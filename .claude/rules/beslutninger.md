@@ -4,6 +4,128 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## BOOKING BEKREFTES AUTOMATISK, OG BOOKINGE-POSTENE FÅR DESIGN (Anders 27.09.2026, bindende)
+
+**Offentlig booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført.**
+Kunden skal ikke vente på coachen. Ingen «Venter på bekreftelse fra coach» for offentlig
+booking eller flexkunder. Svar på spørsmålet etter runde 11 i Claude Design «AK Golf Precision
+Athletics» (`7d7c2994`), der BK-flyten var tegnet med ventestatus.
+
+Koden gjør dette allerede: Stripe-webhooken setter bookingen fra `PENDING` til bekreftet og
+sender bekreftelsen (`src/lib/stripe/handle-event.ts`, `bookingBleBekreftet`). Ventestatusen
+fantes bare i designet.
+
+**Alle bookinge-postene skal designes, og bekreftelsen er første sted for mersalg.** Anders:
+«Allerede her kan vi gjøre et mersalg på å starte i Player HQ.» Noen booker i appen (AK Golf
+Academy), andre er flexkunder som booker én time på nett uten konto og trenger alt på e-post.
+
+- **Bekreftelse:** tid, sted, tjeneste, pris og avbestillingsfrist, legg i kalender. Flexkunde
+  (gjest) får lenke til å opprette PlayerHQ-konto. Appbruker får lenke til bookingen i appen.
+- **Endret time:** gammel og ny tid tydelig.
+- **Takk etter coachingtime** til kunde uten PlayerHQ-konto: takk for timen og treningen, og
+  tilbud om å fortsette i PlayerHQ. Jarvis forbereder, et menneske sender (§Produkt og tilgang).
+- Påminnelse og avbestilling sendes også i dag (`sendBookingReminder`,
+  `sendBookingCancellation`) og tegnes i samme runde, så alle bookinge-postene er like.
+
+**Overstyrer:** AG-03b punkt 4 om bookingbekreftelse i AgencyOS (AG-06) gjelder ikke offentlig
+booking med betaling. Coach kan fortsatt avlyse.
+
+**Arbeidet dette utløser:**
+
+1. **Design, runde 16 i `7d7c2994`:** BK-03 og PH-23 bekreftet uten ventestatus og med
+   PlayerHQ-tilbud til gjest. E-postene EP-01 bekreftelse (gjest og appbruker), EP-02 endret
+   time, EP-03 påminnelse, EP-04 avbestilling, EP-05 takk etter coachingtime, EP-06 oppfølging.
+   Ferdig når alle er i `audit.html` med null avvik og Anders har sett dem (port 7).
+2. **Ny e-postmal i koden:** `tilHtml` i `src/lib/email/booking-emails.ts` bruker gamle
+   hardkodede farger. Bytt til malen fra runde 16. Ferdig når alle fire bookinge-postene bruker den.
+3. **Kontolenke i bekreftelsen til gjest** (`guestEmail` satt, `userId` null). Ferdig når
+   lenken fører til registrering med e-posten ferdig utfylt.
+4. **Takk-e-post som utkast til coachen:** bygg på `src/lib/agents/lead-oppfolging.ts`, som i
+   dag bare gir coachen kopierbar tekst. Ferdig når en gjennomført gjestebooking gir et ferdig
+   e-postutkast i AgencyOS-køen, som coachen sender med ett trykk (rust «Send»).
+
+5. **Tidligere bookinger hentes inn på kontoen** når en flexkunde registrerer seg med samme
+   e-post (Anders 27.09). Finnes ikke i koden i dag. Ferdig når gjestebookinger med samme
+   `guestEmail` får `userId` ved registrering og vises i PlayerHQ. Kvitteringen lenker i dag til
+   `/auth/signup?epost=…` med e-posten i adressen
+   (`src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx`); bytt til en løsning uten
+   e-post i lenken.
+6. **Tidspunkt for e-postene etter coachingtime** (Anders 27.09): takk (EP-05) klar som utkast
+   hos coachen innen 24 timer etter timen. Én oppfølging (EP-06) etter 14 dager, bare hvis kunden
+   verken har booket ny time eller kjøpt PlayerHQ. Deretter ingenting mer.
+
+Bookinger fra appen bekreftes også automatisk (Anders 27.09): de lagres som `PENDING` til
+betalingen er gjennomført (`src/app/portal/booking/actions.ts`), deretter bekreftet.
+
+## WANG: FEM ANSATTROLLER, OG SKOLENE DELER ÉN KOORDINERINGSSIDE (Anders 26.09.2026, bindende)
+
+Svar på spørsmålene etter runde 14 i Claude Design «WANG Golf UI prototype» (`6cfa623c`).
+
+- **Ansattrollene i WANG er Sportssjef, Trener, Kontaktlærer, Rektor og Toppidrettssjef.** Elev,
+  Foresatt og Åpen består som brukerroller. **Assist Coach og Admin brukes ikke i WANG.**
+  «Assist Coach» (§AK-stigen, 22.09) gjelder fortsatt AK Golf utenfor `/team-wang`.
+- **Skolene deler én felles side** (D3 / WANG-33). Der ser hver WANG-skole hvem som har
+  stjernemerket hvilken spiller, og hvem ved hvilken skole som har kommunisert med eleven eller de
+  foresatte, og når. Innholdet i kommunikasjonen, vurderingstall, notater og skolekarakterer blir
+  hos skolen som eier dem (uendret fra `designsystem/wang/TILGANGSMATRISE.md`).
+
+**Overstyrer:** `Admin`-rollen i `designsystem/wang/TILGANGSMATRISE.md`, Mia Holts Assist Coach-rolle
+i prototypens batch 7, og «personvern mellom skoler er ikke avklart» i
+`designsystem/wang/APNE-BESLUTNINGER.md` §6.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Prototypen, runde 15** (`6cfa623c`): bytt Assist Coach og Admin i alle filer, legg Rektor og
+   Toppidrettssjef i rollevelgeren, og gjør WANG-33 til den felles siden: stjernemarkering per skole
+   og en kontaktlogg (hvem, skole, når, med elev eller foresatt), uten meldingsinnhold. Fjern merket
+   «Designforslag · personvern mellom skoler er ikke avklart». Ferdig når Designs måling er 0 avvik
+   i 390/1280 og Anders har sett skjermen.
+2. **Tilgangsmatrisen** (`designsystem/wang/TILGANGSMATRISE.md`): rollelinjen og D3 er rettet i denne
+   beslutningen. D2, D4 og D11 peker fortsatt på Admin til punkt 3 er avklart.
+3. **Åpent, venter på Anders:** hvem tar Admins oppgaver (timeplanføring D4, plasser D2, roller
+   D11), og hva ser Rektor og Toppidrettssjef? Ikke bygg tilgang for de to før det er svart.
+4. **Datamodell før D3 kan bygges:** stjernemarkering per skole og en kontaktlogg per kandidat
+   (skole, person, tidspunkt, mottaker elev/foresatt) — additivt via `db execute`, se gotchas
+   §Database. Kontaktloggen lagrer aldri meldingsinnhold.
+
+## KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN (Anders 26.09.2026, bindende)
+
+Svar på de åpne punktene etter runde 6 og 7 i Precision Athletics (AG-06, AG-09, PH-23).
+
+- **Kartleggingsøkt finnes ikke lenger.** Anders: «Fjern alt som heter kartleggingsøkt.» Ingen
+  tjeneste, knapp, pris, klipp eller tekst skal hete kartleggingsøkt — verken i appen, på
+  markedssidene eller i Claude Design-prosjektet (`7d7c2994`). Det avgjør også spørsmålet om
+  kartleggingsøkt trekker klipp: den finnes ikke.
+- **Etterlevelse er gjennomført tid mot planlagt tid, siste fire uker.** Anders: «Ja jeg ønsker
+  gjennomført til planlagt.» Minutter på gjennomførte økter delt på minutter på planlagte økter
+  med passert sluttid. Fremtidige økter teller ikke. Mangler forfalte økter, vises «—».
+
+**Overstyrer:** «Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris» under §Merke og
+tekst (flyttet til arkivet). Og telle-regelen i `src/lib/domain/etterlevelse.ts` («4/5 ·
+publiserte økter med passert slutt», uten tidsvindu) som etterlevelsestall.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Claude Design (`7d7c2994`):** fjern kartleggingsøkt fra alle skjermer, data og
+   `oversikt.html` (bl.a. AG-06 tjenester og pris, PH-23 klipp). Merk etterlevelse som avklart
+   i AG-09. Ferdig når et søk etter «kartlegging» i prosjektet gir 0 treff i skjermfilene.
+2. **Markedssidene:** fjern «kartleggingsøkt»/«kartleggings-økt» fra `MarkedNav.tsx` (hoved-
+   knappen «Book kartleggingsøkt», to steder), `MarkedCasesV2.tsx`, `MarkedSuksessV2.tsx`,
+   `MarkedKontaktV2.tsx`, `MarkedBookingV2.tsx` og metadata i `src/app/(marketing)/suksess/page.tsx`.
+   Hovedknappen heter «Book time» (Anders 26.09). **Gjort 26.09** i samme PR som beslutningen.
+3. **Tjenestelista i basen:** sjekk om `ServiceType` (og Stripe-produktene) har en
+   kartleggingsøkt. Finnes den: deaktiver, ikke slett (eksisterende bookinger peker på den).
+   Ferdig når den ikke kan bookes.
+4. **Én etterlevelse i koden:** i dag finnes to mål — `etterlevelse()` teller økter uten
+   tidsvindu (ukesrapport, digest, forelder), og `adherencePct()` i
+   `src/lib/workbench/compliance.ts` vekter minutter (Workbench, plan-motoren). Samle dem på
+   minutt-regelen med fire ukers vindu, og vis samme tall på alle flater. Ferdig når
+   ukesrapport, digest, forelder, stall og Workbench viser samme prosent for samme spiller, med
+   tester som låser fire-ukersvinduet.
+
+Treff på «kartlegging» i betydningen *kartlegge noe* (arkitektur-kartlegging, datakartlegging,
+kolonnekartlegging, GFGK-sesongens testperiode, øvelsestags) er ikke tjenesten og røres ikke.
+
 ## Klippekort, rust i avslutt-dialoger og «Følg med» (Anders 26.09.2026, bindende)
 
 Svar på de åpne punktene etter runde 5 i Precision Athletics (PH-23, PH-25, AG-03).
@@ -195,8 +317,8 @@ porting av de tre ferdige områdene.
      ingen side har noensinne rendret dem.
    - Øvelsesredigering (AG-11b): ingen kan i dag opprette eller endre en øvelse noe sted i
      appen, verken admin eller coach.
-   - Bookingbekreftelse i AgencyOS (AG-06, eldre funn, ikke løst i denne runden): en coach
-     kan ikke bekrefte eller avvise en booking noe sted i AgencyOS.
+   - Bookingbekreftelse i AgencyOS (AG-06): offentlig booking bekreftes automatisk etter
+     betaling — se §BOOKING BEKREFTES AUTOMATISK (27.09). Coach kan fortsatt avlyse.
    - Utfordringer (PH-15): kodesiden er bygget (PR #948), men selve ny-skjermen fra
      tegningen er ikke portert ennå.
 5. **Selve portingen:** hver av de 38 skjermene bygges fra sitt manifest
@@ -373,7 +495,7 @@ og ikke kan dras ut av syne.
 
 - MORAD og Mac O'Grady nevnes aldri offentlig. P-posisjoner som internt fagspråk består.
 - Ingen vitnesbyrd, sitater eller stjerner. Vis målingen.
-- Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.
+- Priser leses fra `ServiceType.priceOre`, aldri hardkodet. Kartleggingsøkt er fjernet (§KARTLEGGINGSØKT FJERNES).
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
 - Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Analyse og DataGolf for TN er delte plattformflater.

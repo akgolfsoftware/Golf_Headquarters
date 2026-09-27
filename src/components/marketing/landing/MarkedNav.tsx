@@ -10,9 +10,11 @@ import { Knapp, Mobilmeny, Toppnav, type Lenke } from "@/components/marketing/ak
  *
  * Fasit: `Toppnav` + `Mobilmeny` i AK Golf-masteren, brukt slik
  * `designsystem/ak-golf/ui_kits/markedsside/Deler.jsx` bruker dem. Fem
- * lenker og ÉN handling — «Book kartleggingsøkt» — som gjentas med samme ord
+ * lenker og ÉN handling — «Book time» — som gjentas med samme ord
  * i toppnav, hero og avslutning (kitets README). «Logg inn» ligger i bunnen,
  * ikke her: menyen skal selge én ting.
+ * Avvik:
+ *   - Kartleggingsøkt er fjernet fra teksten (beslutninger.md §KARTLEGGINGSØKT FJERNES, 26.09.2026).
  */
 
 const LENKER: Lenke[] = [
@@ -51,7 +53,7 @@ export function MarkedNav() {
         menyApen={apen}
         handling={
           <Knapp storrelse="sm" href="/booking">
-            Book kartleggingsøkt
+            Book time
           </Knapp>
         }
         onMeny={() => setApen(true)}
@@ -63,7 +65,7 @@ export function MarkedNav() {
         onLukk={() => setApen(false)}
         handling={
           <Knapp fullBredde href="/booking" onClick={() => setApen(false)}>
-            Book kartleggingsøkt
+            Book time
           </Knapp>
         }
       />
