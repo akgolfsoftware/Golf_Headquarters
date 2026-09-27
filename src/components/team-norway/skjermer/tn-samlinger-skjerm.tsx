@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnKnapperekke } from "../tn-handlinger";
+import { TnSamlingSkjema, TnSlettSamling } from "../tn-redigering-skjema";
 import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
 
 /**
@@ -15,7 +17,15 @@ import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermb
  *     samlinger og turneringer, ikke mesterskap som eget merke.
  *   - Dagsprogram, romfordeling og pakkeliste har ingen datamodell. Kortet sier
  *     det rett ut i stedet for å vise eksempeltekst.
+ *   - Samlinger er gruppehendelser (Anders 27.09.2026). Trener lager, endrer og
+ *     sletter dem her. Arrangør er ikke et eget felt; det skrives i notatet.
+ *   - Samlinger og turneringer i årshjulet er egne lenker (Anders 27.09.2026).
  */
+
+const tilDagStreng = (d: Date) => {
+  const o = osloDag(d);
+  return `${o.aar}-${String(o.maned).padStart(2, "0")}-${String(o.dag).padStart(2, "0")}`;
+};
 
 type Hendelse = { type: "samling" | "turnering"; tittel: string; fra: Date; til: Date; sted: string | null; id: string };
 
@@ -57,6 +67,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
         rute={valgt && valgtId ? `/team-norway/samlinger/${valgt.id}` : "/team-norway/samlinger"}
         tittel="Samlinger og terminliste"
         ingress="Hele sesongen på ett ark. Velg en måned for detaljer."
+        handling={data.kontekst.kanAdministrere ? <TnSamlingSkjema knapp="Ny samling" /> : undefined}
       />
 
       <TnFlate>
@@ -76,22 +87,30 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
             const aktiv = m === maned;
             const hendelserIManed = hendelser.filter((h) => iManed(h, aar, m));
             return (
-              <Link
+              <div
                 key={navn}
-                href={lenke(aar, m)}
-                scroll={false}
-                aria-current={aktiv ? "true" : undefined}
-                aria-label={`${MANEDER_LANG[i]} ${aar}, ${hendelserIManed.length} hendelser`}
-                style={{ background: aktiv ? TN.navy50 : TN.white, borderTop: `3px solid ${aktiv ? TN.red600 : "transparent"}`, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "10px 8px 12px", minHeight: 118, display: "flex", flexDirection: "column", gap: 5, textDecoration: "none", minWidth: 0 }}
+                style={{ background: aktiv ? TN.navy50 : TN.white, borderTop: `3px solid ${aktiv ? TN.red600 : "transparent"}`, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "4px 6px 10px", minHeight: 118, display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}
               >
-                <span style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900 }}>{navn}</span>
+                <Link
+                  href={lenke(aar, m)}
+                  scroll={false}
+                  aria-current={aktiv ? "true" : undefined}
+                  aria-label={`${MANEDER_LANG[i]} ${aar}, ${hendelserIManed.length} hendelser`}
+                  style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900, textDecoration: "none", minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}
+                >
+                  {navn}
+                </Link>
                 {hendelserIManed.slice(0, 3).map((h) => (
-                  <span key={`${h.type}-${h.id}`} style={{ display: "block", fontSize: 11.5, lineHeight: 1.3, padding: "3px 5px", borderRadius: TN.radius.sm, background: h.type === "samling" ? TN.navy900 : TN.navy100, color: h.type === "samling" ? TN.white : TN.navy900, overflowWrap: "anywhere" }}>
+                  <Link
+                    key={`${h.type}-${h.id}`}
+                    href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`}
+                    style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 11.5, lineHeight: 1.3, padding: "4px 6px", borderRadius: TN.radius.sm, background: h.type === "samling" ? TN.navy900 : TN.navy100, color: h.type === "samling" ? TN.white : TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}
+                  >
                     {h.tittel}
-                  </span>
+                  </Link>
                 ))}
-                {hendelserIManed.length > 3 ? <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary }}>+{hendelserIManed.length - 3} til</span> : null}
-              </Link>
+                {hendelserIManed.length > 3 ? <Link href={lenke(aar, m)} scroll={false} style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}>+{hendelserIManed.length - 3} til</Link> : null}
+              </div>
             );
           })}
         </div>
@@ -105,7 +124,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
               key={`${h.type}-${h.id}`}
               dato={periode(h.fra, h.til)}
               datoFarge={h.type === "samling" ? TN.navy900 : TN.textSecondary}
-              tittel={h.type === "samling" ? <Link href={`/team-norway/samlinger/${h.id}`} style={{ color: TN.textPrimary }}>{h.tittel}</Link> : h.tittel}
+              tittel={<Link href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`} style={{ color: TN.textPrimary }}>{h.tittel}</Link>}
               tekst={`${h.type === "samling" ? "Samling" : "Turnering"} · ${h.sted ?? "Sted ikke registrert"}`}
             />
           ))}
@@ -130,17 +149,28 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
                   </div>
                 ))}
               </div>
-              <TnEtikett style={{ marginTop: 22, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Arrangør</TnEtikett>
-              <p style={{ fontSize: 14.5, margin: "10px 0 0" }}>{valgt.partner ?? "Ikke registrert"}</p>
               <TnEtikett style={{ marginTop: 22, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Notater</TnEtikett>
               <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: "10px 0 0", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{valgt.notes ?? "Ingen notater på samlingen."}</p>
               <TnFotnote>Dagsprogram, romfordeling og pakkeliste kan ikke registreres i AK Golf HQ ennå, og vises derfor ikke her.</TnFotnote>
+              {data.kontekst.kanAdministrere ? (
+                <div style={{ marginTop: 18 }}>
+                  <TnKnapperekke>
+                    <TnSamlingSkjema
+                      knapp="Endre samling"
+                      variant="sekundar"
+                      samling={{ id: valgt.id, tittel: valgt.name, sted: valgt.location ?? "", fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), notat: valgt.notes ?? "" }}
+                    />
+                    <TnSlettSamling id={valgt.id} navn={valgt.name} />
+                  </TnKnapperekke>
+                </div>
+              ) : null}
               {valgtId ? <p style={{ margin: "14px 0 0" }}><Link href="/team-norway/samlinger" style={{ color: TN.navy700, fontSize: 14, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle samlinger</Link></p> : null}
             </>
           ) : (
             <>
               <TnFlatehode tittel="Neste samling" />
               <TnMangler>Ingen kommende samlinger er registrert for gruppen.</TnMangler>
+              {data.kontekst.kanAdministrere ? <div style={{ marginTop: 16 }}><TnSamlingSkjema knapp="Ny samling" variant="sekundar" /></div> : null}
             </>
           )}
         </TnFlate>

@@ -5,6 +5,8 @@ import { hentTnManedsplan, hentTnSamlinger, hentTnTurneringer } from "@/lib/doma
 import { byggManedsplan, dagnokkel, manedsvindu, type TnHendelse, type TnPlanDag } from "@/lib/domain/tn-manedsplan";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnKnapperekke } from "../tn-handlinger";
+import { TnOktSkjema, TnSlettOkt, type TnOktVerdier } from "../tn-redigering-skjema";
 import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
 
 /**
@@ -18,7 +20,15 @@ import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, med
  *     leses fra adressen (?ar=&maned=) og ikke fra klientstate.
  *   - Kalender vises fra 1024 px. Under det er lista eneste visning, som i
  *     fasitens mobilversjon.
+ *   - Trener legger inn, endrer og sletter økter her (Anders 27.09.2026).
+ *     Samlinger og turneringer i planen lenker til sine egne sider.
  */
+
+const klokkeslett = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Oslo" });
+const dagStreng = (d: Date) => {
+  const o = osloDag(d);
+  return `${o.aar}-${String(o.maned).padStart(2, "0")}-${String(o.dag).padStart(2, "0")}`;
+};
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"] as const;
 const DAGER_LANG = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"] as const;
@@ -77,13 +87,25 @@ function Periodebaand({ navn, hoyre }: { navn?: string; hoyre: string }) {
   );
 }
 
-function Hendelsesrad({ h }: { h: TnHendelse }) {
+function Hendelsesrad({ h, okt }: { h: TnHendelse; okt?: TnOktVerdier }) {
+  const href = h.type === "samling" ? `/team-norway/samlinger/${h.id}` : h.type === "turnering" ? `/team-norway/turneringer/${h.id}` : null;
   return (
     <div style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 12, padding: "10px 0", borderTop: `1px solid ${TN.navy100}` }}>
       <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{h.tid ?? "Hele"}</span>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{h.tittel}</div>
+        <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>
+          {href ? <Link href={href} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{h.tittel}</Link> : h.tittel}
+        </div>
         <div style={{ fontSize: 13, color: TN.textSecondary, marginTop: 2, overflowWrap: "anywhere" }}>{[TYPENAVN[h.type], h.undertekst].filter(Boolean).join(" · ")}</div>
+        {okt?.beskrivelse ? <p style={{ fontSize: 13.5, lineHeight: 1.5, margin: "6px 0 0", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{okt.beskrivelse}</p> : null}
+        {okt ? (
+          <div style={{ marginTop: 4 }}>
+            <TnKnapperekke>
+              <TnOktSkjema okt={okt} knapp="Endre" variant="tekst" />
+              <TnSlettOkt id={okt.id} navn={okt.tittel} />
+            </TnKnapperekke>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -123,6 +145,14 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
   };
   const manedsvalg: TnFilterValg[] = [idag, neste].map((m) => ({ href: adresse({ ar: m.aar, maned: m.maned }), label: MANEDER_LANG[m.maned - 1]!, aktiv: m.aar === aar && m.maned === maned }));
   if (!manedsvalg.some((m) => m.aktiv)) manedsvalg.push({ href: adresse({}), label: `${MANEDER_LANG[maned - 1]} ${aar}`, aktiv: true });
+
+  // Endre og slette gjelder bare trenerens egne gruppeøkter, ikke samlinger og turneringer.
+  const oktVerdier = new Map<string, TnOktVerdier>(
+    data.kontekst.kanAdministrere
+      ? data.okter.map((o) => [o.id, { id: o.id, tittel: o.title, dato: dagStreng(o.startAt), fra: klokkeslett.format(o.startAt), til: klokkeslett.format(o.endAt), sted: o.location ?? "", beskrivelse: o.description ?? "" }])
+      : [],
+  );
+  const rad = (h: TnHendelse, i: number) => <Hendelsesrad key={`${h.id}-${i}`} h={h} okt={h.type === "okt" ? oktVerdier.get(h.id) : undefined} />;
 
   const tomMaaned = tall.okter + tall.turneringsdager + tall.samlingsdager === 0;
 
@@ -169,7 +199,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 24, letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
         <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 4 }}>{`${dm(valgtNokkel)}.${valgtNokkel.slice(0, 4)}`}</div>
         <div style={{ marginTop: 14 }}>
-          {valgtDag.hendelser.map((h, i) => <Hendelsesrad key={`${h.id}-${i}`} h={h} />)}
+          {valgtDag.hendelser.map(rad)}
           {valgtDag.hendelser.length === 0 ? <p style={{ fontSize: 14, color: TN.textSecondary, margin: "10px 0 0" }}>Ingen økter. Hviledag for gruppen.</p> : null}
         </div>
       </aside>
@@ -192,7 +222,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
                       <TnEtikett>{DAGER[ukedag(d.nokkel)]}</TnEtikett>
                       <div style={{ fontFamily: TN.font.mono, fontSize: 14, color: TN.navy900 }}>{dm(d.nokkel)}</div>
                     </div>
-                    <div style={{ minWidth: 0 }}>{d.hendelser.map((h, i) => <Hendelsesrad key={`${h.id}-${i}`} h={h} />)}</div>
+                    <div style={{ minWidth: 0 }}>{d.hendelser.map(rad)}</div>
                   </div>
                 ))}
                 {dager.length === 0 ? <p style={{ fontSize: 14, color: TN.textSecondary, margin: "10px 0" }}>Ingen økter denne uken.</p> : null}
@@ -206,7 +236,9 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
 
   return (
     <SkjermRamme aktiv="manedsplan" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/manedsplan" tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`} />
+      <TnSkjermhode rute="/team-norway/manedsplan" tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
+        handling={data.kontekst.kanAdministrere ? <TnOktSkjema knapp="Ny økt" standardDato={valgtNokkel} /> : undefined}
+      />
 
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12 }}>
         <TnFilterknapper etikett="Velg måned" valg={manedsvalg} />
@@ -237,6 +269,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
             Ingen økter lagt inn for {MANEDER_LANG[maned - 1]!.toLowerCase()} {aar}. Planen vises her så snart trenerteamet har lagt inn første økt.{" "}
             <Link href="/team-norway/samlinger" style={{ color: TN.navy700 }}>Se samlinger</Link>
           </TnMangler>
+          {data.kontekst.kanAdministrere ? <div style={{ marginTop: 16 }}><TnOktSkjema knapp="Legg inn første økt" variant="sekundar" standardDato={valgtNokkel} /></div> : null}
         </TnFlate>
       ) : (
         <>
@@ -245,7 +278,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         </>
       )}
 
-      <TnFotnote>Økter er gruppens planlagte økter. Turneringer og samlinger hentes fra spillernes planer og resultater. Frister kan ikke registreres i AK Golf HQ ennå, og telles derfor ikke.</TnFotnote>
+      <TnFotnote>Økter og samlinger er gruppens egne. Turneringer hentes fra spillernes planer og resultater. Frister kan ikke registreres i AK Golf HQ ennå, og telles derfor ikke.</TnFotnote>
     </SkjermRamme>
   );
 }

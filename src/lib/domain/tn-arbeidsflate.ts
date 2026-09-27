@@ -258,22 +258,27 @@ function osloAar(dato: Date) {
   return Number(osloAarFormat.format(dato));
 }
 
+/**
+ * Samlinger er gruppehendelser med kind «SAMLING» (Anders 27.09.2026), som i
+ * gruppekalenderen. Hele gruppen deltar, så antall deltakere er antall aktive
+ * spillere. Tidligere ble samlinger lest fra `TrainingCamp`, én rad per spiller.
+ */
 export async function hentTnSamlinger(bruker: TnBruker) {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
-  const spillerIder = await spillerIderFor(kontekst, bruker.id);
-  const rader = await prisma.trainingCamp.findMany({
-    where: { userId: { in: spillerIder } },
-    select: { id: true, userId: true, name: true, startDate: true, endDate: true, location: true, partner: true, notes: true },
-    orderBy: { startDate: "desc" },
-    take: 150,
-  });
-  const samlinger = new Map<string, typeof rader>();
-  for (const rad of rader) {
-    const nokkel = `${rad.name}|${rad.startDate.toISOString()}|${rad.endDate.toISOString()}`;
-    samlinger.set(nokkel, [...(samlinger.get(nokkel) ?? []), rad]);
-  }
-  return { kontekst, samlinger: [...samlinger.values()].map((deltakere) => ({ ...deltakere[0]!, antallDeltakere: deltakere.length })) };
+  const [rader, antallSpillere] = await Promise.all([
+    prisma.groupSchedule.findMany({
+      where: { groupId: kontekst.gruppe.id, kind: "SAMLING" },
+      select: { id: true, title: true, startAt: true, endAt: true, location: true, description: true },
+      orderBy: { startAt: "desc" },
+      take: 150,
+    }),
+    prisma.groupMember.count({ where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() } }),
+  ]);
+  return {
+    kontekst,
+    samlinger: rader.map((r) => ({ id: r.id, name: r.title, startDate: r.startAt, endDate: r.endAt, location: r.location, notes: r.description, antallDeltakere: antallSpillere })),
+  };
 }
 
 /** Henter gruppeøkter og perioder i [fra, til). Kalleren velger vinduet (TN-11 bruker hele kalenderuker rundt valgt måned). */
@@ -282,7 +287,8 @@ export async function hentTnManedsplan(bruker: TnBruker, fra: Date, til: Date) {
   if (!kontekst) return null;
   const [okter, perioder] = await Promise.all([
     prisma.groupSchedule.findMany({
-      where: { groupId: kontekst.gruppe.id, startAt: { gte: fra, lt: til } },
+      // Samlinger leses av hentTnSamlinger og legges inn som spenn; her bare øktene.
+      where: { groupId: kontekst.gruppe.id, startAt: { gte: fra, lt: til }, OR: [{ kind: null }, { kind: { not: "SAMLING" } }] },
       select: { id: true, title: true, description: true, startAt: true, endAt: true, location: true, kind: true },
       orderBy: { startAt: "asc" },
     }),
@@ -1223,4 +1229,30 @@ export async function hentTnSpillerProfil(tilgang: TnSpillerTilgang, aar: number
   });
   const sum = aggregerRangliste(iAaret);
   return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
+}
+
+// ── Uttak, spillerstatus og college (Anders 27.09.2026) ──
+
+export type TnUttakRad = { id: string; spillerId: string; arrangement: string; status: string; begrunnelse: string | null; decidedAt: Date };
+
+export async function hentTnUttak(kontekst: TnArbeidskontekst): Promise<TnUttakRad[]> {
+  const rader = await prisma.tnUttak.findMany({ where: { groupId: kontekst.gruppe.id }, orderBy: [{ arrangement: "asc" }, { decidedAt: "desc" }] });
+  return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, decidedAt: r.decidedAt }));
+}
+
+export type TnSpillerstatusRad = { spillerId: string; lisensStatus: string | null; lisensBetaltDato: Date | null; helseattestUtloper: Date | null; antidopingSignert: Date | null };
+
+/** Status for ett år. Spilleren ser bare sin egen (spillerIderFor). */
+export async function hentTnSpillerstatuser(bruker: TnBruker, kontekst: TnArbeidskontekst, aar: number): Promise<Map<string, TnSpillerstatusRad>> {
+  const ider = await spillerIderFor(kontekst, bruker.id);
+  const rader = await prisma.tnSpillerstatus.findMany({ where: { groupId: kontekst.gruppe.id, aar, userId: { in: ider } } });
+  return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, lisensStatus: r.lisensStatus, lisensBetaltDato: r.lisensBetaltDato, helseattestUtloper: r.helseattestUtloper, antidopingSignert: r.antidopingSignert }]));
+}
+
+export type TnCollegeRad = { spillerId: string; skole: string; status: string; startDato: Date | null; notat: string | null };
+
+export async function hentTnCollege(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<Map<string, TnCollegeRad>> {
+  const ider = await spillerIderFor(kontekst, bruker.id);
+  const rader = await prisma.tnCollege.findMany({ where: { groupId: kontekst.gruppe.id, userId: { in: ider } } });
+  return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, skole: r.skole, status: r.status, startDato: r.startDato, notat: r.notat }]));
 }
