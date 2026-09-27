@@ -4,6 +4,42 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, OG MENYEN FÅR SEKS HOVEDPUNKTER (Anders 27.09.2026, bindende)
+
+Anders: «WANG Toppidrett-skjermene som er delt via AK Golf, så skal det være Sportssjef og Trener
+skjermer, spiller har egne skjermer ved bruk av AK Golf – Player HQ.» Og om menyen: den skal ikke
+«drukne i muligheter».
+
+- **`/team-wang` har to roller: Sportssjef og Trener.** Elev, Foresatt, Åpen, Kontaktlærer, Rektor,
+  Toppidrettssjef og Helsepersonell er ikke roller i `/team-wang`. Eleven bruker PlayerHQ (`/portal`).
+- **Menyen har seks hovedpunkter med faner inni**, ikke 43 menypunkter. Trener: I dag · Trening ·
+  Tester · Konkurranse · Meldinger · Elever. Sportssjef får i tillegg Administrasjon (trenere og
+  roller, samtykke, timeplanføring, opptak). Dagens skjermer blir faner under et hovedpunkt.
+- **Trening får en oversikt (WANG-42):** planlagt og gjennomført tid siste fire uker, etterlevelse
+  (tid mot plan, §KARTLEGGINGSØKT FJERNES), oppmøte på morgentrening, per område og per elev.
+- **Ut av WANG-menyen:** Hjem/fellesside (WANG-28), Foresattflaten (WANG-36), Skolefanen (WANG-25),
+  Alle idretter (WANG-40), Helse og belastning (WANG-35). Tegningene beholdes.
+
+**Overstyrer:** rollelinjen i §WANG: FEM ANSATTROLLER (26.09) for `/team-wang`, og rollelinjen i
+`designsystem/wang/TILGANGSMATRISE.md`. Svarer på punkt 3 der: Rektor og Toppidrettssjef finnes
+ikke i `/team-wang`, og Admins oppgaver (D2, D4, D11) ligger hos Sportssjef. Kontaktlærer-spørsmålet
+fra runde 17 faller bort.
+
+**Arbeidet dette utløser:**
+
+1. **Design, runde 17–18 i `6cfa623c`:** ny meny, WANG-42 og bare to roller i alle filer (runde 17
+   ferdig 27.09, runde 18 sendt 27.09). Ferdig når Designs måling er 0 avvik i 390/1280 og Anders
+   har sett skjermene i «WANG Golf Gjennomgang» (port 7).
+2. **Fellessiden `/team-wang` (`src/app/team-wang/page.tsx`)** er i dag åpen uten innlogging for
+   elever og foreldre. **Åpent, venter på Anders:** skal den flyttes til PlayerHQ, bli liggende som
+   offentlig lenke, eller fjernes? Ikke endre ruten før det er svart.
+3. **Tilgang i koden:** `hentWangElevGruppeId` (`src/app/team-wang/_data/wang-tilgang.ts`) gir i dag
+   eleven tilgang til egen IUP under `/team-wang`. Når elevens IUP finnes i PlayerHQ, skal
+   `/team-wang` bare slippe inn trener og sportssjef. Ferdig når en elev som åpner
+   `/team-wang/coach/iup/[elevId]` sendes til PlayerHQ, med test som låser det.
+4. **Skjermene for elev og forelder** (WANG-28, 36, 25, og elevens side av WANG-42, WG-02, WANG-18)
+   hører til PlayerHQ og tegnes i Precision Athletics (`7d7c2994`) når de trengs, ikke i WANG-systemet.
+
 ## ÉN SPILLERPROFIL (AG-08), OG PGA-SAMMENLIGNINGEN BRUKER BARE EKTE DATA GOLF-TALL (Anders 27.09.2026, bindende)
 
 Svar på de to siste uavklarte punktene i Claude Design «AK Golf Precision Athletics» (`7d7c2994`).
@@ -75,8 +111,8 @@ betalingen er gjennomført (`src/app/portal/booking/actions.ts`), deretter bekre
 
 Svar på spørsmålene etter runde 14 i Claude Design «WANG Golf UI prototype» (`6cfa623c`).
 
-- **Ansattrollene i WANG er Sportssjef, Trener, Kontaktlærer, Rektor og Toppidrettssjef.** Elev,
-  Foresatt og Åpen består som brukerroller. **Assist Coach og Admin brukes ikke i WANG.**
+- **Rollene i `/team-wang` er Sportssjef og Trener** — se §WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF
+  OG TRENER (27.09), som erstatter rollelinjen herfra. **Assist Coach og Admin brukes ikke i WANG.**
   «Assist Coach» (§AK-stigen, 22.09) gjelder fortsatt AK Golf utenfor `/team-wang`.
 - **Skolene deler én felles side** (D3 / WANG-33). Der ser hver WANG-skole hvem som har
   stjernemerket hvilken spiller, og hvem ved hvilken skole som har kommunisert med eleven eller de
@@ -89,15 +125,12 @@ i prototypens batch 7, og «personvern mellom skoler er ikke avklart» i
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
 
-1. **Prototypen, runde 15** (`6cfa623c`): bytt Assist Coach og Admin i alle filer, legg Rektor og
-   Toppidrettssjef i rollevelgeren, og gjør WANG-33 til den felles siden: stjernemarkering per skole
-   og en kontaktlogg (hvem, skole, når, med elev eller foresatt), uten meldingsinnhold. Fjern merket
-   «Designforslag · personvern mellom skoler er ikke avklart». Ferdig når Designs måling er 0 avvik
-   i 390/1280 og Anders har sett skjermen.
-2. **Tilgangsmatrisen** (`designsystem/wang/TILGANGSMATRISE.md`): rollelinjen og D3 er rettet i denne
-   beslutningen. D2, D4 og D11 peker fortsatt på Admin til punkt 3 er avklart.
-3. **Åpent, venter på Anders:** hvem tar Admins oppgaver (timeplanføring D4, plasser D2, roller
-   D11), og hva ser Rektor og Toppidrettssjef? Ikke bygg tilgang for de to før det er svart.
+1. **Prototypen, runde 15** (`6cfa623c`): ferdig 27.09 (Assist Coach og Admin fjernet, WANG-33 er
+   felles side). Anders har ikke sett skjermen ennå (port 7).
+2. **Tilgangsmatrisen** (`designsystem/wang/TILGANGSMATRISE.md`): rollelinjen, D2, D4 og D11 er
+   rettet 27.09 til Sportssjef og Trener.
+3. **Avklart 27.09:** Admins oppgaver ligger hos Sportssjef; Rektor og Toppidrettssjef finnes ikke
+   i `/team-wang` (§WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER).
 4. **Datamodell før D3 kan bygges:** stjernemarkering per skole og en kontaktlogg per kandidat
    (skole, person, tidspunkt, mottaker elev/foresatt) — additivt via `db execute`, se gotchas
    §Database. Kontaktloggen lagrer aldri meldingsinnhold.

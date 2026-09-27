@@ -19,11 +19,11 @@ vilje. Les dette **før** du skriver UI, ikke etter.
 7. Fant sjekken ingenting brukeren har rett på, er svaret **403 «Denne siden er lukket»** med
    hvem som kan gi tilgang — aldri en tom side og aldri en ny innloggingsprompt.
 
-Roller: `Åpen` (uten innlogging) · `Elev` · `Foresatt` · `Trener` (rolle på gruppe ved én skole) ·
-`Sportssjef` (ved én skole) · `Kontaktlærer` · `Rektor` · `Toppidrettssjef`
-(Anders 26.09.2026, `.claude/rules/beslutninger.md` §WANG: FEM ANSATTROLLER). Assist Coach og Admin
-brukes ikke i WANG. Der tabellen under fortsatt nevner Admin, er det uavklart hvem som tar oppgaven.
-Hva Rektor og Toppidrettssjef ser, er ikke avklart.
+Roller i `/team-wang`: `Sportssjef` (ved én skole) · `Trener` (rolle på gruppe ved én skole)
+(Anders 27.09.2026, `.claude/rules/beslutninger.md` §WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG
+TRENER). Eleven bruker PlayerHQ. Der matrisen under nevner Elev, Foresatt, Åpen eller Kontaktlærer,
+beskriver den hva eleven og forelderen skal se i PlayerHQ — ikke tilgang i `/team-wang`.
+Assist Coach, Admin, Rektor og Toppidrettssjef brukes ikke i WANG.
 
 ---
 
@@ -55,16 +55,16 @@ Hva Rektor og Toppidrettssjef ser, er ikke avklart.
 | C8 | Systemtilstander | Alle | Laster, feil, uten nett, 403 | 403-siden avslører ikke hva som ligger bak |
 | C9 | Skole-fanen | Elev (egen klasse), Foresatt (eget barn) | Timeplan, prøver, kollisjoner, kompetansemål | Andre klassers timeplan. Kollisjonen vises, men avklares ikke av flaten. |
 | D1 | Rekruttering | **Sportssjef ved egen skole. Ingen andre.** | Kandidatliste, vurderingstall, notat, skolekarakterer | Se egen seksjon nederst |
-| D2 | Plasser | Sportssjef, Admin | Egen skoles plasser i detalj; andre skolers **totaltall** | Hvilke kandidater andre skoler har på venteliste |
+| D2 | Plasser | Sportssjef | Egen skoles plasser i detalj; andre skolers **totaltall** | Hvilke kandidater andre skoler har på venteliste |
 | D3 | Koordinering | Sportssjef ved skoler som har flagget kandidaten | Status, tidsstempel og ansvarlig for alle involverte skoler | **Andre skolers vurderingstall og notater.** Kandidat og foresatt ser aldri tråden. |
-| D4 | Timeplan-føring | Admin, Kontaktlærer ved egen skole | Ukemal, unntak, konflikter | Andre skolers timeplaner. Elever ser resultatet i C9, ikke editoren. |
+| D4 | Timeplan-føring | Sportssjef ved egen skole | Ukemal, unntak, konflikter | Andre skolers timeplaner. Elever ser resultatet i C9, ikke editoren. |
 | D5 | Prøveplan | Trener, Kontaktlærer, Elev (egen klasse) | Prøver mot treningsvolum | Andre klassers prøver |
 | D6 | Foreldremøte | Foresatt (invitasjon og eget svar), Kontaktlærer og Sportssjef (alt) | Foresatt: møtet, agenda, dokumenter, referat. Skolen: svar og oppmøte per hjem. | **Foresatt ser aldri andre hjems svar eller oppmøte.** |
 | D7 | Gruppeposter | Elev og Foresatt i gruppa (leser), Trener (skriver) | Poster, vedlegg | **Lesekvitteringen** — kun trener. Ingen elev ser hvem som ikke har lest. |
 | D8 | Post til én elev | Elev (egen tråd), Foresatt (leser barnets tråd), Trener ved elevens skole | Tråd, meldinger, tidsstempel | **Post krysser ikke skoler.** Foresatt ser barnets tråd, men skriver i sin egen. Meldinger kan ikke slettes. |
 | D9 | Periodeplan | Trener | Perioder, mål, planlagt volum | Elever og foresatte ser ikke planleggingsnivået |
 | D10 | Månedsplan | Trener | Ukene, avvik mot periodeplan, begrunnelse | Avviket vises **kun for treneren selv** — ingen sportssjef skal godkjenne |
-| D11 | Trenere og roller | Sportssjef, Admin | Hver rolle ved hver skole, inkludert hva personen **ikke** når | Roller ved skoler du selv ikke har rolle ved |
+| D11 | Trenere og roller | Sportssjef | Hver rolle ved hver skole, inkludert hva personen **ikke** når | Roller ved skoler du selv ikke har rolle ved |
 | D12 | Inviter elev | Trener med gruppeansvar, Sportssjef | Sendte invitasjoner, status, engangsnøkkelens tilstand | Nøkkelen selv. Invitasjoner sendt av andre skoler. |
 
 ---
