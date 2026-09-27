@@ -5,7 +5,7 @@ source_section: "## Korrelasjons-curiosum: Korrelasjonen mellom puttings SG og l
 tags: [amatør, broadie, kort-spill, putt, sg]
 topics: [amator-data, broadie, putting]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

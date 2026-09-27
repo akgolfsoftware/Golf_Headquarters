@@ -22,8 +22,8 @@ async function main() {
     await client.query(sql);
 
     const { rows } = await client.query(`
-      SELECT column_name, data_type 
-      FROM information_schema.columns 
+      SELECT column_name, data_type
+      FROM information_schema.columns
       WHERE table_name = 'week_plans'
       ORDER BY ordinal_position;
     `);

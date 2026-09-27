@@ -31,6 +31,7 @@ import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { hentTekniskPanel } from "./teknisk-plan-panel";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
 import { dedupGruppeSlots, overlapper } from "@/lib/domain/gruppeplan-dedup";
+import { loadFysTurneringWorkbenchData, type WorkbenchFysTurneringData } from "@/lib/workbench/fys-turnering-data";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -141,6 +142,8 @@ export type WorkbenchData = {
    * Coach: admin-visning om den finnes, ellers portal fysisk.
    */
   fysPlanHref?: string | null;
+  /** Fysisk treningsplan + turneringsmodul fra ny Workbench-modell. */
+  fysTurnering?: WorkbenchFysTurneringData;
   /** Felles gruppetider denne uka (GroupSchedule — tid/sted delt, innhold per spiller). */
   groupSlots?: WorkbenchGroupSlot[];
   /** Om ukedata inkluderer TrainingSessionV2 (lanserings-spor B). */
@@ -289,6 +292,7 @@ export async function loadWorkbenchData(
     monthPlanSessions,
     monthV2SessionsRaw,
     tekniskPanel,
+    fysTurnering,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
@@ -467,6 +471,7 @@ export async function loadWorkbenchData(
       },
     }),
     hentTekniskPanel(userId),
+    loadFysTurneringWorkbenchData(userId, { viewer: opts?.viewer ?? "coach" }),
   ]);
 
   // Filtrer bort V2-speil av coach-utkast for spiller-visning.
@@ -595,6 +600,7 @@ export async function loadWorkbenchData(
           ? "/portal/fysisk"
           : `/admin/spillere/${userId}?fane=fysisk`
         : null,
+      fysTurnering,
       groupSlots: groupSlotsEarly.length > 0 ? groupSlotsEarly : undefined,
       usesV2Sessions: false,
       weekOffset: offset,
@@ -1020,6 +1026,7 @@ export async function loadWorkbenchData(
     planTemplates: templateRows.length > 0 ? templateRows : undefined,
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,
     fysPlanHref,
+    fysTurnering,
     groupSlots: groupSlots.length > 0 ? groupSlots : undefined,
     usesV2Sessions: v2WeekSessions.length > 0,
     weekOffset: offset,

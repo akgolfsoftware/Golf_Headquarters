@@ -11,6 +11,12 @@ import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  lesRundeKilde,
+  rundeRegistreringFelter,
+} from "@/lib/runde-logg/kontrakt";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
@@ -116,11 +122,11 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true, userId: true },
+      select: { sgSource: true, source: true, userId: true },
     });
     if (!round) return;
     // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
-    if (round.sgSource === "manual") return;
+    if (round.sgSource === RUNDE_SG_KILDE.MANUAL) return;
 
     const [shots, holeScores] = await Promise.all([
       prisma.shot.findMany({
@@ -143,18 +149,31 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
     const sg = beregnSgFraShots(shots, holeScores);
     const gran = sg ? beregnGranulaerSgFraShots(shots, holeScores) : null;
     const beslutning = avgjorSgSkriving(round.sgSource, sg, gran);
+    const nesteSgSource = beslutning.handling === "skriv" ? beslutning.felter.sgSource : round.sgSource;
+    const registrering = avledRundeRegistrering({
+      sgSource: nesteSgSource,
+      holeScores,
+      shots,
+      kilde: lesRundeKilde(round.source),
+    });
+    const metadata = rundeRegistreringFelter(registrering);
 
     if (beslutning.handling === "skriv") {
       await prisma.round.update({
         where: { id: roundId },
-        data: beslutning.felter,
+        data: { ...beslutning.felter, ...metadata },
+      });
+    } else {
+      await prisma.round.update({
+        where: { id: roundId },
+        data: metadata,
       });
     }
 
     // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —
     // synk DataGolf-grunnlaget (BrukerSgInput, kilde PLAYERHQ). Best-effort,
     // kaster aldri. Skipper når ingen skriving skjedde.
-    if (sg || round.sgSource === "beregnet") {
+    if (sg || round.sgSource === RUNDE_SG_KILDE.BEREGNET) {
       await synkroniserSgFraRunder(round.userId);
     }
   } catch (error) {
@@ -292,10 +311,28 @@ export async function importUpGameHoleScores(
       where: { roundId, holeNumber: { in: parsed.data.map((h) => h.holeNumber) } },
     });
     // Rundens totalscore = summen av alle hullscorene som nå finnes.
-    const alle = await tx.holeScore.findMany({ where: { roundId }, select: { strokes: true } });
+    const alle = await tx.holeScore.findMany({
+      where: { roundId },
+      select: { holeNumber: true, par: true, strokes: true, putts: true, fairway: true, gir: true },
+    });
+    const registrering = avledRundeRegistrering({
+      sgSource: null,
+      holeScores: alle,
+      shots: [],
+      kilde: "upgame_csv",
+    });
     await tx.round.update({
       where: { id: roundId },
-      data: { score: alle.reduce((sum, x) => sum + x.strokes, 0) },
+      data: {
+        score: alle.reduce((sum, x) => sum + x.strokes, 0),
+        ...rundeRegistreringFelter(registrering, {
+          importMetadata: {
+            format: "upgame_hole_scores",
+            antallHull: parsed.data.length,
+            importedAt: new Date().toISOString(),
+          },
+        }),
+      },
     });
   });
 
@@ -310,10 +347,10 @@ export async function importUpGameHoleScores(
   let sgStatus: "full" | "delvis" | "mangler" = "mangler";
   let sgMelding =
     "Hull-score er lagret. Full Strokes Gained krever slag for slag — legg til detalj om du vil.";
-  if (runde?.sgSource === "beregnet" && runde.sgTotal != null) {
+  if (runde?.sgSource === RUNDE_SG_KILDE.BEREGNET && runde.sgTotal != null) {
     sgStatus = "full";
     sgMelding = "SG er beregnet fra komplett slag-kjede.";
-  } else if (runde?.sgTotal != null || runde?.sgSource === "manual") {
+  } else if (runde?.sgTotal != null || runde?.sgSource === RUNDE_SG_KILDE.MANUAL) {
     sgStatus = "delvis";
     sgMelding =
       "Score er oppdatert. SG er begrenset uten slag for slag (UpGame gir hull-tall).";

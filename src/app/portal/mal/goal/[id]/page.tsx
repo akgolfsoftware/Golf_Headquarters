@@ -23,6 +23,7 @@ import {
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal } from "@/lib/domain/maal-fremdrift";
+import { lesPlanNivaa } from "@/lib/domain/maal-plannivaa";
 
 type GoalStatus = "ACTIVE" | "ACHIEVED" | "ABANDONED";
 
@@ -193,6 +194,7 @@ export default async function GoalDetailPage({
       linkedPyramidArea: goal.linkedPyramidArea,
       linkedTestId: goal.linkedTestId,
       sgOmrade: lesSgMaal(goal.payload)?.omrade ?? null,
+      planNivaa: lesPlanNivaa(goal.payload),
     },
   };
 

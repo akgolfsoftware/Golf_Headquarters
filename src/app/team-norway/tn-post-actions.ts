@@ -4,10 +4,10 @@
  * Server actions for Team Norway-poster (TN-09/TN-10/TN-11, Claw batch 3).
  * Mønster: src/app/admin/(legacy)/team/ekstern-leser-actions.ts.
  *
- * requireCoachActionUser() er den ENESTE autorisasjonen server actions kan
- * stole på (layout-guards kjører ikke for actions) — den fingranulerte
- * sjekken (er trener i DENNE gruppen/for DENNE spilleren) skjer likevel i
- * domenelaget (tn-post.ts), aldri bare her.
+ * Layout-guards kjører ikke for actions, så hver action slår opp brukeren selv.
+ * Gruppeposter og påminnelser krever bare innlogging her; at brukeren er
+ * trener i DENNE gruppen håndheves i domenelaget (tn-post.ts). Spillerposter
+ * krever i tillegg plattformrollen via requireCoachActionUser().
  */
 
 import { z } from "zod";
@@ -17,13 +17,11 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import {
   opprettGruppepost,
   opprettSpillerpost,
-  opprettGruppeDokument,
   merkPostLest,
   hentPostLesekvitteringNavnForViewer,
+  sendPaaminnelse,
 } from "@/lib/domain/tn-post";
 import { erTnPostKind } from "@/lib/domain/tn-post-regler";
-import { uploadFile } from "@/lib/storage/supabase-storage";
-import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
@@ -40,7 +38,10 @@ export async function opprettGruppepostAction(
   if (!parsed.success) {
     return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig post" };
   }
-  const bruker = await requireCoachActionUser();
+  // Gruppetrener uten plattformrollen COACH skal også kunne poste.
+  // Domenelaget krever at forfatteren er trener i akkurat denne gruppen.
+  const bruker = await getCurrentUser();
+  if (!bruker) return { ok: false, feil: "Du er ikke logget inn" };
   try {
     await opprettGruppepost({ forfatterId: bruker.id, groupId, tekst: parsed.data.tekst, kind: parsed.data.kind });
     revalidatePath(`/team-norway/${groupId}`);
@@ -65,36 +66,6 @@ export async function opprettSpillerpostAction(
     return { ok: true };
   } catch (err) {
     return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke publisere posten" };
-  }
-}
-
-const MAKS_DOKUMENT_BYTES = 50 * 1024 * 1024;
-
-/** TN-11 «Last opp fil» — validerer, laster opp til bucket, oppretter DOKUMENT-posten. */
-export async function opprettGruppeDokumentAction(groupId: string, form: FormData): Promise<ActionResult> {
-  const bruker = await requireCoachActionUser();
-  const fil = form.get("file");
-  if (!(fil instanceof File) || fil.size === 0) {
-    return { ok: false, feil: "Ingen fil valgt" };
-  }
-  if (fil.size > MAKS_DOKUMENT_BYTES) {
-    return { ok: false, feil: "Filen er for stor. Maksgrense: 50 MB." };
-  }
-  try {
-    const path = `${groupId}/${Date.now()}-${fil.name.replace(/[^a-zA-Z0-9.\-_]/g, "-")}`;
-    const opplastet = await uploadFile({ bucket: STORAGE_BUCKETS.TN_POST_VEDLEGG, path, file: fil });
-    await opprettGruppeDokument({
-      forfatterId: bruker.id,
-      groupId,
-      fileName: fil.name,
-      fileType: fil.type || null,
-      fileSize: fil.size,
-      path: opplastet.path,
-    });
-    revalidatePath(`/team-norway/${groupId}/dokumenter`);
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, feil: err instanceof Error ? err.message : "Opplasting feilet" };
   }
 }
 
@@ -126,4 +97,19 @@ export async function hentLesekvitteringNavnAction(postId: string): Promise<Lese
     apnet: svar.apnet.map((a) => ({ ...a, readAt: a.readAt.toISOString() })),
     mangler: svar.mangler,
   };
+}
+
+export type PaaminnelseSvar = { ok: true; sendtAtIso: string; antall: number } | { ok: false; feil: string };
+
+/** «Send påminnelse» — tilgang og engangsregel håndheves i domenelaget. */
+export async function sendPaaminnelseAction(postId: string): Promise<PaaminnelseSvar> {
+  if (!z.string().min(1).max(200).safeParse(postId).success) return { ok: false, feil: "Ugyldig innlegg" };
+  const bruker = await getCurrentUser();
+  if (!bruker) return { ok: false, feil: "Du er ikke logget inn" };
+  try {
+    const svar = await sendPaaminnelse(postId, bruker.id);
+    return { ok: true, sendtAtIso: svar.sendtAt.toISOString(), antall: svar.antall };
+  } catch (err) {
+    return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke sende påminnelse" };
+  }
 }

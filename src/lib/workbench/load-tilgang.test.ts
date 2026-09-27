@@ -30,12 +30,15 @@ mock.module("@/lib/prisma", {
         return [{ id: "privat", title: "Privat detalj", kind: "HELSE", isPrivate: true, recurring: null,
           startAt: new Date("2026-09-16T06:00:00Z"), endAt: new Date("2026-09-16T07:00:00Z") }];
       } },
+      weekPlan: { findUnique: async () => {
+        sessionLookups += 1;
+        return null;
+      } },
       schoolScheduleEntry: { findMany: async (args: { where: { OR: unknown[] } }) => {
         sessionLookups += 1;
         assert.deepEqual(args.where.OR, [{ classYear: "VG1" }, { classYear: null }]);
         return [];
       } },
-      weekPlan: { findUnique: async () => null },
     },
   },
 });
@@ -131,7 +134,7 @@ test("egen spillers opptattid hentes etter tilgangskontroll og anonymiseres", as
   sessionLookups = 0;
   const uke = await loadWeek({ weekStart: "2026-09-14", mode: { ...mode, subjectId: "spiller-egen" }, playerId: "spiller-egen" });
   assert.equal(uke.ok, true);
-  assert.equal(sessionLookups, 4);
+  assert.equal(sessionLookups, 5);
   if (uke.ok) {
     assert.equal(uke.data.days[2].lockedBlocks[0].title, "Opptatt");
     assert.doesNotMatch(JSON.stringify(uke.data), /Privat detalj|HELSE/);

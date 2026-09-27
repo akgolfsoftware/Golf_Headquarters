@@ -67,4 +67,3 @@ test("fleksibilitet underveis: legge til, bytte og fjerne øvelser", () => {
   assert.equal(state.drills[1].index, 2);
   assert.equal(state.drills[1].name, "Putting 3 meter");
 });
-

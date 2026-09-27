@@ -40,6 +40,7 @@ function filstorrelse(bytes: number | null | undefined): string | null {
 
 export function TnSeHvem({ postId }: { postId: string }) {
   const [apent, setApent] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [data, setData] = useState<Awaited<ReturnType<typeof hentLesekvitteringNavnAction>>>(null);
 
@@ -51,8 +52,12 @@ export function TnSeHvem({ postId }: { postId: string }) {
     setApent(true);
     if (data) return;
     startTransition(async () => {
-      const svar = await hentLesekvitteringNavnAction(postId);
-      setData(svar);
+      setFeil(null);
+      try {
+        const svar = await hentLesekvitteringNavnAction(postId);
+        setData(svar);
+        if (!svar) setFeil("Du har ikke tilgang til denne lesekvitteringen.");
+      } catch { setFeil("Lesekvitteringen kunne ikke hentes. Prøv igjen."); }
     });
   }
 
@@ -61,6 +66,8 @@ export function TnSeHvem({ postId }: { postId: string }) {
       <button
         type="button"
         onClick={apne}
+        disabled={pending}
+        aria-expanded={apent}
         style={{
           background: "none",
           border: "none",
@@ -86,6 +93,7 @@ export function TnSeHvem({ postId }: { postId: string }) {
             gap: 6,
           }}
         >
+          {feil && <span role="alert" style={{ color: TN.status.redText }}>{feil}</span>}
           {pending && <span style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textSecondary }}>Henter …</span>}
           {data?.mangler.map((m) => (
             <div key={m.userId} style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -109,10 +117,12 @@ export function TnSeHvem({ postId }: { postId: string }) {
 }
 
 function VedleggChip({
+  attachmentId,
   fileName,
   fileType,
   fileSize,
 }: {
+  attachmentId: string;
   fileName: string;
   fileType: string | null;
   fileSize?: number | null;
@@ -121,7 +131,8 @@ function VedleggChip({
   const pdf = type === "PDF";
   const storrelse = filstorrelse(fileSize);
   return (
-    <div
+    <a
+      href={`/api/team-norway/vedlegg/${encodeURIComponent(attachmentId)}`}
       style={{
         display: "flex",
         alignItems: "center",
@@ -171,7 +182,7 @@ function VedleggChip({
           </div>
         )}
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -291,7 +302,7 @@ export function TnPostTidslinje({
             {p.vedlegg.length > 0 && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 {p.vedlegg.map((v) => (
-                  <VedleggChip key={v.id} fileName={v.fileName} fileType={v.fileType} fileSize={v.fileSize} />
+                  <VedleggChip key={v.id} attachmentId={v.id} fileName={v.fileName} fileType={v.fileType} fileSize={v.fileSize} />
                 ))}
               </div>
             )}

@@ -7,7 +7,8 @@
  *
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
  * Avvik:
- * - Utvidet med repetisjonstyper og områder for AK-formelen.
+ *   - Ingen riggrad for fullskjerm-tapperen ennå; innholdet avhenger av øktas køller, rep-typer og lagrede tellinger.
+ *   - Utvidet med repetisjonstyper og områder for AK-formelen.
  */
 
 import { useEffect, useRef, useState } from "react";

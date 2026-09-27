@@ -3,8 +3,8 @@
 Rekkefølge når kilder krangler. Øverst vinner.
 
 1. Designautoritet — `docs/design-system/design-autoritet.md`
-2. Treningsplanlegging og språk — `docs/treningsplanlegging-og-sprak.md` (eneste master)
-3. Treningsplanlegging — `docs/treningsplanlegging.md` (oversikt)
+2. Språk og treningsplanlegging — `docs/treningsplanlegging.md` (eneste master)
+3. Treningsplanlegging — `docs/treningsplanlegging.md`
 4. Chrome-lov — denne filen
 5. Gjeldende skjermleveranse fra Claude Design
 6. ds-core / `src/components`

@@ -1,8 +1,7 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ Utfordringer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys PlayerHQ.
+ * PlayerHQ Utfordringer — AK Golf Precision Athletic.
  */
 
 import Link from "next/link";
@@ -56,7 +55,7 @@ function UtfordringKort({ u }: { u: UtfordringKortData }) {
       <Kort hover pad="16px 18px" style={{ height: "100%" }}>
         {/* Status + eierskap */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <StatusPill tone={avsluttet ? "up" : "lime"}>{avsluttet ? "Fullført" : "Aktiv"}</StatusPill>
+          <StatusPill tone={avsluttet ? "up" : "lime"}>{avsluttet ? "Avsluttet" : "Aktiv"}</StatusPill>
           {u.erEier && <Bit icon="star">Eier</Bit>}
         </div>
 
@@ -132,7 +131,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
   const { aktive, tidligere } = data;
 
   return (
-    <div data-paper-portal-utfordringer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-akgolf-portal-utfordringer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -166,7 +165,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
             <TomTilstand
               icon="trophy"
               title="Ingen aktive utfordringer"
-              sub="Lag en ny utfordring eller bli med i en eksisterende."
+              sub="Lag en ny utfordring og velg hvem som skal delta."
             />
             <div style={{ marginTop: 12 }}>
               <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none", display: "block" }}>

@@ -1,16 +1,11 @@
-/**
- * Team Norway · Uttak & Kriterier (TN-05).
- * Designreferanse: Claude Design «Team Norway App» (3416f258-avledet).
- */
-
-
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { TnUttakSkjerm } from "@/components/team-norway/skjermer/tn-uttak-skjerm";
 
 export const metadata = {
-  title: "Uttak & Kriterier · Team Norway Golf",
-  description: "Uttakskriterier for EM og VM samt offisiell WAGR-rangliste.",
+  title: "Uttak og kriterier · Team Norway Golf",
+  description: "De tre uttakskriteriene og ranglisten med bruttotall.",
 };
 
-export default function TeamNorwayUttakPage() {
-  return <TeamNorwayAppView initialSkjerm="TN-05" />;
+/** TN-05. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-05. */
+export default function Page() {
+  return <TnUttakSkjerm />;
 }

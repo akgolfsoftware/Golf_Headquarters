@@ -12,6 +12,12 @@ import { estimerHullFraTotal } from "@/lib/runde-logg/estimer-fra-total";
 import { beregnSg } from "@/lib/domain/sg";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  rundeRegistreringFelter,
+  type RundeSgKilde,
+} from "@/lib/runde-logg/kontrakt";
 import { hentManuelleSgFelt, validerManuellSg, SG_ALLE_FELT, type ManuellSgInput } from "@/lib/portal-runder/manuell-sg";
 
 /**
@@ -174,8 +180,14 @@ export async function logRoundManual(input: LogRoundManualInput) {
   }
 
   const sgTotal = sg.harTall ? sg.verdier.sgTotal : sgEstimat?.total ?? null;
-  const sgSource: "manual" | "estimert" | null =
-    sg.harTall ? "manual" : sgEstimat != null ? "estimert" : null;
+  const sgSource: RundeSgKilde | null =
+    sg.harTall ? RUNDE_SG_KILDE.MANUAL : sgEstimat != null ? RUNDE_SG_KILDE.ESTIMERT : null;
+  const registrering = avledRundeRegistrering({
+    sgSource,
+    holeScores,
+    shots: [],
+    kilde: sg.harTall ? "manuell" : "etterregistrering",
+  });
   const sgData = sg.harTall ? sg.verdier : {
     ...sg.verdier,
     sgOtt: sgEstimat?.ott ?? null,
@@ -189,7 +201,10 @@ export async function logRoundManual(input: LogRoundManualInput) {
   const data = {
     userId: user.id, courseId: base.data.courseId,
     playedAt: new Date(base.data.playedAt), score,
-    notes: base.data.notes ?? null, ...sgData, sgSource,
+    notes: base.data.notes ?? null,
+    ...sgData,
+    sgSource,
+    ...rundeRegistreringFelter(registrering),
   };
   const roundId = await prisma.$transaction(async (tx) => {
     if (requestRoundId) {

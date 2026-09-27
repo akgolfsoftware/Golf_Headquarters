@@ -48,8 +48,8 @@ export function parseSourceId(sourceId: string): ParsedSourceId {
 }
 
 export function omraadeKodeTilTrainingArea(kode: string | null | undefined): TrainingArea {
-  if (!kode) return "TEE";
-  if (kode === "TEE_TOTAL") return "TEE";
+  if (!kode) return "TEE_TOTAL";
+  if (kode === "TEE") return "TEE_TOTAL";
   return kode as TrainingArea;
 }
 
@@ -61,8 +61,8 @@ export function omraadeKodeTilTrainingArea(kode: string | null | undefined): Tra
  */
 const STANDARD_OMRADE: Record<PyramidArea, TrainingArea> = {
   FYS: "STYRKE",
-  TEK: "TEE",
-  SLAG: "TEE",
+  TEK: "TEE_TOTAL",
+  SLAG: "TEE_TOTAL",
   SPILL: "BANE",
   TURN: "BANE",
 };

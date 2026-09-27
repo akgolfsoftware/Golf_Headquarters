@@ -1,8 +1,332 @@
 # Beslutninger — AK Golf HQ
 
-Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [beslutninger-full.md](../../docs/arkiv/instruks-2026-09-21/beslutninger-full.md). Gamle blokker der er historikk, aldri byggeordre.
+Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
+
+## WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, OG MENYEN FÅR SEKS HOVEDPUNKTER (Anders 27.09.2026, bindende)
+
+Anders: «WANG Toppidrett-skjermene som er delt via AK Golf, så skal det være Sportssjef og Trener
+skjermer, spiller har egne skjermer ved bruk av AK Golf – Player HQ.» Og om menyen: den skal ikke
+«drukne i muligheter».
+
+- **`/team-wang` har to roller: Sportssjef og Trener.** Elev, Foresatt, Åpen, Kontaktlærer, Rektor,
+  Toppidrettssjef og Helsepersonell er ikke roller i `/team-wang`. Eleven bruker PlayerHQ (`/portal`).
+- **Menyen har seks hovedpunkter med faner inni**, ikke 43 menypunkter. Trener: I dag · Trening ·
+  Tester · Konkurranse · Meldinger · Elever. Sportssjef får i tillegg Administrasjon (trenere og
+  roller, samtykke, timeplanføring, opptak). Dagens skjermer blir faner under et hovedpunkt.
+- **Trening får en oversikt (WANG-42):** planlagt og gjennomført tid siste fire uker, etterlevelse
+  (tid mot plan, §KARTLEGGINGSØKT FJERNES), oppmøte på morgentrening, per område og per elev.
+- **Ut av WANG-menyen:** Hjem/fellesside (WANG-28, lever videre som egen åpen side, punkt 2), Foresattflaten (WANG-36), Skolefanen (WANG-25),
+  Alle idretter (WANG-40), Helse og belastning (WANG-35). Tegningene beholdes.
+
+**Overstyrer:** rollelinjen i §WANG: FEM ANSATTROLLER (26.09) for `/team-wang`, og rollelinjen i
+`designsystem/wang/TILGANGSMATRISE.md`. Svarer på punkt 3 der: Rektor og Toppidrettssjef finnes
+ikke i `/team-wang`, og Admins oppgaver (D2, D4, D11) ligger hos Sportssjef. Kontaktlærer-spørsmålet
+fra runde 17 faller bort.
+
+**Arbeidet dette utløser:**
+
+1. **Design, runde 17–18 i `6cfa623c`:** ny meny, WANG-42 og bare to roller i alle filer (runde 17
+   ferdig 27.09, runde 18 sendt 27.09). Ferdig når Designs måling er 0 avvik i 390/1280 og Anders
+   har sett skjermene i «WANG Golf Gjennomgang» (port 7).
+2. **Fellessiden `/team-wang` (`src/app/team-wang/page.tsx`) beholdes uendret og separat**
+   (Anders 27.09: «den siden skal fortsatt holdes separat, den har ingenting med samarbeidssidene
+   for WANG Fredrikstad å gjøre ennå»). Den er åpen uten innlogging for elever og foreldre og er
+   ikke en del av trener- og sportssjefflaten. Ikke flytt, lås eller slå den sammen med menyen.
+3. **Tilgang i koden:** `hentWangElevGruppeId` (`src/app/team-wang/_data/wang-tilgang.ts`) gir i dag
+   eleven tilgang til egen IUP under `/team-wang`. Når elevens IUP finnes i PlayerHQ, skal
+   `/team-wang` bare slippe inn trener og sportssjef. Ferdig når en elev som åpner
+   `/team-wang/coach/iup/[elevId]` sendes til PlayerHQ, med test som låser det.
+4. **Skjermene for elev og forelder** (WANG-28, 36, 25, og elevens side av WANG-42, WG-02, WANG-18)
+   hører til PlayerHQ og tegnes i Precision Athletics (`7d7c2994`) når de trengs, ikke i WANG-systemet.
+
+## ÉN SPILLERPROFIL (AG-08), OG PGA-SAMMENLIGNINGEN BRUKER BARE EKTE DATA GOLF-TALL (Anders 27.09.2026, bindende)
+
+Svar på de to siste uavklarte punktene i Claude Design «AK Golf Precision Athletics» (`7d7c2994`).
+
+- **Én spillerprofil: AG-08 Spiller 360.** Kortet i AG-03 Oppfølgingskø lenker dit. PS-01 finnes
+  ikke i skjermlista og strykes. Overstyrer spørsmålet om PS-01 i §AG-03b punkt 3.
+- **ST-05 PGA-sammenligning:** ekte PGA-navn fra Data Golf i appen (offentlige proffspillere).
+  «Egne tall» bruker bare Data Golfs ekte fordeling, aldri en formel vi har laget selv. Mangler
+  tallet, vises «—».
+
+Krever ingen kodeendring — bekrefter dagens tilstand. `src/lib/datagolf/player-tool-data.ts`
+bruker allerede ekte Data Golf-data og egne registrerte runder. Formelen fantes bare i designet
+og rettes i runde 18.
+
+## BOOKING BEKREFTES AUTOMATISK, OG BOOKINGE-POSTENE FÅR DESIGN (Anders 27.09.2026, bindende)
+
+**Offentlig booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført.**
+Kunden skal ikke vente på coachen. Ingen «Venter på bekreftelse fra coach» for offentlig
+booking eller flexkunder. Svar på spørsmålet etter runde 11 i Claude Design «AK Golf Precision
+Athletics» (`7d7c2994`), der BK-flyten var tegnet med ventestatus.
+
+Koden gjør dette allerede: Stripe-webhooken setter bookingen fra `PENDING` til bekreftet og
+sender bekreftelsen (`src/lib/stripe/handle-event.ts`, `bookingBleBekreftet`). Ventestatusen
+fantes bare i designet.
+
+**Alle bookinge-postene skal designes, og bekreftelsen er første sted for mersalg.** Anders:
+«Allerede her kan vi gjøre et mersalg på å starte i Player HQ.» Noen booker i appen (AK Golf
+Academy), andre er flexkunder som booker én time på nett uten konto og trenger alt på e-post.
+
+- **Bekreftelse:** tid, sted, tjeneste, pris og avbestillingsfrist, legg i kalender. Flexkunde
+  (gjest) får lenke til å opprette PlayerHQ-konto. Appbruker får lenke til bookingen i appen.
+- **Endret time:** gammel og ny tid tydelig.
+- **Takk etter coachingtime** til kunde uten PlayerHQ-konto: takk for timen og treningen, og
+  tilbud om å fortsette i PlayerHQ. Jarvis forbereder, et menneske sender (§Produkt og tilgang).
+- Påminnelse og avbestilling sendes også i dag (`sendBookingReminder`,
+  `sendBookingCancellation`) og tegnes i samme runde, så alle bookinge-postene er like.
+
+**Overstyrer:** AG-03b punkt 4 om bookingbekreftelse i AgencyOS (AG-06) gjelder ikke offentlig
+booking med betaling. Coach kan fortsatt avlyse.
+
+**Arbeidet dette utløser:**
+
+1. **Design, runde 16 i `7d7c2994`:** BK-03 og PH-23 bekreftet uten ventestatus og med
+   PlayerHQ-tilbud til gjest. E-postene EP-01 bekreftelse (gjest og appbruker), EP-02 endret
+   time, EP-03 påminnelse, EP-04 avbestilling, EP-05 takk etter coachingtime, EP-06 oppfølging.
+   Ferdig når alle er i `audit.html` med null avvik og Anders har sett dem (port 7).
+2. **Ny e-postmal i koden:** `tilHtml` i `src/lib/email/booking-emails.ts` bruker gamle
+   hardkodede farger. Bytt til malen fra runde 16. Ferdig når alle fire bookinge-postene bruker den.
+3. **Kontolenke i bekreftelsen til gjest** (`guestEmail` satt, `userId` null). Ferdig når
+   lenken fører til registrering med e-posten ferdig utfylt.
+4. **Takk-e-post som utkast til coachen:** bygg på `src/lib/agents/lead-oppfolging.ts`, som i
+   dag bare gir coachen kopierbar tekst. Ferdig når en gjennomført gjestebooking gir et ferdig
+   e-postutkast i AgencyOS-køen, som coachen sender med ett trykk (rust «Send»).
+
+5. **Tidligere bookinger hentes inn på kontoen** når en flexkunde registrerer seg med samme
+   e-post (Anders 27.09). Finnes ikke i koden i dag. Ferdig når gjestebookinger med samme
+   `guestEmail` får `userId` ved registrering og vises i PlayerHQ. Kvitteringen lenker i dag til
+   `/auth/signup?epost=…` med e-posten i adressen
+   (`src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx`); bytt til en løsning uten
+   e-post i lenken.
+6. **Tidspunkt for e-postene etter coachingtime** (Anders 27.09): takk (EP-05) klar som utkast
+   hos coachen innen 24 timer etter timen. Én oppfølging (EP-06) etter 14 dager, bare hvis kunden
+   verken har booket ny time eller kjøpt PlayerHQ. Deretter ingenting mer.
+
+Bookinger fra appen bekreftes også automatisk (Anders 27.09): de lagres som `PENDING` til
+betalingen er gjennomført (`src/app/portal/booking/actions.ts`), deretter bekreftet.
+
+## WANG: FEM ANSATTROLLER, OG SKOLENE DELER ÉN KOORDINERINGSSIDE (Anders 26.09.2026, bindende)
+
+Svar på spørsmålene etter runde 14 i Claude Design «WANG Golf UI prototype» (`6cfa623c`).
+
+- **Rollene i `/team-wang` er Sportssjef og Trener** — se §WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF
+  OG TRENER (27.09), som erstatter rollelinjen herfra. **Assist Coach og Admin brukes ikke i WANG.**
+  «Assist Coach» (§AK-stigen, 22.09) gjelder fortsatt AK Golf utenfor `/team-wang`.
+- **Skolene deler én felles side** (D3 / WANG-33). Der ser hver WANG-skole hvem som har
+  stjernemerket hvilken spiller, og hvem ved hvilken skole som har kommunisert med eleven eller de
+  foresatte, og når. Innholdet i kommunikasjonen, vurderingstall, notater og skolekarakterer blir
+  hos skolen som eier dem (uendret fra `designsystem/wang/TILGANGSMATRISE.md`).
+
+**Overstyrer:** `Admin`-rollen i `designsystem/wang/TILGANGSMATRISE.md`, Mia Holts Assist Coach-rolle
+i prototypens batch 7, og «personvern mellom skoler er ikke avklart» i
+`designsystem/wang/APNE-BESLUTNINGER.md` §6.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Prototypen, runde 15** (`6cfa623c`): ferdig 27.09 (Assist Coach og Admin fjernet, WANG-33 er
+   felles side). Anders har ikke sett skjermen ennå (port 7).
+2. **Tilgangsmatrisen** (`designsystem/wang/TILGANGSMATRISE.md`): rollelinjen, D2, D4 og D11 er
+   rettet 27.09 til Sportssjef og Trener.
+3. **Avklart 27.09:** Admins oppgaver ligger hos Sportssjef; Rektor og Toppidrettssjef finnes ikke
+   i `/team-wang` (§WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER).
+4. **Datamodell før D3 kan bygges:** stjernemarkering per skole og en kontaktlogg per kandidat
+   (skole, person, tidspunkt, mottaker elev/foresatt) — additivt via `db execute`, se gotchas
+   §Database. Kontaktloggen lagrer aldri meldingsinnhold.
+
+## KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN (Anders 26.09.2026, bindende)
+
+Svar på de åpne punktene etter runde 6 og 7 i Precision Athletics (AG-06, AG-09, PH-23).
+
+- **Kartleggingsøkt finnes ikke lenger.** Anders: «Fjern alt som heter kartleggingsøkt.» Ingen
+  tjeneste, knapp, pris, klipp eller tekst skal hete kartleggingsøkt — verken i appen, på
+  markedssidene eller i Claude Design-prosjektet (`7d7c2994`). Det avgjør også spørsmålet om
+  kartleggingsøkt trekker klipp: den finnes ikke.
+- **Etterlevelse er gjennomført tid mot planlagt tid, siste fire uker.** Anders: «Ja jeg ønsker
+  gjennomført til planlagt.» Minutter på gjennomførte økter delt på minutter på planlagte økter
+  med passert sluttid. Fremtidige økter teller ikke. Mangler forfalte økter, vises «—».
+
+**Overstyrer:** «Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris» under §Merke og
+tekst (flyttet til arkivet). Og telle-regelen i `src/lib/domain/etterlevelse.ts` («4/5 ·
+publiserte økter med passert slutt», uten tidsvindu) som etterlevelsestall.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Claude Design (`7d7c2994`):** fjern kartleggingsøkt fra alle skjermer, data og
+   `oversikt.html` (bl.a. AG-06 tjenester og pris, PH-23 klipp). Merk etterlevelse som avklart
+   i AG-09. Ferdig når et søk etter «kartlegging» i prosjektet gir 0 treff i skjermfilene.
+2. **Markedssidene:** fjern «kartleggingsøkt»/«kartleggings-økt» fra `MarkedNav.tsx` (hoved-
+   knappen «Book kartleggingsøkt», to steder), `MarkedCasesV2.tsx`, `MarkedSuksessV2.tsx`,
+   `MarkedKontaktV2.tsx`, `MarkedBookingV2.tsx` og metadata i `src/app/(marketing)/suksess/page.tsx`.
+   Hovedknappen heter «Book time» (Anders 26.09). **Gjort 26.09** i samme PR som beslutningen.
+3. **Tjenestelista i basen:** sjekk om `ServiceType` (og Stripe-produktene) har en
+   kartleggingsøkt. Finnes den: deaktiver, ikke slett (eksisterende bookinger peker på den).
+   Ferdig når den ikke kan bookes.
+4. **Én etterlevelse i koden:** i dag finnes to mål — `etterlevelse()` teller økter uten
+   tidsvindu (ukesrapport, digest, forelder), og `adherencePct()` i
+   `src/lib/workbench/compliance.ts` vekter minutter (Workbench, plan-motoren). Samle dem på
+   minutt-regelen med fire ukers vindu, og vis samme tall på alle flater. Ferdig når
+   ukesrapport, digest, forelder, stall og Workbench viser samme prosent for samme spiller, med
+   tester som låser fire-ukersvinduet.
+
+Treff på «kartlegging» i betydningen *kartlegge noe* (arkitektur-kartlegging, datakartlegging,
+kolonnekartlegging, GFGK-sesongens testperiode, øvelsestags) er ikke tjenesten og røres ikke.
+
+## Klippekort, rust i avslutt-dialoger og «Følg med» (Anders 26.09.2026, bindende)
+
+Svar på de åpne punktene etter runde 5 i Precision Athletics (PH-23, PH-25, AG-03).
+
+- **Klippekortet gjelder coaching-pakkene Performance og Performance Pro**, ikke bare privattime
+  60 min. Anders: «Klippekort er for subscription Performance og Pro». Klippene er pakkens
+  credits (Performance 2, Performance Pro 4 per måned, BUSINESS-RULES §Coaching-pakker); én
+  coachet økt trekker ett klipp. Pakkene vises aldri som app-nivå.
+- **Farger følger gjeldende designsystem.** Anders: «Vil ha farger til gjeldende design system».
+  Bekreftknappen i avslutt-dialogene (Avbestill i PH-23, Avslutt abonnement i PH-25) er rust,
+  fordi rust er signalet for det som avslutter eller ødelegger (§PRECISION ATHLETICS).
+- **Oppfølgingskøens kolonne heter «Følg med»**, ikke «Watch». Avgjør det første av fire
+  navnevalg i AG-03b-blokken under.
+
+Krever ingen kodeendring — bekrefter dagens tilstand: `src/app/admin/queue/status.ts` har
+allerede etiketten «Følg med», og booking trekker klipp fra `Subscription.creditsRemaining`
+(`src/lib/portal-booking/bekreft-data.ts`). I Claude Design-prosjektet (`7d7c2994`) rettes
+antakelsen om klippekort i PH-23 og merket «Uavklart» på «Følg med» fjernes.
+
+## FARGE BETYR AKSE, OG INGENTING ANNET (Anders 26.09.2026, bindende)
+
+Workbench blandet svart-hvitt (årskurve, periodefelt) med sterke farger (ukefordeling, øktkort).
+Anders: «den ser både svart hvit og med farger». Regelen gjelder hele Precision Athletics.
+
+- Farge betyr alltid aksen FYS · TEK · SLAG · SPILL · TURN.
+- Årskurven viser aksefordelingen per uke i aksefargene, dempet. Periodene er et tynt tekstbånd,
+  ikke fylte blokker.
+- Øktkort er nøytrale med aksefarget stripe på venstre kant, ikke fargede flater.
+- Fremdriftsstreker er grafitt. Grønt og rødt er bare statussignal.
+
+**Arbeidet dette utløser:** rettes i Claude Design-prosjektet `7d7c2994` i runde 5 (alle tegnede
+skjermer + guidelines). I koden gjelder regelen når Workbench-skjermene porteres (AG-11, PH-11).
+
+## «Venter på coach» er et statusord, og en test teller bare med alle slag (Anders 26.09.2026, bindende)
+
+Avklart etter runde 3 i Precision Athletics (PH-11, PH-12, PH-15).
+
+- **«Venter på coach»** er statusen på en plan spilleren har sendt til coach for godkjenning.
+  Det står ved siden av «Venter på spiller» i `docs/ordbok.md` §5, rad Plan.
+- **En test teller bare når alle slag er registrert.** Avsluttes testen før, blir det ikke noe
+  resultat. PH-15 er tegnet med 10 slag. Koden gjør dette allerede for Team Norway-scorekortet:
+  `saveTnTest` lagrer et `TestResult` bare når `tnValidate` godtar alle forsøk, ellers blir
+  økten `ABORTED` uten resultat.
+
+Krever ingen kodeendring — bekrefter dagens tilstand. Ordboka er rettet i samme PR. I Claude
+Design-prosjektet (`7d7c2994`) fjernes merket «Uavklart — venter på Anders» på begge punktene.
+
+## PIPELINES ER ENESTE KILDE FOR TURNERINGSRESULTATER (Anders 26.09.2026, bindende)
+
+**`ak-golf-pipelines` er det eneste som henter inn turneringsresultater. HQ sin egen
+GolfBox-skraper slutter å skrive resultater.** Anders: «Så vi ikke gjør dobbelt med arbeid i
+fremtiden.» Bakgrunn: analysen 26.09 fant at to systemer skriver samme GolfBox-turnering til
+`public.tournaments` med ulik nøkkel (HQ: GolfBox-RID; pipelines: internt løpenummer), og at
+nivåtallene (mot feltet, slag bak vinner, justert for vanskelighet) bare finnes i pipelines'
+rålager. Kilde: `docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md`.
+
+- **Resultater** (deltakelser, runder, plassering, score, nivåtall) skrives til `public.*` kun
+  av `pipelines/golfbox/writers/public_db.py`, hver mandag. HQ-jobben
+  `.github/workflows/scrape-golfbox.yml` (hver time 06–20 UTC, `syncGolfBoxLeaderboards`)
+  skal ikke lenger skrive resultater.
+- **Kalender og frister** (kommende turneringer, `entryCloses`, `registrationUrl`) beholdes i
+  HQ: Vercel-cron `turneringer-ngf` (`syncGolfBoxSchedules`) og `norge-mandag-sync`. De henter
+  ikke resultater i dag heller.
+- **WANG-profiler vises i HQ `/team-wang`**, mot samme base. `wang-toppidrett` er et annet
+  prosjekt med egen base og holdes utenfor. Anders: «WANG Toppidrett-appen er et komplett annet
+  prosjekt som ikke har med WANG-skjermen i AK Golf å gjøre.»
+- **«AK12»** i bestillingen 26.09 utgår — Anders vet ikke selv hva det var. Skjermlisten er
+  PlayerHQ, AgencyOS, Team Norway, WANG og rangskjermene.
+
+**Overstyrer:** «to eiere»-oppsettet fra 15.09 i `docs/turnering-datakilder.md` (HQ-cron eide rå
+GolfBox-resultater) og «Kodet»-raden for GolfBox i `docs/PLATTFORM-KART.md`. Begge rettet 26.09.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her.
+Rekkefølge og kontroller står i analysen §7; her er det beslutningen krever:
+
+1. **Mål dublettene før byttet.** Spørringen i analysen §4b mot `public.tournaments`. Ferdig
+   når tallet er kjent og eksisterende dubletter er slått sammen via `mergedIntoId`
+   (`/admin/tournaments/dubletter`).
+2. **Pipelines bruker samme nøkkel som HQ:** GolfBox-RID som `sourceId`, funn på tvers av
+   opphav, i `pipelines/golfbox/writers/public_db.py` (i dag: `dashboard.tournaments.id`).
+   Ferdig når spørringen i §4b gir 0 rader etter en mandagskjøring.
+3. **Identitet og beregning inn i mandagsjobben:** `pipelines.identity` → `pipelines.sg` →
+   `refresh_views` i `junior-tours-sync.yml`. Ferdig når `dashboard.modell_kjoring` får ny rad
+   hver mandag.
+4. **Pipelines dekker det HQ-skraperen dekket:** `SOURCE_TO_ORIGIN` utvides med ren «golfbox»
+   (NM, senior, midam, klubb), `regions_tour` og `manual`; `tour` settes per kilde, ikke fast
+   `junior-no`. Ferdig når hvert `sourceOrigin` HQ skrev i dag har en pipelines-kilde.
+5. **HQ slutter å skrive resultater:** `scrape-golfbox.yml` settes til `--mode=schedule`
+   (eller slås av), `syncGolfBoxLeaderboards` fjernes fra `scripts/scrape-golfbox.ts`, og
+   `scripts/backfill-golfbox-results.ts` arkiveres. Skjer først når 1–4 er grønne, ikke før.
+   Ferdig når ingen `public_player_entries` får `updatedAt` fra HQ etter byttet.
+6. **Vakt:** HQ `sync-vaktbikkje` (mandag 08:00) varsler når pipelines' mandagskjede mangler
+   eller er rød. Ferdig når simulert rød kjøring gir varsel.
+7. **WANG-profil i `/team-wang`** bygges fra samme datamodul som PlayerHQ og AgencyOS
+   (analysen §6 og §7 steg 6 og 10). Ingen kobling mot `wang-toppidrett`.
+
+Uendret: `public.*` er fortsatt det appen leser; Prisma eier kolonnene, og pipelines legger
+aldri til kolonner. DataGolf vises aldri for andre enn Anders.
+
+## PRECISION ATHLETICS ER DESIGNSYSTEMET FOR AK GOLF HQ (Anders 26.09.2026, bindende)
+
+**Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994-cf63-4c5f-9bdc-fdaf67655a70`)
+er visuell fasit for AK Golf HQ** — PlayerHQ (`/portal`), AgencyOS (`/admin`), forelder, `/auth`,
+booking og statistikk. Anders: «det designsystemet er for selve AK Golf HQ, både player og
+agency OS». Det erstatter «AK Golf Design System» (`87aa23fb`) og «App design» (`830e7bce`) som
+fasit. «App design» finnes ikke lenger i Claude Design (`get_project`: not found, 26.09.2026).
+Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
+
+- **Rust er signal, ikke handling.** Primærknappen er grafitt `#141413` med hvit tekst. Rust
+  `#9B2415` brukes bare på det som haster eller ødelegger (sletting, trekk tilbake), Live-pillen
+  og tellere som krever coachens handling — maks én per skjerm. Overstyrer «Rust følger
+  handlingen, ikke ordet» (22.09).
+- **Lyst tema er standard** i `/portal` og `/admin`. Nattema (`data-theme="night"`) brukes i
+  Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
+  `/portal` og `/admin`» (21.09).
+- Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
+- Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
+  Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
+- Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Fullfør designsystemet** i `7d7c2994`: rett knapper/tema etter punktene over, legg til
+   manglende komponenter (tabell som blir kortrader, ark, tidslinje, graf-grunnstykker, felt med
+   feilmelding, tom/laster/feil). Fjern Toppidrett- og WANG-kitene fra prosjektet. Ferdig når
+   `readme.md` og komponentkortene dekker alt skjermene under trenger.
+2. **Skjermliste fra appen:** alle `page.tsx` under `/portal`, `/admin`, `/forelder`, `/auth`,
+   booking og `/stats` som ikke er videresendinger, gruppert i skjermtyper. Ferdig når hver rute
+   peker på én skjermtegning i prosjektet.
+3. **Tegn alle skjermene** i mobil 390, iPad 768/1024 og desktop 1280/1440, lys og natt, tom,
+   laster og feil. Claude Code styrer prosjektet via Chrome. Ferdig per skjerm når målingen viser
+   `scrollWidth === clientWidth` i alle bredder og Anders har sett den (port 7).
+4. **Temastandard i koden:** `erMorkFlate()` i `src/lib/v2/tema-default.ts` gjør `/admin` mørk
+   uten lagret valg — skal bli lys. Nattema for Live-økt og slagregistrering bygges sammen med
+   de skjermene.
+5. **38 skjermer fra «App design» må tegnes på nytt.** Blokken «AG-03b» under viser til dem,
+   men prosjektet er borte. Funksjonsfunnene i den blokken (datamodell, navnevalg, hull) står
+   fortsatt; bare tegningene mangler. Dekkes av punkt 3.
+
+Pekerne er rettet i samme PR: `design-autoritet.md`, `designsystem/README.md`, `ak-hq-design`-skillen.
+
+## FORELDER-SKALLET BRUKER FELLES NAVIGASJON (Anders 23.09.2026, bindende)
+
+`/forelder` skal bruke samme navigasjonsmønster som AgencyOS og PlayerHQ: hamburgermeny
+på mobil og topplinje med fire mål og «Mer» på desktop. FO-01 til FO-04 skal bruke ett
+delt skall, ikke fire ulike navigasjoner. Dette produktvalget gjelder innen gjeldende
+designautoritet «AK Golf Precision Athletics»; eldre «App design»-tegninger er historikk.
+
+**Arbeidet dette utløser:** Samordne FO-01 til FO-04 i gjeldende designprosjekt, bygg
+skallet én gang i appen og kontroller mobil, desktop og relevante temaer. Dagens
+`src/components/v2/shell.tsx` har fortsatt `BunnNavLenker`/`IkonRailNav` for forelder;
+denne dokumentbeslutningen er ikke en ferdig skjermimplementasjon. Anders må se de
+oppdaterte skjermene før port 7 kan regnes som bestått.
 
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 
@@ -39,22 +363,21 @@ porting av de tre ferdige områdene.
    - Caddie-samtale: `getOrCreateActiveConversation()` har null kallere i dag, og eneste
      chat-kaller sender tom `conversationId` — uten dette kan forslagsflyten i AG-14 aldri
      lagre et utkast. Se `agencyos-handover/AG-14-manifest.md`.
-3. **Fire navnevalg venter på Anders før tekst fryses i kode** — hver er én linje å rette
+3. **Navnevalg som venter på Anders (ett avgjort 26.09) før tekst fryses i kode** — hver er én linje å rette
    når svaret foreligger:
-   - «Watch»-kolonnen i AG-03b: behold engelsk, eller bytt til «Følg med»?
+   - ~~«Watch»-kolonnen i AG-03b~~ — avgjort 26.09: «Følg med» (§Klippekort, rust i avslutt-dialoger og «Følg med»).
    - Caddie-navnet i UI: koden sier «Coach AI», «AI-coach» og «AI om {fornavn}» om hverandre
      for samme funksjon (PH-16). Ordboken sier «Caddie».
    - «Merge» (AG-04) vs. «Slå sammen» (AG-10) er samme handling med to navn og to rust-svar.
-   - PS-01 (ny spillerprofil-side) overlapper med spillerkortet i AG-03s inspektør — behold
-     begge og koble dem (anbefalt), eller slå sammen til én?
+   - PS-01: avgjort 27.09 — én spillerprofil (AG-08), se §ÉN SPILLERPROFIL.
 4. **Fire «ingen kan gjøre X»-hull må bygges sammen med skjermen, ikke bare tegnes rundt**,
    ellers ser skjermen ferdig ut uten å virke:
    - Administrator-Caddie (AG-14): fire API-ruter og seksten verktøy finnes i koden, men
      ingen side har noensinne rendret dem.
    - Øvelsesredigering (AG-11b): ingen kan i dag opprette eller endre en øvelse noe sted i
      appen, verken admin eller coach.
-   - Bookingbekreftelse i AgencyOS (AG-06, eldre funn, ikke løst i denne runden): en coach
-     kan ikke bekrefte eller avvise en booking noe sted i AgencyOS.
+   - Bookingbekreftelse i AgencyOS (AG-06): offentlig booking bekreftes automatisk etter
+     betaling — se §BOOKING BEKREFTES AUTOMATISK (27.09). Coach kan fortsatt avlyse.
    - Utfordringer (PH-15): kodesiden er bygget (PR #948), men selve ny-skjermen fra
      tegningen er ikke portert ennå.
 5. **Selve portingen:** hver av de 38 skjermene bygges fra sitt manifest
@@ -158,13 +481,13 @@ Knøtt som det andre, skal skrives om. Den endrer publisert markedstekst og vent
 
 ## Design (Anders 21.09.2026, bindende)
 
-**AK Golf Design System og Claude Design-prosjektet «App design» gjelder.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
+**Designsystemet er «AK Golf Precision Athletics» — se §PRECISION ATHLETICS øverst.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
 - Kode med Train-lock-/Paper-/`v2`-navn beholdes til funksjonene er flyttet. Navnene gir ingen autoritet.
 - Claude Code/Design eier designet; Codex bygger det i appkoden.
 - Konkret skjermvariant innen systemet kan Anders fortsatt velge før bygging.
 - Ferdig skjerm = funksjonen virker og Anders har sett den (mobil 390 px + desktop, lys og mørk, tom/laster/feil).
 - Paper er fjernet fra plattformen; vakten `scripts/check-ingen-paper.mjs` kjører i `npm run verify`.
-- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Mørk er standard på `/portal` og `/admin`, lys på `/auth` og `/forelder` og landingssidene (`src/lib/v2/tema-default.ts`).
+- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Lys er standard overalt; natt i Live-økt og slagregistrering (`src/lib/v2/tema-default.ts`, se §PRECISION ATHLETICS punkt 4).
 - Ikke bruk `accent` som tekstfarge på `primary`; bruk `-foreground`-paret.
 
 ## Aldri sidelengs rulling (Anders 22.09.2026, bindende)
@@ -181,28 +504,6 @@ verktøyrader vi bygger selv.
   rammen, og `scrollWidth === clientWidth`. Bevis føres i skjermens manifest, port 4.
 - Trengs sidelengs rulling likevel, er det et avvik som legges fram for Anders før det
   bygges — ikke et valg som tas underveis.
-
-## Rust følger handlingen, ikke ordet (Anders 22.09.2026, bindende)
-
-**Rust `#9B2415` bæres av den bekreftende handlingen på skjermen — uansett hva den heter.**
-Merge, Send, Legg i kalenderen, Publiser, Godkjenn og START ØKT er samme handling med riktig
-navn, og alle bærer rust. Dette avløser formuleringen «rust kun på Publiser, Godkjenn og
-START ØKT», som beskrev de tre stedene regelen var prøvd, ikke prinsippet bak den.
-
-Bakgrunn: køen (`/admin/ko`) har ulike handlingsord per kilde, hentet fra
-`AdminGodkjenningerTrainLock.tsx`. Å kalle alt «Godkjenn» for å få rust ville skjult at et
-Caddie-utkast faktisk sender en e-post ut av huset.
-
-- **Alt annet er grafitt.** Test: gjør knappen det saken ber om, eller noe annet? Åpne økt,
-  Fortsett økt, Prøv igjen, Lagre, Kjør og Slå sammen avgjør ingenting — de er grafitt.
-- **Sletting bærer aldri rust.** Rust betyr godkjenn; en sletting er det motsatte. Den
-  bekreftende knappen i en sletting er grafitt i et kort med rustkant.
-- **Én rust per skjerm.** Står to bekreftende handlinger synlig samtidig, bærer den valgte
-  saken rust og resten grafitt.
-- Domenefarge blir aldri en handling. Signalfargene bærer aldri lesbar tekst alene.
-
-Krever ingen kodeendring nå — regelen styrer designarbeidet i Claude Design «App design»
-(`SKILL.md` §Rust). Den gjelder appkoden når AgencyOS-skjermene bygges.
 
 ## Hurtigknappen gjelder alle AgencyOS-skjermer (Anders 22.09.2026, bindende)
 
@@ -226,10 +527,12 @@ og ikke kan dras ut av syne.
 ## Treningsfag
 
 - Ingen treningsregel er låst: ingen invarianter, tak, minimum eller plan-validering mot metodikk (18.08). Vokabularet består som frie merkelapper. Gjeninnfør aldri en regel uten ny beslutning.
-- AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS, M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
-- Treningsplanlegging og språk: `docs/treningsplanlegging-og-sprak.md` er eneste master fra 26.09.2026. Tidligere `docs/ordbok.md` og gjennomgangen er grunnlag; `docs/ordbok.json` genereres fra den nye masteren.
+- AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS-koder (CS0, CS20–CS100), M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
+- Hastighet i læringssteg er 25, 50, 75 og 100 prosent av Club Speed (Lav hastighet 25/50/75 %, Automatikk 100 %, Uten ball ingen). Bekreftet av Anders 21.09.2026. Ikke den utgåtte CS-skalaen.
+- Én master for språk og treningsplanlegging: `docs/treningsplanlegging.md` (21.09.2026). `docs/ordbok.md` er bare en peker; `docs/ordbok.json` genereres.
+- Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden er veiledende og sperrer ikke; området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
-- Valgtreet fra årsplan til øvelse (åtte trinn) eies nå av `docs/treningsplanlegging-og-sprak.md`. Puttingavstand i fot, meter kan vises i parentes. Måleutstyr er en fast liste (TrackMan og annen radar). Teknisk fokus per område er eget felt på oppgaven i teknisk plan.
+- Valgtreet fra årsplan til øvelse (åtte trinn) eies av `docs/treningsplanlegging-og-sprak-gjennomgang.md` (22.09). Puttingavstand i fot, meter kan vises i parentes. Måleutstyr er en fast liste (TrackMan og annen radar). Teknisk fokus per område er eget felt på oppgaven i teknisk plan.
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.
 
 ## Workbench
@@ -253,7 +556,7 @@ og ikke kan dras ut av syne.
 
 - MORAD og Mac O'Grady nevnes aldri offentlig. P-posisjoner som internt fagspråk består.
 - Ingen vitnesbyrd, sitater eller stjerner. Vis målingen.
-- Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.
+- Priser leses fra `ServiceType.priceOre`, aldri hardkodet. Kartleggingsøkt er fjernet (§KARTLEGGINGSØKT FJERNES).
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
 - Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Team Norway får kun interne skjermer gratis mot at de promoterer appen (Anders 24.09.2026). Analyse og DataGolf for TN er delte plattformflater.

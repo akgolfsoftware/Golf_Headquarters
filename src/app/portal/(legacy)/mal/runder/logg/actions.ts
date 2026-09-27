@@ -21,6 +21,11 @@ import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  rundeRegistreringFelter,
+} from "@/lib/runde-logg/kontrakt";
 
 // ---------------------------------------------------------------------------
 // Validering (JSON-blob-regelen: alt fra klienten zod-valideres).
@@ -73,6 +78,14 @@ export async function lagreLoggetRunde(
   const sg = beregnSg(sgShots);
   const granulaer = beregnGranulaerSg(runde.hull, sgShots);
   const { hullScores, totalScore } = deriverRundeScore(runde.hull);
+  const sgSource = runde.estimert ? RUNDE_SG_KILDE.ESTIMERT : RUNDE_SG_KILDE.BEREGNET;
+  const alleRader = runde.hull.flatMap((h) => byggShotRader(h));
+  const registrering = avledRundeRegistrering({
+    sgSource,
+    holeScores: hullScores,
+    shots: alleRader,
+    kilde: runde.estimert ? "etterregistrering" : "live",
+  });
 
   const round = await prisma.$transaction(async (tx) => {
     const opprettet = await tx.round.create({
@@ -101,14 +114,14 @@ export async function lagreLoggetRunde(
         sgPutt15_25: granulaer.sgPutt15_25,
         sgPutt25_40: granulaer.sgPutt25_40,
         sgPutt40plus: granulaer.sgPutt40plus,
-        sgSource: runde.estimert ? "estimert" : "beregnet",
+        sgSource,
+        ...rundeRegistreringFelter(registrering),
         roundType: runde.roundType ?? null,
         notes: runde.notes ?? null,
       },
       select: { id: true },
     });
 
-    const alleRader = runde.hull.flatMap((h) => byggShotRader(h));
     const { shots, putts } = splitShotRader(alleRader);
     await tx.shot.createMany({
       data: shots.map((rad) => ({ ...rad, roundId: opprettet.id })),

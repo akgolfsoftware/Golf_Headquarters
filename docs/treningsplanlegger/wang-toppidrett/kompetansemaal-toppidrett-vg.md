@@ -20,13 +20,14 @@ Eleven skal kunne:
 1. vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening
 2. dokumentere og evaluere en valgt treningsperiode
 3. kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for
-   ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter
+   ferdighetsutvikling i idretten og kunne bruke disse for å utvikle sin egen ferdighet
 4. gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning
 5. forstå forholdet mellom totalbelastning og restitusjon
 6. beskrive mentale forberedelser til trening og konkurranse
 7. bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for
    å stimulere til økt motivasjon
-8. vise god samhandling og respektfull treningsatferd
+8. vise god samhandling og respektfull treningsatferd som bidrar til aktivitetsglede og et godt
+   lærings- og utviklingsmiljø
 
 ## Toppidrett 2 (VG2) — kv284
 

@@ -5,7 +5,7 @@ source_section: "## Driver (Trackman Combine): - Kjørehastigheten: ~100–104 m
 tags: [amatør, ball-data, handicap, putt, sg, trackman]
 topics: [implementasjon, putting, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

@@ -144,4 +144,3 @@ export async function hentTekniskPanel(userId: string): Promise<TekniskPanelData
     },
   };
 }
-

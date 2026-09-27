@@ -277,7 +277,7 @@ export function WangRekrutteringView() {
       {/* ─────────────────────────────────────────────────────────────
           WANG REKRUTTERING & OPPTAKSHUB
          ───────────────────────────────────────────────────────────── */}
-      
+
       {/* Header med WANG Brand & Pipeline Status */}
       <div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>

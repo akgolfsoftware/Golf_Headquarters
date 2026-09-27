@@ -3,17 +3,15 @@
 /**
  * UtenforBanenV2 — PlayerHQ «Utenfor banen» (Paper-port W2, fase2).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-hjem-rest.html.
+ * Avvik:
+ *  - Fasiten er Paper, slettet 30.08.2026 — denne skjermen er ikke portert til gjeldende Precision Athletic-design.
+ *  - Lag-fanen viser HCP/kategori, IKKE SG siste 30 dager — venner deler aldri tall (B39-personvernmodellen).
+ *  - Utfordringskortene har ingen fremdriftsspor (gjort/mål) — DrillChallenge har ikke målverdi i modellen.
  *
  * Tre faner (Fysisk · Lag · Utfordringer) med aria-pressed, «Én ting nå» kun
  * når dagens FYS-økt faktisk finnes (aldri fabrikkert), uke-grid med
  * gjort/planlagt/tom-markører og forklar-linje, og ærlig tom tilstand per
  * fasit («Ingenting aktivt utenfor banen» → skriv til coachen).
- *
- * Ærlige avvik fra fasiten (datamodellen eier sannheten):
- *  - Lag-fanen viser HCP/kategori, IKKE SG siste 30 dager — venner deler aldri
- *    tall (B39-personvernmodellen). Forklar-linjen sier det som det er.
- *  - Utfordringskortene har ingen fremdriftsspor (gjort/mål) — DrillChallenge
- *    har ikke målverdi i modellen. Viser deltakere, frist og egen plassering.
  */
 
 import { useState } from "react";
@@ -468,13 +466,13 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                       </span>
                     </Link>
                   ))}
-                  <p style={forklarStil()}>Utfordringer settes opp av coachen for stallen. Du kan ikke lage egne ennå.</p>
+                  <p style={forklarStil()}>Utfordringer kan lages med venner og gruppemedlemmer som deltakere.</p>
                 </>
               ) : (
                 <TomTilstand
                   icon="flag"
                   title="Ingen aktive utfordringer"
-                  sub="Utfordringer fra coachen dukker opp her når de settes i gang."
+                  sub="Lag en ny utfordring og velg hvem som skal delta."
                 />
               )}
             </Kort>

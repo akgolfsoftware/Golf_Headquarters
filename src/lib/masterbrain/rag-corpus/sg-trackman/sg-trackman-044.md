@@ -5,7 +5,7 @@ source_section: "## 2. Trackman & D-Plane-fysikk (med matematikk)"
 tags: [ball-data, club-data, d-plane, drill, kategori, pga-tour, sg, trackman]
 topics: [d-plane, implementasjon, pga-snitt, sg-kategorier, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, ExerciseDefinition, RAG, SgBaseline, TechnicalPlan, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, ExerciseDefinition, RAG, SgBaseline, TechnicalPlan, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

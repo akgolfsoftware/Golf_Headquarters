@@ -54,20 +54,20 @@ function inferCategory(route: string): string {
   if (route.startsWith("/portal/mal")) return "PlayerHQ · Mål";
   if (route.startsWith("/portal")) return "PlayerHQ";
 
-  if (route.startsWith("/admin/spillere")) return "CoachHQ · Spillere";
+  if (route.startsWith("/admin/spillere")) return "AgencyOS · Spillere";
   if (route.startsWith("/admin/planer") || route.startsWith("/admin/plans"))
-    return "CoachHQ · Planer";
-  if (route.startsWith("/admin/booking")) return "CoachHQ · Booking";
-  if (route.startsWith("/admin/godkjenn")) return "CoachHQ · Godkjenning";
-  if (route.startsWith("/admin/kalender")) return "CoachHQ · Kalender";
+    return "AgencyOS · Planer";
+  if (route.startsWith("/admin/booking")) return "AgencyOS · Booking";
+  if (route.startsWith("/admin/godkjenn")) return "AgencyOS · Godkjenning";
+  if (route.startsWith("/admin/kalender")) return "AgencyOS · Kalender";
   if (route.startsWith("/admin/messaging") || route.startsWith("/admin/meldinger"))
-    return "CoachHQ · Meldinger";
+    return "AgencyOS · Meldinger";
   if (route.startsWith("/admin/services") || route.startsWith("/admin/tjenester"))
-    return "CoachHQ · Tjenester";
-  if (route.startsWith("/admin/team")) return "CoachHQ · Team";
+    return "AgencyOS · Tjenester";
+  if (route.startsWith("/admin/team")) return "AgencyOS · Team";
   if (route.startsWith("/admin/agencyos") || route.startsWith("/admin/agency"))
-    return "CoachHQ · AgencyOS";
-  if (route.startsWith("/admin")) return "CoachHQ";
+    return "AgencyOS";
+  if (route.startsWith("/admin")) return "AgencyOS";
 
   if (route.startsWith("/auth")) return "Auth";
   if (route.startsWith("/booking")) return "Booking (publikum)";

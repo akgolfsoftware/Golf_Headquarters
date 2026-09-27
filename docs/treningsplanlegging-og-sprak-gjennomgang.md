@@ -71,7 +71,7 @@
 ```text
 Årsplan
   → Periodeplan
-    → Måned 
+    → Måned
      → Uke
       → Økt
         → Øvelse
@@ -133,7 +133,7 @@ Dette er hierarkiet coachen skal møte når en øvelse legges inn i en økt.
    → Range · Treningsområde · Bane, korthullsbane · TM Simulator · Treningsrom · Hjemme
 
 4. Måleutstyr             Hvordan måles øvelsen?
-   → Med TrackMan · Uten TrackMan · Annen radar 
+   → Med TrackMan · Uten TrackMan · Annen radar
 
 5. Gjennomføring          Hvordan skal spilleren trene?
    → Motorikk/læringssteg · Treningsmåte · Oppgave
@@ -627,8 +627,8 @@ Dette feltet vises bare når området er fullsving.
 ## 16. Parkeringsplass
 
 - Senere versjon: optimaliser teknisk plan etter hvilke parametere hver måleenhet har (TrackMan-mål bare der enheten måler dem). (Anders 22.09)
-- 
-- 
-- 
+-
+-
+-
 
 ---

@@ -246,10 +246,13 @@ function initialer(navn: string): string {
 export function GruppeRoster({
   live,
   iupLenke = false,
+  turneringerLenke = false,
 }: {
   live: WangLiveData | null;
   /** Trenerflaten: vis inngang til IUP-samtalen per elev. */
   iupLenke?: boolean;
+  /** Trenerflaten: vis inngang til turneringsresultater per elev. */
+  turneringerLenke?: boolean;
 }) {
   if (!live) return null;
   return (
@@ -347,31 +350,56 @@ export function GruppeRoster({
                   {e.rolle === "COACH" ? "Trener" : e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}
                 </div>
               </div>
-              {/* IUP gjelder kun spillere — trenere/hjelpetrenere (G5) har ingen. */}
-              {iupLenke && e.rolle === "PLAYER" ? (
-                <Link
-                  href={`/team-wang/coach/iup/${e.id}`}
-                  className="wang-pressable"
-                  style={{
-                    marginLeft: "auto",
-                    flexShrink: 0,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: 32,
-                    padding: "0 11px",
-                    borderRadius: 999,
-                    background: "var(--tint-teal)",
-                    color: "var(--wang-teal-text)",
-                    fontFamily: "var(--font-brand)",
-                    fontWeight: 700,
-                    fontSize: 11,
-                    textDecoration: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  IUP
-                </Link>
+              {/* IUP og turneringer gjelder kun spillere — trenere/hjelpetrenere (G5) har ingen. */}
+              {(iupLenke || turneringerLenke) && e.rolle === "PLAYER" ? (
+                <div style={{ marginLeft: "auto", flexShrink: 0, display: "inline-flex", gap: 6 }}>
+                  {iupLenke ? (
+                    <Link
+                      href={`/team-wang/coach/iup/${e.id}`}
+                      className="wang-pressable"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minHeight: 32,
+                        padding: "0 11px",
+                        borderRadius: 999,
+                        background: "var(--tint-teal)",
+                        color: "var(--wang-teal-text)",
+                        fontFamily: "var(--font-brand)",
+                        fontWeight: 700,
+                        fontSize: 11,
+                        textDecoration: "none",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      IUP
+                    </Link>
+                  ) : null}
+                  {turneringerLenke ? (
+                    <Link
+                      href={`/team-wang/coach/turneringer/${e.id}`}
+                      className="wang-pressable"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minHeight: 32,
+                        padding: "0 11px",
+                        borderRadius: 999,
+                        background: "var(--tint-navy)",
+                        color: "var(--wang-navy)",
+                        fontFamily: "var(--font-brand)",
+                        fontWeight: 700,
+                        fontSize: 11,
+                        textDecoration: "none",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Turneringer
+                    </Link>
+                  ) : null}
+                </div>
               ) : null}
             </div>
           ))}

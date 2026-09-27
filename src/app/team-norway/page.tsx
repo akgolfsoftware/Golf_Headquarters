@@ -1,18 +1,11 @@
-/**
- * Team Norway · Landslagsoversikt (TN-01).
- * Designreferanse: Claude Design «Team Norway App» (3416f258-avledet).
- * Farger: Navy #012B5D, Rød #D70232 (kun aktiv fane/frist), Bakgrunn #F2F7FC.
- * Typografi: Jost overskrifter, Lato brødtekst, IBM Plex Mono tall.
- */
-
-
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { TnOversiktSkjerm } from "@/components/team-norway/skjermer/tn-oversikt-skjerm";
 
 export const metadata = {
   title: "Team Norway Golf · Landslagsoversikt",
-  description: "Offisielt dashbord for Norges Golfforbund / Team Norway Golf.",
+  description: "Neste samling, fellestesten og det siste fra trenerteamet.",
 };
 
-export default function TeamNorwayPage() {
-  return <TeamNorwayAppView initialSkjerm="TN-01" />;
+/** TN-01. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-01. */
+export default function TeamNorwayOversiktPage() {
+  return <TnOversiktSkjerm />;
 }

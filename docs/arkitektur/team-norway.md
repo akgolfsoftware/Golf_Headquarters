@@ -1,6 +1,6 @@
 # Team Norway — Landslagsflaten
 
-Dato: 26. september 2026  
+Dato: 26. september 2026
 Plassering i kodebasen: `src/app/team-norway/`, `src/components/team-norway/`, `src/lib/domain/tn-*`
 
 ---

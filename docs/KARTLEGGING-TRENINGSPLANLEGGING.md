@@ -1,10 +1,7 @@
 # Kartlegging: slik planlegges trening i AK Golf HQ i dag
 
-> Historisk kodekart fra 26.09.2026, ikke styrende produktfasit. Nye beslutninger om
-> planlegging og språk står i [den ene masteren](treningsplanlegging-og-sprak.md).
-
-**Dato:** 26. september 2026  
-**Git-branch:** `antigravity-forbedring`  
+**Dato:** 26. september 2026
+**Git-branch:** `antigravity-forbedring`
 **Filer og mapper undersøkt:** `prisma/schema.prisma`, `prisma/seed.ts`, `prisma/seed-data/`, `scripts/seed-*`, `src/lib/domain/`, `src/lib/workbench/`, `src/lib/plan-engine/`, `src/lib/plan-builder/`, `src/lib/training/`, `src/lib/masterbrain/`, `src/lib/agents/`, `src/app/admin/workbench/`, `src/app/portal/`, `docs/treningsplanlegging.md`, `docs/treningsplanlegging-og-sprak-gjennomgang.md`, `docs/ordbok.md`, `docs/treningsplanlegger/wang-toppidrett/`, `docs/referanse/masterbrain-rebuild/`.
 
 ---
@@ -75,10 +72,10 @@ Kilde: `prisma/schema.prisma` og `src/lib/domain/ak-formel-v2.ts`.
 * **Pyramideverdier (`PyramidArea`):**
   `FYS` (Fysisk), `TEK` (Teknisk), `SLAG` (Golfslag), `SPILL` (Spill), `TURN` (Turnering).
 * **De 19 treningsområdene (`Omraade`):**
-  *Fullsving:* `TEE_TOTAL`, `INNSPILL_200`, `INNSPILL_150`, `INNSPILL_100`, `INNSPILL_50`.  
-  *Nærspill:* `CHIP`, `PITCH`, `LOB`, `BUNKER`.  
-  *Putting:* `PUTT_0_3`, `PUTT_3_5`, `PUTT_5_10`, `PUTT_10_25`, `PUTT_25_40`, `PUTT_40_PLUSS` (alle i fot).  
-  *Fysisk:* `STYRKE`, `KONDISJON`, `BEVEGELIGHET`.  
+  *Fullsving:* `TEE_TOTAL`, `INNSPILL_200`, `INNSPILL_150`, `INNSPILL_100`, `INNSPILL_50`.
+  *Nærspill:* `CHIP`, `PITCH`, `LOB`, `BUNKER`.
+  *Putting:* `PUTT_0_3`, `PUTT_3_5`, `PUTT_5_10`, `PUTT_10_25`, `PUTT_25_40`, `PUTT_40_PLUSS` (alle i fot).
+  *Fysisk:* `STYRKE`, `KONDISJON`, `BEVEGELIGHET`.
   *Bane:* `BANE`.
 * **Læringssteg / Motorikk (`Motorikk` — kun for fullsving):**
   `UTEN_BALL` (Uten ball), `LAV_HAST` (Lav hastighet, 25–75 % fart), `AUTO` (Automatikk / normal fart).
@@ -89,10 +86,10 @@ Kilde: `prisma/schema.prisma` og `src/lib/domain/ak-formel-v2.ts`.
 * **Måleutstyr (`Maaleutstyr`):**
   `TRACKMAN`, `FLIGHTSCOPE`, `GARMIN_R10`, `MEVO_PLUS`, `ANNET`, `UTEN`.
 * **Tekniske dimensjoner (`OmradeDimensjon` — maks én per øvelse):**
-  *Fullsving:* `SIKTE`, `STARTRETNING`, `KURVE`, `HOYDE`, `TREFFPUNKT`, `LENGDEKONTROLL`, `SPINN`.  
-  *Nærspill:* `LANDINGSPUNKT`, `UTRULLING`, `KOLLEVALG`, `BOUNCE_BRUK`.  
-  *Bunker:* `SANDINNGANG`, `LIE_VARIASJON`.  
-  *Putting:* `GREENLESING`, `BALLSTART`.  
+  *Fullsving:* `SIKTE`, `STARTRETNING`, `KURVE`, `HOYDE`, `TREFFPUNKT`, `LENGDEKONTROLL`, `SPINN`.
+  *Nærspill:* `LANDINGSPUNKT`, `UTRULLING`, `KOLLEVALG`, `BOUNCE_BRUK`.
+  *Bunker:* `SANDINNGANG`, `LIE_VARIASJON`.
+  *Putting:* `GREENLESING`, `BALLSTART`.
   *Banespill:* `SPILLEFORMAT`, `STRATEGIOPPGAVE`.
 * **Sandtrinn (`SandTrinn` — bunkerens motorikk):**
   `UTEN_BALL_I_SAND`, `MED_BALL`.
@@ -175,8 +172,8 @@ Inngangsporten for coach er `/admin/workbench/[playerId]`. Skjermen styres av `s
 ## 5. Spiller, Live og agenter
 
 ### Hvordan en plan når PlayerHQ
-Spilleren ser planen på dashbordet (`/portal`), i kalenderen (`/portal/kalender`) og i dagsagendaen (`loadPlayerDay` i `src/lib/workbench/wb-actions.ts`).  
-* **Regel:** Økter med status `DRAFT` er usynlige for spilleren. Først når coachen klikker «Publiser», endres status til `PUBLISHED` (eller `SCHEDULED`), og økten blir synlig i spillerens app.  
+Spilleren ser planen på dashbordet (`/portal`), i kalenderen (`/portal/kalender`) og i dagsagendaen (`loadPlayerDay` i `src/lib/workbench/wb-actions.ts`).
+* **Regel:** Økter med status `DRAFT` er usynlige for spilleren. Først når coachen klikker «Publiser», endres status til `PUBLISHED` (eller `SCHEDULED`), og økten blir synlig i spillerens app.
 * **Spilleravvisning:** Hvis spilleren velger «Ikke delta» eller avviser en foreslått økt, settes `hiddenByPlayer = true`. Økten forsvinner fra spillerens visning, men slettes aldri fra basen; coachen ser den fortsatt i AgencyOS merket som skjult.
 
 ### Hva spilleren registrerer i Live-økta (`/portal/live/[sessionId]`)
@@ -202,9 +199,9 @@ Underveis i økta registreres fremdriften offline-først i nettleseren og synkro
 
 | Kilde / Filsti | Versjon / Dato | Godkjent | Sammendrag |
 |---|---|---|---|
-| `docs/treningsplanlegging-og-sprak-gjennomgang.md` | Historisk master · 22.09.2026 | Ja (Anders) | Tidligere autoritet for valgtreet; nå grunnlag for `docs/treningsplanlegging-og-sprak.md`. |
+| `docs/treningsplanlegging-og-sprak-gjennomgang.md` | Master · 22.09.2026 | Ja (Anders) | Gjeldende autoritet for hele valgtreet fra årsplan til øvelse (åtte trinn) og bindende begrepsvalg. |
 | `docs/treningsplanlegging.md` | 22.09.2026 | Ja | Forenklet oversikt over planleggingsrekken, periodetyper, de 19 områdene og øvelsesstrukturen. |
-| `docs/ordbok.md` | Historisk master · 21.09.2026 | Ja (Anders) | Tidligere ordbok; nå grunnlag for `docs/treningsplanlegging-og-sprak.md`. |
+| `docs/ordbok.md` | Master · 21.09.2026 | Ja (Anders) | Prosjektets eneste gjeldende ordbok. Definerer språk, A–K-skala (A=best), forbudte ord og TrackMan-standarder. |
 | `docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md` | 23.09.2026 | Ja | 44-ukers årshjul for WANG Fredrikstad (VG1–VG3). Definerer datoer for GRUNN, SPES og TURN, samt 8 uketyper. |
 | `docs/treningsplanlegger/wang-toppidrett/oktmal.md` | 21.09.2026 | Ja | Standard øktstruktur (7 seksjoner) for faste treninger (M/O/F 08:00–10:00) og mapping til AK-formelen. |
 | `docs/treningsplanlegger/wang-toppidrett/grunnlag-funn.md` | 21.09.2026 | Ja | Analyse av kildedokumenter på disk (6-årsløp, læreplaner, to eldre årsplanutkast og avvikssjekk). |
@@ -241,8 +238,8 @@ Underveis i økta registreres fremdriften offline-først i nettleseren og synkro
   1. Ekte slag-for-slag ført i appens rundelogg.
   2. Ekstern hurtigutfylling av ferdige SG-tall fra UpGame, Arccos eller Shot Scope, lagret i `BrukerSgInput`.
 * **Beregning av Strokes Gained:**
-  Koden i `src/lib/domain/sg.ts` regner SG per slag etter standardformelen:  
-  `SG = (Forventet slag fra startposisjon) − (Forventet slag fra sluttposisjon) − 1`  
+  Koden i `src/lib/domain/sg.ts` regner SG per slag etter standardformelen:
+  `SG = (Forventet slag fra startposisjon) − (Forventet slag fra sluttposisjon) − 1`
   Baseline-tabellene i koden er:
   - OTT, APP og ARG: Mark Broadie (*Every Shot Counts*, 2014) PGA Tour-snitt, interpolert til meter-intervaller.
   - Putting: Team Norway IUP Ref-ark (2025) i meter (0–18 m).
@@ -287,30 +284,30 @@ Underveis i økta registreres fremdriften offline-først i nettleseren og synkro
 
 ## Hull — det appen ikke kan uttrykke i dag
 
-1. **Ingen uke-entitet i databasen:**  
+1. **Ingen uke-entitet i databasen:**
    Appen kan ikke lagre et eget ukenotat, et ukemål eller en fast uketype (f.eks. «Utviklingsuke» eller «Pre-turnering») på en uke. Hvis Anders ønsker at en 16-årings plan skal merkes med uketyper fra WANG-årshjulet, må dette enten bygges som en ny modell, lagres i øktenes titler, eller utledes av regler.
-2. **Ingen junior-baseline for Strokes Gained:**  
+2. **Ingen junior-baseline for Strokes Gained:**
    En 16-åring med handicap 4 vil få kraftig negative tall på nesten alle slag fordi målestokken er PGA Tour Top 40. Appen har ingen beregningsmotor som måler mot junior-elitenivå (selv om referansetall finnes i frittstående JSON-filer for tester).
-3. **Turneringens formål er ufullstendig:**  
+3. **Turneringens formål er ufullstendig:**
    Appen skiller mellom prioriteter (`MAJOR`, `NORMAL`, `LOCAL`) og plan-nivåer (A/B/C), men mangler et formelt felt for om turneringen spilles for *trening*, *utvikling* eller *prestasjon*.
-4. **Alder er frakoblet volumtaket i praksis:**  
+4. **Alder er frakoblet volumtaket i praksis:**
    Olympiatoppens og Masterbrains regel om at ukentlig treningstid ikke skal overstige alder for utøvere under 18 år (16 år = maks 16 timer) håndheves ikke av koden. En 14-åring og en 20-åring i kategori E får nøyaktig samme timeforslag.
-5. **Fritekst for mengde i Workbench-skjemaet:**  
+5. **Fritekst for mengde i Workbench-skjemaet:**
    Selv om datamodellen har felter for repetisjoner fordelt på motorikksteg og tekniske dimensjoner, tilbyr dagens øvelseseditor i Workbench bare et enkelt tekstfelt for mengde når coachen planlegger manuelt.
-6. **Mangler VG-kompetansemål for golfspesifikke øvelser:**  
+6. **Mangler VG-kompetansemål for golfspesifikke øvelser:**
    Udir-kompetansemål for Toppidrett VG1–VG3 ligger i databasen, men det finnes ingen maskinell mapping mellom en konkret golføvelse (f.eks. wedge-spredning) og et spesifikt kompetansemål; dette må legges inn manuelt som tekst i øktnotatene.
 
 ---
 
 ## Mine anbefalinger (kort, holdt utenfor kartleggingen)
 
-1. **Behold 19-områders taksonomien og A–K (A=best):**  
+1. **Behold 19-områders taksonomien og A–K (A=best):**
    Ikke la eldre Masterbrain-dokumenter eller 17-listen forvirre standarden. Fasiten som ble spikret 20.–22. september 2026 er den mest gjennomarbeidede og må ligge til grunn for 16-årsplanen.
-2. **Bruk `weeklySessionBudget` og prosentfordeling som mal-grunnlag:**  
+2. **Bruk `weeklySessionBudget` og prosentfordeling som mal-grunnlag:**
    For en 16-åring (typisk kategori D, E eller F) bør standardmalen definere ukevolum i minutter og fordele prosentvis på de fem pyramideområdene (f.eks. 50 % FYS, 35 % TEK, 10 % SLAG, 5 % SPILL i GRUNN).
-3. **Bygg en lettvekts `UkePlan`-kobling hvis uketyper er viktige:**  
+3. **Bygg en lettvekts `UkePlan`-kobling hvis uketyper er viktige:**
    Hvis WANG-rytmen (Utviklingsuke vs. Pre-turnering vs. Testuke) skal styre øktforslagene automatisk, bør uketype legges til som et felt på sesongens uker, eller knyttes direkte til `PeriodBlock` som en ukematrise.
-4. **Introduser en visuell junior-referanse for Strokes Gained:**  
+4. **Introduser en visuell junior-referanse for Strokes Gained:**
    For å unngå demotiverende minus-tall hos en 16-åring bør visningslaget i PlayerHQ få en referanselinje for «Nordisk junior elite» (f.eks. snittscore 74–76 / Kategori D), selv om motoren bak fortsatt regner mot PGA Tour-tall.
-5. **Bruk teknisk plan aktivt som oppgavebank:**  
+5. **Bruk teknisk plan aktivt som oppgavebank:**
    Siden koblingen mellom `PositionTask` og `SessionDrill` allerede fungerer og logger reps tilbake til P-posisjonene, bør 16-årsplanen bygges med standardiserte P-oppgaver (spesielt P1–P4 for grunnteknikk) som dras rett inn i øktene.

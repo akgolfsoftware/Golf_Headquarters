@@ -1,6 +1,6 @@
 # WANG Toppidrett — Skoleflaten
 
-Dato: 26. september 2026  
+Dato: 26. september 2026
 Plassering i kodebasen: `src/app/team-wang/`, `src/app/team-wang/_data/`, `src/app/team-wang/_components/`
 
 ---

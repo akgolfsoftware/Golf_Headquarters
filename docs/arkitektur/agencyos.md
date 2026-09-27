@@ -1,6 +1,6 @@
 # AgencyOS — Trenerens arbeidsflate
 
-Dato: 26. september 2026  
+Dato: 26. september 2026
 Plassering i kodebasen: `src/app/admin/`, `src/components/admin/`, `src/lib/agencyos/`
 
 ---
@@ -64,7 +64,7 @@ AgencyOS leser **59 modeller** og skriver til **28 modeller** i databasen:
 ## 5. Hva som er stubs, prototyper eller uferdig
 
 - **12 uferdige seksjoner i SpillerProfilPanel:** I `src/components/admin/v2/SpillerProfilPanel.tsx` linje 16 bekrefter koden:
-  > *«...eksisterende loadere; de 12 øvrige er ærlige stubber («ikke koblet ennå»).»*  
+  > *«...eksisterende loadere; de 12 øvrige er ærlige stubber («ikke koblet ennå»).»*
   Dette gjelder blant annet dybdevisning av utstyrsbag, kosthold og detaljert helsejournal.
 - **Mission Control / Live innboks er en visuell mockup:** `src/lib/agencyos/live-data.ts` linje 4 slår fast:
   > *«Foreløpig et visuelt skall: dataene er løftet verbatim fra Anders' innboks... Live-integrasjoner (Gmail / Beeper / iMessage / Notion / Google Kalender) kobles senere.»*

@@ -5,7 +5,7 @@ source_section: "### TheGrint, 18Birdies, Golf Pad, SwingU implementerer SG med 
 tags: [amatør, baseline, handicap, sg, trackman]
 topics: [implementasjon, sg-baseline]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

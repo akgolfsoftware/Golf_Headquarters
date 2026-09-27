@@ -288,7 +288,7 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
                     borderRadius: 4,
                     border: `1px solid ${aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.hair}`,
                     background: aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.dock,
-                    color: aktiv ? "#ffffff" : TL.text,
+                    color: aktiv ? TL.onFill : TL.text,
                     fontFamily: TL.font.mono,
                     fontSize: 13,
                     fontWeight: aktiv ? 700 : 500,
@@ -346,7 +346,7 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
                 ...sekundærKnapp,
                 marginTop: 6,
                 background: "var(--ak-grunn-farge-rust-600)",
-                color: "#ffffff",
+                color: TL.onFill,
                 border: "none",
               }}
             >

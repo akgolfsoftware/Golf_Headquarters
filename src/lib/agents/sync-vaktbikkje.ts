@@ -12,6 +12,13 @@
 //   (PgaPlayerSeason.lastUpdated): alltid 8 dager (ukentlige jobber).
 //   Merk feltnavnene — verifisert mot prisma/schema.prisma: SgBaseline har
 //   `fetchedAt` (ikke updatedAt), PgaPlayerSeason har `lastUpdated`.
+// - Pipelines' egen mandagskjede (dashboard.modell_kjoring, skrevet av
+//   `python -m pipelines.sg` i ak-golf-pipelines): 8 dager ferskhet, PLUSS
+//   en egen "rød kjøring"-sjekk uavhengig av ferskhet — konvergert=false
+//   betyr jobben kjørte, men modellen feilet, og skal varsles selv om
+//   raden er fersk (beslutninger.md §PIPELINES ER ENESTE KILDE, punkt 6).
+//   `dashboard`-skjemaet er ikke i Prisma sin schema.prisma (eid av
+//   pipelines, ikke HQ) — leses derfor via $queryRaw, ikke en Prisma-modell.
 //
 // Kjøres mandag 08:00 UTC — ETTER alle mandagssyncene (05:00–07:30), så en
 // vellykket mandagskjøring aldri rekker å bli flagget som stale.
@@ -117,9 +124,24 @@ export function bruddTekst(brudd: FerskhetsBrudd[]): string {
 
 // ── Agent (DB + varsling) ───────────────────────────────────────────────────
 
+type ModellKjoringRad = { beregnet_at: Date; konvergert: boolean };
+
+/** Siste rad i dashboard.modell_kjoring — skrevet av `python -m pipelines.sg`
+ * i ak-golf-pipelines. Ikke en Prisma-modell (eid av pipelines), derfor
+ * $queryRaw. Returnerer null hvis tabellen er tom (jobben har aldri kjørt). */
+async function hentSisteModellKjoring(): Promise<ModellKjoringRad | null> {
+  const rader = await prisma.$queryRaw<ModellKjoringRad[]>`
+    SELECT beregnet_at, konvergert
+    FROM dashboard.modell_kjoring
+    ORDER BY beregnet_at DESC
+    LIMIT 1
+  `;
+  return rader[0] ?? null;
+}
+
 export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentResult> {
   return runAgent(VAKTBIKKJE_AGENT_NAME, null, async () => {
-    const [runde, turnering, baseline, pga] = await Promise.all([
+    const [runde, turnering, baseline, pga, modellKjoring] = await Promise.all([
       prisma.publicPlayerRound.findFirst({
         orderBy: { createdAt: "desc" },
         select: { createdAt: true },
@@ -136,6 +158,12 @@ export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentRe
       prisma.pgaPlayerSeason.findFirst({
         orderBy: { lastUpdated: "desc" },
         select: { lastUpdated: true },
+      }),
+      hentSisteModellKjoring().catch((err) => {
+        // dashboard-skjemaet eies av pipelines — en feil her (f.eks. tabellen
+        // ikke opprettet ennå) skal aldri velte resten av vaktbikkja.
+        console.warn("[sync-vaktbikkje] kunne ikke lese dashboard.modell_kjoring:", err);
+        return null;
       }),
     ]);
 
@@ -161,9 +189,24 @@ export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentRe
         sist: pga?.lastUpdated ?? null,
         grenseTimer: GRENSE_UKESJOBB_TIMER,
       },
+      {
+        navn: "Pipelines mandagskjede (feltstyrke-modell)",
+        sist: modellKjoring?.beregnet_at ?? null,
+        grenseTimer: GRENSE_UKESJOBB_TIMER,
+      },
     ];
 
     const brudd = finnFerskhetsBrudd(kilder, now);
+
+    // "Rød kjøring": jobben kjørte og skrev en fersk rad, men modellen
+    // konvergerte ikke. Egen sjekk uavhengig av ferskhet — en fersk rad
+    // med konvergert=false skal varsles, ikke stilltiende godkjennes fordi
+    // den er "ny nok".
+    const rodKjoring =
+      modellKjoring !== null && modellKjoring.konvergert === false
+        ? `- Pipelines mandagskjede: siste kjøring (${osloDatoTidFmt.format(modellKjoring.beregnet_at)}) fullførte, men modellen KONVERGERTE IKKE — tallene fra denne kjøringen er ikke pålitelige.`
+        : null;
+
     const bruddJson = brudd.map((b) => ({
       navn: b.navn,
       sist: b.sist?.toISOString() ?? null,
@@ -171,7 +214,7 @@ export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentRe
       timerSiden: b.timerSiden,
     }));
 
-    if (brudd.length === 0) {
+    if (brudd.length === 0 && rodKjoring === null) {
       return { output: { varslet: false, sjekket: kilder.length, brudd: [] } };
     }
 
@@ -184,20 +227,33 @@ export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentRe
           aarsak: "ingen admin-bruker funnet",
           sjekket: kilder.length,
           brudd: bruddJson,
+          rodKjoring: rodKjoring !== null,
         },
       };
     }
 
+    const antallProblemer = brudd.length + (rodKjoring ? 1 : 0);
+    const tekst = [brudd.length > 0 ? bruddTekst(brudd) : null, rodKjoring]
+      .filter(Boolean)
+      .join("\n\n");
+
     await varsleAgentFunn({
       coachId: admin.id,
       tittel:
-        brudd.length === 1
+        antallProblemer === 1
           ? "Synk-vaktbikkje: én datasynk har stoppet"
-          : `Synk-vaktbikkje: ${brudd.length} datasynker har stoppet`,
-      tekst: bruddTekst(brudd),
+          : `Synk-vaktbikkje: ${antallProblemer} datasynker har stoppet`,
+      tekst,
       lenke: ADMIN_LENKE,
     });
 
-    return { output: { varslet: true, sjekket: kilder.length, brudd: bruddJson } };
+    return {
+      output: {
+        varslet: true,
+        sjekket: kilder.length,
+        brudd: bruddJson,
+        rodKjoring: rodKjoring !== null,
+      },
+    };
   });
 }

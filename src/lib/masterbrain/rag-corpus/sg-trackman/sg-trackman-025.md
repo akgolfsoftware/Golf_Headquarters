@@ -5,7 +5,7 @@ source_section: "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle
 tags: [pga-tour, putt, trackman]
 topics: [putting, trackman-parametere]
 lang: no
-relevance: [CoachHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

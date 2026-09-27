@@ -1,16 +1,12 @@
-/**
- * Team Norway · Fellestesting & Protokoller (TN-03).
- * Designreferanse: Claude Design «Team Norway App» (3416f258-avledet).
- */
-
-
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { TnFellestestingSkjerm } from "@/components/team-norway/skjermer/tn-fellestesting-skjerm";
 
 export const metadata = {
   title: "Fellestesting · Team Norway Golf",
-  description: "Nasjonale benchmark-tester og testprotokoller for landslagsutøvere.",
+  description: "Testdager, minstekrav per klasse og føring av resultater.",
 };
 
-export default function TeamNorwayFellestestingPage() {
-  return <TeamNorwayAppView initialSkjerm="TN-03" />;
+/** TN-03. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-03. */
+export default async function Page({ searchParams }: { searchParams: Promise<{ dag?: string }> }) {
+  const { dag } = await searchParams;
+  return <TnFellestestingSkjerm dagId={dag} />;
 }

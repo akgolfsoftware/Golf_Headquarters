@@ -398,6 +398,15 @@ export function LoginPrecisionView() {
                 </div>
               </div>
 
+              <div className="text-right">
+                <Link
+                  href="/auth/forgot-password"
+                  className="font-sans text-xs text-black/60 hover:text-black hover:underline"
+                >
+                  Glemt passord?
+                </Link>
+              </div>
+
               <button
                 type="submit"
                 disabled={laster || !epost || !passord}
