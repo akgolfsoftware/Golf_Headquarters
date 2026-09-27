@@ -4,6 +4,20 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ÉN SPILLERPROFIL (AG-08), OG PGA-SAMMENLIGNINGEN BRUKER BARE EKTE DATA GOLF-TALL (Anders 27.09.2026, bindende)
+
+Svar på de to siste uavklarte punktene i Claude Design «AK Golf Precision Athletics» (`7d7c2994`).
+
+- **Én spillerprofil: AG-08 Spiller 360.** Kortet i AG-03 Oppfølgingskø lenker dit. PS-01 finnes
+  ikke i skjermlista og strykes. Overstyrer spørsmålet om PS-01 i §AG-03b punkt 3.
+- **ST-05 PGA-sammenligning:** ekte PGA-navn fra Data Golf i appen (offentlige proffspillere).
+  «Egne tall» bruker bare Data Golfs ekte fordeling, aldri en formel vi har laget selv. Mangler
+  tallet, vises «—».
+
+Krever ingen kodeendring — bekrefter dagens tilstand. `src/lib/datagolf/player-tool-data.ts`
+bruker allerede ekte Data Golf-data og egne registrerte runder. Formelen fantes bare i designet
+og rettes i runde 18.
+
 ## BOOKING BEKREFTES AUTOMATISK, OG BOOKINGE-POSTENE FÅR DESIGN (Anders 27.09.2026, bindende)
 
 **Offentlig booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført.**
@@ -309,8 +323,7 @@ porting av de tre ferdige områdene.
    - Caddie-navnet i UI: koden sier «Coach AI», «AI-coach» og «AI om {fornavn}» om hverandre
      for samme funksjon (PH-16). Ordboken sier «Caddie».
    - «Merge» (AG-04) vs. «Slå sammen» (AG-10) er samme handling med to navn og to rust-svar.
-   - PS-01 (ny spillerprofil-side) overlapper med spillerkortet i AG-03s inspektør — behold
-     begge og koble dem (anbefalt), eller slå sammen til én?
+   - PS-01: avgjort 27.09 — én spillerprofil (AG-08), se §ÉN SPILLERPROFIL.
 4. **Fire «ingen kan gjøre X»-hull må bygges sammen med skjermen, ikke bare tegnes rundt**,
    ellers ser skjermen ferdig ut uten å virke:
    - Administrator-Caddie (AG-14): fire API-ruter og seksten verktøy finnes i koden, men
