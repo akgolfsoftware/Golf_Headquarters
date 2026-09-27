@@ -5,7 +5,7 @@ source_section: "## Nivå Deliberate practice Deliberate play/Baneplay Kommentar
 tags: [club-data, drill, volum]
 topics: [implementasjon, treningsvolum]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, ExerciseDefinition, RAG, TechnicalPlan, TrackMan]
+relevance: [AiPlanGeneration, AgencyOS, ExerciseDefinition, RAG, TechnicalPlan, TrackMan]
 updated: 2026-06-14
 ---
 

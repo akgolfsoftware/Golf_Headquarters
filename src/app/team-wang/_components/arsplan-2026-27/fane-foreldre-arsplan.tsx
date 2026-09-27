@@ -11,7 +11,7 @@ import { useState } from "react";
 
 import { FORELDREMOTER, SKOLERUTE, TRINN, TRINN_ORD, UKESRAPPORTER, moteTekst, nesteFredagTekst } from "../../_data/arsplan-fasit-2026-27";
 import { SPAN_START_ISO } from "../../_data/wang-plan";
-import { Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./primitiver";
+import { FaneHero, Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./primitiver";
 
 function Ukessammendrag() {
   const [apen, setApen] = useState<number | null>(null);
@@ -39,7 +39,7 @@ function Ukessammendrag() {
         <>
           <div
             style={{
-              borderRadius: 26,
+              borderRadius: 4,
               padding: "clamp(22px,3.4vw,32px)",
               color: "var(--white)",
               background:
@@ -184,7 +184,7 @@ function Praktisk() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 8 }}>
           {SKOLERUTE.map(([maaned, tekst, uke]) => (
-            <div key={tekst} style={{ background: "var(--neutral-50)", borderRadius: 10, padding: 10, minWidth: 0 }}>
+            <div key={tekst} style={{ background: "var(--neutral-50)", borderRadius: 4, padding: 10, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>
                 {maaned} · {uke}
               </div>
@@ -200,6 +200,13 @@ function Praktisk() {
 export function FaneForeldreArsplan() {
   return (
     <div>
+      <FaneHero
+        eyebrow="Foresatte"
+        tittel="Ukens sammendrag og praktisk info"
+        ingress="Trener skriver et kort sammendrag hver fredag. Det handler om gruppen, aldri om enkeltelever."
+        foto="/team-wang/hero/foreldre-roing.jpg"
+        fotoAlt="To WANG-elever i robåt"
+      />
       <Ukessammendrag />
       <Foreldremoter />
       <Praktisk />

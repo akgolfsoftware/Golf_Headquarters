@@ -21,9 +21,10 @@ test.describe("Auth — login-flyt", () => {
 
   test("glemt-passord-link finnes", async ({ page }) => {
     await gotoAndWait(page, "/auth/login");
-    const link = page.locator(
-      'a[href*="glemt"], a[href*="forgot"], a:has-text("Glemt")',
+    await page.getByRole("button", { name: "Logg inn med passord" }).click();
+    await expect(page.getByRole("link", { name: "Glemt passord?" })).toHaveAttribute(
+      "href",
+      "/auth/forgot-password",
     );
-    await expect(link.first()).toBeVisible({ timeout: 5000 });
   });
 });

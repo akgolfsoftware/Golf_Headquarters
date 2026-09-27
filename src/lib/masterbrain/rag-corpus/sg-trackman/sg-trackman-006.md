@@ -5,7 +5,7 @@ source_section: "## Offisiell PGA Tour-definisjon: Måler spillerens prestasjon 
 tags: [app, broadie, kategori, pga-tour, putt, sg]
 topics: [implementasjon, pga-snitt, putting, sg-kategorier]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

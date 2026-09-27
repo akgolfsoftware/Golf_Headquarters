@@ -19,7 +19,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 
 import { ARSPLAN_EVENTS, PERIODER, FASER, faseForPeriode, type HendelseType } from "../../_data/arsplan-fasit-2026-27";
 import { d, WD_SHORT } from "../../_data/wang-plan";
-import { Chip, PillGruppe, Seksjon, SeksjonHode, WangKort, leggTilDager, mandagAv } from "./primitiver";
+import { Chip, FaneHero, PillGruppe, Seksjon, SeksjonHode, WangKort, leggTilDager, mandagAv } from "./primitiver";
 
 const TYPE_INFO: Record<HendelseType, { navn: string; farge: string; tint: string }> = {
   okt: { navn: "Trening og samling", farge: "var(--wang-teal-text)", tint: "var(--tint-teal)" },
@@ -69,7 +69,7 @@ function ValgtDagKort({ valgtDag, onGaaTilTrening }: { valgtDag: string; onGaaTi
                   justifyContent: "space-between",
                   gap: 12,
                   padding: "10px 12px",
-                  borderRadius: 12,
+                  borderRadius: 4,
                   border: "1px solid var(--border-subtle)",
                   background: "var(--surface-card)",
                   cursor: "pointer",
@@ -112,7 +112,7 @@ function UkeVisning({ mandagIso, valgtDag, onVelgDag }: { mandagIso: string; val
               minWidth: 0,
               textAlign: "left",
               border: valgt ? "1.5px solid var(--wang-navy)" : "1px solid var(--border-subtle)",
-              borderRadius: 12,
+              borderRadius: 4,
               background: "var(--surface-card)",
               padding: 8,
               cursor: "pointer",
@@ -179,7 +179,7 @@ function MaanedVisning({
                 minHeight: 74,
                 textAlign: "left",
                 border: valgt ? "1.5px solid var(--wang-navy)" : "1px solid var(--border-subtle)",
-                borderRadius: 10,
+                borderRadius: 4,
                 background: "var(--surface-card)",
                 padding: 6,
                 cursor: "pointer",
@@ -238,7 +238,7 @@ function AarVisning({ aar, onApneManed }: { aar: number; onApneManed: (m: number
             minWidth: 0,
             textAlign: "left",
             border: "1px solid var(--border-subtle)",
-            borderRadius: 12,
+            borderRadius: 4,
             padding: 12,
             background: "var(--surface-card)",
             cursor: "pointer",
@@ -271,7 +271,7 @@ function TidslinjeVisning({ onApnePeriode }: { onApnePeriode: (uker: string) => 
               gap: 12,
               textAlign: "left",
               border: "1px solid var(--border-subtle)",
-              borderRadius: 14,
+              borderRadius: 4,
               padding: 14,
               background: "var(--surface-card)",
               cursor: "pointer",
@@ -303,8 +303,16 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
   const mandag = useMemo(() => mandagAv(valgtDag), [valgtDag]);
 
   return (
+    <div>
+      <FaneHero
+        eyebrow="Kalender"
+        tittel="Alt som skjer, dag for dag"
+        ingress="Økter, samlinger, turneringer, tester, prøver og skolefri i samme kalender. Velg en dag for å se hva som står på den."
+        foto="/team-wang/hero/kalender-langrenn.jpg"
+        fotoAlt="WANG-elev i langrenn"
+      />
     <Seksjon id="kalender">
-      <SeksjonHode nr={1} label="Fire visninger" tittel="Kalender" ingress="Tidslinje, uke, måned eller år — trykk en dag for å se hendelsene og hoppe til planen." />
+      <SeksjonHode label="Fire visninger" tittel="Kalender" ingress="Tidslinje, uke, måned eller år — trykk en dag for å se hendelsene og hoppe til planen." />
       <PillGruppe
         valg={(["Tidslinje", "Uke", "Måned", "År"] as const).map((v) => ({
           label: v,
@@ -404,6 +412,7 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
 
       <ValgtDagKort valgtDag={valgtDag} onGaaTilTrening={onGaaTilTrening} />
     </Seksjon>
+    </div>
   );
 }
 

@@ -97,6 +97,8 @@ export interface SettRepsLoggerProps {
   sist?: SettRad[];
   startSett?: SettRad[];
   vektSteg?: number;
+  prosent1RM?: number;
+  anbefaltKg?: number;
   /** Varsler forelder om nye sett-verdier — brukt der loggen skal persisteres (f.eks. live-økt). */
   onChange?: (sett: SettRad[]) => void;
 }
@@ -107,6 +109,8 @@ export function SettRepsLogger({
   sist = [{ vekt: 60, reps: 8 }, { vekt: 60, reps: 8 }, { vekt: 62.5, reps: 6 }],
   startSett = [{ vekt: 60, reps: 8 }, { vekt: 62.5, reps: 8 }],
   vektSteg = 2.5,
+  prosent1RM,
+  anbefaltKg,
   onChange,
 }: SettRepsLoggerProps) {
   const [sett, setSett] = useState<SettRad[]>(startSett);
@@ -129,6 +133,24 @@ export function SettRepsLogger({
           <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{ovelse}</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 7 }}>
             {muskelgrupper.map((m) => <MuskelgruppeChip key={m} navn={m} />)}
+            {anbefaltKg != null && anbefaltKg > 0 && (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "2px 8px",
+                  borderRadius: 9999,
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
+                  fontFamily: TL.font.mono,
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: TL.mute,
+                }}
+              >
+                Mål: {anbefaltKg} kg{prosent1RM != null ? ` (${Math.round(prosent1RM)}% 1RM)` : ""}
+              </span>
+            )}
           </div>
         </div>
         <Caps size={9}>{del}</Caps>

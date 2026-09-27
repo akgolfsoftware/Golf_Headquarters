@@ -106,7 +106,31 @@ function buildCsp(nonce: string): string {
 }
 
 export async function proxy(request: NextRequest) {
+  const host = request.headers.get("host") || "";
+  const forwardedHost = request.headers.get("x-forwarded-host") || "";
+
+  if (host.includes("ngf-spillerranking") || forwardedHost.includes("ngf-spillerranking")) {
+    if (request.nextUrl.pathname === "/") {
+      return NextResponse.redirect(new URL("/team-norway/rangliste", request.url));
+    }
+  }
+
   const path = request.nextUrl.pathname;
+
+  // Skjermkatalogen er ren UI-visning lokalt: trenger ingen Supabase-kall eller auth-refresh
+  if (path === "/skjermer" || path.startsWith("/skjermer/")) {
+    const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+    const csp = buildCsp(nonce);
+    const reqHeaders = new Headers(request.headers);
+    reqHeaders.set("x-nonce", nonce);
+    reqHeaders.set("Content-Security-Policy", csp);
+    reqHeaders.set("x-pathname", path);
+    const res = NextResponse.next({
+      request: { headers: reqHeaders },
+    });
+    res.headers.set("Content-Security-Policy", csp);
+    return res;
+  }
 
   // VEDLIKEHOLD (Anders 25.08.2026): hele akgolf.no er stengt, coaching bookes
   // på telefon. Alt som ikke er unntatt rewrites til /vedlikehold — URL-en

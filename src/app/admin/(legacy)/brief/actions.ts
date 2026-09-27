@@ -1,7 +1,7 @@
 "use server";
 
 /**
- * Eksport-actions for CoachHQ brief-rapport.
+ * Eksport-actions for AgencyOS brief-rapport.
  *
  * `exportBriefReport` validerer inputen med zod, sjekker at brukeren er
  * COACH/ADMIN, og returnerer en placeholder URL til en generert PDF/CSV.

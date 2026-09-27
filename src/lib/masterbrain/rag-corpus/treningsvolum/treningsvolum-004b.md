@@ -5,7 +5,7 @@ source_section: "1.4–1.5 Treningsvolum: Elite junior og periodisering (del 2)"
 tags: ["amat\u00f8r", "handicap", "ltad", "periodisering", "volum"]
 topics: ["amator-data", "periodisering", "treningsvolum"]
 lang: no
-relevance: ["AiPlanGeneration", "CoachHQ", "PlayerHQ", "RAG", "TechnicalPlan"]
+relevance: ["AiPlanGeneration", "AgencyOS", "PlayerHQ", "RAG", "TechnicalPlan"]
 updated: 2026-06-14
 ---
 

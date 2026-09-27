@@ -5,7 +5,7 @@ source_section: "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle
 tags: [amatør, ball-data, d-plane, putt, trackman]
 topics: [ballflukt-fysikk, implementasjon, putting, trackman-parametere]
 lang: no
-relevance: [CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

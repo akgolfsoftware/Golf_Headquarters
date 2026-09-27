@@ -143,7 +143,7 @@
       "ug_capability": "Roster management, turneringsoppretting, auto-deling, videoanalyse, chat, drill-tildeling, Digi Locker",
       "ug_strength": "Komplett for akademier og nasjonale forbund. God funksjonell bredde.",
       "ug_weakness": "Drill-tildeling er manuell og ikke koblet til SG-diagnose. Ingen automatisk planforslag.",
-      "ak_golf_hq_status": "CoachHQ → PlayerHQ workflow med agent-genererte planforslag. OVERLEGENT."
+      "ak_golf_hq_status": "AgencyOS → PlayerHQ workflow med agent-genererte planforslag. OVERLEGENT."
     },
     {
       "id": "practice_library",
@@ -228,7 +228,7 @@
     {
       "id": "adv_5",
       "advantage": "Coach-til-spiller arbeidsflyt",
-      "description": "CoachHQ → PlayerHQ med agent-genererte planforslag. Coach godkjenner — system implementerer.",
+      "description": "AgencyOS → PlayerHQ med agent-genererte planforslag. Coach godkjenner — system implementerer.",
       "feature": "AI-assistert coach workflow"
     },
     {

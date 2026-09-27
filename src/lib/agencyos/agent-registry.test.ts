@@ -34,6 +34,7 @@ const INFRASTRUKTUR = new Set([
   "plan-action-tilgang.ts",
   "plan-revision-actions.ts",
   "provenance.ts",
+  "trackman-observations.ts",
   "triggers.ts",
   "youtube-search.ts",
 ]);

@@ -92,7 +92,7 @@
      Poppins/Lora/IBM Plex Mono er appens eneste fonter (se rot-layout);
      ikke gjeninnfør en fjerde.
      ───────────────────────────────────────────────────────────────────── */
-  --tl-font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
+  --tl-font-sans: var(--font-ibm-plex-sans), var(--font-poppins), Arial, system-ui, sans-serif;
   --tl-font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   --tl-text-title: 34px;            /* 700 · letter-spacing -0.02em */

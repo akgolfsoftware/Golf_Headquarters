@@ -1,17 +1,18 @@
 "use client";
 
-/* AK Golf HQ — MARKEDSSIDE: offentlig booking (/booking), PP-1.7.
-   Fasit: `designsystem/paper/fase1/booking.html`. Stilene er portert dit
-   («booking-paper.css»), markupen her følger fasitens struktur og rekkefølge:
-   topp → hero med fakta → steg 1 tjeneste → steg-flyt (tid/deg/bekreft) →
-   spørsmål → sticky dokk.
-
-   ÉN AVVIK FRA FASITEN, bestilt av Anders 10.08.2026: fasiten avslutter med en
-   forespørsel («du betaler ikke nå»). Appen beholder Stripe, så siste steg går
-   til betaling. All tekst som lovet det motsatte er skrevet om — teksten her er
-   fasiten sin, tilpasset at kunden faktisk betaler før timen.
-
-   LÅST (Anders 01.08.2026): kun coachingtjenester. Simulatortid selges ikke. */
+/**
+ * AK Golf HQ — MARKEDSSIDE: offentlig booking (/booking), PP-1.7.
+ * Fasit: `designsystem/paper/fase1/booking.html`. Stilene er portert dit
+ * («booking-paper.css»), markupen her følger fasitens struktur og rekkefølge:
+ * topp → hero med fakta → steg 1 tjeneste → steg-flyt (tid/deg/bekreft) →
+ * spørsmål → sticky dokk.
+ * Avvik:
+ *   - Fasiten er Paper, slettet 30.08.2026 — bookingflyten er ikke portert til gjeldende Precision Athletic-design.
+ *   - Bestilt av Anders 10.08.2026: fasiten avslutter med en forespørsel («du betaler ikke nå»). Appen beholder Stripe, så siste steg går til betaling.
+ *   - Kartleggingsøkt er fjernet fra teksten (beslutninger.md §KARTLEGGINGSØKT FJERNES, 26.09.2026).
+ *
+ * LÅST (Anders 01.08.2026): kun coachingtjenester. Simulatortid selges ikke.
+ */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -287,8 +288,8 @@ export function MarkedBookingV2({
             <span className="eyebrow">AK Golf Academy · Fredrikstad</span>
             <h1>Book en time med Anders Kristiansen</h1>
             <p className="ingress prose">
-              Personlig coaching for spillere som vil ned i score. Første time er en kartlegging:
-              vi måler, ser på hva som faktisk koster deg slag, og du går derfra med en plan —
+              Personlig coaching for spillere som vil ned i score. I første time
+              måler vi og finner hva som faktisk koster deg slag, og du går derfra med en plan —
               uansett om du fortsetter eller ikke.
             </p>
             <a
@@ -302,7 +303,7 @@ export function MarkedBookingV2({
               <div>
                 <span className="k">Første time</span>
                 <span className="v">{fraPris === null ? "—" : `fra ${kr(fraPris)} kr`}</span>
-                <span className="w">kartlegging med TrackMan</span>
+                <span className="w">måling med TrackMan</span>
               </div>
               <div>
                 <span className="k">Neste ledige</span>

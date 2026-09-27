@@ -5,7 +5,7 @@ source_section: "(Preamble) (del 3)"
 tags: [amatør, app, handicap, putt, sg]
 topics: [implementasjon]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

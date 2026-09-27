@@ -5,7 +5,7 @@ source_section: "### Merk om tallformat: Tekniske parametere og tabeller bruker 
 tags: [app, baseline, broadie, formule, kategori, ott, pga-tour, putt, sg, trackman]
 topics: [beregning, broadie, pga-snitt, putting, sg-baseline, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

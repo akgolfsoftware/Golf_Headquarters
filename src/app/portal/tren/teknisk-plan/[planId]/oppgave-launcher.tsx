@@ -113,6 +113,8 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
     repsMaalFull: draft.repsMaalFull,
+    bildeUrl: draft.bildeUrl || undefined,
+    videoUrl: draft.videoUrl || undefined,
     tmGoals: mapTmGoals(draft.tmGoals),
     hitRateGoals: mapHitRateGoals(draft.hitRateGoals),
   };

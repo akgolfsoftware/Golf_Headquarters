@@ -254,7 +254,7 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
         <Rad leading={<SeksjonIkon name="map-pin" />} title="Anlegg" sub="Utstyr og fasiliteter du har tilgang til" />
       </Link>
       <Link href="/portal/meg/innstillinger/ai-coach" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad leading={<SeksjonIkon name="sparkles" />} title="AI-coach" sub="Tone og hvor mye den skal foreslå" />
+        <Rad leading={<SeksjonIkon name="sparkles" />} title="Caddie" sub="Tone og hvor mye den skal foreslå" />
       </Link>
       <Link href="/portal/meg/innstillinger/integrasjoner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad leading={<SeksjonIkon name="link-2" />} title="Integrasjoner" sub="TrackMan, Google Kalender og flere" />

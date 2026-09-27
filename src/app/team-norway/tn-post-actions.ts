@@ -17,13 +17,10 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import {
   opprettGruppepost,
   opprettSpillerpost,
-  opprettGruppeDokument,
   merkPostLest,
   hentPostLesekvitteringNavnForViewer,
 } from "@/lib/domain/tn-post";
 import { erTnPostKind } from "@/lib/domain/tn-post-regler";
-import { uploadFile } from "@/lib/storage/supabase-storage";
-import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
@@ -65,36 +62,6 @@ export async function opprettSpillerpostAction(
     return { ok: true };
   } catch (err) {
     return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke publisere posten" };
-  }
-}
-
-const MAKS_DOKUMENT_BYTES = 50 * 1024 * 1024;
-
-/** TN-11 «Last opp fil» — validerer, laster opp til bucket, oppretter DOKUMENT-posten. */
-export async function opprettGruppeDokumentAction(groupId: string, form: FormData): Promise<ActionResult> {
-  const bruker = await requireCoachActionUser();
-  const fil = form.get("file");
-  if (!(fil instanceof File) || fil.size === 0) {
-    return { ok: false, feil: "Ingen fil valgt" };
-  }
-  if (fil.size > MAKS_DOKUMENT_BYTES) {
-    return { ok: false, feil: "Filen er for stor. Maksgrense: 50 MB." };
-  }
-  try {
-    const path = `${groupId}/${Date.now()}-${fil.name.replace(/[^a-zA-Z0-9.\-_]/g, "-")}`;
-    const opplastet = await uploadFile({ bucket: STORAGE_BUCKETS.TN_POST_VEDLEGG, path, file: fil });
-    await opprettGruppeDokument({
-      forfatterId: bruker.id,
-      groupId,
-      fileName: fil.name,
-      fileType: fil.type || null,
-      fileSize: fil.size,
-      path: opplastet.path,
-    });
-    revalidatePath(`/team-norway/${groupId}/dokumenter`);
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, feil: err instanceof Error ? err.message : "Opplasting feilet" };
   }
 }
 

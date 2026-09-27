@@ -20,9 +20,9 @@ jobs:
       # `npm ci`) og senere steg har dem. Generate kobler ikke til DB.
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
       DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
-      # tsc --noEmit + next build går tom for default ~2GB heap på et stort
-      # prosjekt (411 ruter). Hev til 4GB (ubuntu-latest har 7GB RAM).
-      NODE_OPTIONS: --max-old-space-size=4096
+      # tsc --noEmit trenger mer enn 4GB heap etter sammenslåingen.
+      # 5GB er verifisert lokalt og gir rom på ubuntu-latest (7GB RAM).
+      NODE_OPTIONS: --max-old-space-size=5120
       NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
       NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
       ANTHROPIC_API_KEY: dummy
