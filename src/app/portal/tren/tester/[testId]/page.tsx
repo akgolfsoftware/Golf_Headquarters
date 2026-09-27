@@ -42,6 +42,9 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
+import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
+import { foreslaGodkjenteOvelser, ovelsesNavn, sammenlignMedForrige } from "@/lib/portal-tester/test-anbefaling";
+import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
 
 export const dynamic = "force-dynamic";
 
@@ -115,6 +118,16 @@ export default async function TestDetaljSpillerPage({
   const maks = hist.length > 0 ? Math.max(...hist.map((r) => r.score), 0) : 0;
   const siste = resultater[resultater.length - 1] ?? null;
   const nestSiste = resultater[resultater.length - 2] ?? null;
+  const fasiliteter = siste && test.omraade ? await prisma.playerFacility.findMany({
+    where: { userId: user.id },
+    select: { capabilities: true, maksPuttLengdeM: true, rangeLengdeM: true },
+  }) : [];
+  const forslag = siste ? foreslaGodkjenteOvelser({
+    test: { id: test.id, omraade: test.omraade },
+    bank: hentGodkjenteOvelsesbankElementer(),
+    fasiliteter,
+    spillerKategori: null,
+  }) : [];
 
   // TE-03 type A-hero (count_ok/hit_rate — Gate-familien): «N OK av M · mål K».
   const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
@@ -137,7 +150,11 @@ export default async function TestDetaljSpillerPage({
   }
 
   let trend: { text: string; tone: "pos" | "neg" | "flat" } | null = null;
-  if (siste && nestSiste) {
+  const sikkertSammenlignbar = siste && nestSiste && sammenlignMedForrige(
+    { ...siste, testId: test.id },
+    resultater.map((rad) => ({ ...rad, testId: test.id })),
+  ) !== "IKKE_SAMMENLIGNBAR";
+  if (siste && nestSiste && sikkertSammenlignbar) {
     const diff = siste.score - nestSiste.score;
     if (diff === 0) {
       trend = { text: "±0 vs forrige måling", tone: "flat" };
@@ -494,7 +511,7 @@ export default async function TestDetaljSpillerPage({
                   Kilde: dine {resultater.length === 1 ? "logg av" : `${resultater.length} loggede målinger av`}{" "}
                   {test.name}, sist {fmtDatoLang((siste ?? resultater[0]).takenAt)}.
                 </li>
-                {siste && nestSiste ? (
+                {siste && nestSiste && trend ? (
                   <li style={{ marginBottom: 8 }}>
                     Beregning: trenden er siste måling mot nest siste —{" "}
                     {formaterTestVerdi({ kind: scoringSpec.kind, verdi: siste.score, shotsCount: gateShotsCount })} mot{" "}
@@ -502,7 +519,7 @@ export default async function TestDetaljSpillerPage({
                   </li>
                 ) : (
                   <li style={{ marginBottom: 8 }}>
-                    Beregning: første måling er referansen — trend kommer fra andre måling.
+                    {resultater.length === 1 ? "Én måling gir ingen trend." : "Historikken vises, men protokoll og testforhold kan ikke verifiseres for sikker trend."}
                   </li>
                 )}
                 <li style={{ marginBottom: 8 }}>
@@ -512,6 +529,15 @@ export default async function TestDetaljSpillerPage({
             </details>
           </Kort>
         )}
+
+        {siste && <ResultatKontekst />}
+        {siste && <Kort eyebrow="øvelser å vurdere">
+          <p style={{ color: TL.mute, fontSize: 13 }}>Dette er forslag etter et registrert resultat, ikke en diagnose eller automatisk planendring. Coachen velger eventuell videre trening.</p>
+          {forslag.length ? <ul>{forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => <li key={ovelse.id} style={{ marginBlock: 14 }}>
+            <strong>{ovelsesNavn(ovelse.navn)}</strong> · {ovelse.beskrivelse}
+            <p style={{ color: TL.mute, fontSize: 12 }}>{kanLeggesTil ? "Fasilitet er bekreftet. " : ""}{begrunnelse}</p>
+          </li>)}</ul> : <p>Ingen godkjent øvelse er koblet til dette testområdet ennå.</p>}
+        </Kort>}
 
         {/* Kontrakt §3: skjermens ene aksenthandling — start testen.
             I tom tilstand bor clay-handlingen i tom-blokken over (maks én). */}

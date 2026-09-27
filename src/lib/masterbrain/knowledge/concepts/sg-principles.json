@@ -127,6 +127,24 @@
     ],
     "putt": []
   },
+  "app_band_faults": {
+    "200+": [
+      "angle_loss_backswing"
+    ],
+    "150-200": [
+      "improper_weight_transfer"
+    ],
+    "100-150": [
+      "incorrect_elbow_position"
+    ],
+    "50-100": [
+      "left_elbow_stall"
+    ],
+    "<50": [
+      "left_elbow_stall",
+      "casting"
+    ]
+  },
   "diagnostic_logic": {
     "crisis_threshold": {
       "value": -1.0,

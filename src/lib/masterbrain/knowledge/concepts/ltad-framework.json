@@ -240,31 +240,31 @@
     "foundation": {
       "ltad_phase": "foundation",
       "ak_stige": ["Mini", "Knøtt"],
-      "canon_categories": ["I", "J", "K"],
+      "canon_categories": ["A", "B", "C"],
       "description": "Basisinnlæring, lek og utforskning. Fokus på bevegelsesglede og grunnleggende slagmekanikk."
     },
     "development": {
       "ltad_phase": "development",
       "ak_stige": ["Basis", "Utvikling"],
-      "canon_categories": ["F", "G", "H"],
+      "canon_categories": ["C", "D", "E", "F"],
       "description": "Systematisk teknisk utvikling. Innføring av strukturert trening og konkurranse."
     },
     "specialization": {
       "ltad_phase": "specialization",
       "ak_stige": ["Utvikling", "Elite"],
-      "canon_categories": ["D", "E"],
+      "canon_categories": ["F", "G", "H", "I"],
       "description": "Spesialisert golftrening med høyt volum. Integrert fysisk og teknisk utvikling."
     },
     "performance": {
       "ltad_phase": "performance",
       "ak_stige": ["Elite"],
-      "canon_categories": ["B", "C"],
+      "canon_categories": ["I", "J", "K"],
       "description": "Konkurransefokusert trening. Optimalisering av alle prestasjonsparametere."
     },
     "elite": {
       "ltad_phase": "elite",
       "ak_stige": ["ProElite"],
-      "canon_categories": ["A"],
+      "canon_categories": ["K"],
       "description": "Tour-nivå vedlikehold og optimalisering. Svært individualisert tilnærming."
     }
   },
