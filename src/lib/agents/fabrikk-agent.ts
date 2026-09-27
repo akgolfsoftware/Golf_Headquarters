@@ -66,12 +66,12 @@ Har den treningsverdi, svar KUN med gyldig JSON på nøyaktig denne formen:
   "pyramidArea": "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN",
   "skillArea": "TEE_TOTAL" | "TILNAERMING" | "AROUND_GREEN" | "PUTTING" | "SPILL" | null,
   "durationMin": heltall minutter,
-  "minKategori": "A".."L" | null,
-  "maxKategori": "A".."L" | null,
+  "minKategori": "A".."K" | null,
+  "maxKategori": "A".."K" | null,
   "begrunnelse": "1 setning: hvorfor treningsrelevant og hvem den passer for"
 }
 
-CANON-fasit (AK Golf sitt ferdighetsrammeverk, A=nybegynner..K=elite) — bruk
+CANON-fasit (AK Golf sitt ferdighetsrammeverk, A=verdensklasse..K=nybegynner) — bruk
 denne til å sette et realistisk minKategori/maxKategori-spenn:
 ${canonSammendrag()}
 

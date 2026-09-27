@@ -9,6 +9,9 @@ import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { TL } from "@/lib/v2/train-lock";
 import { TnScorecard } from "./scorecard";
+import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
+import { foreslaGodkjenteOvelser, ovelsesNavn } from "@/lib/portal-tester/test-anbefaling";
+import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
 
 export const dynamic = "force-dynamic";
 export default async function TeamNorwayTests({ searchParams }: { searchParams: Promise<{ test?: string; session?: string; count?: string }> }) {
@@ -26,6 +29,19 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     const stored = row.testResultId ? await prisma.testResult.findFirst({ where: { id: row.testResultId, userId: user.id, testId: row.testId } }) : null;
     const saved = TnResultSchema.safeParse(stored?.details);
     if (row.status === "COMPLETED" && (!saved.success || saved.data.protocolId !== p.id || saved.data.count !== state.data.count)) notFound();
+    let forslag = [] as ReturnType<typeof foreslaGodkjenteOvelser>;
+    if (row.status === "COMPLETED" && saved.success && stored) {
+      const facilities = await prisma.playerFacility.findMany({
+        where: { userId: user.id },
+        select: { capabilities: true, maksPuttLengdeM: true, rangeLengdeM: true },
+      });
+      forslag = foreslaGodkjenteOvelser({
+        test: { id: row.testId, omraade: null },
+        bank: hentGodkjenteOvelsesbankElementer(),
+        fasiliteter: facilities,
+        spillerKategori: null,
+      });
+    }
     // Integrasjonsvakt: en PÅGÅENDE økt en trener fører i en testdag er
     // samme TestSession-rad (userId = spilleren). Egenføringens redigerbare
     // scorecard skal ALDRI vises for den — spilleren ser en kort, read-only
@@ -35,7 +51,18 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     content = testdagKobling ? (
       <p>Denne økten føres av en trener som del av en testdag og kan ikke redigeres her.</p>
     ) : (
-      <TnScorecard savedResult={saved.success ? saved.data : undefined} key={row.id} protocol={p} initial={{ sessionId: row.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: row.status }} />
+      <>
+        <TnScorecard savedResult={saved.success ? saved.data : undefined} key={row.id} protocol={p} initial={{ sessionId: row.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: row.status }} />
+        {row.status === "COMPLETED" && saved.success ? <ResultatKontekst /> : null}
+        {row.status === "COMPLETED" && saved.success ? <section aria-label="Øvelsesforslag" style={{ borderTop: `1px solid ${TL.hair}`, marginTop: 24, paddingTop: 20 }}>
+          <h2>Øvelser å vurdere etter testen</h2>
+          <p>Dette er ikke en diagnose eller automatisk endring i treningsplanen. Ta resultatet og forslagene med coachen.</p>
+          {forslag.length ? <ul>{forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => <li key={ovelse.id} style={{ marginBlock: 16 }}>
+            <strong>{ovelsesNavn(ovelse.navn)}</strong> · {ovelse.beskrivelse}
+            <p>{kanLeggesTil ? "Fasilitet er bekreftet. " : ""}{begrunnelse}</p>
+          </li>)}</ul> : <p>Ingen godkjent øvelse er koblet til denne testen ennå.</p>}
+        </section> : null}
+      </>
     );
   } else if (query.test) {
     const p = tnProtocol(query.test, query.count === undefined ? undefined : Number(query.count));

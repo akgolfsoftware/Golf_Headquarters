@@ -9,7 +9,7 @@
     "Mark Broadie SG-forskning",
     "TrackMan Academy metodikk"
   ],
-  "description": "CANON v3.5 — AK Golf sitt coachingframework. A–K-skalaen defineres ENESTE sted i src/lib/domain/ak-kategori.ts (A er World Elite <68 brutto, K er Nybegynner 100+).",
+  "description": "CANON v3.5 — AK Golf sitt komplette coachingframework. Definerer 11 ferdighetsnivåer (A-K), pyramidefordeling av treningstyper, L-fase motorisk læringsmodell, invarianter og periodesystem. Grunnlaget for alle CoachHQ og PlayerHQ beslutninger.",
   "categories": {
     "A": {
       "id": "A",
@@ -339,18 +339,18 @@
     },
     {
       "id": "pr_7",
-      "trigger": "SPES-periode",
+      "trigger": "SPESIALISERING-periode",
       "adjustments": {
         "SLAG": "elevated",
         "TEK": "standard",
         "SPILL": "standard",
         "TURN": "low"
       },
-      "description": "Spesialiseringsperiode: SLAG økes. Spesifikke golfferdighetere."
+      "description": "Spesialiseringsperiode: SLAG økes. Spesifikke golfferdigheter."
     },
     {
       "id": "pr_8",
-      "trigger": "TURN-periode",
+      "trigger": "TURNERING-periode",
       "adjustments": {
         "SPILL": "elevated",
         "TURN": "elevated",
@@ -361,7 +361,7 @@
     },
     {
       "id": "pr_9",
-      "trigger": "A-C kategorier",
+      "trigger": "I-K kategorier",
       "adjustments": {
         "TEK": "heavy",
         "FYS": "heavy",
@@ -371,7 +371,7 @@
     },
     {
       "id": "pr_10",
-      "trigger": "H-K kategorier",
+      "trigger": "A-D kategorier",
       "adjustments": {
         "TEK": "reduced",
         "SPILL": "elevated",
@@ -391,7 +391,11 @@
       "tek_percent": "60-80",
       "ball_use": false,
       "priority_override": "L-KROPP overstyrer ALL annen prioritering. Ingen SG-diagnostikk brukes i denne fasen.",
-      "typical_drills": ["Rotasjonsøvelser uten kølle", "Tyngdeoverføringsdrill", "Korrekt ryggradposisjon i adresse"]
+      "typical_drills": [
+        "Rotasjonsøvelser uten kølle",
+        "Tyngdeoverføringsdrill",
+        "Korrekt ryggradposisjon i adresse"
+      ]
     },
     "L-ARM": {
       "id": "L-ARM",
@@ -403,7 +407,11 @@
       "tek_percent": "50-70",
       "ball_use": "minimal",
       "priority_override": "L-ARM overstyrer all SG-prioritering. Teknisk korreksjon er absolutt mål.",
-      "typical_drills": ["P1-P9 posisjonsdrill med speil", "Half-swing med armfokus", "Slow motion video-analyse"]
+      "typical_drills": [
+        "P1-P9 posisjonsdrill med speil",
+        "Half-swing med armfokus",
+        "Slow motion video-analyse"
+      ]
     },
     "L-KØLLE": {
       "id": "L-KØLLE",
@@ -415,7 +423,11 @@
       "tek_percent": "40-60",
       "ball_use": true,
       "priority_override": "L-KØLLE: SG brukes som supplement — ikke primær driver.",
-      "typical_drills": ["Køllebane-drilll med gate", "Impact bag-trening", "Køllebane-analyse med TrackMan"]
+      "typical_drills": [
+        "Køllebane-drilll med gate",
+        "Impact bag-trening",
+        "Køllebane-analyse med TrackMan"
+      ]
     },
     "L-BALL": {
       "id": "L-BALL",
@@ -427,7 +439,11 @@
       "tek_percent": "30-50",
       "ball_use": true,
       "priority_override": "Ingen L-fase override — full SG-vekting gjelder i L-BALL.",
-      "typical_drills": ["Retningskontroll-driller", "Distansekontroll-driller", "TrackMan-basert feedback"]
+      "typical_drills": [
+        "Retningskontroll-driller",
+        "Distansekontroll-driller",
+        "TrackMan-basert feedback"
+      ]
     },
     "L-AUTO": {
       "id": "L-AUTO",
@@ -439,14 +455,18 @@
       "tek_percent": "20-40",
       "ball_use": true,
       "priority_override": "Ingen L-fase override — full SG-vekting. Fokus på automatisering og pressure-testing.",
-      "typical_drills": ["Pressure-driller (PR4-PR5)", "Bane-simulering", "Turneringsformat trening"]
+      "typical_drills": [
+        "Pressure-driller (PR4-PR5)",
+        "Bane-simulering",
+        "Turneringsformat trening"
+      ]
     }
   },
   "invariants": [
     {
       "id": "inv_1",
       "rule": "TEK minimum 15% av alle økter",
-      "description": "Teknisk trening kan aldri reduseres under 15% — selv i TURN-periode eller L-AUTO.",
+      "description": "Teknisk trening kan aldri reduseres under 15% — selv i TURNERING-periode eller L-AUTO.",
       "severity": "blocking"
     },
     {
@@ -529,26 +549,47 @@
       "name_en": "Foundation Period",
       "description": "Forsesongen. Bygge fysisk og teknisk grunnlag for sesongen.",
       "typical_timing": "Oktober–januar",
-      "focus": ["FYS", "TEK"],
+      "focus": [
+        "FYS",
+        "TEK"
+      ],
       "pyramid_adjustment": "FYS og TEK elevated — SPILL og TURN minimale"
     },
-    "SPES": {
-      "id": "SPES",
+    "SPESIALISERING": {
+      "id": "SPESIALISERING",
       "name": "Spesialiseringsperiode",
       "name_en": "Specialization Period",
       "description": "Midt-sesong forberedelse. Spesifikke golfspesifikke ferdigheter.",
       "typical_timing": "Februar–april",
-      "focus": ["SLAG", "TEK"],
+      "focus": [
+        "SLAG",
+        "TEK"
+      ],
       "pyramid_adjustment": "SLAG elevated — TEK standard, SPILL starter"
     },
-    "TURN": {
-      "id": "TURN",
+    "TURNERING": {
+      "id": "TURNERING",
       "name": "Turneringsperiode",
       "name_en": "Tournament Period",
       "description": "Konkurransesesongen. Prestere i turneringer.",
       "typical_timing": "Mai–september",
-      "focus": ["SPILL", "TURN"],
+      "focus": [
+        "SPILL",
+        "TURN"
+      ],
       "pyramid_adjustment": "SPILL og TURN elevated — TEK og FYS redusert, minimalt endringsarbeid"
+    },
+    "EVALUERING": {
+      "id": "EVALUERING",
+      "name": "Evaluering",
+      "name_en": "Evaluation Period",
+      "description": "Test, analyse og læring etter trenings- eller turneringsperiode. Brukes til å samle data, evaluere effekt og justere neste plan.",
+      "typical_timing": "Etter testuke, turneringsblokk eller 4-ukers mikrosyklus",
+      "focus": [
+        "SPILL",
+        "TURN"
+      ],
+      "pyramid_adjustment": "Test og analyse prioriteres — ingen stor teknisk ombygging før ny plan er satt"
     }
   },
   "scale_definitions": {
@@ -557,15 +598,51 @@
       "unit": "mph",
       "description": "Kølgehastighet i miles per time. Brukes til å kalibrere treningsintensitet og miljø.",
       "levels": [
-        {"level": "CS20", "value": 20, "context": "Bevegelsesdrill uten ball"},
-        {"level": "CS30", "value": 30, "context": "Langsom teknisk drill"},
-        {"level": "CS40", "value": 40, "context": "Halvfart teknisk drill"},
-        {"level": "CS50", "value": 50, "context": "Minimum for balltrening"},
-        {"level": "CS60", "value": 60, "context": "Moderat balltrening"},
-        {"level": "CS70", "value": 70, "context": "Kontrollert full swing"},
-        {"level": "CS80", "value": 80, "context": "Full swing med kontroll"},
-        {"level": "CS90", "value": 90, "context": "Tour-speed trening"},
-        {"level": "CS100", "value": 100, "context": "Maks hastighet"}
+        {
+          "level": "CS20",
+          "value": 20,
+          "context": "Bevegelsesdrill uten ball"
+        },
+        {
+          "level": "CS30",
+          "value": 30,
+          "context": "Langsom teknisk drill"
+        },
+        {
+          "level": "CS40",
+          "value": 40,
+          "context": "Halvfart teknisk drill"
+        },
+        {
+          "level": "CS50",
+          "value": 50,
+          "context": "Minimum for balltrening"
+        },
+        {
+          "level": "CS60",
+          "value": 60,
+          "context": "Moderat balltrening"
+        },
+        {
+          "level": "CS70",
+          "value": 70,
+          "context": "Kontrollert full swing"
+        },
+        {
+          "level": "CS80",
+          "value": 80,
+          "context": "Full swing med kontroll"
+        },
+        {
+          "level": "CS90",
+          "value": 90,
+          "context": "Tour-speed trening"
+        },
+        {
+          "level": "CS100",
+          "value": 100,
+          "context": "Maks hastighet"
+        }
       ]
     },
     "pr": {
@@ -573,11 +650,31 @@
       "unit": "nivå 1-5",
       "description": "Pressurenivå i treningssituasjon. Simulerer konkurransepress progressivt.",
       "levels": [
-        {"level": "PR1", "value": 1, "context": "Minimalt press — ren teknikk-drill, ingen konsekvens"},
-        {"level": "PR2", "value": 2, "context": "Lett press — mål definert, men ingen konkurranse"},
-        {"level": "PR3", "value": 3, "context": "Moderat press — scoringssystem eller partner involvert"},
-        {"level": "PR4", "value": 4, "context": "Høyt press — simulert turneringsrunde eller økonomi/poeng"},
-        {"level": "PR5", "value": 5, "context": "Maksimalt press — faktisk turneringssituasjon"}
+        {
+          "level": "PR1",
+          "value": 1,
+          "context": "Minimalt press — ren teknikk-drill, ingen konsekvens"
+        },
+        {
+          "level": "PR2",
+          "value": 2,
+          "context": "Lett press — mål definert, men ingen konkurranse"
+        },
+        {
+          "level": "PR3",
+          "value": 3,
+          "context": "Moderat press — scoringssystem eller partner involvert"
+        },
+        {
+          "level": "PR4",
+          "value": 4,
+          "context": "Høyt press — simulert turneringsrunde eller økonomi/poeng"
+        },
+        {
+          "level": "PR5",
+          "value": 5,
+          "context": "Maksimalt press — faktisk turneringssituasjon"
+        }
       ]
     },
     "m": {
@@ -585,12 +682,36 @@
       "unit": "nivå M0-M5",
       "description": "Trenings-miljøets struktur og kontroll. M0 er mest kontrollert, M5 er konkurranse.",
       "levels": [
-        {"level": "M0", "value": 0, "context": "Kontrollert range, ingen mål, ingen ball"},
-        {"level": "M1", "value": 1, "context": "Kontrollert range, enkelt mål"},
-        {"level": "M2", "value": 2, "context": "Driving range med definerte mål og distanser"},
-        {"level": "M3", "value": 3, "context": "Baneøving uten konkurranse (greenside, treningsgreen)"},
-        {"level": "M4", "value": 4, "context": "Bane med scoringsfokus, simulert konkurranse"},
-        {"level": "M5", "value": 5, "context": "Faktiske turneringsforhold"}
+        {
+          "level": "M0",
+          "value": 0,
+          "context": "Kontrollert range, ingen mål, ingen ball"
+        },
+        {
+          "level": "M1",
+          "value": 1,
+          "context": "Kontrollert range, enkelt mål"
+        },
+        {
+          "level": "M2",
+          "value": 2,
+          "context": "Driving range med definerte mål og distanser"
+        },
+        {
+          "level": "M3",
+          "value": 3,
+          "context": "Baneøving uten konkurranse (greenside, treningsgreen)"
+        },
+        {
+          "level": "M4",
+          "value": 4,
+          "context": "Bane med scoringsfokus, simulert konkurranse"
+        },
+        {
+          "level": "M5",
+          "value": 5,
+          "context": "Faktiske turneringsforhold"
+        }
       ]
     }
   },
