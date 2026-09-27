@@ -1249,3 +1249,9 @@ Tidligere punkt under §Merke og tekst: «Kartleggingsøkt er ikke gratis: 90 mi
 timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.» Erstattet av
 §KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN i `.claude/rules/beslutninger.md`
 (Anders 26.09.2026: kartleggingsøkt finnes ikke lenger).
+
+## Arkivert 27.09.2026: rollelinjen fra «WANG: FEM ANSATTROLLER» (26.09.2026)
+
+Opprinnelig tekst: «Ansattrollene i WANG er Sportssjef, Trener, Kontaktlærer, Rektor og
+Toppidrettssjef. Elev, Foresatt og Åpen består som brukerroller.» Erstattet 27.09.2026 av
+`.claude/rules/beslutninger.md` §WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER.
