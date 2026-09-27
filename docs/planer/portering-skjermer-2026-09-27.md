@@ -1,7 +1,7 @@
-# Plan for Antigravity: fra Claude Design til kode — 27.09.2026
+# Plan for portering: fra Claude Design til kode — 27.09.2026
 
-**Status:** Forslag. Venter på Anders' godkjenning før noe bygges.
-**Erstatter:** [planen fra 25.09](plan-portering-claude-design-til-kode-2026-09-25.md), som bygger på gjetting (se §2).
+**Status:** Fase 0 er gjennomført for skjermene (PR #979). Porteringen gjøres av Opus 5.5 i Claude Code (Anders 27.09.2026).
+**Erstatter:** planen fra 25.09 (`plan-portering-claude-design-til-kode-2026-09-25.md`), som bygger på gjetting (se §2).
 **Omfang:** PlayerHQ (`/portal`), AgencyOS (`/admin`), WANG (`/team-wang/coach`) og Team Norway (`/team-norway`).
 **Grunnlag:** gjennomgang av `origin/main` (`d025124c3`), alle grener og arbeidsmapper, 27.09.2026 kl. 22:30.
 
@@ -11,7 +11,7 @@
 - Koden har funksjonene, men nesten alt har fortsatt det gamle utseendet (Train-lock).
 - Forrige porteringsforsøk (26.09) byttet ut fem ekte skjermer med demoskjermer med oppdiktede
   navn og tall. To nye demoskjermer kom inn i kveld (#977). Det må rettes først.
-- Antigravity kan ikke lese Claude Design selv. Designpakkene må derfor legges i repoet før start.
+- Designpakkene må legges i repoet før start, så porteringen ikke avhenger av en kobling som kan falle ut.
 - Regelen som styrer hele planen: **bytt utseendet, behold dataene.** En skjerm som virker i dag,
   skal virke likt etterpå — med ekte data, samme tilgangskontroll og samme handlinger.
 
@@ -48,8 +48,11 @@ sikkerhetsregelen i denne økta. Sesjonsnotatet fra Codex (27.09 kl. 21:46) sier
 | F8 | Fire styrende dokumenter peker fortsatt på det gamle designet («App design») | `AGENTS.md`, `START-HER.md`, `docs/platform/AGENT-BRIEF.md`, `docs/FASIT.md` | Middels |
 | F9 | Planen fra 25.09 inneholder ting som ikke er besluttet eller er fjernet: Vipps, kategori A–K, magisk lenke med SMS, fraværsmelding i WANG, farger som ikke er i systemet | `docs/planer/plan-portering-…-2026-09-25.md` | Middels |
 | F10 | Designets overlevering (`overlevering/codex.md`, `tokens.css`) finnes bare i Claude Design, ikke i repoet | — | Blokkerer start |
+| F13 | Meg, fysisk og forelder var koblet til demovisninger med faste reserveverdier (snitt 73,4, «Coach Anders») | `/portal/meg`, `/portal/fysisk`, `/forelder`, `/portal/toppidrett` | Høy |
+| F14 | Personvernerklæringen var byttet med en side der «Slett alle mine data» bare viste en bekreftelse uten å slette | `/personvern` | Høy |
+| F15 | Offentlig booking lovet Vipps og hadde mistet abonnementene | `/booking` | Middels |
 | F11 | To nye sider fra #977 viser faste demotall uten spillerens egne data, med 273 og 185 hardkodede farger | `/portal/teknisk`, `/portal/periodeplan` | Høy |
-| F12 | #977 la utgått fagspråk inn i kunnskapsgrunnlaget AI-agentene leser: L-faser, CS, M0–M5 og PR1–PR5. I tillegg et kategorisystem med egne farger per akse | `src/lib/masterbrain/rag-corpus/morad/`, `src/lib/domain/ak-kategorisystem.ts` | Høy |
+| F12 | #977 gjenopplivet tre filer som var slettet med vilje (#562, #893) og la utgått fagspråk inn i kunnskapsgrunnlaget AI-agentene leser: L-faser, CS, M0–M5 og PR1–PR5. I tillegg et kategorisystem med egne farger per akse | `src/lib/masterbrain/rag-corpus/morad/`, `src/lib/domain/ak-kategorisystem.ts` | Høy |
 
 F1–F5 kom inn som direkte lagringer i main natt til 26.09 (`29c0e9421`, `0048632b1`, `ed7ae13e8`,
 `bf9821294`, `8603082ba`), uten PR og uten kontroll. Main er nå sperret for direkte lagring.
@@ -74,7 +77,7 @@ F1–F5 kom inn som direkte lagringer i main natt til 26.09 (`29c0e9421`, `00486
 De tre systemene blandes aldri. Skrift, farger og hjørner fra ett område brukes ikke i et annet.
 Skjermlista for PlayerHQ og AgencyOS: [skjermliste-precision-athletics.md](../design-system/skjermliste-precision-athletics.md).
 
-## 4. Faste regler for Antigravity
+## 4. Faste regler for porteringen
 
 1. Les [AGENTS.md](../../AGENTS.md), [beslutninger.md](../../.claude/rules/beslutninger.md) og
    [gotchas.md](../../.claude/rules/gotchas.md) før første endring. Ved konflikt vinner beslutningene.
@@ -82,11 +85,11 @@ Skjermlista for PlayerHQ og AgencyOS: [skjermliste-precision-athletics.md](../de
    handlinger. Bare visningskomponenten byttes. Finnes ikke tallet, vises «—». Aldri oppdiktede
    navn eller tall i en rute brukere kan nå.
 3. Ingen hardkodede farger, skrifter eller hjørner. Alt går gjennom fargenavnene (tokens) for området.
-4. Egen gren per skjermtype: `antigravity/<område>-<skjerm-ID>`, fra fersk `origin/main`.
+4. Egen gren per skjermtype: `claude/port-<område>-<skjerm-ID>`, fra fersk `origin/main`.
    Én PR per skjermtype. Aldri lagring rett i main. Aldri `git add -A`.
 5. Ingen endring i database, tilgangsregler, `vercel.json` eller betaling uten Anders' ja til akkurat den endringen.
 6. Aldri sidelengs rulling. Treffflater minst 44 px.
-7. Ett område om gangen per verktøy. Codex og Antigravity jobber aldri i samme skjermtype samtidig.
+7. Ett område om gangen per verktøy. To økter jobber aldri i samme skjermtype samtidig.
    Før start: sjekk åpne PR-er og grener for samme skjerm-ID.
 8. Ingen elevnavn eller spillernavn i sky-prompts. Bruk syntetiske testdata i den lokale testbasen.
 
@@ -106,7 +109,7 @@ Skjermlista for PlayerHQ og AgencyOS: [skjermliste-precision-athletics.md](../de
 
 ## 6. Fasene
 
-### Fase 0 — Rett feilene (før alt annet)
+### Fase 0 — Rett feilene (skjermene rettet 27.09.2026 i PR #979; 0.6 og 0.8 gjenstår)
 
 | Steg | Arbeid | Ferdig når |
 |---|---|---|
@@ -121,7 +124,7 @@ Skjermlista for PlayerHQ og AgencyOS: [skjermliste-precision-athletics.md](../de
 
 ### Fase 1 — Designpakkene inn i repoet
 
-Gjøres av Claude Code, fordi Antigravity ikke har tilgang til Claude Design.
+Krever at Anders har koblet til Claude Design på nytt (`/design-login` i en vanlig `claude`-terminal).
 
 | Steg | Arbeid | Ferdig når |
 |---|---|---|
@@ -195,28 +198,28 @@ Skjermene er bygget. Det som gjenstår er kontroll, ikke nybygg.
 Forelder, konto, offentlig booking, e-postene, statistikk, GFGK Junior og markedssidene.
 De er tegnet (unntatt markedssidene) og tas i en egen plan etter fase 4.
 
-## 7. Startmelding til Antigravity
+## 7. Startmelding til Opus 5.5
 
 ```text
 Du jobber i AK Golf HQ. Les disse filene før du gjør noe:
 1. AGENTS.md
 2. .claude/rules/beslutninger.md
 3. .claude/rules/gotchas.md
-4. docs/planer/antigravity-portering-2026-09-27.md
+4. docs/planer/portering-skjermer-2026-09-27.md
 
 Følg §4 (faste regler) og §5 (oppskrift per skjermtype) i planen uten unntak.
 Viktigst: bytt utseendet, behold dataene. Aldri oppdiktede navn eller tall i en
 rute brukere kan nå. Aldri hardkodede farger. Aldri lagring rett i main.
 
-Start med fase 0, steg 0.1. Lag en gren fra origin/main, gjør ett steg,
-kjør npm run verify, opprett PR, og stopp. Vent på beskjed før neste steg.
+Skjermene i fase 0 er rettet. Start med fase 1, steg 1.1. Én skjermtype per gren og PR.
+Kjør npm run verify før hver PR.
 Svar på norsk bokmål, kort og uten faguttrykk.
 ```
 
-## 8. Spørsmål til Anders
+## 8. Avklart 27.09.2026
 
-1. Skal Antigravity ta over byggingen fra Codex, eller skal de dele? Anbefaling: Antigravity tar
-   PlayerHQ og AgencyOS-utseendet, Codex fortsetter med funksjoner og data. Da jobber de aldri i samme fil.
-2. Skal fase 0 rettes nå, før resten av planen godkjennes? Anbefaling: ja. F1–F4 og F11–F12 ligger i hovedversjonen.
-3. Port 7 for 74 skjermtyper er mye å se gjennom. Anbefaling: Anders ser hver bolk samlet (P1, P2 …),
-   ikke skjerm for skjerm.
+Anders: «Om du anbefaler noe annet så gjør dine anbefalinger.» Derfor gjelder anbefalingene:
+
+1. Opus 5.5 porterer utseendet. Codex fortsetter med funksjoner og data. De jobber aldri i samme skjermtype samtidig.
+2. Fase 0 ble rettet før porteringen startet.
+3. Anders ser skjermene én bolk om gangen (P1, P2 …), ikke skjerm for skjerm.
