@@ -9,6 +9,13 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  lesRundeDataQuality,
+  lesRundeKilde,
+  lesRundeStatus,
+} from "@/lib/runde-logg/kontrakt";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RundeDetaljV2, type RundeDetaljData } from "@/components/portal/v2/RundeDetaljV2";
 
@@ -81,8 +88,20 @@ export default async function RundeDetaljPage({
   const visKjedeStatus =
     erEier &&
     runde.holeScores.length > 0 &&
-    runde.sgSource !== "beregnet" &&
-    runde.sgSource !== "manual";
+    runde.sgSource !== RUNDE_SG_KILDE.BEREGNET &&
+    runde.sgSource !== RUNDE_SG_KILDE.MANUAL;
+  const avledetRegistrering = avledRundeRegistrering({
+    sgSource: runde.sgSource,
+    holeScores: runde.holeScores,
+    shots: runde.shots,
+    kilde: lesRundeKilde(runde.source),
+  });
+  const registrering = {
+    ...avledetRegistrering,
+    status: lesRundeStatus(runde.status) ?? avledetRegistrering.status,
+    dataQuality: lesRundeDataQuality(runde.dataQuality) ?? avledetRegistrering.dataQuality,
+    kilde: lesRundeKilde(runde.source) ?? avledetRegistrering.kilde,
+  };
 
   // Scorekort-statistikk (D6a): UT/INN/TOTALT + putter/fairway/GIR-aggregater
   // — kun fra ekte HoleScore-rader (aldri fra shot-fallback), og kun for
@@ -146,6 +165,7 @@ export default async function RundeDetaljPage({
     sgTotal: runde.sgTotal,
     sgKategorier,
     sgSource: runde.sgSource,
+    registrering,
     manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,
     hull,
     erEier,

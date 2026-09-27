@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import type { RundeRow, RunderKpis } from "@/lib/portal-runder/runder-list-data";
+import { RUNDE_DATAQUALITY_META, RUNDE_STATUS_META } from "@/lib/runde-logg/kontrakt";
 import { FortsettRundeCta, useHarRundeKladd } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import { fmtSg } from "@/components/v2";
 
@@ -30,7 +31,7 @@ export type RunderV2Data = {
 /** Kanoniske ruter (funksjons-hrefs kan ikke sendes server→klient). */
 const RUTE_NY = "/portal/mal/runder/ny";
 const RUTE_LIVE = "/portal/runde/live";
-const RUTE_SLAG = "/portal/runde/logg";
+const RUTE_ETTERREGISTRER = "/portal/runde/logg";
 const ruteDetalj = (id: string) => `/portal/mal/runder/${id}`;
 
 /* ── Rene hjelpere (norsk bokmål, brutto score) ────────────────────── */
@@ -141,7 +142,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{r.courseName}</div>
                 <div style={{ marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                  {radSub(r.playedAt)}
+                  {radSub(r.playedAt)} · {RUNDE_DATAQUALITY_META[r.dataQuality].label}
                 </div>
               </div>
               <div style={{ textAlign: "right", flex: "none" }}>
@@ -149,7 +150,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                   {r.score} <span style={{ color: TL.mute }}>{tilParTxt(r.vsPar)}</span>
                 </div>
                 <div style={{ marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                  SG {r.sgTotal == null ? "–" : fmtSg(r.sgTotal)}
+                  {RUNDE_STATUS_META[r.status].label} · SG {r.sgTotal == null ? "–" : fmtSg(r.sgTotal)}
                 </div>
               </div>
               <ChevronRight size={16} strokeWidth={2} style={{ color: TL.mute, flex: "none" }} />
@@ -180,18 +181,18 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
       </Link>
       <div style={{ marginTop: 4, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16 }}>
         <Link
-          href={RUTE_SLAG}
+          href={RUTE_ETTERREGISTRER}
           className="v2-press"
           style={{ height: 44, display: "flex", alignItems: "center", fontSize: 15, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
         >
-          Før slag for slag
+          Etterregistrer score
         </Link>
         <Link
           href={RUTE_NY}
           className="v2-press"
           style={{ height: 44, display: "flex", alignItems: "center", fontSize: 15, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
         >
-          Score og manuell SG
+          Score, detaljer og SG
         </Link>
       </div>
     </div>
