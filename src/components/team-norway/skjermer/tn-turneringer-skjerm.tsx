@@ -15,6 +15,7 @@ import { MANEDER, SkjermRamme, hentSkjermbruker, osloDag, periode, medDato } fro
  *     noe felt som sier om de teller i uttaket.
  *   - Uttaksmøte, reiselogistikk og budsjett per utøver har ingen datamodell.
  *     Listen viser dato, sted, påmeldte og resultater som faktisk er registrert.
+ *   - Hver turnering åpnes på egen side (Anders 27.09.2026).
  */
 
 type Visning = "kommende" | "fullforte";
@@ -64,7 +65,7 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
             <div key={m.navn} style={{ background: TN.white, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "10px 8px 12px", minHeight: 96, display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
               <span style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900 }}>{m.navn}</span>
               {m.turneringer.slice(0, 3).map((t) => (
-                <span key={t.id} style={{ display: "block", fontSize: 11.5, lineHeight: 1.3, padding: "3px 5px", borderRadius: TN.radius.sm, background: TN.navy100, color: TN.navy900, overflowWrap: "anywhere" }}>{t.name}</span>
+                <Link key={t.id} href={`/team-norway/turneringer/${t.id}`} style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 11.5, lineHeight: 1.3, padding: "3px 6px", borderRadius: TN.radius.sm, background: TN.navy100, color: TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}>{t.name}</Link>
               ))}
               {m.turneringer.length > 3 ? <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary }}>+{m.turneringer.length - 3} til</span> : null}
             </div>
@@ -83,7 +84,7 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
               key={t.id}
               dato={t.startDate ? periode(t.startDate, t.endDate ?? t.startDate) : "Dato mangler"}
               datoBredde={104}
-              tittel={t.name}
+              tittel={<Link href={`/team-norway/turneringer/${t.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{t.name}</Link>}
               tekst={`${t.location ?? "Sted ikke registrert"} · ${visning === "kommende" ? `${pameldte} på planen` : `${t.results.length} med resultat${beste !== null ? ` · beste plass ${beste}` : ""}`}`}
               hoyre={t.sourceOrigin === "MANUAL" ? <TnStatusmerke farge={TN.textSecondary}>Manuell</TnStatusmerke> : null}
             />

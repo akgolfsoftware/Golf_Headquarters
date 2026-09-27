@@ -6,6 +6,8 @@ import { Check, ChevronDown, FileText, Plus } from "lucide-react";
 
 import { TN } from "@/lib/v2/team-norway";
 import { hentLesekvitteringNavnAction, merkPostLestAction, sendPaaminnelseAction, type LesekvitteringNavnSvar } from "@/app/team-norway/tn-post-actions";
+import { endrePostAction, slettPostAction } from "@/app/team-norway/tn-redigering-actions";
+import { TnKnapperekke, TnSkjemaArk, TnSlettKnapp, TnTekstfelt } from "./tn-handlinger";
 
 /**
  * Klientdelene av TN-13 Gruppeposter og TN-14 Dokumenter.
@@ -91,6 +93,10 @@ export type TnInnlegg = {
   lest: number;
   /** Sendt påminnelse, eller null. Bare med i trenerens visning. */
   paaminnelse: { sendtAtIso: string; antall: number } | null;
+  endret: boolean;
+  /** Forfatteren kan endre. Forfatteren og trener kan slette. Serveren sjekker på nytt. */
+  kanEndre: boolean;
+  kanSlette: boolean;
 };
 
 /** Kvitterer innlegget som lest når spiller eller foresatt ser det. */
@@ -145,7 +151,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
             <span style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{innlegg.forfatter}</span>
-            <span style={{ fontFamily: TN.font.mono, fontSize: 10.5, letterSpacing: "0.06em", color: TN.textSecondary, textTransform: "uppercase" }}>{innlegg.rolle} · {tid(innlegg.tidIso)}</span>
+            <span style={{ fontFamily: TN.font.mono, fontSize: 10.5, letterSpacing: "0.06em", color: TN.textSecondary, textTransform: "uppercase" }}>{innlegg.rolle} · {tid(innlegg.tidIso)}{innlegg.endret ? " · endret" : ""}</span>
           </div>
           <div style={{ marginTop: 6, display: "flex" }}>
             <span style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.xs }}>Til hele gruppen</span>
@@ -153,6 +159,20 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
         </div>
       </div>
       {innlegg.tekst ? <p style={{ fontSize: 15, lineHeight: 1.62, margin: "12px 0 0", maxWidth: "66ch", whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{innlegg.tekst}</p> : null}
+      {innlegg.kanEndre || innlegg.kanSlette ? (
+        <div style={{ marginTop: 8 }}>
+          <TnKnapperekke>
+            {innlegg.kanEndre ? (
+              <TnSkjemaArk knapp="Endre" knappVariant="tekst" tittel="Endre innlegg" lagreTekst="Lagre endringer" send={(v) => endrePostAction(innlegg.id, v.tekst)}>
+                <TnTekstfelt etikett="Innlegg" navn="tekst" standard={innlegg.tekst} maks={2000} rader={6} />
+              </TnSkjemaArk>
+            ) : null}
+            {innlegg.kanSlette ? (
+              <TnSlettKnapp knapp="Slett" variant="tekst" tittel="Slett innlegg" tekst="Innlegget og vedleggene slettes for hele gruppen. Lesekvitteringene forsvinner også." bekreft="Slett innlegget" handling={() => slettPostAction(innlegg.id)} />
+            ) : null}
+          </TnKnapperekke>
+        </div>
+      ) : null}
       {innlegg.vedlegg.length > 0 ? (
         <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
           {innlegg.vedlegg.map((v) => (

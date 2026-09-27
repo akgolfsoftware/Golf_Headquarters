@@ -124,7 +124,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
               key={`${h.type}-${h.id}`}
               dato={periode(h.fra, h.til)}
               datoFarge={h.type === "samling" ? TN.navy900 : TN.textSecondary}
-              tittel={<Link href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`} style={{ color: TN.textPrimary }}>{h.tittel}</Link>}
+              tittel={<Link href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{h.tittel}</Link>}
               tekst={`${h.type === "samling" ? "Samling" : "Turnering"} · ${h.sted ?? "Sted ikke registrert"}`}
             />
           ))}

@@ -9,6 +9,7 @@ import {
   lagreSpillerstatusAction,
   lagreUttakAction,
   slettCollegeAction,
+  slettDokumentAction,
   slettOktAction,
   slettSamlingAction,
   slettTestdagAction,
@@ -221,4 +222,10 @@ export function TnAvsluttSpiller({ spillerId, navn }: { spillerId: string; navn:
       handling={() => ut(avsluttSpillerAction(spillerId))}
     />
   );
+}
+
+// ── Dokument ──
+
+export function TnSlettDokument({ id, navn }: { id: string; navn: string }) {
+  return <TnSlettKnapp knapp="Slett" variant="tekst" tittel="Slett dokument" tekst={`«${navn}» slettes for hele gruppen.`} bekreft="Slett dokumentet" handling={() => ut(slettDokumentAction(id))} />;
 }

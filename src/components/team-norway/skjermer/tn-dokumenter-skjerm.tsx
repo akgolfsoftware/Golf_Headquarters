@@ -9,6 +9,7 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnShell } from "../tn-shell";
 import { TnFilterknapper, TnSkjermhode } from "../tn-flate";
 import { TnDokumentSkjema } from "../tn-gruppe-klient";
+import { TnSlettDokument } from "../tn-redigering-skjema";
 import { datoLang, hentSkjermbruker } from "./felles";
 
 /**
@@ -20,6 +21,7 @@ import { datoLang, hentSkjermbruker } from "./felles";
  *   - Filtypene er de lagringen godtar: PDF, XLSX, JPG, PNG og WEBP, maks 50 MB.
  *     DOCX godtas ikke.
  *   - Trenere ser i tillegg hvor mange i gruppen som har åpnet filen.
+ *   - Den som lastet opp og trenere kan slette et dokument (Anders 27.09.2026).
  */
 
 function filtype(navn: string) {
@@ -83,6 +85,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
               <span style={{ fontFamily: TN.font.body, fontSize: 13, overflowWrap: "anywhere" }}>{d.opplasterNavn}</span>
               <span>{storrelse(d.fileSize)}</span>
               {erTrener ? <span>{d.kvittering.apnet}/{d.kvittering.totalt} åpnet</span> : null}
+              {harTrenertilgang || d.opplasterId === bruker.id ? <TnSlettDokument id={d.attachmentId} navn={d.fileName} /> : null}
             </div>
           </div>
         ))}

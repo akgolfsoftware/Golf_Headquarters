@@ -7,7 +7,9 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnOpprettTestdag } from "../tn-testdag-opprett";
 import { TnTestdagKo } from "../tn-testdag-ko";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnRutenett, TnSkjermhode, TnStatusmerke } from "../tn-flate";
-import { SkjermRamme, datoKort, datoLang, hentSkjermbruker } from "./felles";
+import { TnKnapperekke } from "../tn-handlinger";
+import { TnSlettTestdag, TnTestdagEndre } from "../tn-redigering-skjema";
+import { SkjermRamme, datoKort, datoLang, hentSkjermbruker, osloDag } from "./felles";
 
 /**
  * TN-03 Fellestesting. Minstekrav per klasse og føring av resultater på testdagen.
@@ -23,7 +25,15 @@ import { SkjermRamme, datoKort, datoLang, hentSkjermbruker } from "./felles";
  *     mens minstekravene mangler.
  *   - Spillerkøen (hvem som mangler resultat) er lagt til under, fordi den er
  *     det trenerteamet bruker for å finne hvem som må testes.
+ *   - Trener kan endre en åpen testdag og slette en testdag uten førte
+ *     resultater (Anders 27.09.2026).
  */
+
+const klokke24 = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Oslo" });
+function lokalTid(d: Date) {
+  const o = osloDag(d);
+  return `${o.aar}-${String(o.maned).padStart(2, "0")}-${String(o.dag).padStart(2, "0")}T${klokke24.format(d)}`;
+}
 
 const KLASSER = ["Gutter U18", "Jenter U18", "Damer", "Herrer"] as const;
 const STANDARDKOLONNER = "minmax(0, 1.7fr) repeat(4, minmax(0, 1fr))";
@@ -53,7 +63,13 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
           rute={`/team-norway/fellestesting?dag=${dag.id}`}
           tittel={dag.title}
           ingress={`${dag.protokollNavn}${dag.location ? ` · ${dag.location}` : ""} · ${datoLang(dag.scheduledAt)} kl. ${klokke.format(dag.scheduledAt)}`}
-          handling={<Link href="/team-norway/fellestesting" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle testdager</Link>}
+          handling={
+            <TnKnapperekke>
+              {valgt.kontekst.kanAdministrere && (dag.status === "PLANNED" || dag.status === "ACTIVE") ? <TnTestdagEndre id={dag.id} tittel={dag.title} sted={dag.location ?? ""} tidspunktLokal={lokalTid(dag.scheduledAt)} /> : null}
+              {valgt.kontekst.kanAdministrere && fort === 0 ? <TnSlettTestdag id={dag.id} navn={dag.title} /> : null}
+              <Link href="/team-norway/fellestesting" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle testdager</Link>
+            </TnKnapperekke>
+          }
         />
         <TnFlate>
           <TnFlatehode tittel="Registrer resultat" merknad={<TnStatusmerke farge={status.farge}>{status.tekst}</TnStatusmerke>} />
@@ -95,7 +111,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
               <TnDatoRad
                 key={d.id}
                 dato={datoKort(d.scheduledAt)}
-                tittel={<Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.textPrimary }}>{d.title}</Link>}
+                tittel={<Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{d.title}</Link>}
                 tekst={`${d.protokollNavn}${d.location ? ` · ${d.location}` : ""}`}
                 hoyre={<span style={{ textAlign: "right" }}><span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>{d.antallFullfort} / {d.antallDeltakere}</span><TnStatusmerke farge={DAGSTATUS[d.status].farge}>{DAGSTATUS[d.status].tekst}</TnStatusmerke></span>}
               />
@@ -115,7 +131,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
             <>
               <TnEtikett style={{ marginTop: 26, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Holdt · {holdte.length}</TnEtikett>
               {holdte.map((d) => (
-                <TnDatoRad key={d.id} dato={datoKort(d.scheduledAt)} tittel={<Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.textPrimary }}>{d.title}</Link>} tekst={d.protokollNavn} hoyre={<span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>{d.antallFullfort} / {d.antallDeltakere}</span>} />
+                <TnDatoRad key={d.id} dato={datoKort(d.scheduledAt)} tittel={<Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{d.title}</Link>} tekst={d.protokollNavn} hoyre={<span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>{d.antallFullfort} / {d.antallDeltakere}</span>} />
               ))}
             </>
           ) : null}
@@ -151,7 +167,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
               datoBredde={40}
               dato={r.tester}
               datoFarge={r.tester === 0 ? TN.textSecondary : TN.navy900}
-              tittel={<Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ color: TN.textPrimary }}>{r.navn}</Link>}
+              tittel={<Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{r.navn}</Link>}
               tekst={r.sisteTest ? `Siste test ${datoLang(r.sisteTest)}${r.sisteTestNavn ? ` · ${r.sisteTestNavn}` : ""}` : "Ingen resultat registrert"}
             />
           ))

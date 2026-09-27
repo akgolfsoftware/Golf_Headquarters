@@ -69,7 +69,7 @@ export async function TnCollegeSkjerm() {
       <TnFlate>
         <TnFlatehode tittel="Kommende samlinger" merknad={`${kommende.length} neste`} />
         {kommende.map((s) => (
-          <TnDatoRad key={s.id} dato={periode(s.startDate, s.endDate)} tittel={<Link href={`/team-norway/samlinger/${s.id}`} style={{ color: TN.textPrimary }}>{s.name}</Link>} tekst={s.location ?? "Sted ikke registrert"} />
+          <TnDatoRad key={s.id} dato={periode(s.startDate, s.endDate)} tittel={<Link href={`/team-norway/samlinger/${s.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.name}</Link>} tekst={s.location ?? "Sted ikke registrert"} />
         ))}
         {kommende.length === 0 ? <TnMangler>Ingen kommende samlinger er registrert.</TnMangler> : null}
         <TnFotnote>Hvem i college-gruppen som kan stille på hver samling, kan ikke registreres ennå. Avklar direkte med spilleren og college-treneren.</TnFotnote>

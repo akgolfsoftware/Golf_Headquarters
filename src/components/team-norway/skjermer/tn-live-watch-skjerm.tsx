@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
@@ -38,7 +39,7 @@ export async function TnLiveWatchSkjerm() {
               key={t.id}
               dato={periode(t.startDate, t.endDate ?? t.startDate)}
               datoBredde={104}
-              tittel={t.name}
+              tittel={<Link href={`/team-norway/turneringer/${t.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{t.name}</Link>}
               tekst={`${t.location ?? "Sted ikke registrert"} · ${spillere} ${spillere === 1 ? "spiller" : "spillere"}`}
               hoyre={<TnStatusmerke farge={TN.navy900}>Pågår</TnStatusmerke>}
             />

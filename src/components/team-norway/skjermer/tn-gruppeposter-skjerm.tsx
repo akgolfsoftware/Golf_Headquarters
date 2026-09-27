@@ -22,6 +22,8 @@ import { TnInnleggKort, TnInnleggSkjema, type TnInnlegg } from "../tn-gruppe-kli
  *   - Maks lengde er 2000 tegn, som serveren håndhever for alle poster, ikke 600.
  *   - Frittstående opplastinger vises under Dokumenter, ikke som innlegg.
  *   - Spillere og foresatte ser andelen som har lest, ikke navnene.
+ *   - Forfatteren kan endre innlegget. Forfatteren og trener kan slette det
+ *     (Anders 27.09.2026). Endret innlegg merkes «endret».
  */
 export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
   const bruker = await hentSkjermbruker();
@@ -44,6 +46,9 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
       vedlegg: p.vedlegg.map((v) => ({ id: v.id, fileName: v.fileName })),
       totalt: p.kvittering?.totalt ?? 0,
       lest: p.kvittering?.apnet ?? 0,
+      endret: p.editedAt !== null,
+      kanEndre: p.authorUserId === bruker.id,
+      kanSlette: p.authorUserId === bruker.id || harTrenertilgang,
       paaminnelse: paaminnelser.has(p.id) ? { sendtAtIso: paaminnelser.get(p.id)!.sendtAt.toISOString(), antall: paaminnelser.get(p.id)!.antall } : null,
     }));
 

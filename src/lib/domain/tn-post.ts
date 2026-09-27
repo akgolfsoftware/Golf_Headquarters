@@ -178,6 +178,7 @@ export type TnDokumentRad = {
   fileType: string | null;
   fileSize: number | null;
   path: string;
+  opplasterId: string;
   opplasterNavn: string;
   oppdatert: Date;
   /** «FRA POST» hvis vedlegget lå på en tekstpost, «LASTET OPP» ved frittstående opplasting. */
@@ -203,6 +204,7 @@ export async function hentGruppeDokumenter(groupId: string, viewerId: string): P
         fileSize: vedlegg.fileSize,
         path: vedlegg.path,
         opplasterNavn: post.authorNavn,
+        opplasterId: post.authorUserId,
         oppdatert: post.createdAt,
         kilde: post.kind === "DOKUMENT" ? "LASTET_OPP" : "FRA_POST",
         kategori: vedlegg.category,
@@ -220,6 +222,7 @@ export type TnPostMedKvittering = {
   tekst: string;
   kind: string;
   createdAt: Date;
+  editedAt: Date | null;
   vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string; category: string | null }[];
   kvittering: { totalt: number; apnet: number; manglerIder: string[] } | null;
 };
@@ -261,6 +264,7 @@ export async function hentGruppetidslinje(groupId: string, viewerId: string): Pr
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
+    editedAt: p.editedAt,
     vedlegg: p.vedlegg,
     kvittering: beregnLesekvittering(
       spillerIder,
@@ -380,6 +384,7 @@ export async function hentSpillerpostTidslinje(spillerId: string, viewerId: stri
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
+    editedAt: p.editedAt,
     vedlegg: p.vedlegg,
     kvittering: beregnLesekvittering([spillerId], p.lesekvittert.map((k) => k.userId)),
   }));
