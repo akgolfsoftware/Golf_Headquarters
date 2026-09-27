@@ -22,6 +22,7 @@ import {
 } from "./hull-editor";
 
 type Course = { id: string; name: string; par: number };
+export type RundeNyFormFlyt = "total" | "scorekort" | "detaljer" | "sg";
 
 const MIN_TOTAL = 1;
 const MAX_TOTAL = 199;
@@ -40,8 +41,10 @@ const segmentCls = (aktiv: boolean) =>
 
 export function RundeNyForm({
   courses,
+  initialFlyt = "total",
 }: {
   courses: Course[];
+  initialFlyt?: RundeNyFormFlyt;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -65,9 +68,10 @@ export function RundeNyForm({
   const pars = useMemo(() => parTemplate(coursePar), [coursePar]);
 
   // Manuell SG starter med totalscore. Hull-for-hull er fortsatt tilgjengelig.
-  const [modus, setModus] = useState<"hull" | "total">("total");
+  const starterMedHull = initialFlyt === "scorekort" || initialFlyt === "detaljer";
+  const [modus, setModus] = useState<"hull" | "total">(starterMedHull ? "hull" : "total");
   const [antallHull, setAntallHull] = useState<9 | 18>(18);
-  const [visDetaljer, setVisDetaljer] = useState(false);
+  const [visDetaljer, setVisDetaljer] = useState(initialFlyt === "detaljer");
 
   // Hull-state — starter på par for hvert hull (spilleren stepper opp/ned).
   const [hull, setHull] = useState<HullVerdi[]>(() => nyeHull(pars));
@@ -387,6 +391,14 @@ export function RundeNyForm({
       )}
 
       <div className="mb-6">
+        <div className="mb-3 rounded-xl border border-border bg-card px-3.5 py-3">
+          <div className={lblCls}>SG-kilde</div>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            {initialFlyt === "sg"
+              ? "Lim inn eller tast SG-tall fra UpGame, Arccos, Shot Scope eller turnering. Tallene lagres som manuell SG og overskrives ikke av automatisk beregning."
+              : "Har du SG-tall fra en annen app, kan du fylle dem inn her. Lar du feltene stå tomme, lagres bare scoregrunnlaget."}
+          </p>
+        </div>
         <ManuellSgFelt value={sg} onChange={setSg} feil={sgFeil} disabled={pending} />
       </div>
 
