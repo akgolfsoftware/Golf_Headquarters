@@ -5,6 +5,8 @@ import { hentTnSamlinger, hentTnSpillere, hentTnTestdag, hentTnTestdager, type T
 import { hentGruppepostSide } from "@/lib/domain/tn-post";
 import { TN } from "@/lib/v2/team-norway";
 import { TnFlate, TnFlatehode, TnEtikett, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
+import { TnOktSkjema, TnSamlingSkjema } from "../tn-redigering-skjema";
 import { SkjermRamme, datoKort, hentSkjermbruker, osloDag, periode } from "./felles";
 
 /**
@@ -20,6 +22,7 @@ import { SkjermRamme, datoKort, hentSkjermbruker, osloDag, periode } from "./fel
  *     «STENGER»-merkingen står ikke. Datoen for testdagen står i stedet.
  *   - Aktivitetsstrømmen er gruppepostene. Stillingstittel finnes ikke, avsender
  *     står med rollen i gruppen. «Nye» per leser telles ikke; merknaden sier «Siste 4».
+ *   - Trener har snarveier til ny samling, økt, testdag og innlegg (Anders 27.09.2026).
  *   - Dempede farger på den mørke flaten er tokenene navy-100 og navy-300, ikke
  *     prototypens #D5E1EE og #9FB6D1.
  */
@@ -74,6 +77,15 @@ export async function TnOversiktSkjerm() {
   return (
     <SkjermRamme aktiv="oversikt" brukerNavn={bruker.name} kontekst={kontekst}>
       <TnSkjermhode rute="/team-norway" tittel="Landslagsoversikt" ingress="Neste samling, fellestesten og det siste fra trenerteamet. Tre ting, i den rekkefølgen." />
+
+      {kontekst.kanAdministrere ? (
+        <TnKnapperekke>
+          <TnSamlingSkjema knapp="Ny samling" />
+          <TnOktSkjema knapp="Ny økt" variant="sekundar" />
+          <TnHandlingLenke href="/team-norway/fellestesting" variant="sekundar">Ny testdag</TnHandlingLenke>
+          <TnHandlingLenke href={`/team-norway/${kontekst.gruppe.id}`} variant="sekundar">Nytt innlegg</TnHandlingLenke>
+        </TnKnapperekke>
+      ) : null}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(340px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
         <section style={{ background: TN.navy900, color: TN.white, borderRadius: TN.radius.lg, padding: "clamp(18px, 2.2vw, 26px)", display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>

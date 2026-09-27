@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hentTnTrenere } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnHandlingLenke } from "../tn-handlinger";
 import { tnRolleNavn } from "../tn-shell";
 import { SkjermRamme, datoLang, hentSkjermbruker } from "./felles";
 
@@ -26,7 +27,7 @@ export async function TnFagapparatSkjerm() {
 
   return (
     <SkjermRamme aktiv="fagapparat" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/fagapparat" tittel="Fagapparat" ingress="Hvem i trenerteamet som følger landslagsspillerne." />
+      <TnSkjermhode rute="/team-norway/fagapparat" tittel="Fagapparat" ingress="Hvem i trenerteamet som følger landslagsspillerne." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/tilgang">Legg til trener</TnHandlingLenke> : undefined} />
 
       <TnFlate>
         <TnFlatehode tittel="Fagteam" merknad={`${data.rader.length} ${data.rader.length === 1 ? "person" : "personer"}`} />

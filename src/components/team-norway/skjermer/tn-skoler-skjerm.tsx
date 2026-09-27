@@ -61,7 +61,7 @@ export async function TnSkolerSkjerm() {
             <div style={{ flex: "1 1 240px", minWidth: 0, fontSize: 15, fontWeight: 700, color: s.skole === IKKE_REGISTRERT ? TN.textSecondary : TN.textPrimary, overflowWrap: "anywhere" }}>{s.skole}</div>
             <div style={{ flex: "2 1 300px", minWidth: 0, display: "flex", flexWrap: "wrap", gap: "4px 14px", fontSize: 14 }}>
               {s.spillere.map((p) => (
-                <Link key={p.id} href={`/team-norway/spiller/${p.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Link key={p.id} href={`/team-norway/spiller/${p.id}/oversikt`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}>
                   {p.navn}
                   {s.skole !== IKKE_REGISTRERT ? <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>{p.skolear ?? "—"}</span> : null}
                 </Link>

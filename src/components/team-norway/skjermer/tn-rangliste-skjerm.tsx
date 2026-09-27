@@ -56,7 +56,7 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
                 <span role="cell" style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
                   <span className="hidden sm:inline-flex"><TnInitialer navn={r.navn} storrelse={32} /></span>
                   <span style={{ minWidth: 0 }}>
-                    <Link href={`/team-norway/spiller/${r.id}`} style={{ display: "block", fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere" }}>{r.navn}</Link>
+                    <Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere" }}>{r.navn}</Link>
                     <span style={{ display: "block", fontSize: 12.5, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.koblet ? (r.klubb ?? "Klubb ikke registrert") : "Ikke koblet til resultatprofil"}</span>
                   </span>
                 </span>

@@ -4,14 +4,16 @@ import { Check, Minus, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerTester, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerstatuser, hentTnSpillerTester, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { formaterHcp } from "@/lib/domain/hcp";
 import { alderFraFodselsdato } from "@/lib/forelder";
 import type { TilgangsNivaa } from "@/lib/feature-flags";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
 import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler } from "../tn-flate";
-import { ER_COLLEGE, datoLang, osloDag, periode } from "./felles";
+import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
+import { LISENS_TEKST, TnAvsluttSpiller } from "../tn-redigering-skjema";
+import { ER_COLLEGE, datoKort, datoLang, osloDag, periode } from "./felles";
 
 /**
  * TN-02 Spillerprofil. Testprotokoller, årets turneringer og dokumentstatus for én spiller.
@@ -23,8 +25,8 @@ import { ER_COLLEGE, datoLang, osloDag, periode } from "./felles";
  *   - Klasse (Herrer, Damer, U18) står ikke: profilen har ikke kjønn.
  *   - Portrettbilde finnes ikke i profilen. Kvadratisk initialplate i stedet.
  *   - WAGR har ingen datakilde og står med strek.
- *   - Helseattest og antidoping-samtykke har ingen datamodell og står som
- *     «Ikke registrert». Lisens er PlayerHQ-tilgangen, og vises bare for trenere.
+ *   - Lisens, helseattest og antidoping leses fra registreringen i TN-10
+ *     (Anders 27.09.2026). PlayerHQ-tilgangen vises i tillegg for trenere.
  *   - Testtabellen er én rad per protokoll med siste og beste resultat, ikke
  *     fire faste tester per dato. Protokollene har egne enheter og ingen
  *     landslagsstandard (se TN-18), så standard i parentes står ikke.
@@ -66,11 +68,15 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
   const { kontekst } = tilgang;
   const aar = osloDag(new Date()).aar;
 
-  const [profil, tester, lisens] = await Promise.all([
+  const [profil, tester, lisens, statuser] = await Promise.all([
     hentTnSpillerProfil(tilgang, aar),
     hentTnSpillerTester(bruker, spillerId),
     kontekst.kanAdministrere ? hentTnSpillerLisens(tilgang) : Promise.resolve(null),
+    hentTnSpillerstatuser(bruker, kontekst, aar),
   ]);
+  const reg = statuser.get(spillerId) ?? null;
+  const naa = new Date();
+  const helseDager = reg?.helseattestUtloper ? Math.floor((reg.helseattestUtloper.getTime() - naa.getTime()) / 864e5) : null;
   if (!profil) notFound();
 
   const alder = alderFraFodselsdato(profil.fodselsdato);
@@ -78,18 +84,35 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
   const testrader = [...(tester?.rader ?? [])].sort((a, b) => b.sisteDato.getTime() - a.sisteDato.getTime());
 
   const status: Statusrad[] = [
+    reg?.lisensStatus
+      ? { tittel: `Lisens ${aar}`, tekst: `${LISENS_TEKST[reg.lisensStatus] ?? reg.lisensStatus}${reg.lisensBetaltDato ? ` ${datoLang(reg.lisensBetaltDato)}` : ""}`, merke: reg.lisensStatus === "UBETALT" ? "MANGLER" : "GYLDIG", tone: reg.lisensStatus === "UBETALT" ? "varsel" : "ok" }
+      : { tittel: `Lisens ${aar}`, tekst: "Ikke registrert i Lisens og dokumenter.", merke: "IKKE REGISTRERT", tone: "ukjent" },
+    reg?.helseattestUtloper && helseDager !== null
+      ? { tittel: "Helseattest", tekst: `Utløper ${datoLang(reg.helseattestUtloper)}`, merke: helseDager < 0 ? "UTLØPT" : helseDager <= 30 ? `FRIST ${datoKort(reg.helseattestUtloper)}` : "GYLDIG", tone: helseDager <= 30 ? "varsel" : "ok" }
+      : { tittel: "Helseattest", tekst: "Ikke registrert i Lisens og dokumenter.", merke: "IKKE REGISTRERT", tone: "ukjent" },
+    reg?.antidopingSignert
+      ? { tittel: "Antidoping-samtykke", tekst: `Signert ${datoLang(reg.antidopingSignert)}`, merke: "SIGNERT", tone: "ok" }
+      : { tittel: "Antidoping-samtykke", tekst: "Ikke registrert i Lisens og dokumenter.", merke: "IKKE REGISTRERT", tone: "ukjent" },
     ...(lisens
       ? [lisens.status === "ok"
-        ? { tittel: `Lisens ${aar}`, tekst: NIVA[lisens.niva].tekst, merke: NIVA[lisens.niva].merke, tone: NIVA[lisens.niva].tone }
-        : { tittel: `Lisens ${aar}`, tekst: "Tilgangen kunne ikke leses akkurat nå. Prøv igjen.", merke: "UKJENT", tone: "ukjent" as const }]
+        ? { tittel: "PlayerHQ", tekst: NIVA[lisens.niva].tekst, merke: NIVA[lisens.niva].merke, tone: NIVA[lisens.niva].tone }
+        : { tittel: "PlayerHQ", tekst: "Tilgangen kunne ikke leses akkurat nå. Prøv igjen.", merke: "UKJENT", tone: "ukjent" as const }]
       : []),
-    { tittel: "Helseattest", tekst: "Kan ikke registreres i AK Golf HQ ennå.", merke: "IKKE REGISTRERT", tone: "ukjent" },
-    { tittel: "Antidoping-samtykke", tekst: "Kan ikke registreres i AK Golf HQ ennå.", merke: "IKKE REGISTRERT", tone: "ukjent" },
   ];
+
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
       <TnSpillerFaner spillerId={spillerId} spillerNavn={profil.navn} aktiv="oversikt" kanAdministrere={!kontekst.erSpiller} />
+
+      {!kontekst.erSpiller ? (
+        <TnKnapperekke>
+          <TnHandlingLenke href={`/team-norway/spiller/${spillerId}`}>Skriv til spilleren</TnHandlingLenke>
+          <TnHandlingLenke href={`/team-norway/spiller/${spillerId}/tester`} variant="sekundar">Tester</TnHandlingLenke>
+          <TnHandlingLenke href={`/team-norway/workbench?spiller=${spillerId}`} variant="sekundar">Plan</TnHandlingLenke>
+          {kontekst.kanAdministrere ? <TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /> : null}
+        </TnKnapperekke>
+      ) : null}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(360px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
         <TnFlate style={{ display: "flex", flexWrap: "wrap", gap: 22, alignItems: "flex-start" }}>
@@ -123,6 +146,9 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
         <TnFlate>
           <TnFlatehode tittel="Status" />
           {status.map((rad) => <Statuslinje key={rad.tittel} rad={rad} />)}
+          {kontekst.kanAdministrere ? (
+            <Link href="/team-norway/lisens-okonomi" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>Endre i Lisens og dokumenter →</Link>
+          ) : null}
         </TnFlate>
 
         <TnFlate style={{ gridColumn: "1 / -1" }}>

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, TnFlate, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnHandlingLenke } from "../tn-handlinger";
 import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
 
 /**
@@ -76,7 +77,7 @@ function Navnecelle({ s }: { s: TnSpillerRad }) {
     <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
       <TnInitialer navn={s.navn} storrelse={40} />
       <div style={{ minWidth: 0 }}>
-        <Link href={`/team-norway/spiller/${s.id}`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere" }}>{s.navn}</Link>
+        <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
         <div style={{ fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{[s.klubb ?? "Klubb ikke registrert", aar === null ? null : `${aar} år`].filter(Boolean).join(" · ")}</div>
       </div>
     </div>
@@ -103,7 +104,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
 
   return (
     <SkjermRamme aktiv="spillere" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/spillere" tittel="Spillerutvikling" ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk." />
+      <TnSkjermhode rute="/team-norway/spillere" tittel="Spillerutvikling" ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter">Inviter spiller</TnHandlingLenke> : undefined} />
 
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
         <TnFilterknapper

@@ -220,6 +220,7 @@ export function TnAvsluttSpiller({ spillerId, navn }: { spillerId: string; navn:
       tekst={`${navn} tas ut av Team Norway-gruppen fra i dag. Resultater og historikk beholdes.`}
       bekreft="Avslutt medlemskapet"
       handling={() => ut(avsluttSpillerAction(spillerId))}
+      videre="/team-norway/spillere"
     />
   );
 }
