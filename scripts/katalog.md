@@ -15,6 +15,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-slag-detaljer-2026-09-16.ts](<add-slag-detaljer-2026-09-16.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-post-2026-09-01.ts](<add-tn-post-2026-09-01.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-tn-testdag-2026-09-17.ts](<add-tn-testdag-2026-09-17.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |
@@ -185,6 +186,13 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Test / bilde — kontroller miljø og testkonto | [scripts/t13-oppsett-shots-desktop.mjs](<t13-oppsett-shots-desktop.mjs>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/t13-oppsett-shots.mjs](<t13-oppsett-shots.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/tell-ventende-saker.ts](<tell-ventende-saker.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-demo-lokal-menykontroll.mjs](<tn-demo-lokal-menykontroll.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-demo-lokal-privatfil.mjs](<tn-demo-lokal-privatfil.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-demo-lokal-reise.mjs](<tn-demo-lokal-reise.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-demo-lokal-seed.ts](<tn-demo-lokal-seed.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-demo-lokal-standby.mjs](<tn-demo-lokal-standby.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-fullfor-lokal-reise.mjs](<tn-fullfor-lokal-reise.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/tn-fullfor-lokal-seed.ts](<tn-fullfor-lokal-seed.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/train-lock-fasit-ramme.mjs](<train-lock-fasit-ramme.mjs>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/train-lock-pixel-diff.mjs](<train-lock-pixel-diff.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/verify-agent-loop.ts](<verify-agent-loop.ts>) |
