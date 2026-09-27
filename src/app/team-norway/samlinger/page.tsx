@@ -1,16 +1,11 @@
-/**
- * Team Norway · Samlinger & Månedsplan (TN-04).
- * Designreferanse: Claude Design «Team Norway App» (3416f258-avledet).
- */
-
-
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { TnSamlingerSkjerm } from "@/components/team-norway/skjermer/tn-samlinger-skjerm";
 
 export const metadata = {
-  title: "Samlinger & Månedsplan · Team Norway Golf",
-  description: "Årshjul, dagsprogram og pakkelister for Team Norway landslagssamlinger.",
+  title: "Samlinger og terminliste · Team Norway Golf",
+  description: "Årshjul med samlinger og turneringer for landslagsgruppen.",
 };
 
-export default function TeamNorwaySamlingerPage() {
-  return <TeamNorwayAppView initialSkjerm="TN-04" />;
+/** TN-04. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-04. */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnSamlingerSkjerm sokeparametre={await searchParams} />;
 }

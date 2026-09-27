@@ -16,6 +16,14 @@
 export const TN_POST_KINDER = ["TEKST", "REISE", "MOTE", "OKT", "DOKUMENT"] as const;
 export type TnPostKind = (typeof TN_POST_KINDER)[number];
 
+// Kategori på et opplastet dokument i TN-14 (Anders 27.09). Vedlegg i innlegg har ingen.
+export const TN_DOKUMENT_KATEGORIER = ["Sesongplan", "Uttak", "Reise", "Test", "Helse"] as const;
+export type TnDokumentKategori = (typeof TN_DOKUMENT_KATEGORIER)[number];
+
+export function erTnDokumentKategori(v: unknown): v is TnDokumentKategori {
+  return typeof v === "string" && (TN_DOKUMENT_KATEGORIER as readonly string[]).includes(v);
+}
+
 export function erTnPostKind(v: string): v is TnPostKind {
   return (TN_POST_KINDER as readonly string[]).includes(v);
 }
