@@ -92,7 +92,7 @@
       "description": "Pre-runde planleggingsverktøy",
       "ug_capability": "Dispersjonsoverlay, TrackMan data-import, Shot Tracker",
       "ug_strength": "Integrasjon med historiske data gjør planlegging datadrevet",
-      "ug_weakness": "Ingen periodisert kontekst — vet ikke om spilleren er i GRUNN/SPESIALISERING/TURNERING/EVALUERING-periode",
+      "ug_weakness": "Ingen periodisert kontekst — vet ikke om spilleren er i GRUNN/SPES/TURN-periode",
       "ak_golf_hq_status": "AK Golf integrerer rundeplanlegging med CANON-periode og L-fase"
     },
     {
