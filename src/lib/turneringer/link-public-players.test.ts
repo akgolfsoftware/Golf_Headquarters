@@ -48,7 +48,7 @@ test("link-kandidat-seleksjon: 0 / 1 / mange", () => {
 
 test("linkAndSyncUserTournamentResults: koble og speile mock test", async () => {
   const { linkAndSyncUserTournamentResults } = await import("./link-public-players");
-  
+
   const mockUser = { id: "u-1", name: "Viktor Hovland", publicPlayerId: null };
   const mockPublic = [
     { id: "pp-1", name: "Viktor Hovland", linkedUser: null },

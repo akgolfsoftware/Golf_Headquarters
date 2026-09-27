@@ -57,7 +57,7 @@ for (const fil of FILER) {
   deler.push(`/* ---- tokens/${fil} ---- */`, scopet.trimEnd(), "");
 }
 
-const ny = deler.join("\n") + "\n";
+const ny = `${deler.join("\n").trimEnd()}\n`;
 
 if (process.argv.includes("--sjekk")) {
   const gammel = existsSync(UT) ? readFileSync(UT, "utf8") : "";

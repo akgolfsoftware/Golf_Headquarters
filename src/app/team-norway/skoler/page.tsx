@@ -1,12 +1,12 @@
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { TnSkolerSkjerm } from "@/components/team-norway/skjermer/tn-skoler-skjerm";
 
 export const metadata = {
-  title: "Team Norway · Toppidrettsskoler & Testoversikt",
-  description: "Nasjonal testoversikt for WANG Toppidrett og WANG Ung toppidrettsskoler.",
+  title: "Skoleoversikt · Team Norway Golf",
+  description: "Skole og trinn for spillerne i landslagsgruppen.",
   robots: { index: false, follow: false },
 };
 
-/** TN-06: Toppidrettsskoler og nasjonal testoversikt */
+/** TN-17. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-17. */
 export default function Page() {
-  return <TeamNorwayAppView initialSkjerm="TN-06" />;
+  return <TnSkolerSkjerm />;
 }

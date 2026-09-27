@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatHours, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
-import type { PyramidArea, SourceItem, YearPeriodBand, YearViewModel } from "@/lib/domain/workbench/types";
+import type { PlanningGoalSummary, PyramidArea, SourceItem, YearPeriodBand, YearViewModel } from "@/lib/domain/workbench/types";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
@@ -16,6 +16,7 @@ type Props = {
   aar: YearViewModel;
   kilder: SourceItem[];
   roster?: { id: string; navn: string }[];
+  goals?: PlanningGoalSummary[];
 };
 
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -50,7 +51,7 @@ function periodePosisjon(periode: YearPeriodBand, year: number): { left: string;
   return { left: `${left}%`, width: `${Math.max(periode.widthPct, 3)}%` };
 }
 
-export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [] }: Props) {
+export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [], goals = [] }: Props) {
   const router = useRouter();
   const [valgtId, setValgtId] = useState<string | null>(aar.periods.find((periode) => periode.aktiv)?.id ?? aar.periods[0]?.id ?? null);
   const valgt = aar.periods.find((periode) => periode.id === valgtId) ?? null;
@@ -62,7 +63,7 @@ export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [] }
 
   return <div className="wb-layout">
     <aside className="wb-sources">
-      <SourcesPanel kilder={kilder} playerId={playerId} aar={String(aar.year)} />
+      <SourcesPanel kilder={kilder} playerId={playerId} aar={String(aar.year)} goals={goals} />
       <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map((spiller) => <Link key={spiller.id} href={workbenchUrl(spiller.id, "aar", { aar: String(aar.year) })} aria-current={spiller.id === playerId ? "page" : undefined}>{spiller.navn}<small>Spiller</small></Link>)}</nav>
     </aside>
 

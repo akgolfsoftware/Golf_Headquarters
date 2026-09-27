@@ -11,6 +11,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
@@ -25,6 +26,7 @@ import {
   kanSeGruppepost,
   kanSeSpillerpost,
   osloKalenderar,
+  type TnDokumentKategori,
   type TnPostKind,
 } from "@/lib/domain/tn-post-regler";
 
@@ -152,6 +154,7 @@ export async function opprettGruppeDokument(input: {
   fileType: string | null;
   fileSize: number | null;
   path: string;
+  kategori: TnDokumentKategori | null;
 }): Promise<{ id: string }> {
   await krevDokumentOpplastingstilgang(input.groupId, input.forfatterId);
   return prisma.tnPost.create({
@@ -161,7 +164,7 @@ export async function opprettGruppeDokument(input: {
       tekst: "",
       kind: "DOKUMENT",
       vedlegg: {
-        create: { fileName: input.fileName, fileType: input.fileType, fileSize: input.fileSize, path: input.path },
+        create: { fileName: input.fileName, fileType: input.fileType, fileSize: input.fileSize, path: input.path, category: input.kategori },
       },
     },
     select: { id: true },
@@ -175,10 +178,13 @@ export type TnDokumentRad = {
   fileType: string | null;
   fileSize: number | null;
   path: string;
+  opplasterId: string;
   opplasterNavn: string;
   oppdatert: Date;
   /** «FRA POST» hvis vedlegget lå på en tekstpost, «LASTET OPP» ved frittstående opplasting. */
   kilde: "FRA_POST" | "LASTET_OPP";
+  /** Kategori valgt ved opplasting. Null for vedlegg i innlegg og eldre filer. */
+  kategori: string | null;
   kvittering: { totalt: number; apnet: number; manglerIder: string[] };
 };
 
@@ -198,8 +204,10 @@ export async function hentGruppeDokumenter(groupId: string, viewerId: string): P
         fileSize: vedlegg.fileSize,
         path: vedlegg.path,
         opplasterNavn: post.authorNavn,
+        opplasterId: post.authorUserId,
         oppdatert: post.createdAt,
         kilde: post.kind === "DOKUMENT" ? "LASTET_OPP" : "FRA_POST",
+        kategori: vedlegg.category,
         kvittering: post.kvittering ?? { totalt: 0, apnet: 0, manglerIder: [] },
       });
     }
@@ -214,7 +222,8 @@ export type TnPostMedKvittering = {
   tekst: string;
   kind: string;
   createdAt: Date;
-  vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string }[];
+  editedAt: Date | null;
+  vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string; category: string | null }[];
   kvittering: { totalt: number; apnet: number; manglerIder: string[] } | null;
 };
 
@@ -255,6 +264,7 @@ export async function hentGruppetidslinje(groupId: string, viewerId: string): Pr
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
+    editedAt: p.editedAt,
     vedlegg: p.vedlegg,
     kvittering: beregnLesekvittering(
       spillerIder,
@@ -276,6 +286,8 @@ export type TnGruppepostSide = {
   tidslinje: TnPostMedKvittering[];
   /** Tom hvis viewer ikke er trener, eller siste post er åpnet av alle. */
   sistePostMangler: TnGruppepostMangler[];
+  /** Rolle i gruppen per aktiv trener, til avsenderlinjen i TN-13. */
+  forfatterRoller: Record<string, string>;
 };
 
 /** Samlet oppslag for TN-09 — én IDOR-port, deretter tellere til header/skinne. */
@@ -335,6 +347,7 @@ export async function hentGruppepostSide(groupId: string, viewerId: string): Pro
     foresatte: foresatteUnike.length,
     tidslinje,
     sistePostMangler,
+    forfatterRoller: Object.fromEntries(trenere.map((t) => [t.user.id, t.role === "ASSISTANT" ? "Assist Coach" : "Trener"])),
   };
 }
 
@@ -371,6 +384,7 @@ export async function hentSpillerpostTidslinje(spillerId: string, viewerId: stri
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
+    editedAt: p.editedAt,
     vedlegg: p.vedlegg,
     kvittering: beregnLesekvittering([spillerId], p.lesekvittert.map((k) => k.userId)),
   }));
@@ -462,6 +476,67 @@ export async function hentPostLesekvitteringNavnForViewer(
   }
 
   return null;
+}
+
+/** Grupperingsnøkkel for påminnelsen på ett innlegg — én påminnelse per innlegg. */
+export function tnPaaminnelseNokkel(postId: string): string {
+  return `tn-paaminnelse:${postId}`;
+}
+
+export type TnPaaminnelse = { sendtAt: Date; antall: number };
+
+/** Påminnelser som er sendt for innleggene, nøklet på post-id. */
+export async function hentPaaminnelser(postIder: readonly string[]): Promise<Map<string, TnPaaminnelse>> {
+  if (postIder.length === 0) return new Map();
+  const rader = await prisma.notification.groupBy({
+    by: ["groupKey"],
+    where: { groupKey: { in: postIder.map(tnPaaminnelseNokkel) } },
+    _min: { createdAt: true },
+    _count: { _all: true },
+  });
+  const svar = new Map<string, TnPaaminnelse>();
+  for (const r of rader) {
+    if (!r.groupKey || !r._min.createdAt) continue;
+    svar.set(r.groupKey.slice("tn-paaminnelse:".length), { sendtAt: r._min.createdAt, antall: r._count._all });
+  }
+  return svar;
+}
+
+/**
+ * «Send påminnelse» i TN-13. Bare trener i gruppen, bare én gang per innlegg,
+ * og bare til spillerne som ikke har lest. Varselet bærer aldri innleggets
+ * tekst — mottakerne er ofte mindreårige og varselet kan vises på låseskjermen.
+ */
+export async function sendPaaminnelse(postId: string, trenerId: string): Promise<TnPaaminnelse> {
+  const post = await prisma.tnPost.findUnique({
+    where: { id: postId },
+    select: { groupId: true, lesekvittert: { select: { userId: true } } },
+  });
+  if (!post?.groupId) throw new Error("Innlegget finnes ikke");
+  if ((await hentViewerRolleIGruppe(post.groupId, trenerId)) !== "TRENER") {
+    throw new Error("Bare trenere i gruppen kan sende påminnelse");
+  }
+  const tidligere = (await hentPaaminnelser([postId])).get(postId);
+  if (tidligere) return tidligere;
+
+  const lest = new Set(post.lesekvittert.map((k) => k.userId));
+  const mottakere = (await gruppensSpillerIder(post.groupId)).filter((id) => !lest.has(id));
+  if (mottakere.length === 0) throw new Error("Alle har lest innlegget");
+
+  const gruppe = await prisma.group.findUnique({ where: { id: post.groupId }, select: { name: true } });
+  await Promise.all(
+    mottakere.map((userId) =>
+      notify({
+        userId,
+        type: "melding",
+        title: "Påminnelse: nytt innlegg fra trenerteamet",
+        body: gruppe ? `Les innlegget i ${gruppe.name}.` : undefined,
+        link: `/team-norway/${post.groupId}`,
+        groupKey: tnPaaminnelseNokkel(postId),
+      }),
+    ),
+  );
+  return (await hentPaaminnelser([postId])).get(postId) ?? { sendtAt: new Date(), antall: 0 };
 }
 
 /** Samme ressursport brukes før filskriving og før postlagring. */

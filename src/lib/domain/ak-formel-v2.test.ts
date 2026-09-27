@@ -118,3 +118,25 @@ test("erOmraadeKode skiller fasitkoder fra fri tekst", () => {
   assert.equal(erOmraadeKode("MOBILITET"), false);
   assert.equal(erOmraadeKode(undefined), false);
 });
+
+test("hastighet i læringssteg er 25, 50, 75 og 100 prosent av Club Speed", async () => {
+  const m = await import("@/lib/domain/ak-formel-v2");
+  assert.deepEqual([...m.HASTIGHET_PROSENT], [25, 50, 75, 100]);
+  assert.deepEqual([...m.hastighetForMotorikk("UTEN_BALL")], []);
+  assert.deepEqual([...m.hastighetForMotorikk("LAV_HAST")], [25, 50, 75]);
+  assert.deepEqual([...m.hastighetForMotorikk("AUTO")], [100]);
+  assert.equal(m.erHastighetProsent(50), true);
+  assert.equal(m.erHastighetProsent(60), false);
+  assert.equal(m.erHastighetProsent("50"), false);
+  assert.equal(m.hastighetLabel(75), "75 % av Club Speed");
+});
+
+test("hastighet gjelder bare fullsving", async () => {
+  const m = await import("@/lib/domain/ak-formel-v2");
+  assert.equal(m.hastighetGjelderOmraade("TEE_TOTAL"), true);
+  assert.equal(m.hastighetGjelderOmraade("INNSPILL_100"), true);
+  assert.equal(m.hastighetGjelderOmraade("CHIP"), false);
+  assert.equal(m.hastighetGjelderOmraade("PUTT_3_5"), false);
+  assert.equal(m.hastighetGjelderOmraade("STYRKE"), false);
+  assert.equal(m.hastighetGjelderOmraade("BANE"), false);
+});

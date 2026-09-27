@@ -21,6 +21,7 @@ import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, lo
 import { mondayOf } from "@/lib/domain/workbench/operations";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
+import { hentMaalSpor } from "@/lib/workbench/maal-spor";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,8 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   });
   if (!spiller) notFound();
 
+  const goals = await hentMaalSpor(playerId);
+
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
   const visning = parseVisning(sp.vis);
@@ -88,6 +91,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           aar={yearRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -116,6 +120,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           maned={monthRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -144,6 +149,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           periode={periodRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -220,6 +226,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           uke={weekRes.data}
           selectedSessionId={sp.okt}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -234,6 +241,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         spillerNavn={spiller.name ?? "Ukjent"}
         uke={weekRes.data}
         kilder={kilderRes.ok ? kilderRes.data : []}
+        goals={goals}
       />
     </WorkbenchShell>
   );

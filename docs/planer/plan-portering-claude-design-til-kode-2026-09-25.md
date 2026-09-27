@@ -1,8 +1,8 @@
 # Plan: Portering fra Claude Design (Precision Athletics) til produksjonskode
 
-**Dato:** 25.09.2026  
-**Status:** Godkjent planlegging  
-**Kilde / Autoritet:** Claude Design-prosjekt `7d7c2994-cf63-4c5f-9bdc-fdaf67655a70` og [design-autoritet.md](../design-system/design-autoritet.md).  
+**Dato:** 25.09.2026
+**Status:** Godkjent planlegging
+**Kilde / Autoritet:** Claude Design-prosjekt `7d7c2994-cf63-4c5f-9bdc-fdaf67655a70` og [design-autoritet.md](../design-system/design-autoritet.md).
 **Mål:** Etablere 100 % designdekning i produksjonskode for alle 496 ruter i AK Golf HQ uten visuell eller funksjonell gjetting.
 
 ---

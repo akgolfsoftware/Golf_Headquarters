@@ -29,7 +29,7 @@ const UKENOTATER: { id: WeekNote; tittel: string }[] = [
 export function WeekPlanEditor({ weekPlan, onSave, lagrer = false }: Props) {
   const [weekType, setWeekType] = useState<WeekType>(weekPlan?.weekType ?? "UTVIKLING");
   const [notes, setNotes] = useState<WeekNote[]>(weekPlan?.notes ?? []);
-  
+
   // Timer per pyramide
   const [timerFys, setTimerFys] = useState<string>(weekPlan?.plannedHoursFys != null ? String(weekPlan.plannedHoursFys) : "");
   const [timerTek, setTimerTek] = useState<string>(weekPlan?.plannedHoursTek != null ? String(weekPlan.plannedHoursTek) : "");

@@ -6,7 +6,7 @@
  *      brukes i nye kodefiler utenfor migreringsbroene — ellers exit 1.
  *
  * Kjør: npx tsx scripts/ordbok-json.ts
- * Kilder for betydning og skjermnavn: docs/ordbok.md og docs/treningsplanlegging.md.
+ * Kilde for betydning og skjermnavn: docs/treningsplanlegging.md (eneste master).
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
@@ -52,6 +52,13 @@ for (const navn of MAA_DEKKES) {
 if (mangler.length > 0) {
   console.error("Verdier i den aktive AK-formelen som IKKE er nevnt i docs/treningsplanlegging.md:\n" +
     mangler.map((n) => ` - ${n}`).join("\n"));
+  process.exit(1);
+}
+
+// ── 2b. Låste verdier må stå i masteren ────────────────────────────
+// Club Speed-nivåene er låst av Anders 21.09.2026 (kap. 19 i masteren).
+if (!/25, 50, 75 og 100 prosent av Club Speed/.test(master)) {
+  console.error("Masteren mangler den låste regelen «25, 50, 75 og 100 prosent av Club Speed».");
   process.exit(1);
 }
 
@@ -104,8 +111,7 @@ const ut = {
   $schema: "ordbok-lag-3",
   versjon: new Date().toISOString().slice(0, 10),
   kilder: {
-    master: "docs/ordbok.md",
-    planlegging: "docs/treningsplanlegging.md",
+    master: "docs/treningsplanlegging.md",
     schema: "prisma/schema.prisma",
     kode: "src/lib/domain/ak-formel-v2.ts",
   },

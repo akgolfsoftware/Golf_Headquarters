@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnSpillerutviklingSkjerm } from "@/components/team-norway/skjermer/tn-spillerutvikling-skjerm";
 
-/** TN-00 Workdesk. Fasit: designsystem/team-norway/templates/tn-workdesk/TnBatch1.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="spillere" />; }
+/** TN-12. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-12. */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnSpillerutviklingSkjerm sokeparametre={await searchParams} />;
+}

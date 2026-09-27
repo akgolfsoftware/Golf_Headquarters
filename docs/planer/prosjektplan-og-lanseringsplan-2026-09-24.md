@@ -1,8 +1,8 @@
 # AK Golf HQ — Prosjekt- og lanseringsplan
 
-Dato: 24. september 2026  
-Status: Oppdatert masterplan etter fullført teknisk oppgradering (gren `antigravity-forbedring`, commit `064fb2106`)  
-Forretningsansvarlig: Anders Kristiansen, CEO i AK Golf Group AS  
+Dato: 24. september 2026
+Status: Oppdatert masterplan etter fullført teknisk oppgradering (gren `antigravity-forbedring`, commit `064fb2106`)
+Forretningsansvarlig: Anders Kristiansen, CEO i AK Golf Group AS
 
 ---
 
