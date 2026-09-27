@@ -26,6 +26,7 @@ import {
   kanSeGruppepost,
   kanSeSpillerpost,
   osloKalenderar,
+  type TnDokumentKategori,
   type TnPostKind,
 } from "@/lib/domain/tn-post-regler";
 
@@ -153,6 +154,7 @@ export async function opprettGruppeDokument(input: {
   fileType: string | null;
   fileSize: number | null;
   path: string;
+  kategori: TnDokumentKategori | null;
 }): Promise<{ id: string }> {
   await krevDokumentOpplastingstilgang(input.groupId, input.forfatterId);
   return prisma.tnPost.create({
@@ -162,7 +164,7 @@ export async function opprettGruppeDokument(input: {
       tekst: "",
       kind: "DOKUMENT",
       vedlegg: {
-        create: { fileName: input.fileName, fileType: input.fileType, fileSize: input.fileSize, path: input.path },
+        create: { fileName: input.fileName, fileType: input.fileType, fileSize: input.fileSize, path: input.path, category: input.kategori },
       },
     },
     select: { id: true },
@@ -180,6 +182,8 @@ export type TnDokumentRad = {
   oppdatert: Date;
   /** «FRA POST» hvis vedlegget lå på en tekstpost, «LASTET OPP» ved frittstående opplasting. */
   kilde: "FRA_POST" | "LASTET_OPP";
+  /** Kategori valgt ved opplasting. Null for vedlegg i innlegg og eldre filer. */
+  kategori: string | null;
   kvittering: { totalt: number; apnet: number; manglerIder: string[] };
 };
 
@@ -201,6 +205,7 @@ export async function hentGruppeDokumenter(groupId: string, viewerId: string): P
         opplasterNavn: post.authorNavn,
         oppdatert: post.createdAt,
         kilde: post.kind === "DOKUMENT" ? "LASTET_OPP" : "FRA_POST",
+        kategori: vedlegg.category,
         kvittering: post.kvittering ?? { totalt: 0, apnet: 0, manglerIder: [] },
       });
     }
@@ -215,7 +220,7 @@ export type TnPostMedKvittering = {
   tekst: string;
   kind: string;
   createdAt: Date;
-  vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string }[];
+  vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string; category: string | null }[];
   kvittering: { totalt: number; apnet: number; manglerIder: string[] } | null;
 };
 

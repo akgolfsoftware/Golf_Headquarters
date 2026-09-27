@@ -233,10 +233,11 @@ function Initialer({ navn }: { navn: string }) {
  * (`/api/team-norway/dokumenter`), aldri via server action, så størrelsesgrensen
  * gjelder bare denne ruten.
  */
-export function TnDokumentSkjema({ groupId, maksMb }: { groupId: string; maksMb: number }) {
+export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: string; maksMb: number; kategorier: string[] }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [fil, setFil] = useState<File | null>(null);
+  const [kategori, setKategori] = useState(kategorier[0] ?? "");
   const [feil, setFeil] = useState<string | null>(null);
   const [melding, setMelding] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -249,6 +250,7 @@ export function TnDokumentSkjema({ groupId, maksMb }: { groupId: string; maksMb:
     setMelding(null);
     const form = new FormData();
     form.set("file", fil);
+    form.set("kategori", kategori);
     startTransition(async () => {
       try {
         const res = await fetch(`/api/team-norway/dokumenter?groupId=${encodeURIComponent(groupId)}`, { method: "POST", body: form });
@@ -288,6 +290,12 @@ export function TnDokumentSkjema({ groupId, maksMb }: { groupId: string; maksMb:
             />
           </label>
         </div>
+        <label style={{ flex: "0 1 200px", minWidth: 0 }}>
+          <span style={etikett}>Kategori</span>
+          <select value={kategori} onChange={(e) => setKategori(e.target.value)} disabled={pending} style={{ marginTop: 6, width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.xs, background: TN.white, color: TN.textPrimary, fontFamily: TN.font.body, fontSize: 16 }}>
+            {kategorier.map((k) => <option key={k} value={k}>{k}</option>)}
+          </select>
+        </label>
         <button type="button" onClick={lastOpp} disabled={pending} style={{ ...primaerKnapp, opacity: pending ? 0.6 : 1 }}>{pending ? "Laster opp …" : "Last opp"}</button>
       </div>
       {feil ? <div role="alert" style={feilboks}>{feil}</div> : null}

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { krevDokumentOpplastingstilgang } from "@/lib/domain/tn-post";
+import { erTnDokumentKategori } from "@/lib/domain/tn-post-regler";
 import { lagreTnDokument, MAKS_TN_DOKUMENT_BYTES } from "@/lib/domain/tn-dokument-lagring";
 
 /** Avgrenset multipart-rute: filgrensen trenger ikke endre alle server actions. */
@@ -36,7 +37,9 @@ export async function POST(request: Request) {
     const form = await new Response(Buffer.concat(chunks), { headers: { "Content-Type": request.headers.get("content-type") ?? "" } }).formData();
     const fil = form.get("file");
     if (!(fil instanceof File)) return Response.json({ ok: false, feil: "Ingen fil valgt." }, { status: 400 });
-    const svar = await lagreTnDokument(groupId, bruker.id, fil);
+    const kategori = form.get("kategori");
+    if (kategori !== null && !erTnDokumentKategori(kategori)) return Response.json({ ok: false, feil: "Ukjent kategori." }, { status: 400 });
+    const svar = await lagreTnDokument(groupId, bruker.id, fil, kategori);
     if (svar.ok) {
       revalidatePath(`/team-norway/${groupId}/dokumenter`);
       revalidatePath("/team-norway/dokumenter");

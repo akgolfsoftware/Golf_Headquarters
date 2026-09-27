@@ -896,6 +896,9 @@ model TnPostAttachment {
   fileType  String?
   fileSize  Int?
   path      String
+  // Sesongplan | Uttak | Reise | Test | Helse — bare på opplastinger i TN-14.
+  // Null for vedlegg i innlegg. DDL: scripts/add-tn-vedlegg-kategori-2026-09-27.ts
+  category  String?
   createdAt DateTime @default(now())
 
   post TnPost @relation(fields: [postId], references: [id], onDelete: Cascade)

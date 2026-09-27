@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5805,
+    "prosjektfiler": 5807,
     "sidefiler": 509,
     "prismamodeller": 200,
     "enhetstestfiler": 514,
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 29182
+      "byte": 37777
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -6674,7 +6674,7 @@
     {
       "sti": "designsystem/wang/APNE-BESLUTNINGER.md",
       "omrade": "designkilde",
-      "byte": 6852
+      "byte": 7180
     },
     {
       "sti": "designsystem/wang/assets/wang-crest.svg",
@@ -6759,7 +6759,7 @@
     {
       "sti": "designsystem/wang/fasit/arsplan-2026-27/WANG Arsplan 2026-27.dc.html",
       "omrade": "designkilde",
-      "byte": 133782
+      "byte": 133860
     },
     {
       "sti": "designsystem/wang/fasit/SYNC-STATUS.md",
@@ -7079,7 +7079,7 @@
     {
       "sti": "designsystem/wang/TILGANGSMATRISE.md",
       "omrade": "designkilde",
-      "byte": 9783
+      "byte": 10105
     },
     {
       "sti": "designsystem/wang/tokens/wang-tokens.css",
@@ -7094,7 +7094,7 @@
     {
       "sti": "docs/arkiv/instruks-2026-09-21/beslutninger-full.md",
       "omrade": "historikk",
-      "byte": 100410
+      "byte": 100782
     },
     {
       "sti": "docs/arkiv/instruks-2026-09-21/gotchas-full.md",
@@ -7354,7 +7354,7 @@
     {
       "sti": "docs/design-system/precision-athletics-rundeplan.md",
       "omrade": "dokumentasjon",
-      "byte": 3432
+      "byte": 7427
     },
     {
       "sti": "docs/design-system/skjermliste-precision-athletics.md",
@@ -7874,7 +7874,7 @@
     {
       "sti": "docs/treningsplanlegger/wang-toppidrett/kompetansemaal-toppidrett-vg.md",
       "omrade": "dokumentasjon",
-      "byte": 4605
+      "byte": 4687
     },
     {
       "sti": "docs/treningsplanlegger/wang-toppidrett/kompetansemaal.md",
@@ -8469,7 +8469,7 @@
     {
       "sti": "prisma/schema.prisma",
       "omrade": "databasekilde",
-      "byte": 223040
+      "byte": 223226
     },
     {
       "sti": "prisma/scripts/map-fasilitet-krav.ts",
@@ -8549,7 +8549,7 @@
     {
       "sti": "prisma/seed.ts",
       "omrade": "databasekilde",
-      "byte": 32195
+      "byte": 32274
     },
     {
       "sti": "prisma/sql/2026-07-31-lyd-samtykke-token.sql",
@@ -11022,6 +11022,11 @@
       "byte": 7404
     },
     {
+      "sti": "scripts/add-tn-vedlegg-kategori-2026-09-27.ts",
+      "omrade": "verktoy",
+      "byte": 1485
+    },
+    {
       "sti": "scripts/add-utfordring-retning-2026-09-22.ts",
       "omrade": "verktoy",
       "byte": 2079
@@ -11405,6 +11410,11 @@
       "sti": "scripts/meg-tilbakeskriving/venter-paa-deg.ts",
       "omrade": "verktoy",
       "byte": 4829
+    },
+    {
+      "sti": "scripts/merge-tournament-dupes-2026-09-26.ts",
+      "omrade": "verktoy",
+      "byte": 4871
     },
     {
       "sti": "scripts/migrate-google-calendar-mirror.ts",
@@ -12554,7 +12564,7 @@
     {
       "sti": "src/app/(marketing)/suksess/page.tsx",
       "omrade": "appkode",
-      "byte": 546
+      "byte": 534
     },
     {
       "sti": "src/app/(marketing)/treningsfilosofi/page.tsx",
@@ -14969,12 +14979,12 @@
     {
       "sti": "src/app/api/team-norway/dokumenter/route.ts",
       "omrade": "appkode",
-      "byte": 2579
+      "byte": 2968
     },
     {
       "sti": "src/app/api/team-norway/dokumenter/tn-dokumenter-route.test.ts",
       "omrade": "test",
-      "byte": 5766
+      "byte": 6480
     },
     {
       "sti": "src/app/api/team-norway/vedlegg/[attachmentId]/route.ts",
@@ -17649,12 +17659,12 @@
     {
       "sti": "src/app/team-norway/tn-post-actions.test.ts",
       "omrade": "test",
-      "byte": 2460
+      "byte": 5084
     },
     {
       "sti": "src/app/team-norway/tn-post-actions.ts",
       "omrade": "appkode",
-      "byte": 3633
+      "byte": 4664
     },
     {
       "sti": "src/app/team-norway/tn-testdag-actions.ts",
@@ -17794,7 +17804,7 @@
     {
       "sti": "src/app/team-wang/_data/arsplan-fasit-2026-27.ts",
       "omrade": "appkode",
-      "byte": 53889
+      "byte": 53967
     },
     {
       "sti": "src/app/team-wang/_data/coach-arsplan.ts",
@@ -19324,7 +19334,7 @@
     {
       "sti": "src/components/marketing/landing/MarkedNav.tsx",
       "omrade": "appkode",
-      "byte": 2234
+      "byte": 2313
     },
     {
       "sti": "src/components/marketing/mobile-menu.tsx",
@@ -19394,12 +19404,12 @@
     {
       "sti": "src/components/marketing/v2/MarkedBookingV2.tsx",
       "omrade": "appkode",
-      "byte": 30203
+      "byte": 30302
     },
     {
       "sti": "src/components/marketing/v2/MarkedCasesV2.tsx",
       "omrade": "appkode",
-      "byte": 4922
+      "byte": 4948
     },
     {
       "sti": "src/components/marketing/v2/MarkedCoachDetaljV2.tsx",
@@ -19434,7 +19444,7 @@
     {
       "sti": "src/components/marketing/v2/MarkedKontaktV2.tsx",
       "omrade": "appkode",
-      "byte": 10114
+      "byte": 10022
     },
     {
       "sti": "src/components/marketing/v2/MarkedOmOssV2.tsx",
@@ -19479,7 +19489,7 @@
     {
       "sti": "src/components/marketing/v2/MarkedSuksessV2.tsx",
       "omrade": "appkode",
-      "byte": 2366
+      "byte": 2354
     },
     {
       "sti": "src/components/marketing/v2/MarkedTreningsfilosofiV2.tsx",
@@ -21139,7 +21149,7 @@
     {
       "sti": "src/components/team-norway/skjermer/tn-dokumenter-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 6435
+      "byte": 6217
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-fagapparat-skjerm.tsx",
@@ -21149,7 +21159,7 @@
     {
       "sti": "src/components/team-norway/skjermer/tn-gruppeposter-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 4287
+      "byte": 4479
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-lisens-skjerm.tsx",
@@ -21219,7 +21229,7 @@
     {
       "sti": "src/components/team-norway/tn-gruppe-klient.tsx",
       "omrade": "appkode",
-      "byte": 15801
+      "byte": 17876
     },
     {
       "sti": "src/components/team-norway/tn-inviter-spiller.tsx",
@@ -24539,7 +24549,7 @@
     {
       "sti": "src/lib/domain/tn-dokument-lagring.ts",
       "omrade": "appkode",
-      "byte": 3104
+      "byte": 3218
     },
     {
       "sti": "src/lib/domain/tn-evaluering.ts",
@@ -24569,12 +24579,12 @@
     {
       "sti": "src/lib/domain/tn-post-regler.ts",
       "omrade": "appkode",
-      "byte": 4965
+      "byte": 5401
     },
     {
       "sti": "src/lib/domain/tn-post.ts",
       "omrade": "appkode",
-      "byte": 19026
+      "byte": 21900
     },
     {
       "sti": "src/lib/domain/tn-rangliste.test.ts",

@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
+import { TN_DOKUMENT_KATEGORIER } from "@/lib/domain/tn-post-regler";
 import { MAX_FILE_SIZES, STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell } from "../tn-shell";
@@ -15,14 +16,11 @@ import { datoLang, hentSkjermbruker } from "./felles";
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-14.
  *
  * Avvik:
- *   - Kategori (Sesongplan, Uttak, Reise, Test, Helse) finnes ikke på filen.
- *     Filteret skiller i stedet på kilde: lastet opp her, eller vedlegg i et innlegg.
+ *   - Vedlegg i innlegg har ingen kategori. De vises under Alle, merket «Fra innlegg».
  *   - Filtypene er de lagringen godtar: PDF, XLSX, JPG, PNG og WEBP, maks 50 MB.
  *     DOCX godtas ikke.
  *   - Trenere ser i tillegg hvor mange i gruppen som har åpnet filen.
  */
-
-type Kilde = "LASTET_OPP" | "FRA_POST";
 
 function filtype(navn: string) {
   const deler = navn.split(".");
@@ -47,9 +45,9 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
 
   const erTrener = rolle === "TRENER";
   const harTrenertilgang = erTrener || bruker.role === "ADMIN";
-  const kildeParam = Array.isArray(sokeparametre.kilde) ? sokeparametre.kilde[0] : sokeparametre.kilde;
-  const kilde: Kilde | null = kildeParam === "opplastet" ? "LASTET_OPP" : kildeParam === "innlegg" ? "FRA_POST" : null;
-  const liste = dokumenter.filter((d) => !kilde || d.kilde === kilde);
+  const kategoriParam = Array.isArray(sokeparametre.kategori) ? sokeparametre.kategori[0] : sokeparametre.kategori;
+  const kategori = TN_DOKUMENT_KATEGORIER.find((k) => k.toLowerCase() === kategoriParam) ?? null;
+  const liste = dokumenter.filter((d) => !kategori || d.kategori === kategori);
   const base = `/team-norway/${groupId}/dokumenter`;
   const maksMb = Math.round(MAX_FILE_SIZES[STORAGE_BUCKETS.TN_POST_VEDLEGG] / (1024 * 1024));
 
@@ -57,14 +55,13 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
     <TnShell aktiv="dokumenter" brukerNavn={bruker.name ?? "Ukjent"} rolle={erTrener ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt"} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
       <TnSkjermhode rute={base} tittel="Dokumenter" ingress={`Sesongplan, uttakskriterier og reiseinfo for ${gruppe.name}. Alle i gruppen finner filene her.`} />
 
-      {erTrener ? <TnDokumentSkjema groupId={groupId} maksMb={maksMb} /> : null}
+      {erTrener ? <TnDokumentSkjema groupId={groupId} maksMb={maksMb} kategorier={[...TN_DOKUMENT_KATEGORIER]} /> : null}
 
       <TnFilterknapper
         etikett="Filtrer dokumenter"
         valg={[
-          { href: base, label: "Alle", aktiv: kilde === null, antall: dokumenter.length },
-          { href: `${base}?kilde=opplastet`, label: "Lastet opp", aktiv: kilde === "LASTET_OPP", antall: dokumenter.filter((d) => d.kilde === "LASTET_OPP").length },
-          { href: `${base}?kilde=innlegg`, label: "Fra innlegg", aktiv: kilde === "FRA_POST", antall: dokumenter.filter((d) => d.kilde === "FRA_POST").length },
+          { href: base, label: "Alle", aktiv: kategori === null, antall: dokumenter.length },
+          ...TN_DOKUMENT_KATEGORIER.map((k) => ({ href: `${base}?kategori=${k.toLowerCase()}`, label: k, aktiv: kategori === k, antall: dokumenter.filter((d) => d.kategori === k).length })),
         ]}
       />
 
@@ -77,7 +74,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
               </span>
               <span style={{ minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{d.fileName}</span>
-                <span style={{ display: "block", fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{d.kilde === "LASTET_OPP" ? "Lastet opp" : "Fra innlegg"}</span>
+                <span style={{ display: "block", fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{d.kategori ?? (d.kilde === "LASTET_OPP" ? "Uten kategori" : "Fra innlegg")}</span>
               </span>
             </a>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", alignItems: "baseline", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, minWidth: 0 }}>
@@ -94,7 +91,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
             <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "10px 0 0", maxWidth: "60ch" }}>
               {dokumenter.length > 0
-                ? "Ingen dokumenter med denne kilden."
+                ? "Ingen dokumenter i denne kategorien."
                 : erTrener
                   ? "Last opp sesongplan, uttakskriterier og reiseinfo, så finner spillerne alt på ett sted."
                   : "Trenerteamet har ikke delt noen dokumenter ennå."}

@@ -16,6 +16,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-post-2026-09-01.ts](<add-tn-post-2026-09-01.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-testdag-2026-09-17.ts](<add-tn-testdag-2026-09-17.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-tn-vedlegg-kategori-2026-09-27.ts](<add-tn-vedlegg-kategori-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |
@@ -92,6 +93,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/meg-tilbakeskriving/skriv-ak-brain.ts](<meg-tilbakeskriving/skriv-ak-brain.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/meg-tilbakeskriving/skriv-second-brain.ts](<meg-tilbakeskriving/skriv-second-brain.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/meg-tilbakeskriving/venter-paa-deg.ts](<meg-tilbakeskriving/venter-paa-deg.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/merge-tournament-dupes-2026-09-26.ts](<merge-tournament-dupes-2026-09-26.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/migrate-google-calendar-mirror.ts](<migrate-google-calendar-mirror.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/mulligan-triage/com.akgolf.mulligan-triage.plist](<mulligan-triage/com.akgolf.mulligan-triage.plist>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/mulligan-triage/env.ts](<mulligan-triage/env.ts>) |
