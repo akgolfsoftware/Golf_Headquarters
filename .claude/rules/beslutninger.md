@@ -17,7 +17,7 @@ skjermer, spiller har egne skjermer ved bruk av AK Golf – Player HQ.» Og om m
   roller, samtykke, timeplanføring, opptak). Dagens skjermer blir faner under et hovedpunkt.
 - **Trening får en oversikt (WANG-42):** planlagt og gjennomført tid siste fire uker, etterlevelse
   (tid mot plan, §KARTLEGGINGSØKT FJERNES), oppmøte på morgentrening, per område og per elev.
-- **Ut av WANG-menyen:** Hjem/fellesside (WANG-28), Foresattflaten (WANG-36), Skolefanen (WANG-25),
+- **Ut av WANG-menyen:** Hjem/fellesside (WANG-28, lever videre som egen åpen side, punkt 2), Foresattflaten (WANG-36), Skolefanen (WANG-25),
   Alle idretter (WANG-40), Helse og belastning (WANG-35). Tegningene beholdes.
 
 **Overstyrer:** rollelinjen i §WANG: FEM ANSATTROLLER (26.09) for `/team-wang`, og rollelinjen i
@@ -30,9 +30,10 @@ fra runde 17 faller bort.
 1. **Design, runde 17–18 i `6cfa623c`:** ny meny, WANG-42 og bare to roller i alle filer (runde 17
    ferdig 27.09, runde 18 sendt 27.09). Ferdig når Designs måling er 0 avvik i 390/1280 og Anders
    har sett skjermene i «WANG Golf Gjennomgang» (port 7).
-2. **Fellessiden `/team-wang` (`src/app/team-wang/page.tsx`)** er i dag åpen uten innlogging for
-   elever og foreldre. **Åpent, venter på Anders:** skal den flyttes til PlayerHQ, bli liggende som
-   offentlig lenke, eller fjernes? Ikke endre ruten før det er svart.
+2. **Fellessiden `/team-wang` (`src/app/team-wang/page.tsx`) beholdes uendret og separat**
+   (Anders 27.09: «den siden skal fortsatt holdes separat, den har ingenting med samarbeidssidene
+   for WANG Fredrikstad å gjøre ennå»). Den er åpen uten innlogging for elever og foreldre og er
+   ikke en del av trener- og sportssjefflaten. Ikke flytt, lås eller slå den sammen med menyen.
 3. **Tilgang i koden:** `hentWangElevGruppeId` (`src/app/team-wang/_data/wang-tilgang.ts`) gir i dag
    eleven tilgang til egen IUP under `/team-wang`. Når elevens IUP finnes i PlayerHQ, skal
    `/team-wang` bare slippe inn trener og sportssjef. Ferdig når en elev som åpner
