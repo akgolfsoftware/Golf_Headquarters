@@ -1,5 +1,8 @@
 # Kartlegging: slik planlegges trening i AK Golf HQ i dag
 
+> Historisk kodekart fra 26.09.2026, ikke styrende produktfasit. Nye beslutninger om
+> planlegging og språk står i [den ene masteren](treningsplanlegging-og-sprak.md).
+
 **Dato:** 26. september 2026  
 **Git-branch:** `antigravity-forbedring`  
 **Filer og mapper undersøkt:** `prisma/schema.prisma`, `prisma/seed.ts`, `prisma/seed-data/`, `scripts/seed-*`, `src/lib/domain/`, `src/lib/workbench/`, `src/lib/plan-engine/`, `src/lib/plan-builder/`, `src/lib/training/`, `src/lib/masterbrain/`, `src/lib/agents/`, `src/app/admin/workbench/`, `src/app/portal/`, `docs/treningsplanlegging.md`, `docs/treningsplanlegging-og-sprak-gjennomgang.md`, `docs/ordbok.md`, `docs/treningsplanlegger/wang-toppidrett/`, `docs/referanse/masterbrain-rebuild/`.
@@ -199,9 +202,9 @@ Underveis i økta registreres fremdriften offline-først i nettleseren og synkro
 
 | Kilde / Filsti | Versjon / Dato | Godkjent | Sammendrag |
 |---|---|---|---|
-| `docs/treningsplanlegging-og-sprak-gjennomgang.md` | Master · 22.09.2026 | Ja (Anders) | Gjeldende autoritet for hele valgtreet fra årsplan til øvelse (åtte trinn) og bindende begrepsvalg. |
+| `docs/treningsplanlegging-og-sprak-gjennomgang.md` | Historisk master · 22.09.2026 | Ja (Anders) | Tidligere autoritet for valgtreet; nå grunnlag for `docs/treningsplanlegging-og-sprak.md`. |
 | `docs/treningsplanlegging.md` | 22.09.2026 | Ja | Forenklet oversikt over planleggingsrekken, periodetyper, de 19 områdene og øvelsesstrukturen. |
-| `docs/ordbok.md` | Master · 21.09.2026 | Ja (Anders) | Prosjektets eneste gjeldende ordbok. Definerer språk, A–K-skala (A=best), forbudte ord og TrackMan-standarder. |
+| `docs/ordbok.md` | Historisk master · 21.09.2026 | Ja (Anders) | Tidligere ordbok; nå grunnlag for `docs/treningsplanlegging-og-sprak.md`. |
 | `docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md` | 23.09.2026 | Ja | 44-ukers årshjul for WANG Fredrikstad (VG1–VG3). Definerer datoer for GRUNN, SPES og TURN, samt 8 uketyper. |
 | `docs/treningsplanlegger/wang-toppidrett/oktmal.md` | 21.09.2026 | Ja | Standard øktstruktur (7 seksjoner) for faste treninger (M/O/F 08:00–10:00) og mapping til AK-formelen. |
 | `docs/treningsplanlegger/wang-toppidrett/grunnlag-funn.md` | 21.09.2026 | Ja | Analyse av kildedokumenter på disk (6-årsløp, læreplaner, to eldre årsplanutkast og avvikssjekk). |

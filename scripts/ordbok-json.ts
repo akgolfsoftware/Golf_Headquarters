@@ -6,7 +6,7 @@
  *      brukes i nye kodefiler utenfor migreringsbroene — ellers exit 1.
  *
  * Kjør: npx tsx scripts/ordbok-json.ts
- * Kilder for betydning og skjermnavn: docs/ordbok.md og docs/treningsplanlegging.md.
+ * Kilde for betydning og skjermnavn: docs/treningsplanlegging-og-sprak.md.
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
@@ -22,7 +22,7 @@ import {
 
 const ROT = process.cwd();
 const SCHEMA = join(ROT, "prisma/schema.prisma");
-const MASTER = join(ROT, "docs/treningsplanlegging.md");
+const MASTER = join(ROT, "docs/treningsplanlegging-og-sprak.md");
 const UT = join(ROT, "docs/ordbok.json");
 
 // ── 1. Prisma-enums fra schema ─────────────────────────────────────
@@ -50,7 +50,7 @@ for (const navn of MAA_DEKKES) {
   }
 }
 if (mangler.length > 0) {
-  console.error("Verdier i den aktive AK-formelen som IKKE er nevnt i docs/treningsplanlegging.md:\n" +
+  console.error("Verdier i den aktive AK-formelen som IKKE er nevnt i docs/treningsplanlegging-og-sprak.md:\n" +
     mangler.map((n) => ` - ${n}`).join("\n"));
   process.exit(1);
 }
@@ -104,8 +104,8 @@ const ut = {
   $schema: "ordbok-lag-3",
   versjon: new Date().toISOString().slice(0, 10),
   kilder: {
-    master: "docs/ordbok.md",
-    planlegging: "docs/treningsplanlegging.md",
+    master: "docs/treningsplanlegging-og-sprak.md",
+    planlegging: "docs/treningsplanlegging-og-sprak.md",
     schema: "prisma/schema.prisma",
     kode: "src/lib/domain/ak-formel-v2.ts",
   },

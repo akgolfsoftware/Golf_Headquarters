@@ -20,8 +20,8 @@ AK Golf HQ samler offentlig nettsted, coachingbooking, PlayerHQ og AgencyOS i é
 | Spørsmål | Kilde |
 |---|---|
 | Hva skal produktet gjøre? | [Nordstjernen](NORDSTJERNE.md), [produktreglene](BUSINESS-RULES.md) |
-| Hvilket språk og hvilke begreper gjelder? | [Ordbok og språk](../ordbok.md) — eneste master |
-| Hvordan planlegges trening? | [Språk og treningsplanlegging — gjennomgang](../treningsplanlegging-og-sprak-gjennomgang.md) (master), [Treningsplanlegging](../treningsplanlegging.md) (oversikt) |
+| Hvilket språk og hvilke begreper gjelder? | [Treningsplanlegging og språk](../treningsplanlegging-og-sprak.md) — eneste master |
+| Hvordan planlegges trening? | [Treningsplanlegging og språk](../treningsplanlegging-og-sprak.md) — eneste master; [Treningsplanlegging](../treningsplanlegging.md) er oversikt |
 | Hvordan skal skjermen se ut? | [Gjeldende designautoritet](../design-system/design-autoritet.md), deretter [designarbeid og referanser](../../designsystem/README.md) |
 | Hva gjør funksjonen faktisk? | Koden, testene og en målt kundereise |
 | Hva gjenstår? | [Arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md) |

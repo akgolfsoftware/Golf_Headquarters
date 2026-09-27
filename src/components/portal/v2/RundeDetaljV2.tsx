@@ -14,6 +14,7 @@ import { ManuellSgRedigering } from "@/components/portal/runde-ny/manuell-sg-red
 import { SG_DETALJGRUPPER, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import { Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
+import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type GranulaerSgData = {
@@ -250,6 +251,8 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
           ))}
         </div>
       )}
+
+      <ResultatKontekst />
 
       {/* Scorekort — fasit: tabell Hull/Par/Score/Mot par + Sum, klebrig hode */}
       {harHull ? (

@@ -6,8 +6,8 @@
 |---|---|
 | Fasit (chrome, Workbench, port) | [FASIT.md](FASIT.md) |
 | Valgt Workbench-master og PNG-er | [Workbench-overlevering](workbench-handover.md) |
-| Språk, treningsfag og skjermord | [Ordbok og språk](ordbok.md) — eneste master |
-| Årsplan, perioder og Workbench-valg | [Treningsplanlegging](treningsplanlegging.md) |
+| Språk, treningsfag, tester og skjermord | [Treningsplanlegging og språk](treningsplanlegging-og-sprak.md) — eneste master |
+| Årsplan, perioder og Workbench-valg | [Treningsplanlegging](treningsplanlegging.md) — oversikt |
 | Prosjekt og kodekart | [Agent Brief](platform/AGENT-BRIEF.md) |
 | Låste produktregler | [BUSINESS-RULES.md](platform/BUSINESS-RULES.md) |
 | Tester og drift | [Testing](testing.md), [runbook](runbook.md) |

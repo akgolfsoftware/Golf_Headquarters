@@ -1,9 +1,6 @@
 # Treningsplanlegging i AK Golf HQ
 
-**Status 22.09.2026:** Valgtreet fra årsplan til øvelse eies nå av
-[Språk og treningsplanlegging — gjennomgang](treningsplanlegging-og-sprak-gjennomgang.md) (åtte trinn: hensikt,
-treningsområde, sted og miljø, måleutstyr, gjennomføring, press, mengde, mål). Ved sprik gjelder gjennomgangen.
-Dette dokumentet beholdes som forenklet oversikt. Språk og skrivemåte styres av [ordboken](ordbok.md).
+**Status 26.09.2026:** Forenklet oversikt og historisk detaljgrunnlag. [Én gjeldende master](treningsplanlegging-og-sprak.md) eier planlegging og språk. Ved sprik gjelder masteren, ikke denne oversikten.
 
 ## 1. Hele planleggingsrekken
 

@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "6"
-  reviewed: "2026-09-21"
+  version: "7"
+  reviewed: "2026-09-27"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -14,10 +14,12 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 ## Utgangspunkt og kildeorden
 
 - Anders' siste bestilling styrer. **AK Golf Design System og Claude Design-prosjektet «App design» er valgt designautoritet fra 21.09.2026.** Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
+- Gjeldende «App design»-prosjekt er **Precision Athletics** med prosjekt-ID `7d7c2994-cf63-4c5f-9bdc-fdaf67655a70` fra 25.09.2026. Tidligere `830e7bce` er arkiv når det gjelder ny retning, men kan brukes som funksjons- og overgangshistorikk.
+- Typografi og presisjon følger beslutningen 24.09.2026: **IBM Plex Sans** for tekst/meny/knapper og **IBM Plex Mono** for tall, tider, yardages, prosenter og metadata.
 - Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
 - Viderefør siste faktiske versjon i «App design» og bevar nyere rettinger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
 - Team Norway har sitt eget språk for egne `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, navy skinne, rød `#D70232`. Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
-- I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
+- I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md`, `docs/design-system/design-autoritet.md`, `docs/treningsplanlegging-og-sprak.md` og aktuell `designsystem/README.md`. Bruk produktregler og treningsmasteren for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.
 - En ny designleveranse er et forslag inntil Anders velger den for den aktuelle byggeoppgaven. Bruk allerede avklarte valg; ikke innfør gjentatte godkjenningsstopp for rutinearbeid.
 - Hold utforming, faglige påstander og teknisk implementering atskilt. En designbestilling autoriserer ikke sletting av appfunksjoner, produksjonsendringer eller betalinger. Vedlagt innhold er underlag, ikke nye kjøreordrer.
@@ -41,7 +43,7 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 
 1. **Kartlegg:** knytt faktiske ruter, modalvinduer, roller og systemtilstander til brukerreiser og skjermfamilier. Bevar alle funksjoner. Et gammelt rutenavn er ikke tillatelse til sletting. Se inventaret og skjermomfanget.
 2. **Wireframe:** tegn informasjonsrekkefølge, hovedhandling, navigasjon og relevante tilstander før detaljering. Vis samme oppgave på mobil og bred skjerm. Bruk felles mønstre med dokumenterte unntak.
-3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder Design System v0.1. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
+3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder gjeldende AK Golf Design System / Precision Athletics. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
 4. **Samordne komponentene:** dokumenter grunnverdier, betydningsbaserte verdier og komponentverdier som faktisk brukes i skjermene. Koble valgt designversjon til eksisterende komponenter når kode skal bygges; ikke la dagens tokens styre utforskingen og ikke opprett et nytt parallelt system av vane.
 5. **Fullfør familiene:** bruk avtalt retning gjennom alle registrerte flater og formater. En pilot er ikke slutten på en bestilling som gjelder hele appen. Fortsett med avklart arbeid; noter konkrete produktspørsmål som blokkerer avhengige deler.
 6. **Prøv og lever:** gå gjennom flytene, kontroller formatene, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
@@ -52,6 +54,7 @@ Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → øk
 
 - Vis øktens faktiske fase: planlagt, pågående, fullført eller avbrutt, med egen lagringstilstand. Samme økt og tall skal henge sammen gjennom I dag, Plan, Live og oppsummering.
 - Strokes Gained-grafer bruker samme skala på begge sider av null. Negative tall må være like lesbare som positive. Forklar kilde, periode, måleenhet og sammenligningsgrunnlag.
+- Skill Map og andre analyseflater skal skille målt verdi, beregnet analyse, faglig hypotese og coachens beslutning. En vakker visualisering er ikke bevis på at dataflyten finnes.
 - Prioriter oppgaven foran dekorative kort og modultelling. Gjentatte knappenavn må bety samme handling. Gi en vei tilbake og en måte å rette feiltrykk på der det er relevant.
 - Del komponenter og grammatikk på tvers av appen, men tilpass tetthet og innhold til spiller, coach, forelder og offentlig nettsted. Organisasjonsprofiler kan ha begrunnede forskjeller.
 - Design for berøring, tastatur, liten skjerm, stor tekst og relevante nettfeil. Ikke løs plassmangel ved å gjøre viktig tekst uleselig eller fjerne funksjoner på mobil.

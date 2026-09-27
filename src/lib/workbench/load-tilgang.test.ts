@@ -35,6 +35,7 @@ mock.module("@/lib/prisma", {
         assert.deepEqual(args.where.OR, [{ classYear: "VG1" }, { classYear: null }]);
         return [];
       } },
+      weekPlan: { findUnique: async () => null },
     },
   },
 });

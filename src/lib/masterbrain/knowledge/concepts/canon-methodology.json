@@ -14,10 +14,12 @@
     "A": {
       "id": "A",
       "name": "Kategori A",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
+      "niva": "World Elite",
+      "snittscore": "< 68",
+      "handicap_equivalent": "+4 eller bedre",
       "handicap_min": null,
-      "handicap_max": null,
-      "description": "Profesjonelt tour-nivå. Spiller for livsopphold, DP World Tour / PGA Tour / LIV-nivå.",
+      "handicap_max": -4,
+      "description": "World Elite. Internasjonalt tour-nivå (DP World Tour / PGA Tour / Major).",
       "ltad_phase": "elite",
       "pyramid_default": {
         "FYS": 15,
@@ -26,17 +28,19 @@
         "SPILL": 25,
         "TURN": 15
       },
-      "coaching_notes": "Svært individualisert. Minimale tekniske endringer. Optimalisering av spesifikke styrker.",
+      "coaching_notes": "Svært individualisert. Optimalisering av spesifikke styrker og scoring.",
       "l_fase_typical": "L-AUTO",
-      "brutto_score_average": "under 68"
+      "typisk_alder": "18–22"
     },
     "B": {
       "id": "B",
       "name": "Kategori B",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Elite amatør / tidlig profesjonell. Plussh.cap, konkurrerer på nasjonalt og internasjonalt nivå.",
+      "niva": "National Elite",
+      "snittscore": "68–72",
+      "handicap_equivalent": "+0 til +3",
+      "handicap_min": -3,
+      "handicap_max": 0,
+      "description": "National Elite. Challenge Tour / Nordic League toppspiller / landslag elite.",
       "ltad_phase": "performance_to_elite",
       "pyramid_default": {
         "FYS": 16,
@@ -45,17 +49,19 @@
         "SPILL": 22,
         "TURN": 15
       },
-      "coaching_notes": "Finjustering og optimalisering. Turneringsplanlegging er kritisk. Tett agent-støtte.",
+      "coaching_notes": "Finjustering og optimalisering. Turneringsplanlegging er kritisk.",
       "l_fase_typical": "L-AUTO",
-      "brutto_score_average": "68-72"
+      "typisk_alder": "17–20"
     },
     "C": {
       "id": "C",
       "name": "Kategori C",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Avansert, kompetitiv amatør. Scorer jevnlig i parregionen, aktiv i seriespill.",
+      "niva": "National U21",
+      "snittscore": "72–74",
+      "handicap_equivalent": "0-3",
+      "handicap_min": 0,
+      "handicap_max": 3,
+      "description": "National U21. Norgescup topp / Elite amatør / landslag junior.",
       "ltad_phase": "performance",
       "pyramid_default": {
         "FYS": 17,
@@ -64,17 +70,19 @@
         "SPILL": 20,
         "TURN": 13
       },
-      "coaching_notes": "Mental trening og konkurranseforberedelse prioriteres. SG er primær diagnose.",
+      "coaching_notes": "Scoring-bevissthet og mental konkurranseforberedelse prioriteres.",
       "l_fase_typical": "L-BALL til L-AUTO",
-      "brutto_score_average": "72-74"
+      "typisk_alder": "16–19"
     },
     "D": {
       "id": "D",
       "name": "Kategori D",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Lav-handicap. Turneringsklar, scorer konsistent under 80.",
+      "niva": "Regional Elite",
+      "snittscore": "74–76",
+      "handicap_equivalent": "4-7",
+      "handicap_min": 4,
+      "handicap_max": 7,
+      "description": "Regional Elite. Scratch-spiller / Toppidrett regional.",
       "ltad_phase": "specialization",
       "pyramid_default": {
         "FYS": 18,
@@ -83,17 +91,19 @@
         "SPILL": 18,
         "TURN": 12
       },
-      "coaching_notes": "Mer SPILL og TURN, mindre ren TEK. SG viktig diagnose-verktøy.",
+      "coaching_notes": "Mer SPILL og TURN, SG er primær diagnose.",
       "l_fase_typical": "L-BALL",
-      "brutto_score_average": "74-76"
+      "typisk_alder": "15–18"
     },
     "E": {
       "id": "E",
       "name": "Kategori E",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Mid-handicap. Konsistent spill, aktiv turneringsdeltaker på klubbnivå.",
+      "niva": "Regional U18",
+      "snittscore": "76–78",
+      "handicap_equivalent": "8-11",
+      "handicap_min": 8,
+      "handicap_max": 11,
+      "description": "Regional U18. Satsende junior / aktiv turneringsdeltaker.",
       "ltad_phase": "specialization",
       "pyramid_default": {
         "FYS": 20,
@@ -104,15 +114,17 @@
       },
       "coaching_notes": "SG-bevissthet viktig. Balanse mellom teknisk utvikling og scoring-fokus.",
       "l_fase_typical": "L-KØLLE til L-BALL",
-      "brutto_score_average": "76-78"
+      "typisk_alder": "14–17"
     },
     "F": {
       "id": "F",
       "name": "Kategori F",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Mellomliggende utvikling. Kan score konsistent, begynner å konkurrere lokalt.",
+      "niva": "Klubbspiller Senior",
+      "snittscore": "78–80",
+      "handicap_equivalent": "12-16",
+      "handicap_min": 12,
+      "handicap_max": 16,
+      "description": "Klubbspiller Senior. Etablert turneringsspiller på klubbnivå.",
       "ltad_phase": "development_to_specialization",
       "pyramid_default": {
         "FYS": 20,
@@ -123,15 +135,17 @@
       },
       "coaching_notes": "Overgang til spesialisert trening. Introdusere turnering-spesifikke ferdigheter.",
       "l_fase_typical": "L-KØLLE",
-      "brutto_score_average": "78-80"
+      "typisk_alder": "15–17"
     },
     "G": {
       "id": "G",
       "name": "Kategori G",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Mellomliggende grunnlag. Konsistent ballkontakt, forstår kurveslag og situasjonsvalg.",
+      "niva": "Klubbspiller Junior",
+      "snittscore": "80–85",
+      "handicap_equivalent": "17-21",
+      "handicap_min": 17,
+      "handicap_max": 21,
+      "description": "Klubbspiller Junior. Aktiv junior med ambisjoner.",
       "ltad_phase": "development",
       "pyramid_default": {
         "FYS": 20,
@@ -140,17 +154,19 @@
         "SPILL": 13,
         "TURN": 5
       },
-      "coaching_notes": "Fokus på konsistens og situasjonsforståelse. Begynn å introdusere SG-bevissthet.",
+      "coaching_notes": "Fokus på konsistens og situasjonsforståelse.",
       "l_fase_typical": "L-ARM til L-KØLLE",
-      "brutto_score_average": "80-85"
+      "typisk_alder": "14–16"
     },
     "H": {
       "id": "H",
       "name": "Kategori H",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Elementær kompetanse. Spiller selvstendig, forstår grunnleggende spilleregler.",
+      "niva": "Rekrutt Senior",
+      "snittscore": "85–90",
+      "handicap_equivalent": "22-27",
+      "handicap_min": 22,
+      "handicap_max": 27,
+      "description": "Rekrutt Senior. Etablert klubbspiller.",
       "ltad_phase": "development",
       "pyramid_default": {
         "FYS": 20,
@@ -159,17 +175,19 @@
         "SPILL": 12,
         "TURN": 6
       },
-      "coaching_notes": "Systematisk arbeid med tekniske grunnprinsipper. Introdusere scoring-bevissthet.",
+      "coaching_notes": "Systematisk arbeid med tekniske grunnprinsipper.",
       "l_fase_typical": "L-ARM",
-      "brutto_score_average": "85-90"
+      "typisk_alder": "13–15"
     },
     "I": {
       "id": "I",
       "name": "Kategori I",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Grunnleggende ferdigheter under utvikling. Kan spille hele baner med noe assistanse.",
+      "niva": "Rekrutt Junior",
+      "snittscore": "90–95",
+      "handicap_equivalent": "28-35",
+      "handicap_min": 28,
+      "handicap_max": 35,
+      "description": "Rekrutt Junior. Grunnleggende ferdigheter under utvikling.",
       "ltad_phase": "foundation_to_development",
       "pyramid_default": {
         "FYS": 20,
@@ -178,17 +196,19 @@
         "SPILL": 10,
         "TURN": 5
       },
-      "coaching_notes": "Overgang fra lek til strukturert trening. Introdusere grunnleggende slagtyper for alle situasjoner.",
+      "coaching_notes": "Overgang fra lek til strukturert trening.",
       "l_fase_typical": "L-KROPP til L-ARM",
-      "brutto_score_average": "90-95"
+      "typisk_alder": "12–14"
     },
     "J": {
       "id": "J",
       "name": "Kategori J",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
-      "handicap_max": null,
-      "description": "Nybegynner med grunnleggende bevissthet. Kan utføre enkle slag men mangler konsistens.",
+      "niva": "Nybegynner Senior",
+      "snittscore": "95–100",
+      "handicap_equivalent": "36-54",
+      "handicap_min": 36,
+      "handicap_max": 54,
+      "description": "Nybegynner Senior. Kan utføre enkle slag men mangler konsistens.",
       "ltad_phase": "foundation",
       "pyramid_default": {
         "FYS": 20,
@@ -199,15 +219,17 @@
       },
       "coaching_notes": "Introduksjon til grunnleggende slagtyper. Mye repetisjon med lavt press.",
       "l_fase_typical": "L-KROPP",
-      "brutto_score_average": "95-100"
+      "typisk_alder": "11–13"
     },
     "K": {
       "id": "K",
       "name": "Kategori K",
-      "handicap_equivalent": "ikke nivågrunnlag — bruk brutto_score_average",
-      "handicap_min": null,
+      "niva": "Nybegynner Junior",
+      "snittscore": "100+",
+      "handicap_equivalent": "54+",
+      "handicap_min": 54,
       "handicap_max": null,
-      "description": "Komplett nybegynner. Ingen golferfaring. Fokus på grunnleggende bevegelsesmønstre og glede ved spillet.",
+      "description": "Nybegynner Junior. Komplett nybegynner. Ingen golferfaring. Lek, mestring og bevegelsesglede.",
       "ltad_phase": "foundation",
       "pyramid_default": {
         "FYS": 25,
@@ -218,7 +240,7 @@
       },
       "coaching_notes": "Lek og utforskning i sentrum. Ingen prestasjonskrav. Bygg kjærlighet til spillet.",
       "l_fase_typical": "L-KROPP",
-      "brutto_score_average": "100+"
+      "typisk_alder": "8–11"
     }
   },
   "pyramid_defaults": {

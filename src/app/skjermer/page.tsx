@@ -28,6 +28,8 @@ import { PersonvernPrecisionView } from "@/components/portal/profil/PersonvernPr
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { IkkeFunnet } from "@/components/system/ikke-funnet";
 import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
+import { PeriodeplanPyramideView } from "@/components/portal/toppidrett/PeriodeplanPyramideView";
+import { TekniskPlanPrecisionView } from "@/components/portal/teknisk/TekniskPlanPrecisionView";
 
 interface SkjermDefinisjon {
   id: string;
@@ -90,6 +92,35 @@ const ALLE_SKJERMER: SkjermDefinisjon[] = [
       "Sjekk abonnementsstatus og brutto snittscore",
     ],
     komponent: <SpillerProfilPrecisionView navn="Magnus Kristiansen" />,
+  },
+  {
+    id: "periodeplan-pyramide",
+    tittel: "Periodeplan & Utviklingspyramiden",
+    kategori: "PLAYERHQ",
+    rute: "/portal/periodeplan",
+    beskrivelse:
+      "Komplett periodeplanlegging for sesongen med 5-lags interaktiv pyramide (FYS, TEK, SLAG, SPILL, TURN), P1–P10 svingposisjoner, TrackMan radarmål og ukevolum.",
+    testpunkter: [
+      "Trykk på trappetrinnene i pyramiden (TEK, FYS, SLAG, SPILL, TURN) for å åpne detaljpanelet",
+      "Bytt periode (Grunnperiode, Spesialperiode, Treningssamling) og se timer og mål oppdatere seg",
+      "Utforsk P1-P10 svingposisjonene med sjekkpunkter og TrackMan-nøkkeltall",
+    ],
+    komponent: <PeriodeplanPyramideView />,
+  },
+  {
+    id: "teknisk-plan",
+    tittel: "Teknisk Plan & Progresjon",
+    kategori: "PLAYERHQ",
+    rute: "/portal/teknisk",
+    beskrivelse:
+      "Systematisk teknisk plan for grunnslag (5m draw) med TrackMan radarmål, P1–P10 svingoppgaver, referansevideoer, 3 motoriske læringssteg og treningsdagbok.",
+    testpunkter: [
+      "Inspiser TrackMan radartall med toleranser og grønn/gul status",
+      "Bla gjennom P1–P10 tidslinjen og se trenerens fasitvideo side-om-side med spillerens video",
+      "Sjekk de 3 motoriske læringsstegene (Uten ball, Lav fart, Auto) og arenafordeling (Nett, TrackMan, Range, Bane)",
+      "Klikk 'Loggfør repetisjoner i treningsdagboka' for å registrere en økt med video",
+    ],
+    komponent: <TekniskPlanPrecisionView />,
   },
   {
     id: "agencyos-stall",

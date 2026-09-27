@@ -1,12 +1,8 @@
-# AK Golf HQ — ordbok og språk (MASTER)
+# AK Golf HQ — ordbok og språk (historisk grunnlag)
 
-> Dokumentet eier språk, ikke utseende. [Gjeldende designautoritet](design-system/design-autoritet.md)
-> styrer alle nye skjermer. [Treningsplanlegging](treningsplanlegging.md) forklarer hvordan
-> begrepene brukes i årsplan, perioder, økter og øvelser.
-
-**Status 21.09.2026:** Dette er den eneste gjeldende masteren for språk, begreper,
-treningsmodell, planlegging, statuser, staving og skjermtekst i AK Golf HQ. Uavklarte
-enkeltvalg er merket i dokumentet og gjør ikke andre ordbøker til parallelle fasiter.
+> Historisk språkgrunnlag fra 21.09.2026. **Ikke styrende.**
+> [Én gjeldende master for treningsplanlegging og språk](treningsplanlegging-og-sprak.md)
+> gjelder ved sprik. [Designautoriteten](design-system/design-autoritet.md) styrer utseende.
 
 `docs/ordbok.json` er maskinlesbar, avledet data og ikke et eget styrende dokument.
 
@@ -16,33 +12,31 @@ skjermtekster, kildeutdrag, konflikttabeller og ferdigbehandlede avklaringer lig
 
 ## Innhold
 
-1. Bruk av masteren
+1. Historisk bruk av ordboken
 2. Felles språk og skrivemåte
 3. Gjeldende treningsspråk og viktige skiller
 4. Handlinger, statuser og meldinger
 5. Faste statusord
 6. Ord som ikke skal brukes
 
-## 1. Bruk av masteren
+## 1. Historisk bruk av ordboken
 
-Denne masteren styrer ordvalg i appen.
+Tabellen nedenfor viser tidligere kildeorden, ikke gjeldende styring. Se [den ene masteren](treningsplanlegging-og-sprak.md).
 
 | Spørsmål | Styrende kilde |
 |---|---|
 | Nytt uttrykk eller konkret valg | Anders' uttrykkelige beslutning for den aktuelle flaten |
-| Treningsmodell og faglige definisjoner | Denne masterens treningsdel og senere uttrykkelige beslutninger fra Anders |
-| Planleggingsbegreper og dimensjoner | [Språk og treningsplanlegging — gjennomgang](treningsplanlegging-og-sprak-gjennomgang.md) (master for valgtreet), med [Treningsplanlegging](treningsplanlegging.md) som forenklet oversikt |
-| Produktnavn, abonnement, booking og tilgang | Denne masteren og gjeldende produktregler |
-| Vanlige appord og staving | Denne masterens ordregister og skriveregler |
-| Tall, enheter og knappeord | Denne masterens regler for tall, enheter, handlinger og statuser |
-| TrackMan-parameternes skrivemåte | Denne masterens TrackMan-del |
-| Markedsføringens tone og tekst | Denne masterens skriveregler og godkjent merkespråk |
+| Treningsmodell og faglige definisjoner | [Gjeldende master](treningsplanlegging-og-sprak.md) |
+| Planleggingsbegreper og dimensjoner | [Gjeldende master](treningsplanlegging-og-sprak.md) |
+| Produktnavn, abonnement, booking og tilgang | [Gjeldende master](treningsplanlegging-og-sprak.md) og [produktregler](platform/BUSINESS-RULES.md) |
+| Vanlige appord og staving | [Gjeldende master](treningsplanlegging-og-sprak.md) |
+| Tall, enheter og knappeord | [Gjeldende master](treningsplanlegging-og-sprak.md) |
+| TrackMan-parameternes skrivemåte | [Gjeldende master](treningsplanlegging-og-sprak.md) |
+| Markedsføringens tone og tekst | [Gjeldende master](treningsplanlegging-og-sprak.md) og godkjent merkespråk |
 | Visuelt design | Den Claude Design-versjonen Anders velger. Denne ordboken fastsetter ingen farger, fonter eller navigasjon |
 | Faktisk funksjon og levering | Kode og prøvd brukerreise; dokumenttekst alene er ikke bevis |
 
-**Instruks til Claude Design:** Bruk ordene i denne masteren. Ikke hent språk fra eldre
-designfiler eller arkiv. Ikke endre tekniske identifikatorer eller produktregler som del av
-språkarbeid.
+**For nytt design:** Bruk ordene i [gjeldende master](treningsplanlegging-og-sprak.md), ikke dette historiske grunnlaget.
 
 ## 2. Felles språk og skrivemåte
 
