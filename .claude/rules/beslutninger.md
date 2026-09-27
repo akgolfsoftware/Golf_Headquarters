@@ -44,13 +44,18 @@ booking med betaling. Coach kan fortsatt avlyse.
    dag bare gir coachen kopierbar tekst. Ferdig når en gjennomført gjestebooking gir et ferdig
    e-postutkast i AgencyOS-køen, som coachen sender med ett trykk (rust «Send»).
 
-**Åpent:**
-- Kobles gjestens tidligere bookinger til kontoen når hen registrerer seg med samme e-post?
-  Ikke sjekket i koden.
-- Når sendes oppfølgingen (EP-06), og hvor mange ganger? Anders sa «potensielt etterpå».
-  Ingen tidsfrist er valgt.
-- Bookinger fra appen lagres også som `PENDING` til betalingen er gjennomført
-  (`src/app/portal/booking/actions.ts`). Antatt samme regel: automatisk. Bekreft.
+5. **Tidligere bookinger hentes inn på kontoen** når en flexkunde registrerer seg med samme
+   e-post (Anders 27.09). Finnes ikke i koden i dag. Ferdig når gjestebookinger med samme
+   `guestEmail` får `userId` ved registrering og vises i PlayerHQ. Kvitteringen lenker i dag til
+   `/auth/signup?epost=…` med e-posten i adressen
+   (`src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx`); bytt til en løsning uten
+   e-post i lenken.
+6. **Tidspunkt for e-postene etter coachingtime** (Anders 27.09): takk (EP-05) klar som utkast
+   hos coachen innen 24 timer etter timen. Én oppfølging (EP-06) etter 14 dager, bare hvis kunden
+   verken har booket ny time eller kjøpt PlayerHQ. Deretter ingenting mer.
+
+Bookinger fra appen bekreftes også automatisk (Anders 27.09): de lagres som `PENDING` til
+betalingen er gjennomført (`src/app/portal/booking/actions.ts`), deretter bekreftet.
 
 ## WANG: FEM ANSATTROLLER, OG SKOLENE DELER ÉN KOORDINERINGSSIDE (Anders 26.09.2026, bindende)
 
