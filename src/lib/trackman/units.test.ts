@@ -63,6 +63,46 @@ describe("eksplisitte TrackMan-enheter", () => {
 });
 
 describe("CSV-enheter gjennom hele normaliseringen", () => {
+  it("bevarer horisontal startretning og mål i meter med eksplisitt enhet", () => {
+    const shots = csvShots([
+      "Date,Club,Launch Direction (deg),Target Distance (yd)",
+      "2026-09-11,Driver,-2.4,180",
+    ].join("\n"));
+    const canonical = csvShotsToCanonical(shots)[0];
+    assert.equal(shots[0]?.launchDirectionDeg, -2.4);
+    assert.equal(shots[0]?.sourceUnits?.targetDistance, "yd");
+    assert.equal(canonical?.launchDirectionDeg, -2.4);
+    assert.equal(canonical?.targetDistanceM, 164.59);
+  });
+
+  it("gjetter ikke målavstand når enheten mangler eller ikke støttes", () => {
+    const missing = csvShotsToCanonical(csvShots(
+      "Date,Club,Horizontal Launch Angle,Target Distance\n2026-09-11,Driver,0,180",
+    ))[0];
+    const unsupported = csvShotsToCanonical(csvShots(
+      "Date,Club,Launch Direction,Target Distance (ft)\n2026-09-11,Driver,1,540",
+    ))[0];
+    const zero = csvShotsToCanonical(csvShots(
+      "Date,Club,Launch Direction,Target Distance (m)\n2026-09-11,Driver,1,0",
+    ))[0];
+    assert.equal(missing?.launchDirectionDeg, 0);
+    assert.equal(missing?.targetDistanceM, null);
+    assert.equal(unsupported?.targetDistanceM, null);
+    assert.equal(zero?.targetDistanceM, null);
+  });
+
+  it("bevarer riktig startretning og målavstand når bare utvalgte slag importeres", () => {
+    const csv = [
+      "Date,Club,Launch Direction,Target Distance",
+      ",,deg,m",
+      "2026-09-11,7-jern,-2,150",
+      "2026-09-11,7-jern,3,170",
+    ].join("\n");
+    const [shot] = csvShotsToCanonical(csvShots(byggTrackManCsvMedValgteSlag(csv, new Set([1]))));
+    assert.equal(shot.launchDirectionDeg, 3);
+    assert.equal(shot.targetDistanceM, 170);
+  });
+
   it("bevarer m/s, mph, meter og yards fra overskriftene", () => {
     const shots = csvShots(
       [

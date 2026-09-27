@@ -38,6 +38,7 @@ import {
   listMatchTasksForImport,
   parseTrackManPhotoForPreview,
   type TrackManEnvironment,
+  type TrackManTargetLineStatus,
 } from "@/app/portal/mal/trackman/actions";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 import {
@@ -152,6 +153,8 @@ export function TrackmanImportModal({
   const [recordedAt, setRecordedAt] = useState(today);
   const [environment, setEnvironment] =
     useState<TrackManEnvironment>("SIMULATOR_INDOOR");
+  const [targetLineStatus, setTargetLineStatus] = useState<TrackManTargetLineStatus>("UNKNOWN");
+  const [targetDistance, setTargetDistance] = useState("");
   const [preferredTaskId, setPreferredTaskId] = useState<string>("");
   const [matchTasks, setMatchTasks] = useState<Array<{ id: string; label: string }>>([]);
   const [forceImport, setForceImport] = useState(false);
@@ -188,6 +191,8 @@ export function TrackmanImportModal({
     setShots([]);
     setValgt(new Set());
     setEnvironment("SIMULATOR_INDOOR");
+    setTargetLineStatus("UNKNOWN");
+    setTargetDistance("");
     setPreferredTaskId("");
     setForceImport(false);
     setFeil(null);
@@ -268,6 +273,7 @@ export function TrackmanImportModal({
           launchAngleDeg: s.launchAngleDeg,
           spinRateRpm: s.spinRateRpm,
           sideMeters: s.sideMeters,
+          launchDirectionDeg: s.launchDirectionDeg,
           notes: null,
           sourceUnits: {
             clubSpeed: "mph",
@@ -303,6 +309,10 @@ export function TrackmanImportModal({
       return;
     }
     if (steg === 2) {
+      if (targetDistance.trim() && (!(Number(targetDistance) > 0) || Number(targetDistance) > 1000)) {
+        setFeil("Målavstand må være mellom 0 og 1000 meter.");
+        return;
+      }
       if (kilde === "csv" && shots.length === 0) {
         setFeil("Last opp en CSV-fil først.");
         return;
@@ -353,6 +363,8 @@ export function TrackmanImportModal({
             kilde === "photo" ? shots.filter((_, i) => valgt.has(i)) : undefined,
           recordedAt,
           environment,
+          targetLineStatus,
+          targetDistanceM: targetDistance.trim() ? Number(targetDistance) : null,
           forceImport,
           preferredTaskId: preferredTaskId || undefined,
           // CSV filtreres allerede i content; HTML trenger indekser mot full parse
@@ -457,6 +469,10 @@ export function TrackmanImportModal({
               setRecordedAt={setRecordedAt}
               environment={environment}
               setEnvironment={setEnvironment}
+              targetLineStatus={targetLineStatus}
+              setTargetLineStatus={setTargetLineStatus}
+              targetDistance={targetDistance}
+              setTargetDistance={setTargetDistance}
               filename={filename}
               onFile={handleFile}
               shotsCount={shots.length}
@@ -479,6 +495,8 @@ export function TrackmanImportModal({
               kilde={kilde}
               recordedAt={recordedAt}
               environment={environment}
+              targetLineStatus={targetLineStatus}
+              targetDistance={targetDistance}
               filename={filename}
               valgtCount={valgt.size}
               totalCount={shots.length}
@@ -603,6 +621,10 @@ function Steg2({
   setRecordedAt,
   environment,
   setEnvironment,
+  targetLineStatus,
+  setTargetLineStatus,
+  targetDistance,
+  setTargetDistance,
   filename,
   onFile,
   shotsCount,
@@ -616,6 +638,10 @@ function Steg2({
   setRecordedAt: (s: string) => void;
   environment: TrackManEnvironment;
   setEnvironment: (e: TrackManEnvironment) => void;
+  targetLineStatus: TrackManTargetLineStatus;
+  setTargetLineStatus: (status: TrackManTargetLineStatus) => void;
+  targetDistance: string;
+  setTargetDistance: (value: string) => void;
   filename: string | null;
   onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   shotsCount: number;
@@ -652,6 +678,39 @@ function Steg2({
           className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
       </label>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="block min-w-0">
+          <span className="mb-1 block font-mono text-[10px] uppercase text-muted-foreground">
+            Mållinje mot valgt mål
+          </span>
+          <select
+            value={targetLineStatus}
+            onChange={(e) => setTargetLineStatus(e.target.value as TrackManTargetLineStatus)}
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="UNKNOWN">Ukjent</option>
+            <option value="CONFIRMED">Bekreftet</option>
+            <option value="NOT_ALIGNED">Ikke rettet mot målet</option>
+          </select>
+        </label>
+        <label className="block min-w-0">
+          <span className="mb-1 block font-mono text-[10px] uppercase text-muted-foreground">
+            Felles målavstand (m)
+          </span>
+          <input
+            type="number"
+            min="0.1"
+            max="1000"
+            step="0.1"
+            inputMode="decimal"
+            value={targetDistance}
+            onChange={(e) => setTargetDistance(e.target.value)}
+            placeholder="Valgfritt"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          />
+        </label>
+      </div>
 
       <label className="block">
         <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -777,8 +836,11 @@ function Steg3({
                   className="h-4 w-4 rounded border-input accent-primary"
                   aria-label={`Slag ${i + 1}`}
                 />
-                <span className="truncate font-medium">
-                  {s.club ?? "Ukjent"}
+                <span className="min-w-0 font-medium">
+                  <span className="block truncate">{s.club ?? "Ukjent"}</span>
+                  <span className="block truncate font-mono text-[10px] font-normal text-muted-foreground">
+                    Start {s.launchDirectionDeg != null ? `${s.launchDirectionDeg.toFixed(1)}°` : "ukjent"}
+                  </span>
                 </span>
                 <span className="text-right font-mono tabular-nums">
                   {s.carryMeters != null ? s.carryMeters.toFixed(1) : "—"}
@@ -808,6 +870,8 @@ function Steg4({
   kilde,
   recordedAt,
   environment,
+  targetLineStatus,
+  targetDistance,
   filename,
   valgtCount,
   totalCount,
@@ -815,6 +879,8 @@ function Steg4({
   kilde: Kilde | null;
   recordedAt: string;
   environment: TrackManEnvironment;
+  targetLineStatus: TrackManTargetLineStatus;
+  targetDistance: string;
   filename: string | null;
   valgtCount: number | null;
   totalCount: number | null;
@@ -836,6 +902,8 @@ function Steg4({
           })}
         />
         <Row label="Treningsmiljø" value={envLabel ?? environment} />
+        <Row label="Mållinje" value={{ UNKNOWN: "Ukjent", CONFIRMED: "Bekreftet", NOT_ALIGNED: "Ikke rettet mot målet" }[targetLineStatus]} />
+        <Row label="Felles målavstand" value={targetDistance.trim() ? `${targetDistance} m` : "Ikke oppgitt"} />
         <Row label="Fil" value={filename ?? "—"} />
         {valgtCount != null && totalCount != null && (
           <Row label="Slag" value={`${valgtCount} av ${totalCount} valgt`} />

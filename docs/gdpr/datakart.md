@@ -50,7 +50,7 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | Kategori | Prisma-modell (felter) | Formål | Rettsgrunnlag (forslag) | Retention (forslag) |
 |---|---|---|---|---|
 | Runder/slag/tester | `Round`, `Shot`, `HoleScore`, `TestResult`, `TestSession`, `TrainingLog` m.fl. | Kjerneproduktet: utvikling bevist | Avtale | Som konto |
-| TrackMan-data | `TrackManSession`, `TrackManShot`, `ClubMetricTrend` | Analyse | Avtale | Som konto |
+| TrackMan-data, startretning og måloppsett | `TrackManSession`, `TrackManShot`, `ClubMetricTrend` | Analyse | Avtale | Som konto |
 | Planer/økter | `TrainingPlan`, `TrainingPlanSession*`, `TrainingSessionV2`, `PlanSession`, `TechnicalPlan*` osv. | Planlegging/gjennomføring | Avtale | Som konto |
 | AI-chat (spiller) | `CoachingSession.messages` (JSON), `CaddieMessage`, `CaddieConversation` | AI-coach / caddie | Avtale; AVKLAR: egen info om at innhold sendes til Anthropic | Erklæringen lover «kan slettes når som helst» — AVKLAR: selvbetjent slette-knapp finnes ikke i dag |
 | Coach-notater om spiller | `CoachNote` | Coachens private notater | Berettiget interesse | Som konto; NB: omfattes av spillerens innsynsrett |

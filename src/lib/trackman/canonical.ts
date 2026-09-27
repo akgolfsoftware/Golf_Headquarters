@@ -18,8 +18,10 @@ export type CanonicalShot = {
   carryMeters: number | null;
   totalMeters: number | null;
   launchAngleDeg: number | null;
+  launchDirectionDeg: number | null;
   spinRateRpm: number | null;
   sideMeters: number | null;
+  targetDistanceM: number | null;
   faceToPath: number | null;
   clubPath: number | null;
   faceAngle: number | null;
@@ -74,13 +76,26 @@ export function csvShotsToCanonical(shots: CsvShot[]): CanonicalShot[] {
     carryMeters: distanceToMeters(s.carryMeters, s.sourceUnits?.carry),
     totalMeters: distanceToMeters(s.totalMeters, s.sourceUnits?.total),
     launchAngleDeg: s.launchAngleDeg,
+    launchDirectionDeg: s.launchDirectionDeg != null && Number.isFinite(s.launchDirectionDeg)
+      ? s.launchDirectionDeg
+      : null,
     spinRateRpm: s.spinRateRpm,
     sideMeters: distanceToMeters(s.sideMeters, s.sourceUnits?.side),
+    targetDistanceM: validTargetDistance(s.targetDistanceRaw ?? null, s.sourceUnits?.targetDistance),
     faceToPath: s.faceToPathDeg ?? null,
     clubPath: s.clubPathDeg ?? null,
     faceAngle: s.faceAngleDeg ?? null,
     attackAngle: s.attackAngleDeg ?? null,
   }));
+}
+
+function validTargetDistance(
+  raw: number | null,
+  unit: TrackManDistanceUnit | undefined,
+): number | null {
+  if (!unit || raw == null || raw <= 0) return null;
+  const meters = distanceToMeters(raw, unit);
+  return meters != null && meters <= 1000 ? meters : null;
 }
 
 /**
@@ -101,8 +116,10 @@ export function htmlReportToCanonical(report: TrackManHtmlReport): CanonicalShot
         carryMeters: null,
         totalMeters: total,
         launchAngleDeg: null,
+        launchDirectionDeg: Number.isFinite(shot.launchDirection) ? shot.launchDirection : null,
         spinRateRpm: null,
         sideMeters: null,
+        targetDistanceM: null,
         faceToPath: Number.isFinite(shot.faceToPath) ? shot.faceToPath : null,
         clubPath: Number.isFinite(shot.clubPath) ? shot.clubPath : null,
         faceAngle: Number.isFinite(shot.faceAngle) ? shot.faceAngle : null,

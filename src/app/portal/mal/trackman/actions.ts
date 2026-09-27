@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
@@ -27,6 +28,13 @@ import type { Prisma } from "@/generated/prisma/client";
 
 export type { TrackManEnvironment };
 
+const TargetSetupSchema = z.object({
+  targetLineStatus: z.enum(["UNKNOWN", "CONFIRMED", "NOT_ALIGNED"]).default("UNKNOWN"),
+  targetDistanceM: z.number().finite().positive().max(1000).nullish(),
+});
+
+export type TrackManTargetLineStatus = z.infer<typeof TargetSetupSchema>["targetLineStatus"];
+
 export type ImportTrackManResult = {
   sessionIds: string[];
   shotCount: number;
@@ -52,6 +60,8 @@ export type ImportTrackManInput = {
   photoShots?: TrackManShot[];
   recordedAt: string;
   environment: TrackManEnvironment;
+  targetLineStatus?: TrackManTargetLineStatus;
+  targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
   preferredTaskId?: string;
   /** 0-baserte indekser for valgte slag (steg 3 i modal). Uten = alle. */
@@ -105,6 +115,11 @@ export async function importTrackMan(
   const user = await requireConsentingUser();
   const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
   const recordedAt = new Date(input.recordedAt);
+  if (!Number.isFinite(recordedAt.getTime())) throw new Error("Ugyldig dato for TrackMan-økt.");
+  const targetSetup = TargetSetupSchema.parse({
+    targetLineStatus: input.targetLineStatus,
+    targetDistanceM: input.targetDistanceM,
+  });
   const matchOpts: MatchOptions = {
     preferredTaskId: input.preferredTaskId,
     preferFullsving: true,
@@ -212,6 +227,8 @@ export async function importTrackMan(
       shotCount: shots.length,
       rawJson,
       environment: input.environment,
+      targetLineStatus: targetSetup.targetLineStatus,
+      targetDistanceM: targetSetup.targetDistanceM ?? null,
     },
   });
 
@@ -263,8 +280,10 @@ export async function importTrackMan(
       carryDistance: shot.carryMeters,
       totalDistance: shot.totalMeters,
       launchAngle: shot.launchAngleDeg,
+      launchDirection: shot.launchDirectionDeg,
       spinRate: shot.spinRateRpm,
       side: shot.sideMeters,
+      targetDistanceM: shot.targetDistanceM ?? targetSetup.targetDistanceM ?? null,
       faceToPath: shot.faceToPath,
       clubPath: shot.clubPath,
       faceAngle: shot.faceAngle,
@@ -309,6 +328,8 @@ export type TrackManCsvInput = {
   recordedAt: string;
   csvContent: string;
   environment: TrackManEnvironment;
+  targetLineStatus?: TrackManTargetLineStatus;
+  targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
   preferredTaskId?: string;
 };
@@ -321,6 +342,8 @@ export async function importTrackManCsv(
     content: input.csvContent,
     recordedAt: input.recordedAt,
     environment: input.environment,
+    targetLineStatus: input.targetLineStatus,
+    targetDistanceM: input.targetDistanceM,
     onBehalfOfUserId: input.onBehalfOfUserId,
     preferredTaskId: input.preferredTaskId,
   });
@@ -330,6 +353,8 @@ export type TrackManHtmlInput = {
   recordedAt: string;
   htmlContent: string;
   environment: TrackManEnvironment;
+  targetLineStatus?: TrackManTargetLineStatus;
+  targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
   preferredTaskId?: string;
 };
@@ -342,6 +367,8 @@ export async function importTrackManHtml(
     content: input.htmlContent,
     recordedAt: input.recordedAt,
     environment: input.environment,
+    targetLineStatus: input.targetLineStatus,
+    targetDistanceM: input.targetDistanceM,
     onBehalfOfUserId: input.onBehalfOfUserId,
     preferredTaskId: input.preferredTaskId,
   });

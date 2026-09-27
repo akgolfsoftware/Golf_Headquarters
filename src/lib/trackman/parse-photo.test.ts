@@ -23,7 +23,7 @@ test("fotoavlesning bevarer kildeenheter og avviser usikre modellresultater", as
 
   await t.test("råverdier beholdes og blandede enheter konverteres én gang", async () => {
     const result = await parse([{
-      club: "  7-jern  ", clubSpeed: 60, ballSpeed: 70, carry: 330, total: 320, side: -5,
+      club: "  7-jern  ", clubSpeed: 60, ballSpeed: 70, carry: 330, total: 320, side: -5, launchDirection: -1.5,
       sourceUnits: { clubSpeed: "mph", ballSpeed: "m/s", carry: "m", total: "yd", side: "yd" },
     }]);
     assert.ok(result.ok);
@@ -36,6 +36,7 @@ test("fotoavlesning bevarer kildeenheter og avviser usikre modellresultater", as
     assert.equal(canonical.carryMeters, 330);
     assert.equal(canonical.totalMeters, 292.61);
     assert.equal(canonical.sideMeters, -4.57);
+    assert.equal(canonical.launchDirectionDeg, -1.5);
     assert.deepEqual(trackManShotsForPreview(result.shots)[0], canonical);
   });
 
