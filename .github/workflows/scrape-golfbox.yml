@@ -1,21 +1,19 @@
 name: Scrape GolfBox (norske turneringer)
 
-# Henter terminliste + leaderboard for norske amatør/junior-turneringer fra
-# GolfBox sine offentlige JSON-handlere. Skriver direkte til Supabase.
-# Delsystem A — se docs/turnering-datakilder.md.
+# Henter KUN terminliste (kommende turneringer + påmeldingsfrister) for norske
+# amatør/junior-turneringer fra GolfBox sine offentlige JSON-handlere.
+# Skriver direkte til Supabase. Delsystem A — se docs/turnering-datakilder.md.
+#
+# Rettet 27.09.2026 (beslutninger.md §PIPELINES ER ENESTE KILDE, punkt 5):
+# skriver IKKE lenger turneringsRESULTATER — det gjør kun ak-golf-pipelines
+# (mandag 04:00 UTC). Denne jobben dekker bare kalender/frister + intern
+# User<->PublicPlayer-lenking, ikke ekstern resultatinnhenting.
 
 on:
   schedule:
-    # Hver time 06–20 UTC (norsk dag/kveld, dekker spilletid). --mode=all
-    # gjør både schedule- og leaderboard-sync; leaderboards treffer kun
-    # pågående/nylig fullførte turneringer, så det er billig utenom sesong.
+    # Hver time 06–20 UTC (norsk dag/kveld) — kun kalender/frister, billig.
     - cron: "0 6-20 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "schedule | leaderboards | all"
-        required: false
-        default: "all"
+  workflow_dispatch: {}
 
 # Unngå overlappende kjøringer.
 concurrency:
@@ -44,5 +42,5 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Scrape GolfBox
-        run: npx tsx scripts/scrape-golfbox.ts --mode=${{ github.event.inputs.mode || 'all' }}
+      - name: Scrape GolfBox (kalender/frister)
+        run: npx tsx scripts/scrape-golfbox.ts

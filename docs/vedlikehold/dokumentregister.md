@@ -6,7 +6,15 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 
 | Kategori | Dokument |
 |---|---|
+| dokumentasjon | [docs/AARSPLAN-MOTOR-STATUS.md](<../AARSPLAN-MOTOR-STATUS.md>) |
 | dokumentasjon | [docs/ak-master.md](<../ak-master.md>) |
+| dokumentasjon | [docs/ARKITEKTUR-KART.md](<../ARKITEKTUR-KART.md>) |
+| dokumentasjon | [docs/arkitektur/agencyos.md](<../arkitektur/agencyos.md>) |
+| dokumentasjon | [docs/arkitektur/agenticos.md](<../arkitektur/agenticos.md>) |
+| dokumentasjon | [docs/arkitektur/forelderportal.md](<../arkitektur/forelderportal.md>) |
+| dokumentasjon | [docs/arkitektur/playerhq.md](<../arkitektur/playerhq.md>) |
+| dokumentasjon | [docs/arkitektur/team-norway.md](<../arkitektur/team-norway.md>) |
+| dokumentasjon | [docs/arkitektur/wang.md](<../arkitektur/wang.md>) |
 | historikk | [docs/arkiv/instruks-2026-09-21/beslutninger-full.md](<../arkiv/instruks-2026-09-21/beslutninger-full.md>) |
 | historikk | [docs/arkiv/instruks-2026-09-21/gotchas-full.md](<../arkiv/instruks-2026-09-21/gotchas-full.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md](<../beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md>) |
@@ -75,6 +83,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/jarvis-shortcut.md](<../jarvis-shortcut.md>) |
 | dokumentasjon | [docs/juridisk/presisjonsstrategi-rettigheter.md](<../juridisk/presisjonsstrategi-rettigheter.md>) |
 | dokumentasjon | [docs/kartlegging-teamnorway-wang-playerhq.md](<../kartlegging-teamnorway-wang-playerhq.md>) |
+| dokumentasjon | [docs/KARTLEGGING-TRENINGSPLANLEGGING.md](<../KARTLEGGING-TRENINGSPLANLEGGING.md>) |
 | dokumentasjon | [docs/marketing/masterprompt-visuell.md](<../marketing/masterprompt-visuell.md>) |
 | dokumentasjon | [docs/marketing/tekstplan-forside-2026-09-05.md](<../marketing/tekstplan-forside-2026-09-05.md>) |
 | dokumentasjon | [docs/merkevare/ak-golf-merkeplattform-2026-08-31.md](<../merkevare/ak-golf-merkeplattform-2026-08-31.md>) |
@@ -82,6 +91,9 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/ordbok.md](<../ordbok.md>) |
 | dokumentasjon | [docs/plan-styrkeprogram-fys.md](<../plan-styrkeprogram-fys.md>) |
 | datert-plan | [docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md](<../planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md>) |
+| datert-plan | [docs/planer/database-modell-deprekering-2026-09-27.md](<../planer/database-modell-deprekering-2026-09-27.md>) |
+| datert-plan | [docs/planer/plan-portering-claude-design-til-kode-2026-09-25.md](<../planer/plan-portering-claude-design-til-kode-2026-09-25.md>) |
+| datert-plan | [docs/planer/prosjektplan-og-lanseringsplan-2026-09-24.md](<../planer/prosjektplan-og-lanseringsplan-2026-09-24.md>) |
 | datert-plan | [docs/planer/team-norway-demodag-2026-09-14.md](<../planer/team-norway-demodag-2026-09-14.md>) |
 | datert-plan | [docs/planer/workbench-design-og-kode-natt-2026-09-20.md](<../planer/workbench-design-og-kode-natt-2026-09-20.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |

@@ -1,4 +1,8 @@
 /**
+ * ARKIVERT 27.09.2026 (beslutninger.md §PIPELINES ER ENESTE KILDE, punkt 5):
+ * HQ henter ikke lenger turneringsresultater — det gjør kun ak-golf-pipelines.
+ * Skriptet er beholdt som historikk, kjøres ikke lenger.
+ *
  * Engangs-backfill: henter resultater for alle GolfBox-turneringer (Olyo, Srixon,
  * Norgescup, Østlandstour m.fl.) som er COMPLETED men aldri fikk
  * public_player_entries — fordi syncGolfBoxLeaderboards() tidligere hadde et

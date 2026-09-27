@@ -1,13 +1,10 @@
 // trackman-agent: kjøres etter TrackManSession.create. Leser primært TrackManShot,
-// fallback rawJson. Skriver Signal og evt. INTENSITY_ADJUST PlanAction.
+// fallback rawJson. Skriver målesignaler, ikke tekniske diagnoser.
 
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { runAgent, type AgentResult } from "./agent-runner";
-import { varsleVedPlanAction } from "./notify-plan-action";
-import { byggProvenance } from "./provenance";
+import { summarizeFaceToPath, type FaceToPathShot } from "./trackman-observations";
 
 export const AGENT_NAME = "trackman-agent";
 
@@ -24,7 +21,6 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
             club: true,
             carryDistance: true,
             totalDistance: true,
-            smashFactor: true,
             faceToPath: true,
           },
         },
@@ -35,8 +31,7 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
     }
 
     const perKolle = new Map<string, number[]>();
-    const smashValues: number[] = [];
-    const faceToPathValues: number[] = [];
+    const faceToPathShots: FaceToPathShot[] = [];
 
     // Primær: strukturerte TrackManShot-rader (CSV + HTML-pipeline)
     if (sisteSesjon.shots.length > 0) {
@@ -45,8 +40,7 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
         if (dist != null) {
           perKolle.set(s.club, [...(perKolle.get(s.club) ?? []), dist]);
         }
-        if (s.smashFactor != null) smashValues.push(s.smashFactor);
-        if (s.faceToPath != null) faceToPathValues.push(s.faceToPath);
+        faceToPathShots.push({ club: s.club, faceToPath: s.faceToPath });
       }
     } else if (sisteSesjon.rawJson) {
       // Fallback: rawJson (eldre HTML uten shots)
@@ -59,7 +53,6 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
         const klubb = r.Club ?? r.club ?? r.kolle ?? null;
         const distanseStr =
           r.Distance ?? r.distance ?? r.Carry ?? r.carry ?? null;
-        const smashStr = r["Smash Factor"] ?? r.smashFactor ?? r.Smash ?? null;
         const ftpStr =
           r["Face To Path"] ??
           r.faceToPath ??
@@ -72,18 +65,15 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
             perKolle.set(klubb, [...(perKolle.get(klubb) ?? []), distanse]);
           }
         }
-        if (smashStr) {
-          const smash = Number(smashStr);
-          if (!Number.isNaN(smash)) smashValues.push(smash);
-        }
-        if (ftpStr) {
+        if (klubb && ftpStr != null && ftpStr !== "") {
           const ftp = Number(ftpStr);
-          if (!Number.isNaN(ftp)) faceToPathValues.push(ftp);
+          faceToPathShots.push({ club: klubb, faceToPath: ftp });
         }
       }
     }
 
-    if (perKolle.size === 0 && smashValues.length === 0) {
+    const faceToPathObservations = summarizeFaceToPath(faceToPathShots);
+    if (perKolle.size === 0 && faceToPathObservations.length === 0) {
       return { signalsWritten: 0, planActionsWritten: 0 };
     }
 
@@ -106,99 +96,28 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
       computedAt,
     }));
 
-    if (faceToPathValues.length >= 3) {
-      const snittFtp =
-        faceToPathValues.reduce((a, b) => a + b, 0) / faceToPathValues.length;
-      const moradFaultId =
-        Math.abs(snittFtp) > 4
-          ? snittFtp > 0
-            ? "face_open"
-            : "over_the_top"
-          : mapSgBandToFault("OTT");
-      if (moradFaultId) {
-        signaler.push({
-          userId,
-          kind: "TRACKMAN_FACE_TO_PATH",
-          value: snittFtp,
-          payload: {
-            sessionId: sisteSesjon.id,
-            moradFaultId,
-            antallSlag: faceToPathValues.length,
-          },
-          computedAt,
-        });
-      }
+    for (const observation of faceToPathObservations) {
+      signaler.push({
+        userId,
+        kind: "TRACKMAN_FACE_TO_PATH",
+        value: observation.meanDegrees,
+        payload: {
+          sessionId: sisteSesjon.id,
+          klubb: observation.club,
+          antallSlag: observation.shotCount,
+          interpretation: "MEASUREMENT_ONLY",
+        },
+        computedAt,
+      });
     }
 
     if (signaler.length > 0) {
       await prisma.signal.createMany({ data: signaler });
     }
 
-    let planActionsWritten = 0;
-    if (smashValues.length >= 3) {
-      const snitt =
-        smashValues.reduce((a, b) => a + b, 0) / smashValues.length;
-      if (snitt < 1.38) {
-        const plan = await prisma.trainingPlan.findFirst({
-          where: { userId, isActive: true },
-          select: { id: true },
-        });
-        const eksisterende = await prisma.planAction.findFirst({
-          where: {
-            userId,
-            actionType: "INTENSITY_ADJUST",
-            status: "PENDING",
-            agentName: AGENT_NAME,
-          },
-        });
-        if (!eksisterende) {
-          const coachId = await resolveCoachIdForPlayer(userId);
-          const forklaring = `Smash factor snitt ${snitt.toFixed(2)} — reduser CS og fokuser treffkvalitet.`;
-          const created = await prisma.planAction.create({
-            data: {
-              userId,
-              coachId,
-              planId: plan?.id ?? null,
-              actionType: "INTENSITY_ADJUST",
-              agentName: AGENT_NAME,
-              suggestion: {
-                csTarget: 60,
-                forklaring,
-                signalSnapshot: {
-                  kind: "TRACKMAN_METRIC",
-                  value: snitt,
-                  metric: "smash_factor",
-                },
-              },
-              provenance: byggProvenance({
-                kilde: "TRACKMAN",
-                rader: [
-                  {
-                    id: sisteSesjon.id,
-                    dato: sisteSesjon.recordedAt.toISOString(),
-                  },
-                ],
-                regel: "smash factor-snitt under 1.38",
-                terskel: 1.38,
-                maaltVerdi: snitt,
-              }),
-            },
-          });
-          planActionsWritten++;
-          await varsleVedPlanAction({
-            userId,
-            agentName: AGENT_NAME,
-            actionType: "INTENSITY_ADJUST",
-            forklaring,
-            planActionId: created.id,
-          });
-        }
-      }
-    }
-
     return {
       signalsWritten: signaler.length,
-      planActionsWritten,
+      planActionsWritten: 0,
     };
   });
 }
