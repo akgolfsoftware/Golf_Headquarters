@@ -17,11 +17,14 @@ import { prisma } from "@/lib/prisma";
 const CountsSchema = z
   .array(
     z.object({
-      club: z.string().min(1).max(40),
+      club: z.string().min(1).max(60),
       count: z.number().int().min(0).max(5000),
+      area: z.string().max(40).optional().nullable(),
+      category: z.string().max(40).optional().nullable(),
+      repetitionType: z.string().max(40).optional().nullable(),
     }),
   )
-  .max(20);
+  .max(100);
 
 async function persistCounts(sessionId: string, counts: unknown, finish: boolean) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -59,8 +62,20 @@ async function persistCounts(sessionId: string, counts: unknown, finish: boolean
       for (const rad of parsed.data) {
         await tx.sessionBallLog.upsert({
           where: { planSessionId_club: { planSessionId: sessionId, club: rad.club } },
-          create: { planSessionId: sessionId, club: rad.club, count: rad.count },
-          update: { count: rad.count },
+          create: {
+            planSessionId: sessionId,
+            club: rad.club,
+            count: rad.count,
+            area: rad.area ?? null,
+            category: rad.category ?? null,
+            repetitionType: rad.repetitionType ?? null,
+          },
+          update: {
+            count: rad.count,
+            area: rad.area ?? null,
+            category: rad.category ?? null,
+            repetitionType: rad.repetitionType ?? null,
+          },
         });
       }
     });

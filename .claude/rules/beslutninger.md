@@ -4,6 +4,20 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ÉN SPILLERPROFIL (AG-08), OG PGA-SAMMENLIGNINGEN BRUKER BARE EKTE DATA GOLF-TALL (Anders 27.09.2026, bindende)
+
+Svar på de to siste uavklarte punktene i Claude Design «AK Golf Precision Athletics» (`7d7c2994`).
+
+- **Én spillerprofil: AG-08 Spiller 360.** Kortet i AG-03 Oppfølgingskø lenker dit. PS-01 finnes
+  ikke i skjermlista og strykes. Overstyrer spørsmålet om PS-01 i §AG-03b punkt 3.
+- **ST-05 PGA-sammenligning:** ekte PGA-navn fra Data Golf i appen (offentlige proffspillere).
+  «Egne tall» bruker bare Data Golfs ekte fordeling, aldri en formel vi har laget selv. Mangler
+  tallet, vises «—».
+
+Krever ingen kodeendring — bekrefter dagens tilstand. `src/lib/datagolf/player-tool-data.ts`
+bruker allerede ekte Data Golf-data og egne registrerte runder. Formelen fantes bare i designet
+og rettes i runde 18.
+
 ## BOOKING BEKREFTES AUTOMATISK, OG BOOKINGE-POSTENE FÅR DESIGN (Anders 27.09.2026, bindende)
 
 **Offentlig booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført.**
@@ -267,6 +281,18 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
 
 Pekerne er rettet i samme PR: `design-autoritet.md`, `designsystem/README.md`, `ak-hq-design`-skillen.
 
+## FORELDER-SKALLET BRUKER FELLES NAVIGASJON (Anders 23.09.2026, bindende)
+
+`/forelder` skal bruke samme navigasjonsmønster som AgencyOS og PlayerHQ: hamburgermeny
+på mobil og topplinje med fire mål og «Mer» på desktop. FO-01 til FO-04 skal bruke ett
+delt skall, ikke fire ulike navigasjoner. Dette produktvalget gjelder innen gjeldende
+designautoritet «AK Golf Precision Athletics»; eldre «App design»-tegninger er historikk.
+
+**Arbeidet dette utløser:** Samordne FO-01 til FO-04 i gjeldende designprosjekt, bygg
+skallet én gang i appen og kontroller mobil, desktop og relevante temaer. Dagens
+`src/components/v2/shell.tsx` har fortsatt `BunnNavLenker`/`IkonRailNav` for forelder;
+denne dokumentbeslutningen er ikke en ferdig skjermimplementasjon. Anders må se de
+oppdaterte skjermene før port 7 kan regnes som bestått.
 
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 
@@ -309,8 +335,7 @@ porting av de tre ferdige områdene.
    - Caddie-navnet i UI: koden sier «Coach AI», «AI-coach» og «AI om {fornavn}» om hverandre
      for samme funksjon (PH-16). Ordboken sier «Caddie».
    - «Merge» (AG-04) vs. «Slå sammen» (AG-10) er samme handling med to navn og to rust-svar.
-   - PS-01 (ny spillerprofil-side) overlapper med spillerkortet i AG-03s inspektør — behold
-     begge og koble dem (anbefalt), eller slå sammen til én?
+   - PS-01: avgjort 27.09 — én spillerprofil (AG-08), se §ÉN SPILLERPROFIL.
 4. **Fire «ingen kan gjøre X»-hull må bygges sammen med skjermen, ikke bare tegnes rundt**,
    ellers ser skjermen ferdig ut uten å virke:
    - Administrator-Caddie (AG-14): fire API-ruter og seksten verktøy finnes i koden, men
@@ -483,7 +508,7 @@ og ikke kan dras ut av syne.
 
 ## Produkt og tilgang
 
-- Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år. ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
+- Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
 - PlayerHQ har fire faner: I dag · Plan · Analyse · Meg. Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
@@ -498,7 +523,7 @@ og ikke kan dras ut av syne.
 - Priser leses fra `ServiceType.priceOre`, aldri hardkodet. Kartleggingsøkt er fjernet (§KARTLEGGINGSØKT FJERNES).
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
-- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Analyse og DataGolf for TN er delte plattformflater.
+- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Team Norway får kun interne skjermer gratis mot at de promoterer appen (Anders 24.09.2026). Analyse og DataGolf for TN er delte plattformflater.
 - WANG har eget system (`src/styles/wang-tokens.css`). Junior Academy og GFGK Junior er ulike ting.
 
 ## Data (brytes disse, blir tallene feil)

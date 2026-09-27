@@ -5,7 +5,7 @@ source_section: "## Korrelasjons-curiosum: Korrelasjonen mellom puttings SG og l
 tags: [amatør, baseline, broadie, handicap, ott, pga-tour, putt, sg]
 topics: [amator-data, broadie, implementasjon, pga-snitt, putting, sg-baseline]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

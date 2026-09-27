@@ -5,7 +5,7 @@ source_section: "21. Ordliste norsk-engelsk golfterminologi (del 2)"
 tags: ["baseline", "kategori", "sg", "trackman"]
 topics: ["implementasjon", "sg-baseline", "sg-kategorier"]
 lang: no
-relevance: ["CoachHQ", "PlayerHQ", "RAG", "SgBaseline"]
+relevance: ["AgencyOS", "PlayerHQ", "RAG", "SgBaseline"]
 updated: 2026-06-14
 ---
 

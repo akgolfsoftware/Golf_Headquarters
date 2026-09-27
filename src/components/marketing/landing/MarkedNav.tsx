@@ -14,6 +14,7 @@ import { Knapp, Mobilmeny, Toppnav, type Lenke } from "@/components/marketing/ak
  * i toppnav, hero og avslutning (kitets README). «Logg inn» ligger i bunnen,
  * ikke her: menyen skal selge én ting.
  * Avvik:
+ *   - Markedsnavet følger AK Golf-masterens kit, ikke Train-lock-riggen; ingen egen visuell riggrad ennå.
  *   - Kartleggingsøkt er fjernet fra teksten (beslutninger.md §KARTLEGGINGSØKT FJERNES, 26.09.2026).
  */
 

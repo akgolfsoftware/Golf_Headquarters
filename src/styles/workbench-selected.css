@@ -4,12 +4,12 @@
   --wb-sand: #F2F1ED; --wb-panel: #FAF8F3; --wb-white: #FFFFFF;
   --wb-ink: #141413; --wb-body: #2a2926; --wb-muted: #6b6862; --wb-border: #ddd9d1; --wb-strong: #c9c4ba;
   --wb-fys: #2a2926; --wb-tek: #141413; --wb-slag: #6b6862; --wb-spill: #8a8680; --wb-turn: #8a6a12;
-  --tl-font-sans: var(--font-archivo), Arial, sans-serif;
+  --tl-font-sans: var(--font-ibm-plex-sans), Arial, sans-serif;
   --tl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --tl-scene: var(--wb-sand); --tl-elev: var(--wb-white); --tl-dock: var(--wb-panel);
   --tl-hair: var(--wb-border); --tl-dim: var(--wb-border); --tl-text: var(--wb-ink); --tl-mute: var(--wb-muted);
   --tl-fill: var(--wb-ink); --tl-on-fill: var(--wb-white); --tl-warm: var(--wb-ink); --tl-warm-ink: var(--wb-ink);
-  --tl-r-card: 2px; --tl-r-sheet: 2px 2px 0 0; --tl-artefakt: 340px; --tl-kilder: 236px;
+  --tl-r-card: 8px; --tl-r-sheet: 12px 12px 0 0; --tl-artefakt: 340px; --tl-kilder: 236px;
   min-height: 100dvh; background: var(--wb-sand); color: var(--wb-ink); font-family: var(--tl-font-sans); font-size: 15px;
 }
 .wb-app * { box-sizing: border-box; }
@@ -40,7 +40,7 @@
 .wb-inspector { border-left: 1px solid var(--wb-border); background: var(--wb-panel); padding: 16px 14px; min-width: 0; }
 .wb-kicker { display: block; margin: 0 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--wb-muted); }
 .wb-heading { display: flex; gap: 16px; align-items: flex-end; margin: 0 0 18px; }
-.wb-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-oswald), sans-serif; letter-spacing: -.01em; white-space: nowrap; }
+.wb-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-ibm-plex-sans), sans-serif; letter-spacing: -.01em; white-space: nowrap; }
 .wb-heading .wb-sub { flex: 1; font: 400 11px/1.2 var(--tl-font-mono); color: var(--wb-muted); padding-bottom: 5px; }
 .wb-publish { min-height: 44px; padding: 0 18px; border: 0; border-radius: 2px; background: var(--ak-grunn-farge-rust-600); color: var(--ak-workbench-pa-handling); font-size: 15px; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .wb-publish:disabled { opacity: .5; cursor: default; }
@@ -50,7 +50,7 @@
 .wb-roster a { min-height: 44px; padding: 8px 10px; display: flex; flex-direction: column; color: var(--wb-body); border: 1px solid transparent; border-radius: 2px; font-size: 14px; }
 .wb-roster a[aria-current] { border-color: var(--wb-strong); background: var(--wb-white); font-weight: 600; }
 .wb-roster small { color: var(--wb-muted); font: 400 10px/1.4 var(--tl-font-mono); }
-.wb-week-summary h2 { font: 600 17px/1.2 var(--font-oswald), sans-serif; margin: 0; }
+.wb-week-summary h2 { font: 600 17px/1.2 var(--font-ibm-plex-sans), sans-serif; margin: 0; }
 .wb-week-summary p { font: 400 11px/1.4 var(--tl-font-mono); color: var(--wb-muted); margin: 4px 0 24px; }
 .wb-week-summary dl { margin: 0 0 22px; }
 .wb-week-summary dl div { display: grid; grid-template-columns: 104px 1fr; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--wb-border); }
@@ -123,7 +123,7 @@
   .wb-mobile-summary { display: flex; flex-direction: column; position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; height: 292px; padding: 12px 14px 14px; background: var(--wb-white); border: 1px solid var(--wb-strong); border-radius: 2px 2px 0 0; box-shadow: 0 -8px 24px rgb(20 20 19 / 8%); gap: 8px; overflow: auto; }
   .wb-grip { width: 36px; height: 3px; flex: 0 0 3px; background: var(--wb-strong); border-radius: 2px; align-self: center; margin-bottom: 6px; }
   .wb-mobile-summary .wb-kicker { margin: 0; }
-  .wb-mobile-summary h2 { margin: 0; font: 600 17px/1.2 var(--font-oswald), sans-serif; }
+  .wb-mobile-summary h2 { margin: 0; font: 600 17px/1.2 var(--font-ibm-plex-sans), sans-serif; }
   .wb-mobile-summary dl { margin: 4px 0; }
   .wb-mobile-summary dl div { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--wb-border); font-size: 14px; line-height: 1.4; }
   .wb-mobile-summary dl div:last-child { border: 0; }
@@ -146,7 +146,7 @@
 .wb-period-body { gap: 20px; }
 .wb-period-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
 .wb-period-card { min-height: 132px; padding: 16px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); }
-.wb-period-card strong { display: block; margin-top: 14px; font: 600 28px/1 var(--font-oswald),sans-serif; }
+.wb-period-card strong { display: block; margin-top: 14px; font: 600 28px/1 var(--font-ibm-plex-sans),sans-serif; }
 .wb-period-card strong small { display: block; margin-top: 7px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
 .wb-period-card > small { display: block; margin-top: 10px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
 .wb-period-meter { display: block; height: 5px; margin-top: 16px; background: var(--wb-border); overflow: hidden; }
@@ -163,7 +163,7 @@
 .wb-period-week { min-height: 112px; padding: 12px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); color: var(--wb-ink); }
 .wb-period-week > span { display: block; font-weight: 600; }
 .wb-period-week small { display: block; min-height: 17px; margin-top: 7px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
-.wb-period-week b { display: block; margin-top: 10px; font: 500 16px/1 var(--font-oswald),sans-serif; }
+.wb-period-week b { display: block; margin-top: 10px; font: 500 16px/1 var(--font-ibm-plex-sans),sans-serif; }
 .wb-period-week > i { display: block; height: 3px; margin-top: 12px; background: var(--wb-border); }
 .wb-period-week > i span { display: block; height: 100%; background: var(--wb-ink); }
 .wb-period-table-wrap { overflow-x: auto; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); }
@@ -197,9 +197,9 @@
 /* Måned — WB-05 valgt Claude Design-master. */
 .wb-month-body { gap: 18px; }
 .wb-month-heading { display: flex; align-items: flex-end; gap: 14px; }
-.wb-month-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-oswald),sans-serif; }
+.wb-month-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-ibm-plex-sans),sans-serif; }
 .wb-month-heading .wb-sub { flex: 1; padding-bottom: 4px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
-.wb-month-year { padding-bottom: 2px; color: var(--wb-body); font: 500 18px/1 var(--font-oswald),sans-serif; }
+.wb-month-year { padding-bottom: 2px; color: var(--wb-body); font: 500 18px/1 var(--font-ibm-plex-sans),sans-serif; }
 .wb-month-progress { min-width: 190px; }
 .wb-month-progress b { display: block; font: 500 15px/1.2 var(--tl-font-mono); }
 .wb-month-progress .wb-period-meter { margin-top: 8px; }
@@ -258,7 +258,7 @@
 /* År — WB-06 valgt Claude Design-master. */
 .wb-year-body { gap: 18px; }
 .wb-year-heading { display: flex; align-items: flex-end; gap: 14px; }
-.wb-year-heading h1 { margin: 0; font: 600 32px/1 var(--font-oswald),sans-serif; }
+.wb-year-heading h1 { margin: 0; font: 600 32px/1 var(--font-ibm-plex-sans),sans-serif; }
 .wb-year-heading .wb-sub { flex: 1; padding-bottom: 4px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
 .wb-year-progress { min-width: 210px; }
 .wb-year-progress b { display: block; font: 500 15px/1.2 var(--tl-font-mono); }
@@ -329,7 +329,7 @@
 .wb-session-drills button > small { color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); text-align: right; }
 .wb-session-empty { min-height: 120px; display: grid; place-content: center; border: 1px solid var(--wb-strong); background: var(--wb-white); color: var(--wb-muted); font-size: 13px; }
 .wb-inline-link { display: inline-flex; align-items: center; justify-content: center; width: fit-content; }
-.wb-session-editor h2 { margin: 0; font: 600 18px/1.2 var(--font-oswald),sans-serif; }
+.wb-session-editor h2 { margin: 0; font: 600 18px/1.2 var(--font-ibm-plex-sans),sans-serif; }
 .wb-session-editor > p { margin: 5px 0 16px; color: var(--wb-muted); font: 400 11px/1.4 var(--tl-font-mono); }
 .wb-session-editor dl { margin: 0; }
 .wb-session-editor dl div { display: grid; grid-template-columns: 94px minmax(0,1fr); gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--wb-border); }
@@ -432,17 +432,17 @@
 .wb-live-layout .wb-pills { background: var(--wb-live-flat); border-bottom-color: var(--wb-live-raised); }
 .wb-live-body { background: var(--wb-live-flat); }
 .wb-live-heading { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 16px; }
-.wb-live-heading h1 { margin: 0; color: var(--wb-live-text); font: 600 29px/1.05 var(--font-oswald),sans-serif; letter-spacing: -.01em; }
+.wb-live-heading h1 { margin: 0; color: var(--wb-live-text); font: 600 29px/1.05 var(--font-ibm-plex-sans),sans-serif; letter-spacing: -.01em; }
 .wb-live-meta { padding-bottom: 5px; color: var(--wb-live-muted); font: 400 11px/1.2 var(--tl-font-mono); }
-.wb-live-clock { margin-left: auto; color: var(--wb-live-text); font: 600 29px/1 var(--font-oswald),sans-serif; letter-spacing: -.01em; }
+.wb-live-clock { margin-left: auto; color: var(--wb-live-text); font: 600 29px/1 var(--font-ibm-plex-mono),monospace; letter-spacing: -.01em; }
 .wb-live-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-bottom: 18px; }
-.wb-live-card { min-width: 0; padding: 14px 16px; border: 1px solid var(--wb-live-raised); border-radius: 2px; background: var(--wb-live-page); }
-.wb-live-card h2 { margin: 6px 0 0; color: var(--wb-live-text); font: 600 18px/1.15 var(--font-oswald),sans-serif; }
+.wb-live-card { min-width: 0; padding: 14px 16px; border: 1px solid var(--wb-live-raised); border-radius: 8px; background: var(--wb-live-page); }
+.wb-live-card h2 { margin: 6px 0 0; color: var(--wb-live-text); font: 600 18px/1.15 var(--font-ibm-plex-sans),sans-serif; }
 .wb-live-card > p { margin: 4px 0 0; color: var(--wb-live-muted); font-size: 13px; }
 .wb-live-counter { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
-.wb-live-counter button { width: 44px; height: 44px; padding: 0; border: 1px solid var(--wb-live-strong); border-radius: 2px; background: transparent; color: var(--wb-live-text); font-size: 21px; cursor: pointer; }
+.wb-live-counter button { width: 44px; height: 44px; padding: 0; border: 1px solid var(--wb-live-strong); border-radius: 8px; background: transparent; color: var(--wb-live-text); font-size: 21px; cursor: pointer; }
 .wb-live-counter button:hover,.wb-live-actions button:hover,.wb-live-exercises button:hover { background: var(--wb-live-raised); }
-.wb-live-counter strong { min-width: 72px; text-align: center; color: var(--wb-live-text); font: 600 42px/1 var(--font-oswald),sans-serif; }
+.wb-live-counter strong { min-width: 72px; text-align: center; color: var(--wb-live-text); font: 600 42px/1 var(--font-ibm-plex-mono),monospace; }
 .wb-live-counter-label { display: block; margin-top: 6px; color: var(--wb-live-muted); font: 400 11px/1.2 var(--tl-font-mono); }
 .wb-live-series { display: flex; flex-direction: column; margin-top: 8px; }
 .wb-live-series > div { min-height: 44px; display: grid; grid-template-columns: minmax(0,1fr) 84px 110px; align-items: center; gap: 10px; border-bottom: 1px solid var(--wb-live-raised); }
@@ -451,11 +451,11 @@
 .wb-live-series span { color: var(--wb-live-muted); font: 400 13px/1.2 var(--tl-font-mono); }
 .wb-live-series em { color: var(--wb-live-muted); font-size: 13px; font-style: normal; text-align: right; }
 .wb-live-actions { display: flex; gap: 6px; margin-top: 12px; }
-.wb-live-actions button,.wb-live-finish { min-height: 44px; flex: 1; padding: 0 12px; border: 1px solid var(--wb-live-strong); border-radius: 2px; background: transparent; color: var(--wb-live-text); font-size: 14px; font-weight: 600; cursor: pointer; }
+.wb-live-actions button,.wb-live-finish { min-height: 44px; flex: 1; padding: 0 12px; border: 1px solid var(--wb-live-strong); border-radius: 8px; background: transparent; color: var(--wb-live-text); font-size: 14px; font-weight: 600; cursor: pointer; }
 .wb-live-actions button:disabled { opacity: .45; cursor: default; }
 .wb-live-exercises { display: grid; gap: 3px; }
 .wb-live-exercises > div { display: grid; gap: 3px; }
-.wb-live-exercises > div > button { appearance: none; min-height: 44px; display: grid; grid-template-columns: 24px minmax(0,1fr) 70px 120px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--wb-live-raised); border-radius: 2px; background: var(--wb-live-page); color: var(--wb-live-text); text-align: left; cursor: pointer; }
+.wb-live-exercises > div > button { appearance: none; min-height: 44px; display: grid; grid-template-columns: 24px minmax(0,1fr) 70px 120px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--wb-live-raised); border-radius: 8px; background: var(--wb-live-page); color: var(--wb-live-text); text-align: left; cursor: pointer; }
 .wb-live-exercises > div > button[aria-current] { border-color: var(--wb-live-text); }
 .wb-live-exercises button > span { color: var(--wb-live-strong); font: 400 11px/1.2 var(--tl-font-mono); }
 .wb-live-exercises button > b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
@@ -463,7 +463,7 @@
 .wb-live-exercises button > em { color: var(--wb-live-muted); font-size: 13px; font-style: normal; text-align: right; }
 .wb-live-finish { width: fit-content; min-width: 180px; margin-top: 10px; flex: 0 0 auto; }
 .wb-live-inspector { background: var(--wb-live-page); border-left-color: var(--wb-live-raised); }
-.wb-live-next h2 { margin: 0; color: var(--wb-live-text); font: 600 18px/1.2 var(--font-oswald),sans-serif; }
+.wb-live-next h2 { margin: 0; color: var(--wb-live-text); font: 600 18px/1.2 var(--font-ibm-plex-sans),sans-serif; }
 .wb-live-next > p { margin: 5px 0 22px; color: var(--wb-live-muted); font: 400 11px/1.4 var(--tl-font-mono); }
 .wb-live-next dl { margin: 0 0 20px; }
 .wb-live-next dl div { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--wb-live-raised); }
@@ -472,7 +472,7 @@
 .wb-live-next dd[data-empty="true"] { color: var(--wb-live-strong); }
 .wb-live-next .wb-publish { width: 100%; }
 .wb-live-empty { min-height: 260px; display: grid; place-content: center; text-align: center; border: 1px solid var(--wb-live-raised); background: var(--wb-live-page); }
-.wb-live-empty h1 { margin: 0; font: 600 29px/1.1 var(--font-oswald),sans-serif; }
+.wb-live-empty h1 { margin: 0; font: 600 29px/1.1 var(--font-ibm-plex-sans),sans-serif; }
 .wb-live-empty p,.wb-live-load-error { color: var(--wb-live-muted); font-size: 13px; }
 .wb-live-load-error { padding: 24px; }
 @media(max-width:1023px) {

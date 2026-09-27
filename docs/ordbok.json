@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-09-26",
+  "versjon": "2026-09-27",
   "kilder": {
     "master": "docs/ordbok.md",
     "planlegging": "docs/treningsplanlegging.md",
@@ -690,6 +690,19 @@
       "SUBSCRIPTION",
       "INVOICE",
       "OTHER"
+    ],
+    "WeekType": [
+      "UTVIKLING",
+      "VEDLIKEHOLD",
+      "TURNERING"
+    ],
+    "WeekNote": [
+      "FERIE",
+      "TEST",
+      "SAMLING",
+      "EVALUERING",
+      "PRE_TURNERING",
+      "TEKNIKK_UKE"
     ],
     "FacilityType": [
       "STUDIO",

@@ -549,7 +549,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       {fane === "turnering" && (
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <Kort eyebrow="Kommende turneringer" action={<Link href="/admin/tournaments" style={{ textDecoration: "none" }}><Caps size={9}>Meld på →</Caps></Link>}>
+            <Kort eyebrow="Kommende turneringer" action={<Link href="/admin/turnering" style={{ textDecoration: "none" }}><Caps size={9}>Meld på →</Caps></Link>}>
               <RadListe items={data.turnering.kommende} tomIcon="trophy" tomTitle="Ingen påmeldinger" tomSub="Kommende turneringer med nedtelling vises her." />
             </Kort>
             <Kort eyebrow="Siste resultater">

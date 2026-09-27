@@ -18,6 +18,7 @@ type Props = {
 };
 
 const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
+  { kind: "TEK", tittel: "Teknisk plan (P1–P10)", ikon: "crosshair" },
   { kind: "DRILL", tittel: UI.sourcesDrills, ikon: "dumbbell" },
   { kind: "TEMPLATE", tittel: UI.sourcesTemplates, ikon: "star" },
   { kind: "PREVIOUS_WEEK", tittel: UI.sourcesPrevious, ikon: "history" },
@@ -80,10 +81,52 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
 }
 
 function KildeKort({ kilde }: { kilde: SourceItem }) {
+  const erHovedfokus = kilde.tags?.includes("HOVEDFOKUS");
   return (
-    <li draggable title={UI.dragHint} onDragStart={(e: DragEvent<HTMLLIElement>) => { settKildeDataTransfer(e, kilde.id); e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`; }} onDragEnd={(e: DragEvent<HTMLLIElement>) => { e.currentTarget.style.boxShadow = "none"; }} style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, padding: "6px 2px 6px 10px", borderRadius: 2, cursor: "grab", minWidth: 0 }}>
-      <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kilde.title}</div>
-      {kilde.subtitle && <div style={{ fontSize: 11, fontWeight: 400, color: TL.mute, marginTop: 1 }}>{kilde.subtitle}</div>}
+    <li
+      draggable
+      title={UI.dragHint}
+      onDragStart={(e: DragEvent<HTMLLIElement>) => {
+        settKildeDataTransfer(e, kilde.id);
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`;
+      }}
+      onDragEnd={(e: DragEvent<HTMLLIElement>) => {
+        e.currentTarget.style.boxShadow = "none";
+      }}
+      style={{
+        fontFamily: TL.font.sans,
+        fontSize: 13,
+        fontWeight: 600,
+        color: TL.text,
+        padding: "6px 4px 6px 10px",
+        borderRadius: 2,
+        cursor: "grab",
+        minWidth: 0,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kilde.title}</span>
+        {erHovedfokus && (
+          <span
+            style={{
+              fontSize: 9,
+              fontFamily: TL.font.mono,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              color: "var(--ak-grunn-farge-rust-600)",
+              textTransform: "uppercase",
+              flexShrink: 0,
+            }}
+          >
+            Fokus
+          </span>
+        )}
+      </div>
+      {kilde.subtitle && (
+        <div style={{ fontSize: 11, fontWeight: 400, color: TL.mute, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {kilde.subtitle}
+        </div>
+      )}
     </li>
   );
 }
