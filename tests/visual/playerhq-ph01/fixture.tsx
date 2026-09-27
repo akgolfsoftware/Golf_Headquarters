@@ -26,7 +26,7 @@ const agenda = [
 ];
 const approval: PlayerDaySession = {
   id: "approval-1",
-  title: "Wedge 40–80 m · flyttet til 16.00",
+  title: "Innspill 50 m · flyttet til 16.00",
   startMinute: 960,
   durationMinutes: 90,
   pyramid: "SLAG",
@@ -41,9 +41,11 @@ const approval: PlayerDaySession = {
 
 function naaFor(tilstand: string): NaaKort | null {
   const base: NaaKort = {
-    tittel: "Wedge 40–80 m",
+    tittel: "Innspill 50 m",
     tid: "16.00–17.30",
     meta: "Treningsområde · Mulligan Indoor · 1 t 30 min",
+    varighetTekst: "1 t 30 min",
+    stedTekst: "Treningsområde · Mulligan Indoor",
     ctaTekst: "Start økt",
     ctaHref: "/portal/live/wedge-1",
     fremdriftPst: null,
@@ -81,7 +83,7 @@ const props: IDagSelectedProps = {
   prikker: state === "locked" ? prikker.map((prikk) => ({ ...prikk, fylt: false })) : prikker,
   tilstand: visningstilstand(state),
   naa: state === "locked" ? null : naaFor(state),
-  neste: ["normal", "completed"].includes(state) ? { tittel: "Putting · 3–5 fot", meta: "I morgen · 08.00–09.00", href: "/portal/planlegge" } : null,
+  neste: ["normal", "completed"].includes(state) ? { tittel: "Putt 3–5 fot", meta: "I morgen · 08.00–09.00", href: "/portal/planlegge" } : null,
   sgInnspill: "−0,41",
   okterUke: state === "empty-week" || state === "locked" ? 0 : 5,
   fullfortUke: state === "completed" ? 4 : 3,

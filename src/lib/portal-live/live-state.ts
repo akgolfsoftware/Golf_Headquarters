@@ -116,4 +116,3 @@ export function removeLiveDrill(state: LiveState, drillId: string): LiveState {
   }
   return { ...state, drills: reindexed };
 }
-

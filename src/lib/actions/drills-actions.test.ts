@@ -7,7 +7,7 @@ mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser:
 
 test("drills-actions — opprettOvelseAction validerer obligatoriske felt", async () => {
   const { opprettOvelseAction } = await import("./drills-actions");
-  
+
   try {
     const res = await opprettOvelseAction({
       name: "   ",

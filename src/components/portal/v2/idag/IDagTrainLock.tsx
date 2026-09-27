@@ -55,6 +55,10 @@ export type NaaKort = {
   sekundarHref?: string;
   /** Øktens pyramide-nivå (FYS/TEK/SLAG/SPILL/TURN) — styrer PH-01b-stripen. */
   pyramide?: string | null;
+  /** Varighet alene, uten sted. PH-01 v1.0 viser den sammen med klokkeslettet. */
+  varighetTekst?: string | null;
+  /** Sted alene, uten varighet. PH-01 v1.0 viser det sammen med pyramidenivået. */
+  stedTekst?: string | null;
   /**
    * Illustrasjon øverst i «Nå»-kortet (PH-01b hero-felt).
    * Fasitens hero er en BILDE-plassholder. Uten bilde tegnes feltet ikke —

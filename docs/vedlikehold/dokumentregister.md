@@ -15,8 +15,6 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/arkitektur/playerhq.md](<../arkitektur/playerhq.md>) |
 | dokumentasjon | [docs/arkitektur/team-norway.md](<../arkitektur/team-norway.md>) |
 | dokumentasjon | [docs/arkitektur/wang.md](<../arkitektur/wang.md>) |
-| historikk | [docs/arkiv/instruks-2026-09-21/beslutninger-full.md](<../arkiv/instruks-2026-09-21/beslutninger-full.md>) |
-| historikk | [docs/arkiv/instruks-2026-09-21/gotchas-full.md](<../arkiv/instruks-2026-09-21/gotchas-full.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md](<../beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/claude-design-zip-2-review-2026-09-10.md](<../beslutningsgrunnlag/claude-design-zip-2-review-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/claude-design-zip-3-review-2026-09-10.md](<../beslutningsgrunnlag/claude-design-zip-3-review-2026-09-10.md>) |
@@ -37,7 +35,6 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md](<../beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-retting-2026-09-10.md](<../beslutningsgrunnlag/teknisk-retting-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md](<../beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md>) |
-| dokumentasjon | [docs/demo-sprak-og-treningsplanlegging.md](<../demo-sprak-og-treningsplanlegging.md>) |
 | dokumentasjon | [docs/design-audit/datagolf-kildestatus-2026-09-14.md](<../design-audit/datagolf-kildestatus-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-demo-2026-09-14.md](<../design-audit/team-norway-demo-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-dokument-invitasjon-2026-09-14.md](<../design-audit/team-norway-dokument-invitasjon-2026-09-14.md>) |
@@ -45,15 +42,6 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md](<../design-audit/team-norway-testdag-modellforslag-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-uavhengig-kontroll-2026-09-14.md](<../design-audit/team-norway-uavhengig-kontroll-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-utvidelse-uavhengig-kontroll-2026-09-14.md](<../design-audit/team-norway-utvidelse-uavhengig-kontroll-2026-09-14.md>) |
-| dokumentasjon | [docs/design-audit/workbench-aar-kontroll-2026-09-21.md](<../design-audit/workbench-aar-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-handover-import-2026-09-20.md](<../design-audit/workbench-handover-import-2026-09-20.md>) |
-| dokumentasjon | [docs/design-audit/workbench-kontrollretting-2026-09-21.md](<../design-audit/workbench-kontrollretting-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-live-kontroll-2026-09-21.md](<../design-audit/workbench-live-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-maned-kontroll-2026-09-21.md](<../design-audit/workbench-maned-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-okt-kontroll-2026-09-21.md](<../design-audit/workbench-okt-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-periode-kontroll-2026-09-21.md](<../design-audit/workbench-periode-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-stall-kontroll-2026-09-21.md](<../design-audit/workbench-stall-kontroll-2026-09-21.md>) |
-| dokumentasjon | [docs/design-audit/workbench-uke-kontroll-2026-09-21.md](<../design-audit/workbench-uke-kontroll-2026-09-21.md>) |
 | dokumentasjon | [docs/design-system/ak-hq-designarbeid.md](<../design-system/ak-hq-designarbeid.md>) |
 | dokumentasjon | [docs/design-system/claude-design-d03-d05-beslutning-2026-09-13.md](<../design-system/claude-design-d03-d05-beslutning-2026-09-13.md>) |
 | dokumentasjon | [docs/design-system/claude-design-datagolf-h2-04-tilbakemelding.md](<../design-system/claude-design-datagolf-h2-04-tilbakemelding.md>) |
@@ -93,9 +81,9 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md](<../planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md>) |
 | datert-plan | [docs/planer/database-modell-deprekering-2026-09-27.md](<../planer/database-modell-deprekering-2026-09-27.md>) |
 | datert-plan | [docs/planer/plan-portering-claude-design-til-kode-2026-09-25.md](<../planer/plan-portering-claude-design-til-kode-2026-09-25.md>) |
+| datert-plan | [docs/planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md](<../planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md>) |
 | datert-plan | [docs/planer/prosjektplan-og-lanseringsplan-2026-09-24.md](<../planer/prosjektplan-og-lanseringsplan-2026-09-24.md>) |
 | datert-plan | [docs/planer/team-norway-demodag-2026-09-14.md](<../planer/team-norway-demodag-2026-09-14.md>) |
-| datert-plan | [docs/planer/workbench-design-og-kode-natt-2026-09-20.md](<../planer/workbench-design-og-kode-natt-2026-09-20.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |
 | dokumentasjon | [docs/platform/BOOKING-POLICY.md](<../platform/BOOKING-POLICY.md>) |
 | dokumentasjon | [docs/platform/BOOKING-SLOT-HOLD.md](<../platform/BOOKING-SLOT-HOLD.md>) |

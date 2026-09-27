@@ -1,6 +1,6 @@
 # PlayerHQ — Spillerens flate
 
-Dato: 26. september 2026  
+Dato: 26. september 2026
 Plassering i kodebasen: `src/app/portal/`, `src/components/portal/`, `src/lib/portal/`
 
 ---

@@ -6,11 +6,13 @@
 
 import { z } from "zod";
 import type { AKFormel } from "./types";
+import { OvelseDetaljerSchema } from "./ovelse-detaljer";
 
 export const PyramidAreaSchema = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
 export const TrainingAreaSchema = z.enum([
   // Full sving
+  "TEE",
   "TEE_TOTAL",
   "INNSPILL_200",
   "INNSPILL_150",
@@ -59,6 +61,7 @@ export const AkFormelSchema = z.object({
   belastning: BelastningSchema.optional(),
   press: PressSchema.optional(),
   label: z.string(),
+  detaljer: OvelseDetaljerSchema.optional(),
 });
 
 /**

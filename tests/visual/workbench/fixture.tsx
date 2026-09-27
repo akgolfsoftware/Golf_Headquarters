@@ -2,6 +2,7 @@
 import { createRoot } from "react-dom/client";
 import { WorkbenchShell } from "@/components/workbench/WorkbenchShell";
 import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
+import { WorkbenchOkt } from "@/components/workbench/WorkbenchOkt";
 import type { WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
 
 const sessions: WorkbenchSession[] = [
@@ -27,6 +28,26 @@ const week: WeekViewModel = {
     return { date, weekday: i + 1, sessions: empty ? [] : sessions.filter(s => s.date === date), lockedBlocks: !empty && i === 2 ? [{ id: "syntetisk-skole", startMinute: 480, durationMinutes: 360, title: "Skole", kind: "SKOLE", dimmed: true }] : [] };
   }),
 };
+const okt = new URLSearchParams(location.search).get("fixture") === "okt";
+if (okt) {
+  const drill = (id: string, title: string, area: "TEE" | "INNSPILL_100" | "STYRKE", pyramid: "TEK" | "FYS", detaljer: NonNullable<WorkbenchSession["drills"][number]["akFormel"]["detaljer"]>, motorikk?: "LAV_HAST") => ({
+    id, title, durationMinutes: 25, order: 0,
+    akFormel: { pyramid, area, label: `${pyramid} · ${area}`, ...(motorikk ? { motorikk } : {}), press: "OBSERVERT" as const, belastning: "INNENDORS" as const, detaljer },
+  });
+  const valgt = week.days[0].sessions[1];
+  valgt.drills = [
+    drill("d1", "Lengdekontroll 100–150 m", "INNSPILL_100", "TEK", {
+      hastighetProsent: 50, tekniskFokus: "LENGDEKONTROLL", sted: { hoved: "INNENDORS_GOLF", delvalg: "Simulator" },
+      maaleutstyr: "MED_TRACKMAN", treningsmaate: "BLOKK", mengde: { enhet: "SLAG", antall: 30 }, mal: { resultatkrav: "20 av 30 innenfor målområdet" },
+    }, "LAV_HAST"),
+    drill("d2", "Putt 3–5 fot, ballstart", "STYRKE", "FYS", { mengde: { enhet: "SERIER", antall: 4, reps: 6 } }),
+  ];
+  createRoot(document.getElementById("root")!).render(
+    <WorkbenchShell coachName="Anders Kristiansen" playerId="syntetisk-spiller">
+      <WorkbenchOkt playerId="syntetisk-spiller" spillerNavn="Øyvind Rojahn" uke={week} selectedSessionId={valgt.id} kilder={[]} roster={[{ id: "syntetisk-spiller", navn: "Øyvind Rojahn" }]} />
+    </WorkbenchShell>,
+  );
+} else
 createRoot(document.getElementById("root")!).render(
   <WorkbenchShell coachName="Anders Kristiansen" playerId="syntetisk-spiller">
     <WorkbenchUke playerId="syntetisk-spiller" spillerNavn="Øyvind Rojahn" uke={week} kilder={[]} roster={[{ id: "syntetisk-spiller", navn: "Øyvind Rojahn" }]} />
