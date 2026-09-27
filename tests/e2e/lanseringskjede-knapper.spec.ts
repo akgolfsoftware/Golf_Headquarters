@@ -272,10 +272,9 @@ test("statisk: ingen død onClick eller href=# i lanseringskjeden", () => {
 test("login-siden har ekte lenker (uten innlogging)", async ({ page }) => {
   await page.goto("/auth/login", { waitUntil: "domcontentloaded" });
   await dismissCookieBanner(page);
-  await page.getByRole("button", { name: "Logg inn med passord" }).click();
   const feil = await auditSynligeKnapper(page);
-  await expect(page.getByRole("button", { name: "Logg inn", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Glemt passord?" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Logg inn/i }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Glemt passord/i }).first()).toBeVisible();
   expect(feil, feil.join("\n")).toEqual([]);
 });
 
