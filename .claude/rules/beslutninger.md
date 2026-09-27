@@ -281,6 +281,18 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
 
 Pekerne er rettet i samme PR: `design-autoritet.md`, `designsystem/README.md`, `ak-hq-design`-skillen.
 
+## FORELDER-SKALLET BRUKER FELLES NAVIGASJON (Anders 23.09.2026, bindende)
+
+`/forelder` skal bruke samme navigasjonsmønster som AgencyOS og PlayerHQ: hamburgermeny
+på mobil og topplinje med fire mål og «Mer» på desktop. FO-01 til FO-04 skal bruke ett
+delt skall, ikke fire ulike navigasjoner. Dette produktvalget gjelder innen gjeldende
+designautoritet «AK Golf Precision Athletics»; eldre «App design»-tegninger er historikk.
+
+**Arbeidet dette utløser:** Samordne FO-01 til FO-04 i gjeldende designprosjekt, bygg
+skallet én gang i appen og kontroller mobil, desktop og relevante temaer. Dagens
+`src/components/v2/shell.tsx` har fortsatt `BunnNavLenker`/`IkonRailNav` for forelder;
+denne dokumentbeslutningen er ikke en ferdig skjermimplementasjon. Anders må se de
+oppdaterte skjermene før port 7 kan regnes som bestått.
 
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 
