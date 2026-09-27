@@ -1,7 +1,7 @@
 "use server";
 
 /**
- * Eksport-actions for CoachHQ analytics-rapport.
+ * Eksport-actions for AgencyOS analytics-rapport.
  *
  * Validerer input med zod og returnerer placeholder download-URL.
  * Faktisk PDF/CSV/XLSX-generering kommer i egen iterasjon.

@@ -13,7 +13,7 @@ import type { SeasonVolumeSummary, BudgetWarning } from "./warnings";
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
 export type FullSwingArea =
-  | "TEE"
+  | "TEE_TOTAL"
   | "INNSPILL_200"
   | "INNSPILL_150"
   | "INNSPILL_100"

@@ -5,7 +5,7 @@ source_section: "10.8–10.10 Balldata: Total avstand, Side og Apex Height"
 tags: ["ball-data", "pga-tour", "trackman"]
 topics: ["trackman-parametere"]
 lang: no
-relevance: ["CoachHQ", "RAG", "TrackMan"]
+relevance: ["AgencyOS", "RAG", "TrackMan"]
 updated: 2026-06-14
 ---
 

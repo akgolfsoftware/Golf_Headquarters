@@ -1727,7 +1727,7 @@ export async function completeSession(
   return settStatus(sessionId, "COMPLETED");
 }
 
-export const UpdateSessionEffortSchema = z.object({
+const UpdateSessionEffortSchema = z.object({
   sessionId: z.string().min(1),
   perceivedEffort: z.number().int().min(1).max(10).nullable().optional(),
   actualMinutes: z.number().int().min(1).max(1440).nullable().optional(),

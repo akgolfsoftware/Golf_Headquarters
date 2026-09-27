@@ -63,9 +63,11 @@ Totalt: 571 ruter
 
 ## 4. Datamodellen
 
-Databasen defineres i `prisma/schema.prisma` med **198 modeller** og **84 enumer**:
-* **171 modeller** er aktivt i bruk og spørres direkte via `prisma.<modell>` i kildekoden.
-* **27 modeller** har ingen spørringer i `src/` (f.eks. eldre utkast som `MissionControl`, `LegacyPlanSnapshot` og eksperimentelle tabeller).
+Databasen defineres i `prisma/schema.prisma` med **199 modeller** og **84 enumer**.
+Fersk kontroll 27.09.2026 fant **25 modeller** uten direkte `prisma.<modell>`-spørring i
+`src/`, `scripts/` eller `tests/`. De er dokumentert som deprekeringskandidater i
+[database-modell-deprekering-2026-09-27.md](planer/database-modell-deprekering-2026-09-27.md).
+De fjernes ikke uten separat radtelling, datakategori og additiv migrasjonsplan.
 
 ### Kjernerelasjoner (Mermaid-diagram)
 

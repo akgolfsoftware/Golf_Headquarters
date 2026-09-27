@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 6)"
 tags: [amatør, handicap, lpga, pga-tour]
 topics: [lpga-snitt, pga-snitt]
 lang: no
-relevance: [CoachHQ, PlayerHQ, RAG, SgBaseline, forventetSg]
+relevance: [AgencyOS, PlayerHQ, RAG, SgBaseline, forventetSg]
 updated: 2026-06-14
 ---
 

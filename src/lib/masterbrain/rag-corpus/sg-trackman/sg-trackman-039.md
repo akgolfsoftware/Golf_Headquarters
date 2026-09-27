@@ -5,7 +5,7 @@ source_section: "## 20.1 Lie-forenkling"
 tags: [baseline, kategori, kort-spill, sg, trackman]
 topics: [sg-baseline, sg-kategorier]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

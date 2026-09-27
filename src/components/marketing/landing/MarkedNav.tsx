@@ -13,6 +13,8 @@ import { Knapp, Mobilmeny, Toppnav, type Lenke } from "@/components/marketing/ak
  * lenker og ÉN handling — «Book kartleggingsøkt» — som gjentas med samme ord
  * i toppnav, hero og avslutning (kitets README). «Logg inn» ligger i bunnen,
  * ikke her: menyen skal selge én ting.
+ * Avvik:
+ *   - Markedsnavet følger AK Golf-masterens kit, ikke Train-lock-riggen; ingen egen visuell riggrad ennå.
  */
 
 const LENKER: Lenke[] = [

@@ -5,7 +5,7 @@ source_section: "1.3–1.4 Treningsvolum: Videregående og elite junior (del 1)"
 tags: ["amat\u00f8r", "handicap", "ltad", "volum"]
 topics: ["amator-data", "treningsvolum"]
 lang: no
-relevance: ["AiPlanGeneration", "CoachHQ", "PlayerHQ", "RAG", "TechnicalPlan"]
+relevance: ["AiPlanGeneration", "AgencyOS", "PlayerHQ", "RAG", "TechnicalPlan"]
 updated: 2026-06-14
 ---
 

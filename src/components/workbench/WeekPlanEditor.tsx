@@ -132,7 +132,7 @@ export function WeekPlanEditor({ weekPlan, onSave, lagrer = false }: Props) {
                   borderRadius: 14,
                   border: `1px solid ${aktiv ? "var(--ak-grunn-farge-rust-600)" : "var(--wb-border)"}`,
                   background: aktiv ? "var(--ak-grunn-farge-rust-600)" : "var(--wb-surface)",
-                  color: aktiv ? "#ffffff" : "var(--wb-body)",
+                  color: aktiv ? TL.onFill : "var(--wb-body)",
                   cursor: "pointer",
                   transition: "all 0.15s ease",
                 }}
@@ -365,7 +365,7 @@ export function WeekPlanEditor({ weekPlan, onSave, lagrer = false }: Props) {
           borderRadius: 3,
           border: "none",
           background: "var(--ak-grunn-farge-rust-600)",
-          color: "#ffffff",
+          color: TL.onFill,
           cursor: lagrer ? "not-allowed" : "pointer",
           opacity: lagrer ? 0.7 : 1,
           transition: "background 0.15s ease",

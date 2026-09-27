@@ -5,7 +5,7 @@ source_section: "## 5.1 Full tabell: avstand × lie (10–600 yards, alle lie-ty
 tags: [amatør, baseline, broadie, handicap, kategori, pga-tour, putt, sg]
 topics: [broadie, pga-snitt, putting, sg-baseline, sg-kategorier]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

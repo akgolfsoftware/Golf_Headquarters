@@ -48,7 +48,7 @@ export default async function WorkspaceNotionPage({
 
   return (
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href="/admin/workspace">Workspace</TlTilbake>
+      <TlTilbake href="/admin/oppgaver">Oppgaver</TlTilbake>
       <AdminWorkspaceNotionTrainLock data={data} />
     </V2Shell>
   );

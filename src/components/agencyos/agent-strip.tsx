@@ -3,7 +3,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgentStrip — AI-coach hint banner.
- * Direkte fra wireframe/design-package/project/coachhq-A/02-plan-bygger.html (linje 23-33).
+ * Direkte fra historisk wireframe/design-package/project/agencyos-A/02-plan-bygger.html (linje 23-33).
  *
  * Brukes for å vise AI-assistentens forslag, observasjoner eller status.
  * Forest-til-lime gradient bakgrunn + lime venstre-border + AK-avatar.

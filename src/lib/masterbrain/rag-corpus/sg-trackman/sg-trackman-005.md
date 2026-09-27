@@ -5,7 +5,7 @@ source_section: "## 2.2 Mark Broadie og opphavet (del 3)"
 tags: [app, baseline, broadie, kategori, ott, pga-tour, putt, sg]
 topics: [broadie, implementasjon, pga-snitt, putting, sg-baseline, sg-kategorier]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

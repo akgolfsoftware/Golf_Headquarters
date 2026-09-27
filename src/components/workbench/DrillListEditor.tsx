@@ -58,12 +58,11 @@ import {
 } from "@/lib/domain/omrade-relevans";
 
 function toOmraadeKode(area: TrainingArea): OmraadeKode {
-  if (area === "TEE") return "TEE_TOTAL";
   return area as OmraadeKode;
 }
 
 const OMRADE_GRUPPER: { label: string; areas: TrainingArea[] }[] = [
-  { label: "Full sving", areas: ["TEE", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50"] },
+  { label: "Full sving", areas: ["TEE_TOTAL", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50"] },
   { label: "Nærspill", areas: ["CHIP", "PITCH", "LOB", "BUNKER"] },
   { label: "Putt", areas: ["PUTT_0_3", "PUTT_3_5", "PUTT_5_10", "PUTT_10_25", "PUTT_25_40", "PUTT_40_PLUSS"] },
   { label: "Fysisk", areas: ["STYRKE", "KONDISJON", "BEVEGELIGHET"] },
@@ -126,7 +125,7 @@ export function DrillListEditor({
   const [visSkjema, setVisSkjema] = useState(false);
   const [tittel, setTittel] = useState("");
   const [pyramid, setPyramid] = useState<PyramidArea>(defaultPyramid);
-  const [omrade, setOmrade] = useState<TrainingArea>("TEE");
+  const [omrade, setOmrade] = useState<TrainingArea>("TEE_TOTAL");
   const [varighet, setVarighet] = useState(15);
   const [beskrivelse, setBeskrivelse] = useState("");
   const [motorikk, setMotorikk] = useState<Motorikk>("LAV_HAST");

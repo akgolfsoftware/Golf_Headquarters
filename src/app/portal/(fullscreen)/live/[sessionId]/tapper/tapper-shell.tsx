@@ -6,6 +6,8 @@
  * og putting (kortputt, mellomputt, lengdeputt), samt repetisjonstyper (full fart, lav fart, tørrsving).
  *
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Avvik:
+ *   - Ingen riggrad for fullskjerm-tapperen ennå; innholdet avhenger av øktas køller, rep-typer og lagrede tellinger.
  */
 
 import { useEffect, useRef, useState } from "react";

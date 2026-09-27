@@ -5,7 +5,7 @@ source_section: "(Preamble) (del 2)"
 tags: [amatør, app, baseline, handicap, pga-tour, putt, sg]
 topics: [implementasjon, pga-snitt, putting, sg-baseline]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

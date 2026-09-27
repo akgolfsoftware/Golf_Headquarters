@@ -200,7 +200,7 @@ enum SubscriptionStatus {
 
 // Program-tilhørighet for spillere.
 // PLATFORM_ONLY = selvbetjent bruker uten coachrelasjon (GDPR-skille).
-// Alle andre program = synlig i CoachHQ for tildelt coach.
+// Alle andre program = synlig i AgencyOS for tildelt coach.
 enum PlayerProgram {
   WANG_TOPPIDRETT // WANG Toppidrett Fredrikstad
   WANG_UNG // WANG Ung Fredrikstad
@@ -624,7 +624,7 @@ model User {
   planChangeRequestsAsCoach  PlanChangeRequest[]     @relation("PlanChangeCoach")
   tournamentPreparations     TournamentPreparation[]
 
-  // CoachHQ-relasjoner (Fase 2.1)
+  // AgencyOS-relasjoner (Fase 2.1)
   tournamentResults TournamentResult[]
   coachedGroups     Group[]                   @relation("CoachOfGroup")
   groupMemberships  GroupMember[]
@@ -753,7 +753,7 @@ model User {
   trainingLogs TrainingLog[]
 
   // Performance: hot path — filtrere aktive spillere/coacher
-  // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
+  // (PlayerHQ-lister, AgencyOS-portefølje, talent-tracking).
   @@index([role, deletedAt])
   // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
   @@index([primaryCoachId])
@@ -2439,7 +2439,7 @@ model WinbackTilbud {
 // Program-enrollering — kobler spiller til program + coach.
 // Én rad per (spiller × program × periode). Historikk beholdes ved endedAt.
 // En spiller kan ha flere aktive enrolleringer simultant (mange-til-mange).
-// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i CoachHQ.
+// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i AgencyOS.
 model PlayerEnrollment {
   id         String        @id @default(cuid())
   userId     String
@@ -2874,7 +2874,7 @@ model PushedCalendarEvent {
   @@map("pushed_calendar_events")
 }
 
-// ---------- CoachHQ-modeller (Fase 2.1) ----------
+// ---------- AgencyOS-modeller (Fase 2.1) ----------
 
 model Tournament {
   id        String    @id @default(cuid())

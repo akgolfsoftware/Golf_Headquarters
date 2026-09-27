@@ -716,7 +716,7 @@ html[data-v2-tema="dark"] ::selection {
 /* ---------- AK Golf type helpers ----------
  * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.
  * Tilpasset prosjektets HSL-trippel-konvensjon (hsl(var(--token))).
- * Brukes for hero/KPI/eyebrow-typografi på tvers av PlayerHQ + CoachHQ + Marketing.
+ * Brukes for hero/KPI/eyebrow-typografi på tvers av PlayerHQ + AgencyOS + Marketing.
  */
 .h-display {
   font-family: var(--font-display);

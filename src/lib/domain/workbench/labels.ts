@@ -26,7 +26,7 @@ export const PYRAMID_LABEL: Record<PyramidArea, string> = {
 };
 
 export const AREA_LABEL: Record<TrainingArea, string> = {
-  TEE: "Utslag",
+  TEE_TOTAL: "Utslag",
   INNSPILL_200: "Innspill 200 m",
   INNSPILL_150: "Innspill 150 m",
   INNSPILL_100: "Innspill 100 m",

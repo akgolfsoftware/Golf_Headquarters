@@ -201,7 +201,7 @@ export async function saveSessionV2VideoNote(input: SaveVideoNoteInput): Promise
   return { ok: true };
 }
 
-export const SendOktNotatTilCoachInput = z.object({
+const SendOktNotatTilCoachInput = z.object({
   sessionId: z.string().min(1),
   tekst: z.string().min(1).max(2000),
   drillNavn: z.string().optional(),
@@ -255,4 +255,3 @@ export async function sendOktNotatTilCoach(
 
   return { ok: true };
 }
-

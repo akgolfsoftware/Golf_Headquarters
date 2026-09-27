@@ -130,7 +130,7 @@ export function IDagSelected(p: IDagSelectedProps) {
   const days = p.prikker.filter((d) => !d.tom);
   const initials = (p.navn ?? "Spiller").split(/\s+/).slice(0, 2).map((s) => s[0]).join("");
   let hero: ReactNode;
-  if (p.planLaast) hero = <section className={styles.card}><Kicker>Gratis konto</Kicker><h2>Treningsplanen krever full tilgang</h2><p>Du kan fortsatt åpne tester, runder, analyse og booking. Planlagte økter åpnes med full tilgang.</p><ButtonLink href="/portal/oppgrader">Se hva full tilgang gir</ButtonLink><Link className={styles.textLink} href="#ph01-apent">Fortsett med gratis konto</Link></section>;
+  if (p.planLaast) hero = <section className={styles.card}><Kicker>Gratis konto</Kicker><h2>Treningsplanen krever full tilgang</h2><p>Du kan fortsatt åpne tester, runder, analyse og booking. Planlagte økter åpnes med full tilgang.</p><ButtonLink href="/portal/meg/abonnement/oppgrader/flyt">Se hva full tilgang gir</ButtonLink><Link className={styles.textLink} href="#ph01-apent">Fortsett med gratis konto</Link></section>;
   else if (failed) hero = <section className={styles.card} role="alert"><Kicker>{IDAG_UI.feilCaps}</Kicker><h2>{IDAG_UI.feilTittel}</h2><p>{IDAG_UI.feilBrød}</p><button className={styles.button} onClick={() => router.refresh()}>Prøv igjen</button></section>;
   else if (p.naa || blocked) hero = <Now naa={p.naa} approval={blocked} />;
   else if (p.tilstand === "hvile") hero = <section className={styles.card}><Kicker>Nå · Hviledag</Kicker><h2>Hvile</h2><p>Hvilen er en del av planen.</p><ButtonLink href="/portal/planlegge" quiet>Åpne uken i Plan</ButtonLink></section>;

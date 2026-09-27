@@ -6,6 +6,8 @@
  * AO-06 Project-ark og AO-07 Task-ark, klikk-gjennom detaljark i samme fil,
  * er IKKE bygget: radene har verken href eller onClick ennå. Dokumentert
  * avvik, ikke løst i PX-6 — se PR-beskrivelsen.)
+ * Avvik:
+ *   - Ingen riggrad for AO-05 i panelmodus ennå; detaljarkene i samme fasitfil er ikke bygget.
  */
 
 import { TL } from "@/lib/v2/train-lock";
@@ -32,7 +34,7 @@ export function AdminAgenticosProjects({ data }: { data: AgenticosProjectsData }
           {n === 0 ? "7 areas" : `7 areas · ${n} ${n === 1 ? "prosjekt" : "prosjekter"}`}
         </span>
         <div style={{ flex: 1 }} />
-        <AoKnapp variant="primaer" href="/admin/workspace">
+        <AoKnapp variant="primaer" href="/admin/oppgaver">
           Nytt prosjekt
         </AoKnapp>
       </div>
@@ -41,7 +43,7 @@ export function AdminAgenticosProjects({ data }: { data: AgenticosProjectsData }
         <AoTom
           tittel="Ingen prosjekter ennå"
           tekst="Projects grupperes på AKADEMI · PRODUKT · AGENTICOS · ØKONOMI · INNHOLD · PERSONLIG · DRIFT når de lander fra workspace."
-          cta={<AoKnapp variant="primaer" href="/admin/workspace">Åpne workspace</AoKnapp>}
+          cta={<AoKnapp variant="primaer" href="/admin/oppgaver">Åpne oppgaver</AoKnapp>}
         />
       ) : (
         <div style={{ padding: "16px 0", display: "flex", flexDirection: "column", gap: 14 }}>
@@ -64,5 +66,3 @@ export function AdminAgenticosProjects({ data }: { data: AgenticosProjectsData }
     </div>
   );
 }
-
-
