@@ -33,7 +33,7 @@ export interface SpillerProfilPrecisionProps {
 }
 
 export function SpillerProfilPrecisionView({
-  navn = "Magnus Kristiansen",
+  navn = "Magnus Aasheim",
   epost = "magnus@akgolf.no",
   hcp = 1.4,
   hjemmeklubb = "Gamle Fredrikstad Golfklubb",

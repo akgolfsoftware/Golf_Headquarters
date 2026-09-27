@@ -28,7 +28,7 @@ export function StallPrecisionView() {
   const [spillere] = useState<StallSpiller[]>([
     {
       id: "spiller-1",
-      navn: "Magnus Kristiansen",
+      navn: "Magnus Aasheim",
       kategori: "Kategori D",
       snittScore: 73.4,
       acwr: 1.18,
