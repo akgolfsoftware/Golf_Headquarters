@@ -15,6 +15,7 @@
  */
 
 import "server-only";
+import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
@@ -186,6 +187,9 @@ export async function avsluttTilgang(input: {
   groupId: string;
   targetUserId: string;
 }): Promise<TnAvsluttResultat> {
+  z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
+  const gruppe = await hentTeamNorwayGruppe();
+  if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
 
@@ -195,6 +199,7 @@ export async function avsluttTilgang(input: {
       select: { id: true, role: true, endedAt: true },
     });
     if (!rad || rad.endedAt) return { ok: true };
+    if (rad.role !== "COACH" && rad.role !== "ASSISTANT") throw new Error("Kun trenertilgang kan avsluttes her");
 
     if (rad.role === "COACH") {
       const andreAktiveTrenere = await tx.groupMember.count({
@@ -232,11 +237,18 @@ export async function settTilgang(input: {
   fraIso: string;
   tilIso: string | null;
 }): Promise<TnSettRolleResultat> {
+  z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
+  const gruppe = await hentTeamNorwayGruppe();
+  if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
 
-  const fra = parseDatoStrengUtc(input.fraIso) ?? new Date();
-  const til = input.tilIso ? parseDatoStrengUtc(input.tilIso) : null;
+  z.enum(["COACH", "ASSISTANT"]).parse(input.rolle);
+  const fra = parseDatoStrengUtc(input.fraIso);
+  const til = input.tilIso === null ? null : parseDatoStrengUtc(input.tilIso);
+  if (!fra || (input.tilIso !== null && !til) || (til && til <= fra)) {
+    throw new Error("Ugyldig datointervall");
+  }
 
   return medSerialiserbarTilgangsoppdatering(async (tx) => {
     const eksisterende = await tx.groupMember.findUnique({
@@ -271,5 +283,6 @@ export async function settTilgang(input: {
 function parseDatoStrengUtc(iso: string): Date | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   if (!m) return null;
-  return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+  const dato = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+  return dato.toISOString().slice(0, 10) === iso ? dato : null;
 }
