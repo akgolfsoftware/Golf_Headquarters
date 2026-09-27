@@ -200,3 +200,15 @@
   }
   .tallKolonne { text-align: left; }
 }
+
+/* Skjemaark og bekreftelse (tn-handlinger.tsx). Global reset fjerner margin,
+   så arket sentreres her. Bakteppet dempes med navy. */
+.ark {
+  margin: auto;
+  background: var(--tn-white);
+  color: var(--tn-ink-900);
+  overflow: auto;
+}
+.ark::backdrop {
+  background: color-mix(in srgb, var(--tn-navy-900) 45%, transparent);
+}

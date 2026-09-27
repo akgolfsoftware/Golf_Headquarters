@@ -202,9 +202,69 @@ export function TnKnapp({
 
 // ───────────────────────── Rail (org-skall) ─────────────────────────
 
-export type TnMenyPunkt =
-  | { type: "overskrift"; label: string }
-  | { type: "lenke"; label: string; href: string; aktiv?: boolean; badge?: string };
+export type TnMenyLenke = { label: string; href: string; aktiv: boolean };
+export type TnMenyGruppe = { id: string; label: string; ikon: string; aktiv: boolean; punkter: TnMenyLenke[] };
+export type TnBunnValg = TnMenyLenke & { ikon: string };
+
+/** Ett menypunkt i skinnen: rød markør 3 px og lysere navy bak når aktivt. */
+export function TnMenyrad({ punkt, onClick }: { punkt: TnMenyLenke; onClick?: () => void }) {
+  return (
+    <a
+      href={punkt.href}
+      onClick={onClick}
+      aria-current={punkt.aktiv ? "page" : undefined}
+      style={{
+        minHeight: 44,
+        padding: "4px 10px 4px 0",
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        textDecoration: "none",
+        background: punkt.aktiv ? TN.rail.active : "transparent",
+        color: punkt.aktiv ? TN.rail.on : TN.rail.text,
+        fontFamily: TN.font.body,
+        fontSize: TN.text.sm,
+        fontWeight: punkt.aktiv ? TN.weight.bold : TN.weight.regular,
+      }}
+    >
+      <span aria-hidden="true" style={{ width: 3, alignSelf: "stretch", background: punkt.aktiv ? TN.rail.marker : "transparent", flexShrink: 0 }} />
+      <span style={{ flex: 1, minWidth: 0, paddingLeft: 27 }}>{punkt.label}</span>
+    </a>
+  );
+}
+
+/**
+ * Én menygruppe som kan foldes sammen. Native <details>, så den virker uten
+ * JavaScript. Gruppen med aktiv skjerm er åpen; lukkede grupper viser antall.
+ */
+export function TnMenygruppe({ gruppe, alltidApen = false, onVelg }: { gruppe: TnMenyGruppe; alltidApen?: boolean; onVelg?: () => void }) {
+  const hode = (
+    <>
+      <Icon name={gruppe.ikon} size={18} style={{ color: gruppe.aktiv ? TN.rail.on : TN.rail.muted, flexShrink: 0 }} />
+      <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase" }}>{gruppe.label}</span>
+    </>
+  );
+  const punkter = gruppe.punkter.map((p) => <TnMenyrad key={p.href} punkt={p} onClick={onVelg} />);
+  const hodeStil: CSSProperties = { minHeight: 44, display: "flex", alignItems: "center", gap: 10, padding: "0 10px", color: gruppe.aktiv ? TN.rail.on : TN.rail.text };
+  if (alltidApen) {
+    return (
+      <div>
+        <div style={hodeStil}>{hode}</div>
+        {punkter}
+      </div>
+    );
+  }
+  return (
+    <details open={gruppe.aktiv} className="group">
+      <summary className="list-none [&::-webkit-details-marker]:hidden" style={{ ...hodeStil, cursor: "pointer" }}>
+        {hode}
+        <span className="group-open:hidden" style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.rail.muted }}>{gruppe.punkter.length}</span>
+        <Icon name="chevron-right" size={14} className="group-open:rotate-90" style={{ color: TN.rail.muted, flexShrink: 0 }} />
+      </summary>
+      {punkter}
+    </details>
+  );
+}
 
 export type TnBrukerFot = { navn: string; rolle: string };
 
@@ -215,12 +275,12 @@ export type TnBrukerFot = { navn: string; rolle: string };
  * og avgjør `aktiv` selv (unngår en client-side routing-avhengighet her).
  */
 export function TnRail({
-  punkter,
+  grupper,
   bruker,
   orgNavn,
   orgUndertittel,
 }: {
-  punkter: TnMenyPunkt[];
+  grupper: TnMenyGruppe[];
   bruker: TnBrukerFot;
   orgNavn: string;
   orgUndertittel: string;
@@ -231,6 +291,10 @@ export function TnRail({
       style={{
         width: 252,
         flexShrink: 0,
+        position: "sticky",
+        top: 0,
+        height: "100dvh",
+        alignSelf: "flex-start",
         background: TN.rail.bg,
         color: TN.rail.on,
         flexDirection: "column",
@@ -263,59 +327,9 @@ export function TnRail({
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, minHeight: 0, overflow: "auto" }}>
-        {punkter.map((p, i) =>
-          p.type === "overskrift" ? (
-            <div
-              key={`h-${i}`}
-              style={{
-                fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
-                letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
-                color: TN.rail.muted,
-                padding: "18px 12px 6px",
-              }}
-            >
-              {p.label}
-            </div>
-          ) : (
-            <a
-              key={`${p.href}-${p.label}`}
-              href={p.href}
-              aria-current={p.aktiv ? "page" : undefined}
-              style={{
-                minHeight: 44,
-                borderRadius: TN.radius.xs,
-                padding: "4px 10px",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                textDecoration: "none",
-                background: p.aktiv ? TN.rail.active : "transparent",
-                color: p.aktiv ? TN.rail.on : TN.rail.text,
-                fontWeight: p.aktiv ? TN.weight.bold : TN.weight.regular,
-              }}
-            >
-              <span
-                style={{
-                  width: 3,
-                  height: 18,
-                  borderRadius: TN.radius.full,
-                  background: p.aktiv ? TN.rail.marker : "transparent",
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.medium, flex: 1, minWidth: 0 }}>
-                {p.label}
-              </span>
-              {p.badge && (
-                <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: p.aktiv ? TN.rail.on : TN.rail.muted }}>{p.badge}</span>
-              )}
-            </a>
-          ),
-        )}
-      </div>
+      <nav aria-label="Team Norway" style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minHeight: 0, overflowY: "auto" }}>
+        {grupper.map((g) => <TnMenygruppe key={g.id} gruppe={g} />)}
+      </nav>
 
       {/* Ingen hvit strek i skinnen (Anders 22.09.2026) — foten skilles med luft. */}
       <div style={{ marginTop: 18, paddingTop: 14, display: "flex", alignItems: "center", gap: 10 }}>

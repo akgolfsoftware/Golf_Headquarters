@@ -12,17 +12,12 @@ import { mock, test } from "node:test";
 
 let bruker: { id: string; role: "COACH" | "ADMIN" | "PLAYER" } | null = { id: "coach-1", role: "COACH" };
 let gruppetilgang = true;
-let lagreKall: { groupId: string; forfatterId: string; fileSize: number }[] = [];
+let lagreKall: { groupId: string; forfatterId: string; fileSize: number; kategori?: string | null }[] = [];
 const MAKS_BYTES_TEST = 200; // liten grense i testen — selve 50 MB-verdien er dekket av tn-dokument-lagring.test.ts
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
-mock.module("@/lib/auth/action-guards", {
-  namedExports: {
-    requireCoachActionUser: async () => {
-      if (!bruker) throw new Error("unauthenticated");
-      return bruker;
-    },
-  },
+mock.module("@/lib/auth/getCurrentUser", {
+  namedExports: { getCurrentUser: async () => bruker },
 });
 mock.module("@/lib/domain/tn-post", {
   namedExports: {
@@ -35,8 +30,8 @@ mock.module("@/lib/domain/tn-post", {
 mock.module("@/lib/domain/tn-dokument-lagring", {
   namedExports: {
     MAKS_TN_DOKUMENT_BYTES: MAKS_BYTES_TEST,
-    lagreTnDokument: async (groupId: string, forfatterId: string, fil: File) => {
-      lagreKall.push({ groupId, forfatterId, fileSize: fil.size });
+    lagreTnDokument: async (groupId: string, forfatterId: string, fil: File, kategori: string | null = null) => {
+      lagreKall.push({ groupId, forfatterId, fileSize: fil.size, kategori });
       return { ok: true };
     },
   },
@@ -49,9 +44,10 @@ function reset() {
 }
 reset();
 
-function multipartBody(filInnhold: string, filnavn = "plan.pdf") {
+function multipartBody(filInnhold: string, filnavn = "plan.pdf", kategori?: string) {
   const boundary = "----tngrense";
   const body =
+    (kategori === undefined ? "" : `--${boundary}\r\nContent-Disposition: form-data; name="kategori"\r\n\r\n${kategori}\r\n`) +
     `--${boundary}\r\n` +
     `Content-Disposition: form-data; name="file"; filename="${filnavn}"\r\n` +
     `Content-Type: application/pdf\r\n\r\n` +
@@ -147,6 +143,22 @@ test("ingen fil i skjemaet gir en ærlig 400", async () => {
   const boundary = "----tomt";
   const body = `--${boundary}--\r\n`;
   const res = await post({ body, contentType: `multipart/form-data; boundary=${boundary}` });
+  assert.equal(res.status, 400);
+  assert.equal(lagreKall.length, 0);
+});
+
+test("kategori fra skjemaet sendes videre til lagringen", async () => {
+  reset();
+  const { body, contentType } = multipartBody("kort innhold", "reise.pdf", "Reise");
+  const res = await post({ body, contentType });
+  assert.equal(res.status, 200);
+  assert.equal(lagreKall[0]?.kategori, "Reise");
+});
+
+test("ukjent kategori avvises med 400 uten lagring", async () => {
+  reset();
+  const { body, contentType } = multipartBody("kort innhold", "x.pdf", "Hemmelig");
+  const res = await post({ body, contentType });
   assert.equal(res.status, 400);
   assert.equal(lagreKall.length, 0);
 });

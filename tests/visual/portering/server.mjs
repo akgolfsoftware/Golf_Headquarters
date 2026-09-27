@@ -7,10 +7,32 @@ import { resolve } from "node:path";
 const root = process.cwd();
 const output = resolve(root, "_archive/portering-kontroll-2026-09-10");
 mkdirSync(output, { recursive: true });
+const alleEntryPoints = {
+  live: resolve(root, "tests/visual/portering/live-fixture.tsx"),
+  brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"),
+  plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"),
+  idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"),
+  playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"),
+  wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"),
+  fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"),
+  trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx"),
+};
+const valgteEntryPoints = (process.env.PORTERING_FIXTURE ?? "")
+  .split(",")
+  .map((navn) => navn.trim())
+  .filter(Boolean);
+const ukjenteEntryPoints = valgteEntryPoints.filter((navn) => !(navn in alleEntryPoints));
+if (ukjenteEntryPoints.length > 0) {
+  throw new Error(`Ukjent PORTERING_FIXTURE: ${ukjenteEntryPoints.join(", ")}`);
+}
+const entryPoints = valgteEntryPoints.length > 0
+  ? Object.fromEntries(valgteEntryPoints.map((navn) => [navn, alleEntryPoints[navn]]))
+  : alleEntryPoints;
 await build({
-  entryPoints: { live: resolve(root, "tests/visual/portering/live-fixture.tsx"), brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"), plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
+  entryPoints,
   outdir: output,
   bundle: true,
+  loader: { ".png": "dataurl" },
   format: "iife",
   jsx: "automatic",
   define: { "process.env.NODE_ENV": '"development"' },

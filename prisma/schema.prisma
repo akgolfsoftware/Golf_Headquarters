@@ -878,6 +878,8 @@ model TnPost {
   // TEKST | REISE | MOTE | OKT — badge-merket i TN-09/TN-10-designet.
   kind           String   @default("TEKST")
   createdAt      DateTime @default(now())
+  // Satt når forfatteren har endret teksten. DDL: scripts/add-tn-handlinger-2026-09-27.ts
+  editedAt       DateTime?
 
   vedlegg      TnPostAttachment[]
   lesekvittert TnPostLesekvittering[]
@@ -896,6 +898,9 @@ model TnPostAttachment {
   fileType  String?
   fileSize  Int?
   path      String
+  // Sesongplan | Uttak | Reise | Test | Helse — bare på opplastinger i TN-14.
+  // Null for vedlegg i innlegg. DDL: scripts/add-tn-vedlegg-kategori-2026-09-27.ts
+  category  String?
   createdAt DateTime @default(now())
 
   post TnPost @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -6542,4 +6547,63 @@ model WorkbenchDrill {
 
   @@index([sessionId, sortOrder])
   @@map("workbench_drills")
+}
+
+// ── Team Norway: uttak, spillerstatus og college (Anders 27.09.2026) ──
+// Additivt, uten @relation (samme isolasjon som TrainingPeriod).
+// DDL: scripts/add-tn-handlinger-2026-09-27.ts
+
+// Uttak til et arrangement (TN-05). Én rad per spiller og arrangement.
+// Kriteriene summeres aldri til en score; begrunnelsen er fritekst fra treneren.
+model TnUttak {
+  id          String   @id @default(cuid())
+  groupId     String
+  userId      String
+  arrangement String
+  // UTTATT | RESERVE | IKKE_UTTATT
+  status      String
+  begrunnelse String?
+  decidedById String
+  decidedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([groupId, userId, arrangement])
+  @@index([groupId, arrangement])
+  @@map("tn_uttak")
+}
+
+// Lisens, helseattest og antidoping per spiller og år (TN-10, TN-02).
+// Bare statusdatoer. Ingen helseopplysninger lagres her.
+model TnSpillerstatus {
+  id                String    @id @default(cuid())
+  groupId           String
+  userId            String
+  aar               Int
+  // BETALT | UBETALT | FRITAK
+  lisensStatus      String?
+  lisensBetaltDato  DateTime? @db.Date
+  helseattestUtloper DateTime? @db.Date
+  antidopingSignert DateTime? @db.Date
+  updatedById       String
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([groupId, userId, aar])
+  @@map("tn_spillerstatus")
+}
+
+// College i USA per spiller (TN-06).
+model TnCollege {
+  id          String    @id @default(cuid())
+  groupId     String
+  userId      String
+  skole       String
+  // INTERESSE | DIALOG | TILBUD | SIGNERT | STUDERER
+  status      String
+  startDato   DateTime? @db.Date
+  notat       String?
+  updatedById String
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([groupId, userId])
+  @@map("tn_college")
 }

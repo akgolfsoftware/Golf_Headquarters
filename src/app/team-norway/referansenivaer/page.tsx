@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnReferansenivaerSkjerm } from "@/components/team-norway/skjermer/tn-referansenivaer-skjerm";
 
-/** TN-21. Fasit: designsystem/team-norway/templates/tn-referansenivaer/TnReferansenivaer.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="referansenivaer" />; }
+/** TN-18. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-18. */
+export default function Page() {
+  return <TnReferansenivaerSkjerm />;
+}
