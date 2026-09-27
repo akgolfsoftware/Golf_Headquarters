@@ -11,6 +11,11 @@ import { TN } from "@/lib/v2/team-norway";
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc): navy knapp med
  * hvit tekst, Jost i versaler med sperring, hjørner 2 px, minst 44 px høy.
  * Sletting er grafitt i et kort med rød kant, aldri en rød knapp.
+ *
+ * Avvik:
+ *   - Designet tegner ingen skjemaark. Arket bruker kortenes språk: hvit flate,
+ *     tittel over 2 px navy strek, felt og knapper fra TN-03 «Registrer resultat».
+ *   - Bekreftelsesarket har rød toppkant i stedet for rød kant rundt hele kortet.
  */
 
 type Resultat = { ok: true; videre?: string } | { ok: false; feil: string };
