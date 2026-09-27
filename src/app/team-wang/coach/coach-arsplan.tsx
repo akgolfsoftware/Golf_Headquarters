@@ -510,7 +510,7 @@ function Oversikt({
         ) : null}
       </div>
 
-      <GruppeRoster live={live} iupLenke />
+      <GruppeRoster live={live} iupLenke turneringerLenke />
 
       <div
         style={{
