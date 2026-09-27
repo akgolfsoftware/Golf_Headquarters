@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
@@ -18,7 +20,21 @@ export type UtfordringInput = {
   drillId?: string | null;
   startAt?: string | null;
   endAt?: string | null;
+  /** true = høyest score vinner. Overstyres av øvelsens egen retning når satt. */
+  higherIsBetter?: boolean;
+  /** Bruker-id-er valgt fra venner/egne grupper/stallen. Eier legges alltid til automatisk. */
+  deltakerIds?: string[];
 };
+
+const OpprettUtfordringSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  description: z.string().max(4000).nullish(),
+  drillId: z.string().min(1).max(128).nullish(),
+  startAt: z.string().max(40).nullish(),
+  endAt: z.string().max(40).nullish(),
+  higherIsBetter: z.boolean().optional(),
+  deltakerIds: z.array(z.string().min(1).max(128)).max(100).optional(),
+});
 
 function parseDato(verdi?: string | null): Date | null {
   if (!verdi) return null;
@@ -27,23 +43,76 @@ function parseDato(verdi?: string | null): Date | null {
   return d;
 }
 
+/**
+ * Gyldige deltaker-kandidater for en bruker: venner (Friendship ACCEPTED) og
+ * medlemmer (uansett rolle, endedAt: null) av grupper brukeren selv er aktivt
+ * medlem av. En coach sin gruppe gir dermed automatisk tilgang til stallen
+ * (PLAYER-medlemmene der) — ingen delbar lenke, kun disse to kildene
+ * (beslutninger.md §Utfordringer skal leve).
+ */
+async function hentGyldigeDeltakerIder(userId: string): Promise<Set<string>> {
+  const [vennskap, egneMedlemskap] = await Promise.all([
+    prisma.friendship.findMany({
+      where: { status: "ACCEPTED", OR: [{ userAId: userId }, { userBId: userId }] },
+      select: { userAId: true, userBId: true },
+    }),
+    prisma.groupMember.findMany({
+      where: { userId, endedAt: null },
+      select: { groupId: true },
+    }),
+  ]);
+
+  const ider = new Set<string>();
+  for (const v of vennskap) ider.add(v.userAId === userId ? v.userBId : v.userAId);
+
+  const gruppeIder = egneMedlemskap.map((m) => m.groupId);
+  if (gruppeIder.length > 0) {
+    const medlemmer = await prisma.groupMember.findMany({
+      where: { groupId: { in: gruppeIder }, endedAt: null, userId: { not: userId } },
+      select: { userId: true },
+    });
+    for (const m of medlemmer) ider.add(m.userId);
+  }
+
+  return ider;
+}
+
 export async function opprettUtfordring(input: UtfordringInput) {
-  const user = await krevBruker();
-  const navn = input.name.trim();
-  if (!navn) throw new Error("Navn er påkrevd.");
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"], kreverTilgang: "FULL" });
+  const parsed = OpprettUtfordringSchema.safeParse(input);
+  if (!parsed.success) throw new Error("Kontroller navn, tekst og deltakere.");
+  const data = parsed.data;
+  const navn = data.name;
+
+  let higherIsBetter = data.higherIsBetter ?? true;
+  if (data.drillId) {
+    const ovelse = await prisma.exerciseDefinition.findUnique({
+      where: { id: data.drillId },
+      select: { higherIsBetter: true },
+    });
+    if (ovelse?.higherIsBetter != null) higherIsBetter = ovelse.higherIsBetter;
+  }
+
+  const onskedeDeltakere = [...new Set((data.deltakerIds ?? []).filter((id) => id !== user.id))];
+  if (onskedeDeltakere.length > 0) {
+    const gyldige = await hentGyldigeDeltakerIder(user.id);
+    const ugyldig = onskedeDeltakere.find((id) => !gyldige.has(id));
+    if (ugyldig) throw new Error("Kan bare legge til venner eller medlemmer av egne grupper som deltakere.");
+  }
 
   const ny = await prisma.drillChallenge.create({
     data: {
       ownerId: user.id,
       name: navn,
-      description: input.description?.trim() || null,
-      drillId: input.drillId || null,
-      startAt: parseDato(input.startAt),
-      endAt: parseDato(input.endAt),
+      description: data.description?.trim() || null,
+      drillId: data.drillId || null,
+      startAt: parseDato(data.startAt),
+      endAt: parseDato(data.endAt),
       status: "ACTIVE",
-      // Eier blir automatisk deltaker
+      higherIsBetter,
+      // Eier blir automatisk deltaker, i tillegg til de valgte
       participants: {
-        create: { userId: user.id },
+        create: [{ userId: user.id }, ...onskedeDeltakere.map((userId) => ({ userId }))],
       },
     },
   });
@@ -52,8 +121,18 @@ export async function opprettUtfordring(input: UtfordringInput) {
     actorId: user.id,
     action: "challenge.created",
     target: `DrillChallenge:${ny.id}`,
-    metadata: { name: ny.name, drillId: ny.drillId },
+    metadata: { name: ny.name, drillId: ny.drillId, higherIsBetter, deltakere: onskedeDeltakere.length + 1 },
   });
+
+  for (const deltakerId of onskedeDeltakere) {
+    await notify({
+      userId: deltakerId,
+      type: "achievement",
+      title: "Du er lagt til i en utfordring",
+      body: `${user.name ?? "En spiller"} la deg til i «${ny.name}».`,
+      link: `/portal/utfordringer/${ny.id}`,
+    });
+  }
 
   revalidatePath("/portal/utfordringer");
   redirect(`/portal/utfordringer/${ny.id}`);
@@ -112,7 +191,7 @@ export async function registrerScore(challengeId: string, score: number, notes?:
     },
   });
 
-  // Beregn rangering på nytt (høyere score = bedre)
+  // Beregn rangering på nytt (retning avgjøres av utfordringens higherIsBetter)
   await reberegnRanger(challengeId);
 
   await audit({
@@ -126,9 +205,13 @@ export async function registrerScore(challengeId: string, score: number, notes?:
 }
 
 async function reberegnRanger(challengeId: string) {
+  const utfordring = await prisma.drillChallenge.findUnique({
+    where: { id: challengeId },
+    select: { higherIsBetter: true },
+  });
   const deltakere = await prisma.challengeParticipant.findMany({
     where: { challengeId, score: { not: null } },
-    orderBy: { score: "desc" },
+    orderBy: { score: utfordring?.higherIsBetter === false ? "asc" : "desc" },
     select: { id: true, score: true },
   });
 

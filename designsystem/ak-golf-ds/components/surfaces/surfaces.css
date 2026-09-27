@@ -1,0 +1,41 @@
+.aos-panel{background:var(--surface-flat);border:var(--border-w) solid var(--border-hairline);border-radius:var(--radius);box-shadow:var(--shadow-panel)}
+.aos-panel--raised{background:var(--surface-raised)}
+.aos-panel--sunken{background:var(--surface-sunken);box-shadow:none}
+.aos-panel--flush{border-left:0;border-right:0;border-radius:0;box-shadow:none}
+.aos-panel__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);padding:var(--space-4) var(--space-5);border-bottom:var(--border-w) solid var(--border-hairline)}
+.aos-panel__headtext{display:flex;flex-direction:column;gap:var(--space-1);min-width:0}
+.aos-panel__acts{display:flex;align-items:center;gap:var(--space-2);flex:none}
+.aos-panel__body{padding:var(--space-5)}
+.aos-panel__body--flush{padding:0}
+.aos-panel__foot{padding:var(--space-3) var(--space-5);border-top:var(--border-w) solid var(--border-hairline);font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.aos-panel--warn{border-color:var(--border-warn);background:var(--warn-tint)}
+.aos-panel--action{border-color:var(--border-action);background:var(--action-tint)}
+.aos-panel--focus{background:var(--surface-ink);border-color:var(--surface-ink-hover);box-shadow:none;color:var(--text-inverse-soft)}
+.aos-panel--focus .aos-panel__head,.aos-panel--focus .aos-panel__foot{border-color:var(--surface-ink-hover)}
+
+.aos-card{display:flex;flex-direction:column;gap:var(--space-2);background:var(--surface-raised);border:var(--border-w) solid var(--border-hairline);border-radius:var(--radius);padding:var(--space-4);text-align:left;text-decoration:none;color:inherit;box-shadow:var(--shadow-raised);transition:border-color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.aos-card--interactive{cursor:pointer;font:inherit}
+@media (hover:hover) and (pointer:fine){.aos-card--interactive:hover{border-color:var(--border-ink)}}
+.aos-card--interactive:active{transform:scale(.995)}
+.aos-card__title{font:var(--type-title-s);color:var(--text-primary);margin:0}
+.aos-card__body{font:var(--type-body-s);color:var(--text-secondary);margin:0}
+.aos-card__meta{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);display:flex;gap:var(--space-2);flex-wrap:wrap}
+.aos-card__foot{margin-top:var(--space-2);padding-top:var(--space-3);border-top:var(--border-w) solid var(--border-hairline);display:flex;align-items:center;gap:var(--space-2)}
+
+.aos-metric{display:flex;flex-direction:column;gap:var(--space-1)}
+.aos-metric__label{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-metric__val{font:var(--type-metric);letter-spacing:var(--tracking-display);color:var(--text-primary);display:flex;align-items:baseline;gap:var(--space-1)}
+.aos-metric__unit{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.aos-metric__val--empty{color:var(--text-muted)}
+.aos-metric__note{font:var(--type-body-s);color:var(--text-secondary)}
+.aos-metric__delta{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-secondary)}
+
+.aos-table{width:100%;border-collapse:collapse;font:var(--type-body-s)}
+.aos-table thead th{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted);text-align:left;padding:var(--space-2) var(--space-4);border-bottom:var(--border-w) solid var(--border-strong);white-space:nowrap}
+.aos-trow{border-bottom:var(--border-w) solid var(--border-hairline);transition:background var(--dur-fast) var(--ease-out)}
+.aos-trow > td{padding:var(--space-3) var(--space-4);vertical-align:middle;color:var(--text-body)}
+.aos-trow > td:first-child{font:var(--fw-medium) var(--fs-15)/var(--lh-snug) var(--font-body);color:var(--text-primary)}
+.aos-trow--interactive{cursor:pointer}
+@media (hover:hover) and (pointer:fine){.aos-trow--interactive:hover{background:var(--surface-hover)}}
+.aos-trow--selected{background:var(--surface-raised);box-shadow:inset 2px 0 0 var(--action)}
+.aos-trow__meta{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}

@@ -18,39 +18,63 @@
 import { useState, type FormEvent } from "react";
 import { X, Check, Camera, Play, Sparkles, Search, GripVertical, Plus, Trash2 } from "lucide-react";
 import {
-  FASE_STEG_KEYS,
-  PRESS_NIVAA_KEYS,
-  lFaseTilSteg,
-  stegTilLFase,
-  stegLabel,
-  faseLabel,
-  pressTilNivaa,
-  nivaaTilPress,
-  pressNivaaLabel,
-} from "@/lib/ak-formel-visning";
+  MOTORIKK_KODER,
+  MOTORIKK_LABEL,
+  BELASTNING_KODER,
+  BELASTNING_LABEL,
+  PRESS_KODER,
+  PRESS_LABEL,
+  MAALEUTSTYR_KODER,
+  MAALEUTSTYR_LABEL,
+  DIMENSJON_LABEL,
+  type MotorikkKode,
+  type BelastningKode,
+  type PressKode,
+  type MaaleutstyrKode,
+  type DimensjonKode,
+} from "@/lib/domain/ak-formel-v2";
+import { dimensjonerFor, relevansFor } from "@/lib/domain/omrade-relevans";
 import {
   KOLLER,
-  L_PHASES,
-  CS_LEVELS,
-  M_LEVELS,
-  PR_LEVELS,
-  SG_BUCKETS,
+  P_POSITIONS,
+  hovedP,
+  mellomposisjonerFor,
+  pNavn,
+  OMRAADE_FANER,
+  omraadeVisning,
+  type OmraadeFane,
+  type OmraadeKode,
   HIT_RATE_PROTOCOLS,
   type HitRateProtocol,
   type PyramidArea,
 } from "./constants";
+import { sokOvelser } from "@/lib/workbench/ovelse-sok";
+import { TL } from "@/lib/v2/train-lock";
 import "./oppgave-modal.css";
+
+function getEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return `https://www.youtube.com/embed/${v}`;
+    }
+    if (u.hostname === "youtu.be") {
+      const v = u.pathname.slice(1);
+      if (v) return `https://www.youtube.com/embed/${v}`;
+    }
+    if (u.hostname.includes("vimeo.com")) {
+      const m = /\/(\d+)/.exec(u.pathname);
+      if (m) return `https://player.vimeo.com/video/${m[1]}`;
+    }
+  } catch {}
+  return null;
+}
 
 const PYRAMIDES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-const SG_TAB_LABEL: Record<keyof typeof SG_BUCKETS, string> = {
-  Tee: "Tee",
-  "Approach (m)": "Approach",
-  "Around Green": "Around Green",
-  "Putt (m)": "Putt",
-};
-
-type SGTab = keyof typeof SG_BUCKETS;
+type SGTab = OmraadeFane;
 
 export interface TmGoalDraft {
   id: string;
@@ -89,12 +113,17 @@ export interface OppgaveDraft {
   beskrivelse: string;
   pyramide: PyramidArea;
   omraadeTab: SGTab;
+  /** Typet område (fasitens liste). `omraade` er visningsetiketten, avledet. */
+  omraadeKode: OmraadeKode;
   omraade: string;
   koller: string[];
-  lFase?: typeof L_PHASES[number];
-  cs?: typeof CS_LEVELS[number];
-  m?: typeof M_LEVELS[number];
-  pr?: typeof PR_LEVELS[number];
+  /** v2-akser (22.09). L-fase, CS, Miljø og Press er utgått. */
+  motorikk?: MotorikkKode;
+  belastning?: BelastningKode;
+  press?: PressKode;
+  /** Teknisk fokus — én per oppgave, valgfritt. */
+  dimensjon?: DimensjonKode;
+  maaleutstyr?: MaaleutstyrKode;
   kategori?: TaskKategori;
   bildeUrl?: string;
   videoUrl?: string;
@@ -122,6 +151,8 @@ interface OppgaveModalProps {
   onUploadMedia?: (file: File, kind: "bilde" | "video") => Promise<string>;
 }
 
+const AVANSERT_P_NOKKEL = "tp-avansert-p";
+
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
@@ -140,6 +171,65 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
   const [loggingReps, setLoggingReps] = useState(false);
   const [uploading, setUploading] = useState<"bilde" | "video" | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
+
+  // Øvelsesbank-søk
+  const [drillSearchOpen, setDrillSearchOpen] = useState(false);
+  const [drillQuery, setDrillQuery] = useState("");
+  const [drillResults, setDrillResults] = useState<
+    Array<{ id: string; name: string; pyramidArea: string }>
+  >([]);
+  const [isSearchingDrills, setIsSearchingDrills] = useState(false);
+  const [drillNames, setDrillNames] = useState<Record<string, string>>({});
+
+  async function handleDrillSearch(q: string) {
+    setDrillQuery(q);
+    setIsSearchingDrills(true);
+    try {
+      const res = await sokOvelser(q, draft.pyramide);
+      setDrillResults(res);
+      setDrillNames((prev) => {
+        const next = { ...prev };
+        for (const item of res) {
+          next[item.id] = item.name;
+        }
+        return next;
+      });
+    } catch {
+      // Ignorer søkefeil
+    } finally {
+      setIsSearchingDrills(false);
+    }
+  }
+
+  function toggleDrill(id: string, name?: string) {
+    if (name) {
+      setDrillNames((prev) => ({ ...prev, [id]: name }));
+    }
+    setDraft((d) => {
+      const exists = d.drillIds.includes(id);
+      return {
+        ...d,
+        drillIds: exists ? d.drillIds.filter((x) => x !== id) : [...d.drillIds, id],
+      };
+    });
+  }
+  // Avansert P-velger (mellomposisjoner) — per-nettleser-bekvemmelighet, aldri fasit.
+  const [avansertP, setAvansertPState] = useState<boolean>(() => {
+    try { return window.localStorage.getItem(AVANSERT_P_NOKKEL) === "1"; } catch { return false; }
+  });
+  function setAvansertP(v: boolean) {
+    setAvansertPState(v);
+    try { window.localStorage.setItem(AVANSERT_P_NOKKEL, v ? "1" : "0"); } catch { /* privat modus o.l. */ }
+  }
+  const relevans = relevansFor(draft.omraadeKode);
+  const dimensjoner = dimensjonerFor(draft.omraadeKode);
+
+  function velgOmraade(tab: SGTab, kode: OmraadeKode) {
+    setDraft((d) => ({ ...d, omraadeTab: tab, omraadeKode: kode, omraade: omraadeVisning(kode) }));
+  }
+  function velgP(num: string) {
+    setDraft((d) => ({ ...d, pNummer: num, pName: pNavn(num) }));
+  }
 
   if (!open) return null;
 
@@ -315,6 +405,49 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
             </div>
             <div className="section-row">
               <div className="field-stack">
+                <span className="field-label">
+                  P-posisjon{" "}
+                  <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· {draft.pNummer} {pNavn(draft.pNummer)}</span>
+                </span>
+                <div className="seg cols-5" role="group" aria-label="Hovedposisjon P1 til P10">
+                  {P_POSITIONS.map((p) => (
+                    <button
+                      type="button"
+                      key={p.num}
+                      className={hovedP(draft.pNummer) === p.num ? "active" : ""}
+                      title={p.name}
+                      onClick={() => velgP(p.num)}
+                    >
+                      <span className="dot" />{p.num.replace(".0", "")}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className={`chip ${avansertP ? "active" : ""}`}
+                  aria-pressed={avansertP}
+                  onClick={() => setAvansertP(!avansertP)}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  {avansertP ? "Avansert: mellomposisjoner vises" : "Avansert: vis mellomposisjoner"}
+                </button>
+                {avansertP && mellomposisjonerFor(hovedP(draft.pNummer)).length > 0 && (
+                  <div className="seg cols-5" role="group" aria-label={`Mellomposisjoner under ${hovedP(draft.pNummer)}`}>
+                    {[{ num: hovedP(draft.pNummer), name: pNavn(hovedP(draft.pNummer)) }, ...mellomposisjonerFor(hovedP(draft.pNummer))].map((p) => (
+                      <button
+                        type="button"
+                        key={p.num}
+                        className={draft.pNummer === p.num ? "active" : ""}
+                        title={p.name}
+                        onClick={() => velgP(p.num)}
+                      >
+                        <span className="dot" />{p.num}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="field-stack">
                 <label className="field-label" htmlFor="f-title">Tittel</label>
                 <input
                   id="f-title"
@@ -381,43 +514,40 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
 
               <div className="field-stack">
                 <span className="field-label">
-                  Område{" "}
+                  Treningsområde{" "}
                   <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· Strokes Gained</span>
                 </span>
                 <p className="field-helper">
-                  Matcher SG-buckets. Velg én hoved-kategori, deretter sub-område.
+                  Velg område, deretter lengde. Putting i fot, meter i parentes.
                 </p>
                 <div className="area-tabs">
-                  {(Object.keys(SG_BUCKETS) as SGTab[]).map((tab) => (
+                  {(Object.keys(OMRAADE_FANER) as SGTab[]).map((tab) => (
                     <button
                       type="button"
                       key={tab}
                       className={`area-tab ${tab === draft.omraadeTab ? "active" : ""}`}
-                      onClick={() => {
-                        const buckets = SG_BUCKETS[tab];
-                        patch({ omraadeTab: tab, omraade: buckets[0] });
-                      }}
+                      onClick={() => velgOmraade(tab, OMRAADE_FANER[tab][0])}
                     >
-                      {SG_TAB_LABEL[tab]}
+                      {tab}
                       <span className="meta">
-                        {SG_BUCKETS[tab].length === 1
-                          ? SG_BUCKETS[tab][0]
-                          : `${SG_BUCKETS[tab].length} sub`}
+                        {OMRAADE_FANER[tab].length === 1
+                          ? omraadeVisning(OMRAADE_FANER[tab][0])
+                          : `${OMRAADE_FANER[tab].length} valg`}
                       </span>
                     </button>
                   ))}
                 </div>
                 <div className="area-sub">
-                  <span className="area-sub-label">{SG_TAB_LABEL[draft.omraadeTab]} · velg sub-område</span>
+                  <span className="area-sub-label">{draft.omraadeTab} · velg lengde eller slag</span>
                   <div className="chip-row">
-                    {SG_BUCKETS[draft.omraadeTab].map((sub) => (
+                    {OMRAADE_FANER[draft.omraadeTab].map((kode) => (
                       <button
                         type="button"
-                        key={sub}
-                        className={`chip ${sub === draft.omraade ? "active" : ""}`}
-                        onClick={() => patch({ omraade: sub })}
+                        key={kode}
+                        className={`chip ${kode === draft.omraadeKode ? "active" : ""}`}
+                        onClick={() => velgOmraade(draft.omraadeTab, kode)}
                       >
-                        {sub}
+                        {omraadeVisning(kode)}
                       </button>
                     ))}
                   </div>
@@ -445,50 +575,71 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
             </div>
           </section>
 
-          {/* 3. MODALITET */}
+          {/* 3. GJENNOMFØRING */}
           <section className="section">
             <div className="section-head">
               <span className="num">
-                <b>3</b> Trenings-modalitet{" "}
-                <span style={{ color: "hsl(var(--muted-foreground))" }}>· MORAD</span>
+                <b>3</b> Gjennomføring{" "}
+                <span style={{ color: "hsl(var(--muted-foreground))" }}>
+                  · {relevans.motorikk ? "full sving" : "ingen læringssteg for dette området"}
+                </span>
               </span>
             </div>
 
             <div className="modality-grid">
+              {relevans.motorikk && (
+                <ModalitySeg
+                  label="Læringssteg"
+                  helper="Uten ball → Lav hastighet → Automatikk. Gjelder bare full sving."
+                  options={MOTORIKK_KODER}
+                  value={draft.motorikk}
+                  onChange={(v) => patch({ motorikk: v })}
+                  cols={3}
+                  labelFor={(k) => MOTORIKK_LABEL[k]}
+                />
+              )}
+              {relevans.dimensjon && dimensjoner.length > 0 && (
+                <ModalitySeg
+                  label="Teknisk fokus"
+                  helper="Én per oppgave. Følger med når oppgaven legges inn i en økt."
+                  options={dimensjoner}
+                  value={draft.dimensjon}
+                  onChange={(v) => patch({ dimensjon: draft.dimensjon === v ? undefined : v })}
+                  cols={dimensjoner.length > 3 ? 4 : 3}
+                  labelFor={(k) => DIMENSJON_LABEL[k]}
+                />
+              )}
               <ModalitySeg
-                label="Læringsfase"
-                helper="Uten ball → Lav hastighet → Auto."
-                options={FASE_STEG_KEYS}
-                value={lFaseTilSteg(draft.lFase) ?? undefined}
-                onChange={(v) => patch({ lFase: stegTilLFase(v, draft.lFase) ?? undefined })}
+                label="Måleutstyr"
+                helper="Fast liste. Velges her, aldri gjettet ut fra sted."
+                options={MAALEUTSTYR_KODER}
+                value={draft.maaleutstyr}
+                onChange={(v) => patch({ maaleutstyr: draft.maaleutstyr === v ? undefined : v })}
                 cols={3}
-                labelFor={stegLabel}
+                labelFor={(k) => MAALEUTSTYR_LABEL[k]}
               />
-              <ModalitySeg
-                label="CS-nivå · hastighet"
-                helper="CS50 ≈ halv-tempo, CS100 ≈ full."
-                options={CS_LEVELS}
-                value={draft.cs}
-                onChange={(v) => patch({ cs: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="M · miljø"
-                helper="M0 = ingen distraksjon, M5 = full press."
-                options={M_LEVELS}
-                value={draft.m}
-                onChange={(v) => patch({ m: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="Press"
-                helper="Fri → Krav → Utfordring → Konkurranse."
-                options={PRESS_NIVAA_KEYS}
-                value={pressTilNivaa(draft.pr) ?? undefined}
-                onChange={(v) => patch({ pr: nivaaTilPress(v, draft.pr) ?? undefined })}
-                cols={4}
-                labelFor={pressNivaaLabel}
-              />
+              {relevans.belastning && (
+                <ModalitySeg
+                  label="Sted og miljø"
+                  helper="Konteksten treningen skjer i."
+                  options={BELASTNING_KODER}
+                  value={draft.belastning}
+                  onChange={(v) => patch({ belastning: v })}
+                  cols={4}
+                  labelFor={(k) => BELASTNING_LABEL[k]}
+                />
+              )}
+              {relevans.press && (
+                <ModalitySeg
+                  label="Press"
+                  helper="Hvem ser på, og hvilken situasjon trenes."
+                  options={PRESS_KODER}
+                  value={draft.press}
+                  onChange={(v) => patch({ press: v })}
+                  cols={4}
+                  labelFor={(k) => PRESS_LABEL[k]}
+                />
+              )}
             </div>
           </section>
 
@@ -500,15 +651,13 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                 <span style={{ color: "hsl(var(--muted-foreground))" }}>· valgfritt</span>
               </span>
             </div>
-            {!isEditing || !onUploadMedia ? (
-              <p className="field-helper">Lagre oppgaven først, så kan du legge til bilde og video.</p>
-            ) : (
+            {isEditing && onUploadMedia ? (
               <div className="media-grid">
                 <label className={`media-slot ${draft.videoUrl ? "has-file" : ""}`}>
                   <span className="ic" aria-hidden>{uploading === "video" ? <Sparkles size={14} /> : <Play size={14} />}</span>
                   <span className="copy">
                     <span className="nm">
-                      {uploading === "video" ? "Laster opp …" : draft.videoUrl ? "Video lagt til" : "Legg til video"}
+                      {uploading === "video" ? "Laster opp …" : draft.videoUrl ? "Video lagt til" : "Last opp video"}
                     </span>
                     <span className="meta">MP4 / MOV · max 50 MB</span>
                   </span>
@@ -524,7 +673,7 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                   <span className="ic" aria-hidden>{uploading === "bilde" ? <Sparkles size={14} /> : <Camera size={14} />}</span>
                   <span className="copy">
                     <span className="nm">
-                      {uploading === "bilde" ? "Laster opp …" : draft.bildeUrl ? "Bilde lagt til" : "Legg til bilde"}
+                      {uploading === "bilde" ? "Laster opp …" : draft.bildeUrl ? "Bilde lagt til" : "Last opp bilde"}
                     </span>
                     <span className="meta">JPG / PNG / WEBP · max 5 MB</span>
                   </span>
@@ -537,7 +686,36 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                   />
                 </label>
               </div>
-            )}
+            ) : null}
+
+            {/* Direkte lenke for video og bilde */}
+            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <label className="field-label" style={{ fontSize: 11, marginBottom: 4, display: "block" }}>
+                  Videolenke (YouTube, Vimeo eller MP4):
+                </label>
+                <input
+                  type="url"
+                  className="field-input"
+                  placeholder="https://www.youtube.com/watch?v=... eller https://..."
+                  value={draft.videoUrl ?? ""}
+                  onChange={(e) => patch({ videoUrl: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="field-label" style={{ fontSize: 11, marginBottom: 4, display: "block" }}>
+                  Bildelenke (URL):
+                </label>
+                <input
+                  type="url"
+                  className="field-input"
+                  placeholder="https://..."
+                  value={draft.bildeUrl ?? ""}
+                  onChange={(e) => patch({ bildeUrl: e.target.value })}
+                />
+              </div>
+            </div>
+
             {mediaError && (
               <p className="field-helper" style={{ color: "hsl(var(--destructive))", marginTop: 8 }}>{mediaError}</p>
             )}
@@ -550,11 +728,22 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
               />
             )}
             {draft.videoUrl && (
-              <video
-                src={draft.videoUrl}
-                controls
-                style={{ marginTop: 12, maxHeight: 200, borderRadius: 10, display: "block" }}
-              />
+              getEmbedUrl(draft.videoUrl) ? (
+                <div style={{ marginTop: 12, borderRadius: 10, overflow: "hidden", aspectRatio: "16 / 9", maxHeight: 240, width: "100%" }}>
+                  <iframe
+                    src={getEmbedUrl(draft.videoUrl)!}
+                    style={{ width: "100%", height: "100%", border: 0 }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <video
+                  src={draft.videoUrl}
+                  controls
+                  style={{ marginTop: 12, maxHeight: 200, borderRadius: 10, display: "block", width: "100%" }}
+                />
+              )
             )}
           </section>
 
@@ -699,16 +888,101 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
               <span className="num"><b>8</b> Linkede drills fra øvelsesbanken</span>
               <span className="helper">{draft.drillIds.length} valgt</span>
             </div>
-            <div className="chip-row">
+            <div className="chip-row" style={{ flexWrap: "wrap", gap: 8 }}>
               {draft.drillIds.map((id) => (
-                <span key={id} className="drill-chip selected">
-                  <span className="id">#{id}</span>
+                <span
+                  key={id}
+                  className="drill-chip selected"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6 }}
+                >
+                  <span className="id">{drillNames[id] ?? `#${id.slice(0, 8)}`}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleDrill(id)}
+                    aria-label="Fjern drill"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "inherit",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <X size={12} aria-hidden />
+                  </button>
                 </span>
               ))}
-              <button type="button" className="drill-chip action">
-                <Search size={11} aria-hidden /> Søk i drill-bibliotek
+              <button
+                type="button"
+                className="drill-chip action"
+                onClick={() => {
+                  const nextState = !drillSearchOpen;
+                  setDrillSearchOpen(nextState);
+                  if (nextState && drillResults.length === 0) {
+                    handleDrillSearch("");
+                  }
+                }}
+              >
+                <Search size={11} aria-hidden /> {drillSearchOpen ? "Lukk øvelsessøk" : "Søk i øvelsesbanken"}
               </button>
             </div>
+
+            {drillSearchOpen && (
+              <div
+                style={{
+                  marginTop: 12,
+                  padding: 12,
+                  background: TL.dim,
+                  borderRadius: 8,
+                  border: `1px solid ${TL.hair}`,
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Søk i øvelsesbanken …"
+                  value={drillQuery}
+                  onChange={(e) => handleDrillSearch(e.target.value)}
+                  className="field-input"
+                  style={{ width: "100%", marginBottom: 8 }}
+                />
+                {isSearchingDrills ? (
+                  <p className="field-helper">Leter i øvelsesbanken …</p>
+                ) : drillResults.length === 0 ? (
+                  <p className="field-helper">Ingen øvelser funnet for {draft.pyramide}.</p>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto" }}>
+                    {drillResults.map((dr) => {
+                      const isSelected = draft.drillIds.includes(dr.id);
+                      return (
+                        <div
+                          key={dr.id}
+                          onClick={() => toggleDrill(dr.id, dr.name)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "6px 10px",
+                            borderRadius: 6,
+                            background: isSelected ? TL.fill : TL.elev,
+                            color: isSelected ? TL.onFill : TL.text,
+                            cursor: "pointer",
+                            fontSize: 12,
+                          }}
+                        >
+                          <span style={{ fontWeight: 600 }}>{dr.name}</span>
+                          <span style={{ fontSize: 10, opacity: 0.8 }}>
+                            {isSelected ? "Valgt (klikk for å fjerne)" : "Legg til"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             <p className="field-helper" style={{ marginTop: 10 }}>
               Når disse drillene loggføres i en treningsøkt, telles reps automatisk mot oppgaven.
             </p>
@@ -753,10 +1027,11 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                     ) : draft.koller.length > 1 ? (
                       <span className="tp-tag club">{draft.koller.length} KØLLER</span>
                     ) : null}
-                    {draft.lFase ? <span className="tp-tag lphase">{faseLabel(draft.lFase)}</span> : null}
-                    {draft.cs ? <span className="tp-tag cs">{draft.cs}</span> : null}
-                    {draft.m ? <span className="tp-tag">{draft.m}</span> : null}
-                    {draft.pr ? <span className="tp-tag">{draft.pr}</span> : null}
+                    {draft.motorikk ? <span className="tp-tag lphase">{MOTORIKK_LABEL[draft.motorikk].toUpperCase()}</span> : null}
+                    {draft.dimensjon ? <span className="tp-tag cs">{DIMENSJON_LABEL[draft.dimensjon].toUpperCase()}</span> : null}
+                    {draft.maaleutstyr ? <span className="tp-tag">{MAALEUTSTYR_LABEL[draft.maaleutstyr].toUpperCase()}</span> : null}
+                    {draft.belastning ? <span className="tp-tag">{BELASTNING_LABEL[draft.belastning].toUpperCase()}</span> : null}
+                    {draft.press ? <span className="tp-tag">{PRESS_LABEL[draft.press].toUpperCase()}</span> : null}
                   </div>
                 </div>
               </div>

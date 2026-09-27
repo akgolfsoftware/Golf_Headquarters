@@ -8,7 +8,7 @@ import { MarkedSuksessV2 } from "@/components/marketing/v2/MarkedSuksessV2";
 export const metadata: Metadata = {
   title: "Suksesshistorier · AK Golf Academy",
   description:
-    "Bli neste suksesshistorie hos AK Golf Academy — se turneringsresultater eller book en kartleggingsøkt.",
+    "Bli neste suksesshistorie hos AK Golf Academy — se turneringsresultater eller book en time.",
 };
 
 export default function SuksessPage() {

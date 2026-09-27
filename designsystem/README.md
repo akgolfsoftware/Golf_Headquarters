@@ -1,9 +1,10 @@
 # Designarbeid og referanser
 
-## Gjeldende designautoritet — 21.09.2026
+## Gjeldende designautoritet — 26.09.2026
 
-[AK Golf Design System og Claude Design-prosjektet «App design»](../docs/design-system/design-autoritet.md)
-styrer alt nytt designarbeid. Train-lock og Paper er utgående og har ingen visuell autoritet,
+[Claude Design-prosjektet «AK Golf Precision Athletics»](../docs/design-system/design-autoritet.md)
+(`7d7c2994`) styrer alt nytt designarbeid for AK Golf HQ. Det erstatter «AK Golf Design System»
+og «App design» fra 21.09. Train-lock og Paper er utgående og har ingen visuell autoritet,
 selv om eldre dokumenter eller kode bruker ordene «låst», «valgt» eller «fasit». Det skal ikke
 spørres om dette på nytt. Eldre materiale under brukes bare til funksjonsdekning, sporbarhet og
 kontrollert overgang.
@@ -15,13 +16,13 @@ Anders har bestilt portering av den konkrete Workbench-masteren med åtte piller
 manifest og filhasher. Rust er kun de avtalte handlingene; øvrige kort og fyll er
 grafitt. Denne bestillingen styrer Workbench-omfanget foran eldre kandidatstatus
 under. `selectedForBuilding` i designprosjektet er ikke endret. Appens visuelle
-og funksjonelle kontroll føres separat i [arbeidsplanen](../docs/planer/workbench-design-og-kode-natt-2026-09-20.md).
+og funksjonelle kontroll føres separat.
 
 ## Historisk produktretning før systemvalget — oppdatert 13.09.2026
 
 Arbeidet startet fra blankt lerret i Claude Design og videreføres nå som ett **AK Golf HQ Design System** for hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er de fire prioriterte kjernene. Booking, marked, innlogging/konto, forelder, delt innsyn og systemtilstander skal bruke samme fundament gjennom navngitte profiler og mønstre. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
 
-**Team Norway er særskilt låst og visuelt godkjent 13.09.2026:** Claw-pakken er valgt visuell autoritet for alle egne `/team-norway/*`-skjermer. Den ekte logoen, paletten, typografien, komponentgrammatikken og skjermmønstrene skal brukes; dette er ikke et rent farge-/logobytte. AK Golf HQs kode, funksjoner, datamodeller, tilgang, samtykke og personvern er fortsatt funksjonell autoritet. Se [beslutning og implementeringsomfang](../docs/design-system/team-norway-claw-valgt-2026-09-13.md).
+**Utgått 22.09.2026:** Claw var visuell autoritet for `/team-norway/*` fra 13.09. Den rollen er nå det skarpe Team Norway-språket i prosjektet «Team Norway App» — se [beslutningen](../.claude/rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK. Den ekte logoen og navy/rød består uendret. AK Golf HQs kode, funksjoner, datamodeller, tilgang, samtykke og personvern er fortsatt funksjonell autoritet. Historikk: [Claw-valget 13.09](../docs/design-system/team-norway-claw-valgt-2026-09-13.md).
 
 Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Anders' bildesett fra 11.09 styrer visuell smak. Eksisterende Train-lock, Paper, v2 og tidligere designpakker brukes til funksjonsdekning og implementasjonsforståelse, ikke som visuell fasit i denne utforskingen.
 
@@ -49,7 +50,7 @@ Tabellen viser hvor materialet og dagens implementasjon finnes. Versjonsvalget f
 | Booking, også offentlig `/booking` | Tidligere lys Train-lock-flyt; finn B-skjermene i registeret | `--tl-*` / `TL` |
 | Markedssider `/` og øvrig offentlig nettsted | [AK Golf-master](ak-golf/readme.md) | `--ak-*`, `src/styles/ak-golf.css`; genererte verdier kommer fra `ak-golf/tokens.json` |
 | WANG `/team-wang` | [WANG](wang/LES-MEG.md), [portering](wang/PORTING.md) | `src/styles/wang-tokens.css` |
-| Team Norway `/team-norway` | [Claw / Team Norway](team-norway/handover/PORTING.md) | Team Norway-pakkens tokenbro; delte analyseflater har Train-lock-struktur |
+| Team Norway `/team-norway` | «Team Norway App» i Claude Design (se beslutningen 22.09); [funksjonsinventar](team-norway/handover/PORTING.md) | `src/styles/team-norway-tokens.css`, `src/lib/v2/team-norway.ts` (`TN`); delte analyseflater har Train-lock-struktur |
 | Lokale utkast / tidligere godkjente tillegg | [Canvas](canvas/README.md) | Se den enkelte referansen. |
 
 ### Trenerprototypene for Team Norway og WANG
@@ -60,7 +61,7 @@ Norway Golf for TN, WANG Toppidrett for WANG. Visuelle valg skal ikke krysse mel
 
 | Flate | Prosjekt i Claude Design | Mappe | Omfang |
 |---|---|---|---|
-| Team Norway | Claw Design — Team Norway Golf | `templates/tn-coach-demo/` | TN-00–TN-27, 34 dyp-lenker, ni menypunkter |
+| Team Norway | Claw Design — Team Norway Golf (utgått som visuell fasit 22.09; fortsatt funksjonsinventar) | `templates/tn-coach-demo/` | TN-00–TN-27, 34 dyp-lenker, ni menypunkter |
 | WANG | WANG Toppidrett Designsystem | `templates/wang-coach-demo/` | 59 skjermer, åtte menygrupper |
 
 Begge er kontrollert 21.09.2026: hver rute er åpnet og målt, uten JavaScript-feil.

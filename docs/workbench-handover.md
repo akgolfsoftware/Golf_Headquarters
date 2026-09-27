@@ -6,7 +6,6 @@ Master, 16 PNG-er i 2×, manifest, SKILL, logoer og designverdier er importert t
 Kilden er [Workbench uke-kroppen](https://claude.ai/design/p/830e7bce-eaba-465b-848c-26f73bd0f2d3).
 Importen 20.09 inkluderer Anders' avklaring: grafitt på øktkort og fordelinger,
 rust bare på Publiser / Godkjenn / START ØKT. Periode har «Valgt periode».
-Se [importkontroll og gjenstående arbeid](design-audit/workbench-handover-import-2026-09-20.md).
 Import er ikke visuell godkjenning av appen. `selectedForBuilding` er ikke endret.
 
 ## Chrome (låst)

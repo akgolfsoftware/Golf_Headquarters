@@ -1,10 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TnTilgangRad, TnTilgangStatus } from "@/lib/domain/tn-tilgang";
-import { TnAvatarInitialer, TnPille, TnRail } from "./core";
+import { TnAvatarInitialer, TnPille } from "./core";
 import { TnDataTable } from "./tn-data-table";
-import { TnRailMobil } from "./rail-mobil";
-import { tnHovedmeny } from "./tn-shell";
+import { TnShell } from "./tn-shell";
 import styles from "./tn-tilgang-visning.module.css";
 
 /**
@@ -40,14 +39,17 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
 }) {
   const valgt = rader.find((rad) => rad.userId === valgtId);
   const lenke = (id: string) => `/team-norway/tilgang?valgt=${encodeURIComponent(id)}`;
-  const meny = tnHovedmeny({ aktiv: "tilgang", groupId: gruppeId, visTrenerflater: true, kanAdministrere: true });
-
   return (
-    <div className={styles.skall}>
-      <TnRail punkter={meny} bruker={{ navn: brukerNavn, rolle: "Sportssjef" }} orgNavn="Team Norway" orgUndertittel="Administrasjon" />
-      <div className={styles.innhold}>
-        <TnRailMobil punkter={meny} orgNavn="Team Norway" />
-        <main className={styles.arbeidsflate} data-valgt={!!valgt || undefined}>
+    <TnShell
+      aktiv="tilgang"
+      brukerNavn={brukerNavn}
+      rolle="Sportssjef"
+      groupId={gruppeId}
+      visTrenerflater
+      kanAdministrere
+      flate="full"
+    >
+      <main className={styles.arbeidsflate} data-valgt={!!valgt || undefined}>
           <section className={styles.liste} aria-labelledby="tn-tilgang-tittel">
             <header>
               <p className={styles.oyenbryn}>Administrasjon · Tilgang</p>
@@ -109,8 +111,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
               {skjema}
             </section>
           )}
-        </main>
-      </div>
-    </div>
+      </main>
+    </TnShell>
   );
 }

@@ -30,7 +30,7 @@ export function AdminAgenticosCockpit({ data }: { data: AgenticosCockpitData }) 
               Åpne agent
             </AoKnapp>
           }
-          sekundaer={<AoKnapp href="/admin/agenticos/ko">Se kø</AoKnapp>}
+          sekundaer={<AoKnapp href="/admin/ko?fane=agentko">Se kø</AoKnapp>}
         />
       ) : null}
 
@@ -48,7 +48,7 @@ export function AdminAgenticosCockpit({ data }: { data: AgenticosCockpitData }) 
               ? "venter på deg — én om gangen, ingenting skrives før du sier ja"
               : "venter på deg — én om gangen, ingenting skrives før du sier ja"}
           </span>
-          <AoKnapp variant="lenke" href="/admin/agenticos/godkjenn">
+          <AoKnapp variant="lenke" href="/admin/ko?fane=agentgodkjenn">
             Åpne godkjenn-kø
           </AoKnapp>
         </AoKort>
@@ -59,7 +59,7 @@ export function AdminAgenticosCockpit({ data }: { data: AgenticosCockpitData }) 
           <span style={{ fontSize: 13, color: TL.mute, flex: 1 }}>
             tasks klare i kø{data.pagarCount > 0 ? ` · ${data.pagarCount} pågår` : ""}
           </span>
-          <AoKnapp variant="lenke" href="/admin/agenticos/ko">
+          <AoKnapp variant="lenke" href="/admin/ko?fane=agentko">
             Åpne kø
           </AoKnapp>
         </AoKort>
@@ -75,7 +75,7 @@ export function AdminAgenticosCockpit({ data }: { data: AgenticosCockpitData }) 
           <span style={{ fontSize: 13, color: TL.mute, lineHeight: 1.4, flex: 1 }}>
             nye research-resultater · leste bare, ingen godkjenning
           </span>
-          <AoKnapp variant="lenke" href="/admin/agenticos">
+          <AoKnapp variant="lenke" href="/admin/jarvis">
             Les
           </AoKnapp>
         </AoKort>
@@ -99,7 +99,7 @@ function NesteKort({ data }: { data: AgenticosCockpitData }) {
         <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>
           Agenten foreslår nye når det kommer data den kan jobbe med — forslagene havner i godkjenn-køen.
         </p>
-        <AoKnapp variant="primaer" full href="/admin/workspace">
+        <AoKnapp variant="primaer" full href="/admin/oppgaver">
           Ny oppgave
         </AoKnapp>
       </AoKort>
@@ -121,10 +121,10 @@ function NesteKort({ data }: { data: AgenticosCockpitData }) {
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         {erGodkjenn ? (
           <>
-            <AoKnapp variant="primaer" full href={`/admin/agenticos/godkjenn?sak=${neste.id}`}>
+            <AoKnapp variant="primaer" full href={`/admin/ko?fane=agentgodkjenn&sak=${neste.id}`}>
               Godkjenn
             </AoKnapp>
-            <AoKnapp href={`/admin/agenticos/godkjenn?sak=${neste.id}`}>Åpne task</AoKnapp>
+            <AoKnapp href={`/admin/ko?fane=agentgodkjenn&sak=${neste.id}`}>Åpne task</AoKnapp>
           </>
         ) : neste.kanKjore ? (
           <>
@@ -162,5 +162,4 @@ function KjorKnapp({ slug }: { slug: string }) {
     </AoKnapp>
   );
 }
-
 

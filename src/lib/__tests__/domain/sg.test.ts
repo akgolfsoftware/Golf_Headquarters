@@ -97,8 +97,13 @@ test("formaterSg: positiv → '+1,2'", () => {
   assert.equal(formaterSg(1.234), "+1,2");
 });
 
-test("formaterSg: negativ → '-0,8'", () => {
-  assert.equal(formaterSg(-0.78), "-0,8");
+test("formaterSg: negativ → '−0,8' med ekte minus", () => {
+  // Endret 22.09.2026: denne testen låste ASCII-bindestrek og var grunnen til
+  // at formaterSg var den ENESTE SG-formatereren i kodebasen som ikke brukte
+  // ekte minus (U+2212). Samme tall kunne dermed se ulikt ut på to flater
+  // ved siden av hverandre.
+  assert.equal(formaterSg(-0.78), "−0,8");
+  assert.ok(!formaterSg(-0.78).includes("-"), "ASCII-bindestrek skal ikke forekomme");
 });
 
 test("formaterSg: 0 → '0,0'", () => {
@@ -111,6 +116,6 @@ test("formaterSg: avrunding bort fra 0 fungerer", () => {
   // -0.05 avrundes til -0.1 av Math.round (banker's rounding gjelder ikke i JS)
   // Vi sjekker bare at format-strengen har minustegn og er ett desimal
   const negativ = formaterSg(-0.15);
-  assert.ok(negativ.startsWith("-"));
+  assert.ok(negativ.startsWith("−"));
   assert.ok(negativ.includes(","));
 });

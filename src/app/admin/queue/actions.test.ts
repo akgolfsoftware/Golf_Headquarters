@@ -5,6 +5,9 @@
  * coach-scoping — kun egne spillere (`harCoachTilgangTilSpiller`), ADMIN
  * unntatt. Pluss rollegrensen (PLAYER/uinnlogget avvist av
  * `requirePortalUser`, som her KASTER siden den ikke er fanget).
+ *
+ * Lagring er FollowUpCase.upsert (beslutning 23.09.2026, AG-03b) — erstattet
+ * fra Signal-basert overstyring.
  */
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
@@ -22,13 +25,13 @@ let coachedeSpillere = new Set(["spiller-a"]);
 /** Spillere coach-a faktisk har tilgang til (coach-scoping). */
 let coachensSpillere = new Set(["spiller-a"]);
 
-let signalCreates: unknown[] = [];
+let followUpUpserts: { where: unknown; create: unknown; update: unknown }[] = [];
 
 function nullstill() {
   bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
   coachedeSpillere = new Set(["spiller-a"]);
   coachensSpillere = new Set(["spiller-a"]);
-  signalCreates = [];
+  followUpUpserts = [];
 }
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -52,10 +55,10 @@ mock.module("@/lib/auth/coached", {
 const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
-  signal: {
-    create: async ({ data }: { data: unknown }) => {
-      signalCreates.push(data);
-      return { id: "signal-1" };
+  followUpCase: {
+    upsert: async (args: { where: unknown; create: unknown; update: unknown }) => {
+      followUpUpserts.push(args);
+      return { id: "followup-1" };
     },
   },
 });
@@ -72,21 +75,21 @@ test("settOppfolgingsstatus avviser PLAYER uten å skrive signal", async () => {
   bruker = { id: "spiller-a", role: "PLAYER", name: "Spiller A" };
   const { settOppfolgingsstatus } = await actions();
   await assert.rejects(() => settOppfolgingsstatus("spiller-a", "risk"));
-  assert.equal(signalCreates.length, 0);
+  assert.equal(followUpUpserts.length, 0);
 });
 
 test("settOppfolgingsstatus avviser uinnlogget uten å skrive signal", async () => {
   bruker = null;
   const { settOppfolgingsstatus } = await actions();
   await assert.rejects(() => settOppfolgingsstatus("spiller-a", "risk"));
-  assert.equal(signalCreates.length, 0);
+  assert.equal(followUpUpserts.length, 0);
 });
 
 test("settOppfolgingsstatus avviser ugyldig status med ok:false", async () => {
   const { settOppfolgingsstatus } = await actions();
   const svar = await settOppfolgingsstatus("spiller-a", "ugyldig" as never);
   assert.equal(svar.ok, false);
-  assert.equal(signalCreates.length, 0);
+  assert.equal(followUpUpserts.length, 0);
 });
 
 test("settOppfolgingsstatus avviser selvbetjent spiller (ikke i coaching-sporet) med ok:false", async () => {
@@ -95,7 +98,7 @@ test("settOppfolgingsstatus avviser selvbetjent spiller (ikke i coaching-sporet)
   const svar = await settOppfolgingsstatus("spiller-a", "risk");
   assert.equal(svar.ok, false);
   assert.equal(svar.error, "Spilleren er ikke i coaching-sporet.");
-  assert.equal(signalCreates.length, 0);
+  assert.equal(followUpUpserts.length, 0);
 });
 
 test("settOppfolgingsstatus avviser COACH uten tilgang til spilleren med ok:false", async () => {
@@ -104,18 +107,31 @@ test("settOppfolgingsstatus avviser COACH uten tilgang til spilleren med ok:fals
   const svar = await settOppfolgingsstatus("spiller-a", "risk");
   assert.equal(svar.ok, false);
   assert.equal(svar.error, "Du har ikke tilgang til denne spilleren.");
-  assert.equal(signalCreates.length, 0);
+  assert.equal(followUpUpserts.length, 0);
 });
 
-test("settOppfolgingsstatus skriver signal for COACH med tilgang", async () => {
+test("settOppfolgingsstatus skriver FollowUpCase for COACH med tilgang", async () => {
   const { settOppfolgingsstatus } = await actions();
   const svar = await settOppfolgingsstatus("spiller-a", "watch");
   assert.equal(svar.ok, true);
-  assert.equal(signalCreates.length, 1);
-  const data = signalCreates[0] as { userId: string; kind: string; payload: { status: string } };
-  assert.equal(data.userId, "spiller-a");
-  assert.equal(data.kind, "OPPFOLGING_STATUS");
-  assert.equal(data.payload.status, "watch");
+  assert.equal(followUpUpserts.length, 1);
+  const { where, create } = followUpUpserts[0] as {
+    where: { userId: string };
+    create: { userId: string; status: string; setById: string };
+  };
+  assert.equal(where.userId, "spiller-a");
+  assert.equal(create.userId, "spiller-a");
+  assert.equal(create.status, "watch");
+  assert.equal(create.setById, "coach-a");
+});
+
+test("settOppfolgingsstatus setter resolvedAt/resolvedById når status er «ok»", async () => {
+  const { settOppfolgingsstatus } = await actions();
+  const svar = await settOppfolgingsstatus("spiller-a", "ok");
+  assert.equal(svar.ok, true);
+  const { create } = followUpUpserts[0] as { create: { resolvedAt?: Date; resolvedById?: string } };
+  assert.ok(create.resolvedAt instanceof Date);
+  assert.equal(create.resolvedById, "coach-a");
 });
 
 test("settOppfolgingsstatus lar ADMIN skrive når harCoachTilgangTilSpiller gir treff", async () => {
@@ -127,5 +143,5 @@ test("settOppfolgingsstatus lar ADMIN skrive når harCoachTilgangTilSpiller gir 
   const { settOppfolgingsstatus } = await actions();
   const svar = await settOppfolgingsstatus("spiller-a", "check");
   assert.equal(svar.ok, true);
-  assert.equal(signalCreates.length, 1);
+  assert.equal(followUpUpserts.length, 1);
 });

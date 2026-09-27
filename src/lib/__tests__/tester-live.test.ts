@@ -191,7 +191,10 @@ test("PEI-forsøk: tomt array + neste-indeks", () => {
   assert.equal(peiNesteIndeks(delvis), 1);
 });
 
-test("formatPei: alltid to tall, komma som desimalskille", () => {
-  assert.equal(formatPei(0.0426), "4,26 % · 0,04");
-  assert.equal(formatPei(0.04), "4,00 % · 0,04");
+test("formatPei: prosent med komma, aldri den rå brøken", () => {
+  // Endret 22.09.2026: ga tidligere «4,26 % · 0,04». Halehenget var råverdien,
+  // og det er nettopp det tallet som ikke skal på skjermen — det leses som en
+  // egen måling og forvirrer mot prosenten ved siden av.
+  assert.equal(formatPei(0.0426), "4,26 %");
+  assert.equal(formatPei(0.04), "4,00 %");
 });

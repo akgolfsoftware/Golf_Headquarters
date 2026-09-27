@@ -12,7 +12,7 @@ Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er innga
 - Årsplan, perioder og valg i Workbench: `docs/treningsplanlegging.md`.
 - Designautoritet: `docs/design-system/design-autoritet.md`, deretter `designsystem/README.md`. Bruk den konkrete skjermversjonen Anders velger innen det gjeldende systemet; gamle tegninger og beslutninger er historikk.
 - Faktisk oppførsel: koden og testene. Dokumentert intensjon er ikke bevis på ferdig funksjon.
-- Nåstatus: `docs/STATUS-NÅ.md`. Arbeidsliste: `docs/MASTERPLAN-GJENSTAAENDE.md`. Historikk ligger under `docs/arkiv/`.
+- Nåstatus og arbeidsliste: begge ble fjernet som utgåtte (b700ce008). Arbeid som en beslutning utløser, står i beslutningens egen blokk i `.claude/rules/beslutninger.md`. Historikk ligger under `docs/arkiv/`.
 
 ## Arbeidsmåte
 

@@ -663,7 +663,7 @@ function TrainLockAgencyRail() {
 
       <div style={{ flex: 1, minHeight: 8 }} />
       <Link
-        href="/admin/agenticos"
+        href="/admin/jarvis"
         className="v2-press v2-focus"
         style={{
           height: 36,

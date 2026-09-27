@@ -1,0 +1,31 @@
+/* src/styles/ak-golf-ds.css
+   AK Golf Design System på markedsflaten. ENESTE inngang — lastes av ruter som
+   tegner sitt eget skall, aldri av globals.css.
+
+   Dagens designautoritet (21.09.2026): Claude Design-prosjektet
+   «AK Golf Design System» 87aa23fb-8eac-4ca4-aaa0-7a636f4318ff.
+   Speil: designsystem/ak-golf-ds/ (scripts/speil-ak-golf-ds.mjs).
+   Se docs/design-system/design-autoritet.md.
+
+   IKKE det samme som ak-golf.css, som laster det eldre merkesystemet
+   (designsystem/ak-golf/, merket historisk 21.09.2026). Det gamle lever til
+   alle markedssidene er portert.
+
+   Rekkefølgen er masterens egen (web.css → styles.css + marketing).
+
+   Utelatt med vilje:
+   - tokens/fonts.css: @import fra Google Fonts. Fontene lastes med next/font.
+   - tokens/base.css: setter html/body/a globalt. Gjenskapt scopet i
+     ak-golf-ds-grunnlag.css.
+   - app-komponentene (navigation, states, app, measurement, datagolf):
+     ds-core-laget. Markedsflaten bruker dem ikke. De hentes inn når app-laget
+     porteres. */
+
+@import "./ak-golf-ds-tokens.generert.css";
+@import "./ak-golf-ds-grunnlag.css";
+
+@import "../../designsystem/ak-golf-ds/components/buttons/buttons.css";
+@import "../../designsystem/ak-golf-ds/components/typography/typography.css";
+@import "../../designsystem/ak-golf-ds/components/surfaces/surfaces.css";
+@import "../../designsystem/ak-golf-ds/components/instrument.css";
+@import "../../designsystem/ak-golf-ds/components/marketing/marketing.css";

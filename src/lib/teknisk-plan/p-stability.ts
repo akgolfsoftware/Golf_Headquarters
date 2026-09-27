@@ -1,5 +1,5 @@
 import { TL } from "@/lib/v2/train-lock";
-import { P_POSITIONS } from "@/components/teknisk-plan/constants";
+import { P_POSITIONS, hovedP } from "@/components/teknisk-plan/constants";
 import type { PStabilityBar, TaskRow, TmGoalRow } from "./types";
 
 type TaskInput = {
@@ -74,7 +74,15 @@ function mapTask(t: TaskInput): TaskRow {
 
 /** Aggregerer P1.0–P10.0-stabilitet fra rep-fremdrift per posisjon. */
 export function computePStability(positions: PositionInput[]): PStabilityBar[] {
-  const byNum = new Map(positions.map((p) => [p.pNummer, p]));
+  // Mellomposisjoner (P4.1 …) telles inn i sin hoved-P.
+  const byNum = new Map<string, PositionInput>();
+  for (const p of positions) {
+    const k = hovedP(p.pNummer);
+    const eks = byNum.get(k);
+    byNum.set(k, eks
+      ? { ...eks, hovedfokus: eks.hovedfokus || p.hovedfokus, tasks: [...eks.tasks, ...p.tasks] }
+      : { ...p, pNummer: k });
+  }
 
   return P_POSITIONS.map((pDef) => {
     const pos = byNum.get(pDef.num);

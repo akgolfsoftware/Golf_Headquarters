@@ -5,7 +5,7 @@ source_section: "## 1.2 Klubbspiller (HCP 80)"
 tags: [amatør, club-data, handicap, volum]
 topics: [treningsvolum]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, TechnicalPlan, TrackMan, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, TechnicalPlan, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

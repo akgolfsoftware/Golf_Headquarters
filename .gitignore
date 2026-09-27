@@ -35,6 +35,10 @@ yarn-error.log*
 
 # generert output fra scripts (f.eks. Mac-indekseringsjobben)
 scripts/*.log
+# check-tl-kontrast.mjs skriver denne ved hver `npm run verify`. Filen ble
+# slettet som utgått 21.09.2026, men scriptet gjenskaper den — uten denne
+# linjen dukker den opp som usporet hos alle som kjører kvalitetsporten.
+docs/design-audit/train-lock-kontrast.md
 
 # env files (can opt-in for committing if needed)
 .env*

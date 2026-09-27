@@ -152,9 +152,9 @@ export function IDagSelected(p: IDagSelectedProps) {
   const initials = (p.navn ?? "Spiller").split(/\s+/).slice(0, 2).map((s) => s[0]).join("");
   // Stablingsrekkefølge på liten skjerm. På bred skjerm ligger elementene i hver sin
   // kolonne, der verdiene allerede stiger, så samme tall styrer begge formatene.
-  const ORD = { godkjenning: 1, hero: 2, tall: 3, dag: 4, test: 5, trackman: 6, neste: 7, apent: 8, maaned: 9, caddie: 10 } as const;
+  const ORD = { godkjenning: 1, hero: 2, tall: 3, runde: 4, dag: 5, test: 6, trackman: 7, neste: 8, apent: 9, maaned: 10, caddie: 11 } as const;
   let hero: ReactNode;
-  if (p.planLaast) hero = <section className={styles.card} style={{ order: ORD.hero }}><Kicker>Gratis konto</Kicker><h2>Treningsplanen krever full tilgang</h2><p>Du kan fortsatt åpne tester, runder, analyse og booking. Planlagte økter åpnes med full tilgang.</p><ButtonLink href="/portal/oppgrader">Se hva full tilgang gir</ButtonLink><Link className={styles.textLink} href="#ph01-apent">Fortsett med gratis konto</Link></section>;
+  if (p.planLaast) hero = <section className={styles.card} style={{ order: ORD.hero }}><Kicker>Gratis konto</Kicker><h2>Treningsplanen krever full tilgang</h2><p>Du kan fortsatt åpne tester, runder, analyse og booking. Planlagte økter åpnes med full tilgang.</p><ButtonLink href="/portal/meg/abonnement/oppgrader/flyt">Se hva full tilgang gir</ButtonLink><Link className={styles.textLink} href="#ph01-apent">Fortsett med gratis konto</Link></section>;
   else if (failed) hero = <section className={styles.card} style={{ order: ORD.hero }} role="alert"><Kicker>{IDAG_UI.feilCaps}</Kicker><h2>{IDAG_UI.feilTittel}</h2><p>{IDAG_UI.feilBrød}</p><button className={styles.button} onClick={() => router.refresh()}>Prøv igjen</button></section>;
   else if (p.naa || blocked) hero = <div style={{ order: ORD.hero, minWidth: 0 }}><Now naa={p.naa} approval={blocked} /></div>;
   else if (p.tilstand === "hvile") hero = <section className={styles.card} style={{ order: ORD.hero }}><Kicker>Nå · Hviledag</Kicker><h2>Hvile</h2><p>Hvilen er en del av planen.</p><ButtonLink href="/portal/planlegge" quiet>Åpne uken i Plan</ButtonLink></section>;
@@ -173,11 +173,24 @@ export function IDagSelected(p: IDagSelectedProps) {
         {p.caddie && <details className={styles.caddie} style={{ order: ORD.caddie }}><summary>Spør Caddie</summary>{p.caddie}</details>}
       </div><div className={styles.cards}>
         <div className={styles.stats} style={{ order: ORD.tall }}><section className={styles.stat}><Kicker>Økter denne uken</Kicker><div className={styles.number}>{p.planLaast || failed || p.okterUke === 0 ? "—" : <>{p.fullfortUke ?? 0}<small> av {p.okterUke}</small></>}</div>{!p.planLaast && !failed && p.weekProgress.plannedMin > 0 && <progress aria-label="Ukefremdrift" max={p.weekProgress.plannedMin} value={p.weekProgress.completedMin} />}<p className={styles.caption}>{p.planLaast ? "Krever full tilgang." : failed ? "Ikke tilgjengelig uten nett." : p.weekProgress.plannedMin > 0 ? `${p.weekProgress.completedMin} av ${p.weekProgress.plannedMin} planlagte minutter` : "Ingen planlagte minutter."}</p></section><SG value={failed ? null : p.sgVerdi} label={p.sgInnspill} unavailable={failed} /></div>
+        <section className={`${styles.card} ${styles.roundCard}`} style={{ order: ORD.runde }} aria-label="Runde og statistikk">
+          <div className={styles.row}>
+            <Kicker>Runde og statistikk</Kicker>
+            <Link className={styles.textLink} href="/portal/mal/runder">Tidligere runder ›</Link>
+          </div>
+          <p className={styles.roundText}>
+            Har du spilt en runde? Fyll inn SG-tall fra UpGame/Arccos på 30 sekunder, eller før slag for slag.
+          </p>
+          <div className={styles.actions}>
+            <ButtonLink href="/portal/mal/runder/ny" quiet>Fyll inn fra annen app</ButtonLink>
+            <ButtonLink href="/portal/runde/logg" quiet>Før slag for slag</ButtonLink>
+          </div>
+        </section>
         {p.testerLive && <section className={styles.card} style={{ order: ORD.test }}><Kicker>Test pågår · {p.testerLive.testNavn}</Kicker><p className={styles.mono}>{p.testerLive.fremdrift}</p><ButtonLink href={`/portal/tren/tester/${p.testerLive.testId}/gjennomfor`}>Fortsett testen</ButtonLink></section>}
         {p.neste && <section className={styles.card} style={{ order: ORD.neste }}><Kicker>Neste</Kicker>{p.neste.href ? <Link href={p.neste.href}><h3>{p.neste.tittel}</h3><p className={styles.mono}>{p.neste.meta}</p></Link> : <><h3>{p.neste.tittel}</h3><p>{p.neste.meta}</p></>}</section>}
       </div><aside className={styles.side} aria-label="Månedsoversikt">
         <section className={styles.card}><h2>{p.maanedNavn}</h2>{failed ? <p className={styles.caption}>Månedsstatus hentes når du er på nett.</p> : <><div className={styles.calendar}>{IDAG_UKE_BOKSTAVER.map((d,i) => <span key={`${d}-${i}`} aria-hidden>{d}</span>)}{p.prikker.map((d,i) => <span key={i} className={`${d.fylt ? styles.filled : ""} ${d.idag ? styles.today : ""}`} aria-label={d.tom ? undefined : `${i - (p.prikker.length - days.length) + 1}. ${p.maanedNavn}${d.idag ? ", i dag" : ""}${d.fylt ? ", gjennomført økt" : ""}`}>{d.tom ? "" : i - (p.prikker.length - days.length) + 1}</span>)}</div><p className={styles.caption}>Fylt dato = gjennomført økt. Ring = i dag.</p></>}</section>
-        {p.planLaast && <section className={styles.card}><h2>Full tilgang</h2><p className={styles.caption}>Planlagte økter, Workbench og Live åpnes med full tilgang. Gratis konto utløper aldri.</p><ButtonLink href="/portal/oppgrader" quiet>Se hva full tilgang gir</ButtonLink></section>}
+        {p.planLaast && <section className={styles.card}><h2>Full tilgang</h2><p className={styles.caption}>Planlagte økter, Workbench og Live åpnes med full tilgang. Gratis konto utløper aldri.</p><ButtonLink href="/portal/meg/abonnement/oppgrader/flyt" quiet>Se hva full tilgang gir</ButtonLink></section>}
         {!p.planLaast && failed && <section className={styles.card}><h2>Ukens tall</h2><div className={styles.number}>—</div><p className={styles.caption}>Ikke tilgjengelig uten nett.</p></section>}
         {!p.planLaast && !failed && <section className={styles.card}><h2>Ukens tall</h2><div className={styles.number}>{p.okterUke > 0 ? p.weekProgress.completedMin : "—"}</div><p className={styles.caption}>Planlagte minutter i gjennomførte økter · Uke {p.ukeNummer}</p><Kicker>Fordeling</Kicker><dl className={styles.distribution}>{Object.entries(p.weekProgress.completedByAxis).map(([axis, minutes]) => <div key={axis}><dt>{PYRAMID_LABEL[axis as keyof typeof PYRAMID_LABEL] ?? axis}</dt><dd className={styles.mono}>{p.weekProgress.plannedByAxis[axis as keyof typeof p.weekProgress.plannedByAxis] > 0 ? `${minutes} min` : "—"}</dd></div>)}</dl></section>}
       </aside></div>

@@ -1,0 +1,11 @@
+/* Instrumentlaget — rutenett, kryss og målestokk som grafisk element.
+   Ikke dekor: det viser at flaten er målt opp. Aldri under innhold som skal leses. */
+.aos-instr{background-image:linear-gradient(to right,var(--border-hairline) 0 var(--border-w),transparent var(--border-w)),linear-gradient(to bottom,var(--border-hairline) 0 var(--border-w),transparent var(--border-w));background-size:var(--size-56) var(--size-56);background-position:0 0}
+.aos-instr--halv{background-size:calc(var(--size-56) / 2) calc(var(--size-56) / 2)}
+.aos-instr--vannrett{background-image:linear-gradient(to bottom,var(--border-hairline) 0 var(--border-w),transparent var(--border-w))}
+.aos-instr__kryss{position:relative}
+.aos-instr__kryss::before,.aos-instr__kryss::after{content:"";position:absolute;background:var(--border-strong)}
+.aos-instr__kryss::before{left:50%;top:calc(50% - 5px);width:var(--border-w);height:11px}
+.aos-instr__kryss::after{top:50%;left:calc(50% - 5px);height:var(--border-w);width:11px}
+.aos-instr__rule{height:9px;border-top:var(--border-w) solid var(--border-strong);background-image:repeating-linear-gradient(to right,var(--border-strong) 0 var(--border-w),transparent var(--border-w) var(--space-2))}
+.aos-instr__rule--grov{background-image:repeating-linear-gradient(to right,var(--border-strong) 0 var(--border-w),transparent var(--border-w) var(--size-56))}

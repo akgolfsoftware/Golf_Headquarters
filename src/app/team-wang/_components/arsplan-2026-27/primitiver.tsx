@@ -4,6 +4,7 @@
 // 25.08.2026). Egen, isolert primitiv-fil for den nye fasiten — rører ikke
 // `../primitiver.tsx` som den kjørende `/team-wang`-siden bruker i dag.
 
+import Image from "next/image";
 import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
 import { d, iso } from "../../_data/wang-plan";
@@ -51,45 +52,20 @@ export function Seksjon({
   );
 }
 
-export function Squircle({
-  nr,
-  farge = "var(--wang-navy)",
-  bg = "var(--tint-navy)",
-}: {
-  nr: number | string;
-  farge?: string;
-  bg?: string;
-}) {
-  return (
-    <div
-      style={{
-        width: 34,
-        height: 34,
-        borderRadius: 12,
-        background: bg,
-        color: farge,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "var(--font-brand)",
-        fontWeight: 800,
-        fontSize: 14,
-        flexShrink: 0,
-      }}
-    >
-      {nr}
-    </div>
-  );
-}
-
+/**
+ * Overskriftsblokk — restylet 22.09.2026 mot Claude Design-prosjektet «Årsplan
+ * Golf WANG Golf Fredrikstad» (779d22c8, mal wang-golf-fellesside): stor
+ * uthevet eyebrow i teal, tynn (300) overskrift i stedet for fet, ingen
+ * nummerert sirkel foran — designet bruker bare eyebrow-teksten som "steg".
+ * `nr` beholdes i signaturen (brukt av eksisterende kall) men vises ikke.
+ */
 export function SeksjonHode({
-  nr,
   label,
   tittel,
   ingress,
   maksBredde = 660,
 }: {
-  nr: number | string;
+  nr?: number | string;
   label: string;
   tittel: string;
   ingress?: string;
@@ -97,26 +73,25 @@ export function SeksjonHode({
 }) {
   return (
     <div style={{ marginBottom: 20 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <Squircle nr={nr} />
-        <span
-          style={{
-            fontFamily: "var(--font-brand)",
-            fontWeight: 700,
-            fontSize: 12,
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
-            color: "var(--wang-teal-text)",
-          }}
-        >
-          {label}
-        </span>
-      </div>
+      <p
+        style={{
+          margin: "0 0 6px",
+          fontFamily: "var(--font-brand)",
+          fontWeight: 500,
+          fontSize: 11,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: "var(--wang-teal-text)",
+        }}
+      >
+        {label}
+      </p>
       <h2
         style={{
           fontFamily: "var(--font-brand)",
-          fontWeight: 700,
-          fontSize: "clamp(24px, 4.2vw, 34px)",
+          fontWeight: 300,
+          fontSize: "clamp(24px, 4.2vw, 32px)",
+          letterSpacing: "-0.015em",
           lineHeight: 1.1,
           margin: 0,
           color: "var(--text-primary)",
@@ -127,8 +102,8 @@ export function SeksjonHode({
       {ingress ? (
         <p
           style={{
-            fontSize: "clamp(14.5px, 2vw, 16.5px)",
-            lineHeight: 1.6,
+            fontSize: "clamp(14.5px, 2vw, 16px)",
+            lineHeight: 1.55,
             color: "var(--text-secondary)",
             maxWidth: maksBredde,
             marginTop: 8,
@@ -141,10 +116,16 @@ export function SeksjonHode({
   );
 }
 
+/**
+ * Kortflate — restylet 22.09.2026 mot samme designfasit: hvit flate, 4 px
+ * radius, 1 px `var(--neutral-200)`-kant, ingen skygge (erstatter forrige runde,
+ * runde-20-med-skygge-kort). `style.borderTop` kan fortsatt sette en farget
+ * 3–4 px topplinje for periode-/aksefarge, slik designet gjør på kortene.
+ */
 export function WangKort({
   children,
   style,
-  padding = "clamp(18px, 3vw, 26px)",
+  padding = "clamp(18px, 3vw, 24px)",
 }: {
   children: ReactNode;
   style?: CSSProperties;
@@ -153,9 +134,9 @@ export function WangKort({
   return (
     <div
       style={{
-        background: "var(--surface-card)",
-        borderRadius: 20,
-        boxShadow: "var(--shadow-card)",
+        background: "var(--white)",
+        borderRadius: 4,
+        border: "1px solid var(--neutral-200)",
         padding,
         boxSizing: "border-box",
         ...style,
@@ -190,14 +171,14 @@ export function PillGruppe({
           onClick={v.onVelg}
           style={{
             fontFamily: "var(--font-brand)",
-            fontWeight: 700,
-            fontSize: 12.5,
-            padding: "9px 15px",
-            minHeight: 40,
+            fontWeight: 500,
+            fontSize: 13,
+            padding: "7px 16px",
+            minHeight: 36,
             borderRadius: 999,
-            border: `1.5px solid ${v.aktiv ? aktivBg : "var(--border-subtle)"}`,
-            background: v.aktiv ? aktivBg : "transparent",
-            color: v.aktiv ? aktivFg : "var(--text-secondary)",
+            border: `1px solid ${v.aktiv ? aktivBg : "var(--neutral-200)"}`,
+            background: v.aktiv ? aktivBg : "var(--white)",
+            color: v.aktiv ? aktivFg : "var(--text-primary)",
             cursor: "pointer",
           }}
         >
@@ -225,11 +206,12 @@ export function Chip({
         display: "inline-flex",
         alignItems: "center",
         fontFamily: "var(--font-brand)",
-        fontWeight: 700,
-        fontSize: 11.5,
+        fontWeight: 500,
+        fontSize: 11,
         letterSpacing: "0.02em",
-        padding: "3px 9px",
+        padding: "3px 10px",
         borderRadius: 999,
+        border: `1px solid ${farge}`,
         background: tint,
         color: farge,
         whiteSpace: "normal",
@@ -290,4 +272,84 @@ export function klampTilIntervall(isoDato: string, startIso: string, sluttIso: s
   if (isoDato < startIso) return startIso;
   if (isoDato > sluttIso) return sluttIso;
   return isoDato;
+}
+
+/**
+ * Delt hero for Skole-/Kalender-/Foreldre-fanen — samme navy gradient og
+ * tynne overskriftsvekt som Treningsfanens hero, uten fotoseksjon (designets
+ * foto er ikke overført til appen ennå). Treningsfanens hero har egen,
+ * rikere variant (Sted-/trener-bånd) og bruker ikke denne.
+ */
+export function FaneHero({
+  eyebrow,
+  tittel,
+  ingress,
+  foto,
+  fotoAlt,
+}: {
+  eyebrow: string;
+  tittel: string;
+  ingress: string;
+  /** Foto-sti under /public, f.eks. "/team-wang/hero/skole-fotball.jpg". Uten foto: navy gradient som før. */
+  foto?: string;
+  fotoAlt?: string;
+}) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        background: foto ? "var(--navy-deep)" : "var(--grad-hero-line)",
+        color: "var(--white)",
+      }}
+    >
+      {foto ? (
+        <>
+          <Image
+            src={foto}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center 20%" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
+          {fotoAlt ? <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>{fotoAlt}</span> : null}
+        </>
+      ) : null}
+      <Wrap>
+        <div style={{ padding: "clamp(32px,5.5vw,44px) 0", position: "relative" }}>
+          <p
+            style={{
+              margin: "0 0 10px",
+              fontFamily: "var(--font-brand)",
+              fontWeight: 500,
+              fontSize: 11,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "var(--white)",
+            }}
+          >
+            {eyebrow}
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-brand)",
+              fontWeight: 300,
+              fontSize: "clamp(26px,5vw,38px)",
+              letterSpacing: "-0.015em",
+              lineHeight: 1.12,
+              maxWidth: "26ch",
+            }}
+          >
+            {tittel}
+          </h1>
+          <p style={{ fontSize: "clamp(14.5px,2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 560, marginTop: 12 }}>
+            {ingress}
+          </p>
+        </div>
+      </Wrap>
+    </div>
+  );
 }

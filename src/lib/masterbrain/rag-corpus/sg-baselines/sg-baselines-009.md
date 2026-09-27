@@ -5,7 +5,7 @@ source_section: "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Aroun
 tags: [app, baseline, broadie, ott, putt, sg]
 topics: [implementasjon, putting, sg-baseline]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

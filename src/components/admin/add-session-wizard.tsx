@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X, Search } from "lucide-react";
-import { AgentStrip } from "@/components/coachhq/agent-strip";
+import { AgentStrip } from "@/components/agencyos/agent-strip";
 import type {
   ExerciseDefinition,
   LPhase,

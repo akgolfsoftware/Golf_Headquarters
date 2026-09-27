@@ -1,31 +1,26 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   AK Golf HQ · TEAM NORWAY-TOKENS — PRODUKSJONSSPEIL (Claw batch 3, 01.09.2026)
+   AK Golf HQ · TEAM NORWAY-TOKENS — PRODUKSJONSSPEIL
 
-   FASIT (verdiene er hentet herfra, aldri fra hukommelse):
-   · designsystem/team-norway/tokens/colors.css
-   · designsystem/team-norway/tokens/effects.css
-   · designsystem/team-norway/tokens/spacing.css
-   · designsystem/team-norway/tokens/typography.css
-   · designsystem/team-norway/readme.md — begrunnelse for verdiene
+   FASIT (Anders 22.09.2026, .claude/rules/beslutninger.md §TEAM NORWAY-APPEN
+   BYTTER DESIGNSPRÅK): Claude Design-prosjektet «Team Norway App». Claw og
+   speilet designsystem/team-norway/ er funksjonsinventar og historikk, ikke
+   visuell fasit. Verdiene her er hentet fra prosjektets tokens, aldri fra
+   hukommelse.
 
-   Claw-brandingen er designfasit for `/team-norway/*` ALENE (Anders
-   30.08.2026, .claude/rules/beslutninger.md §TEAM NORWAY-SKJERMENE DESIGNES
-   I CLAUDE-BRANDINGEN). Train-lock (--tl-*) og disse tokenene er to
-   parallelle, ikke-konkurrerende systemer — en skjerm bruker ALLTID bare
-   ett sett. Analyse/DataGolf under /team-norway/* er unntaket: de er
-   Train-lock med TN-skinn (logo/aksentfarge), ikke egne Claw-tegninger
-   (§ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN).
+   Kjernen i språket: Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, ingen
+   sirkler, kvadratisk avatar, navy skinne. Rød er #D70232 — målt fra
+   logofilen, identitet og frist, ALDRI statusfarge.
 
-   BEVISST AVVIK FRA FASITEN — ingen verdiendring, kun navnerom:
-   Alle navn har prefikset `--tn-` (fasiten har ingen prefiks). Uten det
-   ville dette settet kollidert med --tl-*, --p-*, --v2-*, golfdata ved import
-   i samme globals.css.
+   Train-lock (--tl-*) og disse tokenene er to parallelle, ikke-konkurrerende
+   systemer — en skjerm bruker ALLTID bare ett sett. Analyse/DataGolf under
+   /team-norway/* er unntaket: de er Train-lock med TN-skinn.
 
-   MØRK ER EN ROLLE, IKKE ET TEMA (readme.md, bekreftet 30.08.2026): i
-   motsetning til Train-lock finnes INGEN html[data-tn-tema="dark"]-bryter
-   her. `--tn-dark-*` er egne, navngitte tokens for hero/seksjonsskille/
-   presentasjon — brukes eksplisitt på DE flatene, aldri som appens tema.
-   Lys (`--tn-surface-page` osv.) er standardflaten for alt annet.
+   BEVISST AVVIK: alle navn har prefikset `--tn-`. Uten det ville settet
+   kollidert med --tl-*, --p-*, --v2-* ved import i samme globals.css.
+
+   MØRK ER EN ROLLE, IKKE ET TEMA: ingen html[data-tn-tema="dark"]-bryter
+   finnes her. `--tn-dark-*` brukes eksplisitt på hero/seksjonsskille/
+   presentasjon, aldri som appens tema. Lys er standardflaten.
 
    REGEL FOR DENNE FILA (samme som train-lock-tokens.css): kun variabel-
    deklarasjoner. Ingen selektorregler som setter color/background/border.
@@ -115,27 +110,49 @@
   --tn-accent-primary: var(--tn-navy-900);
   --tn-accent-secondary: var(--tn-red-600);
 
+  /* ── Skinnen (sidemenyen) — alltid navy, aldri hvit (Anders 22.09.2026).
+         Ingen hvit hårstrek inne i skinnen: brukerfoten skilles med luft,
+         ikke med en linje. Målt kontrast mot --tn-rail-bg: hvit 13,9;
+         --tn-rail-text 9,4; --tn-rail-muted 6,6 — alle over AA.
+         --tn-rail-marker er identitet, ikke tekst: den bærer aldri lesbar
+         tekst (2,6 mot navy), bare den 3 px brede streken foran aktiv rad. ── */
+  --tn-rail-bg: var(--tn-navy-900);
+  --tn-rail-active: #013B7D;
+  --tn-rail-marker: var(--tn-red-600);
+  --tn-rail-text: #C6D6EA;
+  --tn-rail-muted: #9DB4D0;
+  --tn-rail-on: #FFFFFF;
+
   --tn-link: var(--tn-navy-600);
   --tn-link-hover: var(--tn-navy-900);
   --tn-focus-ring: 0 0 0 3px rgba(10, 81, 153, 0.28);
 
-  /* ── Geometri ── */
-  --tn-radius-xs: 6px;
-  --tn-radius-sm: 10px;
-  --tn-radius-md: 14px;
-  --tn-radius-lg: 20px;
-  --tn-radius-xl: 28px;
-  --tn-radius-full: 999px;
+  /* ── Geometri — 0, 2 eller 4. Ingenting annet.
+         Ordmerket er geometrisk og tett; myke hjørner over 4 px gjør flatene
+         runde på en måte merket ikke er. Sirkler finnes ikke i systemet —
+         derfor er også avataren kvadratisk.
+         `--tn-radius-full` beholder NAVNET for at 18 kallsteder ikke må
+         skrives om, men verdien er 0: piller finnes ikke lenger. ── */
+  --tn-radius-xs: 0;
+  --tn-radius-sm: 2px;
+  --tn-radius-md: 2px;
+  --tn-radius-lg: 4px;
+  --tn-radius-xl: 4px;
+  --tn-radius-full: 0;
 
-  /* ── Skygger — tre nivåer, aldri Liquid Glass/backdrop-filter ── */
-  --tn-shadow-sm: 0 1px 2px rgba(6, 17, 31, 0.06), 0 1px 3px rgba(6, 17, 31, 0.05);
-  --tn-shadow-md: 0 2px 4px rgba(6, 17, 31, 0.05), 0 8px 20px -6px rgba(6, 17, 31, 0.12);
-  --tn-shadow-lg: 0 4px 8px rgba(6, 17, 31, 0.05), 0 20px 40px -12px rgba(6, 17, 31, 0.16);
-  --tn-shadow-dark: 0 20px 48px -16px rgba(0, 0, 0, 0.65);
+  /* ── Skygger finnes ikke. Flater skilles med én hårstrek, ikke med dybde.
+         Navnene står igjen så kallsteder ikke må skrives om; verdien er
+         `none`, og den som trenger avgrensning setter en 1 px kant. ── */
+  --tn-shadow-sm: none;
+  --tn-shadow-md: none;
+  --tn-shadow-lg: none;
+  --tn-shadow-dark: none;
 
-  /* Diagonalen (56px) — KUN hero/seksjonsskille, aldri kort eller kontroller. */
-  --tn-clip-diagonal-b: polygon(0 0, 100% 0, 100% calc(100% - 56px), 0 100%);
-  --tn-clip-diagonal-t: polygon(0 56px, 100% 0, 100% 100%, 0 100%);
+  /* Diagonalen var Claws ene bevegelse. Det nye systemet har ingen mønstre
+     eller motiver utenom flaggstreken, så den er slått av. Ingen kallsteder
+     i src/ bruker den (kontrollert 22.09.2026). */
+  --tn-clip-diagonal-b: none;
+  --tn-clip-diagonal-t: none;
 
   /* ── Bevegelse — alt trykkbart under 300ms. Aldri ease-in på grensesnitt. ── */
   --tn-duration-press: 120ms;
@@ -165,42 +182,46 @@
   --tn-gutter-section: 64px;
   --tn-max-content: 1160px;
 
-  /* ── Typografi — Schibsted Grotesk (display + body), IBM Plex Mono
-         (alt som måles: tall, etiketter, tidsstempler). rem, ikke px.
-         --font-schibsted-grotesk lastes av src/app/team-norway/layout.tsx
-         (next/font, scoped til /team-norway/*) — fallback til navngitt
-         font utenfor det skallet, aldri en tom var(). --font-ibm-plex-mono
-         er allerede lastet globalt (src/app/layout.tsx), samme font som
-         Train-lock bruker — gjenbrukes, lastes ikke på nytt. ── */
-  --tn-font-display: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
-  --tn-font-body: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
+  /* ── Typografi — Jost (display), Lato (brødtekst), IBM Plex Mono (alt som
+         måles: tall, etiketter, tidsstempler). rem, ikke px.
+         Jost er Futura-slekt og ligger nærmest ordmerkets tynne, sperrede
+         versaler; Lato bærer teksten uten å konkurrere. Begge lastes av
+         src/app/team-norway/layout.tsx (next/font, scoped til
+         /team-norway/*) — fallback til navngitt font utenfor det skallet,
+         aldri en tom var(). --font-ibm-plex-mono er allerede lastet globalt
+         (src/app/layout.tsx) — gjenbrukes, lastes ikke på nytt.
+         Schibsted Grotesk er ute av systemet (Anders 22.09.2026). ── */
+  --tn-font-display: var(--font-jost, "Jost"), "Futura", system-ui, sans-serif;
+  --tn-font-body: var(--font-lato, "Lato"), system-ui, sans-serif;
   --tn-font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), ui-monospace, monospace;
 
-  --tn-text-display-xl: 4rem;
-  --tn-text-display: 3rem;
-  --tn-text-h1: 2.25rem;
-  --tn-text-h2: 1.75rem;
-  --tn-text-h3: 1.3125rem;
+  --tn-text-display-xl: 4.75rem;
+  --tn-text-display: 3.375rem;
+  --tn-text-h1: 1.875rem;
+  --tn-text-h2: 1.5rem;
+  --tn-text-h3: 1.1875rem;
   --tn-text-lg: 1.125rem;
   --tn-text-base: 1rem;
   --tn-text-sm: 0.875rem;
   --tn-text-xs: 0.8125rem;
   --tn-text-micro: 0.6875rem;
 
+  --tn-weight-light: 300;
   --tn-weight-regular: 400;
   --tn-weight-medium: 500;
   --tn-weight-semibold: 600;
   --tn-weight-bold: 700;
   --tn-weight-black: 900;
 
-  --tn-tracking-display: -0.035em;
-  --tn-tracking-heading: -0.02em;
-  --tn-tracking-normal: -0.005em;
-  --tn-tracking-small: 0.005em;
-  --tn-tracking-eyebrow: 0.16em;
+  /* Sperret, ikke tett. Ordmerket er vidt, og overskriftene følger det. */
+  --tn-tracking-display: 0.16em;
+  --tn-tracking-heading: 0.06em;
+  --tn-tracking-normal: 0;
+  --tn-tracking-small: 0;
+  --tn-tracking-eyebrow: 0.22em;
 
-  --tn-leading-tight: 1.05;
-  --tn-leading-snug: 1.25;
-  --tn-leading-normal: 1.55;
+  --tn-leading-tight: 1.04;
+  --tn-leading-snug: 1.22;
+  --tn-leading-normal: 1.62;
   --tn-leading-relaxed: 1.7;
 }

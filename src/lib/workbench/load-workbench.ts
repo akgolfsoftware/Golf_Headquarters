@@ -28,6 +28,7 @@ import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
+import { hentTekniskPanel } from "./teknisk-plan-panel";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
 import { dedupGruppeSlots, overlapper } from "@/lib/domain/gruppeplan-dedup";
 import {
@@ -148,6 +149,12 @@ export type WorkbenchData = {
   weekOffset?: number;
   /** Mandag 00:00 (ISO) for uka dataen gjelder — UI utleder datotall + i-dag. */
   weekStartISO?: string;
+  /**
+   * Spillerens tekniske plan som dragbare oppgavekort (Anders 22.09).
+   * Null/undefined når spilleren ikke har en aktiv plan — panelet viser da en
+   * ærlig tom tilstand i stedet for tomme kort.
+   */
+  tekniskPanel?: import("./teknisk-plan-panel-typer").TekniskPanelData | null;
   /** Måneden uka ligger i: én rad per dag MED økter (plan + v2, dublett-luket).
    *  UI-en bygger selve kalendergriden fra weekStartISO — dette er kun innholdet. */
   monthDays?: { dateISO: string; count: number; axes: { ax: Axis; min: number }[] }[];
@@ -281,6 +288,7 @@ export async function loadWorkbenchData(
     fysiskPlan,
     monthPlanSessions,
     monthV2SessionsRaw,
+    tekniskPanel,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
@@ -458,6 +466,7 @@ export async function loadWorkbenchData(
         practiceType: true,
       },
     }),
+    hentTekniskPanel(userId),
   ]);
 
   // Filtrer bort V2-speil av coach-utkast for spiller-visning.
@@ -1015,6 +1024,7 @@ export async function loadWorkbenchData(
     usesV2Sessions: v2WeekSessions.length > 0,
     weekOffset: offset,
     weekStartISO,
+    tekniskPanel,
     monthDays: monthDays.length > 0 ? monthDays : undefined,
   };
 }

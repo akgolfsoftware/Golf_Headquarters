@@ -1,7 +1,9 @@
 # Treningsplanlegging i AK Golf HQ
 
-**Status 21.09.2026:** Forenklet master for hvordan årsplan, perioder, uker, økter og øvelser
-planlegges i Workbench. Språk og skrivemåte styres av [ordboken](ordbok.md).
+**Status 22.09.2026:** Valgtreet fra årsplan til øvelse eies nå av
+[Språk og treningsplanlegging — gjennomgang](treningsplanlegging-og-sprak-gjennomgang.md) (åtte trinn: hensikt,
+treningsområde, sted og miljø, måleutstyr, gjennomføring, press, mengde, mål). Ved sprik gjelder gjennomgangen.
+Dette dokumentet beholdes som forenklet oversikt. Språk og skrivemåte styres av [ordboken](ordbok.md).
 
 ## 1. Hele planleggingsrekken
 

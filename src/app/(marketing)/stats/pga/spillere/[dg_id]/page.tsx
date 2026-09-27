@@ -9,6 +9,7 @@ import "./../spillere.css";
 import "../../pga.css";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { formaterTall, formaterProsent, formaterFortegn } from "@/lib/format-tall";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { SEED_SPILLERE } from "../page";
@@ -273,11 +274,14 @@ export default async function SpillerProfilPage({
           }}
         >
           {[
-            { lbl: "SG Total",    val: spiller.sgTotal ? `+${spiller.sgTotal.toFixed(2)}` : "—" },
-            { lbl: "Drive",       val: spiller.drive ? `${spiller.drive.toFixed(0)}` : "—" },
-            { lbl: "Fairway %",   val: spiller.fairway ? `${spiller.fairway.toFixed(1)}%` : "—" },
-            { lbl: "GIR %",       val: spiller.gir ? `${spiller.gir.toFixed(1)}%` : "—" },
-            { lbl: "Scoring",     val: spiller.scoring ? spiller.scoring.toFixed(2) : "—" },
+            // Fortegnet kommer fra formaterFortegn. Det var tidligere hardkodet
+            // «+», så en negativ SG ville vist «+-0.41». Null-sjekken er
+            // eksplisitt: en SG på nøyaktig 0 er en gyldig måling, ikke «—».
+            { lbl: "SG Total",    val: formaterFortegn(spiller.sgTotal, 2) },
+            { lbl: "Drive",       val: formaterTall(spiller.drive, 0) },
+            { lbl: "Fairway %",   val: formaterProsent(spiller.fairway, 1, true) },
+            { lbl: "GIR %",       val: formaterProsent(spiller.gir, 1, true) },
+            { lbl: "Scoring",     val: formaterTall(spiller.scoring, 2, true) },
           ].map((k, i, arr) => (
             <div
               key={k.lbl}

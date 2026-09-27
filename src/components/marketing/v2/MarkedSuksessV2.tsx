@@ -45,7 +45,7 @@ export function MarkedSuksessV2() {
           </p>
           <div className="pk-knapperad pk-knapperad-midt">
             <Link className="pk-btn pk-btn-ink" href="/booking">
-              Book en kartleggingsøkt
+              Book en time
             </Link>
             <Link className="pk-btn" href="/kontakt">
               Snakk med oss

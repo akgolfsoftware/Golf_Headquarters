@@ -274,6 +274,7 @@ export function MegV2({ data }: { data: MegData }) {
     { ic: "briefcase", l: "Utstyr", sub: "Køller, ball, bag, lengder", href: "/portal/meg/utstyr" },
     { ic: "users", l: "Foresatte", sub: "Registrerte foreldre/verger", href: "/portal/meg/foreldre" },
     { ic: "activity", l: "Venner", sub: "Legg til venner, se at de har trent", href: "/portal/venner" },
+    { ic: "trophy", l: "Utfordringer", sub: "Lag og følg scoreutfordringer", href: "/portal/utfordringer" },
     { ic: "settings", l: "Innstillinger", sub: "Varsler, personvern, anlegg, språk", href: "/portal/meg/innstillinger" },
     { ic: "shield", l: "Personvern og samtykke", sub: lydGittLokalt ? "Lydsamtykke gitt" : "Lydsamtykke mangler", href: "/portal/meg/innstillinger/personvern" },
   ];

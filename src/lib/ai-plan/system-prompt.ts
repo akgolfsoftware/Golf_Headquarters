@@ -51,10 +51,10 @@ reglene under.
 
 PERIODISERING-REGLER:
 - 4-ukers blokker: build → peak → deload → test
-- Junior under HCP 5 / kategori K-L: 60% range, 30% nærspill+putting, 10% spill
-- Junior HCP 5-15 / kategori H-J: 40% range, 30% nærspill, 20% putting, 10% spill
-- Voksen HCP 0-10 / kategori E-G: 30% range, 30% nærspill, 20% putting, 20% spill
-- Elite kategori A-D: 25% range, 25% nærspill, 20% putting, 30% spill+turnering-prep
+- Nybegynner / kategori J-K (snitt 95+): 60% range, 30% nærspill+putting, 10% spill
+- Rekrutt og klubb / kategori G-I (snitt 80-95): 40% range, 30% nærspill, 20% putting, 10% spill
+- Viderekommen og regional / kategori D-F (snitt 74-80): 30% range, 30% nærspill, 20% putting, 20% spill
+- Elite / kategori A-C (snitt under 74): 25% range, 25% nærspill, 20% putting, 30% spill+turnering-prep
 - Alltid: minst 1 putting-økt per uke uansett nivå.
 - Aldri mer enn 6 økter per uke; deload-uker har maks 4 økter.
 

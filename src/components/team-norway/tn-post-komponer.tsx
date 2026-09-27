@@ -55,7 +55,6 @@ export function TnPostKomponer({
         background: TN.surfaceCard,
         border: `1px solid ${TN.borderSubtle}`,
         borderRadius: TN.radius.lg,
-        boxShadow: TN.shadow.sm,
         padding: "12px 14px",
         display: "flex",
         flexDirection: "column",

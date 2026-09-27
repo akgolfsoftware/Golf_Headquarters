@@ -97,7 +97,7 @@ export function AdminAgenticosKo({ data }: { data: AgenticosKoData }) {
           })}
         </div>
         <div style={{ flex: 1 }} />
-        <AoKnapp href="/admin/workspace">Ny oppgave</AoKnapp>
+        <AoKnapp href="/admin/oppgaver">Ny oppgave</AoKnapp>
       </div>
 
       {totalt === 0 ? (
@@ -108,7 +108,7 @@ export function AdminAgenticosKo({ data }: { data: AgenticosKoData }) {
         <AoTom
           tittel="Ingen som venter"
           tekst="Research lander i Cockpit. Du får varsel når noe trenger et blikk."
-          cta={<AoKnapp variant="primaer" href="/admin/workspace">Start en ny kjøring</AoKnapp>}
+          cta={<AoKnapp variant="primaer" href="/admin/oppgaver">Start en ny kjøring</AoKnapp>}
         />
       ) : (
         <div style={{ padding: "16px 0", display: "flex", flexDirection: "column", gap: 16 }}>

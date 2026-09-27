@@ -13,7 +13,8 @@ description: |
   «sjekk mot merket», «kan vi skrive», «hvilket bilde».
   IKKE for produktskjermer i /portal, /admin eller /forelder — bruk ak-hq-design
   og den aktive produktretningen. IKKE for /team-norway/* — der gjelder
-  Claw (designsystem/team-norway/).
+  «Team Norway App» i Claude Design (se beslutninger.md §TEAM NORWAY-APPEN
+  BYTTER DESIGNSPRÅK). Claw er utgått.
 metadata:
   version: "1.1"
   reviewed: "2026-09-11"

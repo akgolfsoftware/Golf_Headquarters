@@ -96,9 +96,14 @@ ikke summere på tvers av to definisjoner.
 
 ---
 
-## 6 · Personvern i koordineringen mellom skoler
+## 6 · Personvern i koordineringen mellom skoler — BESLUTTET 26.09.2026
 
-**Blokkerer:** D3 (kan ikke bygges), og delvis D2.
+**Svar (Anders):** skolene deler én felles side. Der ser alle hvem som har stjernemerket hvilken
+spiller, og hvem som har kommunisert med eleven eller foresatte, og når. Innhold, vurderinger og
+notater deles ikke. Se `.claude/rules/beslutninger.md` §WANG: FEM ANSATTROLLER. Spørsmålet om varsel
+under står fortsatt åpent.
+
+Opprinnelig spørsmål:
 
 Hvor mye får én WANG-skole se om en annen skoles kontakt med en **mindreårig kandidat**?
 

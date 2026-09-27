@@ -9,11 +9,22 @@ import type { GruppeKalenderData } from "@/lib/gruppe-kalender/types";
 import { GRUPPE_KEYS, UKEPLAN, type GruppeKey, type UkeOkt } from "./gfgk-junior-data";
 
 // Samme gruppenavn som den opprinnelige /gfgk-junior-kalenderen (og opprett-scriptet).
+// Navnet er fallback for rader uten slug; se GRUPPE_DB_SLUG for identiteten
+// som faktisk brukes til oppslag (LS-03-funnet, beslutning 23.09.2026).
 export const GRUPPE_DB_NAVN: Record<GruppeKey, string> = {
   U10: "GFGK Junior Mini U10",
   U13: "GFGK Junior Basis U13",
   U15: "GFGK Junior Utvikling U15",
   U19: "GFGK Junior Elite U19",
+};
+
+// Kanonisk slug (src/lib/domain/grupper.ts, satt av bootstrap.ts) — identiteten
+// et oppslag skal treffe på, uavhengig av hva gruppen heter i AgencyOS i dag.
+export const GRUPPE_DB_SLUG: Record<GruppeKey, string> = {
+  U10: "gfgk-mini",
+  U13: "gfgk-basis",
+  U15: "gfgk-utvikling",
+  U19: "gfgk-elite",
 };
 
 const DAG_NAVN = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
@@ -50,7 +61,7 @@ export interface GfgkGruppeData {
 
 export async function hentGfgkGruppe(key: GruppeKey): Promise<GfgkGruppeData> {
   try {
-    const db = await hentGruppeKalenderData(GRUPPE_DB_NAVN[key]);
+    const db = await hentGruppeKalenderData(GRUPPE_DB_NAVN[key], GRUPPE_DB_SLUG[key]);
     if (db && db.faste.length > 0) {
       return { key, kilde: "agencyos", ukeplan: dbTilUkeplan(db), db };
     }

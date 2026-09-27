@@ -7,8 +7,7 @@ Les dette før du endrer filer. [START-HER.md](../../START-HER.md) er inngangen.
 Gjeldende visuell autoritet er [AK Golf Design System og «App design»](../design-system/design-autoritet.md).
 Train-lock og Paper er utgående. Eldre navn i kode beskriver overgangstilstand, ikke ny designretning.
 
-Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md)
-og [gjeldende arbeidsplan](../planer/workbench-design-og-kode-natt-2026-09-20.md).
+Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md).
 Lenker merket «historisk Git-versjon» bevarer fjernede dokumenter; de er ikke
 nye kjøreordrer eller bevis på dagens status.
 
@@ -22,7 +21,7 @@ AK Golf HQ samler offentlig nettsted, coachingbooking, PlayerHQ og AgencyOS i é
 |---|---|
 | Hva skal produktet gjøre? | [Nordstjernen](NORDSTJERNE.md), [produktreglene](BUSINESS-RULES.md) |
 | Hvilket språk og hvilke begreper gjelder? | [Ordbok og språk](../ordbok.md) — eneste master |
-| Hvordan planlegges trening? | [Treningsplanlegging](../treningsplanlegging.md) |
+| Hvordan planlegges trening? | [Språk og treningsplanlegging — gjennomgang](../treningsplanlegging-og-sprak-gjennomgang.md) (master), [Treningsplanlegging](../treningsplanlegging.md) (oversikt) |
 | Hvordan skal skjermen se ut? | [Gjeldende designautoritet](../design-system/design-autoritet.md), deretter [designarbeid og referanser](../../designsystem/README.md) |
 | Hva gjør funksjonen faktisk? | Koden, testene og en målt kundereise |
 | Hva gjenstår? | [Arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md) |

@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 2)"
 tags: [amatør, benchmarking, handicap, kort-spill, pga-tour, putt, sg]
 topics: [benchmarking, kortspill]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg, forventetSg]
 updated: 2026-06-14
 ---
 

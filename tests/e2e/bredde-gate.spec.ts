@@ -54,6 +54,30 @@ const AGENCYOS = [
   { navn: "Bookinger", url: "/admin/bookinger" },
 ] as const;
 
+/**
+ * Team Norway. Ruter uten egen parameter — de som krever gruppe-id eller
+ * spiller-id måles gjennom oversiktens lenker, ikke med gjettede id-er.
+ * Alle går gjennom samme TnShell etter 22.09.2026, så en overflyt her er
+ * enten i skallet eller i skjermens eget innhold.
+ */
+const TEAM_NORWAY = [
+  { navn: "TN Oversikt", url: "/team-norway" },
+  { navn: "TN Fellestesting", url: "/team-norway/fellestesting" },
+  { navn: "TN Samlingspunkt", url: "/team-norway/samlinger" },
+  { navn: "TN Collegegruppen", url: "/team-norway/college" },
+  { navn: "TN Månedsplan", url: "/team-norway/manedsplan" },
+  { navn: "TN Spillerutvikling", url: "/team-norway/spillere" },
+  { navn: "TN Uttaksliste", url: "/team-norway/uttak" },
+  { navn: "TN Rangliste", url: "/team-norway/rangliste" },
+  { navn: "TN Skoleoversikt", url: "/team-norway/skoler" },
+  { navn: "TN Testprotokoller", url: "/team-norway/protokoller" },
+  { navn: "TN Turneringer", url: "/team-norway/turneringer" },
+  { navn: "TN Referansenivåer", url: "/team-norway/referansenivaer" },
+  { navn: "TN Trenere og tilgang", url: "/team-norway/tilgang" },
+  { navn: "TN Inviter spiller", url: "/team-norway/inviter" },
+  { navn: "TN Trenerkatalog", url: "/team-norway/apparatet" },
+] as const;
+
 async function loggInn(page: Page, email: string, password: string): Promise<void> {
   await page.goto("/auth/login");
   await dismissCookieBanner(page);
@@ -115,5 +139,16 @@ test.describe("Bredde-gate 390px — AgencyOS", () => {
     test.skip(!creds, "Krever E2E_COACH_* eller SCREENTEST_PASSWORD");
     await loggInn(page, creds!.email, creds!.password);
     await målBredde(page, AGENCYOS);
+  });
+});
+
+test.describe("Bredde-gate 390px — Team Norway", () => {
+  test.use({ viewport: MOBIL });
+
+  test("Team Norway-flaten har ingen horisontal scroll", async ({ page }) => {
+    const creds = coachCredentials();
+    test.skip(!creds, "Krever E2E_COACH_* eller SCREENTEST_PASSWORD");
+    await loggInn(page, creds!.email, creds!.password);
+    await målBredde(page, TEAM_NORWAY);
   });
 });
