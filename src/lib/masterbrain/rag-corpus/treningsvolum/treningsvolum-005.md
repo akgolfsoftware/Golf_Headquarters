@@ -5,7 +5,7 @@ source_section: "## 1.6 Sammenligning med andre tekniske idretter"
 tags: [volum]
 topics: [treningsvolum]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, TechnicalPlan]
+relevance: [AiPlanGeneration, AgencyOS, RAG, TechnicalPlan]
 updated: 2026-06-14
 ---
 

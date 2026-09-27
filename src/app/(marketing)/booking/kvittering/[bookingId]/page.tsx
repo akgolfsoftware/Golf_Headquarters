@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { MarkedBookingKvitteringV2 } from "@/components/marketing/v2/MarkedBookingKvitteringV2";
+import { BookingKvitteringPrecision } from "@/components/marketing/booking/BookingKvitteringPrecision";
 
 export const metadata: Metadata = {
   title: "Bekreftet · AK Golf",
@@ -60,19 +60,23 @@ export default async function Kvittering({ params }: Props) {
   }).format(booking.priceOre / 100);
 
   return (
-    <MarkedBookingKvitteringV2
-      bekreftet={booking.status === "CONFIRMED"}
-      guestEmail={booking.guestEmail}
-      innlogget={Boolean(user)}
-      signupHref={signupHref}
-      detaljer={{
-        bestillingRef: `#${booking.id.slice(-8)}`,
-        tjeneste: booking.serviceType.name,
-        dato,
-        klokkeslett: `${tid} (${booking.serviceType.durationMin} min)`,
-        sted: booking.location.name,
-        prisTekst,
-      }}
-    />
+    <div className="min-h-screen bg-[#FAF8F3] text-[#141413]">
+      <BookingKvitteringPrecision
+        bekreftet={booking.status === "CONFIRMED"}
+        guestEmail={booking.guestEmail}
+        innlogget={Boolean(user)}
+        signupHref={signupHref}
+        detaljer={{
+          bestillingRef: `#${booking.id.slice(-8)}`,
+          tjeneste: booking.serviceType.name,
+          dato,
+          klokkeslett: `${tid} (${booking.serviceType.durationMin} min)`,
+          sted: booking.location.name,
+          prisTekst,
+          startDatoIso: booking.startAt.toISOString(),
+          varighetMin: booking.serviceType.durationMin,
+        }}
+      />
+    </div>
   );
 }

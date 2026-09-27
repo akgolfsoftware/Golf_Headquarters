@@ -8,6 +8,8 @@ import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Caps, Kort, StatusPill, Icon } from "@/components/v2";
+import { DispersionMap, DispersionBucketBar, type SigmaLevel } from "@/components/trackman/DispersionMap";
+import type { DispersionMapResult, DispersionMapShot } from "@/lib/trackman/dispersion-map";
 
 export type FullSvingTaskRad = {
   id: string;
@@ -28,6 +30,8 @@ export type FullSvingTaskRad = {
 
 export type FullSvingFlateProps = {
   tasks: FullSvingTaskRad[];
+  dispersion?: DispersionMapResult | null;
+  latestSessionDate?: string | null;
   /** Når true, kalles onFilterChange for å skjule ikke-fullsving i listen under. */
   onFilterChange?: (onlyFullsving: boolean) => void;
 };
@@ -39,14 +43,34 @@ const METRIC_LABEL: Record<string, string> = {
   club_speed_mean: "Klubbhastighet",
   ball_speed_mean: "Ballhastighet",
   side_std: "Side spredning",
+  club_path_mean: "Svingbane (path)",
+  club_path_std: "Svingbane spredning",
+  face_angle_mean: "Bladvinkel (face)",
+  face_angle_std: "Bladvinkel spredning",
+  face_to_path_mean: "Blad mot bane",
+  face_to_path_std: "Blad mot bane spredning",
+  attack_angle_mean: "Angrepsvinkel",
+  attack_angle_std: "Angrepsvinkel spredning",
+  launch_angle_mean: "Utgangsvinkel",
+  launch_angle_std: "Utgangsvinkel spredning",
+  spin_rate_mean: "Spinn",
+  spin_rate_std: "Spinn spredning",
 };
 
 function metricLabel(m: string): string {
   return METRIC_LABEL[m] ?? m.replace(/_/g, " ");
 }
 
-export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
+export function FullSvingFlate({
+  tasks,
+  dispersion,
+  latestSessionDate,
+  onFilterChange,
+}: FullSvingFlateProps) {
   const [onlyFullsving, setOnlyFullsving] = useState(false);
+  const [selectedShot, setSelectedShot] = useState<DispersionMapShot | null>(null);
+  const [sigma, setSigma] = useState<SigmaLevel>(1);
+  const [visKart, setVisKart] = useState(true);
 
   const medMaal = useMemo(
     () => tasks.filter((t) => t.goals.length > 0),
@@ -140,6 +164,122 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
           </Link>
         </div>
       </div>
+
+      {dispersion && dispersion.shots.length > 0 ? (
+        <div
+          style={{
+            marginTop: 16,
+            borderRadius: TL.radius.card,
+            border: `1px solid ${TL.hair}`,
+            background: TL.dock,
+            padding: "14px 16px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            <div>
+              <Caps size={9}>Automatisk TrackMan-spredning · {latestSessionDate ?? "Siste økt"}</Caps>
+              <div
+                style={{
+                  fontFamily: TL.font.sans,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: TL.text,
+                  marginTop: 2,
+                }}
+              >
+                {dispersion.n} slag registrert
+                {dispersion.medianCarry != null ? ` · Median carry: ${dispersion.medianCarry} m` : ""}
+                {dispersion.offlineBias != null
+                  ? ` · Bias: ${dispersion.offlineBias > 0 ? "+" : ""}${dispersion.offlineBias} m ${dispersion.offlineBias > 0 ? "høyre" : dispersion.offlineBias < 0 ? "venstre" : "rett"}`
+                  : ""}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <button
+                type="button"
+                onClick={() => setSigma(sigma === 1 ? 2 : 1)}
+                className="v2-focus"
+                style={{
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: 6,
+                  color: TL.text,
+                  fontFamily: TL.font.mono,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: "4px 8px",
+                  cursor: "pointer",
+                }}
+              >
+                {sigma}σ ellipse
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisKart(!visKart)}
+                className="v2-focus"
+                style={{
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: 6,
+                  color: TL.mute,
+                  fontFamily: TL.font.mono,
+                  fontSize: 10,
+                  padding: "4px 8px",
+                  cursor: "pointer",
+                }}
+              >
+                {visKart ? "Skjul kart" : "Vis kart"}
+              </button>
+            </div>
+          </div>
+
+          {visKart && (
+            <div style={{ maxWidth: 440, margin: "0 auto", width: "100%" }}>
+              <DispersionMap
+                shots={dispersion.shots}
+                oneSigmaEllipse={dispersion.oneSigmaEllipse}
+                twoSigmaEllipse={dispersion.twoSigmaEllipse}
+                hasEllipse={dispersion.hasEllipse}
+                sigma={sigma}
+                selectedShotId={selectedShot?.id ?? null}
+                onSelectShot={setSelectedShot}
+                showBiasArrow={false}
+                variant="approach"
+                mode="satellite"
+              />
+              {dispersion.hasEllipse && (
+                <div style={{ marginTop: 8 }}>
+                  <DispersionBucketBar {...dispersion.bucketShare} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {dispersion.caddieSentence && (
+            <p
+              style={{
+                fontFamily: TL.font.sans,
+                fontSize: 12,
+                color: TL.mute,
+                textAlign: "center",
+                margin: "10px 0 0",
+                fontStyle: "italic",
+              }}
+            >
+              {dispersion.caddieSentence}
+            </p>
+          )}
+        </div>
+      ) : null}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 16 }}>
         {tasks.slice(0, 8).map((t) => {

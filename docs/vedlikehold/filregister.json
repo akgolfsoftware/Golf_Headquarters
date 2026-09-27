@@ -18892,32 +18892,32 @@
       "byte": 1276
     },
     {
-      "sti": "src/components/coachhq/agent-strip.tsx",
+      "sti": "src/components/agencyos/agent-strip.tsx",
       "omrade": "appkode",
       "byte": 1346
     },
     {
-      "sti": "src/components/coachhq/tournament-enroll-modal.tsx",
+      "sti": "src/components/agencyos/tournament-enroll-modal.tsx",
       "omrade": "appkode",
       "byte": 13227
     },
     {
-      "sti": "src/components/coachhq/workbench/notater-actions.test.ts",
+      "sti": "src/components/agencyos/workbench/notater-actions.test.ts",
       "omrade": "test",
       "byte": 3288
     },
     {
-      "sti": "src/components/coachhq/workbench/notater-actions.ts",
+      "sti": "src/components/agencyos/workbench/notater-actions.ts",
       "omrade": "appkode",
       "byte": 3793
     },
     {
-      "sti": "src/components/coachhq/workbench/shell.tsx",
+      "sti": "src/components/agencyos/workbench/shell.tsx",
       "omrade": "appkode",
       "byte": 1048
     },
     {
-      "sti": "src/components/coachhq/workbench/tabs.tsx",
+      "sti": "src/components/agencyos/workbench/tabs.tsx",
       "omrade": "appkode",
       "byte": 3962
     },

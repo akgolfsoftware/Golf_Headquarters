@@ -5,7 +5,7 @@ source_section: "(Preamble) (del 1)"
 tags: [baseline, pga-tour, sg]
 topics: [implementasjon, pga-snitt, sg-baseline]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

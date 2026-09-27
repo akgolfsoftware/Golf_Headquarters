@@ -146,6 +146,9 @@ const CANON: Fasitfil = {
     [
       "## CANON — kategorier og pyramide",
       "",
+      "A–K-kategorier følger ENESTE gyldige definisjon i ak-kategori.ts:",
+      "A er World Elite (< 68 brutto score), K er Nybegynner (100+ slag).",
+      "",
       "Pyramidens standardfordeling:",
       json(canonMethodology.pyramid_defaults),
       "",

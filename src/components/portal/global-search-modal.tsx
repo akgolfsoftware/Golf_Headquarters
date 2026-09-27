@@ -217,7 +217,7 @@ const ACTIONS: Action[] = [
     id: "view-mode-coach",
     label: "Bytt til Coach-view",
     description: "Hopp tilbake til AgencyOS (kun for coach/admin)",
-    keywords: ["coach", "coachhq", "admin", "bytt", "view"],
+    keywords: ["coach", "agencyos", "admin", "bytt", "view"],
     icon: UserCog,
     kind: { type: "view-mode-coach" },
     requireCoachRole: true,

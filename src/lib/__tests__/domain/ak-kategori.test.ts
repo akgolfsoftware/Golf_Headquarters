@@ -67,3 +67,12 @@ test("prosentTilNesteNiva: lavere score = nærmere opprykk", () => {
   assert.equal(prosentTilNesteNiva(60), null);
   assert.equal(prosentTilNesteNiva(120), null);
 });
+
+test("canon-methodology.json samsvarer med ak-kategori.ts (A=World Elite, K=Nybegynner)", async () => {
+  const canon = await import("../../masterbrain/knowledge/concepts/canon-methodology.json");
+  const cats = canon.default.categories as Record<string, { niva?: string; snittscore?: string; name: string }>;
+  assert.equal(cats.A.niva, "World Elite");
+  assert.equal(cats.A.snittscore, "< 68");
+  assert.equal(cats.K.niva, "Nybegynner Junior");
+  assert.equal(cats.K.snittscore, "100+");
+});

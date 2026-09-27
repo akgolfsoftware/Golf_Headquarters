@@ -5,7 +5,7 @@ source_section: "## Definisjon: Retningen kølleflaten peker ved kontaktpunktets
 tags: [amatør, club-data, d-plane, trackman]
 topics: [trackman-parametere]
 lang: no
-relevance: [CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

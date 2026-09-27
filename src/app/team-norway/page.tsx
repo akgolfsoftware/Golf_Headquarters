@@ -5,6 +5,11 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { TN } from "@/lib/v2/team-norway";
 
+export const metadata = {
+  title: "Team Norway Golf · Landslagsoversikt",
+  description: "Offisielt dashbord for Norges Golfforbund / Team Norway Golf.",
+};
+
 /**
  * TN-02 Oversikt — inngang til den kanoniske Team Norway-gruppen.
  *

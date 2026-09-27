@@ -1,8 +1,7 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ Utfordring-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys PlayerHQ.
+ * PlayerHQ Utfordring-detalj — AK Golf Precision Athletic.
  */
 
 import { useState, useTransition } from "react";
@@ -32,6 +31,7 @@ export type UtfordringDetaljData = {
   endAt: Date | null;
   erEier: boolean;
   erDeltaker: boolean;
+  higherIsBetter: boolean;
   minScore: number | null;
   minNotes: string | null;
   deltakere: DeltakerRad[];
@@ -60,10 +60,12 @@ function scoreTekst(v: number): string {
 function ScoreSkjema({
   minScore,
   minNotes,
+  higherIsBetter,
   onLagre,
 }: {
   minScore: number | null;
   minNotes: string | null;
+  higherIsBetter: boolean;
   onLagre: (score: number, notes: string | null) => Promise<void>;
 }) {
   const router = useRouter();
@@ -98,7 +100,11 @@ function ScoreSkjema({
       }
     >
       <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 14, marginTop: 4 }}>
-        <SkjemaFelt label="Score" hjelp="Høyere er bedre. Bruk komma som desimaltegn." feil={feil}>
+        <SkjemaFelt
+          label="Score"
+          hjelp={`${higherIsBetter ? "Høyest" : "Lavest"} score vinner. Bruk komma som desimaltegn.`}
+          feil={feil}
+        >
           <Inndata label={null} value={score} placeholder="F.eks. 42" mono onChange={setScore} />
         </SkjemaFelt>
         <SkjemaFelt label="Notat (valgfritt)" hjelp={null}>
@@ -139,7 +145,7 @@ export function UtfordringDetaljV2({
   }
 
   return (
-    <div data-paper-portal-utfordring-detalj style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-akgolf-portal-utfordring-detalj style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/utfordringer" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">PlayerHQ · Utfordringer</MikroMeta>
@@ -150,7 +156,7 @@ export function UtfordringDetaljV2({
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Caps>{erAktiv ? "Aktiv utfordring" : "Avsluttet utfordring"}</Caps>
-            <StatusPill tone={erAktiv ? "lime" : "up"}>{erAktiv ? "Aktiv" : "Fullført"}</StatusPill>
+            <StatusPill tone={erAktiv ? "lime" : "up"}>{erAktiv ? "Aktiv" : "Avsluttet"}</StatusPill>
             {data.erEier && <Bit icon="star">Eier</Bit>}
           </div>
           <div style={{ marginTop: 10 }}>
@@ -192,7 +198,12 @@ export function UtfordringDetaljV2({
 
       {/* Score-registrering */}
       {erAktiv && data.erDeltaker && (
-        <ScoreSkjema minScore={data.minScore} minNotes={data.minNotes} onLagre={actions.registrerScore} />
+        <ScoreSkjema
+          minScore={data.minScore}
+          minNotes={data.minNotes}
+          higherIsBetter={data.higherIsBetter}
+          onLagre={actions.registrerScore}
+        />
       )}
 
       {/* Resultatliste */}
@@ -201,13 +212,16 @@ export function UtfordringDetaljV2({
           <Caps>Resultatliste ({data.deltakere.length})</Caps>
           <HjelpTips k="utfordringScore" />
         </span>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "-4px 0 0", lineHeight: 1.45 }}>
+          {data.higherIsBetter ? "Høyest score vinner." : "Lavest score vinner."}
+        </p>
 
         {data.deltakere.length === 0 ? (
           <Kort>
             <TomTilstand
               icon="trophy"
               title="Ingen deltakere ennå"
-              sub="Del utfordringen og inviter andre til å bli med."
+              sub="Velg deltakere når utfordringen opprettes."
             />
           </Kort>
         ) : (

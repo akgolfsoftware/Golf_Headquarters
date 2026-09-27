@@ -5,7 +5,7 @@ source_section: "### Felle 1 — Sammenligning med feil baseline: En amatørs ne
 tags: [amatør, baseline, broadie, formule, handicap, pga-tour, putt, sg]
 topics: [amator-data, broadie, pga-snitt, putting, sg-baseline]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

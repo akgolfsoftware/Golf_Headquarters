@@ -4,6 +4,8 @@
  * AO-04 Run-detalj. AgentRun er ferdig (OK|ERROR) — ingen falsk progresjon.
  * Godkjenn resultat er hvit primær når et forslag venter.
  * Fasit: designsystem/train-lock/AO-00 LOCK Run Skills Tilstander.dc.html
+ * Avvik:
+ *   - Ingen egen riggrad for AO-04 ennå; skjermen er dataavhengig av siste AgentRun og forslag i kø.
  */
 
 import { TL } from "@/lib/v2/train-lock";
@@ -27,7 +29,7 @@ export function AdminAgenticosRunDetalj({ data }: { data: AgentDetaljData }) {
               Åpne godkjenn-kø
             </AoKnapp>
           }
-          sekundaer={<AoKnapp href="/admin/agenticos">Tilbake til cockpit</AoKnapp>}
+          sekundaer={<AoKnapp href="/admin/jarvis">Tilbake til cockpit</AoKnapp>}
         />
       ) : null}
 
@@ -68,7 +70,7 @@ export function AdminAgenticosRunDetalj({ data }: { data: AgentDetaljData }) {
             Godkjenn resultat
           </AoKnapp>
         ) : null}
-        <AoKnapp href="/admin/agenticos">Cockpit</AoKnapp>
+        <AoKnapp href="/admin/jarvis">Cockpit</AoKnapp>
       </div>
 
       {data.manuell ? (

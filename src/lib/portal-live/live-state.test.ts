@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mapWbToLiveSummary } from "./wb-live-map";
-import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState } from "./live-state";
+import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, addLiveDrill, swapLiveDrill, removeLiveDrill } from "./live-state";
 import { completedLiveDrills } from "./live-summary";
 import { byggLiveDrillKoRad } from "@/lib/offline-queue/live-drill-kladd";
 const session = () => mapWbToLiveSummary({ id: "s", title: "Syntetisk økt", date: new Date(0), startMinute: 540, durationMinutes: 30, status: "IN_PROGRESS", pyramid: "TEK", location: null, notes: null, publishedAt: null, createdAt: new Date(0), drills: [0, 1].map((i) => ({ id: `d${i}`, title: "Øvelse", description: null, durationMinutes: 15, sortOrder: i })) });
@@ -42,3 +42,29 @@ test("sammendrag teller bare eksplisitt ferdige øvelser, med eldre fallback", (
   data.completedSummary = { liveSummary: { completedDrillIds: ["d1", "d1", "other", null] } };
   assert.deepEqual(completedLiveDrills(data), ["d1"]);
 });
+test("fleksibilitet underveis: legge til, bytte og fjerne øvelser", () => {
+  let state = restoreLiveState(session(), null);
+  assert.equal(state.drills.length, 2);
+
+  // Legg til en øvelse underveis
+  state = addLiveDrill(state, { name: "Putting 3 meter", durationMinutes: 10, plannedReps: 20 });
+  assert.equal(state.drills.length, 3);
+  assert.equal(state.drills[2].name, "Putting 3 meter");
+  assert.equal(state.drills[2].index, 3);
+  assert.equal(state.drills[2].durationMinutes, 10);
+  assert.equal(state.drills[2].status, "queued");
+
+  // Bytte ut en øvelse
+  state = swapLiveDrill(state, state.drills[0].id, "Chipping fra rough", 20);
+  assert.equal(state.drills[0].name, "Chipping fra rough");
+  assert.equal(state.drills[0].durationMinutes, 20);
+
+  // Fjerne en øvelse
+  const idToRemove = state.drills[1].id;
+  state = removeLiveDrill(state, idToRemove);
+  assert.equal(state.drills.length, 2);
+  assert.equal(state.drills[0].index, 1);
+  assert.equal(state.drills[1].index, 2);
+  assert.equal(state.drills[1].name, "Putting 3 meter");
+});
+

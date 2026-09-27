@@ -19,6 +19,7 @@ import {
   SessionStatusSchema,
   parseAkFormel,
 } from "@/lib/domain/workbench/schemas";
+import { computeSessionLoad } from "@/lib/domain/workbench/load";
 
 export type WbRow = WorkbenchSessionRow & { drills: WorkbenchDrillRow[] };
 
@@ -78,6 +79,14 @@ export function mapSession(row: WbRow): WorkbenchSession {
     practiceType: practiceType.success ? practiceType.data : undefined,
     location: row.location ?? undefined,
     notes: row.notes ?? undefined,
+    perceivedEffort: row.perceivedEffort ?? null,
+    actualMinutes: row.actualMinutes ?? null,
+    load: computeSessionLoad({
+      durationMinutes: row.durationMinutes,
+      actualMinutes: row.actualMinutes,
+      perceivedEffort: row.perceivedEffort,
+      status: row.status,
+    }),
     rationale: row.rationale ?? undefined,
     skillArea: row.skillArea ?? undefined,
     pressureLevel: row.pressureLevel ?? undefined,

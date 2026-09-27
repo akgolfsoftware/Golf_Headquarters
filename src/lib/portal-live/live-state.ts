@@ -41,3 +41,79 @@ export function markLiveDrill(state: LiveState, drillId: string, done: boolean):
   if (!drills.some((d) => d.status === "active")) { const first = drills.find((d) => d.status === "queued"); if (first) first.status = "active"; }
   return { ...state, drills, drillSec: selected.status === "active" || !state.drills.some((d) => d.status === "active") ? count(drills.find((d) => d.status === "active")?.actualDurationSec) : state.drillSec };
 }
+
+export function addLiveDrill(
+  state: LiveState,
+  nyDrill: { name: string; durationMinutes?: number; pyramide?: LiveV2Drill["pyramide"]; plannedReps?: number }
+): LiveState {
+  const index = state.drills.length + 1;
+  const id = `extra-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  const drill: LiveDrillState = {
+    id,
+    index,
+    name: nyDrill.name,
+    description: "Lagt til underveis i økta",
+    durationMinutes: nyDrill.durationMinutes ?? 10,
+    actualDurationSec: 0,
+    plannedReps: nyDrill.plannedReps ?? 10,
+    pyramide: nyDrill.pyramide ?? "TEK",
+    lFase: null,
+    notes: null,
+    repType: "BALLER_SLATT",
+    repAntall: nyDrill.plannedReps ?? 10,
+    repMinutter: nyDrill.durationMinutes ?? 10,
+    repSett: null,
+    repReps: null,
+    fysTreningstype: null,
+    fysMuskelgruppe: null,
+    fysSett: null,
+    fysReps: null,
+    fysVektKg: null,
+    fysTempo: null,
+    fysPauseSek: null,
+    fysVarighetMin: null,
+    fysIntensitetsSone: null,
+    fysDistanseM: null,
+    fysAktivitet: null,
+    fysBevegelighetType: null,
+    fysHoldSek: null,
+    status: state.drills.length === 0 ? "active" : "queued",
+    repsTotal: 0,
+    repsWithoutBall: 0,
+    repsLowSpeed: 0,
+    repsAutomatic: 0,
+    repsHit: 0,
+  };
+  return { ...state, drills: [...state.drills, drill] };
+}
+
+export function swapLiveDrill(
+  state: LiveState,
+  drillId: string,
+  newName: string,
+  durationMinutes?: number
+): LiveState {
+  return {
+    ...state,
+    drills: state.drills.map((d) =>
+      d.id === drillId
+        ? {
+            ...d,
+            name: newName,
+            durationMinutes: durationMinutes ?? d.durationMinutes,
+          }
+        : d
+    ),
+  };
+}
+
+export function removeLiveDrill(state: LiveState, drillId: string): LiveState {
+  const filtered = state.drills.filter((d) => d.id !== drillId);
+  const reindexed = filtered.map((d, i) => ({ ...d, index: i + 1 }));
+  if (!reindexed.some((d) => d.status === "active") && reindexed.some((d) => d.status === "queued")) {
+    const firstQueued = reindexed.find((d) => d.status === "queued");
+    if (firstQueued) firstQueued.status = "active";
+  }
+  return { ...state, drills: reindexed };
+}
+

@@ -200,7 +200,7 @@ enum SubscriptionStatus {
 
 // Program-tilhørighet for spillere.
 // PLATFORM_ONLY = selvbetjent bruker uten coachrelasjon (GDPR-skille).
-// Alle andre program = synlig i CoachHQ for tildelt coach.
+// Alle andre program = synlig i AgencyOS for tildelt coach.
 enum PlayerProgram {
   WANG_TOPPIDRETT // WANG Toppidrett Fredrikstad
   WANG_UNG // WANG Ung Fredrikstad
@@ -627,7 +627,7 @@ model User {
   planChangeRequestsAsCoach  PlanChangeRequest[]     @relation("PlanChangeCoach")
   tournamentPreparations     TournamentPreparation[]
 
-  // CoachHQ-relasjoner (Fase 2.1)
+  // AgencyOS-relasjoner (Fase 2.1)
   tournamentResults TournamentResult[]
   coachedGroups     Group[]                   @relation("CoachOfGroup")
   groupMemberships  GroupMember[]
@@ -756,7 +756,7 @@ model User {
   trainingLogs TrainingLog[]
 
   // Performance: hot path — filtrere aktive spillere/coacher
-  // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
+  // (PlayerHQ-lister, AgencyOS-portefølje, talent-tracking).
   @@index([role, deletedAt])
   // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
   @@index([primaryCoachId])
@@ -1850,11 +1850,14 @@ model PuttDetail {
 // tapper-flaten). Plain planSessionId uten @relation — additivt og isolert,
 // samme mønster som trainingSessionV2Id på Booking.
 model SessionBallLog {
-  id            String   @id @default(cuid())
-  planSessionId String
-  club          String
-  count         Int      @default(0)
-  updatedAt     DateTime @default(now()) @updatedAt
+  id             String   @id @default(cuid())
+  planSessionId  String
+  club           String
+  count          Int      @default(0)
+  area           String?
+  category       String?
+  repetitionType String?
+  updatedAt      DateTime @default(now()) @updatedAt
 
   @@unique([planSessionId, club])
   @@index([planSessionId])
@@ -2529,7 +2532,7 @@ model WinbackTilbud {
 // Program-enrollering — kobler spiller til program + coach.
 // Én rad per (spiller × program × periode). Historikk beholdes ved endedAt.
 // En spiller kan ha flere aktive enrolleringer simultant (mange-til-mange).
-// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i CoachHQ.
+// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i AgencyOS.
 model PlayerEnrollment {
   id         String        @id @default(cuid())
   userId     String
@@ -2964,7 +2967,7 @@ model PushedCalendarEvent {
   @@map("pushed_calendar_events")
 }
 
-// ---------- CoachHQ-modeller (Fase 2.1) ----------
+// ---------- AgencyOS-modeller (Fase 2.1) ----------
 
 model Tournament {
   id        String    @id @default(cuid())
@@ -3323,6 +3326,7 @@ model SeasonPlan {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   periodBlocks      PeriodBlock[]
   tournamentEntries TournamentEntry[]
+  weekPlans         WeekPlan[]
 
   @@unique([userId, year])
   @@index([userId])
@@ -3376,6 +3380,56 @@ model GroupPeriodBlock {
   @@index([groupId, startDate])
   @@map("group_period_blocks")
 }
+
+// Oppgave 2: Gjør uken til et reelt objekt (WeekPlan)
+enum WeekType {
+  UTVIKLING
+  VEDLIKEHOLD
+  TURNERING
+}
+
+enum WeekNote {
+  FERIE
+  TEST
+  SAMLING
+  EVALUERING
+  PRE_TURNERING
+  TEKNIKK_UKE
+}
+
+model WeekPlan {
+  id                 String     @id @default(cuid())
+  playerId           String
+  seasonPlanId       String?
+  isoYear            Int
+  weekNumber         Int
+  weekType           WeekType   @default(UTVIKLING)
+  notes              WeekNote[] @default([])
+  plannedHoursFys    Float?
+  plannedHoursTek    Float?
+  plannedHoursSlag   Float?
+  plannedHoursSpill  Float?
+  plannedHoursTurn   Float?
+  repTargetDry       Int?
+  repTargetLowSpeed  Int?
+  repTargetFullSpeed Int?
+  repTargetPutting   Int?
+  repTargetShortGame Int?
+  repetitionTargets  Json?
+  loadCeiling        Int?
+  customNotes        String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  seasonPlan SeasonPlan? @relation(fields: [seasonPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([playerId, isoYear, weekNumber])
+  @@index([playerId])
+  @@index([seasonPlanId])
+  @@index([isoYear, weekNumber])
+  @@map("week_plans")
+}
+
 
 // WANG-årsplan (Anders 2026-08-15): elevens EGNE fokusområder for én periode —
 // det andre sporet i årsplanen, avtalt med trener i IUP-samtalen.
@@ -6449,6 +6503,12 @@ model WorkbenchSession {
   // Midlertidig sporingsfelt for idempotent backfill fra training_plan_sessions
   // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
   migrertFraTrainingPlanSessionId String? @unique
+
+  // Belastning og anstrengelse (sRPE, 26.09.2026):
+  // perceivedEffort: 1–10 (Borg CR-10 / Foster-skala)
+  // actualMinutes: faktisk gjennomført tid i minutter (hvis ulik durationMinutes)
+  perceivedEffort Int?
+  actualMinutes   Int?
 
   drills WorkbenchDrill[]
 

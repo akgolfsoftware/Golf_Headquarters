@@ -5,7 +5,7 @@ source_section: "## 2.2 The Four SG Components and Their Computational Definitio
 tags: [app, baseline, ott, sg]
 topics: [implementasjon]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 
