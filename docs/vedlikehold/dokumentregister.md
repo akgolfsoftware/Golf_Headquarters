@@ -35,7 +35,6 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md](<../beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-retting-2026-09-10.md](<../beslutningsgrunnlag/teknisk-retting-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md](<../beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md>) |
-| dokumentasjon | [docs/demo-sprak-og-treningsplanlegging.md](<../demo-sprak-og-treningsplanlegging.md>) |
 | dokumentasjon | [docs/design-audit/datagolf-kildestatus-2026-09-14.md](<../design-audit/datagolf-kildestatus-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-demo-2026-09-14.md](<../design-audit/team-norway-demo-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-dokument-invitasjon-2026-09-14.md](<../design-audit/team-norway-dokument-invitasjon-2026-09-14.md>) |
@@ -82,6 +81,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md](<../planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md>) |
 | datert-plan | [docs/planer/database-modell-deprekering-2026-09-27.md](<../planer/database-modell-deprekering-2026-09-27.md>) |
 | datert-plan | [docs/planer/plan-portering-claude-design-til-kode-2026-09-25.md](<../planer/plan-portering-claude-design-til-kode-2026-09-25.md>) |
+| datert-plan | [docs/planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md](<../planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md>) |
 | datert-plan | [docs/planer/prosjektplan-og-lanseringsplan-2026-09-24.md](<../planer/prosjektplan-og-lanseringsplan-2026-09-24.md>) |
 | datert-plan | [docs/planer/team-norway-demodag-2026-09-14.md](<../planer/team-norway-demodag-2026-09-14.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |
