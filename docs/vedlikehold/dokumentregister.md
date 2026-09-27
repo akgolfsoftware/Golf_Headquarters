@@ -116,6 +116,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/skjermtekst/skjerm-tekst-hovedskjermer.md](<../skjermtekst/skjerm-tekst-hovedskjermer.md>) |
 | dokumentasjon | [docs/taksonomi-verifikasjon.md](<../taksonomi-verifikasjon.md>) |
 | dokumentasjon | [docs/testing.md](<../testing.md>) |
+| dokumentasjon | [docs/treningsplanlegger/junior-16/arsplan-standard.md](<../treningsplanlegger/junior-16/arsplan-standard.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md](<../treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/00-terminliste-2027-utkast.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/00-terminliste-2027-utkast.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/01-periodebrev.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/01-periodebrev.md>) |

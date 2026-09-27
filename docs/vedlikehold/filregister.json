@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5828,
+    "prosjektfiler": 5829,
     "sidefiler": 517,
     "prismamodeller": 204,
     "enhetstestfiler": 533,
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 42428
+      "byte": 43492
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -7465,6 +7465,11 @@
       "sti": "docs/testing.md",
       "omrade": "dokumentasjon",
       "byte": 14144
+    },
+    {
+      "sti": "docs/treningsplanlegger/junior-16/arsplan-standard.md",
+      "omrade": "dokumentasjon",
+      "byte": 15702
     },
     {
       "sti": "docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md",
@@ -29109,12 +29114,12 @@
     {
       "sti": "tests/visual/portering/README.md",
       "omrade": "test",
-      "byte": 6130
+      "byte": 6156
     },
     {
       "sti": "tests/visual/portering/server.mjs",
       "omrade": "test",
-      "byte": 10687
+      "byte": 11224
     },
     {
       "sti": "tests/visual/portering/tn-tilgang-fixture.tsx",
@@ -29124,7 +29129,7 @@
     {
       "sti": "tests/visual/portering/tn-tilgang.py",
       "omrade": "test",
-      "byte": 6302
+      "byte": 6350
     },
     {
       "sti": "tests/visual/portering/train-lock-fixture.tsx",
