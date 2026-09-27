@@ -4,6 +4,59 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## BOOKING BEKREFTES AUTOMATISK, OG BOOKINGE-POSTENE FÅR DESIGN (Anders 27.09.2026, bindende)
+
+**Offentlig booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført.**
+Kunden skal ikke vente på coachen. Ingen «Venter på bekreftelse fra coach» for offentlig
+booking eller flexkunder. Svar på spørsmålet etter runde 11 i Claude Design «AK Golf Precision
+Athletics» (`7d7c2994`), der BK-flyten var tegnet med ventestatus.
+
+Koden gjør dette allerede: Stripe-webhooken setter bookingen fra `PENDING` til bekreftet og
+sender bekreftelsen (`src/lib/stripe/handle-event.ts`, `bookingBleBekreftet`). Ventestatusen
+fantes bare i designet.
+
+**Alle bookinge-postene skal designes, og bekreftelsen er første sted for mersalg.** Anders:
+«Allerede her kan vi gjøre et mersalg på å starte i Player HQ.» Noen booker i appen (AK Golf
+Academy), andre er flexkunder som booker én time på nett uten konto og trenger alt på e-post.
+
+- **Bekreftelse:** tid, sted, tjeneste, pris og avbestillingsfrist, legg i kalender. Flexkunde
+  (gjest) får lenke til å opprette PlayerHQ-konto. Appbruker får lenke til bookingen i appen.
+- **Endret time:** gammel og ny tid tydelig.
+- **Takk etter coachingtime** til kunde uten PlayerHQ-konto: takk for timen og treningen, og
+  tilbud om å fortsette i PlayerHQ. Jarvis forbereder, et menneske sender (§Produkt og tilgang).
+- Påminnelse og avbestilling sendes også i dag (`sendBookingReminder`,
+  `sendBookingCancellation`) og tegnes i samme runde, så alle bookinge-postene er like.
+
+**Overstyrer:** AG-03b punkt 4 om bookingbekreftelse i AgencyOS (AG-06) gjelder ikke offentlig
+booking med betaling. Coach kan fortsatt avlyse.
+
+**Arbeidet dette utløser:**
+
+1. **Design, runde 16 i `7d7c2994`:** BK-03 og PH-23 bekreftet uten ventestatus og med
+   PlayerHQ-tilbud til gjest. E-postene EP-01 bekreftelse (gjest og appbruker), EP-02 endret
+   time, EP-03 påminnelse, EP-04 avbestilling, EP-05 takk etter coachingtime, EP-06 oppfølging.
+   Ferdig når alle er i `audit.html` med null avvik og Anders har sett dem (port 7).
+2. **Ny e-postmal i koden:** `tilHtml` i `src/lib/email/booking-emails.ts` bruker gamle
+   hardkodede farger. Bytt til malen fra runde 16. Ferdig når alle fire bookinge-postene bruker den.
+3. **Kontolenke i bekreftelsen til gjest** (`guestEmail` satt, `userId` null). Ferdig når
+   lenken fører til registrering med e-posten ferdig utfylt.
+4. **Takk-e-post som utkast til coachen:** bygg på `src/lib/agents/lead-oppfolging.ts`, som i
+   dag bare gir coachen kopierbar tekst. Ferdig når en gjennomført gjestebooking gir et ferdig
+   e-postutkast i AgencyOS-køen, som coachen sender med ett trykk (rust «Send»).
+
+5. **Tidligere bookinger hentes inn på kontoen** når en flexkunde registrerer seg med samme
+   e-post (Anders 27.09). Finnes ikke i koden i dag. Ferdig når gjestebookinger med samme
+   `guestEmail` får `userId` ved registrering og vises i PlayerHQ. Kvitteringen lenker i dag til
+   `/auth/signup?epost=…` med e-posten i adressen
+   (`src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx`); bytt til en løsning uten
+   e-post i lenken.
+6. **Tidspunkt for e-postene etter coachingtime** (Anders 27.09): takk (EP-05) klar som utkast
+   hos coachen innen 24 timer etter timen. Én oppfølging (EP-06) etter 14 dager, bare hvis kunden
+   verken har booket ny time eller kjøpt PlayerHQ. Deretter ingenting mer.
+
+Bookinger fra appen bekreftes også automatisk (Anders 27.09): de lagres som `PENDING` til
+betalingen er gjennomført (`src/app/portal/booking/actions.ts`), deretter bekreftet.
+
 ## WANG: FEM ANSATTROLLER, OG SKOLENE DELER ÉN KOORDINERINGSSIDE (Anders 26.09.2026, bindende)
 
 Svar på spørsmålene etter runde 14 i Claude Design «WANG Golf UI prototype» (`6cfa623c`).
@@ -264,8 +317,8 @@ porting av de tre ferdige områdene.
      ingen side har noensinne rendret dem.
    - Øvelsesredigering (AG-11b): ingen kan i dag opprette eller endre en øvelse noe sted i
      appen, verken admin eller coach.
-   - Bookingbekreftelse i AgencyOS (AG-06, eldre funn, ikke løst i denne runden): en coach
-     kan ikke bekrefte eller avvise en booking noe sted i AgencyOS.
+   - Bookingbekreftelse i AgencyOS (AG-06): offentlig booking bekreftes automatisk etter
+     betaling — se §BOOKING BEKREFTES AUTOMATISK (27.09). Coach kan fortsatt avlyse.
    - Utfordringer (PH-15): kodesiden er bygget (PR #948), men selve ny-skjermen fra
      tegningen er ikke portert ennå.
 5. **Selve portingen:** hver av de 38 skjermene bygges fra sitt manifest
