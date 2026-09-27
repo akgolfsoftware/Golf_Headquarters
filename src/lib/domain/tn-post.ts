@@ -11,6 +11,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
@@ -465,6 +466,67 @@ export async function hentPostLesekvitteringNavnForViewer(
   }
 
   return null;
+}
+
+/** Grupperingsnøkkel for påminnelsen på ett innlegg — én påminnelse per innlegg. */
+export function tnPaaminnelseNokkel(postId: string): string {
+  return `tn-paaminnelse:${postId}`;
+}
+
+export type TnPaaminnelse = { sendtAt: Date; antall: number };
+
+/** Påminnelser som er sendt for innleggene, nøklet på post-id. */
+export async function hentPaaminnelser(postIder: readonly string[]): Promise<Map<string, TnPaaminnelse>> {
+  if (postIder.length === 0) return new Map();
+  const rader = await prisma.notification.groupBy({
+    by: ["groupKey"],
+    where: { groupKey: { in: postIder.map(tnPaaminnelseNokkel) } },
+    _min: { createdAt: true },
+    _count: { _all: true },
+  });
+  const svar = new Map<string, TnPaaminnelse>();
+  for (const r of rader) {
+    if (!r.groupKey || !r._min.createdAt) continue;
+    svar.set(r.groupKey.slice("tn-paaminnelse:".length), { sendtAt: r._min.createdAt, antall: r._count._all });
+  }
+  return svar;
+}
+
+/**
+ * «Send påminnelse» i TN-13. Bare trener i gruppen, bare én gang per innlegg,
+ * og bare til spillerne som ikke har lest. Varselet bærer aldri innleggets
+ * tekst — mottakerne er ofte mindreårige og varselet kan vises på låseskjermen.
+ */
+export async function sendPaaminnelse(postId: string, trenerId: string): Promise<TnPaaminnelse> {
+  const post = await prisma.tnPost.findUnique({
+    where: { id: postId },
+    select: { groupId: true, lesekvittert: { select: { userId: true } } },
+  });
+  if (!post?.groupId) throw new Error("Innlegget finnes ikke");
+  if ((await hentViewerRolleIGruppe(post.groupId, trenerId)) !== "TRENER") {
+    throw new Error("Bare trenere i gruppen kan sende påminnelse");
+  }
+  const tidligere = (await hentPaaminnelser([postId])).get(postId);
+  if (tidligere) return tidligere;
+
+  const lest = new Set(post.lesekvittert.map((k) => k.userId));
+  const mottakere = (await gruppensSpillerIder(post.groupId)).filter((id) => !lest.has(id));
+  if (mottakere.length === 0) throw new Error("Alle har lest innlegget");
+
+  const gruppe = await prisma.group.findUnique({ where: { id: post.groupId }, select: { name: true } });
+  await Promise.all(
+    mottakere.map((userId) =>
+      notify({
+        userId,
+        type: "melding",
+        title: "Påminnelse: nytt innlegg fra trenerteamet",
+        body: gruppe ? `Les innlegget i ${gruppe.name}.` : undefined,
+        link: `/team-norway/${post.groupId}`,
+        groupKey: tnPaaminnelseNokkel(postId),
+      }),
+    ),
+  );
+  return (await hentPaaminnelser([postId])).get(postId) ?? { sendtAt: new Date(), antall: 0 };
 }
 
 /** Samme ressursport brukes før filskriving og før postlagring. */

@@ -16,13 +16,8 @@ let lagreKall: { groupId: string; forfatterId: string; fileSize: number }[] = []
 const MAKS_BYTES_TEST = 200; // liten grense i testen — selve 50 MB-verdien er dekket av tn-dokument-lagring.test.ts
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
-mock.module("@/lib/auth/action-guards", {
-  namedExports: {
-    requireCoachActionUser: async () => {
-      if (!bruker) throw new Error("unauthenticated");
-      return bruker;
-    },
-  },
+mock.module("@/lib/auth/getCurrentUser", {
+  namedExports: { getCurrentUser: async () => bruker },
 });
 mock.module("@/lib/domain/tn-post", {
   namedExports: {

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { hentSkjermbruker } from "./felles";
-import { hentGruppepostSide } from "@/lib/domain/tn-post";
+import { hentGruppepostSide, hentPaaminnelser } from "@/lib/domain/tn-post";
 import { opprettGruppepostAction } from "@/app/team-norway/tn-post-actions";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell } from "../tn-shell";
@@ -15,7 +15,8 @@ import { TnInnleggKort, TnInnleggSkjema, type TnInnlegg } from "../tn-gruppe-kli
  * Avvik:
  *   - Mottaker er alltid hele gruppen. Herrer, Damer og U18 finnes ikke som
  *     mottakergrupper, fordi posten ikke har mottakerfelt og profilen ikke har kjønn.
- *   - «Send påminnelse» er ikke bygget. Kanalen for påminnelser er ikke bestemt.
+ *   - «Send påminnelse» er et varsel i appen (Anders 27.09), én gang per innlegg,
+ *     bare til spillere som ikke har lest. Varselet har ikke innleggets tekst.
  *   - Stillingstittel (Landslagssjef, Fysioterapeut) finnes ikke. Avsender står
  *     med rollen i gruppen: Trener eller Assist Coach.
  *   - Maks lengde er 2000 tegn, som serveren håndhever for alle poster, ikke 600.
@@ -31,8 +32,9 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
   const harTrenertilgang = erTrener || bruker.role === "ADMIN";
   const rolleEtikett = erTrener ? "Trener" : side.rolle === "SPILLER" ? "Spiller" : "Foresatt";
 
-  const innlegg: TnInnlegg[] = side.tidslinje
-    .filter((p) => p.kind !== "DOKUMENT")
+  const synlige = side.tidslinje.filter((p) => p.kind !== "DOKUMENT");
+  const paaminnelser = erTrener ? await hentPaaminnelser(synlige.map((p) => p.id)) : new Map();
+  const innlegg: TnInnlegg[] = synlige
     .map((p) => ({
       id: p.id,
       forfatter: p.authorNavn,
@@ -42,6 +44,7 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
       vedlegg: p.vedlegg.map((v) => ({ id: v.id, fileName: v.fileName })),
       totalt: p.kvittering?.totalt ?? 0,
       lest: p.kvittering?.apnet ?? 0,
+      paaminnelse: paaminnelser.has(p.id) ? { sendtAtIso: paaminnelser.get(p.id)!.sendtAt.toISOString(), antall: paaminnelser.get(p.id)!.antall } : null,
     }));
 
   const mottakere = side.under18 > 0 ? `Hele gruppen · ${side.utovere} spillere + foresatte` : `Hele gruppen · ${side.utovere} spillere`;

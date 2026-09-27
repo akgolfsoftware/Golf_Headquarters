@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, ChevronDown, FileText, Plus } from "lucide-react";
 
 import { TN } from "@/lib/v2/team-norway";
-import { hentLesekvitteringNavnAction, merkPostLestAction, type LesekvitteringNavnSvar } from "@/app/team-norway/tn-post-actions";
+import { hentLesekvitteringNavnAction, merkPostLestAction, sendPaaminnelseAction, type LesekvitteringNavnSvar } from "@/app/team-norway/tn-post-actions";
 
 /**
  * Klientdelene av TN-13 Gruppeposter og TN-14 Dokumenter.
@@ -89,6 +89,8 @@ export type TnInnlegg = {
   vedlegg: { id: string; fileName: string }[];
   totalt: number;
   lest: number;
+  /** Sendt påminnelse, eller null. Bare med i trenerens visning. */
+  paaminnelse: { sendtAtIso: string; antall: number } | null;
 };
 
 /** Kvitterer innlegget som lest når spiller eller foresatt ser det. */
@@ -104,6 +106,9 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
   const [data, setData] = useState<LesekvitteringNavnSvar>(null);
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [paaminnelse, setPaaminnelse] = useState(innlegg.paaminnelse);
+  const [paaminnelseFeil, setPaaminnelseFeil] = useState<string | null>(null);
+  const [sender, startSending] = useTransition();
   const andel = innlegg.totalt ? (innlegg.lest / innlegg.totalt) * 100 : 0;
 
   function veksle() {
@@ -119,6 +124,16 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
       } catch {
         setFeil("Lesekvitteringen kunne ikke hentes. Prøv igjen.");
       }
+    });
+  }
+
+  function paaminn() {
+    if (sender) return;
+    setPaaminnelseFeil(null);
+    startSending(async () => {
+      const svar = await sendPaaminnelseAction(innlegg.id);
+      if (!svar.ok) return setPaaminnelseFeil(svar.feil);
+      setPaaminnelse({ sendtAtIso: svar.sendtAtIso, antall: svar.antall });
     });
   }
 
@@ -161,7 +176,18 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
             <ChevronDown size={14} aria-hidden="true" style={{ transform: apent ? "rotate(180deg)" : undefined }} />
           </button>
         ) : null}
+        {visHvem && !paaminnelse && innlegg.lest < innlegg.totalt ? (
+          <button type="button" onClick={paaminn} disabled={sender} style={{ ...sekundaerKnapp, opacity: sender ? 0.6 : 1 }}>
+            {sender ? "Sender …" : "Send påminnelse"}
+          </button>
+        ) : null}
+        {visHvem && paaminnelse ? (
+          <span role="status" style={{ fontSize: 13, color: TN.navy900 }}>
+            Påminnelse sendt {tid(paaminnelse.sendtAtIso)} til {paaminnelse.antall}
+          </span>
+        ) : null}
       </div>
+      {paaminnelseFeil ? <div role="alert" style={feilboks}>{paaminnelseFeil}</div> : null}
       {apent ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: 16, marginTop: 14 }}>
           {pending ? <div style={{ fontSize: 14, color: TN.textSecondary }}>Henter …</div> : null}
