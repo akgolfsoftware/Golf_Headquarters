@@ -30,6 +30,13 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-retting-2026-09-10.md](<../beslutningsgrunnlag/teknisk-retting-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md](<../beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md>) |
 | dokumentasjon | [docs/demo-sprak-og-treningsplanlegging.md](<../demo-sprak-og-treningsplanlegging.md>) |
+| dokumentasjon | [docs/design-audit/datagolf-kildestatus-2026-09-14.md](<../design-audit/datagolf-kildestatus-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-demo-2026-09-14.md](<../design-audit/team-norway-demo-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-dokument-invitasjon-2026-09-14.md](<../design-audit/team-norway-dokument-invitasjon-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-playerhq-funksjonsgap-2026-09-14.md](<../design-audit/team-norway-playerhq-funksjonsgap-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md](<../design-audit/team-norway-testdag-modellforslag-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-uavhengig-kontroll-2026-09-14.md](<../design-audit/team-norway-uavhengig-kontroll-2026-09-14.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-utvidelse-uavhengig-kontroll-2026-09-14.md](<../design-audit/team-norway-utvidelse-uavhengig-kontroll-2026-09-14.md>) |
 | dokumentasjon | [docs/design-audit/workbench-aar-kontroll-2026-09-21.md](<../design-audit/workbench-aar-kontroll-2026-09-21.md>) |
 | dokumentasjon | [docs/design-audit/workbench-handover-import-2026-09-20.md](<../design-audit/workbench-handover-import-2026-09-20.md>) |
 | dokumentasjon | [docs/design-audit/workbench-kontrollretting-2026-09-21.md](<../design-audit/workbench-kontrollretting-2026-09-21.md>) |
@@ -74,6 +81,8 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md](<../merkevare/ak-golf-tekstkonsept-2026-09-01.md>) |
 | dokumentasjon | [docs/ordbok.md](<../ordbok.md>) |
 | dokumentasjon | [docs/plan-styrkeprogram-fys.md](<../plan-styrkeprogram-fys.md>) |
+| datert-plan | [docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md](<../planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md>) |
+| datert-plan | [docs/planer/team-norway-demodag-2026-09-14.md](<../planer/team-norway-demodag-2026-09-14.md>) |
 | datert-plan | [docs/planer/workbench-design-og-kode-natt-2026-09-20.md](<../planer/workbench-design-og-kode-natt-2026-09-20.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |
 | dokumentasjon | [docs/platform/BOOKING-POLICY.md](<../platform/BOOKING-POLICY.md>) |

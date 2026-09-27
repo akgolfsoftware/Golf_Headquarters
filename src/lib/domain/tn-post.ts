@@ -276,6 +276,8 @@ export type TnGruppepostSide = {
   tidslinje: TnPostMedKvittering[];
   /** Tom hvis viewer ikke er trener, eller siste post er åpnet av alle. */
   sistePostMangler: TnGruppepostMangler[];
+  /** Rolle i gruppen per aktiv trener, til avsenderlinjen i TN-13. */
+  forfatterRoller: Record<string, string>;
 };
 
 /** Samlet oppslag for TN-09 — én IDOR-port, deretter tellere til header/skinne. */
@@ -335,6 +337,7 @@ export async function hentGruppepostSide(groupId: string, viewerId: string): Pro
     foresatte: foresatteUnike.length,
     tidslinje,
     sistePostMangler,
+    forfatterRoller: Object.fromEntries(trenere.map((t) => [t.user.id, t.role === "ASSISTANT" ? "Assist Coach" : "Trener"])),
   };
 }
 
