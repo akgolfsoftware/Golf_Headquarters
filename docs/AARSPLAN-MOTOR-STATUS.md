@@ -1,6 +1,6 @@
 # Status for årsplan-motoren i AK Golf HQ
 
-*Dato: 26. september 2026*  
+*Dato: 26. september 2026*
 *Forankring: Anders Kristiansens trenerbeslutninger for standard årsplan for 16-årig junior (1250 timer).*
 
 Dette dokumentet oppsummerer de seks lukkede hullene i AK Golf HQs treningsmotor. Alle endringer er gjennomført og sikret med separate, isolerte commits og full database- og enhetstestdekning.

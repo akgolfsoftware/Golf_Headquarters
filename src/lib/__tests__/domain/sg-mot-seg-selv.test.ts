@@ -292,4 +292,3 @@ test("beregnSgMotEgetNivaa: viser tall side-om-side mot PGA Tour og mot egen nor
   assert.equal(putt.pgaTourSg, -2.0);
   assert.ok(putt.motEgetNivaaSg !== null && putt.motEgetNivaaSg < 0, "putting er dårligere enn egen baseline");
 });
-

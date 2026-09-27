@@ -24,4 +24,3 @@ export default async function V2FysiskPreviewPage() {
     </V2Shell>
   );
 }
-

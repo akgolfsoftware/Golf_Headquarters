@@ -78,20 +78,20 @@ erDiagram
     User ||--o{ SeasonPlan : "har sesongplan"
     User ||--o{ TechnicalPlan : "har teknisk plan"
     User ||--o{ TestAssignment : "tildelt test"
-    
+
     SeasonPlan ||--o{ PeriodBlock : "bestaar av perioder"
-    
+
     WorkbenchSession ||--o{ WorkbenchDrill : "inneholder ovelser"
     WorkbenchSession ||--o{ SessionBallLog : "registrerer slag"
-    
+
     TechnicalPlan ||--o{ TechnicalPlanPosition : "P1 til P10"
     TechnicalPlanPosition ||--o{ PositionTask : "arbeidsoppgaver"
     PositionTask ||--o{ PositionTaskLog : "loggførte reps"
-    
+
     TestDefinition ||--o{ TestAssignment : "definerer"
     TestAssignment ||--o{ TestSession : "gjennomfores som"
     TestSession ||--o{ TestResult : "gir resultat"
-    
+
     ParentRelation ||--o{ DelingsSamtykke : "styrer samtykke"
 ```
 
