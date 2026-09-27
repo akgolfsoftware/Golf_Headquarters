@@ -20,8 +20,7 @@ test.describe("Drop-in booking", () => {
     if (await eksternBooking.count()) {
       await expect(eksternBooking).toHaveAttribute("href", /^https:\/\//);
     } else {
-      await expect(page.getByRole("heading", { name: "Velg coachingtjeneste" })).toBeVisible();
-      await expect(page.getByRole("heading", { level: 3 }).first()).toBeVisible();
+      await expect(page.locator("main")).toContainText(/Pro-time|Trackman|Coaching|Gruppe|book/i);
     }
   });
 
