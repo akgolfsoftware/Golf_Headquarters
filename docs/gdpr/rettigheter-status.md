@@ -22,8 +22,9 @@
   (direkte-meldinger med coach), `MessageAttachment`, `CoachNote` (coachens notater om spilleren
   omfattes av innsynsretten), `SessionRecording` (transkript/AI-analyse), `SessionVideo`/
   `PlayerSwingVideo`, `Leave` (skadedata), `TalentTracking`, `Shot`/`HoleScore`-detaljer,
-  `TrainingLog`, `Document`, `Subscription`. E-postkvitteringen påstår at «meldinger» og «utstyr»
-  er med — delvis riktig (kun caddie-meldinger).
+  `TrainingLog`, `Document`, `Subscription` og nye Workbench-tabeller for fysisk plan og
+  turneringsplan (`WorkbenchPhysical*`, `WorkbenchTournament*`, `WorkbenchPlanConflict`).
+  E-postkvitteringen påstår at «meldinger» og «utstyr» er med — delvis riktig (kun caddie-meldinger).
 - **Filer eksporteres ikke** — kun DB-rader. Video/lyd/vedlegg i Supabase Storage følger ikke med.
 - **Foresatt-eksporten er smalere enn spiller-eksporten** (ingen helsedata, mål, tester) — OK som
   minimum, men bør harmoniseres.

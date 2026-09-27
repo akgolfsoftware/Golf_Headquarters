@@ -35,8 +35,9 @@ import { InnsiktHubV2 } from "@/components/admin/v2/InnsiktHubV2";
 import { InnsiktStallV2 } from "@/components/admin/v2/InnsiktStallV2";
 import { AdminComplianceV2 } from "@/components/admin/v2/AdminComplianceV2";
 import { InnsiktSpillerListe } from "@/components/admin/v2/analyse/InnsiktSpillerListe";
+import { WorkbenchAnalyseV2 } from "@/components/admin/v2/analyse/WorkbenchAnalyseV2";
 import { ANALYSE_FANER, velgAnalyseFane } from "@/lib/admin/analyse/faner";
-import { lastInnsiktHub, lastInnsiktSpillere, lastInnsiktStall } from "@/lib/admin/analyse/lastere";
+import { lastInnsiktHub, lastInnsiktSpillere, lastInnsiktStall, lastWorkbenchAnalyse } from "@/lib/admin/analyse/lastere";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt · AgencyOS" };
@@ -76,6 +77,10 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
         }
         const data = await lastInnsiktHub(user);
         return <InnsiktHubV2 data={data} somFane />;
+      }
+      case "treningsdata": {
+        const data = await lastWorkbenchAnalyse(user);
+        return <WorkbenchAnalyseV2 data={data} />;
       }
       case "etterlevelse": {
         const { days, label } = windowDaysFra(params.periode);

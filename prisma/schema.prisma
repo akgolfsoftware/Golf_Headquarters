@@ -582,23 +582,23 @@ model User {
   childRelations  ParentRelation[] @relation("Parent")
 
   // PlayerHQ-relasjoner
-  trainingPlans        TrainingPlan[]
-  rounds               Round[]
-  gameplanHull         GameplanHull[]
-  gameplanSoner        GameplanSone[]
+  trainingPlans         TrainingPlan[]
+  rounds                Round[]
+  gameplanHull          GameplanHull[]
+  gameplanSoner         GameplanSone[]
   testResults           TestResult[]
-  testResultsAsWitness  TestResult[]          @relation("TestWitness")
-  testResultsRecorded   TestResult[]          @relation("TestResultRecordedBy")
+  testResultsAsWitness  TestResult[]         @relation("TestWitness")
+  testResultsRecorded   TestResult[]         @relation("TestResultRecordedBy")
   testSessions          TestSession[]
-  testDaysAsCoach       TestDay[]             @relation("TestDayCoach")
-  testDayParticipations TestDayParticipant[]  @relation("TestDayPlayer")
-  testAssignments      TestAssignment[]  @relation("PlayerTestAssignments")
-  coachTestAssignments TestAssignment[]  @relation("CoachTestAssignments")
-  trackManSessions     TrackManSession[]
+  testDaysAsCoach       TestDay[]            @relation("TestDayCoach")
+  testDayParticipations TestDayParticipant[] @relation("TestDayPlayer")
+  testAssignments       TestAssignment[]     @relation("PlayerTestAssignments")
+  coachTestAssignments  TestAssignment[]     @relation("CoachTestAssignments")
+  trackManSessions      TrackManSession[]
   // Flertall siden A1: én rad per kind (COACHING | PLAYERHQ). Bruk
   // src/lib/domain/abonnement/ for oppslag — aldri [0] eller findFirst uten kind.
-  subscriptions        Subscription[]
-  publicPlayer         PublicPlayer?     @relation(fields: [publicPlayerId], references: [id], onDelete: SetNull)
+  subscriptions         Subscription[]
+  publicPlayer          PublicPlayer?        @relation(fields: [publicPlayerId], references: [id], onDelete: SetNull)
 
   // Coaching-relasjoner
   playerCoachingSessions CoachingSession[] @relation("PlayerCoachingSessions")
@@ -870,14 +870,14 @@ model EksternLeserGruppe {
 // 1:1-poster til mindreårige ALLTID er synlige for foresatt (håndheves i
 // src/lib/domain/tn-post.ts, aldri bare i UI). Ingen @relation — additiv isolasjon.
 model TnPost {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   groupId        String?
   mottakerUserId String?
   authorUserId   String
   tekst          String
   // TEKST | REISE | MOTE | OKT — badge-merket i TN-09/TN-10-designet.
-  kind           String   @default("TEKST")
-  createdAt      DateTime @default(now())
+  kind           String    @default("TEKST")
+  createdAt      DateTime  @default(now())
   // Satt når forfatteren har endret teksten. DDL: scripts/add-tn-handlinger-2026-09-27.ts
   editedAt       DateTime?
 
@@ -1846,14 +1846,14 @@ model Shot {
 }
 
 model PuttDetail {
-  id               String                @id @default(cuid())
-  shotId           String                @unique
+  id               String               @id @default(cuid())
+  shotId           String               @unique
   lengdeFot        Float
   breakRetning     PuttBreakRetning
   slopeAlvorlighet PuttSlopeAlvorlighet
   linjeMiss        PuttLinjeMiss?
   fartUtfall       PuttFartUtfall
-  createdAt        DateTime              @default(now())
+  createdAt        DateTime             @default(now())
 
   shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
 
@@ -2657,20 +2657,20 @@ enum PaymentType {
 // Drill-challenge (M14): spillere kan utfordre hverandre på et drill
 // over en periode. Achievements gis ved seier.
 model DrillChallenge {
-  id          String    @id @default(cuid())
-  ownerId     String
-  drillId     String? // ExerciseDefinition (optional — fritt-form-utfordring tillatt)
-  name        String
-  description String?
-  startAt     DateTime?
-  endAt       DateTime?
+  id             String    @id @default(cuid())
+  ownerId        String
+  drillId        String? // ExerciseDefinition (optional — fritt-form-utfordring tillatt)
+  name           String
+  description    String?
+  startAt        DateTime?
+  endAt          DateTime?
   // ACTIVE | ENDED
-  status      String    @default("ACTIVE")
+  status         String    @default("ACTIVE")
   // true = høyest score vinner (default). false = lavest vinner (f.eks. færrest putter).
   // Låst av valgt øvelse (ExerciseDefinition.higherIsBetter) når den er satt.
-  higherIsBetter Boolean @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  higherIsBetter Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   owner        User                   @relation("ChallengeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   participants ChallengeParticipant[]
@@ -3445,7 +3445,6 @@ model WeekPlan {
   @@index([isoYear, weekNumber])
   @@map("week_plans")
 }
-
 
 // WANG-årsplan (Anders 2026-08-15): elevens EGNE fokusområder for én periode —
 // det andre sporet i årsplanen, avtalt med trener i IUP-samtalen.
@@ -4454,13 +4453,13 @@ model PgaApproachDistance {
 // Tak-pakke: 15–25 navngitte proffer som økt-referanse («slå Scheffler»).
 // Skill + innspill-nærhet per spiller, datert. Ukentlig synk. Ikke 3 500 spillere.
 model DatagolfTak {
-  id           String   @id @default(cuid())
-  dgPlayerId   Int      @unique
+  id           String            @id @default(cuid())
+  dgPlayerId   Int               @unique
   name         String
   country      String?
-  sortOrder    Int      @default(100)
+  sortOrder    Int               @default(100)
   formLabel    String?
-  isActive     Boolean  @default(true)
+  isActive     Boolean           @default(true)
   asOf         DateTime
   sgTotal      Float?
   sgOtt        Float?
@@ -4472,9 +4471,9 @@ model DatagolfTak {
   dgRank       Int?
   owgrRank     Int?
   primaryTour  String?
-  source       String   @default("datagolf")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  source       String            @default("datagolf")
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   bands        DatagolfTakBand[]
 
   @@index([isActive, sortOrder])
@@ -4482,16 +4481,16 @@ model DatagolfTak {
 }
 
 model DatagolfTakBand {
-  id               String      @id @default(cuid())
-  takId            String
-  band             String
-  lie              String
-  proximityMeters  Float?
-  sgPerShot        Float?
-  girRate          Float?
-  goodShotRate     Float?
-  shotCount        Int?
-  tak              DatagolfTak @relation(fields: [takId], references: [id], onDelete: Cascade)
+  id              String      @id @default(cuid())
+  takId           String
+  band            String
+  lie             String
+  proximityMeters Float?
+  sgPerShot       Float?
+  girRate         Float?
+  goodShotRate    Float?
+  shotCount       Int?
+  tak             DatagolfTak @relation(fields: [takId], references: [id], onDelete: Cascade)
 
   @@unique([takId, band, lie])
   @@index([takId])
@@ -6506,21 +6505,21 @@ model WorkbenchSession {
   // OW-3 (16.09.2026): felt fra TrainingPlanSession (eldre planlegger), lagt til
   // additivt for å ta imot migrerte rader. Streng, ikke enum — samme begrunnelse
   // som status/blockType/environment over (docs/planer/ow-3-en-oekt-modell-2026-09-16.md §6.1).
-  planId      String?
-  rationale   String?
-  skillArea   String?
-  pressureLevel String?
-  pPosisjoner String[] @default([])
-  maalsetning String?
-  liveSnapshot Json?
+  planId                          String?
+  rationale                       String?
+  skillArea                       String?
+  pressureLevel                   String?
+  pPosisjoner                     String[] @default([])
+  maalsetning                     String?
+  liveSnapshot                    Json?
   // Utgåtte v1-koder (ordbok-masteren §17). Kun historisk lesing av migrerte
   // rader — ingen ny skjerm/action skal noensinne skrive disse (§6.2 i planen).
-  lFase   String?
-  miljo   String?
-  csNivaa String?
+  lFase                           String?
+  miljo                           String?
+  csNivaa                         String?
   // Midlertidig sporingsfelt for idempotent backfill fra training_plan_sessions
   // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
-  migrertFraTrainingPlanSessionId String? @unique
+  migrertFraTrainingPlanSessionId String?  @unique
 
   // Belastning og anstrengelse (sRPE, 26.09.2026):
   // perceivedEffort: 1–10 (Borg CR-10 / Foster-skala)
@@ -6558,6 +6557,281 @@ model WorkbenchDrill {
   @@map("workbench_drills")
 }
 
+// Workbench fysisk plan + turnering (Precision Athletics, 27.09.2026).
+// Nye tabeller holdes additivt ved siden av eksisterende WorkbenchSession,
+// TrainingPlanSession og FysiskPlan. playerId/coachId/groupId er plain id-felt
+// mot eksisterende tabeller, jf. gotchas om kirurgiske schema-endringer.
+model WorkbenchPhysicalBlock {
+  id                 String    @id @default(cuid())
+  playerId           String
+  coachId            String
+  groupId            String?
+  sourceGroupBlockId String?
+  title              String
+  status             String    @default("DRAFT")
+  periodKind         String    @default("SIX_WEEK_BLOCK")
+  startDate          DateTime  @db.Date
+  endDate            DateTime  @db.Date
+  focus              String?
+  notes              String?
+  publishedAt        DateTime?
+  publishedBy        String?
+  withdrawnAt        DateTime?
+  withdrawnBy        String?
+  createdBy          String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  weeks WorkbenchPhysicalWeek[]
+
+  @@index([playerId, startDate])
+  @@index([coachId, startDate])
+  @@index([groupId])
+  @@index([status])
+  @@index([sourceGroupBlockId])
+  @@map("workbench_physical_blocks")
+}
+
+model WorkbenchPhysicalWeek {
+  id               String   @id @default(cuid())
+  blockId          String
+  weekIndex        Int
+  weekStart        DateTime @db.Date
+  label            String
+  plannedMinutes   Int?
+  targetTonnageKg  Float?
+  actualTonnageKg  Float?
+  readinessSummary Json?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  block    WorkbenchPhysicalBlock     @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  sessions WorkbenchPhysicalSession[]
+
+  @@unique([blockId, weekIndex])
+  @@index([blockId, weekStart])
+  @@map("workbench_physical_weeks")
+}
+
+model WorkbenchPhysicalSession {
+  id              String    @id @default(cuid())
+  weekId          String
+  playerId        String
+  date            DateTime  @db.Date
+  startMinute     Int?
+  durationMinutes Int?
+  title           String
+  status          String    @default("DRAFT")
+  type            String    @default("STYRKE")
+  location        String?
+  sortOrder       Int
+  plannedLoad     Int?
+  actualLoad      Int?
+  perceivedEffort Int?
+  readiness       Int?
+  playerNote      String?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  week      WorkbenchPhysicalWeek       @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  exercises WorkbenchPhysicalExercise[]
+
+  @@index([weekId, sortOrder])
+  @@index([playerId, date])
+  @@index([status])
+  @@map("workbench_physical_sessions")
+}
+
+model WorkbenchPhysicalExercise {
+  id          String   @id @default(cuid())
+  sessionId   String
+  exerciseId  String?
+  title       String
+  sortOrder   Int
+  setsTarget  Int?
+  repsMin     Int?
+  repsMax     Int?
+  weightKg    Float?
+  rirTarget   Int?
+  restSeconds Int?
+  tempo       String?
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session WorkbenchPhysicalSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  logs    WorkbenchPhysicalLog[]
+
+  @@index([sessionId, sortOrder])
+  @@index([exerciseId])
+  @@map("workbench_physical_exercises")
+}
+
+model WorkbenchPhysicalLog {
+  id          String   @id @default(cuid())
+  exerciseId  String
+  playerId    String
+  setNumber   Int
+  reps        Int?
+  weightKg    Float?
+  rir         Int?
+  completedAt DateTime @default(now())
+  note        String?
+  createdAt   DateTime @default(now())
+
+  exercise WorkbenchPhysicalExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([exerciseId, setNumber])
+  @@index([playerId, completedAt])
+  @@map("workbench_physical_logs")
+}
+
+model WorkbenchTournamentPlan {
+  id                String    @id @default(cuid())
+  playerId          String
+  coachId           String
+  groupId           String?
+  tournamentId      String?
+  tournamentEntryId String?
+  title             String
+  status            String    @default("DRAFT")
+  focus             String    @default("UTVIKLING")
+  format            String?
+  startDate         DateTime  @db.Date
+  endDate           DateTime  @db.Date
+  travelStartDate   DateTime? @db.Date
+  travelEndDate     DateTime? @db.Date
+  notes             String?
+  publishedAt       DateTime?
+  publishedBy       String?
+  createdBy         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  preparations WorkbenchTournamentPreparation[]
+  rounds       WorkbenchTournamentRound[]
+  goals        WorkbenchTournamentGoal[]
+  evaluations  WorkbenchTournamentEvaluation[]
+  conflicts    WorkbenchPlanConflict[]
+
+  @@index([playerId, startDate])
+  @@index([coachId, startDate])
+  @@index([groupId])
+  @@index([tournamentId])
+  @@index([tournamentEntryId])
+  @@index([status])
+  @@map("workbench_tournament_plans")
+}
+
+model WorkbenchTournamentPreparation {
+  id            String    @id @default(cuid())
+  planId        String
+  date          DateTime  @db.Date
+  title         String
+  category      String
+  playerVisible Boolean   @default(true)
+  completedAt   DateTime?
+  sortOrder     Int
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  plan WorkbenchTournamentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, date])
+  @@index([planId, sortOrder])
+  @@map("workbench_tournament_preparations")
+}
+
+model WorkbenchTournamentRound {
+  id             String    @id @default(cuid())
+  planId         String
+  roundNumber    Int
+  date           DateTime  @db.Date
+  teeTimeMinutes Int?
+  startHole      String?
+  routine        String?
+  gamePlan       String?
+  grossScore     Int?
+  strokesGained  Float?
+  source         String?
+  sourceDate     DateTime?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  plan WorkbenchTournamentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, roundNumber])
+  @@index([planId, date])
+  @@map("workbench_tournament_rounds")
+}
+
+model WorkbenchTournamentGoal {
+  id          String   @id @default(cuid())
+  planId      String
+  kind        String
+  title       String
+  targetValue Float?
+  unit        String?
+  sortOrder   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  plan WorkbenchTournamentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, sortOrder])
+  @@map("workbench_tournament_goals")
+}
+
+model WorkbenchTournamentEvaluation {
+  id         String    @id @default(cuid())
+  planId     String
+  grossTotal Int?
+  sgTotal    Float?
+  source     String?
+  sourceDate DateTime?
+  summary    String?
+  learnings  String?
+  nextAction String?
+  createdBy  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  plan WorkbenchTournamentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, createdAt])
+  @@map("workbench_tournament_evaluations")
+}
+
+model WorkbenchPlanConflict {
+  id                String    @id @default(cuid())
+  playerId          String
+  tournamentPlanId  String?
+  physicalBlockId   String?
+  physicalSessionId String?
+  date              DateTime? @db.Date
+  type              String
+  severity          String    @default("MEDIUM")
+  title             String
+  details           String?
+  resolutionStatus  String    @default("OPEN")
+  resolvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  tournamentPlan WorkbenchTournamentPlan? @relation(fields: [tournamentPlanId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, date])
+  @@index([tournamentPlanId])
+  @@index([physicalBlockId])
+  @@index([physicalSessionId])
+  @@index([resolutionStatus])
+  @@map("workbench_plan_conflicts")
+}
+
 // ── Team Norway: uttak, spillerstatus og college (Anders 27.09.2026) ──
 // Additivt, uten @relation (samme isolasjon som TrainingPeriod).
 // DDL: scripts/add-tn-handlinger-2026-09-27.ts
@@ -6584,17 +6858,17 @@ model TnUttak {
 // Lisens, helseattest og antidoping per spiller og år (TN-10, TN-02).
 // Bare statusdatoer. Ingen helseopplysninger lagres her.
 model TnSpillerstatus {
-  id                String    @id @default(cuid())
-  groupId           String
-  userId            String
-  aar               Int
+  id                 String    @id @default(cuid())
+  groupId            String
+  userId             String
+  aar                Int
   // BETALT | UBETALT | FRITAK
-  lisensStatus      String?
-  lisensBetaltDato  DateTime? @db.Date
+  lisensStatus       String?
+  lisensBetaltDato   DateTime? @db.Date
   helseattestUtloper DateTime? @db.Date
-  antidopingSignert DateTime? @db.Date
-  updatedById       String
-  updatedAt         DateTime  @updatedAt
+  antidopingSignert  DateTime? @db.Date
+  updatedById        String
+  updatedAt          DateTime  @updatedAt
 
   @@unique([groupId, userId, aar])
   @@map("tn_spillerstatus")
