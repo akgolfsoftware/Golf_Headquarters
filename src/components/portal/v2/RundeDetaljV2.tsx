@@ -12,6 +12,13 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ManuellSgRedigering } from "@/components/portal/runde-ny/manuell-sg-redigering";
 import { SG_DETALJGRUPPER, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
+import {
+  RUNDE_DATAQUALITY_META,
+  RUNDE_KILDE_META,
+  RUNDE_SG_KILDE,
+  RUNDE_STATUS_META,
+  type RundeRegistreringStatus,
+} from "@/lib/runde-logg/kontrakt";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import { Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -62,6 +69,7 @@ export type RundeDetaljData = {
   sgKategorier: SgKategori[];
   /** "beregnet" = fra slag-kjeden, "manual" = håndtastet, "estimert" = fra score. */
   sgSource: string | null;
+  registrering: RundeRegistreringStatus;
   manuellSg?: ManuellSgVerdier;
   /** Hull-for-hull — HoleScore-sannhet eller Shot-avledet fallback. */
   hull: ScorekortHull[];
@@ -127,6 +135,9 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
   const diff = data.score - data.par;
   const harHull = data.hull.length > 0;
   const sgTotalTekst = sgTekst(data.sgTotal);
+  const statusMeta = RUNDE_STATUS_META[data.registrering.status];
+  const kvalitetMeta = RUNDE_DATAQUALITY_META[data.registrering.dataQuality];
+  const kildeMeta = RUNDE_KILDE_META[data.registrering.kilde];
 
   const g = data.granulaerSg;
   const detaljVerdier = data.manuellSg ?? Object.fromEntries(Object.entries(g).map(([key, value]) =>
@@ -175,6 +186,25 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         <KpiFlis label="SG totalt" value={sgTotalTekst} hjelp="sgTotal" instant />
       </div>
 
+      <Kort eyebrow="Datagrunnlag" pad="12px 18px">
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <StatusPill tone={data.registrering.kanBeregneSg ? "up" : data.registrering.beskytterManuellSg ? "info" : "warn"}>
+            {statusMeta.label}
+          </StatusPill>
+          <StatusPill tone="info">{kvalitetMeta.label}</StatusPill>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
+            {kildeMeta.label} · {data.registrering.antallKompletteHull}/{data.registrering.antallHullMedScore} hull med komplett kjede
+          </span>
+        </div>
+        <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 13, lineHeight: 1.45, margin: "8px 0 0" }}>
+          {data.registrering.kanBeregneSg
+            ? kvalitetMeta.forklaring
+            : data.registrering.beskytterManuellSg
+              ? "Manuell SG er låst mot automatisk overskriving. Slag og scorekort kan fortsatt redigeres."
+              : `${kvalitetMeta.forklaring} ${data.registrering.manglerForBeregnetSg.length > 0 ? `Mangler: ${data.registrering.manglerForBeregnetSg.slice(0, 3).join(", ")}.` : ""}`}
+        </p>
+      </Kort>
+
       {/* GO V2: rett etter lagring er dette en KVITTERING, ikke en handlings-meny.
           Kortet bekrefter og peker videre — den ene neste handlingen er CTA-pilla
           under. Import/detalj-redigering ligger fortsatt i den stille sekundær-
@@ -185,11 +215,11 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             <p style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, margin: 0 }}>
               Runden er lagret
             </p>
-            {data.sgSource === "manual" ? <StatusPill tone="up">SG registrert</StatusPill>
-              : data.sgTotal != null && <StatusPill tone="up">{data.sgSource === "estimert" ? "SG estimert" : "SG klar"}</StatusPill>}
+            {data.sgSource === RUNDE_SG_KILDE.MANUAL ? <StatusPill tone="up">SG registrert</StatusPill>
+              : data.sgTotal != null && <StatusPill tone="up">{data.sgSource === RUNDE_SG_KILDE.ESTIMERT ? "SG estimert" : "SG klar"}</StatusPill>}
           </div>
           <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
-            {data.sgSource === "manual"
+            {data.sgSource === RUNDE_SG_KILDE.MANUAL
               ? "SG-tallene dine er lagret. Du kan legge til eller endre tallene under."
               : data.sgTotal != null
                 ? "Strokes Gained er klar — se tallene under."
@@ -222,12 +252,12 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         </Link>
       )}
 
-      {data.sgSource === "manual" && (
+      {data.sgSource === RUNDE_SG_KILDE.MANUAL && (
         <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>
           Manuelt registrert SG. Tomme felt betyr at verdien ikke er registrert.
         </p>
       )}
-      {data.sgSource === "estimert" && (
+      {data.sgSource === RUNDE_SG_KILDE.ESTIMERT && (
         <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>SG er estimert fra score, ikke beregnet fra faktiske slag.</p>
       )}
       {data.erEier && data.manuellSg && (
@@ -235,7 +265,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
       )}
       {data.sgKategorier.length > 0 ? (
         <SgKategorier kategorier={data.sgKategorier} hjelp="sgOmrade" desimaler={2}
-          baseline={data.sgSource === "manual" ? "din referanse" : undefined} />
+          baseline={data.sgSource === RUNDE_SG_KILDE.MANUAL ? "din referanse" : undefined} />
       ) : (
         <Kort eyebrow="SG per kategori">
           <TomTilstand icon="trending-up" title="Ingen hovedkategorier registrert"

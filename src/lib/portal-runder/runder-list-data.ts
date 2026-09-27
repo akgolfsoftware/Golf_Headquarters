@@ -10,6 +10,15 @@
  * Mangler data → null/tomt, aldri oppdiktede tall.
  */
 import { prisma } from "@/lib/prisma";
+import {
+  avledRundeRegistrering,
+  lesRundeDataQuality,
+  lesRundeKilde,
+  lesRundeStatus,
+  type RundeDataQuality,
+  type RundeKilde,
+  type RundeStatus,
+} from "@/lib/runde-logg/kontrakt";
 
 export type RundeRow = {
   id: string;
@@ -21,6 +30,9 @@ export type RundeRow = {
   /** score − par. Negativ = under par. */
   vsPar: number;
   sgTotal: number | null;
+  status: RundeStatus;
+  dataQuality: RundeDataQuality;
+  kilde: RundeKilde;
   /** Markerer rundens beste vs-par-resultat (★ i lista). */
   isBest: boolean;
 };
@@ -48,7 +60,15 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
-      include: { course: true },
+      include: {
+        course: true,
+        holeScores: {
+          select: { holeNumber: true, strokes: true, putts: true, fairway: true, gir: true },
+        },
+        shots: {
+          select: { holeNumber: true, distanceToPin: true, isPenalty: true },
+        },
+      },
       take: 50,
     }),
     prisma.courseDefinition.findMany({ orderBy: { name: "asc" } }),
@@ -68,16 +88,27 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
     }
   }
 
-  const rows: RundeRow[] = rounds.map((r) => ({
-    id: r.id,
-    playedAt: r.playedAt,
-    courseName: r.course.name,
-    par: r.course.par,
-    score: r.score,
-    vsPar: r.score - r.course.par,
-    sgTotal: r.sgTotal,
-    isBest: r.id === bestId,
-  }));
+  const rows: RundeRow[] = rounds.map((r) => {
+    const avledet = avledRundeRegistrering({
+      sgSource: r.sgSource,
+      holeScores: r.holeScores,
+      shots: r.shots,
+      kilde: lesRundeKilde(r.source),
+    });
+    return {
+      id: r.id,
+      playedAt: r.playedAt,
+      courseName: r.course.name,
+      par: r.course.par,
+      score: r.score,
+      vsPar: r.score - r.course.par,
+      sgTotal: r.sgTotal,
+      status: lesRundeStatus(r.status) ?? avledet.status,
+      dataQuality: lesRundeDataQuality(r.dataQuality) ?? avledet.dataQuality,
+      kilde: lesRundeKilde(r.source) ?? avledet.kilde,
+      isBest: r.id === bestId,
+    };
+  });
 
   const snittScore =
     total === 0 ? null : rounds.reduce((s, r) => s + r.score, 0) / total;
