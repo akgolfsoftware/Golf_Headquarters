@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 3)"
 tags: [amatør, app, baseline, benchmarking, handicap, sg, trackman]
 topics: [benchmarking, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, diagnostiserSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, beregnSg, diagnostiserSg, forventetSg]
 updated: 2026-06-14
 ---
 

@@ -5,7 +5,7 @@ source_section: "## Komplett Research Document: Strokes Gained, Trackman & D-Pla
 tags: [d-plane, kategori, sg, trackman]
 topics: [d-plane, implementasjon, sg-kategorier, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg]
 updated: 2026-06-14
 ---
 

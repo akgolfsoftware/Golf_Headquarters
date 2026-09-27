@@ -2,7 +2,7 @@ import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PILOT — AgencyOS Plan-bygger · Steg 4 (Pyramide-allokasjon)
- * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger.html
+ * Bygd direkte fra historisk wireframe/design-files-v2/agencyos-A/02-plan-bygger.html
  * URL: /demos/plan-bygger (under (internal) → ADMIN-only)
  *
  * Mock-data for Øyvind Rohjan. Bytt til Prisma-henting senere.

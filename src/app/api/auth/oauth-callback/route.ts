@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
             lastLoginAt: new Date(),
           },
         });
-        // Automatisk PLATFORM_ONLY-enrollering — usynlig i CoachHQ inntil coach
+        // Automatisk PLATFORM_ONLY-enrollering — usynlig i AgencyOS inntil coach
         // enrollerer spilleren i et coachingprogram.
         await prisma.playerEnrollment.create({
           data: {

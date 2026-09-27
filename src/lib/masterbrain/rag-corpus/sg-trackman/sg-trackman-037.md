@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 8)"
 tags: [amatør, baseline, formule, handicap, kategori, sg]
 topics: [implementasjon]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

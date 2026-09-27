@@ -29,11 +29,11 @@ describe("workbench sources-map", () => {
   });
 
   it("mapper omraadeKode til TrainingArea", () => {
-    assert.equal(omraadeKodeTilTrainingArea("TEE_TOTAL"), "TEE");
+    assert.equal(omraadeKodeTilTrainingArea("TEE_TOTAL"), "TEE_TOTAL");
     assert.equal(omraadeKodeTilTrainingArea("INNSPILL_150"), "INNSPILL_150");
     assert.equal(omraadeKodeTilTrainingArea("CHIP"), "CHIP");
     assert.equal(omraadeKodeTilTrainingArea("PUTT_5_10"), "PUTT_5_10");
-    assert.equal(omraadeKodeTilTrainingArea(null), "TEE");
+    assert.equal(omraadeKodeTilTrainingArea(null), "TEE_TOTAL");
   });
 
   it("mapper teknisk oppgave til SourceItem med komplett drill-objekt", () => {

@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside CASES (/cases), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
+ * Avvik:
+ *   - Fasiten er Paper, slettet 30.08.2026 — cases-siden er ikke portert til gjeldende Precision Athletic-design.
  * Ekte copy speilet fra (mlegacy)/cases/page.tsx. Turneringer hentes fra DB
  * i page.tsx (server) og sendes inn som prop.
  */

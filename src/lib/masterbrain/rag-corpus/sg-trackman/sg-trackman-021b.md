@@ -5,7 +5,7 @@ source_section: "10.11–11.2 Balldata (Landing Angle, Curve) og kortspill/putt-
 tags: ["ball-data", "kort-spill", "putt", "trackman"]
 topics: ["kortspill", "putting", "trackman-parametere"]
 lang: no
-relevance: ["CoachHQ", "RAG", "TrackMan"]
+relevance: ["AgencyOS", "RAG", "TrackMan"]
 updated: 2026-06-14
 ---
 

@@ -268,14 +268,14 @@ function Topplinje({
                   wp?.weekType === "UTVIKLING"
                     ? "color-mix(in srgb, var(--ak-grunn-farge-rust-600) 15%, transparent)"
                     : wp?.weekType === "TURNERING"
-                      ? "color-mix(in srgb, #f59e0b 20%, transparent)"
-                      : "color-mix(in srgb, #3b82f6 15%, transparent)",
+                      ? `color-mix(in srgb, ${TL.warn} 20%, transparent)`
+                      : `color-mix(in srgb, ${TL.viz.target} 15%, transparent)`,
                 color:
                   wp?.weekType === "UTVIKLING"
                     ? "var(--ak-grunn-farge-rust-600)"
                     : wp?.weekType === "TURNERING"
-                      ? "#d97706"
-                      : "#2563eb",
+                      ? TL.warn
+                      : TL.viz.target,
                 border: "1px solid currentColor",
               }}
             >

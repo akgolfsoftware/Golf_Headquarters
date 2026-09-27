@@ -5,7 +5,7 @@ source_section: "## Trackman 4 (Nåværende flaggskip — dual radar) (del 1)"
 tags: [club-data, putt, trackman]
 topics: [putting, trackman-parametere]
 lang: no
-relevance: [CoachHQ, RAG, TrackMan]
+relevance: [AgencyOS, RAG, TrackMan]
 updated: 2026-06-14
 ---
 

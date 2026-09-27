@@ -5,7 +5,7 @@ source_section: "## 2.1 Origins and Problem Statement"
 tags: [broadie, putt, sg]
 topics: [broadie, putting]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg]
 updated: 2026-06-14
 ---
 
