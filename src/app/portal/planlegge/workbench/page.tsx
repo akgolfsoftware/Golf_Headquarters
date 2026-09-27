@@ -23,6 +23,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
 import { addWorkbenchSession, moveWorkbenchSession, updateWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek, lagreWorkbenchPeriode, slettWorkbenchPeriode, duplicateWorkbenchSession } from "./actions";
+import { lagreTurneringsrunde, loggFysiskSett } from "@/lib/workbench/fys-turnering-actions";
 import { sokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
 import { hentSpillerSteder } from "@/lib/workbench/spiller-steder";
 import { lesPreferences } from "@/lib/preferences";
@@ -63,6 +64,8 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     lagrePeriode: lagreWorkbenchPeriode,
     slettPeriode: slettWorkbenchPeriode,
     searchTeknisk: sokTekniskOppgaver,
+    loggFysiskSett,
+    lagreTurneringsrunde,
   };
 
   return (

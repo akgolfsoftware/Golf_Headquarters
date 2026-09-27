@@ -241,6 +241,18 @@ export type InnsiktSpillerRad = {
   navn: string;
 };
 
+export type WorkbenchAnalyseData = {
+  nSpillere: number;
+  fysiskOkter: number;
+  fysiskMinutter: number;
+  fysiskTonnasjeKg: number;
+  turneringsplaner: number;
+  turneringsrunder: number;
+  bruttoSnitt: number | null;
+  sgSnitt: number | null;
+  apneKonflikter: number;
+};
+
 export async function lastInnsiktSpillere(viewer: { id: string; role: string }): Promise<InnsiktSpillerRad[]> {
   const spillere = await prisma.user.findMany({
     where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
@@ -248,4 +260,50 @@ export async function lastInnsiktSpillere(viewer: { id: string; role: string }):
     orderBy: { name: "asc" },
   });
   return spillere.map((s) => ({ id: s.id, navn: s.name ?? "Uten navn" }));
+}
+
+export async function lastWorkbenchAnalyse(viewer: { id: string; role: string }): Promise<WorkbenchAnalyseData> {
+  const naa = new Date();
+  const start = new Date(naa.getTime() - 90 * DAG_MS);
+  const spillere = await prisma.user.findMany({
+    where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
+    select: { id: true },
+  });
+  const spillerIds = spillere.map((s) => s.id);
+
+  const [sessions, logs, tournamentPlans, rounds, conflicts] = await Promise.all([
+    prisma.workbenchPhysicalSession.findMany({
+      where: { playerId: { in: spillerIds }, date: { gte: start, lte: naa } },
+      select: { durationMinutes: true },
+    }),
+    prisma.workbenchPhysicalLog.findMany({
+      where: { playerId: { in: spillerIds }, completedAt: { gte: start, lte: naa } },
+      select: { reps: true, weightKg: true },
+    }),
+    prisma.workbenchTournamentPlan.count({
+      where: { playerId: { in: spillerIds }, startDate: { gte: start } },
+    }),
+    prisma.workbenchTournamentRound.findMany({
+      where: { plan: { playerId: { in: spillerIds } }, date: { gte: start, lte: naa } },
+      select: { grossScore: true, strokesGained: true },
+    }),
+    prisma.workbenchPlanConflict.count({
+      where: { playerId: { in: spillerIds }, resolutionStatus: "OPEN" },
+    }),
+  ]);
+
+  const gross = rounds.map((r) => r.grossScore).filter((v): v is number => typeof v === "number");
+  const sg = rounds.map((r) => r.strokesGained).filter((v): v is number => typeof v === "number");
+
+  return {
+    nSpillere: spillerIds.length,
+    fysiskOkter: sessions.length,
+    fysiskMinutter: sessions.reduce((sum, s) => sum + (s.durationMinutes ?? 0), 0),
+    fysiskTonnasjeKg: Math.round(logs.reduce((sum, log) => sum + (log.reps ?? 0) * (log.weightKg ?? 0), 0)),
+    turneringsplaner: tournamentPlans,
+    turneringsrunder: rounds.length,
+    bruttoSnitt: gross.length > 0 ? Math.round((gross.reduce((sum, v) => sum + v, 0) / gross.length) * 10) / 10 : null,
+    sgSnitt: sg.length > 0 ? Math.round((sg.reduce((sum, v) => sum + v, 0) / sg.length) * 10) / 10 : null,
+    apneKonflikter: conflicts,
+  };
 }

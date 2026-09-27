@@ -17,7 +17,10 @@ import { WorkbenchStall } from "@/components/workbench/WorkbenchStall";
 import { WorkbenchLive } from "@/components/workbench/WorkbenchLive";
 import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalender";
 import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
+import { WorkbenchFysTurnering } from "@/components/workbench/WorkbenchFysTurnering";
 import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, loadWorkbenchLive, loadYear, loadSources } from "@/lib/workbench/wb-actions";
+import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
+import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
 import { mondayOf } from "@/lib/domain/workbench/operations";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
@@ -197,7 +200,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     );
   }
 
-  const [roster, weekRes, kilderRes] = await Promise.all([
+  const [roster, weekRes, kilderRes, fysTurnering] = await Promise.all([
     prisma.user.findMany({
       where: coachScopedPlayerWhere(user),
       select: { id: true, name: true },
@@ -205,6 +208,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     }),
     loadWeek({ weekStart, mode, playerId }),
     loadSources({ playerId, weekStart }),
+    loadFysTurneringWorkbenchData(playerId, { viewer: "coach" }),
   ]);
 
   if (!weekRes.ok) {
@@ -234,6 +238,11 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   return (
     <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
+      <WorkbenchFysTurnering
+        playerId={playerId}
+        data={fysTurnering}
+        actions={{ flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan }}
+      />
       <WorkbenchUke
         key={`${playerId}:${weekStart}`}
         playerId={playerId}

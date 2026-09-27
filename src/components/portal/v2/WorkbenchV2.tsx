@@ -37,7 +37,7 @@ import {
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -106,6 +106,18 @@ import { setWbMode } from "@/lib/workbench/wb-mode-action";
 import { faseLabel } from "@/lib/ak-formel-visning";
 
 export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
+
+const miniInputStyle: CSSProperties = {
+  minWidth: 0,
+  minHeight: 34,
+  borderRadius: 8,
+  border: `1px solid ${TL.hair}`,
+  background: TL.dock,
+  color: TL.text,
+  padding: "0 9px",
+  fontFamily: TL.font.mono,
+  fontSize: 12,
+};
 
 /** Klarspråk for L-fase i tidslinje — tåler null/ukjent uten å kaste. */
 function faseLabelSafe(lFase: string): string {
@@ -1752,6 +1764,7 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
     [],
   );
   const paameldinger = useMemo(() => data.turneringPlan ?? [], [data.turneringPlan]);
+  const planmoduler = useMemo(() => data.fysTurnering?.tournamentPlans ?? [], [data.fysTurnering?.tournamentPlans]);
   const blokker = useMemo<TurneringPeriodeBlokk[]>(
     () => (data.seasonBlocks ?? []).map((b) => ({ lPhase: b.lPhase, startDate: b.startDate, endDate: b.endDate })),
     [data.seasonBlocks],
@@ -1840,6 +1853,62 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
           </div>
         </Kort>
       )}
+
+      <Kort eyebrow="Turneringsplaner">
+        {planmoduler.length === 0 ? (
+          <TomTilstand
+            icon="trophy"
+            title="Ingen komplett turneringsplan"
+            sub="Når coachen lager reiseflyt, runder, mål og evaluering, ligger det her."
+          />
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 10 }}>
+            {planmoduler.map((plan) => {
+              const brutto = plan.rounds.map((r) => r.grossScore).filter((v): v is number => typeof v === "number");
+              const score = brutto.length > 0 ? brutto.reduce((a, b) => a + b, 0) : null;
+              return (
+                <div key={plan.id} style={{ border: `1px solid ${TL.hair}`, borderRadius: 12, padding: 12, background: TL.dock, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>{plan.title}</div>
+                      <div style={{ marginTop: 3, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
+                        {datoSpenn(plan.startDate, plan.endDate)} · {plan.focus.toLowerCase()}
+                      </div>
+                    </div>
+                    {statusTag(plan.status.toLowerCase(), plan.status === "PUBLISHED" ? "ok" : "noytral")}
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 12 }}>
+                    {[
+                      ["Runder", String(plan.rounds.length)],
+                      ["Brutto", score == null ? "—" : String(score)],
+                      ["SG", plan.latestEvaluation?.sgTotal == null ? "—" : String(plan.latestEvaluation.sgTotal)],
+                    ].map(([label, value]) => (
+                      <div key={label} style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "8px 9px" }}>
+                        <Caps size={8}>{label}</Caps>
+                        <div style={{ marginTop: 4, fontFamily: TL.font.mono, fontSize: 16, color: TL.text }}>{value}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {(plan.travelStartDate || plan.travelEndDate || plan.preparations.length > 0 || plan.goals.length > 0) && (
+                    <div style={{ marginTop: 12, display: "grid", gap: 7 }}>
+                      {(plan.travelStartDate || plan.travelEndDate) && detaljRad("Reise", datoSpenn(plan.travelStartDate ?? plan.startDate, plan.travelEndDate ?? plan.endDate))}
+                      {plan.goals.slice(0, 2).map((goal) => detaljRad(goal.kind.toLowerCase(), goal.title, goal.unit ? `${goal.targetValue ?? ""} ${goal.unit}`.trim() : undefined))}
+                      {plan.preparations.slice(0, 3).map((prep) => detaljRad(prep.title, prep.completedAt ? "ferdig" : prep.date, prep.category.toLowerCase()))}
+                    </div>
+                  )}
+                  {plan.rounds.length > 0 && (
+                    <div style={{ display: "grid", gap: 7, marginTop: 12 }}>
+                      {plan.rounds.slice(0, 4).map((round) => (
+                        <TurneringsrundeRad key={round.id} planId={plan.id} round={round} actions={actions} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Kort>
 
       {/* Sesongen: perioder som bånd, turneringer som merker oppå. */}
       <Kort eyebrow="Sesongen">
@@ -1979,16 +2048,12 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
         </div>
       )}
 
-      {/* To felt fasiten krever, som ikke finnes i basen — vises som ærlig
-          manglende, aldri som plausible tall ingen har lagt inn. */}
-      <Kort eyebrow="Ikke i basen ennå">
-        <p style={{ margin: "0 0 6px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-          To ting hører hjemme i en turneringsplanlegger, men finnes ikke som felter i dag. De står her som tomme, ikke
-          som antatte.
-        </p>
-        {detaljRad("Påmeldingsfrist", "mangler", "Ingen kolonne i påmeldingene. Fristene ligger hos arrangøren.")}
-        {detaljRad("Reise og opphold", "mangler", "Må planlegges utenfor appen inntil feltene finnes.")}
-      </Kort>
+      {planmoduler.length === 0 && (
+        <Kort eyebrow="Turneringsplan mangler">
+          {detaljRad("Reise og opphold", "ikke planlagt", "Felt finnes i den nye Workbench-modellen.")}
+          {detaljRad("Runder og evaluering", "ikke planlagt", "Brutto score og SG kan registreres per runde.")}
+        </Kort>
+      )}
 
       {/* Detalj-ark for valgt påmelding. */}
       {valgt && (
@@ -2075,6 +2140,189 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
   );
 }
 
+function TurneringsrundeRad({
+  planId,
+  round,
+  actions,
+}: {
+  planId: string;
+  round: NonNullable<WorkbenchData["fysTurnering"]>["tournamentPlans"][number]["rounds"][number];
+  actions?: WorkbenchV2Actions;
+}) {
+  const router = useRouter();
+  const [grossScore, setGrossScore] = useState(round.grossScore?.toString() ?? "");
+  const [strokesGained, setStrokesGained] = useState(round.strokesGained?.toString() ?? "");
+  const [pending, setPending] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const save = async () => {
+    if (!actions?.lagreTurneringsrunde || pending) return;
+    setPending(true);
+    setFeil(null);
+    const res = await actions.lagreTurneringsrunde({
+      planId,
+      roundId: round.id,
+      roundNumber: round.roundNumber,
+      date: round.date,
+      grossScore: grossScore ? Number(grossScore) : null,
+      strokesGained: strokesGained ? Number(strokesGained) : null,
+      source: grossScore || strokesGained ? "PlayerHQ" : null,
+      sourceDate: new Date().toISOString(),
+    });
+    setPending(false);
+    if (!res.ok) {
+      setFeil(res.error ?? "Kunne ikke lagre runden.");
+      return;
+    }
+    router.refresh();
+  };
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "44px 1fr 1fr auto", gap: 7, alignItems: "center", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: 8 }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>R{round.roundNumber}</span>
+      <input aria-label="Brutto score" inputMode="numeric" value={grossScore} onChange={(e) => setGrossScore(e.target.value.replace(/[^\d]/g, "").slice(0, 3))} placeholder="Brutto" style={miniInputStyle} />
+      <input aria-label="Strokes Gained" inputMode="decimal" value={strokesGained} onChange={(e) => setStrokesGained(e.target.value.replace(/[^-\d.]/g, "").slice(0, 6))} placeholder="SG" style={miniInputStyle} />
+      <Knapp ghost onClick={save} disabled={!actions?.lagreTurneringsrunde || pending}>{pending ? "…" : "Lagre"}</Knapp>
+      {feil && <span style={{ gridColumn: "1 / -1", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>{feil}</span>}
+    </div>
+  );
+}
+
+function WBFysiskNivaa({ data, actions, onTilUke }: { data: WorkbenchData; actions?: WorkbenchV2Actions; onTilUke: () => void }) {
+  const router = useRouter();
+  const blocks = data.fysTurnering?.physicalBlocks ?? [];
+  const active = blocks[0] ?? null;
+  const weeks = active?.weeks ?? [];
+  const sessions = weeks.flatMap((w) => w.sessions.map((s) => ({ ...s, weekLabel: w.label })));
+  const totalMinutes = sessions.reduce((sum, s) => sum + (s.durationMinutes ?? 0), 0);
+  const totalTonnage = sessions.reduce((sum, s) => sum + s.actualTonnageKg, 0);
+  const completed = sessions.filter((s) => s.status === "COMPLETED").length;
+  const conflicts = data.fysTurnering?.openConflicts.filter((c) => c.resolutionStatus === "OPEN") ?? [];
+  const [logPendingId, setLogPendingId] = useState<string | null>(null);
+  const [logFeil, setLogFeil] = useState<string | null>(null);
+  const loggNesteSett = async (session: (typeof sessions)[number]) => {
+    const exercise = session.exercises[0];
+    if (!exercise || !actions?.loggFysiskSett || logPendingId) return;
+    setLogPendingId(exercise.id);
+    setLogFeil(null);
+    const res = await actions.loggFysiskSett({
+      exerciseId: exercise.id,
+      setNumber: exercise.logs.length + 1,
+      reps: exercise.repsMax ?? exercise.repsMin ?? 8,
+      weightKg: exercise.weightKg ?? 0,
+      rir: exercise.rirTarget ?? null,
+    });
+    setLogPendingId(null);
+    if (!res.ok) {
+      setLogFeil(res.error ?? "Kunne ikke logge sett.");
+      return;
+    }
+    router.refresh();
+  };
+  const metric = (label: string, value: string, sub?: string) => (
+    <div style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12, padding: "12px 13px", minWidth: 0 }}>
+      <Caps size={8.5}>{label}</Caps>
+      <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 22, color: TL.text }}>{value}</div>
+      {sub && <div style={{ marginTop: 3, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{sub}</div>}
+    </div>
+  );
+
+  if (!active) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 980 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 22, letterSpacing: "-0.02em", color: TL.text }}>Fysisk plan</h2>
+          <Knapp ghost icon="arrow-left" onClick={onTilUke}>Tilbake til uke</Knapp>
+        </div>
+        <Kort>
+          <TomTilstand
+            icon="activity"
+            title="Ingen fysisk blokk i Workbench"
+            sub="Fysiske blokker fra den nye modellen vises her med uker, økter, øvelser, settlogg og belastning."
+          />
+        </Kort>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 1080 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+        <div>
+          <Caps size={9}>Fysisk plan</Caps>
+          <h2 style={{ margin: "5px 0 0", fontFamily: TL.font.sans, fontSize: 23, letterSpacing: "-0.02em", color: TL.text }}>{active.title}</h2>
+          <div style={{ marginTop: 4, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
+            {datoSpenn(active.startDate, active.endDate)} · {active.status.toLowerCase()}
+          </div>
+        </div>
+        <Knapp ghost icon="arrow-left" onClick={onTilUke}>Tilbake til uke</Knapp>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+        {metric("Økter", String(sessions.length), `${completed} fullført`)}
+        {metric("Planlagt tid", fmtVarighet(totalMinutes))}
+        {metric("Tonnasje", totalTonnage > 0 ? `${Math.round(totalTonnage)} kg` : "—", "fra settlogg")}
+        {metric("Konflikter", String(conflicts.length), conflicts.length > 0 ? "må avklares" : "ingen åpne")}
+      </div>
+
+      <Kort eyebrow="Uker og økter">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 10 }}>
+          {weeks.map((week) => (
+            <div key={week.id} style={{ border: `1px solid ${TL.hair}`, borderRadius: 12, background: TL.dock, padding: 12, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+                <strong style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text }}>{week.label}</strong>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{week.weekStart}</span>
+              </div>
+              <div style={{ display: "grid", gap: 7, marginTop: 10 }}>
+                {week.sessions.length === 0 ? (
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Ingen økter lagt inn.</span>
+                ) : (
+                  week.sessions.map((s) => (
+                    <div key={s.id} style={{ border: `1px solid ${TL.hair}`, borderRadius: 10, background: TL.elev, padding: "9px 10px" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{s.title}</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{s.type}</span>
+                      </div>
+                      <div style={{ marginTop: 5, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
+                        {s.date} · {s.durationMinutes ? fmtVarighet(s.durationMinutes) : "uten varighet"} · {s.exercises.length} øvelser
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Kort>
+
+      <Kort eyebrow="Logg">
+        {sessions.length === 0 ? (
+          <TomTilstand icon="activity" title="Ingen fysisk økt å logge" sub="Når økter legges inn i blokken, vises øvelser og sett her." />
+        ) : (
+          <div style={{ display: "grid", gap: 8 }}>
+            {logFeil && <InnsiktChip>{logFeil}</InnsiktChip>}
+            {sessions.slice(0, 8).map((s) => (
+              <Rad
+                key={s.id}
+                leading={<span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, minWidth: 78 }}>{s.weekLabel}</span>}
+                title={s.title}
+                sub={`${s.exercises.map((e) => e.title).slice(0, 3).join(" · ") || "Ingen øvelser"}${s.exercises.length > 3 ? " …" : ""}`}
+                meta={
+                  s.exercises[0] && actions?.loggFysiskSett ? (
+                    <Knapp ghost onClick={() => loggNesteSett(s)} disabled={logPendingId === s.exercises[0].id}>
+                      {logPendingId === s.exercises[0].id ? "Logger…" : "Logg sett"}
+                    </Knapp>
+                  ) : (
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{s.actualTonnageKg > 0 ? `${Math.round(s.actualTonnageKg)} kg` : s.status.toLowerCase()}</span>
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
+      </Kort>
+    </div>
+  );
+}
+
 /* ── PP-3 fasit .period: periodebånd over lerretet ──────────────
    «[Periode] · neste [periode] fra uke N» — fra eksisterende seasonBlocks.
    Ingen periodisering → rendres ikke (ærlig; årsplan-CTA finnes i coldstart). */
@@ -2125,13 +2373,12 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // B40 §3: Årsplan (periodisering/makro-faser) er Pro-only — utelates helt
   // fra zoom-velgeren i Standard, ikke bare deaktivert.
   const zoomOptions = proMode
-    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "turnering", l: "Turnering" }]
-    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "turnering", l: "Turnering" }];
-  // PP-3 fasit mobil: nivåene heter Årsplan/Måned/Uke/Dag — «Turnering» er
-  // ikke en mobil-visning i fasiten (og mobil-grenen rendrer den ikke).
+    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "fysisk", l: "Fysisk" }, { v: "turnering", l: "Turnering" }]
+    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "fysisk", l: "Fysisk" }, { v: "turnering", l: "Turnering" }];
+  // Mobil har de samme arbeidsflatene, men korte navn så pillene ikke sprenger raden.
   const zoomOptionsMobil = proMode
-    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }]
-    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }];
+    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "fysisk", l: "Fys" }, { v: "turnering", l: "Turn" }]
+    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "fysisk", l: "Fys" }, { v: "turnering", l: "Turn" }];
 
   function byttWbMode(neste: "standard" | "pro") {
     if (neste === (wbMode ?? "pro") || modeBytterPending) return;
@@ -2149,7 +2396,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const [nivaa, setNivaaState] = useState(
     zoomParam === "ar"
       ? (proMode ? "ar" : "uke")
-      : zoomParam === "maned" || zoomParam === "dag" || zoomParam === "turnering"
+      : zoomParam === "maned" || zoomParam === "dag" || zoomParam === "fysisk" || zoomParam === "turnering"
         ? zoomParam
         : "uke",
   );
@@ -3201,6 +3448,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             </div>
           )}
           {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
+          {nivaa === "fysisk" && <div key="fysisk" className="v2-fade-in"><WBFysiskNivaa data={data} actions={actions} onTilUke={() => setNivaa("uke")} /></div>}
           {nivaa === "turnering" && <div key="turnering" className="v2-fade-in"><WBTurneringNivaa data={data} actions={actions} /></div>}
             </div>
           </div>
@@ -3399,6 +3647,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           </div>
         )}
         {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
+        {nivaa === "fysisk" && <div key="fysisk" className="v2-fade-in"><WBFysiskNivaa data={data} actions={actions} onTilUke={() => setNivaa("uke")} /></div>}
+        {nivaa === "turnering" && <div key="turnering" className="v2-fade-in"><WBTurneringNivaa data={data} actions={actions} /></div>}
 
         {/* PP-3 fasit mobil: Bibliotek/Balanse som bottom-sheets, ikke akkordeoner */}
         <div style={{ display: "flex", gap: 8 }}>
