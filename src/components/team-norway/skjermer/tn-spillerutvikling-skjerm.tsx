@@ -163,7 +163,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
           </>
         ) : data.rader.length === 0 ? (
           <div style={{ padding: 20 }}>
-            <TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen. <Link href="/team-norway/uttak" style={{ color: TN.navy700 }}>Se uttakskriterier</Link></TnMangler>
+            <TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen. <Link href="/team-norway/uttak" style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Se uttakskriterier</Link></TnMangler>
           </div>
         ) : (
           <div style={{ padding: 20 }}>

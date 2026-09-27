@@ -267,7 +267,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         <TnFlate>
           <TnMangler>
             Ingen økter lagt inn for {MANEDER_LANG[maned - 1]!.toLowerCase()} {aar}. Planen vises her så snart trenerteamet har lagt inn første økt.{" "}
-            <Link href="/team-norway/samlinger" style={{ color: TN.navy700 }}>Se samlinger</Link>
+            <Link href="/team-norway/samlinger" style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Se samlinger</Link>
           </TnMangler>
           {data.kontekst.kanAdministrere ? <div style={{ marginTop: 16 }}><TnOktSkjema knapp="Legg inn første økt" variant="sekundar" standardDato={valgtNokkel} /></div> : null}
         </TnFlate>

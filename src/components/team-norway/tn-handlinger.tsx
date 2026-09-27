@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState, useTransition, type CSSProperties, type FormEvent, type ReactNode } from "react";
 
 import { TN } from "@/lib/v2/team-norway";
+import styles from "./tn-skjerm.module.css";
 
 /**
  * Knapper, felt og ark for handlingene på Team Norway-skjermene.
@@ -151,7 +152,7 @@ export function TnSkjemaArk({ knapp, knappVariant = "primar", tittel, send, lagr
   return (
     <>
       <button type="button" onClick={apne} style={tnKnappStil(knappVariant)}>{knapp}</button>
-      <dialog ref={ref} aria-labelledby={tittelId} style={{ border: `1px solid ${TN.navy100}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
+      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
         <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: 16, padding: "clamp(18px, 3vw, 26px)" }}>
           <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0, paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>{tittel}</h2>
           {children}
@@ -199,7 +200,7 @@ export function TnSlettKnapp({ knapp, tittel, tekst, bekreft, handling, videre, 
   return (
     <>
       <button type="button" onClick={() => { setFeil(null); ref.current?.showModal(); }} style={tnKnappStil(variant)}>{knapp}</button>
-      <dialog ref={ref} aria-labelledby={tittelId} style={{ border: `1px solid ${TN.navy100}`, borderTop: `3px solid ${TN.red600}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
+      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderTop: `3px solid ${TN.red600}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "clamp(18px, 3vw, 24px)" }}>
           <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
