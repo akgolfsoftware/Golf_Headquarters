@@ -3,14 +3,14 @@
 **Status:** Forslag. Venter på Anders' godkjenning før noe bygges.
 **Erstatter:** [planen fra 25.09](plan-portering-claude-design-til-kode-2026-09-25.md), som bygger på gjetting (se §2).
 **Omfang:** PlayerHQ (`/portal`), AgencyOS (`/admin`), WANG (`/team-wang/coach`) og Team Norway (`/team-norway`).
-**Grunnlag:** gjennomgang av `origin/main` (`aa5e88bc1`), alle grener og arbeidsmapper, 27.09.2026 kl. 22.
+**Grunnlag:** gjennomgang av `origin/main` (`d025124c3`), alle grener og arbeidsmapper, 27.09.2026 kl. 22:30.
 
 ## 1. Kort fortalt
 
 - Designet er ferdig tegnet for alle fire områdene. Ingen skjerm er ennå sett og godkjent av Anders (port 7).
 - Koden har funksjonene, men nesten alt har fortsatt det gamle utseendet (Train-lock).
 - Forrige porteringsforsøk (26.09) byttet ut fem ekte skjermer med demoskjermer med oppdiktede
-  navn og tall. Det må rettes først.
+  navn og tall. To nye demoskjermer kom inn i kveld (#977). Det må rettes først.
 - Antigravity kan ikke lese Claude Design selv. Designpakkene må derfor legges i repoet før start.
 - Regelen som styrer hele planen: **bytt utseendet, behold dataene.** En skjerm som virker i dag,
   skal virke likt etterpå — med ekte data, samme tilgangskontroll og samme handlinger.
@@ -21,12 +21,12 @@
 
 | Gren | Tilstand | Anbefaling |
 |---|---|---|
-| `origin/main` | Grønn. Siste: Workbench fysisk plan og turnering (#976), runde/SG (#975), Team Norway TN-01–19 (#958) | Utgangspunkt for alt nytt |
+| `origin/main` | Siste: øvelsesbank koblet til test og plan (#977, kl. 22:17 — kontrollen kjørte fortsatt da dette ble skrevet), Workbench fysisk plan og turnering (#976), runde/SG (#975), Team Norway TN-01–19 (#958) | Utgangspunkt for alt nytt |
 | `claude/arsplan-junior-16` (PR #931) | Eneste åpne PR. Fagutkast, ikke godkjent | La stå til faginnholdet er godkjent |
 | Lokal `main`, `claude/branches-ready-merge-b54509` | 5 lokale sammenslåinger som allerede ligger i main via #975 | Kan slettes — innholdet er i main |
 | `codex/runde-sg-kontrakt`, `codex/workbench-fys-turnering` | Innholdet er i main via #975 og #976 | Kan slettes |
 | `Strokesgained`, `codex/komplett-design-gjennomgang`, `claude/wang-turneringer-2026-09-27` | Ingen egne endringer, bare bak main | Kan slettes |
-| `codex/test-plan-master-2026-09-26` | 3 egne lagringer, 57 bak main, 85 filer | Må vurderes av den som eier den før sletting |
+| `codex/test-plan-master-2026-09-26` | Lagt inn i main som #977 mens gjennomgangen pågikk | Kan slettes |
 | `origin/chore/rydd-utgatt` | 19 lagringer foran main, 19 filer. Oppryddingsøkta | Eies av oppryddingsøkta — ikke rør |
 | `origin/claude/ow3-workbench-session-consolidation-763893` | 515 bak main, fra 17.09 | Utdatert. Kan slettes etter sjekk av de 4 lagringene |
 | Parkert arbeid (stash) `codex/treningsmotor` | Ulagret arbeid satt til side 27.09 | Må avklares: fullføres eller kastes |
@@ -43,11 +43,13 @@ sikkerhetsregelen i denne økta. Sesjonsnotatet fra Codex (27.09 kl. 21:46) sier
 | F3 | Innloggingen har en «SMS tofaktor»-knapp som bare viser en melding og sender videre. Det finnes ingen SMS-kontroll bak | `/auth/login` | Høy |
 | F4 | To WANG-skjermer med oppdiktede navn ligger åpent uten innlogging. Beslutningen 27.09 sier at `/team-wang` utenom fellessiden bare er for sportssjef og trener | `/team-wang/rekruttering`, `/team-wang/toppidrett` | Høy |
 | F5 | Skjermkatalogen med demoskjermer ligger åpent uten innlogging | `/skjermer` | Middels |
-| F6 | De ni nye «Precision»-skjermene har 21–92 hardkodede farger hver. Designets egne fargenavn (tokens) finnes ikke i koden | `src/components/**/**Precision*.tsx` | Middels |
+| F6 | De ni «Precision»-skjermene fra 26.09 har 21–92 hardkodede farger hver. Designets egne fargenavn (tokens) finnes ikke i koden | `src/components/**/**Precision*.tsx` | Middels |
 | F7 | `/admin` starter fortsatt mørkt. Beslutningen 26.09 sier lyst. Nattema finnes ikke i koden | `src/lib/v2/tema-default.ts` | Middels |
 | F8 | Fire styrende dokumenter peker fortsatt på det gamle designet («App design») | `AGENTS.md`, `START-HER.md`, `docs/platform/AGENT-BRIEF.md`, `docs/FASIT.md` | Middels |
 | F9 | Planen fra 25.09 inneholder ting som ikke er besluttet eller er fjernet: Vipps, kategori A–K, magisk lenke med SMS, fraværsmelding i WANG, farger som ikke er i systemet | `docs/planer/plan-portering-…-2026-09-25.md` | Middels |
 | F10 | Designets overlevering (`overlevering/codex.md`, `tokens.css`) finnes bare i Claude Design, ikke i repoet | — | Blokkerer start |
+| F11 | To nye sider fra #977 viser faste demotall uten spillerens egne data, med 273 og 185 hardkodede farger | `/portal/teknisk`, `/portal/periodeplan` | Høy |
+| F12 | #977 la utgått fagspråk inn i kunnskapsgrunnlaget AI-agentene leser: L-faser, CS, M0–M5 og PR1–PR5. I tillegg et kategorisystem med egne farger per akse | `src/lib/masterbrain/rag-corpus/morad/`, `src/lib/domain/ak-kategorisystem.ts` | Høy |
 
 F1–F5 kom inn som direkte lagringer i main natt til 26.09 (`29c0e9421`, `0048632b1`, `ed7ae13e8`,
 `bf9821294`, `8603082ba`), uten PR og uten kontroll. Main er nå sperret for direkte lagring.
@@ -56,7 +58,7 @@ F1–F5 kom inn som direkte lagringer i main natt til 26.09 (`29c0e9421`, `00486
 
 | Område | Design | Kode i dag | Godkjent av Anders |
 |---|---|---|---|
-| PlayerHQ | 26 skjermtyper + runde (PH-RD-01–09) + Workbench fysisk/turnering + analyse (PH-A01–08). Kontrollert, 0 avvik | 175 sider. Funksjonene virker. Gammelt utseende, 3 demoskjermer | Nei |
+| PlayerHQ | 26 skjermtyper + runde (PH-RD-01–09) + Workbench fysisk/turnering + analyse (PH-A01–08). Kontrollert, 0 avvik | 177 sider. Funksjonene virker. Gammelt utseende, 5 demoskjermer | Nei |
 | AgencyOS | 24 skjermtyper + runde (AG-RD-01–02) + Workbench fysisk/turnering + analyse (AG-A01–08). Kontrollert, 0 avvik | 163 sider. Funksjonene virker. Gammelt utseende, 1 demoskjerm (F1) | Nei |
 | WANG | 43 menypunkter i prototypen, to roller, seks hovedpunkter. Runde 19 (NGF-tester) er sendt, ikke bekreftet ferdig | 7 sider. Bare fellessiden, trenerforsiden, IUP og turneringer er ekte | Nei |
 | Team Norway | TN-01–19 levert | 35 sider, bygget med ekte data i #958. Gruppen har 0 spillere, så det meste viser tom tilstand | Nei |
@@ -112,8 +114,10 @@ Skjermlista for PlayerHQ og AgencyOS: [skjermliste-precision-athletics.md](../de
 | 0.2 | F2: `/portal/live` viser spillerens egen økt eller sender til dagens økt | Ingen oppdiktet økt kan vises |
 | 0.3 | F3: fjern SMS-knappen og alt annet i innloggingen som ikke har ekte kontroll bak | Hver knapp gjør det den sier |
 | 0.4 | F4 og F5: legg `/team-wang/rekruttering`, `/team-wang/toppidrett` og `/skjermer` bak innlogging for coach og admin | Åpnet uten innlogging gir innloggingssiden |
-| 0.5 | F8 og F9: rett de fire dokumentene til Precision Athletics, merk 25.09-planen som erstattet | `npm run prosjekt:sjekk` grønn |
-| 0.6 | Rydd grenene merket «kan slettes» i §2 | Bare main, #931, oppryddingsgrenen og aktive arbeidsgrener står igjen |
+| 0.5 | F11: `/portal/teknisk` og `/portal/periodeplan` kobles til spillerens egne data eller sendes videre til den ekte planen | Ingen faste demotall kan vises |
+| 0.6 | F12: Anders avgjør om L-fase-filene og kategorisystemet skal ut eller skrives om til AK-formel v2 | Ingen utgått kode i det agentene leser |
+| 0.7 | F8 og F9: rett de fire dokumentene til Precision Athletics, merk 25.09-planen som erstattet | `npm run prosjekt:sjekk` grønn |
+| 0.8 | Rydd grenene merket «kan slettes» i §2 | Bare main, #931, oppryddingsgrenen og aktive arbeidsgrener står igjen |
 
 ### Fase 1 — Designpakkene inn i repoet
 
@@ -134,7 +138,7 @@ Gjøres av Claude Code, fordi Antigravity ikke har tilgang til Claude Design.
 | 2.2 | Tema: `/admin` starter lyst. Natt i Live-økt og slagregistrering | `tema-default.ts` med tester |
 | 2.3 | Skall: PlayerHQ fire faner, AgencyOS-meny, hurtigknappen i AgencyOS-skallet | Ett skall per område, brukt av alle sider |
 | 2.4 | Grunnkomponenter fra designet: knapp, kort, felt med feilmelding, tabell som blir kortrader, ark, tidslinje, tom/laster/feil | Hver har test og vises i `/skjermer` (bak innlogging) |
-| 2.5 | Skriv de ni «Precision»-skjermene om til tokens og ekte data, eller fjern dem | F6 er 0 hex-farger |
+| 2.5 | Skriv de elleve «Precision»-skjermene om til tokens og ekte data, eller fjern dem | 0 hex-farger i alle elleve |
 
 ### Fase 3 — PlayerHQ
 
@@ -213,6 +217,6 @@ Svar på norsk bokmål, kort og uten faguttrykk.
 
 1. Skal Antigravity ta over byggingen fra Codex, eller skal de dele? Anbefaling: Antigravity tar
    PlayerHQ og AgencyOS-utseendet, Codex fortsetter med funksjoner og data. Da jobber de aldri i samme fil.
-2. Skal fase 0 rettes nå, før resten av planen godkjennes? Anbefaling: ja. F1–F4 ligger i hovedversjonen.
+2. Skal fase 0 rettes nå, før resten av planen godkjennes? Anbefaling: ja. F1–F4 og F11–F12 ligger i hovedversjonen.
 3. Port 7 for 74 skjermtyper er mye å se gjennom. Anbefaling: Anders ser hver bolk samlet (P1, P2 …),
    ikke skjerm for skjerm.
