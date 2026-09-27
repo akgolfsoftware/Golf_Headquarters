@@ -9,13 +9,16 @@ Rekkefølge når kilder krangler. Øverst vinner.
 5. Gjeldende skjermleveranse fra Claude Design
 6. ds-core / `src/components`
 
-AK Golf Design System og «App design» gjelder. Train-lock og Paper er utgående og kan ikke
+«AK Golf Precision Athletics» gjelder (26.09.2026). «App design», Train-lock og Paper er utgående og kan ikke
 overstyre denne filen gjennom eldre dokumenter, minne eller kode. Denne beslutningen skal ikke
 spørres om på nytt.
 
 PNG er bevis, ikke lov.
 
 ## Chrome
+
+Punktene under beskriver Workbench-leveransen 20.09.2026. Der de strider mot designautoriteten
+(hjørner, rust, meny), vinner designautoriteten.
 
 - Topp 56 px. Seks nav: Hjem · Innboks · Kalender · Stall · Workbench · Godkjenninger
 - Ingen søk i Agency-baren
