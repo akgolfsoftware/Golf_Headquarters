@@ -1,17 +1,12 @@
-import { Metadata } from "next";
+/**
+ * /portal/periodeplan — viste en demoplan med faste tall (27.09.2026). Spillerens
+ * egen plan ligger i Plan.
+ */
+
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PeriodeplanPyramideView } from "@/components/portal/toppidrett/PeriodeplanPyramideView";
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Periodeplan & Utviklingspyramiden | AK Golf HQ",
-  description:
-    "Periodeplanlegging og utviklingspyramiden for toppidrett med 5 nivåer (FYS, TEK, SLAG, SPILL, TURN), P1-P10 svingposisjoner og TrackMan-parametre.",
-};
-
-export default async function PeriodeplanPage() {
+export default async function PeriodeplanRedirect() {
   await requirePortalUser({ kreverTilgang: "FULL" });
-
-  return <PeriodeplanPyramideView />;
+  redirect("/portal/planlegge");
 }

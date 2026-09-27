@@ -1,17 +1,12 @@
-import { Metadata } from "next";
+/**
+ * /portal/teknisk — viste en demoplan med faste tall (27.09.2026). Spillerens
+ * egen tekniske plan ligger under utviklingsplanen.
+ */
+
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TekniskPlanPrecisionView } from "@/components/portal/teknisk/TekniskPlanPrecisionView";
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Teknisk Plan & Progresjon | AK Golf HQ",
-  description:
-    "Systematisk teknisk treningsplan med grunnslag (5m draw), TrackMan radarmål, P1-P10 svingoppgaver, motoriske læringssteg og treningsdagbok.",
-};
-
-export default async function TekniskPlanPage() {
+export default async function TekniskRedirect() {
   await requirePortalUser({ kreverTilgang: "FULL" });
-
-  return <TekniskPlanPrecisionView />;
+  redirect("/portal/utviklingsplan");
 }
