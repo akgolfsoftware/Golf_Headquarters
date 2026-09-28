@@ -13,7 +13,7 @@ system 1). Én skjermtype = én tegning som dekker alle rutene i raden.
 lyst tema · natt der «Natt» er merket · tilstandene tom, laster og feil. Kontroll:
 `scrollWidth === clientWidth` i alle bredder.
 
-## PlayerHQ (`/portal`) — fire faner: I dag · Plan · Analyse · Meg
+## PlayerHQ (`/portal`) — fire faner: I dag · Plan · Stats · Meg (Analyse heter Stats fra 28.09)
 
 | ID | Skjermtype | Ruter | Må vise | Natt |
 |---|---|---|---|---|
