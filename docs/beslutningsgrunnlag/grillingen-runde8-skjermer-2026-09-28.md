@@ -595,3 +595,29 @@ anonymisering av navn før AI.
 
 **Kodefunn som må bli egne oppgaver:** opptakeren er ikke koblet til «Start live»; sjekk om
 avskrift og analyse sender spillernavn til eksterne tjenester.
+
+## 7. AgencyOS · Innboks
+
+### Dette fantes 28.09
+- App (MÅLT): `/admin/kommunikasjon` har samlet innboks, utkast, sendt og maler i faner.
+  E-post til post@akgolf.no tas inn (`InnboksEpost`), agent lager svarutkast, Anders sender
+  selv. Egne sider: `/admin/ko` (Kø), `/admin/godkjenninger`, `/admin/queue`
+  (oppfølgingskø). Jarvis-chatten `/meg` står for seg selv.
+- Design: AG-02 Kø, AG-04 Innboks.
+- Kode uten skjerm (MÅLT): `createPlanChangeRequest` og `coachBekreftTurneringEntry` 0 kallere.
+
+### Anders forteller
+- Én innboks som samler alt: e-post, meldinger, oppfølging, godkjenninger, spørsmål fra
+  spillere osv. Der går Anders ikke glipp av noe, og der godkjenner han utkast som Jarvis og AI
+  lager. «Dette skal være her jeg jobber.»
+
+### Spørsmål og svar
+**8.73 «Anna».** Svar: talefeil for «AI».
+**8.74 Oppbygging.** Svar: a — én liste, filterbrikker Alle · Spillere · E-post · Godkjenn ·
+Oppfølging · Varsler, det som haster først, deretter nyeste.
+**8.75 Utkast.** Svar: a — utkastet åpent i raden med «Send», «Rediger», «Forkast»; ingenting
+sendes uten trykk. Gjelder e-post, svar til spillere, sammendrag fra opptak, forslag fra
+motoren.
+**8.76 E-postkontoer.** Svar: post@akgolf.no og akgolfgroup@gmail.com.
+**8.77 Ikke gå glipp av noe.** Svar: a — «Ferdig» tar saken ut av lista; ubesvart spørsmål fra
+spiller etter 24 timer markeres som haster; tom innboks = alt håndtert.
