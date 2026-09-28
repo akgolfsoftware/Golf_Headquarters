@@ -12,8 +12,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | # | Område | Grillet | Bekreftet av Anders | Bestilling sendt |
 |---|---|---|---|---|
 | 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | — |
-| 1 | PlayerHQ · I dag | pågår | — | — |
-| 2 | PlayerHQ · Planlegging | — | — | — |
+| 1 | PlayerHQ · I dag | ja | ja, 28.09 | — |
+| 2 | PlayerHQ · Planlegging | pågår | — | — |
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | — | — | — |
 | 4 | PlayerHQ · Meg | — | — | — |
 | 5 | PlayerHQ · Live-økt og registrering | — | — | — |
@@ -186,7 +186,7 @@ på rad over 70 %. I tillegg milepæler: 10, 50 og 100 fullførte økter etter p
 Ny økt · Registrer runde · Start økt. Endrer beslutningen 22.09 («ikke avklart om den gjelder
 PlayerHQ»).
 
-### Slik vil du ha det (venter på bekreftelse)
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
 - **Pop-up ved åpning:** bare melding fra coach eller endring i dagens plan. «Les» eller
   «Ignorer». Alt annet går til innboksen.
 - **Øverst:** dagens økter som like store kort i tidsrekkefølge, neste først. Hvert kort har
@@ -200,3 +200,58 @@ PlayerHQ»).
 - **Ingen økt i dag:** «Bygg økter i Workbench» og «Registrer runde». Uten treningsplan:
   «Velg treningsplan».
 - **Fjernes:** «Send til coach» på AI-forslag — spilleren godkjenner selv.
+
+## 2. PlayerHQ · Planlegging
+
+### Dette fantes 28.09
+- App: `/portal/planlegge` (PlanV2), `planlegge/workbench`, `planlegge/bygger` (AI, skjules
+  ved lansering), egen `/portal/kalender`, egen `/portal/fysisk`, egne turneringssider
+  (`tren/turneringer`), `utviklingsplan`, `drills`.
+- Design: PH-10 Plan: uke, PH-11 Workbench, PH-12 Planbygger, PH-13 Øvelsesbank,
+  PH-WB-FYS, PH-WB-TURN. Toppidrett: Kalender med 52 ukers årshjul.
+
+### Anders forteller
+- Når spilleren trykker «Opprett årsplan», kommer en veileder som forklarer årsplan,
+  periode, måned og økt, så spilleren ikke blir overveldet.
+- Fysisk trening og turneringer ligger i **samme hovedkalender**. Ingen egne kalendere; de er
+  ekstra punkter i Workbench. Spilleren velger aksen i pyramiderekkefølge (for eksempel FYS)
+  og legger økta inn der.
+- Spilleren kan endre planen selv. Ved endringer rundt turneringer skal coach få varsel.
+- Spør om anbefaling når spilleren trener mye mer enn planlagt.
+- Fanenavn: «Plan» og «Stats» fungerer bedre på mobil, iPad og desktop.
+
+### Spørsmål og svar
+**8.21 Veileder.** Svar: a — første gang trinn for trinn (år → perioder → måned → uke →
+økt), kan hoppes over; etterpå «?» med forklaring på hvert nivå.
+
+**8.22 Mer trening enn planlagt.** Svar: ok til anbefalingen — over 130 % av planlagt tid to
+uker på rad gir forslag om lettere uke i innboksen, og varsel til coach hvis spilleren har
+coach. Ingenting sperres. ACWR over 1,5 blir tilleggsregel når ACWR er bygget (finnes ikke i
+koden i dag).
+
+**8.23 Varsel til coach.** Svar: a — når spilleren legger til, fjerner eller flytter en
+turnering, og når spilleren endrer en økt coachen har lagt inn.
+
+**8.24 Fanenavn.** Svar: a — **I dag · Plan · Stats · Meg**. Endrer «PlayerHQ har fire
+faner: I dag · Plan · Analyse · Meg» i beslutningene.
+
+**8.25 / 8.26 Hovedkalender og Workbench.** Svar: Plan er **én flate** med «se» og
+«rediger». «Rediger» går rett inn i komplett Workbench-modus. Anders: det er viktig at
+Workbench og hovedkalender ikke blandes.
+
+### Slik vil du ha det (venter på bekreftelse)
+- **Fanen heter Plan.** Én flate. Se-modus viser planen i zoom År · Måned · Uke · Dag (uke
+  først på mobil). Trykk på en økt for å se eller starte den.
+- **«Rediger»** går rett inn i komplett Workbench på samme sted. Der velges akse i
+  pyramiderekkefølge (FYS, TEK, SLAG, SPILL, TURN), økter legges inn og dras.
+- **Fysisk trening og turneringer** ligger i samme plan som golføktene — ingen egne kalendere.
+- **Skole, jobb, reise og bookinger** vises som eget lag; opptatt tid legges inn derfra.
+- **Egen kalender, egen fysisk-side og egne turneringssider** forsvinner fra menyen; gamle
+  adresser sender videre til Plan.
+- **Veileder** første gang spilleren oppretter årsplan, trinn for trinn, kan hoppes over;
+  «?» på hvert nivå etterpå.
+- **Spilleren kan endre alt selv.** Coach får varsel når en turnering legges til, fjernes
+  eller flyttes, og når en økt coachen har lagt inn endres.
+- **For mye trening:** over 130 % to uker på rad gir forslag om lettere uke (spiller) og
+  varsel (coach). For lite: under 70 % to uker på rad (fra Motoren).
+
