@@ -18,7 +18,7 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 | 3 | Deling og tilgang | ja | ja, 28.09 | — |
 | 4 | WANG: trener og sportssjef | ja | ja, 28.09 | — |
 | 5 | Team Norway: coach | ja | ja, 28.09 | — |
-| 6 | Spillerens side i PlayerHQ | — | — | — |
+| 6 | Spillerens side i PlayerHQ | ja | ja, 28.09 | — |
 
 ## Kartlegging (målt 28.09)
 
@@ -195,3 +195,22 @@ tilgang. Rolle Spiller med ti skjermer. Ingen IUP, ingen golftester, ingen delin
   resultatene — for kartlegging.
 - **WANG-elevers testresultater deles automatisk med Team Norway, med navn.** Står i WANGs
   opptaksavtale, forelder signerer under 16. Alt annet deler spilleren selv (område 3).
+
+## 6. Spillerens side i PlayerHQ
+
+### Spørsmål og svar
+9.33 a · 9.34 a · 9.35 a (Anders 28.09). Svarene er selve sammendraget.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Delingssiden under Meg** viser hvem som har tilgang (AK-coach, WANG, Team Norway) og hva de
+  ser. Spilleren sender delingslenke, godtar forespørsler og trekker tilgangen med ett trykk.
+  WANG-elever ser at testresultatene deles automatisk med Team Norway, og at det ikke kan slås av.
+- **Forslag fra WANG og Team Norway** kommer i innboksen bak bjella, merket med avsender
+  («WANG · trenerens navn»), med «Godta» og «Avvis».
+- **WANG-eleven:** morgenøktene kommer inn i Plan som arvet gruppeplan (runde 8). Eleven
+  registrerer oppmøte og gjennomføring i PlayerHQ. Ingen egen WANG-fane.
+
+## Neste
+Fase 3 (mulighetskart for WANG og Team Norway), fase 4 (/beslutning og bestillinger til
+`6cfa623c`, `bc3e41fc` og `7d7c2994`). Kodeoppgave allerede funnet: WANG- og TN-tilgang krever
+ikke samtykke i dag (område 3).
