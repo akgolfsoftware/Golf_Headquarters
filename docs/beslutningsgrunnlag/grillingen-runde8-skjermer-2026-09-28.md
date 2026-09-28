@@ -436,8 +436,9 @@ hoppes over og gjøres senere fra profilen.
 - **Turneringsresultater:** nytt steg i onboarding «Finn deg i turneringsresultatene» (AK
   pipelines, golf-ID eller navn + fødselsår, mellomnavn ignoreres), kan hoppes over og tas fra
   profilen. Resultatene vises i Stats → Snittscore.
-- **Sammenligning:** spilleren kan alltid sammenligne snittscoren mot anonymiserte snitt i AK
-  Golf pipelines. Bare coach sammenligner med andre spillere i gruppene.
+- **Sammenligning:** ~~spilleren kan alltid sammenligne snittscoren mot anonymiserte snitt i AK
+  Golf pipelines~~ — fjernet for nå (Anders 28.09 etter runde 22). Bare coach sammenligner med
+  andre spillere i gruppene.
 - **Talentradaren** (coachens vurdering 1–10) ser bare coach, aldri spiller.
 - **Senere:** eksport og utskrift av årsplan.
 - **Fjernes fra PlayerHQ:** talent «Min plan» og roadmap (dekkes av Plan), ukesdigest (blir
@@ -860,5 +861,5 @@ oppstart · 24 Live-økt og runde · 25 Cockpit · 26 Innboks · 27 Stall og Spi
 | 19 | 28.09 | Ny meny i begge skall, felles hurtigknapp og bjelle, ny oversikt. Audit 3 080 tilfeller, 0 avvik. Sju uavklarte punkter til Anders i `oversikt.html`. |
 | 20 | 28.09 | PH-01 tegnet på nytt, PH-02 slått sammen med PH-01. Audit 80 tilfeller, 0 avvik. Nytt spørsmål til Anders: teller «Neste turnering» bare konkurranser (treningsturneringer søndag regnes som økt)? |
 | 21 | 28.09 | PH-10 Plan i fire zoomnivåer (År · Måned · Uke · Dag, mobil åpner i Uke), «Rediger» åpner Workbench (PH-11), fysisk og turneringer er lag i Plan. Audit 160 tilfeller, 0 avvik. Uavklart: registrering av sett for fysisk må inn i PH-04 (egen skjerm borte) · kontrast på sandtonene for Ferie og Restitusjon · lettere uke «14,5 → 11,5 t» er ikke merket ESTIMAT og utregningen må bekreftes. |
-| 22 | 28.09 | Stats med fire deler (Snittscore · Strokes Gained · Trening · Tester), PH-A-sidene slått inn. Audit 480 tilfeller, 0 avvik (rundearkets SG per kategori lagt inn etter audit, ikke kjørt). Uavklart: SG per kategori i rundearket er en fast fordeling av totalen · SG mot PGA i rundelista er utregnet, ikke ekte PGA-tall · normene for Kategori C og PGA-snittet for nærhet er oppdiktet · Tiger 5-ordlyden («Bogey fra innenfor 130 m», «Bom på enkel opp-og-ned») er designets forslag · hvilke anonymiserte grupper spilleren kan sammenligne med (nå Kategori C, U18 region, AK Golf-stallen). |
+| 22 | 28.09 | Stats med fire deler (Snittscore · Strokes Gained · Trening · Tester), PH-A-sidene slått inn. Audit 480 tilfeller, 0 avvik (rundearkets SG per kategori lagt inn etter audit, ikke kjørt). Uavklart: SG per kategori i rundearket er en fast fordeling av totalen · SG mot PGA i rundelista er utregnet, ikke ekte PGA-tall · normene for Kategori C og PGA-snittet for nærhet er oppdiktet · Tiger 5-ordlyden («Bogey fra innenfor 130 m», «Bom på enkel opp-og-ned») er designets forslag · hvilke anonymiserte grupper spilleren kan sammenligne med. **Anders 28.09:** Tiger 5-ordlyden er riktig; sammenligning mot anonymiserte snitt fjernes for nå (rettes foran runde 23). |
 | 31 | 28.09 | Ekstra runde fra grillingen runde 9: deling med WANG og Team Norway, fireukerssjekk, IUP i Spiller 360 (`precision-runde31-bestilling.txt`). — (kjører) |

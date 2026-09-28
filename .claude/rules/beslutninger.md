@@ -47,8 +47,11 @@ reglene.
   prosessmål, fremdrift fra ekte data). Fasilitetsskjema med dekning av de 19 treningsområdene.
   Nytt onboardingsteg «Finn deg i turneringsresultatene». Talent «Min plan», roadmap,
   ukesdigest (blir melding) og «Utenfor banen» utgår.
-- Spilleren kan sammenligne snittscoren sin mot **anonymiserte snitt** fra AK Golf pipelines.
-  Sammenligning med navngitte spillere og talentradaren er bare for coach (§Data uendret).
+- **Spilleren får ingen sammenligning av snittscoren mot andre, verken anonymiserte snitt eller
+  navngitte spillere** (Anders 28.09 etter runde 22: «fjern sammenligning for nå»). Sammenligning
+  med andre spillere og talentradaren er bare for coach (§Data uendret). Sammenligning mot neste
+  kategori (Broadie, ESTIMAT) og PGA Tour i Stats består.
+- **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel opp-og-ned» er bekreftet (28.09).
 - **Live-økt:** økt- og drillklokke, fire tellere per drill (Uten ball · Lav hastighet ·
   Automatikk · Slag) mot plan, neste drill åpnes automatisk. Fysisk økt: spilleren fører vekt,
   reps og serier.
