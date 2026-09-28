@@ -28,7 +28,10 @@ export const STANDARD_PYRAMIDE: Record<NgfKategori, PyramideFordeling> = {
 
 // Typiske antall økter per uke per kategori × LPhase.
 // 8c.1: TESTUKE=turneringstall, FERIE=0, SAMLINGER=grunn/1 — foreløpige verdier (Anders justerer).
-export const STANDARD_OKT_ANTALL: Record<NgfKategori, Record<LPhase, number>> = {
+// RESTITUSJON har ikke standardtall: spiller og coach setter antall økter selv (Anders 28.09.2026).
+export type FaseMedOktAntall = Exclude<LPhase, "RESTITUSJON">;
+
+export const STANDARD_OKT_ANTALL: Record<NgfKategori, Record<FaseMedOktAntall, number>> = {
   A: { GRUNN: 6, SPESIAL: 6, TURNERING: 5, EVALUERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 6, HELDAGSSAMLING: 1 },
   B: { GRUNN: 6, SPESIAL: 6, TURNERING: 5, EVALUERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 6, HELDAGSSAMLING: 1 },
   C: { GRUNN: 5, SPESIAL: 6, TURNERING: 5, EVALUERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 5, HELDAGSSAMLING: 1 },
@@ -41,6 +44,11 @@ export const STANDARD_OKT_ANTALL: Record<NgfKategori, Record<LPhase, number>> = 
   J: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, EVALUERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
   K: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, EVALUERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
 };
+
+/** Standard antall økter per uke, eller null når perioden ikke har et standardtall. */
+export function standardOktAntall(kategori: NgfKategori, fase: LPhase): number | null {
+  return fase === "RESTITUSJON" ? null : STANDARD_OKT_ANTALL[kategori][fase];
+}
 
 // Typisk øktlengde (minutter) per kategori — elite trener lengre økter.
 export const STANDARD_VARIGHET_MIN: Record<NgfKategori, number> = {
@@ -59,6 +67,7 @@ export const FASE_BESKRIVELSE: Record<LPhase, string> = {
   FERIE: "Ferie: fri fra organisert trening — restitusjon.",
   TRENINGSSAMLING: "Treningssamling: flere dager med høy treningstetthet.",
   HELDAGSSAMLING: "Heldagssamling: én hel dag med trening, tester eller banespill.",
+  RESTITUSJON: "Restitusjon: hvile og gjenoppbygging.",
 };
 
 export type UkeType = "BYGG" | "TOPP" | "DELOAD";
@@ -112,12 +121,14 @@ export function fordelOkterPaaOmrader(
  * Deterministisk 4-ukers skjelett for en (kategori × fase)-kombinasjon.
  * Struktur og tall kommer herfra — AI fyller kun inn titler/fokus/drill-valg.
  * Deload-uke: maks 4 økter (systemprompt-regelen) og 25 % kortere økter.
+ * Periode uten standardtall (Restitusjon) gir tomt skjelett.
  */
 export function byggStandardSkjelett(
   kategori: NgfKategori,
   fase: LPhase,
 ): SkjelettOkt[] {
-  const basisAntall = STANDARD_OKT_ANTALL[kategori][fase];
+  const basisAntall = standardOktAntall(kategori, fase);
+  if (basisAntall === null) return [];
   const varighet = STANDARD_VARIGHET_MIN[kategori];
   const fordeling = STANDARD_PYRAMIDE[kategori];
   const okter: SkjelettOkt[] = [];

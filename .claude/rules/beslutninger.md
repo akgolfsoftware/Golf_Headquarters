@@ -301,10 +301,11 @@ Evaluering, Ferie, Restitusjon.
 1. **Navnene i PlayerHQ og AgencyOS.** Gjort 28.09 i samme PR som beslutningen: tolv filer med
    periodenavn, teksten AI-agentene får (`src/lib/masterbrain/hent-kunnskap.ts`) og
    `docs/treningsplanlegging.md` kapittel 6.
-2. **Restitusjon i databasen.** Skriptet `scripts/add-restitusjon-periode-2026-09-28.ts` legger
-   til verdien. Anders kjører det selv; agenten får ikke skrive til den hostede basen. Koden
-   (skjema, navn, farge og ikon) ligger i egen PR som slås sammen etter at skriptet er kjørt.
-   Ferdig når coach kan legge en restitusjonsperiode i årsplanen og spilleren ser den.
+2. **Restitusjon i databasen og koden.** Gjort 28.09.2026: Anders kjørte
+   `scripts/add-restitusjon-periode-2026-09-28.ts` selv, og `RESTITUSJON` finnes i `PeriodeType`
+   og `LPhase` (bekreftet med lesespørring). Skjema, navn, farge og ikon er lagt inn i koden.
+   Antall økter per uke låses ikke (Anders 28.09): spiller og coach setter det selv, og
+   plan-motoren har ikke standardtall for Restitusjon. Gjenstår: Anders ser skjermen (port 7).
 3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`). Gjort 28.09 (masterbrain#13):
    «Spesialperiode» i `REDIGER-HER.md` og `canon-methodology.json`. Kodenavnet SPESIALISERING
    der oversettes fortsatt av appen.

@@ -22,6 +22,7 @@ const LPHASE_META: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 const LPHASE_ORDER: LPhase[] = [
   "GRUNN",
@@ -32,6 +33,7 @@ const LPHASE_ORDER: LPhase[] = [
   "FERIE",
   "TRENINGSSAMLING",
   "HELDAGSSAMLING",
+  "RESTITUSJON",
 ];
 
 export type PeriodeFormV2Initial = {

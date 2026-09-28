@@ -10,7 +10,7 @@ import { PrismaClient, Prisma } from "../src/generated/prisma/client";
 import type { NgfKategori, LPhase, PyramidArea } from "../src/generated/prisma/client";
 import {
   STANDARD_PYRAMIDE,
-  STANDARD_OKT_ANTALL,
+  standardOktAntall,
   FASE_BESKRIVELSE,
   type SkjelettOkt,
 } from "../src/lib/plan-engine/standard-fordeling";
@@ -159,6 +159,8 @@ export async function skrivUtkast(
   kilde: string,
 ): Promise<void> {
   const pyr = STANDARD_PYRAMIDE[kategori];
+  const ukentligOktAntall = standardOktAntall(kategori, fase);
+  if (ukentligOktAntall === null) throw new Error(`${fase} har ikke standardtall for økter per uke`);
   const skjelettVedSlot = new Map(skjelett.map((s) => [`${s.ukeNr}:${s.dagNr}`, s]));
 
   await prisma.planTemplate.create({
@@ -168,7 +170,7 @@ export async function skrivUtkast(
       kategori,
       lPhase: fase,
       varighetUker: 4,
-      ukentligOktAntall: STANDARD_OKT_ANTALL[kategori][fase],
+      ukentligOktAntall,
       disciplinFordeling: {
         FYS: pyr.FYS / 100,
         TEK: pyr.TEK / 100,

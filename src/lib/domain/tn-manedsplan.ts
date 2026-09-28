@@ -24,6 +24,7 @@ export const PERIODENAVN: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 const DAG_MS = 86_400_000;

@@ -264,7 +264,8 @@
       "TESTUKE",
       "FERIE",
       "TRENINGSSAMLING",
-      "HELDAGSSAMLING"
+      "HELDAGSSAMLING",
+      "RESTITUSJON"
     ],
     "SkillArea": [
       "TEE_TOTAL",
@@ -523,7 +524,8 @@
       "TESTUKE",
       "FERIE",
       "TRENINGSSAMLING",
-      "HELDAGSSAMLING"
+      "HELDAGSSAMLING",
+      "RESTITUSJON"
     ],
     "GoalCategory": [
       "OUTCOME",

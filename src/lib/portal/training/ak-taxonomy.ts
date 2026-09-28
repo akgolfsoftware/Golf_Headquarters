@@ -98,6 +98,7 @@ export const PERIODE_FARGER: Record<PeriodeType, PeriodeFarge> = {
   FERIE: { bg: "hsl(var(--secondary))", text: "hsl(var(--muted-foreground))", pattern: "diagonal-stripe" },
   TRENINGSSAMLING: { bg: "hsl(var(--accent))", text: "hsl(var(--foreground))", pattern: "diagonal-stripe" },
   HELDAGSSAMLING: { bg: "hsl(var(--primary))", text: "#FFFFFF", pattern: "diagonal-stripe" },
+  RESTITUSJON: { bg: "hsl(var(--secondary))", text: "hsl(var(--muted-foreground))", pattern: "solid" },
 };
 
 export const PERIODE_LABELS: Record<PeriodeType, string> = {
@@ -109,6 +110,7 @@ export const PERIODE_LABELS: Record<PeriodeType, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 // ---------------------------------------------------------------------------
@@ -158,6 +160,7 @@ export const PeriodeTypeSchema = z.enum([
   "FERIE",
   "TRENINGSSAMLING",
   "HELDAGSSAMLING",
+  "RESTITUSJON",
 ]);
 export const PracticeTypeSchema = z.enum(["BLOKK", "RANDOM", "KONKURRANSE", "SPILL_TEST"]);
 export const LFaseSchema = z.enum(["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"]);

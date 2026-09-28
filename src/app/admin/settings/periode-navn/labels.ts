@@ -16,6 +16,7 @@ const PERIODE_LABEL: Record<PeriodeType, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 export type PeriodeNavnLabel = { verdi: PeriodeType; navn: string };

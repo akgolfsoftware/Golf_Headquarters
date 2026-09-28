@@ -37,6 +37,7 @@ const BAAND_ETIKETT: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 function ukerIPeriode(startIso: string, endIso: string): number {

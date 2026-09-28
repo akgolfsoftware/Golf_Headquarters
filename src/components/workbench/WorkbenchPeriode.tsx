@@ -30,6 +30,7 @@ const PERIODE_LABEL: Record<PeriodType, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 function datoKort(iso: string): string {
