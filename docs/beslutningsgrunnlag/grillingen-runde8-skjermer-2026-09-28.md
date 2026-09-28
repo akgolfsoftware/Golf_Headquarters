@@ -15,8 +15,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 1 | PlayerHQ · I dag | ja | ja, 28.09 | — |
 | 2 | PlayerHQ · Planlegging | ja | ja, 28.09 | — |
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
-| 4 | PlayerHQ · Meg | pågår | — | — |
-| 5 | PlayerHQ · Live-økt og registrering | — | — | — |
+| 4 | PlayerHQ · Meg | ja | ja, 28.09 | — |
+| 5 | PlayerHQ · Live-økt og registrering | pågår | — | — |
 | 6 | AgencyOS · Cockpit | — | — | — |
 | 7 | AgencyOS · Innboks | — | — | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | — | — | — |
@@ -420,3 +420,31 @@ Spilleren kan alltid sammenligne snittscoren sin mot AK Golf pipelines (tolket: 
 anonymiserte snitt i resultatdatabasen, for eksempel samme alder eller tour — bekreftes).
 **8.57 Kobling i onboarding.** Svar: a — eget steg «Finn deg i turneringsresultatene», kan
 hoppes over og gjøres senere fra profilen.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Rekkefølge:** profil (navn, personalia, HCP, hjemmeklubb) · fasiliteter · bookinger ·
+  abonnement og betalingskort · foreldre (inviter, se tilgang) · helse og fravær (skade,
+  sykdom, ferie) · utstyr · hjelp · innstillinger.
+- **Fasiliteter:** så mange du vil, kan endres når som helst. Én om gangen med ja/nei og
+  oppfølging ved ja (range-lengde og driver, korteste og lengste bunkerslag, lengste chip
+  osv.). Viser hvilke av de 17 treningsområdene fasiliteten dekker, og hva som mangler.
+- **Min coach:** hvem, avtale, videoer, tilbakemeldinger. Meldinger i innboksen bak bjella.
+- **Venner og utfordringer** under Meg.
+- **Målsetninger** (nytt navn på mål): i Workbench, bytter ut kalenderen i midtfeltet. Start,
+  slutt, resultat- eller prosessmål, knyttet til år/periode/måned/uke/økt, målbar på alle
+  parametere i plattformen, fremdrift automatisk fra plan, Stats, tester og runder.
+- **Turneringsresultater:** nytt steg i onboarding «Finn deg i turneringsresultatene» (AK
+  pipelines, golf-ID eller navn + fødselsår, mellomnavn ignoreres), kan hoppes over og tas fra
+  profilen. Resultatene vises i Stats → Snittscore.
+- **Sammenligning:** spilleren kan alltid sammenligne snittscoren mot anonymiserte snitt i AK
+  Golf pipelines. Bare coach sammenligner med andre spillere i gruppene.
+- **Talentradaren** (coachens vurdering 1–10) ser bare coach, aldri spiller.
+- **Senere:** eksport og utskrift av årsplan.
+- **Fjernes fra PlayerHQ:** talent «Min plan» og roadmap (dekkes av Plan), ukesdigest (blir
+  melding i innboksen), «Utenfor banen».
+
+**Beslutninger som skal registreres i fase 4:** Mål heter Målsetning · målsetninger i
+Workbench med start, slutt og type · fasilitetsskjema med mål og dekning · turneringskobling i
+onboarding · talentradar bare for coach · sammenligning med andre spillere bare for coach
+(bekrefter gjeldende regel), snittscore mot anonymiserte pipelines-snitt for spiller ·
+talent-, ukesdigest- og «Utenfor banen»-sidene utgår.
