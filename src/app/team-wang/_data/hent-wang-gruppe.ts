@@ -29,7 +29,8 @@ export type WangFase =
   | "TESTUKE"
   | "FERIE"
   | "TRENINGSSAMLING"
-  | "HELDAGSSAMLING";
+  | "HELDAGSSAMLING"
+  | "RESTITUSJON";
 
 export interface WangElev {
   /** Bruker-id. Trengs for å åpne IUP-samtalen for én elev fra trenerflaten. */

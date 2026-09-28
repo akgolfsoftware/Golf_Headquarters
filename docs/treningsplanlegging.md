@@ -337,7 +337,7 @@ Ferie · Restitusjon. «Spesialisering» og «Spesialiseringsperiode» brukes ik
 | Evaluering (`EVALUERING`) | Oppsummering, analyse og justering |
 | Testuke (`TESTUKE`) | Tester og målinger |
 | Ferie (`FERIE`) | Ferie, pause eller redusert plan |
-| Restitusjon | Hvile og gjenoppbygging. Besluttet 28.09.2026, ikke bygget: krever en ny verdi i databasen |
+| Restitusjon (`RESTITUSJON`) | Hvile og gjenoppbygging |
 | Treningssamling (`TRENINGSSAMLING`) | Samling over flere økter eller dager |
 | Heldagssamling (`HELDAGSSAMLING`) | Samling med heldagsformat |
 

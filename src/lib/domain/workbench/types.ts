@@ -77,7 +77,8 @@ export type PeriodLabel =
   | "TESTUKE"
   | "FERIE"
   | "TRENINGSSAMLING"
-  | "HELDAGSSAMLING";
+  | "HELDAGSSAMLING"
+  | "RESTITUSJON";
 
 export type BlockType =
   | "OEKT" // training session
@@ -602,7 +603,7 @@ export interface YearMonthRow {
   eventLabels: string[];
 }
 
-// Samme åtte verdier som Prisma-enumen LPhase — literal union her for å
+// Samme ni verdier som Prisma-enumen LPhase — literal union her for å
 // holde domenelaget Prisma-fritt (mønster fra PyramidArea over).
 export type PeriodType =
   | "GRUNN"
@@ -612,7 +613,8 @@ export type PeriodType =
   | "TESTUKE"
   | "FERIE"
   | "TRENINGSSAMLING"
-  | "HELDAGSSAMLING";
+  | "HELDAGSSAMLING"
+  | "RESTITUSJON";
 
 export interface YearPeriodBand {
   id: string;

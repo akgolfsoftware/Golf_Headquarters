@@ -61,6 +61,7 @@ const FASE_IKON: Record<LPhase, string> = {
   FERIE: "sun",
   TRENINGSSAMLING: "users",
   HELDAGSSAMLING: "clock",
+  RESTITUSJON: "moon",
 };
 const FASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
@@ -71,6 +72,7 @@ const FASE_LABEL: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 const FASE_FILTRE = ["Grunnfase", "Spesialfase", "Turneringsfase"] as const;
 

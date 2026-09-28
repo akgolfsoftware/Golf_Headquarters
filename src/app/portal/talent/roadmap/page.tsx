@@ -51,6 +51,7 @@ const LPHASE_NAVN: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 const MND_KORT = [

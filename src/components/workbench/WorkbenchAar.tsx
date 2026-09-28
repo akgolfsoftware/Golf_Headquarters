@@ -29,6 +29,7 @@ const PERIODE_LABEL: Record<YearPeriodBand["type"], string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 function timer(minutter: number): string {

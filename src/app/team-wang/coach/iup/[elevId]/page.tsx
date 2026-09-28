@@ -32,6 +32,7 @@ const FASE_NAVN: Record<string, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 function osloIdag(): string {

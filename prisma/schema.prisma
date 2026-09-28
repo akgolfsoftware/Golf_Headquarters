@@ -93,6 +93,8 @@ enum LPhase {
   FERIE
   TRENINGSSAMLING
   HELDAGSSAMLING
+  // Anders 28.09.2026 (beslutninger.md §PERIODENE HETER): niende periodetype.
+  RESTITUSJON
 }
 
 enum SkillArea {
@@ -446,6 +448,7 @@ enum PeriodeType {
   FERIE
   TRENINGSSAMLING
   HELDAGSSAMLING
+  RESTITUSJON
 }
 
 // Workbench v2 — Sprint 1 enums

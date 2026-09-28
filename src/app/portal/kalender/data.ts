@@ -36,6 +36,7 @@ const PERIODE_TO_AKSE: Record<PeriodeType, AkseKey> = {
   FERIE: "FYS",
   TRENINGSSAMLING: "TEK",
   HELDAGSSAMLING: "SPILL",
+  RESTITUSJON: "FYS",
 };
 
 const PERIODE_NAVN: Record<PeriodeType, string> = {
@@ -47,6 +48,7 @@ const PERIODE_NAVN: Record<PeriodeType, string> = {
   FERIE: "Hvile",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"] as const;
