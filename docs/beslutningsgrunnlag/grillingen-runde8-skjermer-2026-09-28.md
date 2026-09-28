@@ -812,12 +812,16 @@ kategorisering derfra. Tolket: valgt pyramide styrer område, felt og øvelsesba
   spiller.
 
 ### Spørsmål og svar
-**8.95 Struktur.** Forslag a: Booking · Grupper · Tester · Økonomi · Oppsett; turneringer,
-videoer/opptak, oppgaver og markedsføring flyttes. Venter på svar.
-**8.96 Ny booking.** Forslag a: i hurtigknappen og øverst i Mer; test-tjeneste tildeler testen.
-Venter på svar.
+**8.95 Struktur.** Svar: a — Booking · Grupper · Tester · Økonomi · Oppsett; turneringer til
+Workbench og Plan, videoer og opptak til Spiller 360 → Samtaler, oppgaver til Notion,
+markedsføring til Oppsett.
+**8.96 Ny booking.** Svar: a — i hurtigknappen og øverst i Mer; spiller → tjeneste → tid →
+bekreft; test-tjeneste tildeler testen automatisk.
 **8.97 Grupper.** Svar: søk opp spillere med PlayerHQ, hak av gruppene de skal være med i,
 tildel tester og TrackMan-økter fra gruppen.
-**8.98 Leads.** Forslag a: i Innboks under Oppfølging. Venter på svar.
+**8.98 Leads.** Svar: a — i Innboks under Oppfølging, med utkast fra Jarvis.
 **8.99 Turneringspåmeldinger.** Svar: ingen bekreftelse. Coach ser turneringsoversikten per
 spiller.
+**8.100 Økonomi.** Svar: coach legger inn budsjett, laster opp Tripletex-eksport hver
+måned, og appen leser betalingsinformasjon fra Stripe.
+**8.101 Resten.** Svar: ja til 8.95, 8.96 og 8.98.
