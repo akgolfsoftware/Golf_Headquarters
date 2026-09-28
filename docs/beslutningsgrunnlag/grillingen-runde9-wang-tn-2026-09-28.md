@@ -14,7 +14,7 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 | # | Område | Grillet | Bekreftet av Anders | Bestilling sendt |
 |---|---|---|---|---|
 | 1 | IUP — felles modell fra PlayerHQ | ja | ja, 28.09 | — |
-| 2 | Testbatteri | — | — | — |
+| 2 | Testbatteri | ja | ja, 28.09 | — |
 | 3 | Deling og tilgang | — | — | — |
 | 4 | WANG: trener og sportssjef | — | — | — |
 | 5 | Team Norway: coach | — | — | — |
@@ -73,3 +73,29 @@ AK sine. Testbatteriene er de samme.
 - **Kategorier** AK Golf A–K etter snittscore. **Pyramiden** FYS, TEK, SLAG, SPILL, TURN.
   **Testbatteriet** er det samme for alle tre.
 - **Kompetansemål fra Udir** bare på WANG-skjermene, brutt ned på pyramiden.
+
+## 2. Testbatteri
+
+### Dette fantes 28.09
+Ett lager i koden med 20 tester. WANG-tegningen: to låste protokoller, testdag, testkø
+(«Kontrollert»), 11 NGF-tester uavklart. Team Norway-tegningen: bare fysiske protokoller
+(3000 m, knebøy, CMJ, medisinball, hastighet) og referansenivåer per klasse.
+
+### Spørsmål og svar
+- 9.9 a Både spiller og trener kan føre.
+- 9.10 a De uavklarte NGF-testene ligger i batteriet, som i 6-årsløpet.
+- 9.11 a AK-kategori som standard, TN-klasse i tillegg for TN-spillere.
+- 9.12 Fysiske tester etter 6-årsløpet.
+- 9.13 «I grunnperioden testes det hver sjette uke på fysisk, og litt variabelt på de andre testene.»
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Ett testbatteri** for AK Golf, WANG og Team Norway, lagret på spilleren.
+- **Spiller og trener kan føre.** Trenerført merkes «Kontrollert», spillerført «Egenført».
+- **Alle NGF-testene fra 6-årsløpet** er med, også de 11 som var uavklart (gate-testene, VISA
+  Express, Putt Speed, 9 hull lengde, Teknikktest A, B og C).
+- **Nivå:** AK-kategori A–K som standard; TN-spillere ser i tillegg landslagsnivået for klassen
+  (Gutter U18, Jenter U18, Damer, Herrer).
+- **Fysiske tester etter 6-årsløpet:** benkpress, markløft trapbar, lengdehopp, rotasjonskast,
+  clubspeed. TN-tegningens 3000 m, knebøy, CMJ og medisinball utgår.
+- **Rytme:** fysisk hver sjette uke i grunnperioden; andre tester legger treneren i årsplanen
+  etter behov; andre perioder setter treneren selv.
