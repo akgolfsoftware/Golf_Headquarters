@@ -9,12 +9,12 @@ import {
   sammenlignPNummer,
 } from "./constants";
 
-test("P1–P10 har fasitens navn (morad-posisjonssystem.md)", () => {
+test("P1–P10 har ordmasterens navn (beslutninger.md, 27.09.2026)", () => {
   assert.equal(P_POSITIONS.length, 10);
-  assert.equal(pNavn("P5.0"), "Halvveis ned (venstre arm parallell, maks lag)");
-  assert.equal(pNavn("P6.0"), "Kølle parallell ned (lag-release starter)");
-  assert.equal(pNavn("P8.0"), "Kølle parallell på utgang");
-  assert.equal(pNavn("P9.0"), "Venstre arm parallell på follow-through");
+  assert.equal(pNavn("P5.0"), "Venstre arm parallell i nedsving");
+  assert.equal(pNavn("P6.0"), "Kølle parallell i nedsving");
+  assert.equal(pNavn("P8.0"), "Kølle parallell i gjennomføring");
+  assert.equal(pNavn("P9.0"), "Høyre arm parallell i oppfølging");
 });
 
 test("mellomposisjoner hører under sin hoved-P og har navn", () => {

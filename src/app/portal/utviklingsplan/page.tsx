@@ -39,8 +39,16 @@ export const dynamic = "force-dynamic";
 /* ── Oppslagstabeller (ordbok/taksonomi, ikke fabrikkert) ──────────── */
 
 const P_NAVN: Record<string, string> = {
-  P1: "Adresse", P2: "Takeaway", P3: "Halvveis tilbake", P4: "Topp-posisjon", P5: "Transisjon",
-  P6: "Halvveis ned", P7: "Impact", P8: "Tidlig oppfølging", P9: "Kølle parallell", P10: "Finish",
+  P1: "Adresse / Oppstilling",
+  P2: "Kølle parallell i baksving",
+  P3: "Venstre arm parallell i baksving",
+  P4: "Toppen av baksvingen",
+  P5: "Venstre arm parallell i nedsving",
+  P6: "Kølle parallell i nedsving",
+  P7: "Treffpunktet",
+  P8: "Kølle parallell i gjennomføring",
+  P9: "Høyre arm parallell i oppfølging",
+  P10: "Fullføring og balanse",
 };
 
 // 3-trinns visnings-index (Uten ball=0 · Lav hastighet=1 · Auto=2) for læringstrappen.
