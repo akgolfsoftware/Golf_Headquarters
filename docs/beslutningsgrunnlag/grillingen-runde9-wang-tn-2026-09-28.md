@@ -224,6 +224,7 @@ ikke samtykke i dag (område 3).
 | WANG `6cfa623c` | 20b | A–K fra `src/lib/domain/ak-kategori.ts`, WG-02 og WANG-06 utgår, plan uke 40–43, oppdiktede testpoeng fjernet («—»). |
 | WANG `6cfa623c` | 20c–d | Ranking WAGR + NGF juniorranking (48 tilfeller, 0 avvik). Fireukerssjekken med arkets ordlyd, bare for WANG/TN-grupper; Ung har 34 spørsmål, Junior 41 (som i arket). 48 tilfeller, 0 avvik. |
 | Team Norway `bc3e41fc` | 1 | Spillerrollen borte, spillerprofil med IUP, fellestesting, ny Kartlegging, tilgang og samtykke. Ikke målt av designet; måling, A–K og TN-arkets utviklingssjekk bestilt. |
+| Team Norway `bc3e41fc` | 1b | Måling og A–K: 300 tilfeller (25 skjermer × 4 tilstander × 390/1280/1440), 0 avvik etter retting av 21 for små treffflater. A–K etter AK-tabellen. Utviklingssjekken manglet arkets tekst; rettingen med ranking, delingslenke, spørsmålsfil og nivå Ung sendt 28.09. |
 | Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
 
 Avklart 28.09: delingslenken gjelder sju dager · ranking i IUP er WAGR og NGFs juniorranking ·
