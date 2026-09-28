@@ -16,7 +16,7 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 | 1 | IUP — felles modell fra PlayerHQ | ja | ja, 28.09 | — |
 | 2 | Testbatteri | ja | ja, 28.09 | — |
 | 3 | Deling og tilgang | ja | ja, 28.09 | — |
-| 4 | WANG: trener og sportssjef | — | — | — |
+| 4 | WANG: trener og sportssjef | ja | ja, 28.09 | — |
 | 5 | Team Norway: coach | — | — | — |
 | 6 | Spillerens side i PlayerHQ | — | — | — |
 
@@ -134,3 +134,32 @@ ingen skjerm. WANG-34 viser at TN bare ser tester og runder.
 - **Kodeoppgave (egen, ikke i denne runden):** WANG- og TN-tilgang må kreve samtykke
   (`wang-tilgang.ts`, `tn-arbeidsflate.ts` `hentTnSpillerTilgang`); i dag holder
   gruppemedlemskap.
+
+## 4. WANG: trener og sportssjef
+
+### Dette fantes 28.09
+45 skjermer i `6cfa623c`: meny I dag · Trening · Tester · Konkurranse · Meldinger · Elever +
+Administrasjon. IUP med halvårsevaluering, kategori E–A+, egne fysiske protokoller.
+
+### Anders forteller
+«Hovedsakelig ha kontroll på spilleren, kunne følge opp spilleren på trening, samtaler og
+turneringer.»
+
+### Spørsmål og svar
+9.22–9.26: Anders svarte «De navnet var længere på alle», tolket som «den anbefalte på alle»
+(a på alle fem), bekreftet i sammendraget.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Hovedoppgave:** kontroll på spilleren — trening, samtaler og turneringer.
+- **Øverst:** elever som trenger deg (under 70 % to uker på rad, fireukerssjekk ikke levert,
+  forslag som venter svar, turneringer denne uka).
+- **Elevprofil** med samme innhold som Spiller 360, i WANG-drakt: Plan · Stats · Tester · IUP ·
+  Samtaler · Turneringer. Kompetansemål fra Udir bare her.
+- **Samtaler:** spilleren leverer fireukerssjekken; treneren ser svarene og tar samtale ved behov,
+  logget med «Avtalt», kan bli forslag til planen.
+- **Turneringer:** kommende og siste med brutto, plassering og SG fra AK Golf pipelines. WANG
+  melder ikke på og bekrefter ingenting.
+- **Administrasjon** for sportssjef som 27.09; samtykkeoversikten følger den nye delingen.
+- **Rettes i tegningen:** IUP fra PlayerHQ med forslag i stedet for endring · fireukerssjekk i
+  stedet for halvårsevaluering · kategori A–K i stedet for E–A+ · fysiske tester etter
+  6-årsløpet · roller fjernet 27.09 ut av WANG-24 og WANG-34.
