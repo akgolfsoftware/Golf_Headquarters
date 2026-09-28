@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { LPhase, PeriodeType } from "@/generated/prisma/enums";
 import { LPHASE_FARGE, LPHASE_LABEL, LPHASE_REKKEFOLGE } from "@/lib/labels/taxonomy";
+import { byggStandardSkjelett, standardOktAntall } from "@/lib/plan-engine/standard-fordeling";
 import { PeriodeTypeSchema } from "@/lib/portal/training/ak-taxonomy";
 import { periodeTypeFraNavn } from "@/lib/portal/training/periode-navn";
 import { PeriodeInputSchema } from "./perioder";
@@ -30,4 +31,11 @@ test("valglistene dekker alle periodetypene i databaseskjemaet", () => {
 
 test("periodenavnet «Restitusjon» gjenkjennes", () => {
   assert.equal(periodeTypeFraNavn("Restitusjon"), "RESTITUSJON");
+});
+
+// Anders 28.09.2026: antall økter låses ikke — spiller og coach setter det selv.
+test("Restitusjon har ikke standardtall for økter per uke", () => {
+  assert.equal(standardOktAntall("A", "RESTITUSJON"), null);
+  assert.deepEqual(byggStandardSkjelett("A", "RESTITUSJON"), []);
+  assert.equal(standardOktAntall("A", "GRUNN"), 6);
 });

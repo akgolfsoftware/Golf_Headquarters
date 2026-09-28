@@ -29,8 +29,8 @@ Evaluering, Ferie, Restitusjon.
 2. **Restitusjon i databasen og koden.** Gjort 28.09.2026: Anders kjørte
    `scripts/add-restitusjon-periode-2026-09-28.ts` selv, og `RESTITUSJON` finnes i `PeriodeType`
    og `LPhase` (bekreftet med lesespørring). Skjema, navn, farge og ikon er lagt inn i koden.
-   Antall økter per uke i plan-motoren (`STANDARD_OKT_ANTALL`) er 0 som forslag, samme som
-   Ferie, til Anders har bekreftet tallet. Gjenstår: Anders ser skjermen (port 7).
+   Antall økter per uke låses ikke (Anders 28.09): spiller og coach setter det selv, og
+   plan-motoren har ikke standardtall for Restitusjon. Gjenstår: Anders ser skjermen (port 7).
 3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`). Gjort 28.09 (masterbrain#13):
    «Spesialperiode» i `REDIGER-HER.md` og `canon-methodology.json`. Kodenavnet SPESIALISERING
    der oversettes fortsatt av appen.
