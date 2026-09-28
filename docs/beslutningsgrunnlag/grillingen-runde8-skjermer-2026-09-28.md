@@ -17,8 +17,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
 | 4 | PlayerHQ · Meg | ja | ja, 28.09 | — |
 | 5 | PlayerHQ · Live-økt og registrering | ja | ja, 28.09 | — |
-| 6 | AgencyOS · Cockpit | pågår | — | — |
-| 7 | AgencyOS · Innboks | — | — | — |
+| 6 | AgencyOS · Cockpit | ja | ja, 28.09 | — |
+| 7 | AgencyOS · Innboks | pågår | — | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | — | — | — |
 | 9 | AgencyOS · Kalender | — | — | — |
 | 10 | AgencyOS · Workbench | — | — | — |
@@ -564,3 +564,34 @@ det går deretter rett til spilleren.
 knappen grå; spilleren ser «Opptak pågår».
 **8.72 Navn i sammendraget.** Svar: a — navnet byttes ut før avskriften sendes til AI og settes
 inn igjen etterpå. Sjekkes i kode som egen oppgave.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026, «Bereft» tolket som «bekreftet»)
+- **Øverst:** tellerrad (meldinger som venter, følger ikke planen, turneringer denne uka,
+  forslag som venter), deretter dagens kalender 05:00–22:00 med coaching- og gruppeøkter,
+  spiller/gruppe, sted og «Start live».
+- **Venter på svar:** meldinger, videoer og spørsmål fra spillere i egne grupper, nyeste først,
+  kort svar i raden, hele samtalen i Innboks.
+- **Oppgaver:** fra Notion Tasks og Prosjekter; forfalt og frist i dag; huk av i appen.
+  Oppgavelista i appen utgår.
+- **Turneringer denne uka:** spiller, turnering, sted, dager til start; etterpå brutto score og
+  plassering. Bare egne grupper.
+- **Følger ikke planen:** under 70 % to uker på rad, laveste først, antall uker, lenke til
+  Spiller 360.
+- **Nøkkeltall:** aktive spillere, økter gjennomført i stallen denne uka, snitt etterlevelse.
+  Ikke økonomi.
+- **Hurtigknapp** med snarvei til Workbench (som bestemt).
+- **Live coachingøkt:** spillerkort (navn, kategori, HCP, siste runde med SG, aktive
+  målsetninger) · teknisk plan (P-posisjoner, oppgaver, bilde, video) · legg inn video, bilde og
+  målbilde fra iPhone · opptak og notater, krever samtykke fra onboarding, spilleren ser
+  «Opptak pågår» · sammendrag som utkast til coach, godkjent går rett til spilleren,
+  hjemmelekse inn i planen med ett trykk · navnet tas ut før tekst sendes til AI.
+- **Menyen** rettes til Cockpit · Innboks · Stall · Kalender · Workbench · Mer, med Cockpit som
+  startskjerm.
+
+**Beslutninger som skal registreres i fase 4:** Cockpit som startskjerm med dagens kalender
+05–22 · oppgaver kun fra Notion, oppgavelista i appen utgår · live coachingøkt med opptak,
+teknisk plan og sammendrag coach godkjenner · samtykke til opptak i onboarding ·
+anonymisering av navn før AI.
+
+**Kodefunn som må bli egne oppgaver:** opptakeren er ikke koblet til «Start live»; sjekk om
+avskrift og analyse sender spillernavn til eksterne tjenester.
