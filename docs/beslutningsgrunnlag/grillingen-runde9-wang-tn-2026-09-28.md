@@ -211,6 +211,6 @@ tilgang. Rolle Spiller med ti skjermer. Ingen IUP, ingen golftester, ingen delin
   registrerer oppmøte og gjennomføring i PlayerHQ. Ingen egen WANG-fane.
 
 ## Neste
-Fase 3 (mulighetskart for WANG og Team Norway), fase 4 (/beslutning og bestillinger til
+Fase 3 ferdig: [mulighetskart-wang-tn-2026-09-28.md](mulighetskart-wang-tn-2026-09-28.md), venter på Anders. Fase 4 (/beslutning og bestillinger til
 `6cfa623c`, `bc3e41fc` og `7d7c2994`). Kodeoppgave allerede funnet: WANG- og TN-tilgang krever
 ikke samtykke i dag (område 3).
