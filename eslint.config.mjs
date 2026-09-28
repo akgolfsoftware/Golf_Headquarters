@@ -193,7 +193,6 @@ const eslintConfig = defineConfig([
       "src/components/portal/v2/WorkbenchV2.tsx",
       "src/components/portal/v2/chat/FangstSheet.tsx",
       "src/components/portal/v2/chat/PortalStegListe.tsx",
-      "src/components/portal/v2/idag/IDagSelected.tsx",
       "src/components/sg-hub/ConditionsSlider.tsx",
       "src/components/sg-hub/DPlanePlot.tsx",
       "src/components/sg-hub/SgTrainingScatter.tsx",
