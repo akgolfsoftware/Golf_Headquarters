@@ -554,3 +554,13 @@ score og plassering; bare spillere i egne grupper.
 **8.68 Varsel og nøkkeltall.** Svar: a — under 70 % to uker på rad, laveste først, lenke til
 Spiller 360. Nøkkeltall: aktive spillere, økter gjennomført i stallen denne uka, snitt
 etterlevelse, forslag som venter. Økonomi utenfor Cockpit.
+**8.69 Under live coachingøkt.** Svar: a — spillerkort øverst (navn, kategori, HCP, siste
+runde med SG, aktive målsetninger), teknisk plan i midten (aktive P-posisjoner, oppgaver,
+bilde og video), opptak og notatfelt nederst. I tillegg: coach legger enkelt inn video og
+bilde fra iPhone, og kan legge inn målbilde («malbilde» i talen, tolket som målbilde).
+**8.70 Etter økta.** Svar: a — sammendraget kommer som utkast til coach, coach godkjenner, og
+det går deretter rett til spilleren.
+**8.71 Samtykke.** Svar: a — ja til opptak i onboarding (forelder for juniorer); uten ja er
+knappen grå; spilleren ser «Opptak pågår».
+**8.72 Navn i sammendraget.** Svar: a — navnet byttes ut før avskriften sendes til AI og settes
+inn igjen etterpå. Sjekkes i kode som egen oppgave.
