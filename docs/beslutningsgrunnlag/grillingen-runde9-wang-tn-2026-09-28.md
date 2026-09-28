@@ -214,3 +214,16 @@ tilgang. Rolle Spiller med ti skjermer. Ingen IUP, ingen golftester, ingen delin
 Fase 3 ferdig: [mulighetskart-wang-tn-2026-09-28.md](mulighetskart-wang-tn-2026-09-28.md), godkjent av Anders 28.09. Fase 4: beslutningen står i `.claude/rules/beslutninger.md` §ÉN IUP OG ETT TESTBATTERI; bestillinger sendt 28.09 til WANG runde 20
 (`6cfa623c`), Team Norway (`bc3e41fc`) og Precision runde 31 (`7d7c2994`, sendes etter runde 22). Kodeoppgave allerede funnet: WANG- og TN-tilgang krever
 ikke samtykke i dag (område 3).
+
+## Fase 4 — leveranser (rapportert av designet, ikke målt av Claude Code)
+
+| Prosjekt | Runde | Resultat |
+|---|---|---|
+| WANG `6cfa623c` | 20 | Ny `WANG Golf Elevprofil.dc.html`: WANG-43 Elever som trenger deg, WANG-44 Elevprofil, WANG-45 Fireukerssjekk, WANG-46 Forslag, WANG-34 på ny. 56 tilfeller 390/1280, 0 avvik. |
+| WANG `6cfa623c` | 20b | A–K fra `src/lib/domain/ak-kategori.ts`, WG-02 og WANG-06 utgår, plan uke 40–43, oppdiktede testpoeng fjernet («—»). |
+| Team Norway `bc3e41fc` | 1 | Spillerrollen borte, spillerprofil med IUP, fellestesting, ny Kartlegging, tilgang og samtykke. Ikke målt av designet; måling, A–K og TN-arkets utviklingssjekk bestilt. |
+| Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
+
+Venter på Anders: delingslenkens varighet (designet antok 7 dager) · hvilken ranking i IUP ·
+poengskala for de ni NGF-testene og 8-ball · om 41 spørsmål hver fjerde uke er for mye.
+
