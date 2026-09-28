@@ -20,6 +20,8 @@ mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.m
   spillerens nivå: Ung, Junior, Amatør eller Profesjonell) erstatter WANGs halvårsevaluering.
   **Bare for spillere i en WANG-gruppe (Ung eller Toppidrett) eller Team Norway-gruppe** (Anders
   28.09: «Alle andre brukere skal ikke ha disse spørsmålssjekkene»). Sesongevaluering uka før uke 43.
+  **Nivå Ung** = spilleren går i 8., 9. eller 10. klasse dette skoleåret (skoleåret 2026/27: født
+  2011–2013), med arkets 34 Ung-spørsmål; eldre spillere bruker Junior (41) og videre.
 - **Ett testbatteri** for alle tre, med alle NGF-testene fra 6-årsløpet og fysisk etter
   6-årsløpet (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed). Spiller og
   trener fører («Egenført» · «Kontrollert»). Nivå er AK A–K; TN-spillere ser i tillegg
