@@ -30,9 +30,9 @@ Evaluering, Ferie, Restitusjon.
    kirurgisk via `db execute` (gotchas §Database). Krever Anders' ja til akkurat den endringen.
    Deretter navn, farge og ikon i de samme tolv filene. Ferdig når coach kan legge en
    restitusjonsperiode i årsplanen og spilleren ser den.
-3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`): «Spesialiseringsperiode» i
-   `FASIT-metodikk-og-vokabular-2026-08-19.md`, `REDIGER-HER.md` og `canon-methodology.json`
-   byttes til «Spesialperiode». Kodenavnet SPESIALISERING der oversettes fortsatt av appen.
+3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`). Gjort 28.09 (masterbrain#13):
+   «Spesialperiode» i `REDIGER-HER.md` og `canon-methodology.json`. Kodenavnet SPESIALISERING
+   der oversettes fortsatt av appen.
 4. **WANG og GFGK Junior er ikke endret.** WANG-årsplanen (`src/app/team-wang/_data/`) og den
    offentlige GFGK-teksten (`src/app/gfgk-junior/_data/`) sier «Spesialisering». Endres bare hvis
    Anders sier at lista også gjelder der.
