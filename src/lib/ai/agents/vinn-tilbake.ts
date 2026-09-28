@@ -8,6 +8,7 @@
 import "server-only";
 import { anthropic, modelFor, isAiEnabled, tekstFra } from "../client";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonym } from "@/lib/ai/anonymiser";
 
 export const VINN_TILBAKE_SYSTEM = `
 Du er Vinn Tilbake-agent for AK Golf HQ.
@@ -124,6 +125,7 @@ export async function identifiserInaktiveSpillere(
     const sisteFokus = sisteOkt?.title ?? null;
 
     const melding = await byggMelding({
+      spillerId: sp.id,
       spillerNavn: sp.name,
       coachNavn,
       dagerInaktiv,
@@ -150,7 +152,9 @@ export async function identifiserInaktiveSpillere(
 
 // ---------- Melding-bygging ----------
 
-async function byggMelding(opts: {
+/** Eksportert for personverntesten. */
+export async function byggMelding(opts: {
+  spillerId: string;
   spillerNavn: string;
   coachNavn: string;
   dagerInaktiv: number;
@@ -163,14 +167,15 @@ async function byggMelding(opts: {
     return byggDemoMelding(opts);
   }
 
-  // ANONYMISERT (GDPR art. 9): kun fornavn sendes til Anthropic (nødvendig for
-  // personlig tiltale i meldingen), aldri fullt navn eller coach-navn. Meldingen
-  // gjelder ofte mindreårige — fullt navn + inaktivitet/frafall er sensitivt.
+  // ANONYMISERT (GDPR art. 9): ingen del av navnet sendes til Anthropic. Modellen
+  // får et pseudonym, og fornavnet settes inn i svaret her. Meldingen gjelder
+  // ofte mindreårige — navn + inaktivitet/frafall er sensitivt.
   const fornavn = opts.spillerNavn.split(" ")[0];
+  const pseudonym = pseudonymForId(opts.spillerId);
   const userPrompt = `
 Skriv en personlig oppfølgings-melding på maks 80 ord.
 
-Spiller: ${fornavn}
+Spiller: ${pseudonym}
 Dager inaktiv: ${opts.dagerInaktiv}
 ${opts.sisteFokus ? `Sist trent på: ${opts.sisteFokus}` : ""}
 ${opts.sisteMaalTitle ? `Aktivt mål: ${opts.sisteMaalTitle}` : ""}
@@ -187,7 +192,7 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
-    const text = tekstFra(response);
+    const text = substituerPseudonym(tekstFra(response), pseudonym, fornavn);
     return text || byggDemoMelding(opts);
   } catch {
     return byggDemoMelding(opts);
