@@ -64,6 +64,14 @@ i koden, men som ingen skjerm viser eller ingen knapp starter. Grunnlag:
 | D4 | Enkel/dyp modus, dato i fritekst | `/api/player-depth`, `/api/parse-date` | Ikke etterspurt |
 | D5 | Sosiale medier-agent, tilgjengelighetsvakt | `social-media-agent`, `availability-24-7-monitor` | Starter bare manuelt, ikke etterspurt |
 
-## Anders' valg
+## Anders' valg (28.09.2026)
 
-Ikke valgt ennå.
+«Jeg ønsker at du implementerer alle disse forslagene. Foruten skade, hvis køllehastighet
+faller.»
+
+- **Inn i designbestillingene:** A1–A8, A10–A12 og B1–B8.
+- **Ikke med:** A9 skadevarsel på køllehastighet.
+- **C1–C6** blir kodeoppgaver etter denne runden (ingen kode i runde 8).
+- **D1–D5** er ikke valgt.
+- Tolkning: «implementerer» betyr i designet nå. Selve koden bygges etter at Anders har sett
+  tegningene (port 7).
