@@ -253,10 +253,15 @@ hurtighandlingene i AgencyOS (nå fem med «Ny booking»).
    `~/ak-brain/claude-code/prompter/precision-runde19-bestilling.txt` og videre. Ferdig når alle
    er sendt og statusraden i grillingsfila er oppdatert.
 2. **Port 7:** Anders ser de nye tegningene i 390 og desktop. Ingen porting til kode før det.
-3. **Personvern før annen kode (haster):** ukeforslaget sender ekte spillernavn til Anthropic
-   (`src/lib/ai-plan/week-suggest.ts:194`, `ctx.name`); sjekk om opptak og avskrift gjør det
-   samme; slett konto (`deleteUserAccount`) har ingen knapp. Ferdig når ingen prompt inneholder
-   navn, med test som låser det, og spilleren kan slette kontoen fra Meg.
+3. **Personvern før annen kode (haster).** Gjort 28.09: ukeforslaget, vinn-tilbake,
+   live-økt-chatten og avskriften av coachingopptak sender ikke lenger spillernavn til Anthropic,
+   låst med tester. Slett konto finnes allerede: Meg › Personvern › «Slett kontoen min» sender en
+   forespørsel som coach eller admin godkjenner (`opprettGdprForesporsel`); `deleteUserAccount`
+   er en eldre, ubrukt vei. **Gjenstår:** fritekst brukeren selv skriver (chatmeldinger i
+   coach-AI og portal-chat, øktnotater, coachnotater, AI-minne) sendes uvasket, og Caddies
+   navnedetektor (`src/lib/caddie/privacy.ts`) brukes bare i Caddie-chatten. Anders' egne verktøy
+   (Meg-agenten, innboksutkast, Kommando) sender navn fra e-post, kalender og Stripe; det er
+   Anders' egne data, men bør vurderes.
 4. **Riktighet i planforslaget:** hardkodede fasilitetsflagg (`src/lib/ai-plan/context.ts`,
    `hasBunker: false`, `hasNetAndMat: false`) og signalnavn som ikke matcher
    (`plan-builder/index.ts`, `SG_AREA`). Ferdig når fasilitetsskjemaet styrer flaggene og

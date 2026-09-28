@@ -47,8 +47,8 @@ const SuggestionsSchema = z.object({
 
 export type WeekSuggestion = z.infer<typeof VariantSchema>;
 
+// Ingen navn: spillerens navn sendes aldri til Anthropic (beslutninger.md §SKJERMENE … RUNDE 8, punkt 3).
 type PlayerContext = {
-  name: string;
   currentPeriod?: string;
   nextTournament?: { name: string; daysUntil: number } | null;
   sgWeaknesses?: string[];
@@ -100,11 +100,6 @@ function fallbackSuggestions(): WeekSuggestion[] {
 }
 
 async function loadPlayerContext(userId: string, weekStart: Date): Promise<PlayerContext> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { name: true },
-  });
-
   // Neste turnering etter weekStart.
   const nextEntry = await prisma.tournamentEntry.findFirst({
     where: {
@@ -161,7 +156,6 @@ async function loadPlayerContext(userId: string, weekStart: Date): Promise<Playe
   });
 
   return {
-    name: user?.name ?? "Spiller",
     nextTournament,
     sgWeaknesses,
     recentLoadDays,
@@ -191,7 +185,6 @@ async function standardAnker(userId: string, aktivFase: string | null): Promise<
 
 function buildPrompt(ctx: PlayerContext, weekStart: Date, ekstra: string[]): string {
   const lines: string[] = [];
-  lines.push(`Spiller: ${ctx.name}`);
   lines.push(`Uke som starter: ${weekStart.toISOString().slice(0, 10)} (mandag)`);
   if (ctx.nextTournament) {
     lines.push(
