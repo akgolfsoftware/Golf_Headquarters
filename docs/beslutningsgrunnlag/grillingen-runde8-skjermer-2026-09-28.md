@@ -22,7 +22,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | ja | ja, 28.09 | — |
 | 9 | AgencyOS · Kalender | ja | ja, 28.09 | — |
 | 10 | AgencyOS · Workbench | ja | ja, 28.09 | — |
-| 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | pågår | — | — |
+| 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | ja | ja, 28.09 | — |
 
 ## 0. Motoren
 
@@ -825,3 +825,25 @@ spiller.
 **8.100 Økonomi.** Svar: coach legger inn budsjett, laster opp Tripletex-eksport hver
 måned, og appen leser betalingsinformasjon fra Stripe.
 **8.101 Resten.** Svar: ja til 8.95, 8.96 og 8.98.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026, svar «Ja, kjøre neste fase»)
+- **Mer, fem punkter:** Booking · Grupper · Tester · Økonomi · Oppsett.
+- **Booking:** «Ny booking» øverst og i hurtigknappen; spiller → tjeneste → tid → bekreft;
+  test-tjeneste tildeler testen automatisk; tjenester og priser.
+- **Grupper:** søk opp spillere med PlayerHQ, hak av gruppene; tildel tester og TrackMan-økter
+  til gruppa; medlemmer, timeplan, skoledata. Gruppeplanen ligger i Workbench.
+- **Tester:** tildel, normer, TrackMan-økter.
+- **Økonomi:** budsjett legges inn, Tripletex-eksport lastes opp hver måned, Stripe leses for
+  betalinger. Tall fra kilden, aldri anslått.
+- **Oppsett:** profil, team og invitasjoner, GDPR, logger, markedsføring, hjelp.
+- **Flyttes ut:** turneringer → Workbench og Plan · videoer og opptak → Spiller 360 → Samtaler ·
+  oppgaver → Notion.
+- **Leads** i Innboks under Oppfølging med utkast fra Jarvis.
+- **Turneringspåmeldinger** bekreftes ikke; turneringsoversikt per spiller i Spiller 360.
+
+**Beslutninger som skal registreres i fase 4:** Mer med fem punkter · økonomi fra budsjett,
+Tripletex-eksport og Stripe · leads i Innboks · ingen bekreftelse av turneringspåmelding.
+
+## Fase 3
+
+Mulighetskartet: [mulighetskart-playerhq-agencyos-2026-09-28.md](mulighetskart-playerhq-agencyos-2026-09-28.md).
