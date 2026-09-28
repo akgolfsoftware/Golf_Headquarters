@@ -54,7 +54,7 @@ export function PlayerHQSkall({ children, innboksHref, uleste }: { children: Rea
       </div>
     </nav>
     <header className="pa-skall__topp">
-      <Link href="/portal" aria-label="PlayerHQ hjem" style={{ display: "flex", minWidth: 0 }}>
+      <Link href="/portal" aria-label="PlayerHQ hjem" style={{ display: "flex", alignItems: "center", minHeight: 44, minWidth: 0 }}>
         <Image src="/logos/logo-ak-golf-hq.svg" alt="AK Golf HQ" width={91} height={20} style={{ height: 20, width: "auto" }} priority />
       </Link>
       <span style={{ flex: 1 }} />

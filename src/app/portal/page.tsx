@@ -150,7 +150,9 @@ export default async function PortalHjemPage() {
     popup: popup && { id: popup.id, kind: popup.kind, title: popup.title, body: popup.body, tid: `I DAG · ${tid(popup.createdAt)}`, href: popup.href },
   };
 
-  return <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
-    <PH01IDag {...props}><PushOptInBanner /></PH01IDag>
-  </PlayerHQSkall>;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
+      <PH01IDag {...props}><PushOptInBanner /></PH01IDag>
+    </PlayerHQSkall>
+  );
 }
