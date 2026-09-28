@@ -1,0 +1,81 @@
+/* AgencyOS runde 8 — AG-13…AG-18. Bare demodata. Lørdag 26.09.2026 kl. 15:40. */
+window.AG_DATA3 = {
+  live: [
+    { id: "l1", who: "Magnus Aasheim", title: "Innspill ca. 150 m · lengdekontroll", axis: ["slag"], start: "15:30", min: 60, where: "Treningsområde", drill: "3 av 4 · 7-jern mot mål ±6 m", shots: 42, hit: 57, form: 4, coach: "Anders Kristiansen" },
+    { id: "l2", who: "Tobias Lindvik", title: "Putting 3–5 fot · ballstart", axis: ["slag"], start: "15:10", min: 45, where: "Puttinggreen", drill: "2 av 3 · Port-øvelse 4 fot", shots: 64, hit: 81, form: 3, coach: "Selvstendig" },
+    { id: "l3", who: "Thea Nilsen", title: "Styrke bein og kjerne", axis: ["fys"], start: "15:00", min: 50, where: "Innendørs", drill: "4 av 5 · Knebøy 4 × 6", shots: null, hit: null, form: 4, coach: "Selvstendig" },
+  ],
+  liveShots: [["15:31", "7-jern", 148.2, "Treff"], ["15:32", "7-jern", 141.0, "Kort"], ["15:33", "7-jern", 151.6, "Treff"], ["15:34", "7-jern", 155.9, "Lang"], ["15:35", "7-jern", 149.1, "Treff"], ["15:36", "7-jern", 146.8, "Treff"], ["15:37", "7-jern", 139.4, "Kort"], ["15:38", "7-jern", 150.3, "Treff"]],
+  weekTemplates: [
+    { id: "w1", name: "Spesialperiode · WANG", grp: "WANG Toppidrett", h: 8.5, sessions: 7, mix: [["fys", 90], ["tek", 120], ["slag", 180], ["spill", 120]], used: 14 },
+    { id: "w2", name: "Turneringsuke · lett", grp: "Alle", h: 5.0, sessions: 4, mix: [["fys", 45], ["slag", 90], ["spill", 60], ["turn", 105]], used: 9 },
+    { id: "w3", name: "Grunnperiode · Utvikling", grp: "Utvikling", h: 6.0, sessions: 5, mix: [["fys", 120], ["tek", 150], ["slag", 90]], used: 22 },
+    { id: "w4", name: "Knøtt · to økter", grp: "Knøtt", h: 2.5, sessions: 2, mix: [["tek", 45], ["slag", 60], ["spill", 45]], used: 31 },
+  ],
+  programs: [
+    { id: "g1", name: "Wedge-blokk 4 uker", weeks: 4, focus: "Innspill ca. 50 m · lengdekontroll", axis: "slag", players: 3 },
+    { id: "g2", name: "Utslag startretning", weeks: 6, focus: "Utslag · startretning", axis: "tek", players: 2 },
+    { id: "g3", name: "Vinterstyrke", weeks: 12, focus: "Styrke · Bevegelighet", axis: "fys", players: 11 },
+  ],
+  stdSessions: [
+    { id: "s1", name: "Putting 3–5 fot · ballstart", axis: "slag", min: 45, drills: 3 },
+    { id: "s2", name: "Utslag · P6.0–P7.0", axis: "tek", min: 60, drills: 4 },
+    { id: "s3", name: "9 hull · strategioppgave", axis: "spill", min: 120, drills: 1 },
+    { id: "s4", name: "Styrke bein og kjerne", axis: "fys", min: 50, drills: 5 },
+  ],
+  drills: [
+    { id: "d1", name: "7-jern mot mål", axis: "slag", area: "Innspill ca. 150 m", mot: "Automatikk", bel: "Treningsområde", press: "Observert", dim: "Lengdekontroll", dose: "30 slag", goal: "±6 m", by: "Anders Kristiansen · 12.09.2026" },
+    { id: "d2", name: "Port-øvelse 4 fot", axis: "slag", area: "Putting 3–5", mot: null, bel: "Treningsområde", press: "Alene", dim: "Ballstart", dose: "50 putter", goal: "±1° ballstart", by: "Anders Kristiansen · 02.09.2026" },
+    { id: "d3", name: "Speilarbeid P4.0", axis: "tek", area: "Utslag", mot: "Uten ball", bel: "Innendørs", press: "Alene", dim: "Sikte og oppstilling", dose: "3 × 10", goal: "Stopp parallelt 8 av 10", by: "Anders Kristiansen · 23.09.2026" },
+    { id: "d4", name: "Pitch til 3 mål", axis: "slag", area: "Pitch", mot: null, bel: "Treningsområde", press: "Konkurranse", dim: "Landingspunkt", dose: "30 slag", goal: "±3 m", by: "Anders Kristiansen · 19.08.2026" },
+    { id: "d5", name: "Knebøy", axis: "fys", area: "Styrke", mot: null, bel: "Innendørs", press: "Alene", dim: null, dose: "4 × 6 · RIR 2", goal: "—", by: "Anders Kristiansen · 01.08.2026" },
+  ],
+  tests: [
+    { id: "t1", name: "Innspill ca. 50 m ±4 m", src: "Team Norway", slag: 10, unit: "av 10", ladder: [["Nivå 1", 3], ["Nivå 2", 5], ["Nivå 3", 7], ["Nivå 4", 9]] },
+    { id: "t2", name: "Putting 3 fot · 10 på rad", src: "AK Golf", slag: 10, unit: "av 10", ladder: [["Nivå 1", 5], ["Nivå 2", 7], ["Nivå 3", 9], ["Nivå 4", 10]] },
+    { id: "t3", name: "Utslag · fairway 30 m", src: "Team Norway", slag: 14, unit: "av 14", ladder: [["Nivå 1", 5], ["Nivå 2", 7], ["Nivå 3", 9], ["Nivå 4", 11]] },
+  ],
+  results: [
+    { id: "r1", who: "Tobias Lindvik", test: "t1", v: 7, prev: 5, date: "26.09.2026", done: 10, att: "Magnus Aasheim", sync: true },
+    { id: "r2", who: "Ingrid Berg", test: "t1", v: 5, prev: 4, date: "12.09.2026", done: 10, att: "Anders Kristiansen", sync: true },
+    { id: "r3", who: "Sara Holm", test: "t2", v: 9, prev: 8, date: "25.09.2026", done: 10, att: "—", sync: false },
+    { id: "r4", who: "Emil Solberg", test: "t3", v: null, prev: 6, date: "25.09.2026", done: 9, att: "—", sync: false },
+    { id: "r5", who: "Magnus Aasheim", test: "t3", v: 11, prev: 10, date: "19.09.2026", done: 14, att: "Anders Kristiansen", sync: true },
+  ],
+  groups: [
+    { id: "mini", name: "Mini", ladder: 1, age: "7–10 år", n: 14, coach: "Kari Demo", role: "Assist Coach", times: [["Onsdag", "16:30–17:30", "Nærspillsområde"]], school: null },
+    { id: "basis", name: "Basis", ladder: 2, age: "10–13 år", n: 18, coach: "Per Demo", role: "Assist Coach", times: [["Tirsdag", "17:00–18:30", "Treningsområde"], ["Torsdag", "17:00–18:30", "Treningsområde"]], school: null },
+    { id: "utv", name: "Utvikling", ladder: 3, age: "13–16 år", n: 9, coach: "Anders Kristiansen", role: "Hovedcoach", times: [["Mandag", "17:00–18:30", "Nærspillsområde"], ["Onsdag", "16:00–17:30", "Treningsområde"]], school: null },
+    { id: "elite", name: "Elite", ladder: 4, age: "16+ år", n: 6, coach: "Anders Kristiansen", role: "Hovedcoach", times: [["Mandag–fredag", "07:00–08:30", "Treningsområde"]], school: null },
+    { id: "knott", name: "Knøtt", ladder: null, age: "11–12 år", n: 8, coach: "Kari Demo", role: "Assist Coach", times: [["Lørdag", "10:00–11:00", "Nærspillsområde"]], school: null, side: "Egen gruppe ved siden av stigen" },
+    { id: "wang", name: "WANG Toppidrett", ladder: null, age: "VG1–VG3", n: 12, coach: "Anders Kristiansen", role: "Hovedcoach", times: [["Mandag–fredag", "07:00–08:30", "Borregaard GK"]], school: { name: "WANG Toppidrett Fredrikstad", contact: "Line Demo · kontaktlærer", absence: 3, exams: [["02.10.2026", "Heldagsprøve norsk · VG2"], ["14.10.2026", "Tentamen matematikk · VG1"]] }, side: "Skolegruppe ved siden av stigen" },
+  ],
+  members: {
+    wang: [["Tobias Lindvik", "VG2", "Elite"], ["Magnus Aasheim", "VG3", "Elite"], ["Sara Holm", "VG2", "Utvikling"], ["Ingrid Berg", "VG1", "Utvikling"], ["Jonas Lie", "VG2", "Elite"], ["Nora Bakke", "VG1", "Utvikling"]],
+    utv: [["Sara Holm", "—", "Utvikling"], ["Ingrid Berg", "—", "Utvikling"], ["Nora Bakke", "—", "Utvikling"], ["Thea Nilsen", "—", "Utvikling"], ["Emil Solberg", "—", "Utvikling"]],
+  },
+  yearplan: [["Grunnperiode", "Uke 1–14"], ["Spesialperiode", "Uke 15–22"], ["Turneringsperiode", "Uke 23–35"], ["Spesialperiode høst", "Uke 36–44"], ["Evaluering", "Uke 45–48"], ["Grunnperiode", "Uke 49–52"]],
+  tournaments: [
+    { id: "u1", name: "Klubbmesterskap Borregaard GK", date: "27.09.2026", course: "Borregaard GK", place: "Sarpsborg", lat: 59.28, lon: 11.11, level: "Klubb", mine: ["Tobias Lindvik", "Thea Nilsen", "Sara Holm"], st: "Påmeldt" },
+    { id: "u2", name: "Srixon Tour · runde 6", date: "03.10.2026", course: "Oslo GK", place: "Oslo", lat: 59.95, lon: 10.62, level: "Nasjonal", mine: ["Magnus Aasheim", "Tobias Lindvik"], st: "Påmeldt" },
+    { id: "u3", name: "Region Øst · juniortour", date: "10.10.2026", course: "Hvaler GK", place: "Hvaler", lat: 59.07, lon: 11.03, level: "Regional", mine: ["Ingrid Berg", "Emil Solberg", "Nora Bakke"], st: "Åpen" },
+    { id: "u4", name: "Høstpokalen", date: "17.10.2026", course: "Larvik GK", place: "Larvik", lat: 59.05, lon: 10.03, level: "Regional", mine: [], st: "Åpen" },
+    { id: "u5", name: "Srixon Tour · runde 5", date: "19.09.2026", course: "Kristiansand GK", place: "Kristiansand", lat: 58.15, lon: 8.0, level: "Nasjonal", mine: ["Magnus Aasheim"], st: "Spilt", result: [["Magnus Aasheim", "71 · 73", "144 slag (+2)", "T8"]] },
+  ],
+  tDups: [{ id: "x1", a: { name: "Region Øst juniortour Hvaler", src: "GolfBox · 20.09.2026", date: "10.10.2026", course: "Hvaler GK" }, b: { name: "Region Øst · juniortour", src: "Lagt inn manuelt · 18.09.2026", date: "10.10.2026", course: "Hvaler Golfklubb" }, match: "Samme dato og bane" }],
+  dg: { who: "Magnus Aasheim", src: "DATA GOLF · AMATØRBASELINE · 21.09.2026", rows: [["SG total mot scratch", "+0,6"], ["Beste kategori", "APP +0,5"], ["Svakeste kategori", "PUTT −0,4"]] },
+  tmSessions: [
+    { id: "m1", who: "Tobias Lindvik", date: "24.09.2026", bay: "Studio 1", club: "7-jern", shots: 50, video: 3, rows: [["Club Speed", "mph", 82.4], ["Ball Speed", "mph", 110.6], ["Smash Factor", "", 1.34], ["Attack Angle", "°", -2.1], ["Club Path", "°", 3.8], ["Face to Path", "°", -2.9], ["Launch Angle", "°", 18.4], ["Spin Rate", "rpm", 6720], ["Carry", "m", 147.8]] },
+    { id: "m2", who: "Magnus Aasheim", date: "24.09.2026", bay: "Studio 1", club: "Driver", shots: 40, video: 2, rows: [["Club Speed", "mph", 108.2], ["Ball Speed", "mph", 159.1], ["Smash Factor", "", 1.47], ["Attack Angle", "°", 2.4], ["Club Path", "°", 1.2], ["Face to Path", "°", -0.8], ["Launch Angle", "°", 13.1], ["Spin Rate", "rpm", 2480], ["Carry", "m", 246.5]] },
+    { id: "m3", who: "Sara Holm", date: "23.09.2026", bay: "Studio 2", club: "Driver", shots: 36, video: 0, rows: [["Club Speed", "mph", 91.0], ["Ball Speed", "mph", 131.3], ["Smash Factor", "", 1.44], ["Attack Angle", "°", -0.6], ["Club Path", "°", 3.1], ["Face to Path", "°", -1.9], ["Launch Angle", "°", 12.2], ["Spin Rate", "rpm", 3010], ["Carry", "m", 198.2]] },
+    { id: "m4", who: "Jonas Lie", date: "22.09.2026", bay: "Studio 1", club: "PW", shots: 30, video: 1, rows: [["Club Speed", "mph", 78.0], ["Ball Speed", "mph", 96.2], ["Smash Factor", "", 1.23], ["Attack Angle", "°", -4.4], ["Club Path", "°", 0.8], ["Face to Path", "°", 0.4], ["Launch Angle", "°", 24.9], ["Spin Rate", "rpm", 8840], ["Carry", "m", null]] },
+  ],
+  videos: [
+    { id: "v1", s: "m1", title: "7-jern · face-on · P4.0–P7.0", len: "0:12", at: "24.09.2026 16:22", by: "Anders Kristiansen", note: "Kølle over plan i P5.0" },
+    { id: "v2", s: "m1", title: "7-jern · down-the-line", len: "0:10", at: "24.09.2026 16:24", by: "Anders Kristiansen", note: "" },
+    { id: "v3", s: "m1", title: "Speilarbeid P4.0", len: "0:25", at: "24.09.2026 16:40", by: "Tobias Lindvik", note: "Egen opptak" },
+    { id: "v4", s: "m2", title: "Driver · face-on", len: "0:09", at: "24.09.2026 17:05", by: "Anders Kristiansen", note: "" },
+    { id: "v5", s: "m2", title: "Driver · down-the-line", len: "0:09", at: "24.09.2026 17:06", by: "Anders Kristiansen", note: "" },
+    { id: "v6", s: "m4", title: "PW · face-on", len: "0:11", at: "22.09.2026 16:18", by: "Anders Kristiansen", note: "Samtykke video: ja" },
+  ],
+};

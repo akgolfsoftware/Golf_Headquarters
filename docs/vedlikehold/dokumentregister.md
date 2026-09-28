@@ -84,6 +84,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md](<../merkevare/ak-golf-tekstkonsept-2026-09-01.md>) |
 | dokumentasjon | [docs/ordbok.md](<../ordbok.md>) |
 | dokumentasjon | [docs/plan-styrkeprogram-fys.md](<../plan-styrkeprogram-fys.md>) |
+| datert-plan | [docs/planer/agencyos-portering-natt-2026-09-28.md](<../planer/agencyos-portering-natt-2026-09-28.md>) |
 | datert-plan | [docs/planer/ak-golf-hq-sammenhengende-datakjede-2026-09-27.md](<../planer/ak-golf-hq-sammenhengende-datakjede-2026-09-27.md>) |
 | datert-plan | [docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md](<../planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md>) |
 | datert-plan | [docs/planer/database-modell-deprekering-2026-09-27.md](<../planer/database-modell-deprekering-2026-09-27.md>) |

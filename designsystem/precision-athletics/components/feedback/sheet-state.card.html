@@ -1,0 +1,19 @@
+<!-- @dsCard group="Components" viewport="1000x560" name="Sheet og tilstander" subtitle="Bunnark (mobil) · Inspector 340 (desktop) · Laster · Tom · Feil" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><title>Sheet og State</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-page);padding:20px;box-sizing:border-box}.lbl{font:var(--type-meta);color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}.frame{position:relative;border:1px solid var(--border-hairline);border-radius:8px;overflow:hidden;background:var(--surface-page);min-height:420px}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const NS = window.AKGolfPrecisionAthletics_7d7c29;
+const { Sheet, KeyValue, Button, LoadingState, EmptyState, ErrorState } = NS;
+const body=<KeyValue items={[["Klippekort","3 av 10"],["Gyldig til","31.12.2026"],["Forrige time","22.09 · 16:30"]]}/>;
+const foot=<><Button fullWidth icon="check">Bekreft flytting</Button><Button variant="ghost" fullWidth>Avbryt</Button></>;
+function App(){return <div style={{display:"grid",gridTemplateColumns:"260px minmax(0,1fr) 300px",gap:16}}>
+<div><div className="lbl">Bunnark · 390</div><div className="frame"><Sheet open inline mode="bottom" onClose={()=>{}} kicker="Privattime · Tir 29.09" title="Ida Berg · 16:30" footer={foot}>{body}</Sheet></div></div>
+<div><div className="lbl">Inspector · desktop</div><div className="frame"><Sheet open inline mode="right" onClose={()=>{}} kicker="Privattime · Tir 29.09" title="Ida Berg · 16:30" footer={foot}>{body}</Sheet></div></div>
+<div style={{display:"flex",flexDirection:"column",gap:12}}><div className="lbl">Tilstander</div><LoadingState text="Henter stallen …"/><EmptyState icon="users" title="Ingen spillere i gruppen" text="Legg til en spiller eller flytt noen fra Junior." action="Legg til spiller"/><ErrorState text="TrackMan svarte ikke. Ingenting er slettet." code="FEIL 504 · 14:02" onRetry={()=>{}}/></div>
+</div>}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);</script></body></html>

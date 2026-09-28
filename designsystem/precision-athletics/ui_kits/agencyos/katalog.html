@@ -1,0 +1,69 @@
+<!-- @dsCard group="AgencyOS" viewport="1440x900" name="AgencyOS · skjermkatalog" subtitle="AG-01–AG-24 · bredde 390/768/1024/1280/1440 · data/tom/laster/feil · hurtigknapp i skallet" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS · skjermkatalog</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+html,body{margin:0;background:var(--surface-sunken);color:var(--text-primary);font:var(--type-body)}
+.bar{position:sticky;top:0;z-index:10;background:var(--surface-flat);border-bottom:1px solid var(--border-hairline);padding:12px 16px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end}
+.grp{display:flex;flex-direction:column;gap:6px;min-width:0}
+.grp>span{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);text-transform:uppercase}
+.sel{min-width:0;max-width:100%}
+.sel select{font:var(--type-body-s)}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0;align-self:center}
+.brand b{font:600 15px/1.2 var(--font-sans)}.brand a{font:var(--type-meta);letter-spacing:.04em;color:var(--text-secondary)}
+.stage{padding:20px 16px 40px;display:flex;justify-content:safe center;min-width:0;overflow:hidden}
+.frame{background:var(--surface-page);border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-card);transform-origin:top left}
+.frame iframe{border:0;display:block}
+.info{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;padding:12px 16px 0;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted)}
+a{color:var(--link)}a:hover{color:var(--text-primary)}
+</style>
+<script src="../katalog.js"></script>
+</head><body>
+<div class="bar">
+<div class="brand"><img src="../../assets/ak-golf-logo-ink.svg" alt="" width="24" height="24"><div><b>AgencyOS · skjermkatalog</b><br><a href="../../oversikt.html">Til oversikten</a></div></div>
+<label class="grp"><span>Skjerm</span><div class="pa-control pa-select sel"><select id="scr" aria-label="Skjerm"></select></div></label>
+<div class="grp"><span>Bredde</span><div class="pa-seg" id="w"></div></div>
+<div class="grp"><span>Tilstand</span><div class="pa-seg" id="state"></div></div>
+</div>
+<div class="info" id="info"></div>
+<div class="stage" id="stage"><div id="box"><div class="frame" id="frame"><iframe id="ifr" title="Skjerm"></iframe></div></div></div>
+<script>
+const K = window.AK_KATALOG, IDS = Object.keys(K).filter((k) => k.startsWith("AG-"));
+const OPT = { w: [["390", "390"], ["768", "768"], ["1024", "1024"], ["1280", "1280"], ["1440", "1440"]], state: [["data", "Data"], ["tom", "Tom"], ["laster", "Laster"], ["feil", "Feil"]] };
+let S = { id: "AG-01", w: "1280", state: "data" };
+try { Object.assign(S, JSON.parse(localStorage.getItem("ag-cat-ui") || "{}")); } catch (e) {}
+if (K[location.hash.slice(1)]) S.id = location.hash.slice(1);
+const sel = document.getElementById("scr");
+IDS.forEach((id) => { const o = document.createElement("option"); o.value = id; o.textContent = id + " · " + K[id].name ; sel.appendChild(o); });
+sel.onchange = () => set({ id: sel.value });
+for (const k of Object.keys(OPT)) { const el = document.getElementById(k); OPT[k].forEach(([v, l]) => { const b = document.createElement("button"); b.type = "button"; b.className = "pa-seg__opt"; b.textContent = l; b.dataset.v = v; b.onclick = () => set({ [k]: v }); el.appendChild(b); }); }
+const ifr = document.getElementById("ifr"), frame = document.getElementById("frame"), box = document.getElementById("box");
+let loaded = false;
+function src() { return "screen.html?id=" + S.id + "&state=" + S.state; }
+function set(p) {
+  const wChanged = p.w && p.w !== S.w; Object.assign(S, p);
+  localStorage.setItem("ag-cat-ui", JSON.stringify(S)); history.replaceState(null, "", "#" + S.id);
+  paint();
+  if (loaded && !wChanged && ifr.contentWindow.__agShow) ifr.contentWindow.__agShow(S.id, S.state); else { loaded = false; ifr.src = src(); }
+}
+function paint() {
+  sel.value = S.id;
+  for (const k of Object.keys(OPT)) document.querySelectorAll("#" + k + " .pa-seg__opt").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === S[k])));
+  const w = +S.w, h = w <= 390 ? 844 : w <= 768 ? 1024 : 900, avail = Math.min(document.getElementById("stage").clientWidth || 0, document.documentElement.clientWidth || window.innerWidth || 0) - 32;
+  if (avail <= 0) { requestAnimationFrame(paint); return; }
+  const sc = Math.max(0.1, Math.min(1, avail / w));
+  ifr.style.width = w + "px"; ifr.style.height = h + "px"; frame.style.width = w + "px"; frame.style.transform = "scale(" + sc + ")";
+  box.style.width = w * sc + "px"; box.style.height = h * sc + "px";
+  const m = K[S.id]; document.getElementById("info").innerHTML = "<span>" + S.id + " · " + m.name.toUpperCase() + "</span><span>" + w + " PX" + (sc < 1 ? " · VIST " + Math.round(sc * 100) + " %" : "") + "</span><span>" + "LYST TEMA · HURTIGKNAPPEN KAN DRAS" + "</span>";
+}
+ifr.onload = () => { loaded = true; requestAnimationFrame(paint); };
+let __n = 0; (function settle() { paint(); if (++__n < 20) setTimeout(settle, 100); })();
+if (document.fonts) document.fonts.ready.then(paint);
+addEventListener("load", paint);
+addEventListener("message", (e) => { if (e.data && e.data.ag === "go" && K[e.data.id]) { S.id = e.data.id; localStorage.setItem("ag-cat-ui", JSON.stringify(S)); history.replaceState(null, "", "#" + S.id); paint(); } });
+addEventListener("hashchange", () => { const h = location.hash.slice(1); if (K[h] && h !== S.id) set({ id: h }); });
+addEventListener("resize", paint);
+new ResizeObserver(() => paint()).observe(document.getElementById("stage"));
+requestAnimationFrame(paint);
+paint(); ifr.src = src();
+</script>
+</body></html>

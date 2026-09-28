@@ -1,0 +1,25 @@
+<!-- @dsCard group="Regler" viewport="960x560" name="Farge · regel 4" subtitle="Farge betyr aksen og ingenting annet. Øktkort, årskurve, perioder, fremdrift" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><title>Farge · regel 4</title><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;background:var(--surface-page);padding:20px;box-sizing:border-box;color:var(--text-primary)}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}.c{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}.k{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}.m{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted)}p{margin:0;font:var(--type-body-s);color:var(--text-secondary);text-wrap:pretty}.card{position:relative;border:1px solid var(--border-hairline);border-radius:8px;background:var(--surface-card);padding:8px 8px 8px 13px;display:flex;flex-direction:column;gap:4px;overflow:hidden}.card i{position:absolute;left:0;top:0;bottom:0;width:4px}.t{font:500 11px/1 var(--font-mono);color:var(--text-secondary)}.n{font:500 13px/1.25 var(--font-sans)}.bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px;height:72px;align-items:end;border-bottom:1px solid var(--border-strong)}.bars div{display:flex;flex-direction:column-reverse}.band{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-bottom:1px solid var(--border-hairline)}.band span{font:500 12px/32px var(--font-sans);color:var(--text-secondary);padding:0 6px;border-left:1px solid var(--border-strong);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.band span:first-child{border-left:0}.band .on{color:var(--text-primary);font-weight:600;box-shadow:inset 0 -2px 0 var(--border-ink)}.prog{height:4px;background:var(--surface-sunken)}.prog b{display:block;height:100%;background:var(--primary)}.no{display:flex;gap:8px;align-items:center;font:var(--type-label);color:var(--text-secondary)}.x{width:28px;height:18px;border-radius:4px}</style>
+</head><body><div class="g">
+<section class="c"><span class="k">Øktkort</span>
+<div class="card"><i style="background:var(--axis-slag)"></i><span class="t">14:30 · 1:15</span><span class="n">Innspill og nærspill</span><span class="m">SLAG</span></div>
+<div class="card"><i style="background:linear-gradient(to bottom,var(--axis-fys) 0 30%,var(--axis-slag) 30% 80%,var(--axis-spill) 80% 100%)"></i><span class="t">14:30 · 2:00</span><span class="n">Oppvarming, innspill og banespill</span><span class="m">FYS · SLAG · SPILL · STRIPEN DELES</span></div>
+<p>Overflate-bunn, 4 px aksestripe til venstre, vanlig tekstfarge. Ingen fargede flater.</p>
+<div class="no"><span class="x" style="background:var(--axis-slag-soft)"></span>Ikke: farget bunn på økta</div></section>
+<section class="c"><span class="k">Årskurve og perioder</span>
+<div class="band"><span style="grid-column:1/5">Grunnperiode</span><span style="grid-column:5/8" class="on">Spesialperiode</span><span style="grid-column:8/13">Turneringsperiode</span></div>
+<div class="bars" id="bars"></div>
+<p>Stablede søyler i aksefargene per uke. Valgt uke full styrke, tidligere uker dempet, framtidige lysere. Periodene er et tynt tekstbånd med skillestreker.</p>
+<div class="no"><span class="x" style="background:var(--graphite-600)"></span>Ikke: svarte eller grå periodeblokker</div></section>
+<section class="c"><span class="k">Fremdrift og status</span>
+<div style="display:flex;flex-direction:column;gap:6px"><span class="m">UKE 40 · 14,5 / 18 T</span><div class="prog"><b style="width:80%"></b></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pa-status pa-status--ok"><span class="pa-status__dot"></span>Publisert</span><span class="pa-status pa-status--warn"><span class="pa-status__dot"></span>Konflikt</span></div>
+<p>Fremdriftsstreker er grafitt. Grønt, gult og rødt er bare status, aldri pynt. Aksepiller og fordelingsstreken beholder aksefargene.</p>
+<div style="display:flex;height:12px;gap:2px"><span style="flex:3;background:var(--axis-fys)"></span><span style="flex:2;background:var(--axis-tek)"></span><span style="flex:4;background:var(--axis-slag)"></span><span style="flex:2;background:var(--axis-spill)"></span><span style="flex:1;background:var(--axis-turn)"></span></div>
+<div class="no"><span class="x" style="background:var(--ok)"></span>Ikke: grønn fremdriftsstrek</div></section>
+</div>
+<script>
+const ax=["fys","tek","slag","spill","turn"],mix=[[35,30,20,10,5],[20,20,35,20,5],[15,10,25,20,30]],h=[14,16,15,17,18,20,19,22,24,21,23,20];
+document.getElementById("bars").innerHTML=h.map((v,i)=>{const m=mix[i<4?0:i<7?1:2],sel=i===5,op=sel?1:i<5?.55:.28;return'<div style="opacity:'+op+'">'+m.map((p,j)=>'<span style="height:'+(v*2.6*p/100)+'px;background:var(--axis-'+ax[j]+')"></span>').join("")+"</div>"}).join("");
+</script></body></html>

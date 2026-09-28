@@ -1,0 +1,25 @@
+<!-- @dsCard group="Components" viewport="1000x560" name="Timeline, KeyValue, Badge, Chart" subtitle="Mono tidsstempel · nøkkel/verdi · teller · Sparkline, BarRow, mål-linje, akse" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><title>Data display</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-page);padding:20px;box-sizing:border-box}.lbl{font:var(--type-meta);color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}.box{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:8px;padding:16px;min-width:0}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const NS = window.AKGolfPrecisionAthletics_7d7c29;
+const { Timeline, KeyValue, Badge, Chart, BarRow, Sparkline } = NS;
+function App(){return <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:16,alignItems:"start"}}>
+<div className="box"><div className="lbl">Timeline</div><Timeline items={[{day:"LØR 26.09",time:"14:02",title:"Anders godkjente ukeplan uke 40",meta:"PUBLISERT TIL SPILLER"},{time:"13:48",title:"Caddie foreslo hviledag",meta:"BELASTNINGSAGENT · ACWR 1,62",axis:"fys"},{day:"FRE 25.09",time:"19:40",title:"Jonas registrerte 60 slag",body:"Treningsområde · 7-jern",axis:"slag"},{time:"—",title:"Test innspill ca. 100 m",meta:"PLANLAGT 02.10",hollow:true}]}/></div>
+<div style={{display:"flex",flexDirection:"column",gap:16}}>
+<div className="box"><div className="lbl">KeyValue</div><KeyValue items={[["Klippekort","3 av 10"],["Gyldig til","31.12.2026"],["Forrige time",null],{label:"Abonnement",value:"FULL",mono:false,hint:"299 KR/MND"}]}/></div>
+<div className="box"><div className="lbl">Badge-teller</div><div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap"}}><span style={{display:"flex",gap:8,alignItems:"center",font:"var(--type-label)"}}>Kø <Badge count={9} tone="signal" label="venter"/></span><span style={{display:"flex",gap:8,alignItems:"center",font:"var(--type-label)"}}>Stall <Badge count={18}/></span><span style={{display:"flex",gap:8,alignItems:"center",font:"var(--type-label)"}}>Innboks <Badge count={124} tone="inverse"/></span></div></div>
+</div>
+<div className="box"><Chart kicker="Uke 39 · plan mot gjennomført" title="Timer per akse" axis={{min:0,max:8,ticks:5,unit:"t"}} footer="MÅL-LINJE = PLAN · 7 DAGER">
+<BarRow label="FYS" axis="fys" value={3.5} max={8} goal={4} display="3,5" unit="t"/>
+<BarRow label="TEK" axis="tek" value={2} max={8} goal={2} display="2,0" unit="t"/>
+<BarRow label="SLAG" axis="slag" value={5.2} max={8} goal={5} display="5,2" unit="t"/>
+<BarRow label="SPILL" axis="spill" value={null} max={8} goal={1.5}/>
+</Chart><div style={{marginTop:16}}><div className="lbl">Sparkline · innspill ca. 50 m ±4 m · mål 65 %</div><Sparkline values={[48,52,51,57,61,64]} goal={65} axis="slag" height={40}/></div></div>
+</div>}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);</script></body></html>
