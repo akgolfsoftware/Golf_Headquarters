@@ -408,7 +408,7 @@ function byggDemoForslag(
       samlet = "Plan i konkurranseuken — kun touch og mental prep.";
     } else if (dager <= 21) {
       endringer.push({
-        endring: "Spesialisering: 70% SLAG/SPILL, 30% TURN-simulering",
+        endring: "Spesialperiode: 70% SLAG/SPILL, 30% TURN-simulering",
         pyramideAkser: ["SLAG", "SPILL", "TURN"],
         rasjonale: `Turnering om ${dager} dager — spesialiserings-fase`,
         varighet: `${dager - 7} dager før taper starter`,

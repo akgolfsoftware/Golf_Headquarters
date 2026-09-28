@@ -26,7 +26,7 @@ export const dynamic = "force-dynamic";
 
 const FASE_NAVN: Record<string, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   TESTUKE: "Testuke",
   FERIE: "Ferie",

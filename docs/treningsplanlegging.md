@@ -337,7 +337,7 @@ Ferie · Restitusjon. «Spesialisering» og «Spesialiseringsperiode» brukes ik
 | Evaluering (`EVALUERING`) | Oppsummering, analyse og justering |
 | Testuke (`TESTUKE`) | Tester og målinger |
 | Ferie (`FERIE`) | Ferie, pause eller redusert plan |
-| Restitusjon | Hvile og gjenoppbygging. Besluttet 28.09.2026, ikke bygget: krever en ny verdi i databasen |
+| Restitusjon (`RESTITUSJON`) | Hvile og gjenoppbygging. Besluttet 28.09.2026; bygges når verdien er lagt til i databasen |
 | Treningssamling (`TRENINGSSAMLING`) | Samling over flere økter eller dager |
 | Heldagssamling (`HELDAGSSAMLING`) | Samling med heldagsformat |
 
@@ -707,5 +707,5 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`): inspektør på desktop, bunnark på mobil under 1024 px. Sett i komponentprøve, ikke i innlogget app |
 | Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
 | Flytt opp/ned og fjern øvelse på mobil | Bygget i «Valgt øvelse»-arket; fjerning krever bekreftelse. Sett i komponentprøve, ikke i innlogget app |
-| Testuke, Treningssamling og Heldagssamling | Står ikke i Anders' periodeliste 28.09.2026. Beholdes som de er til Anders har sagt om de skal bort |
+| Testuke, Treningssamling og Heldagssamling | Beholdes (Anders 28.09.2026). De er hendelser i årsplanen, ikke treningsperioder |
 | Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |
