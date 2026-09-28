@@ -17,7 +17,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
 | 4 | PlayerHQ · Meg | ja | ja, 28.09 | — |
 | 5 | PlayerHQ · Live-økt og registrering | ja | ja, 28.09 | — |
-| 6 | AgencyOS · Cockpit | — | — | — |
+| 6 | AgencyOS · Cockpit | pågår | — | — |
 | 7 | AgencyOS · Innboks | — | — | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | — | — | — |
 | 9 | AgencyOS · Kalender | — | — | — |
@@ -520,3 +520,37 @@ misser er påkrevd. Matcher `PuttDetail` (`breakRetning`, `slopeAlvorlighet`, `f
 neste drill · reps per læringssteg føres live · spilleren kan endre vekt, reps og serier i
 fysisk økt · SG-registrering med påkrevd avstand, underlag, kølle og puttdetaljer · GPS og
 banekart senere.
+
+## 6. AgencyOS · Cockpit
+
+### Dette fantes 28.09
+- Menyen i appen (`skall-ia.ts`): Stall · Workbench · Kø · Jarvis · Meg; Cockpit gjemt under
+  Meg → Konsoll. Avviker fra beslutningen (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
+- App: 8 sider under Cockpit (konsoll, AK-stigen, live-tavle, Jarvis, agenter, oppgaver,
+  Notion). `/admin/oppgaver` lagrer prosjekter, handlingssenter og rutiner i appen; Notion er
+  bare en integrasjon (MÅLT) — i strid med regelen om Notion som eneste kilde for oppgaver.
+- Design: AG-01 Hjem, AG-02 Kø, AG-03 Oppfølgingskø. Modul: Stall-matrise.
+- Kode uten skjerm (MÅLT): AI-plan fra AgencyOS 0 kallere; ACWR i stallvisningen hardkodet.
+- Opptak (MÅLT): `SessionRecording` + `/api/recording/*` — opptak i biter, transkripsjon
+  (Deepgram), AI-analyse (teknisk, taktisk, mental, fysisk, hjemmelekse, coachanalyse, neste
+  økt), Notion-side og slettefrist. Skjerm: `/admin/recording`.
+
+### Anders forteller
+- Komplett oversikt over arbeidsdagen: coachingøkter, beskjeder, videoer og spørsmål fra
+  spillere i gruppene som kan besvares enkelt, arbeidsoppgaver og prosjekter, turneringer
+  denne uka, snarvei til Workbench, varsel om hvem som ikke følger planen, nøkkelinformasjon.
+- «Start live» starter en coachingøkt. Da kommer spillerprofilen, spillerens tekniske plan og
+  opptakeren som tar opp alt og lager sammendrag.
+
+### Spørsmål og svar
+**8.64 Øverst.** Svar: kalendervisning av dagen med klokkeslett 05:00–22:00, «Start live» på
+hver coachingøkt.
+**8.65 Meldinger.** Svar: a — «Venter på svar» i Cockpit, kort svar i raden, hele samtalen i
+Innboks.
+**8.66 Oppgaver.** Svar: a — fra Notion Tasks og Prosjekter; forfalt og frist i dag; huk av i
+appen; oppgavelista i appen utgår.
+**8.67 Turneringer.** Svar: a — spiller, turnering, sted, dager til start; etterpå brutto
+score og plassering; bare spillere i egne grupper.
+**8.68 Varsel og nøkkeltall.** Svar: a — under 70 % to uker på rad, laveste først, lenke til
+Spiller 360. Nøkkeltall: aktive spillere, økter gjennomført i stallen denne uka, snitt
+etterlevelse, forslag som venter. Økonomi utenfor Cockpit.
