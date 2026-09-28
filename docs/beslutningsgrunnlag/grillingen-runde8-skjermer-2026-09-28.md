@@ -16,7 +16,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 2 | PlayerHQ · Planlegging | ja | ja, 28.09 | — |
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
 | 4 | PlayerHQ · Meg | ja | ja, 28.09 | — |
-| 5 | PlayerHQ · Live-økt og registrering | pågår | — | — |
+| 5 | PlayerHQ · Live-økt og registrering | ja | ja, 28.09 | — |
 | 6 | AgencyOS · Cockpit | — | — | — |
 | 7 | AgencyOS · Innboks | — | — | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | — | — | — |
@@ -488,3 +488,35 @@ tastet, går appen automatisk til neste slag. Feil rettes ved å trykke på tall
 **8.62 Etter økt og runde.** Svar: etter økt vurderer spilleren hvor tungt det var og fokus.
 Etter runde: brutto score, SG og Tiger 5 med en gang; runde-agentene skal starte (rettes i
 kode som egen oppgave).
+**8.63 Putter.** Svar (talen sa «åtte trettiseks», tolket som 8.63): lengde i fot, break
+(venstre mot høyre, høyre mot venstre, oppover, nedover), fart (kort eller lang) og hvor man
+misser er påkrevd. Matcher `PuttDetail` (`breakRetning`, `slopeAlvorlighet`, `fartUtfall`,
+`linjeMiss`).
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+**Treningsøkt (natt, store treffflater)**
+- Før start: overskrift (hvem, hva, pyramide, AK-formel, tid) og liste over alle driller.
+- Start: klokke for hele økta; første drill åpnes automatisk med detaljert beskrivelse.
+- Teknisk oppgave fra individuell teknisk plan: bilde, video og tekst fra coach; spilleren kan
+  legge til egen video eller bilde.
+- Hver drill: egen klokke · fire tellere (Uten ball · Lav hastighet · Automatikk · Slag) med
+  +1/+5 og planlagt antall · «Ferdig» stopper klokka og viser reps mot plan · neste drill åpnes
+  automatisk · hopp over eller bytt rekkefølge fra lista.
+- Fysisk økt: følger programmet, fyll inn vekt, endre reps og serier.
+- Etter økt: tid totalt og per drill mot plan, reps mot plan, hvor tungt og fokus. Coach ser
+  økta automatisk.
+
+**Runde**
+- Per slag, alt påkrevd: avstand (meter; fot på green), underlag og kølle. Straffeslag ett
+  trykk, «I hull» avslutter hullet.
+- Putter, påkrevd: lengde i fot, break (V→H, H→V, oppover, nedover), fart (kort/lang) og
+  hvor man misser.
+- Appen går automatisk til neste slag; trykk på et tall for å rette.
+- GPS kommer med banekartet senere.
+- Etter runden: brutto score, SG per kategori og Tiger 5 med en gang; runde-agentene starter
+  (rettes i kode som egen oppgave).
+
+**Beslutninger som skal registreres i fase 4:** live-økt med økt- og drillklokke og automatisk
+neste drill · reps per læringssteg føres live · spilleren kan endre vekt, reps og serier i
+fysisk økt · SG-registrering med påkrevd avstand, underlag, kølle og puttdetaljer · GPS og
+banekart senere.
