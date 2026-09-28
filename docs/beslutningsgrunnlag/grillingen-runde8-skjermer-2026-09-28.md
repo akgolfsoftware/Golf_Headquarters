@@ -20,8 +20,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 6 | AgencyOS · Cockpit | ja | ja, 28.09 | — |
 | 7 | AgencyOS · Innboks | ja | ja, 28.09 | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | ja | ja, 28.09 | — |
-| 9 | AgencyOS · Kalender | ja | — | — |
-| 10 | AgencyOS · Workbench | — | — | — |
+| 9 | AgencyOS · Kalender | ja | ja, 28.09 | — |
+| 10 | AgencyOS · Workbench | pågår | — | — |
 | 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | — | — | — |
 
 ## 0. Motoren
@@ -717,3 +717,20 @@ spillernes ledige tid, ledig anlegg og pris × plasser; inntekt merket anslag; c
 «Varsler X spillere · Angre» i 10 sekunder før det sendes.
 **8.88 Tilgang.** Svar: a — head coach ser alt; assistant coach ser egne økter og egne
 gruppeøkter.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Alle bookinger i AK Golf:** dag/uke/måned/år, alle coacher synlige som standard med
+  filter på coach, kolonne per coach i dagvisning, økt viser initialer, tjeneste og påmeldte
+  mot plasser. Ikke farge per coach.
+- **Gruppeøkter:** faste og alle som vanlige spillere kan booke.
+- **Forslag til nye gruppeøkter** i Innboks for head coach og assistant coach, bygget på fulle
+  økter og ventelister, spillernes ledige tid, ledig anlegg og pris × plasser; inntekt merket
+  anslag; coach godkjenner, økta legges ut til booking.
+- **Flytte økt:** automatisk varsel (push i PlayerHQ, ellers e-post EP-02) med «Varsler X
+  spillere · Angre» i 10 sekunder.
+- **Tilgang:** head coach ser alt; assistant coach egne økter og gruppeøkter.
+- **Google-kalenderen** koblet begge veier som i dag.
+
+**Beslutninger som skal registreres i fase 4:** samlet bookingkalender for alle coacher ·
+inntektsforslag for gruppeøkter via Innboks · automatisk varsel ved flytting med angre ·
+tilgang head coach / assistant coach.
