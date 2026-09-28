@@ -23,9 +23,9 @@ type Props = {
 
 const PERIODE_LABEL: Record<PeriodType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
-  EVALUERING: "Evalueringsperiode",
+  EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",

@@ -22,9 +22,9 @@ type Props = {
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const PERIODE_LABEL: Record<YearPeriodBand["type"], string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
-  EVALUERING: "Evalueringsperiode",
+  EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
