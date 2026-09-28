@@ -4,6 +4,34 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ØKONOMI BARE FOR HEAD COACH, WEDGE GATE TELLER TREFF, ALLE STANDARDPLANER FOR ALLE KATEGORIER (Anders 28.09.2026, bindende)
+
+Svar på de sju åpne spørsmålene etter fase 4 (runde 27–30 i Precision).
+
+- **Økonomi (AG-20) vises bare for head coach.** Assistant coach ser verken menypunktet eller siden.
+- **Wedge Gate teller treff.** Hvert forsøk føres som treff eller bom; resultatet er antall treff.
+- **Stall-matrisen** Trenger deg · Følger planen · Hviler: bekreftet.
+- **Talentradaren** får stiplet linje for Kategori C: bekreftet (bare coach, §Data).
+- **Hurtigmeldingene** OK · Spørsmål · Ikke nå: bekreftet.
+- **Alle fem standardplaner kan velges i alle kategorier A–K.** Spilleren velger selv; innholdet
+  tilpasses kategorien (§SKJERMENE … RUNDE 8, Motoren).
+- **Bildet for tellerne i live-økt** sender Anders senere. Punktet står åpent til da.
+
+**Overstyrer:** «Wedge Gate … beholder sperren» under §Åpne punkter etter runde 19–26, og
+«Hvilke fem planer som passer hvilke kategorier A–K er ikke skrevet» i §SKJERMENE … RUNDE 8 punkt 10.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`):** de fem bekreftede punktene fjernes som «Uavklart» i
+   `ui_kits/katalog.js`; AG-20 merkes «Bare head coach». Ferdig når oversikt.html ikke har dem som uavklart.
+2. **Tilgang i koden:** `src/app/admin/agencyos/okonomi/page.tsx:18` slipper i dag inn `ADMIN` og
+   `COACH`. Begrens til head coach-rollen, også i Mer-menyen. Ferdig når en assistant coach sendes
+   bort fra siden og ikke ser menypunktet, låst med test.
+3. **Wedge Gate i koden:** `src/lib/portal-tester/tn-catalog.ts` har Wedge Gate som `points` med
+   poengfelt og sperre. Bytt til treff/bom per forsøk og fjern sperren. Ferdig når
+   `tn-scoring.test.ts` låser at resultatet er antall treff.
+4. **Standardplanene** skrives for alle kategorier A–K (faglig innhold fra Anders), jf. RUNDE 8 punkt 8.
+
 ## SLETTEDIALOG KAN VÆRE RUST, ØKONOMI FØLGER AK GOLFS TJENESTER, RAPPORTBYGGEREN FJERNES (Anders 28.09.2026, bindende)
 
 Svar på spørsmålene etter runde 28–30 i Precision Athletics og Team Norway 1c.
@@ -65,8 +93,7 @@ Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på reste
    putt … må bekreftes»). Fjern sperren for disse: Gate-testene summerer førte poeng, 9 hull
    lengde bruker skalaen over. Ferdig når `tn-scoring.test.ts` låser begge, og testen
    «ukjente gate-regler produserer ikke falsk standardscore» er skrevet om.
-3. **Uavklart:** Wedge Gate står i koden (`A26:F38`) men ikke i arket på Drive; den beholder
-   sperren. Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
+3. **Wedge Gate teller treff** (§ØKONOMI BARE FOR HEAD COACH, 28.09). **Uavklart:** Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
 
 ## ÉN IUP OG ETT TESTBATTERI FOR AK GOLF, WANG OG TEAM NORWAY, OG SPILLEREN DELER SELV (Anders 28.09.2026, bindende)
 
@@ -243,8 +270,8 @@ hurtighandlingene i AgencyOS (nå fem med «Ny booking»).
 9. **Datamodell** for målsetning med start, slutt og type, samtykke til opptak og Ytelsesbilde i
    onboarding, «Egen»-merke på arvede gruppeøkter og gjentakelse — additivt via `db execute`
    (gotchas §Database), først når skjermene er godkjent.
-10. **Uavklart:** bildet Anders nevnte for tellerne i live-økt kom ikke med. Hvilke fem planer som
-    passer hvilke kategorier A–K er ikke skrevet.
+10. **Uavklart:** bildet Anders nevnte for tellerne i live-økt kommer senere. Alle fem planene gjelder
+    alle kategorier A–K (§ØKONOMI BARE FOR HEAD COACH, 28.09).
 
 ## PERIODENE HETER GRUNNPERIODE, SPESIALPERIODE, TURNERINGSPERIODE, EVALUERING, FERIE OG RESTITUSJON (Anders 28.09.2026, bindende)
 
