@@ -58,6 +58,7 @@ reglene.
   golføkt får belastning 1–10 og fokus 1–10 (hvor konsentrert spilleren var).
 - **Runderegistrering:** per slag påkrevd avstand, underlag og kølle; putt påkrevd lengde i fot,
   break, fart og miss. SG, brutto score og Tiger 5 vises rett etter runden.
+  Bom på putt: Venstre · Høyre · På linja (Anders 28.09).
 - **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
 
 **AgencyOS**
@@ -72,6 +73,7 @@ reglene.
   oppfølgingssaker. Kø, godkjenninger og oppfølgingskøen slås inn; kolonnene Risiko · Følg med ·
   Sjekk · Løst blir filter. Spillerspørsmål ubesvart etter 24 timer haster. Jarvis-chatten er
   egen side.
+- **«Følger ikke planen»** i Cockpit viser de to siste ukene, med lenke til hele planen (Anders 28.09).
 - **Stall i tre bånd:** I dag · Trener nå · Hele stallen. Coach kan sende melding under økta.
   Raden viser når planen og avtalen utløper.
 - **Spiller 360** har IUP-samtale for alle spillere og fanene Plan · Stats · Teknisk plan ·
