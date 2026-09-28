@@ -277,3 +277,55 @@ Spilleren ser alt i egen kalender.
 varsel til coach ved turneringsendring · 130 %-regelen · Google-kalender begge veier, coach
 ser bare opptatt.
 
+
+## 3. PlayerHQ · Stats
+
+### Dette fantes 28.09
+- App: 22 sider (Analyse, DataGolf, TrackMan, tester, mål, SG-hub), mange uten meny inn.
+- Design: PH-16 Analyse-hub (SG per runde, fem innganger), PH-18 Runder og statistikk,
+  PH-A01–A08 Treningsanalyse, PH-17 TrackMan, PH-14/15 Tester, PH-19 Mål og talent,
+  PH-20 Gameplan og banekart.
+- Kontroll mot toppidrettsmodulene (MÅLT i `7d7c2994` 28.09; PH-24 og AU-04 ikke lest):
+  Ytelsesbilde og Baseline mangler helt. Delvis: Banekart (PH-20 mangler SG per sone),
+  Treningsanalyse (mangler treningsmengde mot SG i samme graf), SG (mangler proximity mot PGA
+  per avstand, up-and-down per lie, Tiger 5), Ferdighetstest (mangler PEI-poeng og vitne),
+  Kategori (mangler interaktiv skala), Mål (mangler kjeden årsmål → øktmål), Øvelse (PH-13
+  bare viser). TrackMan nesten dekket i PH-17/PH-A04.
+- Kode (MÅLT, `src/lib/sg.ts`): SG-kategoriene er de samme som treningsområdene — Tee,
+  Innspill 200+/150–200/100–150/50–100/0–50, Chip, Pitch, Lob, Bunker, Putt 0–3/3–5/5–10/
+  10–15/15–25/25–40/40+ fot.
+
+### Anders forteller
+- Øverst: positiv trend hvis den finnes, deretter kategoriene der man taper mest, synkende.
+- SG-oversikt: hvor man ligger an mot neste kategori etter snittscore. Spilleren sammenlignes
+  mot neste kategori, ikke PGA Tour.
+- Stats består av snittscore, strokes gained, trening og tester.
+- Live-føring av alle slag på banen uten banekart i starten: legg inn hull 1, så hvert slag med
+  det som trengs for komplett SG (tas videre i område 5).
+
+### Spørsmål og svar
+**8.30 Øverst.** Svar: positiv trend først, så SG-kategoriene sortert etter flest tapte slag.
+**8.31 Sammenligning.** Svar: neste kategori (Broadie, merket estimat) som standard.
+**8.32 Oppdeling.** Svar: fire faner — Snittscore · Strokes Gained · Trening · Tester.
+**8.33 Ytelsesbilde.** Svar: b — med alt, også søvn og mat; samtykke godkjennes i onboarding.
+**8.34 Nok data.** Svar: a — under 8 runder «for lite grunnlag», tee og innspill fra 12,
+nærspill og putting fra 24; men spilleren kan starte fra 4 runder.
+**8.35 PGA Tour.** Svar: b — coach ser alltid PGA; spilleren kan slå det på selv.
+**8.36 Innhold per fane.** Svar: Snittscore = rundescore og scorekort. Strokes Gained = alle
+kategorier (Tee, Innspill 200+ til 50–100, alle nærspill- og puttekategorier). Trening =
+treningsmengde mot SG-utvikling, spredning og utvalgte TrackMan-parametere, filter på
+pyramide og alle parametere fra treningsplanleggeren. Tester = resultater, progresjon,
+snitt, med positiv trend øverst.
+**8.37 Positiv trend.** Svar: a — SG-kategorien med størst forbedring siste 10 runder mot de
+10 før. Finnes ingen, hoppes den over.
+**8.38 Fire runder.** Svar: a — 4–7 runder vises merket «foreløpig»; under 4: «Registrer X
+runder til for å se Stats».
+**8.39 Banekart.** Svar: a — SG per avstand som liste nå; tegnet hullkart senere.
+**8.40 Kategori A–K.** Svar: a — øverst i Snittscore.
+**8.41 Filter i Trening.** Svar: a — tidsrom, periode, pyramide, område, sted, motorikk,
+press, kølle, samlet bak én «Filter»-knapp; på mobil vises valgte filtre som brikker.
+**8.42 Tester.** Svar: a — siste resultat, snitt, progresjon og nivå mot neste kategori
+(«—» der normen mangler).
+**8.43 Ytelsesbilde, plassering.** Svar: a — på hver runde i Snittscore, samlet radar øverst.
+**8.44 Coachens visning.** Svar: a — samme Stats for valgt spiller, PGA alltid på, og
+sammenligning med stallen.
