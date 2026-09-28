@@ -54,7 +54,8 @@ reglene.
 - **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel opp-og-ned» er bekreftet (28.09).
 - **Live-økt:** økt- og drillklokke, fire tellere per drill (Uten ball · Lav hastighet ·
   Automatikk · Slag) mot plan, neste drill åpnes automatisk. Fysisk økt: spilleren fører vekt,
-  reps og serier.
+  reps og serier. Etter økta (Anders 28.09): fysisk økt får «Hvor tungt» 1–10 (opplevd belastning);
+  golføkt får belastning 1–10 og fokus 1–10 (hvor konsentrert spilleren var).
 - **Runderegistrering:** per slag påkrevd avstand, underlag og kølle; putt påkrevd lengde i fot,
   break, fart og miss. SG, brutto score og Tiger 5 vises rett etter runden.
 - **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
