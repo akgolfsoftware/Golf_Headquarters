@@ -12,9 +12,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { WangInnloggingsSkjema } from "./wang-innloggings-skjema";
 
-export function WangLogin({ retursti = "/team-wang" }: { retursti?: string }) {
+export function WangLogin({ retursti = "/team-wang", avvisning = null, innloggetSom = null }: { retursti?: string; avvisning?: { tittel: string; tekst: string } | null; innloggetSom?: string | null }) {
   const router = useRouter();
-  return <WangInnloggingsSkjema loggInn={async ({ epost, passord }) => {
+  return <WangInnloggingsSkjema avvisning={avvisning} innloggetSom={innloggetSom} loggInn={async ({ epost, passord }) => {
     const { error } = await createClient().auth.signInWithPassword({ email: epost, password: passord });
     if (error?.name === "AuthRetryableFetchError" || error?.status === 0) throw new Error("Innloggingen fikk ikke forbindelse.");
     if (error) return { ok: false };

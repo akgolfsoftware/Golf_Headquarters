@@ -30,10 +30,10 @@ const LOGO_HVIT_PNG = new URL("../../designsystem/team-norway/assets/logo/team-n
 mock.module(LOGO_PNG, { defaultExport: { src: "/logo.png", width: 1, height: 1 } });
 mock.module(LOGO_HVIT_PNG, { defaultExport: { src: "/logo-hvit.png", width: 1, height: 1 } });
 
-let TnVisning: typeof import("@/app/team-norway/spiller/[spillerId]/tester/[testId]/visning").TnVisning;
-let TnOvrigVisning: typeof import("@/app/team-norway/spiller/[spillerId]/tester/[testId]/visning").TnOvrigVisning;
+let TnVisning: typeof import("@/app/team-norway/(trener)/spiller/[spillerId]/tester/[testId]/visning").TnVisning;
+let TnOvrigVisning: typeof import("@/app/team-norway/(trener)/spiller/[spillerId]/tester/[testId]/visning").TnOvrigVisning;
 before(async () => {
-  const mod = await import("@/app/team-norway/spiller/[spillerId]/tester/[testId]/visning");
+  const mod = await import("@/app/team-norway/(trener)/spiller/[spillerId]/tester/[testId]/visning");
   TnVisning = mod.TnVisning;
   TnOvrigVisning = mod.TnOvrigVisning;
 });

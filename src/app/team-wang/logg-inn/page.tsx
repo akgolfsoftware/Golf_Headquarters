@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
+import { avvisningsmelding, lesAvvisningsgrunn } from "@/lib/auth/domene-sperre";
 import { WangLogin } from "./wang-login";
 import { tryggWangRetursti } from "../_data/wang-retur-sti";
 
@@ -17,8 +19,18 @@ export const metadata: Metadata = {
 export default async function WangLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string | string[] }>;
+  searchParams: Promise<{ next?: string | string[]; avvist?: string | string[] }>;
 }) {
-  const { next } = await searchParams;
-  return <WangLogin retursti={tryggWangRetursti(next)} />;
+  const { next, avvist } = await searchParams;
+  // Domenesperren (src/lib/auth/domene-sperre.ts) sender avviste hit med
+  // ?avvist=domene|rolle. Da vises meldingen og en knapp for å logge ut.
+  const grunn = lesAvvisningsgrunn(avvist);
+  const bruker = grunn ? await getCurrentUserRaw() : null;
+  return (
+    <WangLogin
+      retursti={tryggWangRetursti(next)}
+      avvisning={grunn ? avvisningsmelding("wang", grunn) : null}
+      innloggetSom={bruker?.email ?? null}
+    />
+  );
 }

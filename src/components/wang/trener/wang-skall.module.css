@@ -1,0 +1,100 @@
+/* WANG-trenerskallet. Mål og farger fra «WANG Golf Skjermoversikt.dc.html»
+   (klassene wg-shell, wg-side, wgm-*, wgf-*) i Claude Design 6cfa623c.
+   Bare --wtr-tokens (src/styles/wang-trener-tokens.css). Brekkpunkt 820 px
+   som i tegningen. Ingen sidelengs rulling: fanene brytes over flere linjer
+   på desktop og blir en nedtrekksliste på mobil. */
+
+.skall { display: grid; grid-template-columns: var(--wtr-sidenav-width) minmax(0, 1fr); min-height: 100dvh; }
+.side { display: flex; flex-direction: column; background: var(--wtr-blue); position: sticky; top: 0; height: 100dvh; overflow-y: auto; }
+.logo { padding: 28px 24px 20px; }
+.logo img { width: 176px; height: auto; display: block; }
+.sted { margin: 0 24px 12px; font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-mint); }
+.nav { padding: 4px 12px 16px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.system { margin-top: auto; padding-top: 20px; display: flex; flex-direction: column; }
+
+.navpunkt {
+  width: 100%; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px;
+  border: 0; border-radius: var(--wtr-radius-control); background: transparent;
+  color: var(--wtr-rail-text); font-family: var(--wtr-font-display); font-size: 14px; line-height: 1.3;
+  text-decoration: none; text-align: left; cursor: pointer;
+  transition: background-color var(--wtr-dur-base) var(--wtr-ease-out);
+}
+.navpunkt:hover { background: var(--wtr-rail-hover); color: var(--wtr-white); }
+.navpunkt:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring-on-dark); }
+.navpunkt[aria-current="page"] { background: var(--wtr-rail-active); color: var(--wtr-white); font-weight: 500; }
+.navpunkt span { flex: 1; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+.navSystem { min-height: 40px; font-size: 12px; color: var(--wtr-rail-text-system); }
+.bruker { margin: 8px 12px 0; padding: 12px 12px 4px; border-top: 1px solid var(--wtr-rail-hover); font-family: var(--wtr-font-display); font-size: 12px; color: var(--wtr-rail-muted); overflow-wrap: anywhere; }
+.bruker strong { display: block; font-weight: 500; color: var(--wtr-white); font-size: 13px; }
+
+.hoved { min-width: 0; display: flex; flex-direction: column; }
+.dtop {
+  background: var(--wtr-white); border-bottom: 1px solid var(--wtr-border-subtle); padding: 0 var(--wtr-gutter-desktop);
+  min-height: var(--wtr-topbar-height); display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 20;
+}
+.dtopSti { margin: 0; flex: 1; min-width: 0; font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.demo { flex: none; display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px; border-radius: var(--wtr-radius-pill); background: var(--wtr-status-active-bg); color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+
+.mtop { display: none; background: var(--wtr-blue); padding: 12px var(--wtr-gutter-mobile); align-items: center; gap: 12px; position: sticky; top: 0; z-index: 20; }
+.mtop img { height: 28px; width: auto; display: block; }
+.mtopTekst { flex: 1; min-width: 0; }
+.mtopSted { margin: 0; font-family: var(--wtr-font-display); font-size: 10px; font-weight: 500; color: var(--wtr-mint); }
+.mtopTittel { margin: 0; font-family: var(--wtr-font-display); font-size: 15px; font-weight: 500; color: var(--wtr-white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.innhold { padding: 24px var(--wtr-gutter-desktop) 64px; width: 100%; max-width: var(--wtr-content-max); min-width: 0; }
+
+/* Faner i hovedpunktet */
+.faner { margin: 0 0 24px; min-width: 0; }
+.fanerad { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2px; border-bottom: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.fane {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; margin-bottom: -1px;
+  border-bottom: 2px solid transparent; color: var(--wtr-text-muted); font-family: var(--wtr-font-display);
+  font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap;
+  transition: background-color var(--wtr-dur-base) var(--wtr-ease-out);
+}
+.fane:hover { background: var(--wtr-blue-tint); color: var(--wtr-blue); }
+.fane:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+.fane[aria-current="page"] { color: var(--wtr-blue); border-bottom-color: var(--wtr-blue); }
+.faneDel { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px 0 16px; margin-left: 6px; border-left: 1px solid var(--wtr-border-subtle); font-family: var(--wtr-font-display); font-size: 11px; font-weight: 500; color: var(--wtr-text-muted); }
+.faneValg { display: none; flex-direction: column; gap: 6px; min-width: 0; }
+.faneValg span { font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); }
+.faneValg select { width: 100%; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--wtr-grey); border-radius: var(--wtr-radius-control); background: var(--wtr-white); color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 14px; font-weight: 500; }
+.faneValg select:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+
+/* Mobilens bunnrad og «Mer»-ark */
+.mbar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--wtr-white); border-top: 1px solid var(--wtr-border-subtle); min-height: var(--wtr-tabbar-height); padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.mtab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; min-height: var(--wtr-tabbar-height);
+  padding: 0 2px; border: 0; background: transparent; color: var(--wtr-text-muted); text-decoration: none;
+  font-family: var(--wtr-font-display); font-size: 10.5px; font-weight: 500; text-align: center; cursor: pointer;
+}
+.mtab span { max-width: 100%; overflow-wrap: anywhere; }
+.mtab:hover { color: var(--wtr-blue); }
+.mtab:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+.mtab[aria-current="page"], .mtabAktiv { color: var(--wtr-pink); }
+.overlegg { position: fixed; inset: 0; z-index: 70; background: var(--wtr-overlay); display: flex; align-items: flex-end; }
+.ark { width: 100%; max-height: 86vh; overflow-y: auto; background: var(--wtr-white); border-radius: var(--wtr-radius-control) var(--wtr-radius-control) 0 0; padding-bottom: calc(24px + env(safe-area-inset-bottom)); box-shadow: var(--wtr-shadow-overlay); }
+.arkHode { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 20px; }
+.arkHode h2 { flex: 1; margin: 0; font-family: var(--wtr-font-display); font-size: 16px; font-weight: 500; color: var(--wtr-blue); }
+.lukk { width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; color: var(--wtr-blue); cursor: pointer; border-radius: var(--wtr-radius-control); }
+.lukk:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+.arkGruppe { margin: 0; padding: 14px 20px 6px; font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); border-top: 1px solid var(--wtr-border-subtle); }
+.arkPunkt { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 20px; border: 0; background: transparent; color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 14px; text-decoration: none; text-align: left; cursor: pointer; }
+.arkPunkt span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.arkPunkt:hover { background: var(--wtr-blue-tint); }
+.arkPunkt:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+.arkPunkt[aria-current="page"] { background: var(--wtr-status-planned-bg); font-weight: 500; }
+
+@media (max-width: 820px) {
+  .skall { grid-template-columns: minmax(0, 1fr); }
+  .side, .dtop { display: none; }
+  .mtop { display: flex; }
+  .mbar { display: grid; }
+  .innhold { padding: 16px var(--wtr-gutter-mobile) calc(96px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
+  .fanerad { display: none; }
+  .faneValg { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navpunkt, .fane { transition: none; }
+}

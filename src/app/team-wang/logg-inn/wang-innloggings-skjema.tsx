@@ -6,9 +6,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./wang-login.module.css";
+import { loggUtWang } from "@/lib/auth/logout";
+import { WANG_START } from "@/lib/wang/wang-ruter";
 
-export function WangInnloggingsSkjema({ loggInn }: {
+export function WangInnloggingsSkjema({ loggInn, avvisning = null, innloggetSom = null }: {
   loggInn: (input: { epost: string; passord: string }) => Promise<{ ok: boolean }>;
+  /** Satt når domenesperren har avvist kontoen (?avvist=domene|rolle). */
+  avvisning?: { tittel: string; tekst: string } | null;
+  innloggetSom?: string | null;
 }) {
   const id = useId();
   const [epost, settEpost] = useState("");
@@ -47,6 +52,12 @@ export function WangInnloggingsSkjema({ loggInn }: {
           <h1 id={`${id}-tittel`}>Logg inn</h1>
           <p>Fellessiden er åpen for alle. Logg inn for å åpne innholdet kontoen din har tilgang til.</p>
         </section>
+        {avvisning && <section role="alert" className={styles.kort} aria-labelledby={`${id}-avvist`}>
+          <h2 id={`${id}-avvist`}>{avvisning.tittel}</h2>
+          <p className={styles.feil}>{avvisning.tekst}</p>
+          {innloggetSom && <p className={styles.hjelp}>Innlogget som {innloggetSom}</p>}
+          {innloggetSom && <form action={loggUtWang}><button type="submit" className={styles.sekundaer}>Logg ut</button></form>}
+        </section>}
         <form onSubmit={send} className={styles.kort} aria-busy={travel} aria-labelledby={`${id}-tittel`}>
           {harFeil && <p id={`${id}-feil`} role="alert" className={styles.feil}>
             {status === "nettfeil" ? "Fikk ikke forbindelse. Sjekk nettet og prøv igjen." : "Kunne ikke logge inn. Kontroller e-post og passord og prøv igjen."}
@@ -74,9 +85,9 @@ export function WangInnloggingsSkjema({ loggInn }: {
         <dl className={styles.roller}>
           <div><dt>Uten innlogging</dt><dd>Felles årsplan, kalender og praktisk informasjon. Ingen elevnavn eller individuelle resultater.</dd></div>
           <div><dt>Elever og foresatte</dt><dd>Personlig innhold følger tilgangen på kontoen din.</dd></div>
-          <div><dt>Trenere</dt><dd>Trenerverktøy krever innlogging og tilgang.</dd></div>
+          <div><dt>Sportssjef og trenere</dt><dd>Trenerflaten krever innlogging med en @wang.no-adresse.</dd></div>
         </dl>
-        <Link href="/team-wang/coach" className={styles.tekstlenke}>Åpne trenerflaten</Link>
+        <Link href={WANG_START} className={styles.tekstlenke}>Åpne trenerflaten</Link>
         <Link href="/admin/spillere" className={styles.tekstlenke}>Elevadministrasjon</Link>
       </aside>
     </div>

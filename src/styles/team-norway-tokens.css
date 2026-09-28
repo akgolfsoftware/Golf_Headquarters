@@ -38,6 +38,8 @@
   --tn-navy-600: #0A5199;
   --tn-navy-400: #4A85C0;
   --tn-navy-300: #7FA3C9;
+  /* #C9D6E5: kant på sekundærknapper og filterknapper i «Team Norway App.dc.html». */
+  --tn-navy-200: #C9D6E5;
   --tn-navy-100: #E3ECF6;
   --tn-navy-50: #F2F7FC;
 
@@ -87,7 +89,8 @@
   --tn-data-accent: #D70232;
 
   /* ── Flater ── */
-  --tn-surface-page: var(--tn-ink-50);
+  /* Sidebunnen i «Team Norway App.dc.html» er #F2F7FC (kontrollert 28.09.2026). */
+  --tn-surface-page: var(--tn-navy-50);
   --tn-surface-card: var(--tn-white);
   --tn-surface-sunken: var(--tn-ink-100);
   --tn-surface-inverse: var(--tn-navy-900);
@@ -117,10 +120,12 @@
          --tn-rail-marker er identitet, ikke tekst: den bærer aldri lesbar
          tekst (2,6 mot navy), bare den 3 px brede streken foran aktiv rad. ── */
   --tn-rail-bg: var(--tn-navy-900);
-  --tn-rail-active: #013B7D;
+  /* Skinnens verdier kontrollert mot «Team Norway App.dc.html» 28.09.2026:
+     aktiv rad #0A5199, gruppetekst #C9D6E5, mono-etiketter #9FB6D1. */
+  --tn-rail-active: var(--tn-navy-600);
   --tn-rail-marker: var(--tn-red-600);
-  --tn-rail-text: #C6D6EA;
-  --tn-rail-muted: #9DB4D0;
+  --tn-rail-text: var(--tn-navy-200);
+  --tn-rail-muted: #9FB6D1;
   --tn-rail-on: #FFFFFF;
 
   --tn-link: var(--tn-navy-600);

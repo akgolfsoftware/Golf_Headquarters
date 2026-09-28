@@ -31,6 +31,7 @@ export const TN = {
   navy600: "var(--tn-navy-600)",
   navy400: "var(--tn-navy-400)",
   navy300: "var(--tn-navy-300)",
+  navy200: "var(--tn-navy-200)",
   navy100: "var(--tn-navy-100)",
   navy50: "var(--tn-navy-50)",
 

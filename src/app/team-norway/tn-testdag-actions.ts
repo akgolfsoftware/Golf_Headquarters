@@ -15,7 +15,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
+import { TEAM_NORWAY_DEMO_SLUG, TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere, erTnGruppeSlug } from "@/lib/domain/grupper";
 import { medSerialisertTestdagTransaksjon } from "@/lib/domain/tn-testdag-lock";
 import { tnDefinitionData, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
@@ -46,7 +46,9 @@ export async function opprettTestdag(input: unknown): Promise<{ ok: true; testDa
 
   try {
     const testDayId = await medSerialisertTestdagTransaksjon(async (tx) => {
-      const gruppe = await tx.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG }, select: { id: true } });
+      // Demotreneren oppretter i demogruppen; alle andre i den ekte TN-gruppen.
+      const demo = await tx.groupMember.findFirst({ where: { userId: coach.id, ...aktivtMedlemskapWhere(), group: { slug: TEAM_NORWAY_DEMO_SLUG } }, select: { groupId: true } });
+      const gruppe = demo?.groupId ? { id: demo.groupId } : await tx.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG }, select: { id: true } });
       if (!gruppe) throw new Error("Team Norway-gruppen finnes ikke.");
       if (coach.role !== "ADMIN") {
         const medlem = await tx.groupMember.findFirst({ where: { groupId: gruppe.id, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() }, select: { id: true } });
@@ -100,7 +102,7 @@ export async function settTestdagDeltakerStatus(input: unknown): Promise<{ ok: t
         where: { id: parsed.data.testDayParticipantId },
         include: { testDay: { include: { group: true } } },
       });
-      if (!deltaker || deltaker.testDay.group.slug !== TEAM_NORWAY_SLUG) throw new Error("Fant ikke deltakeren.");
+      if (!deltaker || !erTnGruppeSlug(deltaker.testDay.group.slug)) throw new Error("Fant ikke deltakeren.");
       if (deltaker.testDay.status !== "ACTIVE") throw new Error("Testdagen er ikke aktiv og kan ikke endres.");
       if (coach.role !== "ADMIN") {
         const medlem = await tx.groupMember.findFirst({ where: { groupId: deltaker.testDay.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() }, select: { id: true } });
@@ -127,7 +129,7 @@ export async function avsluttTestdag(testDayId: string): Promise<{ ok: true } | 
   try {
     await medSerialisertTestdagTransaksjon(async (tx) => {
       const dag = await tx.testDay.findUnique({ where: { id: testDayId }, include: { group: true, participants: { select: { status: true } } } });
-      if (!dag || dag.group.slug !== TEAM_NORWAY_SLUG) throw new Error("Fant ikke testdagen.");
+      if (!dag || !erTnGruppeSlug(dag.group.slug)) throw new Error("Fant ikke testdagen.");
       if (coach.role !== "ADMIN") {
         const medlem = await tx.groupMember.findFirst({ where: { groupId: dag.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() }, select: { id: true } });
         if (!medlem) throw new Error("Du er ikke aktiv trener i Team Norway-gruppen.");

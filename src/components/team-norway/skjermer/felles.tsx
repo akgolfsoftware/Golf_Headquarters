@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import type { TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
+import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
 import { TnShell, tnRolleNavn, type TnAktivSide } from "../tn-shell";
 
+/**
+ * Første kall i hver TN-skjerm. Håndhever domenesperren (@golfforbundet.no
+ * eller ADMIN) og trenerrollen — se `src/lib/domain/tn-flate-tilgang.ts`.
+ */
 export async function hentSkjermbruker() {
-  return requirePortalUser({ kreverTilgang: "INGEN" });
+  return (await krevTnTrenerflate()).bruker;
 }
 
 export function SkjermRamme({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string | null; kontekst: TnArbeidskontekst; children: ReactNode }) {

@@ -1,0 +1,146 @@
+/* =========================================================================
+   WANG-trenerflaten (/team-wang/(trener)) — tokens
+   Kilde: Claude Design «WANG Golf UI prototype» (6cfa623c), mappa
+   _ds/wang-toppidrett-designsystem-3580374e-…/tokens/ (colors.css,
+   typography.css, spacing.css, form.css, motion.css) og skallet i
+   «WANG Golf Skjermoversikt.dc.html» / «WANG Golf Trening.dc.html»,
+   lest 28.09.2026. Verdiene er kopiert, ikke gjenskapt.
+
+   Scopet under .wang-tr, med prefikset --wtr-, slik at de aldri kolliderer
+   med fellessidens .wang-tp-tokens (src/styles/wang-tokens.css), som bygger
+   på et eldre WANG-uttrykk og står urørt.
+
+   Regler fra designsystemet (form.css / colors.css):
+   - Kant før skygge. Radius 4 på kort, 8 på kontroller, 999 bare på filter
+     og status. Ingen skygge utenom dialog og mobilens bunnrad.
+   - Rosa (#D12A5C) er handlingsfargen: én primærhandling per flate.
+   - Sekundærfargene brukes bare når noe betyr noe (status).
+   - Montserrat på titler, tall og etiketter. Quattrocento Sans på mengdetekst.
+   ========================================================================= */
+
+.wang-tr {
+  /* ---- Hovedfarger (designmanualen 2021, s. 38–41) ---- */
+  --wtr-blue: #17446f;
+  --wtr-green: #2e857d;
+  --wtr-mint: #49ca9f;
+  --wtr-pink: #d12a5c;
+  --wtr-orange: #f47b20;
+  --wtr-yellow: #fcd700;
+  --wtr-lightblue: #007db1;
+  --wtr-purple: #7f1975;
+  --wtr-white: #ffffff;
+  --wtr-grey: #d2d2d2;
+  --wtr-black: #000000;
+
+  /* ---- Avledede flater ---- */
+  --wtr-blue-tint: #f2f5f8;
+  --wtr-blue-deep: #0f2e4c;
+  --wtr-green-tint: #eef6f5;
+  --wtr-pink-tint: #fbeef2;
+  --wtr-grey-line: #e6e8ea;
+
+  /* ---- Semantiske aliaser ---- */
+  --wtr-surface-page: var(--wtr-blue-tint);
+  --wtr-surface-card: var(--wtr-white);
+  --wtr-surface-subtle: var(--wtr-blue-tint);
+  --wtr-surface-structure: var(--wtr-blue);
+  --wtr-text-body: var(--wtr-blue);
+  --wtr-text-muted: #5b7793;
+  /* Kolonnehodet i lister («tr-ehead» i WANG Golf Trening.dc.html). */
+  --wtr-text-head: #4a6a8a;
+  --wtr-text-on-dark: var(--wtr-white);
+  --wtr-text-accent-on-dark: var(--wtr-mint);
+  --wtr-text-disabled: #9bafc1;
+  --wtr-border-card: var(--wtr-grey);
+  --wtr-border-subtle: var(--wtr-grey-line);
+  --wtr-border-strong: var(--wtr-blue);
+  --wtr-border-focus: var(--wtr-lightblue);
+
+  --wtr-action-primary: var(--wtr-pink);
+  --wtr-action-primary-hover: #b32450;
+  --wtr-action-primary-press: #9c1f46;
+  --wtr-action-disabled: var(--wtr-grey);
+
+  /* ---- Status: mening, ikke pynt ---- */
+  --wtr-status-planned: var(--wtr-lightblue);
+  --wtr-status-planned-bg: #e6f2f8;
+  --wtr-status-active: var(--wtr-orange);
+  --wtr-status-active-bg: #fdf0e4;
+  --wtr-status-done: var(--wtr-green);
+  --wtr-status-done-bg: var(--wtr-green-tint);
+  --wtr-status-absent: var(--wtr-purple);
+  --wtr-status-absent-bg: #f3e8f2;
+  --wtr-status-alert: var(--wtr-pink);
+  --wtr-status-alert-bg: var(--wtr-pink-tint);
+
+  /* ---- Skallet (sidemeny på navy) ---- */
+  --wtr-rail-text: rgba(255, 255, 255, 0.82);
+  --wtr-rail-text-system: rgba(255, 255, 255, 0.72);
+  --wtr-rail-muted: rgba(255, 255, 255, 0.6);
+  --wtr-rail-hover: rgba(255, 255, 255, 0.07);
+  --wtr-rail-active: rgba(255, 255, 255, 0.14);
+  --wtr-overlay: rgba(15, 46, 76, 0.44);
+
+  /* ---- Type (produktskala, px) ---- */
+  --wtr-font-display: var(--font-wtr-display, "Montserrat"), system-ui, sans-serif;
+  --wtr-font-body: var(--font-wtr-body, "Quattrocento Sans"), Georgia, serif;
+  --wtr-type-display-1: 44px;
+  --wtr-type-display-2: 34px;
+  --wtr-type-page-title: 40px;
+  --wtr-type-page-title-mobile: 28px;
+  --wtr-type-title: 26px;
+  --wtr-type-heading: 20px;
+  --wtr-type-subheading: 17px;
+  --wtr-type-body: 16px;
+  --wtr-type-meta: 14px;
+  --wtr-type-micro: 12px;
+  --wtr-type-metric: 40px;
+  --wtr-leading-tight: 1.08;
+  --wtr-leading-title: 1.18;
+  --wtr-leading-body: 1.55;
+  --wtr-tracking-display: -0.015em;
+
+  /* ---- Rom og form ---- */
+  --wtr-space-1: 4px;
+  --wtr-space-2: 8px;
+  --wtr-space-3: 12px;
+  --wtr-space-4: 16px;
+  --wtr-space-5: 20px;
+  --wtr-space-6: 24px;
+  --wtr-space-8: 32px;
+  --wtr-space-10: 40px;
+  --wtr-space-12: 48px;
+  --wtr-space-16: 64px;
+  --wtr-gutter-mobile: 20px;
+  --wtr-gutter-desktop: 32px;
+  --wtr-content-max: 1244px;
+  --wtr-sidenav-width: 248px;
+  --wtr-topbar-height: 64px;
+  --wtr-tabbar-height: 64px;
+  --wtr-radius-card: 4px;
+  --wtr-radius-control: 8px;
+  --wtr-radius-pill: 999px;
+  --wtr-focus-ring: 0 0 0 3px rgba(0, 125, 177, 0.35);
+  --wtr-focus-ring-on-dark: 0 0 0 3px rgba(255, 255, 255, 0.55);
+  --wtr-shadow-overlay: 0 12px 32px rgba(15, 46, 76, 0.22);
+  --wtr-hit-min: 44px;
+
+  /* ---- Bevegelse ---- */
+  --wtr-dur-fast: 120ms;
+  --wtr-dur-base: 180ms;
+  --wtr-dur-slow: 240ms;
+  --wtr-ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
+
+  background: var(--wtr-surface-page);
+  color: var(--wtr-text-body);
+  font-family: var(--wtr-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wang-tr {
+    --wtr-dur-fast: 1ms;
+    --wtr-dur-base: 1ms;
+    --wtr-dur-slow: 1ms;
+  }
+}
