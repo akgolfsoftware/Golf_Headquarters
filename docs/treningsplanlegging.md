@@ -326,14 +326,18 @@ planlagt/gjennomført/uteblitt. Sporet regnes bare for mål koblet til et pyrami
 
 ## 6. Perioder
 
+Synlige navn (Anders 28.09.2026): Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering ·
+Ferie · Restitusjon. «Spesialisering» og «Spesialiseringsperiode» brukes ikke.
+
 | Periodetype | Brukes til |
 |---|---|
 | Grunnperiode (`GRUNN`) | Bygge kapasitet, teknisk grunnlag og treningsvaner |
 | Spesialperiode (`SPESIAL`) | Spesifikk trening mot spillerens behov |
 | Turneringsperiode (`TURNERING`) | Forberedelse og gjennomføring rundt turneringer |
-| Evalueringsperiode (`EVALUERING`) | Oppsummering, analyse og justering |
+| Evaluering (`EVALUERING`) | Oppsummering, analyse og justering |
 | Testuke (`TESTUKE`) | Tester og målinger |
 | Ferie (`FERIE`) | Ferie, pause eller redusert plan |
+| Restitusjon | Hvile og gjenoppbygging. Besluttet 28.09.2026, ikke bygget: krever en ny verdi i databasen |
 | Treningssamling (`TRENINGSSAMLING`) | Samling over flere økter eller dager |
 | Heldagssamling (`HELDAGSSAMLING`) | Samling med heldagsformat |
 
@@ -703,4 +707,5 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`): inspektør på desktop, bunnark på mobil under 1024 px. Sett i komponentprøve, ikke i innlogget app |
 | Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
 | Flytt opp/ned og fjern øvelse på mobil | Bygget i «Valgt øvelse»-arket; fjerning krever bekreftelse. Sett i komponentprøve, ikke i innlogget app |
+| Testuke, Treningssamling og Heldagssamling | Står ikke i Anders' periodeliste 28.09.2026. Beholdes som de er til Anders har sagt om de skal bort |
 | Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |

@@ -63,9 +63,9 @@ const FASE_IKON: Record<LPhase, string> = {
   HELDAGSSAMLING: "clock",
 };
 const FASE_LABEL: Record<LPhase, string> = {
-  GRUNN: "Grunnfase",
-  SPESIAL: "Spesialfase",
-  TURNERING: "Turneringsfase",
+  GRUNN: "Grunnperiode",
+  SPESIAL: "Spesialperiode",
+  TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",

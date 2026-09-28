@@ -91,7 +91,7 @@ const ALLE_SKJERMER: SkjermDefinisjon[] = [
       "Inspiser kalibrerte TrackMan-carry-tall i meter",
       "Sjekk abonnementsstatus og brutto snittscore",
     ],
-    komponent: <SpillerProfilPrecisionView navn="Magnus Kristiansen" />,
+    komponent: <SpillerProfilPrecisionView navn="Magnus Aasheim" />,
   },
   {
     id: "periodeplan-pyramide",
@@ -148,7 +148,7 @@ const ALLE_SKJERMER: SkjermDefinisjon[] = [
       "Test samtykkebryterne for foto og reise (lagres i sanntid)",
       "Inspiser klippekort og treveis dialog med trener",
     ],
-    komponent: <ForelderPrecisionView spillerNavn="Magnus Kristiansen" />,
+    komponent: <ForelderPrecisionView spillerNavn="Magnus Aasheim" />,
   },
   {
     id: "booking-flyt",

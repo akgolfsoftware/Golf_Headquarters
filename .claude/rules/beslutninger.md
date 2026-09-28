@@ -4,6 +4,39 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PERIODENE HETER GRUNNPERIODE, SPESIALPERIODE, TURNERINGSPERIODE, EVALUERING, FERIE OG RESTITUSJON (Anders 28.09.2026, bindende)
+
+Svar på at språkmasteren sa «Spesialperiode» mens Masterbrain og teksten AI-agentene får, sa
+«Spesialiseringsperiode». Anders ga lista: Grunnperiode, Spesialperiode, Turneringsperiode,
+Evaluering, Ferie, Restitusjon.
+
+- **Synlige navn:** Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering · Ferie ·
+  Restitusjon. «Spesialisering», «Spesialiseringsperiode» og «Evalueringsperiode» brukes ikke.
+- **Kodenavnene endres ikke:** `GRUNN`, `SPESIAL`, `TURNERING`, `EVALUERING`, `FERIE`.
+- **Restitusjon er ny periodetype.** Den finnes ikke i databasen i dag (`PeriodeType` og `LPhase`
+  har åtte verdier, ingen `RESTITUSJON`).
+- **Ikke avklart:** Testuke, Treningssamling og Heldagssamling står ikke i lista. De beholdes
+  uendret til Anders har sagt om de skal bort. Ingenting fjernes på antakelse.
+
+**Overstyrer:** navnene «Spesialiseringsperiode» og «Evalueringsperiode» i koden, og raden
+«Evalueringsperiode» i `docs/treningsplanlegging.md` kapittel 6.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Navnene i PlayerHQ og AgencyOS.** Gjort 28.09 i samme PR som beslutningen: tolv filer med
+   periodenavn, teksten AI-agentene får (`src/lib/masterbrain/hent-kunnskap.ts`) og
+   `docs/treningsplanlegging.md` kapittel 6.
+2. **Restitusjon i databasen.** Additiv ny verdi `RESTITUSJON` i `PeriodeType` og `LPhase`,
+   kirurgisk via `db execute` (gotchas §Database). Krever Anders' ja til akkurat den endringen.
+   Deretter navn, farge og ikon i de samme tolv filene. Ferdig når coach kan legge en
+   restitusjonsperiode i årsplanen og spilleren ser den.
+3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`). Gjort 28.09 (masterbrain#13):
+   «Spesialperiode» i `REDIGER-HER.md` og `canon-methodology.json`. Kodenavnet SPESIALISERING
+   der oversettes fortsatt av appen.
+4. **WANG og GFGK Junior er ikke endret.** WANG-årsplanen (`src/app/team-wang/_data/`) og den
+   offentlige GFGK-teksten (`src/app/gfgk-junior/_data/`) sier «Spesialisering». Endres bare hvis
+   Anders sier at lista også gjelder der.
+
 ## POSISJONSNAVN FØLGER ORDMASTEREN, OG TEKNISK PLAN SPERRER INGENTING (Anders 27.09.2026, bindende)
 
 Avklart etter to designrunder i Claude Design «AK Golf Precision Athletics» (`7d7c2994`), der

@@ -280,7 +280,7 @@ export function TekniskPlanPrecisionView() {
             <span className="text-xs text-[#DDD9D1]">|</span>
             <span className="text-[11px] font-mono text-[#736E65] flex items-center gap-1">
               <User size={12} />
-              Magnus Kristiansen (Trener: Anders Kristiansen)
+              Magnus Aasheim (Trener: Anders Kristiansen)
             </span>
             <span className="text-xs text-[#DDD9D1]">|</span>
             <span className="text-[11px] font-mono text-[#0D6338] bg-[#0D6338]/10 px-2 py-0.5 rounded font-medium">

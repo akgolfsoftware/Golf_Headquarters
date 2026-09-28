@@ -40,8 +40,8 @@ const PERIODE_TO_AKSE: Record<PeriodeType, AkseKey> = {
 
 const PERIODE_NAVN: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialisering",
-  TURNERING: "Konkurranse",
+  SPESIAL: "Spesialperiode",
+  TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Hvile",

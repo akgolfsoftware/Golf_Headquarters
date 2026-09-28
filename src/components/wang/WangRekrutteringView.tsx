@@ -51,7 +51,7 @@ export interface TalentSpiller {
 const INITIAL_TALENTER: TalentSpiller[] = [
   {
     id: "t1",
-    navn: "Magnus Kristiansen",
+    navn: "Magnus Aasheim",
     fodselsar: 2008,
     klubb: "Gamle Fredrikstad GK",
     onsketAvSkoler: ["Fredrikstad", "Oslo"],

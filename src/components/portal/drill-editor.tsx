@@ -241,7 +241,7 @@ export function DrillEditor({
                   lPhase === phase ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-foreground/20"
                 }`}
               >
-                {phase === "GRUNN" ? "Grunn" : phase === "SPESIAL" ? "Spesialisering" : "Turnering"}
+                {phase === "GRUNN" ? "Grunn" : phase === "SPESIAL" ? "Spesial" : "Turnering"}
               </button>
             ))}
           </div>
