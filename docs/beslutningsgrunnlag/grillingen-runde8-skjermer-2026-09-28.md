@@ -858,4 +858,5 @@ oppstart · 24 Live-økt og runde · 25 Cockpit · 26 Innboks · 27 Stall og Spi
 | Runde | Sendt | Designets melding (rapportert, ikke målt av Claude Code) |
 |---|---|---|
 | 19 | 28.09 | Ny meny i begge skall, felles hurtigknapp og bjelle, ny oversikt. Audit 3 080 tilfeller, 0 avvik. Sju uavklarte punkter til Anders i `oversikt.html`. |
-| 20 | 28.09 | — |
+| 20 | 28.09 | PH-01 tegnet på nytt, PH-02 slått sammen med PH-01. Audit 80 tilfeller, 0 avvik. Nytt spørsmål til Anders: teller «Neste turnering» bare konkurranser (treningsturneringer søndag regnes som økt)? |
+| 21 | 28.09 | — (kjører ved øktslutt) |
