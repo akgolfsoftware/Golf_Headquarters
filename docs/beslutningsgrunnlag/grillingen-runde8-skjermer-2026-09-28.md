@@ -21,8 +21,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 7 | AgencyOS · Innboks | ja | ja, 28.09 | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | ja | ja, 28.09 | — |
 | 9 | AgencyOS · Kalender | ja | ja, 28.09 | — |
-| 10 | AgencyOS · Workbench | pågår | — | — |
-| 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | — | — | — |
+| 10 | AgencyOS · Workbench | ja | ja, 28.09 | — |
+| 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | pågår | — | — |
 
 ## 0. Motoren
 
@@ -734,3 +734,59 @@ gruppeøkter.
 **Beslutninger som skal registreres i fase 4:** samlet bookingkalender for alle coacher ·
 inntektsforslag for gruppeøkter via Innboks · automatisk varsel ved flytting med angre ·
 tilgang head coach / assistant coach.
+
+## 10. AgencyOS · Workbench
+
+### Dette fantes 28.09
+- App: `/admin/plan`, maler, teknisk plan, plan-templates (ny, vis, rediger),
+  `workbench/[playerId]`.
+- Design: AG-11 Workbench, AG-14 Plan-hub, AG-TP, AG-WB-FYS, AG-WB-TURN, AG-16 Grupper,
+  øktbygger og øvelsesredigering.
+- Gjeldende beslutning: én motor (spillerens WorkbenchV2) med stall- og gruppevelger; ny uke
+  kopierer forrige; ekte dra-og-slipp.
+- Kode uten knapp (MÅLT): dupliser uke/økt, fjern økt, lagre periode, coachnotater, bruk mal på
+  spiller, søk i tekniske oppgaver, AI-plan for 20 spillere. Ingen kan lage eller endre øvelse;
+  16 godkjente, alle putting.
+
+### Anders forteller
+- Planlegge årsplan, periodisering, månedsplan, ukeplan og øktplan for individuelle spillere i
+  grupper og for gruppetrening i de samme gruppene — for eksempel WANG Toppidrett Fredrikstad
+  og alle GFGK-grupper.
+- Er spilleren medlem, får hen gruppens økter automatisk i kalenderen sammen med den
+  individuelle planen.
+- Lik funksjon som spillerens Workbench, pluss enkelt bytte mellom grupper og spillere.
+- Fysisk tre ganger i uka: klokkeslett, dra fra sidefeltet, slipp på tidspunkt, sett
+  gjentakelse.
+
+### Spørsmål og svar
+**8.89 Gruppe og individ.** Svar: gruppeplanen arves av medlemmene (konseptet over).
+**8.90 Bytte.** Svar: a — velgere Gruppe og Spiller med søk, Forrige/Neste, husker sist brukte.
+**8.91 Sidefeltet.** Svar: øvelsesbank, fysisk treningsprogram, øktmaler, turneringer, ny
+teknisk plan, målsetninger osv.
+**8.92 Gjentakelse.** Svar: dra pyramideaksen (for eksempel FYS) ut, slipp på tidspunkt, sett
+gjentakelse, legg til fysisk treningsprogram.
+**8.93 Øvelser.** Svar: «+» for manuell øvelse, eller velg fra banken med filter etter valgt
+pyramide. Har man valgt TEK, skal man aldri få en SPILL-øvelse.
+**8.94 Pyramiden styrer.** Svar: planleggingen starter i pyramiden, og resten følger riktig
+kategorisering derfra. Tolket: valgt pyramide styrer område, felt og øvelsesbank, også for egne
+øvelser. **Endrer** «Pyramiden er veiledende og sperrer ikke» (beslutninger §Treningsfag).
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Samme Workbench som spilleren**, pluss velgere for Gruppe og Spiller med søk,
+  Forrige/Neste og minne om sist brukte.
+- **Alle nivåer:** årsplan, periodisering, måned, uke og økt — for enkeltspillere og for grupper
+  (WANG Toppidrett Fredrikstad, alle GFGK-grupper).
+- **Gruppeplanen er grunnmuren:** medlemmer får gruppeøktene automatisk i sin PlayerHQ-kalender
+  sammen med den individuelle planen. Tilpasning per spiller merkes «Egen»; endring i
+  gruppeplanen slår gjennom til alle som ikke har egen versjon.
+- **Sidefelt:** øvelsesbank, fysisk treningsprogram, øktmaler, turneringer, ny teknisk plan,
+  målsetninger.
+- **Dra og slipp:** pyramideakse ut, slipp på klokkeslett, «Gjenta» (hver uke, annenhver,
+  valgte dager, til dato eller ut perioden), legg til fysisk program; senere endring «bare
+  denne» eller «alle framover».
+- **Øvelser:** pyramiden velges først og styrer kategoriseringen videre; banken filtreres
+  etter den; «+» lager egen øvelse innenfor samme kategorisering.
+
+**Beslutninger som skal registreres i fase 4:** gruppeplan arves av medlemmene med
+«Egen»-overstyring · gjentakelse ved slipp · pyramiden styrer kategorisering og øvelsesbank
+(endrer §Treningsfag) · coach kan lage øvelser.
