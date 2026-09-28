@@ -6,6 +6,7 @@
 
 import { z } from "zod";
 import { anthropicKlient, COACH_MODEL } from "./anthropic";
+import { anonymiserNavn, reSubstituer } from "./saker/anonymiser";
 
 // ----------------------------------------------------------------------------
 // Typer
@@ -85,6 +86,16 @@ Anbefalinger er alltid råd, aldri krav — skriv aldri at spilleren "må" eller
 
 Returner resultatet gjennom verktøyet lever_okt_analyse.`;
 
+/**
+ * Spillerens navn slik det kan stå i avskriften: fullt navn og hver del av det.
+ * Navnet byttes med [PERSON1] osv. før teksten sendes, og settes tilbake i svaret
+ * (beslutninger.md §SKJERMENE … RUNDE 8, punkt 3).
+ */
+function navnIAvskrift(navn: string): string[] {
+  const deler = navn.split(/\s+/).filter((d) => d.length >= 2);
+  return [navn, ...deler];
+}
+
 function byggBrukerPrompt(input: AnalyseInput): string {
   const k = input.spillerKontekst;
   const linjer: string[] = [];
@@ -101,7 +112,8 @@ function byggBrukerPrompt(input: AnalyseInput): string {
   linjer.push("");
   linjer.push(`ØKT-VARIGHET: ${input.varighetMin} min`);
   linjer.push("");
-  linjer.push("RÅ TRANSKRIPSJON FRA COACHING-ØKTEN (automatisk tale-til-tekst, kan inneholde feil):");
+  linjer.push("RÅ TRANSKRIPSJON FRA COACHING-ØKTEN (automatisk tale-til-tekst, kan inneholde feil).");
+  linjer.push("Spillerens navn er byttet med [PERSON1], [PERSON2] osv. Behold plassholderne uendret der du nevner spilleren.");
   linjer.push("---");
   linjer.push(input.transkripsjon);
   linjer.push("---");
@@ -124,7 +136,11 @@ export async function analyserCoachingSesjon(
   input: AnalyseInput,
 ): Promise<AnalyseResultat> {
   const klient = anthropicKlient();
-  const brukerPrompt = byggBrukerPrompt(input);
+  const { anonymisert, mapping } = anonymiserNavn(
+    input.transkripsjon,
+    navnIAvskrift(input.spillerKontekst.navn),
+  );
+  const brukerPrompt = byggBrukerPrompt({ ...input, transkripsjon: anonymisert });
 
   const respons = await klient.messages.create({
     model: COACH_MODEL,
@@ -208,5 +224,9 @@ export async function analyserCoachingSesjon(
       `Claude-respons matchet ikke forventet schema: ${parsed.error.message}`,
     );
   }
-  return parsed.data;
+  return AnalyseResultatSchema.parse(
+    Object.fromEntries(
+      Object.entries(parsed.data).map(([felt, tekst]) => [felt, reSubstituer(tekst, mapping)]),
+    ),
+  );
 }
