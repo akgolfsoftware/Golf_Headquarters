@@ -427,7 +427,7 @@ hoppes over og gjøres senere fra profilen.
   sykdom, ferie) · utstyr · hjelp · innstillinger.
 - **Fasiliteter:** så mange du vil, kan endres når som helst. Én om gangen med ja/nei og
   oppfølging ved ja (range-lengde og driver, korteste og lengste bunkerslag, lengste chip
-  osv.). Viser hvilke av de 17 treningsområdene fasiliteten dekker, og hva som mangler.
+  osv.). Viser hvilke av de 19 treningsområdene fasiliteten dekker, og hva som mangler.
 - **Min coach:** hvem, avtale, videoer, tilbakemeldinger. Meldinger i innboksen bak bjella.
 - **Venner og utfordringer** under Meg.
 - **Målsetninger** (nytt navn på mål): i Workbench, bytter ut kalenderen i midtfeltet. Start,

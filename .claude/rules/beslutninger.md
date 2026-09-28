@@ -4,6 +4,43 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Åpne punkter etter runde 19–26 og Team Norways poengskala (Anders 28.09.2026, bindende)
+
+Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på resten.
+
+- **«Neste turnering»** på I dag er neste offisielle golfturnering. Interne konkurranser
+  (KjippeConk o.l.) er økter i agenda og plan, ikke turneringer.
+- **Fasilitetsspørsmålene gjelder alle spillere** (oppstart og Meg), med dekning av de 19
+  treningsområdene.
+- **AG-12 er sammendraget etter live-økta:** utkast til coach, godkjent går det til spilleren.
+- **«Svar» på innbokssak uten utkast** åpner et tomt skrivefelt og «Lag utkast» (Jarvis). Coach sender.
+- **Konkurransespilleren** anbefales etter turneringsnivået fra oppstarten, ikke etter kategori.
+  Spiller som ikke spiller turneringer får Klubbspilleren anbefalt. Spilleren velger selv.
+- **PlayerHQ-innboksen bak bjella (PH-21) heter «Innboks».**
+- **Break-tabellen** flyttes til Plan › Øvelsesbank, under putting.
+- **Bjelletallet er grafitt**, rust bare når innboksen har en sak som haster (Risiko, eller
+  spillerspørsmål ubesvart over 24 timer). Regelen «høyst én rust» får ikke unntak.
+- **Referanseverdi for testnivå (AG-15)** vises som «—» og «Referanse ikke satt» til A–K-nivåtallene
+  er vedtatt (§Åpent).
+- **Ingen egen Stats-side for coach under Mer.** Stats bor i Spiller 360 og Grupper.
+- **Team Norways poengskala** kommer fra scorekort-arket på Drive («Team Norway Tester
+  Treningsprotokoll Spiller.xlsx», fanen Referens). 8-ball: avstand til mål under 0,1 m = 4 ·
+  0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0. Putt (9 hull lengde, restavstand i fot):
+  senket (0–0,1) = 6 · til 1 = 3 · til 2 = 1 · til 4 = 0,5 · over = 0. **Nærspill Gate og VISA
+  Express:** arket har ingen skala; poeng føres for hånd per slag og appen summerer.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`)** sendes med runde 28: alle punktene over fjernes som
+   «Uavklart» i `ui_kits/katalog.js` og tegnes slik. Ferdig når oversikt.html viser 0 av dem.
+2. **TN-poeng i koden:** `src/lib/portal-tester/tn-catalog.ts` sperrer Nærspill Gate og VISA
+   Express («Poengskala og treffkriterier må bekreftes») og 9 hull lengde («poeng ved senket
+   putt … må bekreftes»). Fjern sperren for disse: Gate-testene summerer førte poeng, 9 hull
+   lengde bruker skalaen over. Ferdig når `tn-scoring.test.ts` låser begge, og testen
+   «ukjente gate-regler produserer ikke falsk standardscore» er skrevet om.
+3. **Uavklart:** Wedge Gate står i koden (`A26:F38`) men ikke i arket på Drive; den beholder
+   sperren. Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
+
 ## SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (Anders 28.09.2026, bindende)
 
 Anders gikk gjennom alle elleve områder og bekreftet hvert sammendrag. Anders: «Ting som nå evt
