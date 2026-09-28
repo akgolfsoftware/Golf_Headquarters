@@ -15,7 +15,7 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 |---|---|---|---|---|
 | 1 | IUP — felles modell fra PlayerHQ | ja | ja, 28.09 | — |
 | 2 | Testbatteri | ja | ja, 28.09 | — |
-| 3 | Deling og tilgang | — | — | — |
+| 3 | Deling og tilgang | ja | ja, 28.09 | — |
 | 4 | WANG: trener og sportssjef | — | — | — |
 | 5 | Team Norway: coach | — | — | — |
 | 6 | Spillerens side i PlayerHQ | — | — | — |
@@ -99,3 +99,38 @@ Ett lager i koden med 20 tester. WANG-tegningen: to låste protokoller, testdag,
   clubspeed. TN-tegningens 3000 m, knebøy, CMJ og medisinball utgår.
 - **Rytme:** fysisk hver sjette uke i grunnperioden; andre tester legger treneren i årsplanen
   etter behov; andre perioder setter treneren selv.
+
+## 3. Deling og tilgang
+
+### Dette fantes 28.09
+`DelingsSamtykke` i PlayerHQ (tester, stats, hele profilen; forelder under 16; kan trekkes).
+WANG- og TN-trenerne slipper inn på gruppemedlemskap uten samtykkesjekk. «Hele profilen» åpner
+ingen skjerm. WANG-34 viser at TN bare ser tester og runder.
+
+### Spørsmål og svar
+- 9.14 b Absolutt alt, også helse og meldinger. Claude anbefalte at samtykkesiden sier det rett
+  ut; ikke motsagt, bekreftet i sammendraget.
+- 9.15 Ja, men: «Wang og Team Norway kan gi forslag til endring i IUP-en, treningsplaner,
+  vurderinger og samtaler. Men spiller bestemmer til syvende og sist.»
+- 9.16 WANG og TN kan sende forespørsel om å opprette PlayerHQ. Har spilleren PlayerHQ, sendes
+  lenke til e-post på wang.no eller golfforbundet.no.
+- 9.17 «Når spiller trekker tilgangen, så forsvinner coach med en gang.»
+- 9.18 b, avklart med 9.19 (tolket som a, bekreftet i sammendraget): WANG/TN foreslår, AK-coach
+  endrer direkte.
+- 9.20 «Spiller står ansvarlig for å gjøre sin individuelle IUP og dele deretter med Wang og
+  Team Norway coach.»
+- 9.21 «Spilleren må betale for PlayerHQ.»
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Spilleren har ansvaret for IUP-en** og deler den selv med WANG- og TN-coachen.
+- **Deling:** uten PlayerHQ kan WANG/TN invitere til å opprette konto. Med PlayerHQ sender
+  spilleren delingslenke til trenerens e-post; lenken virker bare for @wang.no og
+  @golfforbundet.no. Under 16 år godkjenner forelderen.
+- **Spilleren betaler PlayerHQ selv**, vanlig pris.
+- **Innsyn:** absolutt alt, også helse og meldinger. Samtykkesiden sier det rett ut.
+- **Endringer:** WANG og TN fører tester og sender forslag til plan, IUP, vurderinger og
+  samtaler; spilleren godtar eller avviser. AK-coachen endrer direkte; spilleren kan angre.
+- **Trekkes tilgangen, forsvinner coachen med en gang.** Det som er ført blir hos spilleren.
+- **Kodeoppgave (egen, ikke i denne runden):** WANG- og TN-tilgang må kreve samtykke
+  (`wang-tilgang.ts`, `tn-arbeidsflate.ts` `hentTnSpillerTilgang`); i dag holder
+  gruppemedlemskap.
