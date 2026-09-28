@@ -790,3 +790,34 @@ kategorisering derfra. Tolket: valgt pyramide styrer område, felt og øvelsesba
 **Beslutninger som skal registreres i fase 4:** gruppeplan arves av medlemmene med
 «Egen»-overstyring · gjentakelse ved slipp · pyramiden styrer kategorisering og øvelsesbank
 (endrer §Treningsfag) · coach kan lage øvelser.
+
+## 11. AgencyOS · Mer
+
+### Dette fantes 28.09
+- App (29 sider): booking (ny, detalj, tjenester), økonomi (`agencyos/okonomi`, Tripletex
+  lesetilgang), tester (oversikt, normer, tildel, TrackMan), grupper (oversikt, per gruppe med
+  årsplan, skoledata, timeplan, Workbench), oppsett (profil, ekstern, inviter, GDPR,
+  revisjonslogg, feillogg), øvrig (turneringer, markedsføring, opptak, videoer, hjelp).
+- Design: AG-06, AG-15, AG-16, AG-17, AG-18, AG-20, AG-21, AG-23, AG-24.
+- Kode uten skjerm (MÅLT): leads lages daglig uten skjerm; `coachBekreftTurneringEntry` 0
+  kallere; Stripe-kundeportal 0 kallere.
+
+### Anders forteller
+- Snarvei til ny booking, for eksempel når han skal ta en test med en spiller.
+- Slå sammen så mange funksjoner som mulig (tolket: færrest mulig egne sider).
+- Grupper: søke opp spillere med PlayerHQ i alle tilgjengelige grupper, hake av hvilke grupper
+  de skal være med i, tildele tester, TrackMan-økter osv.
+- Økonomioversikt: «Står jeg bare til booking av grupper» — uklart, spørres om.
+- Turneringspåmeldinger trenger ikke bekreftes; coach vil bare ha turneringsoversikten per
+  spiller.
+
+### Spørsmål og svar
+**8.95 Struktur.** Forslag a: Booking · Grupper · Tester · Økonomi · Oppsett; turneringer,
+videoer/opptak, oppgaver og markedsføring flyttes. Venter på svar.
+**8.96 Ny booking.** Forslag a: i hurtigknappen og øverst i Mer; test-tjeneste tildeler testen.
+Venter på svar.
+**8.97 Grupper.** Svar: søk opp spillere med PlayerHQ, hak av gruppene de skal være med i,
+tildel tester og TrackMan-økter fra gruppen.
+**8.98 Leads.** Forslag a: i Innboks under Oppfølging. Venter på svar.
+**8.99 Turneringspåmeldinger.** Svar: ingen bekreftelse. Coach ser turneringsoversikten per
+spiller.
