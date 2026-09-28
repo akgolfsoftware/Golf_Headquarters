@@ -859,4 +859,5 @@ oppstart · 24 Live-økt og runde · 25 Cockpit · 26 Innboks · 27 Stall og Spi
 |---|---|---|
 | 19 | 28.09 | Ny meny i begge skall, felles hurtigknapp og bjelle, ny oversikt. Audit 3 080 tilfeller, 0 avvik. Sju uavklarte punkter til Anders i `oversikt.html`. |
 | 20 | 28.09 | PH-01 tegnet på nytt, PH-02 slått sammen med PH-01. Audit 80 tilfeller, 0 avvik. Nytt spørsmål til Anders: teller «Neste turnering» bare konkurranser (treningsturneringer søndag regnes som økt)? |
-| 21 | 28.09 | — (kjører ved øktslutt) |
+| 21 | 28.09 | PH-10 Plan i fire zoomnivåer (År · Måned · Uke · Dag, mobil åpner i Uke), «Rediger» åpner Workbench (PH-11), fysisk og turneringer er lag i Plan. Audit 160 tilfeller, 0 avvik. Uavklart: registrering av sett for fysisk må inn i PH-04 (egen skjerm borte) · kontrast på sandtonene for Ferie og Restitusjon · lettere uke «14,5 → 11,5 t» er ikke merket ESTIMAT og utregningen må bekreftes. |
+| 22 | 28.09 | — (kjører) |
