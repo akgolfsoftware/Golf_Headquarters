@@ -366,3 +366,57 @@ PGA-sammenligningen er slått på.
 kategori som standard, PGA valgfritt for spiller og alltid for coach · grenser for nok data
 (4/8/12/24) · Ytelsesbilde med helsedata bak samtykke i onboarding · banekart og
 vitnegodkjenning senere · coach ser samme Stats som spilleren.
+
+## 4. PlayerHQ · Meg
+
+### Dette fantes 28.09
+- App: 38 sider under Meg (profil, abonnement, bookinger, dokumenter, helse, utstyr, foreldre,
+  hjelp, resultater, 9 innstillingssider). Utenfor Meg: coach-kontakt (11), mål (4), talent
+  (4), utfordringer (3), venner (2), ukesdigest.
+- Design: PH-24 Meg, PH-25 Abonnement og innstillinger, PH-21 Coach-kontakt, PH-23 Booking,
+  PH-26 Utenfor banen.
+- Kode (MÅLT): `Goal` har resultat-/prosessmål (`GoalCategory`) og sluttdato, ikke startdato.
+  `PlayerFacility` har range-lengde, lengste putt og 14 ja/nei-evner; ikke bunker- eller
+  chiplengder. Fasiliteter kan ikke endres etter oppstart (`saveFacilities` 0 kallere).
+  Skade/fravær har ingen skriveflyt. Utfordringer kan ikke opprettes (`opprettUtfordring`
+  0 kallere). Profilkobling mot AK pipelines finnes (`src/lib/profil-kobling/`): golf-ID eller
+  fornavn + etternavn + fødselsår, mellomnavn ignoreres; bare i Meg → Resultater.
+- Talent (MÅLT): radar = coachens vurdering 1–10 (fysisk, teknikk, taktikk, mental,
+  motivasjon) + testnivå per pyramideområde; sammenligning = eget SG-snitt mot én annen
+  (anonymisert) spiller.
+
+### Anders forteller
+- Meg: profil (navn, personalia, HCP, hjemmeklubb), fasiliteter (flere, med hva som kan og
+  ikke kan trenes), bookinger, betalingskort, inviter foreldre, hjelp, alle innstillinger.
+- Senere: eksport og utskrift av årsplan.
+- Mål heter **Målsetning**. Målsetninger integreres i Workbench og synkroniseres med alt i
+  appen (planlegging, stats, resultatmål). Alle har start- og sluttdato og er resultat- eller
+  prosessmål.
+- Turneringsresultater via AK pipelines: spilleren finner sin profil fra GolfBox i onboarding,
+  uten krav om eksakt navn (mellomnavn), og henter resultatene inn.
+
+### Spørsmål og svar
+**8.45 Målsetninger.** Svar (via 8.50): i Workbench.
+**8.46 Coachen.** Svar: a — meldinger i innboksen bak bjella; «Min coach» under Meg (hvem,
+avtale, videoer, tilbakemeldinger).
+**8.47 Rekkefølge i Meg.** Svar: a — profil · fasiliteter · bookinger · abonnement og
+betalingskort · foreldre · helse og fravær · utstyr · hjelp · innstillinger.
+**8.48 Fasiliteter.** Svar: a — dekning av treningsområder per fasilitet, så mange du vil,
+kan endres når som helst. Viktig: range-lengde (kan jeg slå driver?), treningsbunker ja/nei
+med korteste og lengste slag, lengste chip (for eksempel 30 m ja/nei) osv. for alle typer.
+**8.49 Løse sider.** Svar: venner og utfordringer flyttes under Meg. Talent, ukesdigest og
+«Utenfor banen»: se 8.54–8.56.
+**8.50 Målsetninger i Workbench.** Svar: a — «Målsetninger» i Workbench bytter
+midtfeltet (der kalenderen står) til målsetningene. Hver har start, slutt og type, knyttes til
+nivå (år, periode, måned, uke, økt), fremdrift hentes automatisk.
+**8.51 Hva måles.** Svar: alle funksjoner og parametere i hele plattformen.
+**8.52 Fasilitetsskjema.** Svar: a — én fasilitet om gangen, ja/nei med oppfølging ved ja;
+appen regner ut dekning av treningsområdene.
+**8.53 Turneringsresultater.** Svar: koblingen mot AK pipelines skjer i onboarding (8.57);
+resultatene hentes inn i plattformen.
+**8.55 Talentradar.** Svar: bare coach, aldri spiller.
+**8.56 Sammenligning.** Svar: bare coach kan sammenligne med andre spillere i gruppene.
+Spilleren kan alltid sammenligne snittscoren sin mot AK Golf pipelines (tolket: mot
+anonymiserte snitt i resultatdatabasen, for eksempel samme alder eller tour — bekreftes).
+**8.57 Kobling i onboarding.** Svar: a — eget steg «Finn deg i turneringsresultatene», kan
+hoppes over og gjøres senere fra profilen.
