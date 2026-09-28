@@ -574,6 +574,7 @@ model User {
   userStatus UserStatus        @default(AKTIV)
   leaves     Leave[]
   busyBlocks PlayerBusyBlock[]
+  dagsformer PlayerDailyForm[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1066,6 +1067,23 @@ model PlayerBusyBlock {
 
   @@index([userId, startAt])
   @@map("player_busy_blocks")
+}
+
+// Dagsform på I dag (PH-01, Anders 28.09.2026): spilleren velger 1–5 én gang per
+// Oslo-dag (Tung · Slapp · Ok · God · Topp). Nytt valg samme dag overskriver.
+// Coach leser den som del av spillerens data.
+model PlayerDailyForm {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("player_daily_forms")
 }
 
 // Foreldre-invitasjons-relasjon (V2 Spor 3).

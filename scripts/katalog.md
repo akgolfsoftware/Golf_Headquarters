@@ -12,6 +12,9 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-drift-rutiner-2026-08-30.ts](<add-drift-rutiner-2026-08-30.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-exercise-definition-v2-akser-2026-09-23.ts](<add-exercise-definition-v2-akser-2026-09-23.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-follow-up-case-2026-09-23.ts](<add-follow-up-case-2026-09-23.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-player-daily-form-2026-09-28.ts](<add-player-daily-form-2026-09-28.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-restitusjon-periode-2026-09-28.ts](<add-restitusjon-periode-2026-09-28.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-round-registration-metadata-2026-09-27.ts](<add-round-registration-metadata-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-slag-detaljer-2026-09-16.ts](<add-slag-detaljer-2026-09-16.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-handlinger-2026-09-27.ts](<add-tn-handlinger-2026-09-27.ts>) |
@@ -19,6 +22,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-testdag-2026-09-17.ts](<add-tn-testdag-2026-09-17.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-vedlegg-kategori-2026-09-27.ts](<add-tn-vedlegg-kategori-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-workbench-fys-turnering-2026-09-27.ts](<add-workbench-fys-turnering-2026-09-27.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-tokens.mjs](<ak-golf-tokens.mjs>) |
@@ -111,6 +115,8 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ordbok-json.ts](<ordbok-json.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ow3-fase1-utvid-workbench-session-2026-09-16.ts](<ow3-fase1-utvid-workbench-session-2026-09-16.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ow3-fase2-migrer-training-plan-sessions-2026-09-16.ts](<ow3-fase2-migrer-training-plan-sessions-2026-09-16.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/ow3-fase3-utvid-workbench-drill-2026-09-17.ts](<ow3-fase3-utvid-workbench-drill-2026-09-17.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/ow3-fase3b-workbench-drill-exerciseid-2026-09-17.ts](<ow3-fase3b-workbench-drill-exerciseid-2026-09-17.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/p0-test-innlogget-reise.mjs](<p0-test-innlogget-reise.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/p0-test-seed-hq.ts](<p0-test-seed-hq.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/pilot-flyt-smoke.mjs](<pilot-flyt-smoke.mjs>) |
