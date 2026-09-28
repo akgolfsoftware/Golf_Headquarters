@@ -12,7 +12,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | # | Område | Grillet | Bekreftet av Anders | Bestilling sendt |
 |---|---|---|---|---|
 | 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | — |
-| 1 | PlayerHQ · I dag | — | — | — |
+| 1 | PlayerHQ · I dag | pågår | — | — |
 | 2 | PlayerHQ · Planlegging | — | — | — |
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | — | — | — |
 | 4 | PlayerHQ · Meg | — | — | — |
@@ -96,7 +96,7 @@ rad gir forslag til omlegging.
 Junior-aspirant · Konkurransespilleren · Practice like the pros. Innholdet tilpasses A–K.
 
 **8.12 Køller i teknikktesten.** Svar: sandwedge, 7-jern og driver. Talen sa «femten» —
-antall slag per kølle (10 eller 15) bekreftes.
+Bekreftet: 10 slag per kølle.
 
 **8.13 Testresultatet.** Svar: a — testen viser spredning og variasjon i TrackMan-tallene og
 merker største svakhet. Den setter ikke nivå; nivået kommer fra snittscoren.
@@ -147,10 +147,56 @@ starter ikke runde-agentene.
   køllehastighet), `pyramid-weighting` (fordeling mot ønsket).
 
 ### Anders forteller
-—
+- Spilleren skal se dagens treningsøkter, og kunne starte en økt med ett trykk rett etter at
+  appen er åpnet.
+- Varsel fra coach eller fra appen kommer først som pop-up. Spilleren velger å lese eller
+  ignorere.
+- Forslag fra motoren vises både som varsel og i en innboks.
+
+### Dette fantes 28.09
+- Design PH-01: hilsen, «Registrer runde», bjelle, øktkort med «Start økt»/«Se øktark»,
+  dagsform 1–5, agenda, neste fysiske økt, neste turnering, Caddie-forslag med «Send til
+  coach» (bryter 8.4), treningstid for uka per akse.
+- App `/portal`: tilsvarende, pluss Caddie-felt, TrackMan- og testkort. Ingen pop-up og ingen
+  samlet innboks: varsler og coachmeldinger ligger hver for seg.
 
 ### Spørsmål og svar
-—
+**8.14 Flere økter samme dag.** Svar: den neste økten på tidslinjen vises alltid. Alle økter
+har like store kort, og det skal være lett å se hvor i pyramiden økta hører hjemme (FYS, TEK,
+SLAG, SPILL, TURN).
 
-### Slik vil du ha det
-—
+**8.15 Pop-up.** Svar: bare melding fra coach og endring i dagens treningsplan. Alt annet
+går rett til innboksen og vises med rødt varseltall.
+
+**8.16 Innboks.** Svar ikke gitt eksplisitt; tolket som én innboks bak bjella (bekreftes i
+sammendraget).
+
+**8.17 Innhold på I dag.** Svar: dagsform · agenda · neste fysiske økt · neste turnering med
+nedtelling i dager · fordeling av treningstiden på uka · en spillifisert visning av hvor mange
+økter som er fullført etter planen. En flyttbar hurtigknapp med snarveier: spør Caddie,
+opprett ny økt, registrer runde og andre snarveier.
+
+**8.18 Ingen økt i dag.** Svar: «Bygg økter i Workbench» eller «Registrer runde». Har
+spilleren ingen treningsplan: «Velg treningsplan».
+
+**8.19 Fullførte økter.** Svar: anbefalt — «5 av 6 økter fullført denne uka» og rekke med uker
+på rad over 70 %. I tillegg milepæler: 10, 50 og 100 fullførte økter etter planen.
+
+**8.20 Hurtigknapp i PlayerHQ.** Svar: ja, også på spillerflaten. Snarveier: Spør Caddie ·
+Ny økt · Registrer runde · Start økt. Endrer beslutningen 22.09 («ikke avklart om den gjelder
+PlayerHQ»).
+
+### Slik vil du ha det (venter på bekreftelse)
+- **Pop-up ved åpning:** bare melding fra coach eller endring i dagens plan. «Les» eller
+  «Ignorer». Alt annet går til innboksen.
+- **Øverst:** dagens økter som like store kort i tidsrekkefølge, neste først. Hvert kort har
+  aksefarget stripe (FYS, TEK, SLAG, SPILL, TURN) og «Start» med ett trykk.
+- **Under:** dagsform · agenda · neste fysiske økt · neste turnering med nedtelling i dager ·
+  treningstid for uka per akse · fullførte økter mot plan (uke, rekke over 70 %, milepæler 10,
+  50, 100).
+- **Bjella øverst:** rødt tall; åpner én felles innboks med forslag fra motoren (godta eller
+  avvis), meldinger fra coach og varsler.
+- **Hurtigknapp:** flyttbar, med Spør Caddie · Ny økt · Registrer runde · Start økt.
+- **Ingen økt i dag:** «Bygg økter i Workbench» og «Registrer runde». Uten treningsplan:
+  «Velg treningsplan».
+- **Fjernes:** «Send til coach» på AI-forslag — spilleren godkjenner selv.
