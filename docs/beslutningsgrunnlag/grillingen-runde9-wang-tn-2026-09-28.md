@@ -17,7 +17,7 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 | 2 | Testbatteri | ja | ja, 28.09 | — |
 | 3 | Deling og tilgang | ja | ja, 28.09 | — |
 | 4 | WANG: trener og sportssjef | ja | ja, 28.09 | — |
-| 5 | Team Norway: coach | — | — | — |
+| 5 | Team Norway: coach | ja | ja, 28.09 | — |
 | 6 | Spillerens side i PlayerHQ | — | — | — |
 
 ## Kartlegging (målt 28.09)
@@ -163,3 +163,35 @@ turneringer.»
 - **Rettes i tegningen:** IUP fra PlayerHQ med forslag i stedet for endring · fireukerssjekk i
   stedet for halvårsevaluering · kategori A–K i stedet for E–A+ · fysiske tester etter
   6-årsløpet · roller fjernet 27.09 ut av WANG-24 og WANG-34.
+
+## 5. Team Norway: coach
+
+### Dette fantes 28.09
+19 skjermer i `bc3e41fc` («Team Norway App delivery»): oversikt, spillerprofil, fellestesting,
+samlinger, uttak, college, turneringer, live-watch, fagapparat, lisens og økonomi, månedsplan,
+spillerutvikling, gruppeposter, dokumenter, protokoller, rangliste, skoler, referansenivåer,
+tilgang. Rolle Spiller med ti skjermer. Ingen IUP, ingen golftester, ingen deling med PlayerHQ.
+
+### Spørsmål og svar
+- 9.27 ikke besvart direkte; anbefaling (a) lagt inn og bekreftet i sammendraget.
+- 9.28 «Spillere skal alltid se det samme som PlayerHQ.» «I designet kun trenerskjermer for WANG
+  Toppidrett og Team Norway.»
+- 9.29 «Felles testing er fra hele batteriet.»
+- 9.30/9.31 b «De skal fortsette å være faktiske skjermer for Team Norway. Vi skal gjøre det så
+  komplett som mulig. Team Norway trenger skjermer for å se all testinformasjon til WANG-skolene,
+  og elever som har levert tester. De skal kunne se all data fra tester for kartlegging.»
+- 9.32 b «Går du på WANG Toppidrett så er det automatisk deling av testresultater med Team Norway.»
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Bare trenerskjermer** i WANG- og TN-designet. Spilleren ser alltid det samme som PlayerHQ;
+  TN-tegningens spillervisning utgår.
+- **Alle TN-skjermene blir og gjøres så komplette som mulig:** samlinger, uttak, fagapparat,
+  college, lisens og økonomi, live-watch, månedsplan, rangliste, skoler, gruppeposter, dokumenter.
+- **Øverst:** spillere som trenger deg, deretter neste samling.
+- **Spillerprofil** med samme innhold som PlayerHQ og Spiller 360, i TN-drakt: Plan · Stats ·
+  Tester · IUP · Samtaler · Turneringer.
+- **Fellestesting** fra hele batteriet; landslagsnivå per klasse ved siden av AK-kategori.
+- **Ny kartleggingsskjerm:** testdata fra alle WANG-skolene — hvem som har levert og alle
+  resultatene — for kartlegging.
+- **WANG-elevers testresultater deles automatisk med Team Norway, med navn.** Står i WANGs
+  opptaksavtale, forelder signerer under 16. Alt annet deler spilleren selv (område 3).
