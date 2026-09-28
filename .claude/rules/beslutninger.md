@@ -41,6 +41,68 @@ Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på reste
 3. **Uavklart:** Wedge Gate står i koden (`A26:F38`) men ikke i arket på Drive; den beholder
    sperren. Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
 
+## ÉN IUP OG ETT TESTBATTERI FOR AK GOLF, WANG OG TEAM NORWAY, OG SPILLEREN DELER SELV (Anders 28.09.2026, bindende)
+
+Grillingen runde 9: Anders bekreftet alle seks områder og mulighetskartets anbefaling («Send dette
+til de riktige Claude Design-prosjektene»). Kjernen: «Spiller står ansvarlig for å gjøre sin
+individuelle IUP og dele deretter med Wang og Team Norway coach.» Fasit for detaljene er «Slik vil
+du ha det» per område i `docs/beslutningsgrunnlag/grillingen-runde9-wang-tn-2026-09-28.md`;
+mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.md`.
+
+- **Én IUP** med Team Norways IUP-ark som mal. Spilleren eier den; AK Golf kan bruke dataene
+  anonymisert (står i vilkårene). **Ingen IUP-fane i PlayerHQ** — delene ligger i Plan, Stats,
+  Målsetning og Meg. Trenerne får fanen «IUP» i Spiller 360, WANG og Team Norway, i arkets
+  rekkefølge, hentet fra PlayerHQ.
+- **Fireukerssjekk** i I dag (prosessmål, målsetninger og alle utviklingssjekkens 41 spørsmål på
+  spillerens nivå: Ung, Junior, Amatør eller Profesjonell) erstatter WANGs halvårsevaluering.
+  **Bare for spillere i en WANG-gruppe (Ung eller Toppidrett) eller Team Norway-gruppe** (Anders
+  28.09: «Alle andre brukere skal ikke ha disse spørsmålssjekkene»). Sesongevaluering uka før uke 43.
+  **Nivå Ung** = spilleren går i 8., 9. eller 10. klasse dette skoleåret (skoleåret 2026/27: født
+  2011–2013), med arkets 34 Ung-spørsmål; eldre spillere bruker Junior (41) og videre.
+- **Ett testbatteri** for alle tre, med alle NGF-testene fra 6-årsløpet og fysisk etter
+  6-årsløpet (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed). Spiller og
+  trener fører («Egenført» · «Kontrollert»). Nivå er AK A–K; TN-spillere ser i tillegg
+  landslagsnivå per klasse. Fysisk test hver sjette uke i grunnperioden.
+- **Deling:** spilleren sender delingslenke fra Meg til trenerens e-post, bare @wang.no og
+  @golfforbundet.no; forelder godkjenner under 16. Innsyn er alt, også helse og meldinger, og
+  samtykkesiden sier det rett ut. Trekkes tilgangen, forsvinner treneren med en gang. Spilleren
+  betaler PlayerHQ selv. WANG-elevers testresultater deles automatisk med Team Norway, med navn
+  (opptaksavtalen).
+  Delingslenken gjelder i sju dager (Anders 28.09).
+- **Ranking i IUP:** WAGR og NGFs juniorranking (Anders 28.09).
+- **Poengskala** for gate-testene, VISA Express, Putt Speed og 8-ball hentes fra Team Norways
+  scorekort-ark, som Anders sender. Til da vises «—»; ingen skala lages på antakelse.
+- **WANG og Team Norway foreslår, spilleren bestemmer** (plan, IUP, vurdering, samtale).
+  AK-coachen endrer direkte; spilleren kan angre.
+- **Bare trenerskjermer** i WANG- og TN-designet; spilleren ser det samme som i PlayerHQ. Alle
+  TN-trenerskjermene blir og gjøres komplette, og TN får en kartleggingsskjerm for WANG-skolenes
+  testdata. Kompetansemål fra Udir bare på WANG-skjermene. Kategori A–K erstatter WANGs E–A+.
+
+**Overstyrer:** WANGs halvårsevaluering og kategori E–A+ i `6cfa623c`, TN-tegningens fysiske
+protokoller (3000 m, knebøy, CMJ, medisinball) og spillerrolle i `bc3e41fc`, og at WANG- og
+TN-trenere får tilgang gjennom gruppemedlemskap.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Personvern først (haster):** WANG- og TN-tilgang må kreve delingssamtykke.
+   `hentWangCoachGruppeId`/`hentWangElevGruppeId` (`src/app/team-wang/_data/wang-tilgang.ts`) og
+   `hentTnSpillerTilgang` (`src/lib/domain/tn-arbeidsflate.ts`) sjekker i dag bare gruppe og
+   rolle, mens `DelingsSamtykke` er et eget system. Ferdig når en trener uten samtykke ikke ser
+   spilleren, og det låses med test (mulighetskart WC1–WC3).
+2. **Bestillinger sendt 28.09:** WANG runde 20 (`6cfa623c`), Team Norway (`bc3e41fc`) og Precision
+   runde 31 (`7d7c2994`). Ferdig når alle tre har levert og Anders har sett skjermene (port 7).
+3. **Delingslenke med domenesjekk** (@wang.no, @golfforbundet.no) og forelders godkjenning under
+   16. I dag finnes bare plassholdertekst (`src/components/team-norway/tn-tilgang-handlinger.tsx`).
+4. **Samtykkeoversikt** for sportssjef og TN: koble `beregnDekningsgrad`
+   (`src/lib/domain/deling/dekningsgrad.ts`, 0 kallere) til en skjerm.
+5. **Fireukerssjekk og utviklingssjekk** i PlayerHQ, med visning for trener. Utviklingssjekk finnes
+   ikke i koden. Datamodell additivt via `db execute` (gotchas §Database), først når skjermene er
+   godkjent.
+6. **WANG-demoøkter** blandes med ekte data uten merking (`src/app/team-wang/_data/live-sesong.ts`).
+   Ferdig når demo er merket eller fjernet.
+7. **Venter:** invitasjon til PlayerHQ fra WANG/TN, landslagsnivå per klasse (tallene må komme fra
+   Team Norway) og kjønn i TN-ranglisten — til delingen virker.
+
 ## SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (Anders 28.09.2026, bindende)
 
 Anders gikk gjennom alle elleve områder og bekreftet hvert sammendrag. Anders: «Ting som nå evt
