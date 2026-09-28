@@ -11,7 +11,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 
 | # | Område | Grillet | Bekreftet av Anders | Bestilling sendt |
 |---|---|---|---|---|
-| 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | — |
+| 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | runde 19 (felles struktur) og 23 (oppstart) |
 | 1 | PlayerHQ · I dag | ja | ja, 28.09 | — |
 | 2 | PlayerHQ · Planlegging | ja | ja, 28.09 | — |
 | 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
@@ -847,3 +847,15 @@ Tripletex-eksport og Stripe · leads i Innboks · ingen bekreftelse av turnering
 ## Fase 3
 
 Mulighetskartet: [mulighetskart-playerhq-agencyos-2026-09-28.md](mulighetskart-playerhq-agencyos-2026-09-28.md).
+
+## Fase 4 — bestillinger til Precision Athletics
+
+Bestillingene ligger i `~/ak-brain/claude-code/prompter/precision-runde19-bestilling.txt` til
+`precision-runde30-bestilling.txt`: 19 felles struktur · 20 I dag · 21 Plan · 22 Stats · 23 Meg og
+oppstart · 24 Live-økt og runde · 25 Cockpit · 26 Innboks · 27 Stall og Spiller 360 ·
+28 Kalender · 29 Workbench · 30 Mer.
+
+| Runde | Sendt | Designets melding (rapportert, ikke målt av Claude Code) |
+|---|---|---|
+| 19 | 28.09 | Ny meny i begge skall, felles hurtigknapp og bjelle, ny oversikt. Audit 3 080 tilfeller, 0 avvik. Sju uavklarte punkter til Anders i `oversikt.html`. |
+| 20 | 28.09 | — |
