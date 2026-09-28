@@ -14,8 +14,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | — |
 | 1 | PlayerHQ · I dag | ja | ja, 28.09 | — |
 | 2 | PlayerHQ · Planlegging | ja | ja, 28.09 | — |
-| 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | pågår | — | — |
-| 4 | PlayerHQ · Meg | — | — | — |
+| 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | ja | ja, 28.09 | — |
+| 4 | PlayerHQ · Meg | pågår | — | — |
 | 5 | PlayerHQ · Live-økt og registrering | — | — | — |
 | 6 | AgencyOS · Cockpit | — | — | — |
 | 7 | AgencyOS · Innboks | — | — | — |
@@ -329,3 +329,40 @@ press, kølle, samlet bak én «Filter»-knapp; på mobil vises valgte filtre so
 **8.43 Ytelsesbilde, plassering.** Svar: a — på hver runde i Snittscore, samlet radar øverst.
 **8.44 Coachens visning.** Svar: a — samme Stats for valgt spiller, PGA alltid på, og
 sammenligning med stallen.
+
+**Tillegg.** Vitnegodkjenning av test venter til vennefunksjonen finnes. Tiger 5 vises i
+Snittscore (talen: «hvor jeg er Tipper», tolket som «der det passer»). Nærhet til hull per
+avstand mot PGA Tour («fra 100 m: PGA snitt X m, du Y m») vises i Strokes Gained når
+PGA-sammenligningen er slått på.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Fanen heter Stats**, fire deler: Snittscore · Strokes Gained · Trening · Tester.
+- **Øverst i hver del:** positiv trend hvis den finnes (størst forbedring siste 10 runder mot
+  de 10 før), deretter kategoriene med flest tapte slag, synkende.
+- **Sammenligning:** neste kategori etter snittscore (Broadie, merket estimat). Spilleren kan
+  slå på PGA Tour; coach ser alltid begge.
+- **Snittscore:** kategori A–K øverst med «X slag til neste kategori» · rundescore og
+  scorekort · Tiger 5 per runde og sum for sesongen · Ytelsesbilde på hver runde (fem
+  faktorer, energifall per hull, søvn og mat) med samlet radar øverst · samtykke i onboarding.
+- **Strokes Gained:** alle kategorier — Tee · Innspill 200+, 150–200, 100–150, 50–100 · alle
+  nærspillkategorier (0–50, Chip, Pitch, Lob, Bunker) · alle puttekategorier (0–3 til 40+
+  fot). Som liste per avstand; tegnet hullkart senere. Med PGA på: nærhet til hull per
+  avstand mot PGA-snittet.
+- **Trening:** treningsmengde mot SG-utvikling i samme område · spredning og utvalgte
+  TrackMan-parametere · én «Filter»-knapp (tidsrom, periode, pyramide, område, sted,
+  motorikk, press, kølle), valgte filtre som brikker på mobil.
+- **Tester:** siste resultat, snitt, progresjon, nivå mot neste kategori («—» der normen
+  mangler). Vitnegodkjenning venter til vennefunksjonen finnes.
+- **Nok data:** under 4 runder «Registrer X runder til» · 4–7 runder «foreløpig» · tee og
+  innspill sikre fra 12, nærspill og putting fra 24.
+- **Coach i AgencyOS:** samme Stats for valgt spiller, PGA alltid på, sammenligning med stallen.
+- **Toppidrettsmodulene:** Ytelsesbilde → Snittscore · SG → Strokes Gained · Treningsanalyse
+  og TrackMan → Trening · Ferdighetstest → Tester · Kategori A–K → Snittscore · Banekart →
+  senere · Baseline og Onboarding → oppstarten (område 0) · Mål → område 4 · Øvelse →
+  Workbench.
+- **Videre til område 5:** live-føring av hvert slag hull for hull, uten banekart.
+
+**Beslutninger som skal registreres i fase 4:** fire faner i Stats · sammenligning mot neste
+kategori som standard, PGA valgfritt for spiller og alltid for coach · grenser for nok data
+(4/8/12/24) · Ytelsesbilde med helsedata bak samtykke i onboarding · banekart og
+vitnegodkjenning senere · coach ser samme Stats som spilleren.
