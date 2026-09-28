@@ -66,8 +66,9 @@ AK sine. Testbatteriene er de samme.
 - **Ingen egen IUP-fane i PlayerHQ.** Delene finnes i Plan, Stats, Målsetninger og Meg.
 - **Nytt i PlayerHQ:** kort sjekk hver fjerde uke i I dag og innboksen (prosessmål,
   målsetninger, utviklingssjekk). Sesongevaluering uka før uke 43.
-- **Utviklingssjekken** bruker arkets spørsmål (Ung, Junior, Amatør, Profesjonell) for alle
-  spillere i AK Golf.
+- **Utviklingssjekken** bruker arkets spørsmål (Ung, Junior, Amatør, Profesjonell), alle 41 på
+  spillerens nivå hver fjerde uke, **bare for spillere i WANG- eller Team Norway-grupper**.
+  Andre AK-spillere får den ikke (Anders 28.09, erstatter «alle spillere i AK Golf» fra 9.4).
 - **Samlet IUP for trenerne:** fanen «IUP» i Spiller 360, WANG og Team Norway, i samme rekkefølge
   som arket. Alt hentes fra PlayerHQ, ingenting føres to ganger.
 - **Kategorier** AK Golf A–K etter snittscore. **Pyramiden** FYS, TEK, SLAG, SPILL, TURN.
@@ -225,6 +226,6 @@ ikke samtykke i dag (område 3).
 | Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
 
 Avklart 28.09: delingslenken gjelder sju dager · ranking i IUP er WAGR og NGFs juniorranking ·
-poengskalaen kommer fra Team Norways scorekort-ark som Anders sender. Venter: om 41 spørsmål hver
-fjerde uke er for mye.
+poengskalaen kommer fra Team Norways scorekort-ark som Anders sender. Avklart: alle 41 spørsmål hver fjerde uke, bare
+for WANG- og Team Norway-spillere.
 

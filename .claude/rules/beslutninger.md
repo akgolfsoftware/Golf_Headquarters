@@ -16,8 +16,10 @@ mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.m
   anonymisert (står i vilkårene). **Ingen IUP-fane i PlayerHQ** — delene ligger i Plan, Stats,
   Målsetning og Meg. Trenerne får fanen «IUP» i Spiller 360, WANG og Team Norway, i arkets
   rekkefølge, hentet fra PlayerHQ.
-- **Fireukerssjekk** i I dag (prosessmål, målsetninger, utviklingssjekk med arkets spørsmål Ung,
-  Junior, Amatør, Profesjonell) erstatter WANGs halvårsevaluering. Sesongevaluering uka før uke 43.
+- **Fireukerssjekk** i I dag (prosessmål, målsetninger og alle utviklingssjekkens 41 spørsmål på
+  spillerens nivå: Ung, Junior, Amatør eller Profesjonell) erstatter WANGs halvårsevaluering.
+  **Bare for spillere i en WANG-gruppe (Ung eller Toppidrett) eller Team Norway-gruppe** (Anders
+  28.09: «Alle andre brukere skal ikke ha disse spørsmålssjekkene»). Sesongevaluering uka før uke 43.
 - **Ett testbatteri** for alle tre, med alle NGF-testene fra 6-årsløpet og fysisk etter
   6-årsløpet (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed). Spiller og
   trener fører («Egenført» · «Kontrollert»). Nivå er AK A–K; TN-spillere ser i tillegg
