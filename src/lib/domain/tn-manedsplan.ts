@@ -17,7 +17,7 @@ export type TnPlanUke = { nr: number; fra: string; til: string; periode: { navn:
 
 export const PERIODENAVN: Record<LPhase, string> = {
   GRUNN: "Grunn",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesial",
   TURNERING: "Turnering",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",

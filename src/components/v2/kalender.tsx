@@ -223,7 +223,7 @@ export interface Turnering {
 const PP_RAMP = ["rgb(36,49,42)", TL.fill, "rgb(62,122,78)", "rgb(110,154,78)", TL.fill];
 const PP_MND = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
 const PP_FASER: Fase[] = [
-  { navn: "Grunnperiode", fraUke: 1, uker: 14 }, { navn: "Spesialisering", fraUke: 15, uker: 12 },
+  { navn: "Grunnperiode", fraUke: 1, uker: 14 }, { navn: "Spesialperiode", fraUke: 15, uker: 12 },
   { navn: "Turneringsperiode", fraUke: 27, uker: 16 }, { navn: "Restitusjon", fraUke: 43, uker: 10 },
 ];
 const PP_TURN: Turnering[] = [{ navn: "Norgescup 1", uke: 24, prio: "B" }, { navn: "NM junior", uke: 30, prio: "A" }, { navn: "Klubbmesterskap", uke: 34, prio: "C" }, { navn: "Norgescup-finale", uke: 38, prio: "A" }];

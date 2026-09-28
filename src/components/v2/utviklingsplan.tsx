@@ -274,7 +274,7 @@ export interface UtviklingsplanOversiktProps {
   cta?: string;
 }
 export function UtviklingsplanOversikt({
-  planNavn = "Teknisk utviklingsplan — sommer 2026", periode = "Spesialisering · uke 24–31",
+  planNavn = "Teknisk utviklingsplan — sommer 2026", periode = "Spesialperiode · uke 24–31",
   posisjoner = DEMO_RAIL, aktivP = "P4", aktivNavn,
   nesteKrav = { tittel: "Venstre arm parallell med skulderlinjen i P4", repsGjort: 240, repsMaal: 300, lFase: "L-Ball", cs: "CS60", spor: "PAA_VEI", status: "active", tmMaal: "Spredning 7-jern < 9,0 m" },
   coachNote = "Hold CS60 ut uken — vi tester CS80 mandag.", cta = "Start økt på dette",
