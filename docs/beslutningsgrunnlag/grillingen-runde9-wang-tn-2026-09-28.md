@@ -228,6 +228,7 @@ ikke samtykke i dag (område 3).
 | Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
 | WANG `6cfa623c` | 20e | Nivå i fireukerssjekken etter klassetrinn: 8.–10. trinn Ung (34 spørsmål), VG1–VG3 Junior (41). 56 tilfeller i 390/1280 × fire tilstander, 0 avvik. |
 | Team Norway `bc3e41fc` | 1c | Rettingen fra 10:17 ble avbrutt før den startet; sendt på nytt med poengskalaen. Ranking WAGR + NGF juniorranking, delingslenke sju dager med utløpsdato, fireukerssjekk med arkets ordlyd (Ung 34, Junior 41, Amatør 41, Profesjonell 38), 8-ball og 9 hull lengde regnes etter arket, Nærspill Gate og VISA Express føres for hånd, øvrige «Poengskala ikke satt». 120 tilfeller (10 visninger × 4 tilstander × 390/1280/1440), 0 avvik. Uavklart: en 19-åring står som Amatør (19–24), ikke Junior · 0 fot er satt som «senket» i 9 hull lengde. |
+| Team Norway `bc3e41fc` | 1d | Junior til og med året man fyller 19 (§SLETTEDIALOG KAN VÆRE RUST): demospilleren født 2007 er Junior med 41 spørsmål og «internasjonal klasse Amatør»; 0–0,1 fot = senket, 6 poeng. 36 tilfeller (390/1280/1440 × fire tilstander), 0 avvik. |
 
 Avklart 28.09: delingslenken gjelder sju dager · ranking i IUP er WAGR og NGFs juniorranking ·
 poengskalaen kommer fra Team Norways scorekort-ark som Anders sender. Avklart: alle 41 spørsmål hver fjerde uke, bare
