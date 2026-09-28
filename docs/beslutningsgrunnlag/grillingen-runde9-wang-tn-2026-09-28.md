@@ -224,6 +224,7 @@ ikke samtykke i dag (område 3).
 | Team Norway `bc3e41fc` | 1 | Spillerrollen borte, spillerprofil med IUP, fellestesting, ny Kartlegging, tilgang og samtykke. Ikke målt av designet; måling, A–K og TN-arkets utviklingssjekk bestilt. |
 | Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
 
-Venter på Anders: delingslenkens varighet (designet antok 7 dager) · hvilken ranking i IUP ·
-poengskala for de ni NGF-testene og 8-ball · om 41 spørsmål hver fjerde uke er for mye.
+Avklart 28.09: delingslenken gjelder sju dager · ranking i IUP er WAGR og NGFs juniorranking ·
+poengskalaen kommer fra Team Norways scorekort-ark som Anders sender. Venter: om 41 spørsmål hver
+fjerde uke er for mye.
 

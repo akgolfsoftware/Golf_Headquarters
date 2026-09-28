@@ -27,6 +27,10 @@ mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.m
   samtykkesiden sier det rett ut. Trekkes tilgangen, forsvinner treneren med en gang. Spilleren
   betaler PlayerHQ selv. WANG-elevers testresultater deles automatisk med Team Norway, med navn
   (opptaksavtalen).
+  Delingslenken gjelder i sju dager (Anders 28.09).
+- **Ranking i IUP:** WAGR og NGFs juniorranking (Anders 28.09).
+- **Poengskala** for gate-testene, VISA Express, Putt Speed og 8-ball hentes fra Team Norways
+  scorekort-ark, som Anders sender. Til da vises «—»; ingen skala lages på antakelse.
 - **WANG og Team Norway foreslår, spilleren bestemmer** (plan, IUP, vurdering, samtale).
   AK-coachen endrer direkte; spilleren kan angre.
 - **Bare trenerskjermer** i WANG- og TN-designet; spilleren ser det samme som i PlayerHQ. Alle
