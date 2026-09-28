@@ -448,3 +448,43 @@ Workbench med start, slutt og type · fasilitetsskjema med mål og dekning · tu
 onboarding · talentradar bare for coach · sammenligning med andre spillere bare for coach
 (bekrefter gjeldende regel), snittscore mot anonymiserte pipelines-snitt for spiller ·
 talent-, ukesdigest- og «Utenfor banen»-sidene utgår.
+
+## 5. PlayerHQ · Live-økt og registrering
+
+### Dette fantes 28.09
+- App: 14 sider — live brief → aktiv → slagteller → oppsummering, runde live, runde logg,
+  gjennomføre, runderegistrering med hull og slag, treningslogg.
+- Design (natt): PH-03 Øktark, PH-04 Live brief, PH-05 Live aktiv, PH-06 Slagteller, PH-07
+  Øktoppsummering, PH-08 Runde live, PH-15 Test gjennomfør. PH-09 Registrer runde,
+  PH-RD-01–09 runderegistrering for SG.
+- Kode (MÅLT): `DrillLogV2` har reps uten ball, lav hastighet, automatikk og slått; teknisk
+  plan har planlagte reps per læringssteg. Fysisk program med sett, reps, RIR, pulssone og
+  logg. `Shot` har hull, par, underlag, avstand til hull, kølle, slagtype, straffeslag, GPS-felt
+  (ubrukt); `PuttDetail` har lengde i fot, break, helling, fart. SG krever bare avstand før
+  slaget, underlag og straffeslag. Videoopplasting uferdig. Ny runderegistrering starter ikke
+  runde-agentene.
+
+### Anders forteller
+- Start økt → liste over alle driller i økta før start. Overskrift med hvem, hva, pyramide,
+  AK-formel og annen relevant info. Timer for hele økta.
+- Ved start: detaljert beskrivelse av første drill kommer automatisk. Er det en teknisk oppgave
+  fra den individuelle tekniske planen: bilde, video og tekst fra trener; spilleren kan legge til
+  egen video eller bilde.
+- Hver drill har egen timer som stopper når drillen fullføres.
+- Reps loggføres per drill: uten ball, lav hastighet, automatikk og slag.
+- Fysisk: følg programmet, fyll inn vekt, endre reps og serier (for eksempel 4 × 4 → 3 på de
+  siste).
+- Runde: spilleren legger inn det som trengs for eksakt SG etter runden.
+
+### Spørsmål og svar
+**8.58 Reps.** Svar: a — fire store tellere (Uten ball · Lav hastighet · Automatikk · Slag),
++1/+5, trykk på tallet for å skrive, planlagt antall ved siden av. Anders nevnte et bilde av
+omtrentlig visning; det kom ikke med i meldingen.
+**8.59 Drill fullført.** Svar: a — «Ferdig» stopper drillens klokke, viser reps mot plan, neste
+drill åpnes automatisk; hopp over eller bytt rekkefølge fra lista.
+**8.60 Per slag.** Svar: b — påkrevd. Avstand, underlag (lie) og kølle tastes; når slaget er
+tastet, går appen automatisk til neste slag. Feil rettes ved å trykke på tallet.
+**8.61 Avstand.** Svar: a — spilleren taster; GPS kommer med banekartet senere.
+**8.62 Etter økt og runde.** Svar: etter økt vurderer spilleren hvor tungt det var og fokus.
+Etter runde: brutto score, SG og Tiger 5 med en gang; runde-agentene skal starte (rettes i
+kode som egen oppgave).
