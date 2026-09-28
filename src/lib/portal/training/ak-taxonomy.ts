@@ -102,7 +102,7 @@ export const PERIODE_FARGER: Record<PeriodeType, PeriodeFarge> = {
 
 export const PERIODE_LABELS: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",

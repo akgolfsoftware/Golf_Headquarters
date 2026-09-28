@@ -36,7 +36,7 @@ export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
 
 export const LPHASE_LABEL: Record<LPhase, string> = {
   GRUNN:           "Grunnperiode",
-  SPESIAL:         "Spesialiseringsperiode",
+  SPESIAL:         "Spesialperiode",
   TURNERING:       "Turneringsperiode",
   EVALUERING:      "Evaluering",
   TESTUKE:         "Testuke",

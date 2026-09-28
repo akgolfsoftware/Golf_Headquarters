@@ -113,7 +113,7 @@ function json(verdi: unknown): string {
  */
 const GJELDENDE_PERIODER = {
   GRUNN: "Grunnperiode — fundament, fysisk og teknisk",
-  SPESIAL: "Spesialiseringsperiode — slag og spissing",
+  SPESIAL: "Spesialperiode — slag og spissing",
   TURNERING: "Turneringsperiode — konkurranse og vedlikehold",
   EVALUERING: "Evaluering — testing, analyse, planlegging av neste periode",
   TESTUKE: "Testuke — samlet testgjennomføring",

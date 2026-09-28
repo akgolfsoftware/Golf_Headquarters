@@ -44,7 +44,7 @@ function parseMilepaeler(json: unknown): Milepael[] {
 
 const LPHASE_NAVN: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",

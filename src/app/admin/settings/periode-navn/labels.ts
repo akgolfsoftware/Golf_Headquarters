@@ -9,7 +9,7 @@ import type { PeriodeType } from "@/generated/prisma/client";
 
 const PERIODE_LABEL: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
