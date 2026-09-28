@@ -4,6 +4,43 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Åpne punkter etter runde 19–26 og Team Norways poengskala (Anders 28.09.2026, bindende)
+
+Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på resten.
+
+- **«Neste turnering»** på I dag er neste offisielle golfturnering. Interne konkurranser
+  (KjippeConk o.l.) er økter i agenda og plan, ikke turneringer.
+- **Fasilitetsspørsmålene gjelder alle spillere** (oppstart og Meg), med dekning av de 19
+  treningsområdene.
+- **AG-12 er sammendraget etter live-økta:** utkast til coach, godkjent går det til spilleren.
+- **«Svar» på innbokssak uten utkast** åpner et tomt skrivefelt og «Lag utkast» (Jarvis). Coach sender.
+- **Konkurransespilleren** anbefales etter turneringsnivået fra oppstarten, ikke etter kategori.
+  Spiller som ikke spiller turneringer får Klubbspilleren anbefalt. Spilleren velger selv.
+- **PlayerHQ-innboksen bak bjella (PH-21) heter «Innboks».**
+- **Break-tabellen** flyttes til Plan › Øvelsesbank, under putting.
+- **Bjelletallet er grafitt**, rust bare når innboksen har en sak som haster (Risiko, eller
+  spillerspørsmål ubesvart over 24 timer). Regelen «høyst én rust» får ikke unntak.
+- **Referanseverdi for testnivå (AG-15)** vises som «—» og «Referanse ikke satt» til A–K-nivåtallene
+  er vedtatt (§Åpent).
+- **Ingen egen Stats-side for coach under Mer.** Stats bor i Spiller 360 og Grupper.
+- **Team Norways poengskala** kommer fra scorekort-arket på Drive («Team Norway Tester
+  Treningsprotokoll Spiller.xlsx», fanen Referens). 8-ball: avstand til mål under 0,1 m = 4 ·
+  0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0. Putt (9 hull lengde, restavstand i fot):
+  senket (0–0,1) = 6 · til 1 = 3 · til 2 = 1 · til 4 = 0,5 · over = 0. **Nærspill Gate og VISA
+  Express:** arket har ingen skala; poeng føres for hånd per slag og appen summerer.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`)** sendes med runde 28: alle punktene over fjernes som
+   «Uavklart» i `ui_kits/katalog.js` og tegnes slik. Ferdig når oversikt.html viser 0 av dem.
+2. **TN-poeng i koden:** `src/lib/portal-tester/tn-catalog.ts` sperrer Nærspill Gate og VISA
+   Express («Poengskala og treffkriterier må bekreftes») og 9 hull lengde («poeng ved senket
+   putt … må bekreftes»). Fjern sperren for disse: Gate-testene summerer førte poeng, 9 hull
+   lengde bruker skalaen over. Ferdig når `tn-scoring.test.ts` låser begge, og testen
+   «ukjente gate-regler produserer ikke falsk standardscore» er skrevet om.
+3. **Uavklart:** Wedge Gate står i koden (`A26:F38`) men ikke i arket på Drive; den beholder
+   sperren. Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
+
 ## ÉN IUP OG ETT TESTBATTERI FOR AK GOLF, WANG OG TEAM NORWAY, OG SPILLEREN DELER SELV (Anders 28.09.2026, bindende)
 
 Grillingen runde 9: Anders bekreftet alle seks områder og mulighetskartets anbefaling («Send dette
@@ -65,6 +102,122 @@ TN-trenere får tilgang gjennom gruppemedlemskap.
    Ferdig når demo er merket eller fjernet.
 7. **Venter:** invitasjon til PlayerHQ fra WANG/TN, landslagsnivå per klasse (tallene må komme fra
    Team Norway) og kjønn i TN-ranglisten — til delingen virker.
+
+## SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (Anders 28.09.2026, bindende)
+
+Anders gikk gjennom alle elleve områder og bekreftet hvert sammendrag. Anders: «Ting som nå evt
+er låst kan endres.» Fasit for detaljene er «Slik vil du ha det» per område i
+`docs/beslutningsgrunnlag/grillingen-runde8-skjermer-2026-09-28.md`; valgene i mulighetskartet
+står i `docs/beslutningsgrunnlag/mulighetskart-playerhq-agencyos-2026-09-28.md`. Her står bare
+reglene.
+
+**Motoren (planforslag)**
+- Ved lansering finnes ingen AI-planbygger. Spilleren velger én av fem standardplaner (Weekend
+  Warrior, Klubbspilleren, Junior-aspirant, Konkurransespilleren, Practice like the pros),
+  tilpasset kategori A–K, og kan alltid bygge økter selv i Workbench.
+- Alder begrenser aldri plan eller mengde.
+- Oppstart: alder, HCP, snittscore, turneringsnivå, SG i år og forrige sesong, fasiliteter.
+  Teknikktesten (bygger på Inspill Basic) anbefales, er ikke påkrevd, og viser største svakhet
+  uten å sette nivå.
+- Justeringsforslag kommer bare når: SG viser gap til neste nivå (Broadie per HCP, merket
+  estimat) · tre turneringsrunder på rad er minst tre slag over snittet av de ti siste tellende ·
+  gjennomført tid er under 70 % av plan to uker på rad · over 130 % to uker på rad (lettere uke).
+  Aldri etter én runde eller én turnering. Forslag er forslag, ikke sperrer (§Treningsfag).
+- Spilleren godkjenner AI-forslag selv; «Send til coach» på forslag fjernes. Coach kan endre
+  planen uten spillerens godkjenning, men spilleren kan angre. Spiller uten coach: Anders ser
+  ikke planen og kan ikke skrives til.
+
+**PlayerHQ**
+- Fanene heter **I dag · Plan · Stats · Meg**.
+- **I dag:** pop-up bare for melding fra coach eller endring i dagens plan. Dagens økter øverst
+  med «Start». Bjella åpner én innboks med forslag, meldinger og varsler.
+- **Plan** er én flate: se-modus (År · Måned · Uke · Dag) og «Rediger» som åpner komplett
+  Workbench. Fysisk trening og turneringer ligger i samme plan; egne kalender-, fysisk- og
+  turneringssider utgår (gamle adresser sender videre). Coach varsles når spilleren endrer en
+  turnering eller en økt coachen la inn.
+- **Google-kalender begge veier.** Coach ser bare opptatt tid, aldri tittel. Apple senere.
+- **Stats** har fire deler: Snittscore · Strokes Gained · Trening · Tester. Standard
+  sammenligning er neste kategori (Broadie, merket estimat); spilleren kan slå på PGA Tour, coach
+  ser alltid begge. Nok data: under 4 runder ingen konklusjon, 4–7 «foreløpig», tee og innspill
+  sikre fra 12, nærspill og putting fra 24.
+- **Ytelsesbilde** (søvn, mat, energi) krever samtykke i onboarding. Banekart, GPS og
+  vitnegodkjenning av tester kommer senere.
+- **Meg:** «Mål» heter **Målsetning** og ligger i Workbench (start, slutt, resultat- eller
+  prosessmål, fremdrift fra ekte data). Fasilitetsskjema med dekning av de 19 treningsområdene.
+  Nytt onboardingsteg «Finn deg i turneringsresultatene». Talent «Min plan», roadmap,
+  ukesdigest (blir melding) og «Utenfor banen» utgår.
+- **Spilleren får ingen sammenligning av snittscoren mot andre, verken anonymiserte snitt eller
+  navngitte spillere** (Anders 28.09 etter runde 22: «fjern sammenligning for nå»). Sammenligning
+  med andre spillere og talentradaren er bare for coach (§Data uendret). Sammenligning mot neste
+  kategori (Broadie, ESTIMAT) og PGA Tour i Stats består.
+- **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel opp-og-ned» er bekreftet (28.09).
+- **Live-økt:** økt- og drillklokke, fire tellere per drill (Uten ball · Lav hastighet ·
+  Automatikk · Slag) mot plan, neste drill åpnes automatisk. Fysisk økt: spilleren fører vekt,
+  reps og serier. Etter økta (Anders 28.09): fysisk økt får «Hvor tungt» 1–10 (opplevd belastning);
+  golføkt får belastning 1–10 og fokus 1–10 (hvor konsentrert spilleren var).
+- **Runderegistrering:** per slag påkrevd avstand, underlag og kølle; putt påkrevd lengde i fot,
+  break, fart og miss. SG, brutto score og Tiger 5 vises rett etter runden.
+  Bom på putt: Venstre · Høyre · På linja (Anders 28.09).
+- **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
+
+**AgencyOS**
+- Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Cockpit er startskjerm, med
+  dagens kalender 05–22. Hurtigknappen får også «Ny booking».
+- **Oppgaver kommer bare fra Notion** (Tasks og Prosjekter); oppgavelista i appen utgår.
+- **Live coachingøkt** med opptak, teknisk plan og sammendrag. Opptak krever samtykke fra
+  onboarding og spilleren ser «Opptak pågår». Sammendraget er utkast til coach; godkjent går det
+  til spilleren. Navn tas ut før tekst sendes til AI.
+- **Én innboks** for all kommunikasjon og alle godkjenninger: begge e-postkontoene
+  (post@akgolf.no, akgolfgroup@gmail.com), spillermeldinger, forslag, varsler, leads og
+  oppfølgingssaker. Kø, godkjenninger og oppfølgingskøen slås inn; kolonnene Risiko · Følg med ·
+  Sjekk · Løst blir filter. Spillerspørsmål ubesvart etter 24 timer haster. Jarvis-chatten er
+  egen side.
+- **«Følger ikke planen»** i Cockpit viser de to siste ukene, med lenke til hele planen (Anders 28.09).
+- **Stall i tre bånd:** I dag · Trener nå · Hele stallen. Coach kan sende melding under økta.
+  Raden viser når planen og avtalen utløper.
+- **Spiller 360** har IUP-samtale for alle spillere og fanene Plan · Stats · Teknisk plan ·
+  Tester · Samtaler · Talent (bare coach).
+- **Kalender:** alle coachers bookinger samlet, filter på coach. Head coach ser alt, assistant
+  coach egne økter og gruppeøkter. Flytting av økt varsler spillerne automatisk, med angre i 10
+  sekunder. Forslag til nye gruppeøkter med inntektsanslag kommer i Innboks; coach godkjenner.
+- **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
+  «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
+  Coach kan lage egne øvelser.
+- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett. Økonomi leses fra
+  budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
+
+**Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
+er valgt bort.
+
+**Overstyrer:** fanenavnet «Analyse» (§Produkt og tilgang), «Pyramiden er veiledende»
+(§Treningsfag), «Ikke avklart: om den også gjelder PlayerHQ» (§Hurtigknappen), og de fire
+hurtighandlingene i AgencyOS (nå fem med «Ny booking»).
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Bestillinger runde 19–30 til Precision Athletics (`7d7c2994`)**, én per område, lagret i
+   `~/ak-brain/claude-code/prompter/precision-runde19-bestilling.txt` og videre. Ferdig når alle
+   er sendt og statusraden i grillingsfila er oppdatert.
+2. **Port 7:** Anders ser de nye tegningene i 390 og desktop. Ingen porting til kode før det.
+3. **Personvern før annen kode (haster):** ukeforslaget sender ekte spillernavn til Anthropic
+   (`src/lib/ai-plan/week-suggest.ts:194`, `ctx.name`); sjekk om opptak og avskrift gjør det
+   samme; slett konto (`deleteUserAccount`) har ingen knapp. Ferdig når ingen prompt inneholder
+   navn, med test som låser det, og spilleren kan slette kontoen fra Meg.
+4. **Riktighet i planforslaget:** hardkodede fasilitetsflagg (`src/lib/ai-plan/context.ts`,
+   `hasBunker: false`, `hasNetAndMat: false`) og signalnavn som ikke matcher
+   (`plan-builder/index.ts`, `SG_AREA`). Ferdig når fasilitetsskjemaet styrer flaggene og
+   spillerens svakhet kommer med i forslaget.
+5. **ACWR i stallen** er hardkodet. Vis «—» til tallet regnes ut.
+6. **Runde-agentene** starter ikke etter `logRoundManual` eller turneringsrunder (mulighet A1).
+7. **Fanenavnet i koden:** «Analyse» → «Stats» i `src/components/v2/shell.tsx:86` når Stats
+   porteres. Adressen `/portal/analysere` beholdes eller sender videre.
+8. **AI-planbyggeren skjules** for spillere ved lansering; de fem standardplanene må skrives
+   (faglig innhold fra Anders, per kategori A–K).
+9. **Datamodell** for målsetning med start, slutt og type, samtykke til opptak og Ytelsesbilde i
+   onboarding, «Egen»-merke på arvede gruppeøkter og gjentakelse — additivt via `db execute`
+   (gotchas §Database), først når skjermene er godkjent.
+10. **Uavklart:** bildet Anders nevnte for tellerne i live-økt kom ikke med. Hvilke fem planer som
+    passer hvilke kategorier A–K er ikke skrevet.
 
 ## PERIODENE HETER GRUNNPERIODE, SPESIALPERIODE, TURNERINGSPERIODE, EVALUERING, FERIE OG RESTITUSJON (Anders 28.09.2026, bindende)
 
@@ -649,8 +802,8 @@ verktøyrader vi bygger selv.
 ## Hurtigknappen gjelder alle AgencyOS-skjermer (Anders 22.09.2026, bindende)
 
 Den flyttbare svarte hurtigknappen skal finnes på **alle skjermer i AgencyOS**, ikke bare Hjem.
-Fire hurtighandlinger: ny økt i Workbench · ny melding til spiller · registrer runde · spør
-Jarvis.
+Fem hurtighandlinger: ny økt i Workbench · ny melding til spiller · registrer runde · spør
+Jarvis · ny booking (§SKJERMENE … RUNDE 8).
 
 - Den bor i **én delt modul**, ikke som kopiert kode per skjerm: i designprosjektet
   `agencyos-handover/ag-hurtigknapp.css` og `.js`. Bygges den i appen, skal den være én
@@ -658,8 +811,8 @@ Jarvis.
 - Faste regler: 56 × 56 px grafitt, radius 2 · kan dras hvor som helst og klemmes 8 px fra
   hver kant · drag åpner ikke menyen (under fem piksler er et trykk) · menyen snur når den
   ellers ville gått utenfor flaten.
-- **Ikke avklart: om den også gjelder PlayerHQ.** Legg den ikke på spillerflaten før Anders
-  har sagt det.
+- **Gjelder også PlayerHQ** (28.09): Spør Caddie · Ny økt · Registrer runde · Start økt.
+  Se §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8.
 
 Byggeoppgave når AgencyOS-skallet bygges: knappen hører til skallet (`src/components/v2/shell.tsx`),
 ikke til den enkelte siden. Ferdig når den står på hver `/admin`-side, husker posisjonen sin,
@@ -671,7 +824,7 @@ og ikke kan dras ut av syne.
 - AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS-koder (CS0, CS20–CS100), M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
 - Hastighet i læringssteg er 25, 50, 75 og 100 prosent av Club Speed (Lav hastighet 25/50/75 %, Automatikk 100 %, Uten ball ingen). Bekreftet av Anders 21.09.2026. Ikke den utgåtte CS-skalaen.
 - Én master for språk og treningsplanlegging: `docs/treningsplanlegging.md` (21.09.2026). `docs/ordbok.md` er bare en peker; `docs/ordbok.json` genereres.
-- Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden er veiledende og sperrer ikke; området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
+- Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden velges først og styrer kategoriseringen og øvelsesbanken (28.09, §SKJERMENE … RUNDE 8); området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
 - Valgtreet fra årsplan til øvelse (åtte trinn) eies av `docs/treningsplanlegging-og-sprak-gjennomgang.md` (22.09). Puttingavstand i fot, meter kan vises i parentes. Måleutstyr er en fast liste (TrackMan og annen radar). Teknisk fokus per område er eget felt på oppgaven i teknisk plan.
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.
@@ -686,7 +839,7 @@ og ikke kan dras ut av syne.
 ## Produkt og tilgang
 
 - Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
-- PlayerHQ har fire faner: I dag · Plan · Analyse · Meg. Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
+- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
 - Jarvis forbereder alt og sender ingenting. Alt som forlater huset eller endrer noe for et menneske krever Anders' ja.
