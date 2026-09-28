@@ -13,12 +13,12 @@ treningsmengde, turneringsrunder, leiruker, kompetansemål, testbatteri).
 
 | # | Område | Grillet | Bekreftet av Anders | Bestilling sendt |
 |---|---|---|---|---|
-| 1 | IUP — felles modell fra PlayerHQ | ja | ja, 28.09 | — |
-| 2 | Testbatteri | ja | ja, 28.09 | — |
-| 3 | Deling og tilgang | ja | ja, 28.09 | — |
-| 4 | WANG: trener og sportssjef | ja | ja, 28.09 | — |
-| 5 | Team Norway: coach | ja | ja, 28.09 | — |
-| 6 | Spillerens side i PlayerHQ | ja | ja, 28.09 | — |
+| 1 | IUP — felles modell fra PlayerHQ | ja | ja, 28.09 | 28.09 |
+| 2 | Testbatteri | ja | ja, 28.09 | 28.09 |
+| 3 | Deling og tilgang | ja | ja, 28.09 | 28.09 |
+| 4 | WANG: trener og sportssjef | ja | ja, 28.09 | 28.09 |
+| 5 | Team Norway: coach | ja | ja, 28.09 | 28.09 |
+| 6 | Spillerens side i PlayerHQ | ja | ja, 28.09 | 28.09 |
 
 ## Kartlegging (målt 28.09)
 
@@ -211,6 +211,6 @@ tilgang. Rolle Spiller med ti skjermer. Ingen IUP, ingen golftester, ingen delin
   registrerer oppmøte og gjennomføring i PlayerHQ. Ingen egen WANG-fane.
 
 ## Neste
-Fase 3 ferdig: [mulighetskart-wang-tn-2026-09-28.md](mulighetskart-wang-tn-2026-09-28.md), venter på Anders. Fase 4 (/beslutning og bestillinger til
-`6cfa623c`, `bc3e41fc` og `7d7c2994`). Kodeoppgave allerede funnet: WANG- og TN-tilgang krever
+Fase 3 ferdig: [mulighetskart-wang-tn-2026-09-28.md](mulighetskart-wang-tn-2026-09-28.md), godkjent av Anders 28.09. Fase 4: beslutningen står i `.claude/rules/beslutninger.md` §ÉN IUP OG ETT TESTBATTERI; bestillinger sendt 28.09 til WANG runde 20
+(`6cfa623c`), Team Norway (`bc3e41fc`) og Precision runde 31 (`7d7c2994`, sendes etter runde 22). Kodeoppgave allerede funnet: WANG- og TN-tilgang krever
 ikke samtykke i dag (område 3).
