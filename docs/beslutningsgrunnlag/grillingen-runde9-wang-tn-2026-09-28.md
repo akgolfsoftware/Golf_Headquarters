@@ -222,6 +222,7 @@ ikke samtykke i dag (område 3).
 |---|---|---|
 | WANG `6cfa623c` | 20 | Ny `WANG Golf Elevprofil.dc.html`: WANG-43 Elever som trenger deg, WANG-44 Elevprofil, WANG-45 Fireukerssjekk, WANG-46 Forslag, WANG-34 på ny. 56 tilfeller 390/1280, 0 avvik. |
 | WANG `6cfa623c` | 20b | A–K fra `src/lib/domain/ak-kategori.ts`, WG-02 og WANG-06 utgår, plan uke 40–43, oppdiktede testpoeng fjernet («—»). |
+| WANG `6cfa623c` | 20c–d | Ranking WAGR + NGF juniorranking (48 tilfeller, 0 avvik). Fireukerssjekken med arkets ordlyd, bare for WANG/TN-grupper; Ung har 34 spørsmål, Junior 41 (som i arket). 48 tilfeller, 0 avvik. |
 | Team Norway `bc3e41fc` | 1 | Spillerrollen borte, spillerprofil med IUP, fellestesting, ny Kartlegging, tilgang og samtykke. Ikke målt av designet; måling, A–K og TN-arkets utviklingssjekk bestilt. |
 | Precision `7d7c2994` | 31 | PH-27 Deling, FO-05, AG-08-IUP, fireukerssjekk. 420 tilfeller, 0 avvik. Utviklingssjekken rettet til TN-arkets ordlyd i runde 23. |
 
