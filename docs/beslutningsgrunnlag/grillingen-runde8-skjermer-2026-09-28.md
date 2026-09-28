@@ -13,8 +13,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 |---|---|---|---|---|
 | 0 | Motoren: planforslag, data og coach i løkka | ja | ja, 28.09 | — |
 | 1 | PlayerHQ · I dag | ja | ja, 28.09 | — |
-| 2 | PlayerHQ · Planlegging | pågår | — | — |
-| 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | — | — | — |
+| 2 | PlayerHQ · Planlegging | ja | ja, 28.09 | — |
+| 3 | PlayerHQ · Stats / Analyse (med toppidrettsmodulene) | pågår | — | — |
 | 4 | PlayerHQ · Meg | — | — | — |
 | 5 | PlayerHQ · Live-økt og registrering | — | — | — |
 | 6 | AgencyOS · Cockpit | — | — | — |
@@ -239,7 +239,20 @@ faner: I dag · Plan · Analyse · Meg» i beslutningene.
 «rediger». «Rediger» går rett inn i komplett Workbench-modus. Anders: det er viktig at
 Workbench og hovedkalender ikke blandes.
 
-### Slik vil du ha det (venter på bekreftelse)
+**Kalenderkobling (lagt til 28.09).** Anders: spilleren skal kunne se hele kalenderen sin i
+appen. Målt i koden: Google-kobling finnes allerede, begge veier (`src/lib/google-calendar*.ts`),
+brukes i dag for coachkalender og bookinger. Spilleren har `/portal/meg/innstillinger/integrasjoner`.
+Apple finnes ikke.
+
+**8.27 Retning.** Svar: b — begge veier. Kalenderen vises i appen, og øktene havner i
+spillerens faktiske Google-kalender.
+
+**8.28 Apple.** Svar: b — bare Google ved lansering, Apple senere.
+
+**8.29 Hva coach ser.** Svar: a — coach ser bare «Opptatt» og klokkeslett, aldri tittel.
+Spilleren ser alt i egen kalender.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
 - **Fanen heter Plan.** Én flate. Se-modus viser planen i zoom År · Måned · Uke · Dag (uke
   først på mobil). Trykk på en økt for å se eller starte den.
 - **«Rediger»** går rett inn i komplett Workbench på samme sted. Der velges akse i
@@ -254,4 +267,13 @@ Workbench og hovedkalender ikke blandes.
   eller flyttes, og når en økt coachen har lagt inn endres.
 - **For mye trening:** over 130 % to uker på rad gir forslag om lettere uke (spiller) og
   varsel (coach). For lite: under 70 % to uker på rad (fra Motoren).
+- **Kalenderkobling:** spilleren kobler Google-kalenderen sin. Hele kalenderen vises i Plan,
+  og øktene legges ut i Google-kalenderen (begge veier). Coach ser bare opptatt tid og
+  klokkeslett, aldri tittel, slik at coach finner ledig tid uten å se privat innhold. Apple
+  kommer senere.
+
+**Beslutninger som skal registreres i fase 4:** fanene I dag · Plan · Stats · Meg · Plan er
+én flate med se og rediger (Workbench) · ingen egne kalendere for fysisk og turnering ·
+varsel til coach ved turneringsendring · 130 %-regelen · Google-kalender begge veier, coach
+ser bare opptatt.
 
