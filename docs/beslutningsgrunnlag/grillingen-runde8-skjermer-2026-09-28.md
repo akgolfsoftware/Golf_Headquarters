@@ -20,7 +20,7 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 6 | AgencyOS · Cockpit | ja | ja, 28.09 | — |
 | 7 | AgencyOS · Innboks | ja | ja, 28.09 | — |
 | 8 | AgencyOS · Stall og Spiller 360 (AG-08) | ja | ja, 28.09 | — |
-| 9 | AgencyOS · Kalender | — | — | — |
+| 9 | AgencyOS · Kalender | ja | — | — |
 | 10 | AgencyOS · Workbench | — | — | — |
 | 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | — | — | — |
 
@@ -687,3 +687,33 @@ melding · Åpne Workbench · Start live · IUP-samtale; faner Plan · Stats · 
 
 **Beslutninger som skal registreres i fase 4:** stall i tre bånd med Trener nå · melding under
 økt · plan- og avtaleutløp i stallen · Spiller 360 med IUP-samtale for alle spillere.
+
+## 9. AgencyOS · Kalender
+
+### Dette fantes 28.09
+- App: `/admin/kalender`, ny og vis hendelse, `availability` (når du kan bookes),
+  gjennomføring av økt. Google-kalender koblet begge veier (speiling inn, bookinger ut).
+- Design: AG-05 Kalender. Bookinge-poster: EP-02 endret time (beslutning 27.09).
+
+### Anders forteller
+- Komplett oversikt over alle bookinger i AK Golf, fordelt på dag, uke, måned og år, og per
+  coach.
+- Alle faste gruppeøkter og gruppeøkter som tilbys til booking.
+- Anbefalinger om hvor gruppeøkter bør settes opp for head coach og assistant coach, for å øke
+  inntekten.
+- Flytter jeg en økt, får spillere med PlayerHQ («Play Rage Queue» i talen) varsel; uten app
+  går det e-post med endringsbekreftelse.
+
+### Spørsmål og svar
+**8.84 Gruppeøkter til booking.** Svar: alle gruppetreninger vanlige spillere kan booke
+(talen sa «turneringsmodulen», tolket som bookingmodulen).
+**8.85 Visning.** Svar: «viser alle coacher» — tolket som a med alle coacher synlige som
+standard: dag/uke/måned/år, kolonne per coach i dagvisning, filter på coach, økt viser
+initialer, tjeneste og påmeldte mot plasser. Ikke farge per coach (farge betyr akse).
+**8.86 Anbefalinger.** Svar: a — forslag i Innboks bygget på fulle økter og ventelister,
+spillernes ledige tid, ledig anlegg og pris × plasser; inntekt merket anslag; coach godkjenner,
+økta legges ut til booking.
+**8.87 Flytting.** Svar: a — varsel automatisk (push i PlayerHQ, ellers e-post EP-02), med
+«Varsler X spillere · Angre» i 10 sekunder før det sendes.
+**8.88 Tilgang.** Svar: a — head coach ser alt; assistant coach ser egne økter og egne
+gruppeøkter.
