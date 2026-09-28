@@ -23,7 +23,7 @@ Svar på de sju åpne spørsmålene etter fase 4 (runde 27–30 i Precision).
 **Arbeidet dette utløser:**
 
 1. **Retting til Precision (`7d7c2994`):** de fem bekreftede punktene fjernes som «Uavklart» i
-   `ui_kits/katalog.js`; AG-20 merkes «Bare head coach». Ferdig når oversikt.html ikke har dem som uavklart.
+   `ui_kits/katalog.js`; AG-20 merkes «Bare head coach». Ferdig når oversikt.html ikke har dem som uavklart. **Gjort 28.09** (runde 32 og 32b; Wedge Gate også i WANG 20f og Team Norway 1e–1f, med 9 slag etter arket).
 2. **Tilgang i koden:** `src/app/admin/agencyos/okonomi/page.tsx:18` slipper i dag inn `ADMIN` og
    `COACH`. Begrens til head coach-rollen, også i Mer-menyen. Ferdig når en assistant coach sendes
    bort fra siden og ikke ser menypunktet, låst med test.
