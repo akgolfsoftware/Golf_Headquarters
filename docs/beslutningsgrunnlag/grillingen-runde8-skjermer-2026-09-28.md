@@ -18,8 +18,8 @@ Tidligere runder: [runde 6](grillingen-runde6-2026-08-30.md),
 | 4 | PlayerHQ · Meg | ja | ja, 28.09 | — |
 | 5 | PlayerHQ · Live-økt og registrering | ja | ja, 28.09 | — |
 | 6 | AgencyOS · Cockpit | ja | ja, 28.09 | — |
-| 7 | AgencyOS · Innboks | pågår | — | — |
-| 8 | AgencyOS · Stall og Spiller 360 (AG-08) | — | — | — |
+| 7 | AgencyOS · Innboks | ja | ja, 28.09 | — |
+| 8 | AgencyOS · Stall og Spiller 360 (AG-08) | ja | ja, 28.09 | — |
 | 9 | AgencyOS · Kalender | — | — | — |
 | 10 | AgencyOS · Workbench | — | — | — |
 | 11 | AgencyOS · Mer (booking, økonomi, tester, grupper) | — | — | — |
@@ -622,3 +622,68 @@ motoren.
 **8.77 Ikke gå glipp av noe.** Svar: a — «Ferdig» tar saken ut av lista; ubesvart spørsmål fra
 spiller etter 24 timer markeres som haster; tom innboks = alt håndtert.
 **8.78 Jarvis-chatten.** Svar: b — egen side, ikke i Innboks.
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026, «Alt her er nå bekreftet»)
+- **Én innboks for alt**, der Anders jobber: e-post (post@akgolf.no og akgolfgroup@gmail.com),
+  meldinger, videoer og spørsmål fra spillere, oppfølging, godkjenninger og forslag fra
+  motoren, varsler om planendringer og turneringer, sammendrag fra opptak.
+- **Én liste**, det som haster først, deretter nyeste. Filterbrikker: Alle · Spillere ·
+  E-post · Godkjenn · Oppfølging · Varsler.
+- **Utkast fra Jarvis og AI** åpne i raden med «Send», «Rediger», «Forkast». Ingenting sendes
+  uten trykk.
+- **Ferdig** tar saken ut av lista. Ubesvart spørsmål fra spiller etter 24 timer markeres som
+  haster. Tom innboks = alt håndtert.
+- **Slås sammen hit:** Kø, godkjenninger, oppfølgingskøen (kolonnene Risiko · Følg med · Sjekk ·
+  Løst blir filter) og kommunikasjon. Gamle adresser sender videre.
+- **Jarvis-chatten** er egen side.
+
+**Beslutninger som skal registreres i fase 4:** én innboks for all kommunikasjon og alle
+godkjenninger · to e-postkontoer inn · 24-timersgrense for spillerspørsmål · Kø, godkjenninger
+og oppfølgingskø slås inn i Innboks · Jarvis-chat egen side.
+
+## 8. AgencyOS · Stall og Spiller 360 (AG-08)
+
+### Dette fantes 28.09
+- App: 12 sider (stall, ny spiller, spillerprofil med analyse, plan, tester,
+  turneringskobling, rediger; oppfølgingskø, innsikt, runder). Live-tavle
+  `/admin/(fullscreen)/agencyos/live` viser pågående økter (IN_PROGRESS), ikke lenket fra stallen.
+- Design: AG-07 Stall, AG-08 Spiller 360, AG-09 Spilleranalyse, AG-10 Teknisk plan, AG-22
+  Innsikt og talent, AG-A01–A08. Modul: Stall-matrise, Ytelsesbilde, Kategori, Baseline.
+- Kode (MÅLT): ACWR i stallvisningen hardkodet. IUP-samtalen fra WANG er gjenbrukbar.
+  Melding til spiller under økt finnes ikke.
+
+### Anders forteller
+- Stallen: hvem jeg coacher i dag; liveoversikt over hvem som trener nå, med knapp for å sende
+  melding under økta; hvem som følger planen og hvem som ikke gjør det; hvor lenge spillerne har
+  igjen og utgående treningsplaner som må følges opp. Ba om anbefalinger.
+
+### Spørsmål og svar
+**8.79 Øverst i stallen.** Svar: a — tre bånd: I dag · Trener nå · Hele stallen.
+**8.80 Melding under økta.** Svar: a — hurtigmelding eller fritekst som varsel, svar med ett
+trykk fra live-økta; coach kan følge økta uten å endre.
+**8.81 Hvor lenge igjen.** Svar: c — både treningsplan (hvor lenge de har plan) og
+coachingavtale (klipp, fornyelse).
+**8.82 Rad per spiller.** Svar: a — navn og kategori, etterlevelse 4 uker, SG-trend 30 d,
+siste økt, neste turnering, grunn til oppfølging, plan slutter / avtale; de som trenger deg
+først; kort på mobil; ACWR «—» til den regnes ut.
+**8.83 Spiller 360.** Svar: a — spillerkort og «Dette krever deg nå» øverst; knapper Send
+melding · Åpne Workbench · Start live · IUP-samtale; faner Plan · Stats · Teknisk plan · Tester
+· Samtaler (IUP, opptak, notater) · Talent (radar, bare coach).
+
+### Slik vil du ha det (bekreftet av Anders 28.09.2026)
+- **Stall, tre bånd:** I dag (spillere du coacher i dag, klokkeslett) · Trener nå (økt i gang,
+  hvilken økt og hvor langt, «Send melding») · Hele stallen.
+- **Melding under økta:** hurtigmelding eller fritekst som varsel; spilleren svarer med ett
+  trykk; coach kan følge repetisjonene uten å endre.
+- **Rad per spiller:** navn, kategori, etterlevelse 4 uker, SG-trend 30 d, siste økt, neste
+  turnering, grunn til oppfølging, plan slutter om X dager, avtale (klipp igjen, fornyes).
+  De som trenger deg først. Kort på mobil, ingen sidelengs rulling. ACWR «—» til den regnes ut.
+- **Spiller 360:** spillerkort og «Dette krever deg nå» · Send melding · Åpne Workbench ·
+  Start live · IUP-samtale · faner Plan · Stats (samme som spilleren, PGA alltid på,
+  sammenligning med stallen) · Teknisk plan · Tester · Samtaler (IUP, opptak, notater) ·
+  Talent (radar, bare coach).
+- **Toppidrettsmodulene her:** Stall-matrise → Hele stallen · Ytelsesbilde og Kategori A–K →
+  Stats-fanen · Baseline → oppstart · talentradar → Talent-fanen.
+
+**Beslutninger som skal registreres i fase 4:** stall i tre bånd med Trener nå · melding under
+økt · plan- og avtaleutløp i stallen · Spiller 360 med IUP-samtale for alle spillere.
