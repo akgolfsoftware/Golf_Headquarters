@@ -4,6 +4,33 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SLETTEDIALOG KAN VÆRE RUST, ØKONOMI FØLGER AK GOLFS TJENESTER, RAPPORTBYGGEREN FJERNES (Anders 28.09.2026, bindende)
+
+Svar på spørsmålene etter runde 28–30 i Precision Athletics og Team Norway 1c.
+
+- **En dialog er en egen flate.** Slett, trekk tilbake og avslutt i en dialog kan være rust selv
+  når bjella er rust. «Høyst én rust» gjelder innholdsflaten. Anders: «JA».
+- **Økonomi (AG-20) fordeler budsjett og regnskap på AK Golfs tjenester:** Coaching privat ·
+  Grupper · GFGK-avtalen · Gruppetimer · Andre tjenester fra AK Golf. Resultat per virksomhet i
+  månedsavslutningen (`.claude/rules/admin-tripletex.md`) er uendret.
+- **Rapportbyggeren (AG-A07) fjernes.** Anders: «Fjern den».
+- **Nivå i Team Norways utviklingssjekk:** i Norge er man junior til og med det året man fyller
+  19. Spilleren får Junior-spørsmålene ut det året. Der internasjonal klasse vises, står Amatør.
+
+**Overstyrer:** «Regelen «høyst én rust» får ikke unntak» under §Åpne punkter etter runde 19–26,
+og designets plassering av AG-A07 under Spiller 360 og Grupper.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`):** readme regel 2 (dialog er egen flate), AG-20 med de
+   fem tjenestene, AG-A07 merket «Utgår 28.09» og ute av navigasjonen. Ferdig når oversikt.html
+   ikke har disse som uavklart.
+2. **Retting til Team Norway (`bc3e41fc`):** en spiller som fyller 19 i år står som Junior (41
+   spørsmål), med Amatør som internasjonal klasse. Ferdig når demospilleren på 19 viser det.
+3. **Kode når Økonomi porteres:** `/admin/reports` sender i dag til
+   `/admin/agencyos/okonomi#rapporter` (`src/app/admin/reports/page.tsx`). Rapportdelen tas ut og
+   adressen sender til Økonomi. Ferdig når ingen meny eller lenke viser rapportbyggeren.
+
 ## Åpne punkter etter runde 19–26 og Team Norways poengskala (Anders 28.09.2026, bindende)
 
 Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på resten.
@@ -19,7 +46,7 @@ Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på reste
 - **PlayerHQ-innboksen bak bjella (PH-21) heter «Innboks».**
 - **Break-tabellen** flyttes til Plan › Øvelsesbank, under putting.
 - **Bjelletallet er grafitt**, rust bare når innboksen har en sak som haster (Risiko, eller
-  spillerspørsmål ubesvart over 24 timer). Regelen «høyst én rust» får ikke unntak.
+  spillerspørsmål ubesvart over 24 timer). En dialog er egen flate og kan ha rust (§SLETTEDIALOG).
 - **Referanseverdi for testnivå (AG-15)** vises som «—» og «Referanse ikke satt» til A–K-nivåtallene
   er vedtatt (§Åpent).
 - **Ingen egen Stats-side for coach under Mer.** Stats bor i Spiller 360 og Grupper.
