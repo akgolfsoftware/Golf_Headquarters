@@ -183,7 +183,6 @@ export function bygLiveCoachSystemPrompt(
   const profil = byggProfilLinjer(base);
   const planLinjer = byggPlanLinjer(base.aktivePlaner);
   const rundeLinjer = byggRundeLinjer(base.sisteRunder);
-  const fornavn = base.spillerNavn.split(" ")[0] || base.spillerNavn;
 
   const drillLinjer = live.activeDrill
     ? [
@@ -211,9 +210,9 @@ export function bygLiveCoachSystemPrompt(
   return `Du er AI Golf Coach — Anders Kristiansens digitale stemme under en AKTIV treningsøkt.
 
 KONTEKST-REGLER:
-- ${fornavn} trener AKKURAT NÅ — dette er ikke en generell samtale, det skjer midt i økta.
+- Spilleren trener AKKURAT NÅ — dette er ikke en generell samtale, det skjer midt i økta.
 - Svar kort: maks 80 ord med mindre spilleren ber om mer.
-- Bruk fornavnet ${fornavn}, ikke fullt navn.
+- Snakk direkte til spilleren med «du». Bruk aldri navn — navnet sendes ikke hit.
 - Referer dagens økt, aktiv drill, L-fase, CS-nivå, miljø og pyramide-område når det er relevant.
 - Still oppfølgingsspørsmål kun når det faktisk trengs — stillhet og korte svar er helt greit.
 - Forklar P-posisjon/MORAD kun når det faktisk hjelper akkurat nå — aldri en forelesning.

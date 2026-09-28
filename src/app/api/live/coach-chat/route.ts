@@ -10,6 +10,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { anthropic, modelFor, isAiEnabled, streamAnthropicTekst } from "@/lib/ai/client";
 import { recallMemory, formatMemoryForPrompt } from "@/lib/ai/memory";
 import { hentLiveCoachKontext } from "@/lib/ai/live-coach-context";
+import { pseudonymForId } from "@/lib/ai/anonymiser";
 import { hentRestraintPromptData } from "@/lib/coach-restraint/context";
 import { buildRestraintBlock } from "@/lib/coach-restraint/prompt";
 import { bygLiveCoachSystemPrompt, type SystemPromptInput } from "@/lib/ai-plan/coach-prompt";
@@ -169,7 +170,7 @@ export async function POST(req: Request) {
 
   const {
     mottaker,
-    spillerNavn,
+    spillerNavn: _spillerNavn,
     hcp,
     ambition,
     homeClub,
@@ -180,17 +181,12 @@ export async function POST(req: Request) {
     sisteTester,
     ...live
   } = kontekst;
-  // GDPR-tiltak 2026-07-27: bygLiveCoachSystemPrompt adresserer spilleren
-  // direkte ved fornavn i sanntid mens økta pågår (ekte streaming — modellen
-  // SKAL produsere navnet i selve svaret). Full pseudonym+reverse-substitusjon
-  // (som i daily-brief.ts) er ikke trygt å hacke inn på en strømmende respons,
-  // så vi lar ikke navnet stå ureflektert: prompten trenger uansett kun
-  // fornavnet (se "Bruk fornavnet, ikke fullt navn" i bygLiveCoachSystemPrompt),
-  // så etternavnet kuttes her for å minimere hva som sendes til Anthropic.
-  const fornavnKun = spillerNavn.split(" ")[0] || spillerNavn;
+  // Personvern (beslutninger.md §SKJERMENE … RUNDE 8, punkt 3): ingen del av
+  // navnet sendes til Anthropic. Svaret strømmer rett til spilleren, så i stedet
+  // for å bytte tilbake får modellen et pseudonym og beskjed om å si «du».
   const base: SystemPromptInput = {
     mottaker,
-    spillerNavn: fornavnKun,
+    spillerNavn: pseudonymForId(user.id),
     hcp,
     ambition,
     homeClub,
