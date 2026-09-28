@@ -228,7 +228,7 @@ export default async function AdminPlanPage() {
       {
         id: "tekniskplan",
         tittel: "Teknisk plan",
-        undertekst: "P-posisjoner og MORAD-arbeid per spiller",
+        undertekst: "P-posisjoner og teknisk arbeid per spiller",
         antall: spillerAntall,
         href: "/admin/plan/teknisk",
       },

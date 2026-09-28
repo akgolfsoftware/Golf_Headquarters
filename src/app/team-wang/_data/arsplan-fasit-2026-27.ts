@@ -46,7 +46,7 @@ export const FASER: Record<FaseKey, FaseInfo> = {
     tekst: "var(--wang-teal-text)",
   },
   SPES: {
-    navn: "Spesialisering",
+    navn: "Spesialperiode",
     farge: "var(--cat-blue)",
     tint: "var(--tint-blue)",
     tekst: "var(--cat-blue)",
@@ -179,7 +179,7 @@ export const PERIODER: Periode[] = [
   },
   {
     id: "SPES",
-    navn: "Spesialisering",
+    navn: "Spesialperiode",
     uker: "Uke 11–16",
     datoer: "15. mar – 25. apr 2027",
     fokus: "Overføre teknikk til slag på bane og kalibrere avstander.",

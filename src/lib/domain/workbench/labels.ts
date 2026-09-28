@@ -358,13 +358,13 @@ export const KONDISJON_TYPE_LABEL: Record<KondisjonType, string> = {
 
 export const MORAD_POSISJONER: { id: MoradPosisjon; label: string; beskrivelse: string }[] = [
   { id: "P1.0", label: "P1", beskrivelse: "Adresse / Oppstilling" },
-  { id: "P2.0", label: "P2", beskrivelse: "Kølle horisontal baksving" },
-  { id: "P3.0", label: "P3", beskrivelse: "Venstre arm horisontal baksving" },
+  { id: "P2.0", label: "P2", beskrivelse: "Kølle parallell i baksving" },
+  { id: "P3.0", label: "P3", beskrivelse: "Venstre arm parallell i baksving" },
   { id: "P4.0", label: "P4", beskrivelse: "Toppen av baksvingen" },
-  { id: "P5.0", label: "P5", beskrivelse: "Venstre arm horisontal nedsving" },
-  { id: "P6.0", label: "P6", beskrivelse: "Kølle horisontal nedsving" },
-  { id: "P7.0", label: "P7", beskrivelse: "Treffpunkt (Impact)" },
-  { id: "P8.0", label: "P8", beskrivelse: "Kølle horisontal gjennomføring" },
-  { id: "P9.0", label: "P9", beskrivelse: "Høyre arm horisontal oppfølging" },
-  { id: "P10.0", label: "P10", beskrivelse: "Fullføring / Balanse" },
+  { id: "P5.0", label: "P5", beskrivelse: "Venstre arm parallell i nedsving" },
+  { id: "P6.0", label: "P6", beskrivelse: "Kølle parallell i nedsving" },
+  { id: "P7.0", label: "P7", beskrivelse: "Treffpunktet" },
+  { id: "P8.0", label: "P8", beskrivelse: "Kølle parallell i gjennomføring" },
+  { id: "P9.0", label: "P9", beskrivelse: "Høyre arm parallell i oppfølging" },
+  { id: "P10.0", label: "P10", beskrivelse: "Fullføring og balanse" },
 ];

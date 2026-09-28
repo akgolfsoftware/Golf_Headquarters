@@ -7,7 +7,7 @@ import type { WorkbenchInsights } from "./types";
 
 const PHASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialiseringsperiode",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",

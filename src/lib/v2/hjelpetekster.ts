@@ -46,7 +46,7 @@ const RAW = {
   periodetype: {
     tittel: "Periodetype",
     forklaring:
-      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesialisering (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
+      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesial (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
   },
   ukevolum: {
     tittel: "Ukevolum",

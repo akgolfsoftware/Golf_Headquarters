@@ -60,7 +60,7 @@ export const STANDARD_VARIGHET_MIN: Record<NgfKategori, number> = {
 
 export const FASE_BESKRIVELSE: Record<LPhase, string> = {
   GRUNN: "Grunnperiode: fysisk og teknisk fundament, høyt volum, lav intensitet.",
-  SPESIAL: "Spesialiseringsperiode: rettet mot spillerens svakeste SG-område, stigende intensitet.",
+  SPESIAL: "Spesialperiode: rettet mot spillerens svakeste SG-område, stigende intensitet.",
   TURNERING: "Turneringsperiode: redusert volum, skarp prestasjonsfokus, spill og strategitrening.",
   EVALUERING: "Evaluering: testing, analyse og planlegging av neste periode, lavt øvrig volum.",
   TESTUKE: "Testuke: kontrollpunkt — testbatteri som måler fremgangen, lavt øvrig volum.",

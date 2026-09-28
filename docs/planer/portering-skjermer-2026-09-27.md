@@ -150,6 +150,7 @@ Krever at Anders har koblet til Claude Design på nytt (`/design-login` i en van
 | P1 | PH-01, PH-02, PH-03, PH-04–07 | I dag → åpne økt → gjennomfør → oppsummering |
 | P2 | PH-10, PH-11 med fysisk plan og turnering, PH-12, PH-13 | Planlegge uka |
 | P3 | PH-08, PH-09, PH-RD-01–09, PH-14, PH-15 | Registrere runde og test |
+| P3b | PH-TP-01 (lenket fra PH-19), PH-A07 med testsignal | Teknisk plan og testutvikling for spiller (§9) |
 | P4 | PH-16–20, PH-A01–08 | Analyse |
 | P5 | PH-21–26 | Coach, booking, Meg, abonnement |
 
@@ -158,8 +159,8 @@ Krever at Anders har koblet til Claude Design på nytt (`/design-login` i en van
 | Bolk | Skjermtyper | Reise |
 |---|---|---|
 | A1 | AG-01, AG-02, AG-03, AG-04 | Coachens morgen: hjem, kø, oppfølging, innboks |
-| A2 | AG-07, AG-08, AG-09, AG-RD-01–02, AG-A01–08, AG-10 | Stall og spiller |
-| A3 | AG-11 med fysisk plan og turnering, AG-12, AG-13, AG-14, AG-15 | Planlegge og gjennomføre |
+| A2 | AG-07, AG-08, AG-09, AG-RD-01–02, AG-A01–08, AG-10 utvidet, AG-TP-01, AG-TP-02 | Stall og spiller (teknisk plan: §9) |
+| A3 | AG-11 med fysisk plan, turnering og kilde på øktkort, AG-12, AG-13, AG-14, AG-15 med testdetalj | Planlegge og gjennomføre (test til økt: §9) |
 | A4 | AG-05, AG-06, AG-16, AG-17, AG-18 | Kalender, booking, grupper, turneringer |
 | A5 | AG-19–24 | Caddie, økonomi, oppgaver, oppsett, drift |
 
@@ -223,3 +224,81 @@ Anders: «Om du anbefaler noe annet så gjør dine anbefalinger.» Derfor gjelde
 1. Opus 5.5 porterer utseendet. Codex fortsetter med funksjoner og data. De jobber aldri i samme skjermtype samtidig.
 2. Fase 0 ble rettet før porteringen startet.
 3. Anders ser skjermene én bolk om gangen (P1, P2 …), ikke skjerm for skjerm.
+
+## 9. Teknisk plan og test til økt (tillegg 27.09.2026)
+
+Tegnet i `7d7c2994` 27.09.2026 etter bestilling fra Anders. Beslutningene står i
+[beslutninger.md](../../.claude/rules/beslutninger.md) §POSISJONSNAVN FØLGER ORDMASTEREN.
+Designets egne spesifikasjoner: `overlevering/teknisk-plan-progresjon-2026-09-27.md`,
+`overlevering/test-til-okt-2026-09-27.md` og `overlevering/codex.md` §14–15. Claude Design
+rapporterer 144 og 376 målte tilfeller med 0 avvik. Tallene er designets egne og er ikke målt på
+nytt herfra. Anders har ikke sett skjermene (port 7).
+
+### Skjermtypene
+
+| ID | Skjerm | Rute i dag | Kode i dag |
+|---|---|---|---|
+| AG-10 | Teknisk plan, utvidet | `/admin/spillere/[id]/plan/[planId]`, `/admin/plan/teknisk` | Ekte sider. Coachsiden er bare lesevisning og har ingen egne handlinger |
+| AG-TP-01 | Oppgaveskjema | Ny: `…/plan/[planId]?oppgave=[taskId]` | `src/components/teknisk-plan/oppgave-modal.tsx` dekker feltene i dag |
+| AG-TP-02 | Før og nå per posisjon | Ny: `…/plan/[planId]/for-og-na` | Finnes ikke |
+| PH-TP-01 | Teknisk plan (spiller) | `/portal/tren/teknisk-plan/[planId]` | Ekte side med `actions.ts`: `createTask`, `updateTaskBasics`, `deleteTask`, `reorderPositions`, `reorderTasks`, `logReps`, `startLiveSessionForTask` |
+| AG-15 | Tester (coach), fanen Testdetalj | `/admin/tester`, `/admin/spillere/[id]/tester` | Ekte sider. Ingen vei fra resultat til øvelse |
+| PH-A07 | Tester · utvikling | `/portal/tren/tester`, `…/[testId]` | Ekte sider |
+| AG-11 | Kilde på øktkort | `/admin/workbench/[playerId]` | Koblingen til oppgave finnes. Kobling til test finnes ikke |
+
+`src/components/portal/teknisk/TekniskPlanPrecisionView.tsx` er en demoskjerm med faste tall og
+ordet «Trener». Den vises bare i `/skjermer` og skal ikke brukes som utgangspunkt.
+
+### Designets begreper mot databasen
+
+Designet bruker egne navn på tabellene. Dette er de som faktisk finnes i `prisma/schema.prisma`.
+
+| I designet | I databasen | Status |
+|---|---|---|
+| Oppgave med posisjon, slag, område, teknisk fokus, kølle, miljø, press, måleutstyr | `PositionTask`: `slagNavn`, `omraadeKode`, `dimensjon`, `koller`, `motorikk`, `belastning`, `press`, `maaleutstyr`, `sandTrinn`, `status` | Finnes |
+| Hovedfokus-posisjon | `TechnicalPlanPosition.hovedfokus` | Finnes |
+| Rep-mål per læringssteg og miljø | `PositionTaskMaal` (én rad per læringssteg og miljø, `maalReps`, `gjortReps`) | Finnes |
+| TrackMan-mål: utgangspunkt, målboks, nå | `PositionTaskTmGoal`: `baselineValue`, `targetValue`/`rangeMax`, `currentValue`, `klubb`, `baselineN` | Finnes |
+| Treffprotokoll, fire typer | `PositionTaskTmGoal.protocol` (`ROLLING_WINDOW`, `BEST_OF_N`, `STREAK`, `SESSION_GATE`), `windowSize`, `requiredHits` | Finnes |
+| «Legg i økt» med kobling til oppgaven | `SessionDrill.positionTaskId`, `TrainingDrillV2.positionTaskId` | Finnes |
+| Planstatus og publisering hver for seg | `TechnicalPlan.status` finnes. Tidspunkt for publisering finnes ikke | Delvis |
+| Registrering med kilde, spillerens kommentar og coachens svar | `PositionTaskLog`: kilden kan leses av `sessionV2Id` og `trackmanShotId`, og `notater` er ett fritekstfelt. Coachens svar finnes ikke | Delvis |
+| Posisjonsstatus (Ikke startet · Jobber med · Godkjent) | Status finnes bare på oppgaven, ikke på posisjonen | Mangler |
+| Kvalitetssjekk («7 av 10», dato, kilde, hvem) | Bare samlet treffstatus på TrackMan-målet | Mangler |
+| To daterte bilder per oppgave, med coachens notat | `PositionTask.bildeUrl` og `videoUrl`, ett av hvert | Mangler |
+| Testforhold og «avvikende forhold» | `TestResult.details` er fritt. Eget felt finnes ikke | Mangler |
+| Coachens valg etter et testresultat | `PlanAction` er generell og ikke koblet til `TestResult` | Mangler |
+| Opphav «Fra test» på øvelse i økt | Finnes ikke | Mangler |
+
+### Tillegg i datamodellen
+
+Hvert punkt krever Anders' ja før det legges i basen (regel 5 i §4). Alle er additive og gjøres
+kirurgisk med `db execute`, se [gotchas.md](../../.claude/rules/gotchas.md) §Database.
+
+| Nr. | Tillegg | Trengs av |
+|---|---|---|
+| D1 | To daterte bilder per oppgave (før og nå), med opplaster og coachens notat | AG-TP-02, PH-TP-01 |
+| D2 | Logg for kvalitetssjekk: oppgave, dato, kilde, treff, antall slag, registrert av | AG-10, PH-TP-01 |
+| D3 | Coachens svar på en registrering, med dato | AG-10 |
+| D4 | Tidspunkt for publisering på `TechnicalPlan` | AG-10, AG-TP-01 |
+| D5 | Testforhold og merke for avvikende forhold på `TestResult` | AG-15, PH-A07 |
+| D6 | Coachens valg per test (ingen endring · mer målrettet trening · vurder teknisk oppgave), med angre | AG-15, PH-A07 |
+| D7 | Opphav på øvelse i økt: test eller teknisk oppgave | AG-11 |
+
+Posisjonsstatus er ikke tatt med som tillegg. Anders må avgjøre om status skal finnes per posisjon
+i tillegg til per oppgave.
+
+### Rekkefølge
+
+1. PH-TP-01 og AG-10 uten D1–D4. Alt som står som «Finnes» i tabellen kan porteres nå.
+   Kvalitetssjekk, coachens svar og før og nå vises med tom tilstand til tilleggene er inne.
+2. AG-TP-01, bygget på handlingene i `actions.ts`. Coachsiden trenger egne handlinger med
+   tilgangssjekk.
+3. D1–D4 etter Anders' ja, deretter AG-TP-02 og resten av AG-10.
+4. D5–D7 etter Anders' ja, deretter AG-15, PH-A07 og kilde på øktkort i AG-11.
+
+### Ikke tegnet
+
+Milepæler mot måldato, mellomposisjoner (P4.1 og lignende) i de nye skjermene og ballbane sett
+ovenfra. Mellomposisjoner finnes i koden i dag (`mellomposisjonerFor`) og må beholdes når
+oppgaveskjemaet porteres.
