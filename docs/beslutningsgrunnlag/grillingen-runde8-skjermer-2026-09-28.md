@@ -621,3 +621,4 @@ motoren.
 **8.76 E-postkontoer.** Svar: post@akgolf.no og akgolfgroup@gmail.com.
 **8.77 Ikke gå glipp av noe.** Svar: a — «Ferdig» tar saken ut av lista; ubesvart spørsmål fra
 spiller etter 24 timer markeres som haster; tom innboks = alt håndtert.
+**8.78 Jarvis-chatten.** Svar: b — egen side, ikke i Innboks.
