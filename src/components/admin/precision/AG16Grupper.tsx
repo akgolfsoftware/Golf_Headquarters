@@ -2,90 +2,88 @@
 
 /**
  * AG-16 Grupper i Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/agencyos/screens/AG-16.jsx).
+ * ui_kits/agencyos/screens/AG-mer.jsx, runde 30 — den tegningen vinner over
+ * den eldre AG-16.jsx fordi screen.html laster den sist).
  *
- * Slår sammen to eksisterende, uendrede datakilder:
- *  - GrupperData (src/app/admin/grupper/page.tsx) — grupper, medlemstall,
- *    faste tider fra GroupSchedule.
- *  - AkStigenData (src/lib/agencyos/ak-stigen-data.ts) — AK-stigens fire
- *    trinn (Mini → Basis → Utvikling → Elite) og «ved siden av stigen»
- *    (Knøtt, WANG Toppidrett).
- *
- * Undersidene (medlemmer, faste tider, årsplan, skoledata) lever fortsatt på
- * sine egne, uendrede adresser (/admin/grupper/[id], .../timeplan,
- * .../arsplan, .../arsplan/skoledata) — se PR-teksten §Parkert. Denne
- * skjermen lenker dit i stedet for å late som funksjonen er duplisert her.
+ * Data uendret fra src/app/admin/grupper/page.tsx (GrupperData: grupper,
+ * medlemstall, faste tider fra GroupSchedule, neste økt). Tegningens
+ * medlemsliste med navn, «Legg til spillere»-ark og «Tildelt gruppa» har
+ * ingen data i denne laster — de bor på gruppesiden (/admin/grupper/[id]) og
+ * er parkert her, se PR-teksten. Skjermen lenker til undersidene i stedet for
+ * å late som funksjonen er duplisert: gruppe, Workbench, timeplan og årsplan.
  */
-import type { ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import { Users, ChevronRight } from "lucide-react";
-import { Sidehode, TomTilstand, Ikon, KnappLenke } from "@/components/precision/pa";
-import { Tabell, InlineVarsel, Kort, KortHode, type Kolonne } from "@/components/precision/pa-a5";
+import { useState, type ReactNode } from "react";
+import { Users, ArrowRight, Layers, CalendarDays, CalendarRange } from "lucide-react";
+import { Sidehode, TomTilstand, KnappLenke, Meta } from "@/components/precision/pa";
 import type { GrupperData, GruppeV2 } from "@/components/admin/v2/GrupperV2";
-import type { AkStigenData, AkStigenTrinn } from "@/lib/agencyos/ak-stigen-data";
 import "@/styles/precision-a5.css";
 
 export type AG16Tilstand = "data" | "tom";
 export type AG16Props = {
   tilstand: AG16Tilstand;
   data: GrupperData;
-  stigen: AkStigenData;
   nyGruppeKnapp: ReactNode;
   gfgkBootstrapKnapp: ReactNode | null;
 };
 
-function StigeTrinn({ trinn, medlemmer }: { trinn: AkStigenTrinn; medlemmer: number | null }) {
-  return <div className="pa-a5-stige__trinn">
-    <span className="pa-a5-stige__nr">{trinn.kode}</span>
-    <span className="pa-a5-stige__navn">{trinn.navn}</span>
-    <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>
-      {trinn.alder.toUpperCase()} · {medlemmer == null ? "—" : `${medlemmer} SPILLERE`}
-    </span>
-  </div>;
-}
-
-function VedSidenAv({ vedSidenAv }: { vedSidenAv: AkStigenData["vedSidenAv"] }) {
-  if (vedSidenAv.length === 0) return null;
-  return <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
-    <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>VED SIDEN AV STIGEN · IKKE TRINN</span>
-    <div className="pa-a5-stige">
-      {vedSidenAv.map((g) => <div key={g.id} className="pa-a5-stige__trinn" style={{ cursor: "default" }}>
-        <span className="pa-a5-stige__navn">{g.navn}</span>
-        <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>{g.medlemmer} SPILLERE</span>
-      </div>)}
+function Seksjon({ k, meta, children }: { k: string; meta?: string; children: ReactNode }) {
+  return <section aria-label={k} className="pa-card" style={{ padding: 16, gap: 8, minWidth: 0 }}>
+    <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
+      <span className="kicker" style={{ flex: "1 1 auto", minWidth: 0 }}>{k}</span>
+      {meta && <Meta>{meta}</Meta>}
     </div>
+    {children}
+  </section>;
+}
+
+function Rad({ a, b, forste }: { a: string; b: ReactNode; forste?: boolean }) {
+  return <div role="listitem" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,auto)", gap: 12, alignItems: "center", minHeight: 52, borderTop: forste ? "none" : "1px solid var(--border-hairline)", padding: "6px 0", minWidth: 0 }}>
+    <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", minWidth: 0 }}>{a}</span>
+    <span style={{ font: "600 13px/1.3 var(--font-mono)", color: "var(--text-primary)", textAlign: "right", overflowWrap: "anywhere", minWidth: 0 }}>{b}</span>
   </div>;
 }
 
-function GruppeTabell({ grupper }: { grupper: readonly GruppeV2[] }) {
-  const router = useRouter();
-  const cols: Kolonne<GruppeV2>[] = [
-    { key: "navn", label: "Gruppe", render: (g) => g.navn },
-    { key: "n", label: "Spillere", mono: true, align: "right", render: (g) => String(g.antallMedlemmer) },
-    { key: "tid", label: "Faste tider", render: (g) => g.faste.length === 0 ? "—" : g.faste.map((f) => `${f.dag} ${f.tid}`).join(" · ") },
-    { key: "neste", label: "Neste økt", mono: true, render: (g) => g.nesteOkt ?? "—" },
-    { key: "aapne", label: "", render: () => <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: "var(--text-muted)" }}>Åpne<Ikon icon={ChevronRight} size={16} /></span> },
-  ];
-  return <Tabell caption={`Alle grupper · ${grupper.length}`} columns={cols} rows={grupper}
-    onSelect={(g) => router.push(`/admin/grupper/${g.id}`)} tomTekst="Ingen grupper ennå." />;
+const spillere = (n: number) => `${n} ${n === 1 ? "SPILLER" : "SPILLERE"}`;
+
+function GruppeValgt({ g }: { g: GruppeV2 }) {
+  const medlemmer = <Seksjon k={`Medlemmer · ${g.navn}`} meta={spillere(g.antallMedlemmer)}>
+    <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>
+      {g.antallMedlemmer === 0 ? "Ingen medlemmer ennå. Legg til spillere på gruppesiden." : "Medlemslisten og innmelding ligger på gruppesiden."}
+    </p>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <KnappLenke size="sm" href={`/admin/grupper/${g.id}`} icon={Users} iconName="users">Åpne gruppen</KnappLenke>
+    </div>
+  </Seksjon>;
+  const plan = <Seksjon k="Timeplan og årsplan" meta="GRUPPEPLAN I WORKBENCH">
+    <div role="list">
+      <Rad forste a="Faste tider" b={g.faste.length === 0 ? "—" : g.faste.map((f) => `${f.dag} ${f.tid}`).join(" · ")} />
+      <Rad a="Neste økt" b={g.nesteOkt ?? "—"} />
+    </div>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <KnappLenke size="sm" variant="secondary" href={`/admin/grupper/${g.id}/workbench`} icon={Layers} iconName="layers" iconRight={ArrowRight}>Åpne gruppeplanen i Workbench</KnappLenke>
+      <KnappLenke size="sm" variant="ghost" href={`/admin/grupper/${g.id}/timeplan`} icon={CalendarDays} iconName="calendar-days">Timeplan</KnappLenke>
+      <KnappLenke size="sm" variant="ghost" href={`/admin/grupper/${g.id}/arsplan`} icon={CalendarRange} iconName="calendar-range">Årsplan</KnappLenke>
+    </div>
+  </Seksjon>;
+  return <div className="pa-a5-grid pa-a5-grid--2">
+    <div className="pa-a5-stack">{medlemmer}</div>
+    <div className="pa-a5-stack">{plan}</div>
+  </div>;
 }
 
-export function AG16Grupper({ tilstand, data, stigen, nyGruppeKnapp, gfgkBootstrapKnapp }: AG16Props) {
+export function AG16Grupper({ tilstand, data, nyGruppeKnapp, gfgkBootstrapKnapp }: AG16Props) {
+  const [valgtId, setValgtId] = useState<string | null>(data.grupper[0]?.id ?? null);
+  const valgt = data.grupper.find((g) => g.id === valgtId) ?? data.grupper[0] ?? null;
   const totalt = data.grupper.reduce((s, g) => s + g.antallMedlemmer, 0);
   return <div className="pa-side">
-    <Sidehode kicker="Grupper" title="Grupper" sub="AK-stigen har fire trinn. Knøtt og WANG Toppidrett er egne grupper ved siden av stigen." />
+    <Sidehode kicker="Mer · Grupper" title="Grupper" />
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{nyGruppeKnapp}{gfgkBootstrapKnapp}</div>
-    {tilstand === "tom" ? <TomTilstand icon={Users} title="Ingen spillere i gruppene" text="Legg spillere inn fra Stall. Gruppen styrer faste tider og årsplan." actions={<KnappLenke href="/admin/spillere" variant="secondary" icon={Users}>Åpne Stall</KnappLenke>} /> : <div className="pa-a5-stack">
-      <Kort>
-        <KortHode tittel="AK-stigen" aside="FIRE TRINN" />
-        <div className="pa-a5-stige">
-          {stigen.trinn.map((t) => <StigeTrinn key={t.kode} trinn={t} medlemmer={stigen.grupper[t.gruppeNavn]?.medlemmer ?? null} />)}
-        </div>
-        <VedSidenAv vedSidenAv={stigen.vedSidenAv} />
-        {stigen.ukartlagt.length > 0 && <InlineVarsel tone="warn" tittel="Ukartlagt">{stigen.ukartlagt.length} {stigen.ukartlagt.length === 1 ? "gruppe har" : "grupper har"} spillere uten et trinn i stigen: {stigen.ukartlagt.map((g) => g.navn).join(", ")}.</InlineVarsel>}
-      </Kort>
-      <GruppeTabell grupper={data.grupper} />
-      <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>{data.grupper.length} GRUPPER · {totalt} SPILLERE TOTALT</span>
+    {tilstand === "tom" || !valgt ? <TomTilstand icon={Users} title="Ingen grupper ennå" text="Lag en gruppe og legg inn spillere. Gruppen styrer faste tider og årsplan." actions={<KnappLenke href="/admin/spillere" variant="secondary" icon={Users}>Åpne Stall</KnappLenke>} /> : <div className="pa-a5-stack">
+      <div role="group" aria-label="Velg gruppe" style={{ display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0 }}>
+        {data.grupper.map((g) => <button key={g.id} type="button" aria-pressed={g.id === valgt.id} className="pa-choice pa-a5-choice" title={g.navn} onClick={() => setValgtId(g.id)}><span className="pa-a5-choice__tekst">{`${g.navn} · ${g.antallMedlemmer}`}</span></button>)}
+      </div>
+      <GruppeValgt g={valgt} />
+      <Meta>{data.grupper.length} GRUPPER · {totalt} SPILLERE TOTALT</Meta>
     </div>}
   </div>;
 }

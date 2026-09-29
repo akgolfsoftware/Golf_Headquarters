@@ -19,7 +19,6 @@ import { AG16Grupper } from "@/components/admin/precision/AG16Grupper";
 import type { GrupperData, GruppeV2, FastTid } from "@/components/admin/v2/GrupperV2";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
-import { lastAkStigenData } from "@/lib/agencyos/ak-stigen-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Grupper · AgencyOS" };
@@ -121,7 +120,6 @@ export default async function V2GrupperPage() {
   });
 
   const data: GrupperData = { grupper };
-  const stigen = await lastAkStigenData();
 
   // gfgkjunior.no-bootstrap: vis engangsknappen til alle fire gruppene finnes.
   const gfgkNavn = new Set(GFGK_BOOTSTRAP_GRUPPER.map((g) => g.navn));
@@ -131,9 +129,8 @@ export default async function V2GrupperPage() {
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AG16Grupper
-        tilstand={grupper.reduce((s, g) => s + g.antallMedlemmer, 0) === 0 ? "tom" : "data"}
+        tilstand={grupper.length === 0 ? "tom" : "data"}
         data={data}
-        stigen={stigen}
         nyGruppeKnapp={<NyGruppeButton coaches={coaches} />}
         gfgkBootstrapKnapp={manglerGfgk ? <GfgkBootstrapButton /> : null}
       />
