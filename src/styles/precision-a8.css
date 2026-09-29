@@ -49,7 +49,7 @@
 .a8-fane{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);font:600 14px/1 var(--font-sans);text-decoration:none;cursor:pointer;box-sizing:border-box}
 .a8-fane[aria-current="page"],.a8-fane[aria-pressed="true"]{background:var(--primary);border-color:var(--border-ink);color:var(--text-on-primary)}
 
-.a8-valg{min-height:44px;height:auto;max-width:100%}
+.a8-valg{min-height:44px;height:auto;max-width:100%;white-space:normal;text-align:left;padding-top:8px;padding-bottom:8px;line-height:1.3;box-sizing:border-box;text-decoration:none}
 
 .a8-tall-rutenett{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:8px;min-width:0}
 .a8-tall{display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:6px;background:var(--surface-flat);border:1px solid var(--border-hairline);min-width:0}
