@@ -1,6 +1,6 @@
 "use client";
 
-/* Teknisk plan · oversikt: feil-tilstand i Precision Athletics. Logger error.digest som før. */
+/* AG-10: feil-tilstand i Precision Athletics. Logger error.digest som før. */
 
 import { useEffect } from "react";
 import { CircleAlert, RotateCw } from "lucide-react";
@@ -14,7 +14,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   return (
     <AgencyOSSkall navn="">
       <div className="pa-side">
-        <FeilTilstand icon={CircleAlert} title="Oversikten kunne ikke hentes" text="Ingen planer er endret. Prøv igjen."
+        <FeilTilstand icon={CircleAlert} title="Teknisk plan kunne ikke hentes" text="Ingen oppgaver er endret. Prøv igjen."
           code={error.digest ? `FEIL · ${error.digest}` : "FEIL · TEKNISK PLAN"}
           retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
       </div>

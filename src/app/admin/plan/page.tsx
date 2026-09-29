@@ -40,7 +40,7 @@
  * - Teknisk plan    = antall coachede spillere (samme populasjon som
  *   `/admin/plan/teknisk` viser) — canvasens undertekst («P-posisjoner og
  *   MORAD-arbeid per spiller») er designfasiten; underliggende data er i
- *   dag TEK-økt-aggregater, ikke P1–P10 (se GAP-notatet i AdminTekniskPlanV2
+ *   /admin/plan/teknisk leser spillernes TechnicalPlan (29.09.2026)
  *   — aldri fabriker P-posisjonsdata for å matche teksten).
  *
  * Uke-headeren («Uke N · X spillere · Y økter · Z udekket») telles fra

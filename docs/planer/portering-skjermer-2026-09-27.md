@@ -238,10 +238,10 @@ nytt herfra. Anders har ikke sett skjermene (port 7).
 
 | ID | Skjerm | Rute i dag | Kode i dag |
 |---|---|---|---|
-| AG-10 | Teknisk plan, utvidet | `/admin/spillere/[id]/plan/[planId]`, `/admin/plan/teknisk` | Ekte sider. Coachsiden er bare lesevisning og har ingen egne handlinger |
-| AG-TP-01 | Oppgaveskjema | Ny: `…/plan/[planId]?oppgave=[taskId]` | `src/components/teknisk-plan/oppgave-modal.tsx` dekker feltene i dag |
+| AG-10 | Teknisk plan, utvidet | `/admin/spillere/[id]/plan/[planId]`, `/admin/plan/teknisk` | Portert 29.09.2026 (`AG10TekniskPlan.tsx`, `AG10Oversikt.tsx`). Oversikten leser TechnicalPlan, ikke TEK-økter |
+| AG-TP-01 | Oppgaveskjema | `…/plan/[planId]?oppgave=[taskId\|ny]` | Portert 29.09.2026 (`AGTP01Oppgaveskjema.tsx`, `oppgave-actions.ts`: TrackMan-mål, treffprotokoll, rep-mål per miljø) |
 | AG-TP-02 | Før og nå per posisjon | Ny: `…/plan/[planId]/for-og-na` | Finnes ikke |
-| PH-TP-01 | Teknisk plan (spiller) | `/portal/tren/teknisk-plan/[planId]` | Ekte side med `actions.ts`: `createTask`, `updateTaskBasics`, `deleteTask`, `reorderPositions`, `reorderTasks`, `logReps`, `startLiveSessionForTask` |
+| PH-TP-01 | Teknisk plan (spiller) | `/portal/tren/teknisk-plan/[planId]` (inngang `/portal/tren/teknisk-plan` og `/portal/teknisk`) | Portert 29.09.2026 (`PHTP01TekniskPlan.tsx`). Leser planen og registrerer repetisjoner med miljø og kommentar |
 | AG-15 | Tester (coach), fanen Testdetalj | `/admin/tester`, `/admin/spillere/[id]/tester` | Ekte sider. Ingen vei fra resultat til øvelse |
 | PH-A07 | Tester · utvikling | `/portal/tren/tester`, `…/[testId]` | Ekte sider |
 | AG-11 | Kilde på øktkort | `/admin/workbench/[playerId]` | Koblingen til oppgave finnes. Kobling til test finnes ikke |

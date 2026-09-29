@@ -1,23 +1,25 @@
 "use client";
 
-/* Teknisk plan · oversikt: feil-tilstand i Precision Athletics. Logger error.digest som før. */
+/* PH-TP-01: feil-tilstand i Precision Athletics. Registreringer som allerede
+   er sendt, er lagret — det er bare visningen som mangler. */
 
 import { useEffect } from "react";
 import { CircleAlert, RotateCw } from "lucide-react";
-import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { FeilTilstand, Knapp } from "@/components/precision/pa";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    console.error("[teknisk-plan/error]", error.digest, error);
   }, [error]);
   return (
-    <AgencyOSSkall navn="">
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
       <div className="pa-side">
-        <FeilTilstand icon={CircleAlert} title="Oversikten kunne ikke hentes" text="Ingen planer er endret. Prøv igjen."
+        <FeilTilstand icon={CircleAlert} title="Planen kunne ikke hentes"
+          text="Repetisjoner du allerede har registrert, er lagret. Prøv igjen."
           code={error.digest ? `FEIL · ${error.digest}` : "FEIL · TEKNISK PLAN"}
           retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
       </div>
-    </AgencyOSSkall>
+    </PlayerHQSkall>
   );
 }

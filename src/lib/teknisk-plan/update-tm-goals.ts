@@ -114,7 +114,7 @@ function seriesForMetric(metric: string, shots: ShotMetrics[]): number[] {
   }
 }
 
-function aggregateMetric(metric: string, shots: ShotMetrics[]): number | null {
+export function aggregateMetric(metric: string, shots: ShotMetrics[]): number | null {
   const series = seriesForMetric(metric, shots);
   if (series.length === 0) return null;
 
