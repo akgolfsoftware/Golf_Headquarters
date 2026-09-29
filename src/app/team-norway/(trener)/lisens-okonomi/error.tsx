@@ -4,5 +4,5 @@ import { TnFeiltilstand } from "@/components/team-norway/tn-uttak-plan-gruppe-ad
 
 /** Feiltilstand fra «Team Norway App.dc.html» (stErr). */
 export default function Feil({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  return <TnFeiltilstand hva="tilgangslisten" reset={reset} digest={error.digest} />;
+  return <TnFeiltilstand hva="lisensene" reset={reset} digest={error.digest} />;
 }
