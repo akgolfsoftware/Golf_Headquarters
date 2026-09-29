@@ -41,12 +41,11 @@
 .tp-kort__stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--axis-tek); }
 .tp-kort__detaljer { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
 .tp-kv { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: 0; }
-.tp-miljo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tp-miljo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 124px), 1fr)); gap: 8px; }
 .tp-oppsummering { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 
 @container (min-width: 600px) {
   .tp-kv { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .tp-miljo { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tp-oppsummering { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 }
 @container (min-width: 900px) {
@@ -81,7 +80,7 @@
 .tp-skjemaknapp { display: block; }
 @media (min-width: 1025px) {
   .tp-skjemaflate { flex-direction: row; gap: 24px; align-items: flex-start; }
-  .tp-skjemaflate > .tp-forhand { flex: 1; min-width: 0; }
+  .tp-skjemaflate > .tp-forhand { flex: 1; min-width: 0; container-type: inline-size; }
   .tp-inspektor {
     display: flex; flex-direction: column; width: 340px; flex: none; position: sticky; top: 16px;
     max-height: calc(100vh - 32px); background: var(--surface-card); border: 1px solid var(--border-hairline);
@@ -96,3 +95,8 @@
 .tp-formelhode { display: flex; flex-direction: column; gap: 6px; position: sticky; top: 0; z-index: 1; background: var(--surface-card); padding-bottom: 10px; }
 .tp-fem { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
 .tp-fem .pa-choice { min-width: 0; padding: 0 4px; justify-content: center; }
+
+/* Tellerne: raden er 44 px med 1 px kant, så knappene ble 42 px. 46 px gir 44 px treffmål. */
+@media (pointer: coarse), (max-width: 1024px) {
+  .tp-teller.pa-stepper--sm .pa-stepper__row { height: 46px; }
+}

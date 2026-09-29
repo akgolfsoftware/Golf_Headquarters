@@ -269,7 +269,7 @@ export function Teller({ label, verdi, onEndre, min = 0, maks = 1000, steg = 1, 
 }) {
   const id = useId();
   const sett = (v: number) => onEndre(Math.max(min, Math.min(maks, Math.round(v * 100) / 100)));
-  return <div className={`pa-stepper${storrelse === "md" ? "" : ` pa-stepper--${storrelse}`}`} role="group" aria-labelledby={id}>
+  return <div className={`pa-stepper tp-teller${storrelse === "md" ? "" : ` pa-stepper--${storrelse}`}`} role="group" aria-labelledby={id}>
     <span id={id} className="pa-field__label">{label}</span>
     <div className="pa-stepper__row">
       <button type="button" className="pa-stepper__btn" aria-label={`Mindre ${label.toLowerCase()}`} disabled={verdi <= min} onClick={() => sett(verdi - steg)}><Minus size={18} aria-hidden /></button>
