@@ -1,25 +1,16 @@
-import { SkjermRamme } from "@/components/team-norway/skjermer/felles";
-import { TnSkjermhode, TnFlate, TnMangler } from "@/components/team-norway/tn-flate";
-import { TN_RUTER } from "@/components/team-norway/tn-ruter";
-import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
+import { KartleggingSkjerm } from "@/components/team-norway/tn-daglig-spillere/kartlegging-skjerm";
 
 export const metadata = {
   title: "Team Norway Golf · Kartlegging",
-  description: "Testdata fra WANG-skolene: hvem som har levert, og alle resultater.",
+  description: "Testdata for spillerne: hvem som har levert, og alle resultater.",
 };
 
-/**
- * Kartlegging (tegningens id «kartlegging», uten TN-kode). Midlertidig side så
- * menylenken ikke gir 404. Skjermagenten bygger den ekte skjermen her.
- */
-export default async function TnKartleggingPage() {
-  const { bruker, kontekst } = await krevTnTrenerflate();
-  return (
-    <SkjermRamme aktiv="kartlegging" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute={TN_RUTER.kartlegging} tittel="Kartlegging" ingress="Testdata fra alle WANG-skolene: hvem som har levert, og alle resultater." />
-      <TnFlate>
-        <TnMangler>Skjermen er ikke bygget ennå.</TnMangler>
-      </TnFlate>
-    </SkjermRamme>
-  );
+function forste(v: string | string[] | undefined) {
+  return Array.isArray(v) ? v[0] : v;
+}
+
+/** Kartlegging (tegningens id «kartlegging», uten TN-kode). Fasit: «Team Norway App.dc.html». */
+export default async function TnKartleggingPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const s = await searchParams;
+  return <KartleggingSkjerm sok={{ skole: forste(s.skole), klasse: forste(s.klasse), test: forste(s.test), periode: forste(s.periode) }} />;
 }
