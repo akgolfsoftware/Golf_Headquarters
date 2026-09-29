@@ -4,6 +4,41 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG- OG TEAM NORWAY-INNLOGGING: EGET DOMENE, EGEN SKOLE, OG FELLESSIDEN STÅR UTENFOR (Anders 29.09.2026, bindende)
+
+Avklart under porteringen av alle WANG- og Team Norway-skjermer (PR #1004).
+
+- **Etter innlogging havner trener og sportssjef på dashbordet for sin egen WANG-skole**
+  (`/team-wang/i-dag`), aldri på fellessiden. Anders: «Man skal havne på dashbord siden for sin
+  enkelt Wang skole.» Skolen er WANG-gruppen treneren er medlem av (`krevWangTrener`).
+- **Fellessiden `/team-wang` er ikke en del av WANG- og Team Norway-flatene.** Anders: «Det er
+  annen felles side for spillere og foreldre i Wang Fredrikstad.» Den er åpen, egen, og røres
+  ikke i arbeid på trener- og sportssjefflaten.
+- **Domenesperre:** `/team-wang`-trenerflaten slipper bare inn @wang.no, `/team-norway` bare
+  @golfforbundet.no (`src/lib/auth/domene-sperre.ts`). Plattformadmin (Anders) er unntatt begge
+  steder. Støtteapparatet fra Olympiatoppen (@olympiatoppen.no) slipper ikke inn og må få
+  @golfforbundet.no-adresser (Anders 29.09: «ja det stemmer»).
+- **Vitnefeltene på testresultat er i databasen** (Anders 29.09: «Legg til disse om de mangler»):
+  `witnessUserId`, `witnessStatus`, `attestationMode` på `test_results`, lagt inn additivt 29.09.
+  Tabellen `test_shots` (samme skript, `scripts/n4-add-testshot-table.ts`) er IKKE laget — den
+  står i `schema.prisma`, men finnes ikke i basen, og krever eget ja.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Returstien:** gjort 29.09 i PR #1004 (`src/app/team-wang/_data/wang-retur-sti.ts`, med
+   test). Tom, ugyldig eller fellesside-sti gir `/team-wang/i-dag`.
+2. **Fellessidens feilside (500) i produksjon:** rettet i egen PR #1005 (utenfor #1004). Ferdig
+   når #1005 er lagt inn i main og `/team-wang` svarer 200.
+3. **Innloggingsskjermen lenker til fellessiden** («Fortsett uten å logge inn» og logoen i
+   `src/app/team-wang/logg-inn/wang-innloggings-skjema.tsx`). Fjernes eller pekes om når WANG-24
+   portes. Ferdig når trenerinnloggingen ikke sender noen til fellessiden.
+4. **Flere WANG-skoler:** i dag finnes bare én ekte WANG-gruppe (`wang-toppidrett`) pluss
+   demogruppen, og `krevWangTrener` kjenner bare de to. Når en ny skole tas i bruk, trenger den
+   egen gruppe, og tilgangen må finne alle WANG-skolegrupper. Åpent: hvordan en trener med flere
+   skoler velger skole.
+5. **Olympiatoppen-adresser:** Anders/NGF sørger for @golfforbundet.no-adresser til fysisk
+   trener, fysio og mental trener. Ingen kodeendring.
+
 ## Workbench over uka: årsplan, periode og måned (Anders 28.09.2026, bindende)
 
 Anders vil ha knapper og skjema for ny årsplan, periodisering og månedsplan i Workbench.
