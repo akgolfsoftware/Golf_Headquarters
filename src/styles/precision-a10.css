@@ -131,3 +131,9 @@ div.a10-dag__tom:hover { border-color: var(--border-strong); color: var(--text-m
 /* Glideren i fordelingen: navn, glider, prosent */
 .a10-fordelingsrad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 48px; gap: 10px; align-items: center; min-width: 0; }
 .a10-fordelingsrad__tall { text-align: right; font: 600 13px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text-primary); }
+
+/* Lest tekst (sammendrag, fokuspunkt): linjeskift beholdes, vises i sin helhet */
+.a10-notat {
+  font: var(--type-body); line-height: 1.6; color: var(--text-primary); white-space: pre-wrap; overflow-wrap: anywhere;
+  padding: 14px; border-radius: var(--radius); background: var(--surface-flat); border: 1px solid var(--border-hairline);
+}
