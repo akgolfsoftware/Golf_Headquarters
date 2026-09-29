@@ -170,7 +170,7 @@ export function Sendknapp({ children }: { children: ReactNode }) {
 
 /** Kvadratisk initialplate (tegningens avatar: 2 px hjørner, navy50-bunn). */
 export function Initialplate({ navn, storrelse = 44 }: { navn: string; storrelse?: number }) {
-  const ord = navn.trim().split(/\s+/).filter(Boolean);
+  const ord = navn.trim().split(/\s+/).filter((o) => /^\p{L}/u.test(o));
   const initialer = ord.length === 0 ? "?" : `${ord[0][0]}${ord.length > 1 ? ord[ord.length - 1][0] : ""}`.toUpperCase();
   return (
     <span aria-hidden style={{ width: storrelse, height: storrelse, flex: "none", borderRadius: TN.radius.sm, background: TN.navy50, border: `1px solid ${TN.navy100}`, color: TN.navy900, fontFamily: TN.font.display, fontSize: storrelse >= 80 ? 26 : 14, letterSpacing: "0.08em", display: "flex", alignItems: "center", justifyContent: "center" }}>
