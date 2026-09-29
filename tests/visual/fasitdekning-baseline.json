@@ -2,5 +2,5 @@
   "sitert": 141,
   "av": 219,
   "sistEndret": "2026-09-29",
-  "grunn": "Spiller 360 (AG-08) er portet til Precision Athletics (designbeslutning 26.09.2026 §PRECISION ATHLETICS ER DESIGNSYSTEMET). Den gamle /admin/spillere/[id]/page.tsx siterte Train-lock-tegningene S3-03 Spiller profil bento, AG-08 Spiller-ark og S3-01 Agency Spiller 360; ny side siterer Claude Design-prosjektet 7d7c2994 (ui_kits/agencyos/screens/AG-360.jsx, AG-08-IUP.jsx) i stedet. Én Train-lock-sitering faller derfor bort uten erstatning i denne tellingen (den teller kun designsystem/train-lock/), 142→141. Forrige senkning (A3, 144→142) hadde samme årsak."
+  "grunn": "Innboks (A1) og Spiller 360 (AG-08) er portet til Precision Athletics (7d7c2994). Begge fjernet Train-lock-siteringer; samlet telling etter sammenslåing er 141/219 (målt med check-fasitdekning-baseline.mjs 29.09)."
 }

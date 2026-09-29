@@ -1,10 +1,12 @@
 "use client";
 
-/* Tynn error.tsx (fase 6, SPOR R2) — logger error.digest, rendrer V2Feil.
-   Endre visuelt uttrykk i src/components/v2/feil-laste.tsx, ikke her. */
+/* AG-04 Innboks i Precision Athletics: feil-tilstanden i samme skall.
+   Logger error.digest som før. */
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { TriangleAlert } from "lucide-react";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
 
 export default function Error({
   error,
@@ -17,5 +19,17 @@ export default function Error({
     console.error("[v2/error]", error.digest, error);
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/admin/agencyos" />;
+  return (
+    <AgencyOSSkall navn="">
+      <div className="pa-side">
+        <FeilTilstand
+          icon={TriangleAlert}
+          title="Innboksen kunne ikke hentes"
+          text="E-post og meldinger hentes på nytt når du prøver igjen. Ingenting er sendt."
+          code={error.digest}
+          retry={<Knapp variant="secondary" onClick={reset}>Prøv igjen</Knapp>}
+        />
+      </div>
+    </AgencyOSSkall>
+  );
 }
