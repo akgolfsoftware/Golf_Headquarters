@@ -1,0 +1,18 @@
+/*
+ * Precision Athletics — bolk A5 («Mer»): Tester, Grupper, Gruppeanalyse,
+ * Økonomi, Oppsett. Egen fil for å unngå konflikt med parallelle bolker.
+ * Bruker bare tokens fra .pa-root (precision-athletics.css).
+ */
+.pa-a5-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+@media (min-width:960px){.pa-a5-grid--2{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+
+.pa-a5-stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+.pa-a5-choice{height:44px;max-width:100%;min-width:0;justify-content:flex-start}
+.pa-a5-choice__tekst{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.pa-a5-stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:8px;min-width:0}
+.pa-a5-stat{display:flex;flex-direction:column;gap:4px;min-width:0;padding:12px;border-radius:6px;background:var(--surface-flat);border:1px solid var(--border-hairline)}
+.pa-a5-stat__label{font:var(--type-body-s);color:var(--text-secondary)}
+.pa-a5-stat__value{font:600 19px/1.1 var(--font-mono);color:var(--text-primary);overflow-wrap:anywhere}
+.pa-a5-stat__hint{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted)}
