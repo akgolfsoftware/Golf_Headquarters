@@ -1,44 +1,48 @@
 /**
- * TN-19 Trenere og tilgang.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-19.
- * Avvik:
- *   - Skjermavvikene står i tn-tilgang-visning.tsx. Tilgang og lagring
- *     avgjøres på serveren; valgt person for «Endre» følger URL-en.
+ * TN-19 Tilgang og samtykke (erstatter Samtykke og Inviter spiller).
+ * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm «tilgang».
+ * Avvikene står i tn-tilgang-samtykke.tsx. Tilgang og lagring avgjøres på
+ * serveren; valgt person for «Endre» og delingsfilteret følger adressen.
  */
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { erSportssjef, hentTeamNorwayTilganger, tnTilgangStatus } from "@/lib/domain/tn-tilgang";
-import { TnTilgangVisning } from "@/components/team-norway/tn-tilgang-visning";
+
 import { TnTilgangSkjema } from "@/components/team-norway/tn-tilgang-skjema";
-import { avsluttTilgangAction, leggTilTrenerAction, settTilgangAction } from "./tn-tilgang-actions";
+import { hentTnSamtykkeoversikt } from "@/components/team-norway/tn-uttak-plan-gruppe-admin/samtykke-hent";
+import { lesDelingFilter } from "@/components/team-norway/tn-uttak-plan-gruppe-admin/samtykke-data";
+import { TnTilgangSamtykkeSkjerm } from "@/components/team-norway/tn-uttak-plan-gruppe-admin/tn-tilgang-samtykke";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
+import { erSportssjef, hentTeamNorwayTilganger, tnTilgangStatus } from "@/lib/domain/tn-tilgang";
+import { avsluttTilgangAction, leggTilTrenerAction, settTilgangAction } from "./tn-tilgang-actions";
+
+export const metadata = { title: "Tilgang og samtykke · Team Norway Golf" };
 
 function tilInputIso(dato: Date): string {
   return dato.toISOString().slice(0, 10);
 }
 
-export default async function TilgangPage({ searchParams }: { searchParams: Promise<{ valgt?: string }> }) {
+export default async function TilgangPage({ searchParams }: { searchParams: Promise<{ valgt?: string; deling?: string }> }) {
   // Domenesperren: @golfforbundet.no + trenerrolle, eller ADMIN (tn-flate-tilgang.ts).
-  await krevTnTrenerflate();
-  const { valgt } = await searchParams;
-  // Trener i Team Norway-gruppen slipper inn uten plattformrolle COACH (Anders 26.09.2026).
+  const { bruker, kontekst } = await krevTnTrenerflate();
   // erSportssjef er selve sperren: aktiv COACH i TN-gruppen, eller ADMIN.
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
-  if (!await erSportssjef({ id: bruker.id, role: bruker.role })) notFound();
+  if (!(await erSportssjef({ id: bruker.id, role: bruker.role }))) notFound();
 
+  const { valgt, deling } = await searchParams;
   const data = await hentTeamNorwayTilganger(bruker.id);
   if (!data) notFound();
   const { gruppe, rader } = data;
+  const spillere = await hentTnSamtykkeoversikt(gruppe.id);
   const valgtRad = rader.find((rad) => rad.userId === valgt);
 
   return (
-    <TnTilgangVisning
-      brukerNavn={bruker.name ?? "Ukjent"}
-      gruppeId={gruppe.id}
+    <TnTilgangSamtykkeSkjerm
+      brukerNavn={bruker.name}
+      kontekst={kontekst}
       gruppeNavn={gruppe.name}
-      rader={rader.map((rad) => ({ ...rad, status: tnTilgangStatus(rad) }))}
-      valgtId={valgtRad?.userId}
+      spillere={spillere}
+      filter={lesDelingFilter(deling)}
+      trenere={rader.map((rad) => ({ ...rad, aktiv: tnTilgangStatus(rad) === "AKTIV" }))}
       egenId={bruker.id}
+      valgtId={valgtRad?.userId}
       avslutt={avsluttTilgangAction.bind(null, gruppe.id)}
       leggTil={leggTilTrenerAction}
       skjema={valgtRad ? (

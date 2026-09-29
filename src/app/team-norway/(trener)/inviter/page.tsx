@@ -1,4 +1,8 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { permanentRedirect } from "next/navigation";
 
-/** TN-19. Fasit: designsystem/team-norway/templates/tn-inviter-spiller/TnInviterSpiller.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="inviter" />; }
+import { TN_RUTER } from "@/components/team-norway/tn-ruter";
+
+/** Inviter spiller er flyttet inn i TN-19 Tilgang og samtykke (Team Norway App delivery, 28.09). */
+export default function Page() {
+  permanentRedirect(`${TN_RUTER.tilgang}#inviter`);
+}

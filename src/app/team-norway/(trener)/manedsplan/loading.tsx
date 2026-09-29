@@ -2,5 +2,5 @@ import { TnLasterSide } from "@/components/team-norway/tn-uttak-plan-gruppe-admi
 
 /** Lastetilstand fra «Team Norway App.dc.html» (stLoad). */
 export default function Laster() {
-  return <TnLasterSide hva="tilgangslisten" />;
+  return <TnLasterSide hva="månedsplanen" />;
 }

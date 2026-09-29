@@ -1,6 +1,8 @@
-import { TnReferansenivaerSkjerm } from "@/components/team-norway/skjermer/tn-referansenivaer-skjerm";
+import { TnReferansenivaerSkjerm } from "@/components/team-norway/tn-uttak-plan-gruppe-admin/tn-referansenivaer";
 
-/** TN-18. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-18. */
-export default function Page() {
-  return <TnReferansenivaerSkjerm />;
+export const metadata = { title: "Referansenivåer · Team Norway Golf" };
+
+/** TN-18. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm «referanse». */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnReferansenivaerSkjerm sokeparametre={await searchParams} />;
 }
