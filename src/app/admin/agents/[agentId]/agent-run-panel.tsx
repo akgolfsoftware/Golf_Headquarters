@@ -13,10 +13,9 @@ const TRIGGERE: Valg[] = [
   { id: "turnering-prep", label: "Turneringsprep" },
 ];
 
-const selectCls =
-  "rounded-md border border-border bg-card px-3 py-2 text-sm";
-const btnCls =
-  "rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60";
+// Precision Athletics (AG-19): pa-/a4-klasser i stedet for Tailwind-tokens.
+const selectCls = "a4-input";
+const btnCls = "pa-btn pa-btn--primary";
 
 export function AgentRunPanel(props: {
   agentId: string;
@@ -40,11 +39,11 @@ export function AgentRunPanel(props: {
 
 function PanelShell({ children }: { children: ReactNode }) {
   return (
-    <section className="rounded-lg border border-accent/30 bg-accent/5 p-6">
-      <h3 className="mb-1 font-display text-base font-semibold tracking-tight">
+    <section className="pa-card" style={{ padding: 16, gap: 8, minWidth: 0 }}>
+      <h3 style={{ margin: 0, font: "600 15px/1.3 var(--font-sans)" }}>
         Kjør på en spiller
       </h3>
-      <p className="mb-4 text-sm text-muted-foreground">
+      <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
         Velg under og kjør. Forslaget vises her og logges i kjøringene.
       </p>
       {children}
@@ -72,7 +71,7 @@ function PlanRevisjonPanel({ plans }: { plans: Valg[] }) {
   return (
     <PanelShell>
       {plans.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm">
           Ingen treningsplaner å kjøre på ennå.
         </p>
       ) : (
@@ -112,7 +111,7 @@ function PlanRevisjonPanel({ plans }: { plans: Valg[] }) {
         </div>
       )}
 
-      {feil && <p className="mt-3 text-sm text-destructive">{feil}</p>}
+      {feil && <p className="mt-3 text-sm">{feil}</p>}
 
       {forslag && (
         <div className="mt-4 rounded-lg border border-border bg-card p-4">
@@ -126,11 +125,11 @@ function PlanRevisjonPanel({ plans }: { plans: Valg[] }) {
                 <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
                   {e.pyramideAkser.join(" · ")} · {e.varighet}
                 </span>
-                <p className="text-sm text-muted-foreground">{e.rasjonale}</p>
+                <p className="text-sm">{e.rasjonale}</p>
               </li>
             ))}
           </ul>
-          <p className="mt-3 border-t border-border pt-3 text-sm text-muted-foreground">
+          <p className="mt-3 border-t border-border pt-3 text-sm">
             {forslag.samletAnbefaling}
           </p>
         </div>
@@ -167,7 +166,7 @@ function PeakingPanel({
   return (
     <PanelShell>
       {mangler ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm">
           Trenger minst én spiller og én kommende turnering.
         </p>
       ) : (
@@ -207,7 +206,7 @@ function PeakingPanel({
         </div>
       )}
 
-      {feil && <p className="mt-3 text-sm text-destructive">{feil}</p>}
+      {feil && <p className="mt-3 text-sm">{feil}</p>}
 
       {plan && (
         <div className="mt-4 rounded-lg border border-border bg-card p-4">
@@ -224,11 +223,11 @@ function PeakingPanel({
                   Uke {u.uke} · {u.bompaFase} · vol {u.volum} · int{" "}
                   {u.intensitet}
                 </span>
-                <p className="text-sm text-muted-foreground">{u.rasjonale}</p>
+                <p className="text-sm">{u.rasjonale}</p>
               </li>
             ))}
           </ul>
-          <p className="mt-3 border-t border-border pt-3 text-sm text-muted-foreground">
+          <p className="mt-3 border-t border-border pt-3 text-sm">
             {plan.generellRad}
           </p>
         </div>

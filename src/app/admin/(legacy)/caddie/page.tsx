@@ -1,8 +1,8 @@
 /**
- * Gammel co-agent-rute. T12: inn i AgenticOS.
+ * Gammel co-agent-rute. Caddie-samtalen bor i Jarvis, fane «Samtale» (AG-19).
  */
 import { permanentRedirect } from "next/navigation";
 
 export default function CaddieRedirect() {
-  permanentRedirect("/admin/agenticos");
+  permanentRedirect("/admin/jarvis?fane=samtale");
 }

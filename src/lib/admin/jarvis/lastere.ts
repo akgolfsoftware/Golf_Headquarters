@@ -21,5 +21,7 @@ export function jarvisFaneTellinger(
     prosjekter,
     skills: AGENTICOS_SKILLS.length,
     runtimes: AGENTICOS_RUNTIMES.filter((r) => r.koblet).length,
+    // Samtalen har ingen telling (utkast vises i selve fanen).
+    samtale: 0,
   };
 }

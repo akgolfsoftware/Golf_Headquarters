@@ -1,8 +1,8 @@
 /**
- * T12: Caddie-chat er nedlagt — foldet inn i Jarvis-fanen (AgenticOS).
+ * Caddie-samtalen bor i Jarvis, fane «Samtale» (AG-19).
  */
 import { permanentRedirect } from "next/navigation";
 
 export default function CaddieSamtaleRedirect() {
-  permanentRedirect("/admin/agenticos");
+  permanentRedirect("/admin/jarvis?fane=samtale");
 }

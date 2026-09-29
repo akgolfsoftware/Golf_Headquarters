@@ -10,9 +10,9 @@ import {
   velgJarvisFane,
 } from "./faner";
 
-test("fire faner, i rekkefølgen fra canvasen Anders godkjente", () => {
-  assert.deepEqual(JARVIS_FANER.map((f) => f.id), ["ko", "prosjekter", "skills", "runtimes"]);
-  assert.deepEqual(JARVIS_FANER.map((f) => f.label), ["Kø", "Prosjekter", "Skills", "Runtimes"]);
+test("fem faner: de fire fra canvasen og Samtale (AG-19)", () => {
+  assert.deepEqual(JARVIS_FANER.map((f) => f.id), ["ko", "prosjekter", "skills", "runtimes", "samtale"]);
+  assert.deepEqual(JARVIS_FANER.map((f) => f.label), ["Kø", "Prosjekter", "Skills", "Runtimes", "Samtale"]);
 });
 
 test("hver fane peker på adressen den erstattet", () => {
@@ -33,6 +33,7 @@ test("gyldig ?fane= respekteres", () => {
   assert.equal(velgJarvisFane("prosjekter"), "prosjekter");
   assert.equal(velgJarvisFane("skills"), "skills");
   assert.equal(velgJarvisFane("runtimes"), "runtimes");
+  assert.equal(velgJarvisFane("samtale"), "samtale");
 });
 
 test("erJarvisFaneId avviser alt som ikke er en fane", () => {
@@ -47,6 +48,7 @@ test("standardfanen har ren adresse, resten har ?fane=", () => {
   assert.equal(jarvisHref("prosjekter"), "/admin/jarvis?fane=prosjekter");
   assert.equal(jarvisHref("skills"), "/admin/jarvis?fane=skills");
   assert.equal(jarvisHref("runtimes"), "/admin/jarvis?fane=runtimes");
+  assert.equal(jarvisHref("samtale"), "/admin/jarvis?fane=samtale");
 });
 
 /**
@@ -81,4 +83,22 @@ test("alle fire gamle adresser redirecter til /admin/jarvis", () => {
     les("src/app/admin/agenticos/skills/page.tsx"),
     /redirect\("\/admin\/jarvis\?fane=skills"\)/,
   );
+});
+
+/**
+ * AG-19: Caddie-samtalen kobles uten skjemaendring. Siden henter samtalen bare
+ * for ADMIN (samme grense som /api/caddie/*), og bruker AgencyOSSkall.
+ */
+test("/admin/jarvis kobler samtalen bare for ADMIN og bruker Precision-skallet", () => {
+  const src = readFileSync(join(process.cwd(), "src/app/admin/jarvis/page.tsx"), "utf8");
+  const uten = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+  assert.match(uten, /user\.role === "ADMIN"[\s\S]*hentEllerOpprettSamtale\(/);
+  assert.match(uten, /<AgencyOSSkall/);
+  assert.doesNotMatch(uten, /V2Shell/);
+});
+
+test("Caddie-redirectene peker på fanen Samtale", () => {
+  const les = (p: string) => readFileSync(join(process.cwd(), p), "utf8");
+  assert.match(les("src/app/admin/agencyos/caddie/page.tsx"), /\/admin\/jarvis\?fane=samtale/);
+  assert.match(les("src/app/admin/(legacy)/caddie/page.tsx"), /\/admin\/jarvis\?fane=samtale/);
 });
