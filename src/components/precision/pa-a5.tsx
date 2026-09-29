@@ -18,7 +18,7 @@ const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean)
 export type Fane = { value: string; label: string; count?: number };
 export function Faner({ faner, value, onChange }: { faner: readonly Fane[]; value: string; onChange: (v: string) => void }) {
   return <div role="tablist" className="pa-tabs" aria-label="Faner">
-    {faner.map((f) => <button key={f.value} type="button" role="tab" aria-selected={f.value === value} className="pa-tab" onClick={() => onChange(f.value)}>
+    {faner.map((f) => <button key={f.value} type="button" role="tab" aria-selected={f.value === value} className="pa-tab" style={{ minWidth: 44 }} onClick={() => onChange(f.value)}>
       {f.label}{f.count != null && <span className="pa-tab__count">{f.count}</span>}
     </button>)}
   </div>;
