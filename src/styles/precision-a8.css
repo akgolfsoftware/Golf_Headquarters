@@ -1,0 +1,82 @@
+/*
+ * Precision Athletics — Spiller 360 (AG-08) med faner, AG-A02/A04 i Stats,
+ * AG-RD-01 Rundeanalyse og AG-TP-02 Før og nå. Egen fil for å unngå konflikt
+ * med parallelle bolker. Bare tokens fra .pa-root (precision-athletics.css).
+ */
+.a8-side{display:flex;flex-direction:column;gap:16px;min-width:0;width:100%;max-width:1440px;margin:0 auto;padding:16px 16px 96px;box-sizing:border-box}
+@media (min-width:1024px){.a8-side{padding:24px 32px 96px}}
+
+.a8-to{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;align-items:start}
+@media (min-width:1100px){.a8-to{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.a8-to--lik{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.a8-stabel{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+.a8-arbeid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;align-items:start}
+@media (min-width:1280px){.a8-arbeid{grid-template-columns:260px minmax(0,1fr)}}
+.a8-rail{padding:0;overflow:hidden}
+.a8-rail summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 16px;font:600 var(--fs-14)/1 var(--font-sans);color:var(--text-primary)}
+.a8-rail summary::-webkit-details-marker{display:none}
+.a8-rail__liste{display:flex;flex-direction:column;border-top:1px solid var(--border-hairline)}
+.a8-rail__rad{display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:52px;padding:6px 16px;border-bottom:1px solid var(--border-hairline);text-decoration:none;color:var(--text-primary);min-width:0}
+.a8-rail__rad:last-child{border-bottom:0}
+.a8-rail__rad[aria-current="page"]{background:var(--surface-hover);box-shadow:inset 2px 0 0 var(--primary)}
+.a8-rail__navn{font:500 var(--fs-14)/1.3 var(--font-sans);overflow-wrap:anywhere}
+
+.a8-sek{display:flex;flex-direction:column;padding:16px;min-width:0}
+.a8-sek__hode{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;min-width:0}
+.a8-sek__hode .kicker{flex:1 1 auto;min-width:0}
+
+.a8-liste{display:flex;flex-direction:column;min-width:0}
+.a8-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:48px;padding:6px 0;border-top:1px solid var(--border-hairline);min-width:0}
+.a8-rad:first-child{border-top:0}
+.a8-rad--3{grid-template-columns:minmax(0,1fr) auto auto}
+.a8-rad--dag{grid-template-columns:72px minmax(0,1fr) auto}
+.a8-rad--merke{grid-template-columns:64px minmax(0,1fr) auto}
+@media (max-width:480px){.a8-rad--3{grid-template-columns:minmax(0,1fr) auto}.a8-rad--3>:nth-child(3){grid-column:1/-1;text-align:left}}
+.a8-lbl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.a8-lbl__a{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere;text-wrap:pretty}
+.a8-v{font:600 14px/1.2 var(--font-mono);color:var(--text-primary);text-align:right;font-variant-numeric:tabular-nums}
+.a8-dempet{margin:0;font:var(--type-body-s);color:var(--text-secondary);text-wrap:pretty}
+.a8-tekst{margin:0;font:var(--type-body-s);color:var(--text-primary);text-wrap:pretty;overflow-wrap:anywhere;white-space:pre-line}
+
+.a8-knapper{display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+.a8-kort-hode{display:flex;gap:12px;align-items:center;flex-wrap:wrap;min-width:0}
+.a8-kort-hode__tekst{flex:1 1 180px;min-width:0;display:flex;flex-direction:column;gap:2px}
+
+.a8-krav{all:unset;box-sizing:border-box;display:block;width:100%;min-height:52px;padding:8px 0;border-top:1px solid var(--border-hairline);cursor:pointer;color:inherit;text-decoration:none}
+.a8-krav:first-child{border-top:0}
+
+.a8-faner{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.a8-fane{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);font:600 14px/1 var(--font-sans);text-decoration:none;cursor:pointer;box-sizing:border-box}
+.a8-fane[aria-current="page"],.a8-fane[aria-pressed="true"]{background:var(--primary);border-color:var(--border-ink);color:var(--text-on-primary)}
+
+.a8-valg{min-height:44px;height:auto;max-width:100%}
+
+.a8-tall-rutenett{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:8px;min-width:0}
+.a8-tall{display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:6px;background:var(--surface-flat);border:1px solid var(--border-hairline);min-width:0}
+.a8-tall__k{font:var(--type-body-s);color:var(--text-secondary)}
+.a8-tall__v{font:600 22px/1 var(--font-mono);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.a8-tall__e{font:var(--type-num-s);color:var(--text-muted)}
+
+.a8-stolpe{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:36px;border-top:1px solid var(--border-hairline)}
+.a8-stolpe:first-child{border-top:0}
+.a8-stolpe__spor{height:8px;background:var(--surface-sunken);position:relative}
+.a8-stolpe__fyll{position:absolute;left:0;top:0;bottom:0;background:var(--primary)}
+.a8-stolpe__plan{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text-muted)}
+
+.a8-radar{width:100%;max-width:380px;height:auto;display:block;margin:0 auto}
+
+.a8-iup-nr{font:600 12px/1 var(--font-mono);color:var(--text-muted)}
+
+.a8-skjema{display:flex;flex-direction:column;gap:12px;min-width:0}
+.a8-skjema__rad{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;min-width:0}
+.a8-skjema__rad>*{min-width:0}
+.a8-felt{box-sizing:border-box;width:100%;min-height:44px;padding:0 12px;border-radius:var(--radius);border:1px solid var(--border-control);background:var(--surface-card);color:var(--text-primary);font:var(--type-body)}
+.a8-felt--mono{font:var(--type-num)}
+textarea.a8-felt{min-height:96px;padding:10px 12px;resize:vertical}
+.a8-etikett{display:flex;flex-direction:column;gap:6px;min-width:0;font:var(--type-label);color:var(--text-secondary)}
+@media (min-width:768px){.a8-skjema__to{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+
+.a8-bilder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
+.a8-bilde{display:flex;flex-direction:column;gap:6px;min-width:0}
+.a8-bilde__ramme{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;border:1px dashed var(--border-strong);border-radius:6px;background:var(--surface-flat);overflow:hidden;box-sizing:border-box}
+.a8-bilde__ramme img{width:100%;height:100%;object-fit:contain}
