@@ -1,82 +1,18 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgencyOS — Full spilleranalyse i coach-dybde (/admin/spillere/[id]/analyse),
- * v2-design (retning C). Coach-speilet av PlayerHQ «Analysere», alltid
- * nivaa="elite" (full dekomponering + fagkode-chips).
+ * `/admin/spillere/[id]/analyse` → Spiller 360 (`?fane=stats`), 29.09.2026.
  *
- * Auth + dataloader gjenbrukt 1:1 fra den forrige (legacy) siden: samme
- * requirePortalUser-guard (ADMIN/COACH), samme loadMinGolf i «elite»-dybde
- * og loadAnalyticsWorkbenchData. Spiller-id kommer fra ruten (params.id) —
- * notFound() hvis spilleren ikke finnes.
- *
- * Server component.
+ * Stats-fanen (AG-A02 + AG-A04 + AG-RD-01) dekker alt analysesiden viste: SG-status, mot seg selv,
+ * neste fokus, putting, nivåkrav, Tiger 5, runder, TrackMan per kølle, tester, treningshistorikk
+ * med filter, utvikling per sesong og turneringshistorikk.
+ * Tilgangssjekken skjer på Spiller 360 (requirePortalUser + coachScopedPlayerWhere).
  */
-
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { notFound } from "next/navigation";
-
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
-import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminSpillerAnalyseV2 } from "@/components/admin/v2/AdminSpillerAnalyseV2";
-import { sammenlignMedSegSelv, STANDARD_VINDU } from "@/lib/domain/sg-mot-seg-selv";
-import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
-import { hentVekstrateData } from "@/lib/admin/vekstrate-data";
-
-export const dynamic = "force-dynamic";
-
-export default async function SpillerAnalysePage({
+export default async function Spiller360AnalyseRedirect({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+}): Promise<never> {
   const { id } = await params;
-
-  const spiller = await prisma.user.findFirst({
-    // I0: selvbetjent spiller → notFound.
-    where: { AND: [coachScopedPlayerWhere(user), { id }] },
-    select: { id: true, name: true },
-  });
-  if (!spiller) notFound();
-
-  // Coach ser alltid full dekomponering → «elite»-dybde.
-  //
-  // I tillegg: «hvor taper hen slag, målt mot seg selv» — coachens
-  // hovedspørsmål (beslutning 2026-08-30). Vi henter dobbelt så mange runder
-  // som vindusstørrelsen, siden sammenligningen trenger et vindu bakover også.
-  const [minGolf, workbench, sgRunder, turneringer, vekstrate] = await Promise.all([
-    loadMinGolf(spiller.id, "elite"),
-    loadAnalyticsWorkbenchData(spiller.id),
-    prisma.round.findMany({
-      where: { userId: spiller.id },
-      orderBy: { playedAt: "desc" },
-      take: STANDARD_VINDU * 2,
-      select: {
-        playedAt: true,
-        sgOtt: true,
-        sgApp: true,
-        sgArg: true,
-        sgPutt: true,
-      },
-    }),
-    hentTurneringshistorikk(spiller.id),
-    hentVekstrateData(spiller.id),
-  ]);
-
-  const motSegSelv = sammenlignMedSegSelv(sgRunder);
-
-  return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminSpillerAnalyseV2
-        navn={spiller.name ?? "Spiller"}
-        spillerId={spiller.id}
-        data={{ minGolf, workbench }}
-        motSegSelv={motSegSelv}
-        vekstrate={vekstrate}
-        turneringer={turneringer}
-      />
-    </V2Shell>
-  );
+  redirect(`/admin/spillere/${id}?fane=stats`);
 }

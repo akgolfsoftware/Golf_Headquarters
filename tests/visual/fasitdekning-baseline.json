@@ -2,5 +2,5 @@
   "sitert": 141,
   "av": 219,
   "sistEndret": "2026-09-29",
-  "grunn": "Bolk A1 Innboks (AgencyOS-portering til Precision Athletics, beslutninger.md §PRECISION ATHLETICS ER DESIGNSYSTEMET og §SKJERMENE … RUNDE 8 «Én innboks»): /admin/kommunikasjon, /admin/ko › Godkjenninger og /admin/queue er slått inn i /admin/innboks (AG04Innboks.tsx, siterer Claude Design 7d7c2994 ui_kits/agencyos/screens/AG-innboks.jsx). InnboksSakerTrainLock.tsx (AG-03 Innboks.dc.html) og AdminGodkjenningerTrainLock.tsx (AG-10 Godkjenning Merge.dc.html) ble ubrukt og er fjernet. Én Train-lock-tegning faller dermed ut av DENNE tellingen (den teller kun designsystem/train-lock/), 142→141."
+  "grunn": "Innboks (A1) og Spiller 360 (AG-08) er portet til Precision Athletics (7d7c2994). Begge fjernet Train-lock-siteringer; samlet telling etter sammenslåing er 141/219 (målt med check-fasitdekning-baseline.mjs 29.09)."
 }

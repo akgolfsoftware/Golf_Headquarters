@@ -1,6 +1,6 @@
 "use client";
 
-/* AG-RD-01 Rundeanalyse: Precision-feil. */
+/* Rediger profil (AG-08): Precision-feil. */
 
 import { useEffect } from "react";
 import { CircleAlert, RotateCw } from "lucide-react";
@@ -15,11 +15,11 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    console.error("[admin/error]", error.digest, error);
   }, [error]);
 
   return <AgencyOSSkall navn="Coach"><div className="pa-side">
-    <FeilTilstand icon={CircleAlert} title="Rundene kunne ikke hentes" text="Ingen runder er endret. Prøv igjen."
+    <FeilTilstand icon={CircleAlert} title="Profilen kunne ikke hentes" text="Ingen felt er endret. Prøv igjen."
       retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
   </div></AgencyOSSkall>;
 }
