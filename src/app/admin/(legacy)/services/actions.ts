@@ -83,10 +83,17 @@ export async function updateService(id: string, input: ServiceInput) {
 
 export async function deleteService(id: string) {
   const user = await requireCoachActionUser();
-  await prisma.serviceType.delete({ where: { id } });
+  // En tjeneste med bookinger kan ikke slettes (bookingene peker på den):
+  // den deaktiveres i stedet, så den ikke kan bookes lenger (Anders 29.09.2026).
+  const antallBookinger = await prisma.booking.count({ where: { serviceTypeId: id } });
+  if (antallBookinger > 0) {
+    await prisma.serviceType.update({ where: { id }, data: { active: false } });
+  } else {
+    await prisma.serviceType.delete({ where: { id } });
+  }
   await audit({
     actorId: user.id,
-    action: "service.deleted",
+    action: antallBookinger > 0 ? "service.deactivated" : "service.deleted",
     target: `ServiceType:${id}`,
   });
   revalidatePath("/admin/services");

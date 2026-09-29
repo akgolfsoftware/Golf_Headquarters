@@ -25,6 +25,8 @@ let serviceUpdates: Array<{ id: string; data: unknown }> = [];
 let serviceDeletes: string[] = [];
 let auditWrites: Array<{ action: string }> = [];
 let redirectKall: string[] = [];
+/** Antall bookinger som peker på tjenesten (deleteService deaktiverer da i stedet). */
+let antallBookinger = 0;
 
 function nullstill() {
   bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
@@ -34,6 +36,7 @@ function nullstill() {
   serviceDeletes = [];
   auditWrites = [];
   redirectKall = [];
+  antallBookinger = 0;
 }
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -64,6 +67,7 @@ mock.module("@/lib/audit", {
 const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
+  booking: { count: async () => antallBookinger },
   serviceType: {
     findUnique: async ({ where }: { where: { slug: string } }) =>
       opptatteSlugs.has(where.slug) ? { id: "opptatt", slug: where.slug } : null,
@@ -178,4 +182,13 @@ test("deleteService sletter og redirecter for COACH", async () => {
   await assert.rejects(() => deleteService("tjeneste-a"), /NEXT_REDIRECT/);
   assert.deepEqual(serviceDeletes, ["tjeneste-a"]);
   assert.deepEqual(redirectKall, ["/admin/services"]);
+});
+
+test("deleteService deaktiverer i stedet for å slette når tjenesten har bookinger", async () => {
+  antallBookinger = 3;
+  const { deleteService } = await actions();
+  await assert.rejects(() => deleteService("tjeneste-a"), /NEXT_REDIRECT/);
+  assert.deepEqual(serviceDeletes, []);
+  assert.deepEqual(serviceUpdates, [{ id: "tjeneste-a", data: { active: false } }]);
+  assert.equal(auditWrites.at(-1)?.action, "service.deactivated");
 });

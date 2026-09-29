@@ -8,6 +8,8 @@ import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
+import { bookingBetaling } from "@/lib/booking/betalingsvalg";
 
 
 export type OpprettOktInput = {
@@ -18,6 +20,15 @@ export type OpprettOktInput = {
   startAt: Date | string;
   varighetMin: number;
   notater?: string;
+  /**
+   * Betalingsvalg fra coachens bookingveiviser (Anders 29.09.2026). Utelatt =
+   * som før (pris fra tjenesten, ingen betalingsmåte satt).
+   * - KLIPP: trekker ett klipp fra spillerens coaching-pakke (samme atomiske
+   *   trekk som createCreditBooking), pris 0, subscriptionId settes.
+   * - FAKTURA: tjenestens pris, merket «skal faktureres» (fakturaen lages i Tripletex).
+   * - GRATIS: pris 0.
+   */
+  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
 };
 
 export type OpprettOktResult = {
@@ -77,6 +88,22 @@ export async function opprettOktPaaTid(
     facilityId = facility.id;
   }
 
+  // Klipp: spillerens coaching-pakke må ha klipp igjen. Selve trekket skjer
+  // atomisk i transaksjonen under (updateMany med creditsRemaining > 0).
+  let klippAbonnementId: string | null = null;
+  if (data.betaling === "KLIPP") {
+    const pakke = await prisma.subscription.findUnique({
+      where: { userId_kind: { userId: spiller.id, kind: "COACHING" } },
+      select: { id: true, status: true, currentPeriodEnd: true, monthlyCredits: true, creditsRemaining: true },
+    });
+    if (!pakke || !kanBrukeCredits(pakke) || pakke.monthlyCredits === 0) {
+      throw new Error("Spilleren har ingen aktiv coaching-pakke med klipp.");
+    }
+    if (pakke.creditsRemaining <= 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
+    klippAbonnementId = pakke.id;
+  }
+  const betaling = bookingBetaling(data.betaling, serviceType.priceOre, klippAbonnementId);
+
   let booking: { id: string };
   try {
     // Kollisjonsvern (A-pakken): coach- og fasilitets-sjekk i samme
@@ -89,6 +116,13 @@ export async function opprettOktPaaTid(
         startAt,
         endAt,
       });
+      if (klippAbonnementId) {
+        const trukket = await tx.subscription.updateMany({
+          where: { id: klippAbonnementId, creditsRemaining: { gt: 0 } },
+          data: { creditsRemaining: { decrement: 1 } },
+        });
+        if (trukket.count === 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
+      }
       return tx.booking.create({
         data: {
           plassNr: vern.plassNr,
@@ -99,7 +133,9 @@ export async function opprettOktPaaTid(
           startAt,
           endAt,
           status: "CONFIRMED",
-          priceOre: serviceType.priceOre,
+          priceOre: betaling.priceOre,
+          ...(betaling.paymentMethod ? { paymentMethod: betaling.paymentMethod } : {}),
+          ...(betaling.subscriptionId ? { subscriptionId: betaling.subscriptionId } : {}),
           coachId: serviceType.coachUserId ?? null,
           notes: data.notater?.trim() || null,
         },
@@ -135,6 +171,7 @@ export async function opprettOktPaaTid(
       locationId: location.id,
       startAt: startAt.toISOString(),
       varighetMin: data.varighetMin,
+      betaling: data.betaling ?? null,
     },
   });
 
