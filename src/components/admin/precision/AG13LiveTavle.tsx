@@ -4,8 +4,11 @@
  *
  * Ren visning: dataene kommer uendret fra hentLiveTavle() (T9, 27.08.2026)
  * — pågående treningsøkter (trainingSessionV2, status IN_PROGRESS) og
- * planlagte økter senere i dag. Ingen kart, ingen video, ingen sim-booking
- * (fasitens egen regel: «Tavla er artefakt, aldri fane»).
+ * planlagte økter senere i dag.
+ *
+ * Merk: i katalogen overstyres AG-13.jsx (Live-tavle) av AG-cockpit.jsx
+ * (AG-13 = Live coachingøkt). Tavla har derfor ingen aktiv tegning; denne
+ * visningen følger den overstyrte tegningen og grunnkomponentene.
  *
  * Bevisst avvik fra tegningen:
  *   - Tegningens Lyst/Natt-bryter og enkelt-økt-detaljpanel (highlight,
@@ -17,8 +20,8 @@
  *     ikke coach-tilknytning eller live-slag per økt ennå.
  */
 import Link from "next/link";
-import { Activity, Radio } from "lucide-react";
-import { Meta, Sidehode, StatusPille, TomTilstand } from "@/components/precision/pa";
+import { CalendarDays, Radio } from "lucide-react";
+import { KnappLenke, Meta, Sidehode, StatusPille, TomTilstand } from "@/components/precision/pa";
 import { Fremdriftslinje, Initialer } from "@/components/precision/pa-a3";
 import type { LiveTavleData } from "@/lib/agencyos/live-tavle-data";
 
@@ -63,7 +66,7 @@ function KommerRad({ k }: { k: LiveTavleData["kommerIDag"][number] }) {
         <span className="pa-row__sub">{k.tittel}</span>
       </span>
       <span className="pa-row__value">
-        {new Date(k.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
+        {new Date(k.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}
       </span>
     </Link>
   );
@@ -75,9 +78,9 @@ export function AG13LiveTavle({ data }: { data: LiveTavleData }) {
     <div className="pa-side">
       <Sidehode kicker="Live-tavle" title="Tavle" sub={n > 0 ? <StatusPille tone="live">{`Live · ${n} ${n === 1 ? "økt" : "økter"}`}</StatusPille> : undefined} />
       {n === 0 ? (
-        <TomTilstand icon={Radio} title="Ingen økter pågår nå" text="Tavla fylles automatisk når en økt settes i gang." />
+        <TomTilstand icon={Radio} title="Ingen økter pågår nå" text="Økter som settes i gang, vises her." actions={<KnappLenke variant="secondary" icon={CalendarDays} href="/admin/kalender">Åpne Kalender</KnappLenke>} />
       ) : (
-        <div role="list" aria-label="Pågående økter" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 12 }}>
+        <div aria-label="Pågående økter" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 12 }}>
           {data.liveOkter.map((okt) => (
             <OktKort key={okt.id} okt={okt} />
           ))}
@@ -94,12 +97,6 @@ export function AG13LiveTavle({ data }: { data: LiveTavleData }) {
             ))}
           </div>
         )}
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}>
-        <Activity size={12} style={{ color: "var(--text-faint)" }} aria-hidden />
-        <span style={{ font: "var(--type-meta)", color: "var(--text-faint)", textAlign: "center" }}>
-          Tavla er artefakt, aldri fane. Ingen kart, ingen video, ingen sim-booking.
-        </span>
       </div>
     </div>
   );

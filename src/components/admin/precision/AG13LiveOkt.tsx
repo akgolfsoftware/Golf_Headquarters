@@ -5,23 +5,26 @@
  * (Claude Design 7d7c2994, ui_kits/agencyos/screens/AG-cockpit.jsx, AG13
  * med noConsent, «Live coachingøkt · uten samtykke til opptak»).
  *
- * Nattema (beslutninger.md §SKJERMENE … RUNDE 8: «AG-13 Live coachingøkt er
- * nattema: AgencyOSSkall med natt, ingen hurtigknapp» — satt av page.tsx).
+ * Nattema via AgencyOSSkall natt (skallets egen regel: «Nattema (Live
+ * coachingøkt). Hurtigknappen vises ikke på nattflater»; beslutninger.md
+ * §PRECISION ATHLETICS: nattema i Live-økt) — satt av page.tsx.
  *
  * Bevisst avvik fra tegningen:
  *   - Samtykke til opptak finnes ikke som eget felt i datamodellen ennå
- *     (beslutninger.md §ÉN IUP …, punkt 5: «samtykke til opptak … additivt
- *     … først når skjermene er godkjent»). Denne sida viser derfor alltid
- *     AG-13-U-tilstanden (opptaket vises som ikke startet, «Start opptak»)
- *     — aldri en fabrikert samtykke-status. Når feltet finnes, styrer det
- *     om «Start opptak»-kortet vises.
+ *     (beslutninger.md §SKJERMENE … RUNDE 8, punkt 9). Sida påstår derfor
+ *     verken «samtykke gitt» eller «samtykke mangler»: opptakskortet sier
+ *     rett ut at samtykket ikke registreres i appen, og «Start opptak»
+ *     (lenke til /admin/recording, som før) er sekundærknapp. Ingen rust.
+ *   - Tegningens spillerkort (kategori, HCP, siste runde, målsetninger),
+ *     teknisk plan, «Fra iPhone», hjemmelekse og «Avslutt økta» krever
+ *     lastere som ikke finnes for denne ruta — parkert, se PR.
  *   - Én ting nå-kortet, driller, transkript og analyse er datalikt med
  *     før portingen (lastLiveOktData/live-okt-actions.ts, urørt).
  */
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { Check, Star } from "lucide-react";
-import { Ikon, Knapp, Meta } from "@/components/precision/pa";
+import { ArrowLeft, Check, Mic, Star } from "lucide-react";
+import { Ikon, Knapp, KnappLenke, Meta } from "@/components/precision/pa";
 import { Nokkellinje } from "@/components/precision/pa-a3";
 import { MicButton } from "@/components/shared/mic-button";
 import { sendLiveMelding, sendBriefTilSpiller, lagreCoachVurdering } from "@/lib/agencyos/live-okt-actions";
@@ -138,7 +141,7 @@ function BriefSeksjon({ sessionId, initialMelding }: { sessionId: string; initia
         disabled={isPending}
         placeholder="Hva skal spilleren tenke på før økten starter?"
         rows={3}
-        style={{ width: "100%", resize: "vertical", height: "auto", padding: 10 }}
+        style={{ width: "100%", resize: "vertical", height: "auto", padding: 10, font: "var(--type-body)" }}
       />
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <Knapp variant="secondary" onClick={send} disabled={isPending} loading={isPending} loadingText="Sender …">
@@ -205,7 +208,7 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
         disabled={isPending}
         placeholder="Notat om økten (valgfritt)"
         rows={3}
-        style={{ width: "100%", resize: "vertical", height: "auto", padding: 10 }}
+        style={{ width: "100%", resize: "vertical", height: "auto", padding: 10, font: "var(--type-body)" }}
       />
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <Knapp variant="secondary" onClick={lagre} disabled={isPending} loading={isPending} loadingText="Lagrer …">
@@ -225,25 +228,20 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
 export function AG13LiveOkt({ data }: { data: LiveOktData }) {
   return (
     <div className="pa-side" style={{ maxWidth: 1080 }}>
-      <div>
-        <h1 className="pa-pagehead__title" style={{ margin: 0 }}>{data.tittel}</h1>
-        <Meta>
-          {new Date(data.startTime).toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "short" })} ·{" "}
-          {new Date(data.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
-        </Meta>
-      </div>
-
-      {!data.opptak && (
-        <div className="pa-alert pa-alert--signal" style={{ flexDirection: "column", gap: 10 }}>
-          <span className="pa-alert__title">Start opptaket før du sier noe</span>
-          <p style={{ margin: 0 }}>
-            Alt du sier fra du trykker og til du stopper blir til transkript, analyse og hjemmelekse. Starter du sent, mister spilleren begynnelsen av det du forklarte.
-          </p>
-          <Link href={`/admin/recording?okt=${data.id}`} className="pa-btn pa-btn--signal" style={{ alignSelf: "flex-start" }}>
-            Start opptak
-          </Link>
+      <Link href="/admin/agencyos/live" style={{ display: "inline-flex", alignItems: "center", gap: 6, minHeight: 44, font: "var(--type-body-s)", color: "var(--text-secondary)", textDecoration: "none", alignSelf: "flex-start" }}>
+        <Ikon icon={ArrowLeft} size={16} /> Tavle
+      </Link>
+      <header className="pa-pagehead">
+        <div className="pa-pagehead__row">
+          <div className="pa-pagehead__text">
+            <div className="kicker pa-pagehead__kicker">
+              {`Live coachingøkt · ${new Date(data.startTime).toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "short", timeZone: "Europe/Oslo" })} · ${new Date(data.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}${data.sted ? ` · ${data.sted}` : ""}`}
+            </div>
+            <h1 className="pa-pagehead__title">{data.spillerNavn ?? data.tittel}</h1>
+            {data.spillerNavn && <p className="pa-pagehead__sub">{data.tittel}</p>}
+          </div>
         </div>
-      )}
+      </header>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))", gap: 16, alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -287,7 +285,22 @@ export function AG13LiveOkt({ data }: { data: LiveOktData }) {
                 <Meta>status: {data.opptak.status.toLowerCase()}</Meta>
               </>
             ) : (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen opptak på denne økta ennå. Opptaket startes fra kortet øverst.</p>
+              <>
+                <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                  Ingen opptak på denne økta ennå. Alt du sier fra du trykker og til du stopper blir til transkript, analyse og hjemmelekse.
+                </p>
+                <div className="pa-alert">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+                    <span className="pa-alert__title">Samtykke til opptak registreres ikke i appen ennå</span>
+                    <span>Spør spilleren før du starter opptaket.</span>
+                  </div>
+                </div>
+                <div>
+                  <KnappLenke variant="secondary" icon={Mic} href={`/admin/recording?okt=${data.id}`}>
+                    Start opptak
+                  </KnappLenke>
+                </div>
+              </>
             )}
           </Kort>
 
@@ -296,7 +309,7 @@ export function AG13LiveOkt({ data }: { data: LiveOktData }) {
               <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)" }}>{data.opptak.coachAnalyse}</p>
             ) : (
               <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-                {data.opptak ? "Analysen lages av opptaket. Kjøres når opptaket er ferdig transkribert." : "Analysen lages av opptaket. Start opptaket øverst, så kommer analysen hit når den er ferdig."}
+                {data.opptak ? "Analysen lages av opptaket. Kjøres når opptaket er ferdig transkribert." : "Analysen lages av opptaket. Start opptaket, så kommer analysen hit når den er ferdig."}
               </p>
             )}
           </Kort>

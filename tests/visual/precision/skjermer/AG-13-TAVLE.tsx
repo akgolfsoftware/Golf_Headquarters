@@ -1,4 +1,5 @@
-/** Prøvefil for AG-13 Live-tavle. Syntetiske data, ingen ekte spillere. */
+/** Prøvefil for Live-tavla (/admin/agencyos/live). AG-13.jsx «Live-tavle» er overstyrt
+ * i katalogen av AG-cockpit.jsx (AG-13 = Live coachingøkt), derfor egen ID. Syntetiske data. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG13LiveTavle } from "@/components/admin/precision/AG13LiveTavle";
