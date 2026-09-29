@@ -7,14 +7,16 @@
  * bruker samme motor som cronen.
  *
  * Server Component. Auth via requirePortalUser (COACH/ADMIN), som /admin/tester.
+ * Flyttet ut av (legacy) og portert til Precision Athletics (AG-15 normer).
  */
 
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { readSyncState, type ProtocolSyncState } from "@/lib/admin/benchmark-sync-schema";
 import { syncModeFor } from "@/lib/admin/benchmark-sync";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG15Normer } from "@/components/admin/precision/AG15Normer";
 import {
-  AdminBenchmarksV2,
   type AdminBenchmarksV2Data,
   type BenchmarksPendingRad,
   type BenchmarksRad,
@@ -26,6 +28,7 @@ import {
 } from "./actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Normer · Tester · AgencyOS" };
 
 type Row = { id: string; name: string; state: ProtocolSyncState };
 
@@ -40,7 +43,7 @@ function fmtDate(iso: string | undefined): string {
 }
 
 export default async function BenchmarksAdminPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const defs = await prisma.testDefinition.findMany({
     select: { id: true, name: true, protocol: true },
@@ -101,11 +104,13 @@ export default async function BenchmarksAdminPage() {
   };
 
   return (
-    <AdminBenchmarksV2
-      data={data}
-      onApprove={approveBenchmarkPending}
-      onReject={rejectBenchmarkPending}
-      onSyncNow={runBenchmarkSyncNow}
-    />
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG15Normer
+        data={data}
+        onApprove={approveBenchmarkPending}
+        onReject={rejectBenchmarkPending}
+        onSyncNow={runBenchmarkSyncNow}
+      />
+    </AgencyOSSkall>
   );
 }

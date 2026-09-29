@@ -4,7 +4,9 @@
  * (samme skjerm, to inngangspunkt). Ekte spillerkategori (A–K) og ekte
  * gjennomførte/tildelte test-tall — ingen fabrikerte tall.
  *
- * Route-baserte modaler (åpnes fra "Tildel"-CTAene på /admin/tester).
+ * Flyttet ut av (legacy) og portert til Precision Athletics (AG-15 tildel):
+ * en side i AgencyOSSkall, ikke lenger en modal. `AdminTildelTestV2` brukes
+ * fortsatt av /admin/spillere/[id]/tildel-test.
  */
 
 import { notFound } from "next/navigation";
@@ -13,9 +15,12 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
-import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
+import type { AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG15Tildel } from "@/components/admin/precision/AG15Tildel";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Tildel test · AgencyOS" };
 
 export default async function TildelTestPage({
   params,
@@ -63,5 +68,9 @@ export default async function TildelTestPage({
     tilbakeHref: "/admin/tester",
   };
 
-  return <AdminTildelTestV2 data={data} />;
+  return (
+    <AgencyOSSkall navn={viewer.name ?? "Coach"}>
+      <AG15Tildel data={data} />
+    </AgencyOSSkall>
+  );
 }
