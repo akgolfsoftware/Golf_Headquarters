@@ -7,8 +7,8 @@
  * summary}/actions.ts` — samme logikk, samme rollesjekk og samme
  * datafelt (completedSummary.coachMessages[]/.coachBrief/.coachRating),
  * kun ny plassering. Alle tre handlinger vises nå som seksjoner i
- * `/admin/agencyos/live/[sessionId]` (LiveOktCoachTrainLock) i stedet for
- * tre separate ruter — se docs/natt/T9-DONE.md.
+ * `/admin/agencyos/live/[sessionId]` (AG13LiveOkt, Precision Athletics fra
+ * 29.09.2026) i stedet for tre separate ruter — se docs/natt/T9-DONE.md.
  *
  * sendLiveMelding — coach sender en rask melding mens spillerens økt pågår.
  * sendBriefTilSpiller — coach skriver et fokuspunkt som vises før økten.

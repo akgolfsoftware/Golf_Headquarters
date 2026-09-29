@@ -33,7 +33,7 @@
  * skal ALDRI utvide tilgang.
  */
 
-export type KalenderFaneId = "uke" | "maned" | "dag" | "stall";
+export type KalenderFaneId = "uke" | "maned" | "dag" | "stall" | "tilg";
 
 export type KalenderFane = {
   id: KalenderFaneId;
@@ -42,11 +42,20 @@ export type KalenderFane = {
   gammelHref: string | null;
 };
 
+/**
+ * «Tilgjengelighet» (28.09.2026, Precision Athletics AG-05): tegningen har
+ * fem faner, ikke fire — «Ledighet er ikke en fane»-unntaket over er dermed
+ * overstyrt av den godkjente tegningen. Fanen viser bare det faste
+ * ukemønsteret (i tegningens omfang); dato-unntak, flere steder og
+ * årsvisningen lever videre uendret på /admin/availability, som fanen også
+ * lenker videre til for «avansert».
+ */
 export const KALENDER_FANER: KalenderFane[] = [
   { id: "uke", label: "Uke", gammelHref: null },
   { id: "maned", label: "Måned", gammelHref: null },
   { id: "dag", label: "Dag", gammelHref: null },
   { id: "stall", label: "Stall-dag", gammelHref: "/admin/stall/dag" },
+  { id: "tilg", label: "Tilgjengelighet", gammelHref: null },
 ];
 
 export const KALENDER_STANDARDFANE: KalenderFaneId = "uke";
