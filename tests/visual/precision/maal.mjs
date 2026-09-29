@@ -18,7 +18,7 @@
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { extname, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -76,8 +76,14 @@ await build({
   plugins: [stubbePlugin], logLevel: "error",
 });
 
-// Samme rekkefølge som skallene: komponentstilene først, så Precision-laget.
-const css = ["precision-komponenter.css", "precision-athletics.css"].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// Samme rekkefølge som skallene: komponentstilene først, så Precision-laget,
+// så eventuelle bolk-egne stilark (src/styles/precision-<bolk>.css, f.eks.
+// precision-a5.css) — lastet i filnavn-rekkefølge, alfabetisk etter «precision-».
+const STILARK_ROT = ["precision-komponenter.css", "precision-athletics.css"];
+const bolkStilark = readdirSync(resolve(root, "src/styles"))
+  .filter((f) => f.startsWith("precision-") && f.endsWith(".css") && !STILARK_ROT.includes(f))
+  .sort();
+const css = [...STILARK_ROT, ...bolkStilark].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
