@@ -93,9 +93,9 @@ export function TurneringKoblingKlient({ spillerId, spillerNavn, current, initia
             <span className="pa-sr">Søk turneringsspiller</span>
             <input className="a8-felt" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Fornavn eller etternavn" aria-label="Søk turneringsspiller" />
           </label>
-          <Knapp type="submit" variant="secondary" icon={Search} iconName="search" loading={pending} loadingText="Søker …" disabled={q.trim().length === 0}>Søk</Knapp>
+          <Knapp type="submit" variant="secondary" icon={Search} iconName="search" loading={pending} loadingText="Søker …" disabled={q.trim().length < 2}>Søk</Knapp>
         </form>
-        {treff.length > 0 && <TreffListe treff={treff} pending={pending} onKoble={koble} />}
+        {treff.length > 0 ? <TreffListe treff={treff} pending={pending} onKoble={koble} /> : <Dempet>Skriv minst to bokstaver og trykk Søk. Velg deretter riktig person.</Dempet>}
       </Seksjon>
     </div>
   );
