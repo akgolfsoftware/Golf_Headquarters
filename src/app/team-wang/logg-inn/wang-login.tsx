@@ -1,25 +1,32 @@
 "use client";
 
 /**
- * Fasit: designsystem/wang/skjermer-batch2/c7-logg-inn.html.
- * Ekte innlogging bruker prosjektets eksisterende Supabase-klient.
- * Avvik:
- *   - Ingen påstand om antall forsøk eller låsetid; tjenesten eier grensene.
- *   - Tilgangsteksten beskriver eksisterende innganger. Nye elev-/foresattflater
- *     og gruppetilgang skal verifiseres før de loves her.
+ * WANG-24 Logg inn — kobler skjemaet til prosjektets Supabase-klient.
+ * Ingen påstand om antall forsøk eller låsetid; tjenesten eier grensene.
+ * Serverens domenesperre avgjør tilgang når brukeren åpner trenerflaten.
  */
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { WangInnloggingsSkjema } from "./wang-innloggings-skjema";
+import { WangInnloggingsSkjema, type WangLoggInnDel } from "./wang-innloggings-skjema";
 
-export function WangLogin({ retursti = "/team-wang", avvisning = null, innloggetSom = null }: { retursti?: string; avvisning?: { tittel: string; tekst: string } | null; innloggetSom?: string | null }) {
+export function WangLogin({
+  retursti,
+  avvisning = null,
+  innloggetSom = null,
+  del = "login",
+  delHref,
+}: {
+  retursti: string;
+  avvisning?: { tittel: string; tekst: string } | null;
+  innloggetSom?: string | null;
+  del?: WangLoggInnDel;
+  delHref: Record<WangLoggInnDel, string>;
+}) {
   const router = useRouter();
-  return <WangInnloggingsSkjema avvisning={avvisning} innloggetSom={innloggetSom} loggInn={async ({ epost, passord }) => {
+  return <WangInnloggingsSkjema avvisning={avvisning} innloggetSom={innloggetSom} del={del} delHref={delHref} loggInn={async ({ epost, passord }) => {
     const { error } = await createClient().auth.signInWithPassword({ email: epost, password: passord });
     if (error?.name === "AuthRetryableFetchError" || error?.status === 0) throw new Error("Innloggingen fikk ikke forbindelse.");
     if (error) return { ok: false };
-    // Behold WANG som returflate. Serverens eksisterende sperrer avgjør
-    // tilgang når brukeren åpner trenerverktøy eller personlig innhold.
     router.replace(retursti);
     router.refresh();
     return { ok: true };
