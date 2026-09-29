@@ -9,12 +9,13 @@
  * precision-a4.css.
  */
 import { useEffect, useId, type ReactNode } from "react";
+import Link from "next/link";
 import { X } from "lucide-react";
 import { Ikon, Knapp } from "./pa";
 
 const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(" ");
 
-/* ---------- Faner ---------- */
+/* ---------- Faner (klient-state) ---------- */
 
 export function Faner({ faner, valgt, onEndre }: {
   faner: ReadonlyArray<{ verdi: string; navn: string; antall?: number }>;
@@ -30,6 +31,20 @@ export function Faner({ faner, valgt, onEndre }: {
         </button>
       ))}
     </div>
+  );
+}
+
+/* ---------- Faner som ekte lenker (server-rendret navigasjon) ---------- */
+
+export function FanerLenker({ faner }: { faner: ReadonlyArray<{ href: string; navn: string; aktiv: boolean }> }) {
+  return (
+    <nav className="pa-tabs" aria-label="Faner">
+      {faner.map((f) => (
+        <Link key={f.href} href={f.href} aria-current={f.aktiv ? "page" : undefined} className="pa-tab" data-fanelenke="">
+          {f.navn}
+        </Link>
+      ))}
+    </nav>
   );
 }
 

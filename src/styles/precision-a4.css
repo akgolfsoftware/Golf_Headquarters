@@ -34,6 +34,27 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* FanerLenker (pa-a4.tsx): faner som ekte <Link>, samme visuelle uttrykk som pa-tab[aria-selected]. */
+.pa-tab[data-fanelenke] {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+.pa-tab[aria-current="page"] {
+  color: var(--text-primary);
+}
+.pa-tab[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--primary);
+}
+
 .a4-meta {
   font: var(--type-meta);
   letter-spacing: 0.04em;
@@ -60,6 +81,18 @@
   height: 12px;
   border-radius: 2px;
   flex: none;
+}
+
+div.a4-week--grid {
+  display: none;
+}
+@media (min-width: 1025px) {
+  div.a4-week--grid {
+    display: block;
+  }
+  div.a4-week--mobil {
+    display: none;
+  }
 }
 
 .a4-week {
@@ -118,6 +151,7 @@
   position: absolute;
   left: 3px;
   right: 3px;
+  min-height: 44px;
   border-radius: var(--radius-inner, 4px);
   border: 1px solid var(--border-hairline);
   background: var(--surface-card);
@@ -126,6 +160,7 @@
   cursor: pointer;
   min-width: 0;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .a4-ev--ledig {
