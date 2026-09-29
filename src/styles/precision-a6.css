@@ -53,12 +53,4 @@
 .pa-a6-oppgave__tittel{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
 .pa-a6-oppgave__tittel[data-ferdig]{text-decoration:line-through;color:var(--text-muted)}
 
-.pa-a6-fokus{display:flex;align-items:center;gap:10px;min-height:56px;border-top:1px solid var(--border-hairline);padding:6px 0;min-width:0}
-.pa-a6-fokus[data-forste]{border-top:none}
-.pa-a6-fokus__lenke{flex:1 1 auto;min-width:0;display:flex;align-items:center;min-height:44px;color:inherit;text-decoration:none}
-.pa-a6-fokus__lenke:hover .pa-a6-etikett__a{text-decoration:underline;text-underline-offset:3px}
-.pa-a6-fokus__knapper{display:flex;gap:4px;flex:none}
-.pa-a6-angre{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;border-radius:6px;background:var(--surface-sunken);font:var(--type-body-s);color:var(--text-primary);min-width:0}
-.pa-a6-angre__tekst{flex:1 1 auto;min-width:0}
-
 .pa-a6-handlinger{display:flex;gap:8px;flex-wrap:wrap}

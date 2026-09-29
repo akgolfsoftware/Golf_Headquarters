@@ -1,12 +1,11 @@
 /**
  * Visningsdata for Cockpit (AG-01) i Precision Athletics. Ren omforming av
  * det sida allerede laster (loadDailyBrief, lastGodkjenninger,
- * lastCockpitTillegg, loadFokusSpillere) — ingen spørringer, ingen anslag.
+ * lastCockpitTillegg) — ingen spørringer, ingen anslag.
  * Mangler et tall, blir det «—».
  */
 import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
 import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
-import type { FokusData } from "@/lib/agencyos/fokus-spillere";
 import type { CockpitTillegg } from "./cockpit-tillegg-regler";
 
 /** Kalenderstripen går fra 05:00 til 22:00 (beslutninger.md §SKJERMENE … RUNDE 8). */
@@ -41,10 +40,6 @@ export type AG01Data = {
   utenforPlan: CockpitTillegg["utenforPlan"];
   utenforPlanUker: string;
   nokkeltall: CockpitNokkel[];
-  /** Bare head coach (ADMIN). null = skjult. */
-  okonomi: CockpitNokkel[] | null;
-  /** null = fokusdata kunne ikke lastes. */
-  fokus: FokusData | null;
 };
 
 export function hhmm(min: number): string {
@@ -89,8 +84,6 @@ export function byggAG01Data(inn: {
   brief: CockpitData;
   ko: { totalt?: number | null; rows: AdminGodkjenningV2Row[] };
   tillegg: CockpitTillegg;
-  fokus: FokusData | null;
-  erHeadCoach: boolean;
   kicker: string;
   klokke: string;
 }): AG01Data {
@@ -102,18 +95,6 @@ export function byggAG01Data(inn: {
     { label: "Strokes Gained, snitt", verdi: brief.stallSgKpi, kilde: "RUNDER SISTE 30 DAGER · EGEN STALL" },
     { label: "Planøkter gjennomført", verdi: brief.planAdherenceKpi, kilde: "FULLFØRTE AV PLANLAGTE · ALLE PLANER · 30 DAGER" },
   ];
-  let okonomi: CockpitNokkel[] | null = null;
-  if (inn.erHeadCoach) {
-    const mrr = kpi(brief, "MRR");
-    okonomi = [
-      { label: "MRR", verdi: mrr ? `${mrr.value}${mrr.unit ?? ""}` : "—", kilde: "AKTIVE PRO-ABONNEMENT × 299 KR" },
-      {
-        label: "Dagens bookingverdi",
-        verdi: brief.dagensVerdiKr == null ? "—" : `${brief.dagensVerdiKr.toLocaleString("nb-NO")} kr`,
-        kilde: "BEKREFTEDE OG VENTENDE BOOKINGER I DAG",
-      },
-    ];
-  }
   return {
     kicker: inn.kicker,
     klokke: inn.klokke,
@@ -135,7 +116,5 @@ export function byggAG01Data(inn: {
     utenforPlan: tillegg.utenforPlan,
     utenforPlanUker: tillegg.utenforPlanUker,
     nokkeltall,
-    okonomi,
-    fokus: inn.fokus,
   };
 }

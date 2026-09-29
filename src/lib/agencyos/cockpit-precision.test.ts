@@ -42,17 +42,9 @@ test("stripen går fra 05 til 22 og klemmes", () => {
   assert.equal(hhmm(7 * 60 + 5), "07:05");
 });
 
-test("økonomi vises bare for head coach", () => {
-  const felles = { brief, ko: { totalt: 3, rows: [] }, tillegg, fokus: null, kicker: "K", klokke: "10:30" };
-  assert.equal(byggAG01Data({ ...felles, erHeadCoach: false }).okonomi, null);
-  const hc = byggAG01Data({ ...felles, erHeadCoach: true }).okonomi;
-  assert.deepEqual(hc?.map((k) => k.verdi), ["4,2k", `${(2400).toLocaleString("nb-NO")} kr`]);
-});
-
 test("mangler tallet, blir det «—»", () => {
-  const uten = { ...brief, kpis: [], dagensVerdiKr: null } as unknown as CockpitData;
-  const d = byggAG01Data({ brief: uten, ko: { rows: [] }, tillegg, fokus: null, erHeadCoach: true, kicker: "K", klokke: "10:30" });
+  const uten = { ...brief, kpis: [] } as unknown as CockpitData;
+  const d = byggAG01Data({ brief: uten, ko: { rows: [] }, tillegg, kicker: "K", klokke: "10:30" });
   assert.equal(d.nokkeltall.find((k) => k.label === "Økter i dag")?.verdi, "—");
-  assert.deepEqual(d.okonomi?.map((k) => k.verdi), ["—", "—"]);
   assert.equal(d.venter.totalt, 0);
 });

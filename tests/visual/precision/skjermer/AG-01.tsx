@@ -45,17 +45,6 @@ const data: AG01Data = {
     { label: "Strokes Gained, snitt", verdi: "+0,4", kilde: "RUNDER SISTE 30 DAGER · EGEN STALL" },
     { label: "Planøkter gjennomført", verdi: "83 %", kilde: "FULLFØRTE AV PLANLAGTE · ALLE PLANER · 30 DAGER" },
   ],
-  okonomi: [
-    { label: "MRR", verdi: "9,3k", kilde: "AKTIVE PRO-ABONNEMENT × 299 KR" },
-    { label: "Dagens bookingverdi", verdi: "2 400 kr", kilde: "BEKREFTEDE OG VENTENDE BOOKINGER I DAG" },
-  ],
-  fokus: {
-    pinnet: [{ playerId: "f1", navn: "Mari Solberg-Kristoffersen", initialer: "MS", avatarUrl: null, sub: "TESTBANEN GK", href: "#" }],
-    forslag: [
-      { playerId: "f2", navn: "Jonas Prøve", initialer: "JP", avatarUrl: null, sub: "", href: "#", kind: "plan", grunn: "Plan-etterlevelse 34 % denne uka", hjelp: "planEtterlevelse" },
-      { playerId: "f3", navn: "Live Testesen", initialer: "LT", avatarUrl: null, sub: "", href: "#", kind: "sg", grunn: "Strokes Gained −0,8 · siste 8 målinger", hjelp: "sgTotal" },
-    ],
-  },
 };
 
 const Vis = (t: AG01Tilstand, erAdmin = true, d: AG01Data = data) => (
@@ -68,7 +57,7 @@ const Vis = (t: AG01Tilstand, erAdmin = true, d: AG01Data = data) => (
 
 export const tilstander = {
   data: Vis("data"),
-  coach: Vis("data", false, { ...data, okonomi: null, fokus: null }),
+  coach: Vis("data", false),
   tom: Vis("tom"),
   laster: Vis("laster"),
   feil: Vis("feil"),

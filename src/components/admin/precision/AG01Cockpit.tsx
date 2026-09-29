@@ -9,27 +9,24 @@
  * Erstatter TrainLockCockpit. Bevart derfra: køen fra lastGodkjenninger
  * (samme tall som /admin/ko), dagens økter fra loadDailyBrief, «Skriv ut» og
  * «Eksporter rapport» (EksportModal kind="brief") og frakoblet-tilstanden.
- * Nytt fra eksisterende data: fokusspillere med fest/løsne (pinnSpiller/
- * avpinnSpiller) og angre, nøkkeltall, økonomi bare for head coach,
- * oppgaver fra Notion-cachen, «Følger ikke planen» (to siste uker) og
- * turneringer denne uka.
+ * Nytt fra eksisterende data: nøkkeltall, oppgaver fra Notion-cachen,
+ * «Følger ikke planen» (to siste uker) og turneringer denne uka.
+ *
+ * Bevisst utelatt (verken i tegningen eller i den forrige TrainLockCockpit):
+ * fokusspillere og Økonomi/MRR — se page.tsx-hodet.
  *
  * Ikke bygget fordi grunnlaget mangler i koden (se PR «Parkert»): kort svar
  * direkte fra Cockpit, huke av Notion-oppgaver, «Start live» fra kalenderen
  * og turneringsresultat.
  */
-import { useState, useSyncExternalStore, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowRight, CalendarX, Star, WifiOff, X, TriangleAlert } from "lucide-react";
-import { Knapp, KnappLenke, Meta, StatusPille, LasterTilstand, FeilTilstand, Ikon } from "@/components/precision/pa";
+import { useSyncExternalStore } from "react";
+import { ArrowRight, CalendarX, WifiOff } from "lucide-react";
+import { Knapp, KnappLenke, Meta, StatusPille, LasterTilstand, FeilTilstand } from "@/components/precision/pa";
 import { SideHode } from "@/components/precision/pa-a4";
 import { Seksjon, Dempet, Rad, RadLenke, Etikett, Teller, Tellere, Dagsstripe } from "@/components/precision/pa-cockpit";
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
-import { pinnSpiller, avpinnSpiller } from "@/app/admin/agencyos/actions";
 import { kalPst, KAL_START_MIN, KAL_SLUTT_MIN, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
-import type { FokusData } from "@/lib/agencyos/fokus-spillere";
 import "@/styles/precision-a6.css";
 
 export type AG01Tilstand = "data" | "tom" | "laster" | "feil";
@@ -123,70 +120,6 @@ function Nokkeltall({ tittel, meta, rader, tom }: { tittel: string; meta: string
   </Seksjon>;
 }
 
-type Angre = { tekst: string; angre: () => void } | null;
-
-/** Fokusspillere: fest (pinnSpiller), løsne (avpinnSpiller), avvis forslag — alle med angre. */
-function Fokus({ fokus }: { fokus: FokusData | null }) {
-  const router = useRouter();
-  const [pending, start] = useTransition();
-  const [skjulte, setSkjulte] = useState<ReadonlySet<string>>(new Set());
-  const [feil, setFeil] = useState<string | null>(null);
-  const [angre, setAngre] = useState<Angre>(null);
-
-  if (!fokus) {
-    return <Seksjon kicker="Fokusspillere" meta="—" label="Fokusspillere"><Dempet>Fokusspillerne kunne ikke hentes nå.</Dempet></Seksjon>;
-  }
-  const vis = (id: string) => setSkjulte((s) => { const n = new Set(s); n.delete(id); return n; });
-  const skjul = (id: string) => setSkjulte((s) => new Set(s).add(id));
-
-  const fest = (id: string, navn: string, medAngre = true) => {
-    setFeil(null); skjul(id);
-    start(async () => {
-      const res = await pinnSpiller(id);
-      if (!res.ok) { vis(id); setFeil(res.error ?? "Kunne ikke feste spilleren."); return; }
-      setAngre(medAngre ? { tekst: `${navn} er festet.`, angre: () => losne(id, navn, false) } : null);
-      vis(id);
-      router.refresh();
-    });
-  };
-  const losne = (id: string, navn: string, medAngre = true) => {
-    setFeil(null);
-    start(async () => {
-      const res = await avpinnSpiller(id);
-      if (!res.ok) { setFeil(res.error ?? "Kunne ikke løsne spilleren."); return; }
-      setAngre(medAngre ? { tekst: `${navn} er løsnet.`, angre: () => fest(id, navn, false) } : null);
-      router.refresh();
-    });
-  };
-  const avvis = (id: string, navn: string) => {
-    setFeil(null); skjul(id);
-    setAngre({ tekst: `Forslaget om ${navn} er skjult.`, angre: () => { vis(id); setAngre(null); } });
-  };
-
-  const forslag = fokus.forslag.filter((f) => !skjulte.has(f.playerId));
-  const rader = [
-    ...fokus.pinnet.map((p) => ({ ...p, festet: true as const, grunn: p.sub || null })),
-    ...forslag.map((f) => ({ ...f, festet: false as const })),
-  ];
-  return <Seksjon kicker="Fokusspillere" meta={`${fokus.pinnet.length} AV 3 FESTET`} label="Fokusspillere">
-    {rader.length === 0 ? <Dempet>Ingen festet og ingen forslag. Fest en spiller fra Stall, så ligger den her.</Dempet> : <div role="list">
-      {rader.map((r, i) => <div role="listitem" key={r.playerId} className="pa-a6-fokus" data-forste={i === 0 || undefined}>
-        <Link href={r.href} className="pa-a6-fokus__lenke"><Etikett a={r.navn} sub={r.festet ? `FESTET${r.grunn ? " · " + r.grunn : ""}` : `FORSLAG · ${r.grunn.toUpperCase()}`} /></Link>
-        <span className="pa-a6-fokus__knapper">
-          {r.festet
-            ? <button type="button" className="pa-iconbtn" aria-label={`Løsne ${r.navn}`} title="Løsne" disabled={pending} onClick={() => losne(r.playerId, r.navn)}><Ikon icon={Star} size={18} name="star" /></button>
-            : <>
-              <button type="button" className="pa-iconbtn" aria-label={`Fest ${r.navn}`} title="Fest" disabled={pending} onClick={() => fest(r.playerId, r.navn)}><Ikon icon={Star} size={18} name="star" /></button>
-              <button type="button" className="pa-iconbtn" aria-label={`Skjul forslaget om ${r.navn}`} title="Skjul" disabled={pending} onClick={() => avvis(r.playerId, r.navn)}><Ikon icon={X} size={18} name="x" /></button>
-            </>}
-        </span>
-      </div>)}
-    </div>}
-    {angre && <div className="pa-a6-angre" role="status"><span className="pa-a6-angre__tekst">{angre.tekst}</span><Knapp variant="ghost" size="sm" disabled={pending} onClick={() => { const a = angre; setAngre(null); a.angre(); }}>Angre</Knapp></div>}
-    {feil && <div className="pa-a6-angre" role="alert"><Ikon icon={TriangleAlert} size={16} name="triangle-alert" /><span className="pa-a6-angre__tekst">{feil}</span></div>}
-  </Seksjon>;
-}
-
 export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: AG01Data }) {
   const paaNett = usePaaNett();
   const tom = tilstand === "tom";
@@ -207,7 +140,7 @@ export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: 
     /></div>;
   }
 
-  const d = tom ? { ...data, kalender: [], venter: { totalt: 0, rader: [] }, oppgaver: [], turneringer: [], utenforPlan: [], fokus: data.fokus ? { pinnet: [], forslag: [] } : null } : data;
+  const d = tom ? { ...data, kalender: [], venter: { totalt: 0, rader: [] }, oppgaver: [], turneringer: [], utenforPlan: [] } : data;
   const tellere = <Tellere>
     <Teller href="/admin/ko" tall={d.venter.totalt} label="Venter på deg" />
     <Teller href="/admin/spillere" tall={d.utenforPlan.length} label="Følger ikke planen" />
@@ -220,11 +153,9 @@ export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: 
     <Oppgaver oppgaver={d.oppgaver} />
   </div>;
   const hoyre = <div className="pa-a6-stabel">
-    <Fokus fokus={d.fokus} />
     <Turneringer rader={d.turneringer} />
     <UtenforPlan rader={d.utenforPlan} uker={d.utenforPlanUker} />
     <Nokkeltall tittel="Nøkkeltall" meta="INGEN ØKONOMI HER" rader={d.nokkeltall} tom={tom} />
-    {d.okonomi && <Nokkeltall tittel="Økonomi" meta="BARE HEAD COACH" rader={d.okonomi} tom={tom} />}
   </div>;
   return <div className="pa-a6-side">
     {hode}
