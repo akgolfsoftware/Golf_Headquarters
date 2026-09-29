@@ -1,6 +1,6 @@
 /**
  * AgencyOS — GRUPPE-WORKBENCH (8c.3), AG-11-GRUPPE i Precision Athletics.
- * Skallet og rammen er portert (AG11Gruppe); gruppas årsplan er uendret.
+ * Skallet og rammen er portert (AG11Gruppe); gruppas årsplan er portert i AG11GruppeAr (AG-11-GRUPPE-AR).
  * Opprinnelig (8c.3): gruppens EGEN årsplan på samme
  * canvas som spillerens (WorkbenchAarsplan gjenbrukt 1:1 — Anders:
  * gruppen har egen periodisering, spillerne beholder individuelle planer).
@@ -14,10 +14,9 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG11Gruppe } from "@/components/admin/precision/AG11Gruppe";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
-import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
-import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
+import { AG11GruppeAr } from "@/components/admin/precision/AG11Ar";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
+import type { OktAkse } from "@/lib/workbench/arsplan-view";
 import { dagNavnKort } from "@/lib/uke-helpers";
 
 export const dynamic = "force-dynamic";
@@ -60,16 +59,17 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
     },
   });
 
-  const seasonBlocks = blokker.map((b) => ({
+  const perioder = blokker.map((b) => ({
     id: b.id,
-    lPhase: b.lPhase,
-    startDate: b.startDate.toISOString(),
-    endDate: b.endDate.toISOString(),
+    type: b.lPhase,
+    startDate: b.startDate.toISOString().slice(0, 10),
+    endDate: b.endDate.toISOString().slice(0, 10),
     focus: b.focus,
-    weeklyVolMin: b.weeklyVolMin,
-    weeklyVolMax: b.weeklyVolMax,
-    budsjett: parseSessionBudget(b.weeklySessionBudget),
+    ukevolumMin: b.weeklyVolMin,
+    ukevolumMax: b.weeklyVolMax,
+    budsjett: parseSessionBudget(b.weeklySessionBudget) as Partial<Record<OktAkse, number>> | null,
   }));
+  const idag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
 
   // Samme eierskap som /admin/grupper: en coach ser gruppene hun eier, admin alle.
   const grupper = await prisma.group.findMany({
@@ -89,18 +89,7 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
           tid: `${OSLO_TID.format(s.startAt)}–${OSLO_TID.format(s.endAt)}`,
           sted: s.location,
         }))}
-        aarsplan={
-          <div style={TL_SCOPE}>
-            <GruppeAarsplanKlient
-              gruppeNavn={gruppe.name}
-              medlemmer={gruppe._count.members}
-              seasonBlocks={seasonBlocks}
-              onLagre={coachLagreGruppePeriode.bind(null, gruppe.id)}
-              onSlett={coachSlettGruppePeriode.bind(null, gruppe.id)}
-              onRullUt={coachRullUtGruppeAarsplan.bind(null, gruppe.id)}
-            />
-          </div>
-        }
+        aarsplan={<AG11GruppeAr gruppeId={gruppe.id} gruppeNavn={gruppe.name} medlemmer={gruppe._count.members} perioder={perioder} idag={idag} />}
       />
     </AgencyOSSkall>
   );

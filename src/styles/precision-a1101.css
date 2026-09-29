@@ -1,0 +1,88 @@
+/* AG-11-AR: årsplan, periode og periodeskjema (Workbench over uka).
+   Bare tokens. Farge betyr akse; alt annet er grafitt og nøytralt. */
+.a1101 { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.a1101 * { box-sizing: border-box; }
+.a1101-hode { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; min-width: 0; }
+.a1101-hode__tekst { display: flex; flex-direction: column; gap: 4px; flex: 1 1 240px; min-width: 0; }
+.a1101-tittel { font: 600 16px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a1101-hjelp { margin: 0; font: var(--type-body-s); color: var(--text-primary); text-wrap: pretty; overflow-wrap: anywhere; }
+.a1101-delt { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border-hairline); min-width: 0; }
+.a1101-delt__hode { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+
+/* Vannrett bånd (fra 700 px) */
+.a1101-mnd { display: grid; min-width: 0; }
+.a1101-mnd > * { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; min-width: 0; display: grid; place-items: center; border-left: 1px solid var(--border-hairline); font: 600 11px/1 var(--font-mono); color: var(--text-muted); letter-spacing: .04em; }
+.a1101-mnd > *[data-na="true"] { color: var(--text-primary); }
+.a1101-mnd > span { cursor: default; }
+.a1101-mnd > *:focus-visible, .a1101-bar:focus-visible, .a1101-ut:focus-visible, .a1101-lrad:focus-visible, .a1101-mrad:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.a1101-spor { position: relative; min-width: 0; }
+.a1101-linje { position: absolute; top: 0; width: 1px; background: var(--border-hairline); }
+.a1101-bar { all: unset; display: block; text-align: left; box-sizing: border-box; cursor: pointer; position: absolute; height: 44px; padding: 5px 4px 0; border-top: 1px solid var(--text-primary); font: 500 11px/1.2 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--text-primary); white-space: nowrap; overflow: hidden; }
+.a1101-bar[data-spor="0"] { border-top-width: 2px; }
+.a1101-bar[aria-pressed="true"] { background: var(--surface-flat); box-shadow: inset 0 0 0 1px var(--border-ink); }
+.a1101-stolpe { position: absolute; width: 1px; background: var(--text-primary); }
+.a1101-ut { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; height: 44px; min-width: 44px; padding: 0 4px; display: grid; place-items: center; border: 1px solid var(--text-primary); border-radius: 4px; background: var(--surface-card); font: 500 11px/1.2 var(--font-mono); letter-spacing: .04em; color: var(--text-primary); }
+.a1101-ut[aria-pressed="true"] { background: var(--surface-flat); }
+.a1101-idag { position: absolute; top: 0; width: 0; border-left: 1px dashed var(--text-primary); }
+.a1101-forkort { display: flex; gap: 4px 16px; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; font: var(--type-meta); letter-spacing: .04em; color: var(--text-primary); }
+.a1101-forkort b { font-weight: 600; }
+
+/* Loddrett år (under 700 px) */
+.a1101-liste { display: flex; flex-direction: column; min-width: 0; }
+.a1101-lmnd { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px; padding: 4px 0; min-width: 0; }
+.a1101-lmnd + .a1101-lmnd { border-top: 1px solid var(--border-hairline); }
+.a1101-lnavn { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; display: flex; flex-direction: column; gap: 3px; padding-top: 10px; font: 600 12px/1.2 var(--font-mono); color: var(--text-primary); letter-spacing: .04em; }
+span.a1101-lnavn { cursor: default; }
+.a1101-lperioder { display: flex; flex-direction: column; min-width: 0; }
+.a1101-lrad { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding-left: 10px; min-width: 0; box-shadow: inset 2px 0 0 var(--text-primary); }
+.a1101-lrad[data-spor="1"] { box-shadow: inset 1px 0 0 var(--text-primary); }
+.a1101-lrad[aria-pressed="true"] { background: var(--surface-flat); box-shadow: inset 2px 0 0 var(--text-primary), inset 0 0 0 1px var(--border-ink); }
+.a1101-lrad__navn { font: 500 14px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a1101-ingen { min-height: 44px; display: flex; align-items: center; }
+
+/* Periodeliste */
+.a1101-prader { display: flex; flex-direction: column; min-width: 0; }
+.a1101-prad { display: grid; grid-template-columns: minmax(0, 1fr) auto 44px; gap: 8px; align-items: center; min-height: 56px; padding: 4px 0; min-width: 0; }
+.a1101-prad + .a1101-prad { border-top: 1px solid var(--border-hairline); }
+.a1101-prad__knapp { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 2px; min-width: 0; min-height: 44px; justify-content: center; }
+.a1101-prad__knapp:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.a1101-prad__navn { font: 500 14px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a1101-tall { font: 600 13px/1.2 var(--font-mono); color: var(--text-primary); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Periodenavigasjon og akser */
+.a1101-nav { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; align-items: center; }
+.a1101-nav__midt { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; text-align: center; }
+.a1101-akser { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.a1101-akse { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(64px, auto); gap: 8px; align-items: center; min-width: 0; }
+.a1101-akse__navn { font: 600 12px/1 var(--font-mono); color: var(--text-primary); }
+.a1101-akse__spor { height: 8px; background: var(--surface-sunken); position: relative; border-radius: 2px; }
+.a1101-akse__fyll { position: absolute; left: 0; top: 0; bottom: 0; background: var(--a9-akse); border-radius: 2px; }
+.a1101-akse__verdi { font: 600 13px/1.2 var(--font-mono); color: var(--text-primary); text-align: right; font-variant-numeric: tabular-nums; }
+.a1101-uker { display: flex; flex-direction: column; min-width: 0; }
+.a1101-uke { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 48px; text-decoration: none; min-width: 0; }
+.a1101-uke + .a1101-uke { border-top: 1px solid var(--border-hairline); }
+.a1101-uke:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Skjema og veileder */
+.a1101-skjema { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.a1101-timer { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; min-width: 0; }
+.a1101-timer label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.a1101-timer .a1101-timer__akse { font: 600 11px/1 var(--font-mono); color: var(--text-primary); padding-bottom: 4px; box-shadow: inset 0 -3px 0 var(--a9-akse); }
+.a1101-timer .a4-input { width: 100%; min-width: 0; text-align: center; padding: 0 4px; }
+.a1101-to { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; min-width: 0; }
+.a1101-steg { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.a1101-steg li { display: flex; flex-direction: column; gap: 4px; min-width: 0; font: 400 12px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a1101-steg li[aria-current="step"] { font-weight: 600; }
+.a1101-steg li::before { content: ""; height: 2px; background: var(--border-hairline); }
+.a1101-steg li[data-ferdig="true"]::before { background: var(--text-primary); }
+.a1101-valg { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px; min-height: 56px; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); }
+.a1101-valg[aria-checked="true"] { border-color: var(--border-ink); background: var(--surface-flat); }
+.a1101-valg[aria-disabled="true"] { cursor: default; opacity: .6; }
+.a1101-valg:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.a1101-valg__prikk { width: 16px; height: 16px; margin-top: 2px; border-radius: 8px; border: 1px solid var(--border-strong); }
+.a1101-valg[aria-checked="true"] .a1101-valg__prikk { box-shadow: inset 0 0 0 4px var(--surface-card), inset 0 0 0 8px var(--text-primary); }
+.a1101-valg__tekst { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.a1101-valg__tittel { font: 600 14px/1.3 var(--font-sans); color: var(--text-primary); }
+.a1101-gruppe { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.a1101-avkryss { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px; align-items: center; min-height: 48px; min-width: 0; }
+.a1101-avkryss input { width: 20px; height: 20px; margin: 12px; }
