@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnMetrikk, TnMetrikkRutenett, TnTomtilstand } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon, TnMetrikk, TnMetrikkRutenett, TnTomtilstand } from "@/components/team-norway/tn-shell";
 import { TnDataTable } from "@/components/team-norway/tn-data-table";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { TN } from "@/lib/v2/team-norway";
@@ -32,8 +33,8 @@ function retningIngress(lowerIsBetter: boolean | null, emne: string): string {
 export function TnVisning({ spillerId, data }: { spillerId: string; data: TnSpillerTestDetalj }) {
   const harGyldigeResultater = data.historikk.length > 0;
   return (
-    <TnShell aktiv="spillere" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
+    <TnShell aktiv="spiller" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
       <TnSidehode overlinje="Testdetalj" tittel={data.protokollNavn} ingress={retningIngress(data.lowerIsBetter, "denne protokollen")} />
 
       {data.antallUtelatt > 0 && (
@@ -92,8 +93,8 @@ export function TnOvrigVisning({ spillerId, data }: { spillerId: string; data: T
   const harResultater = data.historikk.length > 0;
   const sisteMedForsok = data.sisteForsok.length > 0;
   return (
-    <TnShell aktiv="spillere" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
+    <TnShell aktiv="spiller" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
       <TnSidehode overlinje="Testdetalj · øvrig PlayerHQ-test" tittel={data.navn} ingress={retningIngress(data.lowerIsBetter, "denne testen")} />
 
       <TnSeksjon tittel="Protokoll" forklaring={data.regel}>

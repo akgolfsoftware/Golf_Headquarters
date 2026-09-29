@@ -62,7 +62,7 @@ export async function TnTurneringSkjerm({ id }: { id: string }) {
               {data.kontekst.erSpiller ? (
                 <div style={{ fontSize: 14.5, fontWeight: 700, minHeight: 44, display: "flex", alignItems: "center" }}>{r.navn}</div>
               ) : (
-                <Link href={`/team-norway/spiller/${r.uid}/oversikt`} style={{ fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", overflowWrap: "anywhere" }}>{r.navn}</Link>
+                <Link href={`/team-norway/spiller/${r.uid}`} style={{ fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", overflowWrap: "anywhere" }}>{r.navn}</Link>
               )}
               <div style={{ fontSize: 13, color: TN.textSecondary }}>{r.pamelding ? resultatStatus(r.pamelding.entryStatus) : "Resultat registrert"}</div>
             </div>

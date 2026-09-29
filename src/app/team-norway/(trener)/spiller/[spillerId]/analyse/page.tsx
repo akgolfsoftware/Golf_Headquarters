@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTester, hentTnSpillerAnalyseHub } from "@/lib/domain/tn-arbeidsflate";
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { TN } from "@/lib/v2/team-norway";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
@@ -44,8 +45,8 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
   const hub = await hentTnSpillerAnalyseHub(data.tilgang);
 
   return (
-    <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
+    <TnShell aktiv="spiller" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
       <TnSidehode overlinje="Analyse" tittel="Utvikling per protokoll" ingress="Hver protokoll vises for seg — ingen sammenslått totalscore på tvers av ulike måleenheter." />
 
       {(hub.sgAkser.some((a) => a.verdi !== null) || hub.trackman) && (
