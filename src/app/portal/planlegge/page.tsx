@@ -13,6 +13,7 @@ import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
 import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { ukenummer } from "@/lib/uke-helpers";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Plan · PlayerHQ" };
@@ -27,12 +28,13 @@ export default async function PlayerPlanPage({ searchParams }: { searchParams: P
   const dato = new Date(Date.UTC(y, m - 1, d + ukeOffset * 7));
   const referanse = osloInstant(dato.getUTCFullYear(), dato.getUTCMonth() + 1, dato.getUTCDate(), 12, 0);
   const mandag = OSLO_YMD_FMT.format(osloUkeGrenser(referanse).start);
-  const [week, depthMode, periode, kalender, forslag] = await Promise.all([
+  const [week, depthMode, periode, kalender, forslag, tekniskePlaner] = await Promise.all([
     getWeekOverview(user.id, referanse), getPlayerDepthMode(), hentUkePeriode(user.id, referanse),
     hentSpillerUkeITiden(user.id, mandag), hentPlanForslag(user.id, mandag),
+    prisma.technicalPlan.count({ where: { userId: user.id } }),
   ]);
   for (const day of week) day.isToday = OSLO_YMD_FMT.format(day.date) === OSLO_YMD_FMT.format(naa);
   return <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-    <PlanV2 key={mandag} data={{ weekNumber: ukenummer(referanse), week }} depthMode={depthMode} periode={periode} kalender={kalender} forslag={forslag} ukeOffset={ukeOffset} />
+    <PlanV2 key={mandag} data={{ weekNumber: ukenummer(referanse), week }} depthMode={depthMode} periode={periode} kalender={kalender} forslag={forslag} ukeOffset={ukeOffset} harTekniskPlan={tekniskePlaner > 0} />
   </V2Shell>;
 }
