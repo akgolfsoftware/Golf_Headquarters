@@ -16,6 +16,7 @@ import "server-only";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { avledRundeRegistrering, RUNDE_DATAQUALITY_META } from "@/lib/runde-logg/kontrakt";
+import { osloDagDato } from "./bygg-innboks";
 
 export type ManglendeSgRunde = {
   id: string;
@@ -41,9 +42,7 @@ export type DatakvalitetData = {
 const DAG = 86_400_000;
 
 function rundeLinje(spilt: Date, bane: string, score: number): string {
-  const dag = spilt.toLocaleDateString("nb-NO", { weekday: "short", timeZone: "Europe/Oslo" });
-  const dato = spilt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
-  return `${dag.charAt(0).toUpperCase()}${dag.slice(1).replace(".", "")} ${dato} · ${bane} · ${score} slag`;
+  return `${osloDagDato(spilt)} · ${bane} · ${score} slag`;
 }
 
 function trengsTekst(mangler: string[]): string {

@@ -94,9 +94,15 @@ export function tidTekst(iso: string | undefined, now: Date): string {
   const dag = (x: Date) => x.toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" });
   const kl = d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
   if (dag(d) === dag(now)) return kl;
-  const ukedag = d.toLocaleDateString("nb-NO", { weekday: "short", timeZone: "Europe/Oslo" }).replace(".", "");
-  const dato = d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
-  return `${ukedag.charAt(0).toUpperCase()}${ukedag.slice(1)} ${dato} · ${kl}`;
+  return `${osloDagDato(d)} · ${kl}`;
+}
+
+/** «Man 28.09» i Oslo-tid. */
+export function osloDagDato(d: Date): string {
+  const deler = new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" }).formatToParts(d);
+  const del = (t: string) => deler.find((x) => x.type === t)?.value ?? "";
+  const ukedag = del("weekday").replace(".", "");
+  return `${ukedag.charAt(0).toUpperCase()}${ukedag.slice(1)} ${del("day").padStart(2, "0")}.${del("month").padStart(2, "0")}`;
 }
 
 const tom = (s: string | null | undefined) => !s || !s.trim();
@@ -113,7 +119,7 @@ function kontraktDetaljer(sak: InnboksSak | undefined): { label: string; tekst: 
   return rader.filter((r): r is [string, string] => !tom(r[1])).map(([label, tekst]) => ({ label, tekst }));
 }
 
-const OPPF_KIND: Record<OppfStatus, string> = { risk: "Risiko", watch: "Følg med", check: "Sjekk inn", ok: "Løst" };
+const OPPF_KIND = "Oppfølging";
 
 export function byggInnboks(k: InnboksKilder): InnboksPost[] {
   const { now } = k;
@@ -331,7 +337,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
       key: `oppf:${o.id}`,
       filtre: ["oppfolging"],
       oppf: o.status,
-      kind: OPPF_KIND[o.status],
+      kind: OPPF_KIND,
       fra: o.navn,
       tittel: o.signalTekst,
       tekst: o.siden.charAt(0).toUpperCase() + o.siden.slice(1) + ".",
