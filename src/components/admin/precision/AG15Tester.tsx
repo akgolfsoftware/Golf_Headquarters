@@ -23,10 +23,9 @@ import "@/styles/precision-a5.css";
 
 export type AG15Props = { data: AdminTesterV2Data };
 
-function statusTone(status: AdminTesterStatus): "neutral" | "ok" | "warn" | "live" {
+function statusTone(status: AdminTesterStatus): "neutral" | "ok" | "warn" {
   if (status === "Bedre") return "ok";
   if (status === "Svakere") return "warn";
-  if (status === "Pågår") return "live";
   return "neutral";
 }
 
@@ -57,7 +56,7 @@ export function AG15Tester({ data }: AG15Props) {
       </div>)}
     </div>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <KnappLenke href="/admin/tester/tildel" icon={Plus} iconName="plus">Registrer test</KnappLenke>
+      <KnappLenke href="/admin/tester/tildel" icon={Plus} iconName="plus">Tildel test</KnappLenke>
       <KnappLenke href="/admin/tester/foreslatte" variant="ghost" icon={Lightbulb} iconName="lightbulb">Foreslåtte</KnappLenke>
       <KnappLenke href="/admin/tester/benchmarks" variant="ghost" icon={Target} iconName="target">Fasiter</KnappLenke>
     </div>

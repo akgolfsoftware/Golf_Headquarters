@@ -15,8 +15,8 @@ const data: AdminTesterV2Data = {
   ],
   tester: ["9 hull lengde", "Putt Speed", "Wedge Gate"],
   rader: [
-    { key: "s1", spillerId: "p1", navn: "Tobias Lindvik", test: "Wedge Gate", resultat: "—", delta: null, deltaDir: null, dato: "28.09", status: "Pågår" },
-    { key: "r1", spillerId: "p2", navn: "Magnus Aasheim", test: "9 hull lengde", resultat: "212 m", delta: "+4 m", deltaDir: "up", dato: "24.09", status: "Bedre" },
+    { key: "s1", spillerId: "p1", navn: "Test Spiller En", test: "Wedge Gate", resultat: "—", delta: null, deltaDir: null, dato: "28.09", status: "Pågår" },
+    { key: "r1", spillerId: "p2", navn: "Test Spiller To", test: "9 hull lengde", resultat: "212 m", delta: "+4 m", deltaDir: "up", dato: "24.09", status: "Bedre" },
     { key: "r2", spillerId: "p3", navn: "Ingrid Berg med et langt navn som må brytes", test: "Putt Speed", resultat: "1,8 m/s", delta: "−0,1 m/s", deltaDir: "down", dato: "20.09", status: "Svakere" },
     { key: "r3", spillerId: "p4", navn: "Emil Solberg", test: "9 hull lengde", resultat: "198 m", delta: null, deltaDir: null, dato: "18.09", status: "Stabilt" },
   ],
