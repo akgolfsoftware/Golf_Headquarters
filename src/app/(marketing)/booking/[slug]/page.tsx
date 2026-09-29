@@ -5,7 +5,7 @@
  * oppslag, getAvailableSlots + coach-filtrering (Markus-tjenester skal ikke
  * vise Anders' tider), default «i morgen» og 14-dagers datovelger. Dag- og
  * datotekster formateres her (server, nb-NO — samme som før); presentasjonen
- * bor i MarkedBookingTjenesteV2 (v2, MRamme).
+ * bor i BK02VelgTid (Precision Athletics, BK-02).
  */
 import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { notFound, redirect } from "next/navigation";
@@ -13,10 +13,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { getAvailableSlots } from "@/lib/booking/availability";
-import {
-  MarkedBookingTjenesteV2,
-  type TjenesteDag,
-} from "@/components/marketing/v2/MarkedBookingTjenesteV2";
+import { BK02VelgTid, type BK02Dag } from "@/components/booking/precision/BK02VelgTid";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -72,7 +69,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
   // 14 dager fremover som dato-velger
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);
-  const dager: TjenesteDag[] = Array.from({ length: 14 }, (_, i) => {
+  const dager: BK02Dag[] = Array.from({ length: 14 }, (_, i) => {
     const d = new Date(idag);
     d.setDate(d.getDate() + i);
     const iso = toDateInput(d);
@@ -91,7 +88,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
   });
 
   return (
-    <MarkedBookingTjenesteV2
+    <BK02VelgTid
       tjeneste={{
         slug,
         name: service.name,

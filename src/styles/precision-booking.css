@@ -1,0 +1,29 @@
+/* Offentlig booking i Precision Athletics (BK-02). Virker bare innenfor .pa-root. */
+.bk-kols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (min-width: 1024px) {
+  .bk-kols { grid-template-columns: minmax(0, 1fr) 300px; }
+  .bk-oppsummering { position: sticky; top: 16px; }
+}
+.bk-dager { display: flex; flex-wrap: wrap; gap: 6px; }
+.bk-dager .pa-choice { text-decoration: none; }
+.bk-dager .pa-choice[aria-current="date"] { background: var(--primary); border-color: var(--primary); color: var(--text-on-primary); }
+.bk-slot {
+  min-height: 52px; width: 100%; text-align: left; padding: 0 14px; border-radius: var(--radius);
+  border: 1px solid var(--border-hairline); background: var(--surface-card); color: var(--text-primary);
+  display: flex; gap: 12px; align-items: center; cursor: pointer; font: inherit; min-width: 0;
+}
+.bk-slot[aria-pressed="true"] { border-color: var(--border-ink); box-shadow: inset 0 0 0 1px var(--border-ink); }
+.bk-slot__tid { font: 600 15px/1 var(--font-mono); }
+.bk-slot__coach { font: var(--type-body-s); color: var(--text-secondary); min-width: 0; overflow-wrap: anywhere; }
+.bk-steg { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.bk-steg li { display: inline-flex; gap: 6px; align-items: center; font: var(--type-meta); letter-spacing: .04em; color: var(--text-muted); text-transform: uppercase; }
+.bk-steg li[data-naa], .bk-steg li[data-ferdig] { color: var(--text-primary); }
+.bk-steg__nr { width: 22px; height: 22px; border-radius: 999px; display: grid; place-items: center; border: 1px solid var(--border-ink); font: 600 11px/1 var(--font-mono); }
+.bk-steg li[data-ferdig] .bk-steg__nr { background: var(--primary); color: var(--text-on-primary); }
+.bk-tilbake { text-decoration: none; }
+.bk-topp { margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+.bk-innhold { width: 100%; margin: 0 auto; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 20px; flex: 1; box-sizing: border-box; min-width: 0; }
+@media (min-width: 768px) {
+  .bk-topp { padding: 14px 24px; }
+  .bk-innhold { padding: 32px 24px 48px; }
+}
