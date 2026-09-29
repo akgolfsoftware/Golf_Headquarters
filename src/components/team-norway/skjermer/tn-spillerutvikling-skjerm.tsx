@@ -77,7 +77,7 @@ function Navnecelle({ s }: { s: TnSpillerRad }) {
     <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
       <TnInitialer navn={s.navn} storrelse={40} />
       <div style={{ minWidth: 0 }}>
-        <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
+        <Link href={`/team-norway/spiller/${s.id}`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
         <div style={{ fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{[s.klubb ?? "Klubb ikke registrert", aar === null ? null : `${aar} år`].filter(Boolean).join(" · ")}</div>
       </div>
     </div>
