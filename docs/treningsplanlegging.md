@@ -587,6 +587,23 @@ kapittel 19. Feltet vises bare for Utslag og Innspill.
 
 **Sandtrinn (bare bunker):** Uten ball i sanden (`UTEN_BALL_I_SAND`) · Med ball (`MED_BALL`).
 
+### 14.4 Posisjoner i teknisk plan (P1.0–P10.0)
+
+Faste navn på skjerm (Anders 27.09.2026, `.claude/rules/beslutninger.md` §POSISJONSNAVN FØLGER ORDMASTEREN):
+
+| Posisjon | Navn |
+|---|---|
+| P1.0 | Adresse / Oppstilling |
+| P2.0 | Kølle parallell i baksving |
+| P3.0 | Venstre arm parallell i baksving |
+| P4.0 | Toppen av baksvingen |
+| P5.0 | Venstre arm parallell i nedsving |
+| P6.0 | Kølle parallell i nedsving |
+| P7.0 | Treffpunktet |
+| P8.0 | Kølle parallell i gjennomføring |
+| P9.0 | Høyre arm parallell i oppfølging |
+| P10.0 | Fullføring og balanse |
+
 ## 15. Trinn 6: press
 
 Feltet heter **Press** og svarer på hvem som ser på og hvilken situasjon som trenes.
