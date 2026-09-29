@@ -8,6 +8,8 @@ import { TnFlate, TnFlatehode, TnEtikett, TnFotnote, TnInitialer, TnMangler, TnS
 import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
 import { TnOktSkjema, TnSamlingSkjema } from "../tn-redigering-skjema";
 import { SkjermRamme, datoKort, hentSkjermbruker, osloDag, periode } from "./felles";
+import { hentUkeTid } from "../tn-daglig-spillere/data";
+import { TrengerDeg } from "../tn-daglig-spillere/trenger-deg";
 
 /**
  * TN-01 Landslagsoversikt. Neste samling, fellestesten og det siste fra trenerteamet.
@@ -23,6 +25,8 @@ import { SkjermRamme, datoKort, hentSkjermbruker, osloDag, periode } from "./fel
  *   - Aktivitetsstrømmen er gruppepostene. Stillingstittel finnes ikke, avsender
  *     står med rollen i gruppen. «Nye» per leser telles ikke; merknaden sier «Siste 4».
  *   - Trener har snarveier til ny samling, økt, testdag og innlegg (Anders 27.09.2026).
+ *   - «Spillere som trenger deg» står øverst (tegningen 28.09). Se avvikene i
+ *     tn-daglig-spillere/trenger-deg.tsx.
  *   - Dempede farger på den mørke flaten er tokenene navy-100 og navy-300, ikke
  *     prototypens #D5E1EE og #9FB6D1.
  */
@@ -67,6 +71,8 @@ export async function TnOversiktSkjerm() {
   const neste = [...samlingsdata.samlinger].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()).find((s) => s.endDate.getTime() >= naa.getTime()) ?? null;
   const dagerIgjen = neste ? Math.max(0, dagnummer(neste.startDate) - dagnummer(naa)) : null;
 
+  const ukeTid = spillere ? await hentUkeTid(spillere.rader.map((r) => r.id), naa, 2) : null;
+
   const testdagRad = testdager ? velgTestdag(testdager.dager, naa) : null;
   const testdag = testdagRad ? await hentTnTestdag(bruker, testdagRad.id) : null;
   const klubbPerSpiller = new Map((spillere?.rader ?? []).map((r) => [r.id, r.klubb]));
@@ -76,7 +82,7 @@ export async function TnOversiktSkjerm() {
 
   return (
     <SkjermRamme aktiv="oversikt" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute="/team-norway" tittel="Landslagsoversikt" ingress="Neste samling, fellestesten og det siste fra trenerteamet. Tre ting, i den rekkefølgen." />
+      <TnSkjermhode rute="/team-norway" tittel="Landslagsoversikt" ingress="Spillerne som trenger deg først. Deretter neste samling, fellestesten og det siste fra trenerteamet." />
 
       {kontekst.kanAdministrere ? (
         <TnKnapperekke>
@@ -86,6 +92,8 @@ export async function TnOversiktSkjerm() {
           <TnHandlingLenke href={`/team-norway/${kontekst.gruppe.id}`} variant="sekundar">Nytt innlegg</TnHandlingLenke>
         </TnKnapperekke>
       ) : null}
+
+      {spillere && ukeTid ? <TrengerDeg spillere={spillere.rader} ukeTid={ukeTid} /> : null}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(340px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
         <section style={{ background: TN.navy900, color: TN.white, borderRadius: TN.radius.lg, padding: "clamp(18px, 2.2vw, 26px)", display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>

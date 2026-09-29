@@ -5,6 +5,7 @@ import { TnKort, TnPille, TnRail, type TnBunnValg, type TnMenyGruppe, type TnMen
 import { TnRailMobil } from "./rail-mobil";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
+import { TN_RUTER, tnDokumenterHref, tnGruppeHref } from "./tn-ruter";
 
 /**
  * TN-01 Organisasjonsskall — felles skall for alle Team Norway-ruter.
@@ -19,6 +20,8 @@ import { TN } from "@/lib/v2/team-norway";
 export type TnAktivSide =
   | "oversikt"
   | "fellestesting"
+  | "kartlegging"
+  | "spiller"
   | "samlinger"
   | "college"
   | "manedsplan"
@@ -47,22 +50,27 @@ function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide)
 type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean; kanAdministrere: boolean };
 
 /**
- * Sidemenyen i seks grupper (fasit: «Team Norway App delivery», runde 26.09).
- * Spilleren ser bare ti skjermer og aldri uttak, fellestesting, fagapparat
- * eller admin. Tomme grupper tas bort. Spillerprofil står ikke i menyen:
- * den krever en valgt spiller og nås fra Spillerutvikling.
+ * Sidemenyen i seks grupper — konstanten GROUPS i «Team Norway App.dc.html»
+ * (Claude Design bc3e41fc, 28.09.2026), med etikettene fra SCREENS/SUPD.
+ * Rutene står i src/components/team-norway/tn-ruter.ts.
+ * Flaten er bare for trenerteamet (domenesperren i tn-flate-tilgang.ts), så
+ * spillerutgaven av menyen er borte: spillere bruker PlayerHQ.
+ * Utgått 28.09: Samtykke og Inviter spiller (flyttet inn i Tilgang og
+ * samtykke) og Spillervisning. DataGolf og Analyse er ikke tegnet; de peker på
+ * eksisterende sider. Tilgang og samtykke vises bare for den som kan
+ * administrere (siden selv svarer 404 for andre).
  */
-export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrere }: MenyValg): TnMenyGruppe[] {
+export function tnHovedmeny({ aktiv, groupId, kanAdministrere }: MenyValg): TnMenyGruppe[] {
   const grupper: Omit<TnMenyGruppe, "aktiv">[] = [
     {
       id: "daglig",
       label: "Daglig",
       ikon: "calendar",
       punkter: [
-        lenke("Oversikt", "/team-norway", "oversikt", aktiv),
-        lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
-        lenke("Turneringer og reise", "/team-norway/turneringer", "turneringer", aktiv),
-        lenke("Live Watch", "/team-norway/live-watch", "live-watch", aktiv),
+        lenke("Landslagsoversikt", TN_RUTER.oversikt, "oversikt", aktiv),
+        lenke("Samlinger", TN_RUTER.samlinger, "samlinger", aktiv),
+        lenke("Turneringer og reise", TN_RUTER.turneringer, "turneringer", aktiv),
+        lenke("Live Watch", TN_RUTER.live, "live-watch", aktiv),
       ],
     },
     {
@@ -70,37 +78,34 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
       label: "Spillere",
       ikon: "users",
       punkter: [
-        ...(t ? [lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv), lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
-        lenke("College og USA", "/team-norway/college", "college", aktiv),
-        ...(t ? [lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv)] : []),
+        lenke("Spillerutvikling", TN_RUTER.spillere, "spillere", aktiv),
+        lenke("Spillerprofil", TN_RUTER.spiller, "spiller", aktiv),
+        lenke("Fellestesting", TN_RUTER.test, "fellestesting", aktiv),
+        lenke("Kartlegging", TN_RUTER.kartlegging, "kartlegging", aktiv),
+        lenke("College og USA", TN_RUTER.college, "college", aktiv),
+        lenke("Skoleoversikt", TN_RUTER.skoler, "skoler", aktiv),
       ],
     },
     {
       id: "uttak",
       label: "Uttak",
       ikon: "check",
-      punkter: t
-        ? [
-            lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
-            lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-            { label: "DataGolf", href: "/portal/analysere/datagolf", aktiv: false },
-          ]
-        : [],
+      punkter: [
+        lenke("Uttak og kriterier", TN_RUTER.uttak, "uttak", aktiv),
+        lenke("Rangliste", TN_RUTER.rangliste, "rangliste", aktiv),
+        { label: "DataGolf", href: TN_RUTER.datagolf, aktiv: false },
+      ],
     },
     {
       id: "plan",
       label: "Plan og fag",
       ikon: "clock",
       punkter: [
-        lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
-        ...(t
-          ? [
-              lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
-              lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
-              lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
-              lenke("Analyse", "/team-norway/analyse", "analyse", aktiv),
-            ]
-          : []),
+        lenke("Månedsplan", TN_RUTER.manedsplan, "manedsplan", aktiv),
+        lenke("Testprotokoller", TN_RUTER.protokoller, "protokoller", aktiv),
+        lenke("Referansenivåer", TN_RUTER.referanse, "referansenivaer", aktiv),
+        lenke("Fagapparat", TN_RUTER.fagapparat, "fagapparat", aktiv),
+        lenke("Analyse", TN_RUTER.analyse, "analyse", aktiv),
       ],
     },
     {
@@ -108,17 +113,16 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
       label: "Gruppe",
       ikon: "mail",
       punkter: groupId
-        ? [lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv), lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv)]
+        ? [lenke("Gruppeposter", tnGruppeHref(groupId), "gruppeposter", aktiv), lenke("Dokumenter", tnDokumenterHref(groupId), "dokumenter", aktiv)]
         : [],
     },
     {
       id: "admin",
-      label: t ? "Meg og admin" : "Meg",
+      label: "Admin",
       ikon: "user",
       punkter: [
-        lenke("Lisens og økonomi", "/team-norway/lisens-okonomi", "lisens", aktiv),
-        { label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling", aktiv: false },
-        ...(kanAdministrere ? [lenke("Trenere og tilgang", "/team-norway/tilgang", "tilgang", aktiv), lenke("Inviter spiller", "/team-norway/inviter", "inviter", aktiv)] : []),
+        ...(kanAdministrere ? [lenke("Tilgang og samtykke", TN_RUTER.tilgang, "tilgang", aktiv)] : []),
+        lenke("Lisens og økonomi", TN_RUTER.lisens, "lisens", aktiv),
       ],
     },
   ];
@@ -132,7 +136,7 @@ export function tnBunnmeny({ aktiv, visTrenerflater }: MenyValg): TnBunnValg[] {
         { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
         { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "calendar" },
         { label: "Uttak", href: "/team-norway/uttak", aktiv: aktiv === "uttak" || aktiv === "rangliste", ikon: "check" },
-        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "fellestesting" || aktiv === "skoler", ikon: "users" },
+        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "spiller" || aktiv === "fellestesting" || aktiv === "kartlegging" || aktiv === "skoler", ikon: "users" },
       ]
     : [
         { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
@@ -236,71 +240,5 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
     <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.full, background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy700, fontWeight: TN.weight.semibold, fontSize: TN.text.sm, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
       {children}
     </Link>
-  );
-}
-
-export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
-
-/**
- * Fast spillerhode + fanebar — brukes på ALLE spillerscopede TN-ruter
- * (post, oversikt, tester, analyse, og planøktens workbench/teknisk-plan/
- * evaluering) slik at spilleren forblir tydelig fastholdt i overskriften
- * uansett hvilken fane man er på. «Post» beholder sin egen, eksisterende
- * rute (/team-norway/spiller/[id]) uendret — denne baren gjør den nåbar
- * som en tydelig fane i stedet for eneste inngang.
- *
- * Plan/Teknisk plan/Evaluering er nå EKTE faner i samme nav (med
- * `aria-current`), ikke en løsrevet lenkerad under — planøktens sider kan
- * derfor sette `aktiv="workbench"`/`"teknisk-plan"`/`"evaluering"` uten
- * cast og faktisk få fanen markert aktiv.
- *
- * `kanAdministrere`-navnet er beholdt for bakoverkompatibilitet med
- * kalleren i planøktens ruter (ikke en omdøping som bryter planfiler),
- * men betydningen her er LESETILGANG (COACH/ASSISTANT/ADMIN — dvs.
- * `!erSpiller`), ikke skrivetilgang: en ASSISTANT skal se disse fanene
- * selv om de ikke kan redigere planen selv (de underliggende rutene har
- * sin egen skrivevakt). Kall med `!kontekst.erSpiller`, ikke
- * `kontekst.kanAdministrere` (se coordination.md for planøkten).
- */
-export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
-  const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
-    { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
-    { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
-    { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
-    { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },
-  ];
-  const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
-    ? [
-        { id: "workbench", label: "Plan (Workbench)", href: `/team-norway/workbench?spiller=${spillerId}` },
-        { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
-        { id: "evaluering", label: "Evaluering", href: `/team-norway/spiller/${spillerId}/evaluering` },
-      ]
-    : [];
-  const faner = [...kjernefaner, ...planfaner];
-  return (
-    <header style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div>
-        <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>Spiller</p>
-        <h1 style={{ margin: "6px 0 0", fontFamily: TN.font.display, fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: TN.leading.tight, color: TN.navy900 }}>{spillerNavn}</h1>
-      </div>
-      <nav aria-label="Spillerfaner" style={{ display: "flex", gap: 4, flexWrap: "wrap", borderBottom: `1px solid ${TN.borderSubtle}` }}>
-        {faner.map((f) => (
-          <Link
-            key={f.id}
-            href={f.href}
-            aria-current={aktiv === f.id ? "page" : undefined}
-            style={{
-              minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px",
-              fontSize: TN.text.sm, fontWeight: aktiv === f.id ? TN.weight.bold : TN.weight.semibold,
-              color: aktiv === f.id ? TN.navy900 : TN.textSecondary,
-              borderBottom: aktiv === f.id ? `2px solid ${TN.navy900}` : "2px solid transparent",
-              textDecoration: "none",
-            }}
-          >
-            {f.label}
-          </Link>
-        ))}
-      </nav>
-    </header>
   );
 }

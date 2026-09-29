@@ -5,7 +5,11 @@ import { tryggWangRetursti } from "./wang-retur-sti";
 
 test("beholder bare interne returstier under team-wang", () => {
   assert.equal(tryggWangRetursti("/team-wang/coach?fane=plan#uke"), "/team-wang/coach?fane=plan#uke");
-  assert.equal(tryggWangRetursti("/team-wang"), "/team-wang");
+});
+
+test("fellessiden er aldri mål etter innlogging, dashbordet er standard", () => {
+  assert.equal(tryggWangRetursti("/team-wang"), "/team-wang/i-dag");
+  assert.equal(tryggWangRetursti("/team-wang?fane=trening"), "/team-wang/i-dag");
 });
 
 test("avviser ekstern, protokollrelativ og forfalsket WANG-sti", () => {
@@ -16,7 +20,7 @@ test("avviser ekstern, protokollrelativ og forfalsket WANG-sti", () => {
     "/portal",
     "/team-wang\\@ond.example",
   ]) {
-    assert.equal(tryggWangRetursti(verdi), "/team-wang", verdi);
+    assert.equal(tryggWangRetursti(verdi), "/team-wang/i-dag", verdi);
   }
 });
 
@@ -28,6 +32,6 @@ test("avviser login-loop, ugyldig verdi og flere next-parametre", () => {
     ["/team-wang/coach", "https://ond.example"],
     undefined,
   ]) {
-    assert.equal(tryggWangRetursti(verdi), "/team-wang");
+    assert.equal(tryggWangRetursti(verdi), "/team-wang/i-dag");
   }
 });

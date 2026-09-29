@@ -6,6 +6,7 @@ import type { TnField, TnKind } from "@/lib/portal-tester/tn-catalog";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode, TnStatusmerke } from "../tn-flate";
 import { SkjermRamme, hentSkjermbruker } from "./felles";
+import { TN_KLASSER, kortVersjon } from "../tn-uttak-plan-gruppe-admin/referanse-data";
 
 /**
  * TN-15 Testprotokoller, liste og detalj på samme skjerm.
@@ -17,8 +18,9 @@ import { SkjermRamme, hentSkjermbruker } from "./felles";
  *   - Formål, utstyr, gjennomføringssteg og ansvarlig trener finnes ikke i
  *     protokollkilden. Detaljen viser det kilden har: forsøk, målavstander,
  *     registreringsfelt og kildeområdet i scorekortet.
- *   - «Landslagsstandard» er målavstandene i protokollen, ikke nivåkrav.
- *     Nivåkrav står på Referansenivåer.
+ *   - «Forsøk og mål» er målavstandene i protokollen, ikke nivåkrav.
+ *     «Landslagsstandard» per klasse står med strek, som i tegningen, til
+ *     Team Norway har fastsatt normene (samme kilde som Referansenivåer).
  *   - «Bruk i fellestesting» åpner testføringen i PlayerHQ, der målingen faktisk
  *     lagres.
  */
@@ -75,8 +77,8 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
         ]}
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 380px), 1fr))", gap: 20, alignItems: "start" }}>
-        <section aria-label="Protokoller" style={{ background: TN.white, border: `1px solid ${TN.navy100}`, minWidth: 0 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-start" }}>
+        <section aria-label="Protokoller" style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, flex: "1 1 300px", minWidth: 0, overflow: "hidden" }}>
           {liste.map((p) => {
             const aktiv = p.id === detalj?.id;
             return (
@@ -85,11 +87,11 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
                 href={adresse({ valgt: p.id })}
                 scroll={false}
                 aria-current={aktiv ? "true" : undefined}
-                style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", minHeight: 56, padding: "10px 16px", borderBottom: `1px solid ${TN.navy100}`, borderLeft: `3px solid ${aktiv ? TN.navy900 : "transparent"}`, background: aktiv ? TN.navy50 : TN.white, textDecoration: "none", color: TN.textPrimary }}
+                style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", minHeight: 60, padding: "13px 16px 13px 13px", borderBottom: `1px solid ${TN.navy100}`, borderLeft: `3px solid ${aktiv ? TN.navy900 : "transparent"}`, background: aktiv ? TN.navy50 : TN.white, textDecoration: "none", color: TN.textPrimary }}
               >
                 <span style={{ minWidth: 0 }}>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 700, overflowWrap: "anywhere" }}>{p.navn}</span>
-                  <span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, marginTop: 2 }}>{p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
+                  <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{p.navn}</span>
+                  <span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 11.5, color: TN.textSecondary, marginTop: 3 }}>{kortVersjon(bibliotek.versjon)} · {p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
                 </span>
                 <TnStatusmerke farge={p.status === "KLAR" ? TN.navy900 : TN.textSecondary}>{p.status}</TnStatusmerke>
               </Link>
@@ -98,7 +100,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
           {liste.length === 0 ? <div style={{ padding: 16 }}><TnMangler>Ingen protokoller med denne statusen.</TnMangler></div> : null}
         </section>
 
-        <TnFlate>
+        <TnFlate style={{ flex: "999 1 520px" }}>
           {detalj ? (
             <>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
@@ -143,7 +145,17 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
                 </>
               ) : null}
 
-              <TnFotnote>Kilde: {detalj.source}.</TnFotnote>
+              <TnEtikett style={{ marginTop: 22, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Landslagsstandard</TnEtikett>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 120px), 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}`, marginTop: 10 }}>
+                {TN_KLASSER.map((k) => (
+                  <div key={k} style={{ background: TN.white, padding: "10px 12px", minWidth: 0 }}>
+                    <TnEtikett>{k}</TnEtikett>
+                    <div style={{ fontFamily: TN.font.mono, fontSize: 15, marginTop: 4, color: TN.textSecondary }}>—</div>
+                  </div>
+                ))}
+              </div>
+
+              <TnFotnote>Normen fra Team Norway mangler, derfor strek. Kilde for protokollen: {detalj.source}.</TnFotnote>
 
               {detalj.blocked ? (
                 <p style={{ margin: "18px 0 0", padding: "12px 14px", border: `1px solid ${TN.navy100}`, borderLeft: `3px solid ${TN.navy900}`, fontSize: 14, lineHeight: 1.6 }}>

@@ -47,7 +47,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
+import { aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere, erTnGruppeSlug } from "@/lib/domain/grupper";
 import { medSerialisertTestdagTransaksjon } from "@/lib/domain/tn-testdag-lock";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 import { tnProtocol, TN_VERSION } from "@/lib/portal-tester/tn-catalog";
@@ -79,7 +79,7 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
         where: { id: data.testDayParticipantId },
         include: { testDay: { include: { group: true, testDefinition: true } } },
       });
-      if (!deltaker || deltaker.testDay.group.slug !== TEAM_NORWAY_SLUG) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
+      if (!deltaker || !erTnGruppeSlug(deltaker.testDay.group.slug)) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
       if (deltaker.testDay.status !== "ACTIVE") throw new Error("Testdagen er ikke aktiv og tar ikke imot nye registreringer.");
 
       if (coach.role !== "ADMIN") {

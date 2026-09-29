@@ -4,8 +4,8 @@ import { createRoot } from "react-dom/client";
 import { TnTilgangVisning, type TnTilgangVisningsrad } from "@/components/team-norway/tn-tilgang-visning";
 import { TnTilgangSkjema } from "@/components/team-norway/tn-tilgang-skjema";
 import { TnInput, TnKnapp } from "@/components/team-norway/core";
-import TilgangLaster from "@/app/team-norway/tilgang/loading";
-import TilgangFeil from "@/app/team-norway/tilgang/error";
+import TilgangLaster from "@/app/team-norway/(trener)/tilgang/loading";
+import TilgangFeil from "@/app/team-norway/(trener)/tilgang/error";
 import type { TnSettRolleResultat } from "@/lib/domain/tn-tilgang";
 
 const params = new URLSearchParams(window.location.search);

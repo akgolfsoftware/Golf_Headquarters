@@ -16,7 +16,8 @@ import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
   aktivtTrenerMedlemskapWhere,
-  TEAM_NORWAY_SLUG,
+  erTnGruppeSlug,
+  TN_GRUPPE_SLUGER,
 } from "@/lib/domain/grupper";
 import {
   beregnLesekvittering,
@@ -35,7 +36,7 @@ async function erTeamNorwayGruppe(groupId: string): Promise<boolean> {
     where: { id: groupId },
     select: { slug: true },
   });
-  return gruppe?.slug === TEAM_NORWAY_SLUG;
+  return erTnGruppeSlug(gruppe?.slug);
 }
 
 async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean> {
@@ -78,7 +79,7 @@ async function erAktivTrenerIGruppeMedSpiller(trenerId: string, spillerId: strin
     where: {
       ...aktivtTrenerMedlemskapWhere(trenerId),
       group: {
-        slug: TEAM_NORWAY_SLUG,
+        slug: { in: [...TN_GRUPPE_SLUGER] },
         members: { some: { userId: spillerId, ...aktivtSpillerMedlemskapWhere() } },
       },
     },

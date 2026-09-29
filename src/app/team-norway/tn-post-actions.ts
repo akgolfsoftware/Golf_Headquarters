@@ -62,7 +62,7 @@ export async function opprettSpillerpostAction(
   const bruker = await requireCoachActionUser();
   try {
     await opprettSpillerpost({ forfatterId: bruker.id, spillerId, tekst: parsed.data.tekst, kind: parsed.data.kind });
-    revalidatePath(`/team-norway/spiller/${spillerId}`);
+    revalidatePath(`/team-norway/spiller/${spillerId}/post`);
     return { ok: true };
   } catch (err) {
     return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke publisere posten" };

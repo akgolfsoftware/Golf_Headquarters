@@ -7,6 +7,7 @@ import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
+import { erWangTrenerSti } from "@/lib/wang/wang-ruter";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -190,7 +191,16 @@ export async function proxy(request: NextRequest) {
   // lenken — ikke gjenta det. Skal noe på fellessiden vise en person (navn,
   // e-post, bilde, initialer koblet til én elev), skal sperren utvides tilbake
   // til hele `/team-wang` i SAMME endring.
-  const erTeamWangCoach = path === "/team-wang/coach" || path.startsWith("/team-wang/coach/");
+  //
+  // Trenerflaten (Anders 27.–28.09.2026) er alle stiene i rutekartet
+  // src/lib/wang/wang-ruter.ts. Proxyen stopper bare uinnloggede; domenet
+  // (@wang.no) og trenerrollen sjekkes på serveren (wang-trener-tilgang.ts).
+  const erTeamWangCoach = erWangTrenerSti(path);
+  // /team-norway er bare for trenerteamet (@golfforbundet.no, sjekkes på
+  // serveren i tn-flate-tilgang.ts). Bare innloggingen er åpen.
+  const erTeamNorway =
+    (path === "/team-norway" || path.startsWith("/team-norway/")) &&
+    path !== "/team-norway/logg-inn";
   // /stats/aargang: kohort-utforskeren er bygget for fødselsårene 2000–2012 og
   // teller dermed nettopp de kullene barnevern-regelen forbyr åpent (Anders
   // 30.08.2026, datakartleggingens svar 1). Siden slettes ikke og tømmes ikke —
@@ -208,6 +218,7 @@ export async function proxy(request: NextRequest) {
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
     erTeamWangCoach ||
+    erTeamNorway ||
     erAargangHub;
 
   if (erBeskyttet) {
@@ -230,8 +241,12 @@ export async function proxy(request: NextRequest) {
 
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = path.startsWith("/team-wang") ? "/team-wang/logg-inn" : "/auth/login";
-      url.searchParams.set("next", path);
+      url.pathname = path.startsWith("/team-wang")
+        ? "/team-wang/logg-inn"
+        : erTeamNorway
+          ? "/team-norway/logg-inn"
+          : "/auth/login";
+      if (!erTeamNorway) url.searchParams.set("next", path);
       return NextResponse.redirect(url);
     }
   }

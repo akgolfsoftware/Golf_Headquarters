@@ -32,6 +32,25 @@ export const gruppemedlemRolleSchema = z.enum(GRUPPEMEDLEM_ROLLER);
 
 export const TEAM_NORWAY_SLUG = "team-norway" as const;
 
+/**
+ * Demogrupper (Anders 28.09.2026): egne grupper med oppdiktede elever og
+ * spillere, så demobrukerne kan se skjermene uten å se én ekte person.
+ * Opprettes og fjernes bare av `scripts/add-demo-wang-tn-2026-09-29.ts` og
+ * `scripts/slett-demo-wang-tn-2026-09-29.ts`. Ikke kanoniske, ikke
+ * `managedByAkGolf` — et medlemskap her gir aldri gratis PlayerHQ.
+ * Tilgangen avgjøres fortsatt av aktivt medlemskap: en demotrener ser bare
+ * demogruppen, og en ekte trener ser aldri demogruppen.
+ */
+export const TEAM_NORWAY_DEMO_SLUG = "team-norway-demo" as const;
+export const WANG_TOPPIDRETT_DEMO_SLUG = "wang-toppidrett-demo" as const;
+
+/** Gruppene Team Norway-flaten kan vise. Den ekte står først og vinner. */
+export const TN_GRUPPE_SLUGER = [TEAM_NORWAY_SLUG, TEAM_NORWAY_DEMO_SLUG] as const;
+
+export function erTnGruppeSlug(slug: string | null | undefined): boolean {
+  return TN_GRUPPE_SLUGER.some((s) => s === slug);
+}
+
 export type KanoniskGruppeSlug =
   | "gfgk-mini"
   | "gfgk-basis"

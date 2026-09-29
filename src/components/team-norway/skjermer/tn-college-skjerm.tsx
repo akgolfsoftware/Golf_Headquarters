@@ -61,7 +61,7 @@ export async function TnCollegeSkjerm() {
             <div style={{ flex: "1 1 280px", minWidth: 0, display: "flex", gap: 14, alignItems: "center" }}>
               <TnInitialer navn={s.navn} />
               <div style={{ minWidth: 0 }}>
-                <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
+                <Link href={`/team-norway/spiller/${s.id}`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
                 <div style={{ fontSize: 13.5, color: TN.textSecondary, marginTop: 2, overflowWrap: "anywhere" }}>{reg?.skole ?? s.skole}</div>
                 {reg?.notat ? <div style={{ fontSize: 13, marginTop: 4, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{reg.notat}</div> : null}
               </div>
