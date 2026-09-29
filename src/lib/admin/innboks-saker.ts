@@ -63,6 +63,8 @@ export type InnboksHandling = {
 export type InnboksSak = {
   /** «<kilde>:<rad-id>» — server-handlingen ruter på prefikset. */
   id: string;
+  /** Når saken kom (løste saker: når den ble avgjort). Brukes til «nyeste først» i Innboks. */
+  opprettetIso?: string;
   kilde: InnboksKilde;
   type: InnboksSakType;
   tittel: string;
@@ -311,6 +313,7 @@ export async function loadInnboksSaker(user: {
 
     saker.push({
       id: `planAction:${a.id}`,
+      opprettetIso: a.createdAt.toISOString(),
       kilde: "planAction",
       type: "forslag",
       tittel: sugg?.title ?? sugg?.tittel ?? handlingstypeLabel(a.actionType),
@@ -362,6 +365,7 @@ export async function loadInnboksSaker(user: {
     );
     saker.push({
       id: `caddieDraftGruppe:${toolName}`,
+      opprettetIso: eldst.createdAt.toISOString(),
       kilde: "caddieDraft",
       type: "forslag",
       tittel: `${caddieDraftTittel(toolName)} · ${gruppe.length}`,
@@ -394,6 +398,7 @@ export async function loadInnboksSaker(user: {
     const { frist, snart } = fristTekst(d.createdAt, now, false);
     saker.push({
       id: `caddieDraft:${d.id}`,
+      opprettetIso: d.createdAt.toISOString(),
       kilde: "caddieDraft",
       type: "forslag",
       tittel: caddieDraftTittel(d.toolName),
@@ -429,6 +434,7 @@ export async function loadInnboksSaker(user: {
       r.preferredDate != null && r.preferredDate.getTime() - now.getTime() < 3 * DAG;
     saker.push({
       id: `sessionRequest:${r.id}`,
+      opprettetIso: r.createdAt.toISOString(),
       kilde: "sessionRequest",
       type: "forespørsel",
       tittel: "Ber om økt",
@@ -455,6 +461,7 @@ export async function loadInnboksSaker(user: {
     const erNy = f.status !== "SETT";
     saker.push({
       id: `appFeedback:${f.id}`,
+      opprettetIso: f.createdAt.toISOString(),
       kilde: "appFeedback",
       type: "forespørsel",
       tittel: `Tilbakemelding · ${f.type}`,
@@ -482,6 +489,7 @@ export async function loadInnboksSaker(user: {
     const { frist, snart } = sakFristTekst(s.frist, now);
     saker.push({
       id: `sak:${s.id}`,
+      opprettetIso: s.opprettet.toISOString(),
       kilde: "sak",
       type: "forespørsel",
       tittel: s.emne?.trim() || `Henvendelse via ${kanalLabel}`,
@@ -510,6 +518,7 @@ export async function loadInnboksSaker(user: {
     const erDrift = DRIFT_ORD.test(`${n.type} ${n.title}`);
     saker.push({
       id: `notification:${n.id}`,
+      opprettetIso: n.createdAt.toISOString(),
       kilde: "notification",
       type: erDrift ? "drift" : "varsel",
       tittel: n.title,
@@ -533,6 +542,7 @@ export async function loadInnboksSaker(user: {
     const godkjent = a.status === "ACCEPTED";
     saker.push({
       id: `planAction:${a.id}`,
+      opprettetIso: a.updatedAt.toISOString(),
       kilde: "planAction",
       type: "forslag",
       tittel: handlingstypeLabel(a.actionType),
