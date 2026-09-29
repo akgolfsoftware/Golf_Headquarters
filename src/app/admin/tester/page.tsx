@@ -18,14 +18,13 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
 import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG15Tester } from "@/components/admin/precision/AG15Tester";
 
-import {
-  AdminTesterV2,
-  type AdminTesterV2Data,
-  type AdminTesterV2Rad,
-  type AdminTesterStatus,
+import type {
+  AdminTesterV2Data,
+  AdminTesterV2Rad,
+  AdminTesterStatus,
 } from "@/components/admin/v2/AdminTesterV2";
 
 export const dynamic = "force-dynamic";
@@ -162,9 +161,8 @@ export default async function V2AdminTesterPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <InnsiktHubNav />
-      <AdminTesterV2 data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG15Tester data={data} />
+    </AgencyOSSkall>
   );
 }

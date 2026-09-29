@@ -73,10 +73,13 @@ const IdSchema = z.string().min(1, "ID er påkrevd");
 const LogRepsSchema = z.object({
   taskId: z.string().min(1, "Oppgave-ID er påkrevd"),
   reps: z.object({
-    dry: z.number().int().min(0).optional(),
-    lav: z.number().int().min(0).optional(),
-    full: z.number().int().min(0).optional(),
+    dry: z.number().int().min(0).max(5000).optional(),
+    lav: z.number().int().min(0).max(5000).optional(),
+    full: z.number().int().min(0).max(5000).optional(),
   }),
+  // PH-TP-01: miljø og kommentar til coachen (valgfritt).
+  belastning: z.enum(BELASTNING_KODER).nullish(),
+  kommentar: z.string().max(500).nullish(),
 });
 
 interface TmGoalInput {
@@ -420,8 +423,9 @@ export async function reorderTasks(positionId: string, orderedIds: string[]) {
 export async function logReps(
   taskId: string,
   reps: { dry?: number; lav?: number; full?: number },
+  kontekst?: { belastning?: BelastningKode | null; kommentar?: string | null },
 ) {
-  LogRepsSchema.parse({ taskId, reps });
+  LogRepsSchema.parse({ taskId, reps, ...kontekst });
   const task = await prisma.positionTask.findUnique({
     where: { id: taskId },
     include: { position: { select: { planId: true } } },
@@ -429,7 +433,10 @@ export async function logReps(
   if (!task) throw new Error("Oppgave ikke funnet");
   const { user } = await ensurePlanAccess(task.position.planId);
 
-  await applyPositionTaskReps(taskId, reps, user.id);
+  await applyPositionTaskReps(taskId, reps, user.id, {
+    belastning: kontekst?.belastning ?? null,
+    notater: kontekst?.kommentar?.trim() || null,
+  });
 
   revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
   return { ok: true };
