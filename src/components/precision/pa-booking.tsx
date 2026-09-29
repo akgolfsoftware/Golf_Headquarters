@@ -8,7 +8,7 @@
  */
 import { useEffect, useRef, type ReactNode } from "react";
 import { CircleCheck, Info, TriangleAlert } from "lucide-react";
-import { Ikon, Meta } from "./pa";
+import { Ikon, Meta, StatusPille } from "./pa";
 
 const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(" ");
 
@@ -121,7 +121,7 @@ export function Valgrad({ valgt, onVelg, tittel, under, side, disabled }: {
         <span className="a4-rad__tittel" data-valgt={valgt ? "" : undefined}>{tittel}</span>
         {under && <Meta>{under}</Meta>}
       </span>
-      {side != null && <span className="a4-rad__side">{side}</span>}
+      {(side != null || valgt) && <span className="a4-rad__side">{side}{valgt && <StatusPille tone="ok">Valgt</StatusPille>}</span>}
     </button>
   );
 }

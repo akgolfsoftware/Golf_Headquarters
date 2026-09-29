@@ -1,48 +1,37 @@
 /**
- * AgencyOS — Tjenester (GJENNOMFØRE · TJENESTER), /admin/services. v2-port 16. juli 2026.
+ * AgencyOS — Tjenester (/admin/services) i Precision Athletics (29.09.2026).
  *
- * Datakilde: prisma.serviceType (priceOre/durationMin/active — ekte tall).
- * «+ Ny tjeneste» og «Endre»/slett per rad gjenbruker ServiceFormV2 (ekte CRUD, urørt).
- *
- * Fikset samtidig: tabellen viste tidligere kun opprett-knappen — rediger/slett
- * var bygget i skjemaet (updateService/deleteService) men aldri koblet per rad.
- * Nå rendres «Endre» per rad — ingen ny funksjon, bare faktisk bruk av det
- * som allerede fantes.
+ * Samme datakilde som før (alle ServiceType-rader, også skjulte) og samme
+ * handlinger: createService og updateService fra ./actions. «Slett» går
+ * gjennom fjernTjeneste, som deaktiverer en tjeneste som har bookinger i
+ * stedet for å slette den. Redigering skjer i et ark (AG-06 «Tjenester og pris»).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { AdminServicesTrainLock, type AdminServicesV2Data } from "@/components/admin/v2/oppsett/AdminServicesTrainLock";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { KnappLenke } from "@/components/precision/pa";
+import { Side, SideHode } from "@/components/precision/pa-a4";
+import { TjenestePanel } from "@/components/admin/precision/AG06Booking";
+import { hentAG06Tjenester } from "@/app/admin/bookinger/data";
 
 export const dynamic = "force-dynamic";
-
-const TALLORD = ["Null", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni", "Ti", "Elleve", "Tolv"];
-
-function prisLabel(priceOre: number): string {
-  const kr = priceOre / 100;
-  return `${kr.toLocaleString("nb-NO", { maximumFractionDigits: priceOre % 100 === 0 ? 0 : 2 })} kr`;
-}
+export const metadata = { title: "Tjenester · AgencyOS" };
 
 export default async function ServicesPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const tjenester = await hentAG06Tjenester();
 
-  const tjenester = await prisma.serviceType.findMany({
-    orderBy: [{ active: "desc" }, { name: "asc" }],
-    select: { id: true, name: true, description: true, durationMin: true, priceOre: true, active: true },
-  });
-
-  const data: AdminServicesV2Data = {
-    tittelOrd: tjenester.length < TALLORD.length ? TALLORD[tjenester.length] : String(tjenester.length),
-    flertall: tjenester.length !== 1,
-    tjenester: tjenester.map((s) => ({
-      id: s.id,
-      navn: s.name,
-      varighetMin: s.durationMin,
-      prisLabel: prisLabel(s.priceOre),
-      aktiv: s.active,
-      raw: s,
-    })),
-  };
-
-  return <AdminServicesTrainLock data={data} />;
+  return (
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <Side>
+        <SideHode
+          kicker="Booking · tjenester og pris"
+          title="Tjenester"
+          sub="Pris og varighet her er det spillerne ser når de booker. Nye priser gjelder nye bookinger."
+          actions={<KnappLenke href="/admin/bookinger" variant="ghost">Til bookinger</KnappLenke>}
+        />
+        <TjenestePanel tjenester={tjenester} />
+      </Side>
+    </AgencyOSSkall>
+  );
 }

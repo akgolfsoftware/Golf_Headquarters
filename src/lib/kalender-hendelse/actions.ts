@@ -33,8 +33,13 @@ const OpprettHendelseSchema = z
 
 export type OpprettHendelseInput = {
   title: string;
-  startAt: Date;
-  endAt: Date;
+  /**
+   * «YYYY-MM-DDTHH:mm» tolkes på serveren som naiv Oslo-veggklokke, samme
+   * konvensjon som bookinger og availability.ts (Precision-skjemaet sender
+   * streng). Et Date-objekt fra nettleseren godtas fortsatt.
+   */
+  startAt: Date | string;
+  endAt: Date | string;
   notes?: string;
 };
 
@@ -58,6 +63,41 @@ export async function opprettHendelse(input: OpprettHendelseInput) {
 
   revalidatePath("/admin/kalender");
   redirect("/admin/kalender");
+}
+
+/**
+ * Endre en kalenderhendelse (Precision, 29.09.2026). Samme tilgangsregel som
+ * sletting: COACH bare egne, ADMIN alle. Google-hendelsen oppdateres etterpå
+ * (pushKalenderHendelse bruker den lagrede koblingen, best-effort).
+ */
+export async function oppdaterHendelse(id: string, input: OpprettHendelseInput) {
+  const coach = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const parsed = OpprettHendelseSchema.parse(input);
+
+  const hendelse = await prisma.calendarEvent.findUnique({
+    where: { id },
+    select: { coachId: true },
+  });
+  if (!hendelse) throw new Error("Hendelsen finnes ikke");
+  if (coach.role !== "ADMIN" && hendelse.coachId !== coach.id) {
+    throw new Error("Du har ikke tilgang til å endre denne hendelsen");
+  }
+
+  await prisma.calendarEvent.update({
+    where: { id },
+    data: {
+      title: parsed.title.trim(),
+      startAt: parsed.startAt,
+      endAt: parsed.endAt,
+      notes: parsed.notes?.trim() || null,
+    },
+  });
+
+  await pushKalenderHendelse(id);
+
+  revalidatePath("/admin/kalender");
+  revalidatePath(`/admin/kalender/hendelse/${id}`);
+  redirect(`/admin/kalender/hendelse/${id}`);
 }
 
 export async function slettHendelse(id: string) {

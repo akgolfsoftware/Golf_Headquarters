@@ -97,6 +97,10 @@ export default async function OktDetalj({ params }: Props) {
           notat: booking.notes,
           kanAvbestille,
           kanFaaRefusjon,
+          flytteforslag:
+            booking.proposedStartAt && kanAvbestille
+              ? `${formatDato(booking.proposedStartAt)} kl. ${formatTid(booking.proposedStartAt)}`
+              : null,
         }}
       />
     </V2Shell>

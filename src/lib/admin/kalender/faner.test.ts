@@ -27,7 +27,7 @@ test("seks faner, uke først som standard", () => {
 test("stall-fanen dokumenterer adressen den erstattet", () => {
   assert.deepEqual(
     KALENDER_FANER.map((f) => f.gammelHref),
-    [null, null, null, "/admin/stall/dag", null],
+    [null, null, null, null, "/admin/stall/dag", null],
   );
 });
 
