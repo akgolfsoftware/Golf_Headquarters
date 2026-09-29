@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { readSyncState, type ProtocolSyncState } from "@/lib/admin/benchmark-sync-schema";
 import { syncModeFor } from "@/lib/admin/benchmark-sync";
+import { formaterTall } from "@/lib/format-tall";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG15Normer } from "@/components/admin/precision/AG15Normer";
 import {
@@ -33,8 +34,7 @@ export const metadata = { title: "Normer · Tester · AgencyOS" };
 type Row = { id: string; name: string; state: ProtocolSyncState };
 
 function fmt(n: number): string {
-  if (Number.isInteger(n)) return String(n);
-  return n.toFixed(1).replace(".", ",");
+  return formaterTall(n, 1);
 }
 
 function fmtDate(iso: string | undefined): string {
