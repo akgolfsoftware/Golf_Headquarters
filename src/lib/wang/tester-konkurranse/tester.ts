@@ -33,15 +33,24 @@ export function protokollTekst(def: TestDefinisjonInfo): string {
  * eller ufullstendig protokoll gir «—». Andre tester viser målt verdi med
  * enheten fra scoringsregelen.
  */
-export function resultatTekst(def: TestDefinisjonInfo, score: number, details: unknown): { verdi: string; enhet: string; tall: number | null } {
+export function resultatTekst(def: TestDefinisjonInfo, score: number, details: unknown): { verdi: string; enhet: string; tall: number | null; enhetKode: string } {
   if (erNgfTest(def.id)) {
     const r = tnComparableResult(def.id, score, details);
-    if (!r) return { verdi: TOM, enhet: "", tall: null };
+    if (!r) return { verdi: TOM, enhet: "", tall: null, enhetKode: "" };
     const tekst = tnFormat({ value: r.score, unit: r.unit });
-    return { verdi: tekst, enhet: "", tall: r.score };
+    return { verdi: tekst, enhet: "", tall: r.score, enhetKode: r.unit };
   }
-  if (!Number.isFinite(score)) return { verdi: TOM, enhet: "", tall: null };
-  return { verdi: tallTekst(score, 1), enhet: enhetFraRegel(def.scoringRule) ?? "", tall: score };
+  if (!Number.isFinite(score)) return { verdi: TOM, enhet: "", tall: null, enhetKode: "" };
+  const enhet = enhetFraRegel(def.scoringRule) ?? "";
+  return { verdi: tallTekst(score, 1), enhet, tall: score, enhetKode: enhet };
+}
+
+/** Endring mellom to målinger: «+2,5 kg», «−1,2 prosentpoeng» (PEI lagres som brøk). */
+export function endringTekst(d: number, enhetKode: string): string {
+  if (Math.abs(d) < 1e-9) return "±0";
+  const fortegn = d > 0 ? "+" : "−";
+  if (enhetKode === "PEI") return `${fortegn}${tallTekst(Math.abs(d) * 100, 1)} prosentpoeng`;
+  return `${fortegn}${tallTekst(Math.abs(d), 1)}${enhetKode ? ` ${enhetKode}` : ""}`;
 }
 
 /** Om lavere er bedre for en test. NGF: fra arket. Andre: høyere er bedre med mindre regelen sier annet. */

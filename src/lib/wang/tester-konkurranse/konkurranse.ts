@@ -31,9 +31,16 @@ export type GjennomfortTurnering = {
   deltakere: ElevResultat[];
 };
 
-/** Brutto per fullførte runde (ingen null, bare positive heltall). */
+/**
+ * Brutto per runde som kan sammenlignes: positive heltall, og bare
+ * 18-hullsrunder (eller ukjent hullantall fra kilden). En 9-hullsrunde
+ * ville trukket snittet ned.
+ */
 export function bruttoRunder(runder: Resultatrunde[]): number[] {
-  return runder.map((r) => r.brutto).filter((b): b is number => b !== null && Number.isSafeInteger(b) && b > 0);
+  return runder
+    .filter((r) => r.hull === null || r.hull === 18)
+    .map((r) => r.brutto)
+    .filter((b): b is number => b !== null && Number.isSafeInteger(b) && b > 0);
 }
 
 /** Gruppas snitt brutto per runde, og antall runder bak snittet. */
