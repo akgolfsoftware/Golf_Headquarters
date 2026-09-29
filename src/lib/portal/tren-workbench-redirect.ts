@@ -1,11 +1,12 @@
 /**
  * Legacy /portal/tren/* planleggingsruter → Workbench hub.
  * Session-/test-gjennomføring (cuid-økt, test-wizard) beholdes uendret.
+ * /portal/tren/teknisk-plan er ikke lenger her (29.09.2026): Workbench har ingen
+ * teknisk-fane, så PH-TP-01 var uten vei inn. Ruta sender selv til spillerens plan.
  */
 
 const TAB_BY_PREFIX: [string, string][] = [
   ["/portal/tren/aarsplan", "gantt"],
-  ["/portal/tren/teknisk-plan", "tek"],
   ["/portal/tren/turneringer", "seson"],
   ["/portal/tren/kalender", "uke"],
   ["/portal/tren/fys-plan", "std"],
