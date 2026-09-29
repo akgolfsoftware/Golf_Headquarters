@@ -5,7 +5,7 @@
  *
  * Bare for head coach (ADMIN): beslutninger.md §ØKONOMI BARE FOR HEAD COACH …
  * (Anders 28.09.2026). Tidligere slapp COACH også inn — nå redirectes COACH
- * til Cockpit, låst av page.test.tsx.
+ * til Cockpit, låst av src/lib/agencyos/okonomi-tilgang.test.ts.
  */
 
 import { redirect } from "next/navigation";

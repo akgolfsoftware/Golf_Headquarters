@@ -2,7 +2,8 @@
 
 /**
  * AG-20 Økonomi i Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/agencyos/screens/AG-20.jsx). Bare for head coach (ADMIN) —
+ * ui_kits/agencyos/screens/AG-mer.jsx, runde 30 — vinner over den eldre
+ * AG-20.jsx fordi screen.html laster den sist). Bare for head coach (ADMIN) —
  * beslutninger.md §ØKONOMI BARE FOR HEAD COACH, WEDGE GATE TELLER TREFF …
  * (Anders 28.09.2026).
  *
@@ -12,8 +13,8 @@
  * bygget; se PR-teksten §Parkert. Kroner leses fra Tripletex/Stripe, aldri
  * anslått.
  */
-import { Download, FileSpreadsheet } from "lucide-react";
-import { Sidehode, LasterTilstand, TomTilstand, FeilTilstand, Knapp, StatusPille } from "@/components/precision/pa";
+import { ExternalLink, FileSpreadsheet } from "lucide-react";
+import { Sidehode, LasterTilstand, TomTilstand, FeilTilstand, Knapp, StatusPille, Meta } from "@/components/precision/pa";
 import { Tabell, InlineVarsel, Kort, KortHode, type Kolonne } from "@/components/precision/pa-a5";
 import type { AdminOkonomiV2Data, OkonomiFaktura, OkonomiTimeklipp } from "@/lib/admin/okonomi-data";
 import { erForfalt, fmtKrNb, klippPrikker, ytdAvvikTekst, ytdAvvik } from "@/lib/admin/okonomi-visning";
@@ -25,15 +26,15 @@ export type AG20Props = { tilstand: AG20Tilstand; data: AdminOkonomiV2Data };
 function YtdKort({ data }: { data: AdminOkonomiV2Data }) {
   const avvik = ytdAvvik(data.ytd.budsjettKr, data.ytd.resultatKr);
   return <Kort>
-    <KortHode tittel={`YTD · ${data.aar}`} aside={data.tripletexKonfigurert ? "TRIPLETEX" : "IKKE KOBLET"} />
+    <KortHode tittel={`Budsjett mot regnskap · hittil i ${data.aar}`} aside={data.tripletexKonfigurert ? "REGNSKAP FRA TRIPLETEX · ALDRI ANSLÅTT" : "TRIPLETEX IKKE KOBLET"} />
     <div className="pa-a5-stat-grid">
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">Budsjett</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.budsjettKr)}</span></div>
-      <div className="pa-a5-stat"><span className="pa-a5-stat__label">Resultat</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.resultatKr)}</span></div>
+      <div className="pa-a5-stat"><span className="pa-a5-stat__label">Regnskap</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.resultatKr)}</span></div>
     </div>
     <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>
       AVVIK MOT BUDSJETT: {ytdAvvikTekst(avvik).toUpperCase()}
     </span>
-    {!data.hull.budsjettkilde && <InlineVarsel tone="info" tittel="Mangler">Ingen budsjettkilde er koblet ennå. Avvik per virksomhet vises ikke.</InlineVarsel>}
+    {!data.hull.budsjettkilde && <InlineVarsel tone="info" tittel="Mangler">Ingen budsjettkilde er koblet ennå. Fordelingen på AK Golfs tjenester vises ikke før den finnes.</InlineVarsel>}
   </Kort>;
 }
 
@@ -43,9 +44,9 @@ function FakturaTabell({ rader }: { rader: OkonomiFaktura[] }) {
     { key: "beskrivelse", label: "Beskrivelse", render: (r) => r.beskrivelse ?? "—" },
     { key: "dato", label: "Dato", mono: true, render: (r) => r.dato },
     { key: "belop", label: "Beløp", mono: true, align: "right", render: (r) => fmtKrNb(r.belopKr) },
-    { key: "status", label: "Status", render: (r) => <StatusPille tone={erForfalt(r.status) ? "signal" : r.status === "Betalt" ? "ok" : "neutral"}>{r.status}</StatusPille> },
+    { key: "status", label: "Status", render: (r) => <StatusPille tone={erForfalt(r.status) ? "warn" : r.status === "Betalt" ? "ok" : "neutral"}>{r.status}</StatusPille> },
   ];
-  return <Tabell caption="Betalinger og abonnement" columns={cols} rows={rader.map((r) => ({ ...r, id: r.id }))} tomTekst="Ingen fakturaer å vise." />;
+  return <Tabell caption="Betalinger fra Stripe" columns={cols} rows={rader.map((r) => ({ ...r, id: r.id }))} tomTekst="Ingen fakturaer å vise." />;
 }
 
 function TimeklippListe({ rader }: { rader: OkonomiTimeklipp[] }) {
@@ -64,7 +65,7 @@ function TimeklippListe({ rader }: { rader: OkonomiTimeklipp[] }) {
 
 export function AG20Okonomi({ tilstand, data }: AG20Props) {
   return <div className="pa-side">
-    <Sidehode kicker={`Økonomi · ${data.aar}`} title="Økonomi" sub="Kroner leses fra Tripletex og Stripe. Ingenting estimeres." />
+    <Sidehode kicker="Mer · Økonomi · bare head coach" title="Økonomi" sub="Kroner leses fra Tripletex og Stripe. Ingenting estimeres." />
     {tilstand === "laster" && <LasterTilstand text="Leser Tripletex-eksporten …" />}
     {tilstand === "feil" && <FeilTilstand icon={FileSpreadsheet} title="Tripletex-eksporten kunne ikke leses" text="Ingen tall er endret. Prøv igjen." code="TRIPLETEX · FEIL" />}
     {tilstand === "tom" && <TomTilstand icon={FileSpreadsheet} title="Ingen eksport lest ennå" text="Økonomitallene hentes fra Tripletex. Første eksport kommer om kort tid." />}
@@ -75,7 +76,8 @@ export function AG20Okonomi({ tilstand, data }: AG20Props) {
         <FakturaTabell rader={data.fakturaer} />
       </div>
       <TimeklippListe rader={data.timeklipp} />
-      <div><Knapp variant="secondary" icon={Download} onClick={() => window.open(data.stripeHref, "_blank", "noopener")}>Åpne Stripe</Knapp></div>
+      <Meta>ALLE BELØP EKS. MVA · CREDITS = TIMEKLIPP, ALDRI APP-NIVÅ · FORFALT LESES FRA STRIPE</Meta>
+      <div><Knapp variant="secondary" icon={ExternalLink} iconName="external-link" onClick={() => window.open(data.stripeHref, "_blank", "noopener,noreferrer")}>Åpne Stripe</Knapp></div>
     </div>}
   </div>;
 }

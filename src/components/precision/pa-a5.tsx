@@ -110,7 +110,7 @@ export function InlineVarsel({ tone = "info", tittel, children }: { tone?: "info
 
 /* ---------- Kort med overskrift ---------- */
 export function KortHode({ tittel, aside }: { tittel: ReactNode; aside?: ReactNode }) {
-  return <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", justifyContent: "space-between", padding: "14px 16px 0" }}>
+  return <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
     <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>{tittel}</span>
     {aside && <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>{aside}</span>}
   </div>;

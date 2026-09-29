@@ -13,7 +13,7 @@ const data: AdminOkonomiV2Data = {
   tripletexKonfigurert: true,
   ytd: { budsjettKr: 1_250_000, resultatKr: 980_500 },
   fakturaer: [
-    { id: "f1", navn: "Ola Nordmann", beskrivelse: "Coaching privat", dato: "24.09", belopKr: 950, status: "Betalt" },
+    { id: "f1", navn: "Ola Nordmann", beskrivelse: "Coaching privat", dato: "24.09", belopKr: 1200, status: "Betalt" },
     { id: "f2", navn: "Kari Hansen", beskrivelse: "Abonnement Performance med et langt navn som må brytes pent", dato: "20.09", belopKr: 690, status: "Forfalt" },
     { id: "f3", navn: "Per Olsen", beskrivelse: "Gruppetime", dato: "18.09", belopKr: 350, status: "Sendt" },
   ],
