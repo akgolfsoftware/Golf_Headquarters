@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { WangInnloggingsSkjema } from "./wang-innloggings-skjema";
 
-export function WangLogin({ retursti = "/team-wang", avvisning = null, innloggetSom = null }: { retursti?: string; avvisning?: { tittel: string; tekst: string } | null; innloggetSom?: string | null }) {
+export function WangLogin({ retursti = "/team-wang/i-dag", avvisning = null, innloggetSom = null }: { retursti?: string; avvisning?: { tittel: string; tekst: string } | null; innloggetSom?: string | null }) {
   const router = useRouter();
   return <WangInnloggingsSkjema avvisning={avvisning} innloggetSom={innloggetSom} loggInn={async ({ epost, passord }) => {
     const { error } = await createClient().auth.signInWithPassword({ email: epost, password: passord });
