@@ -33,7 +33,7 @@ Totalt eier `/admin` **163 ruter** (alle er `page.tsx`). Rutene fordeler seg på
 | **Turneringer & Runder** | 7 | `/admin/tournaments`, `/admin/tournaments/[id]`, `/admin/runder`, `/admin/turnering-kart` |
 | **Trening & Media** | 4 | `/admin/recording`, `/admin/trackman`, `/admin/trackman/[sessionId]`, `/admin/videoer` |
 | **Cockpit / Hjem** | 3 | `/admin` (redirect til agencyos), `/admin/agencyos`, `/admin/agencyos/ak-stigen` |
-| **Live** | 2 | `/admin/(fullscreen)/agencyos/live`, `/admin/(fullscreen)/agencyos/live/[sessionId]` |
+| **Live** | 2 | `/admin/agencyos/live`, `/admin/agencyos/live/[sessionId]` |
 | **Annet / Omdirigeringer** | 8 | `/admin/mer`, `/admin/ai`, `/admin/board`, `/admin/tilstander` (fanges i next.config.ts) |
 
 ---
