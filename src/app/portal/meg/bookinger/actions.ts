@@ -60,14 +60,16 @@ export async function cancelBooking(bookingId: string) {
   // S-19: spor om refund faktisk lyktes — ikke tier stille ved feil.
   let stripeRefundOk = false;
   let stripeRefundFeilet = false;
+  let stripeRefundId: string | undefined;
   if (outcome.refundStripe && booking.stripePaymentIntentId) {
     try {
       const stripe = stripeKlient();
-      await stripe.refunds.create({
+      const refusjon = await stripe.refunds.create({
         payment_intent: booking.stripePaymentIntentId,
         reason: "requested_by_customer",
         metadata: { bookingId: booking.id },
       });
+      stripeRefundId = refusjon?.id;
       stripeRefundOk = true;
     } catch (error) {
       stripeRefundFeilet = true;
@@ -168,7 +170,12 @@ export async function cancelBooking(bookingId: string) {
   // Send avbestillings-e-post (best-effort)
   try {
     const { sendBookingCancellation } = await import("@/lib/email/booking-emails");
-    await sendBookingCancellation(bookingId);
+    await sendBookingCancellation(bookingId, {
+      refundIssued: stripeRefundOk,
+      refundFailed: stripeRefundFeilet,
+      isCreditBooking: creditRefunded,
+      refundId: stripeRefundId,
+    });
   } catch (error) {
     await logError({
       context: "booking.cancel.epost",

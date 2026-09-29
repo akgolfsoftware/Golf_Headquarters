@@ -9,6 +9,14 @@ import { cancellationDeadline } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
+import {
+  byggAvbestilling,
+  formaterKr,
+  osloDag,
+  osloDagOgTid,
+  osloKlokke,
+  type Refusjon,
+} from "@/lib/email/templates/avbestilling-mal";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -146,16 +154,70 @@ export async function sendBookingReminder(bookingId: string) {
   await sendBooking("oekt-paaminnelse", bookingId);
 }
 
+/**
+ * EP-04 «Avbestilling» (Precision Athletics). Innhold og utseende bygges i
+ * `templates/avbestilling-mal.ts`. EmailTemplate-raden `booking-avbestilt` er fortsatt
+ * bryteren: mangler eller er den deaktivert, sendes ingenting.
+ */
 export async function sendBookingCancellation(
   bookingId: string,
-  extra: { refundIssued?: boolean; isCreditBooking?: boolean } = {},
+  extra: {
+    refundIssued?: boolean;
+    refundFailed?: boolean;
+    isCreditBooking?: boolean;
+    /** Stripe-refusjonens ID (re_…), vises som referanse til gjest. */
+    refundId?: string;
+  } = {},
 ) {
-  const refundLine = extra.isCreditBooking
-    ? "Credit-en er ført tilbake til abonnementet ditt."
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { name: true, email: true } },
+      serviceType: true,
+      subscription: { select: { creditsRemaining: true, monthlyCredits: true } },
+    },
+  });
+  if (!booking) throw new Error("Booking not found");
+
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) {
+    console.warn("[booking-email] Ingen e-post på booking", bookingId);
+    return;
+  }
+  await hentTemplate("booking-avbestilt");
+
+  const app = !!booking.userId;
+  const navn = booking.user?.name ?? booking.guestName ?? "";
+  const refusjon: Refusjon = extra.isCreditBooking
+    ? {
+        type: "klipp",
+        igjen: booking.subscription?.creditsRemaining ?? null,
+        av: booking.subscription?.monthlyCredits ?? null,
+      }
     : extra.refundIssued
-      ? "Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager."
-      : "Avbestilt etter avbestillingsfristen — ingen refusjon.";
-  await sendBooking("booking-avbestilt", bookingId, { refundLine });
+      ? { type: "penger", belop: formaterKr(booking.priceOre) }
+      : extra.refundFailed
+        ? { type: "feilet" }
+        : { type: "ingen" };
+
+  const { subject, html } = byggAvbestilling({
+    mottaker: app ? "app" : "gjest",
+    fornavn: navn.split(" ")[0] ?? "",
+    tjeneste: `${booking.serviceType.name} ${booking.serviceType.durationMin} min`,
+    dag: osloDag(booking.startAt),
+    klokke: `${osloKlokke(booking.startAt)}–${osloKlokke(booking.endAt)}`,
+    avbestiltTidspunkt: osloDagOgTid(new Date()),
+    refusjon,
+    referanse: !app && refusjon.type === "penger" ? (extra.refundId ?? booking.id) : booking.id,
+    lenker: { bookNy: `${APP_URL}/booking`, playerhq: `${APP_URL}/portal` },
+  });
+
+  try {
+    await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+  } catch (error) {
+    await logError({ context: "email.booking.resend", error, meta: { bookingId } });
+    throw error;
+  }
 }
 
 /**
