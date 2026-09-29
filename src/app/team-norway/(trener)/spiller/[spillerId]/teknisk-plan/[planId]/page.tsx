@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -15,7 +16,7 @@ import {
 } from "@/lib/domain/tn-teknisk-plan";
 import { P_POSITIONS } from "@/components/teknisk-plan/constants";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
 
@@ -153,14 +154,14 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 
   return (
     <TnShell
-      aktiv="spillere"
+      aktiv="spiller"
       brukerNavn={bruker.name ?? "Ukjent"}
       rolle={kontekst.erSpiller ? "Spiller" : "Trener"}
       groupId={kontekst.gruppeId}
       visTrenerflater={kontekst.erTrener}
       kanAdministrere={kontekst.kanAdministrere}
     >
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
       <Link href={`/team-norway/spiller/${spillerId}/teknisk-plan`} style={{ color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>← Alle planer</Link>
       <TnSidehode overlinje="TN-23 · Teknisk plan" tittel={plan.navn} ingress={`${plan.startDato.toISOString().slice(0, 10)}${plan.sluttDato ? ` – ${plan.sluttDato.toISOString().slice(0, 10)}` : ""}`} />
 

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTester, hentTnSpillerOvrigeTester } from "@/lib/domain/tn-arbeidsflate";
 import { tnFormat } from "@/lib/portal-tester/tn-scoring";
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnTomtilstand } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand } from "@/components/team-norway/tn-shell";
 import { TnDataTable } from "@/components/team-norway/tn-data-table";
 import { TN } from "@/lib/v2/team-norway";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
@@ -38,8 +39,8 @@ export default async function SpillerTesterPage({ params }: { params: Promise<{ 
   if (!data) notFound();
 
   return (
-    <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
+    <TnShell aktiv="spiller" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
       <TnSidehode overlinje="Testoversikt" tittel="Tester" ingress="Team Norway-protokoller først, øvrige PlayerHQ-tester under." />
 
       <TnSeksjon tittel="Team Norway-protokoller" forklaring="Én rad per protokoll. Retningen på «best» beregnes ut fra testprotokollen, ikke antatt fra en lagret verdi.">

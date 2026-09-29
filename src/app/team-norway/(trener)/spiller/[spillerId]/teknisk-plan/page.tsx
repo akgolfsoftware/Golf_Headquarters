@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
 import { harTnTekniskPlanLesetilgang, hentTnTekniskPlaner, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
 
@@ -37,14 +38,14 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
 
   return (
     <TnShell
-      aktiv="spillere"
+      aktiv="spiller"
       brukerNavn={bruker.name ?? "Ukjent"}
       rolle={kontekst.erSpiller ? "Spiller" : "Trener"}
       groupId={kontekst.gruppeId}
       visTrenerflater={kontekst.erTrener}
       kanAdministrere={kontekst.kanAdministrere}
     >
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
+      <SpillerUnderfaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
       <TnSidehode
         overlinje="TN-23 · Teknisk plan"
         tittel={spillerNavn}
