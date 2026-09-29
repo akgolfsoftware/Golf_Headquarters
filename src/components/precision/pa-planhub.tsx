@@ -32,7 +32,7 @@ function stripe(akser: readonly PaAkse[]): string {
 
 export function Seksjon({ tittel, meta, label, gap = 12, children }: { tittel: ReactNode; meta?: ReactNode; label?: string; gap?: number; children: ReactNode }) {
   return <section aria-label={label ?? (typeof tittel === "string" ? tittel : undefined)} className="pa-card a10-seksjon" style={{ gap }}>
-    <div className="a10-seksjon__hode"><span className="kicker">{tittel}</span>{meta != null && <Meta>{meta}</Meta>}</div>
+    <div className="a10-seksjon__hode"><span className="kicker">{tittel}</span>{meta != null && (typeof meta === "string" || typeof meta === "number" ? <Meta>{meta}</Meta> : meta)}</div>
     {children}
   </section>;
 }
@@ -74,6 +74,15 @@ export function Aksebar({ verdier, label }: { verdier: ReadonlyArray<{ akse: PaA
   if (sum <= 0) return <span className="a10-aksebar a10-aksebar--tom" role="img" aria-label={`${label}: ingen data`} />;
   return <span className="a10-aksebar" role="img" aria-label={`${label}: ${verdier.map((v) => `${v.akse.toUpperCase()} ${v.verdi}`).join(", ")}`}>
     {verdier.filter((v) => v.verdi > 0).map((v) => <span key={v.akse} style={{ flex: v.verdi / sum, background: `var(--axis-${v.akse})` }} />)}
+  </span>;
+}
+
+/** Andel 0–100 som stolpe i aksefargen, med valgfri strek for et referansenivå. */
+export function Prosentbar({ verdi, merke, akse, label }: { verdi: number; merke?: number | null; akse: PaAkse; label: string }) {
+  const k = (n: number) => Math.max(0, Math.min(100, n));
+  return <span className="a10-pbar" role="img" aria-label={label}>
+    <span className="a10-pbar__fyll" style={{ width: `${k(verdi)}%`, background: `var(--axis-${akse})` }} />
+    {merke != null && <span className="a10-pbar__merke" style={{ left: `calc(${k(merke)}% - 1px)` }} />}
   </span>;
 }
 

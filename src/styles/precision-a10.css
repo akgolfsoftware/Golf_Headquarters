@@ -59,6 +59,10 @@ button.a10-ev { appearance: none; -webkit-appearance: none; }
 .a10-aksenokler { display: flex; gap: 6px 10px; flex-wrap: wrap; align-items: center; min-width: 0; }
 .a10-aksenokkel { display: inline-flex; gap: 4px; align-items: center; }
 
+.a10-pbar { position: relative; display: block; height: 8px; background: var(--surface-sunken); border-radius: 2px; overflow: hidden; min-width: 0; }
+.a10-pbar__fyll { position: absolute; left: 0; top: 0; bottom: 0; }
+.a10-pbar__merke { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text-primary); }
+
 /* Valg og felt */
 .a10-valgrad { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .a10-valgrad__hode { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
