@@ -83,7 +83,7 @@
 .seg:last-child { border-radius: 0 8px 8px 0; }
 .seg + .seg { margin-left: -1px; }
 .seg:hover { background: var(--wtr-blue-tint); }
-.seg[aria-current="page"], .seg[aria-pressed="true"] { background: var(--wtr-blue); border-color: var(--wtr-blue); color: var(--wtr-white); position: relative; }
+.seg[aria-current="page"], .seg[aria-pressed="true"], .segAktiv { background: var(--wtr-blue); border-color: var(--wtr-blue); color: var(--wtr-white); position: relative; }
 .seg:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); position: relative; }
 
 /* Kalender (wg-cal, wg-day). */

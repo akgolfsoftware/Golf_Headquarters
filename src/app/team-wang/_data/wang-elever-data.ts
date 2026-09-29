@@ -105,7 +105,17 @@ export async function hentGruppeElev(gruppeId: string, elevId: string, na: Date)
   return r ? tilElev(r, na) : null;
 }
 
-export type WangSnitt = { snitt: number | null; antall: number; kategori: string | null; kategoriNiva: string | null };
+/** Antall godkjente foresatte (ulike personer) til elevene. Grunnlag for mottakerlinja i WANG-13. */
+export async function tellForesatte(elevIder: string[]): Promise<number> {
+  if (elevIder.length === 0) return 0;
+  const rader = await prisma.parentRelation.findMany({
+    where: { childId: { in: elevIder }, approved: true, relationship: "Foresatt" },
+    select: { parentId: true },
+  });
+  return new Set(rader.map((r) => r.parentId)).size;
+}
+
+export type WangSnitt ={ snitt: number | null; antall: number; kategori: string | null; kategoriNiva: string | null };
 
 /** Snittscore og A–K-kategori på atten-hullsrunder siste 12 måneder, per elev. */
 export async function hentSnittForElever(elevIder: string[], na: Date): Promise<Map<string, WangSnitt>> {
