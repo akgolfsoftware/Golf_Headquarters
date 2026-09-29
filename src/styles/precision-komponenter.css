@@ -147,10 +147,10 @@
 .pa-alert{display:flex;gap:12px;padding:12px 16px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-sunken);color:var(--text-body);font:var(--type-body-s)}
 .pa-alert__title{font-weight:600;color:var(--text-primary)}
 .pa-alert .pa-icon{margin-top:1px}
-.pa-alert--info{background:var(--info-tint);border-color:transparent}.pa-alert--info&gt;.pa-icon{color:var(--info)}
-.pa-alert--warn{background:var(--warn-tint);border-color:transparent}.pa-alert--warn&gt;.pa-icon{color:var(--warn)}
-.pa-alert--ok{background:var(--ok-tint);border-color:transparent}.pa-alert--ok&gt;.pa-icon{color:var(--ok)}
-.pa-alert--signal{background:var(--signal-tint);border-color:transparent}.pa-alert--signal&gt;.pa-icon{color:var(--signal-ink)}
+.pa-alert--info{background:var(--info-tint);border-color:transparent}.pa-alert--info>.pa-icon{color:var(--info)}
+.pa-alert--warn{background:var(--warn-tint);border-color:transparent}.pa-alert--warn>.pa-icon{color:var(--warn)}
+.pa-alert--ok{background:var(--ok-tint);border-color:transparent}.pa-alert--ok>.pa-icon{color:var(--ok)}
+.pa-alert--signal{background:var(--signal-tint);border-color:transparent}.pa-alert--signal>.pa-icon{color:var(--signal-ink)}
 
 /* Dialog */
 .pa-scrim{position:fixed;inset:0;background:var(--scrim-modal);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100}
@@ -422,7 +422,7 @@
 .pa-pagehead__sub{font:var(--type-body);color:var(--text-secondary);margin:8px 0 0;max-width:680px;text-wrap:pretty}
 .pa-pagehead__meta{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);margin-top:8px}
 .pa-pagehead__actions{display:flex;flex-wrap:wrap;gap:8px;max-width:100%;min-width:0}
-@container (max-width:600px){.pa-pagehead__actions{width:100%}.pa-pagehead__actions&gt;*{flex:1 1 auto}.pa-pagehead__actions&gt;.pa-btn{min-width:0}}
+@container (max-width:600px){.pa-pagehead__actions{width:100%}.pa-pagehead__actions>*{flex:1 1 auto}.pa-pagehead__actions>.pa-btn{min-width:0}}
 
 @media (pointer:coarse),(max-width:1024px){.pa-filter__opt,.pa-pager__btn,.pa-pager__gap,.pa-table__sortchip{height:44px}.pa-pager__btn{min-width:44px}.pa-search__clear{width:44px;height:44px}}
 
