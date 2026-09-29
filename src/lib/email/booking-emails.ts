@@ -9,6 +9,7 @@ import { cancellationDeadline } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
+import { byggBekreftelse, googleKalenderUrl } from "./booking-bekreftelse";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -138,8 +139,62 @@ async function sendBooking(
   }
 }
 
+/**
+ * EP-01. Bygger bekreftelsen fra bookingdata (Precision Athletics-malen), ikke fra
+ * EmailTemplate-raden i databasen. Gjest = booking uten bruker.
+ */
 export async function sendBookingConfirmation(bookingId: string) {
-  await sendBooking("booking-bekreftelse", bookingId);
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { name: true, email: true } },
+      coach: { select: { name: true } },
+      serviceType: true,
+      location: true,
+    },
+  });
+  if (!booking) throw new Error("Booking not found");
+
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) {
+    console.warn("[booking-email] Ingen e-post på booking", bookingId);
+    return;
+  }
+  const erGjest = !booking.user;
+  const navn = booking.user?.name ?? booking.guestName ?? null;
+  const referanse = `#${booking.id.slice(-8)}`;
+  const sted = booking.location.name;
+
+  const { subject, html } = byggBekreftelse({
+    type: erGjest ? "gjest" : "app",
+    fornavn: navn ? navn.split(" ")[0] : null,
+    tjeneste: booking.serviceType.name,
+    varighetMin: booking.serviceType.durationMin,
+    start: booking.startAt,
+    slutt: booking.endAt,
+    sted,
+    coach: booking.coach?.name ?? null,
+    frist: cancellationDeadline(booking.startAt),
+    prisOre: booking.subscriptionId ? null : booking.priceOre,
+    betalingsref: booking.stripePaymentIntentId,
+    referanse,
+    kalenderUrl: googleKalenderUrl({ tjeneste: booking.serviceType.name, start: booking.startAt, slutt: booking.endAt, sted, referanse }),
+    bookingUrl: `${APP_URL}/portal/meg/bookinger`,
+    endreUrl: erGjest
+      ? `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking ${referanse}`)}`
+      : `${APP_URL}/portal/meg/bookinger`,
+    opprettKontoUrl: erGjest ? `${APP_URL}/auth/signup` : null,
+    spillerhqTilbud: erGjest
+      ? { tekst: "plan fra coachen, økter, tester og analyse av rundene dine", manedNok: null, arNok: null }
+      : null,
+  });
+
+  try {
+    await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+  } catch (error) {
+    await logError({ context: "email.booking.resend", error, meta: { bookingId } });
+    throw error;
+  }
 }
 
 export async function sendBookingReminder(bookingId: string) {
