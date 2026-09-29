@@ -3,8 +3,9 @@
  * Hele stallen (beslutninger.md §SKJERMENE … RUNDE 8, AgencyOS › Stall i tre
  * bånd, 28.09.2026). Bygger på den ekte `loadStallen`-loaderen (samme data og
  * tilgangsregel som den gamle Stallen-siden) og legger til:
- *  - «Trener nå»: WorkbenchSession med status IN_PROGRESS, i coachens spiller-
- *    skop. Naturlig, sanntids «pågår» — ikke en gjettet tilstand.
+ *  - «Trener nå»: WorkbenchSession med status IN_PROGRESS og dagens dato (Oslo),
+ *    i coachens spillerskop. En økt som ble stående IN_PROGRESS en tidligere
+ *    dag, teller ikke som «trener nå».
  *  - Utløp på plan/avtale: Subscription.currentPeriodEnd (kind COACHING) per
  *    spiller. Mangler abonnementet, vises «—» (aldri anslått dato).
  *
@@ -12,9 +13,9 @@
  */
 import { prisma } from "@/lib/prisma";
 import { loadStallen, type StallenRow } from "./stallen-data";
-import { stallenPlayerWhere } from "./stallen-scope";
 import { nesteOktLabel, sisteAktivitetLabel } from "./stall-rad";
 import { sammeDag } from "@/lib/uke-helpers";
+import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 
 export type StallBaandRad = StallenRow & {
   /** Plan/avtale (Subscription.currentPeriodEnd, kind COACHING). null = ingen aktiv avtale. */
@@ -43,7 +44,7 @@ export async function loadStallPrecision(
   const [paagaende, avtaler] = await Promise.all([
     spillerIds.length
       ? prisma.workbenchSession.findMany({
-          where: { playerId: { in: spillerIds }, status: "IN_PROGRESS" },
+          where: { playerId: { in: spillerIds }, status: "IN_PROGRESS", date: osloDagSomDbDato(naa) },
           select: { id: true, playerId: true, title: true, startMinute: true, durationMinutes: true },
         })
       : Promise.resolve([]),
@@ -80,7 +81,3 @@ export async function loadStallPrecision(
   return { total: stall.total, iDag, trenerNaa, heleStallen: rader };
 }
 
-/** Egen sjekk om coachen har lov til å se spillerens rad (brukt av 360-lenker). */
-export function stallSpillerWhereForCoach(coach: { id: string; role: string }, q?: string) {
-  return stallenPlayerWhere(coach, q);
-}

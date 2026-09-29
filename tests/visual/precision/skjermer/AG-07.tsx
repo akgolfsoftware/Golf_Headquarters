@@ -50,7 +50,10 @@ const spiller1 = rad({ id: "p1", name: "Test Spiller A med et navn som er langt 
 const spiller2 = rad({ id: "p2", name: "Test Spiller B", group: "GFGK", status: "bak", statusLabel: "Bak plan", adhPct: 32, paagaaende: { id: "s1", tittel: "Wedge 50–90 m", startMinute: 780, durationMinutes: 60 } });
 const spiller3 = rad({ id: "p3", name: "Test Spiller C", group: "AKA", status: "hviler", statusLabel: "Planlagt pause", adhPct: null, sgTrend: [], sisteOkt: igaar, sisteAktivitetLabel: "økt i går", avtaleUtlopIso: new Date(naa.getFullYear(), naa.getMonth() + 1, 15).toISOString() });
 
-const alle = [spiller1, spiller2, spiller3];
+const spiller4 = rad({ id: "p4", name: "Test Spiller D", status: "inaktiv", statusLabel: "Inaktiv", neverLoggedIn: true, dagerSiden: null, adhPct: null, sgTrend: [] });
+const spiller5 = rad({ id: "p5", name: "Test Spiller E", group: "GFGK", status: "veil", statusLabel: "Ønsker veiledning", adhPct: 55, skylder: true, sgTrend: [-0.4, -0.1, 0.3, 0.6], sgDelta: 1.0 });
+
+const alle = [spiller1, spiller2, spiller3, spiller4, spiller5];
 
 const Skall = ({ children }: { children: React.ReactNode }) => (
   <AdminRolleProvider erAdmin>
