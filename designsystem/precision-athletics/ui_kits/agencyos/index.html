@@ -1,0 +1,51 @@
+<!-- @dsCard group="AgencyOS" viewport="1440x900" name="AgencyOS · coach (/admin)" subtitle="Ett skall: Hjem · Innboks · Kalender · Stall · Workbench · Kø · Caddie. NavRail over 1024, MenuBar + NavDrawer under" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><title>AgencyOS · AK Golf HQ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="../../assets/ak-vocabulary.js"></script>
+<script src="data.js"></script>
+<script src="data-admin.js"></script>
+<script src="planmotor-data.js"></script>
+</head><body><div id="root"></div>
+<script type="text/babel" src="../_shared/ds-next.jsx"></script>
+<script type="text/babel" src="../_shared/KitShell.jsx"></script>
+<script type="text/babel" src="Parts.jsx"></script>
+<script src="../_shared/ia.js"></script>
+<script type="text/babel" src="../_shared/Hurtigknapp.jsx"></script>
+<script type="text/babel" src="Cockpit.jsx"></script>
+<script type="text/babel" src="Godkjenninger.jsx"></script>
+<script type="text/babel" src="Caddie.jsx"></script>
+<script type="text/babel" src="Kalender.jsx"></script>
+<script type="text/babel" src="OktBygger.jsx"></script>
+<script type="text/babel" src="StallScreen.jsx"></script>
+<script type="text/babel" src="CalendarScreen.jsx"></script>
+<script type="text/babel" src="ExerciseComposer.jsx"></script>
+<script type="text/babel" src="PlanParts.jsx"></script>
+<script type="text/babel" src="PlanEngine.jsx"></script>
+<script type="text/babel">
+const { PageHeader, EmptyState } = window.AKGolfPrecisionAthletics_7d7c29;
+const NAV = [
+  { id: "hjem", label: "Hjem", icon: "house", items: [{ id: "hjem", label: "Hjem", icon: "house" }] },
+  { id: "innboks", label: "Innboks", icon: "inbox", items: [{ id: "innboks", label: "Innboks", icon: "inbox" }] },
+  { id: "kal", label: "Kalender", icon: "calendar-days", items: [{ id: "kalender", label: "Timeplan og booking", icon: "calendar-days" }, { id: "treningsuke", label: "Treningsuke", icon: "calendar-range" }] },
+  { id: "stall", label: "Stall", icon: "users", items: [{ id: "stall", label: "Stall", icon: "users", count: 18 }] },
+  { id: "wb", label: "Workbench", icon: "layers", items: [{ id: "workbench", label: "Planmotor", icon: "layers" }, { id: "oktbygger", label: "Øktbygger", icon: "list-plus" }] },
+  { id: "ko", label: "Kø", icon: "badge-check", items: [{ id: "godkjenninger", label: "Kø · godkjenninger", icon: "badge-check", count: 9, signal: true }] },
+  { id: "caddie", label: "Caddie", icon: "sparkles", items: [{ id: "caddie", label: "Caddie", icon: "sparkles" }] },
+];
+const cw = (w) => (w > 1024 ? w - 56 : w);
+function Innboks() {
+  return <div style={window.KIT.pageWrap}><PageHeader kicker="Innboks · Lør 26.09" title="Innboks" /><EmptyState icon="inbox" title="Ingen uleste meldinger" text="Meldinger fra spillere og foreldre samles her. Saker som krever godkjenning ligger i Kø." /></div>;
+}
+function Stall() { const w = window.KIT.useW(); const [sel, setSel] = React.useState(1); return <StallScreen w={cw(w)} selected={sel} setSelected={setSel} />; }
+function Treningsuke() { const w = window.KIT.useW(); return <CalendarScreen w={cw(w)} />; }
+function Workbench() { const w = window.KIT.useW(); return <PlanEngine w={cw(w)} onToast={window.AOA.toast} />; }
+const SCREENS = { hjem: window.Cockpit, innboks: Innboks, kalender: window.Kalender, treningsuke: Treningsuke, stall: Stall, workbench: Workbench, oktbygger: window.OktBygger, godkjenninger: window.Godkjenninger, caddie: window.Caddie };
+ReactDOM.createRoot(document.getElementById("root")).render(<><window.KIT.KitShell nav={NAV} screens={SCREENS} store="aos-page" fallback="hjem" who={{ name: "Anders Kristiansen", role: "HOVEDCOACH" }} /><window.AOA.Toaster /><window.AOS_FAB.Hurtigknapp onAction={(id) => { if (id === "okt") window.__kitSetPage("workbench"); else if (id === "melding") window.__kitSetPage("innboks"); else if (id === "jarvis") window.__kitSetPage("caddie"); else window.AOA.toast("Registrer runde", "VELG SPILLER"); }} /></>);
+</script>
+</body></html>

@@ -1,0 +1,96 @@
+/* AK Golf — Precision Athletics. Lyst tema er standard (planlegging, admin). */
+:root{
+/* Sand — flater */
+--sand-100:#faf8f3;--sand-150:#f1eee8;--sand-200:#e6e3dd;--sand-300:#ddd9d1;--sand-400:#c9c4ba;--white:#ffffff;
+/* Grafitt — blekk og primærhandling. Ingen ren svart. */
+--graphite-900:#141413;--graphite-800:#2a2926;--graphite-700:#3a3935;--graphite-600:#46443f;--graphite-500:#686560;--graphite-400:#8a8680;
+/* Rust — KUN viktige handlingssignaler */
+--rust-600:#9b2415;--rust-700:#7d1c10;--rust-400:#d8553f;--rust-100:#fbebea;
+/* Natt — mørkt tema for utendørs gjennomføring */
+--night-950:#0c0d0c;--night-900:#141513;--night-850:#1b1c1a;--night-800:#232421;--night-700:#2f302c;--night-500:#6e6c66;--night-300:#a9a59d;--night-200:#cfcbc2;
+/* Semantisk rå */
+--green-700:#2f6b3a;--green-50:#eaf2ea;--amber-700:#7e6110;--amber-50:#fbf4e4;--blue-800:#1d3557;--blue-50:#e8edf4;
+/* Banekart (nattkart) — terreng, aldri signal */
+--course-rough:#1f2a22;--course-rough-2:#233026;--course-green:#2b4a33;--course-green-edge:#3f6a4a;--course-bunker:#2a2823;
+/* Fem treningsakser — offisielle verdier fra appens kodebase. Base (fyll/prikk), tekst (på myk bakgrunn), myk bakgrunn */
+--axis-fys:#788c5d;--axis-fys-ink:#63784a;--axis-fys-soft:rgba(120,140,93,.13);
+--axis-tek:#b8852a;--axis-tek-ink:#8a6316;--axis-tek-soft:rgba(184,133,42,.13);
+--axis-slag:#2563eb;--axis-slag-ink:#1d4fd0;--axis-slag-soft:rgba(37,99,235,.13);
+--axis-spill:#c46686;--axis-spill-ink:#9e4a67;--axis-spill-soft:rgba(196,102,134,.16);
+--axis-turn:#a32d2d;--axis-turn-ink:#a32d2d;--axis-turn-soft:rgba(163,45,45,.13);
+
+/* ---- Semantiske alias — komponentene bruker bare disse ---- */
+--surface-page:var(--sand-200);
+--surface-flat:var(--sand-100);
+--surface-card:var(--white);
+--surface-sunken:var(--sand-150);
+--surface-hover:var(--sand-150);
+--surface-inverse:var(--graphite-900);
+--text-primary:var(--graphite-900);
+--text-body:var(--graphite-800);
+--text-secondary:var(--graphite-600);
+--text-muted:var(--graphite-500);
+--text-faint:var(--graphite-400);
+--text-on-primary:var(--white);
+--text-inverse:var(--sand-100);
+--border-hairline:var(--sand-300);
+--border-strong:var(--sand-400);
+--border-control:var(--graphite-500);
+--border-ink:var(--graphite-900);
+--primary:var(--graphite-900);
+--primary-hover:var(--graphite-700);
+--primary-press:var(--graphite-800);
+--signal:var(--rust-600);
+--signal-hover:var(--rust-700);
+--signal-tint:var(--rust-100);
+--signal-ink:var(--rust-600);
+--ok:var(--green-700);--ok-tint:var(--green-50);
+--warn:var(--amber-700);--warn-tint:var(--amber-50);
+--info:var(--blue-800);--info-tint:var(--blue-50);
+--link:var(--blue-800);
+--focus-ring:var(--graphite-900);
+/* Periodetyper i årsplanen — grafitt-trinn, aldri kulør (aksene eier kulørene) */
+--period-grunn:var(--graphite-600);--period-spesial:var(--graphite-500);--period-turnering:var(--graphite-900);--period-evaluering:var(--graphite-400);--period-ferie:var(--sand-400);--period-restitusjon:var(--sand-300);
+--scrim-modal:rgba(20,20,19,.44);
+--scrim-photo:linear-gradient(to bottom,rgba(20,20,19,.5) 0%,rgba(20,20,19,0) 24%,rgba(20,20,19,0) 40%,rgba(20,20,19,.8) 100%);/* @kind other */
+--axis-fys-fg:var(--axis-fys-ink);--axis-tek-fg:var(--axis-tek-ink);--axis-slag-fg:var(--axis-slag-ink);--axis-spill-fg:var(--axis-spill-ink);--axis-turn-fg:var(--axis-turn-ink);
+--axis-fys-bg:var(--axis-fys-soft);--axis-tek-bg:var(--axis-tek-soft);--axis-slag-bg:var(--axis-slag-soft);--axis-spill-bg:var(--axis-spill-soft);--axis-turn-bg:var(--axis-turn-soft);
+color-scheme:light;
+}
+/* Mørkt tema — dyp natt-flate. Live-økt og slagregistrering utendørs. */
+[data-theme="night"]{
+--surface-page:var(--night-950);
+--surface-flat:var(--night-900);
+--surface-card:var(--night-850);
+--surface-sunken:var(--night-900);
+--surface-hover:var(--night-800);
+--surface-inverse:var(--sand-100);
+--text-primary:var(--sand-100);
+--text-body:var(--night-200);
+--text-secondary:var(--night-300);
+--text-muted:var(--night-300);
+--text-faint:var(--night-500);
+--text-on-primary:var(--graphite-900);
+--text-inverse:var(--graphite-900);
+--border-hairline:var(--night-700);
+--border-strong:var(--night-500);
+--border-control:var(--night-300);
+--border-ink:var(--sand-100);
+--primary:var(--sand-100);
+--primary-hover:var(--white);
+--primary-press:var(--night-200);
+--signal:var(--rust-600);
+--signal-hover:#b12a19;
+--signal-tint:rgba(216,85,63,.16);
+--signal-ink:var(--rust-400);
+--ok:#7cc48a;--ok-tint:rgba(124,196,138,.14);
+--warn:#e0b050;--warn-tint:rgba(224,176,80,.14);
+--info:#8fb0e6;--info-tint:rgba(143,176,230,.14);
+--link:var(--sand-100);
+--focus-ring:var(--sand-100);
+--scrim-modal:rgba(0,0,0,.6);
+--axis-fys:#56c59a;--axis-tek:#e8a33d;--axis-slag:#84a9ff;--axis-spill:#d98aa3;--axis-turn:#f2908c;
+--axis-fys-fg:var(--axis-fys);--axis-tek-fg:var(--axis-tek);--axis-slag-fg:var(--axis-slag);--axis-spill-fg:var(--axis-spill);--axis-turn-fg:var(--axis-turn);
+--axis-fys-bg:rgba(86,197,154,.16);--axis-tek-bg:rgba(232,163,61,.16);--axis-slag-bg:rgba(132,169,255,.16);--axis-spill-bg:rgba(217,138,163,.16);--axis-turn-bg:rgba(242,144,140,.16);
+color-scheme:dark;
+}

@@ -1,0 +1,5 @@
+/* IBM Plex Sans — alt som leses. IBM Plex Mono — alt som er målt (tabular-nums).
+   Ingen lisensierte binærfiler er levert: lastes fra Google Fonts. Bytt til lokale @font-face ved selvhosting. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+@font-face{font-family:"IBM Plex Sans Fallback";src:local("Arial");size-adjust:100.6%;ascent-override:101.9%;descent-override:27.3%;line-gap-override:0%}
+@font-face{font-family:"IBM Plex Mono Fallback";src:local("Courier New");size-adjust:99.7%;ascent-override:102.3%;descent-override:27.1%;line-gap-override:0%}
