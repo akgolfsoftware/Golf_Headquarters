@@ -1,0 +1,229 @@
+/* WANG Tester og Konkurranse (WG-03, WANG-08–11, 22, 23, 27, 37, 39).
+   Mål fra Claude Design 6cfa623c: «WANG Golf.dc.html» (WG-03), Batch 3
+   (WANG-08, 09), Batch 4 (WANG-10, 11), Batch 8 (WANG-22, 23), Batch 9
+   (WANG-27) og Batch 14 (WANG-37, 39). Bare --wtr-tokens. Ingen sidelengs
+   rulling: rader stables under 820 px, alle grid-barn har minWidth 0. */
+
+.stabel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.stabel20 { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.rad { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; min-width: 0; }
+.radVenstre { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; }
+
+.ingress { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--wtr-blue); max-width: 780px; }
+.fot { margin: 0; font-family: var(--wtr-font-display); font-size: 12.5px; font-weight: 500; color: var(--wtr-text-muted); }
+.tall { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; }
+.dempet { color: var(--wtr-text-muted); }
+
+/* Kort */
+.kort { background: var(--wtr-surface-card); border: 1px solid var(--wtr-border-card); border-radius: var(--wtr-radius-card); overflow: hidden; min-width: 0; }
+.kortAktiv { border-color: var(--wtr-border-strong); }
+.kortPolstret { padding: 20px 24px; display: grid; gap: 12px; }
+.kortHode { padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
+.h2 { margin: 0; font-family: var(--wtr-font-display); font-weight: 500; font-size: 17px; color: var(--wtr-blue); }
+.h2liten { margin: 0; font-family: var(--wtr-font-display); font-weight: 500; font-size: 16px; color: var(--wtr-blue); }
+.meta { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 500; color: var(--wtr-text-muted); }
+.bandTittel { margin: 0; padding: 8px 24px; background: var(--wtr-blue-tint); font-family: var(--wtr-font-display); font-size: 12.5px; font-weight: 500; color: var(--wtr-text-muted); }
+.tomLinje { margin: 0; padding: 14px 20px; border-top: 1px solid var(--wtr-border-subtle); font-size: 15px; color: var(--wtr-text-muted); }
+
+/* Oppsett */
+.split { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.split15 { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.split17 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.splitProt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 20px; align-items: start; }
+.aside { position: sticky; top: 88px; }
+.kortRutenett { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+
+/* Låsmerke («Kun innlogget …») */
+.laas { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; min-width: 0; max-width: 100%; padding: 4px 10px; border-radius: var(--wtr-radius-pill); background: var(--wtr-white); border: 1px solid var(--wtr-grey); color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
+
+/* Status med prikk (wg-st / wg-dot) */
+.st { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: var(--wtr-radius-pill); border: 1px solid var(--wtr-grey); background: var(--wtr-white); color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; white-space: nowrap; justify-self: start; }
+.prikk { width: 8px; height: 8px; border-radius: var(--wtr-radius-pill); flex: none; display: inline-block; }
+.pPlanlagt { background: var(--wtr-text-disabled); }
+.pMangler { background: transparent; box-shadow: inset 0 0 0 1.5px var(--wtr-text-muted); }
+.pFort { background: var(--wtr-lightblue); }
+.pKontrollert { background: var(--wtr-green); }
+.pLaast { background: var(--wtr-blue); }
+.pObs { background: var(--wtr-orange); }
+
+/* Segmentvalg som lenker (wg-seg) */
+.seg { display: flex; flex-wrap: wrap; min-width: 0; }
+.segValg { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 1px solid var(--wtr-grey); background: var(--wtr-white); color: var(--wtr-text-muted); font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: background-color var(--wtr-dur-base) var(--wtr-ease-out); }
+.segValg:hover { background: var(--wtr-blue-tint); text-decoration: none; color: var(--wtr-text-muted); }
+.segValg:first-child { border-radius: var(--wtr-radius-control) 0 0 var(--wtr-radius-control); }
+.segValg:last-child { border-radius: 0 var(--wtr-radius-control) var(--wtr-radius-control) 0; }
+.segValg + .segValg { margin-left: -1px; }
+.segValg[aria-current="page"], .segValg[aria-current="page"]:hover { background: var(--wtr-blue); border-color: var(--wtr-blue); color: var(--wtr-white); position: relative; }
+.segValg:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+
+/* Felter */
+.lbl { display: grid; gap: 6px; min-width: 0; font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; color: var(--wtr-blue); }
+.felt { width: 100%; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--wtr-grey); border-radius: var(--wtr-radius-control); background: var(--wtr-white); color: var(--wtr-blue); font-family: var(--wtr-font-display); font-size: 14px; }
+.felt:focus { outline: none; border-color: var(--wtr-lightblue); box-shadow: var(--wtr-focus-ring); }
+.feltFeil { border-color: var(--wtr-pink); }
+.feilTekst { margin: 0; font-size: 14px; color: var(--wtr-pink); }
+.okTekst { margin: 0; font-size: 14px; color: var(--wtr-green); }
+.velgerRad { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; min-width: 0; }
+.velger { display: grid; gap: 6px; min-width: min(100%, 220px); font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; color: var(--wtr-blue); }
+.toKol { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+/* Rosa kontrollknapp (wg-kbtn) og tekstknapp (wg-tbtn) */
+.kbtn { min-height: 44px; padding: 0 14px; border: 0; border-radius: var(--wtr-radius-control); background: var(--wtr-action-primary); color: var(--wtr-white); font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.kbtn:hover { background: var(--wtr-action-primary-hover); }
+.kbtn:active { background: var(--wtr-action-primary-press); }
+.kbtn:disabled { background: var(--wtr-action-disabled); cursor: not-allowed; }
+.kbtn:focus-visible { outline: none; box-shadow: var(--wtr-focus-ring); }
+.tilbake { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--wtr-pink); font-family: var(--wtr-font-display); font-size: 14px; font-weight: 500; text-decoration: none; }
+.tilbake:hover { color: var(--wtr-action-primary-hover); text-decoration: underline; }
+.radLenke { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; color: var(--wtr-pink); text-decoration: none; }
+.radLenke:hover { color: var(--wtr-action-primary-hover); text-decoration: underline; }
+
+/* WG-03 fysiske tester */
+.fysKort { background: var(--wtr-surface-card); border: 1px solid var(--wtr-border-card); border-radius: var(--wtr-radius-card); padding: 22px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: end; min-width: 0; }
+.fysNavn { margin: 0; font-family: var(--wtr-font-display); font-weight: 500; font-size: 16px; color: var(--wtr-blue); }
+.fysVerdi { margin: 0; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.fysTall { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 36px; font-weight: 700; color: var(--wtr-blue); line-height: 1.1; }
+.fysEnhet { font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; color: var(--wtr-text-muted); }
+.fysVurdering { margin: 0; font-size: 15px; line-height: 1.45; color: var(--wtr-blue); }
+.soyler { display: flex; align-items: flex-end; gap: 10px; height: 130px; border-bottom: 1px solid var(--wtr-grey); }
+.soyle { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; height: 100%; gap: 4px; }
+.soyleTekst { text-align: center; font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 11.5px; font-weight: 500; color: var(--wtr-blue); }
+.soyleSiste { background: var(--wtr-blue); border-radius: 2px 2px 0 0; }
+.soyleAnnen { background: var(--wtr-grey); border-radius: 2px 2px 0 0; }
+.soyleEtiketter { display: flex; gap: 10px; margin-top: 6px; }
+.soyleEtikett { flex: 1; min-width: 0; text-align: center; font-family: var(--wtr-font-display); font-size: 11px; font-weight: 500; color: var(--wtr-text-muted); line-height: 1.25; }
+.registrer { background: var(--wtr-surface-card); border: 1px solid var(--wtr-border-card); border-radius: var(--wtr-radius-card); padding: 24px; display: grid; gap: 16px; position: sticky; top: 88px; min-width: 0; }
+
+/* WANG-08 testdag */
+.tsplit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
+.koRad { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 10px 20px; border-top: 1px solid var(--wtr-border-subtle); background: var(--wtr-white); min-width: 0; }
+.koNr { width: 24px; flex: none; font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 12px; color: var(--wtr-text-muted); }
+.koNavn { display: block; font-family: var(--wtr-font-display); font-size: 14px; font-weight: 500; color: var(--wtr-blue); }
+.koMeta { display: block; font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--wtr-text-muted); }
+.dagRad { display: grid; grid-template-columns: 112px minmax(0, 1.4fr) minmax(0, 1fr) 150px; gap: 6px 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.dagRad > * { min-width: 0; }
+
+/* WANG-37 testkø */
+.cnt { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cnt > * + * { border-left: 1px solid var(--wtr-border-subtle); }
+.cntCelle { padding: 12px 16px; display: grid; gap: 2px; min-width: 0; }
+.cntEtikett { font-family: var(--wtr-font-display); font-size: 12.5px; font-weight: 500; color: var(--wtr-text-muted); }
+.cntTall { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 26px; font-weight: 700; color: var(--wtr-blue); line-height: 1.1; }
+.trow { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) 96px minmax(0, 1fr) 128px; gap: 6px 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.trow > * { min-width: 0; }
+.thead { background: var(--wtr-blue-tint); font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); }
+
+/* WANG-39 rangering og WANG-11 resultater */
+.rrow { display: grid; grid-template-columns: 40px minmax(0, 1fr) 100px minmax(0, 1.4fr); gap: 4px 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.rrow > * { min-width: 0; }
+.merknad { margin: 0; padding: 12px 14px; border: 1px dashed var(--wtr-blue); border-radius: var(--wtr-radius-card); background: var(--wtr-white); display: flex; gap: 8px; align-items: flex-start; font-family: var(--wtr-font-display); font-size: 14px; font-weight: 700; color: var(--wtr-blue); }
+.merknadSvak { font-weight: 500; }
+.resRad { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, 48px) 60px 64px 72px; gap: 8px; align-items: center; min-height: 56px; padding: 8px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.resRad > * { min-width: 0; }
+.resHode { background: var(--wtr-blue-tint); border-top: 0; min-height: 40px; font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); }
+.mobilMeta { display: none; }
+
+/* WANG-10 turneringer */
+.turRad { display: grid; grid-template-columns: 104px minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: center; min-height: 64px; padding: 8px 20px; border-top: 1px solid var(--wtr-border-subtle); background: var(--wtr-white); min-width: 0; }
+.turRad > * { min-width: 0; }
+.turHode { background: var(--wtr-blue-tint); border-top: 0; min-height: 44px; font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); }
+.turNavn { display: inline-flex; flex-direction: column; gap: 2px; min-height: 44px; justify-content: center; text-decoration: none; min-width: 0; }
+.turNavn:hover { text-decoration: none; }
+.turNavnTekst { font-family: var(--wtr-font-display); font-size: 14px; font-weight: 500; color: var(--wtr-blue); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.turNavnPil { color: var(--wtr-pink); }
+.lblM { display: none; color: var(--wtr-text-muted); }
+.kolX { min-width: 0; }
+
+/* WANG-11 detalj */
+.nedtelling { margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.nedtellingTall { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 56px; font-weight: 800; color: var(--wtr-blue); line-height: 1; }
+.infoRad { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 12px 0; border-bottom: 1px solid var(--wtr-border-subtle); }
+.infoNokkel { flex: 0 0 150px; font-family: var(--wtr-font-display); font-size: 13px; font-weight: 500; color: var(--wtr-text-muted); }
+.infoVerdi { flex: 1; min-width: 0; font-size: 15px; color: var(--wtr-blue); }
+.knyttet { background: var(--wtr-surface-card); border: 1px solid var(--wtr-border-card); border-radius: var(--wtr-radius-card); padding: 20px 24px; display: grid; position: sticky; top: 88px; min-width: 0; }
+.knyttetRad { display: grid; gap: 2px; padding: 12px 0; border-top: 1px solid var(--wtr-border-subtle); }
+.person { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 60px; padding: 10px 20px; border-top: 1px solid var(--wtr-border-subtle); }
+
+/* WANG-09 samlinger */
+.srow { display: grid; grid-template-columns: 64px minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 180px; gap: 12px; align-items: center; width: 100%; min-height: 64px; padding: 10px 20px; border-top: 1px solid var(--wtr-border-subtle); background: var(--wtr-white); text-decoration: none; color: inherit; transition: background-color var(--wtr-dur-base) var(--wtr-ease-out); min-width: 0; }
+a.srow:hover { background: var(--wtr-blue-tint); text-decoration: none; color: inherit; }
+.srow > * { min-width: 0; }
+.shead { background: var(--wtr-blue-tint); border-top: 0; min-height: 44px; font-family: var(--wtr-font-display); font-size: 12px; font-weight: 500; color: var(--wtr-text-muted); }
+.stegNr { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; color: var(--wtr-green); }
+
+/* WANG-22 protokoller */
+.prow { display: grid; gap: 4px; width: 100%; padding: 14px 20px; border-top: 1px solid var(--wtr-border-subtle); background: var(--wtr-white); text-decoration: none; color: inherit; transition: background-color var(--wtr-dur-base) var(--wtr-ease-out); min-width: 0; }
+a.prow:hover { background: var(--wtr-blue-tint); text-decoration: none; color: inherit; }
+.prow[aria-current="page"] { background: var(--wtr-status-planned-bg); }
+.prowTopp { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: space-between; min-width: 0; }
+.orow { display: grid; grid-template-columns: minmax(0, 1.6fr) 90px 80px 90px; gap: 6px 12px; align-items: center; padding: 10px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.orow > * { min-width: 0; }
+.helRad { grid-column: 1 / -1; min-width: 0; font-size: 13px; line-height: 1.45; color: var(--wtr-text-muted); overflow-wrap: anywhere; }
+.laastLinje { margin: 0; display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: var(--wtr-radius-card); background: var(--wtr-blue-tint); font-size: 15px; line-height: 1.5; color: var(--wtr-blue); }
+.hvitTag { background: var(--wtr-white); border: 1px solid var(--wtr-grey); }
+
+/* WANG-23 resultater per elev */
+.hrow { display: grid; grid-template-columns: 92px minmax(0, 1fr) 70px; gap: 4px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--wtr-border-subtle); }
+.hrow > * { min-width: 0; }
+.bar { height: 8px; border-radius: var(--wtr-radius-pill); background: var(--wtr-blue-tint); overflow: hidden; position: relative; }
+.barFyll { position: absolute; left: 0; top: 0; bottom: 0; background: var(--wtr-blue); border-radius: var(--wtr-radius-pill); }
+.resKort { background: var(--wtr-surface-card); border: 1px solid var(--wtr-border-card); border-radius: var(--wtr-radius-card); padding: 18px 20px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.resStor { font-family: var(--wtr-font-display); font-variant-numeric: tabular-nums; font-size: 32px; font-weight: 700; color: var(--wtr-blue); line-height: 1; }
+
+/* WANG-27 statistikk */
+.chart { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; align-items: end; height: 190px; padding: 0 4px; }
+.chartEtiketter { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; padding: 0 4px; margin-top: 6px; }
+.chartSoyle { display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; height: 100%; min-width: 0; gap: 4px; }
+.chartFyll { display: block; background: var(--wtr-blue); border-radius: 2px 2px 0 0; }
+.chartBeste { background: var(--wtr-mint); }
+.statRad { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px 56px; gap: 4px 12px; align-items: center; padding: 10px 20px; border-top: 1px solid var(--wtr-border-subtle); min-width: 0; }
+.statRad > * { min-width: 0; }
+.hoyre { text-align: right; }
+
+@media (max-width: 1100px) {
+  .split, .split15, .split17, .splitProt, .tsplit { grid-template-columns: minmax(0, 1fr); }
+  .aside, .registrer, .knyttet { position: static; }
+  .turRad { grid-template-columns: 96px minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .kolX { display: none; }
+  .srow { grid-template-columns: 56px minmax(0, 1.5fr) minmax(0, 1fr) 170px; }
+  .kolSted { display: none; }
+}
+
+@media (max-width: 820px) {
+  .kortPolstret { padding: 16px; }
+  .fysKort { grid-template-columns: minmax(0, 1fr); padding: 18px 16px; }
+  .registrer { padding: 16px; }
+  .trow { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 16px; }
+  .trow .helMobil { grid-column: 1 / -1; }
+  .thead, .turHode, .resHode, .shead, .kunDesk { display: none; }
+  .cntCelle { padding: 12px; }
+  .cntTall { font-size: 22px; }
+  .rrow { grid-template-columns: 32px minmax(0, 1fr) auto; padding: 12px 16px; }
+  .rrow .helMobil { grid-column: 2 / -1; }
+  .turRad { grid-template-columns: minmax(0, 1fr); row-gap: 2px; padding: 12px 16px; }
+  .kolX { display: block; }
+  .lblM { display: inline; }
+  .mobilMeta { display: block; }
+  .resRad { grid-template-columns: minmax(0, 1fr) 52px 60px; padding: 8px 16px; }
+  .kolD { display: none; }
+  .srow { grid-template-columns: 48px minmax(0, 1fr); row-gap: 6px; padding: 10px 16px; }
+  .kolS { grid-column: 2; }
+  .orow { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 16px; }
+  .orow .helMobil { grid-column: 1 / -1; }
+  .dagRad { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 16px; }
+  .dagRad .helMobil { grid-column: 1 / -1; }
+  .statRad { grid-template-columns: minmax(0, 1fr) auto auto; padding: 10px 16px; }
+  .statRad .helMobil { grid-column: 1 / -1; }
+  .chart, .chartEtiketter { gap: 3px; }
+  .chart { height: 160px; }
+  .koRad { padding: 10px 16px; }
+  .person { padding: 10px 16px; }
+  .prow { padding: 12px 16px; }
+  .bandTittel { padding: 8px 16px; }
+  .laas { border-radius: var(--wtr-radius-card); }
+  .infoNokkel { flex-basis: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segValg, .srow, .prow { transition: none; }
+}
