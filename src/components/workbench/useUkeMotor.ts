@@ -100,18 +100,24 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
       () => toast.success("Ukeplan lagret"),
     );
 
-  const opprett = (v: NyOktVerdier, ferdig: (forsteId: string | null) => void) => {
+  /** `medAngre`: meldingen får «Angre», som sletter det som nettopp ble laget (AG-11). */
+  const opprett = (v: NyOktVerdier, ferdig: (forsteId: string | null) => void, medAngre = false) => {
     const { repeatWeeks, ...felter } = v;
     if (repeatWeeks > 1) {
       kjor(() => createSessionSeries({ playerId, ...felter, repeatWeeks }), (okter: WorkbenchSession[]) => {
         ferdig(okter[0]?.id ?? null);
-        toast.success(UI.toastSeriesCreated(okter.length));
+        const forste = okter[0]?.id;
+        toast.success(UI.toastSeriesCreated(okter.length), medAngre && forste ? {
+          action: { label: "Angre", onClick: () => kjor(() => deleteSessionSeries({ sessionId: forste, policy: "HELE_SERIEN" }), () => toast.success(UI.toastSeriesDeleted(okter.length))) },
+        } : undefined);
       });
       return;
     }
     kjor(() => createSession({ playerId, ...felter }), (okt: WorkbenchSession) => {
       ferdig(okt.id);
-      toast.success(UI.toastDraftCreated);
+      toast.success(UI.toastDraftCreated, medAngre ? {
+        action: { label: "Angre", onClick: () => kjor(() => deleteSession(okt.id), () => toast.success(UI.toastSessionDeleted)) },
+      } : undefined);
     });
   };
 
@@ -124,8 +130,11 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   const drillFraKilde = (sessionId: string, sourceId: string) =>
     kjor(() => addDrillFromSource({ sessionId, sourceId }), () => toast.success(UI.toastDrillDroppedOnSession));
 
-  const flytt = (sessionId: string, v: FlyttVerdier) =>
-    kjor(() => moveSession({ sessionId, ...v }), () => toast.success(UI.toastSessionMoved));
+  /** `tilbake`: meldingen får «Angre», som flytter økta tilbake (AG-11, dra-og-slipp). */
+  const flytt = (sessionId: string, v: FlyttVerdier, tilbake?: FlyttVerdier) =>
+    kjor(() => moveSession({ sessionId, ...v }), () => toast.success(UI.toastSessionMoved, tilbake ? {
+      action: { label: "Angre", onClick: () => kjor(() => moveSession({ sessionId, ...tilbake }), () => toast.success(UI.toastSessionMoved)) },
+    } : undefined));
 
   const publiser = (ider: string[], ferdig?: () => void) => {
     if (ider.length === 0) return;

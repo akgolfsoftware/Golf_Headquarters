@@ -1,23 +1,32 @@
 /**
- * AgencyOS Workbench — coach. Kroppen er WorkbenchUke (lov: 8 piller,
- * inspector 340, rust Publiser, sand, formel 8). WorkbenchV2 er ikke fasit.
+ * AgencyOS Workbench — coach (AG-11 i Precision Athletics).
+ *
+ * Uke, Økt og Målsetninger er portert (AG11Workbench): samme guard, samme
+ * lastere (loadWeek, loadSources, hentMaalSpor, loadFysTurneringWorkbenchData)
+ * og samme skriveside (wb-actions via useUkeMotor) som WorkbenchUke hadde.
+ * `?pille=fys` og `?pille=turn` er fysisk plan og turneringer (AG-WB-FYS,
+ * AG-WB-TURN) med de samme seks handlingene som før.
+ *
+ * År, Periode og Måned (egen beslutning, PR #995) og Stall, Live og Min
+ * kalender er ikke portert: de vises som før inne i Precision-skallet.
  */
 
 import { notFound } from "next/navigation";
+import { CalendarX } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { WorkbenchShell } from "@/components/workbench/WorkbenchShell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { FeilTilstand } from "@/components/precision/pa";
+import { AG11Workbench, type AG11Side } from "@/components/admin/precision/AG11Workbench";
+import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
 import { WorkbenchAar } from "@/components/workbench/WorkbenchAar";
 import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
 import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
-import { WorkbenchOkt } from "@/components/workbench/WorkbenchOkt";
 import { WorkbenchStall } from "@/components/workbench/WorkbenchStall";
 import { WorkbenchLive } from "@/components/workbench/WorkbenchLive";
 import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalender";
-import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
-import { WorkbenchFysTurnering } from "@/components/workbench/WorkbenchFysTurnering";
 import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, loadWorkbenchLive, loadYear, loadSources } from "@/lib/workbench/wb-actions";
 import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
@@ -25,13 +34,17 @@ import { mondayOf } from "@/lib/domain/workbench/operations";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
+import "@/styles/workbench-selected.css";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Workbench · AgencyOS" };
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ uke?: string; vis?: string; aar?: string; maned?: string; periode?: string; okt?: string }>;
+  searchParams: Promise<{ uke?: string; vis?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
 };
+
+const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
 
 function aarFraParam(raw?: string): number {
   const aar = Number(raw);
@@ -54,204 +67,166 @@ function ukeStartFraParam(raw?: string): string {
   return mondayOf(d.toISOString().slice(0, 10));
 }
 
+/** Visninger som ikke er portert ennå: samme komponent som før, i Precision-skallet. */
+function Arv({ children, live }: { children: React.ReactNode; live?: boolean }) {
+  return <div className="a9-arv"><div className="wb-app" data-surface={live ? "live" : "light"}>{children}</div></div>;
+}
+
+function Feil({ navn, melding }: { navn: string; melding: string }) {
+  return (
+    <AgencyOSSkall navn={navn}>
+      <div className="pa-side">
+        <FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text={melding} />
+      </div>
+    </AgencyOSSkall>
+  );
+}
+
 export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { playerId } = await params;
   const sp = await searchParams;
+  const navn = user.name ?? "Coach";
 
   const spiller = await prisma.user.findFirst({
     where: { AND: [coachScopedPlayerWhere(user), { id: playerId }] },
     select: { id: true, name: true },
   });
   if (!spiller) notFound();
+  const spillerNavn = spiller.name ?? "Ukjent";
+
+  if (sp.pille === "fys" || sp.pille === "turn") {
+    const fys = await loadFysTurneringWorkbenchData(playerId, { viewer: "coach" });
+    const actions = { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan };
+    return (
+      <AgencyOSSkall navn={navn}>
+        {sp.pille === "fys"
+          ? <AG11Fysisk playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />
+          : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />}
+      </AgencyOSSkall>
+    );
+  }
 
   const goals = await hentMaalSpor(playerId);
-
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
-  const visning = parseVisning(sp.vis);
+  const visning = sp.vis === "mal" ? "mal" : parseVisning(sp.vis);
+  const hentRoster = () => prisma.user.findMany({
+    where: coachScopedPlayerWhere(user),
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
 
   if (visning === "aar") {
     const year = aarFraParam(sp.aar);
     const [roster, yearRes, kilderRes] = await Promise.all([
-      prisma.user.findMany({
-        where: coachScopedPlayerWhere(user),
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      }),
+      hentRoster(),
       loadYear({ year, mode, playerId }),
       loadSources({ playerId, weekStart: `${year}-01-01` }),
     ]);
-    if (!yearRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}><p style={{ padding: 24 }}>{yearRes.error}</p></WorkbenchShell>;
-    }
+    if (!yearRes.ok) return <Feil navn={navn} melding={yearRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchAar
-          key={`${playerId}:${year}`}
-          playerId={playerId}
-          roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spiller.name ?? "Ukjent"}
-          aar={yearRes.data}
-          kilder={kilderRes.ok ? kilderRes.data : []}
-          goals={goals}
-        />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv>
+        <WorkbenchAar key={`${playerId}:${year}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+          spillerNavn={spillerNavn} aar={yearRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
+      </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "maned") {
     const monthStart = manedFraParam(sp.maned);
     const [roster, monthRes, kilderRes] = await Promise.all([
-      prisma.user.findMany({
-        where: coachScopedPlayerWhere(user),
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      }),
+      hentRoster(),
       loadMonth({ monthStart, mode, playerId }),
       loadSources({ playerId, weekStart: mondayOf(monthStart) }),
     ]);
-    if (!monthRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}><p style={{ padding: 24 }}>{monthRes.error}</p></WorkbenchShell>;
-    }
+    if (!monthRes.ok) return <Feil navn={navn} melding={monthRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchManed
-          key={`${playerId}:${monthStart}`}
-          playerId={playerId}
-          roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spiller.name ?? "Ukjent"}
-          maned={monthRes.data}
-          kilder={kilderRes.ok ? kilderRes.data : []}
-          goals={goals}
-        />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv>
+        <WorkbenchManed key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+          spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
+      </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "periode") {
     const year = aarFraParam(sp.aar);
     const [roster, periodRes, kilderRes] = await Promise.all([
-      prisma.user.findMany({
-        where: coachScopedPlayerWhere(user),
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      }),
+      hentRoster(),
       loadPeriod({ year, periodId: sp.periode, mode, playerId }),
       loadSources({ playerId, weekStart }),
     ]);
-    if (!periodRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}><p style={{ padding: 24 }}>{periodRes.error}</p></WorkbenchShell>;
-    }
+    if (!periodRes.ok) return <Feil navn={navn} melding={periodRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchPeriode
-          key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}`}
-          playerId={playerId}
-          roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spiller.name ?? "Ukjent"}
-          periode={periodRes.data}
-          kilder={kilderRes.ok ? kilderRes.data : []}
-          goals={goals}
-        />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv>
+        <WorkbenchPeriode key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+          spillerNavn={spillerNavn} periode={periodRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
+      </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "stall") {
     const stallRes = await loadStallFollowup({ weekStart, playerId });
-    if (!stallRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}><p style={{ padding: 24 }}>{stallRes.error}</p></WorkbenchShell>;
-    }
+    if (!stallRes.ok) return <Feil navn={navn} melding={stallRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchStall
-          key={`${playerId}:${weekStart}:${sp.okt ?? "forste"}`}
-          playerId={playerId}
-          spillerNavn={spiller.name ?? "Ukjent"}
-          data={stallRes.data}
-          selectedSessionId={sp.okt}
-        />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv>
+        <WorkbenchStall key={`${playerId}:${weekStart}:${sp.okt ?? "forste"}`} playerId={playerId} spillerNavn={spillerNavn} data={stallRes.data} selectedSessionId={sp.okt} />
+      </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "live") {
     const liveRes = await loadWorkbenchLive({ weekStart, playerId });
-    if (!liveRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId} surface="live"><p className="wb-live-load-error">{liveRes.error}</p></WorkbenchShell>;
-    }
+    if (!liveRes.ok) return <Feil navn={navn} melding={liveRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId} surface="live">
-        <WorkbenchLive key={liveRes.data.current?.id ?? "ingen-pagaaende"} playerId={playerId} spillerNavn={spiller.name ?? "Ukjent"} data={liveRes.data} />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv live>
+        <WorkbenchLive key={liveRes.data.current?.id ?? "ingen-pagaaende"} playerId={playerId} spillerNavn={spillerNavn} data={liveRes.data} />
+      </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "min") {
     const calendarRes = await loadMinCalendar({ weekStart, playerId });
-    if (!calendarRes.ok) {
-      return <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}><p style={{ padding: 24 }}>{calendarRes.error}</p></WorkbenchShell>;
-    }
+    if (!calendarRes.ok) return <Feil navn={navn} melding={calendarRes.error} />;
     return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={user.name ?? "Coach"} data={calendarRes.data} />
-      </WorkbenchShell>
+      <AgencyOSSkall navn={navn}><Arv>
+        <WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={navn} data={calendarRes.data} />
+      </Arv></AgencyOSSkall>
     );
   }
 
-  const [roster, weekRes, kilderRes, fysTurnering] = await Promise.all([
-    prisma.user.findMany({
-      where: coachScopedPlayerWhere(user),
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
+  // Uke, Økt og Målsetninger: samme data, nivået velges i klienten.
+  const [roster, weekRes, kilderRes, fysTurnering, grupper] = await Promise.all([
+    hentRoster(),
     loadWeek({ weekStart, mode, playerId }),
     loadSources({ playerId, weekStart }),
     loadFysTurneringWorkbenchData(playerId, { viewer: "coach" }),
+    // Samme eierskap som /admin/grupper: en coach ser gruppene hun eier, admin alle.
+    prisma.group.findMany({
+      where: user.role === "COACH" ? { coachId: user.id } : {},
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
+  if (!weekRes.ok) return <Feil navn={navn} melding={weekRes.error} />;
 
-  if (!weekRes.ok) {
-    return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <p style={{ padding: 24 }}>{weekRes.error}</p>
-      </WorkbenchShell>
-    );
-  }
-
-  if (visning === "okt") {
-    return (
-      <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-        <WorkbenchOkt
-          key={`${playerId}:${weekStart}:${sp.okt ?? "forste"}`}
-          playerId={playerId}
-          roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spiller.name ?? "Ukjent"}
-          uke={weekRes.data}
-          selectedSessionId={sp.okt}
-          kilder={kilderRes.ok ? kilderRes.data : []}
-          goals={goals}
-        />
-      </WorkbenchShell>
-    );
-  }
-
+  const side = SIDER.find((s) => s === sp.side);
   return (
-    <WorkbenchShell coachName={user.name ?? "Coach"} playerId={playerId}>
-      <WorkbenchFysTurnering
-        playerId={playerId}
-        data={fysTurnering}
-        actions={{ flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan }}
-      />
-      <WorkbenchUke
+    <AgencyOSSkall navn={navn}>
+      <AG11Workbench
         key={`${playerId}:${weekStart}`}
         playerId={playerId}
-        roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-        spillerNavn={spiller.name ?? "Ukjent"}
+        spillerNavn={spillerNavn}
         uke={weekRes.data}
         kilder={kilderRes.ok ? kilderRes.data : []}
+        roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))}
         goals={goals}
+        fys={fysTurnering}
+        niva={visning === "mal" ? "mal" : visning === "okt" ? "okt" : "uke"}
+        side={side}
+        valgtOktId={sp.okt}
       />
-    </WorkbenchShell>
+    </AgencyOSSkall>
   );
 }

@@ -1,7 +1,10 @@
-/* V2Laster-skeleton for Workbench-uke (B3, agency-herding). Server Component. */
+"use client";
 
-import { V2Laster } from "@/components/v2/laster";
+/* AG-11 Workbench i Precision Athletics: laster-tilstand i samme skall som sida. */
+
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return <AgencyOSSkall navn=""><div className="pa-side"><LasterTilstand text="Henter planen …" /></div></AgencyOSSkall>;
 }

@@ -42,6 +42,12 @@ type Props = {
   /** Kun for «ark»: om arket er åpent. Utkastet beholdes når det lukkes. */
   apen?: boolean;
   onLukk?: () => void;
+  /**
+   * «precision»: bare feltene, i Precision Athletics-klassene (AG-11), uten
+   * egen beholder — forelderen legger dem i et ark. Pyramiden velges først
+   * som aksepiller. Standard er Workbench-utseendet fra før.
+   */
+  utseende?: "wb" | "precision";
 };
 
 /**
@@ -49,7 +55,9 @@ type Props = {
  * vises, og pyramiden filtrerer bort felt som ikke hører hjemme i grenen. Hver gren har
  * sitt eget utkast, så et valg i én gren aldri overskriver en annen.
  */
-export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "panel", apen = false, onLukk }: Props) {
+export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "panel", apen = false, onLukk, utseende = "wb" }: Props) {
+  const precision = utseende === "precision";
+  const kicker = precision ? "a9-ovelse__steg" : "wb-kicker";
   const [pyramide, setPyramide] = useState<PyramidArea>(standardPyramide);
   const [utkast, setUtkast] = useState(tommeUtkast);
   const [title, setTitle] = useState("");
@@ -101,16 +109,30 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
 
   const felter = (
     <>
-      <label>{UI.drillTitle}<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={UI.drillTitlePlaceholder} /></label>
+      {precision ? null : <label>{UI.drillTitle}<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={UI.drillTitlePlaceholder} /></label>}
 
-      <span className="wb-kicker">1 · Hensikt</span>
-      <label>Pyramide
-        <select value={pyramide} onChange={(e) => { setPyramide(e.target.value as PyramidArea); setFeil(null); }}>
-          {PYRAMIDER.map((p) => <option key={p} value={p}>{PYRAMID_LABEL[p]}</option>)}
-        </select>
-      </label>
+      <span className={kicker}>1 · Hensikt</span>
+      {precision ? (
+        <div role="radiogroup" aria-label="Pyramide" className="a9-akser">
+          {PYRAMIDER.map((p) => (
+            <button key={p} type="button" role="radio" aria-checked={pyramide === p}
+              className={`pa-choice pa-choice--axis pa-choice--${p.toLowerCase()} a9-choice`}
+              onClick={() => { setPyramide(p); setFeil(null); }}>
+              <span className="pa-choice__dot" aria-hidden />{p}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <label>Pyramide
+          <select value={pyramide} onChange={(e) => { setPyramide(e.target.value as PyramidArea); setFeil(null); }}>
+            {PYRAMIDER.map((p) => <option key={p} value={p}>{PYRAMID_LABEL[p]}</option>)}
+          </select>
+        </label>
+      )}
 
-      <span className="wb-kicker">2 · Treningsområde</span>
+      {precision ? <label>{UI.drillTitle}<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={UI.drillTitlePlaceholder} /></label> : null}
+
+      <span className={kicker}>2 · Treningsområde</span>
       <div>
         <label>{UI.drillArea}
           <select value={u.area} onChange={(e) => sett("area", e.target.value as TrainingArea)}>
@@ -120,7 +142,7 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
         <label>{UI.drillDuration}<input type="number" min={1} max={600} value={durationMinutes} onChange={(e) => setDurationMinutes(Number(e.target.value))} /></label>
       </div>
 
-      <span className="wb-kicker">3 · Sted og treningsmiljø</span>
+      <span className={kicker}>3 · Sted og treningsmiljø</span>
       <div>
         <label>Sted
           <select value={u.stedHoved} onChange={(e) => setUtkast((f) => ({ ...f, [pyramide]: { ...f[pyramide], stedHoved: e.target.value, stedDelvalg: "" } }))}>
@@ -140,7 +162,7 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
 
       {felt.maaleutstyr ? (
         <>
-          <span className="wb-kicker">4 · Måleutstyr</span>
+          <span className={kicker}>4 · Måleutstyr</span>
           <label>Hvordan måles øvelsen?
             <select value={u.maaleutstyr} onChange={(e) => sett("maaleutstyr", e.target.value)}>
               <option value="">Ikke valgt</option>
@@ -151,7 +173,7 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
       ) : null}
 
       {felt.laeringssteg || felt.tekniskFokus.length > 0 || felt.sandTrinn || felt.treningsmaate ? (
-        <span className="wb-kicker">5 · Gjennomføring</span>
+        <span className={kicker}>5 · Gjennomføring</span>
       ) : null}
       {felt.laeringssteg ? (
         <div>
@@ -198,7 +220,7 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
 
       {felt.press ? (
         <>
-          <span className="wb-kicker">6 · {UI.formelPress}</span>
+          <span className={kicker}>6 · {UI.formelPress}</span>
           <label>Hvem ser på?
             <select value={u.press} onChange={(e) => sett("press", e.target.value)}>
               <option value="">Ikke valgt</option>
@@ -208,7 +230,7 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
         </>
       ) : null}
 
-      <span className="wb-kicker">7 · Mengde</span>
+      <span className={kicker}>7 · Mengde</span>
       <div>
         {felt.mengde.enheter.length > 1 ? (
           <label>Enhet
@@ -230,17 +252,23 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "pa
         </div>
       ) : null}
 
-      <span className="wb-kicker">8 · Mål</span>
+      <span className={kicker}>8 · Mål</span>
       <label>{UI.formelMal}<input value={u.malsetning} onChange={(e) => sett("malsetning", e.target.value)} placeholder="Hva øvelsen skal flytte" /></label>
       <label>Målemetode<input value={u.malemetode} onChange={(e) => sett("malemetode", e.target.value)} placeholder="For eksempel TrackMan: Launch Direction" /></label>
       <label>Resultatkrav<input value={u.resultatkrav} onChange={(e) => sett("resultatkrav", e.target.value)} placeholder="For eksempel 20 av 30 innenfor målområdet" /></label>
       <label>Notat<input value={u.notat} onChange={(e) => sett("notat", e.target.value)} /></label>
       <label>{UI.formelMate}<input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Hvordan øvelsen gjennomføres" /></label>
 
-      {feil ? <p role="alert" className="wb-ovelse-feil">{feil}</p> : null}
-      {ark ? null : <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>}
+      {feil ? <p role="alert" className={precision ? "a9-ovelse__feil" : "wb-ovelse-feil"}>{feil}</p> : null}
+      {ark ? null : precision ? (
+        <button type="button" className="pa-btn pa-btn--primary pa-btn--full" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>
+      ) : (
+        <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>
+      )}
     </>
   );
+
+  if (precision) return <div className="a9-ovelse">{felter}</div>;
 
   if (!ark) {
     return (
