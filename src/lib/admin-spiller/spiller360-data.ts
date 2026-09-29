@@ -523,7 +523,7 @@ async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
       spilteAar: spiller.playingYears ? `${spiller.playingYears} år` : null,
       ambisjon: spiller.ambition, grupper,
     },
-    foreldre: spiller.childRelations.map((c) => ({ id: c.id, navn: c.parent.name ?? "—", relasjon: c.relationship, kontakt: c.parent.phone ?? c.parent.email ?? null })),
+    foreldre: spiller.childRelations.map((c) => ({ id: c.id, navn: c.parent.name ?? "—", relasjon: ({ FATHER: "Far", MOTHER: "Mor", GUARDIAN: "Verge / annen foresatt" } as Record<string, string>)[c.relationship] ?? c.relationship, kontakt: c.parent.phone ?? c.parent.email ?? null })),
     ranking: [
       { navn: "WAGR", verdi: ekstra.wagr ? `${ekstra.wagr.rank}. plass` : null, kilde: ekstra.wagr ? "WAGR · SISTE SNAPSHOT" : "WAGR · IKKE RANGERT" },
       { navn: "NGF juniorranking", verdi: null, kilde: "NGF · FINNES IKKE I APPEN ENNÅ" },
