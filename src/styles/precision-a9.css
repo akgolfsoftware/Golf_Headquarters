@@ -171,3 +171,5 @@
 .a9-arv { min-width: 0; border-radius: var(--radius); overflow: hidden; }
 .a9-arv .wb-app { min-height: 0; }
 .a9-akser .pa-choice__dot { display: none; }
+/* Gruppas årsplan (ikke portert) får 44 px treffmål på knappene. */
+.a9-arv--gruppe button { min-height: 44px; }
