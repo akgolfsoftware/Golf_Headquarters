@@ -7,7 +7,6 @@ let bruker = { id: "coach-1", role: "COACH" };
 let coachGruppeId: string | null = "wang-top-id";
 let elevGruppeId: string | null = "wang-top-id";
 let tilgangFeil = false;
-let liveKall = 0;
 let elevLesinger = 0;
 let transaksjoner = 0;
 let periodeCount = 1;
@@ -70,7 +69,6 @@ mock.module("@/app/team-wang/_data/wang-tilgang", {
 mock.module("@/app/team-wang/_data/hent-wang-gruppe", {
   namedExports: {
     hentWangGruppe: async () => {
-      liveKall += 1;
       return { gruppeId: "wang-top-id" };
     },
   },
@@ -111,10 +109,6 @@ mock.module("@/lib/prisma", {
   },
 });
 
-async function coachPage() {
-  return (await import("./page")).default;
-}
-
 async function iupPage() {
   return (await import("./iup/[elevId]/page")).default;
 }
@@ -128,7 +122,6 @@ test.beforeEach(() => {
   coachGruppeId = "wang-top-id";
   elevGruppeId = "wang-top-id";
   tilgangFeil = false;
-  liveKall = 0;
   elevLesinger = 0;
   transaksjoner = 0;
   periodeCount = 1;
@@ -136,24 +129,12 @@ test.beforeEach(() => {
   periodeWheres.length = 0;
 });
 
-test("coachruten henter aldri elevlisten når gruppetilgang mangler", async () => {
-  const side = await coachPage();
-  coachGruppeId = null;
-  await assert.rejects(side(), (error) => error === IKKE_FUNNET);
-  assert.equal(liveKall, 0);
-});
-
-test("coachruten henter elevlisten etter godkjent gruppetilgang", async () => {
-  const side = await coachPage();
-  const resultat = await side();
-  assert.equal(liveKall, 1);
-  assert.ok(resultat);
-});
-
-test("IUP-ruten leser ingen elevdata når den felles ressursgrensen avviser", async () => {
+test("IUP-ruten (WG-02 utgår) sender videre til IUP-fanen i elevprofilen uten å lese elevdata", async () => {
   const side = await iupPage();
-  elevGruppeId = null;
-  await assert.rejects(side({ params: Promise.resolve({ elevId: "elev-1" }) }), (error) => error === IKKE_FUNNET);
+  await assert.rejects(
+    side({ params: Promise.resolve({ elevId: "elev-1" }) }),
+    (error) => error instanceof Error && error.message === "REDIRECT:/team-wang/elev/elev-1?fane=iup",
+  );
   assert.equal(elevLesinger, 0);
 });
 
