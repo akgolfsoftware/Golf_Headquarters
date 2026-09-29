@@ -19,6 +19,7 @@ import { phone, email, optStr } from "@/lib/validation/schemas";
 import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
 import { APP_URL } from "@/lib/app-url";
 import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
+import type { FasSvar } from "@/lib/onboarding/oppstart";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -121,6 +122,30 @@ export type SpillerOnboardingData = {
   acceptedPrivacy?: boolean;
   /** Samtykke: egne drills kan deles med plattformen. */
   drillDelingGodtatt?: boolean;
+
+  // Runde 23 (AU-04, 28.09.2026): nye oppstartssteg. Alt under lagres bare i
+  // preferences.onboarding (JSON), ingen nye kolonner. Forslag til egne felt står i PR-en.
+  /** Fødselsdato «ÅÅÅÅ-MM-DD». For under 16 lagres den i kolonnen først når forelderens e-post er oppgitt (Samtykker). */
+  fodselsdato?: string;
+  /** Snittscore siste 10 runder, brutto. Grunnlag for A–K-estimatet i oppstart. */
+  snittScoreSiste10?: number;
+  /** Svarene fra fasilitetsskjemaet (ja/nei og lengder), én rad per sted. */
+  fasiliteterSvar?: OppstartFasSvar[];
+  /** Teknikktest (Inspill Basic): verktøy, avstander og fem slag per kølle. Setter ikke nivå. */
+  teknikktest?: OppstartTeknikktest;
+  /** Ytelsesbilde (søvn, mat, energi) lagres og deles med coach. */
+  samtykkeYtelsesbilde?: boolean;
+  /** Opptak i coachingøkt (video og lyd). Gjelder bare myndige; under 16 gir forelder samtykket. */
+  samtykkeOpptak?: boolean;
+  /** Valgt standardplan: én av de fem navnene i TRENINGSPLANER. */
+  treningsplan?: string;
+};
+
+export type OppstartFasSvar = FasSvar;
+export type OppstartTeknikktest = {
+  verktoy: string;
+  avstand: Record<string, number>;
+  slag: Record<string, Array<[number | null, number | null]>>;
 };
 
 export type ForelderOnboardingData = {
@@ -386,6 +411,17 @@ async function fullforOnboardingSideEffekter(
     }
   } catch (error) {
     await logError({ context: "onboarding.complete.goals", error, userId });
+  }
+
+  // 2b) Opptak i coachingøkt: samme handling som Meg › Personvern. Gjelder bare myndige;
+  // under 16 gir forelder samtykket via lenke, og handlingen avviser mindreårige selv.
+  try {
+    if (onboarding.samtykkeOpptak === true) {
+      const { settEgetLydSamtykke } = await import("@/app/portal/meg/actions");
+      await settEgetLydSamtykke();
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.lyd-samtykke", error, userId });
   }
 
   // 3) Auto-koble til PublicPlayer og hente inn historiske turneringsresultater
