@@ -6,14 +6,11 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  AdminEksternLeserTrainLock,
-  type EksternLeserRad,
-} from "@/components/admin/v2/oppsett/AdminEksternLeserTrainLock";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG23Ekstern, type EksternLeserRad } from "@/components/admin/precision/AG23Team";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Eksterne lesere · AgencyOS" };
 
 export default async function AdminEksternLeserPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
@@ -55,9 +52,8 @@ export default async function AdminEksternLeserPage() {
         }));
 
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
-      <TlTilbake href="/admin/team">Team</TlTilbake>
-      <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Admin"}>
+      <AG23Ekstern tilstand="data" grupper={grupper} lesere={lesere} />
+    </AgencyOSSkall>
   );
 }

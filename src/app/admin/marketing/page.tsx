@@ -3,17 +3,15 @@
  * AI-generering og uten eksterne API-er (M2/M3 bygger videre).
  *
  * Auth: samme requirePortalUser-guard (ADMIN/COACH) som resten av /admin.
- * Chrome: V2Shell (flaten ligger i Mer-panelet under Drift — railens aktive
- * seksjon utledes automatisk av shellens prefiks-matching, som for de andre
- * Mer-flatene; det finnes ingen egen «mer»-nav-id).
+ * Chrome: AgencyOSSkall (AG-23 Markedsføring i Precision Athletics).
  *
  * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminMarketingTrainLock, type MarketingPostV2Row } from "@/components/admin/v2/oppsett/AdminMarketingTrainLock";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG23Markedsforing, type MarketingPostRad } from "@/components/admin/precision/AG23Markedsforing";
 import { MARKETING_KANALER, MARKETING_STATUSER, type MarketingKanal, type MarketingStatus } from "@/lib/admin-marketing/konstanter";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +40,7 @@ export default async function AdminMarketingPage() {
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);
 
-  const rader: MarketingPostV2Row[] = poster.map((p) => ({
+  const rader: MarketingPostRad[] = poster.map((p) => ({
     id: p.id,
     tittel: p.title,
     kanal: somKanal(p.channel),
@@ -53,8 +51,8 @@ export default async function AdminMarketingPage() {
   }));
 
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminMarketingTrainLock poster={rader} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG23Markedsforing tilstand={rader.length === 0 ? "tom" : "data"} poster={rader} />
+    </AgencyOSSkall>
   );
 }
