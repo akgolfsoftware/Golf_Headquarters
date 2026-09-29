@@ -1,55 +1,77 @@
 /**
- * Data for AG-05s Tilgjengelighet-fane — det faste ukemønsteret. Leser samme
- * `CoachAvailability`-tabell som /admin/availability, uten nye felt.
+ * Data for AG-05s Tilgjengelighet-fane (Precision Athletics, 29.09.2026).
+ * Leser samme `CoachAvailability`-tabell som /admin/availability, uten nye felt:
+ * flere vinduer per dag, datounntak (vindu på én dato), repetisjon
+ * (`recurrenceInterval`), gyldighet (`validFrom`/`validTo`) og sted.
  *
- * Fanen viser bare ukentlige vinduer som gjelder i dag (validFrom/validTo).
- * Har en dag nøyaktig ett slikt vindu, kan det slås av og på her. Har dagen
- * flere (flere steder eller perioder), står antallet, og endringen gjøres på
- * /admin/availability, som fortsatt er full fasit for steder, dato-unntak,
- * årsplan og Google-synk. Ingen tid lages på antakelse.
+ * Endringer går gjennom de uendrede handlingene addSlot/updateSlot/deleteSlot
+ * (guard, eierskap og «ikke to steder samtidig»-vernet ligger der).
  */
 
 import { prisma } from "@/lib/prisma";
 import type { User } from "@/generated/prisma/client";
 
-export type UkedagRad = {
-  ukedag: number; // 0=man..6=søn (samme som SlotInput.weekday)
-  navn: string;
-  /** Satt bare når dagen har nøyaktig ett ukentlig vindu. */
-  slotId: string | null;
-  antall: number;
-  paa: boolean;
-  /** «15:00–19:00 · Studio 1», eller null når dagen ikke har ett enkelt vindu. */
-  tekst: string | null;
+export type TilgVindu = {
+  id: string;
+  /** 0=man..6=søn for ukentlige vinduer; null for datounntak. */
+  ukedag: number | null;
+  /** «YYYY-MM-DD» for datounntak; null for ukentlige vinduer. */
+  dato: string | null;
+  start: string;
+  slutt: string;
+  aktiv: boolean;
+  stedId: string | null;
+  stedNavn: string | null;
+  gyldigFra: string | null;
+  gyldigTil: string | null;
+  /** 1/null = hver uke, 2 = annenhver, 3 = hver tredje … */
+  repetisjon: number | null;
+  /** Vinduet gjelder i dag (innenfor gyldighet). */
+  gjelderNaa: boolean;
 };
 
-const NAVN = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+export type TilgData = {
+  vinduer: TilgVindu[];
+  steder: Array<{ id: string; navn: string }>;
+  idag: string;
+};
 
-export async function hentUkemonster(user: User): Promise<UkedagRad[]> {
-  const idag = new Date(`${new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date())}T00:00:00.000Z`);
-  const slots = await prisma.coachAvailability.findMany({
-    where: {
-      coachId: user.id,
-      weekday: { not: null },
-      date: null,
-      AND: [
-        { OR: [{ validFrom: null }, { validFrom: { lte: idag } }] },
-        { OR: [{ validTo: null }, { validTo: { gte: idag } }] },
-      ],
-    },
-    orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
-    select: { id: true, weekday: true, startTime: true, endTime: true, active: true, location: { select: { name: true } } },
-  });
-  return NAVN.map((navn, i) => {
-    const dag = slots.filter((s) => s.weekday === i);
-    const en = dag.length === 1 ? dag[0] : null;
-    return {
-      ukedag: i,
-      navn,
-      slotId: en?.id ?? null,
-      antall: dag.length,
-      paa: dag.some((s) => s.active),
-      tekst: en ? `${en.startTime}–${en.endTime}${en.location ? ` · ${en.location.name}` : ""}` : null,
-    };
-  });
+const iso = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : null);
+
+export async function hentTilgjengelighet(user: User): Promise<TilgData> {
+  const idag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  const [slots, steder] = await Promise.all([
+    prisma.coachAvailability.findMany({
+      where: { coachId: user.id },
+      orderBy: [{ weekday: "asc" }, { date: "asc" }, { startTime: "asc" }],
+      select: {
+        id: true, weekday: true, date: true, startTime: true, endTime: true, active: true,
+        locationId: true, validFrom: true, validTo: true, recurrenceInterval: true,
+        location: { select: { name: true } },
+      },
+    }),
+    prisma.location.findMany({ where: { active: true }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
+  ]);
+  return {
+    idag,
+    steder: steder.map((s) => ({ id: s.id, navn: s.name })),
+    vinduer: slots.map((s) => {
+      const fra = iso(s.validFrom);
+      const til = iso(s.validTo);
+      return {
+        id: s.id,
+        ukedag: s.weekday,
+        dato: iso(s.date),
+        start: s.startTime,
+        slutt: s.endTime,
+        aktiv: s.active,
+        stedId: s.locationId,
+        stedNavn: s.location?.name ?? null,
+        gyldigFra: fra,
+        gyldigTil: til,
+        repetisjon: s.recurrenceInterval,
+        gjelderNaa: (!fra || fra <= idag) && (!til || til >= idag),
+      };
+    }),
+  };
 }

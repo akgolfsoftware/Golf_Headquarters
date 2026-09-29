@@ -58,7 +58,43 @@ export interface KalenderHendelse {
   lesevisning?: boolean;
   /** KA-05: id-ene til hendelsene denne kolliderer med (kun BOOKING). */
   kollidererMed?: string[];
+  /**
+   * Akse fra `WorkbenchSession.pyramid` (kun ØKTER). Farge betyr akse og
+   * ingenting annet: booking, turnering, test og skole har ingen akse og
+   * tegnes nøytralt.
+   */
+  akse?: KalenderAkse;
+  /** Kan flyttes i kalenderen: økt (flyttes direkte) eller booking (forslag). */
+  flytt?: KalenderFlytt;
+  /** Coachen som eier økta/bookingen — filteret «Alle coacher» i AG-05. */
+  coachId?: string | null;
 }
+
+export type KalenderAkse = "fys" | "tek" | "slag" | "spill" | "turn";
+
+const AKSER: readonly KalenderAkse[] = ["fys", "tek", "slag", "spill", "turn"];
+
+/** «FYS» → «fys». Ukjent eller tom pyramide gir ingen akse (nøytral). */
+export function akseFraPyramide(pyramid: string | null | undefined): KalenderAkse | undefined {
+  const v = (pyramid ?? "").trim().toLowerCase();
+  return (AKSER as readonly string[]).includes(v) ? (v as KalenderAkse) : undefined;
+}
+
+export type KalenderFlytt =
+  | {
+      type: "okt";
+      id: string;
+      /** Spilleren ser økta (publisert/pågår/fullført) og får derfor varsel. */
+      spillerSer: boolean;
+    }
+  | {
+      type: "booking";
+      id: string;
+      /** Bookingen har en spillerkonto som kan godta et forslag i PlayerHQ. */
+      harSpiller: boolean;
+      /** Allerede foreslått ny tid, venter på spilleren («YYYY-MM-DD HH:MM»). */
+      foreslaatt: string | null;
+    };
 
 /** Behold kun hendelser fra synlige lag — komponenten eier `synligeLag`-state. */
 export function synlige(

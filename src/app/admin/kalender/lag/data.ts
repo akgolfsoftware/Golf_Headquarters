@@ -13,9 +13,12 @@ import { dagerIUken, endOfDay, endOfWeek, formatPeriode, startOfDay, startOfWeek
 import { fraDatoKolonne, tilDatoKolonne } from "@/lib/workbench/wb-map";
 import {
   ALLE_LAG,
+  akseFraPyramide,
   type KalenderHendelse,
   type KalenderLag,
 } from "@/lib/domain/kalender-lag";
+import { byggTurneringslag, type Turneringslag } from "@/lib/domain/kalender-turnering";
+import { SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
 import {
   romKollisjoner,
   romKollidererIder,
@@ -45,6 +48,13 @@ export interface KalenderLagUkeData {
   kollisjoner: RomKollisjonPar[];
   /** Serialiserbart over RSC → klient (ikke Set). */
   kollidererIder: string[];
+  /**
+   * Turneringslaget over uka (WorkbenchTournamentPlan): turnerings- og
+   * reisedager per dag i vinduet, og reisevarsler. Vises over uka.
+   */
+  turneringslag: Turneringslag;
+  /** Coachene som eier økter/bookinger i vinduet — filteret «Alle coacher». */
+  coacher: Array<{ id: string; navn: string }>;
   nav: {
     forrige: string;
     neste: string;
@@ -115,8 +125,12 @@ async function hentHendelserIVindu(
   hendelser: KalenderHendelse[];
   kollisjoner: RomKollisjonPar[];
   kollidererIder: string[];
+  turneringslag: Turneringslag;
+  coacher: Array<{ id: string; navn: string }>;
 }> {
-  const [oktRader, skoleRader, turneringRader, testRader, bookingRader] = await Promise.all([
+  const forsteDag = dager[0] ?? isoAvLokalDato(vinduStart);
+  const sisteDag = dager[dager.length - 1] ?? isoAvLokalDato(vinduStart);
+  const [oktRader, skoleRader, turneringRader, testRader, bookingRader, turneringsPlaner] = await Promise.all([
     prisma.workbenchSession.findMany({
       where: {
         date: { gte: tilDatoKolonne(dager[0] ?? isoAvLokalDato(vinduStart)), lte: tilDatoKolonne(dager[dager.length - 1] ?? isoAvLokalDato(vinduStart)) },
@@ -130,6 +144,9 @@ async function hentHendelserIVindu(
         title: true,
         location: true,
         playerId: true,
+        pyramid: true,
+        status: true,
+        coachId: true,
       },
       orderBy: [{ date: "asc" }, { startMinute: "asc" }],
       take: 2000,
@@ -168,9 +185,31 @@ async function hentHendelserIVindu(
       orderBy: { startAt: "asc" },
       take: 2000,
     }),
+    // Turneringslaget: planer som spilles eller har reisedager i vinduet.
+    prisma.workbenchTournamentPlan.findMany({
+      where: {
+        status: { notIn: ["WITHDRAWN", "ARCHIVED"] },
+        OR: [
+          { startDate: { lte: tilDatoKolonne(sisteDag) }, endDate: { gte: tilDatoKolonne(forsteDag) } },
+          { travelStartDate: { lte: tilDatoKolonne(sisteDag) }, travelEndDate: { gte: tilDatoKolonne(forsteDag) } },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        playerId: true,
+        startDate: true,
+        endDate: true,
+        travelStartDate: true,
+        travelEndDate: true,
+      },
+      orderBy: { startDate: "asc" },
+      take: 200,
+    }),
   ]);
 
-  const spillerIder = [...new Set(oktRader.map((r) => r.playerId))];
+  const coachIder = [...new Set([...oktRader.map((r) => r.coachId), ...bookingRader.map((r) => r.coachId)].filter((id): id is string => !!id))];
+  const spillerIder = [...new Set([...oktRader.map((r) => r.playerId), ...turneringsPlaner.map((p) => p.playerId), ...coachIder])];
   const spillerNavn = new Map<string, string | null>();
   if (spillerIder.length > 0) {
     const spillere = await prisma.user.findMany({
@@ -194,6 +233,13 @@ async function hentHendelserIVindu(
       sluttMin: Math.min(1440, r.startMinute + r.durationMinutes),
       heldag: false,
       href: `/admin/workbench/${r.playerId}`,
+      akse: akseFraPyramide(r.pyramid),
+      coachId: r.coachId,
+      flytt: {
+        type: "okt",
+        id: r.id,
+        spillerSer: (SPILLER_SYNLIGE_STATUSER as readonly string[]).includes(r.status),
+      },
     });
   }
 
@@ -257,6 +303,17 @@ async function hentHendelserIVindu(
       sluttMin,
       heldag: false,
       href: `/admin/bookinger/${r.id}`,
+      coachId: r.coachId,
+      flytt: r.status === "COMPLETED"
+        ? undefined
+        : {
+            type: "booking",
+            id: r.id,
+            harSpiller: r.userId != null,
+            foreslaatt: r.proposedStartAt
+              ? `${isoAvLokalDato(r.proposedStartAt)} ${String(r.proposedStartAt.getHours()).padStart(2, "0")}:${String(r.proposedStartAt.getMinutes()).padStart(2, "0")}`
+              : null,
+          },
     });
     if (r.facility) {
       kapasitetPerFasilitet[r.facility.id] = r.facility.capacity;
@@ -281,10 +338,31 @@ async function hentHendelserIVindu(
     }
   }
 
+  const turneringslag = byggTurneringslag(
+    dager,
+    turneringsPlaner.map((p) => ({
+      id: p.id,
+      tittel: p.title,
+      spiller: spillerNavn.get(p.playerId) ?? "Spiller",
+      spillerId: p.playerId,
+      startDato: fraDatoKolonne(p.startDate),
+      sluttDato: fraDatoKolonne(p.endDate),
+      reiseFra: p.travelStartDate ? fraDatoKolonne(p.travelStartDate) : null,
+      reiseTil: p.travelEndDate ? fraDatoKolonne(p.travelEndDate) : null,
+    })),
+    oktRader.map((r) => ({ spillerId: r.playerId, dato: fraDatoKolonne(r.date), tittel: r.title })),
+  );
+
+  const coacher = coachIder
+    .map((id) => ({ id, navn: spillerNavn.get(id) ?? "Coach" }))
+    .sort((a, b) => a.navn.localeCompare(b.navn, "nb-NO"));
+
   return {
     hendelser,
     kollisjoner,
     kollidererIder: [...kollidererSet],
+    turneringslag,
+    coacher,
   };
 }
 
@@ -395,3 +473,46 @@ export async function hentKalenderLagManed(
 export const KALENDER_LAG_UKEDAG_KORT = UKEDAG_KORT;
 export type { KalenderHendelse, KalenderLag, RomKollisjonPar };
 export { ALLE_LAG };
+
+export interface KalenderAarData {
+  aar: number;
+  maaneder: Array<{ nokkel: string; navn: string; bookinger: number; okter: number }>;
+  nav: { forrige: string; neste: string; idag: string };
+}
+
+const MND_KORT = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
+
+/**
+ * AG-05-AR: bookinger og økter per måned i ett år. Samme statuser som
+ * uke-visningen (bookinger: bekreftet/venter/gjennomført; økter: ikke
+ * avlyst/hoppet over). Tellinger, ingen estimater.
+ */
+export async function hentKalenderAar(aarParam?: string): Promise<KalenderAarData> {
+  const iAar = Number(new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo", year: "numeric" }).format(new Date()));
+  const aar = aarParam && /^\d{4}$/.test(aarParam) ? Number(aarParam) : iAar;
+  const maaneder = await Promise.all(
+    MND_KORT.map(async (navn, m) => {
+      const [bookinger, okter] = await Promise.all([
+        prisma.booking.count({
+          where: { startAt: { gte: new Date(aar, m, 1), lt: new Date(aar, m + 1, 1) }, status: { in: ["CONFIRMED", "PENDING", "COMPLETED"] } },
+        }),
+        prisma.workbenchSession.count({
+          where: {
+            date: { gte: new Date(Date.UTC(aar, m, 1)), lt: new Date(Date.UTC(aar, m + 1, 1)) },
+            status: { notIn: ["CANCELLED", "SKIPPED"] },
+          },
+        }),
+      ]);
+      return { nokkel: `${aar}-${String(m + 1).padStart(2, "0")}`, navn, bookinger, okter };
+    }),
+  );
+  return {
+    aar,
+    maaneder,
+    nav: {
+      forrige: `/admin/kalender?fane=ar&aar=${aar - 1}`,
+      neste: `/admin/kalender?fane=ar&aar=${aar + 1}`,
+      idag: "/admin/kalender?fane=ar",
+    },
+  };
+}

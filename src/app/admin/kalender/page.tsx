@@ -6,19 +6,19 @@
  *
  * «Tilgjengelighet» er en ny, femte fane (AG-05-tegningen, 28.09.2026) — se
  * lib/admin/kalender/faner.ts for hvorfor det tidligere var et bevisst unntak.
+ * «År» (AG-05-AR) og Stall-dag i Precision kom 29.09.2026.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Side, SideHode, FanerLenker } from "@/components/precision/pa-a4";
-import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
+import { AG05Uke, AG05Maned, AG05Aar, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
-import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
+import { AG05StallDag, AG05StallFeil } from "@/components/admin/precision/AG05StallDag";
 import { loadStallDag } from "@/lib/workbench/wb-actions";
 import { erKalenderLag, type KalenderLag } from "@/lib/domain/kalender-lag";
-import { hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
-import { hentUkemonster } from "./tilg-data";
+import { hentKalenderAar, hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
+import { hentTilgjengelighet } from "./tilg-data";
 import { KALENDER_FANER, kalenderHref, velgKalenderFane } from "@/lib/admin/kalender/faner";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +31,7 @@ type SearchParams = Promise<{
   maaned?: string;
   dato?: string;
   lag?: string;
+  aar?: string;
 }>;
 
 const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/;
@@ -54,15 +55,16 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
     const dato = sp.dato && ISO_DATO.test(sp.dato) ? sp.dato : idag;
     const res = await loadStallDag({ dato });
     periode = `Stall-dag · ${dato}`;
-    innhold = (
-      <div style={TL_SCOPE}>
-        {res.ok ? <StallDagV2 dato={dato} data={res.data} erIdag={dato === idag} somFane /> : <StallDagFeil melding={res.error} />}
-      </div>
-    );
+    innhold = res.ok ? <AG05StallDag dato={dato} data={res.data} erIdag={dato === idag} /> : <AG05StallFeil melding={res.error} />;
   } else if (fane === "tilg") {
-    const rader = await hentUkemonster(user);
+    const data = await hentTilgjengelighet(user);
     periode = "Tilgjengelighet";
-    innhold = <AG05Tilg rader={rader} />;
+    innhold = <AG05Tilg data={data} />;
+  } else if (fane === "ar") {
+    const data = await hentKalenderAar(sp.aar);
+    periode = `År ${data.aar}`;
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} />;
+    innhold = <AG05Aar data={data} />;
   } else if (fane === "maned") {
     const data = await hentKalenderLagManed(sp.maaned, { lag: startLag });
     periode = data.periode;
@@ -81,7 +83,7 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
         <SideHode
           kicker={`Kalender · ${periode}`}
           title="Kalender"
-          sub="Åpne en hendelse for å se detaljene og gå videre til den."
+          sub="Dra en økt eller booking til ny dag og tid, eller åpne den og velg Flytt. Økter flyttes med en gang; bookinger får et forslag spilleren godtar."
           actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />}
         />
         <FanerLenker faner={KALENDER_FANER.map((f) => ({ href: kalenderHref(f.id), navn: f.label, aktiv: f.id === fane }))} />

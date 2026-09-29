@@ -170,3 +170,38 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
     oldTime: formatTid(oldStartAt),
   });
 }
+
+/**
+ * Coach foreslår ny tid på en booking (Anders 29.09.2026). Bookingen er ikke
+ * flyttet ennå: e-posten ber spilleren godta eller avslå i PlayerHQ. Teksten
+ * ligger i koden (ingen ny EmailTemplate-rad), så ingen databaseendring trengs.
+ */
+export async function sendBookingFlytteforslag(bookingId: string) {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { user: { select: { name: true, email: true } }, serviceType: { select: { name: true } }, location: { select: { name: true } } },
+  });
+  if (!booking || !booking.proposedStartAt) return;
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) return;
+  const navn = booking.user?.name?.split(" ")[0] ?? booking.guestName ?? "der";
+  const lenke = `${APP_URL}/portal/booking/${booking.id}`;
+  const body = [
+    `Hei ${navn},`,
+    `Coachen din foreslår å flytte **${booking.serviceType.name}** på ${booking.location.name}.`,
+    `Nå: ${formatDato(booking.startAt)} kl ${formatTid(booking.startAt)}\nForslag: ${formatDato(booking.proposedStartAt)} kl ${formatTid(booking.proposedStartAt)}`,
+    `Timen står på den gamle tiden til du har svart. Godta eller avslå her: ${lenke}`,
+    "Hilsen AK Golf",
+  ].join("\n\n");
+  try {
+    await resendKlient().emails.send({
+      from: FRA_EPOST,
+      to: epost,
+      subject: `Forslag om ny tid: ${booking.serviceType.name}`,
+      html: tilHtml(body),
+    });
+  } catch (error) {
+    await logError({ context: "email.booking.flytteforslag", error, meta: { bookingId } });
+    throw error;
+  }
+}

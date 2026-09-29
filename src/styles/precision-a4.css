@@ -282,3 +282,364 @@ div.a4-week--grid {
   align-items: center;
   min-width: 0;
 }
+
+/* ===================== A4 del 2 (29.09.2026) ===================== */
+
+/* Valgpille og segmentert valg: 44 px treffmål under 1024 px (designets --control-h). */
+.a4-choice {
+  max-width: 100%;
+  min-width: 0;
+}
+@media (max-width: 1024px) {
+  .a4-choice {
+    height: 44px;
+  }
+  .a4-seg .pa-seg__opt {
+    height: 40px;
+  }
+}
+.a4-seg {
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.a4-pilrad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Varsel med handling til høyre (bryter under på smal skjerm). */
+.a4-alert {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.a4-alert__tekst {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.a4-alert__handling {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Angre-toast: fast nederst, sentrert. */
+.a4-undo {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(420px, calc(100% - 32px));
+}
+.a4-toast__tekst {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.a4-toast__action {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Aksestripe på økter: farge betyr akse, ingenting annet. Nøytralt ellers. */
+.a4-ev[data-akse] {
+  box-shadow: inset 3px 0 0 var(--a4-akse);
+}
+.a4-ev[data-dra] {
+  cursor: grab;
+}
+.a4-ev[data-drar] {
+  opacity: 0.45;
+}
+.a4-week__day[data-slipp] {
+  outline: 1px dashed var(--border-strong);
+  outline-offset: -2px;
+}
+.a4-ev[data-forslag] {
+  border-style: dashed;
+}
+
+/* Turneringslaget over uka. */
+.a4-turn {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+@media (min-width: 1025px) {
+  .a4-turn {
+    grid-template-columns: 48px repeat(7, minmax(0, 1fr));
+  }
+}
+.a4-turn__etikett {
+  display: none;
+  align-self: center;
+}
+@media (min-width: 1025px) {
+  .a4-turn__etikett {
+    display: block;
+  }
+}
+.a4-turn__celle {
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: var(--radius-inner, 4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid transparent;
+  min-width: 0;
+}
+.a4-turn__celle[data-type="TURNERING"] {
+  background: var(--axis-turn-soft);
+  box-shadow: inset 3px 0 0 var(--axis-turn);
+}
+.a4-turn__celle[data-type="REISE"] {
+  border: 1px dashed var(--border-strong);
+}
+.a4-turn__tekst {
+  font: 500 12px/1.2 var(--font-sans);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* Veiviser: steglinje og radioliste. */
+.a4-steg {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 4px;
+}
+.a4-steg__ledd {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.a4-steg__strek {
+  height: 3px;
+  background: var(--border-hairline);
+}
+.a4-steg__ledd[aria-current="step"] .a4-steg__strek,
+.a4-steg__ledd[data-ferdig] .a4-steg__strek {
+  background: var(--primary);
+}
+.a4-rad {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.a4-rad:first-child {
+  border-top: none;
+}
+.a4-rad:focus-visible {
+  outline: 2px solid var(--border-ink);
+  outline-offset: 2px;
+}
+.a4-rad[disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
+.a4-rad__hoved {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.a4-rad__tittel {
+  font: 500 14px/1.3 var(--font-sans);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+.a4-rad__tittel[data-valgt] {
+  font-weight: 600;
+}
+.a4-rad__side {
+  font: 600 14px/1 var(--font-mono);
+  color: var(--text-primary);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.a4-liste {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* AG-06: to kolonner med detaljpanel fra 1100 px. */
+.a4-todel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 1100px) {
+  .a4-todel {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+  .a4-bare-smal {
+    display: none;
+  }
+}
+@media (max-width: 1099px) {
+  .a4-bare-bred {
+    display: none;
+  }
+}
+.a4-bkrad {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  min-height: 64px;
+  border-top: 1px solid var(--border-hairline);
+}
+.a4-bkrad:first-child {
+  border-top: none;
+}
+.a4-bkrad[aria-pressed="true"] {
+  background: var(--surface-flat);
+  box-shadow: inset 2px 0 0 var(--border-ink);
+}
+.a4-bkrad:focus-visible {
+  outline: 2px solid var(--border-ink);
+  outline-offset: -2px;
+}
+.a4-bkrad__tid {
+  font: 600 14px/1 var(--font-mono);
+  width: 96px;
+  flex: none;
+}
+.a4-bkrad__hoved {
+  flex: 1 1 180px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.a4-bkrad__tittel {
+  font: 500 14px/1.3 var(--font-sans);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* Årsvisning: én rad per måned. */
+.a4-aar__rad {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 56px 56px;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+  border-top: 1px solid var(--border-hairline);
+}
+.a4-aar__rad:first-child {
+  border-top: none;
+}
+.a4-aar__spor {
+  height: 8px;
+  background: var(--surface-sunken);
+  position: relative;
+}
+.a4-aar__fyll {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--primary);
+}
+.a4-tall {
+  font: 600 13px/1 var(--font-mono);
+  color: var(--text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tilgjengelighet: vindu-rader. */
+.a4-vindu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-height: 52px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-hairline);
+  min-width: 0;
+}
+.a4-vindu__dag {
+  font: 500 14px/1.2 var(--font-sans);
+  width: 88px;
+  flex: none;
+}
+.a4-vindu__tid {
+  font: var(--type-num-s);
+  flex: 1 1 140px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.a4-vindu__handling {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Stall-dag i Precision: spillere som kolonner (desktop), kort (mobil). */
+.a4-stall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+.a4-stall__kort {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  min-width: 0;
+}
+.a4-stall__okt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 8px 4px 10px;
+  border-radius: var(--radius-inner, 4px);
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-card);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.a4-stall__okt[data-utkast] {
+  border-style: dashed;
+  background: transparent;
+}
+.a4-stall__okt[data-akse] {
+  box-shadow: inset 3px 0 0 var(--a4-akse);
+}
