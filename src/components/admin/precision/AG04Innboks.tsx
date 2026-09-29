@@ -462,7 +462,10 @@ export function AG04Innboks(props: AG04Props) {
                   <div role="list">{lost.map((p) => <Sak key={p.key} p={p} open={open === p.key}
                     onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={false} />)}</div>
                 </section>}
-                {visOppf && <Meta>{`DRA EN SAK TIL RISIKO, FØLG MED, SJEKK ELLER LØST · AV ${tallTekst(oppfolgingSpillere)} SPILLERE TOTALT`}</Meta>}
+                {visOppf && <div className="pa-a7-rad">
+                  <Meta>{`DRA EN SAK TIL RISIKO, FØLG MED, SJEKK ELLER LØST · AV ${tallTekst(oppfolgingSpillere)} SPILLERE TOTALT`}</Meta>
+                  <KnappLenke size="sm" variant="ghost" href="/admin/oppsett">Justere regler</KnappLenke>
+                </div>}
               </>}
           <Meta>HASTER FØRST, DERETTER NYESTE · SPØRSMÅL FRA SPILLER UBESVART I 24 T MERKES HASTER · RISIKO ER FILTER UNDER OPPFØLGING · JARVIS-CHATTEN HAR EGEN SIDE</Meta>
         </>}

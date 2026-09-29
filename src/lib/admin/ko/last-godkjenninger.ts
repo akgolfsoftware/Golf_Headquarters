@@ -28,7 +28,7 @@ import { caddieDraftAvgjortWhere, caddieDraftKoWhere } from "@/lib/caddie/draft-
 import type {
   AdminGodkjenningerV2Data,
   AdminGodkjenningV2Row,
-} from "@/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock";
+} from "@/components/admin/v2/AdminGodkjenningerV2";
 
 export type KoBruker = { id: string; role: string };
 
