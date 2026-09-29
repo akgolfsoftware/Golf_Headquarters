@@ -6,6 +6,8 @@ import { sorterRangliste, type TnRanglisteSortering } from "@/lib/domain/tn-rang
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
 import { SkjermRamme, hentSkjermbruker, osloDag } from "./felles";
+import { Users } from "lucide-react";
+import { TnTomFlate } from "../tn-uttak-plan-gruppe-admin/tn-tilstander";
 
 /**
  * TN-16 Rangliste.
@@ -13,6 +15,8 @@ import { SkjermRamme, hentSkjermbruker, osloDag } from "./felles";
  *
  * Avvik:
  *   - Klassefilteret (Herrer/Damer) finnes ikke: spillerprofilen har ikke kjønn.
+ *   - Klassefilteret er ute også i siste tegning (Alle/Herrer/Damer/U18):
+ *     kjønn finnes ikke på brukeren, og klasse regnes ikke ut.
  *   - Spillere som ikke er koblet til en offentlig spillerprofil har ingen
  *     resultater å hente. De står nederst med strek og merknaden «ikke koblet».
  */
@@ -20,7 +24,7 @@ import { SkjermRamme, hentSkjermbruker, osloDag } from "./felles";
 const tall1 = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const tall2 = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const SORTERINGER: [TnRanglisteSortering, string][] = [["brutto", "Brutto snitt"], ["plass", "Snittplassering"], ["starter", "Flest starter"]];
-const KOLONNER = "28px minmax(0, 1fr) 48px 60px 64px";
+const KOLONNER = "28px minmax(0, 1fr) repeat(3, minmax(50px, 76px))";
 
 export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Record<string, string | string[] | undefined> }) {
   const bruker = await hentSkjermbruker();
@@ -36,6 +40,9 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
     <SkjermRamme aktiv="rangliste" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode rute="/team-norway/rangliste" tittel="Rangliste" ingress={`Alle landslagsspillere med antall starter, snittplassering og brutto snitt i ${aar}. Netto regnes ikke.`} />
 
+      {rader.length === 0 ? (
+        <TnTomFlate ikon={Users} tittel="Ingen spillere i gruppen" tekst="Ranglisten fylles når spillerne er lagt inn i Team Norway-gruppen og koblet til resultatene sine." lenke={{ href: "/team-norway/turneringer", tekst: "Se turneringer" }} />
+      ) : (<>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
         <TnEtikett>Sorter</TnEtikett>
         <TnFilterknapper etikett="Sorter ranglisten" valg={SORTERINGER.map(([id, label]) => ({ href: `/team-norway/rangliste?sort=${id}`, label, aktiv: id === sortering }))} />
@@ -43,11 +50,10 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
 
       <TnFlate>
         <TnFlatehode tittel={`Rangliste · sesongen ${aar}`} merknad={`Kun brutto · ${medStart} av ${rader.length} med start`} />
-        {rader.length > 0 ? (
           <div role="table" aria-label={`Rangliste ${aar}`}>
             <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "10px 0", borderBottom: `1px solid ${TN.navy100}` }}>
-              {["#", "Spiller", "Starter", "Snittpl.", "Brutto"].map((k, i) => (
-                <TnEtikett key={k} style={{ fontSize: 10.5, textAlign: i >= 2 ? "right" : undefined }}><span role="columnheader">{k}</span></TnEtikett>
+              {([["#", null], ["Spiller", null], ["Starter", "starter"], ["Snittpl.", "plass"], ["Brutto", "brutto"]] as const).map(([k, id], i) => (
+                <TnEtikett key={k} style={{ fontSize: 10.5, letterSpacing: "0.12em", textAlign: i >= 2 ? "right" : undefined, color: id === sortering ? TN.navy900 : TN.textSecondary }}><span role="columnheader" aria-sort={id === sortering ? (id === "starter" ? "descending" : "ascending") : undefined}>{k}</span></TnEtikett>
               ))}
             </div>
             {rader.map((r, i) => (
@@ -66,11 +72,10 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
               </div>
             ))}
           </div>
-        ) : (
-          <TnMangler>Ingen spillere i gruppen ennå. Ranglisten fylles når spillerne er lagt inn og koblet til resultatene sine.</TnMangler>
-        )}
+        {medStart === 0 ? <TnMangler>Ingen resultater for sesongen ennå. Ranglisten bygges fra brutto score i registrerte turneringer. Første resultat kommer når en spiller har fullført en runde.</TnMangler> : null}
         <TnFotnote>Brutto snitt er ekte slag per runde i {aar}. Snittplassering regnes bare der plasseringen bygger på brutto, aldri i nettoklasser. Spillere uten start står nederst med strek.</TnFotnote>
       </TnFlate>
+      </>)}
     </SkjermRamme>
   );
 }
