@@ -36,7 +36,8 @@ import { mondayOf, monthStartOf, lastDayOfMonth, addDays } from "@/lib/domain/wo
 import { PYRAMID_LABEL, STATUS_LABEL, BLOCK_LABEL } from "@/lib/domain/workbench/labels";
 import type { PyramidArea, RecurrencePolicy, WorkbenchMode, SourceItem } from "@/lib/domain/workbench/types";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon } from "@/components/team-norway/tn-shell";
+import { SpillerUnderfaner } from "@/components/team-norway/tn-daglig-spillere/spiller-underfaner";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
 import { krevTnTrenerflate } from "@/lib/domain/tn-flate-tilgang";
 
@@ -347,7 +348,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       />
 
       {spillerId && (
-        <TnSpillerFaner
+        <SpillerUnderfaner
           spillerId={spillerId}
           spillerNavn={kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? spillerId}
           aktiv="workbench"

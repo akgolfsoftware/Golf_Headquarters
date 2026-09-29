@@ -1,8 +1,11 @@
 /**
  * TN-19 Tilgang og samtykke (erstatter Samtykke og Inviter spiller).
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm «tilgang».
- * Avvikene står i tn-tilgang-samtykke.tsx. Tilgang og lagring avgjøres på
- * serveren; valgt person for «Endre» og delingsfilteret følger adressen.
+ * Tilgang og lagring avgjøres på serveren; valgt person for «Endre» og
+ * delingsfilteret følger adressen.
+ * Avvik:
+ *   - Ingen riggrad: skjermen er dataavhengig og har ingen fixture ennå.
+ *   - Resten av avvikene mot tegningen står i tn-tilgang-samtykke.tsx.
  */
 import { notFound } from "next/navigation";
 

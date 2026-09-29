@@ -53,10 +53,8 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
   const erTrenerHer = bruker.id !== spillerId && !foresatte.some((f) => f.parent.id === bruker.id);
   const spillerAlder = alder(spiller.dateOfBirth);
 
-  async function publiserSpillerpost(input: { tekst: string; kind: string }) {
-    "use server";
-    return opprettSpillerpostAction(spillerId, input);
-  }
+  // Serverhandlingen (med egen trenervakt) bindes til spilleren her.
+  const publiserSpillerpost = opprettSpillerpostAction.bind(null, spillerId);
 
   const harTrenertilgang = erTrenerHer || bruker.role === "ADMIN";
 

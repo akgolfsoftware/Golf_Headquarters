@@ -26,7 +26,7 @@ export function tnDokumenterHref(groupId: string): string {
 }
 
 export function tnSpillerpostHref(spillerId: string): string {
-  return `/team-norway/spiller/${spillerId}`;
+  return `/team-norway/spiller/${spillerId}/post`;
 }
 
 export function tnTestforingHref(protocolId?: string): string {
