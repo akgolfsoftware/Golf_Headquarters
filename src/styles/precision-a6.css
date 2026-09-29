@@ -1,0 +1,56 @@
+/*
+ * Precision Athletics — Cockpit (AG-01). Egen fil for å unngå konflikt med
+ * parallelle bolker. Speiler AG-cockpit.jsx (runde 25). Bare tokens fra .pa-root.
+ */
+.pa-a6-side{padding:20px 16px 104px;display:flex;flex-direction:column;gap:16px;max-width:1360px;width:100%;box-sizing:border-box;margin:0 auto;min-width:0}
+@media (min-width:600px){.pa-a6-side{padding:28px 24px 104px;gap:24px}}
+@media (min-width:1080px){.pa-a6-side{padding:32px 32px 104px}}
+
+.pa-a6-kolonner{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (min-width:1064px){.pa-a6-kolonner{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start}}
+.pa-a6-stabel{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+.pa-a6-sek{padding:16px;gap:8px;min-width:0}
+.pa-a6-sek__hode{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pa-a6-sek__kicker{flex:1 1 auto}
+.pa-a6-dempet{margin:0;font:var(--type-body-s);color:var(--text-secondary);text-wrap:pretty}
+
+.pa-a6-rad{display:grid;gap:12px;align-items:center;border-top:1px solid var(--border-hairline);padding:6px 0;min-width:0;box-sizing:border-box}
+.pa-a6-rad[data-forste]{border-top:none}
+.pa-a6-rad--lenke{color:inherit;text-decoration:none;cursor:pointer;border-radius:2px}
+.pa-a6-rad--lenke:hover .pa-a6-etikett__a{text-decoration:underline;text-underline-offset:3px}
+.pa-a6-rad--lenke:focus-visible{outline:2px solid var(--text-primary);outline-offset:2px}
+
+.pa-a6-etikett{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pa-a6-etikett__a{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere;text-wrap:pretty}
+
+.pa-a6-tellere{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
+@media (min-width:700px){.pa-a6-tellere{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.pa-a6-teller{padding:14px;gap:6px;text-align:left;min-width:0;min-height:84px;color:inherit;text-decoration:none;box-sizing:border-box}
+.pa-a6-teller__tall{font:600 28px/1 var(--font-mono);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.pa-a6-teller__label{font:500 13px/1.3 var(--font-sans);color:var(--text-secondary)}
+
+.pa-a6-stripe{position:relative;height:20px;background:var(--surface-sunken);border-radius:4px}
+.pa-a6-stripe__okt{position:absolute;top:3px;bottom:3px;background:var(--primary);border-radius:2px}
+.pa-a6-stripe__okt[data-ferdig]{background:var(--graphite-400)}
+.pa-a6-stripe__naa{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text-primary)}
+.pa-a6-stripe__akse{display:flex;justify-content:space-between}
+
+.pa-a6-tid{display:flex;flex-direction:column;gap:2px}
+.pa-a6-tid__start{font:600 15px/1 var(--font-mono);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.pa-a6-tid__start[data-ferdig]{color:var(--text-muted)}
+
+.pa-a6-tall{font:600 17px/1 var(--font-mono);color:var(--text-primary);font-variant-numeric:tabular-nums;text-align:right}
+.pa-a6-tall--s{font:600 13px/1.3 var(--font-mono)}
+.pa-a6-pst{display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+
+.pa-a6-venter{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px solid var(--border-hairline);min-width:0}
+.pa-a6-venter[data-forste]{border-top:none}
+.pa-a6-venter__topp{display:flex;gap:10px;align-items:center;min-width:0;flex-wrap:wrap}
+.pa-a6-venter__hvem{flex:1 1 auto;min-width:0;font:600 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.pa-a6-venter__tekst{font:400 14px/1.4 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere;text-wrap:pretty}
+
+.pa-a6-oppgave__tittel{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.pa-a6-oppgave__tittel[data-ferdig]{text-decoration:line-through;color:var(--text-muted)}
+
+.pa-a6-handlinger{display:flex;gap:8px;flex-wrap:wrap}

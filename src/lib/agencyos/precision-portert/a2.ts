@@ -4,4 +4,4 @@
  * Mønster: «/admin/spillere/[id]» — hakeparentes er ett vilkårlig ledd.
  * Bare sider under src/app/admin/(legacy) trenger å stå her.
  */
-export const A2: readonly string[] = [];
+export const A2: readonly string[] = ["/admin/spillere/[id]/rediger"];

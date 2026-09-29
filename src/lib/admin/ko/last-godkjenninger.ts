@@ -28,7 +28,7 @@ import { caddieDraftAvgjortWhere, caddieDraftKoWhere } from "@/lib/caddie/draft-
 import type {
   AdminGodkjenningerV2Data,
   AdminGodkjenningV2Row,
-} from "@/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock";
+} from "@/components/admin/v2/AdminGodkjenningerV2";
 
 export type KoBruker = { id: string; role: string };
 
@@ -232,10 +232,10 @@ export async function lastGodkjenninger(
     ...requestRows.map((r, i) => ({ ...r, _opprettet: sessionRequests[i].createdAt })),
   ];
   alleRowsMedTid.sort((a, b) => b._opprettet.getTime() - a._opprettet.getTime());
-  const alleRows: AdminGodkjenningV2Row[] = alleRowsMedTid.map(({ _opprettet, ...rest }) => {
-    void _opprettet;
-    return rest;
-  });
+  const alleRows: AdminGodkjenningV2Row[] = alleRowsMedTid.map(({ _opprettet, ...rest }) => ({
+    ...rest,
+    opprettetIso: _opprettet.toISOString(),
+  }));
 
   // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
   const lostRader = await prisma.planAction.findMany({
