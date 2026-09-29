@@ -1,11 +1,17 @@
 import { redirect } from "next/navigation";
+import { innboksHref } from "@/lib/admin/innboks/filter";
 
 /**
- * /admin/godkjenninger → /admin/ko?fane=godkjenninger
+ * /admin/godkjenninger → /admin/innboks?filter=godkjenn
  *
- * MASTERPLAN 15.1 (beslutning 6.9, «én inngang per funksjon»): seks kø-adresser
- * ble til én. Adressen består som redirect — ingen lenke noe sted skal brekke.
+ * Godkjenningene (Kø-fanen «Godkjenninger») er slått inn i Innboks › Godkjenn
+ * (AG-04, «Én innboks», 28.09.2026). Adressen består som redirect — ingen
+ * lenke noe sted skal brekke. Søkeparametrene følger med.
  */
-export default function GodkjenningerRedirect(): never {
-  redirect("/admin/ko");
+export default async function GodkjenningerRedirect({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<never> {
+  redirect(innboksHref("godkjenn", await searchParams));
 }

@@ -1,11 +1,13 @@
 "use client";
 
-/* Rute-error.tsx for /admin/workbench/[playerId] (B3, agency-herding).
-   Logger til feillogg via reportClientError. Visuelt: V2Feil. */
+/* Rute-error.tsx for /admin/workbench/[playerId] (AG-11, Precision Athletics).
+   Logger til feillogg via reportClientError, som før. */
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { CalendarX } from "lucide-react";
 import { reportClientError } from "@/lib/report-client-error";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
 
 export default function WorkbenchUkeError({
   error,
@@ -25,5 +27,12 @@ export default function WorkbenchUkeError({
     });
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/admin/spillere" tittel="Kunne ikke laste Workbench-uken" />;
+  return (
+    <AgencyOSSkall navn="">
+      <div className="pa-side">
+        <FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text="Ingen økter er endret. Prøv igjen, eller gå tilbake til stallen." code={error.digest}
+          retry={<Knapp variant="secondary" onClick={reset}>Prøv igjen</Knapp>} />
+      </div>
+    </AgencyOSSkall>
+  );
 }
