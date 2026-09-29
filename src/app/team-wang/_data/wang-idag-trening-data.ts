@@ -221,6 +221,38 @@ export async function hentGruppeplan(gruppeId: string, idag: string): Promise<Wa
   return { perioder, hendelser, skoledager };
 }
 
+export type WangAarsgrunnlag = WangGruppeplan & {
+  elever: WangElevKort[];
+  okter: WangOkt[];
+  /** Skoleårets spenn: fra første periodestart (eller 1. august) til siste periodeslutt (eller 30. juni). */
+  fra: string;
+  til: string;
+};
+
+/** Alt årsplan, periodeplan og månedsplan trenger for ett skoleår. */
+export async function hentAarsgrunnlag(gruppeId: string, idag: string): Promise<WangAarsgrunnlag> {
+  const [plan, elever] = await Promise.all([hentGruppeplan(gruppeId, idag), hentGruppeElever(gruppeId)]);
+  const startAar = Number(idag.slice(0, 4)) - (Number(idag.slice(5, 7)) < 8 ? 1 : 0);
+  const fra = plan.perioder.length ? plan.perioder.reduce((m, p) => (p.fra < m ? p.fra : m), plan.perioder[0].fra) : `${startAar}-08-01`;
+  const til = plan.perioder.length ? plan.perioder.reduce((m, p) => (p.til > m ? p.til : m), plan.perioder[0].til) : `${startAar + 1}-06-30`;
+  const okter = await hentElevOkter(elever.map((e) => e.id), fra, til);
+  return { ...plan, elever, okter, fra, til };
+}
+
+/** Sammenhengende ferier fra skoleruta (én rad per dag i basen) som intervaller. */
+export function ferier(skoledager: readonly WangSkoledag[]): Array<{ navn: string; fra: string; til: string }> {
+  const ut: Array<{ navn: string; fra: string; til: string }> = [];
+  for (const d of skoledager.filter((x) => x.kategori === "FERIE" && x.klassetrinn === null).sort((a, b) => (a.dato < b.dato ? -1 : 1))) {
+    const siste = ut[ut.length - 1];
+    const nesteDag = siste ? new Date(Date.parse(`${siste.til}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10) : "";
+    // Helgen mellom to feriedager hører til samme ferie.
+    const etterHelg = siste ? new Date(Date.parse(`${siste.til}T00:00:00Z`) + 3 * 86_400_000).toISOString().slice(0, 10) : "";
+    if (siste && siste.navn === d.tittel && (d.dato === nesteDag || d.dato <= etterHelg)) siste.til = d.dato;
+    else ut.push({ navn: d.tittel, fra: d.dato, til: d.dato });
+  }
+  return ut;
+}
+
 /**
  * Faste ukentlige økter gjelder fra første dato og videre. Denne gir
  * forekomstene i et datointervall (begge med), for kalender og ukeplan.

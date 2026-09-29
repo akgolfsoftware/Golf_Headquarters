@@ -315,6 +315,18 @@ export function underSyttiToUker(okter: readonly WangOkt[], idag: string, naa: D
   return null;
 }
 
+/** Planlagt og gjennomført i et datointervall (en periode), med snitt-nevner per elev. */
+export function periodeVolum(p: { fra: string; til: string }, okter: readonly WangOkt[], antallElever: number, naa: Date) {
+  const i = okter.filter((o) => o.dato >= p.fra && o.dato <= p.til);
+  return {
+    i,
+    n: Math.max(1, antallElever),
+    sum: summer(i, naa),
+    omr: perOmrade(i),
+    uker: Math.max(1, Math.round((dagerMellom(p.fra, p.til) + 1) / 7)),
+  };
+}
+
 // ---------------------------------------------------------------- gruppeøkter
 
 /**
