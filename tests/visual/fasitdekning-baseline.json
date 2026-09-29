@@ -1,6 +1,6 @@
 {
-  "sitert": 144,
+  "sitert": 142,
   "av": 219,
-  "sistEndret": "2026-09-21",
-  "grunn": "Anders godkjente uttrykkelig 21.09.2026 kildebyttet 153 til 144: gamle Workbench-referanser A-01c, A-02b, A-02c, A-04, A-09, A-11, A-18, WB-00 og WB-01 er erstattet som visuell fasit av valgt Claude Design-pakke. check-workbench-handover er obligatorisk i verify:static og kontrollerer 24 kildefiler og 16 PNG-er. Funksjons- og bildebevis kreves fortsatt per fane. Se docs/design-audit/workbench-kontrollretting-2026-09-21.md. Øvrig Train-lock-kontroll beholdes; ingen publiserings- eller databaseautorisasjon."
+  "sistEndret": "2026-09-29",
+  "grunn": "Bolk A3 (AgencyOS-portering til Precision Athletics, designbeslutning 26.09.2026 §PRECISION ATHLETICS ER DESIGNSYSTEMET) portet AG-13 Live-tavle og AG-13-U Live coachingøkt: LiveTavleTrainLock.tsx og LiveOktCoachTrainLock.tsx (Train-lock-æra, siterte AG-09/AG-09b Live-tavle.dc.html) er fjernet og erstattet av AG13LiveTavle.tsx/AG13LiveOkt.tsx, som siterer Claude Design-prosjektet 7d7c2994 (ui_kits/agencyos/screens/AG-13.jsx, AG-cockpit.jsx) i stedet — Precision Athletics er nå fasit, ikke Train-lock, jf. beslutninger.md. De to Train-lock-siteringene faller derfor bort uten erstatning i DENNE tellingen (den teller kun designsystem/train-lock/), 144→142. Senkningen gjentar seg forventet etter hvert som flere bolker (A1/A2/A4/A5) og resten av A3 flytter skjermer fra Train-lock til Precision Athletics."
 }

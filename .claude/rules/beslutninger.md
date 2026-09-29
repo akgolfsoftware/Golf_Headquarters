@@ -4,6 +4,43 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Workbench over uka: årsplan, periode og måned (Anders 28.09.2026, bindende)
+
+Anders vil ha knapper og skjema for ny årsplan, periodisering og månedsplan i Workbench.
+I dag lages en årsplan bare i det skjulte ved første periode (`opprettPeriodeCore`,
+`src/lib/workbench/periode-core.ts`), alltid 1. jan–31. des, og måneden kan bare leses.
+
+- **Både coach og spiller kan opprette årsplan.** Coach for en spiller eller en gruppe; spilleren
+  for seg selv. Coachen ser spillerens plan.
+- **Tidsrommet velges ved opprettelse.** Forslaget er skoleåret (aug–jun) for WANG og
+  kalenderåret ellers.
+- **Måneden får eget innhold:** fokus og mål (koblet til Målsetninger), timer per akse
+  FYS · TEK · SLAG · SPILL · TURN fordelt på ukene, tester og turneringer, og notat og evaluering
+  når måneden er over.
+- **«Ny årsplan» kan starte fra** kopi av fjoråret, standardplan A–K, gruppas årsplan eller tom plan.
+
+**Arbeidet dette utløser:**
+
+1. **Design i Precision (`7d7c2994`):** veileder «Opprett årsplan» (utgangspunkt, tidsrom, navn),
+   årsplanen med perioder, periodeskjema, månedsskjema, og coachens og gruppas inngang. Samme
+   Workbench for spiller (PH-11) og coach (AG-11), jf. `ui_kits/_shared/WB3.jsx`, som i dag bare
+   dekker uka. Ferdig når skjermene er i `audit.html` med 0 avvik og Anders har sett dem (port 7).
+2. **Årsplan i basen:** `SeasonPlan` (`prisma/schema.prisma`) har ingen `createdById` og er unik på
+   `[userId, year]`. Legg til `createdById`, la `year` bety startåret og ta start/slutt fra skjemaet.
+   Additivt via `db execute` (gotchas §Database). Ferdig når en plan aug 2026–jun 2027 kan lagres.
+3. **Ny tabell `MonthPlan`** (finnes ikke): spiller, årsplan, år og måned, fokus, timer per akse,
+   notat og evaluering; mål kobles via Målsetninger. Additivt via `db execute`. Ferdig når
+   månedsskjemaet lagrer og ukene viser timene fra måneden.
+4. **Opprett årsplan i koden:** én server-handling som oppretter planen fra de fire utgangspunktene.
+   Kopi av fjoråret og standardplan A–K finnes ikke i dag (malene i `PlanTemplate` er 4-ukersblokker);
+   gruppas plan gjenbruker `coachRullUtGruppeAarsplan` (`src/lib/workbench/gruppe-periode-actions.ts`).
+   Ferdig når alle fire er låst med test.
+5. **Coachen kan redigere spillerens perioder:** `coachLagrePeriode` og `coachSlettPeriode`
+   (`src/lib/workbench/session-actions.ts`) har ingen kaller, og `/admin/workbench/[playerId]`
+   viser år og måned uten redigering. Ferdig når coachen kan legge inn, endre og slette en periode der.
+6. **Åpent:** innholdet i standardårsplanene per kategori A–K (faglig, fra Anders), jf. punkt 4 i
+   §ØKONOMI BARE FOR HEAD COACH.
+
 ## ØKONOMI BARE FOR HEAD COACH, WEDGE GATE TELLER TREFF, ALLE STANDARDPLANER FOR ALLE KATEGORIER (Anders 28.09.2026, bindende)
 
 Svar på de sju åpne spørsmålene etter fase 4 (runde 27–30 i Precision).

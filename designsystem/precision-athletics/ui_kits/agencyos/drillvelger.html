@@ -1,0 +1,36 @@
+<!-- @dsCard group="AgencyOS" viewport="1440x900" name="Adaptiv øvelsesvelger" subtitle="TURN, TEK and FYS side by side — the form reshapes to the axis" -->
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="planmotor-data.js"></script><title>Adaptiv øvelsesvelger</title>
+<style>body{background:var(--surface-page)}</style></head><body><div id="root"></div>
+<script src="../../assets/ak-vocabulary.js"></script>
+<script type="text/babel" src="ExerciseComposer.jsx"></script>
+<script type="text/babel">
+const { Toast } = window.AKGolfPrecisionAthletics_7d7c29;
+function Board() {
+  const [log, setLog] = React.useState(null);
+  const cols = [["turn", "TURN · to trykk"], ["tek", "TEK · bare teknikk"], ["fys", "FYS · bare fysisk"]];
+  return (
+    <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, minHeight: "100vh" }}>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 260 }}><div className="kicker">AK-formelen · kontekst-smart øvelsesvelger</div><h1 style={{ font: "var(--type-title-l)", color: "var(--text-primary)", marginTop: 6 }}>Én akse, bare de feltene som gjelder</h1></div>
+        <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>SAMME KOMPONENT · TRE STARTVALG · BYTT AKSE I HVILKEN SOM HELST</span>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(400px,1fr))", gap: 16, alignItems: "start" }}>
+        {cols.map(([a, l]) => (
+          <div key={a} style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
+            <span style={{ font: "var(--type-meta)", color: "var(--text-secondary)" }}>{l.toUpperCase()}</span>
+            <ExerciseComposer compact initialAxis={a} context={"Ons 30 · 14:30 · Innspill og nærspill"} onAdd={(d) => setLog({ t: d.title + " lagt til", m: "+" + window.PM.fmtHM(d.min) + " · " + d.axis.toUpperCase(), k: Date.now() })} />
+          </div>
+        ))}
+      </div>
+      {log && <div key={log.k} style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)" }}><Toast meta={log.m}>{log.t}</Toast></div>}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<Board />);
+</script></body></html>
