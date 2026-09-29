@@ -1,8 +1,7 @@
 /**
- * AgencyOS Gruppe-detalj — v2. Auth/Prisma-loader bevart 1:1 fra legacy-
- * skjermen (admin/(legacy)/grupper/[id]). gruppe-actions.tsx (StartOkt/
- * LeggTilSpiller/FjernMedlem/SeAlleTimePlan/Detaljer/Aapne) er tailwind-
- * only og gjenbrukes uendret.
+ * AgencyOS Gruppe-detalj (AG-16a) i Precision Athletics. Auth/Prisma-loader
+ * bevart 1:1; uttrykket ligger i AG16Gruppe.tsx, som kaller de samme server
+ * actions som før (gruppe-actions.tsx er ikke lenger i bruk).
  */
 
 import { notFound } from "next/navigation";
@@ -10,21 +9,8 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  GruppeDetaljV2,
-  type GruppeDetaljV2Data,
-} from "@/components/admin/v2/GruppeDetaljV2";
-import { RullUtMalPanel } from "@/components/admin/v2/RullUtMalPanel";
-import {
-  StartOktButton,
-  LeggTilSpillerButton,
-  FjernMedlemButton,
-  SeAlleTimePlanButton,
-  DetaljerButton,
-  AapneButton,
-  SlettGruppeButton,
-} from "./gruppe-actions";
+import { AG16Gruppedetalj } from "@/components/admin/precision/AG16Gruppe";
+import type { GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Gruppe · AgencyOS" };
@@ -228,26 +214,10 @@ export default async function GruppeDetaljPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <GruppeDetaljV2
-        data={data}
-        ekstra={
-          <RullUtMalPanel
-            groupId={data.id}
-            antallMedlemmer={data.antallMedlemmer}
-            maler={maler.map((m) => ({ id: m.id, name: m.name, varighetUker: m.varighetUker, sessionCount: m._count.sessions }))}
-          />
-        }
-        actions={{
-          StartOktButton,
-          LeggTilSpillerButton,
-          FjernMedlemButton,
-          SeAlleTimePlanButton,
-          DetaljerButton,
-          AapneButton,
-          SlettGruppeButton,
-        }}
-      />
-    </V2Shell>
+    <AG16Gruppedetalj
+      navn={user.name ?? ""}
+      data={data}
+      maler={maler.map((m) => ({ id: m.id, name: m.name, varighetUker: m.varighetUker, sessionCount: m._count.sessions }))}
+    />
   );
 }
