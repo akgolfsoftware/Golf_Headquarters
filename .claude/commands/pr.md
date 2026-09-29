@@ -22,7 +22,7 @@ Gjør klar og åpne en pull request for gjeldende branch.
 - [ ] Databaseendring verifisert (hvis skjemaendring)
 
 ## Skjermbilder
-[Kun hvis UI-endring — ett bilde mobil 390px og ett desktop, lys modus; natt bare hvis endringen berører nattema]
+[Kun hvis UI-endring — mobil 390px og desktop, lys og natt, pluss tom/laster/feil (port 7 krever alle tilstander)]
 ```
 
 7. Push branchen: `git push -u origin <branch-navn>`.
@@ -30,4 +30,4 @@ Gjør klar og åpne en pull request for gjeldende branch.
 9. Rapporter PR-lenken og minn om at Vercel preview-URL skal sjekkes før merge. Ikke poll CI/Vercel; sjekk én gang med `gh pr checks` når Anders spør.
 10. Legg til én linje i `docs/feillogg.md` (format øverst i filen) hvis noe i denne økten kostet ekstra tid — ellers ikke rør filen.
 11. Ikke merge selv, og aldri push til `main` uten Anders' eksplisitte «ja» i samtalen — håndheves også av `.claude/hooks/beskytt.mjs`.
-12. Kostnad: PR-steget skal ta under 8 tool-kall. Skjermbilder og målinger tas kun når endringen er UI og de ikke allerede ligger i økta; ett sett (390 lys + 1280 lys), ikke alle tilstander. Beskrivelsen skrives kort (malen over, ingen ekstra seksjoner) og i ett kall. Ingen ekstra gjennomlesing av filer, ingen sub-agenter, ingen ny verify hvis den allerede er grønn på samme commit.
+12. Kostnad: PR-steget skal ta under 8 tool-kall. Skjermbilder og målinger tas kun når endringen er UI og de ikke allerede ligger i økta; da alle tilstander (390 og 1280, lys og natt, tom/laster/feil), ikke kuttet. Beskrivelsen skrives kort (malen over, ingen ekstra seksjoner) og i ett kall. Ingen ekstra gjennomlesing av filer, ingen sub-agenter, ingen ny verify hvis den allerede er grønn på samme commit.
