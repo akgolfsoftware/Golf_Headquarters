@@ -11,7 +11,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Side, SideHode, FanerLenker } from "@/components/precision/pa-a4";
-import { AG05Uke, AG05Maned, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
+import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
@@ -47,6 +47,7 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
 
   let innhold: React.ReactNode;
   let periode = "";
+  let navigasjon: React.ReactNode = null;
 
   if (fane === "stall") {
     const idag = osloIdag();
@@ -65,23 +66,26 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
   } else if (fane === "maned") {
     const data = await hentKalenderLagManed(sp.maaned, { lag: startLag });
     periode = data.periode;
-    innhold = <AG05Maned data={data} />;
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} />;
+    innhold = <AG05Maned data={data} startLag={startLag} />;
   } else {
     const data = await hentKalenderLagUke(sp.uke, { lag: startLag, visning: fane, dato: sp.dato });
     periode = data.periode;
-    innhold = <AG05Uke data={data} dagIso={sp.dato} />;
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} />;
+    innhold = <AG05Uke data={data} dagIso={sp.dato} startLag={startLag} />;
   }
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <Side max={1480}>
         <SideHode
-          kicker={periode}
+          kicker={`Kalender · ${periode}`}
           title="Kalender"
-          sub="Dra en hendelse for å flytte den, eller åpne den og velg Flytt."
+          sub="Åpne en hendelse for å se detaljene og gå videre til den."
           actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />}
         />
         <FanerLenker faner={KALENDER_FANER.map((f) => ({ href: kalenderHref(f.id), navn: f.label, aktiv: f.id === fane }))} />
+        {navigasjon}
         {innhold}
       </Side>
     </AgencyOSSkall>

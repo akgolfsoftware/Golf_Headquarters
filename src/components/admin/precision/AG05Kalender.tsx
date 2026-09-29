@@ -20,10 +20,10 @@
  */
 import Link from "next/link";
 import { useState } from "react";
-import { CalendarDays, CalendarPlus } from "lucide-react";
+import { CalendarDays, CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { KnappLenke, Meta, TomTilstand } from "@/components/precision/pa";
 import { Ark, Nokkelverdi, Kolonner } from "@/components/precision/pa-a4";
-import { LAG_LABEL, type KalenderHendelse, type KalenderLag } from "@/lib/domain/kalender-lag";
+import { ALLE_LAG, LAG_LABEL, LAG_MENY_LABEL, synlige, type KalenderHendelse, type KalenderLag } from "@/lib/domain/kalender-lag";
 import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
 import "@/styles/precision-a4.css";
 
@@ -46,6 +46,41 @@ function hhmm(min: number): string {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
+/** Lagfilter (tegningens «Lag»-filter): hvilke kalenderlag som vises. Samme valg som før (øye-toggle i KalenderLagUkeV2). */
+function useLagFilter(startLag?: KalenderLag) {
+  const [valgt, setValgt] = useState<Set<KalenderLag>>(() => new Set(startLag ? [startLag] : ALLE_LAG));
+  const veksle = (l: KalenderLag) => {
+    const neste = new Set(valgt);
+    if (neste.has(l)) neste.delete(l);
+    else neste.add(l);
+    setValgt(neste);
+  };
+  return { valgt, veksle };
+}
+
+function LagFilter({ valgt, veksle }: { valgt: ReadonlySet<KalenderLag>; veksle: (l: KalenderLag) => void }) {
+  return (
+    <div className="pa-filter" role="group" aria-label="Lag">
+      {ALLE_LAG.map((l) => (
+        <button key={l} type="button" className="pa-filter__opt" aria-pressed={valgt.has(l)} onClick={() => veksle(l)}>
+          <span className="pa-filter__label">{LAG_MENY_LABEL[l]}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Forrige · I dag · Neste — periode-navigasjonen fra lag/data.ts (`nav`). */
+export function AG05Periode({ forrige, idag, neste }: { forrige: string; idag: string; neste: string }) {
+  return (
+    <div className="a4-periode" role="group" aria-label="Periode">
+      <KnappLenke href={forrige} variant="ghost" size="sm" icon={ChevronLeft} iconName="chevron-left">Forrige</KnappLenke>
+      <KnappLenke href={idag} variant="secondary" size="sm">I dag</KnappLenke>
+      <KnappLenke href={neste} variant="ghost" size="sm" iconRight={ChevronRight}>Neste</KnappLenke>
+    </div>
+  );
+}
+
 function EventSheet({ ev, onClose }: { ev: KalenderHendelse | null; onClose: () => void }) {
   return (
     <Ark
@@ -63,7 +98,7 @@ function EventSheet({ ev, onClose }: { ev: KalenderHendelse | null; onClose: () 
           ["Dato", `${dagMnd(ev.dato)}`, { mono: true }],
           ["Tid", ev.heldag ? "Hele dagen" : ev.startMin != null && ev.sluttMin != null ? `${hhmm(ev.startMin)}–${hhmm(ev.sluttMin)}` : "—", { mono: true }],
           ["Hvem", ev.undertekst, {}],
-          ["Kolliderer med", ev.kollidererMed && ev.kollidererMed.length > 0 ? `${ev.kollidererMed.length} annen hendelse` : null, {}],
+          ["Kolliderer med", ev.kollidererMed && ev.kollidererMed.length > 0 ? (ev.kollidererMed.length === 1 ? "1 annen hendelse" : `${ev.kollidererMed.length} andre hendelser`) : null, {}],
         ]} />
       )}
     </Ark>
@@ -74,28 +109,36 @@ function EventChip({ ev, onClick }: { ev: KalenderHendelse; onClick: () => void 
   return (
     <button type="button" className="a4-ev" style={{ position: "static", width: "100%" }} onClick={onClick}>
       <span className="a4-ev__title">{ev.tittel}</span>
-      {!ev.heldag && ev.startMin != null && ev.sluttMin != null && <Meta>{hhmm(ev.startMin)}–{hhmm(ev.sluttMin)}</Meta>}
-      {ev.undertekst && <Meta> · {ev.undertekst}</Meta>}
+      {(() => {
+        const tid = !ev.heldag && ev.startMin != null && ev.sluttMin != null ? `${hhmm(ev.startMin)}–${hhmm(ev.sluttMin)}` : null;
+        const meta = [tid, ev.undertekst].filter(Boolean).join(" · ");
+        return meta ? <Meta>{meta}</Meta> : null;
+      })()}
     </button>
   );
 }
 
 /** Uke- og dag-visning deler datakilden (KalenderLagUkeData) og bare grid-layouten skiller dem. */
-export function AG05Uke({ data, dagIso }: { data: KalenderLagUkeData; dagIso?: string }) {
+export function AG05Uke({ data: raa, dagIso, startLag }: { data: KalenderLagUkeData; dagIso?: string; startLag?: KalenderLag }) {
   const [valgt, setValgt] = useState<KalenderHendelse | null>(null);
+  const lag = useLagFilter(startLag);
+  const data = { ...raa, hendelser: synlige(raa.hendelser, lag.valgt) };
   const enDag = data.visning === "dag";
-  const dager = enDag ? data.dager.filter((d) => d === (dagIso ?? data.idagIso)) : data.dager;
+  const dagValgt = dagIso && data.dager.includes(dagIso) ? dagIso : data.dager.includes(data.idagIso) ? data.idagIso : data.dager[0];
+  const dager = enDag ? data.dager.filter((d) => d === dagValgt) : data.dager;
 
-  if (data.hendelser.length === 0 && dager.every((d) => !data.hendelser.some((e) => e.dato === d))) {
+  if (!dager.some((d) => data.hendelser.some((e) => e.dato === d))) {
     return (
       <>
-        <TomTilstand icon={CalendarDays} title="Ingen hendelser" text="Sett tilgjengelighet først, så kan spillere booke og lagøkter legges oppå." />
+        <LagFilter {...lag} />
+        <TomTilstand icon={CalendarDays} title={enDag ? "Ingen hendelser denne dagen" : "Ingen hendelser denne uka"} text="Sett tilgjengelighet først, så kan spillere booke og lagøkter legges oppå." actions={<KnappLenke href="/admin/kalender?fane=tilg" variant="secondary">Sett tilgjengelighet</KnappLenke>} />
       </>
     );
   }
 
   return (
     <>
+      <LagFilter {...lag} />
       {!enDag && (
         <div className="a4-daylist a4-week--mobil">
           {dager.map((d) => {
@@ -161,16 +204,21 @@ export function AG05Uke({ data, dagIso }: { data: KalenderLagUkeData; dagIso?: s
   );
 }
 
-export function AG05Maned({ data }: { data: KalenderLagUkeData }) {
+export function AG05Maned({ data, startLag }: { data: KalenderLagUkeData; startLag?: KalenderLag }) {
+  const lag = useLagFilter(startLag);
+  const hendelser = synlige(data.hendelser, lag.valgt);
   return (
+    <>
+    <LagFilter {...lag} />
     <div className="a4-month">
       {data.rutenett.map((c) => {
-        const es = c.iManed ? data.hendelser.filter((e) => e.dato === c.dato) : [];
+        const es = c.iManed ? hendelser.filter((e) => e.dato === c.dato) : [];
         const num = Number(c.dato.slice(8, 10));
+        if (!c.iManed) return <span key={c.dato} className="a4-month__cell" data-utenfor="" aria-hidden />;
         return (
-          <Link key={c.dato} href={c.iManed ? `/admin/kalender?fane=dag&dato=${c.dato}` : "#"} className="a4-month__cell" aria-disabled={!c.iManed}>
-            <span className="a4-month__num">{c.iManed ? num : ""}</span>
-            {c.iManed && es.length > 0 && (
+          <Link key={c.dato} href={`/admin/kalender?fane=dag&dato=${c.dato}`} className="a4-month__cell" aria-label={`${c.dato}${es.length ? ` · ${es.length} hendelser` : ""}`}>
+            <span className="a4-month__num">{num}</span>
+            {es.length > 0 && (
               <span className="a4-month__dots">
                 {es.slice(0, 4).map((e) => <span key={e.id} className="a4-month__dot" style={{ background: "var(--border-strong)" }} title={LAG_LABEL[e.lag]} />)}
               </span>
@@ -179,19 +227,7 @@ export function AG05Maned({ data }: { data: KalenderLagUkeData }) {
         );
       })}
     </div>
-  );
-}
-
-export function AG05Legende({ lag }: { lag: readonly KalenderLag[] }) {
-  return (
-    <div className="a4-legend">
-      {lag.map((l) => (
-        <span key={l} className="a4-legend__swatch">
-          <span className="a4-legend__box" style={{ border: "1px solid var(--border-strong)" }} />
-          <Meta>{LAG_LABEL[l]}</Meta>
-        </span>
-      ))}
-    </div>
+    </>
   );
 }
 

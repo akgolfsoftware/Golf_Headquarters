@@ -10,7 +10,11 @@
  * to-kolonners skrivebordsvisning uten egen grid-layout.
  *
  * Avvik fra tegningen (se PR/rapport):
- * - Ingen «utkast i Innboks» ved avvisning/avlysning — den koblingen finnes
+ * - «Flytt» og «Avlys med begrunnelse» på en bekreftet booking finnes ikke:
+ *   det finnes ingen handling for å avlyse en bekreftet booking (betalte
+ *   bookinger må via Stripe først, gotchas §Betaling). Arket lenker i stedet
+ *   til bookingdetaljen (/admin/bookinger/[id]).
+ * - Ingen «utkast i Innboks» ved avvisning — den koblingen finnes
  *   ikke i kodebasen ennå (parkert, krever egen innboks-datamodell).
  * - Tjenester har ikke et «trekker klipp»-felt i ServiceType; det er derfor
  *   ikke tegnet inn i tjeneste-arket (ingen data å vise).
@@ -18,12 +22,12 @@
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, CalendarPlus } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Knapp, StatusPille, TomTilstand, Sidehode } from "@/components/precision/pa";
+import { Knapp, KnappLenke, StatusPille, TomTilstand } from "@/components/precision/pa";
 import {
   Faner, Ark, Dialogboks, Skjemafelt, Nedtrekk, Tekstfelt, TekstOmrade, Nokkelverdi,
-  Tabell, Side, Kolonner, Stabel, Kort, type TabellKolonne,
+  Tabell, Side, SideHode, Kolonner, Stabel, Kort, type TabellKolonne,
 } from "@/components/precision/pa-a4";
 import { bekreftBooking, avvisBooking } from "@/app/admin/(legacy)/bookinger/actions";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
@@ -48,6 +52,7 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
   const [sel, setSel] = useState<string | null>(null);
   const [rej, setRej] = useState<AG06Booking | null>(null);
   const [why, setWhy] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const router = useRouter();
 
@@ -57,16 +62,22 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
 
   const kjor = (fn: (id: string) => Promise<void>) => {
     if (!sel) return;
-    start(async () => { await fn(sel); setSel(null); router.refresh(); });
+    start(async () => {
+      try { await fn(sel); setFeil(null); setSel(null); router.refresh(); }
+      catch (e) { setFeil(e instanceof Error ? e.message : "Bookingen kunne ikke bekreftes."); }
+    });
   };
   const doReject = () => {
     if (!rej) return;
-    start(async () => { await avvisBooking(rej.id); setRej(null); setWhy(""); setSel(null); router.refresh(); });
+    start(async () => {
+      try { await avvisBooking(rej.id); setFeil(null); setRej(null); setWhy(""); setSel(null); router.refresh(); }
+      catch (e) { setFeil(e instanceof Error ? e.message : "Bookingen kunne ikke avvises."); setRej(null); }
+    });
   };
 
   const kolonner: TabellKolonne<AG06Booking>[] = [
     { key: "tid", label: "Tid", mono: true, render: (b) => `${b.date} ${b.t}` },
-    { key: "hvem", label: "Hvem", render: (b) => <span>{b.who} · {b.svcNavn}<br /><span className="a4-meta">{kr(b.priceOre)} · {(b.src ?? "—").toUpperCase()}</span></span> },
+    { key: "hvem", label: "Hvem", render: (b) => <span>{b.who} · {b.svcNavn}<br /><span className="a4-meta">{kr(b.priceOre)} · {b.pay.toUpperCase()} · {(b.src ?? "—").toUpperCase()}</span></span> },
     { key: "status", label: "Status", render: (b) => <StatusPille tone={TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</StatusPille> },
   ];
 
@@ -84,12 +95,12 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
   return (
     <AgencyOSSkall navn={navn}>
       <Side>
-        <Sidehode
+        <SideHode
           kicker="Booking"
           title="Booking"
-          sub="Betalte bookinger (offentlig og PlayerHQ) bekreftes automatisk når tiden er ledig. Du bekrefter eller avviser bare bookinger uten betaling. Alle kan avlyses."
+          sub="Betalte bookinger (offentlig og PlayerHQ) bekreftes automatisk når tiden er ledig. Du bekrefter eller avviser bare bookinger uten betaling."
+          actions={<Knapp variant="secondary" icon={CalendarPlus} iconName="calendar-plus" onClick={() => { setFane("ny"); setSel(null); }}>Ny booking</Knapp>}
         />
-        <Knapp variant="secondary" icon={CalendarCheck} iconName="calendar-plus" onClick={() => setFane("ny")}>Ny booking</Knapp>
         <Faner
           faner={[
             { verdi: "foresp", navn: "Uten betaling", antall: pend.length },
@@ -100,6 +111,7 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
           valgt={fane}
           onEndre={(v) => { setFane(v as typeof fane); setSel(null); }}
         />
+        {feil && <p role="alert" className="a4-feil">{feil}</p>}
         {body}
       </Side>
 
@@ -115,7 +127,7 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
               <Knapp variant="secondary" fullWidth disabled={pending} onClick={() => setRej(cur)}>Avvis</Knapp>
             </>
           ) : cur.st === "Bekreftet" ? (
-            <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => setRej(cur)}>Avlys med begrunnelse</Knapp>
+            <KnappLenke variant="secondary" fullWidth href={`/admin/bookinger/${cur.id}`}>Åpne booking</KnappLenke>
           ) : (
             <Knapp variant="ghost" fullWidth onClick={() => setSel(null)}>Lukk</Knapp>
           )
@@ -139,15 +151,15 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
       <Dialogboks
         open={!!rej}
         onClose={() => setRej(null)}
-        title={rej?.st === "Bekreftet" ? "Avlyse bookingen?" : "Avvise bookingen?"}
+        title="Avvise bookingen?"
         footer={<>
           <Knapp variant="ghost" onClick={() => setRej(null)}>Avbryt</Knapp>
-          <Knapp variant="signal" disabled={why.trim().length < 8 || pending} onClick={doReject}>{rej?.st === "Bekreftet" ? "Avlys" : "Avvis"}</Knapp>
+          <Knapp variant="signal" disabled={why.trim().length < 8 || pending} onClick={doReject}>Avvis</Knapp>
         </>}
       >
         {rej && (
           <Stabel gap={12}>
-            <p style={{ margin: 0 }}>{rej.who} · {rej.date} {rej.t}. Begrunnelsen lagres ikke automatisk til kunden ennå — send den selv i Innboks.</p>
+            <p style={{ margin: 0 }}>{rej.who} · {rej.date} {rej.t}. Begrunnelsen lagres ikke og sendes ikke til kunden — gi beskjed selv.</p>
             <Skjemafelt label="Kort begrunnelse" required hint="Minst 8 tegn." error={why && why.trim().length < 8 ? "Skriv en kort begrunnelse på minst 8 tegn." : undefined}>
               <TekstOmrade value={why} onChange={setWhy} placeholder="Studio 1 er stengt for service tirsdag." />
             </Skjemafelt>
@@ -172,8 +184,9 @@ function NyBookingSkjema({ valg, onOpprettet }: { valg: BookingValg; onOpprettet
 
   const opprett = () => {
     if (!spillerId || !serviceTypeId || !locationId || !dato) { setFeil("Fyll ut alle feltene."); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dato) || !/^\d{2}:\d{2}$/.test(tid)) { setFeil("Skriv dato som ÅÅÅÅ-MM-DD og tid som TT:MM."); return; }
     start(async () => {
-      const res = await bookIKalender({ spillerId, serviceTypeId, locationId, start: `${dato}T${tid}` });
+      const res = await bookIKalender({ spillerId, serviceTypeId, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined });
       if (!res.ok) { setFeil(res.feil); return; }
       setFeil(null);
       onOpprettet();
@@ -181,7 +194,7 @@ function NyBookingSkjema({ valg, onOpprettet }: { valg: BookingValg; onOpprettet
   };
 
   return (
-    <Kolonner mal="minmax(0,1.2fr) minmax(0,1fr)">
+    <Kolonner mal="repeat(auto-fit, minmax(min(100%, 340px), 1fr))">
       <Kort>
         <Skjemafelt label="Spiller"><Nedtrekk value={spillerId} onChange={setSpillerId} options={valg.spillere.map((s) => ({ value: s.id, label: s.navn }))} /></Skjemafelt>
         <Skjemafelt label="Tjeneste"><Nedtrekk value={serviceTypeId} onChange={setServiceTypeId} options={valg.tjenester.map((t) => ({ value: t.id, label: `${t.navn} · ${t.varighetMin} min · ${kr(t.prisOre)}` }))} /></Skjemafelt>
@@ -191,7 +204,7 @@ function NyBookingSkjema({ valg, onOpprettet }: { valg: BookingValg; onOpprettet
           <Skjemafelt label="Tid"><Tekstfelt mono value={tid} onChange={setTid} placeholder="16:00" /></Skjemafelt>
         </Kolonner>
         <Skjemafelt label="Notat (valgfritt)"><TekstOmrade value={notater} onChange={setNotater} placeholder="—" /></Skjemafelt>
-        {feil && <p style={{ color: "var(--signal-ink)", margin: 0 }}>{feil}</p>}
+        {feil && <p role="alert" className="a4-feil">{feil}</p>}
       </Kort>
       <Kort>
         <Nokkelverdi items={[
@@ -214,7 +227,8 @@ function TjenestePanel({ tjenester }: { tjenester: BookingValg["tjenester"] }) {
   ];
   return (
     <Stabel>
-      <Tabell caption="Tjenester · kilde ServiceType. Endre pris og varighet under Mer › Oppsett." columns={kolonner} rows={tjenester} tomTekst="Ingen tjenester" />
+      <Tabell caption="Tjenester · kilde ServiceType" columns={kolonner} rows={tjenester} tomTekst="Ingen tjenester" />
+      <div><KnappLenke variant="secondary" href="/admin/services">Endre tjenester og pris</KnappLenke></div>
     </Stabel>
   );
 }

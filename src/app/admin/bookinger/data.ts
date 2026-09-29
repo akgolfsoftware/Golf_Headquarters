@@ -2,8 +2,8 @@
  * Data-loader for AG-06 Booking (Precision Athletics). Leser samme Booking- og
  * ServiceType-tabeller som resten av appen bruker — ingen nye felt, ingen
  * skjemaendring. Coach ser eget scope (`coachBookingScope`), admin ser alt.
- * Pris er alltid `ServiceType.priceOre` (beslutninger.md §Merke og tekst) —
- * «timepris»-fallbacket i tegningen er demodata og brukes ikke her.
+ * Pris er bookingens `priceOre` (satt fra `ServiceType.priceOre` da den ble
+ * laget) — aldri hardkodet, og «timepris»-fallbacket i tegningen er demodata.
  */
 
 import { prisma } from "@/lib/prisma";
@@ -21,19 +21,22 @@ export type AG06Booking = {
   where: string;
   date: string;
   t: string;
-  /** «Betalt» = Stripe. «Faktura» = ingen betalingsspor ennå (manuell/gjest). */
-  pay: "Betalt" | "Faktura";
+  /** Betalingsspor på bookingen. «Ikke betalt» = pris over 0 uten Stripe eller klipp. */
+  pay: "Betalt" | "Klipp" | "Gratis" | "Ikke betalt";
   src: string | null;
   note: string | null;
   at: string;
   st: "Venter" | "Bekreftet" | "Avvist";
 };
 
-const DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit" });
+const DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
 const KL_FMT = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 
-function betaling(b: { stripePaymentIntentId: string | null }): AG06Booking["pay"] {
-  return b.stripePaymentIntentId ? "Betalt" : "Faktura";
+function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; subscriptionId: string | null }): AG06Booking["pay"] {
+  if (b.stripePaymentIntentId) return "Betalt";
+  if (b.subscriptionId) return "Klipp";
+  if (b.priceOre <= 0) return "Gratis";
+  return "Ikke betalt";
 }
 
 function status(s: string): AG06Booking["st"] {

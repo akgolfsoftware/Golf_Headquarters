@@ -36,6 +36,7 @@
 
 /* FanerLenker (pa-a4.tsx): faner som ekte <Link>, samme visuelle uttrykk som pa-tab[aria-selected]. */
 .pa-tab[data-fanelenke] {
+  text-decoration: none;
   min-width: 44px;
   min-height: 44px;
   padding: 0 4px;
@@ -111,7 +112,7 @@ div.a4-week--grid {
 
 .a4-week__daycell {
   padding: 10px 6px;
-  font: 600 var(--fs-12)/1 var(--font-mono);
+  font: 600 12px/1 var(--font-mono);
   color: var(--text-primary);
   border-left: 1px solid var(--border-hairline);
   min-width: 0;
@@ -178,7 +179,7 @@ div.a4-week--grid {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font: 500 var(--fs-12)/1.25 var(--font-sans);
+  font: 500 12px/1.25 var(--font-sans);
   color: var(--text-primary);
 }
 
@@ -211,7 +212,7 @@ div.a4-week--grid {
 }
 
 .a4-daylist__time {
-  font: 500 var(--fs-12)/1 var(--font-mono);
+  font: 500 12px/1 var(--font-mono);
   color: var(--text-secondary);
   padding-top: 10px;
 }
@@ -237,14 +238,14 @@ div.a4-week--grid {
   min-width: 0;
 }
 
-.a4-month__cell[disabled] {
+.a4-month__cell[data-utenfor] {
   cursor: default;
   background: transparent;
   border-color: transparent;
 }
 
 .a4-month__num {
-  font: 500 var(--fs-12)/1 var(--font-mono);
+  font: 500 12px/1 var(--font-mono);
   color: var(--text-primary);
 }
 
@@ -264,4 +265,20 @@ div.a4-week--grid {
   .a4-month__cell {
     min-height: 84px;
   }
+}
+
+/* Feilmelding fra en handling (bekreft, avvis, lagre). Samme uttrykk som feltfeil. */
+.a4-feil {
+  margin: 0;
+  font: var(--type-body-s);
+  color: var(--signal-ink);
+}
+
+/* Periode-navigasjon (forrige · i dag · neste) over kalenderen. */
+.a4-periode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
 }

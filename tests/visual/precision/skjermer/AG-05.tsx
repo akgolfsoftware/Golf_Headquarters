@@ -1,7 +1,9 @@
 /** Prøvefil for AG-05 Kalender. Syntetiske data, ingen ekte spillere. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand, FeilTilstand } from "@/components/precision/pa";
+import { CalendarX } from "lucide-react";
 import { Side, SideHode, FanerLenker } from "@/components/precision/pa-a4";
-import { AG05Uke, AG05Maned, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
+import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
 import type { UkedagRad } from "@/app/admin/kalender/tilg-data";
@@ -19,10 +21,10 @@ const ukeData: KalenderLagUkeData = {
   visning: "uke", ukeNr: 40, periode: "Uke 40 · 28.09–04.10",
   dager: DAGER, rutenett: DAGER.map((dato) => ({ dato, iManed: true })), idagIso: "2026-09-29",
   hendelser: [
-    { id: "okt-1", lag: "OEKTER", dato: "2026-09-29", tittel: "Wedge 50–90 m", undertekst: "Tobias Lindvik", startMin: 9 * 60, sluttMin: 10 * 60, heldag: false, href: "/admin/workbench/p1" },
+    { id: "okt-1", lag: "OEKTER", dato: "2026-09-29", tittel: "Wedge 50–90 m", undertekst: "Ola Testesen", startMin: 9 * 60, sluttMin: 10 * 60, heldag: false, href: "/admin/workbench/p1" },
     { id: "booking-1", lag: "BOOKING", dato: "2026-09-29", tittel: "Ola Testesen", undertekst: "Privattime 60 min", startMin: 17 * 60, sluttMin: 18 * 60, heldag: false, href: "/admin/bookinger/b1" },
     { id: "skole-1", lag: "SKOLE", dato: "2026-09-30", tittel: "Heldagsprøve", undertekst: "VG2", startMin: null, sluttMin: null, heldag: true, lesevisning: true },
-    { id: "turn-1", lag: "TURNERING", dato: "2026-10-02", tittel: "Srixon Tour · runde 2", undertekst: "Lea Brekke", startMin: null, sluttMin: null, heldag: true },
+    { id: "turn-1", lag: "TURNERING", dato: "2026-10-02", tittel: "Srixon Tour · runde 2", undertekst: "Kari Prøvesen", startMin: null, sluttMin: null, heldag: true },
   ],
   kollisjoner: [], kollidererIder: [], nav: NAV,
 };
@@ -41,13 +43,13 @@ const manedData: KalenderLagUkeData = {
 };
 
 const tilgRader: UkedagRad[] = [
-  { ukedag: 0, navn: "Mandag", slotId: "s1", paa: true, range: "15:00–19:00" },
-  { ukedag: 1, navn: "Tirsdag", slotId: "s2", paa: true, range: "15:00–19:00" },
-  { ukedag: 2, navn: "Onsdag", slotId: null, paa: false, range: "—" },
-  { ukedag: 3, navn: "Torsdag", slotId: "s3", paa: true, range: "16:00–20:00" },
-  { ukedag: 4, navn: "Fredag", slotId: null, paa: false, range: "—" },
-  { ukedag: 5, navn: "Lørdag", slotId: null, paa: false, range: "—" },
-  { ukedag: 6, navn: "Søndag", slotId: null, paa: false, range: "—" },
+  { ukedag: 0, navn: "Mandag", slotId: "s1", antall: 1, paa: true, tekst: "15:00–19:00" },
+  { ukedag: 1, navn: "Tirsdag", slotId: "s2", antall: 1, paa: true, tekst: "15:00–19:00 · Studio 1" },
+  { ukedag: 2, navn: "Onsdag", slotId: null, antall: 0, paa: false, tekst: null },
+  { ukedag: 3, navn: "Torsdag", slotId: null, antall: 2, paa: true, tekst: null },
+  { ukedag: 4, navn: "Fredag", slotId: "s4", antall: 1, paa: false, tekst: "16:00–20:00" },
+  { ukedag: 5, navn: "Lørdag", slotId: null, antall: 0, paa: false, tekst: null },
+  { ukedag: 6, navn: "Søndag", slotId: null, antall: 0, paa: false, tekst: null },
 ];
 
 const FANER = [
@@ -61,8 +63,9 @@ const FANER = [
 const Skjelett = ({ children, periode }: { children: React.ReactNode; periode: string }) => (
   <AgencyOSSkall navn="Test Coach">
     <Side max={1480}>
-      <SideHode kicker={periode} title="Kalender" sub="Dra en hendelse for å flytte den, eller åpne den og velg Flytt." actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
+      <SideHode kicker={`Kalender · ${periode}`} title="Kalender" sub="Åpne en hendelse for å se detaljene og gå videre til den." actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
       <FanerLenker faner={FANER} />
+      {periode !== "Tilgjengelighet" && <AG05Periode forrige="#" idag="#" neste="#" />}
       {children}
     </Side>
   </AgencyOSSkall>
@@ -73,5 +76,7 @@ export const tilstander = {
   dag: <Skjelett periode={dagData.periode}><AG05Uke data={dagData} dagIso="2026-09-29" /></Skjelett>,
   maned: <Skjelett periode={manedData.periode}><AG05Maned data={manedData} /></Skjelett>,
   tilg: <Skjelett periode="Tilgjengelighet"><AG05Tilg rader={tilgRader} /></Skjelett>,
+  laster: <Skjelett periode={ukeData.periode}><LasterTilstand text="Henter kalenderen …" /></Skjelett>,
+  feil: <Skjelett periode={ukeData.periode}><FeilTilstand icon={CalendarX} title="Kalenderen kunne ikke hentes" text="Ingen hendelser er endret." /></Skjelett>,
   tom: <Skjelett periode={ukeData.periode}><AG05Uke data={{ ...ukeData, hendelser: [] }} /></Skjelett>,
 };

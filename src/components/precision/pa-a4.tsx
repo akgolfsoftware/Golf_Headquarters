@@ -238,7 +238,7 @@ export function Tabell<R extends { id: string }>({ caption, columns, rows, onSel
 /* ---------- Layout ---------- */
 
 export function Side({ max = 1200, children }: { max?: number; children: ReactNode }) {
-  return <div style={{ maxWidth: max, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>{children}</div>;
+  return <div className="pa-side" style={{ maxWidth: max }}>{children}</div>;
 }
 
 export function Kolonner({ mal, gap = 16, children }: { mal: string; gap?: number; children: ReactNode }) {
