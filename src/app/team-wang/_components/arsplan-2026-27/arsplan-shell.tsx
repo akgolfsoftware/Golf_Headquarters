@@ -9,7 +9,6 @@ import { useState } from "react";
 import Image from "next/image";
 
 import { FaneTrening, type TreningSide } from "./fane-trening";
-import { TRENING_SIDER } from "./trening-sider";
 import { FaneSkole } from "./fane-skole";
 import { FaneKalenderArsplan } from "./fane-kalender-arsplan";
 import { FaneForeldreArsplan } from "./fane-foreldre-arsplan";
@@ -23,6 +22,14 @@ const NAV: { key: ArsplanFane; label: string }[] = [
   { key: "skole", label: "Skole" },
   { key: "kalender", label: "Kalender" },
   { key: "foreldre", label: "Foreldre" },
+];
+
+export const TRENING_SIDER: { key: TreningSide; label: string }[] = [
+  { key: "arsplan", label: "Årsplan" },
+  { key: "periodisering", label: "Periodisering" },
+  { key: "manedsplan", label: "Månedsplan" },
+  { key: "ukeplan", label: "Ukeplan" },
+  { key: "oktplaner", label: "Øktplaner" },
 ];
 
 const SEKUNDAER: Record<Exclude<ArsplanFane, "trening">, { href: string; label: string }[]> = {
