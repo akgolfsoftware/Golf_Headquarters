@@ -2,7 +2,7 @@
 
 /**
  * AG-07 Stall i Precision Athletics — porting av /admin/spillere.
- * Fasit: designsystem/precision-athletics/ui_kits/agencyos/screens/AG-stall.jsx
+ * Tegning: designsystem/precision-athletics/ui_kits/agencyos/screens/AG-stall.jsx
  * (runde 27, lastes sist i screen.html og overstyrer AG-07.jsx).
  *
  * Tre bånd (beslutninger.md §SKJERMENE … RUNDE 8): I dag · Trener nå · Hele
