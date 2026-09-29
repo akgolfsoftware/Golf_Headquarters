@@ -110,7 +110,7 @@ export function WangSkall({
           {/* eslint-disable-next-line @next/next/no-img-element -- statisk SVG */}
           <img src="/team-wang/wang-crest.svg" alt="WANG" width={22} height={28} />
           <div className={s.mtopTekst}>
-            <p className={s.mtopSted}>{erDemo ? `${sted} · Demo` : sted}</p>
+            <p className={s.mtopSted}>{sted}</p>
             <p className={s.mtopTittel}>{tittel}</p>
           </div>
         </header>
