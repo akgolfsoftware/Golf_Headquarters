@@ -95,7 +95,7 @@ export function AG23Markedsforing({ tilstand, poster }: { tilstand: AG23MarkedsT
   ];
   const nyKnapp = <Knapp size="sm" icon={Plus} iconName="plus" onClick={() => setNy(true)}>Ny post</Knapp>;
   return <div className="pa-side">
-    <AG23Hode sted="marketing" kicker="Mer · Oppsett · Markedsføring" tittel="Markedsføring" sub="Innholdskalender og poster per kanal. Ingenting publiseres herfra." />
+    <AG23Hode sted="marketing" kicker="Mer · Oppsett" tittel="Oppsett" />
     {tilstand === "laster" && <LasterTilstand text="Henter innholdskalenderen …" />}
     {tilstand === "feil" && <FeilTilstand icon={Megaphone} title="Kalenderen kunne ikke hentes" text="Ingenting er endret. Prøv igjen." code="MARKEDSFØRING · FEIL" retry={<Knapp variant="secondary" icon={RefreshCw} iconName="refresh-cw" onClick={() => window.location.reload()}>Prøv igjen</Knapp>} />}
     {tilstand === "tom" && <TomTilstand icon={Megaphone} title="Ingen planlagte poster" text="Legg den første posten i kalenderen." actions={nyKnapp} />}

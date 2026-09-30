@@ -13,5 +13,5 @@ const poster: MarketingPostRad[] = [
 const Vis = (t: AG23MarkedsTilstand, p: MarketingPostRad[] = poster) => (
   <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach"><AG23Markedsforing tilstand={t} poster={p} /></AgencyOSSkall></AdminRolleProvider>
 );
-export const natt = ["natt"];
-export const tilstander = { data: Vis("data"), tom: Vis("tom", []), laster: Vis("laster"), feil: Vis("feil"), natt: Vis("data") };
+export const natt = ["natt", "natt-tom", "natt-laster", "natt-feil"];
+export const tilstander = { data: Vis("data"), tom: Vis("tom", []), laster: Vis("laster"), feil: Vis("feil"), natt: Vis("data"), "natt-tom": Vis("tom", []), "natt-laster": Vis("laster"), "natt-feil": Vis("feil") };

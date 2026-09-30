@@ -10,12 +10,13 @@ const data: AdminProfilV2Data = {
   navn: "Test Coach", epost: "test.coach@example.com", phone: "+47 900 00 000", avatarUrl: null, hcp: 2.4,
   homeClub: "Testklubben Golfklubb med et langt navn som må brytes pent", bio: "Kort bio for prøven.",
   certifications: ["PGA Class A", "TPI Level 2"], languages: ["Norsk", "Engelsk"], clubs: ["Testklubben"],
-  rolleLabel: "Administrator", abonnementLabel: "Pro (299 kr/mnd)", opprettetLabel: "01. jan. 2026",
+  rolleLabel: "Administrator", abonnementLabel: "Pro", opprettetLabel: "01. jan. 2026",
 };
 const tom: AdminProfilV2Data = { ...data, phone: null, hcp: null, homeClub: null, bio: "", certifications: [], clubs: [] };
 const handlinger = { lagreProfil: async () => ({ ok: true as const }), lastOppAvatar: async () => ({ ok: true as const, url: "" }) } as unknown as AG23ProfilHandlinger;
+const oversikt = { kalender: "Koblet · synket 30.09 08:20", tjenester: "6 tjenester · oppdatert 01.08.2026" };
 const Vis = (t: AG23ProfilTilstand, d: AdminProfilV2Data = data) => (
-  <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach"><AG23Profil tilstand={t} data={d} handlinger={handlinger} /></AgencyOSSkall></AdminRolleProvider>
+  <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach"><AG23Profil tilstand={t} data={d} handlinger={handlinger} oversikt={oversikt} /></AgencyOSSkall></AdminRolleProvider>
 );
-export const natt = ["natt"];
-export const tilstander = { data: Vis("data"), tom: Vis("data", tom), laster: Vis("laster"), feil: Vis("feil"), natt: Vis("data") };
+export const natt = ["natt", "natt-tom", "natt-laster", "natt-feil"];
+export const tilstander = { data: Vis("data"), tom: Vis("data", tom), laster: Vis("laster"), feil: Vis("feil"), natt: Vis("data"), "natt-tom": Vis("data", tom), "natt-laster": Vis("laster"), "natt-feil": Vis("feil") };

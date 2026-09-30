@@ -1,8 +1,15 @@
-/* Skjerm-speilet skeleton: Marketing er en listeflate (hode + kort med rader) —
-   liste-varianten fra det delte V2Laster-biblioteket. */
-
-import { V2Laster } from "@/components/v2/laster";
+/* AG-23 Oppsett: laster-tilstand i Precision Athletics. Ren serverkomponent
+   (loading.tsx importerer aldri en "use client"-modul, gotchas §Bygg og drift). */
+import "@/styles/precision-komponenter.css";
+import "@/styles/precision-athletics.css";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="dashboard" />;
+  return (
+    <div className="pa-root" data-design="precision-athletics" style={{ minHeight: "100dvh", background: "var(--surface-page)" }}>
+      <div className="pa-side">
+        <LasterTilstand text="Henter oppsett …" />
+      </div>
+    </div>
+  );
 }

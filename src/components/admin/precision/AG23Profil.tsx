@@ -2,13 +2,13 @@
 
 /**
  * AG-23 Profil i Precision Athletics (AG-mer.jsx, fane Profil, runde 30).
- * Data og handlinger uendret: samme felt fra User + preferences,
- * oppdaterCoachProfil og uploadAvatar. Tegningen viser bare fem
- * nøkkelverdier; skjemaet er beholdt slik at ingen funksjon forsvinner.
+ * Data og handlinger uendret. Fasitens fem nøkkelverdier vises først;
+ * skjemaet (oppdaterCoachProfil, uploadAvatar) ligger bak «Endre» så
+ * ingen funksjon forsvinner.
  */
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, CircleUser, RefreshCw } from "lucide-react";
+import { Check, CircleUser, Pencil, RefreshCw } from "lucide-react";
 import { Knapp, LasterTilstand, FeilTilstand, Meta } from "@/components/precision/pa";
 import { Felt, Kort, KortHode, InlineVarsel, Nokkelverdi } from "@/components/precision/pa-a5";
 import { AG23Hode, TekstFeltStor } from "./AG23Hode";
@@ -18,6 +18,7 @@ import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import type { AdminProfilV2Data } from "@/components/admin/v2/oppsett/AdminProfilTrainLock";
 import "@/styles/precision-a5.css";
 
+export type AG23ProfilOversikt = { kalender: string; tjenester: string };
 export type AG23ProfilTilstand = "data" | "laster" | "feil";
 /** Server actions sendes inn fra page.tsx (holder klientfila fri for serverkode). */
 export type AG23ProfilHandlinger = { lagreProfil: typeof OppdaterCoachProfil; lastOppAvatar: typeof UploadAvatar };
@@ -31,7 +32,8 @@ function Avatar({ src, navn }: { src: string | null; navn: string }) {
   </span>;
 }
 
-function Skjema({ data, handlinger }: { data: AdminProfilV2Data; handlinger: AG23ProfilHandlinger }) {
+function Skjema({ data, handlinger, oversikt }: { data: AdminProfilV2Data; handlinger: AG23ProfilHandlinger; oversikt: AG23ProfilOversikt }) {
+  const [rediger, setRediger] = useState(false);
   const router = useRouter();
   const [f, setF] = useState({
     navn: data.navn, epost: data.epost, phone: data.phone ?? "", hcp: hcpTekst(data.hcp), homeClub: data.homeClub ?? "",
@@ -85,6 +87,15 @@ function Skjema({ data, handlinger }: { data: AdminProfilV2Data; handlinger: AG2
 
   return <div className="pa-a5-stack">
     <Kort>
+      <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>Profil</span><Meta>{data.rolleLabel.toUpperCase()}</Meta></div>
+      <Nokkelverdi items={[
+        ["Navn", data.navn || "—"], ["E-post", data.epost || "—"], ["Rolle", data.rolleLabel],
+        ["Google-kalender", oversikt.kalender], ["Tjenester og priser", oversikt.tjenester],
+      ]} />
+      {!rediger && <div><Knapp variant="secondary" size="sm" icon={Pencil} iconName="pencil" onClick={() => setRediger(true)}>Endre</Knapp></div>}
+    </Kort>
+    {rediger && <>
+    <Kort>
       <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", minWidth: 0 }}>
         <Avatar src={avatar} navn={data.navn} />
         <div style={{ flex: "1 1 200px", minWidth: 0 }}>
@@ -131,15 +142,19 @@ function Skjema({ data, handlinger }: { data: AdminProfilV2Data; handlinger: AG2
         </Kort>
       </div>
     </div>
-    <div><Knapp icon={Check} iconName="check" loading={lagrer} onClick={lagre}>Lagre endringer</Knapp></div>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <Knapp icon={Check} iconName="check" loading={lagrer} onClick={lagre}>Lagre endringer</Knapp>
+      <Knapp variant="ghost" onClick={() => setRediger(false)}>Lukk</Knapp>
+    </div>
+    </>}
   </div>;
 }
 
-export function AG23Profil({ tilstand, data, handlinger }: { tilstand: AG23ProfilTilstand; data: AdminProfilV2Data; handlinger: AG23ProfilHandlinger }) {
-  return <div className="pa-side">
-    <AG23Hode sted="profil" kicker="Mer · Oppsett · Profil" tittel="Profil" />
+export function AG23Profil({ tilstand, data, handlinger, oversikt }: { tilstand: AG23ProfilTilstand; data: AdminProfilV2Data; handlinger: AG23ProfilHandlinger; oversikt: AG23ProfilOversikt }) {
+  return <div className="pa-side" style={{ maxWidth: 960 }}>
+    <AG23Hode sted="profil" kicker="Mer · Oppsett" tittel="Oppsett" />
     {tilstand === "laster" && <LasterTilstand text="Henter profilen …" />}
     {tilstand === "feil" && <FeilTilstand icon={CircleUser} title="Profilen kunne ikke hentes" text="Ingenting er endret. Prøv igjen." code="PROFIL · FEIL" retry={<Knapp variant="secondary" icon={RefreshCw} iconName="refresh-cw" onClick={() => window.location.reload()}>Prøv igjen</Knapp>} />}
-    {tilstand === "data" && <Skjema data={data} handlinger={handlinger} />}
+    {tilstand === "data" && <Skjema data={data} handlinger={handlinger} oversikt={oversikt} />}
   </div>;
 }

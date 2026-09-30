@@ -41,6 +41,11 @@ import { TlKort, TlRad, TlKnapp } from "@/components/admin/v2/oppsett/tl-kit";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG23Hode } from "@/components/admin/precision/AG23Hode";
+import { AG23TeamOversikt, type TeamRad } from "@/components/admin/precision/AG23Team";
+import { prisma } from "@/lib/prisma";
+import { canUser } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
+import { EKSTRA_TILGANGER } from "@/lib/admin/oppsett/ekstra-tilganger";
 import { TL } from "@/lib/v2/train-lock";
 import { AdminOppsettHubTrainLock } from "@/components/admin/v2/oppsett/AdminOppsettHubTrainLock";
 import { AdminKlubbInnstillingerTrainLock } from "@/components/admin/v2/oppsett/AdminKlubbInnstillingerTrainLock";
@@ -91,6 +96,27 @@ export default async function OppsettPage({
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { fane: onsket, rad, visning, ok, error } = await searchParams;
+
+  if (onsket === "team") {
+    const [brukere, kanInvitere] = await Promise.all([
+      prisma.user.findMany({
+        where: { role: { in: ["ADMIN", "COACH"] }, deletedAt: null },
+        select: { id: true, name: true, email: true, role: true, lastLoginAt: true },
+        orderBy: [{ role: "asc" }, { name: "asc" }],
+      }),
+      canUser(user, Capability.INVITE_USERS),
+    ]);
+    const team: TeamRad[] = brukere.map((b) => ({
+      id: b.id, navn: b.name || "Uten navn", epost: b.email,
+      rolle: b.role === "ADMIN" ? "ADMIN" : "COACH", aktiv: b.lastLoginAt != null,
+    }));
+    return (
+      <AgencyOSSkall navn={user.name ?? "Coach"}>
+        <AG23TeamOversikt tilstand="data" team={team} kanInvitere={kanInvitere}
+          kanTildeleTilganger={user.role === "ADMIN"} tilganger={EKSTRA_TILGANGER} kanEksterne={user.role === "ADMIN"} />
+      </AgencyOSSkall>
+    );
+  }
 
   const faner = synligeOppsettFaner(user.role === "ADMIN");
   const aktiv = velgOppsettFane(onsket, faner);
@@ -199,8 +225,9 @@ export default async function OppsettPage({
           sted="oppsett"
           kicker="Mer · Oppsett"
           tittel="Oppsett"
-          faner={faner.map((f) => ({ id: f.id, label: f.label, href: oppsettHref(f.id) }))}
-          aktivFane={aktiv}
+          sub="Profil, team, tilgang, kalender, sikkerhet og integrasjoner."
+          innstillinger={faner.map((f) => ({ id: f.id, label: f.label, href: oppsettHref(f.id) }))}
+          aktivInnstilling={aktiv}
         />
         <div style={{ minWidth: 0 }}>{innhold}</div>
       </div>

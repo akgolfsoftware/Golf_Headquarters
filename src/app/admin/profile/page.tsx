@@ -4,6 +4,7 @@
  * og samme mutasjoner (oppdaterCoachProfil, uploadAvatar).
  */
 
+import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { oppdaterCoachProfil } from "@/app/admin/(legacy)/profile/actions";
@@ -39,13 +40,27 @@ export default async function AdminProfilePage() {
     languages: asStringArray(prefs.languages, ["Norsk"]),
     clubs: asStringArray(prefs.clubs, user.homeClub ? [user.homeClub] : []),
     rolleLabel: user.role === "ADMIN" ? "Administrator" : "Coach",
-    abonnementLabel: user.tier === "PRO" ? "Pro (299 kr/mnd)" : "Gratis",
+    abonnementLabel: user.tier === "PRO" ? "Pro" : "Gratis",
     opprettetLabel: user.createdAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "short", year: "numeric" }),
+  };
+
+  const [kobling, tjenester] = await Promise.all([
+    prisma.googleCalendarConnection.findUnique({ where: { userId: user.id }, select: { status: true, lastSyncAt: true } }),
+    prisma.serviceType.aggregate({ where: { active: true }, _count: { _all: true }, _max: { updatedAt: true } }),
+  ]);
+  const dato = (d: Date) => d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" });
+  const oversikt = {
+    kalender: !kobling
+      ? "Ikke koblet"
+      : `${kobling.status === "ACTIVE" ? "Koblet" : kobling.status === "PAUSED" ? "Satt på pause" : "Feil ved synk"} · ${kobling.lastSyncAt ? `synket ${kobling.lastSyncAt.toLocaleString("nb-NO", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}` : "aldri synket"}`,
+    tjenester: tjenester._count._all === 0 || !tjenester._max.updatedAt
+      ? "—"
+      : `${tjenester._count._all} tjenester · oppdatert ${dato(tjenester._max.updatedAt)}`,
   };
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG23Profil tilstand="data" data={data} handlinger={{ lagreProfil: oppdaterCoachProfil, lastOppAvatar: uploadAvatar }} />
+      <AG23Profil tilstand="data" data={data} oversikt={oversikt} handlinger={{ lagreProfil: oppdaterCoachProfil, lastOppAvatar: uploadAvatar }} />
     </AgencyOSSkall>
   );
 }
