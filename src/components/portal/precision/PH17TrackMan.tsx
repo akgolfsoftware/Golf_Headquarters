@@ -23,6 +23,7 @@ import { Valgpille } from "@/components/precision/pa-planhub";
 import { formaterTall } from "@/lib/format-tall";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import type { Ph17Okt, Ph17Kolle } from "@/lib/trackman/ph17-data";
+import { regnSpredning } from "@/lib/trackman/ph17-spredning";
 import type { GappingData } from "@/lib/portal/gapping-data";
 import type { ClubFitReport, FitStatus } from "@/lib/sg-hub/equipment-fit";
 import "@/styles/precision-ph17.css";
@@ -50,10 +51,10 @@ export function PH17Ramme({ aktiv, tilstand = "data", kode, importerFor, childre
     <SideHode kicker="Stats · TrackMan" title="TrackMan" sub="Økter importeres fra TrackMan-eksport eller -konto. Tallene står på engelsk slik TrackMan viser dem."
       actions={<>
         <TrackmanImportModal label="Importer økt" className="pa-btn pa-btn--secondary" onBehalfOfUserId={importerFor} />
-        <KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href="/portal/analysere">Stats</KnappLenke>
+        <KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href="/portal/analysere">Analyse</KnappLenke>
       </>} />
     {tilstand === "feil"
-      ? <FeilTilstand icon={CircleAlert} title="TrackMan-øktene kunne ikke hentes" text="Øktene er ikke slettet. Prøv igjen om litt." code={kode ?? "FEIL 503 · TRACKMAN"} retry={<KnappLenke variant="secondary" href="/portal/analysere/trackman">Prøv igjen</KnappLenke>} />
+      ? <FeilTilstand icon={CircleAlert} title="TrackMan-øktene kunne ikke hentes" text="Øktene er ikke slettet. Prøv igjen om litt." code={kode ?? "FEIL 503 · TRACKMAN"} retry={<KnappLenke variant="secondary" href={FANER.find((f) => f.id === aktiv)?.href ?? FANER[0].href}>Prøv igjen</KnappLenke>} />
       : <>
         <FanerLenker faner={FANER.map((f) => ({ href: f.href, navn: f.navn, aktiv: f.id === aktiv }))} />
         {children}
@@ -63,14 +64,11 @@ export function PH17Ramme({ aktiv, tilstand = "data", kode, importerFor, childre
 
 /* ---------------- Økter ---------------- */
 
-function Spredning({ pts, height, label }: { pts: [number, number][]; height: number; label: string }) {
+function Spredning({ pts, label }: { pts: [number, number][]; label: string }) {
   const n = pts.length;
-  const maks = pts.reduce((a, p) => Math.max(a, Math.abs(p[0]), Math.abs(p[1])), 0);
-  const range = [6, 9, 12, 18, 24, 36, 60].find((r) => r >= maks) ?? 100;
-  const mx = n ? pts.reduce((a, p) => a + p[0], 0) / n : 0, my = n ? pts.reduce((a, p) => a + p[1], 0) / n : 0;
-  const sx = n ? Math.sqrt(pts.reduce((a, p) => a + (p[0] - mx) ** 2, 0) / n) : 0, sy = n ? Math.sqrt(pts.reduce((a, p) => a + (p[1] - my) ** 2, 0) / n) : 0;
+  const { range, mx, my, sx, sy } = regnSpredning(pts);
   const S = 100 / range;
-  return <div className="ph17-spred" style={{ height }}>
+  return <div className="ph17-spred">
     <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label={label}>
       {[1, 2, 3].map((r) => <circle key={r} cx="0" cy="0" r={r * 100 / 3} fill="none" stroke="var(--border-hairline)" vectorEffect="non-scaling-stroke" />)}
       <line x1="-100" x2="100" y1="0" y2="0" stroke="var(--border-strong)" vectorEffect="non-scaling-stroke" />
@@ -89,12 +87,12 @@ function Metrikk({ k, v, e }: { k: string; v: string | null; e?: string }) {
   return <div className="ph17-metrikk"><span className="ph17-metrikk__k">{k}</span><span><span className="ph17-metrikk__v">{v ?? "—"}</span>{v != null && e && <span className="ph17-metrikk__e">{e}</span>}</span></div>;
 }
 
-export function PH17Okter({ okter, valgtId }: { okter: Ph17Okt[]; valgtId?: string }) {
+export function PH17Okter({ okter, valgtId, importerFor }: { okter: Ph17Okt[]; valgtId?: string; importerFor?: string }) {
   const start = okter.find((o) => o.id === valgtId) ?? okter[0];
   const [sid, setSid] = useState(start?.id ?? "");
   const [kolle, setKolle] = useState(start?.klubber[0]?.navn ?? "");
   if (!okter.length) return <TomTilstand icon={Crosshair} title="Ingen TrackMan-økter" text="Importer en økt fra TrackMan, eller book en bay. Øktene dukker opp her etter import." actions={<>
-    <TrackmanImportModal label="Importer økt" className="pa-btn pa-btn--primary" />
+    <TrackmanImportModal label="Importer økt" className="pa-btn pa-btn--primary" onBehalfOfUserId={importerFor} />
     <KnappLenke variant="secondary" href="/portal/booking">Book bay</KnappLenke></>} />;
   const ses = okter.find((o) => o.id === sid) ?? okter[0];
   const k: Ph17Kolle | undefined = ses.klubber.find((c) => c.navn === kolle) ?? ses.klubber[0];
@@ -119,7 +117,7 @@ export function PH17Okter({ okter, valgtId }: { okter: Ph17Okt[]; valgtId?: stri
       <Kort>
         <KortHode tittel={`Spredning · ${k?.navn ?? "—"} · ${k?.pts.length ?? 0} slag`} kilde={src} />
         {k && k.pts.length > 0
-          ? <Spredning pts={k.pts} height={320} label={`Spredning ${k.navn}`} />
+          ? <Spredning pts={k.pts} label={`Spredning ${k.navn}`} />
           : <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen slag med sideavvik og carry i denne økta.</p>}
       </Kort>
       <Kort>

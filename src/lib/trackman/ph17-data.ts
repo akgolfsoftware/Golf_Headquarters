@@ -48,8 +48,8 @@ type Slag = {
 
 export function byggKolle(navn: string, slag: Slag[]): Ph17Kolle {
   const gyldige = slag.filter((s) => !s.outlier);
-  const carry = snittAv(slag.map((s) => s.carryDistance));
-  const pts: [number, number][] = carry == null ? [] : slag.flatMap((s) => (s.side != null && s.carryDistance != null ? [[s.side, s.carryDistance - carry] as [number, number]] : []));
+  const carry = snittAv(gyldige.map((s) => s.carryDistance));
+  const pts: [number, number][] = carry == null ? [] : gyldige.flatMap((s) => (s.side != null && s.carryDistance != null ? [[s.side, s.carryDistance - carry] as [number, number]] : []));
   return {
     navn, pts,
     snitt: {
