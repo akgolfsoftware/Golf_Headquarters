@@ -43,7 +43,7 @@ const stubbePlugin = {
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
       resolveDir: root, loader: "js",
       contents: path === "next/navigation"
-        ? 'export const useRouter=()=>({push(){},replace(){},refresh(){},back(){},prefetch(){}});export const usePathname=()=>window.__PROVE_PATH__||"/";export const useSearchParams=()=>new URLSearchParams(location.search);export const useParams=()=>({});export function redirect(){throw new Error("redirect i prøven")};export function notFound(){throw new Error("notFound i prøven")}'
+        ? 'export const useRouter=()=>({push(){},replace(){},refresh(){},back(){},prefetch(){}});export const usePathname=()=>window.__PROVE_PATH__||"/";export const useSearchParams=()=>new URLSearchParams(location.search);export const useParams=()=>({});export function redirect(){throw new Error("redirect i prøven")};export function unstable_rethrow(e){throw e};export function notFound(){throw new Error("notFound i prøven")}'
         : path === "next/link"
           ? 'import{createElement}from"react";export default function Link({prefetch,scroll,replace,shallow,...p}){return createElement("a",p)}'
           : path === "next/dynamic"
@@ -82,9 +82,11 @@ await build({
 import { readdirSync } from "node:fs";
 const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp)\.css$/.test(f)).sort();
 const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// CSS-moduler (.module.css) bygges av esbuild til prove.css og må med, ellers måles skjermen uten egen stil.
+const modulCss = existsSync(resolve(out, "prove.css")) ? readFileSync(resolve(out, "prove.css"), "utf8") : "";
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
-<style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
+<style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\n${modulCss}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
 const TYPER = { ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon" };
 const server = createServer((req, res) => {
   const u = new URL(req.url, "http://127.0.0.1");

@@ -2,6 +2,8 @@
 
 import { useActionState, useRef } from "react";
 import { unstable_rethrow } from "next/navigation";
+import { Play } from "lucide-react";
+import { Knapp } from "@/components/precision/pa";
 import styles from "./session-brief.module.css";
 
 /** Serveren avgjør om økten kan startes. Ved nettfeil beholdes hele arket. */
@@ -23,6 +25,6 @@ export function BriefStart({ action }: { action: () => Promise<void> }) {
     else submitting.current = true;
   }}>
     {error && <p className={styles.error} role="alert">{error}</p>}
-    <button className={styles.primary} data-od-id="brief-start" type="submit" disabled={pending}>{pending ? "Åpner økta…" : "Start økta"}</button>
+    <Knapp size="xl" fullWidth icon={Play} type="submit" data-od-id="brief-start" loading={pending} loadingText="Åpner økt …" style={{ height: 64 }}>Start økt</Knapp>
   </form>;
 }
