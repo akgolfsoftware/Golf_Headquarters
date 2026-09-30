@@ -8,8 +8,10 @@
  * uendret fra CoachAIV2. Bare visningen er ny.
  *
  * Bevisste avvik fra tegningen:
+ *   - Chipen «Foreslå en turnering» har ikke fast måned (ville blitt utdatert).
+ *   - Fane: PlayerHQSkall markerer fane etter adresse; tegningen har «Meg». Skallet er delt og er ikke rørt.
  *   - «KILDE · …» under svaret vises ikke: API-et returnerer ren tekst uten kilde.
- *   - Utkast-kortet («Godta og send til Anders») vises ikke: Caddie lager ikke utkast i dag.
+ *   - Utkast-kortet («Godta og send til coach») vises ikke: Caddie lager ikke utkast i dag.
  *   - Klokkeslett under meldingene vises ikke: meldingene lagres uten tidspunkt.
  *   - «Ny samtale» og «Eksporter» beholdes (finnes i appen, ikke i tegningen).
  */
@@ -20,7 +22,7 @@ import { Ikon, Knapp, KnappLenke, Meta, TomTilstand, FeilTilstand } from "@/comp
 import { SideHode, Side, Kort } from "@/components/precision/pa-a4";
 import "@/styles/precision-a4.css";
 
-export type PH22Tilstand = "data" | "tom" | "feil" | "pro";
+export type PH22Tilstand = "data" | "tom" | "feil" | "pro" | "laster";
 export type PH22Props = {
   /** Kun for prøve/forhåndsvisning: tvinger frem tilstand. Ellers utledes den av data. */
   tilstand?: PH22Tilstand;
@@ -28,22 +30,26 @@ export type PH22Props = {
   sessionId: string | null;
   initialMessages: ChatMelding[];
   skrivTilHref: string;
+  /** Spillerens coach (fornavn). Mangler den, brukes «coachen din». */
+  coachNavn?: string | null;
 };
 
-const CHIPS = ["Hva bør jeg trene på i dag?", "Hvordan var siste runde?", "Foreslå en turnering i oktober", "Hvor mye har jeg trent denne uka?"];
-const FEIL = { title: "Caddie svarer ikke", text: "Ingen forslag er sendt og ingenting er endret. Prøv igjen, eller skriv til Anders." };
+const CHIPS = ["Hva bør jeg trene på i dag?", "Hvordan var siste runde?", "Foreslå en turnering", "Hvor mye har jeg trent denne uka?"];
+const feilTekst = (c: string) => `Ingen forslag er sendt og ingenting er endret. Prøv igjen, eller skriv til ${c}.`;
 
-function Header({ skrivTilHref }: { skrivTilHref: string }) {
+function Header({ skrivTilHref, coach }: { skrivTilHref: string; coach: string }) {
   return <SideHode kicker="Meg · Caddie" title="Caddie"
-    sub="Caddie svarer ut fra dine data. Alt Caddie foreslår er utkast. Du eller Anders godtar før noe endres."
-    actions={<KnappLenke variant="secondary" icon={MessageSquare} href={skrivTilHref}>Skriv til Anders</KnappLenke>} />;
+    sub={`Caddie svarer ut fra dine data. Alt Caddie foreslår er utkast. Du eller ${coach} godtar før noe endres.`}
+    actions={<KnappLenke variant="secondary" icon={MessageSquare} href={skrivTilHref}>{`Skriv til ${coach}`}</KnappLenke>} />;
 }
 
-export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages, skrivTilHref }: PH22Props) {
+export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages, skrivTilHref, coachNavn }: PH22Props) {
+  const coach = coachNavn?.trim() || "coachen din";
   const [meldinger, setMeldinger] = useState<ChatMelding[]>(initialMessages);
   const [txt, setTxt] = useState("");
   const [sender, setSender] = useState(false);
   const [feilVist, setFeilVist] = useState(tilstand === "feil");
+  const [feilKode, setFeilKode] = useState("FEIL · CADDIE");
   const [sessionId, setSessionId] = useState<string | null>(sid);
   const endRef = useRef<HTMLDivElement>(null);
   /** Økes ved «Ny samtale» slik at en pågående strøm aldri skriver inn i den nye samtalen. */
@@ -55,7 +61,7 @@ export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages
 
   if (tilstand === "pro" || (tilstand === undefined && erGratis)) {
     return <Side max={880}>
-      <Header skrivTilHref={skrivTilHref} />
+      <Header skrivTilHref={skrivTilHref} coach={coach} />
       <Kort>
         <TomTilstand icon={Lock} title="Caddie krever Pro" text="Caddie er en del av Pro-abonnementet."
           actions={<KnappLenke href="/portal/meg/abonnement">Oppgrader til Pro</KnappLenke>} />
@@ -72,13 +78,14 @@ export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages
     setTxt("");
     setSender(true);
     setFeilVist(false);
+    setFeilKode("FEIL · CADDIE");
     try {
       const res = await fetch("/api/coach/ai-chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ sessionId, messages: historikk }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) { setFeilKode(`FEIL · CADDIE · HTTP ${res.status}`); throw new Error(`HTTP ${res.status}`); }
       const ny = res.headers.get("x-session-id");
       if (gen === genRef.current && ny && ny !== sessionId) setSessionId(ny);
       const reader = res.body?.getReader();
@@ -114,13 +121,14 @@ export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages
   }
 
   const tom = meldinger.length === 0;
-  const skriver = sender && meldinger[meldinger.length - 1]?.content === "";
+  const laster = tilstand === "laster";
+  const skriver = laster || sender && meldinger[meldinger.length - 1]?.content === "";
 
   return <Side max={880}>
-    <Header skrivTilHref={skrivTilHref} />
+    <Header skrivTilHref={skrivTilHref} coach={coach} />
     <div className="pa-card" style={{ padding: 0, overflow: "hidden", minWidth: 0 }}>
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16, minHeight: 280, minWidth: 0 }} aria-live="polite">
-        {tom && !feilVist && <TomTilstand icon={Sparkles} title="Spør Caddie om treningen din" text="Caddie kjenner planen, øktene, rundene og TrackMan-tallene dine. Caddie sender og endrer ingenting selv." />}
+        {tom && !feilVist && !laster && <TomTilstand icon={Sparkles} title="Spør Caddie om treningen din" text="Caddie kjenner planen, øktene, rundene og TrackMan-tallene dine. Caddie sender og endrer ingenting selv." />}
         {meldinger.map((m, i) => m.role === "user"
           ? <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, minWidth: 0 }}>
             <div style={{ maxWidth: "min(520px,88%)", padding: "10px 14px", borderRadius: 8, background: "var(--primary)", color: "var(--text-on-primary)", font: "var(--type-body)", overflowWrap: "anywhere", whiteSpace: "pre-wrap" }}>{m.content}</div>
@@ -134,8 +142,8 @@ export function PH22Caddie({ tilstand, erGratis, sessionId: sid, initialMessages
               <Meta>CADDIE</Meta>
             </div>
           </div>)}
-        {skriver && <Meta>CADDIE LESER PLAN OG ØKTER …</Meta>}
-        {feilVist && <FeilTilstand icon={CircleAlert} title={FEIL.title} text={FEIL.text} code="FEIL · CADDIE" />}
+        {laster ? <Meta>CADDIE LESER DATAENE DINE …</Meta> : skriver && <Meta>CADDIE LESER PLAN OG ØKTER …</Meta>}
+        {feilVist && <FeilTilstand icon={CircleAlert} title="Caddie svarer ikke" text={feilTekst(coach)} code={feilKode} />}
       </div>
       <div style={{ padding: 12, borderTop: "1px solid var(--border-hairline)", display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

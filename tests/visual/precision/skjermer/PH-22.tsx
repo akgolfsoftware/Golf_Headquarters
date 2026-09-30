@@ -4,7 +4,7 @@ import { PH22Caddie, type PH22Props } from "@/components/portal/precision/PH22Ca
 import { PH22Turneringsforslag } from "@/components/portal/precision/PH22Turneringsforslag";
 
 export const sti = "/portal/coach/ai";
-export const natt = ["data-natt", "tom-natt", "feil-natt", "turnering-natt"];
+export const natt = ["data-natt", "tom-natt", "feil-natt", "laster-natt", "turnering-natt"];
 
 const base: PH22Props = {
   erGratis: false,
@@ -28,6 +28,7 @@ export const tilstander = {
   data: <Vis />, "data-natt": <Vis />,
   tom: <Vis initialMessages={[]} />, "tom-natt": <Vis initialMessages={[]} />,
   feil: <Vis tilstand="feil" initialMessages={[]} />, "feil-natt": <Vis tilstand="feil" initialMessages={[]} />,
+  laster: <Vis tilstand="laster" initialMessages={[]} />, "laster-natt": <Vis tilstand="laster" initialMessages={[]} />,
   pro: <Vis tilstand="pro" />,
   turnering: Tur(forslag), "turnering-natt": Tur(forslag), "turnering-tom": Tur([]),
 };

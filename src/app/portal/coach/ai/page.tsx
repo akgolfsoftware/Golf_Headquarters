@@ -23,7 +23,7 @@ export default async function CoachAiPage({
   const startNy = sp?.ny === "1";
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
 
-  const [sisteSesjon, dash] = await Promise.all([
+  const [sisteSesjon, dash, enrollering] = await Promise.all([
     startNy
       ? Promise.resolve(null)
       : prisma.coachingSession.findFirst({
@@ -31,6 +31,11 @@ export default async function CoachAiPage({
           orderBy: { updatedAt: "desc" },
         }),
     getUnreadNotifications(user.id, 1).catch(() => null),
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      include: { coach: { select: { name: true } } },
+      orderBy: { enrolledAt: "desc" },
+    }),
   ]);
 
   const initialMessages: ChatMelding[] =
@@ -53,6 +58,7 @@ export default async function CoachAiPage({
         sessionId={sisteSesjon?.id ?? null}
         initialMessages={initialMessages}
         skrivTilHref="/portal/coach/melding"
+        coachNavn={enrollering?.coach?.name?.split(" ")[0] ?? null}
       />
     </PlayerHQSkall>
   );
