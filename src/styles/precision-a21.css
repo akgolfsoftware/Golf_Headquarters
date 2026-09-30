@@ -1,0 +1,13 @@
+/* Innloggingsflatene (AU-01–AU-03). Måler 24/16 og 48/24 som Box i AU-01-03.jsx. */
+.pa-auth__side{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;box-sizing:border-box}
+.pa-auth__kolonne{width:100%;max-width:var(--auth-maks,440px);display:flex;flex-direction:column;gap:20px;min-width:0}
+.pa-auth__rad{display:flex;gap:8px;flex-wrap:wrap}
+.pa-auth__valg{display:flex;flex-direction:column;gap:8px}
+.pa-auth__lenke{display:inline-flex;align-items:center;min-height:44px;font:500 14px/1 var(--font-sans);color:var(--link)}
+.pa-auth__pakke{text-align:left;padding:16px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:44px;font:inherit}
+.pa-auth__pakke[aria-checked="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.pa-auth__pakke:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.pa-auth__pakke-topp{display:flex;justify-content:space-between;gap:8px}
+@media (min-width:768px){.pa-auth__side{padding:48px 24px}}
+/* Selve feltet skal være 44 px treffflate; rammen på 1 px spiser 2 px av innsiden. */
+.pa-auth .pa-control input{height:calc(100% + 2px);margin:-1px 0}

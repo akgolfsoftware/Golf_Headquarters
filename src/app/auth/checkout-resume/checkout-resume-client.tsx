@@ -1,22 +1,24 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TL } from "@/lib/v2/train-lock";
-
-import { LogoAK, Caps } from "@/components/v2";
+import { CircleAlert } from "lucide-react";
+import { FeilTilstand, KnappLenke, LasterTilstand } from "@/components/precision/pa";
+import { AuthBoks, Fremdrift } from "@/components/precision/pa-auth";
 
 /**
  * Gjenopptar Stripe Checkout etter signup + onboarding.
- * V2/B: status først, én grønn vei videre ved feil.
+ * AU-02 steg 4 «Betaling» i Precision Athletics (Claude Design 7d7c2994,
+ * ui_kits/konto/screens/AU-01-03.jsx): status først, én vei videre ved feil.
+ * `forhandsvisning` brukes bare i målingen og hopper over Stripe-kallet.
  */
-export function CheckoutResumeClient({ plan }: { plan?: string }) {
+export function CheckoutResumeClient({ plan, forhandsvisning, tema }: { plan?: string; forhandsvisning?: "laster" | "feil"; tema?: "night" }) {
   const router = useRouter();
   const startet = useRef(false);
-  const [feil, setFeil] = useState(false);
+  const [feil, setFeil] = useState(forhandsvisning === "feil");
 
   useEffect(() => {
+    if (forhandsvisning) return;
     if (startet.current) return;
     startet.current = true;
 
@@ -42,90 +44,12 @@ export function CheckoutResumeClient({ plan }: { plan?: string }) {
         setFeil(true);
       }
     })();
-  }, [plan, router]);
+  }, [plan, router, forhandsvisning]);
 
-  return (
-    <main
-      className="light"
-      style={{
-        minHeight: "100svh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-        background: `radial-gradient(900px 380px at 50% -10%, var(--v2-vignett), transparent 62%), ${TL.scene}`,
-        color: TL.text,
-        fontFamily: TL.font.sans,
-        colorScheme: "light",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
-          <LogoAK size={28} />
-        </div>
-        {feil ? (
-          <>
-            <Caps size={10} style={{ marginBottom: 10, color: TL.mute }}>
-              Betaling
-            </Caps>
-            <p
-              style={{
-                fontFamily: TL.font.sans,
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                margin: "0 0 10px",
-                color: TL.text,
-              }}
-            >
-              Vi fikk ikke startet betalingen
-            </p>
-            <p style={{ fontSize: 14, lineHeight: 1.5, color: TL.mute, margin: "0 0 22px" }}>
-              Prøv igjen fra abonnement — du mister ikke kontoen.
-            </p>
-            <Link
-              href="/portal/meg/abonnement"
-              className="v2-press"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 48,
-                padding: "0 22px",
-                borderRadius: 9999,
-                background: TL.fill,
-                color: TL.onFill,
-                fontWeight: 700,
-                fontSize: 14,
-                textDecoration: "none",
-              }}
-            >
-              Gå til abonnement
-            </Link>
-          </>
-        ) : (
-          <>
-            <Caps size={10} style={{ marginBottom: 10, color: TL.mute }}>
-              Nesten ferdig
-            </Caps>
-            <p
-              style={{
-                fontFamily: TL.font.sans,
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                margin: "0 0 10px",
-                color: TL.text,
-              }}
-            >
-              Sender deg til betaling
-            </p>
-            <p style={{ fontSize: 14, color: TL.mute, margin: 0 }}>
-              Et øyeblikk …
-            </p>
-          </>
-        )}
-      </div>
-    </main>
-  );
+  return <AuthBoks maks={520} tema={tema}>
+    <Fremdrift steg={3} />
+    {feil
+      ? <FeilTilstand icon={CircleAlert} title="Vi fikk ikke startet betalingen" text="Prøv igjen fra abonnement — du mister ikke kontoen." retry={<KnappLenke href="/portal/meg/abonnement" variant="secondary">Gå til abonnement</KnappLenke>} />
+      : <LasterTilstand text="Sender deg til betaling …" />}
+  </AuthBoks>;
 }
