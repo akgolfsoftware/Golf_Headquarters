@@ -1,22 +1,19 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import {
-  OpprettUtfordringV2,
-  type UtfordringDeltakerValg,
-  type UtfordringOvelseValg,
-} from "@/components/portal/v2/OpprettUtfordringV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH24dNy, type PH24dOvelse, type PH24dValg } from "@/components/portal/precision/PH24dUtfordringer";
+import { opprettUtfordring } from "../actions";
 
 export const dynamic = "force-dynamic";
 
-function sorterDeltakere(a: UtfordringDeltakerValg, b: UtfordringDeltakerValg): number {
+function sorterDeltakere(a: PH24dValg, b: PH24dValg): number {
   return a.navn.localeCompare(b.navn, "nb");
 }
 
 export default async function NyUtfordringPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"], kreverTilgang: "FULL" });
 
-  const [vennskap, egneMedlemskap, ovelser] = await Promise.all([
+  const [vennskap, egneMedlemskap, ovelser, uleste] = await Promise.all([
     prisma.friendship.findMany({
       where: { status: "ACCEPTED", OR: [{ userAId: user.id }, { userBId: user.id }] },
       include: {
@@ -33,9 +30,10 @@ export default async function NyUtfordringPage() {
       orderBy: { name: "asc" },
       take: 80,
     }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
 
-  const kandidater = new Map<string, UtfordringDeltakerValg>();
+  const kandidater = new Map<string, PH24dValg>();
   for (const vennskapRad of vennskap) {
     const annen = vennskapRad.userAId === user.id ? vennskapRad.userB : vennskapRad.userA;
     kandidater.set(annen.id, {
@@ -69,15 +67,15 @@ export default async function NyUtfordringPage() {
   }
 
   const deltakere = [...kandidater.values()].sort(sorterDeltakere);
-  const ovelseValg: UtfordringOvelseValg[] = ovelser.map((ovelse) => ({
+  const ovelseValg: PH24dOvelse[] = ovelser.map((ovelse) => ({
     id: ovelse.id,
     navn: ovelse.name,
     higherIsBetter: ovelse.higherIsBetter,
   }));
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <OpprettUtfordringV2 deltakere={deltakere} ovelser={ovelseValg} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH24dNy tilstand="data" deltakere={deltakere} ovelser={ovelseValg} opprett={opprettUtfordring} />
+    </PlayerHQSkall>
   );
 }
