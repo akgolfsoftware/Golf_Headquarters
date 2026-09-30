@@ -1,0 +1,30 @@
+/*
+ * Precision Athletics — AG-24 Drift (Logger, Feillogg, GDPR, Hjelp).
+ * Egen fil for å unngå konflikt med parallelle bolker. Bare tokens fra .pa-root.
+ */
+.pa-a24-nav{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.pa-a24-sec{padding:16px;gap:8px}
+.pa-a24-sec__hode{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;justify-content:space-between}
+.pa-a24-rad{display:flex;flex-direction:column;gap:8px;min-width:0;padding:10px 0;border-top:1px solid var(--border-hairline)}
+.pa-a24-rad:first-child{border-top:none}
+.pa-a24-rad__topp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:36px;min-width:0}
+.pa-a24-rad__tekst{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pa-a24-rad__a{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.pa-a24-rad__b{display:inline-flex;align-items:center;justify-content:flex-end;min-width:0}
+.pa-a24-rad__melding{margin:0;font:var(--type-body-s);color:var(--text-secondary);overflow-wrap:anywhere;text-wrap:pretty}
+.pa-a24-stack{min-width:0}
+.pa-a24-stack summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font:500 13px/1.3 var(--font-sans);color:var(--text-primary)}
+.pa-a24-stack pre{margin:0;padding:12px;border-radius:6px;background:var(--surface-sunken);font:400 12px/1.5 var(--font-mono);color:var(--text-primary);white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%}
+.pa-a24-kv{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pa-a24-kv>div{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:baseline;min-width:0}
+.pa-a24-kv dt{font:var(--type-body-s);color:var(--text-secondary)}
+.pa-a24-kv dd{margin:0;font:400 14px/1.4 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.pa-a24-handlinger{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.pa-a24-handlinger form{display:contents}
+.pa-a24-bekreft{display:flex;flex-direction:column;gap:12px;min-width:0;font:var(--type-body-s);color:var(--text-primary)}
+.pa-a24-sok{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;box-shadow:inset 0 0 0 1px var(--border-hairline);border-radius:6px;background:var(--surface-card);color:var(--text-secondary);min-width:0}
+.pa-a24-sok__felt{flex:1 1 auto;min-width:0;height:100%;border:0;background:transparent;font:400 14px/1.3 var(--font-sans);color:var(--text-primary);outline:none}
+.pa-a24-sok:focus-within{box-shadow:inset 0 0 0 1px var(--border-ink)}
+.pa-a24-bekreft__skjema{display:flex;flex-direction:column;gap:12px;min-width:0}
+.pa-a24-bekreft__felt{height:44px;min-width:0;width:100%;box-sizing:border-box;padding:0 12px;border:0;border-radius:6px;box-shadow:inset 0 0 0 1px var(--border-hairline);background:var(--surface-card);font:400 14px/1.3 var(--font-mono);color:var(--text-primary);outline:none}
+.pa-a24-bekreft__felt:focus{box-shadow:inset 0 0 0 1px var(--border-ink)}

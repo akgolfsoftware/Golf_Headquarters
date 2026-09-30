@@ -1,7 +1,6 @@
 /**
- * v2: AgencyOS Audit-log (retning C). Egen top-level route-group (v2preview)
- * som IKKE arver AdminShell — kun root-layout — så V2Shell leverer all chrome
- * (IkonRail/BunnNav) i mørk v2-scope.
+ * AgencyOS Logger (AG-24, Precision Athletics). Visningen ligger i
+ * AG24Drift; siden eier bare tilgang og data.
  *
  * Auth + data følger den ekte (legacy) /admin/audit-log-flaten 1:1: samme
  * requirePortalUser-guard (kun ADMIN) og samme Prisma-spørring (AuditLog,
@@ -14,17 +13,17 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
-  AdminAuditLogTrainLock,
-  type AdminAuditLogV2Data,
-  type AdminAuditLogV2Event,
-  type AdminAuditLogV2Kind,
-  type AdminAuditLogV2Status,
-} from "@/components/admin/v2/oppsett/AdminAuditLogTrainLock";
+  AG24Logger,
+  type AuditData as AdminAuditLogV2Data,
+  type AuditHendelse as AdminAuditLogV2Event,
+  type AuditKind as AdminAuditLogV2Kind,
+  type AuditStatus as AdminAuditLogV2Status,
+} from "@/components/admin/precision/AG24Drift";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Logger · AgencyOS" };
 
 const NB = new Intl.DateTimeFormat("nb-NO", {
   day: "numeric",
@@ -80,9 +79,8 @@ export default async function V2AdminAuditLogPage() {
   const data: AdminAuditLogV2Data = { events, total, mistenkelige };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/oppsett">Innstillinger</TlTilbake>
-      <AdminAuditLogTrainLock data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG24Logger data={data} />
+    </AgencyOSSkall>
   );
 }

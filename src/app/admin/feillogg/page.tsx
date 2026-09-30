@@ -11,16 +11,16 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
-  AdminFeilloggTrainLock,
-  type AdminFeilloggV2Data,
-  type AdminFeilloggV2Rad,
-  type AdminFeilloggV2Severity,
-} from "@/components/admin/v2/oppsett/AdminFeilloggTrainLock";
+  AG24Feillogg,
+  type FeilData as AdminFeilloggV2Data,
+  type FeilRad as AdminFeilloggV2Rad,
+  type FeilSeverity as AdminFeilloggV2Severity,
+} from "@/components/admin/precision/AG24Drift";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Feillogg · AgencyOS" };
 
 const NB = new Intl.DateTimeFormat("nb-NO", {
   day: "numeric",
@@ -71,9 +71,8 @@ export default async function AdminFeilloggPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/oppsett">Innstillinger</TlTilbake>
-      <AdminFeilloggTrainLock data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG24Feillogg data={data} />
+    </AgencyOSSkall>
   );
 }
