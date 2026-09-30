@@ -100,8 +100,8 @@ export function Nokkelverdi({ items, kolonner = 1 }: { items: ReadonlyArray<read
 }
 
 /* ---------- Inline varsel ---------- */
-const ALERT_IKON = { info: Info, warn: TriangleAlert, ok: CircleCheck, signal: TriangleAlert } as const;
-export function InlineVarsel({ tone = "info", tittel, children }: { tone?: "info" | "warn" | "ok" | "signal"; tittel?: string; children: ReactNode }) {
+const ALERT_IKON = { neutral: Info, info: Info, warn: TriangleAlert, ok: CircleCheck, signal: TriangleAlert } as const;
+export function InlineVarsel({ tone = "info", tittel, children }: { tone?: "neutral" | "info" | "warn" | "ok" | "signal"; tittel?: string; children: ReactNode }) {
   return <div className={`pa-alert pa-alert--${tone}`} role={tone === "signal" || tone === "warn" ? "alert" : undefined}>
     <Ikon icon={ALERT_IKON[tone]} size={18} />
     <span>{tittel && <span className="pa-alert__title">{tittel} </span>}{children}</span>

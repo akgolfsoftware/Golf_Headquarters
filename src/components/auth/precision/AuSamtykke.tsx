@@ -11,6 +11,11 @@
  * Oppslag av token skjer fortsatt på serversiden i page.tsx og styrer hvilken tilstand som vises.
  * Handlingene er de samme som før: `confirmGuardianConsent`, `bekreftLydSamtykkeViaToken`,
  * `resendGuardianInvitation` og `logout`.
+ *
+ * Avvik:
+ *   - Lydsamtykket har en avkrysning som må hukes av før knappen virker; tegningen viser den ikke.
+ *   - Samtykket trekkes via post@akgolf.no i både skjema og kvittering; koden har ingen trekk-flyt i forelderportalen.
+ *   - Infovarselet bruker tone neutral, statuspillen «Venter på forelder» bruker tone info (som tegningen).
  */
 import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
@@ -80,7 +85,7 @@ export function GuardianConsentPrecision(props: GuardianConsentPrecisionProps) {
         <Hode
           kicker={`Samtykke for ${props.playerName}${alderTekst(props.playerAge)}`}
           tittel="Samtykket er registrert"
-          tekst="Du kan trekke samtykket når som helst i forelderportalen under Samtykke."
+          tekst={<>Du kan trekke samtykket når som helst ved å kontakte oss på <a href="mailto:post@akgolf.no" style={{ color: "var(--link)" }}>post@akgolf.no</a>.</>}
         />
         <div><KnappLenke href="/forelder">Gå til foreldreportal</KnappLenke></div>
       </Ramme>
@@ -124,7 +129,7 @@ function GuardianSkjema({ token, playerName, playerAge, guardianEmail, natt }: E
           <Avkrysning checked={databehandling} onChange={setDatabehandling} label={`Jeg samtykker til at AK Golf behandler ${playerName} sine persondata iht. personvernerklæringen: profil, treningsdata, golfstatistikk, bookinger og kommunikasjon med coach.`} />
           <Avkrysning checked={vilkar} onChange={setVilkar} label={`Jeg har lest og godtar vilkårene for bruk av AK Golf på vegne av ${playerName}, og bekrefter at jeg har foreldreansvar.`} />
         </div>
-        <InlineVarsel tone="info">Denne lenken gir bare tilgang til dette samtykket. Den logger deg ikke inn og viser ingen andre data.</InlineVarsel>
+        <InlineVarsel tone="neutral">Denne lenken gir bare tilgang til dette samtykket. Den logger deg ikke inn og viser ingen andre data.</InlineVarsel>
         {feil && <InlineVarsel tone="warn">{feil}</InlineVarsel>}
         <Knapp type="submit" fullWidth size="lg" loading={pending} loadingText="Lagrer …">Bekreft samtykke</Knapp>
       </form>
@@ -196,7 +201,7 @@ export function LydSamtykkePrecision({ token, spillerNavn, ordlyd, forhandsvis, 
       <Hode kicker={`Samtykke for ${spillerNavn} · AK Golf Academy`} tittel="Samtykke til lydopptak" tekst="Les ordlyden og bekreft. Du kan trekke samtykket senere." />
       <pre className="au__ordlyd" tabIndex={0} aria-label="Ordlyd i samtykket">{ordlyd}</pre>
       <div className="au__valg"><Avkrysning checked={ok} onChange={setOk} label="Jeg har lest ordlyden og samtykker på vegne av spilleren." /></div>
-      <InlineVarsel tone="info">Denne lenken gir bare tilgang til dette samtykket. Den logger deg ikke inn og viser ingen andre data. Trekker du samtykket, stoppes nye opptak med en gang.</InlineVarsel>
+      <InlineVarsel tone="neutral">Denne lenken gir bare tilgang til dette samtykket. Den logger deg ikke inn og viser ingen andre data. Trekker du samtykket, stoppes nye opptak med en gang.</InlineVarsel>
       {feil && <InlineVarsel tone="warn">{feil}</InlineVarsel>}
       <Knapp fullWidth size="lg" disabled={!ok} loading={laster} loadingText="Lagrer …" onClick={bekreft}>Jeg samtykker</Knapp>
     </Ramme>
@@ -228,7 +233,7 @@ export function SamtykkeVenterPrecision({ spillerNavn, invitasjonEmail, natt }: 
         tittel="Venter på forelder"
         tekst={<>Hei {spillerNavn || "der"}. Du er under 16 år, så en forelder må godkjenne kontoen din.{epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""} Du kan ikke bruke PlayerHQ før samtykket er gitt.</>}
       />
-      <div><StatusPille tone="warn">Venter på forelder</StatusPille></div>
+      <div><StatusPille tone="info">Venter på forelder</StatusPille></div>
       <Nokkelverdi items={[
         ["Konto", "Opprettet", { mono: false }],
         ["E-post til forelder", epostSendt ? "Sendt" : "Ikke sendt", { mono: false }],
