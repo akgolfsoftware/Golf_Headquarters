@@ -17,7 +17,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Tier, UserRole } from "@/generated/prisma/client";
 import { Knapp, LasterTilstand } from "@/components/precision/pa";
 import { InlineVarsel } from "@/components/precision/pa-a5";
-import { AuthBoks, AuthHode, Avkryss, Fremdrift, FormFelt, Segmentert, TekstInput } from "@/components/precision/pa-auth";
+import { AuthBoks, AuthHode, Avkryss, Fremdrift, FormFelt, PassordInput, Segmentert, TekstInput } from "@/components/precision/pa-auth";
 
 type Plan = "TALENT" | "FULL";
 type Periode = "MND" | "AAR";
@@ -80,8 +80,17 @@ export function SignupPA({ defaultEmail, subscribe, kilde, forhandsvisning }: { 
   const [feil, setFeil] = useState<string | null>(forhandsvisning?.feil ?? null);
   const [laster, setLaster] = useState(forhandsvisning?.laster ?? false);
 
-  /** Verdien som følger brukeren til onboarding og betaling. TALENT har ingen betaling. */
-  const abonnement = plan === "TALENT" && !coaching ? undefined : subscribe ?? STRIPE_PLAN[periode];
+  /**
+   * Verdien som følger brukeren til onboarding og betaling. TALENT har ingen betaling.
+   * Coaching-pakke fra markedssidene gjelder uendret. For FULL avgjør den viste
+   * perioden planen, så kortet og Stripe alltid er enige; ukjente ?subscribe=-verdier
+   * sendes aldri videre. Foresatte sendes ikke til betaling på egen konto med mindre
+   * de kom inn med en eksplisitt PlayerHQ-plan (?subscribe=pro / pro_aar), som før.
+   */
+  const fullPlan = subscribe === "pro" || subscribe === "pro_aar";
+  const abonnement = coaching ? subscribe
+    : plan === "FULL" && (rolle === "PLAYER" || fullPlan) ? STRIPE_PLAN[periode]
+    : undefined;
 
   function videre() {
     if (!plan) { setFeltfeil({ plan: "Velg TALENT eller FULL." }); return; }
@@ -149,8 +158,8 @@ export function SignupPA({ defaultEmail, subscribe, kilde, forhandsvisning }: { 
       <FormFelt label="Fornavn" required error={feltfeil.fornavn}><TekstInput value={fornavn} onChange={(e) => setFornavn(e.target.value)} autoComplete="given-name" /></FormFelt>
       <FormFelt label="Etternavn" required error={feltfeil.etternavn}><TekstInput value={etternavn} onChange={(e) => setEtternavn(e.target.value)} autoComplete="family-name" /></FormFelt>
       <FormFelt label="E-post" required error={feltfeil.email}><TekstInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></FormFelt>
-      <FormFelt label="Passord" required hint="Minst 8 tegn." error={feltfeil.passord}><TekstInput type="password" value={passord} onChange={(e) => setPassord(e.target.value)} autoComplete="new-password" /></FormFelt>
-      <FormFelt label="Gjenta passord" required error={feltfeil.bekreft}><TekstInput type="password" value={bekreft} onChange={(e) => setBekreft(e.target.value)} autoComplete="new-password" /></FormFelt>
+      <FormFelt label="Passord" required hint="Minst 8 tegn." error={feltfeil.passord}><PassordInput value={passord} onChange={(e) => setPassord(e.target.value)} autoComplete="new-password" /></FormFelt>
+      <FormFelt label="Gjenta passord" required error={feltfeil.bekreft}><PassordInput value={bekreft} onChange={(e) => setBekreft(e.target.value)} autoComplete="new-password" /></FormFelt>
       <div className="pa-field"><span className="pa-field__label">Jeg er</span>
         <Segmentert etikett="Jeg er" full valg={ROLLER.map((r) => ({ verdi: r.verdi, navn: r.navn }))} verdi={rolle as "PLAYER" | "PARENT"} onChange={(v) => setRolle(v)} />
       </div>
