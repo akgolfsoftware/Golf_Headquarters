@@ -36,10 +36,10 @@ test("emne følger tegningen", () => {
   );
 });
 test("gjest får endre-lenke, appbruker får PlayerHQ-lenke", () => {
-  assert.ok(byggPaaminnelse(data).html.includes("Endre eller avbestill"));
+  assert.ok(byggPaaminnelse(data).html.includes("Se bestillingen din"));
   const app = byggPaaminnelse({ ...data, mottaker: "app" }).html;
   assert.ok(app.includes("Se bookingen i PlayerHQ"));
-  assert.ok(!app.includes("Endre eller avbestill"));
+  assert.ok(!app.includes("Se bestillingen din"));
 });
 test("passert frist gir tegningens tekst, ellers frist", () => {
   assert.ok(
@@ -79,4 +79,4 @@ test("viser varighet i tjenesteraden", () => {
     !byggPaaminnelse({ ...data, varighetMin: null }).html.includes(" min<"),
   );
 });
-test("formaterer kroner", () => assert.equal(formaterKr(295000), "2 950 kr"));
+test("formaterer kroner", () => assert.equal(formaterKr(295000), "2\u00a0950\u00a0kr"));

@@ -77,7 +77,7 @@ function skall(c: Farger, d: PaaminnelseData): { subject: string; html: string }
   const app = d.mottaker === "app";
   const sekundaer = app
     ? [lenke(c, "Se bookingen i PlayerHQ", d.lenker.bookingIApp)]
-    : [lenke(c, "Endre eller avbestill", d.lenker.endre)];
+    : [lenke(c, "Se bestillingen din", d.lenker.endre)];
 
   const kropp =
     avsnitt(c, `Hei ${esc(d.fornavn || "der")}. Her er timen din i morgen. Ta med egne køller og møt fem minutter før.`) +
@@ -120,5 +120,5 @@ export function byggPaaminnelse(d: PaaminnelseData, opts: { mork?: boolean } = {
 /** «950 kr» med hardt mellomrom som tusenskille. */
 export function formaterKr(ore: number): string {
   const kr = Math.round(ore / 100);
-  return `${String(kr).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} kr`;
+  return `${String(kr).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0")}\u00a0kr`;
 }

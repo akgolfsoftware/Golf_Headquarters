@@ -29,6 +29,13 @@ function kortDato(d: Date): string {
   return `${uke} ${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
 }
 
+/** Pakkenavn fra abonnementet; ukjent plan gir null («—» i malen), aldri gjetning. */
+function klippTekst(plan: string | null): string | null {
+  if (plan === "PERFORMANCE") return "1 klipp · Performance";
+  if (plan === "PERFORMANCE_PRO") return "1 klipp · Performance Pro";
+  return null;
+}
+
 function formatTid(d: Date): string {
   return d.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
@@ -87,6 +94,7 @@ async function sendBooking(
       user: { select: { name: true, email: true } },
       serviceType: true,
       location: true,
+      subscription: { select: { plan: true } },
     },
   });
   if (!booking) throw new Error("Booking not found");
@@ -163,6 +171,7 @@ export async function sendBookingReminder(bookingId: string) {
       coach: { select: { name: true } },
       serviceType: true,
       location: true,
+      subscription: { select: { plan: true } },
     },
   });
   if (!booking) throw new Error("Booking not found");
@@ -192,7 +201,7 @@ export async function sendBookingReminder(bookingId: string) {
     coach: booking.coach?.name ?? null,
     pris: erCreditBooking ? "Inkludert i abonnement" : formaterKr(booking.priceOre),
     betaling: erCreditBooking
-      ? { tekst: "Trukket fra månedlig saldo", mono: false }
+      ? { tekst: klippTekst(booking.subscription?.plan ?? null), mono: false }
       : { tekst: booking.stripePaymentIntentId ?? null, mono: true },
     referanse: booking.id,
     frist: `${kortDato(frist)} kl. ${formatTid(frist)}`,
