@@ -1,0 +1,163 @@
+/**
+ * AG-05 Tilgjengelighet (/admin/availability): uke-rutenett med dra-og-slipp,
+ * årsplan og månedsoversikt. Bare Precision-tokens (var(--…)), ingen hex-farger.
+ */
+
+.t5-uke {
+  display: grid;
+  grid-template-columns: 44px repeat(7, minmax(0, 1fr));
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  user-select: none;
+  min-width: 0;
+}
+
+.t5-uke__hode {
+  padding: 10px 0;
+  text-align: center;
+  font: 600 12px/1 var(--font-mono);
+  color: var(--text-primary);
+  background: var(--surface-flat);
+  border-bottom: 1px solid var(--border-hairline);
+  border-left: 1px solid var(--border-hairline);
+  min-width: 0;
+}
+
+.t5-uke__time {
+  font: 400 11px/1 var(--font-mono);
+  color: var(--text-muted);
+  padding: 4px 6px 0 0;
+  text-align: right;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.t5-celle {
+  all: unset;
+  box-sizing: border-box;
+  height: 44px;
+  min-width: 0;
+  cursor: crosshair;
+  border-left: 1px solid var(--border-hairline);
+  border-top: 1px solid var(--border-hairline);
+  background: transparent;
+}
+.t5-celle[data-halv] {
+  border-top-style: dashed;
+}
+.t5-celle[data-apen] {
+  background: var(--ok-tint);
+}
+.t5-celle[data-drag] {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 2px var(--border-ink);
+}
+.t5-celle:focus-visible {
+  outline: 2px solid var(--border-ink);
+  outline-offset: -2px;
+}
+
+@media (min-width: 1025px) {
+  .t5-celle,
+  .t5-uke__time {
+    height: 32px;
+  }
+}
+
+.t5-forhandsvisning {
+  font: var(--type-meta);
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.t5-gantt {
+  display: grid;
+  grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  .t5-gantt {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+.t5-gantt__spor {
+  position: relative;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+  min-width: 0;
+}
+.t5-gantt__mnd {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.t5-gantt__mnd span {
+  border-left: 1px solid var(--border-hairline);
+}
+.t5-gantt__mnd span:first-child {
+  border-left: none;
+}
+.t5-gantt__stolpe {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 2px;
+  background: var(--text-primary);
+}
+.t5-gantt__mndhode {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  font: 600 11px/1 var(--font-mono);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.t5-dag {
+  min-height: 52px;
+}
+.t5-dag[data-apen] {
+  background: var(--ok-tint);
+  border-color: var(--border-hairline);
+}
+.t5-dag[data-idag] .a4-month__num {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.t5-dag__tid {
+  font: var(--type-meta);
+  color: var(--ok);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.t5-ukedager {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.t5-ukedager > span {
+  text-align: center;
+  font: var(--type-meta);
+  color: var(--text-muted);
+}
+
+.t5-rad {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.t5-rad + .t5-rad {
+  border-top: 1px solid var(--border-hairline);
+}
