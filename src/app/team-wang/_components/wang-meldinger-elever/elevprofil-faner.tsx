@@ -11,9 +11,13 @@ import {
 } from "@/app/team-wang/_data/wang-elever-data";
 import { formaterSg, isoTilKort, isoTilNorsk, norskTall, osloIso, timerTekst } from "@/app/team-wang/_data/wang-elever-regler";
 import { WangChips, WangFeil, WangKort, WangStatus, WangTabell, WangTag, type WangStatusTone } from "@/components/wang/trener/wang-ui";
+import { ForslagSkjema, SamtaleSkjema } from "@/components/oppfolging/oppfolging-skjema";
+import { hentFireukerssjekker, hentForslag, hentSamtaler } from "@/lib/oppfolging/data";
+import { opprettWangForslag, opprettWangSamtale } from "@/app/team-wang/(trener)/elever/oppfolging-actions";
+import { ForslagListe, SamtaleListe } from "@/app/team-wang/_components/wang-oppfolging/oppfolging-visning";
 import { elevprofilHref } from "@/lib/wang/wang-ruter";
 
-import { IkkeKobletKort, KortHode, OmradeMerke, dagTekst, meStil as s, tidTekst } from "./felles";
+import { KortHode, OmradeMerke, dagTekst, meStil as s, tidTekst } from "./felles";
 
 /**
  * Fanene i WANG-44 Elevprofil. Hver fane henter sine egne data, slik at bare
@@ -352,12 +356,36 @@ export async function IupFane({ elev, gruppeId, gruppeNavn, trenerNavn }: { elev
 
 // ---------------------------------------------------------------- Samtaler
 
-export function SamtalerFane({ elev }: { elev: WangElevGrunn }) {
+export async function SamtalerFane({ elev, gruppeId }: { elev: WangElevGrunn; gruppeId: string }) {
+  const k = { flate: "WANG", groupId: gruppeId } as const;
+  let data;
+  try {
+    const na = new Date();
+    const [samtaler, forslag, sjekker] = await Promise.all([hentSamtaler(k, elev.id), hentForslag(k, elev.id), hentFireukerssjekker(k, na, elev.id)]);
+    data = { samtaler, forslag, sjekker, iDag: osloIso(na) };
+  } catch {
+    return <WangFeil tekst={FEIL_TEKST} />;
+  }
+  const valgt = [{ id: elev.id, navn: elev.navn }];
   return (
-    <IkkeKobletKort
-      tittel="Samtaleloggen er ikke tatt i bruk ennå."
-      tekst={`Samtaler med ${elev.fornavn} og det dere avtalte, kan ikke lagres her ennå. Når loggen er på plass, vises samtalene her med dato og avtale.`}
-    />
+    <>
+      <WangKort tittel="Samtaler" meta={String(data.samtaler.length)}>
+        <SamtaleListe samtaler={data.samtaler} visElev={false} />
+      </WangKort>
+      <SamtaleSkjema
+        flate="WANG"
+        person="elev"
+        elever={valgt}
+        valgtElevId={elev.id}
+        action={opprettWangSamtale}
+        iDag={data.iDag}
+        sjekker={data.sjekker.filter((x) => x.status === "LEVERT").map((x) => ({ id: x.id, etikett: `Frist ${osloIso(x.frist)}` }))}
+      />
+      <WangKort tittel="Forslag til eleven" meta={String(data.forslag.length)}>
+        <ForslagListe forslag={data.forslag} visElev={false} />
+      </WangKort>
+      <ForslagSkjema flate="WANG" person="elev" elever={valgt} valgtElevId={elev.id} action={opprettWangForslag} />
+    </>
   );
 }
 

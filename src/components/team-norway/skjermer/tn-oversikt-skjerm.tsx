@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { hentTnSamlinger, hentTnSpillere, hentTnTestdag, hentTnTestdager, type TnTestdagRad } from "@/lib/domain/tn-arbeidsflate";
 import { hentGruppepostSide } from "@/lib/domain/tn-post";
+import { hentOppfolgingTall } from "@/lib/oppfolging/data";
 import { TN } from "@/lib/v2/team-norway";
 import { TnFlate, TnFlatehode, TnEtikett, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
 import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
@@ -71,7 +72,9 @@ export async function TnOversiktSkjerm() {
   const neste = [...samlingsdata.samlinger].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()).find((s) => s.endDate.getTime() >= naa.getTime()) ?? null;
   const dagerIgjen = neste ? Math.max(0, dagnummer(neste.startDate) - dagnummer(naa)) : null;
 
-  const ukeTid = spillere ? await hentUkeTid(spillere.rader.map((r) => r.id), naa, 2) : null;
+  const [ukeTid, oppfolging] = spillere
+    ? await Promise.all([hentUkeTid(spillere.rader.map((r) => r.id), naa, 2), hentOppfolgingTall({ flate: "TEAM_NORWAY", groupId: kontekst.gruppe.id }, naa)])
+    : [null, null];
 
   const testdagRad = testdager ? velgTestdag(testdager.dager, naa) : null;
   const testdag = testdagRad ? await hentTnTestdag(bruker, testdagRad.id) : null;
@@ -93,7 +96,7 @@ export async function TnOversiktSkjerm() {
         </TnKnapperekke>
       ) : null}
 
-      {spillere && ukeTid ? <TrengerDeg spillere={spillere.rader} ukeTid={ukeTid} /> : null}
+      {spillere && ukeTid && oppfolging ? <TrengerDeg spillere={spillere.rader} ukeTid={ukeTid} oppfolging={oppfolging} /> : null}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(340px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
         <section style={{ background: TN.navy900, color: TN.white, borderRadius: TN.radius.lg, padding: "clamp(18px, 2.2vw, 26px)", display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>

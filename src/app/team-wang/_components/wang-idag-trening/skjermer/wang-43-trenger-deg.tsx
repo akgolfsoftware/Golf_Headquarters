@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flag, TrendingDown } from "lucide-react";
+import { ClipboardList, Flag, Send, TrendingDown } from "lucide-react";
 
 import { erTurneringstittel } from "@/app/team-wang/_data/live-sesong";
 import { hendelserMellom, hentElevOkter, hentGruppeElever, hentGruppeplan } from "@/app/team-wang/_data/wang-idag-trening-data";
@@ -18,6 +18,7 @@ import {
 } from "@/app/team-wang/_data/wang-trening-beregning";
 import { Pillenke, Sidehode, it as s, lastTrygt } from "@/app/team-wang/_components/wang-idag-trening/it-ui";
 import type { WangSkjermKontekst } from "@/app/team-wang/_components/wang-idag-trening/it-ui";
+import { hentOppfolgingTall } from "@/lib/oppfolging/data";
 import { WangDemoMerknad, WangFeil, WangKnapp, WangTom } from "@/components/wang/trener/wang-ui";
 import { elevprofilHref, wangHref } from "@/lib/wang/wang-ruter";
 
@@ -40,7 +41,8 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
   const last = await lastTrygt(async () => {
     const [elever, plan] = await Promise.all([hentGruppeElever(gruppe.id), hentGruppeplan(gruppe.id, idag)]);
     const okter = await hentElevOkter(elever.map((e) => e.id), leggTilDager(mandag, -14), sondag);
-    return { elever, plan, okter };
+    const oppfolging = await hentOppfolgingTall({ flate: "WANG", groupId: gruppe.id }, naa);
+    return { elever, plan, okter, oppfolging };
   });
 
   if (!last.ok) {
@@ -52,7 +54,10 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
     );
   }
 
-  const { elever, plan, okter } = last.data;
+  const { elever, plan, okter, oppfolging } = last.data;
+  const navnPaaElev = new Map(elever.map((e) => [e.id, e.navn]));
+  const sjekkElever = oppfolging.sjekkIkkeLevert.map((id) => ({ id, navn: navnPaaElev.get(id) ?? "Uten navn" }));
+  const forslagElever = oppfolging.forslagVenter.map((id) => ({ id, navn: navnPaaElev.get(id) ?? "Uten navn" }));
   const turneringer = hendelserMellom(plan.hendelser, mandag, sondag).filter((h) => erTurneringstittel(h.tittel));
 
   const rader = elever
@@ -64,15 +69,18 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
   const uke2 = isoUke(leggTilDager(mandag, -7));
   const felt: Array<{ key: Grunn; etikett: string; verdi: string; hint: string }> = [
     { key: "tid", etikett: "Under 70 % to uker på rad", verdi: String(rader.length), hint: `Av planlagt tid, uke ${uke1} og ${uke2}` },
-    { key: "sjekk", etikett: "Fireukerssjekk ikke levert", verdi: "—", hint: "Fireukerssjekken lagres ikke i appen ennå" },
-    { key: "forslag", etikett: "Forslag venter svar", verdi: "—", hint: "Forslag til elev lagres ikke i appen ennå" },
+    { key: "sjekk", etikett: "Fireukerssjekk ikke levert", verdi: String(sjekkElever.length), hint: "Frist passert uten innlevering" },
+    { key: "forslag", etikett: "Forslag venter svar", verdi: String(forslagElever.length), hint: "Sendt til elev, ikke besvart" },
     { key: "turn", etikett: "Turnering denne uka", verdi: String(turneringer.length), hint: `Uke ${uke} · ${ddmm(mandag)}–${ddmm(sondag)} · fra gruppas kalender` },
   ];
 
   const visTid = valgt === null || valgt === "tid";
+  const visSjekk = valgt === null || valgt === "sjekk";
+  const visForslag = valgt === null || valgt === "forslag";
   const visTurn = valgt === null || valgt === "turn";
-  const overskrift = valgt === null ? `${rader.length} ${rader.length === 1 ? "elev trenger" : "elever trenger"} deg` : `${valgt === "tid" ? rader.length : valgt === "turn" ? turneringer.length : "—"} · ${felt.find((f) => f.key === valgt)?.etikett.toLowerCase()}`;
-  const ingenting = rader.length === 0 && turneringer.length === 0;
+  const antallElever = new Set([...rader.map((r) => r.e.id), ...sjekkElever.map((e) => e.id), ...forslagElever.map((e) => e.id)]).size;
+  const overskrift = valgt === null ? `${antallElever} ${antallElever === 1 ? "elev trenger" : "elever trenger"} deg` : `${valgt === "tid" ? rader.length : valgt === "turn" ? turneringer.length : valgt === "sjekk" ? sjekkElever.length : forslagElever.length} · ${felt.find((f) => f.key === valgt)?.etikett.toLowerCase()}`;
+  const ingenting = rader.length === 0 && turneringer.length === 0 && sjekkElever.length === 0 && forslagElever.length === 0;
 
   return (
     <div className={s.stabel}>
@@ -96,7 +104,7 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
         <section className={s.kort}>
           <WangTom
             tittel="Ingen elever trenger deg i dag."
-            tekst={elever.length === 0 ? "Gruppa har ingen aktive elever ennå." : "Ingen elever ligger under 70 % av planlagt tid to uker på rad, og gruppas kalender har ingen turnering denne uka."}
+            tekst={elever.length === 0 ? "Gruppa har ingen aktive elever ennå." : "Ingen elever ligger under 70 % av planlagt tid to uker på rad, ingen fireukerssjekk er forfalt, ingen forslag venter på svar, og gruppas kalender har ingen turnering denne uka."}
             handling={<WangKnapp href={wangHref("WANG-07")}>Se elevene</WangKnapp>}
           />
         </section>
@@ -106,12 +114,6 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
             <h2 className={s.h2}>{overskrift}</h2>
             {valgt !== null ? <Pillenke href={wangHref("WANG-43")}>Vis alle grunner</Pillenke> : null}
           </div>
-
-          {valgt === "sjekk" || valgt === "forslag" ? (
-            <p className={s.rad} style={{ margin: 0, display: "block", fontSize: 15, color: "var(--wtr-text-muted)" }}>
-              {valgt === "sjekk" ? "Fireukerssjekken fra PlayerHQ lagres ikke i appen ennå. Derfor kan ingen elev vises her." : "Forslag du sender til elever lagres ikke i appen ennå. Derfor kan ingen elev vises her."}
-            </p>
-          ) : null}
 
           {visTid
             ? rader.map(({ e, funn }) => (
@@ -126,6 +128,38 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
                       Under 70 % av planlagt tid to uker på rad · uke {funn.uker[0]} {prosent(funn.andeler[0])} · uke {funn.uker[1]} {prosent(funn.andeler[1])}
                     </span>
                     <Pillenke href={elevprofilHref(e.id, "plan")}>Plan</Pillenke>
+                  </div>
+                </div>
+              ))
+            : null}
+
+          {visSjekk
+            ? sjekkElever.map((e) => (
+                <div key={`sjekk-${e.id}`} className={s.elevBlokk}>
+                  <div className={s.elevHode}>
+                    <Link href={elevprofilHref(e.id)} className={s.navnLenke}>{e.navn}</Link>
+                    <span className={s.meta}>{gruppe.name}</span>
+                  </div>
+                  <div className={s.grunn}>
+                    <ClipboardList size={18} strokeWidth={1.5} aria-hidden="true" color="var(--wtr-blue)" />
+                    <span className={s.grunnTekst}>Fireukerssjekk ikke levert · fristen er passert</span>
+                    <Pillenke href={wangHref("WANG-45")}>Fireukerssjekk</Pillenke>
+                  </div>
+                </div>
+              ))
+            : null}
+
+          {visForslag
+            ? forslagElever.map((e) => (
+                <div key={`forslag-${e.id}`} className={s.elevBlokk}>
+                  <div className={s.elevHode}>
+                    <Link href={elevprofilHref(e.id)} className={s.navnLenke}>{e.navn}</Link>
+                    <span className={s.meta}>{gruppe.name}</span>
+                  </div>
+                  <div className={s.grunn}>
+                    <Send size={18} strokeWidth={1.5} aria-hidden="true" color="var(--wtr-blue)" />
+                    <span className={s.grunnTekst}>Forslag venter svar fra eleven</span>
+                    <Pillenke href={wangHref("WANG-46")}>Forslag</Pillenke>
                   </div>
                 </div>
               ))
@@ -148,6 +182,8 @@ export async function WangTrengerDeg({ gruppe, erDemo, sok }: WangSkjermKontekst
 
           {valgt === "tid" && rader.length === 0 ? <p className={s.rad} style={{ margin: 0, display: "block", fontSize: 15 }}>Ingen elever ligger under 70 % to uker på rad.</p> : null}
           {valgt === "turn" && turneringer.length === 0 ? <p className={s.rad} style={{ margin: 0, display: "block", fontSize: 15 }}>Gruppas kalender har ingen turnering denne uka.</p> : null}
+          {valgt === "sjekk" && sjekkElever.length === 0 ? <p className={s.rad} style={{ margin: 0, display: "block", fontSize: 15 }}>Alle fireukerssjekker er levert innen fristen.</p> : null}
+          {valgt === "forslag" && forslagElever.length === 0 ? <p className={s.rad} style={{ margin: 0, display: "block", fontSize: 15 }}>Ingen forslag venter på svar.</p> : null}
         </section>
       )}
 

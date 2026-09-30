@@ -22,10 +22,14 @@ import { SkjermRamme, datoKort, datoLang, osloDag, periode } from "../skjermer/f
 import { TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
 import { LISENS_TEKST, TnAvsluttSpiller } from "../tn-redigering-skjema";
 import { TN_RUTER, TN_SPILLERPROFIL_FANER, tnSpillerHref } from "../tn-ruter";
+import { ForslagSkjema, SamtaleSkjema } from "@/components/oppfolging/oppfolging-skjema";
+import { hentFireukerssjekker, hentForslag, hentSamtaler } from "@/lib/oppfolging/data";
+import { FORSLAG_STATUS_NAVN, FORSLAG_TYPE_NAVN, SAMTALE_TYPE_NAVN, osloDagIso } from "@/lib/oppfolging/regler";
+import { opprettTnForslag, opprettTnSamtale } from "@/app/team-norway/tn-oppfolging-actions";
 import { hentUkeTid, hentUkensOkter } from "./data";
 import { TERSKEL_PROSENT, underTerskelToUker } from "./etterlevelse";
 import { SpillerVelger } from "./spiller-velger";
-import { Fanerad, Initialplate, KpiRad, ManglerMerke, Primarlenke, TomTilstand, etikett, mono } from "./ui";
+import { Fanerad, Initialplate, KpiRad, ManglerMerke, Primarlenke, etikett, mono } from "./ui";
 
 /**
  * TN-02 Spillerprofil. Fasit: «Team Norway App.dc.html» (Claude Design bc3e41fc),
@@ -44,10 +48,9 @@ import { Fanerad, Initialplate, KpiRad, ManglerMerke, Primarlenke, TomTilstand, 
  *     testliste. Landslagsnorm finnes ikke og står med strek.
  *   - IUP: bare delene som har data (personinfo, dokumentstatus, nivå, aktive
  *     planer og tester). Evaluering og teknisk plan har egne sider.
- *   - Samtaler og fireukerssjekker har ingen modell. Fanen viser postene til
- *     spilleren, som er den ekte kommunikasjonen i dag.
- *   - «Forslag til spilleren» med Godtar/Avviser har ingen modell. Seksjonen sier
- *     det, og peker til Post.
+ *   - Samtaler, fireukerssjekker og «Forslag til spilleren» kommer fra tabellene
+ *     `elev_samtaler`, `fireukerssjekker` og `trener_forslag` (Pakke 1). Spilleren
+ *     godtar eller avviser i PlayerHQ; her står bare statusen.
  */
 
 type Fane = (typeof TN_SPILLERPROFIL_FANER)[number]["id"];
@@ -159,13 +162,19 @@ export async function TnSpillerprofil({ spillerId, fane }: { spillerId: string; 
   const testrader = tester?.rader ?? [];
 
   // Data per fane hentes bare når fanen er åpen.
-  const [ukeTid, ukensOkter, planer, hub, poster] = await Promise.all([
+  const lesK = { flate: "TEAM_NORWAY", groupId: kontekst.gruppe.id } as const;
+  const [ukeTid, ukensOkter, planer, hub, poster, samtaler, forslag, sjekker] = await Promise.all([
     fane === "plan" ? hentUkeTid([spillerId], naa, 5) : Promise.resolve(null),
     fane === "plan" ? hentUkensOkter(spillerId, naa) : Promise.resolve(null),
     fane === "plan" || fane === "iup" ? hentTnSpillerAktivePlaner(tilgang) : Promise.resolve(null),
     fane === "stats" ? hentTnSpillerAnalyseHub(tilgang).catch(() => null) : Promise.resolve(null),
     fane === "sam" ? hentSpillerpostTidslinje(spillerId, bruker.id) : Promise.resolve(null),
+    fane === "sam" ? hentSamtaler(lesK, spillerId).catch(() => null) : Promise.resolve(null),
+    hentForslag(lesK, spillerId).catch(() => null),
+    fane === "sam" ? hentFireukerssjekker(lesK, naa, spillerId).catch(() => null) : Promise.resolve(null),
   ]);
+  const dagIso = osloDagIso(naa);
+  const skjemaSpiller = [{ id: spillerId, navn: profil.navn }];
 
   const sgVerdier = hub?.sgAkser.map((a) => a.verdi) ?? [];
   const sgTotal = sgVerdier.length > 0 && sgVerdier.every((v): v is number => v !== null) ? sgVerdier.reduce((a, b) => a + b, 0) : null;
@@ -400,9 +409,44 @@ export async function TnSpillerprofil({ spillerId, fane }: { spillerId: string; 
             </div>
           ))}
           {poster === null ? <TnMangler>Postene til spilleren kunne ikke leses.</TnMangler> : poster.length === 0 ? <TnMangler>Ingen poster til {fornavn} ennå.</TnMangler> : null}
-          <TnFotnote>Samtalereferater og fireukerssjekker har ingen modell ennå. Postene til spilleren er det som finnes i dag.</TnFotnote>
+          <TnFotnote>Samtalereferater og fireukerssjekker ligger under, og postene til spilleren over.</TnFotnote>
           <div style={{ marginTop: 12 }}><Primarlenke href={`${tnSpillerHref(spillerId)}/post`}>Skriv til {fornavn}</Primarlenke></div>
         </Seksjon>
+      ) : null}
+
+      {fane === "sam" ? (
+        <>
+          <Seksjon tittel="Fireukerssjekk" merknad={sjekker ? `${sjekker.length}` : undefined}>
+            {(sjekker ?? []).map((x) => (
+              <Fireledd
+                key={x.id}
+                a={`Frist ${datoLang(x.frist)}`}
+                b={x.prosessmaal ? `Prosessmål: ${x.prosessmaal}` : "—"}
+                c={x.status === "LEVERT" ? `Levert ${x.levertAt ? datoLang(x.levertAt) : "—"}` : x.status === "FORFALT" ? "Ikke levert" : "Pågår"}
+                d={x.utviklingssjekk ? `Utviklingssjekk ${x.utviklingssjekk.niva.toLowerCase()}` : undefined}
+              />
+            ))}
+            {sjekker === null ? <TnMangler>Fireukerssjekkene kunne ikke leses.</TnMangler> : sjekker.length === 0 ? <TnMangler>Ingen fireukerssjekk fra {fornavn} ennå.</TnMangler> : null}
+          </Seksjon>
+          <Seksjon tittel="Samtalereferater" merknad={samtaler ? `${samtaler.length}` : undefined}>
+            {(samtaler ?? []).map((x) => (
+              <div key={x.id} style={{ padding: "14px 0", borderBottom: `1px solid ${TN.navy100}` }}>
+                <div style={mono(11, TN.textSecondary)}>{datoLang(x.dato)} · {SAMTALE_TYPE_NAVN[x.type]}</div>
+                <p style={{ fontSize: 14, lineHeight: 1.55, color: TN.ink700, margin: "4px 0 0", maxWidth: "68ch", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{x.avtalt}</p>
+              </div>
+            ))}
+            {samtaler === null ? <TnMangler>Samtalene kunne ikke leses.</TnMangler> : samtaler.length === 0 ? <TnMangler>Ingen samtaler med {fornavn} er logget.</TnMangler> : null}
+            <SamtaleSkjema
+              flate="TEAM_NORWAY"
+              person="spiller"
+              elever={skjemaSpiller}
+              valgtElevId={spillerId}
+              action={opprettTnSamtale}
+              iDag={dagIso}
+              sjekker={(sjekker ?? []).filter((x) => x.status === "LEVERT").map((x) => ({ id: x.id, etikett: `Frist ${datoLang(x.frist)}` }))}
+            />
+          </Seksjon>
+        </>
       ) : null}
 
       {fane === "tur" ? (
@@ -430,11 +474,19 @@ export async function TnSpillerprofil({ spillerId, fane }: { spillerId: string; 
         </Seksjon>
       ) : null}
 
-      <Seksjon tittel={`Forslag til ${fornavn}`}>
-        <TomTilstand tittel="Forslag kan ikke sendes ennå">
-          Forslag som spilleren godtar eller avviser i PlayerHQ har ingen modell ennå. Til da skriver du til {fornavn} under Post.
-        </TomTilstand>
-        <Primarlenke href={`${tnSpillerHref(spillerId)}/post`}>Skriv til {fornavn}</Primarlenke>
+      <Seksjon tittel={`Forslag til ${fornavn}`} merknad={forslag ? `${forslag.length}` : undefined}>
+        {(forslag ?? []).map((f) => (
+          <div key={f.id} style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", padding: "14px 0", borderBottom: `1px solid ${TN.navy100}` }}>
+            <div style={{ flex: "1 1 280px", minWidth: 0 }}>
+              <div style={mono(11, TN.textSecondary)}>{datoLang(f.createdAt)} · {FORSLAG_TYPE_NAVN[f.type]}</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: TN.ink700, margin: "4px 0 0", maxWidth: "68ch", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{f.tekst}</p>
+              {f.svar ? <p style={{ fontSize: 13.5, margin: "4px 0 0", color: TN.textSecondary, overflowWrap: "anywhere" }}>Svar: {f.svar}</p> : null}
+            </div>
+            <span style={{ ...mono(11, TN.navy900), letterSpacing: "0.04em", textTransform: "uppercase" }}>{FORSLAG_STATUS_NAVN[f.status]}</span>
+          </div>
+        ))}
+        {forslag === null ? <TnMangler>Forslagene kunne ikke leses.</TnMangler> : forslag.length === 0 ? <TnMangler>Ingen forslag sendt til {fornavn} ennå.</TnMangler> : null}
+        <ForslagSkjema flate="TEAM_NORWAY" person="spiller" elever={skjemaSpiller} valgtElevId={spillerId} action={opprettTnForslag} />
       </Seksjon>
     </SkjermRamme>
   );
