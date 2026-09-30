@@ -1,13 +1,13 @@
-import { ResetPasswordV2 } from "@/components/portal/v2/ResetPasswordV2";
+import type { Metadata } from "next";
+import { AU03Nytt } from "@/components/auth/precision/AU03Passord";
+
+export const metadata: Metadata = { title: "Sett nytt passord · AK Golf HQ" };
 
 /**
- * /auth/reset-password — v2-redesign (2026-07-10): ResetPasswordV2
- * (retning C «Presis») erstatter den gamle terminal-lys-fasiten. Samme ekte
- * reset-logikk (Supabase auth.updateUser + redirect til /portal) som før, nå
- * portert inn i ResetPasswordV2 selv — se
- * src/components/portal/v2/ResetPasswordV2.tsx. Brukeren lander her etter å ha
- * klikket lenken fra e-posten. Gamle reset-form.tsx står urørt som fallback.
+ * /auth/reset-password — AU-03 i Precision Athletics (Claude Design 7d7c2994,
+ * ui_kits/konto/screens/AU-01-03.jsx). Brukeren lander her fra lenken i e-posten.
+ * Samme logikk som før (Supabase updateUser, deretter /portal).
  */
 export default function ResetPasswordPage() {
-  return <ResetPasswordV2 />;
+  return <AU03Nytt />;
 }

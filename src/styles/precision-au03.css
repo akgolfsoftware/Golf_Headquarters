@@ -1,0 +1,19 @@
+/* AU-03 Passord i Precision Athletics. Fasit: 7d7c2994 ui_kits/konto/screens/AU-01-03.jsx.
+   Bare layout; farger og skrift kommer fra tokens i .pa-root. */
+.au03{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;box-sizing:border-box;background:var(--surface-page,var(--sand-100));color:var(--text-primary);font-family:var(--font-sans)}
+.au03__boks{width:100%;max-width:440px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.au03__logo{height:22px;width:auto;align-self:flex-start;display:block}
+.au03__hode{display:flex;flex-direction:column;gap:6px}
+.au03__h1{margin:0;font:600 26px/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.au03__sub{margin:0;font:var(--type-body);color:var(--text-secondary);text-wrap:pretty}
+.au03__skjema{display:flex;flex-direction:column;gap:20px;min-width:0}
+.au03__input{width:100%;box-sizing:border-box}
+.au03__knapper{display:flex;gap:8px;flex-wrap:wrap}
+@media (min-width:640px){.au03{padding:48px 24px}}
+/* Tegningens felt er 46 px høyt (44 px innhold + kant) og «PÅKREVD» står med store bokstaver. */
+.au03__input{height:46px}
+.au03 .pa-formfield__req{text-transform:uppercase}
+/* Logoen er mørk på lys grunn; nattema bruker den negative varianten. */
+.au03__logo--natt{display:none}
+.pa-root[data-theme="night"] .au03__logo--lys{display:none}
+.pa-root[data-theme="night"] .au03__logo--natt{display:block}
