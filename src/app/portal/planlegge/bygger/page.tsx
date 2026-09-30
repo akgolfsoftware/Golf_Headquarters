@@ -1,7 +1,9 @@
 /**
  * PlayerHQ Velg treningsplan (PH-12) i Precision Athletics — /portal/planlegge/bygger.
  * Tegning: Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-12.jsx.
- * Malene er de godkjente standardplanene for spillerens nivå (PlanTemplate), ingen AI.
+ * MIDLERTIDIG: malene er PlanTemplate (4-ukersblokker) filtrert på nivå. Beslutningen 28.09 krever fem
+ * navngitte standardplaner i alle kategorier A–K; de kommer når Anders sender innholdet i dem.
+ * Malene har ikke timer per uke, så timer settes av spilleren (ingen gjettet verdi).
  * Den gamle AI-byggeren (PlanByggerV2 og actionene) ligger urørt i koden.
  */
 
@@ -17,7 +19,8 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Lag en plan · PlayerHQ" };
 
 export default async function PlanByggerPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
+  // Bare spilleren (forelder sendes til /forelder). requirePortalUser sperrer også TALENT/INGEN før steg 1.
+  const user = await requirePortalUser({ allow: ["PLAYER"] });
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const [mal, uleste] = await Promise.all([
@@ -29,7 +32,6 @@ export default async function PlanByggerPage() {
     navn: t.navn,
     sub: `${t.varighetUker} uker · ${t.ukentligOktAntall} økter per uke`,
     uker: Math.min(52, Math.max(2, t.varighetUker)),
-    timer: 12,
     fordeling: fordelingFraMal(t.disciplinFordeling),
   }));
 

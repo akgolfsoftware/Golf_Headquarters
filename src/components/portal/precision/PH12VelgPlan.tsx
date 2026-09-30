@@ -9,7 +9,7 @@
  *
  * Avvik fra tegningen (se PR): «Foreslå med Caddie» er ikke med (ingen AI-planbygger
  * ved lansering); malene kommer fra PlanTemplate i stedet for de fire eksempelmalene;
- * timer per uke starter på 12 fordi malene ikke har timer; startukene regnes fra i dag;
+ * timer per uke er ikke satt før spilleren velger (malene har ikke timer, vises «—»); startukene regnes fra i dag;
  * «Sendt» viser klokkeslett fra klokka, ikke navn på coach.
  */
 import { useState, useTransition } from "react";
@@ -28,7 +28,7 @@ import { formaterTall } from "@/lib/format-tall";
 import type { SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
 import "@/styles/precision-a12.css";
 
-export type VelgPlanMal = { id: string; navn: string; sub: string; uker: number; timer: number; fordeling: Fordeling };
+export type VelgPlanMal = { id: string; navn: string; sub: string; uker: number; fordeling: Fordeling };
 export type PH12Props = {
   maler: readonly VelgPlanMal[];
   startUker: readonly StartUke[];
@@ -39,8 +39,9 @@ export type PH12Props = {
   startSteg?: number;
 };
 
+const TIMER_START = 12; // bare startpunkt for telleren, vises aldri som verdi før spilleren har valgt
 const STEG = ["Mal", "SMART-mål", "Periode og volum", "Oppsummering"] as const;
-const TOM: VelgPlanMal = { id: "tom", navn: "Tom plan", sub: "Bygg alt selv i Workbench", uker: 8, timer: 12, fordeling: JEVN_FORDELING };
+const TOM: VelgPlanMal = { id: "tom", navn: "Tom plan", sub: "Bygg alt selv i Workbench", uker: 8, fordeling: JEVN_FORDELING };
 const SMART = [
   ["s", "Spesifikt", "Hva vil du bli bedre på?", "Bedre lengdekontroll på innspill ca. 50 m"],
   ["m", "Målbart", "Hvilket tall viser at du er der?", "7 av 10 innenfor 4 m i test"],
@@ -63,14 +64,15 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
   const [g, setG] = useState<SmartMaal>({ s: "", m: "", a: "", r: "", t: "" });
   const [forsokt, setForsokt] = useState(false);
   const [uker, setUker] = useState(mal.uker);
-  const [timer, setTimer] = useState(mal.timer);
+  const [timer, setTimer] = useState(TIMER_START);
+  const [timerSatt, setTimerSatt] = useState(false);
   const [start, setStart] = useState(startUker[0]?.verdi ?? "");
   const [mix, setMix] = useState<Fordeling>(mal.fordeling);
   const [sendt, setSendt] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, run] = useTransition();
 
-  const velg = (x: VelgPlanMal) => { setMalId(x.id); setUker(x.uker); setTimer(x.timer); setMix(x.fordeling); };
+  const velg = (x: VelgPlanMal) => { setMalId(x.id); setUker(x.uker); setMix(x.fordeling); };
   const errs = validerMaal(g);
   const harFeil = Object.keys(errs).length > 0;
   const sum = fordelingSum(mix);
@@ -79,7 +81,7 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
 
   const neste = () => {
     if (steg === 1) { setForsokt(true); if (harFeil) return; }
-    if (steg === 2 && sum !== 100) return;
+    if (steg === 2 && (sum !== 100 || !timerSatt)) return;
     setSteg(Math.min(3, steg + 1));
     document.getElementById("pa-innhold")?.scrollTo(0, 0);
   };
@@ -91,7 +93,7 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
 
   const aside = <div className="pa-card ph12-kort ph12-side" style={{ gap: 12 }}>
     <span className="kicker">Planen så langt</span>
-    <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Mål", setning, { mono: false }], ["Start", steg >= 2 ? startLabel : null], ["Lengde", steg >= 2 ? `${uker} uker` : null], ["Volum", steg >= 2 ? `${timer} t/uke` : null], ["Totalt", steg >= 2 ? `${tusenskille(uker * timer)} t` : null]]} />
+    <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Mål", setning, { mono: false }], ["Start", steg >= 2 ? startLabel : null], ["Lengde", steg >= 2 ? `${uker} uker` : null], ["Volum", steg >= 2 && timerSatt ? `${timer} t/uke` : null], ["Totalt", steg >= 2 && timerSatt ? `${tusenskille(uker * timer)} t` : null]]} />
   </div>;
 
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
@@ -120,7 +122,7 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
             <div role="radiogroup" aria-label="Mal" className="ph12-maler">{valg.map((x) => <button key={x.id} type="button" role="radio" aria-checked={x.id === malId} className="ph12-mal" onClick={() => velg(x)}>
               <span className="ph12-mal__navn">{x.navn}</span><Meta style={{ overflowWrap: "anywhere" }}>{x.sub.toUpperCase()}</Meta>
             </button>)}</div>
-            {tomtGrunnlag && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen maler passer nivået ditt ennå. Du kan starte med en tom plan.</p>}
+            {tomtGrunnlag && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Malene blir tilgjengelige når coachen din har koblet deg til en gruppe. Du kan starte med en tom plan.</p>}
           </div>}
 
           {steg === 1 && <div className="pa-card ph12-kort" style={{ gap: 20 }}>
@@ -139,15 +141,16 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
               <SegmentertValg label="Start" value={start} options={startUker.map((u) => ({ id: u.verdi, label: u.label }))} onChange={setStart} /></div>
             <div className="ph12-to">
               <Teller label="Antall uker" verdi={uker} min={2} maks={52} storrelse="md" format={(v) => `${v} uker`} onEndre={setUker} />
-              <Teller label="Timer per uke" verdi={timer} min={4} maks={30} storrelse="md" format={(v) => `${v} t`} onEndre={setTimer} />
+              <Teller label="Timer per uke" verdi={timer} min={4} maks={30} storrelse="md" format={(v) => `${v} t`} onEndre={(v) => { setTimer(v); setTimerSatt(true); }} />
             </div>
             <div>
               <div className="ph12-hode" style={{ marginBottom: 12 }}><span className="pa-field__label">Fordeling per akse</span><Meta style={{ color: sum === 100 ? "var(--text-muted)" : "var(--warn)" }}>{sum} % AV 100 %</Meta></div>
               <div style={{ marginBottom: 12 }}><Fordelingsbar f={mix} /></div>
               <div className="ph12-akser">{VELG_AKSER.map((a: VelgAkse) => <div key={a} className="ph12-akse">
-                <span className="ph12-akse__hode"><AkseMerke axis={a} /><Meta>{desimal((timer * mix[a]) / 100)} T/UKE</Meta></span>
+                <span className="ph12-akse__hode"><AkseMerke axis={a} /><Meta>{timerSatt ? `${desimal((timer * mix[a]) / 100)} T/UKE` : "—"}</Meta></span>
                 <Teller label={`${a.toUpperCase()} prosent`} verdi={mix[a]} min={0} maks={80} steg={5} storrelse="sm" format={(v) => `${v} %`} onEndre={(v) => setMix({ ...mix, [a]: v })} />
               </div>)}</div>
+              {!timerSatt && <div style={{ marginTop: 12 }}><Varsel tone="info" tittel="Velg timer per uke">Timer per uke kommer ikke fra malen. Velg selv hvor mange timer du har, så regnes fordelingen ut.</Varsel></div>}
               {sum !== 100 && <div style={{ marginTop: 12 }}><Varsel tone="warn" tittel={`Fordelingen er ${sum} %`}>Juster aksene til summen er 100 % før du går videre.</Varsel></div>}
             </div>
           </div>}
@@ -158,17 +161,18 @@ export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, 
               <Meta>{sendt ? `SENDT TIL COACH ${sendt}` : "IKKE SENDT"}</Meta>
             </div>
             <p style={{ margin: 0, font: "600 17px/1.4 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{setning ?? "Ingen mål satt."}</p>
-            <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Start", startLabel], ["Lengde", `${uker} uker`], ["Volum", `${timer} t/uke`], ["Totalt", `${tusenskille(uker * timer)} t`], ["Oppnåelig", g.a.trim() || null, { mono: false }], ["Relevant", g.r.trim() || null, { mono: false }]]} />
+            <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Start", startLabel], ["Lengde", `${uker} uker`], ["Volum", timerSatt ? `${timer} t/uke` : null], ["Totalt", timerSatt ? `${tusenskille(uker * timer)} t` : null], ["Oppnåelig", g.a.trim() || null, { mono: false }], ["Relevant", g.r.trim() || null, { mono: false }]]} />
             <Fordelingsbar f={mix} />
             <div className="ph12-liste">{VELG_AKSER.map((a) => <span key={a}><AkseMerke axis={a} /><Tall style={{ font: "var(--type-num-s)" }}>{mix[a]} %</Tall></span>)}</div>
             {feil && <Varsel tone="signal" tittel="Planen ble ikke sendt">{feil}</Varsel>}
+            {sendt && <Varsel tone="ok" tittel="Planen er sendt til coach">Den blir ikke aktiv før coachen har godkjent den.</Varsel>}
             {sendt && <div><KnappLenke variant="secondary" icon={Layers} iconName="layers" href={workbenchHref}>Åpne i Workbench</KnappLenke></div>}
           </div>}
 
           <div className="ph12-nav">
             <Knapp variant="ghost" icon={ArrowLeft} iconName="arrow-left" disabled={steg === 0 || !!sendt} onClick={() => setSteg(steg - 1)}>Tilbake</Knapp>
             {steg < 3
-              ? <Knapp iconRight={ArrowRight} disabled={steg === 2 && sum !== 100} onClick={neste}>Neste: {STEG[steg + 1]}</Knapp>
+              ? <Knapp iconRight={ArrowRight} disabled={steg === 2 && (sum !== 100 || !timerSatt)} onClick={neste}>Neste: {STEG[steg + 1]}</Knapp>
               : <Knapp icon={Send} iconName="send" disabled={!!sendt} loading={pending} loadingText="Sender …" onClick={send}>Send til coach</Knapp>}
           </div>
         </div>

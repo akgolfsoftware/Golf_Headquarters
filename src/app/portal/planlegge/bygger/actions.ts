@@ -17,7 +17,7 @@ import {
   type GenerertForslag,
   type LagrePlanInput,
 } from "@/lib/plan-builder";
-import { sendPlanTilCoachCore, type SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
+import { SendPlanFeil, sendPlanTilCoachCore, type SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
 
 export async function anbefalMalV2(input: {
   maltype: ByggerMaltype;
@@ -67,13 +67,15 @@ export async function lagrePlanV2(
 export async function sendPlanTilCoachV2(
   input: SendPlanInput,
 ): Promise<{ ok: true; planId: string } | { ok: false; error: string }> {
-  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
+  // Bare spilleren sender: planen og målet lagres på avsenderens egen konto (forelder har ingen egen plan her).
+  const user = await requirePortalUser({ allow: ["PLAYER"] });
   try {
-    const res = await sendPlanTilCoachCore(user, input);
+    const res = await sendPlanTilCoachCore({ id: user.id, nivaa: user.tilgang.nivaa }, input);
     revalidatePath("/portal/planlegge");
     revalidatePath("/portal/mal");
     return { ok: true, planId: res.planId };
   } catch (error) {
+    if (error instanceof SendPlanFeil) return { ok: false, error: error.message };
     await logError({ context: "bygger.sendPlanTilCoach", error, meta: { userId: user.id } });
     return { ok: false, error: "Planen ble ikke sendt. Ingenting er lagret. Prøv igjen." };
   }

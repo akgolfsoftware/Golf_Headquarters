@@ -6,9 +6,9 @@ import { Natt } from "./_natt";
 
 export const sti = "/portal/planlegge";
 const maler: VelgPlanMal[] = [
-  { id: "a", navn: "Sesongplan junior", sub: "52 uker · 5 økter per uke", uker: 52, timer: 12, fordeling: { fys: 25, tek: 25, slag: 30, spill: 15, turn: 5 } },
-  { id: "b", navn: "Grunnperiode vinter", sub: "12 uker · 4 økter per uke", uker: 12, timer: 12, fordeling: { fys: 20, tek: 20, slag: 20, spill: 20, turn: 20 } },
-  { id: "c", navn: "Turneringsforberedelse", sub: "4 uker · 6 økter per uke", uker: 4, timer: 12, fordeling: { fys: 10, tek: 15, slag: 35, spill: 30, turn: 10 } },
+  { id: "a", navn: "Sesongplan junior", sub: "52 uker · 5 økter per uke", uker: 52, fordeling: { fys: 25, tek: 25, slag: 30, spill: 15, turn: 5 } },
+  { id: "b", navn: "Grunnperiode vinter", sub: "12 uker · 4 økter per uke", uker: 12, fordeling: { fys: 20, tek: 20, slag: 20, spill: 20, turn: 20 } },
+  { id: "c", navn: "Turneringsforberedelse", sub: "4 uker · 6 økter per uke", uker: 4, fordeling: { fys: 10, tek: 15, slag: 35, spill: 30, turn: 10 } },
 ];
 const startUker = [
   { verdi: "2026-10-05", label: "Uke 41", mandag: "2026-10-05" },

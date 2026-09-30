@@ -22,18 +22,22 @@ export const SendPlanSchema = z.object({
 });
 export type SendPlanInput = z.infer<typeof SendPlanSchema>;
 
-export type SendPlanBruker = { id: string; tier: string };
+/** Feil som er trygge å vise spilleren ordrett. Alt annet får en generell beskjed. */
+export class SendPlanFeil extends Error {}
+
+/** `nivaa` kommer fra resolveTilgang (user.tilgang.nivaa), ikke fra tier-feltet. */
+export type SendPlanBruker = { id: string; nivaa: "FULL" | "TALENT" | "INGEN" };
 
 export async function sendPlanTilCoachCore(user: SendPlanBruker, raw: SendPlanInput): Promise<{ planId: string; goalId: string }> {
-  if (user.tier === "GRATIS") throw new Error("TALENT-brukere kan ikke lagre planer. Oppgrader til FULL for å lagre.");
+  if (user.nivaa !== "FULL") throw new SendPlanFeil("Planen kan bare sendes med full tilgang til PlayerHQ. Du kan oppgradere under Meg.");
   const input = SendPlanSchema.parse(raw);
-  if (Object.keys(validerMaal(input.maal)).length > 0) throw new Error("Målet mangler mål, tall eller dato.");
-  if (fordelingSum(input.fordeling) !== 100) throw new Error("Fordelingen per akse må bli 100 %.");
+  if (Object.keys(validerMaal(input.maal)).length > 0) throw new SendPlanFeil("Målet mangler mål, tall eller dato.");
+  if (fordelingSum(input.fordeling) !== 100) throw new SendPlanFeil("Fordelingen per akse må bli 100 %.");
   const start = new Date(`${input.startDato}T00:00:00.000Z`);
-  if (Number.isNaN(start.getTime())) throw new Error("Ugyldig startdato.");
+  if (Number.isNaN(start.getTime())) throw new SendPlanFeil("Ugyldig startdato.");
   const slutt = new Date(start.getTime() + input.uker * 7 * 86400000);
   const tittel = maalSetning(input.maal);
-  if (!tittel) throw new Error("Målet mangler.");
+  if (!tittel) throw new SendPlanFeil("Målet mangler.");
 
   const alloc = Object.fromEntries(VELG_AKSER.map((k) => [k.toUpperCase(), input.fordeling[k]]));
   return prisma.$transaction(async (tx) => {
