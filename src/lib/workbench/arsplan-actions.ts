@@ -40,19 +40,23 @@ export async function coachOpprettArsplan(playerId: string, rawInput: unknown): 
   if (!parsed.success) return { ok: false, error: "Ugyldig input til årsplanen" };
   const { aar, navn, sammendrag, utgangspunkt } = parsed.data;
 
-  const finnes = await prisma.seasonPlan.findFirst({ where: { userId: playerId, year: aar }, select: { id: true } });
-  if (finnes) return { ok: false, error: `Det finnes allerede en årsplan for ${aar}. Legg til perioder i den, eller slett periodene først.` };
+  // Sjekk og skriving skjer i én transaksjon bak en rådgivende lås per spiller og år:
+  // SeasonPlan har ingen unik nøkkel på [userId, year] i denne veien, så to samtidige
+  // innsendinger ville ellers gitt to planer for samme år.
+  const utfall = await prisma.$transaction(async (tx): Promise<OpprettArsplanResultat> => {
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${`arsplan:${playerId}:${aar}`}))`;
+    const finnes = await tx.seasonPlan.findFirst({ where: { userId: playerId, year: aar }, select: { id: true } });
+    if (finnes) return { ok: false, error: `Det finnes allerede en årsplan for ${aar}. Legg til perioder i den, eller slett periodene først.` };
 
-  const fjor = utgangspunkt === "fjor"
-    ? await prisma.seasonPlan.findFirst({
-        where: { userId: playerId, year: aar - 1 },
-        select: { periodBlocks: { orderBy: { startDate: "asc" } } },
-      })
-    : null;
-  if (utgangspunkt === "fjor" && (!fjor || fjor.periodBlocks.length === 0)) return { ok: false, error: `Fant ingen perioder i ${aar - 1} å kopiere.` };
+    const fjor = utgangspunkt === "fjor"
+      ? await tx.seasonPlan.findFirst({
+          where: { userId: playerId, year: aar - 1 },
+          select: { periodBlocks: { orderBy: { startDate: "asc" } } },
+        })
+      : null;
+    if (utgangspunkt === "fjor" && (!fjor || fjor.periodBlocks.length === 0)) return { ok: false, error: `Fant ingen perioder i ${aar - 1} å kopiere.` };
 
-  const perioder = fjor?.periodBlocks ?? [];
-  await prisma.$transaction(async (tx) => {
+    const perioder = fjor?.periodBlocks ?? [];
     const plan = await tx.seasonPlan.create({
       data: { userId: playerId, year: aar, name: navn, notes: sammendrag || null, startDate: utcDag(`${aar}-01-01`), endDate: utcDag(`${aar}-12-31`) },
       select: { id: true },
@@ -73,9 +77,11 @@ export async function coachOpprettArsplan(playerId: string, rawInput: unknown): 
         },
       });
     }
+    return { ok: true, perioder: perioder.length };
   });
+  if (!utfall.ok) return utfall;
 
   revalidatePath(`/admin/workbench/${playerId}`);
   revalidatePath(`/admin/spillere/${playerId}/workbench`);
-  return { ok: true, perioder: perioder.length };
+  return utfall;
 }

@@ -17,8 +17,8 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarPlus, CalendarRange, ChevronLeft, ChevronRight, Check, Layers, Pencil, Plus, Send, Trash2, Users } from "lucide-react";
-import { Ikon, Knapp, TomTilstand, AKSE_NAVN, type Akse } from "@/components/precision/pa";
+import { CalendarPlus, CalendarRange, ChevronLeft, ChevronRight, Check, Layers, LayoutTemplate, Pencil, Plus, Search, Send, Trash2, Users } from "lucide-react";
+import { Ikon, Knapp, KnappLenke, TomTilstand, AKSE_NAVN, type Akse } from "@/components/precision/pa";
 import { Ark, Dialogboks, Nedtrekk, Side, SideHode, Skjemafelt, TekstOmrade, Tekstfelt } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { AKSER, Caps, Fremdrift, Valgpille, Velger, akseStil } from "@/components/precision/pa-workbench";
@@ -27,7 +27,7 @@ import { coachOpprettArsplan } from "@/lib/workbench/arsplan-actions";
 import { coachLagreGruppePeriode, coachRullUtGruppeAarsplan, coachSlettGruppePeriode } from "@/lib/workbench/gruppe-periode-actions";
 import { publishSessions } from "@/lib/workbench/wb-actions";
 import { validateWeek } from "@/lib/domain/workbench/operations";
-import type { PeriodViewModel, PyramidArea, YearViewModel } from "@/lib/domain/workbench/types";
+import type { PeriodViewModel, PlanningGoalSummary, PyramidArea, SourceItem, YearViewModel } from "@/lib/domain/workbench/types";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import {
   DAG, OKT_AKSER, PERIODE_TYPER, antallUker, isoMs, isoTilDmy, manederIn, omraadeAv, periodeEtikett, periodeType, plassering,
@@ -295,19 +295,21 @@ function Valg({ på, disabled, tittel, under, onClick }: { på: boolean; disable
   </button>;
 }
 
-function OpprettVeileder({ playerId, spillerNavn, aar, fjorAntall, onLukk }: { playerId: string; spillerNavn: string; aar: number; fjorAntall: number; onLukk: () => void }) {
+function OpprettVeileder({ playerId, spillerNavn, aar, fjorAntall, planAar, onLukk }: { playerId: string; spillerNavn: string; aar: number; fjorAntall: number; planAar: readonly number[]; onLukk: () => void }) {
   const router = useRouter();
   const [steg, setSteg] = useState<1 | 2 | 3>(1);
   const [kilde, setKilde] = useState<Kilde | null>(null);
-  const [ar, setAr] = useState(String(aar));
+  // Bare år uten plan tilbys: veilederen feiler alltid på et år som allerede har en årsplan.
+  const ledigeAar = [aar - 1, aar, aar + 1, aar + 2].filter((y) => !planAar.includes(y));
+  const [ar, setAr] = useState(String(ledigeAar.includes(aar) ? aar : ledigeAar[0] ?? aar));
   const [navn, setNavn] = useState("");
   const [sum, setSum] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
   const [travel, start] = useTransition();
   const navnEllerStandard = navn.trim() || `Sesong ${ar}`;
   const stegNavn = ["Utgangspunkt", "Tidsrom", "Navn og sammendrag"];
-  const fjorFeil = kilde === "fjor" && Number(ar) !== aar ? `Kopi av fjoråret er bare mulig for ${aar}. Velg ${aar}, eller bytt år i Workbench først.` : null;
-  const kan = steg === 1 ? kilde === "fjor" || kilde === "tom" : steg === 2 ? Number.isInteger(Number(ar)) && !fjorFeil : navnEllerStandard.length > 0;
+  const fjorFeil = kilde === "fjor" && Number(ar) !== aar ? `Kopi av fjoråret er bare mulig for ${aar}. Velg ${aar} hvis det er ledig, eller bytt år i Workbench først.` : null;
+  const kan = steg === 1 ? kilde === "fjor" || kilde === "tom" : steg === 2 ? Number.isInteger(Number(ar)) && ledigeAar.includes(Number(ar)) && !fjorFeil : navnEllerStandard.length > 0;
 
   function opprett() {
     setFeil(null);
@@ -317,7 +319,7 @@ function OpprettVeileder({ playerId, spillerNavn, aar, fjorAntall, onLukk }: { p
     });
   }
 
-  const aarValg = [aar - 1, aar, aar + 1, aar + 2].map((y) => ({ value: String(y), label: `Kalenderår ${y}` }));
+  const aarValg = ledigeAar.map((y) => ({ value: String(y), label: `Kalenderår ${y}` }));
   return <Ark open onClose={onLukk} kicker={`Steg ${steg} av 3 · ${stegNavn[steg - 1]} · for ${spillerNavn}`} title="Opprett årsplan"
     footer={<>
       {steg === 3
@@ -337,7 +339,7 @@ function OpprettVeileder({ playerId, spillerNavn, aar, fjorAntall, onLukk }: { p
         <Valg på={kilde === "tom"} tittel="Tom plan" under="DU LEGGER INN PERIODENE SELV" onClick={() => setKilde("tom")} />
       </div>}
       {steg === 2 && <>
-        <Skjemafelt label="Tidsrom" hint="Årsplanen dekker hele kalenderåret."><Nedtrekk value={ar} onChange={setAr} options={aarValg} /></Skjemafelt>
+        <Skjemafelt label="Tidsrom" hint={ledigeAar.length < 4 ? "Bare år uten årsplan kan velges. Årsplanen dekker hele kalenderåret." : "Årsplanen dekker hele kalenderåret."}><Nedtrekk value={ar} onChange={setAr} options={aarValg} /></Skjemafelt>
         {fjorFeil && <p role="alert" className="a1101-hjelp" style={{ fontWeight: 600 }}>{fjorFeil}</p>}
         <Caps>SKOLEÅR (AUG–JUN) OG FRI START OG SLUTT KREVER NYE FELT PÅ ÅRSPLANEN · FORSLAG, IKKE BYGGET</Caps>
       </>}
@@ -354,8 +356,7 @@ function OpprettVeileder({ playerId, spillerNavn, aar, fjorAntall, onLukk }: { p
 /* Nivåfaner og hode                                                   */
 /* ------------------------------------------------------------------ */
 
-function NivaaFaner({ playerId, aar, valgt }: { playerId: string; aar: number; valgt: "ar" | "periode" }) {
-  const uke = `${aar}-01-01`;
+function NivaaFaner({ playerId, aar, valgt, onMer }: { playerId: string; aar: number; valgt: "ar" | "periode"; onMer: () => void }) {
   const faner: [string, string, string][] = [
     ["ar", "År", workbenchUrl(playerId, "aar", { aar: String(aar) })],
     ["periode", "Periode", workbenchUrl(playerId, "periode", { aar: String(aar) })],
@@ -363,13 +364,80 @@ function NivaaFaner({ playerId, aar, valgt }: { playerId: string; aar: number; v
     ["uke", "Uke", workbenchUrl(playerId, "uke", {})],
     ["okt", "Økt", workbenchUrl(playerId, "okt", {})],
     ["mal", "Målsetninger", `/admin/workbench/${playerId}?vis=mal`],
-    ["stall", "Stall", workbenchUrl(playerId, "stall", { uke })],
-    ["live", "Live", workbenchUrl(playerId, "live", { uke })],
-    ["min", "Min kalender", workbenchUrl(playerId, "min", { uke })],
   ];
   return <div role="tablist" aria-label="Nivå" className="a9-faner">
     {faner.map(([k, l, href]) => <Valgpille key={k} rolle="tab" valgt={k === valgt} href={href}>{l}</Valgpille>)}
+    <Valgpille valgt={false} onClick={onMer}>Mer</Valgpille>
   </div>;
+}
+
+/** Snarveier og de tre visningene som ikke er egne faner (Stall, Live, Min kalender). Lenker til Uke-nivået der handlingene bor. */
+function snarveierFor(playerId: string): [typeof Plus, string, string][] {
+  return [
+    [LayoutTemplate, "Bruk mal på spiller", `/admin/workbench/${playerId}?side=maler`],
+    [Search, "Søk i tekniske oppgaver", `/admin/workbench/${playerId}?side=tp`],
+  ];
+}
+
+function MerArk({ playerId, aar, spillerNavn, onLukk }: { playerId: string; aar: number; spillerNavn: string; onLukk: () => void }) {
+  const uke = `${aar}-01-01`;
+  const rader: [string, string][] = [
+    ["Stall", workbenchUrl(playerId, "stall", { uke })],
+    ["Live", workbenchUrl(playerId, "live", { uke })],
+    ["Min kalender", workbenchUrl(playerId, "min", { uke })],
+    ...snarveierFor(playerId).map(([, l, href]): [string, string] => [l, href]),
+  ];
+  return <Ark open onClose={onLukk} kicker={`Workbench · ${spillerNavn}`} title="Mer" footer={<Knapp variant="ghost" fullWidth onClick={onLukk}>Lukk</Knapp>}>
+    <div role="list" className="a1101-uker">
+      {rader.map(([l, href]) => <Link key={l} role="listitem" href={href} className="a1101-uke" onClick={onLukk}><span className="a1101-prad__navn">{l}</span></Link>)}
+    </div>
+  </Ark>;
+}
+
+/* ------------------------------------------------------------------ */
+/* Sidefelt: øvelsesbank og målsetninger                               */
+/* ------------------------------------------------------------------ */
+
+const KILDE_GRUPPER: { kind: SourceItem["kind"]; tittel: string }[] = [
+  { kind: "TEK", tittel: "Teknisk plan (P1–P10)" },
+  { kind: "DRILL", tittel: "Øvelser" },
+  { kind: "TEMPLATE", tittel: "Øktmaler" },
+  { kind: "PREVIOUS_WEEK", tittel: "Forrige uke" },
+];
+
+function Sidefelt({ kilder, goals }: { kilder: readonly SourceItem[]; goals: readonly PlanningGoalSummary[] }) {
+  const [fane, setFane] = useState<"bank" | "mal">("bank");
+  return <section aria-label="Sidefelt" className="pa-card a1101-side">
+    <div role="tablist" aria-label="Sidefelt" className="a9-faner">
+      <Valgpille rolle="tab" valgt={fane === "bank"} onClick={() => setFane("bank")}>Øvelsesbank</Valgpille>
+      <Valgpille rolle="tab" valgt={fane === "mal"} onClick={() => setFane("mal")}>Målsetninger</Valgpille>
+    </div>
+    {fane === "bank"
+      ? kilder.length === 0
+        ? <Caps>INGEN KILDER ENNÅ · ØVELSER, MALER OG TEKNISK PLAN VISES HER</Caps>
+        : KILDE_GRUPPER.map((g) => {
+          const el = kilder.filter((k) => k.kind === g.kind);
+          if (el.length === 0) return null;
+          return <div key={g.kind} className="a1101-delt">
+            <div className="a1101-delt__hode"><Caps>{g.tittel.toUpperCase()}</Caps><Caps>{el.length}</Caps></div>
+            <div role="list" aria-label={g.tittel} className="a1101-uker">
+              {el.map((k) => <div key={k.id} role="listitem" className="a1101-kilde" style={k.pyramid ? akseStil(k.pyramid.toLowerCase() as Akse) : undefined}>
+                <span className="a1101-prad__navn">{k.title}</span>
+                {k.subtitle && <Caps>{k.subtitle}</Caps>}
+              </div>)}
+            </div>
+          </div>;
+        })
+      : goals.length === 0
+        ? <Caps>INGEN AKTIVE MÅLSETNINGER</Caps>
+        : <div role="list" aria-label="Aktive målsetninger" className="a1101-uker">
+          {goals.map((g) => <div key={g.id} role="listitem" className="a1101-kilde">
+            <span className="a1101-prad__navn">{g.title}</span>
+            <Caps>{g.typeLabel}{g.targetDate ? ` · FRIST ${g.targetDate.slice(8, 10)}.${g.targetDate.slice(5, 7)}.${g.targetDate.slice(0, 4)}` : " · INGEN FRIST"}</Caps>
+            <Caps>{g.fremdrift.hasData ? `${g.fremdrift.pct} % · ${g.fremdrift.detail}` : `FREMDRIFT: ${g.fremdrift.detail}`}</Caps>
+          </div>)}
+        </div>}
+  </section>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -388,21 +456,29 @@ export type AG11ArProps = {
   plan: { navn: string | null; notater: string | null } | null;
   blokker: Record<string, PeriodeBlokk>;
   fjorAntall: number;
+  /** Årene (rundt visningsåret) som allerede har en årsplan for spilleren. */
+  planAar: readonly number[];
+  /** Øvelsesbank og målsetninger i sidefeltet. */
+  kilder: readonly SourceItem[];
+  goals: readonly PlanningGoalSummary[];
   idag: string;
-  /** Åpner et ark ved første visning (brukes av skjermprøven). */
+  /** Åpner et ark ved første visning (`?ny=1` og `?rediger=<periodeId>`, også brukt av skjermprøven). */
   startApen?: "veileder" | "skjema" | "ny-periode";
+  /** Periode som skjemaet åpnes på med `startApen="skjema"`; første periode hvis utelatt eller ukjent. */
+  redigerId?: string;
 };
 
-export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, periode, plan, blokker, fjorAntall, idag, startApen }: AG11ArProps) {
+export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, periode, plan, blokker, fjorAntall, planAar, kilder, goals, idag, startApen, redigerId }: AG11ArProps) {
   const router = useRouter();
   const [velger, setVelger] = useState<"spiller" | "gruppe" | null>(null);
   const year = aar.year;
   const perioder = useMemo(() => sorter(aar.periods.map((p) => tilRad(p, blokker[p.id]))), [aar.periods, blokker]);
-  const førsteRad = (periode?.period ? perioder.find((p) => p.id === periode.period?.id) : undefined) ?? perioder[0];
+  const førsteRad = (redigerId ? perioder.find((p) => p.id === redigerId) : undefined) ?? (periode?.period ? perioder.find((p) => p.id === periode.period?.id) : undefined) ?? perioder[0];
   const [skjema, setSkjema] = useState<{ s: PeriodeSkjema; ny: boolean } | null>(
     startApen === "skjema" && førsteRad ? { s: skjemaFraPeriode(førsteRad), ny: false } : startApen === "ny-periode" ? { s: tomtSkjema(), ny: true } : null,
   );
   const [veileder, setVeileder] = useState(startApen === "veileder");
+  const [mer, setMer] = useState(false);
   const [publiser, setPubliser] = useState(false);
   const idx = roster.findIndex((p) => p.id === playerId);
   const spillerHref = (id: string) => workbenchUrl(id, niva === "ar" ? "aar" : "periode", { aar: String(year) });
@@ -422,6 +498,7 @@ export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, peri
     return res;
   };
   const harPlan = plan != null || perioder.length > 0;
+  const kanOppretteAarsplan = [year - 1, year, year + 1, year + 2].some((y) => !planAar.includes(y));
   const tot = aar.plannedToDateMinutes;
 
   const arFlate = !harPlan ? (
@@ -432,11 +509,11 @@ export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, peri
       <div className="a1101-hode">
         <div className="a1101-hode__tekst">
           <span className="a1101-tittel">{plan?.navn || `Årsplan ${year}`} · {spillerNavn}</span>
-          <Caps>01.01.{year}–31.12.{year} · {perioder.length} PERIODER · {timerTekst(aar.completedMinutes)} AV {timerTekst(tot)} GJENNOMFØRT HITTIL</Caps>
+          <Caps>01.01.{year}–31.12.{year} · {antallUker(`${year}-01-01`, `${year}-12-31`)} UKER · {perioder.length} PERIODER · {timerTekst(aar.completedMinutes)} AV {timerTekst(tot)} GJENNOMFØRT HITTIL</Caps>
         </div>
         <div className="a9-rad">
           <Knapp size="sm" icon={Plus} onClick={nyPeriode}>Ny periode</Knapp>
-          <Knapp size="sm" variant="secondary" icon={CalendarPlus} onClick={() => setVeileder(true)}>Opprett årsplan</Knapp>
+          <Knapp size="sm" variant="secondary" icon={CalendarPlus} disabled={!kanOppretteAarsplan} onClick={() => setVeileder(true)}>Opprett årsplan</Knapp>
         </div>
       </div>
       {plan?.notater && <p className="a1101-hjelp">{plan.notater}</p>}
@@ -475,14 +552,14 @@ export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, peri
 
   const periodeFlate = !pv || !valgtRad ? (
     <TomTilstand icon={CalendarRange} title={perioder.length === 0 ? "Ingen perioder" : "Fant ikke perioden"} text={perioder.length === 0 ? `Årsplanen for ${year} har ingen perioder ennå.` : "Perioden finnes ikke i denne årsplanen."}
-      actions={<><Knapp icon={Plus} onClick={nyPeriode}>Ny periode</Knapp><Knapp variant="secondary" icon={CalendarPlus} onClick={() => setVeileder(true)}>Opprett årsplan</Knapp></>} />
+      actions={<><Knapp icon={Plus} onClick={nyPeriode}>Ny periode</Knapp><Knapp variant="secondary" icon={CalendarPlus} disabled={!kanOppretteAarsplan} onClick={() => setVeileder(true)}>Opprett årsplan</Knapp></>} />
   ) : (
     <div className="a1101">
       <div className="a1101-nav">
-        <button type="button" className="pa-iconbtn pa-iconbtn--secondary" aria-label="Forrige periode" disabled={i0 === 0} onClick={() => apnePeriode(lista[i0 - 1].id)}><Ikon icon={ChevronLeft} size={20} /></button>
+        <button type="button" className="pa-iconbtn" aria-label="Forrige periode" disabled={i0 === 0} onClick={() => apnePeriode(lista[i0 - 1].id)}><Ikon icon={ChevronLeft} size={20} /></button>
         <span className="a1101-nav__midt"><span className="a1101-tittel">{periodeType(valgtRad.type).navn}</span>
           <Caps>{isoTilDmy(valgtRad.startDate)}–{isoTilDmy(valgtRad.endDate)} · {pv.weeks.length} {pv.weeks.length === 1 ? "UKE" : "UKER"}</Caps></span>
-        <button type="button" className="pa-iconbtn pa-iconbtn--secondary" aria-label="Neste periode" disabled={i0 === lista.length - 1} onClick={() => apnePeriode(lista[i0 + 1].id)}><Ikon icon={ChevronRight} size={20} /></button>
+        <button type="button" className="pa-iconbtn" aria-label="Neste periode" disabled={i0 === lista.length - 1} onClick={() => apnePeriode(lista[i0 + 1].id)}><Ikon icon={ChevronRight} size={20} /></button>
       </div>
       <div className="a9-rad">
         <Knapp size="sm" variant="secondary" icon={Pencil} onClick={() => rediger(valgtRad)}>Rediger periode</Knapp>
@@ -529,17 +606,24 @@ export function AG11Ar({ playerId, spillerNavn, roster, grupper, niva, aar, peri
         onNeste={roster.length > 1 ? () => router.push(spillerHref(roster[(idx + 1) % roster.length].id)) : undefined}
         onSok={() => setVelger("spiller")}
         meta={`${roster.length} ${roster.length === 1 ? "SPILLER" : "SPILLERE"} I STALLEN`} />
-      <NivaaFaner playerId={playerId} aar={year} valgt={niva} />
+      <NivaaFaner playerId={playerId} aar={year} valgt={niva} onMer={() => setMer(true)} />
+      <div className="a9-snarveier" role="group" aria-label="Snarveier">
+        {snarveierFor(playerId).map(([ic, l, href]) => <KnappLenke key={l} variant="secondary" size="sm" icon={ic} href={href}>{l}</KnappLenke>)}
+      </div>
       <div className="a9-ukenav" role="group" aria-label="Velg år">
         <button type="button" className="pa-iconbtn pa-iconbtn--secondary" aria-label="Forrige år" onClick={() => gaaAar(year - 1)}><Ikon icon={ChevronLeft} size={20} /></button>
         <div className="a9-ukenav__tittel">{year}</div>
         <button type="button" className="pa-iconbtn pa-iconbtn--secondary" aria-label="Neste år" onClick={() => gaaAar(year + 1)}><Ikon icon={ChevronRight} size={20} /></button>
       </div>
-      <section aria-label={niva === "ar" ? "År" : "Periode"} className="pa-card a9-kort">{niva === "ar" ? arFlate : periodeFlate}</section>
+      <div className="a9-hoved a9-hoved--sidefelt">
+        <section aria-label={niva === "ar" ? "År" : "Periode"} className="pa-card a9-kort">{niva === "ar" ? arFlate : periodeFlate}</section>
+        {harPlan && <Sidefelt kilder={kilder} goals={goals} />}
+      </div>
     </div>
     {skjema && <PeriodeArk key={skjema.s.id ?? "ny"} skjema={skjema.s} ny={skjema.ny} kicker={`${skjema.ny ? "Ny periode" : "Rediger periode"} · ${spillerNavn}`}
       merknad={`${spillerNavn.split(" ")[0].toUpperCase()} SER ENDRINGEN`} onLagre={lagre} onSlett={slett} onLukk={() => setSkjema(null)} />}
-    {veileder && <OpprettVeileder playerId={playerId} spillerNavn={spillerNavn} aar={year} fjorAntall={fjorAntall} onLukk={() => setVeileder(false)} />}
+    {veileder && <OpprettVeileder playerId={playerId} spillerNavn={spillerNavn} aar={year} fjorAntall={fjorAntall} planAar={planAar} onLukk={() => setVeileder(false)} />}
+    {mer && <MerArk playerId={playerId} aar={year} spillerNavn={spillerNavn} onLukk={() => setMer(false)} />}
     {publiser && pv && <PubliserPeriodeArk okter={utkast} tittel={`${valgtRad ? periodeType(valgtRad.type).navn : "Periode"} · ${spillerNavn}`} onLukk={() => setPubliser(false)} onFerdig={() => router.refresh()} />}
     {velger && <VelgerArk modus={velger} liste={velger === "gruppe" ? grupper : roster} valgtId={velger === "gruppe" ? null : playerId}
       hrefFor={(id) => velger === "gruppe" ? `/admin/grupper/${id}/workbench` : spillerHref(id)} onLukk={() => setVelger(null)} />}

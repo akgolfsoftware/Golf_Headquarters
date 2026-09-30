@@ -8,7 +8,7 @@ import { AdminRolleProvider } from "@/components/v2/rolle";
 import { FeilTilstand, Knapp, LasterTilstand } from "@/components/precision/pa";
 import { AG11Ar, AG11GruppeAr, type AG11ArProps, type PeriodeBlokk } from "@/components/admin/precision/AG11Ar";
 import { AG11Gruppe } from "@/components/admin/precision/AG11Gruppe";
-import type { PeriodViewModel, PyramidArea, WorkbenchMode, YearPeriodBand, YearViewModel } from "@/lib/domain/workbench/types";
+import type { PeriodViewModel, PlanningGoalSummary, PyramidArea, SourceItem, WorkbenchMode, YearPeriodBand, YearViewModel } from "@/lib/domain/workbench/types";
 import type { PeriodeRad } from "@/lib/workbench/arsplan-view";
 import { Natt } from "./_natt";
 import { GRUPPER, ROSTER, SPILLER, OKTER } from "./_wb-data";
@@ -55,9 +55,18 @@ const periode = (id = "c"): PeriodViewModel => {
   };
 };
 
+const KILDER: SourceItem[] = [
+  { id: "k1", kind: "TEK", title: "P4.0 Toppen av baksvingen", subtitle: "Teknisk plan · Testspiller", pyramid: "TEK" },
+  { id: "k2", kind: "DRILL", title: "Innspill ca. 50 m, tre mål", subtitle: "SLAG · Innspill · 20 min", pyramid: "SLAG", durationMinutes: 20 },
+  { id: "k3", kind: "TEMPLATE", title: "Turneringsuke", subtitle: "4 økter" },
+];
+const MAL: PlanningGoalSummary[] = [{
+  id: "m1", title: "Putting 3–5 fot", category: "PROCESS", targetDate: "2026-12-31", typeLabel: "Øktfrekvens", planNivaa: "AAR", planNivaaKilde: "valgt",
+  fremdrift: { pct: 40, hasData: true, status: "on-track", detail: "20 av 50 forsøk" }, spor: null, nesteTiltak: "Putting-økt tirsdag",
+}];
 const basis = (tom: boolean): Omit<AG11ArProps, "niva" | "periode"> => ({
   playerId: "p1", spillerNavn: SPILLER, roster: ROSTER, grupper: GRUPPER, aar: aar(tom),
-  plan: tom ? null : { navn: "Sesong 2026", notater: "Fra kategori D mot C." }, blokker: tom ? {} : BLOKKER, fjorAntall: tom ? 0 : 6, idag: "2026-09-29",
+  plan: tom ? null : { navn: "Sesong 2026", notater: "Fra kategori D mot C." }, blokker: tom ? {} : BLOKKER, fjorAntall: tom ? 0 : 6, planAar: tom ? [] : [2026], kilder: tom ? [] : KILDER, goals: tom ? [] : MAL, idag: "2026-09-29",
 });
 const Rolle = ({ children, natt = false }: { children: React.ReactNode; natt?: boolean }) => {
   const skall = <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach">{children}</AgencyOSSkall></AdminRolleProvider>;
@@ -90,6 +99,14 @@ const Feil = () => (
   </div></AgencyOSSkall></AdminRolleProvider>
 );
 
+const Laster2 = ({ natt = false }: { natt?: boolean }) => <Rolle natt={natt}><div className="pa-side"><LasterTilstand text="Henter planen …" /></div></Rolle>;
+const Feil2 = ({ natt = false }: { natt?: boolean }) => (
+  <Rolle natt={natt}><div className="pa-side">
+    <FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text="Ingen perioder er endret. Prøv igjen, eller gå tilbake til stallen." code="FEIL 503 · WORKBENCH"
+      retry={<Knapp variant="secondary">Prøv igjen</Knapp>} />
+  </div></Rolle>
+);
+
 export const tilstander = {
   data: <Ar />,
   tom: <Ar tom />,
@@ -107,5 +124,16 @@ export const tilstander = {
   "natt-veileder": <Ar tom startApen="veileder" natt />,
   "natt-periodeskjema": <Per startApen="skjema" natt />,
   "natt-gruppe": <Gruppe natt />,
+  "natt-tom": <Ar tom natt />,
+  "natt-laster": <Laster2 natt />,
+  "natt-feil": <Feil2 natt />,
+  "gruppe-laster": <Rolle><div className="pa-side"><LasterTilstand text="Henter gruppas plan …" /></div></Rolle>,
+  "gruppe-feil": <Rolle><div className="pa-side"><FeilTilstand icon={CalendarX} title="Gruppa kunne ikke lastes" text="Ingen perioder er endret. Prøv igjen." code="FEIL 503 · GRUPPE" retry={<Knapp variant="secondary">Prøv igjen</Knapp>} /></div></Rolle>,
+  "natt-gruppe-tom": <Gruppe tom natt />,
+  "natt-gruppe-laster": <Rolle natt><div className="pa-side"><LasterTilstand text="Henter gruppas plan …" /></div></Rolle>,
+  "natt-gruppe-feil": <Rolle natt><div className="pa-side"><FeilTilstand icon={CalendarX} title="Gruppa kunne ikke lastes" text="Ingen perioder er endret. Prøv igjen." code="FEIL 503 · GRUPPE" retry={<Knapp variant="secondary">Prøv igjen</Knapp>} /></div></Rolle>,
+  "rediger-id": <Rolle><AG11Ar {...basis(false)} niva="periode" periode={periode("a")} startApen="skjema" redigerId="a" /></Rolle>,
+  "natt-ny-periode": <Ar startApen="ny-periode" natt />,
+  "natt-periode-tom": <Per tom natt />,
 };
-export const natt = ["natt-data", "natt-periode", "natt-veileder", "natt-periodeskjema", "natt-gruppe"];
+export const natt = ["natt-data", "natt-periode", "natt-veileder", "natt-periodeskjema", "natt-gruppe", "natt-tom", "natt-laster", "natt-feil", "natt-gruppe-tom", "natt-gruppe-laster", "natt-gruppe-feil", "natt-ny-periode", "natt-periode-tom"];

@@ -42,7 +42,7 @@ export const metadata = { title: "Workbench · AgencyOS" };
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ uke?: string; vis?: string; niva?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
+  searchParams: Promise<{ uke?: string; vis?: string; niva?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string; ny?: string; rediger?: string }>;
 };
 
 const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
@@ -56,19 +56,20 @@ function visningParam(sp: { vis?: string; niva?: string }): string | undefined {
 }
 
 /** Leser periodenes lagrede volum og økter per akse (loadYear leverer dem ikke). Ren lesing. */
-async function hentBlokker(playerId: string, year: number): Promise<{ plan: { navn: string | null; notater: string | null } | null; blokker: Record<string, PeriodeBlokk>; fjorAntall: number }> {
-  const [denne, fjor] = await Promise.all([
+async function hentBlokker(playerId: string, year: number): Promise<{ plan: { navn: string | null; notater: string | null } | null; blokker: Record<string, PeriodeBlokk>; fjorAntall: number; planAar: number[] }> {
+  const [denne, fjor, planer] = await Promise.all([
     prisma.seasonPlan.findFirst({
       where: { userId: playerId, year },
       select: { name: true, notes: true, periodBlocks: { select: { id: true, weeklyVolMin: true, weeklyVolMax: true, weeklySessionBudget: true, sourceGroupId: true } } },
     }),
     prisma.periodBlock.count({ where: { seasonPlan: { userId: playerId, year: year - 1 } } }),
+    prisma.seasonPlan.findMany({ where: { userId: playerId, year: { in: [year - 1, year, year + 1, year + 2] } }, select: { year: true } }),
   ]);
   const blokker: Record<string, PeriodeBlokk> = {};
   for (const b of denne?.periodBlocks ?? []) {
     blokker[b.id] = { ukevolumMin: b.weeklyVolMin, ukevolumMax: b.weeklyVolMax, budsjett: parseSessionBudget(b.weeklySessionBudget) as Partial<Record<OktAkse, number>> | null, fraGruppe: b.sourceGroupId != null };
   }
-  return { plan: denne ? { navn: denne.name, notater: denne.notes } : null, blokker, fjorAntall: fjor };
+  return { plan: denne ? { navn: denne.name, notater: denne.notes } : null, blokker, fjorAntall: fjor, planAar: planer.map((p) => p.year) };
 }
 
 function aarFraParam(raw?: string): number {
@@ -134,6 +135,10 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   const goals = await hentMaalSpor(playerId);
   const weekStart = ukeStartFraParam(sp.uke);
+  // Tegningens adresser: `?ny=1` åpner veilederen, `?rediger=<periodeId>` åpner periodeskjemaet.
+  const startApen = sp.ny === "1" ? ("veileder" as const) : sp.rediger ? ("skjema" as const) : undefined;
+  const redigerId = sp.rediger || undefined;
+  const startNokkel = `${startApen ?? ""}${redigerId ?? ""}`;
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
   const visning = sp.vis === "mal" ? "mal" : parseVisning(visningParam(sp));
   const hentRoster = () => prisma.user.findMany({
@@ -152,13 +157,13 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   if (visning === "aar") {
     const year = aarFraParam(sp.aar);
-    const [roster, yearRes, grupper, plan] = await Promise.all([hentRoster(), loadYear({ year, mode, playerId }), hentGrupper(), hentBlokker(playerId, year)]);
+    const [roster, yearRes, grupper, plan, kilderRes] = await Promise.all([hentRoster(), loadYear({ year, mode, playerId }), hentGrupper(), hentBlokker(playerId, year), loadSources({ playerId, weekStart: `${year}-01-01` })]);
     if (!yearRes.ok) return <Feil navn={navn} melding={yearRes.error} />;
     return (
       <AgencyOSSkall navn={navn}>
-        <AG11Ar key={`${playerId}:${year}:ar`} playerId={playerId} spillerNavn={spillerNavn} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        <AG11Ar key={`${playerId}:${year}:ar:${startNokkel}`} playerId={playerId} spillerNavn={spillerNavn} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
           grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))} niva="ar" aar={yearRes.data} periode={null} plan={plan.plan} blokker={plan.blokker}
-          fjorAntall={plan.fjorAntall} idag={idagIso()} />
+          fjorAntall={plan.fjorAntall} planAar={plan.planAar} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} idag={idagIso()} startApen={startApen} redigerId={redigerId} />
       </AgencyOSSkall>
     );
   }
@@ -181,20 +186,21 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   if (visning === "periode") {
     const year = aarFraParam(sp.aar);
-    const [roster, periodRes, yearRes, grupper, plan] = await Promise.all([
+    const [roster, periodRes, yearRes, grupper, plan, kilderRes] = await Promise.all([
       hentRoster(),
       loadPeriod({ year, periodId: sp.periode, mode, playerId }),
       loadYear({ year, mode, playerId }),
       hentGrupper(),
       hentBlokker(playerId, year),
+      loadSources({ playerId, weekStart }),
     ]);
     if (!periodRes.ok) return <Feil navn={navn} melding={periodRes.error} />;
     if (!yearRes.ok) return <Feil navn={navn} melding={yearRes.error} />;
     return (
       <AgencyOSSkall navn={navn}>
-        <AG11Ar key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} spillerNavn={spillerNavn} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        <AG11Ar key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}:${startNokkel}`} playerId={playerId} spillerNavn={spillerNavn} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
           grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))} niva="periode" aar={yearRes.data} periode={periodRes.data} plan={plan.plan} blokker={plan.blokker}
-          fjorAntall={plan.fjorAntall} idag={idagIso()} />
+          fjorAntall={plan.fjorAntall} planAar={plan.planAar} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} idag={idagIso()} startApen={startApen} redigerId={redigerId} />
       </AgencyOSSkall>
     );
   }
