@@ -14,6 +14,7 @@ import { RundeNyForm, type RundeNyFormFlyt } from "@/components/portal/runde-ny/
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 import { RUNDE_DATAQUALITY_META } from "@/lib/runde-logg/kontrakt";
+import { PHRD01MedKladd } from "@/components/portal/precision/PHRD01VelgNiva";
 
 type NyRundeFlyt = RundeNyFormFlyt | "slag";
 
@@ -74,7 +75,28 @@ export default async function NyRundePage({
   searchParams: Promise<{ flyt?: string | string[] | undefined }>;
 }) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const flyt = lesFlyt((await searchParams).flyt);
+  const rawFlyt = (await searchParams).flyt;
+
+  // Uten valgt flyt: PH-RD-01, velg registreringsnivå (Precision Athletics).
+  // Adressene med ?flyt= (scorekort, SG, total, detaljer, slag) virker som før.
+  if (rawFlyt === undefined) {
+    let tilstand: "data" | "tom" | "feil" = "data";
+    let uleste = 0;
+    try {
+      const [antallBaner, ul] = await Promise.all([
+        prisma.courseDefinition.count(),
+        prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+      ]);
+      uleste = ul;
+      if (antallBaner === 0) tilstand = "tom";
+    } catch (feil) {
+      console.error("PH-RD-01: kunne ikke hente baner", feil);
+      tilstand = "feil";
+    }
+    return <PHRD01MedKladd tilstand={tilstand} uleste={uleste} />;
+  }
+
+  const flyt = lesFlyt(rawFlyt);
   const [alleCourses, sisteBaneId] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },
