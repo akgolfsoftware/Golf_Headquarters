@@ -1,13 +1,13 @@
 /**
  * Live runde-føring — /portal/runde/live (fullscreen, ingen shell).
- * Paper-fasit: designsystem/paper/fase1/playerhq-runde-live.html.
- * Stepper per hull er standardinngangen; slag-for-slag-detaljen er beholdt
- * bak hullet. Kladd i localStorage, SG beregnes server-side ved lagring.
+ * Fasit: Precision Athletics PH-RD-02/03/04/05/08 (Claude Design 7d7c2994,
+ * runde 24). Oppsett, føring (slag for slag eller bare score) og ferdig-skjerm
+ * styres av PHRDLive. Kladd i localStorage, SG beregnes server-side ved lagring.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { RundeLiveKlient } from "@/components/portal/runde-logg/runde-live-klient";
+import { PHRDLive } from "@/components/portal/precision/PHRDLive";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 
@@ -31,5 +31,5 @@ export default async function RundeLivePage() {
   // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
   const baner = medForst(alleBaner, sisteBaneId);
 
-  return <RundeLiveKlient baner={baner} />;
+  return <PHRDLive baner={baner} />;
 }

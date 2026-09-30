@@ -1,13 +1,14 @@
 /**
  * Logg en runde (etterregistrering) — /portal/runde/logg (fullscreen).
- * Paper-fasit: designsystem/paper/fase1/playerhq-runde-logg.html.
+ * Fasit: Precision Athletics PH-RD-06 (Claude Design 7d7c2994).
  * ÉN skjerm: dato + bane, «Hull for hull | Bare totalen», og de 2 siste
  * loggførte rundene (ekte data). KUN brutto score.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { RundeEtterregistreringKlient } from "@/components/portal/runde-logg/runde-etterregistrering-klient";
+import { PHRD06Etterregistrering } from "@/components/portal/precision/PHRD06";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 
@@ -49,5 +50,9 @@ export default async function RundeLoggPage() {
     slag: r.score,
   }));
 
-  return <RundeEtterregistreringKlient baner={baner} siste={siste} />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHRD06Etterregistrering baner={baner} siste={siste} />
+    </PlayerHQSkall>
+  );
 }
