@@ -17,7 +17,7 @@ import { Check, Play, SkipForward } from "lucide-react";
 import { UI, PYRAMID_LABEL, formatMinutes } from "@/lib/domain/workbench/labels";
 import { formatIntervallPunkt } from "@/lib/portal/idag-visning";
 import { oktArkLiveHref } from "@/lib/portal/session-hrefs";
-import type { WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Belastning, Press, WorkbenchSession } from "@/lib/domain/workbench/types";
 import { startSession, completeSessionWithEffort, skipSession, updateSessionEffort } from "@/lib/workbench/wb-actions";
 import { computeSessionLoad, RPE_SKALA } from "@/lib/domain/workbench/load";
 import { Knapp, KnappLenke, Meta, type Akse } from "@/components/precision/pa";
@@ -30,7 +30,16 @@ const STATUS: Partial<Record<WorkbenchSession["status"], PH03Status>> = {
   PUBLISHED: "Planlagt", SCHEDULED: "Planlagt", IN_PROGRESS: "Pågår", COMPLETED: "Gjennomført", SKIPPED: "Hoppet over", CANCELLED: "Avlyst",
 };
 
-export function OktArk({ session: initial }: { session: WorkbenchSession }) {
+const BELASTNING_NAVN: Record<Belastning, string> = { INNENDORS: "Innendørs", TRENINGSOMRADE: "Treningsområde", BANE: "Bane", KONKURRANSE: "Konkurranse" };
+const PRESS_NAVN: Record<Press, string> = { ALENE: "Alene", OBSERVERT: "Observert", KONKURRANSE: "Konkurranse", TURNERING: "Turnering" };
+
+/** Felles verdi på tvers av øvelsene; null når øvelsene er ulike eller ingen har verdi (vises som «—»). */
+function feltlik<T extends string>(verdier: (T | undefined)[], navn: Record<T, string>): string | null {
+  const satt = new Set(verdier.filter((v): v is T => v != null));
+  return satt.size === 1 && verdier.every((v) => v != null) ? navn[[...satt][0]] : null;
+}
+
+export function OktArk({ session: initial, coachNavn = null }: { session: WorkbenchSession; coachNavn?: string | null }) {
   const router = useRouter();
   const [session, setSession] = useState(initial);
   const [travel, startTravel] = useTransition();
@@ -71,14 +80,13 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
   const planlagt = session.status === "PUBLISHED" || session.status === "SCHEDULED";
   const pagar = session.status === "IN_PROGRESS";
   const ferdig = session.status === "COMPLETED";
-  const akse = session.pyramid.toLowerCase() as Akse;
 
   const handlinger = planlagt ? <>
     <Knapp icon={Play} iconName="play" loading={laster("start")} loadingText="Starter …" disabled={travel} onClick={() => utfor("start")}>{UI.startSession}</Knapp>
     <Knapp variant="ghost" icon={SkipForward} iconName="skip-forward" disabled={travel} onClick={() => setHoppArk(true)}>{UI.skipSession}</Knapp>
   </> : pagar ? <>
-    <KnappLenke href={oktArkLiveHref(session.id, "IN_PROGRESS")} icon={Play} iconName="play">{UI.continueSession}</KnappLenke>
-    <Knapp variant="secondary" icon={Check} iconName="check" loading={laster("fullfor")} loadingText="Fullfører …" disabled={travel} onClick={() => utfor("fullfor")}>{UI.completeSession}</Knapp>
+    <Knapp icon={Check} iconName="check" loading={laster("fullfor")} loadingText="Fullfører …" disabled={travel} onClick={() => utfor("fullfor")}>{UI.completeSession}</Knapp>
+    <KnappLenke href={oktArkLiveHref(session.id, "IN_PROGRESS")} variant="secondary" icon={Play} iconName="play">{UI.continueSession}</KnappLenke>
     <Knapp variant="ghost" icon={SkipForward} iconName="skip-forward" disabled={travel} onClick={() => setHoppArk(true)}>{UI.skipSession}</Knapp>
   </> : ferdig ? <KnappLenke href={oktArkLiveHref(session.id, "COMPLETED")} variant="secondary">{UI.seRecap}</KnappLenke> : null;
 
@@ -89,8 +97,13 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
       tittel={session.title}
       status={STATUS[session.status] ?? "Planlagt"}
       statusMeta={pagar ? `${session.drills.length} ØVELSER` : null}
-      ovelser={session.drills.map((d) => ({ id: d.id, akse, navn: d.title, kode: d.techniqueFocus ?? null, mengde: null, min: d.durationMinutes, gjort: null }))}
+      ovelser={session.drills.map((d) => ({ id: d.id, akse: d.akFormel.pyramid.toLowerCase() as Akse, navn: d.title, kode: d.akFormel.label || null, mengde: null, min: d.durationMinutes, gjort: null }))}
       nokler={[
+        ["Fokus", [...new Set(session.drills.map((d) => d.techniqueFocus).filter((f): f is string => !!f))].join(", ") || null],
+        ["Belastning", feltlik(session.drills.map((d) => d.akFormel.belastning), BELASTNING_NAVN)],
+        ["Press", feltlik(session.drills.map((d) => d.akFormel.press), PRESS_NAVN)],
+        ["Mål", session.maalsetning?.trim() || null],
+        ["Coach", coachNavn],
         ["Varighet", formatMinutes(session.durationMinutes)],
         ["Pyramide", PYRAMID_LABEL[session.pyramid]],
         ["Sted", session.location?.trim() || null],
@@ -107,10 +120,11 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
           <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Hvor anstrengende var økten, fra 1 (veldig lett) til 10 (maksimalt)?</p>
           <div className="ph03-rpe" role="group" aria-label="Velg anstrengelse fra 1 til 10">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <button key={n} type="button" aria-pressed={effort === n} title={`${n}: ${RPE_SKALA[n]?.kort}`} onClick={() => setEffort(n)}>{n}</button>
+              <button key={n} type="button" aria-pressed={effort === n} title={`${n}: ${RPE_SKALA[n]?.kort} — ${RPE_SKALA[n]?.beskrivelse}`} onClick={() => setEffort(n)}>{n}</button>
             ))}
           </div>
           {effort != null && <Meta>{effort} / 10 · {(RPE_SKALA[effort]?.kort ?? "").toUpperCase()}</Meta>}
+          {effort != null && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{RPE_SKALA[effort]?.beskrivelse}</p>}
           <Skjemafelt label="Faktisk varighet (minutter)">
             <Tekstfelt value={minutter} onChange={setMinutter} mono inputMode="numeric" />
           </Skjemafelt>

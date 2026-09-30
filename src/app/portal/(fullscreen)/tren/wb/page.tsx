@@ -20,9 +20,9 @@ import "@/styles/precision-ph03.css";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dagens økter · PlayerHQ" };
 
-const STATUS: Partial<Record<SessionStatus, { navn: string; tone: "neutral" | "live" | "ok" | "warn" }>> = {
+const STATUS: Partial<Record<SessionStatus, { navn: string; tone: "neutral" | "info" | "ok" | "warn" }>> = {
   PUBLISHED: { navn: "Planlagt", tone: "neutral" }, SCHEDULED: { navn: "Planlagt", tone: "neutral" },
-  IN_PROGRESS: { navn: "Pågår", tone: "live" }, COMPLETED: { navn: "Gjennomført", tone: "ok" },
+  IN_PROGRESS: { navn: "Pågår", tone: "info" }, COMPLETED: { navn: "Gjennomført", tone: "ok" },
   SKIPPED: { navn: "Hoppet over", tone: "warn" }, CANCELLED: { navn: "Avlyst", tone: "warn" },
 };
 
