@@ -13,11 +13,11 @@
  * mønsteret i naboskjermene.
  */
 import Link from "next/link";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, ChevronLeft, ChevronRight, Plus, RefreshCw } from "lucide-react";
-import { toast } from "sonner";
+import { CalendarClock, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Ikon, Knapp, KnappLenke, Meta, StatusPille, TomTilstand } from "@/components/precision/pa";
+import { SegmentertValg } from "@/components/precision/pa-a2";
 import { Ark, Bryter, Dialogboks, FanerLenker, Kort, Nedtrekk, Skjemafelt, Stabel } from "@/components/precision/pa-a4";
 import { addSlot, deleteSlot, updateSlot } from "@/app/admin/(legacy)/availability/actions";
 import "@/styles/precision-a4.css";
@@ -155,10 +155,12 @@ export function Vinduskjema({ steder, initial, defaultUkedag, open, onClose }: {
           <Skjemafelt label="Anlegg">
             <Nedtrekk value={stedId} onChange={setStedId} options={steder.map((s) => ({ value: s.id, label: s.name }))} />
           </Skjemafelt>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-            <Knapp variant={modus === "weekly" ? "primary" : "secondary"} aria-pressed={modus === "weekly"} onClick={() => setModus("weekly")}>Ukentlig</Knapp>
-            <Knapp variant={modus === "date" ? "primary" : "secondary"} aria-pressed={modus === "date"} onClick={() => setModus("date")}>Spesifikk dato</Knapp>
-          </div>
+          <SegmentertValg
+            label="Type tidsvindu"
+            value={modus}
+            onChange={setModus}
+            options={[{ id: "weekly", label: "Ukentlig" }, { id: "date", label: "Spesifikk dato" }]}
+          />
           {modus === "weekly" ? (
             <>
               <Skjemafelt label="Ukedag">
@@ -261,6 +263,39 @@ function Ukerutenett({ steder, vinduer }: { steder: Sted[]; vinduer: UkeVindu[] 
     if (overlapp) return setFeil("Overlapper med eksisterende vindu. Juster først.");
     setBekreft({ dag: drag.dag, start: tidFraRad(lav), slutt: tidFraRad(hoy + 1) });
   };
+  // Dra avsluttes på dokumentnivå: slipp utenfor rutenettet og avbrutt berøring
+  // (pointercancel) skal aldri la markeringen stå igjen. Berøring sender ikke
+  // pointerenter til cellene under fingeren, så posisjonen slås opp her.
+  const sluttRef = useRef(sluttDrag);
+  useEffect(() => {
+    sluttRef.current = sluttDrag;
+  });
+  const draTilstand = drag !== null;
+  useEffect(() => {
+    if (!draTilstand) return;
+    const opp = () => sluttRef.current();
+    const avbryt = () => {
+      dragDag.current = null;
+      setDrag(null);
+    };
+    const flytt = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      const celle = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-dag][data-rad]");
+      if (celle) setDrag((d) => (d && d.dag === Number(celle.dataset.dag) ? { ...d, b: Number(celle.dataset.rad) } : d));
+    };
+    const hindreRulling = (e: TouchEvent) => { if (e.cancelable) e.preventDefault(); };
+    document.addEventListener("pointerup", opp);
+    document.addEventListener("pointercancel", avbryt);
+    document.addEventListener("pointermove", flytt);
+    document.addEventListener("touchmove", hindreRulling, { passive: false });
+    return () => {
+      document.removeEventListener("pointerup", opp);
+      document.removeEventListener("pointercancel", avbryt);
+      document.removeEventListener("pointermove", flytt);
+      document.removeEventListener("touchmove", hindreRulling);
+    };
+  }, [draTilstand]);
+
   const klikk = (dag: number, rad: number) => {
     if (drag) return;
     setBekreft({ dag, start: tidFraRad(rad), slutt: tidFraRad(rad + 1) });
@@ -285,7 +320,7 @@ function Ukerutenett({ steder, vinduer }: { steder: Sted[]; vinduer: UkeVindu[] 
     <Stabel gap={12}>
       <Meta>DRA I RUTENETTET FOR Å LAGE ET VINDU · TRYKK PÅ EN RUTE FOR 30 MINUTTER{forhandsvis ? ` · ${forhandsvis}` : ""}</Meta>
       {feil && !bekreft && <p role="alert" className="a4-feil">{feil}</p>}
-      <div className="t5-uke" role="grid" aria-label="Ukens tilgjengelighet">
+      <div className="t5-uke" role="grid" aria-label="Ukens tilgjengelighet" data-drar={drag ? "" : undefined}>
         <div style={{ borderBottom: "1px solid var(--border-hairline)", background: "var(--surface-flat)" }} />
         {DAGER_KORT.map((d) => <div key={d} className="t5-uke__hode">{d}</div>)}
         {Array.from({ length: RADER }).map((_, rad) => (
@@ -301,10 +336,11 @@ function Ukerutenett({ steder, vinduer }: { steder: Sted[]; vinduer: UkeVindu[] 
                   data-halv={rad % 2 === 1 ? "" : undefined}
                   data-apen={erApen(dag, rad) ? "" : undefined}
                   data-drag={iDrag ? "" : undefined}
+                  data-dag={dag}
+                  data-rad={rad}
                   aria-label={`${DAGER[dag]} ${tidFraRad(rad)}`}
                   onPointerDown={(e) => startDrag(dag, rad, e)}
                   onPointerEnter={() => flyttDrag(dag, rad)}
-                  onPointerUp={sluttDrag}
                   onClick={() => klikk(dag, rad)}
                 />
               );
@@ -403,7 +439,14 @@ function Maaned({ data }: { data: TilgjengelighetData }) {
           ) : (
             <div key={c.dag} className="a4-month__cell t5-dag" style={{ cursor: "default" }} data-apen={c.range ? "" : undefined} data-idag={c.erIdag ? "" : undefined}>
               <span className="a4-month__num">{c.dag}</span>
-              <span className={c.range ? "t5-dag__tid" : "a4-meta"}>{c.range ?? "—"}</span>
+              {c.range ? (
+                <>
+                  <span className="t5-dag__tid">{c.range}</span>
+                  <span className="t5-dag__prikk" aria-hidden />
+                </>
+              ) : (
+                <span className="a4-meta">—</span>
+              )}
             </div>
           ),
         )}
@@ -426,9 +469,8 @@ export function AG05Tilgjengelighet({ data }: { data: TilgjengelighetData }) {
     <Stabel gap={16}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         <Knapp icon={Plus} iconName="plus" onClick={() => setNytt(true)}>Nytt tidsvindu</Knapp>
-        <Knapp variant="secondary" icon={RefreshCw} iconName="refresh-cw" onClick={() => toast.info("Synkronisering skjer automatisk hvert 15. minutt")}>Synk</Knapp>
         <KnappLenke href="/admin/kalender?fane=tilg" variant="ghost">Til kalenderen</KnappLenke>
-        <StatusPille tone={antall > 0 ? "ok" : "warn"}>{antall === 0 ? "Ingen vinduer" : `${antall} vinduer`}</StatusPille>
+        <StatusPille tone={antall > 0 ? "ok" : "warn"}>{antall === 0 ? "Ingen vinduer" : antall === 1 ? "1 vindu" : `${antall} vinduer`}</StatusPille>
       </div>
 
       {antall === 0 && data.visning === "maaned" && (

@@ -47,6 +47,9 @@
 .t5-celle[data-halv] {
   border-top-style: dashed;
 }
+.t5-uke[data-drar] {
+  touch-action: none;
+}
 .t5-celle[data-apen] {
   background: var(--ok-tint);
 }
@@ -122,6 +125,7 @@
 }
 
 .t5-dag {
+  position: relative;
   min-height: 52px;
 }
 .t5-dag[data-apen] {
@@ -137,7 +141,29 @@
   font: var(--type-meta);
   color: var(--ok);
   min-width: 0;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+}
+.t5-dag__prikk {
+  display: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+/* Under 768 px er cellene for smale til klokkeslett: prikk i stedet, tiden blir
+   igjen for skjermlesere. */
+@media (max-width: 767px) {
+  .t5-dag__tid {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .t5-dag__prikk {
+    display: block;
+  }
 }
 .t5-ukedager {
   display: grid;

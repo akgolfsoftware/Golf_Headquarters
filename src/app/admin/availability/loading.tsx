@@ -1,12 +1,6 @@
-import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { LasterTilstand } from "@/components/precision/pa";
+import { V2Laster } from "@/components/v2/laster";
 
+/** Bare serverkomponenter her (gotchas §Bygg og drift: loading.tsx importerer aldri en "use client"-modul). */
 export default function Loading() {
-  return (
-    <AgencyOSSkall navn="">
-      <div className="pa-side">
-        <LasterTilstand text="Henter tilgjengeligheten …" />
-      </div>
-    </AgencyOSSkall>
-  );
+  return <V2Laster variant="liste" />;
 }

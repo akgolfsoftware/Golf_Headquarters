@@ -6,7 +6,7 @@ import { Kort, Side, SideHode } from "@/components/precision/pa-a4";
 import { AG05Tilgjengelighet, Vinduskjema, type TilgjengelighetData, type VinduRad } from "@/components/admin/precision/AG05Tilgjengelighet";
 
 export const sti = "/admin/availability";
-export const natt = ["data-natt", "uke-natt"];
+export const natt = ["data-natt", "uke-natt", "aar-natt", "tom-natt", "skjema-natt", "laster-natt", "feil-natt"];
 
 const STEDER = [{ id: "s1", name: "Studio 1" }, { id: "s2", name: "Utebane" }];
 
@@ -77,8 +77,13 @@ export const tilstander = {
   uke: <Skjelett><AG05Tilgjengelighet data={data("uke")} /><Sync /></Skjelett>,
   "uke-natt": <Skjelett><AG05Tilgjengelighet data={data("uke")} /><Sync /></Skjelett>,
   aar: <Skjelett><AG05Tilgjengelighet data={data("aar")} /><Sync /></Skjelett>,
+  "aar-natt": <Skjelett><AG05Tilgjengelighet data={data("aar")} /><Sync /></Skjelett>,
   tom: <Skjelett><AG05Tilgjengelighet data={data("maaned", true)} /><Sync /></Skjelett>,
+  "tom-natt": <Skjelett><AG05Tilgjengelighet data={data("maaned", true)} /><Sync /></Skjelett>,
   skjema: <Skjelett><AG05Tilgjengelighet data={data("maaned")} /><Vinduskjema steder={STEDER} initial={VINDUER[0].skjema} open onClose={() => {}} /></Skjelett>,
+  "skjema-natt": <Skjelett><AG05Tilgjengelighet data={data("maaned")} /><Vinduskjema steder={STEDER} initial={VINDUER[0].skjema} open onClose={() => {}} /></Skjelett>,
   laster: <AgencyOSSkall navn=""><div className="pa-side"><LasterTilstand text="Henter tilgjengeligheten …" /></div></AgencyOSSkall>,
+  "laster-natt": <AgencyOSSkall navn=""><div className="pa-side"><LasterTilstand text="Henter tilgjengeligheten …" /></div></AgencyOSSkall>,
   feil: <AgencyOSSkall navn=""><div className="pa-side"><FeilTilstand icon={CalendarX} title="Tilgjengeligheten kunne ikke hentes" text="Ingen tidsvinduer er endret. Bookinger fra spillere tas vare på." /></div></AgencyOSSkall>,
+  "feil-natt": <AgencyOSSkall navn=""><div className="pa-side"><FeilTilstand icon={CalendarX} title="Tilgjengeligheten kunne ikke hentes" text="Ingen tidsvinduer er endret. Bookinger fra spillere tas vare på." /></div></AgencyOSSkall>,
 };
