@@ -4,10 +4,13 @@
  * (src/components/workbench/SourcesPanel.tsx, PR #601 — ekte loadSources-data,
  * drag inn i uken), ikke på en egen side. Redirecter til Planlegge-hub'en,
  * som er den ærlige inngangen til Workbench (spillervalg → uke).
+ *
+ * Fra 29.09.2026 sender den til Øvelser-fanen i Plan-hub (AG-14), der coach
+ * oppretter og endrer øvelser i øvelsesbanken.
  */
 
 import { permanentRedirect } from "next/navigation";
 
 export default function DrillBibliotekRedirect() {
-  permanentRedirect("/admin/planlegge");
+  permanentRedirect("/admin/plan?fane=ovelser");
 }
