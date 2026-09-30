@@ -18,7 +18,7 @@
  *     via lenke. Ingen «sett/ny»-status: SessionVideo har ingen sett-kolonne.
  *   - Planer: spilleren kan ikke godta/avvise en plan (ingen slik status i basen).
  *     Viser Aktiv / Fullført / Pause med fremdrift.
- *   - Ønsket økt: dato-felt i stedet for fire dagspiller, og områdene er
+ *   - Ønsket økt: dato-felt i stedet for fire dagspiller, og pyramideaksene er
  *     FYS · TEK · SLAG · SPILL · TURN (det sendOnskeligOkt tar imot).
  */
 import { useState, useTransition, type ReactNode } from "react";
@@ -237,7 +237,7 @@ export function PH21Onske({ coachNavn, coachId, iDag, send }: {
     <span className="kicker">Ønsket økt</span>
     <p className="ph21-tom" style={{ margin: 0 }}>Be om en økt eller et tema. {coachNavn} legger den inn i planen hvis det passer.</p>
     <Skjemafelt label="Dag"><input className="a4-input" type="date" min={iDag} value={dato} onChange={(e) => setDato(e.target.value)} aria-label="Dag" /></Skjemafelt>
-    <Skjemafelt label="Område"><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{OMRADER.map((a) => <Valgpille key={a} valgt={omrade === a} onClick={() => setOmrade(a)}>{a}</Valgpille>)}</div></Skjemafelt>
+    <Skjemafelt label="Pyramide"><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{OMRADER.map((a) => <Valgpille key={a} valgt={omrade === a} onClick={() => setOmrade(a)}>{a}</Valgpille>)}</div></Skjemafelt>
     <Skjemafelt label="Hva vil du jobbe med?" required><Tekstfelt value={tekst} onChange={setTekst} placeholder="Lengdekontroll 50–70 m før klubbmesterskapet" /></Skjemafelt>
     {feil && <p role="alert" className="ph21-feil">{feil}</p>}
     {sendt
@@ -245,7 +245,7 @@ export function PH21Onske({ coachNavn, coachId, iDag, send }: {
       : <div><Knapp icon={Send} iconName="send" disabled={!tekst.trim()} loading={venter} loadingText="Sender …" onClick={() => {
         setFeil(null);
         start(async () => {
-          try { await send({ preferredAt: dato ? `${dato}T16:00:00` : undefined, pyramidArea: omrade, notes: tekst.trim(), coachId: coachId ?? undefined }); setSendt(true); }
+          try { await send({ preferredAt: dato || undefined, pyramidArea: omrade, notes: tekst.trim(), coachId: coachId ?? undefined }); setSendt(true); }
           catch { setFeil("Kunne ikke sende. Prøv igjen."); }
         });
       }}>Send ønske</Knapp></div>}

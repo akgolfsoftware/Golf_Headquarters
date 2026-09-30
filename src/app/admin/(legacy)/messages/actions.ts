@@ -172,6 +172,7 @@ export async function sendMeldingTilSpiller(
         async (tx) => {
           const eksisterende = await tx.coachingSession.findFirst({
             where: { userId: playerId, coachId: me.id, kind: "DIRECT" },
+            orderBy: { createdAt: "desc" },
             select: { id: true, messages: true },
           });
           if (eksisterende) {

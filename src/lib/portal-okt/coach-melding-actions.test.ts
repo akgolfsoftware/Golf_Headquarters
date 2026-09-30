@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 
-let viewer = { id: "spiller", role: "PLAYER", tier: "FULL", name: "Syn spiller" };
+let viewer = {
+  id: "spiller",
+  role: "PLAYER",
+  tier: "FULL",
+  name: "Syn spiller",
+};
 let enrolledCoachId: string | null = "coach-a";
 let mottakerRolle: string | null = "COACH";
 let writes = 0;
@@ -12,7 +17,9 @@ let oppdatert: unknown[] | null = null;
 mock.module("@/lib/auth/requirePortalUser", {
   namedExports: { requirePortalUser: async () => viewer },
 });
-mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
+mock.module("next/cache", {
+  namedExports: { revalidatePath: () => undefined },
+});
 mock.module("next/navigation", {
   namedExports: {
     redirect: (href: string) => {
@@ -20,32 +27,30 @@ mock.module("next/navigation", {
     },
   },
 });
-mock.module("@/lib/prisma", {
-  namedExports: {
-    prisma: {
-      playerEnrollment: {
-        findFirst: async () =>
-          enrolledCoachId ? { coachId: enrolledCoachId } : null,
-      },
-      user: {
-        findUnique: async () => (mottakerRolle ? { role: mottakerRolle } : null),
-      },
-      coachingSession: {
-        findFirst: async () => eksisterendeTrad,
-        update: async ({ data }: { data: { messages: unknown[] } }) => {
-          writes += 1;
-          oppdatert = data.messages;
-          return { id: "melding-1" };
-        },
-        create: async ({ data }: { data: { coachId: string } }) => {
-          writes += 1;
-          createdCoachId = data.coachId;
-          return { id: "melding-1" };
-        },
-      },
+const mockPrisma: Record<string, unknown> = {
+  playerEnrollment: {
+    findFirst: async () =>
+      enrolledCoachId ? { coachId: enrolledCoachId } : null,
+  },
+  user: {
+    findUnique: async () => (mottakerRolle ? { role: mottakerRolle } : null),
+  },
+  $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn(mockPrisma),
+  coachingSession: {
+    findFirst: async () => eksisterendeTrad,
+    update: async ({ data }: { data: { messages: unknown[] } }) => {
+      writes += 1;
+      oppdatert = data.messages;
+      return { id: "melding-1" };
+    },
+    create: async ({ data }: { data: { coachId: string } }) => {
+      writes += 1;
+      createdCoachId = data.coachId;
+      return { id: "melding-1" };
     },
   },
-});
+};
+mock.module("@/lib/prisma", { namedExports: { prisma: mockPrisma } });
 
 let sendMeldingNyV2: typeof import("@/app/portal/coach/melding/ny/actions").sendMeldingNyV2;
 
@@ -73,7 +78,10 @@ test("spiller sender bare til tildelt coach", async () => {
 });
 
 test("melding legges til på eksisterende tråd i stedet for å lage ny", async () => {
-  eksisterendeTrad = { id: "melding-1", messages: [{ role: "user", content: "Hei" }] };
+  eksisterendeTrad = {
+    id: "melding-1",
+    messages: [{ role: "user", content: "Hei" }],
+  };
   await assert.rejects(
     () => sendMeldingNyV2({ coachId: "coach-a", body: "Kan vi bytte tid?" }),
     /redirect:\/portal\/coach$/,
