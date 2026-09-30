@@ -1,19 +1,17 @@
 /**
- * /portal/ai/foresla-turnering — AI foreslår turneringer — v2.
- * v2-port 16. juli 2026: `ForeslaTurneringV2` erstatter foresla-turnering-screen
- * (v10), ruten flyttet ut av (legacy). Auth-guard, Prisma-queries og
- * rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter)
- * uendret.
+ * /portal/ai/foresla-turnering — Caddie foreslår turneringer — Precision Athletics PH-22.
+ * Visningen er PH22Turneringsforslag. Innlogging, Prisma-spørringer og
+ * rangeringen (påmeldinger + katalog, ingen oppdiktede sannsynligheter) uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import {
-  ForeslaTurneringV2,
-  type TournamentSuggestion,
-} from "@/components/portal/v2/ForeslaTurneringV2";
+  PH22Turneringsforslag,
+  type TurneringsForslag as TournamentSuggestion,
+} from "@/components/portal/precision/PH22Turneringsforslag";
 
 export const dynamic = "force-dynamic";
 
@@ -134,17 +132,15 @@ export default async function ForeslaTurneringPage() {
   const hcpLabel =
     user.hcp != null ? user.hcp.toLocaleString("nb-NO", { maximumFractionDigits: 1 }) : "—";
 
+  const dash = await getUnreadNotifications(user.id, 1).catch(() => null);
+
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
-      <ForeslaTurneringV2
-        data={{
-          playerFirstName: (user.name ?? "deg").split(" ")[0],
-          hcpLabel,
-          catalogCount: catalog.length,
-          suggestions: suggestions.slice(0, 6),
-        }}
+    <PlayerHQSkall innboksHref="/portal/coach/melding" uleste={dash?.count ?? 0}>
+      <PH22Turneringsforslag
+        hcpLabel={hcpLabel}
+        catalogCount={catalog.length}
+        suggestions={suggestions.slice(0, 6)}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }
