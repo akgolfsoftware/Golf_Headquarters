@@ -5,10 +5,14 @@ export function klokkeslett(iso: string): string {
   return new Intl.DateTimeFormat("nb-NO", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
 }
 
-/** «man. 28. sep. · 17:00» */
+/** «Ma 28.09 · 15:00» (som i tegningen BK.jsx) */
 export function tidTekst(iso: string): string {
-  const d = new Intl.DateTimeFormat("nb-NO", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" }).format(new Date(iso));
-  return `${d} · ${klokkeslett(iso)}`;
+  const dato = new Date(iso);
+  const uke = new Intl.DateTimeFormat("nb-NO", { timeZone: TZ, weekday: "short" }).format(dato).replace(".", "");
+  const del = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "2-digit", month: "2-digit" }).formatToParts(dato);
+  const dm = `${del.find((x) => x.type === "day")?.value}.${del.find((x) => x.type === "month")?.value}`;
+  const ukeKort = uke.slice(0, 1).toUpperCase() + uke.slice(1, 2);
+  return `${ukeKort} ${dm} · ${klokkeslett(iso)}`;
 }
 
 export function krTekst(ore: number): string {

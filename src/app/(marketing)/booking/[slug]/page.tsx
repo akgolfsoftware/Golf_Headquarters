@@ -53,11 +53,14 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
   const service = await prisma.serviceType.findUnique({ where: { slug } });
   if (!service || !service.active) notFound();
 
-  const valgtDato = dato ? new Date(dato) : new Date();
-  valgtDato.setHours(0, 0, 0, 0);
+  // «I dag» er Oslo-dato, ikke serverens (UTC) dato — ellers feil mellom 00 og 02 norsk tid.
+  const osloIdagIso = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
+  const osloIdag = new Date(`${osloIdagIso}T00:00:00.000Z`);
+  const valgtDato = dato ? new Date(dato) : new Date(osloIdag);
+  valgtDato.setUTCHours(0, 0, 0, 0);
   // Default til i morgen hvis ingen dato valgt
   if (!dato) {
-    valgtDato.setDate(valgtDato.getDate() + 1);
+    valgtDato.setUTCDate(valgtDato.getUTCDate() + 1);
   }
 
   const alleSlots = await getAvailableSlots(service.id, valgtDato);
@@ -67,16 +70,15 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
     : alleSlots;
 
   // 14 dager fremover som dato-velger
-  const idag = new Date();
-  idag.setHours(0, 0, 0, 0);
+  const idag = osloIdag;
   const dager: BK02Dag[] = Array.from({ length: 14 }, (_, i) => {
     const d = new Date(idag);
-    d.setDate(d.getDate() + i);
+    d.setUTCDate(d.getUTCDate() + i);
     const iso = toDateInput(d);
     return {
       iso,
-      dagsnavn: d.toLocaleDateString("nb-NO", { weekday: "short" }),
-      datotekst: d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" }),
+      dagsnavn: d.toLocaleDateString("nb-NO", { weekday: "short", timeZone: "UTC" }),
+      datotekst: d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "UTC" }),
       valgt: iso === toDateInput(valgtDato),
     };
   });
@@ -85,6 +87,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
     weekday: "long",
     day: "numeric",
     month: "long",
+    timeZone: "UTC",
   });
 
   return (

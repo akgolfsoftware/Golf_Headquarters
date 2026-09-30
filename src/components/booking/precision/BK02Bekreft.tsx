@@ -13,6 +13,8 @@
  *   - «Notater til coach» beholdes fra dagens skjema (tegningen har det ikke).
  *   - «Jeg booker for et barn»: navnet på spilleren legges først i notatet til coach,
  *     siden bookingen ikke har eget felt for det (forslag i PR).
+ *   - Ingen tekst om hvor lenge tiden holdes (tegningen har den ikke; koden holder tiden
+ *     først ved Betal, i 3 minutter) og ingen refusjonstekst utenom vilkårslinja.
  *   - Ingen ventestatus: bookingen bekreftes automatisk når betalingen er gjennomført.
  */
 import { useState, useTransition } from "react";
@@ -29,7 +31,7 @@ export type BK02BekreftProps = {
   coachId: string;
   tjenesteNavn: string;
   durationMin: number;
-  /** Ferdig formatert i Europe/Oslo, f.eks. «man. 28. sep. · 17:00». */
+  /** Ferdig formatert i Europe/Oslo, f.eks. «Ma 28.09 · 17:00». */
   tidTekst: string;
   /** ISO-dato (YYYY-MM-DD) i Oslo, for «Tilbake» til riktig dag. */
   datoIso: string;
@@ -90,11 +92,11 @@ export function BK02Bekreft(p: BK02BekreftProps) {
           <Avkrysning checked={barn} onChange={setBarn} label="Jeg booker for et barn under 18" />
           {barn && (
             <Skjemafelt label="Spillerens navn" required error={feil.spiller}>
-              <input className="a4-input" aria-label="Spillerens navn" value={spiller} onChange={(e) => setSpiller(e.target.value)} />
+              <input className="a4-input" aria-label="Spillerens navn" maxLength={100} value={spiller} onChange={(e) => setSpiller(e.target.value)} />
             </Skjemafelt>
           )}
           <Skjemafelt label="Notater til coach" hint="Valgfritt.">
-            <textarea className="a4-input" aria-label="Notater til coach" rows={3} style={{ height: "auto", padding: "10px 12px", resize: "vertical" }} value={notat} onChange={(e) => setNotat(e.target.value)} />
+            <textarea className="a4-input" aria-label="Notater til coach" rows={3} maxLength={800} style={{ height: "auto", padding: "10px 12px", resize: "vertical" }} value={notat} onChange={(e) => setNotat(e.target.value)} />
           </Skjemafelt>
           <div className="pa-card" style={{ padding: "10px 14px", minHeight: 60, gap: 3, borderColor: "var(--border-ink)", boxShadow: "inset 0 0 0 1px var(--border-ink)" }}>
             <span style={{ font: "600 14px/1.2 var(--font-sans)" }}>Kort</span>
@@ -123,7 +125,6 @@ export function BK02Bekreft(p: BK02BekreftProps) {
         <KnappLenke variant="ghost" href={`/booking/${p.slug}?dato=${p.datoIso}`}>Tilbake</KnappLenke>
         <Knapp icon={Lock} loading={pending} loadingText="Sender til Stripe …" onClick={betal}>{`Betal ${p.prisTekst}`}</Knapp>
       </div>
-      <Meta>TIDEN ER HOLDT FOR DEG I 15 MINUTTER. AVBESTILLING SENEST 24 TIMER FØR GIR FULL REFUSJON.</Meta>
     </BookingSkall>
   );
 }
