@@ -5,10 +5,10 @@
  * Fasit: Claude Design 7d7c2994, ui_kits/booking/screens/BK.jsx (Flow, start = 0).
  * Data og handlinger er de samme som før: `hentLedigeDager` og `createBookingCheckout`.
  *
- * Avvik fra tegningen (se PR-beskrivelsen):
- *  - Betaling går til Stripe Checkout (omdirigering). Kortfelt og Vipps-valg finnes ikke i koden.
- *  - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
- *  - «Neste uke» finnes ikke: `hentLedigeDager` henter sju dager fram.
+ * Avvik:
+ *   - Betaling går til Stripe Checkout (omdirigering). Kortfelt og Vipps-valg finnes ikke i koden.
+ *   - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
+ *   - «Neste uke» finnes ikke: `hentLedigeDager` henter sju dager fram.
  */
 import { useCallback, useMemo, useState } from "react";
 import { ArrowRight, CalendarX, CircleAlert, Lock, LogIn, RotateCw } from "lucide-react";
@@ -117,7 +117,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
     if (steg === 1 && !tid) x.slot = "Velg et ledig tidspunkt.";
     if (steg === 2) {
       if (!meg.navn.trim()) x.navn = "Skriv fullt navn.";
-      if (!okMail(meg.epost)) x.epost = "Skriv en gyldig e-postadresse. Bekreftelsen sendes dit.";
+      if (!okMail(meg.epost)) x.epost = "Skriv en gyldig e-postadresse. Kvitteringen sendes dit.";
       if (meg.tlf.trim().length < 5) x.tlf = "Skriv et telefonnummer vi kan nå deg på.";
       if (meg.barn && !meg.spiller.trim()) x.spiller = "Skriv navnet på spilleren du booker for.";
     }
@@ -211,7 +211,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
       <Meta>DU SENDES TIL STRIPE FOR Å BETALE MED KORT</Meta>
       <label className="pa-check"><input type="checkbox" checked={vilkar} onChange={(e) => setVilkar(e.target.checked)} />
         <span className="pa-check__box" aria-hidden>{vilkar && <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" strokeWidth="1.8" /></svg>}</span>
-        <span>Jeg godtar vilkårene. Avbestilling senere enn 24 timer før refunderes ikke.</span></label>
+        <span>Jeg godtar vilkårene. Gratis avbestilling fram til 24 timer før.</span></label>
       {feil.vilkar && <InlineVarsel tone="warn">{feil.vilkar}</InlineVarsel>}
       {betalfeil && <InlineVarsel tone="signal">{betalfeil}</InlineVarsel>}
     </div>;
