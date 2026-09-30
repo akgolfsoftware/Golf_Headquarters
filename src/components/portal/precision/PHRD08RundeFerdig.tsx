@@ -6,6 +6,10 @@
  * Siden viser en lagret runde: score, Strokes Gained og hull for hull.
  *
  * Bevisste avvik fra tegningen:
+ *   - Statuspillen («Komplett») står på egen rad under sidehodet: `Sidehode` har ingen plass for
+ *     meta ved siden av tittelen ennå.
+ *   - `ResultatKontekst` er beholdt med eget uttrykk (tailwind); den finnes ikke i RD08-tegningen.
+ *   - Tilstandene laster og feil er målt som egne prøver (PH-RD-08.tsx); natt er ikke aktuelt og ikke målt.
  *   - Tegningens «Lagre runde» og «Lagre delvis» finnes ikke: runden er allerede lagret når siden
  *     åpnes. Handlingene er de siden allerede hadde (fullfør slag-kjeden, rediger hull for hull,
  *     slag for slag, import fra UpGame, del med coach).
@@ -108,7 +112,7 @@ function Kilde({ d }: { d: PHRD08Data }) {
   const tekst = beregnet ? "Beregnet · slag-for-slag" : manuell ? "Manuell SG" : est ? "Estimert fra score" : "Kilde mangler";
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap", font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)", textTransform: "uppercase", minWidth: 0 }}>
     <span>{[tekst, d.datoKort].join(" · ")}</span>
-    {est && <span style={{ padding: "1px 6px", border: "1px dashed var(--border-strong)", borderRadius: 4, color: "var(--text-secondary)" }}>Estimat</span>}
+    {est && <span style={{ padding: "2px 6px", border: "1px solid var(--border-strong)", borderRadius: 4, color: "var(--text-secondary)" }}>Estimat</span>}
   </span>;
 }
 
@@ -154,8 +158,7 @@ export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; u
         {d.sgSource === RUNDE_SG_KILDE.MANUAL ? "SG-tallene dine er lagret." : d.sgTotal != null ? "Strokes Gained er klar." : "Mangler hull-score for full Strokes Gained."}
       </InlineVarsel>}
       {d.visKjedeStatus && <InlineVarsel tone="warn" tittel="SG venter på slag-kjeden.">
-        {d.antallKomplette} av {d.antallHullMedScore} hull er komplette.{" "}
-        <Link href={`/portal/mal/runder/${d.id}/fullfor`} style={{ color: "inherit", textDecoration: "underline" }}>Fullfør kjeden</Link> for full Strokes Gained.
+        {d.antallKomplette} av {d.antallHullMedScore} hull er komplette. Fullfør slag-kjeden for full Strokes Gained.
       </InlineVarsel>}
 
       <div className="phrd08-kol">
@@ -212,7 +215,10 @@ export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; u
         </Sek>
         : <Sek k="Hull for hull">
           <TomTilstand icon={Flag} title="Ingen hull-for-hull ennå" text="Kun totalscore er registrert for denne runden."
-            actions={d.erEier ? <KnappLenke href={`/portal/mal/runder/${d.id}/hull`} icon={ListChecks} iconName="list-checks">Legg til hull-for-hull</KnappLenke> : undefined} />
+            actions={d.erEier ? <>
+              <KnappLenke href={`/portal/mal/runder/${d.id}/hull`} icon={ListChecks} iconName="list-checks">Legg til hull-for-hull</KnappLenke>
+              <KnappLenke variant="ghost" icon={Route} iconName="route" href="/portal/runde/logg">Eller før slag for slag</KnappLenke>
+            </> : undefined} />
         </Sek>}
 
       <Sek><ResultatKontekst /></Sek>
@@ -223,11 +229,9 @@ export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; u
           <KnappLenke variant="ghost" icon={Route} iconName="route" href={`/portal/mal/runder/${d.id}/slag`}>Slag for slag</KnappLenke>
           <KnappLenke variant="secondary" icon={Pencil} iconName="pencil" href={`/portal/mal/runder/${d.id}/hull`}>Rediger hull for hull</KnappLenke>
         </>}
-        {d.erEier && d.visKjedeStatus
-          ? <KnappLenke icon={TriangleAlert} iconName="triangle-alert" href={`/portal/mal/runder/${d.id}/fullfor`}>Fullfør slag-kjeden</KnappLenke>
-          : d.erEier
-            ? <KnappLenke icon={TrendingUp} iconName="trending-up" href="/portal/analysere">Se SG-trend i Stats</KnappLenke>
-            : <KnappLenke icon={MessageSquare} iconName="message-square" href="/portal/coach/melding">Del med coach</KnappLenke>}
+        {d.erEier && d.visKjedeStatus && <KnappLenke icon={TriangleAlert} iconName="triangle-alert" href={`/portal/mal/runder/${d.id}/fullfor`}>Fullfør slag-kjeden</KnappLenke>}
+        {d.erEier && !d.visKjedeStatus && harHull && <KnappLenke icon={MessageSquare} iconName="message-square" href="/portal/coach/melding">Del med coach</KnappLenke>}
+        {d.erEier && <KnappLenke variant={d.visKjedeStatus || harHull ? "ghost" : undefined} icon={TrendingUp} iconName="trending-up" href="/portal/analysere">Se SG-trend i Stats</KnappLenke>}
       </div>
     </div>
   </PlayerHQSkall>;

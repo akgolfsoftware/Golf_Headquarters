@@ -1,4 +1,7 @@
 /** Prøvefil for PH-RD-08 Runde ferdig. Syntetiske data (tegningens RD_DATA.summary), ingen ekte spillere. */
+import { FileWarning } from "lucide-react";
+import { FeilTilstand, LasterTilstand, Sidehode } from "@/components/precision/pa";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PHRD08RundeFerdig, type PHRD08Data } from "@/components/portal/precision/PHRD08RundeFerdig";
 
 export const sti = "/portal/mal/runder/r1";
@@ -23,6 +26,11 @@ export const tilstander = {
   data: <PHRD08RundeFerdig data={base} uleste={3} />,
   tom: <PHRD08RundeFerdig uleste={3} data={{ ...base, hull: [], putter: null, fairway: null, gir: null, straff: null, ut: null, inn: null, sgTotal: null, sgKategorier: [], sgSource: null }} />,
   nettopp: <PHRD08RundeFerdig uleste={3} data={{ ...base, nettoppLagret: true, visKjedeStatus: true, antallKomplette: 11, sgSource: "estimert" }} />,
+  laster: <PlayerHQSkall innboksHref="/portal/varsler" uleste={3}><div className="pa-side" style={{ maxWidth: 1200 }}>
+    <Sidehode kicker="Runde · Ferdig" title="Henter runde" /><LasterTilstand text="Henter runden …" /></div></PlayerHQSkall>,
+  feil: <PlayerHQSkall innboksHref="/portal/varsler" uleste={3}><div className="pa-side" style={{ maxWidth: 1200 }}>
+    <Sidehode kicker="Runde · Ferdig" title="Runden kunne ikke hentes" />
+    <FeilTilstand icon={FileWarning} title="Kunne ikke hente runden" text="Prøv igjen om litt. Runden din er ikke endret." /></div></PlayerHQSkall>,
   ikkeEier: <PHRD08RundeFerdig uleste={0} data={{ ...base, erEier: false }} />,
 };
-export const natt: string[] = ["data"];
+export const natt: string[] = [];
