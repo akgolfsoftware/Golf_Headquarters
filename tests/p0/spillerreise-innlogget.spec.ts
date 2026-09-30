@@ -175,17 +175,16 @@ async function startV2Live(page: Page, oktId: string) {
 }
 
 async function avsluttV2Live(page: Page) {
-  const ferdig = page.getByRole("button", { name: "Marker øvelsen ferdig" });
+  // PH-05: «Ferdig med drillen» fullfører økta direkte når det er siste drill.
+  const ferdig = page.getByRole("button", { name: "Ferdig med drillen" });
   if (await ferdig.isVisible().catch(() => false)) await ferdig.click();
-  const seOppsummering = page.getByRole("button", { name: "Avslutt og se oppsummering" });
-  if (await seOppsummering.isVisible().catch(() => false)) {
-    await seOppsummering.click();
-  } else {
-    await page.getByRole("button", { name: "Avslutt", exact: true }).click();
+  const avslutt = page.getByRole("button", { name: "Avslutt", exact: true });
+  if (await avslutt.isVisible().catch(() => false) && await avslutt.isEnabled().catch(() => false)) {
+    await avslutt.click();
+    const bekreft = page.getByRole("button", { name: "Avslutt og lagre" });
+    await expect(bekreft).toBeVisible();
+    await bekreft.click();
   }
-  const bekreft = page.getByRole("button", { name: "Avslutt og logg økta" });
-  await expect(bekreft).toBeVisible();
-  await bekreft.click();
 }
 
 test.describe("P0 innlogget spillerreise", () => {
@@ -240,15 +239,16 @@ test.describe("P0 innlogget spillerreise", () => {
     await expect(page.locator('[data-od-id="playerhq-live-active"]')).toHaveAttribute("data-phase", "active", {
       timeout: 60_000,
     });
-    await expect(page.locator('[data-od-id="live-tap-rep"]')).toBeEnabled();
+    await expect(page.locator('[data-od-id="live-teller-repsAutomatic-pluss"]')).toBeEnabled();
     for (let i = 0; i < v2Reps; i += 1) {
-      await page.locator('[data-od-id="live-tap-rep"]').click();
+      await page.locator('[data-od-id="live-teller-repsAutomatic-pluss"]').click();
     }
     for (let i = 0; i < v2Treff; i += 1) {
-      await page.locator('[data-od-id="live-tap-treff"]').click();
+      await page.locator('[data-od-id="live-teller-repsHit-pluss"]').click();
     }
     const v2Totalt = v2Reps + v2Treff;
-    await expect(page.locator("output").filter({ hasText: `${v2Totalt} reps · ${v2Treff} treff` })).toBeVisible();
+    await expect(page.getByTestId("teller-repsAutomatic")).toContainText(String(v2Reps));
+    await expect(page.getByTestId("teller-repsHit")).toContainText(String(v2Treff));
     await avsluttV2Live(page);
     await ventPaSti(page, `/portal/live/${v2Id}/summary`);
     await expect(page.getByRole("heading", { name: "P0 V2 Innspill" })).toBeVisible();
