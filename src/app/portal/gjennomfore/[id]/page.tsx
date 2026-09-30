@@ -114,7 +114,7 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
         currentParticipants={data.invite.currentParticipants} spillere={data.invite.spillere} label="Inviter en kompis" variant="ghost" />}
     </section>}
     {!erGjort && <InlineVarsel tone="info" tittel="Økta er din.">
-      Du kan endre målet, hoppe over øvelser eller droppe hele økta. Anders får beskjed, så han vet hva som skjedde.
+      Du kan endre målet, hoppe over øvelser eller droppe hele økta. Coachen din får beskjed, så coachen vet hva som skjedde.
     </InlineVarsel>}
   </>;
 

@@ -47,7 +47,7 @@ export function AkseMerke({ axis, size = "md" }: { axis: Akse; size?: "sm" | "md
   return <span className={cx("pa-badge", `pa-badge--${axis}`, size === "sm" && "pa-badge--sm")}><span className="pa-badge__dot" />{AKSE_NAVN[axis]}</span>;
 }
 
-export function StatusPille({ tone = "neutral", children }: { tone?: "neutral" | "ok" | "warn" | "signal" | "live"; children: ReactNode }) {
+export function StatusPille({ tone = "neutral", children }: { tone?: "neutral" | "ok" | "warn" | "info" | "signal" | "live"; children: ReactNode }) {
   return <span className={cx("pa-status", tone !== "neutral" && `pa-status--${tone}`)}><span className="pa-status__dot" />{children}</span>;
 }
 
