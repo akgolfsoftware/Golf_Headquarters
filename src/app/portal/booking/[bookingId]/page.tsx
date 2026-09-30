@@ -1,54 +1,23 @@
 /**
- * PlayerHQ · Booking · Økt-detalj (/portal/booking/[bookingId]) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingDetaljV2` erstatter legacy-siden,
- * ruten flyttet ut av (legacy). Auth + lese-query (findUnique m/ eierskaps-
- * sjekk `booking.userId !== user.id`) er uendret — kun presentasjonslaget er
- * nytt. Legacy-sidens hardkodede TIMELINE/MÅL/UTSTYR-plassholdere er SLETTET
- * (ærlig-data-prinsippet): kun ekte booking-felter vises. Datoformatering har
- * følger lagret veggklokke uten en ekstra tidssonekonvertering.
+ * PlayerHQ · Booking · detalj (/portal/booking/[bookingId]) — Precision Athletics PH-23
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-23.jsx, «Mine timer»).
+ * Auth og eierskapssjekk (`booking.userId !== user.id` → notFound) er uendret; bare
+ * visningen er ny. Avbestilling håndheves server-side i cancelBooking (24-timersregelen, policy.ts).
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, type StatusTone } from "@/components/v2";
-import { BookingDetaljV2 } from "@/components/portal/v2/BookingDetaljV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { kr, naivDatoLang, naivKlokke } from "@/lib/portal-booking/ph23-format";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Detalj, type PH23Rad } from "@/components/portal/precision/PH23Booking";
 import { AVBESTILLING_FRIST_TIMER, hoursUntil } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Booking · PlayerHQ" };
 
-type Props = {
-  params: Promise<{ bookingId: string }>;
-};
-
-// Ekte booking-status → lesbar etikett (samme vokabular som Mine bookinger).
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "Behandler",
-  CONFIRMED: "Bekreftet",
-  CANCELLED: "Avbestilt",
-  COMPLETED: "Gjennomført",
-};
-
-const STATUS_TONE: Record<string, StatusTone> = {
-  PENDING: "warn",
-  CONFIRMED: "lime",
-  CANCELLED: "down",
-  COMPLETED: "up",
-};
-
-function formatTid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-}
-
-function formatDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
+type Props = { params: Promise<{ bookingId: string }> };
 
 export default async function OktDetalj({ params }: Props) {
   const { bookingId } = await params;
@@ -56,39 +25,30 @@ export default async function OktDetalj({ params }: Props) {
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    include: {
-      serviceType: true,
-      location: true,
-    },
+    include: { serviceType: true, location: true },
   });
-
   if (!booking || booking.userId !== user.id) notFound();
 
   const timerTilStart = hoursUntil(booking.startAt);
   const kanAvbestille = (booking.status === "PENDING" || booking.status === "CONFIRMED") && timerTilStart > 0;
-  const kanFaaRefusjon = timerTilStart > AVBESTILLING_FRIST_TIMER;
+  const kanRefusjon = timerTilStart > AVBESTILLING_FRIST_TIMER;
 
-  const coach =
+  const [coach, uleste] = await Promise.all([
     booking.serviceType.coachUserId
-      ? await prisma.user.findUnique({
-          where: { id: booking.serviceType.coachUserId },
-          select: { id: true, name: true },
-        })
-      : null;
+      ? prisma.user.findUnique({ where: { id: booking.serviceType.coachUserId }, select: { id: true, name: true } })
+      : null,
+    hentUleste(user.id),
+  ]);
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/bookinger">Mine bookinger</TilbakeLenke>
-      <BookingDetaljV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH23Detalj
         data={{
           bookingId: booking.id,
           tjeneste: booking.serviceType.name,
-          statusLabel: STATUS_LABEL[booking.status] ?? "Planlagt",
-          statusTone: STATUS_TONE[booking.status] ?? "info",
-          dato: formatDato(booking.startAt),
-          tid: `${formatTid(booking.startAt)}–${formatTid(booking.endAt)}`,
+          status: booking.status as PH23Rad["status"],
+          dato: naivDatoLang(booking.startAt),
+          tid: `${naivKlokke(booking.startAt)}–${naivKlokke(booking.endAt)}`,
           varighetMin: booking.serviceType.durationMin,
           sted: booking.location.name,
           stedId: booking.location.id,
@@ -96,9 +56,10 @@ export default async function OktDetalj({ params }: Props) {
           coachId: coach?.id ?? null,
           notat: booking.notes,
           kanAvbestille,
-          kanFaaRefusjon,
+          kanRefusjon,
+          betaling: booking.subscriptionId ? "Klipp" : kr(booking.priceOre),
         }}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

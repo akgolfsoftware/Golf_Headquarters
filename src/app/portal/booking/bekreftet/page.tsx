@@ -1,4 +1,5 @@
 /**
+ * PH-23 Booking, kvittering (Precision Athletics, Claude Design 7d7c2994). Under: opprinnelig kommentar.
  * PlayerHQ · Booking bekreftet (/portal/booking/bekreftet?bookingId=…) — v2.
  * v2-port 17. juli 2026 (Team G-B): `BookingBekreftetV2` erstatter legacy-
  * siden, ruten flyttet ut av (legacy). Kvitteringsside etter credit-booking
@@ -13,8 +14,10 @@ import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { kr, naivDatoLang, naivKlokke } from "@/lib/portal-booking/ph23-format";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Kvittering } from "@/components/portal/precision/PH23Booking";
 
 export const dynamic = "force-dynamic";
 
@@ -71,29 +74,20 @@ export default async function BekreftetPage({ searchParams }: Props) {
       })
     : null;
 
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const uleste = await hentUleste(user.id);
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <BookingBekreftetV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH23Kvittering
         data={{
-          linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
+          linje: `${booking.serviceType.name} · ${naivDatoLang(booking.startAt)} kl. ${naivKlokke(booking.startAt)}`,
           coachNavn: coach?.name ?? null,
           sted: booking.location.name,
           varighetMin: booking.serviceType.durationMin,
+          betaling: booking.subscriptionId ? "Klipp" : kr(booking.priceOre),
           kalenderUrl: googleKalenderUrl(booking),
         }}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

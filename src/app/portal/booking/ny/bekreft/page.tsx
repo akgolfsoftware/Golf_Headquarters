@@ -1,29 +1,30 @@
 /**
- * Bekreft credit-booking (/portal/booking/ny/bekreft) — v2 (retning C),
- * Team G-A 17. juli 2026.
+ * Book time, steg 3: bekreft (/portal/booking/ny/bekreft) — Precision Athletics PH-23
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-23.jsx).
  *
- * RESTYLING ONLY av legacy-siden: samme guards, queries og ledig-sjekk
- * (isSlotStillAvailable) — kopiert uendret. Kun presentasjonen er ny
- * (V2Shell + BookingNyBekreftV2, som kaller createCreditBooking som før).
- * URL-kontrakten ?service=&start=&coach= er uendret.
+ * Samme guards, queries og ledig-sjekk (isSlotStillAvailable) som før i byggBookingBekreftData.
+ * URL-kontrakten ?service=&start=&coach=&betaling= er uendret. Klipp trekkes atomisk av
+ * createCreditBooking; kort går via Stripe Checkout, og webhooken bekrefter.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { byggBookingBekreftData } from "@/lib/portal-booking/bekreft-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingNyBekreftV2 } from "@/components/portal/v2/BookingNyBekreftV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { prisma } from "@/lib/prisma";
+import { pakkeNavn } from "@/lib/domain/abonnement";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Bekreft } from "@/components/portal/precision/PH23Booking";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Bekreft booking · PlayerHQ" };
 
 type Props = {
   searchParams: Promise<{ service?: string; start?: string; coach?: string; betaling?: string }>;
 };
 
-export default async function BekreftCreditBookingPage({
-  searchParams,
-}: Props) {
+export default async function BekreftCreditBookingPage({ searchParams }: Props) {
   const { service: serviceSlug, start, coach: coachId, betaling } = await searchParams;
-
   if (!serviceSlug || !start || !coachId) notFound();
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -41,10 +42,17 @@ export default async function BekreftCreditBookingPage({
   if (resultat.status === "krever_credits_redirect") redirect("/portal/booking/ny");
   if (resultat.status === "ikke_funnet") notFound();
 
+  const [uleste, abo] = await Promise.all([
+    hentUleste(user.id),
+    prisma.subscription.findUnique({ where: { userId_kind: { userId: user.id, kind: "COACHING" } }, select: { monthlyCredits: true, creditsRemaining: true } }),
+  ]);
+
   return (
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
-      <BookingNyBekreftV2 data={resultat.data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH23Bekreft
+        data={resultat.data}
+        klipp={{ total: abo?.monthlyCredits ?? 0, igjen: abo?.creditsRemaining ?? 0, pakke: pakkeNavn(abo?.monthlyCredits ?? 0), fornyesTekst: null }}
+      />
+    </PlayerHQSkall>
   );
 }

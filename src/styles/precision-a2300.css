@@ -1,0 +1,36 @@
+/* PH-23 Booking (spiller) — Precision Athletics. Bare oppsett som ikke lar seg gjøre inline (mediespørringer). */
+.pa-root .ph23-kolonner{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;min-width:0}
+@media (min-width:1024px){.pa-root .ph23-kolonner{grid-template-columns:minmax(0,1fr) 340px}}
+.pa-root .ph23-tjenester{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:8px;min-width:0}
+.pa-root .ph23-tjeneste{text-align:left;padding:16px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--text-primary);text-decoration:none;min-height:44px}
+.pa-root .ph23-tjeneste[aria-current="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.pa-root .ph23-dager{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:4px;min-width:0}
+.pa-root .ph23-dag{height:60px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;text-decoration:none;cursor:pointer}
+.pa-root .ph23-dag[aria-current="true"]{background:var(--primary);border-color:var(--border-ink);color:var(--text-on-primary)}
+.pa-root .ph23-dag>span:nth-child(1){font:500 11px/1 var(--font-sans)}
+.pa-root .ph23-dag>span:nth-child(2){font:600 14px/1 var(--font-mono)}
+.pa-root .ph23-dag>span:nth-child(3){font:500 10px/1 var(--font-mono);opacity:.75}
+.pa-root .ph23-tider{display:flex;gap:8px;flex-wrap:wrap}
+.pa-root .ph23-tider .pa-choice{min-height:44px;min-width:44px;text-decoration:none}
+.pa-root .ph23-rad{display:flex;flex-direction:column;gap:8px;padding:12px 0;min-width:0}
+.pa-root .ph23-rad+.ph23-rad{border-top:1px solid var(--border-hairline)}
+.pa-root .ph23-rad{gap:4px}
+.pa-root .ph23-rad__topp{margin:-8px 0 0}
+.pa-root .ph23-rad__topp{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pa-root .ph23-rad__tittel{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);flex:1 1 160px;min-width:0;overflow-wrap:anywhere}
+.pa-root .ph23-handlinger{display:flex;gap:8px;flex-wrap:wrap}
+.pa-root .ph23-trinn{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.pa-root .ph23-trinn li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pa-root .ph23-trinn__strek{height:4px;background:var(--surface-sunken)}
+.pa-root .ph23-trinn li[data-ferdig="true"] .ph23-trinn__strek{background:var(--primary)}
+.pa-root .ph23-trinn__navn{font:500 13px/1.2 var(--font-sans);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pa-root .ph23-trinn li[aria-current="step"] .ph23-trinn__navn{font-weight:600;color:var(--text-primary)}
+.pa-root .ph23-klipp{display:grid;gap:3px}
+.pa-root .ph23-klipp span{height:8px;background:var(--primary)}
+.pa-root .ph23-klipp span[data-brukt="true"]{background:var(--surface-sunken)}
+.pa-root .ph23-varsel{display:flex;gap:8px;align-items:flex-start;padding:12px 16px;border:1px solid var(--border-hairline);border-radius:8px;background:var(--surface-card);font:var(--type-body-s);color:var(--text-primary);min-width:0;overflow-wrap:anywhere}
+.pa-root .ph23-varsel[data-tone="signal"]{border-color:var(--signal-ink)}
+.pa-root .ph23-varsel[data-tone="ok"]{border-color:var(--border-ink)}
+.pa-root .ph23-lenkerad{display:flex;gap:12px;align-items:center;padding:12px 0;min-height:44px;color:var(--text-primary);text-decoration:none;min-width:0}
+.pa-root .ph23-lenkerad+.ph23-lenkerad{border-top:1px solid var(--border-hairline)}
+.pa-root .ph23-lenke{display:inline-flex;align-items:center;min-height:44px;color:inherit}
