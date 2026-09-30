@@ -108,7 +108,7 @@ async function lesTapperKo(page: Page): Promise<TapperKoRadForPrøve[]> {
 }
 
 function tellerLocator(page: Page) {
-  return page.getByText("slag denne økta", { exact: true }).locator("xpath=following-sibling::div[1]");
+  return page.locator('[data-od-id="tapper-total"]');
 }
 
 test.describe("P0 innlogget privat lokal lagring (R-C)", () => {
@@ -126,14 +126,15 @@ test.describe("P0 innlogget privat lokal lagring (R-C)", () => {
 
     await loggInnUtenAOppdrag(page, spillerEpost, spillerPassord);
     await startOktOgApneTapper(page, wbId);
-    await expect(page.getByText("slag denne økta", { exact: true })).toBeVisible();
+    await expect(page.getByText("Slag denne økta", { exact: true })).toBeVisible();
 
     // Simuler at nettet forsvinner under en økt — lagringen skal da falle
     // tilbake til den lokale, eier-navnerommede IndexedDB-køen i stedet for
     // å miste slagene.
     await page.context().setOffline(true);
     await page.locator('[data-od-id="tapper-klubb-driver"]').click();
-    await expect(page.getByRole("alert").filter({ hasText: "Slagene ble ikke lagret" })).toBeVisible({
+    await page.locator('[data-od-id="tapper-pluss-1"]').click();
+    await expect(page.getByRole("alert").filter({ hasText: "Tellingene ble ikke lagret" })).toBeVisible({
       timeout: 20_000,
     });
     await page.context().setOffline(false);
@@ -152,10 +153,10 @@ test.describe("P0 innlogget privat lokal lagring (R-C)", () => {
     // eksplisitt utlogging).
     await loggInnUtenAOppdrag(page, fremmedEpost, fremmedPassord);
     await startOktOgApneTapper(page, fremmedWbId);
-    await expect(page.getByText("slag denne økta", { exact: true })).toBeVisible();
+    await expect(page.getByText("Slag denne økta", { exact: true })).toBeVisible();
     // Fremmed sin teller skal starte på 0 — ALDRI arve spillerens kølagte tall.
-    await expect(tellerLocator(page)).toHaveText("0");
-    await expect(page.getByRole("alert").filter({ hasText: "Slagene ble ikke lagret" })).toHaveCount(0);
+    await expect(tellerLocator(page)).toHaveText("—");
+    await expect(page.getByRole("alert").filter({ hasText: "Tellingene ble ikke lagret" })).toHaveCount(0);
 
     // Spillerens rad ligger fortsatt urørt i IndexedDB — fremmed sin
     // innlasting har verken lest, slettet eller overskrevet den.

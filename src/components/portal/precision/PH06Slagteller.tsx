@@ -19,6 +19,9 @@
  *     nå velges elementet, deretter +1 eller +5 (som tegnet).
  *   - «Prøv igjen nå» og lagringsfeil (nett borte, køet lokalt) er egen feilflate
  *     over tellingen; tegningens feiltilstand gjelder TrackMan.
+ *   - Korttittelen er «Slag denne økta» (repetisjoner utenfor full sving); tegningen har øvelsesnavn.
+ *   - data-od-id er beholdt fra før (tapper-klubb-<id>, tapper-avslutt, tapper-angre,
+ *     tapper-retry m.fl.) fordi P0-testene styres av dem. Avslutt åpner dialog: tapper-avslutt-bekreft.
  *   - AI-coach-knappen (LiveCoachPanel) er ikke i tegningen. Den beholdes og er
  *     løftet over handlingslinjen.
  */
@@ -70,18 +73,19 @@ export function PH06Slagteller(p: PH06Props) {
   const [avslutt, setAvslutt] = useState(false);
   const tom = p.tilstand === "tom";
   const kanTelle = p.tilstand === "data" || p.tilstand === "tom" || p.tilstand === "feil";
+  const odPrefiks = p.omrade === "FULL_SVING" ? "tapper-klubb" : p.omrade === "NAERSPILL" ? "tapper-naerspill" : "tapper-putting";
   const valgtNavn = p.elementer.find((e) => e.id === p.valgt)?.navn ?? null;
 
   const topp = (
     <>
-      <Link href={p.tilbakeHref} className="pa-iconbtn" aria-label="Til live-økta" style={{ width: 56, height: 56 }}>
+      <Link href={p.tilbakeHref} className="pa-iconbtn" aria-label="Til live-økta" data-od-id="tapper-tilbake" style={{ width: 56, height: 56 }}>
         <Ikon icon={ChevronLeft} size={22} name="chevron-left" />
       </Link>
       <StatusPille tone="live">Live</StatusPille>
       <Meta style={{ flex: "1 1 0", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         SLAGTELLER · {p.oktLabel.toUpperCase()}
       </Meta>
-      <Knapp variant="ghost" onClick={() => setAvslutt(true)} disabled={p.avslutter} style={{ height: 56 }}>Avslutt</Knapp>
+      <Knapp variant="ghost" data-od-id="tapper-avslutt" onClick={() => setAvslutt(true)} disabled={p.avslutter} style={{ height: 56 }}>Avslutt</Knapp>
     </>
   );
 
@@ -96,15 +100,15 @@ export function PH06Slagteller(p: PH06Props) {
         {p.avsluttFeil && <FeilTilstand icon={CircleAlert} title="Økta ble ikke avsluttet" text={p.avsluttFeil} />}
         {p.lagreFeil && (
           <FeilTilstand icon={CircleAlert} title={p.lagreFeil.tittel} text={p.lagreFeil.tekst} code={p.lagreFeil.kode}
-            retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={p.onProvIgjen}>Prøv igjen nå</Knapp>} />
+            retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" data-od-id="tapper-retry" onClick={p.onProvIgjen}>Prøv igjen nå</Knapp>} />
         )}
 
         {kanTelle && (
           <>
             <div className="pa-card" style={{ padding: 16, gap: 10 }}>
-              <div style={{ font: "var(--type-title-s)", color: "var(--text-primary)" }}>Repetisjoner denne økta</div>
+              <div style={{ font: "var(--type-title-s)", color: "var(--text-primary)" }}>{p.enhet === "slag" ? "Slag" : "Repetisjoner"} denne økta</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
-                <span style={{ font: "600 56px/1 var(--font-mono)", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}
+                <span data-od-id="tapper-total" style={{ font: "600 56px/1 var(--font-mono)", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}
                   aria-label={tom ? "Ingen registrert" : `${p.totalt} registrert`}>{tom ? "—" : p.totalt}</span>
                 <Meta style={{ overflowWrap: "anywhere" }}>{valgtNavn ? `${valgtNavn.toUpperCase()} · ${p.valgtAntall}` : "—"}</Meta>
               </div>
@@ -114,8 +118,8 @@ export function PH06Slagteller(p: PH06Props) {
             {tom && <TomTilstand icon={Target} title="Ingen slag registrert" text="Velg kølle og trykk +1 for hvert slag." />}
 
             <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
-              <SegmentertValg label="Område" value={p.omrade} options={p.omrader} onChange={p.onOmrade} />
-              <SegmentertValg label="Repetisjonstype" value={p.repType} options={p.repTyper} onChange={p.onRepType} />
+              <SegmentertValg label="Område" odPrefix="tapper-omraade" value={p.omrade} options={p.omrader} onChange={p.onOmrade} />
+              <SegmentertValg label="Repetisjonstype" odPrefix="tapper-type" value={p.repType} options={p.repTyper} onChange={p.onRepType} />
             </div>
 
             <div>
@@ -125,17 +129,17 @@ export function PH06Slagteller(p: PH06Props) {
                 </span>
                 <Meta>{p.elementer.length} {p.omrade === "FULL_SVING" ? "KØLLER" : "VALG"}</Meta>
               </div>
-              <div role="group" aria-label="Velg" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(96px,1fr))", gap: 6 }}>
+              <div role="group" aria-label="Velg" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(72px,1fr))", gap: 6 }}>
                 {p.elementer.map((e) => {
                   const på = e.id === p.valgt;
                   return (
-                    <button key={e.id} type="button" onClick={() => p.onValgt(e.id)} aria-pressed={på}
+                    <button key={e.id} type="button" data-od-id={`${odPrefiks}-${e.id}`} onClick={() => p.onValgt(e.id)} aria-pressed={på}
                       style={{
                         minHeight: 56, borderRadius: 8, padding: "6px 8px", minWidth: 0,
                         border: "1px solid " + (på ? "var(--border-ink)" : "var(--border-hairline)"),
                         background: på ? "var(--primary)" : "var(--surface-card)",
                         color: på ? "var(--text-on-primary)" : "var(--text-primary)",
-                        font: "600 14px/1.25 var(--font-sans)", cursor: "pointer", overflowWrap: "anywhere",
+                        font: "600 15px/1.25 var(--font-mono)", cursor: "pointer", overflowWrap: "anywhere",
                       }}>{e.navn}</button>
                   );
                 })}
@@ -167,14 +171,14 @@ export function PH06Slagteller(p: PH06Props) {
         <div style={{ position: "sticky", bottom: 0, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)", zIndex: 5 }}>
           <div style={{ maxWidth: MAKS_BREDDE, margin: "0 auto", padding: "12px 16px calc(16px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "grid", gridTemplateColumns: "72px minmax(0,1fr)", gap: 8 }}>
-              <button type="button" className="pa-btn pa-btn--secondary" aria-label="Angre ett slag" onClick={p.onAngre}
+              <button type="button" className="pa-btn pa-btn--secondary" aria-label="Angre ett slag" data-od-id="tapper-angre" onClick={p.onAngre}
                 disabled={p.avslutter || !p.sist} style={{ width: 72, height: 72, padding: 0 }}>
                 <Ikon icon={Undo2} size={22} name="undo-2" />
               </button>
-              <Knapp variant="secondary" onClick={() => p.onLeggTil(5)} disabled={p.avslutter || !p.valgt}
+              <Knapp variant="secondary" data-od-id="tapper-pluss-5" onClick={() => p.onLeggTil(5)} disabled={p.avslutter || !p.valgt}
                 style={{ height: 72, font: "600 21px/1 var(--font-sans)" }}>+5 {p.enhet}</Knapp>
             </div>
-            <Knapp size="xl" fullWidth onClick={() => p.onLeggTil(1)} disabled={p.avslutter || !p.valgt}
+            <Knapp size="xl" fullWidth data-od-id="tapper-pluss-1" onClick={() => p.onLeggTil(1)} disabled={p.avslutter || !p.valgt}
               style={{ height: 96, font: "600 29px/1 var(--font-sans)" }}>+1 {p.enhet}</Knapp>
           </div>
         </div>
@@ -182,8 +186,8 @@ export function PH06Slagteller(p: PH06Props) {
 
       <Dialogboks open={avslutt} onClose={() => setAvslutt(false)} title="Avslutte økta?"
         footer={<>
-          <Knapp size="xl" variant="secondary" onClick={() => setAvslutt(false)}>Fortsett</Knapp>
-          <Knapp size="xl" loading={p.avslutter} loadingText="Lagrer …" onClick={() => { setAvslutt(false); p.onAvslutt(); }}>Avslutt og lagre</Knapp>
+          <Knapp size="xl" variant="secondary" data-od-id="tapper-avslutt-avbryt" onClick={() => setAvslutt(false)}>Fortsett</Knapp>
+          <Knapp size="xl" data-od-id="tapper-avslutt-bekreft" loading={p.avslutter} loadingText="Lagrer …" onClick={() => { setAvslutt(false); p.onAvslutt(); }}>Avslutt og lagre</Knapp>
         </>}>
         {p.totalt} repetisjoner er registrert i denne økta. De lagres når du avslutter.
       </Dialogboks>
@@ -200,7 +204,7 @@ export function PH06IngenOkt() {
       <div style={{ width: "100%", maxWidth: MAKS_BREDDE, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <TomTilstand icon={Target} title="Ingen økt pågår"
           text="Slagtelleren hører til en pågående økt. Start dagens økt, så teller vi derfra."
-          actions={<Link href="/portal" className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full">Start økta</Link>} />
+          actions={<Link href="/portal" data-od-id="tapper-tom-start" className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full">Start økta</Link>} />
       </div>
     </div>
   );
