@@ -11,6 +11,7 @@ import {
   erLydSamtykkeTokenGyldig,
   hashLydSamtykkeToken,
 } from "@/lib/recording/lyd-samtykke-token";
+import { LydSamtykkeStatus as StatusBoks } from "@/components/auth/precision/LydSamtykkeStatus";
 import { LydSamtykkeForm } from "./lyd-samtykke-form";
 
 type Props = {
@@ -18,23 +19,6 @@ type Props = {
 };
 
 export const dynamic = "force-dynamic";
-
-function StatusBoks({
-  tittel,
-  tekst,
-}: {
-  tittel: string;
-  tekst: string;
-}) {
-  return (
-    <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">{tittel}</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        {tekst}
-      </p>
-    </div>
-  );
-}
 
 async function finnRad(rawToken: string) {
   const tokenHash = hashLydSamtykkeToken(rawToken);

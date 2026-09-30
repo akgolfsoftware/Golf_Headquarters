@@ -20,8 +20,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, Mail, Smartphone, Users } from "lucide-react";
-import { TL } from "@/lib/v2/train-lock";
-import { AK } from "@/lib/v2/ak-palett";
 
 import {
   saveForelderOnboardingStep,
@@ -33,16 +31,16 @@ import {
   StepHeader,
   StepHeading,
   PrimaryCta,
-  SecondaryLink,
-} from "@/components/auth/onboarding/wizard-chrome";
-import {
   Field,
   TextField,
   FieldGroupLabel,
   HeroIllo,
+  OptionRow,
   AgreeItem,
   SecurityStrip,
-} from "@/components/auth/onboarding/wizard-fields";
+} from "@/components/auth/precision/veiviser";
+import { InlineVarsel } from "@/components/precision/pa-a5";
+import { Meta } from "@/components/precision/pa";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Konstanter
@@ -62,13 +60,9 @@ const BETALINGSMETODER = [
   { id: "FAKTURA", label: "Faktura", sub: "30 dagers frist", anbefalt: false, icon: Mail },
 ] as const;
 
-// Mobil-først body-wrapper — 430px kolonne, DS-token-spacing.
+// Kolonnen (bredde og luft) eies av VeiviserFlate; steget legger bare blokkene under hverandre.
 function StepBody({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-col gap-4 px-4 py-6">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-col gap-5">{children}</div>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -143,27 +137,25 @@ export function ForelderWizard() {
   const kanFullfore = acceptedTraining && acceptedPrivacy && acceptedPayment;
 
   const eyebrowFor: Record<number, string> = {
-    1: "1 av 4 · Velkommen",
-    2: "2 av 4 · Din info",
-    3: "3 av 4 · Vilkår og samtykke",
-    4: "4 av 4 · Betaling",
+    1: "Velkommen",
+    2: "Din info",
+    3: "Vilkår og samtykke",
+    4: "Betaling",
   };
 
   return (
-    <div className="w-full">
-      {/* progress + header (felles chrome) */}
-      <div className="mx-auto w-full max-w-[430px] px-4 pt-4">
-        <ProgressDots total={TOTAL_STEPS} current={step} />
-        <div className="mt-3">
-          <StepHeader
-            step={step}
-            total={TOTAL_STEPS}
-            eyebrow={eyebrowFor[step]}
-            onBack={tilbake}
-            canGoBack={step > 1}
-            disabled={pending}
-          />
-        </div>
+    <div className="flex w-full flex-col gap-5">
+      {/* stegstrek + tilbake (felles chrome) */}
+      <div className="flex flex-col gap-2">
+        <ProgressDots total={TOTAL_STEPS} current={step} etikett="Forelder" />
+        <StepHeader
+          step={step}
+          total={TOTAL_STEPS}
+          eyebrow={eyebrowFor[step]}
+          onBack={tilbake}
+          canGoBack={step > 1}
+          disabled={pending}
+        />
       </div>
 
       {/* ── STEG 1 — Velkommen ─────────────────────────────────── */}
@@ -176,46 +168,9 @@ export function ForelderWizard() {
             titleAfter="."
             deck="Coach Anders og spilleren din har akkurat satt opp profilen hos AK Golf Academy. Som foresatt er du en sentral del av utviklingen — uten å være i veien."
           />
-          <div
-            className="px-4 py-4"
-            style={{ borderRadius: 14, background: TL.dock, border: `1px solid ${TL.hair}` }}
-          >
-            <p className="text-[13px] leading-relaxed" style={{ color: TL.mute }}>
-              Du får din egen{" "}
-              <strong style={{ fontWeight: 600, color: TL.text }}>foreldre-portal</strong> med
-              innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til
-              Anders direkte.
-            </p>
-          </div>
-          <div
-            className="px-4 py-4"
-            style={{
-              borderRadius: 14,
-              background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${TL.fill} 35%, transparent)`,
-            }}
-          >
-            <blockquote
-              className="italic leading-snug"
-              style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.text }}
-            >
-              Foreldre er den viktigste støttespilleren en ung utøver har. Vi gjør alt vi kan for
-              at du skal føle deg trygg på hva vi gjør — og hvorfor.
-            </blockquote>
-            <cite
-              className="mt-2 block not-italic"
-              style={{
-                fontFamily: TL.font.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: TL.fill,
-              }}
-            >
-              Anders Kristiansen · Head Coach
-            </cite>
-          </div>
+          <InlineVarsel tone="info">
+            Du får din egen <strong>foreldre-portal</strong> med innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til Anders direkte.
+          </InlineVarsel>
           <PrimaryCta onClick={neste} disabled={pending}>
             La oss begynne
           </PrimaryCta>
@@ -264,36 +219,18 @@ export function ForelderWizard() {
           </Field>
 
           <FieldGroupLabel>Relasjon</FieldGroupLabel>
-          <div className="grid grid-cols-3 gap-2">
-            {RELASJONER.map((rel) => {
-              const selected = parentRelation === rel.id;
-              return (
-                <button
-                  key={rel.id}
-                  type="button"
-                  onClick={() => setParentRelation(rel.id)}
-                  aria-pressed={selected}
-                  className="v2-press v2-focus"
-                  style={{
-                    appearance: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 44,
-                    borderRadius: 11,
-                    cursor: "pointer",
-                    fontFamily: TL.font.sans,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    background: selected ? TL.dim : TL.dock,
-                    border: `1px solid ${selected ? TL.fill : TL.hair}`,
-                    color: selected ? TL.text : TL.mute,
-                  }}
-                >
-                  {rel.label}
-                </button>
-              );
-            })}
+          <div className="pa-seg pa-seg--full" role="group" aria-label="Relasjon">
+            {RELASJONER.map((rel) => (
+              <button
+                key={rel.id}
+                type="button"
+                className="pa-seg__opt"
+                onClick={() => setParentRelation(rel.id)}
+                aria-pressed={parentRelation === rel.id}
+              >
+                {rel.label}
+              </button>
+            ))}
           </div>
 
           <SecurityStrip>
@@ -360,130 +297,25 @@ export function ForelderWizard() {
             deck="Spilleren har valgt PRO-abonnement, 299 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
           />
 
-          {/* Abonnement-oppsummering — mørkt forest-merkevarekort (fast forest,
-              hvit tekst — uavhengig av tema, samme idiom som HeroIllo) */}
-          <div
-            className="flex flex-col gap-1 px-4 py-4"
-            style={{ borderRadius: 16, background: TL.fill }}
-          >
-            <span
-              style={{
-                fontFamily: TL.font.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: AK.farge.hvitA75,
-              }}
-            >
-              Abonnement
-            </span>
-            <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: AK.farge.hvitA96 }}>
-              AK Golf Academy PRO
-            </span>
-            <span
-              style={{
-                fontFamily: TL.font.mono,
-                fontSize: 28,
-                fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: "-0.01em",
-                fontVariantNumeric: "tabular-nums",
-                color: AK.farge.hvitA96,
-              }}
-            >
-              299 kr/mnd
-            </span>
-            <span
-              className="mt-1"
-              style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", color: AK.farge.hvitA65 }}
-            >
-              Avsluttes når som helst · 30 dagers oppsigelse
-            </span>
+          <div className="pa-card" style={{ padding: 16, gap: 4 }}>
+            <Meta>ABONNEMENT</Meta>
+            <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>AK Golf Academy PRO</span>
+            <span style={{ font: "var(--type-num)", fontSize: 28, lineHeight: 1.1 }}>299 kr/mnd</span>
+            <Meta>AVSLUTTES NÅR SOM HELST · 30 DAGERS OPPSIGELSE</Meta>
           </div>
 
           <FieldGroupLabel>Velg betalingsmetode</FieldGroupLabel>
-          <div className="grid grid-cols-3 gap-2">
-            {BETALINGSMETODER.map(({ id, label, sub, anbefalt, icon: Icon }) => {
-              const selected = paymentMethod === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setPaymentMethod(id)}
-                  aria-pressed={selected}
-                  className="v2-press v2-focus"
-                  style={{
-                    position: "relative",
-                    appearance: "none",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 6,
-                    borderRadius: 13,
-                    padding: "12px 8px",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    background: selected ? TL.dim : TL.dock,
-                    border: `1px solid ${selected ? TL.fill : TL.hair}`,
-                  }}
-                >
-                  {anbefalt && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: -9,
-                        right: 6,
-                        borderRadius: 4,
-                        background: TL.fill,
-                        padding: "2px 6px",
-                        fontFamily: TL.font.mono,
-                        fontSize: 8,
-                        fontWeight: 700,
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: TL.onFill,
-                      }}
-                    >
-                      Anbefalt
-                    </span>
-                  )}
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 32,
-                      height: 32,
-                      borderRadius: 9999,
-                      background: selected
-                        ? `color-mix(in srgb, ${TL.fill} 14%, transparent)`
-                        : TL.dim,
-                      color: selected ? TL.fill : TL.mute,
-                    }}
-                  >
-                    <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                  </span>
-                  <span
-                    style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}
-                  >
-                    {label}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: TL.font.mono,
-                      fontSize: 8,
-                      fontWeight: 600,
-                      lineHeight: 1.4,
-                      letterSpacing: "0.04em",
-                      color: TL.mute,
-                    }}
-                  >
-                    {sub}
-                  </span>
-                </button>
-              );
-            })}
+          <div role="radiogroup" aria-label="Betalingsmetode" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {BETALINGSMETODER.map(({ id, label, sub, anbefalt, icon }) => (
+              <OptionRow
+                key={id}
+                label={anbefalt ? `${label} · anbefalt` : label}
+                sub={sub}
+                icon={icon}
+                selected={paymentMethod === id}
+                onClick={() => setPaymentMethod(id)}
+              />
+            ))}
           </div>
 
           <SecurityStrip>
@@ -496,30 +328,7 @@ export function ForelderWizard() {
         </StepBody>
       )}
 
-      {error && (
-        <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
-          <div
-            className="px-4 py-3 text-[13px]"
-            style={{
-              borderRadius: 11,
-              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
-              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
-              color: TL.text,
-            }}
-            role="alert"
-          >
-            {error}
-          </div>
-        </div>
-      )}
-
-      {step > 1 && step < TOTAL_STEPS && (
-        <div className="mx-auto w-full max-w-[430px] px-4 pb-6">
-          <SecondaryLink onClick={tilbake} disabled={pending}>
-            Tilbake
-          </SecondaryLink>
-        </div>
-      )}
+      {error && <InlineVarsel tone="signal">{error}</InlineVarsel>}
     </div>
   );
 }

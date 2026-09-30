@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOnboardingState, getResumeStep } from "@/lib/auth/onboarding-state";
-import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
+import { VeiviserFlate } from "@/components/auth/precision/veiviser";
 import { OnboardingWizard } from "./onboarding-wizard";
 
 export const dynamic = "force-dynamic";

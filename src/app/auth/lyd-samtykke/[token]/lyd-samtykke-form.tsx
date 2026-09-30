@@ -1,6 +1,14 @@
 "use client";
 
+/**
+ * Lyd-samtykke via lenke i Precision Athletics. Ingen egen tegning: bruker
+ * AU-05 (7d7c2994, ui_kits/konto/screens/AU-04-06.jsx). Logikken er uendret.
+ */
 import { useState, useTransition } from "react";
+import { Check } from "lucide-react";
+import { Knapp, Meta } from "@/components/precision/pa";
+import { InlineVarsel } from "@/components/precision/pa-a5";
+import { AuthFlate, AuthOverskrift } from "@/components/auth/precision/AuthFlate";
 import { bekreftLydSamtykkeViaToken } from "./actions";
 
 type Props = {
@@ -28,50 +36,26 @@ export function LydSamtykkeForm({ token, spillerNavn, ordlyd }: Props) {
 
   if (ferdig) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-12">
-        <h1 className="text-xl font-semibold text-foreground">Takk</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-          Samtykke til lydopptak for <strong className="text-foreground">{spillerNavn}</strong>{" "}
-          er registrert. Treneren kan starte opptak ved neste økt.
-        </p>
-      </div>
+      <AuthFlate max={520}>
+        <AuthOverskrift
+          kicker="Samtykke"
+          tittel="Takk, samtykket er registrert"
+          tekst={<>Samtykke til lydopptak for <strong style={{ color: "var(--text-primary)" }}>{spillerNavn}</strong> er registrert. Treneren kan starte opptak ved neste økt.</>}
+        />
+      </AuthFlate>
     );
   }
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">
-        Samtykke til lydopptak
-      </h1>
-      <p className="mt-2 text-[15px] text-muted-foreground">
-        For <strong className="text-foreground">{spillerNavn}</strong> — AK Golf Academy
-      </p>
-
-      <div className="mt-6 max-h-72 overflow-y-auto rounded-md border border-border bg-card p-4">
-        <pre className="whitespace-pre-wrap font-sans text-[13px] leading-relaxed text-foreground">
-          {ordlyd}
-        </pre>
+    <AuthFlate max={520}>
+      <AuthOverskrift kicker={`Samtykke for ${spillerNavn}`} tittel="Samtykke til lydopptak" tekst="AK Golf Academy ber om samtykke. Les ordlyden og bekreft. Du kan trekke samtykket senere." />
+      <div className="pa-card" style={{ padding: 16, maxHeight: 288, overflowY: "auto", overflowX: "hidden" }} tabIndex={0} role="region" aria-label="Ordlyd i samtykket">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere", font: "var(--type-body-s)", color: "var(--text-body)" }}>{ordlyd}</pre>
       </div>
-
-      <button
-        type="button"
-        onClick={bekreft}
-        disabled={pending}
-        className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-3 text-[15px] font-semibold text-primary-foreground disabled:opacity-50"
-      >
-        {pending ? "Lagrer …" : "Jeg samtykker"}
-      </button>
-
-      {feil && (
-        <p className="mt-3 text-[13px] text-destructive" role="alert">
-          {feil}
-        </p>
-      )}
-
-      <p className="mt-4 text-[12px] text-muted-foreground">
-        Du kan trekke samtykket senere via treneren. Da stoppes nye opptak med
-        en gang.
-      </p>
-    </div>
+      <InlineVarsel tone="info">Denne lenken gir bare tilgang til dette samtykket. Den logger deg ikke inn og viser ingen andre data.</InlineVarsel>
+      {feil && <InlineVarsel tone="signal">{feil}</InlineVarsel>}
+      <Knapp fullWidth size="lg" icon={Check} loading={pending} loadingText="Lagrer …" onClick={bekreft}>Jeg samtykker</Knapp>
+      <Meta>DU KAN TREKKE SAMTYKKET VIA TRENEREN · NYE OPPTAK STOPPES MED EN GANG</Meta>
+    </AuthFlate>
   );
 }

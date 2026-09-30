@@ -43,7 +43,6 @@ import {
   Sunset,
   Trophy,
 } from "lucide-react";
-import { TL } from "@/lib/v2/train-lock";
 import { tierEtikett } from "@/lib/tier-etikett";
 
 import {
@@ -64,7 +63,7 @@ import {
   StepHeading,
   PrimaryCta,
   SecondaryLink,
-} from "@/components/auth/onboarding/wizard-chrome";
+} from "@/components/auth/precision/veiviser";
 import {
   Field,
   TextField,
@@ -83,7 +82,8 @@ import {
   SummaryCard,
   SummaryRow,
   AgreeItem,
-} from "@/components/auth/onboarding/wizard-fields";
+} from "@/components/auth/precision/veiviser";
+import { InlineVarsel } from "@/components/precision/pa-a5";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Konstanter
@@ -178,13 +178,9 @@ function toggle<T>(arr: T[], item: T, max: number): T[] {
   return [...arr, item];
 }
 
-// Mobil-først body-wrapper — 430px kolonne, DS-token-spacing.
+// Kolonnen (bredde og luft) eies av VeiviserFlate; steget legger bare blokkene under hverandre.
 function StepBody({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-col gap-4 px-4 py-6">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-col gap-5">{children}</div>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -392,52 +388,21 @@ export function OnboardingWizard({
     });
   }
 
-  // Fasit-format: «TRINN N AV M» som mono-caps eyebrow rett over tittelen.
-  const eyebrowFor: Record<number, string> = {
-    1: "VELKOMMEN",
-    2: `TRINN 2 AV ${TOTAL_STEPS}`,
-    3: `TRINN 3 AV ${TOTAL_STEPS}`,
-    4: `TRINN 4 AV ${TOTAL_STEPS}`,
-    5: `TRINN 5 AV ${TOTAL_STEPS}`,
-    6: `TRINN 6 AV ${TOTAL_STEPS}`,
-    7: `TRINN 7 AV ${TOTAL_STEPS}`,
-  };
+  // Stegtelleren («SPILLER · STEG N AV M») eies av ProgressDots; bare velkomststeget har egen kicker.
+  const eyebrowFor: Record<number, string | undefined> = { 1: "VELKOMMEN" };
 
   return (
-    <div className="w-full">
-      {/* steps-rail (fasit: skjult på velkomst-steget) */}
+    <div className="flex w-full flex-col gap-5">
+      {/* stegstrek (skjult på velkomst-steget) */}
       {step > 1 && (
-        <div className="mx-auto w-full max-w-[430px] px-4 pt-5">
-          <ProgressDots total={TOTAL_STEPS} current={step} />
-        </div>
+        <ProgressDots total={TOTAL_STEPS} current={step} etikett="Spiller" valgfri={step < TOTAL_STEPS} />
       )}
 
       {/* ── STEG 1 — Velkommen (fasit: sentrert logo + AHead + CTA) ── */}
       {step === 1 && (
         <StepBody>
-          <div className="pt-2">
-            <div className="mb-5 flex justify-center">
-              <span
-                aria-hidden
-                style={{
-                  display: "grid",
-                  placeItems: "center",
-                  width: 56,
-                  height: 56,
-                  borderRadius: 14,
-                  background: TL.fill,
-                  color: TL.onFill,
-                  fontFamily: TL.font.sans,
-                  fontSize: 24,
-                  fontWeight: 700,
-                  lineHeight: 1,
-                }}
-              >
-                ak
-              </span>
-            </div>
+          <div>
             <StepHeading
-              center
               eyebrow={eyebrowFor[1]}
               title="Vi"
               emphasis="gleder oss"
@@ -506,7 +471,7 @@ export function OnboardingWizard({
                 placeholder="forelder@example.com"
                 autoComplete="email"
               />
-              <p className="mt-1 text-[11px]" style={{ color: TL.mute }}>
+              <p className="mt-1" style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>
                 Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
               </p>
             </Field>
@@ -993,29 +958,12 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {error && (
-        <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
-          <div
-            className="px-4 py-3 text-[13px]"
-            style={{
-              borderRadius: 11,
-              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
-              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
-              color: TL.text,
-            }}
-            role="alert"
-          >
-            {error}
-          </div>
-        </div>
-      )}
+      {error && <InlineVarsel tone="signal">{error}</InlineVarsel>}
 
       {step > 1 && step < TOTAL_STEPS && (
-        <div className="mx-auto w-full max-w-[430px] px-4 pb-6">
-          <SecondaryLink onClick={hopp} disabled={pending}>
-            Hopp over og gå til portalen
-          </SecondaryLink>
-        </div>
+        <SecondaryLink onClick={hopp} disabled={pending}>
+          Hopp over og gå til portalen
+        </SecondaryLink>
       )}
     </div>
   );

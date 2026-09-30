@@ -3,7 +3,7 @@
 // som spiller-onboardingen. Auth-guard og ForelderWizard-logikk uendret.
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
+import { VeiviserFlate } from "@/components/auth/precision/veiviser";
 import { ForelderWizard } from "./forelder-wizard";
 
 export default async function ForelderOnboardingPage() {

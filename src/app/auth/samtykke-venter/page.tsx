@@ -4,7 +4,8 @@
  * Brukeren havner her via requirePortalUser-gaten når
  * requiresGuardianConsent=true && guardianConsentGivenAt=null.
  *
- * Viser (v2-redesign 2026-07-10, <SamtykkeVenterV2>):
+ * Viser (v2-redesign 2026-07-10, <SamtykkeVenterPA
+      loggUt={logout}>):
  * - Forklaring på situasjonen
  * - Resend-invitasjon-skjema
  * - Logg ut-link
@@ -17,7 +18,8 @@ import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
-import { SamtykkeVenterV2 } from "@/components/portal/v2/SamtykkeVenterV2";
+import { logout } from "@/lib/auth/logout";
+import { SamtykkeVenterPA } from "@/components/auth/precision/SamtykkeVenterPA";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +51,8 @@ export default async function SamtykkeVenterPage() {
   });
 
   return (
-    <SamtykkeVenterV2
+    <SamtykkeVenterPA
+      loggUt={logout}
       spillerNavn={user.name ?? ""}
       invitasjonEmail={sisteInvitasjon?.email ?? null}
     />
