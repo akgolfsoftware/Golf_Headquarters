@@ -1,15 +1,15 @@
 /** Prøvefil for AG-24 Drift (Logger, Feillogg, GDPR, Hjelp). Syntetiske data, ingen ekte personer. */
-import { TriangleAlert } from "lucide-react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { FeilTilstand, Knapp, LasterTilstand } from "@/components/precision/pa";
 import { AG24Feillogg, AG24Gdpr, AG24Hjelp, AG24Logger, type AuditData, type FeilData, type GdprData } from "@/components/admin/precision/AG24Drift";
+import { AG24Feil, AG24Laster } from "@/components/admin/precision/AG24Tilstander";
 import { Natt } from "./_natt";
 
 export const sti = "/admin/audit-log";
 
 const audit: AuditData = {
-  total: 1284, mistenkelige: 2,
+  total: 1284,
   events: [
     { id: "a1", time: "30. sep., 08:12", kind: "auth", actor: "Test Coach", action: "auth.login", status: "ok" },
     { id: "a2", time: "30. sep., 07:58", kind: "api", actor: "system", action: "stripe.webhook.invoice.paid med et veldig langt hendelsesnavn som må brytes", status: "ok" },
@@ -18,7 +18,7 @@ const audit: AuditData = {
   ],
 };
 const feil: FeilData = {
-  total: 37, sisteDogn: 1, kontekster: 3,
+  total: 37,
   feil: [
     { id: "f1", tid: "30. sep., 06:45", kontekst: "api/cron/sync-golfbox", melding: "Timeout etter 30 s mot ekstern tjeneste (syntetisk prøvemelding som er lang nok til å brytes over flere linjer).", stack: "Error: Timeout\n    at fetchMedTimeout (src/lib/eksempel/hent.ts:41:11)\n    at synk (src/lib/eksempel/synk.ts:12:5)", severity: "error" },
     { id: "f2", tid: "29. sep., 22:10", kontekst: "portal/booking", melding: "Ugyldig tidspunkt", stack: null, severity: "warn" },
@@ -33,24 +33,30 @@ const gdpr: GdprData = {
 };
 const ingen = async () => {};
 
-const Skall = ({ children }: { children: React.ReactNode }) => <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach">{children}</AgencyOSSkall></AdminRolleProvider>;
+const Skall = ({ children, erAdmin = true }: { children: ReactNode; erAdmin?: boolean }) => <AdminRolleProvider erAdmin={erAdmin}><AgencyOSSkall navn="Test Coach">{children}</AgencyOSSkall></AdminRolleProvider>;
+
+/** AG24Feil logger feilen med console.error; prøven skal ikke telle den som konsollfeil. */
+function DempetFeil({ children }: { children: ReactNode }) {
+  const orig = useRef(console.error);
+  console.error = () => {};
+  useEffect(() => { console.error = orig.current; }, []);
+  return <>{children}</>;
+}
 
 export const tilstander = {
   logg: <Skall><AG24Logger data={audit} /></Skall>,
-  "logg-tom": <Skall><AG24Logger data={{ events: [], total: 0, mistenkelige: 0 }} /></Skall>,
+  "logg-tom": <Skall><AG24Logger data={{ events: [], total: 0 }} /></Skall>,
   feillogg: <Skall><AG24Feillogg data={feil} /></Skall>,
-  "feillogg-tom": <Skall><AG24Feillogg data={{ feil: [], total: 0, sisteDogn: 0, kontekster: 0 }} /></Skall>,
+  "feillogg-tom": <Skall><AG24Feillogg data={{ feil: [], total: 0 }} /></Skall>,
   gdpr: <Skall><AG24Gdpr data={gdpr} utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall>,
-  "gdpr-bekreft": <Skall><AG24Gdpr data={gdpr} startBekreftId="g1" utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall>,
   "gdpr-tom": <Skall><AG24Gdpr data={{ rader: [] }} utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall>,
   hjelp: <Skall><AG24Hjelp /></Skall>,
-  "hjelp-tom": <Skall><AG24Hjelp artikler={[]} /></Skall>,
-  laster: <Skall><div className="pa-side"><LasterTilstand text="Henter logger …" /></div></Skall>,
-  feil: <Skall><div className="pa-side"><FeilTilstand icon={TriangleAlert} title="Loggen kunne ikke hentes" text="Ingenting er endret. Prøv igjen om litt." retry={<Knapp variant="secondary">Prøv igjen</Knapp>} /></div></Skall>,
+  "hjelp-coach": <Skall erAdmin={false}><AG24Hjelp /></Skall>,
+  laster: <AdminRolleProvider erAdmin><AG24Laster text="Henter logger …" /></AdminRolleProvider>,
+  feil: <AdminRolleProvider erAdmin><DempetFeil><AG24Feil title="Loggen kunne ikke hentes" error={Object.assign(new Error("syntetisk"), { digest: "prøve-0930" })} reset={() => {}} /></DempetFeil></AdminRolleProvider>,
   "logg-natt": <Natt><Skall><AG24Logger data={audit} /></Skall></Natt>,
   "feillogg-natt": <Natt><Skall><AG24Feillogg data={feil} /></Skall></Natt>,
-  "gdpr-bekreft-natt": <Natt><Skall><AG24Gdpr data={gdpr} startBekreftId="g1" utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall></Natt>,
   "gdpr-natt": <Natt><Skall><AG24Gdpr data={gdpr} utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall></Natt>,
   "hjelp-natt": <Natt><Skall><AG24Hjelp /></Skall></Natt>,
 };
-export const natt = ["logg-natt", "feillogg-natt", "gdpr-natt", "hjelp-natt", "gdpr-bekreft-natt"];
+export const natt = ["logg-natt", "feillogg-natt", "gdpr-natt", "hjelp-natt"];

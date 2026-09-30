@@ -39,19 +39,11 @@ function severity(raw: string): AdminFeilloggV2Severity {
 export default async function AdminFeilloggPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
 
-  const naa = new Date();
-  const dognSiden = new Date(naa.getTime() - 24 * 60 * 60 * 1000);
-
-  const [rader, total, sisteDogn] = await Promise.all([
+  const [rader, total] = await Promise.all([
     prisma.errorLog
       .findMany({ orderBy: { createdAt: "desc" }, take: 50 })
       .catch(() => []),
     prisma.errorLog.count().catch(() => 0),
-    prisma.errorLog
-      .count({
-        where: { createdAt: { gte: dognSiden }, severity: { in: ["fatal", "error"] } },
-      })
-      .catch(() => 0),
   ]);
 
   const feil: AdminFeilloggV2Rad[] = rader.map((r) => ({
@@ -63,12 +55,7 @@ export default async function AdminFeilloggPage() {
     severity: severity(r.severity),
   }));
 
-  const data: AdminFeilloggV2Data = {
-    feil,
-    total,
-    sisteDogn,
-    kontekster: new Set(feil.map((f) => f.kontekst)).size,
-  };
+  const data: AdminFeilloggV2Data = { feil, total };
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>

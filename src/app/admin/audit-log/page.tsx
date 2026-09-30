@@ -70,13 +70,7 @@ export default async function V2AdminAuditLogPage() {
     status: statusFromAction(r.action),
   }));
 
-  const now = new Date();
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const mistenkelige = rows.filter(
-    (r) => statusFromAction(r.action) !== "ok" && r.createdAt >= sevenDaysAgo,
-  ).length;
-
-  const data: AdminAuditLogV2Data = { events, total, mistenkelige };
+  const data: AdminAuditLogV2Data = { events, total };
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
