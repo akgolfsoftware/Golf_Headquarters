@@ -1,7 +1,6 @@
 /**
- * PlayerHQ · Booking bekreftet (/portal/booking/bekreftet?bookingId=…) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingBekreftetV2` erstatter legacy-
- * siden, ruten flyttet ut av (legacy). Kvitteringsside etter credit-booking
+ * PlayerHQ · Booking bekreftet (/portal/booking/bekreftet?bookingId=…) —
+ * Precision Athletics PH-23 (PH23Bekreftet). Kvitteringsside etter credit-booking
  * (bekreft-form router.push-er hit). Uendret logikk: eierskaps-sjekk
  * (`booking.userId !== user.id` → notFound) og googleKalenderUrl()-
  * genereringen. COPY-FIKS: legacy-tittelen «Forespørsel sendt!» var uærlig —
@@ -13,8 +12,9 @@ import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
+import { datoLang, klokke, naivIso } from "@/lib/portal-booking/ph23-visning";
+import { PH23Skall } from "@/components/portal/precision/PH23Skall";
+import { PH23Bekreftet } from "@/components/portal/precision/PH23Booking";
 
 export const dynamic = "force-dynamic";
 
@@ -71,22 +71,14 @@ export default async function BekreftetPage({ searchParams }: Props) {
       })
     : null;
 
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const iso = naivIso(booking.startAt);
+  const dato = datoLang(iso);
+  const klokkeslett = klokke(iso);
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <BookingBekreftetV2
-        data={{
+    <PH23Skall userId={user.id}>
+      <PH23Bekreftet
+        d={{
           linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
           coachNavn: coach?.name ?? null,
           sted: booking.location.name,
@@ -94,6 +86,6 @@ export default async function BekreftetPage({ searchParams }: Props) {
           kalenderUrl: googleKalenderUrl(booking),
         }}
       />
-    </V2Shell>
+    </PH23Skall>
   );
 }
