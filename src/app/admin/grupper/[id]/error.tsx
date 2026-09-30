@@ -27,7 +27,7 @@ export default function Error({
     return (
       <AgencyOSSkall navn="">
         <div className="pa-side">
-          <FeilTilstand icon={UsersRound} title={timeplan ? "Timeplanen kunne ikke hentes" : "Gruppen kunne ikke hentes"} text="Ingen tider eller medlemskap er endret. Prøv igjen." code={error.digest} retry={<Knapp variant="secondary" onClick={reset}>Prøv igjen</Knapp>} />
+          <FeilTilstand icon={UsersRound} title={timeplan ? "Timeplanen kunne ikke hentes" : "Gruppen kunne ikke hentes"} text={timeplan ? "Ingen tider er endret. Prøv igjen." : "Ingen medlemskap er endret. Prøv igjen."} code={error.digest} retry={<Knapp variant="secondary" onClick={reset}>Prøv igjen</Knapp>} />
         </div>
       </AgencyOSSkall>
     );

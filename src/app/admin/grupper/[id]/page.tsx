@@ -1,7 +1,7 @@
 /**
  * AgencyOS Gruppe-detalj (AG-16a) i Precision Athletics. Auth/Prisma-loader
  * bevart 1:1; uttrykket ligger i AG16Gruppe.tsx, som kaller de samme server
- * actions som før (gruppe-actions.tsx er ikke lenger i bruk).
+ * actions som før.
  */
 
 import { notFound } from "next/navigation";
@@ -218,6 +218,12 @@ export default async function GruppeDetaljPage({
       navn={user.name ?? ""}
       data={data}
       maler={maler.map((m) => ({ id: m.id, name: m.name, varighetUker: m.varighetUker, sessionCount: m._count.sessions }))}
+      antallFaste={gruppe.schedules.filter((s) => s.recurring && s.recurring !== "NONE").length}
+      kanSlette={
+        user.role !== "COACH" ||
+        gruppe.coachId === user.id ||
+        gruppe.members.some((m) => m.userId === user.id && m.role === "COACH")
+      }
     />
   );
 }

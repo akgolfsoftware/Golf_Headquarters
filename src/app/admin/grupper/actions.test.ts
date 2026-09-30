@@ -24,8 +24,8 @@ const coacher: Record<string, { id: string; role: string; deletedAt: Date | null
   "coach-b": { id: "coach-b", role: "COACH", deletedAt: null },
   "slettet-coach": { id: "slettet-coach", role: "COACH", deletedAt: new Date() },
 };
-const grupper: Record<string, { id: string; name: string }> = {
-  "gruppe-a": { id: "gruppe-a", name: "Gruppe A" },
+const grupper: Record<string, { id: string; name: string; coachId: string }> = {
+  "gruppe-a": { id: "gruppe-a", name: "Gruppe A", coachId: "coach-a" },
 };
 
 let groupCreates: unknown[] = [];
@@ -92,7 +92,13 @@ Object.assign(prismaMock, {
       groupCreates.push(data);
       return { id: "gruppe-ny", name: data.name };
     },
-    findUnique: async ({ where }: { where: { id: string } }) => grupper[where.id] ?? null,
+    findFirst: async ({ where }: { where: { id: string; OR?: Array<{ coachId?: string }> } }) => {
+      const g = grupper[where.id];
+      if (!g) return null;
+      // Simulerer eierskapsfilteret: kun coachId-grenen (ingen COACH-medlemmer i testen).
+      if (where.OR) return where.OR.some((c) => c.coachId === g.coachId && c.coachId === bruker?.id) ? g : null;
+      return g;
+    },
     delete: async ({ where }: { where: { id: string } }) => {
       if (simulerDbFeil) throw new Error("db feil");
       groupDeletes.push(where.id);
@@ -193,6 +199,22 @@ test("deleteGroup sletter gruppe for COACH med MANAGE_GROUPS", async () => {
   assert.ok("success" in svar && svar.success);
   assert.deepEqual(groupDeletes, ["gruppe-a"]);
   assert.equal(auditWrites.at(-1)?.action, "group.deleted");
+});
+
+test("deleteGroup avviser COACH som ikke eier gruppen, uten å slette", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  const { deleteGroup } = await actions();
+  const svar = await deleteGroup("gruppe-a");
+  assert.ok("error" in svar);
+  assert.equal(groupDeletes.length, 0);
+});
+
+test("deleteGroup lar ADMIN slette andres gruppe", async () => {
+  bruker = { id: "admin-a", role: "ADMIN", name: "Admin" };
+  const { deleteGroup } = await actions();
+  const svar = await deleteGroup("gruppe-a");
+  assert.ok("success" in svar && svar.success);
+  assert.deepEqual(groupDeletes, ["gruppe-a"]);
 });
 
 test("deleteGroup avviser ukjent gruppe-id", async () => {

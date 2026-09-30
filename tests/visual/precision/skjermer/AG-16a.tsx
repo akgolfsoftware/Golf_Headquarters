@@ -2,7 +2,7 @@
 import { UsersRound } from "lucide-react";
 import { AG16Gruppedetalj, AG16Timeplan } from "@/components/admin/precision/AG16Gruppe";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { LasterTilstand, FeilTilstand } from "@/components/precision/pa";
+import { FeilTilstand, LasterTilstand } from "@/components/precision/pa";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { Natt } from "./_natt";
 import type { GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
@@ -45,16 +45,21 @@ const tp: GruppeTimeplanV2Data = {
 
 const medRolle = (n: React.ReactNode) => <AdminRolleProvider erAdmin>{n}</AdminRolleProvider>;
 
-export const tilstander = {
-  data: medRolle(<AG16Gruppedetalj navn="Test Coach" data={data} maler={maler} />),
-  tom: medRolle(<AG16Gruppedetalj navn="Test Coach" data={{ ...data, antallMedlemmer: 0, antallHjelpetrenere: 0, medlemmer: [], trinnValg: [], nesteSamling: null, kommendeSamlinger: [], antallSamlinger: 0, snittHcp: "—", totalRunder: 0, proAndel: 0, coachNavn: null, coachEpost: null }} maler={[]} />),
+const grunn: Record<string, React.ReactNode> = {
+  data: medRolle(<AG16Gruppedetalj navn="Test Coach" data={data} maler={maler} antallFaste={2} kanSlette />),
+  tom: medRolle(<AG16Gruppedetalj navn="Test Coach" data={{ ...data, antallMedlemmer: 0, antallHjelpetrenere: 0, medlemmer: [], trinnValg: [], nesteSamling: null, kommendeSamlinger: [], antallSamlinger: 0, snittHcp: "—", totalRunder: 0, proAndel: 0, coachNavn: null, coachEpost: null }} maler={[]} antallFaste={0} kanSlette />),
+  // Tegningens laster-tilstand. Runtime bruker den generiske V2Laster i grupper/loading.tsx (ren serverkomponent, CSP-regelen) — avvik meldt i PR.
   laster: medRolle(<AgencyOSSkall navn="Test Coach"><div className="pa-side"><LasterTilstand text="Henter gruppen …" /></div></AgencyOSSkall>),
-  feil: medRolle(<AgencyOSSkall navn="Test Coach"><div className="pa-side"><FeilTilstand icon={UsersRound} title="Gruppen kunne ikke hentes" text="Ingen tider eller medlemskap er endret. Prøv igjen." code="FEIL 503" /></div></AgencyOSSkall>),
+  feil: medRolle(<AgencyOSSkall navn="Test Coach"><div className="pa-side"><FeilTilstand icon={UsersRound} title="Gruppen kunne ikke hentes" text="Ingen medlemskap er endret. Prøv igjen." code="FEIL 503" /></div></AgencyOSSkall>),
   timeplan: medRolle(<AG16Timeplan navn="Test Coach" data={tp} />),
   "timeplan-fokus": medRolle(<AG16Timeplan navn="Test Coach" data={{ ...tp, focusId: "r3" }} />),
-  "data-natt": medRolle(<Natt><AG16Gruppedetalj navn="Test Coach" data={data} maler={maler} /></Natt>),
-  "timeplan-natt": medRolle(<Natt><AG16Timeplan navn="Test Coach" data={tp} /></Natt>),
   "timeplan-tom": medRolle(<AG16Timeplan navn="Test Coach" data={{ ...tp, totaltAntall: 0, faste: [], kommende: [], tidligere: [] }} />),
+  "timeplan-feil": medRolle(<AgencyOSSkall navn="Test Coach"><div className="pa-side"><FeilTilstand icon={UsersRound} title="Timeplanen kunne ikke hentes" text="Ingen tider er endret. Prøv igjen." code="FEIL 503" /></div></AgencyOSSkall>),
 };
 
-export const natt = ["data-natt", "timeplan-natt"];
+/** Nattvariant av hver tilstand (tegningen er målt i natt for alle tilstander). */
+const nattVarianter = Object.fromEntries(Object.entries(grunn).map(([k, v]) => [`${k}-natt`, <Natt key={k}>{v}</Natt>]));
+
+export const tilstander = { ...grunn, ...nattVarianter };
+
+export const natt = Object.keys(nattVarianter);

@@ -15,13 +15,12 @@
 import { useEffect, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarDays, CalendarPlus, Copy, Layers, Mail, Trash2, UserMinus, UserPlus, UsersRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, Copy, Layers, Mail, Plus, Trash2, UserMinus, UserPlus, CalendarDays } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Knapp, KnappLenke, Meta, StatusPille, TomTilstand } from "@/components/precision/pa";
-import { Initialer } from "@/components/precision/pa-a3";
 import { Sokefelt, SegmentertValg, IkonKnapp } from "@/components/precision/pa-a2";
-import { Ark, Dialogboks, FanerLenker, Skjemafelt, Tekstfelt, TekstOmrade, Side, SideHode } from "@/components/precision/pa-a4";
-import type { GruppeDetaljV2Data, MedlemRad, SamlingRad } from "@/components/admin/v2/GruppeDetaljV2";
+import { Ark, Dialogboks, Skjemafelt, Tekstfelt, TekstOmrade, Side, SideHode } from "@/components/precision/pa-a4";
+import type { GruppeDetaljV2Data, MedlemRad } from "@/components/admin/v2/GruppeDetaljV2";
 import type { GruppeTimeplanV2Data, TimeplanRad } from "@/components/admin/v2/GruppeTimeplanV2";
 import { fjernGruppemedlem, inviterSpillereTilGruppe, leggTilGruppemedlem, opprettGruppeTrening, dupliserGruppeTime } from "@/app/admin/grupper/[id]/actions";
 import { deleteGroup } from "@/app/admin/grupper/actions";
@@ -31,6 +30,7 @@ import { osloLokalTilDato, datoTilOsloLokal } from "@/lib/admin/gruppe-tid";
 import type { GruppemedlemRolle } from "@/lib/domain/grupper";
 import "@/styles/precision-a4.css";
 import "@/styles/precision-a5.css";
+import "@/styles/precision-a16.css";
 
 export type RullUtMal = { id: string; name: string; varighetUker: number; sessionCount: number };
 
@@ -39,13 +39,20 @@ export type RullUtMal = { id: string; name: string; varighetUker: number; sessio
 type FaneId = "medlemmer" | "workbench" | "arsplan" | "timeplan" | "skoledata";
 function GruppeFaner({ groupId, aktiv }: { groupId: string; aktiv: FaneId }) {
   const b = `/admin/grupper/${groupId}`;
-  return <FanerLenker faner={[
-    { href: b, navn: "Medlemmer", aktiv: aktiv === "medlemmer" },
-    { href: `${b}/workbench`, navn: "Workbench", aktiv: aktiv === "workbench" },
-    { href: `${b}/arsplan`, navn: "Årsplan", aktiv: aktiv === "arsplan" },
-    { href: `${b}/timeplan`, navn: "Timeplan", aktiv: aktiv === "timeplan" },
-    { href: `${b}/arsplan/skoledata`, navn: "Skoledata", aktiv: aktiv === "skoledata" },
-  ]} />;
+  const faner: ReadonlyArray<{ href: string; navn: string; id: FaneId }> = [
+    { href: b, navn: "Medlemmer", id: "medlemmer" },
+    { href: `${b}/workbench`, navn: "Workbench", id: "workbench" },
+    { href: `${b}/arsplan`, navn: "Årsplan", id: "arsplan" },
+    { href: `${b}/timeplan`, navn: "Timeplan", id: "timeplan" },
+    { href: `${b}/arsplan/skoledata`, navn: "Skoledata", id: "skoledata" },
+  ];
+  return <nav aria-label="Gruppe" className="ag16-faner">
+    {faner.map((f) => <Link key={f.id} href={f.href} className="pa-choice ag16-pille" aria-pressed={f.id === aktiv} aria-current={f.id === aktiv ? "page" : undefined}>{f.navn}</Link>)}
+  </nav>;
+}
+
+function TilbakeTilGrupper() {
+  return <div><KnappLenke variant="ghost" size="sm" icon={ArrowLeft} iconName="arrow-left" href="/admin/grupper">Grupper</KnappLenke></div>;
 }
 
 function Seksjon({ k, meta, children }: { k: string; meta?: string; children: ReactNode }) {
@@ -133,9 +140,9 @@ function LeggTilArk({ data, onClose }: { data: GruppeDetaljV2Data; onClose: () =
     });
   };
 
-  return <Ark open onClose={onClose} kicker={`Grupper · ${data.navn}`} title="Legg til medlem"
+  return <Ark open onClose={onClose} kicker="Grupper · søk i PlayerHQ" title="Legg til spillere"
     footer={<>
-      <Knapp fullWidth icon={UserPlus} iconName="user-plus" disabled={pending || !valgt} loading={pending} loadingText="Legger til …" onClick={lagre}>Legg til {entall}</Knapp>
+      <Knapp fullWidth icon={UserPlus} iconName="user-plus" disabled={pending || !valgt} loading={pending} loadingText="Legger til …" onClick={lagre}>Lagre</Knapp>
       <Knapp variant="ghost" fullWidth disabled={pending} onClick={onClose}>Avbryt</Knapp>
     </>}>
     <SegmentertValg label="Rolle i gruppen" value={rolle} options={ROLLER} onChange={velgRolle} />
@@ -209,9 +216,24 @@ function RullUtArk({ data, maler, onClose }: { data: GruppeDetaljV2Data; maler: 
 }
 
 export type AG16Tilstand = "data" | "tom";
-export type AG16DetaljProps = { navn: string; data: GruppeDetaljV2Data; maler: RullUtMal[] };
+export type AG16DetaljProps = {
+  navn: string; data: GruppeDetaljV2Data; maler: RullUtMal[];
+  /** Antall gjentakende (faste) tider i gruppas timeplan. */
+  antallFaste: number;
+  /** Bare eier (hovedcoach eller aktivt COACH-medlem) og ADMIN kan slette gruppen; deleteGroup håndhever det på serveren. */
+  kanSlette: boolean;
+};
 
-export function AG16Gruppedetalj({ navn, data, maler }: AG16DetaljProps) {
+const Rad = ({ a, sub, b, i }: { a: string; sub?: string | null; b?: ReactNode; i: number }) =>
+  <div role="listitem" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 52, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "6px 0", minWidth: 0 }}>
+    <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+      <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{a}</span>
+      {sub && <Meta>{sub}</Meta>}
+    </span>
+    {b != null && <span style={{ font: "600 13px/1.3 var(--font-mono)", color: "var(--text-primary)", textAlign: "right", display: "flex", gap: 8, alignItems: "center", justifyContent: "flex-end", flexWrap: "wrap" }}>{b}</span>}
+  </div>;
+
+export function AG16Gruppedetalj({ navn, data, maler, antallFaste, kanSlette }: AG16DetaljProps) {
   const router = useRouter();
   const [leggTil, setLeggTil] = useState(false);
   const [rullUt, setRullUt] = useState(false);
@@ -236,78 +258,47 @@ export function AG16Gruppedetalj({ navn, data, maler }: AG16DetaljProps) {
     router.push("/admin/grupper");
   });
 
-  const medlemmer = <Seksjon k={`Medlemmer · ${data.medlemmer.length}`} meta={`SNITT-HCP ${data.snittHcp}`.toUpperCase()}>
-    {data.trinnValg.length > 0 && <div role="group" aria-label="Trinn" style={{ display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0 }}>
-      {["", ...data.trinnValg].map((t) => <Link key={t || "alle"} href={t ? `?trinn=${encodeURIComponent(t)}` : "?"} scroll={false} className="pa-choice" aria-pressed={(data.aktivtTrinn ?? "") === t}>{t || "Alle"}</Link>)}
+  const antall = data.medlemmer.length;
+  const medlemmer = <Seksjon k={`Medlemmer · ${data.navn}`} meta={`${antall} ${antall === 1 ? "SPILLER" : "SPILLERE"} · ${(data.coachNavn ?? "Ingen coach").toUpperCase()}`}>
+    {data.trinnValg.length > 0 && <div role="group" aria-label="Trinn" className="ag16-faner">
+      {["", ...data.trinnValg].map((t) => <Link key={t || "alle"} href={t ? `?trinn=${encodeURIComponent(t)}` : "?"} scroll={false} className="pa-choice ag16-pille" aria-pressed={(data.aktivtTrinn ?? "") === t}>{t || "Alle"}</Link>)}
     </div>}
-    {data.medlemmer.length === 0
-      ? <TomTilstand icon={UsersRound} title="Ingen medlemmer ennå" text="Legg til spillere for å se gruppen her." actions={<Knapp size="sm" icon={UserPlus} iconName="user-plus" onClick={() => setLeggTil(true)}>Legg til medlem</Knapp>} />
-      : <div role="list">
-        {data.medlemmer.map((m, i) => <div key={m.id} role="listitem" style={{ display: "grid", gridTemplateColumns: "auto minmax(0,1fr) auto auto", gap: 12, alignItems: "center", minHeight: 56, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "6px 0", minWidth: 0 }}>
-          <Initialer navn={m.navn} size={36} />
-          <Link href={`/admin/spillere/${m.userId}`} style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0, color: "inherit", textDecoration: "none" }}>
-            <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{m.navn}</span>
-            <Meta>{`${m.homeClub ?? "Klubb ukjent"} · ${rolleTekst(m)}${m.schoolYear ? ` · ${m.schoolYear}` : ""}`.toUpperCase()}</Meta>
+    {antall === 0
+      ? <Dempet>Ingen medlemmer ennå. Søk opp spillere med PlayerHQ og hak av gruppa.</Dempet>
+      : <div role="list" className="ag16-medlemsliste">
+        {data.medlemmer.map((m) => <div key={m.id} role="listitem" className="ag16-medlem">
+          <Link href={`/admin/spillere/${m.userId}`} className="ag16-medlem__navn">
+            {m.navn}
+            {(m.erTrener || m.erHjelpetrener) && <Meta>{rolleTekst(m).toUpperCase()}</Meta>}
           </Link>
-          <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
-            <span style={{ font: "600 13px/1.3 var(--font-mono)", color: "var(--text-primary)" }}>{`HCP ${fmtHcp(m.hcp)}`}</span>
-            <Meta>{m.planNavn ? `PLAN ${m.planAndel} %` : "INGEN PLAN"}</Meta>
-          </span>
           <IkonKnapp icon={UserMinus} name="user-minus" aria-label={`Fjern ${m.navn} fra gruppen`} onClick={() => setFjern(m)} />
         </div>)}
       </div>}
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <Knapp size="sm" icon={UserPlus} iconName="user-plus" onClick={() => setLeggTil(true)}>Legg til spillere</Knapp>
+      {maler.length > 0 && <Knapp size="sm" variant="secondary" icon={Layers} iconName="layers" disabled={data.antallMedlemmer === 0} onClick={() => setRullUt(true)}>Rull ut planmal</Knapp>}
+    </div>
   </Seksjon>;
 
-  const stat = (l: string, v: string, h?: string) => <div key={l} className="pa-a5-stat"><span className="pa-a5-stat__label">{l}</span><span className="pa-a5-stat__value">{v}</span>{h && <span className="pa-a5-stat__hint">{h.toUpperCase()}</span>}</div>;
-  const neste: (SamlingRad & { description?: string | null }) | null = data.nesteSamling;
-  const hoyre = <>
-    <Seksjon k="Nøkkeltall" meta="SISTE 90 DAGER">
-      <div className="pa-a5-stat-grid">
-        {stat("Medlemmer", String(data.antallMedlemmer), `${data.antallHjelpetrenere} assist coach`)}
-        {stat("Snitt-HCP", data.snittHcp)}
-        {stat("Runder", String(data.totalRunder), "90 dager")}
-        {stat("PRO-andel", `${data.proAndel} %`)}
-      </div>
-    </Seksjon>
-    <Seksjon k="Neste samling" meta={data.antallSamlinger ? `${data.antallSamlinger} PLANLAGT` : "INGEN"}>
-      {neste ? <>
-        <div role="list">
-          {[neste, ...data.kommendeSamlinger.filter((s) => s.id !== neste.id)].slice(0, 5).map((s, i) => <div key={s.id} role="listitem" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 52, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "6px 0", minWidth: 0 }}>
-            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-              <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{s.title}</span>
-              <Meta>{`${dato(s.startAt)} · ${klokke(s.startAt)}${s.location ? ` · ${s.location}` : ""}`.toUpperCase()}</Meta>
-            </span>
-            <KnappLenke size="sm" variant="ghost" href={`/admin/grupper/${data.id}/timeplan?focus=${s.id}#s-${s.id}`}>Detaljer</KnappLenke>
-          </div>)}
-        </div>
-        <div><KnappLenke size="sm" variant="secondary" href="/admin/bookinger/ny" icon={CalendarPlus} iconName="calendar-plus">Start økt</KnappLenke></div>
-      </> : <Dempet>Ingen samlinger planlagt. Bruk «Planlegg gruppetrening» for å legge inn første økt.</Dempet>}
-    </Seksjon>
-    <Seksjon k="Coach">
-      <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{data.coachNavn ?? "Ingen primær-coach satt"}</span>
-      {data.coachEpost && <Meta style={{ overflowWrap: "anywhere" }}>{data.coachEpost.toUpperCase()}</Meta>}
-    </Seksjon>
-    {maler.length > 0 && <Seksjon k="Planlegg for hele gruppa" meta={`${maler.length} MALER`}>
-      <Dempet>Rull ut en planmal til alle {data.antallMedlemmer} medlemmene i én operasjon.</Dempet>
-      <div><Knapp size="sm" variant="secondary" icon={Layers} iconName="layers" disabled={data.antallMedlemmer === 0} onClick={() => setRullUt(true)}>Rull ut mal</Knapp></div>
-    </Seksjon>}
-  </>;
+  const plan = <Seksjon k="Timeplan og skoledata" meta="GRUPPEPLAN I WORKBENCH">
+    <div role="list">
+      <Rad i={0} a="Faste tider" b={antallFaste > 0 ? `${antallFaste} ukentlig` : "—"} />
+      <Rad i={1} a="Skoledata" b="—" />
+    </div>
+    <div><KnappLenke variant="secondary" size="sm" iconRight={ArrowRight} href={`/admin/grupper/${data.id}/workbench`}>Åpne gruppeplanen i Workbench</KnappLenke></div>
+  </Seksjon>;
 
   return <AgencyOSSkall navn={navn}>
     <Side>
-      <SideHode kicker="Mer · Grupper" title={data.navn}
-        sub={`${data.type} · ${data.antallMedlemmer} ${data.antallMedlemmer === 1 ? "medlem" : "medlemmer"} · Coach ${data.coachNavn ?? "ikke satt"}`}
-        actions={<div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <KnappLenke icon={CalendarDays} iconName="calendar-days" href={`/admin/grupper/${data.id}/timeplan`}>Planlegg gruppetrening</KnappLenke>
-          <Knapp variant="secondary" icon={UserPlus} iconName="user-plus" onClick={() => setLeggTil(true)}>Legg til medlem</Knapp>
-        </div>} />
+      <TilbakeTilGrupper />
+      <SideHode kicker="Mer · Grupper" title={data.navn} />
       <GruppeFaner groupId={data.id} aktiv="medlemmer" />
       {feil && <p role="alert" className="a4-feil">{feil}</p>}
-      <div className="pa-a5-grid pa-a5-grid--2">
+      <div className="ag16-kolonner">
         <div className="pa-a5-stack">{medlemmer}</div>
         <div className="pa-a5-stack">
-          {hoyre}
-          <div><Knapp variant="ghost" size="sm" icon={Trash2} iconName="trash-2" onClick={() => setSlett(true)}>Slett gruppe</Knapp></div>
+          {plan}
+          {kanSlette && <div><Knapp variant="ghost" size="sm" icon={Trash2} iconName="trash-2" onClick={() => setSlett(true)}>Slett gruppe</Knapp></div>}
         </div>
       </div>
     </Side>
@@ -336,20 +327,29 @@ function varighet(startIso: string, endIso: string): string {
 }
 const storForbokstav = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-function TimeplanSeksjon({ k, rader, fast, dempet, focusId, onDupliser }: { k: string; rader: TimeplanRad[]; fast?: boolean; dempet?: boolean; focusId: string | null; onDupliser: (r: TimeplanRad) => void }) {
-  return <Seksjon k={k} meta={`${rader.length} ${fast ? "UKENTLIG" : ""}`.trim()}>
-    <div role="list" style={{ opacity: dempet ? 0.75 : 1 }}>
+const KORT_UKEDAG = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "short" });
+const DAG_MND = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit" });
+/** «LØR 03.10» som i tegningen (ukedag kort, dag og måned med to sifre). */
+const kortDato = (iso: string) => {
+  const d = new Date(iso);
+  const del = (t: "day" | "month") => DAG_MND.formatToParts(d).find((p) => p.type === t)?.value.padStart(2, "0") ?? "—";
+  return `${KORT_UKEDAG.format(d).replace(".", "")} ${del("day")}.${del("month")}`;
+};
+
+function TimeplanSeksjon({ k, meta, rader, fast, focusId, onDupliser }: { k: string; meta: string; rader: TimeplanRad[]; fast?: boolean; focusId: string | null; onDupliser: (r: TimeplanRad) => void }) {
+  return <Seksjon k={k} meta={meta}>
+    <div role="list">
       {rader.map((s, i) => <div key={s.id} id={`s-${s.id}`} role="listitem" data-fokus={s.id === focusId || undefined}
-        style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 56, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "8px 0", minWidth: 0, boxShadow: s.id === focusId ? "inset 3px 0 0 var(--text-primary)" : "none", paddingLeft: s.id === focusId ? 12 : 0 }}>
+        style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 52, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "6px 0", minWidth: 0, boxShadow: s.id === focusId ? "inset 3px 0 0 var(--text-primary)" : "none", paddingLeft: s.id === focusId ? 12 : 0 }}>
         <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-          <span style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{s.title}</span>
-            {fast && s.recurring && <StatusPille>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</StatusPille>}
-          </span>
-          <Meta>{`${storForbokstav(UKEDAG.format(new Date(s.startAt)))} · ${klokke(s.startAt).replace(":", ".")}–${klokke(s.endAt).replace(":", ".")} · ${varighet(s.startAt, s.endAt)}${fast ? "" : ` · ${dato(s.startAt)}`}${s.location ? ` · ${s.location}` : ""}${s.maxParticipants != null ? ` · maks ${s.maxParticipants}` : ""}`.toUpperCase()}</Meta>
+          <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{s.title}</span>
+          <Meta>{`${fast ? storForbokstav(UKEDAG.format(new Date(s.startAt))) : kortDato(s.startAt)} · ${klokke(s.startAt).replace(":", ".")}–${klokke(s.endAt).replace(":", ".")} · ${varighet(s.startAt, s.endAt)}${s.location ? ` · ${s.location}` : ""}${fast && s.maxParticipants != null ? ` · maks ${s.maxParticipants}` : ""}`.toUpperCase()}</Meta>
           {s.description && <Dempet>{s.description}</Dempet>}
         </span>
-        <Knapp size="sm" variant="ghost" icon={Copy} iconName="copy" onClick={() => onDupliser(s)}>Dupliser</Knapp>
+        <span style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {fast && s.recurring && <StatusPille>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</StatusPille>}
+          <Knapp size="sm" variant="ghost" icon={Copy} iconName="copy" onClick={() => onDupliser(s)}>Dupliser</Knapp>
+        </span>
       </div>)}
     </div>
   </Seksjon>;
@@ -393,7 +393,7 @@ function NyTreningArk({ groupId, navn, onClose }: { groupId: string; navn: strin
 
   return <Ark open onClose={onClose} kicker={`Timeplan · ${navn}`} title="Ny gruppetrening"
     footer={<>
-      <Knapp fullWidth icon={CalendarPlus} iconName="calendar-plus" loading={pending} loadingText="Oppretter …" onClick={opprett}>Opprett</Knapp>
+      <Knapp fullWidth icon={Plus} iconName="plus" loading={pending} loadingText="Oppretter …" onClick={opprett}>Opprett</Knapp>
       <Knapp variant="ghost" fullWidth disabled={pending} onClick={onClose}>Avbryt</Knapp>
     </>}>
     <Skjemafelt label="Tittel" required><Tekstfelt value={tittel} onChange={setTittel} placeholder="Gruppetrening" /></Skjemafelt>
@@ -448,24 +448,25 @@ export function AG16Timeplan({ navn, data }: AG16TimeplanProps) {
 
   return <AgencyOSSkall navn={navn}>
     <Side>
+      <TilbakeTilGrupper />
       <SideHode kicker="Mer · Grupper · Timeplan" title={data.navn}
-        sub={`${data.totaltAntall} tider totalt · ${data.faste.length} faste · ${data.kommende.length} kommende`}
-        actions={<Knapp icon={CalendarPlus} iconName="calendar-plus" onClick={() => setNy(true)}>Ny gruppetrening</Knapp>} />
+        actions={<Knapp icon={Plus} iconName="plus" onClick={() => setNy(true)}>Ny gruppetrening</Knapp>} />
       <GruppeFaner groupId={data.groupId} aktiv="timeplan" />
-      {data.totaltAntall === 0
-        ? <TomTilstand icon={CalendarDays} title="Ingen faste tider satt" text="Legg inn første gruppetrening. Ukentlige tider vises her." actions={<Knapp icon={CalendarPlus} iconName="calendar-plus" onClick={() => setNy(true)}>Ny gruppetrening</Knapp>} />
-        : <div className="pa-a5-grid pa-a5-grid--2">
-          <div className="pa-a5-stack">
-            {data.faste.length > 0 && <TimeplanSeksjon k="Faste tider · ukentlig" rader={data.faste} fast focusId={data.focusId} onDupliser={setDup} />}
-            {data.kommende.length > 0 && <TimeplanSeksjon k="Kommende samlinger" rader={data.kommende} focusId={data.focusId} onDupliser={setDup} />}
-            {data.faste.length === 0 && data.kommende.length === 0 && <Seksjon k="Kommende"><Dempet>Ingen kommende samlinger.</Dempet></Seksjon>}
-          </div>
-          <div className="pa-a5-stack">
-            {data.tidligere.length > 0
-              ? <TimeplanSeksjon k="Tidligere" rader={data.tidligere} dempet focusId={data.focusId} onDupliser={setDup} />
-              : <Seksjon k="Tidligere" meta="INGEN"><Dempet>Ingen tidligere samlinger.</Dempet></Seksjon>}
-          </div>
-        </div>}
+      <div className="ag16-kolonner">
+        <div className="pa-a5-stack">
+          {data.faste.length > 0
+            ? <TimeplanSeksjon k="Faste tider" meta={`${data.faste.length} UKENTLIG`} rader={data.faste} fast focusId={data.focusId} onDupliser={setDup} />
+            : <Seksjon k="Faste tider" meta="INGEN"><TomTilstand icon={CalendarDays} title="Ingen faste tider" text="Legg inn første gruppetrening. Ukentlige tider vises her." actions={<Knapp variant="secondary" icon={Plus} iconName="plus" onClick={() => setNy(true)}>Ny gruppetrening</Knapp>} /></Seksjon>}
+          {data.kommende.length > 0
+            ? <TimeplanSeksjon k="Kommende samlinger" meta={`${data.kommende.length} PLANLAGT`} rader={data.kommende} focusId={data.focusId} onDupliser={setDup} />
+            : <Seksjon k="Kommende samlinger" meta="INGEN"><Dempet>Ingen enkeltsamlinger planlagt.</Dempet></Seksjon>}
+        </div>
+        <div className="pa-a5-stack">
+          {data.tidligere.length > 0
+            ? <TimeplanSeksjon k="Tidligere" meta={`${data.tidligere.length} GJENNOMFØRT`} rader={data.tidligere} focusId={data.focusId} onDupliser={setDup} />
+            : <Seksjon k="Tidligere" meta="INGEN"><Dempet>Ingen tidligere samlinger.</Dempet></Seksjon>}
+        </div>
+      </div>
     </Side>
     {ny && <NyTreningArk groupId={data.groupId} navn={data.navn} onClose={() => setNy(false)} />}
     {dup && <DupliserArk groupId={data.groupId} rad={dup} onClose={() => setDup(null)} />}
