@@ -14,7 +14,7 @@ export default function BriefError({ error, reset }: { error: Error & { digest?:
   }, [error]);
   return <div className="pa-root" data-theme="night" data-design="precision-athletics" style={{ minHeight: "100dvh", background: "var(--surface-page)", padding: "12px 16px", boxSizing: "border-box" }}>
     <div style={{ maxWidth: 600, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-      <FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Tilkoblingen ble brutt. Prøv igjen, eller gå tilbake til I dag."
+      <FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Noe gikk galt da økta skulle hentes. Prøv igjen, eller gå tilbake til I dag."
         retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
       <Link href="/portal" className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full" style={{ height: 64 }}>Tilbake til I dag</Link>
     </div>

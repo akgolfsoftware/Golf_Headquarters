@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Play } from "lucide-react";
 import { Ikon } from "@/components/precision/pa";
-import { PH04Lenke } from "@/components/portal/precision/PH04LiveBrief";
+import { PH04Lenke, PH04TilbakeIDag, PH04TilbakeTilPlan } from "@/components/portal/precision/PH04LiveBrief";
 import type { LiveV2Session } from "./types";
 import { plannedVolumText } from "./types";
 import { AXIS_LABEL } from "@/lib/portal-live/format";
@@ -22,8 +22,11 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
   const ekstra = [];
   if (data.coachComment) ekstra.push({ label: "Fra coachen", text: data.coachComment });
   if (provenance) ekstra.push({ label: "Om økta", text: provenance });
-  const action = <>{href && <PH04Lenke href={href} ikon={choice.kind === "start" ? <Ikon icon={Play} size={22} name="play" /> : undefined}>{choice.kind === "start" ? "Start økt" : choice.label}</PH04Lenke>}
-    {canStart && choice.kind === "start" && <Link className="pa-btn pa-btn--secondary pa-btn--lg pa-btn--full" href="/portal/planlegge/workbench" data-od-id="brief-flytt-okta">Åpne i Workbench</Link>}</>;
+  const sperret = choice.kind === "blocked";
+  const tomStart = data.drills.length === 0 && choice.kind === "start";
+  const action = tomStart ? <PH04TilbakeIDag /> : <>{href && <PH04Lenke href={href} ikon={choice.kind === "start" ? <Ikon icon={Play} size={22} name="play" /> : undefined}>{choice.kind === "start" ? "Start økt" : choice.label}</PH04Lenke>}
+    {canStart && choice.kind === "start" && <Link className="pa-btn pa-btn--secondary pa-btn--lg pa-btn--full" href="/portal/planlegge/workbench" data-od-id="brief-flytt-okta">Åpne i Workbench</Link>}
+    {sperret && <PH04TilbakeTilPlan />}</>;
   return <SessionBrief title={data.title} durationMin={durationMin} scheduledAtISO={data.scheduledAtISO} location={data.location} pyramide={data.pyramide} hvem={data.studentName} coach={data.coachName}
     maal={data.maalsetning} fokus={data.focus} sections={ekstra} message={choice.message} action={action}
     drills={data.drills.map((drill) => ({ id: drill.id, navn: drill.name, pyramide: drill.pyramide, notat: [drill.description, drill.notes !== drill.description ? drill.notes : null].filter(Boolean).join("\n") || null,

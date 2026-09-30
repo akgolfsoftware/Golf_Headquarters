@@ -1,6 +1,6 @@
 /** Prøvefil for PH-04 Live-økt: før start. Syntetiske data, demospiller. */
 import { Play, CircleAlert, RotateCw } from "lucide-react";
-import { PH04LiveBrief, PH04Lenke, type PH04Props, type PH04Ovelse } from "@/components/portal/precision/PH04LiveBrief";
+import { PH04LiveBrief, PH04Lenke, PH04TilbakeIDag, PH04TilbakeTilPlan, type PH04Props, type PH04Ovelse } from "@/components/portal/precision/PH04LiveBrief";
 import { LiveBrief } from "@/components/portal/live/LiveBrief";
 import type { LiveV2Session } from "@/components/portal/live/types";
 import { Ikon, LasterTilstand, FeilTilstand, Knapp } from "@/components/precision/pa";
@@ -27,10 +27,10 @@ export const tilstander = {
   data: <PH04LiveBrief {...base} />,
   lang: <PH04LiveBrief {...base} tittel="Et veldig langt øktnavn som må brytes på flere linjer uten å sprenge skjermen" sted="Fredrikstad Golfklubb, Range 3 og puttinggreen" hvem="Et veldig langt spillernavn Og Etternavn"
     maal={"Første linje i målet.\nAndre linje med et veldig_langt_ord_uten_mellomrom_som_må_brytes_riktig_i_kortet"} ovelser={[ov(1, "Øvelse_med_et_veldig_langt_navn_uten_mellomrom_som_må_brytes", 20, "30 baller", "Teknisk", "Notat over\nto linjer")]} />,
-  tom: <PH04LiveBrief {...base} ovelser={[]} maal={null} fokus={null} ekstra={[]} />,
-  sperret: <PH04LiveBrief {...base} melding="Live krever PRO." handling={<PH04Lenke href="#">Se abonnement</PH04Lenke>} />,
+  tom: <PH04LiveBrief {...base} ovelser={[]} maal={null} fokus={null} ekstra={[]} handling={<PH04TilbakeIDag />} />,
+  sperret: <PH04LiveBrief {...base} melding="Live krever abonnement." handling={<><PH04Lenke href="#">Se abonnement</PH04Lenke><PH04TilbakeTilPlan /></>} />,
   laster: <Tegn><LasterTilstand text="Henter økta …" /></Tegn>,
-  feil: <Tegn><FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Tilkoblingen ble brutt. Prøv igjen, eller gå tilbake til I dag." retry={<Knapp variant="secondary" icon={RotateCw}>Prøv igjen</Knapp>} /><PH04Lenke href="#">Tilbake til I dag</PH04Lenke></Tegn>,
+  feil: <Tegn><FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Noe gikk galt da økta skulle hentes. Prøv igjen, eller gå tilbake til I dag." retry={<Knapp variant="secondary" icon={RotateCw}>Prøv igjen</Knapp>} /><PH04Lenke href="#">Tilbake til I dag</PH04Lenke></Tegn>,
 };
 
 // Ekte komponenter (LiveBrief) med syntetiske data: beviser kartleggingen fra appens datamodell.

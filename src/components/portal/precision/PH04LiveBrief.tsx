@@ -35,6 +35,7 @@ export type PH04Props = {
   ekstra: { label: string; text: string }[];
   ovelser: PH04Ovelse[];
   melding: string | null;
+  /** Handlingen nederst. Null gir «Tilbake til I dag». */
   handling: ReactNode;
 };
 
@@ -45,6 +46,16 @@ export function PH04Lenke({ href, children, ikon }: { href: string; children: Re
   return <Link href={href} className={btn(Boolean(ikon))} style={{ height: 64 }} data-od-id="brief-start">{ikon}{children}</Link>;
 }
 
+/** Tom økt som kan startes: ingen drill å starte, så veien tilbake er eneste handling. */
+export function PH04TilbakeIDag() {
+  return <PH04Lenke href="/portal" ikon={<Ikon icon={ArrowLeft} size={22} name="arrow-left" />}>Tilbake til I dag</PH04Lenke>;
+}
+
+/** Sekundærlenke til Plan for sperret økt, så knappen nederst aldri er eneste vei videre. */
+export function PH04TilbakeTilPlan() {
+  return <Link href="/portal/planlegge" className="pa-btn pa-btn--secondary pa-btn--lg pa-btn--full" data-od-id="brief-tilbake-plan">Tilbake til Plan</Link>;
+}
+
 const rad = { display: "flex", flexDirection: "column", gap: 4 } as const;
 const overTekst = { overflowWrap: "anywhere", minWidth: 0 } as const;
 
@@ -53,9 +64,7 @@ export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal
   const hvemLinje = [hvem ? hvem.toUpperCase() : null, coach ? `MED ${coach.toUpperCase()}` : null].filter(Boolean).join(" · ");
   const topp = [tid, sted?.toUpperCase()].filter(Boolean).join(" · ");
   const harKort = Boolean(maal || fokus || ekstra.length);
-  const bunn = tom && !melding
-    ? <PH04Lenke href="/portal" ikon={<Ikon icon={ArrowLeft} size={22} name="arrow-left" />}>Tilbake til I dag</PH04Lenke>
-    : handling;
+  const bunn = handling ?? <PH04TilbakeIDag />;
   return <div className="pa-root" data-theme="night" data-design="precision-athletics" data-od-id="ph-04-live-for-start" style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "var(--surface-page)", color: "var(--text-primary)" }}>
     <main style={{ flex: 1, width: "100%", maxWidth: 600, margin: "0 auto", boxSizing: "border-box", padding: "12px 16px 16px", display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 56 }}>
@@ -106,7 +115,7 @@ export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal
       </>}
     </main>
     <div style={{ position: "sticky", bottom: 0, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)", zIndex: 5 }}>
-      <div style={{ maxWidth: 600, margin: "0 auto", padding: "12px 16px max(16px, env(safe-area-inset-bottom))", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", padding: "12px 16px calc(max(16px, env(safe-area-inset-bottom)) + var(--ak-cookie-h, 0px))", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 8 }}>
         {melding && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }} role="status">{melding}</p>}
         {bunn}
       </div>
