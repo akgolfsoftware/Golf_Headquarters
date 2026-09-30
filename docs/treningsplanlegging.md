@@ -47,7 +47,7 @@ og viser bare relevante felt. Coachen og spilleren bestemmer.
 | Verdier som er bekreftet og låst | Kapittel 19 |
 | Interne kodenøkler og enum-verdier | Kapittel 20 |
 | Produktnavn, abonnement, booking og tilgang | Kapittel 2.5 og gjeldende produktregler |
-| Visuelt design | Den Claude Design-versjonen Anders velger. Masteren fastsetter ingen farger, fonter eller navigasjon |
+| Visuelt design | Den Claude Design-versjonen Anders velger. Masteren fastsetter ingen farger eller fonter; bare menynavnene (2.6) |
 | Faktisk funksjon | Kode og prøvd brukerreise. Dokumenttekst alene er ikke bevis |
 
 **Instruks til Claude Design:** bruk ordene i denne masteren. Ikke hent språk fra eldre
