@@ -1,13 +1,11 @@
 "use client";
 
-/* Feil-tilstand for /portal/tren/tester (Paper-port W1, fase2).
-   Fasit-copy: resultatlageret svarte ikke — loggede resultater er trygge.
-   Ligger på tester-nivået (ikke tren/) så fys-plan ikke arver copy-en.
-   Dekker også [testId]-rutene. */
+/* Feil-tilstand for /portal/tren/tester — Precision Athletics PH-14.
+   Dekker også [testId]-, ny- og team-norway-rutene under. */
 
 import { useEffect } from "react";
-import { TL } from "@/lib/v2/train-lock";
-
+import { CircleAlert } from "lucide-react";
+import { FeilTilstand } from "@/components/precision/pa";
 
 export default function Error({
   error,
@@ -21,46 +19,16 @@ export default function Error({
   }, [error]);
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", width: "100%", padding: "24px 16px" }}>
-      <div
-        style={{
-          padding: "24px 16px",
-          background: TL.dock,
-          border: `1px dashed ${TL.hair}`,
-          borderRadius: TL.radius.card,
-        }}
-      >
-        <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-          Klarte ikke å hente testene
-        </h3>
-        <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-          Resultatlageret svarte ikke innen 30 sekunder. Loggede resultater er trygge — også de
-          som alt er sendt til talentprofilen din.
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          data-od-id="tester-retry"
-          className="v2-press v2-focus"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 56,
-            width: "100%",
-            border: `1px solid ${TL.hair}`,
-            borderRadius: TL.radius.card,
-            background: TL.dim,
-            color: TL.text,
-            fontFamily: TL.font.sans,
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Prøv igjen
-        </button>
+    <div className="pa-root" data-design="precision-athletics">
+      <div className="pa-side" style={{ maxWidth: 1320 }}>
+        <FeilTilstand
+          icon={CircleAlert}
+          title="Testene kunne ikke hentes"
+          text="Resultatene dine er ikke slettet. Prøv igjen."
+          code={error.digest ? `FEIL · ${error.digest}` : undefined}
+          retry={<button type="button" className="pa-btn pa-btn--secondary" onClick={reset}>Prøv igjen</button>}
+        />
       </div>
-    </main>
+    </div>
   );
 }

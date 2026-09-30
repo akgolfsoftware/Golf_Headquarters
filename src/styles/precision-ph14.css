@@ -1,11 +1,9 @@
 /* PH-14 Tester (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-14.jsx). */
 .ph14-kolonner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
 .ph14-panel { display: none; }
-.ph14-ark-inn { display: block; }
 @media (min-width: 768px) {
   .ph14-kolonner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .ph14-panel { display: flex; }
-  .ph14-ark-inn { display: none; }
 }
 @media (min-width: 1280px) {
   .ph14-kolonner { grid-template-columns: minmax(0, 1fr) 400px; }

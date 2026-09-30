@@ -1,5 +1,6 @@
 /** Prøvefil for PH-14 Tester. Syntetiske data, ingen ekte spillere. */
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 import { PH14Tester, type PH14Props, type PH14Test } from "@/components/portal/precision/PH14Tester";
 
 export const sti = "/portal/tren/tester";
@@ -25,6 +26,7 @@ const Vis = (p: Partial<PH14Props>) => <PlayerHQSkall innboksHref="#" uleste={0}
 export const tilstander = {
   data: <Vis />,
   "data-natt": <Vis />,
+  laster: <div className="pa-side" style={{ maxWidth: 1320 }}><LasterTilstand text="Henter testprotokollene …" /></div>,
   tom: <Vis tilstand="tom" grupper={[]} antallForfaller={0} />,
   feil: <Vis tilstand="feil" grupper={[]} ukjentKode="FEIL 503 · TESTER" />,
 };

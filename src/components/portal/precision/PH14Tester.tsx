@@ -11,9 +11,10 @@
  *   - Grupperingen er Golfslag / Teknikk / Andre (hub-gruppe.ts), ikke
  *     Team Norway / AK Golf / Mine tester: appen har ingen slik gruppering.
  *   - «Registrer resultat» og «Lag egen test» åpner ikke eget ark; de fører til
- *     eksisterende flyter (/ny og /ny/egen). Loggen krever sted og utstyr, og
+ *     eksisterende flyter (/ny og /ny/egen). /ny velger test i eget steg 1 (fra en
+ *     fast katalog, ikke test-id), så valgt test tas ikke med dit. Loggen krever sted og utstyr, og
  *     Team Norway-tester kan ikke føres som ett tall (poengsum regnes fra forsøkene).
- *   - Enhet vises bare der verdiformateringen har en (prosent, poeng, treff): testene
+ *   - Enhet vises bare der verdiformateringen har en (prosent, poeng, «OK av N»): testene
  *     har ingen enhetskolonne. Norm A–K vises ikke: normene finnes ikke for alle tester.
  *   - Kurven er en enkel linje uten mål: testene har ikke målverdi i dataene.
  */
@@ -58,7 +59,7 @@ const bred = (cb: () => void) => { const m = window.matchMedia("(min-width: 768p
 function Kurve({ verdier, hoyde, label }: { verdier: number[]; hoyde: number; label: string }) {
   const min = Math.min(...verdier), max = Math.max(...verdier), span = max - min || 1, h = hoyde, w = 200;
   const pts = verdier.map((v, i) => `${(i / (verdier.length - 1)) * w},${h - 3 - ((v - min) / span) * (h - 6)}`).join(" ");
-  return <svg role="img" aria-label={label} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height: h, display: "block" }}>
+  return <svg {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height: h, display: "block" }}>
     <polyline points={pts} fill="none" stroke="var(--text-primary)" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
   </svg>;
 }
@@ -105,19 +106,19 @@ export function PH14Tester(p: PH14Props) {
   const liste = <Stabel>
     <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
       <Sokefelt label="Søk test" placeholder="Søk test" value={q} onChange={setQ} />
-      <Meta>{antallTreff} TESTER</Meta>
+      <Meta>{antallTreff} {antallTreff === 1 ? "TEST" : "TESTER"}</Meta>
     </div>
     {p.grupper.map((g) => {
       const rader = g.tester.filter(treff);
       if (!rader.length) return null;
       return <div key={g.id} className="pa-card" style={{ padding: 0, overflow: "hidden" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", padding: "12px 16px", borderBottom: "1px solid var(--border-hairline)", background: "var(--surface-flat)" }}>
-          <span className="kicker">{g.label}</span><Meta>{rader.length} TESTER</Meta>
+          <span className="kicker">{g.label}</span><Meta>{rader.length} {rader.length === 1 ? "TEST" : "TESTER"}</Meta>
         </div>
         {rader.map((t) => <button key={t.id} type="button" className="ph14-rad" aria-pressed={sel?.id === t.id} onClick={() => setValgt(t.id)}>
           <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
             <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{t.navn}</span>
-            <Meta>{t.maalinger ? `SISTE ${t.sisteDato ?? "—"} · ${t.maalinger} MÅLINGER` : "IKKE TESTET"}</Meta>
+            <Meta>{t.maalinger ? `SISTE ${t.sisteDato ?? "—"} · ${t.maalinger} ${t.maalinger === 1 ? "MÅLING" : "MÅLINGER"}` : "IKKE TESTET"}</Meta>
           </span>
           {split && (t.kurve.length >= 2 ? <Kurve verdier={t.kurve} hoyde={24} label="" /> : <Meta>—</Meta>)}
           <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
@@ -134,9 +135,9 @@ export function PH14Tester(p: PH14Props) {
   return <Side max={1320}>
     <SideHode kicker="Plan · Tester" title="Tester" sub="Team Norway-testbatteriet, AK Golf-tester og egne tester. Resultatene vises i Stats." actions={handlinger} />
     {p.tilstand === "feil"
-      ? <FeilTilstand icon={CircleAlert} title="Testene kunne ikke hentes" text="Resultatene dine er ikke slettet. Prøv igjen." code={p.ukjentKode ?? "FEIL 503 · TESTER"} retry={<KnappLenke variant="secondary" href="/portal/tren/tester">Prøv igjen</KnappLenke>} />
+      ? <FeilTilstand icon={CircleAlert} title="Testene kunne ikke hentes" text="Resultatene dine er ikke slettet. Prøv igjen." code={p.ukjentKode} retry={<KnappLenke variant="secondary" href="/portal/tren/tester">Prøv igjen</KnappLenke>} />
       : tom
-        ? <TomTilstand icon={ClipboardList} title="Ingen tester ennå" text="Testene avtaler du med Anders i Workbench. Du kan lage en egen test nå." actions={<KnappLenke href={p.egenHref} icon={Plus} iconName="plus">Lag egen test</KnappLenke>} />
+        ? <TomTilstand icon={ClipboardList} title="Ingen tester ennå" text="Testene dukker opp her når coachen din har registrert deg. Du kan lage en egen test nå." actions={<KnappLenke href={p.egenHref} icon={Plus} iconName="plus">Lag egen test</KnappLenke>} />
         : <div className="ph14-kolonner">
           {liste}
           <div className="pa-card ph14-panel">

@@ -54,6 +54,8 @@ export type TestRow = {
   delta: { text: string; tone: "pos" | "neg" | "flat" } | null;
   /** Antall registrerte forsøk. */
   attempts: number;
+  /** Alle resultater, nyeste først (råscore + tidspunkt). */
+  resultater: { score: number; takenAt: Date }[];
   /** Eldste→nyeste score for sparkline (min. 2 punkter for linje). */
   history: number[];
   /** Lavere score = bedre (utledet fra scoringRule). */
@@ -257,6 +259,7 @@ export async function loadTesterScreen(user: {
       latestDate: last ? dateLabel(last.takenAt) : null,
       delta,
       attempts,
+      resultater: [...hist].reverse(),
       history: hist.map((h) => h.score),
       lowerIsBetter,
       verdict,

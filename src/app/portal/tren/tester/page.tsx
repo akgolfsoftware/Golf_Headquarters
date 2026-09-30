@@ -6,7 +6,6 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
 import { loadTesterScreen, type TestRow } from "@/lib/portal-tester/tester-data";
 import { hubGruppeForNavn, formatHubVerdi, HUB_GRUPPE_LABEL, HUB_GRUPPE_REKKEFOLGE, type HubGruppe } from "@/lib/portal-tester/hub-gruppe";
 import { getUnreadNotifications } from "@/app/portal/actions";
@@ -29,25 +28,21 @@ export default async function TesterHubPage() {
   let feil = false;
   let uleste = 0;
   try {
-    const [screen, resultater, dash] = await Promise.all([
+    const [screen, dash] = await Promise.all([
       loadTesterScreen({ id: user.id, name: user.name, hcp: user.hcp, tier: user.tier }),
-      prisma.testResult.findMany({ where: { userId: user.id }, orderBy: { takenAt: "desc" }, select: { testId: true, score: true, takenAt: true } }),
       getUnreadNotifications(user.id, 1).catch(() => null),
     ]);
     uleste = dash?.count ?? 0;
-    const perTest = new Map<string, { score: number; takenAt: Date }[]>();
-    for (const r of resultater) perTest.set(r.testId, [...(perTest.get(r.testId) ?? []), r]);
-
     const alleRader = screen.groups.flatMap((g) => g.rows);
     antallForfaller = alleRader.filter((r) => r.forfallDato != null).length;
     const perGruppe = new Map<HubGruppe, PH14Test[]>(HUB_GRUPPE_REKKEFOLGE.map((g) => [g, []]));
     for (const r of alleRader) {
-      const hist = perTest.get(r.id) ?? [];
       const fmt = (raw: number | null) => (raw == null ? null : formatHubVerdi({ scoringKind: r.scoringKind, latestRaw: raw, shotsCount: r.shotsCount }));
-      perGruppe.get(r.hubGruppe ?? hubGruppeForNavn(r.name))!.push(tilTest(r, hist, fmt));
+      perGruppe.get(r.hubGruppe ?? hubGruppeForNavn(r.name))!.push(tilTest(r, fmt));
     }
     grupper = HUB_GRUPPE_REKKEFOLGE.map((g) => ({ id: g, label: HUB_GRUPPE_LABEL[g], tester: perGruppe.get(g)! })).filter((g) => g.tester.length > 0);
-  } catch {
+  } catch (e) {
+    console.error("[tester/page]", e);
     feil = true;
   }
 
@@ -65,7 +60,7 @@ export default async function TesterHubPage() {
   );
 }
 
-function tilTest(r: TestRow, hist: { score: number; takenAt: Date }[], fmt: (raw: number | null) => string | null): PH14Test {
+function tilTest(r: TestRow, fmt: (raw: number | null) => string | null): PH14Test {
   return {
     id: r.id,
     navn: r.name,
@@ -77,7 +72,7 @@ function tilTest(r: TestRow, hist: { score: number; takenAt: Date }[], fmt: (raw
     delta: r.delta ? { tekst: r.delta.text, bra: r.delta.tone === "pos" } : null,
     hoyereErBedre: !r.lowerIsBetter,
     forsok: r.shotsCount,
-    historikk: hist.map((h) => ({ dato: dma(h.takenAt), verdi: fmt(h.score) ?? "—" })),
+    historikk: r.resultater.map((h) => ({ dato: dma(h.takenAt), verdi: fmt(h.score) ?? "—" })),
     kurve: r.history,
     href: r.href,
   };

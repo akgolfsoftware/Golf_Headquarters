@@ -1,9 +1,15 @@
-/* Laster-tilstand for /portal/tren/tester (Paper-port W1, fase2).
-   Fasit: playerhq-tester-hub.html — enkle skjelettlinjer i avtagende bredde.
-   Ligger på tester-nivået (ikke tren/) så fys-plan ikke arver den. */
+/* Laster-tilstand for /portal/tren/tester — Precision Athletics PH-14.
+   Ren serverkomponent: ingen import fra "use client"-moduler (CSP-nonce, se
+   gotchas §Bygg og drift). Derfor ikke PlayerHQSkall; skallet kommer med siden. */
 
-import { V2Laster } from "@/components/v2/laster";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <div className="pa-root" data-design="precision-athletics">
+      <div className="pa-side" style={{ maxWidth: 1320 }}>
+        <LasterTilstand text="Henter testprotokollene …" />
+      </div>
+    </div>
+  );
 }
