@@ -1,13 +1,20 @@
 /**
- * Booking-relaterte transaksjons-e-poster.
+ * Booking-relaterte transaksjons-e-poster (EP-01 til EP-04, Precision Athletics).
  *
- * Henter EmailTemplate via slug, substituerer placeholders, sender via Resend.
+ * Innhold og utseende bygges i `templates/booking-mal.ts` fra bookingens egne data.
+ * EmailTemplate-raden (slug) er fortsatt bryteren: mangler eller er den deaktivert,
+ * sendes ingenting. Sendes via Resend.
  */
 import "server-only";
 
-import { cancellationDeadline } from "@/lib/booking/policy";
+import { AVBESTILLING_FRIST_TIMER, cancellationDeadline, hoursUntil } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import {
+  byggBookingEpost,
+  formaterKr,
+  type BookingEpostType,
+} from "@/lib/email/templates/booking-mal";
 import { logError } from "@/lib/error-tracking";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -28,38 +35,6 @@ function formatTid(d: Date): string {
   });
 }
 
-/**
- * Erstatt {{placeholder}} med faktiske verdier.
- */
-function substituer(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? "");
-}
-
-/**
- * Konverter markdown-aktig template-body til enkel HTML.
- * Støtter avsnitt (tomme linjer), fet (**tekst**), og linker.
- */
-function tilHtml(body: string): string {
-  const avsnitt = body.split(/\n\n+/).map((p) => {
-    let html = p.trim();
-    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/\n/g, "<br />");
-    return `<p>${html}</p>`;
-  });
-
-  return `<!doctype html>
-<html lang="nb">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; padding: 0 16px; color: #0A1F17; line-height: 1.6;">
-${avsnitt.join("\n")}
-<hr style="margin-top: 32px; border: none; border-top: 1px solid #E5E3DD;" />
-<p style="margin-top: 16px; color: #5E5C57; font-size: 12px;">
-  AK Golf Academy · Bossumveien 6, 1605 Fredrikstad
-</p>
-</body>
-</html>`;
-}
-
 async function hentTemplate(slug: string) {
   const tpl = await prisma.emailTemplate.findUnique({ where: { slug } });
   if (!tpl || !tpl.active) {
@@ -68,15 +43,53 @@ async function hentTemplate(slug: string) {
   return tpl;
 }
 
+/** «Mandag 28. september 2026 kl. 09:14» i Oslo-tid, uavhengig av serverens sone. */
+function osloNaa(now: Date = new Date()): string {
+  const dato = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo", weekday: "long", day: "numeric", month: "long", year: "numeric",
+  }).format(now);
+  const tid = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).format(now);
+  return `${stor(dato)} kl. ${tid}`;
+}
+
+function stor(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** Google Kalender-lenke fra bookingens Oslo-veggklokke (lagret som server-lokal tid). */
+function kalenderLenke(tittel: string, start: Date, slutt: Date, sted: string): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  const f = (d: Date) =>
+    `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}T${p(d.getHours())}${p(d.getMinutes())}00`;
+  const q = new URLSearchParams({
+    action: "TEMPLATE",
+    text: tittel,
+    dates: `${f(start)}/${f(slutt)}`,
+    ctz: "Europe/Oslo",
+    location: sted,
+  });
+  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+}
+
+type SendExtra = {
+  oldStartAt?: Date;
+  refundIssued?: boolean;
+  isCreditBooking?: boolean;
+};
+
 async function sendBooking(
+  type: BookingEpostType,
   slug: string,
   bookingId: string,
-  extraVars: Record<string, string> = {},
+  extra: SendExtra = {},
 ) {
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
     include: {
       user: { select: { name: true, email: true } },
+      coach: { select: { name: true } },
       serviceType: true,
       location: true,
     },
@@ -84,41 +97,66 @@ async function sendBooking(
   if (!booking) throw new Error("Booking not found");
 
   const epost = booking.user?.email ?? booking.guestEmail;
-  const navn = booking.user?.name ?? booking.guestName ?? "der";
+  const navn = booking.user?.name ?? booking.guestName ?? "";
   if (!epost) {
     console.warn("[booking-email] Ingen e-post på booking", bookingId);
     return;
   }
 
-  const tpl = await hentTemplate(slug);
-  const cancelDeadline = cancellationDeadline(booking.startAt);
+  await hentTemplate(slug);
 
-  // Credit-baserte bookinger (fra Academy-abonnement) skal ikke vise pris,
-  // men en melding om at den er trukket fra abonnementet.
+  // Credit-baserte bookinger (fra Academy-abonnement) viser ikke pris,
+  // men at den er trukket fra abonnementet.
   const erCreditBooking = !!booking.subscriptionId;
-  const priceFormatted = erCreditBooking
-    ? "Inkludert i abonnement"
-    : `${booking.priceOre / 100} kr`;
-  const paymentRef = erCreditBooking
-    ? "Trukket fra månedlig saldo"
-    : (booking.stripePaymentIntentId ?? "");
+  const erApp = !!booking.userId;
+  const frist = cancellationDeadline(booking.startAt);
+  const fristTekst = `${formatDato(frist)} kl. ${formatTid(frist)}`;
+  const varighetMin = Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000);
+  const tjeneste = varighetMin > 0 ? `${booking.serviceType.name} ${varighetMin} min` : booking.serviceType.name;
+  const refusjon = extra.isCreditBooking
+    ? "Klippet er lagt tilbake"
+    : extra.refundIssued
+      ? `${formaterKr(booking.priceOre)} til kortet du betalte med`
+      : "Ingen refusjon, avbestilt etter fristen";
 
-  const vars: Record<string, string> = {
-    name: navn,
-    serviceTypeName: booking.serviceType.name,
-    date: formatDato(booking.startAt),
-    time: formatTid(booking.startAt),
-    location: booking.location.name,
-    priceFormatted,
-    paymentRef,
-    cancelDeadline: `${formatDato(cancelDeadline)} kl ${formatTid(cancelDeadline)}`,
-    bookingId: booking.id,
-    appUrl: APP_URL,
-    ...extraVars,
-  };
-
-  const subject = substituer(tpl.subject, vars);
-  const body = substituer(tpl.body, vars);
+  const { subject, html } = byggBookingEpost({
+    type,
+    mottaker: erApp ? "app" : "gjest",
+    fornavn: navn.trim().split(/\s+/)[0] || "der",
+    tjeneste,
+    dag: stor(formatDato(booking.startAt)),
+    klokke: `${formatTid(booking.startAt)}–${formatTid(booking.endAt)}`,
+    gammelTid: extra.oldStartAt
+      ? { dag: stor(formatDato(extra.oldStartAt)), klokke: formatTid(extra.oldStartAt) }
+      : undefined,
+    sted: booking.location.name,
+    coach: booking.coach?.name ?? null,
+    pris: erCreditBooking ? "Inkludert i abonnement" : formaterKr(booking.priceOre),
+    betaling: erCreditBooking
+      ? { tekst: "Trukket fra månedlig saldo", mono: false }
+      : { tekst: booking.stripePaymentIntentId, mono: true },
+    referanse: booking.id,
+    frist: fristTekst,
+    fristPassert: hoursUntil(booking.startAt) <= AVBESTILLING_FRIST_TIMER,
+    avbestiltTidspunkt: osloNaa(),
+    refusjon,
+    lenker: {
+      kalender: kalenderLenke(
+        `AK Golf: ${booking.serviceType.name}`,
+        booking.startAt,
+        booking.endAt,
+        booking.location.name,
+      ),
+      bookingIApp: `${APP_URL}/portal/booking/${booking.id}`,
+      endre: erApp
+        ? `${APP_URL}/portal/meg/bookinger`
+        : `${APP_URL}/booking/kvittering/${booking.id}`,
+      veibeskrivelse: `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: booking.location.name }).toString()}`,
+      nyBooking: `${APP_URL}/booking`,
+      playerhq: `${APP_URL}/portal`,
+      opprettKonto: `${APP_URL}/auth/signup`,
+    },
+  });
 
   try {
     const klient = resendKlient();
@@ -126,7 +164,7 @@ async function sendBooking(
       from: FRA_EPOST,
       to: epost,
       subject,
-      html: tilHtml(body),
+      html,
     });
   } catch (error) {
     await logError({
@@ -139,23 +177,18 @@ async function sendBooking(
 }
 
 export async function sendBookingConfirmation(bookingId: string) {
-  await sendBooking("booking-bekreftelse", bookingId);
+  await sendBooking("bekreftelse", "booking-bekreftelse", bookingId);
 }
 
 export async function sendBookingReminder(bookingId: string) {
-  await sendBooking("oekt-paaminnelse", bookingId);
+  await sendBooking("paaminnelse", "oekt-paaminnelse", bookingId);
 }
 
 export async function sendBookingCancellation(
   bookingId: string,
   extra: { refundIssued?: boolean; isCreditBooking?: boolean } = {},
 ) {
-  const refundLine = extra.isCreditBooking
-    ? "Credit-en er ført tilbake til abonnementet ditt."
-    : extra.refundIssued
-      ? "Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager."
-      : "Avbestilt etter avbestillingsfristen — ingen refusjon.";
-  await sendBooking("booking-avbestilt", bookingId, { refundLine });
+  await sendBooking("avbestilt", "booking-avbestilt", bookingId, extra);
 }
 
 /**
@@ -165,8 +198,5 @@ export async function sendBookingCancellation(
  * standard-variablene fra sendBooking() viser automatisk den nye tiden.
  */
 export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date) {
-  await sendBooking("booking-flyttet", bookingId, {
-    oldDate: formatDato(oldStartAt),
-    oldTime: formatTid(oldStartAt),
-  });
+  await sendBooking("endret", "booking-flyttet", bookingId, { oldStartAt });
 }
