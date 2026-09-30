@@ -39,9 +39,12 @@ function feilFraStatus(status: number, feltFeil?: string): string {
 export function LiveCoachPanel({
   data,
   activeDrillId,
+  loft = 16,
 }: {
   data: LiveCoachPanelData;
   activeDrillId?: string | null;
+  /** Avstand fra bunnen i px; live-flatene løfter panelet over handlingsfeltet. */
+  loft?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [meldinger, setMeldinger] = useState<LiveCoachChatRow[]>(data.initialMessages);
@@ -215,7 +218,7 @@ function FloatingShell({
         style={{
           position: "fixed",
           right: 16,
-          bottom: "max(env(safe-area-inset-bottom) + 16px, 16px)",
+          bottom: `max(env(safe-area-inset-bottom) + ${loft}px, ${loft}px)`,
           zIndex: 60,
           width: 56,
           height: 56,
@@ -241,7 +244,7 @@ function FloatingShell({
       style={{
         position: "fixed",
         right: 16,
-        bottom: "max(env(safe-area-inset-bottom) + 16px, 16px)",
+        bottom: `max(env(safe-area-inset-bottom) + ${loft}px, ${loft}px)`,
         zIndex: 60,
         width: "min(400px, calc(100vw - 32px))",
         maxHeight: "min(70vh, 620px)",

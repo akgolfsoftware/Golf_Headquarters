@@ -1,186 +1,118 @@
 "use client";
 
 /**
- * PlayerHQ · Live-økt — FYS-modalitetslogger (2026-07-16-port).
+ * PH-06 Fysisk økt i Precision Athletics: spilleren fører reps og kilo per serie, og kan
+ * legge til eller fjerne serier. Styrke, kondisjon og bevegelighet som før; registreringen
+ * lagres som klarspråktekst via fysLoggState.
  *
- * Gren av DrillLogger for fysiske drills (pyramide === "FYS"): styrke
- * (sett×reps×vekt), kondisjon (varighet + pulssone) og bevegelighet
- * (reps/hold). Gjenbruker v2-primitivene fra src/components/v2/fysisk.tsx
- * (SettRepsLogger/PulsSoneVelger) i stedet for å bygge en ny logger fra
- * bunnen, per Claude Design phq-live.jsx sin FysLogger-idé.
- *
- * Ærlighet: TrainingDrillV2 sine fys*-felt (vekt/muskelgruppe/sone) er i dag
- * ALDRI fylt ut av plan→live-speilingen — loggeren faller derfor tilbake til
- * de generiske repSett/repReps/plannedReps-feltene og lar spilleren fylle inn
- * vekt/sone selv. Kobles automatisk til ekte planlagte mål den dagen
- * autoring-pipelinen bygges.
+ * Bevisste avvik fra tegningen:
+ *   - Serien har ingen «ferdig»-hake: modellen lagrer bare verdiene, og en serie i lista
+ *     regnes som utført.
+ *   - «Sist» og RIR vises ikke: plan→live-speilingen lagrer ingen av delene.
+ *   - Pulssone vises som nøytrale valg (farge betyr bare akse).
  */
 
 import { useState } from "react";
+import { Minus, Plus } from "lucide-react";
 import { fysLoggState } from "@/lib/portal-live/fys-registrering";
 import type { LiveV2Drill, DrillRepState } from "./types";
-import { SettRepsLogger, type SettRad, PulsSoneVelger } from "@/components/v2/fysisk";
-import { Stegteller } from "@/components/v2/skjema";
-import { Caps } from "@/components/v2/core";
+import type { SettRad } from "@/components/v2/fysisk";
 import { MicButton } from "@/components/shared/mic-button";
-import { HjelpTips } from "@/components/v2/hjelp";
+import { Meta } from "@/components/precision/pa";
+import { Kortseksjon, Stepper } from "@/components/portal/precision/PHOkt";
 
 type FysModalitet = "styrke" | "kondisjon" | "bevegelighet";
 
 function fysModalitet(drill: LiveV2Drill): FysModalitet {
   if (drill.fysBevegelighetType) return "bevegelighet";
-  if (drill.fysTreningstype === "kondisjon" || drill.fysAktivitet || drill.repType === "TID") {
-    return "kondisjon";
-  }
+  if (drill.fysTreningstype === "kondisjon" || drill.fysAktivitet || drill.repType === "TID") return "kondisjon";
   if (drill.fysTreningstype === "bevegelighet") return "bevegelighet";
   return "styrke";
 }
 
-export type FysDrillLoggerProps = {
-  drill: LiveV2Drill;
-  onChange: (state: DrillRepState) => void;
-};
+const SONER = [["S1", "Rolig", "under 120"], ["S2", "Moderat", "120–140"], ["S3", "Terskel−", "140–160"], ["S4", "Terskel+", "160–175"], ["S5", "Maks", "over 175"]] as const;
 
-/** Notat-felt m/ MicButton for talelogging — delt av alle tre modaliteter. */
-function FysNotat({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-      <Caps>Notat (valgfritt)</Caps>
-      <div className="relative mt-2 flex items-center">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="F.eks. «kjentes tungt siste sett»"
-          className="w-full rounded-xl border border-background/15 bg-background/5 py-2.5 pl-3 pr-12 text-sm text-background placeholder:text-background/40 focus:border-accent focus:outline-none"
-        />
-        <span className="absolute right-1.5">
-          <MicButton variant="suffix" onResult={(t) => onChange(value ? `${value} ${t}` : t)} />
-        </span>
-      </div>
+export type FysDrillLoggerProps = { drill: LiveV2Drill; onChange: (state: DrillRepState) => void };
+
+function Notat({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return <Kortseksjon tittel="Notat (valgfritt)">
+    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+      <input type="text" className="pa-okt-felt" aria-label="Notat" value={value} onChange={(e) => onChange(e.target.value)} placeholder="F.eks. «kjentes tungt siste sett»" style={{ paddingRight: 56 }} />
+      <span style={{ position: "absolute", right: 4 }}><MicButton variant="suffix" onResult={(t) => onChange(value ? `${value} ${t}` : t)} /></span>
     </div>
-  );
+  </Kortseksjon>;
 }
+
+const tilTall = (s: string): number => { const n = Number(s.replace(",", ".")); return Number.isFinite(n) && n >= 0 ? n : 0; };
 
 export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
   const modalitet = fysModalitet(drill);
-  const muskelgrupper = drill.fysMuskelgruppe
-    ? drill.fysMuskelgruppe.split(",").map((s) => s.trim()).filter(Boolean)
-    : ["Styrke"];
   const settTall = drill.fysSett ?? drill.repSett ?? 3;
   const repsMaal = drill.fysReps ?? drill.repReps ?? 8;
   const startVekt = drill.fysVektKg ?? 20;
-  const startSett: SettRad[] = Array.from({ length: settTall }, () => ({ vekt: startVekt, reps: repsMaal }));
 
   const [sone, setSone] = useState("S3");
   const [varighetMin, setVarighetMin] = useState(drill.fysVarighetMin ?? drill.repMinutter ?? 10);
   const [bevegelseReps, setBevegelseReps] = useState(drill.fysReps ?? drill.plannedReps ?? 10);
   const [holdSek, setHoldSek] = useState(drill.fysHoldSek ?? 20);
-  const [sisteSett, setSisteSett] = useState<SettRad[]>(startSett);
+  const [sett, setSett] = useState<{ reps: number; kg: string }[]>(() => Array.from({ length: settTall }, () => ({ reps: repsMaal, kg: String(startVekt).replace(".", ",") })));
   const [notat, setNotat] = useState("");
-
   const erHold = drill.fysBevegelighetType === "hold";
 
-  function meldStyrke(sett: SettRad[], nyttNotat = notat) {
-    setSisteSett(sett);
-    onChange(fysLoggState({ type: "styrke", sett, notat: nyttNotat }));
+  const rader = (r: { reps: number; kg: string }[]): SettRad[] => r.map((x) => ({ vekt: tilTall(x.kg), reps: x.reps }));
+  function meldStyrke(r: { reps: number; kg: string }[], n = notat) { setSett(r); onChange(fysLoggState({ type: "styrke", sett: rader(r), notat: n })); }
+  function meldKondisjon(s: string, min: number, n = notat) { onChange(fysLoggState({ type: "kondisjon", minutter: min, sone: s, notat: n })); }
+  function meldBevegelighet(reps: number, hold: number, n = notat) {
+    onChange(fysLoggState(erHold ? { type: "hold", sekunder: hold, notat: n } : { type: "reps", repetisjoner: reps, notat: n }));
   }
-
-  function meldKondisjon(nesteSone: string, nesteVarighet: number, nyttNotat = notat) {
-    onChange(fysLoggState({ type: "kondisjon", minutter: nesteVarighet, sone: nesteSone, notat: nyttNotat }));
-  }
-
-  function meldBevegelighet(reps: number, hold: number, nyttNotat = notat) {
-    onChange(fysLoggState(erHold
-      ? { type: "hold", sekunder: hold, notat: nyttNotat }
-      : { type: "reps", repetisjoner: reps, notat: nyttNotat }));
-  }
-
-  function håndterNotat(v: string) {
+  function haandterNotat(v: string) {
     setNotat(v);
     if (modalitet === "kondisjon") meldKondisjon(sone, varighetMin, v);
     else if (modalitet === "bevegelighet") meldBevegelighet(bevegelseReps, holdSek, v);
-    else meldStyrke(sisteSett, v);
+    else meldStyrke(sett, v);
   }
 
-  if (modalitet === "kondisjon") {
-    return (
-      <div className="flex flex-col gap-4 px-4 py-4">
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-          <Caps>Varighet</Caps>
-          <div className="mt-2">
-            <Stegteller
-              label={null}
-              value={varighetMin}
-              min={0}
-              max={180}
-              step={1}
-              enhet="min"
-              onChange={(v) => { setVarighetMin(v); meldKondisjon(sone, v); }}
-            />
-          </div>
-        </div>
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-          <span className="inline-flex items-center gap-1.5">
-            <Caps>Oppnådd puls-sone</Caps>
-            <HjelpTips k="pulsSone" size={11} />
-          </span>
-          <div className="mt-3">
-            <PulsSoneVelger valgt={sone} onChange={(id) => { setSone(id); meldKondisjon(id, varighetMin); }} />
-          </div>
-        </div>
-        <FysNotat value={notat} onChange={håndterNotat} />
+  if (modalitet === "kondisjon") return <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <Kortseksjon tittel="Varighet"><Stepper label="Varighet" value={varighetMin} min={0} max={180} enhet="min" onChange={(v) => { setVarighetMin(v); meldKondisjon(sone, v); }} /></Kortseksjon>
+    <Kortseksjon tittel="Oppnådd pulssone">
+      <div role="group" aria-label="Pulssone" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {SONER.map(([id, navn, puls]) => <button key={id} type="button" className="pa-choice pa-choice--lg" aria-pressed={sone === id} style={{ justifyContent: "space-between", width: "100%", borderRadius: 8 }}
+          onClick={() => { setSone(id); meldKondisjon(id, varighetMin); }}><span>{id} · {navn}</span><span style={{ font: "var(--type-meta)", opacity: 0.8 }}>{puls} slag/min</span></button>)}
       </div>
-    );
-  }
+    </Kortseksjon>
+    <Notat value={notat} onChange={haandterNotat} />
+  </div>;
 
-  if (modalitet === "bevegelighet") {
-    return (
-      <div className="flex flex-col gap-4 px-4 py-4">
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-          <Caps>{erHold ? "Hold (sekunder)" : "Repetisjoner"}</Caps>
-          <div className="mt-2">
-            {erHold ? (
-              <Stegteller
-                label={null}
-                value={holdSek}
-                min={0}
-                max={300}
-                step={5}
-                enhet="s"
-                onChange={(v) => { setHoldSek(v); meldBevegelighet(bevegelseReps, v); }}
-              />
-            ) : (
-              <Stegteller
-                label={null}
-                value={bevegelseReps}
-                min={0}
-                max={200}
-                step={1}
-                enhet="reps"
-                onChange={(v) => { setBevegelseReps(v); meldBevegelighet(v, holdSek); }}
-              />
-            )}
+  if (modalitet === "bevegelighet") return <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <Kortseksjon tittel={erHold ? "Hold (sekunder)" : "Repetisjoner"}>
+      {erHold
+        ? <Stepper label="Hold" value={holdSek} min={0} max={300} step={5} enhet="s" onChange={(v) => { setHoldSek(v); meldBevegelighet(bevegelseReps, v); }} />
+        : <Stepper label="Repetisjoner" value={bevegelseReps} min={0} max={200} enhet="reps" onChange={(v) => { setBevegelseReps(v); meldBevegelighet(v, holdSek); }} />}
+    </Kortseksjon>
+    <Notat value={notat} onChange={haandterNotat} />
+  </div>;
+
+  return <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <section aria-label={`Serier ${drill.name}`} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Meta>PLAN {settTall} × {repsMaal}{drill.fysVektKg != null ? ` @ ${String(drill.fysVektKg).replace(".", ",")} KG` : ""}</Meta>
+      <div role="table" aria-label="Serier" style={{ display: "grid", gridTemplateColumns: "32px minmax(0,1fr) minmax(0,1fr)", gap: 8, alignItems: "center" }}>
+        <Meta>#</Meta><Meta>REPS</Meta><Meta>KG</Meta>
+        {sett.map((x, i) => <div key={i} role="row" style={{ display: "contents" }}>
+          <Meta style={{ font: "var(--type-num-s)" }}>{i + 1}</Meta>
+          <div style={{ display: "grid", gridTemplateColumns: "48px minmax(0,1fr) 48px", alignItems: "center", gap: 4 }}>
+            <button type="button" className="pa-iconbtn" style={{ width: 48, height: 52 }} aria-label={`Færre reps serie ${i + 1}`} onClick={() => meldStyrke(sett.map((y, j) => j === i ? { ...y, reps: Math.max(0, y.reps - 1) } : y))}><Minus size={18} aria-hidden /></button>
+            <span style={{ font: "600 18px/1 var(--font-mono)", textAlign: "center", color: "var(--text-primary)" }}>{x.reps}</span>
+            <button type="button" className="pa-iconbtn" style={{ width: 48, height: 52 }} aria-label={`Flere reps serie ${i + 1}`} onClick={() => meldStyrke(sett.map((y, j) => j === i ? { ...y, reps: y.reps + 1 } : y))}><Plus size={18} aria-hidden /></button>
           </div>
-        </div>
-        <FysNotat value={notat} onChange={håndterNotat} />
+          <input className="pa-okt-felt" inputMode="decimal" aria-label={`Kilo serie ${i + 1}`} value={x.kg} style={{ minHeight: 52, fontFamily: "var(--font-mono)", fontSize: 18 }}
+            onChange={(e) => meldStyrke(sett.map((y, j) => j === i ? { ...y, kg: e.target.value.replace(/[^\d,.]/g, "").slice(0, 5) } : y))} />
+        </div>)}
       </div>
-    );
-  }
-
-  // styrke (default)
-  return (
-    <div className="flex flex-col gap-4 px-4 py-4">
-      <SettRepsLogger
-        ovelse={drill.name}
-        muskelgrupper={muskelgrupper}
-        del={drill.fysTreningstype ?? "Styrke"}
-        startSett={startSett}
-        sist={[]}
-        vektSteg={2.5}
-        onChange={meldStyrke}
-      />
-      <FysNotat value={notat} onChange={håndterNotat} />
-    </div>
-  );
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button type="button" className="pa-btn pa-btn--ghost pa-btn--sm" style={{ minHeight: 44 }} onClick={() => meldStyrke([...sett, { ...sett[sett.length - 1] }])}><Plus size={16} aria-hidden />Legg til serie</button>
+        <button type="button" className="pa-btn pa-btn--ghost pa-btn--sm" style={{ minHeight: 44 }} disabled={sett.length <= 1} onClick={() => meldStyrke(sett.slice(0, -1))}><Minus size={16} aria-hidden />Fjern serie</button>
+      </div>
+    </section>
+    <Notat value={notat} onChange={haandterNotat} />
+  </div>;
 }

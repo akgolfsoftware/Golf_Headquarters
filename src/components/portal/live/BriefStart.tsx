@@ -2,7 +2,8 @@
 
 import { useActionState, useRef } from "react";
 import { unstable_rethrow } from "next/navigation";
-import styles from "./session-brief.module.css";
+import { Play } from "lucide-react";
+import { Knapp } from "@/components/precision/pa";
 
 /** Serveren avgjør om økten kan startes. Ved nettfeil beholdes hele arket. */
 export function BriefStart({ action }: { action: () => Promise<void> }) {
@@ -22,7 +23,7 @@ export function BriefStart({ action }: { action: () => Promise<void> }) {
     if (submitting.current) event.preventDefault();
     else submitting.current = true;
   }}>
-    {error && <p className={styles.error} role="alert">{error}</p>}
-    <button className={styles.primary} data-od-id="brief-start" type="submit" disabled={pending}>{pending ? "Åpner økta…" : "Start økta"}</button>
+    {error && <p className="pa-okt-dempet" role="alert" style={{ marginBottom: 12, padding: 12, borderRadius: 8, background: "var(--signal-tint)", color: "var(--text-primary)" }}>{error}</p>}
+    <Knapp type="submit" size="xl" fullWidth icon={Play} iconName="play" loading={pending} loadingText="Åpner økta …">Start økta</Knapp>
   </form>;
 }
