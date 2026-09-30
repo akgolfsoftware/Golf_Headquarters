@@ -38,7 +38,7 @@ const stubbePlugin = {
   name: "prove-grenser",
   setup(b) {
     b.onResolve({ filter: SERVER_ONLY }, ({ path }) => ({ path, namespace: "stub-tom" }));
-    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};" }));
+    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const logout=async()=>{};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};" }));
     b.onResolve({ filter: /^next\/(link|navigation|image|dynamic)$/ }, ({ path }) => ({ path, namespace: "next-stub" }));
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
       resolveDir: root, loader: "js",
@@ -80,7 +80,7 @@ await build({
 // Basestilene alltid, pluss enhver bolk-egen stil (precision-a1.css, precision-a4.css, …)
 // bolkene legger i src/styles/ ved siden av sin egen visning.
 import { readdirSync } from "node:fs";
-const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp)\.css$/.test(f)).sort();
+const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp|au)\.css$/.test(f)).sort();
 const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">

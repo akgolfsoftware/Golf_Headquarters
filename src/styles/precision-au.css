@@ -1,0 +1,22 @@
+/* Kontosider uten innlogging (AU-05 Samtykke via lenke) i Precision Athletics.
+   Fasit: 7d7c2994 ui_kits/konto/screens/AU-04-06.jsx (Box og H). Bare layout; farger og skrift kommer fra tokens i .pa-root. */
+.au{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;background:var(--surface-page,var(--sand-100));color:var(--text-primary);font-family:var(--font-sans)}
+.au__kolonne{width:100%;max-width:440px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.au__kolonne--bred{max-width:520px}
+.au__logo{height:22px;width:auto;align-self:flex-start;display:block}
+.au__logo--natt{display:none}
+[data-theme="night"] .au__logo--lys{display:none}
+[data-theme="night"] .au__logo--natt{display:block}
+.au__hode{display:flex;flex-direction:column;gap:6px;min-width:0}
+.au__h1{margin:0;font:600 26px/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance;overflow-wrap:anywhere}
+.au__ingress{margin:0;font:var(--type-body);color:var(--text-secondary);text-wrap:pretty;overflow-wrap:anywhere}
+.au__valg{display:flex;flex-direction:column;gap:10px}
+.au__valg .pa-check{align-items:flex-start;padding:6px 0;height:auto}
+.au__valg .pa-check__box{margin-top:1px}
+.au__punkter{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font:var(--type-body-s);color:var(--text-secondary)}
+.au__punkter strong{color:var(--text-primary);font-weight:600}
+.au__lenke{font:500 14px/1 var(--font-sans);color:var(--link);display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+.au__lenker{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center}
+.au__ordlyd{max-height:288px;overflow-y:auto;padding:16px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-card);font:var(--type-body-s);color:var(--text-primary);white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.au__logg{background:none;border:0;padding:0;cursor:pointer;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);min-height:44px;text-transform:uppercase}
+@media (min-width:640px){.au{padding:48px 24px}}
