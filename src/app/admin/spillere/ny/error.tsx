@@ -19,7 +19,7 @@ export default function Error({
   }, [error]);
 
   return <AgencyOSSkall navn="Coach"><div className="pa-side">
-    <FeilTilstand icon={CircleAlert} title="Skjemaet kunne ikke åpnes" text="Ingen spiller er opprettet. Prøv igjen."
+    <FeilTilstand icon={CircleAlert} title="Spilleren ble ikke opprettet" text="Ingenting er lagret. Prøv igjen." code="FEIL 502 · OPPRETT SPILLER"
       retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
   </div></AgencyOSSkall>;
 }

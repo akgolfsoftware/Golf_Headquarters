@@ -32,7 +32,7 @@ export const AG07_NY_TOM: AG07NySkjema = {
   foreldreNavn: "",
   foreldreEpost: "",
   foreldreTelefon: "",
-  velkomstMelding: "Hei og velkommen til AK Golf Academy. Vi gleder oss til å trene sammen med deg.",
+  velkomstMelding: "Velkommen til AK Golf Academy. Vi gleder oss til å trene sammen med deg.",
   sendInvitasjon: true,
 };
 
