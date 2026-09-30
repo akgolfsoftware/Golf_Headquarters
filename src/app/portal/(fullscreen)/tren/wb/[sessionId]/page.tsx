@@ -24,6 +24,8 @@ export default async function WorkbenchOktPage({ params }: { params: Promise<{ s
     loadPlayerSession(sessionId),
     prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
+  const coachId = res.ok && res.data && res.data.coachId !== user.id ? res.data.coachId : null;
+  const coachNavn = coachId ? (await prisma.user.findUnique({ where: { id: coachId }, select: { name: true } }))?.name ?? null : null;
   const tilbake = <KnappLenke href="/portal" variant="secondary">{UI.backToToday}</KnappLenke>;
 
   return (
@@ -33,7 +35,7 @@ export default async function WorkbenchOktPage({ params }: { params: Promise<{ s
       ) : !res.data ? (
         <div className="pa-side"><TomTilstand icon={Eye} title={UI.sessionNotFoundTitle} text={UI.sessionNotFoundBody} actions={tilbake} /></div>
       ) : (
-        <OktArk session={res.data} />
+        <OktArk session={res.data} coachNavn={coachNavn} />
       )}
     </PlayerHQSkall>
   );

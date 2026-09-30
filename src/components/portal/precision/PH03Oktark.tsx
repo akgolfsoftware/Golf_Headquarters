@@ -42,8 +42,8 @@ export type PH03Props = {
   children?: ReactNode;
 };
 
-const TONE: Record<PH03Status, "neutral" | "live" | "ok" | "warn"> = {
-  Planlagt: "neutral", "Pågår": "live", "Gjennomført": "ok", "Hoppet over": "warn", Avlyst: "warn",
+const TONE: Record<PH03Status, "neutral" | "info" | "ok" | "warn"> = {
+  Planlagt: "neutral", "Pågår": "info", "Gjennomført": "ok", "Hoppet over": "warn", Avlyst: "warn",
 };
 
 function Ovelse({ o, nr }: { o: PH03Ovelse; nr: number }) {
@@ -53,7 +53,7 @@ function Ovelse({ o, nr }: { o: PH03Ovelse; nr: number }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         <AkseMerke axis={o.akse} />
-        <span style={{ font: "500 15px/1.3 var(--font-sans)", color: gjort ? "var(--text-muted)" : "var(--text-primary)", flex: "1 1 180px", minWidth: 0, overflowWrap: "anywhere" }}>{o.navn}</span>
+        <span style={{ font: "500 15px/1.3 var(--font-sans)", color: gjort ? "var(--text-muted)" : "var(--text-primary)", textDecoration: gjort ? "line-through" : "none", flex: "1 1 180px", minWidth: 0, overflowWrap: "anywhere" }}>{o.navn}</span>
       </div>
       {o.kode && <div style={{ font: "500 12px/1.35 var(--font-mono)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>{o.kode}</div>}
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>

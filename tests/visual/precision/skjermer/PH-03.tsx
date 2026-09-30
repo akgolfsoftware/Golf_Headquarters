@@ -17,7 +17,7 @@ const base: PH03Props = {
     { id: "e2", akse: "tek", navn: "Vinkel på slagflaten", kode: "TEK_RANGE_UTEN-BALL_ALENE", mengde: "3 sett", min: 20, gjort: null },
     { id: "e3", akse: "spill", navn: "Wedge mot mål under press", kode: null, mengde: null, min: null, gjort: null },
   ],
-  nokler: [["Målsetning", "Bedre avstandskontroll"], ["Når", "Lør 26.09 09:00"], ["Sted", "Range 3"], ["Varighet", "1 t 15 min"], ["Pyramide", "Slag"], ["Coach", "Anders Kristiansen"]],
+  nokler: [["Fokus", "Avstandskontroll"], ["Belastning", "Treningsområde"], ["Press", "Alene"], ["Mål", "Bedre avstandskontroll"], ["Coach", "Anders Kristiansen"], ["Varighet", "1 t 15 min"], ["Sted", "Range 3"]],
   notatTittel: "Fra coach",
   notat: { tekst: "Hold rytmen jevn. Logg hvert femte slag og noter hvilken kølle du bruker.", kilde: "ANDERS KRISTIANSEN" },
   tilbake: { href: "#", label: "Plan" },
