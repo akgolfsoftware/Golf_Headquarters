@@ -6,6 +6,8 @@
  * Tider som sendes til klienten er ISO-tekst uten Z (`fraNaivVeggklokke`); `iso*` leser feltene ut
  * av teksten, så server og klient gir samme klokkeslett uansett tidssone.
  */
+import { startOfDay } from "@/lib/uke-helpers";
+
 const stor = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const nb = (d: Date, o: Intl.DateTimeFormatOptions, tz?: string) => new Intl.DateTimeFormat("nb-NO", { ...(tz ? { timeZone: tz } : {}), ...o }).format(d);
 
@@ -34,13 +36,12 @@ export type PH23Dag = { iso: string; ukedag: string; dag: number; mnd: string; a
 
 /** De neste `antall` dagene fra og med i dag (serverens dagsgrense, samme regel som før), med valgt dag markert. */
 export function dagerFremover(antall: number, valgt: Date): PH23Dag[] {
-  const idag = new Date();
-  idag.setHours(0, 0, 0, 0);
+  const idag = startOfDay(new Date());
   return Array.from({ length: antall }, (_, i) => {
     const d = new Date(idag);
     d.setDate(idag.getDate() + i);
     return {
-      iso: d.toISOString().split("T")[0]!,
+      iso: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`,
       ukedag: UKEDAG[d.getDay()]!,
       dag: d.getDate(),
       mnd: d.toLocaleDateString("nb-NO", { month: "short" }),

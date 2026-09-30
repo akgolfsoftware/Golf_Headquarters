@@ -13,6 +13,8 @@
  *   - Dagene viser måned, ikke «N ledig»: antall ledige tider per dag hentes ikke for alle 14 dager.
  *   - «Flytt time» er egen side (bytte krever ny tid mot coachens kalender), ikke ark.
  *   - Klippekortet viser «—» for det appen ikke lagrer per kunde (bruk i forrige måned e.l.).
+ *   - Oversikten har «Neste ledige tid» og «Coacher», som tegningen ikke har (avvik 8): funksjonen fantes
+ *     i dagens booking (første ledige tid, klippekort-tekst, coach-oppslag) og fjernes ikke.
  *   - «SENDT TIL {e-post}» er ikke med på kvitteringen: kvitteringssiden vet ikke om e-posten gikk.
  */
 import Link from "next/link";
@@ -29,6 +31,7 @@ import type { BookingNyV2Data } from "@/components/portal/v2/BookingNyV2";
 import type { BookingNyBekreftV2Data } from "@/components/portal/v2/BookingNyBekreftV2";
 import { isoKlokke, type PH23Dag } from "@/lib/portal-booking/ph23-format";
 import type { HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 import "@/styles/precision-a2300.css";
 
 const kort = (style?: React.CSSProperties) => ({ padding: 16, gap: 12, display: "flex", flexDirection: "column", minWidth: 0, ...style }) as const;
@@ -116,7 +119,7 @@ export function AvbestillDialog({ bookingId, tittel, tid, kanRefusjon, open, onC
       <Knapp variant="signal" onClick={utfor} loading={venter} loadingText="Avbestiller …">Avbestill</Knapp>
     </>}>
       <p style={{ margin: 0 }}>
-        {tittel} {tid}. {kanRefusjon ? "Mer enn 24 timer til timen: timen frigis og betalingen refunderes." : "Mindre enn 24 timer til timen: ingen refusjon."}
+        {tittel} {tid}. {kanRefusjon ? `Mer enn ${AVBESTILLING_FRIST_TIMER} timer til timen: timen frigis og betalingen refunderes.` : `Mindre enn ${AVBESTILLING_FRIST_TIMER} timer til timen: ingen refusjon.`}
       </p>
       {feil && <p role="alert" style={{ margin: "8px 0 0", color: "var(--signal-ink)" }}>{feil}</p>}
     </Dialogboks>
@@ -151,7 +154,7 @@ export function PH23Timer({ rader, handlinger = true, detaljHref = true }: { rad
               <div className="ph23-handlinger">
                 {r.kanBytte && <KnappLenke size="sm" variant="secondary" icon={Move} iconName="move" href={r.byttHref}>Flytt time</KnappLenke>}
                 <Knapp size="sm" variant="ghost" onClick={() => setAvbestill(r)}>Avbestill</Knapp>
-                {!r.kanBytte && <Meta>UNDER 24 TIMER: INGEN FLYTTING ELLER REFUSJON</Meta>}
+                {!r.kanBytte && <Meta>UNDER {AVBESTILLING_FRIST_TIMER} TIMER: INGEN FLYTTING ELLER REFUSJON</Meta>}
               </div>
             )}
           </div>
@@ -189,7 +192,7 @@ export function PH23Hub({ tilstand, klipp, kommende, tidligere, forsteLedige, co
                   <div style={{ font: "var(--type-title-m)", color: "var(--text-primary)" }}>{forsteLedige.ukedagKort} kl. {forsteLedige.kl}</div>
                   <p style={muted}>
                     {forsteLedige.serviceName} med {forsteLedige.coachNavn}.{" "}
-                    {harPakke ? (tomForKlipp ? "Klippene er brukt opp denne perioden, så timen betales med kort." : `Du har ${klipp.igjen} ${klipp.igjen === 1 ? "klipp" : "klipp"} igjen denne perioden.`) : "Uten coaching-pakke betales timen med kort."}
+                    {harPakke ? (tomForKlipp ? "Klippene er brukt opp denne perioden, så timen betales med kort." : `Du har ${klipp.igjen} klipp igjen denne perioden.`) : "Uten coaching-pakke betales timen med kort."}
                   </p>
                   <div><KnappLenke size="lg" iconRight={ArrowRight} href="/portal/booking/ny">Ta {forsteLedige.ukedagKort} {forsteLedige.kl}</KnappLenke></div>
                 </>
@@ -203,7 +206,7 @@ export function PH23Hub({ tilstand, klipp, kommende, tidligere, forsteLedige, co
                 {forsteLedige && <KnappLenke variant="secondary" href="/portal/booking/ny">Se alle ledige tider</KnappLenke>}
                 <KnappLenke variant="ghost" href="/portal/booking/ny?betaling=1">Kjøp ekstra time med kort</KnappLenke>
               </div>
-              <Meta>GRATIS AVBESTILLING FRAM TIL 24 TIMER FØR</Meta>
+              <Meta>GRATIS AVBESTILLING FRAM TIL {AVBESTILLING_FRIST_TIMER} TIMER FØR</Meta>
             </div>
             {coaches.length > 0 && (
               <div className="pa-card" style={kort({ padding: "12px 16px", gap: 0 })}>
@@ -375,7 +378,7 @@ export function PH23Bekreft({ data, klipp }: { data: BookingNyBekreftV2Data; kli
                 <TekstOmrade value={notat} onChange={setNotat} placeholder="Hva vil du jobbe med? Spesielle ønsker?" />
               </Skjemafelt>
             )}
-            <Meta>GRATIS AVBESTILLING FRAM TIL 24 TIMER FØR</Meta>
+            <Meta>GRATIS AVBESTILLING FRAM TIL {AVBESTILLING_FRIST_TIMER} TIMER FØR</Meta>
             {feil && <Varsel tone="signal"><Ikon icon={CircleAlert} size={16} /><span>{feil}</span></Varsel>}
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
@@ -444,7 +447,7 @@ export function PH23Detalj({ data }: { data: PH23DetaljData }) {
           ["Betaling", data.betaling, { mono: false }],
         ]} />
         {data.notat && <div><span className="kicker">Notat</span><p style={{ ...muted, marginTop: 4, color: "var(--text-primary)" }}>{data.notat}</p></div>}
-        <Meta>GRATIS AVBESTILLING FRAM TIL 24 TIMER FØR</Meta>
+        <Meta>GRATIS AVBESTILLING FRAM TIL {AVBESTILLING_FRIST_TIMER} TIMER FØR</Meta>
         <div className="ph23-handlinger">
           {data.kanAvbestille && data.kanRefusjon && <KnappLenke variant="secondary" icon={Move} iconName="move" href={`/portal/meg/bookinger/reschedule/${data.bookingId}`}>Flytt time</KnappLenke>}
           {data.kanAvbestille && <Knapp variant="ghost" onClick={() => setDialog(true)}>Avbestill</Knapp>}
@@ -533,7 +536,7 @@ export function PH23Bytt({ bookingId, tjeneste, naaTekst, sted, varighetMin, dag
           <div className="pa-card" style={kort()}>
             <span className="kicker">Nåværende tid</span>
             <Nokkelverdi items={[["Time", tjeneste, { mono: false }], ["Tid", naaTekst], ["Varighet", `${varighetMin} min`], ["Sted", sted, { mono: false }]]} />
-            <Meta>FLYTTING ER GRATIS FRAM TIL 24 TIMER FØR START</Meta>
+            <Meta>FLYTTING ER GRATIS FRAM TIL {AVBESTILLING_FRIST_TIMER} TIMER FØR START</Meta>
           </div>
         </div>
       </Tilstandsvakt>
@@ -577,7 +580,7 @@ export function PH23Coach({ data }: { data: PH23CoachData }) {
             <p style={muted}>Velg type økt, eller gå rett til booking for å se ledige tider.</p>
             <KnappLenke fullWidth href={data.wizardHref}>Velg tid og bekreft</KnappLenke>
             <KnappLenke fullWidth variant="secondary" icon={Mail} href={data.meldingHref}>Send melding i stedet</KnappLenke>
-            <Meta>GRATIS AVBESTILLING FRAM TIL 24 TIMER FØR</Meta>
+            <Meta>GRATIS AVBESTILLING FRAM TIL {AVBESTILLING_FRIST_TIMER} TIMER FØR</Meta>
           </div>
           <div className="pa-card" style={kort({ gap: 4 })}>
             <span className="kicker">Felles økter</span>

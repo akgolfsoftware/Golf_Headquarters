@@ -12,10 +12,8 @@
 .pa-root .ph23-dag>span:nth-child(3){font:500 10px/1 var(--font-mono);opacity:.75}
 .pa-root .ph23-tider{display:flex;gap:8px;flex-wrap:wrap}
 .pa-root .ph23-tider .pa-choice{min-height:44px;min-width:44px;text-decoration:none}
-.pa-root .ph23-rad{display:flex;flex-direction:column;gap:8px;padding:12px 0;min-width:0}
+.pa-root .ph23-rad{display:flex;flex-direction:column;gap:4px;padding:12px 0;min-width:0}
 .pa-root .ph23-rad+.ph23-rad{border-top:1px solid var(--border-hairline)}
-.pa-root .ph23-rad{gap:4px}
-.pa-root .ph23-rad__topp{margin:-8px 0 0}
 .pa-root .ph23-rad__topp{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
 .pa-root .ph23-rad__tittel{font:500 14px/1.3 var(--font-sans);color:var(--text-primary);flex:1 1 160px;min-width:0;overflow-wrap:anywhere}
 .pa-root .ph23-handlinger{display:flex;gap:8px;flex-wrap:wrap}
