@@ -7,8 +7,8 @@
  * Stilene ligger i precision-komponenter.css / precision-athletics.css.
  */
 import Image from "next/image";
-import { cloneElement, isValidElement, useId, type InputHTMLAttributes, type ReactElement, type ReactNode } from "react";
-import { Check, CircleAlert } from "lucide-react";
+import { cloneElement, isValidElement, useId, useState, type InputHTMLAttributes, type ReactElement, type ReactNode } from "react";
+import { Check, CircleAlert, Eye, EyeOff } from "lucide-react";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
 import "@/styles/precision-a21.css";
@@ -66,6 +66,18 @@ export function FormFelt({ label, hint, error, required, children }: { label: st
 
 export function TekstInput({ mono, className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { mono?: boolean }) {
   return <div className={cx("pa-control", mono && "pa-control--mono", rest["aria-invalid"] && "pa-control--error", className)}><input {...rest} /></div>;
+}
+
+/** Passordfelt med «Vis passord»-knapp (fra SignupV2). Knappen har 44 px treffmål. */
+export function PassordInput({ className, ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
+  const [vis, setVis] = useState(false);
+  return <div className={cx("pa-control", rest["aria-invalid"] && "pa-control--error", className)}>
+    <input {...rest} type={vis ? "text" : "password"} />
+    <button type="button" onClick={() => setVis((v) => !v)} aria-label={vis ? "Skjul passord" : "Vis passord"} aria-pressed={vis}
+      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 44, height: 44, margin: "0 -12px 0 0", border: 0, background: "transparent", color: "var(--text-secondary)", cursor: "pointer" }}>
+      <Ikon icon={vis ? EyeOff : Eye} size={18} />
+    </button>
+  </div>;
 }
 
 export function Avkryss({ label, ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { label: ReactNode }) {
