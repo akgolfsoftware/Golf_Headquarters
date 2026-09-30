@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { byggGruppeAnalyse, type OktInn } from "./gruppe-analyse";
+import { byggGruppeAnalyse, gruppeScopeWhere, oktFraWorkbench, type OktInn } from "./gruppe-analyse";
 
 const now = new Date("2026-09-30T12:00:00Z");
 const okt = (userId: string, dagerSiden: number, min: number, status: OktInn["status"]): OktInn => ({
@@ -48,4 +48,29 @@ test("rader sorteres alfabetisk, aldri etter tall", () => {
     now,
   );
   assert.deepEqual(d.spillere.map((s) => s.navn), ["Anna", "Bjørn"]);
+});
+
+test("coach ser grupper der hen er eier ELLER aktivt trener-medlem (som coachScopedPlayerWhere)", () => {
+  const w = gruppeScopeWhere({ id: "c1", role: "COACH" });
+  assert.deepEqual(w.OR, [
+    { coachId: "c1" },
+    { members: { some: { userId: "c1", role: { in: ["COACH", "ASSISTANT"] }, endedAt: null } } },
+  ]);
+  assert.equal(w.arkivertAt, null);
+});
+
+test("admin ser alle ikke-arkiverte grupper", () => {
+  const w = gruppeScopeWhere({ id: "a1", role: "ADMIN" });
+  assert.equal(w.OR, undefined);
+  assert.equal(w.arkivertAt, null);
+});
+
+test("WorkbenchSession gir samme minutt-regel som Spiller 360 (statuskart og tidspunkt)", () => {
+  const dato = new Date(Date.UTC(2026, 8, 28));
+  const fullfort = oktFraWorkbench({ playerId: "p", date: dato, startMinute: 600, durationMinutes: 60, status: "COMPLETED" });
+  const publisert = oktFraWorkbench({ playerId: "p", date: dato, startMinute: 720, durationMinutes: 60, status: "PUBLISHED" });
+  assert.equal(fullfort.scheduledAt.toISOString(), "2026-09-28T10:00:00.000Z");
+  assert.equal(publisert.status, "PLANNED");
+  const d = byggGruppeAnalyse([], [{ id: "p", navn: "S" }], [fullfort, publisert], now);
+  assert.equal(d.spillere[0].etterlevelsePct, 50);
 });

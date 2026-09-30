@@ -1,12 +1,18 @@
-"use client";
-/* AG-A03: /admin/analyse viser Precision-laster; underrutene beholder V2Laster. */
-import { usePathname } from "next/navigation";
-import { V2Laster } from "@/components/v2/laster";
-import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+/* AG-A03: laster-tilstand for /admin/analyse i Precision Athletics. Ren serverkomponent
+   (loading.tsx importerer aldri en "use client"-modul, gotchas §Bygg og drift; CSP-vakt:
+   tests/e2e/csp-konsoll.spec.ts). Skallet kommer fra layouten. */
+import "@/styles/precision-komponenter.css";
+import "@/styles/precision-athletics.css";
 import { LasterTilstand } from "@/components/precision/pa";
+import { AnalyseTopp } from "@/components/admin/precision/AGA03Analyse";
 
 export default function Loading() {
-  return usePathname() === "/admin/analyse"
-    ? <AgencyOSSkall navn="Coach"><div className="pa-side"><LasterTilstand text="Henter innsikten …" /></div></AgencyOSSkall>
-    : <V2Laster variant="dashboard" />;
+  return (
+    <div className="pa-root" data-design="precision-athletics" style={{ minHeight: "100dvh", background: "var(--surface-page)" }}>
+      <div className="pa-side">
+        <AnalyseTopp fane={null} />
+        <LasterTilstand text="Henter grupper …" />
+      </div>
+    </div>
+  );
 }

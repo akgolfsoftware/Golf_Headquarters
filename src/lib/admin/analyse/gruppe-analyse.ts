@@ -1,6 +1,12 @@
 /**
  * Gruppeanalyse (AG-A03) og Etterlevelse i Precision Athletics.
  *
+ * Kilde for økter: `WorkbenchSession` (OW-3, den ene økt-tabellen) med samme
+ * uttrekk og statuskart som Spiller 360 (`spiller360-data.ts`) og Workbench
+ * (`load-workbench.ts`), slik at samme spiller får samme prosent på alle flater.
+ * Gruppene avgrenses som spillerne (`coachScopedPlayerWhere`): coachId ELLER
+ * aktivt trener-medlemskap.
+ *
  * Etterlevelse = gjennomførte minutter / planlagte minutter, siste 4 uker,
  * kun forfalte økter (beslutninger.md 26.09). Regelen bor i
  * `adherencePct` (src/lib/workbench/compliance.ts) og gjenbrukes her.
@@ -12,9 +18,11 @@
  */
 
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
+import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
-import type { SessionStatus } from "@/generated/prisma/client";
+import type { Prisma, SessionStatus } from "@/generated/prisma/client";
 
 export const ETTERLEVELSE_UKER = 4;
 const DAG_MS = 86_400_000;
@@ -56,6 +64,9 @@ export type GruppeAnalyseData = {
   samlet: { antallSpillere: number; etterlevelsePct: number | null };
 };
 
+/** Brukes når fanen ikke viser gruppetall: da hoppes de tre spørringene over. */
+export const TOM_GRUPPE_ANALYSE: GruppeAnalyseData = { uker: ETTERLEVELSE_UKER, grupper: [], spillere: [], samlet: { antallSpillere: 0, etterlevelsePct: null } };
+
 function minutter(okter: OktInn[], now: Date): { gjennomfort: number; planlagt: number } {
   let gjennomfort = 0;
   let planlagt = 0;
@@ -65,6 +76,28 @@ function minutter(okter: OktInn[], now: Date): { gjennomfort: number; planlagt: 
     if (o.status === "COMPLETED") gjennomfort += o.durationMin;
   }
   return { gjennomfort, planlagt };
+}
+
+/** WorkbenchSession.status → compliance-vokabularet (samme tabell som spiller360-data.ts og load-workbench.ts). */
+const WB_TIL_SESSION: Record<string, SessionStatus> = {
+  SCHEDULED: "PLANNED", PUBLISHED: "PLANNED", PLANNED: "PLANNED", IN_PROGRESS: "ACTIVE",
+  COMPLETED: "COMPLETED", CANCELLED: "CANCELLED", SKIPPED: "SKIPPED",
+};
+
+/** `date` (@db.Date, UTC-midnatt for Oslo-dagen) + startMinute → tidspunkt. */
+export function wbTid(date: Date, startMinute: number): Date {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, startMinute));
+}
+
+export function oktFraWorkbench(o: { playerId: string; date: Date; startMinute: number; durationMinutes: number; status: string }): OktInn {
+  return { userId: o.playerId, scheduledAt: wbTid(o.date, o.startMinute), durationMin: o.durationMinutes, status: WB_TIL_SESSION[o.status] ?? "PLANNED" };
+}
+
+/** Samme grupperegel som `coachScopedPlayerWhere`: egen gruppe ELLER aktivt trener-medlem. */
+export function gruppeScopeWhere(viewer: { id: string; role: string }): Prisma.GroupWhereInput {
+  const base: Prisma.GroupWhereInput = { arkivertAt: null };
+  if (viewer.role !== "COACH") return base;
+  return { ...base, OR: [{ coachId: viewer.id }, { members: { some: aktivtTrenerMedlemskapWhere(viewer.id) } }] };
 }
 
 const forfalt = (o: OktInn, now: Date) => oktCompliance(o, now) !== "fremtidig";
@@ -117,7 +150,8 @@ export function byggGruppeAnalyse(
 }
 
 export async function lastGruppeAnalyse(viewer: { id: string; role: string }, now = new Date()): Promise<GruppeAnalyseData> {
-  const fra = new Date(now.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
+  const idag = osloDagSomDbDato(now);
+  const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
 
   const spillereRaw = await prisma.user.findMany({
     where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
@@ -126,7 +160,7 @@ export async function lastGruppeAnalyse(viewer: { id: string; role: string }, no
   const tillatt = new Set(spillereRaw.map((s) => s.id));
 
   const grupperRaw = await prisma.group.findMany({
-    where: { arkivertAt: null, ...(viewer.role === "COACH" ? { coachId: viewer.id } : {}) },
+    where: gruppeScopeWhere(viewer),
     select: {
       id: true,
       name: true,
@@ -135,9 +169,9 @@ export async function lastGruppeAnalyse(viewer: { id: string; role: string }, no
     },
   });
 
-  const okterRaw = await prisma.trainingPlanSession.findMany({
-    where: { scheduledAt: { gte: fra, lte: now }, plan: { userId: { in: [...tillatt] } } },
-    select: { scheduledAt: true, durationMin: true, status: true, plan: { select: { userId: true } } },
+  const okterRaw = await prisma.workbenchSession.findMany({
+    where: { playerId: { in: [...tillatt] }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" } },
+    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true },
   });
 
   return byggGruppeAnalyse(
@@ -148,7 +182,7 @@ export async function lastGruppeAnalyse(viewer: { id: string; role: string }, no
       spillerIds: g.members.map((m) => m.userId).filter((id) => tillatt.has(id)),
     })),
     spillereRaw.map((s) => ({ id: s.id, navn: s.name ?? "Uten navn" })),
-    okterRaw.map((o) => ({ userId: o.plan.userId, scheduledAt: o.scheduledAt, durationMin: o.durationMin, status: o.status })),
+    okterRaw.map(oktFraWorkbench),
     now,
   );
 }

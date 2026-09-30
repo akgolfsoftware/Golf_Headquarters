@@ -15,7 +15,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { Users, TrendingUp, CircleAlert } from "lucide-react";
 import { Sidehode, TomTilstand, KnappLenke, Meta } from "@/components/precision/pa";
-import { Tabell, InlineVarsel, Nokkelverdi, KortHode, Kort } from "@/components/precision/pa-a5";
+import { Tabell, InlineVarsel, Nokkelverdi, Kort } from "@/components/precision/pa-a5";
 import { ANALYSE_FANER, analyseHref, type AnalyseFaneId } from "@/lib/admin/analyse/faner";
 import type { GruppeAnalyseData, GruppeAnalyseRad, SpillerEtterlevelseRad } from "@/lib/admin/analyse/gruppe-analyse";
 import type { InnsiktHubV2Data } from "@/components/admin/v2/InnsiktHubV2";
@@ -25,7 +25,6 @@ export type AGA03Tilstand = "data" | "tom";
 export type AGA03Props = {
   tilstand: AGA03Tilstand;
   fane: AnalyseFaneId;
-  antall: Partial<Record<AnalyseFaneId, number>>;
   hub: InnsiktHubV2Data | null;
   analyse: GruppeAnalyseData;
   /** Innhold for faner som ikke er tegnet ennå (spiller, treningsdata, trend, detalj). */
@@ -46,25 +45,63 @@ function Bar({ label, verdi, mal }: { label: string; verdi: number | null; mal: 
   </div>;
 }
 
-function Fanerad({ aktiv, antall }: { aktiv: AnalyseFaneId; antall: AGA03Props["antall"] }) {
-  return <nav aria-label="Innsikt-faner" className="pa-tabs" style={{ display: "flex", flexWrap: "wrap", gap: "0 24px" }}>
-    {ANALYSE_FANER.map((f) => <Link key={f.id} href={analyseHref(f.id)} role="tab" aria-selected={f.id === aktiv} aria-current={f.id === aktiv ? "page" : undefined} className="pa-tab" style={{ minWidth: 44, textDecoration: "none" }}>
-      {f.label}{antall[f.id] != null && <span className="pa-tab__count">{antall[f.id]}</span>}
-    </Link>)}
+/** Faner som valgpiller (tegning AG-A1: nav med ChoicePill, aktiv side har aria-current). */
+export function Fanerad({ aktiv }: { aktiv: AnalyseFaneId | null }) {
+  return <nav aria-label="Innsikt" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+    {ANALYSE_FANER.map((f) => {
+      const erAktiv = f.id === aktiv;
+      return <Link key={f.id} href={analyseHref(f.id)} aria-current={erAktiv ? "page" : undefined} className="pa-choice"
+        style={{ minWidth: 44, textDecoration: "none", ...(erAktiv ? { background: "var(--primary)", borderColor: "var(--primary)", color: "var(--text-on-primary)" } : {}) }}>
+        {f.label}
+      </Link>;
+    })}
   </nav>;
 }
 
+/** Sidehode og faner. Ported faner bruker tegningens tittel; øvrige faner beholder «Innsikt». */
+export function AnalyseTopp({ fane, ported = true }: { fane: AnalyseFaneId | null; ported?: boolean }) {
+  return <>
+    <Sidehode kicker="Innsikt · Analyse av treningsdata"
+      title={ported ? "Gruppeanalyse" : "Innsikt"}
+      sub={ported ? "Nivå, datadekning, belastning og gjennomføring per gruppe. Ingen rangering av enkeltspillere."
+        : "Referansen er spilleren selv. Kohortsammenligning er coachens verktøy og vises aldri til spiller eller forelder."} />
+    <Fanerad aktiv={fane} />
+  </>;
+}
+
+/** Kortoverskrift i store bokstaver (Head k=… i tegningen). */
+function Overlinje({ tittel, aside }: { tittel: ReactNode; aside?: ReactNode }) {
+  return <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", justifyContent: "space-between", minWidth: 0 }}>
+    <span style={{ font: "var(--type-kicker)", letterSpacing: "var(--tracking-kicker)", textTransform: "uppercase", color: "var(--text-muted)", minWidth: 0, overflowWrap: "anywhere" }}>{tittel}</span>
+    {aside && <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>{aside}</span>}
+  </div>;
+}
+
 const gruppeKolonner = () => [
-  { key: "navn", label: "Gruppe", render: (r: GruppeAnalyseRad) => r.navn },
+  { key: "navn", label: "Gruppe", render: (r: GruppeAnalyseRad) => <Link href={`/admin/grupper/${r.id}`} style={{ color: "inherit" }}>{r.navn}</Link> },
   { key: "n", label: "Spillere", mono: true, align: "right" as const, render: (r: GruppeAnalyseRad) => String(r.antallSpillere) },
   { key: "kat", label: "Kategori", mono: true, render: (r: GruppeAnalyseRad) => r.kategori ?? "—" },
   { key: "dekk", label: "Datadekning", mono: true, align: "right" as const, render: (r: GruppeAnalyseRad) => pst(r.datadekningPct) },
-  { key: "etter", label: "Etterlevelse", mono: true, align: "right" as const, render: (r: GruppeAnalyseRad) => pst(r.etterlevelsePct) },
+  /* Ingen målt ACWR-kilde på gruppenivå: «—», aldri gjetning. */
+  { key: "acwr", label: "ACWR snitt", mono: true, align: "right" as const, render: () => "—" },
+  { key: "etter", label: "Gjennomført", mono: true, align: "right" as const, render: (r: GruppeAnalyseRad) => pst(r.etterlevelsePct) },
+  { key: "note", label: "Viktigst nå", render: () => "—" },
 ];
 
 function Stall({ hub, analyse }: { hub: InnsiktHubV2Data | null; analyse: GruppeAnalyseData }) {
   return <div className="pa-a5-stack">
-    <InlineVarsel tone="info" tittel="Sammenligning, ikke rangering.">Tallene er gruppesnitt. Rader står alfabetisk, aldri fra best til dårligst.</InlineVarsel>
+    <InlineVarsel tone="info" tittel="Sammenligning, ikke rangering">Tallene er gruppesnitt. Enkeltspillere vises bare for coacher med tilgang, og aldri som liste fra best til dårligst.</InlineVarsel>
+    <Kort>
+      <Tabell caption="Grupper" columns={gruppeKolonner()} rows={analyse.grupper} tomTekst="Ingen grupper med spillere." />
+    </Kort>
+    {analyse.grupper.length > 0 && <div className="pa-a5-grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))" }}>
+      {analyse.grupper.map((g) => <Kort key={g.id}>
+        <Overlinje tittel={g.navn} aside={`${g.antallSpillere} ${g.antallSpillere === 1 ? "SPILLER" : "SPILLERE"}`} />
+        <Bar label="Datadekning" verdi={g.datadekningPct} mal={80} />
+        <Bar label="Gjennomført" verdi={g.etterlevelsePct} mal={85} />
+        <Meta>{g.planlagtMin > 0 ? `${min(g.gjennomfortMin)} AV ${min(g.planlagtMin)}` : "INGEN FORFALTE ØKTER"}</Meta>
+      </Kort>)}
+    </div>}
     {hub && <div className="pa-a5-stat-grid">
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">SG totalt, snitt</span><span className="pa-a5-stat__value">{hub.sgSnitt}</span><span className="pa-a5-stat__hint">RUNDER · {hub.periodeLabel.toUpperCase()}</span></div>
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">Gjennomført denne uken</span><span className="pa-a5-stat__value">{hub.okterDenneUken}</span><span className="pa-a5-stat__hint">ØKTER · {hub.nSpillere} SPILLERE</span></div>
@@ -72,23 +109,10 @@ function Stall({ hub, analyse }: { hub: InnsiktHubV2Data | null; analyse: Gruppe
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">TrackMan-økter</span><span className="pa-a5-stat__value">{hub.trackmanOkter > 0 ? hub.trackmanOkter : "—"}</span><span className="pa-a5-stat__hint">{hub.periodeLabel.toUpperCase()}</span></div>
     </div>}
     {hub?.harKategoriData && <Kort>
-      <KortHode tittel="SG per kategori" aside={`STALLEN · ${hub.periodeLabel.toUpperCase()}`} />
+      <Overlinje tittel="SG per kategori" aside={`STALLEN · ${hub.periodeLabel.toUpperCase()}`} />
       <Nokkelverdi items={hub.kategorier.map((k) => [k.label, k.verdi] as const)} />
       {hub.lekkasjeTekst && <Meta>{hub.lekkasjeTekst}</Meta>}
     </Kort>}
-    <Kort>
-      <KortHode tittel="Grupper" aside={`ETTERLEVELSE ${analyse.uker} UKER · GJENNOMFØRT / PLANLAGT MINUTTER`} />
-      <Tabell caption="Grupper" columns={gruppeKolonner()} rows={analyse.grupper} tomTekst="Ingen grupper med spillere." />
-    </Kort>
-    {analyse.grupper.length > 0 && <div className="pa-a5-grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))" }}>
-      {analyse.grupper.map((g) => <Kort key={g.id}>
-        <KortHode tittel={g.navn} aside={`${g.antallSpillere} ${g.antallSpillere === 1 ? "SPILLER" : "SPILLERE"}`} />
-        <Bar label="Datadekning" verdi={g.datadekningPct} mal={80} />
-        <Bar label="Etterlevelse" verdi={g.etterlevelsePct} mal={85} />
-        <Meta>{g.planlagtMin > 0 ? `${min(g.gjennomfortMin)} AV ${min(g.planlagtMin)}` : "INGEN FORFALTE ØKTER"}</Meta>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><KnappLenke size="sm" variant="secondary" href={`/admin/grupper/${g.id}`} icon={Users} iconName="users">Åpne gruppen</KnappLenke></div>
-      </Kort>)}
-    </div>}
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       <KnappLenke size="sm" variant="secondary" href="/admin/analyse?fane=stall&visning=trend" icon={TrendingUp} iconName="trending-up">Trend siste 8 uker</KnappLenke>
     </div>
@@ -98,21 +122,19 @@ function Stall({ hub, analyse }: { hub: InnsiktHubV2Data | null; analyse: Gruppe
 function Etterlevelse({ analyse }: { analyse: GruppeAnalyseData }) {
   const spillerKolonner = [
     { key: "navn", label: "Spiller", render: (r: SpillerEtterlevelseRad) => r.navn },
-    { key: "min", label: "Gjennomført", mono: true, align: "right" as const, render: (r: SpillerEtterlevelseRad) => r.planlagtMin > 0 ? `${min(r.gjennomfortMin)} av ${min(r.planlagtMin)}` : "—" },
-    { key: "pst", label: "Etterlevelse", mono: true, align: "right" as const, render: (r: SpillerEtterlevelseRad) => pst(r.etterlevelsePct) },
+    { key: "pst", label: "Gjennomført", mono: true, align: "right" as const, render: (r: SpillerEtterlevelseRad) => pst(r.etterlevelsePct) },
+    { key: "min", label: "Minutter", mono: true, align: "right" as const, render: (r: SpillerEtterlevelseRad) => r.planlagtMin > 0 ? `${min(r.gjennomfortMin)} av ${min(r.planlagtMin)}` : "—" },
   ];
   return <div className="pa-a5-stack">
-    <InlineVarsel tone="info" tittel="Slik regnes etterlevelse.">Gjennomførte minutter delt på planlagte minutter, siste {analyse.uker} uker. Økter som ikke er forfalt teller ikke. Uten forfalte økter vises «—».</InlineVarsel>
+    <InlineVarsel tone="info" tittel="Slik regnes gjennomføring">Gjennomførte minutter delt på planlagte minutter, siste {analyse.uker} uker. Økter som ikke er forfalt teller ikke. Uten forfalte økter vises «—».</InlineVarsel>
     <div className="pa-a5-stat-grid">
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">Stallen samlet</span><span className="pa-a5-stat__value">{pst(analyse.samlet.etterlevelsePct)}</span><span className="pa-a5-stat__hint">{analyse.samlet.antallSpillere} SPILLERE · {analyse.uker} UKER</span></div>
     </div>
     <Kort>
-      <KortHode tittel="Per gruppe" aside="ALFABETISK" />
-      <Tabell caption="Etterlevelse per gruppe" columns={gruppeKolonner()} rows={analyse.grupper} tomTekst="Ingen grupper med spillere." />
+      <Tabell caption="Per gruppe" columns={gruppeKolonner()} rows={analyse.grupper} tomTekst="Ingen grupper med spillere." />
     </Kort>
     <Kort>
-      <KortHode tittel="Per spiller" aside="ALFABETISK · ØKTLOGG" />
-      <Tabell caption="Etterlevelse per spiller" columns={spillerKolonner} rows={analyse.spillere} tomTekst="Ingen spillere." />
+      <Tabell caption="Per spiller" columns={spillerKolonner} rows={analyse.spillere} tomTekst="Ingen spillere." />
     </Kort>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       <KnappLenke size="sm" variant="secondary" href="/admin/analyse?fane=etterlevelse&visning=detalj" icon={CircleAlert} iconName="circle-alert">Spillerpanel og øvelser</KnappLenke>
@@ -120,13 +142,12 @@ function Etterlevelse({ analyse }: { analyse: GruppeAnalyseData }) {
   </div>;
 }
 
-export function AGA03Analyse({ tilstand, fane, antall, hub, analyse, eldre }: AGA03Props) {
+export function AGA03Analyse({ tilstand, fane, hub, analyse, eldre }: AGA03Props) {
   const ported = eldre == null;
   return <div className="pa-side">
-    <Sidehode kicker="Academy · Innsikt" title="Innsikt" sub="Referansen er spilleren selv. Kohortsammenligning er coachens verktøy og vises aldri til spiller eller forelder." />
-    <Fanerad aktiv={fane} antall={antall} />
+    <AnalyseTopp fane={fane} ported={ported} />
     {!ported ? <div style={{ minWidth: 0 }}>{eldre}</div>
-      : tilstand === "tom" ? <TomTilstand icon={Users} title="Ingen spillere i stallen" text="Innsikt vises når stallen har spillere med registrerte økter." actions={<KnappLenke href="/admin/spillere" variant="secondary" icon={Users} iconName="users">Åpne Stall</KnappLenke>} />
+      : tilstand === "tom" ? <TomTilstand icon={Users} title="Ingen grupper med data" text="Legg spillere i en gruppe for å se gruppeanalysen." actions={<KnappLenke href="/admin/grupper" variant="secondary" icon={Users} iconName="users">Åpne grupper</KnappLenke>} />
       : fane === "etterlevelse" ? <Etterlevelse analyse={analyse} /> : <Stall hub={hub} analyse={analyse} />}
   </div>;
 }

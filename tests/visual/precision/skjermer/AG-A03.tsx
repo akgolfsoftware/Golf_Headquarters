@@ -35,12 +35,11 @@ const hub: AGA03Props["hub"] = {
   lekkasjeTekst: "Lekkasje i stallen: Innspill er stallens svakeste kategori.",
 };
 const tomAnalyse: GruppeAnalyseData = { uker: 4, grupper: [], spillere: [], samlet: { antallSpillere: 0, etterlevelsePct: null } };
-const antall = { stall: 18, spiller: 18 };
 
 const Vis = (p: Partial<AGA03Props>) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <AGA03Analyse tilstand="data" fane="stall" antall={antall} hub={hub} analyse={analyse} {...p} />
+      <AGA03Analyse tilstand="data" fane="stall" hub={hub} analyse={analyse} {...p} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
@@ -48,10 +47,16 @@ const Vis = (p: Partial<AGA03Props>) => (
 export const tilstander = {
   data: Vis({}),
   etterlevelse: Vis({ fane: "etterlevelse" }),
-  tom: Vis({ tilstand: "tom", hub: null, analyse: tomAnalyse, antall: { stall: 0, spiller: 0 } }),
+  tom: Vis({ tilstand: "tom", hub: null, analyse: tomAnalyse }),
   laster: <AdminRolleProvider erAdmin><Loading /></AdminRolleProvider>,
-  feil: <AdminRolleProvider erAdmin><Feil error={Object.assign(new Error("prøve"), { digest: "502" })} reset={() => {}} /></AdminRolleProvider>,
+  feil: <AdminRolleProvider erAdmin><Feil error={Object.assign(new Error("prøve"), { digest: "prove-503" })} reset={() => {}} /></AdminRolleProvider>,
   natt: <Natt>{Vis({ fane: "etterlevelse" })}</Natt>,
 };
 
-if (typeof location !== "undefined" && new URLSearchParams(location.search).get("t") === "feil") console.error = () => {};
+
+/* Tillatt-liste: bare den forventede feilloggen fra error.tsx i feil-tilstanden ("[v2/error]")
+   holdes utenfor konsollmålingen. Alle andre konsollfeil slipper gjennom og feiler målingen. */
+if (typeof location !== "undefined" && new URLSearchParams(location.search).get("t") === "feil") {
+  const opprinnelig = console.error.bind(console);
+  console.error = (...args: unknown[]) => { if (args[0] === "[v2/error]") return; opprinnelig(...args); };
+}

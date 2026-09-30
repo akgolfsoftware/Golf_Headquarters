@@ -42,7 +42,7 @@ import { InnsiktSpillerListe } from "@/components/admin/v2/analyse/InnsiktSpille
 import { WorkbenchAnalyseV2 } from "@/components/admin/v2/analyse/WorkbenchAnalyseV2";
 import { velgAnalyseFane } from "@/lib/admin/analyse/faner";
 import { lastInnsiktHub, lastInnsiktSpillere, lastInnsiktStall, lastWorkbenchAnalyse } from "@/lib/admin/analyse/lastere";
-import { lastGruppeAnalyse } from "@/lib/admin/analyse/gruppe-analyse";
+import { lastGruppeAnalyse, TOM_GRUPPE_ANALYSE } from "@/lib/admin/analyse/gruppe-analyse";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt · AgencyOS" };
@@ -68,8 +68,8 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
   const aktiv = velgAnalyseFane(params.fane);
 
   const spillereForTeller = await lastInnsiktSpillere(user);
-  const antall = { stall: spillereForTeller.length, spiller: spillereForTeller.length };
-  const analyse = await lastGruppeAnalyse(user);
+  const visGruppetall = (aktiv === "stall" && params.visning !== "trend") || (aktiv === "etterlevelse" && params.visning !== "detalj");
+  const analyse = visGruppetall ? await lastGruppeAnalyse(user) : TOM_GRUPPE_ANALYSE;
 
   let hub = null;
   let eldre: React.ReactNode | undefined;
@@ -96,9 +96,8 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AGA03Analyse
-        tilstand={spillereForTeller.length === 0 ? "tom" : "data"}
+        tilstand={spillereForTeller.length === 0 || (aktiv === "stall" && visGruppetall && analyse.grupper.length === 0) ? "tom" : "data"}
         fane={aktiv}
-        antall={antall}
         hub={hub}
         analyse={analyse}
         eldre={eldre}
