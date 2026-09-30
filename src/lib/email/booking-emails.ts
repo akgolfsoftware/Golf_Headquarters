@@ -5,10 +5,11 @@
  */
 import "server-only";
 
-import { cancellationDeadline } from "@/lib/booking/policy";
+import { AVBESTILLING_FRIST_TIMER, cancellationDeadline, hoursUntil } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
+import { byggPaaminnelse, formaterKr } from "@/lib/email/templates/paaminnelse-mal";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -19,6 +20,13 @@ function formatDato(d: Date): string {
     month: "long",
     year: "numeric",
   });
+}
+
+/** «Tirsdag 29.09.2026» (skrivemåten i EP-03-tegningen). */
+function kortDato(d: Date): string {
+  const uke = d.toLocaleDateString("nb-NO", { weekday: "long" });
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${uke} ${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
 }
 
 function formatTid(d: Date): string {
@@ -142,8 +150,66 @@ export async function sendBookingConfirmation(bookingId: string) {
   await sendBooking("booking-bekreftelse", bookingId);
 }
 
+/**
+ * EP-03 «Påminnelse dagen før» (Precision Athletics). Innhold og utseende bygges i
+ * `templates/paaminnelse-mal.ts`. EmailTemplate-raden `oekt-paaminnelse` er fortsatt
+ * bryteren: mangler eller er den deaktivert, sendes ingenting.
+ */
 export async function sendBookingReminder(bookingId: string) {
-  await sendBooking("oekt-paaminnelse", bookingId);
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { name: true, email: true } },
+      coach: { select: { name: true } },
+      serviceType: true,
+      location: true,
+    },
+  });
+  if (!booking) throw new Error("Booking not found");
+
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) {
+    console.warn("[booking-email] Ingen e-post på booking", bookingId);
+    return;
+  }
+  await hentTemplate("oekt-paaminnelse");
+
+  const navn = booking.user?.name ?? booking.guestName ?? "";
+  const erCreditBooking = !!booking.subscriptionId;
+  const app = !!booking.userId;
+  const frist = cancellationDeadline(booking.startAt);
+  const start = formatTid(booking.startAt);
+
+  const { subject, html } = byggPaaminnelse({
+    mottaker: app ? "app" : "gjest",
+    fornavn: navn.split(" ")[0] ?? "",
+    tjeneste: booking.serviceType.name,
+    varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60000),
+    dag: kortDato(booking.startAt).replace(/^./, (t) => t.toUpperCase()),
+    start,
+    klokke: `${start}–${formatTid(booking.endAt)}`,
+    sted: booking.location.name,
+    coach: booking.coach?.name ?? null,
+    pris: erCreditBooking ? "Inkludert i abonnement" : formaterKr(booking.priceOre),
+    betaling: erCreditBooking
+      ? { tekst: "Trukket fra månedlig saldo", mono: false }
+      : { tekst: booking.stripePaymentIntentId ?? null, mono: true },
+    referanse: booking.id,
+    frist: `${kortDato(frist)} kl. ${formatTid(frist)}`,
+    fristPassert: hoursUntil(booking.startAt) < AVBESTILLING_FRIST_TIMER,
+    lenker: {
+      veibeskrivelse: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.location.address || booking.location.name)}`,
+      bookingIApp: `${APP_URL}/portal/booking/${booking.id}`,
+      endre: `${APP_URL}/booking/kvittering/${booking.id}`,
+    },
+  });
+
+  try {
+    await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+  } catch (error) {
+    await logError({ context: "email.booking.resend", error, meta: { bookingId } });
+    throw error;
+  }
 }
 
 export async function sendBookingCancellation(
