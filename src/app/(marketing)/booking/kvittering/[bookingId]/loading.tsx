@@ -1,4 +1,4 @@
-import { BK03Ramme } from "@/components/marketing/precision/BK03Kvittering";
+import { BK03Ramme } from "@/components/marketing/precision/BK03Ramme";
 import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Laster() {

@@ -31,7 +31,7 @@ export default async function Kvittering({ params }: Props) {
   const booking = await prisma.booking
     .findUnique({
       where: { id: bookingId },
-      include: { serviceType: true, location: true, coach: { select: { name: true } } },
+      include: { serviceType: true, location: true, coach: { select: { name: true } }, user: { select: { email: true } } },
     })
     .catch(() => "feil" as const);
 
@@ -68,7 +68,7 @@ export default async function Kvittering({ params }: Props) {
     coach: booking.coach?.name ?? null,
     betalt,
     betaltVedStripe: Boolean(booking.stripePaymentIntentId ?? booking.stripeCheckoutSessionId),
-    epost: booking.guestEmail ?? user?.email ?? null,
+    epost: booking.guestEmail ?? booking.user?.email ?? null,
     fristTekst: `GRATIS AVBESTILLING TIL ${nb(frist, { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }).toUpperCase()} KL. ${nb(frist, { hour: "2-digit", minute: "2-digit" })} (24 TIMER FØR)`,
     ics: {
       start: tilIcs(booking.startAt),

@@ -13,15 +13,16 @@
  *   - Tegningens «Vis som» (Gjest/Innlogget) er en demokontroll og bygges ikke.
  *   - PENDING (Stripe-webhooken er ikke ferdig) finnes ikke i tegningen. Beholdt fra dagens side:
  *     siden spør på nytt hvert 3. sekund i opptil 30 sekunder.
+ *   - Kalenderfila bruker flytende tid (uten TZID) og escaper tekst etter RFC 5545.
  *   - Kontolenken til gjest bærer fortsatt e-posten i adressen (forslag til løsning uten står i PR-en).
  */
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
-import { useEffect, type ReactNode } from "react";
-import Image from "next/image";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus, ArrowUpRight, Receipt, RotateCw, UserPlus } from "lucide-react";
 import { FeilTilstand, Knapp, KnappLenke, LasterTilstand, Meta, StatusPille, TomTilstand } from "@/components/precision/pa";
+import { BK03Ramme } from "./BK03Ramme";
 
 export type BK03Detaljer = {
   ref: string;
@@ -42,24 +43,6 @@ export type BK03Props = {
   signupHref: string;
   detaljer: BK03Detaljer | null;
 };
-
-/** Ramme: lys topplinje med logo, smal kolonne. Delt av kvittering, laster og feil. */
-export function BK03Ramme({ children }: { children: ReactNode }) {
-  return (
-    <div className="pa-root" data-design="precision-athletics" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <header style={{ borderBottom: "1px solid var(--border-hairline)", background: "var(--surface-flat)" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, boxSizing: "border-box" }}>
-          <Image src="/logos/logo-ak-golf-academy.svg" alt="AK Golf Academy" width={120} height={22} style={{ height: 22, width: "auto" }} priority />
-          <span style={{ flex: 1 }} />
-          <Meta>BOOKING</Meta>
-        </div>
-      </header>
-      <main style={{ width: "100%", maxWidth: 640, margin: "0 auto", padding: "20px 16px 40px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 20, flex: 1 }}>
-        {children}
-      </main>
-    </div>
-  );
-}
 
 const h1 = { margin: 0, font: "600 26px/1.2 var(--font-sans)", letterSpacing: "var(--tracking-display)", color: "var(--text-primary)" } as const;
 
@@ -87,10 +70,13 @@ function SpoerPaaNytt() {
   return null;
 }
 
+/** RFC 5545 §3.3.11: escape \\, ; , og linjeskift i tekstverdier. Tidene er flytende (uten TZID): Oslo-veggklokke, riktig for norske brukere. */
+const icsTekst = (t: string) => t.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+
 function lastNedIcs(i: BK03Detaljer["ics"]) {
   const tekst = [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//AK Golf//Booking//NO", "BEGIN:VEVENT",
-    `UID:${i.fil}@akgolf`, `SUMMARY:${i.tittel}`, `DTSTART:${i.start}`, `DTEND:${i.slutt}`, `LOCATION:${i.sted}`,
+    `UID:${i.fil}@akgolf`, `SUMMARY:${icsTekst(i.tittel)}`, `DTSTART:${i.start}`, `DTEND:${i.slutt}`, `LOCATION:${icsTekst(i.sted)}`,
     "END:VEVENT", "END:VCALENDAR",
   ].join("\r\n");
   const url = URL.createObjectURL(new Blob([tekst], { type: "text/calendar;charset=utf-8" }));
@@ -156,10 +142,9 @@ export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer }: BK
             <div className="pa-card" style={{ padding: 16, gap: 10, background: "var(--surface-flat)", boxShadow: "none" }}>
               <span className="kicker">Fortsett i PlayerHQ</span>
               <span style={{ font: "var(--type-body)", textWrap: "pretty" }}>
-                Plan fra coachen, økter, tester og analyse av rundene dine. FULL koster 299 kr per måned eller 2 690 kr per år. Timen din ligger klar når du logger inn.
+                Plan fra coachen, økter, tester og analyse av rundene dine. FULL koster 299 kr per måned eller 2 690 kr per år.
               </span>
               <div><KnappLenke variant="secondary" icon={UserPlus} href={signupHref}>Opprett konto</KnappLenke></div>
-              <Meta>BOOKINGENE DINE FØLGER MED INN I KONTOEN</Meta>
             </div>
           )}
         </>
