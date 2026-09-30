@@ -1,7 +1,8 @@
-/* V2Laster-skeleton (fase 6, SPOR R2). Server Component. */
-
-import { V2Laster } from "@/components/v2/laster";
+"use client";
+/* Ny spiller (AG-07-NY) har Precision-laster; sida har AgencyOSSkall selv. */
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="kort" />;
+  return <AgencyOSSkall navn="Coach"><div className="pa-side"><LasterTilstand text="Åpner skjemaet …" /></div></AgencyOSSkall>;
 }
