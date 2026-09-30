@@ -1,17 +1,19 @@
 /**
- * /booking/kvittering/[bookingId] — v2-port 16. juli 2026. Datalogikk
- * gjenbrukt 1:1 fra (mlegacy)/booking/kvittering/[bookingId]/page.tsx:
- * booking-oppslag (m/ tjeneste + lokasjon), CONFIRMED-sjekken, gjest→signup-
- * broen med prefilt e-post og Europe/Oslo-formatering. Stripe success_url
- * peker fortsatt hit (samme adresse). Presentasjon + PENDING-polling bor i
- * MarkedBookingKvitteringV2 (v2, MRamme) — pending-refresh.tsx er flyttet
- * inn dit.
+ * /booking/kvittering/[bookingId] — BK-03 i Precision Athletics (tegning: Claude
+ * Design 7d7c2994, ui_kits/booking/screens/BK.jsx). Stripe success_url lander
+ * her. Booking-oppslaget, CONFIRMED-sjekken og Europe/Oslo-formateringen er
+ * uendret; presentasjon og PENDING-polling bor i `BookingKvittering`.
+ *
+ * Kontolenken for gjester har ikke lenger e-posten i adressen
+ * (beslutninger.md §BOOKING BEKREFTES AUTOMATISK punkt 5).
  */
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { MarkedBookingKvitteringV2 } from "@/components/marketing/v2/MarkedBookingKvitteringV2";
+import { cancellationDeadline } from "@/lib/booking/policy";
+import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
+import { BookingKvittering } from "@/components/booking/precision/BookingKvittering";
 
 export const metadata: Metadata = {
   title: "Bekreftet · AK Golf",
@@ -30,17 +32,13 @@ export default async function Kvittering({ params }: Props) {
     include: {
       serviceType: true,
       location: true,
+      coach: { select: { name: true } },
     },
   });
 
   if (!booking) notFound();
 
-  // Innlogget → «Mine bestillinger». Gjest → onboarding-bro til gratis konto
-  // med e-post prefilt fra bookingen. (Gjør siden per-request-dynamisk — OK.)
   const user = await getCurrentUser();
-  const signupHref = booking.guestEmail
-    ? `/auth/signup?epost=${encodeURIComponent(booking.guestEmail)}`
-    : "/auth/signup";
 
   const dato = booking.startAt.toLocaleDateString("nb-NO", {
     weekday: "long",
@@ -59,20 +57,29 @@ export default async function Kvittering({ params }: Props) {
     maximumFractionDigits: 0,
   }).format(booking.priceOre / 100);
 
+  const frist = cancellationDeadline(booking.startAt);
+  const fristTekst = `${frist.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" })} kl. ${frist.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+
+  const start = naivOsloTilTidspunkt(booking.startAt);
+  const slutt = new Date(start.getTime() + booking.serviceType.durationMin * 60_000);
+
   return (
-    <MarkedBookingKvitteringV2
+    <BookingKvittering
       bekreftet={booking.status === "CONFIRMED"}
-      guestEmail={booking.guestEmail}
       innlogget={Boolean(user)}
-      signupHref={signupHref}
-      detaljer={{
-        bestillingRef: `#${booking.id.slice(-8)}`,
-        tjeneste: booking.serviceType.name,
-        dato,
-        klokkeslett: `${tid} (${booking.serviceType.durationMin} min)`,
-        sted: booking.location.name,
-        prisTekst,
-      }}
+      epost={booking.guestEmail ?? user?.email ?? null}
+      referanse={`#${booking.id.slice(-8)}`}
+      tjeneste={booking.serviceType.name}
+      varighetMin={booking.serviceType.durationMin}
+      dato={dato}
+      klokkeslett={tid}
+      coach={booking.coach?.name ?? null}
+      spiller={null}
+      sted={booking.location.name}
+      prisTekst={prisTekst}
+      fristTekst={fristTekst}
+      startIso={start.toISOString()}
+      sluttIso={slutt.toISOString()}
     />
   );
 }

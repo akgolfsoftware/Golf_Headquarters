@@ -1,0 +1,62 @@
+/* Offentlig booking i Precision Athletics (BK-01 til BK-03).
+   Tegning: Claude Design 7d7c2994, ui_kits/booking/screens/BK.jsx.
+   Virker bare innenfor .pa-root. Ingen sidelengs rulling: alt brekker om. */
+.bk-side{min-height:100dvh;display:flex;flex-direction:column;background:var(--surface-page);color:var(--text-body);--bk-max:960px}
+.bk-side--smal{--bk-max:640px}
+.bk-topp{border-bottom:1px solid var(--border-hairline);background:var(--surface-flat)}
+.bk-topp__in{max-width:var(--bk-max);margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;box-sizing:border-box}
+.bk-topp__logo{height:22px;width:auto;display:block}
+.bk-topp__logo--natt{display:none}
+.pa-root[data-theme="night"] .bk-topp__logo--dag{display:none}
+.pa-root[data-theme="night"] .bk-topp__logo--natt{display:block}
+.bk-topp__fyll{flex:1}
+.bk-innhold{width:100%;max-width:var(--bk-max);margin:0 auto;padding:20px 16px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;min-width:0}
+.bk-tittel{font:600 clamp(22px,1.2vw + 16px,28px)/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.bk-tittel:focus{outline:none}
+.bk-tekst{font:var(--type-body);color:var(--text-secondary);text-wrap:pretty}
+.bk-rad{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bk-stabel{display:flex;flex-direction:column;gap:14px;min-width:0}
+.bk-smalt{max-width:520px}
+.bk-kols{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+
+.bk-steg{list-style:none;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}
+.bk-steg__punkt{display:inline-flex;gap:6px;align-items:center;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);text-transform:uppercase}
+.bk-steg__punkt[data-naa],.bk-steg__punkt[data-ferdig]{color:var(--text-primary)}
+.bk-steg__nr{width:22px;height:22px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border-ink);font:600 11px/1 var(--font-mono)}
+.bk-steg__punkt[data-ferdig] .bk-steg__nr{background:var(--primary);color:var(--text-on-primary)}
+
+.bk-tjenester{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px}
+.bk-valg{text-align:left;padding:14px;min-height:96px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer;display:flex;flex-direction:column;gap:6px;font:inherit;min-width:0}
+.bk-valg[aria-checked="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.bk-valg:focus-visible,.bk-tid:focus-visible,.bk-slot:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.bk-valg__topp{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;min-width:0}
+.bk-valg__navn{font:600 15px/1.3 var(--font-sans);overflow-wrap:anywhere}
+.bk-valg__pris{font:var(--type-num);font-variant-numeric:tabular-nums}
+.bk-valg__tekst{font:var(--type-body-s);color:var(--text-secondary)}
+
+.bk-uke{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.bk-uke__dag{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:8px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);min-width:0;align-items:center}
+.bk-uke__navn{font:600 12px/1 var(--font-mono);width:64px;flex:none;color:var(--text-primary)}
+.bk-tid{min-height:44px;min-width:64px;padding:0 8px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-card);color:var(--text-primary);font:500 13px/1 var(--font-mono);cursor:pointer}
+.bk-tid[aria-pressed="true"]{border-color:var(--border-ink);background:var(--primary);color:var(--text-on-primary)}
+.bk-slots{display:flex;flex-direction:column;gap:6px}
+.bk-slot{min-height:52px;text-align:left;padding:0 14px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);display:flex;gap:12px;align-items:center;flex-wrap:wrap;cursor:pointer;font:inherit}
+.bk-slot[aria-pressed="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.bk-slot__kl{font:600 15px/1 var(--font-mono)}
+.bk-slot__meta{font:var(--type-body-s);color:var(--text-secondary)}
+
+.bk-sammendrag{padding:16px;gap:10px}
+.bk-blokk{padding:16px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-flat);display:flex;flex-direction:column;gap:10px;min-width:0}
+.bk-ref{font:600 22px/1.2 var(--font-mono);letter-spacing:.04em;overflow-wrap:anywhere;color:var(--text-primary)}
+
+@media (min-width:768px){
+  .bk-topp__in{padding:14px 24px}
+  .bk-innhold{padding:32px 24px 48px}
+  .bk-uke{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .bk-uke__dag{flex-direction:column;align-items:stretch}
+  .bk-uke__navn{width:auto}
+}
+@media (min-width:1024px){
+  .bk-kols--sammendrag{grid-template-columns:minmax(0,1fr) 300px}
+  .bk-sammendrag{position:sticky;top:16px}
+}

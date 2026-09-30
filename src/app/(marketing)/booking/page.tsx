@@ -1,23 +1,22 @@
 /**
- * /booking — Paper-port (PP-1.7, 10.08.2026). Fasit:
- * `designsystem/paper/fase1/booking.html` — én side med fire steg
- * (tjeneste → tid → deg → bekreft), i stedet for den gamle tre-siders flyten
- * via `/booking/[slug]`. Presentasjonen bor i MarkedBookingV2.
+ * /booking — BK-01 og BK-02 i Precision Athletics (tegning: Claude Design
+ * 7d7c2994, ui_kits/booking/screens/BK.jsx). Én side med fire steg
+ * (tjeneste → tid → deg → bekreft og betal). Presentasjonen bor i
+ * `BookingFlyt` (src/components/booking/precision).
  *
- * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt fra
- * v2-porten 16. juli 2026. Undersidene `/booking/[slug]` består uendret —
- * de er fortsatt Stripe-flytens landingspunkt ved avbrutt betaling.
+ * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt.
+ * `/booking/[slug]` og `/booking/[slug]/bekreft` sender hit med
+ * `?tjeneste=<slug>`: Stripes cancel_url peker fortsatt til `/booking/<slug>`.
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
-import { finnNesteLedige } from "./ledige-tider";
 import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
-  MarkedBookingV2,
-  type PaperAbonnement,
-  type PaperTjeneste,
-} from "@/components/marketing/v2/MarkedBookingV2";
+  BookingFlyt,
+  type BkAbonnement,
+  type BkTjeneste,
+} from "@/components/booking/precision/BookingFlyt";
 
 export const metadata: Metadata = {
   title: "Book en time · AK Golf Academy",
@@ -65,7 +64,12 @@ function sorterSomFasit<T extends { sorterPaa: string | null; pris: number }>(a:
 // enn bookingen havner på.
 const LOKASJON_FALLBACK = "Gamle Fredrikstad GK";
 
-export default async function BookingLanding() {
+export default async function BookingLanding({
+  searchParams,
+}: {
+  searchParams: Promise<{ tjeneste?: string }>;
+}) {
+  const { tjeneste: startSlug } = await searchParams;
   // Pauset for publikum: alle domener sendes til Acuity. Kun ADMIN ser flyten
   // (til BOOKING_PUBLIC=true) — se src/lib/booking/offentlig-booking.ts.
   if (!(await kanBrukeInnebygdBooking())) {
@@ -90,29 +94,27 @@ export default async function BookingLanding() {
     }),
   ]);
 
-  const tjenester: PaperTjeneste[] = services
+  const tjenester: BkTjeneste[] = services
     .filter((s) => !erAbonnement(s.name))
     .map((s) => ({
       slug: s.slug,
       navn: s.name,
-      coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
+      coach: coachEtikett(s.name, fornavn(s.coach?.name)),
       sorterPaa: fornavn(s.coach?.name),
-      pris: Math.round(s.priceOre / 100),
       // ServiceType har ingen kolonne for prisenhet, så flaten sier «kr» og lar
       // beskrivelsen fra basen bære nyansen (delt økt, per spiller osv.).
-      enhet: "kr",
+      pris: Math.round(s.priceOre / 100),
       varighetMin: s.durationMin,
       beskrivelse: s.description,
     }))
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...t }) => t);
 
-  const abonnement: PaperAbonnement[] = services
+  const abonnement: BkAbonnement[] = services
     .filter((s) => erAbonnement(s.name))
     .map((s) => ({
       slug: s.slug,
-      navn: s.name,
-      coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
+      navn: [s.name, coachEtikett(s.name, fornavn(s.coach?.name))].filter(Boolean).join(" · "),
       sorterPaa: fornavn(s.coach?.name),
       pris: Math.round(s.priceOre / 100),
       beskrivelse: s.description,
@@ -120,17 +122,12 @@ export default async function BookingLanding() {
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...a }) => a);
 
-  // Heroens «Neste ledige» skal vise et ekte tidspunkt med en gang. Vi spør for
-  // den billigste økta — den er også fra-prisen heroen viser, så tallene hører
-  // sammen. Oppslaget bryter på første ledige dag.
-  const nesteLedig = tjenester.length ? await finnNesteLedige(tjenester[0].slug) : null;
-
   return (
-    <MarkedBookingV2
+    <BookingFlyt
       tjenester={tjenester}
       abonnement={abonnement}
       lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
-      nesteLedigInit={nesteLedig?.tekst ?? null}
+      startSlug={startSlug ?? null}
     />
   );
 }
