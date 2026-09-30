@@ -7,8 +7,9 @@
  * Fire faner: Runder (liste + scorekort), Statistikk, Hull, Sesonger.
  *
  * Bevisste avvik fra tegningen:
- *   - Etter-runden-gjennomgang (SG per kategori, 3-putter, notat) er ikke med: appen har
- *     ingen lagring for den. Forslag til felt står i PR-beskrivelsen.
+ *   - Etter-runden-gjennomgang viser det som er lagret på runden: SG per kategori
+ *     (OTT/APP/ARG/PUTT), kilde, status og notat. 3-putter er ikke med: det finnes
+ *     ikke noe felt for det.
  *   - «SG mot PGA Tour» (Data Golf) er ikke med: DataGolf vises aldri for andre enn Anders.
  *   - Scrambling er ikke med som metrikk: HoleScore har ikke opp-og-ned.
  *   - «Del runde» åpner ikke eget ark, men fører til eksisterende delingsside for runden.
@@ -30,6 +31,8 @@ export type PH18Props = {
   /** Fanen som er åpen først. */
   startFane?: "runder" | "stat" | "hull" | "sesong";
   modell: PH18Model;
+  /** Satt når siden bare regner på de siste N rundene. */
+  avkortet?: number;
   registrerHref: string;
   liveHref: string;
   /** Lenke til delingssiden for en runde. */
@@ -47,10 +50,16 @@ const FANER = [
 const MND = ["APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT"];
 
 const dec = (v: number, d = 1) => formaterTall(v, d, true);
-const tilPar = (v: number) => (v === 0 ? "E" : v > 0 ? `+${v}` : `−${Math.abs(v)}`);
+const tilPar = (v: number | null) => (v == null ? "—" : v === 0 ? "E" : v > 0 ? `+${v}` : `−${Math.abs(v)}`);
 const sgTxt = (v: number | null) => (v == null ? "—" : formaterFortegn(v, 2));
-const kolonnerAuto = (min: number) => `repeat(auto-fit, minmax(min(100%, ${min}px), 1fr))`;
-const grid = (min: number): React.CSSProperties => ({ display: "grid", gridTemplateColumns: kolonnerAuto(min), gap: 16, minWidth: 0, alignItems: "start" });
+/** To kolonner i gitt forhold på bred skjerm; stables under 360 px per kolonne. */
+function Par({ forhold, children }: { forhold: [number, number]; children: [React.ReactNode, React.ReactNode] }) {
+  const kol = (f: number): React.CSSProperties => ({ flex: `${f} 1 0`, minWidth: "min(100%, 360px)" });
+  return <div style={{ display: "flex", flexWrap: "wrap", gap: 16, minWidth: 0, alignItems: "flex-start" }}>
+    <div style={kol(forhold[0])}>{children[0]}</div>
+    <div style={kol(forhold[1])}>{children[1]}</div>
+  </div>;
+}
 
 function Merke({ slag, par }: { slag: number; par: number }) {
   const d = slag - par;
@@ -95,7 +104,7 @@ function RundeDetalj({ r, p }: { r: PH18Runde; p: PH18Props }) {
     </div>
     <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
       <span style={{ font: "var(--type-metric-l)", color: "var(--text-primary)" }}>{r.score}</span>
-      <Tall style={{ color: "var(--text-muted)" }}>slag ({tilPar(r.score - r.par)}) · brutto{r.hull === 9 ? " · 9 hull" : ""}</Tall>
+      <Tall style={{ color: "var(--text-muted)" }}>slag ({tilPar(r.par == null ? null : r.score - r.par)}) · brutto{r.hull === 9 ? " · 9 hull" : ""}</Tall>
     </div>
     <Scorekort r={r} />
     <Nokkelverdi items={[
@@ -103,7 +112,17 @@ function RundeDetalj({ r, p }: { r: PH18Runde; p: PH18Props }) {
       ["Fairway treff", r.fairwayPct == null ? "—" : `${r.fairwayPct} %`],
       ["GIR", r.girPct == null ? "—" : `${r.girPct} %`],
       ["Putter", r.putter ?? "—"],
+      ["SG utslag", sgTxt(r.sgKategorier.ott)],
+      ["SG innspill", sgTxt(r.sgKategorier.app)],
+      ["SG rundt green", sgTxt(r.sgKategorier.arg)],
+      ["SG putting", sgTxt(r.sgKategorier.putt)],
+      ["Status", r.status ?? "—"],
+      ["Kilde", r.kilde ?? "—"],
     ]} />
+    {r.notat && <div>
+      <span className="kicker">Notat</span>
+      <p style={{ margin: "4px 0 0", font: "var(--type-body-s)", color: "var(--text-secondary)", whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{r.notat}</p>
+    </div>}
     <div><KnappLenke variant="ghost" icon={Flag} href={p.detaljHref(r.id)}>Hull for hull</KnappLenke></div>
   </Kort>;
 }
@@ -118,6 +137,11 @@ function Linje({ verdier, hoyde, label }: { verdier: (number | null)[]; hoyde: n
   </svg>;
 }
 
+function kilder(rs: PH18Runde[]): string {
+  const k = [...new Set(rs.map((r) => r.kilde).filter((x): x is string => x != null))];
+  return (k.length ? k.join(" · ") : "DINE REGISTRERTE RUNDER").toUpperCase();
+}
+
 function Statistikk({ m }: { m: PH18Model }) {
   const [valgt, setValgt] = useState<PH18Metrikk>("snitt");
   const met = PH18_METRIKKER.find((x) => x.verdi === valgt)!;
@@ -125,7 +149,7 @@ function Statistikk({ m }: { m: PH18Model }) {
   const gyldige = serie.filter((v): v is number => v != null);
   const snitt = gyldige.length ? gyldige.reduce((a, b) => a + b, 0) / gyldige.length : null;
   const fmt = (v: number | null) => (v == null ? "—" : met.enhet === "%" ? `${v} %` : `${dec(v)} ${met.enhet}`);
-  return <div style={grid(360)}>
+  return <Par forhold={[1.3,1]}>
     <Kort pad={16}>
       <div style={{ maxWidth: 320 }}>
         <Skjemafelt label="Metrikk"><Nedtrekk value={valgt} onChange={(v) => setValgt(v as PH18Metrikk)} options={PH18_METRIKKER.map((x) => ({ value: x.verdi, label: x.navn }))} /></Skjemafelt>
@@ -140,6 +164,7 @@ function Statistikk({ m }: { m: PH18Model }) {
         <Meta>{met.lavereErBedre ? "LAVERE ER BEDRE" : "HØYERE ER BEDRE"}</Meta>
         <Meta>{m.runder[0]?.kortDato}</Meta>
       </div>
+      <Meta>KILDE · {kilder(m.runder)} · SIST {m.runder[0]?.dato}</Meta>
       {met.bareAtten && <Meta>9-HULLSRUNDER TELLER IKKE I SNITT BRUTTO OG PUTTER</Meta>}
     </Kort>
     <Tabell caption={`${met.navn} per runde`} rows={m.runder} tomTekst="—" columns={[
@@ -147,14 +172,14 @@ function Statistikk({ m }: { m: PH18Model }) {
       { key: "b", label: "Bane", render: (r) => r.bane },
       { key: "v", label: met.navn, mono: true, align: "right", render: (r) => fmt(metrikkVerdi(r, valgt)) },
     ]} />
-  </div>;
+  </Par>;
 }
 
 function Hull({ m }: { m: PH18Model }) {
   const h = m.hull;
   if (!h) return <TomTilstand icon={Flag} title="Ingen hull-for-hull-runder ennå" text="Snitt per hull krever en runde med score på alle 18 hull." />;
   const maks = Math.max(1.2, ...h.snitt);
-  return <div style={grid(360)}>
+  return <Par forhold={[1.4,1]}>
     <Kort pad={16} gap={6}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
         <span className="kicker">Snitt til par per hull · {h.bane}</span><Meta>{h.antallRunder} {h.antallRunder === 1 ? "RUNDE" : "RUNDER"}</Meta>
@@ -180,7 +205,7 @@ function Hull({ m }: { m: PH18Model }) {
         <Meta>SNITT {h.beste.snitt > 0 ? "+" : ""}{dec(h.beste.snitt)} TIL PAR · {h.antallRunder} {h.antallRunder === 1 ? "RUNDE" : "RUNDER"}</Meta>
       </Kort>
     </Stabel>
-  </div>;
+  </Par>;
 }
 
 function Sesonger({ m }: { m: PH18Model }) {
@@ -191,7 +216,7 @@ function Sesonger({ m }: { m: PH18Model }) {
   const ticks: number[] = []; for (let v = bunn; v <= topp; v += 4) ticks.push(v);
   const x = (i: number) => 30 + (i * (W - 50)) / 6, y = (v: number) => 16 + (1 - (v - bunn) / (topp - bunn)) * (H - 40);
   const ink = ["var(--graphite-400)", "var(--graphite-500)", "var(--graphite-600)", "var(--text-primary)"].slice(-s.length);
-  return <div style={grid(360)}>
+  return <Par forhold={[1.4,1]}>
     <Kort pad={16}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}><span className="kicker">Til par per måned · 18 hull</span><Meta>{s[0].aar}–{s[s.length - 1].aar}</Meta></div>
       <div style={{ width: "100%", minWidth: 0 }}>
@@ -216,7 +241,7 @@ function Sesonger({ m }: { m: PH18Model }) {
       { key: "n", label: "Runder", mono: true, align: "right", render: (x) => x.antall },
       { key: "a", label: "Snitt brutto", mono: true, align: "right", render: (x) => (x.snittBrutto == null ? "—" : `${dec(x.snittBrutto)} slag`) },
     ]} />
-  </div>;
+  </Par>;
 }
 
 export function PH18Runder(p: PH18Props) {
@@ -226,28 +251,30 @@ export function PH18Runder(p: PH18Props) {
   const runder = p.modell.runder;
   const r = runder.find((x) => x.id === rid) ?? runder[0] ?? null;
   return <Side max={1320}>
-    <SideHode kicker="Stats · Runder og statistikk" title="Runder og statistikk" sub="Score er alltid brutto. Til par regnes av par på hullene du har spilt."
+    <SideHode kicker="Stats · Runder og statistikk" title="Runder og statistikk" sub="Score er alltid brutto. Til par regnes av par på hullene du har ført; uten hullscore vises «—»."
       actions={<KnappLenke icon={Flag} href={p.registrerHref}>Registrer runde</KnappLenke>} />
     {p.tilstand === "feil" ? <FeilTilstand icon={CircleAlert} title="Rundene kunne ikke hentes" text="Ingen runder er slettet. Prøv å laste siden på nytt." code={p.ukjentKode ?? "FEIL · RUNDER"} />
-      : p.tilstand === "tom" ? <TomTilstand icon={Flag} title="Ingen runder ennå" text="Registrer første runde for å få scorekort, statistikk og hull-analyse."
-        actions={<><KnappLenke icon={Flag} href={p.registrerHref}>Registrer runde</KnappLenke><KnappLenke variant="secondary" icon={Play} href={p.liveHref}>Spill med live-registrering</KnappLenke></>} />
       : <>
         {harKladd && <div><KnappLenke variant="secondary" icon={Play} href={p.liveHref}>Fortsett runde</KnappLenke></div>}
         <div className="pa-tabs" role="tablist">
           {FANER.map((f) => <button key={f.verdi} type="button" role="tab" aria-selected={f.verdi === fane} className="pa-tab" style={{ minWidth: 44 }} onClick={() => setFane(f.verdi)}>{f.navn}</button>)}
         </div>
-        {fane === "runder" && <div style={grid(360)}>
+        {p.avkortet != null && <Meta>VISER DE {p.avkortet} SISTE RUNDENE</Meta>}
+        {p.tilstand === "tom" && (fane === "runder" || fane === "stat") ? <TomTilstand icon={Flag} title="Ingen runder ennå" text="Registrer første runde for å få scorekort, statistikk og hull-analyse."
+          actions={<><KnappLenke icon={Flag} href={p.registrerHref}>Registrer runde</KnappLenke><KnappLenke variant="secondary" icon={Play} href={p.liveHref}>Spill med live-registrering</KnappLenke></>} /> : <>
+        {fane === "runder" && <Par forhold={[1, 1.2]}>
           <Tabell caption="Runder" rows={runder} selectedId={r?.id} onSelect={setRid} columns={[
             { key: "d", label: "Dato", mono: true, render: (x) => x.kortDato },
             { key: "b", label: "Bane", render: (x) => x.bane },
-            { key: "s", label: "Brutto", mono: true, align: "right", render: (x) => `${x.score} slag (${tilPar(x.score - x.par)})${x.hull === 9 ? " · 9 hull" : ""}` },
+            { key: "s", label: "Brutto", mono: true, align: "right", render: (x) => `${x.score} slag (${tilPar(x.par == null ? null : x.score - x.par)})${x.hull === 9 ? " · 9 hull" : ""}` },
             { key: "g", label: "SG", mono: true, align: "right", render: (x) => sgTxt(x.sg) },
           ]} />
-          {r && <RundeDetalj r={r} p={p} />}
-        </div>}
+          {r ? <RundeDetalj r={r} p={p} /> : <span />}
+        </Par>}
         {fane === "stat" && <Statistikk m={p.modell} />}
         {fane === "hull" && <Hull m={p.modell} />}
         {fane === "sesong" && <Sesonger m={p.modell} />}
+      </>}
       </>}
   </Side>;
 }

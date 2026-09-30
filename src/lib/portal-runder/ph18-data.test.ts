@@ -5,7 +5,8 @@ import { byggPH18, metrikkVerdi, type PH18RundeInn } from "./ph18-data";
 const hull = (n: number, par: number, strokes: number, o: Partial<PH18RundeInn["holeScores"][number]> = {}) => ({ holeNumber: n, par, strokes, putts: 2, fairway: true, gir: false, ...o });
 const atten = (strokesPer: number[]) => strokesPer.map((s, i) => hull(i + 1, 4, s));
 const runde = (id: string, dato: string, hs: PH18RundeInn["holeScores"], o: Partial<PH18RundeInn> = {}): PH18RundeInn => ({
-  id, playedAt: new Date(dato), score: hs.reduce((s, h) => s + h.strokes, 0), courseName: "GFGK", coursePar: 72, sgTotal: null, sgSource: null, roundType: null, holeScores: hs, ...o,
+  id, playedAt: new Date(dato), score: hs.reduce((s, h) => s + h.strokes, 0), courseName: "GFGK", sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null, sgSource: null, roundType: null,
+  status: null, partialSave: false, source: null, notes: null, holeScores: hs, ...o,
 });
 
 describe("byggPH18", () => {
@@ -49,5 +50,38 @@ describe("byggPH18", () => {
     assert.equal(m.sesonger[0].maaneder[0], 0);
     assert.equal(m.sesonger[1].maaneder[5], 18);
     assert.equal(m.sesonger[1].maaneder[6], null);
+  });
+
+  it("gjetter aldri par eller hullantall: uten hullscore er til par ukjent og runden teller ikke i snitt eller sesong", () => {
+    const m = byggPH18([
+      runde("a", "2026-09-20T10:00:00Z", [], { score: 79 }),
+      runde("b", "2026-09-13T10:00:00Z", Array.from({ length: 5 }, (_, i) => hull(i + 1, 4, 5))),
+      runde("c", "2026-09-06T10:00:00Z", atten(Array(18).fill(5))),
+    ]);
+    for (const r of m.runder.slice(0, 2)) {
+      assert.equal(r.par, null);
+      assert.equal(r.hull, null);
+      assert.equal(r.kort, null);
+      assert.equal(metrikkVerdi(r, "snitt"), null);
+    }
+    assert.equal(m.sesonger.length, 1);
+    assert.equal(m.sesonger[0].antall, 1);
+    assert.equal(m.sesonger[0].snittBrutto, 90);
+  });
+
+  it("viser lagringsstatus, kilde og notat slik de er lagret, og årstall i kortdato", () => {
+    const m = byggPH18([
+      runde("a", "2026-09-20T10:00:00Z", atten(Array(18).fill(4)), { status: "komplett", source: "live", notes: " Bra putting ", sgOtt: 0.5 }),
+      runde("b", "2025-08-01T10:00:00Z", atten(Array(18).fill(4)), { status: "delvis", partialSave: true }),
+      runde("c", "2025-07-01T10:00:00Z", atten(Array(18).fill(4)), { status: "ukjent-verdi" }),
+    ]);
+    assert.equal(m.runder[0].status, "Komplett");
+    assert.equal(m.runder[0].kilde, "Live føring");
+    assert.equal(m.runder[0].notat, "Bra putting");
+    assert.equal(m.runder[0].sgKategorier.ott, 0.5);
+    assert.equal(m.runder[0].kortDato, "20.09.26");
+    assert.equal(m.runder[1].status, "Delvis lagret");
+    assert.equal(m.runder[2].status, null);
+    assert.equal(m.runder[2].kilde, null);
   });
 });

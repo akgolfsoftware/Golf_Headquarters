@@ -9,8 +9,8 @@ export const natt = ["data-natt", "sesonger-natt"];
 const PAR = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5];
 const hs = (slag: number[]) => slag.map((s, i) => ({ holeNumber: i + 1, par: PAR[i], strokes: s, putts: 2, fairway: PAR[i] === 3 ? null : i % 3 !== 0, gir: i % 2 === 0 }));
 const inn = (id: string, dato: string, slag: number[], o: Partial<PH18RundeInn> = {}): PH18RundeInn => ({
-  id, playedAt: new Date(dato), score: slag.reduce((a, b) => a + b, 0), courseName: "Gamle Fredrikstad Golfklubb med et langt banenavn", coursePar: 72,
-  sgTotal: 0.4, sgSource: "manual", roundType: "trening", holeScores: hs(slag), ...o,
+  id, playedAt: new Date(dato), score: slag.reduce((a, b) => a + b, 0), courseName: "Gamle Fredrikstad Golfklubb med et langt banenavn",  sgTotal: 0.4, sgOtt: 0.2, sgApp: -0.1, sgArg: 0.1, sgPutt: 0.2, sgSource: "manual", roundType: "trening",
+  status: "manuell_sg", partialSave: false, source: "manuell", notes: null, holeScores: hs(slag), ...o,
 });
 const jevn = (d: number) => PAR.map((p, i) => p + (i % 4 === 0 ? d : i % 5 === 0 ? -1 : 0));
 const modell = byggPH18([

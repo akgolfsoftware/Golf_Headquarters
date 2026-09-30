@@ -12,6 +12,9 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH18Runder } from "@/components/portal/precision/PH18Runder";
 import { byggPH18, type PH18Model } from "@/lib/portal-runder/ph18-data";
 
+/** Øvre grense for hvor mange runder siden regner på. Går spilleren over den, sier siden det. */
+const MAKS_RUNDER = 500;
+
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Runder og statistikk · PlayerHQ" };
 
@@ -23,24 +26,28 @@ export default async function RunderPage() {
   let modell: PH18Model = { runder: [], hull: null, sesonger: [] };
   let feil = false;
   let uleste = 0;
+  let avkortet = false;
   try {
     const [runder, dash] = await Promise.all([
       prisma.round.findMany({
         where: { userId: user.id },
         orderBy: { playedAt: "desc" },
-        take: 200,
+        take: MAKS_RUNDER + 1,
         select: {
-          id: true, playedAt: true, score: true, sgTotal: true, sgSource: true, roundType: true,
-          course: { select: { name: true, par: true } },
+          id: true, playedAt: true, score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true, sgSource: true, roundType: true,
+          status: true, partialSave: true, source: true, notes: true,
+          course: { select: { name: true } },
           holeScores: { select: { holeNumber: true, par: true, strokes: true, putts: true, fairway: true, gir: true } },
         },
       }),
       getUnreadNotifications(user.id, 1).catch(() => null),
     ]);
     uleste = dash?.count ?? 0;
-    modell = byggPH18(runder.map((r) => ({
-      id: r.id, playedAt: r.playedAt, score: r.score, courseName: r.course.name, coursePar: r.course.par,
-      sgTotal: r.sgTotal, sgSource: r.sgSource, roundType: r.roundType, holeScores: r.holeScores,
+    avkortet = runder.length > MAKS_RUNDER;
+    modell = byggPH18(runder.slice(0, MAKS_RUNDER).map((r) => ({
+      id: r.id, playedAt: r.playedAt, score: r.score, courseName: r.course.name,
+      sgTotal: r.sgTotal, sgOtt: r.sgOtt, sgApp: r.sgApp, sgArg: r.sgArg, sgPutt: r.sgPutt, sgSource: r.sgSource, roundType: r.roundType,
+      status: r.status, partialSave: r.partialSave, source: r.source, notes: r.notes, holeScores: r.holeScores,
     })));
   } catch {
     feil = true;
@@ -51,6 +58,7 @@ export default async function RunderPage() {
       <PH18Runder
         tilstand={feil ? "feil" : modell.runder.length === 0 ? "tom" : "data"}
         modell={modell}
+        avkortet={avkortet ? MAKS_RUNDER : undefined}
         registrerHref="/portal/mal/runder/ny"
         liveHref="/portal/runde/live"
         delHref={(id) => `/portal/statistikk/runder/${id}/del`}

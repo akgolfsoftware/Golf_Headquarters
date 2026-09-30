@@ -7,16 +7,25 @@
  * aldri 0 eller en gjetning. Score er brutto.
  */
 
+import { RUNDE_KILDE_META, RUNDE_STATUS_META, lesRundeKilde, lesRundeStatus } from "@/lib/runde-logg/kontrakt";
+
 export type PH18RundeInn = {
   id: string;
   playedAt: Date;
   score: number;
   courseName: string;
-  /** Baneregisterets par. Brukes bare når rundens egne hull mangler. */
-  coursePar: number;
   sgTotal: number | null;
+  sgOtt: number | null;
+  sgApp: number | null;
+  sgArg: number | null;
+  sgPutt: number | null;
   sgSource: string | null;
   roundType: string | null;
+  /** Rå verdier fra Round.status / Round.source / Round.notes. */
+  status: string | null;
+  partialSave: boolean;
+  source: string | null;
+  notes: string | null;
   holeScores: { holeNumber: number; par: number; strokes: number; putts: number | null; fairway: boolean | null; gir: boolean | null }[];
 };
 
@@ -24,15 +33,22 @@ export type PH18Runde = {
   id: string;
   /** dd.mm.åååå (Oslo). */
   dato: string;
+  /** dd.mm.åå (Oslo). */
   kortDato: string;
   bane: string;
   score: number;
-  par: number;
+  /** Summen av par på rundens egne hull. null når hullene ikke er ført (par hentes aldri fra baneregisteret). */
+  par: number | null;
   /** 9 eller 18, eller null når antall hull ikke kan avgjøres. */
   hull: 9 | 18 | null;
   art: string | null;
   sg: number | null;
+  sgKategorier: { ott: number | null; app: number | null; arg: number | null; putt: number | null };
   sgKilde: string | null;
+  /** Visningsnavn på lagringsstatus, eller null når ukjent. */
+  status: string | null;
+  kilde: string | null;
+  notat: string | null;
   fairwayPct: number | null;
   girPct: number | null;
   putter: number | null;
@@ -79,25 +95,32 @@ function prosent(verdier: (boolean | null)[]): number | null {
 
 function tilRunde(r: PH18RundeInn): PH18Runde {
   const hs = [...r.holeScores].sort((a, b) => a.holeNumber - b.holeNumber);
-  const hull: 9 | 18 | null = hs.length === 18 || hs.length === 9 ? (hs.length as 9 | 18) : hs.length === 0 && r.coursePar >= 60 ? 18 : null;
-  const par = hs.length > 0 && (hs.length === 9 || hs.length === 18) ? hs.reduce((s, h) => s + h.par, 0) : r.coursePar;
+  // Hullantall og par kommer bare fra rundens egne hullscore. Uten dem er begge ukjente.
+  const hull: 9 | 18 | null = hs.length === 18 || hs.length === 9 ? (hs.length as 9 | 18) : null;
+  const par = hull ? hs.reduce((s, h) => s + h.par, 0) : null;
   const dato = OSLO.format(r.playedAt).replaceAll("/", ".");
   const putter = hs.length > 0 && hs.every((h) => h.putts != null) ? hs.reduce((s, h) => s + (h.putts ?? 0), 0) : null;
+  const status = lesRundeStatus(r.status);
+  const kilde = lesRundeKilde(r.source);
   return {
     id: r.id,
     dato,
-    kortDato: dato.slice(0, 5),
+    kortDato: `${dato.slice(0, 6)}${dato.slice(8)}`,
     bane: r.courseName,
     score: r.score,
     par,
     hull,
     art: r.roundType,
     sg: r.sgTotal,
+    sgKategorier: { ott: r.sgOtt, app: r.sgApp, arg: r.sgArg, putt: r.sgPutt },
     sgKilde: r.sgSource,
+    status: r.partialSave ? "Delvis lagret" : status ? RUNDE_STATUS_META[status].label : null,
+    kilde: kilde ? RUNDE_KILDE_META[kilde].label : null,
+    notat: r.notes?.trim() ? r.notes.trim() : null,
     fairwayPct: prosent(hs.map((h) => h.fairway)),
     girPct: prosent(hs.map((h) => h.gir)),
     putter,
-    kort: hs.length === 9 || hs.length === 18 ? hs.map((h) => ({ par: h.par, slag: h.strokes })) : null,
+    kort: hull ? hs.map((h) => ({ par: h.par, slag: h.strokes })) : null,
   };
 }
 
@@ -125,9 +148,10 @@ function byggHull(inn: PH18RundeInn[]): PH18HullSnitt | null {
 function byggSesonger(runder: PH18Runde[], inn: PH18RundeInn[]): PH18Sesong[] {
   const perAar = new Map<number, { maaned: number; tilPar: number; score: number }[]>();
   inn.forEach((r, i) => {
-    if (runder[i].hull !== 18) return;
+    const par = runder[i].par;
+    if (runder[i].hull !== 18 || par == null) return;
     const { aar, maaned } = osloAarMaaned(r.playedAt);
-    perAar.set(aar, [...(perAar.get(aar) ?? []), { maaned, tilPar: runder[i].score - runder[i].par, score: runder[i].score }]);
+    perAar.set(aar, [...(perAar.get(aar) ?? []), { maaned, tilPar: runder[i].score - par, score: runder[i].score }]);
   });
   return [...perAar.entries()]
     .sort((a, b) => b[0] - a[0])
