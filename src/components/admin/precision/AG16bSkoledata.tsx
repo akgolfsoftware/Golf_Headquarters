@@ -9,6 +9,7 @@ import { useState, useTransition } from "react";
 import { Upload, CircleAlert, FileWarning } from "lucide-react";
 import { Knapp, Meta, FeilTilstand, LasterTilstand } from "@/components/precision/pa";
 import { Side, SideHode, Skjemafelt } from "@/components/precision/pa-a4";
+import { InlineVarsel } from "@/components/precision/pa-a5";
 import { GruppeFanerPa } from "./AG16bArsplan";
 import { importerSkoledata } from "@/app/admin/grupper/[id]/arsplan/skoledata/actions";
 
@@ -60,13 +61,12 @@ export function AG16bSkoledata({
             <Meta>DATO|TRINN (VG1, VG2, VG3 ELLER TOMT)|KATEGORI|TITTEL|NOTAT</Meta>
           </label>
           <div><Knapp type="submit" icon={Upload} iconName="upload" loading={pending} loadingText="Importerer …">Importer</Knapp></div>
-          {resultat && <div role="status" className="pa-card" style={{ padding: 16, gap: 8, minWidth: 0, borderColor: resultat.ok ? undefined : "var(--signal)" }}>
-            <span style={{ font: "600 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{resultat.melding}</span>
-            {resultat.feil.length > 0 && <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4, font: "var(--type-body-s)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>
+          {resultat && <InlineVarsel tone={resultat.ok ? "ok" : "signal"} tittel={resultat.melding}>
+            {resultat.feil.length > 0 && <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4, overflowWrap: "anywhere" }}>
               {resultat.feil.map((f, i) => <li key={i}>{f}</li>)}
             </ul>}
             {!resultat.ok && <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><FileWarning size={14} aria-hidden /><Meta>RETT LINJENE OVER OG PRØV IGJEN</Meta></span>}
-          </div>}
+          </InlineVarsel>}
         </form>}
   </Side>;
 }

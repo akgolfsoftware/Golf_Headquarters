@@ -13,6 +13,7 @@ import { CalendarRange, Trophy, Upload } from "lucide-react";
 import { Meta, KnappLenke, TomTilstand, FeilTilstand, LasterTilstand } from "@/components/precision/pa";
 import { FanerLenker, Side, SideHode } from "@/components/precision/pa-a4";
 import "@/styles/precision-a5.css";
+import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import type { GruppeKalenderData, SkoleHendelse } from "@/lib/gruppe-kalender/types";
 
 export type AG16bTilstand = "data" | "tom" | "laster" | "feil";
@@ -85,9 +86,14 @@ function Innhold({ gruppe, data, trinn }: { gruppe: AG16bArsplanProps["gruppe"];
   const perioder = <Seksjon k="Perioder" meta={`${data.perioder.length} ${data.perioder.length === 1 ? "PERIODE" : "PERIODER"}`}>
     {data.perioder.length === 0
       ? <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen perioder lagt inn for gruppen. Perioder settes i gruppe-Workbench.</p>
-      : <div role="list">{data.perioder.map((p, i) => <Rad key={p.id} forste={i === 0} a={p.name}
-          sub={[p.note, p.kompetansemal.length ? `${p.kompetansemal.length} KOMPETANSEMÅL` : null].filter(Boolean).join(" · ").toUpperCase() || null}
-          b={`${dagFmt.format(new Date(p.startDate))} – ${dagAarFmt.format(dagFør(p.endDate))}`} />)}</div>}
+      : <div role="list">{data.perioder.map((p, i) => <div key={p.id} style={{ minWidth: 0 }}>
+          <Rad forste={i === 0} a={p.name}
+            sub={[p.note, p.kompetansemal.length ? `${p.kompetansemal.length} KOMPETANSEMÅL` : null].filter(Boolean).join(" · ").toUpperCase() || null}
+            b={`${dagFmt.format(new Date(p.startDate))} – ${dagAarFmt.format(dagFør(p.endDate))}`} />
+          {p.kompetansemal.length > 0 && <ul aria-label={`Kompetansemål ${p.name}`} style={{ margin: "0 0 8px", paddingLeft: 18, listStyle: "disc", display: "flex", flexDirection: "column", gap: 4, font: "var(--type-body-s)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>
+            {p.kompetansemal.map((k) => <li key={k.id}>{k.classYear} · {k.curriculumCode} nr. {k.goalNumber}: {k.text}</li>)}
+          </ul>}
+        </div>)}</div>}
   </Seksjon>;
 
   const fasteKort = <Seksjon k="Faste tider" meta={faste.length ? `${faste.length} PER UKE` : undefined}>
@@ -130,10 +136,14 @@ function Innhold({ gruppe, data, trinn }: { gruppe: AG16bArsplanProps["gruppe"];
           b={t.endDate && nokkelFmt.format(new Date(t.startDate)) !== nokkelFmt.format(new Date(t.endDate)) ? `${dagFmt.format(new Date(t.startDate))} – ${dagFmt.format(new Date(t.endDate))}` : dagFmt.format(new Date(t.startDate))} />)}</div>}
   </Seksjon>;
 
-  return <div className="pa-a5-grid pa-a5-grid--2">
+  const kalender = <Seksjon k="Kalender" meta="ÅR · MÅNED · UKE · DAG">
+    <div style={{ minWidth: 0 }}><GruppeKalenderWrapper data={data} classYear={trinn} /></div>
+  </Seksjon>;
+
+  return <div className="pa-a5-stack">{kalender}<div className="pa-a5-grid pa-a5-grid--2">
     <div className="pa-a5-stack">{perioder}{skoleKort}</div>
     <div className="pa-a5-stack">{fasteKort}{samlinger}{turneringer}</div>
-  </div>;
+  </div></div>;
 }
 
 export function AG16bArsplan({ tilstand, gruppe, data, trinn, kanRedigere = true }: AG16bArsplanProps) {

@@ -16,7 +16,7 @@ const Vis = ({ t = "data", r = null }: { t?: "data" | "laster" | "feil"; r?: { o
 
 export const tilstander = {
   data: <Vis />,
-  tom: <Vis r={{ ok: true, melding: "3 rader lagt inn.", feil: [] }} />,
+  "resultat-ok": <Vis r={{ ok: true, melding: "3 rader lagt inn.", feil: [] }} />,
   "feil-rader": <Vis r={{ ok: false, melding: "Importen feilet. Ingenting er lagt inn.", feil: ["Linje 4: ukjent kategori «PRØVEX» (må være TIME/PROVE/HELDAGSPROVE/EKSAMEN/FERIE/SKOLETUR/ANNET)", "Linje 7: ugyldig dato «2026-13-40»"] }} />,
   "feil-rader-natt": <Vis r={{ ok: false, melding: "Importen feilet. Ingenting er lagt inn.", feil: ["Linje 7: ugyldig dato «2026-13-40»"] }} />,
   laster: <Vis t="laster" />,
