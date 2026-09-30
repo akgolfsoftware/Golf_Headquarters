@@ -4,7 +4,7 @@
  * AG-23 Oppsett i Precision Athletics (Claude Design 7d7c2994,
  * ui_kits/agencyos/screens/AG-mer.jsx, runde 30 - fasit).
  *
- * Fasit: ÉN fanerad med seks faner: Profil, Team og invitasjoner, GDPR,
+ * Tegningen har ÉN fanerad med seks faner: Profil, Team og invitasjoner, GDPR,
  * Logger, Markedsføring, Hjelp. Alle AG-23-flater bruker samme rad.
  * Fanene GDPR, Logger og Hjelp peker på eksisterende adresser. Bare ADMIN
  * ser GDPR, Logger og Markedsføring (samme porter som målsidene).
