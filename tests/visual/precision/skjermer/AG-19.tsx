@@ -45,33 +45,36 @@ const samtale: NonNullable<AG19Props["samtale"]> = {
   ],
 };
 
-function Vis(over: Partial<AG19Props> & { tilstand: AG19Tilstand; fane: JarvisFaneId }) {
+function Vis(over: Partial<AG19Props> & { tilstand: AG19Tilstand; fane: JarvisFaneId }, natt = false) {
   const p: AG19Props = {
     faner: JARVIS_FANER, antall: { ko: 3, prosjekter: 3, skills: AGENTICOS_SKILLS.length, runtimes: 1 },
     cockpit, kjoringer, valgtKjoringId: "r1", prosjekter, skills: AGENTICOS_SKILLS, runtimes: AGENTICOS_RUNTIMES, kjoringerIdag: 3, samtale,
     ...over,
   };
-  return <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach"><AG19Jarvis {...p} /></AgencyOSSkall></AdminRolleProvider>;
+  return <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach" natt={natt}><AG19Jarvis {...p} /></AgencyOSSkall></AdminRolleProvider>;
 }
 
 const tomCockpit = { ...cockpit, neste: null, venterPaDeg: 0, feilende: [], klarCount: 0, researchCount: 0, runtimeLinje: "Ingen kjøringer i dag" };
 
-export const tilstander = {
-  data: Vis({ tilstand: "data", fane: "ko" }),
-  "data-feilet": Vis({ tilstand: "data", fane: "ko", valgtKjoringId: "r2" }),
-  tom: Vis({ tilstand: "tom", fane: "ko", cockpit: tomCockpit, kjoringer: [] }),
-  laster: Vis({ tilstand: "laster", fane: "ko" }),
-  feil: Vis({ tilstand: "feil", fane: "ko" }),
-  prosjekter: Vis({ tilstand: "data", fane: "prosjekter" }),
-  "prosjekter-tom": Vis({ tilstand: "data", fane: "prosjekter", prosjekter: { grupper: [], tomme: "" } }),
-  skills: Vis({ tilstand: "data", fane: "skills" }),
-  runtimes: Vis({ tilstand: "data", fane: "runtimes" }),
-  samtale: Vis({ tilstand: "data", fane: "samtale" }),
-  "samtale-tom": Vis({ tilstand: "data", fane: "samtale", samtale: { conversationId: "c2", historikk: [], utkastVenter: 0 } }),
-  "samtale-last": Vis({ tilstand: "data", fane: "samtale", samtale: null }),
-};
+const lys = {
+  data: { tilstand: "data", fane: "ko" },
+  "data-feilet": { tilstand: "data", fane: "ko", valgtKjoringId: "r2" },
+  tom: { tilstand: "tom", fane: "ko", cockpit: tomCockpit, kjoringer: [] },
+  laster: { tilstand: "laster", fane: "ko" },
+  feil: { tilstand: "feil", fane: "ko" },
+  prosjekter: { tilstand: "data", fane: "prosjekter" },
+  "prosjekter-tom": { tilstand: "data", fane: "prosjekter", prosjekter: { grupper: [], tomme: "" } },
+  skills: { tilstand: "data", fane: "skills" },
+  runtimes: { tilstand: "data", fane: "runtimes" },
+  samtale: { tilstand: "data", fane: "samtale" },
+  "samtale-tom": { tilstand: "data", fane: "samtale", samtale: { conversationId: "c2", historikk: [], utkastVenter: 0 } },
+  "samtale-last": { tilstand: "data", fane: "samtale", samtale: null },
+} satisfies Record<string, Parameters<typeof Vis>[0]>;
 
-// Nattema måles som egne tilstander (samme innhold, natt-tema).
-const nattNavn = ["data", "data-feilet", "tom", "laster", "feil", "prosjekter", "prosjekter-tom", "skills", "runtimes", "samtale", "samtale-tom", "samtale-last"] as const;
-for (const n of nattNavn) (tilstander as Record<string, React.ReactNode>)[`natt-${n}`] = tilstander[n];
-export const natt: string[] = nattNavn.map((n) => `natt-${n}`);
+// Nattema går gjennom skallets egen natt-prop (data-theme="night" på .pa-root).
+export const tilstander: Record<string, React.ReactNode> = {};
+for (const [navn, over] of Object.entries(lys)) {
+  tilstander[navn] = Vis(over);
+  tilstander[`natt-${navn}`] = Vis(over, true);
+}
+export const natt: string[] = Object.keys(lys).map((n) => `natt-${n}`);

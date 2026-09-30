@@ -2,6 +2,8 @@
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG19Kjoringsdetalj } from "@/components/admin/precision/AG19Kjoringsdetalj";
+import { CircleAlert } from "lucide-react";
+import { FeilTilstand, LasterTilstand } from "@/components/precision/pa";
 import type { AgentDetaljData } from "@/components/admin/v2/AdminAgentDetaljV2";
 
 export const sti = "/admin/agents/ukesforslag";
@@ -32,14 +34,20 @@ const data: AgentDetaljData = {
   manuell: null,
 };
 
-const Vis = (d: AgentDetaljData) => <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach"><AG19Kjoringsdetalj data={d} /></AgencyOSSkall></AdminRolleProvider>;
+const Vis = (d: AgentDetaljData, natt = false) => <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach" natt={natt}><AG19Kjoringsdetalj data={d} /></AgencyOSSkall></AdminRolleProvider>;
+// Samme uttrykk som agents/loading.tsx og agents/error.tsx.
+const Laster = (natt = false) => <AgencyOSSkall navn="Coach" natt={natt}><div className="pa-side"><LasterTilstand text="Henter agenten …" /></div></AgencyOSSkall>;
+const Feil = (natt = false) => <AgencyOSSkall navn="Coach" natt={natt}><div className="pa-side"><FeilTilstand icon={CircleAlert} title="Jarvis svarer ikke" text="Ingen utkast er sendt eller slettet. Prøv igjen." /></div></AgencyOSSkall>;
 
-export const tilstander = {
-  data: Vis(data),
-  feilet: Vis({ ...data, tilstand: "feilet", feil: { naarTekst: "29.09 06:00 etter 1,0 s", sidenTekst: "Forrige vellykkede kjøring var 22.09.26. Forslagene derfra står fortsatt i køen", melding: "Tidsavbrudd mot kalenderen." } }),
-  tom: Vis({ ...data, tilstand: "ingen", kjoringer: [], forslag: [], sisteSteg: null, kpi: { kjoringer30d: 0, kjoringerSub: "0 OK · 0 feil", snittTidTekst: "—", forslagLaget: 0, forslagSub: "0 godkjent · 0 avvist" }, panel: { godkjentRateTekst: "—", godkjentSub: "Ingen avgjort ennå", eldsteIKoTekst: "—", eldsteSub: "Ingen venter" } }),
+const tom: AgentDetaljData = { ...data, tilstand: "ingen", kjoringer: [], forslag: [], sisteSteg: null, kpi: { kjoringer30d: 0, kjoringerSub: "0 OK · 0 feil", snittTidTekst: "—", forslagLaget: 0, forslagSub: "0 godkjent · 0 avvist" }, panel: { godkjentRateTekst: "—", godkjentSub: "Ingen avgjort ennå", eldsteIKoTekst: "—", eldsteSub: "Ingen venter" } };
+const feilet: AgentDetaljData = { ...data, tilstand: "feilet", feil: { naarTekst: "29.09 06:00 etter 1,0 s", sidenTekst: "Forrige vellykkede kjøring var 22.09.26. Forslagene derfra står fortsatt i køen", melding: "Tidsavbrudd mot kalenderen." } };
+const lys: Record<string, (natt: boolean) => React.ReactNode> = {
+  data: (n) => Vis(data, n),
+  feilet: (n) => Vis(feilet, n),
+  tom: (n) => Vis(tom, n),
+  laster: (n) => Laster(n),
+  feil: (n) => Feil(n),
 };
-
-const nattNavn = ["data", "feilet", "tom"] as const;
-for (const n of nattNavn) (tilstander as Record<string, React.ReactNode>)[`natt-${n}`] = tilstander[n];
-export const natt: string[] = nattNavn.map((n) => `natt-${n}`);
+export const tilstander: Record<string, React.ReactNode> = {};
+for (const [navn, f] of Object.entries(lys)) { tilstander[navn] = f(false); tilstander[`natt-${navn}`] = f(true); }
+export const natt: string[] = Object.keys(lys).map((n) => `natt-${n}`);

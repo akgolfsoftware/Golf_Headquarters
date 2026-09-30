@@ -16,7 +16,7 @@ import { useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowRight, CircleAlert, ListChecks, Play, Sparkles } from "lucide-react";
+import { ArrowRight, CircleAlert, ListChecks, MessageSquare, Play, Sparkles } from "lucide-react";
 import { Sidehode, Knapp, KnappLenke, StatusPille, TomTilstand, Meta, Tall, FeilTilstand, LasterTilstand } from "@/components/precision/pa";
 import { Kolonner, Stabel, Nokkelverdi } from "@/components/precision/pa-a4";
 import { InlineVarsel, KortHode, Kort } from "@/components/precision/pa-a5";
@@ -51,7 +51,7 @@ const kjoringHref = (id: string) => `/admin/jarvis?kjoring=${encodeURIComponent(
 function Faneverktoy({ faner, aktiv, antall }: { faner: readonly JarvisFane[]; aktiv: JarvisFaneId; antall: AG19Props["antall"] }) {
   return <nav className="pa-tabs" aria-label="Jarvis-faner">
     {faner.map((f) => {
-      const n = f.id === "samtale" ? undefined : antall[f.id];
+      const n = f.id === "ko" ? antall[f.id] : undefined;
       return <Link key={f.id} href={jarvisHref(f.id)} aria-current={f.id === aktiv ? "page" : undefined} className="pa-tab" data-fanelenke="">
         {f.label}{n !== undefined && <span className="pa-tab__count">{n}</span>}
       </Link>;
@@ -147,13 +147,13 @@ function KoFane({ p }: { p: AG19Props }) {
     <NesteKort cockpit={cockpit} />
     <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", minWidth: 0 }}>
       <Tellekort tall={cockpit.venterPaDeg} tekst="venter på deg. Ingenting skrives før du sier ja" href="/admin/ko?fane=agentgodkjenn" lenke="Godkjenn-køen" />
-      <Tellekort tall={cockpit.klarCount} tekst={cockpit.pagarCount > 0 ? `tasks klare i kø · ${cockpit.pagarCount} pågår` : "tasks klare i kø"} href="/admin/ko?fane=agentko" lenke="Åpne kø" />
+      <Tellekort tall={cockpit.klarCount} tekst={cockpit.pagarCount > 0 ? `oppgaver klare i kø · ${cockpit.pagarCount} pågår` : "oppgaver klare i kø"} href="/admin/ko?fane=agentko" lenke="Åpne kø" />
       <Tellekort tall={cockpit.researchCount} tekst="nye signaler siste 7 dager. Bare lesing, ingen godkjenning" href="/admin/jarvis?fane=skills" lenke="Se hva agentene får lov til" />
     </div>
     <section aria-label="Siste kjøringer">
       <Stabel gap={8}>
         <KortHode tittel="Siste kjøringer" aside={cockpit.runtimeLinje.toUpperCase()} />
-        {kjoringer.length === 0 ? <TomTilstand icon={Sparkles} title="Ingen kjøringer ennå" text="Agentene kjører etter sin egen plan. Du kan også starte en agent manuelt fra kortet over, eller spørre Caddie direkte." actions={<KnappLenke href={jarvisHref("samtale")} icon={Sparkles} iconName="sparkles">Åpne samtale</KnappLenke>} />
+        {kjoringer.length === 0 ? <TomTilstand icon={Sparkles} title="Ingen kjøringer ennå" text="Agentene kjører etter sin egen plan. Du kan også starte en agent manuelt fra kortet over, eller spørre Caddie direkte." actions={<KnappLenke href={jarvisHref("samtale")} icon={MessageSquare} iconName="message-square">Åpne samtale</KnappLenke>} />
           : <Kolonner mal="repeat(auto-fit, minmax(min(100%, 340px), 1fr))" gap={16}>
             <div className="pa-card" style={{ padding: 0, overflow: "hidden", minWidth: 0 }}>
               {kjoringer.map((k, i) => <KjoringRad key={k.id} k={k} valgt={valgt?.id === k.id} forste={i === 0} />)}
@@ -219,14 +219,14 @@ function RuntimesFane({ runtimes, kjoringerIdag }: { runtimes: readonly Agentico
     <InlineVarsel tone="info" tittel="Ollama kjører på Mac Mini, ikke i denne appen.">
       Data forlater ikke maskinen når Ollama kjører. Modeller lastes og sjekkes på maskinen, ikke herfra.
     </InlineVarsel>
-    <Meta>AV BETYR AT TASKS TILDELT DEN BLIR STÅENDE SOM KLAR. INGENTING KJØRES OM. OVERSIKT, INGEN BRYTERE LAGRER HER.</Meta>
+    <Meta>AV BETYR AT OPPGAVER TILDELT DEN BLIR STÅENDE SOM KLAR. INGENTING KJØRES OM. OVERSIKT, INGEN BRYTERE LAGRER HER.</Meta>
   </Stabel>;
 }
 
 function Innhold({ p }: { p: AG19Props }): ReactNode {
   switch (p.fane) {
     case "ko": return p.tilstand === "tom"
-      ? <TomTilstand icon={Sparkles} title="Ingen kjøringer i dag" text="Agentene kjører etter sin egen plan. Du kan også spørre Caddie direkte." actions={<KnappLenke href={jarvisHref("samtale")} icon={Sparkles} iconName="sparkles">Åpne samtale</KnappLenke>} />
+      ? <TomTilstand icon={Sparkles} title="Ingen kjøringer i dag" text="Agentene kjører etter sin egen plan. Du kan også spørre Caddie direkte." actions={<KnappLenke href={jarvisHref("samtale")} icon={MessageSquare} iconName="message-square">Åpne samtale</KnappLenke>} />
       : <KoFane p={p} />;
     case "prosjekter": return <ProsjekterFane data={p.prosjekter} />;
     case "skills": return <SkillsFane skills={p.skills} />;
