@@ -37,12 +37,10 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Side } from "@/components/precision/pa-a4";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
-import { AG04RestHode } from "@/components/admin/precision/AG04RestHode";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { KommunikasjonHode } from "@/components/admin/v2/kommunikasjon/KommunikasjonHode";
 import { AdminEmailV2 } from "@/components/admin/v2/AdminEmailV2";
-import { KOMMUNIKASJON_FANER, kommunikasjonHref, velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
+import { KOMMUNIKASJON_FANER, velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
 import { innboksHref, lesInnboksFilter } from "@/lib/admin/innboks/filter";
 import {
   kommunikasjonFaneTellinger,
@@ -71,25 +69,16 @@ export default async function KommunikasjonPage({
 
   const innboksData = await lastKommunikasjonInnboks({ id: user.id, role: user.role, name: user.name });
   const antall = await kommunikasjonFaneTellinger(innboksData.apne);
-  const hode = (
-    <AG04RestHode
-      kicker="Innboks · Kommunikasjon"
-      title="Kommunikasjon"
-      sub="E-post, meldinger og maler ett sted. Utkast skrives her — sending krever alltid ditt ja."
-      faner={KOMMUNIKASJON_FANER.map((f) => ({ id: f.id, label: f.label, href: kommunikasjonHref(f.id) }))}
-      aktiv={aktiv}
-      antall={antall}
-    />
-  );
+  const hode = <KommunikasjonHode faner={KOMMUNIKASJON_FANER} aktiv={aktiv} antall={antall} />;
 
   const innhold = <AdminEmailV2 data={await lastKommunikasjonMaler()} somFane />;
 
   return (
-    <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <Side>
+    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
         {hode}
-        <div style={{ ...TL_SCOPE, minWidth: 0 }}>{innhold}</div>
-      </Side>
-    </AgencyOSSkall>
+        {innhold}
+      </div>
+    </V2Shell>
   );
 }

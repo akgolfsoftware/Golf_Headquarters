@@ -3,18 +3,20 @@
 /**
  * AG-04-REST · Rediger e-postmal i Precision Athletics (Claude Design 7d7c2994,
  * ui_kits/agencyos/screens/AG-04.jsx, fane Maler › «Rediger e-postmal»).
+ * Merk: AG-innboks.jsx er nyere fasit for Innboks, men har ingen Maler-fane;
+ * maleditoren har derfor bare AG-04.jsx som tegning (etag 1790464878364882).
  *
  * Tegningen har navn, emne, tekst, felt-piller, forhåndsvisning, Lagre, Avbryt
- * og Slett. Koden beholder i tillegg det eksisterende: Send test, Sett som
+ * og Slett nederst i kortet. Koden beholder i tillegg det eksisterende: Send test, Sett som
  * standard, Arkiver og Aktiv-bryter, med de samme server-handlingene som før.
  * «Slett mal» finnes ikke som handling i appen (bare Arkiver) og er ikke laget.
  * Arkiver-bekreftelsen er rust (avslutter malen), som Avslutt-dialogene ellers.
  */
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Archive, Check, Send, Star } from "lucide-react";
 import { Knapp, KnappLenke, Meta, StatusPille } from "@/components/precision/pa";
-import { Bryter, Dialogboks, Kort, Kolonner, Side, SideHode, Skjemafelt, Stabel, TekstOmrade, Tekstfelt } from "@/components/precision/pa-a4";
+import { Bryter, Dialogboks, Kort, Kolonner, Side, SideHode, Skjemafelt, Stabel, Tekstfelt } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { saveTemplate, sendTestEmail, setAsDefault, archiveTemplate } from "@/app/admin/(legacy)/email-templates/[id]/rediger/actions";
 import "@/styles/precision-a4.css";
@@ -56,9 +58,12 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
   const endret = name !== mal.name || subject !== mal.subject || body !== mal.body || active !== mal.active;
   const iBruk = useMemo(() => Array.from(new Set(Array.from(`${subject}\n${body}`.matchAll(TOKEN), (m) => m[1]!))), [subject, body]);
 
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   function si(type: "ok" | "signal", tekst: string) {
+    if (timer.current) clearTimeout(timer.current);
     setMelding({ type, tekst });
-    setTimeout(() => setMelding(null), 3500);
+    timer.current = setTimeout(() => setMelding(null), 3500);
   }
   const feilTekst = (e: unknown, alt: string) => (e instanceof Error ? e.message : alt);
 
@@ -83,17 +88,12 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
     : active ? <StatusPille tone="ok">Aktiv · lagret</StatusPille> : <StatusPille>Utkast · lagret</StatusPille>;
 
   return <Side max={1040}>
+    <style>{".ag04-chip{min-height:44px}@media (min-width:1025px){.ag04-chip{min-height:36px}}"}</style>
     <SideHode
       kicker={`Innboks · Rediger e-postmal · ${mal.slug}`}
       title={name || "Ny mal"}
       sub="Maler brukes av Jarvis og deg når utkast lages. Utkast sendes aldri automatisk."
-      actions={<>
-        <KnappLenke href="/admin/kommunikasjon?fane=maler" variant="ghost">Tilbake til maler</KnappLenke>
-        <Knapp variant="ghost" icon={Send} iconName="send" disabled={venter} onClick={sendTest}>Send test</Knapp>
-        <Knapp variant="ghost" icon={Star} iconName="star" disabled={venter || active} onClick={settStandard}>Sett som standard</Knapp>
-        <Knapp variant="secondary" icon={Archive} iconName="archive" disabled={venter} onClick={() => setArkiverApen(true)}>Arkiver</Knapp>
-        <Knapp icon={Check} iconName="check" disabled={venter || !endret} loading={venter} onClick={lagre}>{endret ? "Lagre mal" : "Lagret"}</Knapp>
-      </>}
+      actions={<KnappLenke href="/admin/kommunikasjon?fane=maler" variant="ghost">Tilbake til maler</KnappLenke>}
     />
     <div>{status}</div>
     {melding && <div role="status" aria-live="polite"><InlineVarsel tone={melding.type}>{melding.tekst}</InlineVarsel></div>}
@@ -103,12 +103,22 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
           <Skjemafelt label="Navn på mal"><Tekstfelt value={name} onChange={setName} placeholder="Bookingbekreftelse" /></Skjemafelt>
           <Skjemafelt label="Emne" hint="Kan inneholde felter i doble krøllparenteser."><Tekstfelt mono value={subject} onChange={setSubject} placeholder="Din time {{okt_dato}}" /></Skjemafelt>
           <Skjemafelt label="Tekst" hint="Felter i doble krøllparenteser fylles ut når utkastet lages.">
-            <TekstOmrade value={body} onChange={setBody} placeholder="Hei {{spillerFornavn}}," />
+            <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Hei {{spillerFornavn}},"
+              style={{ width: "100%", boxSizing: "border-box", minHeight: 160, padding: 12, borderRadius: "var(--radius)", border: "1px solid var(--border-control)", background: "var(--surface-card)", color: "var(--text-primary)", font: "var(--type-num-s)", lineHeight: 1.5, resize: "vertical" }} />
           </Skjemafelt>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }} role="group" aria-label="Sett inn felt">
-            {Object.keys(AG04_EKSEMPEL).map((k) => <button key={k} type="button" className="pa-table__sortchip" style={{ font: "500 12px/1 var(--font-mono)" }} onClick={() => setBody((b) => `${b} {{${k}}}`)}>{`{{${k}}}`}</button>)}
+            {Object.keys(AG04_EKSEMPEL).map((k) => <button key={k} type="button" className="ag04-chip" style={{ padding: "0 10px", borderRadius: 999, border: "1px solid var(--border-strong)", background: "var(--surface-card)", color: "var(--text-primary)", font: "500 12px/1 var(--font-mono)", cursor: "pointer" }} onClick={() => setBody((b) => `${b} {{${k}}}`)}>{`{{${k}}}`}</button>)}
           </div>
           <Bryter checked={active} onChange={setActive} label="Aktiv · kan brukes av Jarvis" />
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <Knapp icon={Check} iconName="check" disabled={venter || !endret} loading={venter} onClick={lagre}>{endret ? "Lagre mal" : "Lagret"}</Knapp>
+            <KnappLenke href="/admin/kommunikasjon?fane=maler" variant="ghost">Avbryt</KnappLenke>
+            <span style={{ flex: 1 }} />
+            <Knapp variant="ghost" icon={Send} iconName="send" disabled={venter} onClick={sendTest}>Send test</Knapp>
+            <Knapp variant="ghost" icon={Star} iconName="star" disabled={venter || active} onClick={settStandard}>Sett som standard</Knapp>
+            <Knapp variant="secondary" icon={Archive} iconName="archive" disabled={venter} onClick={() => setArkiverApen(true)}>Arkiver</Knapp>
+          </div>
+          <Meta>{`/ADMIN/EMAIL-TEMPLATES/${mal.id.toUpperCase()}/REDIGER`}</Meta>
         </Stabel>
       </Kort>
       <Kort>
