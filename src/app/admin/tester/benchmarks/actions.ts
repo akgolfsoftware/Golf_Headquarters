@@ -14,6 +14,8 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { runBenchmarkSync } from "@/lib/admin/benchmark-sync";
 import {
   readSyncState,
@@ -36,7 +38,8 @@ async function loadPendingTest(testId: string) {
 }
 
 export async function approveBenchmarkPending(testId: string): Promise<void> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
   const loaded = await loadPendingTest(testId);
   if (!loaded) return;
   const { def, state } = loaded;
@@ -81,7 +84,8 @@ export async function approveBenchmarkPending(testId: string): Promise<void> {
 }
 
 export async function rejectBenchmarkPending(testId: string): Promise<void> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
   const loaded = await loadPendingTest(testId);
   if (!loaded) return;
   const { def, state } = loaded;
@@ -111,7 +115,8 @@ export async function rejectBenchmarkPending(testId: string): Promise<void> {
 }
 
 export async function runBenchmarkSyncNow(): Promise<void> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
   await runBenchmarkSync();
   revalidatePath(PAGE);
   revalidatePath("/admin/tester");

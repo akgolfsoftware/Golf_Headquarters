@@ -11,7 +11,7 @@
  * benchmarks/page.tsx og benchmarks/actions.ts.
  */
 import { useTransition } from "react";
-import { RefreshCw, Target, TriangleAlert, Check, X, ChevronLeft } from "lucide-react";
+import { RefreshCw, Target, TriangleAlert, Check, X, ArrowLeft } from "lucide-react";
 import { Sidehode, TomTilstand, StatusPille, Meta, Knapp, KnappLenke } from "@/components/precision/pa";
 import { Tabell, InlineVarsel, KortHode, Kort, type Kolonne } from "@/components/precision/pa-a5";
 import type { AdminBenchmarksV2Data, BenchmarksPendingRad, BenchmarksRad, SyncMode } from "@/components/admin/v2/AdminBenchmarksV2";
@@ -52,12 +52,12 @@ export function AG15Normer({ data, onApprove, onReject, onSyncNow }: AG15NormerP
   type Rad = BenchmarksRad;
   const cols: Kolonne<Rad>[] = [
     { key: "navn", label: "Test", render: (r) => r.navn },
-    { key: "mode", label: "Synk", render: (r) => <StatusPille tone={r.mode === "static" ? "neutral" : "ok"}>{MODUS[r.mode]}</StatusPille> },
+    { key: "mode", label: "Synk", render: (r) => <StatusPille tone="neutral">{MODUS[r.mode]}</StatusPille> },
     { key: "kilde", label: "Kilde", mono: true, render: (r) => r.kilde },
     { key: "verdier", label: "Nivåer", mono: true, align: "right", render: (r) => r.verdier },
   ];
   return <div className="pa-side">
-    <KnappLenke href="/admin/tester" variant="ghost" size="sm" icon={ChevronLeft} iconName="chevron-left">Tester</KnappLenke>
+    <div><KnappLenke href="/admin/tester" variant="ghost" size="sm" icon={ArrowLeft} iconName="arrow-left">Tester (coach)</KnappLenke></div>
     <Sidehode kicker="Tester · normer" title="Normer og nivåstiger"
       sub="Nivåene per test, hentet fra DataGolf hver mandag kl. 08:00. Endringer under 3 % skrives automatisk. Større utslag venter her på godkjenning." />
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>

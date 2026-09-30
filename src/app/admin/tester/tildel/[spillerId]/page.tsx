@@ -10,7 +10,8 @@
  */
 
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
 import { prisma } from "@/lib/prisma";
@@ -27,7 +28,7 @@ export default async function TildelTestPage({
 }: {
   params: Promise<{ spillerId: string }>;
 }) {
-  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requireCapability(Capability.MANAGE_TESTS);
   const { spillerId } = await params;
 
   const [spiller, tester, totalt, fullforte] = await Promise.all([
