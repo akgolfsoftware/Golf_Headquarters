@@ -1,5 +1,5 @@
 /** Prøvefil for AG-24 Drift (Logger, Feillogg, GDPR, Hjelp). Syntetiske data, ingen ekte personer. */
-import { useEffect, useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG24Feillogg, AG24Gdpr, AG24Hjelp, AG24Logger, type AuditData, type FeilData, type GdprData } from "@/components/admin/precision/AG24Drift";
@@ -35,13 +35,9 @@ const ingen = async () => {};
 
 const Skall = ({ children, erAdmin = true }: { children: ReactNode; erAdmin?: boolean }) => <AdminRolleProvider erAdmin={erAdmin}><AgencyOSSkall navn="Test Coach">{children}</AgencyOSSkall></AdminRolleProvider>;
 
-/** AG24Feil logger feilen med console.error; prøven skal ikke telle den som konsollfeil. */
-function DempetFeil({ children }: { children: ReactNode }) {
-  const orig = useRef(console.error);
-  console.error = () => {};
-  useEffect(() => { console.error = orig.current; }, []);
-  return <>{children}</>;
-}
+/** AG24Feil logger feilen med console.error («[v2/error]»); prøven skal ikke telle akkurat den som konsollfeil. */
+const opprinneligFeillogg = console.error;
+console.error = (...args: unknown[]) => { if (args[0] !== "[v2/error]") opprinneligFeillogg(...args); };
 
 export const tilstander = {
   logg: <Skall><AG24Logger data={audit} /></Skall>,
@@ -53,7 +49,7 @@ export const tilstander = {
   hjelp: <Skall><AG24Hjelp /></Skall>,
   "hjelp-coach": <Skall erAdmin={false}><AG24Hjelp /></Skall>,
   laster: <AdminRolleProvider erAdmin><AG24Laster text="Henter logger …" /></AdminRolleProvider>,
-  feil: <AdminRolleProvider erAdmin><DempetFeil><AG24Feil title="Loggen kunne ikke hentes" error={Object.assign(new Error("syntetisk"), { digest: "prøve-0930" })} reset={() => {}} /></DempetFeil></AdminRolleProvider>,
+  feil: <AdminRolleProvider erAdmin><AG24Feil title="Loggen kunne ikke hentes" error={Object.assign(new Error("syntetisk"), { digest: "prøve-0930" })} reset={() => {}} /></AdminRolleProvider>,
   "logg-natt": <Natt><Skall><AG24Logger data={audit} /></Skall></Natt>,
   "feillogg-natt": <Natt><Skall><AG24Feillogg data={feil} /></Skall></Natt>,
   "gdpr-natt": <Natt><Skall><AG24Gdpr data={gdpr} utforSletteforesporsel={ingen} avvisForesporsel={ingen} /></Skall></Natt>,
