@@ -27,7 +27,7 @@ Object.assign(tilstander, {
   "tid-valgt": fra(1, { dag: "29.9", kl: "17:00" }),
   "tid-ingen": <BK01Booking {...base} forhandsvis={{ steg: 1, slug: "pt60", dager: dager.map((d) => ({ ...d, tider: [] })) }} />,
   deg: fra(2, { dag: "29.9", kl: "17:00", skjema: { navn: "Anders Kristiansen", epost: "demo@example.no", tlf: "911 22 110", barn: true, spiller: "Øyvind Rohjan" } }),
-  "deg-feil": fra(2, { dag: "29.9", kl: "17:00", feil: { navn: "Skriv fullt navn.", epost: "Skriv en gyldig e-postadresse. Bekreftelsen sendes dit.", tlf: "Skriv et telefonnummer vi kan nå deg på." } }),
+  "deg-feil": fra(2, { dag: "29.9", kl: "17:00", feil: { navn: "Skriv fullt navn.", epost: "Skriv en gyldig e-postadresse. Kvitteringen sendes dit.", tlf: "Skriv et telefonnummer vi kan nå deg på." } }),
   betal: fra(3, { dag: "29.9", kl: "17:00" }),
   laster: fra(1, { tilstand: "laster" }),
   feil: fra(1, { tilstand: "feil" }),
