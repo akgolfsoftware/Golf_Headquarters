@@ -32,8 +32,10 @@ export type Refusjon =
   | { type: "penger"; belop: string }
   /** Klipp fra abonnementet lagt tilbake. `igjen`/`av` vises bare når begge er kjent. */
   | { type: "klipp"; igjen: number | null; av: number | null }
-  /** Avbestilt etter fristen: ingen refusjon. */
+  /** Avbestilt etter fristen: ingen refusjon. Bare når vi vet at fristen var overskredet. */
   | { type: "ingen" }
+  /** Utfallet er ikke kjent (f.eks. gratis booking): vises som «—», aldri gjetning. */
+  | { type: "ukjent" }
   /** Refusjonen feilet mot Stripe og behandles manuelt. */
   | { type: "feilet" };
 
@@ -84,6 +86,8 @@ export function refusjonTekst(r: Refusjon): string {
       return "Ingen refusjon, timen ble avbestilt etter fristen";
     case "feilet":
       return "Kunne ikke behandles automatisk";
+    case "ukjent":
+      return "—";
   }
 }
 

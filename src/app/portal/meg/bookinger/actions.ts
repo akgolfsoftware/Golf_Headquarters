@@ -174,6 +174,10 @@ export async function cancelBooking(bookingId: string) {
       refundIssued: stripeRefundOk,
       refundFailed: stripeRefundFeilet,
       isCreditBooking: creditRefunded,
+      creditFailed: Boolean(booking.subscriptionId && outcome.restoreCredit && !creditRefunded),
+      etterFristen: Boolean(
+        outcome.lateCancelNoRefund && (booking.subscriptionId || booking.stripePaymentIntentId),
+      ),
       refundId: stripeRefundId,
     });
   } catch (error) {

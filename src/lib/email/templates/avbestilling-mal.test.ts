@@ -54,6 +54,9 @@ test("EP-04: manglende verdi vises som tankestrek, aldri gjetning", () => {
 test("EP-04: ingen refusjon og feilet refusjon har egen tekst", () => {
   assert.match(refusjonTekst({ type: "ingen" }), /Ingen refusjon/);
   assert.match(refusjonTekst({ type: "feilet" }), /ikke behandles automatisk/);
+  assert.equal(refusjonTekst({ type: "ukjent" }), "—");
+  const { html } = byggAvbestilling({ ...data, refusjon: { type: "ukjent" } });
+  assert.doesNotMatch(html, /etter fristen/);
 });
 
 test("EP-04: HTML-tegn i data escapes", () => {

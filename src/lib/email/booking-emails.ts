@@ -164,6 +164,10 @@ export async function sendBookingCancellation(
   extra: {
     refundIssued?: boolean;
     refundFailed?: boolean;
+    /** Klippet skulle legges tilbake, men det feilet. */
+    creditFailed?: boolean;
+    /** Avbestilt etter fristen og bookingen hadde betaling/klipp som ikke ble tilbakeført. */
+    etterFristen?: boolean;
     isCreditBooking?: boolean;
     /** Stripe-refusjonens ID (re_…), vises som referanse til gjest. */
     refundId?: string;
@@ -196,9 +200,11 @@ export async function sendBookingCancellation(
       }
     : extra.refundIssued
       ? { type: "penger", belop: formaterKr(booking.priceOre) }
-      : extra.refundFailed
+      : extra.refundFailed || extra.creditFailed
         ? { type: "feilet" }
-        : { type: "ingen" };
+        : extra.etterFristen
+          ? { type: "ingen" }
+          : { type: "ukjent" };
 
   const { subject, html } = byggAvbestilling({
     mottaker: app ? "app" : "gjest",
