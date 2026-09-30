@@ -50,6 +50,7 @@ import { HullForing } from "./hull-foring";
 import { HullOversikt } from "./hull-oversikt";
 import { SgPanel } from "./sg-panel";
 import { RundeRecap } from "./runde-recap";
+import { PH08RundeLive } from "@/components/portal/precision/PH08RundeLive";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
@@ -291,6 +292,40 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
           setSteg("foring");
           setVisning("stepper");
         }}
+      />
+    );
+  }
+
+  // PH-RD-03/04: slag-for-slag-føringen er en helskjerm nattflate i Precision
+  // Athletics, rendret før det gamle skallet. Hurtigføringen (stepper) er
+  // uendret og nås via pila øverst til venstre.
+  if (steg === "foring" && oppsett && aktivtHull && visning === "detalj") {
+    return (
+      <PH08RundeLive
+        key={aktivtHullIdx}
+        tilstand="data"
+        bane={oppsett.courseNavn}
+        hullNr={aktivtHull.holeNumber}
+        antallHull={hullData.length}
+        par={aktivtHull.par}
+        lengdeMeter={aktivtHull.lengdeMeter}
+        spilte={hullData.flatMap((h, i) => (scores[i] != null ? [{ par: h.par, slag: scores[i] as number }] : []))}
+        onFerdigHull={(slag, lengde) => {
+          setHullData((data) =>
+            data.map((h, i) => (i === aktivtHullIdx ? { ...h, lengdeMeter: lengde, slag } : h)),
+          );
+          const n = hullData.length;
+          for (let s = 1; s < n; s++) {
+            const idx = (aktivtHullIdx + s) % n;
+            if (!erFerdig(hullData[idx])) {
+              setAktivtHullIdx(idx);
+              return;
+            }
+          }
+          setSteg("oppsummering");
+        }}
+        onAvslutt={spilte === 0 ? () => setVisning("stepper") : lagreRunden}
+        onTilbake={() => setVisning("stepper")}
       />
     );
   }
