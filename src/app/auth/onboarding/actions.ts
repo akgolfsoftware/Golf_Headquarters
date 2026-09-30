@@ -418,7 +418,10 @@ async function fullforOnboardingSideEffekter(
   try {
     if (onboarding.samtykkeOpptak === true) {
       const { settEgetLydSamtykke } = await import("@/app/portal/meg/actions");
-      await settEgetLydSamtykke();
+      const lyd = await settEgetLydSamtykke();
+      if (!lyd.ok) {
+        await logError({ context: "onboarding.complete.lyd-samtykke", error: new Error(lyd.feil), userId });
+      }
     }
   } catch (error) {
     await logError({ context: "onboarding.complete.lyd-samtykke", error, userId });

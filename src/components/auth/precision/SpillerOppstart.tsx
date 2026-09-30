@@ -446,7 +446,7 @@ export function SpillerOppstart(p: OppstartProps) {
   if (tilstand === "feil") {
     return (
       <VeiviserFlate max={560}>
-        <FeilTilstand icon={AlertTriangle} title="Oppsettet kunne ikke lagres" text="Svarene dine er lagret på enheten. Prøv igjen." code="FEIL 502 · ONBOARDING" retry={<Knapp variant="secondary" onClick={p.onProvIgjen}>Prøv igjen</Knapp>} />
+        <FeilTilstand icon={AlertTriangle} title="Oppsettet kunne ikke lagres" text="Svarene er ikke lagret ennå. Prøv igjen." retry={<Knapp variant="secondary" onClick={p.onProvIgjen}>Prøv igjen</Knapp>} />
       </VeiviserFlate>
     );
   }
