@@ -339,6 +339,7 @@ describe("måned og år", () => {
     assert.equal(month.sessionCount, 1);
     assert.equal(month.weekSummaries[0].sessionCount, 1);
     assert.equal(month.weekSummaries[0].minutes, 120);
+    assert.equal(Object.values(month.weekSummaries[0].byPyramid).reduce((a, b) => a + b, 0), 120);
     assert.equal(month.weeks[0].days[1].inMonth, false);
     assert.equal(month.weeks[0].days[1].lines.length, 1);
   });

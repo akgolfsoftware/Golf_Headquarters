@@ -5,7 +5,7 @@ import { AG11Maned } from "@/components/admin/precision/AG11Maned";
 import type { MonthDayCell, MonthViewModel, PyramidArea } from "@/lib/domain/workbench/types";
 import { Feil, Laster } from "./AG-11";
 import { Natt } from "./_natt";
-import { ROSTER, SPILLER } from "./_wb-data";
+import { KILDER, MAL, ROSTER, SPILLER } from "./_wb-data";
 
 export const sti = "/admin/workbench/p1?vis=maned&maned=2026-10";
 
@@ -43,7 +43,12 @@ function lag(tom: boolean): MonthViewModel {
     budget: { plannedMinutes: (["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).reduce((s, a) => s + per(a), 0), targetMinutes: 0,
       byPyramid: { FYS: per("FYS"), TEK: per("TEK"), SLAG: per("SLAG"), SPILL: per("SPILL"), TURN: per("TURN") } },
     sessionCount: tom ? 0 : Object.values(PLAN).flat().length,
-    weekSummaries: weeks.map((w, i) => ({ weekStart: w.weekStart, weekNumber: w.weekNumber, sessionCount: tom ? 0 : [1, 5, 2, 1, 1][i], minutes: tom ? 0 : [60, 495, 360, 60, 180][i] })),
+    weekSummaries: weeks.map((w, i) => {
+      const byPyramid = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 } as Record<PyramidArea, number>;
+      if (!tom) for (const d of w.days) if (d.inMonth) for (const l of PLAN[d.date] ?? []) byPyramid[l[1]] += l[2];
+      const minutes = Object.values(byPyramid).reduce((a, b) => a + b, 0);
+      return { weekStart: w.weekStart, weekNumber: w.weekNumber, sessionCount: tom ? 0 : (w.days.filter((d) => d.inMonth).reduce((a, d) => a + (PLAN[d.date]?.length ?? 0), 0)), minutes, byPyramid };
+    }),
     plannedToDateMinutes: tom ? 0 : 420, completedMinutes: tom ? 0 : 315,
     completedByPyramid: tom ? { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 } : gjort,
   };
@@ -52,7 +57,8 @@ function lag(tom: boolean): MonthViewModel {
 const Vis = ({ tom = false }: { tom?: boolean }) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <AG11Maned playerId="p1" spillerNavn={SPILLER} maned={lag(tom)} roster={ROSTER} />
+      <AG11Maned playerId="p1" spillerNavn={SPILLER} maned={lag(tom)} roster={ROSTER} kilder={tom ? [] : KILDER} goals={tom ? [] : MAL}
+        periode={tom ? null : { type: "Turneringsperiode", fokus: "Putting 3–5 fot og korte innspill", start: "2026-10-06", slutt: "2026-12-20", budsjett: { FYS: 2, TEK: 2, SLAG: 3, SPILL: 1 } }} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );

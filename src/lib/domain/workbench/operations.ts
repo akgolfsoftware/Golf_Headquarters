@@ -429,6 +429,7 @@ export function buildMonthViewModel(
     const days: MonthDayCell[] = [];
     let weekMinutes = 0;
     let weekCount = 0;
+    const weekByPyramid = { ...TOM_BALANSE };
     for (let i = 0; i < 7; i++) {
       const date = addDays(cursor, i);
       const dags = (byDate.get(date) ?? [])
@@ -439,6 +440,7 @@ export function buildMonthViewModel(
       if (erIManeden) {
         weekMinutes += aktive.reduce((n, s) => n + s.durationMinutes, 0);
         weekCount += aktive.length;
+        for (const s of aktive) weekByPyramid[s.pyramid] += s.durationMinutes;
       }
       const shown = aktive.slice(0, MAX_MONTH_LINES);
       days.push({
@@ -460,6 +462,7 @@ export function buildMonthViewModel(
       weekNumber: isoWeekNumber(cursor),
       sessionCount: weekCount,
       minutes: weekMinutes,
+      byPyramid: weekByPyramid,
     });
   }
 

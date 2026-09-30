@@ -584,6 +584,8 @@ export interface MonthViewModel {
     weekNumber: number;
     sessionCount: number;
     minutes: number;
+    /** Planlagte minutter per pyramideakse, bare dager i måneden. */
+    byPyramid: Record<PyramidArea, number>;
   }>;
   plannedToDateMinutes: number;
   completedMinutes: number;

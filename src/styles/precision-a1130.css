@@ -5,13 +5,16 @@
 @media (min-width: 900px) { .am-to { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
 .am-kort { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .am-tekst { margin: 0; font: 400 14px/1.5 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
-.am-tall { font: 500 13px/1.2 var(--font-mono); color: var(--text-primary); white-space: nowrap; }
-.am-akse { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 16px; align-items: center; min-height: 44px; padding-left: 10px; border-top: 1px solid var(--border-hairline); box-shadow: inset 3px 0 0 var(--a9-akse, var(--border-strong)); min-width: 0; }
+.am-tall { font: 500 12px/1.2 var(--font-mono); color: var(--text-primary); white-space: nowrap; }
+.am-akse { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 8px; align-items: center; min-height: 44px; padding-left: 10px; border-top: 1px solid var(--border-hairline); box-shadow: inset 3px 0 0 var(--a9-akse, var(--border-strong)); min-width: 0; }
 .am-akse--sum { box-shadow: none; border-top: 1px solid var(--border-strong); }
 .am-akse__navn { font: 600 12px/1 var(--font-mono); color: var(--text-primary); }
 .am-akse--hode { min-height: 0; padding-bottom: 6px; box-shadow: none; border-top: 0; }
 .am-akse--hode span { font: 600 11px/1 var(--font-mono); color: var(--text-muted); }
 .am-akse > span:nth-child(n+2) { text-align: right; }
+.am-maned { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.am-maned__tekst { display: flex; flex-direction: column; gap: 4px; flex: 1 1 140px; min-width: 0; }
+.am-maned__navn { margin: 0; font: 600 20px/1.2 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
 .am-kal { display: none; }
 .am-dagliste { display: flex; flex-direction: column; min-width: 0; }
 .am-dag { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--border-hairline); text-decoration: none; color: var(--text-primary); min-height: 44px; min-width: 0; }
@@ -32,3 +35,5 @@
   .am-kal__dato { font: 600 11px/1 var(--font-mono); }
   .am-kal__celle .am-linje { font-size: 11px; padding-left: 5px; overflow: hidden; max-height: 2.6em; }
 }
+
+@container a9 (min-width: 960px) { .a9 .am-hoved { grid-template-columns: minmax(0, 1fr) 340px; } }

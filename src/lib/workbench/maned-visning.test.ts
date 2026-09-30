@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { harSkjulteLinjer, hentHendelser, timer } from "./maned-visning";
+import { velgPeriode } from "./maned-periode-valg";
 import type { MonthViewModel } from "@/lib/domain/workbench/types";
 
 const dag = (date: string, inMonth: boolean, lines: MonthViewModel["weeks"][number]["days"][number]["lines"], restCount = 0) => ({ date, dayOfMonth: Number(date.slice(8)), inMonth, lines, restCount });
@@ -21,5 +22,16 @@ describe("maned-visning", () => {
   });
   it("harSkjulteLinjer sier fra når en dag har rest", () => {
     assert.equal(harSkjulteLinjer(maned), true);
+  });
+});
+
+describe("velgPeriode", () => {
+  const p = (start: string, slutt: string, fokus: string) => ({ type: "GRUNN", start, slutt, fokus, budsjett: null });
+  it("velger perioden med flest dager i måneden", () => {
+    const valgt = velgPeriode([p("2026-09-01", "2026-10-05", "A"), p("2026-10-06", "2026-12-20", "B")], "2026-10-01", "2026-10-31");
+    assert.equal(valgt?.fokus, "B");
+  });
+  it("gir null uten overlapp", () => {
+    assert.equal(velgPeriode([p("2026-01-01", "2026-02-01", "A")], "2026-10-01", "2026-10-31"), null);
   });
 });

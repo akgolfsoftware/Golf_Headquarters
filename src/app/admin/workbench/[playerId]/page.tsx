@@ -30,7 +30,8 @@ import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalende
 import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, loadWorkbenchLive, loadYear, loadSources } from "@/lib/workbench/wb-actions";
 import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
-import { mondayOf } from "@/lib/domain/workbench/operations";
+import { lastDayOfMonth, mondayOf } from "@/lib/domain/workbench/operations";
+import { hentManedPeriode } from "@/lib/workbench/maned-periode";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
@@ -135,15 +136,17 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   if (visning === "maned") {
     const monthStart = manedFraParam(sp.maned);
-    const [roster, monthRes] = await Promise.all([
+    const [roster, monthRes, kilderRes, periode] = await Promise.all([
       hentRoster(),
       loadMonth({ monthStart, mode, playerId }),
+      loadSources({ playerId, weekStart: monthStart }),
+      hentManedPeriode(playerId, monthStart, lastDayOfMonth(monthStart)),
     ]);
     if (!monthRes.ok) return <Feil navn={navn} melding={monthRes.error} />;
     return (
       <AgencyOSSkall navn={navn}>
         <AG11Maned key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spillerNavn} maned={monthRes.data} />
+          spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} periode={periode} />
       </AgencyOSSkall>
     );
   }
