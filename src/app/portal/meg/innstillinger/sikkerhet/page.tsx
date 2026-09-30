@@ -1,49 +1,29 @@
 /**
- * v2 — PlayerHQ Innstillinger · Sikkerhet (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), InnstillingerSikkerhetV2 rendrer innholds-stacken.
- *
- * KANONISK sikkerhet-skjerm etter D7-konsolideringen (Anders 17. juli 2026):
- * /portal/meg/sikkerhet er nå redirect hit; passord-/e-post-skjemaene derfra
- * er flyttet inn i InnstillingerSikkerhetV2. Auth-guard og score-heuristikk
- * uendret:
- *   - Sikkerhetsscore utledet ærlig fra hva vi faktisk vet (e-post bekreftet
- *     → 80, ellers 55; 2FA-flagg finnes ikke på User ennå, så +20 opptjenes
- *     via 2FA-flyten).
- *   - Endre passord/e-post: skjema klientside mot Supabase Auth (i
- *     komponenten). Glemt passord: lenke til /auth/forgot-password.
- *     Tofaktor: lenke til den ekte TOTP-flyten på /portal/meg/sikkerhet/2fa.
- *   - Aktive økter: ekte lastLoginAt; full øktliste er «kommer snart» —
- *     ingen oppdiktede enheter eller tidspunkter.
+ * Sikkerhet (/portal/meg/innstillinger/sikkerhet) — Precision Athletics PH-25.
+ * Kanonisk sikkerhetsflate (D7, 17. juli 2026): passord og e-post endres mot Supabase Auth i
+ * komponenten; tofaktor går til /portal/meg/sikkerhet/2fa. Den tidligere sikkerhetsscoren
+ * (80 eller 55 utledet av at e-posten finnes) er fjernet: den var ikke en måling.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerSikkerhetV2 } from "@/components/portal/v2/InnstillingerSikkerhetV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Sikkerhet } from "@/components/portal/precision/PH25Abonnement";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Sikkerhet · PlayerHQ" };
 
 function formatSiste(d: Date | null | undefined): string {
-  if (!d) return "Ukjent";
-  return `${d.toLocaleDateString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "Europe/Oslo",
-  })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}`;
+  if (!d) return "—";
+  return `${d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}`;
 }
 
 export default async function SikkerhetPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
-
-  // Ærlig score: passord (Supabase-konto) gir basis, e-post bekreftet løfter,
-  // 2FA-aktivering gir resten. Vi har ikke 2FA-flagg på User enda, så toppen
-  // (+20) opptjenes via 2FA-flyten — derav 80 som realistisk nåverdi.
-  const harEpost = !!user.email;
-  const score = harEpost ? 80 : 55;
-
+  const uleste = await hentUleste(user.id);
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerSikkerhetV2 data={{ score, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH25Sikkerhet sisteInnlogging={formatSiste(user.lastLoginAt)} />
+    </PlayerHQSkall>
   );
 }
