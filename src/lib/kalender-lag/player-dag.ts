@@ -52,6 +52,11 @@ export async function hentSpillerUkeITiden(playerId: string, mandag: string): Pr
   return hentSpillerTidsrom(playerId, mandag, sondag.toISOString().slice(0, 10), false);
 }
 
+/** Kalenderlag for et vilkårlig tidsrom (Plan måned og år). Økter leveres av getWeekOverview. */
+export async function hentSpillerPeriodeITiden(playerId: string, fraDato: string, tilDato: string): Promise<KalenderHendelse[]> {
+  return hentSpillerTidsrom(playerId, fraDato, tilDato, false);
+}
+
 async function hentSpillerTidsrom(playerId: string, dato: string, sisteDato: string, medOkter: boolean): Promise<KalenderHendelse[]> {
   const { fra } = dagensVindu(dato);
   const { til } = dagensVindu(sisteDato);
