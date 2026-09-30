@@ -6021,6 +6021,81 @@ model FollowUpCase {
   @@map("follow_up_cases")
 }
 
+/// Fireukerssjekk (WANG-43/44/45, TN-01/02): elevens/spillerens innlevering hver
+/// fjerde uke. Delt mellom WANG og Team Norway; `flate` skiller dem.
+/// Elevtekst (prosessmål) og svar lagres; aldri helsetekst eller meldinger.
+model Fireukerssjekk {
+  id      String @id @default(cuid())
+  /// "WANG" | "TEAM_NORWAY"
+  flate   String
+  groupId String
+  /// Eleven/spilleren (User.id). Ingen FK: additiv tabell, tilgang sjekkes i domenelaget.
+  userId  String
+
+  periodeStart DateTime
+  periodeSlutt DateTime
+  frist        DateTime
+  /// null = ikke levert
+  levertAt     DateTime?
+  prosessmaal  String?
+  /// { niva: "UNG"|"JUNIOR"|"AMATOR"|"PROFESJONELL", svar: { "<spørsmålsnr>": 1–4 } }. Valideres med zod.
+  utviklingssjekk Json?
+  paaminnelseSendtAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([flate, groupId, frist])
+  @@index([userId, periodeStart])
+  @@map("fireukerssjekker")
+}
+
+/// Trenerforslag til elev/spiller (WANG-46, TN-02). Treneren endrer aldri
+/// plan/IUP direkte; forslaget går til eleven som godtar eller avviser.
+model TrenerForslag {
+  id      String @id @default(cuid())
+  /// "WANG" | "TEAM_NORWAY"
+  flate   String
+  groupId String
+  trenerId String
+  elevId   String
+  /// "PLAN" | "IUP" | "SAMTALE" | "VURDERING"
+  type    String
+  tekst   String
+  /// "VENTER" | "GODTATT" | "AVVIST"
+  status  String    @default("VENTER")
+  svar    String?
+  svartAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([flate, groupId, status])
+  @@index([elevId, status])
+  @@map("trener_forslag")
+}
+
+/// Samtale mellom trener og elev/spiller (WANG-44, TN-02): dato, type og hva som ble avtalt.
+model ElevSamtale {
+  id      String @id @default(cuid())
+  /// "WANG" | "TEAM_NORWAY"
+  flate   String
+  groupId String
+  elevId  String
+  trenerId String
+  dato    DateTime
+  /// "FIREUKERSSJEKK" | "OPPFOLGING" | "ANNET"
+  type    String
+  avtalt  String
+  fireukerssjekkId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([flate, groupId, dato])
+  @@index([elevId, dato])
+  @@map("elev_samtaler")
+}
+
 model KommandoChat {
   id        String   @id @default(cuid())
   userId    String

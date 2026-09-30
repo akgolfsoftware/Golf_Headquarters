@@ -99,7 +99,7 @@ export default async function WangElevprofilSide({
       {fane === "stats" ? <StatsFane elev={elev} /> : null}
       {fane === "tester" ? <TesterFane elev={elev} filter={testerFilter} /> : null}
       {fane === "iup" ? <IupFane elev={elev} gruppeId={gruppe.id} gruppeNavn={gruppe.name} trenerNavn={trenerNavn} /> : null}
-      {fane === "samtaler" ? <SamtalerFane elev={elev} /> : null}
+      {fane === "samtaler" ? <SamtalerFane elev={elev} gruppeId={gruppe.id} /> : null}
       {fane === "turneringer" ? <TurneringerFane elev={elev} /> : null}
     </WangSide>
   );
