@@ -32,11 +32,14 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { innboksHref } from "@/lib/admin/innboks/filter";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
-import { KoHode } from "@/components/admin/v2/ko/KoHode";
-import { synligeFaner, velgFane } from "@/lib/admin/ko/faner";
+import { Lock, CircleCheck } from "lucide-react";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { TomTilstand } from "@/components/precision/pa";
+import { Side } from "@/components/precision/pa-a4";
+import { InlineVarsel } from "@/components/precision/pa-a5";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
+import { AG04RestHode } from "@/components/admin/precision/AG04RestHode";
+import { synligeFaner, velgFane, koHref } from "@/lib/admin/ko/faner";
 import { koFaneTellinger } from "@/lib/admin/ko/tellinger";
 import { lastForeslatteTester } from "@/lib/admin/ko/last-foreslatte-tester";
 import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
@@ -47,7 +50,6 @@ import { AdminAgenticosGodkjenn } from "@/components/admin/v2/agenticos/AdminAge
 import { AdminForeslatteTesterV2 } from "@/components/admin/v2/AdminForeslatteTesterV2";
 import { MergeDubletterListe } from "@/app/admin/tournaments/dubletter/merge-liste";
 import { ModeringClientV2 } from "@/components/admin/v2/AdminStatsModereringV2";
-import { TlRadGruppe, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kø · AgencyOS" };
@@ -77,15 +79,11 @@ export default async function KoPage({
     // Skal ikke kunne skje (godkjenninger og dubletter krever ingen capability),
     // men en tom fane-liste skal si ifra, ikke krasje.
     return (
-      <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <TlRadGruppe>
-          <TlTomTilstand
-            icon="lock"
-            title="Ingen kø-visninger tilgjengelig"
-            sub="Kontoen din har ikke tilgang til noen av kø-fanene. Ta kontakt med en administrator."
-          />
-        </TlRadGruppe>
-      </V2Shell>
+      <AgencyOSSkall navn={user.name ?? "Coach"}>
+        <Side>
+          <TomTilstand icon={Lock} title="Ingen kø-visninger tilgjengelig" text="Kontoen din har ikke tilgang til noen av kø-fanene. Ta kontakt med en administrator." />
+        </Side>
+      </AgencyOSSkall>
     );
   }
 
@@ -100,7 +98,16 @@ export default async function KoPage({
   }
 
   const antall = await koFaneTellinger(user, faner);
-  const hode = <KoHode faner={faner} aktiv={aktiv} antall={antall} />;
+  const hode = (
+    <AG04RestHode
+      kicker="Innboks · Kø"
+      title="Kø"
+      sub="Alt som krever deg i dag. Én adresse — fanene bytter innhold, ikke side."
+      faner={faner.map((f) => ({ id: f.id, label: f.label, href: koHref(f.id) }))}
+      aktiv={aktiv}
+      antall={antall}
+    />
+  );
 
   // Kun den aktive fanen lastes — aldri alle fem.
 
@@ -122,35 +129,19 @@ export default async function KoPage({
         const liste = await lastDubletter();
         if (liste.length === 0) {
           return (
-            <TlRadGruppe>
-              <TlTomTilstand
-                icon="check-circle"
-                title="Ingen ventende dubletter"
-                sub="Når spillere legger til manuelle turneringer som matcher en kjent kilde, vises de her for vurdering."
-              />
-            </TlRadGruppe>
+            <TomTilstand
+              icon={CircleCheck}
+              title="Ingen ventende dubletter"
+              text="Når spillere legger til manuelle turneringer som matcher en kjent kilde, vises de her for vurdering."
+            />
           );
         }
         return (
           <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                borderRadius: TL.radius.card,
-                background: TL.elev,
-                padding: "14px 18px",
-              }}
-            >
-              <Icon name="info" size={16} style={{ color: TL.mute, marginTop: 1, flex: "none" }} />
-              <p style={{ fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
-                <strong style={{ color: TL.text, fontWeight: 600 }}>Slik fungerer sammenslåing: </strong>
-                Når du slår sammen en manuell turnering inn i en kanonisk turnering, flyttes alle påmeldinger,
-                resultater og deltakerlister automatisk. Manuell-raden markeres som dublett og forsvinner fra
-                hovedlista.
-              </p>
-            </div>
+            <InlineVarsel tittel="Slik fungerer sammenslåing.">
+              Når du slår sammen en manuell turnering inn i en kanonisk turnering, flyttes alle påmeldinger, resultater og
+              deltakerlister automatisk. Manuell-raden markeres som dublett og forsvinner fra hovedlista.
+            </InlineVarsel>
             <MergeDubletterListe liste={liste} />
           </>
         );
@@ -162,12 +153,14 @@ export default async function KoPage({
     }
   })();
 
+  // Innholdet i fanene er fortsatt Train-lock-komponenter (ingen tegning) og
+  // ligger i TL_SCOPE, som i Kalender. Sidehode og faner er Precision.
   return (
-    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <Side>
         {hode}
-        {innhold}
-      </div>
-    </V2Shell>
+        <div style={{ ...TL_SCOPE, display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{innhold}</div>
+      </Side>
+    </AgencyOSSkall>
   );
 }
