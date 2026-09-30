@@ -102,7 +102,7 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
                   ? `Kostnad: ${esc(kr(i.spillerhqTilbud.manedNok))} per måned eller ${esc(kr(i.spillerhqTilbud.arNok))} per år. `
                   : "") +
                 (i.opprettKontoUrl
-                  ? `<a href="${esc(i.opprettKontoUrl)}" style="color:${c.link};text-decoration:underline">Opprett konto</a><br><span style="font-size:14px">Bookingene dine følger med inn i kontoen.</span>`
+                  ? `<a class="lnk" href="${esc(i.opprettKontoUrl)}" style="display:inline-block;padding:14px 6px;color:${c.link};text-decoration:underline">Opprett konto</a>`
                   : ""),
             )
           : ""),

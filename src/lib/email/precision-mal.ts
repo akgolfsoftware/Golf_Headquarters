@@ -61,14 +61,14 @@ export function kvTabell(c: EpostFarger, rader: KvRad[]): string {
   const celler = rader
     .map(
       (r) =>
-        `<tr><td class="m" style="font:400 14px/1.4 ${FONT};color:${c.muted};padding:9px 12px 9px 0;border-top:1px solid ${c.line};width:38%;vertical-align:top">${esc(r.label)}</td><td class="t" style="font:${r.mono ? `500 14px/1.4 ${MONO}` : `500 15px/1.4 ${FONT}`};color:${c.text};padding:9px 0;border-top:1px solid ${c.line};vertical-align:top;word-break:break-word">${r.html}</td></tr>`,
+        `<tr><td class="m ln" style="font:400 14px/1.4 ${FONT};color:${c.muted};padding:9px 12px 9px 0;border-top:1px solid ${c.line};width:38%;vertical-align:top">${esc(r.label)}</td><td class="t ln" style="font:${r.mono ? `500 14px/1.4 ${MONO}` : `500 15px/1.4 ${FONT}`};color:${c.text};padding:9px 0;border-top:1px solid ${c.line};vertical-align:top;word-break:break-word">${r.html}</td></tr>`,
     )
     .join("");
   return `<tr><td style="padding:4px 0 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${celler}</table></td></tr>`;
 }
 
 export function boks(c: EpostFarger, overskrift: string, html: string): string {
-  return `<tr><td style="padding:4px 0 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:${c.flat};border:1px solid ${c.line};border-radius:8px;padding:16px"><div class="t" style="font:600 12px/1 ${MONO};letter-spacing:.08em;color:${c.text};text-transform:uppercase;padding-bottom:8px">${esc(overskrift)}</div><div class="b" style="font:400 15px/1.55 ${FONT};color:${c.body}">${html}</div></td></tr></table></td></tr>`;
+  return `<tr><td style="padding:4px 0 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="flat" style="background:${c.flat};border:1px solid ${c.line};border-radius:8px;padding:16px"><div class="t" style="font:600 12px/1 ${MONO};letter-spacing:.08em;color:${c.text};text-transform:uppercase;padding-bottom:8px">${esc(overskrift)}</div><div class="b" style="font:400 15px/1.55 ${FONT};color:${c.body}">${html}</div></td></tr></table></td></tr>`;
 }
 
 export type EpostSkallInput = {
@@ -86,17 +86,17 @@ export function epostSkall(input: EpostSkallInput): string {
   const natt = input.natt === true;
   const c: EpostFarger = natt ? EPOST_NATT : EPOST_LYS;
   const knapp = input.knapp
-    ? `<tr><td style="padding:8px 0 4px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-radius:8px;background:${c.btn}"><a href="${esc(input.knapp.href)}" style="display:inline-block;padding:14px 22px;font:600 16px/1 ${FONT};color:${c.btnText};text-decoration:none;border-radius:8px">${esc(input.knapp.tekst)}</a></td></tr></table></td></tr>`
+    ? `<tr><td style="padding:8px 0 4px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td class="btnbg" style="border-radius:8px;background:${c.btn}"><a class="btntxt" href="${esc(input.knapp.href)}" style="display:inline-block;padding:14px 22px;font:600 16px/1 ${FONT};color:${c.btnText};text-decoration:none;border-radius:8px">${esc(input.knapp.tekst)}</a></td></tr></table></td></tr>`
     : "";
   const sek =
     input.sekundaere && input.sekundaere.length > 0
       ? `<tr><td style="padding:12px 0 0;font:400 15px/1.5 ${FONT}">${input.sekundaere
-          .map((s) => `<a href="${esc(s.href)}" style="color:${c.link};text-decoration:underline">${esc(s.tekst)}</a>`)
-          .join(" &nbsp;·&nbsp; ")}</td></tr>`
+          .map((s) => `<a class="lnk" href="${esc(s.href)}" style="display:inline-block;padding:14px 6px;min-height:16px;color:${c.link};text-decoration:underline">${esc(s.tekst)}</a>`)
+          .join(" · ")}</td></tr>`
       : "";
   const nattRegler = natt
     ? ""
-    : `@media (prefers-color-scheme:dark){body,.bg{background:${EPOST_NATT.page}!important}.card{background:${EPOST_NATT.card}!important;border-color:${EPOST_NATT.line}!important}.t{color:${EPOST_NATT.text}!important}.b{color:${EPOST_NATT.body}!important}.m{color:${EPOST_NATT.muted}!important}}`;
+    : `@media (prefers-color-scheme:dark){body,.bg{background:${EPOST_NATT.page}!important}.card{background:${EPOST_NATT.card}!important;border-color:${EPOST_NATT.line}!important}.t{color:${EPOST_NATT.text}!important}.b{color:${EPOST_NATT.body}!important}.m{color:${EPOST_NATT.muted}!important}.flat{background:${EPOST_NATT.flat}!important;border-color:${EPOST_NATT.line}!important}.ln{border-color:${EPOST_NATT.line}!important}.lnk,.lnk:visited{color:${EPOST_NATT.link}!important}.btnbg{background:${EPOST_NATT.btn}!important}.btntxt{color:${EPOST_NATT.btnText}!important}}`;
   return `<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>${esc(input.tittel)}</title>
 <style>body{margin:0;padding:0;-webkit-text-size-adjust:100%}table{border-collapse:collapse}a{color:${c.link}}@media (max-width:620px){.wrap{width:100%!important}.pad{padding:20px 16px!important}}${nattRegler}</style></head>
 <body class="bg" style="margin:0;padding:0;background:${c.page}"><div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(input.forhandsvisning)}</div>

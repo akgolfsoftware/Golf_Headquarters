@@ -7,23 +7,23 @@ const slutt = new Date(Date.UTC(2026, 8, 29, 18, 0));
 const frist = new Date(Date.UTC(2026, 8, 28, 17, 0));
 
 const base: BekreftelseInput = {
-type: "gjest",
-fornavn: "Mari",
-tjeneste: "Privattime",
-varighetMin: 60,
-start,
-slutt,
-sted: "Studio 1",
-coach: "Anders Kristiansen",
-frist,
-prisOre: 95000,
-betalingsref: "pi_demo",
-referanse: "#abcd1234",
-kalenderUrl: "https://calendar.google.com/x",
-bookingUrl: "https://akgolf.no/portal/meg/bookinger",
-endreUrl: "mailto:post@akgolf.no",
-opprettKontoUrl: "https://akgolf.no/auth/signup",
-spillerhqTilbud: { tekst: "plan fra coachen", manedNok: null, arNok: null },
+  type: "gjest",
+  fornavn: "Mari",
+  tjeneste: "Privattime",
+  varighetMin: 60,
+  start,
+  slutt,
+  sted: "Studio 1",
+  coach: "Anders Kristiansen",
+  frist,
+  prisOre: 95000,
+  betalingsref: "pi_demo",
+  referanse: "#abcd1234",
+  kalenderUrl: "https://calendar.google.com/x",
+  bookingUrl: "https://akgolf.no/portal/meg/bookinger",
+  endreUrl: "mailto:post@akgolf.no",
+  opprettKontoUrl: "https://akgolf.no/auth/signup",
+  spillerhqTilbud: { tekst: "plan fra coachen", manedNok: null, arNok: null },
 };
 
 test("formaterer Oslo-veggklokke uavhengig av serverens tidssone", () => {
@@ -54,6 +54,18 @@ test("escaper navn og bruker natt-palett når bedt om", () => {
   const { html } = byggBekreftelse({ ...base, fornavn: "<b>x</b>", natt: true });
   assert.ok(html.includes("&lt;b&gt;x&lt;/b&gt;"));
   assert.ok(html.includes("#0c0d0c"));
+});
+test("lys mail har mørk-regler for flate, lenke og knapp, og lover ikke kontosammenslåing", () => {
+  const { html } = byggBekreftelse(base);
+  const mork = html.slice(html.indexOf("prefers-color-scheme:dark"));
+  for (const k of [".flat{", ".lnk", ".btnbg{", ".btntxt{", ".ln{"]) assert.ok(mork.includes(k), k);
+  assert.ok(html.includes('class="flat"'));
+  assert.ok(html.includes('class="btnbg"'));
+  assert.ok(!html.includes("følger med inn i kontoen"));
+});
+test("lenker har treffmål på minst 44 px", () => {
+  const { html } = byggBekreftelse(base);
+  assert.ok(html.includes("display:inline-block;padding:14px 6px"));
 });
 test("kalenderlenke bruker Oslo som tidssone", () => {
   const u = googleKalenderUrl({ tjeneste: "T", start, slutt, sted: "S", referanse: "#1" });
