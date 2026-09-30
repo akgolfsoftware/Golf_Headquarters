@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER (Anders 29.09.2026, bindende)
+
+Anders: «docs/ordbok.md vinner». Svar på det uavklarte punktet i §PRECISION ATHLETICS om to ordlister.
+
+- **Språket eies av repoet.** `docs/ordbok.md` peker til masteren `docs/treningsplanlegging.md`, som
+  er eneste kilde for ord, statuser, posisjonsnavn og treningsbegreper.
+- **`guidelines/ordmaster.md` i Claude Design «AK Golf Precision Athletics» (`7d7c2994`) er avledet.**
+  Den er et speil for tegningene, ikke fasit. Sier den noe annet enn masteren, rettes ordmasteren.
+- Posisjonsnavnene fra §POSISJONSNAVN FØLGER ORDMASTEREN (27.09) står nå i masteren §14.4, så
+  navnene er de samme og kilden er repoet.
+
+**Overstyrer:** Precisions `readme.md`, som kaller `guidelines/ordmaster.md` autoritativ.
+
+**Arbeidet dette utløser:**
+
+1. **Posisjonsnavn i masteren:** P1.0–P10.0 inn i `docs/treningsplanlegging.md` §14.4. Gjort i samme PR.
+2. **Precision (`7d7c2994`):** `readme.md` og toppen av `guidelines/ordmaster.md` sier at masteren i
+   repoet gjelder og at ordmasteren er avledet. Ferdig når ingen fil i prosjektet kaller ordmasteren
+   autoritativ.
+3. **Avvik mellom ordmasteren og masteren:** sammenlign ordene, legg avvikene fram for Anders, og rett
+   ordmasteren etter svaret. Ferdig når de to sier det samme om hvert ord de begge har.
+
 ## Workbench over uka: årsplan, periode og måned (Anders 28.09.2026, bindende)
 
 Anders vil ha knapper og skjema for ny årsplan, periodisering og månedsplan i Workbench.
@@ -361,7 +383,8 @@ idékilde, ikke visuell fasit: den bruker det gamle designsystemet `87aa23fb`.
   P2.0 Kølle parallell i baksving · P3.0 Venstre arm parallell i baksving · P4.0 Toppen av
   baksvingen · P5.0 Venstre arm parallell i nedsving · P6.0 Kølle parallell i nedsving · P7.0
   Treffpunktet · P8.0 Kølle parallell i gjennomføring · P9.0 Høyre arm parallell i oppfølging ·
-  P10.0 Fullføring og balanse. Kilde: `guidelines/ordmaster.md` §5 i `7d7c2994`.
+  P10.0 Fullføring og balanse. Står i `docs/treningsplanlegging.md` §14.4 (kilde fra 29.09,
+  §APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER).
 - **Kvalitetssjekken vises bare.** Anders: «Bare vises.» Den er aldri krav for å gå videre til
   neste læringssteg. Rep-mål og treffprotokoll viser også bare status (§Treningsfag).
 - **AK-formelen når en oppgave har flere læringssteg og miljøer:** formelen viser steget spilleren
@@ -680,9 +703,8 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
   Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
   `/portal` og `/admin`» (21.09).
 - Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
-- Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
-  Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
-  Posisjonsnavnene er avgjort 27.09: ordmasteren gjelder (§POSISJONSNAVN FØLGER ORDMASTEREN).
+- Ordlister: `docs/ordbok.md` (masteren `docs/treningsplanlegging.md`) vinner over prosjektets
+  `guidelines/ordmaster.md` (§APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER, 29.09).
 - Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
