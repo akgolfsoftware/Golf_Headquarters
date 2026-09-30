@@ -15,7 +15,8 @@ import { getHoleDetail } from "@/lib/gameplan/queries";
 import { hentGameplanForHull } from "@/lib/gameplan/actions";
 import { CourseMap } from "@/components/gameplan/course-map";
 import { GameplanPlanlegger } from "@/components/gameplan/GameplanPlanlegger";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, KpiFlis, MikroMeta, TomTilstand } from "@/components/v2";
@@ -47,7 +48,7 @@ export default async function HoleDetailPage({
   const erPlanlegg = segment.key === "planlegg";
 
   const user = await requirePortalUser();
-  const data = await getHoleDetail(baneId, holeNumber, user.id, segment.type);
+  const [data, dash] = await Promise.all([getHoleDetail(baneId, holeNumber, user.id, segment.type), getUnreadNotifications(user.id, 1).catch(() => null)]);
   if (!data) notFound();
   const { bane, hole, tee, green, landings, stats } = data;
 
@@ -61,8 +62,8 @@ export default async function HoleDetailPage({
         : null;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={dash?.count ?? 0}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
         <Link
           href={`/portal/gameplan/${bane.id}`}
           style={{ textDecoration: "none", alignSelf: "flex-start" }}
@@ -193,6 +194,6 @@ export default async function HoleDetailPage({
           </Kort>
         )}
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

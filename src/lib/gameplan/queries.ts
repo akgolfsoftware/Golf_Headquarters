@@ -101,3 +101,40 @@ export async function getHoleDetail(
 
   return { bane, hole, tee, green, landings, stats };
 }
+
+export type GameplanHull = {
+  holeNumber: number;
+  par: number | null;
+  lengthMeter: number | null;
+  tee: LatLng | null;
+  green: LatLng | null;
+  /** Spillerens registrerte tee-slag (første slag) på hullet. */
+  teeSlag: { klubb: string | null; landing: LatLng }[];
+};
+
+/** PH-20: bane med hull og spillerens tee-slag per hull, i ett sett. */
+export async function getGameplanBane(baneId: string, userId: string) {
+  const bane = await prisma.bane.findUnique({
+    where: { id: baneId },
+    select: { id: true, navn: true, klubb: true, holes: { orderBy: { holeNumber: "asc" } } },
+  });
+  if (!bane) return null;
+  const slag = await prisma.shot.findMany({
+    where: { round: { userId, course: { baneId } }, shotNumber: 1, endX: { not: null }, endY: { not: null } },
+    select: { holeNumber: true, club: true, endX: true, endY: true },
+  });
+  const perHull = new Map<number, GameplanHull["teeSlag"]>();
+  for (const s of slag) {
+    if (s.endX == null || s.endY == null) continue;
+    perHull.set(s.holeNumber, [...(perHull.get(s.holeNumber) ?? []), { klubb: s.club, landing: { lat: s.endY, lng: s.endX } }]);
+  }
+  const hull: GameplanHull[] = bane.holes.map((h) => ({
+    holeNumber: h.holeNumber,
+    par: h.par,
+    lengthMeter: h.lengthMeter,
+    tee: h.teeLat != null && h.teeLng != null ? { lat: h.teeLat, lng: h.teeLng } : null,
+    green: h.greenLat != null && h.greenLng != null ? { lat: h.greenLat, lng: h.greenLng } : null,
+    teeSlag: perHull.get(h.holeNumber) ?? [],
+  }));
+  return { id: bane.id, navn: bane.navn, klubb: bane.klubb, hull };
+}

@@ -1,28 +1,45 @@
 /**
- * PlayerHQ Gameplan (B30, omdøpt fra "Baneguide" 16. jul 2026) — banebibliotek.
- * V2Shell leverer chrome-en (IkonRail/BunnNav), GameplanV2 rendrer innholds-stacken.
+ * PlayerHQ · Gameplan, banebibliotek (/portal/gameplan) — Precision Athletics PH-20
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-20.jsx). Data som før (getBaneLibrary).
  */
-
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { getBaneLibrary } from "@/lib/gameplan/queries";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { GameplanV2 } from "@/components/portal/v2/GameplanV2";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH20Baner, type PH20BaneKort } from "@/components/portal/precision/PH20Gameplan";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Gameplan · PlayerHQ" };
 
 export default async function V2GameplanPreviewPage() {
   const user = await requirePortalUser();
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await getBaneLibrary(user.id);
+  let baner: PH20BaneKort[] = [];
+  let feil = false;
+  let uleste = 0;
+  try {
+    const [lib, hull, dash] = await Promise.all([
+      getBaneLibrary(user.id),
+      prisma.courseHole.groupBy({ by: ["baneId"], _sum: { par: true, lengthMeter: true } }),
+      getUnreadNotifications(user.id, 1).catch(() => null),
+    ]);
+    uleste = dash?.count ?? 0;
+    const sum = new Map(hull.map((h) => [h.baneId, h._sum]));
+    baner = lib.map((b) => ({
+      id: b.id, navn: b.navn, klubb: b.klubb, hull: b.holesMapped, kartlagt: b.hasGeometry, runder: b.playerRounds,
+      par: sum.get(b.id)?.par || null, meter: sum.get(b.id)?.lengthMeter || null,
+    }));
+  } catch {
+    feil = true;
+  }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <GameplanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH20Baner baner={baner} feil={feil} />
+    </PlayerHQSkall>
   );
 }
