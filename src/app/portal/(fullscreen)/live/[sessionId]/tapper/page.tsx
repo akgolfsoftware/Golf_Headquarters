@@ -1,16 +1,15 @@
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { filterLiveCoachMessages, type LiveCoachPanelData } from "@/components/portal/live/types";
-import { TL } from "@/lib/v2/train-lock";
+import { PH06IngenOkt } from "@/components/portal/precision/PH06Slagteller";
 
 import { TapperShell } from "./tapper-shell";
 
 /**
  * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper).
- * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Fasit: PH-06 Slagteller i Claude Design «AK Golf Precision Athletics» (7d7c2994).
  * Avvik:
  *   - Ingen egen riggrad: PH-05-raden måler /portal/live/<id>/active
  *     (LiveActive.tsx), som er skjermen fasiten faktisk tegner. Slagtelleren
@@ -95,56 +94,9 @@ export default async function LiveTapperPage({
     }
   }
 
-  // Tom tilstand — fasit-copy: slagtelleren hører til en pågående økt.
+  // Tom tilstand — slagtelleren hører til en pågående økt.
   if (!playerId || !oktLabel) {
-    return (
-      <main
-        data-paper-slug="playerhq-live-tapper"
-        style={{ minHeight: "100dvh", background: TL.scene, display: "grid", placeItems: "center", padding: 16 }}
-      >
-        <div
-          style={{
-            maxWidth: 430,
-            width: "100%",
-            padding: "24px 16px",
-            background: TL.dock,
-            border: `1px dashed ${TL.hair}`,
-            borderRadius: TL.radius.card,
-          }}
-        >
-          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-            Ingen økt pågår
-          </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-            Slagtelleren hører til en pågående økt. Start dagens økt, så teller
-            vi derfra.
-          </p>
-          {/* Kontrakt §3: tom tilstand — én aksenthandling, én vei videre. */}
-          <Link
-            href="/portal"
-            data-od-id="tapper-tom-start"
-            data-paper-en-ting="true"
-            className="v2-press v2-focus"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 56,
-              width: "100%",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
-            Start økta
-          </Link>
-        </div>
-      </main>
-    );
+    return <PH06IngenOkt />;
   }
 
   const thread = await prisma.coachingSession.findUnique({
