@@ -26,7 +26,7 @@
 @media (min-width: 768px) and (max-width: 1279px) { .ph20-hovedliste { display: block; } }
 .ph20-kart { background: var(--sand-200); }
 .ph20-rader { padding: 0; overflow: hidden; }
-.ph20-rad { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 40px 32px minmax(0, 1fr) minmax(0, 64px); gap: 8px; align-items: center; padding: 0 12px; min-height: 44px; width: 100%; border-top: 1px solid var(--border-hairline); }
+.ph20-rad { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 40px 32px minmax(0, 1fr); gap: 8px; align-items: center; padding: 0 12px; min-height: 44px; width: 100%; border-top: 1px solid var(--border-hairline); }
 .ph20-rad--hode { cursor: default; min-height: 36px; background: var(--surface-flat); border-top: 0; }
 .ph20-rad[aria-pressed="true"] { background: var(--surface-flat); box-shadow: inset 2px 0 0 var(--border-ink); }
 .ph20-rad:focus-visible { outline: 2px solid var(--border-ink); outline-offset: -2px; }

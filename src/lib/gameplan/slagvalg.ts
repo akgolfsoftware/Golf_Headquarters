@@ -1,7 +1,7 @@
 /**
  * Slagvalg fra tee per hull, regnet fra spillerens egne registrerte slag (PH-20).
  * Ren funksjon uten database. Bunker og vann finnes ikke i banedata, så de
- * inngår ikke i anbefalingen; den bygger bare på carry, spredning og hullets lengde.
+ * inngår ikke i anbefalingen; den bygger bare på lengde (tee til hvilested), spredning og hullets lengde.
  */
 import { haversine, projectToAimFrame } from "./dispersion";
 import type { LatLng } from "./shot-coords";
@@ -11,7 +11,7 @@ export type TeeSlag = { klubb: string | null; landing: LatLng };
 export type KlubbValg = {
   klubb: string;
   n: number;
-  /** Snitt carry i meter (avstand tee → landing). */
+  /** Snitt lengde i meter: avstand tee til der ballen ble liggende (total, ikke carry). Feltnavnet er historisk. */
   carry: number;
   /** To standardavvik sideveis, meter. Null under 3 slag. */
   sideSpredning: number | null;

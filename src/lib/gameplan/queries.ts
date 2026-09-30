@@ -121,11 +121,13 @@ export async function getGameplanBane(baneId: string, userId: string) {
   if (!bane) return null;
   const slag = await prisma.shot.findMany({
     where: { round: { userId, course: { baneId } }, shotNumber: 1, endX: { not: null }, endY: { not: null } },
-    select: { holeNumber: true, club: true, endX: true, endY: true },
+    select: { holeNumber: true, club: true, endX: true, endY: true, createdAt: true },
   });
   const perHull = new Map<number, GameplanHull["teeSlag"]>();
+  let sisteSlag: Date | null = null;
   for (const s of slag) {
     if (s.endX == null || s.endY == null) continue;
+    if (!sisteSlag || s.createdAt > sisteSlag) sisteSlag = s.createdAt;
     perHull.set(s.holeNumber, [...(perHull.get(s.holeNumber) ?? []), { klubb: s.club, landing: { lat: s.endY, lng: s.endX } }]);
   }
   const hull: GameplanHull[] = bane.holes.map((h) => ({
@@ -136,5 +138,5 @@ export async function getGameplanBane(baneId: string, userId: string) {
     green: h.greenLat != null && h.greenLng != null ? { lat: h.greenLat, lng: h.greenLng } : null,
     teeSlag: perHull.get(h.holeNumber) ?? [],
   }));
-  return { id: bane.id, navn: bane.navn, klubb: bane.klubb, hull };
+  return { id: bane.id, navn: bane.navn, klubb: bane.klubb, hull, sisteSlag };
 }

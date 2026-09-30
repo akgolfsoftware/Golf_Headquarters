@@ -25,6 +25,7 @@ export default async function BaneOverviewPage({ params }: { params: Promise<{ b
       <PH20Bane
         bane={{ id: bane.id, navn: bane.navn, klubb: bane.klubb }}
         hull={bane.hull.map((h) => ({ nr: h.holeNumber, par: h.par, meter: h.lengthMeter, tee: h.tee, green: h.green, teeSlag: h.teeSlag }))}
+        sisteSlag={bane.sisteSlag ? bane.sisteSlag.toISOString() : null}
         planleggHref={(nr) => `/portal/gameplan/${bane.id}/hull/${nr}?type=planlegg`}
       />
     </PlayerHQSkall>

@@ -22,9 +22,9 @@ export default async function V2GameplanPreviewPage() {
   let feil = false;
   let uleste = 0;
   try {
-    const [lib, hull, dash] = await Promise.all([
-      getBaneLibrary(user.id),
-      prisma.courseHole.groupBy({ by: ["baneId"], _sum: { par: true, lengthMeter: true } }),
+    const lib = await getBaneLibrary(user.id);
+    const [hull, dash] = await Promise.all([
+      prisma.courseHole.groupBy({ by: ["baneId"], where: { baneId: { in: lib.map((b) => b.id) } }, _sum: { par: true, lengthMeter: true } }),
       getUnreadNotifications(user.id, 1).catch(() => null),
     ]);
     uleste = dash?.count ?? 0;

@@ -9,7 +9,7 @@
  *
  * Bevisste avvik fra tegningen:
  *   - Tallene er spillerens egne registrerte tee-slag (Shot.club, GPS), ikke en fast
- *     TrackMan-tabell. Køller med under 3 slag vises uten spredning og anbefales ikke.
+ *     TrackMan-tabell. «Lengde» er avstand tee til der ballen ble liggende (total, med rull), ikke carry. Køller med under 3 slag vises uten spredning og anbefales ikke.
  *   - Bunker og vann tegnes ikke: banedata har ingen hindre per hull (tegningens
  *     hindre var eksempeldata). Anbefalingen bygger derfor ikke på hindre.
  *   - «Snitt på hullet» utgår: scorer per hull er ikke koblet til banen.
@@ -31,7 +31,7 @@ export type PH20BaneKort = { id: string; navn: string; klubb: string; hull: numb
 export function PH20Baner({ baner, feil, feilKode }: { baner: PH20BaneKort[]; feil?: boolean; feilKode?: string }) {
   return <Side max={1400}>
     <Stabel>
-      <SideHode kicker="Analyse · Gameplan" title="Gameplan og banekart" sub="Velg bane og hull. Slagvalget bygger på spredningen din og hvor hindrene ligger." />
+      <SideHode kicker="Analyse · Gameplan" title="Gameplan og banekart" sub="Velg bane og hull. Slagvalget bygger på dine egne tee-slag." />
       {feil ? <FeilTilstand icon={CircleAlert} title="Banekartet kunne ikke lastes" text="Gameplanene dine er lagret. Prøv igjen om litt." code={feilKode ?? "FEIL 500 · GAMEPLAN"} />
         : baner.length === 0 ? <TomTilstand icon={KartIkon} title="Ingen gameplan ennå" text="Spill en runde, så dukker banen din opp her med slagvalg per hull."
           actions={<KnappLenke href="/portal/runde/live" icon={Crosshair} iconName="crosshair">Start live-føring</KnappLenke>} />
@@ -47,7 +47,7 @@ export function PH20Baner({ baner, feil, feilKode }: { baner: PH20BaneKort[]; fe
                 </span>
               </Link>)}
             </div>
-            <Meta>BANEDATA · KARTLAGTE HULL. BUNKER OG VANN VISES IKKE ENNÅ.</Meta>
+            <Meta>BANEDATA · KARTLAGTE HULL. KILDE OG DATO PER BANE VISES PÅ BANESIDEN. BUNKER OG VANN VISES IKKE ENNÅ.</Meta>
           </>}
     </Stabel>
   </Side>;
@@ -55,14 +55,14 @@ export function PH20Baner({ baner, feil, feilKode }: { baner: PH20BaneKort[]; fe
 
 export type PH20Hull = { nr: number; par: number | null; meter: number | null; tee: LatLng | null; green: LatLng | null; teeSlag: { klubb: string | null; landing: LatLng }[] };
 
-type Rad = { id: string; n: number; par: string; len: string; tee: string };
+type Rad = { id: string; n: number; par: string; tee: string };
 
 function Hullrader({ rader, valgt, onVelg }: { rader: Rad[]; valgt: number; onVelg: (i: number) => void }) {
   return <div className="pa-card ph20-rader" role="group" aria-label="Hull-liste">
-    <div className="ph20-rad ph20-rad--hode"><Meta>HULL</Meta><Meta>PAR</Meta><Meta style={{ textAlign: "right" }}>METER</Meta><Meta>TEE</Meta></div>
+    <div className="ph20-rad ph20-rad--hode"><Meta>HULL</Meta><Meta>PAR</Meta><Meta>TEE</Meta></div>
     {rader.map((r, i) => <button key={r.id} type="button" className="ph20-rad" aria-pressed={i === valgt} onClick={() => onVelg(i)}>
       <span style={{ font: "600 14px/1 var(--font-mono)" }}>{r.n}</span><span style={{ font: "var(--type-num-s)" }}>{r.par}</span>
-      <span style={{ font: "var(--type-num-s)", textAlign: "right" }}>{r.len}</span><span style={{ font: "var(--type-num-s)", overflowWrap: "anywhere" }}>{r.tee}</span>
+      <span style={{ font: "var(--type-num-s)", overflowWrap: "anywhere" }}>{r.tee}</span>
     </button>)}
   </div>;
 }
@@ -75,7 +75,7 @@ function Hullkart({ hull, valg }: { hull: PH20Hull; valg: KlubbValg | null }) {
   const fw = `M${X(-15)} ${Y(fwFra)} L${X(-15)} ${Y(len - 22)} Q${X(0)} ${Y(len - 12)} ${X(15)} ${Y(len - 22)} L${X(15)} ${Y(fwFra)} Q${X(0)} ${Y(fwFra - 10)} ${X(-15)} ${Y(fwFra)}Z`;
   const land = valg ? Math.min(valg.carry, len) : 0;
   const lat = valg ? Math.max(-40, Math.min(40, valg.sideSnitt)) : 0;
-  const beskrivelse = `Hull ${hull.nr}, par ${par ?? "ukjent"}, ${len} meter${valg ? `, slagvalg ${valg.klubb} ${dec(valg.carry)} meter` : ""}`;
+  const beskrivelse = `Hull ${hull.nr}, par ${par ?? "ukjent"}, ${len} meter${valg ? `, slagvalg ${valg.klubb} lengde ${dec(valg.carry)} meter` : ""}`;
   return <svg viewBox="0 0 400 720" preserveAspectRatio="xMidYMid meet" style={{ width: "100%", height: "100%", display: "block" }} role="img" aria-label={beskrivelse}>
     <rect x="0" y="0" width="400" height="720" fill="var(--sand-200)" />
     {len > 0 && <>
@@ -104,8 +104,10 @@ function Hullkart({ hull, valg }: { hull: PH20Hull; valg: KlubbValg | null }) {
   </svg>;
 }
 
-export function PH20Bane({ bane, hull, planleggHref, baneHref = "/portal/gameplan" }: {
+export function PH20Bane({ bane, hull, planleggHref, baneHref = "/portal/gameplan", sisteSlag = null }: {
   bane: { id: string; navn: string; klubb: string }; hull: PH20Hull[]; planleggHref: (nr: number) => string; baneHref?: string;
+  /** ISO-tidspunkt for siste registrerte tee-slag på banen, null om ingen. */
+  sisteSlag?: string | null;
 }) {
   const [h, setH] = useState(0);
   const [valgt, setValgt] = useState<Record<number, string>>({});
@@ -120,7 +122,7 @@ export function PH20Bane({ bane, hull, planleggHref, baneHref = "/portal/gamepla
       <span className="ph20-hull__nr">{x.nr}</span><span className="ph20-hull__par">PAR {x.par ?? "—"}</span>
     </button>)}
   </div>;
-  const rader: Rad[] = hull.map((x, i) => ({ id: String(i), n: x.nr, par: x.par != null ? String(x.par) : "—", len: x.meter != null ? String(x.meter) : "—", tee: (() => { const v = x.tee && x.green && x.meter ? klubbValg(x.teeSlag, x.tee, x.green, x.meter) : []; return valgt[x.nr] ?? anbefalt(v, x.par, x.meter ?? 0) ?? "—"; })() }));
+  const rader: Rad[] = hull.map((x, i) => ({ id: String(i), n: x.nr, par: x.par != null ? String(x.par) : "—", tee: (() => { const v = x.tee && x.green && x.meter ? klubbValg(x.teeSlag, x.tee, x.green, x.meter) : []; return valgt[x.nr] ?? anbefalt(v, x.par, x.meter ?? 0) ?? "—"; })() }));
 
   return <Side max={1400}>
     <Stabel>
@@ -132,7 +134,7 @@ export function PH20Bane({ bane, hull, planleggHref, baneHref = "/portal/gamepla
           <Stabel>
             <div className="ph20-hullvelger">{velger}</div>
             <div className="pa-card ph20-kart"><Hullkart hull={aktiv} valg={aktivValg} /></div>
-            <Meta>BANEDATA · KARTLAGTE HULL · HINDER VISES IKKE ENNÅ</Meta>
+            <Meta>BANEDATA · KARTLAGTE HULL · SISTE SLAG {sisteSlag ? new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(sisteSlag)) : "—"} · HINDER VISES IKKE ENNÅ</Meta>
           </Stabel>
           <Stabel>
             <div className="pa-card" style={{ padding: 16, gap: 12, display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -143,7 +145,7 @@ export function PH20Bane({ bane, hull, planleggHref, baneHref = "/portal/gamepla
                   {alle.map((o) => <button key={o.klubb} type="button" role="radio" aria-checked={o.klubb === klubb} className="ph20-valg" onClick={() => setValgt((x) => ({ ...x, [aktiv.nr]: o.klubb }))}>
                     <span style={{ font: "600 15px/1 var(--font-mono)", overflowWrap: "anywhere" }}>{o.klubb}</span>
                     <span style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
-                      <span style={{ font: "var(--type-num-s)" }}>Carry {dec(o.carry)} m · {o.igjen > 0 ? `${dec(o.igjen)} m igjen` : "på green"}</span>
+                      <span style={{ font: "var(--type-num-s)" }}>Lengde {dec(o.carry)} m · {o.igjen > 0 ? `${dec(o.igjen)} m igjen` : "på green"}</span>
                       <Meta style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
                         {o.n < MIN_SLAG ? <>{o.n} SLAG · FOR FÅ TIL SPREDNING</> : <>{o.n} SLAG · ESTIMAT</>}
                       </Meta>
