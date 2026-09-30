@@ -13,7 +13,9 @@
  *     oppsettet. Teksten bruker bane, antall ført og dato fra kladden, ikke faste tall.
  *   - «Tom» vises når appen ikke har noen baner å velge blant. Handlingen «Velg bane»
  *     går til live-føringen, der oppsettet velger bane.
- *   - Skjemaene bak Rask score og Import (RD-06 og RD-07) er ennå ikke tegnet om i koden.
+ *   - RD-06 og RD-07 er tegnet (PH-RD-2.jsx, PH-RD-06 til 09) men ikke portert: skjemaene bak Rask score
+ *     og Import ligger ennå i det gamle RundeNyForm-skallet. Enheten er delvis levert (parkert).
+ *   - Tom- og feiltekstene er skrevet slik at de ikke lover mer enn koden gjør (ingen «sendes når nettet er tilbake»).
  */
 import { useCallback, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -89,10 +91,10 @@ export function PHRD01VelgNiva({ tilstand = "data", kladd = null, uleste = 0, fe
       <style>{CSS}</style>
       <div className="phrd01-hode"><Sidehode kicker="Runde · Ny" title="Registrer runde" sub="Velg hvor mye du vil føre. Du kan alltid legge til mer etterpå." /></div>
       {tilstand === "feil" ? <FeilTilstand icon={TriangleAlert} title="Runden kunne ikke hentes"
-          text="Det du har ført er lagret på telefonen og sendes når nettet er tilbake." code={feilKode}
+          text="Noe gikk galt da siden skulle hentes. Prøv igjen om litt." code={feilKode}
           retry={<KnappLenke variant="secondary" icon={RotateCw} iconName="rotate-cw" href="/portal/mal/runder/ny">Prøv igjen</KnappLenke>} />
-        : tilstand === "tom" ? <TomTilstand icon={Flag} title="Ingen bane valgt ennå"
-          text="Velg bane og dato først. Sist spilte bane foreslås øverst."
+        : tilstand === "tom" ? <TomTilstand icon={Flag} title="Ingen baner registrert"
+          text="Det finnes ingen baner i AK Golf ennå. Bane velges i oppsettet når du starter føringen."
           actions={<KnappLenke icon={MapPin} iconName="map-pin" href="/portal/runde/live">Velg bane</KnappLenke>} />
         : <>
           {kladd && <div role="status" className="pa-alert phrd01-info">
