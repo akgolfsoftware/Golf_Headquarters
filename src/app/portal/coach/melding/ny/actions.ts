@@ -52,21 +52,25 @@ export async function sendMeldingNyV2(input: SendMeldingNyInput): Promise<void> 
     throw new Error("forbidden");
   }
 
-  const session = await prisma.coachingSession.create({
-    data: {
-      userId: user.id,
-      coachId,
-      kind: "DIRECT",
-      messages: [
-        {
-          role: "user",
-          content: body.trim(),
-          ts: new Date().toISOString(),
-        },
-      ] as Prisma.InputJsonValue[],
-    },
+  // Samme tråd med samme coach: legg meldingen til på den siste DIRECT-samtalen.
+  const ny = { role: "user", content: body.trim(), ts: new Date().toISOString() };
+  const siste = await prisma.coachingSession.findFirst({
+    where: { userId: user.id, coachId, kind: "DIRECT" },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, messages: true },
   });
+  if (siste) {
+    const eksisterende = Array.isArray(siste.messages) ? (siste.messages as Prisma.InputJsonValue[]) : [];
+    await prisma.coachingSession.update({
+      where: { id: siste.id },
+      data: { messages: [...eksisterende, ny] as Prisma.InputJsonValue[] },
+    });
+  } else {
+    await prisma.coachingSession.create({
+      data: { userId: user.id, coachId, kind: "DIRECT", messages: [ny] as Prisma.InputJsonValue[] },
+    });
+  }
 
-  revalidatePath("/portal/coach/melding");
-  redirect(`/portal/coach/melding/${session.id}`);
+  revalidatePath("/portal/coach");
+  redirect("/portal/coach");
 }

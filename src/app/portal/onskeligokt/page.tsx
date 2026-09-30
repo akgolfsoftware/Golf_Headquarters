@@ -1,44 +1,25 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Be om økt (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), OnskeligOktV2 rendrer skjema-stacken.
- *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/onskeligokt/page.tsx): coach-lista utledes av hvem som faktisk
- * tilbyr coaching (serviceType.coachUserId), ikke role=COACH.
+ * PH-21 Innboks · Ønsket økt (/portal/onskeligokt) i Precision Athletics.
+ * Coach-lista utledes av hvem som faktisk tilbyr coaching (serviceType.coachUserId).
  */
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { OnskeligOktV2 } from "@/components/portal/v2/OnskeligOktV2";
-import { TilbakeLenke } from "@/components/v2";
+import { innboksKontekst } from "@/lib/portal-okt/innboks-data";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH21Ramme, PH21Onske } from "@/components/portal/precision/PH21Innboks";
+import { sendOnskeligOkt } from "@/app/portal/(legacy)/onskeligokt/actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Ønsket økt · PlayerHQ" };
 
-export default async function V2OnskeligOktPreviewPage() {
+export default async function OnskeligOktPage() {
   const user = await requirePortalUser();
-
-  const coachLinks = await prisma.serviceType.findMany({
-    where: { coachUserId: { not: null } },
-    select: { coachUserId: true },
-    distinct: ["coachUserId"],
-  });
-  const coachIds = coachLinks
-    .map((s) => s.coachUserId)
-    .filter((id): id is string => id !== null);
-  const coacher = await prisma.user.findMany({
-    where: { id: { in: coachIds }, deletedAt: null },
-    select: { id: true, name: true, email: true },
-    orderBy: { name: "asc" },
-  });
-
-  const coachName = coacher[0]?.name ?? "coachen";
-
+  const ctx = await innboksKontekst(user.id);
+  const iDag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
-      <OnskeligOktV2 data={{ coacher, coachName }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ctx.uleste}>
+      <PH21Ramme aktiv="onske" coachNavn={ctx.coachNavn}>
+        <PH21Onske coachNavn={ctx.coachNavn ?? "Coachen"} coachId={ctx.coachId} iDag={iDag} send={sendOnskeligOkt} />
+      </PH21Ramme>
+    </PlayerHQSkall>
   );
 }

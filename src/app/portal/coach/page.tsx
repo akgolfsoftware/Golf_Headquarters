@@ -1,86 +1,51 @@
-import { TL } from "@/lib/v2/train-lock";
 /**
- * v2-forhåndsvisning — PlayerHQ Coach-hub (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), CoachHubV2 rendrer innholds-stacken.
- *
- * Auth + dataloadere gjenbrukes 1:1 fra den ekte /portal/coach-siden:
- * getCoachProfile + getMessages + getUpcomingSessions + getCoachNotes.
+ * PH-21 Innboks · Meldinger (/portal/coach) i Precision Athletics.
+ * Tegning: Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-21.jsx.
+ * Uten coach (selvbetjent spiller) vises veien inn, aldri en blindgate.
  */
-
-import Link from "next/link";
-import { erCoachetSpiller } from "@/lib/auth/coached";
-import { Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
 import { redirect } from "next/navigation";
+import { Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getCoachProfile, getMessages, getUpcomingSessions, getCoachNotes } from "@/app/portal/(legacy)/coach/actions";
-import { getTilbakemeldingerListe } from "@/lib/portal-okt/coach-tilbakemelding-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { CoachHubV2, type CoachHubData } from "@/components/portal/v2/CoachHubV2";
+import { erCoachetSpiller } from "@/lib/auth/coached";
+import { innboksKontekst, hentMeldingsTrad } from "@/lib/portal-okt/innboks-data";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { KnappLenke, TomTilstand } from "@/components/precision/pa";
+import { Side, SideHode } from "@/components/precision/pa-a4";
+import { PH21Ramme, PH21Meldinger } from "@/components/portal/precision/PH21Innboks";
+import { sendMeldingNyV2 } from "./melding/ny/actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Innboks · PlayerHQ" };
 
-export default async function V2CoachPreviewPage() {
+export default async function InnboksMeldingerPage() {
   const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  // I0 (LÅST regel): selvbetjent spiller (kun abonnement) har ingen
-  // coachrelasjon — vis oppsalgs-flate i stedet for coach-hubben (aldri blindgate).
+  const ctx = await innboksKontekst(user.id);
+
   if (!(await erCoachetSpiller(user.id))) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-        <Kort tint>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={ctx.uleste}>
+        <Side max={1200}>
+          <SideHode kicker="Innboks" title="Innboks" />
           <TomTilstand
-            icon="users"
-            title="Coach følger med her — når du er med i AK Golf Academy"
-            sub="Med en coaching-pakke (Performance eller Performance Pro) eller plass i en AK-gruppe får du egen coach, ukeplaner laget for deg og direkte meldinger her."
+            icon={Users}
+            title="Coach følger med her, når du er med i AK Golf Academy"
+            text="Med en coaching-pakke (Performance eller Performance Pro) eller plass i en AK-gruppe får du egen coach, ukeplaner laget for deg og direkte meldinger her. Alt du logger nå er der den dagen du får coach."
+            actions={<KnappLenke href="/portal/booking" icon={Users} iconName="users">Book en prøvetime</KnappLenke>}
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
-            <Link href="/portal/booking" style={{ textDecoration: "none" }}>
-              <Knapp icon="calendar-check">Book en prøvetime</Knapp>
-            </Link>
-          </div>
-        </Kort>
-        <Kort>
-          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>
-            Du mister ingenting ved å vente. Alt du logger nå — økter, runder og tester — er der den dagen du får coach.
-          </p>
-        </Kort>
-      </V2Shell>
+        </Side>
+      </PlayerHQSkall>
     );
   }
 
-  const coach = await getCoachProfile();
-
-  const [messages, upcoming, notes, tilbakemeldinger] = await Promise.all([
-    coach ? getMessages(coach.id) : Promise.resolve([]),
-    getUpcomingSessions(),
-    getCoachNotes(),
-    getTilbakemeldingerListe(user.id),
-  ]);
-
-  const data: CoachHubData = {
-    coach: coach ? { id: coach.id, name: coach.name, initials: coach.initials, avatarUrl: coach.avatarUrl } : null,
-    meFornavn: user.name.split(" ")[0] ?? "Deg",
-    fokus: notes.length > 0 ? { title: notes[0].title, content: notes[0].content } : null,
-    meldinger: messages.map((m) => ({ id: m.id, role: m.role, body: m.body, ts: m.ts })),
-    kommende: upcoming.map((s) => ({
-      id: s.id,
-      title: s.title,
-      startAt: s.startAt,
-      endAt: s.endAt,
-      locationName: s.locationName,
-      status: s.status,
-    })),
-    tilbakemeldingerCount: tilbakemeldinger.length,
-  };
-
+  const meldinger = await hentMeldingsTrad(user.id, ctx.coachId);
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl ?? undefined}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <CoachHubV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ctx.uleste}>
+      <PH21Ramme aktiv="msg" coachNavn={ctx.coachNavn}>
+        <PH21Meldinger coachId={ctx.coachId} coachNavn={ctx.coachNavn ?? "coachen"} meldinger={meldinger} send={sendMeldingNyV2} kanSende={user.role === "PLAYER" && user.tier !== "GRATIS" && !!ctx.coachId} />
+      </PH21Ramme>
+    </PlayerHQSkall>
   );
 }
