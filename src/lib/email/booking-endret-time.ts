@@ -90,7 +90,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
   const gammelSlutt = new Date(input.oldStartAt.getTime() + (input.endAt.getTime() - input.startAt.getTime()));
   const frist = cancellationDeadline(input.startAt);
   const tjeneste = `${input.tjenesteNavn} ${input.varighetMin} min`;
-  const sted = input.stedAdresse ? `${input.stedNavn}, ${input.stedAdresse}` : input.stedNavn;
+  const sted = input.stedAdresse ? `${input.stedNavn} · ${input.stedAdresse}` : input.stedNavn;
 
   const nyTid = `${dag(input.startAt, true)} kl. ${tidRom(input.startAt, input.endAt)}`;
   const gammelTid = `${dag(input.oldStartAt, true)} kl. ${tidRom(input.oldStartAt, gammelSlutt)}`;
@@ -118,7 +118,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
     ? ""
     : boks(
         "Fortsett i PlayerHQ",
-        `Med konto får du plan fra coachen, økter, tester og analyse av rundene dine. FULL koster ${kr(PLAYERHQ_PRIS_MND)} per måned eller ${kr(PLAYERHQ_PRIS_AAR)} per år. <a href="${esc(input.appUrl)}/auth/signup" style="color:${c.link};text-decoration:underline">${esc(input.epost ? `Opprett konto med ${input.epost}` : "Opprett konto")}</a><br><span style="font-size:14px">Bookingene dine følger med inn i kontoen.</span>`,
+        `Med konto får du plan fra coachen, økter, tester og analyse av rundene dine. FULL koster ${kr(PLAYERHQ_PRIS_MND)} per måned eller ${kr(PLAYERHQ_PRIS_AAR)} per år. <a class="lnk" href="${esc(input.appUrl)}/auth/signup" style="color:${c.link};text-decoration:underline">${esc(input.epost ? `Opprett konto med ${input.epost}` : "Opprett konto")}</a><br><span style="font-size:14px">Bookingene dine følger med inn i kontoen.</span>`,
         c,
       );
 

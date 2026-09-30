@@ -78,3 +78,19 @@ test("kalenderlenken beholder veggklokken uten Z", () => {
   assert.match(html, /dates=20261001T160000%2F20261001T170000/);
   assert.match(html, /ctz=Europe%2FOslo/);
 });
+
+test("mørk visning i e-postprogram: boks, lenker og knapp overstyres i media-regelen", () => {
+  const { html } = byggEndretTimeEpost(grunn);
+  const media = html.match(/@media \(prefers-color-scheme:dark\)\{[\s\S]*?\}\}/)?.[0] ?? "";
+  assert.match(media, /\.flat\{background:#141513!important/);
+  assert.match(media, /a\.lnk\{color:#faf8f3!important/);
+  assert.match(media, /\.btn\{background:#faf8f3!important/);
+  assert.match(media, /a\.btna\{color:#141413!important/);
+  assert.match(html, /class="flat"/);
+  assert.match(html, /class="btn"/);
+  assert.match(html, /class="lnk"/);
+});
+
+test("sted skilles med midtstilt prikk som i tegningen", () => {
+  assert.match(byggEndretTimeEpost(grunn).html, /Studio 1 · Borregaard GK/);
+});

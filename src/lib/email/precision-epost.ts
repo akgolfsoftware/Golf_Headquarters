@@ -80,7 +80,7 @@ export function faktaRader(rader: readonly FaktaRad[], c: Farger = EPOST_LYS): s
 }
 
 export function boks(head: string, html: string, c: Farger = EPOST_LYS): string {
-  return `<tr><td style="padding:4px 0 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:${c.flat};border:1px solid ${c.line};border-radius:8px;padding:16px"><div class="t" style="font:600 12px/1 ${MONO};letter-spacing:.08em;color:${c.text};text-transform:uppercase;padding-bottom:8px">${esc(head)}</div><div class="b" style="font:400 15px/1.55 ${FONT};color:${c.body}">${html}</div></td></tr></table></td></tr>`;
+  return `<tr><td style="padding:4px 0 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="flat" style="background:${c.flat};border:1px solid ${c.line};border-radius:8px;padding:16px"><div class="t" style="font:600 12px/1 ${MONO};letter-spacing:.08em;color:${c.text};text-transform:uppercase;padding-bottom:8px">${esc(head)}</div><div class="b" style="font:400 15px/1.55 ${FONT};color:${c.body}">${html}</div></td></tr></table></td></tr>`;
 }
 
 /** Skallet rundt alle bookinge-postene. Lys som standard; mørk følger `prefers-color-scheme`. */
@@ -88,16 +88,16 @@ export function epostSkall(input: EpostSkall): string {
   const dark = input.dark ?? false;
   const c: Farger = dark ? EPOST_MORK : EPOST_LYS;
   const knapp = input.button
-    ? `<tr><td style="padding:8px 0 4px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-radius:8px;background:${c.btn}"><a href="${esc(input.button[1])}" style="display:inline-block;padding:14px 22px;font:600 16px/1 ${FONT};color:${c.btnText};text-decoration:none;border-radius:8px">${esc(input.button[0])}</a></td></tr></table></td></tr>`
+    ? `<tr><td style="padding:8px 0 4px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td class="btn" style="border-radius:8px;background:${c.btn}"><a class="btna" href="${esc(input.button[1])}" style="display:inline-block;padding:14px 22px;font:600 16px/1 ${FONT};color:${c.btnText};text-decoration:none;border-radius:8px">${esc(input.button[0])}</a></td></tr></table></td></tr>`
     : "";
   const sekundaer = input.secondary?.length
     ? `<tr><td style="padding:12px 0 0;font:400 15px/1.5 ${FONT}">${input.secondary
-        .map(([l, h]) => `<a href="${esc(h)}" style="color:${c.link};text-decoration:underline">${esc(l)}</a>`)
+        .map(([l, h]) => `<a class="lnk" href="${esc(h)}" style="color:${c.link};text-decoration:underline">${esc(l)}</a>`)
         .join(" &nbsp;·&nbsp; ")}</td></tr>`
     : "";
   const mork = dark
     ? ""
-    : `@media (prefers-color-scheme:dark){body,.bg{background:${EPOST_MORK.page}!important}.card{background:${EPOST_MORK.card}!important;border-color:${EPOST_MORK.line}!important}.t{color:${EPOST_MORK.text}!important}.b{color:${EPOST_MORK.body}!important}.m{color:${EPOST_MORK.muted}!important}}`;
+    : `@media (prefers-color-scheme:dark){body,.bg{background:${EPOST_MORK.page}!important}.card{background:${EPOST_MORK.card}!important;border-color:${EPOST_MORK.line}!important}.t{color:${EPOST_MORK.text}!important}.b{color:${EPOST_MORK.body}!important}.m{color:${EPOST_MORK.muted}!important}.flat{background:${EPOST_MORK.flat}!important;border-color:${EPOST_MORK.line}!important}a.lnk{color:${EPOST_MORK.link}!important}.btn{background:${EPOST_MORK.btn}!important}a.btna{color:${EPOST_MORK.btnText}!important}}`;
   return `<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>${esc(input.title)}</title>
 <style>body{margin:0;padding:0;-webkit-text-size-adjust:100%}table{border-collapse:collapse}a{color:${c.link}}@media (max-width:620px){.wrap{width:100%!important}.pad{padding:20px 16px!important}}${mork}</style></head>
 <body class="bg" style="margin:0;padding:0;background:${c.page}"><div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(input.pre)}</div>
