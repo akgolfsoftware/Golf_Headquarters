@@ -14,6 +14,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
 function formatDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", {
+    timeZone: "UTC", // Booking lagres som Oslo-veggklokke.
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -23,6 +24,7 @@ function formatDato(d: Date): string {
 
 function formatTid(d: Date): string {
   return d.toLocaleTimeString("nb-NO", {
+    timeZone: "UTC",
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -41,7 +43,7 @@ function substituer(template: string, vars: Record<string, string>): string {
  */
 function tilHtml(body: string): string {
   const avsnitt = body.split(/\n\n+/).map((p) => {
-    let html = p.trim();
+    let html = p.trim().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/\n/g, "<br />");
     return `<p>${html}</p>`;
@@ -122,12 +124,13 @@ async function sendBooking(
 
   try {
     const klient = resendKlient();
-    await klient.emails.send({
+    const result = await klient.emails.send({
       from: FRA_EPOST,
       to: epost,
       subject,
       html: tilHtml(body),
     });
+    if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({
       context: "email.booking.resend",
@@ -148,13 +151,17 @@ export async function sendBookingReminder(bookingId: string) {
 
 export async function sendBookingCancellation(
   bookingId: string,
-  extra: { refundIssued?: boolean; isCreditBooking?: boolean } = {},
+  extra: { refundIssued?: boolean; isCreditBooking?: boolean; refundPending?: boolean; lateCancelNoRefund?: boolean } = {},
 ) {
   const refundLine = extra.isCreditBooking
     ? "Credit-en er ført tilbake til abonnementet ditt."
     : extra.refundIssued
       ? "Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager."
-      : "Avbestilt etter avbestillingsfristen — ingen refusjon.";
+      : extra.refundPending
+        ? "Refusjonen venter på behandling. Vi følger opp betalingen."
+        : extra.lateCancelNoRefund
+          ? "Avbestilt etter avbestillingsfristen — ingen refusjon."
+          : "Bookingen er avbestilt.";
   await sendBooking("booking-avbestilt", bookingId, { refundLine });
 }
 
