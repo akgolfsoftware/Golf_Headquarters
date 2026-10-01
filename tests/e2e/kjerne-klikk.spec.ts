@@ -16,13 +16,12 @@
  * Kan kjøres mot prod: CI=1 PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app
  */
 
-import { test, expect, type Page, type ConsoleMessage } from "@playwright/test";
+import { test, expect, type Page, type ConsoleMessage } from "./_test";
 import { config as loadEnv } from "dotenv";
 import {
   coachCredentials,
   playerCredentials,
-  dismissCookieBanner,
-  selectPasswordLogin,
+  loginWith as loggInn,
 } from "./_auth-helpers";
 
 loadEnv({ path: ".env.local" });
@@ -58,7 +57,7 @@ const AGENCYOS_KJERNE = [
   { navn: "Cockpit", url: "/admin/agencyos" },
   { navn: "Innboks", url: "/admin/innboks" },
   { navn: "Spillere (alle)", url: "/admin/spillere" },
-  { navn: "Turneringer", url: "/admin/tournaments" },
+  { navn: "Turneringer", url: "/admin/turnering" },
   { navn: "Bookinger", url: "/admin/bookinger" },
 ] as const;
 
@@ -71,32 +70,34 @@ function samleKonsollfeil(page: Page, ut: string[]): void {
   page.on("console", (msg: ConsoleMessage) => {
     if (msg.type() !== "error") return;
     const tekst = msg.text();
+    // The isolated browser deliberately blocks these two external analytics scripts.
+    if (process.env.LOCAL_E2E === "1" && msg.location().url.startsWith("https://va.vercel-scripts.com/") && /Failed to load resource/.test(tekst)) return;
     if (IGNORERT_KONSOLL.some((r) => r.test(tekst))) return;
     if (KJENTE_FEIL.some((r) => r.test(tekst))) return;
-    ut.push(tekst);
+    ut.push(`${msg.location().url}: ${tekst}`);
   });
   page.on("pageerror", (err) => {
     if (KJENTE_FEIL.some((r) => r.test(err.message))) return;
-    ut.push(`pageerror: ${err.message}`);
+    ut.push(`pageerror at ${page.url()}: ${err.message}`);
   });
 }
 
-async function loggInn(page: Page, email: string, password: string): Promise<void> {
-  await page.goto("/auth/login");
-  await selectPasswordLogin(page);
-  await page.locator('input[type="email"]').fill(email);
-  await page.locator('input[type="password"]').fill(password);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL(/\/(portal|admin|auth\/etter-innlogging)/, { timeout: 30_000 });
-  await dismissCookieBanner(page);
-}
 
 async function sveipSkjermer(
   page: Page,
   skjermer: readonly { navn: string; url: string }[],
 ): Promise<void> {
   for (const skjerm of skjermer) {
-    const res = await page.goto(skjerm.url, { waitUntil: "domcontentloaded" });
+    const res = await page.goto(skjerm.url, { waitUntil: "load" });
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    if (skjerm.url === "/portal/planlegge/workbench") {
+      // The inspector reads its content after hydration. Finish that read
+      // before a full document navigation aborts the in-flight server action.
+      await expect(page.getByText("Henter driller…", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Henter…", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Kunne ikke hente økt", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Kunne ikke hente øktinnhold.", { exact: true })).toHaveCount(0);
+    }
     const status = res?.status() ?? 0;
     expect(
       status === 200 || (status >= 300 && status < 400),
@@ -143,10 +144,12 @@ for (const bredde of BREDDER) {
       await loggInn(page, creds!.email, creds!.password);
       await page.goto("/admin/spillere", { waitUntil: "domcontentloaded" });
 
-      const lenke = page.locator('a[href^="/admin/spillere/"]').first();
-      if (await lenke.isVisible().catch(() => false)) {
+      const lenke = page.locator('a[href^="/admin/spillere/"]:not([href$="/ny"])').first();
+      await expect(lenke).toBeVisible();
+      {
         await lenke.click();
         await page.waitForURL(/\/admin\/spillere\/[^/]+/, { timeout: 20_000 });
+        await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
         await expect(page.locator("body")).not.toContainText(
           /Application error|Internal Server Error/i,
         );
@@ -174,7 +177,7 @@ for (const bredde of BREDDER) {
         .toEqual([]);
     });
 
-    test(`Analysere-fanene kan klikkes (${bredde.navn})`, async ({ page }) => {
+    test(`Analyselenkene åpner riktig side (${bredde.navn})`, async ({ page }) => {
       const creds = playerCredentials();
       test.skip(!creds, "Krever E2E_TEST_USER_EMAIL/PASSWORD");
 
@@ -184,13 +187,13 @@ for (const bredde of BREDDER) {
       await loggInn(page, creds!.email, creds!.password);
       await page.goto("/portal/analysere", { waitUntil: "domcontentloaded" });
 
-      for (const fane of ["Statistikk", "Trening", "TrackMan", "Tester"]) {
-        const knapp = page.getByRole("button", { name: fane, exact: false }).first();
-        if (!(await knapp.isVisible().catch(() => false))) continue;
-        await knapp.click();
-        await expect(page.locator("body")).not.toContainText(
-          /Application error|Internal Server Error/i,
-        );
+      for (const href of ["/portal/analysere/skill-map", "/portal/mal/runder", "/portal/analysere/trackman", "/portal/tren/tester"]) {
+        await page.goto("/portal/analysere");
+        const lenke = page.locator(`a[href="${href}"]`).filter({ visible: true }).first();
+        await expect(lenke).toBeVisible();
+        await lenke.click();
+        await expect(page).toHaveURL(new RegExp(href.replaceAll("/", "\\/") + "(?:[/?].*)?$"));
+        await expect(page.locator("body")).not.toContainText(/Application error|Internal Server Error/i);
       }
 
       expect(feil, `Konsollfeil i Analysere-fanene (${bredde.navn}):\n${feil.join("\n")}`)

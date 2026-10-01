@@ -86,15 +86,59 @@ try {
       await prisma.user.update({ where: { id: userId }, data: { primaryCoachId: result[`LOCAL_${coach}_ID`] } });
     }
   }
+  for (const slug of ['team-norway', 'wang-toppidrett']) {
+    const group = await prisma.group.upsert({
+      where: { slug }, create: { id: `${PREFIX}-${slug}`, slug, name: `Syntetisk ${slug}`, managedByAkGolf: false }, update: {},
+    });
+    if (!group.id.startsWith(PREFIX)) throw new Error('Unexpected local group owner');
+    for (const [key, role] of [['COACH_A', 'COACH'], ['P01', 'PLAYER']] as const) {
+      await prisma.groupMember.upsert({
+        where: { groupId_userId: { groupId: group.id, userId: result[`LOCAL_${key}_ID`] } },
+        create: { groupId: group.id, userId: result[`LOCAL_${key}_ID`], role }, update: { endedAt: null },
+      });
+    }
+  }
+  for (let weekday = 0; weekday < 7; weekday++) {
+    await prisma.coachAvailability.upsert({
+      where: { id: `${PREFIX}-availability-${weekday}` },
+      create: { id: `${PREFIX}-availability-${weekday}`, coachId: result.LOCAL_COACH_A_ID, weekday, startTime: '10:00', endTime: '14:00' }, update: { active: true },
+    });
+  }
+  await prisma.serviceType.upsert({
+    where: { id: `${PREFIX}-service` },
+    create: { id: `${PREFIX}-service`, slug: `${PREFIX}-coaching`, name: 'Lokal syntetisk coaching', priceOre: 10000, durationMin: 30, coachUserId: result.LOCAL_COACH_A_ID },
+    update: { active: true },
+  });
+  await prisma.location.upsert({
+    where: { id: `${PREFIX}-location` },
+    create: { id: `${PREFIX}-location`, name: 'Gamle Fredrikstad GK', address: 'Syntetisk adresse' }, update: { active: true, name: 'Gamle Fredrikstad GK' },
+  });
+  await prisma.subscription.upsert({
+    where: { userId_kind: { userId: result.LOCAL_P01_ID, kind: 'COACHING' } },
+    create: { userId: result.LOCAL_P01_ID, kind: 'COACHING', plan: 'PERFORMANCE_PRO', tier: 'PRO', monthlyCredits: 4, creditsRemaining: 4, currentPeriodEnd: new Date(Date.now() + 30 * 86400000) },
+    update: { status: 'ACTIVE', monthlyCredits: 4, creditsRemaining: 4, currentPeriodEnd: new Date(Date.now() + 30 * 86400000) },
+  });
+  await prisma.trackManSession.upsert({
+    where: { id: `${PREFIX}-trackman` },
+    create: { id: `${PREFIX}-trackman`, userId: result.LOCAL_P01_ID, recordedAt: new Date(), source: 'local-synthetic', shotCount: 3 },
+    update: { recordedAt: new Date() },
+  });
+  for (let n = 1; n <= 3; n++) {
+    await prisma.trackManShot.upsert({
+      where: { id: `${PREFIX}-shot-${n}` },
+      create: { id: `${PREFIX}-shot-${n}`, sessionId: `${PREFIX}-trackman`, shotNumber: n, recordedAt: new Date(), club: '7 Iron', carryDistance: 130 + n, totalDistance: 140 + n, side: n - 2 }, update: {},
+    });
+  }
+  const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Oslo' }).format(new Date());
   const sessionId = `${PREFIX}-p01-session`;
   await prisma.workbenchSession.upsert({
     where: { id: sessionId },
     create: {
       id: sessionId, playerId: result.LOCAL_P01_ID, coachId: result.LOCAL_COACH_A_ID,
-      date: new Date('2026-10-01T00:00:00Z'), startMinute: 540, durationMinutes: 45,
+      date: new Date(`${today}T00:00:00Z`), startMinute: 540, durationMinutes: 45,
       title: 'Lokal syntetisk slagøkt', pyramid: 'SLAG', status: 'PUBLISHED',
       createdBy: 'COACH', publishedBy: result.LOCAL_COACH_A_ID, publishedAt: new Date(),
-    }, update: {},
+    }, update: { date: new Date(`${today}T00:00:00Z`), status: 'PUBLISHED' },
   });
   result.LOCAL_P01_SESSION_ID = sessionId;
   writeFileSync(credentialsPath, Object.entries(result).map(([key, value]) => `${key}=${JSON.stringify(value)}`).join('\n') + '\n', { mode: 0o600 });

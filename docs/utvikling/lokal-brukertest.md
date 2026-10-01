@@ -1,6 +1,6 @@
 # Isolert brukertest på Mac
 
-Denne riggen følger Anders' forhåndsgodkjenning for lokal testing 21.09.2026. Den bruker bare syntetiske personer og egen Supabase-identitet `ak-hq-brukere-20261001`. Etter samordning og automatisk opprydding er den gjenopprettet i arbeidskopien `.claude/worktrees/codex-lokal-brukertest`. Koblingsarbeidet 01.10.2026 ligger på `codex/design-data-journeys-2026-10-01`. Miljøfilene er fortsatt separate og ignorerte.
+Denne riggen følger Anders' forhåndsgodkjenning for lokal testing 21.09.2026. Den bruker bare syntetiske personer og egen Supabase-identitet `ak-hq-brukere-20261001`. Etter samordning og automatisk opprydding er den gjenopprettet i arbeidskopien `.claude/worktrees/codex-lokal-brukertest`. Videre testing 01.10.2026 ligger på `codex/sju-testkontoer-2026-10-01`, fra main `c86b0408d`. Miljøfilene er fortsatt separate og ignorerte.
 
 ## Mål og vern
 
@@ -65,3 +65,23 @@ Den lokale standardmalen sender innloggingslenke uten seks-sifret kode. Kodetest
 Se [kontrollrapporten](../design-audit/brukere-funksjonskontroll-2026-10-01.md) for resultater og avgrensning.
 
 Senere samme dag ble riggen utvidet med trener → spiller → Live → oppsummering og faktiske lagringsprøver. Se [koblingskontrollen](../design-audit/design-lagring-kontroll-2026-10-01.md) og [overleveringsgrunnlaget](../planer/design-lagring-brukerreiser-2026-10-01.md).
+
+
+## Sju kontoer for de tidligere utelatte E2E-prøvene
+
+De 64 kontobetingede kjøringene var 32 prøvevarianter i to nettlesermotorer, ikke 64 kontoer. `seed` gjenbruker fire spillere, to trenere og én foresatt. P01 er hovedspiller med publisert økt, syntetiske TrackMan-slag, coachingpakke med fire timer og medlemskap i WANG og Team Norway. COACH_A har trenerrolle i de to gruppene. P02 mangler coach-relasjon, P03 tilhører COACH_B, P04 mangler foreldresamtykke og PARENT mangler godkjent barn-relasjon.
+
+`seed` tilbakestiller P01 sin syntetiske saldo til fire og dagens faste økt til publisert. Ikke kjør seed samtidig med en skrivende brukerreise. Den lager også syntetisk tjeneste, teststed og ledige coachingvinduer. Ingen kortbetaling eller ekte e-post sendes.
+
+Etter `seed` og mens `dev` kjører:
+
+```sh
+node scripts/local-users-run.mjs e2e
+node scripts/local-users-run.mjs users
+```
+
+`e2e` kobler P01 og COACH_A til prøvenes vanlige innlogging og P02 til testen av en spiller uten coach-relasjon. Kontoene finnes bare i den ignorerte miljøfilen. Manifestet `tests/local-users/e2e-cases.json` velger de opprinnelige 32 variantene, samt rettet Workbench-, tjenestevalg- og full credit-booking-prøve: 35 varianter, 70 kjøringer i Chromium og WebKit. Manglende kontoer eller en utelatt prøve gjør lokal kontroll rød. Produksjonens offentlige kontroll kan fortsatt utelate prøvene uten testkontoer.
+
+Den lokale kjøreren avviser appens vanlige `.env`-filer og leverandørinnstillinger i testkonfigurasjonen. `BOOKING_PUBLIC` åpnes bare i den kontrollerte lokale prosessen. Nettleseren stopper eksterne nettadresser. De to bevisst blokkerte Vercel-analyseskriptene regnes ikke som appfeil i denne lokale kontrollen; andre konsollfeil kontrolleres fortsatt. Ingen tilgangsvakter slås av.
+
+Den fullstendige credit-prøven bruker appens innlogging og knapper, leser faktisk lagret booking og saldo fra den lokale databasen og avbestiller. Stripe-kortbetaling er en separat integrasjonsprøve og inngår ikke i disse 70.

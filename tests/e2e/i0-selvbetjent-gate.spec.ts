@@ -12,13 +12,11 @@
  * seedet av scripts/seed-screentest-coach.ts). Uten begge: testen hoppes over.
  */
 
-import "../../scripts/_env";
 import { readFileSync } from "node:fs";
-import { test, expect } from "@playwright/test";
-import { selectPasswordLogin } from "./_auth-helpers";
+import { test, expect } from "./_test";
+import { coachCredentials, loginAsCoach } from "./_auth-helpers";
 
-const COACH_EMAIL = "coachtest@akgolf.test";
-const COACH_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+const coach = coachCredentials();
 
 // Skrevet av scripts/seed-platform-only-player.ts — unngår å importere den
 // genererte Prisma-klienten direkte i en Playwright-spec (transformen klarer
@@ -26,6 +24,7 @@ const COACH_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
 const FIXTURE_PATH = "tmp/e2e-fixtures.json";
 
 function finnSelvbetjentSpillerId(): string | null {
+  if (process.env.E2E_UNCOACHED_PLAYER_ID) return process.env.E2E_UNCOACHED_PLAYER_ID;
   try {
     const raw = readFileSync(FIXTURE_PATH, "utf-8");
     const data = JSON.parse(raw) as { selvbetjentSpillerId?: string };
@@ -46,7 +45,7 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
     page,
   }) => {
     test.skip(
-      !COACH_PASSWORD,
+      !coach,
       "Krever SCREENTEST_PASSWORD i .env.local (seedet coach: coachtest@akgolf.test)",
     );
     test.skip(
@@ -55,12 +54,7 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
     );
 
     // Logg inn som coach.
-    await page.goto("/auth/login");
-    await selectPasswordLogin(page);
-    await page.locator('input[type="email"]').fill(COACH_EMAIL);
-    await page.locator('input[type="password"]').fill(COACH_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/admin/, { timeout: 15_000 });
+    await loginAsCoach(page);
 
     const gatedeRuter = [
       `/admin/spillere/${selvbetjentId}`,
@@ -70,7 +64,10 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
 
     for (const rute of gatedeRuter) {
       const respons = await page.goto(rute);
-      expect(respons?.status(), `${rute} skal svare 404`).toBe(404);
+      // Next streams not-found pages with HTTP 200 after headers were sent.
+      expect([200, 404]).toContain(respons?.status());
+      await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toBeVisible();
+      await expect(page.getByText("Testspiller 02", { exact: true })).toHaveCount(0);
       await expect(
         page.getByText("Denne siden finnes ikke"),
         `${rute} skal vise AgencyOS' 404-side, ikke spillerdata`,
@@ -79,17 +76,13 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
   });
 
   test("selvbetjent spiller vises ikke i stall-lista", async ({ page }) => {
-    test.skip(!COACH_PASSWORD, "Krever SCREENTEST_PASSWORD i .env.local");
+    test.skip(!coach, "Krever SCREENTEST_PASSWORD i .env.local");
     test.skip(!selvbetjentId, "Krever seedet selvbetjent testspiller");
 
-    await page.goto("/auth/login");
-    await selectPasswordLogin(page);
-    await page.locator('input[type="email"]').fill(COACH_EMAIL);
-    await page.locator('input[type="password"]').fill(COACH_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/admin/, { timeout: 15_000 });
+    await loginAsCoach(page);
 
     await page.goto("/admin/spillere");
-    await expect(page.getByText("Selvbetjent Testspiller")).toHaveCount(0);
+    await expect(page.locator('a[href^="/admin/spillere/"]:not([href$="/ny"])').first()).toBeVisible();
+    await expect(page.locator(`a[href*="${selvbetjentId}"]`)).toHaveCount(0);
   });
 });

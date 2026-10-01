@@ -14,8 +14,8 @@
  * men gjentas her for å dokumentere intensjonen.
  */
 
-import { test, expect } from "@playwright/test";
-import { selectPasswordLogin } from "./_auth-helpers";
+import { test, expect } from "./_test";
+import { loginAsPlayer } from "./_auth-helpers";
 
 const TEST_PLAYER_EMAIL = process.env.E2E_TEST_USER_EMAIL ?? "";
 const TEST_PLAYER_PASSWORD = process.env.E2E_TEST_USER_PASSWORD ?? "";
@@ -44,12 +44,7 @@ test.describe("Auth guard — PLAYER på /admin", () => {
     );
 
     // Login som PLAYER
-    await page.goto("/auth/login");
-    await selectPasswordLogin(page);
-    await page.locator('input[type="email"]').fill(TEST_PLAYER_EMAIL);
-    await page.locator('input[type="password"]').fill(TEST_PLAYER_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/portal/, { timeout: 15_000 });
+    await loginAsPlayer(page);
 
     // Prøv å åpne admin
     for (const route of ADMIN_ROUTES) {

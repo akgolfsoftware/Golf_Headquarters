@@ -10,7 +10,7 @@
  * manuelt eller når test-DB + Stripe-mock er konfigurert.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
 
 test.describe("Drop-in booking", () => {
   test("/booking viser tilgjengelig bookingvei", async ({ page }) => {
@@ -24,16 +24,22 @@ test.describe("Drop-in booking", () => {
     }
   });
 
-  test("Klikk på service navigerer til service-side", async ({ page }) => {
+  test("Tjenestevalg åpner ledige tider", async ({ page }) => {
     await page.goto("/booking");
-    // Finn første lenke som peker til /booking/<slug>
-    const serviceLink = page.locator('a[href^="/booking/"]').first();
-    const hasService = (await serviceLink.count()) > 0;
-    test.skip(!hasService, "Ingen service-lenker funnet (tomt DB-seed)");
-
-    const href = await serviceLink.getAttribute("href");
-    await serviceLink.click();
-    await expect(page).toHaveURL(new RegExp(href ?? "/booking/"));
+    const external = page.getByRole("link", { name: "Åpne bookingkalender" });
+    if (await external.count()) {
+      // A deliberately paused deployment exposes the external booking path.
+      expect(process.env.LOCAL_E2E).not.toBe("1");
+      await expect(external).toHaveAttribute("href", /^https:\/\//);
+      return;
+    }
+    const service = page.getByRole("group", { name: "Velg tjeneste", exact: true }).getByRole("button").first();
+    await expect(service).toBeVisible();
+    await service.click();
+    await expect(service).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("heading", { name: "Velg tid", exact: true })).toBeVisible();
+    await expect(page.getByText("Henter ledige tider …", { exact: true })).toBeHidden();
+    await expect(page.getByText(/Klarte ikke hente ledige tider/)).toHaveCount(0);
   });
 
   test("Booking-kvittering-side returnerer 200 eller 404 (ikke 500)", async ({ request }) => {

@@ -92,3 +92,8 @@ Første avgrensede testjobb er rettet lokalt: de tre røde innloggingsprøvene f
 ## Lanseringsbeslutningen
 
 Lansering kan anbefales når alle P0-punkter er lukket, avklart produktomfang er gjennomgått uten ukjente kritiske handlinger, og alle reiser har riktig funksjon, tilgang, lagring, feilbehandling og designbevis. Et område kan bare flyttes til senere ved en uttrykkelig omfangsbeslutning fra Anders. Godkjenning av planen er ikke automatisk godkjenning av databaseendringer, tilgangsendringer eller produksjonspublisering.
+
+
+## Oppfølging av utelatte brukerprøver
+
+Se [kontrollen med sju testkontoer](../design-audit/sju-testkontoer-2026-10-01.md) for arbeidet etter produksjonsmålingen over. De 64 kontobetingede kjøringene betyr 32 prøvevarianter i to nettlesere. Kontoer og testdata gjenbrukes i et isolert lokalt miljø, med egne negative tilgangsprøver. L11 kan først lukkes når også øvrige kritiske reiser og produksjonsavhengigheter er kontrollert; lokal credit-booking erstatter ikke Stripe-prøven i L05.
