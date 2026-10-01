@@ -12,6 +12,8 @@
 
 import "server-only";
 import { ukenummer } from "@/lib/uke-helpers";
+import { loadTrainingResults, resultGolfCount } from "@/lib/portal-analyse/training-results";
+import { readDrillResults } from "@/lib/portal-live/training-result";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { weekPlanProgress } from "@/lib/portal/week-progress";
 import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
@@ -207,7 +209,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
   await assertCanViewPlayerData(userId);
   const [logs, workbench] = await Promise.all([
     prisma.drillLogV2.findMany({
-      where: { loggedBy: userId },
+      where: { loggedBy: userId, drill: { pyramide: { not: "FYS" } } },
       orderBy: { loggedAt: "desc" },
       take: limit,
       select: {
@@ -231,7 +233,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
       },
       orderBy: { updatedAt: "desc" },
       take: limit,
-      select: { id: true, title: true, updatedAt: true },
+      select: { id: true, title: true, updatedAt: true, liveSnapshot: true },
     }),
   ]);
   const counts = workbench.length === 0 ? [] : await prisma.sessionBallLog.groupBy({
@@ -255,7 +257,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
       drillName: "Gjennomført økt",
       sessionTitle: session.title,
       loggedAt: session.updatedAt,
-      repsTotal: countBySession.get(session.id) ?? 0,
+      repsTotal: resultGolfCount(readDrillResults(session.liveSnapshot)) ?? countBySession.get(session.id) ?? 0,
       successRate: null,
       href: `/portal/live/${session.id}/summary`,
     })),
@@ -407,11 +409,13 @@ export async function getStatsSnapshot(userId: string, naa: Date = new Date()): 
     loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: weekStart, lte: now } } }),
     prisma.drillLogV2.findMany({
-      where: { loggedBy: userId, loggedAt: { gte: todayStart, lt: todayEnd } },
+      where: { loggedBy: userId, loggedAt: { gte: todayStart, lt: todayEnd }, drill: { pyramide: { not: "FYS" } } },
       select: { repsTotal: true },
     }),
   ]);
-  const todayIds = todaySessions.map(session => session.id);
+  const todayResults = await loadTrainingResults(todaySessions.filter(s => s.model === "wb"));
+  const detailed = new Map(todayResults.map(r => [r.sessionId, resultGolfCount(r.results)]).filter((entry): entry is [string, number] => entry[1] != null));
+  const todayIds = todaySessions.filter(s => s.model !== "v2" && !detailed.has(s.id)).map(session => session.id);
   const ballCounts = todayIds.length === 0 ? null : await prisma.sessionBallLog.aggregate({
     where: { planSessionId: { in: todayIds } },
     _sum: { count: true },
@@ -421,7 +425,7 @@ export async function getStatsSnapshot(userId: string, naa: Date = new Date()): 
     (sum, session) => sum + session.durationMin,
     0,
   );
-  const repsToday = todayLogs.reduce((sum, log) => sum + log.repsTotal, 0) + (ballCounts?._sum.count ?? 0);
+  const repsToday = todayLogs.reduce((sum, log) => sum + log.repsTotal, 0) + (ballCounts?._sum.count ?? 0) + [...detailed.values()].reduce((sum, n) => sum + n, 0);
 
   return {
     sessionsToday: todaySessions.length,

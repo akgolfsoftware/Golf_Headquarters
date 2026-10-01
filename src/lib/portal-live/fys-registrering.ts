@@ -1,7 +1,7 @@
 import type { DrillRepState, LiveV2Drill, LiveV2DrillLog } from "@/components/portal/live/types";
 
 export type FysRegistrering =
-  | { type: "styrke"; sett: { vekt: number; reps: number }[]; notat: string }
+  | { type: "styrke"; sett: { vekt: number; reps: number; rir?: number }[]; notat: string }
   | { type: "kondisjon"; minutter: number; sone: string; notat: string }
   | { type: "hold"; sekunder: number; notat: string }
   | { type: "reps"; repetisjoner: number; notat: string };
@@ -14,7 +14,7 @@ export function fysLoggState(reg: FysRegistrering): DrillRepState {
   let verdi: number;
   switch (reg.type) {
     case "styrke":
-      tekst = `Styrke: ${reg.sett.map(s => `${kg(s.vekt)} kg × ${s.reps}`).join(" · ")}`;
+      tekst = `Styrke: ${reg.sett.map(s => `${kg(s.vekt)} kg × ${s.reps}${s.rir === undefined ? "" : ` (RIR ${s.rir})`}`).join(" · ")}`;
       verdi = reg.sett.reduce((sum, s) => sum + s.reps, 0);
       break;
     case "kondisjon":
@@ -42,14 +42,14 @@ export function lesFysRegistrering(notes: string | null | undefined): FysRegistr
   const reps = /^Bevegelighet: (\d+) reps$/.exec(kjerne);
   if (reps && Number(reps[1]) <= 200) return { type: "reps", repetisjoner: Number(reps[1]), notat };
   if (kjerne.startsWith("Styrke: ")) {
-    const sett: { vekt: number; reps: number }[] = [];
+    const sett: { vekt: number; reps: number; rir?: number }[] = [];
     for (const rad of kjerne.slice(8).split(" · ")) {
-      const treff = /^(\d+(?:[,.]\d+)?) kg × (\d+)$/.exec(rad);
+      const treff = /^(\d+(?:[,.]\d+)?) kg × (\d+)(?: \(RIR ([0-4])\))?$/.exec(rad);
       if (!treff) return null;
       const vekt = Number(treff[1].replace(",", "."));
       const antall = Number(treff[2]);
       if (!Number.isFinite(vekt) || !Number.isSafeInteger(antall) || antall < 1) return null;
-      sett.push({ vekt, reps: antall });
+      sett.push({ vekt, reps: antall, ...(treff[3] !== undefined ? { rir: Number(treff[3]) } : {}) });
     }
     return { type: "styrke", sett, notat };
   }
@@ -58,7 +58,7 @@ export function lesFysRegistrering(notes: string | null | undefined): FysRegistr
 
 export function fysVisningsrader(reg: FysRegistrering): { label: string; verdi: string }[] {
   switch (reg.type) {
-    case "styrke": return reg.sett.map((s, i) => ({ label: `Sett ${i + 1}`, verdi: `${kg(s.vekt)} kg × ${s.reps}` }));
+    case "styrke": return reg.sett.map((s, i) => ({ label: `Sett ${i + 1}`, verdi: `${kg(s.vekt)} kg × ${s.reps}${s.rir === undefined ? "" : ` (RIR ${s.rir})`}` }));
     case "kondisjon": return [{ label: "Registrert varighet", verdi: `${reg.minutter} min` }, { label: "Pulssone", verdi: reg.sone }];
     case "hold": return [{ label: "Hold", verdi: `${reg.sekunder} sek` }];
     case "reps": return [{ label: "Repetisjoner", verdi: String(reg.repetisjoner) }];

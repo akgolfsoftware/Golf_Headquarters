@@ -63,7 +63,7 @@ function tidTekst(min: number): string {
 function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   const deler: string[] = [];
   const golf = golfLoggTall(data.drills, data.existingLogs);
-  const totalReps = data.drills.some(d => d.pyramide === "FYS") ? golf.totalReps : data.totalReps;
+  const totalReps = data.logSource !== "tapper" && data.drills.some(d => d.pyramide === "FYS") ? golf.totalReps : data.totalReps;
   const min = Math.round(data.durationSec / 60);
   if (data.drills.length > 0) {
     deler.push(
@@ -128,7 +128,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
   const planVindu = Math.round((Date.parse(data.endTimeISO) - Date.parse(data.scheduledAtISO)) / 60_000);
   const planMinutter = planVindu > 0 ? planVindu : data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
   const { planReps, treff, totalReps: golfReps } = golfLoggTall(data.drills, data.existingLogs);
-  const totalReps = data.drills.some(d => d.pyramide === "FYS") ? golfReps : data.totalReps;
+  const totalReps = data.logSource !== "tapper" && data.drills.some(d => d.pyramide === "FYS") ? golfReps : data.totalReps;
   const harOvelser = !erTapper && data.drills.length > 0;
   const harTall = erTapper || harOvelser || totalReps > 0 || data.durationSec > 0;
   const hoved = harOvelser

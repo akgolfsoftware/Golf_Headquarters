@@ -7,6 +7,8 @@
  * sikkerhetsgjennomgang 2026-07-14 — se assertCanViewPlayerData).
  */
 
+import { loadPhysicalResults, loadTrainingResults, resultGolfCount } from "@/lib/portal-analyse/training-results";
+import type { DrillResult } from "@/lib/portal-live/training-result";
 import { prisma } from "@/lib/prisma";
 import type {
   PyramidArea,
@@ -49,6 +51,8 @@ function startOfPeriod(period: "7d" | "30d" | "90d" | "1y" | "all"): Date | null
 // ── Types ───────────────────────────────────────────────────────────────────
 
 export type TrainingStats = {
+  physicalResults?: Awaited<ReturnType<typeof loadPhysicalResults>>;
+  results?: { sessionId: string; results: DrillResult[] }[];
   sessions: number;
   reps: number;
   minutes: number;
@@ -222,12 +226,16 @@ export async function getTrainingStats(
     where: { planSessionId: { in: sessions.map(session => session.id) } },
     _sum: { count: true },
   });
+  const [results, physicalResults] = await Promise.all([loadTrainingResults(sessions), loadPhysicalResults(userId, rangeStart, naa)]);
+  const resultsBySession = new Map(results.map(r => [r.sessionId, resultGolfCount(r.results)]));
   const ballsBySession = new Map(ballCounts.map(row => [row.planSessionId, row._sum.count ?? 0]));
 
   const minutes = sessions.reduce((sum, session) => sum + session.durationMin, 0);
 
-  const v2Reps = drills.reduce((sum, drill) => sum + (drill.repsTotal ?? 0), 0);
-  const wbReps = ballCounts.reduce((sum, row) => sum + (row._sum.count ?? 0), 0);
+  const v2Ids = new Set(sessions.filter(s => s.model === "v2").map(s => s.id));
+  const v2Reps = drills.filter(d => d.drill.pyramide !== "FYS" && v2Ids.has(d.drill.sessionId)).reduce((sum, drill) => sum + (drill.repsTotal ?? 0), 0);
+  // Detaljresultat og slagteller er alternative målinger, aldri to tillegg.
+  const wbReps = sessions.filter(s => s.model !== "v2").reduce((sum, s) => sum + (resultsBySession.get(s.id) ?? ballsBySession.get(s.id) ?? 0), 0);
   const reps = v2Reps + wbReps;
 
   const byAxisAgg = new Map<PyramidArea, { minutes: number; sessions: Set<string> }>();
@@ -251,8 +259,8 @@ export async function getTrainingStats(
     date: session.startTime,
     durationMin: session.durationMin,
     pyramidArea: session.pyramidArea,
-    reps: drills.filter(drill => drill.drill?.sessionId === session.id)
-      .reduce((sum, drill) => sum + (drill.repsTotal ?? 0), ballsBySession.get(session.id) ?? 0),
+    reps: drills.filter(drill => drill.drill?.sessionId === session.id && drill.drill.pyramide !== "FYS")
+      .reduce((sum, drill) => sum + (drill.repsTotal ?? 0), session.model === "v2" ? 0 : resultsBySession.get(session.id) ?? ballsBySession.get(session.id) ?? 0),
   }));
 
   const analyseFra = from ?? new Date(naa.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -263,6 +271,8 @@ export async function getTrainingStats(
   }).catch(() => null);
 
   return {
+    results,
+    physicalResults,
     sessions: sessions.length,
     reps,
     minutes: Math.round(minutes),

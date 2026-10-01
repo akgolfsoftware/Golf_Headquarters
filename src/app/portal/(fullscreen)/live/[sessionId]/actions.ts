@@ -18,6 +18,9 @@ import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { beregnSRpe } from "@/lib/training/srpe";
+import { DrillResultSchema, FysResultSchema, readDrillResults, type DrillResult } from "@/lib/portal-live/training-result";
+import { golfLoggTall, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
+import { z } from "zod";
 import { summaryFieldUpdate } from "@/lib/portal-live/summary-field";
 
 export type StartSessionResult =
@@ -145,7 +148,7 @@ function mapDrill(drill: {
     description: drill.description,
     durationMinutes: drill.durationMinutes,
     actualDurationSec: drill.actualDurationSec,
-    plannedReps: drill.repetitions ?? 0,
+    plannedReps: drill.pyramide === "FYS" || drill.repType === "TID" || drill.repType === "SETT_REPS" ? 0 : drill.repetitions ?? drill.repAntall ?? 0,
     pyramide: drill.pyramide,
     lFase: drill.lFase,
     notes: drill.notes,
@@ -269,7 +272,13 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
     completed: session.status === "COMPLETED",
     studentName: student?.name ?? null,
     pyramide,
-    drills: session.drills.map(mapDrill),
+    drills: session.drills.map(drill => {
+      const source = session.status === "COMPLETED" ? readDrillResults(session.completedSummary).find(r => r.drillId === drill.id)?.source : null;
+      return mapDrill(source ? { ...drill, ...source.physicalDose, name: source.title, pyramide: source.pyramid,
+        durationMinutes: source.durationMinutes, repType: source.repType, repAntall: source.repAntall,
+        repMinutter: source.repMinutter, repSett: source.repSett, repReps: source.repReps,
+        repetitions: source.repetitions !== undefined ? source.repetitions : drill.repetitions } : drill);
+    }),
     existingLogs: existingLogs.map(mapLog),
     completedSummary: session.completedSummary,
   };
@@ -308,90 +317,66 @@ export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boo
   if (session.status !== "IN_PROGRESS") return { ok: false };
   if (!session.drills.some((drill) => drill.id === input.drillId)) throw new Error("Øvelsen tilhører ikke denne økta.");
   const counters = [input.repsTotal, input.repsWithoutBall, input.repsLowSpeed, input.repsAutomatic, input.repsHit];
-  if (counters.some((value) => !Number.isSafeInteger(value) || value < 0)) throw new Error("Kontroller antall registreringer.");
+  if (counters.some((value) => !Number.isSafeInteger(value) || value < 0 || value > 100000)) throw new Error("Kontroller antall registreringer.");
 
-  const successRate =
-    input.successRate ??
-    (input.repsTotal > 0 ? Math.round((input.repsHit / input.repsTotal) * 100) : 0);
-
-  // Hent forrige logg (om noen) FØR upsert — trengs for å regne delta til
-  // teknisk-oppgave-automatikken under, siden denne upserten SETTER de nye
-  // totalene (ikke øker dem), mens PositionTask.repsGjort* skal ØKES.
-  const existingLog = await prisma.drillLogV2.findFirst({
-    where: { drillId: input.drillId, loggedBy: user.id },
-    select: { id: true, repsWithoutBall: true, repsLowSpeed: true, repsHit: true },
-    orderBy: { loggedAt: "desc" },
-  });
-
-  await prisma.drillLogV2.upsert({
-    where: {
-      // Prisma støtter ikke unik sammensatt nøkkel uten @unique; vi bruker id-en
-      // via drillId + loggedBy lookup i stedet.
-      id: existingLog?.id ?? "__new__",
-    },
-    create: {
-      drillId: input.drillId,
-      loggedBy: user.id,
-      repsTotal: input.repsTotal,
-      repsWithoutBall: input.repsWithoutBall,
-      repsLowSpeed: input.repsLowSpeed,
-      repsAutomatic: input.repsAutomatic,
-      repsHit: input.repsHit,
-      successRate,
-      notes: input.notes ?? null,
-    },
-    update: {
-      repsTotal: input.repsTotal,
-      repsWithoutBall: input.repsWithoutBall,
-      repsLowSpeed: input.repsLowSpeed,
-      repsAutomatic: input.repsAutomatic,
-      repsHit: input.repsHit,
-      successRate,
-      notes: input.notes ?? null,
-      loggedAt: new Date(),
-    },
-  });
-
-  // Faktisk medgått tid på drillen (2026-07-27). Skrives kun oppover: en
-  // pause-og-fortsett-runde skal ikke kunne kutte tiden som alt er registrert,
-  // og en 0-verdi fra en avbrutt drill skal aldri overskrive ekte tid.
-  if (input.actualDurationSec !== undefined && input.actualDurationSec > 0) {
-    const sek = Math.min(Math.round(input.actualDurationSec), 12 * 60 * 60);
-    const forrige = await prisma.trainingDrillV2.findUnique({
-      where: { id: input.drillId },
-      select: { actualDurationSec: true },
-    });
-    if (sek > (forrige?.actualDurationSec ?? 0)) {
-      await prisma.trainingDrillV2.update({
-        where: { id: input.drillId },
-        data: { actualDurationSec: sek },
-      });
+  const parsed = z.object({ successRate: z.number().int().min(0).max(100).optional(), notes: z.string().max(4000).optional(), actualDurationSec: z.number().int().min(0).max(43200).optional() }).safeParse(input);
+  if (!parsed.success) throw new Error("Ugyldig treningsresultat.");
+  const successRate = input.successRate ?? (input.repsTotal > 0 ? Math.round((input.repsHit / input.repsTotal) * 100) : 0);
+  if (successRate > 100) throw new Error("Kontroller antall treff.");
+  const saved = await prisma.$transaction(async tx => {
+    // Samme radlås som fullføring: siste resultat kan ikke lande etter sluttstatus.
+    const locked = await tx.$queryRaw<{ status: string; completedSummary: Prisma.JsonValue }[]>(Prisma.sql`SELECT status, "completedSummary" FROM training_sessions_v2 WHERE id = ${session.id} FOR UPDATE`);
+    if (locked[0]?.status !== "IN_PROGRESS") return false;
+    const drill = await tx.trainingDrillV2.findUniqueOrThrow({ where: { id: input.drillId }, select: { name: true, durationMinutes: true, exerciseId: true, repetitions: true, belastning: true,
+      fysTreningstype: true, fysSett: true, fysReps: true, fysVektKg: true, fysPauseSek: true,
+      fysVarighetMin: true, fysIntensitetsSone: true, fysDistanseM: true, fysBevegelighetType: true,
+      fysHoldSek: true, fysTempo: true, fysAktivitet: true, repType: true, repAntall: true, repMinutter: true, repSett: true, repReps: true, pyramide: true, positionTaskId: true, actualDurationSec: true, positionTask: { select: { updatedAt: true, position: { select: { plan: { select: { userId: true } } } } } } } });
+    if (drill.pyramide !== "FYS" && input.repsTotal !== input.repsWithoutBall + input.repsLowSpeed + input.repsAutomatic + input.repsHit) throw new Error("Antall må stemme med registreringene.");
+    const existing = await tx.drillLogV2.findFirst({ where: { drillId: input.drillId, loggedBy: user.id }, orderBy: { loggedAt: "desc" } });
+    const data = { repsTotal: input.repsTotal, repsWithoutBall: input.repsWithoutBall, repsLowSpeed: input.repsLowSpeed, repsAutomatic: input.repsAutomatic, repsHit: input.repsHit, successRate, notes: input.notes ?? null };
+    if (existing) await tx.drillLogV2.update({ where: { id: existing.id }, data: { ...data, loggedAt: new Date() } });
+    else await tx.drillLogV2.create({ data: { ...data, drillId: input.drillId, loggedBy: user.id } });
+    if (input.actualDurationSec != null && input.actualDurationSec > (drill.actualDurationSec ?? 0)) await tx.trainingDrillV2.update({ where: { id: input.drillId }, data: { actualDurationSec: input.actualDurationSec } });
+    if (drill.pyramide !== "FYS" && drill.positionTaskId && drill.positionTask?.position.plan.userId === user.id) {
+      await applyPositionTaskReps(drill.positionTaskId, {
+        dry: input.repsWithoutBall - (existing?.repsWithoutBall ?? 0),
+        lav: input.repsLowSpeed - (existing?.repsLowSpeed ?? 0),
+        full: input.repsAutomatic + input.repsHit - (existing?.repsAutomatic ?? 0) - (existing?.repsHit ?? 0),
+      }, user.id, { sessionV2Id: input.sessionId, belastning: drill.belastning ?? null }, tx);
     }
-  }
-
-  // Runde 2 (2026-07-14): drill koblet til en teknisk oppgave? Logg reps
-  // automatisk mot den — uten ball → dry, lav fart → lav, truffet → fullt.
-  // "Automatikk er viktig. Ingen må gjøre dobbelt arbeid." (Anders)
-  const drill = await prisma.trainingDrillV2.findUnique({
-    where: { id: input.drillId },
-    select: {
-      positionTaskId: true,
-      positionTask: { select: { position: { select: { plan: { select: { userId: true } } } } } },
-    },
-  });
-  if (drill?.positionTaskId && drill.positionTask?.position.plan.userId === user.id) {
-    const dryDelta = Math.max(0, input.repsWithoutBall - (existingLog?.repsWithoutBall ?? 0));
-    const lavDelta = Math.max(0, input.repsLowSpeed - (existingLog?.repsLowSpeed ?? 0));
-    const fullDelta = Math.max(0, input.repsHit - (existingLog?.repsHit ?? 0));
-    if (dryDelta > 0 || lavDelta > 0 || fullDelta > 0) {
-      await applyPositionTaskReps(
-        drill.positionTaskId,
-        { dry: dryDelta || undefined, lav: lavDelta || undefined, full: fullDelta || undefined },
-        user.id,
-        { sessionV2Id: input.sessionId },
-      );
+    const priorResults = readDrillResults(locked[0].completedSummary);
+    const oldResult = priorResults.find(r => r.drillId === input.drillId);
+    const fys = FysResultSchema.safeParse(lesFysRegistrering(input.notes));
+    const measured = drill.pyramide === "FYS" ? (fys.success ? fys.data : null) : {
+      type: "golf" as const, repsWithoutBall: input.repsWithoutBall, repsLowSpeed: input.repsLowSpeed,
+      repsAutomatic: input.repsAutomatic, repsHit: input.repsHit, notat: input.notes ?? "",
+    };
+    if (!measured && oldResult) throw new Error("Den fysiske registreringen kunne ikke leses. Ingen data er endret.");
+    if (measured) {
+      const result: DrillResult = {
+        drillId: input.drillId, result: measured, actualDurationSec: input.actualDurationSec == null ? drill.actualDurationSec : Math.max(input.actualDurationSec, drill.actualDurationSec ?? 0),
+        loggedAt: new Date().toISOString(), source: oldResult?.source ?? {
+          repetitions: drill.repetitions ?? null, belastning: drill.belastning ?? null,
+          ...(drill.pyramide === "FYS" ? { physicalDose: {
+            fysTreningstype: drill.fysTreningstype ?? null, fysSett: drill.fysSett ?? null, fysReps: drill.fysReps ?? null,
+            fysVektKg: drill.fysVektKg ?? null, fysPauseSek: drill.fysPauseSek ?? null, fysVarighetMin: drill.fysVarighetMin ?? null,
+            fysIntensitetsSone: drill.fysIntensitetsSone ?? null, fysDistanseM: drill.fysDistanseM ?? null,
+            fysBevegelighetType: drill.fysBevegelighetType ?? null, fysHoldSek: drill.fysHoldSek ?? null,
+            fysTempo: drill.fysTempo ?? null, fysAktivitet: drill.fysAktivitet ?? null,
+          } } : {}),
+          pyramid: drill.pyramide, planRevision: session.updatedAt.toISOString(), sourceId: drill.positionTaskId ?? drill.exerciseId,
+          sourceRevision: drill.positionTask?.updatedAt.toISOString() ?? null, positionTaskId: drill.positionTaskId, exerciseId: drill.exerciseId,
+          title: drill.name, akFormel: null, repType: drill.repType, repAntall: drill.repAntall,
+          repMinutter: drill.repMinutter, repSett: drill.repSett, repReps: drill.repReps, durationMinutes: drill.durationMinutes,
+        },
+      };
+      if (!DrillResultSchema.safeParse(result).success) throw new Error("Treningsresultatets kilde eller enhet er ugyldig.");
+      const root = locked[0].completedSummary && typeof locked[0].completedSummary === "object" && !Array.isArray(locked[0].completedSummary) ? locked[0].completedSummary : {};
+      await tx.trainingSessionV2.update({ where: { id: session.id }, data: { completedSummary: { ...root, drillResults: [...priorResults.filter(r => r.drillId !== input.drillId), result] } } });
     }
-  }
+    return true;
+  });
+  if (!saved) return { ok: false };
 
   revalidatePath(`/portal/live/${input.sessionId}`);
   revalidatePath(`/portal/live/${input.sessionId}/active`);
@@ -416,12 +401,16 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   if (clientDurationSec != null && (!Number.isSafeInteger(clientDurationSec) || clientDurationSec < 0)) throw new Error("Ugyldig varighet.");
   if (completedDrillIds && (!Array.isArray(completedDrillIds) || completedDrillIds.some((id) => !session.drills.some((drill) => drill.id === id)))) throw new Error("Ugyldig øvelse i fullføringen.");
 
-  const logs = await prisma.drillLogV2.findMany({
+  await prisma.$transaction(async tx => {
+    const locked = await tx.$queryRaw<{ status: string; completedSummary: Prisma.JsonValue }[]>(Prisma.sql`SELECT status, "completedSummary" FROM training_sessions_v2 WHERE id = ${sessionId} FOR UPDATE`);
+    if (locked[0]?.status === "COMPLETED") return;
+    if (locked[0]?.status !== "IN_PROGRESS") throw new Error("Økta er ikke pågående.");
+  const logs = await tx.drillLogV2.findMany({
     where: { drill: { sessionId } },
     orderBy: { loggedAt: "asc" },
   });
 
-  const totalReps = logs.reduce((sum, l) => sum + l.repsTotal, 0);
+  const totalReps = golfLoggTall(session.drills.map(d => ({ id: d.id, pyramide: d.pyramide, plannedReps: d.repetitions ?? 0 })), logs).totalReps;
   const drillsCompleted = completedDrillIds ? new Set(completedDrillIds).size : new Set(logs.map((log) => log.drillId)).size;
   const startedAt = logs.length > 0 ? logs[0].loggedAt : session.startTime;
   const lastLoggedAt = logs.length > 0 ? logs[logs.length - 1].loggedAt : new Date();
@@ -432,10 +421,10 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   const durationSec = clientDurationSec ?? computedDurationSec;
 
   const existingSummary =
-    session.completedSummary &&
-    typeof session.completedSummary === "object" &&
-    !Array.isArray(session.completedSummary)
-      ? (session.completedSummary as Record<string, unknown>)
+    locked[0].completedSummary &&
+    typeof locked[0].completedSummary === "object" &&
+    !Array.isArray(locked[0].completedSummary)
+      ? locked[0].completedSummary
       : {};
 
   const summary = {
@@ -451,11 +440,11 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
     },
   };
 
-  const writes: Prisma.PrismaPromise<unknown>[] = [prisma.trainingSessionV2.update({
+  const writes: Prisma.PrismaPromise<unknown>[] = [tx.trainingSessionV2.update({
     where: { id: sessionId },
     data: {
       status: "COMPLETED",
-      completedSummary: summary as unknown as Prisma.InputJsonValue,
+      completedSummary: summary,
     },
   })];
 
@@ -472,11 +461,11 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
       repsHit: l.repsHit,
     }));
     writes.push(
-      prisma.trainingPlanSession.updateMany({
+      tx.trainingPlanSession.updateMany({
         where: { id: session.generertFraId },
         data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
       }),
-      prisma.trainingPlanSessionLog.upsert({
+      tx.trainingPlanSessionLog.upsert({
         where: { sessionId: session.generertFraId },
         create: {
           sessionId: session.generertFraId,
@@ -484,18 +473,20 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
           completedAt: new Date(),
           totalReps,
           rating: null,
-          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+          drillAggregates: drillAggregates,
         },
         update: {
           completedAt: new Date(),
           totalReps,
-          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+          drillAggregates: drillAggregates,
         },
       }),
     );
   }
 
-  await prisma.$transaction(writes);
+  await Promise.all(writes);
+
+  });
 
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`);
@@ -557,7 +548,7 @@ export async function lagreSpillerVurdering(
     session.completedSummary &&
     typeof session.completedSummary === "object" &&
     !Array.isArray(session.completedSummary)
-      ? (session.completedSummary as Record<string, unknown>)
+      ? session.completedSummary
       : {};
 
   // sRPE (Foster): økt-RPE × varighet i minutter = belastningspoeng.

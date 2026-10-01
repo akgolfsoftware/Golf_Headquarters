@@ -41,6 +41,10 @@ export type LiveV2Status = SessionStatusV2;
 
 /** Drill-view for live-økt (TrainingDrillV2). */
 export type LiveV2Drill = {
+  plannedDose?: import("@/lib/domain/workbench/ovelse-detaljer").OvelseDetaljer["mengde"] | null;
+  sourceId?: string | null;
+  positionTaskId?: string | null;
+  exerciseId?: string | null;
   id: string;
   /** 1-basert rekkefølge for visning. */
   index: number;
@@ -158,6 +162,7 @@ export type DrillRepState = {
 
 /** Sammendragsdata for fullført økt. */
 export type LiveV2Summary = LiveV2Session & {
+  trainingResults?: import("@/lib/portal-live/training-result").DrillResult[];
   logSource?: "tapper";
   durationSec: number;
   totalReps: number;

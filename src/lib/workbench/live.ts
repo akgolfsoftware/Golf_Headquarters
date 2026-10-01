@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DrillResultsSchema, readDrillResults, readCompletedDrillIds } from "@/lib/portal-live/training-result";
 
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 
@@ -14,6 +15,7 @@ const WorkbenchLiveSnapshotSchema = z.object({
   totalSec: z.number().int().min(0).max(604800),
   updatedAtISO: z.string(),
   drills: z.array(LiveDrillSchema).max(100),
+  drillResults: DrillResultsSchema.optional(),
   seriesTargets: z.record(z.string(), z.number().int().min(1).max(12)).optional(),
 });
 
@@ -77,4 +79,17 @@ export function parseWorkbenchLiveSnapshot(
       drillIds.map((drillId) => [drillId, parsed.data.seriesTargets?.[drillId] ?? 3]),
     ),
   };
+}
+
+/** Målte resultater beholdes; eldre kladder ryddes som før. */
+export function completedWorkbenchSnapshot(value: unknown) {
+  if (value && typeof value === "object" && "drillResults" in value && !DrillResultsSchema.safeParse(value.drillResults).success) {
+    throw new Error("Øktens resultater kunne ikke leses. Ingen resultater er slettet.");
+  }
+  const results = readDrillResults(value);
+  if (!results.length) return null;
+  const snapshot = WorkbenchLiveSnapshotSchema.safeParse(value);
+  return { drillResults: results, completedDrillIds: snapshot.success
+    ? snapshot.data.drills.filter(d => d.status === "done").map(d => d.drillId) : readCompletedDrillIds(value) };
+
 }

@@ -1,3 +1,5 @@
+import { readDrillResults } from "@/lib/portal-live/training-result";
+import { golfLoggTall } from "@/lib/portal-live/fys-registrering";
 import { completedLiveDrills } from "@/lib/portal-live/live-summary";
 import { prisma } from "@/lib/prisma";
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
@@ -72,6 +74,8 @@ export default async function LiveSummaryPage({
       publishedAt: wb.publishedAt,
       createdAt: wb.createdAt,
       drills: wb.drills,
+      liveSnapshot: wb.liveSnapshot,
+      actualMinutes: wb.actualMinutes,
     }, ballCounts);
     const naa = new Date();
     const { okt, href } = await loadNesteOkt(user.id, naa);
@@ -132,13 +136,13 @@ export default async function LiveSummaryPage({
       : null;
 
   // Beregn sammendrag fra loggene.
-  const totalReps = data.existingLogs.reduce((sum, l) => sum + l.repsTotal, 0);
+  const totalReps = golfLoggTall(data.drills, data.existingLogs).totalReps;
   const completedDrillIds = completedLiveDrills(data);
   const drillsCompleted = completedDrillIds.length;
   const pyramidSummary = data.drills.reduce<Record<PyramidArea, number>>(
     (acc, drill) => {
       const log = data.existingLogs.find((l) => l.drillId === drill.id);
-      acc[drill.pyramide] = (acc[drill.pyramide] ?? 0) + (log?.repsTotal ?? 0);
+      acc[drill.pyramide] = (acc[drill.pyramide] ?? 0) + (drill.pyramide === "FYS" ? 0 : log?.repsTotal ?? 0);
       return acc;
     },
     { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 },
@@ -159,6 +163,7 @@ export default async function LiveSummaryPage({
 
   const summaryData: LiveV2Summary = {
     ...data,
+    trainingResults: readDrillResults(data.completedSummary),
     durationSec,
     totalReps,
     drillsCompleted,

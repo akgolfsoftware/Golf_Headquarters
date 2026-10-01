@@ -15,6 +15,9 @@
  * at den kan vises sammen med golf uten å late som den har data den ikke har.
  */
 import "server-only";
+import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
+import { loadTrainingResults } from "./training-results";
+import type { DrillResult } from "@/lib/portal-live/training-result";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { miljoGruppe, type MiljoGruppe } from "@/lib/taxonomy";
@@ -29,6 +32,7 @@ export type TreningsKilde = "GOLF" | "FYS";
 
 /** Én gjennomført drill/øvelse. */
 export type TreningsRad = {
+  resultat?: DrillResult;
   id: string;
   /** Når økten startet (Oslo-korrekt vindusfiltrering skjer i spørringen). */
   dato: Date;
@@ -121,6 +125,9 @@ export async function hentTreningsHistorikk(input: {
     }),
   ]);
 
+  const visible = await loadVisibleSessionRange(userId, fra.toISOString(), til.toISOString());
+  const results = await loadTrainingResults(visible.filter(s => s.status === "COMPLETED"));
+  const resultMap = new Map(results.map(row => [row.sessionId, row.results]));
   const rader: TreningsRad[] = [];
 
   for (const okt of golfOkter) {
@@ -130,7 +137,8 @@ export async function hentTreningsHistorikk(input: {
       rader.push({
         id: d.id,
         dato: okt.startTime,
-        kilde: "GOLF",
+        kilde: d.pyramide === "FYS" ? "FYS" : "GOLF",
+        resultat: resultMap.get(okt.id)?.find(r => r.drillId === d.id),
         oktId: okt.id,
         oktTittel: okt.title,
         navn: d.name,
@@ -148,6 +156,15 @@ export async function hentTreningsHistorikk(input: {
     }
   }
 
+  for (const session of visible.filter(s => s.model === "wb" && s.status === "COMPLETED")) {
+    for (const result of resultMap.get(session.id) ?? []) {
+      const measured = result.actualDurationSec !== null;
+      rader.push({ id: result.drillId, dato: session.startTime, kilde: result.result.type === "golf" ? "GOLF" : "FYS", oktId: session.id, oktTittel: session.title,
+        navn: result.source.title, minutter: measured ? result.actualDurationSec! / 60 : result.source.durationMinutes, maalt: measured,
+        pyramide: result.source.pyramid, omraade: result.source.akFormel?.area ?? null,
+        miljo: result.source.akFormel?.belastning ?? null, miljoGruppe: null, csNivaa: null, lFase: null, resultat: result });
+    }
+  }
   for (const okt of fysOkter) {
     // Fys-planen eies via uke → plan; filtrer bort andres økter.
     if (okt.uke?.plan?.userId !== userId) continue;

@@ -28,11 +28,12 @@ import { HjelpTips } from "@/components/v2/hjelp";
 type FysModalitet = "styrke" | "kondisjon" | "bevegelighet";
 
 function fysModalitet(drill: LiveV2Drill): FysModalitet {
+  const type = drill.fysTreningstype?.toLowerCase();
   if (drill.fysBevegelighetType) return "bevegelighet";
-  if (drill.fysTreningstype === "kondisjon" || drill.fysAktivitet || drill.repType === "TID") {
+  if (type === "kondisjon" || drill.fysAktivitet || drill.repType === "TID") {
     return "kondisjon";
   }
-  if (drill.fysTreningstype === "bevegelighet") return "bevegelighet";
+  if (type === "bevegelighet") return "bevegelighet";
   return "styrke";
 }
 
