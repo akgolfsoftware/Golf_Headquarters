@@ -99,6 +99,7 @@ import {
   tekniskOppgaveToSourceItem,
   templateToSourceItem,
 } from "@/lib/workbench/sources-map";
+import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 
 // ─── Resultattype ───────────────────────────────────────────────────────────
@@ -154,7 +155,7 @@ async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null>
 /** Henter økten og verifiserer at innloggede har lov til å røre den. */
 async function hentMedTilgang(
   sessionId: string,
-  db: Pick<Prisma.TransactionClient, "workbenchSession"> = prisma,
+  db: Pick<Prisma.TransactionClient, "workbenchSession" | "group"> = prisma,
 ): Promise<{ row: WbRow; viewer: Viewer } | { feil: string }> {
   const row = await db.workbenchSession.findUnique({
     where: { id: sessionId },
@@ -163,6 +164,11 @@ async function hentMedTilgang(
   if (!row) return { feil: FINNES_IKKE };
   const viewer = await kreverTilgangTilSpiller(row.playerId);
   if (!viewer) return { feil: INGEN_TILGANG };
+  if (viewer.id === row.playerId && !canReadOwnGroupCopy(row)) return { feil: INGEN_TILGANG };
+  if (row.groupId && !row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(row.id)) {
+    // Originalen leses og endres bare gjennom gruppens egne, avgrensede handlinger.
+    return { feil: "Bruk gruppeplanen for gruppeoriginalen." };
+  }
   return { row, viewer };
 }
 
@@ -292,7 +298,7 @@ export async function loadWeek(params: {
     where: {
       playerId: params.playerId,
       date: { gte: fra, lte: til },
-      ...(erSpillerenSelv ? { hiddenByPlayer: false } : {}),
+      ...(erSpillerenSelv ? { hiddenByPlayer: false, AND: [ownGroupPublicationWhere()] } : {}),
     },
     include: { drills: true },
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
@@ -688,7 +694,7 @@ async function lastOkterIVindu(
     where: {
       playerId,
       date: { gte: fra, lte: til },
-      ...(erSpillerenSelv ? { hiddenByPlayer: false } : {}),
+      ...(erSpillerenSelv ? { hiddenByPlayer: false, AND: [ownGroupPublicationWhere()] } : {}),
     },
     include: { drills: true },
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
@@ -970,13 +976,15 @@ export async function loadSources(params: {
       take: 60,
     }),
     prisma.workbenchSession.findMany({
-      where: { playerId: params.playerId, isTemplate: true },
+      where: { playerId: params.playerId, isTemplate: true,
+        ...(viewer.id === params.playerId ? { hiddenByPlayer: false, AND: [ownGroupPublicationWhere()] } : {}) },
       include: { drills: true },
       orderBy: { updatedAt: "desc" },
       take: 20,
     }),
     prisma.workbenchSession.findMany({
-      where: { playerId: params.playerId, date: { gte: forrigeFra, lte: forrigeTil } },
+      where: { playerId: params.playerId, date: { gte: forrigeFra, lte: forrigeTil },
+        ...(viewer.id === params.playerId ? { hiddenByPlayer: false, AND: [ownGroupPublicationWhere()] } : {}) },
       include: { drills: true },
       orderBy: { date: "asc" },
       take: 20,
@@ -1285,7 +1293,7 @@ export async function createSessionFromSource(input: {
       where: { id: kilde.sessionId },
       include: { drills: true },
     });
-    if (!rad || rad.playerId !== parsed.data.playerId) {
+    if (!rad || rad.playerId !== parsed.data.playerId || (viewer.id === rad.playerId && !canReadOwnGroupCopy(rad))) {
       return { ok: false, error: "Fant ikke kilden." };
     }
     const kildeOkt = mapSession(rad);
@@ -1397,11 +1405,12 @@ export async function moveSession(input: {
   });
 
   await prisma.workbenchSession.update({
-    where: { id: parsed.data.sessionId },
+    where: { id: parsed.data.sessionId, updatedAt: treff.row.updatedAt },
     data: {
       date: tilDatoKolonne(flyttet.date),
       startMinute: flyttet.startMinute,
       durationMinutes: flyttet.durationMinutes,
+      ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}),
     },
   });
 
@@ -1422,6 +1431,7 @@ export async function publishSessions(
       for (const id of new Set(sessionIds)) {
         const treff = await hentMedTilgang(id, tx);
         if ("feil" in treff) throw new Error(treff.feil);
+        if (treff.row.groupId && treff.row.origin === "GROUP" && !treff.row.sourceGroupSessionId && treff.row.id.startsWith("wb-group-")) throw new Error("Bruk gruppepublisering.");
         const neste = publishSessionPure(mapSession(treff.row), {
           sessionId: id,
           publishedBy: treff.viewer.id,
@@ -1457,10 +1467,16 @@ export async function unpublishSession(
   const treff = await hentMedTilgang(sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
+  if (treff.row.groupId && treff.row.origin === "GROUP" && !treff.row.sourceGroupSessionId && treff.row.id.startsWith("wb-group-")) {
+    return { ok: false, error: "Bruk tilbaketrekking for gruppen." };
+  }
+  if (treff.row.status === "DRAFT") return { ok: true, data: mapSession(treff.row) };
+  if (treff.row.status !== "PUBLISHED") return { ok: false, error: "Bare publiserte økter kan trekkes tilbake." };
   const neste = unpublishSessionPure(mapSession(treff.row));
   await prisma.workbenchSession.update({
-    where: { id: sessionId },
-    data: { status: neste.status, publishedAt: null, publishedBy: null },
+    where: { id: sessionId, updatedAt: treff.row.updatedAt },
+    data: { status: neste.status, publishedAt: null, publishedBy: null,
+      ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}) },
   });
 
   return lagreOgHent(sessionId);
@@ -1487,11 +1503,28 @@ export async function addDrill(input: {
   });
 
   await prisma.$transaction(async (tx) => {
+    if (treff.row.sourceGroupSessionId) {
+      await tx.workbenchSession.update({ where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
+        data: { durationMinutes: neste.durationMinutes, localOverride: true } });
+      for (const d of neste.drills) {
+        // Behold eksisterende øvelsers identitet og eventuelle dose-/øvelseskoblinger.
+        if (treff.row.drills.some(existing => existing.id === d.id)) {
+          await tx.workbenchDrill.update({ where: { id: d.id }, data: { sortOrder: d.order } });
+        } else {
+          await tx.workbenchDrill.create({ data: { id: d.id, sessionId: input.sessionId,
+            title: d.title, description: d.description ?? null, durationMinutes: d.durationMinutes,
+            akFormel: akFormelTilJson(d.akFormel), techniqueFocus: d.techniqueFocus ?? null,
+            sourceId: d.sourceId ?? null, sortOrder: d.order } });
+        }
+      }
+      return;
+    }
     await tx.workbenchDrill.deleteMany({ where: { sessionId: input.sessionId } });
     await tx.workbenchSession.update({
-      where: { id: input.sessionId },
+      where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
       data: {
         durationMinutes: neste.durationMinutes,
+        ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}),
         drills: {
           create: neste.drills.map((d) => ({
             title: d.title,
@@ -1528,14 +1561,15 @@ export async function reorderDrills(input: {
     orderedDrillIds: parsed.data.orderedDrillIds,
   });
 
-  await prisma.$transaction(
-    neste.drills.map((d) =>
+  await prisma.$transaction([
+    ...(treff.row.sourceGroupSessionId ? [prisma.workbenchSession.update({ where: { id: treff.row.id, updatedAt: treff.row.updatedAt }, data: { localOverride: true } })] : []),
+    ...neste.drills.map((d) =>
       prisma.workbenchDrill.update({
         where: { id: d.id },
         data: { sortOrder: d.order },
       }),
     ),
-  );
+  ]);
 
   return lagreOgHent(parsed.data.sessionId);
 }
@@ -1556,6 +1590,7 @@ export async function removeDrill(input: {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   await prisma.$transaction([
+    ...(treff.row.sourceGroupSessionId ? [prisma.workbenchSession.update({ where: { id: treff.row.id, updatedAt: treff.row.updatedAt }, data: { localOverride: true } })] : []),
     prisma.workbenchDrill.delete({ where: { id: input.drillId } }),
     ...beholdt.map((d, i) =>
       prisma.workbenchDrill.update({
@@ -1575,7 +1610,16 @@ export async function deleteSession(
   const treff = await hentMedTilgang(sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
-  await prisma.workbenchSession.delete({ where: { id: sessionId } });
+  if (treff.row.groupId && !treff.row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(treff.row.id)) {
+    return { ok: false, error: "Trekk tilbake gruppeøkten fra gruppeplanen." };
+  }
+  if (treff.row.sourceGroupSessionId) {
+    // Et fravalg må ikke gjenopprettes ved neste gruppepublisering.
+    await prisma.workbenchSession.update({ where: { id: sessionId, updatedAt: treff.row.updatedAt },
+      data: { hiddenByPlayer: true, localOverride: true } });
+  } else {
+    await prisma.workbenchSession.delete({ where: { id: sessionId } });
+  }
   revalider(treff.row.playerId);
   return { ok: true, data: null };
 }
@@ -1630,6 +1674,7 @@ export async function updateSeriesSession(input: {
           blockType: mal.blockType,
           environment: mal.environment ?? null,
           notes: mal.notes ?? null,
+          ...(s.sourceGroupSessionId ? { localOverride: true } : {}),
         },
       }),
     ),
@@ -1666,7 +1711,16 @@ export async function deleteSessionSeries(input: {
   const gjeldende = mapSession(treff.row);
   const rammer = await serieMalRammer(gjeldende, parsed.data.policy);
 
-  await prisma.workbenchSession.deleteMany({ where: { id: { in: rammer.map((s) => s.id) } } });
+  await prisma.$transaction(async tx => {
+    for (const s of rammer) {
+      if (s.sourceGroupSessionId) {
+        await tx.workbenchSession.update({ where: { id: s.id, updatedAt: new Date(s.updatedAt) },
+          data: { hiddenByPlayer: true, localOverride: true } });
+      } else {
+        await tx.workbenchSession.delete({ where: { id: s.id } });
+      }
+    }
+  });
   revalider(gjeldende.playerId);
   return { ok: true, data: { slettet: rammer.length } };
 }
@@ -1693,6 +1747,9 @@ async function settStatus(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
+    return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
+  }
   if (row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
     return { ok: false, error: "Økten må være synlig og godkjent før gjennomføring." };
   }
@@ -1780,6 +1837,9 @@ export async function completeSessionWithEffort(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
+    return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
+  }
   if (row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
     return { ok: false, error: "Økten må være synlig og godkjent før gjennomføring." };
   }
