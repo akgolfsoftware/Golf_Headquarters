@@ -8,6 +8,7 @@ import "server-only";
 import { cancellationDeadline } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { byggEndretTimeEpost } from "@/lib/email/booking-endret-time";
 import { logError } from "@/lib/error-tracking";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -166,14 +167,61 @@ export async function sendBookingCancellation(
 }
 
 /**
- * Sendes når en booking flyttes til ny tid. `oldStartAt` er tidspunktet
- * booking-en hadde FØR flyttingen — booking-raden i DB er allerede
- * oppdatert til den nye tiden når denne kalles, så date/time i
- * standard-variablene fra sendBooking() viser automatisk den nye tiden.
+ * Sendes når en booking flyttes til ny tid (EP-02 i Precision Athletics).
+ * `oldStartAt` er tidspunktet booking-en hadde FØR flyttingen — booking-raden
+ * i DB er allerede oppdatert til den nye tiden når denne kalles.
+ * Bygges av `byggEndretTimeEpost`, ikke av DB-malen «booking-flyttet».
  */
 export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date) {
-  await sendBooking("booking-flyttet", bookingId, {
-    oldDate: formatDato(oldStartAt),
-    oldTime: formatTid(oldStartAt),
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { name: true, email: true } },
+      coach: { select: { name: true } },
+      serviceType: true,
+      location: true,
+    },
   });
+  if (!booking) throw new Error("Booking not found");
+
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) {
+    console.warn("[booking-email] Ingen e-post på booking", bookingId);
+    return;
+  }
+
+  // Behold administrasjonens av/på-kontroll selv om innholdet har ny utforming.
+  await hentTemplate("booking-flyttet");
+
+  const fullNavn = booking.user?.name ?? booking.guestName ?? null;
+  const { subject, html } = byggEndretTimeEpost({
+    appUrl: APP_URL,
+    bookingId: booking.id,
+    startAt: booking.startAt,
+    endAt: booking.endAt,
+    oldStartAt,
+    epost,
+    fornavn: fullNavn?.trim().split(/\s+/)[0] || null,
+    tjenesteNavn: booking.serviceType.name,
+    varighetMin: booking.serviceType.durationMin,
+    stedNavn: booking.location.name,
+    stedAdresse: booking.location.address || null,
+    coachNavn: booking.coach?.name ?? null,
+    priceOre: booking.priceOre,
+    erKlipp: !!booking.subscriptionId,
+    stripePaymentIntentId: booking.stripePaymentIntentId,
+    harKonto: !!booking.userId,
+  });
+
+  try {
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
+  } catch (error) {
+    await logError({
+      context: "email.booking.resend",
+      error,
+      meta: { bookingId },
+    });
+    throw error;
+  }
 }
