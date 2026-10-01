@@ -17,12 +17,13 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, relative } from "node:path";
-import { test, expect, type Locator, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "./_test";
 import { config as loadEnv } from "dotenv";
 import {
   coachCredentials,
   playerCredentials,
   dismissCookieBanner,
+  loginWith as loggInn,
   selectPasswordLogin,
 } from "./_auth-helpers";
 
@@ -209,6 +210,7 @@ async function auditSynligeKnapper(page: Page): Promise<string[]> {
 
 async function gaaOgAudit(page: Page, url: string, feil: string[]): Promise<void> {
   const res = await page.goto(url, { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
   const status = res?.status() ?? 0;
   expect(
     status === 200 || (status >= 300 && status < 400),
@@ -231,17 +233,6 @@ async function settTema(page: Page, tema: "dark" | "light"): Promise<void> {
   }, tema);
 }
 
-async function loggInn(page: Page, email: string, password: string): Promise<void> {
-  await page.goto("/auth/login");
-  await selectPasswordLogin(page);
-  await page.locator('input[type="email"]').fill(email);
-  await page.locator('input[type="password"]').fill(password);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL(/\/(portal|admin|auth\/etter-innlogging|forelder)/, {
-    timeout: 30_000,
-  });
-  await dismissCookieBanner(page);
-}
 
 async function klikkHvisTrygg(
   page: Page,
@@ -335,8 +326,10 @@ for (const bredde of BREDDER) {
       await gaaOgAudit(page, "/portal/analysere", feil);
       const dypere = page.locator("a[href^='/portal/']").filter({ hasText: /TrackMan|Runder|Tester|Turnering|DataGolf/i }).first();
       if (await dypere.isVisible().catch(() => false)) {
+        const target = new URL((await dypere.getAttribute("href"))!, page.url());
         await dypere.click();
-        await page.waitForLoadState("domcontentloaded");
+        await expect(page).toHaveURL(target.href);
+        await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
         feil.push(...(await auditSynligeKnapper(page)));
       }
 
@@ -358,7 +351,8 @@ for (const bredde of BREDDER) {
         const href = (await book.getAttribute("href")) ?? "";
         if (href.includes("/portal/booking/ny") && !/[?&]betaling=1/.test(href)) {
           await book.click();
-          await page.waitForLoadState("domcontentloaded");
+          await expect(page).toHaveURL(new URL(href, page.url()).href);
+          await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
           feil.push(...(await auditSynligeKnapper(page)));
           // Stopp før bekreft/betaling.
         }
@@ -390,13 +384,15 @@ for (const bredde of BREDDER) {
       const spillerLenke = page
         .locator('a[href^="/admin/spillere/"]:not([href="/admin/spillere/ny"])')
         .first();
-      if (await spillerLenke.isVisible().catch(() => false)) {
+      await expect(spillerLenke).toBeVisible();
+      {
         await spillerLenke.click();
         await page.waitForURL(/\/admin\/spillere\/[^/]+/, { timeout: 20_000 });
         feil.push(...(await auditSynligeKnapper(page)));
 
-        const wb = page.getByRole("link", { name: /Åpne uke i Workbench|Workbench/i }).first();
-        if (await wb.isVisible().catch(() => false)) {
+        const wb = page.locator('a[href^="/admin/workbench/"]').first();
+        await expect(wb).toBeVisible();
+        {
           await wb.click();
           await page.waitForURL(/\/admin\/workbench\//, { timeout: 20_000 });
           feil.push(...(await auditSynligeKnapper(page)));

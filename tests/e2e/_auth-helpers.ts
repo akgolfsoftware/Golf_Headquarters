@@ -54,11 +54,16 @@ export function hasCoachAuth(): boolean {
 
 /** Cookie-banner kan dekke hele body i headless — lukk den hvis den vises. */
 export async function dismissCookieBanner(page: Page): Promise<void> {
+  // The app intentionally hides the banner on auth routes. An existing consent
+  // cookie also means there is no delayed banner to wait for.
+  if (new URL(page.url()).pathname.startsWith("/auth")) return;
+  if ((await page.context().cookies()).some(cookie => cookie.name === "ak_cookie_consent")) return;
   const btn = page
     .getByRole("button", { name: /Kun nødvendige|Godta alle/i })
     .first();
   try {
-    if (await btn.isVisible({ timeout: 2_500 })) {
+    await btn.waitFor({ state: "visible", timeout: 2_500 });
+    if (await btn.isVisible()) {
       await btn.click();
       await btn.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => undefined);
     }
@@ -76,7 +81,7 @@ export async function selectPasswordLogin(page: Page): Promise<void> {
   await expect(page.locator('input[type="password"]')).toBeVisible();
 }
 
-async function loginWith(
+export async function loginWith(
   page: Page,
   email: string,
   password: string,
@@ -86,9 +91,10 @@ async function loginWith(
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();
-  await page.waitForURL(/\/(portal|auth\/etter-innlogging|forelder|admin)/, {
+  await page.waitForURL(/\/(portal|forelder|admin)/, {
     timeout: 25_000,
   });
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
   await dismissCookieBanner(page);
 }
 

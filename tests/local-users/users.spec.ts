@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse } from "dotenv";
+import { selectPasswordLogin, dismissCookieBanner } from "../e2e/_auth-helpers";
 import { createClient } from "@supabase/supabase-js";
 
 const users = parse(readFileSync(resolve(__dirname, "../../.codex/environments/brukere/.env.users")));
@@ -18,7 +19,7 @@ function credential(key: string) {
 async function login(page: Page, key: string, destination: RegExp) {
   const account = credential(key);
   await page.goto("/auth/login");
-  await page.getByRole("button", { name: "Logg inn med passord", exact: true }).click();
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(account.email);
   await page.locator('input[type="password"]').fill(account.password);
   await page.locator('form button[type="submit"]').click();
@@ -111,7 +112,7 @@ test("foresatt får foreldresiden", async ({ page }) => {
 
 test("feil passord gir ingen tilgang", async ({ page }) => {
   await page.goto("/auth/login");
-  await page.getByRole("button", { name: "Logg inn med passord", exact: true }).click();
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(credential("P01").email);
   await page.locator('input[type="password"]').fill("bevisst-feil-syntetisk-passord");
   await page.locator('form button[type="submit"]').click();
@@ -154,4 +155,58 @@ test("lokal magisk lenke veksles til trenerens innlogging", async ({ page }, tes
   if (!link || new URL(link).hostname !== "127.0.0.1") throw new Error("Mangler lokal verifiseringslenke.");
   await page.goto(link);
   await expect(page).toHaveURL(/\/admin\/agencyos$/);
+});
+
+
+test("samme spillerkonto bruker PlayerHQ, Team Norway og egen WANG-IUP", async ({ page }) => {
+  await login(page, "P01", /\/portal$/);
+  await dismissCookieBanner(page);
+  await page.goto("/team-norway");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/team-norway$/);
+  await page.goto(`/team-wang/coach/iup/${users.LOCAL_P01_ID}`);
+  await expect(page.getByText("IUP-samtale · Testspiller 01", { exact: true })).toBeVisible();
+});
+
+test("samme trenerkonto åpner egne WANG- og Team Norway-grupper", async ({ page }) => {
+  await login(page, "COACH_A", /\/admin\/agencyos$/);
+  for (const route of ["/team-norway", "/team-wang/coach"]) {
+    await page.goto(route);
+    if (route === "/team-wang/coach") {
+      await expect(page.getByText("Testspiller 01", { exact: true })).toBeVisible();
+    } else {
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    }
+    await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toHaveCount(0);
+    await expect(page).toHaveURL(new RegExp(route + "$"));
+  }
+});
+
+test("trener uten gruppemedlemskap får ikke WANG- eller Team Norway-tilgang", async ({ page }) => {
+  await login(page, "COACH_B", /\/admin\/agencyos$/);
+  for (const route of ["/team-norway", "/team-wang/coach"]) {
+    await page.goto(route);
+    await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toBeVisible();
+    await expect(page.getByText("Testspiller 01", { exact: true })).toHaveCount(0);
+  }
+});
+
+test("Workbench håndterer nettverksfeil når øktinnhold hentes", async ({ page }) => {
+  await login(page, "P01", /\/portal$/);
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+  const feil: string[] = [];
+  page.on("pageerror", error => feil.push(error.message));
+  await page.route("**/portal/planlegge/workbench", async route => {
+    if (route.request().method() === "POST" && route.request().headers()["next-action"]) {
+      await route.abort("connectionfailed");
+    } else {
+      await route.fallback();
+    }
+  });
+  await page.goto("/portal/planlegge/workbench");
+  // The inspector is collapsed on mobile; verify the request's error state in
+  // the rendered panel without opening a different session or sending writes.
+  await expect(page.getByText("Kunne ikke hente øktinnhold.", { exact: true }).first()).toBeAttached();
+  expect(feil).toEqual([]);
 });

@@ -46,3 +46,13 @@ export async function assertLocalUsersDatabase(client) {
     throw new Error('Dedicated local test database identity is missing');
   }
 }
+
+/** Reject real provider credentials even when the DB happens to be local. */
+export function assertLocalUsersRuntime(env, appEnvFiles = []) {
+  assertLocalUsersTargets(env);
+  const allowed = new Set(['LOCAL_USERS_PROJECT', 'DATABASE_URL', 'DIRECT_URL',
+    'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'NEXT_PUBLIC_APP_URL']);
+  if (Object.keys(env).some(key => !allowed.has(key)) || appEnvFiles.length) {
+    throw new Error('Local user tests require an isolated runtime without application env files or external provider settings');
+  }
+}

@@ -6,7 +6,7 @@
  *
  * Testen kjører på 390px (iPhone-førsteinntrykket) med tomt samtykke.
  */
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./_test";
 import { loginAsPlayer, playerCredentials } from "./_auth-helpers";
 
 const BANNER = '[aria-label="Cookie-samtykke"]';

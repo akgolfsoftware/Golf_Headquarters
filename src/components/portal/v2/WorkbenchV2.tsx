@@ -37,7 +37,7 @@ import {
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -1519,6 +1519,12 @@ export function OktDrillTidslinje({
         setDrills([]);
         setFeil(true);
       }
+    }).catch(() => {
+      // A failed or navigation-aborted request must not become an unhandled
+      // rejection. Keep the existing error state while this panel is mounted.
+      if (!aktiv) return;
+      setDrills([]);
+      setFeil(true);
     });
     return () => {
       aktiv = false;
@@ -2365,6 +2371,8 @@ function WBPeriodeBand({ data, onTilAarsplan }: { data: WorkbenchData; onTilAars
 }
 
 export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role, steder }: WorkbenchV2Props) {
+  // Keep drag accessibility references identical in server and browser HTML.
+  const dragContextId = useId();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -3042,6 +3050,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
   return (
     <DndContext
+      id={dragContextId}
       sensors={wbSensors}
       collisionDetection={pointerWithin}
       onDragStart={handleWbDragStart}
