@@ -90,8 +90,21 @@ export async function deleteGroup(
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   await assertCapability(user, Capability.MANAGE_GROUPS);
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id: groupId },
+  // Eierskap: sletting kaskaderer medlemmer og samlinger, så bare hovedcoach,
+  // aktivt COACH-medlem eller ADMIN får slette (samme regel som eierGruppen i
+  // [id]/actions.ts). ASSISTANT-medlemmer og andre coacher får «Fant ikke».
+  const gruppe = await prisma.group.findFirst({
+    where: {
+      id: groupId,
+      ...(user.role === "COACH"
+        ? {
+            OR: [
+              { coachId: user.id },
+              { members: { some: { userId: user.id, role: "COACH", endedAt: null } } },
+            ],
+          }
+        : {}),
+    },
     select: { id: true, name: true },
   });
   if (!gruppe) return { error: "Fant ikke gruppen." };
