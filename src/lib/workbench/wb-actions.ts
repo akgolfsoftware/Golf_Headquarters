@@ -61,6 +61,7 @@ import { UI } from "@/lib/domain/workbench/labels";
 import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
 import {
+  completedWorkbenchSnapshot,
   initialWorkbenchLiveSnapshot,
   parseWorkbenchLiveSnapshot,
   type WorkbenchLiveData,
@@ -1244,8 +1245,8 @@ export async function createSessionFromSource(input: {
       createdBy: erCoach ? "COACH" : "PLAYER",
     });
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
+    const task = await prisma.positionTask.findFirst({
+      where: { id: kilde.taskId, position: { plan: { userId: parsed.data.playerId } } },
       include: { position: true },
     });
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
@@ -1332,6 +1333,9 @@ export async function addDrillFromSource(input: {
     return { ok: false, error: "Ugyldig kilde." };
   }
 
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+
   const kilde = parseSourceId(parsed.data.sourceId);
   if (!kilde || (kilde.kind !== "DRILL" && kilde.kind !== "TEK")) {
     return { ok: false, error: "Kun øvelser og tekniske oppgaver kan dras inn på en eksisterende økt." };
@@ -1345,8 +1349,8 @@ export async function addDrillFromSource(input: {
     drill = exerciseToSourceItem(rad).drill;
     if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
+    const task = await prisma.positionTask.findFirst({
+      where: { id: kilde.taskId, position: { plan: { userId: treff.row.playerId } } },
       include: { position: true },
     });
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
@@ -1710,7 +1714,7 @@ async function settStatus(
     data: {
       status,
       ...(liveSnapshot ? { liveSnapshot: liveSnapshot as unknown as Prisma.InputJsonValue } : {}),
-      ...(status !== "IN_PROGRESS" ? { liveSnapshot: Prisma.DbNull } : {}),
+      ...(status !== "IN_PROGRESS" ? { liveSnapshot: status === "COMPLETED" ? completedWorkbenchSnapshot(row.liveSnapshot) ?? Prisma.DbNull : Prisma.DbNull } : {}),
     },
   });
   if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
@@ -1797,7 +1801,7 @@ export async function completeSessionWithEffort(
       status: "COMPLETED",
       perceivedEffort: parsed.data.perceivedEffort,
       actualMinutes: parsed.data.actualMinutes,
-      liveSnapshot: Prisma.DbNull,
+      liveSnapshot: completedWorkbenchSnapshot(row.liveSnapshot) ?? Prisma.DbNull,
     },
   });
   if (result.count !== 1) {
@@ -1842,7 +1846,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
     await prisma.$transaction(async (tx) => {
       const completed = await tx.workbenchSession.updateMany({
         where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt },
-        data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
+        data: { status: "COMPLETED", liveSnapshot: completedWorkbenchSnapshot(current.liveSnapshot) ?? Prisma.DbNull },
       });
       const started = await tx.workbenchSession.updateMany({
         where: {
@@ -1888,6 +1892,7 @@ export async function saveWorkbenchLiveSnapshot(input: unknown): Promise<WbResul
   const current = parseWorkbenchLiveSnapshot(row.liveSnapshot, expectedIds, row.updatedAt.toISOString());
   const updatedAtISO = new Date().toISOString();
   const snapshot = {
+    ...(current.drillResults ? { drillResults: current.drillResults } : {}),
     startedAtISO: current.startedAtISO,
     totalSec: parsed.data.totalSec,
     updatedAtISO,

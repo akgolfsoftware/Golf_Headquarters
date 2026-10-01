@@ -15,25 +15,29 @@ mock.module("@/lib/workbench/v2-sync", { namedExports: { GENERERT_FRA: "test" } 
 mock.module("@/lib/teknisk-plan/apply-reps", { namedExports: { applyPositionTaskReps: async () => {} } });
 mock.module("next/navigation", { namedExports: { redirect: () => { throw new Error("unexpected redirect"); } } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
-mock.module("@/lib/prisma", { namedExports: { prisma: {
+const prismaMock = {
+  $queryRaw: async () => [{ status, completedSummary: { other: "preserve" } }],
   trainingSessionV2: {
-    findUnique: async () => ({ id: "s", studentId: "player", participants: [], drills: [{ id: "d1" }, { id: "d2" }], status, completedSummary: { other: "preserve" }, startTime: new Date(0), generertFra: mirrored ? "test" : null, generertFraId: "plan" }),
-    update: (input: { data: { completedSummary?: unknown; status: string } }) => ({ kind: "session", apply: () => { status = input.data.status; stored = input.data.completedSummary; } }),
+    findUnique: async () => ({ id: "s", studentId: "player", participants: [], drills: [{ id: "d1", pyramide: "TEK", repetitions: null }, { id: "d2", pyramide: "FYS", repetitions: null }], status, completedSummary: { other: "preserve" }, startTime: new Date(0), updatedAt: new Date(0), generertFra: mirrored ? "test" : null, generertFraId: "plan" }),
+    update: async (input: { data: { completedSummary?: unknown; status?: string } }) => { writes.push("session"); if (!failTransaction) { if (input.data.status) status = input.data.status; stored = input.data.completedSummary; } },
   },
   drillLogV2: {
     findMany: async () => [{ drillId: "d1", repsTotal: 12, loggedAt: new Date(0) }, { drillId: "d2", repsTotal: 1, loggedAt: new Date(1000) }],
     findFirst: async () => ({ id: "log", repsWithoutBall: 0, repsLowSpeed: 0, repsHit: 1 }),
-    upsert: async (input: { update: { repsTotal: number } }) => { loggedTotal = input.update.repsTotal; },
+    update: async (input: { data: { repsTotal: number } }) => { loggedTotal = input.data.repsTotal; },
+    create: async (input: { data: { repsTotal: number } }) => { loggedTotal = input.data.repsTotal; },
   },
-  trainingDrillV2: { findUnique: async () => ({ positionTaskId: null }) },
-  trainingPlanSession: { updateMany: () => ({ kind: "plan", apply: () => {} }) },
-  trainingPlanSessionLog: { upsert: () => ({ kind: "plan-log", apply: () => {} }) },
-  $transaction: async (batch: { kind: string; apply: () => void }[]) => {
-    transactionCalls++; writes = batch.map((op) => op.kind);
+  trainingDrillV2: { findUniqueOrThrow: async () => ({ positionTaskId: null, actualDurationSec: null, pyramide: "TEK", name: "Syntetisk øvelse", durationMinutes: 15, exerciseId: null, repType: null, repAntall: null, repMinutter: null, repSett: null, repReps: null }) },
+  trainingPlanSession: { updateMany: async () => { writes.push("plan"); } },
+  trainingPlanSessionLog: { upsert: async () => { writes.push("plan-log"); } },
+  $transaction: async (run: (tx: unknown) => Promise<unknown>) => {
+    transactionCalls++;
+    const result = await run(prismaMock);
     if (failTransaction) throw new Error("synthetic transaction failure");
-    for (const op of batch) op.apply();
+    return result;
   },
-} } });
+};
+mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 let actions: typeof import("@/app/portal/(fullscreen)/live/[sessionId]/actions");
 before(async () => { actions = await import("@/app/portal/(fullscreen)/live/[sessionId]/actions"); });
 beforeEach(() => { userId = "player"; status = "IN_PROGRESS"; mirrored = true; failTransaction = false; stored = null; writes = []; transactionCalls = 0; loggedTotal = null; });
@@ -45,7 +49,7 @@ test("sluttstatus, planspeil og planlogg sendes i én transaksjon", async () => 
   assert.equal((stored as { other: string }).other, "preserve");
   const summary = (stored as { liveSummary: { drillsCompleted: number; completedDrillIds: string[]; durationSec: number; totalReps: number } }).liveSummary;
   assert.deepEqual(summary.completedDrillIds, ["d1"]); assert.equal(summary.drillsCompleted, 1);
-  assert.equal(summary.totalReps, 13); assert.equal(summary.durationSec, 123);
+  assert.equal(summary.totalReps, 12); assert.equal(summary.durationSec, 123);
 });
 test("mislykket transaksjon returnerer ingen vellykket fullføring", async () => {
   failTransaction = true;

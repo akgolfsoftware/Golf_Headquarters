@@ -1,9 +1,11 @@
 "use server";
 
+import { readPhysicalResultNote } from "./physical-result";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   IsoDateSchema,
@@ -279,7 +281,7 @@ export async function loggFysiskSett(input: unknown): Promise<{ ok: boolean; log
   const exercise = await prisma.workbenchPhysicalExercise.findUnique({
     where: { id: parsed.data.exerciseId },
     select: {
-      id: true,
+      id: true, title: true, updatedAt: true, setsTarget: true, repsMin: true, repsMax: true, weightKg: true, rirTarget: true, restSeconds: true,
       session: {
         select: {
           id: true,
@@ -297,17 +299,20 @@ export async function loggFysiskSett(input: unknown): Promise<{ ok: boolean; log
     return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
   }
 
-  const log = await prisma.workbenchPhysicalLog.create({
-    data: {
-      exerciseId: exercise.id,
-      playerId: exercise.session.playerId,
-      setNumber: parsed.data.setNumber,
-      reps: parsed.data.reps ?? null,
-      weightKg: parsed.data.weightKg ?? null,
-      rir: parsed.data.rir ?? null,
-      note: parsed.data.note ?? null,
-    },
-    select: { id: true },
+  // En serie er én absolutt måling. Radlåsen gjør også parallelle nye forsøk trygge.
+  const log = await prisma.$transaction(async tx => {
+    await tx.$queryRaw(Prisma.sql`SELECT id FROM workbench_physical_exercises WHERE id = ${exercise.id} FOR UPDATE`);
+    const previous = await tx.workbenchPhysicalLog.findFirst({ where: { exerciseId: exercise.id, setNumber: parsed.data.setNumber }, orderBy: { createdAt: "asc" }, select: { id: true, note: true } });
+    const current = await tx.workbenchPhysicalExercise.findUniqueOrThrow({ where: { id: exercise.id }, select: { updatedAt: true, title: true, setsTarget: true, repsMin: true, repsMax: true, weightKg: true, rirTarget: true, restSeconds: true } });
+    const source = previous ? readPhysicalResultNote(previous.note)?.source ?? null : {
+      id: exercise.id, revision: current.updatedAt.toISOString(), sessionId: exercise.session.id, pyramid: "FYS" as const,
+      title: current.title, setsTarget: current.setsTarget, repsMin: current.repsMin, repsMax: current.repsMax,
+      weightKg: current.weightKg, rirTarget: current.rirTarget, restSeconds: current.restSeconds,
+    };
+    const data = { playerId: exercise.session.playerId, setNumber: parsed.data.setNumber, reps: parsed.data.reps ?? null, weightKg: parsed.data.weightKg ?? null, rir: parsed.data.rir ?? null, note: JSON.stringify({ kind: "FYS_RESULT_V1", source, note: parsed.data.note ?? null }) };
+    return previous
+      ? tx.workbenchPhysicalLog.update({ where: { id: previous.id }, data, select: { id: true } })
+      : tx.workbenchPhysicalLog.create({ data: { ...data, exerciseId: exercise.id }, select: { id: true } });
   });
 
   revalidateWorkbench(exercise.session.playerId);

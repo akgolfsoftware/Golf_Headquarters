@@ -3,6 +3,8 @@
  * Aggregerer TrainingDrillV2 (plan) + DrillLogV2 (faktisk) for én spiller.
  */
 
+import { readDrillResults, golfResultCount } from "@/lib/portal-live/training-result";
+import { wbDrillPlan } from "@/lib/portal-live/wb-live-map";
 import { prisma } from "@/lib/prisma";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import type { PyramidArea, RepType } from "@/generated/prisma/client";
@@ -77,8 +79,11 @@ export async function hentTreningsanalyse(input: {
           where: { id: { in: wbIds } },
           select: {
             id: true,
+            liveSnapshot: true,
+            pyramid: true,
             drills: {
               select: {
+                id: true, title: true, description: true, durationMinutes: true, sortOrder: true, akFormel: true,
                 repType: true,
                 repAntall: true,
                 repMinutter: true,
@@ -105,7 +110,7 @@ export async function hentTreningsanalyse(input: {
           select: {
             drillId: true,
             repsTotal: true,
-            repsWithoutBall: true,
+            repsWithoutBall: true, repsLowSpeed: true, repsAutomatic: true,
             repsHit: true,
           },
         })
@@ -129,13 +134,13 @@ export async function hentTreningsanalyse(input: {
 
   for (const s of sessions) {
     for (const d of s.drills) {
-      const plan = d.repetitions ?? d.repAntall ?? 0;
+      const plan = d.pyramide === "FYS" || d.repType === "TID" || d.repType === "SETT_REPS" ? 0 : d.repetitions ?? d.repAntall ?? 0;
       planlagteReps += plan;
       const log = logByDrill.get(d.id);
-      const faktisk = log?.repsTotal ?? 0;
+      const faktisk = d.pyramide === "FYS" ? 0 : log?.repsTotal ?? 0;
       faktiskeReps += faktisk;
-      ballerSlatt += log?.repsHit ?? 0;
-      svingerUtenBall += log?.repsWithoutBall ?? 0;
+      ballerSlatt += d.pyramide === "FYS" ? 0 : (log?.repsLowSpeed ?? 0) + (log?.repsAutomatic ?? 0) + (log?.repsHit ?? 0);
+      svingerUtenBall += d.pyramide === "FYS" ? 0 : log?.repsWithoutBall ?? 0;
 
       const akse = akseMap.get(d.pyramide)!;
       akse.planlagtMin += d.durationMinutes;
@@ -155,27 +160,49 @@ export async function hentTreningsanalyse(input: {
   // Workbench-volum er validert i egne felt. Slagtelleren er lagret per økt,
   // ikke per øvelse, så faktiske baller kan knyttes til aksen, men ikke
   // fordeles på øvelser uten å gjette.
-  for (const session of visibleSessions.filter(item => item.model !== "v2")) {
+  for (const session of visibleSessions.filter(item => item.model !== "v2" && !workbench.some(w => w.id === item.id && w.drills.length > 0))) {
     const axis = akseMap.get(session.pyramidArea)!;
     axis.planlagtMin += session.durationMin;
     axis.okter.add(session.id);
   }
   for (const session of workbench) {
     for (const drill of session.drills) {
-      const type = drill.repType as RepType | null;
-      if (!type) continue;
-      const planned = type === "SETT_REPS"
-        ? (drill.repSett ?? 0) * (drill.repReps ?? 0)
-        : type === "TID" ? 0 : (drill.repAntall ?? 0);
+      const plan = wbDrillPlan(drill, session.pyramid as PyramidArea);
+      const type: RepType | "UKJENT" = drill.repType === "BALLER_SLATT" || drill.repType === "SVINGER_UTEN_BALL" || drill.repType === "SETT_REPS" || drill.repType === "TID" ? drill.repType : "UKJENT";
+      const axis = akseMap.get(plan.pyramide)!;
+      axis.planlagtMin += drill.durationMinutes;
+      axis.okter.add(session.id);
+      const planned = plan.plannedReps;
       planlagteReps += planned;
-      if (type === "TID") tidMinutter += drill.repMinutter ?? 0;
-      if (type === "SETT_REPS") settReps += planned;
+      if (plan.dose?.enhet === "MINUTTER") tidMinutter += plan.dose.antall ?? 0;
+      else if (type === "TID") tidMinutter += drill.repMinutter ?? 0;
+      if (plan.pyramide === "FYS" && plan.dose?.enhet === "SERIER") settReps += (plan.dose.antall ?? 0) * (plan.dose.reps ?? 0);
+
       const bucket = repTypeMap.get(type) ?? { planlagt: 0, faktisk: 0 };
       bucket.planlagt += planned;
       repTypeMap.set(type, bucket);
     }
   }
+  const detailedGolfSessions = new Set<string>();
+  for (const session of workbench) {
+    const results = readDrillResults(session.liveSnapshot);
+    if (results.some(r => r.result.type === "golf")) detailedGolfSessions.add(session.id);
+    for (const r of results) {
+      if (r.result.type !== "golf") continue;
+      const actual = golfResultCount(r.result);
+      faktiskeReps += actual;
+      ballerSlatt += r.result.repsLowSpeed + r.result.repsAutomatic + r.result.repsHit;
+      svingerUtenBall += r.result.repsWithoutBall;
+      const axis = r.source.pyramid;
+      akseMap.get(axis)!.faktiskReps += actual;
+      const type = r.source.repType === "BALLER_SLATT" || r.source.repType === "SVINGER_UTEN_BALL" ? r.source.repType : "UKJENT";
+      const bucket = repTypeMap.get(type) ?? { planlagt: 0, faktisk: 0 };
+      bucket.faktisk += actual;
+      repTypeMap.set(type, bucket);
+    }
+  }
   for (const row of ballCounts) {
+    if (detailedGolfSessions.has(row.planSessionId)) continue;
     const actual = row._sum.count ?? 0;
     faktiskeReps += actual;
     ballerSlatt += actual;
