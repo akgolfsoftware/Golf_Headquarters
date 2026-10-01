@@ -17,7 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { innsynsNivaaFra, maskerLeave } from "@/lib/health/leave-innsyn";
-import { beregnGoalProgress } from "@/lib/portal/goals/progress";
+import { beregnGoalProgressListe } from "@/lib/portal/goals/progress";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import { beregnKorrelasjon } from "@/lib/training/korrelasjon";
 import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
@@ -503,10 +503,11 @@ async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
 
   const grupper = spiller.groupMemberships.map((m) => m.group.name);
   const ak = !erWangEllerTn(spiller.groupMemberships.map((m) => m.group.program), grupper);
-  const maal = await Promise.all(spiller.goals.map(async (g) => {
-    const p = await beregnGoalProgress(g, { hcp: spiller.hcp });
+  const fremdrift = await beregnGoalProgressListe(spiller.goals, { hcp: spiller.hcp });
+  const maal = spiller.goals.map((g, index) => {
+    const p = fremdrift[index];
     return { id: g.id, kategori: g.category, tittel: g.title, frist: g.targetDate ? dato(g.targetDate) : null, pct: p.hasData ? p.pct : null };
-  }));
+  });
   const gjennomforte = fireUker.filter((o) => o.status === "COMPLETED");
   const timer = (["fys", "tek", "slag", "spill", "turn"] as AkseKode[]).map((akse) => ({
     akse,
