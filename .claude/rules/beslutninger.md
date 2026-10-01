@@ -4,6 +4,26 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
+
+Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at
+Codex fullfører resterende prosjekt, og har i denne økten bestilt en plan for gjennomføringen.
+Viderefører Precision Athletics og erstatter eldre omtale av Grok eller Claude Code som
+kodeansvarlig. Ingen nye produkt-, skjema-, tilgangs- eller publiseringsvalg følger av rollebyttet.
+
+**Arbeidet dette utløser:** [fullføringsplanen](../../docs/planer/codex-fullforing-claude-design-2026-09-30.md):
+fersk kartlegging → felles grunnlag → komplett treningskjede → øvrige spillerverktøy →
+booking/coaching → AgencyOS/AI → forelder/organisasjoner → sluttkontroll → autorisert lansering.
+Codex bruker valgte, versjonerte designleveranser, bevarer funksjoner og viser app/design
+side om side. Nye konkrete produktvalg avklares; allerede bestilt arbeid videreføres.
+Denne økten leverer planen. Implementasjons- og kontrollstatus føres separat.
+
+**Presisering i samme økt:** Anders vil at Codex planlegger arbeidet før Claude Design er
+ferdig, undersøker alle funksjoner og kontrollerer at de virker sammen. Planens PRE-01–08
+dekker funksjonsregister, isolert testmiljø, fersk teststatus, avtaler mellom moduler,
+treningskjeden, roller/booking/AI, gjenoppretting og teknisk overlevering. Endelig skjermarbeid
+følger valgt design; uavhengig funksjonsarbeid kan gjennomføres først.
+
 ## WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, OG MENYEN FÅR SEKS HOVEDPUNKTER (Anders 27.09.2026, bindende)
 
 Anders: «WANG Toppidrett-skjermene som er delt via AK Golf, så skal det være Sportssjef og Trener

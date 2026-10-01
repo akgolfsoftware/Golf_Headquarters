@@ -28,12 +28,13 @@ Dette er et bindende valg av designsystem og visuell retning. Det skal ikke beha
 
 ## Arbeidsdeling
 
-- **Claude Code og Claude Design** leser koden, bevarer funksjonene og lager/vedlikeholder designet
-  i «AK Golf Precision Athletics».
-- **Codex** bygger designet i appkoden, kontrollerer funksjon og sammenligner appen med den valgte
-  designleveransen.
-- Claude Code skal oppdatere designprosjektets egne autoritets-, overleverings- og minnefiler når
-  retningen utvikles. Codex skal oppdatere prosjektets aktive dokumentasjon og minne ved bygging.
+- **Claude Design** eier designet og lager/vedlikeholder det i «AK Golf Precision Athletics».
+  Designleveransen skal bevare funksjonene og ha konkrete skjermer, tilstander og handlingsbeskrivelser.
+- **Codex** eier appkoden, bygger designet, kontrollerer funksjon og sammenligner appen med den valgte
+  designleveransen. Arbeidsdelingen er bekreftet av Anders 30.09.2026.
+- Claude Design vedlikeholder designprosjektets egne autoritets- og overleveringsfiler.
+  Codex oppdaterer prosjektets aktive dokumentasjon og minne ved bygging.
+- Gjennomføringen følger [fullføringsplanen](../planer/codex-fullforing-claude-design-2026-09-30.md).
 
 ## Valg og spørsmål
 
