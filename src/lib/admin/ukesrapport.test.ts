@@ -8,7 +8,7 @@ const UKE_START = new Date("2026-08-10T00:00:00+02:00");
 const NA = new Date("2026-08-14T18:00:00+02:00");
 
 function e(over: Partial<Etterlevelse> = {}): Etterlevelse {
-  return { teller: 0, nevner: 0, hoppet: 0, ulogget: 0, ...over };
+  return { teller: 0, nevner: 0, hoppet: 0, ulogget: 0, gjennomfortMinutter: 0, planlagtMinutter: 0, pct: null, ...over };
 }
 
 function bygg(over: Partial<Parameters<typeof byggUkesrapport>[0]> = {}) {
@@ -36,12 +36,12 @@ test("testforfall alene er nok til å rapportere", () => {
 });
 
 test("etterlevelse vises med nevneren i klartekst", () => {
-  const kort = bygg({ etterlevelse: e({ teller: 14, nevner: 16, ulogget: 2 }) });
+  const kort = bygg({ etterlevelse: e({ teller: 14, nevner: 16, ulogget: 2, gjennomfortMinutter: 840, planlagtMinutter: 960, pct: 88 }) });
 
   assert.ok(kort);
   const rad = kort.tall.find((t) => t.key === "etterlevelse");
-  assert.equal(rad?.verdi, "14/16");
-  assert.equal(rad?.nevner, "publiserte økter med passert slutt");
+  assert.equal(rad?.verdi, "88 %");
+  assert.equal(rad?.nevner, "gjennomførte mot planlagte minutter · siste fire uker");
 });
 
 test("hoppet og ulogget rapporteres som egne rader, ikke slått sammen", () => {
@@ -55,21 +55,21 @@ test("hoppet og ulogget rapporteres som egne rader, ikke slått sammen", () => {
 });
 
 test("rader uten innhold utelates helt", () => {
-  const kort = bygg({ etterlevelse: e({ teller: 4, nevner: 4 }) });
+  const kort = bygg({ etterlevelse: e({ teller: 4, nevner: 4, pct: 100 }) });
 
   assert.ok(kort);
   assert.equal(kort.tall.length, 1, "kun etterlevelse — ingen tomme nullrader");
 });
 
 test("hvorfor-detaljen navngir agenten, datagrunnlaget og nevneren", () => {
-  const kort = bygg({ etterlevelse: e({ teller: 1, nevner: 2, ulogget: 1 }) });
+  const kort = bygg({ etterlevelse: e({ teller: 1, nevner: 2, ulogget: 1, pct: 50 }) });
 
   assert.ok(kort);
   assert.equal(kort.hvorfor.length, 3);
   assert.match(kort.hvorfor[0], /Rapportagent/);
   assert.match(kort.hvorfor[0], /skriver aldri/, "leser-ikke-skriver må stå eksplisitt");
   assert.match(kort.hvorfor[1], /12 spillere/);
-  assert.match(kort.hvorfor[2], /publiserte økter med passert slutt/);
+  assert.match(kort.hvorfor[2], /gjennomførte mot planlagte minutter/);
 });
 
 test("ukenummer regnes fra ukestart", () => {

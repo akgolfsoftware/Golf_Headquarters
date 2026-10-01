@@ -35,7 +35,7 @@ import { tnFormat } from "@/lib/portal-tester/tn-scoring";
 import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 import { parseForScoring } from "@/lib/portal-tester/test-scoring";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
-import { adherencePct } from "@/lib/workbench/compliance";
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
 import { lastSpillerOversiktForViewer } from "@/lib/admin-spiller/spiller-oversikt-data";
 import { lastSpillerArbeidsvisning } from "@/lib/admin-spiller/spiller-arbeidsvisning-data";
@@ -44,7 +44,7 @@ import { planVisning } from "@/lib/teknisk-plan/tp-visning";
 import { velgPlan } from "@/lib/teknisk-plan/tp-oversikt";
 import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { ukenummer } from "@/lib/uke-helpers";
-import type { SessionStatus, SgCategory } from "@/generated/prisma/client";
+import type { SgCategory } from "@/generated/prisma/client";
 import {
   akseFra, dato, datagrunnlag, desimal, erWangEllerTn, hcp, kortDato, sg, snittscore,
   tellendeRunder, tilPar, type AkseKode, type S360Fane,
@@ -60,17 +60,6 @@ const OMRADE_NAVN: Record<SgCategory, string> = { OTT: "Utslag", APP: "Innspill"
 const SG_KODER: SgCategory[] = ["OTT", "APP", "ARG", "PUTT"];
 const UKEDAG = new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: "UTC" });
 const DAG_MND = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "UTC" });
-
-/** WorkbenchSession.status → compliance-vokabularet (samme tabell som load-workbench.ts). */
-const WB_TIL_SESSION: Record<string, SessionStatus> = {
-  SCHEDULED: "PLANNED", PUBLISHED: "PLANNED", PLANNED: "PLANNED", IN_PROGRESS: "ACTIVE",
-  COMPLETED: "COMPLETED", CANCELLED: "CANCELLED", SKIPPED: "SKIPPED",
-};
-
-/** `date` (@db.Date, UTC-midnatt for Oslo-dagen) + startMinute → lokal tid. */
-function wbTid(date: Date, startMinute: number): Date {
-  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, startMinute);
-}
 
 function dagLabel(d: Date): string {
   const u = UKEDAG.format(d).replace(".", "");
@@ -99,7 +88,6 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
   });
   if (!spiller) return null;
 
-  const idag = osloDagSomDbDato(naa);
   const [runder, okter, avtale, nesteTurnering, sisteBooking, forslag] = await Promise.all([
     prisma.round.findMany({
       where: { userId: id },
@@ -107,10 +95,7 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
       take: 20,
       select: { score: true, playedAt: true, _count: { select: { holeScores: true } } },
     }),
-    prisma.workbenchSession.findMany({
-      where: { playerId: id, date: { gte: new Date(idag.getTime() - 28 * DAG), lte: idag }, status: { not: "DRAFT" } },
-      select: { date: true, startMinute: true, durationMinutes: true, status: true },
-    }),
+    hentEtterlevelse(id, naa),
     prisma.subscription.findFirst({
       where: { userId: id, kind: "COACHING", status: { in: ["ACTIVE", "TRIALING"] } },
       select: { plan: true, monthlyCredits: true, creditsRemaining: true, currentPeriodEnd: true },
@@ -136,10 +121,7 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
   const snitt = snittscore(runder.map((r) => ({ score: r.score, playedAt: r.playedAt, hull: hullFra(r._count.holeScores) })));
   const grupper = spiller.groupMemberships.map((m) => m.group.name);
   const wangTn = erWangEllerTn(spiller.groupMemberships.map((m) => m.group.program), grupper);
-  const pct = adherencePct(
-    okter.map((o) => ({ scheduledAt: wbTid(o.date, o.startMinute), durationMin: o.durationMinutes, status: WB_TIL_SESSION[o.status] ?? "PLANNED" })),
-    naa,
-  );
+  const pct = okter.pct;
   const turnDato = nesteTurnering?.tournament?.startDate ?? nesteTurnering?.manualDate ?? null;
 
   return {
@@ -151,7 +133,7 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
     hcp: hcp(spiller.hcp),
     fodtAar: alderAar(spiller.dateOfBirth),
     tilhorighet: wangTn ? "WANG · TEAM NORWAY" : "AK GOLF",
-    etterlevelse: { pct, kilde: `WORKBENCH · 4 UKER · ${dato(naa)}` },
+    etterlevelse: { pct, kilde: `SYNLIGE ØKTER · 4 UKER · ${dato(naa)}` },
     avtale: avtale
       ? {
           verdi: `${avtale.creditsRemaining} av ${avtale.monthlyCredits} klipp`,
