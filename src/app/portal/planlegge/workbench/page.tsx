@@ -28,6 +28,8 @@ import { mondayOf } from "@/lib/domain/workbench/operations";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
+import "@/styles/precision-komponenter.css";
+import "@/styles/precision-athletics.css";
 import "@/styles/workbench-selected.css";
 
 export const dynamic = "force-dynamic";
@@ -71,7 +73,7 @@ function ukeStartFraParam(raw?: string): string {
 }
 
 function Ramme({ navn, children }: { navn: string | null; children: React.ReactNode }) {
-  return <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={navn ?? undefined}>{children}</V2Shell>;
+  return <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={navn ?? undefined}><div className="pa-root">{children}</div></V2Shell>;
 }
 
 function Feil({ navn, melding }: { navn: string | null; melding: string }) {
