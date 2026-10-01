@@ -3,6 +3,7 @@
  * Aggregerer TrainingDrillV2 (plan) + DrillLogV2 (faktisk) for én spiller.
  */
 
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { prisma } from "@/lib/prisma";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import type { PyramidArea, RepType } from "@/generated/prisma/client";
@@ -43,6 +44,7 @@ export async function hentTreningsanalyse(input: {
   userId: string;
   fra: Date;
   til: Date;
+  now?: Date;
 }): Promise<TreningsanalyseKpi> {
   const { userId, fra, til } = InputSchema.parse(input);
 
@@ -189,7 +191,7 @@ export async function hentTreningsanalyse(input: {
   const gjennomforteOkter = visibleSessions.filter((s) => s.status === "COMPLETED").length;
   const planlagteOkter = visibleSessions.length;
   const etterlevelsePct =
-    planlagteOkter > 0 ? Math.round((gjennomforteOkter / planlagteOkter) * 100) : null;
+    (await hentEtterlevelse(userId, input.now ?? new Date())).pct;
 
   return {
     planlagteOkter,
