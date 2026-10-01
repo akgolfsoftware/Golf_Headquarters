@@ -22,6 +22,7 @@ import "@/styles/precision-ph03.css";
 export type PH03Status = "Planlagt" | "Pågår" | "Gjennomført" | "Hoppet over" | "Avlyst";
 export type PH03Ovelse = {
   id: string; akse: Akse; navn: string; kode: string | null; mengde: string | null; min: number | null; gjort: boolean | null;
+  fokus?: string | null;
 };
 export type PH03Props = {
   tilstand: "data" | "tom" | "feil";
@@ -56,6 +57,7 @@ function Ovelse({ o, nr }: { o: PH03Ovelse; nr: number }) {
         <span style={{ font: "500 15px/1.3 var(--font-sans)", color: gjort ? "var(--text-muted)" : "var(--text-primary)", textDecoration: gjort ? "line-through" : "none", flex: "1 1 180px", minWidth: 0, overflowWrap: "anywhere" }}>{o.navn}</span>
       </div>
       {o.kode && <div style={{ font: "500 12px/1.35 var(--font-mono)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>{o.kode}</div>}
+      {o.fokus && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>{o.fokus}</p>}
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
         <Meta>{o.mengde ? o.mengde.toUpperCase() : "—"}</Meta>
         <Meta>{o.min != null ? `${o.min} MIN` : "—"}</Meta>

@@ -18,9 +18,12 @@ const MIGRATION_SQL = join(
   "prisma/migrations/20260927201000_workbench_physical_tournament_plan/migration.sql",
 );
 
+const PRODUCTION_PROJECT_REF = "dcnxoztjtdqoidaekxry";
+
 function assertSafeDatabase(url: string) {
   const parsed = new URL(url);
   const host = parsed.hostname.toLowerCase();
+  const projectRef = parsed.username.split(".")[1] ?? null;
   const allowRemote = process.argv.includes("--allow-remote");
   const isLocal =
     host === "localhost" ||
@@ -30,6 +33,14 @@ function assertSafeDatabase(url: string) {
   if (!isLocal && !allowRemote) {
     throw new Error(
       `Nekter å kjøre DDL mot ikke-lokal database (${host}). Bruk --allow-remote bare etter eksplisitt DB-godkjenning.`,
+    );
+  }
+  if (
+    !isLocal &&
+    (projectRef !== PRODUCTION_PROJECT_REF || parsed.port !== "5432")
+  ) {
+    throw new Error(
+      "Nekter å kjøre DDL: DIRECT_URL må peke til AK Golf HQ sin godkjente Supabase session pooler på port 5432.",
     );
   }
 }

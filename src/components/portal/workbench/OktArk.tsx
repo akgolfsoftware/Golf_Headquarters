@@ -10,7 +10,7 @@
  * ingen steder ennå).
  */
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Play, SkipForward } from "lucide-react";
@@ -41,6 +41,7 @@ function feltlik<T extends string>(verdier: (T | undefined)[], navn: Record<T, s
 
 export function OktArk({ session: initial, coachNavn = null }: { session: WorkbenchSession; coachNavn?: string | null }) {
   const router = useRouter();
+  const varighetId = useId();
   const [session, setSession] = useState(initial);
   const [travel, startTravel] = useTransition();
   const [aktiv, setAktiv] = useState<Handling | null>(null);
@@ -97,7 +98,7 @@ export function OktArk({ session: initial, coachNavn = null }: { session: Workbe
       tittel={session.title}
       status={STATUS[session.status] ?? "Planlagt"}
       statusMeta={pagar ? `${session.drills.length} ØVELSER` : null}
-      ovelser={session.drills.map((d) => ({ id: d.id, akse: d.akFormel.pyramid.toLowerCase() as Akse, navn: d.title, kode: d.akFormel.label || null, mengde: null, min: d.durationMinutes, gjort: null }))}
+      ovelser={session.drills.map((d) => ({ id: d.id, akse: d.akFormel.pyramid.toLowerCase() as Akse, navn: d.title, kode: d.akFormel.label || null, fokus: d.techniqueFocus, mengde: null, min: d.durationMinutes, gjort: null }))}
       nokler={[
         ["Fokus", [...new Set(session.drills.map((d) => d.techniqueFocus).filter((f): f is string => !!f))].join(", ") || null],
         ["Belastning", feltlik(session.drills.map((d) => d.akFormel.belastning), BELASTNING_NAVN)],
@@ -125,8 +126,8 @@ export function OktArk({ session: initial, coachNavn = null }: { session: Workbe
           </div>
           {effort != null && <Meta>{effort} / 10 · {(RPE_SKALA[effort]?.kort ?? "").toUpperCase()}</Meta>}
           {effort != null && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{RPE_SKALA[effort]?.beskrivelse}</p>}
-          <Skjemafelt label="Faktisk varighet (minutter)">
-            <Tekstfelt value={minutter} onChange={setMinutter} mono inputMode="numeric" />
+          <Skjemafelt label="Faktisk varighet (minutter)" htmlFor={varighetId}>
+            <Tekstfelt id={varighetId} value={minutter} onChange={setMinutter} mono inputMode="numeric" />
           </Skjemafelt>
           {belastning != null && <Meta>{belastning} BELASTNINGSPOENG</Meta>}
           {ferdig && <Knapp variant="secondary" fullWidth loading={travel} disabled={travel} onClick={lagreBelastning}>Lagre belastning</Knapp>}

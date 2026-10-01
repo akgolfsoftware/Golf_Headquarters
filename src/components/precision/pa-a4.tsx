@@ -101,13 +101,13 @@ export function Dialogboks({ open, onClose, title, footer, children }: {
 
 /* ---------- Skjemafelt ---------- */
 
-export function Skjemafelt({ label, hint, error, required, children }: {
-  label: string; hint?: string; error?: string; required?: boolean; children: ReactNode;
+export function Skjemafelt({ label, hint, error, required, children, htmlFor }: {
+  label: string; hint?: string; error?: string; required?: boolean; children: ReactNode; htmlFor?: string;
 }) {
   return (
     <div className={cx("pa-field", error && "pa-formfield--error")}>
       <div className="pa-formfield__top">
-        <span className="pa-field__label">{label}</span>
+        {htmlFor ? <label className="pa-field__label" htmlFor={htmlFor}>{label}</label> : <span className="pa-field__label">{label}</span>}
         {required && <span className="pa-formfield__req">Påkrevd</span>}
       </div>
       <div className="pa-formfield__control">{children}</div>
@@ -131,12 +131,13 @@ export function Nedtrekk({ value, onChange, options, disabled }: {
   );
 }
 
-export function Tekstfelt({ value, onChange, mono, placeholder, inputMode, defaultValue }: {
+export function Tekstfelt({ value, onChange, mono, placeholder, inputMode, defaultValue, id }: {
   value?: string; onChange?: (v: string) => void; mono?: boolean; placeholder?: string;
-  inputMode?: "text" | "numeric"; defaultValue?: string;
+  inputMode?: "text" | "numeric"; defaultValue?: string; id?: string;
 }) {
   return (
     <input
+      id={id}
       className={cx("a4-input", mono && "a4-input--mono")}
       value={value}
       defaultValue={defaultValue}

@@ -1,15 +1,11 @@
 "use client";
 
-/**
- * Åtte Workbench-pills. Fasit: radius 2, treff 44, setningsform, aktiv grafitt.
- * Rust brukes ikke her.
- */
+/** Sju Workbench-nivåer i Precision Athletics. */
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { TL } from "@/lib/v2/train-lock";
 import { UI } from "@/lib/domain/workbench/labels";
-import { workbenchUrl, type WbVisning } from "@/lib/workbench/visning-url";
+import { workbenchUrl, type WbVisning, type WorkbenchSurface } from "@/lib/workbench/visning-url";
 
 const VALG: { id: WbVisning; label: string }[] = [
   { id: "aar", label: UI.visAar },
@@ -17,9 +13,8 @@ const VALG: { id: WbVisning; label: string }[] = [
   { id: "maned", label: UI.visManed },
   { id: "uke", label: UI.visUke },
   { id: "okt", label: UI.visOkt },
-  { id: "stall", label: UI.visStall },
-  { id: "live", label: UI.visLive },
-  { id: "min", label: UI.visMin },
+  { id: "vol", label: "Volum" },
+  { id: "mal", label: "Målsetninger" },
 ];
 
 export function VisningPiller({
@@ -30,6 +25,7 @@ export function VisningPiller({
   aar,
   okt,
   surface = "light",
+  routeSurface = "agency",
 }: {
   playerId: string;
   visning: WbVisning;
@@ -38,6 +34,7 @@ export function VisningPiller({
   aar?: string;
   okt?: string;
   surface?: "light" | "live";
+  routeSurface?: WorkbenchSurface;
 }) {
   const aktiv = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
@@ -67,7 +64,8 @@ export function VisningPiller({
             ref={on ? aktiv : undefined}
             role="tab"
             aria-selected={on}
-            href={workbenchUrl(playerId, v.id, { uke, maned, aar, okt })}
+            data-control-id={`workbench-niva-${v.id === "aar" ? "ar" : v.id}`}
+            href={workbenchUrl(playerId, v.id, { uke, maned, aar, okt }, routeSurface)}
             style={{
               minHeight: 44,
               borderRadius: 2,
@@ -81,9 +79,9 @@ export function VisningPiller({
               letterSpacing: 0,
               textTransform: "none",
               textDecoration: "none",
-              color: live ? (on ? "var(--wb-live-page)" : "var(--wb-live-text)") : (on ? TL.onFill : TL.text),
-              background: live ? (on ? "var(--wb-live-text)" : "var(--wb-live-raised)") : (on ? TL.fill : TL.elev),
-              border: `1px solid ${live ? (on ? "var(--wb-live-text)" : "var(--wb-live-raised)") : (on ? TL.fill : TL.hair)}`,
+              color: live ? (on ? "var(--wb-live-page)" : "var(--wb-live-text)") : (on ? "var(--wb-white)" : "var(--wb-ink)"),
+              background: live ? (on ? "var(--wb-live-text)" : "var(--wb-live-raised)") : (on ? "var(--wb-ink)" : "var(--wb-white)"),
+              border: `1px solid ${live ? (on ? "var(--wb-live-text)" : "var(--wb-live-raised)") : (on ? "var(--wb-ink)" : "var(--wb-border)")}`,
             }}
           >
             {v.label}

@@ -13,7 +13,7 @@ const base: PH03Props = {
   tittel: "Wedge 50–90 m med et langt navn som må brytes pent",
   status: "Planlagt",
   ovelser: [
-    { id: "e1", akse: "slag", navn: "Avstandskontroll 60 m", kode: "SLAG_RANGE_LAV-HAST_ALENE", mengde: "20 slag", min: 15, gjort: null },
+    { id: "e1", akse: "slag", navn: "Avstandskontroll 60 m", fokus: "Rolig vending før du fullfører svingen", kode: "SLAG_RANGE_LAV-HAST_ALENE", mengde: "20 slag", min: 15, gjort: null },
     { id: "e2", akse: "tek", navn: "Vinkel på slagflaten", kode: "TEK_RANGE_UTEN-BALL_ALENE", mengde: "3 sett", min: 20, gjort: null },
     { id: "e3", akse: "spill", navn: "Wedge mot mål under press", kode: null, mengde: null, min: null, gjort: null },
   ],

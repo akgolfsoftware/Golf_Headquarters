@@ -209,7 +209,7 @@ function Trening({ d, spillerId }: { d: S360Stats; spillerId: string }) {
           {!t.analyse ? <Dempet>Ingen økter i perioden.</Dempet> : (
             <div className="a8-tall-rutenett">
               <TallFlis k="Økter" v={`${t.analyse.gjennomforteOkter}/${t.analyse.planlagteOkter}`} kilde="GJENNOMFØRT / PLANLAGT" />
-              <TallFlis k="Etterlevelse" v={t.analyse.etterlevelsePct ?? "—"} enhet={t.analyse.etterlevelsePct != null ? "%" : null} kilde="ØKTER" />
+              <TallFlis k="Etterlevelse" v={t.analyse.etterlevelsePct ?? "—"} enhet={t.analyse.etterlevelsePct != null ? "%" : null} kilde="MINUTTER · 4 UKER" />
               <TallFlis k="Repetisjoner" v={`${t.analyse.faktiskeReps}/${t.analyse.planlagteReps}`} kilde="FAKTISK / PLAN" />
               <TallFlis k="Baller slått" v={t.analyse.ballerSlatt} kilde={`SVINGER UTEN BALL ${t.analyse.svingerUtenBall}`} />
             </div>
