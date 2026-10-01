@@ -7,11 +7,18 @@ export type { Page, ConsoleMessage, Locator } from "@playwright/test";
 export const test = base.extend<{ localNetwork: void }>({
   localNetwork: [async ({ context }, use) => {
     if (process.env.LOCAL_E2E === "1") {
+      const blocked = new Set<string>();
       await context.route("**/*", async route => {
         const url = new URL(route.request().url());
         if (process.env.LOCAL_STRIPE_E2E === "1" ? isLocalStripeBrowserUrl(url.href) :
           url.hostname === "127.0.0.1" && ["3061", "55621"].includes(url.port)) await route.continue();
-        else await route.abort();
+        else {
+          if (process.env.LOCAL_STRIPE_E2E === "1" && !blocked.has(url.hostname)) {
+            blocked.add(url.hostname);
+            console.log(`Stripe test blocked external host: ${url.hostname}`);
+          }
+          await route.abort();
+        }
       });
     }
     await use();

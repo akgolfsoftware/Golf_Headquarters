@@ -12,6 +12,7 @@ import Stripe from 'stripe';
 import { assertLocalUsersTargets, assertLocalUsersDatabase } from './local-users-target.mjs';
 import { assertStripeTestSettings, isOwnStripeCheckout } from './local-stripe-target.mjs';
 import { redactLocalUsersOutput } from './local-users-output.mjs';
+import { localStripeTestAuth } from '../src/lib/stripe/local-test-auth.ts';
 
 // Enter through local-users-run: it checks runtime files and Docker bindings.
 if (process.env.LOCAL_STRIPE_RUNNER !== '1') throw new Error('Use local-users-run.mjs stripe');
@@ -19,7 +20,8 @@ const root = resolve(import.meta.dirname, '..');
 const targets = assertLocalUsersTargets(process.env);
 const settings = parse(readFileSync(resolve(root, '.codex/environments/brukere/.env.stripe-test')));
 assertStripeTestSettings(settings);
-const stripe = new Stripe(settings.STRIPE_SECRET_KEY, { timeout: 15_000, maxNetworkRetries: 0 });
+const testEnv = { ...process.env, ...settings, NODE_ENV: 'development', LOCAL_E2E: '1', LOCAL_STRIPE_E2E: '1' };
+const stripe = new Stripe(settings.STRIPE_SECRET_KEY ?? '', { timeout: 15_000, maxNetworkRetries: 0, ...localStripeTestAuth(testEnv) });
 const db = new pg.Pool({ connectionString: targets.database.toString() });
 const secrets = [...Object.values(settings), process.env.DATABASE_URL, process.env.DIRECT_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY];
@@ -81,7 +83,8 @@ try {
   });
   relay.listen(55625, '127.0.0.1');
   await once(relay, 'listening');
-  const cliEnv = { ...process.env, STRIPE_API_KEY: settings.STRIPE_SECRET_KEY };
+  const cliEnv = { ...process.env };
+  if (settings.STRIPE_SECRET_KEY) cliEnv.STRIPE_API_KEY = settings.STRIPE_SECRET_KEY;
   const listener = child(process.env.LOCAL_STRIPE_CLI || 'stripe', ['listen', '--events', 'checkout.session.completed',
     '--events-from', '@self', '--forward-to', 'http://127.0.0.1:55625/stripe', '--skip-update'], cliEnv, line => {
     const found = line.match(/whsec_[A-Za-z0-9]+/);
@@ -92,7 +95,7 @@ try {
   while (!signingSecret && Date.now() < deadline && listener.exitCode === null && !interrupted) await delay(200);
   if (!signingSecret) throw new Error('Stripe CLI did not establish the test webhook listener');
   console.log('Stripe test listener ready; only this local synthetic service is forwarded');
-  const env = { ...process.env, ...settings, STRIPE_WEBHOOK_SECRET: signingSecret, LOCAL_E2E: '1', LOCAL_STRIPE_E2E: '1' };
+  const env = { ...testEnv, STRIPE_WEBHOOK_SECRET: signingSecret };
   delete env.LOCAL_STRIPE_CLI;
   const app = child(process.execPath, ['node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1', '--port', '3061'], env);
   let ready = false;

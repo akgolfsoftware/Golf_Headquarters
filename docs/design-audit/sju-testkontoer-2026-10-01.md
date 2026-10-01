@@ -32,19 +32,26 @@ Den lokale databasen og lokal Auth inneholder begge de samme sju syntetiske kont
 | Kontoer i app og lokal Auth | 7 i begge |
 | Roller, WANG/TN-medlemskap, trenerpublisering, Live og lagret oppsummering på 390/1440 px | 32 bestått, 0 feilet, 0 utelatt |
 | Full credit-booking og avbestilling i Chromium og WebKit | 2 bestått, 0 feilet, 0 utelatt |
-| Vern for lokalt miljø og output | 25 bestått |
+| Vern for lokalt miljø, Stripe-testmodus og output | 30 bestått |
 | Øktinspektør: datakilde, dose, innlogging, avvist tilgang og manglende økt | 4 bestått |
 | Bevisst nettverksbrudd ved henting av øktinnhold, 390/1440 px | 2 bestått, ingen ubehandlede nettleserfeil |
 | Samlet matrise med tidligere utelatte prøver | 70 bestått, 0 feilet, 0 utelatt, 0 omkjøringer (5,5 min) |
-| Full prosjektkontroll (`npm run verify`) | Bestått: statiske kontroller, 3 908 funksjonstester, 18 komponenttester og produksjonsbygg |
+| Full Stripe-kortbetaling, signert betalingsmelding og lagret booking/betaling i Chromium og WebKit | 2 bestått, 0 feilet, 0 utelatt (36,6 sek) |
+| Full prosjektkontroll (`npm run verify`) | Bestått: statiske kontroller, 3 912 funksjonstester, 18 komponenttester og produksjonsbygg |
 
 Den samlede matrisen består av de opprinnelige 32 kontobetingede variantene, rettet portalprøve, rettet tjenestevalg og implementert credit-prøve: 35 varianter × 2 nettlesermotorer = 70 kjøringer. Manifestet ligger i `tests/local-users/e2e-cases.json`.
 
 ## Avgrensning og videre lanseringsarbeid
 
-De siste to av de opprinnelige 72 kjøringene er full Stripe-kortbetaling i to nettlesere. Denne integrasjonen er fortsatt uprøvd her; miljøet har bevisst ingen betalingsnøkler. Booking med forhåndsbetalte timer beviser ikke Stripe Checkout, webhook, kortrefusjon eller betalings-e-post.
+De siste to av de opprinnelige 72 kjøringene er nå bestått: full Stripe-kortbetaling med testkort 4242 i Chromium og WebKit. Sluttkjøringen ga 2 bestått, 0 feilet, 0 utelatt og 0 omkjøringer på 36,6 sekunder. Sammen med den tidligere 70-kjøringsmatrisen er alle 72 opprinnelig utelatte kjøringer dekket. Stripe kjøres separat fordi denne prøven trenger ekte Stripe-testmodus, mens standardmatrisen er nettverksisolert.
 
-Oppfølging etter bestilling om siste retting og merge: den gamle utelatte Stripe-prøven er erstattet med en konkret gjestereise og en separat testmodus-kjører. Den krever ekte Stripe Checkout, mottatt signert betalingsmelding og lagret bekreftet booking/betaling. 28 miljø- og outputkontroller består, inkludert avvisning av produksjonsnøkler, eksterne appmål og andre kontoers betalingshendelser. Den eksisterende CLI-testtilgangen ble kontrollert direkte mot Stripe og avvist med `api_key_expired`. Ny innlogging er åpnet; ingen kortbetaling er utført og ingen Stripe-prøve er rapportert som bestått. Merge venter på avklart betalingskontroll. Se [oppsettet](../utvikling/lokal-brukertest.md#separat-stripe-testmodus).
+Betalingsprøven oppretter en syntetisk gjestebooking på 100 kroner gjennom appen. Før kortet fylles inn kontrolleres testmodus, beløp, valuta og ventende booking. Deretter kreves faktisk `paid` hos Stripe, signert Checkout-melding med HTTP 200, lokal `CONFIRMED` og nøyaktig én betalingsrad med `SUCCEEDED`, 10 000 øre og NOK. Kvitteringen må vise bekreftet bestilling. Ingen ekte kort, belastning eller spillerdata brukes.
+
+Den utløpte CLI-testnøkkelen ble erstattet av fornyet Stripe CLI-innlogging. CLI 1.53 bruker kortvarig OAuth-tilgang fra macOS-nøkkelringen. Appen godtar denne bare i den dedikerte lokale utviklingsprosessen med riktige lokale mål, og tvinger API-kall til valgt konto i testmodus. Produksjonsbygg, hostede mål, annen API-vert og blandede nøkler avvises. Fire funksjonstester kontrollerer disse grensene; 30 separate miljø-/outputprøver består. Innlogging og kvitteringsreferanser skjules i kjøreloggen.
+
+Testfeil underveis var foreldede felter/innlasting, blokkering av Stripe sine skjemafiler og kortvalg med en utvidet klikkflate. Prøven velger kort via den faktiske knappens tastaturhandling og fyller det virkelige skjemaet. Ingen betalingsrespons er simulert og ingen appvakt er slått av. Oppsettet er beskrevet i [lokal brukertest](../utvikling/lokal-brukertest.md#separat-stripe-testmodus).
+
+Betalings-e-post og push er bevisst ikke koblet til ekte leverandører i dette miljøet. Appen logger manglende lokal e-postmal etter betalingen; dette er ikke bevis for e-postleveranse. Refusjon, e-post, abonnement, avbrudd/gjentatte hendelser og øvrige L05-reiser gjenstår i lanseringsplanen.
 
 Den gamle Før-kort-prøven er oppdatert til faktisk spillerprofil med Plan og Workbench. Den er ikke et nytt bevis for hele Før/Etter-funksjonen. Gjennomføring og oppsummering kontrolleres i den separate, faktisk lagrende treningsreisen.
 

@@ -11,6 +11,7 @@
  */
 
 import { test, expect } from "./_test";
+import { stripeJourney } from "../local-users/stripe-journey";
 
 test.describe("Drop-in booking", () => {
   test("/booking viser tilgjengelig bookingvei", async ({ page }) => {
@@ -51,7 +52,6 @@ test.describe("Drop-in booking", () => {
 
   test("Full Stripe-checkout med test-kort 4242", async ({ page }) => {
     test.skip(process.env.LOCAL_STRIPE_E2E !== "1", "Requires the isolated Stripe test-mode runner");
-    const { stripeJourney } = await import("../local-users/stripe-journey");
     await stripeJourney(page);
   });
 });

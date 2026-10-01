@@ -1,6 +1,6 @@
 # Feillogg — læring for videre arbeid
 
-- 01.10.2026: Stripe-prøvene ble blokkert av utløpt CLI-testnøkkel (`api_key_expired`). Kontroller testtilgang før app og booking startes; forny innloggingen og bruk bare testnøkkel i en separat, ignorert konfigurasjon. En gammel innloggingsfil er ikke bevis på gyldig tilgang.
+- 01.10.2026: Stripe-prøvene ble blokkert av utløpt CLI-testnøkkel (`api_key_expired`). Kontroller testtilgang før app og booking startes; forny innloggingen og bruk bare testnøkkel i en separat, ignorert konfigurasjon. En gammel innloggingsfil er ikke bevis på gyldig tilgang. CLI 1.53 bruker kortvarig OAuth i nøkkelringen; lokal adapter må tvinge testmodus og avvise hostede mål. Checkout krever også Stripe sine CDN-filer og eksplisitt kortvalg før feltene finnes.
 
 - 01.10.2026: Gruppekontrollen stoppet da en samtidig merge endret felles `origin/main` under kjøring; ta inn det nye grunnlaget og kjør kontrollene igjen, uten å endre designvakten.
 

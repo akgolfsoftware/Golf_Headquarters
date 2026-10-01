@@ -23,7 +23,7 @@ Object.assign(env, local, { NEXT_TELEMETRY_DISABLED: '1' });
 // The global maintenance sign would hide every local app page. This is only
 // the already validated synthetic environment, with all access guards intact.
 if (['dev', 'users', 'e2e', 'stripe'].includes(process.argv[2])) { env.VEDLIKEHOLD = '0'; env.BOOKING_PUBLIC = 'true'; }
-if (process.argv[2] === 'stripe') {
+if (['stripe', 'stripe-auth'].includes(process.argv[2])) {
   env.LOCAL_STRIPE_RUNNER = '1';
   if (process.env.LOCAL_STRIPE_CLI) env.LOCAL_STRIPE_CLI = process.env.LOCAL_STRIPE_CLI;
 }
@@ -41,6 +41,7 @@ const actions = {
   users: ['node', 'node_modules/@playwright/test/cli.js', 'test', '-c', 'tests/local-users/playwright.config.ts'],
   e2e: ['node', 'node_modules/@playwright/test/cli.js', 'test', '-c', 'tests/local-users/e2e.config.ts'],
   stripe: ['node', 'scripts/local-stripe-run.mjs'],
+  'stripe-auth': ['node', 'scripts/local-stripe-auth.mjs'],
   journeys: ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/storage-journeys.test.ts'],
   verify: ['npm', 'run', 'verify'],
   static: ['npm', 'run', 'verify:static'],
@@ -49,7 +50,7 @@ const actions = {
   typegen: ['node', 'node_modules/next/dist/bin/next', 'typegen'],
 };
 const command = actions[process.argv[2]];
-if (!command) throw new Error('Choose bootstrap, seed, dev, users, e2e, stripe, journeys, static, verify, test, build or typegen');
+if (!command) throw new Error('Choose bootstrap, seed, dev, users, e2e, stripe, stripe-auth, journeys, static, verify, test, build or typegen');
 const args = command.slice(1);
 if (['users', 'e2e', 'stripe'].includes(process.argv[2])) args.push(...process.argv.slice(3));
 const credentialsFile = resolve(root, '.codex/environments/brukere/.env.users');

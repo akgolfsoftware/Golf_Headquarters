@@ -49,6 +49,10 @@ test('known local credentials are removed from failed action output', () => {
 test('non-sensitive status remains available for diagnosis', () => {
   assert.equal(redactLocalUsersOutput('24 passed, 0 failed'), '24 passed, 0 failed');
 });
+test('Stripe receipt session query is removed from development output', () => {
+  assert.equal(redactLocalUsersOutput('GET /booking/kvittering/synthetic?session_id=cs_test_synthetic'),
+    'GET /booking/kvittering/synthetic?session_id=[redacted]');
+});
 
 test('isolated runtime accepts only local service configuration', () => {
   assert.doesNotThrow(() => assertLocalUsersRuntime({ ...local, SUPABASE_SERVICE_ROLE_KEY: 'local-only', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'local-only' }));

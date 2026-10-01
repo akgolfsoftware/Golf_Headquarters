@@ -5,7 +5,9 @@ import { assertLocalUsersTargets } from "../../scripts/local-users-target.mjs";
 import { assertStripeTestSettings } from "../../scripts/local-stripe-target.mjs";
 
 const targets = assertLocalUsersTargets(process.env);
-assertStripeTestSettings({ STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY });
+assertStripeTestSettings(process.env.LOCAL_STRIPE_OAUTH_TOKEN ? {
+  LOCAL_STRIPE_OAUTH_TOKEN: process.env.LOCAL_STRIPE_OAUTH_TOKEN, LOCAL_STRIPE_ACCOUNT: process.env.LOCAL_STRIPE_ACCOUNT,
+} : { STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY });
 if (process.env.LOCAL_STRIPE_E2E !== "1") throw new Error("Use the dedicated local Stripe runner");
 export default defineConfig({
   testDir: "../e2e", testMatch: "booking-drop-in.spec.ts", grep: /^.*Full Stripe-checkout med test-kort 4242$/,

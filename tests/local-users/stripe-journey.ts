@@ -5,12 +5,15 @@ import Stripe from "stripe";
 import { assertLocalUsersDatabase, assertLocalUsersTargets } from "../../scripts/local-users-target.mjs";
 import { assertStripeTestSettings } from "../../scripts/local-stripe-target.mjs";
 import { dismissCookieBanner } from "../e2e/_auth-helpers";
+import { localStripeTestAuth } from "../../src/lib/stripe/local-test-auth";
 
 /** A genuine test-mode Checkout and CLI webhook, never a simulated success page. */
 export async function stripeJourney(page: Page) {
   const targets = assertLocalUsersTargets(process.env);
-  assertStripeTestSettings({ STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY });
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  assertStripeTestSettings(process.env.LOCAL_STRIPE_OAUTH_TOKEN ? {
+    LOCAL_STRIPE_OAUTH_TOKEN: process.env.LOCAL_STRIPE_OAUTH_TOKEN, LOCAL_STRIPE_ACCOUNT: process.env.LOCAL_STRIPE_ACCOUNT,
+  } : { STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", localStripeTestAuth(process.env));
   const db = new pg.Pool({ connectionString: targets.database.toString() });
   const email = `stripe-e2e-${randomUUID()}@akgolf.test`;
   try {
@@ -38,6 +41,12 @@ export async function stripeJourney(page: Page) {
     expect(checkout.currency).toBe("nok");
     expect(booking.status).toBe("PENDING");
     // Stripe-hosted fields; confirm the real DOM when provider UI changes.
+    await page.getByRole("button", { name: "Pay with card", exact: true }).press("Enter");
+    const agentDisclosure = page.getByRole("checkbox", { name: "I am an AI agent acting on behalf of someone else", exact: true });
+    if (await agentDisclosure.count()) {
+      await agentDisclosure.press("Space");
+      await expect(agentDisclosure).toBeChecked();
+    }
     await page.locator('input[name="cardNumber"]').fill("4242424242424242");
     await page.locator('input[name="cardExpiry"]').fill("12/34");
     await page.locator('input[name="cardCvc"]').fill("123");

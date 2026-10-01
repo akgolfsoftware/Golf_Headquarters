@@ -97,3 +97,8 @@ Lansering kan anbefales når alle P0-punkter er lukket, avklart produktomfang er
 ## Oppfølging av utelatte brukerprøver
 
 Se [kontrollen med sju testkontoer](../design-audit/sju-testkontoer-2026-10-01.md) for arbeidet etter produksjonsmålingen over. De 64 kontobetingede kjøringene betyr 32 prøvevarianter i to nettlesere. Kontoer og testdata gjenbrukes i et isolert lokalt miljø, med egne negative tilgangsprøver. L11 kan først lukkes når også øvrige kritiske reiser og produksjonsavhengigheter er kontrollert; lokal credit-booking erstatter ikke Stripe-prøven i L05.
+
+
+### Betalingskontroll etter fornyet Stripe-testtilgang
+
+De to resterende kjøringene av full Stripe Checkout er bestått i Chromium og WebKit med syntetisk gjest, testkort 4242, ekte signert betalingsmelding og lagret booking/betaling. Sammen med de 70 tidligere beståtte er alle opprinnelig 72 utelatte kjøringer dekket lokalt. Se [målingen](../design-audit/sju-testkontoer-2026-10-01.md). L05 og L11 holdes åpne for øvrige kritiske reiser: blant annet refusjon, abonnement, e-postleveranse, gjentakelser/avbrudd og produksjonsavhengigheter. Lokal kvitteringstekst er ikke bevis for levert e-post; leverandøren er ikke aktivert i riggen.

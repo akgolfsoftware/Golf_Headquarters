@@ -9,8 +9,14 @@ test('test key accepted, live keys and additional providers rejected', () => {
     assert.throws(() => assertStripeTestSettings(settings));
   }
 });
+test('OAuth test settings require exactly the short-lived token and account', () => {
+  const settings = { LOCAL_STRIPE_OAUTH_TOKEN: 'oak_synthetic', LOCAL_STRIPE_ACCOUNT: 'acct_synthetic' };
+  assert.doesNotThrow(() => assertStripeTestSettings(settings));
+  assert.throws(() => assertStripeTestSettings({ ...settings, STRIPE_SECRET_KEY: 'sk_live_synthetic' }));
+  assert.throws(() => assertStripeTestSettings({ ...settings, LOCAL_STRIPE_ACCOUNT: undefined }));
+});
 test('browser is restricted to local app/Auth and HTTPS Stripe', () => {
-  for (const url of ['http://127.0.0.1:3061/booking', 'https://checkout.stripe.com/c/pay/test', 'https://js.stripe.com/v3/']) {
+  for (const url of ['http://127.0.0.1:3061/booking', 'https://checkout.stripe.com/c/pay/test', 'https://js.stripe.com/v3/', 'https://b.stripecdn.com/']) {
     assert.equal(isLocalStripeBrowserUrl(url), true);
   }
   for (const url of ['https://akgolf.no', 'http://checkout.stripe.com', 'https://stripe.com.example.com',
