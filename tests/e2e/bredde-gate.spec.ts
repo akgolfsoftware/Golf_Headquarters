@@ -91,8 +91,13 @@ async function målBredde(
   for (const skjerm of skjermer) {
     if (KJENT_OVERFLYT.includes(skjerm.url)) continue;
     await page.goto(skjerm.url, { waitUntil: "load" });
-    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
-    await expect(page).not.toHaveURL(/\/auth\/login/);
+    if (skjerm.url === "/auth/login") {
+      await expect(page.getByRole("heading", { name: "Logg inn på AK Golf HQ", exact: true })).toBeVisible();
+      await expect(page).toHaveURL(/\/auth\/login(?:[/?].*)?$/);
+    } else {
+      await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+      await expect(page).not.toHaveURL(/\/auth\/login/);
+    }
     await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toHaveCount(0);
     // La layouten sette seg (fonter, hydrering) før måling — to rAF-runder.
     await page.evaluate(
