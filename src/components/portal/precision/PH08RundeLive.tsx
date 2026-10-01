@@ -20,13 +20,17 @@
  *     Modellen tillater ikke Tee som hvileposisjon mellom slag.
  *   - Fart på bom er «Kort» eller «Lang» (modellens KORT og FORBI).
  *   - Køllelista er en fast standardbag. Spillerens egen bag finnes ikke i koden.
- *   - Runde-oversikten og SG-panelet er ikke i tegningen; de ligger i koden, men
- *     nås ikke fra denne flaten.
+ *   - Flere slagdetaljer gir tilgang til eksisterende føring med vind, notater
+ *     og øvrige felt. Tilbakepilen bevarer tilgang til rundeoversikt og SG.
+ *   - Registrerte slag mellomlagres per hull og bruker før hullet er ferdig.
+ *     Angre og varsel ved lagringsfeil bevarer eksisterende funksjoner.
  * Ingen GPS eller banekart (Anders 28.09.2026).
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, Flag, Plus } from "lucide-react";
 import { FeilTilstand, Ikon, Knapp, LasterTilstand, Meta, StatusPille, TomTilstand } from "@/components/precision/pa";
+import type { DesignLie, UtkastSlag } from "@/lib/runde-logg/precision-utkast";
+export type { UtkastSlag, UtkastPutt } from "@/lib/runde-logg/precision-utkast";
 import type { HvileLie, LoggetSlag, PuttRegistrering } from "@/lib/runde-logg/types";
 import type { PuttBreakRetning, PuttSlopeAlvorlighet } from "@/generated/prisma/enums";
 import "@/styles/precision-athletics.css";
@@ -34,7 +38,6 @@ import "@/styles/precision-athletics.css";
 export const BAG = ["Driver", "3W", "5W", "4H", "5i", "6i", "7i", "8i", "9i", "PW", "50°", "54°", "58°"] as const;
 const PUTTER = "Putter";
 
-type DesignLie = "TEE" | "FAIRWAY" | "SEMI" | "ROUGH" | "BUNKER" | "TRAER" | "GREEN";
 const LIER: Array<[DesignLie, string]> = [
   ["TEE", "Tee"], ["FAIRWAY", "Fairway"], ["SEMI", "Semi"], ["ROUGH", "Rough"], ["BUNKER", "Bunker"], ["TRAER", "Trær"], ["GREEN", "Green"],
 ];
@@ -46,10 +49,6 @@ const BREAKS: Array<[PuttBreakRetning, string]> = [
 ];
 const HELNING: Array<[PuttSlopeAlvorlighet, string]> = [["SVAK", "Svak"], ["MODERAT", "Moderat"], ["KRAFTIG", "Kraftig"]];
 
-export type UtkastPutt = {
-  brk: PuttBreakRetning; hel: PuttSlopeAlvorlighet; res: "hull" | "miss"; fart: "Kort" | "Lang" | null; miss: "Venstre" | "Høyre" | "På linja" | null;
-};
-export type UtkastSlag = { id: string; dist: number; lie: DesignLie; club: string; pen: 0 | 1; putt: UtkastPutt | null };
 export type SpiltHull = { par: number; slag: number };
 
 type Skjema = {
@@ -111,6 +110,8 @@ export type PH08Props = {
   spilte: readonly SpiltHull[];
   utkast?: readonly UtkastSlag[];
   feilKode?: string;
+  lagringsfeil?: boolean;
+  onDetaljer?: () => void;
   onUtkast?: (u: readonly UtkastSlag[]) => void;
   /** Hullet er ferdig: slagene i modellens kjede og hullets lengde slik spilleren førte den. */
   onFerdigHull: (slag: LoggetSlag[], lengdeMeter: number, antallSlag: number) => void;
@@ -118,18 +119,18 @@ export type PH08Props = {
   onTilbake: () => void;
 };
 
-export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHull, par, lengdeMeter, spilte, utkast = [], feilKode, onUtkast, onFerdigHull, onAvslutt, onTilbake }: PH08Props) {
+export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHull, par, lengdeMeter, spilte, utkast = [], feilKode, lagringsfeil = false, onDetaljer, onUtkast, onFerdigHull, onAvslutt, onTilbake }: PH08Props) {
   const [shots, setShots] = useState<UtkastSlag[]>(() => [...utkast]);
   const [edit, setEdit] = useState<number | null>(null);
   const [dr, setDr] = useState<Skjema>(() => (utkast.length ? tomt() : blank(lengdeMeter, "TEE")));
   const [toast, setToast] = useState<{ t: string; m: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hoppOverFirst = useRef(true);
-
-  useEffect(() => {
-    if (hoppOverFirst.current) { hoppOverFirst.current = false; return; }
-    onUtkast?.(shots);
-  }, [shots, onUtkast]);
+  // Publiser fra brukerhandlingen. En effekt som avhenger av foreldrens
+  // callback kan ellers overskrive utkastet ved gjenåpning eller hullbytte.
+  const settUtkast = (neste: UtkastSlag[]) => {
+    setShots(neste);
+    onUtkast?.(neste);
+  };
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   const visToast = (t: string, m: string) => {
@@ -144,10 +145,14 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
   const tot = spilte.reduce((a, h) => a + h.slag, 0);
   const totPar = spilte.reduce((a, h) => a + h.par, 0);
   const erForste = shots.length === 0 && edit == null;
-  const okBase = dr.dist !== "" && dr.lie !== "" && dr.club !== "";
+  const avstand = Number(dr.dist);
+  const okBase = dr.dist !== "" && Number.isFinite(avstand) && avstand > 0 && avstand <= 700
+    && (dr.lie !== "TEE" || avstand >= 40) && dr.lie !== "" && dr.club !== ""
+    && (!(erForste || edit === 0) || dr.lie === "TEE");
   const okPutt = okBase && dr.brk !== "" && dr.hel !== "" && (dr.res === "hull" || (dr.res === "miss" && dr.fart !== "" && dr.miss !== ""));
-  const ok = green ? okPutt : okBase;
-  const kanHull = okBase && dr.pen === 0 && (!green || dr.res === "hull" || dr.res === "");
+  const ok = (green ? okPutt && (dr.res !== "hull" || dr.pen === 0) : okBase)
+    && (edit != null || shots.length < 25);
+  const kanHull = shots.length < 25 && okBase && dr.pen === 0 && (!green || dr.res === "hull" || dr.res === "");
 
   const sett = <K extends keyof Skjema>(k: K) => (v: Skjema[K]) =>
     setDr((x) => ({ ...x, [k]: v, ...(k === "lie" && v === "GREEN" ? { club: PUTTER } : {}), ...(k === "lie" && v !== "GREEN" && x.club === PUTTER ? { club: "" } : {}) }));
@@ -159,8 +164,8 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
 
   const avsluttHull = (liste: UtkastSlag[]) => {
     const sc = liste.reduce((a, s) => a + 1 + s.pen, 0);
-    const fortsatt = hullNr < antallHull;
-    visToast(`Hull ${hullNr}: ${sc} slag (${toPar(sc - par)})`, fortsatt ? `NESTE: HULL ${hullNr + 1}` : "SISTE HULL");
+    const fortsatt = spilte.length + 1 < antallHull;
+    visToast(`Hull ${hullNr}: ${sc} slag (${toPar(sc - par)})`, fortsatt ? "NESTE UFERDIGE HULL" : "SISTE HULL");
     const forste = liste[0];
     const lengde = forste && forste.lie === "TEE" ? forste.dist : lengdeMeter;
     setShots([]);
@@ -169,8 +174,9 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
   };
 
   const lagre = (hull: boolean) => {
+    if (!(hull ? kanHull : ok)) return;
     if (edit != null) {
-      setShots((l) => l.map((s, i) => (i === edit ? { ...rec(), id: s.id } : s)));
+      settUtkast(shots.map((s, i) => (i === edit ? { ...rec(), id: s.id } : s)));
       visToast(`Slag ${edit + 1} er rettet`, "—");
       setEdit(null);
       setDr(blank(null, ""));
@@ -178,7 +184,7 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
     }
     const liste = [...shots, rec()];
     if (hull || (green && dr.res === "hull")) { avsluttHull(liste); return; }
-    setShots(liste);
+    settUtkast(liste);
     setDr(blank(null, green ? "GREEN" : ""));
   };
 
@@ -190,7 +196,7 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
 
   const lieNavn = (k: DesignLie) => LIER.find((l) => l[0] === k)?.[1] ?? k;
   const tomtHull = shots.length === 0 && spilte.length === 0 && edit == null;
-  const visLier = LIER.filter(([k]) => k !== "TEE" || erForste || edit === 0);
+  const visLier = LIER.filter(([k]) => erForste || edit === 0 ? k === "TEE" : k !== "TEE");
 
   const top = <>
     <button type="button" className="pa-iconbtn" aria-label="Tilbake til hurtigføringen" onClick={onTilbake} style={{ width: 56, height: 56 }}><Ikon icon={ArrowLeft} name="arrow-left" size={20} /></button>
@@ -203,7 +209,10 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
       <span style={{ font: "600 17px/1 var(--font-mono)", color: "var(--text-primary)" }}>{spilte.length ? `${tot} (${toPar(tot - totPar)})` : "—"}</span>
       <Meta>ETTER {spilte.length} HULL</Meta>
     </span>
-    <button type="button" className="pa-iconbtn" aria-label="Avslutt runden" onClick={onAvslutt} style={{ width: 56, height: 56 }}><Ikon icon={Flag} name="flag" size={20} /></button>
+    <button type="button" className="pa-iconbtn" aria-label="Avslutt runden" onClick={() => {
+      if (shots.length) { visToast("Fullfør pågående hull først", "Slagene er beholdt i utkastet."); return; }
+      onAvslutt();
+    }} style={{ width: 56, height: 56 }}><Ikon icon={Flag} name="flag" size={20} /></button>
   </>;
 
   const gateOk = tilstand === "data";
@@ -214,10 +223,17 @@ export function PH08RundeLive({ tilstand, tema = "night", bane, hullNr, antallHu
   return <div className="pa-root" data-design="precision-athletics" data-theme={tema === "night" ? "night" : undefined} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
     <main id="pa-innhold" style={{ flex: 1, width: "100%", maxWidth: 600, margin: "0 auto", boxSizing: "border-box", padding: "12px 16px 16px", display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 56, flexWrap: "wrap" }}>{top}</div>
+      {lagringsfeil && <p role="alert">Slagene kunne ikke lagres på denne enheten. Behold siden åpen og prøv igjen.</p>}
+      {tilstand === "data" && onDetaljer && shots.length === 0 && <Knapp variant="ghost" onClick={onDetaljer}>Flere slagdetaljer</Knapp>}
+      {tilstand === "data" && shots.length > 0 && <Knapp variant="ghost" onClick={() => {
+        const neste = shots.slice(0, -1);
+        settUtkast(neste); setEdit(null);
+        setDr(neste.length ? blank(null, "") : blank(lengdeMeter, "TEE"));
+      }}>Angre siste slag</Knapp>}
       {tilstand === "laster" && <LasterTilstand text="Henter runden …" />}
-      {tilstand === "feil" && <FeilTilstand icon={Flag} title="Runden kunne ikke lagres" text="Slagene er lagret på telefonen og sendes når nettet er tilbake." code={feilKode ?? "FRAKOBLET"} />}
+      {tilstand === "feil" && <FeilTilstand icon={Flag} title="Runden kunne ikke lagres" text="Behold siden åpen og prøv igjen. Kontroller lagringen før du avslutter." code={feilKode ?? "FRAKOBLET"} />}
       {gateOk && <>
-        {tomtHull && <TomTilstand icon={Flag} title="Første slag på hull 1" text="Avstand, underlag og kølle for hvert slag. Appen går videre til neste slag automatisk." />}
+        {tomtHull && <TomTilstand icon={Flag} title={`Første slag på hull ${hullNr}`} text="Avstand, underlag og kølle for hvert slag. Appen går videre til neste slag automatisk." />}
         {shots.length > 0 && <section aria-label="Slag på hullet" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
             <span className="kicker" style={{ flex: 1, minWidth: 0 }}>Hull {hullNr} · {strokes} slag så langt</span>

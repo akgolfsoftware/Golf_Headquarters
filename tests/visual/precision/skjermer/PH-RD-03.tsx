@@ -15,6 +15,7 @@ const base: PH08Props = {
   onFerdigHull: () => {},
   onAvslutt: () => {},
   onTilbake: () => {},
+  onDetaljer: () => {},
 };
 
 const slag: UtkastSlag[] = [
@@ -28,12 +29,13 @@ const putt: UtkastSlag[] = [
 
 const lys = (p: Partial<PH08Props>) => <PH08RundeLive {...base} tema="light" {...p} />;
 
-export const natt = ["data", "tom", "laster", "feil", "putt"];
+export const natt = ["data", "tom", "laster", "feil", "putt", "lagringsfeil"];
 export const tilstander = {
   data: <PH08RundeLive {...base} utkast={slag} />,
   tom: <PH08RundeLive {...base} hullNr={1} spilte={[]} />,
   laster: <PH08RundeLive {...base} tilstand="laster" />,
   feil: <PH08RundeLive {...base} tilstand="feil" />,
+  lagringsfeil: <PH08RundeLive {...base} utkast={slag} lagringsfeil />,
   putt: <PH08RundeLive {...base} utkast={putt} />,
   "lys-data": lys({ utkast: slag }),
   "lys-tom": lys({ hullNr: 1, spilte: [] }),
