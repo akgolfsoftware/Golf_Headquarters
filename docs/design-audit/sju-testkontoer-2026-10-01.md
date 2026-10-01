@@ -60,3 +60,13 @@ Dette er lokal funksjonskontroll med syntetiske data. Det er ikke produksjonskon
 Sikkerhetsvurdering av endringen: appens eierskaps- og samtykkevakter beholdes; negative brukerprøver er kjørt. Den nye inspektørleseren bruker eksisterende økttilgang før detaljspørringen og binder den til samme spiller. Mindreårig uten samtykke blir avvist; ingen samtykke- eller sletteregler er endret. Endringene som skal lagres er kontrollert mot lokale passord og nøkler, uten treff. Miljøfilene er fortsatt ignorerte. Se [rigg og kjørekommandoer](../utvikling/lokal-brukertest.md).
 
 Alle resultatene er lokale. Det er ikke opprettet en ny CI-kjøring eller publisert en ny produksjonsversjon i denne oppgaven.
+
+## Samlet main etter samtidig Workbench-portering
+
+PR #1069 ble merget som `f9c40e542` etter grønn lokal kontroll, 72/72 og PR-CI. PR #1070 (`29f064aa4`) kom inn samtidig. Ny prøve av samlet main ga 67/70: ukeforslag manglet i begge nettlesere, og én WebKit-innlasting feilet. Den siste bestod uendret ved målrettet omprøve.
+
+Oppfølgingen kobler spillerens ukeforslag til eksisterende serverhandlinger, med Precision-komponenter, tydelig standardforslag uten AI og eksplisitt valg før lagring. Valgt uke beregnes fra norske kalenderdatoer. PlayerHQ-ruten laster nå også de felles Precision-stilene og `.pa-root`; uten dem manglet blant annet dialogplassering og knappestiler. Eksisterende servervakter, PRO-krav og datamodell er beholdt. Mobil 390 px og desktop 1440 px er visuelt inspisert med syntetiske data; dette er teknisk kontroll, ikke ny designgodkjenning fra Anders.
+
+Produksjonsprøvens to breddefeil kom fra en feil testforventning: innloggingssiden har en navngitt h2, og skal naturlig nok bli på `/auth/login`. Testen kontrollerer nå riktig overskrift/URL og beholder breddemålingen og avvisningskontrollene for beskyttede ruter. Den målrettede lesende produksjonsprøven består i begge nettlesere.
+
+Etter rettingene: 70/70 lokale brukerprøver bestått uten feil, skip eller omkjøringer (6,5 minutter). Full `npm run verify` har også bestått: 3 914 funksjonstester, 18 komponenttester og produksjonsbygg. Resultatene gjelder samlet main `f9c40e542` med oppfølgingsrettingene, ikke bare den opprinnelige PR-grenen.

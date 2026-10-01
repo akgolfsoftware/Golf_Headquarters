@@ -25,6 +25,7 @@ import { Ark, Nokkelverdi, Side, SideHode } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { AKSER, Aksestang, Caps, Fremdrift, Listerad, Oktkort, Valgpille, Velger, akseFra, akseStil } from "@/components/precision/pa-workbench";
 import { useUkeMotor } from "@/components/workbench/useUkeMotor";
+import { Ukeforslag } from "@/components/workbench/Ukeforslag";
 import { lesKildeDataTransfer, settKildeDataTransfer } from "@/components/workbench/wb-drag";
 import { osloIdag } from "@/components/workbench/WeekGrid";
 import { AREA_LABEL, UI } from "@/lib/domain/workbench/labels";
@@ -230,6 +231,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     <div className="a9-rad">
       <Knapp variant="ghost" size="sm" icon={RotateCcw} onClick={() => byttUke(0)}>{UI.today}</Knapp>
       <Knapp variant="secondary" size="sm" icon={Plus} onClick={() => setNyOkt({ dato: week.days[dag]?.date ?? week.weekStart, startMinutt: 16 * 60, pyramide: null })}>{UI.createSession}</Knapp>
+      {role === "player" && <Ukeforslag key={week.weekStart} weekStart={week.weekStart} onLagret={motor.lastPaaNytt} />}
       <span style={{ flex: 1 }} />
       <Knapp size="sm" icon={Send} disabled={motor.utkast.length === 0 || travel} onClick={() => setPubliser(true)}>{UI.publishWeek}{motor.utkast.length ? ` · ${motor.utkast.length}` : ""}</Knapp>
     </div>
