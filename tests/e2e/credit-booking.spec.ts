@@ -10,6 +10,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { selectPasswordLogin } from "./_auth-helpers";
 
 const TEST_USER_EMAIL = process.env.E2E_TEST_USER_EMAIL ?? "";
 const TEST_USER_PASSWORD = process.env.E2E_TEST_USER_PASSWORD ?? "";
@@ -23,6 +24,7 @@ test.describe("Credit booking", () => {
   test("Pro-spiller booker time med credit, credits trekkes fra", async ({ page }) => {
     // Login
     await page.goto("/auth/login");
+    await selectPasswordLogin(page);
     await page.locator('input[type="email"]').fill(TEST_USER_EMAIL);
     await page.locator('input[type="password"]').fill(TEST_USER_PASSWORD);
     await page.locator('button[type="submit"]').click();

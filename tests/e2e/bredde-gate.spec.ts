@@ -20,7 +20,12 @@
 
 import { test, expect, type Page } from "@playwright/test";
 import { config as loadEnv } from "dotenv";
-import { coachCredentials, playerCredentials, dismissCookieBanner } from "./_auth-helpers";
+import {
+  coachCredentials,
+  playerCredentials,
+  dismissCookieBanner,
+  selectPasswordLogin,
+} from "./_auth-helpers";
 
 loadEnv({ path: ".env.local" });
 
@@ -80,7 +85,7 @@ const TEAM_NORWAY = [
 
 async function loggInn(page: Page, email: string, password: string): Promise<void> {
   await page.goto("/auth/login");
-  await dismissCookieBanner(page);
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();

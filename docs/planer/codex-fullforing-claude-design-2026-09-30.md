@@ -2,6 +2,8 @@
 
 Dato: 30.09.2026. Bestilt av Anders i denne økten.
 
+Oppdatert prioritering og kildekontroll 01.10: [lanseringsplan med aktive eiere og ferdigkriterier](lanseringsplan-2026-10-01.md). Denne eldre planen beholdes som funksjons- og arbeidsgrunnlag.
+
 **Arbeidsdeling:** Claude Design eier designet. Codex eier appkode, datakoblinger, tester og teknisk kontroll. Anders eier nye produktbeslutninger, valg mellom skjermvarianter og publisering. Målet er en komplett app med sammenhengende brukerreiser og dokumentert kvalitet.
 
 Planen viderefører [designautoriteten](../design-system/design-autoritet.md) og [produktreglene](../platform/BUSINESS-RULES.md). Den erstatter byggerekkefølgen i planene fra [24.09](prosjektplan-og-lanseringsplan-2026-09-24.md) og [25.09](plan-portering-claude-design-til-kode-2026-09-25.md). Eldre funksjonsbeskrivelser er underlag som må kontrolleres mot gjeldende beslutninger og kode. Dette er ingen ny designretning, prisbeslutning eller lanseringsdato.
