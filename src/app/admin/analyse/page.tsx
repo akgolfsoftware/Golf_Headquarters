@@ -25,19 +25,24 @@
  *
  * Design: canvas godkjent 30.08.2026 —
  * designsystem/canvas/agencyos-ia/Analyse.dc.html («Innsikt (15.8)»).
+ *
+ * AG-A03 (30.09.2026): fanene «stall» og «etterlevelse» er portert til Precision
+ * Athletics (AGA03Analyse, tegning AG-A1.jsx). «spiller», «treningsdata»,
+ * `?visning=trend` og `?visning=detalj` (spillerpanel og øvelser) vises
+ * uendret i samme skall. Etterlevelse følger minutt-regelen over 4 uker.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AnalyseHode } from "@/components/admin/v2/analyse/AnalyseHode";
-import { InnsiktHubV2 } from "@/components/admin/v2/InnsiktHubV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AGA03Analyse } from "@/components/admin/precision/AGA03Analyse";
 import { InnsiktStallV2 } from "@/components/admin/v2/InnsiktStallV2";
 import { AdminComplianceV2 } from "@/components/admin/v2/AdminComplianceV2";
 import { InnsiktSpillerListe } from "@/components/admin/v2/analyse/InnsiktSpillerListe";
 import { WorkbenchAnalyseV2 } from "@/components/admin/v2/analyse/WorkbenchAnalyseV2";
-import { ANALYSE_FANER, velgAnalyseFane } from "@/lib/admin/analyse/faner";
+import { velgAnalyseFane } from "@/lib/admin/analyse/faner";
 import { lastInnsiktHub, lastInnsiktSpillere, lastInnsiktStall, lastWorkbenchAnalyse } from "@/lib/admin/analyse/lastere";
+import { lastGruppeAnalyse, TOM_GRUPPE_ANALYSE } from "@/lib/admin/analyse/gruppe-analyse";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt · AgencyOS" };
@@ -63,44 +68,40 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
   const aktiv = velgAnalyseFane(params.fane);
 
   const spillereForTeller = await lastInnsiktSpillere(user);
-  const antall = { stall: spillereForTeller.length, spiller: spillereForTeller.length };
-  const hode = <AnalyseHode faner={ANALYSE_FANER} aktiv={aktiv} antall={antall} />;
+  const visGruppetall = (aktiv === "stall" && params.visning !== "trend") || (aktiv === "etterlevelse" && params.visning !== "detalj");
+  const analyse = visGruppetall ? await lastGruppeAnalyse(user) : TOM_GRUPPE_ANALYSE;
 
-  const innhold = await (async () => {
-    switch (aktiv) {
-      case "spiller":
-        return <InnsiktSpillerListe spillere={spillereForTeller} />;
-      case "stall": {
-        if (params.visning === "trend") {
-          const data = await lastInnsiktStall(user);
-          return <InnsiktStallV2 data={data} somFane />;
-        }
-        const data = await lastInnsiktHub(user);
-        return <InnsiktHubV2 data={data} somFane />;
-      }
-      case "treningsdata": {
-        const data = await lastWorkbenchAnalyse(user);
-        return <WorkbenchAnalyseV2 data={data} />;
-      }
-      case "etterlevelse": {
+  let hub = null;
+  let eldre: React.ReactNode | undefined;
+  switch (aktiv) {
+    case "spiller":
+      eldre = <InnsiktSpillerListe spillere={spillereForTeller} />;
+      break;
+    case "stall":
+      if (params.visning === "trend") eldre = <InnsiktStallV2 data={await lastInnsiktStall(user)} somFane />;
+      else hub = await lastInnsiktHub(user);
+      break;
+    case "treningsdata":
+      eldre = <WorkbenchAnalyseV2 data={await lastWorkbenchAnalyse(user)} />;
+      break;
+    case "etterlevelse":
+      if (params.visning === "detalj") {
         const { days, label } = windowDaysFra(params.periode);
-        const data = await loadComplianceData({
-          windowDays: days,
-          periodLabel: label,
-          selectedPlayerId: params.studentId,
-          viewer: user,
-        });
-        return <AdminComplianceV2 data={data} somFane />;
+        const data = await loadComplianceData({ windowDays: days, periodLabel: label, selectedPlayerId: params.studentId, viewer: user });
+        eldre = <AdminComplianceV2 data={data} somFane />;
       }
-    }
-  })();
+      break;
+  }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        {hode}
-        {innhold}
-      </div>
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AGA03Analyse
+        tilstand={spillereForTeller.length === 0 || (aktiv === "stall" && visGruppetall && analyse.grupper.length === 0) ? "tom" : "data"}
+        fane={aktiv}
+        hub={hub}
+        analyse={analyse}
+        eldre={eldre}
+      />
+    </AgencyOSSkall>
   );
 }
