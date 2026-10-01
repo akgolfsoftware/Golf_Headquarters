@@ -29,7 +29,7 @@ export function LoginPrecisionView() {
       const { error } = await supabase.auth.signInWithOtp({
         email: epost.trim(),
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/etter-innlogging`,
+          emailRedirectTo: `${window.location.origin}/api/auth/oauth-callback`,
         },
       });
 
@@ -66,7 +66,7 @@ export function LoginPrecisionView() {
       if (error) {
         setMelding({ type: "feil", tekst: "Ugyldig eller utløpt kode. Prøv igjen." });
       } else {
-        router.push("/portal");
+        router.replace("/auth/etter-innlogging");
       }
     } catch (_err) {
       setMelding({ type: "feil", tekst: "Kunne ikke verifisere koden." });
@@ -90,7 +90,7 @@ export function LoginPrecisionView() {
       if (error) {
         setMelding({ type: "feil", tekst: "Feil e-post eller passord." });
       } else {
-        router.push("/portal");
+        router.replace("/auth/etter-innlogging");
       }
     } catch (_err) {
       setMelding({ type: "feil", tekst: "Innlogging feilet. Prøv igjen." });
@@ -105,7 +105,7 @@ export function LoginPrecisionView() {
       await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/etter-innlogging`,
+          redirectTo: `${window.location.origin}/api/auth/oauth-callback`,
         },
       });
     } catch (_err) {
@@ -341,8 +341,10 @@ export function LoginPrecisionView() {
               <button
                 type="button"
                 onClick={() => {
-                  alert("SMS tofaktor godkjent.");
-                  router.push("/portal");
+                  setMelding({
+                    type: "feil",
+                    tekst: "SMS-innlogging er ikke tilgjengelig ennå. Bruk e-post eller passord.",
+                  });
                 }}
                 disabled={!telefon || !smsKode}
                 className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#141413] py-2.5 font-sans text-xs font-bold text-white hover:bg-black transition-colors disabled:opacity-50"
