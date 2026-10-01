@@ -9,6 +9,12 @@ import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-
 
 export const runtime = "nodejs";
 
+// Behold nettleserens origin. Next sin interne origin kan være localhost
+// bak en lokal proxy, mens innloggingens cookies tilhører 127.0.0.1.
+function redirectWithinApp(path: string) {
+  return new NextResponse(null, { status: 307, headers: { Location: path } });
+}
+
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
   try {
@@ -29,16 +35,14 @@ export async function GET(req: NextRequest) {
   const next = safeRedirectPath(url.searchParams.get("next"), "/auth/etter-innlogging");
 
   if (!code) {
-    return NextResponse.redirect(new URL("/auth/login?error=no-code", url.origin));
+    return redirectWithinApp("/auth/login?error=no-code");
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(
-      new URL(`/auth/login?error=${encodeURIComponent(error.message)}`, url.origin),
-    );
+    return redirectWithinApp("/auth/login?error=invalid-code");
   }
 
   // Auto-link Supabase auth-bruker til Prisma User.
@@ -104,6 +108,5 @@ export async function GET(req: NextRequest) {
     await logError({ context: "auth.oauth-callback.auto-link", error, severity: "warn" });
   }
 
-  // next er allerede validert som relativ path — new URL er trygt her
-  return NextResponse.redirect(new URL(next, url.origin));
+  return redirectWithinApp(next);
 }
