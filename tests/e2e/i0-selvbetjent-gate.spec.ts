@@ -15,6 +15,7 @@
 import "../../scripts/_env";
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
+import { selectPasswordLogin } from "./_auth-helpers";
 
 const COACH_EMAIL = "coachtest@akgolf.test";
 const COACH_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
@@ -55,6 +56,7 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
 
     // Logg inn som coach.
     await page.goto("/auth/login");
+    await selectPasswordLogin(page);
     await page.locator('input[type="email"]').fill(COACH_EMAIL);
     await page.locator('input[type="password"]').fill(COACH_PASSWORD);
     await page.locator('button[type="submit"]').click();
@@ -81,6 +83,7 @@ test.describe("I0 — selvbetjent spiller usynlig i AgencyOS", () => {
     test.skip(!selvbetjentId, "Krever seedet selvbetjent testspiller");
 
     await page.goto("/auth/login");
+    await selectPasswordLogin(page);
     await page.locator('input[type="email"]').fill(COACH_EMAIL);
     await page.locator('input[type="password"]').fill(COACH_PASSWORD);
     await page.locator('button[type="submit"]').click();

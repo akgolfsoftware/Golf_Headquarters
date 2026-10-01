@@ -30,6 +30,12 @@ Titlene nedenfor er lest direkte fra Codex. Ingen ny bestilling er sendt til dem
 
 «Planlegg Codex’ kodeansvar» startet de tre siste oppgavene. Siste avlesning viser at koordinatorchatten deretter ble arkivert i sin egen økt; denne oppryddingen har ikke arkivert eller slettet den. De tre oppgavene er kontrollert direkte, også da de ikke kom med i sidepanelets samlede liste.
 
+## Oppfølging etter første planleveranse
+
+Kontroll 01.10.2026 ca. kl. 17.10: Redis-eierøkten har slått sammen [#1065](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1065) til main `b87c82d51` (kl. 17.07). Faktisk drift og eventuell publisering følges videre i den økten. Etterlevelse ligger i [#1066](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1066), med GitHub-kontroll under kjøring. Gruppeøkten har fullført lokale tester og lagret `77630b2f6`; teknisk/FYS er fortsatt under kontroll. Designøkten arbeider videre med ett fokus-/tastaturavvik i desktop/natt og har ikke gitt en samlet ferdigmelding.
+
+Sammenligning mot hver grens felles utgangspunkt viser konkret overlapp: etterlevelse og teknisk/FYS endrer begge `src/lib/portal-analyse/treningsanalyse-data.ts`; teknisk/FYS og gruppe endrer begge `src/lib/workbench/wb-actions.ts` og `docs/gdpr/datakart.md`. Samlet funksjonsprøve er nødvendig selv om Git kan slå sammen automatisk. Innloggingsrettingen overlapper ingen av disse kodefilene. Ingen oppgaver er flyttet, slettet eller gitt nye bestillinger herfra.
+
 ## Det vi allerede har bevis for
 
 | Leveranse | Dokumentert bevis | Avgrensning |
@@ -50,7 +56,7 @@ P0 betyr at punktet sperrer åpen lansering. P1 må også fullføres for avklart
 
 | ID / prioritet | Arbeid og nåstatus | Eier og avhengighet | Målbart ferdigkriterium |
 |---|---|---|---|
-| L01 / P0 | Stabil drift: Redis, feil i produksjonstesten og reproduserbar publisering. [Manuell deploy-jobb feilet](https://github.com/akgolfsoftware/Golf_Headquarters/actions/runs/36869358488); tidligere CLI-publisering er separat bevis | Redis: aktiv økt. Tester/publiseringsoppskrift: ufordelt. Kan gjøres før design | Redis virker etter feil/gjenforsøk. Kjerneinnganger virker i begge nettlesere. Manglende deploy-oppsett er rettet eller erstattet av en dokumentert og prøvd publiseringsvei. Versjon og tilbakeføring kan verifiseres |
+| L01 / P0 | Stabil drift: Redis, feil i produksjonstesten og reproduserbar publisering. [Manuell deploy-jobb feilet](https://github.com/akgolfsoftware/Golf_Headquarters/actions/runs/36869358488); tidligere CLI-publisering er separat bevis | Redis: aktiv økt. Innloggingsprøver: denne økten, se [kontrollrapport](../design-audit/innlogging-royktest-2026-10-01.md). Publiseringsoppskrift: ufordelt. Kan gjøres før design | Redis virker etter feil/gjenforsøk. Kjerneinnganger virker i begge nettlesere. Manglende deploy-oppsett er rettet eller erstattet av en dokumentert og prøvd publiseringsvei. Versjon og tilbakeføring kan verifiseres |
 | L02 / P0 | Samle etterlevelse, teknisk/FYS og gruppeflyt | De tre aktive kodeøktene. Samordnes etter L01 uten å overskrive hverandres endringer | Alle tre deler består egne prøver og én samlet trener → spiller → Live → analyse-reise på nyeste main. Samme eier, ID, kilde og faktiske tall hele veien |
 | L03 / P0 | Fullfør treningsmotorens øvrige grener: år/periode/måned/uke, kopi/serie/flytting, teknisk revisjon, FYS, turnering, samtidige endringer og offline/gjenopptakelse | Codex, foreløpig ufordelt utover L02. Bygger på L02 og vedtatte regler | Ingen tap, dobbelttelling, falsk lagring eller stille overskriving i kontrollerte feilforløp; publisert versjon og historikk bevares |
 | L04 / P0 | Lås og bygg valgte designreiser. Ta inn nyttig arbeid fra de eksisterende skjerm-PR-ene etter forskjellskontroll mot ny eksport | Aktiv designøkt → Codex → Anders. Kan leveres reisevis parallelt med L02–03 | Navngitt designversjon per reise; alle knapper koblet til virkelige handlinger. App og referanse vist side om side på 390 px og desktop, avtalte temaer og tom/lastende/feil/fullført. Anders' vurdering registrert |
@@ -73,7 +79,7 @@ P0 betyr at punktet sperrer åpen lansering. P1 må også fullføres for avklart
 
 Kritisk rekkefølge: fungerende driftsgrunnlag → sammenhengende trenings-, betalings- og personvernreiser → valgt design koblet til appen → samlet kontroll → pilot → lanseringsvedtak. Design og backend kan gå samtidig; endelig dato settes når de åpne P0-punktene har kjent omfang. Ingen ubegrunnet dato eller ferdigprosent oppgis.
 
-Første avgrensede testjobb er allerede lokalisert: de tre røde innloggingsprøvene forventer passordfelt/glemt-passord-lenke i startvisningen, mens `LoginView` viser dem etter «Logg inn med passord». Prøv og kontroller denne overgangen i begge nettlesere; behold kravene om fungerende innlogging og gjenoppretting. Ingen test er endret i planarbeidet.
+Første avgrensede testjobb er rettet lokalt: de tre røde innloggingsprøvene følger nå valget «Logg inn med passord». De seks opprinnelige feilene er gjenskapt før rettingen; utvidet kontroll har 24 beståtte prøver i Chromium/WebKit, inkludert gjenopprettingsnavigasjon og metodebytte på 390/1440 px. Se [kontrollrapporten](../design-audit/innlogging-royktest-2026-10-01.md). De 12 målrettede prøvene består også mot publisert app uten innsending. Full lokal kvalitetskontroll har bestått med 3 890 tester og produksjonsbygg. Integrasjon og ny samlet GitHub-produksjonsprøve gjenstår. Ekte innlogging og levering av gjenopprettingslenke må fortsatt prøves separat.
 
 ## Beslutninger som fortsatt må knyttes til konkret leveranse
 

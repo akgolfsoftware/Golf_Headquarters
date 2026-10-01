@@ -11,6 +11,7 @@
 import "../../scripts/_env";
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
+import { selectPasswordLogin } from "./_auth-helpers";
 
 const COACH_EMAIL = "coachtest@akgolf.test";
 const COACH_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
@@ -46,6 +47,7 @@ test.describe("Coach-scope IDOR — sider og API", () => {
     test.skip(!selvbetjentId, "Krever seed: npx tsx scripts/seed-platform-only-player.ts");
 
     await page.goto("/auth/login");
+    await selectPasswordLogin(page);
     await page.locator('input[type="email"]').fill(COACH_EMAIL);
     await page.locator('input[type="password"]').fill(COACH_PASSWORD);
     await page.locator('button[type="submit"]').click();

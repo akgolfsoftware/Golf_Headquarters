@@ -23,6 +23,7 @@ import {
   coachCredentials,
   playerCredentials,
   dismissCookieBanner,
+  selectPasswordLogin,
 } from "./_auth-helpers";
 
 loadEnv({ path: ".env.local" });
@@ -232,7 +233,7 @@ async function settTema(page: Page, tema: "dark" | "light"): Promise<void> {
 
 async function loggInn(page: Page, email: string, password: string): Promise<void> {
   await page.goto("/auth/login");
-  await dismissCookieBanner(page);
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();
@@ -273,7 +274,10 @@ test("login-siden har ekte lenker (uten innlogging)", async ({ page }) => {
   await page.goto("/auth/login", { waitUntil: "domcontentloaded" });
   await dismissCookieBanner(page);
   const feil = await auditSynligeKnapper(page);
-  await expect(page.getByRole("button", { name: /Logg inn/i }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send magisk innloggingslenke", exact: true })).toBeVisible();
+  await selectPasswordLogin(page);
+  feil.push(...(await auditSynligeKnapper(page)));
+  await expect(page.getByRole("button", { name: "Logg inn", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /Glemt passord/i }).first()).toBeVisible();
   expect(feil, feil.join("\n")).toEqual([]);
 });

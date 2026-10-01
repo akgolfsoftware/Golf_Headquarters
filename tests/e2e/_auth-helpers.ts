@@ -12,7 +12,7 @@
  */
 
 import { config as loadEnv } from "dotenv";
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 loadEnv({ path: ".env.local" });
 
@@ -67,13 +67,22 @@ export async function dismissCookieBanner(page: Page): Promise<void> {
   }
 }
 
+/** Velg passord fra standardvisningen med magisk lenke, som en bruker gjør. */
+export async function selectPasswordLogin(page: Page): Promise<void> {
+  // gotoAndWait stopper ved DOMContentLoaded; last også klientkoden før klikk.
+  await page.waitForLoadState("load");
+  await dismissCookieBanner(page);
+  await page.getByRole("button", { name: "Logg inn med passord", exact: true }).click();
+  await expect(page.locator('input[type="password"]')).toBeVisible();
+}
+
 async function loginWith(
   page: Page,
   email: string,
   password: string,
 ): Promise<void> {
   await page.goto("/auth/login");
-  await dismissCookieBanner(page);
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();
