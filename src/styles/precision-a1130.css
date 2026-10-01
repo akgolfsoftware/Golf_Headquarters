@@ -1,0 +1,39 @@
+/* AG-11-MND Workbench måned (navnet precision-aNNN.css er påkrevd av prøvemålingen). Bare tokens; ingen sidelengs rulling. */
+.am { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.am-rad { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.am-to { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; align-items: start; }
+@media (min-width: 900px) { .am-to { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+.am-kort { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.am-tekst { margin: 0; font: 400 14px/1.5 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.am-tall { font: 500 12px/1.2 var(--font-mono); color: var(--text-primary); white-space: nowrap; }
+.am-akse { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 8px; align-items: center; min-height: 44px; padding-left: 10px; border-top: 1px solid var(--border-hairline); box-shadow: inset 3px 0 0 var(--a9-akse, var(--border-strong)); min-width: 0; }
+.am-akse--sum { box-shadow: none; border-top: 1px solid var(--border-strong); }
+.am-akse__navn { font: 600 12px/1 var(--font-mono); color: var(--text-primary); }
+.am-akse--hode { min-height: 0; padding-bottom: 6px; box-shadow: none; border-top: 0; }
+.am-akse--hode span { font: 600 11px/1 var(--font-mono); color: var(--text-muted); }
+.am-akse > span:nth-child(n+2) { text-align: right; }
+.am-maned { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.am-maned__tekst { display: flex; flex-direction: column; gap: 4px; flex: 1 1 140px; min-width: 0; }
+.am-maned__navn { margin: 0; font: 600 20px/1.2 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.am-kal { display: none; }
+.am-dagliste { display: flex; flex-direction: column; min-width: 0; }
+.am-dag { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--border-hairline); text-decoration: none; color: var(--text-primary); min-height: 44px; min-width: 0; }
+.am-dag:first-child { border-top: 0; }
+.am-dag__dato { font: 600 12px/1.3 var(--font-mono); }
+.am-dag__linjer { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.am-linje { display: block; padding-left: 8px; font: 400 13px/1.3 var(--font-sans); box-shadow: inset 3px 0 0 var(--a9-akse, var(--border-strong)); overflow-wrap: anywhere; min-width: 0; }
+.am-linje[data-hairline="true"] { box-shadow: none; outline: 1px solid var(--a9-akse, var(--border-strong)); outline-offset: -1px; }
+@media (min-width: 720px) {
+  .am-dagliste { display: none; }
+  .am-kal { display: block; min-width: 0; }
+  .am-kal__ukedager, .am-kal__uke { display: grid; grid-template-columns: 44px repeat(7, minmax(0, 1fr)); column-gap: 4px; min-width: 0; }
+  .am-kal__ukedager span { font: 600 11px/1 var(--font-mono); color: var(--text-muted); padding-bottom: 6px; }
+  .am-kal__ukenr { font: 600 11px/1 var(--font-mono); color: var(--text-muted); padding-top: 8px; text-decoration: none; }
+  .am-kal__celle { display: flex; flex-direction: column; gap: 3px; min-height: 76px; min-width: 0; padding: 6px 4px; border-top: 1px solid var(--border-hairline); text-decoration: none; color: var(--text-primary); }
+  .am-kal__celle[data-i-maned="false"] { opacity: .5; }
+  .am-kal__celle[aria-current="date"] { border-top: 2px solid var(--text-primary); }
+  .am-kal__dato { font: 600 11px/1 var(--font-mono); }
+  .am-kal__celle .am-linje { font-size: 11px; padding-left: 5px; overflow: hidden; max-height: 2.6em; }
+}
+
+@container a9 (min-width: 960px) { .a9 .am-hoved { grid-template-columns: minmax(0, 1fr) 340px; } }

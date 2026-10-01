@@ -23,14 +23,15 @@ import { AG11Workbench, type AG11Side } from "@/components/admin/precision/AG11W
 import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
 import { WorkbenchAar } from "@/components/workbench/WorkbenchAar";
 import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
-import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
+import { AG11Maned } from "@/components/admin/precision/AG11Maned";
 import { WorkbenchStall } from "@/components/workbench/WorkbenchStall";
 import { WorkbenchLive } from "@/components/workbench/WorkbenchLive";
 import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalender";
 import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, loadWorkbenchLive, loadYear, loadSources } from "@/lib/workbench/wb-actions";
 import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
-import { mondayOf } from "@/lib/domain/workbench/operations";
+import { lastDayOfMonth, mondayOf } from "@/lib/domain/workbench/operations";
+import { hentManedPeriode } from "@/lib/workbench/maned-periode";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
@@ -41,7 +42,7 @@ export const metadata = { title: "Workbench · AgencyOS" };
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ uke?: string; vis?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
+  searchParams: Promise<{ uke?: string; vis?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string; niva?: string }>;
 };
 
 const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
@@ -110,7 +111,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   const goals = await hentMaalSpor(playerId);
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
-  const visning = sp.vis === "mal" ? "mal" : parseVisning(sp.vis);
+  const visning = sp.vis === "mal" ? "mal" : parseVisning(sp.vis ?? (sp.niva === "maned" ? "maned" : undefined));
   const hentRoster = () => prisma.user.findMany({
     where: coachScopedPlayerWhere(user),
     select: { id: true, name: true },
@@ -135,17 +136,18 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   if (visning === "maned") {
     const monthStart = manedFraParam(sp.maned);
-    const [roster, monthRes, kilderRes] = await Promise.all([
+    const [roster, monthRes, kilderRes, periode] = await Promise.all([
       hentRoster(),
       loadMonth({ monthStart, mode, playerId }),
-      loadSources({ playerId, weekStart: mondayOf(monthStart) }),
+      loadSources({ playerId, weekStart: monthStart }),
+      hentManedPeriode(playerId, monthStart, lastDayOfMonth(monthStart)),
     ]);
     if (!monthRes.ok) return <Feil navn={navn} melding={monthRes.error} />;
     return (
-      <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchManed key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
-          spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
-      </Arv></AgencyOSSkall>
+      <AgencyOSSkall navn={navn}>
+        <AG11Maned key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+          spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} periode={periode} />
+      </AgencyOSSkall>
     );
   }
 
