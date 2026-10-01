@@ -1,5 +1,7 @@
 # Feillogg — læring for videre arbeid
 
+- 01.10.2026: Gruppekontrollen stoppet da en samtidig merge endret felles `origin/main` under kjøring; ta inn det nye grunnlaget og kjør kontrollene igjen, uten å endre designvakten.
+
 ## 01.10.2026 — samordning av brukerprøver med hovedgrenen
 
 Samordning av avvikende kodeversjoner krevde nye Next-rutetyper og CI-ens minnegrense. Fungerende innlogging måtte skilles fra demokatalogen i en egen produksjonskomponent; SMS uten leverandør skal verken samle inn data eller bekrefte tilgang. Den isolerte lokale databasen måtte oppdateres med hovedgrenens additive skjemaendringer før brukerprøvene kunne kjøres. Kontroller montert komponent og samsvar mellom lokal kode og lokalt skjema før resultatene brukes som bevis; behold alle tilgangs- og kvalitetskontroller.
