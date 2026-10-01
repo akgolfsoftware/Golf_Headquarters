@@ -503,6 +503,9 @@ export interface YearPeriodInput {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearEventInput {
@@ -593,6 +596,9 @@ export function buildYearViewModel(
         startDate: p.startDate,
         endDate: p.endDate,
         focus: p.focus,
+        weeklyVolMin: p.weeklyVolMin ?? null,
+        weeklyVolMax: p.weeklyVolMax ?? null,
+        sessionBudget: p.sessionBudget ?? null,
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,

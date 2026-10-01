@@ -32,15 +32,15 @@ export function akseFra(pyramide: string | null | undefined): Akse | null {
 }
 
 /** Valgpille (ChoicePill) som fane, radio eller vanlig bryter. Treffmål 44 px. */
-export function Valgpille({ valgt, onClick, akse, rolle = "button", children, href }: {
-  valgt: boolean; onClick?: () => void; akse?: Akse; rolle?: "button" | "tab" | "radio"; children: ReactNode; href?: string;
+export function Valgpille({ valgt, onClick, akse, rolle = "button", children, href, controlId }: {
+  valgt: boolean; onClick?: () => void; akse?: Akse; rolle?: "button" | "tab" | "radio"; children: ReactNode; href?: string; controlId?: string;
 }) {
   const klasse = cx("pa-choice a9-choice", akse && `pa-choice--axis pa-choice--${akse}`);
   if (href) {
-    return <Link href={href} className={klasse} role={rolle === "tab" ? "tab" : undefined} aria-selected={rolle === "tab" ? valgt : undefined}>{children}</Link>;
+    return <Link href={href} className={klasse} role={rolle === "tab" ? "tab" : undefined} aria-selected={rolle === "tab" ? valgt : undefined} data-control-id={controlId}>{children}</Link>;
   }
   const aria = rolle === "tab" ? { role: "tab", "aria-selected": valgt } : rolle === "radio" ? { role: "radio", "aria-checked": valgt } : { "aria-pressed": valgt };
-  return <button type="button" className={klasse} onClick={onClick} {...aria}>
+  return <button type="button" className={klasse} onClick={onClick} data-control-id={controlId} {...aria}>
     {akse && <span className="pa-choice__dot" aria-hidden />}{children}
   </button>;
 }

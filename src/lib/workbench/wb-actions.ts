@@ -101,12 +101,25 @@ import {
 } from "@/lib/workbench/sources-map";
 import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { parseSessionBudget } from "@/lib/workbench/perioder";
 
 // ─── Resultattype ───────────────────────────────────────────────────────────
 
 export type WbResultat<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
+
+const CreateSeasonPlanSchema = z.object({
+  playerId: z.string().min(1),
+  name: z.string().trim().min(1, "Årsplanen må ha et navn.").max(120),
+  notes: z.string().trim().max(1000).optional(),
+  startDate: IsoDateSchema,
+  endDate: IsoDateSchema,
+  source: z.enum(["EMPTY", "PREVIOUS"]),
+});
+
+export type CreateSeasonPlanInput = z.infer<typeof CreateSeasonPlanSchema>;
 
 /**
  * AKFormel → Prisma JSON. Eksplisitt felt for felt: et cast ville sneket
@@ -268,6 +281,120 @@ function sessionOpprettelseData(s: WorkbenchSession) {
 }
 
 // ─── Lesing ─────────────────────────────────────────────────────────────────
+
+/** Oppretter selve årsplanrammen. Eksisterende perioder endres aldri her. */
+export async function createSeasonPlan(
+  input: CreateSeasonPlanInput,
+): Promise<WbResultat<{ id: string; copiedPeriods: number }>> {
+  const parsed = CreateSeasonPlanSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig årsplan." };
+
+  const viewer = await kreverTilgangTilSpiller(parsed.data.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const start = tilDatoKolonne(parsed.data.startDate);
+  const end = tilDatoKolonne(parsed.data.endDate);
+  if (end <= start) return { ok: false, error: "Sluttdato må være etter startdato." };
+  const year = start.getUTCFullYear();
+
+  const existing = await prisma.seasonPlan.findUnique({
+    where: { userId_year: { userId: parsed.data.playerId, year } },
+    include: { periodBlocks: { select: { id: true } } },
+  });
+  if (existing?.periodBlocks.length) {
+    return { ok: false, error: "Årsplanen har allerede perioder. Åpne periodevisningen for å endre dem." };
+  }
+
+  const previous = parsed.data.source === "PREVIOUS"
+    ? await prisma.seasonPlan.findFirst({
+        where: { userId: parsed.data.playerId, year: { lt: year } },
+        orderBy: { year: "desc" },
+        include: { periodBlocks: { orderBy: { startDate: "asc" } } },
+      })
+    : null;
+  if (parsed.data.source === "PREVIOUS" && !previous) {
+    return { ok: false, error: "Fant ingen tidligere årsplan å kopiere." };
+  }
+
+  const yearShift = previous ? year - previous.year : 0;
+  const shiftYear = (date: Date) => {
+    const next = new Date(date);
+    next.setUTCFullYear(next.getUTCFullYear() + yearShift);
+    return next;
+  };
+
+  const plan = await prisma.$transaction(async (tx) => {
+    const row = existing
+      ? await tx.seasonPlan.update({
+          where: { id: existing.id },
+          data: { name: parsed.data.name, notes: parsed.data.notes || null, startDate: start, endDate: end },
+          select: { id: true },
+        })
+      : await tx.seasonPlan.create({
+          data: { userId: parsed.data.playerId, year, name: parsed.data.name, notes: parsed.data.notes || null, startDate: start, endDate: end },
+          select: { id: true },
+        });
+
+    if (previous?.periodBlocks.length) {
+      await tx.periodBlock.createMany({
+        data: previous.periodBlocks.map((period) => ({
+          seasonPlanId: row.id,
+          lPhase: period.lPhase,
+          startDate: shiftYear(period.startDate),
+          endDate: shiftYear(period.endDate),
+          focus: period.focus,
+          weeklyVolMin: period.weeklyVolMin,
+          weeklyVolMax: period.weeklyVolMax,
+          weeklySessionBudget: period.weeklySessionBudget ?? undefined,
+          notes: period.notes,
+          sourceGroupId: period.sourceGroupId,
+        })),
+      });
+    }
+    return row;
+  });
+
+  revalider(parsed.data.playerId);
+  revalidatePath(`/admin/workbench/${parsed.data.playerId}`);
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, data: { id: plan.id, copiedPeriods: previous?.periodBlocks.length ?? 0 } };
+}
+
+export async function saveSeasonPeriod(input: {
+  playerId: string;
+  periodId?: string;
+  data: unknown;
+}): Promise<WbResultat<{ periodId: string }>> {
+  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  let periodId = input.periodId;
+  if (periodId) {
+    const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data);
+    if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke lagre perioden." };
+  } else {
+    const result = await opprettPeriodeCore(input.playerId, input.data);
+    if (!result.ok || !result.periodeId) return { ok: false, error: result.error ?? "Kunne ikke opprette perioden." };
+    periodId = result.periodeId;
+  }
+  revalider(input.playerId);
+  revalidatePath(`/admin/workbench/${input.playerId}`);
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, data: { periodId } };
+}
+
+export async function deleteSeasonPeriod(input: {
+  playerId: string;
+  periodId: string;
+}): Promise<WbResultat<{ periodId: string }>> {
+  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  const result = await slettPeriodeCore(input.playerId, input.periodId);
+  if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke fjerne perioden." };
+  revalider(input.playerId);
+  revalidatePath(`/admin/workbench/${input.playerId}`);
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, data: { periodId: input.periodId } };
+}
 
 /**
  * Hele uka for én spiller — coach-siden. Inneholder DRAFT.
@@ -790,6 +917,9 @@ export async function loadYear(params: {
     startDate: fraDatoKolonne(b.startDate),
     endDate: fraDatoKolonne(b.endDate),
     focus: b.focus,
+    weeklyVolMin: b.weeklyVolMin,
+    weeklyVolMax: b.weeklyVolMax,
+    sessionBudget: parseSessionBudget(b.weeklySessionBudget),
   }));
   const tournamentEvents = tournamentEntries
     .map((e) => {
@@ -863,6 +993,9 @@ export async function loadPeriod(params: {
     startDate: fraDatoKolonne(block.startDate),
     endDate: fraDatoKolonne(block.endDate),
     focus: block.focus,
+    weeklyVolMin: block.weeklyVolMin,
+    weeklyVolMax: block.weeklyVolMax,
+    sessionBudget: parseSessionBudget(block.weeklySessionBudget),
   }));
   const tournamentEvents = tournamentEntries
     .map((entry) => {

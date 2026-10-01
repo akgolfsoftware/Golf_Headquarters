@@ -7,8 +7,8 @@
  * `?pille=fys` og `?pille=turn` er fysisk plan og turneringer (AG-WB-FYS,
  * AG-WB-TURN) med de samme seks handlingene som før.
  *
- * År, Periode og Måned (egen beslutning, PR #995) og Stall, Live og Min
- * kalender er ikke portert: de vises som før inne i Precision-skallet.
+ * År, Periode, Måned, Uke, Økt, Volum og Målsetninger følger det felles
+ * skjermkartet. Historiske dyplenker for Stall, Live og Min støttes fortsatt.
  */
 
 import { notFound } from "next/navigation";
@@ -41,7 +41,7 @@ export const metadata = { title: "Workbench · AgencyOS" };
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ uke?: string; vis?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
+  searchParams: Promise<{ uke?: string; vis?: string; niva?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
 };
 
 const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
@@ -67,7 +67,7 @@ function ukeStartFraParam(raw?: string): string {
   return mondayOf(d.toISOString().slice(0, 10));
 }
 
-/** Visninger som ikke er portert ennå: samme komponent som før, i Precision-skallet. */
+/** Ramme for år, periode, måned og historiske dyplenker. */
 function Arv({ children, live }: { children: React.ReactNode; live?: boolean }) {
   return <div className="a9-arv"><div className="wb-app" data-surface={live ? "live" : "light"}>{children}</div></div>;
 }
@@ -97,7 +97,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   if (sp.pille === "fys" || sp.pille === "turn") {
     const fys = await loadFysTurneringWorkbenchData(playerId, { viewer: "coach" });
-    const actions = { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan };
+    const actions = fys.available === false ? {} : { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan };
     return (
       <AgencyOSSkall navn={navn}>
         {sp.pille === "fys"
@@ -110,7 +110,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   const goals = await hentMaalSpor(playerId);
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
-  const visning = sp.vis === "mal" ? "mal" : parseVisning(sp.vis);
+  const visning = parseVisning(sp.niva ?? sp.vis);
   const hentRoster = () => prisma.user.findMany({
     where: coachScopedPlayerWhere(user),
     select: { id: true, name: true },
@@ -223,7 +223,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))}
         goals={goals}
         fys={fysTurnering}
-        niva={visning === "mal" ? "mal" : visning === "okt" ? "okt" : "uke"}
+        niva={visning === "mal" ? "mal" : visning === "vol" ? "vol" : visning === "okt" ? "okt" : "uke"}
         side={side}
         valgtOktId={sp.okt}
       />
