@@ -1,6 +1,6 @@
 # Isolert brukertest på Mac
 
-Denne riggen følger Anders' forhåndsgodkjenning for lokal testing 21.09.2026. Den bruker bare syntetiske personer og egen Supabase-identitet `ak-hq-brukere-20261001`. Den er etablert i arbeidskopien `codex-funksjon-brukere` på grenen `codex/funksjon-brukere-2026-10-01`.
+Denne riggen følger Anders' forhåndsgodkjenning for lokal testing 21.09.2026. Den bruker bare syntetiske personer og egen Supabase-identitet `ak-hq-brukere-20261001`. Etter samordning og automatisk opprydding er den gjenopprettet i arbeidskopien `.claude/worktrees/codex-lokal-brukertest`. Koblingsarbeidet 01.10.2026 ligger på `codex/design-data-journeys-2026-10-01`. Miljøfilene er fortsatt separate og ignorerte.
 
 ## Mål og vern
 
@@ -23,10 +23,17 @@ Kjør med Node.js 24 fra denne arbeidskopien. Docker og de fem egne Supabase-con
 node scripts/local-users-run.mjs bootstrap
 node scripts/local-users-run.mjs seed
 node --test tests/local-users/target.test.mjs
+node scripts/local-users-run.mjs journeys
 node scripts/local-users-run.mjs dev
 ```
 
 Kjør `node scripts/local-users-run.mjs users` i en egen terminal mens appen kjører. Prøvene krever kontoene og feiler ved manglende oppsett; ingen utelates. De kjører Chromium på desktop 1440 px og mobil 390 px. Traces, videoer og skjermbilder er slått av for å holde innloggingshemmeligheter utenfor testartefakter.
+
+`journeys` prøver appens eksisterende serverhandlinger og lesere mot ekte lokal PostgreSQL. Bare forespørselsidentiteten og Next sin cache erstattes; eksisterende database- og eierskapsspørringer kjører uendret. Dette er ikke bevis for innlogging, samtykkevakten eller nettsiden. Prøvene kontrollerer databaseidentiteten før skriving og rydder bare ID-ene de selv oppretter. Ingen prøve utelates dersom oppsettet mangler.
+
+Arbeidskopien har egne lokale avhengigheter. Turbopack kan ikke bruke en `node_modules`-lenke utenfor arbeidskopiens rot; slik lenke må erstattes med egne avhengigheter før app-/byggkontroll. Bevar hovedmappens avhengigheter og ignorerte runtime-filer.
+
+`dev` og `users` setter `VEDLIKEHOLD=0` bare i den kontrollerte lokale barneprosessen, slik at nettsidens globale vedlikeholdsskilt ikke skjuler appen under prøvene. Innloggings-, rolle-, eierskaps- og samtykkevaktene er beholdt. Produksjonsoppsett og eksisterende miljøfiler endres ikke.
 
 Stopp dev-serveren før `node scripts/local-users-run.mjs verify`, som kjører prosjektets uendrede `npm run verify`. Testene for appens standardadresse krever at den lokale appadressen ikke arves i denne kvalitetskontrollen; database og Auth peker fortsatt bare lokalt. Ikke start en samtidig bygging i samme `.next`-mappe.
 
@@ -56,3 +63,5 @@ Skjemaet ble generert fra `prisma/schema.prisma` med en egen ignorert Prisma-kon
 Den lokale standardmalen sender innloggingslenke uten seks-sifret kode. Kodetesten får derfor en ekte engangskode fra lokal Auth-administrator og prøver selve kodeverifiseringen i appen. Den beviser ikke at produksjonsmalen leverer koden. Google og ekte SMS, foresatts godkjenning/tilbaketrekking, sletting og eksport er fortsatt uprøvd i denne riggen.
 
 Se [kontrollrapporten](../design-audit/brukere-funksjonskontroll-2026-10-01.md) for resultater og avgrensning.
+
+Senere samme dag ble riggen utvidet med trener → spiller → Live → oppsummering og faktiske lagringsprøver. Se [koblingskontrollen](../design-audit/design-lagring-kontroll-2026-10-01.md) og [overleveringsgrunnlaget](../planer/design-lagring-brukerreiser-2026-10-01.md).

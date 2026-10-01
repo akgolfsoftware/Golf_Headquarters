@@ -184,42 +184,7 @@ function initialer(name: string): string {
 // ── Today's session ───────────────────────────────────────────────
 
 export async function getTodaysSession(userId: string, naa: Date = new Date()): Promise<TodaySession | null> {
-  await assertCanViewPlayerData(userId);
-  const now = naa;
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
-    orderBy: { startTime: "asc" },
-    select: {
-      id: true,
-      title: true,
-      startTime: true,
-      endTime: true,
-      status: true,
-      practiceType: true,
-      miljo: true,
-      maalsetning: true,
-      drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
-    },
-    take: 1,
-  });
-
-  const s = sessions[0];
-  if (!s) return null;
-
-  return {
-    id: s.id,
-    title: s.title,
-    startTime: s.startTime,
-    endTime: s.endTime,
-    status: s.status,
-    practiceType: s.practiceType,
-    pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
-    durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
-    sted: s.miljo ? translateMiljo(s.miljo) : null,
-    maalsetning: s.maalsetning,
-    drills: s.drills,
-    href: v2DbSessionHref(s.id, s.status),
-  };
+  return (await getAllTodaysSessions(userId, naa))[0] ?? null;
 }
 
 // ── Week overview ─────────────────────────────────────────────────
@@ -677,38 +642,10 @@ export async function getTrainingHeatmap(userId: string, naa: Date = new Date())
 // ── All today's sessions (for second-session compact row) ─────────
 
 export async function getAllTodaysSessions(userId: string, naa: Date = new Date()): Promise<TodaySession[]> {
-  await assertCanViewPlayerData(userId);
-  const now = naa;
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
-    orderBy: { startTime: "asc" },
-    select: {
-      id: true,
-      title: true,
-      startTime: true,
-      endTime: true,
-      status: true,
-      practiceType: true,
-      miljo: true,
-      maalsetning: true,
-      drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
-    },
-  });
-
-  return sessions.map((s) => ({
-    id: s.id,
-    title: s.title,
-    startTime: s.startTime,
-    endTime: s.endTime,
-    status: s.status,
-    practiceType: s.practiceType,
-    pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
-    durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
-    sted: s.miljo ? translateMiljo(s.miljo) : null,
-    maalsetning: s.maalsetning,
-    drills: s.drills,
-    href: v2DbSessionHref(s.id, s.status),
-  }));
+  // I dag and Plan share identities, publication filters and all three models.
+  const dayKey = OSLO_YMD_FMT.format(naa);
+  const week = await getWeekOverview(userId, naa);
+  return week.find(day => OSLO_YMD_FMT.format(day.date) === dayKey)?.sessions ?? [];
 }
 
 // ── Composed dashboard data ───────────────────────────────────────
