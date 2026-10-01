@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
 import { logError } from "@/lib/error-tracking";
 import { mondayOf } from "@/lib/workbench/session-move-math";
+import { formaterPubliserTid } from "@/lib/workbench/publish-time";
 import type { PlanStatus } from "@/generated/prisma/client";
 
 /** Coach kan sende første gang (DRAFT/REJECTED) og sende oppdatering (ACTIVE/ACCEPTED). */
@@ -87,10 +88,7 @@ export async function hentPubliserDiff(
   const naa = tilSnapshot(plan.sessions);
   const parsed = SnapshotSchema.safeParse(plan.publishedSnapshot);
   const forrige: SnapshotOkt[] = parsed.success ? parsed.data : [];
-  const naar = (iso: string) => {
-    const d = new Date(iso);
-    return `${d.getDate()}.${d.getMonth() + 1} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-  };
+  const naar = formaterPubliserTid;
 
   const forrigeMap = new Map(forrige.map((s) => [s.id, s]));
   const naaMap = new Map(naa.map((s) => [s.id, s]));

@@ -142,6 +142,8 @@ export type WorkbenchFysTurneringData = {
   physicalBlocks: WorkbenchPhysicalBlockDto[];
   tournamentPlans: WorkbenchTournamentPlanDto[];
   openConflicts: WorkbenchPlanConflictDto[];
+  /** false når de valgfrie modultabellene ennå ikke er etablert i databasen. */
+  available?: boolean;
 };
 
 function isoDate(date: Date | null): string | null {
@@ -166,7 +168,24 @@ export async function loadFysTurneringWorkbenchData(
   const windowEnd = new Date(now);
   windowEnd.setDate(windowEnd.getDate() + 210);
 
-  const [physicalBlocks, tournamentPlans, openConflicts] = await Promise.all([
+  // Disse modulene ble lagt til etter hoved-Workbench. Enkelte miljøer har
+  // derfor ennå ikke tabellene. Sjekk dem uten å utløse tre Prisma-feil i
+  // serverloggen; selve Workbench skal fortsatt kunne åpnes.
+  const [tables] = await prisma.$queryRaw<Array<{
+    physical: string | null;
+    tournament: string | null;
+    conflicts: string | null;
+  }>>`
+    SELECT
+      to_regclass('public.workbench_physical_blocks')::text AS physical,
+      to_regclass('public.workbench_tournament_plans')::text AS tournament,
+      to_regclass('public.workbench_plan_conflicts')::text AS conflicts
+  `;
+  if (!tables?.physical || !tables.tournament || !tables.conflicts) {
+    return { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: false };
+  }
+
+  const loadRows = () => Promise.all([
     prisma.workbenchPhysicalBlock.findMany({
       where: {
         playerId,
@@ -220,9 +239,21 @@ export async function loadFysTurneringWorkbenchData(
     }),
   ]);
 
+  let rows: Awaited<ReturnType<typeof loadRows>>;
+  try {
+    rows = await loadRows();
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2021") {
+      return { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: false };
+    }
+    throw error;
+  }
+  const [physicalBlocks, tournamentPlans, openConflicts] = rows;
+
   const conflictDtos = openConflicts.map(mapConflict);
 
   return {
+    available: true,
     physicalBlocks: physicalBlocks.map((block) => {
       const conflicts = conflictDtos.filter((c) =>
         openConflicts.some((raw) => raw.id === c.id && raw.physicalBlockId === block.id),

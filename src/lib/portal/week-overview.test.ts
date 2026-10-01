@@ -45,13 +45,23 @@ test("ukelesing tar med eldre planøkter uten speil, med samme tilgang og Oslo-u
         durationMinutes: 20, status: "PUBLISHED", pyramid: "TEK", location: null, notes: null, drills: [] }] : [];
     } },
   } } });
-  const { getWeekOverview, getWeekPlanProgress } = await import("@/app/portal/actions");
+  const { getWeekOverview, getWeekPlanProgress, getAllTodaysSessions, getTodaysSession } = await import("@/app/portal/actions");
   const now = new Date("2026-03-29T20:00Z");
 
   await t.test("avvist spiller gir ingen databasekall", async () => {
     await assert.rejects(() => getWeekOverview(playerId, now), /Ingen tilgang/);
+    await assert.rejects(() => getAllTodaysSessions(playerId, now), /Ingen tilgang/);
     assert.equal(planCalls.length + v2Calls.length + wbCalls.length, 0);
     allowed = true;
+  });
+
+  await t.test("I dag og enkeltøkt leser samme tre modeller og identiteter som Plan", async () => {
+    includeModern = true;
+    legacy = [planRow("uten-speil"), planRow("med-speil")]; mirrorIds = ["med-speil"];
+    const day = await getAllTodaysSessions(playerId, now);
+    assert.deepEqual(day.map(s => [s.id, s.model]), [["wb", "wb"], ["uten-speil", "plan"], ["speil", "v2"]]);
+    assert.deepEqual(await getTodaysSession(playerId, now), day[0]);
+    assert.equal((await getAllTodaysSessions(playerId, new Date("2026-03-28T20:00Z"))).length, 0);
   });
 
   await t.test("tre modeller gir én sortert agenda og samme økt-/minuttelling", async () => {

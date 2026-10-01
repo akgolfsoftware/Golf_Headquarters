@@ -94,3 +94,22 @@ test("mørk visning i e-postprogram: boks, lenker og knapp overstyres i media-re
 test("sted skilles med midtstilt prikk som i tegningen", () => {
   assert.match(byggEndretTimeEpost(grunn).html, /Studio 1 · Borregaard GK/);
 });
+
+
+test("gratis time viser ikke betalingskrav etter fristen", () => {
+  const { html } = byggEndretTimeEpost({ ...grunn, priceOre: 0, stripePaymentIntentId: null });
+  assert.doesNotMatch(html, /Etter det belastes|Gratis avbestilling til/);
+});
+
+test("gjest loves ikke automatisk kontokobling eller redigering fra kvitteringen", () => {
+  const { html } = byggEndretTimeEpost(grunn);
+  assert.doesNotMatch(html, /Bookingene dine følger med|Endre eller avbestill/);
+  assert.match(html, /Se bookingen/);
+});
+
+test("avbestillingsfrist er 24 faktiske timer over overgangen til vintertid", () => {
+  const { html } = byggEndretTimeEpost({
+    ...grunn, startAt: new Date(2026, 9, 25, 16), endAt: new Date(2026, 9, 25, 17),
+  });
+  assert.match(html, /lørdag 24\.10\.2026 kl\. 17:00/);
+});

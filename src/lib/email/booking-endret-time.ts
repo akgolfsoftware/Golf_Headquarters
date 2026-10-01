@@ -118,7 +118,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
     ? ""
     : boks(
         "Fortsett i PlayerHQ",
-        `Med konto får du plan fra coachen, økter, tester og analyse av rundene dine. FULL koster ${kr(PLAYERHQ_PRIS_MND)} per måned eller ${kr(PLAYERHQ_PRIS_AAR)} per år. <a class="lnk" href="${esc(input.appUrl)}/auth/signup" style="color:${c.link};text-decoration:underline">${esc(input.epost ? `Opprett konto med ${input.epost}` : "Opprett konto")}</a><br><span style="font-size:14px">Bookingene dine følger med inn i kontoen.</span>`,
+        `Med konto får du plan fra coachen, økter, tester og analyse av rundene dine. FULL koster ${kr(PLAYERHQ_PRIS_MND)} per måned eller ${kr(PLAYERHQ_PRIS_AAR)} per år. <a class="lnk" href="${esc(input.appUrl)}/auth/signup" style="color:${c.link};text-decoration:underline">${esc(input.epost ? `Opprett konto med ${input.epost}` : "Opprett konto")}</a>`,
         c,
       );
 
@@ -129,7 +129,9 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
   const body =
     avsnitt(`Hei ${esc(input.fornavn ?? "der")}. Timen din har fått ny tid.`, c) +
     rader +
-    avsnitt(`Gratis avbestilling til <b>${esc(fristTekst)}</b>. ${etterFrist}`, c) +
+    (input.erKlipp || input.priceOre > 0
+      ? avsnitt(`Gratis avbestilling til <b>${esc(fristTekst)}</b>. ${etterFrist}`, c)
+      : "") +
     tilbud;
 
   const html = epostSkall({
@@ -145,7 +147,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
           ["Se bookingen i PlayerHQ", `${input.appUrl}/portal/meg/bookinger`],
           ["Endre eller avbestill", endreLenke],
         ]
-      : [["Endre eller avbestill", endreLenke]],
+      : [["Se bookingen", endreLenke]],
     dark: input.dark,
   });
 
