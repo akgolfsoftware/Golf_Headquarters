@@ -622,6 +622,9 @@ export interface YearPeriodBand {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
   /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
   widthPct: number;
   /** Var perioden aktiv på «i dag» ved bygging. */
