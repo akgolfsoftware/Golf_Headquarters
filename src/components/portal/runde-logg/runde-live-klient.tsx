@@ -50,6 +50,8 @@ import { HullForing } from "./hull-foring";
 import { HullOversikt } from "./hull-oversikt";
 import { SgPanel } from "./sg-panel";
 import { RundeRecap } from "./runde-recap";
+import type { PrecisionHullUtkast, UtkastSlag } from "@/lib/runde-logg/precision-utkast";
+import { PH08RundeLive } from "@/components/portal/precision/PH08RundeLive";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
@@ -57,7 +59,7 @@ import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 const abonnerIngen = () => () => {};
 
 type Steg = "oppsett" | "foring" | "oppsummering";
-type Visning = "stepper" | "detalj" | "oversikt" | "sg";
+type Visning = "stepper" | "avansert" | "detalj" | "oversikt" | "sg";
 
 type RundeLiveKlientProps = {
   baner: Array<{ id: string; name: string }>;
@@ -84,6 +86,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   const [visning, setVisning] = useState<Visning>("stepper");
   const [oppsett, setOppsett] = useState<Omit<OppsettVerdi, "hull"> | null>(null);
   const [hullData, setHullData] = useState<LoggetHull[]>([]);
+  const [precisionHull, setPrecisionHull] = useState<PrecisionHullUtkast>({});
   const [aktivtHullIdx, setAktivtHullIdx] = useState(0);
   const [kladdHandtert, setKladdHandtert] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -109,7 +112,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
     const lagret = lagreKladd(eierId, {
       versjon: 1,
       modus: "live",
-      foringsModus: visning === "detalj" ? "slag" : "hurtig",
+      foringsModus: visning === "detalj" || visning === "avansert" ? "slag" : "hurtig",
       steg,
       oppsett: {
         courseId: oppsett.courseId,
@@ -120,10 +123,11 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
       },
       hullData,
       aktivtHullIdx,
+      precisionHull,
     });
     const statusTimer = window.setTimeout(() => setLokalLagringsfeil(!lagret), 0);
     return () => window.clearTimeout(statusTimer);
-  }, [startet, visning, steg, oppsett, hullData, aktivtHullIdx, eierId]);
+  }, [startet, visning, steg, oppsett, hullData, aktivtHullIdx, eierId, precisionHull]);
 
   const start = (verdi: OppsettVerdi) => {
     setOppsett({
@@ -141,6 +145,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
         slag: [],
       })),
     );
+    setPrecisionHull({});
     setAktivtHullIdx(0);
     setSteg("foring");
     setVisning("stepper");
@@ -157,9 +162,10 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
       playedAt: kladd.oppsett.playedAt,
     });
     setHullData(kladd.hullData);
+    setPrecisionHull(kladd.precisionHull ?? {});
     setAktivtHullIdx(Math.min(kladd.aktivtHullIdx, Math.max(kladd.hullData.length - 1, 0)));
     setSteg(kladd.steg === "oppsett" ? "foring" : kladd.steg);
-    setVisning("stepper");
+    setVisning(kladd.precisionHull?.[kladd.aktivtHullIdx]?.length ? "detalj" : "stepper");
     setKladdHandtert(true);
   };
 
@@ -169,12 +175,26 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   };
 
   const aktivtHull = hullData[aktivtHullIdx];
+  const lagreSlagUtkast = (slag: readonly UtkastSlag[]) => {
+    const neste = { ...precisionHull, [aktivtHullIdx]: [...slag] };
+    setPrecisionHull(neste);
+    if (!oppsett) return;
+    // Skriv synkront ved registrering, før navigasjon eller omlasting.
+    setLokalLagringsfeil(!lagreKladd(eierId, {
+      versjon: 1, modus: "live", foringsModus: "slag", steg,
+      oppsett, hullData, aktivtHullIdx, precisionHull: neste,
+    }));
+  };
 
   // ── Stepper-semantikk (fasit): uendret stepper = par ────────────
   /** Brutto score per hull — null når hullet ikke er satt/ferdig. */
   const scores = useMemo(() => hullData.map((h) => scoreFraHull(h)), [hullData]);
 
   const settScore = (idx: number, strokes: number) => {
+    if (precisionHull[idx]?.length) {
+      visToast("Fullfør pågående slagføring før du endrer hullscoren.");
+      return;
+    }
     setHullData((data) =>
       data.map((h, i) =>
         i === idx
@@ -205,6 +225,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
 
   const stepperNeste = () => {
     if (!aktivtHull) return;
+    if (precisionHull[aktivtHullIdx]?.length) { setVisning("detalj"); return; }
     // Fasit: uendret stepper = par.
     if (scores[aktivtHullIdx] == null) settScore(aktivtHullIdx, aktivtHull.par);
     if (aktivtHullIdx < hullData.length - 1) {
@@ -269,6 +290,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   const relStr = relDiff === 0 ? "E" : relDiff > 0 ? `+${relDiff}` : String(relDiff);
 
   const lagreRunden = () => {
+    const paagaar = Object.keys(precisionHull).find((idx) => precisionHull[idx].length > 0);
+    if (paagaar != null) {
+      setAktivtHullIdx(Number(paagaar)); setVisning("detalj");
+      visToast("Fullfør det pågående hullet før du lagrer runden.");
+      return;
+    }
     if (spilte === 0) {
       visToast("Tast minst ett hull først.");
       return;
@@ -291,6 +318,47 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
           setSteg("foring");
           setVisning("stepper");
         }}
+      />
+    );
+  }
+
+  // PH-RD-03/04: slag-for-slag-føringen er en helskjerm nattflate i Precision
+  // Athletics, rendret før det gamle skallet. Hurtigføringen (stepper) er
+  // uendret og nås via pila øverst til venstre.
+  if (steg === "foring" && oppsett && aktivtHull && visning === "detalj" && aktivtHull.slag.length === 0) {
+    return (
+      <PH08RundeLive
+        key={aktivtHullIdx}
+        tilstand="data"
+        utkast={precisionHull[aktivtHullIdx] ?? []}
+        onUtkast={lagreSlagUtkast}
+        lagringsfeil={lokalLagringsfeil}
+        onDetaljer={() => setVisning("avansert")}
+        bane={oppsett.courseNavn}
+        hullNr={aktivtHull.holeNumber}
+        antallHull={hullData.length}
+        par={aktivtHull.par}
+        lengdeMeter={aktivtHull.lengdeMeter}
+        spilte={hullData.flatMap((h, i) => (scores[i] != null ? [{ par: h.par, slag: scores[i] as number }] : []))}
+        onFerdigHull={(slag, lengde) => {
+          setPrecisionHull((utkast) => {
+            const neste = { ...utkast }; delete neste[aktivtHullIdx]; return neste;
+          });
+          setHullData((data) =>
+            data.map((h, i) => (i === aktivtHullIdx ? { ...h, lengdeMeter: lengde, slag } : h)),
+          );
+          const n = hullData.length;
+          for (let s = 1; s < n; s++) {
+            const idx = (aktivtHullIdx + s) % n;
+            if (!erFerdig(hullData[idx])) {
+              setAktivtHullIdx(idx);
+              return;
+            }
+          }
+          setSteg("oppsummering");
+        }}
+        onAvslutt={lagreRunden}
+        onTilbake={() => setVisning("stepper")}
       />
     );
   }
@@ -788,7 +856,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
         )}
 
         {/* ── Slag-for-slag-detalj (beholdt funksjonalitet) ── */}
-        {steg === "foring" && oppsett && aktivtHull && visning === "detalj" && (
+        {steg === "foring" && oppsett && aktivtHull && (visning === "detalj" || visning === "avansert") && (
           <>
             <button
               type="button"

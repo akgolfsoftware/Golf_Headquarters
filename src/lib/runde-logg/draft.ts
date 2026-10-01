@@ -10,6 +10,7 @@
 
 import { z } from "zod";
 import type { LoggetHull } from "@/lib/runde-logg/types";
+import { precisionHullSchema } from "./precision-utkast";
 import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 
 const GRUNNNOKKEL = "akgolf.runde-logg.kladd.v2";
@@ -87,6 +88,7 @@ const kladdSchema = z.object({
   }),
   hullData: z.array(hullSchema).max(18),
   aktivtHullIdx: z.number().int().min(0).max(17),
+  precisionHull: precisionHullSchema.optional(),
   oppdatert: z.string(),
 });
 
