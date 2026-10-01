@@ -6,8 +6,8 @@
  * faktisk åpnes (eller verifiserer redirect mot checkout.stripe.com hvis
  * Stripe-test-nøkler er satt).
  *
- * Stripe full checkout-flow med test-kort 4242 er kommentert ut — kjøres
- * manuelt eller når test-DB + Stripe-mock er konfigurert.
+ * Full Stripe Checkout kjøres separat med lokal test-DB og ekte Stripe-testmodus.
+ * Den dedikerte riggen avviser produksjonsnøkler og feiler ved utelatte prøver.
  */
 
 import { test, expect } from "./_test";
@@ -49,24 +49,9 @@ test.describe("Drop-in booking", () => {
     expect([200, 404]).toContain(res.status());
   });
 
-  // Full Stripe-checkout-test krever:
-  // - DB-seed med en aktiv ServiceType
-  // - Test-bruker eller gjest-checkout-støtte
-  // - Stripe test-nøkler i CI-env
-  // Markeres som skip inntil dette er på plass.
-  test.skip("Full Stripe-checkout med test-kort 4242", async ({ page }) => {
-    await page.goto("/booking");
-    await page.locator('a[href^="/booking/"]').first().click();
-    // Velg første ledige slot
-    await page.locator('[data-slot]').first().click();
-    await page.locator('button:has-text("Bekreft")').click();
-    // Forvent Stripe-redirect
-    await page.waitForURL(/checkout\.stripe\.com/, { timeout: 15_000 });
-    await page.locator('input[name="cardnumber"]').fill("4242 4242 4242 4242");
-    await page.locator('input[name="exp-date"]').fill("12 / 30");
-    await page.locator('input[name="cvc"]').fill("123");
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/booking\/kvittering/, { timeout: 30_000 });
-    await expect(page.locator("main")).toContainText(/bekreftet|kvittering|takk/i);
+  test("Full Stripe-checkout med test-kort 4242", async ({ page }) => {
+    test.skip(process.env.LOCAL_STRIPE_E2E !== "1", "Requires the isolated Stripe test-mode runner");
+    const { stripeJourney } = await import("../local-users/stripe-journey");
+    await stripeJourney(page);
   });
 });

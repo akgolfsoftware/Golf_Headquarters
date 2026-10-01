@@ -1,5 +1,7 @@
 # Feillogg — læring for videre arbeid
 
+- 01.10.2026: Stripe-prøvene ble blokkert av utløpt CLI-testnøkkel (`api_key_expired`). Kontroller testtilgang før app og booking startes; forny innloggingen og bruk bare testnøkkel i en separat, ignorert konfigurasjon. En gammel innloggingsfil er ikke bevis på gyldig tilgang.
+
 - 01.10.2026: Gruppekontrollen stoppet da en samtidig merge endret felles `origin/main` under kjøring; ta inn det nye grunnlaget og kjør kontrollene igjen, uten å endre designvakten.
 
 ## 01.10.2026 — samordning av brukerprøver med hovedgrenen

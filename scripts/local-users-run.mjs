@@ -22,7 +22,11 @@ const env = Object.fromEntries(['PATH', 'TMPDIR', 'LANG', 'SHELL'].filter(k => p
 Object.assign(env, local, { NEXT_TELEMETRY_DISABLED: '1' });
 // The global maintenance sign would hide every local app page. This is only
 // the already validated synthetic environment, with all access guards intact.
-if (['dev', 'users', 'e2e'].includes(process.argv[2])) { env.VEDLIKEHOLD = '0'; env.BOOKING_PUBLIC = 'true'; }
+if (['dev', 'users', 'e2e', 'stripe'].includes(process.argv[2])) { env.VEDLIKEHOLD = '0'; env.BOOKING_PUBLIC = 'true'; }
+if (process.argv[2] === 'stripe') {
+  env.LOCAL_STRIPE_RUNNER = '1';
+  if (process.env.LOCAL_STRIPE_CLI) env.LOCAL_STRIPE_CLI = process.env.LOCAL_STRIPE_CLI;
+}
 // The unit suite deliberately verifies the default app origin, not this dev URL.
 if (['verify', 'static', 'test', 'build', 'typegen'].includes(process.argv[2])) {
   delete env.NEXT_PUBLIC_APP_URL;
@@ -36,6 +40,7 @@ const actions = {
   dev: ['node', 'node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1', '--port', '3061'],
   users: ['node', 'node_modules/@playwright/test/cli.js', 'test', '-c', 'tests/local-users/playwright.config.ts'],
   e2e: ['node', 'node_modules/@playwright/test/cli.js', 'test', '-c', 'tests/local-users/e2e.config.ts'],
+  stripe: ['node', 'scripts/local-stripe-run.mjs'],
   journeys: ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/storage-journeys.test.ts'],
   verify: ['npm', 'run', 'verify'],
   static: ['npm', 'run', 'verify:static'],
@@ -44,9 +49,9 @@ const actions = {
   typegen: ['node', 'node_modules/next/dist/bin/next', 'typegen'],
 };
 const command = actions[process.argv[2]];
-if (!command) throw new Error('Choose bootstrap, seed, dev, users, e2e, journeys, static, verify, test, build or typegen');
+if (!command) throw new Error('Choose bootstrap, seed, dev, users, e2e, stripe, journeys, static, verify, test, build or typegen');
 const args = command.slice(1);
-if (['users', 'e2e'].includes(process.argv[2])) args.push(...process.argv.slice(3));
+if (['users', 'e2e', 'stripe'].includes(process.argv[2])) args.push(...process.argv.slice(3));
 const credentialsFile = resolve(root, '.codex/environments/brukere/.env.users');
 const credentials = existsSync(credentialsFile) ? parse(readFileSync(credentialsFile)) : {};
 const secrets = [local.DATABASE_URL, local.DIRECT_URL, local.NEXT_PUBLIC_SUPABASE_ANON_KEY, local.SUPABASE_SERVICE_ROLE_KEY,

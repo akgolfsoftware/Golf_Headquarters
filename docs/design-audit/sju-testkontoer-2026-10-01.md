@@ -44,6 +44,8 @@ Den samlede matrisen består av de opprinnelige 32 kontobetingede variantene, re
 
 De siste to av de opprinnelige 72 kjøringene er full Stripe-kortbetaling i to nettlesere. Denne integrasjonen er fortsatt uprøvd her; miljøet har bevisst ingen betalingsnøkler. Booking med forhåndsbetalte timer beviser ikke Stripe Checkout, webhook, kortrefusjon eller betalings-e-post.
 
+Oppfølging etter bestilling om siste retting og merge: den gamle utelatte Stripe-prøven er erstattet med en konkret gjestereise og en separat testmodus-kjører. Den krever ekte Stripe Checkout, mottatt signert betalingsmelding og lagret bekreftet booking/betaling. 28 miljø- og outputkontroller består, inkludert avvisning av produksjonsnøkler, eksterne appmål og andre kontoers betalingshendelser. Den eksisterende CLI-testtilgangen ble kontrollert direkte mot Stripe og avvist med `api_key_expired`. Ny innlogging er åpnet; ingen kortbetaling er utført og ingen Stripe-prøve er rapportert som bestått. Merge venter på avklart betalingskontroll. Se [oppsettet](../utvikling/lokal-brukertest.md#separat-stripe-testmodus).
+
 Den gamle Før-kort-prøven er oppdatert til faktisk spillerprofil med Plan og Workbench. Den er ikke et nytt bevis for hele Før/Etter-funksjonen. Gjennomføring og oppsummering kontrolleres i den separate, faktisk lagrende treningsreisen.
 
 Dette er lokal funksjonskontroll med syntetiske data. Det er ikke produksjonskontroll, visuell godkjenning, gjennomført eksport/sletting, eller bevis for Google, SMS, ekte e-post og andre eksterne integrasjoner. Foreldres godkjenning og tilbaketrekking er fortsatt egne brukerreiser; testen her bekrefter sperren uten samtykke.
