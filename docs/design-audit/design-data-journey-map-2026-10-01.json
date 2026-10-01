@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-10-01T12:17:42.840Z",
-  "baseCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+  "measuredAt": "2026-10-01T13:47:03.016Z",
+  "baseCommit": "1d1adce8b63659ea472e351bbaff6e159f85f359",
   "schemaVersion": 1,
   "limits": [
     "Static runtime-import closure includes reachable helpers and parent layouts, not proof that an action executes.",
@@ -8,10 +8,10 @@
     "Route families are triage groups, not new navigation or product scope. No selected design version is implied.",
     "Browser, real persistence, mocked request context, visual approval and provider tests must be reported separately."
   ],
-  "sourceFingerprint": "97f5a33a7bc0e985bbdec795cda0678eda2bd40a3c216f5a0b27612742f8a5c0",
+  "sourceFingerprint": "cb6278ccdadbe988ccfb58f8bda6809ad5f4b51b8f286383e6e4fa644bb2dfe3",
   "schemaFingerprint": "5f823001a981f09ad75dfcb045245d0a3965919b403fe037c51bf92d69291c77",
   "counts": {
-    "sourceModules": 2765,
+    "sourceModules": 2767,
     "pages": 520,
     "apiRoutes": 70,
     "serverModules": 171
@@ -8365,7 +8365,7 @@
       "family": "coach-operations",
       "parallelSlot": false,
       "sourceSha256": "53a0c4f68b29eb48099066d61be72e450786156b5ddfb5bc92242978dc89eb24",
-      "dependencyCount": 139,
+      "dependencyCount": 149,
       "boundaryFiles": [
         "src/app/admin/(legacy)/messages/actions.ts",
         "src/app/portal/analysere/actions.ts",
@@ -8392,14 +8392,18 @@
         "src/lib/portal-tester/test-followup-actions.ts",
         "src/lib/portal-tester/test-followup-data.ts",
         "src/lib/portal/goals/progress.ts",
+        "src/lib/portal/legacy-plan-week-data.ts",
         "src/lib/portal/min-kurve-data.ts",
         "src/lib/portal/ph01-data.ts",
         "src/lib/portal/sg-omrade-snitt.ts",
         "src/lib/portal/turneringshistorikk-data.ts",
+        "src/lib/portal/visible-session-range.ts",
+        "src/lib/portal/visible-v2.ts",
         "src/lib/teknisk-plan/tp-last.ts",
         "src/lib/training/korrelasjon.ts",
         "src/lib/training/volum.ts",
         "src/lib/workbench/teknisk-plan-panel.ts",
+        "src/lib/workbench/v2-drill-mirror.ts",
         "src/lib/workbench/wb-actions.ts"
       ],
       "modelsRead": [
@@ -8433,6 +8437,8 @@
         "round",
         "schoolScheduleEntry",
         "seasonPlan",
+        "sessionBallLog",
+        "sessionDrill",
         "sessionVideo",
         "sgInsight",
         "shot",
@@ -8447,6 +8453,7 @@
         "trackManSession",
         "trainingLog",
         "trainingPlan",
+        "trainingPlanSession",
         "trainingPlanSessionLog",
         "trainingSessionV2",
         "user",
@@ -8459,6 +8466,7 @@
         "coachingSession",
         "errorLog",
         "helseSamtykke",
+        "trainingDrillV2",
         "user",
         "weekPlan",
         "workbenchDrill",
@@ -10852,14 +10860,16 @@
       "family": "internal",
       "parallelSlot": false,
       "sourceSha256": "aa7806dee942be1969da33cb1aac9a26e66573337c77b3cd8c1f01f8cec48395",
-      "dependencyCount": 9,
+      "dependencyCount": 14,
       "boundaryFiles": [
+        "src/lib/error-tracking.ts",
         "src/lib/webhook-retry.ts"
       ],
       "modelsRead": [
         "webhookFailure"
       ],
       "modelsWritten": [
+        "errorLog",
         "webhookFailure"
       ],
       "evidence": "source-reachability-only",
@@ -11348,7 +11358,7 @@
       "family": "internal",
       "parallelSlot": false,
       "sourceSha256": "aedcb08febf03835b0687cfd31d02d7b4fba1e402828d84825650d570308c9b0",
-      "dependencyCount": 59,
+      "dependencyCount": 60,
       "boundaryFiles": [
         "src/app/portal/actions.ts",
         "src/lib/ai/ruting.ts",
@@ -11362,6 +11372,7 @@
         "src/lib/portal/legacy-plan-week-data.ts",
         "src/lib/portal/optimal-session.ts",
         "src/lib/portal/sg-omrade-snitt.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/portal/visible-v2.ts",
         "src/lib/workbench/v2-drill-mirror.ts"
       ],
@@ -11373,6 +11384,7 @@
         "notification",
         "round",
         "routingRule",
+        "sessionBallLog",
         "sessionDrill",
         "subscription",
         "testResult",
@@ -11987,7 +11999,7 @@
       "kind": "api",
       "family": "booking-payments",
       "parallelSlot": false,
-      "sourceSha256": "9eabd90a398e9edef55effd979e6a93f25e5cd0a291d009dcb2115def856cc43",
+      "sourceSha256": "0a8b2de203f454a4a1c92bb4cdcb8462ed6c7697ca6e8ad2d072b18365474abe",
       "dependencyCount": 25,
       "boundaryFiles": [
         "src/lib/booking/varsle-ny-booking.ts",
@@ -19158,7 +19170,7 @@
       "family": "analysis-registration",
       "parallelSlot": false,
       "sourceSha256": "e0dce1d078a666a6dfaf8df852660891598039a5abcae9f0d9fa8aabb063e0b2",
-      "dependencyCount": 181,
+      "dependencyCount": 195,
       "boundaryFiles": [
         "src/app/admin/(legacy)/calendar/actions.ts",
         "src/app/admin/kalender/booking-actions.ts",
@@ -19199,6 +19211,9 @@
         "src/lib/notifications.ts",
         "src/lib/portal-analyse/trenings-historikk.ts",
         "src/lib/portal-analyse/treningsanalyse-data.ts",
+        "src/lib/portal/legacy-plan-week-data.ts",
+        "src/lib/portal/visible-session-range.ts",
+        "src/lib/portal/visible-v2.ts",
         "src/lib/push/send.ts",
         "src/lib/teknisk-plan/apply-reps.ts",
         "src/lib/teknisk-plan/test-to-tm-baseline.ts",
@@ -19236,6 +19251,7 @@
         "round",
         "routingRule",
         "serviceType",
+        "sessionBallLog",
         "sessionDrill",
         "subscription",
         "technicalPlan",
@@ -30130,7 +30146,7 @@
       "family": "player-account",
       "parallelSlot": false,
       "sourceSha256": "e07810b89d88a106a42b673e3f82f363c9df88eba3ff088e42c80921cfb612e0",
-      "dependencyCount": 217,
+      "dependencyCount": 218,
       "boundaryFiles": [
         "src/app/admin/(legacy)/calendar/actions.ts",
         "src/app/admin/kalender/booking-actions.ts",
@@ -30177,6 +30193,7 @@
         "src/lib/portal/legacy-plan-week-data.ts",
         "src/lib/portal/optimal-session.ts",
         "src/lib/portal/sg-omrade-snitt.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/portal/visible-v2.ts",
         "src/lib/push/send.ts",
         "src/lib/recording/lyd-samtykke.ts",
@@ -30223,6 +30240,7 @@
         "round",
         "routingRule",
         "serviceType",
+        "sessionBallLog",
         "sessionDrill",
         "subscription",
         "talentTracking",
@@ -31385,7 +31403,7 @@
       "family": "player-account",
       "parallelSlot": false,
       "sourceSha256": "d35e2148855e7508aeff0dd22c4701a14e1236b0125eaa84cfa7404030ffd589",
-      "dependencyCount": 218,
+      "dependencyCount": 219,
       "boundaryFiles": [
         "src/app/admin/(legacy)/calendar/actions.ts",
         "src/app/admin/kalender/booking-actions.ts",
@@ -31433,6 +31451,7 @@
         "src/lib/portal/optimal-session.ts",
         "src/lib/portal/ph01-data.ts",
         "src/lib/portal/sg-omrade-snitt.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/portal/visible-v2.ts",
         "src/lib/push/send.ts",
         "src/lib/teknisk-plan/apply-reps.ts",
@@ -31478,6 +31497,7 @@
         "schoolScheduleEntry",
         "seasonPlan",
         "serviceType",
+        "sessionBallLog",
         "sessionDrill",
         "subscription",
         "technicalPlan",
@@ -31795,7 +31815,7 @@
       "family": "planning-sources",
       "parallelSlot": false,
       "sourceSha256": "fe1bcc2ff0260928a9cf1057d21d29feac725fc6898f09f053a27f51d8ed981d",
-      "dependencyCount": 192,
+      "dependencyCount": 193,
       "boundaryFiles": [
         "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
         "src/app/portal/(fullscreen)/live/[sessionId]/tapper/actions.ts",
@@ -31836,6 +31856,7 @@
         "src/lib/portal/optimal-session.ts",
         "src/lib/portal/plan-data.ts",
         "src/lib/portal/sg-omrade-snitt.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/portal/visible-v2.ts",
         "src/lib/push/send.ts",
         "src/lib/teknisk-plan/apply-reps.ts",
@@ -31870,6 +31891,7 @@
         "routingRule",
         "schoolScheduleEntry",
         "seasonPlan",
+        "sessionBallLog",
         "sessionDrill",
         "subscription",
         "technicalPlan",
@@ -31927,7 +31949,7 @@
       "family": "planning-sources",
       "parallelSlot": false,
       "sourceSha256": "0b4a5c03dfd8127d45c3d177479a18bbbb8c3f019941aeaa23386ac4a5b7111f",
-      "dependencyCount": 243,
+      "dependencyCount": 244,
       "boundaryFiles": [
         "src/app/admin/(legacy)/calendar/actions.ts",
         "src/app/admin/kalender/booking-actions.ts",
@@ -47367,23 +47389,19 @@
     },
     {
       "file": "src/app/portal/actions.ts",
-      "sha256": "d2ddf14e6c83d900b1bc6384e9f6da1de71958cebf1acad54e33df9914a7e710",
+      "sha256": "dce45fe7017f8fb457e6ff89f1c047022811db6dc6bd3daabb8a022769027008",
       "imports": [
         "src/lib/auth/assert-own-or-coached.ts",
         "src/lib/jarvis/dagen.ts",
         "src/lib/jarvis/ukesreview.ts",
         "src/lib/portal/goals/progress.ts",
-        "src/lib/portal/legacy-plan-week-data.ts",
         "src/lib/portal/neste-beste-handling.ts",
         "src/lib/portal/optimal-session.ts",
         "src/lib/portal/session-hrefs.ts",
-        "src/lib/portal/translate-taxonomy.ts",
-        "src/lib/portal/visible-v2.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/portal/week-progress.ts",
-        "src/lib/portal/workbench-week.ts",
         "src/lib/prisma.ts",
         "src/lib/uke-helpers.ts",
-        "src/lib/workbench/v2-drill-mirror.ts",
         "src/lib/workbench/wb-map.ts"
       ],
       "unresolvedLocal": [],
@@ -47404,88 +47422,88 @@
       ],
       "modelCalls": [
         {
-          "model": "trainingSessionV2",
+          "model": "drillLogV2",
           "operation": "findMany",
           "writes": false,
-          "line": 617
+          "line": 409
         },
         {
           "model": "workbenchSession",
           "operation": "findMany",
           "writes": false,
-          "line": 252
+          "line": 226
         },
         {
-          "model": "drillLogV2",
-          "operation": "findMany",
+          "model": "sessionBallLog",
+          "operation": "groupBy",
           "writes": false,
-          "line": 457
+          "line": 237
         },
         {
           "model": "notification",
           "operation": "findMany",
           "writes": false,
-          "line": 381
+          "line": 337
         },
         {
           "model": "goal",
           "operation": "findMany",
           "writes": false,
-          "line": 334
+          "line": 290
         },
         {
           "model": "user",
           "operation": "findUnique",
           "writes": false,
-          "line": 420
+          "line": 376
         },
         {
           "model": "notification",
           "operation": "count",
           "writes": false,
-          "line": 380
+          "line": 336
         },
         {
           "model": "coachingSession",
           "operation": "findFirst",
           "writes": false,
-          "line": 408
+          "line": 364
         },
         {
           "model": "round",
           "operation": "count",
           "writes": false,
-          "line": 571
+          "line": 526
+        },
+        {
+          "model": "sessionBallLog",
+          "operation": "aggregate",
+          "writes": false,
+          "line": 415
         },
         {
           "model": "tournamentEntry",
           "operation": "findMany",
           "writes": false,
-          "line": 483
+          "line": 440
         },
         {
           "model": "round",
           "operation": "findMany",
           "writes": false,
-          "line": 562
-        },
-        {
-          "model": "trainingSessionV2",
-          "operation": "count",
-          "writes": false,
-          "line": 568
+          "line": 519
         },
         {
           "model": "user",
           "operation": "findUniqueOrThrow",
           "writes": false,
-          "line": 676
+          "line": 631
         },
         {
           "model": "trainingPlan",
           "operation": "findFirst",
           "writes": false,
-          "line": 694
+          "line": 649
         }
       ]
     },
@@ -47588,12 +47606,13 @@
     },
     {
       "file": "src/app/portal/analysere/actions.ts",
-      "sha256": "10256bcfc6e486dc18918dda3f0a5b46366ed78e31ece63eda72be7ae742d6e3",
+      "sha256": "60f1b9015034ea0da8b9ab3950be368e92b37e2c966fc9fcf9148aa877b1acf7",
       "imports": [
         "src/lib/auth/assert-own-or-coached.ts",
         "src/lib/portal-analyse/periode-vindu.ts",
         "src/lib/portal-analyse/trenings-historikk.ts",
         "src/lib/portal-analyse/treningsanalyse-data.ts",
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/prisma.ts"
       ],
       "unresolvedLocal": [],
@@ -47610,70 +47629,70 @@
       ],
       "modelCalls": [
         {
-          "model": "trainingSessionV2",
-          "operation": "findMany",
-          "writes": false,
-          "line": 202
-        },
-        {
           "model": "drillLogV2",
           "operation": "findMany",
           "writes": false,
-          "line": 217
+          "line": 205
+        },
+        {
+          "model": "sessionBallLog",
+          "operation": "groupBy",
+          "writes": false,
+          "line": 220
         },
         {
           "model": "round",
           "operation": "findMany",
           "writes": false,
-          "line": 609
+          "line": 596
         },
         {
           "model": "round",
           "operation": "findFirst",
           "writes": false,
-          "line": 344
+          "line": 331
         },
         {
           "model": "tournamentEntry",
           "operation": "findMany",
           "writes": false,
-          "line": 396
+          "line": 383
         },
         {
           "model": "tournamentResult",
           "operation": "findMany",
           "writes": false,
-          "line": 410
+          "line": 397
         },
         {
           "model": "testResult",
           "operation": "findMany",
           "writes": false,
-          "line": 472
+          "line": 459
         },
         {
           "model": "trackManSession",
           "operation": "findMany",
           "writes": false,
-          "line": 501
+          "line": 488
         },
         {
           "model": "goal",
           "operation": "findMany",
           "writes": false,
-          "line": 583
+          "line": 570
         },
         {
           "model": "courseDefinition",
           "operation": "findMany",
           "writes": false,
-          "line": 645
+          "line": 632
         },
         {
           "model": "periodBlock",
           "operation": "findFirst",
           "writes": false,
-          "line": 684
+          "line": 671
         }
       ]
     },
@@ -49481,7 +49500,7 @@
     },
     {
       "file": "src/app/portal/meg/innstillinger/actions.ts",
-      "sha256": "d6a06539c82146ab7a9a185cf4a5165932b31ee9ef3989ec84ce65993ba2c2d5",
+      "sha256": "9452c4b079a9034d9bc180a2624d715850883df935469f9b39d32b3ec9bc22f1",
       "imports": [
         "src/lib/audit.ts",
         "src/lib/auth/getCurrentUser.ts",
@@ -49502,7 +49521,7 @@
           "model": "user",
           "operation": "update",
           "writes": true,
-          "line": 253
+          "line": 255
         },
         {
           "model": "user",
@@ -49514,127 +49533,127 @@
           "model": "goal",
           "operation": "findMany",
           "writes": false,
-          "line": 121
+          "line": 123
         },
         {
           "model": "round",
           "operation": "findMany",
           "writes": false,
-          "line": 122
+          "line": 124
         },
         {
           "model": "tournamentEntry",
           "operation": "findMany",
           "writes": false,
-          "line": 123
+          "line": 125
         },
         {
           "model": "seasonPlan",
           "operation": "findMany",
           "writes": false,
-          "line": 124
+          "line": 126
         },
         {
           "model": "trainingSessionV2",
           "operation": "findMany",
           "writes": false,
-          "line": 125
+          "line": 127
         },
         {
           "model": "testResult",
           "operation": "findMany",
           "writes": false,
-          "line": 126
+          "line": 128
         },
         {
           "model": "trackManSession",
           "operation": "findMany",
           "writes": false,
-          "line": 127
+          "line": 129
         },
         {
           "model": "payment",
           "operation": "findMany",
           "writes": false,
-          "line": 128
+          "line": 130
         },
         {
           "model": "notification",
           "operation": "findMany",
           "writes": false,
-          "line": 129
+          "line": 131
         },
         {
           "model": "healthEntry",
           "operation": "findMany",
           "writes": false,
-          "line": 130
+          "line": 132
         },
         {
           "model": "equipmentBag",
           "operation": "findMany",
           "writes": false,
-          "line": 131
+          "line": 133
         },
         {
           "model": "caddieMessage",
           "operation": "findMany",
           "writes": false,
-          "line": 132
+          "line": 134
         },
         {
           "model": "coachNote",
           "operation": "findMany",
           "writes": false,
-          "line": 134
+          "line": 136
         },
         {
           "model": "coachingSession",
           "operation": "findMany",
           "writes": false,
-          "line": 135
+          "line": 137
         },
         {
           "model": "sessionRecording",
           "operation": "findMany",
           "writes": false,
-          "line": 136
+          "line": 138
         },
         {
           "model": "leave",
           "operation": "findMany",
           "writes": false,
-          "line": 137
+          "line": 139
         },
         {
           "model": "talentTracking",
           "operation": "findMany",
           "writes": false,
-          "line": 138
+          "line": 140
         },
         {
           "model": "document",
           "operation": "findMany",
           "writes": false,
-          "line": 139
+          "line": 141
         },
         {
           "model": "trainingLog",
           "operation": "findMany",
           "writes": false,
-          "line": 140
+          "line": 142
         },
         {
           "model": "playerSwingVideo",
           "operation": "findMany",
           "writes": false,
-          "line": 141
+          "line": 143
         },
         {
           "model": "delingsSamtykke",
           "operation": "findMany",
           "writes": false,
-          "line": 142
+          "line": 144
         }
       ]
     },
@@ -52386,7 +52405,7 @@
     },
     {
       "file": "src/lib/admin-spiller/spiller360-data.ts",
-      "sha256": "556d87bd2f8f2bb154c17d3814a7d3b4d427d33f6782054993a25f9abcc049fd",
+      "sha256": "bce746cec15dac522f970fdf6818d1a3c451eaf9be795fb887f12e3af551f3fd",
       "imports": [
         "src/app/portal/analysere/actions.ts",
         "src/lib/admin-spiller/spiller-arbeidsvisning-data.ts",
@@ -52506,25 +52525,25 @@
           "model": "user",
           "operation": "findUnique",
           "writes": false,
-          "line": 582
+          "line": 583
         },
         {
           "model": "coachingSession",
           "operation": "findMany",
           "writes": false,
-          "line": 557
+          "line": 558
         },
         {
           "model": "coachNote",
           "operation": "findFirst",
           "writes": false,
-          "line": 563
+          "line": 564
         },
         {
           "model": "talentTracking",
           "operation": "findUnique",
           "writes": false,
-          "line": 581
+          "line": 582
         }
       ]
     },
@@ -59886,8 +59905,9 @@
     },
     {
       "file": "src/lib/portal-analyse/treningsanalyse-data.ts",
-      "sha256": "51c60008ce5712d263be28ef0e12b2a2ad98a991f27d67f8c5156beb841ff53d",
+      "sha256": "c74e86af1dc9bd3d252f443cf9f86b3fbb29adce4b90e4c24b8da6352aa4b1bb",
       "imports": [
+        "src/lib/portal/visible-session-range.ts",
         "src/lib/prisma.ts"
       ],
       "unresolvedLocal": [],
@@ -59897,13 +59917,25 @@
           "model": "trainingSessionV2",
           "operation": "findMany",
           "writes": false,
-          "line": 48
+          "line": 55
+        },
+        {
+          "model": "workbenchSession",
+          "operation": "findMany",
+          "writes": false,
+          "line": 76
+        },
+        {
+          "model": "sessionBallLog",
+          "operation": "groupBy",
+          "writes": false,
+          "line": 93
         },
         {
           "model": "drillLogV2",
           "operation": "findMany",
           "writes": false,
-          "line": 74
+          "line": 103
         }
       ]
     },
@@ -60209,7 +60241,7 @@
     },
     {
       "file": "src/lib/portal-gjennomfore/okt-status-actions.ts",
-      "sha256": "884b0c08f8b4cc4b32a5f18cfa5b997e5630cf6c00c17bf76af31b21662ef1cd",
+      "sha256": "d988f37c87ebf9f0d74ed6f72201c38ceeb319eeda0dff1e169342e13a620789",
       "imports": [
         "src/lib/auth/requirePortalUser.ts",
         "src/lib/prisma.ts",
@@ -60224,43 +60256,31 @@
           "model": "trainingPlanSession",
           "operation": "findFirst",
           "writes": false,
-          "line": 38
+          "line": 39
         },
         {
           "model": "trainingPlanSession",
-          "operation": "update",
+          "operation": "updateMany",
           "writes": true,
-          "line": 47
+          "line": 74
         },
         {
           "model": "trainingSessionV2",
           "operation": "updateMany",
           "writes": true,
-          "line": 49
+          "line": 69
         },
         {
           "model": "trainingSessionV2",
           "operation": "findFirst",
           "writes": false,
-          "line": 54
-        },
-        {
-          "model": "trainingSessionV2",
-          "operation": "update",
-          "writes": true,
-          "line": 63
-        },
-        {
-          "model": "trainingPlanSession",
-          "operation": "updateMany",
-          "writes": true,
-          "line": 66
+          "line": 61
         },
         {
           "model": "notification",
           "operation": "create",
           "writes": true,
-          "line": 78
+          "line": 90
         }
       ]
     },
@@ -60860,7 +60880,7 @@
     },
     {
       "file": "src/lib/portal/goals/progress.ts",
-      "sha256": "c98500d0124de5a5529b53df3796ba2cb9ef0270c503ccd441ae8870522a157f",
+      "sha256": "9b3525495701ba22c762d017b19f69ce930771cfdce8b9a3f7000c081be5ec1a",
       "imports": [
         "src/lib/domain/maal-fremdrift.ts",
         "src/lib/portal-tester/format-verdi.ts",
@@ -60913,7 +60933,7 @@
           "model": "testResult",
           "operation": "findFirst",
           "writes": false,
-          "line": 218
+          "line": 221
         }
       ]
     },
@@ -61441,6 +61461,37 @@
           "operation": "findUnique",
           "writes": false,
           "line": 46
+        }
+      ]
+    },
+    {
+      "file": "src/lib/portal/visible-session-range.ts",
+      "sha256": "8b86f1082094d8c591fb88a1250053b242fe8b16467ce722f04bafb193a7340d",
+      "imports": [
+        "src/lib/jarvis/dagen.ts",
+        "src/lib/portal/legacy-plan-week-data.ts",
+        "src/lib/portal/session-hrefs.ts",
+        "src/lib/portal/translate-taxonomy.ts",
+        "src/lib/portal/visible-v2.ts",
+        "src/lib/portal/workbench-week.ts",
+        "src/lib/prisma.ts",
+        "src/lib/workbench/v2-drill-mirror.ts",
+        "src/lib/workbench/wb-map.ts"
+      ],
+      "unresolvedLocal": [],
+      "serverActions": [],
+      "modelCalls": [
+        {
+          "model": "trainingSessionV2",
+          "operation": "findMany",
+          "writes": false,
+          "line": 31
+        },
+        {
+          "model": "workbenchSession",
+          "operation": "findMany",
+          "writes": false,
+          "line": 40
         }
       ]
     },
@@ -62899,8 +62950,10 @@
     },
     {
       "file": "src/lib/webhook-retry.ts",
-      "sha256": "61e2819405a7e876d6f87efa658bb2834af9f4afe76477080a65d2efd1a96e5b",
+      "sha256": "212c5aedccc4ba77575ff6c3567a43d235884b8cd96c76f02082a4b1025eafdd",
       "imports": [
+        "src/lib/error-sanitize.ts",
+        "src/lib/error-tracking.ts",
         "src/lib/prisma.ts"
       ],
       "unresolvedLocal": [],
@@ -62910,19 +62963,19 @@
           "model": "webhookFailure",
           "operation": "upsert",
           "writes": true,
-          "line": 39
+          "line": 41
         },
         {
           "model": "webhookFailure",
           "operation": "update",
           "writes": true,
-          "line": 80
+          "line": 86
         },
         {
           "model": "webhookFailure",
           "operation": "findMany",
           "writes": false,
-          "line": 90
+          "line": 96
         }
       ]
     },
@@ -63714,13 +63767,14 @@
     },
     {
       "file": "src/lib/workbench/publish-actions.ts",
-      "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+      "sha256": "487fab834d2942f62ba02bac0fb4a4c9759401857114e3598caff6dbbafed330",
       "imports": [
         "src/lib/auth/coached.ts",
         "src/lib/auth/requirePortalUser.ts",
         "src/lib/error-tracking.ts",
         "src/lib/prisma.ts",
         "src/lib/push/send.ts",
+        "src/lib/workbench/publish-time.ts",
         "src/lib/workbench/session-move-math.ts"
       ],
       "unresolvedLocal": [],
@@ -63735,25 +63789,25 @@
           "model": "trainingPlan",
           "operation": "findFirst",
           "writes": false,
-          "line": 267
+          "line": 265
         },
         {
           "model": "trainingPlan",
           "operation": "update",
           "writes": true,
-          "line": 276
+          "line": 274
         },
         {
           "model": "notification",
           "operation": "create",
           "writes": true,
-          "line": 185
+          "line": 183
         },
         {
           "model": "trainingPlan",
           "operation": "updateMany",
           "writes": true,
-          "line": 246
+          "line": 244
         }
       ]
     },

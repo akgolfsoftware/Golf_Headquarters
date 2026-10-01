@@ -12,18 +12,14 @@
 
 import "server-only";
 import { ukenummer } from "@/lib/uke-helpers";
+import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { weekPlanProgress } from "@/lib/portal/week-progress";
-import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
-import { visibleV2Where } from "@/lib/portal/visible-v2";
-import { workbenchWeekSession } from "@/lib/portal/workbench-week";
-import { loadLegacyPlanWeekSessions } from "@/lib/portal/legacy-plan-week-data";
 import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
 import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
-import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
+import { tilDatoKolonne } from "@/lib/workbench/wb-map";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2, OktAvbruddAarsak } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
-import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
 import {
   hentOptimalOktHint,
@@ -137,32 +133,21 @@ export type StatsSnapshot = {
 
 // ── Helpers ───────────────────────────────────────────────────────
 
-const PRACTICE_TO_PYRAMID: Record<PracticeType, PyramidArea> = {
-  BLOKK: "TEK",
-  RANDOM: "SLAG",
-  KONKURRANSE: "TURN",
-  SPILL_TEST: "SPILL",
-};
-
 const UKEDAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 function startOfDay(d: Date): Date {
-  const s = new Date(d);
-  s.setHours(0, 0, 0, 0);
-  return s;
+  const [year, month, day] = OSLO_YMD_FMT.format(d).split("-").map(Number);
+  return osloInstant(year, month, day, 0, 0);
 }
 
 function endOfDay(d: Date): Date {
-  const e = new Date(d);
-  e.setHours(23, 59, 59, 999);
-  return e;
+  const date = tilDatoKolonne(OSLO_YMD_FMT.format(d));
+  date.setUTCDate(date.getUTCDate() + 1);
+  return osloInstant(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), 0, 0);
 }
 
 function startOfWeek(d: Date): Date {
-  const s = startOfDay(d);
-  const day = (s.getDay() + 6) % 7; // mandag = 0
-  s.setDate(s.getDate() - day);
-  return s;
+  return osloUkeGrenser(d).start;
 }
 
 function fornavn(name: string): string {
@@ -194,25 +179,7 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
   const now = naa;
   const { start, slutt: end } = osloUkeGrenser(now);
 
-  const visibility = await visibleV2Where(userId);
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: { ...visibility, startTime: { gte: start, lt: end } },
-    orderBy: { startTime: "asc" },
-    select: {
-      id: true,
-      generertFra: true,
-      generertFraId: true,
-      title: true,
-      startTime: true,
-      endTime: true,
-      status: true,
-      avbruddAarsak: true,
-      practiceType: true,
-      miljo: true,
-      maalsetning: true,
-      drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
-    },
-  });
+  const sessions = await loadVisibleSessionRange(userId, start.toISOString(), end.toISOString());
 
   const days: WeekDay[] = Array.from({ length: 7 }, (_, i) => {
     const key = tilDatoKolonne(OSLO_YMD_FMT.format(start));
@@ -227,49 +194,10 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
     };
   });
 
-  for (const s of sessions) {
-    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === OSLO_YMD_FMT.format(s.startTime));
-    if (!day) continue;
-    day.sessions.push({
-      id: s.id,
-      model: "v2",
-      planSessionId: s.generertFra === GENERERT_FRA ? s.generertFraId : null,
-      title: s.title,
-      startTime: s.startTime,
-      endTime: s.endTime,
-      status: s.status,
-      avbruddAarsak: s.avbruddAarsak,
-      practiceType: s.practiceType,
-      pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
-      durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
-      sted: s.miljo ? translateMiljo(s.miljo) : null,
-      maalsetning: s.maalsetning,
-      drills: s.drills,
-      href: v2DbSessionHref(s.id, s.status),
-    });
-  }
-
-  const workbench = await prisma.workbenchSession.findMany({
-    where: {
-      playerId: userId,
-      date: { gte: tilDatoKolonne(OSLO_YMD_FMT.format(start)), lt: tilDatoKolonne(OSLO_YMD_FMT.format(end)) },
-      status: { in: [...SPILLER_SYNLIGE_STATUSER] },
-      hiddenByPlayer: false,
-      needsPlayerApproval: false,
-      OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }],
-    },
-    include: { drills: { orderBy: { sortOrder: "asc" } } },
-  });
-  for (const row of workbench) {
-    const key = row.date.toISOString().slice(0, 10);
-    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === key);
-    if (day) day.sessions.push(workbenchWeekSession(row));
-  }
-  for (const session of await loadLegacyPlanWeekSessions(userId, start, end)) {
-    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === OSLO_YMD_FMT.format(session.startTime));
+  for (const session of sessions) {
+    const day = days.find(d => OSLO_YMD_FMT.format(d.date) === OSLO_YMD_FMT.format(session.startTime));
     if (day) day.sessions.push(session);
   }
-  for (const day of days) day.sessions.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   return days;
 }
 
@@ -277,26 +205,43 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
 
 export async function getRecentActivity(userId: string, limit = 5): Promise<RecentActivityItem[]> {
   await assertCanViewPlayerData(userId);
-  const logs = await prisma.drillLogV2.findMany({
-    where: { loggedBy: userId },
-    orderBy: { loggedAt: "desc" },
-    take: limit,
-    select: {
-      id: true,
-      loggedAt: true,
-      repsTotal: true,
-      successRate: true,
-      drill: {
-        select: {
-          name: true,
-          session: { select: { id: true, title: true } },
+  const [logs, workbench] = await Promise.all([
+    prisma.drillLogV2.findMany({
+      where: { loggedBy: userId },
+      orderBy: { loggedAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        loggedAt: true,
+        repsTotal: true,
+        successRate: true,
+        drill: {
+          select: {
+            name: true,
+            session: { select: { id: true, title: true } },
+          },
         },
       },
-    },
+    }),
+    prisma.workbenchSession.findMany({
+      where: {
+        playerId: userId, status: "COMPLETED", hiddenByPlayer: false,
+        needsPlayerApproval: false,
+        OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }],
+      },
+      orderBy: { updatedAt: "desc" },
+      take: limit,
+      select: { id: true, title: true, updatedAt: true },
+    }),
+  ]);
+  const counts = workbench.length === 0 ? [] : await prisma.sessionBallLog.groupBy({
+    by: ["planSessionId"],
+    where: { planSessionId: { in: workbench.map(session => session.id) } },
+    _sum: { count: true },
   });
-
-  if (logs.length > 0) {
-    return logs.map((log) => ({
+  const countBySession = new Map(counts.map(row => [row.planSessionId, row._sum.count ?? 0]));
+  const activities: RecentActivityItem[] = [
+    ...logs.map((log) => ({
       id: log.id,
       drillName: log.drill.name,
       sessionTitle: log.drill.session.title,
@@ -304,8 +249,19 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
       repsTotal: log.repsTotal,
       successRate: log.successRate,
       href: v2DbSessionHref(log.drill.session.id, "COMPLETED"),
-    }));
-  }
+    })),
+    ...workbench.map((session) => ({
+      id: `wb-${session.id}`,
+      drillName: "Gjennomført økt",
+      sessionTitle: session.title,
+      loggedAt: session.updatedAt,
+      repsTotal: countBySession.get(session.id) ?? 0,
+      successRate: null,
+      href: `/portal/live/${session.id}/summary`,
+    })),
+  ].sort((a, b) => b.loggedAt.getTime() - a.loggedAt.getTime()).slice(0, limit);
+
+  if (activities.length > 0) return activities;
 
   // Fallback (fasit «Hva er nytt»): ingen drill-logger ennå → vis siste varsler
   // (coach-meldinger, ny plan, innsikt, booking osv.) som aktivitetsfeed. Ekte data.
@@ -443,28 +399,29 @@ export async function getStatsSnapshot(userId: string, naa: Date = new Date()): 
   await assertCanViewPlayerData(userId);
   const now = naa;
   const weekStart = startOfWeek(now);
+  const todayStart = startOfDay(now);
+  const todayEnd = endOfDay(now);
 
   const [todaySessions, weekSessions, weekRounds, todayLogs] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
-      where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
-      select: { id: true },
-    }),
-    prisma.trainingSessionV2.findMany({
-      where: { studentId: userId, startTime: { gte: weekStart, lte: now } },
-      select: { startTime: true, endTime: true, drills: { select: { durationMinutes: true } } },
-    }),
+    loadVisibleSessionRange(userId, todayStart.toISOString(), todayEnd.toISOString()),
+    loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: weekStart, lte: now } } }),
     prisma.drillLogV2.findMany({
-      where: { loggedBy: userId, loggedAt: { gte: startOfDay(now), lte: endOfDay(now) } },
+      where: { loggedBy: userId, loggedAt: { gte: todayStart, lt: todayEnd } },
       select: { repsTotal: true },
     }),
   ]);
+  const todayIds = todaySessions.map(session => session.id);
+  const ballCounts = todayIds.length === 0 ? null : await prisma.sessionBallLog.aggregate({
+    where: { planSessionId: { in: todayIds } },
+    _sum: { count: true },
+  });
 
   const timeThisWeekMin = weekSessions.reduce(
-    (sum, s) => sum + Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
+    (sum, session) => sum + session.durationMin,
     0,
   );
-  const repsToday = todayLogs.reduce((sum, l) => sum + l.repsTotal, 0);
+  const repsToday = todayLogs.reduce((sum, log) => sum + log.repsTotal, 0) + (ballCounts?._sum.count ?? 0);
 
   return {
     sessionsToday: todaySessions.length,
@@ -565,9 +522,7 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
       take: 10,
       select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),
-    prisma.trainingSessionV2.count({
-      where: { studentId: userId, startTime: { gte: weekStart, lte: now } },
-    }),
+    loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: since90 } } }),
   ]);
 
@@ -592,7 +547,7 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
   return {
     avgScore,
     sgTotal: avg("sgTotal"),
-    sessionsThisWeek: weekSessions,
+    sessionsThisWeek: weekSessions.length,
     roundsCount,
     sgBreakdown: { ott: avg("sgOtt"), app: avg("sgApp"), arg: avg("sgArg"), putt: avg("sgPutt") },
     sgTrend,
@@ -612,25 +567,25 @@ export async function getTrainingHeatmap(userId: string, naa: Date = new Date())
   await assertCanViewPlayerData(userId);
   const now = naa;
   const weeksBack = 12;
-  const rangeStart = startOfWeek(new Date(now.getTime() - (weeksBack - 1) * 7 * 86_400_000));
-
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: rangeStart, lte: endOfDay(now) } },
-    select: { startTime: true },
-  });
+  const currentWeekDate = tilDatoKolonne(OSLO_YMD_FMT.format(startOfWeek(now)));
+  const rangeDate = new Date(currentWeekDate);
+  rangeDate.setUTCDate(rangeDate.getUTCDate() - (weeksBack - 1) * 7);
+  const rangeStart = osloInstant(rangeDate.getUTCFullYear(), rangeDate.getUTCMonth() + 1, rangeDate.getUTCDate(), 0, 0);
+  const sessions = await loadVisibleSessionRange(userId, rangeStart.toISOString(), endOfDay(now).toISOString());
 
   const rows = ["M", "T", "O", "T", "F", "L", "S"];
-  const weekStarts = Array.from({ length: weeksBack }, (_, w) => {
-    const d = new Date(rangeStart);
-    d.setDate(d.getDate() + w * 7);
-    return d;
+  const weekStarts = Array.from({ length: weeksBack }, (_, week) => {
+    const date = new Date(rangeDate);
+    date.setUTCDate(date.getUTCDate() + week * 7);
+    return date;
   });
-  const cols = weekStarts.map((d) => String(d.getDate()));
+  const cols = weekStarts.map(date => String(date.getUTCDate()));
   const counts: number[][] = Array.from({ length: 7 }, () => Array.from({ length: weeksBack }, () => 0));
 
-  for (const s of sessions) {
-    const dayIdx = (s.startTime.getDay() + 6) % 7; // mandag = 0
-    const weekIdx = Math.floor((startOfDay(s.startTime).getTime() - rangeStart.getTime()) / (7 * 86_400_000));
+  for (const session of sessions) {
+    const date = tilDatoKolonne(OSLO_YMD_FMT.format(session.startTime));
+    const dayIdx = (date.getUTCDay() + 6) % 7; // mandag = 0
+    const weekIdx = Math.floor((date.getTime() - rangeDate.getTime()) / (7 * 86_400_000));
     if (weekIdx >= 0 && weekIdx < weeksBack) counts[dayIdx][weekIdx] += 1;
   }
 

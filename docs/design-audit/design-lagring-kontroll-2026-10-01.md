@@ -9,12 +9,13 @@ Bestilling: klargjøre design, lagring og brukerreiser mens Claude Design fullf�
 | `getAllTodaysSessions` og `getTodaysSession` hentet bare V2, selv om Plan også viste Workbench og eldre planøkter | I dag gjenbruker den samme ukeleseren, filtrert til riktig Oslo-dag; samme identiteter, rekkefølge og publiseringsfilter | Lagringsprøven feilet først på manglende dagsøkt, består etter retting. Enhetstest prøver alle tre modeller og feil dag |
 | `completeSessionWithEffort` kunne fullføre utkast og overskrive ferdige innsatsdata ved gjentatt innsending | Samme gyldige startstatuser som vanlig fullføring, historikk beholdes ved gjentakelse og samtidig endring avvises med `updatedAt` | To faktiske lokale lagringsprøver feilet før retting og består etterpå; enhetstest prøver status, eierskap og kollisjon |
 | `loadNesteOkt` søkte bare V2 og eldre planøkter | Workbench er med i samme tidsordnede kandidatvalg; bare synlig, godkjent publisering og korrekt Oslo-tid | Egen lagringsprøve feilet først på feil lenke, består etter retting; skjult, ubesvart, avvist og trukket tilbake gir ingen kandidat |
+| Forsiden og Analyse brukte ulike, hovedsakelig V2-baserte treningsgrunnlag | En felles, tilgangsvoktet leser leverer synlige V2-, Workbench- og eldre planøkter til uke, aktivitet, nøkkeltall, varmekart og treningsanalyse | Faktisk Workbench-økt fullføres med 11 slag og leses med samme ID, akse og telling i Stats; den eksisterende 17-slagsreisen prøver forside, nøkkeltall, varmekart og aktivitet |
 
 Dette endrer ikke databaseskjema, rolle-/samtykkeregler eller produksjonsoppsett. Eksisterende modeller og eierskapsspørringer beholdes.
 
 ## Lagringsprøver
 
-`node scripts/local-users-run.mjs journeys`: **13 bestått, 0 feil, 0 utelatt** etter rettingene.
+`node scripts/local-users-run.mjs journeys`: **14 bestått, 0 feil, 0 utelatt** etter rettingene.
 
 - Coachutkast har samme økt-/øvelse-ID og er skjult i spillerens I dag/Plan.
 - Faktiske coachomfang avviser fremmed trener/spiller uten radendring.
@@ -29,12 +30,13 @@ Dette endrer ikke databaseskjema, rolle-/samtykkeregler eller produksjonsoppsett
 - Neste-økt-lenken respekterer publisering/synlighet og Oslo-tid.
 - Uke over årsskiftet beholder dato/identitet.
 - Slagtelling er absolutt og lagres én gang per nøkkel; oppsummeringen leser sluttelling 17 etter et forsinket forsøk med 99.
+- Den samme gjennomførte Workbench-økten vises i forsideaktivitet, nøkkeltall, varmekart og Analyse med samme ID, treningsakse og faktiske slagtelling.
 
 Bare forespørselsidentiteten og Next sin cache erstattes i disse serverprøvene. Appens faktiske Prisma-klient, PostgreSQL, domenefunksjoner og eierskapsspørringer brukes. Dette er ikke bevis for nettleserinnlogging, samtykkevakt, visuell samsvar eller produksjon. Testen kontrollerer databaseidentitet før skriving og rydder kun sine egne syntetiske økter/tellinger.
 
 ## Kildekart og kontrollgrenser
 
-[Sporingskartet](design-data-journey-map-2026-10-01.json) registrerer 2 765 runtime-kildemoduler, 520 sidefiler, 70 API-ruter og 171 moduler med eksporterte serverhandlinger. Det inkluderer overordnede layout-importer og viser navngitte Prisma-operasjoner. Hver rute står som ikke kontrollert som hel reise, og konkret designreferanse er ennå ikke koblet.
+[Sporingskartet](design-data-journey-map-2026-10-01.json) registrerer 2 767 runtime-kildemoduler, 520 sidefiler, 70 API-ruter og 171 moduler med eksporterte serverhandlinger. Det inkluderer overordnede layout-importer og viser navngitte Prisma-operasjoner. Hver rute står som ikke kontrollert som hel reise, og konkret designreferanse er ennå ikke koblet.
 
 Kartet er generert fra faktisk kode. Det gamle inventarets tall kan ikke brukes som ferske tall: denne kartleggingen oppdager blant annet `use server` etter lange modulkommentarer. Antall filer eller importkoblinger er aldri antall ferdige funksjoner. SQL, Storage, eksterne tjenester, beregnede databasekall og faktisk knappbinding trenger manuell kontroll. Kartets filavtrykk og `--check` avslører kodeendringer etter genereringen.
 
@@ -48,7 +50,7 @@ Fra I dag åpner nettleserprøven øktens brief med den lagrede ID-en direkte. D
 
 Målrettede enhetsprøver: **13 bestått**. Lokal mål-/port-/outputkontroll: **20 bestått**. Lint på berørte filer: **0 feil, 0 advarsler**. Dokumentkontroll: **bestått, 178 dokumenter**. Sporingskartets `--check`: **bestått**.
 
-Samlet `node scripts/local-users-run.mjs verify` → uendret `npm run verify`: **bestått, avsluttet med kode 0**. Prisma-validering/-generering, typekontroll, lint, statiske sikkerhets-/dokumentkontroller, **3 818 enhetsprøver + 14 komponentprøver**, Next-produksjonsbygg og Serwist er gjennomført på denne diffen. Ingen prøve feilet eller ble utelatt. Dev-serveren var stoppet før generering/bygging. Den første frittstående typekontrollen uten prosjektets minnegrense gikk tom for minne; den autoriserte lokale kjøreren bruker samme 5 GB-grense som CI, og både samlet kontroll og bygg består.
+Samlet `node scripts/local-users-run.mjs verify` → uendret `npm run verify`: **bestått, avsluttet med kode 0**. Prisma-validering/-generering, typekontroll, lint, statiske sikkerhets-/dokumentkontroller, **3 876 enhetsprøver + 14 komponentprøver**, Next-produksjonsbygg og Serwist er gjennomført på denne diffen etter oppdatering mot siste `origin/main`. Ingen prøve feilet eller ble utelatt. Dev-serveren var stoppet før generering/bygging. Den første frittstående typekontrollen uten prosjektets minnegrense gikk tom for minne; den autoriserte lokale kjøreren bruker samme 5 GB-grense som CI, og både samlet kontroll og bygg består.
 
 Dette er lokale resultater. Ingen GitHub CI, apppublisering eller ny visuell godkjenning er gjennomført i denne arbeidsrunden.
 
@@ -60,6 +62,6 @@ Dette er lokale resultater. Ingen GitHub CI, apppublisering eller ny visuell god
 
 ## Neste kontrollhull
 
-Ferdig designversjon og knappbinding, teknisk kilde/revisjon → resultat, FYS-dose, gruppepublisering, offline/eierskifte, samtidige redigeringer, full analyse, booking/betaling, samtykke/eksport/sletting, organisasjoner og AI-godkjenning står fortsatt åpne. Kilderegistreringen dekker inngangene til alle områder; den gjør ikke disse reisene ferdige.
+Ferdig designversjon og knappbinding, teknisk kilde/revisjon → resultat, FYS-dose, gruppepublisering, offline/eierskifte, samtidige redigeringer, detaljanalyse per øvelse, booking/betaling, samtykke/eksport/sletting, organisasjoner og AI-godkjenning står fortsatt åpne. Kilderegistreringen dekker inngangene til alle områder; den gjør ikke disse reisene ferdige.
 
-Konkrete neste lesere: `getRecentActivity`, `getStatsSnapshot`, `getKpiStats` og `getTrainingHeatmap` i `src/app/portal/actions.ts` har fortsatt V2-baserte deler. De må prøves mot gjennomført Workbench-økt og riktig skjerm før tallene kan erklæres sammenhengende. Denne runden retter dags-/ukevisning og neste-økt-kjeden; den hevder ikke at hele analysekjeden er dekket.
+Neste konkrete datakjede er etterlevelse i admin-, foresatt- og stallvisninger. Disse leserne bruker fortsatt eldre øktgrunnlag og må samles om produktregelen for gjennomførte minutter mot planlagte minutter de siste fire ukene. Resultatanalyse per øvelse krever fortsatt en uttrykkelig kobling for Workbench-resultater; øktens lagrede slagtelling blir derfor ikke gjettet ned på enkeltøvelser.

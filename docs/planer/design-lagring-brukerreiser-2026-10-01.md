@@ -42,7 +42,7 @@ flowchart LR
     H --> J[Neste publiserte økt]
 ```
 
-Dette er de prøvde Workbench-overgangene. Full analyse av tekniske resultat, FYS-dose, alle tre øktmodeller og samtlige coachflater er fortsatt egne kontrollpunkter. Midlertidige Live-tellere er ikke automatisk varig resultatregistrering i hver treningsgren.
+Dette er de prøvde Workbench-overgangene. Felles øktvolum, faktisk slagtelling og treningsakse er nå kontrollert for alle tre øktmodeller på forside og Analyse. Full analyse av tekniske resultat, FYS-dose og samtlige coachflater er fortsatt egne kontrollpunkter. Midlertidige Live-tellere er ikke automatisk varig resultatregistrering i hver treningsgren.
 
 ## Register for alle brukerreisefamilier
 
@@ -55,7 +55,7 @@ Sporingskartet grupperer alle 590 side-/API-kilder i 13 arbeidsområder. Grupper
 | Teknisk plan, FYS, mal og turnering | Kilde-ID/revisjon → oppgave/dose → planlagt økt → resultat | Kildekode kartlagt. Kontroller hver kildegren med lagring; prototypens simulering er ikke bevis |
 | Publisering, I dag og Plan | Utkast, publisert, trukket tilbake, venter/avvist og duplikater | Workbench-kjeden prøvd mot lokal lagring. Gruppepublisering og alle modellvarianter gjenstår |
 | Live og oppsummering | Start → ny innlasting → teller → fullføring → oppsummering → neste økt | Lokal Workbench-lagring og slagteller prøvd. Full offline-/FYS-/V2-kjede gjenstår |
-| Registrering og analyse | Runde/slag/import/test → korrekt enhet og brutto score → analyse → coach | Aktuelle ruter/lagre kartlagt; helhetlig resultat- og analysebevis mangler |
+| Registrering og analyse | Runde/slag/import/test → korrekt enhet og brutto score → analyse → coach | Øktvolum og Workbench-slag er bevist inn i spillerens Stats; helhetlig resultat- og coachanalyse mangler |
 | Booking, credits og abonnement | Ledig tid → reservasjon → betaling/credit → kalender → endring/avbestilling | Lokal rigg sperrer ekte eksterne handlinger. Leverandørtest og kollisjonsreiser gjenstår |
 | Grupper, meldinger og kalender | Medlemskap → publisering/varsel → riktig mottaker/kalender og utmelding | To separate eiere finnes. Gruppe-, meldings- og kalenderkjedene må prøves |
 | AgencyOS og intern drift | Stall → spiller → plan/oppfølging/rapport med korrekt coachomfang | Søk og Workbench-eierskap er prøvd; øvrige skriveruter står åpne for kontroll |

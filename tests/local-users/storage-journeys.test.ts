@@ -103,6 +103,8 @@ test("fremmed trener og spiller avvises av faktiske eierskapsspørringer uten å
     assert.equal((await as(key, () => wb.moveSession({ sessionId, newDate: "2030-10-02", newStartMinute: 600 }))).ok, false);
     assert.equal((await as(key, () => wb.publishSessions([sessionId]))).ok, false);
     await assert.rejects(as(key, () => portal.getWeekOverview(actors.get("P01")!.id, NOW)), /Ingen tilgang/);
+    await assert.rejects(as(key, () => portal.getStatsSnapshot(actors.get("P01")!.id, NOW)), /Ingen tilgang/);
+    await assert.rejects(as(key, () => portal.getTrainingHeatmap(actors.get("P01")!.id, NOW)), /Ingen tilgang/);
   }
   assert.deepEqual(await db.workbenchSession.findUniqueOrThrow({ where: { id: sessionId } }), before);
 });
@@ -252,4 +254,42 @@ test("slagteller → sluttelling → oppsummering beholder lagring uten duplikat
   assert.equal(summary.totalReps, 17);
   assert.equal(summary.durationSec, 0); // No measured timer was stored by this tapper path.
   assert.equal(summary.completed, true);
+
+  const day = await as("P01", () => portal.getAllTodaysSessions(actors.get("P01")!.id, NOW));
+  const week = await as("P01", () => portal.getWeekOverview(actors.get("P01")!.id, NOW));
+  const startedThisWeek = week.flatMap(item => item.sessions).filter(item => item.startTime < NOW);
+  const stats = await as("P01", () => portal.getStatsSnapshot(actors.get("P01")!.id, NOW));
+  assert.equal(stats.sessionsToday, day.length);
+  assert.equal(stats.timeThisWeekMin, startedThisWeek.reduce((sum, item) => sum + item.durationMin, 0));
+  assert.ok(stats.repsToday >= 17);
+  const kpi = await as("P01", () => portal.getKpiStats(actors.get("P01")!.id, NOW));
+  assert.equal(kpi.sessionsThisWeek, startedThisWeek.length);
+  const heatmap = await as("P01", () => portal.getTrainingHeatmap(actors.get("P01")!.id, NOW));
+  assert.ok(heatmap.totalSessions >= day.length);
+  assert.equal(heatmap.values.flat().some(value => value > 0), true);
+  const recent = await as("P01", () => portal.getRecentActivity(actors.get("P01")!.id, 20));
+  const activity = recent.find(item => item.id === `wb-${session.id}`);
+  assert.equal(activity?.repsTotal, 17);
+  assert.equal(activity?.href, `/portal/live/${session.id}/summary`);
+});
+
+test("gjennomført Workbench-økt når spillerens Stats med samme ID, akse og telling", async () => {
+  const session = await create("P01", "Syntetisk analyseøkt");
+  const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  data(await as("COACH_A", () => wb.moveSession({ sessionId: session.id, newDate: today, newStartMinute: 1 })));
+  data(await as("COACH_A", () => wb.publishSessions([session.id])));
+  data(await as("P01", () => wb.startSession(session.id)));
+  const tapper = await import("../../src/app/portal/(fullscreen)/live/[sessionId]/tapper/actions");
+  assert.equal((await as("P01", () => tapper.finishTapperSession(session.id, [
+    { club: "synthetic-stats-7i", count: 11, area: "FULL_SVING", repetitionType: "FULL_SPEED" },
+  ]))).ok, true);
+  const { getTrainingStats } = await import("../../src/app/portal/analysere/actions");
+  const stats = await as("P01", () => getTrainingStats(actors.get("P01")!.id, "all"));
+  const recent = stats.recentSessions.find(item => item.id === session.id);
+  assert.equal(recent?.pyramidArea, "SLAG");
+  assert.equal(recent?.reps, 11);
+  assert.ok(stats.reps >= 11);
+  assert.ok(stats.byAxis.find(item => item.axis === "SLAG")?.sessions);
+  assert.ok(stats.analyse?.gjennomforteOkter);
+  assert.ok(stats.analyse?.faktiskeReps && stats.analyse.faktiskeReps >= 11);
 });
