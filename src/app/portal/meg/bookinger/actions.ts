@@ -5,7 +5,7 @@ import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booki
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
-import { stripeKlient } from "@/lib/stripe";
+import { bookingRefundKey, refundCancelledBooking } from "@/lib/booking/refund";
 import { audit } from "@/lib/audit";
 import { pushBooking, fjernBooking } from "@/lib/google-calendar-kilder";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
@@ -56,75 +56,49 @@ export async function cancelBooking(bookingId: string) {
     throw new Error(outcome.reasonIfDenied ?? "forbidden");
   }
 
-  // Refunder via Stripe hvis berettiget og PaymentIntent finnes.
-  // S-19: spor om refund faktisk lyktes — ikke tier stille ved feil.
+  // Avbestilling, klipp og varig refusjonsjobb skrives samlet. Bare én
+  // samtidig forespørsel får endre en fortsatt aktiv booking.
+  const avbestilt = await prisma.$transaction(async tx => {
+    const claimed = await tx.booking.updateMany({
+      where: { id: bookingId, status: booking.status, updatedAt: booking.updatedAt },
+      data: { status: "CANCELLED" },
+    });
+    if (claimed.count !== 1) return false;
+    if (booking.subscriptionId && outcome.restoreCredit) {
+      await tx.subscription.update({
+        where: { id: booking.subscriptionId },
+        data: { creditsRemaining: { increment: 1 } },
+      });
+    }
+    if (outcome.refundStripe && booking.stripePaymentIntentId) {
+      await tx.webhookFailure.upsert({
+        where: { eventId: bookingRefundKey(bookingId) },
+        create: {
+          eventId: bookingRefundKey(bookingId), webhookSource: "stripe-refund",
+          payload: { bookingId }, errorMessage: "Refusjon venter på behandling.", attemptCount: 0,
+        },
+        update: {},
+      });
+    }
+    return true;
+  });
+  if (!avbestilt) {
+    const latest = await prisma.booking.findUnique({ where: { id: bookingId }, select: { status: true } });
+    if (latest?.status === "CANCELLED") return;
+    throw new Error("Bookingen ble endret samtidig. Oppdater siden og prøv igjen.");
+  }
+
+  const creditRefunded = Boolean(booking.subscriptionId && outcome.restoreCredit);
   let stripeRefundOk = false;
   let stripeRefundFeilet = false;
   if (outcome.refundStripe && booking.stripePaymentIntentId) {
     try {
-      const stripe = stripeKlient();
-      await stripe.refunds.create({
-        payment_intent: booking.stripePaymentIntentId,
-        reason: "requested_by_customer",
-        metadata: { bookingId: booking.id },
-      });
+      await refundCancelledBooking(bookingId);
       stripeRefundOk = true;
     } catch (error) {
       stripeRefundFeilet = true;
-      await logError({
-        context: "booking.cancel.stripeRefund",
-        error,
-        meta: { userId: user.id, bookingId, paymentIntentId: booking.stripePaymentIntentId },
-      });
-      // S-19: Legg inn WebhookFailure slik at admin ser det i dashbordet
-      // og kan behandle refund manuelt. Best-effort — ikke blokker avbestilling.
-      try {
-        await prisma.webhookFailure.create({
-          data: {
-            webhookSource: "stripe-refund",
-            eventId: `cancel-${booking.id}-${Date.now()}`,
-            payload: {
-              bookingId: booking.id,
-              paymentIntentId: booking.stripePaymentIntentId,
-              userId: booking.userId,
-            },
-            errorMessage: error instanceof Error ? error.message : "ukjent feil",
-            status: "PENDING",
-          },
-        });
-      } catch (dbError) {
-        await logError({
-          context: "booking.cancel.webhookFailureLogg",
-          error: dbError,
-          meta: { userId: user.id, bookingId },
-          severity: "warn",
-        });
-      }
-    }
-  }
-
-  await prisma.booking.update({
-    where: { id: bookingId },
-    data: { status: "CANCELLED" },
-  });
-
-  // Credit-tilbakeføring: hvis bookingen var trukket fra Academy-abonnement
-  // OG den er avbestilt med refundabel-rett (>24t for spillere, alltid for staff)
-  // — øk creditsRemaining med 1.
-  let creditRefunded = false;
-  if (booking.subscriptionId && outcome.restoreCredit) {
-    try {
-      await prisma.subscription.update({
-        where: { id: booking.subscriptionId },
-        data: { creditsRemaining: { increment: 1 } },
-      });
-      creditRefunded = true;
-    } catch (error) {
-      await logError({
-        context: "booking.cancel.creditRefund",
-        error,
-        meta: { userId: user.id, bookingId, subscriptionId: booking.subscriptionId },
-      });
+      // Den varige jobben forblir PENDING også ved prosessavbrudd.
+      await logError({ context: "booking.cancel.stripeRefund", error, meta: { userId: user.id, bookingId } });
     }
   }
 
@@ -168,7 +142,7 @@ export async function cancelBooking(bookingId: string) {
   // Send avbestillings-e-post (best-effort)
   try {
     const { sendBookingCancellation } = await import("@/lib/email/booking-emails");
-    await sendBookingCancellation(bookingId);
+    await sendBookingCancellation(bookingId, { refundIssued: stripeRefundOk, isCreditBooking: creditRefunded, refundPending: stripeRefundFeilet, lateCancelNoRefund: outcome.lateCancelNoRefund });
   } catch (error) {
     await logError({
       context: "booking.cancel.epost",
@@ -189,7 +163,7 @@ export async function cancelBooking(bookingId: string) {
     if (creditRefunded) {
       refundTekst = "Credit returnert.";
     } else if (stripeRefundFeilet) {
-      refundTekst = "Refundering feilet — vi behandler den manuelt innen 24 timer.";
+      refundTekst = "Refusjonen venter på behandling. Vi følger opp betalingen.";
     } else if (stripeRefundOk) {
       refundTekst = "Refusjon underveis.";
     } else if (outcome.lateCancelNoRefund) {

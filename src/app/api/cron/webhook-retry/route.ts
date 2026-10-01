@@ -15,6 +15,8 @@
 
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { z } from "zod";
+import { refundCancelledBooking } from "@/lib/booking/refund";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import {
@@ -53,7 +55,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   }
 
   const feilede = await prisma.webhookFailure.findMany({
-    where: { webhookSource: "stripe", status: "PENDING" },
+    where: { webhookSource: { in: ["stripe", "stripe-refund"] }, status: "PENDING" },
     orderBy: { lastAttemptAt: "asc" },
     take: MAKS_PER_KJORING,
   });
@@ -65,7 +67,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   for (const rad of feilede) {
     // Er eventet allerede behandlet (f.eks. av en senere Stripe-retry som gikk bra),
     // skal vi ikke kjøre det igjen — bare lukke raden.
-    const førsteGang = await markerBehandlet(rad.eventId, "retry");
+    const førsteGang = rad.webhookSource === "stripe-refund" || await markerBehandlet(rad.eventId, "retry");
     if (!førsteGang) {
       await prisma.webhookFailure.update({
         where: { id: rad.id },
@@ -76,15 +78,20 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     try {
-      const event = rad.payload as unknown as Stripe.Event;
-      await handleStripeEvent(event, { stripe, ventPaaSideeffekter: true });
+      if (rad.webhookSource === "stripe-refund") {
+        const { bookingId } = z.object({ bookingId: z.string().min(1) }).parse(rad.payload);
+        await refundCancelledBooking(bookingId, stripe);
+      } else {
+        const event = rad.payload as unknown as Stripe.Event;
+        await handleStripeEvent(event, { stripe, ventPaaSideeffekter: true });
+      }
       await prisma.webhookFailure.update({
         where: { id: rad.id },
         data: { status: "RESOLVED", resolvedAt: new Date() },
       });
       løst++;
     } catch (err) {
-      await angreBehandlet(rad.eventId);
+      if (rad.webhookSource === "stripe") await angreBehandlet(rad.eventId);
       const forsok = rad.attemptCount + 1;
       const girOpp = forsok >= MAKS_FORSOK;
       await prisma.webhookFailure.update({

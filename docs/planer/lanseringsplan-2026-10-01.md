@@ -102,3 +102,7 @@ Se [kontrollen med sju testkontoer](../design-audit/sju-testkontoer-2026-10-01.m
 ### Betalingskontroll etter fornyet Stripe-testtilgang
 
 De to resterende kjøringene av full Stripe Checkout er bestått i Chromium og WebKit med syntetisk gjest, testkort 4242, ekte signert betalingsmelding og lagret booking/betaling. Sammen med de 70 tidligere beståtte er alle opprinnelig 72 utelatte kjøringer dekket lokalt. Se [målingen](../design-audit/sju-testkontoer-2026-10-01.md). L05 og L11 holdes åpne for øvrige kritiske reiser: blant annet refusjon, abonnement, e-postleveranse, gjentakelser/avbrudd og produksjonsavhengigheter. Lokal kvitteringstekst er ikke bevis for levert e-post; leverandøren er ikke aktivert i riggen.
+
+### Neste prioriteringer: refusjon og trygg personvernkjøring
+
+[Kontrollen av betaling og personvern](../design-audit/betaling-personvern-2026-10-01.md) dokumenterer retting av dobbel klipptilbakeføring, manglende varig refusjonsoppfølging, feil avbestillingsmelding og personvernets skrivende tørrkjøring. Tre lokale integrasjonsprøver består, inkludert faktisk refusjon hos Stripe i testmodus. L05/L06 er fortsatt åpne: neste avgrensede arbeid er abonnementsreise, reell e-postleveranse og komplett eksport/ekstern sletting. Denne kontrollen endrer verken designgodkjenning eller produksjonsoppsett.
