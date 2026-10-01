@@ -1,0 +1,1936 @@
+{
+  "iup-2025": {
+    "filnavn": "team-norway-iup-2025.xlsx",
+    "sha256": "25d4e7466697fd231ebf6fb511c44174ad27f0f06fe9374bbe0fec21b04d886e",
+    "ark": "9. Utviklingssjekk 5 Prosesser",
+    "skala": {
+      "min": 1,
+      "maks": 5
+    },
+    "nivaaer": {
+      "UNG": [
+        {
+          "id": "iup-2025-ung-c5",
+          "celle": "C5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine"
+        },
+        {
+          "id": "iup-2025-ung-c6",
+          "celle": "C6",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2025-ung-c7",
+          "celle": "C7",
+          "kategori": "Sosial",
+          "tekst": "Jeg er en god venn for vennene mine"
+        },
+        {
+          "id": "iup-2025-ung-c8",
+          "celle": "C8",
+          "kategori": "Sosial",
+          "tekst": "Jeg får støtte i golfsatsingen min"
+        },
+        {
+          "id": "iup-2025-ung-c11",
+          "celle": "C11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2025-ung-c12",
+          "celle": "C12",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2025-ung-c13",
+          "celle": "C13",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2025-ung-c14",
+          "celle": "C14",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2025-ung-c18",
+          "celle": "C18",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2025-ung-c19",
+          "celle": "C19",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er"
+        },
+        {
+          "id": "iup-2025-ung-c20",
+          "celle": "C20",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2025-ung-c25",
+          "celle": "C25",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2025-ung-c26",
+          "celle": "C26",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2025-ung-c27",
+          "celle": "C27",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2025-ung-c28",
+          "celle": "C28",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-ung-c34",
+          "celle": "C34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde av hvordan jeg skal stille opp for ballen."
+        },
+        {
+          "id": "iup-2025-ung-c35",
+          "celle": "C35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde/film av hvordan jeg skal bevege kroppen min."
+        },
+        {
+          "id": "iup-2025-ung-c36",
+          "celle": "C36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg stiller opp rett etter ballen."
+        },
+        {
+          "id": "iup-2025-ung-c37",
+          "celle": "C37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg beveger kroppen på riktig måte."
+        },
+        {
+          "id": "iup-2025-ung-c38",
+          "celle": "C38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kjenner gode spillere hvis sving jeg sammenligner meg med og ønsker å etterligne."
+        },
+        {
+          "id": "iup-2025-ung-c39",
+          "celle": "C39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg forstår hvorfor jeg må stå opp og bevege meg på en bestemt måte."
+        },
+        {
+          "id": "iup-2025-ung-c40",
+          "celle": "C40",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hva mønstrene mine er innen teknikk"
+        },
+        {
+          "id": "iup-2025-ung-c41",
+          "celle": "C41",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."
+        },
+        {
+          "id": "iup-2025-ung-c44",
+          "celle": "C44",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min"
+        },
+        {
+          "id": "iup-2025-ung-c45",
+          "celle": "C45",
+          "kategori": "Golfutvikling",
+          "tekst": "Min treningsplan for golfutviklingen min er"
+        },
+        {
+          "id": "iup-2025-ung-c46",
+          "celle": "C46",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg implementerer innholdet i planleggingen min"
+        },
+        {
+          "id": "iup-2025-ung-c47",
+          "celle": "C47",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg gjennomfär mengden trening i planleggingen min"
+        },
+        {
+          "id": "iup-2025-ung-c48",
+          "celle": "C48",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har treningskompiser"
+        },
+        {
+          "id": "iup-2025-ung-c52",
+          "celle": "C52",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2025-ung-c53",
+          "celle": "C53",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2025-ung-c54",
+          "celle": "C54",
+          "kategori": "Neste trinn",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2025-ung-c55",
+          "celle": "C55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-ung-c56",
+          "celle": "C56",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2025-ung-c57",
+          "celle": "C57",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har forutsetninger for å gjennomføre treningen min (lokaler/treningsområde etc.)"
+        }
+      ],
+      "JUNIOR": [
+        {
+          "id": "iup-2025-junior-o5",
+          "celle": "O5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine"
+        },
+        {
+          "id": "iup-2025-junior-o6",
+          "celle": "O6",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2025-junior-o7",
+          "celle": "O7",
+          "kategori": "Sosial",
+          "tekst": "Jeg er en god venn for vennene mine"
+        },
+        {
+          "id": "iup-2025-junior-o8",
+          "celle": "O8",
+          "kategori": "Sosial",
+          "tekst": "Jeg får støtte i golfsatsingen min"
+        },
+        {
+          "id": "iup-2025-junior-o11",
+          "celle": "O11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2025-junior-o12",
+          "celle": "O12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2025-junior-o13",
+          "celle": "O13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2025-junior-o14",
+          "celle": "O14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2025-junior-o15",
+          "celle": "O15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2025-junior-o18",
+          "celle": "O18",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2025-junior-o19",
+          "celle": "O19",
+          "kategori": "Fysisk",
+          "tekst": "Min søvnkvalitet og kvantitet er"
+        },
+        {
+          "id": "iup-2025-junior-o20",
+          "celle": "O20",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2025-junior-o21",
+          "celle": "O21",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er"
+        },
+        {
+          "id": "iup-2025-junior-o22",
+          "celle": "O22",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2025-junior-o25",
+          "celle": "O25",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2025-junior-o26",
+          "celle": "O26",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2025-junior-o27",
+          "celle": "O27",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2025-junior-o28",
+          "celle": "O28",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-junior-o29",
+          "celle": "O29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-junior-o30",
+          "celle": "O30",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2025-junior-o31",
+          "celle": "O31",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2025-junior-o34",
+          "celle": "O34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde av hvordan jeg skal stille opp for ballen."
+        },
+        {
+          "id": "iup-2025-junior-o35",
+          "celle": "O35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde/film av hvordan jeg skal bevege kroppen min."
+        },
+        {
+          "id": "iup-2025-junior-o36",
+          "celle": "O36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg stiller opp rett etter ballen."
+        },
+        {
+          "id": "iup-2025-junior-o37",
+          "celle": "O37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg beveger kroppen på riktig måte."
+        },
+        {
+          "id": "iup-2025-junior-o38",
+          "celle": "O38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kjenner gode spillere hvis sving jeg sammenligner meg med og ønsker å etterligne."
+        },
+        {
+          "id": "iup-2025-junior-o39",
+          "celle": "O39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg forstår hvorfor jeg må stå opp og bevege meg på en bestemt måte."
+        },
+        {
+          "id": "iup-2025-junior-o40",
+          "celle": "O40",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hva mønstrene mine er innen teknikk"
+        },
+        {
+          "id": "iup-2025-junior-o41",
+          "celle": "O41",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."
+        },
+        {
+          "id": "iup-2025-junior-o42",
+          "celle": "O42",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en teknisk plan for de fleste golfslagene (utslag, innspill, nærspill, putt)"
+        },
+        {
+          "id": "iup-2025-junior-o45",
+          "celle": "O45",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min"
+        },
+        {
+          "id": "iup-2025-junior-o46",
+          "celle": "O46",
+          "kategori": "Golfutvikling",
+          "tekst": "Min treningsplan for golfutviklingen min er"
+        },
+        {
+          "id": "iup-2025-junior-o47",
+          "celle": "O47",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg implementerer innholdet i planleggingen min"
+        },
+        {
+          "id": "iup-2025-junior-o48",
+          "celle": "O48",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg gjennomfär mengden trening i planleggingen min"
+        },
+        {
+          "id": "iup-2025-junior-o49",
+          "celle": "O49",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har forutsetninger for å gjennomføre treningen min (lokaler/treningsområde etc.)"
+        },
+        {
+          "id": "iup-2025-junior-o50",
+          "celle": "O50",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har treningskompiser"
+        },
+        {
+          "id": "iup-2025-junior-o53",
+          "celle": "O53",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva collegelivet innebærer."
+        },
+        {
+          "id": "iup-2025-junior-o54",
+          "celle": "O54",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av amerikansk kultur."
+        },
+        {
+          "id": "iup-2025-junior-o55",
+          "celle": "O55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for hvordan mine ulike trenere (hjemme, college, Team Norway) skal samhandle."
+        },
+        {
+          "id": "iup-2025-junior-o56",
+          "celle": "O56",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg forstår de akademiske kravene som vil bli stilt til meg på college."
+        },
+        {
+          "id": "iup-2025-junior-o57",
+          "celle": "O57",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg forstår hvordan treningskulturen kan være annerledes i USA sammenlignet med Norge."
+        }
+      ],
+      "AMATOR": [
+        {
+          "id": "iup-2025-amator-aa5",
+          "celle": "AA5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine på college"
+        },
+        {
+          "id": "iup-2025-amator-aa6",
+          "celle": "AA6",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine i Norge"
+        },
+        {
+          "id": "iup-2025-amator-aa7",
+          "celle": "AA7",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2025-amator-aa8",
+          "celle": "AA8",
+          "kategori": "Sosial",
+          "tekst": "I have adapted well to the US culture and college life"
+        },
+        {
+          "id": "iup-2025-amator-aa11",
+          "celle": "AA11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2025-amator-aa12",
+          "celle": "AA12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2025-amator-aa13",
+          "celle": "AA13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2025-amator-aa14",
+          "celle": "AA14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2025-amator-aa15",
+          "celle": "AA15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2025-amator-aa16",
+          "celle": "AA16",
+          "kategori": "Mentalt",
+          "tekst": "Jeg utnytter den mentale coachingen som er tilgjengelig for meg"
+        },
+        {
+          "id": "iup-2025-amator-aa18",
+          "celle": "AA18",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2025-amator-aa19",
+          "celle": "AA19",
+          "kategori": "Fysisk",
+          "tekst": "Min søvnkvalitet og kvantitet er"
+        },
+        {
+          "id": "iup-2025-amator-aa20",
+          "celle": "AA20",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2025-amator-aa21",
+          "celle": "AA21",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er"
+        },
+        {
+          "id": "iup-2025-amator-aa22",
+          "celle": "AA22",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2025-amator-aa23",
+          "celle": "AA23",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter"
+        },
+        {
+          "id": "iup-2025-amator-aa25",
+          "celle": "AA25",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2025-amator-aa26",
+          "celle": "AA26",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2025-amator-aa27",
+          "celle": "AA27",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2025-amator-aa28",
+          "celle": "AA28",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-amator-aa29",
+          "celle": "AA29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2025-amator-aa30",
+          "celle": "AA30",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2025-amator-aa31",
+          "celle": "AA31",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2025-amator-aa34",
+          "celle": "AA34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde av hvordan jeg skal stille opp for ballen."
+        },
+        {
+          "id": "iup-2025-amator-aa35",
+          "celle": "AA35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde/film av hvordan jeg skal bevege kroppen min."
+        },
+        {
+          "id": "iup-2025-amator-aa36",
+          "celle": "AA36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har god kontroll over ballbanen."
+        },
+        {
+          "id": "iup-2025-amator-aa37",
+          "celle": "AA37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kan forme ballbanen når det kreves."
+        },
+        {
+          "id": "iup-2025-amator-aa38",
+          "celle": "AA38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en god forståelse av hvordan påvirkning påvirker ballbanen."
+        },
+        {
+          "id": "iup-2025-amator-aa39",
+          "celle": "AA39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et godt utvalg av øvelser i alle deler av spillet."
+        },
+        {
+          "id": "iup-2025-amator-aa44",
+          "celle": "AA44",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har et godt forhold til college-trenerne."
+        },
+        {
+          "id": "iup-2025-amator-aa45",
+          "celle": "AA45",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med min hjemmetrener."
+        },
+        {
+          "id": "iup-2025-amator-aa46",
+          "celle": "AA46",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med trenerne på Team Norway."
+        },
+        {
+          "id": "iup-2025-amator-aa47",
+          "celle": "AA47",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min."
+        },
+        {
+          "id": "iup-2025-amator-aa48",
+          "celle": "AA48",
+          "kategori": "Golfutvikling",
+          "tekst": "Treningsplanen for golfutviklingen min er på plass."
+        },
+        {
+          "id": "iup-2025-amator-aa49",
+          "celle": "AA49",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2025-amator-aa52",
+          "celle": "AA52",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for min utvikling."
+        },
+        {
+          "id": "iup-2025-amator-aa53",
+          "celle": "AA53",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har tilstrekkelig økonomisk støtte for å støtte mine aktiviteter."
+        },
+        {
+          "id": "iup-2025-amator-aa54",
+          "celle": "AA54",
+          "kategori": "Neste trinn",
+          "tekst": "Spillet mitt er på et passende nivå for å bli profesjonell."
+        },
+        {
+          "id": "iup-2025-amator-aa55",
+          "celle": "AA55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva et proffliv innebærer."
+        },
+        {
+          "id": "iup-2025-amator-aa56",
+          "celle": "AA56",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en plan B hvis profflivet ikke fungerer for meg."
+        },
+        {
+          "id": "iup-2025-amator-aa57",
+          "celle": "AA57",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg er fornøyd med mitt støtteapparat"
+        }
+      ],
+      "PROFESJONELL": [
+        {
+          "id": "iup-2025-profesjonell-am5",
+          "celle": "AM5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine på tour"
+        },
+        {
+          "id": "iup-2025-profesjonell-am6",
+          "celle": "AM6",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine hjem i Norge"
+        },
+        {
+          "id": "iup-2025-profesjonell-am7",
+          "celle": "AM7",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2025-profesjonell-am8",
+          "celle": "AM8",
+          "kategori": "Sosial",
+          "tekst": "I have adapted well to life on the Pro tour."
+        },
+        {
+          "id": "iup-2025-profesjonell-am11",
+          "celle": "AM11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2025-profesjonell-am12",
+          "celle": "AM12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2025-profesjonell-am13",
+          "celle": "AM13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2025-profesjonell-am14",
+          "celle": "AM14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2025-profesjonell-am15",
+          "celle": "AM15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2025-profesjonell-am16",
+          "celle": "AM16",
+          "kategori": "Mentalt",
+          "tekst": "Jeg utnytter den mentale coachingen som er tilgjengelig for meg"
+        },
+        {
+          "id": "iup-2025-profesjonell-am18",
+          "celle": "AM18",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er..."
+        },
+        {
+          "id": "iup-2025-profesjonell-am19",
+          "celle": "AM19",
+          "kategori": "Fysisk",
+          "tekst": "Jeg bruker fysisk coaching som er tilgjengelig for meg."
+        },
+        {
+          "id": "iup-2025-profesjonell-am20",
+          "celle": "AM20",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet."
+        },
+        {
+          "id": "iup-2025-profesjonell-am21",
+          "celle": "AM21",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er..."
+        },
+        {
+          "id": "iup-2025-profesjonell-am22",
+          "celle": "AM22",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har en god årsplan for fysisk vedlikehold/utvikling."
+        },
+        {
+          "id": "iup-2025-profesjonell-am23",
+          "celle": "AM23",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2025-profesjonell-am25",
+          "celle": "AM25",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er..."
+        },
+        {
+          "id": "iup-2025-profesjonell-am26",
+          "celle": "AM26",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp."
+        },
+        {
+          "id": "iup-2025-profesjonell-am27",
+          "celle": "AM27",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp."
+        },
+        {
+          "id": "iup-2025-profesjonell-am28",
+          "celle": "AM28",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger."
+        },
+        {
+          "id": "iup-2025-profesjonell-am29",
+          "celle": "AM29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2025-profesjonell-am34",
+          "celle": "AM34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde av hvordan jeg skal stille opp for ballen."
+        },
+        {
+          "id": "iup-2025-profesjonell-am35",
+          "celle": "AM35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde/film av hvordan jeg skal bevege kroppen min."
+        },
+        {
+          "id": "iup-2025-profesjonell-am36",
+          "celle": "AM36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har god kontroll over ballbanen."
+        },
+        {
+          "id": "iup-2025-profesjonell-am37",
+          "celle": "AM37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kan forme ballbanen når det kreves."
+        },
+        {
+          "id": "iup-2025-profesjonell-am38",
+          "celle": "AM38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en god forståelse av hvordan påvirkning påvirker ballbanen."
+        },
+        {
+          "id": "iup-2025-profesjonell-am39",
+          "celle": "AM39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et godt utvalg av øvelser i alle deler av spillet."
+        },
+        {
+          "id": "iup-2025-profesjonell-am44",
+          "celle": "AM44",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med min hjemmetrener."
+        },
+        {
+          "id": "iup-2025-profesjonell-am45",
+          "celle": "AM45",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med trenerne på Team Norway."
+        },
+        {
+          "id": "iup-2025-profesjonell-am46",
+          "celle": "AM46",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min."
+        },
+        {
+          "id": "iup-2025-profesjonell-am47",
+          "celle": "AM47",
+          "kategori": "Golfutvikling",
+          "tekst": "Treningsplanen for min golfutvikling er på plass."
+        },
+        {
+          "id": "iup-2025-profesjonell-am48",
+          "celle": "AM48",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2025-profesjonell-am52",
+          "celle": "AM52",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for min utvikling."
+        },
+        {
+          "id": "iup-2025-profesjonell-am53",
+          "celle": "AM53",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har tilstrekkelig økonomisk støtte for å støtte mine aktiviteter."
+        },
+        {
+          "id": "iup-2025-profesjonell-am54",
+          "celle": "AM54",
+          "kategori": "Neste trinn",
+          "tekst": "Spillet mitt er på et passende nivå for å bli profesjonell."
+        },
+        {
+          "id": "iup-2025-profesjonell-am55",
+          "celle": "AM55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva et proffliv innebærer."
+        },
+        {
+          "id": "iup-2025-profesjonell-am56",
+          "celle": "AM56",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en plan B hvis profflivet ikke fungerer for meg."
+        },
+        {
+          "id": "iup-2025-profesjonell-am57",
+          "celle": "AM57",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg er fornøyd med mitt støtteapparat."
+        }
+      ]
+    }
+  },
+  "iup-2027": {
+    "filnavn": "Team Norway IUP 2027.xlsx",
+    "sha256": "6786d70f166dc4d5602f792a165eef8372743597ac44904a9fa0a3dd2892f222",
+    "ark": "9. Utviklingssjekk 5 Prosesser",
+    "skala": {
+      "min": 1,
+      "maks": 5
+    },
+    "nivaaer": {
+      "UNG": [
+        {
+          "id": "iup-2027-ung-c5",
+          "celle": "C5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine"
+        },
+        {
+          "id": "iup-2027-ung-c6",
+          "celle": "C6",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2027-ung-c7",
+          "celle": "C7",
+          "kategori": "Sosial",
+          "tekst": "Jeg er en god venn for vennene mine"
+        },
+        {
+          "id": "iup-2027-ung-c8",
+          "celle": "C8",
+          "kategori": "Sosial",
+          "tekst": "Jeg får støtte i golfsatsingen min"
+        },
+        {
+          "id": "iup-2027-ung-c11",
+          "celle": "C11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2027-ung-c12",
+          "celle": "C12",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2027-ung-c13",
+          "celle": "C13",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2027-ung-c14",
+          "celle": "C14",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2027-ung-c17",
+          "celle": "C17",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2027-ung-c18",
+          "celle": "C18",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er nok"
+        },
+        {
+          "id": "iup-2027-ung-c19",
+          "celle": "C19",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2027-ung-c22",
+          "celle": "C22",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2027-ung-c23",
+          "celle": "C23",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2027-ung-c24",
+          "celle": "C24",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2027-ung-c25",
+          "celle": "C25",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-ung-c28",
+          "celle": "C28",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan mine GOBBS skal være"
+        },
+        {
+          "id": "iup-2027-ung-c29",
+          "celle": "C29",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan bevegelsen min skal være"
+        },
+        {
+          "id": "iup-2027-ung-c30",
+          "celle": "C30",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg gjør mine korrekte GOBBS"
+        },
+        {
+          "id": "iup-2027-ung-c31",
+          "celle": "C31",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg utfører min korrekte bevegelse (teknikk)"
+        },
+        {
+          "id": "iup-2027-ung-c32",
+          "celle": "C32",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kjenner til en/flere spillere som har en teknikk som ligner på min ønskede teknikk"
+        },
+        {
+          "id": "iup-2027-ung-c33",
+          "celle": "C33",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har kunnskap om hvorfor mine GOBBS og min bevegelse skal være på en bestemt måte"
+        },
+        {
+          "id": "iup-2027-ung-c34",
+          "celle": "C34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hva mønstrene mine er innen teknikk"
+        },
+        {
+          "id": "iup-2027-ung-c35",
+          "celle": "C35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."
+        },
+        {
+          "id": "iup-2027-ung-c38",
+          "celle": "C38",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min"
+        },
+        {
+          "id": "iup-2027-ung-c39",
+          "celle": "C39",
+          "kategori": "Golfutvikling",
+          "tekst": "Min treningsplan for golfutviklingen min er"
+        },
+        {
+          "id": "iup-2027-ung-c40",
+          "celle": "C40",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg implementerer innholdet i planleggingen min"
+        },
+        {
+          "id": "iup-2027-ung-c41",
+          "celle": "C41",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg gjennomfär mengden trening i planleggingen min"
+        },
+        {
+          "id": "iup-2027-ung-c42",
+          "celle": "C42",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har treningskompiser"
+        },
+        {
+          "id": "iup-2027-ung-c45",
+          "celle": "C45",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2027-ung-c46",
+          "celle": "C46",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2027-ung-c47",
+          "celle": "C47",
+          "kategori": "Neste trinn",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2027-ung-c48",
+          "celle": "C48",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-ung-c49",
+          "celle": "C49",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2027-ung-c50",
+          "celle": "C50",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har forutsetninger for å gjennomføre treningen min (lokaler/treningsområde etc.)"
+        }
+      ],
+      "JUNIOR": [
+        {
+          "id": "iup-2027-junior-o5",
+          "celle": "O5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine"
+        },
+        {
+          "id": "iup-2027-junior-o6",
+          "celle": "O6",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2027-junior-o7",
+          "celle": "O7",
+          "kategori": "Sosial",
+          "tekst": "Jeg er en god venn for vennene mine"
+        },
+        {
+          "id": "iup-2027-junior-o8",
+          "celle": "O8",
+          "kategori": "Sosial",
+          "tekst": "Jeg får støtte i golfsatsingen min"
+        },
+        {
+          "id": "iup-2027-junior-o11",
+          "celle": "O11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2027-junior-o12",
+          "celle": "O12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2027-junior-o13",
+          "celle": "O13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2027-junior-o14",
+          "celle": "O14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2027-junior-o15",
+          "celle": "O15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2027-junior-o18",
+          "celle": "O18",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2027-junior-o19",
+          "celle": "O19",
+          "kategori": "Fysisk",
+          "tekst": "Min søvnkvalitet og kvantitet er"
+        },
+        {
+          "id": "iup-2027-junior-o20",
+          "celle": "O20",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2027-junior-o21",
+          "celle": "O21",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er"
+        },
+        {
+          "id": "iup-2027-junior-o22",
+          "celle": "O22",
+          "kategori": "Fysisk",
+          "tekst": "Mitt fysiske nivå er god nok for de tekniske målene jeg har."
+        },
+        {
+          "id": "iup-2027-junior-o23",
+          "celle": "O23",
+          "kategori": "Fysisk",
+          "tekst": "Mitt fysiske nivå er god nok til å gjennomføre den treningsmengden jeg trenger."
+        },
+        {
+          "id": "iup-2027-junior-o24",
+          "celle": "O24",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2027-junior-o27",
+          "celle": "O27",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2027-junior-o28",
+          "celle": "O28",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2027-junior-o29",
+          "celle": "O29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2027-junior-o30",
+          "celle": "O30",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-junior-o31",
+          "celle": "O31",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-junior-o32",
+          "celle": "O32",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2027-junior-o33",
+          "celle": "O33",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2027-junior-o36",
+          "celle": "O36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan mine GOBBS skal være"
+        },
+        {
+          "id": "iup-2027-junior-o37",
+          "celle": "O37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan bevegelsen min skal være"
+        },
+        {
+          "id": "iup-2027-junior-o38",
+          "celle": "O38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg gjør mine korrekte GOBBS"
+        },
+        {
+          "id": "iup-2027-junior-o39",
+          "celle": "O39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg utfører min korrekte bevegelse (teknikk)"
+        },
+        {
+          "id": "iup-2027-junior-o40",
+          "celle": "O40",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kjenner til en/flere spillere som har en teknikk som ligner på min ønskede teknikk"
+        },
+        {
+          "id": "iup-2027-junior-o41",
+          "celle": "O41",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har kunnskap om hvorfor mine GOBBS og min bevegelse skal være på en bestemt måte"
+        },
+        {
+          "id": "iup-2027-junior-o42",
+          "celle": "O42",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hva mønstrene mine er innen teknikk"
+        },
+        {
+          "id": "iup-2027-junior-o43",
+          "celle": "O43",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."
+        },
+        {
+          "id": "iup-2027-junior-o44",
+          "celle": "O44",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en teknisk plan for de fleste golfslagene (utslag, innspill, nærspill, putt)"
+        },
+        {
+          "id": "iup-2027-junior-o47",
+          "celle": "O47",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min"
+        },
+        {
+          "id": "iup-2027-junior-o48",
+          "celle": "O48",
+          "kategori": "Golfutvikling",
+          "tekst": "Min treningsplan for golfutviklingen min er"
+        },
+        {
+          "id": "iup-2027-junior-o49",
+          "celle": "O49",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg implementerer innholdet i planleggingen min"
+        },
+        {
+          "id": "iup-2027-junior-o50",
+          "celle": "O50",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg gjennomfär mengden trening i planleggingen min"
+        },
+        {
+          "id": "iup-2027-junior-o51",
+          "celle": "O51",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har forutsetninger for å gjennomføre treningen min (lokaler/treningsområde etc.)"
+        },
+        {
+          "id": "iup-2027-junior-o52",
+          "celle": "O52",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har treningskompiser"
+        },
+        {
+          "id": "iup-2027-junior-o55",
+          "celle": "O55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva collegelivet innebærer."
+        },
+        {
+          "id": "iup-2027-junior-o56",
+          "celle": "O56",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av amerikansk kultur."
+        },
+        {
+          "id": "iup-2027-junior-o57",
+          "celle": "O57",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for hvordan mine ulike trenere (hjemme, college, Team Norway) skal samhandle."
+        },
+        {
+          "id": "iup-2027-junior-o58",
+          "celle": "O58",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg forstår de akademiske kravene som vil bli stilt til meg på college."
+        },
+        {
+          "id": "iup-2027-junior-o59",
+          "celle": "O59",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg forstår hvordan treningskulturen kan være annerledes i USA sammenlignet med Norge."
+        }
+      ],
+      "AMATOR": [
+        {
+          "id": "iup-2027-amator-aa5",
+          "celle": "AA5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine på college"
+        },
+        {
+          "id": "iup-2027-amator-aa6",
+          "celle": "AA6",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine i Norge"
+        },
+        {
+          "id": "iup-2027-amator-aa7",
+          "celle": "AA7",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2027-amator-aa8",
+          "celle": "AA8",
+          "kategori": "Sosial",
+          "tekst": "Jeg har tilpasset meg godt til amerikansk kultur og college-livet."
+        },
+        {
+          "id": "iup-2027-amator-aa11",
+          "celle": "AA11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2027-amator-aa12",
+          "celle": "AA12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2027-amator-aa13",
+          "celle": "AA13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2027-amator-aa14",
+          "celle": "AA14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2027-amator-aa15",
+          "celle": "AA15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2027-amator-aa16",
+          "celle": "AA16",
+          "kategori": "Mentalt",
+          "tekst": "Jeg utnytter den mentale coachingen som er tilgjengelig for meg"
+        },
+        {
+          "id": "iup-2027-amator-aa19",
+          "celle": "AA19",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er"
+        },
+        {
+          "id": "iup-2027-amator-aa20",
+          "celle": "AA20",
+          "kategori": "Fysisk",
+          "tekst": "Min søvnkvalitet og kvantitet er"
+        },
+        {
+          "id": "iup-2027-amator-aa21",
+          "celle": "AA21",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet"
+        },
+        {
+          "id": "iup-2027-amator-aa22",
+          "celle": "AA22",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er"
+        },
+        {
+          "id": "iup-2027-amator-aa23",
+          "celle": "AA23",
+          "kategori": "Fysisk",
+          "tekst": "Min fysiske form for trening er"
+        },
+        {
+          "id": "iup-2027-amator-aa24",
+          "celle": "AA24",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter"
+        },
+        {
+          "id": "iup-2027-amator-aa27",
+          "celle": "AA27",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er"
+        },
+        {
+          "id": "iup-2027-amator-aa28",
+          "celle": "AA28",
+          "kategori": "Strategisk",
+          "tekst": "Planen min for å takle skolearbeid er"
+        },
+        {
+          "id": "iup-2027-amator-aa29",
+          "celle": "AA29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg er i fase med skolen"
+        },
+        {
+          "id": "iup-2027-amator-aa30",
+          "celle": "AA30",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-amator-aa31",
+          "celle": "AA31",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp"
+        },
+        {
+          "id": "iup-2027-amator-aa32",
+          "celle": "AA32",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"
+        },
+        {
+          "id": "iup-2027-amator-aa33",
+          "celle": "AA33",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2027-amator-aa36",
+          "celle": "AA36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan mine GOBBS skal være"
+        },
+        {
+          "id": "iup-2027-amator-aa37",
+          "celle": "AA37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et tydelig bilde/film av hvordan bevegelsen min skal være"
+        },
+        {
+          "id": "iup-2027-amator-aa38",
+          "celle": "AA38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg gjør mine korrekte GOBBS"
+        },
+        {
+          "id": "iup-2027-amator-aa39",
+          "celle": "AA39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hvordan det skal føles når jeg utfører min korrekte bevegelse (teknikk)"
+        },
+        {
+          "id": "iup-2027-amator-aa40",
+          "celle": "AA40",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kjenner til en/flere spillere som har en teknikk som ligner på min ønskede teknikk"
+        },
+        {
+          "id": "iup-2027-amator-aa41",
+          "celle": "AA41",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har kunnskap om hvorfor mine GOBBS og min bevegelse skal være på en bestemt måte"
+        },
+        {
+          "id": "iup-2027-amator-aa42",
+          "celle": "AA42",
+          "kategori": "Teknisk",
+          "tekst": "Jeg vet hva mønstrene mine er innen teknikk"
+        },
+        {
+          "id": "iup-2027-amator-aa43",
+          "celle": "AA43",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."
+        },
+        {
+          "id": "iup-2027-amator-aa44",
+          "celle": "AA44",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en teknisk plan for de fleste golfslagene (utslag, innspill, nærspill, putt)"
+        },
+        {
+          "id": "iup-2027-amator-aa45",
+          "celle": "AA45",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kan forme ballbanen når det kreves."
+        },
+        {
+          "id": "iup-2027-amator-aa46",
+          "celle": "AA46",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en god forståelse av hvordan påvirkning påvirker ballbanen."
+        },
+        {
+          "id": "iup-2027-amator-aa47",
+          "celle": "AA47",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et godt utvalg av øvelser i alle deler av spillet."
+        },
+        {
+          "id": "iup-2027-amator-aa50",
+          "celle": "AA50",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har et godt forhold til college-trenerne."
+        },
+        {
+          "id": "iup-2027-amator-aa51",
+          "celle": "AA51",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med min hjemmetrener."
+        },
+        {
+          "id": "iup-2027-amator-aa52",
+          "celle": "AA52",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med trenerne på Team Norway."
+        },
+        {
+          "id": "iup-2027-amator-aa53",
+          "celle": "AA53",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min."
+        },
+        {
+          "id": "iup-2027-amator-aa54",
+          "celle": "AA54",
+          "kategori": "Golfutvikling",
+          "tekst": "Treningsplanen for golfutviklingen min er på plass."
+        },
+        {
+          "id": "iup-2027-amator-aa55",
+          "celle": "AA55",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2027-amator-aa58",
+          "celle": "AA58",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for min utvikling."
+        },
+        {
+          "id": "iup-2027-amator-aa59",
+          "celle": "AA59",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har tilstrekkelig økonomisk støtte for å støtte mine aktiviteter."
+        },
+        {
+          "id": "iup-2027-amator-aa60",
+          "celle": "AA60",
+          "kategori": "Neste trinn",
+          "tekst": "Spillet mitt er på et passende nivå for å bli profesjonell."
+        },
+        {
+          "id": "iup-2027-amator-aa61",
+          "celle": "AA61",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva et proffliv innebærer."
+        },
+        {
+          "id": "iup-2027-amator-aa62",
+          "celle": "AA62",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en plan B hvis profflivet ikke fungerer for meg."
+        },
+        {
+          "id": "iup-2027-amator-aa63",
+          "celle": "AA63",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg er fornøyd med mitt støtteapparat"
+        }
+      ],
+      "PROFESJONELL": [
+        {
+          "id": "iup-2027-profesjonell-am5",
+          "celle": "AM5",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine på tour"
+        },
+        {
+          "id": "iup-2027-profesjonell-am6",
+          "celle": "AM6",
+          "kategori": "Sosial",
+          "tekst": "Jeg er fornøyd med hvordan det fungerer med vennene mine hjem i Norge"
+        },
+        {
+          "id": "iup-2027-profesjonell-am7",
+          "celle": "AM7",
+          "kategori": "Sosial",
+          "tekst": "Jeg har noen å snakke med om personlige saker"
+        },
+        {
+          "id": "iup-2027-profesjonell-am8",
+          "celle": "AM8",
+          "kategori": "Sosial",
+          "tekst": "I have adapted well to life on the Pro tour."
+        },
+        {
+          "id": "iup-2027-profesjonell-am11",
+          "celle": "AM11",
+          "kategori": "Mentalt",
+          "tekst": "Min mentale tilstand er"
+        },
+        {
+          "id": "iup-2027-profesjonell-am12",
+          "celle": "AM12",
+          "kategori": "Mentalt",
+          "tekst": "Jeg har balanse mellom golf og livet utenfor golfen"
+        },
+        {
+          "id": "iup-2027-profesjonell-am13",
+          "celle": "AM13",
+          "kategori": "Mentalt",
+          "tekst": "Mine forventninger er i balanse med min innsats"
+        },
+        {
+          "id": "iup-2027-profesjonell-am14",
+          "celle": "AM14",
+          "kategori": "Mentalt",
+          "tekst": "Andres forventninger er i balanse med mine egne"
+        },
+        {
+          "id": "iup-2027-profesjonell-am15",
+          "celle": "AM15",
+          "kategori": "Mentalt",
+          "tekst": "Min motivasjon for trening er"
+        },
+        {
+          "id": "iup-2027-profesjonell-am16",
+          "celle": "AM16",
+          "kategori": "Mentalt",
+          "tekst": "Jeg utnytter den mentale coachingen som er tilgjengelig for meg"
+        },
+        {
+          "id": "iup-2027-profesjonell-am19",
+          "celle": "AM19",
+          "kategori": "Fysisk",
+          "tekst": "Energinivået mitt til å takle trening og livet generelt er..."
+        },
+        {
+          "id": "iup-2027-profesjonell-am20",
+          "celle": "AM20",
+          "kategori": "Fysisk",
+          "tekst": "Jeg bruker fysisk coaching som er tilgjengelig for meg."
+        },
+        {
+          "id": "iup-2027-profesjonell-am21",
+          "celle": "AM21",
+          "kategori": "Fysisk",
+          "tekst": "Kostholdet jeg spiser er av god kvalitet."
+        },
+        {
+          "id": "iup-2027-profesjonell-am22",
+          "celle": "AM22",
+          "kategori": "Fysisk",
+          "tekst": "Mengden mat jeg spiser er..."
+        },
+        {
+          "id": "iup-2027-profesjonell-am23",
+          "celle": "AM23",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har en god årsplan for fysisk vedlikehold/utvikling."
+        },
+        {
+          "id": "iup-2027-profesjonell-am24",
+          "celle": "AM24",
+          "kategori": "Fysisk",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2027-profesjonell-am27",
+          "celle": "AM27",
+          "kategori": "Strategisk",
+          "tekst": "Min plan for å håndtere livet er..."
+        },
+        {
+          "id": "iup-2027-profesjonell-am28",
+          "celle": "AM28",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar avgjørelser i livet som jeg vinner i det lange løp."
+        },
+        {
+          "id": "iup-2027-profesjonell-am29",
+          "celle": "AM29",
+          "kategori": "Strategisk",
+          "tekst": "Jeg tar beslutninger om golf som jeg vinner i det lange løp."
+        },
+        {
+          "id": "iup-2027-profesjonell-am30",
+          "celle": "AM30",
+          "kategori": "Strategisk",
+          "tekst": "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger."
+        },
+        {
+          "id": "iup-2027-profesjonell-am31",
+          "celle": "AM31",
+          "kategori": "Strategisk",
+          "tekst": "Jeg dokumenterer og evaluerer treningen/turneringen min"
+        },
+        {
+          "id": "iup-2027-profesjonell-am34",
+          "celle": "AM34",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde av hvordan jeg skal stille opp for ballen."
+        },
+        {
+          "id": "iup-2027-profesjonell-am35",
+          "celle": "AM35",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et klart bilde/film av hvordan jeg skal bevege kroppen min."
+        },
+        {
+          "id": "iup-2027-profesjonell-am36",
+          "celle": "AM36",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har god kontroll over ballbanen."
+        },
+        {
+          "id": "iup-2027-profesjonell-am37",
+          "celle": "AM37",
+          "kategori": "Teknisk",
+          "tekst": "Jeg kan forme ballbanen når det kreves."
+        },
+        {
+          "id": "iup-2027-profesjonell-am38",
+          "celle": "AM38",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har en god forståelse av hvordan påvirkning påvirker ballbanen."
+        },
+        {
+          "id": "iup-2027-profesjonell-am39",
+          "celle": "AM39",
+          "kategori": "Teknisk",
+          "tekst": "Jeg har et godt utvalg av øvelser i alle deler av spillet."
+        },
+        {
+          "id": "iup-2027-profesjonell-am42",
+          "celle": "AM42",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med min hjemmetrener."
+        },
+        {
+          "id": "iup-2027-profesjonell-am43",
+          "celle": "AM43",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg opprettholder god kontakt med trenerne på Team Norway."
+        },
+        {
+          "id": "iup-2027-profesjonell-am44",
+          "celle": "AM44",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har klare mål for golfutviklingen min."
+        },
+        {
+          "id": "iup-2027-profesjonell-am45",
+          "celle": "AM45",
+          "kategori": "Golfutvikling",
+          "tekst": "Treningsplanen for min golfutvikling er på plass."
+        },
+        {
+          "id": "iup-2027-profesjonell-am46",
+          "celle": "AM46",
+          "kategori": "Golfutvikling",
+          "tekst": "Jeg har tilgang til gode treningsfasiliteter."
+        },
+        {
+          "id": "iup-2027-profesjonell-am50",
+          "celle": "AM50",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en klar plan for min utvikling."
+        },
+        {
+          "id": "iup-2027-profesjonell-am51",
+          "celle": "AM51",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har tilstrekkelig økonomisk støtte for å støtte mine aktiviteter."
+        },
+        {
+          "id": "iup-2027-profesjonell-am52",
+          "celle": "AM52",
+          "kategori": "Neste trinn",
+          "tekst": "Spillet mitt er på et passende nivå for å bli profesjonell."
+        },
+        {
+          "id": "iup-2027-profesjonell-am53",
+          "celle": "AM53",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en god forståelse av hva et proffliv innebærer."
+        },
+        {
+          "id": "iup-2027-profesjonell-am54",
+          "celle": "AM54",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg har en plan B hvis profflivet ikke fungerer for meg."
+        },
+        {
+          "id": "iup-2027-profesjonell-am55",
+          "celle": "AM55",
+          "kategori": "Neste trinn",
+          "tekst": "Jeg er fornøyd med mitt støtteapparat."
+        }
+      ]
+    }
+  }
+}
