@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5828,
-    "sidefiler": 517,
-    "prismamodeller": 204,
-    "enhetstestfiler": 533,
+    "prosjektfiler": 6159,
+    "sidefiler": 519,
+    "prismamodeller": 216,
+    "enhetstestfiler": 546,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 42428
+      "byte": 69004
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -623,7 +623,7 @@
     {
       "sti": ".claude/skills/playerhq-arkitektur/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 3329
+      "byte": 6695
     },
     {
       "sti": ".claude/skills/prompt-engineer/SKILL.md",
@@ -2214,12 +2214,12 @@
     {
       "sti": "AGENTS.md",
       "omrade": "prosjektoppsett",
-      "byte": 7505
+      "byte": 7497
     },
     {
       "sti": "CLAUDE.md",
       "omrade": "prosjektoppsett",
-      "byte": 1457
+      "byte": 1465
     },
     {
       "sti": "content/blogg/banedata-baerum-gk.mdx",
@@ -3855,6 +3855,1261 @@
       "sti": "designsystem/canvas/wang-team-norway/prompt-claude-design.md",
       "omrade": "designkilde",
       "byte": 15847
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/analysis.card.html",
+      "omrade": "designkilde",
+      "byte": 4322
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/AxisVolumeBars.jsx",
+      "omrade": "designkilde",
+      "byte": 2452
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/ChartTable.jsx",
+      "omrade": "designkilde",
+      "byte": 913
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/DataQualityBadge.jsx",
+      "omrade": "designkilde",
+      "byte": 746
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/DistributionPlot.jsx",
+      "omrade": "designkilde",
+      "byte": 2129
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/EmptyAnalysisState.jsx",
+      "omrade": "designkilde",
+      "byte": 1729
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/EvidenceDrawer.jsx",
+      "omrade": "designkilde",
+      "byte": 1771
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/FilterChips.jsx",
+      "omrade": "designkilde",
+      "byte": 863
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/InsightCard.jsx",
+      "omrade": "designkilde",
+      "byte": 2522
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/PeriodSelector.jsx",
+      "omrade": "designkilde",
+      "byte": 1060
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/SourceBadge.jsx",
+      "omrade": "designkilde",
+      "byte": 1048
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/analysis/TrendChart.jsx",
+      "omrade": "designkilde",
+      "byte": 3918
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/components.css",
+      "omrade": "designkilde",
+      "byte": 43295
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/Button.jsx",
+      "omrade": "designkilde",
+      "byte": 934
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/Button.prompt.md",
+      "omrade": "designkilde",
+      "byte": 539
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/core.card.html",
+      "omrade": "designkilde",
+      "byte": 2348
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/Icon.jsx",
+      "omrade": "designkilde",
+      "byte": 724
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/Icon.prompt.md",
+      "omrade": "designkilde",
+      "byte": 296
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/IconButton.jsx",
+      "omrade": "designkilde",
+      "byte": 495
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/core/IconButton.prompt.md",
+      "omrade": "designkilde",
+      "byte": 189
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Avatar.jsx",
+      "omrade": "designkilde",
+      "byte": 364
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Avatar.prompt.md",
+      "omrade": "designkilde",
+      "byte": 108
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/AxisBadge.jsx",
+      "omrade": "designkilde",
+      "byte": 476
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/AxisBadge.prompt.md",
+      "omrade": "designkilde",
+      "byte": 305
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Badge.jsx",
+      "omrade": "designkilde",
+      "byte": 431
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Badge.prompt.md",
+      "omrade": "designkilde",
+      "byte": 377
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Card.jsx",
+      "omrade": "designkilde",
+      "byte": 968
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Card.prompt.md",
+      "omrade": "designkilde",
+      "byte": 262
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Chart.jsx",
+      "omrade": "designkilde",
+      "byte": 3465
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Chart.prompt.md",
+      "omrade": "designkilde",
+      "byte": 796
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/data-display.card.html",
+      "omrade": "designkilde",
+      "byte": 3659
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/DataRow.jsx",
+      "omrade": "designkilde",
+      "byte": 678
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/DataRow.prompt.md",
+      "omrade": "designkilde",
+      "byte": 208
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/datatable.card.html",
+      "omrade": "designkilde",
+      "byte": 2695
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/DataTable.jsx",
+      "omrade": "designkilde",
+      "byte": 3568
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/DataTable.prompt.md",
+      "omrade": "designkilde",
+      "byte": 1102
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/display.card.html",
+      "omrade": "designkilde",
+      "byte": 2702
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/KeyValue.jsx",
+      "omrade": "designkilde",
+      "byte": 791
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/KeyValue.prompt.md",
+      "omrade": "designkilde",
+      "byte": 465
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Metric.jsx",
+      "omrade": "designkilde",
+      "byte": 851
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Metric.prompt.md",
+      "omrade": "designkilde",
+      "byte": 320
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/StatusPill.jsx",
+      "omrade": "designkilde",
+      "byte": 325
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/StatusPill.prompt.md",
+      "omrade": "designkilde",
+      "byte": 231
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Timeline.jsx",
+      "omrade": "designkilde",
+      "byte": 1169
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/display/Timeline.prompt.md",
+      "omrade": "designkilde",
+      "byte": 589
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Dialog.jsx",
+      "omrade": "designkilde",
+      "byte": 867
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Dialog.prompt.md",
+      "omrade": "designkilde",
+      "byte": 315
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/feedback.card.html",
+      "omrade": "designkilde",
+      "byte": 2456
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/InlineAlert.jsx",
+      "omrade": "designkilde",
+      "byte": 756
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/InlineAlert.prompt.md",
+      "omrade": "designkilde",
+      "byte": 201
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/sheet-state.card.html",
+      "omrade": "designkilde",
+      "byte": 2749
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Sheet.jsx",
+      "omrade": "designkilde",
+      "byte": 1497
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Sheet.prompt.md",
+      "omrade": "designkilde",
+      "byte": 927
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/State.jsx",
+      "omrade": "designkilde",
+      "byte": 2064
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/State.prompt.md",
+      "omrade": "designkilde",
+      "byte": 729
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Toast.jsx",
+      "omrade": "designkilde",
+      "byte": 587
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Toast.prompt.md",
+      "omrade": "designkilde",
+      "byte": 162
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Tooltip.jsx",
+      "omrade": "designkilde",
+      "byte": 347
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/feedback/Tooltip.prompt.md",
+      "omrade": "designkilde",
+      "byte": 175
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Checkbox.jsx",
+      "omrade": "designkilde",
+      "byte": 455
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Checkbox.prompt.md",
+      "omrade": "designkilde",
+      "byte": 124
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/ChoicePill.jsx",
+      "omrade": "designkilde",
+      "byte": 552
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/ChoicePill.prompt.md",
+      "omrade": "designkilde",
+      "byte": 544
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/fields.card.html",
+      "omrade": "designkilde",
+      "byte": 2846
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/FormField.jsx",
+      "omrade": "designkilde",
+      "byte": 1580
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/FormField.prompt.md",
+      "omrade": "designkilde",
+      "byte": 685
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/forms.card.html",
+      "omrade": "designkilde",
+      "byte": 2792
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Input.jsx",
+      "omrade": "designkilde",
+      "byte": 932
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Input.prompt.md",
+      "omrade": "designkilde",
+      "byte": 194
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Radio.jsx",
+      "omrade": "designkilde",
+      "byte": 388
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Radio.prompt.md",
+      "omrade": "designkilde",
+      "byte": 163
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/SearchField.jsx",
+      "omrade": "designkilde",
+      "byte": 1048
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/SearchField.prompt.md",
+      "omrade": "designkilde",
+      "byte": 347
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Segmented.jsx",
+      "omrade": "designkilde",
+      "byte": 796
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Segmented.prompt.md",
+      "omrade": "designkilde",
+      "byte": 175
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/SegmentedFilter.jsx",
+      "omrade": "designkilde",
+      "byte": 939
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/SegmentedFilter.prompt.md",
+      "omrade": "designkilde",
+      "byte": 474
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Select.jsx",
+      "omrade": "designkilde",
+      "byte": 769
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Select.prompt.md",
+      "omrade": "designkilde",
+      "byte": 166
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Stepper.jsx",
+      "omrade": "designkilde",
+      "byte": 1045
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Stepper.prompt.md",
+      "omrade": "designkilde",
+      "byte": 272
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Switch.jsx",
+      "omrade": "designkilde",
+      "byte": 330
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/forms/Switch.prompt.md",
+      "omrade": "designkilde",
+      "byte": 120
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/ActionBar.jsx",
+      "omrade": "designkilde",
+      "byte": 1590
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/BackBar.jsx",
+      "omrade": "designkilde",
+      "byte": 1669
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/ConfirmDialog.jsx",
+      "omrade": "designkilde",
+      "byte": 1632
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/ConflictSheet.jsx",
+      "omrade": "designkilde",
+      "byte": 1921
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/DropZone.jsx",
+      "omrade": "designkilde",
+      "byte": 1785
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/interaction.card.html",
+      "omrade": "designkilde",
+      "byte": 3511
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/MoveSheet.jsx",
+      "omrade": "designkilde",
+      "byte": 1951
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/SortableList.jsx",
+      "omrade": "designkilde",
+      "byte": 4198
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/interaction/UndoToast.jsx",
+      "omrade": "designkilde",
+      "byte": 758
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Breadcrumb.jsx",
+      "omrade": "designkilde",
+      "byte": 621
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Breadcrumb.prompt.md",
+      "omrade": "designkilde",
+      "byte": 353
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/MenuBar.jsx",
+      "omrade": "designkilde",
+      "byte": 1133
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/MenuBar.prompt.md",
+      "omrade": "designkilde",
+      "byte": 214
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/NavDrawer.jsx",
+      "omrade": "designkilde",
+      "byte": 5293
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/NavDrawer.prompt.md",
+      "omrade": "designkilde",
+      "byte": 350
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/navigation.card.html",
+      "omrade": "designkilde",
+      "byte": 4305
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/NavRail.jsx",
+      "omrade": "designkilde",
+      "byte": 2731
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/NavRail.prompt.md",
+      "omrade": "designkilde",
+      "byte": 494
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/page.card.html",
+      "omrade": "designkilde",
+      "byte": 2674
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/PageHeader.jsx",
+      "omrade": "designkilde",
+      "byte": 730
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/PageHeader.prompt.md",
+      "omrade": "designkilde",
+      "byte": 462
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Pagination.jsx",
+      "omrade": "designkilde",
+      "byte": 1694
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Pagination.prompt.md",
+      "omrade": "designkilde",
+      "byte": 299
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/SideNav.jsx",
+      "omrade": "designkilde",
+      "byte": 842
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/SideNav.prompt.md",
+      "omrade": "designkilde",
+      "byte": 327
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/TabBar.jsx",
+      "omrade": "designkilde",
+      "byte": 742
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/TabBar.prompt.md",
+      "omrade": "designkilde",
+      "byte": 182
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Tabs.jsx",
+      "omrade": "designkilde",
+      "byte": 641
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/Tabs.prompt.md",
+      "omrade": "designkilde",
+      "byte": 198
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/TopBar.jsx",
+      "omrade": "designkilde",
+      "byte": 530
+    },
+    {
+      "sti": "designsystem/precision-athletics/components/navigation/TopBar.prompt.md",
+      "omrade": "designkilde",
+      "byte": 231
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/brand-icons.html",
+      "omrade": "designkilde",
+      "byte": 5137
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/brand-logos.html",
+      "omrade": "designkilde",
+      "byte": 1197
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/brand-negative.html",
+      "omrade": "designkilde",
+      "byte": 1015
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/brand-photography.html",
+      "omrade": "designkilde",
+      "byte": 1049
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/buttons.html",
+      "omrade": "designkilde",
+      "byte": 4281
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-axes-night.html",
+      "omrade": "designkilde",
+      "byte": 1975
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-axes.html",
+      "omrade": "designkilde",
+      "byte": 1967
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-graphite.html",
+      "omrade": "designkilde",
+      "byte": 1549
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-night.html",
+      "omrade": "designkilde",
+      "byte": 1482
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-semantic.html",
+      "omrade": "designkilde",
+      "byte": 1427
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-signal.html",
+      "omrade": "designkilde",
+      "byte": 1187
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/colors-surfaces.html",
+      "omrade": "designkilde",
+      "byte": 1444
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/elevation.html",
+      "omrade": "designkilde",
+      "byte": 1794
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/farge.html",
+      "omrade": "designkilde",
+      "byte": 5045
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/motion.html",
+      "omrade": "designkilde",
+      "byte": 2128
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/ordmaster.md",
+      "omrade": "designkilde",
+      "byte": 6102
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/radius.html",
+      "omrade": "designkilde",
+      "byte": 2006
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/spacing-inuse.html",
+      "omrade": "designkilde",
+      "byte": 1543
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/spacing-scale.html",
+      "omrade": "designkilde",
+      "byte": 2502
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/type-body.html",
+      "omrade": "designkilde",
+      "byte": 1106
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/type-kicker.html",
+      "omrade": "designkilde",
+      "byte": 963
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/type-mono.html",
+      "omrade": "designkilde",
+      "byte": 1161
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/type-scale.html",
+      "omrade": "designkilde",
+      "byte": 2250
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/type-titles.html",
+      "omrade": "designkilde",
+      "byte": 964
+    },
+    {
+      "sti": "designsystem/precision-athletics/guidelines/vocabulary.html",
+      "omrade": "designkilde",
+      "byte": 2442
+    },
+    {
+      "sti": "designsystem/precision-athletics/LES-MEG.md",
+      "omrade": "designkilde",
+      "byte": 992
+    },
+    {
+      "sti": "designsystem/precision-athletics/MANIFEST.txt",
+      "omrade": "designkilde",
+      "byte": 15577
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/better-ui-polish-2026-09-27.md",
+      "omrade": "designkilde",
+      "byte": 8349
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/codex.md",
+      "omrade": "designkilde",
+      "byte": 112833
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/index.html",
+      "omrade": "designkilde",
+      "byte": 158471
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/round-sg-registration-2026-09-27.md",
+      "omrade": "designkilde",
+      "byte": 7231
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/teknisk-plan-playerhq-agencyos-analyse.md",
+      "omrade": "designkilde",
+      "byte": 22609
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/teknisk-plan-progresjon-2026-09-27.md",
+      "omrade": "designkilde",
+      "byte": 8244
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/test-til-okt-2026-09-27.md",
+      "omrade": "designkilde",
+      "byte": 4675
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/tokens.css",
+      "omrade": "designkilde",
+      "byte": 9002
+    },
+    {
+      "sti": "designsystem/precision-athletics/overlevering/workbench-fys-turnering-2026-09-27.md",
+      "omrade": "designkilde",
+      "byte": 3926
+    },
+    {
+      "sti": "designsystem/precision-athletics/oversikt.html",
+      "omrade": "designkilde",
+      "byte": 39102
+    },
+    {
+      "sti": "designsystem/precision-athletics/readme.md",
+      "omrade": "designkilde",
+      "byte": 24601
+    },
+    {
+      "sti": "designsystem/precision-athletics/skjermliste.md",
+      "omrade": "designkilde",
+      "byte": 40766
+    },
+    {
+      "sti": "designsystem/precision-athletics/styles.css",
+      "omrade": "designkilde",
+      "byte": 282
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/base.css",
+      "omrade": "designkilde",
+      "byte": 786
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/colors.css",
+      "omrade": "designkilde",
+      "byte": 5137
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/fonts.css",
+      "omrade": "designkilde",
+      "byte": 678
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/layout.css",
+      "omrade": "designkilde",
+      "byte": 310
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/motion.css",
+      "omrade": "designkilde",
+      "byte": 892
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/spacing.css",
+      "omrade": "designkilde",
+      "byte": 878
+    },
+    {
+      "sti": "designsystem/precision-athletics/tokens/typography.css",
+      "omrade": "designkilde",
+      "byte": 1472
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-fas.js",
+      "omrade": "designkilde",
+      "byte": 3275
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-iup.js",
+      "omrade": "designkilde",
+      "byte": 14367
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-pub.js",
+      "omrade": "designkilde",
+      "byte": 3733
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-rd.js",
+      "omrade": "designkilde",
+      "byte": 6354
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-test.js",
+      "omrade": "designkilde",
+      "byte": 2968
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-tp.js",
+      "omrade": "designkilde",
+      "byte": 8549
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-trening.js",
+      "omrade": "designkilde",
+      "byte": 9463
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-wb.js",
+      "omrade": "designkilde",
+      "byte": 6985
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-wb2.js",
+      "omrade": "designkilde",
+      "byte": 2345
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/data-wb3.js",
+      "omrade": "designkilde",
+      "byte": 11325
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/ds-next.jsx",
+      "omrade": "designkilde",
+      "byte": 33888
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/fasiliteter.jsx",
+      "omrade": "designkilde",
+      "byte": 5641
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/Hurtigknapp.jsx",
+      "omrade": "designkilde",
+      "byte": 6792
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/ia.js",
+      "omrade": "designkilde",
+      "byte": 12050
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/KitShell.jsx",
+      "omrade": "designkilde",
+      "byte": 6841
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/screen.html",
+      "omrade": "designkilde",
+      "byte": 2966
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/test-parts.jsx",
+      "omrade": "designkilde",
+      "byte": 3512
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/tn-parts.jsx",
+      "omrade": "designkilde",
+      "byte": 2149
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/tn-scoring.js",
+      "omrade": "designkilde",
+      "byte": 2704
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/tp-parts.jsx",
+      "omrade": "designkilde",
+      "byte": 23629
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/_shared/WB3.jsx",
+      "omrade": "designkilde",
+      "byte": 34606
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/ag-parts.jsx",
+      "omrade": "designkilde",
+      "byte": 15434
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/Caddie.jsx",
+      "omrade": "designkilde",
+      "byte": 13796
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/CalendarScreen.jsx",
+      "omrade": "designkilde",
+      "byte": 7203
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/Cockpit.jsx",
+      "omrade": "designkilde",
+      "byte": 7012
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-admin.js",
+      "omrade": "designkilde",
+      "byte": 13316
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-ag.js",
+      "omrade": "designkilde",
+      "byte": 17136
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-ag2.js",
+      "omrade": "designkilde",
+      "byte": 8280
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-ag3.js",
+      "omrade": "designkilde",
+      "byte": 11070
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-ag4.js",
+      "omrade": "designkilde",
+      "byte": 7189
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-cockpit.js",
+      "omrade": "designkilde",
+      "byte": 5290
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-inbox.js",
+      "omrade": "designkilde",
+      "byte": 5962
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-kal.js",
+      "omrade": "designkilde",
+      "byte": 5657
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-mer.js",
+      "omrade": "designkilde",
+      "byte": 5949
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data-stall.js",
+      "omrade": "designkilde",
+      "byte": 5759
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/data.js",
+      "omrade": "designkilde",
+      "byte": 2291
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/drillvelger.html",
+      "omrade": "designkilde",
+      "byte": 3061
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/ExerciseComposer.jsx",
+      "omrade": "designkilde",
+      "byte": 16009
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/Godkjenninger.jsx",
+      "omrade": "designkilde",
+      "byte": 8458
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/index.html",
+      "omrade": "designkilde",
+      "byte": 4837
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/Kalender.jsx",
+      "omrade": "designkilde",
+      "byte": 13197
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/katalog.html",
+      "omrade": "designkilde",
+      "byte": 5780
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/OktBygger.jsx",
+      "omrade": "designkilde",
+      "byte": 20473
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/Parts.jsx",
+      "omrade": "designkilde",
+      "byte": 4744
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/PlanEngine.jsx",
+      "omrade": "designkilde",
+      "byte": 7220
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/planmotor-data.js",
+      "omrade": "designkilde",
+      "byte": 5443
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/planmotor.html",
+      "omrade": "designkilde",
+      "byte": 3211
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/PlanParts.jsx",
+      "omrade": "designkilde",
+      "byte": 15216
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/README.md",
+      "omrade": "designkilde",
+      "byte": 2358
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screen.html",
+      "omrade": "designkilde",
+      "byte": 5872
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-01.jsx",
+      "omrade": "designkilde",
+      "byte": 7764
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-02.jsx",
+      "omrade": "designkilde",
+      "byte": 16376
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-03.jsx",
+      "omrade": "designkilde",
+      "byte": 5185
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-04.jsx",
+      "omrade": "designkilde",
+      "byte": 11660
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-05.jsx",
+      "omrade": "designkilde",
+      "byte": 18317
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-06.jsx",
+      "omrade": "designkilde",
+      "byte": 12391
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-07.jsx",
+      "omrade": "designkilde",
+      "byte": 9001
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-08-IUP.jsx",
+      "omrade": "designkilde",
+      "byte": 7415
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-08.jsx",
+      "omrade": "designkilde",
+      "byte": 8716
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-09.jsx",
+      "omrade": "designkilde",
+      "byte": 7662
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-10.jsx",
+      "omrade": "designkilde",
+      "byte": 7009
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-11-wb3.jsx",
+      "omrade": "designkilde",
+      "byte": 2615
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-11.jsx",
+      "omrade": "designkilde",
+      "byte": 3479
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-12.jsx",
+      "omrade": "designkilde",
+      "byte": 5572
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-13.jsx",
+      "omrade": "designkilde",
+      "byte": 5853
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-14.jsx",
+      "omrade": "designkilde",
+      "byte": 9376
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-15.jsx",
+      "omrade": "designkilde",
+      "byte": 11998
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-16.jsx",
+      "omrade": "designkilde",
+      "byte": 6164
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-17.jsx",
+      "omrade": "designkilde",
+      "byte": 9441
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-18.jsx",
+      "omrade": "designkilde",
+      "byte": 7162
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-19.jsx",
+      "omrade": "designkilde",
+      "byte": 7973
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-20.jsx",
+      "omrade": "designkilde",
+      "byte": 5908
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-21.jsx",
+      "omrade": "designkilde",
+      "byte": 5402
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-22.jsx",
+      "omrade": "designkilde",
+      "byte": 6445
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-23.jsx",
+      "omrade": "designkilde",
+      "byte": 5993
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-24.jsx",
+      "omrade": "designkilde",
+      "byte": 5017
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-360.jsx",
+      "omrade": "designkilde",
+      "byte": 15774
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-A1.jsx",
+      "omrade": "designkilde",
+      "byte": 15281
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-A2.jsx",
+      "omrade": "designkilde",
+      "byte": 16181
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-cockpit.jsx",
+      "omrade": "designkilde",
+      "byte": 21752
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-innboks.jsx",
+      "omrade": "designkilde",
+      "byte": 9707
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-kalender.jsx",
+      "omrade": "designkilde",
+      "byte": 21687
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-mer.jsx",
+      "omrade": "designkilde",
+      "byte": 27467
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-RD.jsx",
+      "omrade": "designkilde",
+      "byte": 7349
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-stall.jsx",
+      "omrade": "designkilde",
+      "byte": 10164
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-TP.jsx",
+      "omrade": "designkilde",
+      "byte": 16966
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-WB-FYS.jsx",
+      "omrade": "designkilde",
+      "byte": 22030
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/screens/AG-WB-TURN.jsx",
+      "omrade": "designkilde",
+      "byte": 20729
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/agencyos/StallScreen.jsx",
+      "omrade": "designkilde",
+      "byte": 7642
+    },
+    {
+      "sti": "designsystem/precision-athletics/ui_kits/katalog.js",
+      "omrade": "designkilde",
+      "byte": 18566
     },
     {
       "sti": "designsystem/README.md",
@@ -6842,6 +8097,31 @@
       "byte": 10170
     },
     {
+      "sti": "docs/beslutningsgrunnlag/grillingen-runde8-skjermer-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 62254
+    },
+    {
+      "sti": "docs/beslutningsgrunnlag/grillingen-runde9-wang-tn-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 16504
+    },
+    {
+      "sti": "docs/beslutningsgrunnlag/kapabilitetskart-spillerutvikling-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 8875
+    },
+    {
+      "sti": "docs/beslutningsgrunnlag/mulighetskart-playerhq-agencyos-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 6439
+    },
+    {
+      "sti": "docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 5197
+    },
+    {
       "sti": "docs/beslutningsgrunnlag/ordbok-og-workbench-analyse-2026-09-15.md",
       "omrade": "dokumentasjon",
       "byte": 10822
@@ -6865,6 +8145,11 @@
       "sti": "docs/beslutningsgrunnlag/rls-produksjonskontroll-2026-09-10.json",
       "omrade": "dokumentasjon",
       "byte": 2090
+    },
+    {
+      "sti": "docs/beslutningsgrunnlag/skjermkartlegging-2026-09-28.md",
+      "omrade": "dokumentasjon",
+      "byte": 13871
     },
     {
       "sti": "docs/beslutningsgrunnlag/sprak-og-treningskvalitet-2026-09-10.md",
@@ -6989,7 +8274,7 @@
     {
       "sti": "docs/design-system/skjermliste-precision-athletics.md",
       "omrade": "dokumentasjon",
-      "byte": 13273
+      "byte": 13303
     },
     {
       "sti": "docs/design-system/team-norway-claw-valgt-2026-09-13.md",
@@ -7154,7 +8439,7 @@
     {
       "sti": "docs/FASIT.md",
       "omrade": "dokumentasjon",
-      "byte": 2147
+      "byte": 2314
     },
     {
       "sti": "docs/feillogg.md",
@@ -7179,7 +8464,7 @@
     {
       "sti": "docs/gdpr/datakart.md",
       "omrade": "dokumentasjon",
-      "byte": 12626
+      "byte": 13645
     },
     {
       "sti": "docs/gdpr/personvernerklaering-utkast.md",
@@ -7189,7 +8474,7 @@
     {
       "sti": "docs/gdpr/rettigheter-status.md",
       "omrade": "dokumentasjon",
-      "byte": 8426
+      "byte": 8560
     },
     {
       "sti": "docs/integrasjoner/whoop-garmin-oppsett.md",
@@ -7244,7 +8529,7 @@
     {
       "sti": "docs/ordbok.json",
       "omrade": "dokumentasjon",
-      "byte": 15067
+      "byte": 15109
     },
     {
       "sti": "docs/ordbok.md",
@@ -7260,6 +8545,16 @@
       "sti": "docs/plan-styrkeprogram-fys.md",
       "omrade": "dokumentasjon",
       "byte": 19777
+    },
+    {
+      "sti": "docs/planer/agencyos-portering-natt-2026-09-28.md",
+      "omrade": "datert-plan",
+      "byte": 5504
+    },
+    {
+      "sti": "docs/planer/ak-golf-hq-sammenhengende-datakjede-2026-09-27.md",
+      "omrade": "datert-plan",
+      "byte": 10752
     },
     {
       "sti": "docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md",
@@ -7282,6 +8577,11 @@
       "byte": 14004
     },
     {
+      "sti": "docs/planer/portering-skjermer-2026-09-27.md",
+      "omrade": "datert-plan",
+      "byte": 21574
+    },
+    {
       "sti": "docs/planer/prosjektplan-og-lanseringsplan-2026-09-24.md",
       "omrade": "datert-plan",
       "byte": 7086
@@ -7292,9 +8592,14 @@
       "byte": 29443
     },
     {
+      "sti": "docs/planer/treningsplanlegging-og-sprak-en-master-2026-09-26.md",
+      "omrade": "datert-plan",
+      "byte": 10723
+    },
+    {
       "sti": "docs/platform/AGENT-BRIEF.md",
       "omrade": "dokumentasjon",
-      "byte": 5750
+      "byte": 5742
     },
     {
       "sti": "docs/platform/BOOKING-POLICY.md",
@@ -7349,7 +8654,7 @@
     {
       "sti": "docs/PLATTFORM-KART.md",
       "omrade": "dokumentasjon",
-      "byte": 14399
+      "byte": 14432
     },
     {
       "sti": "docs/qa/knapp-audit-lansering.md",
@@ -7549,12 +8854,17 @@
     {
       "sti": "docs/treningsplanlegging-og-sprak-gjennomgang.md",
       "omrade": "dokumentasjon",
-      "byte": 22963
+      "byte": 22867
+    },
+    {
+      "sti": "docs/treningsplanlegging-og-sprak.md",
+      "omrade": "dokumentasjon",
+      "byte": 26187
     },
     {
       "sti": "docs/treningsplanlegging.md",
       "omrade": "dokumentasjon",
-      "byte": 35784
+      "byte": 36153
     },
     {
       "sti": "docs/turnering-datakilder.md",
@@ -7624,7 +8934,7 @@
     {
       "sti": "eslint.config.mjs",
       "omrade": "prosjektoppsett",
-      "byte": 12552
+      "byte": 12496
     },
     {
       "sti": "mdx-components.tsx",
@@ -8127,6 +9437,16 @@
       "byte": 482
     },
     {
+      "sti": "prisma/migrations/20260927143000_round_registration_metadata/migration.sql",
+      "omrade": "databasekilde",
+      "byte": 639
+    },
+    {
+      "sti": "prisma/migrations/20260927201000_workbench_physical_tournament_plan/migration.sql",
+      "omrade": "databasekilde",
+      "byte": 23708
+    },
+    {
       "sti": "prisma/migrations/migration_lock.toml",
       "omrade": "databasekilde",
       "byte": 128
@@ -8139,7 +9459,7 @@
     {
       "sti": "prisma/schema.prisma",
       "omrade": "databasekilde",
-      "byte": 227068
+      "byte": 238109
     },
     {
       "sti": "prisma/scripts/map-fasilitet-krav.ts",
@@ -10432,6 +11752,11 @@
       "byte": 2010
     },
     {
+      "sti": "public/logos/ak-golf-logo-ink.svg",
+      "omrade": "offentlig-innhold",
+      "byte": 1984
+    },
+    {
       "sti": "public/logos/ak-golf-logo-primary-mono.svg",
       "omrade": "offentlig-innhold",
       "byte": 2010
@@ -10677,6 +12002,21 @@
       "byte": 2046
     },
     {
+      "sti": "scripts/add-player-daily-form-2026-09-28.ts",
+      "omrade": "verktoy",
+      "byte": 1842
+    },
+    {
+      "sti": "scripts/add-restitusjon-periode-2026-09-28.ts",
+      "omrade": "verktoy",
+      "byte": 1224
+    },
+    {
+      "sti": "scripts/add-round-registration-metadata-2026-09-27.ts",
+      "omrade": "verktoy",
+      "byte": 2394
+    },
+    {
       "sti": "scripts/add-slag-detaljer-2026-09-16.ts",
       "omrade": "verktoy",
       "byte": 3774
@@ -10710,6 +12050,11 @@
       "sti": "scripts/add-utfordring-retning-2026-09-22.ts",
       "omrade": "verktoy",
       "byte": 2079
+    },
+    {
+      "sti": "scripts/add-workbench-fys-turnering-2026-09-27.ts",
+      "omrade": "verktoy",
+      "byte": 2358
     },
     {
       "sti": "scripts/agency-shot.mjs",
@@ -10839,7 +12184,7 @@
     {
       "sti": "scripts/check-token-gap.mjs",
       "omrade": "verktoy",
-      "byte": 10818
+      "byte": 11060
     },
     {
       "sti": "scripts/check-v2shell-bredde.mjs",
@@ -11185,6 +12530,16 @@
       "sti": "scripts/ow3-fase2-migrer-training-plan-sessions-2026-09-16.ts",
       "omrade": "verktoy",
       "byte": 3971
+    },
+    {
+      "sti": "scripts/ow3-fase3-utvid-workbench-drill-2026-09-17.ts",
+      "omrade": "verktoy",
+      "byte": 3229
+    },
+    {
+      "sti": "scripts/ow3-fase3b-workbench-drill-exerciseid-2026-09-17.ts",
+      "omrade": "verktoy",
+      "byte": 2063
     },
     {
       "sti": "scripts/p0-test-innlogget-reise.mjs",
@@ -11559,7 +12914,7 @@
     {
       "sti": "scripts/standardplan-felles.ts",
       "omrade": "verktoy",
-      "byte": 7764
+      "byte": 7891
     },
     {
       "sti": "scripts/stikkprove-trainlock.mjs",
@@ -11574,7 +12929,7 @@
     {
       "sti": "scripts/sync-masterbrain.ts",
       "omrade": "verktoy",
-      "byte": 4953
+      "byte": 6052
     },
     {
       "sti": "scripts/sync-wagr-results.ts",
@@ -11809,7 +13164,7 @@
     {
       "sti": "src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx",
       "omrade": "appkode",
-      "byte": 2697
+      "byte": 2476
     },
     {
       "sti": "src/app/(marketing)/booking/ledige-tider.ts",
@@ -11819,7 +13174,7 @@
     {
       "sti": "src/app/(marketing)/booking/page.tsx",
       "omrade": "appkode",
-      "byte": 4848
+      "byte": 5190
     },
     {
       "sti": "src/app/(marketing)/cases/page.tsx",
@@ -11894,7 +13249,7 @@
     {
       "sti": "src/app/(marketing)/personvern/page.tsx",
       "omrade": "appkode",
-      "byte": 359
+      "byte": 493
     },
     {
       "sti": "src/app/(marketing)/playerhq/page.tsx",
@@ -12489,7 +13844,7 @@
     {
       "sti": "src/app/admin/(legacy)/kalender/lib/periode-helpers.ts",
       "omrade": "appkode",
-      "byte": 1602
+      "byte": 1629
     },
     {
       "sti": "src/app/admin/(legacy)/kalender/maned/page.tsx",
@@ -12524,7 +13879,7 @@
     {
       "sti": "src/app/admin/(legacy)/layout.tsx",
       "omrade": "appkode",
-      "byte": 867
+      "byte": 933
     },
     {
       "sti": "src/app/admin/(legacy)/loading.tsx",
@@ -12569,7 +13924,7 @@
     {
       "sti": "src/app/admin/(legacy)/plan-templates/actions.ts",
       "omrade": "appkode",
-      "byte": 17260
+      "byte": 17275
     },
     {
       "sti": "src/app/admin/(legacy)/plans/actions.test.ts",
@@ -12715,6 +14070,11 @@
       "sti": "src/app/admin/(legacy)/spillere/ny/constants.ts",
       "omrade": "appkode",
       "byte": 879
+    },
+    {
+      "sti": "src/app/admin/(legacy)/stall/page.tsx",
+      "omrade": "appkode",
+      "byte": 318
     },
     {
       "sti": "src/app/admin/(legacy)/stats/moderering/actions.test.ts",
@@ -13049,7 +14409,7 @@
     {
       "sti": "src/app/admin/analyse/page.tsx",
       "omrade": "appkode",
-      "byte": 4395
+      "byte": 4647
     },
     {
       "sti": "src/app/admin/analyse/stall/error.tsx",
@@ -13669,7 +15029,7 @@
     {
       "sti": "src/app/admin/plan/page.tsx",
       "omrade": "appkode",
-      "byte": 9601
+      "byte": 9603
     },
     {
       "sti": "src/app/admin/plan/plan-redirects.test.ts",
@@ -13849,12 +15209,12 @@
     {
       "sti": "src/app/admin/settings/periode-navn/actions.ts",
       "omrade": "appkode",
-      "byte": 3596
+      "byte": 3611
     },
     {
       "sti": "src/app/admin/settings/periode-navn/labels.ts",
       "omrade": "appkode",
-      "byte": 845
+      "byte": 867
     },
     {
       "sti": "src/app/admin/settings/periode-navn/page.tsx",
@@ -13979,7 +15339,7 @@
     {
       "sti": "src/app/admin/spillere/[id]/tester/page.tsx",
       "omrade": "appkode",
-      "byte": 2159
+      "byte": 6361
     },
     {
       "sti": "src/app/admin/spillere/[id]/turnering-kobling/actions.test.ts",
@@ -14044,7 +15404,7 @@
     {
       "sti": "src/app/admin/spillere/page.tsx",
       "omrade": "appkode",
-      "byte": 749
+      "byte": 4045
     },
     {
       "sti": "src/app/admin/stall/dag/error.tsx",
@@ -14060,11 +15420,6 @@
       "sti": "src/app/admin/stall/dag/page.tsx",
       "omrade": "appkode",
       "byte": 889
-    },
-    {
-      "sti": "src/app/admin/stall/page.tsx",
-      "omrade": "appkode",
-      "byte": 591
     },
     {
       "sti": "src/app/admin/talent/discovery/page.tsx",
@@ -14319,7 +15674,7 @@
     {
       "sti": "src/app/admin/workbench/[playerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 9662
+      "byte": 10327
     },
     {
       "sti": "src/app/admin/workspace/error.tsx",
@@ -14519,7 +15874,7 @@
     {
       "sti": "src/app/api/live/coach-chat/route.ts",
       "omrade": "appkode",
-      "byte": 9662
+      "byte": 9370
     },
     {
       "sti": "src/app/api/mcp/akgolf/route.ts",
@@ -14774,7 +16129,7 @@
     {
       "sti": "src/app/auth/login/page.tsx",
       "omrade": "appkode",
-      "byte": 322
+      "byte": 475
     },
     {
       "sti": "src/app/auth/lyd-samtykke/[token]/actions.ts",
@@ -14999,7 +16354,7 @@
     {
       "sti": "src/app/forelder/page.tsx",
       "omrade": "appkode",
-      "byte": 4261
+      "byte": 6325
     },
     {
       "sti": "src/app/forelder/samtykke/actions.test.ts",
@@ -15414,7 +16769,7 @@
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/tapper/tapper-shell.tsx",
       "omrade": "appkode",
-      "byte": 25499
+      "byte": 25663
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/live/error.tsx",
@@ -15549,7 +16904,7 @@
     {
       "sti": "src/app/portal/(legacy)/coach/ovelser/actions.ts",
       "omrade": "appkode",
-      "byte": 2998
+      "byte": 3013
     },
     {
       "sti": "src/app/portal/(legacy)/coach/ovelser/ny/page.tsx",
@@ -15629,7 +16984,7 @@
     {
       "sti": "src/app/portal/(legacy)/mal/runder/logg/actions.ts",
       "omrade": "appkode",
-      "byte": 6354
+      "byte": 6739
     },
     {
       "sti": "src/app/portal/(legacy)/mal/sg-hub/[club]/annotations/actions.ts",
@@ -15799,7 +17154,7 @@
     {
       "sti": "src/app/portal/ai/foresla-drill/page.tsx",
       "omrade": "appkode",
-      "byte": 3442
+      "byte": 4332
     },
     {
       "sti": "src/app/portal/ai/foresla-turnering/page.tsx",
@@ -16057,6 +17412,11 @@
       "byte": 1640
     },
     {
+      "sti": "src/app/portal/dagsform-actions.ts",
+      "omrade": "appkode",
+      "byte": 1146
+    },
+    {
       "sti": "src/app/portal/datagolf/page.tsx",
       "omrade": "appkode",
       "byte": 328
@@ -16089,7 +17449,7 @@
     {
       "sti": "src/app/portal/error.tsx",
       "omrade": "appkode",
-      "byte": 1164
+      "byte": 1618
     },
     {
       "sti": "src/app/portal/fysisk/actions.test.ts",
@@ -16104,7 +17464,7 @@
     {
       "sti": "src/app/portal/fysisk/page.tsx",
       "omrade": "appkode",
-      "byte": 992
+      "byte": 1273
     },
     {
       "sti": "src/app/portal/gameplan/[baneId]/error.tsx",
@@ -16154,7 +17514,7 @@
     {
       "sti": "src/app/portal/kalender/data.ts",
       "omrade": "appkode",
-      "byte": 16511
+      "byte": 16569
     },
     {
       "sti": "src/app/portal/kalender/error.tsx",
@@ -16194,7 +17554,7 @@
     {
       "sti": "src/app/portal/live/page.tsx",
       "omrade": "appkode",
-      "byte": 469
+      "byte": 435
     },
     {
       "sti": "src/app/portal/live/voice-actions.ts",
@@ -16204,7 +17564,7 @@
     {
       "sti": "src/app/portal/loading.tsx",
       "omrade": "appkode",
-      "byte": 308
+      "byte": 508
     },
     {
       "sti": "src/app/portal/mal/bygger/actions.ts",
@@ -16234,7 +17594,7 @@
     {
       "sti": "src/app/portal/mal/runder/[id]/actions.ts",
       "omrade": "appkode",
-      "byte": 17248
+      "byte": 18395
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/hull/page.tsx",
@@ -16244,12 +17604,12 @@
     {
       "sti": "src/app/portal/mal/runder/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 6350
+      "byte": 7021
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/sg-actions.ts",
       "omrade": "appkode",
-      "byte": 2216
+      "byte": 2575
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/slag-wizard.tsx",
@@ -16269,12 +17629,12 @@
     {
       "sti": "src/app/portal/mal/runder/ny/actions.ts",
       "omrade": "appkode",
-      "byte": 9430
+      "byte": 9794
     },
     {
       "sti": "src/app/portal/mal/runder/ny/page.tsx",
       "omrade": "appkode",
-      "byte": 2525
+      "byte": 7986
     },
     {
       "sti": "src/app/portal/mal/runder/page.tsx",
@@ -16639,7 +17999,7 @@
     {
       "sti": "src/app/portal/meg/page.tsx",
       "omrade": "appkode",
-      "byte": 4967
+      "byte": 4629
     },
     {
       "sti": "src/app/portal/meg/profil-form.tsx",
@@ -16759,7 +18119,12 @@
     {
       "sti": "src/app/portal/page.tsx",
       "omrade": "appkode",
-      "byte": 9186
+      "byte": 8530
+    },
+    {
+      "sti": "src/app/portal/periodeplan/page.tsx",
+      "omrade": "appkode",
+      "byte": 376
     },
     {
       "sti": "src/app/portal/planlegge/bygger/actions.ts",
@@ -16789,7 +18154,7 @@
     {
       "sti": "src/app/portal/planlegge/workbench/actions.ts",
       "omrade": "appkode",
-      "byte": 23439
+      "byte": 20412
     },
     {
       "sti": "src/app/portal/planlegge/workbench/error.tsx",
@@ -16809,12 +18174,12 @@
     {
       "sti": "src/app/portal/planlegge/workbench/page.tsx",
       "omrade": "appkode",
-      "byte": 3647
+      "byte": 3787
     },
     {
       "sti": "src/app/portal/planlegge/workbench/plan-skriv.test.ts",
       "omrade": "test",
-      "byte": 5157
+      "byte": 5645
     },
     {
       "sti": "src/app/portal/spiller/[spillerId]/page.tsx",
@@ -16854,7 +18219,7 @@
     {
       "sti": "src/app/portal/talent/roadmap/page.tsx",
       "omrade": "appkode",
-      "byte": 4554
+      "byte": 4584
     },
     {
       "sti": "src/app/portal/talent/sammenligning/actions.ts",
@@ -16867,14 +18232,14 @@
       "byte": 6248
     },
     {
-      "sti": "src/app/portal/toppidrett/page.tsx",
+      "sti": "src/app/portal/teknisk/page.tsx",
       "omrade": "appkode",
-      "byte": 404
+      "byte": 398
     },
     {
-      "sti": "src/app/portal/toppidrett/ToppidrettKlient.tsx",
+      "sti": "src/app/portal/toppidrett/page.tsx",
       "omrade": "appkode",
-      "byte": 6570
+      "byte": 377
     },
     {
       "sti": "src/app/portal/trackman/[sessionId]/page.tsx",
@@ -16979,7 +18344,7 @@
     {
       "sti": "src/app/portal/tren/tester/[testId]/page.tsx",
       "omrade": "appkode",
-      "byte": 23231
+      "byte": 24958
     },
     {
       "sti": "src/app/portal/tren/tester/error.tsx",
@@ -17024,12 +18389,12 @@
     {
       "sti": "src/app/portal/tren/tester/team-norway/page.tsx",
       "omrade": "appkode",
-      "byte": 6038
+      "byte": 7703
     },
     {
       "sti": "src/app/portal/tren/tester/team-norway/scorecard.tsx",
       "omrade": "appkode",
-      "byte": 6749
+      "byte": 6931
     },
     {
       "sti": "src/app/portal/tren/turneringer/[id]/actions.ts",
@@ -17094,7 +18459,7 @@
     {
       "sti": "src/app/portal/utviklingsplan/page.tsx",
       "omrade": "appkode",
-      "byte": 11458
+      "byte": 11622
     },
     {
       "sti": "src/app/portal/varsler/page.tsx",
@@ -17139,7 +18504,12 @@
     {
       "sti": "src/app/skjermer/page.tsx",
       "omrade": "appkode",
-      "byte": 27318
+      "byte": 553
+    },
+    {
+      "sti": "src/app/skjermer/SkjermKatalog.tsx",
+      "omrade": "appkode",
+      "byte": 28963
     },
     {
       "sti": "src/app/sw.ts",
@@ -17564,7 +18934,7 @@
     {
       "sti": "src/app/team-wang/_data/hent-wang-gruppe.ts",
       "omrade": "appkode",
-      "byte": 10786
+      "byte": 10804
     },
     {
       "sti": "src/app/team-wang/_data/live-sesong.ts",
@@ -17574,7 +18944,7 @@
     {
       "sti": "src/app/team-wang/_data/wang-plan.ts",
       "omrade": "appkode",
-      "byte": 83911
+      "byte": 83903
     },
     {
       "sti": "src/app/team-wang/_data/wang-reise.test.ts",
@@ -17624,7 +18994,7 @@
     {
       "sti": "src/app/team-wang/coach/iup/[elevId]/page.tsx",
       "omrade": "appkode",
-      "byte": 5992
+      "byte": 6014
     },
     {
       "sti": "src/app/team-wang/coach/page.tsx",
@@ -17679,12 +19049,12 @@
     {
       "sti": "src/app/team-wang/rekruttering/page.tsx",
       "omrade": "appkode",
-      "byte": 466
+      "byte": 292
     },
     {
       "sti": "src/app/team-wang/toppidrett/page.tsx",
       "omrade": "appkode",
-      "byte": 489
+      "byte": 277
     },
     {
       "sti": "src/app/team-wang/WangToppidrettPrecisionView.tsx",
@@ -17814,7 +19184,7 @@
     {
       "sti": "src/components/admin/plan-templates/shared.ts",
       "omrade": "appkode",
-      "byte": 5087
+      "byte": 5132
     },
     {
       "sti": "src/components/admin/player/player-detail-panel.tsx",
@@ -17859,7 +19229,7 @@
     {
       "sti": "src/components/admin/stall/StallPrecisionView.tsx",
       "omrade": "appkode",
-      "byte": 8853
+      "byte": 8849
     },
     {
       "sti": "src/components/admin/talent/sammenligning.tsx",
@@ -17870,6 +19240,11 @@
       "sti": "src/components/admin/team/team-kit.tsx",
       "omrade": "appkode",
       "byte": 6220
+    },
+    {
+      "sti": "src/components/admin/test-ovelse-valg.tsx",
+      "omrade": "appkode",
+      "byte": 1662
     },
     {
       "sti": "src/components/admin/v2/AdminAgentDetaljV2.tsx",
@@ -18069,7 +19444,7 @@
     {
       "sti": "src/components/admin/v2/AdminPlanMalerV2.tsx",
       "omrade": "appkode",
-      "byte": 20095
+      "byte": 20157
     },
     {
       "sti": "src/components/admin/v2/AdminPlanMalNyV2.tsx",
@@ -18340,6 +19715,11 @@
       "sti": "src/components/admin/v2/analyse/InnsiktSpillerListe.tsx",
       "omrade": "appkode",
       "byte": 2457
+    },
+    {
+      "sti": "src/components/admin/v2/analyse/WorkbenchAnalyseV2.tsx",
+      "omrade": "appkode",
+      "byte": 2706
     },
     {
       "sti": "src/components/admin/v2/caddie/caddie-approval-modal-v2.tsx",
@@ -18914,7 +20294,7 @@
     {
       "sti": "src/components/forelder/ForelderPrecisionView.tsx",
       "omrade": "appkode",
-      "byte": 28424
+      "byte": 28420
     },
     {
       "sti": "src/components/forelder/minor-gate.tsx",
@@ -19417,11 +20797,6 @@
       "byte": 307
     },
     {
-      "sti": "src/components/navigation/NavDrawer.tsx",
-      "omrade": "appkode",
-      "byte": 9516
-    },
-    {
       "sti": "src/components/onboarding/onboarding-shell.tsx",
       "omrade": "appkode",
       "byte": 415
@@ -19459,7 +20834,7 @@
     {
       "sti": "src/components/portal/drill-editor.tsx",
       "omrade": "appkode",
-      "byte": 19852
+      "byte": 19845
     },
     {
       "sti": "src/components/portal/global-search-modal.tsx",
@@ -19534,7 +20909,7 @@
     {
       "sti": "src/components/portal/live/PlanSessionBrief.tsx",
       "omrade": "appkode",
-      "byte": 2282
+      "byte": 2274
     },
     {
       "sti": "src/components/portal/live/session-brief.module.css",
@@ -19597,14 +20972,19 @@
       "byte": 939
     },
     {
+      "sti": "src/components/portal/precision/PH01IDag.tsx",
+      "omrade": "appkode",
+      "byte": 22307
+    },
+    {
       "sti": "src/components/portal/profil/PersonvernPrecisionView.tsx",
       "omrade": "appkode",
-      "byte": 9386
+      "byte": 9382
     },
     {
       "sti": "src/components/portal/profil/SpillerProfilPrecisionView.tsx",
       "omrade": "appkode",
-      "byte": 17053
+      "byte": 17049
     },
     {
       "sti": "src/components/portal/profile/AchievementsList.tsx",
@@ -19754,7 +21134,7 @@
     {
       "sti": "src/components/portal/runde-ny/runde-ny-form.tsx",
       "omrade": "appkode",
-      "byte": 16952
+      "byte": 17783
     },
     {
       "sti": "src/components/portal/search-trigger-button.tsx",
@@ -19782,6 +21162,11 @@
       "byte": 12522
     },
     {
+      "sti": "src/components/portal/teknisk/TekniskPlanPrecisionView.tsx",
+      "omrade": "appkode",
+      "byte": 53587
+    },
+    {
       "sti": "src/components/portal/toppidrett/BanekartSpatialView.tsx",
       "omrade": "appkode",
       "byte": 14714
@@ -19800,6 +21185,11 @@
       "sti": "src/components/portal/toppidrett/KategoriOversikt.tsx",
       "omrade": "appkode",
       "byte": 9304
+    },
+    {
+      "sti": "src/components/portal/toppidrett/PeriodeplanPyramideView.tsx",
+      "omrade": "appkode",
+      "byte": 36919
     },
     {
       "sti": "src/components/portal/toppidrett/StrokesGainedDeepDive.tsx",
@@ -20089,7 +21479,7 @@
     {
       "sti": "src/components/portal/v2/ForeslaDrillV2.tsx",
       "omrade": "appkode",
-      "byte": 5685
+      "byte": 5716
     },
     {
       "sti": "src/components/portal/v2/ForeslaTurneringV2.tsx",
@@ -20157,11 +21547,6 @@
       "byte": 5709
     },
     {
-      "sti": "src/components/portal/v2/idag/idag-selected.module.css",
-      "omrade": "appkode",
-      "byte": 11130
-    },
-    {
       "sti": "src/components/portal/v2/idag/idag-train-lock.module.css",
       "omrade": "appkode",
       "byte": 3899
@@ -20170,11 +21555,6 @@
       "sti": "src/components/portal/v2/idag/IDagCaddie.tsx",
       "omrade": "appkode",
       "byte": 4356
-    },
-    {
-      "sti": "src/components/portal/v2/idag/IDagSelected.tsx",
-      "omrade": "appkode",
-      "byte": 21356
     },
     {
       "sti": "src/components/portal/v2/idag/IDagTrainLock.tsx",
@@ -20379,7 +21759,7 @@
     {
       "sti": "src/components/portal/v2/PeriodeFormV2.tsx",
       "omrade": "appkode",
-      "byte": 8363
+      "byte": 8410
     },
     {
       "sti": "src/components/portal/v2/plan-v2.module.css",
@@ -20419,12 +21799,12 @@
     {
       "sti": "src/components/portal/v2/RundeDetaljV2.tsx",
       "omrade": "appkode",
-      "byte": 19349
+      "byte": 21148
     },
     {
       "sti": "src/components/portal/v2/RunderV2.tsx",
       "omrade": "appkode",
-      "byte": 7426
+      "byte": 7625
     },
     {
       "sti": "src/components/portal/v2/SamtykkeVenterV2.tsx",
@@ -20574,7 +21954,7 @@
     {
       "sti": "src/components/portal/v2/WorkbenchAarsplan.tsx",
       "omrade": "appkode",
-      "byte": 31723
+      "byte": 31754
     },
     {
       "sti": "src/components/portal/v2/WorkbenchColdstart.tsx",
@@ -20589,7 +21969,7 @@
     {
       "sti": "src/components/portal/v2/WorkbenchV2.tsx",
       "omrade": "appkode",
-      "byte": 185010
+      "byte": 198720
     },
     {
       "sti": "src/components/portal/v2/WorkbenchV2Mobil.tsx",
@@ -20599,7 +21979,7 @@
     {
       "sti": "src/components/portal/v2/WorkbenchV2Sheets.tsx",
       "omrade": "appkode",
-      "byte": 80710
+      "byte": 82515
     },
     {
       "sti": "src/components/portal/varsler/varsler.tsx",
@@ -20625,6 +22005,31 @@
       "sti": "src/components/portal/workbench/OktArk.tsx",
       "omrade": "appkode",
       "byte": 15789
+    },
+    {
+      "sti": "src/components/precision/AdminSkallVelger.tsx",
+      "omrade": "appkode",
+      "byte": 842
+    },
+    {
+      "sti": "src/components/precision/AgencyOSSkall.tsx",
+      "omrade": "appkode",
+      "byte": 9231
+    },
+    {
+      "sti": "src/components/precision/Hurtigknapp.tsx",
+      "omrade": "appkode",
+      "byte": 5973
+    },
+    {
+      "sti": "src/components/precision/pa.tsx",
+      "omrade": "appkode",
+      "byte": 6261
+    },
+    {
+      "sti": "src/components/precision/PlayerHQSkall.tsx",
+      "omrade": "appkode",
+      "byte": 3582
     },
     {
       "sti": "src/components/sg-hub/ClubTaggingModal.tsx",
@@ -20999,7 +22404,7 @@
     {
       "sti": "src/components/team-norway/app/TeamNorwayAppView.tsx",
       "omrade": "appkode",
-      "byte": 86995
+      "byte": 86987
     },
     {
       "sti": "src/components/team-norway/core.tsx",
@@ -21054,7 +22459,7 @@
     {
       "sti": "src/components/team-norway/skjermer/tn-manedsplan-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 16640
+      "byte": 16626
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-oversikt-skjerm.tsx",
@@ -21214,12 +22619,12 @@
     {
       "sti": "src/components/teknisk-plan/constants.test.ts",
       "omrade": "test",
-      "byte": 1429
+      "byte": 1407
     },
     {
       "sti": "src/components/teknisk-plan/constants.ts",
       "omrade": "appkode",
-      "byte": 7854
+      "byte": 7945
     },
     {
       "sti": "src/components/teknisk-plan/omraade.test.ts",
@@ -21265,6 +22670,11 @@
       "sti": "src/components/teknisk-plan/teknisk-plan.css",
       "omrade": "appkode",
       "byte": 22951
+    },
+    {
+      "sti": "src/components/tester/ResultatKontekst.tsx",
+      "omrade": "appkode",
+      "byte": 1011
     },
     {
       "sti": "src/components/trackman/DispersionMap.tsx",
@@ -21589,7 +22999,7 @@
     {
       "sti": "src/components/v2/utviklingsplan.tsx",
       "omrade": "appkode",
-      "byte": 24686
+      "byte": 24850
     },
     {
       "sti": "src/components/v2/wb-composer.tsx",
@@ -21604,7 +23014,7 @@
     {
       "sti": "src/components/wang/WangRekrutteringView.tsx",
       "omrade": "appkode",
-      "byte": 32501
+      "byte": 32497
     },
     {
       "sti": "src/components/widgets/DagensOkterWidget.tsx",
@@ -21644,7 +23054,7 @@
     {
       "sti": "src/components/workbench-hybrid/taxonomy.ts",
       "omrade": "appkode",
-      "byte": 3641
+      "byte": 3633
     },
     {
       "sti": "src/components/workbench-hybrid/theme.ts",
@@ -21734,12 +23144,17 @@
     {
       "sti": "src/components/workbench/WorkbenchAar.tsx",
       "omrade": "appkode",
-      "byte": 8479
+      "byte": 8493
     },
     {
       "sti": "src/components/workbench/WorkbenchFeil.tsx",
       "omrade": "appkode",
       "byte": 1223
+    },
+    {
+      "sti": "src/components/workbench/WorkbenchFysTurnering.tsx",
+      "omrade": "appkode",
+      "byte": 16791
     },
     {
       "sti": "src/components/workbench/WorkbenchLeseflate.tsx",
@@ -21769,7 +23184,7 @@
     {
       "sti": "src/components/workbench/WorkbenchPeriode.tsx",
       "omrade": "appkode",
-      "byte": 10247
+      "byte": 10261
     },
     {
       "sti": "src/components/workbench/WorkbenchShell.tsx",
@@ -21794,7 +23209,7 @@
     {
       "sti": "src/components/workbench/YearPeriodePanel.tsx",
       "omrade": "appkode",
-      "byte": 10522
+      "byte": 10545
     },
     {
       "sti": "src/components/workspace/primitives.tsx",
@@ -21899,7 +23314,7 @@
     {
       "sti": "src/lib/__tests__/ai/live-coach-prompt.test.ts",
       "omrade": "test",
-      "byte": 3605
+      "byte": 3704
     },
     {
       "sti": "src/lib/__tests__/ai/performance-peaking.test.ts",
@@ -22024,7 +23439,7 @@
     {
       "sti": "src/lib/__tests__/domain/tapper-reps.test.ts",
       "omrade": "test",
-      "byte": 2129
+      "byte": 2328
     },
     {
       "sti": "src/lib/__tests__/domain/tn-skall.test.ts",
@@ -22080,6 +23495,11 @@
       "sti": "src/lib/__tests__/google-calendar-tid.test.ts",
       "omrade": "test",
       "byte": 5862
+    },
+    {
+      "sti": "src/lib/__tests__/ingen-demovisning-i-ruter.test.ts",
+      "omrade": "test",
+      "byte": 2361
     },
     {
       "sti": "src/lib/__tests__/leave-innsyn.test.ts",
@@ -22499,17 +23919,17 @@
     {
       "sti": "src/lib/admin/analyse/faner.test.ts",
       "omrade": "test",
-      "byte": 2519
+      "byte": 2708
     },
     {
       "sti": "src/lib/admin/analyse/faner.ts",
       "omrade": "appkode",
-      "byte": 4401
+      "byte": 4475
     },
     {
       "sti": "src/lib/admin/analyse/lastere.ts",
       "omrade": "appkode",
-      "byte": 9666
+      "byte": 12051
     },
     {
       "sti": "src/lib/admin/benchmark-sync-schema.ts",
@@ -22619,7 +24039,7 @@
     {
       "sti": "src/lib/admin/legacy-agencyos-inventory.test.ts",
       "omrade": "test",
-      "byte": 3194
+      "byte": 3125
     },
     {
       "sti": "src/lib/admin/load-app-feedback.ts",
@@ -22887,6 +24307,51 @@
       "byte": 3450
     },
     {
+      "sti": "src/lib/agencyos/precision-ia.test.ts",
+      "omrade": "test",
+      "byte": 1860
+    },
+    {
+      "sti": "src/lib/agencyos/precision-ia.ts",
+      "omrade": "appkode",
+      "byte": 3547
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert.test.ts",
+      "omrade": "test",
+      "byte": 1048
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert.ts",
+      "omrade": "appkode",
+      "byte": 969
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert/a1.ts",
+      "omrade": "appkode",
+      "byte": 356
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert/a2.ts",
+      "omrade": "appkode",
+      "byte": 356
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert/a3.ts",
+      "omrade": "appkode",
+      "byte": 356
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert/a4.ts",
+      "omrade": "appkode",
+      "byte": 356
+    },
+    {
+      "sti": "src/lib/agencyos/precision-portert/a5.ts",
+      "omrade": "appkode",
+      "byte": 356
+    },
+    {
       "sti": "src/lib/agencyos/skall-ia.test.ts",
       "omrade": "test",
       "byte": 2679
@@ -23009,12 +24474,12 @@
     {
       "sti": "src/lib/agents/drill-forslag-agent.ts",
       "omrade": "appkode",
-      "byte": 4010
+      "byte": 6495
     },
     {
       "sti": "src/lib/agents/fabrikk-agent.ts",
       "omrade": "appkode",
-      "byte": 7903
+      "byte": 7911
     },
     {
       "sti": "src/lib/agents/gfgk-ballplukking-agent.test.ts",
@@ -23279,7 +24744,7 @@
     {
       "sti": "src/lib/ai-plan/coach-prompt.ts",
       "omrade": "appkode",
-      "byte": 9583
+      "byte": 9552
     },
     {
       "sti": "src/lib/ai-plan/context.ts",
@@ -23307,9 +24772,14 @@
       "byte": 7125
     },
     {
+      "sti": "src/lib/ai-plan/week-suggest.test.ts",
+      "omrade": "test",
+      "byte": 1754
+    },
+    {
       "sti": "src/lib/ai-plan/week-suggest.ts",
       "omrade": "appkode",
-      "byte": 11639
+      "byte": 11790
     },
     {
       "sti": "src/lib/ai/agents/daily-brief.ts",
@@ -23342,9 +24812,14 @@
       "byte": 11259
     },
     {
+      "sti": "src/lib/ai/agents/vinn-tilbake.test.ts",
+      "omrade": "test",
+      "byte": 1491
+    },
+    {
       "sti": "src/lib/ai/agents/vinn-tilbake.ts",
       "omrade": "appkode",
-      "byte": 7160
+      "byte": 7408
     },
     {
       "sti": "src/lib/ai/anonymiser.test.ts",
@@ -23907,9 +25382,14 @@
       "byte": 1767
     },
     {
+      "sti": "src/lib/coaching-analysis.test.ts",
+      "omrade": "test",
+      "byte": 1904
+    },
+    {
       "sti": "src/lib/coaching-analysis.ts",
       "omrade": "appkode",
-      "byte": 8512
+      "byte": 9390
     },
     {
       "sti": "src/lib/cron/auth.test.ts",
@@ -24095,6 +25575,16 @@
       "sti": "src/lib/domain/ak-kategori.ts",
       "omrade": "appkode",
       "byte": 4169
+    },
+    {
+      "sti": "src/lib/domain/ak-kategorisystem.test.ts",
+      "omrade": "test",
+      "byte": 4836
+    },
+    {
+      "sti": "src/lib/domain/ak-kategorisystem.ts",
+      "omrade": "appkode",
+      "byte": 20934
     },
     {
       "sti": "src/lib/domain/bane-bro.test.ts",
@@ -24459,7 +25949,7 @@
     {
       "sti": "src/lib/domain/sg-skriving.ts",
       "omrade": "appkode",
-      "byte": 4917
+      "byte": 5017
     },
     {
       "sti": "src/lib/domain/sg.ts",
@@ -24584,7 +26074,7 @@
     {
       "sti": "src/lib/domain/tn-manedsplan.ts",
       "omrade": "appkode",
-      "byte": 5656
+      "byte": 5679
     },
     {
       "sti": "src/lib/domain/tn-oversikt.test.ts",
@@ -24774,7 +26264,7 @@
     {
       "sti": "src/lib/domain/workbench/reps.ts",
       "omrade": "appkode",
-      "byte": 2912
+      "byte": 3217
     },
     {
       "sti": "src/lib/domain/workbench/schemas.ts",
@@ -24794,7 +26284,7 @@
     {
       "sti": "src/lib/domain/workbench/types.ts",
       "omrade": "appkode",
-      "byte": 18727
+      "byte": 18760
     },
     {
       "sti": "src/lib/domain/workbench/warnings.ts",
@@ -25294,7 +26784,7 @@
     {
       "sti": "src/lib/labels/taxonomy.ts",
       "omrade": "appkode",
-      "byte": 3305
+      "byte": 3430
     },
     {
       "sti": "src/lib/launch/isolert-testbase.test.ts",
@@ -25319,12 +26809,12 @@
     {
       "sti": "src/lib/masterbrain/drill-bank.test.ts",
       "omrade": "test",
-      "byte": 935
+      "byte": 2782
     },
     {
       "sti": "src/lib/masterbrain/drill-bank.ts",
       "omrade": "appkode",
-      "byte": 1581
+      "byte": 9080
     },
     {
       "sti": "src/lib/masterbrain/hent-kunnskap.test.ts",
@@ -25334,12 +26824,12 @@
     {
       "sti": "src/lib/masterbrain/hent-kunnskap.ts",
       "omrade": "appkode",
-      "byte": 16890
+      "byte": 16937
     },
     {
       "sti": "src/lib/masterbrain/index.ts",
       "omrade": "appkode",
-      "byte": 2599
+      "byte": 2903
     },
     {
       "sti": "src/lib/masterbrain/knowledge/concepts/canon-methodology.json",
@@ -25354,12 +26844,17 @@
     {
       "sti": "src/lib/masterbrain/knowledge/concepts/mikroperiodisering-og-tidsdimensjon.json",
       "omrade": "appkode",
-      "byte": 8586
+      "byte": 9033
     },
     {
       "sti": "src/lib/masterbrain/knowledge/concepts/sg-principles.json",
       "omrade": "appkode",
-      "byte": 9904
+      "byte": 10205
+    },
+    {
+      "sti": "src/lib/masterbrain/knowledge/concepts/treningsomrader-ak-formel-v2.json",
+      "omrade": "appkode",
+      "byte": 7823
     },
     {
       "sti": "src/lib/masterbrain/knowledge/concepts/upgame-dimensions.json",
@@ -25394,7 +26889,82 @@
     {
       "sti": "src/lib/masterbrain/MANIFEST.md",
       "omrade": "appkode",
-      "byte": 10829
+      "byte": 17178
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/godkjent/putting-batch-002.json",
+      "omrade": "appkode",
+      "byte": 12520
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/godkjent/putting.json",
+      "omrade": "appkode",
+      "byte": 12712
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/godkjent/README.md",
+      "omrade": "appkode",
+      "byte": 1590
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/approach.json",
+      "omrade": "appkode",
+      "byte": 148031
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/drill-qa-rapport.md",
+      "omrade": "appkode",
+      "byte": 1767
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/drills-raw.json",
+      "omrade": "appkode",
+      "byte": 124486
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/driver.json",
+      "omrade": "appkode",
+      "byte": 148680
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/elite-kategori.json",
+      "omrade": "appkode",
+      "byte": 144095
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/naerspill.json",
+      "omrade": "appkode",
+      "byte": 154822
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/presisjonsstrategi-sg-range.json",
+      "omrade": "appkode",
+      "byte": 78095
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/putting.json",
+      "omrade": "appkode",
+      "byte": 159574
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/kandidater/wedger.json",
+      "omrade": "appkode",
+      "byte": 181503
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/plan-inntak-og-godkjenning.md",
+      "omrade": "appkode",
+      "byte": 5686
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/README.md",
+      "omrade": "appkode",
+      "byte": 2225
+    },
+    {
+      "sti": "src/lib/masterbrain/ovelsesbank/til-godkjenning/README.md",
+      "omrade": "appkode",
+      "byte": 569
     },
     {
       "sti": "src/lib/masterbrain/putting-signals.test.ts",
@@ -25672,11 +27242,6 @@
       "byte": 3498
     },
     {
-      "sti": "src/lib/masterbrain/rag-corpus/sg-trackman/sg-trackman-021.md",
-      "omrade": "appkode",
-      "byte": 83
-    },
-    {
       "sti": "src/lib/masterbrain/rag-corpus/sg-trackman/sg-trackman-021a.md",
       "omrade": "appkode",
       "byte": 4764
@@ -25777,11 +27342,6 @@
       "byte": 4453
     },
     {
-      "sti": "src/lib/masterbrain/rag-corpus/sg-trackman/sg-trackman-040.md",
-      "omrade": "appkode",
-      "byte": 83
-    },
-    {
       "sti": "src/lib/masterbrain/rag-corpus/sg-trackman/sg-trackman-040a.md",
       "omrade": "appkode",
       "byte": 1950
@@ -25830,11 +27390,6 @@
       "sti": "src/lib/masterbrain/rag-corpus/treningsvolum/treningsvolum-003.md",
       "omrade": "appkode",
       "byte": 4198
-    },
-    {
-      "sti": "src/lib/masterbrain/rag-corpus/treningsvolum/treningsvolum-004.md",
-      "omrade": "appkode",
-      "byte": 85
     },
     {
       "sti": "src/lib/masterbrain/rag-corpus/treningsvolum/treningsvolum-004a.md",
@@ -25892,9 +27447,24 @@
       "byte": 2546
     },
     {
+      "sti": "src/lib/masterbrain/schemas/approved-training-item.schema.json",
+      "omrade": "appkode",
+      "byte": 5739
+    },
+    {
+      "sti": "src/lib/masterbrain/scripts/eval-holdout.py",
+      "omrade": "appkode",
+      "byte": 11120
+    },
+    {
+      "sti": "src/lib/masterbrain/scripts/validate-ovelsesbank.py",
+      "omrade": "appkode",
+      "byte": 8771
+    },
+    {
       "sti": "src/lib/masterbrain/training-data/eval/holdout-15.jsonl",
       "omrade": "appkode",
-      "byte": 8353
+      "byte": 7486
     },
     {
       "sti": "src/lib/masterbrain/training-data/eval/RUBRIC.md",
@@ -25904,7 +27474,7 @@
     {
       "sti": "src/lib/masterbrain/training-data/examples/coaching-recommendations.jsonl",
       "omrade": "appkode",
-      "byte": 98865
+      "byte": 95553
     },
     {
       "sti": "src/lib/masterbrain/training-data/examples/live-coach-dialog.jsonl",
@@ -25914,7 +27484,12 @@
     {
       "sti": "src/lib/masterbrain/training-data/examples/README.md",
       "omrade": "appkode",
-      "byte": 10627
+      "byte": 10245
+    },
+    {
+      "sti": "src/lib/masterbrain/utgatt-kunnskap.test.ts",
+      "omrade": "test",
+      "byte": 1347
     },
     {
       "sti": "src/lib/mcp/auth.ts",
@@ -26294,7 +27869,7 @@
     {
       "sti": "src/lib/plan-engine/standard-fordeling.ts",
       "omrade": "appkode",
-      "byte": 6595
+      "byte": 7177
     },
     {
       "sti": "src/lib/plan-templates/beregn-volum.ts",
@@ -26659,7 +28234,7 @@
     {
       "sti": "src/lib/portal-runder/runder-list-data.ts",
       "omrade": "appkode",
-      "byte": 3329
+      "byte": 4245
     },
     {
       "sti": "src/lib/portal-stats/datagolf-data.ts",
@@ -26730,6 +28305,31 @@
       "sti": "src/lib/portal-tester/session-data.ts",
       "omrade": "appkode",
       "byte": 3293
+    },
+    {
+      "sti": "src/lib/portal-tester/test-anbefaling.test.ts",
+      "omrade": "test",
+      "byte": 3104
+    },
+    {
+      "sti": "src/lib/portal-tester/test-anbefaling.ts",
+      "omrade": "appkode",
+      "byte": 5115
+    },
+    {
+      "sti": "src/lib/portal-tester/test-followup-actions.test.ts",
+      "omrade": "test",
+      "byte": 3633
+    },
+    {
+      "sti": "src/lib/portal-tester/test-followup-actions.ts",
+      "omrade": "appkode",
+      "byte": 4607
+    },
+    {
+      "sti": "src/lib/portal-tester/test-followup-data.ts",
+      "omrade": "appkode",
+      "byte": 3606
     },
     {
       "sti": "src/lib/portal-tester/test-scoring.ts",
@@ -26937,14 +28537,19 @@
       "byte": 2256
     },
     {
-      "sti": "src/lib/portal/ph01-visning.test.ts",
-      "omrade": "test",
-      "byte": 3062
+      "sti": "src/lib/portal/ph01-data.ts",
+      "omrade": "appkode",
+      "byte": 3220
     },
     {
-      "sti": "src/lib/portal/ph01-visning.ts",
+      "sti": "src/lib/portal/ph01-fullfort.test.ts",
+      "omrade": "test",
+      "byte": 2049
+    },
+    {
+      "sti": "src/lib/portal/ph01-fullfort.ts",
       "omrade": "appkode",
-      "byte": 2142
+      "byte": 2953
     },
     {
       "sti": "src/lib/portal/plan-data.test.ts",
@@ -27019,7 +28624,7 @@
     {
       "sti": "src/lib/portal/training/ak-taxonomy.ts",
       "omrade": "appkode",
-      "byte": 6074
+      "byte": 6217
     },
     {
       "sti": "src/lib/portal/training/date-parser.ts",
@@ -27039,7 +28644,7 @@
     {
       "sti": "src/lib/portal/training/periode-navn.ts",
       "omrade": "appkode",
-      "byte": 2407
+      "byte": 2437
     },
     {
       "sti": "src/lib/portal/training/session-generator.ts",
@@ -27300,6 +28905,16 @@
       "sti": "src/lib/runde-logg/granulaer-sg.ts",
       "omrade": "appkode",
       "byte": 4527
+    },
+    {
+      "sti": "src/lib/runde-logg/kontrakt.test.ts",
+      "omrade": "test",
+      "byte": 5134
+    },
+    {
+      "sti": "src/lib/runde-logg/kontrakt.ts",
+      "omrade": "appkode",
+      "byte": 10182
     },
     {
       "sti": "src/lib/runde-logg/pipeline.test.ts",
@@ -27719,7 +29334,7 @@
     {
       "sti": "src/lib/taxonomy.ts",
       "omrade": "appkode",
-      "byte": 18101
+      "byte": 18174
     },
     {
       "sti": "src/lib/team-norway/tn-reise.test.ts",
@@ -27769,7 +29384,7 @@
     {
       "sti": "src/lib/teknisk-plan/sorter-posisjoner.test.ts",
       "omrade": "test",
-      "byte": 849
+      "byte": 835
     },
     {
       "sti": "src/lib/teknisk-plan/sorter-posisjoner.ts",
@@ -28084,7 +29699,7 @@
     {
       "sti": "src/lib/v2/hjelpetekster.ts",
       "omrade": "appkode",
-      "byte": 17790
+      "byte": 17783
     },
     {
       "sti": "src/lib/v2/hooks.ts",
@@ -28252,6 +29867,26 @@
       "byte": 1877
     },
     {
+      "sti": "src/lib/workbench/fys-turnering-actions.ts",
+      "omrade": "appkode",
+      "byte": 15165
+    },
+    {
+      "sti": "src/lib/workbench/fys-turnering-data.ts",
+      "omrade": "appkode",
+      "byte": 11198
+    },
+    {
+      "sti": "src/lib/workbench/fys-turnering-kontrakt.test.ts",
+      "omrade": "test",
+      "byte": 3301
+    },
+    {
+      "sti": "src/lib/workbench/fys-turnering-kontrakt.ts",
+      "omrade": "appkode",
+      "byte": 4936
+    },
+    {
       "sti": "src/lib/workbench/gruppe-periode-actions.ts",
       "omrade": "appkode",
       "byte": 7514
@@ -28259,7 +29894,7 @@
     {
       "sti": "src/lib/workbench/insights.ts",
       "omrade": "appkode",
-      "byte": 3024
+      "byte": 3046
     },
     {
       "sti": "src/lib/workbench/live-switch.test.ts",
@@ -28289,7 +29924,7 @@
     {
       "sti": "src/lib/workbench/load-workbench.ts",
       "omrade": "appkode",
-      "byte": 38641
+      "byte": 43241
     },
     {
       "sti": "src/lib/workbench/locked-blocks.test.ts",
@@ -28347,9 +29982,14 @@
       "byte": 3525
     },
     {
+      "sti": "src/lib/workbench/perioder.restitusjon.test.ts",
+      "omrade": "test",
+      "byte": 1827
+    },
+    {
       "sti": "src/lib/workbench/perioder.ts",
       "omrade": "appkode",
-      "byte": 2022
+      "byte": 2037
     },
     {
       "sti": "src/lib/workbench/publish-actions.test.ts",
@@ -28502,19 +30142,29 @@
       "byte": 68312
     },
     {
+      "sti": "src/lib/workbench/wb-drill-write.ts",
+      "omrade": "appkode",
+      "byte": 4767
+    },
+    {
       "sti": "src/lib/workbench/wb-map.test.ts",
       "omrade": "test",
-      "byte": 3436
+      "byte": 4052
     },
     {
       "sti": "src/lib/workbench/wb-map.ts",
       "omrade": "appkode",
-      "byte": 4531
+      "byte": 4827
     },
     {
       "sti": "src/lib/workbench/wb-mode-action.ts",
       "omrade": "appkode",
       "byte": 820
+    },
+    {
+      "sti": "src/lib/workbench/wb-session-write.ts",
+      "omrade": "appkode",
+      "byte": 14029
     },
     {
       "sti": "src/lib/workbench/week-types.ts",
@@ -28524,7 +30174,7 @@
     {
       "sti": "src/proxy.ts",
       "omrade": "appkode",
-      "byte": 12272
+      "byte": 11670
     },
     {
       "sti": "src/static-images.d.ts",
@@ -28577,6 +30227,16 @@
       "byte": 28636
     },
     {
+      "sti": "src/styles/precision-athletics.css",
+      "omrade": "appkode",
+      "byte": 26186
+    },
+    {
+      "sti": "src/styles/precision-komponenter.css",
+      "omrade": "appkode",
+      "byte": 43729
+    },
+    {
       "sti": "src/styles/team-norway-tokens.css",
       "omrade": "appkode",
       "byte": 8819
@@ -28619,7 +30279,7 @@
     {
       "sti": "START-HER.md",
       "omrade": "prosjektoppsett",
-      "byte": 964
+      "byte": 956
     },
     {
       "sti": "supabase-meg/migrations/0001_init.sql",
@@ -28704,12 +30364,12 @@
     {
       "sti": "tests/e2e/auth.spec.ts",
       "omrade": "test",
-      "byte": 958
+      "byte": 909
     },
     {
       "sti": "tests/e2e/booking-drop-in.spec.ts",
       "omrade": "test",
-      "byte": 3090
+      "byte": 3010
     },
     {
       "sti": "tests/e2e/bredde-gate.spec.ts",
@@ -28769,7 +30429,7 @@
     {
       "sti": "tests/e2e/lanseringskjede-knapper.spec.ts",
       "omrade": "test",
-      "byte": 15879
+      "byte": 15807
     },
     {
       "sti": "tests/e2e/marked-ak-golf.spec.ts",
@@ -28834,7 +30494,7 @@
     {
       "sti": "tests/e2e/routes-public.spec.ts",
       "omrade": "test",
-      "byte": 1345
+      "byte": 1233
     },
     {
       "sti": "tests/e2e/routes-redirect.spec.ts",
@@ -28987,26 +30647,6 @@
       "byte": 15032
     },
     {
-      "sti": "tests/visual/playerhq-ph01/fixture.tsx",
-      "omrade": "test",
-      "byte": 5130
-    },
-    {
-      "sti": "tests/visual/playerhq-ph01/README.md",
-      "omrade": "test",
-      "byte": 402
-    },
-    {
-      "sti": "tests/visual/playerhq-ph01/screenshot.mjs",
-      "omrade": "test",
-      "byte": 5241
-    },
-    {
-      "sti": "tests/visual/playerhq-ph01/server.mjs",
-      "omrade": "test",
-      "byte": 4361
-    },
-    {
       "sti": "tests/visual/playerhq-summary/build-tailwind.mjs",
       "omrade": "test",
       "byte": 1437
@@ -29109,12 +30749,12 @@
     {
       "sti": "tests/visual/portering/README.md",
       "omrade": "test",
-      "byte": 6130
+      "byte": 6156
     },
     {
       "sti": "tests/visual/portering/server.mjs",
       "omrade": "test",
-      "byte": 10687
+      "byte": 11224
     },
     {
       "sti": "tests/visual/portering/tn-tilgang-fixture.tsx",
@@ -29124,7 +30764,7 @@
     {
       "sti": "tests/visual/portering/tn-tilgang.py",
       "omrade": "test",
-      "byte": 6302
+      "byte": 6350
     },
     {
       "sti": "tests/visual/portering/train-lock-fixture.tsx",
@@ -29150,6 +30790,21 @@
       "sti": "tests/visual/portering/wang-next.py",
       "omrade": "test",
       "byte": 5858
+    },
+    {
+      "sti": "tests/visual/precision/maal.mjs",
+      "omrade": "test",
+      "byte": 10459
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/AG-SKALL.tsx",
+      "omrade": "test",
+      "byte": 1007
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-01.tsx",
+      "omrade": "test",
+      "byte": 1426
     },
     {
       "sti": "tests/visual/produkt-ruter.ts",

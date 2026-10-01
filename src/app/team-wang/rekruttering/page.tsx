@@ -1,12 +1,10 @@
-import { WangRekrutteringView } from "@/components/wang/WangRekrutteringView";
+/**
+ * /team-wang/rekruttering — viste oppdiktede kandidater uten innlogging (26.09.2026).
+ * Trenerflaten ligger bak innlogging under /team-wang/coach.
+ */
 
-export const metadata = {
-  title: "WANG Toppidrett · Rekruttering & Opptak",
-  description: "Internskjerm for spillerrekruttering og talentopptak koblet med AK Golf Pipeline.",
-  robots: { index: false, follow: false },
-};
+import { redirect } from "next/navigation";
 
-/** WANG Toppidrett & WANG Ung internskjerm for rekruttering og opptak */
-export default function WangRekrutteringPage() {
-  return <WangRekrutteringView />;
+export default function WangRekrutteringRedirect() {
+  redirect("/team-wang/coach");
 }

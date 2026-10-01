@@ -36,13 +36,14 @@ export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
 
 export const LPHASE_LABEL: Record<LPhase, string> = {
   GRUNN:           "Grunnperiode",
-  SPESIAL:         "Spesialiseringsperiode",
+  SPESIAL:         "Spesialperiode",
   TURNERING:       "Turneringsperiode",
   EVALUERING:      "Evaluering",
   TESTUKE:         "Testuke",
   FERIE:           "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING:  "Heldagssamling",
+  RESTITUSJON:     "Restitusjon",
 };
 
 export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
@@ -54,6 +55,7 @@ export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
   FERIE:           "Fri fra organisert trening — restitusjon",
   TRENINGSSAMLING: "Samling over flere dager med høy treningstetthet",
   HELDAGSSAMLING:  "Én hel dag med trening, tester eller banespill",
+  RESTITUSJON:     "Hvile og gjenoppbygging",
 };
 
 /** Periodefarger på årsplan-tidslinja (8c.1-kanon, tema-følsomme CSS-vars). */
@@ -66,6 +68,7 @@ export const LPHASE_FARGE: Record<LPhase, string> = {
   FERIE:           "var(--v2-mut)",
   TRENINGSSAMLING: "var(--v2-ax-slag)",
   HELDAGSSAMLING:  "var(--v2-lime)",
+  RESTITUSJON:     "var(--v2-mut)",
 };
 
 export const PYRAMIDE_REKKEFOLGE: PyramidArea[] = [
@@ -102,6 +105,7 @@ export const LPHASE_REKKEFOLGE: LPhase[] = [
   "FERIE",
   "TRENINGSSAMLING",
   "HELDAGSSAMLING",
+  "RESTITUSJON",
 ];
 
 export const PRESSURE_LABEL: Record<PressureLevel, string> = {

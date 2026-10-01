@@ -8,7 +8,7 @@
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { revalidatePath } from "next/cache";
-import type { PyramidArea, SkillArea, SessionEnvironment } from "@/generated/prisma/client";
+import type { PyramidArea, SkillArea, SessionEnvironment, Omraade, Motorikk, Belastning, Press } from "@/generated/prisma/client";
 
 export interface OpprettOvelseInput {
   name: string;
@@ -24,6 +24,12 @@ export interface OpprettOvelseInput {
   morad?: boolean;
   higherIsBetter?: boolean;
   parametersJson?: Record<string, unknown>;
+  // AK-formel v2-aksene på selve øvelsen (Plan-hub AG-14). Kolonnene finnes fra
+  // 23.09.2026 (scripts/add-exercise-definition-v2-akser-2026-09-23.ts).
+  omraadeKode?: Omraade | null;
+  motorikk?: Motorikk | null;
+  belastning?: Belastning | null;
+  press?: Press | null;
 }
 
 /**
@@ -52,11 +58,16 @@ export async function opprettOvelseAction(input: OpprettOvelseInput) {
         morad: input.morad ?? false,
         higherIsBetter: input.higherIsBetter ?? null,
         createdBy: user.id,
+        source: "COACH",
+        omraadeKode: input.omraadeKode ?? null,
+        motorikk: input.motorikk ?? null,
+        belastning: input.belastning ?? null,
+        press: input.press ?? null,
         parametersJson: input.parametersJson ? JSON.parse(JSON.stringify(input.parametersJson)) : undefined,
       },
     });
 
-    revalidatePath("/admin/drills");
+    revalidatePath("/admin/plan");
     revalidatePath("/portal/planlegge");
     return { ok: true as const, ovelse };
   } catch (err: unknown) {
@@ -96,10 +107,14 @@ export async function oppdaterOvelseAction(
         ...(input.morad !== undefined ? { morad: input.morad } : {}),
         ...(input.higherIsBetter !== undefined ? { higherIsBetter: input.higherIsBetter } : {}),
         ...(input.parametersJson !== undefined ? { parametersJson: JSON.parse(JSON.stringify(input.parametersJson)) } : {}),
+        ...(input.omraadeKode !== undefined ? { omraadeKode: input.omraadeKode } : {}),
+        ...(input.motorikk !== undefined ? { motorikk: input.motorikk } : {}),
+        ...(input.belastning !== undefined ? { belastning: input.belastning } : {}),
+        ...(input.press !== undefined ? { press: input.press } : {}),
       },
     });
 
-    revalidatePath("/admin/drills");
+    revalidatePath("/admin/plan");
     revalidatePath("/portal/planlegge");
     return { ok: true as const, ovelse };
   } catch (err: unknown) {

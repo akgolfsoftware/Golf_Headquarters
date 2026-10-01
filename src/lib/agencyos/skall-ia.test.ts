@@ -59,8 +59,13 @@ describe("AX-01 hull: live er fullskjerm", () => {
     assert.equal(skallAktivFraPath("/admin/agencyos/live/abc"), "");
   });
 
-  it("siden ligger i (fullscreen)-gruppen, ikke under agencyos-skallet", () => {
-    assert.equal(existsSync("src/app/admin/(fullscreen)/agencyos/live/page.tsx"), true);
-    assert.equal(existsSync("src/app/admin/agencyos/live/page.tsx"), false);
+  it("siden er portert til Precision Athletics (AgencyOSSkall), ikke under det gamle V2-skallet", () => {
+    // Precision Athletics-porten (29.09.2026) flyttet siden ut av
+    // (fullscreen)-gruppen: den fantes bare for denne ruta og ga et eget
+    // navløst V2-skall. AgencyOSSkall styrer nå rail/hurtigknapp for denne
+    // ruta selv, direkte i page.tsx — fortsatt uten V2-skallets AX-01-fane
+    // (erAgencyosFullskjerm over er derfor fortsatt sann).
+    assert.equal(existsSync("src/app/admin/agencyos/live/page.tsx"), true);
+    assert.equal(existsSync("src/app/admin/(fullscreen)/agencyos/live/page.tsx"), false);
   });
 });

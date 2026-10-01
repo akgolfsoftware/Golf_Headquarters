@@ -1,6 +1,6 @@
 {
-  "sitert": 144,
+  "sitert": 140,
   "av": 219,
-  "sistEndret": "2026-09-21",
-  "grunn": "Anders godkjente uttrykkelig 21.09.2026 kildebyttet 153 til 144: gamle Workbench-referanser A-01c, A-02b, A-02c, A-04, A-09, A-11, A-18, WB-00 og WB-01 er erstattet som visuell fasit av valgt Claude Design-pakke. check-workbench-handover er obligatorisk i verify:static og kontrollerer 24 kildefiler og 16 PNG-er. Funksjons- og bildebevis kreves fortsatt per fane. Se docs/design-audit/workbench-kontrollretting-2026-09-21.md. Øvrig Train-lock-kontroll beholdes; ingen publiserings- eller databaseautorisasjon."
+  "sistEndret": "2026-09-29",
+  "grunn": "Plan-hub og øktark (AG-14, AG-12) portet til Precision Athletics (7d7c2994): OktArkV2.tsx (siterte «A-14 iPhone Okt-ark Filip.dc.html») er erstattet av AG12Oktark.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 141→140 (målt etter at Innboks og Spiller 360 ble lagt inn 29.09)."
 }

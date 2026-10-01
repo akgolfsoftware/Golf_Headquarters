@@ -1,0 +1,364 @@
+{
+  "id": "godkjent-putting-001",
+  "status": "GODKJENT",
+  "created": "2026-09-26",
+  "godkjentAv": "Anders Kristiansen",
+  "sourceBatch": "putting-batch-001",
+  "description": "Første godkjente puttingbatch i AK Golf Masterbrain. Alle elementer følger AK Golf HQ sin AK-formel v2 og fasilitetsprofil.",
+  "items": [
+    {
+      "id": "ring-rundt-hull-1m-360-8baller",
+      "type": "DRILL",
+      "navn": "ring-rundt-hull-1m-360-8baller",
+      "beskrivelse": "Plasser 8 baller jevnt fordelt i sirkel 1m fra hullet. Putt alle inn på rad uten å bomme. Ved bom, start på nytt.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "KONKURRANSE",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 0,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal 1m ligge i PUTT_3_5 siden 1m = ca. 3,3 fot?",
+        "Er OBSERVERT riktig pressnivå når spilleren må starte på nytt ved bom?"
+      ]
+    },
+    {
+      "id": "ring-rundt-hull-2m-360-8baller",
+      "type": "DRILL",
+      "navn": "ring-rundt-hull-2m-360-8baller",
+      "beskrivelse": "Plasser 8 baller rundt hullet fra 2m og putt i sirkel for startlinje, greenlesing og retning.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_5_10",
+        "dimensjon": "GREENLESING",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 2,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 3,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 1,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal denne primært klassifiseres som GREENLESING eller BALLSTART?",
+        "Er PUTT_5_10 riktig for 2m, ca. 6,6 fot?"
+      ]
+    },
+    {
+      "id": "putting-clock-3-foot-12baller",
+      "type": "DRILL",
+      "navn": "putting-clock-3-foot-12baller",
+      "beskrivelse": "Clock-drill fra 3 fot med 12 baller rundt hullet for korte putter, rutine og presisjon.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_0_3",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 0.91,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 2,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal 3 foot regnes i PUTT_0_3 eller PUTT_3_5 i praksis?",
+        "Skal rutine gi høyere pressnivå enn OBSERVERT?"
+      ]
+    },
+    {
+      "id": "kenyon-tre-tee-gate-1m",
+      "type": "DRILL",
+      "navn": "kenyon-tre-tee-gate-1m",
+      "beskrivelse": "Tre-tee-gate på kort putt for å trene startlinje og face-kontroll gjennom gate.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE",
+        "HJEM"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 3,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Er dette TEK eller SLAG i pyramiden?",
+        "Skal 1m normaliseres til PUTT_3_5?"
+      ]
+    },
+    {
+      "id": "putter-gate-snever-50cm",
+      "type": "DRILL",
+      "navn": "putter-gate-snever-50cm",
+      "beskrivelse": "Snever putter-gate fra kort avstand for å kontrollere ballstart og face gjennom treff.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE",
+        "HJEM"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "PUTT_0_3",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 0.5,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 1,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 4,
+      "kategoriNotat": "Tagget elite i kandidaten. Foreslått snevret til A-D.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal elite-taggen snevre kategori til A-D?",
+        "Er TEK riktig siden dette handler mest om mekanikk/startlinje?"
+      ]
+    },
+    {
+      "id": "tiger-100-paa-rad-1m",
+      "type": "DRILL",
+      "navn": "tiger-100-paa-rad-1m",
+      "beskrivelse": "Sett korte putter fra 1m og fullfør 100 på rad. Ved bom starter rekken på nytt.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "KONKURRANSE",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "KONKURRANSE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 5,
+      "kategoriNotat": "Kravet 100 på rad er foreslått for sterkere spillere, ikke hele K-A-spennet.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal denne være A-G eller K-A?",
+        "Er KONKURRANSE riktig pressnivå fordi konsekvensen er restart?"
+      ]
+    },
+    {
+      "id": "must-make-pressure-90cm",
+      "type": "DRILL",
+      "navn": "must-make-pressure-90cm",
+      "beskrivelse": "Must-make pressure-putt fra 90cm for å trene rutine og utførelse under konsekvens.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "KONKURRANSE",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_0_3",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "KONKURRANSE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 0.9,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 6,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Er 90cm riktig plassert i PUTT_0_3?",
+        "Skal press være KONKURRANSE eller OBSERVERT?"
+      ]
+    },
+    {
+      "id": "putting-clock-pluss-minus-3foot",
+      "type": "DRILL",
+      "navn": "putting-clock-pluss-minus-3foot",
+      "beskrivelse": "Clock-drill på rundt 3 fot med variasjon pluss/minus for korte putter og presisjon.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_0_3",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 0.91,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 7,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er foreslått normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør første batch.",
+      "kontrollpunkterVurdert": [
+        "Skal 3 foot regnes i PUTT_0_3 eller PUTT_3_5?",
+        "Bør denne slås sammen med putting-clock-3-foot-12baller?"
+      ]
+    }
+  ]
+}

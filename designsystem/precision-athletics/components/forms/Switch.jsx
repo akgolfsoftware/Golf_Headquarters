@@ -1,0 +1,12 @@
+import React from "react";
+const cx = (...a) => a.filter(Boolean).join(" ");
+
+export function Switch({ label, className, ...rest }) {
+  return (
+    <label className={cx("pa-switch", className)}>
+      <input type="checkbox" role="switch" {...rest} />
+      <span className="pa-switch__track" />
+      {label}
+    </label>
+  );
+}

@@ -109,17 +109,18 @@ function json(verdi: unknown): string {
  * oppdateres kun ved `npm run sync:masterbrain` fra det separate
  * masterbrain-repoet, og skal aldri redigeres direkte i denne appen (se
  * fil-kommentaren øverst). Denne listen speiler i stedet Prisma-enumene
- * LPhase/PeriodeType, som nå har samme åtte verdier og samme stavemåte.
+ * LPhase/PeriodeType, som nå har samme ni verdier og samme stavemåte.
  */
 const GJELDENDE_PERIODER = {
   GRUNN: "Grunnperiode — fundament, fysisk og teknisk",
-  SPESIAL: "Spesialiseringsperiode — slag og spissing",
+  SPESIAL: "Spesialperiode — slag og spissing",
   TURNERING: "Turneringsperiode — konkurranse og vedlikehold",
   EVALUERING: "Evaluering — testing, analyse, planlegging av neste periode",
   TESTUKE: "Testuke — samlet testgjennomføring",
   FERIE: "Ferie — fri",
   TRENINGSSAMLING: "Treningssamling — samling, dagsformat",
   HELDAGSSAMLING: "Heldagssamling — samling, heldagsformat",
+  RESTITUSJON: "Restitusjon — hvile og gjenoppbygging",
 };
 
 /**

@@ -4,6 +4,470 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
+
+Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at
+Codex fullfører resterende prosjekt, og har i denne økten bestilt en plan for gjennomføringen.
+Viderefører Precision Athletics og erstatter eldre omtale av Grok eller Claude Code som
+kodeansvarlig. Ingen nye produkt-, skjema-, tilgangs- eller publiseringsvalg følger av rollebyttet.
+
+**Arbeidet dette utløser:** [fullføringsplanen](../../docs/planer/codex-fullforing-claude-design-2026-09-30.md):
+fersk kartlegging → felles grunnlag → komplett treningskjede → øvrige spillerverktøy →
+booking/coaching → AgencyOS/AI → forelder/organisasjoner → sluttkontroll → autorisert lansering.
+Codex bruker valgte, versjonerte designleveranser, bevarer funksjoner og viser app/design
+side om side. Nye konkrete produktvalg avklares; allerede bestilt arbeid videreføres.
+Denne økten leverer planen. Implementasjons- og kontrollstatus føres separat.
+
+**Presisering i samme økt:** Anders vil at Codex planlegger arbeidet før Claude Design er
+ferdig, undersøker alle funksjoner og kontrollerer at de virker sammen. Planens PRE-01–08
+dekker funksjonsregister, isolert testmiljø, fersk teststatus, avtaler mellom moduler,
+treningskjeden, roller/booking/AI, gjenoppretting og teknisk overlevering. Endelig skjermarbeid
+følger valgt design; uavhengig funksjonsarbeid kan gjennomføres først.
+
+## ORDBOKA ER LÅST: AVVIKENE MOT PRECISION ER AVGJORT (Anders 30.09.2026, bindende)
+
+Svar på punkt 3 i §APPENS ORDBOK VINNER: alle avvik mellom masteren `docs/treningsplanlegging.md`
+og Precisions `guidelines/ordmaster.md` er lagt fram og avgjort. Masteren er rettet i samme PR.
+
+- **Stats** er fanen i PlayerHQ; i løpende tekst skrives «statistikk».
+- **Målsetning** er det spilleren sikter mot. «Mål» brukes bare om måltall (TrackMan-mål, rep-mål, resultatkrav).
+- **Venter på coach** er plan-status (bekrefter 26.09).
+- **Nivåene heter Gratis og Full** på skjerm. Pro, Premium og Plus brukes ikke; «Pro» forveksles
+  med coaching-pakken Performance Pro. TALENT / FULL / INGEN er interne tilgangsutfall.
+- **Aksene:** FYS Fysisk · TEK Teknisk · SLAG Golfslag · SPILL Spill · TURN Turnering. Banespill er
+  bare treningsområdet.
+- **Nytt i masteren:** menyene (§2.6), kategorier A–K, SG-kategorier og dagsform (§2.7), fem
+  standardplaner (§2.8), turneringstyper (§10).
+- **Kondisjon** angis med pulssone S1–S5. **Styrke** skrives «4 × 6 @ 90 kg · RIR 2».
+- **Teknisk fokus:** fortsatt ett per øvelse; en økt kan ha flere øvelser valgt fra spillerens
+  tekniske plan. TrackMan-parametere foreslås ut fra valgt fokus.
+- **Fysisk program** legger økter i planen; hver økt kan endres.
+
+**Overstyrer:** «Gratis / Pro» i masteren §2.5, «Stats → Statistikk» og «Goal → Mål» i masteren §3.
+
+**Arbeidet dette utløser:**
+
+1. **Precision (`7d7c2994`):** hele prosjektet rettes etter masteren; `guidelines/ordmaster.md` og
+   `assets/ak-vocabulary.js` blir avledede speil. Ferdig når et søk etter de forbudte ordene i
+   masteren §3 gir 0 treff i skjermtekst, og ingen fil kaller ordmasteren autoritativ.
+2. **Koden:** skjermtekst som viser nivånavn bruker Gratis / Full. Ferdig når ingen brukervendt
+   tekst viser «Pro», «TALENT» eller «FULL» som nivå.
+3. **TrackMan-forslag per fokus:** tabell legges fram for Anders før den bygges.
+4. **Fysisk program:** datamodell og flyt planlegges når fysisk trening bygges.
+
+## APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER (Anders 29.09.2026, bindende)
+
+Anders: «docs/ordbok.md vinner». Svar på det uavklarte punktet i §PRECISION ATHLETICS om to ordlister.
+
+- **Språket eies av repoet.** `docs/ordbok.md` peker til masteren `docs/treningsplanlegging.md`, som
+  er eneste kilde for ord, statuser, posisjonsnavn og treningsbegreper.
+- **`guidelines/ordmaster.md` i Claude Design «AK Golf Precision Athletics» (`7d7c2994`) er avledet.**
+  Den er et speil for tegningene, ikke fasit. Sier den noe annet enn masteren, rettes ordmasteren.
+- Posisjonsnavnene fra §POSISJONSNAVN FØLGER ORDMASTEREN (27.09) står nå i masteren §14.4, så
+  navnene er de samme og kilden er repoet.
+
+**Overstyrer:** Precisions `readme.md`, som kaller `guidelines/ordmaster.md` autoritativ.
+
+**Arbeidet dette utløser:**
+
+1. **Posisjonsnavn i masteren:** P1.0–P10.0 inn i `docs/treningsplanlegging.md` §14.4. Gjort i samme PR.
+2. **Precision (`7d7c2994`):** `readme.md` og toppen av `guidelines/ordmaster.md` sier at masteren i
+   repoet gjelder og at ordmasteren er avledet. Ferdig når ingen fil i prosjektet kaller ordmasteren
+   autoritativ.
+3. **Avvik mellom ordmasteren og masteren:** sammenlign ordene, legg avvikene fram for Anders, og rett
+   ordmasteren etter svaret. Ferdig når de to sier det samme om hvert ord de begge har.
+
+## Workbench over uka: årsplan, periode og måned (Anders 28.09.2026, bindende)
+
+Anders vil ha knapper og skjema for ny årsplan, periodisering og månedsplan i Workbench.
+I dag lages en årsplan bare i det skjulte ved første periode (`opprettPeriodeCore`,
+`src/lib/workbench/periode-core.ts`), alltid 1. jan–31. des, og måneden kan bare leses.
+
+- **Både coach og spiller kan opprette årsplan.** Coach for en spiller eller en gruppe; spilleren
+  for seg selv. Coachen ser spillerens plan.
+- **Tidsrommet velges ved opprettelse.** Forslaget er skoleåret (aug–jun) for WANG og
+  kalenderåret ellers.
+- **Måneden får eget innhold:** fokus og mål (koblet til Målsetninger), timer per akse
+  FYS · TEK · SLAG · SPILL · TURN fordelt på ukene, tester og turneringer, og notat og evaluering
+  når måneden er over.
+- **«Ny årsplan» kan starte fra** kopi av fjoråret, standardplan A–K, gruppas årsplan eller tom plan.
+
+**Arbeidet dette utløser:**
+
+1. **Design i Precision (`7d7c2994`):** veileder «Opprett årsplan» (utgangspunkt, tidsrom, navn),
+   årsplanen med perioder, periodeskjema, månedsskjema, og coachens og gruppas inngang. Samme
+   Workbench for spiller (PH-11) og coach (AG-11), jf. `ui_kits/_shared/WB3.jsx`, som i dag bare
+   dekker uka. Ferdig når skjermene er i `audit.html` med 0 avvik og Anders har sett dem (port 7).
+2. **Årsplan i basen:** `SeasonPlan` (`prisma/schema.prisma`) har ingen `createdById` og er unik på
+   `[userId, year]`. Legg til `createdById`, la `year` bety startåret og ta start/slutt fra skjemaet.
+   Additivt via `db execute` (gotchas §Database). Ferdig når en plan aug 2026–jun 2027 kan lagres.
+3. **Ny tabell `MonthPlan`** (finnes ikke): spiller, årsplan, år og måned, fokus, timer per akse,
+   notat og evaluering; mål kobles via Målsetninger. Additivt via `db execute`. Ferdig når
+   månedsskjemaet lagrer og ukene viser timene fra måneden.
+4. **Opprett årsplan i koden:** én server-handling som oppretter planen fra de fire utgangspunktene.
+   Kopi av fjoråret og standardplan A–K finnes ikke i dag (malene i `PlanTemplate` er 4-ukersblokker);
+   gruppas plan gjenbruker `coachRullUtGruppeAarsplan` (`src/lib/workbench/gruppe-periode-actions.ts`).
+   Ferdig når alle fire er låst med test.
+5. **Coachen kan redigere spillerens perioder:** `coachLagrePeriode` og `coachSlettPeriode`
+   (`src/lib/workbench/session-actions.ts`) har ingen kaller, og `/admin/workbench/[playerId]`
+   viser år og måned uten redigering. Ferdig når coachen kan legge inn, endre og slette en periode der.
+6. **Åpent:** innholdet i standardårsplanene per kategori A–K (faglig, fra Anders), jf. punkt 4 i
+   §ØKONOMI BARE FOR HEAD COACH.
+
+## ØKONOMI BARE FOR HEAD COACH, WEDGE GATE TELLER TREFF, ALLE STANDARDPLANER FOR ALLE KATEGORIER (Anders 28.09.2026, bindende)
+
+Svar på de sju åpne spørsmålene etter fase 4 (runde 27–30 i Precision).
+
+- **Økonomi (AG-20) vises bare for head coach.** Assistant coach ser verken menypunktet eller siden.
+- **Wedge Gate teller treff.** Hvert forsøk føres som treff eller bom; resultatet er antall treff.
+- **Stall-matrisen** Trenger deg · Følger planen · Hviler: bekreftet.
+- **Talentradaren** får stiplet linje for Kategori C: bekreftet (bare coach, §Data).
+- **Hurtigmeldingene** OK · Spørsmål · Ikke nå: bekreftet.
+- **Alle fem standardplaner kan velges i alle kategorier A–K.** Spilleren velger selv; innholdet
+  tilpasses kategorien (§SKJERMENE … RUNDE 8, Motoren).
+- **Bildet for tellerne i live-økt** sender Anders senere. Punktet står åpent til da.
+
+**Overstyrer:** «Wedge Gate … beholder sperren» under §Åpne punkter etter runde 19–26, og
+«Hvilke fem planer som passer hvilke kategorier A–K er ikke skrevet» i §SKJERMENE … RUNDE 8 punkt 10.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`):** de fem bekreftede punktene fjernes som «Uavklart» i
+   `ui_kits/katalog.js`; AG-20 merkes «Bare head coach». Ferdig når oversikt.html ikke har dem som uavklart. **Gjort 28.09** (runde 32 og 32b; Wedge Gate også i WANG 20f og Team Norway 1e–1f, med 9 slag etter arket).
+2. **Tilgang i koden:** `src/app/admin/agencyos/okonomi/page.tsx:18` slipper i dag inn `ADMIN` og
+   `COACH`. Begrens til head coach-rollen, også i Mer-menyen. Ferdig når en assistant coach sendes
+   bort fra siden og ikke ser menypunktet, låst med test.
+3. **Wedge Gate i koden:** `src/lib/portal-tester/tn-catalog.ts` har Wedge Gate som `points` med
+   poengfelt og sperre. Bytt til treff/bom per forsøk og fjern sperren. Ferdig når
+   `tn-scoring.test.ts` låser at resultatet er antall treff.
+4. **Standardplanene** skrives for alle kategorier A–K (faglig innhold fra Anders), jf. RUNDE 8 punkt 8.
+
+## SLETTEDIALOG KAN VÆRE RUST, ØKONOMI FØLGER AK GOLFS TJENESTER, RAPPORTBYGGEREN FJERNES (Anders 28.09.2026, bindende)
+
+Svar på spørsmålene etter runde 28–30 i Precision Athletics og Team Norway 1c.
+
+- **En dialog er en egen flate.** Slett, trekk tilbake og avslutt i en dialog kan være rust selv
+  når bjella er rust. «Høyst én rust» gjelder innholdsflaten. Anders: «JA».
+- **Økonomi (AG-20) fordeler budsjett og regnskap på AK Golfs tjenester:** Coaching privat ·
+  Grupper · GFGK-avtalen · Gruppetimer · Andre tjenester fra AK Golf. Resultat per virksomhet i
+  månedsavslutningen (`.claude/rules/admin-tripletex.md`) er uendret.
+- **Rapportbyggeren (AG-A07) fjernes.** Anders: «Fjern den».
+- **Nivå i Team Norways utviklingssjekk:** i Norge er man junior til og med det året man fyller
+  19. Spilleren får Junior-spørsmålene ut det året. Der internasjonal klasse vises, står Amatør.
+
+**Overstyrer:** «Regelen «høyst én rust» får ikke unntak» under §Åpne punkter etter runde 19–26,
+og designets plassering av AG-A07 under Spiller 360 og Grupper.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`):** readme regel 2 (dialog er egen flate), AG-20 med de
+   fem tjenestene, AG-A07 merket «Utgår 28.09» og ute av navigasjonen. Ferdig når oversikt.html
+   ikke har disse som uavklart.
+2. **Retting til Team Norway (`bc3e41fc`):** en spiller som fyller 19 i år står som Junior (41
+   spørsmål), med Amatør som internasjonal klasse. Ferdig når demospilleren på 19 viser det.
+3. **Kode når Økonomi porteres:** `/admin/reports` sender i dag til
+   `/admin/agencyos/okonomi#rapporter` (`src/app/admin/reports/page.tsx`). Rapportdelen tas ut og
+   adressen sender til Økonomi. Ferdig når ingen meny eller lenke viser rapportbyggeren.
+
+## Åpne punkter etter runde 19–26 og Team Norways poengskala (Anders 28.09.2026, bindende)
+
+Anders svarte selv på tre punkter og sa «ok» til Claudes anbefaling på resten.
+
+- **«Neste turnering»** på I dag er neste offisielle golfturnering. Interne konkurranser
+  (KjippeConk o.l.) er økter i agenda og plan, ikke turneringer.
+- **Fasilitetsspørsmålene gjelder alle spillere** (oppstart og Meg), med dekning av de 19
+  treningsområdene.
+- **AG-12 er sammendraget etter live-økta:** utkast til coach, godkjent går det til spilleren.
+- **«Svar» på innbokssak uten utkast** åpner et tomt skrivefelt og «Lag utkast» (Jarvis). Coach sender.
+- **Konkurransespilleren** anbefales etter turneringsnivået fra oppstarten, ikke etter kategori.
+  Spiller som ikke spiller turneringer får Klubbspilleren anbefalt. Spilleren velger selv.
+- **PlayerHQ-innboksen bak bjella (PH-21) heter «Innboks».**
+- **Break-tabellen** flyttes til Plan › Øvelsesbank, under putting.
+- **Bjelletallet er grafitt**, rust bare når innboksen har en sak som haster (Risiko, eller
+  spillerspørsmål ubesvart over 24 timer). En dialog er egen flate og kan ha rust (§SLETTEDIALOG).
+- **Referanseverdi for testnivå (AG-15)** vises som «—» og «Referanse ikke satt» til A–K-nivåtallene
+  er vedtatt (§Åpent).
+- **Ingen egen Stats-side for coach under Mer.** Stats bor i Spiller 360 og Grupper.
+- **Team Norways poengskala** kommer fra scorekort-arket på Drive («Team Norway Tester
+  Treningsprotokoll Spiller.xlsx», fanen Referens). 8-ball: avstand til mål under 0,1 m = 4 ·
+  0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0. Putt (9 hull lengde, restavstand i fot):
+  senket (0–0,1) = 6 · til 1 = 3 · til 2 = 1 · til 4 = 0,5 · over = 0. **Nærspill Gate og VISA
+  Express:** arket har ingen skala; poeng føres for hånd per slag og appen summerer.
+
+**Arbeidet dette utløser:**
+
+1. **Retting til Precision (`7d7c2994`)** sendes med runde 28: alle punktene over fjernes som
+   «Uavklart» i `ui_kits/katalog.js` og tegnes slik. Ferdig når oversikt.html viser 0 av dem.
+2. **TN-poeng i koden:** `src/lib/portal-tester/tn-catalog.ts` sperrer Nærspill Gate og VISA
+   Express («Poengskala og treffkriterier må bekreftes») og 9 hull lengde («poeng ved senket
+   putt … må bekreftes»). Fjern sperren for disse: Gate-testene summerer førte poeng, 9 hull
+   lengde bruker skalaen over. Ferdig når `tn-scoring.test.ts` låser begge, og testen
+   «ukjente gate-regler produserer ikke falsk standardscore» er skrevet om.
+3. **Wedge Gate teller treff** (§ØKONOMI BARE FOR HEAD COACH, 28.09). **Uavklart:** Måleenheten for målavstand i 9 hull lengde er ikke avgjort av arket.
+
+## ÉN IUP OG ETT TESTBATTERI FOR AK GOLF, WANG OG TEAM NORWAY, OG SPILLEREN DELER SELV (Anders 28.09.2026, bindende)
+
+Grillingen runde 9: Anders bekreftet alle seks områder og mulighetskartets anbefaling («Send dette
+til de riktige Claude Design-prosjektene»). Kjernen: «Spiller står ansvarlig for å gjøre sin
+individuelle IUP og dele deretter med Wang og Team Norway coach.» Fasit for detaljene er «Slik vil
+du ha det» per område i `docs/beslutningsgrunnlag/grillingen-runde9-wang-tn-2026-09-28.md`;
+mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.md`.
+
+- **Én IUP** med Team Norways IUP-ark som mal. Spilleren eier den; AK Golf kan bruke dataene
+  anonymisert (står i vilkårene). **Ingen IUP-fane i PlayerHQ** — delene ligger i Plan, Stats,
+  Målsetning og Meg. Trenerne får fanen «IUP» i Spiller 360, WANG og Team Norway, i arkets
+  rekkefølge, hentet fra PlayerHQ.
+- **Fireukerssjekk** i I dag (prosessmål, målsetninger og alle utviklingssjekkens 41 spørsmål på
+  spillerens nivå: Ung, Junior, Amatør eller Profesjonell) erstatter WANGs halvårsevaluering.
+  **Bare for spillere i en WANG-gruppe (Ung eller Toppidrett) eller Team Norway-gruppe** (Anders
+  28.09: «Alle andre brukere skal ikke ha disse spørsmålssjekkene»). Sesongevaluering uka før uke 43.
+  **Nivå Ung** = spilleren går i 8., 9. eller 10. klasse dette skoleåret (skoleåret 2026/27: født
+  2011–2013), med arkets 34 Ung-spørsmål; eldre spillere bruker Junior (41) og videre.
+- **Ett testbatteri** for alle tre, med alle NGF-testene fra 6-årsløpet og fysisk etter
+  6-årsløpet (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed). Spiller og
+  trener fører («Egenført» · «Kontrollert»). Nivå er AK A–K; TN-spillere ser i tillegg
+  landslagsnivå per klasse. Fysisk test hver sjette uke i grunnperioden.
+- **Deling:** spilleren sender delingslenke fra Meg til trenerens e-post, bare @wang.no og
+  @golfforbundet.no; forelder godkjenner under 16. Innsyn er alt, også helse og meldinger, og
+  samtykkesiden sier det rett ut. Trekkes tilgangen, forsvinner treneren med en gang. Spilleren
+  betaler PlayerHQ selv. WANG-elevers testresultater deles automatisk med Team Norway, med navn
+  (opptaksavtalen).
+  Delingslenken gjelder i sju dager (Anders 28.09).
+- **Ranking i IUP:** WAGR og NGFs juniorranking (Anders 28.09).
+- **Poengskala** for gate-testene, VISA Express, Putt Speed og 8-ball hentes fra Team Norways
+  scorekort-ark, som Anders sender. Til da vises «—»; ingen skala lages på antakelse.
+- **WANG og Team Norway foreslår, spilleren bestemmer** (plan, IUP, vurdering, samtale).
+  AK-coachen endrer direkte; spilleren kan angre.
+- **Bare trenerskjermer** i WANG- og TN-designet; spilleren ser det samme som i PlayerHQ. Alle
+  TN-trenerskjermene blir og gjøres komplette, og TN får en kartleggingsskjerm for WANG-skolenes
+  testdata. Kompetansemål fra Udir bare på WANG-skjermene. Kategori A–K erstatter WANGs E–A+.
+
+**Overstyrer:** WANGs halvårsevaluering og kategori E–A+ i `6cfa623c`, TN-tegningens fysiske
+protokoller (3000 m, knebøy, CMJ, medisinball) og spillerrolle i `bc3e41fc`, og at WANG- og
+TN-trenere får tilgang gjennom gruppemedlemskap.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Personvern først (haster):** WANG- og TN-tilgang må kreve delingssamtykke.
+   `hentWangCoachGruppeId`/`hentWangElevGruppeId` (`src/app/team-wang/_data/wang-tilgang.ts`) og
+   `hentTnSpillerTilgang` (`src/lib/domain/tn-arbeidsflate.ts`) sjekker i dag bare gruppe og
+   rolle, mens `DelingsSamtykke` er et eget system. Ferdig når en trener uten samtykke ikke ser
+   spilleren, og det låses med test (mulighetskart WC1–WC3).
+2. **Bestillinger sendt 28.09:** WANG runde 20 (`6cfa623c`), Team Norway (`bc3e41fc`) og Precision
+   runde 31 (`7d7c2994`). Ferdig når alle tre har levert og Anders har sett skjermene (port 7).
+3. **Delingslenke med domenesjekk** (@wang.no, @golfforbundet.no) og forelders godkjenning under
+   16. I dag finnes bare plassholdertekst (`src/components/team-norway/tn-tilgang-handlinger.tsx`).
+4. **Samtykkeoversikt** for sportssjef og TN: koble `beregnDekningsgrad`
+   (`src/lib/domain/deling/dekningsgrad.ts`, 0 kallere) til en skjerm.
+5. **Fireukerssjekk og utviklingssjekk** i PlayerHQ, med visning for trener. Utviklingssjekk finnes
+   ikke i koden. Datamodell additivt via `db execute` (gotchas §Database), først når skjermene er
+   godkjent.
+6. **WANG-demoøkter** blandes med ekte data uten merking (`src/app/team-wang/_data/live-sesong.ts`).
+   Ferdig når demo er merket eller fjernet.
+7. **Venter:** invitasjon til PlayerHQ fra WANG/TN, landslagsnivå per klasse (tallene må komme fra
+   Team Norway) og kjønn i TN-ranglisten — til delingen virker.
+
+## SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (Anders 28.09.2026, bindende)
+
+Anders gikk gjennom alle elleve områder og bekreftet hvert sammendrag. Anders: «Ting som nå evt
+er låst kan endres.» Fasit for detaljene er «Slik vil du ha det» per område i
+`docs/beslutningsgrunnlag/grillingen-runde8-skjermer-2026-09-28.md`; valgene i mulighetskartet
+står i `docs/beslutningsgrunnlag/mulighetskart-playerhq-agencyos-2026-09-28.md`. Her står bare
+reglene.
+
+**Motoren (planforslag)**
+- Ved lansering finnes ingen AI-planbygger. Spilleren velger én av fem standardplaner (Weekend
+  Warrior, Klubbspilleren, Junior-aspirant, Konkurransespilleren, Practice like the pros),
+  tilpasset kategori A–K, og kan alltid bygge økter selv i Workbench.
+- Alder begrenser aldri plan eller mengde.
+- Oppstart: alder, HCP, snittscore, turneringsnivå, SG i år og forrige sesong, fasiliteter.
+  Teknikktesten (bygger på Inspill Basic) anbefales, er ikke påkrevd, og viser største svakhet
+  uten å sette nivå.
+- Justeringsforslag kommer bare når: SG viser gap til neste nivå (Broadie per HCP, merket
+  estimat) · tre turneringsrunder på rad er minst tre slag over snittet av de ti siste tellende ·
+  gjennomført tid er under 70 % av plan to uker på rad · over 130 % to uker på rad (lettere uke).
+  Aldri etter én runde eller én turnering. Forslag er forslag, ikke sperrer (§Treningsfag).
+- Spilleren godkjenner AI-forslag selv; «Send til coach» på forslag fjernes. Coach kan endre
+  planen uten spillerens godkjenning, men spilleren kan angre. Spiller uten coach: Anders ser
+  ikke planen og kan ikke skrives til.
+
+**PlayerHQ**
+- Fanene heter **I dag · Plan · Stats · Meg**.
+- **I dag:** pop-up bare for melding fra coach eller endring i dagens plan. Dagens økter øverst
+  med «Start». Bjella åpner én innboks med forslag, meldinger og varsler.
+- **Plan** er én flate: se-modus (År · Måned · Uke · Dag) og «Rediger» som åpner komplett
+  Workbench. Fysisk trening og turneringer ligger i samme plan; egne kalender-, fysisk- og
+  turneringssider utgår (gamle adresser sender videre). Coach varsles når spilleren endrer en
+  turnering eller en økt coachen la inn.
+- **Google-kalender begge veier.** Coach ser bare opptatt tid, aldri tittel. Apple senere.
+- **Stats** har fire deler: Snittscore · Strokes Gained · Trening · Tester. Standard
+  sammenligning er neste kategori (Broadie, merket estimat); spilleren kan slå på PGA Tour, coach
+  ser alltid begge. Nok data: under 4 runder ingen konklusjon, 4–7 «foreløpig», tee og innspill
+  sikre fra 12, nærspill og putting fra 24.
+- **Ytelsesbilde** (søvn, mat, energi) krever samtykke i onboarding. Banekart, GPS og
+  vitnegodkjenning av tester kommer senere.
+- **Meg:** «Mål» heter **Målsetning** og ligger i Workbench (start, slutt, resultat- eller
+  prosessmål, fremdrift fra ekte data). Fasilitetsskjema med dekning av de 19 treningsområdene.
+  Nytt onboardingsteg «Finn deg i turneringsresultatene». Talent «Min plan», roadmap,
+  ukesdigest (blir melding) og «Utenfor banen» utgår.
+- **Spilleren får ingen sammenligning av snittscoren mot andre, verken anonymiserte snitt eller
+  navngitte spillere** (Anders 28.09 etter runde 22: «fjern sammenligning for nå»). Sammenligning
+  med andre spillere og talentradaren er bare for coach (§Data uendret). Sammenligning mot neste
+  kategori (Broadie, ESTIMAT) og PGA Tour i Stats består.
+- **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel opp-og-ned» er bekreftet (28.09).
+- **Live-økt:** økt- og drillklokke, fire tellere per drill (Uten ball · Lav hastighet ·
+  Automatikk · Slag) mot plan, neste drill åpnes automatisk. Fysisk økt: spilleren fører vekt,
+  reps og serier. Etter økta (Anders 28.09): fysisk økt får «Hvor tungt» 1–10 (opplevd belastning);
+  golføkt får belastning 1–10 og fokus 1–10 (hvor konsentrert spilleren var).
+- **Runderegistrering:** per slag påkrevd avstand, underlag og kølle; putt påkrevd lengde i fot,
+  break, fart og miss. SG, brutto score og Tiger 5 vises rett etter runden.
+  Bom på putt: Venstre · Høyre · På linja (Anders 28.09).
+- **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
+
+**AgencyOS**
+- Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Cockpit er startskjerm, med
+  dagens kalender 05–22. Hurtigknappen får også «Ny booking».
+- **Oppgaver kommer bare fra Notion** (Tasks og Prosjekter); oppgavelista i appen utgår.
+- **Live coachingøkt** med opptak, teknisk plan og sammendrag. Opptak krever samtykke fra
+  onboarding og spilleren ser «Opptak pågår». Sammendraget er utkast til coach; godkjent går det
+  til spilleren. Navn tas ut før tekst sendes til AI.
+- **Én innboks** for all kommunikasjon og alle godkjenninger: begge e-postkontoene
+  (post@akgolf.no, akgolfgroup@gmail.com), spillermeldinger, forslag, varsler, leads og
+  oppfølgingssaker. Kø, godkjenninger og oppfølgingskøen slås inn; kolonnene Risiko · Følg med ·
+  Sjekk · Løst blir filter. Spillerspørsmål ubesvart etter 24 timer haster. Jarvis-chatten er
+  egen side.
+- **«Følger ikke planen»** i Cockpit viser de to siste ukene, med lenke til hele planen (Anders 28.09).
+- **Stall i tre bånd:** I dag · Trener nå · Hele stallen. Coach kan sende melding under økta.
+  Raden viser når planen og avtalen utløper.
+- **Spiller 360** har IUP-samtale for alle spillere og fanene Plan · Stats · Teknisk plan ·
+  Tester · Samtaler · Talent (bare coach).
+- **Kalender:** alle coachers bookinger samlet, filter på coach. Head coach ser alt, assistant
+  coach egne økter og gruppeøkter. Flytting av økt varsler spillerne automatisk, med angre i 10
+  sekunder. Forslag til nye gruppeøkter med inntektsanslag kommer i Innboks; coach godkjenner.
+- **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
+  «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
+  Coach kan lage egne øvelser.
+- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett. Økonomi leses fra
+  budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
+
+**Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
+er valgt bort.
+
+**Overstyrer:** fanenavnet «Analyse» (§Produkt og tilgang), «Pyramiden er veiledende»
+(§Treningsfag), «Ikke avklart: om den også gjelder PlayerHQ» (§Hurtigknappen), og de fire
+hurtighandlingene i AgencyOS (nå fem med «Ny booking»).
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Bestillinger runde 19–30 til Precision Athletics (`7d7c2994`)**, én per område, lagret i
+   `~/ak-brain/claude-code/prompter/precision-runde19-bestilling.txt` og videre. Ferdig når alle
+   er sendt og statusraden i grillingsfila er oppdatert.
+2. **Port 7:** Anders ser de nye tegningene i 390 og desktop. Ingen porting til kode før det.
+3. **Personvern før annen kode (haster).** Gjort 28.09: ukeforslaget, vinn-tilbake,
+   live-økt-chatten og avskriften av coachingopptak sender ikke lenger spillernavn til Anthropic,
+   låst med tester. Slett konto finnes allerede: Meg › Personvern › «Slett kontoen min» sender en
+   forespørsel som coach eller admin godkjenner (`opprettGdprForesporsel`); `deleteUserAccount`
+   er en eldre, ubrukt vei. **Gjenstår:** fritekst brukeren selv skriver (chatmeldinger i
+   coach-AI og portal-chat, øktnotater, coachnotater, AI-minne) sendes uvasket, og Caddies
+   navnedetektor (`src/lib/caddie/privacy.ts`) brukes bare i Caddie-chatten. Anders' egne verktøy
+   (Meg-agenten, innboksutkast, Kommando) sender navn fra e-post, kalender og Stripe; det er
+   Anders' egne data, men bør vurderes.
+4. **Riktighet i planforslaget:** hardkodede fasilitetsflagg (`src/lib/ai-plan/context.ts`,
+   `hasBunker: false`, `hasNetAndMat: false`) og signalnavn som ikke matcher
+   (`plan-builder/index.ts`, `SG_AREA`). Ferdig når fasilitetsskjemaet styrer flaggene og
+   spillerens svakhet kommer med i forslaget.
+5. **ACWR i stallen** er hardkodet. Vis «—» til tallet regnes ut.
+6. **Runde-agentene** starter ikke etter `logRoundManual` eller turneringsrunder (mulighet A1).
+7. **Fanenavnet i koden:** «Analyse» → «Stats» i `src/components/v2/shell.tsx:86` når Stats
+   porteres. Adressen `/portal/analysere` beholdes eller sender videre.
+8. **AI-planbyggeren skjules** for spillere ved lansering; de fem standardplanene må skrives
+   (faglig innhold fra Anders, per kategori A–K).
+9. **Datamodell** for målsetning med start, slutt og type, samtykke til opptak og Ytelsesbilde i
+   onboarding, «Egen»-merke på arvede gruppeøkter og gjentakelse — additivt via `db execute`
+   (gotchas §Database), først når skjermene er godkjent.
+10. **Uavklart:** bildet Anders nevnte for tellerne i live-økt kommer senere. Alle fem planene gjelder
+    alle kategorier A–K (§ØKONOMI BARE FOR HEAD COACH, 28.09).
+
+## PERIODENE HETER GRUNNPERIODE, SPESIALPERIODE, TURNERINGSPERIODE, EVALUERING, FERIE OG RESTITUSJON (Anders 28.09.2026, bindende)
+
+Svar på at språkmasteren sa «Spesialperiode» mens Masterbrain og teksten AI-agentene får, sa
+«Spesialiseringsperiode». Anders ga lista: Grunnperiode, Spesialperiode, Turneringsperiode,
+Evaluering, Ferie, Restitusjon.
+
+- **Synlige navn:** Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering · Ferie ·
+  Restitusjon. «Spesialisering», «Spesialiseringsperiode» og «Evalueringsperiode» brukes ikke.
+- **Kodenavnene endres ikke:** `GRUNN`, `SPESIAL`, `TURNERING`, `EVALUERING`, `FERIE`.
+- **Restitusjon er ny periodetype** (Anders 28.09: ja til ny verdi i databasen). Rent tillegg:
+  `RESTITUSJON` i `PeriodeType` og `LPhase`. Ingen rader endres.
+- **Testuke, Treningssamling og Heldagssamling beholdes** (Anders 28.09). De er hendelser i
+  årsplanen, ikke treningsperioder.
+- **Lista gjelder også WANG.** Den offentlige GFGK Junior-teksten venter, fordi den er publisert.
+
+**Overstyrer:** navnene «Spesialiseringsperiode» og «Evalueringsperiode» i koden, og raden
+«Evalueringsperiode» i `docs/treningsplanlegging.md` kapittel 6.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Navnene i PlayerHQ og AgencyOS.** Gjort 28.09 i samme PR som beslutningen: tolv filer med
+   periodenavn, teksten AI-agentene får (`src/lib/masterbrain/hent-kunnskap.ts`) og
+   `docs/treningsplanlegging.md` kapittel 6.
+2. **Restitusjon i databasen og koden.** Gjort 28.09.2026: Anders kjørte
+   `scripts/add-restitusjon-periode-2026-09-28.ts` selv, og `RESTITUSJON` finnes i `PeriodeType`
+   og `LPhase` (bekreftet med lesespørring). Skjema, navn, farge og ikon er lagt inn i koden.
+   Antall økter per uke låses ikke (Anders 28.09): spiller og coach setter det selv, og
+   plan-motoren har ikke standardtall for Restitusjon. Gjenstår: Anders ser skjermen (port 7).
+3. **Masterbrain-kilden** (`akgolfsoftware/masterbrain`). Gjort 28.09 (masterbrain#13):
+   «Spesialperiode» i `REDIGER-HER.md` og `canon-methodology.json`. Kodenavnet SPESIALISERING
+   der oversettes fortsatt av appen.
+4. **WANG.** Gjort 28.09: «Spesialperiode» i WANG-årsplanen og IUP-siden
+   (`src/app/team-wang/`). Også rettet i Team Norway-månedsplanen, plan-motoren og hjelpetekstene.
+5. **GFGK Junior venter.** Den offentlige teksten (`src/app/gfgk-junior/_data/`) sier
+   «Spesialisering» og er publisert. Endres når Anders sier fra.
+
+## POSISJONSNAVN FØLGER ORDMASTEREN, OG TEKNISK PLAN SPERRER INGENTING (Anders 27.09.2026, bindende)
+
+Avklart etter to designrunder i Claude Design «AK Golf Precision Athletics» (`7d7c2994`), der
+funksjoner fra prototypen «AK Golf Training Motor» (`4917465a`) ble tegnet inn. Prototypen er
+idékilde, ikke visuell fasit: den bruker det gamle designsystemet `87aa23fb`.
+
+- **Posisjonsnavn: ordmasteren gjelder.** Anders: «Ordlisten gjelder.» P1.0 Adresse / Oppstilling ·
+  P2.0 Kølle parallell i baksving · P3.0 Venstre arm parallell i baksving · P4.0 Toppen av
+  baksvingen · P5.0 Venstre arm parallell i nedsving · P6.0 Kølle parallell i nedsving · P7.0
+  Treffpunktet · P8.0 Kølle parallell i gjennomføring · P9.0 Høyre arm parallell i oppfølging ·
+  P10.0 Fullføring og balanse. Står i `docs/treningsplanlegging.md` §14.4 (kilde fra 29.09,
+  §APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER).
+- **Kvalitetssjekken vises bare.** Anders: «Bare vises.» Den er aldri krav for å gå videre til
+  neste læringssteg. Rep-mål og treffprotokoll viser også bare status (§Treningsfag).
+- **AK-formelen når en oppgave har flere læringssteg og miljøer:** formelen viser steget spilleren
+  er på og hovedmiljøet. Rep-mål per steg og per miljø lagres hver for seg.
+- **Demospilleren i koden heter Magnus Aasheim** (#980), samme navn som i designet.
+
+**Overstyrer:** navnene i `src/components/teknisk-plan/constants.ts` fra 22.09.2026. De var hentet
+fra `wiki/concepts/morad-posisjonssystem.md` i ak-second-brain, som har venstre arm på P9.0.
+Kildene i samme kunnskapsbase (`wiki/sources/2026-05-11-morad-kb-terminology.md`) har høyre arm.
+For posisjonsnavn avgjør dette også spørsmålet om to ordlister i §PRECISION ATHLETICS.
+
+**Gjort i samme PR:** navnene er rettet i `constants.ts`, `src/lib/taxonomy.ts`,
+`src/lib/domain/workbench/labels.ts` og de to utviklingsplan-visningene, med tester. Teksten «MORAD-arbeid» er fjernet fra `/admin/plan`.
+Lagrede posisjonsnavn i basen leses ikke: `medFasitNavn` henter navnet fra koden.
+
+**Arbeidet dette utløser** — detaljene står i
+[porteringsplanen §9](../../docs/planer/portering-skjermer-2026-09-27.md):
+
+1. **Portering av sju skjermtyper:** AG-10 (utvidet), AG-TP-01 Oppgaveskjema, AG-TP-02 Før og nå,
+   PH-TP-01 Teknisk plan (spiller), AG-15 med testdetalj, PH-A07 og kilde på øktkort i AG-11.
+   Ferdig per skjerm etter oppskriften i porteringsplanen §5, og Anders har sett den (port 7).
+2. **Sju tillegg i datamodellen.** Hvert krever Anders' ja før det legges i basen (additivt via
+   `db execute`, gotchas §Database): to daterte bilder per oppgave, logg for kvalitetssjekk,
+   coachens svar på en registrering, publiseringstidspunkt på planen, testforhold på
+   testresultatet, coachens valg per test og opphav på øvelse i økt.
+3. **Navn som står igjen:** `PeriodeplanPyramideView.tsx` (demoskjerm under `/portal/toppidrett`,
+   som skal videresendes) og `ak-kategorisystem.ts` (hovednavn og underposisjoner, ikke i bruk
+   utenfor egen test). Rettes når filene porteres eller fjernes. Nøkkelordene i `src/lib/voice/whisper-transcribe.ts` er talegjenkjenning og
+   beholdes.
+4. **ak-second-brain:** P9.0 i `wiki/concepts/morad-posisjonssystem.md` rettes til høyre arm i en
+   egen økt i den kunnskapsbasen.
+
 ## WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, OG MENYEN FÅR SEKS HOVEDPUNKTER (Anders 27.09.2026, bindende)
 
 Anders: «WANG Toppidrett-skjermene som er delt via AK Golf, så skal det være Sportssjef og Trener
@@ -290,8 +754,8 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
   Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
   `/portal` og `/admin`» (21.09).
 - Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
-- Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
-  Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
+- Ordlister: `docs/ordbok.md` (masteren `docs/treningsplanlegging.md`) vinner over prosjektets
+  `guidelines/ordmaster.md` (§APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER, 29.09).
 - Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
@@ -508,8 +972,8 @@ verktøyrader vi bygger selv.
 ## Hurtigknappen gjelder alle AgencyOS-skjermer (Anders 22.09.2026, bindende)
 
 Den flyttbare svarte hurtigknappen skal finnes på **alle skjermer i AgencyOS**, ikke bare Hjem.
-Fire hurtighandlinger: ny økt i Workbench · ny melding til spiller · registrer runde · spør
-Jarvis.
+Fem hurtighandlinger: ny økt i Workbench · ny melding til spiller · registrer runde · spør
+Jarvis · ny booking (§SKJERMENE … RUNDE 8).
 
 - Den bor i **én delt modul**, ikke som kopiert kode per skjerm: i designprosjektet
   `agencyos-handover/ag-hurtigknapp.css` og `.js`. Bygges den i appen, skal den være én
@@ -517,8 +981,8 @@ Jarvis.
 - Faste regler: 56 × 56 px grafitt, radius 2 · kan dras hvor som helst og klemmes 8 px fra
   hver kant · drag åpner ikke menyen (under fem piksler er et trykk) · menyen snur når den
   ellers ville gått utenfor flaten.
-- **Ikke avklart: om den også gjelder PlayerHQ.** Legg den ikke på spillerflaten før Anders
-  har sagt det.
+- **Gjelder også PlayerHQ** (28.09): Spør Caddie · Ny økt · Registrer runde · Start økt.
+  Se §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8.
 
 Byggeoppgave når AgencyOS-skallet bygges: knappen hører til skallet (`src/components/v2/shell.tsx`),
 ikke til den enkelte siden. Ferdig når den står på hver `/admin`-side, husker posisjonen sin,
@@ -530,7 +994,7 @@ og ikke kan dras ut av syne.
 - AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS-koder (CS0, CS20–CS100), M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
 - Hastighet i læringssteg er 25, 50, 75 og 100 prosent av Club Speed (Lav hastighet 25/50/75 %, Automatikk 100 %, Uten ball ingen). Bekreftet av Anders 21.09.2026. Ikke den utgåtte CS-skalaen.
 - Én master for språk og treningsplanlegging: `docs/treningsplanlegging.md` (21.09.2026). `docs/ordbok.md` er bare en peker; `docs/ordbok.json` genereres.
-- Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden er veiledende og sperrer ikke; området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
+- Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden velges først og styrer kategoriseringen og øvelsesbanken (28.09, §SKJERMENE … RUNDE 8); området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
 - Valgtreet fra årsplan til øvelse (åtte trinn) eies av `docs/treningsplanlegging-og-sprak-gjennomgang.md` (22.09). Puttingavstand i fot, meter kan vises i parentes. Måleutstyr er en fast liste (TrackMan og annen radar). Teknisk fokus per område er eget felt på oppgaven i teknisk plan.
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.
@@ -545,7 +1009,7 @@ og ikke kan dras ut av syne.
 ## Produkt og tilgang
 
 - Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
-- PlayerHQ har fire faner: I dag · Plan · Analyse · Meg. Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
+- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
 - Jarvis forbereder alt og sender ingenting. Alt som forlater huset eller endrer noe for et menneske krever Anders' ja.

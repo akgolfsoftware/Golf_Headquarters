@@ -9,13 +9,14 @@ describe("workbenchRedirectForTrenPath", () => {
       "/portal/planlegge/workbench?tab=gantt",
     );
     assert.equal(
-      workbenchRedirectForTrenPath("/portal/tren/teknisk-plan/abc"),
-      "/portal/planlegge/workbench?tab=tek",
-    );
-    assert.equal(
       workbenchRedirectForTrenPath("/portal/tren/turneringer/gammel-lenke"),
       "/portal/planlegge/workbench?tab=seson",
     );
+  });
+
+  it("keeps teknisk plan (PH-TP-01) — Workbench has no teknisk tab", () => {
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/teknisk-plan"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/teknisk-plan/abc"), null);
   });
 
   it("keeps the v2 base routes for tester and turneringer (ferdigbygde skjermer)", () => {

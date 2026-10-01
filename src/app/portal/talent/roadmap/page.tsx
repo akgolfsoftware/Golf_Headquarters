@@ -44,13 +44,14 @@ function parseMilepaeler(json: unknown): Milepael[] {
 
 const LPHASE_NAVN: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 const MND_KORT = [

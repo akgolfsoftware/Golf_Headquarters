@@ -30,13 +30,14 @@ function datoLang(iso: string): string {
 /** Kort variant for det smale periodebåndet — LPHASE_LABEL uten "-periode"-suffikset. */
 const BAAND_ETIKETT: Record<LPhase, string> = {
   GRUNN: "Grunn",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesial",
   TURNERING: "Turnering",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 function ukerIPeriode(startIso: string, endIso: string): number {

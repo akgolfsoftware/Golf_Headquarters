@@ -7,7 +7,7 @@ import { SessionBrief } from "./SessionBrief";
 import { BriefStart } from "./BriefStart";
 import styles from "./session-brief.module.css";
 
-const L_PHASE_LABEL: Record<string, string> = { GRUNN: "Grunnperiode", SPESIAL: "Spesialiseringsperiode", TURNERING: "Turneringsperiode" };
+const L_PHASE_LABEL: Record<string, string> = { GRUNN: "Grunnperiode", SPESIAL: "Spesialperiode", TURNERING: "Turneringsperiode" };
 export type PlanSessionBriefProps = { data: LiveSessionData; canStart: boolean; blockReason: BriefBlockReason };
 
 export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBriefProps) {

@@ -1,4 +1,4 @@
-import { LoginPrecisionView } from "@/components/auth/LoginPrecisionView";
+import { LoginView } from "@/components/auth/LoginView";
 
 export const metadata = {
   title: "Logg inn · AK Golf HQ",
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginPrecisionView />;
+  return <LoginView />;
 }

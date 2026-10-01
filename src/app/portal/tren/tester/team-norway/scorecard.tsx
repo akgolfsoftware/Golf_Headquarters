@@ -3,6 +3,7 @@
 /** Functional Excel-v3 scorecard. Visual direction remains open; no design approval implied. */
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
 import { TN_VERSION, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFormat, tnRowError, tnScore, tnValidate, type TnValues, type TnResult } from "@/lib/portal-tester/tn-scoring";
@@ -15,6 +16,7 @@ export function TnScorecard({ protocol: p, initial, savedResult }: {
   savedResult?: TnResult;
   initial?: { sessionId: string; revision: number; values: TnValues; notes: string; status: string };
 }) {
+  const router = useRouter();
   const [sessionId] = useState(() => initial?.sessionId ?? crypto.randomUUID());
   const [revision, setRevision] = useState(initial?.revision ?? 0);
   const [raw, setRaw] = useState<Record<string, Record<string, string>>>(() => Object.fromEntries(Object.entries(initial?.values ?? {}).map(([k, row]) => [k, Object.fromEntries(Object.entries(row).map(([f, v]) => [f, v === null ? "" : String(v).replace(".", ",")]))])));
@@ -56,6 +58,7 @@ export function TnScorecard({ protocol: p, initial, savedResult }: {
         setRevision(response.revision); setDirty(false);
         setStatus(intent === "complete" ? "COMPLETED" : intent === "abort" ? "ABORTED" : "IN_PROGRESS");
         setMessage(intent === "complete" ? "Resultatet er lagret." : intent === "abort" ? "Avsluttet ufullstendig. Registreringene er bevart uten testscore." : "Utkastet er lagret på kontoen din.");
+        if (intent === "complete") router.replace(`/portal/tren/tester/team-norway?session=${sessionId}`);
       } catch { setError("Kunne ikke lagre. Registreringene er fortsatt i denne fanen. Prøv igjen."); }
     });
   }

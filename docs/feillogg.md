@@ -1,5 +1,9 @@
 # Feillogg — læring for videre arbeid
 
+## 01.10.2026 — samordning av brukerprøver med hovedgrenen
+
+Samordning av avvikende kodeversjoner krevde nye Next-rutetyper og CI-ens minnegrense. Fungerende innlogging måtte skilles fra demokatalogen i en egen produksjonskomponent; SMS uten leverandør skal verken samle inn data eller bekrefte tilgang. Den isolerte lokale databasen måtte oppdateres med hovedgrenens additive skjemaendringer før brukerprøvene kunne kjøres. Kontroller montert komponent og samsvar mellom lokal kode og lokalt skjema før resultatene brukes som bevis; behold alle tilgangs- og kvalitetskontroller.
+
 ## 10.09.2026 — motstridende prosjektkilder
 
 **Problem:** flere oppsettsguider og verktøykopier anbefalte ulike designsystemer. En mekanisk Claude→Codex-erstatning laget ugyldige `.Codex/`-stier og endret navn på designleveranser. Historiske ferdigpåstander ble lest som nåstatus.

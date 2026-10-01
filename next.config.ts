@@ -162,9 +162,9 @@ const nextConfig: NextConfig = {
 
       // PlayerHQ Planlegge
       { source: "/portal/planlegge/turnering/:id", destination: "/portal/tren/turneringer/:id", permanent: false },
-      // Teknisk plan-liste → Workbench hub (detalj/[planId] beholdes)
-      { source: "/portal/tren/teknisk-plan", destination: "/portal/planlegge/workbench?tab=tek", permanent: false },
-      { source: "/portal/teknisk", destination: "/portal/planlegge/workbench?tab=tek", permanent: false },
+      // Teknisk plan: én vei. /portal/tren/teknisk-plan sender videre til spillerens
+      // aktive plan (PH-TP-01). Workbench har ingen teknisk-fane (29.09.2026).
+      { source: "/portal/teknisk", destination: "/portal/tren/teknisk-plan", permanent: false },
 
       // CoachHQ sub-routes
       { source: "/admin/planlegge/grupper/:id", destination: "/admin/grupper/:id", permanent: false },

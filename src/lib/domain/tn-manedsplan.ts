@@ -17,13 +17,14 @@ export type TnPlanUke = { nr: number; fra: string; til: string; periode: { navn:
 
 export const PERIODENAVN: Record<LPhase, string> = {
   GRUNN: "Grunn",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesial",
   TURNERING: "Turnering",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 const DAG_MS = 86_400_000;

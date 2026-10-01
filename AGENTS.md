@@ -2,7 +2,7 @@
 
 Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
 
-**Gjeldende designautoritet 21.09.2026:** [AK Golf Design System og «App design»](docs/design-system/design-autoritet.md) styrer alt nytt designarbeid i AK Golf HQ. Dette er et bindende systemvalg, ikke en åpen kandidat. Train-lock og Paper er utgående og kan bare brukes som historikk eller funksjonsinventar. Det skal aldri spørres på nytt om de skal gjelde. Bare en ny, uttrykkelig beskjed fra Anders kan endre dette.
+**Gjeldende designautoritet 26.09.2026:** [«AK Golf Precision Athletics»](docs/design-system/design-autoritet.md) styrer alt nytt designarbeid i AK Golf HQ. Dette er et bindende systemvalg, ikke en åpen kandidat. Train-lock og Paper er utgående og kan bare brukes som historikk eller funksjonsinventar. Det skal aldri spørres på nytt om de skal gjelde. Bare en ny, uttrykkelig beskjed fra Anders kan endre dette.
 
 ## Kildeorden
 

@@ -1,7 +1,8 @@
-/* V2Laster-skeleton (fase 6, SPOR R2). Server Component. */
-
-import { V2Laster } from "@/components/v2/laster";
+"use client";
+/* AG-RD-01 Rundeanalyse: Precision-laster. */
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return <AgencyOSSkall navn="Coach"><div className="pa-side"><LasterTilstand text="Henter runder …" /></div></AgencyOSSkall>;
 }

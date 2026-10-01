@@ -4,7 +4,7 @@ Les dette før du endrer filer. [START-HER.md](../../START-HER.md) er inngangen.
 
 ## Produkt og nåsituasjon
 
-Gjeldende visuell autoritet er [AK Golf Design System og «App design»](../design-system/design-autoritet.md).
+Gjeldende visuell autoritet er [«AK Golf Precision Athletics»](../design-system/design-autoritet.md).
 Train-lock og Paper er utgående. Eldre navn i kode beskriver overgangstilstand, ikke ny designretning.
 
 Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md).

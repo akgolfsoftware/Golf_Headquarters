@@ -57,7 +57,7 @@ function Tegnforklaring() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", alignItems: "center" }}>
         <TnEtikett>Perioder</TnEtikett>
         {punkt("Grunn", TN.navy50, TN.navy100)}
-        {punkt("Spesialisering", TN.navy300, TN.navy300)}
+        {punkt("Spesial", TN.navy300, TN.navy300)}
         {punkt("Turnering", TN.navy900, TN.navy900)}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", alignItems: "center" }}>
@@ -72,7 +72,7 @@ function Tegnforklaring() {
 
 function periodeFarge(navn: string | undefined) {
   if (navn === "Turnering") return { bg: TN.navy900, fg: TN.white };
-  if (navn === "Spesialisering") return { bg: TN.navy300, fg: TN.navy900 };
+  if (navn === "Spesial") return { bg: TN.navy300, fg: TN.navy900 };
   if (navn) return { bg: TN.navy50, fg: TN.navy900 };
   return { bg: TN.white, fg: TN.textSecondary };
 }
