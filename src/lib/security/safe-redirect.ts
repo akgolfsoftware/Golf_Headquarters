@@ -25,7 +25,7 @@ export function safeRedirectPath(
   if (!path) return fallback;
 
   // Kun relativ path tillatt: må starte med "/" men IKKE med "//" (protocol-relative)
-  if (!path.startsWith("/") || path.startsWith("//")) {
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) {
     return fallback;
   }
 
