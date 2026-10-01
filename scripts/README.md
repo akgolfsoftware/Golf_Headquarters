@@ -10,6 +10,7 @@
 | Kode, designregler og bygg | `npm run verify` |
 | Enhets- og komponenttester | `npm test` |
 | Lokal innlogging med syntetiske spillere og trenere | [isolert brukertest](../docs/utvikling/lokal-brukertest.md), `local-users-run.mjs` |
+| Design → handling → lagring og koblede lokale prøver | [koblingsgrunnlaget](../docs/planer/design-lagring-brukerreiser-2026-10-01.md), `design-data-journey-map.mjs` og `local-users-run.mjs journeys` |
 | Miljøkontroll uten å vise nøkler eller endre oppsett | `node scripts/launch-preflight.mjs` |
 | Train-lock-måling | [tests/visual/README.md](../tests/visual/README.md), `train-lock-pixel-diff.mjs` |
 | AK Golf-designverdier | `ak-golf-tokens.mjs`; endring følger designpakkens synk |

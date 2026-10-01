@@ -1783,19 +1783,27 @@ export async function completeSessionWithEffort(
   if (row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
     return { ok: false, error: "Økten må være synlig og godkjent før gjennomføring." };
   }
-
-  const updated = await prisma.workbenchSession.update({
-    where: { id: parsed.data.sessionId },
+  // Same lifecycle as completeSession: retries do not rewrite history.
+  if (row.status === "COMPLETED") return { ok: true, data: mapSession(row) };
+  if (!["PUBLISHED", "IN_PROGRESS"].includes(row.status)) {
+    return { ok: false, error: "Økten kan ikke endres fra denne statusen." };
+  }
+  const result = await prisma.workbenchSession.updateMany({
+    where: {
+      id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+      hiddenByPlayer: false, needsPlayerApproval: false,
+    },
     data: {
       status: "COMPLETED",
       perceivedEffort: parsed.data.perceivedEffort,
       actualMinutes: parsed.data.actualMinutes,
       liveSnapshot: Prisma.DbNull,
     },
-    include: { drills: true },
   });
-
-  return { ok: true, data: mapSession(updated) };
+  if (result.count !== 1) {
+    return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  }
+  return lagreOgHent(row.id);
 }
 
 export async function skipSession(

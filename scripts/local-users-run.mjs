@@ -18,6 +18,9 @@ for (const [service, port] of [['db', 55622], ['kong', 55621], ['inbucket', 5562
 // No inherited provider secrets, hosted database defaults or .env copies.
 const env = Object.fromEntries(['PATH', 'TMPDIR', 'LANG', 'SHELL'].filter(k => process.env[k]).map(k => [k, process.env[k]]));
 Object.assign(env, local, { NEXT_TELEMETRY_DISABLED: '1' });
+// The global maintenance sign would hide every local app page. This is only
+// the already validated synthetic environment, with all access guards intact.
+if (['dev', 'users'].includes(process.argv[2])) env.VEDLIKEHOLD = '0';
 // The unit suite deliberately verifies the default app origin, not this dev URL.
 if (['verify', 'static', 'test', 'build', 'typegen'].includes(process.argv[2])) {
   delete env.NEXT_PUBLIC_APP_URL;
@@ -30,6 +33,7 @@ const actions = {
   seed: ['node', '--import', 'tsx', 'scripts/local-users-seed.ts'],
   dev: ['node', 'node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1', '--port', '3061'],
   users: ['node', 'node_modules/@playwright/test/cli.js', 'test', '-c', 'tests/local-users/playwright.config.ts'],
+  journeys: ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/storage-journeys.test.ts'],
   verify: ['npm', 'run', 'verify'],
   static: ['npm', 'run', 'verify:static'],
   test: ['npm', 'test'],
@@ -37,7 +41,7 @@ const actions = {
   typegen: ['node', 'node_modules/next/dist/bin/next', 'typegen'],
 };
 const command = actions[process.argv[2]];
-if (!command) throw new Error('Choose bootstrap, seed, dev, users, static, verify, test, build or typegen');
+if (!command) throw new Error('Choose bootstrap, seed, dev, users, journeys, static, verify, test, build or typegen');
 const args = command.slice(1);
 if (process.argv[2] === 'users') args.push(...process.argv.slice(3));
 const credentialsFile = resolve(root, '.codex/environments/brukere/.env.users');
