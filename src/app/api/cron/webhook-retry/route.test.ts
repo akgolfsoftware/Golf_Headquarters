@@ -6,8 +6,9 @@ let refunded = 0;
 let updates: Array<{ status: string; attemptCount?: number }> = [];
 mock.module("@/lib/prisma", { namedExports: { prisma: { webhookFailure: {
   findMany: async ({ where }: { where: { webhookSource: { in: string[] } } }) => {
-    assert.ok(where.webhookSource.in.includes("stripe-refund"));
-    return [{ id: "job", eventId: "booking-refund-synthetic", webhookSource: "stripe-refund", payload: { bookingId: "synthetic" }, attemptCount: 0 }];
+    assert.ok(where.webhookSource.in.includes("booking-refund"));
+    assert.ok(!where.webhookSource.in.includes("stripe-refund"), "eldre manuelle refusjonssaker skal ikke starte automatisk");
+    return [{ id: "job", eventId: "booking-refund-synthetic", webhookSource: "booking-refund", payload: { bookingId: "synthetic" }, attemptCount: 0 }];
   },
   update: async ({ data }: { data: { status: string; attemptCount?: number } }) => { updates.push(data); },
 } } } });

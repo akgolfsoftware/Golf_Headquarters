@@ -74,7 +74,7 @@ export async function cancelBooking(bookingId: string) {
       await tx.webhookFailure.upsert({
         where: { eventId: bookingRefundKey(bookingId) },
         create: {
-          eventId: bookingRefundKey(bookingId), webhookSource: "stripe-refund",
+          eventId: bookingRefundKey(bookingId), webhookSource: "booking-refund",
           payload: { bookingId }, errorMessage: "Refusjon venter på behandling.", attemptCount: 0,
         },
         update: {},

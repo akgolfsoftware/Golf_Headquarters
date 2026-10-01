@@ -54,8 +54,9 @@ export async function GET(req: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "stripe-init" }, { status: 500 });
   }
 
+  // Eldre stripe-refund-rader var manuelle saker og skal ikke startes automatisk.
   const feilede = await prisma.webhookFailure.findMany({
-    where: { webhookSource: { in: ["stripe", "stripe-refund"] }, status: "PENDING" },
+    where: { webhookSource: { in: ["stripe", "booking-refund"] }, status: "PENDING" },
     orderBy: { lastAttemptAt: "asc" },
     take: MAKS_PER_KJORING,
   });
@@ -67,7 +68,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   for (const rad of feilede) {
     // Er eventet allerede behandlet (f.eks. av en senere Stripe-retry som gikk bra),
     // skal vi ikke kjøre det igjen — bare lukke raden.
-    const førsteGang = rad.webhookSource === "stripe-refund" || await markerBehandlet(rad.eventId, "retry");
+    const førsteGang = rad.webhookSource === "booking-refund" || await markerBehandlet(rad.eventId, "retry");
     if (!førsteGang) {
       await prisma.webhookFailure.update({
         where: { id: rad.id },
@@ -78,7 +79,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     try {
-      if (rad.webhookSource === "stripe-refund") {
+      if (rad.webhookSource === "booking-refund") {
         const { bookingId } = z.object({ bookingId: z.string().min(1) }).parse(rad.payload);
         await refundCancelledBooking(bookingId, stripe);
       } else {

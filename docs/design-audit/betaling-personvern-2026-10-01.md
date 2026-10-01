@@ -6,7 +6,7 @@ Dette er en teknisk kontroll av avgrensede feil, ikke en lanseringsgodkjenning e
 ## Rettet
 
 - Avbestilling, tilbakeføring av klipp og opprettelse av refusjonsjobb lagres i samme databasetransaksjon. Samtidige kall kan ikke tilbakeføre flere klipp. En samtidig endring av bookingen avvises med beskjed om å prøve igjen.
-- Refusjonsjobben bruker eksisterende `WebhookFailure`, stabil Stripe-nøkkel og kontroll av betalingsbeløp, valuta og faktisk refusjonsstatus. Planlagt oppfølging leser også disse jobbene. Prosessavbrudd eller leverandørfeil mister ikke refusjonsbestillingen; etter fem mislykkede oppfølgingsforsøk varsles eksisterende driftskanal.
+- Refusjonsjobben bruker eksisterende `WebhookFailure`, stabil Stripe-nøkkel og kontroll av betalingsbeløp, valuta og faktisk refusjonsstatus. Planlagt oppfølging leser også disse jobbene. Nye jobber bruker kilden `booking-refund`; eldre manuelle `stripe-refund`-saker startes ikke automatisk. Prosessavbrudd eller leverandørfeil mister ikke refusjonsbestillingen; etter fem mislykkede oppfølgingsforsøk varsles eksisterende driftskanal.
 - Avbestillingsmelding får det faktiske resultatet: penger refundert, klipp tilbakeført eller refusjon som venter. En avvist e-post fra Resend regnes som feil. Bookingtid formateres fra lagret Oslo-veggklokke, uavhengig av serverens tidssone. HTML-tegn i tekst behandles som tekst.
 - Personvernets tørrkjøring går ut før skriving. Den sletter heller ikke feillogger.
 - Kontoen ferdigmarkeres først når ekstern sletting lykkes. Opprinnelig slettedato beholdes ved gjenforsøk. Returnerte Storage-feil beholdes som feil, og lydreferansen beholdes for nytt forsøk. Opptak uten lydfil får også tømt transkripsjon og analyse.
