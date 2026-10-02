@@ -3498,6 +3498,8 @@ model WeekPlan {
   repTargetPutting   Int?
   repTargetShortGame Int?
   repetitionTargets  Json?
+  // R06.2: versjonert ukeplan; gamle tidsbudsjetter og enumverdier beholdes.
+  planningDetails    Json?
   loadCeiling        Int?
   customNotes        String?
   createdAt          DateTime   @default(now())

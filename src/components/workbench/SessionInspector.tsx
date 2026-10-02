@@ -80,6 +80,8 @@ export function SessionInspector({
   const [t, m] = start.split(":");
   const nyStartMin = Number(t) * 60 + Number(m);
   const endret = dag !== session.date || nyStartMin !== session.startMinute || varighet !== session.durationMinutes;
+  const faktiskeMinutter = faktiskTid.trim() === "" ? null : Number(faktiskTid);
+  const faktiskGyldig = faktiskeMinutter === null || (Number.isInteger(faktiskeMinutter) && faktiskeMinutter >= 0 && faktiskeMinutter <= 1440);
   const f = session.drills[0]?.akFormel;
 
   return (
@@ -159,12 +161,13 @@ export function SessionInspector({
               : "Ikke vurdert"
           }
         />
+        <InspektorLinje label="Planlagt tid" verdi={`${session.durationMinutes} min`} />
         <InspektorLinje
           label="Faktisk tid"
           verdi={
-            session.actualMinutes
+            session.actualMinutes != null
               ? `${session.actualMinutes} min`
-              : `${session.durationMinutes} min (planlagt)`
+              : "Ikke registrert"
           }
         />
         <InspektorLinje
@@ -190,9 +193,10 @@ export function SessionInspector({
               <Felt label="Faktisk min">
                 <Input
                   type="number"
-                  min="1"
-                  max="600"
-                  placeholder={String(session.durationMinutes)}
+                  min={0}
+                  max={1440}
+                  step={1}
+                  placeholder="Ikke registrert"
                   value={faktiskTid}
                   onChange={(e) => setFaktiskTid(e.target.value)}
                 />
@@ -200,13 +204,8 @@ export function SessionInspector({
             </div>
             <Knapp
               ghost
-              disabled={travel}
-              onClick={() =>
-                onOppdaterAnstrengelse(
-                  effortValg,
-                  faktiskTid.trim() ? parseInt(faktiskTid, 10) : null
-                )
-              }
+              disabled={travel || !faktiskGyldig}
+              onClick={() => { if (faktiskGyldig) onOppdaterAnstrengelse(effortValg, faktiskeMinutter); }}
             >
               Lagre belastning
             </Knapp>

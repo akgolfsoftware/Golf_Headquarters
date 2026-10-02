@@ -1,0 +1,849 @@
+[
+  {
+    "id": "R01.1",
+    "pakke": "Kravregister og versjoner",
+    "oppgave": "Opprett ett register per felt, spørsmål, beregning, referanse, diagram/pivot og handling med stabil ID, kildeversjon, celle/objekt, lagring, spillerflate, begge trenerflater, test og status.",
+    "avhengighet": "Før all bygging",
+    "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R01.2",
+    "pakke": "Kravregister og versjoner",
+    "oppgave": "Ta inn alle 162 utviklingsspørsmål og 13 sesongspørsmål fra den rensede 2027-kilden. Bevar gamle 2025-besvarelser med opprinnelig skala og versjon.",
+    "avhengighet": "Før all bygging",
+    "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
+    "utfart_status": "Kildemodul PR1077, sesongvalidering PR1078 og eieravgrenset besvarelseslagring/revisjoner PR1080 merget. Spillerskjema og trenerlesing gjenstår.",
+    "kodebevis": "main a437e1e11, src/lib/iup/; lagring er ikke bevis på komplette skjermer"
+  },
+  {
+    "id": "R01.3",
+    "pakke": "Kravregister og versjoner",
+    "oppgave": "Registrer alle protokollkonflikter og navngi nøyaktig hvilken beregning som avventer kilde. Hold uavhengig arbeid i gang.",
+    "avhengighet": "Før all bygging",
+    "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R01.4",
+    "pakke": "Kravregister og versjoner",
+    "oppgave": "Kartlegg eksisterende PR-er/arbeidsgrener før en pakke startes; gjenbruk ferdige rettinger og unngå dobbeltarbeid. Fersk status må hentes da, eldre PR-antall er ikke gjeldende fasit.",
+    "avhengighet": "Før all bygging",
+    "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
+    "utfart_status": "PR-er og aktive økter kontrollert 02.10; må gjentas før hver pakke"
+  },
+  {
+    "id": "R02.1",
+    "pakke": "Én identitet, riktige organisasjoner og datadeling",
+    "oppgave": "Bevar User som spilleridentitet og publicPlayerId som ekstern kobling. Representer WANG-skole/trinn/skoleår og TN-gruppe som uavhengige tidsavgrensede relasjoner.",
+    "avhengighet": "R01",
+    "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R02.2",
+    "pakke": "Én identitet, riktige organisasjoner og datadeling",
+    "oppgave": "Utvid eksisterende tilgangsmotor med et eksplisitt WANG→TN-testgrunnlag, registrert avtaleversjon og omfang, uten krav om TN-medlemskap. Ikke gi hele profilen gjennom den gamle smale eksterne leserstien.",
+    "avhengighet": "R01",
+    "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R02.3",
+    "pakke": "Én identitet, riktige organisasjoner og datadeling",
+    "oppgave": "Bruk samme feltavgrensning i profil, søk, serverhandling, eksport, vedlegg, mellomlagring og liveoppdatering. Tilbaketrekking/avsluttet trenerrolle må stenge nye forespørsler.",
+    "avhengighet": "R01",
+    "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R02.4",
+    "pakke": "Én identitet, riktige organisasjoner og datadeling",
+    "oppgave": "Vis særskilt full profildeling, testdeling, foresatt venter, utløpt, trukket, manglende svar og ingen data. Helse, tredjepartsdialog og bilder krever eget tillatt omfang.",
+    "avhengighet": "R01",
+    "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R02.5",
+    "pakke": "Én identitet, riktige organisasjoner og datadeling",
+    "oppgave": "Legg til de nye dataområdene i datakart og innsyn-/slettingsflyt. Definer lagring etter skolebytte/slutt; ikke slett reell historikk som del av oppgraderingen.",
+    "avhengighet": "R01",
+    "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R03.1",
+    "pakke": "Felles IUP-profil og støtteapparat",
+    "oppgave": "Lag en felles autorisert profil-lesemodell som returnerer bare tillatte felt, kildedato, versjon og fullføringsstatus. Organisasjonsflatene bruker samme lagrede svar.",
+    "avhengighet": "R01/R02",
+    "omfang": "IUP-01–03; PH-02–05; TR-03/04/22",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endring lagres én gang og gjenleses med samme revisjon hos spiller og begge autoriserte trenere. Test skjermede felt og historikk.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R03.2",
+    "pakke": "Felles IUP-profil og støtteapparat",
+    "oppgave": "Fullfør skole/klubb/ambisjon, kontaktfelt, støtteapparat med rolle/gyldighet og bestilte helsefelt. Spilleren redigerer sine egne opplysninger.",
+    "avhengighet": "R01/R02",
+    "omfang": "IUP-01–03; PH-02–05; TR-03/04/22",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endring lagres én gang og gjenleses med samme revisjon hos spiller og begge autoriserte trenere. Test skjermede felt og historikk.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R03.3",
+    "pakke": "Felles IUP-profil og støtteapparat",
+    "oppgave": "Erstatt tomme IUP-seksjoner med virkelige innganger til evaluering, mål, plan, tester, teknikk, fysikk og dagbok. Bruk samme sortering som Excel når treneren velger samlet IUP.",
+    "avhengighet": "R01/R02",
+    "omfang": "IUP-01–03; PH-02–05; TR-03/04/22",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endring lagres én gang og gjenleses med samme revisjon hos spiller og begge autoriserte trenere. Test skjermede felt og historikk.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R03.4",
+    "pakke": "Felles IUP-profil og støtteapparat",
+    "oppgave": "Bevar eksisterende profil-/kommunikasjonsfunksjoner og godkjent helseinnsyn; kontoinnstillinger, betaling og sikkerhet er fortsatt spillerens ansvar.",
+    "avhengighet": "R01/R02",
+    "omfang": "IUP-01–03; PH-02–05; TR-03/04/22",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endring lagres én gang og gjenleses med samme revisjon hos spiller og begge autoriserte trenere. Test skjermede felt og historikk.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R04.1",
+    "pakke": "Utviklingssjekk og sesongevaluering",
+    "oppgave": "Opprett versjonerte skjemadefinisjoner, besvarelser og innleveringer med nivå, kildecelle, svartype, skala og revisjon; bruk ny modul bare der eksisterende modell ikke passer.",
+    "avhengighet": "R01/R02/R03",
+    "omfang": "IUP-04/11; PH-14/15; TR-05",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R04.2",
+    "pakke": "Utviklingssjekk og sesongevaluering",
+    "oppgave": "Implementer alle nivåer 34/43/47/38 spørsmål på 1–5 og sesongens 3 fritekstsvar + 10 på 1–4. Hold de sju spørsmålkategoriene atskilt fra fem treningsområder.",
+    "avhengighet": "R01/R02/R03",
+    "omfang": "IUP-04/11; PH-14/15; TR-05",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R04.3",
+    "pakke": "Utviklingssjekk og sesongevaluering",
+    "oppgave": "Lagre/fortsett, feltvalidering, ufullstendig innlevering, historikk og sammenligning innen samme skjema; ikke sammenlign 1–8 og 1–5 som samme skala.",
+    "avhengighet": "R01/R02/R03",
+    "omfang": "IUP-04/11; PH-14/15; TR-05",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R04.4",
+    "pakke": "Utviklingssjekk og sesongevaluering",
+    "oppgave": "Implementer faktisk/ønsket fordeling FYS/TEK/SLAG/SPILL/TURN og minst tre tiltak som kan kobles til prosessmål.",
+    "avhengighet": "R01/R02/R03",
+    "omfang": "IUP-04/11; PH-14/15; TR-05",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R04.5",
+    "pakke": "Utviklingssjekk og sesongevaluering",
+    "oppgave": "Fireukerspåminnelse gjelder WANG/TN; sesongevaluering før uke43. Dette bestemmer ikke startdato for alle årsplaner.",
+    "avhengighet": "R01/R02/R03",
+    "omfang": "IUP-04/11; PH-14/15; TR-05",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R05.1",
+    "pakke": "Mål, kvartalsmatrise og prosessmål",
+    "oppgave": "Definer hver resultatlinje med ID, enhet, kilde, periode, antall, mål, faktisk verdi og registreringstype. Ta med samtlige mål fra Excel, inkludert delintervaller for SG/PEI/putting.",
+    "avhengighet": "R03/R04",
+    "omfang": "IUP-05/06; PH-13/21; TR-06",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Hver matriserad testes mot syntetisk kilde; periodegrenser og enheter samsvarer mellom spiller og begge trenere.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R05.2",
+    "pakke": "Mål, kvartalsmatrise og prosessmål",
+    "oppgave": "Legg til kvartalsvurderinger, årsresultat og historikk uten å endre eksisterende måltype. Oktober–september er et rapportvindu der det brukes.",
+    "avhengighet": "R03/R04",
+    "omfang": "IUP-05/06; PH-13/21; TR-06",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Hver matriserad testes mot syntetisk kilde; periodegrenser og enheter samsvarer mellom spiller og begge trenere.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R05.3",
+    "pakke": "Mål, kvartalsmatrise og prosessmål",
+    "oppgave": "Fullfør resultatmål → prosessmål → handling → start/slutt → målemetode → hjelper → utstyr/fasilitet → evaluering → konkret økt.",
+    "avhengighet": "R03/R04",
+    "omfang": "IUP-05/06; PH-13/21; TR-06",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Hver matriserad testes mot syntetisk kilde; periodegrenser og enheter samsvarer mellom spiller og begge trenere.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R05.4",
+    "pakke": "Mål, kvartalsmatrise og prosessmål",
+    "oppgave": "Automatiske tall og egenrapportering merkes ulikt. Manglende eller usammenlignbare tall får ikke null eller oppdiktet prognose.",
+    "avhengighet": "R03/R04",
+    "omfang": "IUP-05/06; PH-13/21; TR-06",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Hver matriserad testes mot syntetisk kilde; periodegrenser og enheter samsvarer mellom spiller og begge trenere.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R06.1",
+    "pakke": "Samlet Workbench: år, perioder, måned og uke",
+    "oppgave": "Porter valgt workbench-samlet: Sesongkart, Ukeverksted, Trenerbord og Analyse med én delt spiller-/års-/periodekontekst. Bevar alle eksisterende handlinger.",
+    "avhengighet": "R03/R05",
+    "omfang": "IUP-07–09; PH-06–09; TR-07/08",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
+    "utfart_status": "Delvis skrevet; felles kontekst og navigasjon testet. Fire valgte hovedvisninger gjenstår.",
+    "kodebevis": [
+      "src/lib/workbench/plan-kontekst.ts",
+      "tests/komponenter/precision-workbench-integrasjon.test.ts"
+    ],
+    "verifisert_hele_oppgaven": false,
+    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
+  },
+  {
+    "id": "R06.2",
+    "pakke": "Samlet Workbench: år, perioder, måned og uke",
+    "oppgave": "Fullfør ukevis prioritet per treningsområde, fokus, tids-/øktbudsjett og oppholdssted. Støtt år som krysser kalenderår og faktiske datoer.",
+    "avhengighet": "R03/R05",
+    "omfang": "IUP-07–09; PH-06–09; TR-07/08",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
+    "utfart_status": "Ukeprioritet, fokus, timer, øktbudsjett og oppholdssted lagres. 10 lokale database/Auth-prøver og to mobil/desktop-reiser bestod; eksport/anonymisering testet. Full verify bestod; produksjon og visuell godkjenning gjenstår.",
+    "kodebevis": [
+      "src/lib/workbench/ukeplan-schema.ts",
+      "src/lib/workbench/ukeplan-actions.test.ts",
+      "src/components/admin/precision/AG11Ark.tsx"
+    ],
+    "verifisert_hele_oppgaven": false,
+    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
+  },
+  {
+    "id": "R06.3",
+    "pakke": "Samlet Workbench: år, perioder, måned og uke",
+    "oppgave": "Lagre fire uketyper og redigerbar treukerssyklus med tester, opphold og kopiering; vis skole, reise, konkurranse og samling i samme kalender.",
+    "avhengighet": "R03/R05",
+    "omfang": "IUP-07–09; PH-06–09; TR-07/08",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
+    "utfart_status": "Fire uketyper skrevet og koblet til ukeoverskrift. Treukerssyklus og samlet hendelseskalender gjenstår.",
+    "kodebevis": [
+      "src/lib/workbench/ukeplan-schema.test.ts",
+      "tests/komponenter/precision-workbench-integrasjon.test.ts"
+    ],
+    "verifisert_hele_oppgaven": false,
+    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
+  },
+  {
+    "id": "R06.4",
+    "pakke": "Samlet Workbench: år, perioder, måned og uke",
+    "oppgave": "Turneringsplan: tour/land/sted, datoer, 9/18 hull og runder, reisedager separat, prioritet og historisk WAGR Power med kildeår. Ingen sammenblanding med DG-feltstyrke.",
+    "avhengighet": "R03/R05",
+    "omfang": "IUP-07–09; PH-06–09; TR-07/08",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
+    "utfart_status": "Pågående Workbench-pakke; kontekst og ukeplan prioriteres først"
+  },
+  {
+    "id": "R06.5",
+    "pakke": "Samlet Workbench: år, perioder, måned og uke",
+    "oppgave": "Kontroller flytt/kopier/angre, gjentakelser, tidssone/sommertid, kollisjoner, perioder og mål utenfor endret år. Endring med uavklart konsekvens skal bevares som utkast, ikke slette data.",
+    "avhengighet": "R03/R05",
+    "omfang": "IUP-07–09; PH-06–09; TR-07/08",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
+    "utfart_status": "Pågående Workbench-pakke; kontekst og ukeplan prioriteres først"
+  },
+  {
+    "id": "R07.1",
+    "pakke": "Økter, gjennomføring og korrekt treningsdagbok",
+    "oppgave": "Fullfør økt/drillfelt: formål, område, sted, utstyr/antall, metode, læring, fokus, press, mengde, mål, oppvarming, varianter og progresjon.",
+    "avhengighet": "R06",
+    "omfang": "IUP-10/16; PH-10–12; TR-14",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R07.2",
+    "pakke": "Økter, gjennomføring og korrekt treningsdagbok",
+    "oppgave": "Gjenbruk samme økt-ID gjennom plan, Live og logg. Avstem eldre øktmodeller etter eksisterende overgangsplan, uten å slette dem eller telle dobbelte kopier.",
+    "avhengighet": "R06",
+    "omfang": "IUP-10/16; PH-10–12; TR-14",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R07.3",
+    "pakke": "Økter, gjennomføring og korrekt treningsdagbok",
+    "oppgave": "Lag en felles summering som skiller planlagt, faktisk registrert, anslått legacytid, ukjent og fremtid. Fjern skjult presentasjon av planlagt tid som faktisk.",
+    "avhengighet": "R06",
+    "omfang": "IUP-10/16; PH-10–12; TR-14",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
+    "utfart_status": "Felles treningssummering og profil-/IUP-visning koblet og testet: faktisk 0, ukjent, framtid, delvis dekning, hoppet over/avbrutt, ugyldig sommertid og dubletter. Nye fireflater gjenstår; full verify bestod.",
+    "kodebevis": [
+      "src/lib/workbench/treningsvolum.ts",
+      "src/lib/workbench/treningsvolum-spiller360.test.ts",
+      "src/lib/training/volum.test.ts"
+    ],
+    "verifisert_hele_oppgaven": false,
+    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
+  },
+  {
+    "id": "R07.4",
+    "pakke": "Økter, gjennomføring og korrekt treningsdagbok",
+    "oppgave": "Støtt etterregistrering/retting og årsak, øktantall separat fra minutter, dag/uke/måned/sesong og fordeling på fem områder.",
+    "avhengighet": "R06",
+    "omfang": "IUP-10/16; PH-10–12; TR-14",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R07.5",
+    "pakke": "Økter, gjennomføring og korrekt treningsdagbok",
+    "oppgave": "Ved start/pause/fortsett/fullfør/avbryt skal lagringstilstand og gjennomføringsstatus være separate. Ingen «Lagret» før bekreftelse.",
+    "avhengighet": "R06",
+    "omfang": "IUP-10/16; PH-10–12; TR-14",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R08.1",
+    "pakke": "Teknisk og fysisk plan",
+    "oppgave": "Fullfør hvorfor endring skal bedre score, nåværende/ønsket ballflukt og treff, GOBBS, bevegelse, metoder, driller, video, hjelpemidler og ferdiguke.",
+    "avhengighet": "R05/R06/R07",
+    "omfang": "IUP-13–15; PH-16/17/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endret teknisk oppgave sletter ikke gammel gjennomføring; riktige målefelt/enheter og testversjoner vises hos alle autoriserte roller.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R08.2",
+    "pakke": "Teknisk og fysisk plan",
+    "oppgave": "Koble oppgaverevisjon til økt, mål og målegrunnlag. Bevar tidligere versjon og gjennomføring ved ny teknisk retning.",
+    "avhengighet": "R05/R06/R07",
+    "omfang": "IUP-13–15; PH-16/17/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endret teknisk oppgave sletter ikke gammel gjennomføring; riktige målefelt/enheter og testversjoner vises hos alle autoriserte roller.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R08.3",
+    "pakke": "Teknisk og fysisk plan",
+    "oppgave": "Skill IUP2027-driver/7-jern/wedge og sju TrackMan-felt fra den gamle tekniske testprotokollen. Vis metode og versjon ved sammenligning.",
+    "avhengighet": "R05/R06/R07",
+    "omfang": "IUP-13–15; PH-16/17/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endret teknisk oppgave sletter ikke gammel gjennomføring; riktige målefelt/enheter og testversjoner vises hos alle autoriserte roller.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R08.4",
+    "pakke": "Teknisk og fysisk plan",
+    "oppgave": "Bevar fysisk programmering og fem vedtatte tester: benkpress, trapbar, lengdehopp, rotasjonskast og Club Speed. Historiske CMJ/3000m-data leses uten å bli ny obligatorisk standard.",
+    "avhengighet": "R05/R06/R07",
+    "omfang": "IUP-13–15; PH-16/17/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Endret teknisk oppgave sletter ikke gammel gjennomføring; riktige målefelt/enheter og testversjoner vises hos alle autoriserte roller.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R09.1",
+    "pakke": "Testprotokoller, referanser og resultatformat",
+    "oppgave": "Lag versjonert protokollkontrakt: forsøk/rekkefølge, mål, råfelt, enhet, grenser, beregning, presisjon, bedre-retning og referansekilde. Avstem alle38 katalogvarianter og gjenværende sperrer enkeltvis.",
+    "avhengighet": "R01",
+    "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R09.2",
+    "pakke": "Testprotokoller, referanser og resultatformat",
+    "oppgave": "Rett 8-ball til24 forsøk/maks96 i design der feil; kontroller kode mot eksisterende v3-testgrunnlag. Wedge Gate9treff; Nærspill Gate/VISA manuelle poeng etter vedtak.",
+    "avhengighet": "R01",
+    "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R09.3",
+    "pakke": "Testprotokoller, referanser og resultatformat",
+    "oppgave": "Vis PEI-brøk0,05 som5%; behold12,5poeng. Avklar eldre data eksplisitt, ikke gjett prosent fra tallstørrelse.",
+    "avhengighet": "R01",
+    "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R09.4",
+    "pakke": "Testprotokoller, referanser og resultatformat",
+    "oppgave": "Valider skjult Ref-intervall, SG/PEI-referanser, median vs gjennomsnitt, eksakt enhetskonvertering og alle25diagrammenes/énpivots informasjon. Korriger kjente Excel-feil med sporbar beslutning.",
+    "avhengighet": "R01",
+    "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R09.5",
+    "pakke": "Testprotokoller, referanser og resultatformat",
+    "oppgave": "Bevar gamle resultaters formel/protokoll/referanseversjon; ikke utfør stille omberegning. Løs kjente beslutninger uten å be om dem igjen.",
+    "avhengighet": "R01",
+    "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R10.1",
+    "pakke": "Forsøkslagring, bilder og testhistorikk",
+    "oppgave": "Lagre gyldige forsøk automatisk med stabil ID, revisjon og idempotensnøkkel slik at samme innsending ikke dobler resultatet.",
+    "avhengighet": "R02/R09",
+    "omfang": "PH-18; TR-12/13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ny innlogget økt/enhet gjenleser samme verdier; dobbeltklikk, retry, to samtidige redigeringer og avbrutt opplasting prøves i lokal testdatabase.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R10.2",
+    "pakke": "Forsøkslagring, bilder og testhistorikk",
+    "oppgave": "Gjenoppta etter oppfriskning/nettbrudd med minimal kø for egne usendte data; rydd ved utlogging/brukerbytte. Vis lagrer/lagret/venter/feil.",
+    "avhengighet": "R02/R09",
+    "omfang": "PH-18; TR-12/13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ny innlogget økt/enhet gjenleser samme verdier; dobbeltklikk, retry, to samtidige redigeringer og avbrutt opplasting prøves i lokal testdatabase.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R10.3",
+    "pakke": "Forsøkslagring, bilder og testhistorikk",
+    "oppgave": "Fullfør råforsøk og beregnet resultat samlet på serveren. Delvis test må ikke gå inn som gyldig standardresultat/toppliste.",
+    "avhengighet": "R02/R09",
+    "omfang": "PH-18; TR-12/13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ny innlogget økt/enhet gjenleser samme verdier; dobbeltklikk, retry, to samtidige redigeringer og avbrutt opplasting prøves i lokal testdatabase.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R10.4",
+    "pakke": "Forsøkslagring, bilder og testhistorikk",
+    "oppgave": "Koble frivillig slagbilde til forsøk med privat lagring, størrelses-/typekontroll og samme tilgang ved visning/eksport. Ikke send bilder til AI som sideeffekt.",
+    "avhengighet": "R02/R09",
+    "omfang": "PH-18; TR-12/13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ny innlogget økt/enhet gjenleser samme verdier; dobbeltklikk, retry, to samtidige redigeringer og avbrutt opplasting prøves i lokal testdatabase.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R10.5",
+    "pakke": "Forsøkslagring, bilder og testhistorikk",
+    "oppgave": "Retting etter fullføring får årsak, aktør, tidspunkt og ny revisjon; oppdater graf/matrise uten å slette historikk.",
+    "avhengighet": "R02/R09",
+    "omfang": "PH-18; TR-12/13",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Ny innlogget økt/enhet gjenleser samme verdier; dobbeltklikk, retry, to samtidige redigeringer og avbrutt opplasting prøves i lokal testdatabase.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R11.1",
+    "pakke": "Felles testdag på tvers av WANG og TN",
+    "oppgave": "Utvid TestDay bakoverkompatibelt med deltakende skoler/grupper, stasjoner/protokoller, puljer, fellesstart, kapasitet og ansvar. Gamle dager får lesbar én-stasjonstolkning.",
+    "avhengighet": "R02/R09/R10",
+    "omfang": "TR-10–13; PH-18/27",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "To skoler +TN-gruppe +dobbelmedlem; flere tester, én invitasjon/tildeling, riktige rolletilganger, liveoppdatering mellom enheter og korrigert resultat.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R11.2",
+    "pakke": "Felles testdag på tvers av WANG og TN",
+    "oppgave": "Dedup samme spiller på tvers av medlemskap; opprett egne spiller–stasjon-tildelinger. Bevar kø og historiske resultatreferanser.",
+    "avhengighet": "R02/R09/R10",
+    "omfang": "TR-10–13; PH-18/27",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "To skoler +TN-gruppe +dobbelmedlem; flere tester, én invitasjon/tildeling, riktige rolletilganger, liveoppdatering mellom enheter og korrigert resultat.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R11.3",
+    "pakke": "Felles testdag på tvers av WANG og TN",
+    "oppgave": "Tilby føring på egne tildelte stasjoner, trenerføring og kontroll. Arrangør/stasjonstrener får bare nødvendig innsyn, ikke hele IUP.",
+    "avhengighet": "R02/R09/R10",
+    "omfang": "TR-10–13; PH-18/27",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "To skoler +TN-gruppe +dobbelmedlem; flere tester, én invitasjon/tildeling, riktige rolletilganger, liveoppdatering mellom enheter og korrigert resultat.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R11.4",
+    "pakke": "Felles testdag på tvers av WANG og TN",
+    "oppgave": "Bygg felles resultatmatrise med skole/kull/gruppe/test/protokoll/dato/status og sammenlignbare utvalg. Alle WANG-testresultater blir synlige for tillatt TN-leser uten TN-medlemskap.",
+    "avhengighet": "R02/R09/R10",
+    "omfang": "TR-10–13; PH-18/27",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "To skoler +TN-gruppe +dobbelmedlem; flere tester, én invitasjon/tildeling, riktige rolletilganger, liveoppdatering mellom enheter og korrigert resultat.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R11.5",
+    "pakke": "Felles testdag på tvers av WANG og TN",
+    "oppgave": "Oppdater andre autoriserte skjermer fra bekreftet lagring, med gjenopptak etter nettbrudd og siste oppdatering. Innfør ikke åpen deltaker-/resultatliste uten vedtatt publikum.",
+    "avhengighet": "R02/R09/R10",
+    "omfang": "TR-10–13; PH-18/27",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "To skoler +TN-gruppe +dobbelmedlem; flere tester, én invitasjon/tildeling, riktige rolletilganger, liveoppdatering mellom enheter og korrigert resultat.",
+    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R12.1",
+    "pakke": "Trenerforslag som spilleren godkjenner",
+    "oppgave": "Kartlegg eksisterende forslagstyper og utvid felles kontrakt for trener→spiller uten å endre retningen til legacy-forespørsler eller tekniske AI-forslag.",
+    "avhengighet": "R02/R05/R06",
+    "omfang": "PH-26; TR-07/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Før godkjenning uendret plan; avvisning uendret; godta nøyaktig én gang; to trenere og spillerens egne endringer gir synlig konflikt.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R12.2",
+    "pakke": "Trenerforslag som spilleren godkjenner",
+    "oppgave": "Lagre avsender/organisasjon, målspiller, før/etter, begrunnelse, berørte økter/plan, basisrevisjon, gyldighet og status.",
+    "avhengighet": "R02/R05/R06",
+    "omfang": "PH-26; TR-07/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Før godkjenning uendret plan; avvisning uendret; godta nøyaktig én gang; to trenere og spillerens egne endringer gir synlig konflikt.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R12.3",
+    "pakke": "Trenerforslag som spilleren godkjenner",
+    "oppgave": "Bytt TN/WANGs direkte personlige planendringer til forslag. Gruppeplaner og trenerens egne notater følger sine egne rettigheter.",
+    "avhengighet": "R02/R05/R06",
+    "omfang": "PH-26; TR-07/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Før godkjenning uendret plan; avvisning uendret; godta nøyaktig én gang; to trenere og spillerens egne endringer gir synlig konflikt.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R12.4",
+    "pakke": "Trenerforslag som spilleren godkjenner",
+    "oppgave": "Gi spilleren godta/avvis; anvend hele endringen atomisk én gang etter fersk tilgangs- og revisjonssjekk. Ved konflikt skal nyere plan bevares.",
+    "avhengighet": "R02/R05/R06",
+    "omfang": "PH-26; TR-07/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Før godkjenning uendret plan; avvisning uendret; godta nøyaktig én gang; to trenere og spillerens egne endringer gir synlig konflikt.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R12.5",
+    "pakke": "Trenerforslag som spilleren godkjenner",
+    "oppgave": "Støtt utkast/send/sett/godkjent/avvist/trukket/utløpt/konflikt og beslutningshistorikk. WANGs IUP-fokus som endrer personlig plan følger samme godkjenning.",
+    "avhengighet": "R02/R05/R06",
+    "omfang": "PH-26; TR-07/19",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Før godkjenning uendret plan; avvisning uendret; godta nøyaktig én gang; to trenere og spillerens egne endringer gir synlig konflikt.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R13.1",
+    "pakke": "Samlinger, gruppeplaner og invitasjoner",
+    "oppgave": "Gjenbruk gruppeplan/GroupSchedule som utgangspunkt; legg til versjonert program, deltakelse og invitasjonsstatus fremfor separate kopier av kalenderplan.",
+    "avhengighet": "R02/R06/R12",
+    "omfang": "PH-27; TR-08/09",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Publiser → én invitasjon → godta → én komplett plan; prøv avslag, reprise, endring, avlysning, uttrekk og fullførte økter.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R13.2",
+    "pakke": "Samlinger, gruppeplaner og invitasjoner",
+    "oppgave": "Lag komplett dags-/ukeprogram med økter, stasjoner, trener, sted, ressurser, mål og deltakende grupper/skoler.",
+    "avhengighet": "R02/R06/R12",
+    "omfang": "PH-27; TR-08/09",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Publiser → én invitasjon → godta → én komplett plan; prøv avslag, reprise, endring, avlysning, uttrekk og fullførte økter.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R13.3",
+    "pakke": "Samlinger, gruppeplaner og invitasjoner",
+    "oppgave": "Publisering oppretter én invitasjon per valgt spiller, også ved dobbelmedlemskap. Bruk varslingsmønster i appen; ekte e-post/invitasjoner er et eget driftstrinn.",
+    "avhengighet": "R02/R06/R12",
+    "omfang": "PH-27; TR-08/09",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Publiser → én invitasjon → godta → én komplett plan; prøv avslag, reprise, endring, avlysning, uttrekk og fullførte økter.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R13.4",
+    "pakke": "Samlinger, gruppeplaner og invitasjoner",
+    "oppgave": "Spilleren forhåndsviser hele planen og kollisjoner, godtar/avviser, og legger godkjent program inn én gang i kalender/Workbench med opphavskobling.",
+    "avhengighet": "R02/R06/R12",
+    "omfang": "PH-27; TR-08/09",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Publiser → én invitasjon → godta → én komplett plan; prøv avslag, reprise, endring, avlysning, uttrekk og fullførte økter.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R13.5",
+    "pakke": "Samlinger, gruppeplaner og invitasjoner",
+    "oppgave": "Nye vesentlige programendringer krever ny beslutning. Avlysning og uttrekk påvirker framtid uten å ødelegge fullførte økter. Vis faktiske inviterte/bekreftede/møtte antall.",
+    "avhengighet": "R02/R06/R12",
+    "omfang": "PH-27; TR-08/09",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Publiser → én invitasjon → godta → én komplett plan; prøv avslag, reprise, endring, avlysning, uttrekk og fullførte økter.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R14.1",
+    "pakke": "Automatiske turneringsresultater og alle pipeline-profiler",
+    "oppgave": "Bruk pipelines som eneste innhenter; identitetskoble med stabile kilde-ID-er. Samme navn alene gir aldri automatisk kontokobling.",
+    "avhengighet": "R02/R03",
+    "omfang": "IUP-08; PH-20/22; TR-15/16/23",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme resultat to ganger, senere korreksjon, to spillere med samme navn, DNS/WD/CUT,9/18hull, kildebrudd og uautorisert profil; alle tillatte flater samsvarer.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R14.2",
+    "pakke": "Automatiske turneringsresultater og alle pipeline-profiler",
+    "oppgave": "Standardiser kilde/event/runde/spiller/revisjon, brutto, status og tidspunkt; korrigering oppdaterer samme resultat uten duplikat. Bevar kildehistorikk.",
+    "avhengighet": "R02/R03",
+    "omfang": "IUP-08; PH-20/22; TR-15/16/23",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme resultat to ganger, senere korreksjon, to spillere med samme navn, DNS/WD/CUT,9/18hull, kildebrudd og uautorisert profil; alle tillatte flater samsvarer.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R14.3",
+    "pakke": "Automatiske turneringsresultater og alle pipeline-profiler",
+    "oppgave": "Oppdater lesemodell/mellomlager etter vellykket innhenting. Mål faktisk tid til profilen oppdateres; femminuttersmål er foreslått tjenestemål, ikke dagens garanti.",
+    "avhengighet": "R02/R03",
+    "omfang": "IUP-08; PH-20/22; TR-15/16/23",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme resultat to ganger, senere korreksjon, to spillere med samme navn, DNS/WD/CUT,9/18hull, kildebrudd og uautorisert profil; alle tillatte flater samsvarer.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R14.4",
+    "pakke": "Automatiske turneringsresultater og alle pipeline-profiler",
+    "oppgave": "Gi trenerne tilgjengelig katalog over alle tillatte pipeline-profiler, også uten appkonto; vis identitetskonflikt og dekning. Konto-/IUP-tilgang tildeles aldri fra katalogen.",
+    "avhengighet": "R02/R03",
+    "omfang": "IUP-08; PH-20/22; TR-15/16/23",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme resultat to ganger, senere korreksjon, to spillere med samme navn, DNS/WD/CUT,9/18hull, kildebrudd og uautorisert profil; alle tillatte flater samsvarer.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R14.5",
+    "pakke": "Automatiske turneringsresultater og alle pipeline-profiler",
+    "oppgave": "Hold egne treningsrunder, offisielle turneringsrunder, ranking, WAGR Power og DataGolf-data atskilt. Vis siste vellykkede synk ved nedetid og kildejustering ved retting.",
+    "avhengighet": "R02/R03",
+    "omfang": "IUP-08; PH-20/22; TR-15/16/23",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samme resultat to ganger, senere korreksjon, to spillere med samme navn, DNS/WD/CUT,9/18hull, kildebrudd og uautorisert profil; alle tillatte flater samsvarer.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R15.1",
+    "pakke": "DataGolf: hele datagrunnlaget og skjermsettet",
+    "oppgave": "Kartlegg hvert dokumentert datasett/felt mot API/nettside, lokal tabell, oppdatering, enhet, periode og kundevisningsrett. Ikke ta eldre endepunktdokument som bevis på dagens kjøring.",
+    "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
+    "omfang": "DG-01–17; PH-24; TR-17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R15.2",
+    "pakke": "DataGolf: hele datagrunnlaget og skjermsettet",
+    "oppgave": "Fullfør felles datalesere for katalog/profil, kategori-topplister, sammenligning, innspill, historiske runder, kalender/felt, turnering/live, modell, bane/trend og datautforsking.",
+    "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
+    "omfang": "DG-01–17; PH-24; TR-17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R15.3",
+    "pakke": "DataGolf: hele datagrunnlaget og skjermsettet",
+    "oppgave": "Skill faktiske resultater og SG fra ferdighetsestimat/prognoser; vis datadekning, utvalg og antall. Ingen modellscore fremstilt som målt runde.",
+    "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
+    "omfang": "DG-01–17; PH-24; TR-17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R15.4",
+    "pakke": "DataGolf: hele datagrunnlaget og skjermsettet",
+    "oppgave": "Bevar filtre og sammenlignbare perioder ved navigasjon. Analyse → mål/forslag bruker R12. Nettsidefunksjoner uten API får eksplisitt kildebegrensning.",
+    "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
+    "omfang": "DG-01–17; PH-24; TR-17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R15.5",
+    "pakke": "DataGolf: hele datagrunnlaget og skjermsettet",
+    "oppgave": "Aktiver bare datasett med dokumentert bruksrett; samme kontroll i eksport, mellomlager og profil. Spesialist-/oddsregister er avgrenset til relevante voksne roller uten spillhandlinger.",
+    "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
+    "omfang": "DG-01–17; PH-24; TR-17",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
+    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+  },
+  {
+    "id": "R16.1",
+    "pakke": "Trenerflater, administrasjon og full regresjon",
+    "oppgave": "Koble felles autoriserte data til Precision/PlayerHQ, WANG og TN uten egne kopier av IUP. Bevar valgt designprofil per flate.",
+    "avhengighet": "R02–R15",
+    "omfang": "PH-01–34; TR-01–24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R16.2",
+    "pakke": "Trenerflater, administrasjon og full regresjon",
+    "oppgave": "WANG: egne skoler/kull/grupper, morgenøkter, oppmøte, kompetansemål og sportssjefadministrasjon. TN: landslagsgrupper, nasjonal WANG-testoversikt, samlinger, relevante uttak/college/ranking.",
+    "avhengighet": "R02–R15",
+    "omfang": "PH-01–34; TR-01–24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R16.3",
+    "pakke": "Trenerflater, administrasjon og full regresjon",
+    "oppgave": "Bevar eksisterende meldinger, dokumenter, fagapparat, gameplan, TrackMan, fysikk, booking, utstyr, sosiale funksjoner og konto med sine eksisterende rollegrenser. Nye data skal med i innsyn/eksport og dokumentert livssyklus.",
+    "avhengighet": "R02–R15",
+    "omfang": "PH-01–34; TR-01–24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R16.4",
+    "pakke": "Trenerflater, administrasjon og full regresjon",
+    "oppgave": "Lag riktig kunde-/organisasjonsoppsett med roller og avtaleversjoner. Ingen oppdiktet pris, fakturering eller automatisk kundeaktivering.",
+    "avhengighet": "R02–R15",
+    "omfang": "PH-01–34; TR-01–24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R16.5",
+    "pakke": "Trenerflater, administrasjon og full regresjon",
+    "oppgave": "Avstem samtlige ruter/underhandlinger mot funksjonsregisteret; fullfør tom/loading/feil/ikke-delt. Test390/1440 ogWANG1280, tastatur, stor tekst, fokus og kontrast.",
+    "avhengighet": "R02–R15",
+    "omfang": "PH-01–34; TR-01–24",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
+    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+  },
+  {
+    "id": "R17.1",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Kjør nye modeller/tilgangsregler først i separat lokal database med syntetiske kontoer: WANG-only, TN-only, begge, voksen/mindreårig, ulike skoler, trener og stasjonsleder.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R17.2",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Kjør målrettede enhetstester, databaseprøver og hele nettleserreiser; npm run verify, npm test og npm run prosjekt:sjekk etter relevant endring. Rapporter faktiske resultater.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R17.3",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Sammenlign de konkrete designversjonene med appen på390/1440 ogWANG1280. Registrer Anders sin vurdering separat fra tekniske tester.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R17.4",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Rull ut additive og bakoverkompatible kode-/skjemaendringer med tilgangsregler, nødvendige indekser og kontroller. Ha reverserbar aktivering per organisasjon og behold data ved tilbakerulling.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R17.5",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Eventuell Excel-innflytting: forhåndsvisning, feltmapping, kildeversjon, feilliste, duplikatkontroll og sporbar import. Ekte persondataimport/invitasjoner behandles som egne eksplisitte driftstrinn.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  },
+  {
+    "id": "R17.6",
+    "pakke": "Samlet prøve, innføring og avvikling av Excel",
+    "oppgave": "Avvikle Excel først når alle aktive krav er kontrollert, data avstemt, spiller/trenerreise prøvd og ingen kritiske avvik står åpne. Kundepilot og faktisk produksjonsoppdatering må dokumenteres.",
+    "avhengighet": "R01–R16",
+    "omfang": "Alle",
+    "status": "Planlagt — ikke implementert i denne leveransen",
+    "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
+    "utfart_status": "Ikke verifisert"
+  }
+]
