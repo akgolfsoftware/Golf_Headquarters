@@ -595,6 +595,7 @@ model User {
   testResultsAsWitness  TestResult[]         @relation("TestWitness")
   testResultsRecorded   TestResult[]         @relation("TestResultRecordedBy")
   testSessions          TestSession[]
+  testSessionPhotos     TestSessionPhoto[]
   testDaysAsCoach       TestDay[]            @relation("TestDayCoach")
   testDayParticipations TestDayParticipant[] @relation("TestDayPlayer")
   testAssignments       TestAssignment[]     @relation("PlayerTestAssignments")
@@ -2199,10 +2200,29 @@ model TestSession {
   test TestDefinition @relation(fields: [testId], references: [id])
 
   testDayParticipant TestDayParticipant?
+  photos             TestSessionPhoto[]
 
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
+}
+
+/// Valgfritt privat bilde knyttet til ett forsøk i en versjonert TN-test.
+/// Scorekortdeling gir ikke automatisk tilgang til bildet.
+model TestSessionPhoto {
+  id            String      @id @default(cuid())
+  userId        String
+  testSessionId String
+  attemptNumber Int
+  storagePath   String      @unique
+  createdAt     DateTime    @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testSession TestSession @relation(fields: [testSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([testSessionId, attemptNumber])
+  @@index([userId, createdAt])
+  @@map("test_session_photos")
 }
 
 /// Tildeling av en test fra coach til spiller. Spiller varsles ved opprettelse;
