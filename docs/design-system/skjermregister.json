@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "4ade3fbe2bbee66627674be4242c8c7671fb8576",
+  "kodeversjon": "adf4cb3fbd5c97b18c03427bbdcdfdb0d9450dee",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
-    "componentFiles": 831,
-    "surfaceFiles": 246,
+    "componentFiles": 834,
+    "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -14932,12 +14932,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Analyse-huben merker PH16Analyse i PlayerHQSkall. Vindu, Broadie, SG, TrackMan-mini og dypere-lenker er beholdt. Historikk er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-16.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-16 Analyse-hub er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -18642,7 +18644,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "PH-24",
@@ -19156,7 +19158,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-12"
     },
     {
       "screenId": "PH-10",
@@ -22990,10 +22992,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 45,
+    "medAvvik": 46,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 9,
+    "implementert": 10,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
