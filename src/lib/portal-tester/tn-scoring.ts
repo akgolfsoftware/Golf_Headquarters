@@ -2,6 +2,7 @@ import { z } from "zod";
 import { forventedePutter, gronnePutter, sgFraLengde } from "@/lib/domain/pei/broadie-sg-tabeller";
 import { poeng8Ball } from "@/lib/domain/pei/poeng-tabeller";
 import { TN_VERSION, type TnProtocol, type TnRow } from "./tn-catalog";
+import { formaterTestMetrikk } from "./format-verdi";
 
 export const TnValuesSchema = z.record(z.string().regex(/^[1-9]\d*$/), z.record(z.string().max(60), z.union([z.number().finite(), z.string().max(80), z.null()])));
 export type TnValues = z.infer<typeof TnValuesSchema>;
@@ -92,10 +93,8 @@ export function tnScore(p: TnProtocol, values: TnValues): TnResult {
     }
   }
   const primary = p.points8Ball ? metrics.find(m => m.label === "Totalt antall poeng")! : metrics[0];
-  return { version: TN_VERSION, protocolId: p.id, source: p.source, count: p.rows.length, score: primary.value, unit: primary.unit, metrics, values };
+  return { version: TN_VERSION, protocolId: p.id, source: p.source, count: p.rows.length, score: primary.value, unit: primary.unit, metrics, values: structuredClone(values) };
 }
 export function tnFormat(metric: Pick<TnMetric, "value" | "unit">): string {
-  return metric.unit === "PEI"
-    ? new Intl.NumberFormat("nb-NO", { style: "percent", maximumFractionDigits: 2 }).format(metric.value)
-    : `${new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 }).format(metric.value)} ${metric.unit}`;
+  return formaterTestMetrikk(metric.value, metric.unit);
 }

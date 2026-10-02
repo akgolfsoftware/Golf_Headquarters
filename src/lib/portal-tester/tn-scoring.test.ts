@@ -30,7 +30,7 @@ test("PEI bruker geometri og snitt av forholdstall; manglende side er ikke null"
   assert.equal(tnScore(p, values).score, 0.055);
   p.rows[0].target = 100; values["1"] = { carry: 97, side: 4 }; values["2"] = { carry: 97, side: 4 };
   assert.equal(tnScore(p, values).score, 0.05);
-  assert.equal(tnFormat({ value: 0.05, unit: "PEI" }), "5 %");
+  assert.equal(tnFormat({ value: 0.05, unit: "PEI" }), "5 %");
   delete values["1"].side;
   assert.throws(() => tnScore(p, values), /sideavvik/);
 });

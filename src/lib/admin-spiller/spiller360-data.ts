@@ -32,8 +32,7 @@ import { ovelsesNavn } from "@/lib/portal-tester/test-anbefaling";
 import { tnHistorikkRader } from "@/lib/portal-tester/tn-historikk";
 import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFormat } from "@/lib/portal-tester/tn-scoring";
-import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
-import { parseForScoring } from "@/lib/portal-tester/test-scoring";
+import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
@@ -479,7 +478,7 @@ async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
       where: { userId: id },
       orderBy: { takenAt: "desc" },
       take: 12,
-      select: { id: true, score: true, takenAt: true, test: { select: { name: true, protocol: true } } },
+      select: { id: true, testId: true, details: true, score: true, takenAt: true, test: { select: { name: true, protocol: true } } },
     }),
   ]);
 
@@ -526,7 +525,7 @@ async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
     trening: fireUker.length
       ? { gjennomfort: gjennomforte.length, planlagt: fireUker.length, timer, kilde: `WORKBENCH · 4 UKER · ${dato(naa)}` }
       : null,
-    tester: tester.map((t) => ({ navn: t.test.name, verdi: formaterTestVerdi({ kind: parseForScoring(t.test.protocol).kind, verdi: t.score }), kilde: `TEST · ${dato(t.takenAt)}` })),
+    tester: tester.map((t) => ({ navn: t.test.name, verdi: formaterLagretTestResultat({ ...t, protocol: t.test.protocol }), kilde: `TEST · ${dato(t.takenAt)}` })),
     teknikk: tp.aktiv?.oppgaver.map((o) => ({ p: o.pNummer, tittel: o.tittel, status: o.status })) ?? [],
     teknikkKilde: tp.aktiv ? `TEKNISK PLAN · ${tp.aktiv.coach ?? "—"} · ${tp.aktiv.sistRegistrert}`.toUpperCase() : null,
     fys: ekstra.fysTester.map((t) => ({ navn: t.navn, verdi: desimal(t.score), kilde: `FYS-TEST · ${dato(t.takenAt)}` })),

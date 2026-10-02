@@ -1,5 +1,5 @@
 import { TN_CATALOG, TN_VERSION, tnProtocol, isTnTestName, type TnProtocol } from "./tn-catalog";
-import { TnResultSchema } from "./tn-scoring";
+import { TnResultSchema, tnScore } from "./tn-scoring";
 
 export const tnDefinitionId = (p: TnProtocol) => `tn-v3-${p.id}`;
 export function tnFromDefinitionId(id: string) {
@@ -21,6 +21,16 @@ export function tnComparableResult(testId: string, score: number, details: unkno
   const r = parsed.data;
   const p = tnFromDefinitionId(testId);
   if (!p || r.count > 200 || p.blocked || p.id !== r.protocolId || (!p.variableCount && p.rows.length !== r.count)) return null;
-  return { ...r, comparisonKey: `${r.version}:${r.protocolId}:${r.count}:${r.unit}`,
-    direction: p.points8Ball ? "higher" as const : "lower" as const };
+  const actual = p.variableCount ? tnProtocol(p.id, r.count) : p;
+  if (!actual) return null;
+  try {
+    const canonical = tnScore(actual, r.values);
+    if (canonical.score !== score || canonical.unit !== r.unit) return null;
+    const primary = canonical.metrics.find(m => m.value === canonical.score && m.unit === canonical.unit);
+    if (!primary) return null;
+    return { ...canonical, comparisonKey: `${r.version}:${r.protocolId}:${r.count}:${r.unit}`,
+      direction: primary.lowerIsBetter ? "lower" as const : "higher" as const };
+  } catch {
+    return null;
+  }
 }
