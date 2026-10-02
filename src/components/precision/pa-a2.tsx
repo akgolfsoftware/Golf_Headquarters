@@ -24,9 +24,9 @@ export function Sokefelt({ value, onChange, placeholder = "Søk etter navn", lab
   </label>;
 }
 
-export function SegmentertValg<T extends string>({ value, options, onChange, label }: { value: T; options: readonly { id: T; label: string }[]; onChange: (v: T) => void; label: string }) {
+export function SegmentertValg<T extends string>({ value, options, onChange, label, odPrefix }: { value: T; options: readonly { id: T; label: string }[]; onChange: (v: T) => void; label: string; odPrefix?: string }) {
   return <div className="pa-seg" role="group" aria-label={label}>
-    {options.map((o) => <button key={o.id} type="button" className="pa-seg__opt" aria-pressed={value === o.id} onClick={() => onChange(o.id)}>{o.label}</button>)}
+    {options.map((o) => <button key={o.id} type="button" className="pa-seg__opt" data-od-id={odPrefix ? `${odPrefix}-${o.id.toLowerCase()}` : undefined} aria-pressed={value === o.id} onClick={() => onChange(o.id)}>{o.label}</button>)}
   </div>;
 }
 

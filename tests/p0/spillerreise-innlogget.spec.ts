@@ -212,10 +212,12 @@ test.describe("P0 innlogget spillerreise", () => {
     await page.locator('[data-od-id="brief-start"]').click({ timeout: 20_000 });
     await ventPaSti(page, `/portal/live/${wbId}/tapper`);
     await expect(page.getByText("P0 Workbench").first()).toBeVisible();
+    await page.locator('[data-od-id="tapper-klubb-driver"]').click();
     for (let i = 0; i < wbTall; i += 1) {
-      await page.locator('[data-od-id="tapper-klubb-driver"]').click();
+      await page.locator('[data-od-id="tapper-pluss-1"]').click();
     }
     await page.locator('[data-od-id="tapper-avslutt"]').click();
+    await page.locator('[data-od-id="tapper-avslutt-bekreft"]').click();
     await ventPaSti(page, `/portal/live/${wbId}/summary`);
     await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible();
     await expectSlag(page, wbTall);
@@ -268,10 +270,12 @@ test.describe("P0 innlogget spillerreise", () => {
     await expect(page.getByText("P0 Eldre plan").first()).toBeVisible();
     await page.locator('[data-od-id="brief-start"]').click();
     await ventPaSti(page, `/portal/live/${planId}/tapper`);
+    await page.locator('[data-od-id="tapper-klubb-iron-7"]').click();
     for (let i = 0; i < planTall; i += 1) {
-      await page.locator('[data-od-id="tapper-klubb-iron-7"]').click();
+      await page.locator('[data-od-id="tapper-pluss-1"]').click();
     }
     await page.locator('[data-od-id="tapper-avslutt"]').click();
+    await page.locator('[data-od-id="tapper-avslutt-bekreft"]').click();
     await ventPaSti(page, `/portal/live/${planId}/summary`);
     await expect(page.getByRole("heading", { name: "P0 Eldre plan" })).toBeVisible();
     await expectSlag(page, planTall);

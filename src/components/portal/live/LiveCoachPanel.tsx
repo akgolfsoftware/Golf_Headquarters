@@ -39,9 +39,12 @@ function feilFraStatus(status: number, feltFeil?: string): string {
 export function LiveCoachPanel({
   data,
   activeDrillId,
+  bunnLoft = 0,
 }: {
   data: LiveCoachPanelData;
   activeDrillId?: string | null;
+  /** Løfter FAB og panel over en fast handlingslinje nederst (px). Standard 0. */
+  bunnLoft?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [meldinger, setMeldinger] = useState<LiveCoachChatRow[]>(data.initialMessages);
@@ -128,7 +131,7 @@ export function LiveCoachPanel({
 
   if (data.tier === "GRATIS") {
     return (
-      <FloatingShell open={open} onToggle={() => setOpen((v) => !v)} harUlest={false}>
+      <FloatingShell bunnLoft={bunnLoft} open={open} onToggle={() => setOpen((v) => !v)} harUlest={false}>
         <PanelHeader onClose={() => setOpen(false)} />
         <div style={{ padding: "18px 18px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
           <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
@@ -143,7 +146,7 @@ export function LiveCoachPanel({
   }
 
   return (
-    <FloatingShell open={open} onToggle={() => setOpen((v) => !v)} harUlest={harUlest}>
+    <FloatingShell bunnLoft={bunnLoft} open={open} onToggle={() => setOpen((v) => !v)} harUlest={harUlest}>
       <PanelHeader onClose={() => setOpen(false)} />
       <div ref={scrollRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12 }}>
         {meldinger.length === 0 ? (
@@ -199,7 +202,9 @@ function FloatingShell({
   onToggle,
   harUlest,
   children,
+  bunnLoft = 0,
 }: {
+  bunnLoft?: number;
   open: boolean;
   onToggle: () => void;
   harUlest: boolean;
@@ -215,7 +220,7 @@ function FloatingShell({
         style={{
           position: "fixed",
           right: 16,
-          bottom: "max(env(safe-area-inset-bottom) + 16px, 16px)",
+          bottom: `max(env(safe-area-inset-bottom) + ${16 + bunnLoft}px, ${16 + bunnLoft}px)`,
           zIndex: 60,
           width: 56,
           height: 56,
@@ -241,7 +246,7 @@ function FloatingShell({
       style={{
         position: "fixed",
         right: 16,
-        bottom: "max(env(safe-area-inset-bottom) + 16px, 16px)",
+        bottom: `max(env(safe-area-inset-bottom) + ${16 + bunnLoft}px, ${16 + bunnLoft}px)`,
         zIndex: 60,
         width: "min(400px, calc(100vw - 32px))",
         maxHeight: "min(70vh, 620px)",

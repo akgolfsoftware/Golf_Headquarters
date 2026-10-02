@@ -29,9 +29,10 @@ const CountsSchema = z
 async function persistCounts(sessionId: string, counts: unknown, finish: boolean) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const parsed = CountsSchema.safeParse(counts);
-  if (!parsed.success || new Set(parsed.data.map((r) => r.club)).size !== parsed.data.length) {
+  if (!z.string().min(1).max(200).safeParse(sessionId).success || !parsed.success || new Set(parsed.data.map((r) => r.club)).size !== parsed.data.length) {
     return { ok: false, error: "Ugyldig tapper-data." };
   }
+  let serverUpdatedAt: string | undefined;
   try {
     await prisma.$transaction(async (tx) => {
       const plan = await tx.trainingPlanSession.findUnique({
@@ -60,7 +61,7 @@ async function persistCounts(sessionId: string, counts: unknown, finish: boolean
         await tx.workbenchSession.update({ where, data: { status: finish ? "COMPLETED" : row.status } });
       }
       for (const rad of parsed.data) {
-        await tx.sessionBallLog.upsert({
+        const saved = await tx.sessionBallLog.upsert({
           where: { planSessionId_club: { planSessionId: sessionId, club: rad.club } },
           create: {
             planSessionId: sessionId,
@@ -77,6 +78,8 @@ async function persistCounts(sessionId: string, counts: unknown, finish: boolean
             repetitionType: rad.repetitionType ?? null,
           },
         });
+        const stamp = saved?.updatedAt?.toISOString();
+        if (stamp && (!serverUpdatedAt || stamp > serverUpdatedAt)) serverUpdatedAt = stamp;
       }
     });
   } catch {
@@ -85,14 +88,14 @@ async function persistCounts(sessionId: string, counts: unknown, finish: boolean
   revalidatePath("/portal");
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`, "layout");
-  return { ok: true };
+  return { ok: true, serverUpdatedAt };
 }
 
-export async function saveTapperCounts(sessionId: string, counts: unknown): Promise<{ ok: boolean; error?: string }> {
+export async function saveTapperCounts(sessionId: string, counts: unknown): Promise<{ ok: boolean; error?: string; serverUpdatedAt?: string }> {
   return persistCounts(sessionId, counts, false);
 }
 
 /** Sluttelling og fullført-status lagres samlet. Naviger først ved ok. */
-export async function finishTapperSession(sessionId: string, counts: unknown): Promise<{ ok: boolean; error?: string }> {
+export async function finishTapperSession(sessionId: string, counts: unknown): Promise<{ ok: boolean; error?: string; serverUpdatedAt?: string }> {
   return persistCounts(sessionId, counts, true);
 }
