@@ -80,7 +80,14 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
   const [rpe, setRpe] = useState<string>(session?.perceivedEffort != null ? String(session.perceivedEffort) : "");
   const [faktisk, setFaktisk] = useState<string>(session?.actualMinutes != null ? String(session.actualMinutes) : "");
   const [bekreftSlett, setBekreftSlett] = useState(false);
+  const [formaal, setFormaal] = useState(session?.rationale ?? "");
+  const [sted, setSted] = useState(session?.location ?? "");
+  const [malsetning, setMalsetning] = useState(session?.maalsetning ?? "");
   if (!session) return null;
+  const innholdPatch: Parameters<UkeMotor["lagreOktinnhold"]>[1] = {};
+  if (formaal !== (session.rationale ?? "")) innholdPatch.rationale = formaal.trim() || null;
+  if (sted !== (session.location ?? "")) innholdPatch.location = sted.trim() || null;
+  if (malsetning !== (session.maalsetning ?? "")) innholdPatch.maalsetning = malsetning.trim() || null;
   const travel = motor.travel;
   const utkast = session.status === "DRAFT";
   const [t, m] = start.split(":");
@@ -132,6 +139,17 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
       </div>
 
       <div className="a9-skjema">
+        <span className="kicker">Øktens innhold</span>
+        <Felt label="Formål"><textarea maxLength={1000} value={formaal} onChange={e => setFormaal(e.target.value)} /></Felt>
+        <Felt label="Sted"><input maxLength={160} value={sted} onChange={e => setSted(e.target.value)} /></Felt>
+        <Felt label="Øktens målsetning"><textarea maxLength={500} value={malsetning} onChange={e => setMalsetning(e.target.value)} /></Felt>
+        {session.seriesId && <Felt label="Endre innhold for"><select value={policy} onChange={e => setPolicy(e.target.value as RecurrencePolicy)}>{SERIE_POLICIER.map(p => <option key={p} value={p}>{SERIE_POLICY_LABEL[p]}</option>)}</select></Felt>}
+        <Knapp variant="secondary" disabled={travel || Object.keys(innholdPatch).length === 0}
+          onClick={() => motor.lagreOktinnhold(session, innholdPatch, policy)}>Lagre øktinnhold</Knapp>
+        <p className="a9-tekst">Deles med spilleren når økten er publisert.</p>
+      </div>
+
+      <div className="a9-skjema">
         <span className="kicker">{UI.sessionAboutLabel}</span>
         <Nokkelverdi items={[
           [UI.pyramid, PYRAMID_LABEL[session.pyramid] ?? "—"],
@@ -156,6 +174,8 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
           {session.drills.map((d, i) => <div key={d.id} role="listitem" className="a9-ovelsesrad" style={akseStil(akseFra(d.akFormel.pyramid))}>
             <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
               <span className="a9-listerad__tittel">{d.title}</span>
+              {d.akFormel.detaljer?.mal?.malsetning && <span>Målsetning: {d.akFormel.detaljer.mal.malsetning}</span>}
+              {d.techniqueFocus && <span>Historisk fokus / kildeposisjon: {d.techniqueFocus}</span>}
               <Caps>{[d.akFormel.pyramid, AREA_LABEL[d.akFormel.area], `${d.durationMinutes} MIN`].filter(Boolean).join(" · ").toUpperCase()}</Caps>
             </span>
             <span className="a9-ovelsesrad__knapper">
@@ -228,6 +248,9 @@ export function NyOktArk({ utkast, travel, onLukk, onOpprett }: {
   const [start, setStart] = useState(formatTime(utkast.startMinutt));
   const [varighet, setVarighet] = useState(60);
   const [uker, setUker] = useState(1);
+  const [formaal, setFormaal] = useState("");
+  const [sted, setSted] = useState("");
+  const [malsetning, setMalsetning] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
   const send = () => {
     const navn = tittel.trim();
@@ -236,7 +259,7 @@ export function NyOktArk({ utkast, travel, onLukk, onOpprett }: {
     const s = Number(t) * 60 + Number(m);
     if (!Number.isFinite(s)) { setFeil(UI.invalidStartTime); return; }
     setFeil(null);
-    onOpprett({ title: navn, date: dag, startMinute: s, durationMinutes: varighet, pyramid: pyramide, repeatWeeks: uker });
+    onOpprett({ title: navn, date: dag, startMinute: s, durationMinutes: varighet, pyramid: pyramide, repeatWeeks: uker, rationale: formaal.trim() || undefined, location: sted.trim() || undefined, maalsetning: malsetning.trim() || undefined });
   };
   return <Ark open onClose={onLukk} kicker={`${AKSE_NAVN[pyramide.toLowerCase() as Akse] ?? pyramide} · ${dagOgDato(dag)} kl. ${start}`} title={UI.createSession}
     footer={<>
@@ -249,6 +272,9 @@ export function NyOktArk({ utkast, travel, onLukk, onOpprett }: {
         {AKSER.map((a) => <Valgpille key={a} rolle="radio" akse={a} valgt={pyramide === AKSE_NAVN[a]} onClick={() => setPyramide(AKSE_NAVN[a] as PyramidArea)}>{AKSE_NAVN[a]}</Valgpille>)}
       </div>
       <Felt label={UI.titleField}><input value={tittel} onChange={(e) => setTittel(e.target.value)} placeholder={UI.titlePlaceholder} /></Felt>
+      <Felt label="Formål"><textarea maxLength={1000} value={formaal} onChange={e => setFormaal(e.target.value)} /></Felt>
+      <Felt label="Sted"><input maxLength={160} value={sted} onChange={e => setSted(e.target.value)} /></Felt>
+      <Felt label="Øktens målsetning"><textarea maxLength={500} value={malsetning} onChange={e => setMalsetning(e.target.value)} /></Felt>
       <div className="a9-feltrad">
         <Felt label={UI.dateField}><input type="date" value={dag} onChange={(e) => setDag(e.target.value)} /></Felt>
         <Felt label={UI.start} mono><input type="time" step={1800} value={start} onChange={(e) => setStart(e.target.value)} /></Felt>

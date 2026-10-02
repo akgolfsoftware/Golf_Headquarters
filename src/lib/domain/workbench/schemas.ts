@@ -149,13 +149,17 @@ export const SeriesContentPatchSchema = z
     pyramid: PyramidAreaSchema.optional(),
     blockType: BlockTypeSchema.optional(),
     environment: EnvironmentSchema.optional(),
-    notes: z.string().optional(),
-  })
+    notes: z.string().max(5000).nullable().optional(),
+    rationale: z.string().trim().max(1000).nullable().optional(),
+    location: z.string().trim().max(160).nullable().optional(),
+    maalsetning: z.string().trim().max(500).nullable().optional(),
+  }).strict()
   .refine((p) => Object.keys(p).length > 0, "Ingen endringer å lagre.");
 
 export const UpdateSeriesSessionInputSchema = z.object({
   sessionId: z.string().min(1, "Mangler økt-id"),
   patch: SeriesContentPatchSchema,
+  expectedUpdatedAt: z.string().datetime().optional(),
   policy: RecurrencePolicySchema,
 });
 

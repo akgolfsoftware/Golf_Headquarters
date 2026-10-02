@@ -30,6 +30,7 @@ mock.module('@/lib/workbench/wb-actions',{namedExports:{
  createSession:unused,createSessionSeries:unused,createSessionFromSource:unused,deleteSession:unused,deleteSessionSeries:unused,moveSession:unused,publishSessions:unused,removeDrill:unused,reorderDrills:unused,setSessionTemplate:unused,unpublishSession:unused,updateSessionEffort:unused,saveWeekPlan:unused,addDrillFromSource:unused,
  loadWeek:async()=>({ok:true,data:buildWeekViewModel('2026-09-28',[row],[],{kind:'PLAYER',subjectId:'syntetisk-p1',sources:[]})}),
  addDrill:async({drill}:{drill:OvelseInput})=>{row={...row,drills:[{...drill,id:'stabil-drill',order:0}]};return{ok:true,data:row};},
+ updateSeriesSession:async()=>({ok:false,error:'Syntetisk'}),
  updateDrill:async(input:UpdateDrillInput)=>{
   patches.push(input);if(fail)return{ok:false,error:'Syntetisk lagringsfeil'};
   const previous=row.drills[0];const p=input.patch;
@@ -66,7 +67,7 @@ describe('Workbench: faktisk øvelsesskjema og motor',async()=>{
   change(field(render(),UI.drillTitle),'Syntetisk endret');change(field(render(),UI.formelMate),'');change(field(render(),UI.formelMal),'');change(field(render(),'Slag'),'0');
   fail=true;click(find(render(),n=>n.props.children==='Lagre øvelse'));await settle();assert.equal(closed,0);assert.equal(field(render(),UI.drillTitle).props.value,'Syntetisk endret');assert.equal(row.drills[0].title,'Syntetisk original');
   fail=false;click(find(render(),n=>n.props.children==='Lagre øvelse'));await settle();assert.equal(closed,1);assert.equal(row.drills[0].id,original.id);assert.equal(row.drills[0].title,'Syntetisk endret');assert.equal(row.drills[0].description,undefined);assert.equal(row.drills[0].techniqueFocus,undefined);assert.equal(row.drills[0].akFormel.detaljer?.mengde?.antall,0);
-  assert.equal(patches.at(-1)?.patch.description,null);assert.equal(patches.at(-1)?.patch.techniqueFocus,null);assert.equal(patches.at(-1)?.expectedUpdatedAt,row.updatedAt);
+  assert.equal(patches.at(-1)?.patch.description,null);assert.equal(patches.at(-1)?.patch.techniqueFocus,undefined);assert.equal(patches.at(-1)?.expectedUpdatedAt,row.updatedAt);
   states.delete('gjenapnet');const reopened=draw('gjenapnet',()=>OvelseSkjema({standardPyramide:'TEK',drill:row.drills[0],disabled:false,utseende:'precision',onSubmit(){}}));
   assert.equal(field(reopened,UI.drillTitle).props.value,'Syntetisk endret');assert.equal(field(reopened,'Slag').props.value,'0');assert.equal(field(reopened,UI.formelMal).props.value,'');
  });

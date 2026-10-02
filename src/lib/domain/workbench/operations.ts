@@ -105,6 +105,9 @@ export function createSession(
     blockType: cmd.blockType ?? "OEKT",
     environment: cmd.environment,
     notes: cmd.notes,
+    rationale: cmd.rationale,
+    location: cmd.location,
+    maalsetning: cmd.maalsetning,
     drills,
     groupId: cmd.groupId,
     origin:
@@ -161,7 +164,12 @@ export function applySeriesPatch(
   patch: SeriesContentPatch,
   now = new Date().toISOString(),
 ): WorkbenchSession {
-  return { ...session, ...patch, updatedAt: now };
+  return { ...session, ...patch,
+    notes: patch.notes === undefined ? session.notes : patch.notes ?? undefined,
+    rationale: patch.rationale === undefined ? session.rationale : patch.rationale ?? undefined,
+    location: patch.location === undefined ? session.location : patch.location ?? undefined,
+    maalsetning: patch.maalsetning === undefined ? session.maalsetning : patch.maalsetning ?? undefined,
+    updatedAt: now };
 }
 
 // ─── Move / Resize ──────────────────────────────────────────────────────────

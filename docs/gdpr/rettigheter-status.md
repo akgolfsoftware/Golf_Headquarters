@@ -133,3 +133,7 @@ Kilde: `src/components/marketing/v2/MarkedPersonvernV2.tsx` (live på `/personve
 | 6 | Samtykker uten versjonering/zod i `User.preferences` | Middels |
 | 7 | Retention mangler helt for AuditLog, Notification, InnboksEpost, Lead, gjeste-bookinger, transkripter | Middels |
 | 8 | Databehandler-listen i erklæringen er utdatert (Deepgram/Google/Notion) | Middels — fikses av G4-utkastet |
+
+## Øktmål og treukerssyklus 2. oktober 2026
+
+Ny øvelsesmålsetning ligger i eksisterende rå drill-JSON og følger eierens økteksport. Anonymisering fjerner hele `mal`-objektet og nuller øktformål/sted/mål. Treukerssyklusmetadata følger eksisterende ukeplaneksport og fjernes ved anonymisering. Tall og validerte koder beholdes. De avgrensede eier-/idempotensprøvene er grønne; dette lukker ikke de øvrige fil-/ballogg-/foresattehullene ovenfor.

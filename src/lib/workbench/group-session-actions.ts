@@ -27,6 +27,7 @@ const GroupContent = z.object({
   durationMinutes: z.number().int().min(15).max(720),
   title: z.string().trim().min(1).max(200), pyramid: PyramidAreaSchema,
   environment: EnvironmentSchema.nullish(), notes: z.string().max(5000).nullish(),
+  rationale: z.string().trim().max(1000).nullish(), location: z.string().trim().max(160).nullish(), maalsetning: z.string().trim().max(500).nullish(),
   drills: z.array(z.object({
     id: Id.optional(), sourceId: Id.optional(), exerciseId: Id.optional(), positionTaskId: Id.optional(),
     title: z.string().trim().min(1).max(200), description: z.string().max(5000).nullish(),
@@ -75,6 +76,7 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${id}))`;
       const current = await tx.workbenchSession.findUnique({ where: { id } });
       if (value.sessionId && !current) throw new Error("missing");
+      if (value.sessionId && !value.expectedUpdatedAt) throw new Error("stale");
       if (current && value.expectedUpdatedAt && current.updatedAt.toISOString() !== value.expectedUpdatedAt) throw new Error("stale");
       if (current && (current.groupId !== value.groupId || current.origin !== "GROUP" || current.sourceGroupSessionId
         || current.playerId !== current.coachId || !/^wb-group-[a-f0-9]{64}$/.test(current.id))) throw new Error("scope");
@@ -94,7 +96,7 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
         wantedDrills.push({
           title: drill.title, description: drill.description ?? null, durationMinutes: drill.durationMinutes,
           akFormel: old ? JSON.parse(JSON.stringify(bevarHistoriskeDrillfelt(old.akFormel, drill.akFormel as Prisma.InputJsonObject, FORMEL_FELT))) as Prisma.InputJsonObject : drill.akFormel as Prisma.InputJsonObject,
-          techniqueFocus: drill.techniqueFocus ?? null, sortOrder,
+          techniqueFocus: drill.techniqueFocus === undefined ? old?.techniqueFocus ?? null : drill.techniqueFocus, sortOrder,
           sourceId: refs.data.sourceId ?? null, exerciseId: refs.data.exerciseId ?? null, positionTaskId: refs.data.positionTaskId ?? null,
           repType: old?.repType ?? null, repAntall: old?.repAntall ?? null, repMinutter: old?.repMinutter ?? null, repSett: old?.repSett ?? null, repReps: old?.repReps ?? null,
           planRepsUtenBall: old?.planRepsUtenBall ?? null, planRepsLavFart: old?.planRepsLavFart ?? null, planRepsAuto: old?.planRepsAuto ?? null,
@@ -104,12 +106,17 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
       if (new Set(matched).size !== matched.length) throw new Error("duplicate-drill");
       const data = {
         date: tilDatoKolonne(value.date), startMinute: value.startMinute, durationMinutes: value.durationMinutes,
-        title: value.title, pyramid: value.pyramid, environment: value.environment ?? null, notes: value.notes ?? null,
+        title: value.title, pyramid: value.pyramid, environment: value.environment === undefined ? current?.environment ?? null : value.environment,
+        notes: value.notes === undefined ? current?.notes ?? null : value.notes,
+        rationale: value.rationale === undefined ? current?.rationale ?? null : value.rationale || null,
+        location: value.location === undefined ? current?.location ?? null : value.location || null,
+        maalsetning: value.maalsetning === undefined ? current?.maalsetning ?? null : value.maalsetning || null,
       };
       if (current && !["DRAFT", "SCHEDULED", "PUBLISHED"].includes(current.status)) throw new Error("status");
       const unchanged = current && isDeepStrictEqual(data, {
         date: current.date, startMinute: current.startMinute, durationMinutes: current.durationMinutes,
         title: current.title, pyramid: current.pyramid, environment: current.environment, notes: current.notes,
+        rationale: current.rationale, location: current.location, maalsetning: current.maalsetning,
       }) && isDeepStrictEqual(wantedDrills, existing.map(drill => ({
         title: drill.title, description: drill.description, durationMinutes: drill.durationMinutes,
         akFormel: drill.akFormel, techniqueFocus: drill.techniqueFocus, sortOrder: drill.sortOrder,
@@ -185,7 +192,8 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
           const content = { title: source.title, date: source.date, startMinute: source.startMinute,
             durationMinutes: source.durationMinutes, pyramid: source.pyramid, blockType: source.blockType,
             environment: source.environment, practiceType: source.practiceType, location: source.location,
-            notes: source.notes, maalsetning: source.maalsetning, status: "PUBLISHED",
+            notes: source.notes, rationale: source.rationale, maalsetning: source.maalsetning, pressureLevel: source.pressureLevel,
+            pPosisjoner: source.pPosisjoner, skillArea: source.skillArea, status: "PUBLISHED",
             publishedAt: now, publishedBy: viewer.id };
           if (copy) await tx.workbenchSession.update({ where: { id, updatedAt: copy.updatedAt }, data: content });
           else await tx.workbenchSession.create({ data: { ...content, id, playerId: member.userId, coachId: source.coachId,
