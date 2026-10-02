@@ -8,7 +8,7 @@ let markedComplete = false;
 const updateMany = async () => { writes.push("data"); return { count: 1 }; };
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   user: {
-    findUnique: async () => ({ id: "synthetic", publicPlayerId: null }),
+    findUnique: async () => ({ id: "synthetic", email: "synthetic@example.test", publicPlayerId: null }),
     update: async ({ data }: { data: { anonymisertAt?: Date | null } }) => {
       writes.push("user");
       markedComplete = Boolean(data.anonymisertAt);
@@ -20,6 +20,10 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   trainingDrillV2: { updateMany }, drillLogV2: { updateMany }, fysOvelseRad: { updateMany },
   iupBesvarelse: { deleteMany: async ({ where }: { where: { userId: string } }) => {
     assert.equal(where.userId, "synthetic"); writes.push("iup"); return { count: 1 };
+  } },
+  trenerDelingsInvitasjon: { deleteMany: async ({ where }: { where: unknown }) => {
+    assert.deepEqual(where, { OR: [{ userId: "synthetic" }, { gittAvUserId: "synthetic" }, { acceptedByUserId: "synthetic" }, { mottakerEpost: "synthetic@example.test" }] });
+    writes.push("trenerdeling"); return { count: 1 };
   } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
@@ -48,4 +52,5 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   await anonymiserBruker("synthetic");
   assert.equal(markedComplete, true);
   assert.ok(writes.includes("iup"));
+  assert.ok(writes.includes("trenerdeling"));
 });

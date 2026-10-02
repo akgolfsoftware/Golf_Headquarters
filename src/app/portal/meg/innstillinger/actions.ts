@@ -120,6 +120,7 @@ export async function exportUserData(): Promise<{
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
       iupBesvarelser,
+      trenerDelingsInvitasjoner,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({ where: { userId: user.id } }),
@@ -144,6 +145,12 @@ export async function exportUserData(): Promise<{
       prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
       prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
       prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
+      prisma.trenerDelingsInvitasjon.findMany({
+        where: { OR: [{ userId: user.id }, { gittAvUserId: user.id }, { acceptedByUserId: user.id }, { mottakerEpost: user.email.trim().toLowerCase() }] },
+        // Token-hash er en sikkerhetsmekanisme, aldri eksportinnhold.
+        select: { id: true, userId: true, mottakerGruppeId: true, mottakerEpost: true, tekstVersjon: true,
+          gittAvUserId: true, gittAvRolle: true, createdAt: true, expiresAt: true, acceptedAt: true, acceptedByUserId: true, revokedAt: true },
+      }),
     ]);
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
@@ -186,6 +193,7 @@ export async function exportUserData(): Promise<{
       swingVideos,
       delingsSamtykker,
       iupBesvarelser,
+      trenerDelingsInvitasjoner,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +

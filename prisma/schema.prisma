@@ -883,6 +883,8 @@ model DelingsSamtykke {
   // TEST_RESULTATER | STATS
   scope            String
   mottakerGruppeId String
+  // Bare NAVNGITT_KOMPLETT_PROFIL: eldre gruppesamtykker har null.
+  mottakerUserId   String?
   // false = trukket (ny rad, aldri update av gamle)
   gitt             Boolean
   tekstVersjon     String
@@ -892,7 +894,32 @@ model DelingsSamtykke {
   createdAt        DateTime @default(now())
 
   @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@index([userId, scope, mottakerGruppeId, mottakerUserId, createdAt], map: "delings_samtykker_navngitt_idx")
   @@map("delings_samtykker")
+}
+
+// Navngitt deling: token lagres bare som SHA-256. Ingen innsyn før aksept.
+model TrenerDelingsInvitasjon {
+  id               String   @id
+  userId           String
+  mottakerGruppeId  String
+  mottakerEpost     String
+  tokenHash        String   @unique
+  tekstVersjon     String
+  gittAvUserId     String
+  gittAvRolle      String
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+
+  @@index([userId, createdAt], map: "trener_delings_invitasjoner_owner_idx")
+  @@index([mottakerEpost, expiresAt], map: "trener_delings_invitasjoner_email_idx")
+  @@index([mottakerGruppeId], map: "trener_delings_invitasjoner_group_idx")
+  @@index([gittAvUserId], map: "trener_delings_invitasjoner_actor_idx")
+  @@index([acceptedByUserId], map: "trener_delings_invitasjoner_coach_idx")
+  @@map("trener_delings_invitasjoner")
 }
 
 // Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
