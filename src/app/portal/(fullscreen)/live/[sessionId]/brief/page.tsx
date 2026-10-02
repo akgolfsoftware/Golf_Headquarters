@@ -1,6 +1,7 @@
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
- * PlayerHQ · Live-økt brief V2 — TrainingSessionV2.
+ * PlayerHQ · Live-økt brief — PH04Brief i Precision Athletics.
+ * Tilgang, start og blokkering beholdes. Visningen er SessionBrief.
  *
  * Viser økt-mål, fokus, coach-kommentar og drills-liste. Start-knappen sender
  * spilleren til aktiv-skjermen.

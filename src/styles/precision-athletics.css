@@ -422,3 +422,23 @@ color-scheme:dark;
 .ph02-brett > section:last-child{position:sticky;top:16px}
 }
 
+.ph04{min-height:100dvh;display:flex;flex-direction:column}
+.ph04-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:12px 16px;color:var(--text-muted);font:var(--type-meta);letter-spacing:.04em}
+.ph04-tilbake{min-height:44px;display:inline-flex;align-items:center;color:var(--text-primary);text-decoration:none;font:var(--type-button)}
+.ph04-scene{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:0 16px 32px}
+.ph04-ark{width:min(560px,100%);padding:20px 16px 16px;gap:8px}
+.ph04-kicker,.ph04-ark section h2{margin:0;font:var(--type-meta);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.ph04-ark h1{margin:0;font:600 28px/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.ph04-dato,.ph04-meta,.ph04-kilde,.ph04-melding,.ph04-tom,.ph04-notat{margin:0;font:var(--type-body-s);color:var(--text-secondary)}
+.ph04-notat{white-space:pre-wrap}
+.ph04-ovelser{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column}
+.ph04-ovelser li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--border-hairline)}
+.ph04-nr{display:grid;place-items:center;width:28px;height:28px;border-radius:999px;background:var(--primary);color:var(--text-on-primary);font:600 13px/1 var(--font-mono)}
+.ph04-ovelser h2{margin:0;font:600 15px/1.35 var(--font-sans);color:var(--text-primary)}
+.ph04-ark section{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--border-hairline)}
+.ph04-ark section p{margin:0;font:var(--type-body);color:var(--text-primary);white-space:pre-wrap}
+.ph04-ark footer{display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.ph04-feil{margin:0;padding:12px;border-radius:8px;background:var(--warn-tint);color:var(--text-primary);font:var(--type-body-s)}
+@media (min-width:1024px){
+.ph04-scene{align-items:center;padding:24px}
+}

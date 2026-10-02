@@ -5,7 +5,6 @@ import { startPlanSession } from "@/lib/portal-live/actions";
 import { briefAction, type BriefBlockReason } from "@/lib/portal-live/brief-state";
 import { SessionBrief } from "./SessionBrief";
 import { BriefStart } from "./BriefStart";
-import styles from "./session-brief.module.css";
 
 const L_PHASE_LABEL: Record<string, string> = { GRUNN: "Grunnperiode", SPESIAL: "Spesialperiode", TURNERING: "Turneringsperiode" };
 export type PlanSessionBriefProps = { data: LiveSessionData; canStart: boolean; blockReason: BriefBlockReason };
@@ -13,7 +12,7 @@ export type PlanSessionBriefProps = { data: LiveSessionData; canStart: boolean; 
 export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBriefProps) {
   const choice = briefAction(data.status, canStart, blockReason);
   const href = choice.kind === "summary" ? `/portal/live/${data.sessionId}/summary` : choice.kind === "continue" ? `/portal/live/${data.sessionId}/tapper` : blockReason === "tier" ? "/portal/meg/abonnement" : null;
-  const action = choice.kind === "start" ? <BriefStart action={startPlanSession.bind(null, data.sessionId)} /> : href ? <Link href={href} className={styles.primary}>{choice.label}</Link> : null;
+  const action = choice.kind === "start" ? <BriefStart action={startPlanSession.bind(null, data.sessionId)} /> : href ? <Link href={href} className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full" data-od-id="brief-start">{choice.label}</Link> : null;
   const sections = [];
   if (data.maalsetning) sections.push({ label: "Mål for økta", text: data.maalsetning });
   if (data.rationale && data.rationale !== data.maalsetning) sections.push({ label: data.maalsetning ? "Om økta" : "Mål for økta", text: data.rationale });

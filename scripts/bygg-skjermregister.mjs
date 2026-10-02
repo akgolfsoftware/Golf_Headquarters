@@ -162,6 +162,7 @@ const PRECISION_VISNING = [
   ["PH01IDag", "Siden monterer PH01IDag i PlayerHQSkall. Det er kodebevis for visningen, ikke kontroll i appen. ui_kits/playerhq/screens/PH-01.jsx ligger ikke i git."],
   ["PH02Gjor", "Siden monterer PH02Gjor i PlayerHQSkall. Dagens økter, markering, runde og fysisk logging er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-02.jsx ligger ikke i git."],
   ["PH03Oktark", "Siden monterer PH03Oktark i PlayerHQSkall. Start, flytting, invitasjon og oppsummering er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git."],
+  ["PH04Brief", "Brief-siden merker PH04Brief og monterer SessionBrief. Start, blokkering og data-od-id er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-04.jsx ligger ikke i git."],
   ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
 ];
 
