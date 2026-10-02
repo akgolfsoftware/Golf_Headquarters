@@ -520,8 +520,8 @@ model User {
   // §Schema-endringer). resolveValgtCoachId i src/lib/domain/valgt-coach.ts
   // er ENESTE lovlige leser — les aldri feltet direkte i flater/agenter.
   primaryCoachId     String?
-  // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
-  // ved registrering via navn-matching. Gir spilleren turneringshistorikk i profilen.
+  // Kanonisk kobling til turneringsidentitet (PublicPlayer). Nye koblinger
+  // settes ikke automatisk via navn, da navn alene ikke beviser personidentitet.
   publicPlayerId     String?   @unique
   // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
   // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
