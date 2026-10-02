@@ -289,7 +289,8 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
       </div>
 
       <span className={kicker}>8 · Mål</span>
-      <label>{UI.formelMal}<input value={u.malsetning} onChange={(e) => sett("malsetning", e.target.value)} placeholder="Hva øvelsen skal flytte" /></label>
+      {drill?.techniqueFocus && <p>Historisk fokus / kildeposisjon: {drill.techniqueFocus}. Feltet beholdes uendret.</p>}
+      <label>{UI.formelMal}<input maxLength={500} value={u.malsetning} onChange={(e) => sett("malsetning", e.target.value)} placeholder="Hva øvelsen skal flytte" /></label>
       <label>Målemetode<input value={u.malemetode} onChange={(e) => sett("malemetode", e.target.value)} placeholder="For eksempel TrackMan: Launch Direction" /></label>
       <label>Resultatkrav<input value={u.resultatkrav} onChange={(e) => sett("resultatkrav", e.target.value)} placeholder="For eksempel 20 av 30 innenfor målområdet" /></label>
       <label>Notat<input value={u.notat} onChange={(e) => sett("notat", e.target.value)} /></label>
