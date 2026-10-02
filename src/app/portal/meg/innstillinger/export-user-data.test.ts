@@ -16,7 +16,7 @@ let revisjoner: Array<{ metadata?: unknown }> = [];
 let feil: Array<{ context: string }> = [];
 
 const kilder = [
-  "goal", "round", "tournamentEntry", "seasonPlan", "trainingSessionV2",
+  "goal", "round", "roundDraft", "tournamentEntry", "seasonPlan", "trainingSessionV2",
   "testResult", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",

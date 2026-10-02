@@ -100,6 +100,7 @@ export async function exportUserData(): Promise<{
     const [
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,
@@ -127,7 +128,11 @@ export async function exportUserData(): Promise<{
       workbench,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
-      prisma.round.findMany({ where: { userId: user.id } }),
+      prisma.round.findMany({
+        where: { userId: user.id },
+        include: { holeScores: true, shots: { include: { puttDetail: true, sgResults: true } } },
+      }),
+      prisma.roundDraft.findMany({ where: { userId: user.id } }),
       prisma.tournamentEntry.findMany({ where: { userId: user.id }, include: { tournament: true } }),
       prisma.seasonPlan.findMany({ where: { userId: user.id }, include: { periodBlocks: true } }),
       prisma.trainingSessionV2.findMany({ where: { studentId: user.id } }),
@@ -180,6 +185,7 @@ export async function exportUserData(): Promise<{
       user: fullUser,
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,

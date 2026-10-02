@@ -10,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import type { WindDir } from "@/generated/prisma/enums";
 import type { HvileLie, LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
-import { beregnSg } from "@/lib/domain/sg";
+import { beregnSg, type SgBaselinePoint } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";
@@ -147,6 +147,7 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
 }
 
 type HullForingProps = {
+  sgBaselines: ReadonlyArray<SgBaselinePoint>;
   hull: LoggetHull;
   antallHull: number;
   /** Antall hull ferdig før dette (til progresjonsbaren). */
@@ -163,6 +164,7 @@ type HullForingProps = {
 };
 
 export function HullForing({
+  sgBaselines,
   hull,
   antallHull,
   ferdigeFor,
@@ -192,9 +194,9 @@ export function HullForing({
 
   // Hull-SG (klient-estimat — serveren er fasit ved lagring).
   let hullSg: number | null = null;
-  if (ferdig) {
+  if (ferdig && hull.syntetisk !== true) {
     try {
-      hullSg = beregnSg(rundeTilSgShots([hull])).total;
+      hullSg = beregnSg(rundeTilSgShots([hull]), sgBaselines)?.total ?? null;
     } catch {
       hullSg = null;
     }

@@ -180,6 +180,22 @@ export async function anonymiserBruker(
       where: { userId },
       data: { notes: null },
     }),
+    // Behold anonyme slagmål, men fjern sporbar posisjon og egenvurdering.
+    prisma.shot.updateMany({
+      where: { round: { userId } },
+      data: {
+        notes: null,
+        startX: null,
+        startY: null,
+        endX: null,
+        endY: null,
+        targetX: null,
+        targetY: null,
+        mentalScore: null,
+      },
+    }),
+    // Kladden kan inneholde fritekst og nøyaktige slagposisjoner.
+    prisma.roundDraft.deleteMany({ where: { userId } }),
   ]);
 
   // WeekPlan har ingen User-FK og vaskes derfor eksplisitt, også for eldre
