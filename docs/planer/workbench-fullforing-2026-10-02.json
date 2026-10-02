@@ -251,7 +251,7 @@
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
     "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Fire reelle visninger koblet til begge beskyttede ruter på codex/workbench-samlet-2026-10-02. Spiller/dato/uke/år/måned/periode/økt følger konteksten. Felles dataleser, URL- og komponentprøver, samt fire ferske trener-/spillerreiser390/1440 med klikk/hittest/lagring/reload består. Desktop tidsakse og mobilmeny rettet mot eksport77. Samlet publiseringsgate/CI pågår; Anders sin visuelle godkjenning gjenstår. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Ny restpakke er ikke fullverifisert ennå.",
+    "utfart_status": "Fire reelle visninger koblet til begge beskyttede ruter på codex/workbench-samlet-2026-10-02. Spiller/dato/uke/år/måned/periode/økt følger konteksten. Felles dataleser, URL- og komponentprøver, samt fire ferske trener-/spillerreiser390/1440 med klikk/hittest/lagring/reload består. Desktop tidsakse og mobilmeny rettet mot eksport77. Samlet publiseringsgate/CI pågår; Anders sin visuelle godkjenning gjenstår. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Denne restpakken er fullverifisert lokalt etter merge med main; lokal nettleserprøve er gjort på 390 px, men desktop, visuell signoff og samlet kundereise gjenstår.",
     "kodebevis": "Valgt ZIP77 SHA256 9ded841b0f8696697534eb13dae882b3783d351014dae3a92e6e2bba4f042f07; WorkbenchSamlet + fire flater, workbench-samlet-data, samlet-url",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat.",
@@ -308,8 +308,8 @@
     "avhengighet": "R03/R05",
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
     "status": "Delvis utført — kode og lokale kontroller bestått; CI, produksjon og visuell sluttgodkjenning gjenstår",
-    "bevis": "Flytt/kopi/angre og seriehandlinger har stale-/samtidighetsvern. Private opptattblokker, aktive gruppetimer og turnering/reise gir kollisjon og bevarer utkast. Lokal Auth/DB-prøve 8/8; mobil 390 px uke-/treukersreise bestått. Full verify: 4309 enhetstester, 101 komponenttester og produksjonsbygg.",
-    "utfart_status": "Personlige private blokker maskeres for trener og inngår nå i flytt/kopi-kollisjon. Aktive gruppeplaner og turnerings-/reisedager inngår også. Samtidig flytting bekreftet: én av to skriver. Mobilkopi av treukerssyklus og reload består uten horisontal overflyt. CI/merge/deploy og Anders' visuelle godkjenning gjenstår.",
+    "bevis": "Flytt/kopi/angre og seriehandlinger har stale-/samtidighetsvern. Private opptattblokker, aktive gruppetimer og turnering/reise gir kollisjon og bevarer utkast. Lokal Auth/DB-prøve 8/8; mobil 390 px uke-/treukersreise bestått. Full verify etter main-merge: 4322 enhetstester, 101 komponenttester, statiske kontroller og produksjonsbygg.",
+    "utfart_status": "Personlige private blokker maskeres for trener og inngår nå i flytt/kopi-kollisjon. Aktive gruppeplaner og turnerings-/reisedager inngår også. Samtidig flytting bekreftet: én av to skriver. Mobilkopi av treukerssyklus og reload består uten horisontal overflyt. PR/CI og Anders' visuelle godkjenning gjenstår; ingen produksjonsmigrasjon er kjørt.",
     "kodebevis": "src/lib/workbench/plan-handlinger-actions.ts; src/lib/workbench/locked-blocks.ts; src/lib/workbench/plan-kalender-data.ts; tests/local-workbench/oktmetadata.test.ts; tests/local-workbench/okt-syklus-ui.spec.ts",
     "siste_avstemming": "2026-10-02"
   },
@@ -345,7 +345,7 @@
     "omfang": "IUP-10/16; PH-10–12; TR-14",
     "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
-    "utfart_status": "Felles volumleser brukes i alle fire nye flater; klientens ukemotor erstatter ikke legacy/V2-grunnlaget. Faktisk0/null/fremtid og dubletter prøvd. PR1082-foundation er publisert; fireflatepakken avventer fullgate og publisering. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Ny restpakke er ikke fullverifisert ennå.",
+    "utfart_status": "Felles volumleser brukes i alle fire nye flater; klientens ukemotor erstatter ikke legacy/V2-grunnlaget. Faktisk0/null/fremtid og dubletter prøvd. PR1082-foundation er publisert; fireflatepakken avventer fullgate og publisering. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Denne restpakken er fullverifisert lokalt etter merge med main; lokal nettleserprøve er gjort på 390 px, men desktop, visuell signoff og samlet kundereise gjenstår.",
     "kodebevis": "workbench-samlet-volum.ts, workbench-samlet-data.test.ts; produksjonsgrunnlag PR1082",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat.",
@@ -811,9 +811,9 @@
     "oppgave": "Koble felles autoriserte data til Precision/PlayerHQ, WANG og TN uten egne kopier av IUP. Bevar valgt designprofil per flate.",
     "avhengighet": "R02–R15",
     "omfang": "PH-01–34; TR-01–24",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — main inneholder profil-/deling og trenerforslag; full Excel-paritet gjenstår",
     "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon",
+    "utfart_status": "Main-merge inneholder felles profil-lesing, beskyttede Team Norway/WANG-trenerflater og forslag i Workbench. Felt-for-felt IUP-kobling, alle skjermreiser og tilgangsprøver på tvers av organisasjoner er ikke sluttverifisert.",
     "siste_avstemming": "2026-10-02"
   },
   {
@@ -822,9 +822,9 @@
     "oppgave": "WANG: egne skoler/kull/grupper, morgenøkter, oppmøte, kompetansemål og sportssjefadministrasjon. TN: landslagsgrupper, nasjonal WANG-testoversikt, samlinger, relevante uttak/college/ranking.",
     "avhengighet": "R02–R15",
     "omfang": "PH-01–34; TR-01–24",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — trenerflater og delte profiler finnes; komplett WANG/TN-oversikt gjenstår",
     "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon",
+    "utfart_status": "Main-merge inneholder eksisterende WANG UI prototype, Team Norway-profiler og delings-/forslagsfunksjoner. Nasjonal WANG-testoversikt, fellesstart, skole-/gruppegrenser og komplett Excel-arbeidsflyt er ikke verifisert som ende-til-ende-funksjoner.",
     "siste_avstemming": "2026-10-02"
   },
   {
@@ -880,7 +880,7 @@
     "omfang": "Alle",
     "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
-    "utfart_status": "Samlet Workbench fullverify etter siste kodefrys:4183 kode+84 komponent+statiske kontroller+Next/Serwist-bygg bestod04:03 UTC. Prosjektsjekk178 dokumenter grønn. Fire ferske lokale trener-/spillerreiser390/1440 med lagring/gjenåpning består; malretting5 og øvrige målrettede DB/Auth-bevis dokumentert. Ny GitHub-CI/PR/merge/deploy avventes; hele82-planens samlede kundereise er ikke sluttprøvd. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Ny restpakke er ikke fullverifisert ennå.",
+    "utfart_status": "Samlet Workbench fullverify etter main-merge: 4322 enhetstester +101 komponenttester, statiske kontroller og Next/Serwist-bygg bestod 02.10.2026. Prosjektsjekk178 dokumenter grønn. Fire ferske lokale trener-/spillerreiser390/1440 med lagring/gjenåpning består; malretting5 og øvrige målrettede DB/Auth-bevis dokumentert. PR/CI avventes; ingen ny merge/deploy er gjort for denne grenen. Hele82-planens samlede kundereise er ikke sluttprøvd. Oppdatert09:18: PR1091 og1094 er merget/publisert.1094-CI36966904236 bestod4189+94+bygg; produksjonsdeploy6801885972 success07:21 Oslo på f9f328bef. Denne restpakken er fullverifisert lokalt etter merge med main; lokal nettleserprøve er gjort på 390 px, men desktop, visuell signoff og samlet kundereise gjenstår.",
     "kodebevis": "PR1082:4039+36; denne pakken bevisføres i workbench-samlet-kontroll-2026-10-02.md",
     "siste_avstemming": "2026-10-02"
   },

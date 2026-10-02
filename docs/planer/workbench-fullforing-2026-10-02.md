@@ -41,6 +41,9 @@ Claude Design stoppet de siste Workbench-tilleggene ved bruksgrense. Eksisterend
 
 R06.5 er utvidet fra visuell kalenderblokk til faktisk kollisjonskontroll: flytt/kopi teller spillerens private opptattperioder, aktive gruppetimer og turnering/reise. Uavklart overlapp lagres som utkast. To samtidige flytteforsøk mot samme versjon gir én lagring. Lokal syntetisk Auth/DB-prøve 8/8 bestod. 390 px-nettleserprøve av redigering, kopiering og gjenåpning av treukerssyklus bestod uten horisontal overflyt; screenshot ble kun lagret i /tmp og er ikke visuell godkjenning fra Anders.
 
-Full `npm run verify` bestod etter denne koden: statiske kontroller, 4 309 enhetstester, 101 komponenttester, Next.js-produksjonsbygg og Serwist. Øvrig lokal målrettet test dekker flytt/kopi/angre, stale-versjon, serieretry, og gruppeturneringskonflikter. Ingen produksjonsmigrasjon er utført. GitHub CI/PR/merge/deploy og visuell sluttkontroll gjenstår.
+Full `npm run verify` bestod etter merge med fersk `main`: statiske kontroller, 4 322 enhetstester, 101 komponenttester, Next.js-produksjonsbygg og Serwist. Øvrig lokal målrettet test dekker flytt/kopi/angre, stale-versjon, serieretry, og gruppeturneringskonflikter. Ingen produksjonsmigrasjon er utført. PR og CI gjenstår. Ingen produksjonsmigrasjon eller deploy er gjort for denne grenen. Visuell sluttkontroll fra Anders gjenstår.
 
 Hele IUP-arbeidsboken er fortsatt ikke dekket i produktet: de gjenværende punktene i registeret omfatter kilde-for-kilde Excel-paritet, komplett trener-/spillerreise i eksisterende WANG- og Team Norway-prosjekter, DataGolf-avtalerett og datakobling, full test-/fellesstart og uferdige sikkerhets-/personverngrener. Disse er ikke lukket av Workbench-kontrollen.
+
+
+Etter merge med fersk `main` er WANG- og Team Norway-profil-/delingsflater, trenerforslag og DataGolf-designkartlegging kontrollert i registeret som delvis levert. De er ikke bevis på full Excel-paritet eller komplette lagrede trenerreiser. DataGolf-rettigheter og ende-til-ende-datakobling, WANG-testdeling/fellesstart og visuell godkjenning står fortsatt åpne.
