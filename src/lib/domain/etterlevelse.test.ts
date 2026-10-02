@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   etterlevelse,
   etterlevelseTekst,
+  summerEtterlevelse,
   type EtterlevelseOkt,
 } from "@/lib/domain/etterlevelse";
 
@@ -35,7 +36,7 @@ test("teller gjennomførte økter mot forfalte, ikke mot alle planlagte", () => 
 
   assert.equal(e.teller, 2);
   assert.equal(e.nevner, 3, "fremtidige økter må holdes utenfor nevneren");
-  assert.equal(etterlevelseTekst(e), "2/3");
+  assert.equal(etterlevelseTekst(e), "67 %");
 });
 
 test("hoppet og ulogget rapporteres hver for seg", () => {
@@ -89,10 +90,60 @@ test("tom uke gir null", () => {
   assert.equal(etterlevelseTekst(etterlevelse([], NA)), null);
 });
 
-test("full uke uten avvik gir hel brøk", () => {
+test("full uke uten avvik gir 100 prosent", () => {
   const e = etterlevelse([okt(3, "COMPLETED"), okt(2, "COMPLETED")], NA);
 
-  assert.equal(etterlevelseTekst(e), "2/2");
+  assert.equal(etterlevelseTekst(e), "100 %");
   assert.equal(e.hoppet, 0);
   assert.equal(e.ulogget, 0);
+});
+
+
+test("minutter vektes: én kort fullført og én lang ulogget gir 25 %, ikke 50 %", () => {
+  const e = etterlevelse([okt(2, "COMPLETED", 30), okt(1, "PLANNED", 90)], NA);
+  assert.equal(e.pct, 25);
+  assert.equal(e.gjennomfortMinutter, 30);
+  assert.equal(e.planlagtMinutter, 120);
+});
+
+test("fireukersgrensen er inklusiv på start og utelukker eldre økter", () => {
+  const e = etterlevelse([okt(28, "COMPLETED", 30), okt(29, "PLANNED", 90),
+    { ...okt(28, "PLANNED", 90), scheduledAt: new Date(NA.getTime() - 28 * 86_400_000 - 1) }], NA);
+  assert.equal(e.nevner, 1);
+  assert.equal(e.pct, 100);
+});
+
+for (const status of ["PLANNED", "ACTIVE", "IN_PROGRESS", "COMPLETED", "SKIPPED", "CANCELLED", "ABANDONED"] as const) {
+  test(`fremtidig eller pågående ${status} teller aldri før planlagt slutt`, () => {
+    assert.equal(etterlevelse([okt(-1, status)], NA).pct, null);
+    assert.equal(etterlevelse([{ ...okt(0, status), scheduledAt: new Date(NA.getTime() - 30 * 60_000) }], NA).pct, null);
+  });
+}
+
+test("nøyaktig planlagt slutt teller; ett millisekund før teller ikke", () => {
+  const session = { ...okt(0, "COMPLETED"), scheduledAt: new Date(NA.getTime() - 60 * 60_000) };
+  assert.equal(etterlevelse([session], NA).pct, 100);
+  assert.equal(etterlevelse([session], new Date(NA.getTime() - 1)).pct, null);
+});
+
+test("ugyldige eller tomme minutter gir ingen falsk prosent", () => {
+  const e = etterlevelse([0, -60, NaN, Infinity].map(d => okt(1, "COMPLETED", d)), NA);
+  assert.equal(e.pct, null);
+  assert.equal(e.nevner, 0);
+  assert.equal(etterlevelse([{ ...okt(1, "COMPLETED"), scheduledAt: new Date(NaN) }], NA).pct, null);
+});
+
+test("avlyste/avbrutte forfalte økter er avvik i den bindende minuttregelen", () => {
+  const e = etterlevelse([okt(3, "COMPLETED", 30), okt(2, "SKIPPED", 30), okt(1, "CANCELLED", 30), okt(4, "ABANDONED", 30)], NA);
+  assert.equal(e.pct, 25);
+  assert.equal(e.hoppet, 3);
+});
+
+
+test("stallrapporten summerer minutter, ikke gjennomsnitt av prosenter", () => {
+  const sum = summerEtterlevelse([etterlevelse([okt(1, "COMPLETED", 30)], NA), etterlevelse([okt(1, "PLANNED", 90)], NA)]);
+  assert.equal(sum.pct, 25);
+  assert.equal(sum.gjennomfortMinutter, 30);
+  assert.equal(sum.planlagtMinutter, 120);
+  assert.equal(summerEtterlevelse([]).pct, null);
 });

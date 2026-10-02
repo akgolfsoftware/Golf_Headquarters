@@ -20,6 +20,8 @@ import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
 // vanlig import, ikke `import type`.
 import { Prisma } from "@/generated/prisma/client";
+import { anonymiserWorkbenchData } from "@/lib/workbench/workbench-personvern";
+import { anonymiserUkeplandetaljer } from "@/lib/workbench/ukeplan-personvern";
 import {
   slettEksterneBrukerdata,
   type EksternSlettingResultat,
@@ -38,6 +40,8 @@ export type AnonymiseringsResultat = {
     drillLogger: number;
     fysOvelser: number;
     runder: number;
+    ukeplaner: number;
+    workbench: number;
   };
   /**
    * Resultat av ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt).
@@ -77,7 +81,7 @@ export async function anonymiserBruker(
 ): Promise<AnonymiseringsResultat & { dryRun?: boolean; plan?: string[] }> {
   const bruker = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, publicPlayerId: true },
+    select: { id: true, email: true, publicPlayerId: true, deletedAt: true },
   });
 
   // Kontoen kan alt være hard-slettet av en tidligere kjøring. Da er det
@@ -88,8 +92,27 @@ export async function anonymiserBruker(
       publicPlayerAnonymisert: false,
       snittScore: null,
       antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0, workbench: 0 },
       eksterntSlettet: null,
+    };
+  }
+
+  if (opts.dryRun) {
+    const planEkstern = await slettEksterneBrukerdata(userId, { dryRun: true });
+    return {
+      brukerFantes: true,
+      publicPlayerAnonymisert: Boolean(bruker.publicPlayerId),
+      snittScore: null,
+      antallRunder: 0,
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0, workbench: 0 },
+      dryRun: true,
+      plan: [
+        "ville anonymisere Prisma-bruker + fritekst",
+        "ville vaske ukeplanenes notat, oppholdssted og frie fokusfelt",
+        "ville vaske Workbench-økter, fysisk trening, turneringer og plankonflikter",
+        ...(planEkstern.plan ?? []),
+      ],
+      eksterntSlettet: planEkstern,
     };
   }
 
@@ -115,8 +138,8 @@ export async function anonymiserBruker(
     dateOfBirth: null,
     // deletedAt gjør at kontoen faller ut av alle «aktiv bruker»-filtre;
     // anonymisertAt markerer at raden skal BEHOLDES, ikke hard-slettes.
-    deletedAt: naa,
-    anonymisertAt: naa,
+    deletedAt: bruker.deletedAt ?? naa,
+    anonymisertAt: null,
     snittScoreVedSletting: snittScore,
     antallRunderVedSletting: scorer.length,
   };
@@ -159,9 +182,39 @@ export async function anonymiserBruker(
     }),
   ]);
 
+  // WeekPlan har ingen User-FK og vaskes derfor eksplisitt, også for eldre
+  // årsnøkler. Per-rad-transformasjon bevarer bare validerte strukturerte v1-felt.
+  const ukeplaner = await prisma.weekPlan.findMany({
+    where: { playerId: userId }, select: { id: true, planningDetails: true },
+  });
+  let vaskedeUkeplaner = 0;
+  for (const ukeplan of ukeplaner) {
+    const resultat = await prisma.weekPlan.updateMany({
+      where: { id: ukeplan.id, playerId: userId },
+      data: {
+        customNotes: null,
+        // Dette eldre feltet har vilkårlige JSON-nøkler/verdier, ikke en validert dosekontrakt.
+        // De eksplisitte repTarget-/tidsbudsjett-kolonnene beholdes.
+        repetitionTargets: Prisma.DbNull,
+        planningDetails: anonymiserUkeplandetaljer(ukeplan.planningDetails) ?? Prisma.DbNull,
+      },
+    });
+    vaskedeUkeplaner += resultat.count;
+  }
+
+  const vasketWorkbench = await anonymiserWorkbenchData(userId);
+
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
 
   await prisma.$transaction([
+    // IUP kan inneholde personlig refleksjon og helseopplysninger. Beholdes ikke
+    // som koblet historikk på den anonymiserte brukerraden. Revisjoner kaskadeslettes.
+    prisma.iupBesvarelse.deleteMany({ where: { userId } }),
+    // Invitasjoner inneholder mottakerens e-post. Fjernes også når trener/foresatt slettes.
+    prisma.trenerDelingsInvitasjon.deleteMany({ where: { OR: [
+      { userId }, { gittAvUserId: userId }, { acceptedByUserId: userId },
+      { mottakerEpost: bruker.email.trim().toLowerCase() },
+    ] } }),
     prisma.user.update({ where: { id: userId }, data: anonymisering }),
     ...(publicPlayerAnonymisert
       ? [
@@ -184,25 +237,13 @@ export async function anonymiserBruker(
   // ── Ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt) ──
   // Kjøres ETTER at Prisma-anonymiseringen er committet, så den juridisk
   // viktigste vasken alltid fullføres selv om en ekstern tjeneste feiler.
-  // Best-effort internt — kaster aldri.
-  if (opts.dryRun) {
-    const planEkstern = await slettEksterneBrukerdata(userId, { dryRun: true });
-    return {
-      brukerFantes: true,
-      publicPlayerAnonymisert: Boolean(bruker.publicPlayerId),
-      snittScore: null,
-      antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
-      dryRun: true,
-      plan: [
-        "ville anonymisere Prisma-bruker + fritekst",
-        ...(planEkstern.plan ?? []),
-      ],
-      eksterntSlettet: planEkstern,
-    };
-  }
+  // Ferdigmarkering skjer først etter at alle eksterne kilder er bekreftet.
 
   const eksterntSlettet = await slettEksterneBrukerdata(userId);
+  if (eksterntSlettet.feil.length > 0) {
+    throw new Error("Ekstern sletting er ikke fullført. Kontoen beholdes i oppryddingskøen.");
+  }
+  await prisma.user.update({ where: { id: userId }, data: { anonymisertAt: naa } });
 
   return {
     brukerFantes: true,
@@ -215,6 +256,8 @@ export async function anonymiserBruker(
       drillLogger: drillLogger.count,
       fysOvelser: fysOvelser.count,
       runder: rundeNotater.count,
+      ukeplaner: vaskedeUkeplaner,
+      workbench: vasketWorkbench,
     },
     eksterntSlettet,
   };

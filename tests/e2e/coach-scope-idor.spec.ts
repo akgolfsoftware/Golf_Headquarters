@@ -8,15 +8,15 @@
  * Krever samme seed som i0 (coachtest + selvbetjent fixture) der det trengs.
  */
 
-import "../../scripts/_env";
 import { readFileSync } from "node:fs";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
+import { coachCredentials, loginAsCoach } from "./_auth-helpers";
 
-const COACH_EMAIL = "coachtest@akgolf.test";
-const COACH_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+const coach = coachCredentials();
 const FIXTURE_PATH = "tmp/e2e-fixtures.json";
 
 function finnSelvbetjentSpillerId(): string | null {
+  if (process.env.E2E_UNCOACHED_PLAYER_ID) return process.env.E2E_UNCOACHED_PLAYER_ID;
   try {
     const raw = readFileSync(FIXTURE_PATH, "utf-8");
     const data = JSON.parse(raw) as { selvbetjentSpillerId?: string };
@@ -42,21 +42,20 @@ test.describe("Coach-scope IDOR — sider og API", () => {
 
   test("coach: selvbetjent spiller 404 på fremgang og plan", async ({ page }) => {
     const selvbetjentId = finnSelvbetjentSpillerId();
-    test.skip(!COACH_PASSWORD, "Krever SCREENTEST_PASSWORD");
+    test.skip(!coach, "Krever SCREENTEST_PASSWORD");
     test.skip(!selvbetjentId, "Krever seed: npx tsx scripts/seed-platform-only-player.ts");
 
-    await page.goto("/auth/login");
-    await page.locator('input[type="email"]').fill(COACH_EMAIL);
-    await page.locator('input[type="password"]').fill(COACH_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/admin/, { timeout: 15_000 });
+    await loginAsCoach(page);
 
     for (const rute of [
       `/admin/spillere/${selvbetjentId}/fremgang`,
       `/admin/spillere/${selvbetjentId}/plan`,
     ]) {
       const respons = await page.goto(rute);
-      expect(respons?.status(), `${rute} skal være 404`).toBe(404);
+      // Next streams not-found pages with HTTP 200 after headers were sent.
+      expect([200, 404]).toContain(respons?.status());
+      await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toBeVisible();
+      await expect(page.getByText("Testspiller 02", { exact: true })).toHaveCount(0);
     }
   });
 });

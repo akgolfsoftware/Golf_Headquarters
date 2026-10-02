@@ -9,6 +9,8 @@ import {
 
 const data: PaaminnelseData = {
   mottaker: "gjest",
+  betalingstype: "betalt",
+  iMorgen: true,
   fornavn: "Mari",
   tjeneste: "Privattime",
   varighetMin: 60,
@@ -36,10 +38,10 @@ test("emne følger tegningen", () => {
   );
 });
 test("gjest får endre-lenke, appbruker får PlayerHQ-lenke", () => {
-  assert.ok(byggPaaminnelse(data).html.includes("Se bestillingen din"));
+  assert.ok(byggPaaminnelse(data).html.includes("Endre eller avbestill"));
   const app = byggPaaminnelse({ ...data, mottaker: "app" }).html;
   assert.ok(app.includes("Se bookingen i PlayerHQ"));
-  assert.ok(!app.includes("Se bestillingen din"));
+  assert.ok(!app.includes("Endre eller avbestill"));
 });
 test("passert frist gir tegningens tekst, ellers frist", () => {
   assert.ok(
@@ -49,7 +51,7 @@ test("passert frist gir tegningens tekst, ellers frist", () => {
   );
   assert.ok(
     byggPaaminnelse({ ...data, fristPassert: false }).html.includes(
-      "Gratis avbestilling til <b>mandag",
+      "Gratis avbestilling før <b>mandag",
     ),
   );
 });
@@ -80,3 +82,5 @@ test("viser varighet i tjenesteraden", () => {
   );
 });
 test("formaterer kroner", () => assert.equal(formaterKr(295000), "2\u00a0950\u00a0kr"));
+
+test("øre går ikke tapt i betalingsbeløpet", () => assert.equal(formaterKr(95050), "950,50 kr"));

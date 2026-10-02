@@ -5,6 +5,8 @@ export const sti = "/";
 
 const base: PaaminnelseData = {
   mottaker: "gjest",
+  betalingstype: "betalt",
+  iMorgen: true,
   fornavn: "Mari",
   tjeneste: "Privattime",
   varighetMin: 60,
@@ -36,11 +38,11 @@ function Epost({ d, mork }: { d: PaaminnelseData; mork?: boolean }) {
 
 export const tilstander = {
   gjest: <Epost d={base} />,
-  app: <Epost d={{ ...base, mottaker: "app", pris: "Inkludert i abonnement", betaling: { tekst: "1 klipp · Performance Pro", mono: false } }} />,
+  app: <Epost d={{ ...base, mottaker: "app", betalingstype: "klipp", pris: "Inkludert i abonnement", betaling: { tekst: "1 klipp · Performance Pro", mono: false } }} />,
   "frist-igjen": <Epost d={{ ...base, fristPassert: false }} />,
   "mangler-verdier": <Epost d={{ ...base, coach: null, betaling: { tekst: null, mono: true }, fornavn: "" }} />,
   "lang-tekst": <Epost d={{ ...base, sted: "Studio 1 · Et veldig langt stedsnavn som må brytes pent uten å sprenge skjermen", referanse: "BK-2026-0917-EKSTRA-LANG-REFERANSE-UTEN-MELLOMROM-1234567890" }} />,
   "natt-gjest": <Epost d={base} mork />,
-  "natt-app": <Epost d={{ ...base, mottaker: "app" }} mork />,
+  "natt-app": <Epost d={{ ...base, mottaker: "app", betalingstype: "klipp", pris: "Inkludert i abonnement", betaling: { tekst: "1 klipp", mono: false } }} mork />,
 };
 export const natt = ["natt-gjest", "natt-app"];

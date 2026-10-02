@@ -4,6 +4,20 @@
 > MANGLER for lanseringsnivå. Søsterdokument: `datakart.md` (hva vi lagrer) og
 > `personvernerklaering-utkast.md` (hva vi lover).
 
+## Oppfølgingsmerknad 1. oktober 2026
+
+Juli-kartleggingen under er historikk og må ikke alene brukes som dagens mangelliste. `exportUserData()` inkluderer nå også coachnotater, coachingsamtaler, opptak, fravær/skade, talentdata, dokumentrader, treningslogger, swingvideoer og delingssamtykker. Dette er fortsatt ikke bevis på komplett fileksport eller dekning av alle nyere Workbench-modeller.
+
+[Kontrollen av betaling og personvern](../design-audit/betaling-personvern-2026-10-01.md) viser avgrensede rettinger og åpne oppgaver: lesende tørrkjøring, gjenforsøk ved ekstern slettefeil og behandling av Storage-feil. Full sletting hos alle eksterne tjenester og historiske ferdigmarkeringer er fortsatt ikke verifisert.
+
+## Oppfølging 2. oktober 2026 — Workbench
+
+Kontoeksporten inkluderer nå også egne Workbench-økter/øvelser, fysiske blokker/uker/økter/øvelser/logger og turneringsplaner med forberedelser, runder, mål, evalueringer og egne konflikter. Lesing og vask av barn avgrenses ytterligere når barnet har egen spiller-ID. Samme gruppe eller trener er aldri tilstrekkelig eierskap.
+
+Anonymiseringen vasker disse modellenes fritekst, oppholdssted, Live-JSON og ugjennomsiktig JSON. Validerte fagkoder, dose/enheter, tid, brutto score og øvrige tall bevares. Årsplan-/periodefritekst og turneringsoppføringsnotater vaskes også. Feil før Workbench-vask fullføres hindrer profil-/ekstern sletting og ferdigmarkering; etter en ekstern feil kan oppryddingen prøves igjen.
+
+44 målrettede tester og tre prøver mot separat lokal database er grønne. Eksterne tjenester ble erstattet av testdobler; ingen ekte Auth-/Storage-/Stripe-sletting ble utført. Dette lukker de navngitte modellgapene, men bekrefter ikke komplett fileksport, `SessionBallLog`, foresatteksport eller samtlige historiske modeller. Den eldre juli-listen nedenfor er historikk.
+
 ## 1. Innsyn og dataportabilitet (art. 15 + 20)
 
 ### Finnes

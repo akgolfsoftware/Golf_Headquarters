@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
-import { tnProtocol } from "./tn-catalog";
+import { tnProtocol, TN_RULES_VERSION, TN_VERSION } from "./tn-catalog";
 
 type Row = { id: string; userId: string; testId: string; status: string; scoringData: object; testResultId?: string };
 let sessions: Record<string, Row> = {};
@@ -92,4 +92,28 @@ test("fullføring kobler én tildeling og ett internt varsel; retry dobler ikke"
   assert.equal((await save(input())).ok, true);
   assert.equal((await save(input())).ok, true);
   assert.equal(completions, 1); assert.equal(notices, 1);
+});
+
+
+test("ny poengregel lagres med versjon, rådata og desimaler; retry gir ett resultat", async () => {
+  const values = Object.fromEntries([4,4,1,1,1,1,0.5,0,0].map((points, i) => [String(i + 1), { points }]));
+  const data = { sessionId, version: TN_RULES_VERSION, protocolId: "naerspill-gate", count: 9, revision: 0, values, intent: "complete" };
+  assert.equal((await save(data)).ok, true);
+  assert.equal((await save(data)).ok, true);
+  assert.equal(results.length, 1);
+  const result = results[0] as { score: number; testId: string; details: { version: string; values: unknown } };
+  assert.equal(result.score, 12.5);
+  assert.equal(result.testId, "tn-v3-20261002-naerspill-gate");
+  assert.equal(result.details.version, TN_RULES_VERSION);
+  assert.deepEqual(result.details.values, values);
+});
+
+test("gammelt utkast beholdes med gammel regel og kan ikke bytte versjon ved lagring", async () => {
+  const data = { sessionId, version: TN_VERSION, protocolId: "wedge-gate", count: 9, revision: 0, values: { "1": { points: 2.5 } }, intent: "draft" };
+  assert.equal((await save(data)).ok, true);
+  assert.equal((await save({ ...data, revision: 1 })).ok, true);
+  assert.equal((await save({ ...data, revision: 2, version: TN_RULES_VERSION, values: { "1": { ok: "Ja" } } })).ok, false);
+  assert.equal(sessions[sessionId].testId, "tn-v3-wedge-gate");
+  assert.deepEqual((sessions[sessionId].scoringData as { values: unknown }).values, data.values);
+  assert.equal(results.length, 0);
 });

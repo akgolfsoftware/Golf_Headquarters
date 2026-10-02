@@ -173,7 +173,10 @@ function fmtSg(v: number): string {
   return `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
 }
 
-async function progressSgArea(goal: GoalForProgress): Promise<GoalProgress> {
+async function progressSgArea(
+  goal: GoalForProgress,
+  loadSg: typeof hentSgSnittPerOmrade,
+): Promise<GoalProgress> {
   const sgMaal = lesSgMaal(goal.payload);
   if (!sgMaal) return ingenData("Velg SG-område for å måle fremdrift");
 
@@ -182,7 +185,7 @@ async function progressSgArea(goal: GoalForProgress): Promise<GoalProgress> {
     return ingenData(`${navn} · trenger flere registrerte runder for å sette utgangspunkt`);
   }
 
-  const snitt = await hentSgSnittPerOmrade(goal.userId);
+  const snitt = await loadSg(goal.userId);
   const naaVerdi = snitt[sgMaal.omrade];
   if (naaVerdi == null) {
     return ingenData(`${navn} · trenger flere registrerte runder`);
@@ -266,6 +269,33 @@ export async function beregnGoalProgress(
   goal: GoalForProgress,
   ctx: GoalProgressContext,
 ): Promise<GoalProgress> {
+  return beregnMedSgKilde(goal, ctx, hentSgSnittPerOmrade);
+}
+
+/** Samme resultater og rekkefølge som enkeltberegningen. SG-grunnlaget
+ * leses én gang per spiller i dette kallet, uten delt eller varig cache. */
+export async function beregnGoalProgressListe(
+  goals: readonly GoalForProgress[],
+  ctx: GoalProgressContext,
+): Promise<GoalProgress[]> {
+  const reads = new Map<string, ReturnType<typeof hentSgSnittPerOmrade>>();
+  const loadSg: typeof hentSgSnittPerOmrade = (userId) => {
+    let read = reads.get(userId);
+    if (!read) {
+      read = hentSgSnittPerOmrade(userId);
+      reads.set(userId, read);
+    }
+    return read;
+  };
+  const context = { ...ctx, now: ctx.now ?? new Date() };
+  return Promise.all(goals.map((goal) => beregnMedSgKilde(goal, context, loadSg)));
+}
+
+async function beregnMedSgKilde(
+  goal: GoalForProgress,
+  ctx: GoalProgressContext,
+  loadSg: typeof hentSgSnittPerOmrade,
+): Promise<GoalProgress> {
   const now = ctx.now ?? new Date();
   switch (goal.type) {
     case "HCP_TARGET":
@@ -277,7 +307,7 @@ export async function beregnGoalProgress(
     case "TEST_SCORE":
       return progressTestScore(goal);
     case "SG_AREA":
-      return progressSgArea(goal);
+      return progressSgArea(goal, loadSg);
     default:
       return ingenData("Følges opp manuelt");
   }
