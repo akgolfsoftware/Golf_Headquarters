@@ -27,7 +27,7 @@ test('ukeplan lagres og gjenleses i ekte trener-/spillerreise',async({page,conte
  await page.locator('input[type=password]').fill(users.LOCAL_COACH_A_PASSWORD);
  await page.locator('form button[type=submit]').click();
  await expect(page).toHaveURL(/\/admin\/agencyos$/);
- await page.goto(`/admin/workbench/${playerId}?visning=uke&uke=2027-01-04`);
+ await page.goto(`/admin/workbench/${playerId}?klassisk=1&visning=uke&uke=2027-01-04`);
  const banner=page.getByRole('button',{name:'Kun nødvendige',exact:true});
  await expect(banner).toBeVisible(); await banner.click();
  await expect(page.getByRole('heading',{name:'Workbench',exact:true})).toBeVisible();
@@ -69,7 +69,7 @@ test('ukeplan lagres og gjenleses i ekte trener-/spillerreise',async({page,conte
   await player.locator('input[type=password]').fill(users.LOCAL_P01_PASSWORD);
   await player.locator('form button[type=submit]').click();
   await expect(player).toHaveURL(/\/portal$/);
-  await player.goto('http://127.0.0.1:3072/portal/planlegge/workbench?visning=uke&uke=2027-01-04');
+  await player.goto('http://127.0.0.1:3072/portal/planlegge/workbench?klassisk=1&visning=uke&uke=2027-01-04');
   await openWeekPlan(player);
   const playerSheet=player.locator('.pa-sheet[role=dialog]');
   await expect(playerSheet.getByRole('textbox',{name:'Oppholdssted',exact:true})).toHaveValue('');

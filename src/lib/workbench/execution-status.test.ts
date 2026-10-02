@@ -89,6 +89,16 @@ test("fullføring tillater null minutter og skiller det fra ukjent tidsbruk", as
   assert.equal(row.status, "COMPLETED");
 });
 
+test("maler kan ikke startes eller fullføres via direkte handling", async () => {
+  row.isTemplate = true;
+  assert.equal((await actions.startSession("session")).ok, false);
+  assert.equal((await actions.completeSession("session")).ok, false);
+  assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", actualMinutes: 0 })).ok, false);
+  assert.equal((await actions.startNextWorkbenchLiveSession({ nextSessionId: "session" })).ok, false);
+  assert.equal(writes, 0);
+  assert.equal(row.status, "PUBLISHED");
+});
+
 test("innsats avviser negative, ikke-endelige, brøkdels- og for store minutter", async () => {
   for (const actualMinutes of [-1, NaN, Infinity, 0.5, 1441]) {
     assert.equal((await actions.updateSessionEffort({ sessionId: "session", actualMinutes })).ok, false);

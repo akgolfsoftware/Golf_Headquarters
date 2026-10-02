@@ -70,6 +70,7 @@ import {
 } from "@/lib/workbench/min-calendar";
 import {
   AkFormelSchema,
+  AkFormelLeseSchema,
   BlockTypeSchema,
   DeleteSeriesSessionInputSchema,
   EnvironmentSchema,
@@ -97,6 +98,8 @@ import {
   templateToSourceItem,
 } from "@/lib/workbench/sources-map";
 import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
+import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./drill-formel-bevaring";
+import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
@@ -151,6 +154,7 @@ const FINNES_IKKE = "Fant ikke økten.";
  */
 function revalider(playerId: string): void {
   revalidatePath(`/admin/workbench/${playerId}`);
+  revalidatePath("/portal/planlegge/workbench");
   revalidatePath("/portal");
 }
 
@@ -198,7 +202,27 @@ const DrillInputSchema = z.object({
   akFormel: AkFormelSchema,
   techniqueFocus: z.string().optional(),
   sourceId: z.string().optional(),
+  exerciseId: z.string().min(1).max(200).optional(),
+  positionTaskId: z.string().min(1).max(200).optional(),
 });
+
+const UpdateDrillSchema = z.object({
+  sessionId: z.string().min(1),
+  drillId: z.string().min(1),
+  expectedUpdatedAt: z.string().datetime().optional(),
+  patch: z.object({
+    title: DrillInputSchema.shape.title.optional(),
+    description: z.string().nullable().optional(),
+    durationMinutes: DrillInputSchema.shape.durationMinutes.optional(),
+    techniqueFocus: z.string().nullable().optional(),
+    // Hele den kjente formelen erstattes; ukjente historiske JSON-felt beholdes.
+    akFormel: AkFormelLeseSchema.optional(),
+  }).strict().refine(p => Object.values(p).some(v => v !== undefined), "Ingen endringer å lagre."),
+}).strict();
+
+export type UpdateDrillInput = z.infer<typeof UpdateDrillSchema>;
+
+class DrillSamtidigEndring extends Error {}
 
 const CreateSessionSchema = z.object({
   playerId: z.string().min(1),
@@ -278,6 +302,11 @@ function sessionOpprettelseData(s: WorkbenchSession) {
         akFormel: akFormelTilJson(d.akFormel),
         techniqueFocus: d.techniqueFocus ?? null,
         sourceId: d.sourceId ?? null,
+        exerciseId: d.exerciseId ?? null,
+        positionTaskId: d.positionTaskId ?? null,
+        repType: d.repType ?? null, repAntall: d.repAntall ?? null, repMinutter: d.repMinutter ?? null,
+        repSett: d.repSett ?? null, repReps: d.repReps ?? null,
+        planRepsUtenBall: d.planRepsUtenBall ?? null, planRepsLavFart: d.planRepsLavFart ?? null, planRepsAuto: d.planRepsAuto ?? null,
         sortOrder: d.order,
       })),
     },
@@ -367,16 +396,19 @@ export async function createSeasonPlan(
 export async function saveSeasonPeriod(input: {
   playerId: string;
   periodId?: string;
+  seasonPlanId?: string;
   data: unknown;
 }): Promise<WbResultat<{ periodId: string }>> {
   const viewer = await kreverTilgangTilSpiller(input.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (input.seasonPlanId !== undefined && !["PLAYER", "COACH", "ADMIN"].includes(viewer.role))
+    return { ok: false, error: INGEN_TILGANG };
   let periodId = input.periodId;
   if (periodId) {
-    const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data);
+    const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data, input.seasonPlanId);
     if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke lagre perioden." };
   } else {
-    const result = await opprettPeriodeCore(input.playerId, input.data);
+    const result = await opprettPeriodeCore(input.playerId, input.data, input.seasonPlanId);
     if (!result.ok || !result.periodeId) return { ok: false, error: result.error ?? "Kunne ikke opprette perioden." };
     periodId = result.periodeId;
   }
@@ -633,6 +665,7 @@ export async function loadStallFollowup(params: {
 export async function loadWorkbenchLive(params: {
   weekStart: string;
   playerId: string;
+  sessionId?: string;
 }): Promise<WbResultat<WorkbenchLiveData>> {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
@@ -647,17 +680,21 @@ export async function loadWorkbenchLive(params: {
       playerId: params.playerId,
       date: { gte: tilDatoKolonne(from), lte: tilDatoKolonne(to) },
       status: { in: ["IN_PROGRESS", "PUBLISHED"] },
+      isTemplate: false,
       hiddenByPlayer: false,
       needsPlayerApproval: false,
     },
     include: { drills: true },
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
   });
-  const eligible = rows.filter((row) => row.approvalStatus !== "REJECTED");
-  const currentRow = eligible.find((row) => row.status === "IN_PROGRESS") ?? null;
+  const eligible = rows.filter((row) => row.approvalStatus !== "REJECTED" &&
+    !(row.groupId && !row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(row.id)));
+  const selected = params.sessionId ? eligible.find(row => row.id === params.sessionId) : null;
+  if (params.sessionId && !selected) return { ok: false, error: "Den valgte økten er ikke tilgjengelig for gjennomføring i dette tidsrommet." };
+  const currentRow = selected?.status === "IN_PROGRESS" ? selected : eligible.find((row) => row.status === "IN_PROGRESS") ?? null;
   const published = eligible.filter((row) => row.status === "PUBLISHED");
   const currentKey = currentRow ? `${fraDatoKolonne(currentRow.date)}:${String(currentRow.startMinute).padStart(4, "0")}` : "";
-  const nextRow = currentRow
+  const nextRow = selected?.status === "PUBLISHED" ? selected : currentRow
     ? published.find((row) => `${fraDatoKolonne(row.date)}:${String(row.startMinute).padStart(4, "0")}` > currentKey) ?? published[0] ?? null
     : published[0] ?? null;
   const current = currentRow ? mapSession(currentRow) : null;
@@ -1086,13 +1123,7 @@ export async function loadSources(params: {
 
   const [ovelser, maler, forrigeUke, tekniskPanel] = await Promise.all([
     prisma.exerciseDefinition.findMany({
-      where: {
-        OR: [
-          { source: "SYSTEM" },
-          { source: "COACH", visibility: "COACH_PLAYERS" },
-          { createdBy: viewer.id },
-        ],
-      },
+      where: await bankOvelseWhere(viewer, params.playerId),
       orderBy: { name: "asc" },
       take: 60,
     }),
@@ -1254,6 +1285,11 @@ export async function createSession(
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  for (const drill of cmd.drills ?? []) {
+    const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
+    if (!ref.ok) return ref;
+    Object.assign(drill, ref.data);
+  }
 
   const erCoach = viewer.id !== cmd.playerId;
   const utkast = createSessionPure({
@@ -1296,6 +1332,11 @@ export async function createSessionSeries(
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  for (const drill of cmd.drills ?? []) {
+    const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
+    if (!ref.ok) return ref;
+    Object.assign(drill, ref.data);
+  }
 
   const erCoach = viewer.id !== cmd.playerId;
   const forekomster = createSessionSeriesPure(
@@ -1354,9 +1395,10 @@ export async function createSessionFromSource(input: {
 
   const erCoach = viewer.id !== parsed.data.playerId;
   let utkast: WorkbenchSession;
+  let kopierteDriller: WbRow["drills"] | undefined;
 
   if (kilde.kind === "DRILL") {
-    const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
+    const rad = await lastBankOvelse(kilde.exerciseId, viewer, parsed.data.playerId);
     if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
     const drill = exerciseToSourceItem(rad).drill;
     if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
@@ -1373,10 +1415,7 @@ export async function createSessionFromSource(input: {
       createdBy: erCoach ? "COACH" : "PLAYER",
     });
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
-      include: { position: true },
-    });
+    const task = await lastBankOppgave(kilde.taskId, parsed.data.playerId);
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
 
     const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
@@ -1389,6 +1428,7 @@ export async function createSessionFromSource(input: {
       durationMinutes: 20,
       techniqueFocus: task.position.pNummer,
       sourceId: task.id,
+      positionTaskId: task.id,
       akFormel: {
         pyramid: "TEK",
         area: omrade,
@@ -1418,6 +1458,7 @@ export async function createSessionFromSource(input: {
       return { ok: false, error: "Fant ikke kilden." };
     }
     const kildeOkt = mapSession(rad);
+    kopierteDriller = rad.drills;
 
     utkast = createSessionPure({
       playerId: parsed.data.playerId,
@@ -1443,7 +1484,18 @@ export async function createSessionFromSource(input: {
   }
 
   const rad2 = await prisma.workbenchSession.create({
-    data: sessionOpprettelseData(utkast),
+    data: {
+      ...sessionOpprettelseData(utkast),
+      ...(kopierteDriller ? { drills: { create: [...kopierteDriller].sort((a, b) => a.sortOrder - b.sortOrder).map((d, sortOrder) => ({
+        // Kopien får egne ID-er; planinnhold og kilde/dose beholdes fra rå lagring.
+        title: d.title, description: d.description, durationMinutes: d.durationMinutes,
+        akFormel: d.akFormel === null ? Prisma.JsonNull : d.akFormel,
+        techniqueFocus: d.techniqueFocus, sourceId: d.sourceId, sortOrder,
+        exerciseId: d.exerciseId, positionTaskId: d.positionTaskId,
+        repType: d.repType, repAntall: d.repAntall, repMinutter: d.repMinutter, repSett: d.repSett, repReps: d.repReps,
+        planRepsUtenBall: d.planRepsUtenBall, planRepsLavFart: d.planRepsLavFart, planRepsAuto: d.planRepsAuto,
+      })) } } : {}),
+    },
     include: { drills: true },
   });
 
@@ -1460,6 +1512,8 @@ export async function addDrillFromSource(input: {
   if (!parsed.success) {
     return { ok: false, error: "Ugyldig kilde." };
   }
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const kilde = parseSourceId(parsed.data.sourceId);
   if (!kilde || (kilde.kind !== "DRILL" && kilde.kind !== "TEK")) {
@@ -1469,15 +1523,12 @@ export async function addDrillFromSource(input: {
   let drill: Omit<Drill, "id" | "order"> | undefined;
 
   if (kilde.kind === "DRILL") {
-    const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
+    const rad = await lastBankOvelse(kilde.exerciseId, treff.viewer, treff.row.playerId);
     if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
     drill = exerciseToSourceItem(rad).drill;
     if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
-      include: { position: true },
-    });
+    const task = await lastBankOppgave(kilde.taskId, treff.row.playerId);
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
     const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
     const formelLabel = `Teknisk · ${task.position.pNummer} ${task.position.navn}`;
@@ -1489,6 +1540,7 @@ export async function addDrillFromSource(input: {
       durationMinutes: 20,
       techniqueFocus: task.position.pNummer,
       sourceId: task.id,
+      positionTaskId: task.id,
       akFormel: {
         pyramid: "TEK",
         area: omrade,
@@ -1616,6 +1668,9 @@ export async function addDrill(input: {
 
   const treff = await hentMedTilgang(input.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
+  const ref = await hentBankReferanser(parsed.data, treff.viewer, treff.row.playerId);
+  if (!ref.ok) return ref;
+  Object.assign(parsed.data, ref.data);
 
   const neste = addDrillPure(mapSession(treff.row), {
     sessionId: input.sessionId,
@@ -1623,45 +1678,71 @@ export async function addDrill(input: {
     atIndex: input.atIndex,
   });
 
-  await prisma.$transaction(async (tx) => {
-    if (treff.row.sourceGroupSessionId) {
-      await tx.workbenchSession.update({ where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
-        data: { durationMinutes: neste.durationMinutes, localOverride: true } });
+  try {
+    await prisma.$transaction(async (tx) => {
+      const locked = await tx.workbenchSession.updateMany({
+        where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
+        data: { durationMinutes: neste.durationMinutes,
+          ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}) },
+      });
+      if (locked.count !== 1) throw new DrillSamtidigEndring();
       for (const d of neste.drills) {
-        // Behold eksisterende øvelsers identitet og eventuelle dose-/øvelseskoblinger.
+        // Ingen gjenoppretting: identitet, dose, historikk og kildekoblinger beholdes.
         if (treff.row.drills.some(existing => existing.id === d.id)) {
-          await tx.workbenchDrill.update({ where: { id: d.id }, data: { sortOrder: d.order } });
+          await tx.workbenchDrill.update({ where: { id: d.id, sessionId: input.sessionId }, data: { sortOrder: d.order } });
         } else {
           await tx.workbenchDrill.create({ data: { id: d.id, sessionId: input.sessionId,
             title: d.title, description: d.description ?? null, durationMinutes: d.durationMinutes,
             akFormel: akFormelTilJson(d.akFormel), techniqueFocus: d.techniqueFocus ?? null,
-            sourceId: d.sourceId ?? null, sortOrder: d.order } });
+            sourceId: d.sourceId ?? null, exerciseId: d.exerciseId ?? null, positionTaskId: d.positionTaskId ?? null, sortOrder: d.order } });
         }
       }
-      return;
-    }
-    await tx.workbenchDrill.deleteMany({ where: { sessionId: input.sessionId } });
-    await tx.workbenchSession.update({
-      where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
-      data: {
-        durationMinutes: neste.durationMinutes,
-        ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}),
-        drills: {
-          create: neste.drills.map((d) => ({
-            title: d.title,
-            description: d.description ?? null,
-            durationMinutes: d.durationMinutes,
-            akFormel: akFormelTilJson(d.akFormel),
-            techniqueFocus: d.techniqueFocus ?? null,
-            sourceId: d.sourceId ?? null,
-            sortOrder: d.order,
-          })),
-        },
-      },
     });
-  });
+  } catch (error) {
+    if (error instanceof DrillSamtidigEndring) return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+    throw error;
+  }
 
   return lagreOgHent(input.sessionId);
+}
+
+/** Rediger én øvelse med stabil identitet. Undefined beholder, null tømmer tekstfelt. */
+export async function updateDrill(input: UpdateDrillInput): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = UpdateDrillSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig øvelse." };
+  const cmd = parsed.data;
+  const treff = await hentMedTilgang(cmd.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+  const drill = treff.row.drills.find(d => d.id === cmd.drillId);
+  if (!drill) return { ok: false, error: "Fant ikke øvelsen i økten." };
+  if (cmd.expectedUpdatedAt && cmd.expectedUpdatedAt !== treff.row.updatedAt.toISOString()) {
+    return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+  }
+  const patch = cmd.patch;
+  if (patch.akFormel && !gyldigFormelEndring(drill.akFormel, patch.akFormel)) return { ok: false, error: "Ugyldig ny RIR eller øvelsesformel." };
+  const duration = patch.durationMinutes ?? drill.durationMinutes;
+  const total = treff.row.drills.reduce((sum, d) => sum + (d.id === drill.id ? duration : d.durationMinutes), 0);
+  try {
+    await prisma.$transaction(async tx => {
+      const locked = await tx.workbenchSession.updateMany({
+        where: { id: cmd.sessionId, updatedAt: treff.row.updatedAt },
+        data: { durationMinutes: Math.max(treff.row.durationMinutes, total),
+          ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}) },
+      });
+      if (locked.count !== 1) throw new DrillSamtidigEndring();
+      await tx.workbenchDrill.update({ where: { id: cmd.drillId, sessionId: cmd.sessionId }, data: {
+        ...(patch.title !== undefined ? { title: patch.title } : {}),
+        ...(patch.description !== undefined ? { description: patch.description } : {}),
+        ...(patch.durationMinutes !== undefined ? { durationMinutes: patch.durationMinutes } : {}),
+        ...(patch.techniqueFocus !== undefined ? { techniqueFocus: patch.techniqueFocus } : {}),
+        ...(patch.akFormel !== undefined ? { akFormel: bevarHistoriskeDrillfelt(drill.akFormel, akFormelTilJson(patch.akFormel), FORMEL_FELT) } : {}),
+      } });
+    });
+  } catch (error) {
+    if (error instanceof DrillSamtidigEndring) return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+    throw error;
+  }
+  return lagreOgHent(cmd.sessionId);
 }
 
 /** Ny rekkefølge på øvelsene. */
@@ -1851,11 +1932,22 @@ export async function setSessionTemplate(
   sessionId: string,
   isTemplate: boolean,
 ): Promise<WbResultat<WorkbenchSession>> {
-  const treff = await hentMedTilgang(sessionId);
+  const parsed = z.object({ sessionId: z.string().min(1), isTemplate: z.boolean() }).safeParse({ sessionId, isTemplate });
+  if (!parsed.success) return { ok: false, error: "Ugyldig malvalg." };
+  const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
+  const row = treff.row;
+  if (parsed.data.isTemplate && row.status === "IN_PROGRESS") {
+    return { ok: false, error: "En pågående økt kan ikke lagres som mal. Fullfør økten først." };
+  }
 
-  await prisma.workbenchSession.update({ where: { id: sessionId }, data: { isTemplate } });
-  return lagreOgHent(sessionId);
+  // Start og malvalg konkurrerer om samme versjon; originalen må aldri låses midt i gjennomføring.
+  const result = await prisma.workbenchSession.updateMany({
+    where: { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt },
+    data: { isTemplate: parsed.data.isTemplate },
+  });
+  if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  return lagreOgHent(row.id);
 }
 
 // ─── Gjennomføring ──────────────────────────────────────────────────────────
@@ -1868,6 +1960,7 @@ async function settStatus(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
     return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
   }
@@ -1883,7 +1976,7 @@ async function settStatus(
     ? initialWorkbenchLiveSnapshot(row.drills.sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id))
     : null;
   const result = await prisma.workbenchSession.updateMany({
-    where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+    where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false,
       hiddenByPlayer: false, needsPlayerApproval: false },
     data: {
       status,
@@ -1958,6 +2051,7 @@ export async function completeSessionWithEffort(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
     return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
   }
@@ -1971,7 +2065,7 @@ export async function completeSessionWithEffort(
   }
   const result = await prisma.workbenchSession.updateMany({
     where: {
-      id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+      id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false,
       hiddenByPlayer: false, needsPlayerApproval: false,
     },
     data: {
@@ -2008,6 +2102,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
   if ("feil" in nextAccess) return { ok: false, error: nextAccess.feil };
   const current = currentAccess.row;
   const next = nextAccess.row;
+  if (current.isTemplate || next.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (current.playerId !== next.playerId) return { ok: false, error: INGEN_TILGANG };
   if (current.status !== "IN_PROGRESS" || next.status !== "PUBLISHED") {
     return { ok: false, error: "Øktene er endret. Last inn på nytt før du fortsetter." };
@@ -2022,7 +2117,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
   try {
     await prisma.$transaction(async (tx) => {
       const completed = await tx.workbenchSession.updateMany({
-        where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt },
+        where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt, isTemplate: false },
         data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
       });
       const started = await tx.workbenchSession.updateMany({
@@ -2031,6 +2126,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
           playerId: next.playerId,
           status: "PUBLISHED",
           updatedAt: next.updatedAt,
+          isTemplate: false,
           hiddenByPlayer: false,
           needsPlayerApproval: false,
         },
