@@ -2,7 +2,7 @@
  * Mandagssync for norsk turneringsdata-lag.
  * - DataGolf NOR-spillerliste (eksisterende)
  * - GolfBox schedule (kommende + frister)
- * - Navnelink + backfill
+ * - Eksisterende spillerkoblinger + resultat-etterfylling
  * - Dedupe formateringsvarianter
  *
  * Herdet (T7): hvert steg kjører i egen try/catch — én feil stopper ikke
@@ -29,7 +29,7 @@ export type NorgeMandagSyncOppsummering = {
   steg: {
     players: StegResultat<{ added: number; updated: number }>;
     golfbox: StegResultat<{ customers: number; events: number; upcoming: number }>;
-    link: StegResultat<{ linked: number; scannedUsers: number }>;
+    link: StegResultat<{ linked: number; scannedUsers: number; unverifiedNameCandidates: number }>;
     backfill: StegResultat<{ mirrored: number }>;
     dedupe: StegResultat<{ mergedGroups: number; fuzzyLeft: number }>;
   };
@@ -61,9 +61,13 @@ export async function runNorgeMandagSync(): Promise<NorgeMandagSyncOppsummering>
     if (result.failedCustomers?.length) throw new Error(`${result.failedCustomers.length} GolfBox-kalendere kunne ikke hentes`);
     return result;
   });
-  const link = await kjorSteg("navnelink", feil, async () => {
+  const link = await kjorSteg("identitetskandidater", feil, async () => {
     const r = await linkPublicPlayersByExactName(prisma);
-    return { linked: r.linked, scannedUsers: r.scannedUsers };
+    return {
+      linked: r.linked,
+      scannedUsers: r.scannedUsers,
+      unverifiedNameCandidates: r.skippedUnverifiedIdentity,
+    };
   });
   const backfill = await kjorSteg("backfill resultater", feil, async () => {
     const r = await backfillTournamentResultsForLinkedUsers(prisma);
