@@ -132,7 +132,7 @@ Sikkerhet og personvern:
 2. Råtoken finnes bare i første opprettingssvar og akseptkallet, aldri i databasen, dataeksporten eller nye logger. Prisma-feilhendelser er gjort generiske fordi automatiske databasefeil kan røpe argumenter. Ingen invitasjoner eller svar går til ekstern AI.
 3. Under 16 krever foresatt for å gi, men kan trekke selv. Eksport/sletting er utvidet sammen med ny lagring. Ingen gammel samtykketekst utvides, og ny tabell er lukket for Data API.
 
-## Sjette leveranse under kontroll: delingsreise og trenerens IUP-leser
+## Sjette leveranse: delingsreise og trenerens IUP-leser
 
 `/portal/meg/deling` gir eier og godkjent foresatt egen delingsoversikt, oppretting med uttrykkelig samtykke og tilbaketrekking. Innganger ligger på de eksisterende delingssidene for spiller og foresatt. WANG-eleven kan velge TN uten TN-medlemskap. Invitasjonslenken leveres til spilleren for egen videresending; ingen e-posttjeneste eller ekte utsending er aktivert. `/auth/trenerdeling` viser ingen spillerdata før riktig innlogget trener har godtatt. Token brukes som fragment, fjernes fra adressen etter innlasting og lagres bare i minnet. Nettverksgjenforsøk bruker samme opprettings-ID. Mistet førstegangskvittering krever tilbaketrekking og ny lenke, fordi råtoken ikke kan hentes fra databasen.
 
@@ -150,12 +150,19 @@ Sikkerhet/personvern: Eier/foreldrerelasjon og bekreftet treneridentitet håndhe
 
 Alle tre DG01–17-moduler er laget i Claude Design, Precision først. Egen feltkontroll finner135/135 i hver; konkrete TN-enhetsfeil er rettet og kontrollert. Egen390/1440-kontroll av feltutforskeren har ingen sidelengs rulling. Kilder, eksporter, kontroller og gjenstående avvik står i [designkontrollen](../design-audit/datagolf-precision-wang-team-norway-2026-10-02.md). Dette er design, ikke appintegrasjon eller lisensiert kundeaktivering. Full visuell godkjenning og alle interaksjoner gjenstår.
 
-## Sjuende leveranse under kontroll: trenerens spilleroversikt
+## Sjuende leveranse: trenerens spilleroversikt
 
 `/portal/meg/deling/innsyn` uten spillerparameter viser nå «Spillere som deler med meg», med inngang fra trenerens delingsside og tilbakekobling fra besvarelsene. Samme Precision-listekomponent og delingsreferanse brukes. Listen krever bekreftet WANG-/NGF-adresse, akseptert navngitt deling og fortsatt gyldig spiller-/trener-/foreldrerelasjon. Medlemskap alene, ventende lenker og gamle gruppesamtykker gir ingen navn i listen. WANG-elever kan vises hos navngitt TN-trener uten TN-medlemskap.
 
 Databasen henter unike spiller/miljø-par før sidegrensen, slik at flere invitasjoner ikke fyller listen med duplikater. Navn leses først etter den aktuelle delingskontrollen, under samme spillerlås som tilbaketrekking. Maksimalt 20 kandidater kontrolleres per side; en side med bortfalte rettigheter kan være tom og fortsatt ha «Flere delinger».
 
-20 prøver mot den separate lokale databasen og fem komponentprøver bestod. Ny prøving omfatter duplikater, feil trener, tilbaketrekking, WANG→TN, avsluttet treneransvar, ubekreftet adresse og 23 unike delinger fordelt 20/3. Første kjøring fant manglende syntetisk Auth-ID i den nye liste-fixturen; kun fixturen ble rettet, og full lokal databasesuite bestod deretter. Ekte lokal Auth-/nettleserreise viste riktig spiller i trenerlisten og åpnet samme leverte besvarelser. Listen er målt til 390/1440 px uten sidelengs rulling. Full `npm run verify` bestod med 4 114 kodeprøver, 53 komponentprøver og komplett Next-/Serwist-bygg. CI og merge gjenstår for denne delen.
+20 prøver mot den separate lokale databasen og fem komponentprøver bestod. Ny prøving omfatter duplikater, feil trener, tilbaketrekking, WANG→TN, avsluttet treneransvar, ubekreftet adresse og 23 unike delinger fordelt 20/3. Første kjøring fant manglende syntetisk Auth-ID i den nye liste-fixturen; kun fixturen ble rettet, og full lokal databasesuite bestod deretter. Ekte lokal Auth-/nettleserreise viste riktig spiller i trenerlisten og åpnet samme leverte besvarelser. Listen er målt til 390/1440 px uten sidelengs rulling. Full `npm run verify` bestod med 4 114 kodeprøver, 53 komponentprøver og komplett Next-/Serwist-bygg. PR #1090 ble merget kl. 06:15:14 etter fersk grønn CI36962951232 (4 114 kodeprøver, 53 komponentprøver og bygg) og Vercel på head `2b504a350996bdefb52dcce9da45ffb400b42920`. Main ble `1f561cebbcaf6f860797f93df83b641a2b126a36`. Produksjonsdeploy `6801158780` ble bekreftet vellykket kl.06:16:44.
 
 Sikkerhet/personvern: aktuell innlogget trener identifiseres fra bekreftet Auth; rå spiller-/gruppe-ID i sidegrensen er bare søkegrense, aldri rettighet. Parametrisert SQL henter kun kandidat-ID-er, mens navn krever separat gjeldende samtykke i samme transaksjon. Ingen ny lagring, eksport, e-post eller produksjonsmigrasjon. Testene bruker bare syntetiske data. Dette endrer ikke de eldre fullprofilleserne.
+
+
+## Samlet kontroll etter sju leveranser
+
+[Leveransekontrollen](wang-tn-leveransekontroll-2026-10-02.md) avstemmer alle 18 Excel-ark, de viktigste spiller-/trenerreisene og den automatiske turneringskjeden. Ny kontroll av begge originalfiler bestod med 342 identiske spørsmål. Junior Tours28.09 og Nordic League01.10 har grønne kjøringer; kontokobling på navn alene er fortsatt et konkret hull. Ingen ekte datarader eller produksjonslogger ble hentet. PR #1060 er fortsatt ikke mergeklar: feil spørsmålsmodell, egen gruppe-IUP og manglende anvendelse i Workbench.
+
+Sluttkontroll av dokumentpakken på main-grunnlag `226acab39` bestod med full `npm run verify`: 4 183 kodeprøver, 89 komponentprøver og komplett Next-/Serwist-bygg. Den inkluderer annen økts Workbench #1091. DataGolf-eksportene er oppdatert til Precision82, TN4 og WANG3. Egen kontroll bekrefter TNs 306 layouttilstander og riktige godkjenningsmengder i alle tre; Precision/WANG beholder nå kvitteringen etter ny innlasting. Faktisk appintegrasjon gjenstår. Se designkontrollen for nøyaktige grenser og private bevis.
