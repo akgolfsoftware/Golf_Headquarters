@@ -100,11 +100,16 @@ export default async function LiveSummaryPage({
     typeof (rawDineOrd as Record<string, unknown>).tekst === "string"
       ? ((rawDineOrd as Record<string, unknown>).tekst as string)
       : null;
+  const rawBekreftelse = summaryRoot?.etterOkt;
+  const bekreftet = !!rawBekreftelse && typeof rawBekreftelse === "object" && !Array.isArray(rawBekreftelse) && typeof (rawBekreftelse as Record<string, unknown>).loggedAt === "string" && (rawBekreftelse as Record<string, unknown>).utenVurdering === true;
   const rawVurdering = summaryRoot?.spillerVurdering;
   const heltall1til10 = (v: unknown): number | null => (typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= 10 ? v : null);
   const vurdering =
     rawVurdering && typeof rawVurdering === "object" && !Array.isArray(rawVurdering)
       ? {
+          kvalitet: typeof (rawVurdering as Record<string, unknown>).kvalitet === "number" && Number.isInteger((rawVurdering as Record<string, unknown>).kvalitet) && Number((rawVurdering as Record<string, unknown>).kvalitet) >= 1 && Number((rawVurdering as Record<string, unknown>).kvalitet) <= 5 ? Number((rawVurdering as Record<string, unknown>).kvalitet) : null,
+          folelse: typeof (rawVurdering as Record<string, unknown>).folelse === "string" ? String((rawVurdering as Record<string, unknown>).folelse) : null,
+          nesteFokus: typeof (rawVurdering as Record<string, unknown>).nesteFokus === "string" ? String((rawVurdering as Record<string, unknown>).nesteFokus) : null,
           rpe: heltall1til10((rawVurdering as Record<string, unknown>).rpe),
           fokus: heltall1til10((rawVurdering as Record<string, unknown>).fokus),
         }
@@ -149,5 +154,5 @@ export default async function LiveSummaryPage({
   const { okt, href } = await loadNesteOkt(user.id, naa);
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
-  return <EtterOkt key={sessionId} data={summaryData} nesteOkt={nesteOkt} vurdering={vurdering} lagretNotat={lagredeOrd} />;
+  return <EtterOkt key={sessionId} data={summaryData} nesteOkt={nesteOkt} vurdering={vurdering} bekreftet={bekreftet} lagretNotat={lagredeOrd} />;
 }

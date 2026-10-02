@@ -22,6 +22,7 @@ import { Ark, Nokkelverdi, Side, SideHode, Tabell } from "@/components/precision
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Caps, Listerad, Valgpille, akseStil } from "@/components/precision/pa-workbench";
 import type { WorkbenchFysTurneringData, WorkbenchPhysicalSessionDto, WorkbenchTournamentPlanDto } from "@/lib/workbench/fys-turnering-data";
+import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
 import { dagOgDato, klokke } from "./AG11Ark";
 import "@/styles/precision-a4.css";
 import "@/styles/precision-a9.css";
@@ -73,13 +74,13 @@ function useKjor() {
   return { pending, melding, kjor };
 }
 
-function Tilbake({ playerId }: { playerId: string }) {
-  return <KnappLenke variant="ghost" size="sm" icon={ArrowLeft} href={`/admin/workbench/${playerId}`}>Workbench</KnappLenke>;
+function Tilbake({ playerId, routeSurface }: { playerId: string; routeSurface: WorkbenchSurface }) {
+  return <KnappLenke variant="ghost" size="sm" icon={ArrowLeft} href={workbenchUrl(playerId, "uke", {}, routeSurface)}>Workbench</KnappLenke>;
 }
 
 /* =============== AG-WB-FYS · Fysisk plan =============== */
 
-export function AG11Fysisk({ playerId, spillerNavn, data, actions }: { playerId: string; spillerNavn: string; data: WorkbenchFysTurneringData; actions: FysTurnHandlinger }) {
+export function AG11Fysisk({ playerId, spillerNavn, data, actions, routeSurface = "agency" }: { playerId: string; spillerNavn: string; data: WorkbenchFysTurneringData; actions: FysTurnHandlinger; routeSurface?: WorkbenchSurface }) {
   const { pending, melding, kjor } = useKjor();
   const idag = osloIdag();
   const blokker = data.physicalBlocks;
@@ -107,13 +108,14 @@ export function AG11Fysisk({ playerId, spillerNavn, data, actions }: { playerId:
   const hode = <SideHode kicker={`Workbench · Fysisk plan · ${spillerNavn}`} title="Fysisk plan"
     sub={blokk ? <span className="a9-rad"><Status status={blokk.changedAfterPublish ? "CHANGED_AFTER_PUBLISH" : blokk.status} /><span>{spenn(blokk.startDate, blokk.endDate)}</span></span> : undefined}
     actions={<>
-      <Tilbake playerId={playerId} />
+      <Tilbake playerId={playerId} routeSurface={routeSurface} />
       <Knapp variant="secondary" icon={Plus} disabled={!actions.opprettFysiskBlokk} onClick={() => setNyBlokk(true)}>Legg til fysisk blokk</Knapp>
       {blokk && blokk.status !== "PUBLISHED" && actions.publiserFysiskBlokk && <Knapp icon={Send} disabled={pending} onClick={() => kjor(() => actions.publiserFysiskBlokk!({ id: blokk.id }))}>Publiser til spiller</Knapp>}
     </>} />;
 
   return <Side max={1440}><div className="a9">
     {hode}
+    {data.available === false && <InlineVarsel tone="info" tittel="Fysisk plan er ikke aktivert">Datagrunnlaget for denne modulen må etableres før blokker og økter kan lagres.</InlineVarsel>}
     {melding && <InlineVarsel tone="warn">{melding}</InlineVarsel>}
     {!blokk ? <TomTilstand icon={Dumbbell} title="Ingen fysisk plan ennå" text="Lag en blokk med uker og økter. Øktene publiseres til spillerens Plan og I dag."
       actions={<Knapp icon={Plus} disabled={!actions.opprettFysiskBlokk} onClick={() => setNyBlokk(true)}>Legg til fysisk blokk</Knapp>} /> : <>
@@ -237,7 +239,7 @@ export function AG11Fysisk({ playerId, spillerNavn, data, actions }: { playerId:
 
 const FANER = ["Forberedelse", "Turneringsdager", "Mål og strategi", "Etter turnering"] as const;
 
-export function AG11Turnering({ playerId, spillerNavn, data, actions }: { playerId: string; spillerNavn: string; data: WorkbenchFysTurneringData; actions: FysTurnHandlinger }) {
+export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurface = "agency" }: { playerId: string; spillerNavn: string; data: WorkbenchFysTurneringData; actions: FysTurnHandlinger; routeSurface?: WorkbenchSurface }) {
   const { pending, melding, kjor } = useKjor();
   const idag = osloIdag();
   const planer = data.tournamentPlans;
@@ -253,10 +255,11 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions }: { player
     <SideHode kicker={`Workbench · Turneringer · ${spillerNavn}`} title="Turneringsplan"
       sub={plan ? <span className="a9-rad"><Status status={plan.status} /><span>{plan.title} · {spenn(plan.startDate, plan.endDate)}</span></span> : undefined}
       actions={<>
-        <Tilbake playerId={playerId} />
+        <Tilbake playerId={playerId} routeSurface={routeSurface} />
         <Knapp variant="secondary" icon={Plus} disabled={!actions.opprettTurneringsplan} onClick={() => setNy(true)}>Ny turneringsplan</Knapp>
         {plan && plan.status !== "PUBLISHED" && actions.publiserTurneringsplan && <Knapp icon={Send} disabled={pending} onClick={() => kjor(() => actions.publiserTurneringsplan!({ id: plan.id }))}>Publiser til spiller</Knapp>}
       </>} />
+    {data.available === false && <InlineVarsel tone="info" tittel="Turneringsplan er ikke aktivert">Datagrunnlaget for denne modulen må etableres før turneringsplaner kan lagres.</InlineVarsel>}
     {melding && <InlineVarsel tone="warn">{melding}</InlineVarsel>}
     {data.openConflicts.length > 0 && <InlineVarsel tone="warn" tittel={`${data.openConflicts.length} åpne konflikter`}>{data.openConflicts.map((c) => c.title).join(" · ")}</InlineVarsel>}
     {!plan ? <TomTilstand icon={Trophy} title="Ingen turneringsplan ennå" text="Lag en plan med reise, runder, brutto score, SG, mål og evaluering."

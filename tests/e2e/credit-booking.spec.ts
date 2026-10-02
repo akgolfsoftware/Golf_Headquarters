@@ -9,7 +9,9 @@
  * skip-er testen.
  */
 
-import { test, expect } from "@playwright/test";
+import { creditJourney } from "../local-users/credit-journey";
+import { test, expect } from "./_test";
+import { loginAsPlayer } from "./_auth-helpers";
 
 const TEST_USER_EMAIL = process.env.E2E_TEST_USER_EMAIL ?? "";
 const TEST_USER_PASSWORD = process.env.E2E_TEST_USER_PASSWORD ?? "";
@@ -20,21 +22,17 @@ test.describe("Credit booking", () => {
     "E2E_TEST_USER_EMAIL/PASSWORD ikke satt — krever seedet test-spiller med Pro-abonnement"
   );
 
-  test("Pro-spiller booker time med credit, credits trekkes fra", async ({ page }) => {
+  test("Spiller med coachingpakke ser saldo og tjenester", async ({ page }) => {
     // Login
-    await page.goto("/auth/login");
-    await page.locator('input[type="email"]').fill(TEST_USER_EMAIL);
-    await page.locator('input[type="password"]').fill(TEST_USER_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/portal/, { timeout: 15_000 });
+    await loginAsPlayer(page);
 
     // Naviger til ny booking
     await page.goto("/portal/booking/ny");
     await expect(page).toHaveURL(/\/portal\/booking\/ny/);
 
     // Sjekk at credits vises (4 credits forventet for Pro)
-    const main = page.locator("main");
-    await expect(main).toContainText(/credit/i);
+    await expect(page.getByText("4 av 4 timer igjen denne måneden. Velg tjeneste og tid på ett sted.", { exact: true })).toBeVisible();
+    await expect(page.locator('a[href^="/portal/booking/ny?service="]').first()).toBeVisible();
 
     // NB: Selve credit-bookingen krever ledige slots + valgt service.
     // Vi verifiserer kun at credit-balansen vises korrekt. Full flyt
@@ -43,7 +41,8 @@ test.describe("Credit booking", () => {
     // egen test-DB.
   });
 
-  test.skip("Full credit-flyt: book + avbestill, credits back to 4", async () => {
-    // Skip inntil test-DB med seedet Pro-spiller + ledige slots er på plass.
+  test("Full credit-flyt: book + avbestill, credits back to 4", async ({ page }) => {
+    test.skip(process.env.LOCAL_E2E !== "1", "Krever isolert lokal database");
+    await creditJourney(page);
   });
 });

@@ -68,3 +68,14 @@ test("mmss", () => {
   assert.equal(mmss(2612), "43:32");
   assert.equal(mmss(null), "—");
 });
+
+test("fysisk kondisjon og bevegelighet beholder detaljer uten å kalle dem serier", () => {
+  const r = byggEtterOkt(okt({ drills: [drill({id:"f",pyramide:"FYS"})], existingLogs:[logg("f",10,"Kondisjon: 10 min i sone 4 — Syntetisk notat")] }));
+  assert.equal(r.tom, false); assert.equal(r.antall, null);
+  assert.equal(r.rader[0].enhet, null); assert.equal(r.rader[0].notat,"Syntetisk notat");
+  assert.deepEqual(r.rader[0].detaljer,[{label:"Registrert varighet",verdi:"10 min"},{label:"Pulssone",verdi:"S4"}]);
+});
+test("blandet golf og styrke summerer ikke serier som golfrepetisjoner", () => {
+  const r = byggEtterOkt(okt({drills:[drill({id:"g"}),drill({id:"f",pyramide:"FYS",fysSett:3})],existingLogs:[logg("g",20),logg("f",8,"Styrke: 60 kg × 8")]}));
+  assert.equal(r.antall,20);assert.equal(r.rader[1].antall,1);assert.equal(r.rader[1].enhet,"serier");
+});

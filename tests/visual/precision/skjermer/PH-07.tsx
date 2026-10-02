@@ -43,7 +43,7 @@ const neste = { tekst: "Tirsdag 29.09 kl. 15:00 · Putting og nærspill", href: 
 
 export const tilstander = {
   golf: <EtterOkt data={golf} nesteOkt={neste} />,
-  lagret: <EtterOkt data={golf} nesteOkt={neste} vurdering={{ rpe: 6, fokus: 7 }} lagretNotat="Lengdekontroll satt bedre på 50 m enn 100 m." />,
+  lagret: <EtterOkt data={golf} nesteOkt={neste} vurdering={{ kvalitet: 4, rpe: 6, fokus: 7 }} lagretNotat="Lengdekontroll satt bedre på 50 m enn 100 m." />,
   fysisk: <EtterOkt data={fys} />,
   tom: <EtterOkt data={tom} />,
   slagtelling: <EtterOkt data={tapper} />,

@@ -4,6 +4,12 @@
 > MANGLER for lanseringsnivå. Søsterdokument: `datakart.md` (hva vi lagrer) og
 > `personvernerklaering-utkast.md` (hva vi lover).
 
+## Oppfølgingsmerknad 1. oktober 2026
+
+Juli-kartleggingen under er historikk og må ikke alene brukes som dagens mangelliste. `exportUserData()` inkluderer nå også coachnotater, coachingsamtaler, opptak, fravær/skade, talentdata, dokumentrader, treningslogger, swingvideoer og delingssamtykker. Dette er fortsatt ikke bevis på komplett fileksport eller dekning av alle nyere Workbench-modeller.
+
+[Kontrollen av betaling og personvern](../design-audit/betaling-personvern-2026-10-01.md) viser avgrensede rettinger og åpne oppgaver: lesende tørrkjøring, gjenforsøk ved ekstern slettefeil og behandling av Storage-feil. Full sletting hos alle eksterne tjenester og historiske ferdigmarkeringer er fortsatt ikke verifisert.
+
 ## 1. Innsyn og dataportabilitet (art. 15 + 20)
 
 ### Finnes

@@ -9,6 +9,7 @@ import { canAccessPlayer } from "@/lib/auth/own-or-coached";
  */
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
@@ -534,77 +535,68 @@ export async function lagreDineOrd(
   return { ok: true };
 }
 
-/** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */
+const vurderingSchema = z.object({
+  kvalitet: z.number().int().min(1).max(5).optional(),
+  fokus: z.number().int().min(1).max(10).nullable().optional(),
+  rpe: z.number().int().min(1).max(10).optional(),
+  nesteFokus: z.string().trim().max(500).optional(),
+  folelse: z.string().trim().max(200).optional(),
+  notat: z.string().trim().max(2000).optional(),
+  utenVurdering: z.boolean().optional(),
+}).superRefine((v, ctx) => {
+  const harVurdering = v.kvalitet !== undefined || v.rpe !== undefined || v.fokus !== undefined;
+  if (v.utenVurdering ? harVurdering : !harVurdering) {
+    ctx.addIssue({ code: "custom", message: "Velg vurdering eller lagre uten vurdering." });
+  }
+});
+
+/** Samlet lagring av vurdering/notat. Utelatte felt beholder sine tidligere verdier. */
 export async function lagreSpillerVurdering(
   sessionId: string,
-  input: { kvalitet?: number; fokus?: number; nesteFokus: string; folelse?: string; rpe?: number },
+  input: z.input<typeof vurderingSchema>,
 ): Promise<{ ok: boolean; error?: string }> {
-  const { user, session } = await verifyAccess(sessionId);
-  if (session.status !== "COMPLETED") {
-    return { ok: false, error: "Økta er ikke fullført ennå" };
-  }
-  // PH-07: Belastning (rpe) og Fokus (1–10) erstatter kvalitet 1–5 i det nye skjemaet.
-  // Kvalitet er valgfri, men må være 1–5 når den sendes.
-  if (input.kvalitet !== undefined && (!Number.isInteger(input.kvalitet) || input.kvalitet < 1 || input.kvalitet > 5)) {
-    return { ok: false, error: "Kvalitet må være 1–5" };
-  }
-  if (input.fokus !== undefined && (!Number.isInteger(input.fokus) || input.fokus < 1 || input.fokus > 10)) {
-    return { ok: false, error: "Fokus må være et helt tall 1–10" };
-  }
-  if (input.kvalitet === undefined && input.rpe === undefined && input.fokus === undefined) {
-    return { ok: false, error: "Fyll inn belastning eller fokus" };
-  }
-  if (
-    input.rpe !== undefined &&
-    (!Number.isInteger(input.rpe) || input.rpe < 1 || input.rpe > 10)
-  ) {
-    return { ok: false, error: "RPE må være et helt tall 1–10" };
-  }
-
-  const existing =
-    session.completedSummary &&
-    typeof session.completedSummary === "object" &&
-    !Array.isArray(session.completedSummary)
-      ? (session.completedSummary as Record<string, unknown>)
-      : {};
-
-  // sRPE (Foster): økt-RPE × varighet i minutter = belastningspoeng.
-  // Varighet hentes fra serverens egen liveSummary (skrevet av completeSession),
-  // aldri fra klienten. Uten varighet lagres RPE alene (sRpe = null).
-  const liveSummary =
-    existing.liveSummary && typeof existing.liveSummary === "object"
-      ? (existing.liveSummary as Record<string, unknown>)
-      : null;
-  const durationSec =
-    typeof liveSummary?.durationSec === "number" ? liveSummary.durationSec : null;
-  const { durationMin, sRpe } = beregnSRpe(input.rpe, durationSec);
+  const id = z.string().min(1).max(200).safeParse(sessionId);
+  if (!id.success) return { ok: false, error: "Ugyldig økt." };
+  const { user, session } = await verifyAccess(id.data);
+  if (session.status !== "COMPLETED") return { ok: false, error: "Økta er ikke fullført ennå" };
+  const parsed = vurderingSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Kontroller vurderingen og lengden på notatet." };
+  const v = parsed.data;
+  const existing = session.completedSummary && typeof session.completedSummary === "object" && !Array.isArray(session.completedSummary)
+    ? session.completedSummary as Record<string, unknown> : {};
+  const liveSummary = existing.liveSummary && typeof existing.liveSummary === "object" && !Array.isArray(existing.liveSummary)
+    ? existing.liveSummary as Record<string, unknown> : null;
+  const durationSec = typeof liveSummary?.durationSec === "number" ? liveSummary.durationSec : null;
+  const stamp = { loggedBy: user.id, loggedAt: new Date().toISOString() };
 
   await prisma.$transaction(async (tx) => {
-    const count = await tx.$executeRaw(summaryFieldUpdate(sessionId, "spillerVurdering", {
-      kvalitet: input.kvalitet ?? null,
-      fokus: input.fokus ?? null,
-      nesteFokus: input.nesteFokus.trim().slice(0, 500),
-      folelse: input.folelse?.trim().slice(0, 200) || null,
-      rpe: input.rpe ?? null,
-      durationMin,
-      sRpe,
-      loggedBy: user.id,
-      loggedAt: new Date().toISOString(),
-    }));
-    if (count !== 1) throw new Error("Økta er ikke tilgjengelig for lagring");
+    const write = async (field: "spillerVurdering" | "dineOrd" | "etterOkt", value: Prisma.InputJsonObject, merge = false) => {
+      const count = await tx.$executeRaw(summaryFieldUpdate(id.data, field, value, merge));
+      if (count !== 1) throw new Error("Økta er ikke tilgjengelig for lagring");
+    };
+    if (!v.utenVurdering) {
+      await write("spillerVurdering", {
+        ...stamp,
+        ...(v.kvalitet === undefined ? {} : { kvalitet: v.kvalitet }),
+        ...(v.fokus === undefined ? {} : { fokus: v.fokus }),
+        ...(v.nesteFokus === undefined ? {} : { nesteFokus: v.nesteFokus }),
+        ...(v.folelse === undefined ? {} : { folelse: v.folelse || null }),
+        ...(v.rpe === undefined ? {} : { rpe: v.rpe, ...beregnSRpe(v.rpe, durationSec) }),
+      }, true);
+    }
+    if (v.notat !== undefined) await write("dineOrd", { ...stamp, tekst: v.notat });
+    await write("etterOkt", { ...stamp, utenVurdering: v.utenVurdering === true });
 
-    // Vurdering og eventuelt planspeil lagres samlet; feil beholder begge førverdiene.
-    if (session.generertFra === GENERERT_FRA && session.generertFraId && input.kvalitet !== undefined && input.nesteFokus.trim()) {
-      const fokus = input.nesteFokus.trim().slice(0, 500);
+    // Planspeilet krever en faktisk kvalitet; fokus 1–10 er ikke kvalitet 1–5.
+    if (session.generertFra === GENERERT_FRA && session.generertFraId && v.kvalitet !== undefined && v.nesteFokus) {
       await tx.trainingPlanSessionLog.upsert({
         where: { sessionId: session.generertFraId },
-        create: { sessionId: session.generertFraId, startedAt: new Date(), notes: `Spiller-fokus etter økt: ${fokus}`, rating: input.kvalitet },
-        update: { notes: `Spiller-fokus etter økt: ${fokus}`, rating: input.kvalitet },
+        create: { sessionId: session.generertFraId, startedAt: new Date(), notes: `Spiller-fokus etter økt: ${v.nesteFokus}`, rating: v.kvalitet },
+        update: { notes: `Spiller-fokus etter økt: ${v.nesteFokus}`, rating: v.kvalitet },
       });
     }
   });
-
-  revalidatePath(`/portal/live/${sessionId}/summary`);
+  revalidatePath(`/portal/live/${id.data}/summary`);
   revalidatePath("/portal/planlegge");
   return { ok: true };
 }

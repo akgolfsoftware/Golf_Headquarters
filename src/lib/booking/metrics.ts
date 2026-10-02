@@ -4,7 +4,8 @@
  * Surfaces for admin can read keys later; never blocks booking.
  */
 
-import { Redis } from "@upstash/redis";
+import { createUpstashRedis } from "@/lib/upstash-redis";
+import type { Redis } from "@upstash/redis";
 
 export type BookingMetricEvent =
   | "book_success"
@@ -26,17 +27,7 @@ let redis: Redis | null | undefined;
 
 function getRedis(): Redis | null {
   if (redis !== undefined) return redis;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token || /xxxx\.upstash\.io|YOUR_|placeholder/i.test(url + token)) {
-    redis = null;
-    return null;
-  }
-  try {
-    redis = new Redis({ url, token });
-  } catch {
-    redis = null;
-  }
+  redis = createUpstashRedis();
   return redis;
 }
 

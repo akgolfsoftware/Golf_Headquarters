@@ -7,7 +7,7 @@
  * vises som «—» — aldri gjetning.
  */
 import type { LiveV2Summary } from "@/components/portal/live/types";
-import { golfLoggTall, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
+import { fysVisningsrader, golfLoggTall, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 
 export type EtterOktRad = {
   id: string;
@@ -18,6 +18,9 @@ export type EtterOktRad = {
   /** Registrerte reps (golf) eller serier (fysisk) — null uten registrering. */
   antall: number | null;
   planAntall: number | null;
+  enhet: "serier" | "repetisjoner" | null;
+  detaljer: { label: string; verdi: string }[];
+  notat: string | null;
 };
 
 export type EtterOkt = {
@@ -47,10 +50,16 @@ export function byggEtterOkt(data: LiveV2Summary): EtterOkt {
     const l = logg(d.id);
     let antall: number | null = null;
     let planAntall: number | null = null;
+    let enhet: EtterOktRad["enhet"] = "repetisjoner";
+    let detaljer: EtterOktRad["detaljer"] = [];
+    let notat = l?.notes ?? null;
     if (d.pyramide === "FYS") {
       const reg = lesFysRegistrering(l?.notes);
       antall = reg?.type === "styrke" ? reg.sett.length : null;
-      planAntall = positiv(d.fysSett);
+      enhet = reg?.type === "styrke" || d.fysSett != null ? "serier" : null;
+      planAntall = enhet === "serier" ? positiv(d.fysSett) : null;
+      detaljer = reg ? fysVisningsrader(reg) : [];
+      notat = reg ? reg.notat || null : notat;
     } else {
       antall = l ? heltall(l.repsTotal) : null;
       planAntall = positiv(d.plannedReps);
@@ -58,17 +67,18 @@ export function byggEtterOkt(data: LiveV2Summary): EtterOkt {
     return {
       id: d.id, navn: d.name,
       sek: positiv(d.actualDurationSec), planSek: positiv(d.durationMinutes * 60),
-      antall, planAntall,
+      antall, planAntall, enhet, detaljer, notat,
     };
   });
 
   let antall: number | null;
   let planAntall: number | null;
   if (fys) {
-    const summer = rader.filter((r) => r.antall != null);
+    const summer = rader.filter((r) => r.enhet === "serier" && r.antall != null);
     antall = summer.length > 0 ? summer.reduce((s, r) => s + (r.antall ?? 0), 0) : null;
-    const planer = rader.filter((r) => r.planAntall != null);
-    planAntall = planer.length === rader.length && planer.length > 0 ? planer.reduce((s, r) => s + (r.planAntall ?? 0), 0) : null;
+    const serier = rader.filter((r) => r.enhet === "serier");
+    const planer = serier.filter((r) => r.planAntall != null);
+    planAntall = planer.length === serier.length && planer.length > 0 ? planer.reduce((s, r) => s + (r.planAntall ?? 0), 0) : null;
   } else if (data.logSource === "tapper" || data.drills.length === 0) {
     antall = positiv(data.totalReps);
     planAntall = null;
@@ -78,7 +88,7 @@ export function byggEtterOkt(data: LiveV2Summary): EtterOkt {
     planAntall = positiv(golf.planReps);
   }
 
-  const tom = totalSek === null && (antall === null || antall === 0) && rader.every((r) => (r.antall ?? 0) === 0 && r.sek === null);
+  const tom = totalSek === null && (antall === null || antall === 0) && rader.every((r) => (r.antall ?? 0) === 0 && r.sek === null && r.detaljer.length === 0);
   return { variant: fys ? "fys" : "golf", tom, totalSek, planSek, antall, planAntall, rader };
 }
 

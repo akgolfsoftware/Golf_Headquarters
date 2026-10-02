@@ -32,43 +32,55 @@ export async function markerOktStatus(input: {
 
   const user = await requirePortalUser({ allow: ["PLAYER"] });
 
-  let tittel: string | null = null;
-
-  if (kilde === "plan") {
-    const okt = await prisma.trainingPlanSession.findFirst({
-      where: { id, plan: { userId: user.id } },
-      select: { id: true, title: true, status: true },
-    });
-    if (!okt) return { ok: false, error: "Økten finnes ikke" };
-    if (okt.status === "COMPLETED" || okt.status === "SKIPPED") {
-      return { ok: true };
+  // Kilde og speil må lagres samlet. Ellers kan en speilfeil etterlate
+  // én side som ferdig; et nytt forsøk stopper da på terminalstatusen.
+  const resultat = await prisma.$transaction(async (tx) => {
+    if (kilde === "plan") {
+      const okt = await tx.trainingPlanSession.findFirst({
+        where: { id, plan: { userId: user.id } },
+        select: { id: true, title: true, status: true },
+      });
+      if (!okt) return { ok: false as const, error: "Økten finnes ikke" };
+      if (okt.status === "COMPLETED" || okt.status === "SKIPPED") {
+        return { ok: true as const, endret: false, tittel: okt.title };
+      }
+      // Samtidige trykk: bare kalleren som fortsatt finner lest status,
+      // får endre og sende varsel. Den andre får samme idempotente svar.
+      const skrevet = await tx.trainingPlanSession.updateMany({
+        where: { id, status: okt.status }, data: { status },
+      });
+      if (skrevet.count === 0) return { ok: true as const, endret: false, tittel: okt.title };
+      // Manglende speil er tillatt; en faktisk skrivefeil ruller begge tilbake.
+      await tx.trainingSessionV2.updateMany({
+        where: { generertFra: GENERERT_FRA, generertFraId: id },
+        data: { status },
+      });
+      return { ok: true as const, endret: true, tittel: okt.title };
     }
-    tittel = okt.title;
-    await prisma.trainingPlanSession.update({ where: { id }, data: { status } });
-    // Hold v2-speilet i synk (best-effort — speilet kan mangle).
-    await prisma.trainingSessionV2.updateMany({
-      where: { generertFra: GENERERT_FRA, generertFraId: id },
-      data: { status },
-    });
-  } else {
-    const okt = await prisma.trainingSessionV2.findFirst({
+
+    const okt = await tx.trainingSessionV2.findFirst({
       where: { id, studentId: user.id },
       select: { id: true, title: true, status: true, generertFra: true, generertFraId: true },
     });
-    if (!okt) return { ok: false, error: "Økten finnes ikke" };
+    if (!okt) return { ok: false as const, error: "Økten finnes ikke" };
     if (okt.status === "COMPLETED" || okt.status === "SKIPPED") {
-      return { ok: true };
+      return { ok: true as const, endret: false, tittel: okt.title };
     }
-    tittel = okt.title;
-    await prisma.trainingSessionV2.update({ where: { id }, data: { status } });
-    // Speil tilbake til plan-økta — etterlevelsen (adherence) leser plan-sida.
+    const skrevet = await tx.trainingSessionV2.updateMany({
+      where: { id, status: okt.status }, data: { status },
+    });
+    if (skrevet.count === 0) return { ok: true as const, endret: false, tittel: okt.title };
     if (okt.generertFra === GENERERT_FRA && okt.generertFraId) {
-      await prisma.trainingPlanSession.updateMany({
+      await tx.trainingPlanSession.updateMany({
         where: { id: okt.generertFraId, plan: { userId: user.id } },
         data: { status },
       });
     }
-  }
+    return { ok: true as const, endret: true, tittel: okt.title };
+  });
+  if (!resultat.ok) return { ok: false, error: resultat.error };
+  if (!resultat.endret) return { ok: true };
+  const tittel = resultat.tittel;
 
   // Avvik → coachen får beskjed i klarspråk (aldri til selvbetjente uten coach).
   if (status === "SKIPPED") {
