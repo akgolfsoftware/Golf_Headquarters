@@ -2,7 +2,7 @@ import "server-only";
 
 import type { UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import { tnFormat, tnScore, tnSameScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
@@ -340,6 +340,8 @@ export type TnTestdagDeltakerRad = {
   order: number;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE";
   scoreTekst: string | null;
+  lagredeForsok: number | null;
+  totaltForsok: number;
 };
 
 export type TnTestdagRad = {
@@ -401,7 +403,7 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
       testDefinition: true,
       participants: {
         orderBy: { order: "asc" },
-        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } } },
+        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } }, session: { select: { scoringData: true } } },
       },
     },
   });
@@ -419,7 +421,26 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
       deltakere: dag.participants.map((p) => {
         const detaljer = p.result?.details as Partial<TnResult> | null;
         const scoreTekst = p.status === "DONE" && p.result && detaljer?.unit ? tnFormat({ value: p.result.score, unit: detaljer.unit }) : null;
-        return { id: p.id, spillerId: p.playerId, spillerNavn: p.player.name ?? "Ukjent", order: p.order, status: p.status, scoreTekst };
+        const state = p.session ? TnSessionSchema.safeParse(p.session.scoringData) : null;
+        const sessionState = state?.success ? state.data : null;
+        const sessionProtocol = sessionState ? tnProtocol(sessionState.protocolId, undefined, sessionState.version) : null;
+        const lagredeForsok = sessionState && sessionProtocol
+          ? Object.entries(sessionState.values).filter(([nr, values]) => {
+            const row = sessionProtocol.rows[Number(nr) - 1];
+            const harMaling = Object.values(values).some((value) => value !== null && value !== undefined && value !== "");
+            return row !== undefined && harMaling && !tnRowError(row, values, false);
+          }).length
+          : p.session ? 0 : null;
+        return {
+          id: p.id,
+          spillerId: p.playerId,
+          spillerNavn: p.player.name ?? "Ukjent",
+          order: p.order,
+          status: p.status,
+          scoreTekst,
+          lagredeForsok,
+          totaltForsok: sessionState?.count ?? protokoll?.rows.length ?? 0,
+        };
       }),
     },
   };

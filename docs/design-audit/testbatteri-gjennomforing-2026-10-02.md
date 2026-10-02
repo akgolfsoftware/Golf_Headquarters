@@ -88,7 +88,9 @@ Skjermportering fra den nye eksporten, automatisk/offline lagring per forsøk, p
 
 Fagspørsmålene om ni-hullsmål, Impact Location, fysiske protokoller og hvem som får se felles spillerliste er sendt til Anders og står fortsatt ubesvart. Allerede avklarte poeng-/gate-/speedregler er gjennomført uten å be om ny godkjenning.
 
-Sikkerhetskontroll for denne delen: ingen nye åpne ruter, ingen utvidelse av eksisterende spiller-/coachrettigheter, ingen nye produksjonstabeller eller lagringskategorier. Alle nye prøvepersoner er syntetiske og ligger kun lokalt. Eksisterende samtykke- og foresattvakter er beholdt. Database-/lagringsbeviset gjelder den eksisterende egenføringen, ikke den bestilte nye felles testdagen.
+Sikkerhetskontroll for den opprinnelige egenføringen: ingen nye åpne ruter, ingen utvidelse av eksisterende spiller-/coachrettigheter, ingen nye produksjonstabeller eller lagringskategorier. Alle prøvepersoner er syntetiske og ligger kun lokalt. Senere tillegg omfatter nå egen spillerføring på aktiv TN-testdag, privat bildeindeks og automatisk køoppdatering; se oppdatert [scorekort- og autolagringskontroll](testbatteri-scorekort-og-autolagring-2026-10-02.md). Flerskolemodell, WANG-kobling og full liveoppdatering er fortsatt uferdig.
+
+Oppdatert isolert databasekontroll 02.10: **37 av 37 prøver bestod**, inkludert unik og eier-/øktkoblet metadata for privat testbilde. Tabellen ble opprettet med additiv SQL mot `127.0.0.1:56022/testbatteri_20261002`; RLS-status ble kontrollert som aktiv. Ingen bucket eller produksjon ble endret.
 
 ### Eksportidentitet og uavhengig kontroll
 
