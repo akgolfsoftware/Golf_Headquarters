@@ -1,7 +1,8 @@
 /**
- * PlayerHQ · Live-økt aktiv V2 — TrainingSessionV2.
+ * PlayerHQ · Live-økt aktiv — PH05Live i Precision Athletics (natt).
+ * Tilgang, kø og fullføring beholdes. Visningen er LiveActive.
  *
- * Henter økt + drills og rendrer LiveActive-komponenten som styrer timer,
+ * Henter økt + drills og rendrer LiveActive som styrer timer,
  * rep-logging og drill-fremdrift.
  */
 

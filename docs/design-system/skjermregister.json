@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "fba504375a5fba9c031a224b9408779c1aa3d445",
+  "kodeversjon": "b8d8c6b6817bf3c6d9ac5ff47ee6c633fd9e2ff9",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -13184,12 +13184,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Aktiv-siden merker PH05Live og monterer LiveActive i Precision-natt. Timer, reps, pause, notater, offline og fullføring er beholdt. Caddie-panelet er fortsatt v2. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-05.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-05 Live-økt: aktiv er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -22984,10 +22986,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 42,
+    "medAvvik": 43,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 5,
+    "implementert": 6,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
