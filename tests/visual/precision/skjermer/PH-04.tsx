@@ -6,11 +6,11 @@ import type { LiveV2Session } from "@/components/portal/live/types";
 import { Ikon, LasterTilstand, FeilTilstand, Knapp } from "@/components/precision/pa";
 
 export const sti = "/portal/live/o1/brief";
-export const natt = ["livebrief", "data", "lang", "tom", "sperret", "laster", "feil"];
+export const natt = ["tom-med-maal", "livebrief", "data", "lang", "tom", "sperret", "laster", "feil"];
 
 const ov = (i: number, navn: string, min: number, mengde: string, under: string | null = null, notat: string | null = null): PH04Ovelse => ({ id: `d${i}`, navn, min, mengde, under, notat });
 const base: PH04Props = {
-  hvem: "Øyvind Rohjan", coach: "Anders Kristiansen", tittel: "Innspill og nærspill", tid: "14:30–15:45", sted: "Range 3 · Fredrikstad GK", min: 75, akser: ["slag", "tek"],
+  hvem: "Øyvind Rohjan", coach: "Anders Kristiansen", tittel: "Innspill og nærspill", dato: "Fredag 2. oktober 2026", tid: "14:30–15:45", sted: "Range 3 · Fredrikstad GK", min: 75, akser: ["slag", "tek"],
   maal: "Lengdekontroll på innspill mellom 50 og 100 m: innenfor 6 m fra målet.", fokus: "Hendene foran ballen i treff",
   ekstra: [{ label: "Fra coachen", text: "Hold 50 % fart til det sitter." }],
   ovelser: [
@@ -28,9 +28,10 @@ export const tilstander = {
   lang: <PH04LiveBrief {...base} tittel="Et veldig langt øktnavn som må brytes på flere linjer uten å sprenge skjermen" sted="Fredrikstad Golfklubb, Range 3 og puttinggreen" hvem="Et veldig langt spillernavn Og Etternavn"
     maal={"Første linje i målet.\nAndre linje med et veldig_langt_ord_uten_mellomrom_som_må_brytes_riktig_i_kortet"} ovelser={[ov(1, "Øvelse_med_et_veldig_langt_navn_uten_mellomrom_som_må_brytes", 20, "30 baller", "Teknisk", "Notat over\nto linjer")]} />,
   tom: <PH04LiveBrief {...base} ovelser={[]} maal={null} fokus={null} ekstra={[]} />,
+  "tom-med-maal": <PH04LiveBrief {...base} ovelser={[]} />,
   sperret: <PH04LiveBrief {...base} melding="Live krever PRO." handling={<PH04Lenke href="#">Se abonnement</PH04Lenke>} />,
   laster: <Tegn><LasterTilstand text="Henter økta …" /></Tegn>,
-  feil: <Tegn><FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Tilkoblingen ble brutt. Prøv igjen, eller gå tilbake til I dag." retry={<Knapp variant="secondary" icon={RotateCw}>Prøv igjen</Knapp>} /><PH04Lenke href="#">Tilbake til I dag</PH04Lenke></Tegn>,
+  feil: <Tegn><FeilTilstand icon={CircleAlert} title="Økta kunne ikke lastes" text="Prøv igjen, eller gå tilbake til I dag." retry={<Knapp variant="secondary" icon={RotateCw}>Prøv igjen</Knapp>} /><PH04Lenke href="#">Tilbake til I dag</PH04Lenke></Tegn>,
 };
 
 // Ekte komponenter (LiveBrief) med syntetiske data: beviser kartleggingen fra appens datamodell.

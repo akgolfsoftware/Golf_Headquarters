@@ -14,33 +14,27 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Ikon, type Akse, AKSE_NAVN } from "./pa";
+import { AKSER } from "./akser";
+export { AKSER, akseFra } from "./akser";
 import "@/styles/precision-a9.css";
 
 const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(" ");
-
-export const AKSER: readonly Akse[] = ["fys", "tek", "slag", "spill", "turn"];
 
 /** Aksefargen som CSS-variabel for stripe/understrek (bare tokens). */
 export function akseStil(akse: Akse | null | undefined): CSSProperties {
   return { ["--a9-akse" as string]: akse ? `var(--axis-${akse})` : "var(--border-strong)" } as CSSProperties;
 }
 
-/** «TEK» → «tek». Ukjent verdi gir null (nøytral stripe). */
-export function akseFra(pyramide: string | null | undefined): Akse | null {
-  const a = (pyramide ?? "").toLowerCase();
-  return (AKSER as readonly string[]).includes(a) ? (a as Akse) : null;
-}
-
 /** Valgpille (ChoicePill) som fane, radio eller vanlig bryter. Treffmål 44 px. */
-export function Valgpille({ valgt, onClick, akse, rolle = "button", children, href }: {
-  valgt: boolean; onClick?: () => void; akse?: Akse; rolle?: "button" | "tab" | "radio"; children: ReactNode; href?: string;
+export function Valgpille({ valgt, onClick, akse, rolle = "button", children, href, controlId }: {
+  valgt: boolean; onClick?: () => void; akse?: Akse; rolle?: "button" | "tab" | "radio"; children: ReactNode; href?: string; controlId?: string;
 }) {
   const klasse = cx("pa-choice a9-choice", akse && `pa-choice--axis pa-choice--${akse}`);
   if (href) {
-    return <Link href={href} className={klasse} role={rolle === "tab" ? "tab" : undefined} aria-selected={rolle === "tab" ? valgt : undefined}>{children}</Link>;
+    return <Link href={href} className={klasse} role={rolle === "tab" ? "tab" : undefined} aria-selected={rolle === "tab" ? valgt : undefined} data-control-id={controlId}>{children}</Link>;
   }
   const aria = rolle === "tab" ? { role: "tab", "aria-selected": valgt } : rolle === "radio" ? { role: "radio", "aria-checked": valgt } : { "aria-pressed": valgt };
-  return <button type="button" className={klasse} onClick={onClick} {...aria}>
+  return <button type="button" className={klasse} onClick={onClick} data-control-id={controlId} {...aria}>
     {akse && <span className="pa-choice__dot" aria-hidden />}{children}
   </button>;
 }

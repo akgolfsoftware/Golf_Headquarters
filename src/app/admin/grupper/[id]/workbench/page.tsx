@@ -8,6 +8,7 @@
  * under canvaset (lesevisning — timeplanen redigeres på gruppe-detalj).
  */
 
+import { editableGroupWhere } from "@/lib/workbench/group-scope";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
@@ -34,8 +35,8 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
   const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id },
+  const gruppe = await prisma.group.findFirst({
+    where: { id, ...editableGroupWhere(user) },
     select: {
       id: true,
       name: true,

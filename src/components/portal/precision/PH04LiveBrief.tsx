@@ -27,6 +27,7 @@ export type PH04Props = {
   tittel: string;
   /** «14:30–15:45», allerede formatert. */
   tid: string | null;
+  dato?: string | null;
   sted: string | null;
   min: number;
   akser: Akse[];
@@ -48,14 +49,12 @@ export function PH04Lenke({ href, children, ikon }: { href: string; children: Re
 const rad = { display: "flex", flexDirection: "column", gap: 4 } as const;
 const overTekst = { overflowWrap: "anywhere", minWidth: 0 } as const;
 
-export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal, fokus, ekstra, ovelser, melding, handling }: PH04Props) {
+export function PH04LiveBrief({ hvem, coach, tittel, tid, dato, sted, min, akser, maal, fokus, ekstra, ovelser, melding, handling }: PH04Props) {
   const tom = ovelser.length === 0;
   const hvemLinje = [hvem ? hvem.toUpperCase() : null, coach ? `MED ${coach.toUpperCase()}` : null].filter(Boolean).join(" · ");
-  const topp = [tid, sted?.toUpperCase()].filter(Boolean).join(" · ");
+  const topp = [dato, tid, sted?.toUpperCase()].filter(Boolean).join(" · ");
   const harKort = Boolean(maal || fokus || ekstra.length);
-  const bunn = tom && !melding
-    ? <PH04Lenke href="/portal" ikon={<Ikon icon={ArrowLeft} size={22} name="arrow-left" />}>Tilbake til I dag</PH04Lenke>
-    : handling;
+  const bunn = handling ?? <PH04Lenke href="/portal" ikon={<Ikon icon={ArrowLeft} size={22} name="arrow-left" />}>Tilbake til I dag</PH04Lenke>;
   return <div className="pa-root" data-theme="night" data-design="precision-athletics" data-od-id="ph-04-live-for-start" style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "var(--surface-page)", color: "var(--text-primary)" }}>
     <main style={{ flex: 1, width: "100%", maxWidth: 600, margin: "0 auto", boxSizing: "border-box", padding: "12px 16px 16px", display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 56 }}>
@@ -73,8 +72,8 @@ export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal
           <Meta>{min > 0 ? min : "—"} MIN{tid ? ` · ${tid}` : ""}</Meta>
         </div>
       </header>
-      {tom ? <TomTilstand icon={ListPlus} title="Ingen driller i økta" text="Coachen har ikke lagt inn driller ennå. Du kan bygge økta selv i Workbench."
-        actions={<Link href="/portal/planlegge/workbench" className="pa-btn pa-btn--secondary pa-btn--icon-l"><Ikon icon={Layers} size={18} name="layers" />Åpne Workbench</Link>} /> : <>
+      {tom && <TomTilstand icon={ListPlus} title="Ingen driller i økta" text="Coachen har ikke lagt inn driller ennå. Du kan bygge økta selv i Workbench."
+        actions={<Link href="/portal/planlegge/workbench" className="pa-btn pa-btn--secondary pa-btn--icon-l"><Ikon icon={Layers} size={18} name="layers" />Åpne Workbench</Link>} />}
         {harKort && <div className="pa-card" style={{ padding: 16, gap: 12 }}>
           {maal && <><span className="kicker">Dagens mål</span>
             <div style={{ font: "600 21px/1.3 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty", whiteSpace: "pre-wrap", ...overTekst }}>{maal}</div></>}
@@ -87,7 +86,7 @@ export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal
             <span style={{ font: "var(--type-body-s)", color: "var(--text-primary)", whiteSpace: "pre-wrap", textWrap: "pretty", ...overTekst }}>{e.text}</span>
           </div>)}
         </div>}
-        <section aria-label="Driller" className="pa-card" style={{ padding: "8px 16px" }}>
+      {!tom && <section aria-label="Driller" className="pa-card" style={{ padding: "8px 16px" }}>
           <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {ovelser.map((o, i) => <li key={o.id} style={{ display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 68, padding: "6px 0", borderTop: i ? "1px solid var(--border-hairline)" : "none", minWidth: 0 }}>
               <Meta style={{ font: "var(--type-num-s)" }}>{String(i + 1).padStart(2, "0")}</Meta>
@@ -102,8 +101,7 @@ export function PH04LiveBrief({ hvem, coach, tittel, tid, sted, min, akser, maal
               </span>
             </li>)}
           </ol>
-        </section>
-      </>}
+        </section>}
     </main>
     <div style={{ position: "sticky", bottom: 0, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)", zIndex: 5 }}>
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "12px 16px max(16px, env(safe-area-inset-bottom))", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 8 }}>

@@ -35,6 +35,12 @@ function rad(overstyr: Partial<WbLiveInput> = {}): WbLiveInput {
 }
 
 describe("wb-live-map", () => {
+  it("brief beholder faktisk mål adskilt fra coach-notat, også uten øvelser", () => {
+    const data = mapWbToLiveSessionData(rad({ maalsetning: "Hold balansen", notes: "Ta pauser", drills: [] }));
+    assert.equal(data.maalsetning, "Hold balansen");
+    assert.equal(data.rationale, "Ta pauser");
+    assert.equal(mapWbToLiveSessionData(rad()).maalsetning, null);
+  });
   it("PUBLISHED mappes til PLANNED for brief", () => {
     assert.equal(wbStatusToPlanStatus("PUBLISHED"), "PLANNED");
     assert.equal(wbStatusToPlanStatus("IN_PROGRESS"), "ACTIVE");

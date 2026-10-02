@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { PH04LiveBrief, type PH04Ovelse } from "@/components/portal/precision/PH04LiveBrief";
-import { akseFra } from "@/components/precision/pa-workbench";
+import { akseFra } from "@/components/precision/akser";
 import type { Akse } from "@/components/precision/pa";
 
 export type BriefDrill = PH04Ovelse & { pyramide?: string | null };
@@ -20,6 +20,7 @@ export type SessionBriefProps = {
   action: ReactNode;
   message?: string | null;
 };
+const date = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" });
 const clock = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 
 /** Felles innhold for V2-, plan- og Workbench-økter. Modellenes handlinger
@@ -30,6 +31,6 @@ export function SessionBrief({ title, durationMin, scheduledAtISO, location, pyr
   const end = new Date(start.getTime() + Math.max(0, durationMin) * 60_000);
   const tid = validDate ? `${clock.format(start)}${durationMin > 0 ? `–${clock.format(end)}` : ""}` : null;
   const akser = [...new Set([akseFra(pyramide), ...drills.map((d) => akseFra(d.pyramide))].filter((a): a is Akse => a !== null))];
-  return <PH04LiveBrief hvem={hvem ?? null} coach={coach ?? null} tittel={title} tid={tid} sted={location ?? null} min={durationMin} akser={akser}
+  return <PH04LiveBrief hvem={hvem ?? null} coach={coach ?? null} tittel={title} dato={validDate ? date.format(start) : null} tid={tid} sted={location ?? null} min={durationMin} akser={akser}
     maal={maal ?? null} fokus={fokus ?? null} ekstra={sections} ovelser={drills.map(({ pyramide: _p, ...o }) => o)} melding={message ?? null} handling={action} />;
 }
