@@ -61,6 +61,9 @@ let bookingUpdates: Array<{ id: string; data: unknown }> = [];
 let auditWrites: Array<{ action: string; target: string }> = [];
 let pushBookingKall: string[] = [];
 let varsleKall: string[] = [];
+/** Spillerens coaching-pakke (Klipp i bookingveiviseren). */
+let pakke: { id: string; status: string; currentPeriodEnd: Date | null; monthlyCredits: number; creditsRemaining: number } | null = null;
+let klippTrekk: unknown[] = [];
 
 function nullstill() {
   bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
@@ -71,6 +74,8 @@ function nullstill() {
   pushBookingKall = [];
   varsleKall = [];
   bookings["booking-1"].status = "CONFIRMED";
+  pakke = null;
+  klippTrekk = [];
 }
 
 class BookingKollisjonStub extends Error {}
@@ -141,6 +146,15 @@ Object.assign(prismaMock, {
     update: async ({ where, data }: { where: { id: string }; data: unknown }) => {
       bookingUpdates.push({ id: where.id, data });
       return { id: where.id };
+    },
+  },
+  subscription: {
+    findUnique: async () => pakke,
+    updateMany: async (args: unknown) => {
+      klippTrekk.push(args);
+      if (!pakke || pakke.creditsRemaining <= 0) return { count: 0 };
+      pakke.creditsRemaining -= 1;
+      return { count: 1 };
     },
   },
   $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn(prismaMock),
@@ -300,4 +314,65 @@ test("cancelSession kansellerer booking for COACH", async () => {
   assert.equal(svar.ok, true);
   assert.equal((bookingUpdates[0]?.data as { status: string }).status, "CANCELLED");
   assert.equal(auditWrites.at(-1)?.action, "booking.cancelled");
+});
+
+// ─── Betalingsvalg i coachens bookingveiviser (Anders 29.09.2026) ───────────
+
+test("Klipp trekker ett klipp og lagrer bookingen med pris 0, KLIPP og pakken", async () => {
+  pakke = { id: "sub-1", status: "ACTIVE", currentPeriodEnd: null, monthlyCredits: 2, creditsRemaining: 2 };
+  const { opprettOktPaaTid } = await actions();
+  await opprettOktPaaTid({ ...gyldigInput, betaling: "KLIPP" });
+  assert.equal(klippTrekk.length, 1);
+  assert.equal(pakke.creditsRemaining, 1);
+  const data = bookingCreates[0] as { priceOre: number; paymentMethod: string; subscriptionId: string };
+  assert.equal(data.priceOre, 0);
+  assert.equal(data.paymentMethod, "KLIPP");
+  assert.equal(data.subscriptionId, "sub-1");
+});
+
+test("Klipp uten klipp igjen stopper før noe lagres", async () => {
+  pakke = { id: "sub-1", status: "ACTIVE", currentPeriodEnd: null, monthlyCredits: 2, creditsRemaining: 0 };
+  const { opprettOktPaaTid } = await actions();
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, betaling: "KLIPP" }), /klipp/);
+  assert.equal(bookingCreates.length, 0);
+});
+
+test("Klipp uten coaching-pakke avvises", async () => {
+  const { opprettOktPaaTid } = await actions();
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, betaling: "KLIPP" }), /coaching-pakke/);
+  assert.equal(bookingCreates.length, 0);
+});
+
+test("Faktura beholder tjenestens pris og merkes FAKTURA", async () => {
+  const { opprettOktPaaTid } = await actions();
+  await opprettOktPaaTid({ ...gyldigInput, betaling: "FAKTURA" });
+  const data = bookingCreates[0] as { priceOre: number; paymentMethod: string; subscriptionId?: string };
+  assert.equal(data.priceOre, 100000);
+  assert.equal(data.paymentMethod, "FAKTURA");
+  assert.equal(data.subscriptionId, undefined);
+  assert.equal(klippTrekk.length, 0);
+});
+
+test("Gratis gir pris 0 og GRATIS", async () => {
+  const { opprettOktPaaTid } = await actions();
+  await opprettOktPaaTid({ ...gyldigInput, betaling: "GRATIS" });
+  const data = bookingCreates[0] as { priceOre: number; paymentMethod: string };
+  assert.equal(data.priceOre, 0);
+  assert.equal(data.paymentMethod, "GRATIS");
+});
+
+test("uten betalingsvalg er bookingen som før (ingen betalingsmåte)", async () => {
+  const { opprettOktPaaTid } = await actions();
+  await opprettOktPaaTid(gyldigInput);
+  const data = bookingCreates[0] as { priceOre: number; paymentMethod?: string };
+  assert.equal(data.priceOre, 100000);
+  assert.equal(data.paymentMethod, undefined);
+});
+
+
+test("booking avviser normalisert ugyldig dato og ukjent betalingsmåte før lagring", async () => {
+  const { opprettOktPaaTid } = await import("./actions");
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, startAt: "2098-02-31T09:00" }), /Ugyldig/);
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, betaling: "UKJENT" as "KLIPP" }), /betalingsmåte/);
+  assert.equal(bookingCreates.length, 0); assert.equal(klippTrekk.length, 0);
 });

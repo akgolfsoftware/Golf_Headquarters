@@ -1,19 +1,21 @@
 /**
- * /admin/bookinger/ny — Manuell oppretting av booking for coach/admin (v2).
+ * /admin/bookinger/ny — coachens bookingveiviser i Precision (AG-06-NY,
+ * 29.09.2026). Erstatter NyBookingWizard (V2) med samme data og handlinger:
+ * se src/app/admin/bookinger/ny-data.ts og AG06NyBooking.
  *
- * Multi-coach (2026-08-08):
- * - ADMIN ser alle aktive tjenester med coach-navn.
- * - COACH ser egne + felles (coachUserId null).
- * - Fasiliteter lastes per lokasjon (capacity i wizard).
+ * Adresseparametrene fra før virker fortsatt: ?groupId= (gruppebooking fra
+ * gruppesiden), ?start= (trykk på tom kalenderluke) og ?coachId=.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { NyBookingWizard } from "@/components/admin/bookinger/ny-booking-wizard";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { policyBannerTexts } from "@/lib/booking/policy";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { KnappLenke } from "@/components/precision/pa";
+import { Side, SideHode } from "@/components/precision/pa-a4";
+import { AG06NyBooking } from "@/components/admin/precision/AG06NyBooking";
+import { hentNyBookingData } from "../ny-data";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Ny booking · AgencyOS" };
 
 export default async function NyBookingPage({
   searchParams,
@@ -21,138 +23,20 @@ export default async function NyBookingPage({
   searchParams: Promise<{ groupId?: string; start?: string; coachId?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const erAdmin = user.role === "ADMIN";
-  const { groupId, start, coachId: coachPrefill } = await searchParams;
-
-  const [spillere, tjenester, lokasjoner, coacher, gruppe] = await Promise.all([
-    prisma.user.findMany({
-      where: { role: "PLAYER", deletedAt: null },
-      select: { id: true, name: true, email: true, homeClub: true },
-      orderBy: { name: "asc" },
-      take: 300,
-    }),
-    prisma.serviceType.findMany({
-      where: {
-        active: true,
-        ...(erAdmin
-          ? {}
-          : { OR: [{ coachUserId: user.id }, { coachUserId: null }] }),
-      },
-      select: {
-        id: true,
-        name: true,
-        durationMin: true,
-        priceOre: true,
-        maxDeltakere: true,
-        coachUserId: true,
-        coach: { select: { id: true, name: true } },
-      },
-      orderBy: { name: "asc" },
-    }),
-    prisma.location.findMany({
-      where: { active: true },
-      select: {
-        id: true,
-        name: true,
-        address: true,
-        facilities: {
-          where: { active: true },
-          select: { id: true, name: true, capacity: true },
-          orderBy: { name: "asc" },
-        },
-      },
-      orderBy: { name: "asc" },
-    }),
-    erAdmin
-      ? prisma.user.findMany({
-          where: { role: { in: ["COACH", "ADMIN"] } },
-          select: { id: true, name: true },
-          orderBy: { name: "asc" },
-          take: 50,
-        })
-      : Promise.resolve([{ id: user.id, name: user.name }]),
-    groupId
-      ? prisma.group.findUnique({
-          where: { id: groupId },
-          select: { id: true, name: true, maxParticipants: true },
-        })
-      : Promise.resolve(null),
-  ]);
-
-  const policy = policyBannerTexts();
-
-  // Multi-facility: coaches → facilityIds via availability locations (empty = all)
-  const coachIds = coacher.map((c) => c.id);
-  const avRows =
-    coachIds.length === 0
-      ? []
-      : await prisma.coachAvailability.findMany({
-          where: { coachId: { in: coachIds }, active: true },
-          select: { coachId: true, locationId: true },
-        });
-  const locByCoach = new Map<string, Set<string>>();
-  for (const row of avRows) {
-    if (!row.coachId || !row.locationId) continue;
-    const set = locByCoach.get(row.coachId) ?? new Set<string>();
-    set.add(row.locationId);
-    locByCoach.set(row.coachId, set);
-  }
-  const locToFac = new Map<string, string[]>();
-  for (const loc of lokasjoner) {
-    locToFac.set(
-      loc.id,
-      loc.facilities.map((f) => f.id),
-    );
-  }
-  const coacherMedScope = coacher.map((c) => {
-    const locs = locByCoach.get(c.id);
-    if (!locs || locs.size === 0) {
-      return { id: c.id, name: c.name ?? "Coach", facilityIds: [] as string[] };
-    }
-    const facs = new Set<string>();
-    for (const lid of locs) {
-      for (const fid of locToFac.get(lid) ?? []) facs.add(fid);
-    }
-    return { id: c.id, name: c.name ?? "Coach", facilityIds: [...facs] };
-  });
+  const { groupId, start, coachId } = await searchParams;
+  const data = await hentNyBookingData(user);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <NyBookingWizard
-        spillere={spillere.map((s) => ({
-          id: s.id,
-          name: s.name ?? "Uten navn",
-          email: s.email,
-          homeClub: s.homeClub,
-        }))}
-        tjenester={tjenester.map((t) => ({
-          id: t.id,
-          name: t.name,
-          durationMin: t.durationMin,
-          priceOre: t.priceOre,
-          maxDeltakere: t.maxDeltakere,
-          coachUserId: t.coachUserId,
-          coachName: t.coach?.name ?? null,
-        }))}
-        lokasjoner={lokasjoner.map((l) => ({
-          id: l.id,
-          name: l.name,
-          address: l.address,
-          facilities: l.facilities.map((f) => ({
-            id: f.id,
-            name: f.name,
-            capacity: f.capacity,
-          })),
-        }))}
-        coacher={coacherMedScope}
-        viewerErAdmin={erAdmin}
-        viewerCoachId={user.id}
-        defaultCoachId={coachPrefill ?? (erAdmin ? undefined : user.id)}
-        groupId={groupId}
-        group={gruppe}
-        defaultStart={start}
-        policyHint={policy.cancel}
-      />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <Side>
+        <SideHode
+          kicker="Booking · ny booking"
+          title="Ny booking"
+          sub={data.erAdmin ? "Team-booking: velg coach via tjenesten. Fasilitet er valgfritt." : "Book en spiller eller en gruppe. Fasilitet er valgfritt."}
+          actions={<KnappLenke href="/admin/bookinger" variant="ghost">Til bookinger</KnappLenke>}
+        />
+        <AG06NyBooking data={data} startGruppeId={groupId} startTid={start} startCoachId={coachId} />
+      </Side>
+    </AgencyOSSkall>
   );
 }

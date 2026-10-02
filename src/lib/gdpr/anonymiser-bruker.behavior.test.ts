@@ -24,6 +24,13 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   round: { findMany: async () => [{ score: 75 }], updateMany },
   trainingSessionV2: { findMany: async () => [{ id: "session" }], updateMany },
   trainingDrillV2: { updateMany }, drillLogV2: { updateMany }, fysOvelseRad: { updateMany },
+  innboksEpost: { updateMany: async ({ where, data }: { where: unknown; data: Record<string, unknown> }) => {
+    assert.deepEqual(where, { booking: { userId: "synthetic" } });
+    assert.equal(data.fraEpost, "slettet-synthetic@gdpr.akgolf.invalid");
+    assert.equal(data.fraNavn, null); assert.equal(data.utkastSvar, null);
+    assert.equal(data.brodtekst, "Personopplysninger fjernet.");
+    writes.push("bookingutkast"); return { count: 1 };
+  } },
   iupBesvarelse: { deleteMany: async ({ where }: { where: { userId: string } }) => {
     assert.equal(where.userId, "synthetic"); writes.push("iup"); return { count: 1 };
   } },
@@ -75,6 +82,7 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   externalErrors = [];
   await anonymiserBruker("synthetic");
   assert.equal(markedComplete, true);
+  assert.ok(writes.includes("bookingutkast"));
   assert.ok(writes.includes("iup"));
   assert.ok(writes.includes("trenerdeling"));
 });

@@ -34,7 +34,9 @@ const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   },
 }]));
 Object.assign(prismaMock, { user: {
-  findUnique: async ({ where }: { where: unknown }) => {
+  findUnique: async ({ where, include }: { where: unknown; include: { bookings: { include: { innboksUtkast: { select: Record<string, boolean> } } } } }) => {
+    assert.equal(include.bookings.include.innboksUtkast.select.utkastSvar, true);
+    assert.equal(include.bookings.include.innboksUtkast.select.fraEpost, true);
     lesinger.push({ kilde: "user", where });
     if (feilkilde === "user") throw new Error("Syntetisk profilfeil");
     return profilMangler ? null : bruker;

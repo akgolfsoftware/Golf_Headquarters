@@ -137,3 +137,10 @@ Eier eller godkjent foresatt kan opprette deling. Under 16 kreves foresatt. Mott
 Ny IUP-leser validerer kilden og returnerer bare leverte besvarelser, aldri utkast. Hele dataoppslaget bruker samme transaksjon/lås som rettighetskontrollen. Grunnlaget er ennå ikke montert i en ny offentlig handling eller skjerm; det sender ingen e-post. Samtykketeksten beskriver ønsket fullprofil-omfang uttrykkelig, inkludert helse og meldinger, men ingen slik utvidet visning er aktivert av grunnlaget alene. Gamle WANG/TN-leseveier må samordnes før komplett trenerinnsyn er ferdig.
 
 Invitasjoner som gjelder brukeren, følger dataeksport uten token-hash. Anonymisering fjerner invitasjoner der brukeren er spiller, foresatt, akseptert trener eller e-postmottaker; fysisk sletting har tilsvarende fremmednøkkelvern for identitetsfeltene. Samtykkehistorikk følger eksisterende revisjonsspor. Prisma-hendelser logger bare generiske feilvarsler, aldri rå databasefeil som kan inneholde personopplysninger. Ingen råsvar eller e-post sendes til AI. Testene bruker utelukkende syntetiske identiteter.
+
+
+### Bookingforslag og avvisningsutkast (PR #1010)
+
+Booking lagrer betalingsmåte og foreslått start/slutt med coach-ID. Feltene følger eksisterende bookingeksport. Avvisning oppretter et knyttet InnboksEpost-utkast med kontaktopplysninger og begrunnelse; ingenting sendes av avvisningshandlingen. Avvisning og utkast lagres i samme transaksjon. Tilgangen til selve bookingen avgrenses til riktig coach/admin.
+
+Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vasker kontakt, emne, fritekst og utkast før den eksterne ryddekjeden kobler booking fra brukeren; booking- og betalingshistorikken beholdes. Gjestenes eksisterende retention-/slettespørsmål gjelder fortsatt som beskrevet over. Dette arbeidet legger ikke til noen automatisk utsending ved avvisning.

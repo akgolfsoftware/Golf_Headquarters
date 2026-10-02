@@ -97,6 +97,13 @@ export default async function OktDetalj({ params }: Props) {
           notat: booking.notes,
           kanAvbestille,
           kanFaaRefusjon,
+          // Egen tilstand fra kanAvbestille: et forslag gjelder en NY tid, så det skal
+          // vises uansett hvor nær eller passert bookingens gamle starttidspunkt er —
+          // servergrensen (godtaFlytteforslag) sjekker bare status og den foreslåtte tiden.
+          flytteforslag:
+            booking.proposedStartAt && (booking.status === "PENDING" || booking.status === "CONFIRMED")
+              ? `${formatDato(booking.proposedStartAt)} kl. ${formatTid(booking.proposedStartAt)}`
+              : null,
         }}
       />
     </V2Shell>

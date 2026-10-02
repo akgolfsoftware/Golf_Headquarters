@@ -21,6 +21,8 @@ export interface StallDagOkt {
   durationMinutes: number;
   /** status === "DRAFT" — kun synlig for coach, aldri for spilleren (CLAUDE.md invariant 3). */
   erUtkast: boolean;
+  /** Pyramideområdet (akse) — aksestripen i stall-dagen (Precision, 29.09.2026). */
+  pyramid?: WorkbenchSession["pyramid"];
 }
 
 export interface StallDagSpiller {
@@ -60,6 +62,7 @@ export function buildStallDagViewModel(
       startMinute: o.startMinute,
       durationMinutes: o.durationMinutes,
       erUtkast: o.status === "DRAFT",
+      pyramid: o.pyramid,
     });
   }
 

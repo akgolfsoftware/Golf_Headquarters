@@ -43,6 +43,7 @@ const actions = {
   stripe: ['node', 'scripts/local-stripe-run.mjs'],
   'stripe-auth': ['node', 'scripts/local-stripe-auth.mjs'],
   'priority-journeys': ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/priority-journeys.test.ts'],
+  'coach-booking-journeys': ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/coach-booking-journeys.test.ts'],
   journeys: ['node', '--import', 'tsx', '--conditions=react-server', '--experimental-test-module-mocks', '--test', 'tests/local-users/storage-journeys.test.ts'],
   verify: ['npm', 'run', 'verify'],
   static: ['npm', 'run', 'verify:static'],

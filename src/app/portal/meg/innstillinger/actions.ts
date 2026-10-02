@@ -87,7 +87,10 @@ export async function exportUserData(): Promise<{
     const fullUser = await prisma.user.findUnique({
       where: { id: user.id },
       include: {
-        bookings: true,
+        bookings: { include: { innboksUtkast: { select: {
+          id: true, emne: true, fraNavn: true, fraEpost: true, brodtekst: true,
+          utkastSvar: true, status: true, mottattAt: true, sendtAt: true,
+        } } } },
         parentRelations: { include: { parent: true } },
         childRelations: { include: { child: true } },
       },

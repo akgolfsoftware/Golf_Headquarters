@@ -33,7 +33,7 @@
  * skal ALDRI utvide tilgang.
  */
 
-export type KalenderFaneId = "uke" | "maned" | "dag" | "stall" | "tilg";
+export type KalenderFaneId = "uke" | "maned" | "ar" | "dag" | "stall" | "tilg";
 
 export type KalenderFane = {
   id: KalenderFaneId;
@@ -53,6 +53,8 @@ export type KalenderFane = {
 export const KALENDER_FANER: KalenderFane[] = [
   { id: "uke", label: "Uke", gammelHref: null },
   { id: "maned", label: "Måned", gammelHref: null },
+  // «År» (29.09.2026, AG-05-AR): bookinger og økter per måned i året.
+  { id: "ar", label: "År", gammelHref: null },
   { id: "dag", label: "Dag", gammelHref: null },
   { id: "stall", label: "Stall-dag", gammelHref: "/admin/stall/dag" },
   { id: "tilg", label: "Tilgjengelighet", gammelHref: null },
@@ -73,7 +75,7 @@ export function erKalenderFaneId(s: string | undefined): s is KalenderFaneId {
  */
 export function velgKalenderFane(fane: string | undefined, visning: string | undefined): KalenderFaneId {
   if (erKalenderFaneId(fane)) return fane;
-  if (visning === "maned" || visning === "dag") return visning;
+  if (visning === "maned" || visning === "dag" || visning === "ar") return visning;
   return KALENDER_STANDARDFANE;
 }
 

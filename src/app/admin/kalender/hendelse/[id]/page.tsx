@@ -1,32 +1,24 @@
 /**
- * I3 (Bølge 1) — se og slett en kalenderhendelse. Nåbar fra kalenderens
- * hendelse-kort. Synlig for alle coacher (delt kalendervisning, samme
- * mønster som bookinger/serier) — slett-knappen vises kun til eieren
- * eller ADMIN, håndhevet både i UI og i selve slettHendelse-actionen.
- *
- * Server component.
+ * Kalenderhendelse i Precision, 29.09.2026: se, endre og slett. Synlig for
+ * alle coacher (delt kalendervisning, som før). Endre og slett vises bare for
+ * eieren eller ADMIN — håndhevet også i oppdaterHendelse/slettHendelse.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
-
-import { SlettKnapp } from "./slett-knapp";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { KnappLenke } from "@/components/precision/pa";
+import { Side, SideHode } from "@/components/precision/pa-a4";
+import { HendelseDetalj } from "@/components/admin/precision/AG05Hendelse";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Hendelse · AgencyOS" };
 
-function fmt(d: Date): string {
-  return new Intl.DateTimeFormat("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(d);
-}
+const FMT = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+const p2 = (n: number) => String(n).padStart(2, "0");
+const dato = (d: Date) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+const kl = (d: Date) => `${p2(d.getHours())}:${p2(d.getMinutes())}`;
 
 export default async function HendelseDetaljPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
@@ -38,32 +30,31 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
   });
   if (!hendelse) notFound();
 
-  const kanSlette = user.role === "ADMIN" || hendelse.coachId === user.id;
+  const kanEndre = user.role === "ADMIN" || hendelse.coachId === user.id;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
-      <div style={{ marginTop: 12, marginBottom: 20 }}>
-        <Caps>Hendelse</Caps>
-        <div style={{ marginTop: 6 }}>
-          <Tittel mobile={false}>{hendelse.title}</Tittel>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 420 }}>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-          {fmt(hendelse.startAt)} – {fmt(hendelse.endAt)}
-        </span>
-        {hendelse.notes && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8 }}>{hendelse.notes}</span>
-        )}
-      </div>
-
-      {kanSlette && (
-        <div style={{ marginTop: 24 }}>
-          <SlettKnapp id={hendelse.id} />
-        </div>
-      )}
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <Side max={760}>
+        <SideHode
+          kicker="Kalender · hendelse"
+          title={hendelse.title}
+          actions={<KnappLenke href="/admin/kalender" variant="ghost">Til kalenderen</KnappLenke>}
+        />
+        <HendelseDetalj
+          id={hendelse.id}
+          tid={`${FMT.format(hendelse.startAt)} – ${FMT.format(hendelse.endAt)}`}
+          notat={hendelse.notes}
+          kanEndre={kanEndre}
+          verdier={{
+            tittel: hendelse.title,
+            startDato: dato(hendelse.startAt),
+            startTid: kl(hendelse.startAt),
+            sluttDato: dato(hendelse.endAt),
+            sluttTid: kl(hendelse.endAt),
+            notat: hendelse.notes ?? "",
+          }}
+        />
+      </Side>
+    </AgencyOSSkall>
   );
 }

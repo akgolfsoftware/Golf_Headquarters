@@ -34,6 +34,15 @@ enum BookingStatus {
   COMPLETED
 }
 
+// Betalingsmåte på booking (Anders 29.09.2026). FAKTURA er bare et merke: selve
+// fakturaen lages i Tripletex av Anders.
+enum BookingPaymentMethod {
+  STRIPE
+  KLIPP
+  FAKTURA
+  GRATIS
+}
+
 // PlayerHQ-domenet (Fase 1.5)
 
 enum SessionStatus {
@@ -1297,6 +1306,15 @@ model Booking {
   // Live-økt: settes når coach trykker «Start økt» — kobler bookingen til den
   // opprettede TrainingSessionV2 (live-konsoll). Plain id (ingen relasjon — isolert).
   trainingSessionV2Id     String?
+  // Betalingsmåte (Anders 29.09.2026). Null = eldre booking: betalingen leses fra
+  // Stripe-feltene og subscriptionId som før.
+  paymentMethod           BookingPaymentMethod?
+  // Coach foreslår ny tid på en betalt time; spilleren må godta før startAt/endAt
+  // endres (Anders 29.09.2026). proposedById er coachens id (plain id).
+  proposedStartAt         DateTime?
+  proposedEndAt           DateTime?
+  proposedAt              DateTime?
+  proposedById            String?
 
   user         User?              @relation(fields: [userId], references: [id])
   coach        User?              @relation("BookingCoach", fields: [coachId], references: [id], onDelete: SetNull)
@@ -1306,6 +1324,7 @@ model Booking {
   facility     Facility?          @relation(fields: [facilityId], references: [id], onDelete: SetNull)
   payments     Payment[]
   recordings   SessionRecording[]
+  innboksUtkast InnboksEpost[]
 
   @@index([userId])
   @@index([coachId])
@@ -6211,8 +6230,12 @@ model InnboksEpost {
   utkastGenerertAt DateTime?
   sendtAt          DateTime?
   sendtAv          String?
+  // Utkast med begrunnelse når coach avviser en booking (Anders 29.09.2026).
+  bookingId        String?
+  booking          Booking?  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
 
   @@index([status, mottattAt])
+  @@index([bookingId])
   @@map("innboks_epost")
 }
 
