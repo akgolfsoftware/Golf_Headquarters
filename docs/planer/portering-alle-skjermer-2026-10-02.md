@@ -199,6 +199,8 @@ Hele leveransen kan først kalles ferdig når:
 
 ## 7. Første konkrete arbeidsrekkefølge nå
 
+Status 02.10.2026, utgangspunkt `345617a4`: punkt 1 er levert som register, ikke som portering. [Skjermregisteret](../design-system/skjermregister.md) kobler 527 sidefiler. 520 var tellingen da denne planen ble skrevet. Workbench-PR #1099 er allerede merget og skal ikke gjøres om. Åpne Precision-PR-er vurderes én for én; de bulk-merges ikke. Neste kodebolk er punkt 3, ikke en ny registerrunde.
+
 1. Opprett og fyll skjermregisteret fra fersk inventarskanning.
 2. Lukk Workbench-PR #1099 og testbatteriets umergede leveranse før nye parallelle varianter.
 3. Portér PlayerHQ-kjeden I dag → Plan → økt → Live → oppsummering/analyse.
@@ -207,5 +209,5 @@ Hele leveransen kan først kalles ferdig når:
 6. Ta konto, forelder, offentlig booking, delt innsyn og systemtilstander.
 7. Kjør samlet sikkerhets-, tilgjengelighets-, integrasjons- og lanseringsgate.
 
-Neste arbeidsøkt starter på punkt 1 og stopper ikke ved en grønn prototype: hver rad skal ende i
+Punkt 1 er registeret. Neste arbeidsøkt porterer en avgrenset skjermfamilie og stopper ikke ved en grønn prototype: hver rad skal ende i
 `kontrollert-i-app` eller ha et navngitt, dokumentert avvik.

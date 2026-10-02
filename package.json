@@ -51,7 +51,7 @@
     "saker:triage": "tsx --conditions=react-server scripts/saker-innsamling/triage.ts",
     "check:critical-imports": "node scripts/check-critical-imports.mjs",
     "check:sensitive-route-guards": "node scripts/check-sensitive-route-guards.mjs",
-    "prosjekt:sjekk": "node scripts/check-project-structure.mjs && node scripts/check-doc-lenker.mjs",
+    "prosjekt:sjekk": "node scripts/check-project-structure.mjs && node scripts/check-doc-lenker.mjs && node scripts/bygg-skjermregister.mjs --check",
     "prosjekt:register": "node scripts/prosjekt-register.mjs --write",
     "check:workbench-handover": "node scripts/check-workbench-handover.mjs"
   },
