@@ -52,7 +52,7 @@ IUP 2027 har SHA-256 `6786d70f166dc4d5602f792a165eef8372743597ac44904a9fa0a3dd28
 - Spiller 360 har en IUP-visning med tolv seksjoner. Direkte kodekontroll viser fortsatt tom sesongevaluering og teksten «Utviklingssjekken finnes ikke i appen ennå». Den viser også skala 1–8, som avviker fra IUP 2027.
 - Team Norway har spillerlister, test-/protokollvisninger, gruppekommunikasjon og Workbench-handlinger. Disse må kontrolleres mot regelen om forslag før endring av spillerens personlige plan.
 - WANG har trenerflate, IUP-samtale og turneringsvisning. Flereskoleoversikt og komplett profil må ferdigstilles mot valgt design.
-- Pipelines er vedtatt eneste innhenter av turneringsresultater. Automatisk innhenting alene beviser ikke at alle resultater treffer riktig PlayerHQ-profil.
+- Pipelines er vedtatt eneste innhenter av turneringsresultater. Kodegjennomgangen bekrefter automatisk profiloppdatering for kontoer med verifisert `User.publicPlayerId`; navn alene kobler ikke konto. GolfBox, Nordic League, WAGR og college har beståtte ferske ingest-/speilkjøringer, og HQ speiler lenkede profiler daglig. DataGolf-resultater til kundevendt `public` er deaktivert uten dokumentert visningsrett. Kode-/testbevis og eldre koblingsrisiko står i [turneringskontrollen](wang-tn-leveransekontroll-2026-10-02.md#turneringsdata--fersk-driftskontroll-og-konkret-hull).
 - Ingen produksjonsdata, ekte spilleropplysninger, innlogging, invitasjoner eller databaseendringer er utført i denne planøkten.
 
 Bruk statusene **kildekartlagt**, **tegnet**, **klikkbart**, **kodet**, **funksjonstestet**, **vist til Anders**, **produksjonsverifisert** hver for seg. Utestede funksjoner merkes utestet.
