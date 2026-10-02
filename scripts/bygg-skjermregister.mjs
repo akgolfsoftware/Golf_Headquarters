@@ -158,6 +158,20 @@ function nearestPrecision(route) {
   return best;
 }
 
+const PRECISION_VISNING = [
+  ["PH01IDag", "Siden monterer PH01IDag i PlayerHQSkall. Det er kodebevis for visningen, ikke kontroll i appen. ui_kits/playerhq/screens/PH-01.jsx ligger ikke i git."],
+  ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
+];
+
+function merkVisning(row, source) {
+  if (row.kobling !== "tegnet-skjermtype") return;
+  const hit = PRECISION_VISNING.find(([marker]) => source.includes(marker));
+  if (!hit) return;
+  row.status.implementert = "precision-visning";
+  row.kontrollbevis = hit[1];
+  row.avvik.push("Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git.");
+}
+
 function emptyStatus(extra) {
   return {
     kartlagt: true,
@@ -375,6 +389,8 @@ export function buildRegister(root) {
       }
     }
 
+    merkVisning(row, source);
+
     if (!row.forklaring || !row.eier || !row.kobling || !row.screenId) {
       throw new Error(`Ufullstendig rad: ${page.source}`);
     }
@@ -423,6 +439,8 @@ function tell(register) {
     medAvvik: register.sider.filter((row) => row.avvik.length).length,
     valgtForBygging: register.sider.filter((row) => row.status.valgtForBygging).length,
     utenEksaktType: register.sider.filter((row) => row.screenId === "UTEN-TEGNET-TYPE").length,
+    implementert: register.sider.filter((row) => row.status.implementert !== "ikke-verifisert").length,
+    kontrollertIApp: register.sider.filter((row) => row.status.kontrollertIApp).length,
     kobling,
     screenId,
   };
@@ -480,7 +498,7 @@ export function renderMarkdown(register) {
     "|---|---:|",
     countTable(register.tellinger.kobling),
     "",
-    `${register.tellinger.valgtForBygging} rader treffer en av de ${register.presisjon.skjermtyper} Precision-typene og er derfor merket valgt for bygging som design. ${register.tellinger.utenEksaktType} rader har ingen eksakt type. ${register.tellinger.medAvvik} rader har et registrert avvik. Implementert og kontrollert i appen er 0.`,
+    `${register.tellinger.valgtForBygging} rader treffer en av de ${register.presisjon.skjermtyper} Precision-typene og er derfor merket valgt for bygging som design. ${register.tellinger.utenEksaktType} rader har ingen eksakt type. ${register.tellinger.medAvvik} rader har et registrert avvik. ${register.tellinger.implementert} rader har en Precision-visning i koden. ${register.tellinger.kontrollertIApp} er kontrollert i appen.`,
     "",
     "## Uten eksakt type",
     "",

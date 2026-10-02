@@ -329,3 +329,63 @@ color-scheme:dark;
 /* Hurtigknappens meny (ui_kits/_shared/Hurtigknapp.jsx). */
 .pa-fab__item{box-sizing:border-box;cursor:pointer;min-height:48px;padding:0 12px;border-radius:4px;display:flex;align-items:center;gap:12px;font:500 14px/1.2 var(--font-sans);color:var(--text-primary);text-decoration:none}
 .pa-fab__item:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--focus-ring)}
+
+/* ---- PH-10 Plan: uke ---- */
+.ph10{max-width:1280px}
+.ph10-hode{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.ph10-hode-handlinger,.ph10-handlinger,.ph10-innganger,.ph10-ukenav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ph10-meta{margin:0;font:var(--type-body-s);color:var(--text-secondary)}
+.ph10-merker,.ph10-detalj,.ph10-flytt{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ph10-detalj h2{margin:0;font:600 22px/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.ph10-ovelse{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--border-hairline);font:var(--type-body-s)}
+.ph10-fremdrift{display:flex;flex-direction:column;gap:8px}
+.ph10-fremdrift>div:first-child{display:flex;justify-content:space-between;gap:8px;font:var(--type-body-s)}
+.ph10-spor{height:8px;background:var(--surface-sunken);border-radius:999px;overflow:hidden}
+.ph10-spor>span{display:block;height:100%;background:var(--primary)}
+.ph10-piller{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.ph10-piller button{min-height:44px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:4px}
+.ph10-piller button[aria-pressed="true"]{border-color:var(--border-ink);color:var(--text-primary);background:var(--surface-sunken)}
+.ph10-piller strong{font:600 15px/1 var(--font-mono);font-variant-numeric:tabular-nums}
+.ph10-dagtittel{margin:0;font:600 17px/1.3 var(--font-sans)}
+.ph10-agenda{display:flex;flex-direction:column}
+.ph10-rad{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:56px;padding:8px 0;border:0;border-top:1px solid var(--border-hairline);background:transparent;color:inherit;text-align:left;cursor:pointer;width:100%}
+.ph10-rad-tid{font:500 13px/1 var(--font-mono);font-variant-numeric:tabular-nums}
+.ph10-rad strong{display:block;font:600 15px/1.3 var(--font-sans)}
+.ph10-forslag{display:flex;flex-direction:column;gap:12px}
+.ph10-forslag h2{margin:0;font:600 17px/1.3 var(--font-sans)}
+.ph10-forslagkort{padding:16px;gap:8px}
+.ph10-forslagtittel{border:0;background:transparent;padding:0;text-align:left;font:600 17px/1.3 var(--font-sans);color:var(--text-primary);cursor:pointer}
+.ph10-layout{display:none}
+.ph10-balanse{display:flex;align-items:flex-end;gap:6px;height:48px;margin:8px 0}
+.ph10-balanse span{width:12px;border-radius:2px 2px 0 0;min-height:2px}
+.ph10-minutter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0}
+.ph10-minutter div{min-width:0}
+.ph10-minutter dt{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted)}
+.ph10-minutter dd{margin:0;font:var(--type-body-s)}
+.ph10-flytt input{min-height:44px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);padding:0 12px;font:var(--type-body)}
+.ph10-flytt label{display:flex;flex-direction:column;gap:4px;font:var(--type-body-s)}
+.ph10-ark{width:min(480px,calc(100vw - 32px));max-height:min(85dvh,720px);border:1px solid var(--border-hairline);border-radius:12px;background:var(--surface-card);color:var(--text-primary);padding:0}
+.ph10-ark::backdrop{background:var(--scrim-modal)}
+.ph10-ark-hode{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 12px 16px;border-bottom:1px solid var(--border-hairline)}
+.ph10-ark-kropp{padding:16px;overflow:auto}
+@media (min-width:1024px){
+.ph10-kompakt{display:none}
+.ph10-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+.ph10-desktop{padding:12px;overflow:auto}
+.ph10-inspektor{padding:16px;position:sticky;top:16px}
+.ph10-grid{display:grid;min-width:640px}
+.ph10-daghode,.ph10-timer{position:relative}
+.ph10-daghode{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);text-transform:uppercase}
+.ph10-daghode strong{font:600 15px/1 var(--font-mono);color:var(--text-primary);letter-spacing:0;text-transform:none}
+.ph10-daghode--idag strong{color:var(--text-primary)}
+.ph10-timer span{position:absolute;right:6px;transform:translateY(-50%);font:500 11px/1 var(--font-mono);color:var(--text-muted);font-variant-numeric:tabular-nums}
+.ph10-kolonne{position:relative;border-left:1px solid var(--border-hairline);background-image:linear-gradient(to bottom,transparent calc(100% - 1px),var(--border-hairline) 1px);background-size:100% 52px}
+.ph10-blokk{position:absolute;overflow:hidden;border:0;border-radius:8px;background:var(--surface-sunken);color:var(--text-primary);text-align:left;padding:4px 6px;cursor:pointer;min-height:28px}
+.ph10-blokk[aria-pressed="true"]{outline:2px solid var(--focus-ring);outline-offset:1px}
+.ph10-blokk[data-forslag]{background:transparent;border:1px dashed var(--border-hairline)}
+.ph10-blokk small{display:block;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);text-transform:uppercase}
+.ph10-blokk strong{display:block;font:600 13px/1.2 var(--font-sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph10-heldag{display:grid;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:4px;padding-top:8px}
+.ph10-heldag button{min-height:36px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer}
+}
+
