@@ -2,7 +2,7 @@ import "server-only";
 
 import type { Prisma, UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import { tnFormat, tnScore, tnSameScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
 import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal-tester/tester-data";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
@@ -369,6 +370,8 @@ export type TnTestdagDeltakerRad = {
   order: number;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE";
   scoreTekst: string | null;
+  lagredeForsok: number | null;
+  totaltForsok: number;
 };
 
 export type TnTestdagRad = {
@@ -430,7 +433,7 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
       testDefinition: true,
       participants: {
         orderBy: { order: "asc" },
-        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } } },
+        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } }, session: { select: { scoringData: true } } },
       },
     },
   });
@@ -448,7 +451,26 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
       deltakere: dag.participants.map((p) => {
         const detaljer = p.result?.details as Partial<TnResult> | null;
         const scoreTekst = p.status === "DONE" && p.result && detaljer?.unit ? tnFormat({ value: p.result.score, unit: detaljer.unit }) : null;
-        return { id: p.id, spillerId: p.playerId, spillerNavn: p.player.name ?? "Ukjent", order: p.order, status: p.status, scoreTekst };
+        const state = p.session ? TnSessionSchema.safeParse(p.session.scoringData) : null;
+        const sessionState = state?.success ? state.data : null;
+        const sessionProtocol = sessionState ? tnProtocol(sessionState.protocolId, undefined, sessionState.version) : null;
+        const lagredeForsok = sessionState && sessionProtocol
+          ? Object.entries(sessionState.values).filter(([nr, values]) => {
+            const row = sessionProtocol.rows[Number(nr) - 1];
+            const harMaling = Object.values(values).some((value) => value !== null && value !== undefined && value !== "");
+            return row !== undefined && harMaling && !tnRowError(row, values, false);
+          }).length
+          : p.session ? 0 : null;
+        return {
+          id: p.id,
+          spillerId: p.playerId,
+          spillerNavn: p.player.name ?? "Ukjent",
+          order: p.order,
+          status: p.status,
+          scoreTekst,
+          lagredeForsok,
+          totaltForsok: sessionState?.count ?? protokoll?.rows.length ?? 0,
+        };
       }),
     },
   };
@@ -900,6 +922,7 @@ export async function hentTnGruppeanalyseValg(bruker: TnBruker): Promise<TnGrupp
 export type TnGruppeanalyseRad = {
   spillerId: string;
   spillerNavn: string;
+  skole?: string | null;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE" | "IKKE_TESTDAG";
   score: number | null;
   formatert: string | null;
@@ -975,7 +998,7 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
     if (!protokoll || protokoll.blocked) return null;
     const testId = tnDefinitionId(protokoll);
     const lowerIsBetter = protokoll.points8Ball ? false : true;
-    const rader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId): Promise<TnGruppeanalyseRad | null> => {
+    const navngitteRader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId): Promise<TnGruppeanalyseRad | null> => {
       const spiller = await tx.user.findUnique({ where: { id: spillerId }, select: { name: true } });
       if (!spiller) return null;
       const kandidater = await tx.testResult.findMany({
@@ -992,6 +1015,33 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
         score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
       };
     });
+    const wangSkoler = await hentWangTestresultatSkolerForTeamNorway(bruker);
+    const wangPlayerSchool = new Map<string, { name: string; schools: Set<string> }>();
+    for (const skole of wangSkoler) for (const spiller of skole.players) {
+      const eksisterende = wangPlayerSchool.get(spiller.id) ?? { name: spiller.name, schools: new Set<string>() };
+      eksisterende.schools.add(skole.schoolName);
+      wangPlayerSchool.set(spiller.id, eksisterende);
+    }
+    const wangRader = await Promise.all([...wangPlayerSchool].map(async ([spillerId, spiller]): Promise<TnGruppeanalyseRad> => {
+      const kandidater = await prisma.testResult.findMany({
+        where: { userId: spillerId, testId },
+        orderBy: { takenAt: "desc" },
+        select: { id: true, takenAt: true, score: true, details: true },
+      });
+      const { gyldige } = tnValiderRader(kandidater, protokoll);
+      if (gyldige.length === 0) return {
+        spillerId, spillerNavn: spiller.name, skole: [...spiller.schools].sort().join(" · "),
+        status: "IKKE_TESTDAG", score: null, formatert: null,
+      };
+      const scores = gyldige.map((r) => r.score);
+      const beste = lowerIsBetter ? Math.min(...scores) : Math.max(...scores);
+      return {
+        spillerId, spillerNavn: spiller.name, skole: [...spiller.schools].sort().join(" · "), status: "DONE",
+        score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
+      };
+    }));
+    const wangPlayerIds = new Set(wangRader.map((rad) => rad.spillerId));
+    const rader = [...wangRader, ...navngitteRader.filter((rad): rad is TnGruppeanalyseRad => rad !== null && !wangPlayerIds.has(rad.spillerId))];
     return {
       kontekst, protokollNavn: protokoll.name, lowerIsBetter,
       grunnlag: { type: "protokoll", navn: protokoll.name, dato: null },

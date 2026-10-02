@@ -22,6 +22,7 @@ export const STORAGE_BUCKETS = {
   MESSAGE_ATTACHMENTS: "message-attachments", // privat
   TASK_MEDIA: "task-media",
   TN_POST_VEDLEGG: "tn-post-vedlegg", // privat — Team Norway-poster (TN-09/TN-10/TN-11)
+  TN_TEST_PHOTOS: "tn-test-photos", // privat — spillerens valgfrie bilder til tester
 } as const;
 
 export type StorageBucket =
@@ -50,6 +51,7 @@ export const MAX_FILE_SIZES: Record<StorageBucket, number> = {
   [STORAGE_BUCKETS.MESSAGE_ATTACHMENTS]: 10 * 1024 * 1024, // 10 MB
   [STORAGE_BUCKETS.TASK_MEDIA]: 50 * 1024 * 1024, // 50 MB (Supabase tier-limit) — video-taket; bilder valideres strengere (5 MB) i uploadTaskMedia
   [STORAGE_BUCKETS.TN_POST_VEDLEGG]: 50 * 1024 * 1024, // 50 MB — jf. TN-11-designets tomtilstand
+  [STORAGE_BUCKETS.TN_TEST_PHOTOS]: 2 * 1024 * 1024, // serveren lagrer bare normalisert WebP
 };
 
 // Tillatte MIME-typer per bucket. Bruker for valider opplasting.
@@ -108,6 +110,7 @@ export const ALLOWED_MIME_TYPES: Record<StorageBucket, readonly string[]> = {
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ],
+  [STORAGE_BUCKETS.TN_TEST_PHOTOS]: ["image/webp"],
 };
 
 export function isPublicBucket(bucket: StorageBucket): boolean {

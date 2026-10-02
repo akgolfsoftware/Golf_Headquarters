@@ -83,9 +83,10 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
         >
           <TnDataTable
             caption={resultat.protokollNavn}
-            kolonner={[{ key: "spiller", label: "Spiller" }, { key: "score", label: "Resultat", align: "right" }]}
+            kolonner={[{ key: "skole", label: "Skole" }, { key: "spiller", label: "Spiller" }, { key: "score", label: "Resultat", align: "right" }]}
             rader={resultat.rader.map((rad) => ({
-              spiller: <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.spillerNavn}</Link>,
+              skole: rad.skole ?? "Team Norway",
+              spiller: rad.skole ? rad.spillerNavn : <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.spillerNavn}</Link>,
               score: rad.formatert ?? statusTekst(rad.status),
             }))}
             empty="Ingen spillere i grunnlaget."
