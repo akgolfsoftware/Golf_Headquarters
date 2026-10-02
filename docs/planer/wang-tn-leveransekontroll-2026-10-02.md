@@ -10,7 +10,7 @@ Kontrollgrunnlag: hovedplanen, de to lokale originalfilene, HQ main `226acab39`,
 | Spillerens utfylling | PR #1084. Faktisk lokal innlogging, lagre, gjenåpne, levere, revisjoner og feilprøver. | Fireukersfrister, påminnelser og full sesongorkestrering gjenstår. |
 | Lagring og historikk | PR #1080. Eiergrense, kildevalidering, samtidighet, gjenforsøk, eksport og anonymisering. | Ikke en ny lagringsmodell for hele IUP-arbeidsboken. |
 | Navngitt deling | PR #1087 og #1089. Foresatt for å gi under 16; barnet kan trekke. Riktig bekreftet treneradresse og aktiv tilknytning; WANG→TN uten TN-medlemskap. | Skoleavtalen for obligatorisk WANG-testdeling er et separat, uferdig spor. |
-| Trenerleser | PR #1089. Bare leverte besvarelser, alle originalspørsmål og revisjonshistorikk; nyere utkast skjult. Tilbaketrekking stenger nytt oppslag. | Egen Precision-leser. Full profil og eldre WANG/TN-leseveier er ikke samordnet. |
+| Trenerleser | PR #1089. Bare leverte besvarelser, alle originalspørsmål og revisjonshistorikk; nyere utkast skjult. Tilbaketrekking stenger nytt oppslag. Denne pakken monterer kildevaliderte leverte svar i WANG-IUP og TN-02 under de eksisterende navngitte tilgangsportene. | Dette dekker IUP-lesing i disse profilene, ikke hele spillerprofilen eller alle 18 ark. Egen Precision-leser gjenstår. |
 | Trenerliste | PR #1090. 20 databaseprøver, 53 komponentprøver i fullkontrollen, syntetisk faktisk innlogging og liste→besvarelse. | Merget etter grønn CI og deploy. Ikke en komplett skole-/landslagsoversikt. |
 | Eldre WANG/TN-lesere | PR #1096 (`c8a44556a`). 24 syntetiske databaseprøver og 24 innloggede rutekontroller; fersk GitHub CI og Vercel bestod. | Navngitt deling er koblet til de beskrevne eldre personlige leserne, inkludert lister, analyse, poster, lesekvitteringer og vedlegg. Dette beviser ikke full Excel-dekning, skolebasert testdeling eller visuell godkjenning. |
 | DataGolf | Tre Claude Design-prosjekter med DG01–17. 135/135 feltidentiteter mot lokalt pipelines-skjema. Feltutforsker målt 390/1440. | Design, ikke produksjonsintegrasjon. Ingen kundelisens dokumentert eller aktivert. |
@@ -24,14 +24,14 @@ Kontrollgrunnlag: hovedplanen, de to lokale originalfilene, HQ main `226acab39`,
 | IUP-01 Intro | Delvis | Delvis | Samlet fremdrift og veiledet reise gjennom hele IUP-en. |
 | IUP-02 TN Coaches | Delvis | Delvis | Komplett spillerstyrt fagapparat, roller og kontaktfelt. |
 | IUP-03 Person info | Delvis | Delvis | Feltregister, avgrenset helseinnsyn og egne/felles støttepersoner. |
-| IUP-04 Evaluering spørsmål | Utfylling, lagring og levering prøvd | Alle leverte svar i ny navngitt leser | Montering i begge valgte trenerprofiler; forbedringspunkt→prosessmål. |
+| IUP-04 Evaluering spørsmål | Utfylling, lagring og levering prøvd | Leveringene vises i WANG-IUP og TN-02; kildeår beholdes | Forbedringspunkt→prosessmål og full originalarkavstemming. |
 | IUP-05 Målsetting og oppfølging | Delvis | Delvis | Samtlige måltallsrader, kvartaler og historikk med samme definisjoner. |
 | IUP-06 Prosessmål | Delvis | Delvis | Hele kjeden resultat→handling→prosess→måling→hjelper→evaluering. |
 | IUP-07 Årsplan | Nytt sesongkart/ukeverksted fra #1091, fortsatt delvis Excel-dekning | Delvis | Samordnet WANG/TN-lesing og godkjente endringer; all ukeprioritet og oppholdssted må avstemmes. |
 | IUP-08 Turneringsplan | Delvis | Delvis | WAGR Power, hull/dager, reise og nivåfordeling uten blanding av mål. |
 | IUP-09 Ukeplan | Delvis | Delvis | Fire uketyper, treukerssyklus og testplassering i samme spillerreise. |
 | IUP-10 Treningsøkter | Delvis | Delvis | Alle øktfelter, utstyr/antall, oppvarming og progresjon mot press. |
-| IUP-11 Utviklingssjekk | Begge kilder, alle nivåer og riktig 1–5-skala | Alle leverte svar i ny navngitt leser | Samordnet fireukersoppfølging og innbygging i begge trenerprofiler. |
+| IUP-11 Utviklingssjekk | Begge kilder, alle nivåer og riktig 1–5-skala | Leveringene vises i WANG-IUP og TN-02 | Samordnet fireukersoppfølging og full felt-/beregningsavstemming. |
 | IUP-12 TN Tester Tot | Delvis | Delvis | Avstem merget testbatteri #1086 mot hver originalprotokoll, rådata og testdag. |
 | IUP-13 Teknikktest | Delvis | Delvis | Alle målefelt, A/B, PEI og diagrammenes innhold; ikke bytt kildeversjon stilltiende. |
 | IUP-14 Teknikkplan | Delvis | Delvis | Strukturert før/etter og godkjente oppgaveforslag til Workbench. |
@@ -67,7 +67,7 @@ Fersk GitHub-kontroll viste grønn [Junior Tours-kjøring 28.09](https://github.
 
 Koden viser denne veien for GolfBox: pipelines skriver `public.tournaments`, `public_player_entries` og `public_player_rounds`; `hentTurneringshistorikk` i HQ leser disse via `User.publicPlayerId`. Speiling til egne resultat-/påmeldingsmodeller ligger i `materialize-entry.ts` og etterfyllingen i `link-public-players.ts`.
 
-**Uavklart identitetsbevis:** `linkPublicPlayersByExactName` og `linkAndSyncUserTournamentResults` oppretter fortsatt kontokobling på normalisert navn alene når det finnes én kandidat. Én navnekandidat dokumenterer ikke at kontoen tilhører riktig person. Skjemaet har heller ikke eget verifisert GolfBox-identitetsfelt på `User`. Eksisterende koblinger er ikke undersøkt eller omskrevet her. Før godkjent helhet må kontokoblingen få eksplisitt identitetsbevis, og syntetiske prøver må dekke to like navn, ukjent ID, rettet resultat, gjentatt import og aktiv/avsluttet deling. Grønne innhentingsjobber alene er ikke dette beviset.
+PR #1101 (`e6cee1b9b`) fjernet automatisk kontokobling basert bare på normalisert navn. `linkPublicPlayersByExactName` teller nå mulige kandidater uten å skrive `User.publicPlayerId`; nye ubekreftede kandidater speiles ikke til kontoen. Eksisterende koblinger ble ikke revidert eller omskrevet. Neste identitetsarbeid er derfor å kontrollere opprinnelsen til eldre koblinger og etablere dokumentert identitetsbevis før nye koblinger; navn alene er utilstrekkelig. Grønne innhentingsjobber beviser ikke kontoeierskap.
 
 Pipelines er fortsatt eneste innhenter av resultater. DataGolf-sperrer skal ikke åpnes for å tette denne kjeden. En skrivebeskyttet SQL-kontroll mot riktig HQ-prosjekt bekreftet deltakelser fra OLYO, SRIXON, NORGESCUP, OSTLANDS og REGIONTOUR i appens lesetabeller. Bare antall og siste oppdatering per kilde ble lest; aggregatbeviset er lagret privat. Ingen personnavn, individuelle resultatrader eller logger med spilleropplysninger er hentet fra produksjon i denne kontrollen.
 

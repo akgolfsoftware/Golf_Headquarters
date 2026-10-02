@@ -17,6 +17,7 @@ import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/port
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
 import { lesTurneringsresultat } from "./turneringsresultat";
+import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -593,6 +594,11 @@ export async function medTnSpillerData<T>(bruker: TnBruker, spillerId: string, l
 
 export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
   return medTnSpillerData(bruker, spillerId, async (_tx, tilgang) => tilgang);
+}
+
+/** IUP-besvarelser leses bare innenfor aktuell navngitt profiltilgang/lås. */
+export async function hentTnSpillerIup(bruker: TnBruker, spillerId: string) {
+  return medTnSpillerData(bruker, spillerId, (tx, tilgang) => lesLeverteIupForProfil(tx, tilgang.spillerId));
 }
 
 /**

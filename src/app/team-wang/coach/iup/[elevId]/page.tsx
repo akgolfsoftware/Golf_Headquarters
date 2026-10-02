@@ -9,6 +9,8 @@ import {
   type IupMaaling,
 } from "@/app/team-wang/coach/iup/[elevId]/iup-samtale";
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
+import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
+import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
@@ -65,6 +67,7 @@ export default async function IupPage({
       select: { id: true, name: true, email: true },
     });
     if (!elev) return null;
+    const leverteIup = await lesLeverteIupForProfil(tx, elevId);
 
     const blokker = await tx.groupPeriodBlock.findMany({
       where: { groupId: gruppeId },
@@ -194,6 +197,9 @@ export default async function IupPage({
         }
         maalinger={maalinger}
       />
+      <section className="wang-card" style={{ padding: "18px 20px" }}>
+        <LeverteIupProfil rader={leverteIup} />
+      </section>
       {bruker.role === "COACH" ? <TrenerforslagSkjema organisasjon="WANG" spillerId={elevId} sessions={trenerOkter.map(s => ({
         id: s.id, label: `${s.date.toISOString().slice(0, 10)} ${String(Math.floor(s.startMinute / 60)).padStart(2, "0")}:${String(s.startMinute % 60).padStart(2, "0")} · ${s.title}`,
       }))} /> : null}
