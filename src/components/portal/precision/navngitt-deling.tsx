@@ -16,7 +16,7 @@ type Oversikt = NonNullable<Awaited<ReturnType<typeof hentEgenTrenerdeling>>>;
 const statusNavn = { VENTER: "Venter på aksept", AKTIV: "Aktiv", UTLOPT: "Lenke utløpt", TRUKKET: "Trukket", STENGT: "Tilgang stengt" };
 const dato = (s: string) => new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeZone: "Europe/Oslo" }).format(new Date(s));
 
-export function NavngittDeling({ initial }: { initial: Oversikt }) {
+export function NavngittDeling({ initial, erTrener = false }: { initial: Oversikt; erTrener?: boolean }) {
   const [oversikt, setOversikt] = useState(initial);
   const [grupperad, setGruppe] = useState(initial.grupper[0]?.id ?? "");
   const [epost, setEpost] = useState("");
@@ -73,6 +73,7 @@ export function NavngittDeling({ initial }: { initial: Oversikt }) {
       <h1 className="pa-pagehead__title">Trenerdeling</h1>
       <p>Del med én navngitt WANG- eller Team Norway-trener. Du beholder eierskapet til opplysningene dine.</p>
     </header>
+    {erTrener && <Link className="deling-tilbake" href="/portal/meg/deling/innsyn">Spillere som deler med meg</Link>}
     {feil && <p role="alert" className="deling-feil">{feil}</p>}
     {kvittering && <p role="status">{kvittering}</p>}
     {lenke && <section className="deling-panel"><h2>Delingslenken</h2><p>Kopier lenken og gi den til den navngitte treneren. Den vises bare i denne fanen.</p>
