@@ -49,7 +49,7 @@ De fullstendige funksjonsfamiliene PH-01–34 og TR-01–24 står i [hovedplanen
 |---|---|---|---|
 | Opprette, lagre, levere utviklingssjekk/sesongevaluering | Funksjonstestet | Leser samme leverte grunnlag ved navngitt deling | Leser samme leverte grunnlag ved navngitt deling |
 | Alle Excel-felt i samlet spillerprofil | Delvis | Delvis | Delvis |
-| Gi/trekke full profildeling | Ny spiller-/foresattreise prøvd | Nytt grunnlag, bare IUP-leser koblet | Nytt grunnlag, bare IUP-leser koblet |
+| Gi/trekke full profildeling | Spiller-/foresattreise prøvd | IUP og turneringsprofil koblet | Profiler, samlelister, analyse, planinnsyn, personpost og vedlegg koblet |
 | Obligatorisk testdeling fra alle WANG-skoler til TN | Avtalespor gjenstår | Ikke ferdig | Ikke ferdig |
 | Treningsforslag→godta/avvis→Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
 | Samling publisert→invitasjon→kalender/Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
@@ -76,7 +76,7 @@ Pipelines er fortsatt eneste innhenter av resultater. DataGolf-sperrer skal ikke
 
 ## Neste gjennomføringsrekkefølge
 
-1. Samordne eksisterende WANG/TN-profillesere med navngitt deling, og monter den felles IUP-leseren i valgte organisasjonsdesign. Test alle direkte ruter, søk, eksport og vedlegg etter tilbaketrekking.
+1. Fullfør innbygging av den felles IUP-leseren i valgte organisasjonsdesign og den komplette funksjonsdekningen. [Profiltilgangspakken](wang-tn-profiltilgang-kontroll-2026-10-02.md) kobler eldre lesere og personlige TN-vedlegg til navngitt deling; den dokumenterer hvilke ruter som faktisk er prøvd. Søke-/eksport- og testdagsreisene må fortsatt vurderes hver for seg.
 2. Samordne PR #1060 med kanonisk IUP og den aktuelle Workbench-modellen. Bevis at godkjenning anvender én gang, avvisning anvender null, og nyere spillerendring gir konflikt.
 3. Fullfør skoleavtalens separate testdeling og felles testdag. Avtale-/fagregler som mangler dokumentasjon må ikke oppfinnes.
 4. Fullfør samlingsinvitasjon og planimport med kalenderkonflikt, gjenforsøk og oppdatering etter publisering.

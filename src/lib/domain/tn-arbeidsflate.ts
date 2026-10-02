@@ -1,12 +1,13 @@
 import "server-only";
 
-import type { UserRole } from "@/generated/prisma/client";
+import type { Prisma, UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
 import { tnFormat, tnScore, tnSameScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { prisma } from "@/lib/prisma";
+import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
@@ -44,13 +45,17 @@ export async function hentTnArbeidskontekst(bruker: TnBruker): Promise<TnArbeids
   };
 }
 
-async function spillerIderFor(kontekst: TnArbeidskontekst, brukerId: string): Promise<string[]> {
-  if (kontekst.erSpiller) return [brukerId];
-  const medlemmer = await prisma.groupMember.findMany({
-    where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() },
-    select: { userId: true },
-  });
-  return medlemmer.map((medlem) => medlem.userId);
+/** Samlelister må ha samme aktuelle delingsgrunnlag som detaljprofilene. */
+async function lesTnProfiler<T>(bruker: TnBruker, les: (tx: Prisma.TransactionClient, spillerId: string) => Promise<T | null>) {
+  const kontekst = await hentTnArbeidskontekst(bruker);
+  if (!kontekst) return null;
+  if (kontekst.erSpiller) {
+    const rad = await medTnSpillerData(bruker, bruker.id, (tx) => les(tx, bruker.id));
+    return { kontekst, rader: rad === null ? [] : [rad] };
+  }
+  if (!erTnPersonligDataLeser(kontekst, bruker)) return null;
+  const rader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, les);
+  return { kontekst, rader };
 }
 
 export type TnSpillerRad = {
@@ -71,21 +76,25 @@ export type TnSpillerRad = {
 };
 
 export async function hentTnSpillere(bruker: TnBruker) {
-  const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst) return null;
-  const spillerIder = await spillerIderFor(kontekst, bruker.id);
+  const data = await lesTnProfiler(bruker, async (tx, spillerId) => (await lesTnSpillerRader(tx, spillerId))[0] ?? null);
+  data?.rader.sort((a, b) => a.navn.localeCompare(b.navn, "nb"));
+  return data;
+}
+
+async function lesTnSpillerRader(tx: Prisma.TransactionClient, spillerId: string) {
+  const spillerIder = [spillerId];
   const [spillere, tester, planer] = await Promise.all([
-    prisma.user.findMany({
+    tx.user.findMany({
       where: { id: { in: spillerIder }, deletedAt: null },
       select: { id: true, name: true, hcp: true, homeClub: true, school: true, schoolYear: true, userStatus: true, dateOfBirth: true },
       orderBy: { name: "asc" },
     }),
-    prisma.testResult.findMany({
+    tx.testResult.findMany({
       where: { userId: { in: spillerIder } },
       select: { userId: true, takenAt: true, test: { select: { name: true } } },
       orderBy: { takenAt: "desc" },
     }),
-    prisma.trainingPlan.findMany({
+    tx.trainingPlan.findMany({
       where: { userId: { in: spillerIder }, isActive: true },
       select: { userId: true, name: true, startDate: true, endDate: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
@@ -118,7 +127,7 @@ export async function hentTnSpillere(bruker: TnBruker) {
     planSlutt: planPerSpiller.get(spiller.id)?.endDate ?? null,
     fodselsdato: spiller.dateOfBirth,
   }));
-  return { kontekst, rader };
+  return rader;
 }
 
 export function hentTnProtokollbibliotek() {
@@ -155,11 +164,25 @@ export type TnTurneringRad = {
 };
 
 export async function hentTnTurneringer(bruker: TnBruker) {
-  const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst) return null;
-  const spillerIder = await spillerIderFor(kontekst, bruker.id);
+  const data = await lesTnProfiler(bruker, lesTnTurneringer);
+  if (!data) return null;
+  const perTurnering = new Map<string, TnTurneringRad>();
+  for (const rad of data.rader.flat()) {
+    const forrige = perTurnering.get(rad.id);
+    perTurnering.set(rad.id, forrige ? { ...forrige, results: [...forrige.results, ...rad.results], entries: [...forrige.entries, ...rad.entries] } : rad);
+  }
+  const turneringer = [...perTurnering.values()].sort((a, b) => {
+    if (a.startDate === null) return b.startDate === null ? 0 : 1;
+    if (b.startDate === null) return -1;
+    return b.startDate.getTime() - a.startDate.getTime();
+  });
+  return { kontekst: data.kontekst, turneringer };
+}
+
+async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string): Promise<TnTurneringRad[]> {
+  const spillerIder = [spillerId];
   const [katalogTurneringer, manuelleEntries] = await Promise.all([
-    prisma.tournament.findMany({
+    tx.tournament.findMany({
       where: {
         mergedIntoId: null,
         OR: [
@@ -185,7 +208,7 @@ export async function hentTnTurneringer(bruker: TnBruker) {
     // med tournamentId=null). Disse er ALDRI del av katalogspørringen over
     // (den leser kun Tournament.entries, som krever tournamentId), så det er
     // ingen risiko for dobbelttelling her.
-    prisma.tournamentEntry.findMany({
+    tx.tournamentEntry.findMany({
       where: { userId: { in: spillerIder }, tournamentId: null, manualName: { not: null } },
       select: { id: true, userId: true, manualName: true, manualDate: true, manualEndDate: true, entryStatus: true },
       orderBy: { manualDate: "desc" },
@@ -212,7 +235,7 @@ export async function hentTnTurneringer(bruker: TnBruker) {
     if (b.startDate === null) return -1;
     return b.startDate.getTime() - a.startDate.getTime();
   });
-  return { kontekst, turneringer };
+  return turneringer;
 }
 
 /**
@@ -221,13 +244,20 @@ export async function hentTnTurneringer(bruker: TnBruker) {
  * bare turneringer som startet det året (Oslo).
  */
 export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
-  const spillerside = await hentTnSpillere(bruker);
-  if (!spillerside) return null;
-  const koblinger = await prisma.user.findMany({
+  return lesTnProfiler(bruker, async (tx, spillerId) => {
+    const data = await lesTnRanglisteRad(tx, spillerId, aar);
+    return data.rader[0] ?? null;
+  });
+}
+
+async function lesTnRanglisteRad(tx: Prisma.TransactionClient, spillerId: string, aar?: number) {
+  const rader = await lesTnSpillerRader(tx, spillerId);
+  const spillerside = { rader };
+  const koblinger = await tx.user.findMany({
     where: { id: { in: spillerside.rader.map((spiller) => spiller.id) }, publicPlayerId: { not: null } },
     select: { id: true, publicPlayerId: true },
   });
-  const entries = await prisma.publicPlayerEntry.findMany({
+  const entries = await tx.publicPlayerEntry.findMany({
     where: {
       playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
       tournament: { mergedIntoId: null, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
@@ -245,7 +275,6 @@ export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   }
   const publicId = new Map(koblinger.map((k) => [k.id, k.publicPlayerId!]));
   return {
-    kontekst: spillerside.kontekst,
     rader: spillerside.rader.map((spiller) => {
       const tall = aggregerRangliste(perSpiller.get(publicId.get(spiller.id) ?? "") ?? []);
       return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: publicId.has(spiller.id) };
@@ -503,15 +532,9 @@ export async function hentTnTestdagDeltaker(bruker: TnBruker, deltakerId: string
   };
 }
 
-/**
- * Spillerens fikserte kontekst for oversikt/tester/analyse (TN-utvidelse
- * 14.09.2026). Leser eksisterende tilgang FØR data — aldri en rå
- * spillerId fra URL/query alene:
- *  - spilleren selv: kun sin egen id.
- *  - coach/hjelpetrener/admin: spillerId må være et AKTIVT PLAYER-
- *    medlemskap i SAMME Team Norway-gruppe (`aktivtSpillerMedlemskapWhere`)
- *    — gruppetilhørighet er riktig skop for DELT TN-testdata (motsatt av
- *    personlig PlayerHQ-coachdata, som skal bruke `coachScopedPlayerWhere`).
+/** Visningsdata fra et avgrenset oppslag, aldri et varig tilgangsbevis.
+ * Egen spiller leser seg selv. Treneren trenger aktuell navngitt deling;
+ * WANG-eleven trenger ikke samtidig å være medlem i Team Norway.
  */
 export type TnSpillerTilgang = {
   kontekst: TnArbeidskontekst;
@@ -529,7 +552,7 @@ export type TnSpillerTilgang = {
  * personlige data — selv om det skulle finnes en (feilaktig/gammel)
  * `GroupMember`-rad med gruppe-rolle COACH/ASSISTANT for akkurat den
  * brukeren. Gruppemedlemskap alene er ikke nok; plattformrollen må også
- * faktisk være COACH (eller platform-ADMIN, som alltid har tilgang).
+ * faktisk være COACH (eller platform-ADMIN, som fortsatt må ha navngitt deling).
  */
 function erTnPersonligDataLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
   if (bruker.role === "ADMIN") return true;
@@ -547,34 +570,24 @@ function erTnGruppeanalyseLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): 
   return kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT";
 }
 
-export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
+/** Nytt oppslag for hver lesing. Spillerens navn leses først innenfor delingslåsen. */
+export async function medTnSpillerData<T>(bruker: TnBruker, spillerId: string, les: (tx: Prisma.TransactionClient, tilgang: TnSpillerTilgang) => Promise<T>): Promise<T | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
   if (kontekst.erSpiller) {
-    // Global PLAYER skal KUN se seg selv — uansett hva `spillerId` i
-    // URL-en/query-en sier. `kontekst.erSpiller` er gruppe-rollen alene;
-    // en bruker med GRUPPE-rolle PLAYER men en avvikende PLATTFORMROLLE
-    // (f.eks. GUEST) skal IKKE få en personlig lesevei bare fordi
-    // gruppe-raden sier PLAYER — samme eksplisitte rolleprinsipp som
-    // `erTnPersonligDataLeser` under, speilvendt for selv-tilgang.
-    if (bruker.role !== "PLAYER" && bruker.role !== "COACH" && bruker.role !== "ADMIN") return null;
-    if (bruker.id !== spillerId) return null;
-    return { kontekst, spillerId, spillerNavn: bruker.name ?? "Ukjent" };
+    if (!["PLAYER", "COACH", "ADMIN"].includes(bruker.role) || bruker.id !== spillerId) return null;
+    return prisma.$transaction((tx) => les(tx, { kontekst, spillerId, spillerNavn: bruker.name ?? "Ukjent" }));
   }
-  // Eksplisitt, STRENG leserrolle — se `erTnPersonligDataLeser` over. «ikke
-  // PLAYER» er IKKE det samme som COACH/ASSISTANT/ADMIN, og gruppe-rollen
-  // alene er ikke nok uten at plattformrollen faktisk er COACH/ADMIN.
-  // `GroupMember.role` er en fri streng i skjemaet, ikke en lukket enum: et
-  // medlem med en ukjent/annen rolle (GUEST o.l.) skal aldri kunne lese en
-  // spillers
-  // personlige data bare fordi de ikke er PLAYER.
   if (!erTnPersonligDataLeser(kontekst, bruker)) return null;
-  const medlem = await prisma.groupMember.findFirst({
-    where: { groupId: kontekst.gruppe.id, userId: spillerId, ...aktivtSpillerMedlemskapWhere() },
-    select: { user: { select: { name: true } } },
+  return medNavngittProfil(bruker.id, spillerId, kontekst.gruppe.id, async (tx) => {
+    const spiller = await tx.user.findFirst({ where: { id: spillerId, deletedAt: null, anonymisertAt: null }, select: { name: true } });
+    if (!spiller) return null;
+    return les(tx, { kontekst, spillerId, spillerNavn: spiller.name ?? "Ukjent" });
   });
-  if (!medlem) return null;
-  return { kontekst, spillerId, spillerNavn: medlem.user.name ?? "Ukjent" };
+}
+
+export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
+  return medTnSpillerData(bruker, spillerId, async (_tx, tilgang) => tilgang);
 }
 
 /**
@@ -591,31 +604,33 @@ export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string):
  */
 export type TnSpillerLisens = { status: "ok"; niva: TilgangsNivaa; kilde: TilgangsKilde } | { status: "feil" };
 
-export async function hentTnSpillerLisens(tilgang: TnSpillerTilgang): Promise<TnSpillerLisens> {
-  try {
-    const bruker = await prisma.user.findUniqueOrThrow({
-      where: { id: tilgang.spillerId },
-      select: { tier: true, profilType: true, createdAt: true, trialEndsAt: true },
-    });
-    const [coaching, playerhq, akGruppeCount] = await Promise.all([
-      prisma.subscription.findUnique({
-        where: { userId_kind: { userId: tilgang.spillerId, kind: "COACHING" } },
-        select: { status: true, monthlyCredits: true, currentPeriodEnd: true },
-      }),
-      prisma.subscription.findUnique({
-        where: { userId_kind: { userId: tilgang.spillerId, kind: "PLAYERHQ" } },
-        select: { status: true, currentPeriodEnd: true, plan: true, stripeSubscriptionId: true },
-      }),
-      prisma.groupMember.count({ where: { userId: tilgang.spillerId, ...aktivtAkGruppeMedlemskapWhere() } }),
-    ]);
-    const t = resolveTilgang({
-      tier: bruker.tier, profilType: bruker.profilType, createdAt: bruker.createdAt, trialEndsAt: bruker.trialEndsAt,
-      coaching, playerhq, akGruppeCount,
-    });
-    return { status: "ok", niva: t.nivaa, kilde: t.kilde };
-  } catch {
-    return { status: "feil" };
-  }
+export async function hentTnSpillerLisens(bruker: TnBruker, spillerId: string): Promise<TnSpillerLisens | null> {
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    try {
+      const bruker = await tx.user.findUniqueOrThrow({
+        where: { id: tilgang.spillerId },
+        select: { tier: true, profilType: true, createdAt: true, trialEndsAt: true },
+      });
+      const [coaching, playerhq, akGruppeCount] = await Promise.all([
+        tx.subscription.findUnique({
+          where: { userId_kind: { userId: tilgang.spillerId, kind: "COACHING" } },
+          select: { status: true, monthlyCredits: true, currentPeriodEnd: true },
+        }),
+        tx.subscription.findUnique({
+          where: { userId_kind: { userId: tilgang.spillerId, kind: "PLAYERHQ" } },
+          select: { status: true, currentPeriodEnd: true, plan: true, stripeSubscriptionId: true },
+        }),
+        tx.groupMember.count({ where: { userId: tilgang.spillerId, ...aktivtAkGruppeMedlemskapWhere() } }),
+      ]);
+      const t = resolveTilgang({
+        tier: bruker.tier, profilType: bruker.profilType, createdAt: bruker.createdAt, trialEndsAt: bruker.trialEndsAt,
+        coaching, playerhq, akGruppeCount,
+      });
+      return { status: "ok", niva: t.nivaa, kilde: t.kilde };
+    } catch {
+      return { status: "feil" };
+    }
+  });
 }
 
 /**
@@ -715,61 +730,61 @@ export type TnSpillerTestRad = {
  * å forsvinne stille fra oversikten.
  */
 export async function hentTnSpillerTester(bruker: TnBruker, spillerId: string): Promise<{ tilgang: TnSpillerTilgang; rader: TnSpillerTestRad[] } | null> {
-  const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
-  if (!tilgang) return null;
-  const resultater = await prisma.testResult.findMany({
-    where: { userId: spillerId, testId: { startsWith: "tn-v3-" } },
-    orderBy: { takenAt: "desc" },
-    select: { id: true, testId: true, takenAt: true, score: true, details: true },
-  });
-  const koblinger = await prisma.testDayParticipant.findMany({
-    where: { resultId: { in: resultater.map((r) => r.id) } },
-    select: { id: true, resultId: true },
-  });
-  const koblingMap = new Map(koblinger.map((k) => [k.resultId, k.id]));
-  const grupper = new Map<string, typeof resultater>();
-  for (const r of resultater) {
-    const liste = grupper.get(r.testId) ?? [];
-    liste.push(r);
-    grupper.set(r.testId, liste);
-  }
-  const rader: TnSpillerTestRad[] = [];
-  for (const [testId, liste] of grupper) {
-    const protokoll = tnFromDefinitionId(testId);
-    if (!protokoll) continue; // ukjent protokoll — vises ikke, gjettes ikke
-    const { gyldige, utelatt } = tnValiderRader(liste, protokoll);
-    if (gyldige.length === 0) {
-      // ALLE rader var uforenlige — vis protokollen med en synlig
-      // forklaring i stedet for å la den forsvinne stille.
-      rader.push({
-        testId, protokollNavn: protokoll.name, antall: 0, antallUtelatt: utelatt,
-        sisteScore: null, sisteEnhet: null, sisteFormatert: null, sisteDato: liste[0].takenAt,
-        forrigeScore: null, besteScore: null, besteFormatert: null, lowerIsBetter: null,
-        sisteTestdagDeltakerId: null,
-      });
-      continue;
-    }
-    const retning = gyldige[0].retning;
-    const scores = gyldige.map((r) => r.score);
-    const beste = retning ? Math.min(...scores) : Math.max(...scores);
-    rader.push({
-      testId,
-      protokollNavn: protokoll.name,
-      antall: gyldige.length,
-      antallUtelatt: utelatt,
-      sisteScore: gyldige[0].score,
-      sisteEnhet: gyldige[0].parsed.unit,
-      sisteFormatert: tnFormat({ value: gyldige[0].score, unit: gyldige[0].parsed.unit }),
-      sisteDato: gyldige[0].takenAt,
-      forrigeScore: gyldige[1]?.score ?? null,
-      besteScore: beste,
-      besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
-      lowerIsBetter: retning,
-      sisteTestdagDeltakerId: koblingMap.get(gyldige[0].id) ?? null,
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const resultater = await tx.testResult.findMany({
+      where: { userId: spillerId, testId: { startsWith: "tn-v3-" } },
+      orderBy: { takenAt: "desc" },
+      select: { id: true, testId: true, takenAt: true, score: true, details: true },
     });
-  }
-  rader.sort((a, b) => b.sisteDato.getTime() - a.sisteDato.getTime());
-  return { tilgang, rader };
+    const koblinger = await tx.testDayParticipant.findMany({
+      where: { resultId: { in: resultater.map((r) => r.id) } },
+      select: { id: true, resultId: true },
+    });
+    const koblingMap = new Map(koblinger.map((k) => [k.resultId, k.id]));
+    const grupper = new Map<string, typeof resultater>();
+    for (const r of resultater) {
+      const liste = grupper.get(r.testId) ?? [];
+      liste.push(r);
+      grupper.set(r.testId, liste);
+    }
+    const rader: TnSpillerTestRad[] = [];
+    for (const [testId, liste] of grupper) {
+      const protokoll = tnFromDefinitionId(testId);
+      if (!protokoll) continue; // ukjent protokoll — vises ikke, gjettes ikke
+      const { gyldige, utelatt } = tnValiderRader(liste, protokoll);
+      if (gyldige.length === 0) {
+        // ALLE rader var uforenlige — vis protokollen med en synlig
+        // forklaring i stedet for å la den forsvinne stille.
+        rader.push({
+          testId, protokollNavn: protokoll.name, antall: 0, antallUtelatt: utelatt,
+          sisteScore: null, sisteEnhet: null, sisteFormatert: null, sisteDato: liste[0].takenAt,
+          forrigeScore: null, besteScore: null, besteFormatert: null, lowerIsBetter: null,
+          sisteTestdagDeltakerId: null,
+        });
+        continue;
+      }
+      const retning = gyldige[0].retning;
+      const scores = gyldige.map((r) => r.score);
+      const beste = retning ? Math.min(...scores) : Math.max(...scores);
+      rader.push({
+        testId,
+        protokollNavn: protokoll.name,
+        antall: gyldige.length,
+        antallUtelatt: utelatt,
+        sisteScore: gyldige[0].score,
+        sisteEnhet: gyldige[0].parsed.unit,
+        sisteFormatert: tnFormat({ value: gyldige[0].score, unit: gyldige[0].parsed.unit }),
+        sisteDato: gyldige[0].takenAt,
+        forrigeScore: gyldige[1]?.score ?? null,
+        besteScore: beste,
+        besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
+        lowerIsBetter: retning,
+        sisteTestdagDeltakerId: koblingMap.get(gyldige[0].id) ?? null,
+      });
+    }
+    rader.sort((a, b) => b.sisteDato.getTime() - a.sisteDato.getTime());
+    return { tilgang, rader };
+  });
 }
 
 export type TnSpillerTestResultRad = {
@@ -803,63 +818,63 @@ export type TnSpillerTestDetalj = {
  * en tom, forklart detaljside i stedet for et stille 404.
  */
 export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: string, testId: string): Promise<TnSpillerTestDetalj | null> {
-  const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
-  if (!tilgang) return null;
-  const protokollBase = tnFromDefinitionId(testId);
-  if (!protokollBase) return null;
-  const resultater = await prisma.testResult.findMany({
-    where: { userId: spillerId, testId },
-    orderBy: { takenAt: "desc" },
-    select: { id: true, takenAt: true, score: true, details: true, recordedById: true },
-  });
-  if (resultater.length === 0) return null;
-  const { gyldige, utelatt } = tnValiderRader(resultater, protokollBase);
-  if (gyldige.length === 0) {
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const protokollBase = tnFromDefinitionId(testId);
+    if (!protokollBase) return null;
+    const resultater = await tx.testResult.findMany({
+      where: { userId: spillerId, testId },
+      orderBy: { takenAt: "desc" },
+      select: { id: true, takenAt: true, score: true, details: true, recordedById: true },
+    });
+    if (resultater.length === 0) return null;
+    const { gyldige, utelatt } = tnValiderRader(resultater, protokollBase);
+    if (gyldige.length === 0) {
+      return {
+        tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: null,
+        besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [],
+      };
+    }
+    const retning = gyldige[0].retning;
+    const koblinger = await tx.testDayParticipant.findMany({
+      where: { resultId: { in: gyldige.map((r) => r.id) } },
+      select: { id: true, resultId: true },
+    });
+    const koblingMap = new Map(koblinger.map((k) => [k.resultId, k.id]));
+    const scores = gyldige.map((r) => r.score);
+    const beste = retning ? Math.min(...scores) : Math.max(...scores);
+    const historikk: TnSpillerTestResultRad[] = gyldige.map((r) => ({
+      id: r.id,
+      takenAt: r.takenAt,
+      score: r.score,
+      unit: r.parsed.unit,
+      formatert: tnFormat({ value: r.score, unit: r.parsed.unit }),
+      recordedByCoach: r.recordedById !== null,
+      testdagDeltakerId: koblingMap.get(r.id) ?? null,
+    }));
+    // Siste GYLDIGE rad (ikke nødvendigvis aller siste rad) er grunnlaget for
+    // forsøksvisningen — variable-count-protokoller trenger riktig antall
+    // rader for AKKURAT den gjennomføringen.
+    const sisteGyldig = gyldige[0].parsed;
+    const protokoll = protokollBase.variableCount ? tnProtocol(protokollBase.id, sisteGyldig.count, sisteGyldig.version) : protokollBase;
+    const sisteForsok = protokoll
+      ? protokoll.rows.map((row, i) => {
+          const felter = sisteGyldig.values[String(i + 1)] ?? {};
+          const tekst = row.fields
+            .map((f) => {
+              const v = felter[f.key];
+              if (v === null || v === undefined || v === "") return `${f.label}: —`;
+              return `${f.label}: ${v}${f.unit ? ` ${f.unit}` : ""}`;
+            })
+            .join(" · ");
+          return { label: `Forsøk ${i + 1} · ${row.label}`, verdi: tekst };
+        })
+      : [];
     return {
-      tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: null,
-      besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [],
+      tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: retning,
+      besteScore: beste, besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
+      historikk, antallUtelatt: utelatt, sisteForsok,
     };
-  }
-  const retning = gyldige[0].retning;
-  const koblinger = await prisma.testDayParticipant.findMany({
-    where: { resultId: { in: gyldige.map((r) => r.id) } },
-    select: { id: true, resultId: true },
   });
-  const koblingMap = new Map(koblinger.map((k) => [k.resultId, k.id]));
-  const scores = gyldige.map((r) => r.score);
-  const beste = retning ? Math.min(...scores) : Math.max(...scores);
-  const historikk: TnSpillerTestResultRad[] = gyldige.map((r) => ({
-    id: r.id,
-    takenAt: r.takenAt,
-    score: r.score,
-    unit: r.parsed.unit,
-    formatert: tnFormat({ value: r.score, unit: r.parsed.unit }),
-    recordedByCoach: r.recordedById !== null,
-    testdagDeltakerId: koblingMap.get(r.id) ?? null,
-  }));
-  // Siste GYLDIGE rad (ikke nødvendigvis aller siste rad) er grunnlaget for
-  // forsøksvisningen — variable-count-protokoller trenger riktig antall
-  // rader for AKKURAT den gjennomføringen.
-  const sisteGyldig = gyldige[0].parsed;
-  const protokoll = protokollBase.variableCount ? tnProtocol(protokollBase.id, sisteGyldig.count, sisteGyldig.version) : protokollBase;
-  const sisteForsok = protokoll
-    ? protokoll.rows.map((row, i) => {
-        const felter = sisteGyldig.values[String(i + 1)] ?? {};
-        const tekst = row.fields
-          .map((f) => {
-            const v = felter[f.key];
-            if (v === null || v === undefined || v === "") return `${f.label}: —`;
-            return `${f.label}: ${v}${f.unit ? ` ${f.unit}` : ""}`;
-          })
-          .join(" · ");
-        return { label: `Forsøk ${i + 1} · ${row.label}`, verdi: tekst };
-      })
-    : [];
-  return {
-    tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: retning,
-    besteScore: beste, besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
-    historikk, antallUtelatt: utelatt, sisteForsok,
-  };
 }
 
 export type TnGruppeanalyseValg = { kontekst: TnArbeidskontekst; protokoller: { id: string; navn: string }[]; testdager: TnTestdagRad[] };
@@ -960,27 +975,23 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
     if (!protokoll || protokoll.blocked) return null;
     const testId = tnDefinitionId(protokoll);
     const lowerIsBetter = protokoll.points8Ball ? false : true;
-    const spillere = await prisma.groupMember.findMany({
-      where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() },
-      select: { userId: true, user: { select: { name: true } } },
+    const rader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId): Promise<TnGruppeanalyseRad | null> => {
+      const spiller = await tx.user.findUnique({ where: { id: spillerId }, select: { name: true } });
+      if (!spiller) return null;
+      const kandidater = await tx.testResult.findMany({
+        where: { userId: spillerId, testId },
+        orderBy: { takenAt: "desc" },
+        select: { id: true, takenAt: true, score: true, details: true },
+      });
+      const { gyldige } = tnValiderRader(kandidater, protokoll);
+      if (gyldige.length === 0) return { spillerId, spillerNavn: spiller.name ?? "Ukjent", status: "IKKE_TESTDAG", score: null, formatert: null };
+      const scores = gyldige.map((r) => r.score);
+      const beste = lowerIsBetter ? Math.min(...scores) : Math.max(...scores);
+      return {
+        spillerId, spillerNavn: spiller.name ?? "Ukjent", status: "DONE",
+        score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
+      };
     });
-    const rader: TnGruppeanalyseRad[] = await Promise.all(
-      spillere.map(async (s) => {
-        const kandidater = await prisma.testResult.findMany({
-          where: { userId: s.userId, testId },
-          orderBy: { takenAt: "desc" },
-          select: { id: true, takenAt: true, score: true, details: true },
-        });
-        const { gyldige } = tnValiderRader(kandidater, protokoll);
-        if (gyldige.length === 0) return { spillerId: s.userId, spillerNavn: s.user.name ?? "Ukjent", status: "IKKE_TESTDAG" as const, score: null, formatert: null };
-        const scores = gyldige.map((r) => r.score);
-        const beste = lowerIsBetter ? Math.min(...scores) : Math.max(...scores);
-        return {
-          spillerId: s.userId, spillerNavn: s.user.name ?? "Ukjent", status: "DONE" as const,
-          score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
-        };
-      }),
-    );
     return {
       kontekst, protokollNavn: protokoll.name, lowerIsBetter,
       grunnlag: { type: "protokoll", navn: protokoll.name, dato: null },
@@ -1032,32 +1043,32 @@ function tnOmTnRuteForPlanlagt(spillerId: string, p: PlannedTest): TnSpillerPlan
  *    synlighetsregel som resten av spillerens test-univers).
  */
 export async function hentTnSpillerOvrigeTester(bruker: TnBruker, spillerId: string): Promise<TnSpillerOvrigeTester | null> {
-  const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
-  if (!tilgang) return null;
-  const malSpiller = await prisma.user.findUnique({ where: { id: spillerId }, select: { id: true, name: true, hcp: true, tier: true } });
-  if (!malSpiller) return null;
-  const [skjerm, apneTildelinger] = await Promise.all([
-    loadTesterScreen(malSpiller),
-    prisma.testAssignment.findMany({
-      where: { playerId: spillerId, status: "OPEN", testId: { not: { startsWith: "tn-v3-" } }, test: testTilgangWhere(spillerId) },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, testId: true, dueDate: true, test: { select: { name: true } } },
-    }),
-  ]);
-  const grupper = skjerm.groups
-    .map((gruppe) => ({
-      ...gruppe,
-      rows: gruppe.rows
-        .filter((rad) => !rad.id.startsWith("tn-v3-"))
-        .map((rad) => ({ ...rad, href: `/team-norway/spiller/${spillerId}/tester/${rad.id}` })),
-    }))
-    .filter((gruppe) => gruppe.rows.length > 0);
-  const pagaende = skjerm.planned.filter((p) => !p.testId.startsWith("tn-v3-")).map((p) => tnOmTnRuteForPlanlagt(spillerId, p));
-  const tildelt: TnSpillerPlanlagtTest[] = apneTildelinger.map((t) => ({
-    id: t.id, testId: t.testId, navn: t.test.name, status: "ÅPEN TILDELING",
-    nar: null, frist: t.dueDate, href: `/team-norway/spiller/${spillerId}/tester/${t.testId}`,
-  }));
-  return { tilgang, grupper, planlagt: [...pagaende, ...tildelt] };
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const malSpiller = await tx.user.findUnique({ where: { id: spillerId }, select: { id: true, name: true, hcp: true, tier: true } });
+    if (!malSpiller) return null;
+    const [skjerm, apneTildelinger] = await Promise.all([
+      loadTesterScreen(malSpiller),
+      tx.testAssignment.findMany({
+        where: { playerId: spillerId, status: "OPEN", testId: { not: { startsWith: "tn-v3-" } }, test: testTilgangWhere(spillerId) },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, testId: true, dueDate: true, test: { select: { name: true } } },
+      }),
+    ]);
+    const grupper = skjerm.groups
+      .map((gruppe) => ({
+        ...gruppe,
+        rows: gruppe.rows
+          .filter((rad) => !rad.id.startsWith("tn-v3-"))
+          .map((rad) => ({ ...rad, href: `/team-norway/spiller/${spillerId}/tester/${rad.id}` })),
+      }))
+      .filter((gruppe) => gruppe.rows.length > 0);
+    const pagaende = skjerm.planned.filter((p) => !p.testId.startsWith("tn-v3-")).map((p) => tnOmTnRuteForPlanlagt(spillerId, p));
+    const tildelt: TnSpillerPlanlagtTest[] = apneTildelinger.map((t) => ({
+      id: t.id, testId: t.testId, navn: t.test.name, status: "ÅPEN TILDELING",
+      nar: null, frist: t.dueDate, href: `/team-norway/spiller/${spillerId}/tester/${t.testId}`,
+    }));
+    return { tilgang, grupper, planlagt: [...pagaende, ...tildelt] };
+  });
 }
 
 /** Grupperer forsøk på label → steg-liste (samme mønster som /portal/tren/tester/[testId]). */
@@ -1094,54 +1105,56 @@ export type TnSpillerOvrigTestDetalj = {
  * samme synlighetsregel som spillerens egen /portal-visning.
  */
 export async function hentTnSpillerOvrigTestDetalj(bruker: TnBruker, spillerId: string, testId: string): Promise<TnSpillerOvrigTestDetalj | null> {
-  const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
-  if (!tilgang) return null;
-  const definisjon = await prisma.testDefinition.findFirst({
-    where: { id: testId, AND: [testTilgangWhere(spillerId)] },
-    select: { name: true, scoringRule: true, protocol: true },
-  });
-  if (!definisjon) return null;
-  const resultater = await prisma.testResult.findMany({
-    where: { userId: spillerId, testId },
-    orderBy: { takenAt: "desc" },
-    select: { id: true, takenAt: true, score: true, details: true },
-  });
-  // En gyldig testdefinisjon (protokoll/instruksjon finnes, evt. en åpen
-  // tildeling) skal vise protokollen med «ingen resultater ennå» — ALDRI
-  // et 404 bare fordi spilleren ikke har fullført den ennå.
-  const spec = parseProtocol(definisjon.protocol);
-  const scoringSpec = parseForScoring(definisjon.protocol);
-  const lowerIsBetter = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
-  const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
-  let sisteForsok: { nr: number; ok: boolean | null; side: "V" | "H" | null }[] = [];
-  if (erGateType && resultater.length > 0) {
-    const parsedDetails = ScoringDetailsSchema.safeParse(resultater[0].details);
-    if (parsedDetails.success) {
-      sisteForsok = parsedDetails.data.perSlag.map((s) => ({
-        nr: s.nr,
-        ok: typeof s.verdier.ok === "boolean" ? s.verdier.ok : typeof s.verdier.sunket === "boolean" ? s.verdier.sunket : null,
-        side: s.verdier.miss_side === "V" || s.verdier.miss_side === "H" ? (s.verdier.miss_side as "V" | "H") : null,
-      }));
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const definisjon = await tx.testDefinition.findFirst({
+      where: { id: testId, AND: [testTilgangWhere(spillerId)] },
+      select: { name: true, scoringRule: true, protocol: true },
+    });
+    if (!definisjon) return null;
+    const resultater = await tx.testResult.findMany({
+      where: { userId: spillerId, testId },
+      orderBy: { takenAt: "desc" },
+      select: { id: true, takenAt: true, score: true, details: true },
+    });
+    // En gyldig testdefinisjon (protokoll/instruksjon finnes, evt. en åpen
+    // tildeling) skal vise protokollen med «ingen resultater ennå» — ALDRI
+    // et 404 bare fordi spilleren ikke har fullført den ennå.
+    const spec = parseProtocol(definisjon.protocol);
+    const scoringSpec = parseForScoring(definisjon.protocol);
+    const lowerIsBetter = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
+    const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
+    let sisteForsok: { nr: number; ok: boolean | null; side: "V" | "H" | null }[] = [];
+    if (erGateType && resultater.length > 0) {
+      const parsedDetails = ScoringDetailsSchema.safeParse(resultater[0].details);
+      if (parsedDetails.success) {
+        sisteForsok = parsedDetails.data.perSlag.map((s) => ({
+          nr: s.nr,
+          ok: typeof s.verdier.ok === "boolean" ? s.verdier.ok : typeof s.verdier.sunket === "boolean" ? s.verdier.sunket : null,
+          side: s.verdier.miss_side === "V" || s.verdier.miss_side === "H" ? (s.verdier.miss_side as "V" | "H") : null,
+        }));
+      }
     }
-  }
-  return {
-    tilgang, testId, navn: definisjon.name, regel: definisjon.scoringRule,
-    enhet: scoringSpec.unit, lowerIsBetter, steg: spec ? tnGrupperSteg(spec.forsok) : [],
-    historikk: resultater.map((r) => ({ id: r.id, takenAt: r.takenAt, score: r.score })),
-    sisteForsok,
-  };
+    return {
+      tilgang, testId, navn: definisjon.name, regel: definisjon.scoringRule,
+      enhet: scoringSpec.unit, lowerIsBetter, steg: spec ? tnGrupperSteg(spec.forsok) : [],
+      historikk: resultater.map((r) => ({ id: r.id, takenAt: r.takenAt, score: r.score })),
+      sisteForsok,
+    };
+  });
 }
 
 export type TnSpillerAktivPlan = { id: string; navn: string; status: string; startDato: Date; sluttDato: Date | null };
 
 /** Aktive planer fra den eksisterende TrainingPlan-kilden — ikke bare et testkort. */
-export async function hentTnSpillerAktivePlaner(tilgang: TnSpillerTilgang): Promise<TnSpillerAktivPlan[]> {
-  const planer = await prisma.trainingPlan.findMany({
-    where: { userId: tilgang.spillerId, isActive: true },
-    select: { id: true, name: true, status: true, startDate: true, endDate: true },
-    orderBy: { startDate: "desc" },
+export async function hentTnSpillerAktivePlaner(bruker: TnBruker, spillerId: string): Promise<TnSpillerAktivPlan[] | null> {
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const planer = await tx.trainingPlan.findMany({
+      where: { userId: tilgang.spillerId, isActive: true },
+      select: { id: true, name: true, status: true, startDate: true, endDate: true },
+      orderBy: { startDate: "desc" },
+    });
+    return planer.map((p) => ({ id: p.id, navn: p.name, status: p.status, startDato: p.startDate, sluttDato: p.endDate }));
   });
-  return planer.map((p) => ({ id: p.id, navn: p.name, status: p.status, startDato: p.startDate, sluttDato: p.endDate }));
 }
 
 export type TnSpillerAnalyseHub = {
@@ -1152,19 +1165,19 @@ export type TnSpillerAnalyseHub = {
 /**
  * Valgt spillers REELLE SG/TrackMan-oppsummering — gjenbruker den
  * eksisterende `hentAnalyseHub(userId)` (samme kilde som spillerens egen
- * PlayerHQ-analyse), kalt med MÅLSPILLERENS id. Lovlig innsyn er allerede
- * bevist av `hentTnSpillerTilgang` (aktivt TN-gruppemedlemskap, samme
- * grunnlag som `coachScopedPlayerWhere`s gruppe-gren) — ingen ny consent-
- * eller helserettighet innføres. `dypere`-lenkene i kilden peker til
+ * PlayerHQ-analyse), kalt med MÅLSPILLERENS id. Aktuell deling kontrolleres på nytt før hele oppslaget,
+ * under samme lås som tilbaketrekking. `dypere`-lenkene i kilden peker til
  * coachens EGEN /portal og utelates derfor bevisst.
  */
-export async function hentTnSpillerAnalyseHub(tilgang: TnSpillerTilgang): Promise<TnSpillerAnalyseHub> {
-  const { hentAnalyseHub } = await import("@/lib/portal-analyse/tm-hub-data");
-  const hub = await hentAnalyseHub(tilgang.spillerId);
-  return {
-    sgAkser: hub.sgAkser,
-    trackman: hub.trackman ? { klubb: hub.trackman.klubb, datoKort: hub.trackman.datoKort, setning: hub.trackman.setning, meta: hub.trackman.meta } : null,
-  };
+export async function hentTnSpillerAnalyseHub(bruker: TnBruker, spillerId: string): Promise<TnSpillerAnalyseHub | null> {
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const { hentAnalyseHub } = await import("@/lib/portal-analyse/tm-hub-data");
+    const hub = await hentAnalyseHub(tilgang.spillerId);
+    return {
+      sgAkser: hub.sgAkser,
+      trackman: hub.trackman ? { klubb: hub.trackman.klubb, datoKort: hub.trackman.datoKort, setning: hub.trackman.setning, meta: hub.trackman.meta } : null,
+    };
+  });
 }
 
 export type TnSpillerTurnering = {
@@ -1179,6 +1192,7 @@ export type TnSpillerTurnering = {
 
 export type TnSpillerProfil = {
   navn: string;
+  erTnMedlem: boolean;
   fodselsdato: Date | null;
   klubb: string | null;
   skole: string | null;
@@ -1190,71 +1204,83 @@ export type TnSpillerProfil = {
 };
 
 /**
- * TN-02 Spillerprofil. Krever et allerede verifisert `TnSpillerTilgang`, som de
- * andre personlige leserne. Turneringene kommer fra de offentlige resultatene
+ * TN-02 Spillerprofil. Kontrollerer aktuell navngitt deling gjennom oppslaget.
+ * Turneringene kommer fra de offentlige resultatene
  * (kanonisk kilde), bare brutto, for turneringer som startet i `aar` (Oslo).
  */
-export async function hentTnSpillerProfil(tilgang: TnSpillerTilgang, aar: number): Promise<TnSpillerProfil | null> {
-  const spiller = await prisma.user.findFirst({
-    where: { id: tilgang.spillerId, deletedAt: null },
-    select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, publicPlayerId: true },
-  });
-  if (!spiller) return null;
-  const grunn = { navn: spiller.name ?? tilgang.spillerNavn, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
-  if (!spiller.publicPlayerId) return { ...grunn, turneringer: null, aaret: null };
+export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, aar: number): Promise<TnSpillerProfil | null> {
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const spiller = await tx.user.findFirst({
+      where: { id: tilgang.spillerId, deletedAt: null },
+      select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, publicPlayerId: true, groupMemberships: { where: { groupId: tilgang.kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() }, select: { id: true } } },
+    });
+    if (!spiller) return null;
+    const grunn = { navn: spiller.name ?? tilgang.spillerNavn, erTnMedlem: spiller.groupMemberships.length > 0, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
+    if (!spiller.publicPlayerId) return { ...grunn, turneringer: null, aaret: null };
 
-  const entries = await prisma.publicPlayerEntry.findMany({
-    where: {
-      playerId: spiller.publicPlayerId,
-      tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
-    },
-    select: {
-      status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
-      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
-      tournament: { select: { name: true, startDate: true, endDate: true } },
-    },
-    orderBy: { tournament: { startDate: "desc" } },
+    const entries = await tx.publicPlayerEntry.findMany({
+      where: {
+        playerId: spiller.publicPlayerId,
+        tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
+      },
+      select: {
+        status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
+        roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
+        tournament: { select: { name: true, startDate: true, endDate: true } },
+      },
+      orderBy: { tournament: { startDate: "desc" } },
+    });
+    const iAaret = entries.filter((e) => osloAar(e.tournament.startDate) === aar);
+    const turneringer = iAaret.map((e) => {
+      const tall = aggregerRangliste([e]);
+      const resultat = lesTurneringsresultat(e);
+      return {
+        navn: e.tournament.name,
+        start: e.tournament.startDate,
+        slutt: e.tournament.endDate,
+        status: e.status,
+        runder: tall.runder,
+        bruttoSnitt: tall.bruttoSnitt,
+        plassering: resultat.plasseringTekst,
+      };
+    });
+    const sum = aggregerRangliste(iAaret);
+    return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
   });
-  const iAaret = entries.filter((e) => osloAar(e.tournament.startDate) === aar);
-  const turneringer = iAaret.map((e) => {
-    const tall = aggregerRangliste([e]);
-    const resultat = lesTurneringsresultat(e);
-    return {
-      navn: e.tournament.name,
-      start: e.tournament.startDate,
-      slutt: e.tournament.endDate,
-      status: e.status,
-      runder: tall.runder,
-      bruttoSnitt: tall.bruttoSnitt,
-      plassering: resultat.plasseringTekst,
-    };
-  });
-  const sum = aggregerRangliste(iAaret);
-  return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
 }
 
 // ── Uttak, spillerstatus og college (Anders 27.09.2026) ──
 
 export type TnUttakRad = { id: string; spillerId: string; arrangement: string; status: string; begrunnelse: string | null; decidedAt: Date };
 
-export async function hentTnUttak(kontekst: TnArbeidskontekst): Promise<TnUttakRad[]> {
-  const rader = await prisma.tnUttak.findMany({ where: { groupId: kontekst.gruppe.id }, orderBy: [{ arrangement: "asc" }, { decidedAt: "desc" }] });
+export async function hentTnUttak(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<TnUttakRad[]> {
+  const aktuell = await hentTnArbeidskontekst(bruker);
+  if (!aktuell || aktuell.gruppe.id !== kontekst.gruppe.id) return [];
+  const data = await lesTnProfiler(bruker, (tx, spillerId) => tx.tnUttak.findMany({ where: { groupId: kontekst.gruppe.id, userId: spillerId }, orderBy: [{ arrangement: "asc" }, { decidedAt: "desc" }] }));
+  if (!data || data.kontekst.gruppe.id !== kontekst.gruppe.id) return [];
+  const rader = data.rader.flat().sort((a, b) => a.arrangement.localeCompare(b.arrangement, "nb") || b.decidedAt.getTime() - a.decidedAt.getTime());
   return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, decidedAt: r.decidedAt }));
 }
 
 export type TnSpillerstatusRad = { spillerId: string; lisensStatus: string | null; lisensBetaltDato: Date | null; helseattestUtloper: Date | null; antidopingSignert: Date | null };
 
-/** Status for ett år. Spilleren ser bare sin egen (spillerIderFor). */
+/** Status for ett år. Hver rad krever egeninnsyn eller aktuell navngitt deling. */
 export async function hentTnSpillerstatuser(bruker: TnBruker, kontekst: TnArbeidskontekst, aar: number): Promise<Map<string, TnSpillerstatusRad>> {
-  const ider = await spillerIderFor(kontekst, bruker.id);
-  const rader = await prisma.tnSpillerstatus.findMany({ where: { groupId: kontekst.gruppe.id, aar, userId: { in: ider } } });
+  const aktual = await hentTnArbeidskontekst(bruker);
+  if (!aktual || aktual.gruppe.id !== kontekst.gruppe.id) return new Map();
+  const data = await lesTnProfiler(bruker, (tx, spillerId) => tx.tnSpillerstatus.findMany({ where: { groupId: kontekst.gruppe.id, aar, userId: spillerId } }));
+  if (!data || data.kontekst.gruppe.id !== kontekst.gruppe.id) return new Map();
+  const rader = data.rader.flat();
   return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, lisensStatus: r.lisensStatus, lisensBetaltDato: r.lisensBetaltDato, helseattestUtloper: r.helseattestUtloper, antidopingSignert: r.antidopingSignert }]));
 }
 
 export type TnCollegeRad = { spillerId: string; skole: string; status: string; startDato: Date | null; notat: string | null };
 
 export async function hentTnCollege(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<Map<string, TnCollegeRad>> {
-  const ider = await spillerIderFor(kontekst, bruker.id);
-  const rader = await prisma.tnCollege.findMany({ where: { groupId: kontekst.gruppe.id, userId: { in: ider } } });
+  const aktual = await hentTnArbeidskontekst(bruker);
+  if (!aktual || aktual.gruppe.id !== kontekst.gruppe.id) return new Map();
+  const data = await lesTnProfiler(bruker, (tx, spillerId) => tx.tnCollege.findMany({ where: { groupId: kontekst.gruppe.id, userId: spillerId } }));
+  if (!data || data.kontekst.gruppe.id !== kontekst.gruppe.id) return new Map();
+  const rader = data.rader.flat();
   return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, skole: r.skole, status: r.status, startDato: r.startDato, notat: r.notat }]));
 }

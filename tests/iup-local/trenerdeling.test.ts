@@ -14,6 +14,8 @@ let db: typeof import("../../src/lib/prisma").prisma;
 let api: typeof import("../../src/lib/deling/navngitt");
 let lesing: typeof import("../../src/lib/iup/trener-lesing");
 let trenerliste: typeof import("../../src/lib/deling/treneroversikt");
+let profiler: typeof import("../../src/lib/deling/profil-lesing");
+let tnProfiler: typeof import("../../src/lib/domain/tn-arbeidsflate");
 const sql = new pg.Client({ connectionString: process.env.DATABASE_URL });
 const spiller = "deling-test-spiller";
 const forelder = "deling-test-forelder";
@@ -54,6 +56,8 @@ test.before(async () => {
   assert.equal(identitet.rows[0].marker, "ak-hq-iup-app-20261002");
   ({ prisma: db } = await import("../../src/lib/prisma"));
   api = await import("../../src/lib/deling/navngitt"); lesing = await import("../../src/lib/iup/trener-lesing"); trenerliste = await import("../../src/lib/deling/treneroversikt");
+  profiler = await import("../../src/lib/deling/profil-lesing");
+  tnProfiler = await import("../../src/lib/domain/tn-arbeidsflate");
   for (const id of aktorer) await db.user.upsert({ where: { id }, update: {}, create: {
     id, authId: randomUUID(), name: "Syntetisk deltaker", email: `${id}@${id === tn ? "golfforbundet.no" : [wang, annen].includes(id) ? "wang.no" : "example.test"}`,
     role: id === forelder ? "PARENT" : id === spiller ? "PLAYER" : "COACH", dateOfBirth: new Date("2000-01-01"),
@@ -291,4 +295,81 @@ test("trenerlisten deler inn unike spiller/miljø-par i stabile sider", async ()
     await db.delingsSamtykke.deleteMany({ where: { userId: { in: ids } } });
     await db.user.deleteMany({ where: { id: { in: ids } } });
   }
+});
+
+
+test("profiloppslag holder faktisk PostgreSQL-lås til lesingen er ferdig", async () => {
+  const inv = await del();
+  let startet!: () => void;
+  let fullfor!: () => void;
+  const iLesing = new Promise<void>((resolve) => { startet = resolve; });
+  const fortsett = new Promise<void>((resolve) => { fullfor = resolve; });
+  const lesing = identitet.run(wang, () => profiler.medNavngittProfil(wang, spiller, skole, async (tx) => {
+    startet(); await fortsett;
+    return (await tx.user.findUniqueOrThrow({ where: { id: spiller }, select: { name: true } })).name;
+  }));
+  await iLesing;
+  let trukket = false;
+  const trekking = identitet.run(spiller, async () => {
+    const resultat = await api.trekkTrenerDeling({ invitasjonId: inv.id, spillerId: spiller });
+    trukket = true; return resultat;
+  });
+  try {
+    // En annen forbindelse kan ikke ta den samme låsen mens profiloppslaget pågår.
+    await sql.query("BEGIN");
+    const las = await sql.query("SELECT pg_try_advisory_xact_lock(hashtextextended($1, 0)) AS tilgjengelig", [`trenerdeling:${spiller}`]);
+    assert.equal(las.rows[0].tilgjengelig, false); assert.equal(trukket, false);
+  } finally { await sql.query("ROLLBACK"); fullfor(); }
+  assert.equal(await lesing, "Syntetisk deltaker"); assert.ok((await trekking).ok);
+  innlogget = wang;
+  assert.equal(await profiler.medNavngittProfil(wang, spiller, skole, async () => assert.fail("Ingen lesing etter trekk")), null);
+});
+
+test("TN-profil og samlelister inkluderer navngitt delt WANG-elev uten TN-medlemskap", async () => {
+  const inv = await del(tnGruppe, "deling-test-tn@golfforbundet.no", tn);
+  const trener = { id: tn, role: "COACH" as const, name: "Syntetisk trener" };
+  assert.equal(await db.groupMember.count({ where: { userId: spiller, groupId: tnGruppe } }), 0);
+  assert.ok(await tnProfiler.hentTnSpillerTilgang(trener, spiller));
+  assert.deepEqual((await tnProfiler.hentTnSpillere(trener))?.rader.map((r) => r.id), [spiller]);
+  assert.ok(await tnProfiler.hentTnSpillerTester(trener, spiller));
+  assert.deepEqual(await tnProfiler.hentTnSpillerAktivePlaner(trener, spiller), []);
+  assert.equal((await tnProfiler.hentTnSpillerProfil(trener, spiller, 2026))?.erTnMedlem, false);
+  innlogget = spiller; assert.ok((await api.trekkTrenerDeling({ invitasjonId: inv.id, spillerId: spiller })).ok);
+  innlogget = tn;
+  assert.equal(await tnProfiler.hentTnSpillerTilgang(trener, spiller), null);
+  assert.deepEqual((await tnProfiler.hentTnSpillere(trener))?.rader, []);
+  assert.equal(await tnProfiler.hentTnSpillerTester(trener, spiller), null);
+  assert.equal(await tnProfiler.hentTnSpillerAktivePlaner(trener, spiller), null);
+  assert.equal(await tnProfiler.hentTnSpillerProfil(trener, spiller, 2026), null);
+  assert.deepEqual((await tnProfiler.hentTnTurneringer(trener))?.turneringer, []);
+  assert.deepEqual((await tnProfiler.hentTnRangliste(trener, 2026))?.rader, []);
+});
+
+test("TN-medlemskap og administratorstatus erstatter ikke navngitt deling", async () => {
+  await db.groupMember.create({ data: { userId: spiller, groupId: tnGruppe, role: "PLAYER" } });
+  innlogget = tn;
+  for (const role of ["COACH", "ADMIN"] as const) {
+    const trener = { id: tn, role, name: "Syntetisk trener" };
+    assert.equal(await tnProfiler.hentTnSpillerTilgang(trener, spiller), null);
+    assert.deepEqual((await tnProfiler.hentTnSpillere(trener))?.rader, []);
+  }
+});
+
+
+test("TN-personpost, lesekvitteringer og vedlegg stenges ved faktisk tilbaketrekking", async () => {
+  const inv = await del(tnGruppe, "deling-test-tn@golfforbundet.no", tn);
+  const poster = await import("../../src/lib/domain/tn-post");
+  const post = await db.tnPost.create({ data: { mottakerUserId: spiller, authorUserId: tn, tekst: "Syntetisk privat kontrolltekst", kind: "TEKST", vedlegg: { create: { fileName: "syntetisk.txt", path: "syntetisk/ingen-fil.txt" } } }, include: { vedlegg: true } });
+  try {
+    assert.ok((await poster.hentSpillerpostTidslinje(spiller, tn))?.some((p) => p.id === post.id));
+    assert.ok(await poster.hentTnVedleggForViewer(post.vedlegg[0].id, tn));
+    assert.ok(await poster.hentPostLesekvitteringNavnForViewer(post.id, tn));
+    innlogget = spiller; assert.ok((await api.trekkTrenerDeling({ invitasjonId: inv.id, spillerId: spiller })).ok);
+    innlogget = tn;
+    assert.equal(await poster.hentSpillerpostTidslinje(spiller, tn), null);
+    assert.equal(await poster.hentTnVedleggForViewer(post.vedlegg[0].id, tn), null);
+    assert.equal(await poster.hentPostLesekvitteringNavnForViewer(post.id, tn), null);
+    innlogget = spiller;
+    assert.ok((await poster.hentSpillerpostTidslinje(spiller, spiller))?.some((p) => p.id === post.id));
+  } finally { await db.tnPost.delete({ where: { id: post.id } }); }
 });
