@@ -120,6 +120,8 @@ export async function exportUserData(): Promise<{
       swingVideos,
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
+      iupBesvarelser,
+      weekPlans,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({
@@ -147,6 +149,9 @@ export async function exportUserData(): Promise<{
       prisma.trainingLog.findMany({ where: { userId: user.id } }),
       prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
       prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
+      prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
+      // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
+      prisma.weekPlan.findMany({ where: { playerId: user.id } }),
     ]);
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
@@ -189,6 +194,8 @@ export async function exportUserData(): Promise<{
       trainingLogs,
       swingVideos,
       delingsSamtykker,
+      iupBesvarelser,
+      weekPlans,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +
@@ -210,7 +217,7 @@ export async function exportUserData(): Promise<{
             heading: `Hei ${user.name ?? "der"},`,
             body: `
               <p style="margin:0 0 16px 0;">Du har bedt om en eksport av dine data fra AK Golf HQ.</p>
-              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, ukeplaner, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
               <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
               <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
             `,

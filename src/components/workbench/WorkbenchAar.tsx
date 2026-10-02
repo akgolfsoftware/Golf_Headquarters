@@ -7,6 +7,7 @@ import { formatHours, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
 import type { PlanningGoalSummary, PyramidArea, SourceItem, YearPeriodBand, YearViewModel } from "@/lib/domain/workbench/types";
 import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
+import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
 import { Ark } from "@/components/precision/pa-a4";
@@ -23,6 +24,7 @@ type Props = {
   roster?: { id: string; navn: string }[];
   goals?: PlanningGoalSummary[];
   routeSurface?: WorkbenchSurface;
+  planKontekst?: PlanReferanse;
 };
 
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -58,25 +60,27 @@ function periodePosisjon(periode: YearPeriodBand, year: number): { left: string;
   return { left: `${left}%`, width: `${Math.max(periode.widthPct, 3)}%` };
 }
 
-export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [], goals = [], routeSurface = "agency" }: Props) {
+export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [], goals = [], routeSurface = "agency", planKontekst }: Props) {
   const router = useRouter();
-  const [valgtId, setValgtId] = useState<string | null>(aar.periods.find((periode) => periode.aktiv)?.id ?? aar.periods[0]?.id ?? null);
+  const opprinneligReferanse = planKontekst ?? parsePlanKontekst({ aar: String(aar.year) }).referanse;
+  const [valgtId, setValgtId] = useState<string | null>(aar.periods.find((periode) => periode.id === opprinneligReferanse.periode)?.id ?? aar.periods.find((periode) => periode.aktiv)?.id ?? aar.periods[0]?.id ?? null);
   const [oppretter, setOppretter] = useState(false);
   const valgt = aar.periods.find((periode) => periode.id === valgtId) ?? null;
+  const referanse = { ...opprinneligReferanse, periode: valgt?.id ?? opprinneligReferanse.periode };
   const progress = aar.plannedToDateMinutes > 0 ? Math.min(100, Math.round((aar.completedMinutes / aar.plannedToDateMinutes) * 100)) : 0;
 
   function naviger(delta: -1 | 1) {
-    router.push(workbenchUrl(playerId, "aar", { aar: String(aar.year + delta) }, routeSurface));
+    router.push(workbenchUrl(playerId, "aar", { ...referanse, aar: String(aar.year + delta) }, routeSurface));
   }
 
   return <div className="wb-layout">
     <aside className="wb-sources">
       <SourcesPanel kilder={kilder} playerId={playerId} aar={String(aar.year)} goals={goals} routeSurface={routeSurface} />
-      <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map((spiller) => <Link key={spiller.id} href={workbenchUrl(spiller.id, "aar", { aar: String(aar.year) })} aria-current={spiller.id === playerId ? "page" : undefined}>{spiller.navn}<small>Spiller</small></Link>)}</nav>
+      <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map((spiller) => <Link key={spiller.id} href={workbenchUrl(spiller.id, "aar", { ...referanse, aar: String(aar.year), periode: undefined, okt: undefined }, routeSurface)} aria-current={spiller.id === playerId ? "page" : undefined}>{spiller.navn}<small>Spiller</small></Link>)}</nav>
     </aside>
 
     <main className="wb-main">
-      <div className="wb-pills"><VisningPiller playerId={playerId} visning="aar" aar={String(aar.year)} maned={`${aar.year}-01`} uke={`${aar.year}-01-01`} routeSurface={routeSurface} /></div>
+      <div className="wb-pills"><VisningPiller playerId={playerId} visning="aar" {...referanse} routeSurface={routeSurface} /></div>
       <div className="wb-body wb-year-body">
         <div className="wb-year-heading">
           <div><span className="wb-kicker">{spillerNavn}</span><h1>{aar.year}</h1></div>
@@ -84,7 +88,7 @@ export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [], 
           <div className="wb-year-progress"><span className="wb-kicker">{UI.periodProgress}</span><b>{timer(aar.completedMinutes)} av {timer(aar.plannedToDateMinutes)}</b><span className="wb-period-meter"><i style={{ width: `${progress}%` }} /></span></div>
         </div>
 
-        <div className="wb-year-controls" aria-label="Årshandlinger"><button type="button" className="wb-quiet" aria-label={UI.yearNavPrev} onClick={() => naviger(-1)}>‹</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "aar", { aar: new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Oslo" }).format(new Date()) }, routeSurface))}>{UI.today}</button><button type="button" className="wb-quiet" aria-label={UI.yearNavNext} onClick={() => naviger(1)}>›</button></div>
+        <div className="wb-year-controls" aria-label="Årshandlinger"><button type="button" className="wb-quiet" aria-label={UI.yearNavPrev} onClick={() => naviger(-1)}>‹</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "aar", { ...referanse, aar: new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Oslo" }).format(new Date()) }, routeSurface))}>{UI.today}</button><button type="button" className="wb-quiet" aria-label={UI.yearNavNext} onClick={() => naviger(1)}>›</button></div>
 
         <section className="wb-year-distribution"><span className="wb-kicker">{UI.periodDistribution}</span><div>{PYRAMIDER.map((pyramid) => <span key={pyramid} className="wb-month-tag"><i data-lag={pyramid} />{pyramid}<b>{timer(aar.completedByPyramid[pyramid])} av {timer(aar.budget.byPyramid[pyramid])}</b></span>)}</div></section>
 
@@ -100,16 +104,16 @@ export function WorkbenchAar({ playerId, spillerNavn, aar, kilder, roster = [], 
       </div>
     </main>
 
-    <aside className="wb-inspector"><YearSummary playerId={playerId} year={aar.year} periode={valgt} routeSurface={routeSurface} /></aside>
-    {valgt && <aside className="wb-mobile-summary" aria-label={UI.selectedPeriodTitle}><div className="wb-grip" aria-hidden /><YearSummary playerId={playerId} year={aar.year} periode={valgt} routeSurface={routeSurface} compact /></aside>}
+    <aside className="wb-inspector"><YearSummary playerId={playerId} year={aar.year} periode={valgt} referanse={referanse} routeSurface={routeSurface} /></aside>
+    {valgt && <aside className="wb-mobile-summary" aria-label={UI.selectedPeriodTitle}><div className="wb-grip" aria-hidden /><YearSummary playerId={playerId} year={aar.year} periode={valgt} referanse={referanse} routeSurface={routeSurface} compact /></aside>}
     {oppretter && <AarsplanOppretter playerId={playerId} year={aar.year} onClose={() => setOppretter(false)} />}
   </div>;
 }
 
-function YearSummary({ playerId, year, periode, routeSurface, compact = false }: { playerId: string; year: number; periode: YearPeriodBand | null; routeSurface: WorkbenchSurface; compact?: boolean }) {
+function YearSummary({ playerId, year, periode, referanse, routeSurface, compact = false }: { playerId: string; year: number; periode: YearPeriodBand | null; referanse: PlanReferanse; routeSurface: WorkbenchSurface; compact?: boolean }) {
   if (!periode) return <section className="wb-week-summary"><span className="wb-kicker">{UI.selectedPeriodTitle}</span><h2>—</h2><p>{UI.noPeriodBody}</p></section>;
   const uker = `${isoWeekNumber(periode.startDate)}–${isoWeekNumber(periode.endDate)}`;
-  return <section className="wb-week-summary wb-year-summary"><span className="wb-kicker">{UI.selectedPeriodTitle}</span><h2>{PERIODE_LABEL[periode.type]}</h2><p>uke {uker} · {timer(periode.plannedMinutes)}</p>{!compact && <><dl><div><dt>Dato</dt><dd>{datoKort(periode.startDate)}–{datoKort(periode.endDate)}</dd></div><div><dt>Fokus</dt><dd>{periode.focus ?? "—"}</dd></div><div><dt>Planlagt hittil</dt><dd>{timer(periode.plannedToDateMinutes)}</dd></div><div><dt>Gjennomført</dt><dd>{timer(periode.completedMinutes)}</dd></div><div><dt>Turneringer</dt><dd>{periode.turneringer.length || "—"}</dd></div></dl>{periode.turneringer.length > 0 && <ul>{periode.turneringer.map((turnering) => <li key={`${turnering.dato}:${turnering.navn}`}>{datoKort(turnering.dato)} · {turnering.navn}</li>)}</ul>}</>}<div className="wb-mobile-actions"><Link className="wb-quiet" href={workbenchUrl(playerId, "periode", { aar: String(year), periode: periode.id }, routeSurface)}>{UI.openPeriod}</Link></div></section>;
+  return <section className="wb-week-summary wb-year-summary"><span className="wb-kicker">{UI.selectedPeriodTitle}</span><h2>{PERIODE_LABEL[periode.type]}</h2><p>uke {uker} · {timer(periode.plannedMinutes)}</p>{!compact && <><dl><div><dt>Dato</dt><dd>{datoKort(periode.startDate)}–{datoKort(periode.endDate)}</dd></div><div><dt>Fokus</dt><dd>{periode.focus ?? "—"}</dd></div><div><dt>Planlagt hittil</dt><dd>{timer(periode.plannedToDateMinutes)}</dd></div><div><dt>Gjennomført</dt><dd>{timer(periode.completedMinutes)}</dd></div><div><dt>Turneringer</dt><dd>{periode.turneringer.length || "—"}</dd></div></dl>{periode.turneringer.length > 0 && <ul>{periode.turneringer.map((turnering) => <li key={`${turnering.dato}:${turnering.navn}`}>{datoKort(turnering.dato)} · {turnering.navn}</li>)}</ul>}</>}<div className="wb-mobile-actions"><Link className="wb-quiet" href={workbenchUrl(playerId, "periode", { ...referanse, aar: String(year), periode: periode.id }, routeSurface)}>{UI.openPeriod}</Link></div></section>;
 }
 
 function AarsplanOppretter({ playerId, year, onClose }: { playerId: string; year: number; onClose: () => void }) {
