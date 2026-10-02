@@ -104,6 +104,20 @@ Codex har gjenåpnet Precision-scorekortet etter siste retting: Driver 270 med r
 
 Siste målrettede kodekontroll bestod med 105 av 105 prøver. I tillegg bestod 35 av 35 lokale databaseprøver. Full kvalitetskontroll og CI dokumenteres separat når de er avsluttet.
 
+### Visuell godkjenning fra Anders, 02.10.2026
+
+Anders bekreftet: **«Alle skjermer fra Precision, WANG og Team Norway er godkjent.»** Dette er den visuelle godkjenningen for de tre testbatteri-familiene og opphever tidligere statuslinjer i denne revisjonen som ventet på hans godkjenning.
+
+Godkjente referanser:
+
+- [Precision Athletics – testbatteri](https://claude.ai/design/p/7d7c2994-cf63-4c5f-9bdc-fdaf67655a70?file=ui_kits%2Ftestbatteri-komplett%2Fdesktop.html&present=1), med desktop- og mobilvariant.
+- [WANG Golf Testbatteri](https://claude.ai/design/p/6cfa623c-b2c7-494f-b1bd-9c254b02f335?file=WANG+Golf+Testbatteri.dc.html).
+- [Team Norway App](https://claude.ai/design/p/bc3e41fc-0386-4624-9b14-27355b64e2f7?file=Team+Norway+App.dc.html), inkludert TN-03.
+
+Kontrollgrunnlag i appen: syntetisk, innlogget TN-03 ble vist ved desktop og 390 px mobil; skjermbilder er lagret privat som `testbatteri-team-norway-desktop.png` og `testbatteri-team-norway-mobile-390.png`. Godkjenningen av alle tre familiene er Anders' eksplisitte bekreftelse; dette notatet hevder ikke at hver tilstand og hvert tema ble uavhengig sammenlignet i appen. **Avvik meldt av Anders: ingen.**
+
+Visuell godkjenning er adskilt fra funksjonsbevis. Faktisk privat bildeopplasting gjennom Supabase Storage og ende-til-ende-prøve av liveoppdatering mellom flere enheter står fortsatt som tekniske kontroller. Resultatdeling følger den bekreftede regelen: WANG-trener ser aktive spillere i egen WANG-skolegruppe; Team Norway-trener ser resultater på tvers av aktive WANG-skoler.
+
 ### Avsluttet lokal kvalitetskontroll
 
 Full `npm run verify` avsluttet med kode 0: 4 024 kodetester, 18 komponenttester, statiske vakter, TypeScript, lint, produksjonsbygg og Serwist bestod. Egen dokumentkontroll bestod etter oppdatering av rapporten. Siste rene innrykksretting og presisering av versjonsfeilmeldingen er også kontrollert med målrettet lint, og inngikk i den etterfølgende byggkontrollen. Kontrollen brukte ikke produksjonslegitimasjoner; databasebeviset kommer fra den separate lokale prøven beskrevet over. GitHub CI og merge er neste separate steg.

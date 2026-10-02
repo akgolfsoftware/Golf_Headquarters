@@ -356,3 +356,9 @@ Etter merge skal hovedgrenens automatiske kontroller og den tilhørende utrullin
 **Senere status samme dato:** Separate historikksider for WANG-trener (`/team-wang/coach/tester`) og Team Norway (`/team-norway/wang-resultater`) er lagt til. De avgrenser til aktive WANG-spillere og viser alle fullførte resultater 50 om gangen. Full `npm run verify` består også etter ombasering mot `63242f9e3`; målrettede prøver er 11/11. Testhistorikken forblir adskilt fra innsyn i pågående utkast og bilder. Lokal innlogget visuell gjennomgang står igjen; testappen og databasen kjører ikke i denne arbeidskopien.
 
 Rapporter fremdrift med pakke-ID, hva som faktisk er ferdig, bevis og ett neste steg. Oppdater denne planen og kildenes avviksstatus fremfor å opprette konkurrerende planer. Kalendertid fastsettes når åpne fagpunkter og første komplette designleveranse er avklart; antall skjermer alene er ikke et troverdig tidsestimat.
+
+### Siste status – visuell godkjenning, 02.10.2026
+
+Anders har bekreftet at **alle skjermer fra Precision, WANG og Team Norway er godkjent**. Dette erstatter de eldre statuslinjene over som sier at visuell godkjenning gjenstår. Referanser, lokal kontroll ved desktop/390 px og avgrensningen mellom visuell godkjenning og teknisk funksjonsbevis står i [designrevisjonen](../design-audit/testbatteri-gjennomforing-2026-10-02.md#visuell-godkjenning-fra-anders-02102026).
+
+Precision-, WANG- og Team Norway-kode er allerede flettet til main i PR #1111 og #1113. Videreføring handler derfor om de gjenværende akseptkontrollene, ikke om å vente på flere designvalg. Faktisk privat bildeopplasting gjennom Supabase Storage og liveoppdatering mellom flere enheter må fortsatt prøves ende til ende før hele testbatteriet kan kalles komplett. Den seneste bekreftede grupperegelen gjelder: WANG-trener ser spillere/resultater for egen aktive WANG-skolegruppe; Team Norway-trener ser resultater på tvers av aktive WANG-skoler.
