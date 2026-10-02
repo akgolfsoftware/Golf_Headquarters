@@ -1,0 +1,32 @@
+/* PH-20 Gameplan og banekart (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-20.jsx). */
+.ph20-baner { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; min-width: 0; }
+.ph20-bane { text-decoration: none; display: flex; flex-direction: column; gap: 6px; padding: 14px; min-height: 44px; min-width: 0; color: inherit; }
+.ph20-bane__navn { font: 600 15px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.ph20-bane__rad { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ph20-hull { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 4px; min-width: 0; }
+.ph20-hull__knapp { height: 52px; min-width: 0; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); color: var(--text-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+.ph20-hull__knapp[aria-pressed="true"] { background: var(--primary); color: var(--text-on-primary); border-color: var(--border-ink); }
+.ph20-hull__knapp:focus-visible, .ph20-valg:focus-visible { outline: 2px solid var(--border-ink); outline-offset: 2px; }
+.ph20-hull__nr { font: 600 14px/1 var(--font-mono); }
+.ph20-hull__par { font: 500 10px/1 var(--font-mono); opacity: .75; }
+.ph20-kolonner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+.ph20-liste { display: none; }
+.ph20-hullvelger { display: block; }
+@media (min-width: 768px) { .ph20-kolonner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (min-width: 1280px) {
+  .ph20-kolonner { grid-template-columns: 300px minmax(0, 1fr) 360px; }
+  .ph20-liste { display: block; }
+  .ph20-hullvelger { display: none; }
+}
+.ph20-kart { padding: 0; overflow: hidden; height: 460px; }
+@media (min-width: 768px) { .ph20-kart { height: 600px; } }
+.ph20-valg { text-align: left; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 56px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); color: var(--text-primary); cursor: pointer; min-width: 0; width: 100%; font: inherit; }
+.ph20-valg[aria-checked="true"] { border-color: var(--border-ink); box-shadow: inset 0 0 0 1px var(--border-ink); }
+.ph20-hovedliste { display: none; }
+@media (min-width: 768px) and (max-width: 1279px) { .ph20-hovedliste { display: block; } }
+.ph20-kart { background: var(--sand-200); }
+.ph20-rader { padding: 0; overflow: hidden; }
+.ph20-rad { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 40px 32px minmax(0, 1fr) minmax(0, 64px); gap: 8px; align-items: center; padding: 0 12px; min-height: 44px; width: 100%; border-top: 1px solid var(--border-hairline); }
+.ph20-rad--hode { cursor: default; min-height: 36px; background: var(--surface-flat); border-top: 0; }
+.ph20-rad[aria-pressed="true"] { background: var(--surface-flat); box-shadow: inset 2px 0 0 var(--border-ink); }
+.ph20-rad:focus-visible { outline: 2px solid var(--border-ink); outline-offset: -2px; }
