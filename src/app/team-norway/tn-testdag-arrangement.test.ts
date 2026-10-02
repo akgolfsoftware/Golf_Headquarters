@@ -4,6 +4,7 @@ import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
 
 const TN_GROUP_ID = "tn-group";
 const WANG_GROUP_ID = "wang-school-a";
+const WANG_GROUP_B_ID = "wang-school-b";
 const OTHER_GROUP_ID = "other-group";
 const coach = { id: "coach-tn", role: "COACH", name: "Testcoach" };
 let groups: { id: string; slug: string | null; program: string | null }[];
@@ -12,6 +13,7 @@ let createdStations: Record<string, unknown>[];
 const memberships = [
   { groupId: TN_GROUP_ID, userId: "tn-player" },
   { groupId: WANG_GROUP_ID, userId: "wang-player" },
+  { groupId: WANG_GROUP_B_ID, userId: "wang-player-b" },
 ];
 
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => coach } });
@@ -23,7 +25,7 @@ mock.module("@/lib/domain/tn-testdag-lock", {
 const tx = {
   group: {
     findUnique: async () => ({ id: TN_GROUP_ID }),
-    findMany: async () => groups,
+    findMany: async ({ where }: { where: { id: { in: string[] } } }) => groups.filter((group) => where.id.in.includes(group.id)),
   },
   groupMember: {
     findFirst: async () => ({ id: "coach-membership" }),
@@ -53,6 +55,7 @@ beforeEach(() => {
   groups = [
     { id: TN_GROUP_ID, slug: "team-norway", program: null },
     { id: WANG_GROUP_ID, slug: null, program: "WANG_TOPPIDRETT" },
+    { id: WANG_GROUP_B_ID, slug: null, program: "WANG_UNG" },
   ];
   createdInput = null;
   createdStations = [];
@@ -67,26 +70,30 @@ const input = {
   stations: [
     { groupId: TN_GROUP_ID, stationName: "Team Norway", protocolId: protocol.id, spillerIder: ["tn-player"] },
     { groupId: WANG_GROUP_ID, stationName: "WANG Oslo", protocolId: protocol.id, spillerIder: ["wang-player"] },
+    { groupId: WANG_GROUP_B_ID, stationName: "WANG Stavanger", protocolId: protocol.id, spillerIder: ["wang-player-b"] },
   ],
 };
 
 test("oppretter ett arrangement med egne protokollstasjoner og kun eksisterende deltakeridentiteter", async () => {
   const { opprettFellesTestdag } = await action;
   const result = await opprettFellesTestdag(input);
-  assert.deepEqual(result, { ok: true, eventId: "event-1", stationIds: ["station-1", "station-2"] });
-  assert.equal(createdStations.length, 2);
+  assert.deepEqual(result, { ok: true, eventId: "event-1", stationIds: ["station-1", "station-2", "station-3"] });
+  assert.equal(createdStations.length, 3);
   assert.deepEqual(createdInput, { organizerGroupId: TN_GROUP_ID, organizerId: coach.id, title: input.title, location: input.location, scheduledAt: new Date(input.scheduledAt), status: "ACTIVE" });
   assert.equal(createdStations[0].eventId, "event-1");
   assert.equal(createdStations[0].groupId, TN_GROUP_ID);
   assert.equal(createdStations[1].stationName, "WANG Oslo");
+  assert.equal(createdStations[2].stationName, "WANG Stavanger");
   assert.deepEqual(createdStations[0].participants, { create: [{ playerId: "tn-player", order: 0 }] });
   assert.deepEqual(createdStations[1].participants, { create: [{ playerId: "wang-player", order: 0 }] });
+  assert.deepEqual(createdStations[2].participants, { create: [{ playerId: "wang-player-b", order: 0 }] });
 });
 
 test("avviser fremmed gruppetype selv om en TN- og WANG-stasjon ellers finnes", async () => {
   groups = [
     { id: TN_GROUP_ID, slug: "team-norway", program: null },
     { id: WANG_GROUP_ID, slug: null, program: "WANG_TOPPIDRETT" },
+    { id: WANG_GROUP_B_ID, slug: null, program: "WANG_UNG" },
     { id: OTHER_GROUP_ID, slug: null, program: "AK_ACADEMY" },
   ];
   const { opprettFellesTestdag } = await action;
@@ -125,6 +132,11 @@ test("avviser at en spiller med medlemskap i to grupper blir dobbelt tildelt", a
 });
 
 test("avviser en valgt spiller som ikke er aktiv i stasjonsgruppen før arrangementet skrives", async () => {
+  groups = [
+    { id: TN_GROUP_ID, slug: "team-norway", program: null },
+    { id: WANG_GROUP_ID, slug: null, program: "WANG_TOPPIDRETT" },
+    { id: WANG_GROUP_B_ID, slug: null, program: "WANG_UNG" },
+  ];
   const { opprettFellesTestdag } = await action;
   const result = await opprettFellesTestdag({
     ...input,
