@@ -132,9 +132,20 @@ export interface Drill {
   description?: string;
   durationMinutes: number;
   akFormel: AKFormel;
-  /** Optional technique focus (one only) */
+  /** Historisk fokus/kildeposisjon. Ny målsetning ligger i detaljer.mal.malsetning. */
   techniqueFocus?: string;
   sourceId?: string; // if dragged from bank
+  exerciseId?: string;
+  positionTaskId?: string;
+  /** Historisk scalar-dose følger kopier; frie nye skjemaer skriver ikke L-trappen. */
+  repType?: string;
+  repAntall?: number;
+  repMinutter?: number;
+  repSett?: number;
+  repReps?: number;
+  planRepsUtenBall?: number;
+  planRepsLavFart?: number;
+  planRepsAuto?: number;
   order: number;
 }
 
@@ -402,6 +413,9 @@ export interface CreateSessionCommand {
   drills?: Omit<Drill, "id" | "order">[];
   environment?: Environment;
   notes?: string;
+  rationale?: string;
+  location?: string;
+  maalsetning?: string;
   createdBy: "COACH" | "PLAYER";
   /** When planning in GROUP mode — triggers materialisation to all active members */
   groupId?: string;
@@ -421,6 +435,9 @@ export interface CreateGroupSessionCommand {
   drills?: Omit<Drill, "id" | "order">[];
   environment?: Environment;
   notes?: string;
+  rationale?: string;
+  location?: string;
+  maalsetning?: string;
   /** Active member playerIds at time of create (caller resolves membership) */
   memberPlayerIds: string[];
 }
@@ -452,8 +469,8 @@ export interface ResolvePlayerApprovalCommand {
 
 /** Innholdsfelter en serie-endring kan røre. Dato/tid propagerer aldri. */
 export type SeriesContentPatch = Partial<
-  Pick<WorkbenchSession, "title" | "pyramid" | "blockType" | "environment" | "notes">
->;
+  Pick<WorkbenchSession, "title" | "pyramid" | "blockType" | "environment">
+> & { notes?: string | null; rationale?: string | null; location?: string | null; maalsetning?: string | null };
 
 export interface UpdateSeriesSessionCommand {
   sessionId: string;
@@ -521,6 +538,7 @@ export type WeekNote =
 
 export interface WeekPlanData {
   id?: string;
+  updatedAt?: string;
   playerId: string;
   seasonPlanId?: string | null;
   isoYear: number;
@@ -540,6 +558,7 @@ export interface WeekPlanData {
   repetitionTargets?: Record<string, unknown> | null;
   loadCeiling?: number | null;
   customNotes?: string | null;
+  planningDetails?: import("@/lib/workbench/ukeplan-schema").WeekPlanningDetails | null;
 }
 
 export interface WeekViewModel {
@@ -548,6 +567,14 @@ export interface WeekViewModel {
   budget: WeekBudget;
   mode: WorkbenchMode;
   weekPlan?: WeekPlanData | null;
+  /** Original historisk nøkkel. Kandidaten er ikke koblet til den viste uka. */
+  legacyWeekPlanCandidate?: {
+    id: string;
+    isoYear: number;
+    weekNumber: number;
+    seasonPlanId: string | null;
+    warning: string;
+  };
 }
 
 /** Én synlig linje i en månedscelle (maks tre + «+N mer»). */
@@ -622,6 +649,9 @@ export interface YearPeriodBand {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
   /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
   widthPct: number;
   /** Var perioden aktiv på «i dag» ved bygging. */

@@ -1,19 +1,12 @@
-/**
- * Smoke: PlayerHQ hubs.
- *
- * Disse krever auth — i CI hopper vi over uten `E2E_AUTH_TOKEN` siden vi
- * ikke har sesjons-cookies i pipelinen. Lokalt kan testen kjøres ved å sette
- * env-variabelen før `npx playwright test`.
- */
-
-import { test, expect } from "@playwright/test";
-import { gotoAndWait } from "./_helpers";
+import { test, expect } from "./_test";
+import { playerCredentials, loginAsPlayer } from "./_auth-helpers";
 
 test.describe("PlayerHQ hubs (krever auth)", () => {
-  test.skip(!process.env.E2E_AUTH_TOKEN, "krever auth-token");
-
+  test.skip(!playerCredentials(), "krever spiller-innlogging");
   test("workbench rendrer", async ({ page }) => {
-    await gotoAndWait(page, "/portal");
-    await expect(page.locator("h1").first()).toBeVisible();
+    await loginAsPlayer(page);
+    await page.goto("/portal/planlegge/workbench");
+    await expect(page).toHaveURL(/\/portal\/planlegge\/workbench/);
+    await expect(page.getByRole("button", { name: "Ny økt", exact: true })).toBeVisible();
   });
 });

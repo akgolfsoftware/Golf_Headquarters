@@ -1,5 +1,10 @@
 # AK Golf HQ — Prosjekt- og lanseringsplan
 
+> Oppdatert 30.09.2026: Byggerekkefølge og arbeidsdeling er erstattet av
+> [fullføringsplanen for Claude Design og Codex](codex-fullforing-claude-design-2026-09-30.md).
+> Status-, test- og tidsangivelser under er daterte påstander, ikke ferske bevis eller
+> nye lanseringsbestillinger. Kontroller funksjonsbeskrivelser mot gjeldende beslutninger og kode.
+
 Dato: 24. september 2026
 Status: Oppdatert masterplan etter fullført teknisk oppgradering (gren `antigravity-forbedring`, commit `064fb2106`)
 Forretningsansvarlig: Anders Kristiansen, CEO i AK Golf Group AS

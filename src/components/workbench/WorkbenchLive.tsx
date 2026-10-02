@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { Drill, WorkbenchSession } from "@/lib/domain/workbench/types";
 import { completeSession, saveWorkbenchLiveSnapshot, startNextWorkbenchLiveSession } from "@/lib/workbench/wb-actions";
 import type { WorkbenchLiveData, WorkbenchLiveSnapshot } from "@/lib/workbench/live";
+import type { WorkbenchSurface } from "@/lib/workbench/visning-url";
+import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { VisningPiller } from "./VisningPiller";
 
 const ENVIRONMENT: Record<string, string> = {
@@ -59,9 +61,12 @@ function formula(session: WorkbenchSession, drill: Drill | undefined) {
     { label: UI.formelMotorikk, value: f?.motorikk ? MOTORIKK[f.motorikk] : "—" },
     { label: UI.formelBelastning, value: f?.belastning ? ENVIRONMENT[f.belastning] : session.environment ? ENVIRONMENT[session.environment] : "—" },
     { label: UI.formelPress, value: f?.press ? PRESS[f.press] : session.pressureLevel ?? "—" },
-    { label: UI.formelHensikt, value: session.pyramid === "FYS" ? session.rationale ?? "—" : "—" },
+    { label: UI.formelHensikt, value: session.rationale ?? "—" },
     { label: UI.formelMate, value: drill?.description ?? "—" },
-    { label: UI.formelMal, value: drill?.techniqueFocus ?? session.maalsetning ?? "—" },
+    { label: UI.formelMal, value: drill?.akFormel.detaljer?.mal?.malsetning ?? "—" },
+    { label: "Øktens målsetning", value: session.maalsetning ?? "—" },
+    { label: "Sted for økten", value: session.location ?? "—" },
+    ...(drill?.techniqueFocus ? [{ label: "Historisk fokus / kildeposisjon", value: drill.techniqueFocus }] : []),
   ];
 }
 
@@ -81,8 +86,11 @@ function NextSession({ session, pending, onStart }: { session: WorkbenchSession 
   );
 }
 
-export function WorkbenchLive({ playerId, spillerNavn, data }: { playerId: string; spillerNavn: string; data: WorkbenchLiveData }) {
+export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "agency", planKontekst }: { playerId: string; spillerNavn: string; data: WorkbenchLiveData; routeSurface?: WorkbenchSurface; planKontekst?: PlanReferanse }) {
+  const referanse = { ...parsePlanKontekst({ uke: data.from }).referanse, ...planKontekst, uke: data.from };
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
   const [snapshot, setSnapshot] = useState(data.snapshot);
   const snapshotRef = useRef(data.snapshot);
@@ -107,6 +115,13 @@ export function WorkbenchLive({ playerId, spillerNavn, data }: { playerId: strin
   const reps = activeState?.reps ?? 0;
   const currentSeries = Math.min(targetSeries, Math.floor(reps / 12) + 1);
   const allDone = Boolean(snapshot?.drills.length && snapshot.drills.every((drill) => drill.status === "done"));
+  function velgLiveOkt(sessionId?: string) {
+    const query = new URLSearchParams(searchParams.toString());
+    if (sessionId) query.set("okt", sessionId);
+    else query.delete("okt");
+    if (query.toString() === searchParams.toString()) router.refresh();
+    else router.replace(`${pathname}?${query.toString()}`, { scroll: false });
+  }
   function queueSave(next: WorkbenchLiveSnapshot) {
     if (!current) return;
     const payload = { ...next, sessionId: current.id, totalSec: elapsed(next) };
@@ -166,7 +181,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data }: { playerId: strin
         return;
       }
       toast.success("Økten er startet");
-      router.refresh();
+      velgLiveOkt(data.next!.id);
     });
   }
 
@@ -180,14 +195,14 @@ export function WorkbenchLive({ playerId, spillerNavn, data }: { playerId: strin
         return;
       }
       toast.success("Økten er fullført");
-      router.refresh();
+      velgLiveOkt();
     });
   }
 
   return (
     <div className="wb-layout wb-live-layout">
       <main className="wb-main">
-        <div className="wb-pills"><VisningPiller playerId={playerId} visning="live" uke={data.from} maned={data.from.slice(0, 7)} aar={data.from.slice(0, 4)} surface="live" /></div>
+        <div className="wb-pills"><VisningPiller playerId={playerId} visning="live" {...referanse} surface="live" routeSurface={routeSurface} /></div>
         <div className="wb-body wb-live-body">
           {!current || !snapshot ? (
             <section className="wb-live-empty"><span className="wb-kicker">Live</span><h1>Ingen økt pågår</h1><p>Start den neste publiserte økten fra panelet.</p></section>
@@ -205,7 +220,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data }: { playerId: strin
                 <section className="wb-live-card">
                   <span className="wb-kicker">Øvelse {Math.max(1, activeIndex + 1)} av {current.drills.length}</span>
                   <h2>{activeDrill?.title ?? "Ingen øvelse"}</h2>
-                  <p>{activeDrill?.techniqueFocus ?? activeDrill?.description ?? current.maalsetning ?? "—"}</p>
+                  <p>{activeDrill?.akFormel.detaljer?.mal?.malsetning ?? activeDrill?.description ?? current.maalsetning ?? "—"}</p>
                   {activeDrill ? <><div className="wb-live-counter"><button type="button" aria-label="Trekk fra ett slag" onClick={() => changeReps(-1)}>−</button><strong>{reps}</strong><button type="button" aria-label="Legg til ett slag" onClick={() => changeReps(1)}>+</button></div><span className="wb-live-counter-label">slag i serie {currentSeries} av {targetSeries}</span></> : null}
                 </section>
 

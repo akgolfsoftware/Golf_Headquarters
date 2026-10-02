@@ -15,9 +15,8 @@
 
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
-import { prisma } from "@/lib/prisma";
-import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
-import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
+import { hentAdminTestData } from "@/lib/portal-tester/admin-resultat-data";
+import { formaterLagretTestResultat, sammenlignLagredeTestresultater } from "@/lib/portal-tester/resultat-visning";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG15Tester } from "@/components/admin/precision/AG15Tester";
 
@@ -49,36 +48,7 @@ export default async function V2AdminTesterPage() {
   // G6: MANAGE_TESTS ligger i COACH-defaulten — kan trekkes per trener.
   const user = await requireCapability(Capability.MANAGE_TESTS);
 
-  const naa = new Date();
-  const d30 = new Date(naa.getTime() - 30 * 86_400_000);
-  const d7 = new Date(naa.getTime() - 7 * 86_400_000);
-
-  const [paagaaende, resultater, antall30, antall7] = await Promise.all([
-    prisma.testSession.findMany({
-      where: { status: "IN_PROGRESS" },
-      orderBy: { startedAt: "desc" },
-      take: 6,
-      select: {
-        id: true,
-        startedAt: true,
-        user: { select: { id: true, name: true } },
-        test: { select: { name: true } },
-      },
-    }),
-    prisma.testResult.findMany({
-      orderBy: { takenAt: "desc" },
-      take: 20,
-      select: {
-        id: true,
-        takenAt: true,
-        score: true,
-        user: { select: { id: true, name: true } },
-        test: { select: { name: true, protocol: true } },
-      },
-    }),
-    prisma.testResult.count({ where: { takenAt: { gte: d30 } } }),
-    prisma.testResult.count({ where: { takenAt: { gte: d7 } } }),
-  ]);
+  const { paagaaende, resultater, antall30, antall7, d30 } = await hentAdminTestData(user);
 
   // Antall ULIKE tester i bruk siste 30 d. Her sto tidligere en «Snitt-score»
   // som summerte score på tvers av alle tester og delte på antallet — den
@@ -87,14 +57,6 @@ export default async function V2AdminTesterPage() {
   // ikke; dekningen gjør det.
   const siste30 = resultater.filter((r) => r.takenAt >= d30);
   const testerIBruk = new Set(siste30.map((r) => r.test.name)).size;
-
-  // Delta: sammenlign score med forrige TestResult for samme spiller + test
-  const perSpillerTest = new Map<string, number[]>();
-  for (const r of resultater) {
-    const k = `${r.user.id}::${r.test.name}`;
-    if (!perSpillerTest.has(k)) perSpillerTest.set(k, []);
-    perSpillerTest.get(k)!.push(r.score);
-  }
 
   const rader: AdminTesterV2Rad[] = [
     ...paagaaende.map(
@@ -110,25 +72,23 @@ export default async function V2AdminTesterPage() {
         status: "Pågår",
       }),
     ),
-    ...resultater.slice(0, 14).map((r): AdminTesterV2Rad => {
-      const serie = perSpillerTest.get(`${r.user.id}::${r.test.name}`) ?? [];
-      // Serie er sortert desc — indeks 0 = siste, indeks 1 = forrige
-      const forrige = serie[1] ?? null;
-      // Scoring-typen bærer både enheten og retningen. Uten den ble en
-      // PEI-brøk vist som «0,0», og enhver økning regnet som «Bedre» — feil
-      // for alle tester der lavere er bedre (PEI, tid, spredning).
-      const { kind } = parseForScoring(r.test.protocol);
-      const bedreErLavere = lavereErBedre(kind);
+    ...resultater.slice(0, 14).map((r, index): AdminTesterV2Rad => {
+      // Each row compares with its own predecessor, never itself or a namesake test.
+      const forrige = resultater.slice(index + 1).find(x => x.user.id === r.user.id && x.testId === r.testId);
+      const endring = forrige ? sammenlignLagredeTestresultater(
+        { ...r, protocol: r.test.protocol },
+        { ...forrige, protocol: forrige.test.protocol },
+      ) : null;
       let delta: string | null = null;
       let deltaDir: "up" | "down" | null = null;
       let status: AdminTesterStatus = "Ferdig";
-      if (forrige !== null) {
-        const diff = r.score - forrige;
-        if (erUbetydelig(diff, forrige)) {
+      if (endring && forrige) {
+        const diff = endring.diff;
+        if (erUbetydelig(diff, forrige.score)) {
           status = "Stabilt";
         } else {
-          const forbedring = bedreErLavere ? diff < 0 : diff > 0;
-          delta = formaterTestDelta({ kind, delta: diff });
+          const forbedring = endring.lavereErBedre ? diff < 0 : diff > 0;
+          delta = endring.tekst;
           deltaDir = forbedring ? "up" : "down";
           status = forbedring ? "Bedre" : "Svakere";
         }
@@ -138,7 +98,7 @@ export default async function V2AdminTesterPage() {
         spillerId: r.user.id,
         navn: r.user.name,
         test: r.test.name,
-        resultat: formaterTestVerdi({ kind, verdi: r.score }),
+        resultat: formaterLagretTestResultat({ ...r, protocol: r.test.protocol }),
         delta,
         deltaDir,
         dato: datoLabel(r.takenAt),

@@ -1,4 +1,5 @@
-import { WangArsplanShell, TRENING_SIDER, type ArsplanFane } from "./_components/arsplan-2026-27/arsplan-shell";
+import { WangArsplanShell, type ArsplanFane } from "./_components/arsplan-2026-27/arsplan-shell";
+import { TRENING_SIDER } from "./_components/arsplan-2026-27/trening-sider";
 import type { TreningSide } from "./_components/arsplan-2026-27/fane-trening";
 
 // Fellesside for WANG Toppidrett Fredrikstad – golfgruppa. ÅPEN uten innlogging

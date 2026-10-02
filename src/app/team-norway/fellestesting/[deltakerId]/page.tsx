@@ -11,7 +11,7 @@ export default async function TestdagDeltakerPage({ params }: { params: Promise<
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   const deltaker = await hentTnTestdagDeltaker(bruker, deltakerId);
   if (!deltaker) notFound();
-  const protokoll = tnProtocol(deltaker.protokollId);
+  const protokoll = tnProtocol(deltaker.protokollId, undefined, deltaker.protokollVersjon);
   if (!protokoll) notFound();
 
   return (

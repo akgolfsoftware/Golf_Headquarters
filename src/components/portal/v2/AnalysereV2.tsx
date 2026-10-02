@@ -639,7 +639,7 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <Caps size={9}>Etterlevelse</Caps>
+                <Caps size={9}>Etterlevelse · siste fire uker</Caps>
                 <HjelpTips k="planEtterlevelse" size={11} />
               </span>
               <div style={{ marginTop: 6, fontFamily: TL.font.sans, fontSize: mobile ? 28 : 32, fontWeight: 700, color: TL.text }}>
