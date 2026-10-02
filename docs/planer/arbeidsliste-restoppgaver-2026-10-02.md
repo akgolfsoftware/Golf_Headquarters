@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-02 18:08 CEST på `main` `86d07c7ab`.
+Sist oppdatert: 2026-10-02 18:15 CEST på `main` `30ee79fac`.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
@@ -57,6 +57,8 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
   (`4cba5bec0`).
 - PR #1113: regresjonsdekning for flerskole-testdag
   (`c4f28a3c`).
+- PR #1115: verifisert at turneringsresultater når koblede profiler
+  (`30ee79fac`).
 - PR #1116: siste korrigering av restarbeidslisten etter regresjonsmergen
   (`86d07c7ab`).
 - PR #1110: tidsstemplet restarbeidsliste og kontrollert arbeidskopioversikt
