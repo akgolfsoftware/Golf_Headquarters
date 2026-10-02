@@ -2,15 +2,14 @@ import { completedLiveDrills } from "@/lib/portal-live/live-summary";
 import { prisma } from "@/lib/prisma";
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
- * PlayerHQ · Live-økt oppsummering V2 — TrainingSessionV2.
- *
- * Viser fullført økt med total reps, tid, drills fullført og pyramide-fordeling.
+ * PlayerHQ · Live-økt oppsummering — PH07Summary i Precision Athletics (natt).
+ * Tall, notater, vurdering og lagring beholdes. Visningen er SessionSummary.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
-import { LiveSessionShell, SessionSummary } from "@/components/portal/live";
+import { SessionSummary } from "@/components/portal/live";
 import type { LiveV2Summary } from "@/components/portal/live";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
@@ -47,9 +46,7 @@ export default async function LiveSummaryPage({
           drills: plan.drills.map((d) => ({ id: d.id, title: d.exercise.name, description: d.notes,
             durationMinutes: d.exercise.durationMin ?? 0, sortOrder: d.orderIndex })),
         }, counts);
-        return <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={plan.title} backHref="/portal" closeHref="/portal">
-          <SessionSummary key={sessionId} data={summary} lagredeOrd="Økt gjennomført." />
-        </LiveSessionShell>;
+        return <SessionSummary key={sessionId} data={summary} lagredeOrd="Økt gjennomført." />;
       }
       if (result.reason === "notfound") notFound();
       redirect("/portal/planlegge");
@@ -77,20 +74,12 @@ export default async function LiveSummaryPage({
     const { okt, href } = await loadNesteOkt(user.id, naa);
     const nesteOkt = nesteOktTekst(okt, href, naa);
     return (
-      <LiveSessionShell
-        odId="playerhq-live-summary"
-        title="Etter økta"
-        subtitle={wb.title}
-        backHref="/portal"
-        closeHref="/portal"
-      >
-        <SessionSummary
-          key={sessionId}
-          data={summaryData}
-          nesteOkt={nesteOkt}
-          lagredeOrd="Økt gjennomført."
-        />
-      </LiveSessionShell>
+      <SessionSummary
+        key={sessionId}
+        data={summaryData}
+        nesteOkt={nesteOkt}
+        lagredeOrd="Økt gjennomført."
+      />
     );
   }
 
@@ -171,14 +160,12 @@ export default async function LiveSummaryPage({
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
   return (
-    <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={data.title} backHref="/portal" closeHref="/portal">
-      <SessionSummary
-        key={sessionId}
-        data={summaryData}
-        nesteOkt={nesteOkt}
-        spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}
-        lagredeOrd={lagredeOrd}
-      />
-    </LiveSessionShell>
+    <SessionSummary
+      key={sessionId}
+      data={summaryData}
+      nesteOkt={nesteOkt}
+      spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}
+      lagredeOrd={lagredeOrd}
+    />
   );
 }
