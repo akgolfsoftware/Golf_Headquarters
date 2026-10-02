@@ -17,7 +17,7 @@
  */
 
 import { useState } from "react";
-import { fysLoggState } from "@/lib/portal-live/fys-registrering";
+import { fysLoggState, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import type { LiveV2Drill, DrillRepState } from "./types";
 import { SettRepsLogger, type SettRad, PulsSoneVelger } from "@/components/v2/fysisk";
 import { Stegteller } from "@/components/v2/skjema";
@@ -38,6 +38,7 @@ function fysModalitet(drill: LiveV2Drill): FysModalitet {
 
 export type FysDrillLoggerProps = {
   drill: LiveV2Drill;
+  initialNotes?: string;
   onChange: (state: DrillRepState) => void;
 };
 
@@ -62,7 +63,8 @@ function FysNotat({ value, onChange }: { value: string; onChange: (v: string) =>
   );
 }
 
-export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
+export function FysDrillLogger({ drill, initialNotes, onChange }: FysDrillLoggerProps) {
+  const saved = lesFysRegistrering(initialNotes);
   const modalitet = fysModalitet(drill);
   const muskelgrupper = drill.fysMuskelgruppe
     ? drill.fysMuskelgruppe.split(",").map((s) => s.trim()).filter(Boolean)
@@ -70,14 +72,14 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
   const settTall = drill.fysSett ?? drill.repSett ?? 3;
   const repsMaal = drill.fysReps ?? drill.repReps ?? 8;
   const startVekt = drill.fysVektKg ?? 20;
-  const startSett: SettRad[] = Array.from({ length: settTall }, () => ({ vekt: startVekt, reps: repsMaal }));
+  const startSett: SettRad[] = saved?.type === "styrke" ? saved.sett : Array.from({ length: settTall }, () => ({ vekt: startVekt, reps: repsMaal }));
 
-  const [sone, setSone] = useState("S3");
-  const [varighetMin, setVarighetMin] = useState(drill.fysVarighetMin ?? drill.repMinutter ?? 10);
-  const [bevegelseReps, setBevegelseReps] = useState(drill.fysReps ?? drill.plannedReps ?? 10);
-  const [holdSek, setHoldSek] = useState(drill.fysHoldSek ?? 20);
+  const [sone, setSone] = useState(saved?.type === "kondisjon" ? saved.sone : "S3");
+  const [varighetMin, setVarighetMin] = useState(saved?.type === "kondisjon" ? saved.minutter : drill.fysVarighetMin ?? drill.repMinutter ?? 10);
+  const [bevegelseReps, setBevegelseReps] = useState(saved?.type === "reps" ? saved.repetisjoner : drill.fysReps ?? drill.plannedReps ?? 10);
+  const [holdSek, setHoldSek] = useState(saved?.type === "hold" ? saved.sekunder : drill.fysHoldSek ?? 20);
   const [sisteSett, setSisteSett] = useState<SettRad[]>(startSett);
-  const [notat, setNotat] = useState("");
+  const [notat, setNotat] = useState(saved?.notat ?? "");
 
   const erHold = drill.fysBevegelighetType === "hold";
 

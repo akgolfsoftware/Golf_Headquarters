@@ -84,13 +84,14 @@ export function Ark({ open, onClose, kicker, title, footer, children }: {
 export function Dialogboks({ open, onClose, title, footer, children }: {
   open: boolean; onClose: () => void; title?: ReactNode; footer?: ReactNode; children?: ReactNode;
 }) {
+  const titleId = useId();
   if (!open) return null;
   return (
     <div className="pa-sheet-layer">
       <div className="pa-sheet-scrim" onClick={onClose} />
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-        <div className="pa-dialog" role="alertdialog" aria-modal="true">
-          <div className="pa-dialog__head"><span className="pa-dialog__title">{title}</span></div>
+        <div className="pa-dialog" role="alertdialog" aria-modal="true" aria-labelledby={title ? titleId : undefined}>
+          <div className="pa-dialog__head"><span id={titleId} className="pa-dialog__title">{title}</span></div>
           <div className="pa-dialog__body">{children}</div>
           {footer && <div className="pa-dialog__foot">{footer}</div>}
         </div>

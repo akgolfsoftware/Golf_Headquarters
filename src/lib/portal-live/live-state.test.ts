@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mapWbToLiveSummary } from "./wb-live-map";
-import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, addLiveDrill, swapLiveDrill, removeLiveDrill } from "./live-state";
+import { skipLiveDrill, selectLiveDrill, adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, addLiveDrill, swapLiveDrill, removeLiveDrill } from "./live-state";
 import { completedLiveDrills } from "./live-summary";
 import { byggLiveDrillKoRad } from "@/lib/offline-queue/live-drill-kladd";
 const session = () => mapWbToLiveSummary({ id: "s", title: "Syntetisk økt", date: new Date(0), startMinute: 540, durationMinutes: 30, status: "IN_PROGRESS", pyramid: "TEK", location: null, notes: null, publishedAt: null, createdAt: new Date(0), drills: [0, 1].map((i) => ({ id: `d${i}`, title: "Øvelse", description: null, durationMinutes: 15, sortOrder: i })) });
@@ -66,4 +66,39 @@ test("fleksibilitet underveis: legge til, bytte og fjerne øvelser", () => {
   assert.equal(state.drills[0].index, 1);
   assert.equal(state.drills[1].index, 2);
   assert.equal(state.drills[1].name, "Putting 3 meter");
+});
+
+test("hopp over bevarer tall/tid ved omlasting og teller aldri som ferdig", () => {
+  let state = adjustLiveRep(restoreLiveState(session(), null), "d0", "repsHit", 5);
+  state = skipLiveDrill({ ...state, drillSec: 42, totalSec: 42 }, "d0");
+  assert.equal(state.drills[0].skipped, true);
+  assert.equal(state.drills[0].actualDurationSec, 42);
+  assert.equal(state.drills[1].status, "active");
+  const cached = byggLiveDrillKoRad("bruker-a", "s", livePayload(state), 42, new Date());
+  state = restoreLiveState(session(), cached);
+  assert.equal(state.drills[0].skipped, true);
+  assert.equal(state.drills[0].repsTotal, 5);
+  state = markLiveDrill(state, "d1", true);
+  assert.deepEqual(state.drills.filter(d => d.status === "done").map(d => d.id), ["d1"]);
+  assert.equal(state.drills.some(d => d.status === "active"), false);
+  state = selectLiveDrill(state, "d0");
+  assert.equal(state.drills[0].skipped, false);
+  assert.equal(state.drills[0].status, "active");
+  assert.equal(state.drillSec, 42);
+});
+test("valg av øvelse flytter klokken uten å fullføre forrige øvelse", () => {
+  const state = selectLiveDrill({ ...restoreLiveState(session(), null), drillSec: 27 }, "d1");
+  assert.equal(state.drills[0].status, "queued");
+  assert.equal(state.drills[0].actualDurationSec, 27);
+  assert.equal(state.drills[1].status, "active");
+  assert.equal(state.drillSec, 0);
+});
+test("nyere serverkvittering erstatter tall, men mister ikke lokal ferdig-status", () => {
+  const data = session();
+  const state = markLiveDrill(restoreLiveState(data, null), "d0", true);
+  const cached = { ...byggLiveDrillKoRad("bruker-a", "s", livePayload(state), 0, new Date("2026-09-10")), revision: 1, synketRevision: 1 };
+  data.existingLogs = [{ drillId: "d0", repsTotal: 8, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 8, repsHit: 0, successRate: 0, notes: null, loggedAt: "2026-09-11T12:00Z" }];
+  const restored = restoreLiveState(data, cached);
+  assert.equal(restored.drills[0].status, "done");
+  assert.equal(restored.drills[0].repsTotal, 8);
 });

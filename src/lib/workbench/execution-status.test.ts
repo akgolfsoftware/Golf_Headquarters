@@ -55,3 +55,29 @@ test("annen spiller og samtidig endring avvises", async () => {
   assert.equal((await actions.startSession("session")).ok, false);
   assert.equal(row.status, "PUBLISHED");
 });
+
+test("fullføring med innsats følger samme statusregler og bevarer historikk ved nytt forsøk", async () => {
+  const initial = { ...row };
+  for (const status of ["DRAFT", "SCHEDULED", "SKIPPED", "CANCELLED"]) {
+    row = { ...initial, status };
+    assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", perceivedEffort: 5 })).ok, false);
+  }
+  assert.equal(writes, 0);
+  row = { ...initial };
+  assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", perceivedEffort: 5, actualMinutes: 23 })).ok, true);
+  assert.equal(row.status, "COMPLETED");
+  assert.equal(row.perceivedEffort, 5);
+  assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", perceivedEffort: 9, actualMinutes: 99 })).ok, true);
+  assert.equal(row.perceivedEffort, 5);
+  assert.equal(row.actualMinutes, 23);
+  assert.equal(writes, 1);
+});
+
+test("fullføring med innsats avviser fremmed spiller og samtidig endring", async () => {
+  viewer = "other";
+  assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", actualMinutes: 30 })).ok, false);
+  assert.equal(writes, 0);
+  viewer = "player"; collision = true;
+  assert.equal((await actions.completeSessionWithEffort({ sessionId: "session", actualMinutes: 30 })).ok, false);
+  assert.equal(row.status, "PUBLISHED");
+});

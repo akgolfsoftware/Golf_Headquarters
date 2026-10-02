@@ -33,7 +33,7 @@ export function DrillLogger({ drill, state, onChange, onAdjust, onComplete, done
   return <div>
     {drill.pyramide === "FYS" ? <>
       {state.logNotes && <p className={s.description}>Registrert: {state.logNotes}</p>}
-      <FysDrillLogger drill={drill} onChange={onChange} />
+      <FysDrillLogger key={drill.id} drill={drill} initialNotes={state.logNotes} onChange={onChange} />
     </> : <>
       <p className={s.eyebrow}>Logg repetisjon</p>
       <output className={s.repStatus} data-testid={`count-${drill.id}`} aria-live="polite">{state.repsTotal} reps · {state.repsHit} treff</output>

@@ -8,6 +8,7 @@ import { canAccessPlayer } from "@/lib/auth/own-or-coached";
  * Henter økt + drills, logger reps per drill (DrillLogV2), og fullfører økta.
  */
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
@@ -598,4 +599,47 @@ export async function lagreSpillerVurdering(
   revalidatePath(`/portal/live/${sessionId}/summary`);
   revalidatePath("/portal/planlegge");
   return { ok: true };
+}
+
+const liveDrillInput = z.object({
+  sessionId: z.string().min(1).max(200), requestId: z.string().uuid(),
+  name: z.string().trim().min(1).max(200), durationMinutes: z.number().int().min(1).max(120),
+  pyramide: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]), plannedReps: z.number().int().min(0).max(10000),
+});
+/** Lagres før øvelsen vises, så omlasting aldri mister en lokalt oppdiktet id. */
+export async function addLiveSessionDrill(input: z.input<typeof liveDrillInput>): Promise<LiveV2Drill> {
+  const values = liveDrillInput.parse(input);
+  const { user, session } = await verifyAccess(values.sessionId);
+  if (![session.studentId, session.hostId, session.coachId].includes(user.id)) throw new Error("Bare øktens spiller eller trener kan endre øvelsene.");
+  if (session.status !== "IN_PROGRESS") throw new Error("Økta er ikke pågående.");
+  const drill = await prisma.$transaction(async (tx) => {
+    const current = await tx.trainingSessionV2.findUnique({ where: { id: session.id }, include: { drills: true } });
+    if (!current || current.status !== "IN_PROGRESS") throw new Error("Økta er ikke pågående.");
+    if (![current.studentId, current.hostId, current.coachId].includes(user.id)) throw new Error("Tilgangen til økta er endret.");
+    const id = `live-${session.id}-${values.requestId}`;
+    return tx.trainingDrillV2.upsert({ where: { id }, update: {},
+      create: { id, sessionId: session.id, name: values.name, durationMinutes: values.durationMinutes,
+        pyramide: values.pyramide, repetitions: values.plannedReps, repType: "BALLER_SLATT", repAntall: values.plannedReps, pPosisjoner: [],
+        sortOrder: Math.max(-1, ...current.drills.map(d => d.sortOrder)) + 1,
+        description: "Lagt til underveis i økta" },
+    });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  revalidatePath(`/portal/live/${session.id}/active`);
+  return mapDrill(drill);
+}
+/** Fjerner bare øvelser uten registrerte resultater; treningshistorikk bevares. */
+export async function removeLiveSessionDrill(input: { sessionId: string; drillId: string }): Promise<void> {
+  const values = z.object({ sessionId: z.string().min(1).max(200), drillId: z.string().min(1).max(500) }).parse(input);
+  const { user, session } = await verifyAccess(values.sessionId);
+  if (![session.studentId, session.hostId, session.coachId].includes(user.id)) throw new Error("Bare øktens spiller eller trener kan endre øvelsene.");
+  if (session.status !== "IN_PROGRESS" || session.drills.length < 2) throw new Error("Økta må være pågående og beholde minst én øvelse.");
+  await prisma.$transaction(async (tx) => {
+    const current = await tx.trainingSessionV2.findUnique({ where: { id: session.id }, include: { drills: { select: { id: true } } } });
+    if (!current || current.status !== "IN_PROGRESS" || current.drills.length < 2) throw new Error("Økta må beholde minst én øvelse.");
+    if (![current.studentId, current.hostId, current.coachId].includes(user.id)) throw new Error("Tilgangen til økta er endret.");
+    const result = await tx.trainingDrillV2.deleteMany({ where: { id: values.drillId, sessionId: session.id, session: { status: "IN_PROGRESS" },
+      OR: [{ actualDurationSec: null }, { actualDurationSec: 0 }], logs: { none: { OR: [{ repsTotal: { gt: 0 } }, { repsWithoutBall: { gt: 0 } }, { repsLowSpeed: { gt: 0 } }, { repsAutomatic: { gt: 0 } }, { repsHit: { gt: 0 } }, { notes: { not: null } }] } } } });
+    if (result.count !== 1) throw new Error("Øvelsen har registrert tid eller resultater. Bruk hopp over for å bevare dem.");
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  revalidatePath(`/portal/live/${session.id}/active`);
 }

@@ -5,8 +5,14 @@
  * Fasit: designsystem/train-lock/FO-09 Ukerapport.dc.html
  * (+ FO-09L Ukerapport lys.dc.html — lys/mørk gjøres av tokens).
  * Bento «Økter»/«Oppmøte», «Gjennomført»-liste (hairline-rader), coach-notat
- * i kort, tom-tilstand uten koblet barn. Datamatten i hentForelderUkerapport
- * er urørt — dette er kun visning; øktradene hentes av siden.
+ * i kort, tom-tilstand uten koblet barn. Etterlevelsen bruker den felles minuttregelen; oppmøte beholdes.
+ * Øktradene hentes av siden.
+ * Kontroll: syntetiske modulprøver og HTML-komponentprøver 01.10.2026.
+ * Avvik:
+ *   - Etterlevelse følger minuttregelen fra 26.09, med fireukersperiode.
+ *   - Ingen visuell riggrad; datakobling prøvd, konkret Precision-kontroll gjenstår.
+ * Historisk fasit over beskriver eksisterende komponent; Precision-eksporten
+ * er gjeldende designautoritet. Ingen ny visuell godkjenning i denne rettingen.
  */
 
 import { TL } from "@/lib/v2/train-lock";
@@ -88,6 +94,9 @@ export function ForelderUkerapportV2({
           suffix={`av ${oktPlanlagt}`}
         />
       </div>
+
+      <FoTallKort label="Etterlevelse · siste fire uker" value={data.etterlevelseTekst ?? "—"} />
+      <FoFotnote>{data.nevnerTekst}</FoFotnote>
 
       {/* Gjennomført-lista */}
       <div style={{ marginTop: 22 }}>

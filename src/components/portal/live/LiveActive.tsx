@@ -48,7 +48,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const eierId = useLokalDataEier();
   const live = useLiveSession(data, eierId);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [hoppet, setHoppet] = useState<string[]>([]);
+  const hoppet = live.drills.filter((d) => d.skipped).map((d) => d.id);
   const [kvittering, setKvittering] = useState<{ navn: string; tid: string; planTid: string; fikk: number; plan: number | null } | null>(null);
   const getNotesSnapshot = useCallback(
     () => noteSnapshot(eierId, data.sessionId),
@@ -112,12 +112,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const [newDrillAkse, setNewDrillAkse] = useState<PyramidArea>("TEK");
   const [coachSendStatus, setCoachSendStatus] = useState<string | null>(null);
 
-  const handleAddDrill = () => {
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const addRequest = useRef<string | null>(null);
+  const handleAddDrill = async () => {
     const name = newDrillName.trim();
-    if (!name) return;
-    live.addDrill({ name, durationMinutes: Math.max(1, newDrillMinutes), pyramide: newDrillAkse, plannedReps: 20 });
-    setNewDrillName("");
-    setShowAddDrill(false);
+    if (!name || editing) return;
+    setEditing(true); setEditError(null);
+    addRequest.current ??= crypto.randomUUID();
+    try {
+      await live.addDrill({ requestId: addRequest.current, name, durationMinutes: newDrillMinutes, pyramide: newDrillAkse, plannedReps: 20 });
+      setNewDrillName(""); setShowAddDrill(false); addRequest.current = null;
+    } catch { setEditError("Øvelsen kunne ikke lagres. Kontroller navn, varighet og nettforbindelse, og prøv igjen."); }
+    finally { setEditing(false); }
   };
 
   const handleSendNoteToCoach = async (notatTekst: string) => {
@@ -153,12 +160,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     });
     live.mark(selected.id, true);
     const neste = nesteApne(valgt, [selected.id], hoppet);
-    if (!neste) { void live.finish(); return; }
+    if (!neste) { setConfirm(true); return; }
     setSelectedId(neste.id);
   };
   const hoppOver = (id: string) => {
     const hopp = [...hoppet, id];
-    setHoppet(hopp);
+    live.skip(id);
     if (id === selected?.id) {
       const neste = nesteApne(valgt, [], hopp);
       if (neste) setSelectedId(neste.id);
@@ -221,6 +228,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   </>;
 
   const leggTil = <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+    {editError && <p role="alert">{editError}</p>}
     {!showAddDrill
       ? <Knapp variant="secondary" fullWidth disabled={!enabled} onClick={() => setShowAddDrill(true)}>Legg til drill underveis</Knapp>
       : <>
@@ -233,7 +241,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         </div>
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
           <Knapp variant="ghost" onClick={() => setShowAddDrill(false)}>Avbryt</Knapp>
-          <Knapp disabled={!newDrillName.trim()} onClick={handleAddDrill}>Legg til</Knapp>
+          <Knapp disabled={editing || !newDrillName.trim()} onClick={handleAddDrill}>Legg til</Knapp>
         </div>
       </>}
   </div>;
@@ -256,14 +264,20 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       statusHandling={kanProveLagring ? { label: "Prøv lagring igjen", onClick: live.retrySync } : undefined}
       feilKode="FEIL · START AV ØKT"
       onProv={live.retryStart}
-      kanRegistrere={enabled}
+      kanRegistrere={enabled && !editing}
       slagtellerHref={`/portal/live/${data.sessionId}/tapper`}
       onPause={live.togglePause}
       onAvslutt={() => setConfirm(true)}
-      onVelg={(i) => { const d = live.drills[i]; if (d) setSelectedId(d.id); }}
+      onVelg={(i) => { const d = live.drills[i]; if (d) { live.select(d.id); setSelectedId(d.id); } }}
       onFerdig={ferdigMedDrill}
       onHopp={hoppOver}
-      onFjern={live.removeDrill}
+      onFjern={async (id) => {
+        if (editing) return;
+        setEditing(true); setEditError(null);
+        try { await live.removeDrill(id); }
+        catch { setEditError("Øvelsen kunne ikke fjernes. Øvelser med registrert tid eller resultater må beholdes; bruk hopp over. Kontroller også nettforbindelsen."); }
+        finally { setEditing(false); }
+      }}
       fullforer={finishing}
       dialog={{ open: confirm, ferdige: completedCount, totalt: live.drills.length, lagrer: finishing, feil: live.phase === "finish-error", notatVarsel: !!text.trim(), onFortsett: close, onBekreft: () => { void live.finish(); } }}
       arkEkstra={leggTil}
@@ -272,6 +286,6 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         : undefined}
       ekstra={ekstra}
     />
-    <LiveCoachPanel data={coachPanel} activeDrillId={active?.id} />
+    <LiveCoachPanel data={coachPanel} activeDrillId={active?.id} bunnLoft={104} />
   </>;
 }
