@@ -1,36 +1,26 @@
 /**
- * v2 — PlayerHQ Meg · Hjelpesenter (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav), MegHelpV2 rendrer innholds-stacken.
- *
- * Auth-guarden speiler den tidligere /portal/meg/help-siden (requirePortalUser).
- * Hjelpe-innholdet er statisk redaksjonelt (data.ts) — samme datakontrakt som
- * de eksisterende hjelp-rutene bærer.
+ * Hjelpesenter (/portal/meg/help) — Precision Athletics PH-25.
+ * Auth-guarden speiler den tidligere siden. Innholdet er statisk redaksjonelt (data.ts).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegHelpV2, type MegHelpData } from "@/components/portal/v2/MegHelpV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Hjelp } from "@/components/portal/precision/PH25Abonnement";
 import { HJELP_FAQ, HJELP_KATEGORIER, HJELP_ARTIKLER } from "./data";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Hjelp · PlayerHQ" };
 
 export default async function HelpPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
-
-  const data: MegHelpData = {
-    faq: HJELP_FAQ,
-    kategorier: HJELP_KATEGORIER,
-    artikler: HJELP_ARTIKLER,
-  };
-
+  const uleste = await hentUleste(user.id);
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegHelpV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH25Hjelp data={{ faq: HJELP_FAQ, kategorier: HJELP_KATEGORIER, artikler: HJELP_ARTIKLER }} />
+    </PlayerHQSkall>
   );
 }

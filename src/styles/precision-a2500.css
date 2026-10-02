@@ -1,0 +1,18 @@
+/* PH-25 Abonnement og innstillinger — Precision Athletics. Bare tokens fra precision-athletics.css. */
+.pa-root .ph25-plan[data-paa="true"] { border-color: var(--border-ink); box-shadow: inset 0 0 0 1px var(--border-ink); }
+.pa-root .ph25-lenke {
+  display: flex; gap: 10px; align-items: center; min-height: 44px; min-width: 0;
+  color: var(--text-primary); text-decoration: none; border-top: 1px solid var(--border-hairline);
+}
+.pa-root .ph25-lenke:first-of-type { border-top: 0; }
+.pa-root .ph25-lenke__tekst { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pa-root .ph25-lenke__tittel { font: 500 14px/1.3 var(--font-sans); overflow-wrap: anywhere; }
+.pa-root .ph25-lenke__sub { font: var(--type-body-s); color: var(--text-secondary); overflow-wrap: anywhere; }
+.pa-root .ph25-lenke:focus-visible { outline: 2px solid var(--border-ink); outline-offset: 2px; }
+.pa-root .ph25-nps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.pa-root .ph25-nps .pa-btn { min-width: 0; padding-inline: 0; }
+.pa-root .ph25-liste { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.pa-root .ph25-liste li { display: flex; gap: 8px; align-items: center; font: var(--type-body-s); color: var(--text-primary); min-width: 0; }
+.pa-root .ph25-bryterrad { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px solid var(--border-hairline); }
+.pa-root .ph25-bryterrad:first-of-type { border-top: 0; }
+.pa-root .ph25-inn input { height: calc(100% + 2px); margin: -1px 0; }
