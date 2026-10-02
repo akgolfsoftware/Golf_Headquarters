@@ -46,7 +46,10 @@ function formula(session?: WorkbenchSession) {
     { label: UI.formelPress, value: f?.press ? PRESS[f.press] : session?.pressureLevel ?? "—" },
     { label: UI.formelHensikt, value: session?.rationale ?? "—" },
     { label: UI.formelMate, value: drill?.description ?? (session?.practiceType ? PRAKSIS[session.practiceType] : "—") },
-    { label: UI.formelMal, value: drill?.techniqueFocus ?? session?.maalsetning ?? "—" },
+    { label: UI.formelMal, value: drill?.akFormel.detaljer?.mal?.malsetning ?? "—" },
+    { label: "Øktens målsetning", value: session?.maalsetning ?? "—" },
+    { label: "Sted for økten", value: session?.location ?? "—" },
+    ...(drill?.techniqueFocus ? [{ label: "Historisk fokus / kildeposisjon", value: drill.techniqueFocus }] : []),
   ];
 }
 

@@ -19,10 +19,20 @@ const OmradeSchema = z.object({
   sessionBudget: AntallSchema.nullable(),
 }).strict();
 
+export const UkeSyklusMetadataSchema = z.object({
+  version: z.literal(1), id: z.string().uuid(), anchorWeek: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  position: z.number().int().min(0).max(2),
+  operationId: z.string().uuid(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+}).strict().refine(value => {
+  const date = new Date(`${value.anchorWeek}T12:00:00Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value.anchorWeek && date.getUTCDay() === 1;
+}, "Syklusen må starte på en gyldig mandag.");
+
 export const WeekPlanningDetailsSchema = z.object({
   version: z.literal(1),
   weekType: z.enum(["grunn", "spesial", "tmed", "tuten"]).nullable(),
   location: z.string().trim().max(300).nullable(),
+  cycle: UkeSyklusMetadataSchema.optional(),
   areas: z.object({
     FYS: OmradeSchema, TEK: OmradeSchema, SLAG: OmradeSchema,
     SPILL: OmradeSchema, TURN: OmradeSchema,
@@ -96,6 +106,7 @@ const WeekPlanReadSchema = z.object({
   weekType: z.enum(["UTVIKLING", "VEDLIKEHOLD", "TURNERING"]),
   notes: z.array(z.enum(["FERIE", "TEST", "SAMLING", "EVALUERING", "PRE_TURNERING", "TEKNIKK_UKE"])),
   repetitionTargets: z.record(z.string(), z.unknown()).nullable().optional(),
+  updatedAt: z.union([z.date(), z.string().datetime()]).optional().transform(value => value instanceof Date ? value.toISOString() : value),
 }).refine(gyldigIsoUke);
 
 /** Samme lesekontrakt for uke, lagringssvar og autorisert trenerprofil. */

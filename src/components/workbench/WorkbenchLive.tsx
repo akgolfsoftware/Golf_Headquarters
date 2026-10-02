@@ -61,9 +61,12 @@ function formula(session: WorkbenchSession, drill: Drill | undefined) {
     { label: UI.formelMotorikk, value: f?.motorikk ? MOTORIKK[f.motorikk] : "—" },
     { label: UI.formelBelastning, value: f?.belastning ? ENVIRONMENT[f.belastning] : session.environment ? ENVIRONMENT[session.environment] : "—" },
     { label: UI.formelPress, value: f?.press ? PRESS[f.press] : session.pressureLevel ?? "—" },
-    { label: UI.formelHensikt, value: session.pyramid === "FYS" ? session.rationale ?? "—" : "—" },
+    { label: UI.formelHensikt, value: session.rationale ?? "—" },
     { label: UI.formelMate, value: drill?.description ?? "—" },
-    { label: UI.formelMal, value: drill?.techniqueFocus ?? session.maalsetning ?? "—" },
+    { label: UI.formelMal, value: drill?.akFormel.detaljer?.mal?.malsetning ?? "—" },
+    { label: "Øktens målsetning", value: session.maalsetning ?? "—" },
+    { label: "Sted for økten", value: session.location ?? "—" },
+    ...(drill?.techniqueFocus ? [{ label: "Historisk fokus / kildeposisjon", value: drill.techniqueFocus }] : []),
   ];
 }
 
@@ -217,7 +220,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
                 <section className="wb-live-card">
                   <span className="wb-kicker">Øvelse {Math.max(1, activeIndex + 1)} av {current.drills.length}</span>
                   <h2>{activeDrill?.title ?? "Ingen øvelse"}</h2>
-                  <p>{activeDrill?.techniqueFocus ?? activeDrill?.description ?? current.maalsetning ?? "—"}</p>
+                  <p>{activeDrill?.akFormel.detaljer?.mal?.malsetning ?? activeDrill?.description ?? current.maalsetning ?? "—"}</p>
                   {activeDrill ? <><div className="wb-live-counter"><button type="button" aria-label="Trekk fra ett slag" onClick={() => changeReps(-1)}>−</button><strong>{reps}</strong><button type="button" aria-label="Legg til ett slag" onClick={() => changeReps(1)}>+</button></div><span className="wb-live-counter-label">slag i serie {currentSeries} av {targetSeries}</span></> : null}
                 </section>
 

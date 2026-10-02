@@ -5,9 +5,10 @@
     "oppgave": "Opprett ett register per felt, spørsmål, beregning, referanse, diagram/pivot og handling med stabil ID, kildeversjon, celle/objekt, lagring, spillerflate, begge trenerflater, test og status.",
     "avhengighet": "Før all bygging",
     "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Original 2027-fil kontrollert lokalt:18 ark,1692 formelceller,25 diagrammer,1 pivot,3 tabeller. Alle175 spørsmål matcher originalcellene og SHA. Privat anonymt strukturregister opprettet; full kobling per input/beregning/diagram/handling til lagring og alle tre brukerflater gjenstår.",
+    "kodebevis": "docs/design-audit/iup-2027-strukturkontroll-2026-10-02.md; src/lib/iup/ kildekontrakter"
   },
   {
     "id": "R01.2",

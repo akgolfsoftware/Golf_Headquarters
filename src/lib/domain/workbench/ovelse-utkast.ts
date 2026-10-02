@@ -118,7 +118,7 @@ export function utkastFraOvelse(drill: Drill): Record<PyramidArea, GrenUtkast> {
     vektKg: tekst(d?.mengde?.vektKg), rir: tekst(d?.mengde?.rir), pauseSek: tekst(d?.mengde?.pauseSek),
     kondisjonssegmenter: d?.kondisjonssegmenter?.map(s => ({ minutter: String(s.minutter), pulssone: s.pulssone })) ?? [],
     utstyr: d?.utstyr?.map(v => ({ navn: v.navn, antall: tekst(v.antall) })) ?? [],
-    malsetning: drill.techniqueFocus ?? "", malemetode: d?.mal?.malemetode ?? "",
+    malsetning: d?.mal?.malsetning ?? "", malemetode: d?.mal?.malemetode ?? "",
     resultatkrav: d?.mal?.resultatkrav ?? "", notat: d?.mal?.notat ?? "",
   };
   return utkast;
@@ -185,8 +185,8 @@ export function byggOvelse(pyramid: PyramidArea, u: GrenUtkast, felles: FellesUt
           }
         : undefined,
     mal:
-      u.malemetode || u.resultatkrav || u.notat
-        ? { malemetode: u.malemetode, resultatkrav: u.resultatkrav, notat: u.notat }
+      u.malsetning || u.malemetode || u.resultatkrav || u.notat
+        ? { malsetning: u.malsetning, malemetode: u.malemetode, resultatkrav: u.resultatkrav, notat: u.notat }
         : undefined,
   };
   const vasket = vaskDetaljer(pyramid, u.area, motorikk, stripUndefined(rå));
@@ -217,7 +217,7 @@ export function byggOvelse(pyramid: PyramidArea, u: GrenUtkast, felles: FellesUt
       title,
       durationMinutes: felles.durationMinutes,
       ...(felles.description.trim() ? { description: felles.description.trim() } : {}),
-      ...(u.malsetning.trim() ? { techniqueFocus: u.malsetning.trim() } : {}),
+      ...(original?.techniqueFocus !== undefined ? { techniqueFocus: original.techniqueFocus } : {}),
       akFormel,
     },
   };

@@ -10,7 +10,7 @@ export const FORMEL_FELT: JsonFelt = {
     kondisjonssegmenter: true, utstyr: true,
     sted: { hoved: true, delvalg: true },
     mengde: { enhet: true, antall: true, reps: true, vektKg: true, rir: true, pauseSek: true },
-    mal: { malemetode: true, resultatkrav: true, notat: true },
+    mal: { malsetning: true, malemetode: true, resultatkrav: true, notat: true },
   },
 };
 

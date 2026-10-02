@@ -69,3 +69,12 @@ test('nye segment-/utstyrfelter vasker fritekst, beholder tall og historisk RIR 
  assert.deepEqual(anonymisertAkFormel(dirty),expected);assert.deepEqual(anonymisertAkFormel(expected),expected);
  assert.deepEqual(anonymisertAkFormel({...dirty,detaljer:{utstyr:[{navn:'Persontekst',antall:-1}],kondisjonssegmenter:[{minutter:5,pulssone:'Persontekst'}]}}),{pyramid:'FYS',area:'KONDISJON',label:'Anonymisert øvelse'});
 });
+
+test("ny drillmålsetning vaskes mens tall bevares; øktformål/sted/mål nulles", async () => {
+ const { anonymisertAkFormel, anonymiserWorkbenchData } = await import("./workbench-personvern");
+ const result = anonymisertAkFormel({ pyramid: "FYS", area: "STYRKE", label: "Syntetisk", detaljer: { mal: { malsetning: "Syntetisk privat mål" }, mengde: { enhet: "SERIER", reps: 6, rir: 0 } } });
+ assert.deepEqual(result, { pyramid: "FYS", area: "STYRKE", label: "Anonymisert øvelse", detaljer: { mengde: { enhet: "SERIER", reps: 6, rir: 0 } } });
+ calls.length = 0; await anonymiserWorkbenchData("syntetisk-eier");
+ const data = calls.find(c => c.model === "workbenchSession")?.data;
+ assert.equal(data?.rationale, null); assert.equal(data?.location, null); assert.equal(data?.maalsetning, null);
+});

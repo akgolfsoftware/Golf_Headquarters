@@ -38,8 +38,9 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: async (input: CreateSessionSeriesInput) => { created.push(input); return saveFails ? { ok: false, error: "Syntetisk lagringsfeil" } : { ok: true, data: [{ id: "lagret-tiltak" }] }; },
   deleteSession: unused, deleteSessionSeries: async (input: { sessionId: string; policy: string }) => { deleted.push(input); return { ok: true, data: { slettet: 1 } }; },
-  moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
+  moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, updateSeriesSession: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
 } });
+mock.module("@/lib/workbench/treukerssyklus-actions", { namedExports: { lastTreukerssyklus: unused, lagreTreukerssyklus: unused, kopierTreukerssyklus: unused, opplosTreukerssyklus: unused } });
 mock.module("@/lib/workbench/workbench-samlet-sesong-actions", { namedExports: { saveSeasonBounds: unused } });
 mock.module("@/lib/workbench/group-session-actions", { namedExports: { loadGroupWorkbenchSessions: unused, publishGroupWorkbenchSessions: unused, saveGroupWorkbenchSession: async (input: GroupPayload) => { groupSaved.push(input); if (groupError) return { ok: false, error: groupError }; assert.ok(groupSession); return { ok: true, data: groupSession }; }, withdrawGroupWorkbenchSessions: unused } });
 

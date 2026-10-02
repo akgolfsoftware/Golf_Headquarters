@@ -54,3 +54,7 @@ Full `npm run verify` etter siste kodefrys bestod02.10 kl04:03 UTC:4183 kodetest
 1. **Fremmed data:** serverens innlogging/samtykke skjer før personlesing; eier-/coach-scope, konkrete kildegrenser og status/CAS brukes. Negative lokale DB/Auth- og handlingstester avviser fremmed spiller/kilde, skjult/mal/pending og samtidig endring. Ingen ny WANG/TN-delingsrett er gitt av Workbench-pakken.
 2. **Data ut:** ingen nye logger eller AI-overføring; nye prøver bruker syntetiske data og ignorerte lokale innstillinger. Lokal hemmelighetsmønsterkontroll av endrede/nye filer fant ingen treff; private bilder/manifest ligger utenfor Git.
 3. **Barn/livssyklus:** eksisterende mindreårig-/foreldresamtykkevakter er bevart. Innsyn/vask av nye navngitte Workbench-områder er eieravgrenset og testet, mens fil-/ballogg-/foresatteksport og ekte ekstern sletting fortsatt har egne restkrav.
+
+## Bekreftet publisering
+
+[PR1091](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1091) ble merget 02.10 kl. 04:17:51 UTC som `226acab393a1b21274575e85513c8334df763eca`. Eksakt head `54f955f318bc745c886b885b7fbd6d19a7d8c0f8` bestod GitHub-CI `36963020360`: 4183 kodetester, 88 komponentprøver og bygg. Vercel-preview bestod; produksjonsdeploy `6801208555` for merge-SHA og miljø Production fikk success 04:21:05 UTC. Dette bekrefter publisering av denne pakken, ikke ferdigstillelse av hele 82-oppgavers bestilling eller Anders sin visuelle godkjenning.
