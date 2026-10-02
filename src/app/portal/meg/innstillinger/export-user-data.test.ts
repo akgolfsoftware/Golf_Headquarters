@@ -17,7 +17,7 @@ const kilder = [
   "testResult", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
-  "playerSwingVideo", "delingsSamtykke",
+  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   findMany: async ({ where }: { where: unknown }) => {

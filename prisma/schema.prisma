@@ -693,6 +693,9 @@ model User {
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
 
+  // Én spillereid IUP-besvarelse per skjematype/kilde/nivå/periode.
+  iupBesvarelser IupBesvarelse[]
+
   // Drill-opprettelse (taxonomy v4)
   createdExercises       ExerciseDefinition[] @relation("ExerciseCreator")
   coachDirektiverGitt    CoachDrillDirectiv[] @relation("DirektivCoach")
@@ -767,9 +770,50 @@ model User {
   @@map("users")
 }
 
-// Web Push-abonnement per enhet/browser. Én bruker kan ha flere
-// (laptop, telefon, ulike browsere). Slettes når subscription returnerer
-// 410 Gone fra push-service (gammel/avregistrert).
+// Spillereid IUP. Organisasjonenes frister og oppfølging lagres separat;
+// besvarelser kopieres aldri per skole, trener eller Team Norway-gruppe.
+model IupBesvarelse {
+  id                 String   @id @default(cuid())
+  userId             String
+  type               String
+  versjon            String
+  kildeSha256        String
+  // ALLE for sesongevaluering; utviklingssjekk bruker kildekatalogens nivå.
+  niva               String
+  periodeStart       DateTime @db.Date
+  periodeSlutt       DateTime @db.Date
+  revisjon           Int      @default(0)
+  levertRevisjon     Int?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revisjoner         IupRevisjon[]
+
+  @@unique([userId, type, versjon, niva, periodeStart, periodeSlutt], map: "iup_besvarelse_eier_periode_key")
+  @@index([userId, updatedAt])
+  @@map("iup_besvarelser")
+}
+
+// Append-only ved normal lagring. Både utkast og leveringer får egen revisjon.
+// Revisjonene slettes med besvarelsen ved autorisert sletting/anonymisering.
+model IupRevisjon {
+  id             String   @id @default(cuid())
+  besvarelseId   String
+  revisjon       Int
+  requestId      String   @db.Uuid
+  requestHash    String
+  status         String
+  payload        Json
+  createdAt      DateTime @default(now())
+  besvarelse     IupBesvarelse @relation(fields: [besvarelseId], references: [id], onDelete: Cascade)
+
+  @@unique([besvarelseId, revisjon], map: "iup_revisjon_nummer_key")
+  @@unique([besvarelseId, requestId], map: "iup_revisjon_request_key")
+  @@map("iup_revisjoner")
+}
+
+// Web Push-abonnement per enhet/browser. Én bruker kan ha flere.
+// Slettes når abonnementet returnerer 410 Gone fra push-tjenesten.
 model PushSubscription {
   id         String    @id @default(cuid())
   userId     String    @map("user_id")

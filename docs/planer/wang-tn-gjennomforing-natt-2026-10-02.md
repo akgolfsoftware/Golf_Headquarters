@@ -5,7 +5,8 @@ Anders har bestilt gjennomføring av [hele planen](wang-team-norway-playerhq-kom
 ## Arbeidsgren og avgrensning
 
 - Første gren: `codex/wang-tn-iup-plan-2026-10-02`, merget via PR #1077.
-- Aktiv neste gren: `codex/iup-sesongevaluering-2026-10-02`, fra main `7430f5410`.
+- Andre gren: `codex/iup-sesongevaluering-2026-10-02`, merget via PR #1078.
+- Aktiv neste gren: `codex/iup-besvarelser-lagring-2026-10-02`, fra main `982debe6a`.
 - Worktree: `.claude/worktrees/codex-wang-tn-iup-plan` under prosjektets hovedmappe.
 - Startgrunnlag for kodearbeidet: `da40e700a`, etter PR #1076.
 - Andre aktive oppgaver arbeider med DataGolf/pipelines, Workbench, statistikk og testbatteriet. Deres endringer skal bevares og vurderes ved integrasjon.
@@ -24,7 +25,7 @@ Implementert i `src/lib/iup/utviklingssjekk.ts`, tilhørende JSON og tester:
 - Historikksammenligning krever samme kildeår, samme nivå og to leverte svar.
 - Ingen aktiv standardversjon endres. Det tidligere godkjente 2025-grunnlaget og det nye 2027-grunnlaget holdes adskilt inntil versjonsvalget er avklart.
 
-`scripts/check-iup-original.py` er en skrivebeskyttet kontroll mot de to kjente originalfilene. Den kontrollerer filenes SHA-256 før spørsmål leses og sammenligner alle 316 spørsmål med katalogen. Ingen besvarelser, kontaktfelt eller originale arbeidsbøker legges i Git. Kjør med `python3 scripts/check-iup-original.py --iup-2025 <lokal-2025-fil> --iup-2027 <lokal-2027-fil>`.
+`scripts/check-iup-original.py` er en skrivebeskyttet kontroll mot de to kjente originalfilene. Den kontrollerer filenes SHA-256 før spørsmål leses og sammenligner alle 316 utviklingsspørsmål og 26 sesongspørsmål med katalogene. Ingen besvarelser, kontaktfelt eller originale arbeidsbøker legges i Git. Kjør med `python3 scripts/check-iup-original.py --iup-2025 <lokal-2025-fil> --iup-2027 <lokal-2027-fil>`.
 
 **Viktig begrensning:** Dette er en kilde- og valideringsmodul. Den er ennå ikke koblet til spillerens lagring, års-/fireukerssjekk eller trenernes skjermer. Ingen brukerreise eller Excel-dekning er derfor ferdigmeldt på grunnlag av disse testene.
 
@@ -44,7 +45,17 @@ Implementert i `src/lib/iup/utviklingssjekk.ts`, tilhørende JSON og tester:
 
 `src/lib/iup/sesongevaluering.ts` og tilhørende kildekatalog bevarer begge originalenes tre fritekstspørsmål og ti vurderingsspørsmål. Originalens skala 1–4 brukes separat fra utviklingssjekkens 1–5. Eksplisitt sesongstart/-slutt hindrer at et gammelt årstall i originalteksten blir ny datoperiode. Faktisk og planlagt fordeling skal hver inneholde FYS/TEK/SLAG/SPILL/TURN og summere til 100 prosent ved levering. Minst tre utfylte forbedringspunkter kreves. Utkast bevarer mangler og får ikke automatisk nullverdier.
 
-Alle 26 sesongspørsmål er kontrollert mot originalfilene. Sju målrettede prøver bestod. Full `npm run verify` for andre leveranse bestod: 3 969 kodeprøver, 18 komponentprøver og Next-/Serwist-bygg. Også denne modulen er foreløpig en datakontrakt uten lagring eller montert skjerm. Serverlagets neste oppgave må dekke begge skjematypene med ett spillereid, versjonert grunnlag, slik at WANG og TN ikke lager hver sin besvarelse. GitHub CI og merge for denne leveransen gjenstår i skrivende stund.
+Alle 26 sesongspørsmål er kontrollert mot originalfilene. Sju målrettede prøver bestod. Full `npm run verify` for andre leveranse bestod: 3 969 kodeprøver, 18 komponentprøver og Next-/Serwist-bygg. [PR #1078](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1078) ble merget 02.10 kl. 02:11 etter grønn GitHub-kontroll og Vercel på head `bdf2ba66d`; main ble `982debe6a`. Modulen ble levert som datakontrakt uten montert skjerm.
+
+## Tredje leveranse: kanonisk lagring og historikk
+
+`IupBesvarelse` og `IupRevisjon` gir begge skjemaer ett spillereid grunnlag med kildeår, originalens kontrollsum, nivå og periode. Serverlaget henter eier fra innlogging, validerer mot originalkatalogen og håndterer samtidige endringer, gamle klienter og gjenforsøk. Utkast bevares separat fra siste levering. Historikken leses 20 revisjoner om gangen. Ingen trenerlesing eller ny offentlig handling er aktivert av dette grunnlaget.
+
+Dataeksport inkluderer alle revisjoner. Anonymisering sletter råsvar med tilhørende historikk. Ny SQL gir begge tabeller RLS og fjerner alle API-rettigheter for offentlige/innloggede klientroller. Datakartet er oppdatert; gammel fullprofil-deling får ingen utvidede rettigheter.
+
+17 prøver mot en separat lokal database bestod, inkludert reelle transaksjoner, konflikter, eierkontroll og RLS. 30 prøver for eksport/anonymisering og separat TypeScript-kontroll bestod. Oppsett og avgrensning står i `tests/iup-local/README.md`. Full `npm run verify` bestod med 3 970 kodeprøver, 18 komponentprøver og Next-/Serwist-bygg. Ingen prøver ble hoppet over. Typekontrollen i bygget brukte 9,6 minutter; den ble fullført uten å hoppe over kontrollen.
+
+Additiv SQL er deretter kjørt i det kontrollerte HQ-prosjektet `dcnxoztjtdqoidaekxry` som `iup_besvarelser_20261002`. Begge tabeller manglet ved forhåndskontroll. Etterkontroll bekrefter begge tabeller, RLS, ingen klientprivilegier/policyer for offentlig eller innlogget API-bruker, unike nøkler, valideringsbegrensninger og kaskadesletting. Ingen eksisterende brukerdata ble endret, og ingen IUP-svar ble registrert i produksjon som test. PR og CI gjenstår ved skrivingen av denne journalføringen. Spillerskjema og trenernes visninger gjenstår.
 
 ## Kontrolljournal
 
@@ -60,6 +71,8 @@ Alle 26 sesongspørsmål er kontrollert mot originalfilene. Sju målrettede prø
 Claude Design har en leveranse under `ui_kits/datagolf-komplett/` i [Precision-prosjektet](https://claude.ai/design/p/7d7c2994-cf63-4c5f-9bdc-fdaf67655a70?file=ui_kits%2Fdatagolf-komplett%2Fdesktop.html&present=1). Designverktøyet rapporterer DG-01–DG-17, tilstander og overleveringskontrakt. Denne rapporteringen er ikke alene godkjenning.
 
 Egen nettleserkontroll: desktopoversikt sett; valgt «SG innspill» og «Sesong 2025» i topplisten, åpnet syntetisk spiller, åpnet sammenligning og gått tilbake to ganger. Begge filtrene var bevart. Profilen skilte målt SG fra modell og opplyste at katalogprofilen ikke hadde PlayerHQ-konto eller privat IUP. Mobiloversikten er sett i den faktiske 390-rammen. Resterende skjermer, tallberegning, tastatur og alle tilstander er ikke kontrollert her. Prototypen er ikke koblet til appdata, og TN/WANG-versjonene må kontrolleres separat.
+
+Nyere Precision-eksport `(77)` inneholder også `ui_kits/iup-komplett/`. Dens `dekningsmatrise.md` og `overforing-wang-tn.md` oppgir feilaktig 1–8 for 2025-svar. Originalfilen og kildekontrollen viser **1–5 for både 2025 og 2027**. Ikke kopier prototypens historikketikett eller skala inn i appen. Eksportens utviklingssjekk ligger under Målsetning, mens fireukersoppfølging skal nås fra I dag. Designets rapporterte testresultater er ikke appprøver.
 
 ## Neste etapper
 
@@ -77,3 +90,9 @@ Egen nettleserkontroll: desktopoversikt sett; valgt «SG innspill» og «Sesong 
 1. Ingen nye ruter, databasekall eller handlinger. Modulen kan ikke lese eller endre en annen brukers data.
 2. JSON inneholder bare generiske spørsmål fra kjent skjema og kildemetadata. Ingen elevsvar, kontaktopplysninger, hemmeligheter eller private filstier.
 3. Ingen ny lagring, samtykkeendring, offentlig visning eller sletting. Tilgang, samtykke og livsløp for faktiske besvarelser må implementeres og prøves ved tilkobling til serverlaget.
+
+## Sikkerhets- og personvernkontroll av lagringen
+
+1. `lagreEgenIup` og `hentEgenIup` bruker `requireSpillerActionUser`. Eier kommer fra innlogging; klientens ekstra eier-/gruppefelt avvises. Lesing av fremmed ID returnerer samme tomme resultat som ukjent ID. Slettet/anonymisert eier kontrolleres mot databasen. Dette er prøvd mot lokal database.
+2. Kode og tester inneholder bare generiske spørsmål og syntetiske svar. Privat testkonfigurasjon er ignorert, med egen lokal rolle og passord. Ingen svar sendes til AI eller nye logger. Det finnes ingen ny offentlig rute, og SQL fjerner alle klientprivilegier på råsvarene.
+3. Den faktiske handlingsvakten stopper barn uten nødvendig foreldresamtykke. Begge datatyper og hele revisjonshistorikken følger eierens eksport og slettes ved anonymisering. Kaskadesletting og API-sperrer er prøvd i den separate databasen. Trenerdeling, samtykketekst og montert spillerskjerm inngår i neste del og er ikke ferdigmeldt.
