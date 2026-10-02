@@ -4,7 +4,8 @@ Anders har bestilt gjennomføring av [hele planen](wang-team-norway-playerhq-kom
 
 ## Arbeidsgren og avgrensning
 
-- Gren: `codex/wang-tn-iup-plan-2026-10-02`.
+- Første gren: `codex/wang-tn-iup-plan-2026-10-02`, merget via PR #1077.
+- Aktiv neste gren: `codex/iup-sesongevaluering-2026-10-02`, fra main `7430f5410`.
 - Worktree: `.claude/worktrees/codex-wang-tn-iup-plan` under prosjektets hovedmappe.
 - Startgrunnlag for kodearbeidet: `da40e700a`, etter PR #1076.
 - Andre aktive oppgaver arbeider med DataGolf/pipelines, Workbench, statistikk og testbatteriet. Deres endringer skal bevares og vurderes ved integrasjon.
@@ -39,13 +40,19 @@ Implementert i `src/lib/iup/utviklingssjekk.ts`, tilhørende JSON og tester:
 | Personvern | Eldre fullprofil-samtykke omfatter ikke automatisk helse/private notater | Bevar gjeldende grenser; ikke utvid gammelt samtykke ved å gjenbruke navnet |
 | DataGolf | Kundedistribusjon er ikke dokumentert lisensiert | Precision-design først med syntetiske data; lisens og feltfiltrering før ekte kundeaktivering |
 
+## Neste leveranse: komplett sesongevaluering som datakontrakt
+
+`src/lib/iup/sesongevaluering.ts` og tilhørende kildekatalog bevarer begge originalenes tre fritekstspørsmål og ti vurderingsspørsmål. Originalens skala 1–4 brukes separat fra utviklingssjekkens 1–5. Eksplisitt sesongstart/-slutt hindrer at et gammelt årstall i originalteksten blir ny datoperiode. Faktisk og planlagt fordeling skal hver inneholde FYS/TEK/SLAG/SPILL/TURN og summere til 100 prosent ved levering. Minst tre utfylte forbedringspunkter kreves. Utkast bevarer mangler og får ikke automatisk nullverdier.
+
+Alle 26 sesongspørsmål er kontrollert mot originalfilene. Sju målrettede prøver bestod. Full `npm run verify` for andre leveranse bestod: 3 969 kodeprøver, 18 komponentprøver og Next-/Serwist-bygg. Også denne modulen er foreløpig en datakontrakt uten lagring eller montert skjerm. Serverlagets neste oppgave må dekke begge skjematypene med ett spillereid, versjonert grunnlag, slik at WANG og TN ikke lager hver sin besvarelse. GitHub CI og merge for denne leveransen gjenstår i skrivende stund.
+
 ## Kontrolljournal
 
 - Katalog mot originalfiler: bestått, 154 + 162 spørsmål.
 - Målrettede kilde-/besvarelsestester: 8 bestått.
 - Første fullkontroll stoppet ved TypeScript på grunn av Node-minnegrense. Ny kjøring med prosjektets Node 24 og 8 GiB minnegrense bestod; ingen kontroller ble fjernet.
 - Full `npm run verify`: bestått, 3 962 kodeprøver + 18 komponentprøver, ingen hoppet over; Next- og Serwist-bygg bestått. Bygget kjørte uten produksjonsmiljø og meldte manglende lokale databasetabeller/AI-konfigurasjon; dette er ikke bevis på produksjonsdata eller integrasjoner.
-- CI og merge: ikke bekreftet ennå.
+- Første leveranse: [PR #1077](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1077), GitHub `verify` og Vercel bestått. Merget 02.10.2026 kl. 01:52 norsk tid som `7430f5410`. Kontrollert PR-head `0544b7590`; ingen produksjonsbrukerreise er prøvd.
 - Nettleserreiser, ekte lagring, begge trenerroller, eksport/sletting for nye svar og visuell sammenligning: gjenstår.
 
 ## Observert DataGolf-design
