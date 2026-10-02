@@ -51,3 +51,57 @@ Masteren bruker fot for putting og mph for Club Speed/Ball Speed. Designprompten
 ## Oppsummering før lagring på arbeidsgren
 
 Kontrollert diff: beregning/visning, trenerens radtilgang, syntetiske regresjonsprøver og datert gjennomføringsunderlag. Ingen hemmeligheter, ekte spilleropplysninger, produksjonsskriving, invitasjoner eller e-post. Eksisterende samtykke- og foresattvakter er beholdt. Den avsluttende visningsteksten «Resultatet må kontrolleres» er kontrollert med seks egne visningsprøver etter tekstjusteringen. Automatisk datostempel i `docs/ordbok.json` er tilbakeført; språk-masteren er ikke endret.
+
+## Videreføring etter bestilling om fullføring og merge
+
+Arbeidsgrenen er oppdatert med `origin/main` på `55bf1d5ca` (lokal merge `08fe725ac`). Kontrollstatus ovenfor gjelder første del; denne seksjonen dokumenterer videreføringen.
+
+### Beregning og historikk
+
+- Nærspill Gate og VISA Express summerer manuelle desimalpoeng. Fasit 12,5 beholdes.
+- Wedge Gate teller ni treffvilkår. Driver Gate teller seks faktiske treff. Putt Gate krever både ren gate og lengdesone; en rett putt som er for kort/lang krever ikke oppdiktet sidebom.
+- Putt Speed beregner gjennomsnittlig absolutt restavstand. Råenheten (m/cm/fot) og kort/lang beholdes; resultatet vises i fot. Kort og lang utligner ikke hverandre.
+- Ny regelutgave `tn-excel-v3-2026-10-02` har egne definisjons-ID-er. Gamle definisjoner, rådata og utkast beholder utgaven fra 10.09. Ukjente og feil kombinerte versjoner avvises.
+- Teknikk C har fem grunnmålinger og fem måleforsøk i ny utgave. Gamle 15-radersutkast kan fortsatt åpnes med sin opprinnelige versjon. Fullføring venter fortsatt på Impact Location.
+- Syv tidligere sperrede varianter er åpnet. Totalt 34 varianter kan fullføres; ni-hullsputting og teknikk A/B/C har fortsatt konkrete faglige sperrer. Fysiske protokoller er fortsatt ikke ferdig implementert.
+
+### Faktisk lokal databasekontroll
+
+Egen container `ak-hq-testbatteri-20261002-db`, kun `127.0.0.1:56022`, database `testbatteri_20261002`. Skjema generert fra prosjektets Prisma-skjema i en tom database, uten produksjonsdata eller produksjonslegitimasjoner. Testen kontrollerer vert, port, databasenavn og egen identitetsrad før skriving. Se [testoppskriften](../../tests/testbatteri-local/README.md).
+
+**35 av 35 databaseprøver bestod:** alle 34 fullførbare protokoller gjennom utkast, gjenlesing med separat SQL-klient, avvist annen spiller, fullføring, gjentatt innsending og historisk resultatkontroll, samt én prøve med samtidige rettelser. Innlogget identitet og etterarbeid er isolert; dette beviser ikke Auth, RLS, nettleser eller produksjon.
+
+To faktiske feil ble oppdaget og rettet:
+
+1. PostgreSQL JSONB kan endre feltenes rekkefølge. Sammenligning med `JSON.stringify` avviste identisk gjentatt innsending. Spiller- og trenerhandlingene sammenligner nå nøkler og verdier uavhengig av rekkefølge.
+2. Gjenlest flyttall kunne være `0,0161410033903111` mens beregningen var `0,016141003390311135`. Helt eksakt likhet kunne derfor skjule gyldige resultater. Kontrollene tillater nå kun maskinpresisjonens avrundingsstøy (16 × Number.EPSILON), mens reelle score-/enhetsavvik fortsatt avvises. Visningsavrunding brukes aldri som sammenligningsgrunnlag.
+
+### Claude Design og overlevering
+
+Alle tre prosjektene har nå klikkbare testmoduler og testdagprototyper med kildeuttrekket fra vedleggene. Private prosjektarkiver er lastet ned via Claude Designs eksport. Arkivene er kilde-/designbevis, ikke ferdig appkode. De er lagret under `Documents/Claude/akgolf-hq/testbatteri-kontroll-2026-10-02/design-eksport/`.
+
+Korrigeringer i denne runden: Precision Innspill Basis bruker faktisk tilpasset mål i PEI, og holder tilpassede serier utenfor standardrangering. Team Norway-baneføring bruker restavstand til hull, korrekt påkrevd hullnummer og ballplassering, og beholder standard-/faktisk mål separat. WANG har rettet målserier, språk og bildeoppstart. Claude rapporterer egne skjerm-/tilstandsprøver; dette erstatter ikke Codex sin uavhengige sammenligning mot appen.
+
+### Gjenstående omfang
+
+Skjermportering fra den nye eksporten, automatisk/offline lagring per forsøk, private forsøksbilder, felles arrangement på tvers av skoler/grupper, deltakerføring, tilgangskontroll gjennom hele reisen og ekte liveoppdatering er fortsatt uferdig. Disse delene må ikke merkes fullført eller blandes inn i en påstand om at hele testbatteriet er lansert.
+
+Fagspørsmålene om ni-hullsmål, Impact Location, fysiske protokoller og hvem som får se felles spillerliste er sendt til Anders og står fortsatt ubesvart. Allerede avklarte poeng-/gate-/speedregler er gjennomført uten å be om ny godkjenning.
+
+Sikkerhetskontroll for denne delen: ingen nye åpne ruter, ingen utvidelse av eksisterende spiller-/coachrettigheter, ingen nye produksjonstabeller eller lagringskategorier. Alle nye prøvepersoner er syntetiske og ligger kun lokalt. Eksisterende samtykke- og foresattvakter er beholdt. Database-/lagringsbeviset gjelder den eksisterende egenføringen, ikke den bestilte nye felles testdagen.
+
+### Eksportidentitet og uavhengig kontroll
+
+Siste private designarkiver (SHA-256):
+
+- Precision: `40db63fff699e2dc8ef8d06b64f2ffc64f92e8251bd991d7009ececfdb42fb83`.
+- WANG: `94ec9278498c217a831ced9a4657202ddff30f7db9fe18807fef1577740c151a`.
+- Team Norway: `6cb7fd24df5b3069982f8e9fa741b73c272687753be5b82706739e844d598080`.
+
+Codex har gjenåpnet Precision-scorekortet etter siste retting: Driver 270 med rest 8,64 m viser foreløpig PEI 3,2 %. Skjermbevis: privat `claude-design-sluttkontroll-pei.png`. Prototypen merker lagring som simulert. Dette er designkontroll, ikke bevis på bildeopplasting eller liveoppdatering i appen.
+
+Siste målrettede kodekontroll bestod med 105 av 105 prøver. I tillegg bestod 35 av 35 lokale databaseprøver. Full kvalitetskontroll og CI dokumenteres separat når de er avsluttet.
+
+### Avsluttet lokal kvalitetskontroll
+
+Full `npm run verify` avsluttet med kode 0: 4 024 kodetester, 18 komponenttester, statiske vakter, TypeScript, lint, produksjonsbygg og Serwist bestod. Egen dokumentkontroll bestod etter oppdatering av rapporten. Siste rene innrykksretting og presisering av versjonsfeilmeldingen er også kontrollert med målrettet lint, og inngikk i den etterfølgende byggkontrollen. Kontrollen brukte ikke produksjonslegitimasjoner; databasebeviset kommer fra den separate lokale prøven beskrevet over. GitHub CI og merge er neste separate steg.

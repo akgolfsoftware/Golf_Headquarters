@@ -1,6 +1,6 @@
 # Gjennomføringsplan: komplett testbatteri fra kilder til main
 
-Dato: 02.10.2026. Bestilling: Anders Kristiansen. Status: gjennomføring startet på `codex/testbatteri-plan-2026-10-02`; kilde-/fasitregister og første resultatvisningsrettelser er under verifisering. Ingen merge eller produksjonsendring utført.
+Dato: 02.10.2026. Bestilling: Anders Kristiansen. Status: TB-05 utvidet til 34 fullførbare varianter; 35 faktiske lokale databaseprøver bestod. Ny Claude-eksport er hentet, men portering, bilder og felles testdag/live er fortsatt uferdig. Detaljer i [gjennomføringsrapporten](../design-audit/testbatteri-gjennomforing-2026-10-02.md). Opprinnelig status ved planstart: gjennomføring startet på `codex/testbatteri-plan-2026-10-02`; kilde-/fasitregister og første resultatvisningsrettelser er under verifisering. Ingen merge eller produksjonsendring utført.
 
 **Bestilt sluttresultat:** Testlogikken skal verifiseres, nødvendige skjermer ferdigstilles og kontrolleres i Claude Design, deretter porteres til fungerende appkode, verifiseres samlet og flettes inn i `main`. Oppgaven er ikke ferdig ved en prototype, en åpen PR eller et grønt enkeltstående testsett. Rekkefølgen, arbeidspakkene og sluttkontrollen står i punkt 8, 11 og 12.
 

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import source from "./fixtures/tn-excel-v3.json";
-import { TN_CATALOG, tnProtocol } from "./tn-catalog";
+import { TN_CATALOG, TN_VERSION, tnProtocol } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, type TnValues } from "./tn-scoring";
 import { validateCompletion } from "./validate-completion";
 import { scoreTest } from "./test-scoring";
@@ -51,7 +51,7 @@ test("8-ball bruker meter og terskler uten å runde input", () => {
   assert.equal(tnScore(p, values).metrics.find(m => m.label === "Totalt antall poeng")!.value, 71);
 });
 test("ukjente gate-regler produserer ikke falsk standardscore", () => {
-  const p = tnProtocol("naerspill-gate")!;
+  const p = tnProtocol("naerspill-gate", undefined, TN_VERSION)!;
   const values = Object.fromEntries(p.rows.map((_, i) => [String(i + 1), { points: 1 }]));
   assert.equal(tnValidate(p, values, false), null);
   assert.throws(() => tnScore(p, values), /Poengskala/);

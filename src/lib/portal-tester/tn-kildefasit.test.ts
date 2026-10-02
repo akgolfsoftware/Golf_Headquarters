@@ -9,14 +9,13 @@ const register = z.object({
   protocols: z.array(z.object({ id: z.string(), count: z.number().optional() })),
   acceptanceCases: z.array(z.object({
     protocolId: z.string(), inputs: z.unknown(),
-    expected: z.object({ pei: z.number().optional(), points: z.number().optional(), totalStrokes: z.number().optional() }),
+    expected: z.object({ pei: z.number().optional(), points: z.number().optional(), totalStrokes: z.number().optional(), hits: z.number().optional(), meanAbsoluteResidualCm: z.number().optional() }),
   })),
 }).parse(JSON.parse(readFileSync(new URL("../../../docs/planer/testbatteri-protokollregister-2026-10-02.json", import.meta.url), "utf8")));
 const inputRows = z.array(z.record(z.string(), z.unknown()));
 
 // Expected values were calculated independently from the attached workbook's
-// targets, not by tnScore. This covers the 27 executable protocols; the other
-// 11 and physical definitions remain explicit work in the register.
+// targets, not by tnScore. Includes explicit field mapping for the verified gate and speed rules.
 for (const protocol of TN_CATALOG.filter(p => !p.blocked)) {
   test(`uavhengig kildefasit: ${protocol.id}`, () => {
     const fixture = register.acceptanceCases.find(c => c.protocolId === protocol.id)!;
@@ -28,18 +27,25 @@ for (const protocol of TN_CATALOG.filter(p => !p.blocked)) {
       const fields: TnValues[string] = {};
       for (const field of row.fields) {
         if (field.optional) continue;
-        const raw = source[field.key];
+        const raw = source[field.key]
+          ?? (field.key === "ok" ? source.hit ?? source.gateClear : undefined)
+          ?? (field.key === "speedZone" ? source.withinSpeedZone : undefined)
+          ?? (field.key === "distanceUnit" ? source.unit : undefined);
         if (typeof raw === "number" || typeof raw === "string") fields[field.key] = raw;
         else if (field.key === "hole") fields.hole = i + 1;
         else if (field.choices) fields[field.key] = field.choices[0];
         else assert.fail(`Fasit mangler ${field.key}`);
       }
+      if (protocol.id === "putt-gate" && fields.ok === "Nei") fields.miss = "Venstre";
       values[String(i + 1)] = fields;
     }
     assert.equal(tnValidate(protocol, values, true), null);
     const actual = tnScore(protocol, values);
     const expected = fixture.expected;
-    const expectedMain = protocol.points8Ball ? expected.points : protocol.kind === "putts" ? expected.totalStrokes : expected.pei;
+    const expectedMain = protocol.points8Ball || protocol.kind === "points" ? expected.points
+      : protocol.kind === "gate" ? expected.hits
+      : protocol.kind === "speed" ? expected.meanAbsoluteResidualCm! / 30.48
+      : protocol.kind === "putts" ? expected.totalStrokes : expected.pei;
     assert.equal(typeof expectedMain, "number");
     assert.ok(Math.abs(actual.score - expectedMain!) < 1e-12);
     if (expected.pei !== undefined) {
