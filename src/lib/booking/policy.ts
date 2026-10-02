@@ -59,6 +59,11 @@ export function cancellationDeadline(startAt: Date): Date {
   return tilNaivVeggklokke(new Date(naivOsloTilTidspunkt(startAt).getTime() - AVBESTILLING_FRIST_TIMER * 3_600_000));
 }
 
+/** Frist for databaseverdier med Oslo-veggklokke i UTC-feltene. */
+export function cancellationDeadlineFromUtcWallClock(startAt: Date): Date {
+  return tilNaivVeggklokke(new Date(naivOsloTilTidspunkt(startAt, "utc").getTime() - AVBESTILLING_FRIST_TIMER * 3_600_000), "utc");
+}
+
 export function hoursUntil(startAt: Date, now: Date = new Date()): number {
   return (naivOsloTilTidspunkt(startAt).getTime() - now.getTime()) / (60 * 60 * 1000);
 }

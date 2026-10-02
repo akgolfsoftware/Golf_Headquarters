@@ -152,6 +152,7 @@ export async function runSyncVaktbikkje(now: Date = new Date()): Promise<AgentRe
         select: { lastSyncAt: true },
       }),
       prisma.sgBaseline.findFirst({
+        where: { baselineKind: "legacy_sg_bucket", fetchedAt: { not: null } },
         orderBy: { fetchedAt: "desc" },
         select: { fetchedAt: true },
       }),

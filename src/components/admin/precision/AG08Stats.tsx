@@ -19,6 +19,7 @@ import { MILJO_GRUPPER, MILJO_GRUPPE_LABEL, type MiljoGruppe } from "@/lib/taxon
 import type { HistorikkOppsummering, TreningsKilde, TreningsRad } from "@/lib/portal-analyse/trenings-historikk";
 import { DATAGRUNNLAG_TEKST, desimal, kortDato, sg, akseFra, type AkseKode } from "@/lib/admin-spiller/spiller360-visning";
 import type { S360Stats } from "@/lib/admin-spiller/spiller360-typer";
+import { TreningsvolumVisning } from "./TreningsvolumVisning";
 
 const DELER = [["snitt", "Snittscore"], ["sg", "Strokes Gained"], ["tren", "Trening"], ["test", "Tester"]] as const;
 type Del = (typeof DELER)[number][0];
@@ -196,7 +197,7 @@ function Trening({ d, spillerId }: { d: S360Stats; spillerId: string }) {
     <div className="a8-to">
       <div className="a8-stabel">
         <Seksjon k="Plan mot faktisk" meta={t.planKilde}>
-          {!t.planMotFaktisk.length ? <Dempet>Ingen plan denne uka.</Dempet> : <>
+          {t.volumMetadata ? <TreningsvolumVisning volum={t.volumMetadata} /> : !t.planMotFaktisk.length ? <Dempet>Ingen plan denne uka.</Dempet> : <>
             <Liste>{t.planMotFaktisk.map((r) => <Stolpe key={r.akse} merke={<AkseMerke axis={r.akse as AkseKode} size="sm" />} andel={r.faktisk / maks} plan={r.plan / maks} verdi={`${r.faktisk} / ${r.plan}`} />)}</Liste>
             <Liste>{t.planMotFaktisk.map((r) => <Rad key={r.akse}><Etikett a={AKSE_NAVN[r.akse as AkseKode]} sub={`PLAN ${r.plan} MIN · FAKTISK ${r.faktisk} MIN`} /><Verdi>{avvik(r)}</Verdi></Rad>)}</Liste>
             <Meta>STREKEN ER PLANEN · MINUTTER</Meta>
@@ -209,7 +210,7 @@ function Trening({ d, spillerId }: { d: S360Stats; spillerId: string }) {
           {!t.analyse ? <Dempet>Ingen økter i perioden.</Dempet> : (
             <div className="a8-tall-rutenett">
               <TallFlis k="Økter" v={`${t.analyse.gjennomforteOkter}/${t.analyse.planlagteOkter}`} kilde="GJENNOMFØRT / PLANLAGT" />
-              <TallFlis k="Etterlevelse" v={t.analyse.etterlevelsePct ?? "—"} enhet={t.analyse.etterlevelsePct != null ? "%" : null} kilde="ØKTER" />
+              <TallFlis k="Etterlevelse" v={t.analyse.etterlevelsePct ?? "—"} enhet={t.analyse.etterlevelsePct != null ? "%" : null} kilde="MINUTTER · 4 UKER" />
               <TallFlis k="Repetisjoner" v={`${t.analyse.faktiskeReps}/${t.analyse.planlagteReps}`} kilde="FAKTISK / PLAN" />
               <TallFlis k="Baller slått" v={t.analyse.ballerSlatt} kilde={`SVINGER UTEN BALL ${t.analyse.svingerUtenBall}`} />
             </div>

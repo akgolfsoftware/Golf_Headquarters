@@ -25,18 +25,21 @@ import { Ark, Nokkelverdi, Side, SideHode } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { AKSER, Aksestang, Caps, Fremdrift, Listerad, Oktkort, Valgpille, Velger, akseFra, akseStil } from "@/components/precision/pa-workbench";
 import { useUkeMotor } from "@/components/workbench/useUkeMotor";
+import { Ukeforslag } from "@/components/workbench/Ukeforslag";
 import { lesKildeDataTransfer, settKildeDataTransfer } from "@/components/workbench/wb-drag";
 import { osloIdag } from "@/components/workbench/WeekGrid";
 import { AREA_LABEL, UI } from "@/lib/domain/workbench/labels";
-import { addDays, isoWeekNumber, mondayOf } from "@/lib/domain/workbench/operations";
+import { addDays, isoWeekNumber } from "@/lib/domain/workbench/operations";
 import type { PlanningGoalSummary, PyramidArea, SourceItem, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { WorkbenchFysTurneringData } from "@/lib/workbench/fys-turnering-data";
-import { workbenchUrl } from "@/lib/workbench/visning-url";
+import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
+import { flyttPlanUke, parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
+import { UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
 import { PLAN_NIVAA_LABEL } from "@/lib/domain/maal-plannivaa";
 import { CoachnotatArk, NyOktArk, OktArk, OvelseArk, PubliserArk, UkeplanArk, VelgerArk, UKENOTAT_NAVN, UKETYPE_NAVN, dagOgDato, kildeMerke, klokke, type NyOktUtkast } from "./AG11Ark";
 import "@/styles/precision-a9.css";
 
-export type AG11Niva = "uke" | "okt" | "mal";
+export type AG11Niva = "uke" | "okt" | "vol" | "mal";
 export type AG11Side = "bank" | "fys" | "maler" | "turn" | "tp" | "mal";
 
 export type AG11Props = {
@@ -51,6 +54,9 @@ export type AG11Props = {
   niva?: AG11Niva;
   side?: AG11Side;
   valgtOktId?: string;
+  routeSurface?: WorkbenchSurface;
+  planKontekst?: PlanReferanse;
+  role?: "coach" | "player";
 };
 
 const SIDEFELT: [AG11Side, string][] = [["bank", "Øvelsesbank"], ["fys", "Fysisk program"], ["maler", "Øktmaler"], ["turn", "Turneringer"], ["tp", "Ny teknisk plan"], ["mal", "Målsetninger"]];
@@ -66,7 +72,7 @@ const tellendeOkter = (w: WeekViewModel) => w.days.flatMap((d) => d.sessions).fi
 type Dra = { kind: "akse"; akse: Akse } | { kind: "okt"; session: WorkbenchSession };
 type Drar = Dra & { x: number; y: number; over: string | null };
 
-export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grupper, goals, fys, niva: niva0 = "uke", side: side0 = "bank", valgtOktId }: AG11Props) {
+export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grupper, goals, fys, niva: niva0 = "uke", side: side0 = "bank", valgtOktId, routeSurface = "agency", planKontekst, role = "coach" }: AG11Props) {
   const router = useRouter();
   const motor = useUkeMotor({ playerId, uke });
   const { week, travel } = motor;
@@ -97,18 +103,23 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
   const aktivOkt = okter.find((s) => s.id === oktId) ?? okter[0] ?? null;
   const harGruppeokter = alle.some((s) => s.sourceGroupSessionId);
   const idx = roster.findIndex((p) => p.id === playerId);
-  const spillerHref = (id: string) => `${workbenchUrl(id, niva === "okt" ? "okt" : "uke", { uke: week.weekStart })}`;
+  const referanse: PlanReferanse = {
+    ...(planKontekst ?? parsePlanKontekst({ uke: week.weekStart }).referanse),
+    uke: week.weekStart,
+    okt: oktId ?? planKontekst?.okt,
+  };
+  const wbUrl = (visning: Parameters<typeof workbenchUrl>[1], ref: PlanReferanse = {}) => workbenchUrl(playerId, visning, ref, routeSurface, referanse);
+  const spillerHref = (id: string) => workbenchUrl(id, niva, {}, routeSurface, referanse);
 
   function byttNiva(n: AG11Niva, okt?: string) {
     setNivaState(n);
     if (okt) setOktId(okt);
-    const url = n === "okt" ? workbenchUrl(playerId, "okt", { uke: week.weekStart, okt: okt ?? oktId }) : n === "mal" ? `/admin/workbench/${playerId}?vis=mal&uke=${week.weekStart}` : workbenchUrl(playerId, "uke", { uke: week.weekStart });
-    router.replace(url, { scroll: false });
+    router.replace(wbUrl(n, okt ? { okt } : {}), { scroll: false });
   }
 
   const byttUke = (retning: -1 | 1 | 0) => {
-    const ny = retning === 0 ? mondayOf(idag) : mondayOf(addDays(week.weekStart, retning * 7));
-    router.push(niva === "okt" ? workbenchUrl(playerId, "okt", { uke: ny }) : niva === "mal" ? `/admin/workbench/${playerId}?vis=mal&uke=${ny}` : workbenchUrl(playerId, "uke", { uke: ny }));
+    const ny = flyttPlanUke(retning === 0 ? idag : week.weekStart, retning);
+    router.push(wbUrl(niva, { uke: ny }));
   };
 
   /* ---------- Slipp på klokkeslett ---------- */
@@ -216,7 +227,8 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
   });
   const visFordeling = fordeling.some((f) => f.planMin != null || f.lagt > 0);
   const totalt = okter.reduce((sum, s) => sum + s.durationMinutes, 0);
-  const typeNavn = week.weekPlan?.weekType ? UKETYPE_NAVN[week.weekPlan.weekType] : null;
+  const typeNavn = UKEPLAN_TYPER.find((t) => t.id === week.weekPlan?.planningDetails?.weekType)?.navn
+    ?? (week.weekPlan?.weekType ? UKETYPE_NAVN[week.weekPlan.weekType] : null);
 
   const ukeFlate = <>
     <div className="a9-ukenav">
@@ -227,6 +239,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     <div className="a9-rad">
       <Knapp variant="ghost" size="sm" icon={RotateCcw} onClick={() => byttUke(0)}>{UI.today}</Knapp>
       <Knapp variant="secondary" size="sm" icon={Plus} onClick={() => setNyOkt({ dato: week.days[dag]?.date ?? week.weekStart, startMinutt: 16 * 60, pyramide: null })}>{UI.createSession}</Knapp>
+      {role === "player" && <Ukeforslag key={week.weekStart} weekStart={week.weekStart} onLagret={motor.lastPaaNytt} />}
       <span style={{ flex: 1 }} />
       <Knapp size="sm" icon={Send} disabled={motor.utkast.length === 0 || travel} onClick={() => setPubliser(true)}>{UI.publishWeek}{motor.utkast.length ? ` · ${motor.utkast.length}` : ""}</Knapp>
     </div>
@@ -319,6 +332,37 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     {goals.length === 0 ? <TomTilstand icon={Target} title="Ingen målsetninger" text="Aktive resultat- og prosessmål vises her, med fremdrift fra plan, Stats, tester og runder." /> : <div role="list">{goals.map(malRad)}</div>}
   </>;
 
+  /* ---------- Volum og belastning ---------- */
+  const gjennomfortMin = motor.weeklyLoad.completedMinutes;
+  const planMin = week.budget.plannedMinutes || totalt;
+  const aktiveVarsler = week.budget.warnings?.filter((varsel) => varsel.aktiv) ?? [];
+  const volumFlate = <>
+    <div className="a9-kort__hode"><span className="a9-kort__tittel">Volum og belastning · uke {ukeNr}</span></div>
+    <Caps>PLANLAGT MOT GJENNOMFØRT · MANGLENDE MÅLING VISES SOM —</Caps>
+    <div className="a9-fordeling" aria-label="Volum denne uka">
+      <Nokkelverdi items={[
+        ["Planlagt", planMin > 0 ? hm(planMin) : "—"],
+        ["Gjennomført", motor.weeklyLoad.totalSessionsCount > 0 ? hm(gjennomfortMin) : "—"],
+        ["sRPE", motor.weeklyLoad.ratedSessionsCount > 0 ? String(motor.weeklyLoad.totalLoad) : "—"],
+        ["Vurderte økter", `${motor.weeklyLoad.ratedSessionsCount} av ${motor.weeklyLoad.totalSessionsCount}`],
+      ]} />
+      {fordeling.map((f) => <div key={f.a} className="a9-fordeling__rad" style={akseStil(f.a)}>
+        <span className="a9-fordeling__topp"><span>{AKSE_NAVN[f.a]}</span><span>{f.lagt ? hm(f.lagt) : "—"}</span></span>
+        <Fremdrift pct={f.planMin ? (f.lagt / f.planMin) * 100 : null} label={`${AKSE_NAVN[f.a]} mot ukeplanen`} />
+        <Caps>{f.planMin != null ? `PLAN ${hm(f.planMin).toUpperCase()}` : "PLAN —"}</Caps>
+      </div>)}
+    </div>
+    <section className="a9-mal" aria-label="Belastningsgrunnlag">
+      <div className="a9-mal__topp"><span className="pa-status"><span className="pa-status__dot" />Belastning</span><span className="a9-mal__navn">Opplevd anstrengelse</span><span className="a9-mal__pct">{motor.weeklyLoad.averageEffort ?? "—"}</span></div>
+      <p className="a9-tekst">sRPE beregnes som registrerte minutter ganger opplevd anstrengelse. Uker uten registrering regnes ikke som null.</p>
+    </section>
+    {aktiveVarsler.length > 0 ? aktiveVarsler.map((varsel) => <InlineVarsel key={varsel.id} tone="warn" tittel={varsel.tittel}>{varsel.melding}</InlineVarsel>) : <InlineVarsel tone="info" tittel="Datagrunnlag">Ingen aktive varsler. Manglende historikk vises som — og brukes ikke som null.</InlineVarsel>}
+    <div className="a9-rad">
+      <Knapp variant="secondary" size="sm" icon={ListChecks} onClick={() => setUkeplan(true)}>Rediger ukebudsjett</Knapp>
+      {role === "coach" ? <Knapp size="sm" icon={Plus} onClick={() => { byttNiva("uke"); setNyOkt({ dato: week.weekStart, startMinutt: 16 * 60, pyramide: null }); }}>Legg tiltak i Workbench</Knapp> : null}
+    </div>
+  </>;
+
   /* ---------- Sidefelt ---------- */
   const armer = (k: SourceItem) => { setArm(null); setArmKilde(armKilde?.id === k.id ? null : k); if (niva !== "uke") byttNiva("uke"); };
   const kildeRad = (k: SourceItem, i: number, handling: "okt" | "arm") => <div key={k.id} role="listitem" className={`a9-listerad a9-kilde${i ? " a9-listerad--skille" : ""}`} draggable
@@ -349,7 +393,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
       <Caps>{`${ddmm(blokk.startDate)}–${ddmm(blokk.endDate)}${blokk.focus ? ` · ${blokk.focus}` : ""}`.toUpperCase()}</Caps>
       {fysOkter.length === 0 ? <Caps>INGEN KOMMENDE FYSISKE ØKTER</Caps> : <div role="list" className="a9-liste">{fysOkter.map((s, i) => <Listerad key={s.id} forste={i === 0} akse="fys" tittel={s.title} under={`${dagOgDato(s.date)} · ${s.type}`.toUpperCase()} verdi={s.durationMinutes != null ? `${s.durationMinutes} min` : "—"} />)}</div>}
     </> : <Caps>INGEN FYSISK BLOKK ENNÅ</Caps>}
-    <KnappLenke variant="ghost" size="sm" icon={Dumbbell} iconRight={ChevronRight} href={`/admin/workbench/${playerId}?pille=fys`}>Åpne hele programmet</KnappLenke>
+    <KnappLenke variant="ghost" size="sm" icon={Dumbbell} iconRight={ChevronRight} href={`${routeSurface === "player" ? "/portal/planlegge/workbench" : `/admin/workbench/${playerId}`}?pille=fys`}>Åpne hele programmet</KnappLenke>
   </> : side === "maler" ? <>
     {maler.length === 0 && forrige.length === 0 ? <Caps>INGEN MALER ELLER ØKTER FRA FORRIGE UKE</Caps> : null}
     {maler.length > 0 && <><Caps>ØKTMALER</Caps><div role="list" className="a9-liste">{maler.map((k, i) => kildeRad(k, i, "arm"))}</div></>}
@@ -357,10 +401,10 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     <Caps>LAGRE EN ØKT SOM MAL FRA ØKTARKET</Caps>
   </> : side === "turn" ? <>
     {fys.tournamentPlans.length === 0 ? <Caps>INGEN TURNERINGSPLANER</Caps> : <div role="list" className="a9-liste">{fys.tournamentPlans.slice(0, 6).map((t, i) => <Listerad key={t.id} forste={i === 0} akse="turn" tittel={t.title} under={`${ddmm(t.startDate)}–${ddmm(t.endDate)} · ${t.rounds.length} RUNDER`} verdi={<span className="pa-status"><span className="pa-status__dot" />{t.status}</span>} />)}</div>}
-    <KnappLenke variant="ghost" size="sm" icon={Trophy} iconRight={ChevronRight} href={`/admin/workbench/${playerId}?pille=turn`}>Åpne turneringsmodulen</KnappLenke>
+    <KnappLenke variant="ghost" size="sm" icon={Trophy} iconRight={ChevronRight} href={`${routeSurface === "player" ? "/portal/planlegge/workbench" : `/admin/workbench/${playerId}`}?pille=turn`}>Åpne turneringsmodulen</KnappLenke>
   </> : side === "tp" ? <>
     {tek.length === 0 ? <Caps>INGEN TEKNISKE OPPGAVER</Caps> : <div role="list" className="a9-liste">{tek.map((k, i) => kildeRad(k, i, oktHandling))}</div>}
-    <KnappLenke variant="secondary" size="sm" icon={ClipboardList} href={`/admin/spillere/${playerId}/plan`}>Ny teknisk plan</KnappLenke>
+    <KnappLenke variant="secondary" size="sm" icon={ClipboardList} href={role === "coach" ? `/admin/spillere/${playerId}/plan` : "/portal/coach/melding/ny?emne=teknisk-plan"}>{role === "coach" ? "Ny teknisk plan" : "Be coach lage teknisk plan"}</KnappLenke>
   </> : <>
     {goals.length === 0 ? <Caps>INGEN AKTIVE MÅLSETNINGER</Caps> : <div role="list" className="a9-liste">{goals.map((g, i) => <Listerad key={g.id} forste={i === 0} tittel={g.title} under={`${g.category === "OUTCOME" ? "RESULTATMÅL" : "PROSESSMÅL"} · ${PLAN_NIVAA_LABEL[g.planNivaa].toUpperCase()}`} verdi={g.fremdrift.hasData ? `${g.fremdrift.pct} %` : "—"} />)}</div>}
     <Knapp variant="secondary" size="sm" icon={Target} onClick={() => byttNiva("mal")}>Vis målsetninger i midtfeltet</Knapp>
@@ -373,45 +417,45 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
 
   /* ---------- Snarveier (A3) ---------- */
   const snarveier: [typeof Plus, string, () => void][] = [
-    [LayoutTemplate, "Bruk mal på spiller", () => setSide("maler")],
-    [StickyNote, "Coachnotat", () => setNotat(true)],
+    [LayoutTemplate, role === "coach" ? "Bruk mal på spiller" : "Bruk øktmal", () => setSide("maler")],
+    ...(role === "coach" ? [[StickyNote, "Ukenotat", () => setNotat(true)] as [typeof Plus, string, () => void]] : []),
     [Search, "Søk i tekniske oppgaver", () => setSide("tp")],
     [ListChecks, "Ukeplan og mål", () => setUkeplan(true)],
   ];
 
   const nivaaer: [string, string, AG11Niva | string][] = [
-    ["ar", "År", workbenchUrl(playerId, "aar", { aar: week.weekStart.slice(0, 4) })],
-    ["periode", "Periode", workbenchUrl(playerId, "periode", { aar: week.weekStart.slice(0, 4) })],
-    ["maned", "Måned", workbenchUrl(playerId, "maned", { maned: week.weekStart.slice(0, 7) })],
-    ["uke", "Uke", "uke"], ["okt", "Økt", "okt"], ["mal", "Målsetninger", "mal"],
-    ["stall", "Stall", workbenchUrl(playerId, "stall", { uke: week.weekStart })],
-    ["live", "Live", workbenchUrl(playerId, "live", { uke: week.weekStart })],
-    ["min", "Min kalender", workbenchUrl(playerId, "min", { uke: week.weekStart })],
+    ["ar", "År", wbUrl("aar")],
+    ["periode", "Periode", wbUrl("periode")],
+    ["maned", "Måned", wbUrl("maned")],
+    ["uke", "Uke", "uke"], ["okt", "Økt", "okt"], ["vol", "Volum", "vol"], ["mal", "Målsetninger", "mal"],
   ];
 
   return <Side max={1440}>
     <div className="a9">
       <SideHode kicker="Workbench · Spiller" title="Workbench" />
-      <Velger modus="spiller" navn={spillerNavn}
+      {role === "coach" ? <Velger modus="spiller" navn={spillerNavn}
         onModus={(m) => { if (m === "gruppe") setVelger("gruppe"); }}
         onForrige={roster.length > 1 ? () => router.push(spillerHref(roster[(idx - 1 + roster.length) % roster.length].id)) : undefined}
         onNeste={roster.length > 1 ? () => router.push(spillerHref(roster[(idx + 1) % roster.length].id)) : undefined}
         onSok={() => setVelger("spiller")}
-        meta={`${roster.length} ${roster.length === 1 ? "SPILLER" : "SPILLERE"} I STALLEN`} />
+        meta={`${roster.length} ${roster.length === 1 ? "SPILLER" : "SPILLERE"} I STALLEN`} /> : <Caps>DIN PLAN · {spillerNavn.toUpperCase()}</Caps>}
       <div role="tablist" aria-label="Nivå" className="a9-faner">
-        {nivaaer.map(([k, l, mal]) => mal === "uke" || mal === "okt" || mal === "mal"
-          ? <Valgpille key={k} rolle="tab" valgt={niva === mal} onClick={() => byttNiva(mal as AG11Niva)}>{l}</Valgpille>
-          : <Valgpille key={k} rolle="tab" valgt={false} href={mal}>{l}</Valgpille>)}
+        {nivaaer.map(([k, l, mal]) => mal === "uke" || mal === "okt" || mal === "vol" || mal === "mal"
+          ? <Valgpille key={k} rolle="tab" valgt={niva === mal} controlId={`workbench-niva-${k}`} onClick={() => byttNiva(mal as AG11Niva)}>{l}</Valgpille>
+          : <Valgpille key={k} rolle="tab" valgt={false} controlId={`workbench-niva-${k}`} href={mal}>{l}</Valgpille>)}
       </div>
       <div className="a9-snarveier" role="group" aria-label="Snarveier">
         {snarveier.map(([ic, l, fn]) => <Knapp key={l} variant="secondary" size="sm" icon={ic} onClick={fn}>{l}</Knapp>)}
       </div>
       <div className="a9-mer"><Knapp variant="secondary" size="sm" icon={MoreHorizontal} aria-expanded={mer} onClick={() => setMer(true)}>Mer</Knapp></div>
       {harGruppeokter && <Caps>GRUPPEØKTER LIGGER I PLANEN AUTOMATISK · TILPASSET = «EGEN»</Caps>}
+      {week.legacyWeekPlanCandidate && <div className="a9-rad"><InlineVarsel tone="warn" tittel="Eldre ukeplan må gjennomgås">
+        En eldre plan finnes med originalåret {week.legacyWeekPlanCandidate.isoYear} og uke {week.legacyWeekPlanCandidate.weekNumber}. {week.legacyWeekPlanCandidate.warning}
+      </InlineVarsel></div>}
       {motor.feil && <div className="a9-rad"><InlineVarsel tone="warn" tittel="Workbench">{motor.feil}</InlineVarsel><Knapp variant="ghost" size="sm" onClick={() => void motor.lastPaaNytt()}>{UI.retry}</Knapp></div>}
       <div className="a9-hoved a9-hoved--sidefelt">
-        <section aria-label={niva === "uke" ? "Uke" : niva === "okt" ? "Økt" : "Målsetninger"} className="pa-card a9-kort">
-          {niva === "uke" ? ukeFlate : niva === "okt" ? oktFlate : malFlate}
+        <section aria-label={niva === "uke" ? "Uke" : niva === "okt" ? "Økt" : niva === "vol" ? "Volum" : "Målsetninger"} className="pa-card a9-kort">
+          {niva === "uke" ? ukeFlate : niva === "okt" ? oktFlate : niva === "vol" ? volumFlate : malFlate}
         </section>
         {sidefelt}
       </div>
@@ -429,8 +473,8 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     {nyOkt && <NyOktArk key={`${nyOkt.dato}:${nyOkt.startMinutt}:${nyOkt.pyramide ?? ""}`} utkast={nyOkt} travel={travel} onLukk={() => setNyOkt(null)}
       onOpprett={(v) => motor.opprett(v, () => setNyOkt(null), true)} />}
     {publiser && <PubliserArk motor={motor} spillerNavn={spillerNavn} idag={idag} onLukk={() => setPubliser(false)} />}
-    {ukeplan && <UkeplanArk weekPlan={week.weekPlan} ukeNr={ukeNr} travel={travel} onLukk={() => setUkeplan(false)} onLagre={(d) => { motor.lagreUkeplan(d); setUkeplan(false); }} />}
-    {notat && <CoachnotatArk notat={week.weekPlan?.customNotes ?? ""} ukeNr={ukeNr} spillerNavn={spillerNavn} travel={travel} onLukk={() => setNotat(false)} onLagre={(t) => { motor.lagreUkeplan({ customNotes: t }); setNotat(false); }} />}
+    {ukeplan && <UkeplanArk weekPlan={week.weekPlan} ukeNr={ukeNr} travel={travel} onLukk={() => setUkeplan(false)} onLagre={(d) => { motor.lagreUkeplan(d, () => setUkeplan(false)); }} />}
+    {notat && <CoachnotatArk notat={week.weekPlan?.customNotes ?? ""} ukeNr={ukeNr} spillerNavn={spillerNavn} travel={travel} onLukk={() => setNotat(false)} onLagre={(t) => { motor.lagreUkeplan({ customNotes: t }, () => setNotat(false)); }} />}
     {ovelseFor && <OvelseArk key={`${ovelseFor.id}:${bankAkse}`} session={ovelseFor} pyramide={(AKSE_NAVN[bankAkse] as PyramidArea)} travel={travel} onLukk={() => setOvelseFor(null)}
       onSubmit={(o, ferdig) => motor.leggTilOvelse(ovelseFor.id, o, () => { ferdig(); setOvelseFor(null); })} />}
     {velger && <VelgerArk modus={velger} liste={velger === "gruppe" ? grupper : roster} valgtId={velger === "gruppe" ? null : playerId}

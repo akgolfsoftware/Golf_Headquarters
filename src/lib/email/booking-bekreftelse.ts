@@ -5,7 +5,7 @@
  * Datoer er lagret som Oslo-veggklokke i UTC-feltene (se lib/booking/policy.ts),
  * derfor formateres de med timeZone "UTC".
  */
-import { avsnitt, boks, epostSkall, esc, kr, kvTabell, type KvRad } from "./precision-mal";
+import { avsnitt, boks, epostSkall, esc, kr, faktaRader, EPOST_LYS, EPOST_MORK, type FaktaRad } from "./precision-epost";
 
 export type BekreftelseInput = {
   type: "gjest" | "app";
@@ -59,43 +59,43 @@ export function googleKalenderUrl(i: { tjeneste: string; start: Date; slutt: Dat
 }
 
 export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: string } {
+  const c = i.natt ? EPOST_MORK : EPOST_LYS;
   const dag = datoTekst(i.start);
   const tid = `${klokkeTekst(i.start)}–${klokkeTekst(i.slutt)}`;
-  const rader: KvRad[] = [
-    { label: "Tjeneste", html: esc(`${i.tjeneste} ${i.varighetMin} min`) },
-    { label: "Tid", html: esc(`${dag} kl. ${tid}`) },
-    { label: "Sted", html: esc(i.sted) },
-    { label: "Coach", html: i.coach ? esc(i.coach) : "—" },
-    { label: "Pris", html: i.prisOre === null ? "Inkludert i abonnement" : esc(kr(i.prisOre / 100)) },
+  const rader: FaktaRad[] = [
+    ["Tjeneste", esc(`${i.tjeneste} ${i.varighetMin} min`)],
+    ["Tid", esc(`${dag} kl. ${tid}`)],
+    ["Sted", esc(i.sted)],
+    ["Coach", i.coach ? esc(i.coach) : "—"],
+    ["Pris", i.prisOre === null ? "Inkludert i abonnement" : esc(kr(i.prisOre / 100))],
   ];
-  if (i.prisOre === null) rader.push({ label: "Betaling", html: "1 klipp" });
-  else if (i.betalingsref) rader.push({ label: "Betaling", html: esc(i.betalingsref), mono: true });
-  rader.push({ label: "Referanse", html: esc(i.referanse), mono: true });
+  if (i.prisOre === null) rader.push(["Betaling", "1 klipp"]);
+  else if (i.betalingsref) rader.push(["Betaling", esc(i.betalingsref), true]);
+  rader.push(["Referanse", esc(i.referanse), true]);
 
   const frist = `${datoTekst(i.frist).toLowerCase()} kl. ${klokkeTekst(i.frist)}`;
-  const sekundaere =
+  const sekundaere: [string, string][] =
     i.type === "app"
       ? [
-          { tekst: "Se bookingen i PlayerHQ", href: i.bookingUrl },
-          { tekst: "Endre eller avbestill", href: i.endreUrl },
+          ["Se bookingen i PlayerHQ", i.bookingUrl],
+          ["Endre eller avbestill", i.endreUrl],
         ]
-      : [{ tekst: "Endre eller avbestill", href: i.endreUrl }];
+      : [["Endre eller avbestill", i.endreUrl]];
 
   return {
     subject: `Bekreftet: ${i.tjeneste.toLowerCase()} ${dag.toLowerCase()} kl. ${klokkeTekst(i.start)}`,
     html: epostSkall({
-      natt: i.natt,
-      tittel: "Timen er bekreftet",
-      forhandsvisning: "Timen er bekreftet. Legg den i kalenderen.",
-      innhold: (c) =>
-        avsnitt(c, `Hei${i.fornavn ? ` ${esc(i.fornavn)}` : ""}. Vi gleder oss til å se deg.`) +
-        kvTabell(c, rader) +
+      dark: i.natt,
+      title: "Timen er bekreftet",
+      pre: "Timen er bekreftet. Legg den i kalenderen.",
+      body:
+        avsnitt(`Hei${i.fornavn ? ` ${esc(i.fornavn)}` : ""}. Vi gleder oss til å se deg.`, c) +
+        faktaRader(rader, c) +
         (i.prisOre === null
-          ? avsnitt(c, `Kan du ikke komme? Avbestill senest <b>${esc(frist)}</b>, så legges klippet tilbake.`)
-          : avsnitt(c, `Gratis avbestilling til <b>${esc(frist)}</b>. Etter det belastes full pris.`)) +
+          ? avsnitt(`Kan du ikke komme? Avbestill før <b>${esc(frist)}</b>, så legges klippet tilbake.`, c)
+          : avsnitt(i.prisOre === 0 ? "Timen er gratis. Gi beskjed hvis du ikke kan komme." : `Gratis avbestilling før <b>${esc(frist)}</b>. Etter det refunderes ikke betalingen.`, c)) +
         (i.type === "gjest" && i.spillerhqTilbud
           ? boks(
-              c,
               "Fortsett i PlayerHQ",
               `Med konto får du ${esc(i.spillerhqTilbud.tekst)}. ` +
                 (i.spillerhqTilbud.manedNok !== null && i.spillerhqTilbud.arNok !== null
@@ -104,10 +104,11 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
                 (i.opprettKontoUrl
                   ? `<a class="lnk" href="${esc(i.opprettKontoUrl)}" style="display:inline-block;padding:14px 6px;color:${c.link};text-decoration:underline">Opprett konto</a>`
                   : ""),
+              c,
             )
           : ""),
-      knapp: { tekst: "Legg i kalender", href: i.kalenderUrl },
-      sekundaere,
+      button: ["Legg i kalender", i.kalenderUrl],
+      secondary: sekundaere,
     }),
   };
 }

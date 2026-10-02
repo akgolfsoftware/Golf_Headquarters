@@ -58,9 +58,9 @@ test("escaper navn og bruker natt-palett når bedt om", () => {
 test("lys mail har mørk-regler for flate, lenke og knapp, og lover ikke kontosammenslåing", () => {
   const { html } = byggBekreftelse(base);
   const mork = html.slice(html.indexOf("prefers-color-scheme:dark"));
-  for (const k of [".flat{", ".lnk", ".btnbg{", ".btntxt{", ".ln{"]) assert.ok(mork.includes(k), k);
+  for (const k of [".flat{", ".lnk", ".btn{", "a.btna{", ".ln{"]) assert.ok(mork.includes(k), k);
   assert.ok(html.includes('class="flat"'));
-  assert.ok(html.includes('class="btnbg"'));
+  assert.ok(html.includes('class="btn"'));
   assert.ok(!html.includes("følger med inn i kontoen"));
 });
 test("lenker har treffmål på minst 44 px", () => {
@@ -71,4 +71,9 @@ test("kalenderlenke bruker Oslo som tidssone", () => {
   const u = googleKalenderUrl({ tjeneste: "T", start, slutt, sted: "S", referanse: "#1" });
   assert.ok(u.includes("ctz=Europe%2FOslo"));
   assert.ok(u.includes("20260929T170000%2F20260929T180000"));
+});
+
+test("øre beholdes og gratis booking lover ingen belastning", () => {
+  assert.match(byggBekreftelse({ ...base, prisOre: 95050 }).html, /950,50 kr/);
+  assert.doesNotMatch(byggBekreftelse({ ...base, prisOre: 0, betalingsref: null }).html, /belastes full pris/);
 });

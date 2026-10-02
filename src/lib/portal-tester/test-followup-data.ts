@@ -1,10 +1,8 @@
+import { formaterLagretTestResultat } from "./resultat-visning";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
-import { parseForScoring } from "./test-scoring";
-import { formaterTestVerdi } from "./format-verdi";
 import { tnComparableResult } from "./tn-integration";
-import { tnFormat } from "./tn-scoring";
 import { foreslaGodkjenteOvelser, sammenlignMedForrige } from "./test-anbefaling";
 import { osloDatoOgMinutt } from "@/lib/workbench/min-calendar";
 
@@ -67,15 +65,12 @@ export async function loadTestFollowup(playerId: string, viewer: { id: string; r
         fasiliteter: player.playerFacilities,
         spillerKategori: null,
       });
-    const kind = parseForScoring(result.test.protocol).kind;
     return {
       id: result.id,
       testId: result.testId,
       testNavn: result.test.name,
       dato: result.takenAt,
-      score: tn
-        ? tnFormat({ value: result.score, unit: tn.unit })
-        : formaterTestVerdi({ kind, verdi: result.score }),
+      score: formaterLagretTestResultat({ ...result, protocol: result.test.protocol }),
       trend: sammenlignMedForrige(result, results),
       forslag,
     };
