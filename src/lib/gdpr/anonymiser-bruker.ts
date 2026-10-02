@@ -16,6 +16,7 @@
  * veiene aldri kan komme i utakt.
  */
 import "server-only";
+import { anonymiserTnTestdata } from "@/lib/portal-tester/tn-personvern";
 import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
 // vanlig import, ikke `import type`.
@@ -110,6 +111,8 @@ export async function anonymiserBruker(
         "ville anonymisere Prisma-bruker + fritekst",
         "ville vaske ukeplanenes notat, oppholdssted og frie fokusfelt",
         "ville vaske Workbench-økter, fysisk trening, turneringer og plankonflikter",
+        "ville vaske notater og ukjent JSON i egne Team Norway-testregistreringer",
+        "ville fjerne private Team Norway-testbilder fra Storage og bildeindeksen",
         ...(planEkstern.plan ?? []),
       ],
       eksterntSlettet: planEkstern,
@@ -218,6 +221,7 @@ export async function anonymiserBruker(
     vaskedeUkeplaner += resultat.count;
   }
 
+  await anonymiserTnTestdata(userId);
   const vasketWorkbench = await anonymiserWorkbenchData(userId);
 
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
