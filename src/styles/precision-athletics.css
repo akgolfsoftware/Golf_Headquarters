@@ -389,3 +389,36 @@ color-scheme:dark;
 .ph10-heldag button{min-height:36px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer}
 }
 
+.ph02-tall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ph02-tallkort,.ph02-kort,.ph03-kort{padding:16px;gap:10px}
+.ph02-tallkort{min-width:0}
+.ph02-kort h2,.ph03-kort h2,.ph03-kort p,.ph02-meta{margin:0}
+.ph02-kort h2,.ph03-kort h2{font:600 22px/1.25 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.ph02-meta{font:var(--type-body-s);color:var(--text-secondary)}
+.ph02-merker,.ph02-marker,.ph03-handlinger{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ph02-lagret{display:flex;align-items:center;gap:8px;margin:0}
+.ph02-ovelser{margin:8px 0 0;padding-left:1.2em}
+.ph02-rad{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 0;border-top:1px solid var(--border-hairline)}
+.ph02-radknapp{display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:1 1 160px;min-height:44px;min-width:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;padding:0}
+.ph02-radknapp strong{font:600 15px/1.3 var(--font-sans)}
+.ph02-radknapp--full{flex-direction:row;align-items:center;justify-content:space-between;width:100%;border-top:1px solid var(--border-hairline);padding-top:12px}
+.ph02-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ph03-meta{display:flex;flex-direction:column;margin:0}
+.ph03-meta div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border-hairline);min-width:0}
+.ph03-meta dt{font:var(--type-body-s);color:var(--text-secondary)}
+.ph03-meta dd{margin:0;font:var(--type-body-s);text-align:right}
+.ph03-resultat{margin:0}
+.ph03-ovelse{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border-hairline)}
+.ph03-ovelse strong{display:block;font:600 15px/1.3 var(--font-sans)}
+.ph03-formel{display:block;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);word-break:break-word}
+.ph03-hake{width:22px;height:22px;border-radius:999px;border:1px solid var(--border-hairline);display:grid;place-items:center;flex:none}
+.ph03-hake--pa{background:var(--ok-tint);color:var(--ok)}
+.ph03-rad{display:flex;justify-content:space-between;gap:8px;align-items:center;min-height:44px}
+.ph03 details summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.ph03-handlinger .pa-btn--full{flex:1 1 220px}
+@media (min-width:1024px){
+.ph02-brett{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+.ph02-hoved,.ph02{min-width:0}
+.ph02-brett > section:last-child{position:sticky;top:16px}
+}
+
