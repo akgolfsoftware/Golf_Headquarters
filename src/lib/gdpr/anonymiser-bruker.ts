@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
 // vanlig import, ikke `import type`.
 import { Prisma } from "@/generated/prisma/client";
+import { anonymiserUkeplandetaljer } from "@/lib/workbench/ukeplan-personvern";
 import {
   slettEksterneBrukerdata,
   type EksternSlettingResultat,
@@ -38,6 +39,7 @@ export type AnonymiseringsResultat = {
     drillLogger: number;
     fysOvelser: number;
     runder: number;
+    ukeplaner: number;
   };
   /**
    * Resultat av ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt).
@@ -88,7 +90,7 @@ export async function anonymiserBruker(
       publicPlayerAnonymisert: false,
       snittScore: null,
       antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0 },
       eksterntSlettet: null,
     };
   }
@@ -100,10 +102,11 @@ export async function anonymiserBruker(
       publicPlayerAnonymisert: Boolean(bruker.publicPlayerId),
       snittScore: null,
       antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0 },
       dryRun: true,
       plan: [
         "ville anonymisere Prisma-bruker + fritekst",
+        "ville vaske ukeplanenes notat, oppholdssted og frie fokusfelt",
         ...(planEkstern.plan ?? []),
       ],
       eksterntSlettet: planEkstern,
@@ -176,6 +179,23 @@ export async function anonymiserBruker(
     }),
   ]);
 
+  // WeekPlan har ingen User-FK og vaskes derfor eksplisitt, også for eldre
+  // årsnøkler. Per-rad-transformasjon bevarer bare validerte strukturerte v1-felt.
+  const ukeplaner = await prisma.weekPlan.findMany({
+    where: { playerId: userId }, select: { id: true, planningDetails: true },
+  });
+  let vaskedeUkeplaner = 0;
+  for (const ukeplan of ukeplaner) {
+    const resultat = await prisma.weekPlan.updateMany({
+      where: { id: ukeplan.id, playerId: userId },
+      data: {
+        customNotes: null,
+        planningDetails: anonymiserUkeplandetaljer(ukeplan.planningDetails) ?? Prisma.DbNull,
+      },
+    });
+    vaskedeUkeplaner += resultat.count;
+  }
+
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
 
   await prisma.$transaction([
@@ -223,6 +243,7 @@ export async function anonymiserBruker(
       drillLogger: drillLogger.count,
       fysOvelser: fysOvelser.count,
       runder: rundeNotater.count,
+      ukeplaner: vaskedeUkeplaner,
     },
     eksterntSlettet,
   };
