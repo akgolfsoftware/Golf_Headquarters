@@ -65,6 +65,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
+mock.module("@/lib/portal-tester/tn-personvern", { namedExports: { anonymiserTnTestdata: async (userId: string) => { assert.equal(userId, "synthetic"); writes.push("testbatteri"); } } });
 mock.module("@/lib/workbench/workbench-personvern", { namedExports: {
   anonymiserWorkbenchData: async (playerId: string) => {
     assert.equal(playerId, "synthetic"); writes.push("workbench");

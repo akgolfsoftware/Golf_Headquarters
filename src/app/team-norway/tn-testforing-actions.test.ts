@@ -193,6 +193,22 @@ test("fullført resultat lagres med recordedById = coachen, aldri spilleren", as
   assert.equal((resultatRad as { recordedById?: string; userId?: string }).userId, SPILLER.id);
 });
 
+test("Team Norway-trener kan føre WANG-deltaker via autorisert fellesarrangement", async () => {
+  deltakerRad = basisDeltaker({
+    testDay: {
+      ...((basisDeltaker().testDay) as Record<string, unknown>),
+      groupId: "wang-school-a",
+      group: { slug: null },
+      event: { organizerGroupId: TN_GROUP_ID, organizer: { slug: "team-norway" } },
+    },
+  });
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: verdierForAlleForsok(2), notes: "", intent: "complete" });
+  assert.equal(svar.ok, true);
+  assert.equal((resultatRad?.userId as string), SPILLER.id);
+  assert.equal((resultatRad?.recordedById as string), COACH.id);
+});
+
 test("ADMIN uten eget gruppemedlemskap kan likevel føre (samme unntak som resten av produktet)", async () => {
   viewer = { id: "admin-1", name: "Admin", role: "ADMIN" };
   coachMedlem = null;

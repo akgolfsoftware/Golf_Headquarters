@@ -88,7 +88,9 @@ Skjermportering fra den nye eksporten, automatisk/offline lagring per forsøk, p
 
 Fagspørsmålene om ni-hullsmål, Impact Location, fysiske protokoller og hvem som får se felles spillerliste er sendt til Anders og står fortsatt ubesvart. Allerede avklarte poeng-/gate-/speedregler er gjennomført uten å be om ny godkjenning.
 
-Sikkerhetskontroll for denne delen: ingen nye åpne ruter, ingen utvidelse av eksisterende spiller-/coachrettigheter, ingen nye produksjonstabeller eller lagringskategorier. Alle nye prøvepersoner er syntetiske og ligger kun lokalt. Eksisterende samtykke- og foresattvakter er beholdt. Database-/lagringsbeviset gjelder den eksisterende egenføringen, ikke den bestilte nye felles testdagen.
+Sikkerhetskontroll for den opprinnelige egenføringen: ingen nye åpne ruter, ingen utvidelse av eksisterende spiller-/coachrettigheter, ingen nye produksjonstabeller eller lagringskategorier. Alle prøvepersoner er syntetiske og ligger kun lokalt. Senere tillegg omfatter nå egen spillerføring på aktiv TN-testdag, privat bildeindeks og automatisk køoppdatering; se oppdatert [scorekort- og autolagringskontroll](testbatteri-scorekort-og-autolagring-2026-10-02.md). Flerskolemodell, WANG-kobling og full liveoppdatering er fortsatt uferdig.
+
+Oppdatert isolert databasekontroll 02.10: **37 av 37 prøver bestod**, inkludert unik og eier-/øktkoblet metadata for privat testbilde. Tabellen ble opprettet med additiv SQL mot `127.0.0.1:56022/testbatteri_20261002`; RLS-status ble kontrollert som aktiv. Ingen bucket eller produksjon ble endret.
 
 ### Eksportidentitet og uavhengig kontroll
 
@@ -105,3 +107,15 @@ Siste målrettede kodekontroll bestod med 105 av 105 prøver. I tillegg bestod 3
 ### Avsluttet lokal kvalitetskontroll
 
 Full `npm run verify` avsluttet med kode 0: 4 024 kodetester, 18 komponenttester, statiske vakter, TypeScript, lint, produksjonsbygg og Serwist bestod. Egen dokumentkontroll bestod etter oppdatering av rapporten. Siste rene innrykksretting og presisering av versjonsfeilmeldingen er også kontrollert med målrettet lint, og inngikk i den etterfølgende byggkontrollen. Kontrollen brukte ikke produksjonslegitimasjoner; databasebeviset kommer fra den separate lokale prøven beskrevet over. GitHub CI og merge er neste separate steg.
+
+### Videreføring på oppdatert main, 02.10.2026
+
+Etter ombasering mot `c8a44556a` og PR #1096 bestod full `npm run verify` med Node 24 og 8 GB maksminne. Prisma, TypeScript, lint, prosjektvakter, komplette kildetester, 94 komponenttester, produksjonsbygg og Serwist passerte; lint rapporterte 76 advarsler og 0 feil. Byggingen logget gjentatte meldinger om manglende lokal database og deaktivert AI, men sluttet med suksess. På samme versjon bestod 177 målrettede tester og 37/37 prøver mot isolert PostgreSQL. Reell Supabase Storage-bøtte/opplasting, flerskolearrangement, full livestrøm, Claude Design-sluttgodkjenning, CI, PR og merge gjenstår.
+
+### Kontrollpunkt etter lokal sluttkontroll
+
+Commit `d96195ba0` (`fix: make test session saves retry-safe`) inneholder kun serverhandlingen for retry-sikker lagring og aktiv egen tildeling, sesjonskvittering og regresjonstester. Verifikasjonen på samme arbeidsversjon bestod: full `npm run verify`, 177 målrettede tester, 37/37 isolerte PostgreSQL-prøver, 5/5 nettleserlagerprøver, 36/36 Excel-/kildeprøver og dokument-/diffkontroll. Øvrig scorekort-, foto-, GDPR-, offline- og testdagkode står fremdeles utenfor committen i arbeidskopien. Ingen PR, push, merge eller deploy er utført. Denne committen lukker ikke åpne krav om WANG-skolegrupper, felles flerskolearrangement, resultatmottakere, sanntidsstrøm, privat Storage-bøtte eller Anders' visuelle godkjenning.
+
+### Rebasing og opplasting-sikkerhet
+
+Den opprinnelige committen `d96195ba0` er bevart i sikkerhetsstash før oppdateringen; samme tre filers endring er rebassert som `c9f53ea41` oppå PR #1098 (`3cbe3e216`). Main sin sperre mot egenredigering av trenerførte testdagøkter er beholdt; spillerføringen tillater bare en aktiv, egen tildeling med aktivt medlemskap. På den nye arbeidskopien består bilde-rutetestene 8/8, eksport-/GDPR-/fotoprøvene 54/54, lokal PostgreSQL 37/37 og full `npm run verify` med 4 310 kildetester og 94 komponenttester. Multipart leses nå med en håndhevet kroppsgrense uavhengig av `Content-Length`, endringer krever samme `Origin`, og opplasting/opprydding gir generelle tjenestefeil uten interne detaljer. Selve Storage-bøtten, ekte bildeopplasting og mobilkamera er fortsatt uverifisert.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { settTestdagDeltakerStatus, avsluttTestdag } from "@/app/team-norway/tn-testdag-actions";
 import { TnKnapp, TnPille } from "./core";
@@ -24,6 +24,21 @@ export function TnTestdagKo({ dag, kanSkrive }: { dag: TnTestdag; kanSkrive: boo
   const dagAktiv = dag.status === "ACTIVE";
   const visSkriveknapper = kanSkrive && dagAktiv;
 
+  useEffect(() => {
+    if (!dagAktiv) return;
+    let aktiv = true;
+    const refresh = () => {
+      if (aktiv && document.visibilityState === "visible") router.refresh();
+    };
+    const interval = window.setInterval(refresh, 4000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      aktiv = false;
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [dagAktiv, router]);
+
   function settStatus(testDayParticipantId: string, status: "PENDING" | "SKIPPED" | "ABSENT") {
     setFeil(null);
     start(async () => {
@@ -43,6 +58,7 @@ export function TnTestdagKo({ dag, kanSkrive }: { dag: TnTestdag; kanSkrive: boo
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {feil && <p role="alert" style={{ margin: 0, color: TN.red600, fontSize: TN.text.sm }}>{feil}</p>}
+      {dagAktiv && <p role="status" style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.xs }}>Liveoversikten henter lagrede forsøk automatisk hvert fjerde sekund.</p>}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {dag.deltakere.map((deltaker) => (
           <div
@@ -52,7 +68,8 @@ export function TnTestdagKo({ dag, kanSkrive }: { dag: TnTestdag; kanSkrive: boo
             style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", padding: "12px 14px", borderRadius: TN.radius.md, border: `1px solid ${TN.borderSubtle}`, background: TN.white }}
           >
             <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{deltaker.spillerNavn}</span>
-            <TnPille tone={STATUS_TONE[deltaker.status]}>{STATUS_LABEL[deltaker.status]}</TnPille>
+            <TnPille tone={STATUS_TONE[deltaker.status]}>{deltaker.status === "PENDING" && deltaker.lagredeForsok !== null ? "Pågår" : STATUS_LABEL[deltaker.status]}</TnPille>
+            {deltaker.status === "PENDING" && deltaker.lagredeForsok !== null && <TnPille tone="info">Pågår · {deltaker.lagredeForsok}/{deltaker.totaltForsok} forsøk</TnPille>}
             {deltaker.scoreTekst && <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.sm, color: TN.navy700 }}>{deltaker.scoreTekst}</span>}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {deltaker.status === "PENDING" && (
