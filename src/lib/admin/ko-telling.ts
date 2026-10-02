@@ -4,7 +4,8 @@
  * ÉN kilde til sannhet for «hvor mange saker venter» — samme tall på
  * innboks-banneret (TriageV2), godkjenninger-hodet og varsler-siden.
  * Filtrene speiler loaderen i src/app/admin/godkjenninger/page.tsx:
- *   - PlanAction:      PENDING + coach-scope + spiller-scope
+ *   - PlanAction:      PENDING + coach-scope + spiller-scope, unntatt handlinger
+ *                      som eies av egne spillerflyter (f.eks. samlingsinvitasjon)
  *                      (ADMIN ser også agency-rader: user.role ADMIN)
  *   - CaddieDraft:     PENDING + eier (samme userId som kan godkjenne)
  *   - SessionRequest:  PENDING + coach-scope + spiller-scope
@@ -36,6 +37,7 @@ export function planActionKoWhere(viewer: {
     viewer.role === "ADMIN" ? { OR: [spillerScope, { role: "ADMIN" }] } : spillerScope;
   return {
     status: "PENDING",
+    actionType: { not: "WORKBENCH_GATHERING_INVITE" },
     OR: [{ coachId: viewer.id }, { coachId: null }],
     user: userFilter,
   };

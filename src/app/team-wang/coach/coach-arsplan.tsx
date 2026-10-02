@@ -25,6 +25,7 @@ import { GruppeRoster } from "../_components/live-seksjoner";
 import { Sesongband, type SesongbandPeriode } from "../_components/sesongband";
 import { MONTH_ORDER, MON_SHORT } from "../_data/wang-plan";
 import { HelpDot, Ikon } from "../_components/primitiver";
+import { SamlingsprogramKontroll } from "@/components/workbench/SamlingsprogramKontroll";
 
 // Overlegg: ekte periode-datoer + fokus fra AgencyOS oppå demo-pyramiden.
 // DB-blokkene er sortert kronologisk (TURNERING→GRUNN→SPESIAL→TURNERING) og
@@ -130,11 +131,12 @@ function dato(s: string): string {
   return `${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
+export function CoachArsplan({ live = null, kanPublisere = false }: { live?: WangLiveData | null; kanPublisere?: boolean }) {
   // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
   const toppRef = useToppbarHoyde<HTMLElement>();
   const [selPeriod, setSelPeriod] = useState<string | null>(null);
   const perioder = effektivePerioder(live);
+  const firstPlayerId = live?.elever.find(e => e.rolle === "PLAYER")?.id;
   const periode = selPeriod
     ? (perioder.find((p) => p.key === selPeriod) ?? null)
     : null;
@@ -433,6 +435,10 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
           ) : (
             <Oversikt perioder={perioder} live={live} onOpen={setSelPeriod} />
           )}
+          {kanPublisere && live ? <SamlingsprogramKontroll organisasjon="WANG" planHref={firstPlayerId
+            ? `/admin/workbench/${encodeURIComponent(firstPlayerId)}?flate=bord&gruppe=${encodeURIComponent(live.gruppeId)}` : null} samlinger={live.hendelser
+            .filter((h) => (h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING") && h.sluttIso >= osloIdagIso())
+            .map((h) => ({ id: h.id, tittel: h.tittel, fra: h.startIso, til: h.sluttIso, sted: h.sted }))} /> : null}
         </main>
       </div>
     </div>

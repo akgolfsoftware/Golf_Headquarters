@@ -24,8 +24,10 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     upsert: async () => { writes++; throw new Error("Lesing skal aldri skrive"); },
   },
   workbenchSession: { findMany: async () => [] },
+  groupSchedule: { findMany: async () => [] },
   user: { findUnique: async () => ({ schoolYear: null }) },
   playerBusyBlock: { findMany: async () => [] },
+  workbenchTournamentPlan: { findMany: async () => [] },
 } } });
 let actions: typeof import("./wb-actions");
 before(async () => { actions = await import("./wb-actions"); });

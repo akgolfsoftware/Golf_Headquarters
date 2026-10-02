@@ -18,6 +18,7 @@ function useState<T>(initial: T | (() => T)): [T, (next: T | ((old: T) => T)) =>
   if (!(index in slots)) slots[index] = typeof initial === "function" ? (initial as () => T)() : initial;
   return [slots[index] as T, next => { slots[index] = typeof next === "function" ? (next as (old: T) => T)(slots[index] as T) : next; }];
 }
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("react", { namedExports: { ...React, useState, useMemo: (fn: () => unknown) => fn(), useCallback: (fn: unknown) => fn, useRef: (v: unknown) => ({ current: v }), useEffect() {}, useTransition: () => [false, (fn: () => Promise<unknown>) => transitions.push(fn())] } });
 const replacements: string[] = [];
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ push() {}, refresh() {}, replace: (url: string) => replacements.push(url) }) } });
@@ -42,6 +43,8 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, updateSeriesSession: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
 } });
 mock.module("@/lib/workbench/treukerssyklus-actions", { namedExports: { lastTreukerssyklus: unused, lagreTreukerssyklus: unused, kopierTreukerssyklus: unused, opplosTreukerssyklus: unused } });
+mock.module("@/lib/workbench/plan-handlinger-actions", { namedExports: { flyttWorkbenchPlanOkt: unused, kopierWorkbenchPlanOkt: unused, angreWorkbenchPlanHandling: unused } });
+mock.module("@/lib/workbench/hendelser-actions", { namedExports: { lagreWorkbenchHendelse: unused, slettWorkbenchHendelse: unused, lastWorkbenchHendelser: unused } });
 mock.module("@/lib/workbench/workbench-samlet-sesong-actions", { namedExports: { saveSeasonBounds: unused } });
 mock.module("@/lib/workbench/group-session-actions", { namedExports: { loadGroupWorkbenchSessions: unused, publishGroupWorkbenchSessions: unused, saveGroupWorkbenchSession: async (input: GroupPayload) => { groupSaved.push(input); if (groupError) return { ok: false, error: groupError }; assert.ok(groupSession); return { ok: true, data: groupSession }; }, withdrawGroupWorkbenchSessions: unused } });
 
@@ -56,7 +59,7 @@ const week = buildWeekViewModel("2026-09-28", [session], [], { kind: "PLAYER", s
 const volum = summerTreningsvolum([{ ...session, date: new Date(`${session.date}T00:00:00Z`), updatedAt: new Date(session.updatedAt) }], { fraDato: new Date("2026-09-28T00:00:00Z"), tilDato: new Date("2026-10-05T00:00:00Z"), naa: new Date("2026-10-02T12:00:00Z") });
 function fixture(): WorkbenchSamletData {
   return { player: { id: "syntetisk-p1", navn: "Syntetisk spiller" }, routeSurface: "player", role: "player", flate: "uke", planKontekst: parsePlanKontekst({ uke: "2026-09-28" }), uke: week,
-    kilder: [{ id: "exercise:syntetisk", kind: "DRILL", title: "Syntetisk øvelse", durationMinutes: 30, drill: { title: "Syntetisk øvelse", durationMinutes: 30, akFormel: { pyramid: "TEK", area: "TEE", label: "Syntetisk" } } }], goals: [], fys: { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: true }, roster: [{ id: "syntetisk-p1", navn: "Syntetisk spiller" }], grupper: [], volum, volumKilde: "SYNTETISK SAMLET KILDE", valgtOkt: session, varsler: [],
+    kilder: [{ id: "exercise:syntetisk", kind: "DRILL", title: "Syntetisk øvelse", durationMinutes: 30, drill: { title: "Syntetisk øvelse", durationMinutes: 30, akFormel: { pyramid: "TEK", area: "TEE", label: "Syntetisk" } } }], goals: [], fys: { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: true }, roster: [{ id: "syntetisk-p1", navn: "Syntetisk spiller" }], grupper: [], valgtGruppeId: null, volum, volumKilde: "SYNTETISK SAMLET KILDE", valgtOkt: session, varsler: [],
     sesong: { plan: null, vindu: { fraDato: "2026-01-01", tilDato: "2027-01-01" }, perioder: [], hendelser: [], sessions: [session], volum, maneder: [] },
     bord: { rader: [{ spiller: { id: "syntetisk-p1", navn: "Syntetisk spiller" }, uke: week, volum, error: null, followup: { sessions: [session], pendingPlanActionIds: [], from: "2026-09-28", to: "2026-10-11" } }], total: 1, samtidigeLesere: 1 },
     analyse: { vindu: { fraDato: "2026-01-01", tilDato: "2027-01-01" }, kilde: "SYNTETISK KILDE", volum,
@@ -131,13 +134,14 @@ test("gruppeark sender valgt banks konkrete referanser og viser serverens teknis
   const base = fixture();
   const bank = { ...base.kilder[0], drill: { ...base.kilder[0].drill!, sourceId: "exercise:syntetisk-bank", exerciseId: "syntetisk-bank" } };
   const tek = { ...bank, id: "tek:syntetisk-oppgave", kind: "TEK" as const, title: "Syntetisk teknisk oppgave", drill: { ...bank.drill, sourceId: "tek:syntetisk-oppgave", exerciseId: undefined, positionTaskId: "syntetisk-oppgave" } };
-  const data: WorkbenchSamletData = { ...base, role: "coach", routeSurface: "agency", grupper: [{ id: "syntetisk-gruppe", navn: "Syntetisk gruppe" }], kilder: [bank, tek] };
+  const data: WorkbenchSamletData = { ...base, role: "coach", routeSurface: "agency", grupper: [{ id: "annen-gruppe", navn: "Annen gruppe" }, { id: "syntetisk-gruppe", navn: "Syntetisk gruppe" }], valgtGruppeId: "syntetisk-gruppe", kilder: [bank, tek] };
   const renderBord = () => draw("gruppe-bord", () => WorkbenchTrenerbord({ data }));
   click(find(renderBord(), n => n.props.children === "Gruppeøkter"));
   const render = () => {
     const child = find(renderBord(), n => typeof n.type === "function" && n.type.name === "GruppeArk");
     return draw("ekte-gruppeark", () => (child.type as (props: Record<string, unknown>) => React.ReactNode)(child.props));
   };
+  assert.equal(field(render(), "Gruppe").props.value, "syntetisk-gruppe");
   change(field(render(), "Øvelse"), bank.id); groupSession = { ...session, id: "syntetisk-gruppeoriginal", status: "DRAFT" };
   click(find(render(), n => n.props.children === "Opprett gruppeutkast")); await settle();
   assert.equal(groupSaved[0].groupId, "syntetisk-gruppe");

@@ -90,6 +90,32 @@ test('serie beholder datoer og hvert utelatt innholdsfelt; fremmed rad med samme
  const foreign=await db.workbenchSession.create({data:{id:`${prefix}-foreign-series`,playerId:credentials.LOCAL_P02_ID,coachId:c1,createdBy:'COACH',seriesId:series[0].seriesId,date:new Date('2027-01-11'),startMinute:600,durationMinutes:30,title:'Syntetisk fremmed',pyramid:'TEK'}});createdSessions.push(foreign.id);
  const edited=data(await as('P01',()=>actions.updateSeriesSession({sessionId:series[0].id,patch:{rationale:'Syntetisk ny serie'},policy:'HELE_SERIEN',expectedUpdatedAt:series[0].updatedAt})));assert.equal(edited.length,2);assert.equal(edited.find(s=>s.id===series[1].id)?.location,'Syntetisk annet sted');assert.deepEqual(edited.map(s=>s.date).sort(),series.map(s=>s.date).sort());assert.equal((await db.workbenchSession.findUniqueOrThrow({where:{id:foreign.id}})).rationale,null);
 });
+test('ekte lokale private opptattblokker gjør flytting/gjentakelse til utkast og samtidige endringer kan ikke overskrive',async()=>{
+ const busyId=`${prefix}-busy-conflict`,scheduleId=`${prefix}-schedule-conflict`,tournamentId=`${prefix}-tournament-conflict`,sessionId=`${prefix}-busy-conflict-session`;let copiedIds:string[]=[];
+ await db.playerBusyBlock.deleteMany({where:{id:busyId,userId:p1}});
+ await db.groupSchedule.deleteMany({where:{id:scheduleId,groupId}});
+ await db.workbenchTournamentPlan.deleteMany({where:{id:tournamentId,playerId:p1}});
+ await db.workbenchSession.deleteMany({where:{id:sessionId}});
+ try {
+  await db.playerBusyBlock.create({data:{id:busyId,userId:p1,title:'Syntetisk privat avtale',kind:'HELSE',isPrivate:true,recurring:'WEEKLY',startAt:new Date('2026-09-30T08:00:00.000Z'),endAt:new Date('2026-09-30T09:00:00.000Z')}});
+  await db.groupSchedule.create({data:{id:scheduleId,groupId,title:'Syntetisk gruppetrening',kind:'SAMLING',recurring:'WEEKLY',startAt:new Date('2026-09-30T08:00:00.000Z'),endAt:new Date('2026-09-30T09:00:00.000Z')}});
+  await db.workbenchTournamentPlan.create({data:{id:tournamentId,playerId:p1,coachId:c1,createdBy:p1,title:'Syntetisk turnering',status:'PUBLISHED',startDate:new Date('2026-10-07T00:00:00.000Z'),endDate:new Date('2026-10-07T00:00:00.000Z')}});
+  const session=await db.workbenchSession.create({data:{id:sessionId,playerId:p1,coachId:c1,createdBy:'PLAYER',date:new Date('2026-09-28T00:00:00.000Z'),startMinute:600,durationMinutes:60,title:'Syntetisk konfliktprøve',pyramid:'TEK',status:'PUBLISHED'}});
+  const plan=await import('../../src/lib/workbench/plan-handlinger-actions');
+  const command={playerId:p1,sessionId,expectedUpdatedAt:session.updatedAt.toISOString(),date:'2026-10-07',startMinute:600,durationMinutes:60};
+  const moved=await Promise.all([as('P01',()=>plan.flyttWorkbenchPlanOkt(command)),as('P01',()=>plan.flyttWorkbenchPlanOkt(command))]);
+  assert.equal(moved.filter(r=>r.ok).length,1);assert.equal(moved.find(r=>r.ok)?.conflicts,3);
+  const saved=await db.workbenchSession.findUniqueOrThrow({where:{id:sessionId}});assert.equal(saved.status,'DRAFT');assert.equal(saved.date.toISOString().slice(0,10),'2026-10-07');
+  const copied=await as('P01',()=>plan.kopierWorkbenchPlanOkt({playerId:p1,sessionId,expectedUpdatedAt:saved.updatedAt.toISOString(),dates:['2026-10-14'],startMinute:600}));
+  assert.ok(copied.ok,copied.ok?'':copied.error);if(!copied.ok)throw Error('Kopiering ble avvist');
+  copiedIds=copied.ids;assert.equal(copied.conflicts,2);const copy=await db.workbenchSession.findUniqueOrThrow({where:{id:copiedIds[0]}});assert.equal(copy.status,'DRAFT');
+ } finally {
+  await db.workbenchSession.deleteMany({where:{id:{in:[sessionId,...copiedIds]}}});
+  await db.workbenchTournamentPlan.deleteMany({where:{id:tournamentId,playerId:p1}});
+  await db.groupSchedule.deleteMany({where:{id:scheduleId,groupId}});
+  await db.playerBusyBlock.deleteMany({where:{id:busyId,userId:p1}});
+ }
+});
 test('gruppe→medlem kopierer øktmetadata; lokal tilpasning består etter ny publisering',async()=>{
  const payload={groupId,date:'2027-01-04',startMinute:600,durationMinutes:30,title:'Syntetisk gruppe',pyramid:'TEK' as const,...meta,drills:[{title:'Syntetisk',durationMinutes:30,akFormel:{...formel,detaljer:{mal:{malsetning:'Syntetisk drillmål'}}}}]};
  const master=data(await as('COACH_A',()=>groups.saveGroupWorkbenchSession({...payload,requestId:'46ea8f2b-d95d-468b-8eb3-16d2eeb3262a'})));data(await as('COACH_A',()=>groups.publishGroupWorkbenchSessions({groupId,sessionIds:[master.id]})));

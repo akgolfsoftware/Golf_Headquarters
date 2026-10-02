@@ -7014,6 +7014,14 @@ model WorkbenchTournamentPlan {
   status            String    @default("DRAFT")
   focus             String    @default("UTVIKLING")
   format            String?
+  tour              String?
+  country           String?
+  location          String?
+  holes             Int?
+  priority          String?
+  wagrPower         Float?
+  wagrSourceYear    Int?
+  wagrSource        String?
   startDate         DateTime  @db.Date
   endDate           DateTime  @db.Date
   travelStartDate   DateTime? @db.Date

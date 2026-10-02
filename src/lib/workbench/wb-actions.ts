@@ -55,6 +55,7 @@ import type {
 } from "@/lib/domain/workbench/types";
 import { UI } from "@/lib/domain/workbench/labels";
 import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
+import { lastPlanKalenderBlokker } from "@/lib/workbench/plan-kalender-data";
 import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
 import {
   initialWorkbenchLiveSnapshot,
@@ -62,6 +63,8 @@ import {
   type WorkbenchLiveData,
 } from "@/lib/workbench/live";
 import { osloInstant } from "@/lib/jarvis/dagen";
+import { harGjennomforingshistorikk, initialSessionExecution, jsonObject, readSessionExecution, sealSessionSnapshot } from "./wb-session-life";
+import { mutateSessionExecution } from "./wb-session-life-actions";
 import {
   osloDatoOgMinutt,
   type MinKalenderData,
@@ -262,6 +265,7 @@ const AddDrillFromSourceSchema = z.object({
 
 const SaveWorkbenchLiveSchema = z.object({
   sessionId: z.string().min(1),
+  expectedUpdatedAt: z.string().datetime().optional(),
   totalSec: z.number().int().min(0).max(604800),
   drills: z.array(z.object({
     drillId: z.string().min(1),
@@ -530,10 +534,11 @@ export async function loadWeek(params: {
     }
   }
 
+  const planKalender = await lastPlanKalenderBlokker(params.playerId, mandag, viewer.id === params.playerId);
   const vm = buildWeekViewModel(
     mandag,
     rows.map(mapSession),
-    weekLockedBlocks(mandag, busy, school),
+    weekLockedBlocks(mandag, busy, school).map((day, i) => [...day, ...planKalender[i]]),
     params.mode,
     params.targetMinutes ?? 0,
     mappedWeekPlan,
@@ -1814,6 +1819,7 @@ export async function removeDrill(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const treff = await hentMedTilgang(input.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
+  if (harGjennomforingshistorikk(treff.row)) return { ok: false, error: "Øvelser med gjennomføringshistorikk kan ikke slettes som planutkast." };
   if (!treff.row.drills.some((d) => d.id === input.drillId)) {
     return { ok: false, error: "Fant ikke øvelsen i denne økten." };
   }
@@ -1822,16 +1828,18 @@ export async function removeDrill(input: {
     .filter((d) => d.id !== input.drillId)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-  await prisma.$transaction([
-    ...(treff.row.sourceGroupSessionId ? [prisma.workbenchSession.update({ where: { id: treff.row.id, updatedAt: treff.row.updatedAt }, data: { localOverride: true } })] : []),
-    prisma.workbenchDrill.delete({ where: { id: input.drillId } }),
-    ...beholdt.map((d, i) =>
-      prisma.workbenchDrill.update({
-        where: { id: d.id },
-        data: { sortOrder: i },
-      }),
-    ),
-  ]);
+  try {
+    await prisma.$transaction(async tx => {
+      const locked = await tx.workbenchSession.updateMany({
+        where: { id: treff.row.id, playerId: treff.row.playerId, status: treff.row.status, updatedAt: treff.row.updatedAt,
+          liveSnapshot: { equals: Prisma.DbNull }, actualMinutes: null, perceivedEffort: null },
+        data: { ...(treff.row.sourceGroupSessionId ? { localOverride: true } : { updatedAt: new Date() }) },
+      });
+      if (locked.count !== 1) throw new DrillSamtidigEndring();
+      await tx.workbenchDrill.delete({ where: { id: input.drillId, sessionId: treff.row.id } });
+      for (const [i, drill] of beholdt.entries()) await tx.workbenchDrill.update({ where: { id: drill.id }, data: { sortOrder: i } });
+    });
+  } catch { return { ok: false, error: "Økten ble endret samtidig. Ingen øvelser er fjernet." }; }
 
   return lagreOgHent(input.sessionId);
 }
@@ -1846,13 +1854,19 @@ export async function deleteSession(
   if (treff.row.groupId && !treff.row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(treff.row.id)) {
     return { ok: false, error: "Trekk tilbake gruppeøkten fra gruppeplanen." };
   }
-  if (treff.row.sourceGroupSessionId) {
-    // Et fravalg må ikke gjenopprettes ved neste gruppepublisering.
-    await prisma.workbenchSession.update({ where: { id: sessionId, updatedAt: treff.row.updatedAt },
-      data: { hiddenByPlayer: true, localOverride: true } });
-  } else {
-    await prisma.workbenchSession.delete({ where: { id: sessionId } });
-  }
+  if (harGjennomforingshistorikk(treff.row)) return { ok: false, error: "Økten har gjennomføringshistorikk og kan ikke slettes som et planutkast." };
+  try {
+    const where = { id: sessionId, playerId: treff.row.playerId, status: treff.row.status, updatedAt: treff.row.updatedAt,
+      liveSnapshot: { equals: Prisma.DbNull }, actualMinutes: null, perceivedEffort: null };
+    if (treff.row.sourceGroupSessionId) {
+      // Et fravalg må ikke gjenopprettes ved neste gruppepublisering.
+      const hidden = await prisma.workbenchSession.updateMany({ where, data: { hiddenByPlayer: true, localOverride: true } });
+      if (hidden.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Ingen endring ble lagret." };
+    } else {
+      const removed = await prisma.workbenchSession.deleteMany({ where });
+      if (removed.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Ingen økt ble slettet." };
+    }
+  } catch { return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du prøver igjen." }; }
   revalider(treff.row.playerId);
   return { ok: true, data: null };
 }
@@ -1957,16 +1971,23 @@ export async function deleteSessionSeries(input: {
   const gjeldende = mapSession(treff.row);
   const rammer = await serieMalRammer(gjeldende, parsed.data.policy);
 
-  await prisma.$transaction(async tx => {
-    for (const s of rammer) {
-      if (s.sourceGroupSessionId) {
-        await tx.workbenchSession.update({ where: { id: s.id, updatedAt: new Date(s.updatedAt) },
-          data: { hiddenByPlayer: true, localOverride: true } });
-      } else {
-        await tx.workbenchSession.delete({ where: { id: s.id } });
+  try {
+    await prisma.$transaction(async tx => {
+      const rows = [];
+      for (const s of rammer) {
+        const access = await hentMedTilgang(s.id, tx);
+        if ("feil" in access || access.row.playerId !== gjeldende.playerId || access.row.updatedAt.toISOString() !== s.updatedAt || harGjennomforingshistorikk(access.row)) throw new DrillSamtidigEndring();
+        rows.push(access.row);
       }
-    }
-  });
+      for (const row of rows) {
+        const where = { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+          liveSnapshot: { equals: Prisma.DbNull }, actualMinutes: null, perceivedEffort: null };
+        if (row.sourceGroupSessionId) {
+          await tx.workbenchSession.update({ where, data: { hiddenByPlayer: true, localOverride: true } });
+        } else await tx.workbenchSession.delete({ where });
+      }
+    });
+  } catch { return { ok: false, error: "Serien er endret eller inneholder gjennomføringshistorikk. Ingen økter er fjernet." }; }
   revalider(gjeldende.playerId);
   return { ok: true, data: { slettet: rammer.length } };
 }
@@ -2019,13 +2040,14 @@ async function settStatus(
   const liveSnapshot = status === "IN_PROGRESS" && row.liveSnapshot == null
     ? initialWorkbenchLiveSnapshot(row.drills.sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id))
     : null;
+  if (liveSnapshot) Object.assign(liveSnapshot, { execution: initialSessionExecution(liveSnapshot.startedAtISO) });
   const result = await prisma.workbenchSession.updateMany({
     where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false,
       hiddenByPlayer: false, needsPlayerApproval: false },
     data: {
       status,
       ...(liveSnapshot ? { liveSnapshot: liveSnapshot as unknown as Prisma.InputJsonValue } : {}),
-      ...(status !== "IN_PROGRESS" ? { liveSnapshot: Prisma.DbNull } : {}),
+      ...(status !== "IN_PROGRESS" ? { liveSnapshot: sealSessionSnapshot(row.liveSnapshot, status, new Date().toISOString()) as Prisma.InputJsonValue } : {}),
     },
   });
   if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
@@ -2049,6 +2071,9 @@ const UpdateSessionEffortSchema = z.object({
   sessionId: z.string().min(1),
   perceivedEffort: z.number().int().min(1).max(10).nullable().optional(),
   actualMinutes: z.number().int().min(0).max(1440).nullable().optional(),
+  reason: z.string().trim().min(1).max(500).optional(),
+  expectedUpdatedAt: z.string().datetime().optional(),
+  requestId: z.string().min(8).max(100).optional(),
 });
 
 export type UpdateSessionEffortInput = z.infer<typeof UpdateSessionEffortSchema>;
@@ -2067,17 +2092,24 @@ export async function updateSessionEffort(
 
   const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
-
-  const updated = await prisma.workbenchSession.update({
-    where: { id: parsed.data.sessionId },
+  const row = treff.row;
+  if (["COMPLETED", "ABANDONED", "SKIPPED"].includes(row.status)) {
+    if (!parsed.data.reason || !parsed.data.expectedUpdatedAt || !parsed.data.requestId) return { ok: false, error: "Bruk etterregistrering med årsak for å rette gjennomføringen." };
+    return mutateSessionExecution({ ...parsed.data, action: "RECORD", outcome: row.status });
+  }
+  if (row.isTemplate || row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED" || !["PUBLISHED", "IN_PROGRESS"].includes(row.status)) return { ok: false, error: "Økten kan ikke registreres fra denne statusen." };
+  if (parsed.data.expectedUpdatedAt && parsed.data.expectedUpdatedAt !== row.updatedAt.toISOString()) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt." };
+  const start = osloInstant(row.date.getUTCFullYear(), row.date.getUTCMonth() + 1, row.date.getUTCDate(), Math.floor(row.startMinute / 60), row.startMinute % 60);
+  if (parsed.data.actualMinutes !== undefined && start > new Date()) return { ok: false, error: "En fremtidig økt kan ikke etterregistreres." };
+  const updated = await prisma.workbenchSession.updateMany({
+    where: { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false, hiddenByPlayer: false, needsPlayerApproval: false },
     data: {
       perceivedEffort: parsed.data.perceivedEffort,
       actualMinutes: parsed.data.actualMinutes,
     },
-    include: { drills: true },
   });
-
-  return { ok: true, data: mapSession(updated) };
+  if (updated.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt." };
+  return lagreOgHent(row.id);
 }
 
 /**
@@ -2116,7 +2148,7 @@ export async function completeSessionWithEffort(
       status: "COMPLETED",
       perceivedEffort: parsed.data.perceivedEffort,
       actualMinutes: parsed.data.actualMinutes,
-      liveSnapshot: Prisma.DbNull,
+      liveSnapshot: sealSessionSnapshot(row.liveSnapshot, "COMPLETED", new Date().toISOString()) as Prisma.InputJsonValue,
     },
   });
   if (result.count !== 1) {
@@ -2158,11 +2190,12 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
     [...next.drills].sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id),
   );
 
+  Object.assign(nextSnapshot, { execution: initialSessionExecution(nextSnapshot.startedAtISO) });
   try {
     await prisma.$transaction(async (tx) => {
       const completed = await tx.workbenchSession.updateMany({
         where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt, isTemplate: false },
-        data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
+        data: { status: "COMPLETED", liveSnapshot: sealSessionSnapshot(current.liveSnapshot, "COMPLETED", new Date().toISOString()) as Prisma.InputJsonValue },
       });
       const started = await tx.workbenchSession.updateMany({
         where: {
@@ -2206,18 +2239,24 @@ export async function saveWorkbenchLiveSnapshot(input: unknown): Promise<WbResul
     return { ok: false, error: "Bare én øvelse kan pågå om gangen." };
   }
 
+  if (parsed.data.expectedUpdatedAt && parsed.data.expectedUpdatedAt !== row.updatedAt.toISOString()) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  const raw = row.liveSnapshot == null ? {} : jsonObject(row.liveSnapshot);
+  if (!raw || (raw.execution !== undefined && !readSessionExecution(raw))) return { ok: false, error: "Ukjente gjennomføringsdata er bevart og kan ikke overskrives." };
+  const execution = readSessionExecution(raw);
+  if (execution && execution.phase !== "ACTIVE") return { ok: false, error: "Fortsett økten før du endrer live-data." };
   const current = parseWorkbenchLiveSnapshot(row.liveSnapshot, expectedIds, row.updatedAt.toISOString());
   const updatedAtISO = new Date().toISOString();
   const snapshot = {
+    ...raw,
     startedAtISO: current.startedAtISO,
     totalSec: parsed.data.totalSec,
     updatedAtISO,
-    drills: expectedIds.map((id) => incoming.get(id)!),
-    seriesTargets: Object.fromEntries(expectedIds.map((id) => [id, parsed.data.seriesTargets[id] ?? 3])),
+    drills: expectedIds.map((id) => ({ ...jsonObject((Array.isArray(raw.drills) ? raw.drills : []).find(d => jsonObject(d)?.drillId === id)), ...incoming.get(id)! })),
+    seriesTargets: { ...jsonObject(raw.seriesTargets), ...Object.fromEntries(expectedIds.map((id) => [id, parsed.data.seriesTargets[id] ?? 3])) },
   };
   const result = await prisma.workbenchSession.updateMany({
     where: { id: row.id, playerId: row.playerId, status: "IN_PROGRESS", updatedAt: row.updatedAt },
-    data: { liveSnapshot: snapshot as unknown as Prisma.InputJsonValue },
+    data: { liveSnapshot: snapshot as Prisma.InputJsonValue, updatedAt: new Date(updatedAtISO) },
   });
   if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Prøv igjen." };
   revalider(row.playerId);

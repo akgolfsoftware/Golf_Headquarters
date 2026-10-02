@@ -21,6 +21,7 @@ import { Sokefelt } from "@/components/precision/pa-a2";
 import { Ikon, Knapp, AKSE_NAVN, type Akse } from "@/components/precision/pa";
 import { AKSER, Caps, Valgpille, akseFra, akseStil } from "@/components/precision/pa-workbench";
 import { OvelseSkjema } from "@/components/workbench/OvelseSkjema";
+import { SessionExecutionPanel } from "@/components/workbench/SessionExecutionPanel";
 import type { UkeMotor } from "@/components/workbench/useUkeMotor";
 import { AREA_LABEL, formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
@@ -112,7 +113,7 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
         <Knapp fullWidth icon={Send} disabled={travel} onClick={() => motor.publiser([session.id])}>{UI.publish}</Knapp>
         <Knapp variant="ghost" fullWidth icon={Trash2} disabled={travel} onClick={() => setBekreftSlett(true)}>{UI.delete}</Knapp>
       </> : <>
-        <Knapp variant="secondary" fullWidth icon={Undo2} disabled={travel} onClick={() => motor.trekkTilbake(session.id)}>{UI.unpublish}</Knapp>
+        {session.status === "PUBLISHED" && <Knapp variant="secondary" fullWidth icon={Undo2} disabled={travel} onClick={() => motor.trekkTilbake(session.id)}>{UI.unpublish}</Knapp>}
         <Knapp variant="ghost" fullWidth onClick={onLukk}>Lukk</Knapp>
       </>}>
       <Caps>{meta}</Caps>
@@ -206,9 +207,11 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
           </Felt>
           <Felt label="Faktisk min" mono><input type="number" min={0} max={1440} step={1} inputMode="numeric" placeholder="Ikke registrert" value={faktisk} onChange={(e) => setFaktisk(e.target.value)} /></Felt>
         </div>
-        <Knapp variant="secondary" size="sm" disabled={travel || !faktiskGyldig}
-          onClick={() => { if (faktiskGyldig) motor.oppdaterAnstrengelse(session.id, rpe ? Number(rpe) : null, faktiskeMinutter); }}>Lagre belastning</Knapp>
+        <Knapp variant="secondary" size="sm" disabled={travel || !faktiskGyldig || ["COMPLETED", "SKIPPED", "ABANDONED"].includes(session.status)}
+          onClick={() => { if (faktiskGyldig && !["COMPLETED", "SKIPPED", "ABANDONED"].includes(session.status)) motor.oppdaterAnstrengelse(session.id, rpe ? Number(rpe) : null, faktiskeMinutter); }}>Lagre belastning</Knapp>
       </div>
+
+      {["PUBLISHED", "IN_PROGRESS", "COMPLETED", "SKIPPED", "ABANDONED"].includes(session.status) && <SessionExecutionPanel key={`${session.id}-${session.updatedAt}`} session={session} onSaved={() => { void motor.lastPaaNytt(); }} />}
 
       {session.seriesId && utkast && <div className="a9-skjema">
         <Felt label={UI.seriesPolicyLabel}>
@@ -232,7 +235,7 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
 }
 
 const UI_STATUS: Record<WorkbenchSession["status"], string> = {
-  DRAFT: "UTKAST", SCHEDULED: "PLANLAGT", PUBLISHED: "PUBLISERT", IN_PROGRESS: "PÅGÅR", COMPLETED: "FULLFØRT", CANCELLED: "AVLYST", SKIPPED: "HOPPET OVER",
+  DRAFT: "UTKAST", SCHEDULED: "PLANLAGT", PUBLISHED: "PUBLISERT", IN_PROGRESS: "PÅGÅR", COMPLETED: "FULLFØRT", CANCELLED: "AVLYST", SKIPPED: "HOPPET OVER", ABANDONED: "AVBRUTT",
 };
 
 /* ---------------- Ny økt ---------------- */

@@ -295,17 +295,22 @@ function osloAar(dato: Date) {
 export async function hentTnSamlinger(bruker: TnBruker) {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
-  const [rader, antallSpillere] = await Promise.all([
+  const [rader, antallSpillere, førsteSpiller] = await Promise.all([
     prisma.groupSchedule.findMany({
-      where: { groupId: kontekst.gruppe.id, kind: "SAMLING" },
+      where: { groupId: kontekst.gruppe.id, kind: { in: ["SAMLING", "HELDAGSSAMLING"] } },
       select: { id: true, title: true, startAt: true, endAt: true, location: true, description: true },
       orderBy: { startAt: "desc" },
       take: 150,
     }),
     prisma.groupMember.count({ where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() } }),
+    kontekst.kanAdministrere ? prisma.groupMember.findFirst({
+      where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere(), user: { role: "PLAYER", deletedAt: null } },
+      orderBy: { joinedAt: "asc" }, select: { userId: true },
+    }) : Promise.resolve(null),
   ]);
   return {
     kontekst,
+    planHref: førsteSpiller ? `/admin/workbench/${encodeURIComponent(førsteSpiller.userId)}?flate=bord&gruppe=${encodeURIComponent(kontekst.gruppe.id)}` : null,
     samlinger: rader.map((r) => ({ id: r.id, name: r.title, startDate: r.startAt, endDate: r.endAt, location: r.location, notes: r.description, antallDeltakere: antallSpillere })),
   };
 }

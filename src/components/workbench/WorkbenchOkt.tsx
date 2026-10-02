@@ -33,6 +33,7 @@ import {
 import { OvelseSkjema } from "./OvelseSkjema";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
+import { SessionExecutionPanel } from "./SessionExecutionPanel";
 
 type Props = {
   playerId: string;
@@ -255,6 +256,7 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
                 )}
               </header>
 
+              <SessionExecutionPanel key={`${session.id}-${session.updatedAt}`} session={session} onSaved={() => { void refresh(); }} />
               {sessions.length > 1 ? (
                 <label className="wb-session-picker"><span>Økt i uken</span><select value={session.id} onChange={(event) => selectSession(event.target.value)}>{sessions.map((item) => <option key={item.id} value={item.id}>{datoLabel(item.date)} · {formatTime(item.startMinute)} · {item.title}</option>)}</select></label>
               ) : null}

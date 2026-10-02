@@ -229,7 +229,7 @@ export async function anonymiserBruker(
     // Trenerforslag inneholder spillerens øktdetaljer og trenerens fritekstgrunn.
     // Fjern både mottatte og forfattede forslag når en av partene anonymiseres.
     prisma.planAction.deleteMany({ where: {
-      actionType: "WORKBENCH_COACH_PROPOSAL", OR: [{ userId }, { coachId: userId }],
+      actionType: { in: ["WORKBENCH_COACH_PROPOSAL", "WORKBENCH_GATHERING_INVITE"] }, OR: [{ userId }, { coachId: userId }],
     } }),
     // Invitasjoner inneholder mottakerens e-post. Fjernes også når trener/foresatt slettes.
     prisma.trenerDelingsInvitasjon.deleteMany({ where: { OR: [

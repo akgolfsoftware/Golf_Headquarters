@@ -10,6 +10,7 @@ import type { WorkbenchSurface } from "@/lib/workbench/visning-url";
 const pushed: string[] = [];
 mock.module("react", { namedExports: { ...React, useEffect() {}, useMemo: (f: () => unknown) => f(), useRef: (v: unknown) => ({ current: v }),
   useState: (v: unknown) => [typeof v === "function" ? v() : v, () => undefined], useTransition: () => [false, () => undefined] } });
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ push: (u: string) => pushed.push(u), replace() {}, refresh() {} }),
   usePathname: () => "/portal/planlegge/workbench", useSearchParams: () => new URLSearchParams() } });
 mock.module("next/link", { defaultExport: "a" });

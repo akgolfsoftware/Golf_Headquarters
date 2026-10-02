@@ -5,6 +5,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { CoachArsplan } from "@/app/team-wang/coach/coach-arsplan";
 import { hentWangGruppe } from "@/app/team-wang/_data/hent-wang-gruppe";
 import { hentWangCoachGruppeId } from "@/app/team-wang/_data/wang-tilgang";
+import { canUser } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 
 // WANG Årsplan (Coach) – trenerverktøy. Siden viser roster med elevnavn og
 // IUP-lenker — PII om mindreårige. I tillegg til innlogging og global rolle må
@@ -32,5 +34,6 @@ export default async function WangCoachPage() {
   // og av requirePortalUser over — fellessiden ved siden av er åpen.
   const live = await hentWangGruppe({ medElevnavn: true });
   if (!live || live.gruppeId !== gruppeId) notFound();
-  return <CoachArsplan live={live} />;
+  const kanPublisere = await canUser(bruker, Capability.EDIT_GROUP_PLANS);
+  return <CoachArsplan live={live} kanPublisere={kanPublisere} />;
 }

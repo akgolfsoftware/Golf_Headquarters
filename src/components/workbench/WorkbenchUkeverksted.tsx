@@ -16,6 +16,8 @@ import type { Drill, SourceItem, WorkbenchSession } from "@/lib/domain/workbench
 import type { WorkbenchSamletData } from "@/lib/workbench/workbench-samlet-typer";
 import { flyttPlanUke, osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import { klassiskWorkbenchUrl, samletWorkbenchUrl } from "@/lib/workbench/samlet-url";
+import { WorkbenchHendelserArk } from "./WorkbenchHendelserArk";
+import { WorkbenchPlanHandlinger } from "./WorkbenchPlanHandlinger";
 import { WorkbenchTreukerssyklus } from "./WorkbenchTreukerssyklus";
 import { UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
 
@@ -43,6 +45,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   const [publiser, setPubliser] = useState(false);
   const [ukeplan, setUkeplan] = useState(false);
   const [syklus, setSyklus] = useState(false);
+  const [hendelser, setHendelser] = useState(false);
   const [notat, setNotat] = useState(false);
   const [mobilPanel, setMobilPanel] = useState<"bibliotek" | "detaljer" | null>(null);
   const [plassertid, setPlassertid] = useState("16:00");
@@ -100,6 +103,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
           <section className="ws-section"><div className="ws-row"><AkseMerke axis={valgt.pyramid.toLowerCase() as Akse} /><span className="ws-muted">{STATUS_LABEL[valgt.status]}</span></div><h2>{valgt.title}</h2><p className="ws-num ws-muted">{dagOgDato(valgt.date)} kl. {klokke(valgt.startMinute)} · {valgt.durationMinutes} min</p>
             <dl className="ws-kv"><div><dt>Planlagt</dt><dd className="ws-num">{valgt.durationMinutes} min</dd></div><div><dt>Registrert</dt><dd className="ws-num">{valgt.actualMinutes == null ? "—" : `${valgt.actualMinutes} min`}</dd></div><div><dt>Serie</dt><dd>{valgt.seriesId ? "Gjentatt økt" : "Enkeltøkt"}</dd></div></dl>
             <Knapp variant="secondary" onClick={() => { setMobilPanel(null); setRediger(true); }}>Tid, serie og detaljer</Knapp>
+            <WorkbenchPlanHandlinger key={valgt.id} session={valgt} playerOwnsPlan={data.role === "player"} onLagret={() => { void motor.lastPaaNytt(); }} />
             {valgt.status === "DRAFT" ? <Knapp disabled={travel} onClick={() => { setMobilPanel(null); setPubliser(true); }}>Forhåndsvis og publiser</Knapp> : <Link href={klassiskWorkbenchUrl(data.player.id, "live", { ...referanse, okt: valgt.id }, data.routeSurface)}>Gjennomfør økta</Link>}
           </section>
           <section className="ws-section"><h3>Øvelser i rekkefølge</h3><ol className="ws-inspector-list">{valgt.drills.map((d, i) => <li key={d.id}><strong>{d.title}</strong><p className="ws-muted">{d.durationMinutes} min</p>{d.akFormel.detaljer?.mal?.malsetning && <p>Målsetning: {d.akFormel.detaljer.mal.malsetning}</p>}{d.techniqueFocus && <p className="ws-muted">Historisk fokus / kildeposisjon: {d.techniqueFocus}</p>}<div className="ws-row">
@@ -119,7 +123,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
       <Link className="pa-iconbtn" aria-label="Forrige uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, -1) }, data.routeSurface)}><ChevronLeft size={18} /></Link>
       <h2><span className="ws-week-desktop">Uke {isoWeekNumber(week.weekStart)} <span className="ws-muted">{dagOgDato(week.weekStart)} · {typeNavn}</span></span><span className="ws-week-mobile">{new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${dag}T12:00:00Z`))}<small>Uke {isoWeekNumber(week.weekStart)} · {typeNavn}</small></span></h2>
       <Link className="pa-iconbtn" aria-label="Neste uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, 1) }, data.routeSurface)}><ChevronRight size={18} /></Link>
-      <div className="ws-week-actions"><Knapp variant="secondary" disabled={travel} onClick={() => setSyklus(true)}>Treukerssyklus</Knapp><Knapp variant="secondary" onClick={() => setUkeplan(true)}>Ukeplan</Knapp>
+      <div className="ws-week-actions"><Knapp variant="secondary" onClick={() => setHendelser(true)}>Hendelser</Knapp><Knapp variant="secondary" disabled={travel} onClick={() => setSyklus(true)}>Treukerssyklus</Knapp><Knapp variant="secondary" onClick={() => setUkeplan(true)}>Ukeplan</Knapp>
       <Knapp icon={Plus} disabled={travel} onClick={() => setNy({ dato: dag, startMinutt: 16 * 60, pyramide: null })}>Ny økt</Knapp>
       <Knapp variant="secondary" icon={Send} disabled={travel || motor.utkast.length === 0} onClick={() => setPubliser(true)}>Publiser · {motor.utkast.length}</Knapp></div>
     </div>
@@ -147,6 +151,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
       <aside className="ws-inspector" aria-label="Valgt økt">{inspektor}</aside>
     </div>
     {mobilPanel && <Ark open title={mobilPanel === "bibliotek" ? "Bibliotek" : "Økt og ukesum"} onClose={() => setMobilPanel(null)} footer={<Knapp variant="ghost" onClick={() => setMobilPanel(null)}>Til kalenderen</Knapp>}><div className="ws-panel-ark">{mobilPanel === "bibliotek" ? bibliotek : <>{inspektor}{ukeVolum}</>}</div></Ark>}
+    {hendelser && <WorkbenchHendelserArk playerId={data.player.id} dato={week.weekStart} editable={data.role === "player"} onLukk={() => setHendelser(false)} onLagret={() => { void motor.lastPaaNytt(); }} />}
     {ny && <NyOktArk utkast={ny} travel={travel} onLukk={() => setNy(null)} onOpprett={v => motor.opprett(v, id => { setNy(null); velgOkt(id); }, true)} />}
     {rediger && valgt && <OktArk key={valgt.id} session={valgt} spillerNavn={data.player.navn} motor={motor} onLukk={() => setRediger(false)} onApneOkt={id => { velgOkt(id); setRediger(false); }} onNyOvelse={session => { setRediger(false); setOvelse({ session }); }} onRedigerOvelse={(session, drill) => { setRediger(false); setOvelse({ session, drill }); }} />}
     {ovelse && <OvelseArk key={ovelse.drill?.id ?? ovelse.session.id} session={ovelse.session} drill={ovelse.drill} pyramide={ovelse.drill?.akFormel.pyramid ?? ovelse.session.pyramid} travel={travel} onLukk={() => setOvelse(null)} onSubmit={(o, ferdig) => {

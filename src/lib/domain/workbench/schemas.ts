@@ -84,6 +84,7 @@ export const SessionStatusSchema = z.enum([
   "COMPLETED",
   "CANCELLED",
   "SKIPPED",
+  "ABANDONED",
 ]);
 
 export const BlockTypeSchema = z.enum([

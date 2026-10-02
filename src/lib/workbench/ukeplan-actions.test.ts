@@ -83,6 +83,8 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
       && s.startDate <= where.startDate.lte && s.endDate >= where.endDate.gte) ?? null;
   } },
   workbenchSession: { findMany: async () => { dbCalls++; return []; } },
+  groupSchedule: { findMany: async () => { dbCalls++; return []; } },
+  workbenchTournamentPlan: { findMany: async () => { dbCalls++; return []; } },
   user: { findUnique: async () => { dbCalls++; return { schoolYear: null }; } },
   playerBusyBlock: { findMany: async () => { dbCalls++; return []; } },
 } } });
