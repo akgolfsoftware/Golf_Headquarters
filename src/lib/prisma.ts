@@ -16,10 +16,16 @@ function createPrismaClient() {
     connectionString: process.env.DATABASE_URL,
   });
 
-  return new PrismaClient({
+  const client = new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+    errorFormat: "minimal",
+    // Prisma-feil kan inneholde spørringsargumenter eller nøkkelverdier.
+    // Ikke skriv rå hendelser fra elev-/helse-/delingsdata til terminalen.
+    log: [{ emit: "event", level: "error" }, { emit: "event", level: "warn" }],
   });
+  client.$on("error", () => console.error("[database] Databaseforespørsel mislyktes."));
+  client.$on("warn", () => console.warn("[database] Databaseadvarsel."));
+  return client;
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();

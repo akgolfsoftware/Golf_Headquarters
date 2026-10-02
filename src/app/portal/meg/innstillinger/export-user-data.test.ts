@@ -20,7 +20,7 @@ const kilder = [
   "testResult", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
-  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan",
+  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   findMany: async ({ where }: { where: unknown }) => {
@@ -125,7 +125,9 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
     const felt = kilde === "user" ? "id" :
       kilde === "trainingSessionV2" ? "studentId" :
       ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) ? "playerId" : "userId";
-    assert.deepEqual(where, { [felt]: bruker.id });
+    assert.deepEqual(where, kilde === "trenerDelingsInvitasjon" ? {
+      OR: [{ userId: bruker.id }, { gittAvUserId: bruker.id }, { acceptedByUserId: bruker.id }, { mottakerEpost: bruker.email }],
+    } : { [felt]: bruker.id });
   }
   assert.deepEqual(resultat.data?._storageFiler, [
     { type: "document", url: "private/test-document", title: "Testdokument" },

@@ -1,7 +1,9 @@
 /**
  * Delingssamtykke — data-tilgang (plan T8). Mønster: src/lib/health/samtykke.ts.
  *
- * All skriving av delingssamtykker går HER — append-only, aldri update.
+ * Gruppens delingssamtykker skrives her — append-only, aldri update.
+ * Navngitt fullprofil-deling utvider samme tabell gjennom `navngitt.ts`,
+ * med eget omfang slik at gamle gruppesamtykker aldri utvides.
  * Reglene i seg selv (nyeste-rad-vinner, FORESATT-krav) ligger i
  * `samtykke-regler.ts` og testes uten database.
  */

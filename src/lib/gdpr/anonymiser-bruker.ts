@@ -79,7 +79,7 @@ export async function anonymiserBruker(
 ): Promise<AnonymiseringsResultat & { dryRun?: boolean; plan?: string[] }> {
   const bruker = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, publicPlayerId: true, deletedAt: true },
+    select: { id: true, email: true, publicPlayerId: true, deletedAt: true },
   });
 
   // Kontoen kan alt være hard-slettet av en tidligere kjøring. Da er det
@@ -202,6 +202,11 @@ export async function anonymiserBruker(
     // IUP kan inneholde personlig refleksjon og helseopplysninger. Beholdes ikke
     // som koblet historikk på den anonymiserte brukerraden. Revisjoner kaskadeslettes.
     prisma.iupBesvarelse.deleteMany({ where: { userId } }),
+    // Invitasjoner inneholder mottakerens e-post. Fjernes også når trener/foresatt slettes.
+    prisma.trenerDelingsInvitasjon.deleteMany({ where: { OR: [
+      { userId }, { gittAvUserId: userId }, { acceptedByUserId: userId },
+      { mottakerEpost: bruker.email.trim().toLowerCase() },
+    ] } }),
     prisma.user.update({ where: { id: userId }, data: anonymisering }),
     ...(publicPlayerAnonymisert
       ? [
