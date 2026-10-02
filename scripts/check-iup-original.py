@@ -25,14 +25,14 @@ KATEGORIER = {"Sosial", "Mentalt", "Fysisk", "Strategisk", "Teknisk", "Golfutvik
 KOLONNER = [("UNG", "A", "C"), ("JUNIOR", "M", "O"), ("AMATOR", "Y", "AA"), ("PROFESJONELL", "AK", "AM")]
 
 
-def les_sporsmal(fil: Path, versjon: str) -> dict:
+def les_ark(fil: Path, versjon: str, arknavn: str) -> dict:
     innhold = fil.read_bytes()
     if hashlib.sha256(innhold).hexdigest() != VERSJONER[versjon]:
         raise ValueError(f"{versjon}: originalens kontrollsum er endret. Ny kilde krever en egen vurdering.")
     with ZipFile(fil) as z:
         strenger = ["".join(t.itertext()) for t in ET.fromstring(z.read("xl/sharedStrings.xml"))]
         ark = ET.fromstring(z.read("xl/workbook.xml"))
-        ark_id = next(s.attrib[REL_ID] for s in ark.findall("s:sheets/s:sheet", NS) if s.attrib["name"] == ARK)
+        ark_id = next(s.attrib[REL_ID] for s in ark.findall("s:sheets/s:sheet", NS) if s.attrib["name"] == arknavn)
         relasjoner = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
         target = next(r.attrib["Target"] for r in relasjoner if r.attrib["Id"] == ark_id)
         sti = target.lstrip("/") if target.startswith("/") else posixpath.normpath("xl/" + target)
@@ -44,6 +44,11 @@ def les_sporsmal(fil: Path, versjon: str) -> dict:
             elif celle.attrib.get("t") == "inlineStr":
                 celler[celle.attrib["r"]] = "".join(celle.find("s:is", NS).itertext()).strip()
 
+    return celler
+
+
+def les_sporsmal(fil: Path, versjon: str) -> dict:
+    celler = les_ark(fil, versjon, ARK)
     nivaaer = {}
     for niva, kategorikolonne, sporsmaalskolonne in KOLONNER:
         kategori = None
@@ -63,6 +68,15 @@ def les_sporsmal(fil: Path, versjon: str) -> dict:
     return nivaaer
 
 
+def les_sesongsporsmal(fil: Path, versjon: str) -> list:
+    arknavn = "2. Evaluering spörsmål" if versjon == "iup-2025" else "2. Evaluering spørsmål"
+    celler = les_ark(fil, versjon, arknavn)
+    return [{
+        "id": f"{versjon}-sesong-b{rad}", "celle": f"B{rad}",
+        "type": "FRITEKST" if rad < 9 else "SKALA", "tekst": celler[f"B{rad}"],
+    } for rad in [2, 4, 6, *range(11, 21)]]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--iup-2025", required=True, type=Path)
@@ -70,6 +84,7 @@ def main() -> int:
     args = vars(parser.parse_args())
     katalogsti = Path(__file__).resolve().parent.parent / "src/lib/iup/utviklingssjekk-kilder.json"
     katalog = json.loads(katalogsti.read_text(encoding="utf-8"))
+    sesonger = json.loads(katalogsti.with_name("sesongevaluering-kilder.json").read_text(encoding="utf-8"))
     try:
         for versjon, sha in VERSJONER.items():
             kilde = katalog[versjon]
@@ -79,6 +94,13 @@ def main() -> int:
                 raise ValueError(f"{versjon}: katalogen avviker fra originalens spørsmål, kategorier eller celler")
             antall = sum(len(s) for s in kilde["nivaaer"].values())
             print(f"OK: {versjon}, {antall} spørsmål identiske med originalfilen.")
+            sesong = sesonger[versjon]
+            forventet_ark = "2. Evaluering spörsmål" if versjon == "iup-2025" else "2. Evaluering spørsmål"
+            if sesong["sha256"] != sha or sesong["ark"] != forventet_ark or sesong["skala"] != {"min": 1, "maks": 4}:
+                raise ValueError(f"{versjon}: sesongevalueringens kildemetadata avviker")
+            if les_sesongsporsmal(args[versjon.replace("-", "_")], versjon) != sesong["sporsmal"]:
+                raise ValueError(f"{versjon}: sesongspørsmålene avviker fra originalen")
+            print(f"OK: {versjon}, 13 sesongspørsmål identiske med originalfilen.")
     except (OSError, ValueError, KeyError, StopIteration):
         # Ingen originalinnhold eller private filstier i kontroll-loggen.
         print("IUP-kontrollen feilet: kontroller lokal original, kontrollsum og spørsmålskatalog.", file=sys.stderr)

@@ -179,6 +179,9 @@ export async function anonymiserBruker(
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
 
   await prisma.$transaction([
+    // IUP kan inneholde personlig refleksjon og helseopplysninger. Beholdes ikke
+    // som koblet historikk på den anonymiserte brukerraden. Revisjoner kaskadeslettes.
+    prisma.iupBesvarelse.deleteMany({ where: { userId } }),
     prisma.user.update({ where: { id: userId }, data: anonymisering }),
     ...(publicPlayerAnonymisert
       ? [

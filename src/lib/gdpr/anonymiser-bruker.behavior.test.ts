@@ -18,6 +18,9 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   round: { findMany: async () => [{ score: 75 }], updateMany },
   trainingSessionV2: { findMany: async () => [{ id: "session" }], updateMany },
   trainingDrillV2: { updateMany }, drillLogV2: { updateMany }, fysOvelseRad: { updateMany },
+  iupBesvarelse: { deleteMany: async ({ where }: { where: { userId: string } }) => {
+    assert.equal(where.userId, "synthetic"); writes.push("iup"); return { count: 1 };
+  } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
 mock.module("./slett-eksterne-data", { namedExports: {
@@ -44,4 +47,5 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   externalErrors = [];
   await anonymiserBruker("synthetic");
   assert.equal(markedComplete, true);
+  assert.ok(writes.includes("iup"));
 });

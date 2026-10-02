@@ -119,6 +119,7 @@ export async function exportUserData(): Promise<{
       swingVideos,
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
+      iupBesvarelser,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({ where: { userId: user.id } }),
@@ -142,6 +143,7 @@ export async function exportUserData(): Promise<{
       prisma.trainingLog.findMany({ where: { userId: user.id } }),
       prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
       prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
+      prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
     ]);
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
@@ -183,6 +185,7 @@ export async function exportUserData(): Promise<{
       trainingLogs,
       swingVideos,
       delingsSamtykker,
+      iupBesvarelser,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +
