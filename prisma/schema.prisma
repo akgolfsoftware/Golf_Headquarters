@@ -901,15 +901,15 @@ model DelingsSamtykke {
 
 // Navngitt deling: token lagres bare som SHA-256. Ingen innsyn før aksept.
 model TrenerDelingsInvitasjon {
-  id               String   @id
+  id               String    @id
   userId           String
-  mottakerGruppeId  String
-  mottakerEpost     String
-  tokenHash        String   @unique
+  mottakerGruppeId String
+  mottakerEpost    String
+  tokenHash        String    @unique
   tekstVersjon     String
   gittAvUserId     String
   gittAvRolle      String
-  createdAt        DateTime @default(now())
+  createdAt        DateTime  @default(now())
   expiresAt        DateTime
   acceptedAt       DateTime?
   acceptedByUserId String?
@@ -4630,6 +4630,7 @@ model StrokesGainedBaseline {
   expectedStrokes Float
   sampleSize      Int?
   sourceRow       String?
+  sourceQuality   String?
 
   referenceSet SgReferenceSet @relation(fields: [referenceSetId], references: [id], onDelete: Cascade)
 

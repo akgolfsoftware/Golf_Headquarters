@@ -1,5 +1,7 @@
 import { formaterFortegn } from "@/lib/format-tall";
 
+export const SG_ENGINE_VERSION = "2.0.0";
+
 export type SgCategory = "OTT" | "APP" | "ARG" | "PUTT";
 export type SgLie = "TEE" | "FAIRWAY" | "SEMI_ROUGH" | "ROUGH" | "DEEP_ROUGH" |
   "BUNKER" | "GREEN" | "WATER" | "OOB" | "TREES";
@@ -35,7 +37,7 @@ export type ShotSgCalculation = {
 };
 export type SgPosition = { phase: SgCategory; lie: SgLie; teePar: number; distanceM: number };
 
-/** Lineær interpolasjon innen én kurve. Manglende dekning gir null, aldri ekstrapolasjon. */
+/** Lineær interpolasjon innen én kurve. Bare dokumentert nær-hull-platå er tillatt under første målepunkt. */
 export function interpolerForventedeSlag(
   punkter: ReadonlyArray<SgBaselinePoint>,
   posisjon: SgPosition,
@@ -50,6 +52,15 @@ export function interpolerForventedeSlag(
   if (kurve.length === 0) return null;
   const eksakt = kurve.find((punkt) => punkt.distanceM === posisjon.distanceM);
   if (eksakt) return eksakt.expectedStrokes;
+  // (0, 0) betyr ball i hull og kan ikke interpoleres mot et slag fra 0,1 m.
+  // Kildekalkulatoren holder første positive punkt flatt ned til hullet for
+  // andre underlag enn tee. Krev at punktet er innen 10 m fra hullet.
+  const forstePositive = kurve.find((punkt) => punkt.distanceM > 0);
+  if (posisjon.distanceM > 0 && forstePositive &&
+      posisjon.distanceM < forstePositive.distanceM &&
+      posisjon.lie !== "TEE" && forstePositive.distanceM <= 10) {
+    return forstePositive.expectedStrokes;
+  }
   const hoyre = kurve.findIndex((punkt) => punkt.distanceM > posisjon.distanceM);
   if (hoyre <= 0) return null;
   const venstrePunkt = kurve[hoyre - 1];

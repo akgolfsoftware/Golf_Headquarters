@@ -116,6 +116,7 @@ CREATE TABLE "strokes_gained_baselines" (
     "expectedStrokes" DOUBLE PRECISION NOT NULL,
     "sampleSize" INTEGER,
     "sourceRow" TEXT,
+    "sourceQuality" TEXT,
 
     CONSTRAINT "strokes_gained_baselines_pkey" PRIMARY KEY ("id")
 );
@@ -239,6 +240,9 @@ ALTER TABLE "strokes_gained_baselines" ADD CONSTRAINT "sg_baseline_values_check"
   ("distanceM" <> 0 OR "expectedStrokes" = 0) AND
   ("sampleSize" IS NULL OR "sampleSize" >= 0) AND
   (("lie" = 'TEE' AND "teePar" BETWEEN 3 AND 6) OR ("lie" <> 'TEE' AND "teePar" = 0))
+);
+ALTER TABLE "strokes_gained_baselines" ADD CONSTRAINT "sg_baseline_source_quality_check" CHECK (
+  "sourceQuality" IS NULL OR "sourceQuality" IN ('published', 'interpolated')
 );
 ALTER TABLE "shot_sg_results" ADD CONSTRAINT "shot_sg_results_values_check" CHECK (
   "expectedStart" >= 0 AND "expectedEnd" >= 0 AND "penaltyStrokes" BETWEEN 0 AND 2

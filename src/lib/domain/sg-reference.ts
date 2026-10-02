@@ -1,8 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { SgBaselinePoint } from "./sg";
-
-export const SG_ENGINE_VERSION = "2.0.0";
+import { SG_ENGINE_VERSION, type SgBaselinePoint } from "./sg";
+export { SG_ENGINE_VERSION } from "./sg";
 
 /** Bare et publisert, versjonskompatibelt sett kan brukes til nye SG-tall. */
 export async function hentPublisertSgReferanse() {
