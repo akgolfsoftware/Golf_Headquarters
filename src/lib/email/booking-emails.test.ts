@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
+let subject = "";
+let templateSubject = "Test";
+let templateBody = "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}";
 let html = "";
 let rejected = false;
 let logged = 0;
@@ -16,18 +19,18 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     serviceType: { name: "Syntetisk time", durationMin: 60 }, location: { name: "Testlokale" },
     ...bookingOverride,
   }) },
-  emailTemplate: { findUnique: async () => templateMissing ? null : ({ active: templateActive, subject: "Test", body: "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}" }) },
+  emailTemplate: { findUnique: async () => templateMissing ? null : ({ active: templateActive, subject: templateSubject, body: templateBody }) },
 } } });
 mock.module("@/lib/email", { namedExports: {
-  FRA_EPOST: "test@akgolf.test", resendKlient: () => ({ emails: { send: async (input: { html: string }, options?: { idempotencyKey?: string }) => {
+  FRA_EPOST: "test@akgolf.test", resendKlient: () => ({ emails: { send: async (input: { html: string; subject: string }, options?: { idempotencyKey?: string }) => {
     if (options?.idempotencyKey) providerKeys.push(options.idempotencyKey);
     sentCount++;
     if (providerThrows) throw new Error("Syntetisk transportfeil");
-    html = input.html; return { data: null, error: rejected ? { message: "synthetic rejection" } : null };
+    html = input.html; subject = input.subject; return { data: null, error: rejected ? { message: "synthetic rejection" } : null };
   } } }),
 } });
 mock.module("@/lib/error-tracking", { namedExports: { logError: async () => { logged++; } } });
-test.beforeEach(() => { html = ""; rejected = false; logged = 0; templateActive = true; templateMissing = false; providerThrows = false; sentCount = 0; providerKeys = []; bookingOverride = {}; });
+test.beforeEach(() => { html = ""; rejected = false; logged = 0; templateActive = true; templateMissing = false; providerThrows = false; sentCount = 0; providerKeys = []; bookingOverride = {}; subject = ""; templateSubject = "Test"; templateBody = "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}"; });
 test("avbestillingsmelding viser refusjon og behandler navn som tekst", async () => {
   const { sendBookingCancellation } = await import("./booking-emails");
   await sendBookingCancellation("synthetic", { refundIssued: true });
@@ -175,4 +178,17 @@ test("gjentatte forsøk bruker samme leverandørnøkkel; ny tid har egen nøkkel
   bookingOverride = { startAt: new Date("2026-10-11T10:30:00Z"), endAt: new Date("2026-10-11T11:30:00Z") };
   await sendBookingReminder("synthetic", now);
   assert.notEqual(providerKeys[2], providerKeys[0]);
+});
+
+for (const method of ["sendBookingConfirmation", "sendBookingReminder", "sendBookingRescheduled"] as const) test(`${method} bruker lagret emne og tekst uten å miste faktaradene`, async () => {
+  const senders = await import("./booking-emails");
+  templateSubject = "Endret {{ serviceTypeName }} {{time}}";
+  templateBody = "Lagret beskjed til **{{ spillerNavn }}**\n\nBehold mine egne ord. <script>alert(1)</script>";
+  await senders[method]("synthetic", new Date("2026-10-09T08:30:00Z"));
+  assert.equal(subject, "Endret Syntetisk time 10:30");
+  assert.match(html, /Behold mine egne ord/); assert.match(html, /&lt;script&gt;/); assert.doesNotMatch(html, /<script>/);
+  assert.match(html, /<strong>&lt;img/); assert.match(html, /Tjeneste/); assert.match(html, /Syntetisk time 60 min/);
+  templateBody = "Ny lagret beskjed";
+  await senders[method]("synthetic", new Date("2026-10-09T08:30:00Z"));
+  assert.match(html, /Ny lagret beskjed/); assert.doesNotMatch(html, /Behold mine egne ord/);
 });

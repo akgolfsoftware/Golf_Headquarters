@@ -26,7 +26,7 @@ export type PaaminnelseData = {
   lenker: { veibeskrivelse: string; bookingIApp: string; endre: string };
 };
 
-export function byggPaaminnelse(d: PaaminnelseData, opts: { mork?: boolean } = {}) {
+export function byggPaaminnelse(d: PaaminnelseData, opts: { mork?: boolean; introHtml?: string } = {}) {
   const c = opts.mork ? EPOST_MORK : EPOST_LYS;
   const coachFornavn = d.coach?.split(" ")[0];
   const subject = `${d.iMorgen ? "I morgen" : d.dag} kl. ${d.start}: ${d.tjeneste.toLowerCase()}${coachFornavn ? ` med ${coachFornavn}` : ""}`;
@@ -39,7 +39,7 @@ export function byggPaaminnelse(d: PaaminnelseData, opts: { mork?: boolean } = {
       : d.fristPassert
         ? "Gratis avbestilling er ikke lenger mulig. Kan du ikke komme, gi beskjed så fort du kan."
         : `Gratis avbestilling før <b>${esc(d.frist)}</b>. Etter det refunderes ikke betalingen.`;
-  const body = avsnitt(`Hei ${esc(d.fornavn || "der")}. ${d.iMorgen ? "Her er timen din i morgen." : "Her er en påminnelse om timen din."} Ta med egne køller og møt fem minutter før.`, c) + faktaRader([
+  const body = (opts.introHtml ?? avsnitt(`Hei ${esc(d.fornavn || "der")}. ${d.iMorgen ? "Her er timen din i morgen." : "Her er en påminnelse om timen din."} Ta med egne køller og møt fem minutter før.`, c)) + faktaRader([
     ["Tjeneste", esc(d.varighetMin ? `${d.tjeneste} ${d.varighetMin} min` : d.tjeneste)],
     ["Tid", esc(`${d.dag} kl. ${d.klokke}`)],
     ["Sted", esc(d.sted)],

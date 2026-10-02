@@ -84,7 +84,7 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
     });
     if (!data.ok) return <Feil navn={user.name} melding={data.error} />;
-    return <Ramme navn={user.name}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.referanse.okt, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></Ramme>;
+    return <Ramme navn={user.name}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></Ramme>;
   }
 
   const goals = await hentMaalSpor(playerId);

@@ -2,6 +2,12 @@
 
 Bestilling fra Anders 02.10.2026. Grunnlag: HQ `25bc3302e`, gjeldende beslutninger og lokal IUP-kilde. Dette er en plan og designbestilling, ikke en påstand om at funksjonene er implementert eller at Team Norway har inngått kundeavtale.
 
+## Gjennomføringsstatus 02.10.2026
+
+Planen er fortsatt ikke fullført. Den løpende [nattjournalen](wang-tn-gjennomforing-natt-2026-10-02.md) er fasit for konkrete merge- og testresultater. [Kontrollmatrisen](wang-tn-leveransekontroll-2026-10-02.md) skiller det som er levert, det som bare er tegnet, og det som gjenstår. Tabeller under beskriver bestilt omfang og det daterte startgrunnlaget; «mangler» ved oppstart er ikke automatisk dagens status.
+
+Spillereid utviklingssjekk og sesongevaluering, lagring, levering, historikk, navngitt trenerdeling og trenerens leverte IUP-leser er nå merget. 316 utviklingsspørsmål og 26 sesongspørsmål er kontrollert mot begge originalfiler. Det beviser ikke full dekning av alle 18 Excel-ark. DataGolf DG01–17 er tegnet i alle tre designmiljøer, med [egen kilde- og skjermkontroll](../design-audit/datagolf-precision-wang-team-norway-2026-10-02.md); kundeintegrasjon er ikke aktivert.
+
 ## 1. Målet
 
 Digitaliser hele IUP-arbeidet i PlayerHQ, slik at spilleren registrerer opplysningene én gang. WANG-trener og Team Norway-trener skal få samme komplette sportslige spillerprofil, IUP-innhold, oppfølging og arbeidsmuligheter, innenfor dokumentert tilgang. Ingen av dem skal være avhengig av å få tilsendt et Excel-ark.

@@ -121,9 +121,12 @@ function formelGrunn(session: WorkbenchSession, drill: Drill | undefined, f: Dri
     { label: UI.formelMotorikk, hint: UI.formelHintMotorikk, value: f?.motorikk ? MOTORIKK[f.motorikk] : "—" },
     { label: UI.formelBelastning, hint: UI.formelHintBelastning, value: f?.belastning ? BELASTNING[f.belastning] : session.environment ? BELASTNING[session.environment] ?? session.environment : "—" },
     { label: UI.formelPress, hint: UI.formelHintPress, value: f?.press ? PRESS[f.press] : session.pressureLevel ?? "—" },
-    { label: UI.formelHensikt, hint: UI.formelHintHensikt, value: session.pyramid === "FYS" ? session.rationale ?? "—" : "—" },
+    { label: UI.formelHensikt, hint: UI.formelHintHensikt, value: session.rationale ?? "—" },
     { label: UI.formelMate, hint: UI.formelHintMate, value: drill?.description ?? (session.practiceType ? PRAKSIS[session.practiceType] : "—") },
-    { label: UI.formelMal, hint: UI.formelHintMal, value: drill?.techniqueFocus ?? session.maalsetning ?? "—" },
+    { label: UI.formelMal, hint: UI.formelHintMal, value: drill?.akFormel.detaljer?.mal?.malsetning ?? "—" },
+    { label: "Øktens målsetning", hint: "Øktens innhold", value: session.maalsetning ?? "—" },
+    { label: "Sted for økten", hint: "Øktens innhold", value: session.location ?? "—" },
+    ...(drill?.techniqueFocus ? [{ label: "Historisk fokus / kildeposisjon", hint: "Øktens innhold", value: drill.techniqueFocus }] : []),
   ];
 }
 

@@ -18,6 +18,7 @@ export function anonymisertAkFormel(value: unknown) {
   const mengde = OvelseDetaljerLeseSchema.shape.mengde.safeParse(detaljer.success ? detaljer.data.mengde : undefined);
   const segmenter = OvelseDetaljerSchema.shape.kondisjonssegmenter.safeParse(detaljer.success ? detaljer.data.kondisjonssegmenter : undefined);
   const utstyr = OvelseDetaljerSchema.shape.utstyr.safeParse(detaljer.success ? detaljer.data.utstyr : undefined);
+  // Hele mal-objektet (inkludert ny malsetning) er fritekst og følger aldri med i anonymisert JSON.
   const tryggeDetaljer = {
     ...(mengde.success && mengde.data ? { mengde: mengde.data } : {}),
     ...(segmenter.success && segmenter.data?.length ? { kondisjonssegmenter: segmenter.data } : {}),

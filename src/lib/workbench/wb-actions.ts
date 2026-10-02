@@ -22,7 +22,6 @@ import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDays,
   addDrill as addDrillPure,
-  applySeriesPatch,
   buildMonthViewModel,
   buildPeriodViewModel,
   buildWeekViewModel,
@@ -233,7 +232,10 @@ const CreateSessionSchema = z.object({
   pyramid: PyramidAreaSchema,
   blockType: BlockTypeSchema.optional(),
   environment: EnvironmentSchema.optional(),
-  notes: z.string().optional(),
+  notes: z.string().max(5000).optional(),
+  rationale: z.string().trim().max(1000).optional(),
+  location: z.string().trim().max(160).optional(),
+  maalsetning: z.string().trim().max(500).optional(),
   groupId: z.string().optional(),
   drills: z.array(DrillInputSchema).optional(),
 });
@@ -290,6 +292,10 @@ function sessionOpprettelseData(s: WorkbenchSession) {
     blockType: s.blockType,
     environment: s.environment ?? null,
     notes: s.notes ?? null,
+    rationale: s.rationale || null,
+    location: s.location || null,
+    maalsetning: s.maalsetning || null,
+    practiceType: s.practiceType ?? null,
     origin: s.origin,
     createdBy: s.createdBy,
     seriesId: s.seriesId ?? null,
@@ -559,7 +565,7 @@ export async function saveWeekPlan(
     // Sesongåret kan krysse kalenderåret. En eksplisitt kobling må eies av
     // spilleren og overlappe den faktiske uka; gammel klient beholder gyldig kobling.
     const existing = await prisma.weekPlan.findUnique({
-      where: { playerId_isoYear_weekNumber: key }, select: { seasonPlanId: true },
+      where: { playerId_isoYear_weekNumber: key }, select: { seasonPlanId: true, planningDetails: true, updatedAt: true },
     });
     let seasonPlanId: string | null = null;
     const beholdTomKobling = data.seasonPlanId === undefined && existing?.seasonPlanId === null;
@@ -580,6 +586,11 @@ export async function saveWeekPlan(
 
     // Udefinert felt betyr behold. null betyr eksplisitt tøm, også for JSON.
     // Vi skriver feltene direkte, uten å lese og overskrive hele legacy-raden.
+    const tidligereDetaljer = existing?.planningDetails ? parseWeekPlanData({ ...key, id: "metadata", weekType: "UTVIKLING", notes: [], planningDetails: existing.planningDetails })?.planningDetails : null;
+    if (existing?.planningDetails && !tidligereDetaljer) return { ok: false, error: "Den lagrede ukeplanen må gjennomgås før den endres." };
+    if (tidligereDetaljer?.cycle && data.planningDetails === null) return { ok: false, error: "Oppløs treukerssyklusen før ukeplandetaljene tømmes." };
+    if (data.planningDetails?.cycle && JSON.stringify(data.planningDetails.cycle) !== JSON.stringify(tidligereDetaljer?.cycle)) return { ok: false, error: "Sykluskoblingen endres gjennom treukerssyklusen." };
+    const nyeDetaljer = data.planningDetails && tidligereDetaljer?.cycle ? { ...data.planningDetails, cycle: tidligereDetaljer.cycle } : data.planningDetails;
     const felter = {
       seasonPlanId,
       weekType: data.weekType,
@@ -597,10 +608,18 @@ export async function saveWeekPlan(
       loadCeiling: data.loadCeiling,
       customNotes: data.customNotes,
       ...(data.planningDetails !== undefined ? {
-        planningDetails: data.planningDetails === null ? Prisma.DbNull : data.planningDetails,
+        planningDetails: nyeDetaljer === null ? Prisma.DbNull : nyeDetaljer,
       } : {}),
     };
-    const row = await prisma.weekPlan.upsert({
+    // Metadata fra gamle klienter må ikke overskrive en syklus koblet på siden sist.
+    let row: Awaited<ReturnType<typeof prisma.weekPlan.findUnique>>;
+    if (data.planningDetails !== undefined && existing) {
+      const changed = await prisma.weekPlan.updateMany({ where: { ...key, updatedAt: existing.updatedAt }, data: felter });
+      if (changed.count !== 1) return { ok: false, error: "Ukeplanen er endret. Last inn på nytt før du lagrer." };
+      row = await prisma.weekPlan.findUnique({ where: { playerId_isoYear_weekNumber: key } });
+    } else if (data.planningDetails !== undefined) {
+      row = await prisma.weekPlan.create({ data: { ...key, ...felter, weekType: data.weekType ?? "UTVIKLING", notes: data.notes ?? [] } });
+    } else row = await prisma.weekPlan.upsert({
       where: { playerId_isoYear_weekNumber: key },
       create: { ...key, ...felter, weekType: data.weekType ?? "UTVIKLING", notes: data.notes ?? [] },
       update: felter,
@@ -1284,7 +1303,7 @@ export async function createSession(
   const cmd = parsed.data;
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
   for (const drill of cmd.drills ?? []) {
     const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
     if (!ref.ok) return ref;
@@ -1303,6 +1322,9 @@ export async function createSession(
     blockType: cmd.blockType,
     environment: cmd.environment,
     notes: cmd.notes,
+    rationale: cmd.rationale,
+    location: cmd.location,
+    maalsetning: cmd.maalsetning,
     groupId: cmd.groupId,
     drills: cmd.drills,
     createdBy: erCoach ? "COACH" : "PLAYER",
@@ -1331,7 +1353,7 @@ export async function createSessionSeries(
   const cmd = parsed.data;
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
   for (const drill of cmd.drills ?? []) {
     const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
     if (!ref.ok) return ref;
@@ -1351,6 +1373,9 @@ export async function createSessionSeries(
       blockType: cmd.blockType,
       environment: cmd.environment,
       notes: cmd.notes,
+      rationale: cmd.rationale,
+      location: cmd.location,
+      maalsetning: cmd.maalsetning,
       groupId: cmd.groupId,
       drills: cmd.drills,
       createdBy: erCoach ? "COACH" : "PLAYER",
@@ -1388,13 +1413,14 @@ export async function createSessionFromSource(input: {
   }
 
   const viewer = await kreverTilgangTilSpiller(parsed.data.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
 
   const kilde = parseSourceId(parsed.data.sourceId);
   if (!kilde) return { ok: false, error: "Ukjent kilde." };
 
   const erCoach = viewer.id !== parsed.data.playerId;
   let utkast: WorkbenchSession;
+  let kopiertOktinnhold: Pick<WbRow, "practiceType" | "pressureLevel" | "pPosisjoner" | "skillArea"> | undefined;
   let kopierteDriller: WbRow["drills"] | undefined;
 
   if (kilde.kind === "DRILL") {
@@ -1459,6 +1485,7 @@ export async function createSessionFromSource(input: {
     }
     const kildeOkt = mapSession(rad);
     kopierteDriller = rad.drills;
+    kopiertOktinnhold = { practiceType: rad.practiceType, pressureLevel: rad.pressureLevel, pPosisjoner: rad.pPosisjoner, skillArea: rad.skillArea };
 
     utkast = createSessionPure({
       playerId: parsed.data.playerId,
@@ -1471,6 +1498,9 @@ export async function createSessionFromSource(input: {
       blockType: kildeOkt.blockType,
       environment: kildeOkt.environment,
       notes: kildeOkt.notes,
+      rationale: kildeOkt.rationale,
+      location: kildeOkt.location,
+      maalsetning: kildeOkt.maalsetning,
       drills: kildeOkt.drills.map((d) => ({
         title: d.title,
         description: d.description,
@@ -1486,6 +1516,7 @@ export async function createSessionFromSource(input: {
   const rad2 = await prisma.workbenchSession.create({
     data: {
       ...sessionOpprettelseData(utkast),
+      ...kopiertOktinnhold,
       ...(kopierteDriller ? { drills: { create: [...kopierteDriller].sort((a, b) => a.sortOrder - b.sortOrder).map((d, sortOrder) => ({
         // Kopien får egne ID-er; planinnhold og kilde/dose beholdes fra rå lagring.
         title: d.title, description: d.description, durationMinutes: d.durationMinutes,
@@ -1833,7 +1864,7 @@ async function serieMalRammer(
 ): Promise<WorkbenchSession[]> {
   if (!gjeldende.seriesId || policy === "DENNE") return [gjeldende];
   const serieRader = await prisma.workbenchSession.findMany({
-    where: { seriesId: gjeldende.seriesId },
+    where: { seriesId: gjeldende.seriesId, playerId: gjeldende.playerId },
     include: { drills: true },
   });
   return sessionsMatchingPolicy(serieRader.map(mapSession), gjeldende.id, policy);
@@ -1850,51 +1881,64 @@ export async function updateSeriesSession(input: {
     pyramid?: WorkbenchSession["pyramid"];
     blockType?: WorkbenchSession["blockType"];
     environment?: WorkbenchSession["environment"];
-    notes?: string;
+    notes?: string | null;
+    rationale?: string | null;
+    location?: string | null;
+    maalsetning?: string | null;
   };
+  expectedUpdatedAt?: string;
   policy: RecurrencePolicy;
 }): Promise<WbResultat<WorkbenchSession[]>> {
   const parsed = UpdateSeriesSessionInputSchema.safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, error: "Ugyldig endring." };
-  }
-
+  if (!parsed.success) return { ok: false, error: "Ugyldig endring." };
   const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
-
-  const gjeldende = mapSession(treff.row);
-  const mal = serieMalPatch(gjeldende, parsed.data.patch);
-  const rammer = await serieMalRammer(gjeldende, parsed.data.policy);
-
-  await prisma.$transaction(
-    rammer.map((s) =>
-      prisma.workbenchSession.update({
-        where: { id: s.id },
-        data: {
-          title: mal.title,
-          pyramid: mal.pyramid,
-          blockType: mal.blockType,
-          environment: mal.environment ?? null,
-          notes: mal.notes ?? null,
-          ...(s.sourceGroupSessionId ? { localOverride: true } : {}),
-        },
-      }),
-    ),
-  );
-
-  revalider(gjeldende.playerId);
-  const oppdaterte = await prisma.workbenchSession.findMany({
-    where: { id: { in: rammer.map((s) => s.id) } },
-    include: { drills: true },
-  });
-  return { ok: true, data: oppdaterte.map(mapSession) };
-}
-
-function serieMalPatch(
-  session: WorkbenchSession,
-  patch: Parameters<typeof updateSeriesSession>[0]["patch"],
-): WorkbenchSession {
-  return applySeriesPatch(session, patch);
+  if (!["PLAYER", "COACH", "ADMIN"].includes(treff.viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  if (["rationale", "location", "maalsetning"].some(key => Object.hasOwn(parsed.data.patch, key)) && !parsed.data.expectedUpdatedAt) {
+    return { ok: false, error: "Last inn økten på nytt før du endrer innholdet." };
+  }
+  if (parsed.data.expectedUpdatedAt && parsed.data.expectedUpdatedAt !== treff.row.updatedAt.toISOString()) {
+    return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  }
+  const rammer = await serieMalRammer(mapSession(treff.row), parsed.data.policy);
+  if (rammer.length === 0) return { ok: false, error: "Fant ikke økten i serien. Last inn på nytt." };
+  const patch = parsed.data.patch;
+  const data = {
+    ...(patch.title !== undefined ? { title: patch.title } : {}),
+    ...(patch.pyramid !== undefined ? { pyramid: patch.pyramid } : {}),
+    ...(patch.blockType !== undefined ? { blockType: patch.blockType } : {}),
+    ...(patch.environment !== undefined ? { environment: patch.environment } : {}),
+    ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}),
+    ...(patch.rationale !== undefined ? { rationale: patch.rationale || null } : {}),
+    ...(patch.location !== undefined ? { location: patch.location || null } : {}),
+    ...(patch.maalsetning !== undefined ? { maalsetning: patch.maalsetning || null } : {}),
+  };
+  try {
+    const rows = await prisma.$transaction(async tx => {
+      // Ingen delvis serieoppdatering. Hver forekomst beholder dato, dose og øvrig innhold.
+      const owned = [];
+      for (const session of rammer) {
+        const check = await hentMedTilgang(session.id, tx);
+        if ("feil" in check || check.row.playerId !== treff.row.playerId) throw new DrillSamtidigEndring();
+        if (check.row.updatedAt.toISOString() !== session.updatedAt) throw new DrillSamtidigEndring();
+        owned.push(check.row);
+      }
+      const updated = [];
+      for (const row of owned) {
+        const result = await tx.workbenchSession.updateMany({
+          where: { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt },
+          data: { ...data, ...(row.sourceGroupSessionId ? { localOverride: true } : {}) },
+        });
+        if (result.count !== 1) throw new DrillSamtidigEndring();
+        updated.push(await tx.workbenchSession.findUniqueOrThrow({ where: { id: row.id }, include: { drills: true } }));
+      }
+      return updated;
+    });
+    revalider(treff.row.playerId);
+    return { ok: true, data: rows.map(mapSession) };
+  } catch {
+    return { ok: false, error: "Økten ble endret samtidig eller kunne ikke lagres. Last inn på nytt og prøv igjen." };
+  }
 }
 
 /** Slett én forekomst, denne og fremover, eller hele serien. */

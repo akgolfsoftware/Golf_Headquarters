@@ -36,7 +36,7 @@ before(async () => {
   db = (await import("../../src/lib/prisma")).prisma;
   assert.equal(await db.booking.count({ where: { startAt: { gte: new Date("2077-11-17T09:30:00Z"), lte: new Date("2077-11-17T11:30:00Z") }, status: "CONFIRMED" } }), 0, "Fixturevinduet må være tomt");
   template = await db.emailTemplate.findUnique({ where: { slug: "oekt-paaminnelse" } });
-  await db.emailTemplate.upsert({ where: { slug: "oekt-paaminnelse" }, create: { slug: "oekt-paaminnelse", name: prefix, subject: "syntetisk", body: "syntetisk", active: true }, update: { active: true } });
+  await db.emailTemplate.upsert({ where: { slug: "oekt-paaminnelse" }, create: { slug: "oekt-paaminnelse", name: prefix, subject: "Lagret {{serviceTypeName}}", body: "Syntetisk lagret innledning {{name}}", active: true }, update: { active: true, subject: "Lagret {{serviceTypeName}}", body: "Syntetisk lagret innledning {{name}}" } });
   await db.serviceType.create({ data: { id: `${prefix}-service`, slug: prefix, name: "Syntetisk time", priceOre: 95050, durationMin: 60 } });
   await db.location.create({ data: { id: `${prefix}-place`, name: "Syntetisk sted", address: "Lokalt" } });
   for (const [suffix, status, start] of [["ready", "CONFIRMED", "10:30"], ["cancelled", "CANCELLED", "10:30"], ["outside", "CONFIRMED", "13:30"]] as const) {
@@ -52,7 +52,7 @@ after(async () => {
   await db.booking.deleteMany({ where: { serviceTypeId: `${prefix}-service` } });
   await db.serviceType.deleteMany({ where: { id: `${prefix}-service` } });
   await db.location.deleteMany({ where: { id: `${prefix}-place` } });
-  if (template) await db.emailTemplate.update({ where: { id: template.id }, data: { active: template.active } });
+  if (template) await db.emailTemplate.update({ where: { id: template.id }, data: { active: template.active, subject: template.subject, body: template.body } });
   else await db.emailTemplate.deleteMany({ where: { slug: "oekt-paaminnelse", name: prefix } });
   await db.$disconnect();
 });
@@ -60,7 +60,7 @@ test("Postgres-utvalg, faktisk SDK-forespørsel, sendt-logg og feil uten ekte ut
   t.mock.timers.enable({ apis: ["Date"], now: new Date("2077-11-16T09:30:00Z") });
   const { runBookingReminders } = await import("../../src/lib/agents/booking-reminders");
   const first = await runBookingReminders(); assert.deepEqual(first, { candidates: 1, sent: 1, skipped: 0, failed: 0 });
-  assert.equal(messages.length, 1); assert.match(messages[0].html, /950,50 kr/); assert.match(messages[0].html, /10:30–11:30/);
+  assert.equal(messages.length, 1); assert.match(messages[0].html, /Syntetisk lagret innledning Syntetisk gjest/); assert.match(messages[0].html, /950,50 kr/); assert.match(messages[0].html, /10:30–11:30/);
   assert.equal(messages[0].key, `booking-reminder/${prefix}-ready/2077-11-17T10:30:00.000Z`);
   assert.equal(await db.auditLog.count({ where: { target: `Booking:${prefix}-ready`, action: "booking.reminder_sent" } }), 1);
   assert.equal((await runBookingReminders()).skipped, 1); assert.equal(messages.length, 1);

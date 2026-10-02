@@ -5,9 +5,10 @@
     "oppgave": "Opprett ett register per felt, spørsmål, beregning, referanse, diagram/pivot og handling med stabil ID, kildeversjon, celle/objekt, lagring, spillerflate, begge trenerflater, test og status.",
     "avhengighet": "Før all bygging",
     "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Original 2027-fil kontrollert lokalt:18 ark,1692 formelceller,25 diagrammer,1 pivot,3 tabeller. Alle175 spørsmål matcher originalcellene og SHA. Privat anonymt strukturregister opprettet; full kobling per input/beregning/diagram/handling til lagring og alle tre brukerflater gjenstår.",
+    "kodebevis": "docs/design-audit/iup-2027-strukturkontroll-2026-10-02.md; src/lib/iup/ kildekontrakter"
   },
   {
     "id": "R01.2",
@@ -257,13 +258,10 @@
     "oppgave": "Lagre fire uketyper og redigerbar treukerssyklus med tester, opphold og kopiering; vis skole, reise, konkurranse og samling i samme kalender.",
     "avhengighet": "R03/R05",
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Fire uketyper skrevet og koblet til ukeoverskrift. Treukerssyklus og samlet hendelseskalender gjenstår.",
-    "kodebevis": [
-      "src/lib/workbench/ukeplan-schema.test.ts",
-      "tests/komponenter/precision-workbench-integrasjon.test.ts"
-    ],
+    "utfart_status": "Datofestet redigerbar treukerssyklus implementert med atomisk lagring, målpreview, bekreftet DRAFT-kopi, idempotens og eksplisitt oppløsning.5 ekte lokale DB/Auth og10 enhets-/13 komponentprøver grønne. Full hendelseskalender og datofri syklusmal er ikke dekket. Samlet gate/UI/CI/deploy registreres i kontrollrapporten. Endelig kodefrys06:48:04:4189 kildeprøver og94 komponentprøver samt6 reelle spiller-/coachreiser390/1440 bestod. Full npm run verify med produksjonsbygg bestod06:56; ny PR/CI/produksjon er ennå ikke bekreftet. Designkontrakt sendt til eksisterende Precision/WANG/TN; ferdig eksport og visuell godkjenning avventes.",
+    "kodebevis": "src/lib/workbench/treukerssyklus*.ts; src/components/workbench/WorkbenchTreukerssyklus.tsx; docs/design-audit/workbench-okt-og-syklus-kontroll-2026-10-02.md",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
   },
@@ -296,7 +294,7 @@
     "omfang": "IUP-10/16; PH-10–12; TR-14",
     "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
-    "utfart_status": "Editor, stabile øvelse-ID-er og rå JSON-/dose-bevaring er implementert. Utstyr/valgfritt antall, BANE-oppgaver, kondisjonssegmenter, ny RIR0–4 med historisk5–10-bevaring og autoriserte bank-/oppgavekoblinger gjennom serie/gruppematerialisering er prøvd: felt34 unit+5 komponent+4 ekte DB/Auth; bank23 unit+5 ekte DB/Auth. Øktnivåets formål/sted/mål er kartlagt, ikke ferdigkoblet. Oppvarming/varianter/progresjon gjenstår.",
+    "utfart_status": "Editor, stabile øvelse-ID-er og rå JSON-/dose-bevaring er implementert. Utstyr/valgfritt antall, BANE-oppgaver, kondisjonssegmenter, ny RIR0–4 med historisk5–10-bevaring og autoriserte bank-/oppgavekoblinger gjennom serie/gruppematerialisering er prøvd: felt34 unit+5 komponent+4 ekte DB/Auth; bank23 unit+5 ekte DB/Auth. Øktnivåets formål/sted/mål er kartlagt, ikke ferdigkoblet. Oppvarming/varianter/progresjon gjenstår. Øktformål/sted/mål og selvstendig drillmålsetning er også koblet gjennom oppretting/redigering/kopier;34 enhets-/14 komponent-/7 ekte DB/Auth-prøver grønne. Historisk P-fokus bevares; oppvarmings-/progresjonsregler gjenstår. Se ny kontrollrapport. Endelig kodefrys06:48:04:4189 kildeprøver og94 komponentprøver samt6 reelle spiller-/coachreiser390/1440 bestod. Full npm run verify med produksjonsbygg bestod06:56; ny PR/CI/produksjon er ennå ikke bekreftet. Designkontrakt sendt til eksisterende Precision/WANG/TN; ferdig eksport og visuell godkjenning avventes.",
     "kodebevis": "updateDrill, addDrill, createSessionFromSource, OvelseSkjema, tests/local-workbench/drill-preservation.test.ts"
   },
   {

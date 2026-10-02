@@ -165,6 +165,7 @@ export const OvelseDetaljerSchema = z.object({
   })).max(50).optional(),
   mal: z
     .object({
+      malsetning: kortTekst(500),
       malemetode: kortTekst(200),
       resultatkrav: kortTekst(200),
       notat: kortTekst(500),
@@ -302,8 +303,9 @@ export function vaskDetaljer(
   }
 
   const mal = detaljer.mal;
-  if (mal && (mal.malemetode || mal.resultatkrav || mal.notat)) {
+  if (mal && (mal.malsetning || mal.malemetode || mal.resultatkrav || mal.notat)) {
     ut.mal = {
+      ...(mal.malsetning ? { malsetning: mal.malsetning } : {}),
       ...(mal.malemetode ? { malemetode: mal.malemetode } : {}),
       ...(mal.resultatkrav ? { resultatkrav: mal.resultatkrav } : {}),
       ...(mal.notat ? { notat: mal.notat } : {}),

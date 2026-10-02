@@ -311,7 +311,9 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
     <Nokkelverdi items={[
       [UI.pyramid, aktivOkt.drills[0]?.akFormel.pyramid ?? aktivOkt.pyramid],
       [UI.drillArea, aktivOkt.drills[0] ? AREA_LABEL[aktivOkt.drills[0].akFormel.area] : aktivOkt.skillArea ?? "—"],
-      [UI.formelMal, aktivOkt.drills[0]?.techniqueFocus ?? aktivOkt.maalsetning ?? "—"],
+      [UI.formelMal, aktivOkt.drills[0]?.akFormel.detaljer?.mal?.malsetning ?? "—"],
+      ["Formål", aktivOkt.rationale ?? "—"], ["Sted", aktivOkt.location ?? "—"], ["Øktens målsetning", aktivOkt.maalsetning ?? "—"],
+      ...(aktivOkt.drills[0]?.techniqueFocus ? [["Historisk fokus / kildeposisjon", aktivOkt.drills[0].techniqueFocus] as const] : []),
       [UI.formelMate, aktivOkt.drills[0]?.description ?? "—"],
     ]} />
   </>;
