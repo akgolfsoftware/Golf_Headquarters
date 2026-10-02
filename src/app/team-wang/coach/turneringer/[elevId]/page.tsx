@@ -61,7 +61,7 @@ export default async function WangTurneringerPage({
     });
     if (!elev) return null;
 
-    const historikk = await hentTurneringshistorikk(elevId);
+    const historikk = await hentTurneringshistorikk(elevId, tx);
     const elevNavn = elev.name?.trim() || elev.email;
 
     return (

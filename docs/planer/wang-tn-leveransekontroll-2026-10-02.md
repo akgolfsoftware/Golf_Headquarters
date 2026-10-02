@@ -12,6 +12,7 @@ Kontrollgrunnlag: hovedplanen, de to lokale originalfilene, HQ main `226acab39`,
 | Navngitt deling | PR #1087 og #1089. Foresatt for å gi under 16; barnet kan trekke. Riktig bekreftet treneradresse og aktiv tilknytning; WANG→TN uten TN-medlemskap. | Skoleavtalen for obligatorisk WANG-testdeling er et separat, uferdig spor. |
 | Trenerleser | PR #1089. Bare leverte besvarelser, alle originalspørsmål og revisjonshistorikk; nyere utkast skjult. Tilbaketrekking stenger nytt oppslag. | Egen Precision-leser. Full profil og eldre WANG/TN-leseveier er ikke samordnet. |
 | Trenerliste | PR #1090. 20 databaseprøver, 53 komponentprøver i fullkontrollen, syntetisk faktisk innlogging og liste→besvarelse. | Merget etter grønn CI og deploy. Ikke en komplett skole-/landslagsoversikt. |
+| Eldre WANG/TN-lesere | PR #1096 (`c8a44556a`). 24 syntetiske databaseprøver og 24 innloggede rutekontroller; fersk GitHub CI og Vercel bestod. | Navngitt deling er koblet til de beskrevne eldre personlige leserne, inkludert lister, analyse, poster, lesekvitteringer og vedlegg. Dette beviser ikke full Excel-dekning, skolebasert testdeling eller visuell godkjenning. |
 | DataGolf | Tre Claude Design-prosjekter med DG01–17. 135/135 feltidentiteter mot lokalt pipelines-skjema. Feltutforsker målt 390/1440. | Design, ikke produksjonsintegrasjon. Ingen kundelisens dokumentert eller aktivert. |
 
 ## Alle 18 Excel-ark — gjenværende kontroll
@@ -49,7 +50,7 @@ De fullstendige funksjonsfamiliene PH-01–34 og TR-01–24 står i [hovedplanen
 |---|---|---|---|
 | Opprette, lagre, levere utviklingssjekk/sesongevaluering | Funksjonstestet | Leser samme leverte grunnlag ved navngitt deling | Leser samme leverte grunnlag ved navngitt deling |
 | Alle Excel-felt i samlet spillerprofil | Delvis | Delvis | Delvis |
-| Gi/trekke full profildeling | Spiller-/foresattreise prøvd | IUP og turneringsprofil koblet | Profiler, samlelister, analyse, planinnsyn, personpost og vedlegg koblet |
+| Gi/trekke full profildeling | Spiller-/foresattreise prøvd | IUP, turneringsprofil og eldre personlige lesere koblet (#1096) | Personlige profiler, samlelister, analyse, planinnsyn, personpost, kvitteringer og vedlegg koblet (#1096) |
 | Obligatorisk testdeling fra alle WANG-skoler til TN | Avtalespor gjenstår | Ikke ferdig | Ikke ferdig |
 | Treningsforslag→godta/avvis→Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
 | Samling publisert→invitasjon→kalender/Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
@@ -76,7 +77,7 @@ Pipelines er fortsatt eneste innhenter av resultater. DataGolf-sperrer skal ikke
 
 ## Neste gjennomføringsrekkefølge
 
-1. Fullfør innbygging av den felles IUP-leseren i valgte organisasjonsdesign og den komplette funksjonsdekningen. [Profiltilgangspakken](wang-tn-profiltilgang-kontroll-2026-10-02.md) kobler eldre lesere og personlige TN-vedlegg til navngitt deling; den dokumenterer hvilke ruter som faktisk er prøvd. Søke-/eksport- og testdagsreisene må fortsatt vurderes hver for seg.
+1. Bruk [profiltilgangskontrollen](wang-tn-profiltilgang-kontroll-2026-10-02.md) som bevis for eldre WANG/TN-lesere koblet i #1096. Full IUP-feltdekning og visuell innbygging gjenstår; søke-/eksport- og testdagsreisene må fortsatt vurderes hver for seg.
 2. Samordne PR #1060 med kanonisk IUP og den aktuelle Workbench-modellen. Bevis at godkjenning anvender én gang, avvisning anvender null, og nyere spillerendring gir konflikt.
 3. Fullfør skoleavtalens separate testdeling og felles testdag. Avtale-/fagregler som mangler dokumentasjon må ikke oppfinnes.
 4. Fullfør samlingsinvitasjon og planimport med kalenderkonflikt, gjenforsøk og oppdatering etter publisering.

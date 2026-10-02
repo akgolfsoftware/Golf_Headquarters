@@ -23,7 +23,7 @@ Kun syntetiske personer, eget Supabase/Auth-miljø på 127.0.0.1:55821/55822. Da
 - Den første fullkjøringen avdekket ni WANG-testfeil fra en ny importavhengighet og en foreldet rutemock. Koblingen ble gjort behovsstyrt og rutetesten ble oppdatert; alle 17 berørte regresjonsprøver bestod deretter.
 - `npm run verify` fullførte med exit 0 etter innfletting av main: 4 286 kildeprøver, 94 komponentprøver, TypeScript, lint, statiske kontroller, 178 dokumentlenker og produksjonsbygg. `git diff --check` bestod.
 - UI-kontrollens første kjøring hang under avslutning etter alle 24 visningspåstander. Lokal avslutning ble avgrenset; den påfølgende kjøringen skrev eksplisitt «Alle 24 innloggede sidekontroller bestod» og avsluttet med exit 0. Testkontoer, delinger og medlemskap ble deretter slettet fra den merkede lokale databasen og lokal Auth.
-- Diffkontroll og hovedgrenbasert fullverifisering er bestått. Neste kontroll er fersk GitHub CI på PR-grenen. Ingen PR er opprettet eller merget ennå.
+- Diffkontroll og hovedgrenbasert fullverifisering bestod før innsending. PR [#1096](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1096) ble merget 02.10.2026 kl. 10:36 norsk tid som `c8a44556a96fc74ed9ec1fea38db814700c6dcd5`. Fersk GitHub-kontroll `36983958429` bestod med 4 286 kildeprøver og 94 komponentprøver; Vercel-preview bestod. Ingen produksjonsdata, e-post eller DataGolf-kundedata ble brukt.
 
 Lokale logger og bilder: `Documents/Claude/akgolf-hq/profiltilgang-kontroll-2026-10-02/`. Vedlikeholdte tester: `src/lib/deling/profil-lesing.test.ts`, `src/lib/domain/tn-spiller-oversikt.test.ts`, `src/lib/domain/tn-vedlegg.test.ts`, WANG-rutetester og `tests/iup-local/trenerdeling.test.ts`.
 
@@ -33,6 +33,8 @@ Lokale logger og bilder: `Documents/Claude/akgolf-hq/profiltilgang-kontroll-2026
 2. Ingen nye logger, hemmeligheter eller persondata eksporteres. Testdata er syntetiske. Ingen nye personfelt eller databaser opprettes av pakken.
 3. Den eksisterende kontrollen av foresatt for under 16 år, aktiv spiller og tilbaketrekking gjenbrukes. Eldre test-/statistikksamtykke blir ikke komplett profildeling. Skoleavtalens obligatoriske testdeling er fortsatt en separat avklaring.
 
-## Neste komplette pakke
+## Status for denne pakken og neste komplette pakke
 
-Forslag til trening, IUP og vurderinger må godtas av spilleren før personlig plan endres. Det gjelder også eldre WANG-samtaleskriving og TNs direkte planhandlinger. PR 1060 kan brukes som funksjonsinventar, men har feil spørsmålsmodell og en godkjenning som ikke anvender planen; den skal ikke merges uendret. Deretter følger samling → invitasjon → godkjenning → kalender, samt kontroll av flere skoler/grupper. De andre øktenes Workbench-, testdag- og Excel-registerarbeid må innarbeides fra verifisert main.
+Samordningen av eldre personlige WANG/TN-lesere med navngitt deling er merget i #1096 og er kontrollert med syntetisk database og innloggede ruter. Dette gjør ikke alle Excel-felt, testdelingsregler eller trenerprofiler komplette. Datert kontrollmatrise beskriver hva hver rute prøvde; visuell godkjenning fra Anders er fortsatt egen kontroll.
+
+Neste komplette pakke er samling → invitasjon → spillerens godkjenning → kalender/Workbench. Workbench-PR #1099 er åpen; dens invitasjonsendringer må kontrolleres i endelig PR-diff og fersk CI før eventuell merge. Den fullfører ikke automatisk resterende IUP-felt, skolebasert testdeling, felles testdag eller Excel-register. PR #1060 skal ikke merges uendret: den avviker fra kanonisk spørsmålsmodell og godkjenningen anvender ikke planen. De andre øktenes arbeid må innarbeides fra verifisert main, ikke fra umergede eller lokale endringer.

@@ -14,7 +14,7 @@ er sperret i grenen. Dette er foreløpig ikke produksjonssatt.
 Sperren på `/stats/verktoy` stenger midlertidig også WHS- og
 avstandskalkulatoren fordi de deler klientmodul med Broadie-estimatoren;
 trygge verktøy må skilles ut før dette kan slippes bredt.
-Lokal `npm run verify` er grønn på arbeidsgrenen: 4 292 kildetester,
+Lokal `npm run verify` er grønn på arbeidsgrenen: 4 294 kildetester,
 94 komponenttester, statiske kontroller og produksjonsbygg med Service Worker.
 `npm run prosjekt:sjekk` er også grønn.
 Dette er ikke en målt spillerreise eller produksjonskontroll.
