@@ -9,7 +9,7 @@ import { editableGroupWhere, ownGroupPublicationWhere } from "./group-scope";
 import { loadWeek, loadSources, loadStallFollowup, loadSession, type WbResultat } from "./wb-actions";
 import { loadFysTurneringWorkbenchData } from "./fys-turnering-data";
 import { hentMaalSpor } from "./maal-spor";
-import { parsePlanKontekst, type PlanQuery } from "./plan-kontekst";
+import { parsePlanKontekst, queryVerdi, type PlanQuery } from "./plan-kontekst";
 import { parseSessionBudget } from "./perioder";
 import { summerTreningsvolum, type TreningsvolumOkt } from "./treningsvolum";
 import { fraDatoKolonne, tilDatoKolonne } from "./wb-map";
@@ -99,10 +99,15 @@ export async function loadWorkbenchSamletData(input: {
     if (!ukeRes.ok) return ukeRes;
     if (!kilderRes.ok) varsler.push("Kildebiblioteket kunne ikke lastes. Prøv igjen.");
     if (goals.some(g => g.spor)) varsler.push("Målsporet følger dagens målfrister; det er ikke en historisk periodesum.");
+    const ønsketGruppeId = queryVerdi(query, "gruppe");
+    const valgtGruppeId = role === "coach"
+      ? gruppeRows.find(group => group.id === ønsketGruppeId)?.id ?? gruppeRows[0]?.id ?? null
+      : null;
     const data: WorkbenchSamletData = {
       player: { id: playerId, navn: spiller.name ?? "Spiller" }, routeSurface: input.routeSurface, role, flate: input.flate,
       planKontekst: kontekst, uke: ukeRes.data, kilder: kilderRes.ok ? kilderRes.data : [], goals, fys,
       roster: rosterRows.map(p => ({ id: p.id, navn: p.name ?? "Spiller" })), grupper: gruppeRows.map(g => ({ id: g.id, navn: g.name })),
+      valgtGruppeId,
       volum: summer(weekGrunnlag.okter, weekVindu, now), volumKilde, valgtOkt: null,
       sesong: null, bord: null, analyse: null, varsler,
     };

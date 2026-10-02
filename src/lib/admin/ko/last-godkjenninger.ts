@@ -92,10 +92,10 @@ export async function lastGodkjenninger(
     koTelling(user.id, user.role),
     // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
     prisma.planAction.count({
-      where: { status: "ACCEPTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.planAction.count({
-      where: { status: "REJECTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { status: "REJECTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "APPROVED", syvDagerSiden) }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "REJECTED", syvDagerSiden) }),

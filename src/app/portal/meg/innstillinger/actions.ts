@@ -11,6 +11,7 @@ import { emailLayout } from "@/lib/email/templates/shared";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
+import { SamlingsprogramSchema } from "@/lib/workbench/samlingsinvitasjon-kontrakt";
 
 const LagreFasilitetProfilSchema = z.object({
   fasiliteter: z.array(z.string().min(1)).max(20, "For mange fasiliteter"),
@@ -133,6 +134,8 @@ export async function exportUserData(): Promise<{
       workbench,
       trenerforslag,
       trenerforslagSkrevet,
+      samlingsinvitasjoner,
+      samlingsinvitasjonerSkrevet,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({
@@ -180,6 +183,16 @@ export async function exportUserData(): Promise<{
         orderBy: { createdAt: "asc" },
         select: { id: true, suggestion: true, status: true, createdAt: true },
       }),
+      prisma.planAction.findMany({
+        where: { userId: user.id, actionType: "WORKBENCH_GATHERING_INVITE" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true, decidedAt: true },
+      }),
+      prisma.planAction.findMany({
+        where: { coachId: user.id, actionType: "WORKBENCH_GATHERING_INVITE" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true },
+      }),
     ]);
 
     // En trener får sine egne begrunnelser, ikke øktdata fra andre spillerprofiler.
@@ -192,6 +205,21 @@ export async function exportUserData(): Promise<{
         begrunnelse: forslag.data.begrunnelse,
         status: rad.status,
         opprettet: rad.createdAt.toISOString(),
+      }] : [];
+    });
+
+    const samlingsinvitasjonerEksport = samlingsinvitasjoner.flatMap((rad) => {
+      const program = SamlingsprogramSchema.safeParse(rad.suggestion);
+      return program.success ? [{
+        id: rad.id, program: program.data, status: rad.status,
+        opprettet: rad.createdAt.toISOString(), avgjort: rad.decidedAt?.toISOString() ?? null,
+      }] : [];
+    });
+    // Trenerens eksport inneholder egne publiserte programmer, ikke mottaker-ID-er.
+    const samlingsinvitasjonerSkrevetEksport = samlingsinvitasjonerSkrevet.flatMap((rad) => {
+      const program = SamlingsprogramSchema.safeParse(rad.suggestion);
+      return program.success ? [{
+        id: rad.id, program: program.data, status: rad.status, opprettet: rad.createdAt.toISOString(),
       }] : [];
     });
 
@@ -241,6 +269,8 @@ export async function exportUserData(): Promise<{
       workbench,
       trenerforslag,
       trenerforslagSkrevet: trenerforslagSkrevetEksport,
+      samlingsinvitasjoner: samlingsinvitasjonerEksport,
+      samlingsinvitasjonerSkrevet: samlingsinvitasjonerSkrevetEksport,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +

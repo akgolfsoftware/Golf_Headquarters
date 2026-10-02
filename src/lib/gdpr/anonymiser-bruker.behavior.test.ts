@@ -59,8 +59,8 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     assert.deepEqual(where, { OR: [{ userId: "synthetic" }, { gittAvUserId: "synthetic" }, { acceptedByUserId: "synthetic" }, { mottakerEpost: "synthetic@example.test" }] });
     writes.push("trenerdeling"); return { count: 1 };
   } },
-  planAction: { deleteMany: async ({ where }: { where: { OR: Array<{ userId?: string; coachId?: string }>; actionType: string } }) => {
-    assert.deepEqual(where, { actionType: "WORKBENCH_COACH_PROPOSAL", OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] });
+  planAction: { deleteMany: async ({ where }: { where: { OR: Array<{ userId?: string; coachId?: string }>; actionType: { in: string[] } } }) => {
+    assert.deepEqual(where, { actionType: { in: ["WORKBENCH_COACH_PROPOSAL", "WORKBENCH_GATHERING_INVITE"] }, OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] });
     writes.push("trenerforslag"); return { count: 1 };
   } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),

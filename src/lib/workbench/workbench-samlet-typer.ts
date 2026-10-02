@@ -41,7 +41,7 @@ export type WorkbenchSamletData = {
   player: SamletSpiller; routeSurface: WorkbenchSurface; role: "player" | "coach"; flate: WorkbenchFlate;
   planKontekst: PlanKontekst; uke: WeekViewModel; kilder: SourceItem[];
   goals: PlanningGoalSummary[]; fys: WorkbenchFysTurneringData;
-  roster: SamletSpiller[]; grupper: SamletSpiller[]; volum: Treningsvolum;
+  roster: SamletSpiller[]; grupper: SamletSpiller[]; valgtGruppeId: string | null; volum: Treningsvolum;
   volumKilde: string;
   valgtOkt: WorkbenchSession | null;
   sesong: WorkbenchSamletSesong | null; bord: WorkbenchSamletBord | null; analyse: WorkbenchSamletAnalyse | null;

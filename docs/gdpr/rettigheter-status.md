@@ -14,6 +14,8 @@ Juli-kartleggingen under er historikk og må ikke alene brukes som dagens mangel
 
 Kontoeksporten inkluderer nå også egne Workbench-økter/øvelser, fysiske blokker/uker/økter/øvelser/logger og turneringsplaner med forberedelser, runder, mål, evalueringer og egne konflikter. Lesing og vask av barn avgrenses ytterligere når barnet har egen spiller-ID. Samme gruppe eller trener er aldri tilstrekkelig eierskap.
 
+Samlingsinvitasjoner (`WORKBENCH_GATHERING_INVITE`) er også med i kontoeksport og sletting/anonymisering: spilleren får egne mottatte program og svar, treneren egne publiserte program uten mottaker-ID-er. De private trenerfeltene `notes` og `rationale` inngår ikke i spillernes invitasjonskopi.
+
 Anonymiseringen vasker disse modellenes fritekst, oppholdssted, Live-JSON og ugjennomsiktig JSON. Validerte fagkoder, dose/enheter, tid, brutto score og øvrige tall bevares. Årsplan-/periodefritekst og turneringsoppføringsnotater vaskes også. Feil før Workbench-vask fullføres hindrer profil-/ekstern sletting og ferdigmarkering; etter en ekstern feil kan oppryddingen prøves igjen.
 
 44 målrettede tester og tre prøver mot separat lokal database er grønne. Eksterne tjenester ble erstattet av testdobler; ingen ekte Auth-/Storage-/Stripe-sletting ble utført. Dette lukker de navngitte modellgapene, men bekrefter ikke komplett fileksport, `SessionBallLog`, foresatteksport eller samtlige historiske modeller. Den eldre juli-listen nedenfor er historikk.

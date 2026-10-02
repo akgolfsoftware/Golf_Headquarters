@@ -14,6 +14,7 @@ import { AkFormelSchema, AkFormelLeseSchema, IsoDateSchema, PyramidAreaSchema, E
 import { hentBankReferanser } from "./bank-referanser";
 import { bevarHistoriskeDrillfelt, FORMEL_FELT, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { mapSession, tilDatoKolonne } from "./wb-map";
+import { datoIOslo } from "./samlingsinvitasjon-kontrakt";
 import { osloInstant } from "@/lib/jarvis/dagen";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { WbResultat } from "./wb-actions";
@@ -168,12 +169,20 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
       const sources = await tx.workbenchSession.findMany({ where: { id: { in: ids }, groupId,
         origin: "GROUP", sourceGroupSessionId: null }, include: { drills: true } });
       if (sources.length !== ids.length || sources.some(s => s.playerId !== s.coachId || !/^wb-group-[a-f0-9]{64}$/.test(s.id) || !["DRAFT", "SCHEDULED", "PUBLISHED"].includes(s.status))) throw new Error("selection");
+      const samlinger = await tx.groupSchedule.findMany({ where: {
+        groupId, kind: { in: ["SAMLING", "HELDAGSSAMLING"] }, recurring: { not: "WEEKLY" },
+      }, select: { startAt: true, endAt: true } });
+      const iSamling = (date: Date) => {
+        const day = date.toISOString().slice(0, 10);
+        return samlinger.some(event => day >= datoIOslo(event.startAt) && day <= datoIOslo(event.endAt));
+      };
+      if (publish && sources.some(source => iSamling(source.date))) throw new Error("gathering-invitation-required");
       const members = await tx.groupMember.findMany({ where: { groupId, endedAt: null, role: "PLAYER",
         user: { role: "PLAYER", deletedAt: null } }, select: { userId: true, joinedAt: true } });
       const now = new Date();
       const result = [];
       for (const source of sources) {
-        const copies = await tx.workbenchSession.findMany({ where: { sourceGroupSessionId: source.id, groupId }, include: { drills: true } });
+        const copies = await tx.workbenchSession.findMany({ where: { sourceGroupSessionId: source.id, groupId, planActionId: null }, include: { drills: true } });
         const start = osloInstant(source.date.getUTCFullYear(), source.date.getUTCMonth() + 1, source.date.getUTCDate(), Math.floor(source.startMinute / 60), source.startMinute % 60);
         const eligible = members.filter(m => start > m.joinedAt);
         const recipients = new Set(eligible.map(m => m.userId));
@@ -221,5 +230,10 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30000 });
     revalidate(groupId);
     return { ok: true, data: rows.map(mapSession) };
-  } catch { return { ok: false, error: "Ingen gruppeøkter ble endret. Kontroller tilgang og utvalg, og prøv igjen." }; }
+  } catch (error) {
+    if (error instanceof Error && error.message === "gathering-invitation-required") {
+      return { ok: false, error: "Bruk samlingens invitasjon for økter i samlingsperioden." };
+    }
+    return { ok: false, error: "Ingen gruppeøkter ble endret. Kontroller tilgang og utvalg, og prøv igjen." };
+  }
 }

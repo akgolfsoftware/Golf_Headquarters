@@ -51,7 +51,7 @@ export function WorkbenchTrenerbord({ data }: { data: WorkbenchSamletData }) {
 }
 
 function GruppeArk({ data, onLukk }: { data: WorkbenchSamletData; onLukk: () => void }) {
-  const [groupId, setGroupId] = useState(data.grupper[0]?.id ?? ""); const [sessions, setSessions] = useState<WorkbenchSession[] | null>(null);
+  const [groupId, setGroupId] = useState(data.valgtGruppeId ?? data.grupper[0]?.id ?? ""); const [sessions, setSessions] = useState<WorkbenchSession[] | null>(null);
   const [selected, setSelected] = useState<string[]>([]); const [feil, setFeil] = useState<string | null>(null); const [status, setStatus] = useState<string | null>(null); const [pending, start] = useTransition();
   const [sourceId, setSourceId] = useState(""); const [dato, setDato] = useState(data.uke.weekStart); const [tid, setTid] = useState("16:00");
   const [requestId, setRequestId] = useState<string | null>(null);
