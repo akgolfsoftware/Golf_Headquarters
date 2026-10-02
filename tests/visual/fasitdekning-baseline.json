@@ -1,6 +1,6 @@
 {
-  "sitert": 140,
+  "sitert": 139,
   "av": 219,
-  "sistEndret": "2026-09-29",
-  "grunn": "Plan-hub og øktark (AG-14, AG-12) portet til Precision Athletics (7d7c2994): OktArkV2.tsx (siterte «A-14 iPhone Okt-ark Filip.dc.html») er erstattet av AG12Oktark.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 141→140 (målt etter at Innboks og Spiller 360 ble lagt inn 29.09)."
+  "sistEndret": "2026-09-30",
+  "grunn": "PH-23 Booking (spiller) portet til Precision Athletics (7d7c2994): BookingHubV2.tsx (siterte «BO-02 Mine bookinger.dc.html») er erstattet av PH23Booking.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 140→139."
 }

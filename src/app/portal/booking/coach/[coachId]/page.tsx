@@ -1,5 +1,6 @@
 /**
- * PlayerHQ · Book direkte med coach (/portal/booking/coach/[coachId]) — v2.
+ * PlayerHQ · Book direkte med coach (/portal/booking/coach/[coachId]) — Precision Athletics PH-23
+ * (Claude Design 7d7c2994). Logikk uendret; bare visningen er ny. Eldre v2-kommentar:
  * v2-port 17. juli 2026 (Team G-B): `BookingCoachV2` erstatter legacy-siden,
  * ruten flyttet ut av (legacy). All logikk uendret:
  * - `resolveCoach()` cuid/fornavn-slug-fallback beholdt EKSAKT (skjør —
@@ -13,9 +14,10 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingCoachV2 } from "@/components/portal/v2/BookingCoachV2";
+import { kr } from "@/lib/portal-booking/ph23-format";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Coach } from "@/components/portal/precision/PH23Booking";
 
 export const dynamic = "force-dynamic";
 
@@ -65,12 +67,11 @@ export default async function BookingCoachPage({ params }: Props) {
     orderBy: { durationMin: "asc" },
   });
 
+  const uleste = await hentUleste(user.id);
+
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingCoachV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH23Coach
         data={{
           navn: coach.name,
           ambition: coach.ambition,
@@ -81,10 +82,7 @@ export default async function BookingCoachPage({ params }: Props) {
             navn: s.name,
             varighetMin: s.durationMin,
             beskrivelse: s.description,
-            prisTekst:
-              s.priceOre > 0
-                ? `${(s.priceOre / 100).toLocaleString("nb-NO")} kr`
-                : "1 credit",
+            prisTekst: s.priceOre > 0 ? kr(s.priceOre) : "1 klipp",
             href: `${WIZARD}?coachId=${coach.id}&service=${s.slug}`,
           })),
           wizardHref: `${WIZARD}?coachId=${coach.id}`,
@@ -92,7 +90,7 @@ export default async function BookingCoachPage({ params }: Props) {
           visProKrav: user.tier === "GRATIS",
         }}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }
 

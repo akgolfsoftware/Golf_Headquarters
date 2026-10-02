@@ -1,5 +1,6 @@
 /**
- * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]) — v2.
+ * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]) — Precision Athletics PH-23
+ * (Claude Design 7d7c2994). Logikk uendret; bare visningen er ny. Eldre v2-kommentar:
  * v2-port 17. juli 2026 (Team G-B): `BookingAnleggV2` erstatter legacy-siden,
  * ruten flyttet ut av (legacy). All logikk uendret:
  * - [anleggId] er Location.id (cuid) — Location har ikke slug-felt.
@@ -14,9 +15,9 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { FacilityType } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingAnleggV2 } from "@/components/portal/v2/BookingAnleggV2";
+import { hentUleste } from "@/lib/portal-booking/uleste";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Anlegg } from "@/components/portal/precision/PH23Booking";
 
 export const dynamic = "force-dynamic";
 
@@ -64,12 +65,11 @@ export default async function AnleggDetaljPage({ params }: Props) {
 
   if (!anlegg) notFound();
 
+  const uleste = await hentUleste(user.id);
+
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingAnleggV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH23Anlegg
         data={{
           navn: anlegg.name,
           adresse: anlegg.address,
@@ -82,6 +82,6 @@ export default async function AnleggDetaljPage({ params }: Props) {
           })),
         }}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

@@ -1,27 +1,30 @@
 "use client";
 
-/* Kopi: GAP-1 Tilstander.dc.html · BO-01 Booking feil (PX-7, 29.08.2026). */
+/* Feil-tilstand for booking (Precision Athletics PH-23: «Ledige tider kunne ikke hentes»). Dekker alle ruter under /portal/booking. */
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { CircleAlert } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { FeilTilstand, Knapp, KnappLenke } from "@/components/precision/pa";
+import { Side, SideHode } from "@/components/precision/pa-a4";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    console.error("[booking/error]", error.digest, error);
   }, [error]);
 
   return (
-    <V2Feil
-      reset={reset}
-      tilbakeHref="/portal"
-      tittel="Ingen forbindelse"
-      melding="Bookingsystemet svarer ikke. Ingen luker reservert."
-    />
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <Side max={720}>
+        <SideHode kicker="Meg · Booking" title="Book time" />
+        <FeilTilstand
+          icon={CircleAlert}
+          title="Ledige tider kunne ikke hentes"
+          text="Ingen timer er booket eller endret. Prøv igjen."
+          code="FEIL 502 · BOOKING"
+          retry={<><Knapp onClick={reset}>Prøv igjen</Knapp><KnappLenke variant="ghost" href="/portal">Til I dag</KnappLenke></>}
+        />
+      </Side>
+    </PlayerHQSkall>
   );
 }
