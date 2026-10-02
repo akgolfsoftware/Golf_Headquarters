@@ -102,6 +102,18 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 
 ## Samlede AVKLAR-punkter for Anders (prioritert)
 
+### IUP-besvarelser — tillegg 02.10.2026
+
+`IupBesvarelse` knytter én skjematype, kildeversjon, nivå og periode til spilleren, uten organisasjonskopier. `IupRevisjon` inneholder versjonerte utkast/leveringer, fritekst, egenvurderinger, prosentfordeling og forbedringspunkter, samt tidspunkt og teknisk lagringskvittering. Fritekst og egenvurdering kan inneholde personlige eller helserelaterte opplysninger.
+
+Nytt serverlag begrenser skriving til innlogget bruker med gyldig foreldresamtykke der det kreves. Begge tabeller har RLS og ingen rettigheter for `PUBLIC`, `anon` eller `authenticated`; de er ikke en offentlig Data API. Dette gir ikke WANG/TN-lesere noen nye rettigheter. Eksisterende fullprofil-samtykke er ikke utvidet til helse eller private notater.
+
+Alle revisjoner følger brukerens dataeksport. Autorisert anonymisering sletter besvarelser og kaskadesletter revisjonene; de beholdes ikke på den anonymiserte spillerprofilen. Ordinær lagring overskriver aldri en tidligere revisjon, og nytt utkast erstatter ikke siste leverte revisjon. Ingen råsvar sendes til AI eller legges i applikasjonslogger.
+
+Behandlingsgrunnlag, opplysningstekst og eventuell særskilt helsedeling må avstemmes før spillerregistrering og trenerdeling aktiveres. Dette tillegget beskriver kodegrunnlaget, ikke en juridisk godkjenning eller produksjonsaktivering. Testene bruker bare syntetiske svar. Generell levetid før kontosletting er ikke fastsatt av dette arbeidet.
+
+### Eksisterende avklaringsliste
+
 1. **Art. 9-samtykke** for helse- og skadedata (HealthEntry, Leave/rehabPlan) — aktivt samtykke i onboarding?
 2. **Transkript/AI-analyse av økt-opptak beholdes evig** — sett en retention (f.eks. 3 år etter siste aktive avtale?).
 3. **Gjeste-bookinger** (navn/e-post/telefon uten konto) — retention og slette-vei.
