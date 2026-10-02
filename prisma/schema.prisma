@@ -4424,18 +4424,29 @@ model AiSpillerminne {
   @@map("ai_memories")
 }
 
-// PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
+// To atskilte typer referanser i den eksisterende tabellen:
+// legacy: DataGolf SG per slag i yard-bøtter (IKKE forventede slag til hull).
+// expected_to_hole: vår versjonerte Broadie-baserte kurve i meter.
 model SgBaseline {
-  id              String     @id @default(cuid())
-  category        SgCategory
-  distanceBucket  String // "175-200y"
-  lie             ShotLie?
-  expectedStrokes Float
-  sampleSize      Int
-  source          String // "datagolf-approach-skill-2026Q1"
-  fetchedAt       DateTime
+  id                    String      @id @default(cuid())
+  category              SgCategory?
+  distanceBucket        String? // legacy: "175-200y"
+  lie                   ShotLie?
+  expectedStrokes       Float? // legacy: DataGolf SG per slag, historisk feilnavn
+  sampleSize            Int?
+  source                String?
+  fetchedAt             DateTime?
+  baselineKind          String      @default("legacy_sg_bucket") @map("baseline_kind")
+  baselineVersion       String?     @map("baseline_version")
+  distanceMeters        Decimal?    @map("distance_meters") @db.Decimal(7, 2)
+  lieType               String?     @map("lie_type")
+  expectedStrokesToHole Decimal?    @map("expected_strokes") @db.Decimal(7, 4)
+  sourceReference       String?     @map("source_reference")
+  quality               String?
+  isSupported           Boolean?    @map("is_supported")
 
   @@unique([category, distanceBucket, lie])
+  @@unique([baselineVersion, lieType, distanceMeters], map: "sg_baselines_version_lie_distance_key")
   @@map("sg_baselines")
 }
 
