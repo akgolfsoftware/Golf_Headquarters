@@ -1,6 +1,6 @@
 {
   "version": "2026-10-02-draft-1",
-  "scope": "38 vedlagte/katalogiserte varianter og5separatvedtattefys",
+  "scope": "38 vedlagte/katalogiserte golf- og teknikkvarianter, pluss fem separat vedtatte fysiske tester",
   "sourceSha256": "f9f8ddfeb411b7e2dc84e1935588e7ed950266dda53046e733cbc2d516d03664",
   "protocols": [
     {
@@ -14509,7 +14509,7 @@
     },
     {
       "id": "blank-is-not-zero",
-      "expected": "missing,neverfullscore"
+      "expected": "Mangler registrering; aldri full score"
     },
     {
       "id": "different-targets",

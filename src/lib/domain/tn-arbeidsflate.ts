@@ -2,7 +2,7 @@ import "server-only";
 
 import type { Prisma, UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import { tnFormat, tnScore, tnSameScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
 import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal-tester/tester-data";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
@@ -375,11 +376,16 @@ export type TnTestdagDeltakerRad = {
   order: number;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE";
   scoreTekst: string | null;
+  lagredeForsok: number | null;
+  totaltForsok: number;
 };
 
 export type TnTestdagRad = {
   id: string;
   title: string;
+  eventId: string | null;
+  stationName: string | null;
+  groupName: string;
   location: string | null;
   scheduledAt: Date;
   status: "PLANNED" | "ACTIVE" | "COMPLETED" | "CANCELLED";
@@ -388,15 +394,57 @@ export type TnTestdagRad = {
   antallFullfort: number;
 };
 
+export type TnTestdagGruppevalg = {
+  id: string;
+  navn: string;
+  type: "TEAM_NORWAY" | "WANG";
+  spillere: { id: string; navn: string }[];
+};
+
+/** Team Norway-trener velger aktive WANG-skoler og spillere til en felles testdag. */
+export async function hentTnFellesTestdagGrupper(bruker: TnBruker): Promise<TnTestdagGruppevalg[] | null> {
+  const kontekst = await hentTnArbeidskontekst(bruker);
+  if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
+  const grupper = await prisma.group.findMany({
+    where: {
+      arkivertAt: null,
+      OR: [
+        { id: kontekst.gruppe.id, slug: "team-norway" },
+        { program: { in: ["WANG_UNG", "WANG_TOPPIDRETT"] } },
+      ],
+    },
+    orderBy: [{ program: "asc" }, { name: "asc" }],
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      program: true,
+      members: {
+        where: { ...aktivtSpillerMedlemskapWhere(), user: { deletedAt: null, anonymisertAt: null } },
+        select: { user: { select: { id: true, name: true } } },
+        orderBy: { user: { name: "asc" } },
+      },
+    },
+  });
+  return grupper
+    .filter((gruppe) => gruppe.id === kontekst.gruppe.id || gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT")
+    .map((gruppe) => ({
+      id: gruppe.id,
+      navn: gruppe.name,
+      type: gruppe.slug === "team-norway" ? "TEAM_NORWAY" as const : "WANG" as const,
+      spillere: gruppe.members.map(({ user }) => ({ id: user.id, navn: user.name ?? "Ukjent spiller" })),
+    }));
+}
+
 /** Coach/assistent/admin: liste over testdager i Team Norway-gruppen (aktive og ferdige), nyeste først. */
 export async function hentTnTestdager(bruker: TnBruker): Promise<{ kontekst: TnArbeidskontekst; dager: TnTestdagRad[] } | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
   const dager = await prisma.testDay.findMany({
-    where: { groupId: kontekst.gruppe.id },
+    where: { OR: [{ groupId: kontekst.gruppe.id }, { event: { organizerGroupId: kontekst.gruppe.id } }] },
     orderBy: { scheduledAt: "desc" },
     take: 50,
-    include: { testDefinition: { select: { name: true, protocol: true } }, participants: { select: { status: true } } },
+    include: { group: { select: { name: true } }, event: { select: { id: true, title: true } }, testDefinition: { select: { name: true, protocol: true } }, participants: { select: { status: true } } },
   });
   return {
     kontekst,
@@ -404,7 +452,10 @@ export async function hentTnTestdager(bruker: TnBruker): Promise<{ kontekst: TnA
       const protokoll = tnProtocol((dag.testDefinition.protocol as { protocolId?: string } | null)?.protocolId ?? "");
       return {
         id: dag.id,
-        title: dag.title,
+        title: dag.event?.title ?? dag.title,
+        eventId: dag.event?.id ?? null,
+        stationName: dag.stationName,
+        groupName: dag.group.name,
         location: dag.location,
         scheduledAt: dag.scheduledAt,
         status: dag.status,
@@ -423,6 +474,10 @@ export type TnTestdag = {
   scheduledAt: Date;
   status: "PLANNED" | "ACTIVE" | "COMPLETED" | "CANCELLED";
   protokollNavn: string;
+  eventId: string | null;
+  stationName: string | null;
+  groupName: string;
+  stations: { id: string; name: string; groupName: string }[];
   deltakere: TnTestdagDeltakerRad[];
 };
 
@@ -431,12 +486,14 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
   const dag = await prisma.testDay.findFirst({
-    where: { id: testDayId, groupId: kontekst.gruppe.id },
+    where: { id: testDayId, OR: [{ groupId: kontekst.gruppe.id }, { event: { organizerGroupId: kontekst.gruppe.id } }] },
     include: {
       testDefinition: true,
+      group: { select: { name: true } },
+      event: { select: { id: true, title: true, stations: { include: { group: { select: { name: true } } }, orderBy: { stationName: "asc" } } } },
       participants: {
         orderBy: { order: "asc" },
-        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } } },
+        include: { player: { select: { name: true } }, result: { select: { score: true, details: true } }, session: { select: { scoringData: true } } },
       },
     },
   });
@@ -451,10 +508,33 @@ export async function hentTnTestdag(bruker: TnBruker, testDayId: string): Promis
       scheduledAt: dag.scheduledAt,
       status: dag.status,
       protokollNavn: protokoll?.name ?? dag.testDefinition.name,
+      eventId: dag.event?.id ?? null,
+      stationName: dag.stationName,
+      groupName: dag.group.name,
+      stations: (dag.event?.stations ?? []).map((station) => ({ id: station.id, name: station.stationName ?? station.title, groupName: station.group.name })),
       deltakere: dag.participants.map((p) => {
         const detaljer = p.result?.details as Partial<TnResult> | null;
         const scoreTekst = p.status === "DONE" && p.result && detaljer?.unit ? tnFormat({ value: p.result.score, unit: detaljer.unit }) : null;
-        return { id: p.id, spillerId: p.playerId, spillerNavn: p.player.name ?? "Ukjent", order: p.order, status: p.status, scoreTekst };
+        const state = p.session ? TnSessionSchema.safeParse(p.session.scoringData) : null;
+        const sessionState = state?.success ? state.data : null;
+        const sessionProtocol = sessionState ? tnProtocol(sessionState.protocolId, undefined, sessionState.version) : null;
+        const lagredeForsok = sessionState && sessionProtocol
+          ? Object.entries(sessionState.values).filter(([nr, values]) => {
+            const row = sessionProtocol.rows[Number(nr) - 1];
+            const harMaling = Object.values(values).some((value) => value !== null && value !== undefined && value !== "");
+            return row !== undefined && harMaling && !tnRowError(row, values, false);
+          }).length
+          : p.session ? 0 : null;
+        return {
+          id: p.id,
+          spillerId: p.playerId,
+          spillerNavn: p.player.name ?? "Ukjent",
+          order: p.order,
+          status: p.status,
+          scoreTekst,
+          lagredeForsok,
+          totaltForsok: sessionState?.count ?? protokoll?.rows.length ?? 0,
+        };
       }),
     },
   };
@@ -486,10 +566,10 @@ export async function hentTnTestdagDeltaker(bruker: TnBruker, deltakerId: string
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
   const deltaker = await prisma.testDayParticipant.findFirst({
-    where: { id: deltakerId, testDay: { groupId: kontekst.gruppe.id } },
+    where: { id: deltakerId, testDay: { OR: [{ groupId: kontekst.gruppe.id }, { event: { organizerGroupId: kontekst.gruppe.id } }] } },
     include: {
       player: { select: { name: true } },
-      testDay: { include: { testDefinition: true, participants: { orderBy: { order: "asc" }, select: { id: true, status: true } } } },
+      testDay: { include: { testDefinition: true, event: true, participants: { orderBy: { order: "asc" }, select: { id: true, status: true } } } },
       session: { select: { scoringData: true } },
       result: { select: { score: true, details: true } },
     },
@@ -911,6 +991,7 @@ export async function hentTnGruppeanalyseValg(bruker: TnBruker): Promise<TnGrupp
 export type TnGruppeanalyseRad = {
   spillerId: string;
   spillerNavn: string;
+  skole?: string | null;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE" | "IKKE_TESTDAG";
   score: number | null;
   formatert: string | null;
@@ -947,7 +1028,7 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
 
   if (params.testDayId) {
     const dag = await prisma.testDay.findFirst({
-      where: { id: params.testDayId, groupId: kontekst.gruppe.id },
+      where: { id: params.testDayId, OR: [{ groupId: kontekst.gruppe.id }, { event: { organizerGroupId: kontekst.gruppe.id } }] },
       include: {
         testDefinition: true,
         participants: { include: { player: { select: { name: true } }, result: { select: { id: true, score: true, details: true } } } },
@@ -986,7 +1067,7 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
     if (!protokoll || protokoll.blocked) return null;
     const testId = tnDefinitionId(protokoll);
     const lowerIsBetter = protokoll.points8Ball ? false : true;
-    const rader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId): Promise<TnGruppeanalyseRad | null> => {
+    const navngitteRader = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId): Promise<TnGruppeanalyseRad | null> => {
       const spiller = await tx.user.findUnique({ where: { id: spillerId }, select: { name: true } });
       if (!spiller) return null;
       const kandidater = await tx.testResult.findMany({
@@ -1003,6 +1084,33 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
         score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
       };
     });
+    const wangSkoler = await hentWangTestresultatSkolerForTeamNorway(bruker);
+    const wangPlayerSchool = new Map<string, { name: string; schools: Set<string> }>();
+    for (const skole of wangSkoler) for (const spiller of skole.players) {
+      const eksisterende = wangPlayerSchool.get(spiller.id) ?? { name: spiller.name, schools: new Set<string>() };
+      eksisterende.schools.add(skole.schoolName);
+      wangPlayerSchool.set(spiller.id, eksisterende);
+    }
+    const wangRader = await Promise.all([...wangPlayerSchool].map(async ([spillerId, spiller]): Promise<TnGruppeanalyseRad> => {
+      const kandidater = await prisma.testResult.findMany({
+        where: { userId: spillerId, testId },
+        orderBy: { takenAt: "desc" },
+        select: { id: true, takenAt: true, score: true, details: true },
+      });
+      const { gyldige } = tnValiderRader(kandidater, protokoll);
+      if (gyldige.length === 0) return {
+        spillerId, spillerNavn: spiller.name, skole: [...spiller.schools].sort().join(" · "),
+        status: "IKKE_TESTDAG", score: null, formatert: null,
+      };
+      const scores = gyldige.map((r) => r.score);
+      const beste = lowerIsBetter ? Math.min(...scores) : Math.max(...scores);
+      return {
+        spillerId, spillerNavn: spiller.name, skole: [...spiller.schools].sort().join(" · "), status: "DONE",
+        score: beste, formatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
+      };
+    }));
+    const wangPlayerIds = new Set(wangRader.map((rad) => rad.spillerId));
+    const rader = [...wangRader, ...navngitteRader.filter((rad): rad is TnGruppeanalyseRad => rad !== null && !wangPlayerIds.has(rad.spillerId))];
     return {
       kontekst, protokollNavn: protokoll.name, lowerIsBetter,
       grunnlag: { type: "protokoll", navn: protokoll.name, dato: null },

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ArrowLeft, Bell } from "lucide-react";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   COACH_PERIODS,
@@ -258,6 +259,25 @@ export function CoachArsplan({ live = null, kanPublisere = false }: { live?: Wan
               </div>
             </div>
           ))}
+          <Link
+            href="/team-wang/coach/tester"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 11,
+              minHeight: 42,
+              padding: "0 12px",
+              borderRadius: 12,
+              color: "var(--text-on-dark-dim)",
+              fontFamily: "var(--font-brand)",
+              fontWeight: 600,
+              fontSize: 13.5,
+              textDecoration: "none",
+            }}
+          >
+            <Ikon name="clipboard-list" size={17} />
+            Testresultater
+          </Link>
         </nav>
         <div
           style={{
