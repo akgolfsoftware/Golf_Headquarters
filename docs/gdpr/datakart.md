@@ -102,7 +102,7 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | Google Calendar | `GoogleCalendarConnection` (kryptert refresh-token) | 2-veis kalendersync for coach | Samtykke (OAuth) | Til frakobling; token kryptert med `GOOGLE_TOKEN_ENCRYPTION_KEY` |
 | Notion | `NotionConnection`, `NotionDatabaseLink` | Per-bruker Notion-sync | Samtykke (OAuth) | Til frakobling |
 | GDPR-forespørsler | `DataExportRequest` (userId, subjectUserId, type EXPORT/DELETE, status) | Kvittering/sporing av innsyn- og slettekrav | Rettslig forpliktelse | Bevares som dokumentasjon (forslag 3 år) |
-| Agent-kjøringer | `AgentRun`, `KommandoAgentRun`/`Step`, `Signal`, `PlanAction` | AI-agent-drift | Berettiget interesse | AVKLAR: retention + regel om ingen PII i agent-logger (Nordstjernen-prinsipp) må verifiseres |
+| Agent-kjøringer | `AgentRun`, `KommandoAgentRun`/`Step`, `Signal`, `PlanAction`; `WORKBENCH_COACH_PROPOSAL` lagrer versjonert øktforslag, begrunnelse, status og avgjørelse | Forslag til treningsplan som spilleren selv kan godkjenne/avvise | Berettiget interesse (forslag, ikke automatisk planendring) | Spillerens eksport inkluderer forslagene; trenerens eksport inkluderer egne begrunnelser uten spillerens øktdata. Anonymisering sletter forslag mottatt av eller skrevet av kontoen. Generell oppbevaring av øvrige agentkjøringer er fortsatt uavklart. |
 
 ## Samlede AVKLAR-punkter for Anders (prioritert)
 

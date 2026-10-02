@@ -15,14 +15,11 @@ import {
   tnLagrePeriode,
   tnSlettPeriode,
   tnRullUtAarsplan,
-  tnOpprettOkt,
   tnFlyttOkt,
   tnSlettOkt,
-  tnPubliserOkt,
   tnKopierOkt,
   tnSettMal,
   tnRedigerOktInnhold,
-  tnPubliserFlere,
   hentTnKilder,
   tnOpprettFraMal,
   tnLeggTilOvelseIOkt,
@@ -39,6 +36,7 @@ import type { PyramidArea, RecurrencePolicy, WorkbenchMode, SourceItem } from "@
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
+import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 
 export const dynamic = "force-dynamic";
 
@@ -177,24 +175,6 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
     redirect(tnWorkbenchHref({ visning: "periode", feil: svar.ok ? undefined : svar.feil }));
   }
 
-  async function opprettOkt(form: FormData) {
-    "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
-    const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
-    const malSpillerId = String(form.get("spillerId") ?? "");
-    if (!ferskKontekst || !malSpillerId) return;
-    const dato = String(form.get("dato") ?? "");
-    const [t, m] = String(form.get("tid") ?? "08:00").split(":").map(Number);
-    const svar = await tnOpprettOkt(ferskBruker, ferskKontekst, malSpillerId, {
-      date: dato,
-      startMinute: (Number.isFinite(t) ? t : 8) * 60 + (Number.isFinite(m) ? m : 0),
-      durationMinutes: Number(form.get("varighet") ?? 60),
-      title: String(form.get("tittel") ?? "Økt"),
-      pyramid: (String(form.get("pyramid") ?? "TEK")) as PyramidArea,
-    });
-    redirect(tnWorkbenchHref({ spiller: malSpillerId, visning: "uke", dato, feil: svar.ok ? undefined : svar.feil }));
-  }
-
   async function flyttOkt(form: FormData) {
     "use server";
     const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
@@ -222,17 +202,6 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
     const bekreft = String(form.get("bekreft") ?? "");
     const svar = await tnSlettOkt(ferskBruker, ferskKontekst, malSpillerId, sessionId, bekreft);
     redirect(tnWorkbenchHref({ spiller: malSpillerId, visning: "uke", feil: svar.ok ? undefined : svar.feil }));
-  }
-
-  async function publiserOkt(form: FormData) {
-    "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
-    const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
-    const malSpillerId = String(form.get("spillerId") ?? "");
-    const sessionId = String(form.get("sessionId") ?? "");
-    if (!ferskKontekst || !malSpillerId || !sessionId) return;
-    const svar = await tnPubliserOkt(ferskBruker, ferskKontekst, malSpillerId, sessionId);
-    redirect(tnWorkbenchHref({ spiller: malSpillerId, visning: "dag", okt: sessionId, feil: svar.ok ? undefined : svar.feil }));
   }
 
   async function kopierOkt(form: FormData) {
@@ -287,17 +256,6 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       },
     });
     redirect(tnWorkbenchHref({ spiller: malSpillerId, visning: "dag", okt: sessionId, feil: svar.ok ? undefined : svar.feil }));
-  }
-
-  async function publiserFlere(form: FormData) {
-    "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
-    const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
-    const malSpillerId = String(form.get("spillerId") ?? "");
-    if (!ferskKontekst || !malSpillerId) return;
-    const sessionIds = form.getAll("sessionId").map(String).filter(Boolean);
-    const svar = await tnPubliserFlere(ferskBruker, ferskKontekst, malSpillerId, sessionIds);
-    redirect(tnWorkbenchHref({ spiller: malSpillerId, visning: "uke", dato: datoRaw, feil: svar.ok ? undefined : svar.feil }));
   }
 
   async function opprettFraKilde(form: FormData) {
@@ -381,7 +339,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       </div>
 
       {spillerId ? (
-        (await medNavngittProfil(bruker.id, spillerId, gruppeId, () => renderPersonligPlan({ bruker, kontekst, spillerId, visning, datoRaw, idag, opprettOkt, flyttOkt, slettOkt, publiserOkt, kopierOkt, settMal, redigerOktInnhold, publiserFlere, opprettFraKilde, leggTilOvelse, okt: sp.okt }))) ?? <TnKort>Spilleren har ikke delt profilen med deg.</TnKort>
+        (await medNavngittProfil(bruker.id, spillerId, gruppeId, () => renderPersonligPlan({ bruker, kontekst, spillerId, visning, datoRaw, idag, flyttOkt, slettOkt, kopierOkt, settMal, redigerOktInnhold, opprettFraKilde, leggTilOvelse, okt: sp.okt }))) ?? <TnKort>Spilleren har ikke delt profilen med deg.</TnKort>
       ) : (
         await renderGruppeplan({ bruker, kontekst, visning, datoRaw, idag, opprettPeriode, slettPeriode, rullUtAarsplan })
       )}
@@ -543,19 +501,16 @@ async function renderPersonligPlan(args: {
   visning: Visning;
   datoRaw: string | undefined;
   idag: string;
-  opprettOkt: (form: FormData) => Promise<void>;
   flyttOkt: (form: FormData) => Promise<void>;
   slettOkt: (form: FormData) => Promise<void>;
-  publiserOkt: (form: FormData) => Promise<void>;
   kopierOkt: (form: FormData) => Promise<void>;
   settMal: (form: FormData) => Promise<void>;
   redigerOktInnhold: (form: FormData) => Promise<void>;
-  publiserFlere: (form: FormData) => Promise<void>;
   opprettFraKilde: (form: FormData) => Promise<void>;
   leggTilOvelse: (form: FormData) => Promise<void>;
   okt?: string;
 }) {
-  const { bruker, kontekst, spillerId, visning, datoRaw, idag, opprettOkt, flyttOkt, slettOkt, publiserOkt, kopierOkt, settMal, redigerOktInnhold, publiserFlere, opprettFraKilde, leggTilOvelse, okt } = args;
+  const { bruker, kontekst, spillerId, visning, datoRaw, idag, flyttOkt, slettOkt, kopierOkt, settMal, redigerOktInnhold, opprettFraKilde, leggTilOvelse, okt } = args;
 
   const harLesetilgang = await harTnPersonligPlanLesetilgang(bruker, kontekst, spillerId);
   if (!harLesetilgang) {
@@ -598,24 +553,20 @@ async function renderPersonligPlan(args: {
                     <p style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.xs }}>Ingen Live-inngang før økten er planlagt/publisert.</p>
                   )}
                   {s.status === "SCHEDULED" || s.status === "DRAFT" ? (
-                    <form action={publiserOkt}>
-                      <input type="hidden" name="spillerId" value={spillerId} />
-                      <input type="hidden" name="sessionId" value={s.id} />
-                      <TnKnapp type="submit" variant="sekundaer">Publiser — spilleren ser den etterpå</TnKnapp>
-                    </form>
+                    <p style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.xs }}>Direkte publisering er slått av. Lag et før/etter-forslag og la spilleren godkjenne.</p>
                   ) : null}
                   <form action={flyttOkt} style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
                     <input type="hidden" name="spillerId" value={spillerId} />
                     <input type="hidden" name="sessionId" value={s.id} />
                     <label style={feltLabelStil}>Ny dato<input type="date" name="nyDato" defaultValue={s.date} style={feltInputStil} /></label>
                     <label style={feltLabelStil}>Ny tid<input type="time" name="nyTid" defaultValue={fmtMinutt(s.startMinute)} style={feltInputStil} /></label>
-                    <TnKnapp type="submit" variant="sekundaer">Flytt</TnKnapp>
+                    <TnKnapp type="submit" variant="sekundaer">Send flytteforslag</TnKnapp>
                   </form>
                   <form action={slettOkt} style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
                     <input type="hidden" name="spillerId" value={spillerId} />
                     <input type="hidden" name="sessionId" value={s.id} />
-                    <label style={feltLabelStil}>Skriv SLETT for å bekrefte<input type="text" name="bekreft" style={feltInputStil} /></label>
-                    <TnKnapp type="submit" variant="tekst">Slett</TnKnapp>
+                    <label style={feltLabelStil}>Skriv SLETT for å sende forslaget<input type="text" name="bekreft" style={feltInputStil} /></label>
+                    <TnKnapp type="submit" variant="tekst">Foreslå å ta ut</TnKnapp>
                   </form>
                 </div>
               )}
@@ -624,14 +575,14 @@ async function renderPersonligPlan(args: {
 
           {kanSkrive && (
             <TnKort>
-              <p style={{ margin: 0, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Kopier, mal og rediger</p>
+              <p style={{ margin: 0, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Forslag, mal og rediger</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}>
                 <form action={kopierOkt} style={{ display: "flex", gap: 6, alignItems: "flex-end", flexWrap: "wrap" }}>
                   <input type="hidden" name="spillerId" value={spillerId} />
                   <input type="hidden" name="sessionId" value={s.id} />
                   <label style={feltLabelStil}>Kopier til dato<input type="date" name="nyDato" required style={feltInputStil} /></label>
                   <label style={feltLabelStil}>Tid<input type="time" name="nyTid" defaultValue={fmtMinutt(s.startMinute)} style={feltInputStil} /></label>
-                  <TnKnapp type="submit" variant="sekundaer" size="sm">Kopier økten</TnKnapp>
+                  <TnKnapp type="submit" variant="sekundaer" size="sm">Send kopiforslag</TnKnapp>
                 </form>
 
                 <form action={settMal} style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -663,7 +614,7 @@ async function renderPersonligPlan(args: {
                     )}
                   </div>
                   <label style={feltLabelStil}>Notater<textarea name="notater" defaultValue={s.notes ?? ""} style={{ ...feltInputStil, minHeight: 60 }} /></label>
-                  <div><TnKnapp type="submit" variant="sekundaer" size="sm">Lagre endringer</TnKnapp></div>
+                  <div><TnKnapp type="submit" variant="sekundaer" size="sm">Send endringsforslag</TnKnapp></div>
                 </form>
               </div>
             </TnKort>
@@ -777,7 +728,7 @@ async function renderPersonligPlan(args: {
   return (
     <TnSeksjon
       tittel={visning === "dag" ? fmtDato(new Date(`${dag}T12:00:00Z`)) : `Uke fra ${weekStart}`}
-      forklaring="Samme plan som spilleren ser i PlayerHQ — endringer her er ekte og gjelder umiddelbart."
+      forklaring="Samme plan som spilleren ser i PlayerHQ. Personlige endringer sendes som forslag og trer først i kraft når spilleren godkjenner."
     >
       <div style={{ display: "flex", gap: 8 }}>
         <Link href={tnWorkbenchHref({ spiller: spillerId, visning, dato: addDays(visning === "dag" ? dag : weekStart, visning === "dag" ? -1 : -7) })} style={pilleLenkeStil(false)}>← Forrige</Link>
@@ -797,24 +748,12 @@ async function renderPersonligPlan(args: {
         </Link>
       ))}
 
-      {kanSkrive && ikkePublisert.length > 0 && (
-        <TnKort>
-          <p style={{ margin: 0, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Gjennomgå og publiser</p>
-          <p style={{ margin: "4px 0 12px", color: TN.textSecondary, fontSize: TN.text.xs }}>
-            Se gjennom hele utvalget under før du publiserer — spilleren ser de valgte øktene med én gang.
-          </p>
-          <form action={publiserFlere} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <input type="hidden" name="spillerId" value={spillerId} />
-            {ikkePublisert.map((s) => (
-              <label key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: TN.text.sm }}>
-                <input type="checkbox" name="sessionId" value={s.id} />
-                <span>{s.date} {fmtMinutt(s.startMinute)} · {s.title} · {PYRAMID_LABEL[s.pyramid]} · <TnPille tone="nøytral">{STATUS_LABEL[s.status]}</TnPille></span>
-              </label>
-            ))}
-            <div><TnKnapp type="submit" variant="primaer" size="sm">Publiser valgte økter</TnKnapp></div>
-          </form>
-        </TnKort>
-      )}
+      {kanSkrive && ikkePublisert.length > 0 && <TnKort>
+        <p style={{ margin: 0, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Ventende utkast</p>
+        <p style={{ margin: "4px 0 0", color: TN.textSecondary, fontSize: TN.text.xs }}>
+          Enkeltpublisering og massepublisering er stengt. Send konkrete forslag i «Foreslå treningsendring»; spilleren godkjenner før planen endres.
+        </p>
+      </TnKort>}
 
       {andreOkter.length > 0 && (
         <TnKort>
@@ -835,26 +774,9 @@ async function renderPersonligPlan(args: {
         </TnKort>
       )}
 
-      {kanSkrive && (
-        <TnKort>
-          <form action={opprettOkt} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <p style={{ margin: 0, fontWeight: TN.weight.semibold }}>Ny økt</p>
-            <input type="hidden" name="spillerId" value={spillerId} />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 10 }}>
-              <label style={feltLabelStil}>Dato<input type="date" name="dato" required defaultValue={visning === "dag" ? dag : weekStart} style={feltInputStil} /></label>
-              <label style={feltLabelStil}>Tid<input type="time" name="tid" defaultValue="08:00" style={feltInputStil} /></label>
-              <label style={feltLabelStil}>Varighet (min)<input type="number" name="varighet" min={15} max={720} defaultValue={60} style={feltInputStil} /></label>
-              <label style={feltLabelStil}>Område
-                <select name="pyramid" style={feltInputStil}>
-                  {PYRAMIDER.map((p) => <option key={p} value={p}>{PYRAMID_LABEL[p]}</option>)}
-                </select>
-              </label>
-            </div>
-            <label style={feltLabelStil}>Tittel<input type="text" name="tittel" required maxLength={200} style={feltInputStil} /></label>
-            <div><TnKnapp type="submit" variant="primaer">Legg til økt</TnKnapp></div>
-          </form>
-        </TnKort>
-      )}
+      {kanSkrive && <TrenerforslagSkjema organisasjon="TEAM_NORWAY" spillerId={spillerId} sessions={alleUkensOkter.map(s => ({
+        id: s.id, label: `${s.date} ${fmtMinutt(s.startMinute)} · ${s.title}`,
+      }))} />}
 
       {kanSkrive && await renderOpprettFraKilde({ spillerId, standardDato: visning === "dag" ? dag : weekStart, bruker, kontekst, opprettFraKilde })}
     </TnSeksjon>
@@ -900,7 +822,7 @@ async function renderOpprettFraKilde(args: {
         </label>
         <label style={feltLabelStil}>Dato<input type="date" name="dato" required defaultValue={standardDato} style={feltInputStil} /></label>
         <label style={feltLabelStil}>Tid<input type="time" name="tid" defaultValue="08:00" style={feltInputStil} /></label>
-        <TnKnapp type="submit" variant="sekundaer" size="sm">Opprett fra kilde</TnKnapp>
+        <TnKnapp type="submit" variant="sekundaer" size="sm">Send forslag fra kilde</TnKnapp>
       </form>
     </TnKort>
   );
