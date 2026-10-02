@@ -13,6 +13,7 @@ Kontrollgrunnlag: hovedplanen, de to lokale originalfilene, HQ main `226acab39`,
 | Trenerleser | PR #1089. Bare leverte besvarelser, alle originalspørsmål og revisjonshistorikk; nyere utkast skjult. Tilbaketrekking stenger nytt oppslag. Denne pakken monterer kildevaliderte leverte svar i WANG-IUP og TN-02 under de eksisterende navngitte tilgangsportene. | Dette dekker IUP-lesing i disse profilene, ikke hele spillerprofilen eller alle 18 ark. Egen Precision-leser gjenstår. |
 | Trenerliste | PR #1090. 20 databaseprøver, 53 komponentprøver i fullkontrollen, syntetisk faktisk innlogging og liste→besvarelse. | Merget etter grønn CI og deploy. Ikke en komplett skole-/landslagsoversikt. |
 | Eldre WANG/TN-lesere | PR #1096 (`c8a44556a`). 24 syntetiske databaseprøver og 24 innloggede rutekontroller; fersk GitHub CI og Vercel bestod. | Navngitt deling er koblet til de beskrevne eldre personlige leserne, inkludert lister, analyse, poster, lesekvitteringer og vedlegg. Dette beviser ikke full Excel-dekning, skolebasert testdeling eller visuell godkjenning. |
+| Samlingsprogram og invitasjon | PR #1099. WANG/TN-trener publiserer for valgt gruppe; spilleren får privat invitasjon, ser kalenderkollisjoner og kan legge økter med øvelser i egen Workbench-kalender. Full CI: 4 328 enhets- og 101 komponenttester; Vercel Preview bestod. | Rom- og pakkeliste er utenfor omfanget. Visuell sluttgodkjenning fra Anders er ikke registrert. |
 | DataGolf | Tre Claude Design-prosjekter med DG01–17. 135/135 feltidentiteter mot lokalt pipelines-skjema. Feltutforsker målt 390/1440. | Design, ikke produksjonsintegrasjon. Ingen kundelisens dokumentert eller aktivert. |
 
 ## Alle 18 Excel-ark — gjenværende kontroll
@@ -52,14 +53,14 @@ De fullstendige funksjonsfamiliene PH-01–34 og TR-01–24 står i [hovedplanen
 | Alle Excel-felt i samlet spillerprofil | Delvis | Delvis | Delvis |
 | Gi/trekke full profildeling | Spiller-/foresattreise prøvd | IUP, turneringsprofil og eldre personlige lesere koblet (#1096) | Personlige profiler, samlelister, analyse, planinnsyn, personpost, kvitteringer og vedlegg koblet (#1096) |
 | Obligatorisk testdeling fra alle WANG-skoler til TN | Avtalespor gjenstår | Ikke ferdig | Ikke ferdig |
-| Treningsforslag→godta/avvis→Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
-| Samling publisert→invitasjon→kalender/Workbench | Ikke ferdig ende til ende | Ikke ferdig | Ikke ferdig |
+| Treningsforslag→godta/avvis→Workbench | Spillerens innboks i PlayerHQ; godkjenning anvender økt atomisk én gang, avvisning gir null planendring. Syntetiske prøver dekker gjenforsøk, versjonskonflikt og trukket deling. | WANG trenerflate oppretter forslag under navngitt profiltilgang. | TN Workbench oppretter forslag under navngitt profiltilgang. Begge bruker spillerens samme PlayerHQ-godkjenning. Visuell sluttkontroll gjenstår. |
+| Samling publisert→invitasjon→kalender/Workbench | Invitasjon og spillerens Workbench-import merget (#1099) | Invitasjon og spillerens Workbench-import merget (#1099) | Visuell godkjenning og akseptanse i WANG/TN-flater; rom- og pakkeliste er ikke med. |
 | Felles testdag med flere skoler/grupper | Delvis | Delvis | Delvis |
 | Automatisk turneringsresultat til riktig konto | Delvis; se datakjede under | Delvis | Delvis |
 | Alle pipelineprofiler | Eksisterende offentlige data skilt fra privat profil | Samlet oversikt ikke bevist | Samlet oversikt ikke bevist |
 | DataGolf DG01–17 | Precision-design | Eget WANG-design | Eget TN-design |
 
-Workbench #1091 ble merget kl.06:17:51 med grønn CI/Vercel. Leveransen fra den andre arbeidsøkten er bevart i denne arbeidskopien. [Workbench-kontrollen](../design-audit/workbench-samlet-kontroll-2026-10-02.md) dokumenterer fire visninger, sesongvalg, egen kalender, treningsvolum, øvelsesfelter og personvern. Den påstår ikke full WANG/TN-forslags-, samlings- eller testdagreise. Disse delene er derfor fortsatt åpne her.
+Workbench #1091 ble merget kl.06:17:51 med grønn CI/Vercel. PR #1099 senere utvidet Workbench med samlingspublisering og private invitasjoner. [Workbench-kontrollen](../design-audit/workbench-samlet-kontroll-2026-10-02.md) dokumenterer de tidligere fire visningene; #1099 beskriver den nye invitasjonsflyten. Kodekontroll av `TrenerforslagSkjema`, spillerens `/portal`-innboks og `svarPaTrenerforslag` bekrefter forslag fra både WANG og TN. Godkjenning og planendring skjer i samme serialiserbare transaksjon; avvisning endrer ikke økten. Syntetiske tester dekker én anvendelse, idempotent gjenforsøk, samtidig versjonsendring, trukket deling og utløpt dato. Dette lukker funksjonsgapet i den nye Workbench-flyten; gammel PR #1060 er fortsatt et separat, ikke-mergeklart spor og må ikke brukes til å opprette parallell IUP-/forslagslogikk. Visuell kontroll av trener- og spillerreisen gjenstår. Nasjonal testdeling, felles testdag og full Excel-feltdekning er fortsatt åpne.
 
 ## Turneringsdata — fersk driftskontroll og konkret hull
 
@@ -78,9 +79,9 @@ Pipelines er fortsatt eneste innhenter av resultater. DataGolf-sperrer skal ikke
 ## Neste gjennomføringsrekkefølge
 
 1. Bruk [profiltilgangskontrollen](wang-tn-profiltilgang-kontroll-2026-10-02.md) som bevis for eldre WANG/TN-lesere koblet i #1096. Full IUP-feltdekning og visuell innbygging gjenstår; søke-/eksport- og testdagsreisene må fortsatt vurderes hver for seg.
-2. Samordne PR #1060 med kanonisk IUP og den aktuelle Workbench-modellen. Bevis at godkjenning anvender én gang, avvisning anvender null, og nyere spillerendring gir konflikt.
+2. Bevar den nye Workbench-forslagsflyten som kanonisk: spillerens godkjenning anvender én gang, avvisning anvender null, og nyere spillerendring gir konflikt. Ikke merge PR #1060 uten en eksplisitt gjennomgang mot den allerede leverte `WORKBENCH_COACH_PROPOSAL`-flyten. Kontroller begge trenerflatene visuelt.
 3. Fullfør skoleavtalens separate testdeling og felles testdag. Avtale-/fagregler som mangler dokumentasjon må ikke oppfinnes.
-4. Fullfør samlingsinvitasjon og planimport med kalenderkonflikt, gjenforsøk og oppdatering etter publisering.
+4. Kontroller PR #1099s samlingsinvitasjon mot akseptert WANG/TN-reise og få visuell godkjenning; utvid bare manglende felt etter dokumentert behov. Rom- og pakkeliste er utenfor nåværende bestilling.
 5. Fullfør identitetsbevis og automatisk turneringskjede; oppdater deretter feltregisteret for alle 18 ark med konkrete tester per trenerflate.
 6. Porter DataGolf-design først når kundebruksrett er dokumentert. Kontroller ekte datadekning mot endepunktene; 135 lokale modellfelt er ikke hele API-et.
 
