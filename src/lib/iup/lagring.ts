@@ -6,10 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
 import { rateLimit } from "@/lib/rate-limit";
 import { lesIupLagring, type ValidertIupLagring } from "./lagringskontrakt";
+import { aktivIupTilknytningWhere } from "./tilknytning";
 
 export type IupLagringsresultat =
   | { ok: true; id: string; revisjon: number; gjeldendeRevisjon: number; gjentatt: boolean }
-  | { ok: false; kode: "UGYLDIG" | "KONFLIKT" | "REQUEST_GJENBRUKT" | "KILDE_ENDRET" | "FOR_MANGE"; melding: string };
+  | { ok: false; kode: "UGYLDIG" | "KONFLIKT" | "REQUEST_GJENBRUKT" | "KILDE_ENDRET" | "FOR_MANGE" | "IKKE_IUP_DELTAKER"; melding: string };
 
 function konflikt(): IupLagringsresultat {
   return { ok: false, kode: "KONFLIKT", melding: "Besvarelsen er endret i en annen visning. Hent siste versjon før du lagrer igjen." };
@@ -19,6 +20,8 @@ async function skrivRevisjon(tx: Prisma.TransactionClient, userId: string, p: Va
   // Ny kontroll i transaksjonen: en konto slettet etter innlogging kan ikke skrive.
   const eier = await tx.user.findFirst({ where: { id: userId, deletedAt: null, anonymisertAt: null }, select: { id: true } });
   if (!eier) throw new Error("forbidden");
+  const medlemskap = await tx.groupMember.findFirst({ where: { userId, ...aktivIupTilknytningWhere() }, select: { id: true } });
+  if (!medlemskap) return { ok: false, kode: "IKKE_IUP_DELTAKER", melding: "Spørsmålssjekkene gjelder aktive spillere i WANG eller Team Norway." };
   const nokkel = {
     userId, type: p.type, versjon: p.besvarelse.versjon, niva: p.niva,
     periodeStart: new Date(`${p.periodeStart}T00:00:00.000Z`),

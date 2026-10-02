@@ -6,7 +6,8 @@ Anders har bestilt gjennomføring av [hele planen](wang-team-norway-playerhq-kom
 
 - Første gren: `codex/wang-tn-iup-plan-2026-10-02`, merget via PR #1077.
 - Andre gren: `codex/iup-sesongevaluering-2026-10-02`, merget via PR #1078.
-- Aktiv neste gren: `codex/iup-besvarelser-lagring-2026-10-02`, fra main `982debe6a`.
+- Tredje gren: `codex/iup-besvarelser-lagring-2026-10-02`, merget via PR #1080.
+- Aktiv neste gren: `codex/iup-spillerreise-2026-10-02`, fra main `a437e1e11`.
 - Worktree: `.claude/worktrees/codex-wang-tn-iup-plan` under prosjektets hovedmappe.
 - Startgrunnlag for kodearbeidet: `da40e700a`, etter PR #1076.
 - Andre aktive oppgaver arbeider med DataGolf/pipelines, Workbench, statistikk og testbatteriet. Deres endringer skal bevares og vurderes ved integrasjon.
@@ -55,7 +56,7 @@ Dataeksport inkluderer alle revisjoner. Anonymisering sletter råsvar med tilhø
 
 17 prøver mot en separat lokal database bestod, inkludert reelle transaksjoner, konflikter, eierkontroll og RLS. 30 prøver for eksport/anonymisering og separat TypeScript-kontroll bestod. Oppsett og avgrensning står i `tests/iup-local/README.md`. Full `npm run verify` bestod med 3 970 kodeprøver, 18 komponentprøver og Next-/Serwist-bygg. Ingen prøver ble hoppet over. Typekontrollen i bygget brukte 9,6 minutter; den ble fullført uten å hoppe over kontrollen.
 
-Additiv SQL er deretter kjørt i det kontrollerte HQ-prosjektet `dcnxoztjtdqoidaekxry` som `iup_besvarelser_20261002`. Begge tabeller manglet ved forhåndskontroll. Etterkontroll bekrefter begge tabeller, RLS, ingen klientprivilegier/policyer for offentlig eller innlogget API-bruker, unike nøkler, valideringsbegrensninger og kaskadesletting. Ingen eksisterende brukerdata ble endret, og ingen IUP-svar ble registrert i produksjon som test. PR og CI gjenstår ved skrivingen av denne journalføringen. Spillerskjema og trenernes visninger gjenstår.
+Additiv SQL er deretter kjørt i det kontrollerte HQ-prosjektet `dcnxoztjtdqoidaekxry` som `iup_besvarelser_20261002`. Begge tabeller manglet ved forhåndskontroll. Etterkontroll bekrefter begge tabeller, RLS, ingen klientprivilegier/policyer for offentlig eller innlogget API-bruker, unike nøkler, valideringsbegrensninger og kaskadesletting. Ingen eksisterende brukerdata ble endret, og ingen IUP-svar ble registrert i produksjon som test. [PR #1080](https://github.com/akgolfsoftware/Golf_Headquarters/pull/1080) ble merget kl. 02:51 etter grønn GitHub-kontroll og Vercel på head `7a75b2840`. Main ble `a437e1e11`. Spillerskjema og trenernes visninger gjenstår på dette tidspunktet.
 
 ## Kontrolljournal
 
@@ -96,3 +97,23 @@ Nyere Precision-eksport `(77)` inneholder også `ui_kits/iup-komplett/`. Dens `d
 1. `lagreEgenIup` og `hentEgenIup` bruker `requireSpillerActionUser`. Eier kommer fra innlogging; klientens ekstra eier-/gruppefelt avvises. Lesing av fremmed ID returnerer samme tomme resultat som ukjent ID. Slettet/anonymisert eier kontrolleres mot databasen. Dette er prøvd mot lokal database.
 2. Kode og tester inneholder bare generiske spørsmål og syntetiske svar. Privat testkonfigurasjon er ignorert, med egen lokal rolle og passord. Ingen svar sendes til AI eller nye logger. Det finnes ingen ny offentlig rute, og SQL fjerner alle klientprivilegier på råsvarene.
 3. Den faktiske handlingsvakten stopper barn uten nødvendig foreldresamtykke. Begge datatyper og hele revisjonshistorikken følger eierens eksport og slettes ved anonymisering. Kaskadesletting og API-sperrer er prøvd i den separate databasen. Trenerdeling, samtykketekst og montert spillerskjerm inngår i neste del og er ikke ferdigmeldt.
+
+
+## Fjerde leveranse: spillerens evalueringsreise
+
+Egen rute `/portal/mal/evaluering`, med inngang fra I dag og Målsetning. Bare aktive spillermedlemmer i en ikke-arkivert WANG-gruppe (Ung/Toppidrett-program) eller den kanoniske Team Norway-gruppen kan skrive. Et visningsnavn eller trenerrolle i gruppen gir ingen skriverett. Tidligere deltakere kan fortsatt lese egne svar. Full-tilgang, innlogging, rolle og foreldresamtykke kontrolleres også ved direkte kall til handlingene.
+
+Skjermen viser originalspørsmålene fra eksplisitt kildeår og nivå, utkast/levering, revisjoner og sideinndelt historikk. Kilde- eller formatavvik blokkerer redigering. Samme skjema/periode gjenopptas også utenfor første listeside. Nettverksbrudd beholder samme lagrings-ID for gjenforsøk; samtidig redigering krever innlasting av siste revisjon. Nytt utkast beholder siste levering. Ingen råsvar lagres i nettleserlagring.
+
+Designreferanse: `ui_kits/iup-komplett/v1.js` fra Precision-prosjekt `7d7c2994`, lokal eksport «AK Golf Precision Athletics (77).zip», SHA-256 `9ded841b0f8696697534eb13dae882b3783d351014dae3a92e6e2bba4f042f07`. Den feilaktige historikketiketten 1–8 er erstattet med originalens 1–5. Reell eksplisitt lagring erstatter prototypens `sessionStorage`-lagring. Ingen automatisk fireukersfrist eller sesongfrist er oppdiktet. Dette er registrerte avvik/avgrensninger, ikke Anders' visuelle godkjenning.
+
+Målrettet kontroll: 25 prøver mot ekte lokal database, 12 komponentprøver og 2 handlingsprøver bestod. Eget lokalt Supabase-prosjekt `ak-hq-iup-app-20261002` er opprettet fra tomt skjema, med RLS på 218 tabeller og to syntetiske voksne brukere. Kun lokale porter 55821/55822 og app 3073 brukes. Ingen produksjonsmiljøfil er kopiert. Nettleserreisen bestod med reell innlogging og database: utkast/omlasting, levering, beholdt siste levering, konflikt fra gammel fane, mistet kvittering uten dobbeltlagring, fremmed eier, avsluttet medlemskap, komplett sesongevaluering 2027, null versus ubesvart, lesbar historikk, avbrutt navigasjon og innganger fra I dag/Målsetning. Mobil 390 px og desktop 1440 px er kontrollert med syntetiske data. Natt-tema ble prøvd via eksisterende designattributt, uten å innføre en ny temabryter. Automatisk logging av serverhandlingsargumenter i Next er slått av slik at fritekst ikke havner i utviklerterminalen. Full `npm run verify` bestod med 3 972 kodeprøver, 30 komponentprøver og komplett Next-/Serwist-bygg, uten hoppede prøver. Leveransen venter på ekstern kontroll og merge.
+
+Gjenstår etter denne avgrensede reisen: tidsstyrt fireukers-/sesongoppfølging, trenernes lesing med riktig delingsgrunnlag, øvrige Excel-faner, forslag som faktisk anvendes i Workbench, samlinger, felles testdager, komplett DataGolf-/pipeline-integrasjon og sluttrapport med kildebevis per krav.
+
+
+Sikkerhetskontroll for spillerreisen:
+
+1. Eier hentes fra innlogging, aldri fra skjemaet. Direkte handlinger krever samme Full-tilgang og foreldresamtykke som siden. Fremmed eier og avsluttet medlemskap er prøvd mot ekte lokal app/database.
+2. Katalogene inneholder originalspørsmål uten persondata. Tester og skjermbilder bruker bare syntetiske kontoer/svar. Rå besvarelser går kun til eierens beskyttede skjerm og tidligere etablerte eksport; ingen AI-kall eller ny ekstern deling. Nexts automatiske logging av serverfunksjonsargumenter er deaktivert etter observert testkjøring.
+3. Foreldresamtykke håndheves av eksisterende vakt også ved direkte POST. Eksport/anonymisering fra PR1080 beholdes. WANG/TN får ingen ekstra lesegrunnlag fra medlemskapskontrollen for egen utfylling.

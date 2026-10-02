@@ -11,10 +11,14 @@ let bruker: TestBruker | null = null;
 mock.module("@/lib/auth/getCurrentUser", { namedExports: { getCurrentUser: async () => bruker } });
 let lagreEgenIup: typeof import("../../src/lib/iup/lagring").lagreEgenIup;
 let hentEgenIup: typeof import("../../src/lib/iup/lagring").hentEgenIup;
+let hentEgenIupOversikt: typeof import("../../src/lib/iup/oversikt").hentEgenIupOversikt;
+let finnEgenIup: typeof import("../../src/lib/iup/oversikt").finnEgenIup;
 let prisma: typeof import("../../src/lib/prisma").prisma;
 const db = new pg.Client({ connectionString: process.env.DATABASE_URL });
 const eier = "iup-syntetisk-spiller-a";
 const annen = "iup-syntetisk-spiller-b";
+const tredje = "iup-syntetisk-spiller-c";
+const testGruppe = "iup-syntetisk-wang-gruppe";
 
 function kommando() {
   return {
@@ -37,12 +41,15 @@ test.before(async () => {
   const identitet = await db.query("SELECT current_database() AS db, name FROM public._iup_test_identity");
   assert.deepEqual(identitet.rows, [{ db: "ak_hq_iup_test_20261002", name: "ak-hq-iup-test-20261002" }]);
   ({ lagreEgenIup, hentEgenIup } = await import("../../src/lib/iup/lagring"));
+  ({ hentEgenIupOversikt, finnEgenIup } = await import("../../src/lib/iup/oversikt"));
   ({ prisma } = await import("../../src/lib/prisma"));
-  await db.query('INSERT INTO public.users (id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [eier, annen]);
+  await db.query('INSERT INTO public.users (id) VALUES ($1), ($2), ($3) ON CONFLICT DO NOTHING', [eier, annen, tredje]);
 });
 test.beforeEach(async () => {
-  await prisma.iupBesvarelse.deleteMany({ where: { userId: { in: [eier, annen] } } });
-  await db.query('UPDATE public.users SET "deletedAt" = NULL, "anonymisertAt" = NULL WHERE id = ANY($1)', [[eier, annen]]);
+  await prisma.iupBesvarelse.deleteMany({ where: { userId: { in: [eier, annen, tredje] } } });
+  await db.query('UPDATE public.users SET "deletedAt" = NULL, "anonymisertAt" = NULL WHERE id = ANY($1)', [[eier, annen, tredje]]);
+  await db.query('INSERT INTO public.groups (id,name,slug,program,"arkivertAt") VALUES ($1,$2,$3,$4,NULL) ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name,slug=EXCLUDED.slug,program=EXCLUDED.program,"arkivertAt"=NULL', [testGruppe,"Syntetisk WANG-skole","iup-syntetisk-wang","WANG_UNG"]);
+  for (const id of [eier, annen, tredje]) await db.query('INSERT INTO public.group_members (id,"groupId","userId",role,"endedAt") VALUES ($1,$2,$3,$4,NULL) ON CONFLICT (id) DO UPDATE SET role=EXCLUDED.role,"endedAt"=NULL', [`${id}-medlem`,testGruppe,id,"PLAYER"]);
   bruker = { id: eier, role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null };
 });
 test.after(async () => { await prisma?.$disconnect(); await db.end(); });
@@ -195,4 +202,89 @@ test("faktisk kaskadesletting fjerner både besvarelse og revisjon ved kontoslet
     assert.equal((await db.query("SELECT count(*)::int AS n FROM public.iup_besvarelser")).rows[0].n, 0);
     assert.equal((await db.query("SELECT count(*)::int AS n FROM public.iup_revisjoner")).rows[0].n, 0);
   } finally { await db.query("ROLLBACK"); }
+});
+
+test("utmelding stopper nye svar, men spilleren beholder sin egen historikk", async () => {
+  const a = await lagreEgenIup(kommando()); assert.ok(a.ok);
+  await db.query('UPDATE public.group_members SET "endedAt"=NOW() WHERE "userId"=$1', [eier]);
+  const r = await lagreEgenIup({ ...kommando(), forventetRevisjon: 1 });
+  assert.ok(!r.ok); assert.equal(r.kode,"IKKE_IUP_DELTAKER"); assert.equal(await antall(),1);
+  assert.ok(await hentEgenIup({id:a.id}));
+  const oversikt = await hentEgenIupOversikt(); assert.ok(oversikt);
+  assert.equal(oversikt.kanSvare,false); assert.equal(oversikt.besvarelser[0].id,a.id);
+});
+
+test("arkivert gruppe og trenerrolle gir ikke rett til spillerens spørsmålssjekker", async () => {
+  await db.query('UPDATE public.groups SET "arkivertAt"=NOW() WHERE id=$1', [testGruppe]);
+  const arkivert = await lagreEgenIup(kommando()); assert.ok(!arkivert.ok); assert.equal(arkivert.kode,"IKKE_IUP_DELTAKER");
+  await db.query('UPDATE public.groups SET "arkivertAt"=NULL WHERE id=$1', [testGruppe]);
+  await db.query('UPDATE public.group_members SET role=$1 WHERE "userId"=$2', ["COACH",eier]);
+  const trener = await lagreEgenIup(kommando()); assert.ok(!trener.ok); assert.equal(trener.kode,"IKKE_IUP_DELTAKER");
+  assert.equal(await antall(),0);
+});
+
+test("navnet Team Norway gir ingen rett; den kanoniske gruppen virker også etter navnebytte", async () => {
+  await db.query('UPDATE public.groups SET program=NULL,name=$1 WHERE id=$2', ["Team Norway",testGruppe]);
+  const navn = await lagreEgenIup(kommando()); assert.ok(!navn.ok); assert.equal(navn.kode,"IKKE_IUP_DELTAKER");
+  await db.query('UPDATE public.groups SET slug=$1,name=$2 WHERE id=$3', ["team-norway","Syntetisk landslagsgruppe",testGruppe]);
+  assert.ok((await lagreEgenIup(kommando())).ok);
+});
+
+test("WANG Toppidrett-programmet virker uavhengig av skolens visningsnavn", async () => {
+  await db.query('UPDATE public.groups SET program=$1,name=$2 WHERE id=$3', ["WANG_TOPPIDRETT","Syntetisk skole nummer to",testGruppe]);
+  assert.ok((await lagreEgenIup(kommando())).ok);
+  const oversikt = await hentEgenIupOversikt(); assert.ok(oversikt); assert.equal(oversikt.kanSvare,true);
+});
+
+test("oversikten viser bare egne metadata og avviser ekstra eier eller ufullstendig sidepeker", async () => {
+  const a = await lagreEgenIup(levert()); assert.ok(a.ok);
+  bruker!.id = annen;
+  const tom = await hentEgenIupOversikt(); assert.ok(tom); assert.equal(tom.besvarelser.length,0);
+  assert.equal(await hentEgenIupOversikt({userId:eier}),null);
+  assert.equal(await hentEgenIupOversikt({forId:a.id}),null);
+  bruker!.id=eier;
+  const egen = await hentEgenIupOversikt(); assert.ok(egen);
+  assert.equal(egen.besvarelser[0].status,"LEVERT"); assert.equal(egen.besvarelser[0].levertRevisjon,1);
+  assert.equal(Object.hasOwn(egen.besvarelser[0],"payload"),false);
+  assert.equal(Object.hasOwn(egen.besvarelser[0],"revisjoner"),false);
+  await db.query('UPDATE public.users SET "deletedAt"=NOW() WHERE id=$1',[eier]);
+  const slettet=await hentEgenIupOversikt(); assert.ok(slettet); assert.equal(slettet.besvarelser.length,0); assert.equal(slettet.kanSvare,false);
+});
+
+test("oversikten deler 21 besvarelser med likt tidspunkt i to sider uten hull", async () => {
+  bruker!.id=tredje;
+  const ider:string[]=[];
+  for(let dag=1;dag<=21;dag++) {
+    const dato=`2026-11-${String(dag).padStart(2,"0")}`;
+    const r=await lagreEgenIup({...kommando(),periodeStart:dato,periodeSlutt:dato}); assert.ok(r.ok); ider.push(r.id);
+  }
+  await db.query('UPDATE public.iup_besvarelser SET "updatedAt"=$1 WHERE "userId"=$2',["2026-10-02T00:00:00.000Z",tredje]);
+  const a=await hentEgenIupOversikt(); assert.ok(a?.nesteSide); assert.equal(a.besvarelser.length,20);
+  const b=await hentEgenIupOversikt(a.nesteSide); assert.ok(b); assert.equal(b.besvarelser.length,1); assert.equal(b.nesteSide,null);
+  assert.deepEqual([...a.besvarelser,...b.besvarelser].map(r=>r.id).sort(),ider.sort());
+});
+
+test("gjenopptak finner samme kilde, nivå og periode, aldri en annen spiller", async () => {
+  const p=kommando();const a=await lagreEgenIup(p);assert.ok(a.ok);
+  const valg={type:p.type,versjon:p.besvarelse.versjon,niva:p.besvarelse.niva,periodeStart:p.periodeStart,periodeSlutt:p.periodeSlutt};
+  assert.deepEqual(await finnEgenIup(valg),{ok:true,id:a.id});
+  assert.deepEqual(await finnEgenIup({...valg,niva:"JUNIOR"}),{ok:true,id:null});
+  assert.deepEqual(await finnEgenIup({...valg,versjon:"iup-2027"}),{ok:true,id:null});
+  assert.deepEqual(await finnEgenIup({...valg,periodeStart:"2026-11-01"}),{ok:false});
+  assert.deepEqual(await finnEgenIup({...valg,userId:annen}),{ok:false});
+  bruker!.id=annen;assert.deepEqual(await finnEgenIup(valg),{ok:true,id:null});
+});
+
+
+test("inngangen vises bare for aktive deltakere eller eier av egen historikk", async () => {
+  const { harEgenIupInngang } = await import("../../src/lib/iup/oversikt");
+  assert.equal(await harEgenIupInngang(), true);
+  await db.query('UPDATE public.group_members SET "endedAt"=now() WHERE "userId"=$1', [eier]);
+  assert.equal(await harEgenIupInngang(), false);
+  await db.query('UPDATE public.group_members SET "endedAt"=NULL WHERE "userId"=$1', [eier]);
+  assert.ok((await lagreEgenIup(kommando())).ok);
+  await db.query('UPDATE public.group_members SET "endedAt"=now() WHERE "userId"=$1', [eier]);
+  assert.equal(await harEgenIupInngang(), true);
+  await db.query('UPDATE public.users SET "deletedAt"=now() WHERE id=$1', [eier]);
+  assert.equal(await harEgenIupInngang(), false);
 });
