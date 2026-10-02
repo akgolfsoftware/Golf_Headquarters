@@ -121,6 +121,7 @@ export async function exportUserData(): Promise<{
       delingsSamtykker,
       iupBesvarelser,
       weekPlans,
+      trenerDelingsInvitasjoner,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({ where: { userId: user.id } }),
@@ -147,6 +148,12 @@ export async function exportUserData(): Promise<{
       prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
       // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
       prisma.weekPlan.findMany({ where: { playerId: user.id } }),
+      prisma.trenerDelingsInvitasjon.findMany({
+        where: { OR: [{ userId: user.id }, { gittAvUserId: user.id }, { acceptedByUserId: user.id }, { mottakerEpost: user.email.trim().toLowerCase() }] },
+        // Token-hash er en sikkerhetsmekanisme, aldri eksportinnhold.
+        select: { id: true, userId: true, mottakerGruppeId: true, mottakerEpost: true, tekstVersjon: true,
+          gittAvUserId: true, gittAvRolle: true, createdAt: true, expiresAt: true, acceptedAt: true, acceptedByUserId: true, revokedAt: true },
+      }),
     ]);
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
@@ -190,6 +197,7 @@ export async function exportUserData(): Promise<{
       delingsSamtykker,
       iupBesvarelser,
       weekPlans,
+      trenerDelingsInvitasjoner,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +
