@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-02 14:56 CEST på `main` `8d74ae1d`.
+Sist oppdatert: 2026-10-02 15:36 CEST på `main` `2df6e137b`.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
@@ -26,7 +26,7 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
 | C02 | P0 | FERDIG DEL | **Workbench:** PR #1099 er merget som `8d74ae1d` med kollisjonskart, samtidighetsvern, gruppeøkter og private samlingsinvitasjoner. Lokal fullkontroll, PR-CI, hoved-CI, Vercel-produksjon, helse og produksjonsrøyktest bestod. | Workbench-arbeidskopien er ryddet. Gjenstår som større leveranse: visuell appkontroll mot godkjent Precision-design, komplett Excel-paritet og de øvrige skjerm-/reiseoppgavene i D01–D04. |
 | C03 | P0 | PÅGÅR | **Testbatteri:** retry-sikker lagring er commitet; aktiv arbeidskopi inneholder videre scorekort-, foto-, personvern-, offline- og WANG-resultattilgang. Full verify på oppdatert base bestod med 4 359 kildetester og 101 komponenttester; lokal database 37/37 og foto/GDPR 54/54 er også dokumentert. | Testbatteri-økten. Gjenstår: trenerens konkrete skolehistorikk/resultatvisning, ekte lokal Storage-prøve, felles flerskoletestdag, livescoring, app-/designkontroll, commit, PR og merge. |
 | C04 | P0 | FERDIG DEL | **Portering av alle skjermer:** fersk gjennomføringsplan er laget for 520 sidefiler/rutemønstre, 74 Precision-skjermtyper, 59 WANG-skjermer og TN-00–TN-27/34 dyp-lenker. Ingen appkode ble endret. | [Porteringsplanen](portering-alle-skjermer-2026-10-02.md). Første kodeoppgave er skjermregisteret, deretter rutevis portering. |
-| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1098, #1100, #1101 og #1102 er merget; #1102 har også grønn hoved-CI og produksjonsrøyk. Ny IUP-profilgren viser kildekontrollerte svar i trenerprofilene og har 4 330 + 101 grønne tester og et bestått separat bygg; én samlet sluttkjøring pågår. 175 lagrede spørsmål er kildekontrollert, men hele Excel-erstatningen er ikke ferdig. | WANG/TN-økten. Gjenstår: sluttgate/PR for IUP-delen, komplett IUP-lagring og profiler, testdeling, samlinger, rolle-/tilbaketrekkingsreiser og DataGolf-avgrensning. |
+| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1098, #1100, #1101, #1102 og #1104 er merget. #1104 viser kildekontrollerte, leverte IUP-svar i WANG- og Team Norway-trenerprofilene bak eksisterende navngitt tilgang; lokal fullkontroll bestod med 4 330 kildetester, 101 komponenttester og produksjonsbygg, og PR-CI/Vercel var grønne. 175 lagrede spørsmål er kildekontrollert, men hele Excel-erstatningen er ikke ferdig. | WANG/TN-økten. Gjenstår: komplett feltdekning for alle 18 Excel-ark, skolebasert testdeling, felles testdag, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
 
 ## Ferdig og allerede på `main`
 
@@ -39,6 +39,10 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
 - PR #1101: stopp automatisk spillerkobling basert bare på navn.
 - PR #1102: WANG-turneringshistorikk innenfor delingskontrollert transaksjon
   (`1e4c2f919`).
+- PR #1104: leverte IUP-svar i WANG- og Team Norway-trenerprofilene
+  (`63242f9e3`).
+- PR #1105: verifisert leveransestatus og gjennomføringsjournal for WANG/Team Norway
+  (`2df6e137b`).
 
 Disse skal ikke åpnes som restoppgaver igjen. Nytt arbeid skal bygge på dagens `main` og
 beholde begrensningene som er dokumentert i de respektive PR-ene.
@@ -79,7 +83,6 @@ beholde begrensningene som er dokumentert i de respektive PR-ene.
 | Arbeidskopi | Hvorfor den ikke kan slettes nå |
 |---|---|
 | hovedkopien `codex/arbeidsliste-restoppgaver-2026-10-02` | Inneholder denne arbeidslisten, porteringsplanen og separate lokale `.claude`-endringer som skal bevares. |
-| `wang-tn-iup-profile` | Aktiv IUP-/spillerprofiløkt på fersk `main`. |
 | `codex-testbatteri-scorekort` | Aktivt, ucommittet testbatteri-, foto-, offline- og tilgangsarbeid. |
 | `akgolf-hq-teknisk-fys-resultat` | Har umerget commit `010cc0053` for tekniske og fysiske resultater. |
 | `codex-ak-sg-runtime` | Har åpen utkast-PR #1083 og omfattende staged/unstaged arbeid; må først deles og samordnes. |
@@ -95,7 +98,9 @@ Ryddet 02.10.2026:
 - `wang-tn-profiltilgang` ble fjernet etter merge av PR #1102.
 - `wang-tn-samling-workbench` ble kontrollert ren og fjernet etter merge av PR #1100.
 - `workbench-restfullforing` ble fjernet etter merge og produksjonskontroll av PR #1099.
-- `git worktree prune` ble kjørt. De åtte arbeidskopiene i tabellen over er bevisst beholdt.
+- `wang-tn-iup-profile` ble fjernet etter merge og produksjonskontroll av PR #1104.
+- `wang-tn-merge-report` ble fjernet etter merge av journaloppfølgingen i PR #1105.
+- `git worktree prune` ble kjørt. De sju arbeidskopiene i tabellen over er bevisst beholdt.
 
 ## Rekkefølge
 
