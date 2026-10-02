@@ -169,9 +169,41 @@ test("kun kildevaliderte leveringer leses, og tilbaketrekking avviser også dire
   const args = { spillerId: spiller, gruppeId: skole, besvarelseId: hode.id };
   innlogget = wang;
   const lest = await lesing.hentTrenerIup(args); assert.equal(lest?.revisjoner.length, 1); assert.equal(lest?.revisjoner[0].innhold?.status, "LEVERT");
+  const oversikt = await lesing.hentTrenerIupOversikt({ spillerId: spiller, gruppeId: skole });
+  assert.equal(oversikt?.besvarelser.length, 1); assert.equal(oversikt?.besvarelser[0].levertRevisjon, 1);
+  assert.ok(!JSON.stringify(oversikt).includes('"revisjon":2')); assert.ok(!JSON.stringify(oversikt).includes("UTKAST"));
   innlogget = annen; assert.equal(await lesing.hentTrenerIup(args), null);
+  assert.equal(await lesing.hentTrenerIupOversikt({ spillerId: spiller, gruppeId: skole }), null);
   innlogget = spiller; await api.trekkTrenerDeling({ invitasjonId: d.id, spillerId: spiller });
   innlogget = wang; assert.equal(await lesing.hentTrenerIup(args), null);
+  assert.equal(await lesing.hentTrenerIupOversikt({ spillerId: spiller, gruppeId: skole }), null);
+});
+
+test("delingsoversikten viser eierens statuser og TN-valg, aldri token eller fremmede delinger", async () => {
+  const a = await opprett(); assert.ok(a.ok && a.token);
+  let oversikt = await api.hentEgenTrenerdeling(); assert.ok(oversikt);
+  assert.equal(oversikt.invitasjoner[0].status, "VENTER"); assert.equal(oversikt.kanGi, true);
+  assert.deepEqual(new Set(oversikt.grupper.map((g) => g.id)), new Set([skole, tnGruppe]));
+  assert.ok(!JSON.stringify(oversikt).includes(a.token)); assert.ok(!JSON.stringify(oversikt).includes("tokenHash"));
+  innlogget = wang; await api.aksepterTrenerInvitasjon({ token: a.token });
+  assert.equal(await api.hentEgenTrenerdeling({ spillerId: spiller }), null);
+  innlogget = spiller; oversikt = await api.hentEgenTrenerdeling();
+  assert.equal(oversikt?.invitasjoner[0].status, "AKTIV");
+  await db.groupMember.updateMany({ where: { userId: spiller }, data: { endedAt: new Date() } });
+  oversikt = await api.hentEgenTrenerdeling(); assert.equal(oversikt?.kanGi, false);
+  assert.equal(oversikt?.invitasjoner[0].status, "STENGT"); assert.equal(oversikt?.grupper.length, 0);
+  await api.trekkTrenerDeling({ invitasjonId: a.id, spillerId: spiller });
+  assert.equal((await api.hentEgenTrenerdeling())?.invitasjoner[0].status, "TRUKKET");
+});
+
+test("foreldreoversikt krever godkjent relasjon, mens barnet kan se uten å gi", async () => {
+  await db.user.update({ where: { id: spiller }, data: { dateOfBirth: new Date("2014-01-01"), requiresGuardianConsent: true, guardianConsentGivenAt: new Date() } });
+  innlogget = spiller; assert.equal((await api.hentEgenTrenerdeling())?.kanGi, false);
+  innlogget = forelder; assert.equal(await api.hentEgenTrenerdeling({ spillerId: spiller }), null);
+  await db.parentRelation.create({ data: { parentId: forelder, childId: spiller, approved: true } });
+  const o = await api.hentEgenTrenerdeling({ spillerId: spiller }); assert.equal(o?.kanGi, true); assert.equal(o?.foresattVisning, true);
+  await db.parentRelation.updateMany({ where: { childId: spiller }, data: { approved: false } });
+  assert.equal(await api.hentEgenTrenerdeling({ spillerId: spiller }), null);
 });
 test("tilbaketrukket foreldrerelasjon stopper også tidligere akseptert deling", async () => {
   await db.user.update({ where: { id: spiller }, data: { dateOfBirth: new Date("2014-01-01"), requiresGuardianConsent: true, guardianConsentGivenAt: new Date() } });

@@ -119,15 +119,33 @@ Sikkerhetskontroll for spillerreisen:
 3. Foreldresamtykke håndheves av eksisterende vakt også ved direkte POST. Eksport/anonymisering fra PR1080 beholdes. WANG/TN får ingen ekstra lesegrunnlag fra medlemskapskontrollen for egen utfylling.
 
 
-## Femte leveranse under arbeid: navngitt trenerdeling
+## Femte leveranse: navngitt trenerdeling
 
 Utvider eksisterende `DelingsSamtykke` med navngitt mottaker og eget fullprofil-omfang; gamle gruppesamtykker endres ikke. Sjudagers invitasjon lagrer bare token-hash. Eier eller godkjent foresatt gir uttrykkelig nytt samtykke. Aksept krever samme bekreftede Auth-e-post og aktiv WANG/TN-trenertilknytning. WANG-elever kan dele med TN uten TN-medlemskap. Tilbaketrekking er også tilgjengelig for mindreårig eier og etter utmelding. Aksept/tilbaketrekking og autoriserte IUP-oppslag serialiseres per spiller. Den nye leseren viser bare kildevaliderte leveringer.
 
 15 prøver mot den separate lokale databasen og 41 målrettede prøver for regler/logging/eksport/anonymisering har bestått. Prøvene omfatter feil trener/domene/skole, foreldregodkjenning og bortfalt relasjon, utløpt lenke, gjenforsøk, samtidighet, RLS, egen skole, WANG→TN og direkte oppslag etter tilbaketrekking. Ny kode er samordnet med Workbench-leveransen #1082; begge datakilder beholdes i eksport og anonymisering.
 
-Dette er servergrunnlag. Nytt delingsskjema, invitasjonslevering, trenernes samlevisninger og samordning av eksisterende leseveier gjenstår. Ingen ekte invitasjon er sendt. Full `npm run verify` bestod med 4 048 kodeprøver, 48 komponentprøver og komplett Next-/Serwist-bygg. Den additive SQL-en er brukt i HQ-produksjon med migrasjonen `navngitt_trenerdeling_20261002`. Etterkontroll bekreftet RLS, ingen klientrettigheter/policyer, fire fremmednøkler, fire sjekkregler, ny mottakerkolonne og null invitasjoner. GitHub- og Vercel-kontroll av PR gjenstår.
+Dette er servergrunnlag. Nytt delingsskjema, invitasjonslevering, trenernes samlevisninger og samordning av eksisterende leseveier gjenstår. Ingen ekte invitasjon er sendt. Full `npm run verify` bestod med 4 048 kodeprøver, 48 komponentprøver og komplett Next-/Serwist-bygg. Den additive SQL-en er brukt i HQ-produksjon med migrasjonen `navngitt_trenerdeling_20261002`. Etterkontroll bekreftet RLS, ingen klientrettigheter/policyer, fire fremmednøkler, fire sjekkregler, ny mottakerkolonne og null invitasjoner. PR #1087 ble merget kl. 04:54:57 etter grønn GitHub CI (4 114 kodeprøver, 48 komponentprøver og bygg) og Vercel på head `5890a310f`. Main ble `3df5af7a6`; produksjonsdeploy `6800209192` ble bekreftet vellykket kl. 04:57:10.
 
 Sikkerhet og personvern:
 1. Identitet kommer fra innlogging; godkjent foreldrerelasjon og trenerens bekreftede Auth-e-post kontrolleres separat. Plattformadministrator får ikke en automatisk omvei til navngitt deling. Negative og samtidige tilfeller er prøvd mot lokal database.
 2. Råtoken finnes bare i første opprettingssvar og akseptkallet, aldri i databasen, dataeksporten eller nye logger. Prisma-feilhendelser er gjort generiske fordi automatiske databasefeil kan røpe argumenter. Ingen invitasjoner eller svar går til ekstern AI.
 3. Under 16 krever foresatt for å gi, men kan trekke selv. Eksport/sletting er utvidet sammen med ny lagring. Ingen gammel samtykketekst utvides, og ny tabell er lukket for Data API.
+
+## Sjette leveranse under kontroll: delingsreise og trenerens IUP-leser
+
+`/portal/meg/deling` gir eier og godkjent foresatt egen delingsoversikt, oppretting med uttrykkelig samtykke og tilbaketrekking. Innganger ligger på de eksisterende delingssidene for spiller og foresatt. WANG-eleven kan velge TN uten TN-medlemskap. Invitasjonslenken leveres til spilleren for egen videresending; ingen e-posttjeneste eller ekte utsending er aktivert. `/auth/trenerdeling` viser ingen spillerdata før riktig innlogget trener har godtatt. Token brukes som fragment, fjernes fra adressen etter innlasting og lagres bare i minnet. Nettverksgjenforsøk bruker samme opprettings-ID. Mistet førstegangskvittering krever tilbaketrekking og ny lenke, fordi råtoken ikke kan hentes fra databasen.
+
+`/portal/meg/deling/innsyn` viser navngitt trener kun kildevaliderte leveringer, perioder og revisjonshistorikk. Oversikten røper ikke et senere utkasts dato eller revisjonsnummer. Nytt oppslag krever fortsatt samtykke, bekreftet Auth-adresse, aktiv trener og riktig miljø. Uventet databasefeil behandles som feil, ikke som tomme svar. Manglende trenerbekreftelse gir stengt innsyn.
+
+Egen nettleserkontroll med faktisk lokal Auth/SQL viste oppretting, avvist feil trener, akseptert riktig trener, 34/34 skrivebeskyttede 2027/UNG-spørsmål, skjult nyere utkast, aktiv status, tilbaketrekking og stengt direkte oppslag. Foresatt opprettet ny deling for syntetisk 14-åring; barnet fikk ikke nytt samtykkeskjema, men kunne trekke foresattes deling. 17 databaseprøver og fire nye komponentprøver bestod. 390/1440 px hadde ingen sidelengs rulling. Skjermbilder er private under Documents/Claude/akgolf-hq/trenerdeling-kode-2026-10-02.
+
+Designreferanse: Precision `7d7c2994`, `iup-komplett/deling-navngitt`, eksport81 SHA-256 `cd9d5b358bd588d3b1428cd49c6db47a4eed2a6469c0c8f7ff3764a0073b92f1`. Reell innlogging erstatter rollebytter; originalens kildevaliderte spørsmål erstatter eldre prototypetekst. Navn på trener hentes ikke før aksept; e-post identifiserer mottaker. Duplikate lenker kan forekomme ved nye opprettinger; tilbaketrekking stenger alle for samme trener/miljø. Ingen ny fagregel om foreldrerequest eller automatisk avvisning av duplikat er innført. Anders har ikke visuelt godkjent denne appvisningen; natt-tema og komplett sammenstilling med referansen gjenstår.
+
+Sikkerhet/personvern: Eier/foreldrerelasjon og bekreftet treneridentitet håndheves i serverlaget uavhengig av knappene. Lenke/hash inngår ikke i oversikten. Bare syntetiske kontoer brukes i prøver og private skjermbevis. Under16 kan ikke gi ny deling selv; eksport/sletting fra #1087 er beholdt. Offentlig akseptside har ingen spillerdata. Gamle gruppesamtykker utvides ikke.
+
+**Avgrensning:** Dette er ikke fullført fullprofilinnsyn. Helse, meldinger, Workbench og andre profildeler er ikke koblet til den nye leseren, og eksisterende WANG/TN-leseveier må fortsatt samordnes. Ingen påstand om at alle Excel-faner er ferdige. Full `npm run verify` bestod med 4 114 kodeprøver, 52 komponentprøver og komplett Next-/Serwist-bygg. Dokumentkontrollen og diffkontrollen bestod. Fersk CI og merge for denne sjette delen gjenstår.
+
+## DataGolf-design levert til videre kontroll
+
+Alle tre DG01–17-moduler er laget i Claude Design, Precision først. Egen feltkontroll finner135/135 i hver; konkrete TN-enhetsfeil er rettet og kontrollert. Egen390/1440-kontroll av feltutforskeren har ingen sidelengs rulling. Kilder, eksporter, kontroller og gjenstående avvik står i [designkontrollen](../design-audit/datagolf-precision-wang-team-norway-2026-10-02.md). Dette er design, ikke appintegrasjon eller lisensiert kundeaktivering. Full visuell godkjenning og alle interaksjoner gjenstår.

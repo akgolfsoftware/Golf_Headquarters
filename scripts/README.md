@@ -26,3 +26,9 @@
 ## Lokale driftsjobber
 
 `meg-index.sh`, `meg-index-vaults.ts`, tilhørende `.plist` og `meg-tilbakeskriving/` beholdes på sine stier. Loggfiler er lokale, ignorerte og kan være i bruk. Opprydding skal ikke stoppe jobbene eller flytte aktive loggfiler.
+
+### Lokal navngitt trenerdeling
+
+- `trenerdeling-app-local.mjs`: fire syntetiske Auth-kontoer og egen skole i IUP-testmiljøet; valgfritt `--mindrearig` for foresattreisen. Kontrollerer lokale URL-er, loopback-binding og databasemarkør. Ingen e-post.
+- `trenerdeling-iup-local.mjs`: kildevaliderte leveringer og nyere privat utkast for den syntetiske spilleren. Kjør Node 24 med `--import tsx --conditions=react-server`.
+- Se [IUP-testveiledningen](../tests/iup-local/README.md). Skriptene inngår ikke i dokumentkontrollen og må aldri få produksjonskonfigurasjon.
