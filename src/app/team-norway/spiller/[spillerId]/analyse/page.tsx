@@ -31,14 +31,15 @@ function trend(rad: { sisteScore: number | null; forrigeScore: number | null; lo
  * "totalscore" på tvers av protokoller. Kohort-/rangeringssammenligning
  * er et coach-verktøy (/team-norway/analyse), ikke vist her. SG/TrackMan-
  * sammendraget under gjenbruker eksisterende `hentAnalyseHub` — lovlig
- * innsyn er allerede bevist av tilgangssjekken over.
+ * innsyn kontrolleres på nytt gjennom hele oppslaget.
  */
 export default async function SpillerAnalysePage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
   const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
   const data = await hentTnSpillerTester(bruker, spillerId);
   if (!data) notFound();
-  const hub = await hentTnSpillerAnalyseHub(data.tilgang);
+  const hub = await hentTnSpillerAnalyseHub(bruker, spillerId);
+  if (!hub) notFound();
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>

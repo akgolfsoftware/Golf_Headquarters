@@ -5,6 +5,7 @@
  */
 
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
@@ -46,6 +47,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
     <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref="/forelder/samtykke" />
+        <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
         <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} />
       </div>
     </V2Shell>

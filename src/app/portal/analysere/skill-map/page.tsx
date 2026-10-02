@@ -5,6 +5,8 @@ import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { buildSkillMapData } from "@/lib/domain/skill-map";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Skill Map · PlayerHQ" };
@@ -17,11 +19,10 @@ export default async function SkillMapPage() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const [rounds, training] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: user.id,
-        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
-      },
+      where: { userId: user.id, ...synligSgWhere(activeModelVersionId) },
       orderBy: { playedAt: "desc" },
       take: 20,
       select: {

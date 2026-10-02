@@ -10,6 +10,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { DelRundeV2 } from "@/components/portal/v2/DelRundeV2";
 
@@ -45,7 +46,8 @@ export default async function DelRundePage({ params }: Props) {
 
   const par = runde.course.par ?? 72;
   const relativ = runde.score - par;
-  const visSg = harVisbarSg(runde);
+  const activeModelVersionId = await getActiveAkSgVersionId();
+  const visSg = harVisbarSg(runde, activeModelVersionId);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>

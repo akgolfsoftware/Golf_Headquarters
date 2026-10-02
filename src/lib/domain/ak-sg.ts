@@ -22,9 +22,11 @@ function validDistance(distanceM: number): boolean {
 
 export class AkSgCalculator {
   private readonly byLie = new Map<AkSgLie, ReadonlyArray<AkSgBaselinePoint>>();
+  readonly points: ReadonlyArray<AkSgBaselinePoint>;
 
   constructor(readonly versionId: string, points: ReadonlyArray<AkSgBaselinePoint>) {
     if (!versionId || points.length === 0) throw new Error("SG-modell mangler");
+    const normalized: AkSgBaselinePoint[] = [];
     for (const lie of AK_SG_LIES) {
       const rows = points.filter((point) => point.lie === lie)
         .sort((left, right) => left.distanceM - right.distanceM);
@@ -41,10 +43,12 @@ export class AkSgCalculator {
         }
       }
       this.byLie.set(lie, rows);
+      normalized.push(...rows);
     }
     if (points.length !== [...this.byLie.values()].reduce((sum, rows) => sum + rows.length, 0)) {
       throw new Error("Ukjent SG-underlag");
     }
+    this.points = normalized;
   }
 
   /** Returns null outside observed model coverage; zero is only for a holed end. */

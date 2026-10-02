@@ -1,6 +1,8 @@
 // SG-analyse-ekspert — dypere SG-tolkning etter round-agent.
 
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { aggregateSg } from "@/lib/sg";
 import { SG_TO_PYRAMID, SG_TO_SKILL } from "@/lib/training/skills";
 import { sgBandFaultKandidater } from "@/lib/training/skills/morad-fault";
@@ -17,11 +19,12 @@ export async function runSgAnalyseEkspert(
   userId: string,
 ): Promise<AgentResult> {
   return runAgent(AGENT_NAME, userId, async () => {
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const tretti = new Date();
     tretti.setDate(tretti.getDate() - 30);
 
     const runder = await prisma.round.findMany({
-      where: { userId, playedAt: { gte: tretti } },
+      where: { userId, playedAt: { gte: tretti }, ...synligSgWhere(activeModelVersionId) },
       orderBy: { playedAt: "desc" },
       take: 5,
     });

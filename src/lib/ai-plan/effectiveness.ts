@@ -10,6 +10,8 @@
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 
 const SG_VINDU_RUNDER = 5;
 
@@ -89,6 +91,7 @@ export async function computeEffectiveness(
     },
   });
   if (!plan) return null;
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // 1) Total antall økter + antall fullførte
   const sessions = await prisma.trainingPlanSession.findMany({
@@ -112,7 +115,7 @@ export async function computeEffectiveness(
     prisma.round.findMany({
       where: {
         userId: plan.userId, playedAt: { lt: preCutoff },
-        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+        ...synligSgWhere(activeModelVersionId),
       },
       orderBy: { playedAt: "desc" },
       take: SG_VINDU_RUNDER,
@@ -127,7 +130,7 @@ export async function computeEffectiveness(
     prisma.round.findMany({
       where: {
         userId: plan.userId, playedAt: { gte: postFra },
-        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+        ...synligSgWhere(activeModelVersionId),
       },
       orderBy: { playedAt: "asc" },
       take: SG_VINDU_RUNDER,

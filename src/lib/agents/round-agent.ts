@@ -2,6 +2,8 @@
 // skriver Signal og evt. PlanAction ved tydelig svakhet.
 
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { resolveDrillPakke } from "./plan-action-executor";
 import { aggregateSg } from "@/lib/sg";
 import {
@@ -20,11 +22,12 @@ const SG_TERSKEL = -0.5;
 
 export async function runRoundAgent(userId: string): Promise<AgentResult> {
   return runAgent(AGENT_NAME, userId, async () => {
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const tretti = new Date();
     tretti.setDate(tretti.getDate() - 30);
 
     const runder = await prisma.round.findMany({
-      where: { userId, playedAt: { gte: tretti } },
+      where: { userId, playedAt: { gte: tretti }, ...synligSgWhere(activeModelVersionId) },
     });
 
     const sg = aggregateSg(runder);

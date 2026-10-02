@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 
 export const runtime = "nodejs";
 
@@ -42,7 +44,8 @@ function brukerProfil(u: {
 
 /** Samler ett barns reelle data (alt avledet fra DB). */
 async function samleBarnData(childId: string) {
-  const [child, bookinger, betalinger, runder, oktLogger, varsler] =
+  const activeModelVersionId = await getActiveAkSgVersionId();
+  const [child, bookinger, betalinger, runder, rundeUtkast, oktLogger, varsler] =
     await Promise.all([
       prisma.user.findUnique({
         where: { id: childId },
@@ -75,7 +78,9 @@ async function samleBarnData(childId: string) {
       prisma.round.findMany({
         where: { userId: childId },
         orderBy: { playedAt: "desc" },
+        include: { holeScores: true, shots: { include: { puttDetail: true } } },
       }),
+      prisma.roundDraft.findMany({ where: { userId: childId } }),
       prisma.trainingPlanSessionLog.findMany({
         where: { session: { plan: { userId: childId } } },
         orderBy: { startedAt: "desc" },
@@ -109,8 +114,11 @@ async function samleBarnData(childId: string) {
       id: r.id,
       spilt: r.playedAt.toISOString(),
       score: r.score,
-      sgTotal: r.sgTotal,
+      sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
+      hull: r.holeScores,
+      slag: r.shots,
     })),
+    rundeUtkast,
     treningsokter: oktLogger.map((l) => ({
       id: l.id,
       tittel: l.session.title,

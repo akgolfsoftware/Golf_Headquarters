@@ -95,6 +95,9 @@ export async function beregnKorrelasjon(
 ): Promise<KorrelasjonsResultat[]> {
   const { prisma } = await import("../prisma");
   const { aggregerVolumPerUke } = await import("./volum");
+  const { getActiveAkSgVersionId } = await import("../ak-sg/active-model");
+  const { synligSgWhere } = await import("../ak-sg/visibility");
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   const now = new Date();
   const grense = new Date(now);
@@ -111,6 +114,7 @@ export async function beregnKorrelasjon(
       userId,
       playedAt: { gte: grense },
       sgTotal: { not: null },
+      ...synligSgWhere(activeModelVersionId),
     },
     select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     orderBy: { playedAt: "asc" },

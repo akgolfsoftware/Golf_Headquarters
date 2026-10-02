@@ -5,8 +5,8 @@ import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
-import { loadActiveAkSgModel } from "@/lib/ak-sg/active-model";
-import { beregnAkSgFraShots } from "@/lib/runde-logg/ak-sg-fra-shots";
+import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
+import { hentSgReferanseForRunde, SG_ENGINE_VERSION } from "@/lib/domain/sg-reference";
 import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
@@ -123,7 +123,10 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true, source: true, userId: true },
+      select: {
+        sgSource: true, source: true, userId: true,
+        sgReferenceSetId: true, sgModelVersionId: true,
+      },
     });
     if (!round) return;
     // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
@@ -134,10 +137,15 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
         where: { roundId },
         select: {
           holeNumber: true,
+          id: true,
           holePar: true,
           shotNumber: true,
           lie: true,
           distanceToPin: true,
+          endLie: true,
+          endDistanceToPinM: true,
+          holed: true,
+          penaltyStrokes: true,
           isPenalty: true,
         },
       }),
@@ -147,10 +155,10 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
       }),
     ]);
 
-    const model = await loadActiveAkSgModel();
-    const result = model ? beregnAkSgFraShots(shots, holeScores, model) : null;
-    const sg = result?.sg ?? null;
-    const beslutning = avgjorSgSkriving(round.sgSource, sg, result?.gran ?? null);
+    const reference = await hentSgReferanseForRunde(round.sgReferenceSetId, round.sgModelVersionId);
+    const sg = reference ? beregnSgFraShots(shots, holeScores, reference.points) : null;
+    const gran = sg && reference ? beregnGranulaerSgFraShots(shots, holeScores, reference.points) : null;
+    const beslutning = avgjorSgSkriving(round.sgSource, sg, gran);
     const nesteSgSource = beslutning.handling === "skriv" ? beslutning.felter.sgSource : round.sgSource;
     const registrering = avledRundeRegistrering({
       sgSource: nesteSgSource,
@@ -160,17 +168,18 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
     });
     const metadata = rundeRegistreringFelter(registrering);
 
-    if (beslutning.handling === "skriv") {
-      await prisma.round.update({
+    await prisma.$transaction(async (tx) => {
+      await tx.round.update({
         where: { id: roundId },
-        data: { ...beslutning.felter, sgModelVersionId: result?.versionId ?? null, ...metadata },
+        data: beslutning.handling === "skriv"
+          ? { ...beslutning.felter, ...metadata,
+              sgReferenceSetId: null,
+              sgModelVersionId: sg ? reference?.id : null,
+              benchmarkLevelSnapshot: sg ? reference?.levelCode : null,
+              sgEngineVersion: sg ? SG_ENGINE_VERSION : null }
+          : metadata,
       });
-    } else {
-      await prisma.round.update({
-        where: { id: roundId },
-        data: metadata,
-      });
-    }
+    });
 
     // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —
     // synk DataGolf-grunnlaget (BrukerSgInput, kilde PLAYERHQ). Best-effort,
@@ -344,15 +353,15 @@ export async function importUpGameHoleScores(
   // UpGame = hull-score, ikke slag-kjede → SG er typisk mangler/delvis
   const runde = await prisma.round.findUnique({
     where: { id: roundId },
-    select: { sgTotal: true, sgSource: true, sgModelVersionId: true },
+    select: { sgTotal: true, sgSource: true },
   });
   let sgStatus: "full" | "delvis" | "mangler" = "mangler";
   let sgMelding =
     "Hull-score er lagret. Full Strokes Gained krever slag for slag — legg til detalj om du vil.";
-  if (runde?.sgSource === RUNDE_SG_KILDE.BEREGNET && runde.sgModelVersionId && runde.sgTotal != null) {
+  if (runde?.sgSource === RUNDE_SG_KILDE.BEREGNET && runde.sgTotal != null) {
     sgStatus = "full";
     sgMelding = "SG er beregnet fra komplett slag-kjede.";
-  } else if (runde?.sgSource === RUNDE_SG_KILDE.MANUAL) {
+  } else if (runde?.sgTotal != null || runde?.sgSource === RUNDE_SG_KILDE.MANUAL) {
     sgStatus = "delvis";
     sgMelding =
       "Score er oppdatert. SG er begrenset uten slag for slag (UpGame gir hull-tall).";
@@ -537,8 +546,7 @@ export async function lagreHullKjede(
 
   const round = await prisma.round.findUnique({
     where: { id: roundId },
-    select: { sgTotal: true, sgSource: true, sgModelVersionId: true },
+    select: { sgTotal: true },
   });
-  const approved = round?.sgSource === RUNDE_SG_KILDE.MANUAL || round?.sgModelVersionId != null;
-  return { ok: true, sgTotal: approved ? round?.sgTotal ?? null : null };
+  return { ok: true, sgTotal: round?.sgTotal ?? null };
 }

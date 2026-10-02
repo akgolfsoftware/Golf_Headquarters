@@ -21,6 +21,7 @@ import { parseForScoring } from "@/lib/portal-tester/test-scoring";
 import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { TL } from "@/lib/v2/train-lock";
 
 import Link from "next/link";
@@ -66,6 +67,7 @@ export default async function InnsynSpillerPage({
       : Promise.resolve(false),
   ]);
   if (!kanSeTester && !kanSeStats) notFound();
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   const spiller = await prisma.user.findUnique({
     where: { id: spillerId },
@@ -105,7 +107,7 @@ export default async function InnsynSpillerPage({
   ]);
 
   const snittScore = snitt(runder.map((r) => r.score));
-  const sgRunder = runder.filter(harVisbarSg);
+  const sgRunder = runder.filter((runde) => harVisbarSg(runde, activeModelVersionId));
   const sgRader: { label: string; verdi: number | null }[] = [
     { label: "SG totalt", verdi: snitt(sgRunder.map((r) => r.sgTotal)) },
     { label: "SG utslag", verdi: snitt(sgRunder.map((r) => r.sgOtt)) },

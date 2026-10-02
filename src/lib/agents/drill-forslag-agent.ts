@@ -12,6 +12,8 @@
 // og lagret dem som createDrillSuggestion. Det brøt never-invent-loven.
 
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { runAgent, type AgentResult } from "./agent-runner";
 import {
   DRILL_BANK_EMPTY_CODE,
@@ -96,12 +98,14 @@ async function kjørDrillForslag(userId: string | null): Promise<AgentResult> {
     // Alle forslag under er begrenset til FASIT-id-er.
     const grense = new Date();
     grense.setDate(grense.getDate() - DAGER);
+    const activeModelVersionId = await getActiveAkSgVersionId();
 
     const runder = await prisma.round.findMany({
       where: {
         playedAt: { gte: grense },
         sgTotal: { not: null },
         ...(userId ? { userId } : {}),
+        ...synligSgWhere(activeModelVersionId),
       },
       select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     });

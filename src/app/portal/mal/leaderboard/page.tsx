@@ -11,6 +11,8 @@ import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { FEATURES } from "@/lib/features";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -43,6 +45,7 @@ export default async function LeaderboardPage({
 
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // Velg riktig SG-felt basert på aktiv kategori-tab
   const sgField =
@@ -65,7 +68,7 @@ export default async function LeaderboardPage({
         where: {
           playedAt: { gte: tretti },
           [sgField]: { not: null },
-          OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+          ...synligSgWhere(activeModelVersionId),
         },
         select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
       },

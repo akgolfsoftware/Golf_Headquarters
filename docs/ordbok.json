@@ -552,6 +552,16 @@
       "MOTHER",
       "GUARDIAN"
     ],
+    "RoundPlayStatus": [
+      "IN_PROGRESS",
+      "COMPLETED",
+      "ABANDONED"
+    ],
+    "RoundDraftStatus": [
+      "ACTIVE",
+      "COMPLETED",
+      "ABANDONED"
+    ],
     "ShotLie": [
       "TEE",
       "FAIRWAY",

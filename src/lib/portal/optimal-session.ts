@@ -2,6 +2,8 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { aggregateSg } from "@/lib/sg";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { SG_TO_SKILL } from "@/lib/training/skills";
 import type { PyramidArea, SkillArea, SgCategory } from "@/generated/prisma/client";
 
@@ -36,9 +38,10 @@ export async function hentOptimalOktHint(
 ): Promise<OptimalSessionHint | null> {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   const runder = await prisma.round.findMany({
-    where: { userId, playedAt: { gte: tretti } },
+    where: { userId, playedAt: { gte: tretti }, ...synligSgWhere(activeModelVersionId) },
     orderBy: { playedAt: "desc" },
     take: 8,
   });

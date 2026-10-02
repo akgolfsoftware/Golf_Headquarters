@@ -7,6 +7,8 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import {
@@ -47,7 +49,8 @@ export default async function RundeDetaljPage({
     (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
-  const visGodkjentSg = runde.sgSource === RUNDE_SG_KILDE.MANUAL || runde.sgModelVersionId != null;
+  const activeModelVersionId = await getActiveAkSgVersionId();
+  const visGodkjentSg = harVisbarSg(runde, activeModelVersionId);
   const vistSgSource = visGodkjentSg ? runde.sgSource : null;
 
   // Hull-for-hull: HoleScore er sannheten (skrives av slag-føring OG import);

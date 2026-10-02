@@ -66,6 +66,9 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
       },
     },
   });
+  t.mock.module("@/lib/ak-sg/active-model", {
+    namedExports: { getActiveAkSgVersionId: async () => "00000000-0000-0000-0000-000000000001" },
+  });
 
   const { beregnGoalProgress } = await import("./progress");
 

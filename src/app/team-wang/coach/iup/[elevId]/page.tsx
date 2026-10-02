@@ -1,15 +1,14 @@
 import { notFound } from "next/navigation";
 
-import { prisma } from "@/lib/prisma";
-import { parseForScoring } from "@/lib/portal-tester/test-scoring";
-import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
+import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentWangElevGruppeId } from "@/app/team-wang/_data/wang-tilgang";
+import { medWangElevData } from "@/app/team-wang/_data/wang-tilgang";
 import {
   IupSamtale,
   type IupPeriode,
   type IupMaaling,
 } from "@/app/team-wang/coach/iup/[elevId]/iup-samtale";
+import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
@@ -59,135 +58,148 @@ export default async function IupPage({
     kreverTilgang: "INGEN",
   });
 
-  const gruppeId = await hentWangElevGruppeId(bruker, elevId);
-  if (!gruppeId) notFound();
+  const visning = await medWangElevData(bruker, elevId, async (tx, gruppeId) => {
 
-  const elev = await prisma.user.findUnique({
-    where: { id: elevId },
-    select: { id: true, name: true, email: true },
-  });
-  if (!elev) notFound();
+    const elev = await tx.user.findUnique({
+      where: { id: elevId },
+      select: { id: true, name: true, email: true },
+    });
+    if (!elev) return null;
 
-  const blokker = await prisma.groupPeriodBlock.findMany({
-    where: { groupId: gruppeId },
-    orderBy: { startDate: "asc" },
-    select: {
-      id: true,
-      lPhase: true,
-      startDate: true,
-      endDate: true,
-      focus: true,
-    },
-  });
+    const blokker = await tx.groupPeriodBlock.findMany({
+      where: { groupId: gruppeId },
+      orderBy: { startDate: "asc" },
+      select: {
+        id: true,
+        lPhase: true,
+        startDate: true,
+        endDate: true,
+        focus: true,
+      },
+    });
 
-  const idag = osloIdag();
-  const perioder: IupPeriode[] = blokker.map((b) => ({
-    id: b.id,
-    navn: FASE_NAVN[b.lPhase] ?? b.lPhase,
-    startIso: osloDato(b.startDate),
-    sluttIso: osloDato(b.endDate),
-    fokus: b.focus,
-  }));
+    const idag = osloIdag();
+    const perioder: IupPeriode[] = blokker.map((b) => ({
+      id: b.id,
+      navn: FASE_NAVN[b.lPhase] ?? b.lPhase,
+      startIso: osloDato(b.startDate),
+      sluttIso: osloDato(b.endDate),
+      fokus: b.focus,
+    }));
 
-  // Perioden som avsluttes = den vi står i nå (eller den siste som er passert).
-  const naaIdx = perioder.findIndex(
-    (p) => idag >= p.startIso && idag <= p.sluttIso,
-  );
-  const avsluttendeIdx =
-    naaIdx >= 0
-      ? naaIdx
-      : Math.max(0, perioder.filter((p) => p.sluttIso < idag).length - 1);
-  const avsluttende = perioder[avsluttendeIdx] ?? null;
-  const neste = perioder[avsluttendeIdx + 1] ?? null;
+    // Perioden som avsluttes = den vi står i nå (eller den siste som er passert).
+    const naaIdx = perioder.findIndex(
+      (p) => idag >= p.startIso && idag <= p.sluttIso,
+    );
+    const avsluttendeIdx =
+      naaIdx >= 0
+        ? naaIdx
+        : Math.max(0, perioder.filter((p) => p.sluttIso < idag).length - 1);
+    const avsluttende = perioder[avsluttendeIdx] ?? null;
+    const neste = perioder[avsluttendeIdx + 1] ?? null;
 
-  const maal = await prisma.groupPeriodGoal.findMany({
-    where: { userId: elevId, periodBlockId: { in: perioder.map((p) => p.id) } },
-    orderBy: { createdAt: "asc" },
-    select: {
-      id: true,
-      periodBlockId: true,
-      akse: true,
-      tittel: true,
-      egentidMinUke: true,
-      maalemetode: true,
-      status: true,
-      egenvurdering: true,
-      trenervurdering: true,
-      kommentar: true,
-    },
-  });
+    const maal = await tx.groupPeriodGoal.findMany({
+      where: { userId: elevId, periodBlockId: { in: perioder.map((p) => p.id) } },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        periodBlockId: true,
+        akse: true,
+        tittel: true,
+        egentidMinUke: true,
+        maalemetode: true,
+        status: true,
+        egenvurdering: true,
+        trenervurdering: true,
+        kommentar: true,
+      },
+    });
 
-  // Målinger siden forrige samtale — ekte testresultater i periodens vindu.
-  // Ingen resultater gir tom tilstand, aldri oppdiktede tall.
-  const maalinger: IupMaaling[] = avsluttende
-    ? (
-        await prisma.testResult.findMany({
-          where: {
-            userId: elevId,
-            takenAt: {
-              gte: new Date(`${avsluttende.startIso}T00:00:00Z`),
-              lte: new Date(`${avsluttende.sluttIso}T23:59:59Z`),
+    // Målinger siden forrige samtale — ekte testresultater i periodens vindu.
+    // Ingen resultater gir tom tilstand, aldri oppdiktede tall.
+    const maalinger: IupMaaling[] = avsluttende
+      ? (
+          await tx.testResult.findMany({
+            where: {
+              userId: elevId,
+              takenAt: {
+                gte: new Date(`${avsluttende.startIso}T00:00:00Z`),
+                lte: new Date(`${avsluttende.sluttIso}T23:59:59Z`),
+              },
             },
-          },
-          orderBy: { takenAt: "desc" },
-          take: 8,
-          select: {
-            id: true,
-            score: true,
-            takenAt: true,
-            test: { select: { name: true, pyramidArea: true, protocol: true } },
-          },
+            orderBy: { takenAt: "desc" },
+            take: 8,
+            select: {
+              id: true,
+              score: true,
+              testId: true,
+              details: true,
+              takenAt: true,
+              test: { select: { name: true, pyramidArea: true, protocol: true } },
+            },
+          })
+        ).map((r) => {
+          // Protokollen bærer enheten; uten den ble en PEI-brøk rendret som
+          // «0.038» i IUP-samtalen, med punktum og uten enhet.
+          return {
+            id: r.id,
+            navn: r.test.name,
+            akse: r.test.pyramidArea,
+            verdi: formaterLagretTestResultat({ ...r, protocol: r.test.protocol }),
+            datoIso: osloDato(r.takenAt),
+          };
         })
-      ).map((r) => {
-        // Protokollen bærer enheten; uten den ble en PEI-brøk rendret som
-        // «0.038» i IUP-samtalen, med punktum og uten enhet.
-        const { kind, shots } = parseForScoring(r.test.protocol);
-        return {
-          id: r.id,
-          navn: r.test.name,
-          akse: r.test.pyramidArea,
-          verdi: formaterTestVerdi({ kind, verdi: r.score, shotsCount: shots.length }),
-          datoIso: osloDato(r.takenAt),
-        };
-      })
-    : [];
+      : [];
 
-  return (
-    <IupSamtale
-      elevId={elev.id}
-      elevNavn={elev.name?.trim() || elev.email}
-      avsluttende={avsluttende}
-      neste={neste}
-      evalueringer={
-        avsluttende
-          ? maal
-              .filter((m) => m.periodBlockId === avsluttende.id)
-              .map((m) => ({
-                id: m.id,
-                akse: m.akse,
-                tittel: m.tittel,
-                egentidMinUke: m.egentidMinUke,
-                maalemetode: m.maalemetode,
-                status: m.status,
-                egenvurdering: m.egenvurdering,
-                trenervurdering: m.trenervurdering,
-                kommentar: m.kommentar,
-              }))
-          : []
-      }
-      nyeStart={
-        neste
-          ? maal
-              .filter((m) => m.periodBlockId === neste.id)
-              .map((m) => ({
-                akse: m.akse,
-                tittel: m.tittel,
-                egentidMinUke: m.egentidMinUke,
-                maalemetode: m.maalemetode,
-              }))
-          : []
-      }
-      maalinger={maalinger}
-    />
-  );
+    const trenerOkter = bruker.role === "COACH" ? await tx.workbenchSession.findMany({ where: {
+      playerId: elevId, status: { in: ["DRAFT", "SCHEDULED", "PUBLISHED"] }, sourceGroupSessionId: null,
+      date: { gte: new Date(`${osloIdag()}T00:00:00.000Z`) },
+    }, orderBy: [{ date: "asc" }, { startMinute: "asc" }], take: 40, select: { id: true, date: true, startMinute: true, title: true } }) : [];
+
+    return (
+      <>
+      <IupSamtale
+        elevId={elev.id}
+        elevNavn={elev.name?.trim() || elev.email}
+        avsluttende={avsluttende}
+        neste={neste}
+        evalueringer={
+          avsluttende
+            ? maal
+                .filter((m) => m.periodBlockId === avsluttende.id)
+                .map((m) => ({
+                  id: m.id,
+                  akse: m.akse,
+                  tittel: m.tittel,
+                  egentidMinUke: m.egentidMinUke,
+                  maalemetode: m.maalemetode,
+                  status: m.status,
+                  egenvurdering: m.egenvurdering,
+                  trenervurdering: m.trenervurdering,
+                  kommentar: m.kommentar,
+                }))
+            : []
+        }
+        nyeStart={
+          neste
+            ? maal
+                .filter((m) => m.periodBlockId === neste.id)
+                .map((m) => ({
+                  akse: m.akse,
+                  tittel: m.tittel,
+                  egentidMinUke: m.egentidMinUke,
+                  maalemetode: m.maalemetode,
+                }))
+            : []
+        }
+        maalinger={maalinger}
+      />
+      {bruker.role === "COACH" ? <TrenerforslagSkjema organisasjon="WANG" spillerId={elevId} sessions={trenerOkter.map(s => ({
+        id: s.id, label: `${s.date.toISOString().slice(0, 10)} ${String(Math.floor(s.startMinute / 60)).padStart(2, "0")}:${String(s.startMinute % 60).padStart(2, "0")} · ${s.title}`,
+      }))} /> : null}
+      </>
+    );
+  });
+  if (visning === null) notFound();
+  return visning;
 }

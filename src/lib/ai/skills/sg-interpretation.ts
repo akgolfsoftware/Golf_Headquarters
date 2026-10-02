@@ -1,24 +1,15 @@
-// Skill: Strokes Gained-tolkning mot PGA Tour-benchmarks.
+// Skill: Strokes Gained-tolkning mot AK Golf Baseline.
 //
-// Gir agenten et felles språk for å vurdere SG-tall. Brukes når
-// Caddie/coach-agenter skal forklare svakheter, anbefale fokus eller
-// rapportere progresjon.
+// Gir agenten et felles språk for spillerens egen versjonerte AK-baseline.
 
 export const sgInterpretationSkill = {
   name: "sg-interpretation",
-  description: "Strokes Gained-tolkning mot PGA Tour-benchmarks",
+  description: "Strokes Gained-tolkning mot AK Golf Baseline",
   knowledge: `
-Strokes Gained (SG) måles mot PGA Tour Top 40 (benchmark = 0.0).
-
-Hierarkiet:
-- PGA Top 40: 0.0
-- PGA Tour: ~-0.5
-- Korn Ferry: ~-1.5
-- European Tour: ~-1.0
-- A1 Amatør (PRO-nivå): ~-3.0
-- A2 Amatør: ~-5.0
-- B1 Amatør: ~-8.0
-- B2 Amatør: ~-12.0
+Strokes Gained (SG) beregnes utelukkende mot den aktive AK Golf Baseline-versjonen.
+Null betyr lik modellens forventning fra start- og sluttposisjon; positivt er
+bedre enn forventningen og negativt er svakere enn forventningen. Ikke utled
+eller oppgi tour-snitt, spiller-rangeringer eller sammenligninger mot tredjepart.
 
 4 kategorier av SG:
 - SG-OTT (Off The Tee): drive
@@ -27,15 +18,13 @@ Hierarkiet:
 - SG-PUTT (Putting): putt
 
 Tolkning:
-- SG > 0 mot benchmark = bedre enn benchmark
-- SG < 0 mot benchmark = under benchmark
-- SG totalt < -2.0 i én kategori over 5 runder = svakhet
-- SG-PUTT er mest "trainable" (35% av kompetent-amatørs SG-total)
-- SG-ARG er mest variabel (vær, lies, etc.)
+- SG > 0 mot aktiv AK-baseline = bedre enn modellens forventning
+- SG < 0 mot aktiv AK-baseline = svakere enn modellens forventning
+- vurder mønstre på tvers av flere runder; én runde er ikke nok til å fastslå en svakhet
+- skill mellom målt spillerresultat og modellens forventning
 
 Anbefal coach-intervensjon når:
-- Én SG-kategori er konsekvent under -1.0 i siste 5 runder
-- HCP øker samtidig som SG-OTT er positiv (problem ligger annet sted)
-- Plutselig fall > 1.0 i SG-OTT (mulig drive-problem eller skade)
+- samme SG-kategori viser et vedvarende negativt mønster i flere runder
+- skill mellom utslag, innspill, nærspill og putting før du foreslår treningsfokus
   `.trim(),
 } as const;

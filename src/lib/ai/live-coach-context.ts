@@ -8,6 +8,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import type { LiveCoachKontext, SystemPromptInput } from "@/lib/ai-plan/coach-prompt";
 import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
 
@@ -136,7 +137,7 @@ export async function hentLiveCoachKontext(opts: {
 }): Promise<(LiveCoachKontext & SystemPromptInput) | null> {
   const { userId, sessionId, kind, drillId } = opts;
 
-  const [okt, user, aktivePlaner, sisteRunder] = await Promise.all([
+  const [okt, user, aktivePlaner, sisteRunder, activeModelVersionId] = await Promise.all([
     kind === "plan-session"
       ? hentPlanSessionOkt(sessionId, drillId)
       : hentSessionV2Okt(sessionId, drillId),
@@ -161,6 +162,7 @@ export async function hentLiveCoachKontext(opts: {
       orderBy: { playedAt: "desc" },
       take: 5,
     }),
+    getActiveAkSgVersionId(),
   ]);
 
   if (!okt || !user) return null;
@@ -181,7 +183,7 @@ export async function hentLiveCoachKontext(opts: {
       dato: r.playedAt.toISOString().split("T")[0],
       bane: r.course.name,
       score: r.score,
-      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
+      sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
     })),
     sessionKind: kind,
     sessionId,

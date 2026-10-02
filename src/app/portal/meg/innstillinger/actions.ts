@@ -1,5 +1,7 @@
 "use server";
 
+import { eksporterWorkbenchData } from "@/lib/workbench/workbench-personvern";
+
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
@@ -17,6 +19,11 @@ const LagreFasilitetProfilSchema = z.object({
 const DeleteUserAccountSchema = z.object({
   confirmation: z.literal("SLETT", { error: 'Du må skrive "SLETT" for å bekrefte.' }),
 });
+const TrenerforfattetForslagSchema = z.object({
+  organisasjon: z.enum(["WANG", "TEAM_NORWAY"]),
+  handling: z.enum(["ADD", "UPDATE", "CANCEL"]),
+  begrunnelse: z.string().max(1000),
+}).passthrough();
 
 const GYLDIGE_FASILITETER: DrillFasilitet[] = [
   "RADAR",
@@ -98,6 +105,7 @@ export async function exportUserData(): Promise<{
     const [
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,
@@ -120,9 +128,18 @@ export async function exportUserData(): Promise<{
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
       iupBesvarelser,
+      weekPlans,
+      trenerDelingsInvitasjoner,
+      workbench,
+      trenerforslag,
+      trenerforslagSkrevet,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
-      prisma.round.findMany({ where: { userId: user.id } }),
+      prisma.round.findMany({
+        where: { userId: user.id },
+        include: { holeScores: true, shots: { include: { puttDetail: true, sgResults: true } } },
+      }),
+      prisma.roundDraft.findMany({ where: { userId: user.id } }),
       prisma.tournamentEntry.findMany({ where: { userId: user.id }, include: { tournament: true } }),
       prisma.seasonPlan.findMany({ where: { userId: user.id }, include: { periodBlocks: true } }),
       prisma.trainingSessionV2.findMany({ where: { studentId: user.id } }),
@@ -144,7 +161,39 @@ export async function exportUserData(): Promise<{
       prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
       prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
       prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
+      // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
+      prisma.weekPlan.findMany({ where: { playerId: user.id } }),
+      prisma.trenerDelingsInvitasjon.findMany({
+        where: { OR: [{ userId: user.id }, { gittAvUserId: user.id }, { acceptedByUserId: user.id }, { mottakerEpost: user.email.trim().toLowerCase() }] },
+        // Token-hash er en sikkerhetsmekanisme, aldri eksportinnhold.
+        select: { id: true, userId: true, mottakerGruppeId: true, mottakerEpost: true, tekstVersjon: true,
+          gittAvUserId: true, gittAvRolle: true, createdAt: true, expiresAt: true, acceptedAt: true, acceptedByUserId: true, revokedAt: true },
+      }),
+      eksporterWorkbenchData(user.id),
+      prisma.planAction.findMany({
+        where: { userId: user.id, actionType: "WORKBENCH_COACH_PROPOSAL" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, actionType: true, suggestion: true, status: true, agentName: true, createdAt: true, decidedAt: true, decidedById: true },
+      }),
+      prisma.planAction.findMany({
+        where: { coachId: user.id, actionType: "WORKBENCH_COACH_PROPOSAL" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true },
+      }),
     ]);
+
+    // En trener får sine egne begrunnelser, ikke øktdata fra andre spillerprofiler.
+    const trenerforslagSkrevetEksport = trenerforslagSkrevet.flatMap((rad) => {
+      const forslag = TrenerforfattetForslagSchema.safeParse(rad.suggestion);
+      return forslag.success ? [{
+        id: rad.id,
+        organisasjon: forslag.data.organisasjon,
+        handling: forslag.data.handling,
+        begrunnelse: forslag.data.begrunnelse,
+        status: rad.status,
+        opprettet: rad.createdAt.toISOString(),
+      }] : [];
+    });
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
     // ikke bakes inn i JSON-en. Vi lister referansene så bruker vet hva som
@@ -166,6 +215,7 @@ export async function exportUserData(): Promise<{
       user: fullUser,
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,
@@ -186,6 +236,11 @@ export async function exportUserData(): Promise<{
       swingVideos,
       delingsSamtykker,
       iupBesvarelser,
+      weekPlans,
+      trenerDelingsInvitasjoner,
+      workbench,
+      trenerforslag,
+      trenerforslagSkrevet: trenerforslagSkrevetEksport,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +
@@ -207,7 +262,7 @@ export async function exportUserData(): Promise<{
             heading: `Hei ${user.name ?? "der"},`,
             body: `
               <p style="margin:0 0 16px 0;">Du har bedt om en eksport av dine data fra AK Golf HQ.</p>
-              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, ukeplaner, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
               <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
               <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
             `,

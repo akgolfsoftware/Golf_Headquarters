@@ -147,8 +147,7 @@ export async function logRoundManual(input: LogRoundManualInput) {
       ? holeScores.reduce((sum, h) => sum + h.strokes, 0)
       : input.score;
 
-  // A total score cannot determine shot-level SG. Wait for complete shots and
-  // an approved AK Golf curve; do not synthesize a Broadie-based estimate.
+  // En totalscore uten målt slagkjede har ikke nok data til SG.
   const sgTotal = sg.harTall ? sg.verdier.sgTotal : null;
   const sgSource: RundeSgKilde | null =
     sg.harTall ? RUNDE_SG_KILDE.MANUAL : null;
@@ -158,7 +157,10 @@ export async function logRoundManual(input: LogRoundManualInput) {
     shots: [],
     kilde: sg.harTall ? "manuell" : "etterregistrering",
   });
-  const sgData = { ...sg.verdier, sgTotal };
+  const sgData = sg.harTall ? sg.verdier : {
+    ...sg.verdier,
+    sgTotal,
+  };
   const requestRoundId = base.data.requestId ? `manual-${user.id}-${base.data.requestId}` : undefined;
   const data = {
     userId: user.id, courseId: base.data.courseId,

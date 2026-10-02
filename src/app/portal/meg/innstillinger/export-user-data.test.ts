@@ -1,31 +1,41 @@
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
 
+import { tommeUkeplandetaljer } from "@/lib/workbench/ukeplan-schema";
+
 const bruker = { id: "syntetisk-spiller", name: "Testspiller", email: "spiller@example.invalid" };
 let innlogget = true;
 let venterPaSamtykke = false;
 let feilkilde: string | null = null;
 let epostFeiler = false;
 let profilMangler = false;
+let ukeplaner: { id: string; playerId: string; isoYear: number; weekNumber: number; planningDetails: unknown }[] = [];
 let lesinger: Array<{ kilde: string; where: unknown }> = [];
 let eposter: unknown[] = [];
 let revisjoner: Array<{ metadata?: unknown }> = [];
 let feil: Array<{ context: string }> = [];
 
 const kilder = [
-  "goal", "round", "tournamentEntry", "seasonPlan", "trainingSessionV2",
+  "goal", "round", "roundDraft", "tournamentEntry", "seasonPlan", "trainingSessionV2",
   "testResult", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
-  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse",
+  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
+  "workbenchSession", "workbenchPhysicalBlock", "workbenchPhysicalLog", "workbenchTournamentPlan", "workbenchPlanConflict", "planAction",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   findMany: async ({ where }: { where: unknown }) => {
     lesinger.push({ kilde, where });
     if (feilkilde === kilde) throw new Error("Syntetisk lesefeil");
+    if (kilde === "weekPlan") return ukeplaner.filter(p => p.playerId === (where as { playerId: string }).playerId);
     if (kilde === "document") return [{ url: "private/test-document", title: "Testdokument" }];
     if (kilde === "sessionRecording") return [{ id: "opptak-test", audioUrl: "private/test-audio" }];
     if (kilde === "playerSwingVideo") return [{ id: "video-test", storagePath: "private/test-video" }];
+    if (kilde === "planAction" && "coachId" in (where as object)) return [{
+      id: "skrevet-test", suggestion: { organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", etter: { title: "Spillerens private økt" } },
+      status: "PENDING", createdAt: new Date("2026-10-02T10:00:00.000Z"),
+    }];
+    if (kilde === "planAction") return [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }];
     return [];
   },
 }]));
@@ -69,6 +79,7 @@ test.beforeEach(() => {
   feilkilde = null;
   epostFeiler = false;
   profilMangler = false;
+  ukeplaner = [];
   lesinger = [];
   eposter = [];
   revisjoner = [];
@@ -115,18 +126,30 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   const { exportUserData } = await import("./actions");
   const resultat = await exportUserData();
   assert.equal(resultat.ok, true);
-  assert.equal(lesinger.length, kilder.length + 1);
+  assert.equal(lesinger.length, kilder.length + 2);
   for (const { kilde, where } of lesinger) {
+    if (kilde === "planAction") {
+      assert.deepEqual(where, "coachId" in (where as object)
+        ? { coachId: bruker.id, actionType: "WORKBENCH_COACH_PROPOSAL" }
+        : { userId: bruker.id, actionType: "WORKBENCH_COACH_PROPOSAL" });
+      continue;
+    }
     const felt = kilde === "user" ? "id" :
       kilde === "trainingSessionV2" ? "studentId" :
-      ["coachNote", "sessionRecording"].includes(kilde) ? "playerId" : "userId";
-    assert.deepEqual(where, { [felt]: bruker.id });
+      ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) || kilde.startsWith("workbench") ? "playerId" : "userId";
+    assert.deepEqual(where, kilde === "trenerDelingsInvitasjon" ? {
+      OR: [{ userId: bruker.id }, { gittAvUserId: bruker.id }, { acceptedByUserId: bruker.id }, { mottakerEpost: bruker.email }],
+    } : { [felt]: bruker.id });
   }
   assert.deepEqual(resultat.data?._storageFiler, [
     { type: "document", url: "private/test-document", title: "Testdokument" },
     { type: "opptak", url: "private/test-audio", id: "opptak-test" },
     { type: "swing-video", url: "private/test-video", id: "video-test" },
   ]);
+  assert.deepEqual(resultat.data?.workbench, { sessions: [], physicalBlocks: [], physicalLogs: [], tournamentPlans: [], conflicts: [] });
+  assert.deepEqual(resultat.data?.trenerforslag, [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }]);
+  assert.deepEqual(resultat.data?.trenerforslagSkrevet, [{ id: "skrevet-test", organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", status: "PENDING", opprettet: "2026-10-02T10:00:00.000Z" }]);
+  assert.doesNotMatch(JSON.stringify(resultat.data?.trenerforslagSkrevet), /Spillerens private økt/);
   assert.ok(!String(resultat.data?._note).includes("komplett"));
   assert.ok(!JSON.stringify(eposter).includes("komplett"));
   assert.ok(!JSON.stringify(revisjoner).includes(bruker.email));
@@ -141,4 +164,23 @@ test("e-postfeil ødelegger ikke en vellykket nedlastbar eksport", async () => {
   assert.ok(resultat.data);
   assert.equal(feil.at(-1)?.context, "gdpr.export.epost");
   assert.equal(revisjoner.length, 1);
+});
+
+
+test("eksport inkluderer alle eierens ukeplanår og ny JSON; annen eier utelates", async () => {
+  const details = tommeUkeplandetaljer();
+  details.location = "Syntetisk anlegg"; details.areas.TEK.focus = "Syntetisk fokus";
+  ukeplaner = [
+    { id: "egen-eldre", playerId: bruker.id, isoYear: 2021, weekNumber: 53, planningDetails: null },
+    { id: "egen-ny", playerId: bruker.id, isoYear: 2027, weekNumber: 1, planningDetails: details },
+    { id: "fremmed", playerId: "syntetisk-annen-eier", isoYear: 2027, weekNumber: 1, planningDetails: { private: "skal ikke eksporteres" } },
+  ];
+  const { exportUserData } = await import("./actions");
+  const result = await exportUserData(); assert.equal(result.ok, true);
+  assert.deepEqual(result.data?.weekPlans, ukeplaner.slice(0, 2));
+  assert.doesNotMatch(JSON.stringify(result.data), /fremmed|skal ikke eksporteres/);
+  assert.deepEqual(lesinger.find(l => l.kilde === "weekPlan")?.where, { playerId: bruker.id });
+  assert.equal(eposter.length, 1, "bare den eksisterende syntetiske e-postmocken brukes");
+  assert.doesNotMatch(JSON.stringify(eposter), /Syntetisk anlegg|Syntetisk fokus|skal ikke eksporteres/);
+  assert.doesNotMatch(JSON.stringify(revisjoner), /Syntetisk anlegg|Syntetisk fokus/);
 });

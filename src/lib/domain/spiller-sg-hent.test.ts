@@ -57,6 +57,9 @@ test("hentSpillerSg — bare versjonert eller manuelt SG vises", async (t) => {
       },
     },
   });
+  t.mock.module("@/lib/ak-sg/active-model", {
+    namedExports: { getActiveAkSgVersionId: async () => "own-v1" },
+  });
 
   const { hentSpillerSg, SPILLER_SG_RUNDER } = await import("./spiller-sg");
 

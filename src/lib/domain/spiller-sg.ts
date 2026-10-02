@@ -21,6 +21,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 
 /**
  * Vindu: de N nyeste rundene — UANSETT om de har SG-tall. Snittet regnes over
@@ -136,6 +137,7 @@ export function byggSpillerSgFraInput(registreringer: SgRad[]): SpillerSg | null
 
 /** Kanonisk oppslag — bruk denne, ikke egne prioriteringer per skjerm. */
 export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
+  const activeModelVersionId = await getActiveAkSgVersionId();
   // Ingen OR-filter på sg-feltene her — se SPILLER_SG_RUNDER: vinduet skal
   // være de N nyeste rundene, samme som Hjem/Analysere. byggSpillerSgFraRunder
   // filtrerer bort de uten tall når snittet regnes. Uversjonerte beregninger
@@ -148,7 +150,7 @@ export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
       sgSource: true, sgModelVersionId: true },
   });
 
-  const fraRunder = byggSpillerSgFraRunder(runder.filter(harVisbarSg));
+  const fraRunder = byggSpillerSgFraRunder(runder.filter((runde) => harVisbarSg(runde, activeModelVersionId)));
   if (fraRunder) return fraRunder;
 
   return null;

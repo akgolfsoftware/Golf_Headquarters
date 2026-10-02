@@ -1,5 +1,5 @@
 /**
- * PGA Tour stats-sync for /stats/pga (Fase 2 playground).
+ * Legacy PGA/DataGolf-statistikk. Visningsruter og alle kildeskrivere er stengt.
  *
  * Inneholder tre sync-funksjoner:
  *
@@ -13,12 +13,19 @@
  *  3. syncPgaApproach — aggregerer proximity per yardage-bøtte fra
  *     DataGolf /preds/approach-skill → PgaApproachDistance. Kjøres ukentlig.
  *
- * Alle funksjoner er idempotente (upsert).
+ * Lesefunksjonene beholdes kun for eldre interne kall; kildeskriving kaster før I/O.
  */
 
 import { prisma } from "@/lib/prisma";
 import { getSkillRatings, type DGTour } from "@/lib/datagolf/client";
 import { logError } from "@/lib/error-tracking";
+
+const WRITER_DISABLED =
+  "DataGolf/Broadie-baselineskriving er deaktivert i HQ. Bruk kun isolert pipeline etter dokumentert rettighetskontroll.";
+
+function stoppKildeskriving(): void {
+  throw new Error(WRITER_DISABLED);
+}
 
 // Ett globalt sett. PGA er en eldre lagringsnøkkel, ikke en påstand om tour-dekning.
 const STATS_TOURS: DGTour[] = ["pga"]; // Historisk lagringsnøkkel for ett globalt sett.
@@ -81,14 +88,14 @@ async function syncOneTour(tour: DGTour): Promise<{ players: number }> {
 }
 
 /**
- * Cron-agent: lagrer ett globalt ferdighetssett under den eldre PGA-nøkkelen.
- * Kjøres ukentlig.
+ * Legacy cron-navn beholdes for bakoverkompatibilitet og stopper før API/database.
  */
 export async function syncPgaSkillRatings(): Promise<{
   tours: number;
   totalPlayers: number;
   perTour: Record<string, number>;
 }> {
+  stoppKildeskriving();
   const perTour: Record<string, number> = {};
   let total = 0;
 
@@ -223,11 +230,10 @@ const BROADIE_PUTT_DATA: Array<{
 ];
 
 /**
- * Seed/sync putt-distance-data med Broadie-estimater.
- * Kjøres ukentlig, men data endres kun hvis vi bytter kilde.
- * Idempotent upsert på (year, distanceMeters).
+ * Legacy Broadie-writer beholdes kun for bakoverkompatibilitet og stopper før database.
  */
 export async function syncPgaPuttDistance(): Promise<{ updated: number }> {
+  stoppKildeskriving();
   const year = new Date().getUTCFullYear();
   let updated = 0;
 
@@ -255,11 +261,10 @@ export async function syncPgaPuttDistance(): Promise<{ updated: number }> {
 // ---------------------------------------------------------------------------
 
 /**
- * Detaljerte referanser bevares per spiller og faktisk kildeintervall.
- * Endpointet gir ikke en forventet-slag-tabell eller et PGA-toursnitt.
- * Eldre syntetiske PgaApproachDistance-rader brukes ikke av spillerverktøyet.
+ * Legacy DataGolf-writer beholdes kun for bakoverkompatibilitet og stopper før API/database.
  */
 export async function syncPgaApproach(): Promise<{ updated: number }> {
+  stoppKildeskriving();
   const { syncDatagolfTak } = await import("@/lib/datagolf/tak-sync");
   const result = await syncDatagolfTak();
   return { updated: result.upserted };

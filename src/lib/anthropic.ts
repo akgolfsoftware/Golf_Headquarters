@@ -29,7 +29,7 @@ export type AiCoachKontext = {
   sisteRunder: RoundMedBane[];
 };
 
-export function bygSystemPrompt(ctx: AiCoachKontext): string {
+export function bygSystemPrompt(ctx: AiCoachKontext, activeModelVersionId: string | null = null): string {
   const { user, aktivePlaner, sisteRunder } = ctx;
   return bygCoachSystemPrompt({
     mottaker: "spiller",
@@ -47,7 +47,7 @@ export function bygSystemPrompt(ctx: AiCoachKontext): string {
       dato: r.playedAt.toISOString().split("T")[0],
       bane: r.course.name,
       score: r.score,
-      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
+      sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
     })),
   });
 }

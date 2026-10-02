@@ -20,6 +20,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { kanSeSpillerprofil } from "@/lib/auth/spiller-side-tilgang";
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { notFound } from "next/navigation";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -58,6 +59,7 @@ export default async function SpillerDetaljPage({ params }: Props) {
   });
 
   if (!spiller) notFound();
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // Hent rounds separat for å unngå Prisma-select-kompleksitet
   const rounds = await prisma.round.findMany({
@@ -120,7 +122,7 @@ export default async function SpillerDetaljPage({ params }: Props) {
       ? rounds.reduce((s: number, r: { score: number }) => s + r.score, 0) / rounds.length
       : null;
 
-  const sgRunder = rounds.filter((r) => harVisbarSg(r) && r.sgTotal !== null);
+  const sgRunder = rounds.filter((r) => harVisbarSg(r, activeModelVersionId) && r.sgTotal !== null);
   const sgSnitt =
     sgRunder.length > 0
       ? sgRunder.reduce((s: number, r: { sgTotal: number | null }) => s + (r.sgTotal ?? 0), 0) / sgRunder.length
@@ -142,11 +144,11 @@ export default async function SpillerDetaljPage({ params }: Props) {
       relativ: r.score - (r.course.par ?? 72),
       kursNavn: r.course.name,
       playedAt: r.playedAt.toISOString(),
-      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
-      sgPutt: harVisbarSg(r) ? r.sgPutt : null,
-      sgOtt: harVisbarSg(r) ? r.sgOtt : null,
-      sgApp: harVisbarSg(r) ? r.sgApp : null,
-      sgArg: harVisbarSg(r) ? r.sgArg : null,
+      sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
+      sgPutt: harVisbarSg(r, activeModelVersionId) ? r.sgPutt : null,
+      sgOtt: harVisbarSg(r, activeModelVersionId) ? r.sgOtt : null,
+      sgApp: harVisbarSg(r, activeModelVersionId) ? r.sgApp : null,
+      sgArg: harVisbarSg(r, activeModelVersionId) ? r.sgArg : null,
     })),
     aktivPlan: trainingPlans[0] ?? null,
     coachingHistorikk: coachingSessions.map((s) => ({

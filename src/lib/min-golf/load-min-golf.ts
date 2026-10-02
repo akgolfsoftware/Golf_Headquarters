@@ -22,6 +22,7 @@ import { SG_TO_PYRAMID } from "@/lib/training/skills/types";
 import { buildYardageRows } from "@/lib/sg-hub/yardage-calc";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { nivaaFraKategori, type Nivaa } from "./dybde";
 import {
   fmtKortDato,
@@ -133,7 +134,7 @@ export async function loadMinGolf(
   userId: string,
   overstyrNivaa?: Nivaa,
 ): Promise<MinGolfData> {
-  const [lagredeRunder, innsikter, trackmanOkter, puttSlag, bruker] = await Promise.all([
+  const [lagredeRunder, innsikter, trackmanOkter, puttSlag, bruker, activeModelVersionId] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
@@ -174,10 +175,11 @@ export async function loadMinGolf(
       where: { id: userId },
       select: { hcp: true, preferences: true },
     }),
+    getActiveAkSgVersionId(),
   ]);
 
   // Legacy SG has no approved model version. Preserve score and shot data.
-  const runder = lagredeRunder.map((runde) => harVisbarSg(runde) ? runde : {
+  const runder = lagredeRunder.map((runde) => harVisbarSg(runde, activeModelVersionId) ? runde : {
     ...runde,
     sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null,
     ...Object.fromEntries(SG_DETALJFELT.map(({ key }) => [key, null])),

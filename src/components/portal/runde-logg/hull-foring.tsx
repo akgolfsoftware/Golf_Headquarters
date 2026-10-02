@@ -4,13 +4,15 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * Hull-føring — HOVEDSKJERMEN i live-føringen.
  * Rundetopp (progresjon + score hittil) · slag-kjeden som liste ·
- * inline slag-editor · hull-ferdig-tilstand · «Neste hull».
+ * inline slag-editor · hull-ferdig-tilstand med hull-SG · «Neste hull».
  * Neste slag starter der forrige landet — kjeden kan ikke føres inkonsistent.
  */
 
 import type { WindDir } from "@/generated/prisma/enums";
 import type { HvileLie, LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
-import { Caps, Kort, Icon } from "@/components/v2";
+import { beregnSg, type SgBaselinePoint } from "@/lib/domain/sg";
+import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
+import { fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
@@ -145,6 +147,7 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
 }
 
 type HullForingProps = {
+  sgBaselines: ReadonlyArray<SgBaselinePoint>;
   hull: LoggetHull;
   antallHull: number;
   /** Antall hull ferdig før dette (til progresjonsbaren). */
@@ -161,6 +164,7 @@ type HullForingProps = {
 };
 
 export function HullForing({
+  sgBaselines,
   hull,
   antallHull,
   ferdigeFor,
@@ -187,6 +191,16 @@ export function HullForing({
 
   const straffer = hull.slag.filter((s) => s.straffe).length;
   const strokes = hull.slag.length + straffer;
+
+  // Hull-SG (klient-estimat — serveren er fasit ved lagring).
+  let hullSg: number | null = null;
+  if (ferdig && hull.syntetisk !== true) {
+    try {
+      hullSg = beregnSg(rundeTilSgShots([hull]), sgBaselines)?.total ?? null;
+    } catch {
+      hullSg = null;
+    }
+  }
 
   const sekundaerKnapp = (label: string, ikon: string, onClick: () => void) => (
     <button
@@ -293,6 +307,19 @@ export function HullForing({
               Hull {hull.holeNumber} ferdig — {strokes} slag
               {straffer > 0 ? ` (+${straffer})` : ""}
             </div>
+            {hullSg != null && (
+              <div style={{ display: "flex", gap: 12, fontFamily: TL.font.mono, fontSize: 11.5 }}>
+                <span style={{ color: TL.mute }}>
+                  Hull-SG{" "}
+                  <b style={{ color: TL.text }}>{fmtSg(hullSg)}</b>
+                </span>
+                {straffer > 0 && (
+                  <span style={{ color: TL.mute }}>
+                    Straffen{straffer > 1 ? "e" : ""} kostet <b style={{ color: TL.text }}>−{komma(straffer)},0</b>
+                  </span>
+                )}
+              </div>
+            )}
             {onAngre && (
               <button
                 type="button"

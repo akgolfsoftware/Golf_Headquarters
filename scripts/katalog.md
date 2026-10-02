@@ -172,7 +172,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-screentest-parent.ts](<seed-screentest-parent.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-screentest-trackman.ts](<seed-screentest-trackman.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-screentest.ts](<seed-screentest.ts>) |
-| Data / integrasjon — kan skrive eller sende | [scripts/seed-sg-baselines-2026-07-27.ts](<seed-sg-baselines-2026-07-27.ts>) |
+| Deaktivert — legacy SG-baseline kan ikke skrive til appdatabasen | [scripts/seed-sg-baselines-2026-07-27.ts](<seed-sg-baselines-2026-07-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-stall-detalj.ts](<seed-stall-detalj.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-test-definitions.ts](<seed-test-definitions.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/seed-wagr-benchmark.ts](<seed-wagr-benchmark.ts>) |

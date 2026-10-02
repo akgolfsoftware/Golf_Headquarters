@@ -8,6 +8,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import type { SgOmrade } from "@/lib/domain/maal-fremdrift";
 
 export type SgSnittPerOmrade = Record<SgOmrade, number | null>;
@@ -20,6 +21,7 @@ export const TOMT_SG_SNITT: SgSnittPerOmrade = {
 export const SG_SNITT_RUNDER = 10;
 
 export async function hentSgSnittPerOmrade(userId: string): Promise<SgSnittPerOmrade> {
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const runder = await prisma.round
     .findMany({
       where: { userId },
@@ -39,7 +41,7 @@ export async function hentSgSnittPerOmrade(userId: string): Promise<SgSnittPerOm
     return Math.round((tall.reduce((s, v) => s + v, 0) / tall.length) * 100) / 100;
   };
 
-  const visbare = runder.filter(harVisbarSg);
+  const visbare = runder.filter((runde) => harVisbarSg(runde, activeModelVersionId));
   return {
     OTT: snitt(visbare.map((r) => r.sgOtt)),
     APP: snitt(visbare.map((r) => r.sgApp)),

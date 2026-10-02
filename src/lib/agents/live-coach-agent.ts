@@ -9,6 +9,8 @@
 import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { pseudonymForId, substituerPseudonym } from "@/lib/ai/anonymiser";
 import { notify } from "@/lib/notifications";
@@ -218,6 +220,7 @@ export async function runLiveCoachAgent(opts: {
       };
     }
 
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const [spiller, aktivPlan, sisteRunder] = await Promise.all([
       prisma.user.findUnique({ where: { id: userId }, select: { name: true } }),
       prisma.trainingPlan.findFirst({
@@ -225,7 +228,7 @@ export async function runLiveCoachAgent(opts: {
         select: { name: true },
       }),
       prisma.round.findMany({
-        where: { userId },
+        where: { userId, ...synligSgWhere(activeModelVersionId) },
         orderBy: { playedAt: "desc" },
         take: 3,
         select: {

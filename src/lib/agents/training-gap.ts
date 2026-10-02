@@ -12,6 +12,8 @@
 
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import type { SgCategory } from "@/generated/prisma/client";
 import { runAgent, type AgentResult } from "./agent-runner";
@@ -34,6 +36,7 @@ const OMRAADE_LABEL: Record<SgCategory, string> = {
 
 export async function runTrainingGap(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const spillere = await prisma.user.findMany({
       // Bevisst coachedPlayerWhere (ikke coach-scopet): batch-agent uten viewer.
       where: coachedPlayerWhere(),
@@ -51,7 +54,7 @@ export async function runTrainingGap(): Promise<AgentResult> {
           userId: spiller.id,
           playedAt: { gte: sgGrense },
           sgTotal: { not: null },
-          OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+          ...synligSgWhere(activeModelVersionId),
         },
         select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       });

@@ -8,6 +8,8 @@
  * Achievement), samme beregnFremdrift/mapGoalRow-logikk, samme milepæl-titler.
  */
 
+import Link from "next/link";
+import { harEgenIupInngang } from "@/lib/iup/oversikt";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -78,7 +80,7 @@ const ACHIEVEMENT_TITLER: Record<string, string> = {
 export default async function V2MalPreviewPage() {
   const user = await requirePortalUser();
 
-  const [goals, sisteMilepael] = await Promise.all([
+  const [goals, sisteMilepael, visIup] = await Promise.all([
     prisma.goal.findMany({
       where: { userId: user.id, status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
@@ -87,6 +89,7 @@ export default async function V2MalPreviewPage() {
       where: { userId: user.id },
       orderBy: { earnedAt: "desc" },
     }),
+    ["PLAYER", "COACH", "ADMIN"].includes(user.role) ? harEgenIupInngang() : Promise.resolve(false),
   ]);
 
   const data: MalHubData = {
@@ -106,6 +109,7 @@ export default async function V2MalPreviewPage() {
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MalHubV2 data={data} />
+      {visIup && <Link href="/portal/mal/evaluering" style={{ minHeight: 44, display: "flex", alignItems: "center", textDecoration: "underline" }}>Utviklingssjekk og sesongevaluering</Link>}
     </V2Shell>
   );
 }

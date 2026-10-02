@@ -14,8 +14,9 @@ er sperret i grenen. Dette er foreløpig ikke produksjonssatt.
 Sperren på `/stats/verktoy` stenger midlertidig også WHS- og
 avstandskalkulatoren fordi de deler klientmodul med Broadie-estimatoren;
 trygge verktøy må skilles ut før dette kan slippes bredt.
-Lokal `npm run verify` er grønn: 3 968 kodetester, 18 komponenttester,
-statisk kontroll og produksjonsbygg. `npm run prosjekt:sjekk` er også grønn.
+Lokal `npm run verify` er grønn på arbeidsgrenen: 4 292 kildetester,
+94 komponenttester, statiske kontroller og produksjonsbygg med Service Worker.
+`npm run prosjekt:sjekk` er også grønn.
 Dette er ikke en målt spillerreise eller produksjonskontroll.
 
 ## Beslutning om datagrunnlag
@@ -82,21 +83,60 @@ Dette er ikke en målt spillerreise eller produksjonskontroll.
 ## Åpne sperrer per 02.10
 
 - Rettighet til kommersiell trening og visning av en avledet DataGolf-modell
-  er ikke dokumentert. Ingen verifisert DataGolf-kilde for forventede slag
-  per lie og avstand er identifisert.
+  er ikke dokumentert. DataGolfs offentlige [vilkår](https://datagolf.com/terms-and-conditions)
+  gir personlig, ikke-kommersiell bruk av API/innhold og dokumenterer ikke en
+  kommersiell modelltrenings- eller kundevisningslisens. En separat signert
+  B2B-avtale må vurderes særskilt.
 - De 162 lagrede slagene har ingen komplette `HoleScore`-rader. En egen modell
   kan derfor ikke trenes eller kvalitetssikres ennå.
 - Legacy-tabellene i HQ (`public.sg_baselines`, `dashboard.dg_*`,
-  `public.pga_*`) og eldre SG-baserte innsikter/RAG-tekster må revideres for
-  gjenstående kundeveier før HQ-merge. RAG-samlingen
-  `src/lib/masterbrain/rag-corpus/sg-baselines/` inneholder blant annet
-  numeriske tour- og putteverdier. Det må avklares om denne samlingen eller
-  dens lagrede embedding kan hentes av kunde-AI. De slettes ikke automatisk.
-- Andre SG-konsumenter i admin, foreldreeksport, AI-agenter og gamle innsikter
-  må gjennomgås før en fullstendig «kun AK-algoritmen»-garanti. Aggregater må
-  skille mellom manuell SG og hver enkelt modellversjon. Den nåværende
-  visningssperren skjuler historiske beregninger uten versjon, men en gammel
-  versjon kan fremdeles være uegnet etter at lisensretten opphører.
+  `public.pga_*`) og RAG-tekster med numeriske tour-/putteverdier finnes fortsatt.
+  Kodegjennomgangen fant ingen aktiv app-leser for `knowledge_chunks`; kunde-AI
+  bruker bare MORAD-filer og en allowlistet SG-prompt uten disse verdiene.
+  Corpus-/embedding-rader er ikke slettet fra lagring, og ingen produksjons-DB
+  ble endret. De skal ikke seedes på nytt eller kobles til kundesøk uten ny
+  rettighetskontroll.
+- Kundeviste SG-konsumenter i spiller-/foreldreportal, coach, analyser,
+  statistikk, mål og AI bruker manual-data eller nøyaktig aktiv modellversjon.
+  Legacy-verdier uten aktiv versjonsmatch skjules. Admin/arkivtabeller bevares
+  internt og er ikke en godkjent kilde for kundesvar.
 - Før HQ-koden kan deployes, må den additive `sgModelVersionId`-kolonnen
   legges på HQ-databasen. `app_public` kan opprettes uten aktiv modell;
   leser-URL konfigureres først når egen rolle er testet i produksjon.
+
+## Videreføring mot nyere HQ-main
+
+HQ-main har siden fått Player App V1 med `SgReferenceSet` og
+`sgReferenceSetId`. Den eldre grenens `sgModelVersionId`-felt er derfor
+beholdt som separat versjonsreferanse til den isolerte `app_public`-modellen.
+Runtime-oppslag i V1 er fail-closed: kun `AK_BASELINE` fra
+`ak-golf-first-party` kan brukes. Importskriptet kan fortsatt kontrollere
+kildepunkter skrivefritt, men `--apply` av kilde-/tour-kurven stopper.
+
+Offentlige PGA-, tour- og SG-sammenligningssider, DataGolf-portalen,
+benchmark-huben og DataGolf-synkronisering er sperret i HQ-grenen. WHS-,
+avstands- og handicapverktøy forblir åpne; bare SG-estimatoren og
+tour-ekvivalentverktøyet er stengt. Dette er kode på arbeidsgrenen, ikke
+produksjonsbevis. Ingen database, modell, tilgangsrolle eller Vercel-oppsett
+ble endret av denne videreføringen.
+
+Før merge må den oppdaterte grenen bestå full lokal verify og GitHub CI.
+Før SG kan vises må en førstepartsmodell finnes og synkroniseres fra
+`app_public` til Player App uten tilgang til `external_raw`; det er ikke
+tilstrekkelig å ha en published PGA-kurve.
+
+## Videre kontroll 02.10.2026
+
+- DataGolf- og PGA-statistikkrutene i PlayerHQ/marketing returnerer 404 i denne
+  grenen før sidekomponentene kan hente proffprofiler eller tour-tabeller.
+- De eldre HQ-skriverne `syncDatagolfTak`, `syncPgaSkillRatings`,
+  `syncPgaPuttDistance` og `syncPgaApproach` stopper nå før API- eller
+  databasekall. Deaktiverte Broadie-/tour-seedere og Player App-importør
+  stopper også før databasekontakt. Tester verifiserer avvisningene.
+- SG-verdier i kundevisninger filtreres mot eksakt aktiv modellversjon;
+  manuelt registrerte spillerverdier beholdes. AI-diagnoseprompten får ikke
+  statiske tour-baselines eller DataGolf-kildedata.
+- Dette gjør kodegrenen fail-closed, men beviser ikke produksjonsoppsett.
+  Full lokal verify, CI, migrasjonsrekkefølge, rolleprøve, aktiv
+  førstepartsmodell og målt spillerreise må fortsatt være på plass før merge/
+  aktivering. Ingen rettighet eller produksjonstilgang er lagt inn.

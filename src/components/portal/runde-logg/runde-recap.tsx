@@ -2,16 +2,17 @@
 
 /**
  * Fasit: designsystem/train-lock/RU-02 Player Runde ferdig iPhone.dc.html
- * RU-02 — Recap: V8 hullgrid (front/back ni), Train-lock.
+ * RU-02 — Recap: V8 hullgrid (front/back ni) + scorekort-utdrag, Train-lock.
  * Erstatter den gamle T-styrte Oppsummering-komponenten for
  * `steg === "oppsummering"` i runde-live-klient.tsx. Rendres som en HEL,
  * frittstående skjerm (egen TL.scene-bakgrunn) — aldri inni det T-styrte
  * skallet rundt oppsett/føring, for å unngå å blande T og TL i samme skjerm
- * (gotchas.md). Lagring gjenbruker lagreLoggetRunde; serveren regner SG bare
- * mot en aktiv AK Golf Baseline.
+ * (gotchas.md). Lagring gjenbruker lagreLoggetRunde uendret; serveren regner
+ * SG på nytt ved lagring — klientens tall er kun visning.
  *
  * Grid-konvensjon (fasit): over par = dimmet (TL.opasitet.negativ),
- * under par = ring. Historisk klient-SG fra statiske kildetabeller vises ikke.
+ * under par = ring. Scorekort-utdraget viser de {UTDRAG_ANTALL} hullene med
+ * størst |SG| — ikke alle 18 (det er RU-03/Analyse sin jobb, urørt her).
  *
  * Feil-tilstanden (linje ~108, `feil`) dekker GAP-1 «RU-01 Runde feil»
  * (Fasit: designsystem/train-lock/GAP-1 Tilstander.dc.html) — meldingen
@@ -25,12 +26,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
+import { fmtSg } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { lagreLoggetRunde } from "@/app/portal/(legacy)/mal/runder/logg/actions";
 import { slettKladd } from "@/lib/runde-logg/draft";
 import type { LoggetHull } from "@/lib/runde-logg/types";
+import { beregnSg, type SgBaselinePoint } from "@/lib/domain/sg";
+import { rundeTilSgShots, hullTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+
+const UTDRAG_ANTALL = 3;
 
 function erFerdig(h: LoggetHull): boolean {
   return h.slag.at(-1)?.resultat.iHull === true;
@@ -42,6 +48,8 @@ function diffTekst(diff: number): string {
 }
 
 type RundeRecapProps = {
+  sgBaselines: ReadonlyArray<SgBaselinePoint>;
+  sgReferenceLabel: string | null;
   courseId: string;
   courseNavn: string;
   playedAt: string;
@@ -50,7 +58,7 @@ type RundeRecapProps = {
   onTilbake: () => void;
 };
 
-export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData, onTilbake }: RundeRecapProps) {
+export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData, onTilbake, sgBaselines, sgReferenceLabel }: RundeRecapProps) {
   const router = useRouter();
   const eierId = useLokalDataEier();
   const [lagrer, setLagrer] = useState(false);
@@ -61,20 +69,41 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
 
   let score = 0;
   let putter = 0;
+  let sgTotal: number | null = null;
   let hullScores: ReturnType<typeof deriverRundeScore>["hullScores"] = [];
   try {
     const derivert = deriverRundeScore(ferdige);
     hullScores = derivert.hullScores;
     score = derivert.totalScore;
     putter = hullScores.reduce((sum, h) => sum + h.putts, 0);
+    sgTotal = ferdige.every((h) => h.syntetisk !== true)
+      ? beregnSg(rundeTilSgShots(ferdige), sgBaselines)?.total ?? null
+      : null;
   } catch {
-    // Ufullstendige hull gir ingen oppsummerte tall.
+    sgTotal = null;
   }
 
   const fairwayMuligheter = hullScores.filter((h) => h.fairway != null).length;
   const fairwayTreff = hullScores.filter((h) => h.fairway === true).length;
   const sumPar = ferdige.reduce((sum, h) => sum + h.par, 0);
   const diff = score - sumPar;
+
+  // Per-hull SG — samme motor kalt ett hull av gangen (ingen ny beregning).
+  const sgPerHull = new Map<number, number>();
+  for (const h of ferdige) {
+    if (h.syntetisk) continue;
+    try {
+      const hullSg = beregnSg(hullTilSgShots(h), sgBaselines)?.total;
+      if (hullSg != null) sgPerHull.set(h.holeNumber, hullSg);
+    } catch {
+      // Ufullstendig kjede for dette hullet — vises uten SG (em-dash).
+    }
+  }
+
+  const utdrag = [...sgPerHull.entries()]
+    .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+    .slice(0, UTDRAG_ANTALL)
+    .sort((a, b) => a[0] - b[0]);
 
   const rader: number[][] =
     hullData.length > 9
@@ -168,9 +197,79 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
           </p>
         </section>
 
+        {utdrag.length > 0 && (
+          <section style={{ marginBottom: 24 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute, marginBottom: 10 }}>
+              Scorekort
+            </div>
+            <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 16px" }}>
+              {utdrag.map(([holeNumber, sg]) => {
+                const hull = hullData.find((h) => h.holeNumber === holeNumber)!;
+                const hs = hullScores.find((h) => h.holeNumber === holeNumber)!;
+                return (
+                  <div
+                    key={holeNumber}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "28px 1fr auto auto",
+                      gap: 10,
+                      alignItems: "baseline",
+                      padding: "10px 0",
+                      borderBottom: `1px solid ${TL.hair}`,
+                    }}
+                  >
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>{holeNumber}</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Par {hull.par}</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+                      {hs.strokes}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: TL.font.mono,
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: TL.text,
+                        opacity: sg < 0 ? TL.opasitet.negativ : 1,
+                        fontVariantNumeric: "tabular-nums",
+                        minWidth: 48,
+                        textAlign: "right",
+                      }}
+                    >
+                      {fmtSg(sg)}
+                    </span>
+                  </div>
+                );
+              })}
+              <div style={{ display: "grid", gridTemplateColumns: "28px 1fr auto auto", gap: 10, alignItems: "baseline", padding: "10px 0" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, gridColumn: "1 / 3" }}>Sum</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+                  {score}
+                </span>
+                <span
+                  style={{
+                    fontFamily: TL.font.mono,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: TL.text,
+                    opacity: sgTotal != null && sgTotal < 0 ? TL.opasitet.negativ : 1,
+                    fontVariantNumeric: "tabular-nums",
+                    minWidth: 48,
+                    textAlign: "right",
+                  }}
+                >
+                  {sgTotal == null ? "—" : fmtSg(sgTotal)}
+                </span>
+              </div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+                {sgTotal == null ? "SG: ikke nok registrerte slag eller referansedata" : `SG-referanse: ${sgReferenceLabel ?? "ukjent"}`}
+              </p>
+            </div>
+          </section>
+        )}
+
         {delvis && (
           <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-            Kun de {ferdige.length} fullførte hullene lagres. SG beregnes når AK Golf Baseline er klar.
+            Kun de {ferdige.length} fullførte hullene lagres. Serveren beregner SG på nytt ved lagring.
           </p>
         )}
 

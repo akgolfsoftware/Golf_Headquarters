@@ -66,3 +66,12 @@ export async function loadActiveAkSgModel(): Promise<AkSgCalculator | null> {
     client.release();
   }
 }
+
+/** Fail-closed version lookup for customer-facing SG aggregates. */
+export async function getActiveAkSgVersionId(): Promise<string | null> {
+  try {
+    return (await loadActiveAkSgModel())?.versionId ?? null;
+  } catch {
+    return null;
+  }
+}

@@ -7,7 +7,8 @@
  * Mønster kopiert fra WorkbenchIDagArtefakt (PortalChatHjem.tsx): TL.*-tokens,
  * caps eyebrow, ett kort, én primær CTA.
  *
- * SG vises først etter serverberegning mot en aktiv AK Golf Baseline.
+ * SG så langt regnes med samme motor som live-føringen selv bruker
+ * SG vises ikke uten det versjonerte referansesettet fra serversiden.
  *
  * AVVIK fra GAP-1 «RU-01 Runde tom» (Fasit: designsystem/train-lock/GAP-1
  * Tilstander.dc.html): fasiten tegner en eksplisitt tom-kort med CTA
@@ -21,6 +22,7 @@
 import { useCallback, useSyncExternalStore, type CSSProperties } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
+import { fmtSg } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
 import { scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
@@ -76,6 +78,8 @@ export function RundeLiveArtefakt() {
 
   const total = kladd.hullData.length;
   const ferdige = kladd.hullData.filter((h) => scoreFraHull(h) != null);
+
+  const sgTotal: number | null = null;
 
   if (kladd.steg === "oppsummering") {
     return (
@@ -160,10 +164,11 @@ export function RundeLiveArtefakt() {
               fontSize: 15,
               fontWeight: 700,
               color: TL.text,
+              opacity: sgTotal != null && sgTotal < 0 ? TL.opasitet.negativ : 1,
               fontVariantNumeric: "tabular-nums",
             }}
           >
-            —
+            {sgTotal == null ? "—" : fmtSg(sgTotal)}
           </span>
         </div>
         <Link href="/portal/runde/live" className="v2-press v2-focus" style={ctaStil}>

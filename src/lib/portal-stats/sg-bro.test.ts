@@ -71,6 +71,9 @@ test("sg-broen — aggregering og synk", async (t) => {
       },
     },
   });
+  t.mock.module("@/lib/ak-sg/active-model", {
+    namedExports: { getActiveAkSgVersionId: async () => "own-v1" },
+  });
 
   const { beregnSgAggregat, synkroniserSgFraRunder, SG_BRO_KILDE } = await import(
     "@/lib/portal-stats/sg-bro"
@@ -140,7 +143,7 @@ test("sg-broen — aggregering og synk", async (t) => {
       (sisteFindManyArgs as { where?: unknown } | null)?.where,
       {
         userId: "user-1", sgTotal: { not: null },
-        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: "own-v1" }],
       },
     );
   });

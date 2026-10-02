@@ -11,6 +11,7 @@
  */
 import { prisma } from "@/lib/prisma";
 import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import {
   avledRundeRegistrering,
   lesRundeDataQuality,
@@ -57,7 +58,7 @@ export type RunderListModel = {
  * `userId` kommer fra auth-guard i page.tsx.
  */
 export async function getRunderListModel(userId: string): Promise<RunderListModel> {
-  const [rounds, courseDefs] = await Promise.all([
+  const [rounds, courseDefs, activeModelVersionId] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
@@ -73,6 +74,7 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
       take: 50,
     }),
     prisma.courseDefinition.findMany({ orderBy: { name: "asc" } }),
+    getActiveAkSgVersionId(),
   ]);
 
   const total = rounds.length;
@@ -103,7 +105,7 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
       par: r.course.par,
       score: r.score,
       vsPar: r.score - r.course.par,
-      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
+      sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
       status: lesRundeStatus(r.status) ?? avledet.status,
       dataQuality: lesRundeDataQuality(r.dataQuality) ?? avledet.dataQuality,
       kilde: lesRundeKilde(r.source) ?? avledet.kilde,
@@ -132,7 +134,7 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
         })();
 
   const sgTotalSnitt = (() => {
-    const med = rounds.filter((r) => harVisbarSg(r) && r.sgTotal != null);
+    const med = rounds.filter((r) => harVisbarSg(r, activeModelVersionId) && r.sgTotal != null);
     if (med.length === 0) return null;
     return med.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / med.length;
   })();
