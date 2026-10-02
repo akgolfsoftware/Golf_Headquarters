@@ -100,11 +100,28 @@ export async function hentMineTrenerforslag() {
   });
 }
 
-const ForslagSchema = z.object({
+const SessionForslagSchema = z.object({
   versjon: z.literal(1), organisasjon: z.enum(["WANG", "TEAM_NORWAY"]), handling: z.enum(["ADD", "UPDATE", "CANCEL"]),
   sessionId: z.string().nullable(), expectedUpdatedAt: z.iso.datetime().nullable(),
   for: Innslag.extend({}).partial().nullable(), etter: Innslag.nullable(), begrunnelse: z.string().max(1000),
 }).strict();
+const IupFokusSchema = z.object({
+  versjon: z.literal(1), kind: z.literal("IUP_FOCUS"), organisasjon: z.literal("WANG"),
+  periodBlockId: z.string().min(1), periodName: z.string().min(1).max(120),
+  expected: z.array(z.object({
+    id: z.string(), periodBlockId: z.string(), akse: z.string(), tittel: z.string(), egentidMinUke: z.number().int(),
+    maalemetode: z.string().nullable(), status: z.string(), egenvurdering: z.number().nullable(), trenervurdering: z.number().nullable(),
+    kommentar: z.string().nullable(), updatedAt: z.iso.datetime(),
+  }).strict()).max(20),
+  etter: z.array(z.object({ akse: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]), tittel: z.string().min(1).max(200),
+    egentidMinUke: z.number().int().min(0).max(2400), maalemetode: z.string().max(500).nullable() }).strict()).max(10),
+  begrunnelse: z.string().max(1000),
+}).strict();
+const ForslagSchema = z.union([SessionForslagSchema, IupFokusSchema]);
+type LagretForslag = z.infer<typeof ForslagSchema>;
+function erIupFokus(p: LagretForslag): p is z.infer<typeof IupFokusSchema> {
+  return "kind" in p && p.kind === "IUP_FOCUS";
+}
 
 /** Aksept og planendring er én transaksjon; samme forslag kan aldri anvendes to ganger. */
 export async function svarPaTrenerforslag(input: unknown) {
@@ -125,6 +142,42 @@ export async function svarPaTrenerforslag(input: unknown) {
         status: "REJECTED", decidedAt: new Date(), decidedById: spiller.id,
       } });
       return { ok: true as const, status: "REJECTED" as const };
+    }
+    if (erIupFokus(p)) {
+      const current = await tx.groupPeriodGoal.findMany({
+        where: { userId: spiller.id, periodBlockId: p.periodBlockId }, orderBy: { id: "asc" },
+        select: { id: true, periodBlockId: true, akse: true, tittel: true, egentidMinUke: true, maalemetode: true,
+          status: true, egenvurdering: true, trenervurdering: true, kommentar: true, updatedAt: true },
+      });
+      const currentSnapshot = current.map((row) => ({ ...row, updatedAt: row.updatedAt.toISOString() }));
+      if (JSON.stringify(currentSnapshot) !== JSON.stringify(p.expected)) {
+        await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
+          status: "CONFLICT", decidedAt: new Date(), decidedById: spiller.id,
+        } });
+        return { ok: false as const, feil: "Fokusområdene er endret siden forslaget ble laget. Be treneren sende et nytt forslag." };
+      }
+      if (current.some((goal) => goal.status !== "IKKE_STARTET" || goal.egenvurdering !== null || goal.trenervurdering !== null || goal.kommentar !== null)) {
+        await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
+          status: "CONFLICT", decidedAt: new Date(), decidedById: spiller.id,
+        } });
+        return { ok: false as const, feil: "Perioden har lagret oppfølging som må bevares. Be treneren gå gjennom planen før et nytt forslag." };
+      }
+      const wang = await tx.group.findFirst({ where: { slug: ORGANISASJON_SLUG.WANG, arkivertAt: null }, select: { id: true } });
+      const periode = wang ? await tx.groupPeriodBlock.findFirst({ where: { id: p.periodBlockId, groupId: wang.id }, select: { id: true } }) : null;
+      if (!periode) {
+        await tx.planAction.updateMany({ where: { id: action.id, status: "PENDING" }, data: { status: "CONFLICT", decidedAt: new Date(), decidedById: spiller.id } });
+        return { ok: false as const, feil: "Perioden er ikke lenger tilgjengelig. Be treneren sende et nytt forslag." };
+      }
+      await tx.groupPeriodGoal.deleteMany({ where: { userId: spiller.id, periodBlockId: p.periodBlockId } });
+      if (p.etter.length) await tx.groupPeriodGoal.createMany({ data: p.etter.map((goal) => ({
+        userId: spiller.id, periodBlockId: p.periodBlockId, akse: goal.akse, tittel: goal.tittel,
+        egentidMinUke: goal.egentidMinUke, maalemetode: goal.maalemetode,
+      })) });
+      const claimed = await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
+        status: "ACCEPTED", decidedAt: new Date(), decidedById: spiller.id,
+      } });
+      if (claimed.count !== 1) throw new Error("proposal_already_decided");
+      return { ok: true as const, status: "ACCEPTED" as const };
     }
     if (p.handling === "ADD" && p.etter) {
       await tx.workbenchSession.create({ data: {
@@ -169,5 +222,6 @@ export async function svarPaTrenerforslag(input: unknown) {
   revalidatePath("/portal");
   revalidatePath("/portal/planlegge/workbench");
   revalidatePath("/team-norway/workbench");
+  revalidatePath("/team-wang");
   return resultat;
 }

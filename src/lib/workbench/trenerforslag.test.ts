@@ -7,6 +7,9 @@ let action: { id: string; userId: string; coachId: string; actionType: string; s
 let session: { id: string; playerId: string; date: Date; startMinute: number; durationMinutes: number; title: string; pyramid: string; location: string | null; status: string; updatedAt: Date; sourceGroupSessionId: string | null; groupId: string | null; planActionId?: string | null } | null = null;
 let createdSessions: unknown[] = [];
 let sessionUpdates: unknown[] = [];
+let goals: { id: string; userId: string; periodBlockId: string; akse: string; tittel: string; egentidMinUke: number; maalemetode: string | null;
+  status: string; egenvurdering: number | null; trenervurdering: number | null; kommentar: string | null; updatedAt: Date }[] = [];
+let goalCreates: unknown[] = [];
 let idSequence = 0;
 
 const tx = {
@@ -31,6 +34,13 @@ const tx = {
       sessionUpdates.push(data); Object.assign(session, data, { updatedAt: new Date(session.updatedAt.getTime() + 1000) }); return { count: 1 };
     },
   },
+  groupPeriodGoal: {
+    findMany: async () => goals.map(({ userId: _userId, ...goal }) => goal),
+    deleteMany: async () => { goals = []; return { count: 1 }; },
+    createMany: async ({ data }: { data: unknown[] }) => { goalCreates.push(...data); return { count: data.length }; },
+  },
+  groupPeriodBlock: { findFirst: async () => ({ id: "period-next" }) },
+  group: { findFirst: async () => ({ id: "group-wang" }) },
 };
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -55,7 +65,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
 
 function reset() {
   actor = { id: "coach-a", role: "COACH", email: "coach@example.test" };
-  shareAllowed = true; action = null; session = null; createdSessions = []; sessionUpdates = []; idSequence = 0;
+  shareAllowed = true; action = null; session = null; createdSessions = []; sessionUpdates = []; goals = []; goalCreates = []; idSequence = 0;
 }
 async function mod() { return import("./trenerforslag"); }
 const add = { organisasjon: "TEAM_NORWAY", spillerId: "player-a", handling: "ADD", etter: { date: "2099-01-01", startMinute: 540, durationMinutes: 60, title: "Teknikk", pyramid: "TEK", location: null }, begrunnelse: "Arbeid med presisjon." };
@@ -101,4 +111,45 @@ test("forslag til en utløpt dato lagres ikke", async () => {
   reset(); const { lagTrenerforslag } = await mod();
   const result = await lagTrenerforslag({ ...add, etter: { ...add.etter, date: "2000-01-01" } });
   assert.equal(result.ok, false); assert.equal(action, null);
+});
+
+function makeIupAction() {
+  const updatedAt = new Date("2026-10-02T10:00:00.000Z");
+  goals = [{ id: "goal-before", userId: "player-a", periodBlockId: "period-next", akse: "TEK", tittel: "Innspill", egentidMinUke: 60,
+    maalemetode: null, status: "IKKE_STARTET", egenvurdering: null, trenervurdering: null, kommentar: null, updatedAt }];
+  action = { id: "iup-proposal", userId: "player-a", coachId: "coach-a", actionType: "WORKBENCH_COACH_PROPOSAL", status: "PENDING",
+    suggestion: { versjon: 1, kind: "IUP_FOCUS", organisasjon: "WANG", periodBlockId: "period-next", periodName: "Vår", expected: goals.map(({ userId: _userId, ...g }) => ({ ...g, updatedAt: updatedAt.toISOString() })),
+      etter: [{ akse: "SPILL", tittel: "Beslutninger", egentidMinUke: 90, maalemetode: "Refleksjon etter økt" }], begrunnelse: "Fra samtalen" } } as typeof action;
+}
+
+test("IUP-fokus forblir uendret ved avslag og erstattes først én gang ved godkjenning", async () => {
+  reset(); makeIupAction(); const { svarPaTrenerforslag } = await mod();
+  actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const rejected = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "REJECTED" });
+  assert.equal(rejected.ok, true, JSON.stringify(rejected)); assert.equal(goals[0]?.id, "goal-before"); assert.equal(goalCreates.length, 0);
+
+  reset(); makeIupAction(); actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const accepted = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "ACCEPTED" });
+  assert.equal(accepted.ok, true); assert.equal(goals.length, 0); assert.equal(goalCreates.length, 1); assert.equal(action?.status, "ACCEPTED");
+  const again = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "ACCEPTED" });
+  assert.equal(again.ok, false); assert.equal(goalCreates.length, 1);
+});
+
+test("IUP-fokus i endret periode blir konflikt uten å skrive over elevens endring", async () => {
+  reset(); makeIupAction(); goals[0]!.tittel = "Elevens nyere fokus";
+  actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const { svarPaTrenerforslag } = await mod();
+  const result = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "ACCEPTED" });
+  assert.equal(result.ok, false); assert.equal(goals[0]?.tittel, "Elevens nyere fokus"); assert.equal(goalCreates.length, 0); assert.equal(action?.status, "CONFLICT");
+});
+
+test("IUP-fokus kan ikke fjerne lagret oppfølging fra før-perioden", async () => {
+  reset(); makeIupAction(); goals[0]!.status = "PAA_VEI";
+  if (action && typeof action.suggestion === "object" && action.suggestion !== null) {
+    action.suggestion = { ...action.suggestion, expected: goals.map(({ userId: _userId, ...g }) => ({ ...g, updatedAt: g.updatedAt.toISOString() })) };
+  }
+  actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const { svarPaTrenerforslag } = await mod();
+  const result = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "ACCEPTED" });
+  assert.equal(result.ok, false); assert.equal(goals[0]?.status, "PAA_VEI"); assert.equal(goalCreates.length, 0); assert.equal(action?.status, "CONFLICT");
 });

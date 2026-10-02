@@ -13,7 +13,7 @@ import { AK } from "@/lib/v2/ak-palett";
  * visning. Én primær handling: «Lagre og del med eleven».
  */
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 
@@ -112,6 +112,7 @@ export function IupSamtale({
   const [melding, setMelding] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
   const [lagrer, start] = useTransition();
+  const requestId = useRef(crypto.randomUUID());
 
   const fornavn = elevNavn.split(" ")[0];
   const sumEgentid = nye.reduce((s, n) => s + n.egentidMinUke, 0);
@@ -141,6 +142,8 @@ export function IupSamtale({
           kommentar: r.kommentar,
         })),
         nestePeriodeId: neste.id,
+        nestePeriodeNavn: neste.navn,
+        requestId: requestId.current,
         nyeFokus: nye.map((n) => ({
           akse: n.akse,
           tittel: n.tittel.trim(),
@@ -148,8 +151,10 @@ export function IupSamtale({
           maalemetode: n.maalemetode?.trim() || null,
         })),
       });
-      if (svar.ok)
-        setMelding(`Lagret. Fokusområdene ligger nå i ${fornavn}s årsplan.`);
+      if (svar.ok) {
+        setMelding(`Vurderingen er lagret. Fokusområdene ligger som forslag i ${fornavn}s Workbench og endrer ikke årsplanen før godkjenning.`);
+        requestId.current = crypto.randomUUID();
+      }
       else setFeil(svar.feil);
     });
   };
@@ -234,7 +239,7 @@ export function IupSamtale({
             }}
           >
             Evaluer perioden som avsluttes, les tallene som faktisk er målt, og
-            avtal fokusområdene som skrives inn i {fornavn}s årsplan.
+            foreslå fokusområder for {fornavn}. De legges i årsplanen først når eleven godkjenner.
           </p>
 
           <div
@@ -697,7 +702,7 @@ export function IupSamtale({
                   color: "var(--text-secondary)",
                 }}
               >
-                Skrives inn i {fornavn}s årsplan med én gang.
+                Spilleren får se før og etter i PlayerHQ og velger selv om forslaget skal inn i årsplanen.
               </p>
               <button
                 type="button"

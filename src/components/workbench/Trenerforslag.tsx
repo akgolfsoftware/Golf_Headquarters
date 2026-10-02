@@ -6,11 +6,19 @@ import { lagTrenerforslag, svarPaTrenerforslag } from "@/lib/workbench/trenerfor
 import { TN } from "@/lib/v2/team-norway";
 
 type Innslag = { date: string; startMinute: number; durationMinutes: number; title: string; pyramid: string; location?: string | null };
+type IupFokus = { akse: string; tittel: string; egentidMinUke: number; maalemetode: string | null };
+type IupFokusFoer = IupFokus & { status: string; egenvurdering: number | null; trenervurdering: number | null; kommentar: string | null };
+type IupFokusforslag = { kind: "IUP_FOCUS"; organisasjon: "WANG"; periodName: string; expected: IupFokusFoer[];
+  etter: IupFokus[]; begrunnelse: string };
+type Oktsforslag = { organisasjon: "WANG" | "TEAM_NORWAY"; handling: "ADD" | "UPDATE" | "CANCEL"; sessionId: string | null;
+  for: Partial<Innslag> | null; etter: Innslag | null; begrunnelse: string };
 export type SpillerTrenerforslag = {
   id: string; trener: string; opprettet: string;
-  forslag: { organisasjon: "WANG" | "TEAM_NORWAY"; handling: "ADD" | "UPDATE" | "CANCEL"; sessionId: string | null;
-    for: Partial<Innslag> | null; etter: Innslag | null; begrunnelse: string };
+  forslag: IupFokusforslag | Oktsforslag;
 };
+function erIupFokusforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is IupFokusforslag {
+  return "kind" in forslag && forslag.kind === "IUP_FOCUS";
+}
 
 const felt: React.CSSProperties = { display: "grid", gap: 5, minWidth: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" };
 const input: React.CSSProperties = { minHeight: 40, minWidth: 0, padding: "8px 10px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-1)", color: "var(--text-primary)", font: "inherit" };
@@ -62,12 +70,21 @@ export function TrenerforslagInnboks({ forslag }: { forslag: SpillerTrenerforsla
   async function svar(id: string, beslutning: "ACCEPTED" | "REJECTED") { setValgt(id); start(async () => { const result = await svarPaTrenerforslag({ actionId: id, beslutning }); setValgt(null); setMelding(result.ok ? (beslutning === "ACCEPTED" ? "Endringen er lagt inn i planen." : "Planen er uendret; forslaget er avvist.") : result.feil); router.refresh(); }); }
   return <section aria-label="Forslag fra trener" style={panel}>
     <div><h2 style={{ margin: 0, font: "var(--type-heading-s)", color: "var(--text-primary)" }}>Forslag fra trener</h2><p style={{ margin: "4px 0 0", color: "var(--text-secondary)", font: "var(--type-body-s)" }}>Planen endres først når du godkjenner.</p></div>
-    {forslag.map(f => <article key={f.id} aria-busy={pending && valgt === f.id} style={{ display: "grid", gap: 10, padding: 12, borderTop: "1px solid var(--border-hairline)" }}>
+    {forslag.map(f => { const iup = erIupFokusforslag(f.forslag); const iupData = iup ? f.forslag as IupFokusforslag : null; const oekt = f.forslag as Oktsforslag; return <article key={f.id} aria-busy={pending && valgt === f.id} style={{ display: "grid", gap: 10, padding: 12, borderTop: "1px solid var(--border-hairline)" }}>
       <p style={{ margin: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" }}>{f.forslag.organisasjon === "WANG" ? "WANG" : "Team Norway"} · {f.trener}</p>
-      <div style={{ display: "grid", gap: 6 }}><strong style={{ color: "var(--text-primary)" }}>Før: {vis(f.forslag.for)}</strong><strong style={{ color: "var(--text-primary)" }}>Etter: {f.forslag.handling === "CANCEL" ? "Økten foreslås tatt ut av planen" : vis(f.forslag.etter)}</strong></div>
-      <p style={{ margin: 0, color: "var(--text-secondary)" }}>{f.forslag.begrunnelse}</p>
+      {iupData ? <>
+        <strong style={{ color: "var(--text-primary)" }}>Foreslåtte fokusområder · {iupData.periodName}</strong>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12 }}>
+          <div><strong>Før</strong>{iupData.expected.length ? iupData.expected.map((g, i) => <p key={`${g.tittel}-${i}`} style={{ margin: "6px 0", color: "var(--text-secondary)" }}>{g.akse} · {g.tittel} · {g.egentidMinUke} min/uke{g.maalemetode ? ` · Målemetode: ${g.maalemetode}` : ""} · {g.status}{g.egenvurdering == null ? "" : ` · Egenvurdering ${g.egenvurdering}/5`}{g.trenervurdering == null ? "" : ` · Trenervurdering ${g.trenervurdering}/5`}{g.kommentar ? ` · ${g.kommentar}` : ""}</p>) : <p>Ingen fokusområder</p>}</div>
+          <div><strong>Etter godkjenning</strong>{iupData.etter.length ? iupData.etter.map((g, i) => <p key={`${g.tittel}-${i}`} style={{ margin: "6px 0", color: "var(--text-secondary)" }}>{g.akse} · {g.tittel} · {g.egentidMinUke} min/uke{g.maalemetode ? ` · ${g.maalemetode}` : ""}</p>) : <p>Fokusområdene fjernes for perioden</p>}</div>
+        </div>
+        <p style={{ margin: 0, color: "var(--text-secondary)" }}>Årsplanen endres først når du godkjenner.</p>
+      </> : <>
+        <div style={{ display: "grid", gap: 6 }}><strong style={{ color: "var(--text-primary)" }}>Før: {vis(oekt.for)}</strong><strong style={{ color: "var(--text-primary)" }}>Etter: {oekt.handling === "CANCEL" ? "Økten foreslås tatt ut av planen" : vis(oekt.etter)}</strong></div>
+        <p style={{ margin: 0, color: "var(--text-secondary)" }}>{oekt.begrunnelse}</p>
+      </>}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><button disabled={pending} onClick={() => svar(f.id, "ACCEPTED")} style={stdKnapp}>Godkjenn</button><button disabled={pending} onClick={() => svar(f.id, "REJECTED")} style={{ ...stdKnapp, background: "transparent", color: "var(--text-primary)", border: "1px solid var(--border-default)" }}>Avvis</button></div>
-    </article>)}
+    </article>; })}
     {melding && <p role="status" style={{ margin: 0, color: "var(--text-secondary)" }}>{melding}</p>}
   </section>;
 }
