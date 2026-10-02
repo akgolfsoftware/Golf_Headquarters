@@ -33,6 +33,7 @@ mock.module("react", { namedExports: {
   useTransition: () => [false, (run: () => Promise<unknown>) => { transitions.push(run()); }],
 } });
 const pushes: string[] = [], replacements: string[] = [];
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ push: (url: string) => pushes.push(url), replace: (url: string) => replacements.push(url) }) } });
 mock.module("next/link", { defaultExport: "a" });
 mock.module("sonner", { namedExports: { toast: { success() {}, error() {} } } });

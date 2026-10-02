@@ -30,3 +30,17 @@ Kontoeksport inkluderer eierens ukeplaner. Anonymisering vasker ukenotat, opphol
 Produksjonens eksisterende `week_plans` er kontrollert i kanonisk Golf_Headquarters (`dcnxoztjtdqoidaekxry`): RLS er aktiv, ny JSONB-kolonne finnes ikke ennå. Ingen produksjonsendring er utført. Lokal QA bruker et eget miljø og syntetiske kontoer.
 
 Parallelle kildeleverser: PR 1077, 1078 og 1080 er merget. 1078 gir validering av de 13 kildebaserte sesongevalueringsspørsmålene; 1080 gir eieravgrenset besvarelseslagring med revisjoner. Spillerskjema og trenerlesing er egne, uferdige leveranser. Designprototypens omtale av 2025-skala som 1–8 er feil: kildekatalogen bruker originalskala 1–5. Gamle svar eller kildeår skal ikke omregnes.
+
+## Fortsettelse09:18 Oslo
+
+Anders har bestilt at alle restoppgaver fullføres. Ny isolert arbeidsgren `codex/workbench-restfullforing-2026-10-02` fra fersk maina9a27dd07. PR1094 er allerede merget og produksjonskontrollert. Denne pakken viderefører kalenderhendelser/turneringsplan/flytt/kopi, Live-status og etterregistrering samt komplett anonymt Excel-funksjonsregister. Andre aktive oppgaver bygger WANG/TN-profiltilgang/forslag/samlinger, testbatteri/testdager og statistikk. Leveransene avstemmes etter faktisk merge; ingen parallelle kopier av spillerdata innføres.
+
+Claude Design stoppet de siste Workbench-tilleggene ved bruksgrense. Eksisterende valgte77-komponentfamilier brukes, og nye konkrete designkontrakter klargjøres. Faglige/avtalemessige hull holdes eksplisitte, særlig WANG-testdeling og DataGolf-kundebruksrett. Hele82-oppgavers dekning er ikke ferdig.
+
+## Fortsettelse 02.10 kl. 12:11 Oslo
+
+R06.5 er utvidet fra visuell kalenderblokk til faktisk kollisjonskontroll: flytt/kopi teller spillerens private opptattperioder, aktive gruppetimer og turnering/reise. Uavklart overlapp lagres som utkast. To samtidige flytteforsøk mot samme versjon gir én lagring. Lokal syntetisk Auth/DB-prøve 8/8 bestod. 390 px-nettleserprøve av redigering, kopiering og gjenåpning av treukerssyklus bestod uten horisontal overflyt; screenshot ble kun lagret i /tmp og er ikke visuell godkjenning fra Anders.
+
+Full `npm run verify` bestod etter denne koden: statiske kontroller, 4 309 enhetstester, 101 komponenttester, Next.js-produksjonsbygg og Serwist. Øvrig lokal målrettet test dekker flytt/kopi/angre, stale-versjon, serieretry, og gruppeturneringskonflikter. Ingen produksjonsmigrasjon er utført. GitHub CI/PR/merge/deploy og visuell sluttkontroll gjenstår.
+
+Hele IUP-arbeidsboken er fortsatt ikke dekket i produktet: de gjenværende punktene i registeret omfatter kilde-for-kilde Excel-paritet, komplett trener-/spillerreise i eksisterende WANG- og Team Norway-prosjekter, DataGolf-avtalerett og datakobling, full test-/fellesstart og uferdige sikkerhets-/personverngrener. Disse er ikke lukket av Workbench-kontrollen.

@@ -224,7 +224,7 @@ export async function exportUserData(): Promise<{
             heading: `Hei ${user.name ?? "der"},`,
             body: `
               <p style="margin:0 0 16px 0;">Du har bedt om en eksport av dine data fra AK Golf HQ.</p>
-              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, ukeplaner, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, ukeplaner, personlige kalenderhendelser, turneringsplaner, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
               <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
               <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
             `,

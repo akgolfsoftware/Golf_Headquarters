@@ -35,7 +35,7 @@ export function anonymisertAkFormel(value: unknown) {
 
 /** Innsyn leser bare subjektets egne rader, aldri andre medlemmer av en gruppe. */
 export async function eksporterWorkbenchData(playerId: string) {
-  const [sessions, physicalBlocks, physicalLogs, tournamentPlans, conflicts] = await Promise.all([
+  const [sessions, physicalBlocks, physicalLogs, tournamentPlans, conflicts, calendarEvents] = await Promise.all([
     prisma.workbenchSession.findMany({ where: { playerId }, include: { drills: { orderBy: { sortOrder: "asc" } } } }),
     prisma.workbenchPhysicalBlock.findMany({ where: { playerId }, include: { weeks: { include: {
       sessions: { where: { playerId }, include: { exercises: { include: { logs: { where: { playerId } } } } } },
@@ -46,8 +46,9 @@ export async function eksporterWorkbenchData(playerId: string) {
       conflicts: { where: { playerId } },
     } }),
     prisma.workbenchPlanConflict.findMany({ where: { playerId } }),
+    prisma.playerBusyBlock.findMany({ where: { userId: playerId } }),
   ]);
-  return { sessions, physicalBlocks, physicalLogs, tournamentPlans, conflicts };
+  return { sessions, physicalBlocks, physicalLogs, tournamentPlans, conflicts, calendarEvents };
 }
 
 /** Vasker fritekst/ugjennomsiktig JSON, men beholder tid, dose, score og tallfelter. */
@@ -95,11 +96,12 @@ export async function anonymiserWorkbenchData(playerId: string) {
     prisma.workbenchPhysicalSession.updateMany({ where: session, data: { title: "Anonymisert fysisk økt", location: null, playerNote: null } }),
     prisma.workbenchPhysicalExercise.updateMany({ where: { session }, data: { title: "Anonymisert øvelse", note: null, tempo: null } }),
     prisma.workbenchPhysicalLog.updateMany({ where: { playerId }, data: { note: null } }),
-    prisma.workbenchTournamentPlan.updateMany({ where: plan, data: { title: "Anonymisert turneringsplan", notes: null, format: null } }),
+    prisma.workbenchTournamentPlan.updateMany({ where: plan, data: { title: "Anonymisert turneringsplan", notes: null, format: null, tour: null, country: null, location: null, wagrSource: null } }),
     prisma.workbenchTournamentPreparation.updateMany({ where: { plan }, data: { title: "Anonymisert forberedelse", notes: null } }),
     prisma.workbenchTournamentRound.updateMany({ where: { plan }, data: { startHole: null, routine: null, gamePlan: null, notes: null, source: null } }),
     prisma.workbenchTournamentEvaluation.updateMany({ where: { plan }, data: { summary: null, learnings: null, nextAction: null, source: null } }),
     prisma.workbenchPlanConflict.updateMany({ where: { playerId }, data: { title: "Anonymisert plankonflikt", details: null } }),
+    prisma.playerBusyBlock.updateMany({ where: { userId: playerId }, data: { title: "Opptatt", note: null, kind: "ANNET" } }),
   ]);
   return drillCount + periodCount + goalCount + resultater.reduce((sum, resultat) => sum + resultat.count, 0);
 }

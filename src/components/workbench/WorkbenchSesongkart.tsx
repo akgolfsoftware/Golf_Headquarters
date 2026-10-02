@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkbenchHendelserArk } from "./WorkbenchHendelserArk";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type CSSProperties } from "react";
@@ -25,6 +26,7 @@ export function WorkbenchSesongkart({ data }: { data: WorkbenchSamletData }) {
   const router = useRouter();
   const s = data.sesong;
   const [valgtId, setValgtId] = useState<string | null>(data.planKontekst.referanse.periode ?? s?.perioder.find(p => p.startDate <= data.uke.weekStart && p.endDate >= data.uke.weekStart)?.id ?? null);
+  const [hendelser, setHendelser] = useState(false);
   const [rediger, setRediger] = useState<"periode" | "ny" | "sesong" | null>(null);
   const velgPeriode = (id: string) => { setValgtId(id); router.replace(samletWorkbenchUrl(data.player.id, "sesong", { ...data.planKontekst.referanse, periode: id }, data.routeSurface, {}, { niva: data.planKontekst.visning }), { scroll: false }); };
   if (!s) return <div className="ws-empty"><h2>Sesongkartet kunne ikke hentes</h2><p>Prøv å åpne sesongen på nytt.</p></div>;
@@ -48,8 +50,9 @@ export function WorkbenchSesongkart({ data }: { data: WorkbenchSamletData }) {
   const monthDays = Array.from({ length: Math.round((dagtid(monthEnd) - dagtid(month)) / 86400000) }, (_, i) => new Date(dagtid(month) + i * 86400000).toISOString().slice(0, 10));
   const offset = (new Date(`${month}T12:00:00Z`).getUTCDay() + 6) % 7;
   return <>
+    {hendelser && <WorkbenchHendelserArk playerId={data.player.id} dato={data.uke.weekStart} editable={data.role === "player"} onLukk={() => setHendelser(false)} />}
     <div className="ws-toolbar"><h2>{s.plan?.navn ?? "Sesongkart"}</h2><span className="ws-muted">{dagOgDato(s.vindu.fraDato.slice(0, 10))}–{dagOgDato(new Date(dagtid(s.vindu.tilDato) - 86400000).toISOString().slice(0, 10))}</span>
-      <div className="ws-row">{[["aar", "År"], ["periode", "Periode"], ["maned", "Måned"]].map(([niva, label]) => <Link key={niva} className="pa-btn pa-btn--secondary" aria-current={zoom === niva ? "page" : undefined} href={samletWorkbenchUrl(data.player.id, "sesong", referanse, data.routeSurface, {}, { niva: niva === "aar" ? "aar" : niva === "periode" ? "periode" : "maned" })}>{label}</Link>)}</div>
+      <div className="ws-row"><Knapp variant="secondary" onClick={() => setHendelser(true)}>Hendelser</Knapp><Link className="pa-btn pa-btn--secondary" href={`${klassiskWorkbenchUrl(data.player.id, "uke", referanse, data.routeSurface)}&pille=turn`}>Turneringsplan</Link>{[["aar", "År"], ["periode", "Periode"], ["maned", "Måned"]].map(([niva, label]) => <Link key={niva} className="pa-btn pa-btn--secondary" aria-current={zoom === niva ? "page" : undefined} href={samletWorkbenchUrl(data.player.id, "sesong", referanse, data.routeSurface, {}, { niva: niva === "aar" ? "aar" : niva === "periode" ? "periode" : "maned" })}>{label}</Link>)}</div>
       <Knapp variant="secondary" onClick={() => setRediger("sesong")}>{s.plan ? "Sesonggrenser" : "Opprett årsplan"}</Knapp><Knapp icon={Plus} disabled={!s.plan} onClick={() => setRediger("ny")}>Ny periode</Knapp>
     </div>
     <div className="ws-season"><main aria-label="Sesongtidslinje" className="ws-panel">

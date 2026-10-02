@@ -12,6 +12,7 @@ import type { MinKalenderData, MinKalenderItem } from "@/lib/workbench/min-calen
 import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
 import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { VisningPiller } from "./VisningPiller";
+import { SessionExecutionPanel } from "./SessionExecutionPanel";
 
 const DAYS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 const HOURS = Array.from({ length: 18 }, (_, index) => index + 5);
@@ -65,6 +66,7 @@ function Inspector({ item, playerId, routeSurface, planKontekst }: { item?: MinK
     <span className="wb-kicker">Formel</span>
     <dl>{rows.map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
     <Link className="wb-quiet wb-inline-link wb-min-open" href={href}>Åpne økt</Link>
+    {item.session ? <SessionExecutionPanel key={`${item.session.id}-${item.session.updatedAt}`} session={item.session} /> : null}
   </section>;
 }
 

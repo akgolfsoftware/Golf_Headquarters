@@ -1,15 +1,10 @@
 /**
- * Auto-koble PlayerHQ-brukere til PublicPlayer via eksakt navnematch.
- *
- * Regler (samme disiplin som dedupe):
- * - Kun normalizePlayerName-likhet (formaterings-normalisering).
- * - Hopp over hvis 0 treff eller >1 PublicPlayer med samme normaliserte navn.
- * - Hopp over hvis PublicPlayer allerede er koblet til en annen bruker.
- * - Aldri gjett middelsnavn-varianter.
+ * Bevarer kallkontrakten for tidligere navnebasert kontokobling.
+ * Navnelikhet er ikke identitetsbevis og oppretter aldri en ny binding.
+ * Ny binding krever en separat, verifisert vei med stabil kilde-ID.
  */
 
 import type { PrismaClient } from "@/generated/prisma/client";
-import { normalizePlayerName } from "@/lib/scrapers/player-resolve";
 import { mirrorTournamentResultForLinkedUser } from "@/lib/turneringer/materialize-entry";
 
 export type LinkPublicPlayersResult = {
@@ -18,6 +13,7 @@ export type LinkPublicPlayersResult = {
   skippedAmbiguous: number;
   skippedNoMatch: number;
   skippedAlreadyLinkedPlayer: number;
+  skippedUnverified: number;
 };
 
 export async function linkPublicPlayersByExactName(
@@ -30,74 +26,15 @@ export async function linkPublicPlayersByExactName(
       anonymisertAt: null,
       role: { in: ["PLAYER", "COACH", "ADMIN"] },
     },
-    select: { id: true, name: true },
+    select: { id: true },
   });
-
-  const publicPlayers = await prisma.publicPlayer.findMany({
-    where: { isActive: true },
-    select: {
-      id: true,
-      name: true,
-      linkedUser: { select: { id: true } },
-    },
-  });
-
-  // Map normalisert navn → kandidater
-  const byNorm = new Map<string, typeof publicPlayers>();
-  for (const p of publicPlayers) {
-    const k = normalizePlayerName(p.name);
-    if (!k) continue;
-    if (!byNorm.has(k)) byNorm.set(k, []);
-    byNorm.get(k)!.push(p);
-  }
-
-  let linked = 0;
-  let skippedAmbiguous = 0;
-  let skippedNoMatch = 0;
-  let skippedAlreadyLinkedPlayer = 0;
-
-  for (const u of users) {
-    const k = normalizePlayerName(u.name);
-    if (!k) {
-      skippedNoMatch++;
-      continue;
-    }
-    const candidates = byNorm.get(k) ?? [];
-    if (candidates.length === 0) {
-      skippedNoMatch++;
-      continue;
-    }
-    if (candidates.length > 1) {
-      skippedAmbiguous++;
-      continue;
-    }
-    const target = candidates[0];
-    // PublicPlayer.linkedUser er reverse av User.publicPlayerId
-    if (target.linkedUser && target.linkedUser.id !== u.id) {
-      skippedAlreadyLinkedPlayer++;
-      continue;
-    }
-
-    try {
-      await prisma.user.update({
-        where: { id: u.id },
-        data: { publicPlayerId: target.id },
-      });
-      linked++;
-      // Unngå at to brukere i samme batch tar samme public player
-      target.linkedUser = { id: u.id };
-    } catch {
-      // P2002: race / unique — hopp over
-      skippedAlreadyLinkedPlayer++;
-    }
-  }
-
   return {
     scannedUsers: users.length,
-    linked,
-    skippedAmbiguous,
-    skippedNoMatch,
-    skippedAlreadyLinkedPlayer,
+    linked: 0,
+    skippedAmbiguous: 0,
+    skippedNoMatch: 0,
+    skippedAlreadyLinkedPlayer: 0,
+    skippedUnverified: users.length,
   };
 }
 
@@ -157,8 +94,9 @@ export async function backfillTournamentResultsForLinkedUsers(
 }
 
 /**
- * Koble én enkelt bruker til PublicPlayer og speil turneringsresultater umiddelbart.
- * Brukes ved profilopprettelse, onboarding og profil-oppdatering.
+ * Speil turneringsresultater for en allerede koblet bruker.
+ * Ukoblede brukere får aldri en binding fra navn, heller ikke ved ett treff.
+ * Signaturen beholdes for profilopprettelse, onboarding og profiloppdatering.
  */
 export async function linkAndSyncUserTournamentResults(
   prisma: PrismaClient,
@@ -166,44 +104,11 @@ export async function linkAndSyncUserTournamentResults(
 ): Promise<{ linked: boolean; publicPlayerId?: string; mirrored: number }> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, name: true, publicPlayerId: true },
+    select: { id: true, publicPlayerId: true },
   });
   if (!user) return { linked: false, mirrored: 0 };
 
-  let publicPlayerId = user.publicPlayerId;
-
-  if (!publicPlayerId) {
-    const k = normalizePlayerName(user.name);
-    if (!k) return { linked: false, mirrored: 0 };
-
-    const candidates = await prisma.publicPlayer.findMany({
-      where: { isActive: true },
-      select: {
-        id: true,
-        name: true,
-        linkedUser: { select: { id: true } },
-      },
-    });
-
-    const matching = candidates.filter(
-      (p) => normalizePlayerName(p.name) === k,
-    );
-
-    if (matching.length === 1) {
-      const target = matching[0];
-      if (!target.linkedUser || target.linkedUser.id === user.id) {
-        try {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { publicPlayerId: target.id },
-          });
-          publicPlayerId = target.id;
-        } catch {
-          // Unngå krasj hvis en race condition oppstår
-        }
-      }
-    }
-  }
+  const publicPlayerId = user.publicPlayerId;
 
   if (!publicPlayerId) {
     return { linked: false, mirrored: 0 };

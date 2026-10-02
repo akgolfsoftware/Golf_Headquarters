@@ -18,6 +18,7 @@ function useState<T>(initial: T | (() => T)): [T, (next: T | ((old: T) => T)) =>
   if (!(index in slots)) slots[index] = typeof initial === "function" ? (initial as () => T)() : initial;
   return [slots[index] as T, next => { slots[index] = typeof next === "function" ? (next as (old: T) => T)(slots[index] as T) : next; }];
 }
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("react", { namedExports: { ...React, useState, useMemo: (fn: () => unknown) => fn(), useCallback: (fn: unknown) => fn, useRef: (v: unknown) => ({ current: v }), useEffect() {}, useTransition: () => [false, (fn: () => Promise<unknown>) => transitions.push(fn())] } });
 const replacements: string[] = [];
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ push() {}, refresh() {}, replace: (url: string) => replacements.push(url) }) } });
@@ -42,6 +43,8 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, updateSeriesSession: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
 } });
 mock.module("@/lib/workbench/treukerssyklus-actions", { namedExports: { lastTreukerssyklus: unused, lagreTreukerssyklus: unused, kopierTreukerssyklus: unused, opplosTreukerssyklus: unused } });
+mock.module("@/lib/workbench/plan-handlinger-actions", { namedExports: { flyttWorkbenchPlanOkt: unused, kopierWorkbenchPlanOkt: unused, angreWorkbenchPlanHandling: unused } });
+mock.module("@/lib/workbench/hendelser-actions", { namedExports: { lagreWorkbenchHendelse: unused, slettWorkbenchHendelse: unused, lastWorkbenchHendelser: unused } });
 mock.module("@/lib/workbench/workbench-samlet-sesong-actions", { namedExports: { saveSeasonBounds: unused } });
 mock.module("@/lib/workbench/group-session-actions", { namedExports: { loadGroupWorkbenchSessions: unused, publishGroupWorkbenchSessions: unused, saveGroupWorkbenchSession: async (input: GroupPayload) => { groupSaved.push(input); if (groupError) return { ok: false, error: groupError }; assert.ok(groupSession); return { ok: true, data: groupSession }; }, withdrawGroupWorkbenchSessions: unused } });
 

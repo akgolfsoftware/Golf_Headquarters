@@ -14,6 +14,7 @@ function useState<T>(initial:T|(()=>T)):[T,(v:T|((old:T)=>T))=>void]{
  if(!(i in slots))slots[i]=typeof initial==='function'?(initial as ()=>T)():initial;
  return [slots[i] as T,v=>{slots[i]=typeof v==='function'?(v as (old:T)=>T)(slots[i] as T):v;}];
 }
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module('react',{namedExports:{...React,useState,useEffect(){},useRef:()=>({current:null}),useCallback:(fn:unknown)=>fn,useMemo:(fn:()=>unknown)=>fn(),useTransition:()=>[false,(fn:()=>Promise<unknown>)=>pending.push(fn())]}});
 mock.module('sonner',{namedExports:{toast:{success(){},error(){}}}});
 mock.module('next/link',{defaultExport:'a'});

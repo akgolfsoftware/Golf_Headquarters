@@ -152,6 +152,8 @@ test('faktisk tidsbruk lagrer 0, bevarer undefined og nullstiller null med ekte 
  const created=data(await as('COACH_A',()=>wb.createSession({playerId:actors.get('P01')!,date:'2026-10-01',startMinute:540,durationMinutes:30,title:'Syntetisk faktisk-tid-test',pyramid:'SLAG',drills:[]})));
  try {
   assert.equal((await db.workbenchSession.findUniqueOrThrow({where:{id:created.id}})).actualMinutes,null);
+  // Gjennomføring registreres først når spilleren har en publisert økt.
+  data(await as('COACH_A',()=>wb.publishSessions([created.id])));
   data(await as('P01',()=>wb.updateSessionEffort({sessionId:created.id,actualMinutes:0,perceivedEffort:1})));
   assert.equal((await db.workbenchSession.findUniqueOrThrow({where:{id:created.id}})).actualMinutes,0);
   data(await as('COACH_A',()=>wb.updateSessionEffort({sessionId:created.id,actualMinutes:undefined,perceivedEffort:4})));

@@ -138,4 +138,6 @@ export const SPILLER_SYNLIGE_STATUSER = [
   "PUBLISHED",
   "IN_PROGRESS",
   "COMPLETED",
+  "SKIPPED",
+  "ABANDONED",
 ] as const;

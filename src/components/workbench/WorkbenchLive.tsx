@@ -6,11 +6,13 @@ import { toast } from "sonner";
 
 import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { Drill, WorkbenchSession } from "@/lib/domain/workbench/types";
-import { completeSession, saveWorkbenchLiveSnapshot, startNextWorkbenchLiveSession } from "@/lib/workbench/wb-actions";
+import { saveWorkbenchLiveSnapshot, startNextWorkbenchLiveSession } from "@/lib/workbench/wb-actions";
 import type { WorkbenchLiveData, WorkbenchLiveSnapshot } from "@/lib/workbench/live";
 import type { WorkbenchSurface } from "@/lib/workbench/visning-url";
 import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { VisningPiller } from "./VisningPiller";
+import { SessionExecutionPanel } from "./SessionExecutionPanel";
+import { executionSeconds, readSessionExecution } from "@/lib/workbench/wb-session-life";
 
 const ENVIRONMENT: Record<string, string> = {
   RANGE: "Treningsområde",
@@ -39,6 +41,8 @@ function startTime(minutes: number): string {
 }
 
 function elapsed(snapshot: WorkbenchLiveSnapshot): number {
+  const execution = readSessionExecution(snapshot);
+  if (execution) return executionSeconds(execution);
   const sinceStart = Math.floor((Date.now() - new Date(snapshot.startedAtISO).getTime()) / 1000);
   return Math.max(snapshot.totalSec, Number.isFinite(sinceStart) ? sinceStart : 0);
 }
@@ -95,6 +99,10 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
   const [snapshot, setSnapshot] = useState(data.snapshot);
   const snapshotRef = useRef(data.snapshot);
   const saveQueue = useRef(Promise.resolve());
+  const versionRef = useRef(data.current?.updatedAt ?? "");
+  const saveFailed = useRef(false);
+  const queued = useRef(0);
+  const [saveState, setSaveState] = useState<"confirmed" | "saving" | "error">("confirmed");
   const [seconds, setSeconds] = useState(() => data.snapshot?.totalSec ?? 0);
 
   useEffect(() => {
@@ -114,7 +122,8 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
   const targetSeries = activeDrill && snapshot ? snapshot.seriesTargets[activeDrill.id] ?? 3 : 3;
   const reps = activeState?.reps ?? 0;
   const currentSeries = Math.min(targetSeries, Math.floor(reps / 12) + 1);
-  const allDone = Boolean(snapshot?.drills.length && snapshot.drills.every((drill) => drill.status === "done"));
+  const execution = readSessionExecution(snapshot);
+  const paused = execution?.phase === "PAUSED";
   function velgLiveOkt(sessionId?: string) {
     const query = new URLSearchParams(searchParams.toString());
     if (sessionId) query.set("okt", sessionId);
@@ -125,10 +134,14 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
   function queueSave(next: WorkbenchLiveSnapshot) {
     if (!current) return;
     const payload = { ...next, sessionId: current.id, totalSec: elapsed(next) };
+    queued.current += 1;
+    setSaveState("saving");
     saveQueue.current = saveQueue.current.then(async () => {
-      const result = await saveWorkbenchLiveSnapshot(payload);
-      if (!result.ok) toast.error(result.error);
-    }).catch(() => { toast.error("Live-statusen kunne ikke lagres."); });
+      const result = await saveWorkbenchLiveSnapshot({ ...payload, expectedUpdatedAt: versionRef.current });
+      if (!result.ok) { saveFailed.current = true; setSaveState("error"); toast.error(result.error); }
+      else { versionRef.current = result.data.updatedAtISO; saveFailed.current = false; }
+    }).catch(() => { saveFailed.current = true; setSaveState("error"); toast.error("Live-statusen kunne ikke lagres."); })
+      .finally(() => { queued.current -= 1; if (!queued.current && !saveFailed.current) setSaveState("confirmed"); });
   }
 
   function commit(next: WorkbenchLiveSnapshot) {
@@ -141,7 +154,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
 
   function changeReps(delta: number) {
     const source = snapshotRef.current;
-    if (!source || activeIndex < 0) return;
+    if (!source || paused || activeIndex < 0) return;
     commit({
       ...source,
       drills: source.drills.map((drill, index) => index === activeIndex ? { ...drill, reps: Math.max(0, Math.min(5000, drill.reps + delta)) } : drill),
@@ -150,7 +163,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
 
   function changeSeries(delta: number) {
     const source = snapshotRef.current;
-    if (!source || !activeDrill) return;
+    if (!source || paused || !activeDrill) return;
     commit({
       ...source,
       seriesTargets: { ...source.seriesTargets, [activeDrill.id]: Math.max(1, Math.min(12, targetSeries + delta)) },
@@ -159,7 +172,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
 
   function chooseDrill(index: number) {
     const source = snapshotRef.current;
-    if (!source) return;
+    if (!source || paused) return;
     const clicked = source.drills[index];
     const nextIndex = clicked.status === "active" ? index + 1 : index;
     commit({
@@ -175,6 +188,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
     if (!data.next) return;
     startTransition(async () => {
       await saveQueue.current;
+      if (saveFailed.current) { toast.error("Live-data er ikke bekreftet lagret. Prøv igjen før du starter neste økt."); return; }
       const result = await startNextWorkbenchLiveSession({ currentSessionId: current?.id, nextSessionId: data.next!.id });
       if (!result.ok) {
         toast.error(result.error);
@@ -185,19 +199,6 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
     });
   }
 
-  function finishCurrent() {
-    if (!current) return;
-    startTransition(async () => {
-      await saveQueue.current;
-      const result = await completeSession(current.id);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success("Økten er fullført");
-      velgLiveOkt();
-    });
-  }
 
   return (
     <div className="wb-layout wb-live-layout">
@@ -209,10 +210,25 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
           ) : (
             <>
               <header className="wb-live-heading">
-                <div><span className="wb-kicker">Økt pågår</span><h1>{current.title}</h1></div>
+                <div><span className="wb-kicker">{paused ? "Økt på pause" : "Økt pågår"}</span><h1>{current.title}</h1></div>
                 <span className="wb-live-meta">{spillerNavn} · start {startTime(current.startMinute)} · {current.location ?? (current.environment ? ENVIRONMENT[current.environment] : "—")}</span>
                 <span className="wb-live-clock" aria-label={`Tid brukt ${clock(seconds)}`}>{clock(seconds)}</span>
               </header>
+              <p role="status">{saveState === "saving" ? "Lagrer Live-data …" : saveState === "error" ? "Live-data er ikke lagret" : "Live-data bekreftet lagret"}</p>
+              {saveState === "error" ? <button type="button" className="wb-quiet" onClick={() => { if (snapshotRef.current) queueSave(snapshotRef.current); }}>Prøv lagring igjen</button> : null}
+              <SessionExecutionPanel key={current.id} session={current} execution={execution} live
+                beforeAction={async () => { await saveQueue.current; return saveFailed.current ? null : versionRef.current; }}
+                onSaved={(saved, next) => {
+                  versionRef.current = saved.updatedAt;
+                  if (snapshotRef.current && next) {
+                    const updated = { ...snapshotRef.current, execution: next, totalSec: executionSeconds(next) };
+                    snapshotRef.current = updated; setSnapshot(updated); setSeconds(updated.totalSec);
+                  }
+                  if (saved.status !== "IN_PROGRESS") {
+                    const query = new URLSearchParams(searchParams.toString()); query.set("niva", "okt"); query.set("okt", saved.id);
+                    router.replace(`${pathname}?${query.toString()}`, { scroll: false });
+                  }
+                }} />
 
               {current.drills.length === 0 ? (
                 <section className="wb-live-empty"><span className="wb-kicker">Øvelser i økten</span><h2>Ingen øvelser lagt inn</h2><p>Åpne økten og legg til øvelser før gjennomføring.</p></section>
@@ -221,7 +237,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
                   <span className="wb-kicker">Øvelse {Math.max(1, activeIndex + 1)} av {current.drills.length}</span>
                   <h2>{activeDrill?.title ?? "Ingen øvelse"}</h2>
                   <p>{activeDrill?.akFormel.detaljer?.mal?.malsetning ?? activeDrill?.description ?? current.maalsetning ?? "—"}</p>
-                  {activeDrill ? <><div className="wb-live-counter"><button type="button" aria-label="Trekk fra ett slag" onClick={() => changeReps(-1)}>−</button><strong>{reps}</strong><button type="button" aria-label="Legg til ett slag" onClick={() => changeReps(1)}>+</button></div><span className="wb-live-counter-label">slag i serie {currentSeries} av {targetSeries}</span></> : null}
+                  {activeDrill ? <><div className="wb-live-counter"><button type="button" disabled={paused || pending} aria-label="Trekk fra ett slag" onClick={() => changeReps(-1)}>−</button><strong>{reps}</strong><button type="button" disabled={paused || pending} aria-label="Legg til ett slag" onClick={() => changeReps(1)}>+</button></div><span className="wb-live-counter-label">slag i serie {currentSeries} av {targetSeries}</span></> : null}
                 </section>
 
                 <section className="wb-live-card">
@@ -244,7 +260,7 @@ export function WorkbenchLive({ playerId, spillerNavn, data, routeSurface = "age
                   const label = state?.status === "done" ? "Gjennomført" : state?.status === "active" ? "Pågår" : "Ikke startet";
                   return <button key={drill.id} type="button" aria-current={state?.status === "active" ? "step" : undefined} aria-label={`${drill.title}: ${label}. Klikk for å gå videre.`} onClick={() => chooseDrill(index)}><span>{index + 1}</span><b>{drill.title}</b><small>{drill.durationMinutes} min</small><em>{label}</em></button>;
                 })}</div>
-                {allDone ? <button type="button" className="wb-live-finish" disabled={pending} onClick={finishCurrent}>{pending ? "Fullfører …" : "Fullfør økt"}</button> : null}
+
               </section></>}
             </>
           )}

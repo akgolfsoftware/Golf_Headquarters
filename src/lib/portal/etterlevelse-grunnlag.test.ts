@@ -42,7 +42,7 @@ const prisma = {
     assert.equal(args.where.playerId, "player-test");
     assert.equal(args.where.hiddenByPlayer, false);
     assert.equal(args.where.needsPlayerApproval, false);
-    assert.deepEqual(args.where.status.in, ["PUBLISHED", "IN_PROGRESS", "COMPLETED"]);
+    assert.deepEqual(args.where.status.in, ["PUBLISHED", "IN_PROGRESS", "COMPLETED", "SKIPPED", "ABANDONED"]);
     assert.deepEqual(args.where.OR, [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }]);
     return [{ id: "wb-published", title: "Testøkt", date: wbDate, startMinute: wbMinute,
       durationMinutes: 60, status: "COMPLETED", pyramid: "TEK", location: null, notes: null, drills: [] }];

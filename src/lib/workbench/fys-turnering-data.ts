@@ -85,6 +85,11 @@ export type WorkbenchPhysicalBlockDto = {
 
 export type WorkbenchTournamentPlanDto = {
   id: string;
+  updatedAt?: string;
+  editable?: boolean;
+  tour?: string | null; country?: string | null; location?: string | null;
+  holes?: number | null; priority?: string | null;
+  wagrPower?: number | null; wagrSourceYear?: number | null; wagrSource?: string | null;
   tournamentEntryId: string | null;
   title: string;
   status: WorkbenchPlanStatus | string;
@@ -217,7 +222,7 @@ export async function loadFysTurneringWorkbenchData(
         playerId,
         endDate: { gte: windowStart },
         startDate: { lte: windowEnd },
-        ...visibleWhere(opts?.viewer),
+        ...(opts?.viewer === "player" ? { OR: [{ createdBy: playerId }, { status: { in: [...PLAYER_VISIBLE_STATUSES] } }] } : {}),
       },
       orderBy: [{ startDate: "asc" }, { createdAt: "desc" }],
       take: 12,
@@ -324,6 +329,8 @@ export async function loadFysTurneringWorkbenchData(
     }),
     tournamentPlans: tournamentPlans.map((plan) => ({
       id: plan.id,
+      editable: opts?.viewer !== "player" || plan.createdBy === playerId, updatedAt: plan.updatedAt.toISOString(), tour: plan.tour, country: plan.country, location: plan.location,
+      holes: plan.holes, priority: plan.priority, wagrPower: plan.wagrPower, wagrSourceYear: plan.wagrSourceYear, wagrSource: plan.wagrSource,
       tournamentEntryId: plan.tournamentEntryId,
       title: plan.title,
       status: plan.status,

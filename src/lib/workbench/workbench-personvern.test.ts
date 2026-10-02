@@ -5,7 +5,7 @@ import { Prisma } from "@/generated/prisma/client";
 const calls: { model: string; operation: string; where: unknown; data?: Record<string, unknown> }[] = [];
 const models = ["seasonPlan", "periodBlock", "tournamentEntry", "workbenchSession", "workbenchDrill", "workbenchPhysicalBlock", "workbenchPhysicalWeek",
   "workbenchPhysicalSession", "workbenchPhysicalExercise", "workbenchPhysicalLog", "workbenchTournamentPlan",
-  "workbenchTournamentPreparation", "workbenchTournamentRound", "workbenchTournamentGoal", "workbenchTournamentEvaluation", "workbenchPlanConflict"];
+  "workbenchTournamentPreparation", "workbenchTournamentRound", "workbenchTournamentGoal", "workbenchTournamentEvaluation", "workbenchPlanConflict", "playerBusyBlock"];
 mock.module("@/lib/prisma", { namedExports: { prisma: Object.fromEntries(models.map(model => [model, {
   findMany: async ({ where }: { where: unknown }) => { calls.push({ model, operation: "read", where }); return [{ id: model }]; },
   updateMany: async ({ where, data }: { where: unknown; data: Record<string, unknown> }) => {
@@ -17,13 +17,13 @@ test.beforeEach(() => { calls.length = 0; });
 test("innsyn avgrenser alle fem innganger til spiller, aldri coach eller gruppe", async () => {
   const { eksporterWorkbenchData } = await import("./workbench-personvern");
   const result = await eksporterWorkbenchData("syntetisk-eier");
-  assert.equal(calls.length, 5);
-  for (const c of calls) assert.deepEqual(c.where, { playerId: "syntetisk-eier" });
+  assert.equal(calls.length, 6);
+  for (const c of calls) assert.deepEqual(c.where, c.model === "playerBusyBlock" ? { userId: "syntetisk-eier" } : { playerId: "syntetisk-eier" });
   assert.equal(result.sessions.length, 1); assert.equal(result.physicalLogs.length, 1);
 });
 test("vask er eieravgrenset gjennom direkte felt eller relasjon; tall bevares", async () => {
   const { anonymiserWorkbenchData } = await import("./workbench-personvern");
-  assert.equal(await anonymiserWorkbenchData("syntetisk-eier"), 16);
+  assert.equal(await anonymiserWorkbenchData("syntetisk-eier"), 17);
   for (const c of calls.filter(c => c.operation === "wash")) {
     assert.match(JSON.stringify(c.where), /syntetisk-eier/);
     assert.doesNotMatch(JSON.stringify(c.where), /coachId|groupId/);
@@ -77,4 +77,16 @@ test("ny drillmålsetning vaskes mens tall bevares; øktformål/sted/mål nulles
  calls.length = 0; await anonymiserWorkbenchData("syntetisk-eier");
  const data = calls.find(c => c.model === "workbenchSession")?.data;
  assert.equal(data?.rationale, null); assert.equal(data?.location, null); assert.equal(data?.maalsetning, null);
+});
+
+test("kalenderinnsyn/vask bruker userId; ny turneringsfritekst vaskes og hull/WAGR0/år/prioritet bevares", async () => {
+ const { eksporterWorkbenchData, anonymiserWorkbenchData } = await import("./workbench-personvern");
+ await eksporterWorkbenchData("syntetisk-eier");
+ assert.deepEqual(calls.find(c => c.model === "playerBusyBlock")?.where, { userId: "syntetisk-eier" });
+ calls.length = 0; await anonymiserWorkbenchData("syntetisk-eier");
+ const calendar = calls.find(c => c.model === "playerBusyBlock" && c.operation === "wash");
+ assert.deepEqual(calendar?.where, { userId: "syntetisk-eier" }); assert.deepEqual(calendar?.data, { title: "Opptatt", note: null, kind: "ANNET" });
+ const tournament = calls.find(c => c.model === "workbenchTournamentPlan" && c.operation === "wash")?.data;
+ for (const key of ["tour", "country", "location", "wagrSource"]) assert.equal(tournament?.[key], null);
+ for (const key of ["holes", "wagrPower", "wagrSourceYear", "priority"]) assert.equal(Object.hasOwn(tournament ?? {}, key), false);
 });

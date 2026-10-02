@@ -19,6 +19,7 @@ let pathname = "/portal/planlegge/workbench";
 let query = new URLSearchParams();
 const replaced: { url: string; options: { scroll?: boolean } | undefined }[] = [];
 let refreshed = 0;
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async ({ sessionId }: { sessionId: string }) => fails ? { ok: false, error: "Syntetisk fullføringsfeil" } : { ok: true, data: session(sessionId, "COMPLETED") } } });
 mock.module("next/navigation", { namedExports: { usePathname: () => pathname, useSearchParams: () => query, useRouter: () => ({
   replace: (url: string, options?: { scroll?: boolean }) => replaced.push({ url, options }), refresh: () => { refreshed++; },
 }) } });
@@ -31,6 +32,15 @@ mock.module(createRequire(`${process.cwd()}/package.json`).resolve("sonner"), { 
 const started: { currentSessionId?: string; nextSessionId: string }[] = [];
 const completed: string[] = [];
 let fails = false;
+function MockExecutionPanel({ session: current, onSaved }: { session: WorkbenchSession; onSaved: (session: WorkbenchSession, execution: null) => void }) {
+  return React.createElement("button", { type: "button", onClick: () => transitions.push((async () => {
+    if (fails) { errors.push("Syntetisk fullføringsfeil"); return; }
+    const result = await (await import("@/lib/workbench/wb-session-life-actions")).mutateSessionExecution({ sessionId: current.id });
+    if (result.ok) { completed.push(current.id); successes.push("Økten er fullført"); onSaved(result.data, null); }
+    else errors.push(result.error);
+  })()) }, "Fullfør økt");
+}
+mock.module("@/components/workbench/SessionExecutionPanel", { namedExports: { SessionExecutionPanel: MockExecutionPanel } });
 function session(id: string, status: WorkbenchSession["status"]): WorkbenchSession {
   return { ...createSession({ playerId: "syntetisk-spiller", coachId: "syntetisk-coach", date: "2026-10-01", startMinute: 600, durationMinutes: 60,
     title: "Syntetisk økt", pyramid: "TEK", createdBy: "COACH" }), id, status,
@@ -46,7 +56,7 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
 describe("Workbench Live: valgt økt følger vellykket handling", async () => {
 const { WorkbenchLive } = await import("@/components/workbench/WorkbenchLive");
 type Node = React.ReactElement<Record<string, unknown>>;
-function nodes(node: React.ReactNode): Node[] { if (Array.isArray(node)) return node.flatMap(nodes); if (!React.isValidElement<Record<string, unknown>>(node)) return []; return [node, ...nodes(node.props.children as React.ReactNode)]; }
+function nodes(node: React.ReactNode): Node[] { if (Array.isArray(node)) return node.flatMap(nodes); if (!React.isValidElement<Record<string, unknown>>(node)) return []; const children = node.type === MockExecutionPanel ? (node.type as typeof MockExecutionPanel)(node.props as unknown as Parameters<typeof MockExecutionPanel>[0]) : node.props.children as React.ReactNode; return [node, ...nodes(children)]; }
 function find(node: React.ReactNode, predicate: (n: Node) => boolean): Node { const n = nodes(node).find(predicate); assert.ok(n, "Den faktiske komponentens kontroll finnes"); return n; }
 function click(node: Node) { (node.props.onClick as () => void)(); }
 async function settle() { while (transitions.length) await transitions.shift(); }
@@ -70,7 +80,7 @@ function setUrl(surface: "player" | "agency") {
 }
 function checkContext(url: URL, original: URLSearchParams) {
   assert.equal(url.pathname, pathname);
-  for (const [key, value] of original) if (key !== "okt") assert.equal(url.searchParams.get(key), value, `${key} skal beholdes`);
+  for (const [key, value] of original) if (key !== "okt" && key !== "niva") assert.equal(url.searchParams.get(key), value, `${key} skal beholdes`);
 }
 beforeEach(() => { states.length = 0; cursor = 0; transitions.length = 0; replaced.length = 0; errors.length = 0; successes.length = 0; started.length = 0; completed.length = 0; refreshed = 0; fails = false; });
 
@@ -88,11 +98,11 @@ for (const surface of ["player", "agency"] as const) {
     assert.equal(replaced.length, 1); const url = new URL(replaced[0].url, "https://syntetisk.invalid"); checkContext(url, original);
     assert.equal(url.searchParams.get("okt"), "syntetisk-neste"); assert.deepEqual(replaced[0].options, { scroll: false }); assert.equal(errors.length, 0); assert.ok(successes.includes("Økten er startet"));
   });
-  test(`${surface}: fullføring fjerner foreldet ID og beholder andre valg`, async () => {
+  test(`${surface}: fullføring åpner oppsummeringen for riktig økt og beholder andre valg`, async () => {
     setUrl(surface); const original = new URLSearchParams(query);
     click(find(render(surface), n => n.type === "button" && n.props.children === "Fullfør økt")); await settle();
     assert.deepEqual(completed, ["syntetisk-gammel"]); assert.equal(replaced.length, 1);
-    const url = new URL(replaced[0].url, "https://syntetisk.invalid"); checkContext(url, original); assert.equal(url.searchParams.has("okt"), false); assert.deepEqual(replaced[0].options, { scroll: false }); assert.equal(errors.length, 0); assert.ok(successes.includes("Økten er fullført"));
+    const url = new URL(replaced[0].url, "https://syntetisk.invalid"); checkContext(url, original); assert.equal(url.searchParams.get("niva"), "okt"); assert.equal(url.searchParams.get("okt"), "syntetisk-gammel"); assert.deepEqual(replaced[0].options, { scroll: false }); assert.equal(errors.length, 0); assert.ok(successes.includes("Økten er fullført"));
   });
   test(`${surface}: avvist start og fullføring beholder adressen og viser feil`, async () => {
     setUrl(surface); const original = query.toString(); fails = true;

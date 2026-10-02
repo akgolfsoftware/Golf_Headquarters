@@ -8,6 +8,7 @@ import { UI } from '@/lib/domain/workbench/labels';
 const states=new Map<string,unknown[]>();let context='',cursor=0;
 function draw<T>(id:string,fn:()=>T):T{context=id;cursor=0;return fn();}
 function useState<T>(initial:T|(()=>T)):[T,(v:T|((old:T)=>T))=>void]{const slots=states.get(context)??[];states.set(context,slots);const i=cursor++;if(!(i in slots))slots[i]=typeof initial==='function'?(initial as ()=>T)():initial;return[slots[i] as T,v=>{slots[i]=typeof v==='function'?(v as(old:T)=>T)(slots[i] as T):v;}];}
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module('react',{namedExports:{...React,useState,useEffect(){},useRef:()=>({current:null}),useCallback:(fn:unknown)=>fn,useMemo:(fn:()=>unknown)=>fn(),useTransition:()=>[false,()=>{}]}});
 mock.module('next/link',{defaultExport:'a'});mock.module('next/navigation',{namedExports:{useRouter:()=>({replace(){}})}});mock.module('sonner',{namedExports:{toast:{success(){},error(){}}}});
 mock.module('@/components/workbench/SourcesPanel',{namedExports:{SourcesPanel:'sources'}});mock.module('@/components/workbench/VisningPiller',{namedExports:{VisningPiller:'tabs'}});

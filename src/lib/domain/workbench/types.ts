@@ -98,7 +98,8 @@ export type SessionStatus =
   | "IN_PROGRESS"
   | "COMPLETED"
   | "CANCELLED"
-  | "SKIPPED";
+  | "SKIPPED"
+  | "ABANDONED";
 
 export type PracticeType = "BLOKK" | "VARIABEL" | "KONKURRANSE" | "SPILL_TEST";
 

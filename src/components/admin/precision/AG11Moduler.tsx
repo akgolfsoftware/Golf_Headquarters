@@ -21,6 +21,7 @@ import { Ikon, Knapp, KnappLenke, TomTilstand } from "@/components/precision/pa"
 import { Ark, Nokkelverdi, Side, SideHode, Tabell } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Caps, Listerad, Valgpille, akseStil } from "@/components/precision/pa-workbench";
+import { WorkbenchTurneringsplanArk } from "@/components/workbench/WorkbenchTurneringsplanArk";
 import type { WorkbenchFysTurneringData, WorkbenchPhysicalSessionDto, WorkbenchTournamentPlanDto } from "@/lib/workbench/fys-turnering-data";
 import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
 import { dagOgDato, klokke } from "./AG11Ark";
@@ -247,7 +248,7 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurfa
   const plan: WorkbenchTournamentPlanDto | null = planer.find((p) => p.id === valgtId) ?? planer[0] ?? null;
   const [fane, setFane] = useState<(typeof FANER)[number]>("Forberedelse");
   const [ny, setNy] = useState(false);
-  const [tf, setTf] = useState({ title: "", startDate: idag, endDate: idag, travelStartDate: "", travelEndDate: "", focus: "UTVIKLING" as "TRENING" | "UTVIKLING" | "PRESTASJON" });
+  const [redigerPlan, setRedigerPlan] = useState(false);
   const brutto = plan?.rounds.map((r) => r.grossScore).filter((v): v is number => v != null) ?? [];
   const sg = plan?.rounds.map((r) => r.strokesGained).filter((v): v is number => v != null) ?? [];
 
@@ -256,14 +257,15 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurfa
       sub={plan ? <span className="a9-rad"><Status status={plan.status} /><span>{plan.title} · {spenn(plan.startDate, plan.endDate)}</span></span> : undefined}
       actions={<>
         <Tilbake playerId={playerId} routeSurface={routeSurface} />
-        <Knapp variant="secondary" icon={Plus} disabled={!actions.opprettTurneringsplan} onClick={() => setNy(true)}>Ny turneringsplan</Knapp>
+        <Knapp variant="secondary" icon={Plus} disabled={data.available === false} onClick={() => setNy(true)}>Ny turneringsplan</Knapp>
+        {plan && plan.editable !== false && <Knapp variant="secondary" onClick={() => setRedigerPlan(true)}>Rediger turneringsplan</Knapp>}
         {plan && plan.status !== "PUBLISHED" && actions.publiserTurneringsplan && <Knapp icon={Send} disabled={pending} onClick={() => kjor(() => actions.publiserTurneringsplan!({ id: plan.id }))}>Publiser til spiller</Knapp>}
       </>} />
     {data.available === false && <InlineVarsel tone="info" tittel="Turneringsplan er ikke aktivert">Datagrunnlaget for denne modulen må etableres før turneringsplaner kan lagres.</InlineVarsel>}
     {melding && <InlineVarsel tone="warn">{melding}</InlineVarsel>}
     {data.openConflicts.length > 0 && <InlineVarsel tone="warn" tittel={`${data.openConflicts.length} åpne konflikter`}>{data.openConflicts.map((c) => c.title).join(" · ")}</InlineVarsel>}
     {!plan ? <TomTilstand icon={Trophy} title="Ingen turneringsplan ennå" text="Lag en plan med reise, runder, brutto score, SG, mål og evaluering."
-      actions={<Knapp icon={Plus} disabled={!actions.opprettTurneringsplan} onClick={() => setNy(true)}>Ny turneringsplan</Knapp>} /> : <div className="a9-to">
+      actions={<Knapp icon={Plus} disabled={data.available === false} onClick={() => setNy(true)}>Ny turneringsplan</Knapp>} /> : <div className="a9-to">
       <section className="pa-card a9-kort" aria-label="Turneringer i perioden">
         <span className="kicker">Turneringer i perioden</span>
         <div role="list" className="a9-liste">{planer.map((p, i) => <button key={p.id} type="button" role="listitem" onClick={() => setValgtId(p.id)} aria-current={p.id === plan.id || undefined}
@@ -281,6 +283,9 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurfa
             ["Reise", plan.travelStartDate ? spenn(plan.travelStartDate, plan.travelEndDate ?? plan.travelStartDate) : "—", { mono: true }],
             ["Format", plan.format ?? "—"],
             ["Fokus", FOKUS[plan.focus] ?? plan.focus],
+            ["Tour", plan.tour ?? "—"], ["Land", plan.country ?? "—"], ["Sted", plan.location ?? "—"],
+            ["Hull per runde", plan.holes ?? "—"], ["Prioritet", plan.priority ?? "—"],
+            ["Historisk WAGR Power", plan.wagrPower ?? "—"], ["WAGR kildeår", plan.wagrSourceYear ?? "—"], ["WAGR kilde", plan.wagrSource ?? "—"],
           ]} />
           {plan.rounds.length === 0 ? <Caps>INGEN RUNDER LAGT INN</Caps> : <Tabell caption="Runder og dager" columns={[
             { key: "n", label: "Runde", mono: true, render: (r) => r.roundNumber },
@@ -311,18 +316,8 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurfa
       </section>
     </div>}
 
-    {ny && <Ark open onClose={() => setNy(false)} kicker="Workbench · Turneringer" title="Ny turneringsplan"
-      footer={<><Knapp fullWidth icon={Check} loading={pending} disabled={!tf.title.trim()} onClick={() => actions.opprettTurneringsplan && kjor(() => actions.opprettTurneringsplan!({ playerId, title: tf.title.trim(), startDate: tf.startDate, endDate: tf.endDate, travelStartDate: tf.travelStartDate || null, travelEndDate: tf.travelEndDate || null, focus: tf.focus }), () => setNy(false))}>Opprett som utkast</Knapp><Knapp variant="ghost" fullWidth onClick={() => setNy(false)}>Avbryt</Knapp></>}>
-      <div className="a9-skjema">
-        <Felt label="Navn"><input value={tf.title} onChange={(e) => setTf((f) => ({ ...f, title: e.target.value }))} /></Felt>
-        <div role="radiogroup" aria-label="Fokus" className="a9-rad">{(["TRENING", "UTVIKLING", "PRESTASJON"] as const).map((f) => <Valgpille key={f} rolle="radio" valgt={tf.focus === f} onClick={() => setTf((x) => ({ ...x, focus: f }))}>{FOKUS[f]}</Valgpille>)}</div>
-        <div className="a9-feltrad">
-          <Felt label="Fra"><input type="date" value={tf.startDate} onChange={(e) => setTf((f) => ({ ...f, startDate: e.target.value, endDate: f.endDate < e.target.value ? e.target.value : f.endDate }))} /></Felt>
-          <Felt label="Til"><input type="date" value={tf.endDate} onChange={(e) => setTf((f) => ({ ...f, endDate: e.target.value }))} /></Felt>
-          <Felt label="Reise fra"><input type="date" value={tf.travelStartDate} onChange={(e) => setTf((f) => ({ ...f, travelStartDate: e.target.value }))} /></Felt>
-          <Felt label="Reise til"><input type="date" value={tf.travelEndDate} onChange={(e) => setTf((f) => ({ ...f, travelEndDate: e.target.value }))} /></Felt>
-        </div>
-      </div>
-    </Ark>}
+    {ny && <WorkbenchTurneringsplanArk playerId={playerId} dato={idag} onLukk={() => setNy(false)} />}
+    {redigerPlan && plan && <WorkbenchTurneringsplanArk key={plan.id} playerId={playerId} dato={idag} plan={plan} onLukk={() => setRedigerPlan(false)} />}
+
   </div></Side>;
 }

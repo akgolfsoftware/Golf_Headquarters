@@ -11,6 +11,7 @@ function useState<T>(initial: T): [T, (value: T | ((old: T) => T)) => void] {
   if (!(index in slots)) slots[index] = initial;
   return [slots[index] as T, value => { slots[index] = typeof value === "function" ? (value as (old: T) => T)(slots[index] as T) : value; }];
 }
+mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("react", { namedExports: { ...React, useState, useEffect: (fn: () => void) => { if (!effects.length && !states.has("loaded")) { effects.push(fn); states.set("loaded", []); } } } });
 mock.module("next/link", { defaultExport: "a" });
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ replace() {} }) } });
