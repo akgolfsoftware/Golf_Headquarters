@@ -6,7 +6,7 @@ Kontrollgrunnlag: hovedplanen, de to lokale originalfilene, HQ main `226acab39`,
 
 | Del | Bevis | Grense |
 |---|---|---|
-| Originalspørsmål | 2025: 154 utviklingsspørsmål; 2027: 162. Begge: 13 sesongspørsmål. `scripts/check-iup-original.py` sjekker originalens hash, celle, kategori, ordlyd og skala. | Ikke alle felter, diagrammer og beregninger i 18 ark. |
+| Originalspørsmål | 2025: 154 utviklingsspørsmål; 2027: 162. Begge: 13 sesongspørsmål. `scripts/check-iup-original.py` sjekker originalens hash, celle, kategori, ordlyd og skala. | Alle 18 ark, 1 692 formler, 25 diagrammer, én pivottabell og kjente avvik er inventert i [felt- og beregningsregisteret](iup-2027-felt-og-beregningsregister-2026-10-02.md). Det beviser ikke felt-til-kode-paritet. |
 | Spillerens utfylling | PR #1084. Faktisk lokal innlogging, lagre, gjenåpne, levere, revisjoner og feilprøver. | Fireukersfrister, påminnelser og full sesongorkestrering gjenstår. |
 | Lagring og historikk | PR #1080. Eiergrense, kildevalidering, samtidighet, gjenforsøk, eksport og anonymisering. | Ikke en ny lagringsmodell for hele IUP-arbeidsboken. |
 | Navngitt deling | PR #1087 og #1089. Foresatt for å gi under 16; barnet kan trekke. Riktig bekreftet treneradresse og aktiv tilknytning; WANG→TN uten TN-medlemskap. | Skoleavtalen for obligatorisk WANG-testdeling er et separat, uferdig spor. |
@@ -82,7 +82,7 @@ Pipelines er fortsatt eneste innhenter av resultater. DataGolf-sperrer skal ikke
 2. Bevar den nye Workbench-forslagsflyten som kanonisk: spillerens godkjenning anvender én gang, avvisning anvender null, og nyere spillerendring gir konflikt. Ikke merge PR #1060 uten en eksplisitt gjennomgang mot den allerede leverte `WORKBENCH_COACH_PROPOSAL`-flyten. Kontroller begge trenerflatene visuelt.
 3. Fullfør skoleavtalens separate testdeling og felles testdag. Avtale-/fagregler som mangler dokumentasjon må ikke oppfinnes.
 4. Kontroller PR #1099s samlingsinvitasjon mot akseptert WANG/TN-reise og få visuell godkjenning; utvid bare manglende felt etter dokumentert behov. Rom- og pakkeliste er utenfor nåværende bestilling.
-5. Fullfør identitetsbevis og automatisk turneringskjede; oppdater deretter feltregisteret for alle 18 ark med konkrete tester per trenerflate.
+5. Fullfør identitetsbevis og automatisk turneringskjede; oppdater deretter feltregisteret med konkret PlayerHQ-lagring/-skriver, WANG/TN-leser, tilgangsgrunnlag og tester for hver aktiv feltgruppe.
 6. Porter DataGolf-design først når kundebruksrett er dokumentert. Kontroller ekte datadekning mot endepunktene; 135 lokale modellfelt er ikke hele API-et.
 
 Visuell sluttgodkjenning fra Anders gjenstår. Lokal kontroll, CI, deploy og visuell godkjenning er separate bevis.
