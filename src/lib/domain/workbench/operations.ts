@@ -383,6 +383,7 @@ export function addMonths(monthStart: string, delta: number): string {
 export function isoWeekNumber(isoDate: string): number {
   const d = new Date(isoDate + "T12:00:00Z");
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  d.setUTCHours(0, 0, 0, 0);
   const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
   return Math.ceil(((d.getTime() - yearStart) / 86400000 + 1) / 7);
 }

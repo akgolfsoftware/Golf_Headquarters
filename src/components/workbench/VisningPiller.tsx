@@ -24,6 +24,7 @@ export function VisningPiller({
   maned,
   aar,
   okt,
+  periode,
   surface = "light",
   routeSurface = "agency",
 }: {
@@ -33,6 +34,7 @@ export function VisningPiller({
   maned?: string;
   aar?: string;
   okt?: string;
+  periode?: string;
   surface?: "light" | "live";
   routeSurface?: WorkbenchSurface;
 }) {
@@ -65,7 +67,7 @@ export function VisningPiller({
             role="tab"
             aria-selected={on}
             data-control-id={`workbench-niva-${v.id === "aar" ? "ar" : v.id}`}
-            href={workbenchUrl(playerId, v.id, { uke, maned, aar, okt }, routeSurface)}
+            href={workbenchUrl(playerId, v.id, { uke, maned, aar, okt, periode }, routeSurface)}
             style={{
               minHeight: 44,
               borderRadius: 2,

@@ -1,4 +1,5 @@
 import type { SgCategory } from "@/generated/prisma/client";
+import { tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 
 export interface TrainingLogInput {
   date: Date;
@@ -14,13 +15,21 @@ export interface UkeVolum {
 
 /** Formater dato til ISO-ukenummer (ISO 8601). */
 function isoUkeNummer(dato: Date): string {
-  const d = new Date(Date.UTC(dato.getFullYear(), dato.getMonth(), dato.getDate()));
+  const d = new Date(Date.UTC(dato.getUTCFullYear(), dato.getUTCMonth(), dato.getUTCDate()));
   const dag = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dag);
   const year = d.getUTCFullYear();
   const startOfYear = new Date(Date.UTC(year, 0, 1));
   const uke = Math.ceil(((d.getTime() - startOfYear.getTime()) / 86400000 + 1) / 7);
   return `${year}-W${String(uke).padStart(2, "0")}`;
+}
+
+/** TrainingLog.date er en kalenderdato, ikke et klokkeslett. Begge grenser
+ * bruker Oslo-dagen; framtidige datoer skal ikke bli faktisk treningsvolum. */
+function volumVindu(uker: number, naa: Date): { fra: Date; til: Date } {
+  const oslo = tilNaivVeggklokke(naa);
+  const idag = new Date(Date.UTC(oslo.getFullYear(), oslo.getMonth(), oslo.getDate()));
+  return { fra: new Date(idag.getTime() - uker * 7 * 86_400_000), til: new Date(idag.getTime() + 86_400_000) };
 }
 
 /**
@@ -33,13 +42,13 @@ export function aggregerVolumPerUke(
 ): UkeVolum[] {
   if (logger.length === 0) return [];
 
-  const grense = new Date(fraDato);
-  grense.setDate(grense.getDate() - uker * 7);
+  const { fra, til } = volumVindu(uker, fraDato);
 
   const map = new Map<string, Map<SgCategory, number>>();
 
   for (const log of logger) {
-    if (log.date < grense) continue;
+    if (!Number.isFinite(log.date.getTime()) || log.date < fra || log.date >= til ||
+      !Number.isFinite(log.minutes) || log.minutes < 0) continue;
     const uke = isoUkeNummer(log.date);
     if (!map.has(uke)) map.set(uke, new Map());
     const ukeMap = map.get(uke)!;
@@ -59,14 +68,13 @@ export function aggregerVolumPerUke(
 export async function hentTreningsVolum(
   userId: string,
   uker: number = 8,
+  now: Date = new Date(),
 ): Promise<UkeVolum[]> {
   const { prisma } = await import("../prisma");
-  const now = new Date();
-  const grense = new Date(now);
-  grense.setDate(grense.getDate() - uker * 7);
+  const { fra, til } = volumVindu(uker, now);
 
   const logger = await prisma.trainingLog.findMany({
-    where: { userId, date: { gte: grense } },
+    where: { userId, date: { gte: fra, lt: til } },
     select: { date: true, sgArea: true, minutes: true },
     orderBy: { date: "asc" },
   });

@@ -51,19 +51,28 @@ describe("workbench visning-url", () => {
     );
   });
 
-  it("kobler alle sju hovednivåer til eksakt skjermadresse", () => {
+  it("beholder hele konteksten på alle ti nivåer på begge arbeidsflater", () => {
     const referanse = { aar: "2026", periode: "p-1", maned: "2026-10", uke: "2026-09-28", okt: "o-1" };
-    assert.deepEqual(
-      (["aar", "periode", "maned", "uke", "okt", "vol", "mal"] as const).map((nivaa) => workbenchUrl("p1", nivaa, referanse, "player")),
-      [
-        "/portal/planlegge/workbench?niva=ar&aar=2026",
-        "/portal/planlegge/workbench?niva=periode&aar=2026&periode=p-1",
-        "/portal/planlegge/workbench?niva=maned&maned=2026-10",
-        "/portal/planlegge/workbench?niva=uke&uke=2026-09-28",
-        "/portal/planlegge/workbench?niva=okt&uke=2026-09-28&okt=o-1",
-        "/portal/planlegge/workbench?niva=volum&uke=2026-09-28",
-        "/portal/planlegge/workbench?niva=malsetninger&uke=2026-09-28",
-      ],
-    );
+    for (const surface of ["agency", "player"] as const) {
+      for (const nivaa of ["aar", "periode", "maned", "uke", "okt", "vol", "mal", "stall", "live", "min"] as const) {
+        const url = new URL(workbenchUrl("p1", nivaa, referanse, surface), "https://test.invalid");
+        assert.equal(url.pathname, surface === "player" ? "/portal/planlegge/workbench" : "/admin/workbench/p1");
+        assert.equal(parseVisning(url.searchParams.get("niva") ?? undefined), nivaa);
+        for (const [key, value] of Object.entries(referanse)) assert.equal(url.searchParams.get(key), value);
+      }
+    }
+  });
+
+  it("lar eksplisitt ukebytte overstyre konteksten uten å miste andre valg", () => {
+    const url = new URL(workbenchUrl("p1", "uke", { uke: "2026-10-05" }, "agency", { uke: "2026-09-28", periode: "p-1", okt: "o-1" }), "https://test.invalid");
+    assert.equal(url.searchParams.get("uke"), "2026-10-05");
+    assert.equal(url.searchParams.get("periode"), "p-1");
+    assert.equal(url.searchParams.get("okt"), "o-1");
+  });
+
+  it("URL-koder identifikatorer i query", () => {
+    const url = new URL(workbenchUrl("p1", "periode", { periode: "p & #=1", okt: "o?&=2" }), "https://test.invalid");
+    assert.equal(url.searchParams.get("periode"), "p & #=1");
+    assert.equal(url.searchParams.get("okt"), "o?&=2");
   });
 });

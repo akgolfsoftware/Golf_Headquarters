@@ -13,6 +13,7 @@ import { PublishConfirmDialog } from "./PublishConfirmDialog";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
 import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
+import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { Ark } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Knapp } from "@/components/precision/pa";
@@ -25,6 +26,7 @@ type Props = {
   roster?: { id: string; navn: string }[];
   goals?: PlanningGoalSummary[];
   routeSurface?: WorkbenchSurface;
+  planKontekst?: PlanReferanse;
 };
 
 const PERIODE_LABEL: Record<PeriodType, string> = {
@@ -51,9 +53,10 @@ function timer(minutter: number): string {
   return minutter > 0 ? `${formatHours(minutter)} t` : "—";
 }
 
-export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode, kilder, roster = [], goals = [], routeSurface = "agency" }: Props) {
+export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode, kilder, roster = [], goals = [], routeSurface = "agency", planKontekst }: Props) {
   const router = useRouter();
   const [periode, setPeriode] = useState(startPeriode);
+  const referanse = { ...(planKontekst ?? parsePlanKontekst({ aar: String(periode.year) }, { periode: periode.period }).referanse), periode: periode.period?.id ?? planKontekst?.periode };
   const [publiserApen, setPubliserApen] = useState(false);
   const [valgtePubliser, setValgtePubliser] = useState<Set<string>>(new Set());
   const [feil, setFeil] = useState<string | null>(null);
@@ -111,7 +114,7 @@ export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode,
         <nav className="wb-roster" aria-label="Spillere i stallen">
           <span className="wb-kicker">Stall</span>
           {roster.map((spiller) => (
-            <Link key={spiller.id} href={`/admin/workbench/${spiller.id}?vis=periode&aar=${periode.year}`} aria-current={spiller.id === playerId ? "page" : undefined}>
+            <Link key={spiller.id} href={workbenchUrl(spiller.id, "periode", { ...referanse, periode: undefined, okt: undefined }, routeSurface)} aria-current={spiller.id === playerId ? "page" : undefined}>
               {spiller.navn}<small>Spiller</small>
             </Link>
           ))}
@@ -119,7 +122,7 @@ export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode,
       </aside>
 
       <main className="wb-main">
-        <div className="wb-pills"><VisningPiller playerId={playerId} visning="periode" aar={String(periode.year)} routeSurface={routeSurface} /></div>
+        <div className="wb-pills"><VisningPiller playerId={playerId} visning="periode" {...referanse} routeSurface={routeSurface} /></div>
         <div className="wb-body wb-period-body">
           <div className="wb-heading">
             <div><span className="wb-kicker">{valgt ? periodeNavn : UI.periodPlan}</span><h1>{førsteUke && sisteUke ? `Uke ${førsteUke}–${sisteUke}` : "—"}</h1></div>
@@ -140,7 +143,7 @@ export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode,
               </div>
 
               <section className="wb-period-section"><span className="wb-kicker">{UI.periodTimeline}</span><div className="wb-period-timeline">{periode.weeks.map((uke) => (
-                <Link key={uke.weekStart} href={workbenchUrl(playerId, "uke", { uke: uke.weekStart }, routeSurface)} className="wb-period-week">
+                <Link key={uke.weekStart} href={workbenchUrl(playerId, "uke", { ...referanse, uke: uke.weekStart }, routeSurface)} className="wb-period-week">
                   <span>Uke {uke.weekNumber}</span><small>—</small><b>{timer(uke.minutes)}</b><i><span style={{ width: `${Math.round((uke.minutes / storsteUke) * 100)}%` }} /></i>
                 </Link>
               ))}</div></section>
@@ -154,7 +157,7 @@ export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode,
       </main>
 
       <aside className="wb-inspector"><PeriodSummary periode={periode} /></aside>
-      {valgt && <aside className="wb-mobile-summary" aria-label={UI.selectedPeriodTitle}><div className="wb-grip" aria-hidden /><PeriodSummary periode={periode} compact /><div className="wb-mobile-actions"><Link className="wb-quiet" href={workbenchUrl(playerId, "uke", { uke: periode.weeks[0]?.weekStart ?? valgt.startDate }, routeSurface)}>{UI.openPeriod}</Link><button type="button" className="wb-publish" disabled={!utkast.length || travel} onClick={apnePublisering}>{UI.publishPeriod}</button></div></aside>}
+      {valgt && <aside className="wb-mobile-summary" aria-label={UI.selectedPeriodTitle}><div className="wb-grip" aria-hidden /><PeriodSummary periode={periode} compact /><div className="wb-mobile-actions"><Link className="wb-quiet" href={workbenchUrl(playerId, "uke", { ...referanse, uke: referanse.uke ?? periode.weeks[0]?.weekStart ?? valgt.startDate }, routeSurface)}>{UI.openPeriod}</Link><button type="button" className="wb-publish" disabled={!utkast.length || travel} onClick={apnePublisering}>{UI.publishPeriod}</button></div></aside>}
 
       <PublishConfirmDialog
         open={publiserApen}

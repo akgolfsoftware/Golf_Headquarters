@@ -28,7 +28,6 @@ import {
   buildWeekViewModel,
   buildYearViewModel,
   createSession as createSessionPure,
-  isoWeekNumber,
   lastDayOfMonth,
   mondayOf,
   monthStartOf,
@@ -49,9 +48,7 @@ import type {
   MonthViewModel,
   PeriodViewModel,
   SourceItem,
-  WeekNote,
   WeekPlanData,
-  WeekType,
   WeekViewModel,
   WorkbenchMode,
   WorkbenchSession,
@@ -103,6 +100,13 @@ import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/g
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
+import {
+  isoUkeIdentitet,
+  isoUkeMandag,
+  parseWeekPlanData,
+  SaveWeekPlanInputSchema,
+  type ValidatedSaveWeekPlanInput,
+} from "@/lib/workbench/ukeplan-schema";
 
 // ─── Resultattype ───────────────────────────────────────────────────────────
 
@@ -412,7 +416,9 @@ export async function loadWeek(params: {
   const viewer = await kreverTilgangTilSpiller(params.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
-  const fra = tilDatoKolonne(weekStart.data);
+  const mandag = mondayOf(weekStart.data);
+  const ukeIdentitet = isoUkeIdentitet(mandag);
+  const fra = tilDatoKolonne(mandag);
   const til = new Date(fra);
   til.setUTCDate(til.getUTCDate() + 6);
 
@@ -447,152 +453,134 @@ export async function loadWeek(params: {
       where: {
         playerId_isoYear_weekNumber: {
           playerId: params.playerId,
-          isoYear: parseInt(weekStart.data.slice(0, 4), 10),
-          weekNumber: isoWeekNumber(weekStart.data),
+          ...ukeIdentitet,
         },
       },
     }),
   ]);
 
-  const mappedWeekPlan: WeekPlanData | null = weekPlanRow
-    ? {
-        id: weekPlanRow.id,
-        playerId: weekPlanRow.playerId,
-        seasonPlanId: weekPlanRow.seasonPlanId,
-        isoYear: weekPlanRow.isoYear,
-        weekNumber: weekPlanRow.weekNumber,
-        weekType: weekPlanRow.weekType as WeekType,
-        notes: weekPlanRow.notes as WeekNote[],
-        plannedHoursFys: weekPlanRow.plannedHoursFys,
-        plannedHoursTek: weekPlanRow.plannedHoursTek,
-        plannedHoursSlag: weekPlanRow.plannedHoursSlag,
-        plannedHoursSpill: weekPlanRow.plannedHoursSpill,
-        plannedHoursTurn: weekPlanRow.plannedHoursTurn,
-        repTargetDry: weekPlanRow.repTargetDry,
-        repTargetLowSpeed: weekPlanRow.repTargetLowSpeed,
-        repTargetFullSpeed: weekPlanRow.repTargetFullSpeed,
-        repTargetPutting: weekPlanRow.repTargetPutting,
-        repTargetShortGame: weekPlanRow.repTargetShortGame,
-        repetitionTargets: weekPlanRow.repetitionTargets as Record<string, unknown> | null,
-        loadCeiling: weekPlanRow.loadCeiling,
-        customNotes: weekPlanRow.customNotes,
-      }
-    : null;
+  const mappedWeekPlan = weekPlanRow ? parseWeekPlanData(weekPlanRow) : null;
+  if (weekPlanRow && !mappedWeekPlan) {
+    return { ok: false, error: "Den lagrede ukeplanen har ugyldige felt. Planen er ikke endret." };
+  }
+
+  let legacyWeekPlanCandidate: WeekViewModel["legacyWeekPlanCandidate"];
+  const kalenderaar = Number(mandag.slice(0, 4));
+  if (!weekPlanRow && kalenderaar !== ukeIdentitet.isoYear) {
+    // Eldre klient kunne bruke mandagens kalenderår. Raden kan også tilhøre
+    // en annen uke: behold originalnøkkelen og aldri bruk den som weekPlan.
+    const legacyRow = await prisma.weekPlan.findUnique({
+      where: { playerId_isoYear_weekNumber: {
+        playerId: params.playerId, isoYear: kalenderaar, weekNumber: ukeIdentitet.weekNumber,
+      } },
+      select: { id: true, isoYear: true, weekNumber: true, seasonPlanId: true },
+    });
+    if (legacyRow) {
+      // Bare kildens metadata valideres, uten ISO-ukerefinement. Historiske
+      // ugyldige uke-53-nøkler skal ikke omtolkes, flyttes eller overskrives.
+      const metadata = z.object({
+        id: z.string().min(1).max(200),
+        isoYear: z.number().int().min(1900).max(9998),
+        weekNumber: z.number().int().min(1).max(53),
+        seasonPlanId: z.string().min(1).max(200).nullable(),
+      }).safeParse(legacyRow);
+      if (!metadata.success) return { ok: false, error: "En eldre ukeplan har ugyldige metadata og må gjennomgås. Den lagrede planen er ikke endret." };
+      legacyWeekPlanCandidate = {
+        ...metadata.data,
+        warning: "Det er ikke avklart hvilken uke denne planen tilhører. Den eldre planen er bevart og brukes ikke i den viste uka. Gjennomgå den før du lager en ny plan.",
+      };
+    }
+  }
 
   const vm = buildWeekViewModel(
-    weekStart.data,
+    mandag,
     rows.map(mapSession),
-    weekLockedBlocks(weekStart.data, busy, school),
+    weekLockedBlocks(mandag, busy, school),
     params.mode,
     params.targetMinutes ?? 0,
     mappedWeekPlan,
   );
+  if (legacyWeekPlanCandidate) vm.legacyWeekPlanCandidate = legacyWeekPlanCandidate;
   return { ok: true, data: vm };
 }
 
-export type SaveWeekPlanInput = {
-  playerId: string;
-  isoYear: number;
-  weekNumber: number;
-  weekType: WeekType;
-  notes: WeekNote[];
-  plannedHoursFys?: number | null;
-  plannedHoursTek?: number | null;
-  plannedHoursSlag?: number | null;
-  plannedHoursSpill?: number | null;
-  plannedHoursTurn?: number | null;
-  repTargetDry?: number | null;
-  repTargetLowSpeed?: number | null;
-  repTargetFullSpeed?: number | null;
-  repTargetPutting?: number | null;
-  repTargetShortGame?: number | null;
-  loadCeiling?: number | null;
-  customNotes?: string | null;
-};
+export type SaveWeekPlanInput = ValidatedSaveWeekPlanInput;
 
 export async function saveWeekPlan(
   input: SaveWeekPlanInput
 ): Promise<WbResultat<WeekPlanData>> {
-  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  const parsed = SaveWeekPlanInputSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ukeplanen har ugyldige felt. Kontroller uke, timer og heltall." };
+  const data = parsed.data;
+  const viewer = await kreverTilgangTilSpiller(data.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
-  const seasonPlan = await prisma.seasonPlan.findFirst({
-    where: { userId: input.playerId, year: input.isoYear },
-    select: { id: true },
-  });
-
-  const row = await prisma.weekPlan.upsert({
-    where: {
-      playerId_isoYear_weekNumber: {
-        playerId: input.playerId,
-        isoYear: input.isoYear,
-        weekNumber: input.weekNumber,
-      },
-    },
-    create: {
-      playerId: input.playerId,
-      seasonPlanId: seasonPlan?.id ?? null,
-      isoYear: input.isoYear,
-      weekNumber: input.weekNumber,
-      weekType: input.weekType,
-      notes: input.notes,
-      plannedHoursFys: input.plannedHoursFys,
-      plannedHoursTek: input.plannedHoursTek,
-      plannedHoursSlag: input.plannedHoursSlag,
-      plannedHoursSpill: input.plannedHoursSpill,
-      plannedHoursTurn: input.plannedHoursTurn,
-      repTargetDry: input.repTargetDry,
-      repTargetLowSpeed: input.repTargetLowSpeed,
-      repTargetFullSpeed: input.repTargetFullSpeed,
-      repTargetPutting: input.repTargetPutting,
-      repTargetShortGame: input.repTargetShortGame,
-      loadCeiling: input.loadCeiling,
-      customNotes: input.customNotes,
-    },
-    update: {
-      seasonPlanId: seasonPlan?.id ?? undefined,
-      weekType: input.weekType,
-      notes: input.notes,
-      plannedHoursFys: input.plannedHoursFys,
-      plannedHoursTek: input.plannedHoursTek,
-      plannedHoursSlag: input.plannedHoursSlag,
-      plannedHoursSpill: input.plannedHoursSpill,
-      plannedHoursTurn: input.plannedHoursTurn,
-      repTargetDry: input.repTargetDry,
-      repTargetLowSpeed: input.repTargetLowSpeed,
-      repTargetFullSpeed: input.repTargetFullSpeed,
-      repTargetPutting: input.repTargetPutting,
-      repTargetShortGame: input.repTargetShortGame,
-      loadCeiling: input.loadCeiling,
-      customNotes: input.customNotes,
-    },
-  });
-
-  return {
-    ok: true,
-    data: {
-      id: row.id,
-      playerId: row.playerId,
-      seasonPlanId: row.seasonPlanId,
-      isoYear: row.isoYear,
-      weekNumber: row.weekNumber,
-      weekType: row.weekType as WeekType,
-      notes: row.notes as WeekNote[],
-      plannedHoursFys: row.plannedHoursFys,
-      plannedHoursTek: row.plannedHoursTek,
-      plannedHoursSlag: row.plannedHoursSlag,
-      plannedHoursSpill: row.plannedHoursSpill,
-      plannedHoursTurn: row.plannedHoursTurn,
-      repTargetDry: row.repTargetDry,
-      repTargetLowSpeed: row.repTargetLowSpeed,
-      repTargetFullSpeed: row.repTargetFullSpeed,
-      repTargetPutting: row.repTargetPutting,
-      repTargetShortGame: row.repTargetShortGame,
-      repetitionTargets: row.repetitionTargets as Record<string, unknown> | null,
-      loadCeiling: row.loadCeiling,
-      customNotes: row.customNotes,
-    },
+  const key = { playerId: data.playerId, isoYear: data.isoYear, weekNumber: data.weekNumber };
+  const mandag = isoUkeMandag(data.isoYear, data.weekNumber);
+  const sesongVindu = {
+    userId: data.playerId,
+    startDate: { lte: tilDatoKolonne(addDays(mandag, 6)) },
+    endDate: { gte: tilDatoKolonne(mandag) },
   };
+
+  try {
+    // Sesongåret kan krysse kalenderåret. En eksplisitt kobling må eies av
+    // spilleren og overlappe den faktiske uka; gammel klient beholder gyldig kobling.
+    const existing = await prisma.weekPlan.findUnique({
+      where: { playerId_isoYear_weekNumber: key }, select: { seasonPlanId: true },
+    });
+    let seasonPlanId: string | null = null;
+    const beholdTomKobling = data.seasonPlanId === undefined && existing?.seasonPlanId === null;
+    if (data.seasonPlanId !== null && !beholdTomKobling) {
+      const foretrukketId = data.seasonPlanId ?? existing?.seasonPlanId;
+      const foretrukket = foretrukketId ? await prisma.seasonPlan.findFirst({
+        where: { ...sesongVindu, id: foretrukketId }, select: { id: true },
+      }) : null;
+      if (data.seasonPlanId !== undefined && !foretrukket) {
+        return { ok: false, error: "Årsplanen tilhører ikke spilleren eller dekker ikke denne uka." };
+      }
+      const sesong = foretrukket ?? await prisma.seasonPlan.findFirst({
+        where: sesongVindu, select: { id: true },
+        orderBy: [{ startDate: "desc" }, { year: "desc" }],
+      });
+      seasonPlanId = sesong?.id ?? null;
+    }
+
+    // Udefinert felt betyr behold. null betyr eksplisitt tøm, også for JSON.
+    // Vi skriver feltene direkte, uten å lese og overskrive hele legacy-raden.
+    const felter = {
+      seasonPlanId,
+      weekType: data.weekType,
+      notes: data.notes,
+      plannedHoursFys: data.plannedHoursFys,
+      plannedHoursTek: data.plannedHoursTek,
+      plannedHoursSlag: data.plannedHoursSlag,
+      plannedHoursSpill: data.plannedHoursSpill,
+      plannedHoursTurn: data.plannedHoursTurn,
+      repTargetDry: data.repTargetDry,
+      repTargetLowSpeed: data.repTargetLowSpeed,
+      repTargetFullSpeed: data.repTargetFullSpeed,
+      repTargetPutting: data.repTargetPutting,
+      repTargetShortGame: data.repTargetShortGame,
+      loadCeiling: data.loadCeiling,
+      customNotes: data.customNotes,
+      ...(data.planningDetails !== undefined ? {
+        planningDetails: data.planningDetails === null ? Prisma.DbNull : data.planningDetails,
+      } : {}),
+    };
+    const row = await prisma.weekPlan.upsert({
+      where: { playerId_isoYear_weekNumber: key },
+      create: { ...key, ...felter, weekType: data.weekType ?? "UTVIKLING", notes: data.notes ?? [] },
+      update: felter,
+    });
+    const mapped = parseWeekPlanData(row);
+    if (!mapped) return { ok: false, error: "Ukeplanen kunne ikke gjenleses. Last inn på nytt før neste endring." };
+    revalider(data.playerId);
+    revalidatePath("/portal/planlegge/workbench");
+    return { ok: true, data: mapped };
+  } catch {
+    return { ok: false, error: "Kunne ikke lagre ukeplanen. Prøv igjen." };
+  }
 }
 
 export type StallFollowupData = {
@@ -1923,7 +1911,7 @@ export async function completeSession(
 const UpdateSessionEffortSchema = z.object({
   sessionId: z.string().min(1),
   perceivedEffort: z.number().int().min(1).max(10).nullable().optional(),
-  actualMinutes: z.number().int().min(1).max(1440).nullable().optional(),
+  actualMinutes: z.number().int().min(0).max(1440).nullable().optional(),
 });
 
 export type UpdateSessionEffortInput = z.infer<typeof UpdateSessionEffortSchema>;
