@@ -46,3 +46,9 @@ test("offentlig akseptside røper ingen spiller og krever innlogging med trenerk
   const feilRolle = render(createElement(Aksept, { innlogget: true, erTrener: false }));
   assert.match(feilRolle, /riktig trenerkonto/); assert.doesNotMatch(feilRolle, /<button/);
 });
+
+
+test("trener får inngang til delte spillere uten at spillerens egen flate utvides", () => {
+  assert.match(render(createElement(Side, { initial: base, erTrener: true })), /Spillere som deler med meg/);
+  assert.doesNotMatch(render(createElement(Side, { initial: base })), /Spillere som deler med meg/);
+});

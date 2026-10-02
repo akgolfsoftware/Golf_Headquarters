@@ -13,6 +13,7 @@ let bekreftet = true;
 let db: typeof import("../../src/lib/prisma").prisma;
 let api: typeof import("../../src/lib/deling/navngitt");
 let lesing: typeof import("../../src/lib/iup/trener-lesing");
+let trenerliste: typeof import("../../src/lib/deling/treneroversikt");
 const sql = new pg.Client({ connectionString: process.env.DATABASE_URL });
 const spiller = "deling-test-spiller";
 const forelder = "deling-test-forelder";
@@ -52,7 +53,7 @@ test.before(async () => {
   const identitet = await sql.query("SELECT shobj_description(oid, 'pg_database') AS marker FROM pg_database WHERE datname=current_database()");
   assert.equal(identitet.rows[0].marker, "ak-hq-iup-app-20261002");
   ({ prisma: db } = await import("../../src/lib/prisma"));
-  api = await import("../../src/lib/deling/navngitt"); lesing = await import("../../src/lib/iup/trener-lesing");
+  api = await import("../../src/lib/deling/navngitt"); lesing = await import("../../src/lib/iup/trener-lesing"); trenerliste = await import("../../src/lib/deling/treneroversikt");
   for (const id of aktorer) await db.user.upsert({ where: { id }, update: {}, create: {
     id, authId: randomUUID(), name: "Syntetisk deltaker", email: `${id}@${id === tn ? "golfforbundet.no" : [wang, annen].includes(id) ? "wang.no" : "example.test"}`,
     role: id === forelder ? "PARENT" : id === spiller ? "PLAYER" : "COACH", dateOfBirth: new Date("2000-01-01"),
@@ -245,5 +246,49 @@ test("invitasjoner har RLS og ingen klientprivilegier", async () => {
   const r = await sql.query("SELECT relrowsecurity FROM pg_class WHERE oid='public.trener_delings_invitasjoner'::regclass"); assert.equal(r.rows[0].relrowsecurity, true);
   for (const rolle of ["anon", "authenticated"]) {
     const q = await sql.query("SELECT has_table_privilege($1,'public.trener_delings_invitasjoner','SELECT,INSERT,UPDATE,DELETE') AS har", [rolle]); assert.equal(q.rows[0].har, false);
+  }
+});
+
+
+test("trenerlisten viser bare gjeldende navngitt deling, uten duplikat eller token", async () => {
+  const a = await del(); const b = await del();
+  innlogget = wang;
+  const liste = await trenerliste.hentTrenerensDelteSpillere();
+  assert.equal(liste?.spillere.length, 1); assert.equal(liste?.spillere[0].id, spiller);
+  assert.ok(!JSON.stringify(liste).includes("token"));
+  innlogget = annen; assert.deepEqual((await trenerliste.hentTrenerensDelteSpillere())?.spillere, []);
+  innlogget = spiller; await api.trekkTrenerDeling({ invitasjonId: a.id, spillerId: spiller });
+  innlogget = wang; assert.deepEqual((await trenerliste.hentTrenerensDelteSpillere())?.spillere, []);
+  assert.ok(b.ok);
+});
+
+test("TN-trenerlisten inkluderer samtykket WANG-elev uten TN-medlemskap og sperrer avsluttet ansvar", async () => {
+  await del(tnGruppe, "deling-test-tn@golfforbundet.no", tn);
+  innlogget = tn;
+  assert.equal((await trenerliste.hentTrenerensDelteSpillere())?.spillere[0].id, spiller);
+  await db.groupMember.updateMany({ where: { userId: tn }, data: { endedAt: new Date() } });
+  assert.deepEqual((await trenerliste.hentTrenerensDelteSpillere())?.spillere, []);
+  bekreftet = false;
+  await assert.rejects(() => trenerliste.hentTrenerensDelteSpillere(), /forbidden/);
+});
+
+test("trenerlisten deler inn unike spiller/miljø-par i stabile sider", async () => {
+  const mal = await del();
+  const invitasjon = await db.trenerDelingsInvitasjon.findUniqueOrThrow({ where: { id: mal.id } });
+  const samtykke = await db.delingsSamtykke.findUniqueOrThrow({ where: { id: mal.id } });
+  const ids = Array.from({ length: 22 }, (_, i) => `deling-test-side-${String(i).padStart(2, "0")}`);
+  try {
+    await db.user.createMany({ data: ids.map((id) => ({ id, authId: randomUUID(), email: `${id}@example.test`, name: "Syntetisk side", role: "PLAYER", dateOfBirth: new Date("2000-01-01") })) });
+    await db.groupMember.createMany({ data: ids.map((id) => ({ userId: id, groupId: skole, role: "PLAYER" })) });
+    await db.trenerDelingsInvitasjon.createMany({ data: ids.map((id) => ({ ...invitasjon, id, userId: id, gittAvUserId: id, tokenHash: createHash("sha256").update(id).digest("hex") })) });
+    await db.delingsSamtykke.createMany({ data: ids.map((id) => ({ ...samtykke, id, userId: id, gittAvUserId: id })) });
+    innlogget = wang;
+    const a = await trenerliste.hentTrenerensDelteSpillere(); assert.ok(a?.nesteSide); assert.equal(a.spillere.length, 20);
+    const b = await trenerliste.hentTrenerensDelteSpillere(a.nesteSide); assert.ok(b); assert.equal(b.spillere.length, 3); assert.equal(b.nesteSide, null);
+    assert.equal(new Set([...a.spillere, ...b.spillere].map((r) => `${r.id}:${r.gruppeId}`)).size, 23);
+    assert.equal(await trenerliste.hentTrenerensDelteSpillere({ etterSpiller: spiller }), null);
+  } finally {
+    await db.delingsSamtykke.deleteMany({ where: { userId: { in: ids } } });
+    await db.user.deleteMany({ where: { id: { in: ids } } });
   }
 });
