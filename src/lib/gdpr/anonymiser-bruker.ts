@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
 // vanlig import, ikke `import type`.
 import { Prisma } from "@/generated/prisma/client";
+import { anonymiserWorkbenchData } from "@/lib/workbench/workbench-personvern";
 import { anonymiserUkeplandetaljer } from "@/lib/workbench/ukeplan-personvern";
 import {
   slettEksterneBrukerdata,
@@ -40,6 +41,7 @@ export type AnonymiseringsResultat = {
     fysOvelser: number;
     runder: number;
     ukeplaner: number;
+    workbench: number;
   };
   /**
    * Resultat av ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt).
@@ -90,7 +92,7 @@ export async function anonymiserBruker(
       publicPlayerAnonymisert: false,
       snittScore: null,
       antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0 },
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0, workbench: 0 },
       eksterntSlettet: null,
     };
   }
@@ -102,11 +104,12 @@ export async function anonymiserBruker(
       publicPlayerAnonymisert: Boolean(bruker.publicPlayerId),
       snittScore: null,
       antallRunder: 0,
-      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0 },
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0, ukeplaner: 0, workbench: 0 },
       dryRun: true,
       plan: [
         "ville anonymisere Prisma-bruker + fritekst",
         "ville vaske ukeplanenes notat, oppholdssted og frie fokusfelt",
+        "ville vaske Workbench-økter, fysisk trening, turneringer og plankonflikter",
         ...(planEkstern.plan ?? []),
       ],
       eksterntSlettet: planEkstern,
@@ -190,11 +193,16 @@ export async function anonymiserBruker(
       where: { id: ukeplan.id, playerId: userId },
       data: {
         customNotes: null,
+        // Dette eldre feltet har vilkårlige JSON-nøkler/verdier, ikke en validert dosekontrakt.
+        // De eksplisitte repTarget-/tidsbudsjett-kolonnene beholdes.
+        repetitionTargets: Prisma.DbNull,
         planningDetails: anonymiserUkeplandetaljer(ukeplan.planningDetails) ?? Prisma.DbNull,
       },
     });
     vaskedeUkeplaner += resultat.count;
   }
+
+  const vasketWorkbench = await anonymiserWorkbenchData(userId);
 
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
 
@@ -249,6 +257,7 @@ export async function anonymiserBruker(
       fysOvelser: fysOvelser.count,
       runder: rundeNotater.count,
       ukeplaner: vaskedeUkeplaner,
+      workbench: vasketWorkbench,
     },
     eksterntSlettet,
   };

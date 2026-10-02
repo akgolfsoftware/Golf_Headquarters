@@ -15,5 +15,5 @@ export default async function TrenerdelingPage({ searchParams }: { searchParams:
   // Leseren kontrollerer eierskap/godkjent foreldrerelasjon uavhengig av sidens rolleport.
   const oversikt = await hentEgenTrenerdeling({ spillerId: p.data.barn ?? bruker.id });
   if (!oversikt) notFound();
-  return <NavngittDeling initial={oversikt} />;
+  return <NavngittDeling initial={oversikt} erTrener={bruker.role === "COACH" || bruker.role === "ADMIN"} />;
 }

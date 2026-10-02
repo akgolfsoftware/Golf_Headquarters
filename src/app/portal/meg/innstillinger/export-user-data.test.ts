@@ -21,6 +21,7 @@ const kilder = [
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
   "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
+  "workbenchSession", "workbenchPhysicalBlock", "workbenchPhysicalLog", "workbenchTournamentPlan", "workbenchPlanConflict",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   findMany: async ({ where }: { where: unknown }) => {
@@ -124,7 +125,7 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   for (const { kilde, where } of lesinger) {
     const felt = kilde === "user" ? "id" :
       kilde === "trainingSessionV2" ? "studentId" :
-      ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) ? "playerId" : "userId";
+      ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) || kilde.startsWith("workbench") ? "playerId" : "userId";
     assert.deepEqual(where, kilde === "trenerDelingsInvitasjon" ? {
       OR: [{ userId: bruker.id }, { gittAvUserId: bruker.id }, { acceptedByUserId: bruker.id }, { mottakerEpost: bruker.email }],
     } : { [felt]: bruker.id });
@@ -134,6 +135,7 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
     { type: "opptak", url: "private/test-audio", id: "opptak-test" },
     { type: "swing-video", url: "private/test-video", id: "video-test" },
   ]);
+  assert.deepEqual(resultat.data?.workbench, { sessions: [], physicalBlocks: [], physicalLogs: [], tournamentPlans: [], conflicts: [] });
   assert.ok(!String(resultat.data?._note).includes("komplett"));
   assert.ok(!JSON.stringify(eposter).includes("komplett"));
   assert.ok(!JSON.stringify(revisjoner).includes(bruker.email));
