@@ -3365,6 +3365,7 @@ model CourseHoleTee {
   @@id([teeId, holeId])
   @@index([holeId])
   @@index([holeId, baneId])
+  @@index([teeId, baneId])
   @@map("course_hole_tees")
 }
 
