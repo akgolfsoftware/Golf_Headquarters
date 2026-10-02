@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-02 17:55 CEST på `main` `8dff4fbdf`.
+Sist oppdatert: 2026-10-02 18:18 CEST på `main` `30ee79fac`.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
@@ -8,7 +8,7 @@ arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.
 
 Dette er en utføringsliste, ikke en ny produkt- eller designfasit. Produktregler, beslutninger og valgt designversjon vinner ved konflikt. En oppgave kan først markeres ferdig når funksjon, lagring, tilgang, relevante feiltilstander, testbevis og visuell vurdering er dokumentert hver for seg.
 
-Dette er det avsluttende statuskuttet for denne økten. Andre aktive økter kan fortsette etter tidspunktet over; nytt resultat derfra skal føres inn som en ny, kildekontrollert oppdatering.
+Dette er den avsluttende statuskontrollen etter at de pågående leveransene i denne samlingen er merget. Nye resultater fra videre revisjoner skal føres inn som en ny, kildekontrollert oppdatering.
 
 Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjermer-2026-10-02.md).
 
@@ -28,7 +28,7 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
 | C02 | P0 | FERDIG DEL | **Workbench:** PR #1099 er merget som `8d74ae1d` med kollisjonskart, samtidighetsvern, gruppeøkter og private samlingsinvitasjoner. Lokal fullkontroll, PR-CI, hoved-CI, Vercel-produksjon, helse og produksjonsrøyktest bestod. | Workbench-arbeidskopien er ryddet. Gjenstår som større leveranse: visuell appkontroll mot godkjent Precision-design, komplett Excel-paritet og de øvrige skjerm-/reiseoppgavene i D01–D04. |
 | C03 | P0 | PÅGÅR | **Testbatteri:** PR #1111 er merget (`7cab6313e1`), og regresjonsdekningen for flerskole-testdag ble merget i PR #1113 (`c4f28a3c`). Samlet leveranse har grønn lokal/GitHub/Vercel-kontroll, 4 368 kildetester, 101 komponenttester, produksjonsbygg og 37/37 lokal database. | Gjenstår før sluttgodkjenning: faktisk privat Storage-objekt, innlogget visuell kontroll på 390 px/desktop mot Precision-fasiten og kontroll av liveoppdatering mellom enheter. Lokal forhåndsvisning ble stoppet av testoppsettets portregel (3062 vs. 3000), ikke av produksjonskode. |
 | C04 | P0 | FERDIG DEL | **Portering av alle skjermer:** fersk gjennomføringsplan er laget for 520 sidefiler/rutemønstre, 74 Precision-skjermtyper, 59 WANG-skjermer og TN-00–TN-27/34 dyp-lenker. Ingen appkode ble endret. | [Porteringsplanen](portering-alle-skjermer-2026-10-02.md). Første kodeoppgave er skjermregisteret, deretter rutevis portering. |
-| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1109 og dokumentoppfølging #1112 er merget (`49dcc5459`, `4cba5bec0`). Trenerens nye IUP-fokusområder er forslag som eleven godkjenner; avslag, samtidighetskonflikt og eksisterende oppfølging bevares. To aktive revisjonskopier er startet for IUP-feltparitet og synk mellom WANG-turnering og spillerprofil; de har ennå ingen egen diff eller PR. | Gjenstår: fullføre og dokumentere de to revisjonene, komplett felt- og beregningsparitet fra app til trener, skolebasert testdeling, felles testdag, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
+| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1109, #1112 og revisjonen av synk mellom WANG-turnering og spillerprofil i #1115 er merget (`49dcc5459`, `4cba5bec0`, `30ee79fac`). En videre revisjon av opphavet til offentlige spillerkoblinger ligger i åpen PR #1118 (`fe4595474`); Vercel er grønn og GitHub-kontrollen kjører. Den separate IUP-feltparitetsrevisjonen har fortsatt ingen egen diff eller PR. | Gjenstår: ferdigkontrollere og eventuelt merge #1118, fullføre IUP-feltparitetsrevisjonen, komplett felt- og beregningsparitet fra app til trener, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
 
 ## Ferdig og allerede på `main`
 
@@ -57,6 +57,10 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
   (`4cba5bec0`).
 - PR #1113: regresjonsdekning for flerskole-testdag
   (`c4f28a3c`).
+- PR #1115: verifisert at turneringsresultater når koblede profiler
+  (`30ee79fac`).
+- PR #1116: siste korrigering av restarbeidslisten etter regresjonsmergen
+  (`86d07c7ab`).
 - PR #1110: tidsstemplet restarbeidsliste og kontrollert arbeidskopioversikt
   (`cf257bb78e`).
 
@@ -100,7 +104,7 @@ beholde begrensningene som er dokumentert i de respektive PR-ene.
 |---|---|
 | hovedkopien `codex/arbeidsliste-restoppgaver-2026-10-02` | Inneholder denne arbeidslisten, porteringsplanen og separate lokale `.claude`-endringer som skal bevares. |
 | `iup-field-parity-audit` | Aktiv IUP-feltparitetsrevisjon i frakoblet arbeidskopi på `4cba5bec0`; ingen egen diff eller PR ved statuskuttet. |
-| `codex/wang-tournament-profile-sync-audit-2026-10-02` | Aktiv revisjon av synk mellom WANG-turnering og spillerprofil på `cf257bb78e`; ingen egen diff eller PR ved statuskuttet. |
+| `codex/wang-public-player-link-provenance-review-2026-10-02` | Har åpen PR #1118 (`fe4595474`) for revisjon av opphavet til offentlige spillerkoblinger; Vercel er grønn og GitHub-kontrollen kjører. |
 | `akgolf-hq-teknisk-fys-resultat` | Har umerget commit `010cc0053` for tekniske og fysiske resultater. |
 | `codex-ak-sg-runtime` | Har åpen utkast-PR #1083 og omfattende staged/unstaged arbeid; må først deles og samordnes. |
 | `codex-lokal-brukertest` | Koden fra #1039 er merget, men arbeidskopien har usporede kontrollfiler og en plan som må vurderes før sletting. |
@@ -120,7 +124,7 @@ Ryddet 02.10.2026:
 - `codex-wang-tn-profiltilgang-continue` ble fjernet automatisk etter merge av PR #1107.
 - `codex-wang-iup-approval-proposal-2026-10-02` ble fjernet etter merge av PR #1109.
 - `wang-iup-outcome-docs` ble fjernet etter merge av PR #1112.
-- `git worktree prune` ble kjørt. De ni arbeidskopiene i tabellen over er bevisst beholdt.
+- `git worktree prune` ble kjørt. De åtte arbeidskopiene i tabellen over er bevisst beholdt.
 
 ## Rekkefølge
 
