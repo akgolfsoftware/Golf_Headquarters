@@ -107,11 +107,11 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 
 `IupBesvarelse` knytter én skjematype, kildeversjon, nivå og periode til spilleren, uten organisasjonskopier. `IupRevisjon` inneholder versjonerte utkast/leveringer, fritekst, egenvurderinger, prosentfordeling og forbedringspunkter, samt tidspunkt og teknisk lagringskvittering. Fritekst og egenvurdering kan inneholde personlige eller helserelaterte opplysninger.
 
-Nytt serverlag begrenser skriving til innlogget bruker med gyldig foreldresamtykke der det kreves. Begge tabeller har RLS og ingen rettigheter for `PUBLIC`, `anon` eller `authenticated`; de er ikke en offentlig Data API. Dette gir ikke WANG/TN-lesere noen nye rettigheter. Eksisterende fullprofil-samtykke er ikke utvidet til helse eller private notater.
+Spillerens `/portal/mal/evaluering` og de tilhørende handlingene krever Full-tilgang og gyldig foreldresamtykke der det kreves. Nytt serverlag begrenser skriving til innlogget eier som også har aktivt spillermedlemskap i WANG (Ung/Toppidrett) eller den kanoniske Team Norway-gruppen. Tidligere medlemmer kan lese egne historiske svar gjennom den samme beskyttede spillerflaten. Begge tabeller har RLS og ingen rettigheter for `PUBLIC`, `anon` eller `authenticated`; de er ikke en offentlig Data API. Dette gir ikke WANG/TN-lesere noen nye rettigheter. Eksisterende fullprofil-samtykke er ikke utvidet til helse eller private notater.
 
 Alle revisjoner følger brukerens dataeksport. Autorisert anonymisering sletter besvarelser og kaskadesletter revisjonene; de beholdes ikke på den anonymiserte spillerprofilen. Ordinær lagring overskriver aldri en tidligere revisjon, og nytt utkast erstatter ikke siste leverte revisjon. Ingen råsvar sendes til AI eller legges i applikasjonslogger.
 
-Behandlingsgrunnlag, opplysningstekst og eventuell særskilt helsedeling må avstemmes før spillerregistrering og trenerdeling aktiveres. Dette tillegget beskriver kodegrunnlaget, ikke en juridisk godkjenning eller produksjonsaktivering. Testene bruker bare syntetiske svar. Generell levetid før kontosletting er ikke fastsatt av dette arbeidet.
+Spillerskjemaet legger ikke til ekstern deling. Behandlingsgrunnlag, opplysningstekst og eventuell særskilt helsedeling står fortsatt som avklaringer for trenerdeling. Dette tillegget beskriver kodegrunnlaget og er ikke en juridisk godkjenning. Testene bruker bare syntetiske svar. Generell levetid før kontosletting er ikke fastsatt av dette arbeidet.
 
 ### Eksisterende avklaringsliste
 
