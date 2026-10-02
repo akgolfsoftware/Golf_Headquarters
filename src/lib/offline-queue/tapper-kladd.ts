@@ -7,17 +7,22 @@
  * enhetstestbar uten IndexedDB.
  */
 
+export type TapperCount = { club: string; count: number; area?: string | null; category?: string | null; repetitionType?: string | null };
+
 export type TapperKoRad = {
   /** Sammensatt lokal nøkkel: eier + økt. */
   key: string;
   /** Innlogget aktør som opprettet kladden på denne enheten. */
   eierId: string;
   sessionId: string;
-  counts: Array<{ club: string; count: number }>;
+  counts: TapperCount[];
   /** ISO-tidspunkt for siste lokale oppdatering — kun til feilsøk/visning. */
   sistOppdatert: string;
   /** Antall mislykkede synk-forsøk siden raden ble lagt i køen. */
   forsokAntall: number;
+  revision?: number;
+  synketRevision?: number;
+  serverUpdatedAt?: string;
 };
 
 const MAKS_STILLE_FORSOK = 5;
@@ -25,7 +30,7 @@ const MAKS_STILLE_FORSOK = 5;
 export function byggKoRad(
   eierId: string,
   sessionId: string,
-  counts: Array<{ club: string; count: number }>,
+  counts: TapperCount[],
   naa: Date,
 ): TapperKoRad {
   return {
@@ -51,4 +56,13 @@ export function registrerMislykketForsok(rad: TapperKoRad, naa: Date): TapperKoR
  */
 export function trengerManuellHandling(rad: TapperKoRad): boolean {
   return rad.forsokAntall >= MAKS_STILLE_FORSOK;
+}
+
+/** Ventende lokal telling vinner. Kvittert telling brukes bare når serverbildet
+ * ikke er nyere; sammenligningen bruker serverens egne tidsstempler. */
+export function gjenopptaTapper(rad: TapperKoRad | null, serverUpdatedAt?: string): TapperCount[] | null {
+  if (!rad) return null;
+  if (rad.synketRevision == null || rad.synketRevision !== rad.revision) return rad.counts;
+  if (rad.serverUpdatedAt && (!serverUpdatedAt || rad.serverUpdatedAt >= serverUpdatedAt)) return rad.counts;
+  return null;
 }

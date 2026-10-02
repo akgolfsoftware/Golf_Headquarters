@@ -58,6 +58,7 @@ export type PH06Props = {
   enhet: string;
   lagreFeil: { tittel: string; tekst: string; kode: string } | null;
   onProvIgjen: () => void;
+  lagreTekst?: string;
   avsluttFeil: string | null;
   avslutter: boolean;
   onLeggTil: (n: number) => void;
@@ -98,6 +99,7 @@ export function PH06Slagteller(p: PH06Props) {
         {p.tilstand === "laster" && <LasterTilstand text="Henter økta …" />}
 
         {p.avsluttFeil && <FeilTilstand icon={CircleAlert} title="Økta ble ikke avsluttet" text={p.avsluttFeil} />}
+        {p.lagreTekst && <p role="status" style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{p.lagreTekst}</p>}
         {p.lagreFeil && (
           <FeilTilstand icon={CircleAlert} title={p.lagreFeil.tittel} text={p.lagreFeil.tekst} code={p.lagreFeil.kode}
             retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" data-od-id="tapper-retry" onClick={p.onProvIgjen}>Prøv igjen nå</Knapp>} />
@@ -108,7 +110,7 @@ export function PH06Slagteller(p: PH06Props) {
             <div className="pa-card" style={{ padding: 16, gap: 10 }}>
               <div style={{ font: "var(--type-title-s)", color: "var(--text-primary)" }}>{p.enhet === "slag" ? "Slag" : "Repetisjoner"} denne økta</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
-                <span data-od-id="tapper-total" style={{ font: "600 56px/1 var(--font-mono)", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}
+                <span data-od-id="tapper-total" style={{ fontSize: 56, fontWeight: 600, lineHeight: 1, fontFamily: "var(--font-mono, ui-monospace)", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}
                   aria-label={tom ? "Ingen registrert" : `${p.totalt} registrert`}>{tom ? "—" : p.totalt}</span>
                 <Meta style={{ overflowWrap: "anywhere" }}>{valgtNavn ? `${valgtNavn.toUpperCase()} · ${p.valgtAntall}` : "—"}</Meta>
               </div>
@@ -169,7 +171,7 @@ export function PH06Slagteller(p: PH06Props) {
 
       {kanTelle && (
         <div style={{ position: "sticky", bottom: 0, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)", zIndex: 5 }}>
-          <div style={{ maxWidth: MAKS_BREDDE, margin: "0 auto", padding: "12px 16px calc(16px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ maxWidth: MAKS_BREDDE, margin: "0 auto", padding: "12px 16px calc(16px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "grid", gridTemplateColumns: "72px minmax(0,1fr)", gap: 8 }}>
               <button type="button" className="pa-btn pa-btn--secondary" aria-label="Angre ett slag" data-od-id="tapper-angre" onClick={p.onAngre}
                 disabled={p.avslutter || !p.sist} style={{ width: 72, height: 72, padding: 0 }}>

@@ -10,11 +10,12 @@
  * flaten viser tom tilstand.
  */
 
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
+import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { hentSisteDeling } from "@/lib/admin/ukesrapport-deling";
 import {
-  etterlevelse,
   etterlevelseTekst,
   NEVNER_TEKST,
   type Etterlevelse,
@@ -99,16 +100,9 @@ export async function hentUkesdigest(
   const sisteDag = new Date(nesteStart.getTime() - 86_400_000);
   const femRunderSiden = new Date(now.getTime() - 90 * 86_400_000);
 
-  const [ukeOkter, nesteOkter, runder, forfall, turneringer] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
-      where: { studentId: userId, startTime: { gte: ukeStart, lt: nesteStart } },
-      select: { startTime: true, endTime: true, status: true },
-      orderBy: { startTime: "asc" },
-    }),
-    prisma.trainingSessionV2.findMany({
-      where: { studentId: userId, startTime: { gte: nesteStart, lt: nesteSlutt } },
-      select: { startTime: true, endTime: true },
-    }),
+  const [ukeOkter, nesteOkter, runder, forfall, turneringer, e] = await Promise.all([
+    loadVisibleSessionRange(userId, ukeStart.toISOString(), nesteStart.toISOString()),
+    loadVisibleSessionRange(userId, nesteStart.toISOString(), nesteSlutt.toISOString()),
     prisma.round.findMany({
       where: { userId, playedAt: { gte: femRunderSiden } },
       select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
@@ -131,6 +125,7 @@ export async function hentUkesdigest(
       },
       take: 3,
     }),
+    hentEtterlevelse(userId, now),
   ]);
 
   /* Coachnavnet slås opp separat fordi delingstabellen er bevisst uten
@@ -144,21 +139,8 @@ export async function hentUkesdigest(
       )?.name ?? null
     : null;
 
-  const okter = ukeOkter.map((o) => ({
-    scheduledAt: o.startTime,
-    durationMin: Math.max(
-      0,
-      Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000),
-    ),
-    status: o.status,
-  }));
-
-  const e = etterlevelse(okter, now);
-
-  const loggetMinutter = okter
-    .filter((o) => o.status === "COMPLETED")
-    .reduce((sum, o) => sum + o.durationMin, 0);
-  const planlagtMinutter = okter.reduce((sum, o) => sum + o.durationMin, 0);
+  const loggetMinutter = e.gjennomfortMinutter;
+  const planlagtMinutter = e.planlagtMinutter;
 
   const uke: DigestDag[] = DAG_KORT.map((kort) => ({ kort, tilstand: "ingen" }));
   for (const o of ukeOkter) {

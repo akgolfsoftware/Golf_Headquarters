@@ -67,7 +67,7 @@ export async function slettEksterneBrukerdata(
     }
     try {
       const opptak = await prisma.sessionRecording.count({
-        where: { playerId: userId, audioUrl: { not: null } },
+        where: { playerId: userId },
       });
       plan.push(`ville fjerne ${opptak} opptak + tømme transkript/analyse`);
     } catch {
@@ -114,13 +114,14 @@ export async function slettEksterneBrukerdata(
   // ── 1. Storage: avatar (kjent sti users/<id>.<ext> i bucket "avatars") ──
   if (sb) {
     try {
-      const { data } = await sb.storage
+      const { data, error } = await sb.storage
         .from("avatars")
         .remove([
           `users/${userId}.jpg`,
           `users/${userId}.png`,
           `users/${userId}.webp`,
         ]);
+      if (error) throw error;
       storageFilerFjernet += data?.length ?? 0;
     } catch (err) {
       feil.push(`avatar: ${meld(err)}`);
@@ -138,9 +139,10 @@ export async function slettEksterneBrukerdata(
         .map((v) => v.storagePath ?? v.videoUrl)
         .filter((s): s is string => Boolean(s));
       if (stier.length) {
-        const { data } = await sb.storage
+        const { data, error } = await sb.storage
           .from("player-swing-videos")
           .remove(stier);
+        if (error) throw error;
         storageFilerFjernet += data?.length ?? 0;
       }
     } catch (err) {
@@ -152,16 +154,17 @@ export async function slettEksterneBrukerdata(
   if (sb) {
     try {
       const opptak = await prisma.sessionRecording.findMany({
-        where: { playerId: userId, audioUrl: { not: null } },
+        where: { playerId: userId },
         select: { id: true, audioUrl: true },
       });
       const stier = opptak
         .map((o) => o.audioUrl)
         .filter((s): s is string => Boolean(s));
       if (stier.length) {
-        const { data } = await sb.storage
+        const { data, error } = await sb.storage
           .from("coaching-recordings")
           .remove(stier);
+        if (error) throw error;
         storageFilerFjernet += data?.length ?? 0;
       }
       if (opptak.length) {

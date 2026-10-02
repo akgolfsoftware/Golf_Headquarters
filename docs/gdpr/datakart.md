@@ -50,8 +50,10 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | Kategori | Prisma-modell (felter) | Formål | Rettsgrunnlag (forslag) | Retention (forslag) |
 |---|---|---|---|---|
 | Runder/slag/tester | `Round` (inkl. kilde, kildedato, datakvalitet, status, delvis lagring og importmetadata), `Shot`, `HoleScore`, `TestResult`, `TestSession`, `TrainingLog` m.fl. | Kjerneproduktet: utvikling bevist | Avtale | Som konto |
+| Lokal slagtellerkladd | Nettleserens IndexedDB `akgolf-offline-ko` / `tapper-ko-v2`: innlogget eier-ID, økt-ID, kølle/område/repetisjonstype, antall og kvitteringsversjon | Gjenoppta telling uten tap ved nettbrudd eller omlasting; nyere kladd beholdes ved forsinket svar | Avtale (forslag) | Beholdes på enheten til bekreftet avslutning eller sletting av nettleserdata. Bare gjeldende eiers rader leses/sendes. Usendte rader inngår ikke i servereksport; gjenopptak viser dem i slagtelleren. Ingen automatisk aldersgrense er implementert. |
 | TrackMan-data, startretning og måloppsett | `TrackManSession`, `TrackManShot`, `ClubMetricTrend` | Analyse | Avtale | Som konto |
 | Planer/økter | `TrainingPlan`, `TrainingPlanSession*`, `TrainingSessionV2`, `PlanSession`, `TechnicalPlan*` osv. | Planlegging/gjennomføring | Avtale | Som konto |
+| Gruppeoriginal og individuelle arvede økter | `WorkbenchSession` (`groupId`, `sourceGroupSessionId`, `localOverride`, publiseringsstatus og individuelle gjennomføringsfelt), `WorkbenchDrill`, `SessionBallLog` | Gruppeplan med individuell gjennomføring og statistikk; egne tilpasninger og historikk bevares | Avtale (forslag) | Som konto. Bevisst overgangsunntak: dagens kontoeksport/anonymisering dekker ikke hele Workbench; dette må lukkes før produksjonsbruk av den nye gruppeflyten. Se [gruppeflyt-kontrollen](../design-audit/gruppeflyt-kontroll-2026-10-01.md) |
 | Testbasert øvelsesvalg | `WorkbenchDrill.sourceId` kan inneholde testresultat-ID og godkjent øvelses-ID når coach legger en øvelse i et fremtidig utkast | Vise hvorfor øvelsen ble valgt; ingen automatisk publisering | Avtale (forslag) | Øvelsen følger øktens livsløp; **AVKLAR:** dagens eksport/sletting dekker ikke nødvendigvis dette koblingsfeltet |
 | Workbench fysisk plan og turneringsplan | `WorkbenchPhysicalBlock`, `WorkbenchPhysicalWeek`, `WorkbenchPhysicalSession`, `WorkbenchPhysicalExercise`, `WorkbenchPhysicalLog`, `WorkbenchTournamentPlan`, `WorkbenchTournamentPreparation`, `WorkbenchTournamentRound`, `WorkbenchTournamentGoal`, `WorkbenchTournamentEvaluation`, `WorkbenchPlanConflict` | Fysisk treningsplan, spillerlogging, turneringsforberedelse, runder, brutto score, SG-kilde og konfliktløsning mot reise/skole/testuke | Avtale | Som konto; AVKLAR: eksport/sletting må utvides når skjermene tas i bruk |
 | AI-chat (spiller) | `CoachingSession.messages` (JSON), `CaddieMessage`, `CaddieConversation` | AI-coach / caddie | Avtale; AVKLAR: egen info om at innhold sendes til Anthropic | Erklæringen lover «kan slettes når som helst» — AVKLAR: selvbetjent slette-knapp finnes ikke i dag |
@@ -100,6 +102,18 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | Agent-kjøringer | `AgentRun`, `KommandoAgentRun`/`Step`, `Signal`, `PlanAction` | AI-agent-drift | Berettiget interesse | AVKLAR: retention + regel om ingen PII i agent-logger (Nordstjernen-prinsipp) må verifiseres |
 
 ## Samlede AVKLAR-punkter for Anders (prioritert)
+
+### IUP-besvarelser — tillegg 02.10.2026
+
+`IupBesvarelse` knytter én skjematype, kildeversjon, nivå og periode til spilleren, uten organisasjonskopier. `IupRevisjon` inneholder versjonerte utkast/leveringer, fritekst, egenvurderinger, prosentfordeling og forbedringspunkter, samt tidspunkt og teknisk lagringskvittering. Fritekst og egenvurdering kan inneholde personlige eller helserelaterte opplysninger.
+
+Nytt serverlag begrenser skriving til innlogget bruker med gyldig foreldresamtykke der det kreves. Begge tabeller har RLS og ingen rettigheter for `PUBLIC`, `anon` eller `authenticated`; de er ikke en offentlig Data API. Dette gir ikke WANG/TN-lesere noen nye rettigheter. Eksisterende fullprofil-samtykke er ikke utvidet til helse eller private notater.
+
+Alle revisjoner følger brukerens dataeksport. Autorisert anonymisering sletter besvarelser og kaskadesletter revisjonene; de beholdes ikke på den anonymiserte spillerprofilen. Ordinær lagring overskriver aldri en tidligere revisjon, og nytt utkast erstatter ikke siste leverte revisjon. Ingen råsvar sendes til AI eller legges i applikasjonslogger.
+
+Behandlingsgrunnlag, opplysningstekst og eventuell særskilt helsedeling må avstemmes før spillerregistrering og trenerdeling aktiveres. Dette tillegget beskriver kodegrunnlaget, ikke en juridisk godkjenning eller produksjonsaktivering. Testene bruker bare syntetiske svar. Generell levetid før kontosletting er ikke fastsatt av dette arbeidet.
+
+### Eksisterende avklaringsliste
 
 1. **Art. 9-samtykke** for helse- og skadedata (HealthEntry, Leave/rehabPlan) — aktivt samtykke i onboarding?
 2. **Transkript/AI-analyse av økt-opptak beholdes evig** — sett en retention (f.eks. 3 år etter siste aktive avtale?).

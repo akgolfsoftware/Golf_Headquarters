@@ -7,20 +7,21 @@
  *
  * Fasit: PH-06 Slagteller i Claude Design «AK Golf Precision Athletics»
  * (7d7c2994). Selve visningen ligger i PH06Slagteller; her bor tellingen,
- * lagringen (debounce, offline-kø) og avslutningen — uendret fra før.
+ * lagringen (lokal kladd, ordnet sending) og avslutningen.
  * Utvidet med repetisjonstyper og områder for AK-formelen.
  * Avvik:
  *   - Ingen slagmål og ingen TrackMan-kort; tegningens mål og siste slag finnes ikke i basen. Se PH06Slagteller.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { PH06Slagteller } from "@/components/portal/precision/PH06Slagteller";
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts, finishTapperSession } from "./actions";
-import { leggIKo, tomKo } from "@/lib/offline-queue/tapper-queue";
+import { leggIKo, tomKo, lesTapperUtkast, slettTapperUtkast } from "@/lib/offline-queue/tapper-queue";
+import { gjenopptaTapper } from "@/lib/offline-queue/tapper-kladd";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 import {
   RepetitionArea,
@@ -54,6 +55,7 @@ type Props = {
   /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
   initialCounts?: Record<string, number>;
   initialLogs?: LogEntry[];
+  serverUpdatedAt?: string;
 };
 
 /** Lokalt tapp denne nettleserøkta — bærer «siste rep kl. X» + Angre. */
@@ -72,6 +74,7 @@ export function TapperShell({
   coachPanel,
   initialCounts,
   initialLogs,
+  serverUpdatedAt,
 }: Props) {
   const router = useRouter();
   const eierId = useLokalDataEier();
@@ -87,10 +90,15 @@ export function TapperShell({
   const [finishing, setFinishing] = useState(false);
   const [finishError, setFinishError] = useState<string | null>(null);
   const [tapp, setTapp] = useState<Tapp[]>([]);
-  const [lagreStatus, setLagreStatus] = useState<"ok" | "kolagt" | "gitt-opp">("ok");
+  const [ready, setReady] = useState(false);
+  const [lagreStatus, setLagreStatus] = useState<"ok" | "lagrer" | "kolagt" | "gitt-opp" | "lokal-feil">("ok");
+  const finishingRef = useRef(false);
+  const initialServerStamp = useRef(serverUpdatedAt);
+  const localWrites = useRef<Promise<boolean>>(Promise.resolve(true));
+  const mounted = useRef(true);
 
   // Metadata-oppslag for nøkkel
-  function getMeta(key: string) {
+  const getMeta = useCallback((key: string) => {
     const { baseId, repType } = parseRepKey(key);
 
     const clubMatch = clubs.find((c) => c.id === baseId);
@@ -144,99 +152,97 @@ export function TapperShell({
       category: baseId,
       repetitionType: repType,
     };
-  }
+  }, [clubs, initialLogs]);
 
   const navnFor = (key: string) => getMeta(key).name;
 
-  // ── Persistering: debounce + flush ──────────
+  // Hvert trykk blir først en varig lokal kladd; bare nettverket forsinkes.
   const countsRef = useRef(counts);
-  useEffect(() => {
-    countsRef.current = counts;
-  }, [counts]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const buildPayload = useCallback((snapshot = countsRef.current) => Object.entries(snapshot).map(([club, count]) => {
+    const meta = getMeta(club);
+    return { club, count, area: meta.area, category: meta.category, repetitionType: meta.repetitionType };
+  }), [getMeta]);
 
-  function buildPayload() {
-    return Object.entries(countsRef.current).map(([club, count]) => {
-      const meta = getMeta(club);
-      return {
-        club,
-        count,
-        area: meta.area,
-        category: meta.category,
-        repetitionType: meta.repetitionType,
-      };
-    });
-  }
+  const saveLocal = useCallback((snapshot: Record<string, number>) => {
+    const payload = buildPayload(snapshot);
+    const write = localWrites.current.catch(() => false).then(() => eierId ? leggIKo(eierId, sessionId, payload).catch(() => false) : false);
+    localWrites.current = write;
+    void write.then(ok => { if (mounted.current && !ok) setLagreStatus("lokal-feil"); });
+    return write;
+  }, [buildPayload, eierId, sessionId]);
 
-  async function lagre(): Promise<boolean> {
+  const lagre = useCallback(async (): Promise<boolean> => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = null;
-    const payload = buildPayload();
-    try {
-      const res = await saveTapperCounts(sessionId, payload);
-      if (res.ok) {
-        setLagreStatus("ok");
-        return true;
-      }
-    } catch {
-      /* nettverksfeil — køes lokalt under */
-    }
-    const kolagt = eierId
-      ? await leggIKo(eierId, sessionId, payload).catch(() => false)
-      : false;
-    setLagreStatus(kolagt ? "kolagt" : "gitt-opp");
-    return false;
-  }
+    if (!(await localWrites.current) || !eierId) { setLagreStatus("lokal-feil"); return false; }
+    if (!navigator.onLine) { setLagreStatus("kolagt"); return false; }
+    const result = await tomKo(eierId, sessionId, saveTapperCounts);
+    const ok = result === "tom" || result === "synket";
+    if (mounted.current) setLagreStatus(ok ? "ok" : result === "gitt-opp" ? "gitt-opp" : "kolagt");
+    return ok;
+  }, [eierId, sessionId]);
 
-  function planleggLagring() {
+  function updateCounts(next: Record<string, number>) {
+    countsRef.current = next;
+    setCounts(next);
+    setLagreStatus(navigator.onLine ? "lagrer" : "kolagt");
+    void saveLocal(next);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => void lagre(), 5_000);
   }
 
   useEffect(() => {
+    mounted.current = true;
+    let disposed = false;
+    void (async () => {
+      if (!eierId) return;
+      const cached = await lesTapperUtkast(eierId, sessionId);
+      if (disposed) return;
+      const restored = gjenopptaTapper(cached, initialServerStamp.current);
+      if (restored) {
+        const next = { ...countsRef.current, ...Object.fromEntries(restored.map(row => [row.club, row.count])) };
+        countsRef.current = next; setCounts(next);
+      }
+      setReady(true);
+      if (navigator.onLine) void lagre();
+      else if (restored) setLagreStatus("kolagt");
+    })();
+    const online = () => { void lagre(); };
+    const leave = () => { if (navigator.onLine && !finishingRef.current) void lagre(); };
+    window.addEventListener("online", online);
+    window.addEventListener("pagehide", leave);
     return () => {
+      disposed = true; mounted.current = false;
+      window.removeEventListener("online", online); window.removeEventListener("pagehide", leave);
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, []);
-
-  useEffect(() => {
-    async function synk() {
-      if (!eierId) return;
-      const resultat = await tomKo(eierId, sessionId, saveTapperCounts);
-      if (resultat === "synket") setLagreStatus("ok");
-      else if (resultat === "gitt-opp") setLagreStatus("gitt-opp");
-    }
-    void synk();
-    window.addEventListener("online", synk);
-    return () => window.removeEventListener("online", synk);
-  }, [eierId, sessionId]);
+  }, [eierId, sessionId, lagre]);
 
   async function avslutt() {
-    if (finishing) return;
-    setFinishing(true);
-    setFinishError(null);
+    if (finishingRef.current || !ready) return;
+    finishingRef.current = true;
+    setFinishing(true); setFinishError(null);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     try {
+      if (!(await saveLocal(countsRef.current))) throw new Error("local-save");
+      // Alle eldre sendinger må være kvittert før sluttellingen lagres.
+      if (!(await lagre()) && !(await lagre())) throw new Error("sync");
       const result = await finishTapperSession(sessionId, buildPayload());
-      if (!result.ok) {
-        setFinishError(result.error ?? "Økten ble ikke avsluttet. Prøv igjen.");
-        return;
-      }
+      if (!result.ok) { setFinishError(result.error ?? "Økta ble ikke avsluttet. Prøv igjen."); return; }
+      if (eierId) await slettTapperUtkast(eierId, sessionId);
       router.push(`/portal/live/${sessionId}/summary`);
     } catch {
-      setFinishError("Økten ble ikke avsluttet. Behold siden åpen og prøv igjen når nettet er tilbake.");
-    } finally {
-      setFinishing(false);
-    }
+      setFinishError("Økta ble ikke avsluttet. Behold siden åpen og prøv igjen når nettet er tilbake.");
+    } finally { finishingRef.current = false; setFinishing(false); }
   }
 
   function tappElement(baseId: string) {
-    if (finishing) return;
+    if (finishingRef.current || !ready) return;
     const key = buildRepKey(baseId, activeRepType);
     const label = navnFor(key);
-    setCounts((prev) => ({ ...prev, [key]: (prev[key] ?? 0) + 1 }));
+    updateCounts({ ...countsRef.current, [key]: (countsRef.current[key] ?? 0) + 1 });
     setTapp((prev) => [{ key, label, kl: OSLO_KL.format(new Date()) }, ...prev]);
-    planleggLagring();
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       try {
         navigator.vibrate?.(20);
@@ -247,15 +253,11 @@ export function TapperShell({
   }
 
   function angre() {
-    if (finishing) return;
+    if (finishingRef.current || !ready) return;
     const siste = tapp[0];
     if (!siste) return;
-    setCounts((prev) => ({
-      ...prev,
-      [siste.key]: Math.max(0, (prev[siste.key] ?? 0) - 1),
-    }));
+    updateCounts({ ...countsRef.current, [siste.key]: Math.max(0, (countsRef.current[siste.key] ?? 0) - 1) });
     setTapp((prev) => prev.slice(1));
-    planleggLagring();
   }
 
   const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
@@ -283,14 +285,14 @@ export function TapperShell({
     .map((key) => ({ key, navn: navnFor(key), antall: counts[key] ?? 0 }));
 
   const lagreFeil =
-    lagreStatus === "ok"
+    ["ok", "lagrer"].includes(lagreStatus)
       ? null
       : {
-          tittel: "Tellingene ble ikke lagret",
+          tittel: "Kunne ikke lagres",
           tekst:
-            lagreStatus === "gitt-opp"
-              ? "Fikk ikke synket etter flere forsøk. Repetisjonene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
-              : `Nettet forsvant under lagringen. De ${totalCount} repetisjonene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`,
+            lagreStatus === "lokal-feil"
+              ? "Tellingene kunne ikke lagres på denne enheten. Behold siden åpen og prøv igjen."
+              : "Tellingene er lagret på denne enheten, men er ikke bekreftet på serveren. Prøv igjen når du har nett.",
           kode: lagreStatus === "gitt-opp" ? "SYNK · GITT OPP" : "SYNK · KØET LOKALT",
         };
 
@@ -299,7 +301,7 @@ export function TapperShell({
   return (
     <div data-paper-slug="playerhq-live-tapper" data-od-id="playerhq-live-tapper">
       <PH06Slagteller
-        tilstand={lagreFeil ? "feil" : totalCount === 0 ? "tom" : "data"}
+        tilstand={!ready ? "laster" : lagreFeil ? "feil" : totalCount === 0 ? "tom" : "data"}
         oktLabel={oktLabel}
         tilbakeHref={`/portal/live/${sessionId}`}
         totalt={totalCount}
@@ -317,9 +319,10 @@ export function TapperShell({
         sist={tapp[0] ? { label: tapp[0].label, kl: tapp[0].kl } : null}
         enhet={enhet}
         lagreFeil={lagreFeil}
-        onProvIgjen={() => void lagre()}
+        lagreTekst={lagreStatus === "lagrer" ? "Lagrer tellinger …" : lagreStatus === "ok" && ready ? "Tellingene er lagret" : undefined}
+        onProvIgjen={() => { void saveLocal(countsRef.current).then(ok => { if (ok) void lagre(); }); }}
         avsluttFeil={finishError}
-        avslutter={finishing}
+        avslutter={finishing || !ready}
         onLeggTil={leggTil}
         onAngre={angre}
         onAvslutt={() => void avslutt()}

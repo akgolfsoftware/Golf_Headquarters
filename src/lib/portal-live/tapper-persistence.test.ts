@@ -21,6 +21,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
       sessionBallLog: { upsert: async ({ create }: { create: { count: number } }) => {
         if (failWrite) throw new Error("write failure");
         writeCount++; copy.count = create.count;
+        return { updatedAt: new Date("2026-10-02T02:00:00.000Z") };
       } },
     });
     state = copy;
@@ -63,4 +64,11 @@ test("plan-økt kan avsluttes; utkast og dobbelt køllenavn avvises", async () =
   assert.equal((await finishTapperSession("session", counts)).ok, false);
   state.status = "ACTIVE";
   assert.equal((await finishTapperSession("session", [...counts, ...counts])).ok, false);
+});
+
+test("kvitteringen bruker serverens lagringstid, og ugyldig økt-id avvises", async () => {
+  assert.equal((await saveTapperCounts("session", counts)).serverUpdatedAt, "2026-10-02T02:00:00.000Z");
+  const before = writeCount;
+  assert.equal((await saveTapperCounts("", counts)).ok, false);
+  assert.equal(writeCount, before);
 });

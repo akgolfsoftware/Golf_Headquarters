@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { byggKoRad, registrerMislykketForsok, trengerManuellHandling } from "./tapper-kladd";
+import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, gjenopptaTapper } from "./tapper-kladd";
 
 const NAA = new Date(2026, 6, 11, 12, 0);
 
@@ -48,5 +48,19 @@ describe("trengerManuellHandling", () => {
 
   it("fersk rad (0 forsøk) trenger aldri manuell handling", () => {
     assert.equal(trengerManuellHandling(byggKoRad("bruker-a", "okt-1", [], NAA)), false);
+  });
+});
+
+
+describe("gjenopptak uten gamle serverbilder", () => {
+  const base = byggKoRad("owner", "session", [{ club: "driver", count: 5 }], NAA);
+  it("venter på bekreftelse selv om siden har et nyere serverbilde", () => {
+    assert.deepEqual(gjenopptaTapper({ ...base, revision: 2, synketRevision: 1 }, "2026-10-02T02:00:00.000Z"), base.counts);
+  });
+  it("bevarer en kvittering som kom etter at serveren tegnet siden", () => {
+    assert.deepEqual(gjenopptaTapper({ ...base, revision: 2, synketRevision: 2, serverUpdatedAt: "2026-10-02T02:00:00.000Z" }, "2026-10-02T01:00:00.000Z"), base.counts);
+  });
+  it("bruker nyere serverresultat fra en annen enhet foran en gammel kvittert kladd", () => {
+    assert.equal(gjenopptaTapper({ ...base, revision: 2, synketRevision: 2, serverUpdatedAt: "2026-10-02T01:00:00.000Z" }, "2026-10-02T02:00:00.000Z"), null);
   });
 });
