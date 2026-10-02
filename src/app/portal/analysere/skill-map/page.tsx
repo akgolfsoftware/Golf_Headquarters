@@ -19,7 +19,9 @@ export default async function SkillMapPage() {
 
   const [rounds, training] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id,
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "desc" },
       take: 20,
       select: {

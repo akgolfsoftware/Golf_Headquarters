@@ -121,13 +121,17 @@ export default async function SammenligningPage({
   // SG siste runder i perioden vs runder før perioden
   const [nyeRunder, gamleRunder] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: user.id, playedAt: { gte: periodeStart } },
+      where: { userId: user.id, playedAt: { gte: periodeStart },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "desc" },
       take: 5,
       select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true, playedAt: true },
     }),
     prisma.round.findMany({
-      where: { userId: user.id, playedAt: { lt: periodeStart } },
+      where: { userId: user.id, playedAt: { lt: periodeStart },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "desc" },
       take: 5,
       select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },

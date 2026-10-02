@@ -8,7 +8,6 @@ import { SG_DETALJFELT } from "@/lib/portal-runder/manuell-sg";
 import { prisma } from "@/lib/prisma";
 import {
   byggSpillerSgFraRunder,
-  hentSelvrapportertSg,
   SPILLER_SG_RUNDER,
   type SpillerSg,
 } from "@/lib/domain/spiller-sg";
@@ -22,6 +21,7 @@ import {
 import { SG_TO_PYRAMID } from "@/lib/training/skills/types";
 import { buildYardageRows } from "@/lib/sg-hub/yardage-calc";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { nivaaFraKategori, type Nivaa } from "./dybde";
 import {
   fmtKortDato,
@@ -133,7 +133,7 @@ export async function loadMinGolf(
   userId: string,
   overstyrNivaa?: Nivaa,
 ): Promise<MinGolfData> {
-  const [runder, innsikter, trackmanOkter, puttSlag, bruker] = await Promise.all([
+  const [lagredeRunder, innsikter, trackmanOkter, puttSlag, bruker] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
@@ -144,7 +144,7 @@ export async function loadMinGolf(
       },
     }),
     prisma.sgInsight.findMany({
-      where: { userId, resolvedAt: null },
+      where: { userId, resolvedAt: null, category: "DISTANCE_GAPPING" },
       orderBy: [{ severity: "desc" }, { createdAt: "desc" }],
       take: 10,
     }),
@@ -176,16 +176,21 @@ export async function loadMinGolf(
     }),
   ]);
 
+  // Legacy SG has no approved model version. Preserve score and shot data.
+  const runder = lagredeRunder.map((runde) => harVisbarSg(runde) ? runde : {
+    ...runde,
+    sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null,
+    ...Object.fromEntries(SG_DETALJFELT.map(({ key }) => [key, null])),
+  });
+
   // SG-status: samme kanoniske kilde som sg-gap.ts og hull-analysen
   // (hentSpillerSg — én SG-sannhet, AP0.1 i docs/plan-baneguide-sg-app-2026-08-16.md).
   // Rundene er allerede hentet i Promise.all over, så vi bygger BEREGNET-grenen
   // lokalt på samme vindu («runder» hentes med take:20 for Tiger Five/
   // hull-historikk, men SG-snittet bygges kun over de SPILLER_SG_RUNDER
-  // nyeste — samme vindu Hjem/getKpiStats bruker) og faller kun tilbake til
-  // et prisma-kall (selvrapportert) når ingen av de rundene har SG-tall.
+  // nyeste — samme vindu Hjem/getKpiStats bruker).
   const spillerSg: SpillerSg | null =
-    byggSpillerSgFraRunder(runder.slice(0, SPILLER_SG_RUNDER)) ??
-    (await hentSelvrapportertSg(userId));
+    byggSpillerSgFraRunder(runder.slice(0, SPILLER_SG_RUNDER));
 
   // ---- Nivå (A–K fra snittscore inneværende sesong; fallback: alle runder) ----
   const iAar = runder.filter(
@@ -233,8 +238,6 @@ export async function loadMinGolf(
     .reverse()
     .map((r) => ({ label: fmtKortDato(r.playedAt), sg: r.sgTotal as number }));
 
-  const ferskesteInnsikt = innsikter[0] ?? null;
-
   // ---- Neste fokus: svakeste SG-kategori (utvelgelse, ikke beregning) ----
   let nesteFokus: MinGolfData["nesteFokus"] = null;
   if (kategorier.length > 0) {
@@ -255,7 +258,7 @@ export async function loadMinGolf(
       omrade: `${SG_KLARSPRAK[svakest.akse]} er største lekkasje`,
       sgTap: fmtSg(svakest.sg),
       baseline: svakest.akse === "PUTT" ? PUTT_BASELINE_NAVN : SG_BASELINE_NAVN,
-      begrunnelse: ferskesteInnsikt?.body ?? null,
+      begrunnelse: null,
       formelAkse: `${SG_TO_PYRAMID[svakest.akse]}_${svakest.akse}`,
       handlingHref: "/portal/planlegge/workbench?zoom=uke",
       lekkasjeBaand,
@@ -266,9 +269,7 @@ export async function loadMinGolf(
             grunnlag: spillerSg?.grunnlag ?? "0 runder",
             resept: {
               akse: SG_TO_PYRAMID[svakest.akse],
-              tekst:
-                ferskesteInnsikt?.title ??
-                `Kravtrening på ${verste.label.toLowerCase()} — legg inn i ukeplanen.`,
+              tekst: `Kravtrening på ${verste.label.toLowerCase()} — legg inn i ukeplanen.`,
             },
           }
         : null,
@@ -408,7 +409,7 @@ export async function loadMinGolf(
       trend,
       runder: spillerSg?.antall ?? 0,
       baseline: SG_BASELINE_NAVN,
-      begrunnelse: ferskesteInnsikt?.body ?? null,
+      begrunnelse: null,
       kategorier,
       trendPunkter,
       kilde: spillerSg?.kilde ?? null,

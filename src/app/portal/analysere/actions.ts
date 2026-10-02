@@ -8,6 +8,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import type {
   PyramidArea,
   ShotLie,
@@ -314,7 +315,7 @@ export async function getRoundStats(
     courseName: r.course?.name ?? "Ukjent bane",
     score: r.score,
     par: r.course?.par ?? 72,
-    sgTotal: r.sgTotal,
+    sgTotal: harVisbarSg(r) ? r.sgTotal : null,
     shots: r._count.shots,
   }));
 
@@ -345,7 +346,7 @@ export async function getRoundDetail(userId: string, roundId: string): Promise<R
     courseName: round.course?.name ?? "Ukjent bane",
     score: round.score,
     par: round.course?.par ?? 72,
-    sgTotal: round.sgTotal,
+    sgTotal: harVisbarSg(round) ? round.sgTotal : null,
     shotCount: round.shots.length,
     holeScores: round.holeScores.map((h) => ({
       holeNumber: h.holeNumber,
@@ -597,8 +598,10 @@ async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
     where: { userId },
     orderBy: { playedAt: "desc" },
     take: 10,
-    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true,
+      sgSource: true, sgModelVersionId: true },
   });
+  const visible = recent.filter(harVisbarSg);
 
   function avgOf(vals: (number | null)[]): number | null {
     const filtered = vals.filter((v): v is number => v != null);
@@ -607,12 +610,12 @@ async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
   }
 
   return {
-    roundCount: recent.length,
-    sgTotal: avgOf(recent.map((r) => r.sgTotal)),
-    sgOtt: avgOf(recent.map((r) => r.sgOtt)),
-    sgApp: avgOf(recent.map((r) => r.sgApp)),
-    sgArg: avgOf(recent.map((r) => r.sgArg)),
-    sgPutt: avgOf(recent.map((r) => r.sgPutt)),
+    roundCount: visible.length,
+    sgTotal: avgOf(visible.map((r) => r.sgTotal)),
+    sgOtt: avgOf(visible.map((r) => r.sgOtt)),
+    sgApp: avgOf(visible.map((r) => r.sgApp)),
+    sgArg: avgOf(visible.map((r) => r.sgArg)),
+    sgPutt: avgOf(visible.map((r) => r.sgPutt)),
   };
 }
 

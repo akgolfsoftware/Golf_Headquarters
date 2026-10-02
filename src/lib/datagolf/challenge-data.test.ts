@@ -33,8 +33,13 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     rows = next; return result;
   },
 } } });
-let save: typeof import("@/app/portal/analysere/datagolf/actions").lagreDataGolfUtfordring;
-before(async () => { save = (await import("@/app/portal/analysere/datagolf/actions")).lagreDataGolfUtfordring; });
+let save: (input: unknown) => Promise<{ ok: boolean }>;
+let blockedAction: typeof import("@/app/portal/analysere/datagolf/actions").lagreDataGolfUtfordring;
+before(async () => {
+  const { lagreUtfordringForBruker } = await import("@/lib/datagolf/challenge-data");
+  save = (input) => lagreUtfordringForBruker(viewer, input);
+  blockedAction = (await import("@/app/portal/analysere/datagolf/actions")).lagreDataGolfUtfordring;
+});
 beforeEach(() => { rows = new Map(); writes = 0; fail = false; viewer = "spiller-a"; invalidReference = false; });
 const input = () => ({ attemptId: "e141256c-e12f-45a8-b018-81183a542ac7", tak: 1, slag: "innspill100", carry: 100,
   lie: "fairway", baller: [...Array(4).fill("inne"), ...Array(6).fill("ute")], target: 5,
@@ -62,7 +67,12 @@ test("ufullstendig økt, endret referanse og datamangler skrives ikke", async ()
 });
 test("lagringsfeil returnerer feil og kan forsøkes på nytt", async () => {
   const v = input(); fail = true;
-  assert.equal((await save(v)).ok, false); assert.equal(rows.size, 0);
+  await assert.rejects(() => save(v), /syntetisk lagringsfeil/); assert.equal(rows.size, 0);
   fail = false;
   assert.equal((await save(v)).ok, true); assert.equal(rows.size, 1);
+});
+
+test("kundehandlingen kan ikke lagre DataGolf-utfordringer", async () => {
+  assert.equal((await blockedAction(input())).ok, false);
+  assert.equal(writes, 0);
 });

@@ -20,6 +20,7 @@ import { parseBenchmarks, achievedLevel } from "@/lib/admin/test-benchmarks";
 import { parseForScoring } from "@/lib/portal-tester/test-scoring";
 import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { TL } from "@/lib/v2/train-lock";
 
 import Link from "next/link";
@@ -96,18 +97,21 @@ export default async function InnsynSpillerPage({
             sgApp: true,
             sgArg: true,
             sgPutt: true,
+            sgSource: true,
+            sgModelVersionId: true,
           },
         })
       : Promise.resolve([]),
   ]);
 
   const snittScore = snitt(runder.map((r) => r.score));
+  const sgRunder = runder.filter(harVisbarSg);
   const sgRader: { label: string; verdi: number | null }[] = [
-    { label: "SG totalt", verdi: snitt(runder.map((r) => r.sgTotal)) },
-    { label: "SG utslag", verdi: snitt(runder.map((r) => r.sgOtt)) },
-    { label: "SG innspill", verdi: snitt(runder.map((r) => r.sgApp)) },
-    { label: "SG nærspill", verdi: snitt(runder.map((r) => r.sgArg)) },
-    { label: "SG putting", verdi: snitt(runder.map((r) => r.sgPutt)) },
+    { label: "SG totalt", verdi: snitt(sgRunder.map((r) => r.sgTotal)) },
+    { label: "SG utslag", verdi: snitt(sgRunder.map((r) => r.sgOtt)) },
+    { label: "SG innspill", verdi: snitt(sgRunder.map((r) => r.sgApp)) },
+    { label: "SG nærspill", verdi: snitt(sgRunder.map((r) => r.sgArg)) },
+    { label: "SG putting", verdi: snitt(sgRunder.map((r) => r.sgPutt)) },
   ];
 
   return (

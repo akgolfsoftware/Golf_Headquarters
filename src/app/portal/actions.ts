@@ -18,6 +18,7 @@ import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
 import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
 import { tilDatoKolonne } from "@/lib/workbench/wb-map";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import type { PyramidArea, PracticeType, SessionStatusV2, OktAvbruddAarsak } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
@@ -520,7 +521,8 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
       where: { userId },
       orderBy: { playedAt: "desc" },
       take: 10,
-      select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true,
+        sgSource: true, sgModelVersionId: true },
     }),
     loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: since90 } } }),
@@ -533,14 +535,15 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
       : null;
 
   const avg = (key: "sgTotal" | "sgOtt" | "sgApp" | "sgArg" | "sgPutt"): number | null => {
-    const vals = rounds.filter((r) => r[key] != null).map((r) => r[key] as number);
+    const vals = rounds.filter((r) => harVisbarSg(r) && r[key] != null)
+      .map((r) => r[key] as number);
     return vals.length > 0
       ? Math.round((vals.reduce((s, v) => s + v, 0) / vals.length) * 10) / 10
       : null;
   };
 
   const sgTrend = rounds
-    .filter((r) => r.sgTotal != null)
+    .filter((r) => harVisbarSg(r) && r.sgTotal != null)
     .map((r) => r.sgTotal as number)
     .reverse(); // rounds er nyest→eldst; sparkline leses venstre (eldst) → høyre (nyest)
 

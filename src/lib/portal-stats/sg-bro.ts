@@ -83,7 +83,9 @@ export function beregnSgAggregat(runder: SgBroRunde[]): SgAggregat | null {
 export async function synkroniserSgFraRunder(userId: string): Promise<void> {
   try {
     const runder = await prisma.round.findMany({
-      where: { userId, sgTotal: { not: null } },
+      where: { userId, sgTotal: { not: null },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "desc" },
       take: MAKS_RUNDER,
       select: {

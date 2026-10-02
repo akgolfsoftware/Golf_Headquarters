@@ -9,6 +9,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { DelRundeV2 } from "@/components/portal/v2/DelRundeV2";
 
@@ -27,6 +28,8 @@ export default async function DelRundePage({ params }: Props) {
       score: true,
       playedAt: true,
       sgTotal: true,
+      sgSource: true,
+      sgModelVersionId: true,
       sgOtt: true,
       sgApp: true,
       sgArg: true,
@@ -42,6 +45,7 @@ export default async function DelRundePage({ params }: Props) {
 
   const par = runde.course.par ?? 72;
   const relativ = runde.score - par;
+  const visSg = harVisbarSg(runde);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -52,10 +56,10 @@ export default async function DelRundePage({ params }: Props) {
           relativ,
           kursNavn: runde.course.name,
           playedAt: runde.playedAt.toISOString(),
-          sgPutt: runde.sgPutt ?? null,
-          sgOtt: runde.sgOtt ?? null,
-          sgArg: runde.sgArg ?? null,
-          sgApp: runde.sgApp ?? null,
+          sgPutt: visSg ? runde.sgPutt : null,
+          sgOtt: visSg ? runde.sgOtt : null,
+          sgArg: visSg ? runde.sgArg : null,
+          sgApp: visSg ? runde.sgApp : null,
         }}
         spiller={{
           navn: user.name,

@@ -110,7 +110,10 @@ export async function computeEffectiveness(
 
   const [preRounds, postRounds] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: plan.userId, playedAt: { lt: preCutoff } },
+      where: {
+        userId: plan.userId, playedAt: { lt: preCutoff },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "desc" },
       take: SG_VINDU_RUNDER,
       select: {
@@ -122,7 +125,10 @@ export async function computeEffectiveness(
       },
     }),
     prisma.round.findMany({
-      where: { userId: plan.userId, playedAt: { gte: postFra } },
+      where: {
+        userId: plan.userId, playedAt: { gte: postFra },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
       orderBy: { playedAt: "asc" },
       take: SG_VINDU_RUNDER,
       select: {

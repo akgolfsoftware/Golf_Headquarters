@@ -1,7 +1,7 @@
 /**
  * GET /api/stats/search?q=hovland
  *
- * Returnerer søkeresultater fra PublicPlayer, PgaPlayerSeason og Tournament.
+ * Returnerer søkeresultater fra PublicPlayer og Tournament.
  * Brukes av /stats/sok SokClient (live debounced søk).
  */
 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ norskeSpillere: [], pgaSpillere: [], turneringer: [] });
   }
 
-  const [norskeSpillere, pgaSpillere, turneringer] = await Promise.all([
+  const [norskeSpillere, turneringer] = await Promise.all([
     prisma.publicPlayer
       .findMany({
         where: {
@@ -41,18 +41,6 @@ export async function GET(req: NextRequest) {
         take: 10,
         orderBy: { name: "asc" },
         select: { slug: true, name: true, tier: true, bio: true },
-      })
-      .catch(() => []),
-
-    prisma.pgaPlayerSeason
-      .findMany({
-        where: {
-          playerName: { contains: q, mode: "insensitive" },
-          year: 2026,
-        },
-        take: 10,
-        orderBy: { sgTotal: "desc" },
-        select: { playerName: true, sgTotal: true, dgPlayerId: true },
       })
       .catch(() => []),
 
@@ -70,7 +58,7 @@ export async function GET(req: NextRequest) {
   ]);
 
   return NextResponse.json(
-    { norskeSpillere, pgaSpillere, turneringer },
+    { norskeSpillere, pgaSpillere: [], turneringer },
     {
       headers: {
         "Cache-Control": "no-store, must-revalidate",

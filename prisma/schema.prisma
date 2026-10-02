@@ -1775,6 +1775,8 @@ model Round {
   sgPutt40plus      Float?
   // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
   sgSource          String?
+  // Publisert AK SG-kurve brukt da denne rundens slag ble beregnet.
+  sgModelVersionId  String? @db.Uuid
   // Runde/SG-datakvalitet: kilde, lagringsstatus og audit for import/manuell føring.
   source            String?
   sourceDate        DateTime?

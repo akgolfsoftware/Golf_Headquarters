@@ -30,7 +30,14 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
   // `test.protocol` bærer scoring-typen; null gir fallback-kind, altså
   // høyere-er-bedre — samme oppførsel som før protokollen ble tatt med.
   let latestTestResult: { score: number; test: { protocol: unknown } } | null = null;
-  let sgRounds: { sgOtt: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null }[] = [];
+  let sgRounds: {
+    sgOtt: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null;
+    sgSource: string | null; sgModelVersionId: string | null;
+  }[] = [];
+  const verifisertSgRunde = (sgPutt: number) => ({
+    sgOtt: null, sgApp: null, sgArg: null, sgPutt,
+    sgSource: "beregnet", sgModelVersionId: "00000000-0000-0000-0000-000000000001",
+  });
 
   t.mock.module("@/lib/prisma", {
     namedExports: {
@@ -232,8 +239,12 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     const ingenRunder = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(ingenRunder.hasData, false, "baseline finnes, men ingen runder å regne snitt fra -> ingen data");
 
+    sgRounds = [{ ...verifisertSgRunde(0), sgModelVersionId: null }];
+    const gammelBeregning = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(gammelBeregning.hasData, false, "uversjonert SG skal ikke bli et kundemål");
+
     // Baseline −0,5 → mål +0,5 er en reise på 1,0. Snitt-SG PUTT nå 0,0 = halvveis.
-    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: 0 }];
+    sgRounds = [verifisertSgRunde(0)];
     const halvveis = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(halvveis.hasData, true);
     assert.equal(halvveis.pct, 50);
@@ -241,13 +252,13 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     assert.equal(halvveis.value, 0);
 
     // Nådd målverdi -> 100 % og oppnådd.
-    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: 0.7 }];
+    sgRounds = [verifisertSgRunde(0.7)];
     const oppnaddSg = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(oppnaddSg.pct, 100);
     assert.equal(oppnaddSg.status, "achieved");
 
     // Tilbakegang under baseline klemmes til 0, aldri negativ.
-    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: -1.2 }];
+    sgRounds = [verifisertSgRunde(-1.2)];
     const bakPlanSg = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(bakPlanSg.pct, 0);
     assert.equal(bakPlanSg.status, "behind");

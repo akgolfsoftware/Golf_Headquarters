@@ -13,6 +13,7 @@
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { hentSisteDeling } from "@/lib/admin/ukesrapport-deling";
 import {
@@ -105,7 +106,7 @@ export async function hentUkesdigest(
     loadVisibleSessionRange(userId, nesteStart.toISOString(), nesteSlutt.toISOString()),
     prisma.round.findMany({
       where: { userId, playedAt: { gte: femRunderSiden } },
-      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true, sgSource: true, sgModelVersionId: true },
       orderBy: { playedAt: "desc" },
       take: 5,
     }),
@@ -166,11 +167,12 @@ export async function hentUkesdigest(
     return tall.reduce((a, b) => a + b, 0) / tall.length;
   };
 
+  const visbareRunder = runder.filter(harVisbarSg);
   const sgKilder: { navn: string; verdier: (number | null)[] }[] = [
-    { navn: "Putt", verdier: runder.map((r) => r.sgPutt) },
-    { navn: "Tee", verdier: runder.map((r) => r.sgOtt) },
-    { navn: "Nærspill", verdier: runder.map((r) => r.sgArg) },
-    { navn: "Innspill", verdier: runder.map((r) => r.sgApp) },
+    { navn: "Putt", verdier: visbareRunder.map((r) => r.sgPutt) },
+    { navn: "Tee", verdier: visbareRunder.map((r) => r.sgOtt) },
+    { navn: "Nærspill", verdier: visbareRunder.map((r) => r.sgArg) },
+    { navn: "Innspill", verdier: visbareRunder.map((r) => r.sgApp) },
   ];
 
   const sg: DigestSg[] = sgKilder.flatMap(({ navn, verdier }) => {

@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
@@ -199,7 +200,7 @@ export default async function BarnProfil({
   const antallRunder = barn.rounds.length;
 
   // Gjennomsnitt SG (kun runder med sgTotal — ellers null → «—»)
-  const sgRunder = barn.rounds.filter((r) => r.sgTotal != null);
+  const sgRunder = barn.rounds.filter((r) => harVisbarSg(r) && r.sgTotal != null);
   const avgSg =
     sgRunder.length > 0
       ? sgRunder.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / sgRunder.length
@@ -265,7 +266,7 @@ export default async function BarnProfil({
       id: r.id,
       playedAt: r.playedAt,
       score: r.score,
-      sgTotal: r.sgTotal,
+      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
     })),
     uke: {
       antall: ukeLogger.length,

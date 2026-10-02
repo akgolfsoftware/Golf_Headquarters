@@ -4,8 +4,7 @@
  * Runde-logg — server actions for slag-for-slag-føring.
  *
  * `lagreLoggetRunde` tar den komplette slag-loggen fra live-føringen,
- * BEREGNER SG server-side med SG-motoren (serveren er fasit — klientens
- * løpende estimat er kun visning), og lagrer Round + Shot[] + HoleScore[]
+ * beregner SG bare mot en aktiv AK Golf-modell, og lagrer Round + Shot[] + HoleScore[]
  * i én transaksjon. Kladd underveis lever kun i localStorage på klienten.
  */
 
@@ -15,10 +14,10 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
-import { beregnSg } from "@/lib/domain/sg";
-import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
+import { loadActiveAkSgModel } from "@/lib/ak-sg/active-model";
+import { beregnAkSgFraShots } from "@/lib/runde-logg/ak-sg-fra-shots";
+import { logError } from "@/lib/error-tracking";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
-import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import {
@@ -64,7 +63,7 @@ export type LagreLoggetRundeInput = z.input<typeof rundeSchema>;
 
 export async function lagreLoggetRunde(
   input: LagreLoggetRundeInput,
-): Promise<{ roundId: string; sgTotal: number; score: number }> {
+): Promise<{ roundId: string; sgTotal: number | null; score: number }> {
   const user = await requireConsentingUser();
 
   const parsed = rundeSchema.safeParse(input);
@@ -73,13 +72,15 @@ export async function lagreLoggetRunde(
   }
   const runde = parsed.data;
 
-  // Domene-beregninger — kaster ved inkonsistent kjede (slag etter hole-out osv.)
-  const sgShots = rundeTilSgShots(runde.hull);
-  const sg = beregnSg(sgShots);
-  const granulaer = beregnGranulaerSg(runde.hull, sgShots);
   const { hullScores, totalScore } = deriverRundeScore(runde.hull);
-  const sgSource = runde.estimert ? RUNDE_SG_KILDE.ESTIMERT : RUNDE_SG_KILDE.BEREGNET;
   const alleRader = runde.hull.flatMap((h) => byggShotRader(h));
+  const { shots } = splitShotRader(alleRader);
+  const model = runde.estimert ? null : await loadActiveAkSgModel().catch(async (error) => {
+    await logError({ context: "runde-logg.ak-sg-reader", error }).catch(() => {});
+    return null;
+  });
+  const result = model ? beregnAkSgFraShots(shots, hullScores, model) : null;
+  const sgSource = result ? RUNDE_SG_KILDE.BEREGNET : null;
   const registrering = avledRundeRegistrering({
     sgSource,
     holeScores: hullScores,
@@ -94,26 +95,27 @@ export async function lagreLoggetRunde(
         courseId: runde.courseId,
         playedAt: new Date(runde.playedAt),
         score: totalScore,
-        sgTotal: sg.total,
-        sgOtt: sg.ott,
-        sgApp: sg.app,
-        sgArg: sg.arg,
-        sgPutt: sg.putt,
-        sgTee: granulaer.sgTee,
-        sgApp200: granulaer.sgApp200,
-        sgApp150: granulaer.sgApp150,
-        sgApp100: granulaer.sgApp100,
-        sgApp50: granulaer.sgApp50,
-        sgChip: granulaer.sgChip,
-        sgPitch: granulaer.sgPitch,
-        sgBunker: granulaer.sgBunker,
-        sgPutt0_3: granulaer.sgPutt0_3,
-        sgPutt3_5: granulaer.sgPutt3_5,
-        sgPutt5_10: granulaer.sgPutt5_10,
-        sgPutt10_15: granulaer.sgPutt10_15,
-        sgPutt15_25: granulaer.sgPutt15_25,
-        sgPutt25_40: granulaer.sgPutt25_40,
-        sgPutt40plus: granulaer.sgPutt40plus,
+        sgTotal: result?.sg.total ?? null,
+        sgOtt: result?.sg.ott ?? null,
+        sgApp: result?.sg.app ?? null,
+        sgArg: result?.sg.arg ?? null,
+        sgPutt: result?.sg.putt ?? null,
+        sgTee: result?.gran.sgTee ?? null,
+        sgApp200: result?.gran.sgApp200 ?? null,
+        sgApp150: result?.gran.sgApp150 ?? null,
+        sgApp100: result?.gran.sgApp100 ?? null,
+        sgApp50: result?.gran.sgApp50 ?? null,
+        sgChip: result?.gran.sgChip ?? null,
+        sgPitch: result?.gran.sgPitch ?? null,
+        sgBunker: result?.gran.sgBunker ?? null,
+        sgPutt0_3: result?.gran.sgPutt0_3 ?? null,
+        sgPutt3_5: result?.gran.sgPutt3_5 ?? null,
+        sgPutt5_10: result?.gran.sgPutt5_10 ?? null,
+        sgPutt10_15: result?.gran.sgPutt10_15 ?? null,
+        sgPutt15_25: result?.gran.sgPutt15_25 ?? null,
+        sgPutt25_40: result?.gran.sgPutt25_40 ?? null,
+        sgPutt40plus: result?.gran.sgPutt40plus ?? null,
+        sgModelVersionId: result?.versionId ?? null,
         sgSource,
         ...rundeRegistreringFelter(registrering),
         roundType: runde.roundType ?? null,
@@ -154,7 +156,7 @@ export async function lagreLoggetRunde(
   revalidatePath("/portal/mal");
   revalidatePath("/portal/mal/runder");
 
-  return { roundId: round.id, sgTotal: sg.total, score: totalScore };
+  return { roundId: round.id, sgTotal: result?.sg.total ?? null, score: totalScore };
 }
 
 /**

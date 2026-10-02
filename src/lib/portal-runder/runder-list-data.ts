@@ -10,6 +10,7 @@
  * Mangler data → null/tomt, aldri oppdiktede tall.
  */
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import {
   avledRundeRegistrering,
   lesRundeDataQuality,
@@ -102,7 +103,7 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
       par: r.course.par,
       score: r.score,
       vsPar: r.score - r.course.par,
-      sgTotal: r.sgTotal,
+      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
       status: lesRundeStatus(r.status) ?? avledet.status,
       dataQuality: lesRundeDataQuality(r.dataQuality) ?? avledet.dataQuality,
       kilde: lesRundeKilde(r.source) ?? avledet.kilde,
@@ -131,7 +132,7 @@ export async function getRunderListModel(userId: string): Promise<RunderListMode
         })();
 
   const sgTotalSnitt = (() => {
-    const med = rounds.filter((r) => r.sgTotal != null);
+    const med = rounds.filter((r) => harVisbarSg(r) && r.sgTotal != null);
     if (med.length === 0) return null;
     return med.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / med.length;
   })();

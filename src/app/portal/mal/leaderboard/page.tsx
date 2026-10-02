@@ -65,6 +65,7 @@ export default async function LeaderboardPage({
         where: {
           playedAt: { gte: tretti },
           [sgField]: { not: null },
+          OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
         },
         select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
       },

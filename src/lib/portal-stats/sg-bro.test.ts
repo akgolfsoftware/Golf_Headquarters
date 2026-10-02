@@ -138,7 +138,10 @@ test("sg-broen — aggregering og synk", async (t) => {
     // Broen skal kun se runder som faktisk har SG.
     assert.deepEqual(
       (sisteFindManyArgs as { where?: unknown } | null)?.where,
-      { userId: "user-1", sgTotal: { not: null } },
+      {
+        userId: "user-1", sgTotal: { not: null },
+        OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
+      },
     );
   });
 

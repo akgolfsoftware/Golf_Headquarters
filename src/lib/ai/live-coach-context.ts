@@ -7,6 +7,7 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import type { LiveCoachKontext, SystemPromptInput } from "@/lib/ai-plan/coach-prompt";
 import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
 
@@ -180,7 +181,7 @@ export async function hentLiveCoachKontext(opts: {
       dato: r.playedAt.toISOString().split("T")[0],
       bane: r.course.name,
       score: r.score,
-      sgTotal: r.sgTotal,
+      sgTotal: harVisbarSg(r) ? r.sgTotal : null,
     })),
     sessionKind: kind,
     sessionId,

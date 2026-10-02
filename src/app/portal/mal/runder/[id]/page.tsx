@@ -47,6 +47,8 @@ export default async function RundeDetaljPage({
     (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
+  const visGodkjentSg = runde.sgSource === RUNDE_SG_KILDE.MANUAL || runde.sgModelVersionId != null;
+  const vistSgSource = visGodkjentSg ? runde.sgSource : null;
 
   // Hull-for-hull: HoleScore er sannheten (skrives av slag-føring OG import);
   // fall tilbake til slag-avledet score for eldre runder uten HoleScore-rader.
@@ -88,10 +90,10 @@ export default async function RundeDetaljPage({
   const visKjedeStatus =
     erEier &&
     runde.holeScores.length > 0 &&
-    runde.sgSource !== RUNDE_SG_KILDE.BEREGNET &&
-    runde.sgSource !== RUNDE_SG_KILDE.MANUAL;
+    vistSgSource !== RUNDE_SG_KILDE.BEREGNET &&
+    vistSgSource !== RUNDE_SG_KILDE.MANUAL;
   const avledetRegistrering = avledRundeRegistrering({
-    sgSource: runde.sgSource,
+    sgSource: vistSgSource,
     holeScores: runde.holeScores,
     shots: runde.shots,
     kilde: lesRundeKilde(runde.source),
@@ -143,10 +145,10 @@ export default async function RundeDetaljPage({
 
   const sgKategorier = (
     [
-      { akse: "OTT", sg: runde.sgOtt },
-      { akse: "APP", sg: runde.sgApp },
-      { akse: "ARG", sg: runde.sgArg },
-      { akse: "PUTT", sg: runde.sgPutt },
+      { akse: "OTT", sg: visGodkjentSg ? runde.sgOtt : null },
+      { akse: "APP", sg: visGodkjentSg ? runde.sgApp : null },
+      { akse: "ARG", sg: visGodkjentSg ? runde.sgArg : null },
+      { akse: "PUTT", sg: visGodkjentSg ? runde.sgPutt : null },
     ] as const
   ).flatMap((k) => (k.sg == null ? [] : [{ akse: k.akse, sg: k.sg }]));
 
@@ -162,11 +164,12 @@ export default async function RundeDetaljPage({
     score: runde.score,
     par,
     antallSpilteHull,
-    sgTotal: runde.sgTotal,
+    sgTotal: visGodkjentSg ? runde.sgTotal : null,
+    sgModelVersionId: visGodkjentSg ? runde.sgModelVersionId : null,
     sgKategorier,
-    sgSource: runde.sgSource,
+    sgSource: vistSgSource,
     registrering,
-    manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,
+    manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, visGodkjentSg ? runde[key] : null])) as ManuellSgVerdier,
     hull,
     erEier,
     visKjedeStatus,
@@ -174,22 +177,22 @@ export default async function RundeDetaljPage({
     antallHullMedScore: runde.holeScores.length,
     hullStat,
     granulaerSg: {
-      tee: runde.sgTee,
-      app200: runde.sgApp200,
-      app150: runde.sgApp150,
-      app100: runde.sgApp100,
-      app50: runde.sgApp50,
-      chip: runde.sgChip,
-      pitch: runde.sgPitch,
-      lob: runde.sgLob,
-      bunker: runde.sgBunker,
-      putt0_3: runde.sgPutt0_3,
-      putt3_5: runde.sgPutt3_5,
-      putt5_10: runde.sgPutt5_10,
-      putt10_15: runde.sgPutt10_15,
-      putt15_25: runde.sgPutt15_25,
-      putt25_40: runde.sgPutt25_40,
-      putt40plus: runde.sgPutt40plus,
+      tee: visGodkjentSg ? runde.sgTee : null,
+      app200: visGodkjentSg ? runde.sgApp200 : null,
+      app150: visGodkjentSg ? runde.sgApp150 : null,
+      app100: visGodkjentSg ? runde.sgApp100 : null,
+      app50: visGodkjentSg ? runde.sgApp50 : null,
+      chip: visGodkjentSg ? runde.sgChip : null,
+      pitch: visGodkjentSg ? runde.sgPitch : null,
+      lob: visGodkjentSg ? runde.sgLob : null,
+      bunker: visGodkjentSg ? runde.sgBunker : null,
+      putt0_3: visGodkjentSg ? runde.sgPutt0_3 : null,
+      putt3_5: visGodkjentSg ? runde.sgPutt3_5 : null,
+      putt5_10: visGodkjentSg ? runde.sgPutt5_10 : null,
+      putt10_15: visGodkjentSg ? runde.sgPutt10_15 : null,
+      putt15_25: visGodkjentSg ? runde.sgPutt15_25 : null,
+      putt25_40: visGodkjentSg ? runde.sgPutt25_40 : null,
+      putt40plus: visGodkjentSg ? runde.sgPutt40plus : null,
     },
   };
 

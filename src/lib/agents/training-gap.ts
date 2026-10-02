@@ -51,6 +51,7 @@ export async function runTrainingGap(): Promise<AgentResult> {
           userId: spiller.id,
           playedAt: { gte: sgGrense },
           sgTotal: { not: null },
+          OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
         },
         select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       });

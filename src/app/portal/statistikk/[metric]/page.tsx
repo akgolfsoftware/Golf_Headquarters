@@ -236,6 +236,7 @@ export default async function MetricDrillDownPage({
           where: {
             userId: user.id,
             playedAt: { gte: ninetyDaysAgo },
+            OR: [{ sgSource: "manual" }, { sgModelVersionId: { not: null } }],
           },
           select: {
             id: true,
