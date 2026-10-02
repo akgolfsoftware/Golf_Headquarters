@@ -59,8 +59,20 @@ test("Team Norway-samtykkesiden låser bare testresultater for aktive WANG-eleve
     settSamtykke: async () => ({ ok: true as const }),
   }));
 
-  assert.ok(html.includes("WANG-testresultater deles automatisk"), html);
+  assert.ok(html.includes("Testresultater deles automatisk"), html);
+  assert.ok(!html.includes("WANG-testresultater deles automatisk"), html);
   assert.ok(html.includes("Turneringsresultater og rundestatistikk"), html);
   assert.ok(!html.includes("Tester og resultater"), html);
   assert.equal((html.match(/role="switch"/g) ?? []).length, 2, html);
+});
+
+test("Team Norway-informasjonen vises når ingen ekstern lesergruppe ennå er aktiv", () => {
+  const html = renderToStaticMarkup(createElement(TnSamtykkeSide, {
+    automatiskWangTestdeling: true,
+    organisasjoner: [],
+    settSamtykke: async () => ({ ok: true as const }),
+  }));
+
+  assert.ok(html.includes("WANG-testresultater deles automatisk"), html);
+  assert.ok(html.includes("Ingen frivillig deling er aktiv"), html);
 });

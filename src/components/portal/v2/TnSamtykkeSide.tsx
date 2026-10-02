@@ -123,6 +123,8 @@ export function TnSamtykkeSide({
     endre(gruppeId, automatisk ? "statistikk" : "testerOgResultater", false);
   }
 
+  const harEgenTNTestdeling = status.some((org) => org.testResultaterAutomatisk);
+
   if (status.length === 0 && !automatiskWangTestdeling) {
     return (
       <Kort>
@@ -137,7 +139,7 @@ export function TnSamtykkeSide({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {automatiskWangTestdeling && (
+      {automatiskWangTestdeling && !harEgenTNTestdeling && (
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
             <Icon name="shield" size={16} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
