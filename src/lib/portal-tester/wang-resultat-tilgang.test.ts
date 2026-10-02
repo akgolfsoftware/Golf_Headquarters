@@ -6,6 +6,7 @@ const wangB = { id: "wang-b", name: "WANG Skole B", program: "WANG_UNG", arkiver
 const grupper = [wangA, wangB, { id: "ak-group", name: "AK Academy", program: "AK_ACADEMY", arkivertAt: null, members: [{ userId: "ak-player", user: { name: "AK Player" } }] }];
 let medlemskap: { groupId: string }[] = [];
 let tnMedlem = false;
+let wangElev = false;
 
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   group: {
@@ -23,7 +24,17 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
       assert.deepEqual(where.group.program.in, ["WANG_UNG", "WANG_TOPPIDRETT"]);
       return medlemskap;
     },
-    findFirst: async () => tnMedlem ? { id: "tn-coach-membership" } : null,
+    findFirst: async ({ where }: { where: { userId?: string; groupId?: string; role?: string; endedAt?: null; user?: { role?: string | { in: string[] }; deletedAt?: null; anonymisertAt?: null }; group?: { program?: { in: string[] }; arkivertAt?: null } } }) => {
+      if (where.userId && where.user?.role === "PLAYER") {
+        assert.equal(where.role, "PLAYER");
+        assert.equal(where.endedAt, null);
+        assert.deepEqual(where.user, { role: "PLAYER", deletedAt: null, anonymisertAt: null });
+        assert.deepEqual(where.group?.program?.in, ["WANG_UNG", "WANG_TOPPIDRETT"]);
+        assert.equal(where.group?.arkivertAt, null);
+        return wangElev ? { id: "wang-player-membership" } : null;
+      }
+      return tnMedlem ? { id: "tn-coach-membership" } : null;
+    },
   },
 } } });
 
@@ -62,4 +73,12 @@ test("admin kan se alle registrerte WANG-skolegrupper", async () => {
   const { hentWangTestresultatSkolerForTeamNorway, hentWangTestresultatSkolerForTrener } = await tilgang;
   assert.equal((await hentWangTestresultatSkolerForTeamNorway({ id: "admin", role: "ADMIN" })).length, 2);
   assert.equal((await hentWangTestresultatSkolerForTrener({ id: "admin", role: "ADMIN" })).length, 2);
+});
+
+test("automatisk deling gjelder bare aktive elever i en aktiv WANG-gruppe", async () => {
+  const { harAutomatiskWangTestdeling } = await tilgang;
+  wangElev = true;
+  assert.equal(await harAutomatiskWangTestdeling("player-a"), true);
+  wangElev = false;
+  assert.equal(await harAutomatiskWangTestdeling("player-outside"), false);
 });

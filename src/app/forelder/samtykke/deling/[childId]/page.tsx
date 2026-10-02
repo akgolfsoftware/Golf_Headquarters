@@ -13,6 +13,7 @@ import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { TnSamtykkeSide, type TnOrganisasjon } from "@/components/portal/v2/TnSamtykkeSide";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
+import { harAutomatiskWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   const barn = relasjon.child;
 
   const grupper = await grupperMedEksterneLesereForSpiller(childId);
+  const automatiskWangTestdeling = await harAutomatiskWangTestdeling(childId);
   const status = await hentDelingsStatus(childId, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
 
@@ -35,6 +37,8 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
     gruppeId: g.id,
     navn: g.name,
     testerOgResultater: (kart.get(g.id)?.testResultater ?? false) && (kart.get(g.id)?.stats ?? false),
+    stats: kart.get(g.id)?.stats ?? false,
+    testResultaterAutomatisk: automatiskWangTestdeling && g.slug === "team-norway",
     komplettProfil: kart.get(g.id)?.komplettProfil ?? false,
   }));
 
@@ -48,7 +52,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref="/forelder/samtykke" />
         <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
-        <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} />
+        <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} automatiskWangTestdeling={automatiskWangTestdeling} modus="foresatt" />
       </div>
     </V2Shell>
   );

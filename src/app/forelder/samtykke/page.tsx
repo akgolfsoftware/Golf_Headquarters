@@ -25,6 +25,7 @@ import {
   DelingSamtykkeKort,
   type DelingGruppeStatus,
 } from "@/components/portal/v2/DelingSamtykkeKort";
+import { harAutomatiskWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 
 export const dynamic = "force-dynamic";
 
@@ -80,11 +81,12 @@ export default async function V2ForelderSamtykkePreviewPage() {
   // eneste som teller i ekstern-leser-scopet.
   const delingPerBarn = new Map<
     string,
-    { navn: string; grupper: DelingGruppeStatus[] }
+    { navn: string; grupper: DelingGruppeStatus[]; automatiskWangTestdeling: boolean }
   >(
     await Promise.all(
       relasjoner.map(async (r) => {
         const grupper = await grupperMedEksterneLesereForSpiller(r.child.id);
+        const automatiskWangTestdeling = await harAutomatiskWangTestdeling(r.child.id);
         const status = await hentDelingsStatus(
           r.child.id,
           grupper.map((g) => g.id),
@@ -94,11 +96,13 @@ export default async function V2ForelderSamtykkePreviewPage() {
           r.child.id,
           {
             navn: r.child.name,
+            automatiskWangTestdeling,
             grupper: grupper.map((g) => ({
               gruppeId: g.id,
               gruppeNavn: g.name,
               testResultater: kart.get(g.id)?.testResultater ?? false,
               stats: kart.get(g.id)?.stats ?? false,
+              testResultaterAutomatisk: automatiskWangTestdeling && g.slug === "team-norway",
             })),
           },
         ] as const;
@@ -143,7 +147,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
       {/* T8: delingssamtykke per barn — funksjonelt, merkes for fasit-runde. */}
       {relasjoner.map((r) => {
         const deling = delingPerBarn.get(r.child.id);
-        if (!deling || deling.grupper.length === 0) return null;
+        if (!deling || (deling.grupper.length === 0 && !deling.automatiskWangTestdeling)) return null;
         return (
           <div key={r.child.id} style={{ maxWidth: 720, margin: "16px auto 0", width: "100%" }}>
             <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
@@ -151,6 +155,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
             </div>
             <DelingSamtykkeKort
               grupper={deling.grupper}
+              automatiskWangTestdeling={deling.automatiskWangTestdeling}
               modus={{ type: "foresatt", childId: r.child.id }}
             />
           </div>
