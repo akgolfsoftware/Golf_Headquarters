@@ -5,6 +5,7 @@
  * hvorfor Train-lock (ikke TN-tokens) og kaskade-logikken mellom bryterne.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
 import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
@@ -39,6 +40,7 @@ export default async function DelingPage() {
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <InnstillingerHode tittel="Hvem ser dataene mine" undertekst="Samtykke og deling" tilbakeHref="/portal/meg/innstillinger/personvern" />
+        <Link href="/portal/meg/deling" style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling</Link>
         <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={krevesForesatt} />
       </div>
     </V2Shell>

@@ -10,11 +10,11 @@
  * - «Gjenta» tilbyr de valgene motoren kan lagre: ukentlig i 2–12 uker.
  *   «Valgte dager», «Til dato» og «Ut perioden» har ingen lagring (Parkert).
  * - «Endre bare denne / alle framover» gjelder sletting (seriepolicy), som før.
- * - Coachnotatet er ukeplanens notat (WeekPlan.customNotes), knyttet til uka.
+ * - Ukenotatet er ukeplanens notat (WeekPlan.customNotes), knyttet til uka.
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Check, List, Plus, Send, Star, Trash2, Undo2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, List, Pencil, Plus, Send, Star, Trash2, Undo2, X } from "lucide-react";
 import { Ark, Dialogboks, Nokkelverdi } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Sokefelt } from "@/components/precision/pa-a2";
@@ -25,9 +25,10 @@ import type { UkeMotor } from "@/components/workbench/useUkeMotor";
 import { AREA_LABEL, formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
 import { RPE_SKALA } from "@/lib/domain/workbench/load";
-import type { PyramidArea, RecurrencePolicy, WeekNote, WeekPlanData, WeekType, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Drill, PyramidArea, RecurrencePolicy, WeekNote, WeekPlanData, WeekType, WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { OvelseInput } from "@/lib/domain/workbench/ovelse-utkast";
 import type { SaveWeekPlanInput } from "@/lib/workbench/wb-actions";
+import { tommeUkeplandetaljer, UKEPLAN_OMRADER, UKEPLAN_PRIORITETER, UKEPLAN_TYPER, WeekPlanFieldsSchema, type WeekPlanningDetails } from "@/lib/workbench/ukeplan-schema";
 import type { NyOktVerdier } from "@/components/workbench/CreateSessionModal";
 import "@/styles/precision-a4.css";
 import "@/styles/precision-a9.css";
@@ -67,9 +68,10 @@ function Felt({ label, children, mono }: { label: string; children: React.ReactN
 
 /* ---------------- Økt (redigering) ---------------- */
 
-export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse }: {
+export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse, onRedigerOvelse }: {
   session: WorkbenchSession | null; spillerNavn: string; motor: UkeMotor;
   onLukk: () => void; onApneOkt: (id: string) => void; onNyOvelse: (s: WorkbenchSession) => void;
+  onRedigerOvelse?: (s: WorkbenchSession, drill: Drill) => void;
 }) {
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
@@ -84,6 +86,8 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
   const [t, m] = start.split(":");
   const nyStart = Number(t) * 60 + Number(m);
   const endret = dag !== session.date || nyStart !== session.startMinute || varighet !== session.durationMinutes;
+  const faktiskeMinutter = faktisk.trim() === "" ? null : Number(faktisk);
+  const faktiskGyldig = faktiskeMinutter === null || (Number.isInteger(faktiskeMinutter) && faktiskeMinutter >= 0 && faktiskeMinutter <= 1440);
   const f = session.drills[0]?.akFormel;
   const akse = akseFra(session.pyramid);
   const merke = kildeMerke(session);
@@ -140,9 +144,10 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
           [UI.approvalStatusLabel, session.needsPlayerApproval ? UI.approvalStatusPending : session.approvalStatus === "ACCEPTED" ? UI.approvalStatusAccepted : session.approvalStatus === "REJECTED" ? UI.approvalStatusRejectedValue : "—"],
           ...(session.hiddenByPlayer ? [[UI.hiddenByPlayerLabel, UI.hiddenByPlayerValue] as const] : []),
         ]} />
-        <Knapp variant="ghost" size="sm" icon={Star} disabled={travel} onClick={() => motor.lagreSomMal(session.id, !session.isTemplate)}>
+        <Knapp variant="ghost" size="sm" icon={Star} disabled={travel || (session.status === "IN_PROGRESS" && !session.isTemplate)} onClick={() => motor.lagreSomMal(session.id, !session.isTemplate)}>
           {session.isTemplate ? UI.removeAsTemplate : UI.saveAsTemplate}
         </Knapp>
+        {session.status === "IN_PROGRESS" && !session.isTemplate && <p className="a9-tekst">En pågående økt kan ikke lagres som mal. Fullfør økten først.</p>}
       </div>
 
       <div className="a9-skjema">
@@ -154,6 +159,7 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
               <Caps>{[d.akFormel.pyramid, AREA_LABEL[d.akFormel.area], `${d.durationMinutes} MIN`].filter(Boolean).join(" · ").toUpperCase()}</Caps>
             </span>
             <span className="a9-ovelsesrad__knapper">
+              {onRedigerOvelse && <button type="button" className="pa-iconbtn" aria-label={`Rediger ${d.title}`} disabled={travel} onClick={() => onRedigerOvelse(session, d)}><Ikon icon={Pencil} size={18} /></button>}
               <button type="button" className="pa-iconbtn" aria-label={`Flytt ${d.title} opp`} disabled={travel || i === 0} onClick={() => motor.flyttDrill(session, d.id, -1)}><Ikon icon={ArrowUp} size={18} /></button>
               <button type="button" className="pa-iconbtn" aria-label={`Flytt ${d.title} ned`} disabled={travel || i === session.drills.length - 1} onClick={() => motor.flyttDrill(session, d.id, 1)}><Ikon icon={ArrowDown} size={18} /></button>
               <button type="button" className="pa-iconbtn" aria-label={`Fjern ${d.title}`} disabled={travel} onClick={() => motor.fjernDrill(session.id, d.id)}><Ikon icon={X} size={18} /></button>
@@ -167,7 +173,8 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
         <span className="kicker">Belastning (sRPE)</span>
         <Nokkelverdi items={[
           ["Opplevd anstrengelse", session.perceivedEffort ? `${session.perceivedEffort}/10 · ${RPE_SKALA[session.perceivedEffort]?.kort ?? ""}` : "Ikke vurdert"],
-          ["Faktisk tid", session.actualMinutes ? `${session.actualMinutes} min` : `${session.durationMinutes} min (planlagt)`, { mono: true }],
+          ["Planlagt tid", `${session.durationMinutes} min`, { mono: true }],
+          ["Faktisk tid", session.actualMinutes != null ? `${session.actualMinutes} min` : "Ikke registrert", { mono: true }],
           ["Beregnet belastning", session.load != null ? `${session.load} sRPE-poeng` : "—", { mono: true }],
         ]} />
         <div className="a9-feltrad">
@@ -177,10 +184,10 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <option key={n} value={n}>{n} – {RPE_SKALA[n]?.kort}</option>)}
             </select>
           </Felt>
-          <Felt label="Faktisk min" mono><input type="number" min={1} max={600} inputMode="numeric" placeholder={String(session.durationMinutes)} value={faktisk} onChange={(e) => setFaktisk(e.target.value)} /></Felt>
+          <Felt label="Faktisk min" mono><input type="number" min={0} max={1440} step={1} inputMode="numeric" placeholder="Ikke registrert" value={faktisk} onChange={(e) => setFaktisk(e.target.value)} /></Felt>
         </div>
-        <Knapp variant="secondary" size="sm" disabled={travel}
-          onClick={() => motor.oppdaterAnstrengelse(session.id, rpe ? Number(rpe) : null, faktisk.trim() ? parseInt(faktisk, 10) : null)}>Lagre belastning</Knapp>
+        <Knapp variant="secondary" size="sm" disabled={travel || !faktiskGyldig}
+          onClick={() => { if (faktiskGyldig) motor.oppdaterAnstrengelse(session.id, rpe ? Number(rpe) : null, faktiskeMinutter); }}>Lagre belastning</Knapp>
       </div>
 
       {session.seriesId && utkast && <div className="a9-skjema">
@@ -307,7 +314,7 @@ export const UKETYPE_NAVN: Record<WeekType, string> = { UTVIKLING: "Utvikling", 
 export const UKENOTAT_NAVN: Record<WeekNote, string> = Object.fromEntries(UKENOTATER.map((n) => [n.id, n.tittel])) as Record<WeekNote, string>;
 
 const tall = (v: number | null | undefined) => (v != null ? String(v) : "");
-const tilTall = (v: string, heltall = false) => (v.trim() === "" ? null : heltall ? parseInt(v, 10) : parseFloat(v));
+const tilTall = (v: string) => (v.trim() === "" ? null : Number(v));
 
 export function UkeplanArk({ weekPlan, ukeNr, travel, onLagre, onLukk }: {
   weekPlan?: WeekPlanData | null; ukeNr: number; travel: boolean; onLagre: (d: Partial<SaveWeekPlanInput>) => void; onLukk: () => void;
@@ -318,26 +325,72 @@ export function UkeplanArk({ weekPlan, ukeNr, travel, onLagre, onLukk }: {
   const [rep, setRep] = useState({ full: tall(weekPlan?.repTargetFullSpeed), putt: tall(weekPlan?.repTargetPutting), kort: tall(weekPlan?.repTargetShortGame), torr: tall(weekPlan?.repTargetDry), lav: tall(weekPlan?.repTargetLowSpeed) });
   const [tak, setTak] = useState(tall(weekPlan?.loadCeiling));
   const [notat, setNotat] = useState(weekPlan?.customNotes ?? "");
-  const lagre = () => onLagre({
+  const [detaljer, setDetaljer] = useState<WeekPlanningDetails>(weekPlan?.planningDetails ?? tommeUkeplandetaljer());
+  const [okter, setOkter] = useState({ FYS: tall(detaljer.areas.FYS.sessionBudget), TEK: tall(detaljer.areas.TEK.sessionBudget), SLAG: tall(detaljer.areas.SLAG.sessionBudget), SPILL: tall(detaljer.areas.SPILL.sessionBudget), TURN: tall(detaljer.areas.TURN.sessionBudget) });
+  const [feil, setFeil] = useState<string | null>(null);
+  const lagre = () => {
+    const input = {
     weekType: type, notes: notater,
     plannedHoursFys: tilTall(timer.FYS), plannedHoursTek: tilTall(timer.TEK), plannedHoursSlag: tilTall(timer.SLAG), plannedHoursSpill: tilTall(timer.SPILL), plannedHoursTurn: tilTall(timer.TURN),
-    repTargetFullSpeed: tilTall(rep.full, true), repTargetPutting: tilTall(rep.putt, true), repTargetShortGame: tilTall(rep.kort, true), repTargetDry: tilTall(rep.torr, true), repTargetLowSpeed: tilTall(rep.lav, true),
-    loadCeiling: tilTall(tak, true), customNotes: notat.trim() === "" ? null : notat.trim(),
-  });
+    repTargetFullSpeed: tilTall(rep.full), repTargetPutting: tilTall(rep.putt), repTargetShortGame: tilTall(rep.kort), repTargetDry: tilTall(rep.torr), repTargetLowSpeed: tilTall(rep.lav),
+    loadCeiling: tilTall(tak), customNotes: notat.trim() === "" ? null : notat.trim(),
+    planningDetails: {
+      ...detaljer,
+      location: detaljer.location?.trim() || null,
+      areas: {
+        FYS: { ...detaljer.areas.FYS, sessionBudget: tilTall(okter.FYS) },
+        TEK: { ...detaljer.areas.TEK, sessionBudget: tilTall(okter.TEK) },
+        SLAG: { ...detaljer.areas.SLAG, sessionBudget: tilTall(okter.SLAG) },
+        SPILL: { ...detaljer.areas.SPILL, sessionBudget: tilTall(okter.SPILL) },
+        TURN: { ...detaljer.areas.TURN, sessionBudget: tilTall(okter.TURN) },
+      },
+    },
+    };
+    const parsed = WeekPlanFieldsSchema.safeParse(input);
+    if (!parsed.success) {
+      setFeil("Timer må være gyldige og ikke negative. Økter, repetisjoner og belastningstak må være hele tall på 0 eller mer.");
+      return;
+    }
+    setFeil(null);
+    onLagre(parsed.data);
+  };
   return <Ark open onClose={onLukk} kicker={`Uke ${ukeNr}`} title="Ukeplan og mål"
     footer={<><Knapp fullWidth icon={Check} loading={travel} onClick={lagre}>Lagre ukeplan</Knapp><Knapp variant="ghost" fullWidth onClick={onLukk}>{UI.cancel}</Knapp></>}>
     <div className="a9-skjema">
       <span className="kicker">Uketype</span>
       <div role="radiogroup" aria-label="Uketype" className="a9-rad">
-        {UKETYPER.map((u) => <Valgpille key={u.id} rolle="radio" valgt={type === u.id} onClick={() => setType(u.id)}>{u.tittel}</Valgpille>)}
+        {UKEPLAN_TYPER.map((u) => <Valgpille key={u.id} rolle="radio" valgt={detaljer.weekType === u.id} onClick={() => setDetaljer((p) => ({ ...p, weekType: u.id }))}>{u.navn}</Valgpille>)}
       </div>
+      <Knapp variant="ghost" size="sm" disabled={travel || detaljer.weekType === null} onClick={() => setDetaljer((p) => ({ ...p, weekType: null }))}>Tøm uketype</Knapp>
+      <details><summary>Tidligere uketype: {UKETYPE_NAVN[type]}</summary>
+        <div role="radiogroup" aria-label="Tidligere uketype" className="a9-rad">
+          {UKETYPER.map((u) => <Valgpille key={u.id} rolle="radio" valgt={type === u.id} onClick={() => setType(u.id)}>{u.tittel}</Valgpille>)}
+        </div>
+      </details>
+      <Felt label="Oppholdssted"><input maxLength={300} value={detaljer.location ?? ""} onChange={(e) => setDetaljer((p) => ({ ...p, location: e.target.value || null }))} placeholder="Sted for denne uka" /></Felt>
+      <span className="kicker">Prioritet, fokus og budsjett per område</span>
+      {UKEPLAN_OMRADER.map((k) => <fieldset key={k} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+        <legend className="kicker">{k}</legend>
+        <Felt label={`${k} prioritet`}><select aria-label={`${k} prioritet`} value={detaljer.areas[k].priority ?? ""} onChange={(e) => {
+          const priority = UKEPLAN_PRIORITETER.find((v) => v === e.target.value) ?? null;
+          setDetaljer((p) => ({ ...p, areas: { ...p.areas, [k]: { ...p.areas[k], priority } } }));
+        }}>
+          <option value="">Ikke valgt</option>
+          <option value="UTVIKLE">Utvikle</option><option value="VEDLIKEHOLDE">Vedlikeholde</option><option value="REDUSERE">Redusere</option>
+        </select></Felt>
+        <Felt label={`${k} fokus`}><textarea aria-label={`${k} fokus`} rows={2} maxLength={2000} value={detaljer.areas[k].focus ?? ""} onChange={(e) => {
+          const focus = e.target.value.trim() === "" ? null : e.target.value;
+          setDetaljer((p) => ({ ...p, areas: { ...p.areas, [k]: { ...p.areas[k], focus } } }));
+        }} /></Felt>
+        <div className="a9-feltrad">
+          <Felt label={`${k} timer`} mono><input type="number" step="any" min={0} inputMode="decimal" placeholder="—" value={timer[k]} onChange={(e) => setTimer((p) => ({ ...p, [k]: e.target.value }))} /></Felt>
+          <Felt label={`${k} økter`} mono><input type="number" step={1} min={0} inputMode="numeric" placeholder="—" value={okter[k]} onChange={(e) => setOkter((p) => ({ ...p, [k]: e.target.value }))} /></Felt>
+        </div>
+      </fieldset>)}
+      <Caps>TOMT BUDSJETT ER IKKE FASTSATT · 0 ER INGEN TIMER ELLER ØKTER</Caps>
       <span className="kicker">Ukenotater og merker</span>
       <div className="a9-rad">
         {UKENOTATER.map((n) => <Valgpille key={n.id} valgt={notater.includes(n.id)} onClick={() => setNotater((p) => p.includes(n.id) ? p.filter((x) => x !== n.id) : [...p, n.id])}>{n.tittel}</Valgpille>)}
-      </div>
-      <span className="kicker">Planlagte timer per pyramide</span>
-      <div className="a9-feltrad">
-        {(Object.keys(timer) as (keyof typeof timer)[]).map((k) => <Felt key={k} label={k} mono><input type="number" step={0.5} min={0} inputMode="decimal" placeholder="—" value={timer[k]} onChange={(e) => setTimer((p) => ({ ...p, [k]: e.target.value }))} /></Felt>)}
       </div>
       <span className="kicker">Repetisjonsmål</span>
       <div className="a9-feltrad">
@@ -348,8 +401,9 @@ export function UkeplanArk({ weekPlan, ukeNr, travel, onLagre, onLukk }: {
         <Felt label="Lav fart (teknikk)" mono><input type="number" step={10} min={0} inputMode="numeric" placeholder="—" value={rep.lav} onChange={(e) => setRep((p) => ({ ...p, lav: e.target.value }))} /></Felt>
       </div>
       <Felt label="Belastningstak (sRPE-poeng)" mono><input type="number" step={100} min={0} inputMode="numeric" placeholder="—" value={tak} onChange={(e) => setTak(e.target.value)} /></Felt>
-      <Felt label="Coachnotat"><textarea rows={4} value={notat} onChange={(e) => setNotat(e.target.value)} /></Felt>
-      <Caps>BARE COACH SER NOTATET · KNYTTES TIL UKE {ukeNr}</Caps>
+      <Felt label="Ukenotat"><textarea rows={4} value={notat} onChange={(e) => setNotat(e.target.value)} /></Felt>
+      <Caps>DELES MED SPILLEREN · KNYTTES TIL UKE {ukeNr}</Caps>
+      {feil && <InlineVarsel tone="warn">{feil}</InlineVarsel>}
     </div>
   </Ark>;
 }
@@ -360,21 +414,21 @@ export function CoachnotatArk({ notat, ukeNr, spillerNavn, travel, onLagre, onLu
   notat: string; ukeNr: number; spillerNavn: string; travel: boolean; onLagre: (tekst: string | null) => void; onLukk: () => void;
 }) {
   const [tekst, setTekst] = useState(notat);
-  return <Ark open onClose={onLukk} kicker={`Coachnotat · ${spillerNavn}`} title="Coachnotat"
+  return <Ark open onClose={onLukk} kicker={`Ukenotat · ${spillerNavn}`} title="Ukenotat"
     footer={<><Knapp fullWidth icon={Check} loading={travel} onClick={() => onLagre(tekst.trim() === "" ? null : tekst.trim())}>Lagre</Knapp><Knapp variant="ghost" fullWidth onClick={onLukk}>{UI.cancel}</Knapp></>}>
     <Felt label="Notat"><textarea rows={4} value={tekst} onChange={(e) => setTekst(e.target.value)} /></Felt>
-    <Caps>BARE COACH SER NOTATET · KNYTTES TIL UKE {ukeNr}</Caps>
+    <Caps>DELES MED SPILLEREN · KNYTTES TIL UKE {ukeNr}</Caps>
   </Ark>;
 }
 
 /* ---------------- Ny øvelse (åtte trinn) ---------------- */
 
-export function OvelseArk({ session, pyramide, travel, onLukk, onSubmit }: {
-  session: WorkbenchSession; pyramide: PyramidArea; travel: boolean; onLukk: () => void; onSubmit: (o: OvelseInput, ferdig: () => void) => void;
+export function OvelseArk({ session, pyramide, drill, travel, onLukk, onSubmit }: {
+  session: WorkbenchSession; pyramide: PyramidArea; drill?: Drill; travel: boolean; onLukk: () => void; onSubmit: (o: OvelseInput, ferdig: () => void) => void;
 }) {
-  return <Ark open onClose={onLukk} kicker={`Ny øvelse · ${session.title}`} title={UI.addDrill}>
+  return <Ark open onClose={onLukk} kicker={`${drill ? "Rediger øvelse" : "Ny øvelse"} · ${session.title}`} title={drill ? "Rediger øvelse" : UI.addDrill}>
     <Caps>PYRAMIDEN VELGES FØRST OG STYRER FELTENE VIDERE</Caps>
-    <OvelseSkjema utseende="precision" standardPyramide={pyramide} disabled={travel} onSubmit={onSubmit} />
+    <OvelseSkjema key={drill?.id ?? "ny"} drill={drill} utseende="precision" standardPyramide={pyramide} disabled={travel} onSubmit={(o, ferdig) => onSubmit(o, () => { ferdig(); if (drill) onLukk(); })} />
   </Ark>;
 }
 

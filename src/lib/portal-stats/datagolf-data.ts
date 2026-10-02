@@ -187,7 +187,7 @@ export async function hentDataGolf(userId: string): Promise<DataGolfData> {
       },
     }),
     prisma.sgBaseline.findMany({
-      where: { category: "APP", lie: "FAIRWAY" },
+      where: { baselineKind: "legacy_sg_bucket", category: "APP", lie: "FAIRWAY" },
       select: { distanceBucket: true, expectedStrokes: true, source: true },
       orderBy: { distanceBucket: "asc" },
     }),
@@ -287,7 +287,10 @@ export async function hentDataGolf(userId: string): Promise<DataGolfData> {
     { code: "PUTT", name: KAT_NAVN.PUTT, verdi: harSkillSesong ? (season?.sgPutt ?? null) : duSnitt.putt },
   ];
 
-  const dgBaselines = innspillBaselines.filter((b) => erDataGolfKilde(b.source));
+  const dgBaselines = innspillBaselines.filter(
+    (b): b is typeof b & { distanceBucket: string; expectedStrokes: number } =>
+      erDataGolfKilde(b.source) && b.distanceBucket != null && b.expectedStrokes != null,
+  );
   const innspill: DataGolfInnspillBotte[] = dgBaselines.slice(0, 6).map((b) => ({
     label: b.distanceBucket.replace(/y$/i, ""),
     verdi: b.expectedStrokes,

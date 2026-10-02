@@ -10,7 +10,7 @@
 
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { isoWeekNumber, validateWeek } from "@/lib/domain/workbench/operations";
+import { validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { RecurrencePolicy, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { OvelseInput } from "@/lib/domain/workbench/ovelse-utkast";
@@ -32,8 +32,10 @@ import {
   setSessionTemplate,
   unpublishSession,
   updateSessionEffort,
+  updateDrill,
   type SaveWeekPlanInput,
 } from "@/lib/workbench/wb-actions";
+import { isoUkeIdentitet } from "@/lib/workbench/ukeplan-schema";
 import type { NyOktVerdier } from "./CreateSessionModal";
 import type { LeggTilDrillVerdier } from "./DrillListEditor";
 
@@ -75,29 +77,18 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
     });
   }
 
-  const lagreUkeplan = (data: Partial<SaveWeekPlanInput>) =>
+  // Valgfri callback bevarer gamle kall. Arket lukkes først når serveren
+  // har bekreftet lagring; utelatte felt beholdes og null tømmer eksplisitt.
+  const lagreUkeplan = (data: Partial<SaveWeekPlanInput>, ferdig?: () => void) =>
     kjor(
-      () =>
-        saveWeekPlan({
-          playerId,
-          isoYear: parseInt(week.weekStart.slice(0, 4), 10),
-          weekNumber: isoWeekNumber(week.weekStart),
-          weekType: data.weekType ?? week.weekPlan?.weekType ?? "UTVIKLING",
-          notes: data.notes ?? week.weekPlan?.notes ?? [],
-          plannedHoursFys: data.plannedHoursFys,
-          plannedHoursTek: data.plannedHoursTek,
-          plannedHoursSlag: data.plannedHoursSlag,
-          plannedHoursSpill: data.plannedHoursSpill,
-          plannedHoursTurn: data.plannedHoursTurn,
-          repTargetDry: data.repTargetDry,
-          repTargetLowSpeed: data.repTargetLowSpeed,
-          repTargetFullSpeed: data.repTargetFullSpeed,
-          repTargetPutting: data.repTargetPutting,
-          repTargetShortGame: data.repTargetShortGame,
-          loadCeiling: data.loadCeiling,
-          customNotes: data.customNotes,
-        }),
-      () => toast.success("Ukeplan lagret"),
+      () => saveWeekPlan({
+        ...data,
+        playerId,
+        ...isoUkeIdentitet(week.weekStart),
+        weekType: data.weekType ?? week.weekPlan?.weekType ?? "UTVIKLING",
+        notes: data.notes ?? week.weekPlan?.notes ?? [],
+      }),
+      () => { toast.success("Ukeplan lagret"); ferdig?.(); },
     );
 
   /** `medAngre`: meldingen får «Angre», som sletter det som nettopp ble laget (AG-11). */
@@ -189,6 +180,13 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   const leggTilOvelse = (sessionId: string, ovelse: OvelseInput, ferdig: () => void) =>
     kjor(() => addDrill({ sessionId, drill: ovelse }), () => { ferdig(); toast.success(UI.toastDrillAdded); });
 
+  const oppdaterOvelse = (sessionId: string, drillId: string, ovelse: OvelseInput, ferdig: () => void) => {
+    const session = alleOkter.find(s => s.id === sessionId);
+    kjor(() => updateDrill({ sessionId, drillId, expectedUpdatedAt: session?.updatedAt, patch: {
+      ...ovelse, description: ovelse.description ?? null, techniqueFocus: ovelse.techniqueFocus ?? null,
+    } }), () => { ferdig(); toast.success("Øvelse lagret"); });
+  };
+
   const flyttDrill = (session: WorkbenchSession, drillId: string, retning: -1 | 1) => {
     const idx = session.drills.findIndex((d) => d.id === drillId);
     const nyIdx = idx + retning;
@@ -207,7 +205,7 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   return {
     week, feil, travel, alleOkter, weeklyLoad, utkast, valideringsnotater, opptattIder,
     lastPaaNytt, lagreUkeplan, opprett, fraKilde, drillFraKilde, flytt, publiser, trekkTilbake, slett,
-    lagreSomMal, leggTilDrill, leggTilOvelse, flyttDrill, fjernDrill, oppdaterAnstrengelse,
+    lagreSomMal, leggTilDrill, leggTilOvelse, oppdaterOvelse, flyttDrill, fjernDrill, oppdaterAnstrengelse,
   };
 }
 

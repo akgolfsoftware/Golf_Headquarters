@@ -41,7 +41,7 @@ export function computeSessionLoad(session: SessionLoadInput): number | null {
   }
 
   const minutes =
-    session.actualMinutes != null && session.actualMinutes > 0
+    session.actualMinutes != null && session.actualMinutes >= 0
       ? session.actualMinutes
       : Math.max(0, session.durationMinutes);
 
@@ -67,7 +67,7 @@ export function computeWeeklyLoad(sessions: SessionLoadInput[]): WeeklyLoadResul
 
   for (const s of sessions) {
     const min =
-      s.actualMinutes != null && s.actualMinutes > 0
+      s.actualMinutes != null && s.actualMinutes >= 0
         ? s.actualMinutes
         : Math.max(0, s.durationMinutes);
 

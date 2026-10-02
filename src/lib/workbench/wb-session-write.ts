@@ -16,6 +16,7 @@
  * lesing av migrerte rader, beslutningen 16.09.2026 §6 pkt. 2).
  */
 
+import { canReadOwnGroupCopy } from "@/lib/workbench/group-scope";
 import type { Prisma, PrismaClient, PyramidArea } from "@/generated/prisma/client";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { skrivWorkbenchDrills } from "@/lib/workbench/wb-drill-write";
@@ -55,9 +56,9 @@ async function speilTilV2(
 async function finnEidOkt(db: Db, sessionId: string, playerId: string) {
   const rad = await db.workbenchSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, pyramid: true, title: true, location: true, maalsetning: true, groupId: true },
+    select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, pyramid: true, title: true, location: true, maalsetning: true, groupId: true, sourceGroupSessionId: true, localOverride: true, status: true, updatedAt: true },
   });
-  if (!rad || rad.playerId !== playerId) return null;
+  if (!rad || rad.playerId !== playerId || !canReadOwnGroupCopy(rad)) return null;
   return rad;
 }
 
@@ -141,11 +142,11 @@ export async function moveWbSession(
   const nyDato = computeMoveTarget(naaKlokke, input.dayIndex, input.refDate ?? new Date());
 
   const updated = await prisma.workbenchSession.update({
-    where: { id: input.sessionId },
-    data: { date: lokalDatoTilKolonne(nyDato) },
+    where: { id: input.sessionId, updatedAt: eksisterende.updatedAt },
+    data: { date: lokalDatoTilKolonne(nyDato), ...(eksisterende.sourceGroupSessionId ? { localOverride: true } : {}) },
     select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, pyramid: true, title: true, location: true, maalsetning: true, groupId: true },
   });
-  await speilTilV2(prisma, updated, input.playerId);
+  if (!eksisterende.sourceGroupSessionId) await speilTilV2(prisma, updated, input.playerId);
   return { ok: true };
 }
 
@@ -161,7 +162,7 @@ export async function updateWbSession(
   if (!parsed.success) return { ok: false, error: "Ugyldig endring." };
   const p = parsed.data;
 
-  const data: Prisma.WorkbenchSessionUpdateInput = {};
+  const data: Prisma.WorkbenchSessionUpdateInput = eksisterende.sourceGroupSessionId ? { localOverride: true } : {};
   if (p.title !== undefined) data.title = p.title;
   if (p.pyramidArea !== undefined) data.pyramid = p.pyramidArea;
   if (p.durationMin !== undefined) data.durationMinutes = p.durationMin;
@@ -177,7 +178,7 @@ export async function updateWbSession(
 
   const updated = await prisma.$transaction(async (tx) => {
     const rad = await tx.workbenchSession.update({
-      where: { id: input.sessionId },
+      where: { id: input.sessionId, updatedAt: eksisterende.updatedAt },
       data,
       select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, pyramid: true, title: true, location: true, maalsetning: true, groupId: true },
     });
@@ -191,7 +192,7 @@ export async function updateWbSession(
     }
     return rad;
   });
-  await speilTilV2(prisma, updated, input.playerId);
+  if (!eksisterende.sourceGroupSessionId) await speilTilV2(prisma, updated, input.playerId);
   return { ok: true };
 }
 
@@ -203,8 +204,13 @@ export async function removeWbSession(
 ): Promise<{ ok: boolean; error?: string }> {
   const eksisterende = await finnEidOkt(prisma, input.sessionId, input.playerId);
   if (!eksisterende) return { ok: false, error: "Økt ikke funnet" };
-  await deleteV2ForPlanSession(input.sessionId);
-  await prisma.workbenchSession.delete({ where: { id: input.sessionId } });
+  if (eksisterende.sourceGroupSessionId) {
+    await prisma.workbenchSession.update({ where: { id: input.sessionId, updatedAt: eksisterende.updatedAt },
+      data: { hiddenByPlayer: true, localOverride: true } });
+  } else {
+    await deleteV2ForPlanSession(input.sessionId);
+    await prisma.workbenchSession.delete({ where: { id: input.sessionId } });
+  }
   return { ok: true };
 }
 

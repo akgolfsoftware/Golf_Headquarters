@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import { parseForScoring } from "@/lib/portal-tester/test-scoring";
-import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
+import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentWangElevGruppeId } from "@/app/team-wang/_data/wang-tilgang";
 import {
@@ -134,6 +133,8 @@ export default async function IupPage({
           select: {
             id: true,
             score: true,
+            testId: true,
+            details: true,
             takenAt: true,
             test: { select: { name: true, pyramidArea: true, protocol: true } },
           },
@@ -141,12 +142,11 @@ export default async function IupPage({
       ).map((r) => {
         // Protokollen bærer enheten; uten den ble en PEI-brøk rendret som
         // «0.038» i IUP-samtalen, med punktum og uten enhet.
-        const { kind, shots } = parseForScoring(r.test.protocol);
         return {
           id: r.id,
           navn: r.test.name,
           akse: r.test.pyramidArea,
-          verdi: formaterTestVerdi({ kind, verdi: r.score, shotsCount: shots.length }),
+          verdi: formaterLagretTestResultat({ ...r, protocol: r.test.protocol }),
           datoIso: osloDato(r.takenAt),
         };
       })
