@@ -1,0 +1,121 @@
+# Aktiv arbeidsliste — resterende oppgaver
+
+Sist oppdatert: 2026-10-02 15:36 CEST på `main` `2df6e137b`.
+Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
+arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
+[fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
+[designautoriteten](../design-system/design-autoritet.md) og relevante kontrollrapporter.
+
+Dette er en utføringsliste, ikke en ny produkt- eller designfasit. Produktregler, beslutninger og valgt designversjon vinner ved konflikt. En oppgave kan først markeres ferdig når funksjon, lagring, tilgang, relevante feiltilstander, testbevis og visuell vurdering er dokumentert hver for seg.
+
+Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjermer-2026-10-02.md).
+
+## Statusnøkler
+
+- **PÅGÅR** — aktiv økt arbeider med oppgaven.
+- **VENTER KONTROLL** — kode eller dokumentasjon finnes, men kontrollen er ikke ferdig.
+- **ÅPEN** — ikke startet eller ikke tildelt.
+- **BLOKKERT** — krever en konkret ekstern avklaring før videre arbeid.
+- **FERDIG DEL** — avgrenset del er levert; større leveranse gjenstår.
+
+## Samlet status fra de andre øktene
+
+| ID | Prioritet | Status | Resterende arbeid | Eier / ferdigbevis |
+|---|---|---|---|---|
+| C01 | P0 | FERDIG DEL | **Player App V1 SG:** PR #1088 og indeksoppfølging #1097 er merget. Seks additive tabeller har RLS, appen leser det publiserte settet med 333 SG-punkter, og lokal kontroll, CI, Vercel og produksjonsrøyk er grønne. Gjenstår: komplett mobil/statistikkreise, korrekte kildedata for flere kategorier og dokumentert DataGolf-lisens før sammenligninger vises. | Statistikkøkten. Handover: `~/Documents/Claude/akgolf-hq/codex-handover/statistikk-sg.md`. |
+| C02 | P0 | FERDIG DEL | **Workbench:** PR #1099 er merget som `8d74ae1d` med kollisjonskart, samtidighetsvern, gruppeøkter og private samlingsinvitasjoner. Lokal fullkontroll, PR-CI, hoved-CI, Vercel-produksjon, helse og produksjonsrøyktest bestod. | Workbench-arbeidskopien er ryddet. Gjenstår som større leveranse: visuell appkontroll mot godkjent Precision-design, komplett Excel-paritet og de øvrige skjerm-/reiseoppgavene i D01–D04. |
+| C03 | P0 | PÅGÅR | **Testbatteri:** retry-sikker lagring er commitet; aktiv arbeidskopi inneholder videre scorekort-, foto-, personvern-, offline- og WANG-resultattilgang. Full verify på oppdatert base bestod med 4 359 kildetester og 101 komponenttester; lokal database 37/37 og foto/GDPR 54/54 er også dokumentert. | Testbatteri-økten. Gjenstår: trenerens konkrete skolehistorikk/resultatvisning, ekte lokal Storage-prøve, felles flerskoletestdag, livescoring, app-/designkontroll, commit, PR og merge. |
+| C04 | P0 | FERDIG DEL | **Portering av alle skjermer:** fersk gjennomføringsplan er laget for 520 sidefiler/rutemønstre, 74 Precision-skjermtyper, 59 WANG-skjermer og TN-00–TN-27/34 dyp-lenker. Ingen appkode ble endret. | [Porteringsplanen](portering-alle-skjermer-2026-10-02.md). Første kodeoppgave er skjermregisteret, deretter rutevis portering. |
+| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1098, #1100, #1101, #1102 og #1104 er merget. #1104 viser kildekontrollerte, leverte IUP-svar i WANG- og Team Norway-trenerprofilene bak eksisterende navngitt tilgang; lokal fullkontroll bestod med 4 330 kildetester, 101 komponenttester og produksjonsbygg, og PR-CI/Vercel var grønne. 175 lagrede spørsmål er kildekontrollert, men hele Excel-erstatningen er ikke ferdig. | WANG/TN-økten. Gjenstår: komplett feltdekning for alle 18 Excel-ark, skolebasert testdeling, felles testdag, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
+
+## Ferdig og allerede på `main`
+
+- PR #1039: e-postmalredigering og kontrollert testsending.
+- PR #1088 og #1097: Player App V1 SG og indeksoppfølging.
+- PR #1098: trenerforslag med spillergodkjenning.
+- PR #1099: Workbench-planlegging, gruppeøkter og private samlingsinvitasjoner
+  (`8d74ae1d`).
+- PR #1100: samling/Workbench-status og dokumentert restomfang.
+- PR #1101: stopp automatisk spillerkobling basert bare på navn.
+- PR #1102: WANG-turneringshistorikk innenfor delingskontrollert transaksjon
+  (`1e4c2f919`).
+- PR #1104: leverte IUP-svar i WANG- og Team Norway-trenerprofilene
+  (`63242f9e3`).
+- PR #1105: verifisert leveransestatus og gjennomføringsjournal for WANG/Team Norway
+  (`2df6e137b`).
+
+Disse skal ikke åpnes som restoppgaver igjen. Nytt arbeid skal bygge på dagens `main` og
+beholde begrensningene som er dokumentert i de respektive PR-ene.
+
+## Designportering som fortsatt mangler
+
+| ID | Prioritet | Status | Resterende arbeid | Ferdigkriterium |
+|---|---|---|---|---|
+| D01 | P0 | ÅPEN | **Precision Athletics for hele appen:** koble alle 520 ferske sidefiler til konkrete skjermtyper/mønstre eller undersøkte tekniske forklaringer. Anders har bekreftet at Precision-skjermene er visuelt godkjent; implementerings- og ruteverifisering gjenstår. Registeret dekker 74 skjermtyper og 443 ruter i omfanget, men dette er ikke implementeringsbevis. | PlayerHQ, AgencyOS, forelder, konto, booking, statistikk, innsyn og systemtilstander har valgt versjon, ekte data/handlinger og registrerte avvik. |
+| D02 | P0 | ÅPEN | **Precision-reiser:** portér I dag → Plan → økt → Live → oppsummering/analyse, samt coachens plan → publisering → spiller. Bevar alle eksisterende modeller, eierskap og lagring. | Samme økt-ID, status, tall og eier gjennom hele reisen; kontroll på 390 px og desktop, lyst tema og natt der avtalt. |
+| D03 | P1 | ÅPEN | **WANG-skjermene:** bruk WANGs egne 59-skjermsregister som kilde. Koble hver skjerm til rute, rolle, deling, tom/lastende/feil/fullført og mobil/desktop. | Ingen WANG-skjerm står kun som prototype; hver rad har appreferanse, kontrollbevis og visuelt avvik. |
+| D04 | P1 | ÅPEN | **Team Norway-skjermene:** bruk TN-00–TN-27 og de 34 dyp-lenkene som funksjonsinventar, med Team Norway-profilen separat fra Precision og WANG. | Rolle-/gruppe-/samtykkegrense er prøvd per reise, og hver skjerm er vurdert i riktig TN-designspråk. |
+| D05 | P0 | FERDIG DEL | **Designoverlevering og visuell godkjenning:** Anders har bekreftet at alle Precision-skjermer er visuelt godkjent. Gjenstående er å holde eksport, manifest, ressurser, skjermregister og teknisk avviksregister samordnet med porteringen. | Anders' visuelle godkjenning er registrert; designstatus, teknisk status og vurdering holdes som separate felter. |
+
+## Funksjon, sikkerhet og integrasjoner
+
+| ID | Prioritet | Status | Resterende arbeid | Ferdigkriterium |
+|---|---|---|---|---|
+| F01 | P0 | ÅPEN | **Sammenhengende treningskjede:** teknisk resultat, FYS-dose, gruppepublisering, offline/gjenopptakelse, samtidige redigeringer og detaljanalyse per øvelse. | Trener → publisering → spiller → Live → oppsummering → Analyse fungerer med korrekt kilde, revisjon, enhet og tilgang. |
+| F02 | P0 | ÅPEN | **Booking, betaling og abonnement:** abonnementsfornyelse, mislykket betaling, oppsigelse, delvis/ekstern refusjon, gjentatte webhooker, e-postleveranse og kollisjonsreiser. | Syntetisk end-to-end-kontroll i testmodus, med idempotens, varig kø og korrekt saldo/status. Ingen ekte kunde eller betaling. |
+| F03 | P0 | ÅPEN | **Konto og personvern:** ekte innlogging/gjenopprettingslenke, foresattgodkjenning, deling/tilbaketrekking, komplett eksport og ekstern sletting i Auth, Storage, Stripe og profilkoblinger. | Tillatte og avviste eiere er prøvd på serveren; mindreårige stoppes riktig; sletting og gjenforsøk er sporbare. |
+| F04 | P0 | ÅPEN | **Tilgang og RLS:** fil-for-fil-kontroll av coach-/gruppeomfang, ekstern leser, WANG/TN og alle serverhandlinger som tar spiller-ID. | Ingen fremmed lesing/skriving i syntetisk lokal DB- og nettlesertest; RLS og faktisk DB-tilkobling er dokumentert. |
+| F05 | P1 | ÅPEN | **Filer og eksterne integrasjoner:** Storage/video/lyd, kalender, e-post, varsler, resultatimport, separat ME-database og offentlig bookinginngang. | Format, størrelse, utløp, gjentakelse, feil og tilgang er prøvd uten PII i logger, AI eller Git. |
+| F06 | P1 | ÅPEN | **DataGolf og WANG/NGF:** WANG- og NGF-rettighetene er avklart av Anders. Gjenstående arbeid er å dokumentere beslutningen, koble den til testdeling og avklare eventuelle DataGolf-begrensninger før sammenligninger aktiveres. | Rettighetsgrunnlag og produktregel er lagret; WANG/NGF-reglene er prøvd i relevante roller; DataGolf-visning følger avklart lisens og kildebegrensning. |
+
+## Kvalitetsport og lansering
+
+| ID | Prioritet | Status | Resterende arbeid | Ferdigkriterium |
+|---|---|---|---|---|
+| Q01 | P0 | ÅPEN | **Samlet kvalitetskontroll:** full npm run verify, innloggede nettleserreiser, tastatur, kontrast, mobil, ytelse, avhengighetsvarsler og kritiske nettfeil på samme kodeversjon. | Ingen kritiske feil eller ubegrunnede utelatelser; kontrollrapporten peker til eksakt commit. |
+| Q02 | P0 | ÅPEN | **Drift og gjenoppretting:** produksjonsrøyktest, backup/restore i separat miljø, overvåking, feilvarsler, deploy og tilbakeføring. | Publiseringsvei og tilbakeføring er prøvd og dokumentert; ingen hemmeligheter eller produksjonsdata i kontrollfiler. |
+| Q03 | P0 | ÅPEN | **Pilot:** aktiver syntetiske/pilotkontoer, e-post, coach-/spiller-/foreldrerolle og samtykke. | Avtalte pilotreiser fungerer uten at ekte invitasjon, betaling eller persondata brukes uautorisert. |
+| Q04 | P0 | ÅPEN | **Lanseringspakke:** samle kodeversjon, designversjoner, datasteg, tilgangsregler, driftsansvar, kjente avvik og tilbakeføringsplan. | Anders kan ta et informert lanseringsvedtak; ingen P0-punkt står uklart. |
+| Q05 | P1 | PÅGÅR | **Worktree- og PR-rydding:** nyere merget arbeid er skilt fra aktive arbeidskopier. Rene, integrerte kopier fjernes; kopier med umergede commits, ucommittede filer eller aktiv økt beholdes. De eldre åpne Precision-PR-ene må samordnes/avsluttes enkeltvis mot dagens design og `main`; grønn gammel CI er ikke mergebevis. | Ingen arbeidskopi slettes før diff, private ressurser og neste steg er dokumentert. Ingen gammel PR bulk-merges. |
+
+## Arbeidskopier som skal beholdes
+
+| Arbeidskopi | Hvorfor den ikke kan slettes nå |
+|---|---|
+| hovedkopien `codex/arbeidsliste-restoppgaver-2026-10-02` | Inneholder denne arbeidslisten, porteringsplanen og separate lokale `.claude`-endringer som skal bevares. |
+| `codex-testbatteri-scorekort` | Aktivt, ucommittet testbatteri-, foto-, offline- og tilgangsarbeid. |
+| `akgolf-hq-teknisk-fys-resultat` | Har umerget commit `010cc0053` for tekniske og fysiske resultater. |
+| `codex-ak-sg-runtime` | Har åpen utkast-PR #1083 og omfattende staged/unstaged arbeid; må først deles og samordnes. |
+| `codex-lokal-brukertest` | Koden fra #1039 er merget, men arbeidskopien har usporede kontrollfiler og en plan som må vurderes før sletting. |
+| `codex-workbench-ux-plan` | Har fire usporede plan-/designleveranser som ikke er lagret i Git. |
+| `precision-athletics-konsolidering` | Har et stort, ucommittet design- og kontrollarkiv; sletting uten separat arkivering vil gi datatap. |
+
+Rene arbeidskopier for ferdigmergede leveranser kan fjernes etter kontroll av at PR-en er på
+`main`. Denne listen skal oppdateres med faktisk slettet sti og merge-commit etter ryddingen.
+
+Ryddet 02.10.2026:
+
+- `wang-tn-profiltilgang` ble fjernet etter merge av PR #1102.
+- `wang-tn-samling-workbench` ble kontrollert ren og fjernet etter merge av PR #1100.
+- `workbench-restfullforing` ble fjernet etter merge og produksjonskontroll av PR #1099.
+- `wang-tn-iup-profile` ble fjernet etter merge og produksjonskontroll av PR #1104.
+- `wang-tn-merge-report` ble fjernet etter merge av journaloppfølgingen i PR #1105.
+- `git worktree prune` ble kjørt. De sju arbeidskopiene i tabellen over er bevisst beholdt.
+
+## Rekkefølge
+
+1. Fullfør C02, C03 og C05 uten å starte konkurrerende varianter; bruk C01 og C04 som ferdig grunnlag.
+2. Lukk D01–D05 reisevis, med Precision som autoritet og egne WANG/TN-profiler.
+3. Lukk F01–F06, særlig booking/personvern/tilgang før bred pilot.
+4. Kjør Q01–Q05 på én fast kodeversjon.
+5. Anders vurderer pilot og lansering.
+
+## Bevisgrenser
+
+- En prototype er ikke appkode.
+- En grønn enhetstest er ikke en visuell godkjenning.
+- En rute i inventaret er ikke en ferdig brukerreise.
+- En lokal betalings- eller e-posttest er ikke produksjonsleveranse.
+- En plan eller handover er ikke ferdig funksjon.
+
+Alle oppgaver skal oppdateres med faktisk kodeversjon, designversjon, eier, testbevis, åpne avvik og neste konkrete kommando.

@@ -2,6 +2,8 @@
 
 Bestilt av Anders 01.10.2026. Kontrollgrunnlag: GitHub/main `3d8818238`, lokal Git-kartlegging og direkte avlesning av prosjektøktene ca. kl. 16.10–16.36 norsk tid. Dette er en datert plan; aktive økter kan ha kommet videre etter avlesningen.
 
+**Aktiv utføringsliste 02.10.2026:** [arbeidsliste-restoppgaver-2026-10-02.md](arbeidsliste-restoppgaver-2026-10-02.md)
+
 **Prosjektet er ikke klart for åpen lansering.** Treningskjernen har nå dokumenterte, sammenhengende lokale prøver, men drift, betaling, personvern, øvrige brukerreiser og valgt skjermdesign har åpne kontrollpunkter. Antall filer, grønne enhetstester eller ferdige prototyper er ikke en ferdigprosent.
 
 Planen oppdaterer rekkefølgen i [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md). [Produktreglene](../platform/BUSINESS-RULES.md), [beslutningene](../../.claude/rules/beslutninger.md), [treningsplanleggingen](../treningsplanlegging.md) og [designautoriteten](../design-system/design-autoritet.md) beholder sin myndighet. Claude Design eier designet, Codex appkode og tester, Anders produktvalg og lanseringsbeslutning. WANG og Team Norway beholder egne designprofiler. Ingen funksjonsfamilie er tatt ut av omfanget.
