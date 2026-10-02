@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "345617a46cf29111a8d585fb449cb2392f6c5f6c",
+  "kodeversjon": "cf5329efb71600e847514fce576c8d6a98494cba",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
-    "componentFiles": 828,
+    "componentFiles": 829,
     "surfaceFiles": 242,
     "byArea": {
       "interne-eksempler": 6,
@@ -19047,12 +19047,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Siden monterer PH01IDag i PlayerHQSkall. Det er kodebevis for visningen, ikke kontroll i appen. ui_kits/playerhq/screens/PH-01.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-01 I dag er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -19175,13 +19177,13 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git.",
       "avvik": [
-        "Kodekommentaren sier PH-07. Skjermlisten sier PH-10. Kommentaren er opphav, ikke en ny godkjenning."
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-10 Plan: uke er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -19189,7 +19191,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-07"
+      "kodekommentar": "PH-10"
     },
     {
       "screenId": "PH-11",
@@ -22976,9 +22978,11 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 38,
+    "medAvvik": 39,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
+    "implementert": 2,
+    "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,

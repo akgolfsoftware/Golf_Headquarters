@@ -34,19 +34,24 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(new Set(register.sider.map((row) => row.kildefil)).size, register.sider.length);
   for (const row of register.sider) {
     assert.ok(row.forklaring && row.eier === "D01-skjermregister" && row.kobling && row.screenId);
-    assert.equal(row.status.implementert, "ikke-verifisert");
     assert.equal(row.status.kontrollertIApp, false);
+    if (row.status.implementert === "ikke-verifisert") assert.equal(row.kontrollbevis, null);
   }
   const byRoute = new Map(register.sider.map((row) => [row.rute, row]));
   assert.equal(byRoute.get("/portal").screenId, "PH-01");
   assert.equal(byRoute.get("/portal").status.valgtForBygging, true);
+  assert.equal(byRoute.get("/portal").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal").kontrollbevis, /PH01IDag/);
   assert.equal(byRoute.get("/admin").kobling, "videresending");
   assert.equal(byRoute.get("/team-gfgk").screenId, "AVSLATT");
   assert.equal(byRoute.get("/").screenId, "MK-FORSIDE");
   assert.equal(byRoute.get("/team-norway/college").screenId, "TN-15");
   assert.match(byRoute.get("/team-norway/college").avvik.join(" "), /TN-06/);
   assert.equal(byRoute.get("/portal/planlegge").screenId, "PH-10");
-  assert.match(byRoute.get("/portal/planlegge").avvik.join(" "), /PH-07/);
+  assert.equal(byRoute.get("/portal/planlegge").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/planlegge").kontrollbevis, /PH10Plan/);
+  assert.equal(byRoute.get("/portal/kalender").status.implementert, "ikke-verifisert");
+  assert.equal(register.tellinger.implementert, 2);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

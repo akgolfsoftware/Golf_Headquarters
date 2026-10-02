@@ -199,7 +199,7 @@ Hele leveransen kan først kalles ferdig når:
 
 ## 7. Første konkrete arbeidsrekkefølge nå
 
-Status 02.10.2026, utgangspunkt `345617a4`: punkt 1 er levert som register, ikke som portering. [Skjermregisteret](../design-system/skjermregister.md) kobler 527 sidefiler. 520 var tellingen da denne planen ble skrevet. Workbench-PR #1099 er allerede merget og skal ikke gjøres om. Åpne Precision-PR-er vurderes én for én; de bulk-merges ikke. Neste kodebolk er punkt 3, ikke en ny registerrunde.
+Status 02.10.2026: punkt 1 er merget som PR #1125. Punkt 3 er påbegynt med PH-10 ukevisning (`/portal/planlegge`) i PlayerHQ-skallet. Kalender, opptatt tid, økt, Live og analyse gjenstår i samme kjede. 520 var tellingen da planen ble skrevet; registeret har 527. Workbench-PR #1099 skal ikke gjøres om. Åpne Precision-PR-er bulk-merges ikke.
 
 1. Opprett og fyll skjermregisteret fra fersk inventarskanning.
 2. Lukk Workbench-PR #1099 og testbatteriets umergede leveranse før nye parallelle varianter.
