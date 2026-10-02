@@ -180,6 +180,22 @@ export async function anonymiserBruker(
       where: { userId },
       data: { notes: null },
     }),
+    // Behold anonyme slagmål, men fjern sporbar posisjon og egenvurdering.
+    prisma.shot.updateMany({
+      where: { round: { userId } },
+      data: {
+        notes: null,
+        startX: null,
+        startY: null,
+        endX: null,
+        endY: null,
+        targetX: null,
+        targetY: null,
+        mentalScore: null,
+      },
+    }),
+    // Kladden kan inneholde fritekst og nøyaktige slagposisjoner.
+    prisma.roundDraft.deleteMany({ where: { userId } }),
   ]);
 
   // WeekPlan har ingen User-FK og vaskes derfor eksplisitt, også for eldre
@@ -210,6 +226,11 @@ export async function anonymiserBruker(
     // IUP kan inneholde personlig refleksjon og helseopplysninger. Beholdes ikke
     // som koblet historikk på den anonymiserte brukerraden. Revisjoner kaskadeslettes.
     prisma.iupBesvarelse.deleteMany({ where: { userId } }),
+    // Trenerforslag inneholder spillerens øktdetaljer og trenerens fritekstgrunn.
+    // Fjern både mottatte og forfattede forslag når en av partene anonymiseres.
+    prisma.planAction.deleteMany({ where: {
+      actionType: "WORKBENCH_COACH_PROPOSAL", OR: [{ userId }, { coachId: userId }],
+    } }),
     // Invitasjoner inneholder mottakerens e-post. Fjernes også når trener/foresatt slettes.
     prisma.trenerDelingsInvitasjon.deleteMany({ where: { OR: [
       { userId }, { gittAvUserId: userId }, { acceptedByUserId: userId },

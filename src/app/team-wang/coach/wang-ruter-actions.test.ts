@@ -50,6 +50,11 @@ mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
 mock.module("@/app/team-wang/_data/wang-tilgang", {
   namedExports: {
     WangDataUtilgjengeligError: TestWangDataUtilgjengeligError,
+    medWangElevData: async (_bruker: unknown, _id: string, les: (tx: unknown, gruppe: string) => Promise<unknown>) => {
+      if (tilgangFeil) throw new TestWangDataUtilgjengeligError();
+      if (!elevGruppeId) return null;
+      return les((await import("@/lib/prisma")).prisma, elevGruppeId);
+    },
     hentWangCoachGruppeId: async () => {
       if (tilgangFeil) throw new TestWangDataUtilgjengeligError();
       return coachGruppeId;

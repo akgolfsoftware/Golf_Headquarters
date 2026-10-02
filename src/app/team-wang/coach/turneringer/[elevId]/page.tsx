@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentWangElevGruppeId } from "@/app/team-wang/_data/wang-tilgang";
+import { medWangElevData } from "@/app/team-wang/_data/wang-tilgang";
 import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
 import { resultatKilde, resultatStatus } from "@/lib/domain/turneringsresultat";
 import { IconChip } from "@/app/team-wang/_components/primitiver";
@@ -14,7 +13,8 @@ import { IconChip } from "@/app/team-wang/_components/primitiver";
  * `hentTurneringshistorikk()` — bare en ny visning. Ingen nytt datalag.
  *
  * Samme tilgangsgrense som IUP: eleven må være aktiv spiller i WANG
- * Toppidrett, og ADMIN/COACH/eleven selv/godkjent forelder ser den. Skjermen
+ * Toppidrett. Treneren trenger aktuell navngitt deling; eleven selv og
+ * godkjent forelder beholder eget innsyn. Skjermen
  * er lesevisning — ingen skriving her.
  */
 export const dynamic = "force-dynamic";
@@ -53,164 +53,166 @@ export default async function WangTurneringerPage({
     kreverTilgang: "INGEN",
   });
 
-  const gruppeId = await hentWangElevGruppeId(bruker, elevId);
-  if (!gruppeId) notFound();
+  const visning = await medWangElevData(bruker, elevId, async (tx) => {
 
-  const elev = await prisma.user.findUnique({
-    where: { id: elevId },
-    select: { id: true, name: true, email: true },
-  });
-  if (!elev) notFound();
+    const elev = await tx.user.findUnique({
+      where: { id: elevId },
+      select: { id: true, name: true, email: true },
+    });
+    if (!elev) return null;
 
-  const historikk = await hentTurneringshistorikk(elevId);
-  const elevNavn = elev.name?.trim() || elev.email;
+    const historikk = await hentTurneringshistorikk(elevId);
+    const elevNavn = elev.name?.trim() || elev.email;
 
-  return (
-    <div
-      className="wang-tp"
-      style={{ maxWidth: 720, margin: "0 auto", padding: "20px 16px 48px", display: "grid", gap: 18 }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <IconChip icon="trophy" color="navy" size={44} />
-        <div style={{ minWidth: 0 }}>
+    return (
+      <div
+        className="wang-tp"
+        style={{ maxWidth: 720, margin: "0 auto", padding: "20px 16px 48px", display: "grid", gap: 18 }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <IconChip icon="trophy" color="navy" size={44} />
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "var(--font-brand)",
+                fontWeight: 800,
+                fontSize: 19,
+                color: "var(--text-primary)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {elevNavn}
+            </div>
+            <div className="t-label" style={{ color: "var(--text-secondary)", marginTop: 2 }}>
+              Turneringer
+            </div>
+          </div>
+        </div>
+
+        {!historikk.harHistorikk ? (
           <div
+            className="wang-card"
             style={{
-              fontFamily: "var(--font-brand)",
-              fontWeight: 800,
-              fontSize: 19,
-              color: "var(--text-primary)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              padding: "22px 20px",
+              fontFamily: "var(--font-body)",
+              fontSize: 13.5,
+              color: "var(--text-secondary)",
+              textAlign: "center",
             }}
           >
-            {elevNavn}
+            {historikk.tomGrunn}
           </div>
-          <div className="t-label" style={{ color: "var(--text-secondary)", marginTop: 2 }}>
-            Turneringer
-          </div>
-        </div>
-      </div>
-
-      {!historikk.harHistorikk ? (
-        <div
-          className="wang-card"
-          style={{
-            padding: "22px 20px",
-            fontFamily: "var(--font-body)",
-            fontSize: 13.5,
-            color: "var(--text-secondary)",
-            textAlign: "center",
-          }}
-        >
-          {historikk.tomGrunn}
-        </div>
-      ) : (
-        <>
-          <div className="wang-card" style={{ padding: "16px 18px", display: "flex", gap: 28, flexWrap: "wrap" }}>
-            <div>
-              <div
-                className="wang-num"
-                style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
-              >
-                {historikk.antall}
+        ) : (
+          <>
+            <div className="wang-card" style={{ padding: "16px 18px", display: "flex", gap: 28, flexWrap: "wrap" }}>
+              <div>
+                <div
+                  className="wang-num"
+                  style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
+                >
+                  {historikk.antall}
+                </div>
+                <div className="t-label" style={{ color: "var(--text-secondary)" }}>turneringsstarter</div>
               </div>
-              <div className="t-label" style={{ color: "var(--text-secondary)" }}>turneringsstarter</div>
+              <div>
+                <div
+                  className="wang-num"
+                  style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
+                >
+                  {historikk.bestePlassering != null ? `${historikk.bestePlassering}.` : "—"}
+                </div>
+                <div className="t-label" style={{ color: "var(--text-secondary)" }}>beste plassering</div>
+              </div>
             </div>
-            <div>
-              <div
-                className="wang-num"
-                style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
-              >
-                {historikk.bestePlassering != null ? `${historikk.bestePlassering}.` : "—"}
-              </div>
-              <div className="t-label" style={{ color: "var(--text-secondary)" }}>beste plassering</div>
-            </div>
-          </div>
 
-          {historikk.aar.map((aar) => (
-            <section key={aar.aar}>
-              <div
-                style={{
-                  fontFamily: "var(--font-brand)",
-                  fontWeight: 700,
-                  fontSize: 15,
-                  color: "var(--text-primary)",
-                  margin: "2px 2px 10px",
-                }}
-              >
-                {aar.aar}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {aar.turneringer.map((t) => (
-                  <div
-                    key={t.turneringId}
-                    className="wang-card"
-                    style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 4 }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+            {historikk.aar.map((aar) => (
+              <section key={aar.aar}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 15,
+                    color: "var(--text-primary)",
+                    margin: "2px 2px 10px",
+                  }}
+                >
+                  {aar.aar}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {aar.turneringer.map((t) => (
+                    <div
+                      key={t.turneringId}
+                      className="wang-card"
+                      style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 4 }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                        <div
+                          style={{
+                            fontFamily: "var(--font-brand)",
+                            fontWeight: 700,
+                            fontSize: 14,
+                            color: "var(--text-primary)",
+                            minWidth: 0,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {t.navn}
+                        </div>
+                        <span
+                          className="wang-num"
+                          style={{
+                            flexShrink: 0,
+                            fontFamily: "var(--font-brand)",
+                            fontWeight: 700,
+                            fontSize: 12.5,
+                            color: "var(--text-secondary)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {fmtDato(t.startDato)}
+                        </span>
+                      </div>
                       <div
                         style={{
-                          fontFamily: "var(--font-brand)",
-                          fontWeight: 700,
-                          fontSize: 14,
-                          color: "var(--text-primary)",
-                          minWidth: 0,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {t.navn}
-                      </div>
-                      <span
-                        className="wang-num"
-                        style={{
-                          flexShrink: 0,
-                          fontFamily: "var(--font-brand)",
-                          fontWeight: 700,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                          fontFamily: "var(--font-body)",
                           fontSize: 12.5,
                           color: "var(--text-secondary)",
-                          whiteSpace: "nowrap",
+                          flexWrap: "wrap",
                         }}
                       >
-                        {fmtDato(t.startDato)}
-                      </span>
+                        <span>{resultatKilde(t.kilde)}</span>
+                        <span>·</span>
+                        <span>{resultatStatus(t.status)}</span>
+                        {t.brutto != null ? (
+                          <>
+                            <span>·</span>
+                            <span className="wang-num">{t.brutto} slag ({motPar(t.motPar)})</span>
+                          </>
+                        ) : null}
+                        {t.plassering != null && t.status === "FINISHED" ? (
+                          <>
+                            <span>·</span>
+                            <span className="wang-num">Plass {t.plasseringTekst ?? t.plassering}</span>
+                          </>
+                        ) : null}
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        fontFamily: "var(--font-body)",
-                        fontSize: 12.5,
-                        color: "var(--text-secondary)",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <span>{resultatKilde(t.kilde)}</span>
-                      <span>·</span>
-                      <span>{resultatStatus(t.status)}</span>
-                      {t.brutto != null ? (
-                        <>
-                          <span>·</span>
-                          <span className="wang-num">{t.brutto} slag ({motPar(t.motPar)})</span>
-                        </>
-                      ) : null}
-                      {t.plassering != null && t.status === "FINISHED" ? (
-                        <>
-                          <span>·</span>
-                          <span className="wang-num">Plass {t.plasseringTekst ?? t.plassering}</span>
-                        </>
-                      ) : null}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
-        </>
-      )}
-    </div>
-  );
+                  ))}
+                </div>
+              </section>
+            ))}
+          </>
+        )}
+      </div>
+    );
+  });
+  if (visning === null) notFound();
+  return visning;
 }

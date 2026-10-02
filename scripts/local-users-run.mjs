@@ -35,6 +35,7 @@ if (['verify', 'static', 'test', 'build', 'typegen'].includes(process.argv[2])) 
 }
 env.PATH = dirname(process.execPath) + delimiter + (env.PATH ?? '');
 const actions = {
+  'template-editor-app': ['node', 'tests/local-users/email-template-server.mjs'],
   bootstrap: ['node', 'scripts/local-users-bootstrap.mjs'],
   seed: ['node', '--import', 'tsx', 'scripts/local-users-seed.ts'],
   dev: ['node', 'node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1', '--port', '3061'],

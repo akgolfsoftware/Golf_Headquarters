@@ -9,18 +9,12 @@ import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAars
 import {
   loadSession,
   loadSources,
-  createSession,
-  createSessionFromSource,
-  addDrillFromSource,
-  moveSession,
-  deleteSession,
-  publishSessions,
   setSessionTemplate,
-  updateSeriesSession,
   type CreateSessionInput,
 } from "@/lib/workbench/wb-actions";
-import { forrigeSourceId, parseSourceId } from "@/lib/workbench/sources-map";
+import { parseSourceId } from "@/lib/workbench/sources-map";
 import { addDays } from "@/lib/domain/workbench/operations";
+import { lagTrenerforslag } from "@/lib/workbench/trenerforslag";
 import type { RecurrencePolicy, WorkbenchSession, SourceItem } from "@/lib/domain/workbench/types";
 
 /**
@@ -311,8 +305,11 @@ export async function tnOpprettOkt(
   if (!(await kanSkrivePersonligPlan(bruker, kontekst, spillerId))) {
     return { ok: false, feil: "Du har ikke skriverett til denne spillerens plan." };
   }
-  const res = await createSession({ ...input, playerId: spillerId });
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "ADD", etter: {
+    date: input.date, startMinute: input.startMinute, durationMinutes: input.durationMinutes,
+    title: input.title, pyramid: input.pyramid, location: input.location ?? null,
+  }, begrunnelse: "Treneren foreslår en ny treningsøkt." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 /** Henter økten og verifiserer at den faktisk tilhører `spillerId` (eierskapsporten). */
@@ -335,8 +332,11 @@ export async function tnFlyttOkt(
   }
   const eier = await hentOktForSpiller(spillerId, input.sessionId);
   if ("feil" in eier) return { ok: false, feil: eier.feil };
-  const res = await moveSession(input);
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  const s = eier.data;
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "UPDATE", sessionId: s.id,
+    etter: { date: input.newDate, startMinute: input.newStartMinute, durationMinutes: s.durationMinutes, title: s.title, pyramid: s.pyramid, location: s.location },
+    begrunnelse: "Treneren foreslår å flytte økten." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 export async function tnSlettOkt(
@@ -354,8 +354,9 @@ export async function tnSlettOkt(
   }
   const eier = await hentOktForSpiller(spillerId, sessionId);
   if ("feil" in eier) return { ok: false, feil: eier.feil };
-  const res = await deleteSession(sessionId);
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "CANCEL", sessionId,
+    begrunnelse: "Treneren foreslår å ta økten ut av planen." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 export async function tnPubliserOkt(
@@ -369,8 +370,7 @@ export async function tnPubliserOkt(
   }
   const eier = await hentOktForSpiller(spillerId, sessionId);
   if ("feil" in eier) return { ok: false, feil: eier.feil };
-  const res = await publishSessions([sessionId]);
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  return { ok: false, feil: "Publisering endrer spillerens plan direkte. Bruk «Foreslå treningsendring» slik at spilleren kan godkjenne." };
 }
 
 // ---------------------------------------------------------------------------
@@ -442,13 +442,12 @@ export async function tnKopierOkt(
   const kilde = await hentOktForSpiller(spillerId, input.kildeSessionId);
   if ("feil" in kilde) return { ok: false, feil: kilde.feil };
 
-  const res = await createSessionFromSource({
-    playerId: spillerId,
-    sourceId: forrigeSourceId(input.kildeSessionId),
-    date: input.nyDato,
-    startMinute: input.nyStartMinutt,
-  });
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  const s = kilde.data;
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "ADD", etter: {
+    date: input.nyDato, startMinute: input.nyStartMinutt, durationMinutes: s.durationMinutes,
+    title: s.title, pyramid: s.pyramid, location: s.location,
+  }, begrunnelse: "Treneren foreslår å legge en tidligere økt inn i planen." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 /** Lagre/fjern en økt som mal i kildepanelet — samme eierskapskontroll som de andre øktmutasjonene. */
@@ -508,6 +507,7 @@ export async function tnOpprettFraMal(
   }
   const kilde = parseSourceId(input.sourceId);
   if (!kilde) return { ok: false, feil: "Ukjent kilde." };
+  if (kilde.kind === "TEK") return { ok: false, feil: "Tekniske oppgaver kan ikke gjøres om til en økt i denne flyten." };
   if (kilde.kind === "MAL" || kilde.kind === "FORRIGE") {
     const eier = await hentOktForSpiller(spillerId, kilde.sessionId);
     if ("feil" in eier) return { ok: false, feil: "Malen tilhører ikke valgt spiller." };
@@ -519,8 +519,14 @@ export async function tnOpprettFraMal(
       return { ok: false, feil: "Øvelsen er ikke tilgjengelig for denne spilleren." };
     }
   }
-  const res = await createSessionFromSource({ playerId: spillerId, sourceId: input.sourceId, date: input.dato, startMinute: input.startMinutt });
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  if (kilde.kind === "DRILL") return { ok: false, feil: "Forslag med enkeltøvelser kan ikke sendes før øvelsesinnhold kan vises før og etter." };
+  const s = await hentOktForSpiller(spillerId, kilde.sessionId);
+  if ("feil" in s) return { ok: false, feil: s.feil };
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "ADD", etter: {
+    date: input.dato, startMinute: input.startMinutt, durationMinutes: s.data.durationMinutes,
+    title: s.data.title, pyramid: s.data.pyramid, location: s.data.location,
+  }, begrunnelse: "Treneren foreslår en ny økt basert på en tilgjengelig kilde." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 /** Legg en øvelse fra kildepanelet til en EKSISTERENDE økt — samme synlighets- og eierskapsport som `tnOpprettFraMal`. */
@@ -540,8 +546,7 @@ export async function tnLeggTilOvelseIOkt(
   if (!(await erLovligKildeForSpiller(spillerId, input.sourceId))) {
     return { ok: false, feil: "Øvelsen er ikke tilgjengelig for denne spilleren." };
   }
-  const res = await addDrillFromSource({ sessionId: input.sessionId, sourceId: input.sourceId });
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  return { ok: false, feil: "Enkeltøvelser kan ikke endre spillerens økt før detaljert før og etter-visning er tilgjengelig." };
 }
 
 /** Rediger tittel/pyramide/miljø/notater på én økt — eller denne+fremover/hele serien når økten er del av en gjentakelse. */
@@ -577,8 +582,13 @@ export async function tnRedigerOktInnhold(
     }
   }
 
-  const res = await updateSeriesSession({ sessionId: input.sessionId, patch: input.patch, policy: input.policy });
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  if (input.policy !== "DENNE") return { ok: false, feil: "Samtidig forslag for en hel serie støttes ikke ennå." };
+  const s = eier.data;
+  const res = await lagTrenerforslag({ organisasjon: "TEAM_NORWAY", spillerId, handling: "UPDATE", sessionId: s.id,
+    etter: { date: s.date, startMinute: s.startMinute, durationMinutes: s.durationMinutes,
+      title: input.patch.title ?? s.title, pyramid: input.patch.pyramid ?? s.pyramid, location: s.location },
+    begrunnelse: input.patch.notes ? `Treneren foreslår endring: ${input.patch.notes.slice(0, 900)}` : "Treneren foreslår å justere økten." });
+  return res.ok ? { ok: true } : { ok: false, feil: res.feil };
 }
 
 /**
@@ -601,6 +611,5 @@ export async function tnPubliserFlere(
     const eier = await hentOktForSpiller(spillerId, id);
     if ("feil" in eier) return { ok: false, feil: `${eier.feil} (${id})` };
   }
-  const res = await publishSessions(sessionIds);
-  return res.ok ? { ok: true } : { ok: false, feil: res.error };
+  return { ok: false, feil: "Direkte publisering er slått av. Send endringsforslag til spilleren for godkjenning." };
 }

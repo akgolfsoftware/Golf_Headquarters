@@ -22,6 +22,8 @@ import { harEgenIupInngang } from "@/lib/iup/oversikt";
 import { KnappLenke } from "@/components/precision/pa";
 import type { Akse, TidslinjePunkt } from "@/components/precision/pa";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
+import { TrenerforslagInnboks, type SpillerTrenerforslag } from "@/components/workbench/Trenerforslag";
+import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · PlayerHQ" };
@@ -57,7 +59,7 @@ export default async function PortalHjemPage() {
   const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO.format(naa);
 
-  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup] = await Promise.all([
+  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag] = await Promise.all([
     getDashboardData(user.id, naa),
     planLaast
       ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [] as PlayerDaySession[], nextSessionId: null } })
@@ -68,6 +70,7 @@ export default async function PortalHjemPage() {
     hentFullfortHistorikk(user.id, naa),
     hentIDagPopup(user.id, naa),
     planLaast ? Promise.resolve(false) : harEgenIupInngang(),
+    user.role === "PLAYER" ? hentMineTrenerforslag() : Promise.resolve([] as SpillerTrenerforslag[]),
   ]);
 
   const uke = ukenummer(naa);
@@ -157,6 +160,7 @@ export default async function PortalHjemPage() {
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
       <PH01IDag {...props}>
         <PushOptInBanner />
+        <TrenerforslagInnboks forslag={trenerforslag} />
         {visIup && <section className="pa-card" style={{ padding: 16, gap: 12 }} aria-label="Evaluering">
           <h2>Evaluering</h2>
           <p>Utviklingssjekk, sesongevaluering og dine tidligere besvarelser.</p>

@@ -42,7 +42,7 @@ function brukerProfil(u: {
 
 /** Samler ett barns reelle data (alt avledet fra DB). */
 async function samleBarnData(childId: string) {
-  const [child, bookinger, betalinger, runder, oktLogger, varsler] =
+  const [child, bookinger, betalinger, runder, rundeUtkast, oktLogger, varsler] =
     await Promise.all([
       prisma.user.findUnique({
         where: { id: childId },
@@ -75,7 +75,9 @@ async function samleBarnData(childId: string) {
       prisma.round.findMany({
         where: { userId: childId },
         orderBy: { playedAt: "desc" },
+        include: { holeScores: true, shots: { include: { puttDetail: true, sgResults: true } } },
       }),
+      prisma.roundDraft.findMany({ where: { userId: childId } }),
       prisma.trainingPlanSessionLog.findMany({
         where: { session: { plan: { userId: childId } } },
         orderBy: { startedAt: "desc" },
@@ -110,7 +112,10 @@ async function samleBarnData(childId: string) {
       spilt: r.playedAt.toISOString(),
       score: r.score,
       sgTotal: r.sgTotal,
+      hull: r.holeScores,
+      slag: r.shots,
     })),
+    rundeUtkast,
     treningsokter: oktLogger.map((l) => ({
       id: l.id,
       tittel: l.session.title,

@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { RundeLiveKlient } from "@/components/portal/runde-logg/runde-live-klient";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
+import { hentPublisertSgReferanse } from "@/lib/domain/sg-reference";
 
 export const metadata = { title: "Runde live — AK Golf HQ" };
 
@@ -21,15 +22,16 @@ export default async function RundeLivePage() {
   // for en side (requireConsentingUser er skrevet for server actions).
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
-  const [alleBaner, sisteBaneId] = await Promise.all([
+  const [alleBaner, sisteBaneId, reference] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },
       select: { id: true, name: true },
     }),
     sisteSpilteBaneId(user.id),
+    hentPublisertSgReferanse(),
   ]);
   // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
   const baner = medForst(alleBaner, sisteBaneId);
 
-  return <RundeLiveKlient baner={baner} />;
+  return <RundeLiveKlient baner={baner} sgBaselines={reference?.points ?? []} sgReferenceLabel={reference?.label ?? null} />;
 }

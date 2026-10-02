@@ -8,13 +8,14 @@ let slug = "team-norway";
 let mottaker: string | null = null;
 let foresatt = false;
 let trener = false;
+let navngittDelt = true;
 
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   tnPostAttachment: { findUnique: async ({ where }: { where: { id: string } }) => where.id === "vedlegg-1" ? {
     id: where.id, path: "privat-lagringssti", fileName: "treningsplan.pdf", fileType: "application/pdf", fileSize: 100,
     post: { id: "post-1", groupId: mottaker ? null : "gruppe-tn", mottakerUserId: mottaker },
   } : null },
-  group: { findUnique: async () => ({ slug }) },
+  group: { findUnique: async () => ({ slug, id: "gruppe-tn" }) },
   groupMember: {
     // To ulike kallformer skilles på where-formen: hentViewerRolleIGruppe
     // spør etter { groupId, userId, endedAt: null } uten nestet `group`,
@@ -39,7 +40,11 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   },
 } } });
 
-beforeEach(() => { groupRoller = { coach: "COACH" }; spillerIder = ["spiller-1"]; slug = "team-norway"; mottaker = null; foresatt = false; trener = false; });
+mock.module("@/lib/deling/profil-lesing", { namedExports: {
+  medNavngittProfil: async (_viewer: string, _spiller: string, _gruppe: string, les: (tx: unknown) => Promise<unknown>) => trener && navngittDelt ? les((await import("@/lib/prisma")).prisma) : null,
+} });
+
+beforeEach(() => { navngittDelt = true; groupRoller = { coach: "COACH" }; spillerIder = ["spiller-1"]; slug = "team-norway"; mottaker = null; foresatt = false; trener = false; });
 
 const hent = async (id = "vedlegg-1", viewer = "coach") => (await import("./tn-post")).hentTnVedleggForViewer(id, viewer);
 
@@ -73,4 +78,13 @@ test("individuell post avviser uvedkommende og tillater spiller, godkjent foresa
   assert.ok(await hent("vedlegg-1", "spiller-1"));
   foresatt = true; assert.ok(await hent());
   foresatt = false; trener = true; assert.ok(await hent());
+});
+
+
+test("gruppetrener mister personlig vedlegg når navngitt deling trekkes", async () => {
+  mottaker = "spiller-1"; trener = true;
+  assert.ok(await hent());
+  navngittDelt = false;
+  assert.equal(await hent(), null);
+  assert.ok(await hent("vedlegg-1", "spiller-1"));
 });

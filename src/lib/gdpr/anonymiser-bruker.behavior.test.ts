@@ -24,6 +24,16 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     },
   },
   round: { findMany: async () => [{ score: 75 }], updateMany },
+  shot: { updateMany: async ({ data }: { data: Record<string, unknown> }) => {
+    assert.equal(data.startX, null);
+    assert.equal(data.endY, null);
+    assert.equal(data.targetX, null);
+    assert.equal(data.mentalScore, null);
+    assert.equal(data.notes, null);
+    writes.push("shot");
+    return { count: 1 };
+  } },
+  roundDraft: { deleteMany: async () => { writes.push("roundDraft"); return { count: 1 }; } },
   trainingSessionV2: { findMany: async () => [{ id: "session" }], updateMany },
   trainingDrillV2: { updateMany }, drillLogV2: { updateMany }, fysOvelseRad: { updateMany },
   iupBesvarelse: { deleteMany: async ({ where }: { where: { userId: string } }) => {
@@ -48,6 +58,10 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   trenerDelingsInvitasjon: { deleteMany: async ({ where }: { where: unknown }) => {
     assert.deepEqual(where, { OR: [{ userId: "synthetic" }, { gittAvUserId: "synthetic" }, { acceptedByUserId: "synthetic" }, { mottakerEpost: "synthetic@example.test" }] });
     writes.push("trenerdeling"); return { count: 1 };
+  } },
+  planAction: { deleteMany: async ({ where }: { where: { OR: Array<{ userId?: string; coachId?: string }>; actionType: string } }) => {
+    assert.deepEqual(where, { actionType: "WORKBENCH_COACH_PROPOSAL", OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] });
+    writes.push("trenerforslag"); return { count: 1 };
   } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
@@ -89,8 +103,11 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   externalErrors = [];
   await anonymiserBruker("synthetic");
   assert.equal(markedComplete, true);
+  assert.ok(writes.includes("shot"));
+  assert.ok(writes.includes("roundDraft"));
   assert.ok(writes.includes("iup"));
   assert.ok(writes.includes("trenerdeling"));
+  assert.ok(writes.includes("trenerforslag"));
   assert.ok(writes.includes("workbench"));
 });
 
