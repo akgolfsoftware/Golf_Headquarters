@@ -32,6 +32,8 @@ import {
   setSessionTemplate,
   unpublishSession,
   updateSessionEffort,
+  updateDrill,
+  updateSeriesSession,
   type SaveWeekPlanInput,
 } from "@/lib/workbench/wb-actions";
 import { isoUkeIdentitet } from "@/lib/workbench/ukeplan-schema";
@@ -179,6 +181,16 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   const leggTilOvelse = (sessionId: string, ovelse: OvelseInput, ferdig: () => void) =>
     kjor(() => addDrill({ sessionId, drill: ovelse }), () => { ferdig(); toast.success(UI.toastDrillAdded); });
 
+  const lagreOktinnhold = (session: WorkbenchSession, patch: Partial<{ rationale: string | null; location: string | null; maalsetning: string | null }>, policy: RecurrencePolicy = "DENNE", ferdig?: () => void) =>
+    kjor(() => updateSeriesSession({ sessionId: session.id, patch, policy, expectedUpdatedAt: session.updatedAt }), () => { ferdig?.(); toast.success("Økt lagret"); });
+
+  const oppdaterOvelse = (sessionId: string, drillId: string, ovelse: OvelseInput, ferdig: () => void) => {
+    const session = alleOkter.find(s => s.id === sessionId);
+    kjor(() => updateDrill({ sessionId, drillId, expectedUpdatedAt: session?.updatedAt, patch: {
+      ...ovelse, description: ovelse.description ?? null,
+    } }), () => { ferdig(); toast.success("Øvelse lagret"); });
+  };
+
   const flyttDrill = (session: WorkbenchSession, drillId: string, retning: -1 | 1) => {
     const idx = session.drills.findIndex((d) => d.id === drillId);
     const nyIdx = idx + retning;
@@ -197,7 +209,7 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   return {
     week, feil, travel, alleOkter, weeklyLoad, utkast, valideringsnotater, opptattIder,
     lastPaaNytt, lagreUkeplan, opprett, fraKilde, drillFraKilde, flytt, publiser, trekkTilbake, slett,
-    lagreSomMal, leggTilDrill, leggTilOvelse, flyttDrill, fjernDrill, oppdaterAnstrengelse,
+    lagreSomMal, leggTilDrill, leggTilOvelse, oppdaterOvelse, lagreOktinnhold, flyttDrill, fjernDrill, oppdaterAnstrengelse,
   };
 }
 

@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
-import { TN_VERSION, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { tnVersion, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFormat, tnRowError, tnScore, tnValidate, type TnValues, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { saveTnTest } from "./actions";
 
@@ -53,7 +53,7 @@ export function TnScorecard({ protocol: p, initial, savedResult }: {
     if (err) { setError(err); return; }
     startTransition(async () => {
       try {
-        const response = await saveTnTest({ sessionId, protocolId: p.id, count: p.rows.length, revision, values, notes, intent });
+        const response = await saveTnTest({ sessionId, version: tnVersion(p), protocolId: p.id, count: p.rows.length, revision, values, notes, intent });
         if (!response.ok) { setError(response.error); return; }
         setRevision(response.revision); setDirty(false);
         setStatus(intent === "complete" ? "COMPLETED" : intent === "abort" ? "ABORTED" : "IN_PROGRESS");
@@ -65,7 +65,7 @@ export function TnScorecard({ protocol: p, initial, savedResult }: {
   return <section style={{ color: TL.text }}>
     <h1>{p.name}</h1>
     <p>{closed ? status === "COMPLETED" ? "Fullført" : "Avsluttet ufullstendig" : `${completeRows} av ${p.rows.length} forsøk registrert`}</p>
-    <details><summary>Kilde og registreringsregler</summary><p>{p.source} · {TN_VERSION}</p><p>Faste mål og rekkefølge følger valgt testvariant. Manglende verdi er forskjellig fra null. Nye resultater sammenlignes bare med samme versjon, variant og antall forsøk.</p></details>
+    <details><summary>Kilde og registreringsregler</summary><p>{p.source} · {tnVersion(p)}</p><p>Faste mål og rekkefølge følger valgt testvariant. Manglende verdi er forskjellig fra null. Nye resultater sammenlignes bare med samme versjon, variant og antall forsøk.</p></details>
     {p.blocked && <p role="note">{p.blocked}</p>}
     <fieldset disabled={pending || closed} style={{ border: 0, padding: 0, minWidth: 0 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 16, marginBlock: 20 }}>

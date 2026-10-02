@@ -4,7 +4,8 @@ import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { WeekViewModel } from "@/lib/domain/workbench/types";
 import type { SaveWeekPlanInput } from "@/lib/workbench/wb-actions";
-import { buildWeekViewModel, createSession } from "@/lib/domain/workbench/operations";
+import { UI } from "@/lib/domain/workbench/labels";
+import { applySeriesPatch, buildWeekViewModel, createSession } from "@/lib/domain/workbench/operations";
 import { parsePlanKontekst } from "@/lib/workbench/plan-kontekst";
 import { tommeUkeplandetaljer, UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
 
@@ -69,7 +70,7 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: unused, deleteSession: unused, deleteSessionSeries: unused, moveSession: unused,
   publishSessions: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused,
-  unpublishSession: unused, updateSessionEffort: unused,
+  unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, updateSeriesSession: unused,
   loadWeek: async () => ({ ok: true, data: loadedWeek }),
   saveWeekPlan: async (input: SaveWeekPlanInput) => {
     saved.push(input);
@@ -80,7 +81,7 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
 describe("Precision Workbench: ekte integrasjon", async () => {
 const { useUkeMotor } = await import("@/components/workbench/useUkeMotor");
 const { AG11Workbench } = await import("@/components/admin/precision/AG11Workbench");
-const { UkeplanArk, CoachnotatArk, OktArk } = await import("@/components/admin/precision/AG11Ark");
+const { UkeplanArk, CoachnotatArk, OktArk, NyOktArk } = await import("@/components/admin/precision/AG11Ark");
 const { VisningPiller } = await import("@/components/workbench/VisningPiller");
 const { SessionInspector } = await import("@/components/workbench/SessionInspector");
 type Node = React.ReactElement<Record<string, unknown>>;
@@ -107,6 +108,56 @@ function week(date = "2026-09-28") {
 beforeEach(() => {
   states.clear(); transitions.length = 0; saved.length = 0; pushes.length = 0; replacements.length = 0;
   loadedWeek = week(); saveResult = { ok: false, error: "Lagring feilet" }; saveThrows = false;
+});
+
+test("Precision ny økt sender metadata; redigering/tømming beholder utkast ved feil og gir samme inndata ved retry", () => {
+  const created: Parameters<typeof NyOktArk>[0]["onOpprett"] extends (v: infer T) => void ? T[] : never = [];
+  const renderNew = () => draw("ny-meta", () => NyOktArk({ utkast: { dato: "2026-10-02", startMinutt: 600, pyramide: "TEK" }, travel: false, onLukk() {}, onOpprett(v) { created.push(v); } }));
+  change(field(renderNew(), UI.titleField), "Syntetisk økt");
+  change(field(renderNew(), "Formål"), "Syntetisk formål"); change(field(renderNew(), "Sted"), "Syntetisk sted"); change(field(renderNew(), "Øktens målsetning"), "Syntetisk mål");
+  click(find(renderNew(), n => n.props.children === "Legg inn")); assert.equal(created[0].rationale, "Syntetisk formål"); assert.equal(created[0].location, "Syntetisk sted"); assert.equal(created[0].maalsetning, "Syntetisk mål");
+  const base = { ...createSession({ playerId: "syntetisk-p1", coachId: "syntetisk-c1", date: "2026-10-02", startMinute: 600, durationMinutes: 60, title: "Syntetisk økt", pyramid: "TEK", createdBy: "COACH" }), rationale: "Opprinnelig", location: "Opprinnelig", maalsetning: "Opprinnelig" };
+  const edits: Partial<{ rationale: string | null; location: string | null; maalsetning: string | null }>[] = [];
+  const motor = draw("motor", () => useUkeMotor({ playerId: "syntetisk-p1", uke: loadedWeek }));
+  const renderEdit = () => draw("rediger-meta", () => OktArk({ session: base, spillerNavn: "Syntetisk", motor: { ...motor, lagreOktinnhold(_session, patch) { edits.push(patch); } }, onLukk() {}, onApneOkt() {}, onNyOvelse() {} }));
+  change(field(renderEdit(), "Formål"), "Endret formål"); change(field(renderEdit(), "Sted"), ""); change(field(renderEdit(), "Øktens målsetning"), "");
+  for (let retry = 0; retry < 2; retry++) { click(find(renderEdit(), n => n.props.children === "Lagre øktinnhold")); assert.equal(field(renderEdit(), "Formål").props.value, "Endret formål"); }
+  assert.deepEqual(edits, [{ rationale: "Endret formål", location: null, maalsetning: null }, { rationale: "Endret formål", location: null, maalsetning: null }]);
+});
+
+test("Formål alene for hele serien bevarer senere ukers ulike sted og mål; bare eksplisitt tømming sendes", () => {
+  const first = { ...createSession({ playerId: "syntetisk-p1", coachId: "syntetisk-c1", date: "2026-10-02", startMinute: 600, durationMinutes: 60, title: "Syntetisk serie", pyramid: "TEK", createdBy: "COACH" }), seriesId: "syntetisk-serie", rationale: "Første formål", location: "Første sted", maalsetning: "Første mål" };
+  const later = { ...first, id: "syntetisk-senere", date: "2026-10-09", location: "Senere sted", maalsetning: "Senere mål" };
+  let rows: import("@/lib/domain/workbench/types").WorkbenchSession[] = [first, later];
+  const writes: Parameters<ReturnType<typeof useUkeMotor>["lagreOktinnhold"]>[1][] = [];
+  const motor = draw("motor", () => useUkeMotor({ playerId: "syntetisk-p1", uke: loadedWeek }));
+  const render = () => draw("serie-meta", () => OktArk({ session: first, spillerNavn: "Syntetisk", motor: { ...motor, lagreOktinnhold(_session, patch, policy) {
+    assert.equal(policy, "HELE_SERIEN"); writes.push(patch);
+    rows = rows.map(row => applySeriesPatch(row, patch));
+  } }, onLukk() {}, onApneOkt() {}, onNyOvelse() {} }));
+  change(field(render(), "Endre innhold for"), "HELE_SERIEN");
+  change(field(render(), "Formål"), "Nytt formål");
+  click(find(render(), n => n.props.children === "Lagre øktinnhold"));
+  assert.deepEqual(writes[0], { rationale: "Nytt formål" });
+  assert.equal(rows[1].rationale, "Nytt formål");
+  assert.equal(rows[1].location, "Senere sted"); assert.equal(rows[1].maalsetning, "Senere mål");
+  change(field(render(), "Formål"), first.rationale);
+  change(field(render(), "Sted"), "");
+  click(find(render(), n => n.props.children === "Lagre øktinnhold"));
+  assert.deepEqual(writes[1], { location: null });
+  assert.equal(rows[1].location, undefined); assert.equal(rows[1].maalsetning, "Senere mål");
+});
+
+test("pågående økt deaktiverer malvalg med forklaring, men historisk mal kan fjernes", () => {
+  const base = createSession({ playerId: "syntetisk-p1", coachId: "syntetisk-c1", date: "2026-10-02", startMinute: 600, durationMinutes: 60, title: "Syntetisk økt", pyramid: "TEK", createdBy: "COACH" });
+  for (const isTemplate of [false, true]) {
+    states.clear();
+    const motor = draw("motor", () => useUkeMotor({ playerId: "syntetisk-p1", uke: loadedWeek }));
+    const tree = draw("okt-ark", () => OktArk({ session: { ...base, status: "IN_PROGRESS", isTemplate }, spillerNavn: "Syntetisk spiller", motor, onLukk() {}, onApneOkt() {}, onNyOvelse() {} }));
+    const button = find(tree, n => n.type === "button" && n.props.children === (isTemplate ? "Fjern som mal" : "Lagre som mal"));
+    assert.equal(button.props.disabled, !isTemplate);
+    assert.equal(nodes(tree).some(n => n.props.children === "En pågående økt kan ikke lagres som mal. Fullfør økten først."), !isTemplate);
+  }
 });
 
 test("ekte OktArk skiller ukjent, null og registrerte minutter fra planlagt tid", () => {

@@ -32,6 +32,12 @@ import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-dat
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
 import { parsePlanKontekst, type PlanQuery } from "@/lib/workbench/plan-kontekst";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
+import { WorkbenchLastPaNytt } from "@/components/workbench/WorkbenchLastPaNytt";
+import { WorkbenchSamlet } from "@/components/workbench/WorkbenchSamlet";
+import { loadWorkbenchSamletData } from "@/lib/workbench/workbench-samlet-data";
+import { brukSamletWorkbench, parseWorkbenchFlate } from "@/lib/workbench/samlet-url";
+import { parseVisning } from "@/lib/workbench/visning-url";
+import { queryVerdi } from "@/lib/workbench/plan-kontekst";
 import "@/styles/workbench-selected.css";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +59,7 @@ function Feil({ navn, melding }: { navn: string; melding: string }) {
   return (
     <AgencyOSSkall navn={navn}>
       <div className="pa-side">
-        <FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text={melding} />
+        <FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text={melding} retry={<WorkbenchLastPaNytt />} />
       </div>
     </AgencyOSSkall>
   );
@@ -82,6 +88,15 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />}
       </AgencyOSSkall>
     );
+  }
+
+  if (brukSamletWorkbench(sp)) {
+    const data = await loadWorkbenchSamletData({
+      playerId, routeSurface: "agency", query: sp,
+      flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
+    });
+    if (!data.ok) return <Feil navn={navn} melding={data.error} />;
+    return <AgencyOSSkall navn={navn}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></AgencyOSSkall>;
   }
 
   const goals = await hentMaalSpor(playerId);
@@ -158,11 +173,11 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   }
 
   if (visning === "live") {
-    const liveRes = await loadWorkbenchLive({ weekStart, playerId });
+    const liveRes = await loadWorkbenchLive({ weekStart, playerId, sessionId: kontekst.referanse.okt });
     if (!liveRes.ok) return <Feil navn={navn} melding={liveRes.error} />;
     return (
       <AgencyOSSkall navn={navn}><Arv live>
-        <WorkbenchLive key={liveRes.data.current?.id ?? "ingen-pagaaende"} playerId={playerId} spillerNavn={spillerNavn} data={liveRes.data} />
+        <WorkbenchLive key={`${liveRes.data.current?.id ?? "ingen"}:${liveRes.data.next?.id ?? "ingen"}`} playerId={playerId} spillerNavn={spillerNavn} data={liveRes.data} planKontekst={kontekst.referanse} />
       </Arv></AgencyOSSkall>
     );
   }
@@ -172,7 +187,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     if (!calendarRes.ok) return <Feil navn={navn} melding={calendarRes.error} />;
     return (
       <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={navn} data={calendarRes.data} />
+        <WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={navn} data={calendarRes.data} planKontekst={kontekst.referanse} />
       </Arv></AgencyOSSkall>
     );
   }

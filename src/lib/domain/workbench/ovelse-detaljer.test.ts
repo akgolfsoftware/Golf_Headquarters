@@ -54,7 +54,7 @@ test("Spill og Turnering viser ikke læringssteg, måleutstyr eller treningsmåt
     assert.equal(f.treningsmaate, false);
     assert.equal(f.press, true);
     assert.deepEqual([...f.tekniskFokus], ["SPILLEFORMAT", "STRATEGIOPPGAVE"]);
-    assert.deepEqual([...f.mengde.enheter], ["HULL", "MINUTTER"]);
+    assert.deepEqual([...f.mengde.enheter], ["HULL", "MINUTTER", "OPPGAVER"]);
   }
 });
 

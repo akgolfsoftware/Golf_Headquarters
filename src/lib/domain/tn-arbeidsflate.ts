@@ -2,12 +2,12 @@ import "server-only";
 
 import type { UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import { tnFormat, tnScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnScore, tnSameScore, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { prisma } from "@/lib/prisma";
-import { TN_CATALOG, TN_VERSION, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
 import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal-tester/tester-data";
@@ -123,7 +123,7 @@ export async function hentTnSpillere(bruker: TnBruker) {
 
 export function hentTnProtokollbibliotek() {
   return {
-    versjon: TN_VERSION,
+    versjon: TN_RULES_VERSION,
     rader: TN_CATALOG.map((protokoll) => ({
       id: protokoll.id,
       navn: protokoll.name,
@@ -138,7 +138,7 @@ export function hentTnProtokollbibliotek() {
 export function hentTnProtokolldetalj(id: string) {
   const protokoll = tnProtocol(id);
   if (!protokoll) return null;
-  return { ...protokoll, versjon: TN_VERSION };
+  return { ...protokoll, versjon: tnVersion(protokoll) };
 }
 
 export type TnTurneringRad = {
@@ -429,6 +429,7 @@ export type TnTestdagDeltakerDetalj = {
   id: string;
   spillerNavn: string;
   protokollId: string;
+  protokollVersjon?: string;
   protokollNavn: string;
   status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE";
   scoreTekst: string | null;
@@ -460,17 +461,17 @@ export async function hentTnTestdagDeltaker(bruker: TnBruker, deltakerId: string
   });
   if (!deltaker) return null;
   const protokollId = (deltaker.testDay.testDefinition.protocol as { protocolId?: string } | null)?.protocolId ?? "";
-  const protokoll = tnProtocol(protokollId);
+  const protokoll = tnProtocol(protokollId, undefined, deltaker.testDay.testDefinition.scoringRule ?? "");
   const naboer = deltaker.testDay.participants;
   const egenIndeks = naboer.findIndex((n) => n.id === deltaker.id);
   const forrigePendingDeltakerId = naboer.slice(0, egenIndeks).reverse().find((n) => n.status === "PENDING")?.id ?? null;
   const nestePendingDeltakerId = naboer.slice(egenIndeks + 1).find((n) => n.status === "PENDING")?.id ?? null;
 
   let eksisterendeUtkast: TnTestdagDeltakerDetalj["eksisterendeUtkast"] = null;
-  let utkastFeil: string | null = null;
+  let utkastFeil: string | null = protokoll ? null : "Protokollversjonen kan ikke føres i denne utgaven.";
   if (deltaker.session) {
     const parsed = TnSessionSchema.safeParse(deltaker.session.scoringData);
-    if (parsed.success) {
+    if (parsed.success && protokoll && parsed.data.version === tnVersion(protokoll) && parsed.data.protocolId === protokoll.id && parsed.data.count === protokoll.rows.length) {
       eksisterendeUtkast = { revision: parsed.data.revision, values: parsed.data.values, notes: parsed.data.notes };
     } else {
       utkastFeil = "Den lagrede økten er fra en uforenlig eller foreldet protokollutgave og kan ikke vises som redigerbart utkast.";
@@ -482,6 +483,7 @@ export async function hentTnTestdagDeltaker(bruker: TnBruker, deltakerId: string
     id: deltaker.id,
     spillerNavn: deltaker.player.name ?? "Ukjent",
     protokollId,
+    protokollVersjon: deltaker.testDay.testDefinition.scoringRule ?? undefined,
     protokollNavn: protokoll?.name ?? deltaker.testDay.testDefinition.name,
     status: deltaker.status,
     scoreTekst: deltaker.status === "DONE" && deltaker.result && detaljer?.unit ? tnFormat({ value: deltaker.result.score, unit: detaljer.unit }) : null,
@@ -640,7 +642,7 @@ type TnRaRad = { id: string; takenAt: Date; score: number; details: unknown };
  * stole på det som ble lagret (score, enhet OG retning kan i prinsippet
  * være feil/manipulert/fra en senere endret formel). En rad tas kun med
  * når (a) JSON-en parser som et gyldig `TnResult`, (b) er skrevet for
- * NØYAKTIG denne protokollen (`protocolId`) og gjeldende `TN_VERSION`,
+ * NØYAKTIG denne protokollen (`protocolId`) og den lagrede protokollversjonen,
  * (c) protokollen for radens EGET `count` faktisk finnes og har riktig
  * antall forsøksrader (variable-count-protokoller uten riktig antall er
  * ikke sammenlignbare), (d) `tnScore` kan beregnes fra de rå verdiene uten
@@ -654,11 +656,11 @@ function tnValiderRader<T extends TnRaRad>(rader: T[], protokoll: TnProtocol): {
   let utelatt = 0;
   for (const r of rader) {
     const parsed = TnResultSchema.safeParse(r.details);
-    if (!parsed.success || parsed.data.protocolId !== protokoll.id || parsed.data.version !== TN_VERSION) {
+    if (!parsed.success || parsed.data.protocolId !== protokoll.id || parsed.data.version !== tnVersion(protokoll)) {
       utelatt += 1;
       continue;
     }
-    const forventetProtokoll = protokoll.variableCount ? tnProtocol(protokoll.id, parsed.data.count) : protokoll;
+    const forventetProtokoll = protokoll.variableCount ? tnProtocol(protokoll.id, parsed.data.count, parsed.data.version) : protokoll;
     if (!forventetProtokoll || forventetProtokoll.rows.length !== parsed.data.count) {
       utelatt += 1;
       continue;
@@ -670,7 +672,7 @@ function tnValiderRader<T extends TnRaRad>(rader: T[], protokoll: TnProtocol): {
       utelatt += 1;
       continue;
     }
-    if (kanonisk.score !== r.score || kanonisk.unit !== parsed.data.unit) {
+    if (!tnSameScore(kanonisk.score, r.score) || kanonisk.unit !== parsed.data.unit) {
       utelatt += 1;
       continue;
     }
@@ -839,7 +841,7 @@ export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: strin
   // forsøksvisningen — variable-count-protokoller trenger riktig antall
   // rader for AKKURAT den gjennomføringen.
   const sisteGyldig = gyldige[0].parsed;
-  const protokoll = protokollBase.variableCount ? tnProtocol(protokollBase.id, sisteGyldig.count) : protokollBase;
+  const protokoll = protokollBase.variableCount ? tnProtocol(protokollBase.id, sisteGyldig.count, sisteGyldig.version) : protokollBase;
   const sisteForsok = protokoll
     ? protokoll.rows.map((row, i) => {
         const felter = sisteGyldig.values[String(i + 1)] ?? {};

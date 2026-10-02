@@ -21,14 +21,20 @@ import type { ScoringKind } from "./test-scoring";
  * PEI finnes historisk lagret både som brøk (0,057) og som prosent (5,7).
  * Alt som skal vises eller sammenlignes må normaliseres til prosent først.
  *
- * Heuristikken er terskelen 1,5: en PEI på 1,5 betyr at restavstanden var
- * halvannen gang målavstanden — en så dårlig måling at den i praksis ikke
- * forekommer, mens 1,5 % er en svært god måling. Grensen er derfor trygg i
- * begge retninger. Kilde: `normalizeMeasured` i src/lib/admin/test-benchmarks.ts,
- * som denne funksjonen nå er den felles implementasjonen for.
+ * Dette er kun leseregelen for historiske rader uten skala. Den kan ikke
+ * skille en stor brøk fra en prosentverdi. Versjonerte resultater må bruke
+ * eksplisitt skala; 1,6 som brøk betyr 160 %, aldri 1,6 %.
  */
 export function peiSomProsent(verdi: number): number {
   return verdi <= 1.5 ? verdi * 100 : verdi;
+}
+
+/** Versjonert råverdi: ingen gjetting ut fra tallstørrelse. */
+export function formaterTestMetrikk(verdi: number | null, enhet: string): string {
+  if (verdi === null || !Number.isFinite(verdi)) return "—";
+  return enhet === "PEI"
+    ? `${tall(verdi * 100, 2)} %`
+    : `${tall(verdi, 2)} ${enhet}`;
 }
 
 export function erPeiKind(kind: ScoringKind): boolean {
@@ -67,7 +73,7 @@ export function formaterTestVerdi(params: {
       return `${tall(verdi, 0)} %`;
     case "points_total":
     case "sum":
-      return `${tall(verdi, 0)} p`;
+      return `${tall(verdi, 2)} p`;
     case "carry_average":
     case "distance_average":
     case "spread_stddev":

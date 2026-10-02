@@ -22,7 +22,6 @@ import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDays,
   addDrill as addDrillPure,
-  applySeriesPatch,
   buildMonthViewModel,
   buildPeriodViewModel,
   buildWeekViewModel,
@@ -70,6 +69,7 @@ import {
 } from "@/lib/workbench/min-calendar";
 import {
   AkFormelSchema,
+  AkFormelLeseSchema,
   BlockTypeSchema,
   DeleteSeriesSessionInputSchema,
   EnvironmentSchema,
@@ -97,6 +97,8 @@ import {
   templateToSourceItem,
 } from "@/lib/workbench/sources-map";
 import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
+import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./drill-formel-bevaring";
+import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
@@ -151,6 +153,7 @@ const FINNES_IKKE = "Fant ikke økten.";
  */
 function revalider(playerId: string): void {
   revalidatePath(`/admin/workbench/${playerId}`);
+  revalidatePath("/portal/planlegge/workbench");
   revalidatePath("/portal");
 }
 
@@ -198,7 +201,27 @@ const DrillInputSchema = z.object({
   akFormel: AkFormelSchema,
   techniqueFocus: z.string().optional(),
   sourceId: z.string().optional(),
+  exerciseId: z.string().min(1).max(200).optional(),
+  positionTaskId: z.string().min(1).max(200).optional(),
 });
+
+const UpdateDrillSchema = z.object({
+  sessionId: z.string().min(1),
+  drillId: z.string().min(1),
+  expectedUpdatedAt: z.string().datetime().optional(),
+  patch: z.object({
+    title: DrillInputSchema.shape.title.optional(),
+    description: z.string().nullable().optional(),
+    durationMinutes: DrillInputSchema.shape.durationMinutes.optional(),
+    techniqueFocus: z.string().nullable().optional(),
+    // Hele den kjente formelen erstattes; ukjente historiske JSON-felt beholdes.
+    akFormel: AkFormelLeseSchema.optional(),
+  }).strict().refine(p => Object.values(p).some(v => v !== undefined), "Ingen endringer å lagre."),
+}).strict();
+
+export type UpdateDrillInput = z.infer<typeof UpdateDrillSchema>;
+
+class DrillSamtidigEndring extends Error {}
 
 const CreateSessionSchema = z.object({
   playerId: z.string().min(1),
@@ -209,7 +232,10 @@ const CreateSessionSchema = z.object({
   pyramid: PyramidAreaSchema,
   blockType: BlockTypeSchema.optional(),
   environment: EnvironmentSchema.optional(),
-  notes: z.string().optional(),
+  notes: z.string().max(5000).optional(),
+  rationale: z.string().trim().max(1000).optional(),
+  location: z.string().trim().max(160).optional(),
+  maalsetning: z.string().trim().max(500).optional(),
   groupId: z.string().optional(),
   drills: z.array(DrillInputSchema).optional(),
 });
@@ -266,6 +292,10 @@ function sessionOpprettelseData(s: WorkbenchSession) {
     blockType: s.blockType,
     environment: s.environment ?? null,
     notes: s.notes ?? null,
+    rationale: s.rationale || null,
+    location: s.location || null,
+    maalsetning: s.maalsetning || null,
+    practiceType: s.practiceType ?? null,
     origin: s.origin,
     createdBy: s.createdBy,
     seriesId: s.seriesId ?? null,
@@ -278,6 +308,11 @@ function sessionOpprettelseData(s: WorkbenchSession) {
         akFormel: akFormelTilJson(d.akFormel),
         techniqueFocus: d.techniqueFocus ?? null,
         sourceId: d.sourceId ?? null,
+        exerciseId: d.exerciseId ?? null,
+        positionTaskId: d.positionTaskId ?? null,
+        repType: d.repType ?? null, repAntall: d.repAntall ?? null, repMinutter: d.repMinutter ?? null,
+        repSett: d.repSett ?? null, repReps: d.repReps ?? null,
+        planRepsUtenBall: d.planRepsUtenBall ?? null, planRepsLavFart: d.planRepsLavFart ?? null, planRepsAuto: d.planRepsAuto ?? null,
         sortOrder: d.order,
       })),
     },
@@ -367,16 +402,19 @@ export async function createSeasonPlan(
 export async function saveSeasonPeriod(input: {
   playerId: string;
   periodId?: string;
+  seasonPlanId?: string;
   data: unknown;
 }): Promise<WbResultat<{ periodId: string }>> {
   const viewer = await kreverTilgangTilSpiller(input.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (input.seasonPlanId !== undefined && !["PLAYER", "COACH", "ADMIN"].includes(viewer.role))
+    return { ok: false, error: INGEN_TILGANG };
   let periodId = input.periodId;
   if (periodId) {
-    const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data);
+    const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data, input.seasonPlanId);
     if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke lagre perioden." };
   } else {
-    const result = await opprettPeriodeCore(input.playerId, input.data);
+    const result = await opprettPeriodeCore(input.playerId, input.data, input.seasonPlanId);
     if (!result.ok || !result.periodeId) return { ok: false, error: result.error ?? "Kunne ikke opprette perioden." };
     periodId = result.periodeId;
   }
@@ -527,7 +565,7 @@ export async function saveWeekPlan(
     // Sesongåret kan krysse kalenderåret. En eksplisitt kobling må eies av
     // spilleren og overlappe den faktiske uka; gammel klient beholder gyldig kobling.
     const existing = await prisma.weekPlan.findUnique({
-      where: { playerId_isoYear_weekNumber: key }, select: { seasonPlanId: true },
+      where: { playerId_isoYear_weekNumber: key }, select: { seasonPlanId: true, planningDetails: true, updatedAt: true },
     });
     let seasonPlanId: string | null = null;
     const beholdTomKobling = data.seasonPlanId === undefined && existing?.seasonPlanId === null;
@@ -548,6 +586,11 @@ export async function saveWeekPlan(
 
     // Udefinert felt betyr behold. null betyr eksplisitt tøm, også for JSON.
     // Vi skriver feltene direkte, uten å lese og overskrive hele legacy-raden.
+    const tidligereDetaljer = existing?.planningDetails ? parseWeekPlanData({ ...key, id: "metadata", weekType: "UTVIKLING", notes: [], planningDetails: existing.planningDetails })?.planningDetails : null;
+    if (existing?.planningDetails && !tidligereDetaljer) return { ok: false, error: "Den lagrede ukeplanen må gjennomgås før den endres." };
+    if (tidligereDetaljer?.cycle && data.planningDetails === null) return { ok: false, error: "Oppløs treukerssyklusen før ukeplandetaljene tømmes." };
+    if (data.planningDetails?.cycle && JSON.stringify(data.planningDetails.cycle) !== JSON.stringify(tidligereDetaljer?.cycle)) return { ok: false, error: "Sykluskoblingen endres gjennom treukerssyklusen." };
+    const nyeDetaljer = data.planningDetails && tidligereDetaljer?.cycle ? { ...data.planningDetails, cycle: tidligereDetaljer.cycle } : data.planningDetails;
     const felter = {
       seasonPlanId,
       weekType: data.weekType,
@@ -565,10 +608,18 @@ export async function saveWeekPlan(
       loadCeiling: data.loadCeiling,
       customNotes: data.customNotes,
       ...(data.planningDetails !== undefined ? {
-        planningDetails: data.planningDetails === null ? Prisma.DbNull : data.planningDetails,
+        planningDetails: nyeDetaljer === null ? Prisma.DbNull : nyeDetaljer,
       } : {}),
     };
-    const row = await prisma.weekPlan.upsert({
+    // Metadata fra gamle klienter må ikke overskrive en syklus koblet på siden sist.
+    let row: Awaited<ReturnType<typeof prisma.weekPlan.findUnique>>;
+    if (data.planningDetails !== undefined && existing) {
+      const changed = await prisma.weekPlan.updateMany({ where: { ...key, updatedAt: existing.updatedAt }, data: felter });
+      if (changed.count !== 1) return { ok: false, error: "Ukeplanen er endret. Last inn på nytt før du lagrer." };
+      row = await prisma.weekPlan.findUnique({ where: { playerId_isoYear_weekNumber: key } });
+    } else if (data.planningDetails !== undefined) {
+      row = await prisma.weekPlan.create({ data: { ...key, ...felter, weekType: data.weekType ?? "UTVIKLING", notes: data.notes ?? [] } });
+    } else row = await prisma.weekPlan.upsert({
       where: { playerId_isoYear_weekNumber: key },
       create: { ...key, ...felter, weekType: data.weekType ?? "UTVIKLING", notes: data.notes ?? [] },
       update: felter,
@@ -633,6 +684,7 @@ export async function loadStallFollowup(params: {
 export async function loadWorkbenchLive(params: {
   weekStart: string;
   playerId: string;
+  sessionId?: string;
 }): Promise<WbResultat<WorkbenchLiveData>> {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
@@ -647,17 +699,21 @@ export async function loadWorkbenchLive(params: {
       playerId: params.playerId,
       date: { gte: tilDatoKolonne(from), lte: tilDatoKolonne(to) },
       status: { in: ["IN_PROGRESS", "PUBLISHED"] },
+      isTemplate: false,
       hiddenByPlayer: false,
       needsPlayerApproval: false,
     },
     include: { drills: true },
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
   });
-  const eligible = rows.filter((row) => row.approvalStatus !== "REJECTED");
-  const currentRow = eligible.find((row) => row.status === "IN_PROGRESS") ?? null;
+  const eligible = rows.filter((row) => row.approvalStatus !== "REJECTED" &&
+    !(row.groupId && !row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(row.id)));
+  const selected = params.sessionId ? eligible.find(row => row.id === params.sessionId) : null;
+  if (params.sessionId && !selected) return { ok: false, error: "Den valgte økten er ikke tilgjengelig for gjennomføring i dette tidsrommet." };
+  const currentRow = selected?.status === "IN_PROGRESS" ? selected : eligible.find((row) => row.status === "IN_PROGRESS") ?? null;
   const published = eligible.filter((row) => row.status === "PUBLISHED");
   const currentKey = currentRow ? `${fraDatoKolonne(currentRow.date)}:${String(currentRow.startMinute).padStart(4, "0")}` : "";
-  const nextRow = currentRow
+  const nextRow = selected?.status === "PUBLISHED" ? selected : currentRow
     ? published.find((row) => `${fraDatoKolonne(row.date)}:${String(row.startMinute).padStart(4, "0")}` > currentKey) ?? published[0] ?? null
     : published[0] ?? null;
   const current = currentRow ? mapSession(currentRow) : null;
@@ -1086,13 +1142,7 @@ export async function loadSources(params: {
 
   const [ovelser, maler, forrigeUke, tekniskPanel] = await Promise.all([
     prisma.exerciseDefinition.findMany({
-      where: {
-        OR: [
-          { source: "SYSTEM" },
-          { source: "COACH", visibility: "COACH_PLAYERS" },
-          { createdBy: viewer.id },
-        ],
-      },
+      where: await bankOvelseWhere(viewer, params.playerId),
       orderBy: { name: "asc" },
       take: 60,
     }),
@@ -1253,7 +1303,12 @@ export async function createSession(
   const cmd = parsed.data;
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  for (const drill of cmd.drills ?? []) {
+    const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
+    if (!ref.ok) return ref;
+    Object.assign(drill, ref.data);
+  }
 
   const erCoach = viewer.id !== cmd.playerId;
   const utkast = createSessionPure({
@@ -1267,6 +1322,9 @@ export async function createSession(
     blockType: cmd.blockType,
     environment: cmd.environment,
     notes: cmd.notes,
+    rationale: cmd.rationale,
+    location: cmd.location,
+    maalsetning: cmd.maalsetning,
     groupId: cmd.groupId,
     drills: cmd.drills,
     createdBy: erCoach ? "COACH" : "PLAYER",
@@ -1295,7 +1353,12 @@ export async function createSessionSeries(
   const cmd = parsed.data;
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  for (const drill of cmd.drills ?? []) {
+    const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
+    if (!ref.ok) return ref;
+    Object.assign(drill, ref.data);
+  }
 
   const erCoach = viewer.id !== cmd.playerId;
   const forekomster = createSessionSeriesPure(
@@ -1310,6 +1373,9 @@ export async function createSessionSeries(
       blockType: cmd.blockType,
       environment: cmd.environment,
       notes: cmd.notes,
+      rationale: cmd.rationale,
+      location: cmd.location,
+      maalsetning: cmd.maalsetning,
       groupId: cmd.groupId,
       drills: cmd.drills,
       createdBy: erCoach ? "COACH" : "PLAYER",
@@ -1347,16 +1413,18 @@ export async function createSessionFromSource(input: {
   }
 
   const viewer = await kreverTilgangTilSpiller(parsed.data.playerId);
-  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
 
   const kilde = parseSourceId(parsed.data.sourceId);
   if (!kilde) return { ok: false, error: "Ukjent kilde." };
 
   const erCoach = viewer.id !== parsed.data.playerId;
   let utkast: WorkbenchSession;
+  let kopiertOktinnhold: Pick<WbRow, "practiceType" | "pressureLevel" | "pPosisjoner" | "skillArea"> | undefined;
+  let kopierteDriller: WbRow["drills"] | undefined;
 
   if (kilde.kind === "DRILL") {
-    const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
+    const rad = await lastBankOvelse(kilde.exerciseId, viewer, parsed.data.playerId);
     if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
     const drill = exerciseToSourceItem(rad).drill;
     if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
@@ -1373,10 +1441,7 @@ export async function createSessionFromSource(input: {
       createdBy: erCoach ? "COACH" : "PLAYER",
     });
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
-      include: { position: true },
-    });
+    const task = await lastBankOppgave(kilde.taskId, parsed.data.playerId);
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
 
     const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
@@ -1389,6 +1454,7 @@ export async function createSessionFromSource(input: {
       durationMinutes: 20,
       techniqueFocus: task.position.pNummer,
       sourceId: task.id,
+      positionTaskId: task.id,
       akFormel: {
         pyramid: "TEK",
         area: omrade,
@@ -1418,6 +1484,8 @@ export async function createSessionFromSource(input: {
       return { ok: false, error: "Fant ikke kilden." };
     }
     const kildeOkt = mapSession(rad);
+    kopierteDriller = rad.drills;
+    kopiertOktinnhold = { practiceType: rad.practiceType, pressureLevel: rad.pressureLevel, pPosisjoner: rad.pPosisjoner, skillArea: rad.skillArea };
 
     utkast = createSessionPure({
       playerId: parsed.data.playerId,
@@ -1430,6 +1498,9 @@ export async function createSessionFromSource(input: {
       blockType: kildeOkt.blockType,
       environment: kildeOkt.environment,
       notes: kildeOkt.notes,
+      rationale: kildeOkt.rationale,
+      location: kildeOkt.location,
+      maalsetning: kildeOkt.maalsetning,
       drills: kildeOkt.drills.map((d) => ({
         title: d.title,
         description: d.description,
@@ -1443,7 +1514,19 @@ export async function createSessionFromSource(input: {
   }
 
   const rad2 = await prisma.workbenchSession.create({
-    data: sessionOpprettelseData(utkast),
+    data: {
+      ...sessionOpprettelseData(utkast),
+      ...kopiertOktinnhold,
+      ...(kopierteDriller ? { drills: { create: [...kopierteDriller].sort((a, b) => a.sortOrder - b.sortOrder).map((d, sortOrder) => ({
+        // Kopien får egne ID-er; planinnhold og kilde/dose beholdes fra rå lagring.
+        title: d.title, description: d.description, durationMinutes: d.durationMinutes,
+        akFormel: d.akFormel === null ? Prisma.JsonNull : d.akFormel,
+        techniqueFocus: d.techniqueFocus, sourceId: d.sourceId, sortOrder,
+        exerciseId: d.exerciseId, positionTaskId: d.positionTaskId,
+        repType: d.repType, repAntall: d.repAntall, repMinutter: d.repMinutter, repSett: d.repSett, repReps: d.repReps,
+        planRepsUtenBall: d.planRepsUtenBall, planRepsLavFart: d.planRepsLavFart, planRepsAuto: d.planRepsAuto,
+      })) } } : {}),
+    },
     include: { drills: true },
   });
 
@@ -1460,6 +1543,8 @@ export async function addDrillFromSource(input: {
   if (!parsed.success) {
     return { ok: false, error: "Ugyldig kilde." };
   }
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const kilde = parseSourceId(parsed.data.sourceId);
   if (!kilde || (kilde.kind !== "DRILL" && kilde.kind !== "TEK")) {
@@ -1469,15 +1554,12 @@ export async function addDrillFromSource(input: {
   let drill: Omit<Drill, "id" | "order"> | undefined;
 
   if (kilde.kind === "DRILL") {
-    const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
+    const rad = await lastBankOvelse(kilde.exerciseId, treff.viewer, treff.row.playerId);
     if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
     drill = exerciseToSourceItem(rad).drill;
     if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
   } else if (kilde.kind === "TEK") {
-    const task = await prisma.positionTask.findUnique({
-      where: { id: kilde.taskId },
-      include: { position: true },
-    });
+    const task = await lastBankOppgave(kilde.taskId, treff.row.playerId);
     if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
     const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
     const formelLabel = `Teknisk · ${task.position.pNummer} ${task.position.navn}`;
@@ -1489,6 +1571,7 @@ export async function addDrillFromSource(input: {
       durationMinutes: 20,
       techniqueFocus: task.position.pNummer,
       sourceId: task.id,
+      positionTaskId: task.id,
       akFormel: {
         pyramid: "TEK",
         area: omrade,
@@ -1616,6 +1699,9 @@ export async function addDrill(input: {
 
   const treff = await hentMedTilgang(input.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
+  const ref = await hentBankReferanser(parsed.data, treff.viewer, treff.row.playerId);
+  if (!ref.ok) return ref;
+  Object.assign(parsed.data, ref.data);
 
   const neste = addDrillPure(mapSession(treff.row), {
     sessionId: input.sessionId,
@@ -1623,45 +1709,71 @@ export async function addDrill(input: {
     atIndex: input.atIndex,
   });
 
-  await prisma.$transaction(async (tx) => {
-    if (treff.row.sourceGroupSessionId) {
-      await tx.workbenchSession.update({ where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
-        data: { durationMinutes: neste.durationMinutes, localOverride: true } });
+  try {
+    await prisma.$transaction(async (tx) => {
+      const locked = await tx.workbenchSession.updateMany({
+        where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
+        data: { durationMinutes: neste.durationMinutes,
+          ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}) },
+      });
+      if (locked.count !== 1) throw new DrillSamtidigEndring();
       for (const d of neste.drills) {
-        // Behold eksisterende øvelsers identitet og eventuelle dose-/øvelseskoblinger.
+        // Ingen gjenoppretting: identitet, dose, historikk og kildekoblinger beholdes.
         if (treff.row.drills.some(existing => existing.id === d.id)) {
-          await tx.workbenchDrill.update({ where: { id: d.id }, data: { sortOrder: d.order } });
+          await tx.workbenchDrill.update({ where: { id: d.id, sessionId: input.sessionId }, data: { sortOrder: d.order } });
         } else {
           await tx.workbenchDrill.create({ data: { id: d.id, sessionId: input.sessionId,
             title: d.title, description: d.description ?? null, durationMinutes: d.durationMinutes,
             akFormel: akFormelTilJson(d.akFormel), techniqueFocus: d.techniqueFocus ?? null,
-            sourceId: d.sourceId ?? null, sortOrder: d.order } });
+            sourceId: d.sourceId ?? null, exerciseId: d.exerciseId ?? null, positionTaskId: d.positionTaskId ?? null, sortOrder: d.order } });
         }
       }
-      return;
-    }
-    await tx.workbenchDrill.deleteMany({ where: { sessionId: input.sessionId } });
-    await tx.workbenchSession.update({
-      where: { id: input.sessionId, updatedAt: treff.row.updatedAt },
-      data: {
-        durationMinutes: neste.durationMinutes,
-        ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}),
-        drills: {
-          create: neste.drills.map((d) => ({
-            title: d.title,
-            description: d.description ?? null,
-            durationMinutes: d.durationMinutes,
-            akFormel: akFormelTilJson(d.akFormel),
-            techniqueFocus: d.techniqueFocus ?? null,
-            sourceId: d.sourceId ?? null,
-            sortOrder: d.order,
-          })),
-        },
-      },
     });
-  });
+  } catch (error) {
+    if (error instanceof DrillSamtidigEndring) return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+    throw error;
+  }
 
   return lagreOgHent(input.sessionId);
+}
+
+/** Rediger én øvelse med stabil identitet. Undefined beholder, null tømmer tekstfelt. */
+export async function updateDrill(input: UpdateDrillInput): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = UpdateDrillSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig øvelse." };
+  const cmd = parsed.data;
+  const treff = await hentMedTilgang(cmd.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+  const drill = treff.row.drills.find(d => d.id === cmd.drillId);
+  if (!drill) return { ok: false, error: "Fant ikke øvelsen i økten." };
+  if (cmd.expectedUpdatedAt && cmd.expectedUpdatedAt !== treff.row.updatedAt.toISOString()) {
+    return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+  }
+  const patch = cmd.patch;
+  if (patch.akFormel && !gyldigFormelEndring(drill.akFormel, patch.akFormel)) return { ok: false, error: "Ugyldig ny RIR eller øvelsesformel." };
+  const duration = patch.durationMinutes ?? drill.durationMinutes;
+  const total = treff.row.drills.reduce((sum, d) => sum + (d.id === drill.id ? duration : d.durationMinutes), 0);
+  try {
+    await prisma.$transaction(async tx => {
+      const locked = await tx.workbenchSession.updateMany({
+        where: { id: cmd.sessionId, updatedAt: treff.row.updatedAt },
+        data: { durationMinutes: Math.max(treff.row.durationMinutes, total),
+          ...(treff.row.sourceGroupSessionId ? { localOverride: true } : {}) },
+      });
+      if (locked.count !== 1) throw new DrillSamtidigEndring();
+      await tx.workbenchDrill.update({ where: { id: cmd.drillId, sessionId: cmd.sessionId }, data: {
+        ...(patch.title !== undefined ? { title: patch.title } : {}),
+        ...(patch.description !== undefined ? { description: patch.description } : {}),
+        ...(patch.durationMinutes !== undefined ? { durationMinutes: patch.durationMinutes } : {}),
+        ...(patch.techniqueFocus !== undefined ? { techniqueFocus: patch.techniqueFocus } : {}),
+        ...(patch.akFormel !== undefined ? { akFormel: bevarHistoriskeDrillfelt(drill.akFormel, akFormelTilJson(patch.akFormel), FORMEL_FELT) } : {}),
+      } });
+    });
+  } catch (error) {
+    if (error instanceof DrillSamtidigEndring) return { ok: false, error: "Økten er endret. Last inn på nytt og prøv igjen." };
+    throw error;
+  }
+  return lagreOgHent(cmd.sessionId);
 }
 
 /** Ny rekkefølge på øvelsene. */
@@ -1752,7 +1864,7 @@ async function serieMalRammer(
 ): Promise<WorkbenchSession[]> {
   if (!gjeldende.seriesId || policy === "DENNE") return [gjeldende];
   const serieRader = await prisma.workbenchSession.findMany({
-    where: { seriesId: gjeldende.seriesId },
+    where: { seriesId: gjeldende.seriesId, playerId: gjeldende.playerId },
     include: { drills: true },
   });
   return sessionsMatchingPolicy(serieRader.map(mapSession), gjeldende.id, policy);
@@ -1769,51 +1881,64 @@ export async function updateSeriesSession(input: {
     pyramid?: WorkbenchSession["pyramid"];
     blockType?: WorkbenchSession["blockType"];
     environment?: WorkbenchSession["environment"];
-    notes?: string;
+    notes?: string | null;
+    rationale?: string | null;
+    location?: string | null;
+    maalsetning?: string | null;
   };
+  expectedUpdatedAt?: string;
   policy: RecurrencePolicy;
 }): Promise<WbResultat<WorkbenchSession[]>> {
   const parsed = UpdateSeriesSessionInputSchema.safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, error: "Ugyldig endring." };
-  }
-
+  if (!parsed.success) return { ok: false, error: "Ugyldig endring." };
   const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
-
-  const gjeldende = mapSession(treff.row);
-  const mal = serieMalPatch(gjeldende, parsed.data.patch);
-  const rammer = await serieMalRammer(gjeldende, parsed.data.policy);
-
-  await prisma.$transaction(
-    rammer.map((s) =>
-      prisma.workbenchSession.update({
-        where: { id: s.id },
-        data: {
-          title: mal.title,
-          pyramid: mal.pyramid,
-          blockType: mal.blockType,
-          environment: mal.environment ?? null,
-          notes: mal.notes ?? null,
-          ...(s.sourceGroupSessionId ? { localOverride: true } : {}),
-        },
-      }),
-    ),
-  );
-
-  revalider(gjeldende.playerId);
-  const oppdaterte = await prisma.workbenchSession.findMany({
-    where: { id: { in: rammer.map((s) => s.id) } },
-    include: { drills: true },
-  });
-  return { ok: true, data: oppdaterte.map(mapSession) };
-}
-
-function serieMalPatch(
-  session: WorkbenchSession,
-  patch: Parameters<typeof updateSeriesSession>[0]["patch"],
-): WorkbenchSession {
-  return applySeriesPatch(session, patch);
+  if (!["PLAYER", "COACH", "ADMIN"].includes(treff.viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  if (["rationale", "location", "maalsetning"].some(key => Object.hasOwn(parsed.data.patch, key)) && !parsed.data.expectedUpdatedAt) {
+    return { ok: false, error: "Last inn økten på nytt før du endrer innholdet." };
+  }
+  if (parsed.data.expectedUpdatedAt && parsed.data.expectedUpdatedAt !== treff.row.updatedAt.toISOString()) {
+    return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  }
+  const rammer = await serieMalRammer(mapSession(treff.row), parsed.data.policy);
+  if (rammer.length === 0) return { ok: false, error: "Fant ikke økten i serien. Last inn på nytt." };
+  const patch = parsed.data.patch;
+  const data = {
+    ...(patch.title !== undefined ? { title: patch.title } : {}),
+    ...(patch.pyramid !== undefined ? { pyramid: patch.pyramid } : {}),
+    ...(patch.blockType !== undefined ? { blockType: patch.blockType } : {}),
+    ...(patch.environment !== undefined ? { environment: patch.environment } : {}),
+    ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}),
+    ...(patch.rationale !== undefined ? { rationale: patch.rationale || null } : {}),
+    ...(patch.location !== undefined ? { location: patch.location || null } : {}),
+    ...(patch.maalsetning !== undefined ? { maalsetning: patch.maalsetning || null } : {}),
+  };
+  try {
+    const rows = await prisma.$transaction(async tx => {
+      // Ingen delvis serieoppdatering. Hver forekomst beholder dato, dose og øvrig innhold.
+      const owned = [];
+      for (const session of rammer) {
+        const check = await hentMedTilgang(session.id, tx);
+        if ("feil" in check || check.row.playerId !== treff.row.playerId) throw new DrillSamtidigEndring();
+        if (check.row.updatedAt.toISOString() !== session.updatedAt) throw new DrillSamtidigEndring();
+        owned.push(check.row);
+      }
+      const updated = [];
+      for (const row of owned) {
+        const result = await tx.workbenchSession.updateMany({
+          where: { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt },
+          data: { ...data, ...(row.sourceGroupSessionId ? { localOverride: true } : {}) },
+        });
+        if (result.count !== 1) throw new DrillSamtidigEndring();
+        updated.push(await tx.workbenchSession.findUniqueOrThrow({ where: { id: row.id }, include: { drills: true } }));
+      }
+      return updated;
+    });
+    revalider(treff.row.playerId);
+    return { ok: true, data: rows.map(mapSession) };
+  } catch {
+    return { ok: false, error: "Økten ble endret samtidig eller kunne ikke lagres. Last inn på nytt og prøv igjen." };
+  }
 }
 
 /** Slett én forekomst, denne og fremover, eller hele serien. */
@@ -1851,11 +1976,22 @@ export async function setSessionTemplate(
   sessionId: string,
   isTemplate: boolean,
 ): Promise<WbResultat<WorkbenchSession>> {
-  const treff = await hentMedTilgang(sessionId);
+  const parsed = z.object({ sessionId: z.string().min(1), isTemplate: z.boolean() }).safeParse({ sessionId, isTemplate });
+  if (!parsed.success) return { ok: false, error: "Ugyldig malvalg." };
+  const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
+  const row = treff.row;
+  if (parsed.data.isTemplate && row.status === "IN_PROGRESS") {
+    return { ok: false, error: "En pågående økt kan ikke lagres som mal. Fullfør økten først." };
+  }
 
-  await prisma.workbenchSession.update({ where: { id: sessionId }, data: { isTemplate } });
-  return lagreOgHent(sessionId);
+  // Start og malvalg konkurrerer om samme versjon; originalen må aldri låses midt i gjennomføring.
+  const result = await prisma.workbenchSession.updateMany({
+    where: { id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt },
+    data: { isTemplate: parsed.data.isTemplate },
+  });
+  if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
+  return lagreOgHent(row.id);
 }
 
 // ─── Gjennomføring ──────────────────────────────────────────────────────────
@@ -1868,6 +2004,7 @@ async function settStatus(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
     return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
   }
@@ -1883,7 +2020,7 @@ async function settStatus(
     ? initialWorkbenchLiveSnapshot(row.drills.sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id))
     : null;
   const result = await prisma.workbenchSession.updateMany({
-    where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+    where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false,
       hiddenByPlayer: false, needsPlayerApproval: false },
     data: {
       status,
@@ -1958,6 +2095,7 @@ export async function completeSessionWithEffort(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const row = treff.row;
+  if (row.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (row.groupId && row.origin === "GROUP" && !row.sourceGroupSessionId && row.id.startsWith("wb-group-")) {
     return { ok: false, error: "Gjennomføringen registreres på spillerens økt." };
   }
@@ -1971,7 +2109,7 @@ export async function completeSessionWithEffort(
   }
   const result = await prisma.workbenchSession.updateMany({
     where: {
-      id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+      id: row.id, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt, isTemplate: false,
       hiddenByPlayer: false, needsPlayerApproval: false,
     },
     data: {
@@ -2008,6 +2146,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
   if ("feil" in nextAccess) return { ok: false, error: nextAccess.feil };
   const current = currentAccess.row;
   const next = nextAccess.row;
+  if (current.isTemplate || next.isTemplate) return { ok: false, error: "Plasser en kopi av malen i planen før gjennomføring." };
   if (current.playerId !== next.playerId) return { ok: false, error: INGEN_TILGANG };
   if (current.status !== "IN_PROGRESS" || next.status !== "PUBLISHED") {
     return { ok: false, error: "Øktene er endret. Last inn på nytt før du fortsetter." };
@@ -2022,7 +2161,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
   try {
     await prisma.$transaction(async (tx) => {
       const completed = await tx.workbenchSession.updateMany({
-        where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt },
+        where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt, isTemplate: false },
         data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
       });
       const started = await tx.workbenchSession.updateMany({
@@ -2031,6 +2170,7 @@ export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbR
           playerId: next.playerId,
           status: "PUBLISHED",
           updatedAt: next.updatedAt,
+          isTemplate: false,
           hiddenByPlayer: false,
           needsPlayerApproval: false,
         },

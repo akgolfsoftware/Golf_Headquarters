@@ -8,13 +8,15 @@ let writes: string[] = [];
 let externalErrors: string[] = [];
 let markedComplete = false;
 let kontoFinnes = true;
-let ukeplaner: { id: string; playerId: string; customNotes: string | null; planningDetails: unknown; plannedHoursFys: number; repTargetDry: number }[] = [];
+let workbenchFeiler = false;
+let eksterneSlettinger = 0;
+let ukeplaner: { id: string; playerId: string; customNotes: string | null; planningDetails: unknown; repetitionTargets: unknown; plannedHoursFys: number; repTargetDry: number }[] = [];
 const ukeplanLesinger: { playerId: string }[] = [];
 const ukeplanSkrivinger: { id: string; playerId: string }[] = [];
 const updateMany = async () => { writes.push("data"); return { count: 1 }; };
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   user: {
-    findUnique: async () => kontoFinnes ? ({ id: "synthetic", publicPlayerId: null }) : null,
+    findUnique: async () => kontoFinnes ? ({ id: "synthetic", email: "synthetic@example.test", publicPlayerId: null }) : null,
     update: async ({ data }: { data: { anonymisertAt?: Date | null } }) => {
       writes.push("user");
       markedComplete = Boolean(data.anonymisertAt);
@@ -42,26 +44,42 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
       ukeplanLesinger.push(where);
       return ukeplaner.filter(p => p.playerId === where.playerId).map(p => ({ id: p.id, planningDetails: p.planningDetails }));
     },
-    updateMany: async ({ where, data }: { where: { id: string; playerId: string }; data: { customNotes: null; planningDetails: unknown } }) => {
+    updateMany: async ({ where, data }: { where: { id: string; playerId: string }; data: { customNotes: null; planningDetails: unknown; repetitionTargets: unknown } }) => {
       ukeplanSkrivinger.push(where); writes.push("ukeplan");
       const rows = ukeplaner.filter(p => p.id === where.id && p.playerId === where.playerId);
       for (const p of rows) {
         p.customNotes = data.customNotes;
         p.planningDetails = data.planningDetails === Prisma.DbNull ? null : data.planningDetails;
+        p.repetitionTargets = data.repetitionTargets === Prisma.DbNull ? null : data.repetitionTargets;
       }
       return { count: rows.length };
     },
   },
+  trenerDelingsInvitasjon: { deleteMany: async ({ where }: { where: unknown }) => {
+    assert.deepEqual(where, { OR: [{ userId: "synthetic" }, { gittAvUserId: "synthetic" }, { acceptedByUserId: "synthetic" }, { mottakerEpost: "synthetic@example.test" }] });
+    writes.push("trenerdeling"); return { count: 1 };
+  } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
+mock.module("@/lib/workbench/workbench-personvern", { namedExports: {
+  anonymiserWorkbenchData: async (playerId: string) => {
+    assert.equal(playerId, "synthetic"); writes.push("workbench");
+    if (workbenchFeiler) throw new Error("Workbench-vask feilet");
+    return 13;
+  },
+} });
 mock.module("./slett-eksterne-data", { namedExports: {
-  slettEksterneBrukerdata: async (_id: string, opts?: { dryRun?: boolean }) => ({
+  slettEksterneBrukerdata: async (_id: string, opts?: { dryRun?: boolean }) => {
+    if (!opts?.dryRun) eksterneSlettinger++;
+    return {
     authSlettet: false, stripeKundeSlettet: false, storageFilerFjernet: 0,
     bookingerGjestevasket: 0, feil: externalErrors, dryRun: Boolean(opts?.dryRun), plan: ["syntetisk plan"],
-  }),
+    };
+  },
 } });
 test.beforeEach(() => {
   writes = []; externalErrors = []; markedComplete = false; kontoFinnes = true;
+  workbenchFeiler = false; eksterneSlettinger = 0;
   ukeplaner = []; ukeplanLesinger.length = 0; ukeplanSkrivinger.length = 0;
 });
 
@@ -84,6 +102,19 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   assert.ok(writes.includes("shot"));
   assert.ok(writes.includes("roundDraft"));
   assert.ok(writes.includes("iup"));
+  assert.ok(writes.includes("trenerdeling"));
+  assert.ok(writes.includes("workbench"));
+});
+
+test("Workbench-feil hindrer profil-/ekstern sletting og ferdigmarkering; nytt forsøk fullfører", async () => {
+  const { anonymiserBruker } = await import("./anonymiser-bruker");
+  workbenchFeiler = true;
+  await assert.rejects(() => anonymiserBruker("synthetic"), /Workbench-vask/);
+  assert.equal(markedComplete, false); assert.equal(eksterneSlettinger, 0);
+  assert.equal(writes.includes("user"), false);
+  workbenchFeiler = false;
+  const result = await anonymiserBruker("synthetic");
+  assert.equal(result.vasket.workbench, 13); assert.equal(markedComplete, true); assert.equal(eksterneSlettinger, 1);
 });
 
 
@@ -93,7 +124,7 @@ test("anonymisering vasker bare valgt eiers ukeplaner og bevarer trygge budsjett
     priority: "VEDLIKEHOLDE", sessionBudget: area === "TURN" ? 0 : 2, focus: `Syntetisk fritekst ${area}`,
   };
   const row = (id: string, playerId: string, planningDetails: unknown) => ({
-    id, playerId, customNotes: "Syntetisk ukenotat", planningDetails, plannedHoursFys: 2.5, repTargetDry: 40,
+    id, playerId, customNotes: "Syntetisk ukenotat", planningDetails, repetitionTargets: { ukjent: "Syntetisk personlig tekst" }, plannedHoursFys: 2.5, repTargetDry: 40,
   });
   ukeplaner = [row("egen-v1", "synthetic", details), row("egen-ukjent", "synthetic", { version: 2, location: "Tekst" }),
     row("egen-ekstra", "synthetic", { ...details, ukjentTekst: "Tekst" }), row("annen-eier", "syntetisk-fremmed", details)];
@@ -108,6 +139,7 @@ test("anonymisering vasker bare valgt eiers ukeplaner og bevarer trygge budsjett
   assert.deepEqual(ukeplaner[0].planningDetails, expected);
   for (const p of ukeplaner.slice(0, 3)) {
     assert.equal(p.customNotes, null); assert.equal(p.plannedHoursFys, 2.5); assert.equal(p.repTargetDry, 40);
+    assert.equal(p.repetitionTargets, null);
   }
   assert.equal(ukeplaner[1].planningDetails, null); assert.equal(ukeplaner[2].planningDetails, null);
   assert.deepEqual(ukeplaner[3], original[3]);

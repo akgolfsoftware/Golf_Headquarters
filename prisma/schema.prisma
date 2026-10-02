@@ -884,6 +884,8 @@ model DelingsSamtykke {
   // TEST_RESULTATER | STATS
   scope            String
   mottakerGruppeId String
+  // Bare NAVNGITT_KOMPLETT_PROFIL: eldre gruppesamtykker har null.
+  mottakerUserId   String?
   // false = trukket (ny rad, aldri update av gamle)
   gitt             Boolean
   tekstVersjon     String
@@ -893,7 +895,32 @@ model DelingsSamtykke {
   createdAt        DateTime @default(now())
 
   @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@index([userId, scope, mottakerGruppeId, mottakerUserId, createdAt], map: "delings_samtykker_navngitt_idx")
   @@map("delings_samtykker")
+}
+
+// Navngitt deling: token lagres bare som SHA-256. Ingen innsyn før aksept.
+model TrenerDelingsInvitasjon {
+  id               String   @id
+  userId           String
+  mottakerGruppeId  String
+  mottakerEpost     String
+  tokenHash        String   @unique
+  tekstVersjon     String
+  gittAvUserId     String
+  gittAvRolle      String
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+
+  @@index([userId, createdAt], map: "trener_delings_invitasjoner_owner_idx")
+  @@index([mottakerEpost, expiresAt], map: "trener_delings_invitasjoner_email_idx")
+  @@index([mottakerGruppeId], map: "trener_delings_invitasjoner_group_idx")
+  @@index([gittAvUserId], map: "trener_delings_invitasjoner_actor_idx")
+  @@index([acceptedByUserId], map: "trener_delings_invitasjoner_coach_idx")
+  @@map("trener_delings_invitasjoner")
 }
 
 // Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
@@ -4545,18 +4572,29 @@ model AiSpillerminne {
   @@map("ai_memories")
 }
 
-// PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
+// To atskilte typer referanser i den eksisterende tabellen:
+// legacy: DataGolf SG per slag i yard-bøtter (IKKE forventede slag til hull).
+// expected_to_hole: vår versjonerte Broadie-baserte kurve i meter.
 model SgBaseline {
-  id              String     @id @default(cuid())
-  category        SgCategory
-  distanceBucket  String // "175-200y"
-  lie             ShotLie?
-  expectedStrokes Float
-  sampleSize      Int
-  source          String // "datagolf-approach-skill-2026Q1"
-  fetchedAt       DateTime
+  id                    String      @id @default(cuid())
+  category              SgCategory?
+  distanceBucket        String? // legacy: "175-200y"
+  lie                   ShotLie?
+  expectedStrokes       Float? // legacy: DataGolf SG per slag, historisk feilnavn
+  sampleSize            Int?
+  source                String?
+  fetchedAt             DateTime?
+  baselineKind          String      @default("legacy_sg_bucket") @map("baseline_kind")
+  baselineVersion       String?     @map("baseline_version")
+  distanceMeters        Decimal?    @map("distance_meters") @db.Decimal(7, 2)
+  lieType               String?     @map("lie_type")
+  expectedStrokesToHole Decimal?    @map("expected_strokes") @db.Decimal(7, 4)
+  sourceReference       String?     @map("source_reference")
+  quality               String?
+  isSupported           Boolean?    @map("is_supported")
 
   @@unique([category, distanceBucket, lie])
+  @@unique([baselineVersion, lieType, distanceMeters], map: "sg_baselines_version_lie_distance_key")
   @@map("sg_baselines")
 }
 

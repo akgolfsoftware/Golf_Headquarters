@@ -43,6 +43,7 @@ export type EndretTimeInput = {
   /** Innlogget spiller (appbruker) eller gjest uten konto. */
   harKonto: boolean;
   dark?: boolean;
+  introHtml?: string;
 };
 
 const UKEDAG = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -127,7 +128,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
     : `${input.appUrl}/booking/kvittering/${input.bookingId}`;
 
   const body =
-    avsnitt(`Hei ${esc(input.fornavn ?? "der")}. Timen din har fått ny tid.`, c) +
+    (input.introHtml ?? avsnitt(`Hei ${esc(input.fornavn ?? "der")}. Timen din har fått ny tid.`, c)) +
     rader +
     (input.erKlipp || input.priceOre > 0
       ? avsnitt(`Gratis avbestilling til <b>${esc(fristTekst)}</b>. ${etterFrist}`, c)

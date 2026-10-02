@@ -5,9 +5,10 @@
     "oppgave": "Opprett ett register per felt, spørsmål, beregning, referanse, diagram/pivot og handling med stabil ID, kildeversjon, celle/objekt, lagring, spillerflate, begge trenerflater, test og status.",
     "avhengighet": "Før all bygging",
     "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Original 2027-fil kontrollert lokalt:18 ark,1692 formelceller,25 diagrammer,1 pivot,3 tabeller. Alle175 spørsmål matcher originalcellene og SHA. Privat anonymt strukturregister opprettet; full kobling per input/beregning/diagram/handling til lagring og alle tre brukerflater gjenstår.",
+    "kodebevis": "docs/design-audit/iup-2027-strukturkontroll-2026-10-02.md; src/lib/iup/ kildekontrakter"
   },
   {
     "id": "R01.2",
@@ -15,10 +16,10 @@
     "oppgave": "Ta inn alle 162 utviklingsspørsmål og 13 sesongspørsmål fra den rensede 2027-kilden. Bevar gamle 2025-besvarelser med opprinnelig skala og versjon.",
     "avhengighet": "Før all bygging",
     "omfang": "IUP-01–18, PH-01–34, TR-01–24, DG-01–17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Ingen krav uten ansvarlig pakke; ingen «dekket» uten bevis. Hver av 18 arkklasser og alle spørsmål har sporbar ID.",
-    "utfart_status": "Kildemodul PR1077, sesongvalidering PR1078 og eieravgrenset besvarelseslagring/revisjoner PR1080 merget. Spillerskjema og trenerlesing gjenstår.",
-    "kodebevis": "main a437e1e11, src/lib/iup/; lagring er ikke bevis på komplette skjermer"
+    "utfart_status": "PR1077/1078/1080 og spillerreise PR1084 merget. 162 utviklingsspørsmål og 13 sesongspørsmål har kildekontrakt og spillerflate. Felles trenerlesing/deling og historisk sammenligning er fortsatt egne kontrollpunkter.",
+    "kodebevis": "main 066ec330e; src/lib/iup/, /portal/mal/evaluering, tests/iup-local/ og komponentprøver"
   },
   {
     "id": "R01.3",
@@ -76,9 +77,9 @@
     "oppgave": "Vis særskilt full profildeling, testdeling, foresatt venter, utløpt, trukket, manglende svar og ingen data. Helse, tredjepartsdialog og bilder krever eget tillatt omfang.",
     "avhengighet": "R01",
     "omfang": "IUP-02/03; PH-02–05; TR-02/20/22/24",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Tillatte og avviste prøver for WANG uten TN, TN uten WANG, begge, ingen, annen skole, avsluttet trener, direkte URL, eksport og tilbakekalling.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "Navngitt delingsreise for spiller/foresatt/coach er publisert iPR1089/maincb42e42d7, med tilbaketrekking og avvisning av privat utkast/fremmed coach. Dette gir innleverte IUP-svar, ikke automatisk hele profil/helse/bilder eller nasjonal WANG-testdeling. De øvrige områdenes tilstander og feltgrenser gjenstår."
   },
   {
     "id": "R02.5",
@@ -96,9 +97,9 @@
     "oppgave": "Lag en felles autorisert profil-lesemodell som returnerer bare tillatte felt, kildedato, versjon og fullføringsstatus. Organisasjonsflatene bruker samme lagrede svar.",
     "avhengighet": "R01/R02",
     "omfang": "IUP-01–03; PH-02–05; TR-03/04/22",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Endring lagres én gang og gjenleses med samme revisjon hos spiller og begge autoriserte trenere. Test skjermede felt og historikk.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "Navngitt trenerdeling og delt innlevert IUP har serverkontrakt fraPR1087/main3df5af7a6 og faktisk spiller-/foresatt-/coachreise fraPR1089/maincb42e42d7. Bare gyldig navngitt deling og innleverte revisjoner leses; private utkast er skjermet. Komplett felles profil og samordning med alle WANG/TN-organisasjonslesere gjenstår."
   },
   {
     "id": "R03.2",
@@ -136,9 +137,9 @@
     "oppgave": "Opprett versjonerte skjemadefinisjoner, besvarelser og innleveringer med nivå, kildecelle, svartype, skala og revisjon; bruk ny modul bare der eksisterende modell ikke passer.",
     "avhengighet": "R01/R02/R03",
     "omfang": "IUP-04/11; PH-14/15; TR-05",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "PlayerHQ-reise fra PR1084 er merget og integrert: kildeversjoner, nivåvalg, utviklingssjekk/sesongevaluering, eierens lagring/innlevering/historikk. Domenet og den monterte spillerreisen finnes i main; siste fullgate kjøres i denne pakken. Komplett WANG/TN-trenerreise og alle avhengige koblinger er ikke sluttverifisert."
   },
   {
     "id": "R04.2",
@@ -146,9 +147,9 @@
     "oppgave": "Implementer alle nivåer 34/43/47/38 spørsmål på 1–5 og sesongens 3 fritekstsvar + 10 på 1–4. Hold de sju spørsmålkategoriene atskilt fra fem treningsområder.",
     "avhengighet": "R01/R02/R03",
     "omfang": "IUP-04/11; PH-14/15; TR-05",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "PlayerHQ-reise fra PR1084 er merget og integrert: kildeversjoner, nivåvalg, utviklingssjekk/sesongevaluering, eierens lagring/innlevering/historikk. Domenet og den monterte spillerreisen finnes i main; siste fullgate kjøres i denne pakken. Komplett WANG/TN-trenerreise og alle avhengige koblinger er ikke sluttverifisert."
   },
   {
     "id": "R04.3",
@@ -156,9 +157,9 @@
     "oppgave": "Lagre/fortsett, feltvalidering, ufullstendig innlevering, historikk og sammenligning innen samme skjema; ikke sammenlign 1–8 og 1–5 som samme skala.",
     "avhengighet": "R01/R02/R03",
     "omfang": "IUP-04/11; PH-14/15; TR-05",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "PlayerHQ-reise fra PR1084 er merget og integrert: kildeversjoner, nivåvalg, utviklingssjekk/sesongevaluering, eierens lagring/innlevering/historikk. Domenet og den monterte spillerreisen finnes i main; siste fullgate kjøres i denne pakken. Komplett WANG/TN-trenerreise og alle avhengige koblinger er ikke sluttverifisert."
   },
   {
     "id": "R04.4",
@@ -166,9 +167,9 @@
     "oppgave": "Implementer faktisk/ønsket fordeling FYS/TEK/SLAG/SPILL/TURN og minst tre tiltak som kan kobles til prosessmål.",
     "avhengighet": "R01/R02/R03",
     "omfang": "IUP-04/11; PH-14/15; TR-05",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Alle 175 spørsmål lagres/gjenåpnes med eksakt ordlyd og riktig skala; nivåskifte bevarer svar; begge trenere ser samme delte innlevering.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "PlayerHQ-reise fra PR1084 er merget og integrert: kildeversjoner, nivåvalg, utviklingssjekk/sesongevaluering, eierens lagring/innlevering/historikk. Domenet og den monterte spillerreisen finnes i main; siste fullgate kjøres i denne pakken. Komplett WANG/TN-trenerreise og alle avhengige koblinger er ikke sluttverifisert."
   },
   {
     "id": "R04.5",
@@ -226,13 +227,10 @@
     "oppgave": "Porter valgt workbench-samlet: Sesongkart, Ukeverksted, Trenerbord og Analyse med én delt spiller-/års-/periodekontekst. Bevar alle eksisterende handlinger.",
     "avhengighet": "R03/R05",
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Delvis skrevet; felles kontekst og navigasjon testet. Fire valgte hovedvisninger gjenstår.",
-    "kodebevis": [
-      "src/lib/workbench/plan-kontekst.ts",
-      "tests/komponenter/precision-workbench-integrasjon.test.ts"
-    ],
+    "utfart_status": "Fire reelle visninger koblet til begge beskyttede ruter på codex/workbench-samlet-2026-10-02. Spiller/dato/uke/år/måned/periode/økt følger konteksten. Felles dataleser, URL- og komponentprøver, samt fire ferske trener-/spillerreiser390/1440 med klikk/hittest/lagring/reload består. Desktop tidsakse og mobilmeny rettet mot eksport77. Samlet publiseringsgate/CI pågår; Anders sin visuelle godkjenning gjenstår.",
+    "kodebevis": "Valgt ZIP77 SHA256 9ded841b0f8696697534eb13dae882b3783d351014dae3a92e6e2bba4f042f07; WorkbenchSamlet + fire flater, workbench-samlet-data, samlet-url",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
   },
@@ -244,14 +242,15 @@
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
     "status": "Planlagt — ikke implementert i denne leveransen",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Ukeprioritet, fokus, timer, øktbudsjett og oppholdssted lagres. 10 lokale database/Auth-prøver og to mobil/desktop-reiser bestod; eksport/anonymisering testet. Full verify bestod; produksjon og visuell godkjenning gjenstår.",
+    "utfart_status": "Ukeplanmetadata lagres og er publisert via PR1082/main 970320f75. Full verify grønn (4039 + 36); 10 lokale DB/Auth-prøver og to mobil/desktop-reiser. Produksjonskolonne kontrollert: jsonb, nullable, RLS aktiv, 0 rader uendret. Visuell godkjenning gjenstår.",
     "kodebevis": [
       "src/lib/workbench/ukeplan-schema.ts",
       "src/lib/workbench/ukeplan-actions.test.ts",
       "src/components/admin/precision/AG11Ark.tsx"
     ],
     "verifisert_hele_oppgaven": false,
-    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
+    "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat.",
+    "produksjonsbevis": "GitHub deployment 6799533729, SHA 970320f757bd9cb16b2c2f54a3b6aba6db30b7f7, state success 2026-10-02T02:02:46Z."
   },
   {
     "id": "R06.3",
@@ -259,13 +258,10 @@
     "oppgave": "Lagre fire uketyper og redigerbar treukerssyklus med tester, opphold og kopiering; vis skole, reise, konkurranse og samling i samme kalender.",
     "avhengighet": "R03/R05",
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Fire uketyper skrevet og koblet til ukeoverskrift. Treukerssyklus og samlet hendelseskalender gjenstår.",
-    "kodebevis": [
-      "src/lib/workbench/ukeplan-schema.test.ts",
-      "tests/komponenter/precision-workbench-integrasjon.test.ts"
-    ],
+    "utfart_status": "Datofestet redigerbar treukerssyklus implementert med atomisk lagring, målpreview, bekreftet DRAFT-kopi, idempotens og eksplisitt oppløsning.5 ekte lokale DB/Auth og10 enhets-/13 komponentprøver grønne. Full hendelseskalender og datofri syklusmal er ikke dekket. Samlet gate/UI/CI/deploy registreres i kontrollrapporten. Endelig kodefrys06:48:04:4189 kildeprøver og94 komponentprøver samt6 reelle spiller-/coachreiser390/1440 bestod. Full npm run verify med produksjonsbygg bestod06:56; ny PR/CI/produksjon er ennå ikke bekreftet. Designkontrakt sendt til eksisterende Precision/WANG/TN; ferdig eksport og visuell godkjenning avventes.",
+    "kodebevis": "src/lib/workbench/treukerssyklus*.ts; src/components/workbench/WorkbenchTreukerssyklus.tsx; docs/design-audit/workbench-okt-og-syklus-kontroll-2026-10-02.md",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
   },
@@ -285,9 +281,10 @@
     "oppgave": "Kontroller flytt/kopier/angre, gjentakelser, tidssone/sommertid, kollisjoner, perioder og mål utenfor endret år. Endring med uavklart konsekvens skal bevares som utkast, ikke slette data.",
     "avhengighet": "R03/R05",
     "omfang": "IUP-07–09; PH-06–09; TR-07/08",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samme valgt uke og summer i alle fire visninger; uke40→41 må ikke hoppe til42. Kalendergrenser, tomme perioder, turnering/reise og gjentakelser testes.",
-    "utfart_status": "Pågående Workbench-pakke; kontekst og ukeplan prioriteres først"
+    "utfart_status": "Valgt årsplan-ID brukes ved periodeoppretting også over årsskifte; endring av sesonggrenser kontrollerer alle eksisterende perioder og basisrevisjon. Målrettede positive/negative prøver grønne. Hele flytt/kopi/angre-kjeden er ikke sluttverifisert.",
+    "kodebevis": "periode-core.valgt-sesong.test.ts; workbench-samlet-sesong-actions.test.ts"
   },
   {
     "id": "R07.1",
@@ -295,9 +292,10 @@
     "oppgave": "Fullfør økt/drillfelt: formål, område, sted, utstyr/antall, metode, læring, fokus, press, mengde, mål, oppvarming, varianter og progresjon.",
     "avhengighet": "R06",
     "omfang": "IUP-10/16; PH-10–12; TR-14",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Editor, stabile øvelse-ID-er og rå JSON-/dose-bevaring er implementert. Utstyr/valgfritt antall, BANE-oppgaver, kondisjonssegmenter, ny RIR0–4 med historisk5–10-bevaring og autoriserte bank-/oppgavekoblinger gjennom serie/gruppematerialisering er prøvd: felt34 unit+5 komponent+4 ekte DB/Auth; bank23 unit+5 ekte DB/Auth. Øktnivåets formål/sted/mål er kartlagt, ikke ferdigkoblet. Oppvarming/varianter/progresjon gjenstår. Øktformål/sted/mål og selvstendig drillmålsetning er også koblet gjennom oppretting/redigering/kopier;34 enhets-/14 komponent-/7 ekte DB/Auth-prøver grønne. Historisk P-fokus bevares; oppvarmings-/progresjonsregler gjenstår. Se ny kontrollrapport. Endelig kodefrys06:48:04:4189 kildeprøver og94 komponentprøver samt6 reelle spiller-/coachreiser390/1440 bestod. Full npm run verify med produksjonsbygg bestod06:56; ny PR/CI/produksjon er ennå ikke bekreftet. Designkontrakt sendt til eksisterende Precision/WANG/TN; ferdig eksport og visuell godkjenning avventes.",
+    "kodebevis": "updateDrill, addDrill, createSessionFromSource, OvelseSkjema, tests/local-workbench/drill-preservation.test.ts"
   },
   {
     "id": "R07.2",
@@ -305,9 +303,10 @@
     "oppgave": "Gjenbruk samme økt-ID gjennom plan, Live og logg. Avstem eldre øktmodeller etter eksisterende overgangsplan, uten å slette dem eller telle dobbelte kopier.",
     "avhengighet": "R06",
     "omfang": "IUP-10/16; PH-10–12; TR-14",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Valgt økt brukes i Live; fremmed/skjult/ubekreftet/utkast/mal avvises også av direkte handling. Pågående økt kan ikke konverteres til mal, også ved racing start; historisk feilmerket syntetisk økt kan få flagget fjernet og fullføres. Fem ekte DB/Auth-prøver, fem malhandlingstester, åtte navigasjonskomponentprøver og ti Live/Min-kontekstprøver består. Hele eldre-modellovergangen er ikke ferdig.",
+    "kodebevis": "loadWorkbenchLive; WorkbenchLive; tests/local-workbench/live-selection.test.ts; workbench-live-navigation.test.ts"
   },
   {
     "id": "R07.3",
@@ -315,14 +314,10 @@
     "oppgave": "Lag en felles summering som skiller planlagt, faktisk registrert, anslått legacytid, ukjent og fremtid. Fjern skjult presentasjon av planlagt tid som faktisk.",
     "avhengighet": "R06",
     "omfang": "IUP-10/16; PH-10–12; TR-14",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "60 planlagt/45 faktisk gir45 i alle actualsummer. 0, null og fremtid holdes fra hverandre; samme datospenn og ingen dobbelttelling.",
-    "utfart_status": "Felles treningssummering og profil-/IUP-visning koblet og testet: faktisk 0, ukjent, framtid, delvis dekning, hoppet over/avbrutt, ugyldig sommertid og dubletter. Nye fireflater gjenstår; full verify bestod.",
-    "kodebevis": [
-      "src/lib/workbench/treningsvolum.ts",
-      "src/lib/workbench/treningsvolum-spiller360.test.ts",
-      "src/lib/training/volum.test.ts"
-    ],
+    "utfart_status": "Felles volumleser brukes i alle fire nye flater; klientens ukemotor erstatter ikke legacy/V2-grunnlaget. Faktisk0/null/fremtid og dubletter prøvd. PR1082-foundation er publisert; fireflatepakken avventer fullgate og publisering.",
+    "kodebevis": "workbench-samlet-volum.ts, workbench-samlet-data.test.ts; produksjonsgrunnlag PR1082",
     "verifisert_hele_oppgaven": false,
     "grunnpakke_kontroll": "npm run verify bestod: 4039 funksjonstester, 36 komponentprøver, produksjonsbygg. Hele oppgavens visninger/CI/produksjon vurderes separat."
   },
@@ -392,9 +387,10 @@
     "oppgave": "Lag versjonert protokollkontrakt: forsøk/rekkefølge, mål, råfelt, enhet, grenser, beregning, presisjon, bedre-retning og referansekilde. Avstem alle38 katalogvarianter og gjenværende sperrer enkeltvis.",
     "avhengighet": "R01",
     "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
-    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+    "utfart_status": "Protokollregister og kildekontroll samt testbatterirettelser PR1086 er merget og tatt inn i denne grenen. Registeret navngir 38 golf-/teknikkvarianter og fem fysiske tester. Enkelte enheter og standardprotokoller er fortsatt avklart som åpne.",
+    "kodebevis": "main c76f4e83f; docs/planer/testbatteri-protokollregister-2026-10-02.json; tn-verified-rules/tn-kildefasit"
   },
   {
     "id": "R09.2",
@@ -402,9 +398,10 @@
     "oppgave": "Rett 8-ball til24 forsøk/maks96 i design der feil; kontroller kode mot eksisterende v3-testgrunnlag. Wedge Gate9treff; Nærspill Gate/VISA manuelle poeng etter vedtak.",
     "avhengighet": "R01",
     "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
-    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+    "utfart_status": "Koderettelser fra PR1086 merget: 8-ball24/maks96 og nedre intervallgrenser, kildebaserte variantregler; designendring er sendt av testbatteriøkten, ikke sluttverifisert som skjermportering.",
+    "kodebevis": "main c76f4e83f; src/lib/portal-tester/tn-scoring.ts og tn-kildefasit.test.ts"
   },
   {
     "id": "R09.3",
@@ -412,9 +409,10 @@
     "oppgave": "Vis PEI-brøk0,05 som5%; behold12,5poeng. Avklar eldre data eksplisitt, ikke gjett prosent fra tallstørrelse.",
     "avhengighet": "R01",
     "omfang": "IUP-12/13/15/17/18; PH-18/21; TR-10–13",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Fasitsett rett under/på/over hver grense, null/tomt/desimal/full/ufullstendig. Samme tall i spiller, WANG, TN, matrise og eksport.",
-    "utfart_status": "Parallelle testbatterileveranser kontrolleres før integrasjon"
+    "utfart_status": "Kilderiktig PEI-visning og persistenskontroll fra PR1086 merget. Brøk og manuelle desimalpoeng holdes ulike. Dette beviser ikke at alle nye designskjermer er portert.",
+    "kodebevis": "main c76f4e83f; resultat-visning, tn-persistence og lokale testbatteriprøver"
   },
   {
     "id": "R09.4",
@@ -692,9 +690,9 @@
     "oppgave": "Kartlegg hvert dokumentert datasett/felt mot API/nettside, lokal tabell, oppdatering, enhet, periode og kundevisningsrett. Ikke ta eldre endepunktdokument som bevis på dagens kjøring.",
     "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
     "omfang": "DG-01–17; PH-24; TR-17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
-    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+    "utfart_status": "Main cb42e42d7 inneholder kilde-/designkontroll: 16 lokale DataGolf-modeller,135 felt og21 klientmetoder kartlagt. Precision/TN/WANG-eksporter matcher135/135 felt; trenerfilter107. Dette er kilde-/prototypedekning, ikke bevis på alle API-data, faktisk synk eller kundebruksrett. Endepunkt→modell→faktisk respons og lisens gjenstår."
   },
   {
     "id": "R15.2",
@@ -702,9 +700,9 @@
     "oppgave": "Fullfør felles datalesere for katalog/profil, kategori-topplister, sammenligning, innspill, historiske runder, kalender/felt, turnering/live, modell, bane/trend og datautforsking.",
     "avhengighet": "R01/R02/R14; kundedata krever bruksrett",
     "omfang": "DG-01–17; PH-24; TR-17",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "DG01–17 med normal/tom/delvis/feil/ingen tilgang/forsinkelse; kategorier, rådata, kildeskille, sammenligning og godkjent tiltak kontrolleres.",
-    "utfart_status": "Parallelle pipeline/statistikkleveranser kontrolleres; DataGolf-rett ikke bekreftet"
+    "utfart_status": "Klikkbare DG01–17-moduler er tegnet i Precision, Team Norway og eksisterende WANG UI prototype og dokumentert i main cb42e42d7. Egen designkontroll390/1440 og flere felt-/enhetsrettinger finnes. Felles appdatalesere, full portering og faktisk DB/API-reise er ikke levert av designmodulene."
   },
   {
     "id": "R15.3",
@@ -762,9 +760,10 @@
     "oppgave": "Bevar eksisterende meldinger, dokumenter, fagapparat, gameplan, TrackMan, fysikk, booking, utstyr, sosiale funksjoner og konto med sine eksisterende rollegrenser. Nye data skal med i innsyn/eksport og dokumentert livssyklus.",
     "avhengighet": "R02–R15",
     "omfang": "PH-01–34; TR-01–24",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Alle aktive IUP-krav ogPH/TR/DG-familier har faktisk skjerm, lagring, tilgangsprøve og reisebevis; ingen skjult funksjonsreduksjon.",
-    "utfart_status": "Parallelle IUP/WANG/TN-leveranser kontrolleres før integrasjon"
+    "utfart_status": "Eieravgrenset kontoeksport/anonymisering for navngitte Workbench-modeller skrevet. 44 målrettede tester og tre ekte lokale DB-prøver grønne; egne/fremmede/gruppe/barn, null0/dose, tørrkjøring og feil/gjenforsøk kontrollert. Full fil-/ballogg-/foresatteksport og ekte ekstern sletting er ikke verifisert.",
+    "kodebevis": "workbench-personvern.ts; export-user-data.test.ts; anonymiser-bruker.behavior.test.ts; privacy-persistence.test.ts"
   },
   {
     "id": "R16.4",
@@ -802,9 +801,10 @@
     "oppgave": "Kjør målrettede enhetstester, databaseprøver og hele nettleserreiser; npm run verify, npm test og npm run prosjekt:sjekk etter relevant endring. Rapporter faktiske resultater.",
     "avhengighet": "R01–R16",
     "omfang": "Alle",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Samlet Workbench fullverify etter siste kodefrys:4183 kode+84 komponent+statiske kontroller+Next/Serwist-bygg bestod04:03 UTC. Prosjektsjekk178 dokumenter grønn. Fire ferske lokale trener-/spillerreiser390/1440 med lagring/gjenåpning består; malretting5 og øvrige målrettede DB/Auth-bevis dokumentert. Ny GitHub-CI/PR/merge/deploy avventes; hele82-planens samlede kundereise er ikke sluttprøvd.",
+    "kodebevis": "PR1082:4039+36; denne pakken bevisføres i workbench-samlet-kontroll-2026-10-02.md"
   },
   {
     "id": "R17.3",
@@ -812,9 +812,10 @@
     "oppgave": "Sammenlign de konkrete designversjonene med appen på390/1440 ogWANG1280. Registrer Anders sin vurdering separat fra tekniske tester.",
     "avhengighet": "R01–R16",
     "omfang": "Alle",
-    "status": "Planlagt — ikke implementert i denne leveransen",
+    "status": "Delvis utført — se konkret kontrollstatus",
     "bevis": "Samlet godkjenningsrapport med krav-ID→kode→test→design→produksjonsbevis. Åpne kilde-/avtalespørsmål blokkerer bare berørte funksjoner.",
-    "utfart_status": "Ikke verifisert"
+    "utfart_status": "Uendret eksport77 med SHA9ded841b… og korrigerte private design-77-styled-bilder brukes. Faktisk desktop/mobilkontroll rettet tidsakse ved samtidighet og dekket mobilmeny. Trener/spiller390/1440: fire av fire reiser med klikk, hittest, ukeplanlagring0/2 og reload består. Seks nye lokale spillerinnlogginger og avvist passord består etter full dokumentnavigasjon. Anders sin visuelle godkjenning er ikke registrert.",
+    "kodebevis": "ZIP77-hash og privat design-/appbevis; docs/design-audit/workbench-samlet-kontroll-2026-10-02.md"
   },
   {
     "id": "R17.4",

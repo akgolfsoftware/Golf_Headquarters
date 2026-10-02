@@ -22,10 +22,20 @@ import {
   loadSources,
   loadWeek,
   loadYear,
+  loadWorkbenchLive,
 } from "@/lib/workbench/wb-actions";
 import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
 import { parsePlanKontekst, type PlanQuery } from "@/lib/workbench/plan-kontekst";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
+import { WorkbenchLastPaNytt } from "@/components/workbench/WorkbenchLastPaNytt";
+import { loadPlayerMinCalendar } from "@/lib/workbench/spiller-min-kalender";
+import { WorkbenchLive } from "@/components/workbench/WorkbenchLive";
+import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalender";
+import { WorkbenchSamlet } from "@/components/workbench/WorkbenchSamlet";
+import { loadWorkbenchSamletData } from "@/lib/workbench/workbench-samlet-data";
+import { brukSamletWorkbench, parseWorkbenchFlate } from "@/lib/workbench/samlet-url";
+import { parseVisning } from "@/lib/workbench/visning-url";
+import { queryVerdi } from "@/lib/workbench/plan-kontekst";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
 import "@/styles/workbench-selected.css";
@@ -44,11 +54,11 @@ function Ramme({ navn, children }: { navn: string | null; children: React.ReactN
 }
 
 function Feil({ navn, melding }: { navn: string | null; melding: string }) {
-  return <Ramme navn={navn}><div className="pa-side"><FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text={melding} /></div></Ramme>;
+  return <Ramme navn={navn}><div className="pa-side"><FeilTilstand icon={CalendarX} title="Workbench kunne ikke lastes" text={melding} retry={<WorkbenchLastPaNytt />} /></div></Ramme>;
 }
 
-function Arv({ children }: { children: React.ReactNode }) {
-  return <div className="a9-arv"><div className="wb-app" data-surface="light">{children}</div></div>;
+function Arv({ children, live }: { children: React.ReactNode; live?: boolean }) {
+  return <div className="a9-arv"><div className="wb-app" data-surface={live ? "live" : "light"}>{children}</div></div>;
 }
 
 export default async function PlayerWorkbenchPage({ searchParams }: Props) {
@@ -66,6 +76,15 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
     return <Ramme navn={user.name}>{sp.pille === "fys"
       ? <AG11Fysisk playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />
       : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />}</Ramme>;
+  }
+
+  if (brukSamletWorkbench(sp)) {
+    const data = await loadWorkbenchSamletData({
+      playerId, routeSurface: "player", query: sp,
+      flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
+    });
+    if (!data.ok) return <Feil navn={user.name} melding={data.error} />;
+    return <Ramme navn={user.name}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></Ramme>;
   }
 
   const goals = await hentMaalSpor(playerId);
@@ -103,6 +122,17 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
     const kilderRes = await loadSources({ playerId, weekStart });
     if (!periodRes?.ok) return <Feil navn={user.name} melding={periodRes?.error ?? "Perioden kunne ikke lastes"} />;
     return <Ramme navn={user.name}><Arv><WorkbenchPeriode key={`${playerId}:${kontekst.year}:${periodRes.data.period?.id ?? "tom"}`} planKontekst={kontekst.referanse} playerId={playerId} spillerNavn={spillerNavn} periode={periodRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} routeSurface="player" /></Arv></Ramme>;
+  }
+
+  if (visning === "live") {
+    const live = await loadWorkbenchLive({ weekStart, playerId, sessionId: kontekst.referanse.okt });
+    if (!live.ok) return <Feil navn={user.name} melding={live.error} />;
+    return <Ramme navn={user.name}><Arv live><WorkbenchLive key={`${live.data.current?.id ?? "ingen"}:${live.data.next?.id ?? "ingen"}`} playerId={playerId} spillerNavn={spillerNavn} data={live.data} routeSurface="player" planKontekst={kontekst.referanse} /></Arv></Ramme>;
+  }
+  if (visning === "min") {
+    const kalender = await loadPlayerMinCalendar(weekStart);
+    if (!kalender.ok) return <Feil navn={user.name} melding={kalender.error} />;
+    return <Ramme navn={user.name}><Arv><WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={spillerNavn} data={kalender.data} routeSurface="player" planKontekst={kontekst.referanse} /></Arv></Ramme>;
   }
 
   const [weekRes, kilderRes, fys] = await Promise.all([
