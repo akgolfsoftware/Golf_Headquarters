@@ -49,6 +49,17 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
     <TnShell aktiv="analyse" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(valg.kontekst.rolle)} groupId={valg.kontekst.gruppe.id} visTrenerflater={!valg.kontekst.erSpiller} kanAdministrere={valg.kontekst.kanAdministrere}>
       <TnSidehode overlinje="Gruppeanalyse" tittel="Sammenlign kompatible målinger" ingress="Velg én testdag eller én protokoll. Ulike protokoller blandes aldri i samme sammenligning." />
 
+      {!valg.kontekst.erSpiller && (
+        <TnSeksjon tittel="WANG-skolene">
+          <p style={{ margin: "0 0 12px", color: TN.textSecondary, fontSize: TN.text.sm }}>
+            Åpne full historikk for fullførte testresultater fra alle aktive WANG-grupper.
+          </p>
+          <Link href="/team-norway/wang-resultater" style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>
+            Se alle WANG-resultater →
+          </Link>
+        </TnSeksjon>
+      )}
+
       <TnSeksjon tittel="Velg grunnlag">
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <form method="get" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", minWidth: 0 }}>
@@ -83,9 +94,10 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
         >
           <TnDataTable
             caption={resultat.protokollNavn}
-            kolonner={[{ key: "spiller", label: "Spiller" }, { key: "score", label: "Resultat", align: "right" }]}
+            kolonner={[{ key: "skole", label: "Skole" }, { key: "spiller", label: "Spiller" }, { key: "score", label: "Resultat", align: "right" }]}
             rader={resultat.rader.map((rad) => ({
-              spiller: <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.spillerNavn}</Link>,
+              skole: rad.skole ?? "Team Norway",
+              spiller: rad.skole ? rad.spillerNavn : <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.spillerNavn}</Link>,
               score: rad.formatert ?? statusTekst(rad.status),
             }))}
             empty="Ingen spillere i grunnlaget."
