@@ -29,6 +29,7 @@ export type BekreftelseInput = {
   opprettKontoUrl: string | null;
   spillerhqTilbud: { tekst: string; manedNok: number | null; arNok: number | null } | null;
   natt?: boolean;
+  introHtml?: string;
 };
 
 const DATO = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
@@ -89,7 +90,7 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
       title: "Timen er bekreftet",
       pre: "Timen er bekreftet. Legg den i kalenderen.",
       body:
-        avsnitt(`Hei${i.fornavn ? ` ${esc(i.fornavn)}` : ""}. Vi gleder oss til å se deg.`, c) +
+        (i.introHtml ?? avsnitt(`Hei${i.fornavn ? ` ${esc(i.fornavn)}` : ""}. Vi gleder oss til å se deg.`, c)) +
         faktaRader(rader, c) +
         (i.prisOre === null
           ? avsnitt(`Kan du ikke komme? Avbestill før <b>${esc(frist)}</b>, så legges klippet tilbake.`, c)

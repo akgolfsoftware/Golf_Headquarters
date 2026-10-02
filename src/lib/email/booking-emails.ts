@@ -5,12 +5,16 @@
  */
 import "server-only";
 
-import { cancellationDeadline, cancellationDeadlineFromUtcWallClock } from "@/lib/booking/policy";
+import { AVBESTILLING_FRIST_TIMER, cancellationDeadline, cancellationDeadlineFromUtcWallClock } from "@/lib/booking/policy";
+import { naivOsloTilTidspunkt, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { byggEndretTimeEpost } from "@/lib/email/booking-endret-time";
 import { logError } from "@/lib/error-tracking";
-import { byggBekreftelse, googleKalenderUrl } from "./booking-bekreftelse";
+import { byggPaaminnelse, formaterKr } from "@/lib/email/templates/paaminnelse-mal";
+import { byggBekreftelse, googleKalenderUrl, datoTekst, klokkeTekst } from "./booking-bekreftelse";
+
+import { bookingTemplateContent } from "./booking-template-content";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -83,6 +87,7 @@ async function sendBooking(
       user: { select: { name: true, email: true } },
       serviceType: true,
       location: true,
+      subscription: { select: { plan: true } },
     },
   });
   if (!booking) throw new Error("Booking not found");
@@ -164,17 +169,19 @@ export async function sendBookingConfirmation(bookingId: string) {
     console.warn("[booking-email] Ingen e-post på booking", bookingId);
     return;
   }
-  await hentTemplate("booking-bekreftelse");
+  const template = await hentTemplate("booking-bekreftelse");
+  const content = bookingTemplateContent(template, booking, APP_URL);
   const erGjest = !booking.user;
   const navn = booking.user?.name ?? booking.guestName ?? null;
   const referanse = `#${booking.id.slice(-8)}`;
   const sted = booking.location.name;
 
   const { subject, html } = byggBekreftelse({
+    introHtml: content.introHtml,
     type: erGjest ? "gjest" : "app",
     fornavn: navn ? navn.split(" ")[0] : null,
     tjeneste: booking.serviceType.name,
-    varighetMin: booking.serviceType.durationMin,
+    varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000),
     start: booking.startAt,
     slutt: booking.endAt,
     sted,
@@ -195,7 +202,7 @@ export async function sendBookingConfirmation(bookingId: string) {
   });
 
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({ context: "email.booking.resend", error, meta: { bookingId } });
@@ -203,8 +210,66 @@ export async function sendBookingConfirmation(bookingId: string) {
   }
 }
 
-export async function sendBookingReminder(bookingId: string) {
-  await sendBooking("oekt-paaminnelse", bookingId);
+/** EP-03. Malraden styrer om sending er aktiv. Returnerer true bare ved mottatt leverandørbekreftelse. */
+export async function sendBookingReminder(bookingId: string, now = new Date(), expectedStartAt?: Date): Promise<boolean> {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { name: true, email: true } },
+      coach: { select: { name: true } },
+      serviceType: true,
+      location: true,
+      subscription: { select: { plan: true } },
+    },
+  });
+  if (!booking) throw new Error("Booking not found");
+  const epost = booking.user?.email ?? booking.guestEmail;
+  // Booking kan være avbestilt siden bakgrunnsjobben valgte kandidatene.
+  if (booking.status !== "CONFIRMED" || !epost) return false;
+  if (expectedStartAt && booking.startAt.getTime() !== expectedStartAt.getTime()) return false;
+  const template = await hentTemplate("oekt-paaminnelse");
+  const content = bookingTemplateContent(template, booking, APP_URL);
+  const navn = booking.user?.name ?? booking.guestName ?? "";
+  const erKlipp = Boolean(booking.subscriptionId);
+  const erApp = Boolean(booking.userId);
+  const frist = cancellationDeadlineFromUtcWallClock(booking.startAt);
+  const start = klokkeTekst(booking.startAt);
+  const iMorgen = tilNaivVeggklokke(now, "utc");
+  iMorgen.setUTCDate(iMorgen.getUTCDate() + 1);
+  const plan = booking.subscription?.plan;
+  const klipp = plan === "PERFORMANCE_PRO" ? "1 klipp · Performance Pro" : plan === "PERFORMANCE" ? "1 klipp · Performance" : "1 klipp";
+  const { subject, html } = byggPaaminnelse({
+    mottaker: erApp ? "app" : "gjest",
+    fornavn: navn.split(" ")[0] ?? "",
+    tjeneste: booking.serviceType.name,
+    varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000),
+    dag: datoTekst(booking.startAt), start,
+    klokke: `${start}–${klokkeTekst(booking.endAt)}`,
+    sted: booking.location.name,
+    coach: booking.coach?.name ?? null,
+    pris: erKlipp ? "Inkludert i abonnement" : formaterKr(booking.priceOre),
+    betaling: { tekst: erKlipp ? klipp : booking.stripePaymentIntentId, mono: !erKlipp },
+    betalingstype: erKlipp ? "klipp" : booking.priceOre === 0 ? "gratis" : "betalt",
+    referanse: booking.id,
+    frist: `${datoTekst(frist).toLowerCase()} kl. ${klokkeTekst(frist)}`,
+    fristPassert: naivOsloTilTidspunkt(booking.startAt, "utc").getTime() - now.getTime() <= AVBESTILLING_FRIST_TIMER * 3_600_000,
+    iMorgen: booking.startAt.toISOString().slice(0, 10) === iMorgen.toISOString().slice(0, 10),
+    lenker: {
+      veibeskrivelse: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.location.address || booking.location.name)}`,
+      bookingIApp: `${APP_URL}/portal/booking/${encodeURIComponent(booking.id)}`,
+      endre: `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking #${booking.id.slice(-8)}`)}`,
+    },
+  }, { introHtml: content.introHtml });
+  try {
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html }, {
+      idempotencyKey: `booking-reminder/${booking.id}/${booking.startAt.toISOString()}`,
+    });
+    if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
+    return true;
+  } catch (error) {
+    await logError({ context: "email.booking.resend", error, meta: { bookingId } });
+    throw error;
+  }
 }
 
 export async function sendBookingCancellation(
@@ -248,10 +313,12 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
   }
 
   // Behold administrasjonens av/på-kontroll selv om innholdet har ny utforming.
-  await hentTemplate("booking-flyttet");
+  const template = await hentTemplate("booking-flyttet");
+  const content = bookingTemplateContent(template, booking, APP_URL, { oldDate: datoTekst(oldStartAt), oldTime: klokkeTekst(oldStartAt) });
 
   const fullNavn = booking.user?.name ?? booking.guestName ?? null;
   const { subject, html } = byggEndretTimeEpost({
+    introHtml: content.introHtml,
     appUrl: APP_URL,
     bookingId: booking.id,
     startAt: booking.startAt,
@@ -260,7 +327,7 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
     epost,
     fornavn: fullNavn?.trim().split(/\s+/)[0] || null,
     tjenesteNavn: booking.serviceType.name,
-    varighetMin: booking.serviceType.durationMin,
+    varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000),
     stedNavn: booking.location.name,
     stedAdresse: booking.location.address || null,
     coachNavn: booking.coach?.name ?? null,
@@ -271,7 +338,7 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
   });
 
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({
