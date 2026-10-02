@@ -30,9 +30,7 @@ import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalende
 import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, loadWorkbenchLive, loadYear, loadSources } from "@/lib/workbench/wb-actions";
 import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-data";
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
-import { mondayOf } from "@/lib/domain/workbench/operations";
-import { parseWeekOffset } from "@/lib/workbench/session-move-math";
-import { parseVisning } from "@/lib/workbench/visning-url";
+import { parsePlanKontekst, type PlanQuery } from "@/lib/workbench/plan-kontekst";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
 import "@/styles/workbench-selected.css";
 
@@ -41,31 +39,10 @@ export const metadata = { title: "Workbench · AgencyOS" };
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ uke?: string; vis?: string; niva?: string; aar?: string; maned?: string; periode?: string; okt?: string; pille?: string; side?: string }>;
+  searchParams: Promise<PlanQuery>;
 };
 
 const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
-
-function aarFraParam(raw?: string): number {
-  const aar = Number(raw);
-  if (Number.isInteger(aar) && aar >= 2000 && aar <= 2100) return aar;
-  return Number(new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Oslo" }).format(new Date()));
-}
-
-function manedFraParam(raw?: string): string {
-  if (raw && /^\d{4}-(0[1-9]|1[0-2])$/.test(raw)) return `${raw}-01`;
-  const iso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
-  return `${iso.slice(0, 7)}-01`;
-}
-
-function ukeStartFraParam(raw?: string): string {
-  if (raw && /^\d{4}-\d{2}-\d{2}$/.test(raw)) return mondayOf(raw);
-  const off = parseWeekOffset(raw);
-  const iso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
-  const d = new Date(iso + "T12:00:00Z");
-  d.setUTCDate(d.getUTCDate() + off * 7);
-  return mondayOf(d.toISOString().slice(0, 10));
-}
 
 /** Ramme for år, periode, måned og historiske dyplenker. */
 function Arv({ children, live }: { children: React.ReactNode; live?: boolean }) {
@@ -108,9 +85,15 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   }
 
   const goals = await hentMaalSpor(playerId);
-  const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
-  const visning = parseVisning(sp.niva ?? sp.vis);
+  const now = new Date();
+  let kontekst = parsePlanKontekst(sp, { now });
+  const visning = kontekst.visning;
+  const periodRes = visning === "periode" || (!kontekst.harValgtUke && kontekst.referanse.periode)
+    ? await loadPeriod({ year: kontekst.year, periodId: kontekst.referanse.periode, mode, playerId })
+    : null;
+  if (periodRes?.ok) kontekst = parsePlanKontekst(sp, { now, periode: periodRes.data.period });
+  const weekStart = kontekst.weekStart;
   const hentRoster = () => prisma.user.findMany({
     where: coachScopedPlayerWhere(user),
     select: { id: true, name: true },
@@ -118,48 +101,47 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   });
 
   if (visning === "aar") {
-    const year = aarFraParam(sp.aar);
+    const year = kontekst.year;
     const [roster, yearRes, kilderRes] = await Promise.all([
       hentRoster(),
       loadYear({ year, mode, playerId }),
-      loadSources({ playerId, weekStart: `${year}-01-01` }),
+      loadSources({ playerId, weekStart }),
     ]);
     if (!yearRes.ok) return <Feil navn={navn} melding={yearRes.error} />;
     return (
       <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchAar key={`${playerId}:${year}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        <WorkbenchAar planKontekst={kontekst.referanse} key={`${playerId}:${year}:${kontekst.referanse.periode ?? ""}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
           spillerNavn={spillerNavn} aar={yearRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
       </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "maned") {
-    const monthStart = manedFraParam(sp.maned);
+    const monthStart = kontekst.monthStart;
     const [roster, monthRes, kilderRes] = await Promise.all([
       hentRoster(),
       loadMonth({ monthStart, mode, playerId }),
-      loadSources({ playerId, weekStart: mondayOf(monthStart) }),
+      loadSources({ playerId, weekStart }),
     ]);
     if (!monthRes.ok) return <Feil navn={navn} melding={monthRes.error} />;
     return (
       <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchManed key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        <WorkbenchManed planKontekst={kontekst.referanse} key={`${playerId}:${monthStart}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
           spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
       </Arv></AgencyOSSkall>
     );
   }
 
   if (visning === "periode") {
-    const year = aarFraParam(sp.aar);
-    const [roster, periodRes, kilderRes] = await Promise.all([
+    const year = kontekst.year;
+    const [roster, kilderRes] = await Promise.all([
       hentRoster(),
-      loadPeriod({ year, periodId: sp.periode, mode, playerId }),
       loadSources({ playerId, weekStart }),
     ]);
-    if (!periodRes.ok) return <Feil navn={navn} melding={periodRes.error} />;
+    if (!periodRes?.ok) return <Feil navn={navn} melding={periodRes?.error ?? "Perioden kunne ikke lastes"} />;
     return (
       <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchPeriode key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        <WorkbenchPeriode planKontekst={kontekst.referanse} key={`${playerId}:${year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} roster={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
           spillerNavn={spillerNavn} periode={periodRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} />
       </Arv></AgencyOSSkall>
     );
@@ -170,7 +152,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     if (!stallRes.ok) return <Feil navn={navn} melding={stallRes.error} />;
     return (
       <AgencyOSSkall navn={navn}><Arv>
-        <WorkbenchStall key={`${playerId}:${weekStart}:${sp.okt ?? "forste"}`} playerId={playerId} spillerNavn={spillerNavn} data={stallRes.data} selectedSessionId={sp.okt} />
+        <WorkbenchStall key={`${playerId}:${weekStart}:${sp.okt ?? "forste"}`} playerId={playerId} spillerNavn={spillerNavn} data={stallRes.data} selectedSessionId={kontekst.referanse.okt} />
       </Arv></AgencyOSSkall>
     );
   }
@@ -214,7 +196,8 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   return (
     <AgencyOSSkall navn={navn}>
       <AG11Workbench
-        key={`${playerId}:${weekStart}`}
+        planKontekst={kontekst.referanse}
+        key={`${playerId}:${weekStart}:${visning}:${kontekst.referanse.okt ?? ""}`}
         playerId={playerId}
         spillerNavn={spillerNavn}
         uke={weekRes.data}
@@ -225,7 +208,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         fys={fysTurnering}
         niva={visning === "mal" ? "mal" : visning === "vol" ? "vol" : visning === "okt" ? "okt" : "uke"}
         side={side}
-        valgtOktId={sp.okt}
+        valgtOktId={kontekst.referanse.okt}
       />
     </AgencyOSSkall>
   );

@@ -540,6 +540,7 @@ export interface WeekPlanData {
   repetitionTargets?: Record<string, unknown> | null;
   loadCeiling?: number | null;
   customNotes?: string | null;
+  planningDetails?: import("@/lib/workbench/ukeplan-schema").WeekPlanningDetails | null;
 }
 
 export interface WeekViewModel {
@@ -548,6 +549,14 @@ export interface WeekViewModel {
   budget: WeekBudget;
   mode: WorkbenchMode;
   weekPlan?: WeekPlanData | null;
+  /** Original historisk nøkkel. Kandidaten er ikke koblet til den viste uka. */
+  legacyWeekPlanCandidate?: {
+    id: string;
+    isoYear: number;
+    weekNumber: number;
+    seasonPlanId: string | null;
+    warning: string;
+  };
 }
 
 /** Én synlig linje i en månedscelle (maks tre + «+N mer»). */
