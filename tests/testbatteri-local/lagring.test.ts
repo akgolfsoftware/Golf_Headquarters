@@ -86,3 +86,40 @@ test("database: samtidige rettelser avviser tabende revisjon uten overskriving",
   assert.equal(stored.rows[0].scoringData.revision, 2);
   assert.ok([2, 3].includes(stored.rows[0].scoringData.values["1"].points));
 });
+
+
+test("database: tapt utkastkvittering, JSONB og ny registrering bruker én operasjon hver", async () => {
+  viewer = owner;
+  const p = TN_CATALOG.find(p => p.id === "driver-270")!;
+  const command = { ownerId: owner, sessionId: randomUUID(), mutationId: randomUUID(), version: tnVersion(p), protocolId: p.id, count: 5, revision: 0, values: { "1": { carry: 270, side: 8.64 } }, intent: "draft" };
+  assert.ok((await save(command)).ok);
+  const retry = await save(command);
+  assert.ok(retry.ok); assert.equal(retry.revision, 1);
+  const changed = { ...command, revision: 1, mutationId: randomUUID(), values: { ...command.values, "2": { carry: 270, side: 8.64 } } };
+  assert.ok((await save(changed)).ok);
+  assert.equal((await save(command)).ok, false);
+  const stored = await db.query('SELECT "scoringData" FROM test_sessions WHERE id=$1', [command.sessionId]);
+  assert.equal(stored.rows[0].scoringData.revision, 2);
+  assert.equal(stored.rows[0].scoringData.values["2"].side, 8.64);
+  assert.equal(stored.rows[0].scoringData.lastMutation.id, changed.mutationId);
+});
+
+test("database: privat testbildeindeks kobles til eier, økt og ett unikt forsøk", async () => {
+  viewer = owner;
+  const p = TN_CATALOG.find(p => p.id === "putt-1-3m")!;
+  const sessionId = randomUUID();
+  const saved = await save({ sessionId, version: tnVersion(p), protocolId: p.id, count: p.rows.length, revision: 0, values: {}, intent: "draft" });
+  assert.deepEqual(saved, { ok: true, revision: 1 });
+  const photo = await prisma.testSessionPhoto.create({ data: {
+    id: randomUUID(), userId: owner, testSessionId: sessionId, attemptNumber: 1,
+    storagePath: `${owner}/${sessionId}/1/synthetic.webp`,
+  } });
+  const stored = await db.query('SELECT "userId", "testSessionId", "attemptNumber", "storagePath" FROM test_session_photos WHERE id=$1', [photo.id]);
+  assert.deepEqual(stored.rows, [{ userId: owner, testSessionId: sessionId, attemptNumber: 1, storagePath: `${owner}/${sessionId}/1/synthetic.webp` }]);
+  await assert.rejects(prisma.testSessionPhoto.create({ data: {
+    id: randomUUID(), userId: owner, testSessionId: sessionId, attemptNumber: 1,
+    storagePath: `${owner}/${sessionId}/1/duplicate.webp`,
+  } }));
+  const rls = await db.query(`SELECT relrowsecurity FROM pg_class WHERE oid = 'test_session_photos'::regclass`);
+  assert.equal(rls.rows[0].relrowsecurity, true);
+});
