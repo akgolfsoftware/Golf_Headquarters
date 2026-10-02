@@ -35,7 +35,7 @@ WANG og Team Norway skal kunne:
 | `AGENTS.md`, `docs/platform/AGENT-BRIEF.md`, `docs/platform/BUSINESS-RULES.md`, `docs/treningsplanlegging.md` | Gjeldende produkt-, språk- og arbeidsregler. Faglige detaljer kontrolleres mot master ved bygging. |
 | `docs/design-system/design-autoritet.md` og `.claude/rules/beslutninger.md` | Precision Athletics, eget WANG-system og Team Norway App. Tidligere designlåser er historikk. |
 | `docs/beslutningsgrunnlag/grillingen-runde9-wang-tn-2026-09-28.md` | Felles IUP, spillerens eierskap, deling, fireukerssjekk, testbatteri og trenerroller. Designresultater der er rapportert av designverktøyet, ikke kontrollert her. |
-| Lokal `Team Norway IUP 2027.xlsx` | Direkte struktursjekk 02.10: 18 ark, 17 synlige, ett skjult, 25 diagramdefinisjoner og én pivottabell. Originalen er uendret. |
+| Lokal `Team Norway IUP 2027.xlsx` | Direkte struktursjekk 02.10: 18 ark, 17 synlige, ett skjult, 1 692 formler, 25 diagramdefinisjoner, én pivottabell og åtte mediefiler. Se [felt- og beregningsregisteret](iup-2027-felt-og-beregningsregister-2026-10-02.md). Originalen er uendret. |
 | `workbench-iup-dekning-2026-10-01.md` i Documents/Claude/akgolf-hq | Detaljkontroll av felter, spørsmål, formler og kode 01.10. Brukt som datert revisjonsgrunnlag, ikke dagens produksjonsbevis. |
 | `docs/beslutningsgrunnlag/team-norway-excel-v3-kontroll.md` | Den separate testprotokollfilen v3. Denne filen er ikke identisk med IUP 2027. |
 | `src/components/admin/precision/AG08Faner.tsx`, `src/lib/domain/tn-arbeidsflate.ts`, `tn-workbench.ts`, `src/lib/portal-stats/datagolf-data.ts` | Direkte lest kode bekrefter eksisterende visninger, lesere, planhandlinger og gjenværende IUP-plassholdere. Ingen innlogget funksjonstest i denne økten. |
@@ -90,7 +90,7 @@ Sportslige oversikter skal fortsatt virke når enkelte felt er skjermet: «Ikke 
 
 ## 5. Full dekning av Excel-innholdet
 
-Tabellen er komplett på arknivå for den kontrollerte IUP 2027-filen. Den er et kravkart, ikke en ferdigattest. Felt-for-felt-registeret skal fullføres i første gjennomføringsfase; eksisterende detaljer fra kontrollen 01.10 gjenbrukes.
+Tabellen er komplett på arknivå for den kontrollerte IUP 2027-filen. Den er et kravkart, ikke en ferdigattest. [Felt- og beregningsregisteret](iup-2027-felt-og-beregningsregister-2026-10-02.md) teller alle kildeobjekter og beskriver feltfamilier, kjente formler og avvik uten å lagre elev-/spillersvar. Det felt-for-felt-beviset som gjenstår, er konkret lagring, PlayerHQ-skriveflyt, WANG- og TN-leser, delingsgrunnlag og bestått test for hver aktiv kravrad.
 
 | ID / ark | Innhold som skal digitaliseres | PlayerHQ | Begge trenerprofiler | Statusgrunnlag |
 |---|---|---|---|---|
@@ -356,7 +356,7 @@ Planen er avhengighetsstyrt. Det er ikke gitt et tidsestimat uten detaljert felt
 
 | Etappe | Leveranse | Ansvar og avhengighet | Avsluttes når |
 |---|---|---|---|
-| P0 Kilde- og funksjonskart | Fullt Excel-register, spørsmål/protokollversjoner, rute-/funksjonskart, DataGolf-feltregister, tilgangsmatrise og avvik | Codex; før de aktuelle feltene bygges | Hvert ark, felt og datakildesett har eier, status og skjermtilordning |
+| P0 Kilde- og funksjonskart | Spørsmål/protokollversjoner, felt-til-kode-matrise per trenerflate, DataGolf-feltregister, tilgangsmatrise og avvik | Codex; før de aktuelle feltene bygges | Hvert aktivt felt har eier, lagring/beregning, spillerhandling, WANG/TN-leser, tilgang, skjerm og test |
 | P1 DataGolf Precision | DG-01–17, komplett klikkbar analyseflyt og data-/tilstandskontrakt | Claude Design; første skjermetappe | Alle DataGolf-familier forklart, mobil/desktop kontrollert, syntetiske data |
 | P2 DataGolf TN/WANG | Samme funksjoner i egne designsystemer | Claude Design; bygger på P1-kontrakten | Ingen tap av felt/handlinger ved tilpasning |
 | P3 Profiler og IUP-design | Full spillerutfylling i PlayerHQ, komplett trener-IUP i begge organisasjoner, testinnsynsvariant | Claude Design; P0; versjonsavhengige deler merkes | Hvert IUP-krav har spillerflate og begge trenerflater |
