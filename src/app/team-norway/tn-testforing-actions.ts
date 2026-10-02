@@ -73,14 +73,16 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
     const saved = await medSerialisertTestdagTransaksjon(async (tx) => {
       const deltaker = await tx.testDayParticipant.findUnique({
         where: { id: data.testDayParticipantId },
-        include: { testDay: { include: { group: true, testDefinition: true } } },
+        include: { testDay: { include: { group: true, event: { include: { organizer: true } }, testDefinition: true } } },
       });
-      if (!deltaker || deltaker.testDay.group.slug !== TEAM_NORWAY_SLUG) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
+      const erTNTestdag = deltaker?.testDay.group.slug === TEAM_NORWAY_SLUG;
+      const erTNFellesstasjon = deltaker?.testDay.event?.organizer.slug === TEAM_NORWAY_SLUG;
+      if (!deltaker || (!erTNTestdag && !erTNFellesstasjon)) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
       if (deltaker.testDay.status !== "ACTIVE") throw new Error("Testdagen er ikke aktiv og tar ikke imot nye registreringer.");
 
       if (coach.role !== "ADMIN") {
         const coachMedlem = await tx.groupMember.findFirst({
-          where: { groupId: deltaker.testDay.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() },
+          where: { groupId: erTNFellesstasjon ? deltaker.testDay.event!.organizerGroupId : deltaker.testDay.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() },
           select: { id: true },
         });
         if (!coachMedlem) throw new Error("Du er ikke aktiv trener i Team Norway-gruppen.");
@@ -89,7 +91,7 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
         where: { groupId: deltaker.testDay.groupId, userId: deltaker.playerId, ...aktivtSpillerMedlemskapWhere() },
         select: { id: true },
       });
-      if (!spillerMedlem) throw new Error("Spilleren er ikke lenger et aktivt medlem av Team Norway-gruppen.");
+      if (!spillerMedlem) throw new Error("Spilleren er ikke lenger et aktivt medlem av stasjonsgruppen.");
 
       // Protokollversjon låst til testdagen — aldri live-katalogen.
       if (![TN_VERSION, TN_RULES_VERSION].includes(deltaker.testDay.testDefinition.scoringRule ?? "")) {
@@ -181,6 +183,8 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
     // Egen try/catch, isolert fra svaret som gis til brukeren.
     try {
       revalidatePath("/team-norway/fellestesting");
+      revalidatePath("/team-norway/wang-resultater");
+      revalidatePath("/team-wang/coach/tester");
       revalidatePath("/team-norway/spillere");
       if (saved.resultId) {
         const deltaker = await prisma.testDayParticipant.findUnique({ where: { id: data.testDayParticipantId }, select: { playerId: true } });

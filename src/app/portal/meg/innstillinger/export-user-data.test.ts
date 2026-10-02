@@ -17,7 +17,7 @@ let feil: Array<{ context: string }> = [];
 
 const kilder = [
   "goal", "round", "roundDraft", "tournamentEntry", "seasonPlan", "trainingSessionV2",
-  "testResult", "trackManSession", "payment", "notification", "healthEntry",
+  "testResult", "testSession", "testSessionPhoto", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
   "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
@@ -46,6 +46,7 @@ const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
       status: "PENDING", createdAt: new Date("2026-10-02T10:00:00.000Z"),
     }];
     if (kilde === "planAction") return [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }];
+    if (kilde === "testSessionPhoto") return [{ id: "photo-test", testSessionId: "session-test", attemptNumber: 2, storagePath: "private/test-photo.webp", createdAt: new Date("2026-10-02T09:00:00Z") }];
     return [];
   },
 }]));
@@ -151,12 +152,13 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
       ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) || (kilde.startsWith("workbench") && kilde !== "playerBusyBlock") ? "playerId" : "userId";
     assert.deepEqual(where, kilde === "trenerDelingsInvitasjon" ? {
       OR: [{ userId: bruker.id }, { gittAvUserId: bruker.id }, { acceptedByUserId: bruker.id }, { mottakerEpost: bruker.email }],
-    } : { [felt]: bruker.id });
+    } : kilde === "testSession" ? { userId: bruker.id, testId: { startsWith: "tn-v3-" } } : { [felt]: bruker.id });
   }
   assert.deepEqual(resultat.data?._storageFiler, [
     { type: "document", url: "private/test-document", title: "Testdokument" },
     { type: "opptak", url: "private/test-audio", id: "opptak-test" },
     { type: "swing-video", url: "private/test-video", id: "video-test" },
+    { type: "testbilde", path: "private/test-photo.webp", id: "photo-test", testSessionId: "session-test", attemptNumber: 2 },
   ]);
   assert.deepEqual(resultat.data?.workbench, { sessions: [], physicalBlocks: [], physicalLogs: [], tournamentPlans: [], conflicts: [], calendarEvents: [] });
   assert.deepEqual(resultat.data?.trenerforslag, [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }]);

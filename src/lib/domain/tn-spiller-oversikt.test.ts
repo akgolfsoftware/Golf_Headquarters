@@ -32,6 +32,13 @@ type Tildeling = { id: string; playerId: string; testId: string; dueDate: Date |
 let tildelinger: Tildeling[] = [];
 let planerPerBruker: Record<string, { id: string; name: string; status: string; startDate: Date; endDate: Date | null }[]> = {};
 let analyseHubPerBruker: Record<string, { dagLabel: string; vindu: null; lekkasje: null; lekkasjeLinje: null; sgAkser: { id: string; etikett: string; tekst: string; verdi: number | null }[]; trackman: { sessionId: string; klubb: string; datoKort: string; setning: string; meta: string; kpis: string; variant: string; punkter: unknown[]; ellipse: null } | null; dypere: { href: string; tittel: string; meta: string }[] }> = {};
+let wangResultatSkoler: { groupId: string; schoolName: string; playerIds: string[]; players: { id: string; name: string }[] }[] = [];
+
+mock.module("@/lib/portal-tester/wang-resultat-tilgang", {
+  namedExports: {
+    hentWangTestresultatSkolerForTeamNorway: async () => wangResultatSkoler,
+  },
+});
 
 function feltVerdi(f: TnField, row: TnRow, presis: boolean): string | number {
   if (f.choices) return f.choices[0];
@@ -199,6 +206,7 @@ beforeEach(() => {
   tildelinger = [];
   planerPerBruker = {};
   analyseHubPerBruker = {};
+  wangResultatSkoler = [];
 });
 
 // ---------------------------------------------------------------------
@@ -317,6 +325,21 @@ test("gruppeanalyse per protokoll: spiller uten resultat er UKJENT (null), ikke 
   assert.equal(radB?.score, null);
   // Kjente resultater sorteres FØR ukjente — aldri blandet inn i selve rangeringen.
   assert.equal(resultat!.rader[resultat!.rader.length - 1].score, null);
+});
+
+test("Team Norway gruppeanalyse inkluderer resultater og manglende levering fra alle WANG-skoler", async () => {
+  const resultat = ekteResultat("putt-1-3m", true);
+  wangResultatSkoler = [
+    { groupId: "wang-oslo", schoolName: "WANG Toppidrett Oslo", playerIds: ["wang-a"], players: [{ id: "wang-a", name: "WANG-spiller A" }] },
+    { groupId: "wang-romerike", schoolName: "WANG Ung Romerike", playerIds: ["wang-b"], players: [{ id: "wang-b", name: "WANG-spiller B" }] },
+  ];
+  resultater = [{ id: "wang-result-a", userId: "wang-a", testId: "tn-v3-putt-1-3m", takenAt: new Date("2026-09-12"), score: resultat.score, details: resultat, recordedById: null }];
+  const data = await hentTnGruppeanalyseResultat({ id: "coach-1", role: "COACH", name: "Coach" }, { protokollId: "putt-1-3m" });
+  assert.ok(data);
+  assert.deepEqual(data!.rader.filter((rad) => rad.skole).map((rad) => ({ id: rad.spillerId, skole: rad.skole, score: rad.score })), [
+    { id: "wang-a", skole: "WANG Toppidrett Oslo", score: resultat.score },
+    { id: "wang-b", skole: "WANG Ung Romerike", score: null },
+  ]);
 });
 
 test("gruppeanalyse avvises for spiller uten TN-lese-rolle", async () => {

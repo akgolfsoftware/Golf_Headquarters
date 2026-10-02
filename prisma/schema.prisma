@@ -595,8 +595,10 @@ model User {
   testResultsAsWitness  TestResult[]         @relation("TestWitness")
   testResultsRecorded   TestResult[]         @relation("TestResultRecordedBy")
   testSessions          TestSession[]
+  testSessionPhotos     TestSessionPhoto[]
   testDaysAsCoach       TestDay[]            @relation("TestDayCoach")
   testDayParticipations TestDayParticipant[] @relation("TestDayPlayer")
+  testDayEventsAsOrganizer TestDayEvent[]    @relation("TestDayEventOrganizer")
   testAssignments       TestAssignment[]     @relation("PlayerTestAssignments")
   coachTestAssignments  TestAssignment[]     @relation("CoachTestAssignments")
   trackManSessions      TrackManSession[]
@@ -2199,10 +2201,29 @@ model TestSession {
   test TestDefinition @relation(fields: [testId], references: [id])
 
   testDayParticipant TestDayParticipant?
+  photos             TestSessionPhoto[]
 
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
+}
+
+/// Valgfritt privat bilde knyttet til ett forsøk i en versjonert TN-test.
+/// Scorekortdeling gir ikke automatisk tilgang til bildet.
+model TestSessionPhoto {
+  id            String      @id @default(cuid())
+  userId        String
+  testSessionId String
+  attemptNumber Int
+  storagePath   String      @unique
+  createdAt     DateTime    @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testSession TestSession @relation(fields: [testSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([testSessionId, attemptNumber])
+  @@index([userId, createdAt])
+  @@map("test_session_photos")
 }
 
 /// Tildeling av en test fra coach til spiller. Spiller varsles ved opprettelse;
@@ -2263,6 +2284,10 @@ model TestDay {
   id               String        @id @default(cuid())
   groupId          String
   coachId          String
+  // Null på eldre testdager. Når satt, er denne raden én stasjon/protokoll
+  // under det felles arrangementet; gruppe og deltakerliste gjelder stasjonen.
+  eventId          String?
+  stationName      String?
   title            String
   location         String?
   scheduledAt      DateTime
@@ -2274,11 +2299,37 @@ model TestDay {
   group          Group                @relation(fields: [groupId], references: [id], onDelete: Cascade)
   coach          User                 @relation("TestDayCoach", fields: [coachId], references: [id], onDelete: Cascade)
   testDefinition TestDefinition       @relation(fields: [testDefinitionId], references: [id], onDelete: Cascade)
+  event          TestDayEvent?        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   participants   TestDayParticipant[]
 
   @@index([groupId, status])
   @@index([coachId])
+  @@index([eventId])
   @@map("test_days")
+}
+
+/// Felles testdag på tvers av WANG- og Team Norway-grupper. Hver TestDay under
+/// arrangementet er én stasjon med egen gruppe, protokoll og kø. Eldre TestDay
+/// uten eventId forblir gyldige som enkeltstående testdager.
+model TestDayEvent {
+  id               String        @id @default(cuid())
+  organizerGroupId String
+  organizerId      String
+  title            String
+  location         String?
+  scheduledAt      DateTime
+  status           TestDayStatus @default(PLANNED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  organizer Group     @relation(fields: [organizerGroupId], references: [id], onDelete: Cascade)
+  createdBy User      @relation("TestDayEventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  stations  TestDay[]
+
+  @@index([organizerGroupId, status])
+  @@index([organizerId])
+  @@index([scheduledAt])
+  @@map("test_day_events")
 }
 
 model TestDayParticipant {
@@ -3761,6 +3812,7 @@ model Group {
   members   GroupMember[]
   schedules GroupSchedule[]
   testDays  TestDay[]
+  hostedTestDayEvents TestDayEvent[]
 
   @@index([coachId])
   @@map("groups")

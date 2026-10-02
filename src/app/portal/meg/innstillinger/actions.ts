@@ -111,6 +111,8 @@ export async function exportUserData(): Promise<{
       seasonPlans,
       trainingSessions,
       testResults,
+      testSessions,
+      testSessionPhotos,
       trackmanSessions,
       payments,
       notifications,
@@ -147,6 +149,8 @@ export async function exportUserData(): Promise<{
       prisma.seasonPlan.findMany({ where: { userId: user.id }, include: { periodBlocks: true } }),
       prisma.trainingSessionV2.findMany({ where: { studentId: user.id } }),
       prisma.testResult.findMany({ where: { userId: user.id } }),
+      prisma.testSession.findMany({ where: { userId: user.id, testId: { startsWith: "tn-v3-" } } }),
+      prisma.testSessionPhoto.findMany({ where: { userId: user.id }, select: { id: true, testSessionId: true, attemptNumber: true, storagePath: true, createdAt: true } }),
       prisma.trackManSession.findMany({ where: { userId: user.id } }),
       prisma.payment.findMany({ where: { userId: user.id } }),
       prisma.notification.findMany({ where: { userId: user.id } }),
@@ -236,6 +240,7 @@ export async function exportUserData(): Promise<{
         url: v.storagePath ?? v.videoUrl,
         id: v.id,
       })),
+      ...testSessionPhotos.map((photo) => ({ type: "testbilde", path: photo.storagePath, id: photo.id, testSessionId: photo.testSessionId, attemptNumber: photo.attemptNumber })),
     ];
 
     const exportPayload = {
@@ -248,6 +253,8 @@ export async function exportUserData(): Promise<{
       seasonPlans,
       trainingSessions,
       testResults,
+      testSessions,
+      testSessionPhotos,
       trackmanSessions,
       payments,
       notifications,

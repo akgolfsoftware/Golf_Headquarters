@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { hentTnProtokollbibliotek, hentTnSpillere, hentTnTestdag, hentTnTestdager } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnFellesTestdagGrupper, hentTnProtokollbibliotek, hentTnSpillere, hentTnTestdag, hentTnTestdager } from "@/lib/domain/tn-arbeidsflate";
 import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
 import { TN } from "@/lib/v2/team-norway";
 import { TnOpprettTestdag } from "../tn-testdag-opprett";
+import { TnFellesTestdagOpprett } from "../tn-felles-testdag-opprett";
 import { TnTestdagKo } from "../tn-testdag-ko";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnRutenett, TnSkjermhode, TnStatusmerke } from "../tn-flate";
 import { TnKnapperekke } from "../tn-handlinger";
@@ -62,16 +63,25 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
         <TnSkjermhode
           rute={`/team-norway/fellestesting?dag=${dag.id}`}
           tittel={dag.title}
-          ingress={`${dag.protokollNavn}${dag.location ? ` · ${dag.location}` : ""} · ${datoLang(dag.scheduledAt)} kl. ${klokke.format(dag.scheduledAt)}`}
+          ingress={`${dag.eventId ? `${dag.groupName} · ${dag.stationName ?? "Stasjon"} · ` : ""}${dag.protokollNavn}${dag.location ? ` · ${dag.location}` : ""} · ${datoLang(dag.scheduledAt)} kl. ${klokke.format(dag.scheduledAt)}`}
           handling={
             <TnKnapperekke>
-              {valgt.kontekst.kanAdministrere && (dag.status === "PLANNED" || dag.status === "ACTIVE") ? <TnTestdagEndre id={dag.id} tittel={dag.title} sted={dag.location ?? ""} tidspunktLokal={lokalTid(dag.scheduledAt)} /> : null}
-              {valgt.kontekst.kanAdministrere && fort === 0 ? <TnSlettTestdag id={dag.id} navn={dag.title} /> : null}
+              {valgt.kontekst.kanAdministrere && !dag.eventId && (dag.status === "PLANNED" || dag.status === "ACTIVE") ? <TnTestdagEndre id={dag.id} tittel={dag.title} sted={dag.location ?? ""} tidspunktLokal={lokalTid(dag.scheduledAt)} /> : null}
+              {valgt.kontekst.kanAdministrere && !dag.eventId && fort === 0 ? <TnSlettTestdag id={dag.id} navn={dag.title} /> : null}
               <Link href="/team-norway/fellestesting" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle testdager</Link>
             </TnKnapperekke>
           }
         />
         <TnFlate>
+          {dag.eventId && dag.stations.length > 1 ? (
+            <nav aria-label="Stasjoner i felles testdag" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
+              {dag.stations.map((station) => (
+                <Link key={station.id} href={`/team-norway/fellestesting?dag=${station.id}`} aria-current={station.id === dag.id ? "page" : undefined} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 12px", border: `1px solid ${station.id === dag.id ? TN.navy900 : TN.borderSubtle}`, background: station.id === dag.id ? TN.navy900 : TN.white, color: station.id === dag.id ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: TN.text.sm, textDecoration: "none" }}>
+                  {station.groupName}
+                </Link>
+              ))}
+            </nav>
+          ) : null}
           <TnFlatehode tittel="Registrer resultat" merknad={<TnStatusmerke farge={status.farge}>{status.tekst}</TnStatusmerke>} />
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 10px", marginTop: 18 }}>
             <span style={{ fontFamily: TN.font.mono, fontSize: 36, lineHeight: 1, color: TN.ink900, fontVariantNumeric: "tabular-nums" }}>{fort} / {dag.deltakere.length}</span>
@@ -86,7 +96,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
     );
   }
 
-  const testdager = await hentTnTestdager(bruker);
+  const [testdager, fellesgrupper] = await Promise.all([hentTnTestdager(bruker), hentTnFellesTestdagGrupper(bruker)]);
   const protokoller = TN_CATALOG.filter((p) => !p.blocked && !p.variableCount).map((p) => ({ id: p.id, navn: p.name }));
   const { versjon, rader: bibliotek } = hentTnProtokollbibliotek();
   const klare = bibliotek.filter((r) => r.status === "KLAR");
@@ -112,7 +122,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
                 key={d.id}
                 dato={datoKort(d.scheduledAt)}
                 tittel={<Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{d.title}</Link>}
-                tekst={`${d.protokollNavn}${d.location ? ` · ${d.location}` : ""}`}
+                tekst={`${d.eventId ? `${d.groupName} · ${d.stationName ?? "Stasjon"} · ` : ""}${d.protokollNavn}${d.location ? ` · ${d.location}` : ""}`}
                 hoyre={<span style={{ textAlign: "right" }}><span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>{d.antallFullfort} / {d.antallDeltakere}</span><TnStatusmerke farge={DAGSTATUS[d.status].farge}>{DAGSTATUS[d.status].tekst}</TnStatusmerke></span>}
               />
             ))
@@ -120,6 +130,11 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
 
           {spillerside.kontekst.kanAdministrere ? (
             <>
+              <TnEtikett style={{ marginTop: 26, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Felles testdag · flere skoler</TnEtikett>
+              <p style={{ margin: "10px 0 0", color: TN.textSecondary, fontSize: TN.text.sm }}>Én testdag kan samle Team Norway og flere WANG-skoler. Hver gruppe får egen stasjon, protokoll og livekø.</p>
+              <div style={{ marginTop: 14 }}>
+                <TnFellesTestdagOpprett grupper={fellesgrupper ?? []} protokoller={protokoller} />
+              </div>
               <TnEtikett style={{ marginTop: 26, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Ny testdag</TnEtikett>
               <div style={{ marginTop: 14 }}>
                 <TnOpprettTestdag spillere={spillerside.rader.map((r) => ({ id: r.id, navn: r.navn }))} protokoller={protokoller} />
