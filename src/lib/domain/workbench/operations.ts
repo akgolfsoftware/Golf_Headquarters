@@ -383,6 +383,7 @@ export function addMonths(monthStart: string, delta: number): string {
 export function isoWeekNumber(isoDate: string): number {
   const d = new Date(isoDate + "T12:00:00Z");
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  d.setUTCHours(0, 0, 0, 0);
   const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
   return Math.ceil(((d.getTime() - yearStart) / 86400000 + 1) / 7);
 }
@@ -503,6 +504,9 @@ export interface YearPeriodInput {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearEventInput {
@@ -593,6 +597,9 @@ export function buildYearViewModel(
         startDate: p.startDate,
         endDate: p.endDate,
         focus: p.focus,
+        weeklyVolMin: p.weeklyVolMin ?? null,
+        weeklyVolMax: p.weeklyVolMax ?? null,
+        sessionBudget: p.sessionBudget ?? null,
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,

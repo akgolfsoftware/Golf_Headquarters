@@ -1,0 +1,139 @@
+/**
+ * Plan-hub, planmaler og øktark (AG-14, AG-12) i Precision Athletics.
+ * Bare tokens (var(--…)); ingen hex-farger. Farge betyr akse og ingenting annet.
+ * Komponentene ligger i src/components/precision/pa-planhub.tsx.
+ */
+
+/* Seksjon (tegningens Sec/Card) */
+.a10-seksjon { padding: 16px; min-width: 0; }
+.a10-seksjon__hode { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; min-width: 0; }
+.a10-seksjon__hode > .kicker { flex: 1 1 auto; min-width: 0; }
+
+/* Hendelseskort (tegningens EvCard): 4 px aksestripe på venstre kant */
+.a10-ev {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 10px 16px;
+  border-radius: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+  text-decoration: none;
+  font: inherit;
+}
+.a10-ev--klikk { cursor: pointer; min-height: 44px; transition: border-color var(--dur-fast) var(--ease-color); }
+button.a10-ev { appearance: none; -webkit-appearance: none; }
+.a10-ev--klikk:hover { border-color: var(--border-ink); }
+.a10-ev--klikk:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.a10-ev--stiplet { background: transparent; border-style: dashed; border-color: var(--border-strong); }
+.a10-ev__stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.a10-ev__tittel { font: 600 15px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; min-width: 0; }
+.a10-ev__hode { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; min-width: 0; }
+.a10-ev__hode > .a10-ev__tittel { flex: 1 1 180px; }
+.a10-ev__kode { font: 500 12px/1.3 var(--font-mono); color: var(--text-secondary); overflow-wrap: anywhere; }
+.a10-ev__tekst { font: var(--type-body-s); color: var(--text-secondary); overflow-wrap: anywhere; }
+
+/* Liste og rad (tegningens Row/Lbl) */
+.a10-liste { display: flex; flex-direction: column; min-width: 0; }
+.a10-rad { display: grid; gap: 12px; align-items: center; padding: 6px 0; min-width: 0; }
+.a10-rad + .a10-rad { border-top: 1px solid var(--border-hairline); }
+.a10-etikett { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.a10-etikett__a { font: 500 14px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+
+.a10-utkast {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 4px;
+  border: 1px dashed var(--border-control); font: 600 11px/1 var(--font-mono); letter-spacing: .06em;
+  color: var(--text-secondary); text-transform: uppercase; white-space: nowrap; align-self: flex-start;
+}
+
+/* Aksefordeling */
+.a10-aksebar { display: flex; height: 8px; gap: 2px; min-width: 0; }
+.a10-aksebar--tom { background: var(--surface-sunken); border-radius: 2px; }
+.a10-aksenokler { display: flex; gap: 6px 10px; flex-wrap: wrap; align-items: center; min-width: 0; }
+.a10-aksenokkel { display: inline-flex; gap: 4px; align-items: center; }
+
+.a10-pbar { position: relative; display: block; height: 8px; background: var(--surface-sunken); border-radius: 2px; overflow: hidden; min-width: 0; }
+.a10-pbar__fyll { position: absolute; left: 0; top: 0; bottom: 0; }
+.a10-pbar__merke { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text-primary); }
+
+/* Valg og felt */
+.a10-valgrad { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.a10-valgrad__hode { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.a10-valgrad__valg { display: flex; gap: 6px; flex-wrap: wrap; min-width: 0; }
+
+.a10-input {
+  box-sizing: border-box; width: 100%; min-width: 0; height: var(--control-h); padding: 0 12px;
+  background: var(--surface-card); border: 1px solid var(--border-control); border-radius: var(--radius);
+  color: var(--text-primary); font: var(--type-body);
+}
+.a10-input:focus-visible { outline: none; border-color: var(--border-ink); box-shadow: 0 0 0 1px var(--border-ink); }
+.a10-input::placeholder { color: var(--text-faint); }
+.a10-input--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.a10-input:disabled { background: var(--surface-sunken); color: var(--text-secondary); }
+.a10-select { cursor: pointer; }
+.a10-textarea { height: auto; min-height: 140px; padding: 12px; line-height: 1.55; resize: vertical; }
+.a10-glider { flex: 1; min-width: 0; height: 44px; margin: 0; }
+
+.a10-varsel__tekst { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.a10-dialogsenter { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.a10-knapperad { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-width: 0; }
+
+/* Formel-boksen i øvelsesarket */
+.a10-formel {
+  padding: 12px; border-radius: var(--radius); background: var(--surface-flat);
+  border: 1px solid var(--border-hairline); display: flex; flex-direction: column; gap: 4px; min-width: 0;
+}
+.a10-formel__kode { font: 600 13px/1.4 var(--font-mono); overflow-wrap: anywhere; color: var(--text-primary); }
+
+/* Rutenett av kort */
+.a10-kortnett { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; min-width: 0; }
+.a10-stabel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.a10-stabel--tett { gap: 8px; }
+.a10-to { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+@media (min-width: 1000px) {
+  .a10-to { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .a10-to--smal-venstre { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+}
+.a10-felt2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 12px; min-width: 0; }
+
+/* Uke i planmal: ukedagene som ruter som brytes (aldri sidelengs rulling) */
+.a10-uke { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.a10-uke__hode { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.a10-uke__hode > .kicker { flex: 1 1 auto; }
+.a10-dager { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 128px), 1fr)); gap: 6px; min-width: 0; }
+.a10-dag { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.a10-dag__navn { font: var(--type-meta); letter-spacing: .04em; color: var(--text-muted); text-transform: uppercase; }
+.a10-dag__tom {
+  box-sizing: border-box; min-height: 56px; display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px dashed var(--border-strong); border-radius: 6px; background: transparent; color: var(--text-muted);
+  font: var(--type-body-s); width: 100%; cursor: pointer; appearance: none;
+}
+.a10-dag__tom:hover { border-color: var(--border-ink); color: var(--text-primary); }
+.a10-dag__tom:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+div.a10-dag__tom { cursor: default; }
+div.a10-dag__tom:hover { border-color: var(--border-strong); color: var(--text-muted); }
+.a10-dag .a10-ev { min-height: 56px; }
+
+/* Lagre-linje nederst i mal-editoren */
+.a10-lagrelinje {
+  position: sticky; bottom: 0; z-index: 20; display: flex; gap: 12px; align-items: center; justify-content: flex-end;
+  flex-wrap: wrap; padding: 12px 0 calc(12px + var(--ak-cookie-h, 0px) + env(safe-area-inset-bottom));
+  background: var(--surface-page); border-top: 1px solid var(--border-hairline); min-width: 0;
+}
+
+/* Glideren i fordelingen: navn, glider, prosent */
+.a10-fordelingsrad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 48px; gap: 10px; align-items: center; min-width: 0; }
+.a10-fordelingsrad__tall { text-align: right; font: 600 13px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text-primary); }
+
+/* Lest tekst (sammendrag, fokuspunkt): linjeskift beholdes, vises i sin helhet */
+.a10-notat {
+  font: var(--type-body); line-height: 1.6; color: var(--text-primary); white-space: pre-wrap; overflow-wrap: anywhere;
+  padding: 14px; border-radius: var(--radius); background: var(--surface-flat); border: 1px solid var(--border-hairline);
+}

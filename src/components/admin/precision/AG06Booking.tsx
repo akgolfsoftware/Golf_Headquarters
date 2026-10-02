@@ -32,7 +32,7 @@ import type { AG06Booking, AG06Tjeneste } from "@/app/admin/bookinger/data";
 import type { NyBookingData } from "@/app/admin/bookinger/ny-data";
 import "@/styles/precision-a4.css";
 
-const TONE: Record<AG06Booking["st"], "warn" | "ok" | "neutral"> = { Venter: "warn", Bekreftet: "ok", Avvist: "neutral" };
+const TONE: Record<AG06Booking["st"], "warn" | "ok" | "neutral"> = { Venter: "warn", Bekreftet: "ok", Gjennomført: "neutral", Avvist: "neutral" };
 
 function kr(ore: number): string {
   return (ore / 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 }) + " kr";
@@ -76,27 +76,35 @@ export function BookingHandlinger({ b, etter, kompakt }: { b: BookingForHandling
     catch (e) { setFeil(e instanceof Error ? e.message : "Bookingen kunne ikke bekreftes."); }
   });
   const gjorAvvis = () => start(async () => {
+    try {
     const res = await avvisBookingMedBegrunnelse({ bookingId: b.id, begrunnelse: why });
     if (!res.ok) { setFeil(res.feil); return; }
     setAvvis(false); setWhy("");
     ferdig({ melding: "Bookingen er avvist", meta: res.utkast ? "UTKAST MED BEGRUNNELSEN LIGGER I INNBOKS · IKKE SENDT" : "INGEN E-POST PÅ BOOKINGEN · GI BESKJED SELV" });
+    } catch { setFeil("Bookingen kunne ikke avvises. Prøv igjen."); }
   });
   const gjorAvlys = () => start(async () => {
+    try {
     const res = await avlysBookingSomCoach({ bookingId: b.id, begrunnelse: why || undefined });
     if (!res.ok) { setFeil(res.feil); return; }
     setAvlys(false); setWhy("");
-    ferdig({ melding: "Bookingen er avlyst", meta: res.refundert ? "HELE BELØPET REFUNDERES I STRIPE · SPILLEREN FÅR E-POST" : res.klippTilbake ? "KLIPPET ER FØRT TILBAKE · SPILLEREN FÅR E-POST" : "SPILLEREN FÅR E-POST" });
+    ferdig({ melding: "Bookingen er avlyst", meta: res.refusjonVenter ? "REFUSJON VENTER PÅ BEHANDLING · BETALINGEN FØLGES OPP" : res.refundert ? "HELE BELØPET REFUNDERES I STRIPE" : res.klippTilbake ? "KLIPPET ER FØRT TILBAKE" : "BOOKINGEN ER OPPDATERT" });
+    } catch { setFeil("Bookingen kunne ikke avlyses. Prøv igjen."); }
   });
   const gjorForslag = () => start(async () => {
+    try {
     const res = await foreslaaNyBookingtid({ bookingId: b.id, dato, tid });
     if (!res.ok) { setFeil(res.feil); return; }
     setFlytt(false);
     ferdig({ melding: "Forslaget er sendt", meta: "TIDEN STÅR TIL SPILLEREN GODTAR I PLAYERHQ" });
+    } catch { setFeil("Forslaget kunne ikke lagres. Prøv igjen."); }
   });
   const trekk = () => start(async () => {
+    try {
     const res = await trekkTilbakeForslag(b.id);
     if (!res.ok) { setFeil(res.feil); return; }
     ferdig({ melding: "Forslaget er trukket tilbake", meta: "BOOKINGEN STÅR PÅ OPPRINNELIG TID" });
+    } catch { setFeil("Forslaget kunne ikke trekkes tilbake. Prøv igjen."); }
   });
 
   const refusjonTekst = b.pay === "Betalt"
@@ -113,7 +121,7 @@ export function BookingHandlinger({ b, etter, kompakt }: { b: BookingForHandling
         {b.st === "Venter" && (
           <>
             <Knapp fullWidth={!kompakt} icon={CalendarCheck} iconName="check" loading={pending} onClick={bekreft}>Bekreft booking</Knapp>
-            <Knapp fullWidth={!kompakt} variant="secondary" icon={X} iconName="x" disabled={pending} onClick={() => { setFeil(null); setAvvis(true); }}>Avvis</Knapp>
+            <Knapp fullWidth={!kompakt} variant="secondary" icon={X} iconName="x" disabled={pending} onClick={() => { setFeil(null); if (b.pay === "Betalt" || b.pay === "Klipp") setAvlys(true); else setAvvis(true); }}>{b.pay === "Betalt" || b.pay === "Klipp" ? "Avlys booking" : "Avvis"}</Knapp>
           </>
         )}
         {b.st === "Bekreftet" && (
@@ -159,7 +167,7 @@ export function BookingHandlinger({ b, etter, kompakt }: { b: BookingForHandling
         </>}
       >
         <Stabel gap={12}>
-          <p style={{ margin: 0 }}>{b.who} · {b.date} {b.t}. {refusjonTekst} Spilleren får e-post med en gang.</p>
+          <p style={{ margin: 0 }}>{b.who} · {b.date} {b.t}. {refusjonTekst} Avlysningen blir synlig i PlayerHQ.</p>
           <Skjemafelt label="Notat (valgfritt)" hint="Lagres i loggen. Sendes ikke.">
             <TekstOmrade value={why} onChange={setWhy} placeholder="—" />
           </Skjemafelt>
@@ -182,7 +190,7 @@ export function BookingHandlinger({ b, etter, kompakt }: { b: BookingForHandling
           <Skjemafelt label="Klokkeslett"><Nedtrekk value={tid} onChange={setTid} options={tidsvalg()} /></Skjemafelt>
         </div>
         {feil && <p role="alert" className="a4-feil">{feil}</p>}
-        <Meta>TIDEN ENDRES IKKE FØR SPILLEREN GODTAR · SPILLEREN FÅR E-POST OG SER FORSLAGET I PLAYERHQ</Meta>
+        <Meta>TIDEN ENDRES IKKE FØR SPILLEREN GODTAR OG SER FORSLAGET I PLAYERHQ</Meta>
       </Ark>
 
       {kvittering && <AngreToast melding={kvittering.melding} meta={kvittering.meta} onFerdig={() => setKvittering(null)} ms={6000} />}

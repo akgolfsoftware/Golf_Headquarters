@@ -20,9 +20,11 @@ export function BookingFlytteforslag({ bookingId, naa, forslag }: { bookingId: s
   const svar = (fn: (id: string) => Promise<{ ok: true } | { ok: false; feil: string }>) =>
     start(async () => {
       setFeil(null);
+      try {
       const res = await fn(bookingId);
       if (!res.ok) { setFeil(res.feil); return; }
       router.refresh();
+      } catch { setFeil("Svaret kunne ikke lagres. Prøv igjen."); }
     });
 
   return (

@@ -3,10 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { TN_CATALOG, TN_VERSION, tnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_RULES_VERSION, tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
-import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { TL } from "@/lib/v2/train-lock";
 import { TnScorecard } from "./scorecard";
 import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
@@ -23,9 +23,9 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     if (!row) notFound();
     const state = TnSessionSchema.safeParse(row.scoringData);
     if (!state.success) notFound();
-    const base = tnProtocol(state.data.protocolId);
-    const p = base?.variableCount ? tnProtocol(state.data.protocolId, state.data.count) : base;
-    if (!p || p.rows.length !== state.data.count || row.testId !== `tn-v3-${p.id}`) notFound();
+    const base = tnProtocol(state.data.protocolId, undefined, state.data.version);
+    const p = base?.variableCount ? tnProtocol(state.data.protocolId, state.data.count, state.data.version) : base;
+    if (!p || p.rows.length !== state.data.count || row.testId !== tnDefinitionId(p)) notFound();
     const stored = row.testResultId ? await prisma.testResult.findFirst({ where: { id: row.testResultId, userId: user.id, testId: row.testId } }) : null;
     const saved = TnResultSchema.safeParse(stored?.details);
     if (row.status === "COMPLETED" && (!saved.success || saved.data.protocolId !== p.id || saved.data.count !== state.data.count)) notFound();
@@ -75,7 +75,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     const sessions = await prisma.testSession.findMany({ where: { userId: user.id, testId: { startsWith: "tn-v3-" } }, orderBy: { startedAt: "desc" }, take: 100 });
     const testdagKoblinger = await prisma.testDayParticipant.findMany({ where: { sessionId: { in: sessions.map((s) => s.id) } }, select: { sessionId: true } });
     const kobledeSessionIder = new Set(testdagKoblinger.map((k) => k.sessionId));
-    content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_VERSION}</p>
+    content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_RULES_VERSION}</p>
       <h2>Tildelt av coach</h2>{assignments.length === 0 ? <p>Ingen åpne tildelinger.</p> : <ul>{assignments.map(a => {
         const p = tnFromDefinitionId(a.testId);
         if (!p || p.blocked) return null;
@@ -84,7 +84,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
       <h2>Dine registreringer</h2>{sessions.length === 0 ? <p>Ingen registreringer ennå.</p> : <ul>{sessions.map(s => {
         const state = TnSessionSchema.safeParse(s.scoringData);
         if (!state.success) return null;
-        const tekst = `${tnProtocol(state.data.protocolId)?.name ?? state.data.protocolId} · ${state.data.count} forsøk · ${s.status === "COMPLETED" ? "Fullført" : s.status === "ABORTED" ? "Ufullstendig" : "Utkast"} · ${s.startedAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}`;
+        const tekst = `${tnProtocol(state.data.protocolId, undefined, state.data.version)?.name ?? state.data.protocolId} · ${state.data.count} forsøk · ${s.status === "COMPLETED" ? "Fullført" : s.status === "ABORTED" ? "Ufullstendig" : "Utkast"} · ${s.startedAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}`;
         // Pågående testdag-førte økter er IKKE en lenke her — de kan ikke
         // redigeres i egenføring uansett (samme vakt som over).
         if (s.status === "IN_PROGRESS" && kobledeSessionIder.has(s.id)) {

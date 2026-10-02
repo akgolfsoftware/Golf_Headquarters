@@ -36,6 +36,7 @@ async function hentForslag(bookingId: string) {
       id: true,
       userId: true,
       status: true,
+      updatedAt: true,
       startAt: true,
       endAt: true,
       coachId: true,
@@ -63,7 +64,7 @@ function revalider(bookingId: string) {
 }
 
 const TID = (d: Date) =>
-  d.toLocaleString("nb-NO", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+  d.toLocaleString("nb-NO", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
 
 export async function godtaFlytteforslag(bookingId: string): Promise<ForslagSvar> {
   const treff = await hentForslag(bookingId);
@@ -79,7 +80,7 @@ export async function godtaFlytteforslag(bookingId: string): Promise<ForslagSvar
 
   const gammelStart = booking.startAt;
   try {
-    await prisma.$transaction(async (tx) => {
+    const oppdatert = await prisma.$transaction(async (tx) => {
       const vern = await sjekkKollisjon(tx, {
         coachId: booking.coachId,
         serviceTypeId: booking.serviceTypeId,
@@ -88,8 +89,8 @@ export async function godtaFlytteforslag(bookingId: string): Promise<ForslagSvar
         endAt: booking.proposedEndAt,
         ekskluderBookingId: booking.id,
       });
-      await tx.booking.update({
-        where: { id: booking.id },
+      const res = await tx.booking.updateMany({
+        where: { id: booking.id, status: booking.status, updatedAt: booking.updatedAt, proposedStartAt: booking.proposedStartAt, proposedEndAt: booking.proposedEndAt },
         data: {
           startAt: booking.proposedStartAt,
           endAt: booking.proposedEndAt,
@@ -100,7 +101,9 @@ export async function godtaFlytteforslag(bookingId: string): Promise<ForslagSvar
           proposedById: null,
         },
       });
+      return res.count === 1;
     });
+    if (!oppdatert) return { ok: false, feil: "Forslaget ble endret samtidig. Last siden på nytt." };
   } catch (e) {
     if (erKollisjonsfeil(e)) return { ok: false, feil: `${kollisjonsmelding(e)} Be coachen om en ny tid.` };
     throw e;
@@ -141,10 +144,11 @@ export async function avslaaFlytteforslag(bookingId: string): Promise<ForslagSva
   if (!treff.ok) return { ok: false, feil: treff.feil };
   const { user, booking } = treff;
 
-  await prisma.booking.update({
-    where: { id: booking.id },
+  const oppdatert = await prisma.booking.updateMany({
+    where: { id: booking.id, status: booking.status, updatedAt: booking.updatedAt, proposedStartAt: booking.proposedStartAt, proposedEndAt: booking.proposedEndAt },
     data: { proposedStartAt: null, proposedEndAt: null, proposedAt: null, proposedById: null },
   });
+  if (oppdatert.count !== 1) return { ok: false, feil: "Forslaget ble endret samtidig. Last siden på nytt." };
   if (booking.proposedById) {
     await notify({
       userId: booking.proposedById,

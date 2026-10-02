@@ -24,8 +24,14 @@ const coacher: Record<string, { id: string; role: string; deletedAt: Date | null
   "coach-b": { id: "coach-b", role: "COACH", deletedAt: null },
   "slettet-coach": { id: "slettet-coach", role: "COACH", deletedAt: new Date() },
 };
-const grupper: Record<string, { id: string; name: string }> = {
-  "gruppe-a": { id: "gruppe-a", name: "Gruppe A" },
+type Medlem = { userId: string; role: string; endedAt: Date | null };
+type GruppeFilter = { id: string; OR?: Array<{ coachId?: string; members?: { some: Medlem } }> };
+let medlemmer: Medlem[] = [];
+let trekkTilgangEtterOppslag = false;
+let groupLookups = 0;
+
+const grupper: Record<string, { id: string; name: string; coachId: string }> = {
+  "gruppe-a": { id: "gruppe-a", name: "Gruppe A", coachId: "coach-a" },
 };
 
 let groupCreates: unknown[] = [];
@@ -42,6 +48,23 @@ function nullstill() {
   auditWrites = [];
   bootstrapKall = 0;
   simulerDbFeil = false;
+  medlemmer = [];
+  trekkTilgangEtterOppslag = false;
+  groupLookups = 0;
+}
+
+function finnTilgjengeligGruppe(where: GruppeFilter) {
+  const g = grupper[where.id];
+  if (!g) return null;
+  if (!where.OR) return g;
+  return where.OR.some((del) =>
+    del.coachId === g.coachId ||
+    (del.members && medlemmer.some((m) =>
+      m.userId === del.members!.some.userId &&
+      m.role === del.members!.some.role &&
+      m.endedAt === del.members!.some.endedAt
+    ))
+  ) ? g : null;
 }
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -92,9 +115,15 @@ Object.assign(prismaMock, {
       groupCreates.push(data);
       return { id: "gruppe-ny", name: data.name };
     },
-    findUnique: async ({ where }: { where: { id: string } }) => grupper[where.id] ?? null,
-    delete: async ({ where }: { where: { id: string } }) => {
+    findFirst: async ({ where }: { where: GruppeFilter }) => {
+      groupLookups += 1;
+      const g = finnTilgjengeligGruppe(where);
+      if (trekkTilgangEtterOppslag) medlemmer = [];
+      return g;
+    },
+    delete: async ({ where }: { where: GruppeFilter }) => {
       if (simulerDbFeil) throw new Error("db feil");
+      if (!finnTilgjengeligGruppe(where)) throw new Error("Record not found");
       groupDeletes.push(where.id);
       return { id: where.id };
     },
@@ -195,6 +224,22 @@ test("deleteGroup sletter gruppe for COACH med MANAGE_GROUPS", async () => {
   assert.equal(auditWrites.at(-1)?.action, "group.deleted");
 });
 
+test("deleteGroup avviser COACH som ikke eier gruppen, uten å slette", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  const { deleteGroup } = await actions();
+  const svar = await deleteGroup("gruppe-a");
+  assert.ok("error" in svar);
+  assert.equal(groupDeletes.length, 0);
+});
+
+test("deleteGroup lar ADMIN slette andres gruppe", async () => {
+  bruker = { id: "admin-a", role: "ADMIN", name: "Admin" };
+  const { deleteGroup } = await actions();
+  const svar = await deleteGroup("gruppe-a");
+  assert.ok("success" in svar && svar.success);
+  assert.deepEqual(groupDeletes, ["gruppe-a"]);
+});
+
 test("deleteGroup avviser ukjent gruppe-id", async () => {
   const { deleteGroup } = await actions();
   const svar = await deleteGroup("finnes-ikke");
@@ -236,4 +281,45 @@ test("bootstrapGfgkJuniorGrupper fanger feil fra bootstrap-kjøringen", async ()
   const { bootstrapGfgkJuniorGrupper } = await actions();
   const svar = await bootstrapGfgkJuniorGrupper();
   assert.ok("error" in svar);
+});
+
+
+test("deleteGroup lar aktivt COACH-medlem slette gruppen", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  medlemmer = [{ userId: "coach-b", role: "COACH", endedAt: null }];
+  const { deleteGroup } = await actions();
+  assert.ok("success" in await deleteGroup("gruppe-a"));
+  assert.deepEqual(groupDeletes, ["gruppe-a"]);
+});
+
+for (const [navn, role, endedAt] of [
+  ["ASSISTANT-medlem", "ASSISTANT", null],
+  ["PLAYER-medlem", "PLAYER", null],
+  ["avsluttet COACH-medlem", "COACH", new Date("2026-01-01")],
+] as const) {
+  test(`deleteGroup avviser ${navn} uten sletting eller revisjonslogg`, async () => {
+    bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+    medlemmer = [{ userId: "coach-b", role, endedAt }];
+    const { deleteGroup } = await actions();
+    assert.deepEqual(await deleteGroup("gruppe-a"), { error: "Fant ikke gruppen." });
+    assert.deepEqual(groupDeletes, []);
+    assert.deepEqual(auditWrites, []);
+  });
+}
+
+test("deleteGroup stanser hvis medlemskap trekkes mellom oppslag og sletting", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  medlemmer = [{ userId: "coach-b", role: "COACH", endedAt: null }];
+  trekkTilgangEtterOppslag = true;
+  const { deleteGroup } = await actions();
+  assert.deepEqual(await deleteGroup("gruppe-a"), { error: "Kunne ikke slette gruppen" });
+  assert.deepEqual(groupDeletes, []);
+  assert.deepEqual(auditWrites, []);
+});
+
+test("deleteGroup avviser tom gruppe-id før databaseoppslag", async () => {
+  const { deleteGroup } = await actions();
+  assert.deepEqual(await deleteGroup("  "), { error: "Ugyldig gruppe-id." });
+  assert.equal(groupLookups, 0);
+  assert.deepEqual(groupDeletes, []);
 });

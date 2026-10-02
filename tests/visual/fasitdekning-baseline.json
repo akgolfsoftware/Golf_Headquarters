@@ -1,6 +1,6 @@
 {
-  "sitert": 142,
+  "sitert": 140,
   "av": 219,
   "sistEndret": "2026-09-29",
-  "grunn": "Bolk A3 (AgencyOS-portering til Precision Athletics, designbeslutning 26.09.2026 §PRECISION ATHLETICS ER DESIGNSYSTEMET) portet AG-13 Live-tavle og AG-13-U Live coachingøkt: LiveTavleTrainLock.tsx og LiveOktCoachTrainLock.tsx (Train-lock-æra, siterte AG-09/AG-09b Live-tavle.dc.html) er fjernet og erstattet av AG13LiveTavle.tsx/AG13LiveOkt.tsx, som siterer Claude Design-prosjektet 7d7c2994 (ui_kits/agencyos/screens/AG-13.jsx, AG-cockpit.jsx) i stedet — Precision Athletics er nå fasit, ikke Train-lock, jf. beslutninger.md. De to Train-lock-siteringene faller derfor bort uten erstatning i DENNE tellingen (den teller kun designsystem/train-lock/), 144→142. Senkningen gjentar seg forventet etter hvert som flere bolker (A1/A2/A4/A5) og resten av A3 flytter skjermer fra Train-lock til Precision Athletics."
+  "grunn": "Plan-hub og øktark (AG-14, AG-12) portet til Precision Athletics (7d7c2994): OktArkV2.tsx (siterte «A-14 iPhone Okt-ark Filip.dc.html») er erstattet av AG12Oktark.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 141→140 (målt etter at Innboks og Spiller 360 ble lagt inn 29.09)."
 }

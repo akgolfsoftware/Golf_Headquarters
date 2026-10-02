@@ -368,3 +368,11 @@ test("uten betalingsvalg er bookingen som før (ingen betalingsmåte)", async ()
   assert.equal(data.priceOre, 100000);
   assert.equal(data.paymentMethod, undefined);
 });
+
+
+test("booking avviser normalisert ugyldig dato og ukjent betalingsmåte før lagring", async () => {
+  const { opprettOktPaaTid } = await import("./actions");
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, startAt: "2098-02-31T09:00" }), /Ugyldig/);
+  await assert.rejects(() => opprettOktPaaTid({ ...gyldigInput, betaling: "UKJENT" as "KLIPP" }), /betalingsmåte/);
+  assert.equal(bookingCreates.length, 0); assert.equal(klippTrekk.length, 0);
+});

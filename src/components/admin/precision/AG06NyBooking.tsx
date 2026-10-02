@@ -11,6 +11,7 @@
  * Samme coach/fasilitet-sjekk (isValidCoachFacilityPair). Tid sendes som
  * «YYYY-MM-DDTHH:mm» og tolkes som Oslo-veggklokke på serveren.
  */
+import "@/styles/precision-a4.css";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
@@ -19,6 +20,7 @@ import { Kort, Nedtrekk, Nokkelverdi, Skjemafelt, Tekstfelt, TekstOmrade } from 
 import { Datofelt, Segment, Steglinje, Valgpille, Valgrad, Varsel, tidsvalg } from "@/components/precision/pa-booking";
 import { Sokefelt } from "@/components/precision/pa-a2";
 import { isValidCoachFacilityPair } from "@/lib/booking/facility-scope";
+import { lokalSlutt } from "@/lib/booking/lokal-slutt";
 import { createSessionFromCalendar } from "@/app/admin/(legacy)/calendar/actions";
 import { opprettGruppeTrening } from "@/app/admin/grupper/[id]/actions";
 import type { NyBookingData } from "@/app/admin/bookinger/ny-data";
@@ -109,12 +111,10 @@ export function AG06NyBooking({ data, startGruppeId, startTid, startCoachId, for
     start(async () => {
       try {
         if (modus === "gruppe" && gruppeId) {
-          const [h, m] = tid.split(":").map(Number);
-          const slutt = h * 60 + m + tjeneste.varighetMin;
           const res = await opprettGruppeTrening(gruppeId, {
             title: tjeneste.navn + (gruppe ? ` · ${gruppe.navn}` : ""),
             startAt: startLokal,
-            endAt: slutt >= 1440 ? `${dato}T23:59` : `${dato}T${sluttTid(tid, tjeneste.varighetMin)}`,
+            endAt: lokalSlutt(startLokal, tjeneste.varighetMin),
             location: sted?.navn,
             recurring: "NONE",
             maxParticipants: maks ? Number(maks) : undefined,

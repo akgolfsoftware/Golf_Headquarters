@@ -702,6 +702,9 @@ model User {
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
 
+  // Én spillereid IUP-besvarelse per skjematype/kilde/nivå/periode.
+  iupBesvarelser IupBesvarelse[]
+
   // Drill-opprettelse (taxonomy v4)
   createdExercises       ExerciseDefinition[] @relation("ExerciseCreator")
   coachDirektiverGitt    CoachDrillDirectiv[] @relation("DirektivCoach")
@@ -776,9 +779,50 @@ model User {
   @@map("users")
 }
 
-// Web Push-abonnement per enhet/browser. Én bruker kan ha flere
-// (laptop, telefon, ulike browsere). Slettes når subscription returnerer
-// 410 Gone fra push-service (gammel/avregistrert).
+// Spillereid IUP. Organisasjonenes frister og oppfølging lagres separat;
+// besvarelser kopieres aldri per skole, trener eller Team Norway-gruppe.
+model IupBesvarelse {
+  id                 String   @id @default(cuid())
+  userId             String
+  type               String
+  versjon            String
+  kildeSha256        String
+  // ALLE for sesongevaluering; utviklingssjekk bruker kildekatalogens nivå.
+  niva               String
+  periodeStart       DateTime @db.Date
+  periodeSlutt       DateTime @db.Date
+  revisjon           Int      @default(0)
+  levertRevisjon     Int?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revisjoner         IupRevisjon[]
+
+  @@unique([userId, type, versjon, niva, periodeStart, periodeSlutt], map: "iup_besvarelse_eier_periode_key")
+  @@index([userId, updatedAt])
+  @@map("iup_besvarelser")
+}
+
+// Append-only ved normal lagring. Både utkast og leveringer får egen revisjon.
+// Revisjonene slettes med besvarelsen ved autorisert sletting/anonymisering.
+model IupRevisjon {
+  id             String   @id @default(cuid())
+  besvarelseId   String
+  revisjon       Int
+  requestId      String   @db.Uuid
+  requestHash    String
+  status         String
+  payload        Json
+  createdAt      DateTime @default(now())
+  besvarelse     IupBesvarelse @relation(fields: [besvarelseId], references: [id], onDelete: Cascade)
+
+  @@unique([besvarelseId, revisjon], map: "iup_revisjon_nummer_key")
+  @@unique([besvarelseId, requestId], map: "iup_revisjon_request_key")
+  @@map("iup_revisjoner")
+}
+
+// Web Push-abonnement per enhet/browser. Én bruker kan ha flere.
+// Slettes når abonnementet returnerer 410 Gone fra push-tjenesten.
 model PushSubscription {
   id         String    @id @default(cuid())
   userId     String    @map("user_id")
@@ -848,6 +892,8 @@ model DelingsSamtykke {
   // TEST_RESULTATER | STATS
   scope            String
   mottakerGruppeId String
+  // Bare NAVNGITT_KOMPLETT_PROFIL: eldre gruppesamtykker har null.
+  mottakerUserId   String?
   // false = trukket (ny rad, aldri update av gamle)
   gitt             Boolean
   tekstVersjon     String
@@ -857,7 +903,32 @@ model DelingsSamtykke {
   createdAt        DateTime @default(now())
 
   @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@index([userId, scope, mottakerGruppeId, mottakerUserId, createdAt], map: "delings_samtykker_navngitt_idx")
   @@map("delings_samtykker")
+}
+
+// Navngitt deling: token lagres bare som SHA-256. Ingen innsyn før aksept.
+model TrenerDelingsInvitasjon {
+  id               String   @id
+  userId           String
+  mottakerGruppeId  String
+  mottakerEpost     String
+  tokenHash        String   @unique
+  tekstVersjon     String
+  gittAvUserId     String
+  gittAvRolle      String
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+
+  @@index([userId, createdAt], map: "trener_delings_invitasjoner_owner_idx")
+  @@index([mottakerEpost, expiresAt], map: "trener_delings_invitasjoner_email_idx")
+  @@index([mottakerGruppeId], map: "trener_delings_invitasjoner_group_idx")
+  @@index([gittAvUserId], map: "trener_delings_invitasjoner_actor_idx")
+  @@index([acceptedByUserId], map: "trener_delings_invitasjoner_coach_idx")
+  @@map("trener_delings_invitasjoner")
 }
 
 // Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
@@ -3473,6 +3544,8 @@ model WeekPlan {
   repTargetPutting   Int?
   repTargetShortGame Int?
   repetitionTargets  Json?
+  // R06.2: versjonert ukeplan; gamle tidsbudsjetter og enumverdier beholdes.
+  planningDetails    Json?
   loadCeiling        Int?
   customNotes        String?
   createdAt          DateTime   @default(now())
@@ -4397,18 +4470,29 @@ model AiSpillerminne {
   @@map("ai_memories")
 }
 
-// PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
+// To atskilte typer referanser i den eksisterende tabellen:
+// legacy: DataGolf SG per slag i yard-bøtter (IKKE forventede slag til hull).
+// expected_to_hole: vår versjonerte Broadie-baserte kurve i meter.
 model SgBaseline {
-  id              String     @id @default(cuid())
-  category        SgCategory
-  distanceBucket  String // "175-200y"
-  lie             ShotLie?
-  expectedStrokes Float
-  sampleSize      Int
-  source          String // "datagolf-approach-skill-2026Q1"
-  fetchedAt       DateTime
+  id                    String      @id @default(cuid())
+  category              SgCategory?
+  distanceBucket        String? // legacy: "175-200y"
+  lie                   ShotLie?
+  expectedStrokes       Float? // legacy: DataGolf SG per slag, historisk feilnavn
+  sampleSize            Int?
+  source                String?
+  fetchedAt             DateTime?
+  baselineKind          String      @default("legacy_sg_bucket") @map("baseline_kind")
+  baselineVersion       String?     @map("baseline_version")
+  distanceMeters        Decimal?    @map("distance_meters") @db.Decimal(7, 2)
+  lieType               String?     @map("lie_type")
+  expectedStrokesToHole Decimal?    @map("expected_strokes") @db.Decimal(7, 4)
+  sourceReference       String?     @map("source_reference")
+  quality               String?
+  isSupported           Boolean?    @map("is_supported")
 
   @@unique([category, distanceBucket, lie])
+  @@unique([baselineVersion, lieType, distanceMeters], map: "sg_baselines_version_lie_distance_key")
   @@map("sg_baselines")
 }
 

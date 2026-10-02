@@ -58,7 +58,7 @@ export function AG06BookingDetalj({ data }: { data: AG06BookingDetaljData }) {
           ["Dato", data.dato, {}],
           ["Tid", data.tid, { mono: true }],
           ["Sted", data.sted, {}],
-          ["Pris", kr(data.prisOre), { mono: true, hint: "FRA SERVICETYPE" }],
+          ["Pris", kr(data.prisOre), { mono: true, hint: "PRIS VED BOOKING" }],
           ["Betaling", data.betaling, {}],
           ["Foreslått ny tid", data.forslag ?? undefined, { hint: "VENTER PÅ SPILLEREN" }],
           ["Notat", data.notat, {}],

@@ -135,6 +135,7 @@ export async function foreslaaNyBookingtid(input: { bookingId: string; dato: str
       id: true,
       userId: true,
       status: true,
+      updatedAt: true,
       startAt: true,
       endAt: true,
       coachId: true,
@@ -154,13 +155,14 @@ export async function foreslaaNyBookingtid(input: { bookingId: string; dato: str
   const [y, m, d] = p.data.dato.split("-").map(Number);
   const [hh, mm] = p.data.tid.split(":").map(Number);
   // Lagret tid er naiv Oslo-veggklokke (policy.ts) — samme konvensjon her.
-  const nyStart = new Date(y, m - 1, d, hh, mm, 0, 0);
+  const nyStart = new Date(Date.UTC(y, m - 1, d, hh, mm, 0, 0));
+  if (nyStart.toISOString().slice(0, 10) !== p.data.dato) return { ok: false, feil: "Ugyldig dato." };
   if (hoursUntil(nyStart) <= 0) return { ok: false, feil: "Ny tid må være fram i tid." };
   if (nyStart.getTime() === booking.startAt.getTime()) return { ok: false, feil: "Bookingen ligger allerede på denne tiden." };
   const nyEnd = new Date(nyStart.getTime() + (booking.endAt.getTime() - booking.startAt.getTime()));
 
   try {
-    await prisma.$transaction(async (tx) => {
+    const oppdatert = await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: booking.coachId,
         serviceTypeId: booking.serviceTypeId,
@@ -169,11 +171,13 @@ export async function foreslaaNyBookingtid(input: { bookingId: string; dato: str
         endAt: nyEnd,
         ekskluderBookingId: booking.id,
       });
-      await tx.booking.update({
-        where: { id: booking.id },
+      const res = await tx.booking.updateMany({
+        where: { id: booking.id, status: booking.status, updatedAt: booking.updatedAt, ...coachBookingScope(user) },
         data: { proposedStartAt: nyStart, proposedEndAt: nyEnd, proposedAt: new Date(), proposedById: user.id },
       });
+      return res.count === 1;
     });
+    if (!oppdatert) return { ok: false, feil: "Bookingen ble endret samtidig. Last siden på nytt." };
   } catch (e) {
     if (erKollisjonsfeil(e)) return { ok: false, feil: kollisjonsmelding(e) };
     throw e;

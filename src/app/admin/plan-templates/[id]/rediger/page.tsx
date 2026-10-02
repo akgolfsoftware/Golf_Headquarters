@@ -1,27 +1,19 @@
 /**
- * AgencyOS — Plan-mal-editor (/admin/plan-templates/[id]/rediger).
- * Produksjonsside. Auth-guard, Prisma-queries og server actions (inkl.
- * masseredigering) er uendret — token/skall byttet til Train-lock via
- * `TL_SCOPE`, se `../../page.tsx` for begrunnelse. Volum-beregningen bor
- * fortsatt i src/lib/plan-templates/.
+ * AgencyOS — Plan-mal-editor (/admin/plan-templates/[id]/rediger) i Precision
+ * Athletics, under Plan-hub (AG-14). Auth-guard, Prisma-spørringer og server
+ * actions (inkl. masseredigering) er uendret; visningen er AG14MalRediger i
+ * AgencyOSSkall. Volum-beregningen bor fortsatt i src/lib/plan-templates/.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  AdminPlanMalRedigerV2,
-  type RedigerDrillValg,
-  type RedigerMal,
-  type RedigerOkt,
-} from "@/components/admin/v2/AdminPlanMalRedigerV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG14MalRediger, type RedigerDrillValg, type RedigerMal, type RedigerOkt } from "@/components/admin/precision/AG14MalRediger";
 import {
   readDrills,
   readFordeling,
 } from "@/components/admin/plan-templates/shared";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -92,11 +84,8 @@ export default async function PlanTemplateEditorPage({
   }));
 
   return (
-    <div style={TL_SCOPE}>
-      <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href={`/admin/plan-templates/${id}`}>Mal-detalj</TilbakeLenke>
-        <AdminPlanMalRedigerV2 template={data} drillOptions={drillOptions} />
-      </V2Shell>
-    </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG14MalRediger template={data} drillOptions={drillOptions} />
+    </AgencyOSSkall>
   );
 }

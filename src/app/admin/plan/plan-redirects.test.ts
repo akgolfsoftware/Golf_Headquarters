@@ -28,9 +28,20 @@ test("/admin/planlegge redirecter til /admin/plan", () => {
   assert.match(kilde, /permanentRedirect\("\/admin\/plan"\)/);
 });
 
-test("/admin/plan-templates redirecter til /admin/plan/maler (index alene, ikke /ny eller /[id])", () => {
+test("/admin/plan-templates redirecter til /admin/plan (index alene, ikke /ny eller /[id])", () => {
   const kilde = les("plan-templates/page.tsx");
-  assert.match(kilde, /permanentRedirect\("\/admin\/plan\/maler"\)/);
+  assert.match(kilde, /permanentRedirect\("\/admin\/plan"\)/);
+});
+
+test("/admin/plan/maler redirecter til Ukemaler-fanen i Plan-hub (AG-14)", () => {
+  const kilde = les("plan/maler/page.tsx");
+  assert.match(kilde, /permanentRedirect\("\/admin\/plan\?fane=ukemaler"\)/);
+});
+
+test("de gamle drill-adressene sender til Øvelser-fanen i Plan-hub", () => {
+  for (const rel of ["(legacy)/drills/page.tsx", "(legacy)/drills/[id]/page.tsx", "(legacy)/drills/ny/page.tsx", "drills/[id]/rediger/page.tsx"]) {
+    assert.match(les(rel), /permanentRedirect\("\/admin\/plan\?fane=ovelser"\)/, rel);
+  }
 });
 
 test("/admin/teknisk-plan redirecter til /admin/plan/teknisk", () => {
@@ -39,7 +50,7 @@ test("/admin/teknisk-plan redirecter til /admin/plan/teknisk", () => {
 });
 
 test("Plan-hub, Plan-maler og Teknisk plan har samme tilgangsgate som kildesidene (ADMIN/COACH) — ikke utvidet", () => {
-  for (const rel of ["plan/page.tsx", "plan/maler/page.tsx", "plan/teknisk/page.tsx"]) {
+  for (const rel of ["plan/page.tsx", "plan/teknisk/page.tsx"]) {
     const kilde = les(rel);
     assert.match(
       kilde,
@@ -49,8 +60,7 @@ test("Plan-hub, Plan-maler og Teknisk plan har samme tilgangsgate som kildesiden
   }
 });
 
-test("Plan-hubens rader inkluderer den nye Teknisk plan-raden med href til /admin/plan/teknisk", () => {
-  const kilde = les("plan/page.tsx");
-  assert.match(kilde, /id:\s*"tekniskplan"/);
-  assert.match(kilde, /href:\s*"\/admin\/plan\/teknisk"/);
+test("Plan-hub lenker til Teknisk plan (/admin/plan/teknisk)", () => {
+  const kilde = readFileSync(join(admin, "..", "..", "components/admin/precision/AG14PlanHub.tsx"), "utf8");
+  assert.match(kilde, /href="\/admin\/plan\/teknisk"/);
 });

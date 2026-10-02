@@ -1,0 +1,178 @@
+/*
+ * Precision Athletics — Workbench for coach (AG-11, AG-11-OKT, AG-11-MAL,
+ * AG-11-FYS, AG-11-GRUPPE, AG-WB-FYS, AG-WB-TURN). Portert fra Claude Design
+ * 7d7c2994, ui_kits/_shared/WB3.jsx og agencyos/screens/AG-WB-*.jsx.
+ * Bare tokens fra .pa-root (precision-athletics.css). Farge betyr akse:
+ * øktkort er nøytrale med aksefarget stripe (--a9-akse), fremdrift er grafitt.
+ * Bredden styres som i tegningen av innholdsbredden (container «a9»), ikke skjermen.
+ */
+
+.a9 { container: a9 / inline-size; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.a9 * { box-sizing: border-box; }
+
+/* Caps-linje (Meta) */
+.a9-caps { font: var(--type-meta); letter-spacing: .04em; color: var(--text-muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-width: 0; }
+
+/* Valgpiller: 44 px treffmål, valgt som trykket pille (også som fane/radio). */
+.a9-choice { height: 44px; min-width: 0; max-width: 100%; text-decoration: none; }
+.a9 .pa-choice[aria-selected="true"], .a9 .pa-choice[aria-checked="true"],
+.pa-sheet .pa-choice[aria-selected="true"], .pa-sheet .pa-choice[aria-checked="true"] { background: var(--primary); border-color: var(--primary); color: var(--text-on-primary); }
+.a9 .pa-choice--fys[aria-checked="true"], .pa-sheet .pa-choice--fys[aria-checked="true"] { background: var(--axis-fys-bg); border-color: var(--axis-fys); box-shadow: inset 0 0 0 1px var(--axis-fys); color: var(--axis-fys-fg); }
+.a9 .pa-choice--tek[aria-checked="true"], .pa-sheet .pa-choice--tek[aria-checked="true"] { background: var(--axis-tek-bg); border-color: var(--axis-tek); box-shadow: inset 0 0 0 1px var(--axis-tek); color: var(--axis-tek-fg); }
+.a9 .pa-choice--slag[aria-checked="true"], .pa-sheet .pa-choice--slag[aria-checked="true"] { background: var(--axis-slag-bg); border-color: var(--axis-slag); box-shadow: inset 0 0 0 1px var(--axis-slag); color: var(--axis-slag-fg); }
+.a9 .pa-choice--spill[aria-checked="true"], .pa-sheet .pa-choice--spill[aria-checked="true"] { background: var(--axis-spill-bg); border-color: var(--axis-spill); box-shadow: inset 0 0 0 1px var(--axis-spill); color: var(--axis-spill-fg); }
+.a9 .pa-choice--turn[aria-checked="true"], .pa-sheet .pa-choice--turn[aria-checked="true"] { background: var(--axis-turn-bg); border-color: var(--axis-turn); box-shadow: inset 0 0 0 1px var(--axis-turn); color: var(--axis-turn-fg); }
+
+.a9-rad { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-width: 0; }
+.a9-klipp { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a9-tekst { margin: 0; font: var(--type-body-s); color: var(--text-secondary); text-wrap: pretty; }
+
+/* Velger: modus, forrige/neste og søk */
+.a9-velger { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.a9-velger__bla { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 6px; align-items: center; flex: 1 1 280px; min-width: 0; max-width: 420px; }
+.a9-velger__bla .pa-iconbtn { width: 44px; height: 44px; }
+.a9-velger__navn { min-width: 0; width: 100%; height: 44px; justify-content: flex-start; }
+
+/* Kort */
+.a9-kort { padding: 16px; gap: 12px; min-width: 0; }
+.a9-kort__hode { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.a9-kort__tittel { font: 600 15px/1.3 var(--font-sans); color: var(--text-primary); flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+
+/* Hovedflate + sidefelt 340 fra 1180 px innholdsbredde */
+.a9-hoved { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+@container a9 (min-width: 1180px) { .a9-hoved--sidefelt { grid-template-columns: minmax(0, 1fr) 340px; } }
+
+/* Snarveier: rad fra 700 px, «Mer»-knapp under */
+.a9-snarveier { display: flex; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.a9-mer { display: none; }
+@container a9 (max-width: 699px) { .a9-snarveier { display: none; } .a9-mer { display: flex; gap: 8px; flex-wrap: wrap; } }
+
+/* Ukenavigasjon */
+.a9-ukenav { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; align-items: center; }
+.a9-ukenav__tittel { font: 600 15px/1.3 var(--font-sans); color: var(--text-primary); text-align: center; min-width: 0; overflow-wrap: anywhere; }
+
+/* Fordeling per akse (ukeplanens timer mot lagt inn) */
+.a9-fordeling { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px 12px; min-width: 0; }
+.a9-fordeling__rad { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 8px 10px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); box-shadow: inset 0 -3px 0 var(--a9-akse); }
+.a9-fordeling__topp { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; font: 600 13px/1.2 var(--font-mono); color: var(--text-primary); }
+
+/* Fremdrift i grafitt */
+.a9-fremdrift { display: block; position: relative; height: 6px; background: var(--surface-sunken); overflow: hidden; border-radius: 2px; }
+.a9-fremdrift__fyll { position: absolute; inset: 0 auto 0 0; background: var(--primary); }
+
+/* Aksestang */
+.a9-aksestang { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; min-width: 0; }
+.a9-akseknapp { min-height: 48px; min-width: 0; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); box-shadow: inset 0 -3px 0 var(--a9-akse); color: var(--text-primary); font: 600 13px/1 var(--font-mono); cursor: pointer; touch-action: none; }
+@container a9 (min-width: 900px) { .a9-akseknapp { cursor: grab; } }
+.a9-akseknapp[aria-pressed="true"] { border-color: var(--border-ink); }
+.a9-akseknapp:focus-visible, .a9-okt:focus-visible, .a9-dagknapp:focus-visible, .a9-slipp:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Uka: rutenett fra 900 px, én dag under */
+.a9-uke { display: none; grid-template-columns: 40px repeat(7, minmax(0, 1fr)); gap: 0 4px; min-width: 0; }
+.a9-dagvisning { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+@container a9 (min-width: 900px) { .a9-uke { display: grid; } .a9-dagvisning { display: none; } }
+.a9-uke[data-dras="true"], .a9-dagvisning[data-dras="true"] { user-select: none; }
+.a9-dagnavn { font: 600 13px/1.2 var(--font-sans); color: var(--text-primary); padding-bottom: 6px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.a9-dagnavn__dato { font: var(--type-num-s); color: var(--text-muted); }
+.a9-time { font: 500 11px/1 var(--font-mono); color: var(--text-muted); padding-top: 4px; border-top: 1px solid var(--border-hairline); }
+.a9-slot { min-height: 48px; border-top: 1px solid var(--border-hairline); padding: 2px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.a9-slot[data-over="true"] { background: var(--surface-flat); box-shadow: inset 0 0 0 2px var(--border-ink); }
+.a9-slot[data-tom="true"] { cursor: cell; }
+.a9-dagvelger { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; width: 100%; min-width: 0; position: sticky; top: 0; z-index: 2; background: var(--surface-card); padding: 4px 0; }
+.a9-dagknapp { height: 56px; min-width: 0; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); color: var(--text-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 0; cursor: pointer; }
+.a9-dagknapp span:first-child { font: 500 11px/1 var(--font-sans); }
+.a9-dagknapp span:last-child { font: 600 14px/1 var(--font-mono); }
+.a9-dagknapp[aria-pressed="true"] { background: var(--primary); border-color: var(--border-ink); color: var(--text-on-primary); }
+.a9-dag { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 0 8px; min-width: 0; }
+
+/* Øktkort: nøytralt, aksefarget stripe på venstre kant */
+.a9-okt-rad { display: flex; gap: 4px; align-items: stretch; min-width: 0; }
+.a9-okt { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 6px 8px 6px 10px; border-radius: 6px; background: var(--surface-card); border: 1px solid var(--border-hairline); box-shadow: inset 3px 0 0 var(--a9-akse); text-align: left; }
+@container a9 (min-width: 900px) { .a9-okt { touch-action: none; } }
+.a9-okt[aria-pressed="true"] { border-color: var(--border-ink); }
+.a9-okt[data-dempet="true"] { opacity: .55; }
+.a9-okt[data-dras="true"] { opacity: .45; }
+.a9-okt__tid { font: 600 12px/1.2 var(--font-mono); color: var(--text-primary); }
+.a9-okt__tittel { font: 500 12px/1.25 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a9-okt__merker { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.a9-okt__merker .a9-caps { font-size: 10px; }
+.a9-okt__merker .pa-status { height: 20px; padding: 0 8px; font-size: 11px; }
+.a9-greip { flex: none; width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--border-hairline); background: var(--surface-card); color: var(--text-muted); cursor: grab; touch-action: none; }
+@container a9 (min-width: 900px) { .a9-uke .a9-greip { display: none; } }
+
+/* Opptatt tid (skole, busy) og slipp-mål */
+.a9-opptatt { display: flex; flex-direction: column; gap: 2px; padding: 4px 8px; border-radius: 6px; border: 1px dashed var(--border-strong); color: var(--text-muted); font: 500 11px/1.25 var(--font-sans); overflow-wrap: anywhere; min-width: 0; }
+.a9-slipp { all: unset; box-sizing: border-box; cursor: pointer; flex: 1; min-height: 44px; border-radius: 4px; border: 1px dashed var(--border-strong); display: grid; place-items: center; font: 500 11px/1 var(--font-mono); color: var(--text-muted); text-align: center; padding: 0 4px; }
+
+/* Draspøkelse som følger pekeren */
+.a9-drag { position: fixed; width: 80px; height: 40px; border-radius: 8px; background: var(--surface-card); border: 1px solid var(--border-ink); box-shadow: inset 0 -3px 0 var(--a9-akse); display: grid; place-items: center; font: 600 13px/1 var(--font-mono); color: var(--text-primary); pointer-events: none; z-index: 300; }
+
+/* Lister */
+.a9-liste { display: flex; flex-direction: column; min-width: 0; }
+.a9-listerad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 48px; padding: 4px 0; min-width: 0; }
+.a9-listerad--skille { border-top: 1px solid var(--border-hairline); }
+.a9-listerad--akse { box-shadow: inset 3px 0 0 var(--a9-akse); padding-left: 10px; }
+.a9-listerad__tekst { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.a9-listerad__tittel { font: 500 14px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.a9-listerad__verdi { font: 600 13px/1.2 var(--font-mono); color: var(--text-primary); text-align: right; display: flex; gap: 4px; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
+.a9-kilde[draggable="true"] { cursor: grab; }
+
+/* Sidefelt */
+.a9-sidefelt { padding: 16px; gap: 10px; min-width: 0; align-self: start; }
+.a9-faner { display: flex; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.a9-akser { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; min-width: 0; }
+.a9-akser .pa-choice { justify-content: center; min-width: 0; padding: 0 4px; }
+
+/* Målsetninger */
+.a9-mal { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid var(--border-hairline); min-width: 0; }
+.a9-mal__topp { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.a9-mal__navn { font: 600 14px/1.3 var(--font-sans); color: var(--text-primary); flex: 1 1 160px; min-width: 0; overflow-wrap: anywhere; }
+.a9-mal__pct { font: 600 14px/1 var(--font-mono); color: var(--text-primary); }
+
+/* Øvelser i økta */
+.a9-ovelser { display: flex; flex-direction: column; min-width: 0; }
+.a9-ovelsesrad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; min-height: 52px; box-shadow: inset 3px 0 0 var(--a9-akse); padding-left: 10px; min-width: 0; }
+.a9-ovelsesrad + .a9-ovelsesrad { border-top: 1px solid var(--border-hairline); }
+.a9-ovelsesrad__knapper { display: flex; gap: 2px; }
+
+/* Skjemafelt i ark (øvelse, ukeplan, økt) */
+.a9-skjema { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.a9-felt { display: flex; flex-direction: column; gap: 6px; min-width: 0; font: 500 13px/1.3 var(--font-sans); color: var(--text-secondary); }
+.a9-felt input, .a9-felt select, .a9-felt textarea,
+.a9-ovelse input, .a9-ovelse select { width: 100%; min-width: 0; height: 44px; padding: 0 12px; border-radius: var(--radius); border: 1px solid var(--border-control); background: var(--surface-card); color: var(--text-primary); font: var(--type-body); box-sizing: border-box; }
+.a9-felt textarea { height: auto; min-height: 96px; padding: 12px; resize: vertical; }
+.a9-steg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.a9-steg li { min-height: 32px; padding-top: 8px; border-top: 2px solid var(--border-hairline); color: var(--text-muted); font: var(--type-kicker); letter-spacing: var(--tracking-kicker); text-transform: uppercase; }
+.a9-steg li[aria-current="step"] { border-color: var(--text-primary); color: var(--text-primary); }
+.a9-felt input:focus-visible, .a9-felt select:focus-visible, .a9-felt textarea:focus-visible,
+.a9-ovelse input:focus-visible, .a9-ovelse select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.a9-felt--mono input { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.a9-feltrad { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; min-width: 0; }
+.a9-ovelse { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.a9-ovelse label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font: 500 13px/1.3 var(--font-sans); color: var(--text-secondary); }
+.a9-ovelse > div:not(.a9-akser) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 12px; min-width: 0; }
+.a9-ovelse__steg { font: var(--type-kicker); letter-spacing: var(--tracking-kicker); text-transform: uppercase; color: var(--text-muted); padding-top: 4px; }
+.a9-ovelse__feil { margin: 0; font: var(--type-body-s); color: var(--text-primary); }
+
+/* Avkrysningsliste (publiser) */
+.a9-sjekkliste { display: flex; flex-direction: column; min-width: 0; }
+.a9-sjekkrad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; border-top: 1px solid var(--border-hairline); min-width: 0; }
+.a9-sjekkrad .pa-check { min-width: 0; }
+.a9-sjekkrad .pa-check > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+
+/* Moduler (fysisk plan, turneringer) */
+.a9-to { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; align-items: start; }
+@container a9 (min-width: 900px) { .a9-to { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); } }
+.a9-ukekort { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); gap: 8px; min-width: 0; }
+.a9-ukeboks { display: flex; flex-direction: column; gap: 6px; padding: 8px; min-height: 96px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: var(--surface-flat); min-width: 0; }
+.a9-ukeboks[data-over="true"] { box-shadow: inset 0 0 0 2px var(--border-ink); }
+.a9-tall { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 8px; min-width: 0; }
+.a9-tall__boks { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: var(--surface-flat); min-width: 0; }
+.a9-tall__verdi { font: 600 19px/1.1 var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
+
+/* Ramme rundt års-, periode- og månedsvisninger samt historiske dyplenker. */
+.a9-arv { min-width: 0; border-radius: var(--radius); overflow: hidden; }
+.a9-arv .wb-app { min-height: 0; }
+.a9-akser .pa-choice__dot { display: none; }
+/* Gruppas årsplan bruker samme treffmål. */
+.a9-arv--gruppe button { min-height: 44px; }

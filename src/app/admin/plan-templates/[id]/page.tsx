@@ -1,25 +1,19 @@
 /**
- * AgencyOS — Plan-mal-detalj (/admin/plan-templates/[id]). Produksjonsside.
- * Auth-guard, Prisma-queries og datamapping uendret — token/skall byttet
- * til Train-lock via `TL_SCOPE`, se `../page.tsx` for begrunnelse.
+ * AgencyOS — Plan-mal-detalj (/admin/plan-templates/[id]) i Precision
+ * Athletics, under Plan-hub (AG-14). Auth-guard, Prisma-spørringer og
+ * datamapping er uendret; visningen er AG14MalDetalj i AgencyOSSkall.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  AdminPlanMalDetaljV2,
-  type PlanMalDetalj,
-  type PlanMalOkt,
-} from "@/components/admin/v2/AdminPlanMalDetaljV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG14MalDetalj, type PlanMalDetalj, type PlanMalOkt } from "@/components/admin/precision/AG14MalDetalj";
 import {
   ANBEFALT_FORDELING_PER_KATEGORI,
   readDrills,
   readFordeling,
 } from "@/components/admin/plan-templates/shared";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -99,11 +93,8 @@ export default async function PlanTemplateDetailPage({
   };
 
   return (
-    <div style={TL_SCOPE}>
-      <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/admin/plan/maler">Plan-maler</TilbakeLenke>
-        <AdminPlanMalDetaljV2 template={data} />
-      </V2Shell>
-    </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG14MalDetalj template={data} />
+    </AgencyOSSkall>
   );
 }

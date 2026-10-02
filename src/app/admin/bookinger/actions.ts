@@ -5,8 +5,8 @@
  *
  * - avlysBookingSomCoach: coach avlyser en bekreftet booking. FULL refusjon
  *   uansett tidspunkt (hele beløpet i Stripe, AK Golf dekker gebyret) eller
- *   klippet tilbake. Stripe FØR egen database (gotchas §Betaling): feiler
- *   refusjonen, avlyses ingenting. Spilleren får `sendBookingCancellation`.
+ *   klippet tilbake. Avlysning, klipp og varig refusjonsjobb lagres samlet.
+ *   Stripe-feil beholder jobben til gjenforsøk, med ærlig status til spilleren.
  *   Bygger på samme byggeklosser som `cancelBooking` (portal/meg/bookinger).
  * - avvisBookingMedBegrunnelse: avviser en booking uten betaling og lagrer
  *   begrunnelsen som utkast i Innboks (InnboksEpost, UTKAST_KLART). Ingenting
@@ -20,7 +20,7 @@ import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
-import { stripeKlient } from "@/lib/stripe";
+import { bookingRefundKey, refundCancelledBooking } from "@/lib/booking/refund";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { notify } from "@/lib/notifications";
@@ -37,10 +37,10 @@ function revalider(bookingId?: string) {
   }
 }
 
-const TID = (d: Date) => d.toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" });
+const TID = (d: Date) => d.toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
 
 export type AvlysResultat =
-  | { ok: true; refundert: boolean; klippTilbake: boolean }
+  | { ok: true; refundert: boolean; refusjonVenter: boolean; klippTilbake: boolean }
   | { ok: false; feil: string };
 
 const AvlysSchema = z.object({ bookingId: z.string().min(1), begrunnelse: z.string().max(1000).optional() });
@@ -56,6 +56,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
       id: true,
       userId: true,
       status: true,
+      updatedAt: true,
       startAt: true,
       subscriptionId: true,
       stripePaymentIntentId: true,
@@ -63,7 +64,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
       coachId: true,
       serviceType: { select: { coachUserId: true } },
       payments: {
-        where: { stripePaymentIntentId: { not: null }, status: "SUCCEEDED" },
+        where: { stripePaymentIntentId: { not: null }, status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] } },
         select: { stripePaymentIntentId: true },
         take: 1,
       },
@@ -79,44 +80,47 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
     subscriptionId: booking.subscriptionId,
   });
 
-  // 1) Stripe først. Ingen `amount` = hele det gjenstående beløpet refunderes.
-  if (plan.refunderPaymentIntent) {
-    try {
-      await stripeKlient().refunds.create(
-        {
-          payment_intent: plan.refunderPaymentIntent,
-          reason: "requested_by_customer",
-          metadata: { bookingId: booking.id, avlystAv: "coach" },
-        },
-        { idempotencyKey: `coach-avlys-${booking.id}` },
-      );
-    } catch (error) {
-      await logError({
-        context: "admin.booking.avlysSomCoach.stripeRefund",
-        error,
-        meta: { bookingId: booking.id, paymentIntentId: plan.refunderPaymentIntent },
-      });
-      return { ok: false, feil: "Refusjonen i Stripe feilet. Bookingen er ikke avlyst — prøv igjen." };
-    }
-  }
-
-  // 2) Egen database.
-  const oppdatert = await prisma.booking.updateMany({
-    where: { id: booking.id, status: { in: ["CONFIRMED", "PENDING"] } },
-    data: { status: "CANCELLED", proposedStartAt: null, proposedEndAt: null, proposedAt: null, proposedById: null },
-  });
-  if (oppdatert.count === 0) return { ok: false, feil: "Bookingen ble endret samtidig. Last siden på nytt." };
-
-  let klippTilbake = false;
-  if (plan.klippTilbake && booking.subscriptionId) {
-    try {
-      await prisma.subscription.update({
+  // Samme varige refusjonskjede som spillerens avbestilling. Optimistisk
+  // versjonskontroll hindrer dobbelt tilbakeføring og avlysning av endret tid.
+  const oppdatert = await prisma.$transaction(async tx => {
+    const claimed = await tx.booking.updateMany({
+      where: { id: booking.id, status: booking.status, updatedAt: booking.updatedAt, ...coachBookingScope(user) },
+      data: {
+        status: "CANCELLED", proposedStartAt: null, proposedEndAt: null, proposedAt: null, proposedById: null,
+        ...(plan.refunderPaymentIntent ? { stripePaymentIntentId: plan.refunderPaymentIntent } : {}),
+      },
+    });
+    if (claimed.count !== 1) return false;
+    if (plan.klippTilbake && booking.subscriptionId) {
+      await tx.subscription.update({
         where: { id: booking.subscriptionId },
         data: { creditsRemaining: { increment: 1 } },
       });
-      klippTilbake = true;
+    }
+    if (plan.refunderPaymentIntent) {
+      await tx.webhookFailure.upsert({
+        where: { eventId: bookingRefundKey(booking.id) },
+        create: {
+          eventId: bookingRefundKey(booking.id), webhookSource: "booking-refund",
+          payload: { bookingId: booking.id }, errorMessage: "Refusjon venter på behandling.", attemptCount: 0,
+        },
+        update: {},
+      });
+    }
+    return true;
+  });
+  if (!oppdatert) return { ok: false, feil: "Bookingen ble endret samtidig. Last siden på nytt." };
+
+  const klippTilbake = Boolean(plan.klippTilbake && booking.subscriptionId);
+  let refundert = false;
+  let refusjonVenter = false;
+  if (plan.refunderPaymentIntent) {
+    try {
+      await refundCancelledBooking(booking.id);
+      refundert = true;
     } catch (error) {
-      await logError({ context: "admin.booking.avlysSomCoach.klipp", error, meta: { bookingId: booking.id } });
+      refusjonVenter = true;
+      await logError({ context: "admin.booking.avlysSomCoach.stripeRefund", error, meta: { bookingId: booking.id } });
     }
   }
 
@@ -131,7 +135,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
 
   try {
     const { sendBookingCancellation } = await import("@/lib/email/booking-emails");
-    await sendBookingCancellation(booking.id, { refundIssued: !!plan.refunderPaymentIntent, isCreditBooking: klippTilbake });
+    await sendBookingCancellation(booking.id, { refundIssued: refundert, refundPending: refusjonVenter, isCreditBooking: klippTilbake });
   } catch (error) {
     await logError({ context: "admin.booking.avlysSomCoach.epost", error, meta: { bookingId: booking.id }, severity: "warn" });
   }
@@ -141,7 +145,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
       userId: booking.userId,
       type: "booking",
       title: "Booking avlyst av coach",
-      body: `${TID(booking.startAt)}. ${plan.refunderPaymentIntent ? "Hele beløpet refunderes." : klippTilbake ? "Klippet er ført tilbake." : ""}`.trim(),
+      body: `${TID(booking.startAt)}. ${refusjonVenter ? "Refusjonen venter på behandling. Vi følger opp betalingen." : refundert ? "Hele beløpet er refundert." : klippTilbake ? "Klippet er ført tilbake." : ""}`.trim(),
       link: "/portal/meg/bookinger",
     });
   }
@@ -151,7 +155,8 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
     action: "booking.cancelled.by-coach",
     target: `Booking:${booking.id}`,
     metadata: {
-      fullRefusjon: !!plan.refunderPaymentIntent,
+      fullRefusjon: refundert,
+      refusjonVenter,
       klippTilbake,
       begrunnelse: p.data.begrunnelse?.trim() || null,
       tidTilStartMs: booking.startAt.getTime() - Date.now(),
@@ -159,7 +164,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
   });
 
   revalider(booking.id);
-  return { ok: true, refundert: !!plan.refunderPaymentIntent, klippTilbake };
+  return { ok: true, refundert, refusjonVenter, klippTilbake };
 }
 
 export type AvvisResultat = { ok: true; utkast: boolean } | { ok: false; feil: string };
@@ -178,43 +183,56 @@ export async function avvisBookingMedBegrunnelse(input: { bookingId: string; beg
       startAt: true,
       guestName: true,
       guestEmail: true,
+      updatedAt: true,
+      subscriptionId: true,
+      stripePaymentIntentId: true,
+      payments: { where: { status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] } }, select: { id: true } },
       user: { select: { name: true, email: true } },
       serviceType: { select: { name: true } },
     },
   });
   if (!booking) return { ok: false, feil: "Fant ikke en booking som venter på svar." };
 
-  const res = await prisma.booking.updateMany({
-    where: { id: booking.id, status: "PENDING" },
-    data: { status: "CANCELLED" },
-  });
-  if (res.count === 0) return { ok: false, feil: "Bookingen ble endret samtidig. Last siden på nytt." };
-
+  if (booking.subscriptionId || booking.stripePaymentIntentId || booking.payments.length) {
+    return { ok: false, feil: "Bookingen har betaling eller klipp. Bruk Avlys slik at beløpet eller klippet tilbakeføres." };
+  }
   const epost = booking.user?.email ?? booking.guestEmail;
   const navn = booking.user?.name ?? booking.guestName ?? null;
-  let utkast = false;
-  if (epost) {
-    const tid = TID(booking.startAt);
-    await prisma.innboksEpost.create({
-      data: {
-        fraEpost: epost,
-        fraNavn: navn,
-        emne: `Booking: ${booking.serviceType.name} ${tid}`,
-        brodtekst: `Bookingen ble avvist i AgencyOS av ${user.name ?? "coach"}.\n\nBegrunnelse: ${p.data.begrunnelse}`,
-        status: "UTKAST_KLART",
-        utkastSvar: [
-          `Hei ${navn?.split(" ")[0] ?? ""}`.trim() + ",",
-          `Vi kan dessverre ikke ta imot bookingen din: ${booking.serviceType.name}, ${tid}.`,
-          p.data.begrunnelse,
-          "Book gjerne en annen tid, eller svar på denne e-posten.",
-          `Hilsen\n${user.name ?? "AK Golf"}`,
-        ].join("\n\n"),
-        utkastGenerertAt: new Date(),
-        bookingId: booking.id,
+  const utkast = Boolean(epost);
+  const avvist = await prisma.$transaction(async tx => {
+    const res = await tx.booking.updateMany({
+      where: {
+        id: booking.id, status: "PENDING", updatedAt: booking.updatedAt, ...coachBookingScope(user),
+        subscriptionId: null, stripePaymentIntentId: null,
+        payments: { none: { status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] } } },
       },
+      data: { status: "CANCELLED" },
     });
-    utkast = true;
-  }
+    if (res.count !== 1) return false;
+    if (epost) {
+      const tid = TID(booking.startAt);
+      await tx.innboksEpost.create({
+        data: {
+          fraEpost: epost,
+          fraNavn: navn,
+          emne: `Booking: ${booking.serviceType.name} ${tid}`,
+          brodtekst: `Bookingen ble avvist i AgencyOS av ${user.name ?? "coach"}.\n\nBegrunnelse: ${p.data.begrunnelse}`,
+          status: "UTKAST_KLART",
+          utkastSvar: [
+            `Hei ${navn?.split(" ")[0] ?? ""}`.trim() + ",",
+            `Vi kan dessverre ikke ta imot bookingen din: ${booking.serviceType.name}, ${tid}.`,
+            p.data.begrunnelse,
+            "Book gjerne en annen tid, eller svar på denne e-posten.",
+            `Hilsen\n${user.name ?? "AK Golf"}`,
+          ].join("\n\n"),
+          utkastGenerertAt: new Date(),
+          bookingId: booking.id,
+        },
+      });
+    }
+    return true;
+  });
+  if (!avvist) return { ok: false, feil: "Bookingen ble endret samtidig. Last siden på nytt." };
 
   await audit({
     actorId: user.id,

@@ -30,7 +30,7 @@ export type AG06Booking = {
   src: string | null;
   note: string | null;
   at: string;
-  st: "Venter" | "Bekreftet" | "Avvist";
+  st: "Venter" | "Bekreftet" | "Gjennomført" | "Avvist";
   /** Bookingen har en spillerkonto (kan få flytteforslag i PlayerHQ). */
   harSpiller: boolean;
   /** Foreslått ny tid som venter på spilleren («DD.MM HH:MM»). */
@@ -38,9 +38,9 @@ export type AG06Booking = {
 };
 
 const p2 = (n: number) => String(n).padStart(2, "0");
-const dato = (d: Date) => `${p2(d.getDate())}.${p2(d.getMonth() + 1)}`;
-const kl = (d: Date) => `${p2(d.getHours())}:${p2(d.getMinutes())}`;
-const iso = (d: Date) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+const dato = (d: Date) => `${p2(d.getUTCDate())}.${p2(d.getUTCMonth() + 1)}`;
+const kl = (d: Date) => `${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;
+const iso = (d: Date) => `${d.getUTCFullYear()}-${p2(d.getUTCMonth() + 1)}-${p2(d.getUTCDate())}`;
 
 export function betaling(b: {
   priceOre: number;
@@ -57,6 +57,7 @@ export function betaling(b: {
 
 function status(s: string): AG06Booking["st"] {
   if (s === "PENDING") return "Venter";
+  if (s === "COMPLETED") return "Gjennomført";
   if (s === "CANCELLED") return "Avvist";
   return "Bekreftet";
 }
@@ -92,7 +93,7 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     pay: betaling(r),
     src: r.googleEventId ? "Google" : r.userId ? "PlayerHQ" : "Gjest",
     note: r.notes,
-    at: dato(r.createdAt),
+    at: new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit" }).format(r.createdAt),
     st: status(r.status),
     harSpiller: r.userId != null,
     forslag: r.proposedStartAt ? `${dato(r.proposedStartAt)} ${kl(r.proposedStartAt)}` : null,

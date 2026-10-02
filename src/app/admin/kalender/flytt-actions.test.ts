@@ -28,6 +28,7 @@ function nullstill() {
     id: "b1",
     userId: "spiller-a",
     status: "CONFIRMED",
+    updatedAt: new Date("2026-01-01"),
     startAt: START,
     endAt: SLUTT,
     coachId: "coach-a",
@@ -85,10 +86,10 @@ mock.module("@/lib/workbench/wb-actions", {
 const bookingApi = {
   findFirst: async () => booking,
   findUnique: async () => booking,
-  update: async (args: { where: unknown; data: Record<string, unknown> }) => {
+  updateMany: async (args: { where: unknown; data: Record<string, unknown> }) => {
     bookingUpdates.push(args);
     booking = { ...booking, ...args.data };
-    return booking;
+    return { count: 1 };
   },
 };
 const prismaMock: Record<string, unknown> = {
@@ -111,8 +112,8 @@ test("forslag endrer ikke tiden — bare forslagsfeltene skrives", async () => {
   const data = bookingUpdates[0].data;
   assert.equal("startAt" in data, false);
   assert.equal("endAt" in data, false);
-  assert.equal((data.proposedStartAt as Date).getTime(), new Date(2031, 5, 12, 9, 30).getTime());
-  assert.equal((data.proposedEndAt as Date).getTime(), new Date(2031, 5, 12, 10, 30).getTime());
+  assert.equal((data.proposedStartAt as Date).getTime(), new Date(Date.UTC(2031, 5, 12, 9, 30)).getTime());
+  assert.equal((data.proposedEndAt as Date).getTime(), new Date(Date.UTC(2031, 5, 12, 10, 30)).getTime());
   assert.equal(data.proposedById, "coach-a");
   assert.equal((booking.startAt as Date).getTime(), START.getTime());
   assert.deepEqual(flyttEposter, ["b1"]);
@@ -132,7 +133,7 @@ test("spilleren godtar: bookingen flyttes, forslaget nullstilles og EP-02 sendes
   const { godtaFlytteforslag } = await import("@/app/portal/booking/[bookingId]/actions");
   const res = await godtaFlytteforslag("b1");
   assert.deepEqual(res, { ok: true });
-  assert.equal((booking.startAt as Date).getTime(), new Date(2031, 5, 12, 9, 30).getTime());
+  assert.equal((booking.startAt as Date).getTime(), new Date(Date.UTC(2031, 5, 12, 9, 30)).getTime());
   assert.equal(booking.proposedStartAt, null);
   assert.equal(ep02.length, 1);
   assert.equal(((ep02[0] as unknown[])[1] as Date).getTime(), START.getTime(), "EP-02 får den gamle tiden");

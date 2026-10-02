@@ -27,7 +27,9 @@
  * https://claude.ai/code/artifact/4df52812-fa4f-4654-8564-c46353fe430b
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { innboksHref } from "@/lib/admin/innboks/filter";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -36,12 +38,10 @@ import { Icon } from "@/components/v2/icon";
 import { KoHode } from "@/components/admin/v2/ko/KoHode";
 import { synligeFaner, velgFane } from "@/lib/admin/ko/faner";
 import { koFaneTellinger } from "@/lib/admin/ko/tellinger";
-import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { lastForeslatteTester } from "@/lib/admin/ko/last-foreslatte-tester";
 import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
 import { lastModerering } from "@/lib/admin/ko/last-moderering";
 import { lastAgenticosKo, lastAgenticosGodkjenn } from "@/lib/agencyos/last-agenticos";
-import { AdminGodkjenningerTrainLock } from "@/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock";
 import { AdminAgenticosKo } from "@/components/admin/v2/agenticos/AdminAgenticosKo";
 import { AdminAgenticosGodkjenn } from "@/components/admin/v2/agenticos/AdminAgenticosGodkjenn";
 import { AdminForeslatteTesterV2 } from "@/components/admin/v2/AdminForeslatteTesterV2";
@@ -55,10 +55,11 @@ export const metadata = { title: "Kø · AgencyOS" };
 export default async function KoPage({
   searchParams,
 }: {
-  searchParams: Promise<{ fane?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const { fane: onsket } = await searchParams;
+  const sp = await searchParams;
+  const onsket = Array.isArray(sp.fane) ? sp.fane[0] : sp.fane;
 
   // Effektive capabilities (rolle-default ± per-bruker-overrides), samme kilde
   // som requireCapability bruker — ikke rå rolle.
@@ -88,18 +89,20 @@ export default async function KoPage({
     );
   }
 
+  // Godkjenninger er slått inn i Innboks › Godkjenn (AG-04, «Én innboks»,
+  // 28.09.2026): samme laster, samme handlinger, lav risiko samlet,
+  // ukesrapport og løste sjekkpunkter. De andre Kø-fanene har ingen tegning i
+  // Innboks og står her uendret; Innboks lenker til dem under «Andre køer».
+  if (aktiv === "godkjenninger") {
+    const { fane: _fane, ...ovrige } = sp;
+    void _fane;
+    redirect(innboksHref("godkjenn", ovrige));
+  }
+
   const antall = await koFaneTellinger(user, faner);
   const hode = <KoHode faner={faner} aktiv={aktiv} antall={antall} />;
 
   // Kun den aktive fanen lastes — aldri alle fem.
-  if (aktiv === "godkjenninger") {
-    const data = await lastGodkjenninger(user);
-    return (
-      <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <AdminGodkjenningerTrainLock data={data} hode={hode} />
-      </V2Shell>
-    );
-  }
 
   const innhold = await (async () => {
     switch (aktiv) {
