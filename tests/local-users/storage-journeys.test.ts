@@ -293,3 +293,18 @@ test("gjennomført Workbench-økt når spillerens Stats med samme ID, akse og te
   assert.ok(stats.analyse?.gjennomforteOkter);
   assert.ok(stats.analyse?.faktiskeReps && stats.analyse.faktiskeReps >= 11);
 });
+
+test("eget publisert øktark beholder avsluttet historikk, men ikke skjulte eller upubliserte økter", async () => {
+  const session = await create();
+  for (const status of ["SKIPPED", "CANCELLED"] as const) {
+    await db.workbenchSession.update({ where: { id: session.id }, data: { status, publishedAt: null, hiddenByPlayer: false } });
+    assert.equal(data(await as("P01", () => wb.loadPlayerSession(session.id))), null);
+    await db.workbenchSession.update({ where: { id: session.id }, data: { publishedAt: NOW } });
+    assert.equal(data(await as("P01", () => wb.loadPlayerSession(session.id)))?.status, status);
+    assert.equal(data(await as("P03", () => wb.loadPlayerSession(session.id))), null);
+    await db.workbenchSession.update({ where: { id: session.id }, data: { hiddenByPlayer: true } });
+    assert.equal(data(await as("P01", () => wb.loadPlayerSession(session.id))), null);
+  }
+  await db.workbenchSession.update({ where: { id: session.id }, data: { status: "DRAFT", hiddenByPlayer: false } });
+  assert.equal(data(await as("P01", () => wb.loadPlayerSession(session.id))), null);
+});

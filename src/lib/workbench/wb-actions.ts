@@ -1273,7 +1273,12 @@ export async function loadPlayerSession(
 
   const session = mapSession(row);
   const synligStatuser: readonly string[] = SPILLER_SYNLIGE_STATUSER;
-  if (!synligStatuser.includes(session.status)) return { ok: true, data: null };
+  // Direkte øktark må kunne vise spillerens publiserte historikk etter hopp
+  // over/avlysning. Utsendte oppgaver i dagslisten bruker fortsatt aktivlisten.
+  // Et aldri publisert coach-utkast blir ikke synlig ved å avlyses.
+  const avsluttetPublisert = row.publishedAt != null
+    && (session.status === "SKIPPED" || session.status === "CANCELLED");
+  if (!synligStatuser.includes(session.status) && !avsluttetPublisert) return { ok: true, data: null };
 
   return { ok: true, data: session };
 }

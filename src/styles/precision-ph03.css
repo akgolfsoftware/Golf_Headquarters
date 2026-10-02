@@ -1,0 +1,16 @@
+/* PH-03 Øktark — Precision Athletics. Virker bare innenfor .pa-root. */
+.ph03-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;align-items:start}
+@media (min-width:768px){.ph03-cols{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+@media (min-width:1080px){.ph03-cols{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}}
+.ph03-ovelse{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:14px 0}
+.ph03-ovelse + .ph03-ovelse{border-top:1px solid var(--border-hairline)}
+.ph03-tilbake{display:inline-flex;align-items:center;gap:6px;min-height:var(--hit-min);align-self:flex-start;color:var(--text-secondary);font:var(--type-meta);letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+.ph03-tilbake:hover{color:var(--text-primary)}
+.ph03-rpe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (min-width:600px){.ph03-rpe{grid-template-columns:repeat(10,minmax(0,1fr))}}
+.ph03-rpe button{min-height:var(--hit-min);border:1px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);font:var(--type-num-s);cursor:pointer}
+.ph03-rpe button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--text-on-primary)}
+.ph03-liste__rad{display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 12px;align-items:start;padding:14px 0;color:inherit;text-decoration:none;min-height:var(--hit-min)}
+.ph03-liste li + li .ph03-liste__rad{border-top:1px solid var(--border-hairline)}
+.ph03-liste__rad > :last-child{grid-column:2;justify-self:start}
+@media (min-width:768px){.ph03-liste__rad{grid-template-columns:56px minmax(0,1fr) auto;align-items:center}.ph03-liste__rad > :last-child{grid-column:3;justify-self:end}}

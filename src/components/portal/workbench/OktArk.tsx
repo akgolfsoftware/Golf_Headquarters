@@ -1,429 +1,146 @@
 "use client";
 
 /**
- * Spillerens økt-ark for en publisert Workbench-økt (Loop 3S).
- * Fasit: designsystem/train-lock/PH-04 Økt-ark.dc.html
- * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-04
- * Økt-ark) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
- * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
- * Avvik:
- *   - tegningen er et ark; koden er en side (fase 2, Anders 08.09). Ingen
- *     riggrad ennå. Start går til live-tapper (samme beslutning som I dag).
- * Start → IN_PROGRESS + `/portal/live/{id}/tapper`. Pågående: Fortsett til
- * tapper (primær) + Fullfør på arket. Ferdig: Se recap til summary.
- * Kaller wb-actions direkte (server actions) — WbResultat + toast ved feil,
- * lokal state oppdateres optimistisk fra returnert økt (ingen full reload).
+ * Spillerens økt-ark for en publisert Workbench-økt — PH-03 Øktark i Precision
+ * Athletics (Claude Design 7d7c2994). Visningen er PH03Oktark; denne filen eier
+ * bare handlingene: Start → IN_PROGRESS + live-tapper, Fullfør med sRPE og
+ * faktisk tid, Hopp over (bekreftes i ark). Kaller wb-actions direkte
+ * (WbResultat + toast ved feil); lokal state oppdateres fra returnert økt.
+ * Avvik fra tegningen: hopp over-arket har ikke årsaksvalg (årsaken lagres
+ * ingen steder ennå).
  */
 
-import { useState, useTransition, type CSSProperties } from "react";
-import Link from "next/link";
+import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
-import {
-  UI,
-  PYRAMID_LABEL,
-  formatMinutes,
-} from "@/lib/domain/workbench/labels";
+import { Check, Play, SkipForward } from "lucide-react";
+import { UI, PYRAMID_LABEL, formatMinutes } from "@/lib/domain/workbench/labels";
 import { formatIntervallPunkt } from "@/lib/portal/idag-visning";
 import { oktArkLiveHref } from "@/lib/portal/session-hrefs";
-import type { WorkbenchSession } from "@/lib/domain/workbench/types";
-import {
-  startSession,
-  completeSessionWithEffort,
-  skipSession,
-  updateSessionEffort,
-} from "@/lib/workbench/wb-actions";
+import type { Belastning, Press, WorkbenchSession } from "@/lib/domain/workbench/types";
+import { startSession, completeSessionWithEffort, skipSession, updateSessionEffort } from "@/lib/workbench/wb-actions";
 import { computeSessionLoad, RPE_SKALA } from "@/lib/domain/workbench/load";
-import { STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
+import { Knapp, KnappLenke, Meta, type Akse } from "@/components/precision/pa";
+import { Ark, Skjemafelt, Tekstfelt } from "@/components/precision/pa-a4";
+import { PH03Oktark, type PH03Status } from "@/components/portal/precision/PH03Oktark";
 
 type Handling = "start" | "fullfor" | "hopp-over";
 
-const kort: CSSProperties = {
-  background: TL.elev,
-  borderRadius: TL.radius.card,
-  padding: 20,
+const STATUS: Partial<Record<WorkbenchSession["status"], PH03Status>> = {
+  PUBLISHED: "Planlagt", SCHEDULED: "Planlagt", IN_PROGRESS: "Pågår", COMPLETED: "Gjennomført", SKIPPED: "Hoppet over", CANCELLED: "Avlyst",
 };
 
-/** PH-04: caps-linjen er sans 11/600 med 0.08em — ikke mono. */
-const eyebrow: CSSProperties = {
-  fontFamily: TL.font.sans,
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  color: TL.mute,
-};
+const BELASTNING_NAVN: Record<Belastning, string> = { INNENDORS: "Innendørs", TRENINGSOMRADE: "Treningsområde", BANE: "Bane", KONKURRANSE: "Konkurranse" };
+const PRESS_NAVN: Record<Press, string> = { ALENE: "Alene", OBSERVERT: "Observert", KONKURRANSE: "Konkurranse", TURNERING: "Turnering" };
 
-const primærKnapp: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 48,
-  width: "100%",
-  borderRadius: TL.radius.pill,
-  border: "none",
-  background: TL.fill,
-  color: TL.onFill,
-  fontFamily: TL.font.sans,
-  fontSize: 16,
-  fontWeight: 700,
-  cursor: "pointer",
-  textDecoration: "none",
-  boxSizing: "border-box",
-};
+/** Felles verdi på tvers av øvelsene; null når øvelsene er ulike eller ingen har verdi (vises som «—»). */
+function feltlik<T extends string>(verdier: (T | undefined)[], navn: Record<T, string>): string | null {
+  const satt = new Set(verdier.filter((v): v is T => v != null));
+  return satt.size === 1 && verdier.every((v) => v != null) ? navn[[...satt][0]] : null;
+}
 
-const sekundærKnapp: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 44,
-  width: "100%",
-  border: "none",
-  background: "none",
-  color: TL.mute,
-  fontFamily: TL.font.sans,
-  fontSize: 15,
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-export function OktArk({ session: initial }: { session: WorkbenchSession }) {
+export function OktArk({ session: initial, coachNavn = null }: { session: WorkbenchSession; coachNavn?: string | null }) {
   const router = useRouter();
+  const varighetId = useId();
   const [session, setSession] = useState(initial);
   const [travel, startTravel] = useTransition();
-  const [aktivHandling, setAktivHandling] = useState<Handling | null>(null);
-  const [valgtEffort, setValgtEffort] = useState<number | null>(session.perceivedEffort ?? null);
-  const [faktiskeMinutter, setFaktiskeMinutter] = useState<string>(
-    session.actualMinutes != null ? String(session.actualMinutes) : String(session.durationMinutes)
-  );
+  const [aktiv, setAktiv] = useState<Handling | null>(null);
+  const [hoppArk, setHoppArk] = useState(false);
+  const [effort, setEffort] = useState<number | null>(session.perceivedEffort ?? null);
+  const [minutter, setMinutter] = useState(String(session.actualMinutes ?? session.durationMinutes));
 
-  const parsedMin = parseInt(faktiskeMinutter, 10);
-  const faktiskTid = Number.isFinite(parsedMin) && parsedMin > 0 ? parsedMin : session.durationMinutes;
-  const loadBeregnet = computeSessionLoad({
-    durationMinutes: session.durationMinutes,
-    actualMinutes: faktiskTid,
-    perceivedEffort: valgtEffort,
-  });
+  const parsed = parseInt(minutter, 10);
+  const faktiskTid = Number.isFinite(parsed) && parsed > 0 ? parsed : session.durationMinutes;
+  const belastning = computeSessionLoad({ durationMinutes: session.durationMinutes, actualMinutes: faktiskTid, perceivedEffort: effort });
 
   function lagreBelastning() {
+    setAktiv(null);
     startTravel(async () => {
-      const res = await updateSessionEffort({
-        sessionId: session.id,
-        perceivedEffort: valgtEffort,
-        actualMinutes: faktiskTid,
-      });
-      if (!res.ok) {
-        toast.error(res.error);
-        return;
-      }
+      const res = await updateSessionEffort({ sessionId: session.id, perceivedEffort: effort, actualMinutes: faktiskTid });
+      if (!res.ok) { toast.error(res.error); return; }
       setSession(res.data);
       toast.success("Belastning lagret");
     });
   }
 
-  function utfor(handling: Handling) {
-    setAktivHandling(handling);
+  function utfor(h: Handling) {
+    setAktiv(h);
     startTravel(async () => {
-      const res =
-        handling === "start"
-          ? await startSession(session.id)
-          : handling === "fullfor"
-            ? await completeSessionWithEffort({
-                sessionId: session.id,
-                perceivedEffort: valgtEffort,
-                actualMinutes: faktiskTid,
-              })
-            : await skipSession(session.id);
-      if (!res.ok) {
-        toast.error(res.error);
-        return;
-      }
-      if (handling === "start") {
-        router.push(oktArkLiveHref(session.id, "IN_PROGRESS"));
-        return;
-      }
+      const res = h === "start" ? await startSession(session.id)
+        : h === "fullfor" ? await completeSessionWithEffort({ sessionId: session.id, perceivedEffort: effort, actualMinutes: faktiskTid })
+        : await skipSession(session.id);
+      if (!res.ok) { toast.error(res.error); return; }
+      if (h === "start") { router.push(oktArkLiveHref(session.id, "IN_PROGRESS")); return; }
+      setHoppArk(false);
       setSession(res.data);
-      if (handling === "fullfor") toast.success("Økt fullført");
-      if (handling === "hopp-over") toast.success("Hoppet over");
+      toast.success(h === "fullfor" ? "Økt fullført" : "Hoppet over");
     });
   }
+  const laster = (h: Handling) => travel && aktiv === h;
 
-  const laster = (h: Handling) => travel && aktivHandling === h;
+  const planlagt = session.status === "PUBLISHED" || session.status === "SCHEDULED";
+  const pagar = session.status === "IN_PROGRESS";
+  const ferdig = session.status === "COMPLETED";
+
+  const handlinger = planlagt ? <>
+    <Knapp icon={Play} iconName="play" loading={laster("start")} loadingText="Starter …" disabled={travel} onClick={() => utfor("start")}>{UI.startSession}</Knapp>
+    <Knapp variant="ghost" icon={SkipForward} iconName="skip-forward" disabled={travel} onClick={() => setHoppArk(true)}>{UI.skipSession}</Knapp>
+  </> : pagar ? <>
+    <Knapp icon={Check} iconName="check" loading={laster("fullfor")} loadingText="Fullfører …" disabled={travel} onClick={() => utfor("fullfor")}>{UI.completeSession}</Knapp>
+    <KnappLenke href={oktArkLiveHref(session.id, "IN_PROGRESS")} variant="secondary" icon={Play} iconName="play">{UI.continueSession}</KnappLenke>
+    <Knapp variant="ghost" icon={SkipForward} iconName="skip-forward" disabled={travel} onClick={() => setHoppArk(true)}>{UI.skipSession}</Knapp>
+  </> : ferdig ? <KnappLenke href={oktArkLiveHref(session.id, "COMPLETED")} variant="secondary">{UI.seRecap}</KnappLenke> : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: TL.loft.s2, maxWidth: 460, margin: "0 auto", width: "100%" }}>
-      <div>
-        <span style={{ ...eyebrow, color: session.status === "COMPLETED" ? TL.warmText : eyebrow.color }}>
-          {session.status === "PUBLISHED" ? UI.inspectorTitle : STATUS_CAPS[session.status]} ·{" "}
-          {formatMinutes(session.durationMinutes)}
-        </span>
-        <h1 style={{ margin: "7px 0 0", fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
-          {session.title}
-        </h1>
-        <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-          {[
-            PYRAMID_LABEL[session.pyramid],
-            session.location?.trim(),
-            formatIntervallPunkt(session.startMinute, session.durationMinutes),
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </span>
-      </div>
-
-      {session.notes && (
-        <div style={kort}>
-          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
-            {session.notes}
-          </p>
-        </div>
-      )}
-
-      <div style={{ ...kort, padding: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px 0" }}>
-          <span style={eyebrow}>{UI.drills}</span>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{session.drills.length}</span>
-        </div>
-        {session.drills.length === 0 ? (
-          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, padding: "12px 20px 20px" }}>
-            {UI.emptyDrills}
-          </p>
-        ) : (
-          <div style={{ marginTop: 8, paddingBottom: 4 }}>
-            {session.drills.map((d, i) => (
-              <div
-                key={d.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  padding: "14px 20px",
-                  borderTop: `1px solid ${TL.hair}`,
-                }}
-              >
-                <span
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    flex: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: TL.fill,
-                    color: TL.onFill,
-                    fontFamily: TL.font.sans,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {i + 1}
-                </span>
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>{d.title}</span>
-                  <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{d.techniqueFocus}</span>
-                </span>
-                <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
-                  {d.durationMinutes} min
-                </span>
-              </div>
+    <PH03Oktark
+      tilstand="data"
+      kicker={`${PYRAMID_LABEL[session.pyramid]} · ${formatIntervallPunkt(session.startMinute, session.durationMinutes)}${session.location?.trim() ? ` · ${session.location.trim()}` : ""}`}
+      tittel={session.title}
+      status={STATUS[session.status] ?? "Planlagt"}
+      statusMeta={pagar ? `${session.drills.length} ØVELSER` : null}
+      ovelser={session.drills.map((d) => ({ id: d.id, akse: d.akFormel.pyramid.toLowerCase() as Akse, navn: d.title, kode: d.akFormel.label || null, fokus: d.techniqueFocus, mengde: null, min: d.durationMinutes, gjort: null }))}
+      nokler={[
+        ["Fokus", [...new Set(session.drills.map((d) => d.techniqueFocus).filter((f): f is string => !!f))].join(", ") || null],
+        ["Belastning", feltlik(session.drills.map((d) => d.akFormel.belastning), BELASTNING_NAVN)],
+        ["Press", feltlik(session.drills.map((d) => d.akFormel.press), PRESS_NAVN)],
+        ["Mål", session.maalsetning?.trim() || null],
+        ["Coach", coachNavn],
+        ["Varighet", formatMinutes(session.durationMinutes)],
+        ["Pyramide", PYRAMID_LABEL[session.pyramid]],
+        ["Sted", session.location?.trim() || null],
+        ["Faktisk tid", session.actualMinutes != null ? formatMinutes(session.actualMinutes) : null],
+      ]}
+      notatTittel="Notat fra coach"
+      notat={session.notes ? { tekst: session.notes, kilde: "COACH" } : null}
+      tilbake={{ href: "/portal", label: "I dag" }}
+      handlinger={handlinger}
+      feilKode={`FEIL · ØKT · ${session.id.slice(0, 8).toUpperCase()}`}
+      ekstra={(pagar || ferdig) ? (
+        <section aria-label="Opplevd anstrengelse" className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0 }}>
+          <span className="kicker">Opplevd anstrengelse (sRPE)</span>
+          <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Hvor anstrengende var økten, fra 1 (veldig lett) til 10 (maksimalt)?</p>
+          <div className="ph03-rpe" role="group" aria-label="Velg anstrengelse fra 1 til 10">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+              <button key={n} type="button" aria-pressed={effort === n} title={`${n}: ${RPE_SKALA[n]?.kort} — ${RPE_SKALA[n]?.beskrivelse}`} onClick={() => setEffort(n)}>{n}</button>
             ))}
           </div>
-        )}
-      </div>
-
-      {session.status === "PUBLISHED" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <button type="button" style={primærKnapp} onClick={() => utfor("start")} disabled={travel}>
-            {laster("start") ? "Starter …" : UI.startSession}
-          </button>
-          <button type="button" style={sekundærKnapp} onClick={() => utfor("hopp-over")} disabled={travel}>
-            {laster("hopp-over") ? "Lagrer …" : UI.skipSession}
-          </button>
-        </div>
-      )}
-
-      {session.status === "IN_PROGRESS" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <Link href={oktArkLiveHref(session.id, "IN_PROGRESS")} style={primærKnapp}>
-            {UI.continueSession}
-          </Link>
-          <button type="button" style={sekundærKnapp} onClick={() => utfor("fullfor")} disabled={travel}>
-            {laster("fullfor") ? "Fullfører …" : UI.completeSession}
-          </button>
-          <button type="button" style={sekundærKnapp} onClick={() => utfor("hopp-over")} disabled={travel}>
-            {laster("hopp-over") ? "Lagrer …" : UI.skipSession}
-          </button>
-        </div>
-      )}
-
-      {(session.status === "IN_PROGRESS" || session.status === "COMPLETED") && (
-        <div style={{ ...kort, display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={eyebrow}>Opplevd anstrengelse (sRPE)</span>
-            {loadBeregnet != null && (
-              <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.warmText }}>
-                {loadBeregnet} belastningspoeng
-              </span>
-            )}
-          </div>
-          <p style={{ margin: 0, fontSize: 12, fontFamily: TL.font.sans, color: TL.mute }}>
-            Hvor anstrengende var økten på en skala fra 1 (veldig lett) til 10 (maksimalt)?
-          </p>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 4 }}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
-              const aktiv = valgtEffort === num;
-              return (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => setValgtEffort(num)}
-                  title={`${num}: ${RPE_SKALA[num]?.kort} — ${RPE_SKALA[num]?.beskrivelse}`}
-                  style={{
-                    height: 36,
-                    borderRadius: 4,
-                    border: `1px solid ${aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.hair}`,
-                    background: aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.dock,
-                    color: aktiv ? TL.onFill : TL.text,
-                    fontFamily: TL.font.mono,
-                    fontSize: 13,
-                    fontWeight: aktiv ? 700 : 500,
-                    cursor: "pointer",
-                    transition: "all 0.15s ease",
-                  }}
-                >
-                  {num}
-                </button>
-              );
-            })}
-          </div>
-
-          {valgtEffort != null && (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: TL.dock, padding: "6px 10px", borderRadius: 4 }}>
-              <span style={{ fontSize: 12, fontFamily: TL.font.sans, fontWeight: 600, color: TL.text }}>
-                {valgtEffort} / 10 · {RPE_SKALA[valgtEffort]?.kort}
-              </span>
-              <span style={{ fontSize: 11, fontFamily: TL.font.sans, color: TL.mute }}>
-                {RPE_SKALA[valgtEffort]?.beskrivelse}
-              </span>
-            </div>
-          )}
-
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
-            <label style={{ fontSize: 12, fontFamily: TL.font.sans, color: TL.mute, flex: 1 }}>
-              Faktisk varighet (minutter):
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="600"
-              value={faktiskeMinutter}
-              onChange={(e) => setFaktiskeMinutter(e.target.value)}
-              style={{
-                width: 80,
-                height: 32,
-                borderRadius: 4,
-                border: `1px solid ${TL.hair}`,
-                background: TL.dock,
-                color: TL.text,
-                fontFamily: TL.font.mono,
-                fontSize: 13,
-                textAlign: "center",
-              }}
-            />
-          </div>
-
-          {session.status === "COMPLETED" && (
-            <button
-              type="button"
-              onClick={lagreBelastning}
-              disabled={travel}
-              style={{
-                ...sekundærKnapp,
-                marginTop: 6,
-                background: "var(--ak-grunn-farge-rust-600)",
-                color: TL.onFill,
-                border: "none",
-              }}
-            >
-              {travel ? "Lagrer …" : "Lagre belastning"}
-            </button>
-          )}
-        </div>
-      )}
-
-      {session.status === "COMPLETED" && (
-        <div style={kort}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {/* Warm hake med tegne-animasjon — delight-budsjettet (én gang per
-                økt). Ring lander fra scale(0.9), haken tegnes rett etter. */}
-            <span
-              className="v2-hake-ring"
-              aria-hidden
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                border: `1.5px solid ${WARM}`,
-                flex: "none",
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  className="v2-hake-tegn"
-                  d="M2.5 7.5 L5.5 10.5 L11.5 3.5"
-                  stroke={WARM}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-              {UI.sessionCompletedTitle}
-            </span>
-          </div>
-          <Link
-            href={oktArkLiveHref(session.id, "COMPLETED")}
-            style={{ ...primærKnapp, marginTop: 16 }}
-          >
-            {UI.seRecap}
-          </Link>
-        </div>
-      )}
-
-      {session.status === "SKIPPED" && (
-        <div style={kort}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Icon name="arrow-right" size={18} style={{ color: TL.mute }} />
-            <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-              {UI.sessionSkippedTitle}
-            </span>
-          </div>
-        </div>
-      )}
-
-      <Link
-        href="/portal"
-        style={{
-          textDecoration: "none",
-          textAlign: "center",
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          fontWeight: 600,
-          color: TL.mute,
-          padding: "4px 0",
-        }}
-      >
-        {UI.backToToday}
-      </Link>
-    </div>
+          {effort != null && <Meta>{effort} / 10 · {(RPE_SKALA[effort]?.kort ?? "").toUpperCase()}</Meta>}
+          {effort != null && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{RPE_SKALA[effort]?.beskrivelse}</p>}
+          <Skjemafelt label="Faktisk varighet (minutter)" htmlFor={varighetId}>
+            <Tekstfelt id={varighetId} value={minutter} onChange={setMinutter} mono inputMode="numeric" />
+          </Skjemafelt>
+          {belastning != null && <Meta>{belastning} BELASTNINGSPOENG</Meta>}
+          {ferdig && <Knapp variant="secondary" fullWidth loading={travel} disabled={travel} onClick={lagreBelastning}>Lagre belastning</Knapp>}
+        </section>
+      ) : null}
+    >
+      <Ark open={hoppArk} onClose={() => setHoppArk(false)} kicker="Hoppe over" title={session.title}
+        footer={<>
+          <Knapp fullWidth loading={laster("hopp-over")} disabled={travel} onClick={() => utfor("hopp-over")}>Hopp over økt</Knapp>
+          <Knapp variant="ghost" fullWidth onClick={() => setHoppArk(false)}>Avbryt</Knapp>
+        </>}>
+        <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Coachen din ser at økta er hoppet over og kan flytte den.</p>
+      </Ark>
+    </PH03Oktark>
   );
 }

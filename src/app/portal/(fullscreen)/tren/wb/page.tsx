@@ -1,109 +1,73 @@
 /**
- * Dagens Workbench-økter — spiller-liste (Loop 3S). Kun PUBLISHED |
- * IN_PROGRESS | COMPLETED (loadPlayerDay skjuler DRAFT). Lenker til
- * økt-arket der Start / Fullfør / Hopp over skjer.
- *
- * Egen, midlertidig inngang ved siden av «I dag» (chat-først) — full
- * integrasjon av loadPlayerDay i I dag hører til Loop 3.
+ * Dagens Workbench-økter — spiller-liste (Loop 3S), Precision Athletics.
+ * Kun PUBLISHED | IN_PROGRESS | COMPLETED (loadPlayerDay skjuler DRAFT).
+ * Lenker til økt-arket (PH-03) der Start / Fullfør / Hopp over skjer.
+ * Ingen egen tegning: bygd av samme deler som I dag (PH-01) og øktarket.
  */
 
 import Link from "next/link";
+import { CircleAlert, ListPlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { loadPlayerDay } from "@/lib/workbench/wb-actions";
 import { UI, PYRAMID_LABEL, formatMinutes, formatTime } from "@/lib/domain/workbench/labels";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
-import { harHake, STATUS_CAPS } from "@/components/workbench/wb-visuelt";
 import type { SessionStatus } from "@/lib/domain/workbench/types";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { AkseMerke, FeilTilstand, KnappLenke, Meta, StatusPille, TomTilstand, type Akse } from "@/components/precision/pa";
+import { SideHode } from "@/components/precision/pa-a4";
+import "@/styles/precision-ph03.css";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Dagens økter · PlayerHQ" };
+
+const STATUS: Partial<Record<SessionStatus, { navn: string; tone: "neutral" | "info" | "ok" | "warn" }>> = {
+  PUBLISHED: { navn: "Planlagt", tone: "neutral" }, SCHEDULED: { navn: "Planlagt", tone: "neutral" },
+  IN_PROGRESS: { navn: "Pågår", tone: "info" }, COMPLETED: { navn: "Gjennomført", tone: "ok" },
+  SKIPPED: { navn: "Hoppet over", tone: "warn" }, CANCELLED: { navn: "Avlyst", tone: "warn" },
+};
 
 export default async function WorkbenchDagensOkterPage() {
   const user = await requirePortalUser({ allow: ["PLAYER"] });
   const iDag = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
-  const res = await loadPlayerDay({ playerId: user.id, date: iDag });
+  const [res, uleste] = await Promise.all([
+    loadPlayerDay({ playerId: user.id, date: iDag }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
+  const okter = res.ok ? res.data.sessions : [];
 
   return (
-    <div style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}>
-      <div
-        className="mx-auto w-full max-w-[460px] px-4 pb-8 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6"
-        style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
-      >
-        <header style={{ marginBottom: 16 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 26, letterSpacing: "-0.01em", color: TL.text }}>
-            {UI.today}
-          </h1>
-          <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.mono, fontSize: 11, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute }}>
-            Workbench
-          </span>
-        </header>
-
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <div className="pa-side">
+        <SideHode kicker="Workbench" title={UI.today} />
         {!res.ok ? (
-          <FeilKort melding={res.error} />
-        ) : res.data.sessions.length === 0 ? (
-          <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0 }}>{UI.playerNoSessions}</p>
-          </div>
+          <FeilTilstand icon={CircleAlert} title="Kunne ikke hente dagens økter" text={res.error}
+            retry={<KnappLenke href="/portal" variant="secondary">{UI.backToToday}</KnappLenke>} />
+        ) : okter.length === 0 ? (
+          <TomTilstand icon={ListPlus} title={UI.playerNoSessions} text="Coachen legger inn øktene dine i planen."
+            actions={<KnappLenke href="/portal/planlegge" variant="secondary">Åpne planen</KnappLenke>} />
         ) : (
-          <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 0 }}>
-            {res.data.sessions.map((s, i) => {
-              const status = s.status as SessionStatus;
+          <ul className="pa-card ph03-liste" style={{ padding: "0 16px", margin: 0, listStyle: "none" }}>
+            {okter.map((s) => {
+              const st = STATUS[s.status as SessionStatus] ?? { navn: String(s.status), tone: "neutral" as const };
               return (
-                <Link
-                  key={s.id}
-                  href={`/portal/tren/wb/${s.id}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    padding: "16px 20px",
-                    borderTop: i === 0 ? "none" : `1px solid ${TL.hair}`,
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
-                >
-                  <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                    {formatTime(s.startMinute)}
-                  </span>
-                  <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>{s.title}</span>
-                    <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-                      {PYRAMID_LABEL[s.pyramid as keyof typeof PYRAMID_LABEL] ?? s.pyramid} · {formatMinutes(s.durationMinutes)}
+                <li key={s.id}>
+                  <Link href={`/portal/tren/wb/${s.id}`} className="ph03-liste__rad">
+                    <Meta style={{ font: "var(--type-num-s)" }}>{formatTime(s.startMinute)}</Meta>
+                    <span style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+                      <span style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                        <AkseMerke axis={s.pyramid.toLowerCase() as Akse} />
+                        <span style={{ font: "500 15px/1.3 var(--font-sans)", color: "var(--text-primary)", flex: "1 1 160px", minWidth: 0, overflowWrap: "anywhere" }}>{s.title}</span>
+                      </span>
+                      <Meta>{`${PYRAMID_LABEL[s.pyramid as keyof typeof PYRAMID_LABEL] ?? s.pyramid} · ${formatMinutes(s.durationMinutes)}`.toUpperCase()}</Meta>
                     </span>
-                  </span>
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      flex: "none",
-                      fontFamily: TL.font.mono,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      letterSpacing: TL.track.capsSm,
-                      color: harHake(status) ? TL.warmText : TL.mute,
-                    }}
-                  >
-                    {harHake(status) && <Icon name="check" size={10} style={{ color: TL.warm }} />}
-                    {STATUS_CAPS[status]}
-                  </span>
-                </Link>
+                    <StatusPille tone={st.tone}>{st.navn}</StatusPille>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
       </div>
-    </div>
-  );
-}
-
-function FeilKort({ melding }: { melding: string }) {
-  return (
-    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <Icon name="triangle-alert" size={16} style={{ color: TL.danger }} />
-        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{melding}</span>
-      </div>
-    </div>
+    </PlayerHQSkall>
   );
 }
