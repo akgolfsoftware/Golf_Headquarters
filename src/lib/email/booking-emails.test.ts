@@ -4,6 +4,7 @@ let subject = "";
 let templateSubject = "Test";
 let templateBody = "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}";
 let html = "";
+let cancellationAt: Date | null = new Date("2026-10-09T07:14:00Z");
 let rejected = false;
 let logged = 0;
 let templateActive = true;
@@ -13,6 +14,7 @@ let sentCount = 0;
 let providerKeys: string[] = [];
 let bookingOverride: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: {
+  auditLog: { findFirst: async () => cancellationAt ? { createdAt: cancellationAt } : null },
   booking: { findUnique: async () => ({
     id: "synthetic", status: "CONFIRMED", userId: null, user: null, guestName: '<img src="x">', guestEmail: "synthetic@akgolf.test",
     startAt: new Date("2026-10-10T10:30:00Z"), endAt: new Date("2026-10-10T11:30:00Z"), priceOre: 10000, subscriptionId: null,
@@ -30,9 +32,10 @@ mock.module("@/lib/email", { namedExports: {
   } } }),
 } });
 mock.module("@/lib/error-tracking", { namedExports: { logError: async () => { logged++; } } });
-test.beforeEach(() => { html = ""; rejected = false; logged = 0; templateActive = true; templateMissing = false; providerThrows = false; sentCount = 0; providerKeys = []; bookingOverride = {}; subject = ""; templateSubject = "Test"; templateBody = "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}"; });
+test.beforeEach(() => { html = ""; rejected = false; logged = 0; templateActive = true; templateMissing = false; providerThrows = false; sentCount = 0; providerKeys = []; bookingOverride = {}; cancellationAt = new Date("2026-10-09T07:14:00Z"); subject = ""; templateSubject = "Test"; templateBody = "Hei {{name}}\n\n{{time}}\n\n{{refundLine}}"; });
 test("avbestillingsmelding viser refusjon og behandler navn som tekst", async () => {
   const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED" };
   await sendBookingCancellation("synthetic", { refundIssued: true });
   assert.match(html, /Refusjon er behandlet/); assert.doesNotMatch(html, /ingen refusjon/);
   assert.doesNotMatch(html, /<img/); assert.match(html, /&lt;img/); assert.match(html, /10:30/);
@@ -45,14 +48,16 @@ test("leverandørens returnerte feil logges og kastes", async () => {
 });
 test("ventende refusjon lover ikke at pengene allerede er tilbakeført", async () => {
   const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED" };
   await sendBookingCancellation("synthetic", { refundPending: true });
   assert.match(html, /venter på behandling/); assert.doesNotMatch(html, /Refusjon er behandlet|ingen refusjon/);
 });
 
 test("gratis avbestilling påstår ikke at kunden overskred fristen", async () => {
   const { sendBookingCancellation } = await import("./booking-emails");
-  await sendBookingCancellation("synthetic");
-  assert.match(html, /Bookingen er avbestilt/); assert.doesNotMatch(html, /etter avbestillingsfristen/);
+  bookingOverride = { status: "CANCELLED", priceOre: 0 };
+  await sendBookingCancellation("synthetic", { lateCancelNoRefund: true });
+  assert.match(html, /Timen er avbestilt/); assert.doesNotMatch(html, /etter avbestillingsfristen/);
 });
 
 
@@ -191,4 +196,59 @@ for (const method of ["sendBookingConfirmation", "sendBookingReminder", "sendBoo
   templateBody = "Ny lagret beskjed";
   await senders[method]("synthetic", new Date("2026-10-09T08:30:00Z"));
   assert.match(html, /Ny lagret beskjed/); assert.doesNotMatch(html, /Behold mine egne ord/);
+});
+
+test("avbestilling viser faktisk historikktid i Oslo og bestilt veggklokke", async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED", serviceType: { name: "Syntetisk time", durationMin: 45 } };
+  await sendBookingCancellation("synthetic");
+  assert.match(html, /09.10.2026 kl. 09:14/);
+  assert.match(html, /10:30–11:30/);
+  assert.match(html, /Syntetisk time 60 min/);
+  assert.doesNotMatch(html, /etter avbestillingsfristen|Refusjon er behandlet/);
+});
+test("manglende avbestillingshistorikk blir ukjent, ikke dagens klokke", async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED" }; cancellationAt = null;
+  await sendBookingCancellation("synthetic");
+  assert.match(html, />—</); assert.doesNotMatch(html, /09:14/);
+});
+for (const state of ["CONFIRMED", "COMPLETED", "PENDING"]) test(`avbestilling sendes ikke for ${state}`, async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: state };
+  await sendBookingCancellation("synthetic"); assert.equal(sentCount, 0);
+});
+test("avbestilling uten mottaker sender ingen melding", async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED", guestEmail: null };
+  await sendBookingCancellation("synthetic"); assert.equal(sentCount, 0);
+});
+for (const mode of ["deaktivert", "mangler"]) test(`avbestilling respekterer ${mode} mal`, async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED" }; templateActive = mode !== "deaktivert"; templateMissing = mode === "mangler";
+  await assert.rejects(() => sendBookingCancellation("synthetic"), /mangler eller er deaktivert/); assert.equal(sentCount, 0);
+});
+for (const mode of ["avvist", "transport"]) test(`avbestilling melder ${mode} leverandørfeil`, async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED" }; rejected = mode === "avvist"; providerThrows = mode === "transport";
+  await assert.rejects(() => sendBookingCancellation("synthetic")); assert.equal(logged, 1);
+});
+test("avbestilling bevarer øre og skiller gjenopprettet klipp fra pengebetaling", async () => {
+  const { sendBookingCancellation } = await import("./booking-emails");
+  bookingOverride = { status: "CANCELLED", priceOre: 95050 };
+  await sendBookingCancellation("synthetic", { refundIssued: true }); assert.match(html, /950,50 kr/);
+  bookingOverride = { ...bookingOverride, subscriptionId: "synthetic-sub", subscription: { creditsRemaining: 6, monthlyCredits: 4 } };
+  await sendBookingCancellation("synthetic", { isCreditBooking: true });
+  assert.match(html, /6 klipp igjen/); assert.doesNotMatch(html, /6 av 4|950,50|til kortet/);
+});
+
+test("avbestilling bruker lagret mal med faktisk refundLine og bevarer faktarader", async () => {
+ const { sendBookingCancellation } = await import("./booking-emails");
+ bookingOverride = { status: "CANCELLED" };
+ templateSubject = "Min avbestilling {{time}}";
+ templateBody = "Lagret tekst {{spillerNavn}}: {{refundLine}}";
+ await sendBookingCancellation("synthetic", { refundPending: true });
+ assert.equal(subject, "Min avbestilling 10:30"); assert.match(html, /Lagret tekst &lt;img/);
+ assert.match(html, /venter på behandling/); assert.doesNotMatch(html, /Refusjon er behandlet|<img/);
+ assert.match(html, /09.10.2026 kl. 09:14/); assert.match(html, /Tjeneste/);
 });
