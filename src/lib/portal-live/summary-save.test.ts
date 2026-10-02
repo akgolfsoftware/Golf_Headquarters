@@ -77,3 +77,18 @@ test("uferdig økt og ugyldige eller for lange verdier gir ingen lagring", async
   for (const kvalitet of [NaN, 1.5, 0, 6]) assert.equal((await actions.lagreSpillerVurdering("session", { ...rating, kvalitet })).ok, false);
   assert.equal(updates, 0);
 });
+test("PH-07: belastning og fokus 1–10 lagres uten kvalitet, og uten planspeil", async () => {
+  const res = await actions.lagreSpillerVurdering("session", { rpe: 6, fokus: 7, nesteFokus: "" });
+  assert.equal(res.ok, true);
+  const sv = summary.spillerVurdering as { kvalitet: number | null; fokus: number; rpe: number; sRpe: number };
+  assert.equal(sv.kvalitet, null);
+  assert.equal(sv.fokus, 7);
+  assert.equal(sv.rpe, 6);
+  assert.equal(sv.sRpe, 60);
+  assert.equal(mirror, null);
+});
+test("PH-07: fokus utenfor 1–10 og tom vurdering gir ingen lagring", async () => {
+  for (const fokus of [0, 11, 2.5, NaN]) assert.equal((await actions.lagreSpillerVurdering("session", { rpe: 5, fokus, nesteFokus: "" })).ok, false);
+  assert.equal((await actions.lagreSpillerVurdering("session", { nesteFokus: "" })).ok, false);
+  assert.equal(updates, 0);
+});

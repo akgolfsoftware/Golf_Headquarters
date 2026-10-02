@@ -537,14 +537,22 @@ export async function lagreDineOrd(
 /** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */
 export async function lagreSpillerVurdering(
   sessionId: string,
-  input: { kvalitet: number; nesteFokus: string; folelse?: string; rpe?: number },
+  input: { kvalitet?: number; fokus?: number; nesteFokus: string; folelse?: string; rpe?: number },
 ): Promise<{ ok: boolean; error?: string }> {
   const { user, session } = await verifyAccess(sessionId);
   if (session.status !== "COMPLETED") {
     return { ok: false, error: "Økta er ikke fullført ennå" };
   }
-  if (!Number.isInteger(input.kvalitet) || input.kvalitet < 1 || input.kvalitet > 5) {
+  // PH-07: Belastning (rpe) og Fokus (1–10) erstatter kvalitet 1–5 i det nye skjemaet.
+  // Kvalitet er valgfri, men må være 1–5 når den sendes.
+  if (input.kvalitet !== undefined && (!Number.isInteger(input.kvalitet) || input.kvalitet < 1 || input.kvalitet > 5)) {
     return { ok: false, error: "Kvalitet må være 1–5" };
+  }
+  if (input.fokus !== undefined && (!Number.isInteger(input.fokus) || input.fokus < 1 || input.fokus > 10)) {
+    return { ok: false, error: "Fokus må være et helt tall 1–10" };
+  }
+  if (input.kvalitet === undefined && input.rpe === undefined && input.fokus === undefined) {
+    return { ok: false, error: "Fyll inn belastning eller fokus" };
   }
   if (
     input.rpe !== undefined &&
@@ -573,7 +581,8 @@ export async function lagreSpillerVurdering(
 
   await prisma.$transaction(async (tx) => {
     const count = await tx.$executeRaw(summaryFieldUpdate(sessionId, "spillerVurdering", {
-      kvalitet: input.kvalitet,
+      kvalitet: input.kvalitet ?? null,
+      fokus: input.fokus ?? null,
       nesteFokus: input.nesteFokus.trim().slice(0, 500),
       folelse: input.folelse?.trim().slice(0, 200) || null,
       rpe: input.rpe ?? null,
@@ -585,7 +594,7 @@ export async function lagreSpillerVurdering(
     if (count !== 1) throw new Error("Økta er ikke tilgjengelig for lagring");
 
     // Vurdering og eventuelt planspeil lagres samlet; feil beholder begge førverdiene.
-    if (session.generertFra === GENERERT_FRA && session.generertFraId && input.nesteFokus.trim()) {
+    if (session.generertFra === GENERERT_FRA && session.generertFraId && input.kvalitet !== undefined && input.nesteFokus.trim()) {
       const fokus = input.nesteFokus.trim().slice(0, 500);
       await tx.trainingPlanSessionLog.upsert({
         where: { sessionId: session.generertFraId },

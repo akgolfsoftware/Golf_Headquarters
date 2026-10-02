@@ -2,15 +2,15 @@ import { completedLiveDrills } from "@/lib/portal-live/live-summary";
 import { prisma } from "@/lib/prisma";
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
- * PlayerHQ · Live-økt oppsummering V2 — TrainingSessionV2.
+ * PlayerHQ · Etter økt (PH-07, Precision Athletics) — TrainingSessionV2.
  *
- * Viser fullført økt med total reps, tid, drills fullført og pyramide-fordeling.
+ * Viser fullført økt med tid og reps mot plan, og tar imot spillerens belastning og fokus.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
-import { LiveSessionShell, SessionSummary } from "@/components/portal/live";
+import { EtterOkt } from "@/components/portal/live/EtterOkt";
 import type { LiveV2Summary } from "@/components/portal/live";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
@@ -47,9 +47,7 @@ export default async function LiveSummaryPage({
           drills: plan.drills.map((d) => ({ id: d.id, title: d.exercise.name, description: d.notes,
             durationMinutes: d.exercise.durationMin ?? 0, sortOrder: d.orderIndex })),
         }, counts);
-        return <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={plan.title} backHref="/portal" closeHref="/portal">
-          <SessionSummary key={sessionId} data={summary} lagredeOrd="Økt gjennomført." />
-        </LiveSessionShell>;
+        return <EtterOkt key={sessionId} data={summary} />;
       }
       if (result.reason === "notfound") notFound();
       redirect("/portal/planlegge");
@@ -76,22 +74,7 @@ export default async function LiveSummaryPage({
     const naa = new Date();
     const { okt, href } = await loadNesteOkt(user.id, naa);
     const nesteOkt = nesteOktTekst(okt, href, naa);
-    return (
-      <LiveSessionShell
-        odId="playerhq-live-summary"
-        title="Etter økta"
-        subtitle={wb.title}
-        backHref="/portal"
-        closeHref="/portal"
-      >
-        <SessionSummary
-          key={sessionId}
-          data={summaryData}
-          nesteOkt={nesteOkt}
-          lagredeOrd="Økt gjennomført."
-        />
-      </LiveSessionShell>
-    );
+    return <EtterOkt key={sessionId} data={summaryData} nesteOkt={nesteOkt} />;
   }
 
   const { data } = result;
@@ -118,16 +101,12 @@ export default async function LiveSummaryPage({
       ? ((rawDineOrd as Record<string, unknown>).tekst as string)
       : null;
   const rawVurdering = summaryRoot?.spillerVurdering;
-  const spillerVurdering =
+  const heltall1til10 = (v: unknown): number | null => (typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= 10 ? v : null);
+  const vurdering =
     rawVurdering && typeof rawVurdering === "object" && !Array.isArray(rawVurdering)
       ? {
-          kvalitet: Number((rawVurdering as Record<string, unknown>).kvalitet) || 0,
-          nesteFokus: String((rawVurdering as Record<string, unknown>).nesteFokus ?? ""),
-          folelse:
-            typeof (rawVurdering as Record<string, unknown>).folelse === "string"
-              ? ((rawVurdering as Record<string, unknown>).folelse as string)
-              : null,
-          rpe: Number((rawVurdering as Record<string, unknown>).rpe) || null,
+          rpe: heltall1til10((rawVurdering as Record<string, unknown>).rpe),
+          fokus: heltall1til10((rawVurdering as Record<string, unknown>).fokus),
         }
       : null;
 
@@ -170,15 +149,5 @@ export default async function LiveSummaryPage({
   const { okt, href } = await loadNesteOkt(user.id, naa);
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
-  return (
-    <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={data.title} backHref="/portal" closeHref="/portal">
-      <SessionSummary
-        key={sessionId}
-        data={summaryData}
-        nesteOkt={nesteOkt}
-        spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}
-        lagredeOrd={lagredeOrd}
-      />
-    </LiveSessionShell>
-  );
+  return <EtterOkt key={sessionId} data={summaryData} nesteOkt={nesteOkt} vurdering={vurdering} lagretNotat={lagredeOrd} />;
 }
