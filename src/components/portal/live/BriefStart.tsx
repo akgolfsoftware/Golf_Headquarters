@@ -2,7 +2,6 @@
 
 import { useActionState, useRef } from "react";
 import { unstable_rethrow } from "next/navigation";
-import styles from "./session-brief.module.css";
 
 /** Serveren avgjør om økten kan startes. Ved nettfeil beholdes hele arket. */
 export function BriefStart({ action }: { action: () => Promise<void> }) {
@@ -22,7 +21,7 @@ export function BriefStart({ action }: { action: () => Promise<void> }) {
     if (submitting.current) event.preventDefault();
     else submitting.current = true;
   }}>
-    {error && <p className={styles.error} role="alert">{error}</p>}
-    <button className={styles.primary} data-od-id="brief-start" type="submit" disabled={pending}>{pending ? "Åpner økta…" : "Start økta"}</button>
+    {error && <p className="ph04-feil" role="alert">{error}</p>}
+    <button className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full" data-od-id="brief-start" type="submit" disabled={pending}>{pending ? "Åpner økta…" : "Start økta"}</button>
   </form>;
 }

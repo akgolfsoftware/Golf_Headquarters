@@ -13227,12 +13227,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Brief-siden merker PH04Brief og monterer SessionBrief. Start, blokkering og data-od-id er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-04.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-04 Live-økt: brief er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -22982,10 +22984,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 41,
+    "medAvvik": 42,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 4,
+    "implementert": 5,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
