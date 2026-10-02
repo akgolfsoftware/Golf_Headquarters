@@ -1,5 +1,7 @@
 # Feillogg — læring for videre arbeid
 
+- 02.10.2026: Et isolert SG-worktree lånte `node_modules` som symlink/kopi fra en annen arbeidskopi. Turbopack fant da ikke alle pakker, selv om typekontroll og tester bestod. Kjør `npm ci` fra låsefilen i worktree før produksjonsbygg; ikke gjenbruk en annen kopis avhengigheter.
+
 - 01.10.2026: En isolert Codex-worktree brukte systemets Node 22 og standardgrensen på 4 GB selv om prosjektet krever Node 24; TypeScript gikk tom for minne i fullkontroll og commit-krok. Sett prosjektets Node 24 først i `PATH` og `NODE_OPTIONS=--max-old-space-size=8192` før kontroll og commit i worktrees.
 
 - 01.10.2026: Stripe-prøvene ble blokkert av utløpt CLI-testnøkkel (`api_key_expired`). Kontroller testtilgang før app og booking startes; forny innloggingen og bruk bare testnøkkel i en separat, ignorert konfigurasjon. En gammel innloggingsfil er ikke bevis på gyldig tilgang. CLI 1.53 bruker kortvarig OAuth i nøkkelringen; lokal adapter må tvinge testmodus og avvise hostede mål. Checkout krever også Stripe sine CDN-filer og eksplisitt kortvalg før feltene finnes.

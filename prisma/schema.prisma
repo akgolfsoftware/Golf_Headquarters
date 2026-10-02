@@ -588,6 +588,7 @@ model User {
   // PlayerHQ-relasjoner
   trainingPlans         TrainingPlan[]
   rounds                Round[]
+  roundDrafts           RoundDraft[]
   gameplanHull          GameplanHull[]
   gameplanSoner         GameplanSone[]
   testResults           TestResult[]
@@ -1702,60 +1703,105 @@ model TrainingLog {
 }
 
 model Round {
-  id                String   @id @default(cuid())
-  userId            String
-  courseId          String
-  playedAt          DateTime
-  score             Int
-  sgTotal           Float?
-  sgOtt             Float?
-  sgApp             Float?
-  sgArg             Float?
-  sgPutt            Float?
+  id                     String          @id @default(cuid())
+  userId                 String
+  courseId               String
+  teeId                  String?
+  sgReferenceSetId       String?
+  benchmarkLevelSnapshot String?
+  playStatus             RoundPlayStatus @default(COMPLETED)
+  startedAt              DateTime?
+  finishedAt             DateTime?
+  weatherWindMps         Float?
+  weatherWindDirection   String?
+  weatherTemperatureC    Float?
+  weatherPrecipitation   String?
+  weatherSource          String?
+  sgEngineVersion        String?
+  playedAt               DateTime
+  score                  Int
+  sgTotal                Float?
+  sgOtt                  Float?
+  sgApp                  Float?
+  sgArg                  Float?
+  sgPutt                 Float?
   // Granulære SG-felter (fra taksonomien — alle valgfrie)
-  sgTee             Float?
-  sgApp200          Float?
-  sgApp150          Float?
-  sgApp100          Float?
-  sgApp50           Float?
-  sgChip            Float?
-  sgPitch           Float?
-  sgLob             Float?
-  sgBunker          Float?
-  sgPutt0_3         Float?
-  sgPutt3_5         Float?
-  sgPutt5_10        Float?
-  sgPutt10_15       Float?
-  sgPutt15_25       Float?
-  sgPutt25_40       Float?
-  sgPutt40plus      Float?
+  sgTee                  Float?
+  sgApp200               Float?
+  sgApp150               Float?
+  sgApp100               Float?
+  sgApp50                Float?
+  sgChip                 Float?
+  sgPitch                Float?
+  sgLob                  Float?
+  sgBunker               Float?
+  sgPutt0_3              Float?
+  sgPutt3_5              Float?
+  sgPutt5_10             Float?
+  sgPutt10_15            Float?
+  sgPutt15_25            Float?
+  sgPutt25_40            Float?
+  sgPutt40plus           Float?
   // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
-  sgSource          String?
+  sgSource               String?
   // Runde/SG-datakvalitet: kilde, lagringsstatus og audit for import/manuell føring.
-  source            String?
-  sourceDate        DateTime?
-  dataQuality       String?
-  status            String?
-  partialSave       Boolean  @default(false)
-  importMetadata    Json?
+  source                 String?
+  sourceDate             DateTime?
+  dataQuality            String?
+  status                 String?
+  partialSave            Boolean         @default(false)
+  importMetadata         Json?
   // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
-  roundType         String?
-  notes             String?
+  roundType              String?
+  notes                  String?
   // D6c live turneringsrunde (godkjent 2026-07-17): knytter en runde til en
   // TournamentEntry. Plain id uten @relation — additiv per gotcha-regelen.
-  tournamentEntryId String?
-  createdAt         DateTime @default(now())
+  tournamentEntryId      String?
+  createdAt              DateTime        @default(now())
 
-  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course     CourseDefinition @relation(fields: [courseId], references: [id])
-  shots      Shot[]
-  holeScores HoleScore[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course         CourseDefinition @relation(fields: [courseId], references: [id])
+  tee            CourseTee?       @relation(fields: [teeId], references: [id], onDelete: SetNull)
+  sgReferenceSet SgReferenceSet?  @relation(fields: [sgReferenceSetId], references: [id], onDelete: SetNull)
+  shots          Shot[]
+  holeScores     HoleScore[]
 
   @@index([userId, playedAt])
   @@index([userId, status])
   @@index([source])
   @@index([tournamentEntryId])
+  @@index([teeId])
+  @@index([sgReferenceSetId])
   @@map("rounds")
+}
+
+enum RoundPlayStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum RoundDraftStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+model RoundDraft {
+  id               String           @id @default(cuid())
+  userId           String
+  clientRequestId  String
+  validatedPayload Json
+  schemaVersion    Int              @default(1)
+  revision         Int              @default(1)
+  savedAt          DateTime         @default(now())
+  draftStatus      RoundDraftStatus @default(ACTIVE)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientRequestId])
+  @@index([userId, savedAt])
+  @@map("round_drafts")
 }
 
 // Per-slag statistikk (manuell wizard eller UpGame-import)
@@ -1832,20 +1878,33 @@ enum PuttFartUtfall {
 }
 
 model Shot {
-  id            String   @id @default(cuid())
-  roundId       String
-  holeNumber    Int
-  holePar       Int
-  shotNumber    Int
-  club          String?
-  lie           ShotLie
-  distanceToPin Float?
-  distanceHit   Float?
-  windDir       WindDir?
-  shotType      ShotType
-  isPenalty     Boolean  @default(false)
-  notes         String?
-  createdAt     DateTime @default(now())
+  id                   String   @id @default(cuid())
+  roundId              String
+  holeNumber           Int
+  holePar              Int
+  shotNumber           Int
+  club                 String?
+  lie                  ShotLie
+  distanceToPin        Float?
+  courseHoleId         String?
+  endLie               ShotLie?
+  endDistanceToPinM    Float?
+  holed                Boolean?
+  penaltyStrokes       Int      @default(0) @db.SmallInt
+  penaltyType          String?
+  intendedAimLateralM  Float?
+  intendedAimDistanceM Float?
+  missLateralM         Float?
+  missLongShortM       Float?
+  measurementMethod    String?
+  positionAccuracyM    Float?
+  distanceHit          Float?
+  windDir              WindDir?
+  shotType             ShotType
+  isPenalty            Boolean  @default(false)
+  notes                String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now()) @updatedAt
 
   // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — src/lib/gameplan/shot-coords.ts)
   startX      Float?
@@ -1859,11 +1918,15 @@ model Shot {
 
   endShotKategori EndShotKategori?
   puttDetail      PuttDetail?
+  returnPutts     PuttDetail[]     @relation("PuttReturn")
+  sgResults       ShotSgResult[]
 
-  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  round      Round       @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  courseHole CourseHole? @relation(fields: [courseHoleId], references: [id], onDelete: SetNull)
 
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
+  @@index([courseHoleId])
   @@map("shots")
 }
 
@@ -1876,9 +1939,13 @@ model PuttDetail {
   linjeMiss        PuttLinjeMiss?
   fartUtfall       PuttFartUtfall
   createdAt        DateTime             @default(now())
+  returnOfShotId   String?
+  puttDirection    String?
 
-  shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  shot         Shot  @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  returnOfShot Shot? @relation("PuttReturn", fields: [returnOfShotId], references: [id], onDelete: SetNull)
 
+  @@index([returnOfShotId])
   @@map("putt_details")
 }
 
@@ -1901,21 +1968,28 @@ model SessionBallLog {
 }
 
 model HoleScore {
-  id         String   @id @default(cuid())
-  roundId    String
-  holeNumber Int
-  par        Int
-  strokes    Int
-  putts      Int?
-  fairway    Boolean?
-  gir        Boolean?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  roundId               String
+  holeNumber            Int
+  par                   Int
+  strokes               Int
+  courseHoleId          String?
+  teeLengthMSnapshot    Int?
+  handicapIndexSnapshot Int?
+  penalties             Int?
+  firstPuttFt           Float?
+  putts                 Int?
+  fairway               Boolean?
+  gir                   Boolean?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
-  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  round      Round       @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  courseHole CourseHole? @relation(fields: [courseHoleId], references: [id], onDelete: SetNull)
 
   @@unique([roundId, holeNumber])
   @@index([roundId])
+  @@index([courseHoleId])
   @@map("hole_scores")
 }
 
@@ -3133,6 +3207,7 @@ model Bane {
   updatedAt DateTime @updatedAt
 
   holes             CourseHole[]
+  tees              CourseTee[]
   courseDefinitions CourseDefinition[]
 
   @@index([region])
@@ -3166,14 +3241,60 @@ model CourseHole {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bane Bane @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  bane       Bane            @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  tees       CourseHoleTee[]
+  shots      Shot[]
+  holeScores HoleScore[]
 
   gameplanHull  GameplanHull[]
   gameplanSoner GameplanSone[]
 
   @@unique([baneId, holeNumber])
+  @@unique([id, baneId])
   @@index([baneId])
   @@map("course_holes")
+}
+
+model CourseTee {
+  id           String    @id @default(cuid())
+  baneId       String
+  code         String
+  label        String
+  courseRating Float     @map("course_rating")
+  slopeRating  Int       @map("slope_rating")
+  par          Int?
+  source       String?
+  validFrom    DateTime? @db.Date
+  validTo      DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+
+  bane   Bane            @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  holes  CourseHoleTee[]
+  rounds Round[]
+
+  @@unique([baneId, code])
+  @@unique([id, baneId])
+  @@index([baneId])
+  @@map("course_tees")
+}
+
+model CourseHoleTee {
+  teeId     String
+  holeId    String
+  baneId    String
+  lengthM   Int
+  teeLat    Float?
+  teeLng    Float?
+  source    String?
+  updatedAt DateTime @updatedAt
+
+  tee  CourseTee  @relation(fields: [teeId, baneId], references: [id, baneId], onDelete: Cascade)
+  hole CourseHole @relation(fields: [holeId, baneId], references: [id, baneId], onDelete: Cascade)
+
+  @@id([teeId, holeId])
+  @@index([holeId])
+  @@index([holeId, baneId])
+  @@map("course_hole_tees")
 }
 
 // Gameplan (B30/B39-æraen — omdøpt fra "Baneguide") interaktiv hull-for-hull-planlegging.
@@ -4391,6 +4512,65 @@ model SgBaseline {
 
   @@unique([category, distanceBucket, lie])
   @@map("sg_baselines")
+}
+
+// Versjonerte, kildeførte referansekurver for eksakt slag-SG.
+model SgReferenceSet {
+  id                      String    @id @default(cuid())
+  levelCode               String
+  label                   String
+  source                  String
+  sourceVersion           String
+  licenceNote             String?
+  validFrom               DateTime? @db.Date
+  createdAt               DateTime  @default(now())
+  publishedAt             DateTime?
+  engineCompatibleVersion String
+
+  baselines   StrokesGainedBaseline[]
+  shotResults ShotSgResult[]
+  rounds      Round[]
+
+  @@unique([levelCode, sourceVersion])
+  @@index([levelCode, publishedAt])
+  @@map("sg_reference_sets")
+}
+
+model StrokesGainedBaseline {
+  id              String     @id @default(cuid())
+  referenceSetId  String
+  phase           SgCategory
+  lie             ShotLie
+  teePar          Int        @default(0)
+  distanceM       Float
+  expectedStrokes Float
+  sampleSize      Int?
+  sourceRow       String?
+
+  referenceSet SgReferenceSet @relation(fields: [referenceSetId], references: [id], onDelete: Cascade)
+
+  @@unique([referenceSetId, phase, lie, teePar, distanceM])
+  @@map("strokes_gained_baselines")
+}
+
+model ShotSgResult {
+  shotId         String
+  referenceSetId String
+  engineVersion  String
+  phase          SgCategory
+  expectedStart  Float
+  expectedEnd    Float
+  penaltyStrokes Int        @default(0) @db.SmallInt
+  sgValue        Float
+  inputQuality   String
+  calculatedAt   DateTime   @default(now())
+
+  shot         Shot           @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  referenceSet SgReferenceSet @relation(fields: [referenceSetId], references: [id], onDelete: Restrict)
+
+  @@id([shotId, referenceSetId, engineVersion])
+  @@index([referenceSetId, phase])
+  @@map("shot_sg_results")
 }
 
 // ---------- AK Golf Stats — Fase 2 PGA Tour playground ----------
@@ -6562,21 +6742,21 @@ model WorkbenchSession {
 }
 
 model WorkbenchDrill {
-  id              String  @id @default(cuid())
-  sessionId       String
-  title           String
-  description     String?
-  durationMinutes Int
+  id               String  @id @default(cuid())
+  sessionId        String
+  title            String
+  description      String?
+  durationMinutes  Int
   // AKFormel som JSON — zod-valideres ved lesing (aldri as unknown as T).
-  akFormel        Json
-  techniqueFocus  String?
-  sourceId        String?
-  sortOrder       Int
+  akFormel         Json
+  techniqueFocus   String?
+  sourceId         String?
+  sortOrder        Int
   // Ekte kobling til øvelsesbanken (Anders 17.09.2026: «kun én database for
   // øvelser — WorkbenchDrills og øvelser skal være det eksakt samme»).
   // Nullbar i DB for additiv migrering av eksisterende rader; nye drills fra en
   // øvelse i banken skal alltid sette denne, samme kontrakt som SessionDrill.exerciseId.
-  exerciseId      String?
+  exerciseId       String?
   // Dosefelt (OW-3 fase 3 · 2026-09-17) — speiler SessionDrill sine tellemåte-,
   // volum- og L-trapp-felt. String i stedet for RepType-enum, konsistent med
   // beslutningen 16.09.2026 §6 pkt. 1 (unngå å utvide et delt enum i prod);

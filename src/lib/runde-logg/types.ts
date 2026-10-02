@@ -83,6 +83,8 @@ export type LoggetHull = {
   lengdeMeter: number;
   /** Slagene i rekkefølge. Siste slag skal ha resultat { iHull: true }. */
   slag: LoggetSlag[];
+  /** Kun brutto score ble tastet; posisjonene i slag[] er teknisk generert. */
+  syntetisk?: boolean;
 };
 
 export type LoggetRunde = {

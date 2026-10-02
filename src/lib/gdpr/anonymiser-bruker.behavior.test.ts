@@ -16,6 +16,16 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     },
   },
   round: { findMany: async () => [{ score: 75 }], updateMany },
+  shot: { updateMany: async ({ data }: { data: Record<string, unknown> }) => {
+    assert.equal(data.startX, null);
+    assert.equal(data.endY, null);
+    assert.equal(data.targetX, null);
+    assert.equal(data.mentalScore, null);
+    assert.equal(data.notes, null);
+    writes.push("shot");
+    return { count: 1 };
+  } },
+  roundDraft: { deleteMany: async () => { writes.push("roundDraft"); return { count: 1 }; } },
   trainingSessionV2: { findMany: async () => [{ id: "session" }], updateMany },
   trainingDrillV2: { updateMany }, drillLogV2: { updateMany }, fysOvelseRad: { updateMany },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
@@ -44,4 +54,6 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   externalErrors = [];
   await anonymiserBruker("synthetic");
   assert.equal(markedComplete, true);
+  assert.ok(writes.includes("shot"));
+  assert.ok(writes.includes("roundDraft"));
 });
