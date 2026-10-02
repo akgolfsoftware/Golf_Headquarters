@@ -21,7 +21,7 @@ const kilder = [
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
   "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
-  "workbenchSession", "workbenchPhysicalBlock", "workbenchPhysicalLog", "workbenchTournamentPlan", "workbenchPlanConflict",
+  "workbenchSession", "workbenchPhysicalBlock", "workbenchPhysicalLog", "workbenchTournamentPlan", "workbenchPlanConflict", "planAction",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
   findMany: async ({ where }: { where: unknown }) => {
@@ -31,6 +31,11 @@ const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
     if (kilde === "document") return [{ url: "private/test-document", title: "Testdokument" }];
     if (kilde === "sessionRecording") return [{ id: "opptak-test", audioUrl: "private/test-audio" }];
     if (kilde === "playerSwingVideo") return [{ id: "video-test", storagePath: "private/test-video" }];
+    if (kilde === "planAction" && "coachId" in (where as object)) return [{
+      id: "skrevet-test", suggestion: { organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", etter: { title: "Spillerens private økt" } },
+      status: "PENDING", createdAt: new Date("2026-10-02T10:00:00.000Z"),
+    }];
+    if (kilde === "planAction") return [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }];
     return [];
   },
 }]));
@@ -121,8 +126,14 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   const { exportUserData } = await import("./actions");
   const resultat = await exportUserData();
   assert.equal(resultat.ok, true);
-  assert.equal(lesinger.length, kilder.length + 1);
+  assert.equal(lesinger.length, kilder.length + 2);
   for (const { kilde, where } of lesinger) {
+    if (kilde === "planAction") {
+      assert.deepEqual(where, "coachId" in (where as object)
+        ? { coachId: bruker.id, actionType: "WORKBENCH_COACH_PROPOSAL" }
+        : { userId: bruker.id, actionType: "WORKBENCH_COACH_PROPOSAL" });
+      continue;
+    }
     const felt = kilde === "user" ? "id" :
       kilde === "trainingSessionV2" ? "studentId" :
       ["coachNote", "sessionRecording", "weekPlan"].includes(kilde) || kilde.startsWith("workbench") ? "playerId" : "userId";
@@ -136,6 +147,9 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
     { type: "swing-video", url: "private/test-video", id: "video-test" },
   ]);
   assert.deepEqual(resultat.data?.workbench, { sessions: [], physicalBlocks: [], physicalLogs: [], tournamentPlans: [], conflicts: [] });
+  assert.deepEqual(resultat.data?.trenerforslag, [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }]);
+  assert.deepEqual(resultat.data?.trenerforslagSkrevet, [{ id: "skrevet-test", organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", status: "PENDING", opprettet: "2026-10-02T10:00:00.000Z" }]);
+  assert.doesNotMatch(JSON.stringify(resultat.data?.trenerforslagSkrevet), /Spillerens private økt/);
   assert.ok(!String(resultat.data?._note).includes("komplett"));
   assert.ok(!JSON.stringify(eposter).includes("komplett"));
   assert.ok(!JSON.stringify(revisjoner).includes(bruker.email));

@@ -17,7 +17,10 @@ test("Prisma-feilhendelser røper aldri rå spørringsargumenter eller personopp
       assert.ok(listeners.has(type));
       listeners.get(type)!({ message: 'email=syntetisk@example.test token=syntetisk-hemmelig svar=syntetisk-helsesvar', target: "private-table" });
     }
-    assert.equal(logg.length, 2);
+    const prismaLogg = logg.filter(([melding]) =>
+      melding === "[database] Databaseforespørsel mislyktes." || melding === "[database] Databaseadvarsel.",
+    );
+    assert.equal(prismaLogg.length, 2);
     const tekst = JSON.stringify(logg);
     for (const sensitivt of ["syntetisk@example.test", "syntetisk-hemmelig", "syntetisk-helsesvar", "private-table"]) assert.ok(!tekst.includes(sensitivt));
   } finally { error.mock.restore(); warn.mock.restore(); }

@@ -59,6 +59,10 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     assert.deepEqual(where, { OR: [{ userId: "synthetic" }, { gittAvUserId: "synthetic" }, { acceptedByUserId: "synthetic" }, { mottakerEpost: "synthetic@example.test" }] });
     writes.push("trenerdeling"); return { count: 1 };
   } },
+  planAction: { deleteMany: async ({ where }: { where: { OR: Array<{ userId?: string; coachId?: string }>; actionType: string } }) => {
+    assert.deepEqual(where, { actionType: "WORKBENCH_COACH_PROPOSAL", OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] });
+    writes.push("trenerforslag"); return { count: 1 };
+  } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
 mock.module("@/lib/workbench/workbench-personvern", { namedExports: {
@@ -103,6 +107,7 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   assert.ok(writes.includes("roundDraft"));
   assert.ok(writes.includes("iup"));
   assert.ok(writes.includes("trenerdeling"));
+  assert.ok(writes.includes("trenerforslag"));
   assert.ok(writes.includes("workbench"));
 });
 

@@ -8,6 +8,7 @@ import {
   type IupPeriode,
   type IupMaaling,
 } from "@/app/team-wang/coach/iup/[elevId]/iup-samtale";
+import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
@@ -150,7 +151,13 @@ export default async function IupPage({
         })
       : [];
 
+    const trenerOkter = bruker.role === "COACH" ? await tx.workbenchSession.findMany({ where: {
+      playerId: elevId, status: { in: ["DRAFT", "SCHEDULED", "PUBLISHED"] }, sourceGroupSessionId: null,
+      date: { gte: new Date(`${osloIdag()}T00:00:00.000Z`) },
+    }, orderBy: [{ date: "asc" }, { startMinute: "asc" }], take: 40, select: { id: true, date: true, startMinute: true, title: true } }) : [];
+
     return (
+      <>
       <IupSamtale
         elevId={elev.id}
         elevNavn={elev.name?.trim() || elev.email}
@@ -187,6 +194,10 @@ export default async function IupPage({
         }
         maalinger={maalinger}
       />
+      {bruker.role === "COACH" ? <TrenerforslagSkjema organisasjon="WANG" spillerId={elevId} sessions={trenerOkter.map(s => ({
+        id: s.id, label: `${s.date.toISOString().slice(0, 10)} ${String(Math.floor(s.startMinute / 60)).padStart(2, "0")}:${String(s.startMinute % 60).padStart(2, "0")} · ${s.title}`,
+      }))} /> : null}
+      </>
     );
   });
   if (visning === null) notFound();
