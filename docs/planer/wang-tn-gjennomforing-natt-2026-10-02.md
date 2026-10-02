@@ -186,3 +186,19 @@ Kildekontroll på main `3cbe3e216` viser at `GroupSchedule` lagrer samlingens ti
 Det er likevel ikke en komplett invitasjonsreise: det finnes ingen bestående invitasjon per spiller/samling, spilleraksept/avslag, godkjent programversjon eller treneroversikt over svar. Samling og gruppeøkter er heller ikke koblet sammen, så publisering kan ikke begrenses eller forhåndsvises mot én valgt samling. Eksisterende direkte gruppepublisering kan ikke omtales som «spilleren godtar og legger i planen».
 
 Før kodeendring må pakken dekke hele svarlivsløpet med stabile retry-ID-er, programversjon, kollisjon som ikke flytter personlige økter, bevart oppmøte/historikk og synlig treningsplan i kalender/Workbench. Den må bruke bare aktive medlemmer av valgt gruppe til å begynne med; valg av spillere på tvers av WANG-skoler og TN-grupper krever separat medlems-/invitasjonsmodell og må ikke utledes fra navn eller profildeling. Varselkanal må prøves syntetisk før ekte utsending.
+
+## Etterkontroll etter PR #1099 og #1104
+
+Statusen over om manglende samlingsinvitasjon var riktig ved kildekontrollen, men er nå erstattet av PR #1099. Merget `8d74ae1d` lar WANG- og Team Norway-trenere publisere et program for valgt gruppe. Spillere får private invitasjoner, ser kalenderkollisjon og kan importere økter med øvelser til egen Workbench-kalender. Arbeidskopiens røyktest for samlingsprogram bestod i full CI; rom og pakkeliste er ikke inkludert.
+
+PR #1104 er merget 02.10.2026 kl. 13:11:15Z som `63242f9e3`. WANG-IUP og Team Norway TN-02 viser nå spillerens siste kildevaliderte, leverte utviklingssjekk og sesongevaluering gjennom navngitt profildeling. Utkast avvises. Lokal `npm run verify` bestod på Node 24 med 4 330 enhetstester, 101 komponenttester og bygg av 348 sider. PR-CI #37010378849, Vercel Preview, main-CI #37011334975, Playwright-produksjonsrøyktest #37011334929 og Vercel-produksjonsutrulling `dpl_GSy6oMoJnYDBTnGCGqXsZcXjYSqq` bestod. Ingen migrasjon, testimport eller produksjonsdataskriving ble gjort.
+
+## Gjenstår for den opprinnelige WANG/Team Norway-bestillingen
+
+- Visuell gjennomgang sammen med Anders i valgte designversjoner: WANG-, TN- og PlayerHQ-profilene, spillerens forslag og samlingsinvitasjonen er ikke visuelt godkjent.
+- Felt-for-felt- og formelregister for alle 18 IUP-ark. Originalspørsmålene er kildekontrollert, men det alene dokumenterer ikke komplett Excel-dekning eller at alle arkfelt finnes i alle tre flater.
+- Skoleomfattende testdeling fra alle WANG-skoler til Team Norway og felles testdag på tvers av skoler/grupper. Avtaleversjon, formål, mottaker, periode og fagregler mangler fortsatt dokumentasjon; ikke aktiver eller utled dette fra profilens samtykke.
+- Revisjon av eldre `User.publicPlayerId`-koblinger og bekreftet identitetsløp. PR #1101 sperrer nye navnebaserte autokoblinger, men beviser ikke opprinnelsen til tidligere koblinger.
+- DataGolf-kundebruksrett og reell API-dekning. DG01–17 er tegnet for Precision Athletics, Team Norway og WANG med syntetiske data; ingen kundeaktivering er gjort.
+
+Neste konkrete steg er å vise de godkjente designreferansene sammen med de nye profilvisningene for visuell kontroll. Deretter fullføres Excel-feltregisteret mot de private originalfilene uten å kopiere svar/personopplysninger til Git. Skole-/NGF-avtale og DataGolf-rett må dokumenteres før tilhørende kundetilgang kan aktiveres. Helheten er fortsatt uferdig og ikke kundeklar.
