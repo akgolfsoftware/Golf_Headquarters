@@ -10,6 +10,9 @@ let writes = 0;
 let dbCalls = 0;
 let row: Record<string, unknown> | null = null;
 let failWrite = false;
+let revision = 0;
+let raceOnUpdate = false;
+let raceOnCreate = false;
 const invalidations: string[] = [];
 const seasons = [
   { id: "egen-sesong", userId: playerId, year: 2026, startDate: new Date("2026-08-01"), endDate: new Date("2027-07-31") },
@@ -17,6 +20,20 @@ const seasons = [
   { id: "eldre-sesong", userId: playerId, year: 2025, startDate: new Date("2025-08-01"), endDate: new Date("2026-07-31") },
 ];
 const key = { playerId, isoYear: 2026, weekNumber: 40 };
+
+function matches(wanted: typeof key) {
+  return row !== null && row.playerId === wanted.playerId && row.isoYear === wanted.isoYear && row.weekNumber === wanted.weekNumber;
+}
+function write(fields: Record<string, unknown>) {
+  if (failWrite) throw new Error("Syntetisk lagringsfeil");
+  writes++;
+  row ??= { id: "syntetisk-uke", repetitionTargets: null };
+  for (const [name, value] of Object.entries(fields)) {
+    if (value !== undefined) row[name] = value === Prisma.DbNull ? null : value;
+  }
+  row.updatedAt = new Date(Date.UTC(2026, 9, 2) + ++revision);
+  return structuredClone(row);
+}
 
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => viewer } });
 mock.module("@/lib/auth/coached", { namedExports: {
@@ -30,19 +47,32 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     findUnique: async ({ where }: { where: { playerId_isoYear_weekNumber: typeof key } }) => {
       dbCalls++;
       const wanted = where.playerId_isoYear_weekNumber;
-      return row && row.playerId === wanted.playerId && row.isoYear === wanted.isoYear && row.weekNumber === wanted.weekNumber ? row : null;
+      return matches(wanted) ? structuredClone(row) : null;
+    },
+    create: async ({ data }: { data: typeof key & Record<string, unknown> }) => {
+      dbCalls++;
+      if (raceOnCreate) {
+        row = { ...data, id: "samtidig-uke", customNotes: "Nyere samtidig plan", planningDetails: tommeUkeplandetaljer(), updatedAt: new Date(Date.UTC(2026, 9, 2) + ++revision) };
+      }
+      if (matches(data)) throw new Error("Syntetisk unik nøkkel-konflikt");
+      row = null;
+      return write(data);
+    },
+    updateMany: async ({ where, data }: { where: typeof key & { updatedAt: Date }; data: Record<string, unknown> }) => {
+      dbCalls++;
+      if (raceOnUpdate && row) {
+        row.customNotes = "Nyere samtidig plan";
+        row.updatedAt = new Date(Date.UTC(2026, 9, 2) + ++revision);
+      }
+      if (!matches(where) || !(row?.updatedAt instanceof Date) || row.updatedAt.getTime() !== where.updatedAt.getTime()) return { count: 0 };
+      write(data);
+      return { count: 1 };
     },
     upsert: async ({ create, update }: { create: Record<string, unknown>; update: Record<string, unknown> }) => {
-      if (failWrite) throw new Error("Syntetisk lagringsfeil");
-      writes++;
       const finnes = row && row.playerId === create.playerId && row.isoYear === create.isoYear && row.weekNumber === create.weekNumber;
       const fields = finnes ? update : create;
-      if (!finnes) row = { id: "syntetisk-uke", repetitionTargets: null };
-      assert.ok(row);
-      for (const [name, value] of Object.entries(fields)) {
-        if (value !== undefined) row[name] = value === Prisma.DbNull ? null : value;
-      }
-      return row;
+      if (!finnes) row = null;
+      return write(fields);
     },
   },
   seasonPlan: { findFirst: async ({ where }: { where: {
@@ -62,6 +92,7 @@ before(async () => { actions = await import("./wb-actions"); });
 beforeEach(() => {
   viewer = { id: playerId, role: "PLAYER" };
   access = false; writes = 0; dbCalls = 0; row = null; failWrite = false;
+  revision = 0; raceOnUpdate = false; raceOnCreate = false;
   invalidations.length = 0;
 });
 
@@ -167,7 +198,32 @@ test("ugyldig input avvises før database; ugyldig lagret JSON returneres ikke t
   assert.ok(row); row.planningDetails = { version: 4, areas: {} };
   const read = await load(); assert.equal(read.ok, false);
   if (!read.ok) assert.match(read.error, /ugyldige/);
-  assert.ok((await actions.saveWeekPlan({ ...key, planningDetails: null })).ok);
+  const original = structuredClone(row); const originalWrites = writes;
+  assert.equal((await actions.saveWeekPlan({ ...key, planningDetails: null })).ok, false);
+  assert.deepEqual(row, original, "Ukjent versjon avvises og beholdes også ved et tømmingsforsøk");
+  assert.equal(writes, originalWrites);
+});
+
+test("metadata-CAS avviser nyere rad uten å overskrive samtidig plan eller bekrefte lagring", async () => {
+  assert.ok((await actions.saveWeekPlan({ ...key, planningDetails: tommeUkeplandetaljer(), plannedHoursFys: 2 })).ok);
+  const beforeWrites = writes; invalidations.length = 0; raceOnUpdate = true;
+  const next = tommeUkeplandetaljer(); next.location = "Skal ikke skrives";
+  const saved = await actions.saveWeekPlan({ ...key, planningDetails: next, plannedHoursFys: 99 });
+  assert.equal(saved.ok, false); assert.ok(row);
+  assert.equal(row.customNotes, "Nyere samtidig plan");
+  assert.equal(row.plannedHoursFys, 2);
+  assert.deepEqual(row.planningDetails, tommeUkeplandetaljer());
+  assert.equal(writes, beforeWrites); assert.equal(invalidations.length, 0);
+});
+
+test("forventet tom uke opprettes med unik kontrakt; samtidig ny uke bevares", async () => {
+  raceOnCreate = true;
+  const details = tommeUkeplandetaljer(); details.location = "Skal ikke overskrive";
+  const saved = await actions.saveWeekPlan({ ...key, planningDetails: details });
+  assert.equal(saved.ok, false); assert.ok(row);
+  assert.equal(row.id, "samtidig-uke"); assert.equal(row.customNotes, "Nyere samtidig plan");
+  assert.deepEqual(row.planningDetails, tommeUkeplandetaljer());
+  assert.equal(writes, 0); assert.equal(invalidations.length, 0);
 });
 
 test("databasefeil gir feilstatus og ingen falsk lagringsbekreftelse", async () => {

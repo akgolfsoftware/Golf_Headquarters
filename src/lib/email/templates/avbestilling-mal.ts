@@ -54,10 +54,10 @@ export function refusjonTekst(r: Refusjon): string {
   }
 }
 
-export function byggAvbestilling(d: AvbestillingData, opts: { mork?: boolean } = {}) {
+export function byggAvbestilling(d: AvbestillingData, opts: { mork?: boolean; introHtml?: string } = {}) {
   const c = opts.mork ? EPOST_MORK : EPOST_LYS;
   const subject = `Avbestilt: ${d.tjeneste.replace(/\s+\d+\s*min$/i, "").toLowerCase()} ${d.dag.toLowerCase()}`;
-  const body = avsnitt(`Hei ${esc(d.fornavn || "der")}. Denne timen er avbestilt:`, c) + faktaRader([
+  const body = (opts.introHtml ?? avsnitt(`Hei ${esc(d.fornavn || "der")}. Denne timen er avbestilt:`, c)) + faktaRader([
     ["Tjeneste", esc(d.tjeneste)],
     ["Tid", `<s>${esc(d.dag)} kl. ${esc(d.klokke)}</s>`],
     ["Avbestilt", esc(d.avbestiltTidspunkt ?? "—")],

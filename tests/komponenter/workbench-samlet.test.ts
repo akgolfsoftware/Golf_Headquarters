@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { beforeEach, describe, mock, test } from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -38,8 +39,9 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: async (input: CreateSessionSeriesInput) => { created.push(input); return saveFails ? { ok: false, error: "Syntetisk lagringsfeil" } : { ok: true, data: [{ id: "lagret-tiltak" }] }; },
   deleteSession: unused, deleteSessionSeries: async (input: { sessionId: string; policy: string }) => { deleted.push(input); return { ok: true, data: { slettet: 1 } }; },
-  moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
+  moveSession: unused, publishSessions: unused, resolvePlayerApproval: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused, unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused, updateSeriesSession: unused, loadWeek: unused, saveWeekPlan: unused, createSeasonPlan: unused, deleteSeasonPeriod: unused, saveSeasonPeriod: unused,
 } });
+mock.module("@/lib/workbench/treukerssyklus-actions", { namedExports: { lastTreukerssyklus: unused, lagreTreukerssyklus: unused, kopierTreukerssyklus: unused, opplosTreukerssyklus: unused } });
 mock.module("@/lib/workbench/workbench-samlet-sesong-actions", { namedExports: { saveSeasonBounds: unused } });
 mock.module("@/lib/workbench/group-session-actions", { namedExports: { loadGroupWorkbenchSessions: unused, publishGroupWorkbenchSessions: unused, saveGroupWorkbenchSession: async (input: GroupPayload) => { groupSaved.push(input); if (groupError) return { ok: false, error: groupError }; assert.ok(groupSession); return { ok: true, data: groupSession }; }, withdrawGroupWorkbenchSessions: unused } });
 
@@ -79,6 +81,52 @@ test("fire reelle flater har sine egne arbeidsområder", () => {
   assert.match(html(draw("bord", () => WorkbenchTrenerbord({ data: d }))), /Plan og registrering.*Følg opp/);
   assert.match(html(draw("stats", () => WorkbenchAnalyse({ data: d }))), /Datagrunnlag.*Fra måling til tiltak/);
 });
+test("begge faktiske ruternøkler bevarer samletflaten ved øktvalg, men skifter ved kalender-/spiller-/flatevalg", () => {
+  const base = fixture();
+  for (const file of ["src/app/admin/workbench/[playerId]/page.tsx", "src/app/portal/planlegge/workbench/page.tsx"]) {
+    const source = readFileSync(file, "utf8");
+    const expression = source.match(/WorkbenchSamlet key=\{(\[[^\n]+?\]\.join\(":"\))\}/)?.[1];
+    assert.ok(expression, `Samletnøkkelen finnes i ${file}`);
+    const key = new Function("playerId", "data", `return ${expression}`) as (playerId: string, data: { data: WorkbenchSamletData }) => string;
+    const initial = key(base.player.id, { data: base });
+    const changed = { ...base, planKontekst: { ...base.planKontekst, referanse: { ...base.planKontekst.referanse, okt: "annen-autorisert-okt" } } };
+    assert.equal(key(base.player.id, { data: changed }), initial);
+    assert.notEqual(key("annen-spiller", { data: base }), initial);
+    assert.notEqual(key(base.player.id, { data: { ...base, flate: "analyse" } }), initial);
+    for (const [field, value] of [["weekStart", "2026-10-05"], ["year", 2027], ["monthStart", "2026-11-01"], ["visning", "aar"]] as const) {
+      assert.notEqual(key(base.player.id, { data: { ...base, planKontekst: { ...base.planKontekst, [field]: value } } }), initial);
+    }
+    assert.notEqual(key(base.player.id, { data: { ...base, planKontekst: { ...base.planKontekst, referanse: { ...base.planKontekst.referanse, periode: "annen-periode" } } } }), initial);
+  }
+});
+test("mobilkort og åpent redigeringsark overlever bekreftet URL-valg; tilbake/frem synkroniserer økta", () => {
+  const base = fixture();
+  const later = { ...session, id: "senere-okt", title: "Senere syntetisk økt", startMinute: 720 };
+  const sourceWeek = buildWeekViewModel(base.uke.weekStart, [session, later], [], base.uke.mode);
+  let data: WorkbenchSamletData = { ...base, uke: sourceWeek, valgtOkt: session, planKontekst: parsePlanKontekst({ uke: base.uke.weekStart, okt: session.id }) };
+  const render = () => draw("stabil-samletflate", () => WorkbenchUkeverksted({ data }));
+  const mobileDay = find(render(), n => typeof n.type === "function" && n.type.name === "MobilDagKalender" && n.props.desktop !== true);
+  const mobileCalendar = (mobileDay.type as (props: Record<string, unknown>) => React.ReactNode)({ ...mobileDay.props, dag: later.date });
+  click(find(mobileCalendar, n => n.props.className === "ws-session" && n.key === later.id));
+  assert.match(replacements.at(-1)!, /okt=senere-okt/);
+  assert.ok(nodes(render()).some(n => n.type === "sheet" && n.props.title === "Økt og ukesum"));
+  const select = (selected: WorkbenchSession) => { data = { ...data, valgtOkt: selected, planKontekst: parsePlanKontekst({ uke: base.uke.weekStart, okt: selected.id }) }; render(); };
+  select(later);
+  assert.ok(nodes(render()).some(n => n.type === "sheet" && n.props.title === "Økt og ukesum"));
+  click(find(render(), n => n.props.children === "Tid, serie og detaljer"));
+  const ark = find(render(), n => n.type === "session-sheet");
+  assert.equal(ark.key, later.id);
+  select(later); // Samme bekreftede URL / server-refresh skal ikke nullstille lokal arktilstand.
+  assert.equal(find(render(), n => n.type === "session-sheet").key, ark.key);
+  select(session); // Nettleserens Tilbake.
+  assert.equal((find(render(), n => n.type === "session-sheet").props.session as WorkbenchSession).id, session.id);
+  select(later); // Nettleserens Frem.
+  assert.equal((find(render(), n => n.type === "session-sheet").props.session as WorkbenchSession).id, later.id);
+  data = { ...data, valgtOkt: null, planKontekst: parsePlanKontekst({ uke: base.uke.weekStart }) }; render();
+  assert.match(html(render()), /Ingen økt valgt/);
+  assert.ok(!nodes(render()).some(n => n.type === "session-sheet"));
+});
+
 test("gruppeark sender valgt banks konkrete referanser og viser serverens tekniske avslag", async () => {
   const base = fixture();
   const bank = { ...base.kilder[0], drill: { ...base.kilder[0].drill!, sourceId: "exercise:syntetisk-bank", exerciseId: "syntetisk-bank" } };

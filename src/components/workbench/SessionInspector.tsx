@@ -111,6 +111,11 @@ export function SessionInspector({
         </div>
       )}
 
+      <InspektorBlokk label="Øktens innhold">
+        <InspektorLinje label="Formål" verdi={session.rationale ?? "—"} />
+        <InspektorLinje label="Sted" verdi={session.location ?? "—"} />
+        <InspektorLinje label="Øktens målsetning" verdi={session.maalsetning ?? "—"} />
+      </InspektorBlokk>
       <InspektorBlokk label={UI.timeLabel}>
         <div style={{ display: "grid", gap: 10 }}>
           <Felt label={UI.dateLabel}><Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} /></Felt>

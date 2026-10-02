@@ -12,13 +12,13 @@ test("forhåndsutfylling leser alle kjente felter og beholder registrerte nuller
     techniqueFocus: "Målsetning", akFormel: { pyramid: "FYS", area: "STYRKE", label: "Fysisk", detaljer: {
       sted: { hoved: "FYSISK_TRENINGSSTED", delvalg: "Styrkerom" },
       mengde: { enhet: "SERIER", antall: 4, reps: 6, vektKg: 0, rir: 0, pauseSek: 0 },
-      mal: { malemetode: "Metode", resultatkrav: "Krav", notat: "Notat" },
+      mal: { malsetning: "Målsetning", malemetode: "Metode", resultatkrav: "Krav", notat: "Notat" },
     } } };
   const utkast = utkastFraOvelse(drill);
   assert.equal(utkast.FYS.rir, "0"); assert.equal(utkast.FYS.vektKg, "0"); assert.equal(utkast.FYS.pauseSek, "0");
   assert.equal(utkast.FYS.stedDelvalg, "Styrkerom"); assert.equal(utkast.FYS.malsetning, "Målsetning");
   assert.equal(utkast.TEK.malsetning, "");
-  const result = byggOvelse("FYS", utkast.FYS, { title: drill.title, description: drill.description ?? "", durationMinutes: drill.durationMinutes });
+  const result = byggOvelse("FYS", utkast.FYS, { title: drill.title, description: drill.description ?? "", durationMinutes: drill.durationMinutes }, drill);
   assert.ok(result.ok);
   if (result.ok) { assert.deepEqual(result.ovelse.akFormel.detaljer, drill.akFormel.detaljer); assert.equal(result.ovelse.techniqueFocus, drill.techniqueFocus); }
 });
@@ -74,9 +74,10 @@ test("teknikkøvelse bygges med hastighet, sted, måleutstyr, mengde og mål", (
     maaleutstyr: "MED_TRACKMAN",
     treningsmaate: "BLOKK",
     mengde: { enhet: "SLAG", antall: 30 },
-    mal: { resultatkrav: "20 av 30 innenfor målområdet" },
+    mal: { malsetning: "Jevn lengde", resultatkrav: "20 av 30 innenfor målområdet" },
   });
-  assert.equal(r.ovelse.techniqueFocus, "Jevn lengde");
+  assert.equal(r.ovelse.akFormel.detaljer?.mal?.malsetning, "Jevn lengde");
+  assert.equal(r.ovelse.techniqueFocus, undefined);
   assert.equal(AkFormelSchema.safeParse(f).success, true);
 });
 
@@ -112,4 +113,12 @@ test("mangler navn eller varighet gir norsk feilmelding", () => {
 test("tom øvelse uten detaljer gir ingen detaljer-felt", () => {
   const r = byggOvelse("SLAG", tomtUtkast("SLAG"), FELLES);
   assert.equal(r.ok && "detaljer" in r.ovelse.akFormel, false);
+});
+
+test("P-posisjon blir aldri forhåndsutfylt som mål, og ny målsetning bevarer rå historisk fokus", () => {
+  const original: Drill = { id: "syntetisk", order: 0, title: "Syntetisk", durationMinutes: 20, techniqueFocus: "P4.0", positionTaskId: "syntetisk-task", akFormel: { pyramid: "TEK", area: "TEE_TOTAL", label: "Syntetisk" } };
+  const u = utkastFraOvelse(original).TEK; assert.equal(u.malsetning, "");
+  u.malsetning = "Syntetisk nytt mål";
+  const built = byggOvelse("TEK", u, FELLES, original); assert.ok(built.ok);
+  if (built.ok) { assert.equal(built.ovelse.techniqueFocus, "P4.0"); assert.equal(built.ovelse.akFormel.detaljer?.mal?.malsetning, "Syntetisk nytt mål"); }
 });

@@ -35,7 +35,7 @@ before(async () => {
   Object.assign(process.env, { RESEND_API_KEY: "re_synthetic_local_only", RESEND_BASE_URL: `http://127.0.0.1:${address.port}` });
   db = (await import("../../src/lib/prisma")).prisma;
   template = await db.emailTemplate.findUnique({ where: { slug: "booking-avbestilt" } });
-  await db.emailTemplate.upsert({ where: { slug: "booking-avbestilt" }, create: { slug: "booking-avbestilt", name: prefix, subject: "syntetisk", body: "syntetisk", active: true }, update: { active: true } });
+  await db.emailTemplate.upsert({ where: { slug: "booking-avbestilt" }, create: { slug: "booking-avbestilt", name: prefix, subject: "Avbestilt {{time}}", body: "Syntetisk lagret tekst {{name}}: {{refundLine}}", active: true }, update: { active: true, subject: "Avbestilt {{time}}", body: "Syntetisk lagret tekst {{name}}: {{refundLine}}" } });
   await db.serviceType.create({ data: { id: `${prefix}-service`, slug: prefix, name: "Syntetisk time", priceOre: 95050, durationMin: 60 } });
   await db.location.create({ data: { id: `${prefix}-place`, name: "Syntetisk sted", address: "Lokalt" } });
   for (const [suffix, status, start] of [["ready", "CANCELLED", "10:30"], ["confirmed", "CONFIRMED", "13:30"]] as const) {
@@ -51,7 +51,7 @@ after(async () => {
   await db.booking.deleteMany({ where: { serviceTypeId: `${prefix}-service` } });
   await db.serviceType.deleteMany({ where: { id: `${prefix}-service` } });
   await db.location.deleteMany({ where: { id: `${prefix}-place` } });
-  if (template) await db.emailTemplate.update({ where: { id: template.id }, data: { active: template.active } });
+  if (template) await db.emailTemplate.update({ where: { id: template.id }, data: { active: template.active, subject: template.subject, body: template.body } });
   else await db.emailTemplate.deleteMany({ where: { slug: "booking-avbestilt", name: prefix } });
   await db.$disconnect();
 });
@@ -60,7 +60,7 @@ test("Postgres-historikk og faktisk SDK-kall viser riktig avbestilling uten ekte
   const id = `${prefix}-ready`;
   await db.auditLog.create({ data: { action: "booking.cancelled", target: `Booking:${id}`, createdAt: new Date("2077-11-16T08:14:00Z") } });
   await sendBookingCancellation(id, { refundPending: true });
-  assert.equal(messages.length, 1); assert.match(messages[0].html, /16.11.2077 kl. 09:14/);
+  assert.equal(messages.length, 1); assert.match(messages[0].html, /Syntetisk lagret tekst/); assert.match(messages[0].html, /16.11.2077 kl. 09:14/);
   assert.match(messages[0].html, /10:30–11:30/); assert.match(messages[0].html, /venter på behandling/);
   assert.doesNotMatch(messages[0].html, /Refusjon er behandlet/);
   await sendBookingCancellation(id, { refundIssued: true }); assert.match(messages[1].html, /950,50 kr/);

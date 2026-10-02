@@ -1,7 +1,7 @@
 /**
  * Booking-relaterte transaksjons-e-poster.
  *
- * Kontrollerer aktiv EmailTemplate og bygger de fire bookingmeldingene i felles e-postramme.
+ * Bruker lagret maltekst og bookingens faktiske opplysninger i felles e-postramme.
  */
 import "server-only";
 
@@ -14,7 +14,8 @@ import { logError } from "@/lib/error-tracking";
 import { byggPaaminnelse, formaterKr } from "@/lib/email/templates/paaminnelse-mal";
 import { byggBekreftelse, googleKalenderUrl, datoTekst, klokkeTekst } from "./booking-bekreftelse";
 
-import { byggAvbestilling, formaterKr as avbestillingKr, osloDagOgTid, type Refusjon } from "./templates/avbestilling-mal";
+import { byggAvbestilling, formaterKr as avbestillingKr, osloDagOgTid, refusjonTekst, type Refusjon } from "./templates/avbestilling-mal";
+import { bookingTemplateContent } from "./booking-template-content";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -27,8 +28,8 @@ async function hentTemplate(slug: string) {
 }
 
 /**
- * EP-01. Bygger bekreftelsen fra bookingdata (Precision Athletics-malen), ikke fra
- * EmailTemplate-raden i databasen. Gjest = booking uten bruker.
+ * EP-01. Faktarader fra bookingdata, emne og innledning fra lagret EmailTemplate.
+ * Gjest = booking uten bruker.
  */
 export async function sendBookingConfirmation(bookingId: string) {
   const booking = await prisma.booking.findUnique({
@@ -47,13 +48,15 @@ export async function sendBookingConfirmation(bookingId: string) {
     console.warn("[booking-email] Ingen e-post på booking", bookingId);
     return;
   }
-  await hentTemplate("booking-bekreftelse");
+  const template = await hentTemplate("booking-bekreftelse");
+  const content = bookingTemplateContent(template, booking, APP_URL);
   const erGjest = !booking.user;
   const navn = booking.user?.name ?? booking.guestName ?? null;
   const referanse = `#${booking.id.slice(-8)}`;
   const sted = booking.location.name;
 
   const { subject, html } = byggBekreftelse({
+    introHtml: content.introHtml,
     type: erGjest ? "gjest" : "app",
     fornavn: navn ? navn.split(" ")[0] : null,
     tjeneste: booking.serviceType.name,
@@ -78,7 +81,7 @@ export async function sendBookingConfirmation(bookingId: string) {
   });
 
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({ context: "email.booking.resend", error, meta: { bookingId } });
@@ -103,7 +106,8 @@ export async function sendBookingReminder(bookingId: string, now = new Date(), e
   // Booking kan være avbestilt siden bakgrunnsjobben valgte kandidatene.
   if (booking.status !== "CONFIRMED" || !epost) return false;
   if (expectedStartAt && booking.startAt.getTime() !== expectedStartAt.getTime()) return false;
-  await hentTemplate("oekt-paaminnelse");
+  const template = await hentTemplate("oekt-paaminnelse");
+  const content = bookingTemplateContent(template, booking, APP_URL);
   const navn = booking.user?.name ?? booking.guestName ?? "";
   const erKlipp = Boolean(booking.subscriptionId);
   const erApp = Boolean(booking.userId);
@@ -134,9 +138,9 @@ export async function sendBookingReminder(bookingId: string, now = new Date(), e
       bookingIApp: `${APP_URL}/portal/booking/${encodeURIComponent(booking.id)}`,
       endre: `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking #${booking.id.slice(-8)}`)}`,
     },
-  });
+  }, { introHtml: content.introHtml });
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html }, {
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html }, {
       idempotencyKey: `booking-reminder/${booking.id}/${booking.startAt.toISOString()}`,
     });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
@@ -147,7 +151,6 @@ export async function sendBookingReminder(bookingId: string, now = new Date(), e
   }
 }
 
-/** EP-04: resultatet av avbestillingen vises, uten å utføre nye tilbakeføringer. */
 export async function sendBookingCancellation(
   bookingId: string,
   extra: {
@@ -156,13 +159,13 @@ export async function sendBookingCancellation(
   } = {},
 ) {
   const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: {
-    user: { select: { name: true, email: true } }, serviceType: true,
+    user: { select: { name: true, email: true } }, serviceType: true, location: true, coach: { select: { name: true } },
     subscription: { select: { creditsRemaining: true, monthlyCredits: true } },
   } });
   if (!booking) throw new Error("Booking not found");
   const epost = booking.user?.email ?? booking.guestEmail;
   if (!epost || booking.status !== "CANCELLED") return;
-  await hentTemplate("booking-avbestilt");
+  const template = await hentTemplate("booking-avbestilt");
   const cancellation = await prisma.auditLog.findFirst({
     where: { target: `Booking:${bookingId}`, action: { in: ["booking.cancelled", "booking.cancelled.refund-failed", "booking.cancelled.credit-refunded"] } },
     orderBy: { createdAt: "desc" }, select: { createdAt: true },
@@ -175,6 +178,7 @@ export async function sendBookingCancellation(
     : extra.refundFailed || extra.creditFailed ? { type: "feilet" }
     : (extra.lateCancelNoRefund || extra.etterFristen) && (booking.priceOre > 0 || booking.subscriptionId || booking.stripePaymentIntentId) ? { type: "ingen" }
     : booking.priceOre === 0 && !booking.subscriptionId ? { type: "gratis" } : { type: "ukjent" };
+  const content = bookingTemplateContent(template, booking, APP_URL, { refundLine: refusjonTekst(refusjon) });
   const { subject, html } = byggAvbestilling({
     mottaker: booking.user ? "app" : "gjest", fornavn: navn.split(" ")[0] ?? "",
     tjeneste: `${booking.serviceType.name} ${Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000)} min`,
@@ -182,9 +186,9 @@ export async function sendBookingCancellation(
     avbestiltTidspunkt: cancellation ? osloDagOgTid(cancellation.createdAt) : null,
     refusjon, referanse: !booking.user && refusjon.type === "penger" ? extra.refundId ?? booking.id : booking.id,
     lenker: { bookNy: `${APP_URL}/booking`, playerhq: `${APP_URL}/portal` },
-  });
+  }, { introHtml: content.introHtml });
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({ context: "email.booking.resend", error, meta: { bookingId } });
@@ -192,6 +196,7 @@ export async function sendBookingCancellation(
   }
 }
 
+/** EP-02: oldStartAt er tiden før flytting; booking-raden har allerede ny tid. */
 export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date) {
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
@@ -211,10 +216,12 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
   }
 
   // Behold administrasjonens av/på-kontroll selv om innholdet har ny utforming.
-  await hentTemplate("booking-flyttet");
+  const template = await hentTemplate("booking-flyttet");
+  const content = bookingTemplateContent(template, booking, APP_URL, { oldDate: datoTekst(oldStartAt), oldTime: klokkeTekst(oldStartAt) });
 
   const fullNavn = booking.user?.name ?? booking.guestName ?? null;
   const { subject, html } = byggEndretTimeEpost({
+    introHtml: content.introHtml,
     appUrl: APP_URL,
     bookingId: booking.id,
     startAt: booking.startAt,
@@ -234,7 +241,7 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
   });
 
   try {
-    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject, html });
+    const result = await resendKlient().emails.send({ from: FRA_EPOST, to: epost, subject: content.subject.trim() || subject, html });
     if (result.error) throw new Error("E-postleverandøren avviste bookingmeldingen.");
   } catch (error) {
     await logError({
