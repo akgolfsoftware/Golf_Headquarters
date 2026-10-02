@@ -1,5 +1,7 @@
 "use server";
 
+import { eksporterWorkbenchData } from "@/lib/workbench/workbench-personvern";
+
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
@@ -122,6 +124,7 @@ export async function exportUserData(): Promise<{
       iupBesvarelser,
       weekPlans,
       trenerDelingsInvitasjoner,
+      workbench,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({ where: { userId: user.id } }),
@@ -154,6 +157,7 @@ export async function exportUserData(): Promise<{
         select: { id: true, userId: true, mottakerGruppeId: true, mottakerEpost: true, tekstVersjon: true,
           gittAvUserId: true, gittAvRolle: true, createdAt: true, expiresAt: true, acceptedAt: true, acceptedByUserId: true, revokedAt: true },
       }),
+      eksporterWorkbenchData(user.id),
     ]);
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
@@ -198,6 +202,7 @@ export async function exportUserData(): Promise<{
       iupBesvarelser,
       weekPlans,
       trenerDelingsInvitasjoner,
+      workbench,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +

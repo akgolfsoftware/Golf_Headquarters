@@ -14,7 +14,7 @@
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Check, List, Plus, Send, Star, Trash2, Undo2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, List, Pencil, Plus, Send, Star, Trash2, Undo2, X } from "lucide-react";
 import { Ark, Dialogboks, Nokkelverdi } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Sokefelt } from "@/components/precision/pa-a2";
@@ -25,7 +25,7 @@ import type { UkeMotor } from "@/components/workbench/useUkeMotor";
 import { AREA_LABEL, formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
 import { RPE_SKALA } from "@/lib/domain/workbench/load";
-import type { PyramidArea, RecurrencePolicy, WeekNote, WeekPlanData, WeekType, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Drill, PyramidArea, RecurrencePolicy, WeekNote, WeekPlanData, WeekType, WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { OvelseInput } from "@/lib/domain/workbench/ovelse-utkast";
 import type { SaveWeekPlanInput } from "@/lib/workbench/wb-actions";
 import { tommeUkeplandetaljer, UKEPLAN_OMRADER, UKEPLAN_PRIORITETER, UKEPLAN_TYPER, WeekPlanFieldsSchema, type WeekPlanningDetails } from "@/lib/workbench/ukeplan-schema";
@@ -68,9 +68,10 @@ function Felt({ label, children, mono }: { label: string; children: React.ReactN
 
 /* ---------------- Økt (redigering) ---------------- */
 
-export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse }: {
+export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse, onRedigerOvelse }: {
   session: WorkbenchSession | null; spillerNavn: string; motor: UkeMotor;
   onLukk: () => void; onApneOkt: (id: string) => void; onNyOvelse: (s: WorkbenchSession) => void;
+  onRedigerOvelse?: (s: WorkbenchSession, drill: Drill) => void;
 }) {
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
@@ -143,9 +144,10 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
           [UI.approvalStatusLabel, session.needsPlayerApproval ? UI.approvalStatusPending : session.approvalStatus === "ACCEPTED" ? UI.approvalStatusAccepted : session.approvalStatus === "REJECTED" ? UI.approvalStatusRejectedValue : "—"],
           ...(session.hiddenByPlayer ? [[UI.hiddenByPlayerLabel, UI.hiddenByPlayerValue] as const] : []),
         ]} />
-        <Knapp variant="ghost" size="sm" icon={Star} disabled={travel} onClick={() => motor.lagreSomMal(session.id, !session.isTemplate)}>
+        <Knapp variant="ghost" size="sm" icon={Star} disabled={travel || (session.status === "IN_PROGRESS" && !session.isTemplate)} onClick={() => motor.lagreSomMal(session.id, !session.isTemplate)}>
           {session.isTemplate ? UI.removeAsTemplate : UI.saveAsTemplate}
         </Knapp>
+        {session.status === "IN_PROGRESS" && !session.isTemplate && <p className="a9-tekst">En pågående økt kan ikke lagres som mal. Fullfør økten først.</p>}
       </div>
 
       <div className="a9-skjema">
@@ -157,6 +159,7 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
               <Caps>{[d.akFormel.pyramid, AREA_LABEL[d.akFormel.area], `${d.durationMinutes} MIN`].filter(Boolean).join(" · ").toUpperCase()}</Caps>
             </span>
             <span className="a9-ovelsesrad__knapper">
+              {onRedigerOvelse && <button type="button" className="pa-iconbtn" aria-label={`Rediger ${d.title}`} disabled={travel} onClick={() => onRedigerOvelse(session, d)}><Ikon icon={Pencil} size={18} /></button>}
               <button type="button" className="pa-iconbtn" aria-label={`Flytt ${d.title} opp`} disabled={travel || i === 0} onClick={() => motor.flyttDrill(session, d.id, -1)}><Ikon icon={ArrowUp} size={18} /></button>
               <button type="button" className="pa-iconbtn" aria-label={`Flytt ${d.title} ned`} disabled={travel || i === session.drills.length - 1} onClick={() => motor.flyttDrill(session, d.id, 1)}><Ikon icon={ArrowDown} size={18} /></button>
               <button type="button" className="pa-iconbtn" aria-label={`Fjern ${d.title}`} disabled={travel} onClick={() => motor.fjernDrill(session.id, d.id)}><Ikon icon={X} size={18} /></button>
@@ -420,12 +423,12 @@ export function CoachnotatArk({ notat, ukeNr, spillerNavn, travel, onLagre, onLu
 
 /* ---------------- Ny øvelse (åtte trinn) ---------------- */
 
-export function OvelseArk({ session, pyramide, travel, onLukk, onSubmit }: {
-  session: WorkbenchSession; pyramide: PyramidArea; travel: boolean; onLukk: () => void; onSubmit: (o: OvelseInput, ferdig: () => void) => void;
+export function OvelseArk({ session, pyramide, drill, travel, onLukk, onSubmit }: {
+  session: WorkbenchSession; pyramide: PyramidArea; drill?: Drill; travel: boolean; onLukk: () => void; onSubmit: (o: OvelseInput, ferdig: () => void) => void;
 }) {
-  return <Ark open onClose={onLukk} kicker={`Ny øvelse · ${session.title}`} title={UI.addDrill}>
+  return <Ark open onClose={onLukk} kicker={`${drill ? "Rediger øvelse" : "Ny øvelse"} · ${session.title}`} title={drill ? "Rediger øvelse" : UI.addDrill}>
     <Caps>PYRAMIDEN VELGES FØRST OG STYRER FELTENE VIDERE</Caps>
-    <OvelseSkjema utseende="precision" standardPyramide={pyramide} disabled={travel} onSubmit={onSubmit} />
+    <OvelseSkjema key={drill?.id ?? "ny"} drill={drill} utseende="precision" standardPyramide={pyramide} disabled={travel} onSubmit={(o, ferdig) => onSubmit(o, () => { ferdig(); if (drill) onLukk(); })} />
   </Ark>;
 }
 

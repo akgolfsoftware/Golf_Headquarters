@@ -69,7 +69,7 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: unused, deleteSession: unused, deleteSessionSeries: unused, moveSession: unused,
   publishSessions: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused,
-  unpublishSession: unused, updateSessionEffort: unused,
+  unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused,
   loadWeek: async () => ({ ok: true, data: loadedWeek }),
   saveWeekPlan: async (input: SaveWeekPlanInput) => {
     saved.push(input);
@@ -107,6 +107,18 @@ function week(date = "2026-09-28") {
 beforeEach(() => {
   states.clear(); transitions.length = 0; saved.length = 0; pushes.length = 0; replacements.length = 0;
   loadedWeek = week(); saveResult = { ok: false, error: "Lagring feilet" }; saveThrows = false;
+});
+
+test("pågående økt deaktiverer malvalg med forklaring, men historisk mal kan fjernes", () => {
+  const base = createSession({ playerId: "syntetisk-p1", coachId: "syntetisk-c1", date: "2026-10-02", startMinute: 600, durationMinutes: 60, title: "Syntetisk økt", pyramid: "TEK", createdBy: "COACH" });
+  for (const isTemplate of [false, true]) {
+    states.clear();
+    const motor = draw("motor", () => useUkeMotor({ playerId: "syntetisk-p1", uke: loadedWeek }));
+    const tree = draw("okt-ark", () => OktArk({ session: { ...base, status: "IN_PROGRESS", isTemplate }, spillerNavn: "Syntetisk spiller", motor, onLukk() {}, onApneOkt() {}, onNyOvelse() {} }));
+    const button = find(tree, n => n.type === "button" && n.props.children === (isTemplate ? "Fjern som mal" : "Lagre som mal"));
+    assert.equal(button.props.disabled, !isTemplate);
+    assert.equal(nodes(tree).some(n => n.props.children === "En pågående økt kan ikke lagres som mal. Fullfør økten først."), !isTemplate);
+  }
 });
 
 test("ekte OktArk skiller ukjent, null og registrerte minutter fra planlagt tid", () => {

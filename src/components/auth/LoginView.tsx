@@ -88,7 +88,7 @@ export function LoginView() {
       if (error) {
         setMelding({ type: "feil", tekst: "Feil e-post eller passord." });
       } else {
-        router.replace("/auth/etter-innlogging");
+        window.location.replace("/auth/etter-innlogging");
       }
     } catch (_err) {
       setMelding({ type: "feil", tekst: "Innlogging feilet. Prøv igjen." });
