@@ -6,6 +6,7 @@
 |---|---|
 | Statisk kodeinventar, importer og databasekall (ingen nettverk/appkjøring) | `node scripts/codebase-audit.mjs --output docs/design-audit/kodebase-inventar-YYYY-MM-DD.json` |
 | Struktur, delte instrukser og dokumentlenker | `npm run prosjekt:sjekk` |
+| Skjermregister for D01 | `node scripts/bygg-skjermregister.mjs --check` |
 | Oppdater fil- og dokumentregister | `npm run prosjekt:register` |
 | Kode, designregler og bygg | `npm run verify` |
 | Enhets- og komponenttester | `npm test` |
