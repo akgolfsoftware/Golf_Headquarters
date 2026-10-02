@@ -25,6 +25,8 @@ import {
   hastighetTekst,
   MAALEUTSTYR_LABEL,
   mengdeTekst,
+  kondisjonssegmentTekst,
+  utstyrTekst,
   stedTekst,
   TRENINGSMAATE_LABEL,
 } from "@/lib/domain/workbench/ovelse-detaljer";
@@ -98,6 +100,8 @@ function detaljRader(drill: Drill | undefined) {
     { label: "Sandtrinn", hint: "Bare bunker", value: d.sandTrinn ? SAND_TRINN_LABEL[d.sandTrinn] : undefined },
     { label: "Treningsmåte", hint: "Hvordan spilleren skal trene", value: d.treningsmaate ? TRENINGSMAATE_LABEL[d.treningsmaate] : undefined },
     { label: "Mengde", hint: "Hvor mye som skal gjøres", value: mengdeTekst(d.mengde) },
+    { label: "Kondisjonssegmenter", hint: "Tid og pulssone", value: kondisjonssegmentTekst(d.kondisjonssegmenter) },
+    { label: "Utstyr", hint: "Utstyr og registrert antall", value: utstyrTekst(d.utstyr) },
     { label: "Målemetode", hint: "Hvordan målet måles", value: d.mal?.malemetode },
     { label: "Resultatkrav", hint: "Hva som må til for å nå målet", value: d.mal?.resultatkrav },
     { label: "Notat", hint: "Fritekst", value: d.mal?.notat },

@@ -55,6 +55,16 @@ function mapDrill(row: WorkbenchDrillRow): Drill {
     akFormel: parseAkFormel(row.akFormel, row.title),
     techniqueFocus: row.techniqueFocus ?? undefined,
     sourceId: row.sourceId ?? undefined,
+    exerciseId: row.exerciseId ?? undefined,
+    positionTaskId: row.positionTaskId ?? undefined,
+    repType: row.repType ?? undefined,
+    repAntall: row.repAntall ?? undefined,
+    repMinutter: row.repMinutter ?? undefined,
+    repSett: row.repSett ?? undefined,
+    repReps: row.repReps ?? undefined,
+    planRepsUtenBall: row.planRepsUtenBall ?? undefined,
+    planRepsLavFart: row.planRepsLavFart ?? undefined,
+    planRepsAuto: row.planRepsAuto ?? undefined,
     order: row.sortOrder,
   };
 }

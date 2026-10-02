@@ -9,7 +9,8 @@ import { addDays, isoWeekNumber } from "@/lib/domain/workbench/operations";
 import type { Drill, WorkbenchSession } from "@/lib/domain/workbench/types";
 import { calendarLanes } from "@/lib/workbench/calendar-layout";
 import type { MinKalenderData, MinKalenderItem } from "@/lib/workbench/min-calendar";
-import { workbenchUrl } from "@/lib/workbench/visning-url";
+import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
+import { parsePlanKontekst, type PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { VisningPiller } from "./VisningPiller";
 
 const DAYS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
@@ -49,50 +50,54 @@ function formula(session?: WorkbenchSession) {
   ];
 }
 
-function Inspector({ item }: { item?: MinKalenderItem }) {
+function Inspector({ item, playerId, routeSurface, planKontekst }: { item?: MinKalenderItem; playerId: string; routeSurface: WorkbenchSurface; planKontekst: PlanReferanse }) {
   if (!item) return <p className="wb-empty">Velg en økt for å se detaljene.</p>;
   const rows = formula(item.session);
+  const href = item.session ? workbenchUrl(item.session.playerId, "okt", { okt: item.session.id }, routeSurface,
+    { ...planKontekst, periode: item.session.playerId === playerId ? planKontekst.periode : undefined }) : item.href;
   return <section className="wb-week-summary wb-min-summary">
     <span className="wb-kicker">Valgt økt</span>
     <h2>{item.title}</h2>
     <p>{dateLabel(item.date)} · {formatTime(item.startMinute)}–{formatTime(item.startMinute + item.durationMinutes)}</p>
     <span className="wb-kicker">Formel</span>
     <dl>{rows.map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
-    <Link className="wb-quiet wb-inline-link wb-min-open" href={item.href}>Åpne økt</Link>
+    <Link className="wb-quiet wb-inline-link wb-min-open" href={href}>Åpne økt</Link>
   </section>;
 }
 
-function SourcePanel({ playerId, data }: { playerId: string; data: MinKalenderData }) {
+function SourcePanel({ playerId, data, routeSurface, planKontekst }: { playerId: string; data: MinKalenderData; routeSurface: WorkbenchSurface; planKontekst: PlanReferanse }) {
   return <>
     <span className="wb-kicker">Tidsnivå</span>
     <nav className="wb-min-levels" aria-label="Tidsnivå">
-      <Link href={workbenchUrl(playerId, "uke", { uke: data.weekStart })}>Uke<small>Uke {isoWeekNumber(data.weekStart)}</small></Link>
-      <Link href={workbenchUrl(playerId, "min", { uke: data.weekStart })} aria-current="page">Min kalender<small>{rangeLabel(data.weekStart)}</small></Link>
+      <Link href={workbenchUrl(playerId, "uke", { uke: data.weekStart }, routeSurface, planKontekst)}>Uke<small>Uke {isoWeekNumber(data.weekStart)}</small></Link>
+      <Link href={workbenchUrl(playerId, "min", { uke: data.weekStart }, routeSurface, planKontekst)} aria-current="page">Min kalender<small>{rangeLabel(data.weekStart)}</small></Link>
     </nav>
     <section className="wb-min-sources"><span className="wb-kicker">Egne maler</span>{data.templates.length ? data.templates.map((item) => <div key={item.id}><b>{item.title}</b><small>{item.subtitle}</small></div>) : <p>Ingen lagrede maler.</p>}</section>
     <section className="wb-min-sources"><span className="wb-kicker">Bookinger</span>{data.bookings.length ? data.bookings.map((item) => <div key={item.id}><b>{item.title}</b><small>{item.subtitle}</small></div>) : <p>Ingen bookinger denne uken.</p>}</section>
   </>;
 }
 
-export function WorkbenchMinKalender({ playerId, coachName, data }: { playerId: string; coachName: string; data: MinKalenderData }) {
+export function WorkbenchMinKalender({ playerId, coachName, data, routeSurface = "agency", planKontekst }: { playerId: string; coachName: string; data: MinKalenderData; routeSurface?: WorkbenchSurface; planKontekst?: PlanReferanse }) {
+  const referanse = { ...parsePlanKontekst({ uke: data.weekStart }).referanse, ...planKontekst, uke: data.weekStart };
   const router = useRouter();
   const all = useMemo(() => data.days.flatMap((day) => day.items), [data.days]);
   const initialDay = Math.max(0, data.days.findIndex((day) => day.date === data.todayIso));
   const [dayIndex, setDayIndex] = useState(initialDay);
-  const [selectedId, setSelectedId] = useState(all.find((item) => item.kind === "WORKBENCH")?.id ?? all[0]?.id ?? "");
+  const [selectedId, setSelectedId] = useState(all.find(item => item.session?.id === referanse.okt)?.id ?? all.find((item) => item.kind === "WORKBENCH")?.id ?? all[0]?.id ?? "");
   const selected = all.find((item) => item.id === selectedId) ?? all[0];
+  const valgtReferanse = selected?.session?.playerId === playerId ? { ...referanse, okt: selected.session.id } : referanse;
   const totalMinutes = all.reduce((sum, item) => sum + item.durationMinutes, 0);
   const mobileItems = data.days[dayIndex]?.items ?? [];
   const mobileMinutes = mobileItems.reduce((sum, item) => sum + item.durationMinutes, 0);
   const currentDayIndex = data.days.findIndex((day) => day.date === data.todayIso);
 
   return <div className="wb-layout wb-min-layout">
-    <aside className="wb-sources"><SourcePanel playerId={playerId} data={data} /></aside>
+    <aside className="wb-sources"><SourcePanel playerId={playerId} data={data} routeSurface={routeSurface} planKontekst={valgtReferanse} /></aside>
     <main className="wb-main">
-      <div className="wb-pills"><VisningPiller playerId={playerId} visning="min" uke={data.weekStart} maned={data.weekStart.slice(0, 7)} aar={data.weekStart.slice(0, 4)} /></div>
+      <div className="wb-pills"><VisningPiller playerId={playerId} visning="min" {...valgtReferanse} routeSurface={routeSurface} /></div>
       <div className="wb-body wb-min-body">
         <header className="wb-heading wb-min-heading"><div><span className="wb-kicker">Min kalender</span><h1>Uke {isoWeekNumber(data.weekStart)}</h1></div><span className="wb-sub wb-min-desktop-meta">{coachName} · {rangeLabel(data.weekStart)} · {all.length} økter · {formatHours(totalMinutes)} t</span><span className="wb-sub wb-min-mobile-meta">{coachName} · {dateLabel(data.days[dayIndex]?.date ?? data.weekStart)} · {mobileItems.length} økter · {formatHours(mobileMinutes)} t</span></header>
-        <nav className="wb-min-week-nav" aria-label="Velg uke"><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: addDays(data.weekStart, -7) }))}>←</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: data.todayIso }))}>I dag</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: addDays(data.weekStart, 7) }))}>→</button></nav>
+        <nav className="wb-min-week-nav" aria-label="Velg uke"><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: addDays(data.weekStart, -7) }, routeSurface, valgtReferanse))}>←</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: data.todayIso }, routeSurface, valgtReferanse))}>I dag</button><button type="button" className="wb-quiet" onClick={() => router.push(workbenchUrl(playerId, "min", { uke: addDays(data.weekStart, 7) }, routeSurface, valgtReferanse))}>→</button></nav>
         <section className="wb-calendar wb-min-calendar" aria-label="Min kalender">
           <div className="wb-calendar-axis"><div className="wb-day-heading"/><div className="wb-band"/>{HOURS.map((hour) => <span key={hour}>{String(hour).padStart(2, "0")}:00</span>)}</div>
           {data.days.map((day, index) => {
@@ -108,7 +113,7 @@ export function WorkbenchMinKalender({ playerId, coachName, data }: { playerId: 
         </section>
       </div>
     </main>
-    <aside className="wb-inspector"><Inspector item={selected} /></aside>
-    {selected ? <aside className="wb-mobile-summary wb-min-mobile" aria-label="Valgt økt"><div className="wb-grip" aria-hidden/><Inspector item={selected} /></aside> : null}
+    <aside className="wb-inspector"><Inspector item={selected} playerId={playerId} routeSurface={routeSurface} planKontekst={referanse} /></aside>
+    {selected ? <aside className="wb-mobile-summary wb-min-mobile" aria-label="Valgt økt"><div className="wb-grip" aria-hidden/><Inspector item={selected} playerId={playerId} routeSurface={routeSurface} planKontekst={referanse} /></aside> : null}
   </div>;
 }

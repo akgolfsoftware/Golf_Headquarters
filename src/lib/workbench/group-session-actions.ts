@@ -10,7 +10,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertCapability } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { canEditGroup } from "./group-scope";
-import { AkFormelSchema, IsoDateSchema, PyramidAreaSchema, EnvironmentSchema } from "@/lib/domain/workbench/schemas";
+import { AkFormelSchema, AkFormelLeseSchema, IsoDateSchema, PyramidAreaSchema, EnvironmentSchema } from "@/lib/domain/workbench/schemas";
+import { hentBankReferanser } from "./bank-referanser";
+import { bevarHistoriskeDrillfelt, FORMEL_FELT, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { mapSession, tilDatoKolonne } from "./wb-map";
 import { osloInstant } from "@/lib/jarvis/dagen";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
@@ -26,8 +28,9 @@ const GroupContent = z.object({
   title: z.string().trim().min(1).max(200), pyramid: PyramidAreaSchema,
   environment: EnvironmentSchema.nullish(), notes: z.string().max(5000).nullish(),
   drills: z.array(z.object({
+    id: Id.optional(), sourceId: Id.optional(), exerciseId: Id.optional(), positionTaskId: Id.optional(),
     title: z.string().trim().min(1).max(200), description: z.string().max(5000).nullish(),
-    durationMinutes: z.number().int().min(1).max(600), akFormel: AkFormelSchema,
+    durationMinutes: z.number().int().min(1).max(600), akFormel: AkFormelLeseSchema,
     techniqueFocus: z.string().max(200).nullish(),
   })).max(100),
 }).refine(value => Boolean(value.requestId) !== Boolean(value.sessionId), "Oppgi enten ny forespørsel eller eksisterende økt");
@@ -76,10 +79,29 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
       if (current && (current.groupId !== value.groupId || current.origin !== "GROUP" || current.sourceGroupSessionId
         || current.playerId !== current.coachId || !/^wb-group-[a-f0-9]{64}$/.test(current.id))) throw new Error("scope");
       const existing = await tx.workbenchDrill.findMany({ where: { sessionId: id }, orderBy: { sortOrder: "asc" } });
-      const wantedDrills = value.drills.map((drill, sortOrder) => ({
-        title: drill.title, description: drill.description ?? null, durationMinutes: drill.durationMinutes,
-        akFormel: drill.akFormel as Prisma.InputJsonObject, techniqueFocus: drill.techniqueFocus ?? null, sortOrder,
-      }));
+      const wantedDrills = [];
+      const matchedIds: (string | undefined)[] = [];
+      for (const [sortOrder, drill] of value.drills.entries()) {
+        const old = drill.id ? existing.find(d => d.id === drill.id) : existing[sortOrder];
+        if (drill.id && !old) throw new Error("drill-scope");
+        if (old ? !gyldigFormelEndring(old.akFormel, drill.akFormel) : !AkFormelSchema.safeParse(drill.akFormel).success) throw new Error("formula");
+        const incomingRef = { sourceId: drill.sourceId, exerciseId: drill.exerciseId, positionTaskId: drill.positionTaskId };
+        if (old && Object.entries(incomingRef).some(([key, value]) => value !== undefined && value !== old[key as keyof typeof old])) throw new Error("reference-change");
+        const refs = old ? { ok: true as const, data: { sourceId: old.sourceId, exerciseId: old.exerciseId, positionTaskId: old.positionTaskId } }
+          : await hentBankReferanser(incomingRef, viewer, viewer.id, tx);
+        if (!refs.ok) throw new Error("bank-scope");
+        matchedIds.push(old?.id);
+        wantedDrills.push({
+          title: drill.title, description: drill.description ?? null, durationMinutes: drill.durationMinutes,
+          akFormel: old ? JSON.parse(JSON.stringify(bevarHistoriskeDrillfelt(old.akFormel, drill.akFormel as Prisma.InputJsonObject, FORMEL_FELT))) as Prisma.InputJsonObject : drill.akFormel as Prisma.InputJsonObject,
+          techniqueFocus: drill.techniqueFocus ?? null, sortOrder,
+          sourceId: refs.data.sourceId ?? null, exerciseId: refs.data.exerciseId ?? null, positionTaskId: refs.data.positionTaskId ?? null,
+          repType: old?.repType ?? null, repAntall: old?.repAntall ?? null, repMinutter: old?.repMinutter ?? null, repSett: old?.repSett ?? null, repReps: old?.repReps ?? null,
+          planRepsUtenBall: old?.planRepsUtenBall ?? null, planRepsLavFart: old?.planRepsLavFart ?? null, planRepsAuto: old?.planRepsAuto ?? null,
+        });
+      }
+      const matched = matchedIds.filter((id): id is string => id !== undefined);
+      if (new Set(matched).size !== matched.length) throw new Error("duplicate-drill");
       const data = {
         date: tilDatoKolonne(value.date), startMinute: value.startMinute, durationMinutes: value.durationMinutes,
         title: value.title, pyramid: value.pyramid, environment: value.environment ?? null, notes: value.notes ?? null,
@@ -91,6 +113,9 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
       }) && isDeepStrictEqual(wantedDrills, existing.map(drill => ({
         title: drill.title, description: drill.description, durationMinutes: drill.durationMinutes,
         akFormel: drill.akFormel, techniqueFocus: drill.techniqueFocus, sortOrder: drill.sortOrder,
+        sourceId: drill.sourceId, exerciseId: drill.exerciseId, positionTaskId: drill.positionTaskId,
+        repType: drill.repType, repAntall: drill.repAntall, repMinutter: drill.repMinutter, repSett: drill.repSett, repReps: drill.repReps,
+        planRepsUtenBall: drill.planRepsUtenBall, planRepsLavFart: drill.planRepsLavFart, planRepsAuto: drill.planRepsAuto,
       })));
       if (unchanged) return tx.workbenchSession.findUniqueOrThrow({ where: { id }, include: { drills: true } });
       // Originalen blir et utkast ved endring; mottakernes tidligere publisering består til neste publisering.
@@ -100,7 +125,7 @@ export async function saveGroupWorkbenchSession(input: unknown): Promise<WbResul
           groupId: value.groupId, origin: "GROUP", createdBy: viewer.id, status: "DRAFT" } });
       const ids = [];
       for (const [index, drillData] of wantedDrills.entries()) {
-        const drillId = existing[index]?.id ?? `${id}-drill-${index}`;
+        const drillId = matchedIds[index] ?? `${id}-drill-${hash(`${index}:${value.expectedUpdatedAt ?? value.requestId ?? current?.updatedAt.toISOString()}`)}`;
         ids.push(drillId);
         await tx.workbenchDrill.upsert({ where: { id: drillId }, create: { ...drillData, id: drillId, sessionId: source.id }, update: drillData });
       }
@@ -170,8 +195,12 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
             const drillId = `${id}-drill-${hash(drill.id)}`;
             drillIds.push(drillId);
             const data = { title: drill.title, description: drill.description, durationMinutes: drill.durationMinutes,
-              akFormel: AkFormelSchema.parse(drill.akFormel) as Prisma.InputJsonObject,
-              techniqueFocus: drill.techniqueFocus, sortOrder: drill.sortOrder };
+              // Rå autorisert original kopieres uten å strippe historiske JSON-/dosefelt.
+              akFormel: drill.akFormel === null ? Prisma.JsonNull : drill.akFormel,
+              techniqueFocus: drill.techniqueFocus, sortOrder: drill.sortOrder,
+              sourceId: drill.sourceId, exerciseId: drill.exerciseId, positionTaskId: drill.positionTaskId,
+              repType: drill.repType, repAntall: drill.repAntall, repMinutter: drill.repMinutter, repSett: drill.repSett, repReps: drill.repReps,
+              planRepsUtenBall: drill.planRepsUtenBall, planRepsLavFart: drill.planRepsLavFart, planRepsAuto: drill.planRepsAuto };
             await tx.workbenchDrill.upsert({ where: { id: drillId }, create: { ...data, id: drillId, sessionId: id }, update: data });
           }
           await tx.workbenchDrill.deleteMany({ where: { sessionId: id, id: { notIn: drillIds } } });

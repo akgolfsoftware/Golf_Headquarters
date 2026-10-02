@@ -2,9 +2,34 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { AkFormelSchema } from "@/lib/domain/workbench/schemas";
-import { byggOvelse, FORESLATT_OMRADE, tomtUtkast, tommeUtkast } from "@/lib/domain/workbench/ovelse-utkast";
+import { byggOvelse, FORESLATT_OMRADE, tomtUtkast, tommeUtkast, utkastFraOvelse } from "@/lib/domain/workbench/ovelse-utkast";
+import type { Drill } from "@/lib/domain/workbench/types";
 
 const FELLES = { title: "Lengdekontroll 100–150", durationMinutes: 20, description: "" };
+
+test("forhåndsutfylling leser alle kjente felter og beholder registrerte nuller i fysisk mengde", () => {
+  const drill: Drill = { id: "syntetisk", order: 0, title: "Syntetisk", description: "Gjennomføring", durationMinutes: 20,
+    techniqueFocus: "Målsetning", akFormel: { pyramid: "FYS", area: "STYRKE", label: "Fysisk", detaljer: {
+      sted: { hoved: "FYSISK_TRENINGSSTED", delvalg: "Styrkerom" },
+      mengde: { enhet: "SERIER", antall: 4, reps: 6, vektKg: 0, rir: 0, pauseSek: 0 },
+      mal: { malemetode: "Metode", resultatkrav: "Krav", notat: "Notat" },
+    } } };
+  const utkast = utkastFraOvelse(drill);
+  assert.equal(utkast.FYS.rir, "0"); assert.equal(utkast.FYS.vektKg, "0"); assert.equal(utkast.FYS.pauseSek, "0");
+  assert.equal(utkast.FYS.stedDelvalg, "Styrkerom"); assert.equal(utkast.FYS.malsetning, "Målsetning");
+  assert.equal(utkast.TEK.malsetning, "");
+  const result = byggOvelse("FYS", utkast.FYS, { title: drill.title, description: drill.description ?? "", durationMinutes: drill.durationMinutes });
+  assert.ok(result.ok);
+  if (result.ok) { assert.deepEqual(result.ovelse.akFormel.detaljer, drill.akFormel.detaljer); assert.equal(result.ovelse.techniqueFocus, drill.techniqueFocus); }
+});
+
+test("redigering av navn mister ikke lagrede fysiske dosefelt når antall serier er uavklart", () => {
+  const drill: Drill = { id: "syntetisk", order: 0, title: "Syntetisk", durationMinutes: 20,
+    akFormel: { pyramid: "FYS", area: "STYRKE", label: "Fysisk", detaljer: { mengde: { enhet: "SERIER", reps: 6, vektKg: 60, rir: 0 } } } };
+  const result = byggOvelse("FYS", utkastFraOvelse(drill).FYS, { title: "Endret navn", description: "", durationMinutes: 20 });
+  assert.ok(result.ok);
+  if (result.ok) assert.deepEqual(result.ovelse.akFormel.detaljer?.mengde, drill.akFormel.detaljer?.mengde);
+});
 
 test("pyramiden foreslår område, men alle utkast er egne", () => {
   assert.equal(FORESLATT_OMRADE.FYS, "STYRKE");

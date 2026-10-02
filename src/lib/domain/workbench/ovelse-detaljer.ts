@@ -114,7 +114,8 @@ export const TRENINGSMAATE_LABEL: Record<Treningsmaate, string> = {
 
 // ─── Mengde (kap. 16) ────────────────────────────────────────────────
 
-export const MENGDE_ENHET = ["SLAG", "PUTTER", "HULL", "MINUTTER", "SERIER"] as const;
+export const MENGDE_ENHET = ["SLAG", "PUTTER", "HULL", "MINUTTER", "SERIER", "OPPGAVER"] as const;
+export const PULSSONER = ["S1", "S2", "S3", "S4", "S5"] as const;
 export type MengdeEnhet = (typeof MENGDE_ENHET)[number];
 export const MENGDE_ENHET_LABEL: Record<MengdeEnhet, string> = {
   SLAG: "Slag",
@@ -122,6 +123,7 @@ export const MENGDE_ENHET_LABEL: Record<MengdeEnhet, string> = {
   HULL: "Hull",
   MINUTTER: "Minutter",
   SERIER: "Serier",
+  OPPGAVER: "Oppgaver",
 };
 
 // ─── Skjema for detaljer ─────────────────────────────────────────────
@@ -149,10 +151,18 @@ export const OvelseDetaljerSchema = z.object({
       antall: z.number().int().min(0).max(100000).optional(),
       reps: z.number().int().min(0).max(1000).optional(),
       vektKg: z.number().min(0).max(1000).optional(),
-      rir: z.number().int().min(0).max(10).optional(),
+      rir: z.number().int().min(0).max(4).optional(),
       pauseSek: z.number().int().min(0).max(3600).optional(),
     })
     .optional(),
+  kondisjonssegmenter: z.array(z.object({
+    minutter: z.number().positive().max(1440),
+    pulssone: z.enum(PULSSONER),
+  })).max(50).optional(),
+  utstyr: z.array(z.object({
+    navn: z.string().trim().min(1).max(120),
+    antall: z.number().int().min(0).max(100000).optional(),
+  })).max(50).optional(),
   mal: z
     .object({
       malemetode: kortTekst(200),
@@ -162,6 +172,13 @@ export const OvelseDetaljerSchema = z.object({
     .optional(),
 });
 export type OvelseDetaljer = z.infer<typeof OvelseDetaljerSchema>;
+
+/** Eldre RIR 5–10 skal leses uten å kaste ellers gyldig planinnhold. */
+export const OvelseDetaljerLeseSchema = OvelseDetaljerSchema.extend({
+  mengde: OvelseDetaljerSchema.shape.mengde.unwrap().extend({
+    rir: z.number().int().min(0).max(10).optional(),
+  }).optional(),
+});
 
 // ─── Hvilke felt skal skjemaet tegne? ────────────────────────────────
 
@@ -192,7 +209,7 @@ function mengdeFor(area: TrainingArea): MengdeFelt {
     case "BEVEGELIGHET":
       return { enheter: ["MINUTTER"], reps: false, vekt: false, rir: false, pause: false };
     case "BANE":
-      return { enheter: ["HULL", "MINUTTER"], reps: false, vekt: false, rir: false, pause: false };
+      return { enheter: ["HULL", "MINUTTER", "OPPGAVER"], reps: false, vekt: false, rir: false, pause: false };
     case "PUTT_0_3":
     case "PUTT_3_5":
     case "PUTT_5_10":
@@ -267,6 +284,10 @@ export function vaskDetaljer(
   }
   if (felt.maaleutstyr && detaljer.maaleutstyr) ut.maaleutstyr = detaljer.maaleutstyr;
   if (felt.treningsmaate && detaljer.treningsmaate) ut.treningsmaate = detaljer.treningsmaate;
+  if (area === "KONDISJON" && detaljer.kondisjonssegmenter?.length) {
+    ut.kondisjonssegmenter = detaljer.kondisjonssegmenter;
+  }
+  if (detaljer.utstyr?.length) ut.utstyr = detaljer.utstyr;
 
   const m = detaljer.mengde;
   if (m && felt.mengde.enheter.includes(m.enhet)) {
@@ -306,12 +327,20 @@ export function stedTekst(sted: OvelseDetaljer["sted"]): string | undefined {
 }
 
 export function mengdeTekst(mengde: OvelseDetaljer["mengde"]): string | undefined {
-  if (!mengde || mengde.antall === undefined) return undefined;
-  const base = `${mengde.antall} ${MENGDE_ENHET_LABEL[mengde.enhet].toLowerCase()}`;
+  if (!mengde) return undefined;
   const ekstra: string[] = [];
+  if (mengde.antall !== undefined) ekstra.push(`${mengde.antall} ${MENGDE_ENHET_LABEL[mengde.enhet].toLowerCase()}`);
   if (mengde.reps !== undefined) ekstra.push(`${mengde.reps} repetisjoner`);
   if (mengde.vektKg !== undefined) ekstra.push(`${mengde.vektKg} kg`);
   if (mengde.rir !== undefined) ekstra.push(`RIR ${mengde.rir}`);
   if (mengde.pauseSek !== undefined) ekstra.push(`pause ${mengde.pauseSek} sek`);
-  return ekstra.length > 0 ? `${base} · ${ekstra.join(" · ")}` : base;
+  return ekstra.length ? ekstra.join(" · ") : undefined;
+}
+
+export function kondisjonssegmentTekst(segmenter: OvelseDetaljer["kondisjonssegmenter"]): string | undefined {
+  return segmenter?.length ? segmenter.map(s => `${s.minutter} min · ${s.pulssone}`).join(" / ") : undefined;
+}
+
+export function utstyrTekst(utstyr: OvelseDetaljer["utstyr"]): string | undefined {
+  return utstyr?.length ? utstyr.map(u => u.antall === undefined ? `${u.navn} · antall ikke registrert` : `${u.navn} × ${u.antall}`).join(" / ") : undefined;
 }

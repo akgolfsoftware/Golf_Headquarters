@@ -69,7 +69,7 @@ mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: unused, deleteSession: unused, deleteSessionSeries: unused, moveSession: unused,
   publishSessions: unused, removeDrill: unused, reorderDrills: unused, setSessionTemplate: unused,
-  unpublishSession: unused, updateSessionEffort: unused,
+  unpublishSession: unused, updateSessionEffort: unused, updateDrill: unused,
   loadWeek: async () => ({ ok: true, data: loadedWeek }),
   saveWeekPlan: async (input: SaveWeekPlanInput) => {
     saved.push(input);

@@ -74,6 +74,7 @@ export function exerciseToSourceItem(rad: ExerciseDefinition): SourceItem {
     pyramid,
     area: omrade,
     label: `${PYRAMID_LABEL[pyramid]} · ${AREA_LABEL[omrade]}`,
+    ...(rad.utstyr?.length ? { detaljer: { utstyr: rad.utstyr.filter(n => n.trim()).map(navn => ({ navn: navn.trim() })) } } : {}),
   };
   const sgTags = rad.skillArea ? [`SG: ${rad.skillArea}`] : [];
   const moradTags = rad.morad ? ["MORAD"] : [];
@@ -93,6 +94,7 @@ export function exerciseToSourceItem(rad: ExerciseDefinition): SourceItem {
       durationMinutes: rad.durationMin ?? 15,
       akFormel,
       sourceId: rad.id,
+      exerciseId: rad.id,
     },
     tags: combinedTags,
   };
@@ -175,6 +177,7 @@ export function tekniskOppgaveToSourceItem(oppgave: TekniskPanelOppgave): Source
       techniqueFocus: oppgave.pNummer,
       akFormel,
       sourceId: oppgave.id,
+      positionTaskId: oppgave.id,
     },
     positionTaskId: oppgave.id,
     tags: [

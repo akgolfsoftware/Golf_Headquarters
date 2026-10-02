@@ -135,6 +135,17 @@ export interface Drill {
   /** Optional technique focus (one only) */
   techniqueFocus?: string;
   sourceId?: string; // if dragged from bank
+  exerciseId?: string;
+  positionTaskId?: string;
+  /** Historisk scalar-dose følger kopier; frie nye skjemaer skriver ikke L-trappen. */
+  repType?: string;
+  repAntall?: number;
+  repMinutter?: number;
+  repSett?: number;
+  repReps?: number;
+  planRepsUtenBall?: number;
+  planRepsLavFart?: number;
+  planRepsAuto?: number;
   order: number;
 }
 
