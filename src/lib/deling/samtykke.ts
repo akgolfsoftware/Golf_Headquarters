@@ -95,7 +95,7 @@ export async function registrerDelingsSamtykke(input: {
  */
 export async function grupperMedEksterneLesereForSpiller(
   userId: string,
-): Promise<{ id: string; name: string }[]> {
+): Promise<{ id: string; name: string; slug: string | null }[]> {
   const medlemskap = await prisma.groupMember.findMany({
     where: { userId, role: "PLAYER", endedAt: null },
     select: { groupId: true },
@@ -112,7 +112,7 @@ export async function grupperMedEksterneLesereForSpiller(
 
   return prisma.group.findMany({
     where: { id: { in: [...medLeser] } },
-    select: { id: true, name: true },
+    select: { id: true, name: true, slug: true },
     orderBy: { name: "asc" },
   });
 }

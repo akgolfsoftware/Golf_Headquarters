@@ -7,6 +7,21 @@ import { prisma } from "@/lib/prisma";
 const WANG_PROGRAM = ["WANG_UNG", "WANG_TOPPIDRETT"] as const;
 const TN_SLUG = "team-norway";
 
+/** WANG-elever får testresultatene delt med Team Norway etter opptaksavtalen. */
+export async function harAutomatiskWangTestdeling(userId: string): Promise<boolean> {
+  const medlemskap = await prisma.groupMember.findFirst({
+    where: {
+      userId,
+      role: "PLAYER",
+      endedAt: null,
+      user: { role: "PLAYER", deletedAt: null, anonymisertAt: null },
+      group: { program: { in: [...WANG_PROGRAM] }, arkivertAt: null },
+    },
+    select: { id: true },
+  });
+  return medlemskap !== null;
+}
+
 export type WangResultatSkoleScope = {
   groupId: string;
   schoolName: string;
