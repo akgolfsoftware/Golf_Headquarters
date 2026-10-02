@@ -33,7 +33,7 @@ export async function TnUttakSkjerm() {
   const data = await hentTnRangliste(bruker);
   if (!data || data.kontekst.erSpiller) notFound();
 
-  const uttak = await hentTnUttak(data.kontekst);
+  const uttak = await hentTnUttak(bruker, data.kontekst);
   const spillernavn = new Map(data.rader.map((r) => [r.id, r.navn]));
   const spillervalg = [...data.rader].sort((a, b) => a.navn.localeCompare(b.navn, "nb")).map((r) => ({ id: r.id, navn: r.navn }));
   const arrangementer = [...new Set(uttak.map((u) => u.arrangement))];

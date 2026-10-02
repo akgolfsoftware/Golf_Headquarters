@@ -3,6 +3,7 @@ import Link from "next/link";
 import { z } from "zod";
 import type { CSSProperties } from "react";
 
+import { medNavngittProfil } from "@/lib/deling/profil-lesing";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import type { TnBruker } from "@/lib/domain/tn-arbeidsflate";
 import {
@@ -380,7 +381,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       </div>
 
       {spillerId ? (
-        await renderPersonligPlan({ bruker, kontekst, spillerId, visning, datoRaw, idag, opprettOkt, flyttOkt, slettOkt, publiserOkt, kopierOkt, settMal, redigerOktInnhold, publiserFlere, opprettFraKilde, leggTilOvelse, okt: sp.okt })
+        (await medNavngittProfil(bruker.id, spillerId, gruppeId, () => renderPersonligPlan({ bruker, kontekst, spillerId, visning, datoRaw, idag, opprettOkt, flyttOkt, slettOkt, publiserOkt, kopierOkt, settMal, redigerOktInnhold, publiserFlere, opprettFraKilde, leggTilOvelse, okt: sp.okt }))) ?? <TnKort>Spilleren har ikke delt profilen med deg.</TnKort>
       ) : (
         await renderGruppeplan({ bruker, kontekst, visning, datoRaw, idag, opprettPeriode, slettPeriode, rullUtAarsplan })
       )}
