@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-02 18:18 CEST på `main` `30ee79fac`.
+Sist oppdatert: 2026-10-02 19:24 CEST på `main` `ad5d8c2fb`.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
@@ -26,9 +26,9 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
 |---|---|---|---|---|
 | C01 | P0 | FERDIG DEL | **Player App V1 SG:** PR #1088 og indeksoppfølging #1097 er merget. Seks additive tabeller har RLS, appen leser det publiserte settet med 333 SG-punkter, og lokal kontroll, CI, Vercel og produksjonsrøyk er grønne. Gjenstår: komplett mobil/statistikkreise, korrekte kildedata for flere kategorier og dokumentert DataGolf-lisens før sammenligninger vises. | Statistikkøkten. Handover: `~/Documents/Claude/akgolf-hq/codex-handover/statistikk-sg.md`. |
 | C02 | P0 | FERDIG DEL | **Workbench:** PR #1099 er merget som `8d74ae1d` med kollisjonskart, samtidighetsvern, gruppeøkter og private samlingsinvitasjoner. Lokal fullkontroll, PR-CI, hoved-CI, Vercel-produksjon, helse og produksjonsrøyktest bestod. | Workbench-arbeidskopien er ryddet. Gjenstår som større leveranse: visuell appkontroll mot godkjent Precision-design, komplett Excel-paritet og de øvrige skjerm-/reiseoppgavene i D01–D04. |
-| C03 | P0 | PÅGÅR | **Testbatteri:** PR #1111 er merget (`7cab6313e1`), og regresjonsdekningen for flerskole-testdag ble merget i PR #1113 (`c4f28a3c`). Samlet leveranse har grønn lokal/GitHub/Vercel-kontroll, 4 368 kildetester, 101 komponenttester, produksjonsbygg og 37/37 lokal database. | Gjenstår før sluttgodkjenning: faktisk privat Storage-objekt, innlogget visuell kontroll på 390 px/desktop mot Precision-fasiten og kontroll av liveoppdatering mellom enheter. Lokal forhåndsvisning ble stoppet av testoppsettets portregel (3062 vs. 3000), ikke av produksjonskode. |
+| C03 | P0 | PÅGÅR | **Testbatteri:** PR #1111 er merget (`7cab6313e1`), regresjonsdekningen for flerskole-testdag ble merget i PR #1113 (`c4f28a3c`), og visuell godkjenning er registrert i PR #1120 (`a747a3f1`). Samlet leveranse har grønn lokal/GitHub/Vercel-kontroll, 4 372 kildetester, 103 komponenttester og produksjonsbygg. | Gjenstår før sluttgodkjenning: faktisk privat Storage-objekt, innlogget visuell kontroll på 390 px/desktop mot Precision-fasiten og kontroll av liveoppdatering mellom enheter. |
 | C04 | P0 | FERDIG DEL | **Portering av alle skjermer:** fersk gjennomføringsplan er laget for 520 sidefiler/rutemønstre, 74 Precision-skjermtyper, 59 WANG-skjermer og TN-00–TN-27/34 dyp-lenker. Ingen appkode ble endret. | [Porteringsplanen](portering-alle-skjermer-2026-10-02.md). Første kodeoppgave er skjermregisteret, deretter rutevis portering. |
-| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1109, #1112 og revisjonen av synk mellom WANG-turnering og spillerprofil i #1115 er merget (`49dcc5459`, `4cba5bec0`, `30ee79fac`). En videre revisjon av opphavet til offentlige spillerkoblinger ligger i åpen PR #1118 (`fe4595474`); Vercel er grønn og GitHub-kontrollen kjører. Den separate IUP-feltparitetsrevisjonen har fortsatt ingen egen diff eller PR. | Gjenstår: ferdigkontrollere og eventuelt merge #1118, fullføre IUP-feltparitetsrevisjonen, komplett felt- og beregningsparitet fra app til trener, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
+| C05 | P0 | PÅGÅR | **WANG/TN og IUP/Excel:** PR #1109, #1112, #1115 og revisjonen av offentlige spillerkoblinger i #1118 er merget (`49dcc5459`, `4cba5bec0`, `30ee79fac`, `57b67bf8`). PR #1121 (`ad5d8c2f`) forklarer automatisk WANG-testdeling med Team Norway separat fra frivillig deling; tilgangsvakten er fail-closed og kontrollene er grønne. Den separate IUP-feltparitetsrevisjonen har fortsatt ingen egen diff eller PR. | Gjenstår: fullføre IUP-feltparitetsrevisjonen, komplett felt- og beregningsparitet fra app til trener, visuell sluttkontroll av trener-/spillerreisene og dokumentert DataGolf-bruksrett. |
 
 ## Ferdig og allerede på `main`
 
@@ -61,6 +61,12 @@ Detaljert gjennomføringsplan: [portering av alle skjermer](portering-alle-skjer
   (`30ee79fac`).
 - PR #1116: siste korrigering av restarbeidslisten etter regresjonsmergen
   (`86d07c7ab`).
+- PR #1118: dokumentert opphav og identitetsgrense for offentlige spillerkoblinger
+  (`57b67bf8`).
+- PR #1120: registrert visuell godkjenning av testbatteriet
+  (`a747a3f1`).
+- PR #1121: forklart automatisk WANG-testdeling separat fra frivillig deling
+  (`ad5d8c2fb`).
 - PR #1110: tidsstemplet restarbeidsliste og kontrollert arbeidskopioversikt
   (`cf257bb78e`).
 
@@ -104,7 +110,6 @@ beholde begrensningene som er dokumentert i de respektive PR-ene.
 |---|---|
 | hovedkopien `codex/arbeidsliste-restoppgaver-2026-10-02` | Inneholder denne arbeidslisten, porteringsplanen og separate lokale `.claude`-endringer som skal bevares. |
 | `iup-field-parity-audit` | Aktiv IUP-feltparitetsrevisjon i frakoblet arbeidskopi på `4cba5bec0`; ingen egen diff eller PR ved statuskuttet. |
-| `codex/wang-public-player-link-provenance-review-2026-10-02` | Har åpen PR #1118 (`fe4595474`) for revisjon av opphavet til offentlige spillerkoblinger; Vercel er grønn og GitHub-kontrollen kjører. |
 | `akgolf-hq-teknisk-fys-resultat` | Har umerget commit `010cc0053` for tekniske og fysiske resultater. |
 | `codex-ak-sg-runtime` | Har åpen utkast-PR #1083 og omfattende staged/unstaged arbeid; må først deles og samordnes. |
 | `codex-lokal-brukertest` | Koden fra #1039 er merget, men arbeidskopien har usporede kontrollfiler og en plan som må vurderes før sletting. |
@@ -124,7 +129,9 @@ Ryddet 02.10.2026:
 - `codex-wang-tn-profiltilgang-continue` ble fjernet automatisk etter merge av PR #1107.
 - `codex-wang-iup-approval-proposal-2026-10-02` ble fjernet etter merge av PR #1109.
 - `wang-iup-outcome-docs` ble fjernet etter merge av PR #1112.
-- `git worktree prune` ble kjørt. De åtte arbeidskopiene i tabellen over er bevisst beholdt.
+- `wang-test-share-disclosure-ui` ble fjernet etter merge av PR #1121.
+- `testbatteri-visual-approval` ble fjernet etter merge av PR #1120.
+- `git worktree prune` ble kjørt. De sju arbeidskopiene i tabellen over er bevisst beholdt.
 
 ## Rekkefølge
 
