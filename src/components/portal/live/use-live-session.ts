@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { startSession, logDrillReps, completeSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { addLiveSessionDrill, removeLiveSessionDrill, startSession, logDrillReps, completeSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import { lagreLiveDrillUtkast, lesLiveDrillUtkast, slettLiveDrillUtkast, synkLiveDrillKo } from "@/lib/offline-queue/live-drill-queue";
-import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, addLiveDrill, swapLiveDrill, removeLiveDrill, type LiveState, type RepBucket } from "@/lib/portal-live/live-state";
+import { skipLiveDrill, selectLiveDrill, adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, swapLiveDrill, removeLiveDrill, type LiveState, type RepBucket } from "@/lib/portal-live/live-state";
 import type { LiveV2Session, DrillRepState, LiveV2Drill } from "./types";
 
 type Phase = "starting" | "active" | "start-error" | "finishing" | "finish-error" | "finished";
@@ -122,9 +122,27 @@ export function useLiveSession(data: LiveV2Session, eierId: string | null) {
     togglePause: () => { if (phaseRef.current === "active") persist({ ...latest.current, paused: !latest.current.paused }); },
     change: (id: string, values: DrillRepState) => { if (phaseRef.current === "active") persist({ ...latest.current, drills: latest.current.drills.map((d) => d.id === id ? { ...d, ...values } : d) }); },
     adjust: (id: string, bucket: RepBucket, delta: number) => { if (phaseRef.current === "active") persist(adjustLiveRep(latest.current, id, bucket, delta)); },
+    skip: (id: string) => { if (phaseRef.current === "active") persist(skipLiveDrill(latest.current, id)); },
+    select: (id: string) => { if (phaseRef.current === "active") persist(selectLiveDrill(latest.current, id)); },
     mark: (id: string, done: boolean) => { if (phaseRef.current === "active") persist(markLiveDrill(latest.current, id, done)); },
-    addDrill: (drill: { name: string; durationMinutes?: number; pyramide?: LiveV2Drill["pyramide"]; plannedReps?: number }) => { if (phaseRef.current === "active") persist(addLiveDrill(latest.current, drill)); },
+    addDrill: async (drill: { requestId: string; name: string; durationMinutes: number; pyramide: LiveV2Drill["pyramide"]; plannedReps: number }) => {
+      if (phaseRef.current !== "active") throw new Error("Økta er ikke pågående.");
+      const saved = await addLiveSessionDrill({ sessionId: data.sessionId, ...drill });
+      if (latest.current.drills.some(d => d.id === saved.id)) return;
+      persist({ ...latest.current, drills: [...latest.current.drills, { ...saved, status: latest.current.drills.some(d => d.status === "active") ? "queued" : "active", repsTotal: 0, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: 0 }] });
+    },
     swapDrill: (id: string, newName: string, durationMinutes?: number) => { if (phaseRef.current === "active") persist(swapLiveDrill(latest.current, id, newName, durationMinutes)); },
-    removeDrill: (id: string) => { if (phaseRef.current === "active") persist(removeLiveDrill(latest.current, id)); },
+    removeDrill: async (id: string) => {
+      if (phaseRef.current !== "active") return;
+      const drill = latest.current.drills.find(d => d.id === id);
+      if (!drill || drill.repsTotal > 0 || drill.logNotes || drill.status === "done" || (drill.actualDurationSec ?? 0) > 0 || (drill.status === "active" && latest.current.drillSec > 0)) throw new Error("Øvelsen har registreringer. Bruk hopp over for å bevare dem.");
+      if (syncTimer.current) clearTimeout(syncTimer.current);
+      if (!(await saveLocal(latest.current))) throw new Error("Lagre registreringene før øvelsen fjernes.");
+      // Vent på pågående sending. En nyere klokkeversjon kan fortsatt vente i
+      // køen; den beholdes når bare den tomme øvelsen tas ut av neste kladd.
+      await sync();
+      await removeLiveSessionDrill({ sessionId: data.sessionId, drillId: id });
+      persist(removeLiveDrill(latest.current, id));
+    },
   };
 }

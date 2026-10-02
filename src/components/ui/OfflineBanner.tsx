@@ -49,14 +49,14 @@ export function OfflineBanner() {
   return (
     <aside
       aria-live="assertive"
-      className="fixed top-0 left-0 right-0 z-50 flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-rose-300 bg-rose-50 px-4 py-2.5 text-xs font-sans text-rose-950 shadow-md transition-all"
+      className="relative z-50 flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-rose-300 bg-rose-50 px-4 py-2.5 text-xs font-sans text-rose-950 shadow-md transition-all"
     >
       <div className="flex items-center gap-2">
         <span className="flex h-2 w-2 rounded-full bg-[#9B2415] animate-ping" />
         <WifiOff className="h-4 w-4 text-[#9B2415] shrink-0" />
         <span className="font-bold">Frakoblet internett:</span>
         <span className="text-rose-900">
-          Ingen endringer går tapt. Data lagres lokalt og synkroniseres automatisk når nettet er tilbake.
+          Kontroller at endringene er lagret før du lukker siden.
         </span>
       </div>
 

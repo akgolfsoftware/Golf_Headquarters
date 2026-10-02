@@ -1,21 +1,21 @@
 "use client";
 
-/** PH-05 Live + B2 iPad/Mac fra valgt Trainlock ZIP (4), med v3-tema.
- * Faktiske rep-kategorier beholdes; Treff/Kant/Bom krever egne produktfelt.
- * Kontroll og åpne avvik: docs/design-audit/portering-fire-flater-2026-09-10.md. */
+/** PH-05 Live-økt: aktiv, i Precision Athletics (natt). Selve skjermen er PH05LiveAktiv;
+ * denne komponenten eier økt-hooken (klokke, tellere, lagring, offline), notater, tale,
+ * skjermlås og avslutt-flyten. Tegning: Claude Design 7d7c2994, PH-live.jsx (PH-05). */
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { Check, Pause, Play } from "lucide-react";
 import type { LiveV2Session, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
-import { fysVisningsrader, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import { DrillLogger } from "./DrillLogger";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { useLiveSession } from "./use-live-session";
-import s from "./live-active.module.css";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 import { sendOktNotatTilCoach } from "@/lib/portal-live/actions";
 import { VoiceRangeRecorder } from "@/components/shared/VoiceRangeRecorder";
+import { PH05LiveAktiv, type PH05Drill } from "@/components/portal/precision/PH05LiveAktiv";
+import { Knapp, Meta, type Akse } from "@/components/precision/pa";
+import type { RepBucket } from "@/lib/portal-live/live-state";
 import type { PyramidArea } from "@/generated/prisma/enums";
 
 type LiveNotat = { t: string; tekst: string };
@@ -38,11 +38,18 @@ function readNotes(raw: string): LiveNotat[] {
   } catch { return []; }
 }
 
+const AKSE: Record<PyramidArea, Akse> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
+const TELLERE: [RepBucket, string][] = [["repsWithoutBall", "Uten ball"], ["repsLowSpeed", "Lav hastighet"], ["repsAutomatic", "Automatikk"], ["repsHit", "Treff"]];
+const felt = { width: "100%", boxSizing: "border-box", minHeight: 44, padding: "8px 12px", border: "1px solid var(--border-control)", background: "var(--surface-card)", color: "var(--text-primary)", borderRadius: "var(--radius)", font: "var(--type-body)" } as const;
+const etikett = { font: "var(--type-label)", color: "var(--text-primary)" } as const;
+const sammendrag = { minHeight: 56, display: "flex", alignItems: "center", padding: "0 16px", cursor: "pointer", font: "var(--type-label)", color: "var(--text-primary)" } as const;
+
 export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
   const eierId = useLokalDataEier();
   const live = useLiveSession(data, eierId);
-  const [mode, setMode] = useState<"now" | "list" | "notes">("now");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const hoppet = live.drills.filter((d) => d.skipped).map((d) => d.id);
+  const [kvittering, setKvittering] = useState<{ navn: string; tid: string; planTid: string; fikk: number; plan: number | null } | null>(null);
   const getNotesSnapshot = useCallback(
     () => noteSnapshot(eierId, data.sessionId),
     [data.sessionId, eierId],
@@ -52,24 +59,16 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const [text, setText] = useState("");
   const [noteError, setNoteError] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const finishButton = useRef<HTMLButtonElement>(null);
-  const cancelButton = useRef<HTMLButtonElement>(null);
   const noteInput = useRef<HTMLTextAreaElement>(null);
   const active = live.drills.find((d) => d.status === "active");
-  const aktivFys = active?.pyramide === "FYS" ? lesFysRegistrering(active.logNotes) : null;
   const selected = live.drills.find((d) => d.id === selectedId) ?? active ?? live.drills[0];
+  const valgt = Math.max(0, live.drills.findIndex((d) => d.id === selected?.id));
   const completedCount = live.drills.filter((d) => d.status === "done").length;
-  const ready = live.drills.length > 0 && completedCount === live.drills.length;
   const enabled = live.phase === "active";
   const finishing = live.phase === "finishing" || live.phase === "finished";
   const planned = Math.max(0, Math.round((Date.parse(data.endTimeISO) - Date.parse(data.scheduledAtISO)) / 60000)) || data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
+  const totalReps = live.drills.reduce((sum, d) => sum + d.repsTotal, 0);
 
-  useEffect(() => {
-    const node = dialog.current;
-    if (confirm && node && !node.open) { node.showModal(); cancelButton.current?.focus(); }
-    if (!confirm && node?.open) node.close();
-  }, [confirm]);
   useEffect(() => {
     if (!enabled || live.paused) return;
     let disposed = false;
@@ -92,17 +91,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     if (finishing) return;
     setConfirm(false);
     if (live.phase === "finish-error") live.resumeAfterError();
-    finishButton.current?.focus();
+  };
+  const lagreNotater = (next: LiveNotat[]) => {
+    const key = noteKey(eierId, data.sessionId);
+    if (!key) return false;
+    try { sessionStorage.setItem(key, JSON.stringify(next)); } catch { return false; }
+    window.dispatchEvent(new Event("akhq-live-notes"));
+    return true;
   };
   const addNote = () => {
     const value = text.trim();
     if (!value || !enabled) return;
-    const next = [{ t: fmt(live.totalSec), tekst: value }, ...notes];
-    const key = noteKey(eierId, data.sessionId);
-    if (!key) { setNoteError(true); return; }
-    try { sessionStorage.setItem(key, JSON.stringify(next)); }
-    catch { setNoteError(true); return; }
-    window.dispatchEvent(new Event("akhq-live-notes")); setText(""); setNoteError(false); noteInput.current?.focus();
+    if (!lagreNotater([{ t: fmt(live.totalSec), tekst: value }, ...notes])) { setNoteError(true); return; }
+    setText(""); setNoteError(false); noteInput.current?.focus();
   };
 
   const [showAddDrill, setShowAddDrill] = useState(false);
@@ -111,27 +112,25 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const [newDrillAkse, setNewDrillAkse] = useState<PyramidArea>("TEK");
   const [coachSendStatus, setCoachSendStatus] = useState<string | null>(null);
 
-  const handleAddDrill = () => {
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const addRequest = useRef<string | null>(null);
+  const handleAddDrill = async () => {
     const name = newDrillName.trim();
-    if (!name) return;
-    live.addDrill({
-      name,
-      durationMinutes: Math.max(1, newDrillMinutes),
-      pyramide: newDrillAkse,
-      plannedReps: 20,
-    });
-    setNewDrillName("");
-    setShowAddDrill(false);
+    if (!name || editing) return;
+    setEditing(true); setEditError(null);
+    addRequest.current ??= crypto.randomUUID();
+    try {
+      await live.addDrill({ requestId: addRequest.current, name, durationMinutes: newDrillMinutes, pyramide: newDrillAkse, plannedReps: 20 });
+      setNewDrillName(""); setShowAddDrill(false); addRequest.current = null;
+    } catch { setEditError("Øvelsen kunne ikke lagres. Kontroller navn, varighet og nettforbindelse, og prøv igjen."); }
+    finally { setEditing(false); }
   };
 
   const handleSendNoteToCoach = async (notatTekst: string) => {
     setCoachSendStatus("Sender til coach …");
     try {
-      const res = await sendOktNotatTilCoach({
-        sessionId: data.sessionId,
-        tekst: notatTekst,
-        drillNavn: active?.name,
-      });
+      const res = await sendOktNotatTilCoach({ sessionId: data.sessionId, tekst: notatTekst, drillNavn: active?.name });
       if (res.ok) {
         setCoachSendStatus("Sendt til coach");
         setTimeout(() => setCoachSendStatus(null), 3000);
@@ -143,225 +142,150 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     }
   };
 
+  /** Neste drill som verken er ferdig eller hoppet over, fra og med etter `fra`. */
+  const nesteApne = (fra: number, ferdige: string[], hopp: string[]) => {
+    const n = live.drills.length;
+    for (let i = 1; i < n; i++) {
+      const d = live.drills[(fra + i) % n];
+      if (d && d.status !== "done" && !ferdige.includes(d.id) && !hopp.includes(d.id)) return d;
+    }
+    return undefined;
+  };
+  const ferdigMedDrill = () => {
+    if (!selected || !enabled) return;
+    const sek = selected.status === "active" ? live.drillSec : selected.actualDurationSec ?? 0;
+    setKvittering({
+      navn: selected.name, tid: fmt(sek), planTid: fmt(selected.durationMinutes * 60),
+      fikk: selected.repsTotal, plan: selected.plannedReps > 0 ? selected.plannedReps : null,
+    });
+    live.mark(selected.id, true);
+    const neste = nesteApne(valgt, [selected.id], hoppet);
+    if (!neste) { setConfirm(true); return; }
+    setSelectedId(neste.id);
+  };
+  const hoppOver = (id: string) => {
+    const hopp = [...hoppet, id];
+    live.skip(id);
+    if (id === selected?.id) {
+      const neste = nesteApne(valgt, [], hopp);
+      if (neste) setSelectedId(neste.id);
+    }
+  };
 
-  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase} data-surface="live">
-    <header className={s.header}>
-      <h1 className={s.eyebrow}>Live · {data.title}</h1>
-      <button ref={finishButton} className={s.secondary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>
-    </header>
-    <main className={s.main}>
-      <div className={s.status} role="status">
-        {live.phase === "starting" ? "Klargjør økta …" : live.phase === "start-error" ? "Økta kunne ikke åpnes. Prøv igjen når du har nett." : live.phase === "finished" ? "Åpner oppsummeringen …" : live.saving === "local-error" ? "Kunne ikke lagre på denne enheten. Hold siden åpen og prøv igjen." : live.saving === "offline" ? "Uten nett. Registreringene venter på sending." : live.saving === "error" ? "Ikke sendt. Registreringene er lagret på denne enheten." : live.saving === "saving" ? "Lagrer registreringer …" : "Registreringene er lagret."}
-        {live.phase === "start-error" && <button className={s.textButton} onClick={live.retryStart}>Prøv å åpne igjen</button>}
-        {enabled && ["error", "local-error"].includes(live.saving) && <button className={s.textButton} onClick={live.retrySync}>Prøv lagring igjen</button>}
+  const drills: PH05Drill[] = live.drills.map((d) => ({
+    id: d.id, akse: AKSE[d.pyramide], navn: d.name, beskrivelse: d.description ?? d.notes,
+    arkMeta: d.status === "active" ? "PÅGÅR" : [d.plannedReps > 0 ? `${d.plannedReps} REPS` : null, d.durationMinutes > 0 ? `${d.durationMinutes} MIN` : null].filter(Boolean).join(" · ") || "—",
+    ferdig: d.status === "done", hoppet: hoppet.includes(d.id) && d.status !== "done", fys: d.pyramide === "FYS",
+  }));
+  const status = live.phase === "finished" ? "Åpner oppsummeringen …"
+    : live.saving === "local-error" ? "Kunne ikke lagre på denne enheten. Hold siden åpen og prøv igjen."
+    : live.saving === "offline" ? "Uten nett. Registreringene venter på sending."
+    : live.saving === "error" ? "Ikke sendt. Registreringene er lagret på denne enheten."
+    : live.saving === "saving" ? "Lagrer registreringer …" : null;
+  const kanProveLagring = enabled && (live.saving === "error" || live.saving === "local-error");
+  const tilstand = live.phase === "starting" ? "laster" : live.phase === "start-error" ? "feil" : totalReps === 0 && completedCount === 0 ? "tom" : "data";
+  const volum = selected ? plannedVolumText(selected) : null;
+
+  const ekstra = <>
+    {(selected?.notes || data.maalsetning || data.coachComment || volum) && <details className="pa-card">
+      <summary style={sammendrag}>Øvelsen og coachens beskjed</summary>
+      <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 8, font: "var(--type-body)", color: "var(--text-body)", overflowWrap: "anywhere" }}>
+        {volum && <p style={{ margin: 0 }}>Planlagt: {volum}</p>}
+        {selected?.notes && selected.notes !== selected.description && <p style={{ margin: 0 }}>{selected.notes}</p>}
+        {data.maalsetning && <p style={{ margin: 0 }}>{data.maalsetning}</p>}
+        {data.coachComment && <p style={{ margin: 0 }}>{data.coachComment}</p>}
       </div>
-      <div className={s.columns}>
-        <section aria-label="Økta nå" className={s.overview}>
-          <div className={s.clock} data-testid="live-clock" aria-label={`${fmt(live.totalSec)} medgått tid`}>{fmt(live.totalSec)}</div>
-          <div className={s.clockMeta}>
-            <span>{live.paused ? "På pause" : "Medgått tid"}{planned > 0 ? ` · ${planned} min planlagt` : ""}</span>
-            <button className={s.textButton} disabled={!enabled} onClick={live.togglePause} aria-pressed={live.paused}>
-              {live.paused ? <Play size={16} aria-hidden /> : <Pause size={16} aria-hidden />}{live.paused ? "Fortsett" : "Pause"}
-            </button>
-          </div>
-          <div className={s.now}>
-            <p className={s.eyebrow}>{ready ? "Klar til fullføring" : active ? `Nå · øvelse ${active.index} av ${live.drills.length}` : "Økta di"}</p>
-            <h2>{ready ? "Alle øvelsene er markert ferdige" : active?.name ?? "Ingen øvelser i planen"}</h2>
-            {active && <>
-              <p className={s.meta}>{[active.durationMinutes > 0 ? `${active.durationMinutes} min` : null, plannedVolumText(active)].filter(Boolean).join(" · ")}</p>
-              {active.pyramide === "FYS" ? <p className={s.description}>{aktivFys
-                ? fysVisningsrader(aktivFys).map(rad => `${rad.label}: ${rad.verdi}`).join(" · ")
-                : active.logNotes || "Ingen detaljer registrert"}</p> :
-                <div className={s.count}><strong>{active.repsTotal}</strong><span>{active.plannedReps > 0 ? `av ${active.plannedReps} reps` : "registrert"}{active.repsHit > 0 ? ` · ${active.repsHit} treff` : ""}</span></div>}
-              {active.pyramide !== "FYS" && active.plannedReps > 0 && <progress aria-label="Registreringer i aktiv øvelse" max={active.plannedReps} value={Math.min(active.repsTotal, active.plannedReps)} />}
-            </>}
-            {!active && <p className={s.description}>{ready ? "Du kan rette registreringene eller avslutte når du er klar." : "Du kan bruke notater og Caddie, og avslutte økta når du er klar."}</p>}
-            {ready && <button className={s.primary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt og se oppsummering</button>}
-          </div>
-        </section>
-        <section className={s.registration} aria-label="Registrering">
-          <div className={s.modes} role="group" aria-label="Visning i økta">
-            {([['now', 'Registrer'], ['list', 'Øvelser'], ['notes', 'Notater']] as const).map(([id, label]) => <button key={id} className={s.mode} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}{id === "list" && ` ${completedCount}/${live.drills.length}`}</button>)}
-          </div>
-          <div hidden={mode !== "now"}>
-            {selected ? <>
-              <label className={s.selectLabel} htmlFor="live-drill">Registrer på øvelse</label>
-              <select className={s.select} id="live-drill" value={selected.id} disabled={!enabled} onChange={(event) => setSelectedId(event.target.value)}>{live.drills.map((d) => <option key={d.id} value={d.id}>{d.index}. {d.name}{d.status === "done" ? " · ferdig" : ""}</option>)}</select>
-              <fieldset className={s.fieldset} disabled={!enabled}>
-                {live.drills.map((d) => <div key={d.id} hidden={d.id !== selected.id}>
-                  <DrillLogger drill={d} state={d} onChange={(value) => live.change(d.id, value)} onAdjust={(bucket, delta) => live.adjust(d.id, bucket, delta)} onComplete={() => { live.mark(d.id, d.status !== "done"); setSelectedId(null); }} done={d.status === "done"} />
-                </div>)}
-              </fieldset>
-              <div className={s.voiceSection}>
-                <VoiceRangeRecorder
-                  sessionId={data.sessionId}
-                  compact
-                  onMemoSaved={(obs) => {
-                    if (obs.suggestedReps && active) {
-                      const r = obs.suggestedReps;
-                      if (r.dry > 0) live.adjust(active.id, "repsWithoutBall", r.dry);
-                      if (r.lav > 0) live.adjust(active.id, "repsLowSpeed", r.lav);
-                      if (r.full > 0) live.adjust(active.id, "repsAutomatic", r.full);
-                    }
-                    const ny: LiveNotat = {
-                      t: fmt(live.totalSec),
-                      tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
-                    };
-                    const updated = [ny, ...notes];
-                    const key = noteKey(eierId, data.sessionId);
-                    if (key) {
-                      try {
-                        sessionStorage.setItem(key, JSON.stringify(updated));
-                        window.dispatchEvent(new Event("akhq-live-notes"));
-                      } catch {}
-                    }
-                  }}
-                />
-              </div>
-            </> : <p className={s.description}>Det er ingen øvelser å registrere på.</p>}
-          </div>
-          {(active?.description || active?.notes || data.maalsetning || data.coachComment) && <details className={s.context}><summary>Øvelsen og coachens beskjed</summary>{active?.description && <p>{active.description}</p>}{active?.notes && active.notes !== active.description && <p>{active.notes}</p>}{data.maalsetning && <p>{data.maalsetning}</p>}{data.coachComment && <p>{data.coachComment}</p>}</details>}
-          <div hidden={mode !== "list"}>
-            <ol className={s.drills}>
-              {live.drills.map((d) => <li key={d.id} className={s.drill}>
-                <button className={s.check} aria-label={`${d.status === "done" ? "Fjern ferdigmarkering for" : "Marker ferdig"} ${d.name}`} aria-pressed={d.status === "done"} disabled={!enabled} onClick={() => live.mark(d.id, d.status !== "done")}>{d.status === "done" ? <Check size={20} aria-hidden /> : d.index}</button>
-                <div><h3>{d.name}</h3><p className={s.meta}>{d.repsTotal} registrert{d.status === "active" ? " · pågår" : d.status === "done" ? " · ferdig" : ""}</p></div>
-                <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <button className={s.textButton} onClick={() => { setSelectedId(d.id); setMode("now"); }}>Registrer<span className={s.srOnly}> på {d.name}</span></button>
-                  {d.status !== "done" && live.drills.length > 1 && (
-                    <button
-                      className={s.textButton}
-                      style={{ color: "var(--tl-mute)", padding: "4px 8px" }}
-                      title="Fjern øvelse fra denne økta"
-                      onClick={() => live.removeDrill(d.id)}
-                    >
-                      Fjern
-                    </button>
-                  )}
-                </div>
-              </li>)}
-            </ol>
-            <div style={{ marginTop: 16 }}>
-              {!showAddDrill ? (
-                <button
-                  className={s.secondary}
-                  style={{ width: "100%" }}
-                  disabled={!enabled}
-                  onClick={() => setShowAddDrill(true)}
-                >
-                  + Legg til øvelse underveis
-                </button>
-              ) : (
-                <div style={{ padding: 14, borderRadius: 16, background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", display: "flex", flexDirection: "column", gap: 10 }}>
-                  <label className={s.selectLabel} htmlFor="new-drill-name">Navn på ny øvelse</label>
-                  <input
-                    id="new-drill-name"
-                    type="text"
-                    value={newDrillName}
-                    onChange={(e) => setNewDrillName(e.target.value)}
-                    placeholder="f.eks. Putting 3 meter, Wedges 60m"
-                    style={{ width: "100%", minHeight: 40, padding: "8px 12px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
-                  />
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <label className={s.selectLabel} htmlFor="new-drill-min" style={{ margin: 0 }}>Varighet (min):</label>
-                    <input
-                      id="new-drill-min"
-                      type="number"
-                      min={1}
-                      max={120}
-                      value={newDrillMinutes}
-                      onChange={(e) => setNewDrillMinutes(Number(e.target.value))}
-                      style={{ width: 64, minHeight: 36, padding: "4px 8px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
-                    />
-                  </div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                    {(["TEK", "SLAG", "SPILL", "FYS", "TURN"] as const).map((a) => {
-                      const on = newDrillAkse === a;
-                      return (
-                        <button
-                          key={a}
-                          type="button"
-                          onClick={() => setNewDrillAkse(a)}
-                          style={{
-                            appearance: "none",
-                            padding: "4px 8px",
-                            borderRadius: 6,
-                            border: "1px solid var(--tl-hair)",
-                            background: on ? "var(--tl-dim)" : "transparent",
-                            color: on ? "var(--tl-text)" : "var(--tl-mute)",
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            fontFamily: "var(--tl-font-mono)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {a}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 4 }}>
-                    <button className={s.textButton} onClick={() => setShowAddDrill(false)}>Avbryt</button>
-                    <button className={s.primary} style={{ width: "auto", minHeight: 38, padding: "8px 16px", marginTop: 0 }} disabled={!newDrillName.trim()} onClick={handleAddDrill}>Legg til</button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div hidden={mode !== "notes"} className={s.notes}>
-            <div style={{ marginBottom: 16 }}>
-              <VoiceRangeRecorder
-                sessionId={data.sessionId}
-                onMemoSaved={(obs) => {
-                  const ny: LiveNotat = {
-                    t: fmt(live.totalSec),
-                    tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
-                  };
-                  const updated = [ny, ...notes];
-                  const key = noteKey(eierId, data.sessionId);
-                  if (key) {
-                    try {
-                      sessionStorage.setItem(key, JSON.stringify(updated));
-                      window.dispatchEvent(new Event("akhq-live-notes"));
-                    } catch {}
-                  }
-                }}
-              />
-            </div>
-            <label className={s.selectLabel} htmlFor="live-note">Skriv eller rediger notat</label>
-            <textarea id="live-note" ref={noteInput} rows={4} value={text} disabled={!enabled} onChange={(event) => setText(event.target.value)} placeholder="Hva vil du huske?" />
-            <button className={s.primary} disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</button>
-            <p className={s.meta}>Notatene beholdes i denne fanen og følger med til oppsummeringen.</p>
-            {noteError && <p role="alert">Notatet kunne ikke lagres. Teksten står igjen; prøv på nytt.</p>}
-            {coachSendStatus && <p role="status" style={{ fontSize: "0.8125rem", color: "var(--tl-text)", margin: "6px 0", fontStyle: "italic" }}>{coachSendStatus}</p>}
-            {notes.length === 0 ? <p className={s.description}>Ingen notater ennå.</p> : <ol className={s.noteList}>{notes.map((note, index) => <li key={`${note.t}-${index}`}>
-              <time>{note.t}</time>
-              <p>{note.tekst}</p>
-              <button
-                className={s.textButton}
-                style={{ fontSize: "0.75rem", padding: "4px 0", color: "var(--tl-mute)" }}
-                onClick={() => handleSendNoteToCoach(note.tekst)}
-              >
-                Send notat til trenerens innboks
-              </button>
-            </li>)}</ol>}
-          </div>
-        </section>
+    </details>}
+    <details className="pa-card">
+      <summary style={sammendrag}>Notater{notes.length > 0 ? ` (${notes.length})` : ""}</summary>
+      <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
+        <VoiceRangeRecorder
+          sessionId={data.sessionId}
+          compact
+          onMemoSaved={(obs) => {
+            if (obs.suggestedReps && active) {
+              const r = obs.suggestedReps;
+              if (r.dry > 0) live.adjust(active.id, "repsWithoutBall", r.dry);
+              if (r.lav > 0) live.adjust(active.id, "repsLowSpeed", r.lav);
+              if (r.full > 0) live.adjust(active.id, "repsAutomatic", r.full);
+            }
+            lagreNotater([{ t: fmt(live.totalSec), tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim() }, ...notes]);
+          }}
+        />
+        <label htmlFor="live-note" style={etikett}>Skriv eller rediger notat</label>
+        <textarea id="live-note" ref={noteInput} rows={4} value={text} disabled={!enabled} onChange={(event) => setText(event.target.value)} placeholder="Hva vil du huske?" style={{ ...felt, resize: "vertical" }} />
+        <Knapp variant="secondary" disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</Knapp>
+        <Meta>NOTATENE BEHOLDES I DENNE FANEN OG FØLGER MED TIL OPPSUMMERINGEN</Meta>
+        {noteError && <p role="alert" style={{ margin: 0, color: "var(--text-primary)" }}>Notatet kunne ikke lagres. Teksten står igjen; prøv på nytt.</p>}
+        {coachSendStatus && <p role="status" style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)" }}>{coachSendStatus}</p>}
+        {notes.length === 0 ? <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen notater ennå.</p> : <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column" }}>{notes.map((note, index) => <li key={`${note.t}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "12px 0", borderTop: "1px solid var(--border-hairline)", minWidth: 0 }}>
+          <Meta>{note.t}</Meta>
+          <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-primary)", overflowWrap: "anywhere" }}>{note.tekst}</p>
+          <div><Knapp variant="ghost" onClick={() => handleSendNoteToCoach(note.tekst)}>Send notat til trenerens innboks</Knapp></div>
+        </li>)}</ol>}
       </div>
-    </main>
-    <LiveCoachPanel data={coachPanel} activeDrillId={active?.id} />
-    <dialog ref={dialog} className={s.dialog} tabIndex={-1} onKeyDown={(event) => {
-      if (event.key !== "Tab") return;
-      const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"));
-      const target = event.shiftKey ? buttons.at(-1) : buttons[0];
-      if (!buttons.length || (event.shiftKey ? document.activeElement === buttons[0] : document.activeElement === buttons.at(-1))) { event.preventDefault(); (target ?? event.currentTarget).focus(); }
-    }} aria-labelledby="live-finish-title" onCancel={(event) => { event.preventDefault(); close(); }} onClose={() => { if (!finishing) setConfirm(false); }}>
-      <h2 id="live-finish-title">Avslutte økta?</h2>
-      <p>{completedCount} av {live.drills.length} øvelser markert ferdige. Registreringene lagres før oppsummeringen åpnes.</p>
-      {text.trim() && <p>Du har et notat som ikke er lagt til. Fortsett økta for å ta det med.</p>}
-      {live.phase === "finish-error" && <p className={s.error} role="alert">Fullføringen ble ikke bekreftet. Hold siden åpen. Prøv igjen når du har nett, eller fortsett økta.</p>}
-      <button className={s.primary} disabled={finishing} onClick={() => { void live.finish(); }}>{finishing ? "Lagrer og fullfører …" : live.phase === "finish-error" ? "Prøv fullføring igjen" : "Avslutt og logg økta"}</button>
-      <button ref={cancelButton} className={s.textButton} disabled={finishing} onClick={close}>Fortsett økta</button>
-    </dialog>
+    </details>
+  </>;
+
+  const leggTil = <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+    {editError && <p role="alert">{editError}</p>}
+    {!showAddDrill
+      ? <Knapp variant="secondary" fullWidth disabled={!enabled} onClick={() => setShowAddDrill(true)}>Legg til drill underveis</Knapp>
+      : <>
+        <label htmlFor="new-drill-name" style={etikett}>Navn på ny drill</label>
+        <input id="new-drill-name" type="text" value={newDrillName} onChange={(e) => setNewDrillName(e.target.value)} placeholder="f.eks. Putting 3 meter, Wedges 60m" style={felt} />
+        <label htmlFor="new-drill-min" style={etikett}>Varighet (min)</label>
+        <input id="new-drill-min" type="number" min={1} max={120} value={newDrillMinutes} onChange={(e) => setNewDrillMinutes(Number(e.target.value))} style={{ ...felt, width: 96 }} />
+        <div role="group" aria-label="Akse" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {(["TEK", "SLAG", "SPILL", "FYS", "TURN"] as const).map((a) => <Knapp key={a} variant={newDrillAkse === a ? "primary" : "secondary"} aria-pressed={newDrillAkse === a} onClick={() => setNewDrillAkse(a)}>{a}</Knapp>)}
+        </div>
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
+          <Knapp variant="ghost" onClick={() => setShowAddDrill(false)}>Avbryt</Knapp>
+          <Knapp disabled={editing || !newDrillName.trim()} onClick={handleAddDrill}>Legg til</Knapp>
+        </div>
+      </>}
   </div>;
+
+  return <>
+    <PH05LiveAktiv
+      tilstand={tilstand}
+      klokke={fmt(live.totalSec)}
+      pauset={live.paused}
+      planlagtMin={planned > 0 ? planned : null}
+      drills={drills}
+      valgt={valgt}
+      drillKlokke={selected ? (selected.status === "active" ? fmt(live.drillSec) : selected.actualDurationSec != null ? fmt(selected.actualDurationSec) : "—") : "—"}
+      drillPlan={selected && selected.durationMinutes > 0 ? `AV ${selected.durationMinutes}:00` : "—"}
+      totalt={selected?.repsTotal ?? 0}
+      planlagtTotalt={selected && selected.plannedReps > 0 ? selected.plannedReps : null}
+      tellere={selected ? TELLERE.map(([bucket, label]) => ({ id: bucket, label, verdi: selected[bucket], onEndre: (n: number) => live.adjust(selected.id, bucket, n) })) : []}
+      kvittering={kvittering}
+      status={status}
+      statusHandling={kanProveLagring ? { label: "Prøv lagring igjen", onClick: live.retrySync } : undefined}
+      feilKode="FEIL · START AV ØKT"
+      onProv={live.retryStart}
+      kanRegistrere={enabled && !editing}
+      slagtellerHref={`/portal/live/${data.sessionId}/tapper`}
+      onPause={live.togglePause}
+      onAvslutt={() => setConfirm(true)}
+      onVelg={(i) => { const d = live.drills[i]; if (d) { live.select(d.id); setSelectedId(d.id); } }}
+      onFerdig={ferdigMedDrill}
+      onHopp={hoppOver}
+      onFjern={async (id) => {
+        if (editing) return;
+        setEditing(true); setEditError(null);
+        try { await live.removeDrill(id); }
+        catch { setEditError("Øvelsen kunne ikke fjernes. Øvelser med registrert tid eller resultater må beholdes; bruk hopp over. Kontroller også nettforbindelsen."); }
+        finally { setEditing(false); }
+      }}
+      fullforer={finishing}
+      dialog={{ open: confirm, ferdige: completedCount, totalt: live.drills.length, lagrer: finishing, feil: live.phase === "finish-error", notatVarsel: !!text.trim(), onFortsett: close, onBekreft: () => { void live.finish(); } }}
+      arkEkstra={leggTil}
+      fysInnhold={selected && selected.pyramide === "FYS"
+        ? <DrillLogger drill={selected} state={selected} onChange={(value) => live.change(selected.id, value)} onAdjust={(bucket, delta) => live.adjust(selected.id, bucket, delta)} onComplete={() => { live.mark(selected.id, selected.status !== "done"); setSelectedId(null); }} done={selected.status === "done"} />
+        : undefined}
+      ekstra={ekstra}
+    />
+    <LiveCoachPanel data={coachPanel} activeDrillId={active?.id} bunnLoft={104} />
+  </>;
 }
