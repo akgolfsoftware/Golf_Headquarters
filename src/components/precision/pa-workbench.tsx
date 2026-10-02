@@ -14,21 +14,15 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Ikon, type Akse, AKSE_NAVN } from "./pa";
+import { AKSER } from "./akser";
+export { AKSER, akseFra } from "./akser";
 import "@/styles/precision-a9.css";
 
 const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(" ");
 
-export const AKSER: readonly Akse[] = ["fys", "tek", "slag", "spill", "turn"];
-
 /** Aksefargen som CSS-variabel for stripe/understrek (bare tokens). */
 export function akseStil(akse: Akse | null | undefined): CSSProperties {
   return { ["--a9-akse" as string]: akse ? `var(--axis-${akse})` : "var(--border-strong)" } as CSSProperties;
-}
-
-/** «TEK» → «tek». Ukjent verdi gir null (nøytral stripe). */
-export function akseFra(pyramide: string | null | undefined): Akse | null {
-  const a = (pyramide ?? "").toLowerCase();
-  return (AKSER as readonly string[]).includes(a) ? (a as Akse) : null;
 }
 
 /** Valgpille (ChoicePill) som fane, radio eller vanlig bryter. Treffmål 44 px. */

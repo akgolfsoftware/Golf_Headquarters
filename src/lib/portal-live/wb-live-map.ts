@@ -27,6 +27,7 @@ export type WbLiveInput = {
   startMinute: number;
   location: string | null;
   notes: string | null;
+  maalsetning?: string | null;
   publishedAt: Date | null;
   createdAt: Date;
   drills: WbLiveDrill[];
@@ -76,6 +77,7 @@ export function mapWbToLiveSessionData(row: WbLiveInput): LiveSessionData {
     planName: "Plan",
     title: row.title,
     rationale: row.notes,
+    maalsetning: row.maalsetning ?? null,
     location: row.location,
     axis,
     durationMin: row.durationMinutes,

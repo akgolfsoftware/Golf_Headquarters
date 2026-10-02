@@ -62,6 +62,7 @@ export default async function LiveBriefPage({
       startMinute: wbRow.startMinute,
       location: wbRow.location,
       notes: wbRow.notes,
+      maalsetning: wbRow.maalsetning,
       publishedAt: wbRow.publishedAt,
       createdAt: wbRow.createdAt,
       drills: wbRow.drills,
