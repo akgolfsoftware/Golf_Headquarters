@@ -199,7 +199,7 @@ Hele leveransen kan først kalles ferdig når:
 
 ## 7. Første konkrete arbeidsrekkefølge nå
 
-Status 02.10.2026: punkt 1 er merget som PR #1125. Punkt 3 er påbegynt med PH-10, PH-02, PH-03 og PH-04 brief (`/portal/live/[sessionId]/brief`). Aktiv Live, slagteller, oppsummering, kalender og Workbench-øktark gjenstår. 520 var tellingen da planen ble skrevet; registeret har 527. Workbench-PR #1099 skal ikke gjøres om. Åpne Precision-PR-er bulk-merges ikke.
+Status 02.10.2026: punkt 1 er merget som PR #1125. Punkt 3 er påbegynt med PH-10, PH-02, PH-03, PH-04 brief og PH-05 aktiv Live. Slagteller, oppsummering, kalender og Workbench-øktark gjenstår. 520 var tellingen da planen ble skrevet; registeret har 527. Workbench-PR #1099 skal ikke gjøres om. Åpne Precision-PR-er bulk-merges ikke.
 
 1. Opprett og fyll skjermregisteret fra fersk inventarskanning.
 2. Lukk Workbench-PR #1099 og testbatteriets umergede leveranse før nye parallelle varianter.
