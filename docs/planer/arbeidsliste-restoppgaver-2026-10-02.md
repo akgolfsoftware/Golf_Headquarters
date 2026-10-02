@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-02 15:36 CEST på `main` `2df6e137b`.
+Sist oppdatert: 2026-10-02 15:49 CEST på `main` `a900b7453`.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),
@@ -83,6 +83,7 @@ beholde begrensningene som er dokumentert i de respektive PR-ene.
 | Arbeidskopi | Hvorfor den ikke kan slettes nå |
 |---|---|
 | hovedkopien `codex/arbeidsliste-restoppgaver-2026-10-02` | Inneholder denne arbeidslisten, porteringsplanen og separate lokale `.claude`-endringer som skal bevares. |
+| `codex-wang-tn-profiltilgang-continue` | Aktiv WANG/TN-økt med usporet IUP-feltregister og redigerte leveranseplaner; full kontroll pågår. |
 | `codex-testbatteri-scorekort` | Aktivt, ucommittet testbatteri-, foto-, offline- og tilgangsarbeid. |
 | `akgolf-hq-teknisk-fys-resultat` | Har umerget commit `010cc0053` for tekniske og fysiske resultater. |
 | `codex-ak-sg-runtime` | Har åpen utkast-PR #1083 og omfattende staged/unstaged arbeid; må først deles og samordnes. |
@@ -100,7 +101,7 @@ Ryddet 02.10.2026:
 - `workbench-restfullforing` ble fjernet etter merge og produksjonskontroll av PR #1099.
 - `wang-tn-iup-profile` ble fjernet etter merge og produksjonskontroll av PR #1104.
 - `wang-tn-merge-report` ble fjernet etter merge av journaloppfølgingen i PR #1105.
-- `git worktree prune` ble kjørt. De sju arbeidskopiene i tabellen over er bevisst beholdt.
+- `git worktree prune` ble kjørt. De åtte arbeidskopiene i tabellen over er bevisst beholdt.
 
 ## Rekkefølge
 
