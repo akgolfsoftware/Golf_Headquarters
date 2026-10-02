@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -129,14 +130,14 @@ export async function aksepterTrenerInvitasjon(input: unknown) {
     if (!(await delingsMiljo(tx, rad.userId, rad.mottakerGruppeId, trener.epost)) || !(await trenerIMiljo(tx, trener.id, rad.mottakerGruppeId, trener.epost))) return feil();
     const rolle = await aktorForSpiller(tx, rad.gittAvUserId, rad.userId, true);
     if (rolle !== rad.gittAvRolle) return feil();
-    if (rad.acceptedAt) return rad.acceptedByUserId === trener.id ? { ok: true as const, id: rad.id, gjentatt: true } : feil();
+    if (rad.acceptedAt) return rad.acceptedByUserId === trener.id ? { ok: true as const, id: rad.id, spillerId: rad.userId, gruppeId: rad.mottakerGruppeId, gjentatt: true } : feil();
     if (rad.expiresAt.getTime() <= Date.now()) return feil();
     await tx.trenerDelingsInvitasjon.update({ where: { id: rad.id }, data: { acceptedAt: new Date(), acceptedByUserId: trener.id } });
     await tx.delingsSamtykke.create({ data: {
       id: rad.id, userId: rad.userId, scope: NAVNGITT_PROFIL_SCOPE, mottakerGruppeId: rad.mottakerGruppeId,
       mottakerUserId: trener.id, gitt: true, tekstVersjon: rad.tekstVersjon, gittAvUserId: rad.gittAvUserId, gittAvRolle: rad.gittAvRolle,
     } });
-    return { ok: true as const, id: rad.id, gjentatt: false };
+    return { ok: true as const, id: rad.id, spillerId: rad.userId, gruppeId: rad.mottakerGruppeId, gjentatt: false };
   });
 }
 
@@ -180,4 +181,55 @@ export async function navngittTrenerHarTilgang(tx: Tx, trener: { id: string; epo
     id: samtykke.id, userId: spillerId, mottakerGruppeId: gruppeId, mottakerEpost: trener.epost,
     acceptedByUserId: trener.id, acceptedAt: { not: null }, revokedAt: null,
   }, select: { id: true } }));
+}
+
+const DelingsOversikt = z.object({
+  spillerId: z.string().min(1).max(120).optional(),
+  forDato: z.iso.datetime().optional(), forId: z.string().min(1).max(120).optional(),
+}).strict().refine((p) => Boolean(p.forDato) === Boolean(p.forId));
+
+/** Eier/foresatt ser egne delinger også etter utmelding. Aldri token eller hash. */
+export async function hentEgenTrenerdeling(input: unknown = {}) {
+  const aktor = await hentAktor();
+  const parsed = DelingsOversikt.safeParse(input);
+  if (!parsed.success) return null;
+  const p = parsed.data;
+  const spillerId = p.spillerId ?? aktor.id;
+  return prisma.$transaction(async (tx) => {
+    await laasEier(tx, spillerId);
+    if (!(await aktorForSpiller(tx, aktor.id, spillerId, false))) return null;
+    const spiller = await tx.user.findUniqueOrThrow({ where: { id: spillerId }, select: { id: true, name: true } });
+    const medlemskap = await tx.groupMember.findMany({ where: {
+      userId: spillerId, ...aktivtSpillerMedlemskapWhere(), group: { arkivertAt: null,
+        OR: [{ program: { in: ["WANG_UNG", "WANG_TOPPIDRETT"] } }, { slug: TEAM_NORWAY_SLUG }],
+      },
+    }, select: { group: { select: { id: true, name: true, slug: true, program: true } } } });
+    const tn = medlemskap.length ? await tx.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG, arkivertAt: null }, select: { id: true, name: true, slug: true, program: true } }) : null;
+    const grupper = [...new Map([...medlemskap.map((m) => m.group), ...(tn ? [tn] : [])].map((g) => [g.id, g])).values()];
+    const rader = await tx.trenerDelingsInvitasjon.findMany({ where: {
+      userId: spillerId, ...(p.forDato && p.forId ? { OR: [
+        { createdAt: { lt: new Date(p.forDato) } }, { createdAt: new Date(p.forDato), id: { lt: p.forId } },
+      ] } : {}),
+    }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 21,
+    select: { id: true, mottakerGruppeId: true, mottakerEpost: true, gittAvRolle: true,
+      createdAt: true, expiresAt: true, acceptedAt: true, revokedAt: true, acceptedByUserId: true },
+    });
+    const side = rader.slice(0, 20), siste = side.at(-1);
+    const gruppenavn = await tx.group.findMany({ where: { id: { in: side.map((r) => r.mottakerGruppeId) } }, select: { id: true, name: true } });
+    const navn = new Map(gruppenavn.map((g) => [g.id, g.name]));
+    return {
+      spiller, foresattVisning: aktor.id !== spillerId,
+      kanGi: Boolean(medlemskap.length && await aktorForSpiller(tx, aktor.id, spillerId, true)),
+      grupper: grupper.map((g) => ({ id: g.id, navn: g.name, domene: g.slug === TEAM_NORWAY_SLUG ? "golfforbundet.no" : "wang.no" })),
+      nesteSide: rader.length > 20 && siste ? { forDato: siste.createdAt.toISOString(), forId: siste.id } : null,
+      invitasjoner: await Promise.all(side.map(async (r) => ({
+        id: r.id, gruppeNavn: navn.get(r.mottakerGruppeId) ?? "Tidligere miljø", epost: r.mottakerEpost,
+        gittAvRolle: r.gittAvRolle, opprettet: r.createdAt.toISOString(), utlop: r.expiresAt.toISOString(),
+        status: r.revokedAt ? "TRUKKET" as const : r.acceptedAt ? (
+          r.acceptedByUserId && await navngittTrenerHarTilgang(tx, { id: r.acceptedByUserId, epost: r.mottakerEpost }, spillerId, r.mottakerGruppeId)
+            ? "AKTIV" as const : "STENGT" as const
+        ) : r.expiresAt.getTime() <= Date.now() ? "UTLOPT" as const : "VENTER" as const,
+      }))),
+    };
+  });
 }
