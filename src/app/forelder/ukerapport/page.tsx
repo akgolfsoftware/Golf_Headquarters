@@ -6,6 +6,10 @@
  * Auth: kun PARENT (requirePortalUser). Tallene kommer fra
  * hentForelderUkerapport (datamatten urørt); «Gjennomført»-radene hentes
  * her (samme kilde og ukevindu som loaderen — TrainingSessionV2, gte/lt).
+ *
+ * Avvik:
+ *   - Minuttprosent, oppmøte og perioden er beholdt. Ingen nye tall er funnet på.
+ *   - Flaten er ikke målt i appen. Den krever foresatt-økt og database.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";

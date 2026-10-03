@@ -9,6 +9,11 @@
  * 34/700, «Neste økt» og «Utestående» som 74px-etikettlinjer. Skoletid-
  * bekreftelsen (D6, ekte action) beholdes som egen seksjon i kortet —
  * tillegg utover fasiten, notert i PR-en.
+ *
+ * Avvik:
+ *   - Skoletid-bekreftelsen er beholdt. Den ligger ikke i FO-02-tegningen.
+ *   - Kortet åpner barnets detaljside, som fortsatt bruker det gamle skallet.
+ *   - Visningen er Precision og er ikke målt i appen.
  */
 
 import { useState } from "react";
