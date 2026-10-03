@@ -252,7 +252,11 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/trening/break-tabell").kontrollbevis, /PH26Break/);
   assert.equal(byRoute.get("/portal/trening/putte-laboratoriet").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/trening/putte-laboratoriet").kontrollbevis, /PH26PutteLab/);
-  assert.equal(register.tellinger.implementert, 95);
+  assert.equal(byRoute.get("/portal/tren/fys-plan").screenId, "PH-26");
+  assert.equal(byRoute.get("/portal/tren/fys-plan").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/tren/fys-plan").kontrollbevis, /PH26FysPlan/);
+  assert.equal(byRoute.get("/portal/tren/fys-plan/[planId]").status.implementert, "ikke-verifisert");
+  assert.equal(register.tellinger.implementert, 96);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
