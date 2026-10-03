@@ -260,6 +260,7 @@ const PRECISION_VISNING = [
   ["PH24Dokumenter", "Dokumenter merker PH24Dokumenter i PlayerHQSkall. Dokumentliste, KPI-er og eksterne lenker er beholdt."],
   ["PH26TreningLogg", "Treningslogg merker PH26TreningLogg i PlayerHQSkall. Skjema for dato, område, varighet, øvelse, kvalitet og notater er beholdt."],
   ["PH18Runder", "Runder og statistikk merker PH18Runder i PlayerHQSkall. Runder, statistikk, hull og sesonger er beholdt med brutto score og ærlig par-beregning."],
+  ["PH20Gameplan", "Gameplan og banekart merker PH20Gameplan i PlayerHQSkall. Banevelger, hull-for-hull oversikt, banekart og risikoanalyse er beholdt."],
 ];
 
 function merkVisning(row, source) {

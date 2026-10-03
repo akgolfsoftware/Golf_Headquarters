@@ -271,7 +271,10 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/mal/runder").screenId, "PH-18");
   assert.equal(byRoute.get("/portal/mal/runder").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/mal/runder").kontrollbevis, /PH18Runder/);
-  assert.equal(register.tellinger.implementert, 101);
+  assert.equal(byRoute.get("/portal/gameplan").screenId, "PH-20");
+  assert.equal(byRoute.get("/portal/gameplan").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/gameplan").kontrollbevis, /PH20Gameplan/);
+  assert.equal(register.tellinger.implementert, 102);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

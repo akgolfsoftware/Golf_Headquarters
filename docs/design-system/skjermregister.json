@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "b9afffa285fb1c87c9f772fa1b41c504c79bc532",
+  "kodeversjon": "6f508c064dbf0f6032522dc51811df6ccfc8074c",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -16500,19 +16500,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Gameplan og banekart merker PH20Gameplan i PlayerHQSkall. Banevelger, hull-for-hull oversikt, banekart og risikoanalyse er beholdt.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-20 Gameplan og banekart er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-20"
     },
     {
       "screenId": "PH-03",
@@ -23165,10 +23167,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 128,
+    "medAvvik": 129,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 101,
+    "implementert": 102,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
