@@ -259,7 +259,13 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/venner").screenId, "PH-24");
   assert.equal(byRoute.get("/portal/venner").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/venner").kontrollbevis, /PH24Venner/);
-  assert.equal(register.tellinger.implementert, 97);
+  assert.equal(byRoute.get("/portal/meg/foreldre").screenId, "PH-24");
+  assert.equal(byRoute.get("/portal/meg/foreldre").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/meg/foreldre").kontrollbevis, /PH24Foreldre/);
+  assert.equal(byRoute.get("/portal/meg/dokumenter").screenId, "PH-24");
+  assert.equal(byRoute.get("/portal/meg/dokumenter").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/meg/dokumenter").kontrollbevis, /PH24Dokumenter/);
+  assert.equal(register.tellinger.implementert, 99);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
