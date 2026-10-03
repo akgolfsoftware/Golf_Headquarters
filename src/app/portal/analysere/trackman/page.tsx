@@ -1,10 +1,11 @@
 /**
- * PlayerHQ · TrackMan-liste — TM-01.
- * Fasit: designsystem/train-lock/TM-01 TrackMan liste.dc.html
+ * PH17TrackMan — TrackMan-listen i PlayerHQSkall.
+ * Samme økter og samme opplasting.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TrackManListeTrainLock } from "@/components/portal/v2/TrackManListeTrainLock";
 import { hentTrackManListe } from "@/lib/trackman/liste-data";
 
@@ -13,11 +14,16 @@ export const metadata = { title: "TrackMan · PlayerHQ" };
 
 export default async function TrackManListePage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const data = await hentTrackManListe(user.id);
+  const [data, ulest] = await Promise.all([
+    hentTrackManListe(user.id),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TrackManListeTrainLock data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <TrackManListeTrainLock data={data} />
+      </div>
+    </PlayerHQSkall>
   );
 }
