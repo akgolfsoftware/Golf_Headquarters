@@ -1,3 +1,5 @@
+// PH21CoachHub — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TL } from "@/lib/v2/train-lock";
 /**
  * v2-forhåndsvisning — PlayerHQ Coach-hub (retning C). Egen top-level route-group
@@ -15,7 +17,6 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getCoachProfile, getMessages, getUpcomingSessions, getCoachNotes } from "@/app/portal/(legacy)/coach/actions";
 import { getTilbakemeldingerListe } from "@/lib/portal-okt/coach-tilbakemelding-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachHubV2, type CoachHubData } from "@/components/portal/v2/CoachHubV2";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,8 @@ export default async function V2CoachPreviewPage() {
   // coachrelasjon — vis oppsalgs-flate i stedet for coach-hubben (aldri blindgate).
   if (!(await erCoachetSpiller(user.id))) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
         <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <Kort tint>
           <TomTilstand
@@ -48,7 +50,8 @@ export default async function V2CoachPreviewPage() {
             Du mister ingenting ved å vente. Alt du logger nå — økter, runder og tester — er der den dagen du får coach.
           </p>
         </Kort>
-      </V2Shell>
+      </div>
+    </PlayerHQSkall>
     );
   }
 
@@ -78,9 +81,11 @@ export default async function V2CoachPreviewPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl ?? undefined}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <CoachHubV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

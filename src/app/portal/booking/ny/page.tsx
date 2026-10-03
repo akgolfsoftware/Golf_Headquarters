@@ -1,3 +1,5 @@
+// PH23NyBooking — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * Booking-wizard (/portal/booking/ny) — v2 (retning C), Team G-A 17. juli 2026.
  *
@@ -18,7 +20,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { byggBookingNyData } from "@/lib/portal-booking/ny-wizard-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
 import { BookingNyV2 } from "@/components/portal/v2/BookingNyV2";
 
@@ -41,7 +42,8 @@ export default async function NyBookingPage({ searchParams }: Props) {
 
   if (resultat.ingenTjenester) {
     return (
-      <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
         <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -50,14 +52,17 @@ export default async function NyBookingPage({ searchParams }: Props) {
             sub="Ingen coaching-tjenester er aktive i øyeblikket. Kontakt support@akgolf.no."
           />
         </Kort>
-      </V2Shell>
+      </div>
+    </PlayerHQSkall>
     );
   }
 
   return (
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
       <BookingNyV2 data={resultat.data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

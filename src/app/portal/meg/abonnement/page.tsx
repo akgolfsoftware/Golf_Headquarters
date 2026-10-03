@@ -1,3 +1,5 @@
+// PH25AboOversikt — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2 — PlayerHQ Meg · Abonnement (retning C). V2Shell leverer chrome-en
  * (IkonRail/BunnNav, aktiv «meg»), MegAbonnementV2 rendrer innholds-stacken.
@@ -12,7 +14,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegAbonnementV2, type MegAbonnementData } from "@/components/portal/v2/MegAbonnementV2";
 import { TilbakeLenke } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
@@ -73,9 +74,11 @@ export default async function AbonnementPage({
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegAbonnementV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

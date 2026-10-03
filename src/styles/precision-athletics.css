@@ -952,3 +952,35 @@ button.ph-kal-celle{cursor:pointer}
 .fo-kort > .fo-rad:first-child{border-top:0;padding-top:0}
 button.fo-kort,button.fo-person{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
 button.fo-person:not(.fo-kort){background:transparent;border:0;padding:0}
+/* Eldre v2-kort inne i Precision-skallet leser disse variablene. */
+.pa-root{
+  --tl-scene:var(--surface-page);
+  --tl-elev:var(--surface-card);
+  --tl-dock:var(--surface-sunken);
+  --tl-hair:var(--border-hairline);
+  --tl-dim:var(--border-hairline);
+  --tl-text:var(--text-primary);
+  --tl-mute:var(--text-secondary);
+  --tl-text-hover:var(--text-primary);
+  --tl-fill:var(--primary);
+  --tl-on-fill:var(--text-on-primary);
+  --tl-avatar:var(--surface-sunken);
+  --tl-on-avatar:var(--text-primary);
+  --tl-warm:var(--text-primary);
+  --tl-warm-ink:var(--text-primary);
+  --tl-warm-text:var(--text-secondary);
+  --tl-warm-tint:transparent;
+  --tl-warn:var(--text-secondary);
+  --tl-warn-hair:var(--border-hairline);
+  --tl-danger:var(--signal);
+  --tl-ok:var(--text-primary);
+  --tl-on-danger:var(--text-on-primary);
+  --tl-r-card:var(--radius);
+  --tl-r-row:var(--radius);
+  --tl-r-field:var(--radius);
+  --tl-r-pill:999px;
+  --tl-r-sheet:12px;
+  --tl-font-sans:var(--font-ibm-plex-sans),Arial,sans-serif;
+  --tl-font-mono:var(--font-ibm-plex-mono),ui-monospace,monospace;
+  --tl-shadow-card:var(--shadow-card);
+}

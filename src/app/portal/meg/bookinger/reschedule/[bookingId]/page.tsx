@@ -1,3 +1,5 @@
+// PH23FlyttTime — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * Bytt tid på booking — B-pakke.
  * Nåværende status først, deretter dato → tid, én grønn bekreft i slot-picker.
@@ -10,7 +12,6 @@ import { getAvailableSlots } from "@/lib/booking/availability";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, TomTilstand } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RescheduleDatoVelger } from "./reschedule-dato-velger";
 import { RescheduleSlotPicker } from "./reschedule-slot-picker";
 
@@ -67,7 +68,8 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   });
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div
         style={{
           maxWidth: 720,
@@ -136,7 +138,8 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
           )}
         </div>
       </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }
 

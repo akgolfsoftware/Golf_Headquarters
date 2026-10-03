@@ -1,3 +1,5 @@
+// PH24ProfilKort — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Meg · Profil (W3-port av eksisterende flate).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-profil.html (§8 skjema).
@@ -8,13 +10,15 @@
  *
  * Dataloader gjenbruker hentProfil (User-feltene); hentProfilEkstra legger
  * til stall-tag, runder i år, Golfbox-ID og aktivt HCP-mål.
+ *
+ * Avvik:
+ *   - Skjemaet er montert i PlayerHQSkall. Feltene og lagreProfil er beholdt. Ikke målt i appen.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentProfil } from "@/app/portal/meg/actions";
 import { hentProfilEkstra, manglendeProfilFelter } from "@/lib/portal/profil-flate-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegProfilV2, type MegProfilData } from "@/components/portal/v2/MegProfilV2";
 import { lagreProfil } from "./actions";
 
@@ -63,8 +67,10 @@ export default async function ProfilPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <MegProfilV2 data={data} lagre={lagreProfil} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

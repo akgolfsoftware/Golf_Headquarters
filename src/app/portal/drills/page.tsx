@@ -1,3 +1,5 @@
+// PH13DrillListe — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Øvelsesbank (/portal/drills) — Paper-port W1 (fase2).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-drills.html.
@@ -7,6 +9,9 @@
  * som Workbench-fokus) → filterchips → drill-rader → ærlig tom tilstand.
  * Dataloader gjenbrukt: getDrillLibraryRich (samme tilgangs-filter som før).
  * Bruk siste 30 dager telles fra TrainingDrillV2.exerciseId (egne økter).
+ *
+ * Avvik:
+ *   - Listen er montert i PlayerHQSkall. Filter, anbefalt drill og SG-gap er beholdt. Ikke målt i appen.
  */
 
 import Link from "next/link";
@@ -17,7 +22,6 @@ import { getDrillLibraryRich, type DrillDetail } from "@/lib/portal-drills/drill
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { SG_FOKUS_LABEL, type SgKategori } from "@/lib/workbench/fokus";
 import type { SkillArea } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 
 import { TilbakeLenke } from "@/components/v2";
@@ -156,7 +160,8 @@ export default async function DrillsPage() {
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <div
         data-paper-slug="playerhq-drills"
@@ -218,6 +223,7 @@ export default async function DrillsPage() {
           <DrillsListe anbefalt={anbefalt} rader={rader} />
         )}
       </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

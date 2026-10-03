@@ -1,3 +1,5 @@
+// PH24UtstyrBag — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Meg · Utstyr og bag (W3 — ny rute).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-utstyr.html (§9 tabell + trapp).
@@ -13,13 +15,15 @@
  *
  * Leser: EquipmentBag (rått, til redigeringsseksjonen) + målte carry-snitt
  * fra TrackMan (hentGapping, til lesevisningen).
+ *
+ * Avvik:
+ *   - Lesevisning og redigering er montert i PlayerHQSkall. Skjemaet er beholdt. Ikke målt i appen.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentUtstyrFlate } from "@/lib/portal/utstyr-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegUtstyrV2 } from "@/components/portal/v2/MegUtstyrV2";
 import { MegUtstyrsbagV2 } from "@/components/portal/v2/MegUtstyrsbagV2";
 import type { UtstyrsbagInput } from "@/app/portal/meg/utstyrsbag/actions";
@@ -55,11 +59,13 @@ export default async function UtstyrPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <MegUtstyrV2 data={data} />
       <div id="rediger-utstyr">
         <MegUtstyrsbagV2 data={{ utstyr }} somFane />
       </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }
