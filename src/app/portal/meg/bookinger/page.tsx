@@ -1,14 +1,15 @@
 /**
- * PlayerHQ · Mine bookinger — B-pakke (v2 tokens + én primær CTA).
+ * PH23MineTimer — mine bookinger i PlayerHQSkall.
+ * Samme bookinger, byttefeil og vei til ny booking.
  */
+
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { StatusPille } from "@/components/precision/pa";
 import { BookingerTabs } from "./bookinger-tabs";
-
-import { Caps, Tittel, CTAPill, Kort, StatusPill } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
 
 const BYTT_FEIL_TEKST: Record<string, string> = {
   "24t": "Kunne ikke bytte tid — det er under 24 timer til start, og bytting er da stengt.",
@@ -23,67 +24,44 @@ export default async function MineBookinger({
   const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { error } = await searchParams;
   const feilTekst = error ? BYTT_FEIL_TEKST[error] : undefined;
-
-  // Alle bookinger skjer i appen — wizarden velger selv credits/betaling.
   const nyBookingHref = "/portal/booking/ny";
 
-  const bookings = await prisma.booking.findMany({
-    where: { userId: user.id },
-    include: {
-      serviceType: { select: { name: true, durationMin: true } },
-      location: { select: { name: true } },
-    },
-    orderBy: { startAt: "desc" },
-  });
+  const [bookings, ulest] = await Promise.all([
+    prisma.booking.findMany({
+      where: { userId: user.id },
+      include: {
+        serviceType: { select: { name: true, durationMin: true } },
+        location: { select: { name: true } },
+      },
+      orderBy: { startAt: "desc" },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   const idag = new Date();
   const kommende = bookings.filter(
-    (b) =>
-      b.startAt >= idag &&
-      (b.status === "CONFIRMED" || b.status === "PENDING"),
+    (b) => b.startAt >= idag && (b.status === "CONFIRMED" || b.status === "PENDING"),
   );
-  const historikk = bookings.filter(
-    (b) => b.startAt < idag || b.status === "CANCELLED",
-  );
+  const historikk = bookings.filter((b) => b.startAt < idag || b.status === "CANCELLED");
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1240, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side ph23t">
+        <header>
           <div>
-            <Caps>Meg · Bookinger</Caps>
-            <div style={{ marginTop: 10 }}>
-              <Tittel em="timer">Dine</Tittel>
-            </div>
+            <p>Meg · Bookinger</p>
+            <h1>Dine timer</h1>
           </div>
-          <StatusPill tone={kommende.length > 0 ? "info" : "up"}>
+          <StatusPille tone={kommende.length > 0 ? "neutral" : "ok"}>
             {kommende.length > 0 ? `${kommende.length} kommende` : "Ingen planlagt"}
-          </StatusPill>
-        </div>
-
-        {feilTekst && (
-          <Kort tint>
-            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <StatusPill tone="warn">Kunne ikke bytte</StatusPill>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{feilTekst}</span>
-            </div>
-          </Kort>
-        )}
-
-        <Link href={nyBookingHref} style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="calendar-plus" full>
-            Ny booking
-          </CTAPill>
-        </Link>
-
-        <Kort>
-          <BookingerTabs
-            kommende={kommende}
-            historikk={historikk}
-            nyBookingHref={nyBookingHref}
-          />
-        </Kort>
+          </StatusPille>
+        </header>
+        {feilTekst && <p className="ph23t-feil" role="alert">Kunne ikke bytte. {feilTekst}</p>}
+        <Link href={nyBookingHref} className="pa-btn pa-btn--primary pa-btn--full">Ny booking</Link>
+        <section className="pa-card ph23t-kort">
+          <BookingerTabs kommende={kommende} historikk={historikk} nyBookingHref={nyBookingHref} />
+        </section>
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

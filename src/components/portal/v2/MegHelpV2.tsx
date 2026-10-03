@@ -1,270 +1,100 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
-/**
- * PlayerHQ Meg · Hjelpesenter — v2 Presis + B-pakke (søk, tom = én grønn vei).
- */
-
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Caps, Kort, Rad, Trekkspill, TomTilstand, Icon, PalettSok } from "@/components/v2";
-/* ── Datakontrakt ──────────────────────────────────────────────────── */
+import { Search } from "lucide-react";
+import { TomTilstand } from "@/components/precision/pa";
 
 export type HjelpFaq = { q: string; a: string };
-export type HjelpKategori = {
-  slug: string;
-  tittel: string;
-  beskrivelse: string;
-  ikon: string;
-  antall: number;
-};
-export type HjelpArtikkel = {
-  slug: string;
-  tittel: string;
-  kategori: string;
-  lesetid: number;
-};
-
-export type MegHelpData = {
-  faq: HjelpFaq[];
-  kategorier: HjelpKategori[];
-  artikler: HjelpArtikkel[];
-};
-
-/* ── Lokal byggekloss (samme idiom som InnstillingerV2.SeksjonIkon) ─── */
-
-/** Rundt ikon-emblem foran/over en rad eller flis. */
-function Emblem({ name, size = 34 }: { name: string; size?: number }) {
-  return (
-    <span
-      style={{
-        width: size,
-        height: size,
-        borderRadius: 11,
-        background: TL.dim,
-        border: `1px solid ${TL.hair}`,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flex: "none",
-      }}
-    >
-      <Icon name={name} size={Math.round(size * 0.45)} style={{ color: TL.mute }} />
-    </span>
-  );
-}
-
-/* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tittelstørrelse). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/* ── Skjerm ────────────────────────────────────────────────────────── */
+export type HjelpKategori = { slug: string; tittel: string; beskrivelse: string; ikon: string; antall: number };
+export type HjelpArtikkel = { slug: string; tittel: string; kategori: string; lesetid: number };
+export type MegHelpData = { faq: HjelpFaq[]; kategorier: HjelpKategori[]; artikler: HjelpArtikkel[] };
 
 export function MegHelpV2({ data }: { data: MegHelpData }) {
-  const _mobile = useMobile();
   const { faq, kategorier, artikler } = data;
   const [sok, setSok] = useState("");
-
   const q = sok.trim().toLowerCase();
   const treffKat = useMemo(
-    () =>
-      q
-        ? kategorier.filter(
-            (k) =>
-              k.tittel.toLowerCase().includes(q) ||
-              k.beskrivelse.toLowerCase().includes(q),
-          )
-        : [],
+    () => (q ? kategorier.filter((k) => k.tittel.toLowerCase().includes(q) || k.beskrivelse.toLowerCase().includes(q)) : []),
     [q, kategorier],
   );
   const treffArt = useMemo(
-    () =>
-      q
-        ? artikler.filter(
-            (a) =>
-              a.tittel.toLowerCase().includes(q) ||
-              a.kategori.toLowerCase().includes(q),
-          )
-        : [],
+    () => (q ? artikler.filter((a) => a.tittel.toLowerCase().includes(q) || a.kategori.toLowerCase().includes(q)) : []),
     [q, artikler],
   );
   const ingenTreff = q.length > 0 && treffKat.length === 0 && treffArt.length === 0;
 
   return (
-    <div data-paper-wave-g="meghelp" data-paper-portal-meg-help style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode */}
-      <div>
-        <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Hjelp</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 520 }}>
-          Svar på vanlige spørsmål, søk i veiledningene, eller ta direkte kontakt.
-        </p>
-      </div>
-
-      {/* Søk */}
-      <PalettSok value={sok} onChange={setSok} placeholder="Søk i hjelpesenteret …" />
+    <div className="ph25h">
+      <header>
+        <h1>Hjelp</h1>
+        <p>Meg</p>
+        <p>Svar på vanlige spørsmål, søk i veiledningene, eller ta direkte kontakt.</p>
+      </header>
+      <label className="ph25h-sok">Søk i hjelpesenteret
+        <input value={sok} placeholder="Søk i hjelpesenteret" onChange={(e) => setSok(e.target.value)} />
+      </label>
 
       {q ? (
-        /* ── Søkeresultat ─────────────────────────────────────────── */
         ingenTreff ? (
           <>
-            <Kort>
-              <TomTilstand
-                icon="search"
-                title="Ingen treff"
-                sub="Prøv et annet søkeord, eller ta kontakt med support."
-              />
-            </Kort>
-            <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
-              <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Kontakt support</span>
-            </Link>
+            <TomTilstand icon={Search} title="Ingen treff" text="Prøv et annet søkeord, eller ta kontakt med support." />
+            <Link href="/portal/meg/help/kontakt" className="pa-btn pa-btn--primary pa-btn--full">Kontakt support</Link>
           </>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <>
             {treffKat.length > 0 && (
-              <Kort eyebrow={`Kategorier · ${treffKat.length}`}>
-                {treffKat.map((k, i) => (
-                  <Link
-                    key={k.slug}
-                    href={`/portal/meg/help/kategori/${k.slug}`}
-                    style={{ textDecoration: "none", color: "inherit", display: "block" }}
-                  >
-                    <Rad
-                      leading={<Emblem name={k.ikon} />}
-                      title={k.tittel}
-                      sub={k.beskrivelse}
-                      meta={<Caps size={9}>{k.antall} art.</Caps>}
-                      last={i === treffKat.length - 1}
-                    />
-                  </Link>
-                ))}
-              </Kort>
+              <section className="pa-card ph25h-kort">
+                <p>Kategorier · {treffKat.length}</p>
+                <ul>
+                  {treffKat.map((k) => (
+                    <li key={k.slug}><Link href={`/portal/meg/help/kategori/${k.slug}`}><strong>{k.tittel}</strong><small>{k.beskrivelse}</small></Link><span>{k.antall} art.</span></li>
+                  ))}
+                </ul>
+              </section>
             )}
             {treffArt.length > 0 && (
-              <Kort eyebrow={`Artikler · ${treffArt.length}`}>
-                {treffArt.map((a, i) => (
-                  <Link
-                    key={a.slug}
-                    href={`/portal/meg/help/artikkel/${a.slug}`}
-                    style={{ textDecoration: "none", color: "inherit", display: "block" }}
-                  >
-                    <Rad
-                      leading={<Emblem name="file-text" />}
-                      title={a.tittel}
-                      sub={`${a.kategori} · ${a.lesetid} min lesetid`}
-                      last={i === treffArt.length - 1}
-                    />
-                  </Link>
-                ))}
-              </Kort>
+              <section className="pa-card ph25h-kort">
+                <p>Artikler · {treffArt.length}</p>
+                <ul>
+                  {treffArt.map((a) => (
+                    <li key={a.slug}><Link href={`/portal/meg/help/artikkel/${a.slug}`}><strong>{a.tittel}</strong><small>{a.kategori} · {a.lesetid} min lesetid</small></Link></li>
+                  ))}
+                </ul>
+              </section>
             )}
-          </div>
+          </>
         )
       ) : (
-        /* ── Standard hub ─────────────────────────────────────────── */
         <>
-          {/* Kategori-grid */}
-          <div>
-            <Caps size={9} style={{ margin: "0 2px 10px" }}>Kategorier</Caps>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
+          <section>
+            <p className="ph25h-kicker">Kategorier</p>
+            <div className="ph25h-grid">
               {kategorier.map((k) => (
-                <Link
-                  key={k.slug}
-                  href={`/portal/meg/help/kategori/${k.slug}`}
-                  style={{ textDecoration: "none", color: "inherit", display: "block" }}
-                >
-                  <Kort hover style={{ height: "100%", gap: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <Emblem name={k.ikon} size={38} />
-                      <Icon name="arrow-up-right" size={15} style={{ color: TL.mute }} />
-                    </div>
-                    <div>
-                      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15.5, color: TL.text, letterSpacing: "-0.01em" }}>
-                        {k.tittel}
-                      </div>
-                      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0" }}>
-                        {k.beskrivelse}
-                      </p>
-                    </div>
-                    <Caps size={9} style={{ marginTop: "auto", paddingTop: 4 }}>
-                      {k.antall} artikler
-                    </Caps>
-                  </Kort>
+                <Link key={k.slug} href={`/portal/meg/help/kategori/${k.slug}`} className="pa-card ph25h-kort">
+                  <strong>{k.tittel}</strong>
+                  <span>{k.beskrivelse}</span>
+                  <small>{k.antall} artikler</small>
                 </Link>
               ))}
             </div>
-          </div>
-
-          {/* Ofte stilte spørsmål */}
-          <div>
-            <Caps size={9} style={{ margin: "0 2px 10px" }}>Ofte stilte spørsmål</Caps>
-            <Trekkspill items={faq.map((f) => ({ t: f.q, c: f.a }))} />
-          </div>
-
-          {/* Ta kontakt */}
-          <Kort eyebrow="Ta kontakt">
-            <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                leading={<Emblem name="message-circle" />}
-                title="Chat med support"
-                sub="Svarer vanligvis innen 1 t"
-              />
-            </Link>
-            <a href="mailto:support@akgolf.no" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                leading={<Emblem name="mail" />}
-                title="support@akgolf.no"
-                sub="E-post til teamet"
-              />
-            </a>
-            <Link href="/portal/meg/help/kategori/komme-i-gang" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                leading={<Emblem name="file-text" />}
-                title="Veiledninger"
-                sub="Kom-i-gang-guider"
-                trailing={<Icon name="external-link" size={14} style={{ color: TL.mute }} />}
-                last
-              />
-            </Link>
-          </Kort>
-
-          <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
-            <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Kontakt support</span>
-          </Link>
-          <Link
-            href="/portal/meg/feedback"
-            style={{
-              textDecoration: "none",
-              display: "block",
-              textAlign: "center",
-              fontFamily: TL.font.sans,
-              fontSize: 12,
-              fontWeight: 600,
-              color: TL.mute,
-              padding: "2px 0 4px",
-            }}
-          >
-            Send forslag eller meld feil →
-          </Link>
+          </section>
+          <section className="pa-card ph25h-kort">
+            <p>Ofte stilte spørsmål</p>
+            {faq.map((f) => (
+              <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>
+            ))}
+          </section>
+          <section className="pa-card ph25h-kort">
+            <p>Ta kontakt</p>
+            <ul>
+              <li><Link href="/portal/meg/help/kontakt"><strong>Chat med support</strong><small>Svarer vanligvis innen 1 t</small></Link></li>
+              <li><a href="mailto:support@akgolf.no"><strong>support@akgolf.no</strong><small>E-post til teamet</small></a></li>
+              <li><Link href="/portal/meg/help/kategori/komme-i-gang"><strong>Veiledninger</strong><small>Kom-i-gang-guider</small></Link></li>
+            </ul>
+          </section>
+          <Link href="/portal/meg/help/kontakt" className="pa-btn pa-btn--primary pa-btn--full">Kontakt support</Link>
+          <Link href="/portal/meg/feedback" className="ph25h-forslag">Send forslag eller meld feil</Link>
         </>
       )}
     </div>

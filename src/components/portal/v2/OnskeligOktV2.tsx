@@ -1,30 +1,24 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
-/**
- * PlayerHQ Be om økt — v2 Presis + B-pakke (skjema + én primær «Send»).
- * Ekte coach-liste. T.* only.
- */
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { sendOnskeligOkt } from "@/app/portal/(legacy)/onskeligokt/actions";
-import { Caps, Tittel, Kort, Knapp, FilterChips, Velger, Inndata, TekstOmraade, Bryter, ValgKort, Icon } from "@/components/v2";
-/* ── Datakontrakt (samme som ekte side leverer) ────────────────────── */
+import { Knapp } from "@/components/precision/pa";
+
 export interface OnskeligOktV2Data {
   coacher: { id: string; name: string; email?: string }[];
   coachName: string;
 }
 
-/* ── Valg-tabeller (1:1 med form.tsx) ──────────────────────────────── */
 type Tier = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 type OktType = "1:1" | "MINI" | "RANGE" | "RUNDE";
 type Fasilitet = "MULLIGAN" | "GFGK" | "BOSSUM" | "COACH" | "ONLINE";
 
-const OKT_TYPER: { id: OktType; title: string; tag: string; tagTone?: "warn"; sub: string }[] = [
+const OKT_TYPER: { id: OktType; title: string; tag: string; sub: string }[] = [
   { id: "1:1", title: "1:1 Coaching", tag: "60 min", sub: "Standard 1:1 — coachen observerer, gir feedback, dere jobber sammen." },
   { id: "MINI", title: "Mini-økt", tag: "30 min", sub: "Fokus på ett spesifikt tema — typisk fra forrige runde eller test." },
   { id: "RANGE", title: "Range-besøk sammen", tag: "90 min", sub: "Coachen kommer til rangen — fri form, ofte for å sette opp ukens fokus." },
-  { id: "RUNDE", title: "Spille runde sammen", tag: "4 t", tagTone: "warn", sub: "9 eller 18 hull. Coachen går med — observerer beslutningstaking. Avtales særskilt." },
+  { id: "RUNDE", title: "Spille runde sammen", tag: "4 t", sub: "9 eller 18 hull. Coachen går med — observerer beslutningstaking. Avtales særskilt." },
 ];
 
 const FASILITETER: { id: Fasilitet; title: string; suffix?: string; sub: string }[] = [
@@ -38,23 +32,21 @@ const FASILITETER: { id: Fasilitet; title: string; suffix?: string; sub: string 
 const TIER_ITEMS: Tier[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const EKSTRA_ITEMS = ["PUTT", "Mental", "Turneringsforberedelse", "Annet"];
 
-/* ── Seksjon — Kort m/ nummer-eyebrow + display-tittel + hjelp ──────── */
 function Seksjon({ num, tittel, hjelp, children }: { num: string; tittel: string; hjelp?: string; children: ReactNode }) {
   return (
-    <Kort eyebrow={num}>
-      <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.25, margin: 0 }}>{tittel}</h2>
-      {hjelp && <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "5px 0 0" }}>{hjelp}</p>}
-      <div style={{ marginTop: 14 }}>{children}</div>
-    </Kort>
+    <section className="pa-card ph21-kort">
+      <p>{num}</p>
+      <h2>{tittel}</h2>
+      {hjelp && <p className="ph21-hjelp">{hjelp}</p>}
+      {children}
+    </section>
   );
 }
 
-/* ── Skjerm ────────────────────────────────────────────────────────── */
 export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   const { coacher, coachName } = data;
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
-
   const [oktType, setOktType] = useState<OktType>("1:1");
   const [omrader, setOmrader] = useState<Tier[]>(["SLAG"]);
   const [ekstraOmrader, setEkstraOmrader] = useState<string[]>([]);
@@ -67,23 +59,17 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  function toggleTier(x: string) {
-    const t = x as Tier;
+  function toggleTier(t: Tier) {
     setOmrader((prev) => (prev.includes(t) ? prev.filter((y) => y !== t) : [...prev, t]));
   }
   function toggleEkstra(x: string) {
     setEkstraOmrader((prev) => (prev.includes(x) ? prev.filter((y) => y !== x) : [...prev, x]));
-  }
-  function leggTilTid() {
-    if (datoer.length >= 3) return;
-    setDatoer((d) => [...d, { dato: today, tid: "16:00" }]);
   }
 
   function send() {
     setError(null);
     const forste = datoer[0];
     const preferredAt = fleksibel ? undefined : forste ? `${forste.dato}T${forste.tid}:00` : undefined;
-    const omradeStr = omrader[0] ?? "SLAG";
     const ekstraInfo = [
       `Type: ${oktType}`,
       `Fasilitet: ${fasilitet}`,
@@ -91,15 +77,13 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
       ekstraOmrader.length ? `I tillegg: ${ekstraOmrader.join(", ")}` : null,
       detalj ? `Detalj: ${detalj}` : null,
       melding ? `Melding: ${melding}` : null,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    ].filter(Boolean).join("\n");
 
     startTransition(async () => {
       try {
         await sendOnskeligOkt({
           preferredAt,
-          pyramidArea: omradeStr,
+          pyramidArea: omrader[0] ?? "SLAG",
           notes: ekstraInfo,
           coachId: coachId || undefined,
         });
@@ -110,175 +94,85 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   }
 
   return (
-    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode */}
-      <div>
-        <Caps>PlayerHQ · Be om økt</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="økt">Be om</Tittel>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
-          {coachName} svarer normalt innen 24 timer på hverdager.
-        </p>
-      </div>
+    <div className="ph21">
+      <header>
+        <p>PlayerHQ · Be om økt</p>
+        <h1>Be om økt</h1>
+        <p>{coachName} svarer normalt innen 24 timer på hverdager.</p>
+      </header>
 
-      {/* 00 · COACH — kun hvis flere coacher å velge mellom. Matcher alltid på
-          id (aldri navn) — to coacher kan hete det samme (f.eks. to «Anders
-          Kristiansen»); duplikatnavn får e-post-hint i label for å skille dem. */}
       {coacher.length > 1 && (
-        <Seksjon num="00 · COACH" tittel="Hvem skal ta økten?">
-          <Velger
-            label={null}
-            options={[
-              { value: "", label: "Ingen preferanse" },
-              ...coacher.map((c) => {
+        <Seksjon num="00 · Coach" tittel="Hvem skal ta økten?">
+          <label>Coach
+            <select value={coachId} onChange={(e) => setCoachId(e.target.value)}>
+              <option value="">Ingen preferanse</option>
+              {coacher.map((c) => {
                 const duplikatNavn = coacher.filter((x) => x.name === c.name).length > 1;
-                return { value: c.id, label: duplikatNavn && c.email ? `${c.name} (${c.email})` : c.name };
-              }),
-            ]}
-            value={coachId}
-            onChange={setCoachId}
-          />
+                return <option key={c.id} value={c.id}>{duplikatNavn && c.email ? `${c.name} (${c.email})` : c.name}</option>;
+              })}
+            </select>
+          </label>
         </Seksjon>
       )}
 
-      {/* 01 · TYPE */}
-      <Seksjon num="01 · TYPE" tittel="Hva slags økt?">
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }} role="radiogroup" aria-label="Type økt">
+      <Seksjon num="01 · Type" tittel="Hva slags økt?">
+        <div role="radiogroup" aria-label="Type økt" className="ph21-valg">
           {OKT_TYPER.map((t) => (
-            <ValgKort
-              key={t.id}
-              tittel={t.title}
-              tag={t.tag}
-              tagTone={t.tagTone}
-              sub={t.sub}
-              valgt={oktType === t.id}
-              onClick={() => setOktType(t.id)}
-            />
+            <button key={t.id} type="button" aria-pressed={oktType === t.id} onClick={() => setOktType(t.id)}>
+              <strong>{t.title}</strong><small>{t.tag}</small><span>{t.sub}</span>
+            </button>
           ))}
         </div>
       </Seksjon>
 
-      {/* 02 · TEMA */}
-      <Seksjon num="02 · TEMA" tittel="Hva vil du jobbe med?" hjelp="Velg én eller flere. Coachen bruker dette til å forberede.">
-        <FilterChips items={TIER_ITEMS} active={omrader} onToggle={toggleTier} axis />
-        <div style={{ marginTop: 10 }}>
-          <FilterChips items={EKSTRA_ITEMS} active={ekstraOmrader} onToggle={toggleEkstra} />
+      <Seksjon num="02 · Tema" tittel="Hva vil du jobbe med?" hjelp="Velg én eller flere. Coachen bruker dette til å forberede.">
+        <div className="ph21-chips">
+          {TIER_ITEMS.map((t) => <button key={t} type="button" aria-pressed={omrader.includes(t)} onClick={() => toggleTier(t)}>{t}</button>)}
         </div>
-        <div style={{ marginTop: 16 }}>
-          <TekstOmraade
-            label="Mer detalj (valgfritt)"
-            value={detalj}
-            rows={3}
-            placeholder="Beskriv mer hvis du vil — eks. «Jeg sliter med høyre-misser fra 100 m sist runde»"
-            onChange={setDetalj}
-          />
+        <div className="ph21-chips">
+          {EKSTRA_ITEMS.map((t) => <button key={t} type="button" aria-pressed={ekstraOmrader.includes(t)} onClick={() => toggleEkstra(t)}>{t}</button>)}
         </div>
+        <label>Mer detalj (valgfritt)
+          <textarea rows={3} value={detalj} placeholder="Beskriv mer hvis du vil" onChange={(e) => setDetalj(e.target.value)} />
+        </label>
       </Seksjon>
 
-      {/* 03 · TID */}
-      <Seksjon num="03 · TID" tittel="Når passer det best?" hjelp="Foreslå opp til 3 alternativer — eller slå på «Helt fleksibel».">
-        <div style={{ opacity: fleksibel ? 0.45 : 1, pointerEvents: fleksibel ? "none" : "auto", transition: "opacity 160ms" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {datoer.map((d, i) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "26px 1fr 1fr", alignItems: "end", gap: 10 }}>
-                <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, paddingBottom: 11 }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <Inndata
-                  label={i === 0 ? "Dato" : null}
-                  type="date"
-                  value={d.dato}
-                  onChange={(v) => setDatoer((arr) => arr.map((x, j) => (j === i ? { ...x, dato: v } : x)))}
-                />
-                <Inndata
-                  label={i === 0 ? "Klokkeslett" : null}
-                  type="time"
-                  value={d.tid}
-                  onChange={(v) => setDatoer((arr) => arr.map((x, j) => (j === i ? { ...x, tid: v } : x)))}
-                />
-              </div>
-            ))}
-          </div>
-          {datoer.length < 3 && (
-            <div style={{ marginTop: 12 }}>
-              <Knapp ghost icon="plus" onClick={leggTilTid}>
-                Legg til alternativ ({3 - datoer.length} igjen)
-              </Knapp>
+      <Seksjon num="03 · Tid" tittel="Når passer det best?" hjelp="Foreslå opp til 3 alternativer — eller slå på «Helt fleksibel».">
+        <div className={fleksibel ? "ph21-dim" : undefined}>
+          {datoer.map((d, i) => (
+            <div key={i} className="ph21-tid">
+              <span>{String(i + 1).padStart(2, "0")}</span>
+              <label>{i === 0 ? "Dato" : "Dato"}<input type="date" value={d.dato} onChange={(e) => setDatoer((arr) => arr.map((x, j) => (j === i ? { ...x, dato: e.target.value } : x)))} /></label>
+              <label>{i === 0 ? "Klokkeslett" : "Klokkeslett"}<input type="time" value={d.tid} onChange={(e) => setDatoer((arr) => arr.map((x, j) => (j === i ? { ...x, tid: e.target.value } : x)))} /></label>
             </div>
+          ))}
+          {datoer.length < 3 && (
+            <Knapp type="button" variant="secondary" onClick={() => setDatoer((d) => [...d, { dato: today, tid: "16:00" }])}>
+              Legg til alternativ ({3 - datoer.length} igjen)
+            </Knapp>
           )}
         </div>
-        <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
-          <Bryter
-            label="Helt fleksibel"
-            sub="Coachen foreslår tid"
-            checked={fleksibel}
-            onChange={setFleksibel}
-          />
-        </div>
+        <label className="ph21-sjekk"><input type="checkbox" checked={fleksibel} onChange={(e) => setFleksibel(e.target.checked)} /> Helt fleksibel — coachen foreslår tid</label>
       </Seksjon>
 
-      {/* 04 · FASILITET */}
-      <Seksjon num="04 · FASILITET" tittel="Hvor?">
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }} role="radiogroup" aria-label="Fasilitet">
+      <Seksjon num="04 · Fasilitet" tittel="Hvor?">
+        <div role="radiogroup" aria-label="Fasilitet" className="ph21-valg">
           {FASILITETER.map((f) => (
-            <ValgKort
-              key={f.id}
-              tittel={f.title}
-              tittelSuffix={f.suffix}
-              sub={f.sub}
-              valgt={fasilitet === f.id}
-              onClick={() => setFasilitet(f.id)}
-            />
+            <button key={f.id} type="button" aria-pressed={fasilitet === f.id} onClick={() => setFasilitet(f.id)}>
+              <strong>{f.title}{f.suffix ? ` ${f.suffix}` : ""}</strong><span>{f.sub}</span>
+            </button>
           ))}
         </div>
       </Seksjon>
 
-      {/* 05 · MELDING */}
-      <Seksjon num="05 · MELDING" tittel="Noe coachen bør vite? (valgfritt)">
-        <TekstOmraade
-          label={null}
-          value={melding}
-          rows={3}
-          placeholder="Skriv en kort melding hvis du vil …"
-          onChange={(v) => setMelding(v.slice(0, 500))}
-        />
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{melding.length} / 500</span>
-        </div>
+      <Seksjon num="05 · Melding" tittel="Noe coachen bør vite? (valgfritt)">
+        <textarea rows={3} maxLength={500} value={melding} placeholder="Skriv en kort melding hvis du vil" onChange={(e) => setMelding(e.target.value.slice(0, 500))} />
+        <small>{melding.length} / 500</small>
       </Seksjon>
 
-      {error && (
-        <div role="alert" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 13px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 34%, transparent)` }}>
-          <Icon name="triangle-alert" size={14} style={{ color: TL.danger }} />
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{error}</span>
-        </div>
-      )}
-
-      {/* B: én primær Send full bredde */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
-        <Knapp icon="send" full onClick={send} disabled={pending} style={{ background: TL.fill, color: TL.onFill }}>
-          {pending ? "Sender …" : "Send forespørsel"}
-        </Knapp>
-        <button
-          type="button"
-          onClick={() => router.push("/portal")}
-          style={{
-            appearance: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            fontWeight: 600,
-            color: TL.mute,
-            textAlign: "center",
-            padding: 0,
-          }}
-        >
-          Avbryt →
-        </button>
-      </div>
+      {error && <p role="alert">{error}</p>}
+      <Knapp type="button" fullWidth loading={pending} disabled={pending} onClick={send}>{pending ? "Sender …" : "Send forespørsel"}</Knapp>
+      <button type="button" className="ph21-avbryt" onClick={() => router.push("/portal")}>Avbryt</button>
     </div>
   );
 }

@@ -1,44 +1,40 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Be om økt (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), OnskeligOktV2 rendrer skjema-stacken.
- *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/onskeligokt/page.tsx): coach-lista utledes av hvem som faktisk
- * tilbyr coaching (serviceType.coachUserId), ikke role=COACH.
+ * PH21BeOmOkt — be om økt i PlayerHQSkall.
+ * Coach-listen er fortsatt de som faktisk tilbyr coaching. Sendingen er den samme.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { OnskeligOktV2 } from "@/components/portal/v2/OnskeligOktV2";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
 export default async function V2OnskeligOktPreviewPage() {
   const user = await requirePortalUser();
-
-  const coachLinks = await prisma.serviceType.findMany({
-    where: { coachUserId: { not: null } },
-    select: { coachUserId: true },
-    distinct: ["coachUserId"],
-  });
-  const coachIds = coachLinks
-    .map((s) => s.coachUserId)
-    .filter((id): id is string => id !== null);
+  const [coachLinks, ulest] = await Promise.all([
+    prisma.serviceType.findMany({
+      where: { coachUserId: { not: null } },
+      select: { coachUserId: true },
+      distinct: ["coachUserId"],
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
+  const coachIds = coachLinks.map((s) => s.coachUserId).filter((id): id is string => id !== null);
   const coacher = await prisma.user.findMany({
     where: { id: { in: coachIds }, deletedAt: null },
     select: { id: true, name: true, email: true },
     orderBy: { name: "asc" },
   });
 
-  const coachName = coacher[0]?.name ?? "coachen";
-
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
-      <OnskeligOktV2 data={{ coacher, coachName }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/gjennomfore" className="ph-tilbake">Gjør</Link>
+        <OnskeligOktV2 data={{ coacher, coachName: coacher[0]?.name ?? "coachen" }} />
+      </div>
+    </PlayerHQSkall>
   );
 }

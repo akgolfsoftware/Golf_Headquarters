@@ -984,3 +984,37 @@ button.fo-person:not(.fo-kort){background:transparent;border:0;padding:0}
   --tl-font-mono:var(--font-ibm-plex-mono),ui-monospace,monospace;
   --tl-shadow-card:var(--shadow-card);
 }
+
+.ph-tilbake{display:inline-flex;align-items:center;min-height:44px;color:var(--text-secondary);font:var(--type-label);text-decoration:none}
+.ph-samling,.ph21,.ph23b,.ph23t,.ph25h{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%;margin:0 auto}
+.ph-samling{max-width:980px}
+.ph-samling h1,.ph21 h1,.ph23b h1,.ph23t h1,.ph25h h1{margin:0;font:600 28px/1.15 var(--font-sans);color:var(--text-primary);text-wrap:balance}
+.ph-samling header p,.ph21 header p,.ph23b header p,.ph23t header p,.ph25h header p{margin:4px 0 0;color:var(--text-secondary);font:var(--type-body)}
+.ph23t header,.ph23b-kort header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ph21-kort,.ph23b-kort,.ph23t-kort,.ph25h-kort{padding:16px}
+.ph21-kort > p,.ph23b-kort > p,.ph25h-kicker,.ph25h-kort > p{margin:0;color:var(--text-muted);font:var(--type-meta);letter-spacing:.06em;text-transform:uppercase}
+.ph21 h2,.ph23b h2{margin:6px 0 0;color:var(--text-primary);font:600 18px/1.3 var(--font-sans)}
+.ph21-hjelp,.ph21-kort span,.ph23b-kort span,.ph25h-kort span{color:var(--text-secondary);font:var(--type-body-s)}
+.ph21 label,.ph25h-sok{display:flex;flex-direction:column;gap:6px;color:var(--text-secondary);font:var(--type-label)}
+.ph21 input,.ph21 select,.ph21 textarea,.ph25h-sok input{min-height:44px;padding:8px 12px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);font:var(--type-body)}
+.ph21-valg,.ph21-chips{display:flex;flex-direction:column;gap:8px}
+.ph21-chips{flex-direction:row;flex-wrap:wrap}
+.ph21-valg button,.ph21-chips button{min-height:44px;padding:8px 12px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);text-align:left;cursor:pointer}
+.ph21-chips button{border-radius:999px}
+.ph21-valg button[aria-pressed="true"],.ph21-chips button[aria-pressed="true"]{background:var(--surface-sunken);font-weight:600}
+.ph21-valg small{display:block;color:var(--text-muted);font:var(--type-meta)}
+.ph21-tid{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;align-items:end}
+.ph21-dim{opacity:.45;pointer-events:none}
+.ph21-sjekk{flex-direction:row;align-items:center;min-height:44px}
+.ph21-avbryt,.ph23b-ekstra,.ph25h-forslag{min-height:44px;border:0;background:transparent;color:var(--text-secondary);font:var(--type-label);cursor:pointer}
+.ph21 [role="alert"],.ph23t-feil,.ph23b-melding{margin:0;color:var(--signal);font:var(--type-body-s)}
+.ph23b-kort strong{display:block;color:var(--text-primary);font:var(--type-num)}
+.ph23b ul,.ph25h ul,.ph23b dl{list-style:none;margin:8px 0 0;padding:0}
+.ph23b li,.ph25h li,.ph23b dl div{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;border-top:1px solid var(--border-hairline)}
+.ph23b a,.ph25h a{color:var(--text-primary);text-decoration:none}
+.ph23b small,.ph25h small,.ph23b dd{color:var(--text-secondary);font:var(--type-body-s)}
+.ph23b dt{color:var(--text-secondary);font:var(--type-body)}
+.ph25h-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.ph25h details{border-top:1px solid var(--border-hairline);padding:10px 0}
+.ph25h summary{min-height:44px;cursor:pointer;color:var(--text-primary);font:var(--type-body)}
+@media (min-width:800px){.ph25h-grid{grid-template-columns:1fr 1fr 1fr}}
