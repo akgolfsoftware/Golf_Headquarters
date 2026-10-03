@@ -1,8 +1,8 @@
 /**
- * DataGolf API-klient.
+ * Historisk DataGolf API-klient. Direkte kall fra HQ er sperret.
  *
  * Docs: https://datagolf.com/api-access
- * Krav: DATAGOLF_API_KEY i .env
+ * En lisensiert kildeleser må ligge i den isolerte pipeline-databasen.
  *
  * Endpoints brukt:
  * - /get-schedule       — turneringskalender per tur
@@ -13,31 +13,17 @@
  * - /preds/approach-skill — innspill-nærhet per spiller (tak-pakke)
  * - /preds/get-dg-rankings — rangering for tak-pakke
  *
- * Anti-pattern: Aldri cache disse svarene utenfor cron-jobben.
- * Bruk LeaderboardSnapshot-tabellen som DB-cache, og les fra DB i UI.
+ * Endepunktene beholdes som historisk kontrakt for kode som ennå ikke er
+ * migrert; alle forsøk avvises før nettverk.
  */
-
-const BASE = "https://feeds.datagolf.com";
 
 // "opp" = opposite-field event (samme uke som et signature/major event).
 // DataGolf live-tournament-stats støtter KUN "pga" og "opp" — øvrige tourer
 // (euro/kft/alt) har vi schedule for, men ikke live leaderboard.
 export type DGTour = "pga" | "opp" | "euro" | "kft" | "alt" | "champ" | "liv";
 
-function key(): string {
-  const k = process.env.DATAGOLF_API_KEY;
-  if (!k) throw new Error("DATAGOLF_API_KEY ikke satt i .env");
-  return k;
-}
-
 async function fetchJson<T>(path: string): Promise<T> {
-  const sep = path.includes("?") ? "&" : "?";
-  const url = `${BASE}${path}${sep}key=${key()}&file_format=json`;
-  const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
-  if (!res.ok) {
-    throw new Error(`[datagolf] ${path} → ${res.status}`);
-  }
-  return (await res.json()) as T;
+  throw new Error(`Direkte DataGolf-synk fra HQ er sperret: ${path}`);
 }
 
 // ---------------------------------------------------------------------------

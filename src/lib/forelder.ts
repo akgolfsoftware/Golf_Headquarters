@@ -2,6 +2,8 @@
 
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { computeStreak, aktivStreak } from "@/lib/streak";
@@ -398,6 +400,7 @@ export async function hentForelderUkerapport(
   parentUserId: string,
   barnId?: string | null,
 ): Promise<ForelderUkerapport | null> {
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const { fokus } = await velgGodkjentBarn(parentUserId, barnId);
   if (!fokus) return null;
 
@@ -439,7 +442,7 @@ export async function hentForelderUkerapport(
     // Runder siste 8 uker (for SG-trend + delta).
     prisma.round.findMany({
       where: { userId: childId, playedAt: { gte: for8uker } },
-      select: { playedAt: true, sgTotal: true },
+      select: { playedAt: true, sgTotal: true, sgSource: true, sgModelVersionId: true },
       orderBy: { playedAt: "asc" },
     }),
     // Siste coach-melding (varsel type «melding»).
@@ -503,7 +506,7 @@ export async function hentForelderUkerapport(
       (now.getTime() - r.playedAt.getTime()) / (7 * 24 * 3600 * 1000)
     );
     const idx = 7 - ukerSiden; // eldst (0) → nyest (7)
-    if (idx >= 0 && idx < 8 && r.sgTotal != null) {
+    if (idx >= 0 && idx < 8 && harVisbarSg(r, activeModelVersionId) && r.sgTotal != null) {
       ukeSum[idx] += r.sgTotal;
       ukeAnt[idx] += 1;
     }
@@ -537,7 +540,7 @@ export async function hentForelderUkerapport(
 
   // SG denne uka (snitt sgTotal for runder spilt etter ukestart).
   const ukeRunder = runder.filter(
-    (r) => r.playedAt >= ukeStart && r.playedAt < ukeSlutt && r.sgTotal != null
+    (r) => r.playedAt >= ukeStart && r.playedAt < ukeSlutt && harVisbarSg(r, activeModelVersionId) && r.sgTotal != null
   );
   const ukeSg =
     ukeRunder.length > 0

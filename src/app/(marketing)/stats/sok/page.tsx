@@ -24,20 +24,12 @@ export const metadata: Metadata = {
 async function serverSok(q: string): Promise<SokServerResultater | null> {
   if (!q || q.length < 2) return null;
 
-  const [norskeSpillere, pgaSpillere, turneringer] = await Promise.all([
+  const [norskeSpillere, turneringer] = await Promise.all([
     prisma.publicPlayer
       .findMany({
         where: { country: "NO", isActive: true, ...offentligSpillerFilter(), name: { contains: q, mode: "insensitive" } },
         take: 10,
         select: { slug: true, name: true, tier: true, bio: true },
-      })
-      .catch(() => []),
-    prisma.pgaPlayerSeason
-      .findMany({
-        where: { playerName: { contains: q, mode: "insensitive" }, year: 2026 },
-        take: 10,
-        orderBy: { sgTotal: "desc" },
-        select: { playerName: true, dgPlayerId: true, sgTotal: true },
       })
       .catch(() => []),
     prisma.tournament
@@ -50,7 +42,7 @@ async function serverSok(q: string): Promise<SokServerResultater | null> {
       .catch(() => []),
   ]);
 
-  return { norskeSpillere, pgaSpillere, turneringer };
+  return { norskeSpillere, pgaSpillere: [], turneringer };
 }
 
 export default async function SokPage({

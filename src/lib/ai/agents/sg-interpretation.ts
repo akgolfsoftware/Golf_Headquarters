@@ -12,6 +12,7 @@ import {
   hentMasterbrainKunnskap,
 } from "@/lib/masterbrain";
 import { prisma } from "@/lib/prisma";
+import { loadActiveAkSgModel } from "@/lib/ak-sg/active-model";
 import { pseudonymForId, substituerPseudonym } from "../anonymiser";
 
 /**
@@ -32,7 +33,7 @@ Du er SG Interpretation-agent for AK Golf HQ.
 Du tolker Strokes Gained-data og gir konkrete anbefalinger.
 
 For hver SG-kategori, vurder:
-- Verdi (mot PGA-benchmark = 0.0)
+- Verdi (mot AK Golf Baseline = 0.0)
 - Trend (OPP / FLAT / NED) basert på lineær regresjon over siste runder
 - En 1-setnings tolkning
 
@@ -88,9 +89,10 @@ export async function tolkSg(
     throw new Error(`Spiller ikke funnet: ${spillerId}`);
   }
 
-  // Hent siste 10 runder.
-  const runder = await prisma.round.findMany({
-    where: { userId: spillerId },
+  // Only the currently approved AK model may enter an interpretation prompt.
+  const model = await loadActiveAkSgModel().catch(() => null);
+  const runder = model ? await prisma.round.findMany({
+    where: { userId: spillerId, sgModelVersionId: model.versionId },
     orderBy: { playedAt: "desc" },
     take: 10,
     select: {
@@ -101,7 +103,7 @@ export async function tolkSg(
       sgPutt: true,
       sgTotal: true,
     },
-  });
+  }) : [];
 
   const perKategori = {
     ott: tolkKategori(runder, "sgOtt", "OTT"),
@@ -112,6 +114,18 @@ export async function tolkSg(
 
   const svakesteKategori = finnSvakeste(perKategori);
   const anbefalteDrills = await foreslaDrills(svakesteKategori);
+
+  if (runder.length === 0) {
+    return {
+      spillerId: spiller.id,
+      spillerNavn: spiller.name,
+      runderTatt: 0,
+      sammendrag: "Ingen runder med aktiv AK Golf SG-modell er registrert ennå.",
+      perKategori,
+      svakesteKategori: null,
+      anbefalteDrills: [],
+    };
+  }
 
   // Demo-fallback uten Claude.
   if (!isAiEnabled() || !anthropic) {
@@ -221,11 +235,9 @@ function byggKategoriTolkning(
   trend: SgTrend,
 ): string {
   let nivaa: string;
-  if (snitt > 0) nivaa = "over PGA-benchmark";
-  else if (snitt > -1) nivaa = "nær PGA-benchmark";
-  else if (snitt > -3) nivaa = "PRO-amatør-nivå";
-  else if (snitt > -5) nivaa = "A-amatør-nivå";
-  else nivaa = "B-amatør-nivå";
+  if (snitt > 0) nivaa = "over AK Golf-referansen";
+  else if (snitt === 0) nivaa = "på AK Golf-referansen";
+  else nivaa = "under AK Golf-referansen";
 
   const trendTekst =
     trend === "OPP"

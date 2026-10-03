@@ -9,6 +9,8 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -186,6 +188,7 @@ export default async function MetricDrillDownPage({
   const ninetyDaysAgo = new Date(naaMs - 90 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(naaMs - 30 * 24 * 60 * 60 * 1000);
   const sixtyDaysAgo = new Date(naaMs - 60 * 24 * 60 * 60 * 1000);
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // Hent data parallelt — felles oppslag
   const [drills, sessions, recentRounds] = await Promise.all([
@@ -236,6 +239,7 @@ export default async function MetricDrillDownPage({
           where: {
             userId: user.id,
             playedAt: { gte: ninetyDaysAgo },
+            ...synligSgWhere(activeModelVersionId),
           },
           select: {
             id: true,

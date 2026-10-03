@@ -198,13 +198,21 @@ const SG_PRINSIPPER: Fasitfil = {
   status: "FASIT",
   blokk: () =>
     [
-      "## Strokes Gained — bånd, konfidens og diagnostisk logikk",
+      "## Strokes Gained — kategorier og diagnostisk logikk",
       "",
-      "APP-bånd med baselines og konfidens:",
-      json(sgPrinciples.app_bands),
+      "Kategorier:",
+      json(Object.fromEntries(
+        Object.entries(sgPrinciples.categories as Record<string, Record<string, unknown>>).map(([key, value]) => [key, {
+          name_no: value.name_no,
+          shot_types: value.shot_types,
+        }]),
+      )),
       "",
-      "Diagnostisk logikk:",
-      json(sgPrinciples.diagnostic_logic),
+      "Diagnostiske prinsipper (uten eksterne referanseverdier):",
+      json(Object.fromEntries(
+        Object.entries(sgPrinciples.diagnostic_logic as Record<string, unknown>)
+          .filter(([key]) => key !== "data_source_hierarchy" && key !== "rough_adjustment"),
+      )),
       "",
       "SG → MORAD-feil (ENESTE gyldige kopi av denne koblingen):",
       json(sgPrinciples.sg_to_morad_faults),

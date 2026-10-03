@@ -1781,6 +1781,9 @@ model Round {
   courseId               String
   teeId                  String?
   sgReferenceSetId       String?
+  // Separate version ID from the isolated app_public model registry.
+  // Legacy/external SG rows remain null and are hidden from customer views.
+  sgModelVersionId       String?         @db.Uuid
   benchmarkLevelSnapshot String?
   playStatus             RoundPlayStatus @default(COMPLETED)
   startedAt              DateTime?

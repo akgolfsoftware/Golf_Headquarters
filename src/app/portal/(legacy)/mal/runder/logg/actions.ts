@@ -15,7 +15,7 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
-import { beregnSg, beregnShotSg } from "@/lib/domain/sg";
+import { beregnSg } from "@/lib/domain/sg";
 import { hentPublisertSgReferanse, SG_ENGINE_VERSION } from "@/lib/domain/sg-reference";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
@@ -117,7 +117,8 @@ export async function lagreLoggetRunde(
         sgPutt15_25: granulaer?.sgPutt15_25 ?? null,
         sgPutt25_40: granulaer?.sgPutt25_40 ?? null,
         sgPutt40plus: granulaer?.sgPutt40plus ?? null,
-        sgReferenceSetId: sg ? reference?.id : null,
+        sgReferenceSetId: null,
+        sgModelVersionId: sg ? reference?.id : null,
         benchmarkLevelSnapshot: sg ? reference?.levelCode : null,
         sgEngineVersion: sg ? SG_ENGINE_VERSION : null,
         sgSource,
@@ -132,24 +133,6 @@ export async function lagreLoggetRunde(
     await tx.shot.createMany({
       data: shots.map((rad) => ({ ...rad, roundId: opprettet.id })),
     });
-    if (sg && reference) {
-      const resultater = sgShots.map((shot, index) => {
-        const result = beregnShotSg(shot, reference.points);
-        if (!result) throw new Error("SG-grunnlaget endret seg under lagring");
-        return {
-          shotId: shots[index].id,
-          referenceSetId: reference.id,
-          engineVersion: SG_ENGINE_VERSION,
-          phase: result.phase,
-          expectedStart: result.expectedStart,
-          expectedEnd: result.expectedEnd,
-          penaltyStrokes: result.penaltyStrokes,
-          sgValue: result.sgValue,
-          inputQuality: runde.estimert ? "ESTIMATED" : "MANUAL_CHAIN",
-        };
-      });
-      await tx.shotSgResult.createMany({ data: resultater });
-    }
     if (putts.length > 0) {
       await tx.puttDetail.createMany({ data: putts });
     }

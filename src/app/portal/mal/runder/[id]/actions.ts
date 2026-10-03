@@ -7,8 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
 import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
 import { hentSgReferanseForRunde, SG_ENGINE_VERSION } from "@/lib/domain/sg-reference";
-import { beregnShotSg } from "@/lib/domain/sg";
-import { shotsTilSgShotsMedMeta } from "@/lib/runde-logg/shots-til-sg";
 import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
@@ -125,7 +123,10 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true, source: true, userId: true, sgReferenceSetId: true },
+      select: {
+        sgSource: true, source: true, userId: true,
+        sgReferenceSetId: true, sgModelVersionId: true,
+      },
     });
     if (!round) return;
     // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
@@ -154,7 +155,7 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
       }),
     ]);
 
-    const reference = await hentSgReferanseForRunde(round.sgReferenceSetId);
+    const reference = await hentSgReferanseForRunde(round.sgReferenceSetId, round.sgModelVersionId);
     const sg = reference ? beregnSgFraShots(shots, holeScores, reference.points) : null;
     const gran = sg && reference ? beregnGranulaerSgFraShots(shots, holeScores, reference.points) : null;
     const beslutning = avgjorSgSkriving(round.sgSource, sg, gran);
@@ -167,27 +168,17 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
     });
     const metadata = rundeRegistreringFelter(registrering);
 
-    const medMeta = sg ? shotsTilSgShotsMedMeta(shots, holeScores) : null;
-    const results = medMeta && reference ? medMeta.map((shot) => {
-      const dbShot = shots.find((s) => s.holeNumber === shot.holeNumber && s.shotNumber === shot.slagIndex + 1);
-      const value = beregnShotSg(shot, reference.points);
-      if (!dbShot || !value) throw new Error("SG-slag mangler ved omberegning");
-      return { shotId: dbShot.id, referenceSetId: reference.id, engineVersion: SG_ENGINE_VERSION,
-        phase: value.phase, expectedStart: value.expectedStart, expectedEnd: value.expectedEnd,
-        penaltyStrokes: value.penaltyStrokes, sgValue: value.sgValue, inputQuality: "MANUAL_CHAIN" };
-    }) : [];
     await prisma.$transaction(async (tx) => {
       await tx.round.update({
         where: { id: roundId },
         data: beslutning.handling === "skriv"
           ? { ...beslutning.felter, ...metadata,
-              sgReferenceSetId: sg ? reference?.id : null,
+              sgReferenceSetId: null,
+              sgModelVersionId: sg ? reference?.id : null,
               benchmarkLevelSnapshot: sg ? reference?.levelCode : null,
               sgEngineVersion: sg ? SG_ENGINE_VERSION : null }
           : metadata,
       });
-      await tx.shotSgResult.deleteMany({ where: { shot: { roundId } } });
-      if (results.length > 0) await tx.shotSgResult.createMany({ data: results });
     });
 
     // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —

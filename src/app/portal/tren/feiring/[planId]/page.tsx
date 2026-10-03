@@ -1,6 +1,8 @@
 /**
  * PlayerHQ · Plan-feiring (/portal/tren/feiring/[planId]) — Paper-port W1 (fase2).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-feiring.html.
+ * Avvik:
+ *   - Paper-fasiten er ikke portert til Train-lock-rigg; historisk SG uten modellversjon skjules.
  *
  * Ett formål: anerkjenne arbeidet med ekte tall og peke videre. Auth/eierskaps-
  * sjekk og best-effort computeEffectiveness er uendret. Fullført-guarden viser
@@ -143,25 +145,15 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     publisertAv = coach?.name ?? null;
   }
 
-  // Tidligere planer — rekord (SG-Total) + forrige plans etterlevelse.
+  // Tidligere planer — forrige plans etterlevelse.
   const tidligere = await prisma.planEffectiveness.findMany({
     where: { userId: plan.userId, planId: { not: planId } },
     orderBy: { computedAt: "desc" },
-    select: { sgTotalDelta: true, completionRate: true },
+    select: { completionRate: true },
     take: 20,
   });
   const forrigeEtterlevelse =
     tidligere.length > 0 ? Math.round(tidligere[0].completionRate * 100) : null;
-  const tidligereSgTotal = tidligere
-    .map((t) => t.sgTotalDelta)
-    .filter((v): v is number => v !== null);
-  const personligRekord =
-    tidligereSgTotal.length === 0 ? null : Math.max(...tidligereSgTotal);
-  const erRekord =
-    eff?.sgTotalDelta !== null &&
-    eff?.sgTotalDelta !== undefined &&
-    personligRekord !== null &&
-    eff.sgTotalDelta > personligRekord;
 
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
@@ -176,8 +168,8 @@ export default async function PlanFeiring({ params }: { params: Params }) {
           pyramideTopp,
           publisertAv,
           forrigeEtterlevelse,
-          erRekord,
-          sgTotalDelta: eff?.sgTotalDelta ?? null,
+          erRekord: false,
+          sgTotalDelta: null,
           ikkeFerdig: false,
         }}
       />

@@ -16,6 +16,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 
 const MAKS_RUNDER = 20;
 
@@ -82,8 +84,9 @@ export function beregnSgAggregat(runder: SgBroRunde[]): SgAggregat | null {
  */
 export async function synkroniserSgFraRunder(userId: string): Promise<void> {
   try {
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const runder = await prisma.round.findMany({
-      where: { userId, sgTotal: { not: null } },
+      where: { userId, sgTotal: { not: null }, ...synligSgWhere(activeModelVersionId) },
       orderBy: { playedAt: "desc" },
       take: MAKS_RUNDER,
       select: {

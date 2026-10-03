@@ -16,20 +16,12 @@ import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches
 import { runCalendarSync } from "@/lib/agents/calendar-sync";
 import { runTrainingGap } from "@/lib/agents/training-gap";
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
-import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
 import { runClubTrends } from "@/lib/sg-hub/club-trend-aggregator";
-import { runBenchmarkSync } from "@/lib/admin/benchmark-sync";
 import {
-  syncDataGolfSchedules,
-  syncNorwegianPlayers,
-  syncLiveLeaderboards,
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
 import { runDedupePlayerNames } from "@/lib/turneringer/dedupe-player-names";
-import { runNorgeMandagSync } from "@/lib/turneringer/norge-mandag-sync";
 import { prisma } from "@/lib/prisma";
-import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
-import { syncDatagolfTak } from "@/lib/datagolf/tak-sync";
 import {
   runMorgenbrief,
   runKveldsjournal,
@@ -81,24 +73,11 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "calendar-sync": runCalendarSync,
   "training-gap": runTrainingGap,
   "sg-insights": runSgInsights,
-  "datagolf-sync": syncDataGolf,
   "club-trends": runClubTrends,
-  // NGF-testfasiter — ukentlig DataGolf-drift (mandager 08:00 norsk tid)
-  "benchmark-sync": runBenchmarkSync,
-  // /turneringer-syncs
-  "turneringer-schedule": syncDataGolfSchedules,
-  "turneringer-players": syncNorwegianPlayers,
-  "turneringer-live": syncLiveLeaderboards,
+  // NGF-kilden kan fortsatt synkroniseres uten direkte DataGolf-tilgang.
   "turneringer-ngf": syncNgfSchedule,
   // Navnevask PublicPlayer — kun formateringsvarianter (apply). Middelnavn = manuell.
   "dedupe-player-names": () => runDedupePlayerNames(prisma, { apply: true }),
-  // Mandag: NOR-spillerliste + GolfBox-kalender + link + dedupe
-  "norge-mandag-sync": runNorgeMandagSync,
-  // /stats/pga sync (Fase 2 — ukentlig)
-  "pga-skill-ratings": syncPgaSkillRatings,
-  "pga-putt-distance": syncPgaPuttDistance,
-  "pga-approach": syncPgaApproach,
-  "datagolf-tak": syncDatagolfTak,
   // Meg-assistent proaktive briefer (Fase 6)
   "meg-morgenbrief": runMorgenbrief,
   "meg-kveldsjournal": runKveldsjournal,

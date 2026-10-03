@@ -40,8 +40,9 @@ describe("SG Interpretation — system-prompt", () => {
   });
 
   it("inneholder sg-interpretation skill-kunnskap", () => {
-    // SG-skill nevner PGA Top 40-benchmark.
-    assert.ok(SG_INTERPRETATION_SYSTEM.includes("PGA Tour Top 40"));
+    assert.ok(SG_INTERPRETATION_SYSTEM.includes("AK Golf Baseline"));
+    assert.ok(!SG_INTERPRETATION_SYSTEM.includes("PGA Tour Top 40"));
+    assert.ok(!SG_INTERPRETATION_SYSTEM.includes("DataGolf"));
   });
 });
 

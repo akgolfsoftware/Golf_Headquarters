@@ -1,6 +1,8 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import type { LPhase } from "@/generated/prisma/client";
 import type { WorkbenchData } from "./load-workbench";
 import type { WorkbenchInsights } from "./types";
@@ -33,6 +35,7 @@ export async function buildWorkbenchInsights(
   data: WorkbenchData,
 ): Promise<WorkbenchInsights> {
   const now = new Date();
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
@@ -43,7 +46,7 @@ export async function buildWorkbenchInsights(
     }),
     prisma.round.findMany({
       where: { userId, playedAt: { gte: tretti } },
-      select: { sgPutt: true },
+      select: { sgPutt: true, sgSource: true, sgModelVersionId: true },
       take: 20,
       orderBy: { playedAt: "desc" },
     }),
@@ -52,6 +55,7 @@ export async function buildWorkbenchInsights(
   const periodLabel = activeBlock ? PHASE_LABEL[activeBlock.lPhase] ?? null : null;
 
   const puttValues = weakestPutt
+    .filter((runde) => harVisbarSg(runde, activeModelVersionId))
     .map((r) => r.sgPutt)
     .filter((v): v is number => v !== null);
   const weaknessLine =

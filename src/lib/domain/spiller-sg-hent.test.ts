@@ -15,12 +15,15 @@ import assert from "node:assert/strict";
 
 import type { SgRad } from "./spiller-sg";
 
-const rad = (deler: Partial<SgRad>): SgRad => ({
+type StoredRad = SgRad & { sgSource: string | null; sgModelVersionId: string | null };
+const rad = (deler: Partial<StoredRad>): StoredRad => ({
   sgTotal: null,
   sgOtt: null,
   sgApp: null,
   sgArg: null,
   sgPutt: null,
+  sgSource: null,
+  sgModelVersionId: null,
   ...deler,
 });
 
@@ -31,8 +34,8 @@ const rad = (deler: Partial<SgRad>): SgRad => ({
  * lastet ES-modul, så all mock-tilstand er mutérbar og scenarioene kjører
  * sekvensielt i samme test.
  */
-test("hentSpillerSg — kilderegel, vindu og fallback", async (t) => {
-  let runder: SgRad[] = [];
+test("hentSpillerSg — bare versjonert eller manuelt SG vises", async (t) => {
+  let runder: StoredRad[] = [];
   let registreringer: SgRad[] = [];
   const kall: { rundeArgs?: Record<string, unknown>; inputKalt: boolean } = { inputKalt: false };
 
@@ -54,31 +57,32 @@ test("hentSpillerSg — kilderegel, vindu og fallback", async (t) => {
       },
     },
   });
+  t.mock.module("@/lib/ak-sg/active-model", {
+    namedExports: { getActiveAkSgVersionId: async () => "own-v1" },
+  });
 
   const { hentSpillerSg, SPILLER_SG_RUNDER } = await import("./spiller-sg");
 
   // 1) Runder med SG vinner over registreringer — og input-grenen røres ikke.
-  runder = [rad({ sgTotal: -0.4, sgPutt: -0.9 })];
+  runder = [rad({ sgTotal: -0.4, sgPutt: -0.9,
+    sgSource: "beregnet", sgModelVersionId: "own-v1" })];
   registreringer = [rad({ sgTotal: 2.5 })];
   const beregnet = await hentSpillerSg("u1");
   assert.ok(beregnet);
   assert.equal(beregnet.kilde, "BEREGNET");
   assert.equal(beregnet.total.sg, -0.4);
-  assert.equal(kall.inputKalt, false, "fallback skal ikke slå til når runder har SG");
+  assert.equal(kall.inputKalt, false);
 
   // Vinduet er de N nyeste rundene UANSETT SG (samme som Hjem/Analysere) —
   // ingen OR-filtrering på sg-feltene i spørringen.
   assert.deepEqual(kall.rundeArgs?.where, { userId: "u1" });
   assert.equal(kall.rundeArgs?.take, SPILLER_SG_RUNDER);
 
-  // 2) Runder finnes, men uten SG (hurtig score) → fallback til selvrapportert.
-  runder = [rad({}), rad({})];
+  // 2) Eldre beregnet SG og selvrapportering uten dokumentert modell skjules.
+  runder = [rad({ sgTotal: 2.1, sgSource: "beregnet" }), rad({})];
   registreringer = [rad({ sgApp: -1.0 })];
-  const selvrapportert = await hentSpillerSg("u1");
-  assert.ok(selvrapportert);
-  assert.equal(selvrapportert.kilde, "SELVRAPPORTERT");
-  assert.equal(selvrapportert.app.sg, -1.0);
-  assert.equal(kall.inputKalt, true);
+  assert.equal(await hentSpillerSg("u1"), null);
+  assert.equal(kall.inputKalt, false);
 
   // 3) Ingen data noe sted → null (aldri fabrikkerte nuller).
   runder = [];

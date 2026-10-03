@@ -18,6 +18,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentProfil } from "@/app/portal/meg/actions";
 import { getGoals } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegV2, type MegData } from "@/components/portal/v2/MegV2";
@@ -32,15 +34,16 @@ export default async function V2MegPreviewPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
-  const [profil, goals, agg, identitet, aktivEnrollment, abo, lydSjekk, talentRad] = await Promise.all([
+  const [profil, goals, agg, identitet, aktivEnrollment, abo, lydSjekk, talentRad, sgAgg] = await Promise.all([
     hentProfil(),
     getGoals(user.id, 3),
     prisma.round.aggregate({
       where: { userId: user.id },
       _count: { _all: true },
       _min: { score: true },
-      _avg: { score: true, sgTotal: true },
+      _avg: { score: true },
     }),
     prisma.user.findUnique({
       where: { id: user.id },
@@ -66,6 +69,10 @@ export default async function V2MegPreviewPage() {
     // Talentprofil-inngangen vises kun når featuren er på OG spilleren
     // faktisk har en TalentTracking-rad — aldri en lenke til en tom side.
     FEATURES.TALENT ? prisma.talentTracking.findUnique({ where: { userId: user.id }, select: { userId: true } }) : null,
+    prisma.round.aggregate({
+      where: { userId: user.id, ...synligSgWhere(activeModelVersionId) },
+      _avg: { sgTotal: true },
+    }),
   ]);
 
   const data: MegData = {
@@ -78,7 +85,7 @@ export default async function V2MegPreviewPage() {
       runder: agg._count._all,
       besteRunde: agg._min.score,
       snittScore: agg._avg.score,
-      sgSnitt: agg._avg.sgTotal,
+      sgSnitt: sgAgg._avg.sgTotal,
     },
     identitet: {
       school: identitet?.school ?? null,

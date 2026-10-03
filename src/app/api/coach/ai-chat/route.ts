@@ -10,6 +10,7 @@ import {
 } from "@/lib/anthropic";
 import { pseudonymForId } from "@/lib/ai/anonymiser";
 import { streamAnthropicTekst } from "@/lib/ai/client";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -92,11 +93,12 @@ export async function POST(req: Request) {
   // seg selv (streaming), og "spiller"-system-prompten instruerer aldri
   // modellen om å gjenta navnet i svaret — derfor trengs ingen reverse-
   // substitusjon her (se pseudonym.ts for mønsteret der det faktisk trengs).
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const systemPrompt = bygSystemPrompt({
     user: { ...user, name: pseudonymForId(user.id) },
     aktivePlaner,
     sisteRunder,
-  });
+  }, activeModelVersionId);
 
   // Finn eller opprett session
   let sessionId = body.sessionId;

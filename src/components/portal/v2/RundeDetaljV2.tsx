@@ -66,6 +66,8 @@ export type RundeDetaljData = {
   par: number;
   antallSpilteHull: number;
   sgTotal: number | null;
+  /** Audit reference for SG produced by the active AK Golf baseline. */
+  sgModelVersionId?: string | null;
   /** Kun kategorier med registrert SG (null-verdier er filtrert bort på serveren). */
   sgKategorier: SgKategori[];
   /** "beregnet" = fra slag-kjeden, "manual" = håndtastet, "estimert" = fra score. */
@@ -224,7 +226,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
               ? "SG-tallene dine er lagret. Du kan legge til eller endre tallene under."
               : data.sgTotal != null
                 ? "Strokes Gained er klar — se tallene under."
-              : "Mangler hull-score for full Strokes Gained. Neste steg står rett under."}
+              : "SG vises når slagene er komplette og AK Golf Baseline er klar."}
           </p>
         </Kort>
       )}
@@ -266,7 +268,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
       )}
       {data.sgKategorier.length > 0 ? (
         <SgKategorier kategorier={data.sgKategorier} hjelp="sgOmrade" desimaler={2}
-          baseline={data.sgSource === RUNDE_SG_KILDE.MANUAL ? "din referanse" : undefined} />
+          baseline={data.sgSource === RUNDE_SG_KILDE.MANUAL ? "din referanse" : "AK Golf Baseline"} />
       ) : (
         <Kort eyebrow="SG per kategori">
           <TomTilstand icon="trending-up" title="Ingen hovedkategorier registrert"

@@ -13,6 +13,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { synligSgWhere } from "@/lib/ak-sg/visibility";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import { TalentFaner } from "@/components/portal/v2/TalentFaner";
@@ -117,17 +119,18 @@ export default async function SammenligningPage({
   const dager = periodeValgt === "1ar" ? 365 : periodeValgt === "90d" ? 90 : 30;
   const periodeStart = new Date();
   periodeStart.setDate(periodeStart.getDate() - dager);
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // SG siste runder i perioden vs runder før perioden
   const [nyeRunder, gamleRunder] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: user.id, playedAt: { gte: periodeStart } },
+      where: { userId: user.id, playedAt: { gte: periodeStart }, ...synligSgWhere(activeModelVersionId) },
       orderBy: { playedAt: "desc" },
       take: 5,
       select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true, playedAt: true },
     }),
     prisma.round.findMany({
-      where: { userId: user.id, playedAt: { lt: periodeStart } },
+      where: { userId: user.id, playedAt: { lt: periodeStart }, ...synligSgWhere(activeModelVersionId) },
       orderBy: { playedAt: "desc" },
       take: 5,
       select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },

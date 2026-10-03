@@ -70,16 +70,8 @@
       "schedule": "0 4 * * *"
     },
     {
-      "path": "/api/cron/datagolf-sync",
-      "schedule": "0 5 * * 1"
-    },
-    {
       "path": "/api/cron/club-trends",
       "schedule": "0 3 * * 1"
-    },
-    {
-      "path": "/api/cron/benchmark-sync",
-      "schedule": "0 6 * * 1"
     },
     {
       "path": "/api/cron/check-stuck-bookings",
@@ -102,18 +94,6 @@
       "schedule": "30 4 * * 1"
     },
     {
-      "path": "/api/cron/turneringer-schedule",
-      "schedule": "0 4 * * *"
-    },
-    {
-      "path": "/api/cron/turneringer-players",
-      "schedule": "0 5 * * 1"
-    },
-    {
-      "path": "/api/cron/turneringer-live",
-      "schedule": "*/10 * * * *"
-    },
-    {
       "path": "/api/cron/turneringer-ngf",
       "schedule": "30 4 * * *"
     },
@@ -126,28 +106,8 @@
       "schedule": "0 5 * * 0"
     },
     {
-      "path": "/api/cron/norge-mandag-sync",
-      "schedule": "0 6 * * 1"
-    },
-    {
       "path": "/api/cron/notion-sync",
       "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/pga-skill-ratings",
-      "schedule": "0 6 * * 1"
-    },
-    {
-      "path": "/api/cron/pga-putt-distance",
-      "schedule": "0 7 * * 1"
-    },
-    {
-      "path": "/api/cron/pga-approach",
-      "schedule": "30 7 * * 1"
-    },
-    {
-      "path": "/api/cron/datagolf-tak",
-      "schedule": "0 8 * * 1"
     },
     {
       "path": "/api/cron/meg-morgenbrief",

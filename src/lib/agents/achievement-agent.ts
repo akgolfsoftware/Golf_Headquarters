@@ -2,6 +2,8 @@
 // Trigges fra round-agent og test-agent.
 
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 
@@ -14,6 +16,7 @@ type Milepæl = {
 
 export async function runAchievementAgent(userId: string): Promise<AgentResult> {
   return runAgent(AGENT_NAME, userId, async () => {
+    const activeModelVersionId = await getActiveAkSgVersionId();
     const eksisterende = await prisma.achievement.findMany({
       where: { userId },
       select: { kind: true },
@@ -21,7 +24,9 @@ export async function runAchievementAgent(userId: string): Promise<AgentResult> 
     const eksisterendeKinds = new Set(eksisterende.map((a) => a.kind));
 
     const [runder, tester, sessionLogs] = await Promise.all([
-      prisma.round.findMany({ where: { userId }, select: { id: true, sgTotal: true, playedAt: true } }),
+      prisma.round.findMany({ where: { userId }, select: {
+        id: true, sgTotal: true, playedAt: true, sgSource: true, sgModelVersionId: true,
+      } }),
       prisma.testResult.findMany({ where: { userId }, select: { id: true } }),
       prisma.trainingPlanSessionLog.findMany({
         where: { session: { plan: { userId } } },
@@ -37,7 +42,7 @@ export async function runAchievementAgent(userId: string): Promise<AgentResult> 
     // SG-positive 30d
     const tretti = new Date();
     tretti.setDate(tretti.getDate() - 30);
-    const sg30 = runder.filter((r) => r.playedAt >= tretti && r.sgTotal != null);
+    const sg30 = runder.filter((r) => r.playedAt >= tretti && harVisbarSg(r, activeModelVersionId) && r.sgTotal != null);
     if (sg30.length >= 3) {
       const snitt = sg30.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / sg30.length;
       if (snitt > 0) milepaeler.push({ kind: "SG_POSITIVE_30D", payload: { snitt } });

@@ -13,6 +13,8 @@
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { hentSisteDeling } from "@/lib/admin/ukesrapport-deling";
 import {
@@ -90,6 +92,7 @@ export async function hentUkesdigest(
      Uten deling faller vi tilbake på inneværende uke — det er rammen den
      tomme tilstanden skal vise. */
   const deling = await hentSisteDeling(userId, now);
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const ukeStart = deling?.ukeStart ?? startOfWeek(now);
   /* endOfWeek gir MANDAG NESTE UKE kl. 00:00 — en eksklusiv øvre grense.
      Spørringene bruker den derfor med `lt`, aldri `lte`, ellers drar de med
@@ -105,7 +108,7 @@ export async function hentUkesdigest(
     loadVisibleSessionRange(userId, nesteStart.toISOString(), nesteSlutt.toISOString()),
     prisma.round.findMany({
       where: { userId, playedAt: { gte: femRunderSiden } },
-      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true, sgSource: true, sgModelVersionId: true },
       orderBy: { playedAt: "desc" },
       take: 5,
     }),
@@ -127,6 +130,8 @@ export async function hentUkesdigest(
     }),
     hentEtterlevelse(userId, now),
   ]);
+
+  const visbareRunder = runder.filter((runde) => harVisbarSg(runde, activeModelVersionId));
 
   /* Coachnavnet slås opp separat fordi delingstabellen er bevisst uten
      @relation (additiv, jf. gotchas §Schema-endringer). */
@@ -167,10 +172,10 @@ export async function hentUkesdigest(
   };
 
   const sgKilder: { navn: string; verdier: (number | null)[] }[] = [
-    { navn: "Putt", verdier: runder.map((r) => r.sgPutt) },
-    { navn: "Tee", verdier: runder.map((r) => r.sgOtt) },
-    { navn: "Nærspill", verdier: runder.map((r) => r.sgArg) },
-    { navn: "Innspill", verdier: runder.map((r) => r.sgApp) },
+    { navn: "Putt", verdier: visbareRunder.map((r) => r.sgPutt) },
+    { navn: "Tee", verdier: visbareRunder.map((r) => r.sgOtt) },
+    { navn: "Nærspill", verdier: visbareRunder.map((r) => r.sgArg) },
+    { navn: "Innspill", verdier: visbareRunder.map((r) => r.sgApp) },
   ];
 
   const sg: DigestSg[] = sgKilder.flatMap(({ navn, verdier }) => {

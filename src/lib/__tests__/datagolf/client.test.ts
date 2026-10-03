@@ -1,65 +1,15 @@
-// Tester for DataGolf-klienten. Mocker global fetch (node:test sitt
-// t.mock.method) — ingen ekte nettkall.
-//
-// Bakgrunn (24.08.2026): getSchedule() sendte tidligere ingen `season`-
-// parameter. DataGolf svarer da med en default/stale sesong der so godt som
-// alt er "completed" — fremtidige turneringer i /portal/tren/turneringer
-// forsvant stille. Verifisert manuelt mot ekte API: samme spørring med
-// season=<inneværende år> inkluderer "upcoming"-events resten av året.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { getSchedule, getSkillRatings } from "@/lib/datagolf/client";
 
-test("getSchedule", async (t) => {
-  const originalKey = process.env.DATAGOLF_API_KEY;
-  process.env.DATAGOLF_API_KEY = "test-key";
-  t.after(() => {
-    if (originalKey === undefined) delete process.env.DATAGOLF_API_KEY;
-    else process.env.DATAGOLF_API_KEY = originalKey;
+test("HQ kan ikke gjøre direkte DataGolf-oppslag", async (t) => {
+  let calls = 0;
+  t.mock.method(globalThis, "fetch", async () => {
+    calls++;
+    throw new Error("Nettkall skulle ikke skjedd");
   });
-
-  await t.test("sender med season=inneværende år som default", async (t) => {
-    let calledUrl = "";
-    t.mock.method(globalThis, "fetch", async (url: string) => {
-      calledUrl = url;
-      return new Response(JSON.stringify({ schedule: [] }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    });
-
-    await getSchedule("pga");
-    const expectedYear = new Date().getFullYear();
-    assert.match(calledUrl, new RegExp(`season=${expectedYear}(&|$)`));
-  });
-
-  await t.test("respekterer eksplisitt season-argument", async (t) => {
-    let calledUrl = "";
-    t.mock.method(globalThis, "fetch", async (url: string) => {
-      calledUrl = url;
-      return new Response(JSON.stringify({ schedule: [] }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    });
-
-    await getSchedule("euro", 2027);
-    assert.match(calledUrl, /season=2027(&|$)/);
-  });
-  await t.test("skill-ratings henter ett globalt sett og lekker ikke feilsvar", async (t) => {
-    let calledUrl = "";
-    t.mock.method(globalThis, "fetch", async (url: string) => {
-      calledUrl = url;
-      return new Response(JSON.stringify({ players: [] }), { status: 200 });
-    });
-    await getSkillRatings("kft");
-    assert.equal(new URL(calledUrl).searchParams.has("tour"), false);
-    t.mock.method(globalThis, "fetch", async () => new Response("sensitive-api-body", { status: 403 }));
-    await assert.rejects(() => getSkillRatings(), error => {
-      assert.ok(error instanceof Error);
-      assert.match(error.message, /403/);
-      assert.doesNotMatch(error.message, /sensitive-api-body|test-key/);
-      return true;
-    });
-  });
+  await assert.rejects(() => getSchedule("pga"), /sperret/);
+  await assert.rejects(() => getSchedule("euro", 2027), /sperret/);
+  await assert.rejects(() => getSkillRatings("kft"), /sperret/);
+  assert.equal(calls, 0);
 });

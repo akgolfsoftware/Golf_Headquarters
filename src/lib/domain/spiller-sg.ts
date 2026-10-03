@@ -11,9 +11,8 @@
  *   1. BEREGNET — snitt per kategori over siste SPILLER_SG_RUNDER runder med
  *      SG-tall (Round.sg*; sgSource "manual" er også fasit — manuelt satte
  *      rundetall overskrives aldri av beregning, jf. recomputeRoundSg).
- *   2. SELVRAPPORTERT — BrukerSgInput brukes KUN når ingen runder med SG
- *      finnes (typisk onboarding/import før første førte runde).
- *   3. null når ingen av delene finnes.
+ *   2. Uversjonerte runder og eldre BrukerSgInput vises ikke i PlayerHQ.
+ *   3. null når ingen godkjent runde finnes.
  *
  * Kilden følger alltid med i resultatet slik at UI kan merke tillitsnivået
  * (NORDSTJERNE: TrackMan-verifisert / GPS-beregnet / selvrapportert er ulike
@@ -21,6 +20,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 
 /**
  * Vindu: de N nyeste rundene — UANSETT om de har SG-tall. Snittet regnes over
@@ -136,27 +137,28 @@ export function byggSpillerSgFraInput(registreringer: SgRad[]): SpillerSg | null
 
 /** Kanonisk oppslag — bruk denne, ikke egne prioriteringer per skjerm. */
 export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
+  const activeModelVersionId = await getActiveAkSgVersionId();
   // Ingen OR-filter på sg-feltene her — se SPILLER_SG_RUNDER: vinduet skal
   // være de N nyeste rundene, samme som Hjem/Analysere. byggSpillerSgFraRunder
-  // filtrerer bort de uten tall når snittet regnes.
+  // filtrerer bort de uten tall når snittet regnes. Uversjonerte beregninger
+  // filtreres eksplisitt før aggregatet.
   const runder = await prisma.round.findMany({
     where: { userId },
     orderBy: { playedAt: "desc" },
     take: SPILLER_SG_RUNDER,
-    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true,
+      sgSource: true, sgModelVersionId: true },
   });
 
-  const fraRunder = byggSpillerSgFraRunder(runder);
+  const fraRunder = byggSpillerSgFraRunder(runder.filter((runde) => harVisbarSg(runde, activeModelVersionId)));
   if (fraRunder) return fraRunder;
 
-  return hentSelvrapportertSg(userId);
+  return null;
 }
 
 /**
- * Fallback-grenen alene — for kallere som allerede har rundene sine i minnet
- * (f.eks. load-min-golf.ts, som spør Round i en Promise.all) og derfor kan
- * kjøre `byggSpillerSgFraRunder` selv uten et ekstra prisma-kall. Kalles kun
- * når den grenen ga null, akkurat som i `hentSpillerSg`.
+ * Historisk selvrapportert oppslag. Ikke koblet til kundevisning før kilden
+ * kan verifiseres uavhengig av eldre DataGolf-sammenligninger.
  */
 export async function hentSelvrapportertSg(userId: string): Promise<SpillerSg | null> {
   const registreringer = await prisma.brukerSgInput.findMany({

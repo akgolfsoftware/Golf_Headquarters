@@ -8,6 +8,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import type {
   PyramidArea,
   ShotLie,
@@ -289,6 +291,7 @@ export async function getRoundStats(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<RoundStats> {
   await assertCanViewPlayerData(userId);
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const from = startOfPeriod(period);
 
   const roundsRaw = await prisma.round.findMany({
@@ -314,7 +317,7 @@ export async function getRoundStats(
     courseName: r.course?.name ?? "Ukjent bane",
     score: r.score,
     par: r.course?.par ?? 72,
-    sgTotal: r.sgTotal,
+    sgTotal: harVisbarSg(r, activeModelVersionId) ? r.sgTotal : null,
     shots: r._count.shots,
   }));
 
@@ -328,6 +331,7 @@ export async function getRoundStats(
 
 export async function getRoundDetail(userId: string, roundId: string): Promise<RoundDetail | null> {
   await assertCanViewPlayerData(userId);
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const round = await prisma.round.findFirst({
     where: { id: roundId, userId },
     include: {
@@ -345,7 +349,7 @@ export async function getRoundDetail(userId: string, roundId: string): Promise<R
     courseName: round.course?.name ?? "Ukjent bane",
     score: round.score,
     par: round.course?.par ?? 72,
-    sgTotal: round.sgTotal,
+    sgTotal: harVisbarSg(round, activeModelVersionId) ? round.sgTotal : null,
     shotCount: round.shots.length,
     holeScores: round.holeScores.map((h) => ({
       holeNumber: h.holeNumber,
@@ -593,12 +597,15 @@ export async function getGoals(userId: string): Promise<GoalListItem[]> {
 // ── SG breakdown ─────────────────────────────────────────────────────────────
 
 async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
+  const activeModelVersionId = await getActiveAkSgVersionId();
   const recent = await prisma.round.findMany({
     where: { userId },
     orderBy: { playedAt: "desc" },
     take: 10,
-    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true,
+      sgSource: true, sgModelVersionId: true },
   });
+  const visible = recent.filter((round) => harVisbarSg(round, activeModelVersionId));
 
   function avgOf(vals: (number | null)[]): number | null {
     const filtered = vals.filter((v): v is number => v != null);
@@ -607,12 +614,12 @@ async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
   }
 
   return {
-    roundCount: recent.length,
-    sgTotal: avgOf(recent.map((r) => r.sgTotal)),
-    sgOtt: avgOf(recent.map((r) => r.sgOtt)),
-    sgApp: avgOf(recent.map((r) => r.sgApp)),
-    sgArg: avgOf(recent.map((r) => r.sgArg)),
-    sgPutt: avgOf(recent.map((r) => r.sgPutt)),
+    roundCount: visible.length,
+    sgTotal: avgOf(visible.map((r) => r.sgTotal)),
+    sgOtt: avgOf(visible.map((r) => r.sgOtt)),
+    sgApp: avgOf(visible.map((r) => r.sgApp)),
+    sgArg: avgOf(visible.map((r) => r.sgArg)),
+    sgPutt: avgOf(visible.map((r) => r.sgPutt)),
   };
 }
 

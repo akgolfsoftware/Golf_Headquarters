@@ -70,6 +70,13 @@ test("sg-diagnose bærer med seg hypotese-regelen", () => {
   assert.match(tekst, /video/i);
 });
 
+test("sg-diagnose-kunnskap sender ikke tredjepartsbaselines eller tour-kilder til AI", () => {
+  const tekst = hentMasterbrainKunnskap("sg-diagnose").blokker.join("\n");
+  assert.doesNotMatch(tekst, /app_bands|DataGolf live|MasterBrain Broadie|rough_adjustment/i);
+  assert.doesNotMatch(tekst, /3\.50|3\.20|3\.95/);
+  assert.match(tekst, /Kategorier:/);
+});
+
 test("periodisering inkluderer oversettelsestabellen for periodenavn", () => {
   const k = hentMasterbrainKunnskap("periodisering");
   const tekst = k.blokker.join("\n");

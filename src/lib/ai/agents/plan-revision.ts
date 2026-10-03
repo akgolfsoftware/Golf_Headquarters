@@ -12,6 +12,8 @@ import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "../client";
 import { pyramideSkill, bompaSkill } from "../skills";
 import { prisma } from "@/lib/prisma";
+import { harVisbarSg } from "@/lib/ak-sg/visibility";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseLeave } from "@/lib/health/leave-innsyn";
 
@@ -158,6 +160,7 @@ async function samleKontekst(
   trigger: PlanRevisionTrigger,
 ): Promise<PlanKontekst> {
   const now = new Date();
+  const activeModelVersionId = await getActiveAkSgVersionId();
 
   // Siste runde
   const sisteRunde =
@@ -172,6 +175,8 @@ async function samleKontekst(
             sgApp: true,
             sgArg: true,
             sgPutt: true,
+            sgSource: true,
+            sgModelVersionId: true,
             playedAt: true,
           },
         })
@@ -237,10 +242,12 @@ async function samleKontekst(
 
   return {
     sisteRunde: sisteRunde
-      ? {
-          ...sisteRunde,
-          playedAt: sisteRunde.playedAt,
-        }
+      ? harVisbarSg(sisteRunde, activeModelVersionId)
+        ? sisteRunde
+        : {
+            ...sisteRunde, sgTotal: null, sgOtt: null, sgApp: null,
+            sgArg: null, sgPutt: null,
+          }
       : null,
     aktivSkade: aktivSkade
       ? {

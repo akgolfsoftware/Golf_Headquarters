@@ -6,6 +6,8 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getActiveAkSgVersionId } from "@/lib/ak-sg/active-model";
+import { harVisbarSg, synligSgWhere } from "@/lib/ak-sg/visibility";
 import { toolError } from "../types";
 
 // Periode-helper: regner ut "siden"-dato fra periode-string.
@@ -182,6 +184,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
       try {
         if (!(await hasPlayer(playerId))) return denied();
         const since = periodToSince(period);
+        const activeModelVersionId = await getActiveAkSgVersionId();
         const [rounds, testCount, sessionCount, sgAgg] = await Promise.all([
           prisma.round.findMany({
             where: { userId: playerId, user: scope, playedAt: { gte: since } },
@@ -194,6 +197,8 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
               sgApp: true,
               sgArg: true,
               sgPutt: true,
+              sgSource: true,
+              sgModelVersionId: true,
             },
             orderBy: { playedAt: "desc" },
           }),
@@ -208,7 +213,10 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
             },
           }),
           prisma.round.aggregate({
-            where: { userId: playerId, user: scope, playedAt: { gte: since } },
+            where: {
+              userId: playerId, user: scope, playedAt: { gte: since },
+              ...synligSgWhere(activeModelVersionId),
+            },
             _avg: {
               sgTotal: true,
               sgOtt: true,
@@ -227,8 +235,16 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
             roundCount: rounds.length,
             testCount,
             completedSessionCount: sessionCount,
-            averages: sgAgg._avg,
-            recentRounds: rounds.slice(0, 10),
+            averages: {
+              ...sgAgg._avg,
+              score: rounds.length > 0
+                ? rounds.reduce((sum, round) => sum + round.score, 0) / rounds.length
+                : null,
+            },
+            recentRounds: rounds.slice(0, 10).map((round) => harVisbarSg(round, activeModelVersionId) ? round : {
+              ...round, sgTotal: null, sgOtt: null, sgApp: null,
+              sgArg: null, sgPutt: null,
+            }),
           },
         };
       } catch {
@@ -339,6 +355,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ roundId }) => {
       try {
+        const activeModelVersionId = await getActiveAkSgVersionId();
         const round = await prisma.round.findFirst({
           where: { id: roundId, user: scope },
           select: {
@@ -367,6 +384,8 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
             sgPutt15_25: true,
             sgPutt25_40: true,
             sgPutt40plus: true,
+            sgSource: true,
+            sgModelVersionId: true,
             user: { select: { id: true, name: true } },
             course: { select: { id: true, name: true, par: true, rating: true, slope: true } },
           },
@@ -376,6 +395,17 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
             "Runden er ikke tilgjengelig",
             "Fant ingen runde med denne IDen.",
           );
+        }
+        if (!harVisbarSg(round, activeModelVersionId)) {
+          const skjult = { ...round };
+          for (const felt of [
+            "sgTotal", "sgOtt", "sgApp", "sgArg", "sgPutt", "sgTee",
+            "sgApp200", "sgApp150", "sgApp100", "sgApp50", "sgChip",
+            "sgPitch", "sgLob", "sgBunker", "sgPutt0_3", "sgPutt3_5",
+            "sgPutt5_10", "sgPutt10_15", "sgPutt15_25", "sgPutt25_40",
+            "sgPutt40plus",
+          ] as const) skjult[felt] = null;
+          return { ok: true as const, data: skjult };
         }
         return { ok: true as const, data: round };
       } catch {
