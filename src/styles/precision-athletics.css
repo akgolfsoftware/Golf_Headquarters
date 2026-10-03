@@ -847,7 +847,7 @@ button.ph-kal-celle{cursor:pointer}
 .au-kicker{margin:0;color:var(--text-muted);font:var(--type-meta);letter-spacing:.08em;text-transform:uppercase}
 .au-boks h1{margin:0;font:600 26px/1.2 var(--font-sans);color:var(--text-primary);text-wrap:balance}
 .au-boks header p,.au-boks > p,.au-skjema > p{margin:0;color:var(--text-secondary);font:var(--type-body)}
-.au-boks a:not(.pa-btn){color:var(--link)}
+.au-boks a:not(.pa-btn):not(.au-logo){color:var(--link)}
 .au-skjema{display:flex;flex-direction:column;gap:12px}
 .au-skjema label{display:flex;flex-direction:column;gap:6px;color:var(--text-secondary);font:var(--type-label)}
 .au-skjema input,.au-kode input{width:100%;min-height:48px;padding:8px 12px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);font:var(--type-body)}

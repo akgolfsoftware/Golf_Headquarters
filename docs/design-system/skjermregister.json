@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "49f992c25243585931840abb38edfc68626b05b7",
+  "kodeversjon": "1f7489e97a318ebce7c48513d301c2e0ec850ffe",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -11080,7 +11080,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Utlogget flate merker AU01LoggetUt i Precision. Samme lenker og tømming av hurtigbuffer. Kilde: ui_kits/konto/screens/AU-01-03.jsx. 390×844 og 1440×880 er ikke målt i innlogget app.",
+      "kontrollbevis": "Utlogget flate merker AU01LoggetUt i Precision. Samme lenker og tømming av hurtigbuffer. Kilde: ui_kits/konto/screens/AU-01-03.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Vercel-preview er bak SSO. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -11125,7 +11125,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Innlogging merker AU01Innlogging i Precision. Magisk lenke, kode, passord og Google er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU01. 390×844 og 1440×880 er ikke målt i innlogget app.",
+      "kontrollbevis": "Innlogging merker AU01Innlogging i Precision. Magisk lenke, kode, passord og Google er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU01. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Vercel-preview er bak SSO. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
