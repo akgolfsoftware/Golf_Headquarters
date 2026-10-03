@@ -96,7 +96,16 @@ export async function getGameplanCourses(userId: string): Promise<GameplanCourse
       return FALLBACK_COURSES;
     }
 
-    const items: GameplanCourseItem[] = baner.map((b) => {
+    // Filtrer primært på baner med kartlagt geometri eller spilte runder
+    const relevanteBaner = baner.filter((b) => {
+      const hasMapped = b.holes.length > 0;
+      const roundCount = b.courseDefinitions.reduce((acc, c) => acc + c.rounds.length, 0);
+      return hasMapped || roundCount > 0;
+    });
+
+    const banerÅVise = relevanteBaner.length > 0 ? relevanteBaner : baner.slice(0, 6);
+
+    const items: GameplanCourseItem[] = banerÅVise.map((b) => {
       const allRounds = b.courseDefinitions.flatMap((c) => c.rounds);
       const played = allRounds.length;
       const validScores = allRounds
@@ -129,7 +138,12 @@ export async function getGameplanCourses(userId: string): Promise<GameplanCourse
       };
     });
 
-    return items;
+    // Sorter slik at baner med 'Gameplan klar' eller spilte runder kommer først
+    return items.sort((a, b) => {
+      if (a.plan === "Gameplan klar" && b.plan !== "Gameplan klar") return -1;
+      if (b.plan === "Gameplan klar" && a.plan !== "Gameplan klar") return 1;
+      return b.played - a.played;
+    });
   } catch (err) {
     console.error("[getGameplanCourses] Feil ved henting av baner fra database:", err);
     return FALLBACK_COURSES;
