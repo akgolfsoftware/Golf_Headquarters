@@ -293,20 +293,12 @@ export function PH20Gameplan({
       {toastMessage && (
         <div
           role="status"
+          className="pa-toast"
           style={{
             position: "fixed",
             bottom: 24,
             right: 24,
-            background: "var(--graphite-800)",
-            color: "var(--sand-100)",
-            padding: "12px 18px",
-            borderRadius: 8,
-            font: "500 14px var(--font-sans)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.2)",
             zIndex: 100,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
           }}
         >
           <Check size={16} />
