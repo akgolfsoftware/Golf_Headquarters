@@ -141,7 +141,7 @@ export default async function GjennomforTestPage({
         testId={test.id}
         sessionId={gjenopptak?.sessionId ?? null}
         gjenopptattForsok={gjenopptak ? gateGjenopptakFraVerdier(gjenopptak.verdier, shots) : null}
-        caption={`TEST · ${test.name.toUpperCase()}`}
+        testNavn={test.name}
         shots={shots}
         hasMissSide={harMissSideFelt(test.protocol)}
         maal={gateMaalFraProtokoll(test.protocol)}
@@ -162,7 +162,7 @@ export default async function GjennomforTestPage({
             ? peiGjenopptakFraVerdier(gjenopptak.verdier, shots, malAvstandNokkel, tillMalNokkel)
             : null
         }
-        caption={`TEST · ${test.name.toUpperCase()} · ${shots} SLAG`}
+        testNavn={test.name}
         shots={shots}
         malAvstandNokkel={malAvstandNokkel}
         tillMalNokkel={tillMalNokkel}
