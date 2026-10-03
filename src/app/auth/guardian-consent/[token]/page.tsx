@@ -5,17 +5,15 @@
  * Forelder mottar e-post med signing-link, klikker → kommer hit.
  * Bekrefter samtykke → spiller-konto aktiveres + ParentRelation opprettes.
  *
- * v2-redesign (2026-07-10): rendrer <GuardianConsentV2> (retning C «Presis»)
- * — se src/components/portal/v2/GuardianConsentV2.tsx. Token-oppslaget
- * (utløpt/allerede-akseptert/gyldig) SKJER FORTSATT her på server-siden;
- * resultatet styrer hvilken `state` som sendes til komponenten. Gamle
- * guardian-consent-form.tsx står urørt som fallback.
+ * Rendrer <GuardianConsentPrecision> (Precision Athletics, AU-05). Token-oppslaget
+ * (utløpt/allerede-akseptert/gyldig) skjer fortsatt her på serversiden og styrer `state`.
+ * Gamle GuardianConsentV2 står urørt.
  */
 
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { calculateAge } from "@/lib/auth/minor";
-import { GuardianConsentV2 } from "@/components/portal/v2/GuardianConsentV2";
+import { GuardianConsentPrecision } from "@/components/auth/precision/AuSamtykke";
 
 type Props = {
   params: Promise<{ token: string }>;
@@ -54,7 +52,7 @@ export default async function GuardianConsentPage({ params }: Props) {
 
   if (expired) {
     return (
-      <GuardianConsentV2
+      <GuardianConsentPrecision
         state="expired"
         playerName={invitation.player.name}
         playerAge={playerAge}
@@ -65,7 +63,7 @@ export default async function GuardianConsentPage({ params }: Props) {
 
   if (alreadyAccepted && alreadyConsented) {
     return (
-      <GuardianConsentV2
+      <GuardianConsentPrecision
         state="success"
         playerName={invitation.player.name}
         playerAge={playerAge}
@@ -74,7 +72,7 @@ export default async function GuardianConsentPage({ params }: Props) {
   }
 
   return (
-    <GuardianConsentV2
+    <GuardianConsentPrecision
       state="form"
       token={token}
       playerName={invitation.player.name}

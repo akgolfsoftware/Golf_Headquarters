@@ -11,30 +11,13 @@ import {
   erLydSamtykkeTokenGyldig,
   hashLydSamtykkeToken,
 } from "@/lib/recording/lyd-samtykke-token";
-import { LydSamtykkeForm } from "./lyd-samtykke-form";
+import { LydSamtykkePrecision, LydSamtykkeStatusVisning } from "@/components/auth/precision/AuSamtykke";
 
 type Props = {
   params: Promise<{ token: string }>;
 };
 
 export const dynamic = "force-dynamic";
-
-function StatusBoks({
-  tittel,
-  tekst,
-}: {
-  tittel: string;
-  tekst: string;
-}) {
-  return (
-    <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">{tittel}</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        {tekst}
-      </p>
-    </div>
-  );
-}
 
 async function finnRad(rawToken: string) {
   const tokenHash = hashLydSamtykkeToken(rawToken);
@@ -55,10 +38,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
 
   if (!rad) {
     return (
-      <StatusBoks
-        tittel="Lenken virker ikke"
-        tekst="Lenken er ugyldig eller allerede brukt. Be treneren sende ny e-post hvis du fortsatt skal gi samtykke."
-      />
+      <LydSamtykkeStatusVisning status="ugyldig" />
     );
   }
 
@@ -70,10 +50,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
 
   if (rad.status === "GITT") {
     return (
-      <StatusBoks
-        tittel="Allerede registrert"
-        tekst={`Samtykke for ${spillerNavn} er allerede gitt. Du trenger ikke gjøre noe mer.`}
-      />
+      <LydSamtykkeStatusVisning status="gitt" spillerNavn={spillerNavn} />
     );
   }
 
@@ -86,15 +63,12 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
     })
   ) {
     return (
-      <StatusBoks
-        tittel="Lenken er utløpt"
-        tekst="Be treneren sende en ny e-post med fersk lenke."
-      />
+      <LydSamtykkeStatusVisning status="utlopt" />
     );
   }
 
   return (
-    <LydSamtykkeForm
+    <LydSamtykkePrecision
       token={token}
       spillerNavn={spillerNavn}
       ordlyd={rad.ordlyd}
