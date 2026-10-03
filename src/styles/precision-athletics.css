@@ -724,3 +724,11 @@ button.ph-kal-celle{cursor:pointer}
 .ph-kal-kpi{grid-template-columns:repeat(4,minmax(0,1fr))}
 .ph-kal-perioder li > span:first-child{width:120px}
 }
+
+.ph-wbdag{max-width:720px}
+.ph-wbdag-liste{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ph-wbdag-liste a{display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 14px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);text-decoration:none}
+.ph-wbdag-kl{width:48px;flex:none;font:var(--type-num);color:var(--text-muted)}
+.ph-wbdag-tekst{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ph-wbdag-tekst strong{font:600 15px/1.3 var(--font-sans);overflow-wrap:anywhere}
+.ph-wbdag-tekst small{font:var(--type-body-s);color:var(--text-secondary)}
