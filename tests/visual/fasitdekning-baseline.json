@@ -1,6 +1,6 @@
 {
-  "sitert": 140,
+  "sitert": 138,
   "av": 219,
-  "sistEndret": "2026-09-29",
-  "grunn": "Plan-hub og øktark (AG-14, AG-12) portet til Precision Athletics (7d7c2994): OktArkV2.tsx (siterte «A-14 iPhone Okt-ark Filip.dc.html») er erstattet av AG12Oktark.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 141→140 (målt etter at Innboks og Spiller 360 ble lagt inn 29.09)."
+  "sistEndret": "2026-10-03",
+  "grunn": "PH-07 øktoppsummering portet til Precision Athletics: SessionSummary.tsx siterte «PH-06 Live ferdig.dc.html» og «B3 Lys resterende skjermer.dc.html». De to Train-lock-siteringene er fjernet med vilje fordi flaten nå følger Precision, ikke de tegningene. 140→138."
 }

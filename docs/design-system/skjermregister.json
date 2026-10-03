@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "ad5761ebe3f88f4b4f91994329650c4e3561f26e",
+  "kodeversjon": "3f287371fdf8a1095fd69ba707b4227703f72a0e",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
     "componentFiles": 831,
-    "surfaceFiles": 242,
+    "surfaceFiles": 244,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -13358,12 +13358,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Oppsummeringssiden merker PH07Summary og monterer SessionSummary i Precision-natt. Tall, pyramide, notater, vurdering og lagring er beholdt. Plan-feiring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-07 Øktoppsummering er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -22986,10 +22988,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 43,
+    "medAvvik": 44,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 7,
+    "implementert": 8,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
