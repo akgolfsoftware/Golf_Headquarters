@@ -179,6 +179,8 @@ const PRECISION_VISNING = [
   ["PH19Mal", "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen."],
   ["PH25Varsler", "Varslene merker PH25Varsler i PlayerHQSkall. Liste, lest-markering og lenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
   ["PH26Fysisk", "Fysisk logging merker PH26Fysisk i PlayerHQSkall. Tom tilstand, sett, intervaller og ukeøkter er beholdt. Selve sett-loggen er fortsatt den gamle komponenten. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["AU01Innlogging", "Innlogging merker AU01Innlogging i Precision. Magisk lenke, kode, passord og Google er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU01. 390×844 og 1440×880 er ikke målt i innlogget app."],
+  ["AU01LoggetUt", "Utlogget flate merker AU01LoggetUt i Precision. Samme lenker og tømming av hurtigbuffer. Kilde: ui_kits/konto/screens/AU-01-03.jsx. 390×844 og 1440×880 er ikke målt i innlogget app."],
 ];
 
 function merkVisning(row, source) {

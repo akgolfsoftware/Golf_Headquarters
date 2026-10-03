@@ -1,3 +1,8 @@
+/**
+ * AU01Innlogging — innlogging i Precision Athletics.
+ * Kilde: ui_kits/konto/screens/AU-01-03.jsx, funksjonen AU01.
+ * Magisk lenke, kode, passord og Google er beholdt.
+ */
 import { LoginView } from "@/components/auth/LoginView";
 
 export const metadata = {

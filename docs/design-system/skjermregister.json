@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "78dad62bd5e0fe2c84a42c43bad77226f904b466",
+  "kodeversjon": "49f992c25243585931840abb38edfc68626b05b7",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -11076,19 +11076,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Utlogget flate merker AU01LoggetUt i Precision. Samme lenker og tømming av hurtigbuffer. Kilde: ui_kits/konto/screens/AU-01-03.jsx. 390×844 og 1440×880 er ikke målt i innlogget app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-01 Logg inn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-01"
     },
     {
       "screenId": "AU-01",
@@ -11119,19 +11121,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Innlogging merker AU01Innlogging i Precision. Magisk lenke, kode, passord og Google er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU01. 390×844 og 1440×880 er ikke målt i innlogget app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-01 Logg inn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-01"
     },
     {
       "screenId": "AU-05",
@@ -23010,10 +23014,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 55,
+    "medAvvik": 57,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 20,
+    "implementert": 22,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
