@@ -1,3 +1,5 @@
+// PH21Sporsmalsliste — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2-forhåndsvisning — PlayerHQ Coach · Spørsmål (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell
@@ -12,7 +14,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { sporsmalListeFilter } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachQAV2, type CoachSporsmal } from "@/components/portal/v2/CoachQAV2";
 
 export const dynamic = "force-dynamic";
@@ -65,9 +66,11 @@ export default async function V2CoachSporsmalPreviewPage() {
   }));
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachQAV2 data={{ sporsmal }} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

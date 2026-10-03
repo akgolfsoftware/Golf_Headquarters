@@ -1,3 +1,5 @@
+// PH21TbOkt — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Coach-tilbakemelding etter økt (Paper W3, konsolidert flate).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-coach-tilbakemelding.html
@@ -5,6 +7,9 @@
  * Erstatter på sikt notat/video/oppsummering-spredningen (manifest-w3
  * §Konsolidering) — video er en modul i flaten. Eksisterende ruter står
  * urørt; redirect-konsolideringen er en egen C4-beslutning.
+ *
+ * Avvik:
+ *   - Flaten er montert i PlayerHQSkall. Innholdet er fortsatt CoachTilbakemeldingV2. Ikke målt i appen.
  */
 
 import { redirect } from "next/navigation";
@@ -12,7 +17,6 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { erCoachetSpiller } from "@/lib/auth/coached";
 import { getCoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemelding-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachTilbakemeldingV2 } from "@/components/portal/v2/CoachTilbakemeldingV2";
 
 export const dynamic = "force-dynamic";
@@ -37,14 +41,10 @@ export default async function CoachTilbakemeldingPage({
   const data = await getCoachTilbakemeldingData({ id: user.id, role: user.role }, oktId);
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="meg"
-      nav={PLAYERHQ_NAV}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <CoachTilbakemeldingV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

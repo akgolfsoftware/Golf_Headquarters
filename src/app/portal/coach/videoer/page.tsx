@@ -1,3 +1,5 @@
+// PH21VideoListe — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2-forhåndsvisning — PlayerHQ Coach-videoer (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver PortalShell — kun root-layout.
@@ -11,7 +13,6 @@
 import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachVideoerV2, type CoachVideoerData } from "@/components/portal/v2/CoachVideoerV2";
 
 export const dynamic = "force-dynamic";
@@ -38,9 +39,11 @@ export default async function V2CoachVideoerPreviewPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachVideoerV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

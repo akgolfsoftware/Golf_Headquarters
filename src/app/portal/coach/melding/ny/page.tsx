@@ -1,3 +1,5 @@
+// PH21NyMelding — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ Coach · Ny melding (/portal/coach/melding/ny) — v2.
  * Hovedcoach er den aktive PlayerEnrollment-coachen, samme datakilde
@@ -9,7 +11,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import { CoachMeldingNyV2 } from "@/components/portal/v2/CoachMeldingNyV2";
 import { sendMeldingNyV2 } from "./actions";
@@ -23,10 +24,12 @@ export default async function NyMeldingPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
         <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
         <CoachMeldingNyV2 data={{ gratis: true, coach: null }} sendAction={sendMeldingNyV2} />
-      </V2Shell>
+      </div>
+    </PlayerHQSkall>
     );
   }
 
@@ -39,9 +42,11 @@ export default async function NyMeldingPage() {
   const coach = aktivEnrollering?.coach ?? null;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
       <CoachMeldingNyV2 data={{ gratis: false, coach }} sendAction={sendMeldingNyV2} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

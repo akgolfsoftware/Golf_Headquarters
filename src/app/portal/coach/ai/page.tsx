@@ -1,3 +1,5 @@
+// PH22CoachKi — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2-forhåndsvisning — PlayerHQ AI-coach (retning C). Egen top-level route-group
  * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
@@ -10,7 +12,6 @@
 import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachAIV2, type CoachAIData } from "@/components/portal/v2/CoachAIV2";
 import type { ChatMelding } from "@/lib/anthropic";
 
@@ -59,9 +60,11 @@ export default async function V2CoachAiPreviewPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachAIV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

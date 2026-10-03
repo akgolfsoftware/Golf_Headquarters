@@ -27,7 +27,16 @@ const FANER = [
 ] as const;
 
 function erAktiv(path: string, href: string) {
-  return href === "/portal" ? path === "/portal" : path === href || path.startsWith(href + "/");
+  if (href === "/portal") return path === "/portal";
+  // Coach hørte til Meg i det gamle skallet (aktiv="meg").
+  if (href === "/portal/meg") {
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach");
+  }
+  // Øvelser og ny booking markerte Plan.
+  if (href === "/portal/planlegge") {
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/");
+  }
+  return path === href || path.startsWith(href + "/");
 }
 
 function Bjelle({ href, antall }: { href: string; antall: number }) {

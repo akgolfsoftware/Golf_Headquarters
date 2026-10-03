@@ -1,3 +1,5 @@
+// PH21NyttSporsmal — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ Coach · Nytt spørsmål (/portal/coach/sporsmal/ny) — v2.
  * Erstatter legacy /portal/(legacy)/coach/sporsmal/ny som spillerens inngang
@@ -8,7 +10,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import { CoachSporsmalNyV2, type MinSporsmal } from "@/components/portal/v2/CoachSporsmalNyV2";
 import { stillSporsmalV2 } from "./actions";
@@ -48,9 +49,11 @@ export default async function NySporsmalPage({
   }));
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
       <CoachSporsmalNyV2 data={{ sendt: sendt === "1", mine }} sendAction={stillSporsmalV2} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,3 +1,5 @@
+// PH25Personvern — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * /portal/meg/innstillinger/personvern — Samtykker.
  * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
@@ -11,7 +13,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Kort, StatusPill, Icon } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
@@ -42,7 +43,8 @@ export default async function PersonvernPage() {
   const delingKart = new Map(delingStatus.map((s) => [s.gruppeId, s]));
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
     <div
       data-paper-slug="playerhq-innstillinger"
       data-paper-portal-innstillinger-personvern
@@ -189,6 +191,7 @@ export default async function PersonvernPage() {
         </div>
       </Kort>
     </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }
