@@ -1,3 +1,4 @@
+// FO01IDag — Precision Athletics. Data og handlinger er beholdt.
 /**
  * Foreldreportal · forside «I dag» — pikselport PX-5.
  * Fasit: designsystem/train-lock/FO-01 Forelder les.dc.html (+ FO-01L lys).
@@ -20,7 +21,7 @@ import { hentBarnForForelder } from "@/lib/forelder";
 import { ukenummer } from "@/lib/uke-helpers";
 import { tilDatoKolonne, fraDatoKolonne } from "@/lib/workbench/wb-map";
 import { klokkeslett } from "@/lib/domain/kalender-lag";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderV2,
   type ForelderIdagData,
@@ -184,15 +185,8 @@ export default async function ForelderPage() {
   }
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV}
-      mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderV2 data={data} />
-    </V2Shell>
+    </ForelderSkall>
   );
 }

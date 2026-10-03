@@ -1,3 +1,4 @@
+// FO01Ukerapport — Precision Athletics. Data og handlinger er beholdt.
 /**
  * Foreldreportal · Ukerapport — pikselport PX-5.
  * Fasit: designsystem/train-lock/FO-09 Ukerapport.dc.html (+ FO-09L lys).
@@ -5,13 +6,17 @@
  * Auth: kun PARENT (requirePortalUser). Tallene kommer fra
  * hentForelderUkerapport (datamatten urørt); «Gjennomført»-radene hentes
  * her (samme kilde og ukevindu som loaderen — TrainingSessionV2, gte/lt).
+ *
+ * Avvik:
+ *   - Minuttprosent, oppmøte og perioden er beholdt. Ingen nye tall er funnet på.
+ *   - Flaten er ikke målt i appen. Den krever foresatt-økt og database.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder, hentForelderUkerapport } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderUkerapportV2,
   type UkerapportOktRad,
@@ -90,19 +95,13 @@ export default async function ForelderUkerapportPage() {
   }
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderUkerapportV2
         data={data}
         okter={okter}
         ukeSpenn={ukeSpenn}
         parentName={user.name}
       />
-    </V2Shell>
+    </ForelderSkall>
   );
 }
