@@ -861,3 +861,34 @@ button.ph-kal-celle{cursor:pointer}
 .au-melding{margin:0;padding:12px;border-radius:var(--radius);background:var(--surface-sunken);color:var(--text-primary);font:var(--type-body-s)}
 .au-melding[data-tone="feil"]{color:var(--signal)}
 .au-tips{padding:12px;border-radius:var(--radius);background:var(--surface-sunken);display:flex;flex-direction:column;gap:6px}
+.au-boks--bred{max-width:560px}
+.au-rad{display:grid;grid-template-columns:1fr;gap:12px}
+.au-pakker{display:flex;flex-direction:column;gap:8px}
+.au-pakke{appearance:none;position:relative;text-align:left;width:100%;display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer}
+.au-pakke[aria-checked="true"]{border-color:var(--text-primary);background:var(--surface-sunken)}
+.au-pakke-hode{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.au-pakke-hode strong{font:600 14px/1.3 var(--font-sans)}
+.au-pakke-hode em{font-style:normal;font:var(--type-num);color:var(--text-primary)}
+.au-pakke > span:last-child,.au-prove{color:var(--text-secondary);font:var(--type-body-s)}
+.au-merke{position:absolute;top:-9px;right:12px;border-radius:999px;padding:2px 8px;background:var(--primary);color:var(--text-on-primary);font:600 11px/1.2 var(--font-sans)}
+.au-prove{align-self:flex-start}
+.au-roller{display:flex;gap:8px}
+.au-roller button{flex:1;min-height:44px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-secondary);font:var(--type-label);cursor:pointer}
+.au-roller button[aria-pressed="true"]{border-color:var(--text-primary);color:var(--text-primary);background:var(--surface-sunken)}
+.au-sjekk{display:flex;align-items:flex-start;gap:10px;color:var(--text-secondary);font:var(--type-body-s)}
+.au-sjekk input{width:20px;height:20px;min-height:20px;margin-top:2px;flex:none;padding:0}
+.au-eller{display:flex;align-items:center;gap:12px;margin:0;color:var(--text-muted);font:var(--type-meta);letter-spacing:.08em;text-transform:uppercase}
+.au-eller::before,.au-eller::after{content:"";flex:1;height:1px;background:var(--border-hairline)}
+.au-kodeboks{margin:0;padding:10px 12px;border-radius:6px;background:var(--surface-flat);border:1px solid var(--border-hairline);font:500 13px/1.3 var(--font-mono);overflow-wrap:anywhere}
+.au-linjer{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.au-linjer li{display:flex;justify-content:space-between;gap:12px;min-height:32px;align-items:center;color:var(--text-secondary);font:var(--type-body-s)}
+.au-linjer li span:last-child{color:var(--text-primary);text-align:right}
+.au-liste{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;color:var(--text-secondary);font:var(--type-body-s)}
+.au-handlinger{display:flex;flex-wrap:wrap;gap:8px}
+.au-ordlyd{margin:0;max-height:280px;overflow:auto;white-space:pre-wrap;padding:12px;border-radius:var(--radius);background:var(--surface-sunken);border:1px solid var(--border-hairline);color:var(--text-primary);font:var(--type-body-s)}
+.au-skjema label.au-sjekk{flex-direction:row;align-items:flex-start}
+.au-skjema .au-sjekk input{width:20px;min-height:20px;padding:0}
+.au-skjema > p.au-eller{color:var(--text-muted);font:var(--type-meta);letter-spacing:.08em;text-transform:uppercase}
+@media (min-width:480px){
+.au-rad{grid-template-columns:1fr 1fr}
+}
