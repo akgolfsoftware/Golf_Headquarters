@@ -26,6 +26,13 @@ const FANER = [
   { href: "/portal/meg", label: "Meg", icon: User, name: "user" },
 ] as const;
 
+function erTestDetalj(path: string) {
+  if (!path.startsWith("/portal/tren/tester/")) return false;
+  const rest = path.slice("/portal/tren/tester/".length);
+  if (rest === "ny" || rest.startsWith("ny/") || rest.startsWith("team-norway") || rest.includes("/gjennomfor")) return false;
+  return true;
+}
+
 function erAktiv(path: string, href: string) {
   if (href === "/portal") {
     // Booking med coach utelater aktiv. Det gamle skallet utleder da I dag.
@@ -35,9 +42,9 @@ function erAktiv(path: string, href: string) {
   if (href === "/portal/meg") {
     return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach") || path.startsWith("/portal/ai/mal-bygger") || path.startsWith("/portal/mal/goal");
   }
-  // Øvelser og ny booking markerte Plan. aktiv="gjor" skal ikke lyse noen fane.
+  // Øvelser, ny booking og testdetalj markerte Plan. aktiv="gjor" og /ny skal ikke lyse noen fane.
   if (href === "/portal/planlegge") {
-    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/");
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/") || erTestDetalj(path);
   }
   // Analyse, gameplan, ny runde og gapping markerte Analyse.
   if (href === "/portal/analysere") {
