@@ -238,9 +238,9 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
               type="button"
               onClick={() => setVisning(v)}
               className={
-                "rounded-full px-4 py-1.5 font-mono text-[12px] font-bold uppercase tracking-[0.06em] transition " +
+                "min-h-11 rounded-full px-4 py-1.5 font-mono md:min-h-8 text-[12px] font-bold uppercase tracking-[0.06em] transition " +
                 (visning === v
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-[var(--primary)] text-[var(--text-on-primary)]"
                   : "text-muted-foreground hover:text-foreground")
               }
             >
@@ -250,12 +250,12 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => naviger(-1)} aria-label="Forrige">
+          <button type="button" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded border border-[var(--border-control)] bg-[var(--surface-card)] text-[var(--text-primary)] md:min-h-8 md:min-w-8" onClick={() => naviger(-1)} aria-label="Forrige">
             <ChevronLeft className="h-4 w-4" strokeWidth={1.75} />
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => naviger(1)} aria-label="Neste">
+          </button>
+          <button type="button" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded border border-[var(--border-control)] bg-[var(--surface-card)] text-[var(--text-primary)] md:min-h-8 md:min-w-8" onClick={() => naviger(1)} aria-label="Neste">
             <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -285,7 +285,40 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
       )}
 
       {visning === "uke" && (
-        <div className="min-w-0 overflow-x-auto">
+        <div className="min-w-0 md:hidden">
+          <ul className="flex flex-col gap-2">
+            {ukeDager.map((dagDato, dagIndex) => {
+              const iso = tilIso(dagDato);
+              const blokker = byggUkeblokker(data.faste).filter((b) => b.dag === dagIndex);
+              const hendelser = byggAllDagHendelser(data.samlinger, data.skoleHendelser, iso, iso, classYear, data.turneringer);
+              return (
+                <li key={iso} className="min-w-0 rounded-lg border border-border bg-card p-3">
+                  <button type="button" onClick={() => setValgtDato(iso)} className="min-h-11 min-w-11 text-left font-mono text-[12px] font-bold uppercase tracking-[0.06em] hover:underline">
+                    {UKEDAGER[dagIndex]} {dagDato.getDate()}
+                  </button>
+                  {blokker.length === 0 && hendelser.length === 0 ? (
+                    <p className="text-[13px] text-muted-foreground">Ingen faste tider eller hendelser.</p>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      {blokker.map((b) => (
+                        <p key={b.id} className="min-w-0 break-words text-[13px] text-foreground">
+                          <span className="font-mono text-[11px] font-semibold">{b.tid}</span> {b.tittel}
+                        </p>
+                      ))}
+                      {hendelser.map((h) => (
+                        <p key={h.id} className="min-w-0 break-words text-[13px] text-foreground">{h.tittel}</p>
+                      ))}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {visning === "uke" && (
+        <div className="hidden min-w-0 md:block">
           <AllDagRad
             dager={ukeDager}
             hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(ukeDager[0]), tilIso(ukeDager[6]), classYear, data.turneringer)}
@@ -303,7 +336,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
                   key={dagIndex}
                   id={`dag-${dagIndex}`}
                   header={
-                    <button type="button" onClick={() => setValgtDato(tilIso(dagDato))} className="hover:underline">
+                    <button type="button" onClick={() => setValgtDato(tilIso(dagDato))} className="min-h-8 hover:underline">
                       {navn} {dagDato.getDate()}
                     </button>
                   }
@@ -325,7 +358,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
       )}
 
       {visning === "dag" && (
-        <div className="min-w-0 overflow-x-auto">
+        <div className="min-w-0">
           <p className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             {dag.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" })}
           </p>
@@ -338,7 +371,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
             <TidsGrid.Kolonne
               id="dag-valgt"
               header={
-                <button type="button" onClick={() => setValgtDato(tilIso(dag))} className="hover:underline">
+                <button type="button" onClick={() => setValgtDato(tilIso(dag))} className="min-h-8 hover:underline">
                   Detaljer for dagen
                 </button>
               }
