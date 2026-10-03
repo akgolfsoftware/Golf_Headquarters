@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 43 rader har et registrert avvik. 6 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 43 rader har et registrert avvik. 7 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -92,7 +92,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/forelder/fakturaer` | FO-04 | Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/ukerapport` | FO-01 | Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
-| `/portal/live/[sessionId]/tapper` | PH-06 | Kodekommentaren sier PH-05. Skjermlisten sier PH-06. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/mal/runder` | PH-18 | Kodekommentaren sier PH-11. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/personvern` | PH-25 | Kodekommentaren sier PH-18. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |

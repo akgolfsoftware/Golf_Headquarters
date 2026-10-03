@@ -4,20 +4,15 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { filterLiveCoachMessages, type LiveCoachPanelData } from "@/components/portal/live/types";
-import { TL } from "@/lib/v2/train-lock";
+import "@/styles/precision-athletics.css";
 
 import { TapperShell } from "./tapper-shell";
 
 /**
- * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper).
- * Fasit: designsystem/train-lock/PH-05 Live.dc.html
- * Avvik:
- *   - Ingen egen riggrad: PH-05-raden måler /portal/live/<id>/active
- *     (LiveActive.tsx), som er skjermen fasiten faktisk tegner. Slagtelleren
- *     her er en egen inngang i samme live-sløyfe uten egen fasitramme.
- *   - Gammel Paper-sitering (playerhq-live-tapper.html) er slettet 30.08 — koden
- *     er slagtelleren i live-sløyfa, ikke en 1:1-port av den slettede fila.
- *   - Tar også WorkbenchSession-id fra I dag (Anders 08.09), ikke bare plan-økt.
+ * PlayerHQ · Slagteller — PH06Tapper i Precision Athletics (natt).
+ * Tegningen ui_kits/playerhq/screens/PH-06.jsx ligger ikke i git.
+ * Kølleknapper, +1/+5, angre, lokal kø og avslutning beholdes.
+ * Tar også WorkbenchSession-id fra I dag, ikke bare plan-økt.
  *
  * Kølleknappene bygges av spillerens utstyrsbag (EquipmentBag — fritekst per
  * kategori, så knappene er kategoriene som faktisk er fylt ut). Tom bag →
@@ -99,23 +94,24 @@ export default async function LiveTapperPage({
   if (!playerId || !oktLabel) {
     return (
       <main
-        data-paper-slug="playerhq-live-tapper"
-        style={{ minHeight: "100dvh", background: TL.scene, display: "grid", placeItems: "center", padding: 16 }}
+        className="pa-root ph06"
+        data-theme="night"
+        style={{ minHeight: "100dvh", background: "var(--surface-page)", display: "grid", placeItems: "center", padding: 16 }}
       >
         <div
           style={{
             maxWidth: 430,
             width: "100%",
             padding: "24px 16px",
-            background: TL.dock,
-            border: `1px dashed ${TL.hair}`,
-            borderRadius: TL.radius.card,
+            background: "var(--surface-sunken)",
+            border: `1px dashed var(--border-hairline)`,
+            borderRadius: "var(--radius)",
           }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
             Ingen økt pågår
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
+          <p style={{ margin: "0 0 12px", fontFamily: "var(--font-sans)", fontSize: 13.5, color: "var(--text-muted)" }}>
             Slagtelleren hører til en pågående økt. Start dagens økt, så teller
             vi derfra.
           </p>
@@ -124,7 +120,7 @@ export default async function LiveTapperPage({
             href="/portal"
             data-od-id="tapper-tom-start"
             data-paper-en-ting="true"
-            className="v2-press v2-focus"
+
             style={{
               textDecoration: "none",
               display: "flex",
@@ -132,10 +128,10 @@ export default async function LiveTapperPage({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
+              borderRadius: "var(--radius)",
+              background: "var(--primary)",
+              color: "var(--text-on-primary)",
+              fontFamily: "var(--font-sans)",
               fontSize: 14,
               fontWeight: 600,
             }}
