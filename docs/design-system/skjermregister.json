@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "f3a8a0c4b3a199df5c5055c5dc38a5c8c6f8761b",
+  "kodeversjon": "141bc2a520ea144e92ec44caa83d6dcc58d3fcb8",
   "inventar": {
-    "pageFiles": 527,
-    "uniqueRoutePatterns": 527,
-    "componentFiles": 838,
+    "pageFiles": 528,
+    "uniqueRoutePatterns": 528,
+    "componentFiles": 839,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 181
+      "playerhq": 182
     }
   },
   "presisjon": {
@@ -15624,6 +15624,48 @@
       "kodekommentar": null
     },
     {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/caddie",
+      "kildefil": "src/app/portal/caddie/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/coach/ai",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/coach/ai. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/coach/ai",
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-22",
       "rute": "/portal/coach/ai",
       "kildefil": "src/app/portal/coach/ai/page.tsx",
@@ -15656,7 +15698,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Coach-assistenten merker PH22CoachKi i PlayerHQSkall. Samtalen og handlingene er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Caddie AI & Assistent merker PH22CoachKi og PH22CaddieChat i PlayerHQSkall. Samtale, streaming, kildevisning, utkast, hurtigchips og eksport er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -23168,7 +23210,7 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 527,
+    "sidefiler": 528,
     "medAvvik": 130,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
@@ -23178,7 +23220,7 @@
       "intern-flate": 7,
       "felles-monster": 22,
       "tegnet-skjermtype": 281,
-      "videresending": 162,
+      "videresending": 163,
       "teknisk-forklaring": 32,
       "byggeunderlag": 23
     },
@@ -23200,7 +23242,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 162,
+      "VIDERESENDING": 163,
       "AG-05": 4,
       "AG-06": 3,
       "AG-08": 3,

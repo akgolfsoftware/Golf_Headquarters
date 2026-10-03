@@ -206,7 +206,7 @@ const PRECISION_VISNING = [
   ["FO01Ukerapport", "Ukerapport merker FO01Ukerapport. Minuttprosent, oppmøte og perioden er beholdt. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["FO01Varsler", "Varsler merker FO01Varsler. Listen er beholdt. Lest-markering finnes ikke og er ikke lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH21CoachHub", "Coach-huben merker PH21CoachHub i PlayerHQSkall. Coach, fokus, meldinger, timer og oppsalget uten coach er beholdt. Indre kort er fortsatt v2 og leser Precision-tokener i skallet. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
-  ["PH22CoachKi", "Coach-assistenten merker PH22CoachKi i PlayerHQSkall. Samtalen og handlingene er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["PH22CoachKi", "Caddie AI & Assistent merker PH22CoachKi og PH22CaddieChat i PlayerHQSkall. Samtale, streaming, kildevisning, utkast, hurtigchips og eksport er beholdt."],
   ["PH21Meldingsliste", "Meldingslisten merker PH21Meldingsliste i PlayerHQSkall. Tråden er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH21NyMelding", "Ny melding merker PH21NyMelding i PlayerHQSkall. Sendingen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH13OvelserCoach", "Coachens øvelser merker PH13OvelserCoach i PlayerHQSkall. Listen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
