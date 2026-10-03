@@ -101,7 +101,11 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/varsler").kontrollbevis, /PH25Varsler/);
   assert.equal(byRoute.get("/portal/fysisk").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/fysisk").kontrollbevis, /PH26Fysisk/);
-  assert.equal(register.tellinger.implementert, 20);
+  assert.equal(byRoute.get("/auth/login").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/auth/login").kontrollbevis, /AU01Innlogging/);
+  assert.equal(byRoute.get("/auth/logget-ut").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/auth/logget-ut").kontrollbevis, /AU01LoggetUt/);
+  assert.equal(register.tellinger.implementert, 22);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
