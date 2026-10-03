@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "e54737064652d4e946c59881374e7e2ba5815b55",
+  "kodeversjon": "76770763868e7892b33398bcd0cfcbd3665afb25",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -14848,12 +14848,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Historikken merker PH16Historikk i PlayerHQSkall. Runder, økter, tester, TrackMan og filteret er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-16 Analyse-hub er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16267,12 +16269,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Fysisk logging merker PH26Fysisk i PlayerHQSkall. Tom tilstand, sett, intervaller og ukeøkter er beholdt. Selve sett-loggen er fortsatt den gamle komponenten. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16529,12 +16533,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Opptatt tid merker PH10Opptatt i PlayerHQSkall. Egne avtaler kan legges til og slettes. Skole og gruppetrening er ikke med her. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-10 Plan: uke er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16830,12 +16836,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-19 Mål og talent er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20826,12 +20834,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Varslene merker PH25Varsler i PlayerHQSkall. Liste, lest-markering og lenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -22998,10 +23008,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 49,
+    "medAvvik": 54,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 14,
+    "implementert": 19,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

@@ -173,6 +173,11 @@ const PRECISION_VISNING = [
   ["PH10Kalender", "Kalendersiden merker PH10Kalender og monterer KalenderV2 i PlayerHQSkall. Dag, uke, måned, år og ?dato=-navigasjon er beholdt. Opptatt tid er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
   ["PH11Workbench", "Workbench merker PH11Workbench i PlayerHQSkall. År, periode, måned, uke, økt, volum, mål, fysisk og turnering bruker samme motor. Øktarket er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-11.jsx ligger ikke i git."],
   ["PH14Hub", "Tester-huben merker PH14Hub i PlayerHQSkall. Grupper, forfall, Team Norway-lenke, egen test og tom tilstand er beholdt. Detalj og gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git."],
+  ["PH10Opptatt", "Opptatt tid merker PH10Opptatt i PlayerHQSkall. Egne avtaler kan legges til og slettes. Skole og gruppetrening er ikke med her. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH16Historikk", "Historikken merker PH16Historikk i PlayerHQSkall. Runder, økter, tester, TrackMan og filteret er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH19Mal", "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25Varsler", "Varslene merker PH25Varsler i PlayerHQSkall. Liste, lest-markering og lenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH26Fysisk", "Fysisk logging merker PH26Fysisk i PlayerHQSkall. Tom tilstand, sett, intervaller og ukeøkter er beholdt. Selve sett-loggen er fortsatt den gamle komponenten. 390×844 og 1440×880 er ikke målt mot tegningen."],
 ];
 
 function merkVisning(row, source) {
