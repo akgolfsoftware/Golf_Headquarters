@@ -1,0 +1,29 @@
+/* PH-17 TrackMan (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-17.jsx). */
+.ph17-kol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+.ph17-kol--gap { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 768px) { .ph17-kol--okter { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); } }
+@media (min-width: 1280px) {
+  .ph17-kol--okter { grid-template-columns: 320px minmax(0, 1fr); }
+  .ph17-kol--gap { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+}
+.ph17-rad { all: unset; box-sizing: border-box; flex-shrink: 0; cursor: pointer; display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; min-height: 56px; width: 100%; border-top: 1px solid var(--border-hairline); min-width: 0; }
+.ph17-rad:first-of-type { border-top: 0; }
+.ph17-rad[aria-pressed="true"] { background: var(--surface-flat); box-shadow: inset 2px 0 0 var(--border-ink); }
+.ph17-rad:focus-visible { outline: 2px solid var(--border-ink); outline-offset: -2px; }
+.ph17-valg { display: flex; gap: 8px; flex-wrap: wrap; }
+.ph17-metrikker { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); row-gap: 16px; column-gap: 12px; }
+.ph17-metrikk { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ph17-metrikk__k { font: var(--type-body-s); color: var(--text-secondary); overflow-wrap: anywhere; }
+.ph17-metrikk__v { font: var(--type-num-s); color: var(--text-primary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.ph17-metrikk__e { font: var(--type-meta); color: var(--text-muted); margin-left: 4px; }
+.ph17-spred { position: relative; width: 100%; height: 260px; background: var(--surface-flat); border-radius: 8px; border: 1px solid var(--border-hairline); overflow: hidden; }
+.ph17-spred svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
+.ph17-spred__m { position: absolute; font: var(--type-meta); color: var(--text-muted); }
+.ph17-gap { display: grid; grid-template-columns: 56px minmax(0, 1fr) 72px; gap: 10px; align-items: center; min-height: 30px; }
+.ph17-gap__k { font: 600 13px/1 var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
+.ph17-gap__bar { position: relative; height: 12px; background: var(--surface-sunken); }
+.ph17-gap__v { font: var(--type-num-s); color: var(--text-primary); text-align: right; }
+.ph17-kilde { font: var(--type-meta); letter-spacing: .04em; color: var(--text-muted); overflow-wrap: anywhere; }
+.ph17-utstyr { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; }
+.ph17-vurd { display: inline-flex; gap: 6px; align-items: center; font: var(--type-label); color: var(--warn); }
+@media (min-width: 768px) { .ph17-spred { height: 320px; } }

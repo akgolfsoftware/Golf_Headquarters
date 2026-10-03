@@ -1,31 +1,57 @@
 /**
- * TM-11 «TrackMan-økt-detalj» — kanonisk PlayerHQ-side for én TrackMan-økt
- * (B7, DispersionMap). Erstatter den eldre Paper-porten
- * `src/app/portal/mal/trackman/[id]/page.tsx` som IA-fasit for dette
- * skjermbildet (HANDOFF §LANSERINGSKJERNE TM-11) — den gamle siden lever
- * videre uendret (egen rute, egen /portal/mal-liste), kun
- * `/portal/trackman/[sessionId]` (legacy-redirect) peker nå hit.
+ * PlayerHQ · TrackMan-økt (/portal/analysere/trackman/[id]) — Precision Athletics PH-17
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-17.jsx). Samme skjerm som lista, med
+ * økta valgt: tegningen har ikke egen detaljside.
  *
- * Auth-mønster kopiert fra den gamle siden: eier ELLER ADMIN/COACH.
- * Domeneregning (1σ/2σ, bøtter, caddie-setning) skjer i
- * `computeTrackManDispersionMap` (src/lib/trackman/dispersion-map.ts) — ikke
- * her, jf. CLAUDE.md invariant 5.
- *
- * Bak samme feature-flagg som den gamle siden (FEATURES.TRACKMAN_DETAIL) —
- * funksjonen er ny nok (25.08-fasit, ikke tidligere skjermbilde-godkjent av
- * Anders) til at flagget beholdes fremfor å fjernes.
+ * Tilgang som før: eier, eller ADMIN/COACH. Feature-flagget TRACKMAN_DETAIL beholdes.
+ * Tidligere detaljvisning (Funn, bøtter, slag-ark, «mot forrige») står igjen under PH-17-visningen
+ * til Anders har avgjort om den skal ut («ingenting fjernes», beslutninger.md).
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { FEATURES } from "@/lib/features";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
+import { hentPh17Okter, type Ph17Okt } from "@/lib/trackman/ph17-data";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH17Ramme, PH17Okter } from "@/components/portal/precision/PH17TrackMan";
 import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
 import { TrackManSessionDetail } from "@/components/trackman/TrackManSessionDetail";
-import Link from "next/link";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "TrackMan-økt · PlayerHQ" };
+
+export default async function TrackManOktDetalj({ params }: { params: Promise<{ id: string }> }) {
+  if (!FEATURES.TRACKMAN_DETAIL) notFound();
+
+  // /portal/analysere/* står på talent-allowlisten; kreverTilgang må matche (portal-tilgang-kontrakt.test.ts).
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const { id } = await params;
+
+  const sesjon = await prisma.trackManSession.findUnique({ where: { id }, select: { userId: true, recordedAt: true, source: true } });
+  if (!sesjon) notFound();
+  if (sesjon.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") notFound();
+
+  let okter: Ph17Okt[] = [];
+  let feil = false;
+  const [res, uleste] = await Promise.all([
+    hentPh17Okter(sesjon.userId, id).catch(() => null),
+    getUnreadNotifications(user.id, 1).then((d) => d?.count ?? 0).catch(() => 0),
+  ]);
+  if (res) okter = res; else feil = true;
+
+  const detalj = await hentDetalj(id, sesjon).catch(() => null);
+
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH17Ramme aktiv="okter" tilstand={feil ? "feil" : "data"} importerFor={sesjon.userId !== user.id ? sesjon.userId : undefined}>
+        <PH17Okter okter={okter} valgtId={id} importerFor={sesjon.userId !== user.id ? sesjon.userId : undefined} />
+        {detalj}
+      </PH17Ramme>
+    </PlayerHQSkall>
+  );
+}
 
 const SOURCE_LABEL: Record<string, string> = {
   "csv-import": "TrackMan · CSV",
@@ -33,39 +59,14 @@ const SOURCE_LABEL: Record<string, string> = {
   api: "TrackMan API",
 };
 
-export default async function TrackManOktDetalj({ params }: { params: Promise<{ id: string }> }) {
-  if (!FEATURES.TRACKMAN_DETAIL) notFound();
-
-  // /portal/analysere/* står på talent-allowlisten (stats-lesing er åpent for
-  // den gratis TALENT-profilen — BUSINESS-RULES §317: «Analysere + TrackMan +
-  // Runder + SG er én flate med faner»). kreverTilgang MÅ derfor matche
-  // allowlisten, ellers lyver den om hva TALENT faktisk kommer inn på
-  // (håndhevet av src/lib/__tests__/tilgang/portal-tilgang-kontrakt.test.ts).
-  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const { id } = await params;
-
-  const sesjon = await prisma.trackManSession.findUnique({ where: { id } });
-  if (!sesjon) notFound();
-  if (sesjon.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") notFound();
-
+/** Funn, bøtter, slag-ark og «mot forrige» — uendret fra forrige versjon av siden. */
+async function hentDetalj(id: string, sesjon: { userId: string; recordedAt: Date; source: string }) {
   const shots = await prisma.trackManShot.findMany({
-    where: { sessionId: sesjon.id },
+    where: { sessionId: id },
     orderBy: { shotNumber: "asc" },
-    select: {
-      id: true,
-      shotNumber: true,
-      club: true,
-      side: true,
-      carryDistance: true,
-      totalDistance: true,
-      smashFactor: true,
-      launchAngle: true,
-      faceToPath: true,
-    },
+    select: { id: true, shotNumber: true, club: true, side: true, carryDistance: true, totalDistance: true, smashFactor: true, launchAngle: true, faceToPath: true },
   });
-
-  // Kølla med flest gyldige slag — samme regel som den gamle siden
-  // (finnDispersjonKolle): ett siktemål, én ellipse, aldri alle køller blandet.
+  // Kølla med flest gyldige slag: ett siktemål, én ellipse, aldri alle køller blandet.
   const perKolle = new Map<string, typeof shots>();
   for (const s of shots) {
     if (s.side == null || s.carryDistance == null) continue;
@@ -80,12 +81,9 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
     }
   }
   const kolleShots = shots.filter((s) => s.club === valgtKolle);
-
+  if (kolleShots.length === 0) return null;
   const result = computeTrackManDispersionMap(kolleShots);
 
-  // «Mot forrige» (TM-02/TM-08 «Funn»-lista, siste rad) — nærmeste TIDLIGERE
-  // økt med samme kølle, medianCarry-delta. Ren les-side aggregering av
-  // eksisterende TrackManShot-data, ingen ny datamodell.
   const forrigeOkt = await prisma.trackManShot.findFirst({
     where: { club: valgtKolle, session: { userId: sesjon.userId, recordedAt: { lt: sesjon.recordedAt } } },
     orderBy: { session: { recordedAt: "desc" } },
@@ -108,62 +106,16 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
           : `${delta > 0 ? "+" : ""}${Math.round(delta)} m · ${delta > 0 ? "lenger enn sist" : "kortere enn sist"}`;
     }
   }
-
-  const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <Link
-        href="/portal/analysere/trackman"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          textDecoration: "none",
-          marginBottom: 12,
-        }}
-      >
-        <Icon name="arrow-left" size={15} />
-        Alle TrackMan-økter
-      </Link>
-
-      {kolleShots.length === 0 ? (
-        <div
-          style={{
-            maxWidth: 720,
-            margin: "0 auto",
-            background: TL.elev,
-            border: `1px solid ${TL.hair}`,
-            borderRadius: TL.radius.card,
-            padding: "28px 20px",
-            textAlign: "center",
-          }}
-        >
-          <Icon name="crosshair" size={22} style={{ color: TL.mute }} />
-          <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 14, color: TL.text }}>
-            Ingen slag med side og carry i denne økta.
-          </p>
-          <p style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
-            Importer en økt med begge feltene, så tegnes spredningen her.
-          </p>
-        </div>
-      ) : (
-        <TrackManSessionDetail
-          club={valgtKolle}
-          dateText={datoTekst}
-          sourceLabel={SOURCE_LABEL[sesjon.source] ?? sesjon.source}
-          result={result}
-          allShotsHref="#alle-slag"
-          forrigeDeltaTekst={forrigeDeltaTekst}
-        />
-      )}
-    </V2Shell>
+    <TrackManSessionDetail
+      club={valgtKolle}
+      dateText={datoTekst}
+      sourceLabel={SOURCE_LABEL[sesjon.source] ?? sesjon.source}
+      result={result}
+      allShotsHref="#alle-slag"
+      forrigeDeltaTekst={forrigeDeltaTekst}
+    />
   );
 }

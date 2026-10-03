@@ -1,23 +1,32 @@
 /**
- * PlayerHQ · TrackMan-liste — TM-01.
- * Fasit: designsystem/train-lock/TM-01 TrackMan liste.dc.html
+ * PlayerHQ · TrackMan-økter (/portal/analysere/trackman) — Precision Athletics PH-17
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-17.jsx). Tilgang som før (TALENT).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TrackManListeTrainLock } from "@/components/portal/v2/TrackManListeTrainLock";
-import { hentTrackManListe } from "@/lib/trackman/liste-data";
+import { hentPh17Okter, type Ph17Okt } from "@/lib/trackman/ph17-data";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH17Ramme, PH17Okter } from "@/components/portal/precision/PH17TrackMan";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "TrackMan · PlayerHQ" };
 
 export default async function TrackManListePage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const data = await hentTrackManListe(user.id);
+  let okter: Ph17Okt[] = [];
+  let feil = false;
+  const [res, uleste] = await Promise.all([
+    hentPh17Okter(user.id).catch(() => null),
+    getUnreadNotifications(user.id, 1).then((d) => d?.count ?? 0).catch(() => 0),
+  ]);
+  if (res) okter = res; else feil = true;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TrackManListeTrainLock data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH17Ramme aktiv="okter" tilstand={feil ? "feil" : "data"}>
+        <PH17Okter okter={okter} />
+      </PH17Ramme>
+    </PlayerHQSkall>
   );
 }
