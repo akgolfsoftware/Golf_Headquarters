@@ -1,19 +1,17 @@
 /**
- * PlayerHQ · Mål · Leaderboard (/portal/mal/leaderboard) — v2.
- * v2-port 16. juli 2026: `LeaderboardV2` erstatter wireframe-designet, ruten
- * flyttet ut av (legacy). Feature-gate (FEATURES.LEADERBOARD), auth-guard,
- * Prisma-queries og rangeringslogikken (snitt-SG per felt siste 30 dager,
- * topp 25) er uendret. Delta-rang/badges er fortsatt ikke bygget (TODO i
- * original) — v2 viser dem ikke i stedet for å vise plassholdere.
+ * PH19Tavle — leaderboard i PlayerHQSkall.
+ * Feature-gate, auth og rangering (snitt-SG per felt siste 30 dager, topp 25) er uendret.
+ * Delta-rang og badges vises ikke.
  */
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { FEATURES } from "@/lib/features";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import {
   LeaderboardV2,
   type LeaderboardRad,
@@ -54,30 +52,33 @@ export default async function LeaderboardPage({
           ? "sgPutt"
           : "sgTotal";
 
-  const proBrukere = await prisma.user.findMany({
-    where: { tier: "PRO", role: "PLAYER" },
-    select: {
-      id: true,
-      name: true,
-      hcp: true,
-      homeClub: true,
-      rounds: {
-        where: {
-          playedAt: { gte: tretti },
-          [sgField]: { not: null },
+  const [proBrukere, ulest] = await Promise.all([
+    prisma.user.findMany({
+      where: { tier: "PRO", role: "PLAYER" },
+      select: {
+        id: true,
+        name: true,
+        hcp: true,
+        homeClub: true,
+        rounds: {
+          where: {
+            playedAt: { gte: tretti },
+            [sgField]: { not: null },
+          },
+          select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
         },
-        select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
-      },
-      trainingPlans: {
-        select: {
-          sessions: {
-            where: { scheduledAt: { gte: tretti } },
-            select: { id: true },
+        trainingPlans: {
+          select: {
+            sessions: {
+              where: { scheduledAt: { gte: tretti } },
+              select: { id: true },
+            },
           },
         },
       },
-    },
-  });
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   const rangering: LeaderboardRad[] = proBrukere
     .map((b) => {
@@ -131,19 +132,21 @@ export default async function LeaderboardPage({
   const fornavn = user.name.split(" ")[0];
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-      <LeaderboardV2
-        data={{
-          fornavn,
-          minRank: meg?.rank ?? null,
-          total: rangering.length,
-          tab,
-          sgTab,
-          rader: rangering,
-          meg,
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/mal" className="ph-tilbake">Mål</Link>
+        <LeaderboardV2
+          data={{
+            fornavn,
+            minRank: meg?.rank ?? null,
+            total: rangering.length,
+            tab,
+            sgTab,
+            rader: rangering,
+            meg,
+          }}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,19 +1,17 @@
 /**
- * /portal/ai/foresla-turnering — AI foreslår turneringer — v2.
- * v2-port 16. juli 2026: `ForeslaTurneringV2` erstatter foresla-turnering-screen
- * (v10), ruten flyttet ut av (legacy). Auth-guard, Prisma-queries og
- * rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter)
- * uendret.
+ * PH19ForeslaTurn — foreslåtte turneringer i PlayerHQSkall.
+ * Auth, spørringer og rangering er uendret. Ingen oppdiktede sannsynligheter.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import Link from "next/link";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import {
   ForeslaTurneringV2,
   type TournamentSuggestion,
 } from "@/components/portal/v2/ForeslaTurneringV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +34,7 @@ export default async function ForeslaTurneringPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const now = new Date();
 
-  const [entries, catalog] = await Promise.all([
+  const [entries, catalog, ulest] = await Promise.all([
     prisma.tournamentEntry.findMany({
       where: {
         userId: user.id,
@@ -72,6 +70,7 @@ export default async function ForeslaTurneringPage() {
       },
       take: 30,
     }),
+    getUnreadNotifications(user.id, 1),
   ]);
 
   const enrolledIds = new Set(
@@ -135,16 +134,20 @@ export default async function ForeslaTurneringPage() {
     user.hcp != null ? user.hcp.toLocaleString("nb-NO", { maximumFractionDigits: 1 }) : "—";
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
-      <ForeslaTurneringV2
-        data={{
-          playerFirstName: (user.name ?? "deg").split(" ")[0],
-          hcpLabel,
-          catalogCount: catalog.length,
-          suggestions: suggestions.slice(0, 6),
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/tren/turneringer" className="ph-tilbake">Turneringer</Link>
+          <ForeslaTurneringV2
+            data={{
+              playerFirstName: (user.name ?? "deg").split(" ")[0],
+              hcpLabel,
+              catalogCount: catalog.length,
+              suggestions: suggestions.slice(0, 6),
+            }}
+          />
+        </div>
+      </div>
+    </PlayerHQSkall>
   );
 }

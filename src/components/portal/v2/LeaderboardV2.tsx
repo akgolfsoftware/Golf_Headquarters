@@ -1,13 +1,13 @@
-"use client";
-import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ · Leaderboard — v2 Presis + B-pakke (din plass først, tom = logg runde).
- * Rangering etter snitt-SG siste 30 dager. T.* only.
+ * Leaderboard — snitt-SG siste 30 dager, topp 25.
+ * Gruppe- og kategori-faner styres av URL. Globalt er merket låst.
  */
 
 import Link from "next/link";
-import { fmtSg, Caps, Tittel, Kort, AvatarInit, StatusPill, TomTilstand, HjelpTips, CTAPill } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
+import { Lock, Trophy } from "lucide-react";
+import { fmtSg } from "@/lib/v2/format";
+import { TomTilstand } from "@/components/precision/pa";
+
 export type LeaderboardTab = "venner" | "klubb" | "globalt";
 export type LeaderboardSgTab = "totalt" | "approach" | "short-game" | "putting";
 
@@ -53,206 +53,126 @@ const SG_LABEL: Record<LeaderboardSgTab, string> = {
   putting: "SG PUTT",
 };
 
-const MEDALJE_FARGE: Record<NonNullable<LeaderboardRad["medalje"]>, string> = {
-  gull: "var(--tl-fill)",
-  solv: "var(--tl-mute)",
-  bronse: "var(--tl-warn)",
+const MEDALJE: Record<NonNullable<LeaderboardRad["medalje"]>, string> = {
+  gull: "Gull",
+  solv: "Sølv",
+  bronse: "Bronse",
 };
-
-function LenkePille({ href, aktiv, children }: { href: string; aktiv: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="v2-press v2-focus"
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        fontFamily: TL.font.sans,
-        fontSize: 12.5,
-        fontWeight: aktiv ? 600 : 500,
-        padding: "7px 14px",
-        borderRadius: 9999,
-        color: aktiv ? TL.onFill : TL.mute,
-        background: aktiv ? TL.fill : TL.dock,
-        border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
-        textDecoration: "none",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function SgVerdi({ sg }: { sg: number | null }) {
-  if (sg == null) return <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute }}>—</span>;
-  return (
-    <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: sg >= 0 ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
-      {fmtSg(sg)}
-    </span>
-  );
-}
 
 export function LeaderboardV2({ data }: { data: LeaderboardV2Data }) {
   const { fornavn, minRank, total, tab, sgTab, rader, meg } = data;
 
   return (
-    <div data-paper-wave-g="leaderboard" data-paper-portal-leaderboard style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Header */}
-      <div>
-        <Caps>Mål · Leaderboard · siste 30 dager</Caps>
-        <div style={{ marginTop: 10 }}>
-          {minRank != null ? (
-            <Tittel em={`#${minRank} av ${total}`}>Din plassering, {fornavn}:</Tittel>
-          ) : (
-            <Tittel em={fornavn}>Hvordan står du,</Tittel>
-          )}
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
+    <div className="ph-flate">
+      <header>
+        <p>Mål · Leaderboard · siste 30 dager</p>
+        <h1>
+          {minRank != null
+            ? `Din plassering, ${fornavn}`
+            : `Hvordan står du, ${fornavn}`}
+        </h1>
+        <p>
+          {minRank != null ? `#${minRank} av ${total}. ` : null}
           Pro · siste 30 dager · neste oppdatering søndag 23:59
         </p>
-      </div>
+      </header>
 
-      {/* Gruppe-faner (URL-styrt) */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      <div className="ph-valg" role="group" aria-label="Gruppe">
         {TABS.map((t) => (
-          <LenkePille key={t.key} href={`/portal/mal/leaderboard?tab=${t.key}&sg=${sgTab}`} aktiv={t.key === tab}>
+          <Link
+            key={t.key}
+            href={`/portal/mal/leaderboard?tab=${t.key}&sg=${sgTab}`}
+            aria-current={t.key === tab ? "page" : undefined}
+            aria-label={t.laast ? `${t.label}, låst` : undefined}
+          >
             {t.label}
-            {t.laast && <Icon name="lock" size={11} style={{ color: t.key === tab ? TL.onFill : TL.mute }} />}
-          </LenkePille>
+            {t.laast ? <Lock size={14} aria-hidden /> : null}
+          </Link>
         ))}
       </div>
 
-      {/* Din plassering */}
       {meg && (
-        <Kort tint>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: TL.font.mono, fontSize: 40, fontWeight: 700, color: TL.fill, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>
-              #{meg.rank}
-              <span style={{ fontSize: 16, fontWeight: 400, color: TL.mute }}> / {total}</span>
-            </span>
-            <AvatarInit navn={meg.navn} size={44} />
-            <div style={{ flex: 1, minWidth: 120 }}>
-              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{meg.navn}</div>
-              <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 3 }}>
-                HCP {meg.hcp} · {meg.sub}
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 22 }}>
-              <div>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                  <Caps size={9}>{SG_LABEL[sgTab]}</Caps>
-                  <HjelpTips k={sgTab === "totalt" ? "sgTotal" : "sgOmrade"} size={11} align="right" />
-                </span>
-                <div style={{ marginTop: 5 }}>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 17, fontWeight: 700, color: meg.sg != null && meg.sg >= 0 ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
-                    {meg.sg != null ? fmtSg(meg.sg) : "—"}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <Caps size={9}>Runder</Caps>
-                <div style={{ marginTop: 5 }}>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 17, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
-                    {meg.runder}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Kort>
+        <div className="ph-kpi">
+          <p className="pa-card">
+            <span>Rang</span>
+            <strong>
+              #{meg.rank} / {total}
+            </strong>
+          </p>
+          <p className="pa-card">
+            <span>{SG_LABEL[sgTab]}</span>
+            <strong>{meg.sg != null ? fmtSg(meg.sg) : "—"}</strong>
+          </p>
+          <p className="pa-card">
+            <span>Runder</span>
+            <strong>{meg.runder}</strong>
+          </p>
+          <p className="pa-card">
+            <span>HCP</span>
+            <strong>{meg.hcp}</strong>
+          </p>
+        </div>
       )}
 
-      {/* SG-kategori-faner (URL-styrt) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-          <Caps size={9}>Kategori</Caps>
-          <HjelpTips k="sgOmrade" size={11} />
-        </span>
+      <p>Kategori</p>
+      <div className="ph-valg" role="group" aria-label="Kategori">
         {SG_TABS.map((t) => (
-          <LenkePille key={t.key} href={`/portal/mal/leaderboard?tab=${tab}&sg=${t.key}`} aktiv={t.key === sgTab}>
+          <Link
+            key={t.key}
+            href={`/portal/mal/leaderboard?tab=${tab}&sg=${t.key}`}
+            aria-current={t.key === sgTab ? "page" : undefined}
+          >
             {t.label}
-          </LenkePille>
+          </Link>
         ))}
       </div>
 
-      {/* Rangering */}
       {rader.length === 0 ? (
-        <Kort>
+        <>
           <TomTilstand
-            icon="trophy"
+            icon={Trophy}
             title="Ingen rangering ennå"
-            sub="Registrer runder med SG — da dukker plasseringen din opp her."
+            text="Registrer runder med SG — da dukker plasseringen din opp her."
           />
-          <div style={{ marginTop: 12 }}>
-            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
-                Start live-føring
-              </CTAPill>
-            </Link>
-          </div>
-        </Kort>
+          <Link href="/portal/runde/live" className="pa-btn pa-btn--primary pa-btn--full">
+            Start live-føring
+          </Link>
+        </>
       ) : (
-        <Kort pad="6px 20px">
-          {/* Kolonnehode */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0 8px", borderBottom: `1px solid ${TL.hair}` }}>
-            <Caps size={9} style={{ width: 40 }}>Rang</Caps>
-            <Caps size={9} style={{ flex: 1 }}>Spiller</Caps>
-            <span style={{ width: 56, display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
-              <Caps size={9}>HCP</Caps>
-              <HjelpTips k="hcp" size={10} align="right" />
-            </span>
-            <Caps size={9} style={{ width: 64, textAlign: "right" }}>{SG_LABEL[sgTab]}</Caps>
-            <Caps size={9} style={{ width: 52, textAlign: "right" }}>Runder</Caps>
-            <span style={{ width: 14 }} />
-          </div>
-          {rader.map((r, i) => (
-            <Link key={r.id} href={`/portal/spiller/${r.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <div
-                className="v2-row-h"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "11px 10px",
-                  margin: "0 -10px",
-                  borderRadius: 10,
-                  borderBottom: i === rader.length - 1 ? "none" : `1px solid ${TL.hair}`,
-                  cursor: "pointer",
-                  background: r.meg ? `color-mix(in srgb, ${TL.fill} 6%, transparent)` : undefined,
-                }}
-              >
-                <span style={{ width: 40, display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 13.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
-                  {r.rank}
-                  {r.medalje && <Icon name="trophy" size={13} style={{ color: MEDALJE_FARGE[r.medalje] }} />}
-                </span>
-                <AvatarInit navn={r.navn} size={30} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                    <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <section className="pa-card ph-kort">
+          <p>Rangering · {SG_LABEL[sgTab]}</p>
+          <ul className="ph-rader">
+            {rader.map((r) => (
+              <li key={r.id}>
+                <Link href={`/portal/spiller/${r.id}`}>
+                  <span>
+                    <strong>
                       {r.navn}
-                    </span>
-                    {r.meg && <StatusPill>Deg</StatusPill>}
-                  </div>
-                  <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {r.sub}
-                  </div>
-                </div>
-                <span style={{ width: 56, textAlign: "right", fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{r.hcp}</span>
-                <span style={{ width: 64, textAlign: "right" }}><SgVerdi sg={r.sg} /></span>
-                <span style={{ width: 52, textAlign: "right", fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{r.runder}</span>
-                <Icon name="chevron-right" size={14} style={{ color: TL.mute, flex: "none" }} />
-              </div>
-            </Link>
-          ))}
-        </Kort>
+                      {r.meg ? " · Deg" : ""}
+                    </strong>
+                    <small>
+                      #{r.rank}
+                      {r.medalje ? ` · ${MEDALJE[r.medalje]}` : ""}
+                      {" · "}
+                      {r.sub}
+                      {" · HCP "}
+                      {r.hcp}
+                      {" · "}
+                      {r.runder} runder
+                    </small>
+                  </span>
+                  <b>{r.sg != null ? fmtSg(r.sg) : "—"}</b>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {rader.length > 0 && (
-        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
+        <p>
           Viser 1–{rader.length} av {total} medlemmer
-        </span>
+        </p>
       )}
     </div>
   );

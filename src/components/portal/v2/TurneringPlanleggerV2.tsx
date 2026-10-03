@@ -1,25 +1,15 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Turneringer — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-turneringer.html.
- *
- * Struktur per fasit: «Én ting nå» (nærmeste påmeldingsfrist i planen,
- * clay-CTA «Åpne påmeldingen» → detaljsiden — påmelding skjer ALDRI fra
- * lista) → «påmeldt · N» → «katalogen» → eier-note. Radformat: dato-blokk
- * (dag/mnd) + navn + mono-meta + plan-tag A/B/C.
- *
- * Plan-taggen er interaktiv (Enkelhet: behold funksjoner): tapp legger
- * turneringen i plan (leggTilTurnering) eller bytter nivå A→B→C
- * (settPlanTier). Resultater er alltid BRUTTO (bæres av loaderen).
+ * Turneringsplan. Tapp på plan-taggen legger inn turneringen eller bytter A→B→C.
+ * Påmelding åpnes bare på detaljsiden — aldri fra lista. Resultater er brutto.
  */
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Caps } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
+import { Flag, Pencil, Sparkles } from "lucide-react";
+import { TomTilstand } from "@/components/precision/pa";
 import type {
   PlanleggerTurnering,
   PlanTier,
@@ -47,7 +37,7 @@ function dagBlokk(d: Date): { dag: string; mnd: string } {
   };
 }
 
-/** «frist 20.08» — kompakt fristvisning i mono-metaen. */
+/** «frist 20.08» — kompakt fristvisning. */
 function fristKort(d: Date): string {
   return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
@@ -61,7 +51,6 @@ function erPaameldt(t: PlanleggerTurnering): boolean {
   );
 }
 
-/** Fasitens .turn-rad: dato-blokk + navn + mono-meta + plan-tag. */
 function TurnRad({
   t,
   meta,
@@ -75,80 +64,31 @@ function TurnRad({
 }) {
   const { dag, mnd } = dagBlokk(t.startDate);
   const tier = t.entry?.planTier ?? null;
+  const linje = [`${dag} ${mnd}`, meta].filter(Boolean).join(" · ");
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        background: TL.elev,
-        border: `1px solid ${TL.hair}`,
-        borderRadius: TL.radius.card,
-        padding: "12px 16px",
-        marginBottom: 8,
-        minWidth: 0,
-      }}
-    >
-      <Link
-        href={`/portal/tren/turneringer/${t.id}`}
-        className="v2-focus"
-        style={{
-          flex: 1,
-          minWidth: 0,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          textDecoration: "none",
-          color: "inherit",
-        }}
-      >
-        <span style={{ flex: "none", width: 44, textAlign: "center" }}>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
-            {dag}
-          </span>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9.5, textTransform: "uppercase", color: TL.mute }}>
-            {mnd}
-          </span>
-        </span>
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, fontFamily: TL.font.sans, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {t.name}
-          </span>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {meta}
-          </span>
+    <>
+      <Link href={`/portal/tren/turneringer/${t.id}`}>
+        <span>
+          <strong>{t.name}</strong>
+          <small>{linje}</small>
         </span>
       </Link>
       <button
         type="button"
         disabled={pending}
+        aria-busy={pending || undefined}
         onClick={onTag}
         aria-label={
           tier
             ? `Plan ${tier} — tapp for å bytte nivå`
             : "Legg turneringen i planen din"
         }
-        className="v2-focus"
-        style={{
-          flex: "none",
-          display: "inline-flex",
-          alignItems: "center",
-          padding: "3px 8px",
-          minHeight: 28,
-          borderRadius: TL.radius.pill,
-          fontFamily: TL.font.mono,
-          fontSize: 10,
-          letterSpacing: "0.04em",
-          textTransform: "uppercase",
-          background: TL.dock,
-          color: tier === "A" ? TL.viz.target : TL.mute,
-          border: `1px solid ${TL.hair}`,
-          cursor: pending ? "wait" : "pointer",
-        }}
       >
-        {tier ? `plan ${tier}` : "+ plan"}
+        <span>
+          <strong>{tier ? `plan ${tier}` : "+ plan"}</strong>
+        </span>
       </button>
-    </div>
+    </>
   );
 }
 
@@ -177,8 +117,8 @@ export function TurneringPlanleggerV2({
     });
   }
 
-  // «Én ting nå»: nærmeste kommende påmeldingsfrist i planen der spilleren
-  // IKKE er påmeldt ennå. Ingen kandidat → blokken utelates ærlig.
+  // Nærmeste kommende påmeldingsfrist i planen der spilleren ikke er påmeldt.
+  // Ingen kandidat → blokken utelates.
   const frist = minPlan
     .filter(
       (t) =>
@@ -194,222 +134,122 @@ export function TurneringPlanleggerV2({
   const planTom = minPlan.length === 0;
 
   return (
-    <div
-      data-paper-slug="playerhq-turneringer"
-      data-od-id="playerhq-turneringer"
-      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
-    >
+    <div className="ph-flate">
+      <header>
+        <p>Tren · Turneringer</p>
+        <h1>Turneringer</h1>
+        <p>Planen din + katalogen · brutto score</p>
+      </header>
+
       {feil && (
-        <div
-          role="alert"
-          style={{
-            padding: "12px 14px",
-            borderRadius: TL.radius.card,
-            border: `1px solid color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})`,
-            background: `color-mix(in srgb, ${TL.warn} 10%, ${TL.dock})`,
-            fontFamily: TL.font.sans,
-            fontSize: 13,
-            color: TL.text,
-          }}
-        >
-          {feil}
-        </div>
+        <p role="alert">{feil}</p>
       )}
 
-      {/* Én ting nå — nærmeste påmeldingsfrist (kun når den finnes) */}
       {frist && frist.entryClosesLabel && (
-        <div
-          style={{
-            background: TL.dim,
-            border: `1px solid ${TL.hair}`,
-            borderRadius: TL.radius.card,
-            padding: 16,
-          }}
-        >
-          <Caps>Én ting nå</Caps>
-          <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+        <section className="pa-card ph-kort">
+          <p>Én ting nå</p>
+          <strong>
             Påmeldingsfristen for {frist.name} går ut {frist.entryClosesLabel}
-          </h3>
-          <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
+          </strong>
+          <div>
             {frist.venue ? `${frist.venue} ` : ""}
             {fristKort(frist.startDate)}. Turneringen står som plan{" "}
             {frist.entry?.planTier ?? "B"} i sesongplanen din, men du er ikke
             påmeldt ennå. Påmeldingen er din — to trykk på detaljsiden.
-          </p>
-          {/* Kontrakt §3: skjermens ene aksenthandling — åpner detaljsiden der
-              dobbel bekreftelse skjer. Påmelding skjer aldri fra lista. */}
+          </div>
           <Link
             href={`/portal/tren/turneringer/${frist.id}`}
-            data-od-id="turn-frist-apne"
-            data-paper-en-ting="true"
-            className="v2-press v2-focus"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 56,
-              width: "100%",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
-              fontSize: 14,
-              fontWeight: 600,
-            }}
+            className="pa-btn pa-btn--primary pa-btn--full"
           >
             Åpne påmeldingen
           </Link>
-        </div>
+        </section>
       )}
 
-      {/* Tom plan — fasit-copy; katalogen vises fortsatt under */}
       {planTom && (
-        <div
-          style={{
-            padding: "24px 16px",
-            background: TL.dock,
-            border: `1px dashed ${TL.hair}`,
-            borderRadius: TL.radius.card,
-          }}
-        >
-          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-            Ingen turneringer i planen din
-          </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-            Sesongplanen din har ingen turneringer ennå. Katalogen under viser
-            hva som finnes — eller be Anders foreslå en turneringsplan.
-          </p>
-          <Link
-            href="/portal"
-            data-od-id="turn-tom-be"
-            data-paper-en-ting="true"
-            className="v2-press v2-focus"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 56,
-              width: "100%",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
+        <>
+          <TomTilstand
+            icon={Flag}
+            title="Ingen turneringer i planen din"
+            text="Sesongplanen din har ingen turneringer ennå. Katalogen under viser hva som finnes — eller be Anders foreslå en turneringsplan."
+          />
+          <Link href="/portal" className="pa-btn pa-btn--primary pa-btn--full">
             Be Anders om turneringsplan
           </Link>
-        </div>
+        </>
       )}
 
-      {/* Påmeldt */}
       {paameldt.length > 0 && (
-        <div>
-          <Caps>påmeldt · {paameldt.length}</Caps>
-          <div style={{ marginTop: 8 }}>
+        <section className="pa-card ph-kort">
+          <p>påmeldt · {paameldt.length}</p>
+          <ul className="ph-rader">
             {paameldt.map((t) => (
-              <TurnRad
-                key={t.id}
-                t={t}
-                meta={[
-                  t.venue,
-                  `plan ${t.entry!.planTier}`,
-                  t.entry!.entryStatus === "CONFIRMED"
-                    ? "påmeldt"
-                    : "venter bekreftelse",
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-                pending={pending}
-                onTag={() => tagTapp(t)}
-              />
+              <li key={t.id}>
+                <TurnRad
+                  t={t}
+                  meta={[
+                    t.venue,
+                    `plan ${t.entry!.planTier}`,
+                    t.entry!.entryStatus === "CONFIRMED"
+                      ? "påmeldt"
+                      : "venter bekreftelse",
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                  pending={pending}
+                  onTag={() => tagTapp(t)}
+                />
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
 
-      {/* Videre-lenke — AI-forslag basert på HCP + katalog. Ordinær rad,
-          ingen ny clay-CTA (skjermen har allerede sin ene i «Én ting nå»). */}
-      <Link
-        href="/portal/ai/foresla-turnering"
-        data-od-id="turn-ai-foresla"
-        className="v2-press v2-focus"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          background: TL.elev,
-          border: `1px solid ${TL.hair}`,
-          borderRadius: TL.radius.card,
-          padding: "12px 16px",
-          textDecoration: "none",
-          color: "inherit",
-        }}
-      >
-        <Icon name="sparkles" size={16} style={{ color: TL.mute, flex: "none" }} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
-            La AI foreslå turneringer
-          </span>
-          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
-            Rangert etter nivået og planen din
-          </span>
-        </div>
-        <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
-      </Link>
+      <ul className="ph-rader">
+        <li>
+          <Link href="/portal/ai/foresla-turnering">
+            <Sparkles size={16} aria-hidden />
+            <span>
+              <strong>La AI foreslå turneringer</strong>
+              <small>Rangert etter nivået og planen din</small>
+            </span>
+          </Link>
+        </li>
+      </ul>
 
-      {/* Katalogen */}
-      <div>
-        <Caps>katalogen · {iKatalogen.length}</Caps>
-        <div style={{ marginTop: 8 }}>
-          {iKatalogen.length === 0 ? (
-            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-              Ingen kommende turneringer i katalogen akkurat nå — den fylles av
-              GolfBox-synken.
-            </p>
-          ) : (
-            iKatalogen.map((t) => (
-              <TurnRad
-                key={t.id}
-                t={t}
-                meta={[
-                  t.venue,
-                  t.entryCloses ? `frist ${fristKort(t.entryCloses)}` : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-                pending={pending}
-                onTag={() => tagTapp(t)}
-              />
-            ))
-          )}
-        </div>
-      </div>
+      <section className="pa-card ph-kort">
+        <p>katalogen · {iKatalogen.length}</p>
+        {iKatalogen.length === 0 ? (
+          <div>
+            Ingen kommende turneringer i katalogen akkurat nå — den fylles av
+            GolfBox-synken.
+          </div>
+        ) : (
+          <ul className="ph-rader">
+            {iKatalogen.map((t) => (
+              <li key={t.id}>
+                <TurnRad
+                  t={t}
+                  meta={[
+                    t.venue,
+                    t.entryCloses ? `frist ${fristKort(t.entryCloses)}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                  pending={pending}
+                  onTag={() => tagTapp(t)}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
-      {/* Eier-note — påmelding er spillerens ansvar */}
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          padding: "12px 16px",
-          borderRadius: TL.radius.card,
-          background: TL.dock,
-          border: `1px solid ${TL.hair}`,
-          fontFamily: TL.font.sans,
-          fontSize: 12.5,
-          color: TL.mute,
-        }}
-      >
-        <Icon name="pencil" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
-        <span>
-          Påmelding og avmelding er ditt ansvar — appen minner deg om frister,
-          men trykker aldri for deg. Anders ser planen din og gir råd, ikke
-          pålegg.
-        </span>
-      </div>
+      <p>
+        <Pencil size={14} aria-hidden /> Påmelding og avmelding er ditt ansvar — appen
+        minner deg om frister, men trykker aldri for deg. Anders ser planen din og gir
+        råd, ikke pålegg.
+      </p>
     </div>
   );
 }

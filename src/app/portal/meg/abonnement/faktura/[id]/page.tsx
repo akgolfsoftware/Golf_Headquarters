@@ -1,16 +1,15 @@
-/**
- * PlayerHQ · Meg · Abonnement · Faktura-detalj — v2.
- * v2-port 17. juli 2026 (Team D4a): MegFakturaV2 erstatter Tailwind-siden.
+/** PH25Faktura — fakturadetalj i PlayerHQSkall.
  * Auth, Prisma-oppslaget (kun brukerens egne Payments), status-mapping og
- * netto/mva-utregningen er uendret — kun presentasjonslaget er nytt.
- * PDF-genereringen (faktura-document.tsx, actions.tsx, pdf/route.tsx) er
- * bevisst IKKE rørt; knappene (faktura-actions.tsx) sendes inn som slot.
+ * netto/mva-utregningen er uendret. PDF-ruten og e-post-actionen er urørt.
  */
+import Link from "next/link";
+import { FileText } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, TomTilstand, Kort } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { TomTilstand } from "@/components/precision/pa";
 import { MegFakturaV2, type MegFakturaData } from "@/components/portal/v2/MegFakturaV2";
 import { LastNedPdfKnapp, SendEpostKnapp } from "./faktura-actions";
 
@@ -33,34 +32,39 @@ export default async function FakturaDetaljPage({
   const { id } = await params;
 
   // Hent faktisk Payment fra DB (kun brukerens egne).
-  const payment = await prisma.payment.findFirst({
-    where: { id, userId: user.id },
-    select: {
-      id: true,
-      amountOre: true,
-      status: true,
-      paidAt: true,
-      createdAt: true,
-      type: true,
-      description: true,
-      stripeChargeId: true,
-      stripeInvoiceId: true,
-    },
-  });
+  const [payment, ulest] = await Promise.all([
+    prisma.payment.findFirst({
+      where: { id, userId: user.id },
+      select: {
+        id: true,
+        amountOre: true,
+        status: true,
+        paidAt: true,
+        createdAt: true,
+        type: true,
+        description: true,
+        stripeChargeId: true,
+        stripeInvoiceId: true,
+      },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   // Ingen ekte faktura med denne id-en på brukeren — vis ærlig "ikke funnet".
   if (!payment) {
     return (
-      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="file-text"
-            title="Faktura ikke funnet"
-            sub="Vi fant ingen faktura med denne ID-en på kontoen din."
-          />
-        </Kort>
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+        <div className="pa-side">
+          <div className="ph-flate">
+            <Link href="/portal/meg/abonnement" className="ph-tilbake">Abonnement</Link>
+            <TomTilstand
+              icon={FileText}
+              title="Faktura ikke funnet"
+              text="Vi fant ingen faktura med denne ID-en på kontoen din."
+            />
+          </div>
+        </div>
+      </PlayerHQSkall>
     );
   }
 
@@ -106,21 +110,22 @@ export default async function FakturaDetaljPage({
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
-      <MegFakturaV2
-        data={data}
-        handlinger={
-          <>
-            <PrintButton
-              label="Skriv ut"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--tl-hair)] bg-[var(--tl-dim)] px-4 py-2 text-[12.5px] font-semibold text-[var(--tl-text)]"
-            />
-            <SendEpostKnapp paymentId={payment.id} />
-            <LastNedPdfKnapp paymentId={payment.id} />
-          </>
-        }
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <MegFakturaV2
+          data={data}
+          handlinger={
+            <>
+              <PrintButton
+                label="Skriv ut"
+                className="pa-btn pa-btn--secondary pa-btn--full"
+              />
+              <SendEpostKnapp paymentId={payment.id} />
+              <LastNedPdfKnapp paymentId={payment.id} />
+            </>
+          }
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

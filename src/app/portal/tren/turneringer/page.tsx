@@ -1,15 +1,13 @@
 /**
- * PlayerHQ · Turneringer (/portal/tren/turneringer) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-turneringer.html.
- * Planen din + katalogen · brutto score. Påmelding skjer ALDRI fra lista —
- * dobbel bekreftelse bor på detaljsiden (spilleransvar).
+ * PH22Turnering — turneringsplan i PlayerHQSkall.
+ * Planen din + katalogen · brutto score. Påmelding skjer aldri fra lista.
  */
 
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 
 import {
   loadPlanleggerKatalog,
@@ -24,36 +22,22 @@ export default async function TurneringerPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [katalog, minPlan] = await Promise.all([
+  const [katalog, minPlan, ulest] = await Promise.all([
     loadPlanleggerKatalog(user.id),
     loadMinTurneringsplan(user.id),
+    getUnreadNotifications(user.id, 1),
   ]);
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="plan"
-      nav={PLAYERHQ_NAV}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
-      <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
-      <div style={{ maxWidth: 720, margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: 16 }}>
-        {/* Topp — fasit: Turneringer / Planen din + katalogen · brutto score */}
-        <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
-            Turneringer
-          </h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            Planen din + katalogen · brutto score
-          </span>
-        </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/tren" className="ph-tilbake">Tren</Link>
         <TurneringPlanleggerV2
           katalog={katalog}
           minPlan={minPlan}
           spillerNavn={user.name}
         />
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

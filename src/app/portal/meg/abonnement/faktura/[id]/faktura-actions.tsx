@@ -1,13 +1,11 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
 // Knapper for faktura-detalj: "Last ned PDF" (lenke til pdf-ruten) og
 // "Send på e-post" (server action med inline-tilbakemelding).
-// v2-port 17. juli 2026 (Team D4a): kun presentasjon — actionen
-// (sendFakturaPaaEpost) og pdf-ruten er uendret.
+// Actionen (sendFakturaPaaEpost) og pdf-ruten er uendret.
 
 import { useState, useTransition } from "react";
-import { CTAPill, Knapp, Icon } from "@/components/v2";
+import { Knapp, StatusPille } from "@/components/precision/pa";
 import { sendFakturaPaaEpost } from "./actions";
 
 export function LastNedPdfKnapp({ paymentId }: { paymentId: string }) {
@@ -15,9 +13,9 @@ export function LastNedPdfKnapp({ paymentId }: { paymentId: string }) {
     <a
       href={`/portal/meg/abonnement/faktura/${paymentId}/pdf`}
       download
-      style={{ textDecoration: "none" }}
+      className="pa-btn pa-btn--secondary pa-btn--full"
     >
-      <CTAPill icon="download">Last ned PDF</CTAPill>
+      Last ned PDF
     </a>
   );
 }
@@ -41,30 +39,21 @@ export function SendEpostKnapp({ paymentId }: { paymentId: string }) {
   }
 
   return (
-    <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+    <>
       <Knapp
-        ghost
+        type="button"
+        variant="secondary"
+        fullWidth
         disabled={pending}
+        loading={pending}
+        loadingText="Sender …"
         onClick={send}
-        icon={pending ? "loader" : status?.type === "ok" ? "check" : "mail"}
       >
         Send på e-post
       </Knapp>
       {status && (
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            fontFamily: TL.font.mono,
-            fontSize: 10.5,
-            color: status.type === "ok" ? TL.ok : TL.danger,
-          }}
-        >
-          {status.type === "feil" && <Icon name="alert-triangle" size={11} />}
-          {status.melding}
-        </span>
+        <StatusPille tone={status.type === "ok" ? "ok" : "warn"}>{status.melding}</StatusPille>
       )}
-    </span>
+    </>
   );
 }

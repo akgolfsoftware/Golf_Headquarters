@@ -1,14 +1,10 @@
-"use client";
-import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ · Talent · Roadmap — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys PlayerHQ.
+ * PlayerHQ · Talent · Roadmap.
+ * Faser, turneringer og milepæler fra sesongplanen. Tomt peker til Workbench.
  */
 
-import Link from "next/link";
-import { Kort, Rad, StatusPill, KpiFlis, TomTilstand, HjelpTips } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
-/* ── Data-kontrakt ─────────────────────────────────────────────────── */
+import { Calendar, Circle, CircleCheck, Map, Trophy } from "lucide-react";
+import { Ikon, KnappLenke, StatusPille, TomTilstand } from "@/components/precision/pa";
 
 export interface TalentRoadmapData {
   niva: string;
@@ -24,148 +20,112 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
     data.faser.length === 0 && data.turneringer.length === 0 && data.milepaeler.length === 0;
 
   return (
-    <div data-paper-wave-g="talentroadmap" data-paper-portal-talent-roadmap data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* PRE-BETA — ærlig merking */}
-      <Kort pad="12px 18px">
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <StatusPill tone="warn">Pre-beta</StatusPill>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
-            Sesongplan-funksjonen er under utbygging.
-          </span>
-        </div>
-      </Kort>
+    <div className="ph-flate">
+      <section className="pa-card ph-kort">
+        <StatusPille tone="warn">Pre-beta</StatusPille>
+        <small>Sesongplan-funksjonen er under utbygging.</small>
+      </section>
 
-      {/* Hode */}
-      <div>
-        <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Roadmap</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Talent</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
-          <StatusPill tone="lime">Nivå {data.niva}</StatusPill>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Sesong {data.ar}</span>
-        </div>
+      <header>
+        <p>Talent</p>
+        <h1>Roadmap</h1>
+        <p>Sesong {data.ar}</p>
+      </header>
+      <StatusPille tone="ok">Nivå {data.niva}</StatusPille>
+
+      <div className="ph-kpi">
+        <p className="pa-card">
+          <span>Faser i sesongplan</span>
+          <strong>{data.faser.length}</strong>
+        </p>
+        <p className="pa-card">
+          <span>Turneringer planlagt</span>
+          <strong>{data.turneringer.length}</strong>
+        </p>
+        <p className="pa-card">
+          <span>Milepæler registrert</span>
+          <strong>{data.milepaeler.length}</strong>
+        </p>
       </div>
 
-      {/* KPI-strip — ekte tellinger */}
-      <div className="grid grid-cols-3" style={{ gap: 16 }}>
-        <KpiFlis label="Faser i sesongplan" value={data.faser.length} instant />
-        <KpiFlis label="Turneringer planlagt" value={data.turneringer.length} instant />
-        <KpiFlis label="Milepæler registrert" value={data.milepaeler.length} instant />
-      </div>
-
-      {/* Faser fra sesongplan */}
-      <Kort
-        eyebrow={
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            Sesongplan · faser <HjelpTips k="lFase" size={11} />
-          </span>
-        }
-      >
+      <section className="pa-card ph-kort">
+        <p>Sesongplan · faser</p>
         {data.faser.length === 0 ? (
           <>
             <TomTilstand
-              icon="calendar"
+              icon={Calendar}
               title={`Ingen sesongplan for ${data.ar} ennå`}
-              sub="Faser dukker opp her når planen er lagt i Workbench."
+              text="Faser dukker opp her når planen er lagt i Workbench."
+              actions={
+                <KnappLenke href="/portal/planlegge/workbench?zoom=uke" fullWidth>
+                  Åpne Workbench
+                </KnappLenke>
+              }
             />
-            <div style={{ marginTop: 12 }}>
-              <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-                <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
-              }}>Åpne Workbench
-                </span>
-              </Link>
-            </div>
           </>
         ) : (
-          <div>
-            {data.faser.map((fase, i) => (
-              <Rad
-                key={fase.id}
-                title={fase.navn}
-                sub={fase.fokus ?? undefined}
-                meta={
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, flex: "none" }}>{fase.periode}</span>
-                }
-                trailing={null}
-                last={i === data.faser.length - 1}
-              />
+          <ul>
+            {data.faser.map((fase) => (
+              <li key={fase.id}>
+                <span>
+                  <strong>{fase.navn}</strong>
+                  {fase.fokus && <small>{fase.fokus}</small>}
+                </span>
+                <small>{fase.periode}</small>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
-      </Kort>
+      </section>
 
-      {/* Turneringer */}
       {data.turneringer.length > 0 && (
-        <Kort eyebrow="Planlagte turneringer">
-          <div>
-            {data.turneringer.map((t, i) => (
-              <Rad
-                key={t.id}
-                leading={<Icon name="trophy" size={15} style={{ color: TL.fill, flex: "none" }} />}
-                title={t.navn}
-                meta={
-                  t.datoTekst ? (
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, flex: "none" }}>{t.datoTekst}</span>
-                  ) : undefined
-                }
-                trailing={null}
-                last={i === data.turneringer.length - 1}
-              />
+        <section className="pa-card ph-kort">
+          <p>Planlagte turneringer</p>
+          <ul>
+            {data.turneringer.map((t) => (
+              <li key={t.id}>
+                <Ikon icon={Trophy} size={18} />
+                <span>
+                  <strong>{t.navn}</strong>
+                </span>
+                {t.datoTekst && <small>{t.datoTekst}</small>}
+              </li>
             ))}
-          </div>
-        </Kort>
+          </ul>
+        </section>
       )}
 
-      {/* Milepæler */}
       {data.milepaeler.length > 0 && (
-        <Kort eyebrow="Personlige milepæler">
-          <div>
+        <section className="pa-card ph-kort">
+          <p>Personlige milepæler</p>
+          <ul>
             {data.milepaeler.map((m, i) => (
-              <Rad
-                key={`${m.tittel}-${i}`}
-                leading={
-                  <Icon
-                    name={m.oppnadd ? "check-circle" : "circle"}
-                    size={17}
-                    style={{ color: m.oppnadd ? TL.ok : TL.mute, flex: "none" }}
-                  />
-                }
-                title={m.tittel}
-                sub={m.beskrivelse ?? undefined}
-                meta={
-                  m.datoTekst ? (
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, flex: "none" }}>{m.datoTekst}</span>
-                  ) : undefined
-                }
-                trailing={null}
-                last={i === data.milepaeler.length - 1}
-              />
+              <li key={`${m.tittel}-${i}`}>
+                <Ikon icon={m.oppnadd ? CircleCheck : Circle} size={18} />
+                <span>
+                  <strong>{m.tittel}</strong>
+                  {m.beskrivelse && <small>{m.beskrivelse}</small>}
+                </span>
+                {m.datoTekst && <small>{m.datoTekst}</small>}
+              </li>
             ))}
-          </div>
-        </Kort>
+          </ul>
+        </section>
       )}
 
-      {/* Alt tomt */}
       {altTomt && (
-        <Kort>
+        <section className="pa-card ph-kort">
           <TomTilstand
-            icon="map"
+            icon={Map}
             title="Ingen roadmap-data registrert ennå"
-            sub="Faser, turneringer og milepæler dukker opp når planen legges."
+            text="Faser, turneringer og milepæler dukker opp når planen legges."
+            actions={
+              <KnappLenke href="/portal/planlegge/workbench?zoom=uke" fullWidth>
+                Åpne Workbench
+              </KnappLenke>
+            }
           />
-          <div style={{ marginTop: 12 }}>
-            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-              <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
-              }}>Åpne Workbench
-              </span>
-            </Link>
-          </div>
-        </Kort>
+        </section>
       )}
     </div>
   );

@@ -1,15 +1,12 @@
-/**
- * PlayerHQ · Meg · Abonnement · Avbestill (/portal/meg/abonnement/avbestill) — v2.
- * v2-port 17. juli 2026 (Team D4a): MegAvbestillV2 erstatter den gamle
- * Tailwind-siden + avbestill-buttons.tsx. Auth, Prisma-oppslaget og
- * dato-/dager-avledningen er uendret; cancelPro-actionen (Stripe FØR DB,
- * gotchas.md) er IKKE rørt — kun presentasjonslaget er nytt.
+/** PH25Avbestill — avbestill abonnement i PlayerHQSkall.
+ * Auth, Prisma-oppslaget og dato-/dager-avledningen er uendret.
+ * cancelPro (Stripe før database) ligger i actions.ts.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import {
   MegAvbestillV2,
   type MegAvbestillData,
@@ -27,9 +24,12 @@ function datoDag(d: Date) {
 export default async function AvbestillPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   // A1: vis raden med Stripe-kobling (den som faktisk kan avbestilles).
-  const subscription = await prisma.subscription.findFirst({
-    where: { userId: user.id, stripeSubscriptionId: { not: null } },
-  });
+  const [subscription, ulest] = await Promise.all([
+    prisma.subscription.findFirst({
+      where: { userId: user.id, stripeSubscriptionId: { not: null } },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
   const naa = new Date();
   const proAktivTil =
     subscription?.currentPeriodEnd ?? new Date(naa.getTime() + 31 * 24 * 60 * 60 * 1000);
@@ -64,9 +64,10 @@ export default async function AvbestillPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
-      <MegAvbestillV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <MegAvbestillV2 data={data} />
+      </div>
+    </PlayerHQSkall>
   );
 }

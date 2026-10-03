@@ -1,44 +1,19 @@
 /**
- * PlayerHQ · Gameplan-banekart (/portal/gameplan/[baneId]).
- *
- * Fasit: designsystem/train-lock/GP-02 Gameplan Onsoy.dc.html (hull 1-5
- * kart + liste-mønsteret). Siden bruker allerede kun TL.* (PX-6, 29.08.2026
- * — Paper-fasit-referansen under er historisk, komponenten er token-ren).
- *
-
- * Struktur per fasit: tilbake «‹ Gameplan» → topp (banenavn / «Banekart») →
- * merknad («N hull kartlagt · par X») → kartpanel (Mapbox-satellitt med
- * tee/green per hull — CourseMap gjenbrukes som den er) → hull-liste
- * (circlenum · «Par X · Y m» · slag plottet · chevron) med hull-for-hull-
- * navigasjon til /hull/[nr]. Tom tilstand («bane uten kartdata») med
- * fasit-copy. Ingen clay-CTA — fasiten har ingen. Alle tall fra databasen.
- * Strategivalg (buffer/presisjonsstrategi) og why-details bor på
- * hull-detalj-flaten (/hull/[nr]) — utenfor denne fasitens skjerm.
+ * PH20Bane — banekart i PlayerHQSkall.
+ * Hull, par, lengde og kart kommer fra getBaneOverview. Tomt når banen ikke er kartlagt.
  */
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ChevronRight, MapPin } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { getBaneOverview } from "@/lib/gameplan/queries";
 import { CourseMap, type CourseMapHole } from "@/components/gameplan/course-map";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Kort, Rad, TomTilstand, TilbakeLenke } from "@/components/v2";
-import type { CSSProperties } from "react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { TomTilstand } from "@/components/precision/pa";
 
 export const dynamic = "force-dynamic";
-
-/** Fasitens `.merknad` — Lora-prosa på soft flate. */
-const MERKNAD: CSSProperties = {
-  fontFamily: TL.font.sans,
-  fontSize: 12,
-  color: TL.mute,
-  padding: "8px 12px",
-  background: TL.dock,
-  borderRadius: 8,
-  margin: 0,
-};
 
 export default async function BaneOverviewPage({
   params,
@@ -47,7 +22,10 @@ export default async function BaneOverviewPage({
 }) {
   const { baneId } = await params;
   const user = await requirePortalUser();
-  const data = await getBaneOverview(baneId, user.id);
+  const [data, ulest] = await Promise.all([
+    getBaneOverview(baneId, user.id),
+    getUnreadNotifications(user.id, 1),
+  ]);
   if (!data) notFound();
   const { bane, holes, parSum } = data;
 
@@ -64,89 +42,61 @@ export default async function BaneOverviewPage({
   }));
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gameplan">Gameplan</TilbakeLenke>
-      <div
-        data-paper-slug="playerhq-gameplan-banekart"
-        data-od-id="playerhq-gameplan-banekart"
-        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
-      >
-        {/* Topp per fasit: banenavn som tittel, «Banekart» som sub */}
-        <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
-            {bane.navn}
-          </h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            Banekart
-          </span>
-        </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/gameplan" className="ph-tilbake">Gameplan</Link>
+          <header>
+            <p>Banekart</p>
+            <h1>{bane.navn}</h1>
+            <p>
+              {harData
+                ? `${holes.length} hull kartlagt${parSum > 0 ? ` · par ${parSum}` : ""}`
+                : "Banen er ikke kartlagt ennå."}
+            </p>
+          </header>
 
-        {/* Merknad — kartlagt-status i klarspråk */}
-        <p style={MERKNAD}>
-          {harData
-            ? `${holes.length} hull kartlagt${parSum > 0 ? ` · par ${parSum}` : ""}`
-            : "Banen er ikke kartlagt ennå."}
-        </p>
-
-        {/* Kartpanel — Mapbox-satellitt med tee/green per hull (fasitens mapph) */}
-        {harData && harKart && (
-          <div style={{ border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, overflow: "hidden" }}>
-            <CourseMap
-              center={{ lat: bane.latitude!, lng: bane.longitude! }}
-              geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-              holes={mapHoles}
-              className="h-[220px] w-full"
-            />
-          </div>
-        )}
-
-        {/* Hull-liste / tom tilstand */}
-        <Kort eyebrow="Hull" pad={harData ? "16px 18px 6px" : undefined}>
-          {harData ? (
-            holes.map((h, i) => (
-              <Link
-                key={h.id}
-                href={`/portal/gameplan/${bane.id}/hull/${h.holeNumber}`}
-                data-od-id={`banekart-hull-${h.holeNumber}`}
-                style={{ textDecoration: "none", display: "block" }}
-              >
-                <Rad
-                  last={i === holes.length - 1}
-                  leading={
-                    <span
-                      style={{
-                        display: "grid",
-                        placeItems: "center",
-                        width: 32,
-                        height: 32,
-                        flex: "none",
-                        borderRadius: 9999,
-                        background: TL.dock,
-                        border: `1px solid ${TL.hair}`,
-                        fontFamily: TL.font.mono,
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: TL.text,
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {h.holeNumber}
-                    </span>
-                  }
-                  title={`${h.par ? `Par ${h.par}` : "Par –"}${h.lengthMeter ? ` · ${h.lengthMeter} m` : ""}`}
-                  sub={h.shotCount > 0 ? `${h.shotCount} slag plottet` : "ingen slag plottet"}
-                />
-              </Link>
-            ))
-          ) : (
-            <TomTilstand
-              icon="map-pin"
-              title="Ingen hull kartlagt ennå"
-              sub="Geometri legges inn av AK Golf HQ når banen er lagt til i systemet."
-            />
+          {harData && harKart && (
+            <section className="pa-card" aria-label="Kart">
+              <CourseMap
+                center={{ lat: bane.latitude!, lng: bane.longitude! }}
+                geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
+                holes={mapHoles}
+                className="h-[220px] w-full"
+              />
+            </section>
           )}
-        </Kort>
+
+          <section className="pa-card">
+            <div className="ph-kort">
+              <p>Hull</p>
+              {!harData && (
+                <TomTilstand
+                  icon={MapPin}
+                  title="Ingen hull kartlagt ennå"
+                  text="Geometri legges inn av AK Golf HQ når banen er lagt til i systemet."
+                />
+              )}
+            </div>
+            {harData && (
+              <ul className="ph-rader">
+                {holes.map((h) => (
+                  <li key={h.id}>
+                    <Link href={`/portal/gameplan/${bane.id}/hull/${h.holeNumber}`}>
+                      <strong>{h.holeNumber}</strong>
+                      <span>
+                        <strong>{`${h.par ? `Par ${h.par}` : "Par –"}${h.lengthMeter ? ` · ${h.lengthMeter} m` : ""}`}</strong>
+                        <small>{h.shotCount > 0 ? `${h.shotCount} slag plottet` : "ingen slag plottet"}</small>
+                      </span>
+                      <ChevronRight className="pa-icon" size={18} aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

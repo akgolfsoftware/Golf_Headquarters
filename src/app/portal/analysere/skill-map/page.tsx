@@ -1,7 +1,12 @@
+/**
+ * PH16Skillkart — Skill Map i PlayerHQSkall.
+ * Samme runder, treningsøkter og kart som før.
+ */
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { SkillMapView } from "@/components/portal/skill-map/SkillMapView";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { buildSkillMapData } from "@/lib/domain/skill-map";
 import { prisma } from "@/lib/prisma";
@@ -17,7 +22,7 @@ export default async function SkillMapPage() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  const [rounds, training] = await Promise.all([
+  const [rounds, training, ulest] = await Promise.all([
     prisma.round.findMany({
       where: { userId: user.id },
       orderBy: { playedAt: "desc" },
@@ -46,14 +51,17 @@ export default async function SkillMapPage() {
       where: { plan: { userId: user.id }, scheduledAt: { gte: tretti } },
       select: { skillArea: true, durationMin: true },
     }),
+    getUnreadNotifications(user.id, 1),
   ]);
 
-  const data = buildSkillMapData(rounds, training);
-
   return (
-    <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <SkillMapView data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/analysere" className="ph-tilbake">Analyse</Link>
+          <SkillMapView data={buildSkillMapData(rounds, training)} />
+        </div>
+      </div>
+    </PlayerHQSkall>
   );
 }

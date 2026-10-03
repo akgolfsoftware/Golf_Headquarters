@@ -1,17 +1,15 @@
 /**
- * PlayerHQ · Ukesdigest (D3).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-ukesdigest.html
- *
- * Spillerens uke med samme tall og samme nevner som coachens ukesrapport.
- * Leser kun — ingenting på denne flaten skriver.
+ * PH10Uke — spillerens uke i PlayerHQSkall.
+ * Leser kun. Samme tall og samme nevner som coachens ukesrapport.
  */
 
+import Link from "next/link";
 import { redirect } from "next/navigation";
-
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { UkesdigestV2 } from "@/components/portal/v2/UkesdigestV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentUkesdigest } from "@/lib/portal/ukesdigest";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { UkesdigestV2 } from "@/components/portal/v2/UkesdigestV2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Uka di · PlayerHQ" };
@@ -20,17 +18,19 @@ export default async function UkesdigestPage() {
   const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await hentUkesdigest(user.id);
+  const [data, ulest] = await Promise.all([
+    hentUkesdigest(user.id),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="hjem"
-      nav={PLAYERHQ_NAV}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
-      <UkesdigestV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal" className="ph-tilbake">I dag</Link>
+          <UkesdigestV2 data={data} />
+        </div>
+      </div>
+    </PlayerHQSkall>
   );
 }
