@@ -1,31 +1,22 @@
 /**
- * AgencyOS Ny spiller — Train-lock-port 27.08.2026 (T4). Egen top-level
- * route-group (v2preview) som IKKE arver AdminShell — kun root-layout —
- * så V2Shell leverer all chrome (rail/dock) i mørk v2-scope.
- *
- * Auth følger den ekte /admin/spillere/ny-flaten: samme requirePortalUser-
- * guard (ADMIN/COACH). Skjermen er et opprett-skjema uten data-loader (den
- * ekte siden har heller ingen loader), så ingen eksempel-spiller hentes —
- * ærlig tom-tilstand er selve skjemaet. Submit bruker den EKTE server
- * action `createSpiller` og router til den nye spillerens profil.
- * Tilbake-lenken bygges inline i TrainLockSpillerNy — ikke Paper-ens
- * TilbakeLenke-primitiv.
- *
- * Server component.
+ * AgencyOS — Ny spiller (`/admin/spillere/ny`) i Precision Athletics
+ * (30.09.2026, AG-07-NY). Samme tilgang (ADMIN/COACH) og samme server action
+ * (`createSpiller`) som Train-lock-veiviseren; siden har ingen loader, så
+ * skjemaet er selve tomtilstanden. Skallet er AgencyOSSkall (Hurtigknappen).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TrainLockSpillerNy } from "@/components/admin/v2/TrainLockSpillerNy";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG07Ny } from "@/components/admin/precision/AG07Ny";
 
 export const dynamic = "force-dynamic";
 
-export default async function V2SpillerNyPage() {
+export default async function NySpillerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TrainLockSpillerNy />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG07Ny />
+    </AgencyOSSkall>
   );
 }
