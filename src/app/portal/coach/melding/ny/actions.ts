@@ -52,21 +52,46 @@ export async function sendMeldingNyV2(input: SendMeldingNyInput): Promise<void> 
     throw new Error("forbidden");
   }
 
-  const session = await prisma.coachingSession.create({
-    data: {
-      userId: user.id,
-      coachId,
-      kind: "DIRECT",
-      messages: [
-        {
-          role: "user",
-          content: body.trim(),
-          ts: new Date().toISOString(),
+  // Samme tråd med samme coach: legg meldingen til på den siste DIRECT-samtalen.
+  // Serializable + nye forsøk, som coachsiden (admin/messages), så to samtidige meldinger ikke overskriver hverandre.
+  const ny = { role: "user", content: body.trim(), ts: new Date().toISOString() };
+  const MAX_FORSOK = 3;
+  let lagret = false;
+  for (let forsok = 0; forsok < MAX_FORSOK && !lagret; forsok++) {
+    try {
+      await prisma.$transaction(
+        async (tx) => {
+          const siste = await tx.coachingSession.findFirst({
+            where: { userId: user.id, coachId, kind: "DIRECT" },
+            orderBy: { createdAt: "desc" },
+            select: { id: true, messages: true },
+          });
+          if (siste) {
+            const eksisterende = Array.isArray(siste.messages) ? (siste.messages as Prisma.InputJsonValue[]) : [];
+            await tx.coachingSession.update({
+              where: { id: siste.id },
+              data: { messages: [...eksisterende, ny] as Prisma.InputJsonValue[] },
+            });
+          } else {
+            await tx.coachingSession.create({
+              data: { userId: user.id, coachId, kind: "DIRECT", messages: [ny] as Prisma.InputJsonValue[] },
+            });
+          }
         },
-      ] as Prisma.InputJsonValue[],
-    },
-  });
+        { isolationLevel: "Serializable" },
+      );
+      lagret = true;
+    } catch (err) {
+      const kode = (err as { code?: string } | null)?.code;
+      if (kode === "40001" || kode === "40P01") {
+        await new Promise((r) => setTimeout(r, 25 * (forsok + 1)));
+        continue;
+      }
+      throw new Error("intern feil");
+    }
+  }
+  if (!lagret) throw new Error("Kunne ikke lagre meldingen etter flere forsøk");
 
-  revalidatePath("/portal/coach/melding");
-  redirect(`/portal/coach/melding/${session.id}`);
+  revalidatePath("/portal/coach");
+  redirect("/portal/coach");
 }

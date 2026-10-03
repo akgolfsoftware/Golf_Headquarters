@@ -1,0 +1,27 @@
+/* PH-21 Innboks (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-21.jsx). */
+.ph21-trad { padding: 0; overflow: hidden; }
+.ph21-trad__liste { padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 240px; min-width: 0; }
+.ph21-trad__skriv { padding: 12px; border-top: 1px solid var(--border-hairline); display: flex; gap: 8px; align-items: flex-end; min-width: 0; }
+.ph21-boble { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+.ph21-boble--meg { align-items: flex-end; }
+.ph21-boble__tekst { max-width: min(520px, 88%); padding: 10px 14px; border-radius: 8px; background: var(--surface-card); color: var(--text-primary); border: 1px solid var(--border-hairline); font: var(--type-body); text-wrap: pretty; overflow-wrap: anywhere; white-space: pre-wrap; }
+.ph21-boble--meg .ph21-boble__tekst { background: var(--primary); color: var(--text-on-primary); border: 0; }
+.ph21-kort { padding: 16px; gap: 12px; display: flex; flex-direction: column; min-width: 0; }
+.ph21-to { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+@media (min-width: 1024px) { .ph21-to { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.ph21-rad { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-top: 1px solid var(--border-hairline); min-width: 0; color: inherit; text-decoration: none; }
+.ph21-rad[data-first] { border-top: 0; }
+.ph21-rad--lenke { min-height: 44px; }
+.ph21-rad--lenke:focus-visible { outline: 2px solid var(--border-ink); outline-offset: 2px; }
+.ph21-rad__tittel { font: 500 14px/1.35 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; min-width: 0; }
+.ph21-rad__sub { font: var(--type-body-s); color: var(--text-secondary); overflow-wrap: anywhere; }
+.ph21-tom { font: var(--type-body-s); color: var(--text-secondary); }
+.ph21-feil { margin: 0; font: var(--type-body-s); color: var(--text-primary); border-left: 2px solid var(--signal, currentColor); padding-left: 8px; }
+.ph21-videoer { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.ph21-video { padding: 0; overflow: hidden; text-align: left; color: inherit; font: inherit; cursor: pointer; display: block; width: 100%; }
+.ph21-video__bilde { position: relative; aspect-ratio: 16 / 9; background: var(--surface-flat) center / cover no-repeat; }
+.ph21-video__len { position: absolute; right: 8px; bottom: 8px; padding: 3px 6px; border-radius: 4px; background: var(--graphite-900); color: var(--sand-100); font: 500 11px/1 var(--font-mono); }
+.ph21-video__tekst { padding: 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ph21-varsel { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 12px 0; min-height: 44px; width: 100%; border-top: 1px solid var(--border-hairline); cursor: pointer; min-width: 0; }
+.ph21-varsel[data-first] { border-top: 0; }
+.ph21-varsel:focus-visible { outline: 2px solid var(--border-ink); outline-offset: 2px; }
