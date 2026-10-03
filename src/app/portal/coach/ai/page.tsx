@@ -1,22 +1,20 @@
 /**
- * v2-forhåndsvisning — PlayerHQ AI-coach (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), CoachAIV2 rendrer chat-flaten.
- *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/coach/ai/page.tsx): Pro-gating, siste AI-sesjon, ?ny=1 for ny.
+ * PlayerHQ · Caddie-chat (/portal/coach/ai) — Precision Athletics PH-22
+ * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-22.jsx).
+ * Innlogging, Pro-sperre, siste AI-sesjon og ?ny=1 som før; visningen er PH22Caddie.
  */
 
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { CoachAIV2, type CoachAIData } from "@/components/portal/v2/CoachAIV2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH22Caddie } from "@/components/portal/precision/PH22Caddie";
 import type { ChatMelding } from "@/lib/anthropic";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Caddie · PlayerHQ" };
 
-export default async function V2CoachAiPreviewPage({
+export default async function CoachAiPage({
   searchParams,
 }: {
   searchParams: Promise<{ ny?: string }>;
@@ -25,12 +23,15 @@ export default async function V2CoachAiPreviewPage({
   const startNy = sp?.ny === "1";
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
 
-  const sisteSesjon = startNy
-    ? null
-    : await prisma.coachingSession.findFirst({
-        where: { userId: user.id, kind: "AI" },
-        orderBy: { updatedAt: "desc" },
-      });
+  const [sisteSesjon, dash] = await Promise.all([
+    startNy
+      ? Promise.resolve(null)
+      : prisma.coachingSession.findFirst({
+          where: { userId: user.id, kind: "AI" },
+          orderBy: { updatedAt: "desc" },
+        }),
+    getUnreadNotifications(user.id, 1).catch(() => null),
+  ]);
 
   const initialMessages: ChatMelding[] =
     sisteSesjon && Array.isArray(sisteSesjon.messages)
@@ -45,23 +46,14 @@ export default async function V2CoachAiPreviewPage({
         )
       : [];
 
-  const initialer = user.name
-    ? user.name.split(" ").map((d) => d[0]).slice(0, 2).join("").toUpperCase()
-    : "DU";
-  const fornavn = user.name?.split(" ")[0] ?? "deg";
-
-  const data: CoachAIData = {
-    tier: user.tier,
-    fornavn,
-    initialer,
-    sessionId: sisteSesjon?.id ?? null,
-    initialMessages,
-  };
-
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
-      <CoachAIV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/coach/melding" uleste={dash?.count ?? 0}>
+      <PH22Caddie
+        erGratis={user.tier === "GRATIS"}
+        sessionId={sisteSesjon?.id ?? null}
+        initialMessages={initialMessages}
+        skrivTilHref="/portal/coach/melding"
+      />
+    </PlayerHQSkall>
   );
 }
