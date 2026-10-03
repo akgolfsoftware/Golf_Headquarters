@@ -1,11 +1,15 @@
-import { CheckEmailV2 } from "@/components/portal/v2/CheckEmailV2";
+import { CheckEmailPA } from "@/components/portal/precision/CheckEmailPA";
 
 /**
- * /auth/check-email — v2-redesign (2026-07-10): CheckEmailV2 (retning C
- * «Presis») erstatter den gamle terminal-lys-fasiten. Statisk venteskjerm
- * etter registrering — ingen form-logikk, samme lenkemål (/auth/signup,
- * /auth/login) og samme copy som før.
+ * /auth/check-email — AU-02 steg 3 i Precision Athletics (CheckEmailPA).
+ * Statisk venteskjerm etter registrering — ingen form-logikk, samme lenkemål
+ * (/auth/signup, /auth/login) som før. ?subscribe= føres videre til signup.
  */
-export default function CheckEmailPage() {
-  return <CheckEmailV2 />;
+export default async function CheckEmailPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subscribe?: string }>;
+}) {
+  const { subscribe } = await searchParams;
+  return <CheckEmailPA subscribe={subscribe} />;
 }
