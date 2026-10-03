@@ -5,7 +5,7 @@
  * oppslag, getAvailableSlots + coach-filtrering (Markus-tjenester skal ikke
  * vise Anders' tider), default «i morgen» og 14-dagers datovelger. Dag- og
  * datotekster formateres her (server, nb-NO — samme som før); presentasjonen
- * bor i MarkedBookingTjenesteV2 (v2, MRamme).
+ * bor i BK02VelgTid (Precision Athletics, BK-02).
  */
 import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { notFound, redirect } from "next/navigation";
@@ -13,10 +13,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { getAvailableSlots } from "@/lib/booking/availability";
-import {
-  MarkedBookingTjenesteV2,
-  type TjenesteDag,
-} from "@/components/marketing/v2/MarkedBookingTjenesteV2";
+import { BK02VelgTid, type BK02Dag } from "@/components/booking/precision/BK02VelgTid";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -56,11 +53,14 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
   const service = await prisma.serviceType.findUnique({ where: { slug } });
   if (!service || !service.active) notFound();
 
-  const valgtDato = dato ? new Date(dato) : new Date();
-  valgtDato.setHours(0, 0, 0, 0);
+  // «I dag» er Oslo-dato, ikke serverens (UTC) dato — ellers feil mellom 00 og 02 norsk tid.
+  const osloIdagIso = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
+  const osloIdag = new Date(`${osloIdagIso}T00:00:00.000Z`);
+  const valgtDato = dato ? new Date(dato) : new Date(osloIdag);
+  valgtDato.setUTCHours(0, 0, 0, 0);
   // Default til i morgen hvis ingen dato valgt
   if (!dato) {
-    valgtDato.setDate(valgtDato.getDate() + 1);
+    valgtDato.setUTCDate(valgtDato.getUTCDate() + 1);
   }
 
   const alleSlots = await getAvailableSlots(service.id, valgtDato);
@@ -70,16 +70,15 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
     : alleSlots;
 
   // 14 dager fremover som dato-velger
-  const idag = new Date();
-  idag.setHours(0, 0, 0, 0);
-  const dager: TjenesteDag[] = Array.from({ length: 14 }, (_, i) => {
+  const idag = osloIdag;
+  const dager: BK02Dag[] = Array.from({ length: 14 }, (_, i) => {
     const d = new Date(idag);
-    d.setDate(d.getDate() + i);
+    d.setUTCDate(d.getUTCDate() + i);
     const iso = toDateInput(d);
     return {
       iso,
-      dagsnavn: d.toLocaleDateString("nb-NO", { weekday: "short" }),
-      datotekst: d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" }),
+      dagsnavn: d.toLocaleDateString("nb-NO", { weekday: "short", timeZone: "UTC" }),
+      datotekst: d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "UTC" }),
       valgt: iso === toDateInput(valgtDato),
     };
   });
@@ -88,10 +87,11 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
     weekday: "long",
     day: "numeric",
     month: "long",
+    timeZone: "UTC",
   });
 
   return (
-    <MarkedBookingTjenesteV2
+    <BK02VelgTid
       tjeneste={{
         slug,
         name: service.name,
