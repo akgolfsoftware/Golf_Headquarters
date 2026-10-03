@@ -1,3 +1,4 @@
+// FO03BookingBekreftet — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * Foreldreportal · Booking bekreftet (STEG 9.8). Speiler
  * /portal/booking/bekreftet — eneste forskjell er eierskaps-sjekken: her må
@@ -9,7 +10,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +75,8 @@ export default async function ForelderBekreftetPage({ searchParams }: Props) {
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+        <ForelderSkall>
+      <div className="pa-side">
       <BookingBekreftetV2
         data={{
           linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
@@ -86,6 +88,7 @@ export default async function ForelderBekreftetPage({ searchParams }: Props) {
           merkelapp: "Foreldreportal",
         }}
       />
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

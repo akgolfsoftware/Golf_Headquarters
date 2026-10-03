@@ -1,3 +1,4 @@
+// PH09NyRunde — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ Loggfør runde — totalscore/scorekort og valgfri manuell SG.
  * RundeNyForm deler SG-felt og validering med redigeringen på rundedetaljen.
@@ -6,7 +7,7 @@
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { Caps, Tittel, MikroMeta, Kort, StatusPill } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -108,7 +109,8 @@ export default async function NyRundePage({
   const courses = medForst(alleCourses, sisteBaneId);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Alle runder</MikroMeta>
@@ -218,6 +220,7 @@ export default async function NyRundePage({
           )}
         </div>
       </div>
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

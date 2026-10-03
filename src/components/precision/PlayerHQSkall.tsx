@@ -27,14 +27,21 @@ const FANER = [
 ] as const;
 
 function erAktiv(path: string, href: string) {
-  if (href === "/portal") return path === "/portal";
-  // Coach hørte til Meg i det gamle skallet (aktiv="meg").
-  if (href === "/portal/meg") {
-    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach");
+  if (href === "/portal") {
+    // Booking med coach utelater aktiv. Det gamle skallet utleder da I dag.
+    return path === "/portal" || path.startsWith("/portal/booking/coach");
   }
-  // Øvelser og ny booking markerte Plan.
+  // Coach, målbygger og enkeltmål hørte til Meg (aktiv="meg").
+  if (href === "/portal/meg") {
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach") || path.startsWith("/portal/ai/mal-bygger") || path.startsWith("/portal/mal/goal");
+  }
+  // Øvelser og ny booking markerte Plan. aktiv="gjor" skal ikke lyse noen fane.
   if (href === "/portal/planlegge") {
     return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/");
+  }
+  // Analyse, gameplan, ny runde og gapping markerte Analyse.
+  if (href === "/portal/analysere") {
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/gameplan") || path.startsWith("/portal/mal/runder") || path.startsWith("/portal/mal/trackman");
   }
   return path === href || path.startsWith(href + "/");
 }

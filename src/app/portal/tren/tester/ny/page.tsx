@@ -1,3 +1,4 @@
+// PH14OpprettTest — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Tren · Tester · Ny test (/portal/tren/tester/ny) — v2.
@@ -9,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
 import { NyTestV2 } from "@/components/portal/v2/NyTestV2";
 
@@ -43,7 +44,8 @@ export default async function NyTestPage() {
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/tren/tester">Tilbake til tester</TilbakeLenke>
       <div style={{ maxWidth: 720, width: "100%", margin: "0 auto" }}>
         <Caps>Trening · Tester</Caps>
@@ -60,6 +62,7 @@ export default async function NyTestPage() {
         sistePerTest={Object.fromEntries(sistePerTest)}
         spillerNavn={user.name ?? "Spiller"}
       />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

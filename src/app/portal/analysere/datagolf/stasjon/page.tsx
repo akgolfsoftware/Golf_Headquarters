@@ -1,3 +1,4 @@
+// PH17DgStasjon — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ DataGolf-stasjon.
  *
@@ -7,7 +8,7 @@
  */
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { StasjonTrainLock } from "@/components/portal/v2/StasjonTrainLock";
 import { hentStasjonSide } from "@/lib/datagolf/stasjon-data";
 
@@ -34,7 +35,8 @@ export default async function DatagolfStasjonPage({
   });
 
   return (
-    <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <StasjonTrainLock
         key={
           data.stasjon
@@ -48,6 +50,7 @@ export default async function DatagolfStasjonPage({
         lie={en(sp.lie) === "rough" ? "rough" : "fairway"}
         andreSirkler={data.andreSirkler}
       />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

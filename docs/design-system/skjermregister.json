@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "62b015072ab6856ab3f2e79b3dab7b742fd4d6ef",
+  "kodeversjon": "75e57bc839c06f04289644f31e7ed23296425505",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -11487,12 +11487,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Barnets detalj merker FO02BarnDetalj i ForelderSkall. Pyramide, økter, betaling og skoletid er beholdt. Indre kort er fortsatt v2 og leser Precision-tokener i skallet. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-02 Barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11534,7 +11536,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Barnlisten merker FO02BarnListe. Pyramide, neste økt, utestående og skoletid-bekreftelse er beholdt. Barnets detaljside er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Barnlisten merker FO02BarnListe. Pyramide, neste økt, utestående og skoletid-bekreftelse er beholdt. Barnets detaljside er egen rute. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -11575,12 +11577,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Booking bekreftet merker FO03BookingBekreftet i ForelderSkall. Linje, coach, sted og kalenderlenke er beholdt. Indre kort er fortsatt v2. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11618,12 +11622,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Bekreft time for barn merker FO03NyBarnBekreft i ForelderSkall. byggBookingBekreftData og opprettelsen er beholdt. Indre kort er fortsatt v2. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11661,12 +11667,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Velg tid for barn merker FO03NyBarnTid i ForelderSkall. byggBookingNyData, steg og tom tilstand er beholdt. Indre kort er fortsatt v2. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11704,13 +11712,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Velg barn merker FO03VelgBarn i ForelderSkall. Ett barn sendes rett til tidspunkt. Listen bruker fo-presisjon. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-01. Skjermlisten sier FO-03. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier FO-01. Skjermlisten sier FO-03. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -11753,7 +11762,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Bookinger merker FO03Bookinger. Filter, kommende, tidligere, Venter og lenken til ny booking er beholdt. Opprettelse og bekreftelse er fortsatt gammelt skall. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Bookinger merker FO03Bookinger. Filter, kommende, tidligere, Venter og lenken til ny booking er beholdt. Opprettelse, barnevalg og bekreftelse er egne ruter i samme skall. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -12021,12 +12030,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Deling for barn merker FO05Deling i ForelderSkall. settDelingsSamtykkeForBarn og organisasjonene er beholdt. Indre kort er fortsatt v2. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-05 Samtykke er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -12068,7 +12079,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Samtykke merker FO05Samtykke. lagreSamtykker, helsesamtykke, sletting og eksport er beholdt. Deling per barn er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Samtykke merker FO05Samtykke. lagreSamtykker, helsesamtykke, sletting og eksport er beholdt. Deling per barn er egen rute. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -14723,12 +14734,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Målbygger merker PH12MalBygger i PlayerHQSkall. Skjemaet er beholdt. Indre kort er fortsatt v2. Meg lyser. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-12 Planbygger er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -14851,12 +14864,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "DataGolf-stasjon merker PH17DgStasjon i PlayerHQSkall. Slag, carry og lie er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -14939,12 +14954,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Hullanalyse merker PH18HullAnalyse i PlayerHQSkall. Tallene er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-18 Runder og statistikk er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -15070,12 +15087,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan-økt merker PH17TmOkt i PlayerHQSkall. Økta er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -15156,13 +15175,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Turneringshistorikk merker PH18TurnHist i PlayerHQSkall. Kurve og sesong er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-18 Runder og statistikk er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -15456,12 +15476,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Book med coach merker PH23CoachTid i PlayerHQSkall. Tjenester og lenke til booking-veiviseren er beholdt. I dag lyser, som da aktiv ble utledet. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-23 Booking (spiller) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16390,12 +16412,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Hullplan merker PH20HullPlan i PlayerHQSkall. Planen for hullet er beholdt. Stats lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-20 Gameplan og banekart er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16826,12 +16850,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Enkeltmål merker PH19Enkeltmal i PlayerHQSkall. Målet og handlingene er beholdt. Meg lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-19 Mål og talent er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -16916,7 +16942,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "kontrollbevis": "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er egen rute. 390×844 og 1440×880 er ikke målt mot tegningen.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -17086,12 +17112,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Ny runde merker PH09NyRunde i PlayerHQSkall. Registreringen er beholdt. Stats lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-09 Registrer runde er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -17345,12 +17373,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Gapping merker PH17Gapping i PlayerHQSkall. Lesingen fra TrackMan er beholdt. Stats lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20335,12 +20365,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Egen test merker PH14EgenTest i PlayerHQSkall. Skjemaet er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20378,12 +20410,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Ny test merker PH14OpprettTest i PlayerHQSkall. Opprettelsen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20595,12 +20629,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Break-tabell merker PH26Break i PlayerHQSkall. Tabellen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20681,12 +20717,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Puttelaboratoriet merker PH26PutteLab i PlayerHQSkall. Visningen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -23115,10 +23153,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 104,
+    "medAvvik": 122,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 74,
+    "implementert": 94,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

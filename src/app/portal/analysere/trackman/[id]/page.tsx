@@ -1,3 +1,4 @@
+// PH17TmOkt — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * TM-11 «TrackMan-økt-detalj» — kanonisk PlayerHQ-side for én TrackMan-økt
  * (B7, DispersionMap). Erstatter den eldre Paper-porten
@@ -20,7 +21,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { FEATURES } from "@/lib/features";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
@@ -116,7 +117,8 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <Link
         href="/portal/analysere/trackman"
         style={{
@@ -164,6 +166,7 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
           forrigeDeltaTekst={forrigeDeltaTekst}
         />
       )}
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

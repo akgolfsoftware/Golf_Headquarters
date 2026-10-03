@@ -1,3 +1,4 @@
+// PH19Enkeltmal — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ · Mål-detalj (/portal/mal/goal/[id]) — v2.
  * v2-port 17. juli 2026: `MalDetaljV2` erstatter hybrid-designet
@@ -13,7 +14,7 @@ import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadGoalForViewer } from "@/lib/portal/goals/detail-data";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
 import {
   MalDetaljV2,
@@ -109,7 +110,8 @@ export default async function GoalDetailPage({
   // Ingen ekte mål — eller ikke tilgang. Vis ærlig "ikke funnet", aldri demo-mål.
   if (!goal || !detail) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+            <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+        <div className="pa-side">
         <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -123,7 +125,8 @@ export default async function GoalDetailPage({
             </Link>
           </div>
         </Kort>
-      </V2Shell>
+              </div>
+      </PlayerHQSkall>
     );
   }
 
@@ -199,9 +202,11 @@ export default async function GoalDetailPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
       <MalDetaljV2 data={data} testOptions={testOptions} />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }
