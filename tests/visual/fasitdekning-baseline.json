@@ -1,6 +1,6 @@
 {
-  "sitert": 135,
+  "sitert": 134,
   "av": 219,
-  "sistEndret": "2026-10-03",
-  "grunn": "Varsler, Workbench-øktarket og testdetaljen er portet til Precision. Siteringene av «PH-20 Varsel-ark.dc.html», øktarkets Train-lock-sitering og «TE-03 TN Putt Gate detalj.dc.html» er fjernet med vilje. 138→135."
+  "sistEndret": "2026-10-04",
+  "grunn": "PH-18 Runder og statistikk er portet til Precision Athletics. Den utgåtte Train-lock-siteringen av «PH-11 Analyse runder.dc.html» i RunderV2 er fjernet med vilje. 135→134."
 }
