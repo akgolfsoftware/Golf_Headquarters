@@ -1,6 +1,6 @@
 {
-  "sitert": 136,
+  "sitert": 135,
   "av": 219,
   "sistEndret": "2026-10-03",
-  "grunn": "Varsler og Workbench-øktarket er portet til Precision. Siteringen av «PH-20 Varsel-ark.dc.html» og øktarkets Train-lock-sitering er fjernet med vilje. 138→136."
+  "grunn": "Varsler, Workbench-øktarket og bookingsoversikten er portet til Precision. Siteringene av «PH-20 Varsel-ark.dc.html», øktarkets Train-lock-sitering og «BO-02 Mine bookinger.dc.html» er fjernet med vilje. 138→135."
 }

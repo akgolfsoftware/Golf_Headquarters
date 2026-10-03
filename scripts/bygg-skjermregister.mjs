@@ -253,6 +253,10 @@ const PRECISION_VISNING = [
   ["PH14OpprettTest", "Ny test merker PH14OpprettTest i PlayerHQSkall. Opprettelsen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26Break", "Break-tabell merker PH26Break i PlayerHQSkall. Tabellen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26PutteLab", "Puttelaboratoriet merker PH26PutteLab i PlayerHQSkall. Visningen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["PH21BeOmOkt", "Be om økt merker PH21BeOmOkt i PlayerHQSkall. Type, tema, tid, sted og sending er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH23BookingHub", "Bookingsoversikten merker PH23BookingHub i PlayerHQSkall. Timer, første ledige luke og kommende timer er beholdt. Selve bookingen er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH23MineTimer", "Mine bookinger merker PH23MineTimer i PlayerHQSkall. Kommende, historikk og ny booking er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25Hjelp", "Hjelpesenteret merker PH25Hjelp i PlayerHQSkall. Søk, kategorier, spørsmål og kontakt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
 ];
 
 function merkVisning(row, source) {

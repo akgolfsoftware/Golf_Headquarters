@@ -1,18 +1,15 @@
 /**
- * v2 — PlayerHQ Meg · Hjelpesenter (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav), MegHelpV2 rendrer innholds-stacken.
- *
- * Auth-guarden speiler den tidligere /portal/meg/help-siden (requirePortalUser).
- * Hjelpe-innholdet er statisk redaksjonelt (data.ts) — samme datakontrakt som
- * de eksisterende hjelp-rutene bærer.
+ * PH25Hjelp — hjelpesenter i PlayerHQSkall.
+ * Samme spørsmål, kategorier og artikler. En foresatt sendes bort.
  */
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { MegHelpV2, type MegHelpData } from "@/components/portal/v2/MegHelpV2";
 import { HJELP_FAQ, HJELP_KATEGORIER, HJELP_ARTIKLER } from "./data";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -21,16 +18,15 @@ export default async function HelpPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const data: MegHelpData = {
-    faq: HJELP_FAQ,
-    kategorier: HJELP_KATEGORIER,
-    artikler: HJELP_ARTIKLER,
-  };
+  const data: MegHelpData = { faq: HJELP_FAQ, kategorier: HJELP_KATEGORIER, artikler: HJELP_ARTIKLER };
+  const ulest = await getUnreadNotifications(user.id, 1);
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegHelpV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/meg" className="ph-tilbake">Meg</Link>
+        <MegHelpV2 data={data} />
+      </div>
+    </PlayerHQSkall>
   );
 }

@@ -249,7 +249,15 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/trening/break-tabell").kontrollbevis, /PH26Break/);
   assert.equal(byRoute.get("/portal/trening/putte-laboratoriet").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/trening/putte-laboratoriet").kontrollbevis, /PH26PutteLab/);
-  assert.equal(register.tellinger.implementert, 94);
+  assert.equal(byRoute.get("/portal/onskeligokt").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/onskeligokt").kontrollbevis, /PH21BeOmOkt/);
+  assert.equal(byRoute.get("/portal/booking").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/booking").kontrollbevis, /PH23BookingHub/);
+  assert.equal(byRoute.get("/portal/meg/bookinger").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/meg/bookinger").kontrollbevis, /PH23MineTimer/);
+  assert.equal(byRoute.get("/portal/meg/help").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/meg/help").kontrollbevis, /PH25Hjelp/);
+  assert.equal(register.tellinger.implementert, 98);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
