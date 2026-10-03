@@ -94,7 +94,10 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/tren/tester").screenId, "PH-14");
   assert.equal(byRoute.get("/portal/tren/tester").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/tren/tester").kontrollbevis, /PH14Hub/);
-  assert.equal(byRoute.get("/portal/tren/tester/[testId]").status.implementert, "ikke-verifisert");
+  assert.equal(byRoute.get("/portal/tren/tester/[testId]").screenId, "PH-14");
+  assert.equal(byRoute.get("/portal/tren/tester/[testId]").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/tren/tester/[testId]").kontrollbevis, /PH14Detalj/);
+  assert.equal(byRoute.get("/portal/tren/tester/[testId]/gjennomfor").status.implementert, "ikke-verifisert");
   assert.equal(byRoute.get("/portal/mal").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/mal").kontrollbevis, /PH19Mal/);
   assert.equal(byRoute.get("/portal/varsler").status.implementert, "precision-visning");
@@ -249,7 +252,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/trening/break-tabell").kontrollbevis, /PH26Break/);
   assert.equal(byRoute.get("/portal/trening/putte-laboratoriet").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/trening/putte-laboratoriet").kontrollbevis, /PH26PutteLab/);
-  assert.equal(register.tellinger.implementert, 94);
+  assert.equal(register.tellinger.implementert, 95);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
