@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 57 rader har et registrert avvik. 22 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 59 rader har et registrert avvik. 24 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -87,6 +87,8 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-04, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/admin/profile` | AG-23 | Kodekommentaren sier AG-18. Skjermlisten sier AG-23. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-10, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
+| `/auth/forgot-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/auth/reset-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/bookinger/ny` | FO-03 | Kodekommentaren sier FO-01. Skjermlisten sier FO-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/coach` | FO-06 | Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/fakturaer` | FO-04 | Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning. |

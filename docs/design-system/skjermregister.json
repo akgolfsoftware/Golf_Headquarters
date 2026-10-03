@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "1f7489e97a318ebce7c48513d301c2e0ec850ffe",
+  "kodeversjon": "a248441564a8af7352e536506ed4d1f369aa545b",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -10948,19 +10948,22 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Glemt passord merker AU03Glemt i Precision. resetPasswordForEmail og redirect til reset er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU03. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-03 Passord er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-01"
     },
     {
       "screenId": "AU-05",
@@ -11295,19 +11298,22 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Nytt passord merker AU03NyttPassord i Precision. updateUser, minst 8 tegn og likhetssjekk er beholdt. Tegningen ber om minst 10 tegn og ett tall. Den regelen er ikke innført. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU03. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-03 Passord er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-01"
     },
     {
       "screenId": "AU-05",
@@ -23014,10 +23020,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 57,
+    "medAvvik": 59,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 22,
+    "implementert": 24,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

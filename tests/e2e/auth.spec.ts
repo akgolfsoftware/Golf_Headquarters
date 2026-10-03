@@ -31,10 +31,10 @@ test.describe("Auth — login-flyt", () => {
         await expect(link).toHaveAttribute("href", "/auth/forgot-password");
         await link.click();
         await expect(page).toHaveURL(/\/auth\/forgot-password$/);
-        await expect(page.getByRole("heading", { name: "Glemt passordet?", exact: true })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Glemt passord", exact: true })).toBeVisible();
         await expect(page.locator('input[type="email"]')).toBeVisible();
         await expect(
-          page.getByRole("button", { name: "Send tilbakestillingslenke", exact: true }),
+          page.getByRole("button", { name: "Send lenke", exact: true }),
         ).toBeVisible();
         await page.getByRole("link", { name: "Tilbake til innlogging", exact: true }).click();
         await expect(page).toHaveURL(/\/auth\/login$/);
