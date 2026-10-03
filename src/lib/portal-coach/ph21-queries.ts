@@ -30,7 +30,11 @@ function initials(name: string) {
 type JsonMessage = { role?: string; content?: string; ts?: string; attach?: string };
 
 export async function getPH21Data(userId: string): Promise<PH21Data> {
-  const isCoached = await erCoachetSpiller(userId);
+  const userRow = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true, role: true },
+  });
+  const isCoached = (await erCoachetSpiller(userId)) || userRow?.role === "COACH" || userRow?.role === "ADMIN";
 
   // 1. Coach profil
   let coach: PH21Data["coach"] = null;
@@ -48,6 +52,20 @@ export async function getPH21Data(userId: string): Promise<PH21Data> {
         role: "Hovedcoach · Fredrikstad GK",
         initials: initials(coachRow.name),
         avatarUrl: coachRow.avatarUrl,
+      };
+    }
+  } else {
+    const defaultCoach = await prisma.user.findFirst({
+      where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+      select: { id: true, name: true, avatarUrl: true, role: true },
+    });
+    if (defaultCoach) {
+      coach = {
+        id: defaultCoach.id,
+        name: defaultCoach.name,
+        role: "Hovedcoach · Fredrikstad GK",
+        initials: initials(defaultCoach.name),
+        avatarUrl: defaultCoach.avatarUrl,
       };
     }
   }
@@ -165,11 +183,6 @@ export async function getPH21Data(userId: string): Promise<PH21Data> {
     };
   });
 
-  // Hent brukerens fornavn
-  const userRow = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { name: true },
-  });
   const meFornavn = userRow?.name?.split(" ")[0] ?? "Deg";
 
   return {
