@@ -21,10 +21,11 @@ export type PH18Props = {
   ukjentKode?: string;
   startFane?: "runder" | "stat" | "hull" | "sesong";
   modell: PH18Model;
-  registrerHref: string;
-  liveHref: string;
-  delHref: (id: string) => string;
-  detaljHref: (id: string) => string;
+  registrerHref?: string;
+  liveHref?: string;
+  baseHref?: string;
+  delHref?: (id: string) => string;
+  detaljHref?: (id: string) => string;
 };
 
 const FANER = [
@@ -120,6 +121,9 @@ function Scorekort({ r }: { r: PH18Runde }) {
 }
 
 function RundeDetalj({ r, p }: { r: PH18Runde; p: PH18Props }) {
+  const base = p.baseHref ?? "/portal/mal/runder";
+  const delHref = p.delHref ? p.delHref(r.id) : `${base}/${r.id}/del`;
+  const detaljHref = p.detaljHref ? p.detaljHref(r.id) : `${base}/${r.id}`;
   const sgFelt = [
     r.sgOtt != null ? `Tee: ${sgTxt(r.sgOtt)}` : null,
     r.sgApp != null ? `Innspill: ${sgTxt(r.sgApp)}` : null,
@@ -139,7 +143,7 @@ function RundeDetalj({ r, p }: { r: PH18Runde; p: PH18Props }) {
             {r.bane}
           </div>
         </div>
-        <KnappLenke variant="secondary" icon={Share2} href={p.delHref(r.id)}>
+        <KnappLenke variant="secondary" icon={Share2} href={delHref}>
           Del runde
         </KnappLenke>
       </div>
@@ -184,7 +188,7 @@ function RundeDetalj({ r, p }: { r: PH18Runde; p: PH18Props }) {
       )}
 
       <div>
-        <KnappLenke variant="ghost" icon={Flag} href={p.detaljHref(r.id)}>
+        <KnappLenke variant="ghost" icon={Flag} href={detaljHref}>
           Hull for hull
         </KnappLenke>
       </div>
@@ -451,6 +455,8 @@ function Sesonger({ m }: { m: PH18Model }) {
 
 export function PH18Runder(p: PH18Props) {
   const harKladd = useHarRundeKladd();
+  const regHref = p.registrerHref ?? "/portal/mal/runder/ny";
+  const liveHref = p.liveHref ?? "/portal/runde-live";
   const [fane, setFane] = useState<string>(p.startFane ?? "runder");
   const [rid, setRid] = useState<string | null>(null);
   const runder = p.modell.runder;
@@ -462,7 +468,7 @@ export function PH18Runder(p: PH18Props) {
         kicker="Stats · Runder og statistikk"
         title="Runder og statistikk"
         sub="Score er alltid brutto. Til par regnes av par på hullene du har spilt."
-        actions={<KnappLenke icon={Flag} href={p.registrerHref}>Registrer runde</KnappLenke>}
+        actions={<KnappLenke icon={Flag} href={regHref}>Registrer runde</KnappLenke>}
       />
 
       {/* Fanene vises alltid (punkt 5 i review) */}
@@ -484,7 +490,7 @@ export function PH18Runder(p: PH18Props) {
 
       {harKladd && (
         <div style={{ marginTop: 8 }}>
-          <KnappLenke variant="secondary" icon={Play} href={p.liveHref}>
+          <KnappLenke variant="secondary" icon={Play} href={liveHref}>
             Fortsett runde
           </KnappLenke>
         </div>
@@ -504,10 +510,10 @@ export function PH18Runder(p: PH18Props) {
           text="Registrer første runde for å få scorekort, statistikk og hull-analyse."
           actions={
             <>
-              <KnappLenke icon={Flag} href={p.registrerHref}>
+              <KnappLenke icon={Flag} href={regHref}>
                 Registrer runde
               </KnappLenke>
-              <KnappLenke variant="secondary" icon={Play} href={p.liveHref}>
+              <KnappLenke variant="secondary" icon={Play} href={liveHref}>
                 Spill med live-registrering
               </KnappLenke>
             </>

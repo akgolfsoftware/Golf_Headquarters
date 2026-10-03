@@ -66,8 +66,6 @@ export default async function PH18RunderPage() {
         modell={modell}
         registrerHref="/portal/mal/runder/ny"
         liveHref="/portal/runde-live"
-        delHref={(id) => `/portal/mal/runder/${id}/del`}
-        detaljHref={(id) => `/portal/mal/runder/${id}`}
       />
     </PlayerHQSkall>
   );
