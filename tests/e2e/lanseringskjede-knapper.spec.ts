@@ -49,6 +49,7 @@ const KJEDEROTER = [
   "src/components/portal/v2/LoginV2.tsx",
   "src/components/portal/v2/idag",
   "src/components/portal/v2/PlanV2.tsx",
+  "src/components/portal/precision/PH16Analyse.tsx",
   "src/components/portal/v2/AnalyseHubTrainLock.tsx",
   "src/components/portal/v2/TrackManListeTrainLock.tsx",
   "src/components/portal/v2/MegV2.tsx",
