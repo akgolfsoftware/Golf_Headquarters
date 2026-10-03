@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "0a7805b104ac3b77aa6a0c069f86bda723187091",
+  "kodeversjon": "0b3163bb777333e048c83d46b74492dbfc1ec507",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -20682,12 +20682,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Treningslogg merker PH26TreningLogg i PlayerHQSkall. Skjema for dato, område, varighet, øvelse, kvalitet og notater er beholdt.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -23163,10 +23165,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 127,
+    "medAvvik": 128,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 99,
+    "implementert": 100,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

@@ -258,6 +258,7 @@ const PRECISION_VISNING = [
   ["PH24Venner", "Venner merker PH24Venner i PlayerHQSkall. Liste, søk, invitasjoner og leaderboard er beholdt."],
   ["PH24Foreldre", "Foresatte merker PH24Foreldre i PlayerHQSkall. Liste, relasjon og invitasjon er beholdt."],
   ["PH24Dokumenter", "Dokumenter merker PH24Dokumenter i PlayerHQSkall. Dokumentliste, KPI-er og eksterne lenker er beholdt."],
+  ["PH26TreningLogg", "Treningslogg merker PH26TreningLogg i PlayerHQSkall. Skjema for dato, område, varighet, øvelse, kvalitet og notater er beholdt."],
 ];
 
 function merkVisning(row, source) {
