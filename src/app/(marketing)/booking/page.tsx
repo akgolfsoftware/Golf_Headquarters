@@ -1,8 +1,8 @@
 /**
- * /booking — Paper-port (PP-1.7, 10.08.2026). Fasit:
- * `designsystem/paper/fase1/booking.html` — én side med fire steg
- * (tjeneste → tid → deg → bekreft), i stedet for den gamle tre-siders flyten
- * via `/booking/[slug]`. Presentasjonen bor i MarkedBookingV2.
+ * /booking — BK-01 i Precision Athletics (Claude Design 7d7c2994, ui_kits/booking/
+ * screens/BK.jsx): én side med fire steg (tjeneste, tid, deg, bekreft og betal).
+ * Presentasjonen bor i BK01Booking. Den gamle Paper-presentasjonen
+ * (MarkedBookingV2) er ikke lenger i bruk.
  *
  * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt fra
  * v2-porten 16. juli 2026. Undersidene `/booking/[slug]` består uendret —
@@ -11,13 +11,12 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
-import { finnNesteLedige } from "./ledige-tider";
 import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
-  MarkedBookingV2,
-  type PaperAbonnement,
-  type PaperTjeneste,
-} from "@/components/marketing/v2/MarkedBookingV2";
+  BK01Booking,
+  type BookingAbonnement,
+  type BookingTjeneste,
+} from "@/components/booking/precision/BK01Booking";
 
 export const metadata: Metadata = {
   title: "Book en time · AK Golf Academy",
@@ -90,7 +89,7 @@ export default async function BookingLanding() {
     }),
   ]);
 
-  const tjenester: PaperTjeneste[] = services
+  const tjenester: BookingTjeneste[] = services
     .filter((s) => !erAbonnement(s.name))
     .map((s) => ({
       slug: s.slug,
@@ -98,16 +97,13 @@ export default async function BookingLanding() {
       coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
       sorterPaa: fornavn(s.coach?.name),
       pris: Math.round(s.priceOre / 100),
-      // ServiceType har ingen kolonne for prisenhet, så flaten sier «kr» og lar
-      // beskrivelsen fra basen bære nyansen (delt økt, per spiller osv.).
-      enhet: "kr",
       varighetMin: s.durationMin,
       beskrivelse: s.description,
     }))
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...t }) => t);
 
-  const abonnement: PaperAbonnement[] = services
+  const abonnement: BookingAbonnement[] = services
     .filter((s) => erAbonnement(s.name))
     .map((s) => ({
       slug: s.slug,
@@ -120,17 +116,11 @@ export default async function BookingLanding() {
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...a }) => a);
 
-  // Heroens «Neste ledige» skal vise et ekte tidspunkt med en gang. Vi spør for
-  // den billigste økta — den er også fra-prisen heroen viser, så tallene hører
-  // sammen. Oppslaget bryter på første ledige dag.
-  const nesteLedig = tjenester.length ? await finnNesteLedige(tjenester[0].slug) : null;
-
   return (
-    <MarkedBookingV2
+    <BK01Booking
       tjenester={tjenester}
       abonnement={abonnement}
       lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
-      nesteLedigInit={nesteLedig?.tekst ?? null}
     />
   );
 }
