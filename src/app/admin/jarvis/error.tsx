@@ -1,23 +1,18 @@
 "use client";
 
-/* AG-19 kjøringsdetalj viser Precision-feil; listesiden er en redirect og beholder V2Feil. */
+/* AG-19 Jarvis: Precision-feil. Ingen utkast er sendt eller endret. */
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 import { CircleAlert, RotateCw } from "lucide-react";
-import { V2Feil } from "@/components/v2/feil-laste";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { FeilTilstand, Knapp } from "@/components/precision/pa";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  const pathname = usePathname();
   useEffect(() => {
     console.error("[v2/error]", error.digest, error);
   }, [error]);
-
-  if (pathname.startsWith("/admin/agents/")) return <AgencyOSSkall navn="Coach"><div className="pa-side">
-    <FeilTilstand icon={CircleAlert} title="Agenten kunne ikke hentes" text="Ingen forslag er sendt eller slettet. Prøv igjen."
+  return <AgencyOSSkall navn="Coach"><div className="pa-side">
+    <FeilTilstand icon={CircleAlert} title="Jarvis svarer ikke" text="Ingen utkast er sendt eller slettet. Prøv igjen."
       retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
   </div></AgencyOSSkall>;
-  return <V2Feil reset={reset} tilbakeHref="/admin/agencyos" />;
 }

@@ -21,7 +21,7 @@
  * Ren modul: ingen Prisma, ingen React.
  */
 
-export type JarvisFaneId = "ko" | "prosjekter" | "skills" | "runtimes";
+export type JarvisFaneId = "ko" | "prosjekter" | "skills" | "runtimes" | "samtale";
 
 export type JarvisFane = {
   id: JarvisFaneId;
@@ -36,6 +36,8 @@ export const JARVIS_FANER: JarvisFane[] = [
   { id: "prosjekter", label: "Prosjekter", gammelHref: "/admin/agenticos/projects" },
   { id: "skills", label: "Skills", gammelHref: "/admin/agenticos/skills" },
   { id: "runtimes", label: "Runtimes", gammelHref: "/admin/agenticos/runtimes" },
+  // AG-19 (Precision Athletics): Administrator-Caddie som fane «Samtale».
+  { id: "samtale", label: "Samtale", gammelHref: "/admin/agencyos/caddie" },
 ];
 
 export const JARVIS_STANDARDFANE: JarvisFaneId = "ko";
