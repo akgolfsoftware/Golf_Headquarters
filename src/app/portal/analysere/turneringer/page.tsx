@@ -1,3 +1,4 @@
+// PH18TurnHist — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ · Min kurve (`/portal/analysere/turneringer`).
  *
@@ -21,7 +22,7 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { MinKurveTrainLock, type SesongLenke } from "@/components/portal/v2/MinKurveTrainLock";
 import { TurneringshistorikkTrainLock } from "@/components/portal/v2/TurneringshistorikkTrainLock";
 import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
@@ -53,7 +54,8 @@ export default async function TurneringerPage({ searchParams }: { searchParams: 
   const { dataSistHentet, ...kurve } = kurveData;
 
   return (
-    <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <MinKurveTrainLock
         kurve={kurve}
         dataSistHentet={dataSistHentet}
@@ -62,6 +64,7 @@ export default async function TurneringerPage({ searchParams }: { searchParams: 
         tilbakeHref="/portal/analysere"
       />
       <TurneringshistorikkTrainLock h={historikk} />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }
