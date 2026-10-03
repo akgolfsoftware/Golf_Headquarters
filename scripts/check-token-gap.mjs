@@ -27,7 +27,6 @@ const ALLOW_FILES = new Set([
   // udefinert. Fila MÅ bære fargene sine som rå verdier. Gaten skal ikke
   // tvinge en feilside som mister fargene sine.
   "src/app/global-error.tsx",
-  "src/components/portal/workbench/OktArk.tsx",
   "src/components/workbench/WeekPlanEditor.tsx",
   "src/components/workbench/WorkbenchUke.tsx",
 ]);

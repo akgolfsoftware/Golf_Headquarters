@@ -79,7 +79,9 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/tren/wb").screenId, "PH-02");
   assert.equal(byRoute.get("/portal/tren/wb").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/tren/wb").kontrollbevis, /PH02WbDag/);
-  assert.equal(byRoute.get("/portal/tren/wb/[sessionId]").status.implementert, "ikke-verifisert");
+  assert.equal(byRoute.get("/portal/tren/wb/[sessionId]").screenId, "PH-03");
+  assert.equal(byRoute.get("/portal/tren/wb/[sessionId]").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/tren/wb/[sessionId]").kontrollbevis, /PH03WbArk/);
   assert.equal(byRoute.get("/portal/planlegge/workbench").screenId, "PH-11");
   assert.equal(byRoute.get("/portal/planlegge/workbench").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/planlegge/workbench").kontrollbevis, /PH11Workbench/);
@@ -99,7 +101,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/varsler").kontrollbevis, /PH25Varsler/);
   assert.equal(byRoute.get("/portal/fysisk").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/fysisk").kontrollbevis, /PH26Fysisk/);
-  assert.equal(register.tellinger.implementert, 19);
+  assert.equal(register.tellinger.implementert, 20);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

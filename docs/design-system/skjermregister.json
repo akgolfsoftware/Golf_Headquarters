@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "76770763868e7892b33398bcd0cfcbd3665afb25",
+  "kodeversjon": "78dad62bd5e0fe2c84a42c43bad77226f904b466",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -13619,19 +13619,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Workbench-øktarket merker PH03WbArk i PlayerHQSkall. Start, fortsett, fullfør, hopp over, belastning og recap er beholdt. Utkast er fortsatt skjult. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-03 Øktark er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-03"
     },
     {
       "screenId": "PH-02",
@@ -23008,10 +23010,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 54,
+    "medAvvik": 55,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 19,
+    "implementert": 20,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
