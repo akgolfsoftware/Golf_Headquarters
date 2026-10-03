@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "6f508c064dbf0f6032522dc51811df6ccfc8074c",
+  "kodeversjon": "f3a8a0c4b3a199df5c5055c5dc38a5c8c6f8761b",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
-    "componentFiles": 837,
+    "componentFiles": 838,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -15836,7 +15836,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Coach-huben merker PH21CoachHub i PlayerHQSkall. Coach, fokus, meldinger, timer og oppsalget uten coach er beholdt. Indre kort er fortsatt v2 og leser Precision-tokener i skallet. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -19127,12 +19127,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-21 Coach-kontakt er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -23167,10 +23169,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 129,
+    "medAvvik": 130,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 102,
+    "implementert": 103,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

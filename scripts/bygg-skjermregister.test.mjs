@@ -153,7 +153,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/forelder/varsler").status.implementert, "precision-visning");
   assert.match(byRoute.get("/forelder/varsler").kontrollbevis, /FO01Varsler/);
   assert.equal(byRoute.get("/portal/coach").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/coach").kontrollbevis, /PH21CoachHub/);
+  assert.match(byRoute.get("/portal/coach").kontrollbevis, /PH21Innboks/);
   assert.equal(byRoute.get("/portal/coach/ai").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/coach/ai").kontrollbevis, /PH22CoachKi/);
   assert.equal(byRoute.get("/portal/coach/melding").status.implementert, "precision-visning");
@@ -274,7 +274,13 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/gameplan").screenId, "PH-20");
   assert.equal(byRoute.get("/portal/gameplan").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/gameplan").kontrollbevis, /PH20Gameplan/);
-  assert.equal(register.tellinger.implementert, 102);
+  assert.equal(byRoute.get("/portal/coach").screenId, "PH-21");
+  assert.equal(byRoute.get("/portal/coach").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/coach").kontrollbevis, /PH21Innboks/);
+  assert.equal(byRoute.get("/portal/onskeligokt").screenId, "PH-21");
+  assert.equal(byRoute.get("/portal/onskeligokt").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/onskeligokt").kontrollbevis, /PH21Innboks/);
+  assert.equal(register.tellinger.implementert, 103);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
