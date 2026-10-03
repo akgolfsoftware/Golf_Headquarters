@@ -249,7 +249,17 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/trening/break-tabell").kontrollbevis, /PH26Break/);
   assert.equal(byRoute.get("/portal/trening/putte-laboratoriet").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/trening/putte-laboratoriet").kontrollbevis, /PH26PutteLab/);
-  assert.equal(register.tellinger.implementert, 94);
+  assert.equal(byRoute.get("/portal/analysere/trackman").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/analysere/trackman").kontrollbevis, /PH17TrackMan/);
+  assert.equal(byRoute.get("/portal/gameplan").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/gameplan").kontrollbevis, /PH20Gameplan/);
+  assert.equal(byRoute.get("/portal/booking/bekreftet").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/booking/bekreftet").kontrollbevis, /PH23Bekreftet/);
+  assert.equal(byRoute.get("/portal/booking/[bookingId]").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/booking/[bookingId]").kontrollbevis, /PH23Detalj/);
+  assert.equal(byRoute.get("/portal/meg/innstillinger/sprak").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/meg/innstillinger/sprak").kontrollbevis, /PH25Sprak/);
+  assert.equal(register.tellinger.implementert, 99);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

@@ -1,6 +1,6 @@
 {
-  "sitert": 136,
+  "sitert": 132,
   "av": 219,
   "sistEndret": "2026-10-03",
-  "grunn": "Varsler og Workbench-øktarket er portet til Precision. Siteringen av «PH-20 Varsel-ark.dc.html» og øktarkets Train-lock-sitering er fjernet med vilje. 138→136."
+  "grunn": "Varsler, Workbench-øktarket, gameplan, TrackMan-listen og bookingkvitteringen er portet til Precision. Siteringene av «PH-20 Varsel-ark.dc.html», øktarkets Train-lock-sitering, «GP-01 Gameplan baner.dc.html», «TM-01 TrackMan liste.dc.html», «PH-13 TrackMan liste.dc.html» og «BO-03 Booking bekreftet.dc.html» er fjernet med vilje. 138→132."
 }

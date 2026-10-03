@@ -35,9 +35,9 @@ function erAktiv(path: string, href: string) {
   if (href === "/portal/meg") {
     return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach") || path.startsWith("/portal/ai/mal-bygger") || path.startsWith("/portal/mal/goal");
   }
-  // Øvelser og ny booking markerte Plan. aktiv="gjor" skal ikke lyse noen fane.
+  // Øvelser, ny booking, bookingdetalj og kvittering markerte Plan. Coach-booking lyser I dag. aktiv="gjor" skal ikke lyse noen fane.
   if (href === "/portal/planlegge") {
-    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/");
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/drills") || path === "/portal/booking/ny" || path.startsWith("/portal/booking/ny/") || path === "/portal/booking/bekreftet" || (path.startsWith("/portal/booking/") && !path.startsWith("/portal/booking/ny") && !path.startsWith("/portal/booking/coach") && !path.startsWith("/portal/booking/anlegg"));
   }
   // Analyse, gameplan, ny runde og gapping markerte Analyse.
   if (href === "/portal/analysere") {

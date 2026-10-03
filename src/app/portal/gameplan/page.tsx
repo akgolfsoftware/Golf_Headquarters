@@ -1,14 +1,15 @@
 /**
- * PlayerHQ Gameplan (B30, omdøpt fra "Baneguide" 16. jul 2026) — banebibliotek.
- * V2Shell leverer chrome-en (IkonRail/BunnNav), GameplanV2 rendrer innholds-stacken.
+ * PH20Gameplan — banebiblioteket i PlayerHQSkall.
+ * Samme baner. En gjest og en foresatt slipper ikke inn.
  */
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { getBaneLibrary } from "@/lib/gameplan/queries";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { GameplanV2 } from "@/components/portal/v2/GameplanV2";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +18,17 @@ export default async function V2GameplanPreviewPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await getBaneLibrary(user.id);
+  const [data, ulest] = await Promise.all([
+    getBaneLibrary(user.id),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <GameplanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/analysere" className="ph-tilbake">Analyse</Link>
+        <GameplanV2 data={data} />
+      </div>
+    </PlayerHQSkall>
   );
 }

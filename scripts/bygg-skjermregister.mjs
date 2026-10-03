@@ -253,6 +253,11 @@ const PRECISION_VISNING = [
   ["PH14OpprettTest", "Ny test merker PH14OpprettTest i PlayerHQSkall. Opprettelsen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26Break", "Break-tabell merker PH26Break i PlayerHQSkall. Tabellen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26PutteLab", "Puttelaboratoriet merker PH26PutteLab i PlayerHQSkall. Visningen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["PH17TrackMan", "TrackMan-listen merker PH17TrackMan i PlayerHQSkall. Økter og opplasting er beholdt. Enkeltøkten er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH20Gameplan", "Gameplan merker PH20Gameplan i PlayerHQSkall. Baner, kartlagt geometri og spilte runder er beholdt. Enkeltbanen er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH23Bekreftet", "Bookingkvitteringen merker PH23Bekreftet i PlayerHQSkall. Eierskap, tid og kalenderlenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH23Detalj", "Bookingdetaljen merker PH23Detalj i PlayerHQSkall. Ekte felter, sted, coach og avbestilling er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25Sprak", "Språk merker PH25Sprak i PlayerHQSkall. Norsk kan lagres. Engelsk er fortsatt sperret. 390×844 og 1440×880 er ikke målt mot tegningen."],
 ];
 
 function merkVisning(row, source) {

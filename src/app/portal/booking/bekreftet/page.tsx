@@ -1,26 +1,19 @@
 /**
- * PlayerHQ · Booking bekreftet (/portal/booking/bekreftet?bookingId=…) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingBekreftetV2` erstatter legacy-
- * siden, ruten flyttet ut av (legacy). Kvitteringsside etter credit-booking
- * (bekreft-form router.push-er hit). Uendret logikk: eierskaps-sjekk
- * (`booking.userId !== user.id` → notFound) og googleKalenderUrl()-
- * genereringen. COPY-FIKS: legacy-tittelen «Forespørsel sendt!» var uærlig —
- * credit-bookingen opprettes CONFIRMED, ny tittel er «Booking bekreftet».
- * Klokkeslett følger lagret veggklokke; ingen ekstra Oslo-konvertering av naive tider.
+ * PH23Bekreftet — kvittering etter booking i PlayerHQSkall.
+ * Samme eierskapssjekk og samme kalenderlenke. Kun eieren ser bookingen.
  */
 
 import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
 
 export const dynamic = "force-dynamic";
 
-type Props = {
-  searchParams: Promise<{ bookingId?: string }>;
-};
+type Props = { searchParams: Promise<{ bookingId?: string }> };
 
 function googleKalenderUrl(booking: {
   startAt: Date;
@@ -28,8 +21,7 @@ function googleKalenderUrl(booking: {
   serviceType: { name: string };
   location: { name: string };
 }): string {
-  const fmt = (d: Date) =>
-    naivOsloTilTidspunkt(d).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const fmt = (d: Date) => naivOsloTilTidspunkt(d).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: `AK Golf — ${booking.serviceType.name}`,
@@ -42,58 +34,41 @@ function googleKalenderUrl(booking: {
 
 export default async function BekreftetPage({ searchParams }: Props) {
   const { bookingId } = await searchParams;
-
   if (!bookingId) notFound();
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
-
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: {
-      serviceType: {
-        select: {
-          id: true,
-          name: true,
-          durationMin: true,
-          coachUserId: true,
-        },
+  const [booking, ulest] = await Promise.all([
+    prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        serviceType: { select: { id: true, name: true, durationMin: true, coachUserId: true } },
+        location: { select: { name: true } },
       },
-      location: { select: { name: true } },
-    },
-  });
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   if (!booking || booking.userId !== user.id) notFound();
 
   const coach = booking.serviceType.coachUserId
-    ? await prisma.user.findUnique({
-        where: { id: booking.serviceType.coachUserId },
-        select: { name: true },
-      })
+    ? await prisma.user.findUnique({ where: { id: booking.serviceType.coachUserId }, select: { name: true } })
     : null;
-
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const dato = booking.startAt.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
+  const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <BookingBekreftetV2
-        data={{
-          linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
-          coachNavn: coach?.name ?? null,
-          sted: booking.location.name,
-          varighetMin: booking.serviceType.durationMin,
-          kalenderUrl: googleKalenderUrl(booking),
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <BookingBekreftetV2
+          data={{
+            linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
+            coachNavn: coach?.name ?? null,
+            sted: booking.location.name,
+            varighetMin: booking.serviceType.durationMin,
+            kalenderUrl: googleKalenderUrl(booking),
+          }}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }
