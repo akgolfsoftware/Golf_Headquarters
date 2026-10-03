@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "53b9a3cb0f90c57dbddfafdc6198bc5c92b454a6",
+  "kodeversjon": "e54737064652d4e946c59881374e7e2ba5815b55",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -20308,13 +20308,13 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Tester-huben merker PH14Hub i PlayerHQSkall. Grupper, forfall, Team Norway-lenke, egen test og tom tilstand er beholdt. Detalj og gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.",
       "avvik": [
-        "Kodekommentaren sier PH-15. Skjermlisten sier PH-14. Kommentaren er opphav, ikke en ny godkjenning."
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -20322,7 +20322,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-15"
+      "kodekommentar": "PH-14"
     },
     {
       "screenId": "PH-14",
@@ -23001,7 +23001,7 @@
     "medAvvik": 49,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 13,
+    "implementert": 14,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
