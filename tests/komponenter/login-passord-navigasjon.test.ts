@@ -24,6 +24,7 @@ mock.module("react", { namedExports: { ...React, useState } });
 mock.module("next/link", { defaultExport: "a" });
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ replace: (path: string) => klientNavigasjoner.push(path) }) } });
 mock.module("@/lib/supabase/client", { namedExports: { createClient: () => ({ auth: { signInWithPassword: (input: PassordInput) => innlogging(input) } }) } });
+mock.module("@/styles/precision-athletics.css", { defaultExport: {} });
 type Node = React.ReactElement<Record<string, unknown>>;
 function nodes(tree: React.ReactNode): Node[] {
   if (Array.isArray(tree)) return tree.flatMap(nodes);
