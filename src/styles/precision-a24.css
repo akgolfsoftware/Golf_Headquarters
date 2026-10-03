@@ -1,0 +1,7 @@
+/* PH-24 Meg — to kolonner fra 900 px, ellers én. */
+.pa-root .ph24-kol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; align-items: start; }
+.pa-root .ph24-kol > div { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+@media (min-width: 900px) { .pa-root .ph24-kol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pa-root .ph24-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 44px; padding: 6px 0; }
+.pa-root .ph24-rad + .ph24-rad { border-top: 1px solid var(--border-hairline); }
+.pa-root .ph24-bag { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); column-gap: 16px; }
