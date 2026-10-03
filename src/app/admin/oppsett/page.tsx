@@ -24,7 +24,9 @@
  * bruker `?visning=` — ikke `?fane=`, som allerede eies av toppnivå-valget
  * her.
  *
- * Design: canvas godkjent av Anders 30.08.2026 —
+ * Design: AG-23 i Precision Athletics (7d7c2994, AG-mer.jsx). Faneinnholdet under er
+ * fortsatt Train-lock (ingen fasit for Klubb, Kalender, Sikkerhet, API, Perioder).
+ * Tidligere: canvas godkjent av Anders 30.08.2026 —
  * designsystem/canvas/agencyos-ia/Oppsett.dc.html.
  *
  * MASTERPLAN 15.13 (31.08.2026): `/admin/gdpr` og `/admin/team/ekstern` hadde
@@ -37,9 +39,14 @@
 import Link from "next/link";
 import { TlKort, TlRad, TlKnapp } from "@/components/admin/v2/oppsett/tl-kit";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG23Hode } from "@/components/admin/precision/AG23Hode";
+import { AG23TeamOversikt, type TeamRad } from "@/components/admin/precision/AG23Team";
+import { prisma } from "@/lib/prisma";
+import { canUser } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
+import { EKSTRA_TILGANGER } from "@/lib/admin/oppsett/ekstra-tilganger";
 import { TL } from "@/lib/v2/train-lock";
-import { OppsettHode } from "@/components/admin/v2/oppsett/OppsettHode";
 import { AdminOppsettHubTrainLock } from "@/components/admin/v2/oppsett/AdminOppsettHubTrainLock";
 import { AdminKlubbInnstillingerTrainLock } from "@/components/admin/v2/oppsett/AdminKlubbInnstillingerTrainLock";
 import { AdminKalenderSynkTrainLock } from "@/components/admin/v2/oppsett/AdminKalenderSynkTrainLock";
@@ -50,7 +57,7 @@ import { AdminIntegrasjonerTrainLock } from "@/components/admin/v2/oppsett/Admin
 import { AdminApiKeysTrainLock } from "@/components/admin/v2/oppsett/AdminApiKeysTrainLock";
 import { PeriodeNavnV2 } from "@/components/admin/v2/PeriodeNavnV2";
 import { PERIODE_NAVN_LABELS } from "@/app/admin/settings/periode-navn/labels";
-import { synligeOppsettFaner, velgOppsettFane } from "@/lib/admin/oppsett/faner";
+import { oppsettHref, synligeOppsettFaner, velgOppsettFane } from "@/lib/admin/oppsett/faner";
 import {
   lastAkademiData,
   lastApiData,
@@ -89,6 +96,27 @@ export default async function OppsettPage({
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { fane: onsket, rad, visning, ok, error } = await searchParams;
+
+  if (onsket === "team") {
+    const [brukere, kanInvitere] = await Promise.all([
+      prisma.user.findMany({
+        where: { role: { in: ["ADMIN", "COACH"] }, deletedAt: null },
+        select: { id: true, name: true, email: true, role: true, lastLoginAt: true },
+        orderBy: [{ role: "asc" }, { name: "asc" }],
+      }),
+      canUser(user, Capability.INVITE_USERS),
+    ]);
+    const team: TeamRad[] = brukere.map((b) => ({
+      id: b.id, navn: b.name || "Uten navn", epost: b.email,
+      rolle: b.role === "ADMIN" ? "ADMIN" : "COACH", aktiv: b.lastLoginAt != null,
+    }));
+    return (
+      <AgencyOSSkall navn={user.name ?? "Coach"}>
+        <AG23TeamOversikt tilstand="data" team={team} kanInvitere={kanInvitere}
+          kanTildeleTilganger={user.role === "ADMIN"} tilganger={EKSTRA_TILGANGER} kanEksterne={user.role === "ADMIN"} />
+      </AgencyOSSkall>
+    );
+  }
 
   const faner = synligeOppsettFaner(user.role === "ADMIN");
   const aktiv = velgOppsettFane(onsket, faner);
@@ -191,11 +219,18 @@ export default async function OppsettPage({
   })();
 
   return (
-    <V2Shell bredde="full" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        <OppsettHode faner={faner} aktiv={aktiv} />
-        {innhold}
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="pa-side">
+        <AG23Hode
+          sted="oppsett"
+          kicker="Mer · Oppsett"
+          tittel="Oppsett"
+          sub="Profil, team, tilgang, kalender, sikkerhet og integrasjoner."
+          innstillinger={faner.map((f) => ({ id: f.id, label: f.label, href: oppsettHref(f.id) }))}
+          aktivInnstilling={aktiv}
+        />
+        <div style={{ minWidth: 0 }}>{innhold}</div>
       </div>
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }
