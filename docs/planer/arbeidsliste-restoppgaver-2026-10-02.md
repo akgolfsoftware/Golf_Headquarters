@@ -1,6 +1,6 @@
 # Aktiv arbeidsliste — resterende oppgaver
 
-Sist oppdatert: 2026-10-03 på grenen `grok/ph-neste-fem`. Utgangspunkt er `main` etter tester-huben.
+Sist oppdatert: 2026-10-03 på grenen `grok/ph-neste-fem-2`. Utgangspunkt er `main` etter de fem første Precision-skjermene.
 Statusgrunnlag: direkte avlesning av aktive Codex-økter, GitHub-PR-er, lokale
 arbeidskopier, fersk ruteinventar, [lanseringsplanen](lanseringsplan-2026-10-01.md),
 [fullføringsplanen](codex-fullforing-claude-design-2026-09-30.md),

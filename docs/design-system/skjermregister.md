@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 122 rader har et registrert avvik. 94 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 126 rader har et registrert avvik. 99 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -95,7 +95,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/forelder/ukerapport` | FO-01 | Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
-| `/portal/mal/runder` | PH-18 | Kodekommentaren sier PH-11. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/personvern` | PH-25 | Kodekommentaren sier PH-18. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/team-norway/[groupId]/dokumenter` | TN-11 | Kodekommentaren sier TN-14, som i handover er «Samlingspunkt» på /team-norway/samlinger/[id]. Handover-ruten beholder TN-11. Kommentaren er opphav, ikke godkjenning. |
 | `/team-norway/[groupId]` | TN-09 | Kodekommentaren sier TN-13, som i handover er «Turneringsoversikt» på /team-norway/turneringer. Handover-ruten beholder TN-09. Kommentaren er opphav, ikke godkjenning. |

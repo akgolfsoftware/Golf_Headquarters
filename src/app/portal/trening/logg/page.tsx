@@ -1,23 +1,24 @@
 /**
- * PlayerHQ · Logg treningsøkt (/portal/trening/logg) — v2.
- * v2-port 17. juli 2026 (Team D2): `TreningLoggV2` erstatter legacy-skjemaet,
- * ruten flyttet ut av (legacy). Lagringen går fortsatt via POST
- * /api/portal/trening/logg (uendret API-kontrakt) med redirect til
- * /portal/gjennomfore — kun presentasjonslaget er nytt.
+ * PH26TreningLogg — logg en treningsøkt i PlayerHQSkall.
+ * Lagring går fortsatt til /api/portal/trening/logg.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TreningLoggV2 } from "@/components/portal/v2/TreningLoggV2";
 
 export default async function TreningLoggPage() {
   const user = await requirePortalUser();
+  const ulest = await getUnreadNotifications(user.id, 1);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
-      <TreningLoggV2 />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/gjennomfore" className="ph-tilbake">Gjør</Link>
+        <TreningLoggV2 />
+      </div>
+    </PlayerHQSkall>
   );
 }

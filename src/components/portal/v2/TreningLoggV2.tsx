@@ -1,17 +1,10 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
-/**
- * PlayerHQ · Logg treningsøkt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys PlayerHQ.
- */
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SgCategory } from "@/generated/prisma/client";
-import { Caps, Tittel, Kort, Knapp, PillVelger, Glider, Inndata, TekstOmraade, HjelpTips } from "@/components/v2";
-// String-literaler (ikke verdi-import fra Prisma-klienten) — denne client-
-// komponenten må ikke dra Node-moduler inn i nettleser-bundelen.
-// Ordbok-kanon (docs/ordbok.json §sg.kategorier): norsk klarspråk i spiller-UI.
+import { Knapp } from "@/components/precision/pa";
+
 const OMRAADER: { value: SgCategory; label: string }[] = [
   { value: "OTT", label: "Tee-slag" },
   { value: "APP", label: "Innspill" },
@@ -22,7 +15,6 @@ const OMRAADER: { value: SgCategory; label: string }[] = [
 export function TreningLoggV2() {
   const router = useRouter();
   const today = new Date().toISOString().slice(0, 10);
-
   const [form, setForm] = useState({
     date: today,
     sgArea: "OTT" as SgCategory,
@@ -58,89 +50,41 @@ export function TreningLoggV2() {
   }
 
   return (
-    <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-      <div>
-        <Caps>PlayerHQ · Trening</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="treningsøkt">Logg</Tittel>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <Kort eyebrow="Økten">
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <Inndata
-              label="Dato"
-              type="date"
-              mono
-              value={form.date}
-              onChange={(v) => {
-                // Samme regel som legacy (max=today): aldri fremtidige datoer.
-                const trygg = v > today ? today : v;
-                setForm((f) => ({ ...f, date: trygg }));
-              }}
-            />
-
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
-                <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute }}>Område</span>
-                <HjelpTips k="sgOmrade" size={11} />
-              </div>
-              <PillVelger
-                options={OMRAADER.map((o) => ({ v: o.value, l: o.label }))}
-                value={form.sgArea}
-                onChange={(v) => setForm((f) => ({ ...f, sgArea: v as SgCategory }))}
-              />
-            </div>
-
-            <Glider
-              label="Varighet"
-              min={5}
-              max={240}
-              step={5}
-              value={form.minutes}
-              enhet="min"
-              onChange={(n) => setForm((f) => ({ ...f, minutes: n }))}
-            />
-
-            <Inndata
-              label="Drill / øvelse (valgfritt)"
-              value={form.drillName}
-              placeholder="F.eks. Clock drill, Gate drill"
-              onChange={(v) => setForm((f) => ({ ...f, drillName: v.slice(0, 100) }))}
-            />
-
-            <div>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, display: "block", marginBottom: 7 }}>
-                Kvalitet: {form.quality}/5
-              </span>
-              <PillVelger
-                options={[1, 2, 3, 4, 5].map((n) => ({ v: String(n), l: String(n) }))}
-                value={String(form.quality)}
-                onChange={(v) => setForm((f) => ({ ...f, quality: Number(v) }))}
-              />
-            </div>
-
-            <TekstOmraade
-              label="Notater (valgfritt)"
-              value={form.notes}
-              rows={3}
-              placeholder="Hva jobbet du med? Hva gikk bra?"
-              onChange={(v) => setForm((f) => ({ ...f, notes: v.slice(0, 500) }))}
-            />
+    <form className="ph26l" onSubmit={handleSubmit}>
+      <header>
+        <p>PlayerHQ · Trening</p>
+        <h1>Logg treningsøkt</h1>
+      </header>
+      <section className="pa-card ph26l-kort">
+        <label>Dato<input type="date" max={today} value={form.date} onChange={(e) => setForm((f) => ({ ...f, date: e.target.value > today ? today : e.target.value }))} /></label>
+        <fieldset>
+          <legend>Område</legend>
+          <div>
+            {OMRAADER.map((o) => (
+              <button key={o.value} type="button" aria-pressed={form.sgArea === o.value} onClick={() => setForm((f) => ({ ...f, sgArea: o.value }))}>{o.label}</button>
+            ))}
           </div>
-        </Kort>
-
-        {feil && (
-          <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, margin: 0 }}>
-            {feil}
-          </p>
-        )}
-
-        <Knapp type="submit" full disabled={lagrer} icon="check">
-          {lagrer ? "Lagrer…" : "Lagre økt"}
-        </Knapp>
-      </form>
-    </div>
+        </fieldset>
+        <label>Varighet · {form.minutes} min
+          <input type="range" min={5} max={240} step={5} value={form.minutes} onChange={(e) => setForm((f) => ({ ...f, minutes: Number(e.target.value) }))} />
+        </label>
+        <label>Drill / øvelse (valgfritt)
+          <input value={form.drillName} placeholder="F.eks. Clock drill, Gate drill" maxLength={100} onChange={(e) => setForm((f) => ({ ...f, drillName: e.target.value.slice(0, 100) }))} />
+        </label>
+        <fieldset>
+          <legend>Kvalitet: {form.quality}/5</legend>
+          <div>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" aria-pressed={form.quality === n} onClick={() => setForm((f) => ({ ...f, quality: n }))}>{n}</button>
+            ))}
+          </div>
+        </fieldset>
+        <label>Notater (valgfritt)
+          <textarea rows={3} maxLength={500} placeholder="Hva jobbet du med? Hva gikk bra?" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value.slice(0, 500) }))} />
+        </label>
+      </section>
+      {feil && <p role="alert">{feil}</p>}
+      <Knapp type="submit" fullWidth loading={lagrer} disabled={lagrer}>{lagrer ? "Lagrer…" : "Lagre økt"}</Knapp>
+    </form>
   );
 }
