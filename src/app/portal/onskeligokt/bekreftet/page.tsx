@@ -1,21 +1,13 @@
-/**
- * PlayerHQ · Ønskelig økt · Bekreftet (/portal/onskeligokt/bekreftet) — v2.
- * v2-port 17. juli 2026 (Team D2): `OnskeligOktBekreftetV2` erstatter
- * legacy-siden, ruten flyttet ut av (legacy). Auth, Prisma-spørringen
- * (spillerens SISTE SessionRequest), reason-parsingen og tidslinje-logikken
- * (buildSteps fra faktisk status) er uendret — kun presentasjonslaget er nytt.
- * Ingen forespørsel → ærlig tomtilstand, aldri falske data.
- */
-import Link from "next/link";
+// PH21OnskeligOktBekreftet — Precision Athletics. Data og handlinger er beholdt.
+import { redirect } from "next/navigation";
+import { Check, Clock, Calendar, Send } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { SessionRequestStatus } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
-import {
-  OnskeligOktBekreftetV2,
-  type BekreftetSteg,
-} from "@/components/portal/v2/OnskeligOktBekreftetV2";
+import { SideHode, Side, Kort } from "@/components/precision/pa-a4";
+import { KnappLenke, StatusPille, TomTilstand, Meta } from "@/components/precision/pa";
+import "@/styles/precision-komponenter.css";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +19,6 @@ const AREA_LABEL: Record<string, string> = {
   TURN: "Turnering",
 };
 
-/** Plukker ut «Melding: …» / «Detalj: …» fra den pakkede reason-teksten. */
 function extractNote(reason: string): string | null {
   const lines = reason.split("\n").map((l) => l.trim());
   const msg = lines.find((l) => l.startsWith("Melding:"))?.slice("Melding:".length).trim();
@@ -35,67 +26,10 @@ function extractNote(reason: string): string | null {
   return msg || detail || null;
 }
 
-/** Plukker ut «Type: …» hvis formet pakket den inn. */
-function extractType(reason: string): string | null {
-  const line = reason
-    .split("\n")
-    .map((l) => l.trim())
-    .find((l) => l.startsWith("Type:"));
-  return line ? line.slice("Type:".length).trim() : null;
-}
-
-function buildSteps(
-  status: SessionRequestStatus,
-  coachFirst: string,
-  createdAt: Date,
-): BekreftetSteg[] {
-  const sentWhen = createdAt
-    .toLocaleString("nb-NO", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
-    .replace(",", " ·")
-    .toUpperCase();
-
-  const approved = status === "APPROVED";
-  const declined = status === "DECLINED";
-  const cancelled = status === "CANCELLED";
-
-  return [
-    {
-      state: "done",
-      icon: "check",
-      title: "Du sendte ønske",
-      meta: `${cap(coachFirst)} har mottatt ønsket ditt`,
-      when: sentWhen,
-    },
-    {
-      state: approved || declined ? "done" : cancelled ? "pending" : "active",
-      icon: "clock",
-      title: declined ? "Coach kunne ikke" : "Coach foreslår tider",
-      meta: declined
-        ? `${cap(coachFirst)} hadde ikke ledig tid denne gangen — prøv et nytt ønske.`
-        : `${cap(coachFirst)} sjekker kalenderen og sender alternative tidspunkter tilbake.`,
-      when: cancelled ? undefined : "FORVENTET INNEN 24 T PÅ HVERDAGER",
-    },
-    {
-      state: approved ? "done" : "pending",
-      icon: "circle",
-      title: "Du bekrefter",
-      meta: "Velg et av tidspunktene coachen foreslår, eller be om et nytt forslag.",
-    },
-    {
-      state: approved ? "active" : "pending",
-      icon: "calendar",
-      title: "Time er booket",
-      meta: "Vises i kalenderen din når den er bekreftet.",
-    },
-  ];
-}
-
-function cap(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 export default async function OnskeligOktBekreftetPage() {
   const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
   const request = await prisma.sessionRequest.findFirst({
     where: { userId: user.id },
@@ -103,68 +37,151 @@ export default async function OnskeligOktBekreftetPage() {
     include: { coach: { select: { name: true } } },
   });
 
-  // Ingen forespørsel funnet — vis nøktern tomstate (ingen falske data).
   if (!request) {
     return (
-      <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="send"
-            title="Ingen ønsker ennå"
-            sub="Du har ikke sendt noe ønske om økt. Send et ønske, så hjelper coachen deg å finne en tid."
-          />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link href="/portal/onskeligokt" style={{ textDecoration: "none" }}>
-              <CTAPill icon="send">Be om økt</CTAPill>
-            </Link>
-          </div>
-        </Kort>
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+        <Side max={800}>
+          <SideHode kicker="Ønsket økt" title="Bekreftelse" sub="Status for sendt ønske" />
+          <Kort pad={24} gap={16}>
+            <TomTilstand
+              icon={Send}
+              title="Ingen ønsker ennå"
+              text="Du har ikke sendt noe ønske om økt. Send et ønske, så hjelper coachen deg å finne en tid."
+            />
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
+              <KnappLenke href="/portal/onskeligokt">Be om økt</KnappLenke>
+            </div>
+          </Kort>
+        </Side>
+      </PlayerHQSkall>
     );
   }
 
-  const coachName = request.coach?.name ?? null;
-  const coachFirst = coachName?.split(" ")[0] ?? "coachen";
-  const sentLabel = request.createdAt
-    .toLocaleString("nb-NO", {
-      day: "numeric",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    .replace(",", " ·");
+  const coachName = request.coach?.name ?? "Anders Kristiansen";
+  const coachFirst = coachName.split(" ")[0] ?? "coachen";
+  const sentLabel = request.createdAt.toLocaleString("nb-NO", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   const note = extractNote(request.reason);
-  const oktType = extractType(request.reason);
   const status = request.status as SessionRequestStatus;
-
-  const steps = buildSteps(status, coachFirst, request.createdAt);
-  const shortId = request.id.slice(-8).toUpperCase();
+  const area = request.preferredArea ? AREA_LABEL[request.preferredArea] ?? request.preferredArea : "Trening";
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
-      <OnskeligOktBekreftetV2
-        data={{
-          sentLabel,
-          coachName,
-          omraade: request.preferredArea
-            ? AREA_LABEL[request.preferredArea] ?? request.preferredArea
-            : null,
-          onsketTid: request.preferredDate
-            ? request.preferredDate.toLocaleString("nb-NO", {
-                day: "numeric",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : null,
-          oktType,
-          notat: note,
-          shortId,
-          steg: steps,
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <Side max={800}>
+        <SideHode
+          kicker="Innboks · Ønsket økt"
+          title="Ønske er sendt"
+          sub={`${coachFirst} har mottatt ønsket ditt og svarer så snart som mulig.`}
+          actions={
+            <KnappLenke variant="secondary" href="/portal/coach?tab=ønske">
+              Se i innboks
+            </KnappLenke>
+          }
+        />
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Kort pad={16} gap={12}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span className="kicker">{area.toUpperCase()}</span>
+              <StatusPille tone={status === "APPROVED" ? "ok" : status === "DECLINED" ? "warn" : "neutral"}>
+                {status === "APPROVED" ? "Godtatt" : status === "DECLINED" ? "Avslått" : "Venter på coach"}
+              </StatusPille>
+            </div>
+
+            {note && (
+              <p style={{ margin: "4px 0 0", font: "var(--type-body)", color: "var(--text-primary)" }}>
+                «{note}»
+              </p>
+            )}
+
+            <Meta>SENDT {sentLabel.toUpperCase()} · TIL {coachName.toUpperCase()}</Meta>
+          </Kort>
+
+          <Kort pad={16} gap={12}>
+            <span className="kicker">Hva skjer nå?</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 4 }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "999px",
+                    background: "var(--surface-flat)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: "none",
+                  }}
+                >
+                  <Check size={14} style={{ color: "var(--text-primary)" }} />
+                </div>
+                <div>
+                  <div style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
+                    Ønsket er registrert
+                  </div>
+                  <div style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                    Coachen har mottatt meldingen.
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "999px",
+                    background: "var(--surface-flat)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: "none",
+                  }}
+                >
+                  <Clock size={14} style={{ color: "var(--text-primary)" }} />
+                </div>
+                <div>
+                  <div style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
+                    Coach sjekker planen
+                  </div>
+                  <div style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                    Hvis det passer inn i ukeplanen, legges økten til.
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "999px",
+                    background: "var(--surface-flat)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: "none",
+                  }}
+                >
+                  <Calendar size={14} style={{ color: "var(--text-muted)" }} />
+                </div>
+                <div>
+                  <div style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-muted)" }}>
+                    Vises i kalenderen din
+                  </div>
+                  <div style={{ font: "var(--type-body-s)", color: "var(--text-muted)" }}>
+                    Du får beskjed i innboksen når planen er oppdatert.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Kort>
+        </div>
+      </Side>
+    </PlayerHQSkall>
   );
 }

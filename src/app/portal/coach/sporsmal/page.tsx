@@ -1,76 +1,24 @@
-// PH21Sporsmalsliste — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// PH21Sporsmalsliste — Precision Athletics. Data og handlinger er beholdt.
+import { redirect } from "next/navigation";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-/**
- * v2-forhåndsvisning — PlayerHQ Coach · Spørsmål (retning C). Egen top-level
- * route-group (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell
- * leverer chrome-en, CoachQAV2 rendrer innholds-stacken.
- *
- * Auth + datahenting speiler den ekte siden (src/app/portal/coach/sporsmal/page.tsx):
- * coachens egne + åpne (utildelte) spørsmål, nyeste først, med spillernavn.
- */
-
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { sporsmalListeFilter } from "@/lib/portal-okt/coach-sporsmal-tilgang";
-import { prisma } from "@/lib/prisma";
-import { CoachQAV2, type CoachSporsmal } from "@/components/portal/v2/CoachQAV2";
+import { getPH21Data } from "@/lib/portal-coach/ph21-queries";
+import { PH21Innboks } from "@/components/portal/precision/PH21Innboks";
 
 export const dynamic = "force-dynamic";
 
-function formatDatoTid(d: Date): string {
-  return d.toLocaleString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+export default async function CoachSporsmalPage() {
+  const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
-export default async function V2CoachSporsmalPreviewPage() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-
-  const egneSpillere =
-    user.role === "ADMIN"
-      ? []
-      : await prisma.user.findMany({
-          where: coachScopedPlayerWhere(user),
-          select: { id: true },
-        });
-  const questions = await prisma.question.findMany({
-    where: sporsmalListeFilter({
-      viewerId: user.id,
-      viewerRole: user.role,
-      coachedPlayerIds: egneSpillere.map((spiller) => spiller.id),
-    }),
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
-
-  const askerNavn = new Map<string, string>();
-  const askerIds = [...new Set(questions.map((q) => q.askerUserId))];
-  if (askerIds.length > 0) {
-    const askere = await prisma.user.findMany({
-      where: { id: { in: askerIds } },
-      select: { id: true, name: true },
-    });
-    for (const a of askere) askerNavn.set(a.id, a.name);
-  }
-
-  const sporsmal: CoachSporsmal[] = questions.map((q) => ({
-    id: q.id,
-    navn: askerNavn.get(q.askerUserId) ?? "Ukjent spiller",
-    tittel: q.title,
-    besvart: q.status === "ANSWERED",
-    tid: formatDatoTid(q.createdAt),
-  }));
+  const data = await getPH21Data(user.id);
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
       <div className="pa-side">
-      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
-      <CoachQAV2 data={{ sporsmal }} />
-    </div>
+        <PH21Innboks data={data} initialTab="q" />
+      </div>
     </PlayerHQSkall>
   );
 }
