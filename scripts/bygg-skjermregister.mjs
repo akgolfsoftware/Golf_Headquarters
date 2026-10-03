@@ -253,6 +253,11 @@ const PRECISION_VISNING = [
   ["PH14OpprettTest", "Ny test merker PH14OpprettTest i PlayerHQSkall. Opprettelsen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26Break", "Break-tabell merker PH26Break i PlayerHQSkall. Tabellen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH26PutteLab", "Puttelaboratoriet merker PH26PutteLab i PlayerHQSkall. Visningen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["PH21OktSendt", "Bekreftelsen på ønsket økt merker PH21OktSendt i PlayerHQSkall. Siste forespørsel, status og tidslinje er beholdt. Uten forespørsel vises en tom tilstand. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25InnstillingerHub", "Innstillingene merker PH25InnstillingerHub i PlayerHQSkall. Konto, varsler, synlighet og snarveier er beholdt. En foresatt og en gjest slipper ikke inn. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25Kontakt", "Kontaktskjemaet merker PH25Kontakt i PlayerHQSkall. Kategori, melding og ticket er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25Tilbakemelding", "Tilbakemeldingen merker PH25Tilbakemelding i PlayerHQSkall. Anbefaling, type og sending er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen."],
+  ["PH25PushValg", "Varselvalgene merker PH25PushValg i PlayerHQSkall. Preferanser og push på enheten er beholdt. Innboksen er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen."],
 ];
 
 function merkVisning(row, source) {

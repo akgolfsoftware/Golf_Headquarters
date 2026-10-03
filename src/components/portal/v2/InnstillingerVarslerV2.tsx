@@ -1,68 +1,35 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
-/**
- * PlayerHQ Innstillinger · Varsler — v2 Presis + B-pakke (status først, auto-lagre).
- */
 
-import { useEffect, useState, useTransition, type ReactNode } from "react";
+import { useEffect, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import { VAPID_PUBLIC_KEY } from "@/lib/push/vapid";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { detectPushStatus, aktiverPush, deaktiverPush, type PushStatus } from "@/components/portal/push-toggle";
-import { Caps, Kort, StatusPill, Bryter, PillVelger, Icon } from "@/components/v2";
-/* ── Datakontrakt ──────────────────────────────────────────────────── */
+import { StatusPille } from "@/components/precision/pa";
 
-export type InnstillingerVarslerData = {
-  /** Ekte notif-preferanser fra lesPreferences (alle felt vises som brytere). */
-  notif: UserPreferences["notif"];
-  /** Valgt app-språk fra samme preferanse-blob. */
-  spraak: "nb" | "en";
-};
+export type InnstillingerVarslerData = { notif: UserPreferences["notif"]; spraak: "nb" | "en" };
 
-/** Bryter-rad med skillelinje (Bryter selv har ingen border). */
-function BryterRad({ last, children }: { last?: boolean; children: ReactNode }) {
+function Sjekk({ checked, onChange, label, sub, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; sub: string; disabled?: boolean }) {
   return (
-    <div style={{ padding: "12px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
-      {children}
-    </div>
+    <label className="ph25v-sjekk">
+      <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
+      <span><strong>{label}</strong><small>{sub}</small></span>
+    </label>
   );
 }
-
-/** Nøytral info-/feil-tekstboks for push-tilstandene (ærlig, aldri fabrikert). */
-function InfoBoks({ tone = "noytral", children }: { tone?: "noytral" | "warn" | "down"; children: ReactNode }) {
-  const c = tone === "warn" ? TL.warn : tone === "down" ? TL.danger : TL.mute;
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-        alignItems: "flex-start",
-        padding: "10px 12px",
-        borderRadius: 12,
-        background: TL.dock,
-        border: `1px solid ${tone === "noytral" ? TL.hair : `color-mix(in srgb, ${c} 30%, transparent)`}`,
-      }}
-    >
-      <Icon name={tone === "noytral" ? "info" : "alert-triangle"} size={13} style={{ color: c, flex: "none", marginTop: 2 }} />
-      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: tone === "noytral" ? TL.mute : c, lineHeight: 1.55 }}>{children}</span>
-    </div>
-  );
-}
-
-/* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerData }) {
   const router = useRouter();
-
-  // ── Notif-brytere + språk — samme lagringsflyt som notif-toggles.tsx ──
-  const [prefs, setPrefs] = useState<{ notif: UserPreferences["notif"]; spraak: "nb" | "en" }>({
-    notif: data.notif,
-    spraak: data.spraak,
-  });
+  const [prefs, setPrefs] = useState(data);
   const [pending, startTransition] = useTransition();
   const [lagret, setLagret] = useState(false);
+  const [pushStatus, setPushStatus] = useState<PushStatus>("loading");
+  const [pushFeil, setPushFeil] = useState<string | null>(null);
+  const [pushPending, startPush] = useTransition();
+
+  useEffect(() => { void detectPushStatus().then(setPushStatus); }, []);
 
   function setNotif(felt: keyof UserPreferences["notif"], value: boolean) {
     const oppdatert = { ...prefs, notif: { ...prefs.notif, [felt]: value } };
@@ -76,8 +43,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
   }
 
   function setSpraak(s: "nb" | "en") {
-    const oppdatert = { ...prefs, spraak: s };
-    setPrefs(oppdatert);
+    setPrefs({ ...prefs, spraak: s });
     startTransition(async () => {
       await oppdaterPreferences({ spraak: s });
       setLagret(true);
@@ -86,23 +52,13 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
     });
   }
 
-  // ── Push på denne enheten — samme browser-logikk som før (push-toggle.tsx) ──
-  const [pushStatus, setPushStatus] = useState<PushStatus>("loading");
-  const [pushFeil, setPushFeil] = useState<string | null>(null);
-  const [pushPending, startPush] = useTransition();
-
-  useEffect(() => {
-    void detectPushStatus().then(setPushStatus);
-  }, []);
-
   function vekslePush() {
     if (pushPending) return;
     setPushFeil(null);
     const skruPaa = pushStatus !== "on";
     startPush(async () => {
       try {
-        const neste = skruPaa ? await aktiverPush() : await deaktiverPush();
-        setPushStatus(neste);
+        setPushStatus(skruPaa ? await aktiverPush() : await deaktiverPush());
       } catch (err) {
         setPushFeil(err instanceof Error ? err.message : skruPaa ? "Kunne ikke aktivere" : "Kunne ikke deaktivere");
         if (skruPaa) setPushStatus(await detectPushStatus());
@@ -110,154 +66,54 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
     });
   }
 
-  const pushKropp = (() => {
-    if (pushStatus === "loading") {
-      return <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Sjekker push-status …</span>;
-    }
-    if (pushStatus === "unsupported") {
-      return (
-        <InfoBoks>
-          Push-varsler støttes ikke i denne browseren. Prøv en moderne versjon av Safari, Chrome eller Firefox.
-        </InfoBoks>
-      );
-    }
-    if (!VAPID_PUBLIC_KEY) {
-      return <InfoBoks>Push-varsler er midlertidig deaktivert. (VAPID-keys ikke konfigurert.)</InfoBoks>;
-    }
-    if (pushStatus === "blocked") {
-      return (
-        <InfoBoks tone="warn">
-          Du har blokkert varsler for dette nettstedet. Tillat varsler i browser-innstillingene for å aktivere push.
-        </InfoBoks>
-      );
-    }
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <Bryter
-          checked={pushStatus === "on"}
-          onChange={vekslePush}
-          label="Push-varsler på denne enheten"
-          sub="Få varsler direkte i browser eller på telefonen — selv når portalen er lukket"
-        />
-        {pushFeil && <InfoBoks tone="down">{pushFeil}</InfoBoks>}
-      </div>
-    );
-  })();
-
   const antallPaa = Object.values(prefs.notif).filter(Boolean).length;
 
   return (
-    <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <InnstillingerHode
-        tittel="Varsler"
-        undertekst="Innstillinger"
-        tilbakeHref="/portal/meg/innstillinger"
-        action={lagret ? <StatusPill tone="lime">Lagret</StatusPill> : undefined}
-      />
-
-      {/* B: status først */}
-      <div className="grid grid-cols-2" style={{ gap: 8 }}>
-        <Kort pad="12px">
-          <Caps size={9}>På</Caps>
-          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: TL.text }}>{antallPaa}</div>
-        </Kort>
-        <Kort pad="12px">
-          <Caps size={9}>Push</Caps>
-          <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14, marginTop: 8, color: TL.text }}>
-            {pushStatus === "on" ? "Aktiv" : pushStatus === "loading" ? "…" : "Av"}
-          </div>
-        </Kort>
+    <div className="ph25v">
+      <header>
+        <Link href="/portal/meg/innstillinger" className="ph-tilbake">Innstillinger</Link>
+        <div><h1>Varsler</h1><p>Innstillinger</p></div>
+        {lagret && <StatusPille tone="ok">Lagret</StatusPille>}
+      </header>
+      <div className="ph25v-kpi">
+        <p className="pa-card"><span>På</span><strong>{antallPaa}</strong></p>
+        <p className="pa-card"><span>Push</span><strong>{pushStatus === "on" ? "Aktiv" : pushStatus === "loading" ? "…" : "Av"}</strong></p>
       </div>
-
-      <Kort eyebrow="Denne enheten">{pushKropp}</Kort>
-
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
-        {/* Hendelser */}
-        <Kort eyebrow="Varsler" action={<Caps size={9}>Hva du varsles om</Caps>}>
-          <BryterRad>
-            <Bryter
-              checked={prefs.notif.nyMeldingFraCoach}
-              onChange={(v) => !pending && setNotif("nyMeldingFraCoach", v)}
-              label="Nye meldinger fra coach"
-              sub="Varsles når coachen din sender deg en melding"
-            />
-          </BryterRad>
-          <BryterRad>
-            <Bryter
-              checked={prefs.notif.treningsplanOppdatert}
-              onChange={(v) => !pending && setNotif("treningsplanOppdatert", v)}
-              label="Treningsplan oppdatert"
-              sub="Varsles når coachen endrer treningsplanen din"
-            />
-          </BryterRad>
-          <BryterRad>
-            <Bryter
-              checked={prefs.notif.bookingbekreftelse}
-              onChange={(v) => !pending && setNotif("bookingbekreftelse", v)}
-              label="Bookingbekreftelse"
-              sub="Bekreftelse og påminnelse for bookede tider"
-            />
-          </BryterRad>
-          <BryterRad>
-            <Bryter
-              checked={prefs.notif.ukentligRapport}
-              onChange={(v) => !pending && setNotif("ukentligRapport", v)}
-              label="Ukentlig fremdrifts-rapport"
-              sub="Oppsummering av uken — trening, mål og fremgang"
-            />
-          </BryterRad>
-          <BryterRad last>
-            <Bryter
-              checked={prefs.notif.turneringsresultater}
-              onChange={(v) => !pending && setNotif("turneringsresultater", v)}
-              label="Turneringsresultater"
-              sub="Varsles når turneringsresultater er registrert"
-            />
-          </BryterRad>
-        </Kort>
-
-        {/* Kanaler + språk */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-          <Kort eyebrow="Kanaler" action={<Caps size={9}>Hvordan du mottar dem</Caps>}>
-            <BryterRad>
-              <Bryter
-                checked={prefs.notif.epost}
-                onChange={(v) => !pending && setNotif("epost", v)}
-                label="E-post"
-                sub="Sammendrag av planen og påminnelser på e-post"
-              />
-            </BryterRad>
-            <BryterRad>
-              <Bryter
-                checked={prefs.notif.push}
-                onChange={(v) => !pending && setNotif("push", v)}
-                label="Push-varsler"
-                sub="Sanntidsvarsler i nettleser og mobil"
-              />
-            </BryterRad>
-            <BryterRad last>
-              <Bryter
-                checked={prefs.notif.paaminnelse}
-                onChange={(v) => !pending && setNotif("paaminnelse", v)}
-                label="Påminnelse 1 time før økt"
-                sub="Få påminnelse rett før en planlagt økt starter"
-              />
-            </BryterRad>
-          </Kort>
-
-          <Kort eyebrow="Språk">
-            <PillVelger
-              options={[
-                { v: "nb", l: "Norsk bokmål" },
-                { v: "en", l: "English" },
-              ]}
-              value={prefs.spraak}
-              onChange={(v) => !pending && setSpraak(v as "nb" | "en")}
-            />
-            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
-              Engelsk-støtte kommer i en senere fase.
-            </p>
-          </Kort>
+      <section className="pa-card ph25v-kort">
+        <p>Denne enheten</p>
+        {pushStatus === "loading" && <span>Sjekker push-status …</span>}
+        {pushStatus === "unsupported" && <span>Push-varsler støttes ikke i denne browseren. Prøv en moderne versjon av Safari, Chrome eller Firefox.</span>}
+        {pushStatus !== "loading" && pushStatus !== "unsupported" && !VAPID_PUBLIC_KEY && <span>Push-varsler er midlertidig deaktivert. (VAPID-keys ikke konfigurert.)</span>}
+        {pushStatus === "blocked" && <span role="alert">Du har blokkert varsler for dette nettstedet. Tillat varsler i browser-innstillingene for å aktivere push.</span>}
+        {pushStatus !== "loading" && pushStatus !== "unsupported" && pushStatus !== "blocked" && VAPID_PUBLIC_KEY && (
+          <Sjekk checked={pushStatus === "on"} disabled={pushPending} onChange={vekslePush} label="Push-varsler på denne enheten" sub="Få varsler direkte i browser eller på telefonen — selv når portalen er lukket" />
+        )}
+        {pushFeil && <span role="alert">{pushFeil}</span>}
+      </section>
+      <div className="ph25v-kol">
+        <section className="pa-card ph25v-kort">
+          <p>Hva du varsles om</p>
+          <Sjekk checked={prefs.notif.nyMeldingFraCoach} disabled={pending} onChange={(v) => setNotif("nyMeldingFraCoach", v)} label="Nye meldinger fra coach" sub="Varsles når coachen din sender deg en melding" />
+          <Sjekk checked={prefs.notif.treningsplanOppdatert} disabled={pending} onChange={(v) => setNotif("treningsplanOppdatert", v)} label="Treningsplan oppdatert" sub="Varsles når coachen endrer treningsplanen din" />
+          <Sjekk checked={prefs.notif.bookingbekreftelse} disabled={pending} onChange={(v) => setNotif("bookingbekreftelse", v)} label="Bookingbekreftelse" sub="Bekreftelse og påminnelse for bookede tider" />
+          <Sjekk checked={prefs.notif.ukentligRapport} disabled={pending} onChange={(v) => setNotif("ukentligRapport", v)} label="Ukentlig fremdrifts-rapport" sub="Oppsummering av uken — trening, mål og fremgang" />
+          <Sjekk checked={prefs.notif.turneringsresultater} disabled={pending} onChange={(v) => setNotif("turneringsresultater", v)} label="Turneringsresultater" sub="Varsles når turneringsresultater er registrert" />
+        </section>
+        <div>
+          <section className="pa-card ph25v-kort">
+            <p>Hvordan du mottar dem</p>
+            <Sjekk checked={prefs.notif.epost} disabled={pending} onChange={(v) => setNotif("epost", v)} label="E-post" sub="Sammendrag av planen og påminnelser på e-post" />
+            <Sjekk checked={prefs.notif.push} disabled={pending} onChange={(v) => setNotif("push", v)} label="Push-varsler" sub="Sanntidsvarsler i nettleser og mobil" />
+            <Sjekk checked={prefs.notif.paaminnelse} disabled={pending} onChange={(v) => setNotif("paaminnelse", v)} label="Påminnelse 1 time før økt" sub="Få påminnelse rett før en planlagt økt starter" />
+          </section>
+          <section className="pa-card ph25v-kort">
+            <p>Språk</p>
+            <div className="ph25v-spraak">
+              <button type="button" aria-pressed={prefs.spraak === "nb"} disabled={pending} onClick={() => setSpraak("nb")}>Norsk bokmål</button>
+              <button type="button" aria-pressed={prefs.spraak === "en"} disabled={pending} onClick={() => setSpraak("en")}>English</button>
+            </div>
+            <span>Engelsk-støtte kommer i en senere fase.</span>
+          </section>
         </div>
       </div>
     </div>
