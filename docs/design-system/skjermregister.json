@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a3baab0876fa9f88b34f3b90355fb9709dd3336f",
+  "kodeversjon": "3387a6da86d14aaf09dce8fc0ec631ec4911c25d",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
-    "componentFiles": 835,
+    "componentFiles": 837,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -11530,12 +11530,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Barnlisten merker FO02BarnListe. Pyramide, neste økt, utestående og skoletid-bekreftelse er beholdt. Barnets detaljside er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-02 Barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11747,12 +11749,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Bookinger merker FO03Bookinger. Filter, kommende, tidligere, Venter og lenken til ny booking er beholdt. Opprettelse og bekreftelse er fortsatt gammelt skall. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11790,13 +11794,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Dialog merker FO06Coach. Siste melding, mailto og visning av e-post er beholdt. Det er ikke en chat. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-06 Coach og innstillinger er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -11835,13 +11840,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Fakturaer merker FO04Fakturaer. Beløp og status er beholdt. Ingen betalingsknapp er lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-04 Økonomi er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -11880,12 +11886,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Innstillinger merker FO06Innstillinger. Varselbryterne er fortsatt bare lokale. Logg ut går til innlogging, ikke en utloggingshandling. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-06 Coach og innstillinger er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11923,12 +11931,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Økonomi merker FO04Okonomi. Abonnement per barn er beholdt. Ingen betalingsknapp er lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-04 Økonomi er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11966,12 +11976,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "I dag merker FO01IDag i ForelderSkall. Dagens økt, ukas oppmøte og neste booking er beholdt. Kilde: ui_kits/forelder. Krever foresatt-økt og database, så flaten er ikke målt i appen. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-01 Forelder i dag er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -12052,12 +12064,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Samtykke merker FO05Samtykke. lagreSamtykker, helsesamtykke, sletting og eksport er beholdt. Deling per barn er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-05 Samtykke er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -12095,13 +12109,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Ukerapport merker FO01Ukerapport. Minuttprosent, oppmøte og perioden er beholdt. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-01 Forelder i dag er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -12140,13 +12155,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Varsler merker FO01Varsler. Listen er beholdt. Lest-markering finnes ikke og er ikke lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "FO-01 Forelder i dag er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -23040,10 +23056,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 69,
+    "medAvvik": 75,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 34,
+    "implementert": 44,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

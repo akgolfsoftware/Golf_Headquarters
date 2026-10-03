@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { bekreftSkoletidAction } from "@/app/forelder/barn/skoletid-actions";
 import type { PyramidArea } from "@/generated/prisma/client";
-import { TL } from "@/lib/v2/train-lock";
 import {
   FoSkjerm,
   FoHode,
@@ -27,7 +26,7 @@ import {
   FoCtaSekundar,
   FoFotnote,
   FoTom,
-} from "@/components/forelder/fo-kit";
+} from "@/components/forelder/fo-presisjon";
 
 /* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
@@ -85,60 +84,15 @@ const PYRAMIDE_TRINN: { bredde: string; opacity: number }[] = [
 
 function PyramideSnapshot() {
   return (
-    <div
-      style={{
-        marginTop: 10,
-        display: "flex",
-        flexDirection: "column",
-        gap: 5,
-        alignItems: "center",
-      }}
-    >
-      {PYRAMIDE_TRINN.map((t) => (
-        <div
-          key={t.bredde}
-          style={{
-            width: t.bredde,
-            height: 12,
-            borderRadius: 3,
-            background: TL.text,
-            opacity: t.opacity,
-          }}
-        />
-      ))}
+    <div className="fo-pyramide" aria-hidden>
+      {PYRAMIDE_TRINN.map((t) => <i key={t.bredde} style={{ width: t.bredde, opacity: t.opacity }} />)}
     </div>
   );
 }
 
-/* ── Etikettlinje — 74px etikett + verdi (FO-02) ───────────────────── */
-
 function EtikettLinje({ label, verdi }: { label: string; verdi: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-      <span
-        style={{
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          width: 74,
-          flexShrink: 0,
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          flex: 1,
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          fontWeight: 600,
-          color: TL.text,
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {verdi}
-      </span>
-    </div>
+    <p className="fo-etikett"><span>{label}</span><span>{verdi}</span></p>
   );
 }
 
@@ -149,21 +103,11 @@ function SkoletidSeksjon({ barnId, skoletid }: { barnId: string; skoletid: Skole
   const [status, setStatus] = useState(skoletid.status);
 
   return (
-    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+    <div className="fo-skille">
       <FoCaps>Skoletid · {skoletid.semesterVisning}</FoCaps>
-      <div
-        style={{
-          marginTop: 6,
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          lineHeight: 1.5,
-        }}
-      >
-        {status.bekreftet
-          ? `Bekreftet · gjelder til ${skoletid.semesterSlutt}`
-          : status.tekst}
-      </div>
+      <p className="fo-meta">
+        {status.bekreftet ? `Bekreftet · gjelder til ${skoletid.semesterSlutt}` : status.tekst}
+      </p>
       {!status.bekreftet && (
         <div style={{ marginTop: 10 }}>
           <FoCtaSekundar
@@ -219,84 +163,36 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
         barn.map((b) => {
           const barnFornavn = b.navn.split(" ")[0] ?? b.navn;
           return (
-            <FoKort
-              key={b.id}
-              pad="18px"
-              style={{ marginTop: 14 }}
-              onClick={() => router.push(`/forelder/barn/${b.id}`)}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <FoAvatar navn={barnFornavn} size={44} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, color: TL.text }}>
-                    {barnFornavn}
-                  </div>
-                  <div style={{ marginTop: 1, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-                    {[b.koblet ? `Koblet ${b.koblet}` : null, b.klubb]
-                      .filter(Boolean)
-                      .join(" · ") || b.relationship}
-                  </div>
+            <FoKort key={b.id} pad="18px" style={{ marginTop: 14 }}>
+              <button type="button" className="fo-person" onClick={() => router.push(`/forelder/barn/${b.id}`)}>
+                <FoAvatar navn={barnFornavn} />
+                <div>
+                  <p className="fo-navn">{barnFornavn}</p>
+                  <p className="fo-meta">
+                    {[b.koblet ? `Koblet ${b.koblet}` : null, b.klubb].filter(Boolean).join(" · ") || b.relationship}
+                  </p>
                 </div>
                 <FoChevron />
-              </div>
-
+              </button>
               {!b.samtykkeGitt ? (
-                <div
-                  style={{
-                    marginTop: 14,
-                    paddingTop: 12,
-                    borderTop: `1px solid ${TL.hair}`,
-                    fontFamily: TL.font.sans,
-                    fontSize: 13,
-                    color: TL.mute,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  Vi mangler samtykket ditt — kontoen åpnes ikke før det er
-                  bekreftet. Se Samtykke-siden.
-                </div>
+                <p className="fo-meta">Vi mangler samtykket ditt — kontoen åpnes ikke før det er bekreftet. Se Samtykke-siden.</p>
               ) : (
                 <>
-                  <div style={{ marginTop: 14, display: "flex", gap: 16, alignItems: "flex-end" }}>
-                    <div style={{ flex: 1 }}>
+                  <div className="fo-person">
+                    <div>
                       <FoCaps>Pyramide · 30 dager</FoCaps>
                       <PyramideSnapshot />
                     </div>
-                    <div style={{ width: 96 }}>
+                    <div>
                       <FoCaps>Økter</FoCaps>
-                      <div
-                        style={{
-                          marginTop: 4,
-                          fontFamily: TL.font.sans,
-                          fontSize: 34,
-                          fontWeight: 700,
-                          fontVariantNumeric: "tabular-nums",
-                          letterSpacing: "-0.02em",
-                          color: TL.text,
-                        }}
-                      >
-                        {b.okter30d}
-                      </div>
-                      <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
-                        30 dager
-                      </div>
+                      <p className="fo-metric">{b.okter30d}</p>
+                      <p className="fo-meta">30 dager</p>
                     </div>
                   </div>
-
-                  <div
-                    style={{
-                      marginTop: 14,
-                      paddingTop: 12,
-                      borderTop: `1px solid ${TL.hair}`,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                    }}
-                  >
+                  <div className="fo-skille">
                     <EtikettLinje label="Neste økt" verdi={b.nesteOkt ?? "Ingen planlagt"} />
                     <EtikettLinje label="Utestående" verdi={b.utestaaende} />
                   </div>
-
                   {b.skoletid && <SkoletidSeksjon barnId={b.id} skoletid={b.skoletid} />}
                 </>
               )}

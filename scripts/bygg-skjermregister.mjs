@@ -193,6 +193,16 @@ const PRECISION_VISNING = [
   ["AU05Invitasjon", "Forelderinvitasjon merker AU05Invitasjon i Precision. Tokenstatus og aksepterInvitasjon er beholdt. Krever database, så flaten er ikke målt i appen. Kilde: ui_kits/konto/screens/AU-04-06.jsx, AU05. Ikke satt kontrollert-i-app."],
   ["SY01Offline", "Offline merker SY01Offline i Precision. Lokal lagring og de to lenkene er beholdt. Tegningens demokode om tre ventende endringer er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app."],
   ["SY01Vedlikehold", "Vedlikehold merker SY01Vedlikehold i Precision. Telefon og e-post er beholdt. Tegningens klokkeslett er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app."],
+  ["FO01IDag", "I dag merker FO01IDag i ForelderSkall. Dagens økt, ukas oppmøte og neste booking er beholdt. Kilde: ui_kits/forelder. Krever foresatt-økt og database, så flaten er ikke målt i appen. Ikke satt kontrollert-i-app."],
+  ["FO02BarnListe", "Barnlisten merker FO02BarnListe. Pyramide, neste økt, utestående og skoletid-bekreftelse er beholdt. Barnets detaljside er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO03Bookinger", "Bookinger merker FO03Bookinger. Filter, kommende, tidligere, Venter og lenken til ny booking er beholdt. Opprettelse og bekreftelse er fortsatt gammelt skall. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO04Okonomi", "Økonomi merker FO04Okonomi. Abonnement per barn er beholdt. Ingen betalingsknapp er lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO04Fakturaer", "Fakturaer merker FO04Fakturaer. Beløp og status er beholdt. Ingen betalingsknapp er lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO05Samtykke", "Samtykke merker FO05Samtykke. lagreSamtykker, helsesamtykke, sletting og eksport er beholdt. Deling per barn er ikke med. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO06Coach", "Dialog merker FO06Coach. Siste melding, mailto og visning av e-post er beholdt. Det er ikke en chat. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO06Innstillinger", "Innstillinger merker FO06Innstillinger. Varselbryterne er fortsatt bare lokale. Logg ut går til innlogging, ikke en utloggingshandling. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO01Ukerapport", "Ukerapport merker FO01Ukerapport. Minuttprosent, oppmøte og perioden er beholdt. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
+  ["FO01Varsler", "Varsler merker FO01Varsler. Listen er beholdt. Lest-markering finnes ikke og er ikke lagt til. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
 ];
 
 function merkVisning(row, source) {

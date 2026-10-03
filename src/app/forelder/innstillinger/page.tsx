@@ -1,3 +1,4 @@
+// FO06Innstillinger — Precision Athletics. Data og handlinger er beholdt.
 /**
  * v2-forhåndsvisning — Foreldreportal · Innstillinger (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
@@ -11,7 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderInnstillingerV2,
   type ForelderInnstillingerData,
@@ -36,14 +37,8 @@ export default async function V2ForelderInnstillingerPreviewPage() {
   };
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderInnstillingerV2 data={data} />
-    </V2Shell>
+    </ForelderSkall>
   );
 }

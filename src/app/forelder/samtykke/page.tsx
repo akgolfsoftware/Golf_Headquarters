@@ -1,3 +1,4 @@
+// FO05Samtykke — Precision Athletics. Data og handlinger er beholdt.
 /**
  * v2-forhåndsvisning — Foreldreportal · Samtykke (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
@@ -11,7 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import {
   grupperMedEksterneLesereForSpiller,
@@ -136,13 +137,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
   };
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderSamtykkeV2 data={data} />
       {/* T8: delingssamtykke per barn — funksjonelt, merkes for fasit-runde. */}
       {relasjoner.map((r) => {
@@ -161,6 +156,6 @@ export default async function V2ForelderSamtykkePreviewPage() {
           </div>
         );
       })}
-    </V2Shell>
+    </ForelderSkall>
   );
 }
