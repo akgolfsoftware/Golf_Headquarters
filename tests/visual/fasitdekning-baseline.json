@@ -1,6 +1,6 @@
 {
-  "sitert": 138,
+  "sitert": 137,
   "av": 219,
   "sistEndret": "2026-10-03",
-  "grunn": "PH-07 øktoppsummering portet til Precision Athletics: SessionSummary.tsx siterte «PH-06 Live ferdig.dc.html» og «B3 Lys resterende skjermer.dc.html». De to Train-lock-siteringene er fjernet med vilje fordi flaten nå følger Precision, ikke de tegningene. 140→138."
+  "grunn": "Varslene portet til Precision Athletics: VarslerV2.tsx siterte «PH-20 Varsel-ark.dc.html». Den Train-lock-siteringen er fjernet med vilje fordi flaten nå følger Precision, ikke den tegningen. 138→137."
 }

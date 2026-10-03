@@ -1,21 +1,15 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Mål-hub (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), MalHubV2 rendrer innholds-stacken.
- *
- * Auth + dataloader + fremdrifts-/status-mapping gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/mal/page.tsx): samme Prisma-queries (aktive Goal + siste
- * Achievement), samme beregnFremdrift/mapGoalRow-logikk, samme milepæl-titler.
+ * PH19Mal — mål-huben i PlayerHQSkall.
+ * Samme mål, fremdrift og siste milepæl.
  */
 
 import Link from "next/link";
 import { harEgenIupInngang } from "@/lib/iup/oversikt";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { MalHubV2, type MalHubData, type MalGoalStatus, type MalGoalRad } from "@/components/portal/v2/MalHubV2";
 import type { Goal } from "@/generated/prisma/client";
-import { TilbakeLenke } from "@/components/v2";
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 export const dynamic = "force-dynamic";
@@ -106,10 +100,12 @@ export default async function V2MalPreviewPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MalHubV2 data={data} />
-      {visIup && <Link href="/portal/mal/evaluering" style={{ minHeight: 44, display: "flex", alignItems: "center", textDecoration: "underline" }}>Utviklingssjekk og sesongevaluering</Link>}
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <Link href="/portal/meg" className="ph-tilbake">Meg</Link>
+        <MalHubV2 data={data} />
+        {visIup && <Link href="/portal/mal/evaluering" className="ph-tilbake">Utviklingssjekk og sesongevaluering</Link>}
+      </div>
+    </PlayerHQSkall>
   );
 }
