@@ -1,25 +1,19 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Kalender (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), KalenderV2 rendrer innholds-stacken.
- *
- * Auth gjenbrukt fra den ekte siden (src/app/portal/kalender/page.tsx);
- * loaderen (hentKalenderData) gjenbruker Aar-logikken derfra og utvider med
- * ekte økt-spørringer for Dag/Uke/Maaned.
- *
- * Periode-navigasjon: `?dato=YYYY-MM-DD` sentrerer kalenderen på en gitt dag —
- * styrer hvilken dag/uke/måned/år Dag/Uke/Maaned/Aar viser. Mangler param →
- * i dag (samme mønster som `?uke=` på Workbench).
+ * PlayerHQ kalender — PH10Kalender i PlayerHQSkall.
+ * Dag, uke, måned og år beholder hentKalenderData og ?dato=-navigasjon.
+ * Opptatt tid er fortsatt en egen flate.
+ * Tegningen ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { KalenderV2 } from "@/components/portal/v2/KalenderV2";
 import { hentKalenderData } from "./data";
-import { TilbakeLenke } from "@/components/v2";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Kalender · PlayerHQ" };
 
 type Props = { searchParams: Promise<{ dato?: string }> };
 
@@ -30,26 +24,22 @@ function parseDato(param: string | undefined): Date | undefined {
   return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
-export default async function V2KalenderPreviewPage({ searchParams }: Props) {
+export default async function KalenderSide({ searchParams }: Props) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
-
   const refDato = parseDato((await searchParams).dato);
-  const data = await hentKalenderData(user.id, user.name ?? "Spiller", user.avatarUrl ?? null, refDato);
+  const [data, uleste] = await Promise.all([
+    hentKalenderData(user.id, user.name ?? "Spiller", user.avatarUrl ?? null, refDato),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={data.avatarUrl}>
-      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
-      <KalenderV2 data={data} />
-      {/* Egne avtaler ligger på egen side — de er opptatt tid planleggeren må
-          respektere, ikke økter som hører hjemme i selve kalendervisningen. */}
-      <div style={{ marginTop: 24 }}>
-        <Link
-          href="/portal/kalender/opptatt"
-          style={{ fontSize: 13, textDecoration: "underline" }}
-        >
-          Opptatt tid — egne avtaler
-        </Link>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <div className="pa-side">
+        <KalenderV2 data={data} />
+        <p className="ph-kal-bunn">
+          <Link href="/portal/kalender/opptatt">Opptatt tid — egne avtaler</Link>
+        </p>
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

@@ -169,6 +169,7 @@ const PRECISION_VISNING = [
   ["PH07Feiring", "Plan-feiring merker PH07Feiring og monterer FeiringV2 i PlayerHQSkall. Ekte timer, etterlevelse, SG og ikke-ferdig-vakt er beholdt. Øktoppsummering er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git."],
   ["PH16Analyse", "Analyse-huben merker PH16Analyse i PlayerHQSkall. Vindu, Broadie, SG, TrackMan-mini og dypere-lenker er beholdt. Historikk er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-16.jsx ligger ikke i git."],
   ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
+  ["PH10Kalender", "Kalendersiden merker PH10Kalender og monterer KalenderV2 i PlayerHQSkall. Dag, uke, måned, år og ?dato=-navigasjon er beholdt. Opptatt tid er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
 ];
 
 function merkVisning(row, source) {
