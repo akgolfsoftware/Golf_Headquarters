@@ -1,20 +1,18 @@
 /**
- * PlayerHQ · Talent · Min plan (/portal/talent/min-plan) — v2.
- * v2-port 17. juli 2026 (Team D5): `TalentMinPlanV2` erstatter athletic-
- * skjermen, ruten flyttet ut av (legacy). Feature-gate (FEATURES.TALENT) og
- * «ikke i programmet»-sjekken fra den slettede (legacy)-layouten håndheves
- * nå her i siden. Auth, Prisma-query mot TalentTracking og milepæl-parsingen
- * er uendret — kun presentasjonslaget er nytt.
+ * PH14MinPlan — talentplanen i PlayerHQSkall.
+ * Feature-gate, TalentTracking og milepæl-parsingen er uendret.
  */
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, Star } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TalentFaner } from "@/components/portal/v2/TalentFaner";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { KnappLenke, TomTilstand } from "@/components/precision/pa";
 import {
   TalentMinPlanV2,
   type TalentMinPlanData,
@@ -22,7 +20,6 @@ import {
 import {
   TALENT_AKSE_KEYS,
   TALENT_AKSE_LABELS,
-  TalentIkkeIProgrammet,
 } from "@/components/portal/v2/TalentFellesV2";
 
 type Milepael = {
@@ -31,6 +28,38 @@ type Milepael = {
   beskrivelse?: string;
   fullfort?: boolean;
 };
+
+const TALENT_FANER = [
+  { id: "mitt-niva", l: "Mitt nivå", href: "/portal/talent/mitt-niva" },
+  { id: "min-plan", l: "Min plan", href: "/portal/talent/min-plan" },
+  { id: "roadmap", l: "Roadmap", href: "/portal/talent/roadmap" },
+  { id: "sammenligning", l: "Sammenligning", href: "/portal/talent/sammenligning" },
+] as const;
+
+function TalentValg({ aktiv }: { aktiv: (typeof TALENT_FANER)[number]["id"] }) {
+  return (
+    <nav className="ph-valg" aria-label="Talent">
+      {TALENT_FANER.map((f) => (
+        <Link key={f.id} href={f.href} aria-current={f.id === aktiv ? "page" : undefined}>
+          {f.l}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function IkkeIProgrammet() {
+  return (
+    <section className="pa-card ph-kort">
+      <TomTilstand
+        icon={Star}
+        title="Du er ikke i talent-programmet ennå"
+        text="Talent-modulen er forbeholdt spillere som er invitert inn i AK Golf sitt talentutviklingsprogram. Når du blir tatt opp får du din egen utviklingsplan, radar mot kohort-snitt og sammenligning med andre på samme nivå. Lurer du på hva som skal til? Ta kontakt med coachen din."
+        actions={<KnappLenke href="/portal" icon={ArrowLeft}>Tilbake til PlayerHQ</KnappLenke>}
+      />
+    </section>
+  );
+}
 
 function parseMilepaeler(json: unknown): Milepael[] {
   if (!Array.isArray(json)) return [];
@@ -62,16 +91,23 @@ export default async function MinPlanPage() {
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
-  const tracking = await prisma.talentTracking.findUnique({
-    where: { userId: user.id },
-  });
+  const [tracking, ulest] = await Promise.all([
+    prisma.talentTracking.findUnique({
+      where: { userId: user.id },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   if (!tracking) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-        <TalentIkkeIProgrammet />
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+        <div className="pa-side">
+          <div className="ph-flate">
+            <Link href="/portal/meg" className="ph-tilbake">Meg</Link>
+            <IkkeIProgrammet />
+          </div>
+        </div>
+      </PlayerHQSkall>
     );
   }
 
@@ -112,10 +148,14 @@ export default async function MinPlanPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <TalentFaner aktiv="min-plan" />
-      <TalentMinPlanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/meg" className="ph-tilbake">Meg</Link>
+          <TalentValg aktiv="min-plan" />
+          <TalentMinPlanV2 data={data} />
+        </div>
+      </div>
+    </PlayerHQSkall>
   );
 }

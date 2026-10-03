@@ -2,10 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { UserMinus } from "lucide-react";
 import { fjernVennViaBrukerId } from "@/lib/venner/actions";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Knapp } from "@/components/v2";
+import { Knapp } from "@/components/precision/pa";
 
 export function FjernVennKnapp({ vennUserId }: { vennUserId: string }) {
   const [pending, startTransition] = useTransition();
@@ -26,13 +25,19 @@ export function FjernVennKnapp({ vennUserId }: { vennUserId: string }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-      <Knapp ghost icon="users" onClick={fjern} disabled={pending}>
-        {pending ? "Fjerner…" : "Fjern venn"}
+    <div>
+      <Knapp
+        type="button"
+        variant="ghost"
+        icon={UserMinus}
+        onClick={fjern}
+        loading={pending}
+        loadingText="Fjerner…"
+        disabled={pending}
+      >
+        Fjern venn
       </Knapp>
-      {feil && (
-        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text }}>{feil}</span>
-      )}
+      {feil ? <p role="alert">{feil}</p> : null}
     </div>
   );
 }

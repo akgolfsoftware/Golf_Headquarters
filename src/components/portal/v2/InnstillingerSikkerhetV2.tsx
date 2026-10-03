@@ -1,16 +1,14 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * PlayerHQ Innstillinger · Sikkerhet — v2 Presis + B-pakke (score først, full CTA).
+ * Sikkerhet: score, passord, e-post, glemt passord, tofaktor og siste innlogging.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ReauthModal } from "@/components/auth/reauth-modal";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { createClient } from "@/lib/supabase/client";
-import { Caps, Kort, Rad, StatusPill, TallHero, ProgresjonsBar, Icon, Inndata, Knapp, type StatusTone } from "@/components/v2";
-/* ── Datakontrakt ──────────────────────────────────────────────────── */
+import { Knapp, StatusPille } from "@/components/precision/pa";
 
 export type InnstillingerSikkerhetData = {
   /** Ærlig score fra page.tsx-heuristikken (e-post bekreftet → 80, ellers 55). */
@@ -18,42 +16,6 @@ export type InnstillingerSikkerhetData = {
   /** Ferdigformatert siste innlogging (nb-NO), eller «Ukjent». */
   sisteInnlogging: string;
 };
-
-/* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/** Rundt ikon-emblem foran en rad (samme idiom som InnstillingerV2). */
-function SeksjonIkon({ name, farge }: { name: string; farge?: string }) {
-  return (
-    <span
-      style={{
-        width: 32,
-        height: 32,
-        borderRadius: 10,
-        background: TL.dim,
-        border: `1px solid ${TL.hair}`,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flex: "none",
-      }}
-    >
-      <Icon name={name} size={14} style={{ color: farge || TL.mute }} />
-    </span>
-  );
-}
 
 /** Oversetter Supabase auth-feilmeldinger til norsk. */
 function oversettAuthFeil(msg: string): string {
@@ -73,15 +35,12 @@ function krevesReauth(msg: string): boolean {
   return msg.includes("AAL") || msg.includes("reauthenticat");
 }
 
-/* ── Skjerm ────────────────────────────────────────────────────────── */
-
 export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhetData }) {
-  const mobile = useMobile();
   const supabase = createClient();
   const { score, sisteInnlogging } = data;
 
   const niva = score >= 80 ? "Sterk" : "Grei";
-  const tone: StatusTone = score >= 80 ? "up" : "warn";
+  const tone = score >= 80 ? "ok" : "warn";
 
   // ── Endre passord ──
   const [nyttPassord, setNyttPassord] = useState("");
@@ -154,138 +113,158 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
     setEpostSuksess(true);
   }
 
-  return (
-    <div data-paper-wave-g="innstillingersikkerhet" data-paper-portal-innstillinger-sikkerhet data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <InnstillingerHode tittel="Sikkerhet" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
+  function sendPassord(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void lagrePassord();
+  }
 
-      {/* B: score/status først */}
-      <Kort tint>
-        <TallHero
-          label="Sikkerhetsscore"
-          value={score}
-          unit="/ 100"
-          size={mobile ? 44 : 52}
-          action={<StatusPill tone={tone}>{niva}</StatusPill>}
-          hjelp="sikkerhetsscore"
-        />
-        <div style={{ marginTop: 16 }}>
-          <ProgresjonsBar variant="bar" value={score} max={100} label={null} showValue={false} />
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0" }}>
-          Sist innlogget: {sisteInnlogging}. Aktiver tofaktor for +20.
+  function sendEpost(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void lagreEpost();
+  }
+
+  return (
+    <div className="ph-flate">
+      <Link href="/portal/meg/innstillinger" className="ph-tilbake">Innstillinger</Link>
+      <header>
+        <p>Innstillinger</p>
+        <h1>Sikkerhet</h1>
+        <p>
+          <StatusPille tone={tone}>{niva}</StatusPille>
         </p>
-      </Kort>
+        <p>Sist innlogget: {sisteInnlogging}. Aktiver tofaktor for +20.</p>
+      </header>
+
+      <div className="ph-kpi">
+        <p className="pa-card">
+          <span>Sikkerhetsscore</span>
+          <strong>{score}/100</strong>
+        </p>
+        <p className="pa-card">
+          <span>Nivå</span>
+          <strong>{niva}</strong>
+        </p>
+      </div>
 
       {score < 100 && (
-        <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
-          <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Aktiver tofaktor</span>
+        <Link href="/portal/meg/sikkerhet/2fa" className="pa-btn pa-btn--primary pa-btn--full">
+          Aktiver tofaktor
         </Link>
       )}
 
-      {/* Endre passord + Endre e-post */}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
-        <Kort eyebrow="Endre passord">
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Inndata
-              label="Nytt passord"
+      <section className="pa-card ph-kort">
+        <p>Endre passord</p>
+        <form className="ph-skjema" onSubmit={sendPassord}>
+          <label>
+            Nytt passord
+            <input
               type="password"
               value={nyttPassord}
-              onChange={setNyttPassord}
+              onChange={(e) => setNyttPassord(e.target.value)}
               placeholder="Minst 8 tegn"
+              autoComplete="new-password"
             />
-            <Inndata
-              label="Bekreft nytt passord"
+          </label>
+          <label>
+            Bekreft nytt passord
+            <input
               type="password"
               value={bekreftPassord}
-              onChange={setBekreftPassord}
+              onChange={(e) => setBekreftPassord(e.target.value)}
               placeholder="Gjenta passordet"
+              autoComplete="new-password"
             />
-            {passordFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{passordFeil}</p>
-            )}
-            {passordSuksess && !passordFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>Passord oppdatert.</p>
-            )}
-            <Knapp icon="check" full disabled={passordLagrer} onClick={lagrePassord}>
-              {passordLagrer ? "Lagrer …" : "Lagre nytt passord"}
-            </Knapp>
-          </div>
-        </Kort>
+          </label>
+          {passordFeil && <p role="alert">{passordFeil}</p>}
+          {passordSuksess && !passordFeil && <p>Passord oppdatert.</p>}
+          <Knapp
+            type="submit"
+            variant="primary"
+            fullWidth
+            disabled={passordLagrer}
+            loading={passordLagrer}
+            loadingText="Lagrer …"
+          >
+            Lagre nytt passord
+          </Knapp>
+        </form>
+      </section>
 
-        <Kort eyebrow="Endre e-post">
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Inndata
-              label="Ny e-postadresse"
+      <section className="pa-card ph-kort">
+        <p>Endre e-post</p>
+        <form className="ph-skjema" onSubmit={sendEpost}>
+          <label>
+            Ny e-postadresse
+            <input
               type="email"
               value={nyEpost}
-              onChange={setNyEpost}
+              onChange={(e) => setNyEpost(e.target.value)}
               placeholder="navn@eksempel.no"
+              autoComplete="email"
             />
-            {epostFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{epostFeil}</p>
-            )}
-            {epostSuksess && !epostFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, lineHeight: 1.5, margin: 0 }}>
-                Bekreftelseslenke sendt til {nyEpost.trim()}. E-posten din endres først når du klikker
-                lenken.
-              </p>
-            )}
-            <Knapp icon="check" full disabled={epostLagrer} onClick={lagreEpost}>
-              {epostLagrer ? "Sender …" : "Lagre ny e-post"}
-            </Knapp>
-          </div>
-        </Kort>
-      </div>
+          </label>
+          {epostFeil && <p role="alert">{epostFeil}</p>}
+          {epostSuksess && !epostFeil && (
+            <p>
+              Bekreftelseslenke sendt til {nyEpost.trim()}. E-posten din endres først når du klikker
+              lenken.
+            </p>
+          )}
+          <Knapp
+            type="submit"
+            variant="primary"
+            fullWidth
+            disabled={epostLagrer}
+            loading={epostLagrer}
+            loadingText="Sender …"
+          >
+            Lagre ny e-post
+          </Knapp>
+        </form>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
-        {/* Innlogging */}
-        <div>
-          <Caps size={9} style={{ margin: "0 4px 8px" }}>Innlogging</Caps>
-          <Kort pad="4px 20px 6px">
-            <Link href="/auth/forgot-password" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                leading={<SeksjonIkon name="lock" />}
-                title="Glemt passord?"
-                sub="Send tilbakestillingslenke til e-posten din"
-              />
+      <section className="pa-card ph-kort">
+        <p>Innlogging</p>
+        <ul className="ph-rader">
+          <li>
+            <Link href="/auth/forgot-password">
+              <span>
+                <strong>Glemt passord?</strong>
+                <small>Send tilbakestillingslenke til e-posten din</small>
+              </span>
             </Link>
-            <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                last
-                leading={<SeksjonIkon name="shield-check" farge={TL.fill} />}
-                title="Tofaktor-autentisering"
-                sub="Authenticator-app · ekstra beskyttelse"
-                meta={<StatusPill tone="lime">Anbefalt</StatusPill>}
-              />
+          </li>
+          <li>
+            <Link href="/portal/meg/sikkerhet/2fa">
+              <span>
+                <strong>Tofaktor-autentisering</strong>
+                <small>Authenticator-app · ekstra beskyttelse</small>
+              </span>
+              <StatusPille tone="ok">Anbefalt</StatusPille>
             </Link>
-          </Kort>
-        </div>
+          </li>
+        </ul>
+      </section>
 
-        {/* Aktive økter */}
-        <div>
-          <Caps size={9} style={{ margin: "0 4px 8px" }}>Aktive økter</Caps>
-          <Kort pad="4px 20px 6px">
-            <Rad
-              leading={<SeksjonIkon name="monitor" farge={TL.fill} />}
-              title="Denne enheten"
-              sub={`Siste innlogging · ${sisteInnlogging}`}
-              meta={<StatusPill tone="lime">Aktiv</StatusPill>}
-              trailing={null}
-            />
-            <Rad
-              last
-              leading={<SeksjonIkon name="history" />}
-              title="Andre enheter og innloggings-historikk"
-              sub="Med IP, enhet og tidspunkt"
-              meta={<StatusPill tone="info">Kommer snart</StatusPill>}
-              trailing={null}
-            />
-          </Kort>
-        </div>
-      </div>
+      <section className="pa-card ph-kort">
+        <p>Aktive økter</p>
+        <ul className="ph-rader">
+          <li>
+            <span>
+              <strong>Denne enheten</strong>
+              <small>Siste innlogging · {sisteInnlogging}</small>
+            </span>
+            <StatusPille tone="live">Aktiv</StatusPille>
+          </li>
+          <li>
+            <span>
+              <strong>Andre enheter og innloggings-historikk</strong>
+              <small>Med IP, enhet og tidspunkt</small>
+            </span>
+            <StatusPille tone="neutral">Kommer snart</StatusPille>
+          </li>
+        </ul>
+      </section>
 
       <ReauthModal
         open={showReauth}

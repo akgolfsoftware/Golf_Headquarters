@@ -1,15 +1,14 @@
 /**
- * Caddie-innstillinger — /portal/meg/innstillinger/ai-coach — B-pakke.
- * Oversikt først, én grønn CTA (disabled til V2), vei videre til hjelp.
+ * PH25AiCoach — Caddie-innstillinger i PlayerHQSkall.
+ * Oversikt først. Aktivering er fortsatt av, og hjelp er veien videre.
  */
 
-import Link from "next/link";
+import { Check, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Caps, Kort, StatusPill, CTAPill, Icon } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { Ikon, Knapp, KnappLenke, StatusPille } from "@/components/precision/pa";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -27,96 +26,55 @@ const FEATURES = [
 
 export default async function AiCoachPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const ulest = await getUnreadNotifications(user.id, 1);
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-    <div
-      data-paper-slug="playerhq-innstillinger"
-      data-paper-portal-innstillinger-ai-coach
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
-      <InnstillingerHode
-        tittel="Caddie"
-        undertekst="Innstillinger"
-        tilbakeHref="/portal/meg/innstillinger"
-        action={<StatusPill tone="info">Kommer snart</StatusPill>}
-      />
-      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
-        Personlig assistent som leser dataene dine og foreslår neste steg.
-      </p>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/meg/innstillinger" className="ph-tilbake">Innstillinger</Link>
+          <header>
+            <p>Innstillinger</p>
+            <h1>Caddie</h1>
+            <p>Personlig assistent som leser dataene dine og foreslår neste steg.</p>
+          </header>
+          <StatusPille>Kommer snart</StatusPille>
 
-      <Kort>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 9999,
-              background: TL.fill,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="sparkles" size={18} style={{ color: TL.onFill }} />
-          </span>
-          <div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
-              Hva Caddie gjør
-            </div>
-            <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
-              Personlig · datadrevet · coach-assistent
-            </div>
-          </div>
-        </div>
-        <ul style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-          {FEATURES.map((f) => (
-            <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="check" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
-              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>{f}</span>
-            </li>
-          ))}
-        </ul>
-      </Kort>
+          <section className="pa-card ph-kort">
+            <p>Hva Caddie gjør</p>
+            <small>Personlig · datadrevet · coach-assistent</small>
+            <ul>
+              {FEATURES.map((f) => (
+                <li key={f}>
+                  <Ikon icon={Check} size={16} />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <Kort pad="0">
-        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${TL.hair}` }}>
-          <Caps>Ofte stilte spørsmål</Caps>
-        </div>
-        {FAQ.map((item, i) => (
-          <div
-            key={item.q}
-            style={{
-              padding: "14px 18px",
-              borderBottom: i < FAQ.length - 1 ? `1px solid ${TL.hair}` : "none",
-            }}
-          >
-            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{item.q}</div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4, lineHeight: 1.5 }}>{item.a}</div>
-          </div>
-        ))}
-      </Kort>
+          <section className="pa-card ph-kort">
+            <p>Ofte stilte spørsmål</p>
+            <ul>
+              {FAQ.map((item) => (
+                <li key={item.q}>
+                  <span>
+                    <strong>{item.q}</strong>
+                    <small>{item.a}</small>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ opacity: 0.45, pointerEvents: "none" }} aria-disabled="true">
-          <CTAPill icon="sparkles" full>
+          <Knapp fullWidth icon={Sparkles} disabled>
             Aktiver Caddie (kommer)
-          </CTAPill>
-        </div>
-        <Link href="/portal/meg/help" style={{ textDecoration: "none", textAlign: "center" }}>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.fill }}>
+          </Knapp>
+          <KnappLenke href="/portal/meg/help" variant="secondary" fullWidth>
             Les mer i hjelpesenteret →
-          </span>
-        </Link>
+          </KnappLenke>
+        </div>
       </div>
-    </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

@@ -1,24 +1,23 @@
 /**
- * /portal/ai/foresla-drill — AI foreslår drills — v2.
- * v2-port 16. juli 2026: `ForeslaDrillV2` erstatter foresla-drill-screen (v10),
- * ruten flyttet ut av (legacy). Auth-guard, Prisma-queries, svakhets-signaler
- * og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret.
+ * PH19ForeslaDrill — foreslåtte drills i PlayerHQSkall.
+ * Auth, spørringer, svakhets-signaler og den ærlige match-scoren er uendret.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import {
-  axisKind,
-  AXIS_LABEL,
-  loadWeaknessSignals,
-} from "@/lib/portal-ai/ai-data";
-import { foreslaGodkjenteOvelsesbankElementer } from "@/lib/masterbrain";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import Link from "next/link";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import {
   ForeslaDrillV2,
   type DrillSuggestion,
 } from "@/components/portal/v2/ForeslaDrillV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { foreslaGodkjenteOvelsesbankElementer } from "@/lib/masterbrain";
+import {
+  AXIS_LABEL,
+  axisKind,
+  loadWeaknessSignals,
+} from "@/lib/portal-ai/ai-data";
+import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +25,7 @@ export const dynamic = "force-dynamic";
 export default async function ForeslaDrillPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const [signals, dbUser] = await Promise.all([
+  const [signals, dbUser, ulest] = await Promise.all([
     loadWeaknessSignals(user.id),
     prisma.user.findUnique({
       where: { id: user.id },
@@ -42,6 +41,7 @@ export default async function ForeslaDrillPage() {
         },
       },
     }),
+    getUnreadNotifications(user.id, 1),
   ]);
 
   // Godkjente Masterbrain-øvelser i prioriterte pyramideområder, filtrert på
@@ -107,15 +107,19 @@ export default async function ForeslaDrillPage() {
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/drills">Øvelsesbank</TilbakeLenke>
-      <ForeslaDrillV2
-        data={{
-          playerFirstName: (user.name ?? "deg").split(" ")[0],
-          analysedTestCount,
-          suggestions,
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <div className="ph-flate">
+          <Link href="/portal/drills" className="ph-tilbake">Øvelsesbank</Link>
+          <ForeslaDrillV2
+            data={{
+              playerFirstName: (user.name ?? "deg").split(" ")[0],
+              analysedTestCount,
+              suggestions,
+            }}
+          />
+        </div>
+      </div>
+    </PlayerHQSkall>
   );
 }

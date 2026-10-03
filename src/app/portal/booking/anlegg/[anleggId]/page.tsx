@@ -1,21 +1,15 @@
-/**
- * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingAnleggV2` erstatter legacy-siden,
- * ruten flyttet ut av (legacy). All logikk uendret:
- * - [anleggId] er Location.id (cuid) — Location har ikke slug-felt.
- * - Honest data only: navn + adresse fra Location, ekte Facility-rader.
- *   Specs (hull/par/slope), rating og bio finnes IKKE på modellen og er
- *   BEVISST utelatt — vi fabrikkerer ikke data (beholdt fra legacy).
- * - Ingen per-lokasjon ledig-tider-kilde → CTA lenker til den ekte
- *   booking-flyten i stedet for et faux time-grid.
+/** PH23Anlegg — anleggdetalj i PlayerHQSkall.
+ * [anleggId] er Location.id (cuid). Navn, adresse og aktive fasiliteter.
+ * Hull, par, slope, rating og bio finnes ikke på modellen og vises ikke.
+ * Ledige tider ligger i booking-flyten, ikke på anlegget.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { FacilityType } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { BookingAnleggV2 } from "@/components/portal/v2/BookingAnleggV2";
 
 export const dynamic = "force-dynamic";
@@ -42,46 +36,48 @@ export default async function AnleggDetaljPage({ params }: Props) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { anleggId } = await params;
 
-  const anlegg = await prisma.location.findUnique({
-    where: { id: anleggId },
-    select: {
-      id: true,
-      name: true,
-      address: true,
-      facilities: {
-        where: { active: true },
-        orderBy: { name: "asc" },
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          isIndoor: true,
-          description: true,
+  const [anlegg, ulest] = await Promise.all([
+    prisma.location.findUnique({
+      where: { id: anleggId },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        facilities: {
+          where: { active: true },
+          orderBy: { name: "asc" },
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            isIndoor: true,
+            description: true,
+          },
         },
       },
-    },
-  });
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   if (!anlegg) notFound();
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingAnleggV2
-        data={{
-          navn: anlegg.name,
-          adresse: anlegg.address,
-          fasiliteter: anlegg.facilities.map((f) => ({
-            id: f.id,
-            navn: f.name,
-            typeLabel: FASILITET_TYPE_LABEL[f.type],
-            inne: f.isIndoor,
-            beskrivelse: f.description,
-          })),
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <BookingAnleggV2
+          data={{
+            navn: anlegg.name,
+            adresse: anlegg.address,
+            fasiliteter: anlegg.facilities.map((f) => ({
+              id: f.id,
+              navn: f.name,
+              typeLabel: FASILITET_TYPE_LABEL[f.type],
+              inne: f.isIndoor,
+              beskrivelse: f.description,
+            })),
+          }}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

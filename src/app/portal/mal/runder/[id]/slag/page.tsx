@@ -1,17 +1,14 @@
 /**
- * PlayerHQ Slag-registrering — v2-ramme rundt SlagWizard + UpGameImportModal
- * (verktøyene er shadcn/tailwind og gjenbrukes som de er; kun sidens hode og
- * chrome er v2). Skrive-tilgang håndheves i actions (assertRoundOwner) —
- * kun rundens eier.
+ * PH18Slag — slagredigering i PlayerHQSkall.
+ * SlagWizard og UpGame-import er uendret. Skriving krever at du eier runden.
  */
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { Caps, Tittel, MikroMeta } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 
 import { SlagWizard, type BaneKartData } from "../slag-wizard";
 import { UpGameImportModal } from "../upgame-import-modal";
@@ -26,36 +23,39 @@ export default async function SlagRegistreringPage({
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const { id } = await params;
 
-  const runde = await prisma.round.findUnique({
-    where: { id },
-    include: {
-      course: {
-        select: {
-          name: true,
-          // Banegeometri for det interaktive slag-kartet (valgfri Bane-kobling).
-          bane: {
-            select: {
-              geojson: true,
-              latitude: true,
-              longitude: true,
-              holes: {
-                orderBy: { holeNumber: "asc" },
-                select: {
-                  holeNumber: true,
-                  par: true,
-                  teeLat: true,
-                  teeLng: true,
-                  greenLat: true,
-                  greenLng: true,
+  const [runde, ulest] = await Promise.all([
+    prisma.round.findUnique({
+      where: { id },
+      include: {
+        course: {
+          select: {
+            name: true,
+            // Banegeometri for det interaktive slag-kartet (valgfri Bane-kobling).
+            bane: {
+              select: {
+                geojson: true,
+                latitude: true,
+                longitude: true,
+                holes: {
+                  orderBy: { holeNumber: "asc" },
+                  select: {
+                    holeNumber: true,
+                    par: true,
+                    teeLat: true,
+                    teeLng: true,
+                    greenLat: true,
+                    greenLng: true,
+                  },
                 },
               },
             },
           },
         },
+        shots: { orderBy: [{ holeNumber: "asc" }, { shotNumber: "asc" }] },
       },
-      shots: { orderBy: [{ holeNumber: "asc" }, { shotNumber: "asc" }] },
-    },
-  });
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
   if (!runde) notFound();
   // Kun eieren registrerer slag (actions håndhever det samme ved skriving).
   if (runde.userId !== user.id) notFound();
@@ -88,7 +88,7 @@ export default async function SlagRegistreringPage({
   }));
 
   // Banegeometri til slag-kartet — kun når banen har geojson + senter.
-  // Ellers null: wizarden skjuler kartet ærlig og lar logging virke uendret.
+  // Ellers null: wizarden skjuler kartet og lar logging virke uendret.
   const bane = runde.course.bane;
   const baneKart: BaneKartData | null =
     bane && bane.geojson && bane.latitude != null && bane.longitude != null
@@ -107,36 +107,27 @@ export default async function SlagRegistreringPage({
       : null;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <Link
-          href={`/portal/mal/runder/${id}`}
-          style={{ textDecoration: "none", alignSelf: "flex-start" }}
-        >
-          <MikroMeta icon="arrow-left">Tilbake til runden</MikroMeta>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href={`/portal/mal/runder/${id}`} className="ph-tilbake">
+          Tilbake til runden
         </Link>
-
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div>
-            <Caps>
+        <div className="ph-flate">
+          <header>
+            <p>
               {runde.course.name} · {datoTekst}
-            </Caps>
-            <div style={{ marginTop: 10 }}>
-              <Tittel em="redigering.">Avansert</Tittel>
-            </div>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0", lineHeight: 1.6 }}>
-              Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
-              <Link href="/portal/runde/logg" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
-                slag for slag
-              </Link>{" "}
-              — raskere og alltid komplett kjede.
             </p>
-          </div>
+            <h1>Avansert redigering.</h1>
+            <p>
+              Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
+              <Link href="/portal/runde/logg">slag for slag</Link>
+              {" "}— raskere og alltid komplett kjede.
+            </p>
+          </header>
           <UpGameImportModal roundId={id} />
+          <SlagWizard roundId={id} eksisterendeSlag={serialiserteSlag} baneKart={baneKart} />
         </div>
-
-        <SlagWizard roundId={id} eksisterendeSlag={serialiserteSlag} baneKart={baneKart} />
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

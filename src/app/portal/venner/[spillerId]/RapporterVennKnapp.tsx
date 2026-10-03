@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * Rapporter-inngang på venn-profilen — B-pakke (T tokens + Knapp).
+ * Rapporter-inngang på venn-profilen.
  */
 
 import { useState, useTransition } from "react";
-import { Knapp, Kort } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
+import { Flag } from "lucide-react";
+import { Knapp, StatusPille } from "@/components/precision/pa";
 
 import { opprettRapport } from "@/lib/moderering/actions";
 
@@ -33,81 +33,64 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
 
   if (sendt) {
     return (
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          borderRadius: 9999,
-          border: `1px solid ${TL.hair}`,
-          background: TL.elev,
-          padding: "8px 14px",
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          color: TL.mute,
-        }}
-      >
-        Rapport sendt — takk. En coach ser på den.
-      </div>
+      <StatusPille tone="ok">Rapport sendt — takk. En coach ser på den.</StatusPille>
     );
   }
 
   if (!apen) {
     return (
-      <Knapp ghost icon="flag" onClick={() => setApen(true)}>
+      <Knapp type="button" variant="ghost" icon={Flag} onClick={() => setApen(true)}>
         Rapporter
       </Knapp>
     );
   }
 
   return (
-    <Kort style={{ maxWidth: 360 }}>
-      <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
-        Rapporter denne profilen
-      </div>
-      <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.45 }}>
+    <form
+      className="ph-skjema"
+      onSubmit={(e) => {
+        e.preventDefault();
+        send();
+      }}
+    >
+      <strong>Rapporter denne profilen</strong>
+      <p>
         Fortell kort hva som er galt. En coach vurderer rapporten. Vi deler ikke hvem som har rapportert.
       </p>
-      <textarea
-        value={begrunnelse}
-        onChange={(e) => setBegrunnelse(e.target.value)}
-        rows={3}
-        maxLength={1000}
-        placeholder="Hva vil du melde fra om?"
-        style={{
-          marginTop: 10,
-          width: "100%",
-          resize: "none",
-          borderRadius: 11,
-          border: `1px solid ${TL.hair}`,
-          background: TL.dock,
-          padding: "10px 12px",
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.text,
-          outline: "none",
-          boxSizing: "border-box",
+      <label>
+        Hva vil du melde fra om?
+        <textarea
+          value={begrunnelse}
+          onChange={(e) => setBegrunnelse(e.target.value)}
+          rows={3}
+          maxLength={1000}
+          placeholder="Hva vil du melde fra om?"
+        />
+      </label>
+      {feil ? <p role="alert">{feil}</p> : null}
+      <Knapp
+        type="submit"
+        variant="primary"
+        icon={Flag}
+        fullWidth
+        loading={pending}
+        loadingText="Sender…"
+        disabled={pending || begrunnelse.trim().length === 0}
+      >
+        Send rapport
+      </Knapp>
+      <Knapp
+        type="button"
+        variant="ghost"
+        disabled={pending}
+        onClick={() => {
+          setApen(false);
+          setBegrunnelse("");
+          setFeil(null);
         }}
-      />
-      {feil ? (
-        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</p>
-      ) : null}
-      <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <Knapp icon="flag" onClick={send} disabled={pending || begrunnelse.trim().length === 0}>
-          {pending ? "Sender…" : "Send rapport"}
-        </Knapp>
-        <Knapp
-          ghost
-          disabled={pending}
-          onClick={() => {
-            setApen(false);
-            setBegrunnelse("");
-            setFeil(null);
-          }}
-        >
-          Avbryt
-        </Knapp>
-      </div>
-    </Kort>
+      >
+        Avbryt
+      </Knapp>
+    </form>
   );
 }
