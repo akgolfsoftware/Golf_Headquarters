@@ -15,6 +15,7 @@ import { SideHode, Side, Stabel, Kort, Tabell, Nedtrekk, Skjemafelt, Nokkelverdi
 import { useHarRundeKladd } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import { formaterTall, formaterFortegn } from "@/lib/format-tall";
 import { PH18_METRIKKER, metrikkVerdi, type PH18Metrikk, type PH18Model, type PH18Runde } from "@/lib/portal-runder/ph18-data";
+import "@/styles/precision-komponenter.css";
 
 export type PH18Props = {
   tilstand: "data" | "tom" | "feil";
