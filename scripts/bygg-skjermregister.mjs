@@ -166,6 +166,7 @@ const PRECISION_VISNING = [
   ["PH05Live", "Aktiv-siden merker PH05Live og monterer LiveActive i Precision-natt. Timer, reps, pause, notater, offline og fullføring er beholdt. Caddie-panelet er fortsatt v2. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-05.jsx ligger ikke i git."],
   ["PH06Tapper", "Slagteller-siden merker PH06Tapper. Kølleknapper, +1/+5, angre, lokal kø og avslutning er beholdt i Precision-natt. Caddie-panelet er fortsatt v2. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-06.jsx ligger ikke i git."],
   ["PH07Summary", "Oppsummeringssiden merker PH07Summary og monterer SessionSummary i Precision-natt. Tall, pyramide, notater, vurdering og lagring er beholdt. Plan-feiring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git."],
+  ["PH07Feiring", "Plan-feiring merker PH07Feiring og monterer FeiringV2 i PlayerHQSkall. Ekte timer, etterlevelse, SG og ikke-ferdig-vakt er beholdt. Øktoppsummering er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git."],
   ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
 ];
 

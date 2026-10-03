@@ -1,19 +1,17 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Plan-feiring — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-feiring.html.
- *
- * Ett formål: anerkjenne arbeidet med EKTE tall og peke videre. Ingen
- * konfetti-løgn — tallene bærer feiringen. Fasitens tilstander: fullført
- * (hero + KPI + «perioden i tall» + CTA-rad) og ikke-ferdig (ærlig
- * fremdrift i stedet for fest). Alle tall kommer fra planens egne økter.
+ * PH07Feiring — plan-feiring i Precision Athletics.
+ * Samme tall som før: etterlevelse, timer, uker, pyramide, SG og rekord.
+ * Ikke ferdig viser ærlig fremdrift, ikke fest. Tallene kommer fra planens egne økter.
+ * Tegningsfilen ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.
  */
 
 import Link from "next/link";
-import { Caps, Kort, HvorforDette } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
+import { Trophy } from "lucide-react";
+import { Ikon, Sidehode, StatusPille } from "@/components/precision/pa";
+import { formaterFortegn, formaterProsent } from "@/lib/format-tall";
+import "@/styles/precision-athletics.css";
 
 export type FeiringV2Data = {
   planNavn: string;
@@ -37,207 +35,119 @@ export type FeiringV2Data = {
   ikkeFerdig: boolean;
 };
 
-function fmtDelta(v: number): string {
-  const sign = v >= 0 ? "+" : "";
-  return `${sign}${v.toFixed(2).replace(".", ",")}`;
-}
-
-const CLAY_CTA: React.CSSProperties = {
-  textDecoration: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 56,
-  borderRadius: TL.radius.card,
-  background: TL.fill,
-  color: TL.onFill,
-  fontFamily: TL.font.sans,
-  fontSize: 14,
-  fontWeight: 600,
-};
-
 export function FeiringV2({ data }: { data: FeiringV2Data }) {
   const diff =
     data.forrigeEtterlevelse === null ? null : data.prosent - data.forrigeEtterlevelse;
+  const prosent = Math.max(0, Math.min(100, data.prosent));
+  const rader = (
+    [
+      ["Periode", data.planNavn],
+      data.timer !== null ? ["Treningstimer", `${data.timer} t`] : null,
+      data.pyramideTopp ? ["Størst volum", data.pyramideTopp] : null,
+      data.sgTotalDelta !== null ? ["SG Total-utvikling", formaterFortegn(data.sgTotalDelta)] : null,
+      data.publisertAv ? ["Publisert av", data.publisertAv] : null,
+    ].filter(Boolean) as [string, string][]
+  );
 
   return (
-    <div
-      data-paper-slug="playerhq-feiring"
-      data-od-id="playerhq-feiring"
-      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}
-    >
-      {/* Topp — fasit: Plan fullført + planens navn */}
-      <div>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
-          {data.ikkeFerdig ? "Planen din" : "Plan fullført"}
-        </h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-          {data.planNavn}
-        </span>
-      </div>
+    <div className="ph-feiring" data-od-id="playerhq-feiring">
+      <Sidehode
+        kicker={data.planNavn}
+        title={data.ikkeFerdig ? "Planen din" : "Plan fullført"}
+      />
 
       {data.ikkeFerdig ? (
-        /* Fullført-guarden — fasit: ærlig fremdrift, ingen fest */
-        <div style={{ padding: "24px 16px", background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: TL.radius.card }}>
-          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-            Planen er ikke ferdig ennå
-          </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
+        <section className="pa-card ph-feiring-kort">
+          <h2>Planen er ikke ferdig ennå</h2>
+          <p>
             Du har fullført {data.ferdige} av {data.total} økter. Feiringen venter til siste økt er
             logget — den kommer av seg selv.
           </p>
-          <div style={{ height: 8, background: TL.hair, borderRadius: 9999, overflow: "hidden", margin: "8px 0 12px" }}>
-            <div style={{ height: "100%", width: `${data.prosent}%`, background: TL.mute, borderRadius: 9999 }} />
+          <div
+            className="ph-feiring-spor"
+            role="progressbar"
+            aria-valuenow={prosent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Fremdrift i planen"
+          >
+            <span style={{ width: `${prosent}%` }} />
           </div>
-          <Link href="/portal/tren" data-od-id="feiring-tom-plan" className="v2-press v2-focus" style={{ ...CLAY_CTA, width: "100%" }} data-paper-en-ting="true">
+          <Link href="/portal/tren" data-od-id="feiring-tom-plan" className="pa-btn pa-btn--primary pa-btn--full">
             Åpne neste økt
           </Link>
-        </div>
+        </section>
       ) : (
         <>
-          {/* Hero — den fullførte planen */}
-          <div style={{ textAlign: "center", padding: "32px 16px 24px" }}>
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                margin: "0 auto 16px",
-                borderRadius: 9999,
-                display: "grid",
-                placeItems: "center",
-                background: TL.dim,
-                color: TL.fill,
-              }}
-            >
-              <Icon name="trophy" size={26} />
-            </div>
-            <h2 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 22, fontWeight: 600, color: TL.text }}>
-              {data.planNavn} er fullført
-            </h2>
-            <p style={{ margin: "0 auto", maxWidth: "44ch", fontFamily: TL.font.sans, fontSize: 14.5, color: TL.mute }}>
+          <section className="pa-card ph-feiring-hero">
+            <span className="ph-feiring-merke" aria-hidden>
+              <Ikon icon={Trophy} size={26} name="trophy" />
+            </span>
+            <h2>{data.planNavn} er fullført</h2>
+            <p>
               {data.uker !== null ? `${data.uker} uker, ` : ""}
               {data.ferdige} økter{data.timer !== null ? `, ${data.timer} timer` : ""}. Dette er
               arbeidet som flytter tallene — og du gjorde det.
             </p>
-          </div>
+          </section>
 
-          {/* KPI-rutenett */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, textAlign: "center" }}>
-              <Caps>økter</Caps>
-              <div style={{ fontFamily: TL.font.mono, fontSize: 28, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
-                {data.ferdige} av {data.total}
-              </div>
-            </div>
-            <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, textAlign: "center" }}>
-              <Caps>etterlevelse</Caps>
-              <div style={{ fontFamily: TL.font.mono, fontSize: 28, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
-                {data.prosent} %
-              </div>
+          <div className="ph-feiring-kpi">
+            <section className="pa-card ph-feiring-kort">
+              <p className="ph-feiring-kicker">Økter</p>
+              <p className="ph-feiring-tall">{data.ferdige} av {data.total}</p>
+            </section>
+            <section className="pa-card ph-feiring-kort">
+              <p className="ph-feiring-kicker">Etterlevelse</p>
+              <p className="ph-feiring-tall">{formaterProsent(data.prosent)}</p>
               {diff !== null && (
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    padding: "3px 8px",
-                    borderRadius: 9999,
-                    fontFamily: TL.font.mono,
-                    fontSize: 10,
-                    letterSpacing: "0.04em",
-                    textTransform: "uppercase",
-                    background: TL.dock,
-                    border: `1px solid ${TL.hair}`,
-                    color: diff >= 0 ? TL.ok : TL.danger,
-                  }}
-                >
-                  {diff >= 0 ? "+" : "−"}
-                  {Math.abs(diff)} vs forrige plan
-                </span>
+                <StatusPille tone={diff >= 0 ? "ok" : "warn"}>
+                  {formaterFortegn(diff, 0)} vs forrige plan
+                </StatusPille>
               )}
-            </div>
+            </section>
           </div>
 
-          {/* Rekord — reelt tall uten fasit-motpart, beholdt (ærlig motivasjon) */}
           {data.erRekord && data.sgTotalDelta !== null && (
-            <Kort tint>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <Icon name="star" size={18} style={{ color: TL.fill, flex: "none" }} />
-                <div style={{ minWidth: 0 }}>
-                  <Caps color={TL.fill}>Personlig rekord</Caps>
-                  <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 3 }}>
-                    Beste SG-Total-utvikling av planene dine hittil.
-                  </div>
-                </div>
-              </div>
-            </Kort>
+            <section className="pa-card ph-feiring-kort">
+              <p className="ph-feiring-kicker">Personlig rekord</p>
+              <p>Beste SG-Total-utvikling av planene dine hittil.</p>
+            </section>
           )}
 
-          {/* Perioden i tall */}
-          <Kort eyebrow="perioden i tall">
-            <div>
-              {(
-                [
-                  ["Periode", data.planNavn],
-                  data.timer !== null ? ["Treningstimer", `${data.timer} t`] : null,
-                  data.pyramideTopp ? ["Størst volum", data.pyramideTopp] : null,
-                  data.sgTotalDelta !== null ? ["SG Total-utvikling", fmtDelta(data.sgTotalDelta)] : null,
-                  data.publisertAv ? ["Publisert av", data.publisertAv] : null,
-                ].filter(Boolean) as [string, string][]
-              ).map((pr, i, arr) => (
-                <div
-                  key={pr[0]}
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: 8,
-                    padding: "8px 0",
-                    borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
-                    fontSize: 13,
-                    color: TL.text,
-                  }}
-                >
-                  <span>{pr[0]}</span>
-                  <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, textAlign: "right" }}>{pr[1]}</span>
+          <section className="pa-card ph-feiring-kort">
+            <p className="ph-feiring-kicker">Perioden i tall</p>
+            <dl className="ph-feiring-rader">
+              {rader.map(([navn, verdi]) => (
+                <div key={navn} className="ph-feiring-rad">
+                  <dt>{navn}</dt>
+                  <dd>{verdi}</dd>
                 </div>
               ))}
-            </div>
-            <HvorforDette
-              kilde={`alle øktene i planen «${data.planNavn}» — ${data.ferdige} fullført, ${data.total - data.ferdige} ikke fullført.`}
-              beregning={`etterlevelse er fullførte økter delt på planlagte — ${data.ferdige} av ${data.total} er ${data.prosent} prosent.`}
-              forbehold="droppede økter teller ikke negativt utover brøken — å droppe med beskjed er en del av eierskapet, ikke et avvik."
-            />
-          </Kort>
+            </dl>
+            <details className="ph-feiring-hvorfor">
+              <summary>Hvorfor dette tallet</summary>
+              <ul>
+                <li>
+                  <strong>Kilde: </strong>
+                  alle øktene i planen «{data.planNavn}» — {data.ferdige} fullført, {data.total - data.ferdige} ikke fullført.
+                </li>
+                <li>
+                  <strong>Beregning: </strong>
+                  etterlevelse er fullførte økter delt på planlagte — {data.ferdige} av {data.total} er {formaterProsent(data.prosent)}.
+                </li>
+                <li>
+                  <strong>Forbehold: </strong>
+                  droppede økter teller ikke negativt utover brøken — å droppe med beskjed er en del av eierskapet, ikke et avvik.
+                </li>
+              </ul>
+            </details>
+          </section>
 
-          {/* Kontrakt §3: én aksenthandling — neste periode. Analysen er lesing. */}
-          <div style={{ display: "flex", gap: 8, paddingBottom: 24 }}>
-            <Link
-              href="/portal/planlegge/workbench?zoom=uke"
-              data-od-id="feiring-neste"
-              className="v2-press v2-focus"
-              style={{ ...CLAY_CTA, flex: 1 }}
-              data-paper-en-ting="true"
-            >
+          <div className="ph-feiring-handlinger">
+            <Link href="/portal/planlegge/workbench?zoom=uke" data-od-id="feiring-neste" className="pa-btn pa-btn--primary">
               Åpne neste periode
             </Link>
-            <Link
-              href="/portal/analysere"
-              data-od-id="feiring-analyse"
-              className="v2-press v2-focus"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 56,
-                padding: "0 16px",
-                borderRadius: TL.radius.card,
-                border: `1px solid ${TL.hair}`,
-                color: TL.text,
-                fontFamily: TL.font.sans,
-                fontSize: 14,
-                fontWeight: 500,
-              }}
-            >
+            <Link href="/portal/analysere" data-od-id="feiring-analyse" className="pa-btn pa-btn--secondary">
               Se analysen
             </Link>
           </div>

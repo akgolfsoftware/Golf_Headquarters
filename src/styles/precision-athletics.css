@@ -580,3 +580,28 @@ color-scheme:dark;
 .ph07-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
 .ph07-footer{max-width:420px;margin-inline:auto}
 }
+
+.ph-feiring{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%;margin:0 auto}
+.ph-feiring-kort,.ph-feiring-hero{padding:16px}
+.ph-feiring-hero{text-align:center;padding:32px 16px 24px}
+.ph-feiring-merke{width:56px;height:56px;margin:0 auto 16px;border-radius:999px;display:grid;place-items:center;background:var(--surface-sunken);color:var(--text-primary)}
+.ph-feiring h2{margin:0 0 8px;font:var(--type-title-m);color:var(--text-primary);text-wrap:balance}
+.ph-feiring-hero p,.ph-feiring-kort > p{margin:0;color:var(--text-secondary);font:var(--type-body)}
+.ph-feiring-spor{height:8px;margin:12px 0;border-radius:999px;background:var(--surface-sunken);overflow:hidden}
+.ph-feiring-spor > span{display:block;height:100%;border-radius:inherit;background:var(--text-secondary)}
+.ph-feiring-kpi{display:grid;grid-template-columns:1fr;gap:8px}
+.ph-feiring-kicker{margin:0;font:var(--type-meta);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.ph-feiring-tall{margin:8px 0;font:var(--type-metric);color:var(--text-primary)}
+.ph-feiring-rader{margin:12px 0 0}
+.ph-feiring-rad{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border-hairline);font:var(--type-body-s);color:var(--text-primary)}
+.ph-feiring-rad dt{font:inherit}
+.ph-feiring-rad dd{margin:0 0 0 auto;font:var(--type-num);text-align:right}
+.ph-feiring-rad:last-child{border-bottom:0}
+.ph-feiring-hvorfor{margin-top:12px;border-top:1px solid var(--border-hairline)}
+.ph-feiring-hvorfor summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font:var(--type-label);color:var(--text-primary)}
+.ph-feiring-hvorfor ul{margin:0 0 12px;padding-left:1.2em;color:var(--text-secondary);font:var(--type-body-s)}
+.ph-feiring-handlinger{display:flex;flex-wrap:wrap;gap:8px}
+.ph-feiring-handlinger .pa-btn{flex:1 1 180px}
+@media (min-width:600px){
+.ph-feiring-kpi{grid-template-columns:1fr 1fr}
+}

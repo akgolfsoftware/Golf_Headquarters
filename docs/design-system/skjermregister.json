@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "3f287371fdf8a1095fd69ba707b4227703f72a0e",
+  "kodeversjon": "4ade3fbe2bbee66627674be4242c8c7671fb8576",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
     "componentFiles": 831,
-    "surfaceFiles": 244,
+    "surfaceFiles": 246,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -19871,19 +19871,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Plan-feiring merker PH07Feiring og monterer FeiringV2 i PlayerHQSkall. Ekte timer, etterlevelse, SG og ikke-ferdig-vakt er beholdt. Øktoppsummering er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-07 Øktoppsummering er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-07"
     },
     {
       "screenId": "PH-26",
@@ -22988,10 +22990,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 44,
+    "medAvvik": 45,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 8,
+    "implementert": 9,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
