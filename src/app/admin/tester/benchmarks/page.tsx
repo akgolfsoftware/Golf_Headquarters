@@ -6,15 +6,19 @@
  * (drift over 3 %-grensen fra mandags-cronen). Manuell "Kjør synk nå"-knapp
  * bruker samme motor som cronen.
  *
- * Server Component. Auth via requirePortalUser (COACH/ADMIN), som /admin/tester.
+ * Server Component. Auth via requireCapability(MANAGE_TESTS), som /admin/tester.
+ * Flyttet ut av (legacy) og portert til Precision Athletics (AG-15 normer).
  */
 
 import { prisma } from "@/lib/prisma";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { readSyncState, type ProtocolSyncState } from "@/lib/admin/benchmark-sync-schema";
 import { syncModeFor } from "@/lib/admin/benchmark-sync";
+import { formaterTall } from "@/lib/format-tall";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG15Normer } from "@/components/admin/precision/AG15Normer";
 import {
-  AdminBenchmarksV2,
   type AdminBenchmarksV2Data,
   type BenchmarksPendingRad,
   type BenchmarksRad,
@@ -26,12 +30,12 @@ import {
 } from "./actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Normer · Tester · AgencyOS" };
 
 type Row = { id: string; name: string; state: ProtocolSyncState };
 
 function fmt(n: number): string {
-  if (Number.isInteger(n)) return String(n);
-  return n.toFixed(1).replace(".", ",");
+  return formaterTall(n, 1);
 }
 
 function fmtDate(iso: string | undefined): string {
@@ -40,7 +44,7 @@ function fmtDate(iso: string | undefined): string {
 }
 
 export default async function BenchmarksAdminPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requireCapability(Capability.MANAGE_TESTS);
 
   const defs = await prisma.testDefinition.findMany({
     select: { id: true, name: true, protocol: true },
@@ -101,11 +105,13 @@ export default async function BenchmarksAdminPage() {
   };
 
   return (
-    <AdminBenchmarksV2
-      data={data}
-      onApprove={approveBenchmarkPending}
-      onReject={rejectBenchmarkPending}
-      onSyncNow={runBenchmarkSyncNow}
-    />
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG15Normer
+        data={data}
+        onApprove={approveBenchmarkPending}
+        onReject={rejectBenchmarkPending}
+        onSyncNow={runBenchmarkSyncNow}
+      />
+    </AgencyOSSkall>
   );
 }
