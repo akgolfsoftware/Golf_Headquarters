@@ -1,19 +1,16 @@
 /**
- * v2 — PlayerHQ Innstillinger (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), InnstillingerV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbruker de ekte kildene: requirePortalUser gir
- * bruker (e-post, notif-preferanser, samtykke-felt), getAbonnementData gir
- * FAKTISK abonnementstilstand. Foreldrenavnet slås opp via
- * guardianConsentByUserId. Ingen fabrikerte verdier.
+ * PH25InnstillingerHub — innstillinger i PlayerHQSkall.
+ * Samme abonnement, samtykke og lagring av varsler og synlighet.
+ * En foresatt og en gjest slipper ikke inn.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { InnstillingerV2, type InnstillingerData } from "@/components/portal/v2/InnstillingerV2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
 
@@ -30,22 +27,15 @@ export default async function InnstillingerPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const prefs = lesPreferences(user);
-
-  // Foreldrenavn (kun oppslag når samtykke faktisk er godkjent av noen).
-  const [abo, forelder] = await Promise.all([
+  const [abo, forelder, ulest] = await Promise.all([
     getAbonnementData(user.id),
     user.guardianConsentByUserId
       ? prisma.user.findUnique({ where: { id: user.guardianConsentByUserId }, select: { name: true } })
       : Promise.resolve(null),
+    getUnreadNotifications(user.id, 1),
   ]);
-
-  // Abonnement-kanon: gratis via coaching-pakke (credits) / prøve / gruppe,
-  // ellers 299 kr/mnd. «betaler» = FAKTISK PRO uten coaching-pakke.
   const harPakke = abo.monthlyCredits > 0;
-  const pakke = pakkeNavn(abo.monthlyCredits);
-  const gratis = harPakke || !abo.erPro;
   const betaler = abo.erPro && !harPakke;
-
   const data: InnstillingerData = {
     epost: user.email,
     notif: prefs.notif,
@@ -56,16 +46,16 @@ export default async function InnstillingerPage() {
       godkjentAv: forelder?.name ?? null,
     },
     abonnement: {
-      gratis,
-      pakkeNavn: pakke,
+      gratis: harPakke || !abo.erPro,
+      pakkeNavn: pakkeNavn(abo.monthlyCredits),
       betaler,
       nesteTrekk: betaler ? formatDato(abo.nesteTrekk) : null,
     },
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side"><InnstillingerV2 data={data} /></div>
+    </PlayerHQSkall>
   );
 }

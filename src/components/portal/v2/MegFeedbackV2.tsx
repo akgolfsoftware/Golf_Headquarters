@@ -1,81 +1,40 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
-/**
- * PlayerHQ Meg · Feedback — v2 Presis + B-pakke (send = én full grønn CTA).
- */
-
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { History } from "lucide-react";
 import { submitFeedback } from "@/app/portal/meg/feedback/actions";
-import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand, TekstOmraade, Bryter, NpsSkala, npsSegment, IkonChipVelger, type IkonChipValg } from "@/components/v2";
-/* ── Datakontrakt ──────────────────────────────────────────────────── */
+import { Knapp, StatusPille, TomTilstand } from "@/components/precision/pa";
 
 type FeedbackType = "bug" | "forslag" | "ros" | "sporsmal";
-
-export type MegFeedbackData = {
-  /** ?takk=1 — server-action redirecter hit etter vellykket innsending. */
-  takk: boolean;
-};
-
-/* ── Rene hjelpere (norsk bokmål) ──────────────────────────────────── */
+export type MegFeedbackData = { takk: boolean };
 
 const MAX = 500;
-
-const TYPER: IkonChipValg<FeedbackType>[] = [
-  { id: "bug", navn: "Bug", ikon: "bug" },
-  { id: "forslag", navn: "Forslag", ikon: "lightbulb" },
-  { id: "ros", navn: "Ros", ikon: "heart" },
-  { id: "sporsmal", navn: "Spørsmål", ikon: "help-circle" },
+const TYPER: { id: FeedbackType; navn: string }[] = [
+  { id: "bug", navn: "Bug" },
+  { id: "forslag", navn: "Forslag" },
+  { id: "ros", navn: "Ros" },
+  { id: "sporsmal", navn: "Spørsmål" },
 ];
 
-/** Fritekst-spørsmålet følger NPS-segmentet — samme logikk som dagens skjerm. */
 function fritekstSporsmal(nps: number): string {
-  const seg = npsSegment(nps);
-  if (seg === "kritiker") return "Hva bør vi forbedre?";
-  if (seg === "passiv") return "Hva mangler for å gi en 10-er?";
+  if (nps <= 6) return "Hva bør vi forbedre?";
+  if (nps <= 8) return "Hva mangler for å gi en 10-er?";
   return "Hva liker du best?";
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tittelstørrelse). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/** Liten mono-caps markør (Påkrevd / Valgfritt) til kort-hodet. */
-function Markor({ tekst, farge }: { tekst: string; farge: string }) {
-  return (
-    <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: farge, whiteSpace: "nowrap" }}>
-      {tekst}
-    </span>
-  );
-}
-
-/* ── Skjerm ────────────────────────────────────────────────────────── */
-
 export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
   const router = useRouter();
-  const _mobile = useMobile();
   const [nps, setNps] = useState(9);
   const [type, setType] = useState<FeedbackType>("forslag");
   const [tekst, setTekst] = useState("");
   const [anonym, setAnonym] = useState(false);
   const [pending, startTransition] = useTransition();
   const [feil, setFeil] = useState(false);
+  const kanSende = tekst.trim().length > 0 && !pending;
 
   function send() {
-    // submitFeedback validerer med zod og redirecter til kanonisk rute ved suksess.
-    // Fanger feil (f.eks. utløpt sesjon) i stedet for å la den forsvinne stille —
-    // uten dette klikker brukeren på nytt uten synlig respons (oppfattes som en
-    // innloggings-løkke når sesjonen faktisk er utløpt bak kulissene).
     setFeil(false);
     startTransition(async () => {
       try {
@@ -86,111 +45,52 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
     });
   }
 
-  const kanSende = tekst.trim().length > 0 && !pending;
-
   return (
-    <div data-paper-wave-g="megfeedback" data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Hode */}
-      <div>
-        <Caps>Tilbakemelding · under ett minutt</Caps>
-        <div style={{ marginTop: 12 }}>
-          <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Tilbakemelding</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
-      </div>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 560 }}>
-          Vi leser hver eneste tilbakemelding. Bug, forslag eller bare ros, alt teller.
-        </p>
-      </div>
-
-      {/* Kvittering (kun etter innsending) */}
-      {data.takk && (
-        <Kort tint>
-          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <StatusPill tone="up">Sendt</StatusPill>
-            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
-              Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.
-            </span>
-          </div>
-        </Kort>
-      )}
-
-      {/* Feil ved innsending — f.eks. utløpt sesjon. Ærlig feilmelding, aldri stille svikt.
-          Ingen `tint` (den er forest/lime-merkevarefarget for suksess) — nøytralt kort,
-          fargesignalet bæres av StatusPill tone="down". */}
+    <div className="ph25f">
+      <header>
+        <p>Tilbakemelding · under ett minutt</p>
+        <h1>Tilbakemelding</h1>
+        <p>Vi leser hver eneste tilbakemelding. Bug, forslag eller bare ros, alt teller.</p>
+      </header>
+      {data.takk && <p className="ph25f-ok" role="status"><StatusPille tone="ok">Sendt</StatusPille> Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.</p>}
       {feil && (
-        <Kort>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 11, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <StatusPill tone="down">Kunne ikke sende</StatusPill>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
-                Noe gikk galt. Prøv igjen, eller logg inn på nytt hvis du ble logget ut.
-              </span>
-            </div>
-            <Knapp
-              icon="arrow-right"
-              onClick={() => router.push("/auth/login?next=%2Fportal%2Fmeg%2Ffeedback")}
-            >
-              Logg inn på nytt
-            </Knapp>
-          </div>
-        </Kort>
+        <p className="ph25f-feil" role="alert">
+          <StatusPille tone="signal">Kunne ikke sende</StatusPille>
+          Noe gikk galt. Prøv igjen, eller logg inn på nytt hvis du ble logget ut.
+          <Knapp type="button" variant="secondary" onClick={() => router.push("/auth/login?next=%2Fportal%2Fmeg%2Ffeedback")}>Logg inn på nytt</Knapp>
+        </p>
       )}
-
-      {/* NPS — anbefaling */}
-      <Kort eyebrow="Anbefaling" action={<Markor tekst="Påkrevd" farge={TL.danger} />}>
-        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, lineHeight: 1.35, marginBottom: 16 }}>
-          Hvor sannsynlig er det at du anbefaler PlayerHQ til en venn?
+      <section className="pa-card ph25f-kort">
+        <p>Anbefaling · påkrevd</p>
+        <h2>Hvor sannsynlig er det at du anbefaler PlayerHQ til en venn?</h2>
+        <div className="ph25f-nps" role="radiogroup" aria-label="Anbefaling fra 0 til 10">
+          {Array.from({ length: 11 }, (_, n) => (
+            <button key={n} type="button" aria-pressed={nps === n} onClick={() => setNps(n)}>{n}</button>
+          ))}
         </div>
-        <NpsSkala value={nps} onChange={setNps} />
-      </Kort>
-
-      {/* Type */}
-      <Kort eyebrow="Type tilbakemelding" action={<Markor tekst="Påkrevd" farge={TL.danger} />}>
-        <IkonChipVelger valg={TYPER} value={type} onChange={setType} />
-      </Kort>
-
-      {/* Fritekst — spørsmålet følger NPS-segmentet */}
-      <Kort eyebrow="Din tilbakemelding" action={<Markor tekst="Valgfritt" farge={TL.mute} />}>
-        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, marginBottom: 12 }}>
-          {fritekstSporsmal(nps)}
+      </section>
+      <section className="pa-card ph25f-kort">
+        <p>Type tilbakemelding · påkrevd</p>
+        <div className="ph25f-typer">
+          {TYPER.map((t) => (
+            <button key={t.id} type="button" aria-pressed={type === t.id} onClick={() => setType(t.id)}>{t.navn}</button>
+          ))}
         </div>
-        <TekstOmraade
-          label={null}
-          value={tekst}
-          onChange={(v) => setTekst(v.slice(0, MAX))}
-          rows={5}
-          placeholder="Skriv her, så detaljert eller kort du vil."
-        />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 9 }}>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Hjelper oss å forstå hva som funker</span>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tekst.length} / {MAX}</span>
-        </div>
-      </Kort>
-
-      {/* Anonym */}
-      <Kort>
-        <Bryter
-          label="Send anonymt"
-          sub="Vi kobler ikke svaret til kontoen din. Da kan vi heller ikke følge opp direkte."
-          checked={anonym}
-          onChange={setAnonym}
-        />
-      </Kort>
-
-      <MikroMeta icon="clock">Tar under ett minutt · vi leser alt</MikroMeta>
-      <Knapp icon="send" full onClick={send} disabled={!kanSende}>
-        {pending ? "Sender …" : "Send tilbakemelding"}
-      </Knapp>
-
-      <Kort eyebrow="Tidligere tilbakemeldinger">
-        <TomTilstand
-          icon="history"
-          title="Ingen innsendinger å vise ennå"
-          sub="Historikk kommer når lagring er på plass. Send gjerne en ny tilbakemelding over."
-        />
-      </Kort>
+      </section>
+      <section className="pa-card ph25f-kort">
+        <p>Din tilbakemelding</p>
+        <h2>{fritekstSporsmal(nps)}</h2>
+        <textarea rows={5} maxLength={MAX} value={tekst} placeholder="Skriv her, så detaljert eller kort du vil." onChange={(e) => setTekst(e.target.value.slice(0, MAX))} />
+        <small>{tekst.length} / {MAX}</small>
+      </section>
+      <label className="pa-card ph25f-anon">
+        <input type="checkbox" checked={anonym} onChange={(e) => setAnonym(e.target.checked)} />
+        <span><strong>Send anonymt</strong><small>Vi kobler ikke svaret til kontoen din. Da kan vi heller ikke følge opp direkte.</small></span>
+      </label>
+      <p>Tar under ett minutt · vi leser alt</p>
+      <Knapp type="button" fullWidth loading={pending} disabled={!kanSende} onClick={send}>{pending ? "Sender …" : "Send tilbakemelding"}</Knapp>
+      <TomTilstand icon={History} title="Ingen innsendinger å vise ennå" text="Historikk kommer når lagring er på plass. Send gjerne en ny tilbakemelding over." />
+      <Link href="/portal/meg" className="ph-tilbake">Tilbake til Meg</Link>
     </div>
   );
 }
