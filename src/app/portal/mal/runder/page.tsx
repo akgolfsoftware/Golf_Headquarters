@@ -1,33 +1,74 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Runder (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), RunderV2 rendrer innholds-stacken.
+ * PH18RunderPage — PlayerHQ Runder og statistikk (PH-18) i PlayerHQSkall (Precision Athletics).
  *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/mal/runder/page.tsx).
+ * Claude Design 7d7c2994 (ui_kits/playerhq/screens/PH-18.jsx).
+ * Brutto score, Strokes Gained og streng par-beregning.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getRunderListModel } from "@/lib/portal-runder/runder-list-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { RunderV2 } from "@/components/portal/v2/RunderV2";
-import { TilbakeLenke } from "@/components/v2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { prisma } from "@/lib/prisma";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH18Runder } from "@/components/portal/precision/PH18Runder";
+import { byggPH18, type PH18RundeInn } from "@/lib/portal-runder/ph18-data";
 
 export const dynamic = "force-dynamic";
 
-export default async function V2RunderPreviewPage() {
+export default async function PH18RunderPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const model = await getRunderListModel(user.id);
+  const [rounds, ulest] = await Promise.all([
+    prisma.round.findMany({
+      where: { userId: user.id },
+      orderBy: { playedAt: "desc" },
+      include: {
+        course: { select: { name: true, par: true } },
+        holeScores: {
+          select: { holeNumber: true, par: true, strokes: true, putts: true, fairway: true, gir: true },
+          orderBy: { holeNumber: "asc" },
+        },
+      },
+    }),
+    getUnreadNotifications(user.id, 1).catch(() => ({ count: 0 })),
+  ]);
+
+  const runderInn: PH18RundeInn[] = rounds.map((r) => ({
+    id: r.id,
+    playedAt: r.playedAt,
+    score: r.score,
+    courseName: r.course.name,
+    coursePar: r.course.par,
+    notes: r.notes,
+    status: r.status,
+    partialSave: r.partialSave,
+    source: r.source,
+    sourceDate: r.sourceDate,
+    sgTotal: r.sgTotal,
+    sgOtt: r.sgOtt,
+    sgApp: r.sgApp,
+    sgArg: r.sgArg,
+    sgPutt: r.sgPutt,
+    sgSource: r.sgSource,
+    roundType: r.roundType,
+    holeScores: r.holeScores,
+  }));
+
+  const modell = byggPH18(runderInn);
+  const tilstand = modell.runder.length === 0 ? "tom" : "data";
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      {/* PH-11: Runder er push under Analyse — tilbake dit. */}
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <RunderV2 data={{ navn: user.name ?? "", hcp: user.hcp, rows: model.rows, kpis: model.kpis }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <PH18Runder
+        tilstand={tilstand}
+        modell={modell}
+        registrerHref="/portal/mal/runder/ny"
+        liveHref="/portal/runde-live"
+        delHref={(id) => `/portal/mal/runder/${id}/del`}
+        detaljHref={(id) => `/portal/mal/runder/${id}`}
+      />
+    </PlayerHQSkall>
   );
 }
