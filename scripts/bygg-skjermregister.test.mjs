@@ -76,8 +76,11 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/analysere").kontrollbevis, /PH16Analyse/);
   assert.equal(byRoute.get("/portal/analysere/historikk").status.implementert, "ikke-verifisert");
   assert.equal(byRoute.get("/portal/tren/wb").status.implementert, "ikke-verifisert");
-  assert.equal(byRoute.get("/portal/kalender").status.implementert, "ikke-verifisert");
-  assert.equal(register.tellinger.implementert, 10);
+  assert.equal(byRoute.get("/portal/kalender").screenId, "PH-10");
+  assert.equal(byRoute.get("/portal/kalender").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/portal/kalender").kontrollbevis, /PH10Kalender/);
+  assert.equal(byRoute.get("/portal/kalender/opptatt").status.implementert, "ikke-verifisert");
+  assert.equal(register.tellinger.implementert, 11);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

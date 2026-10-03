@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "adf4cb3fbd5c97b18c03427bbdcdfdb0d9450dee",
+  "kodeversjon": "4967a9c4f2bb1adda742a28eb774292df48000ec",
   "inventar": {
     "pageFiles": 527,
     "uniqueRoutePatterns": 527,
@@ -16570,19 +16570,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Kalendersiden merker PH10Kalender og monterer KalenderV2 i PlayerHQSkall. Dag, uke, måned, år og ?dato=-navigasjon er beholdt. Opptatt tid er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-10 Plan: uke er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-10"
     },
     {
       "screenId": "VIDERESENDING",
@@ -22992,10 +22994,10 @@
   ],
   "tellinger": {
     "sidefiler": 527,
-    "medAvvik": 46,
+    "medAvvik": 47,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 10,
+    "implementert": 11,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
