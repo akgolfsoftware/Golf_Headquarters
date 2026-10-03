@@ -983,7 +983,7 @@ button.fo-person:not(.fo-kort){background:transparent;border:0;padding:0}
   --tl-font-sans:var(--font-ibm-plex-sans),Arial,sans-serif;
   --tl-font-mono:var(--font-ibm-plex-mono),ui-monospace,monospace;
   --tl-shadow-card:var(--shadow-card);
-
+}
 
 .ph14d{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%;margin:0 auto}
 .ph14d-tilbake,.ph14d-lagret a{display:inline-flex;align-items:center;min-height:44px;color:var(--text-secondary);font:var(--type-label);text-decoration:none}
