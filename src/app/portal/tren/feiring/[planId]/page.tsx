@@ -1,21 +1,19 @@
 /**
- * PlayerHQ · Plan-feiring (/portal/tren/feiring/[planId]) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-feiring.html.
- *
- * Ett formål: anerkjenne arbeidet med ekte tall og peke videre. Auth/eierskaps-
- * sjekk og best-effort computeEffectiveness er uendret. Fullført-guarden viser
- * nå fasitens ærlige fremdrift i stedet for redirect — feiringen venter til
- * siste økt er logget. Alle tall (timer, uker, størst volum) regnes fra planens
- * egne økter — aldri fabrikkert; mangler feltet, utelates raden.
+ * PlayerHQ · Plan-feiring (/portal/tren/feiring/[planId]).
+ * PH07Feiring i PlayerHQSkall. Auth, eierskap og best-effort computeEffectiveness er uendret.
+ * Tegningsfilen ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.
+ * Registeret knytter ruten til skjermtype PH-07. Økt etter økt er en annen flate.
  */
 
 import { notFound, redirect } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
 import { logError } from "@/lib/error-tracking";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { FeiringV2 } from "@/components/portal/v2/FeiringV2";
 
 type Params = Promise<{ planId: string }>;
@@ -46,6 +44,13 @@ export default async function PlanFeiring({ params }: { params: Params }) {
   const erCoach = user.role === "COACH" || user.role === "ADMIN";
   if (!erEier && !erCoach) redirect("/portal/tren");
 
+  const uleste = await getUnreadNotifications(user.id, 1);
+  const skall = (barn: ReactNode) => (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <div className="pa-side">{barn}</div>
+    </PlayerHQSkall>
+  );
+
   const totalSesjoner = plan.sessions.length;
   const ferdigeSesjoner = plan.sessions.filter(
     (s) => s.status === "COMPLETED",
@@ -61,8 +66,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     ferdigeSesjoner !== totalSesjoner;
 
   if (ikkeFerdig) {
-    return (
-      <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    return skall(
         <FeiringV2
           data={{
             planNavn: plan.name,
@@ -79,7 +83,6 @@ export default async function PlanFeiring({ params }: { params: Params }) {
             ikkeFerdig: true,
           }}
         />
-      </V2Shell>
     );
   }
 
@@ -163,8 +166,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     personligRekord !== null &&
     eff.sgTotalDelta > personligRekord;
 
-  return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+  return skall(
       <FeiringV2
         data={{
           planNavn: plan.name,
@@ -181,6 +183,5 @@ export default async function PlanFeiring({ params }: { params: Params }) {
           ikkeFerdig: false,
         }}
       />
-    </V2Shell>
   );
 }
