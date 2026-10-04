@@ -19,6 +19,8 @@ const periodeWheres: Array<Record<string, unknown>> = [];
 
 class TestWangDataUtilgjengeligError extends Error {}
 
+mock.module("server-only", { defaultExport: {} });
+
 mock.module("next/navigation", {
   namedExports: {
     notFound: () => {
@@ -44,6 +46,10 @@ mock.module("@/lib/auth/getCurrentUser", {
 
 mock.module("@/app/team-wang/coach/coach-arsplan", {
   namedExports: { CoachArsplan: () => null },
+});
+
+mock.module("@/app/team-wang/coach/WangCoachKlient", {
+  namedExports: { WangCoachKlient: () => null },
 });
 
 mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
