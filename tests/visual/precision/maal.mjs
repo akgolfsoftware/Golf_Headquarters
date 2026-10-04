@@ -81,7 +81,9 @@ await build({
 // bolkene legger i src/styles/ ved siden av sin egen visning.
 import { readdirSync } from "node:fs";
 const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp)\.css$/.test(f)).sort();
-const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// Valgfritt: ferdigkompilert app-CSS (Tailwind) for skjermer som bruker Tailwind-klasser. PRECISION_EKSTRA_CSS=<fil>
+const ekstraCss = process.env.PRECISION_EKSTRA_CSS ? readFileSync(resolve(process.env.PRECISION_EKSTRA_CSS), "utf8") : "";
+const css = ekstraCss + "\n" + ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
@@ -135,6 +137,7 @@ try {
         }
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };
       }, w <= 1024 ? 44 : 32);
+      await page.screenshot({ path: resolve(out, `${t}-${w}-visning.png`) }); // vinduet slik brukeren ser det (Hurtigknappens standardplass)
       await page.screenshot({ path: resolve(out, `${t}-${w}.png`), fullPage: true });
       const ok = m.scrollWidth === m.clientWidth && m.utenfor.length === 0 && m.smaa.length === 0 && feil.length === 0 && m.tekst > 0;
       resultat.push({ tilstand: t, bredde: w, ok, ...m, konsollfeil: feil.slice(0, 5) });

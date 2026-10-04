@@ -1,22 +1,17 @@
 /**
- * AgencyOS Gruppe-årsplan — samme kalenderkjerne (hentGruppeKalenderData +
- * GruppeKalenderWrapper) som den offentlige /team-wang-siden, koblet inn i
- * gruppeplanleggingen. Skole/samling/kompetansemål-innhold er identisk mellom
- * flatene — ingen personlig spillerdata her heller.
+ * AgencyOS Gruppe-årsplan (AG-16b, Precision Athletics). Samme kalenderdata
+ * (hentGruppeKalenderData) som den offentlige /team-wang-siden; ingen
+ * personlig spillerdata. Skallet gir Hurtigknappen.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
+import { canUser } from "@/lib/auth/effective-capabilities";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
-import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG16bArsplan } from "@/components/admin/precision/AG16bArsplan";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
-import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
-import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
-import { TurneringPlan } from "@/components/gruppe-kalender/turnering-plan";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Årsplan · Grupper · AgencyOS" };
@@ -37,39 +32,17 @@ export default async function GruppeArsplanPage({
   if (!gruppe) notFound();
 
   const data = await hentGruppeKalenderData(gruppe.name);
-  const basePath = `/admin/grupper/${id}/arsplan`;
+  const kanRedigere = await canUser(user, Capability.EDIT_GROUP_PLANS);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
-
-      <div className="flex flex-col gap-4">
-        <GruppeFaner groupId={id} aktiv="arsplan" />
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              {gruppe.name}
-            </p>
-            <h1 className="font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Årsplan</h1>
-          </div>
-          <Link href={`${basePath}/skoledata`} className="font-mono text-[11px] font-semibold text-primary hover:underline">
-            Legg inn skoledata →
-          </Link>
-        </div>
-
-        {data ? (
-          <div className="space-y-4">
-            <TrinnFilter basePath={basePath} aktivtTrinn={trinn ?? null} />
-            <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
-            <TurneringPlan turneringer={data.turneringer} />
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Fant ingen kalenderdata for «{gruppe.name}» — gruppen mangler faste treningstider/perioder i systemet.
-          </p>
-        )}
-      </div>
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG16bArsplan
+        tilstand={data ? "data" : "tom"}
+        gruppe={{ id: gruppe.id, navn: gruppe.name }}
+        data={data}
+        trinn={trinn && ["VG1", "VG2", "VG3"].includes(trinn) ? trinn : null}
+        kanRedigere={kanRedigere}
+      />
+    </AgencyOSSkall>
   );
 }
