@@ -9,7 +9,6 @@ import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/booking/availability";
-import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, TomTilstand } from "@/components/v2";
 import { RescheduleDatoVelger } from "./reschedule-dato-velger";
@@ -87,7 +86,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
             <div style={{ marginTop: 10 }}>
               <Tittel em={booking.serviceType.name}>Bytt tid på</Tittel>
             </div>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45 }}>
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--text-secondary)", margin: "8px 0 0", lineHeight: 1.45 }}>
               Velg ny dato og tid under.
             </p>
           </div>
@@ -96,17 +95,17 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
 
         <Kort>
           <Caps style={{ marginBottom: 8 }}>Nåværende tid</Caps>
-          <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
             {naa} kl {naaTid}
           </div>
-          <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4 }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 12.5, color: "var(--text-secondary)", marginTop: 4 }}>
             {booking.serviceType.durationMin} min · {booking.location.name}
           </div>
         </Kort>
 
         <Kort>
-          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-            <strong style={{ color: TL.text }}>Regel:</strong> Bytting er gratis frem til 24 timer før start.
+          <p style={{ margin: 0, fontFamily: "var(--font-sans)", fontSize: 12.5, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+            <strong style={{ color: "var(--text-primary)" }}>Regel:</strong> Bytting er gratis frem til 24 timer før start.
             Etter det kan ikke tidspunktet endres, og bookingen er ikke refunderbar.
           </p>
         </Kort>
