@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **528**. Unike rutemønstre i skanningen: 528. Komponentfiler: 851. Ramme- og tilstandsfiler: 249.
+Sidefiler med rute: **528**. Unike rutemønstre i skanningen: 528. Komponentfiler: 853. Ramme- og tilstandsfiler: 249.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-282 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 147 rader har et registrert avvik. 120 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+282 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 149 rader har et registrert avvik. 122 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 

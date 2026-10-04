@@ -16,6 +16,8 @@ import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 import { RUNDE_DATAQUALITY_META } from "@/lib/runde-logg/kontrakt";
 import { PHRD01MedKladd } from "@/components/portal/precision/PHRD01VelgNiva";
+import { PH09RegistrerRunde } from "@/components/portal/precision/PH09RegistrerRunde";
+import { loadPh0809Data } from "@/lib/portal-runder/load-ph08-09";
 
 type NyRundeFlyt = RundeNyFormFlyt | "slag";
 
@@ -98,12 +100,13 @@ export default async function NyRundePage({
   }
 
   const flyt = lesFlyt(rawFlyt);
-  const [alleCourses, sisteBaneId] = await Promise.all([
+  const [alleCourses, sisteBaneId, ph0809Data] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },
       select: { id: true, name: true, par: true },
     }),
     sisteSpilteBaneId(user.id),
+    loadPh0809Data(user.id),
   ]);
   // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
   const courses = medForst(alleCourses, sisteBaneId);
@@ -215,6 +218,8 @@ export default async function NyRundePage({
                 </Link>
               </div>
             </Kort>
+          ) : flyt === "scorekort" ? (
+            <PH09RegistrerRunde data={ph0809Data} />
           ) : (
             <RundeNyForm courses={courses} initialFlyt={flyt} />
           )}
