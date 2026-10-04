@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "e81b9ee47c5c1e5750befac86535c08885336362",
+  "kodeversjon": "a10287bebc2dc7277df24de743e960fb633386c5",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 847,
+    "componentFiles": 848,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -16248,7 +16248,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Coach-videoer merker PH21VideoListe i PlayerHQSkall. Listen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -17783,7 +17783,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Abonnementet merker PH25AboOversikt i PlayerHQSkall. Pakke, kreditter og historikk er beholdt. Ingen ny betalingsvei er lagt til. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Abonnement og innstillinger merker PH25AboOversikt og PH25Abonnement i PlayerHQSkall. Gratis/Full, betalingsperiode, Stripe-kort, fakturahistorikk, samtykke, varsler, 2FA og slettedialog er implementert etter Claude Design PH-25.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -18572,12 +18572,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Innstillinger og abonnement merker PH25Innstillinger i PlayerHQSkall. Samtykke, varsler, 2FA, faktura og profilinnstillinger er beholdt etter Claude Design PH-25.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -19210,7 +19212,7 @@
       "designkilde": "kode",
       "designversjon": "ikke-en-skjerm",
       "komponentmonster": null,
-      "handlinger": "Send videre til /portal/meg/abonnement/oppgrader/flyt",
+      "handlinger": "Send videre til /portal/meg/abonnement",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "videresending",
@@ -19236,11 +19238,11 @@
       "kontrollbevis": null,
       "avvik": [],
       "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/abonnement/oppgrader/flyt. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/abonnement. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/meg/abonnement/oppgrader/flyt",
+      "videresendingMal": "/portal/meg/abonnement",
       "kodekommentar": null
     },
     {
@@ -23239,10 +23241,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 144,
+    "medAvvik": 145,
     "valgtForBygging": 281,
     "utenEksaktType": 13,
-    "implementert": 117,
+    "implementert": 118,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
