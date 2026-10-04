@@ -18,7 +18,7 @@
  * (eller script-src) og på requestfailed med csp-årsak, på nettopp de rutene
  * som avdekket feilen.
  */
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./_test";
 import { loginAsCoach, hasCoachAuth } from "./_auth-helpers";
 
 const CSP_MONSTER = /content security policy|script-src/i;

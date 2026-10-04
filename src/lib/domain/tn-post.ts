@@ -11,11 +11,11 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 import { notify } from "@/lib/notifications";
 import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
-  aktivtTrenerMedlemskapWhere,
   TEAM_NORWAY_SLUG,
 } from "@/lib/domain/grupper";
 import {
@@ -24,7 +24,6 @@ import {
   fodselsarOslo,
   gruppeflateVisningsnavn,
   kanSeGruppepost,
-  kanSeSpillerpost,
   osloKalenderar,
   type TnDokumentKategori,
   type TnPostKind,
@@ -73,18 +72,17 @@ export async function hentViewerRolleIGruppe(groupId: string, viewerId: string):
   return foresattFor ? "FORESATT" : null;
 }
 
-async function erAktivTrenerIGruppeMedSpiller(trenerId: string, spillerId: string): Promise<boolean> {
-  const rad = await prisma.groupMember.findFirst({
-    where: {
-      ...aktivtTrenerMedlemskapWhere(trenerId),
-      group: {
-        slug: TEAM_NORWAY_SLUG,
-        members: { some: { userId: spillerId, ...aktivtSpillerMedlemskapWhere() } },
-      },
-    },
-    select: { id: true },
-  });
-  return rad !== null;
+async function medNavngittTnPost<T>(trenerId: string, spillerId: string, les: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T | null> {
+  const gruppe = await prisma.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG }, select: { id: true } });
+  if (!gruppe) return null;
+  const { medNavngittProfil } = await import("@/lib/deling/profil-lesing");
+  return medNavngittProfil(trenerId, spillerId, gruppe.id, les);
+}
+
+/** Personlige poster: eget innsyn/foresatt eller aktuell navngitt trenerdeling. */
+export async function medTnSpillerpostData<T>(viewerId: string, spillerId: string, les: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T | null> {
+  if (viewerId === spillerId || await erGodkjentForesattFor(viewerId, spillerId)) return les(prisma);
+  return medNavngittTnPost(viewerId, spillerId, les);
 }
 
 async function erGodkjentForesattFor(viewerId: string, spillerId: string): Promise<boolean> {
@@ -134,12 +132,12 @@ export async function opprettSpillerpost(input: {
   tekst: string;
   kind: TnPostKind;
 }): Promise<{ id: string }> {
-  const lovlig = await erAktivTrenerIGruppeMedSpiller(input.forfatterId, input.spillerId);
-  if (!lovlig) throw new Error("Du er ikke trener for denne spilleren");
-  return prisma.tnPost.create({
+  const post = await medNavngittTnPost(input.forfatterId, input.spillerId, (tx) => tx.tnPost.create({
     data: { mottakerUserId: input.spillerId, authorUserId: input.forfatterId, tekst: input.tekst, kind: input.kind },
     select: { id: true },
-  });
+  }));
+  if (!post) throw new Error("Du er ikke trener for denne spilleren");
+  return post;
 }
 
 /**
@@ -358,36 +356,26 @@ export async function hentGruppepostSide(groupId: string, viewerId: string): Pro
  * kunne se tidslinjen hen selv skriver til).
  */
 export async function hentSpillerpostTidslinje(spillerId: string, viewerId: string): Promise<TnPostMedKvittering[] | null> {
-  const erForesatt = viewerId === spillerId ? false : await erGodkjentForesattFor(viewerId, spillerId);
-  const erTrener = viewerId === spillerId ? false : await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId);
-  if (
-    !kanSeSpillerpost({
-      viewerId,
-      spillerId,
-      viewerErGodkjentForesattForSpilleren: erForesatt,
-      viewerErTrenerForSpilleren: erTrener,
-    })
-  )
-    return null;
+  return medTnSpillerpostData(viewerId, spillerId, async (tx) => {
+    const poster = await tx.tnPost.findMany({
+      where: { mottakerUserId: spillerId },
+      orderBy: { createdAt: "desc" },
+      include: { vedlegg: true, lesekvittert: { select: { userId: true } } },
+    });
+    const navn = await forfatterNavnPerId(poster.map((p) => p.authorUserId));
 
-  const poster = await prisma.tnPost.findMany({
-    where: { mottakerUserId: spillerId },
-    orderBy: { createdAt: "desc" },
-    include: { vedlegg: true, lesekvittert: { select: { userId: true } } },
+    return poster.map((p) => ({
+      id: p.id,
+      authorUserId: p.authorUserId,
+      authorNavn: navn.get(p.authorUserId) ?? "Ukjent",
+      tekst: p.tekst,
+      kind: p.kind,
+      createdAt: p.createdAt,
+      editedAt: p.editedAt,
+      vedlegg: p.vedlegg,
+      kvittering: beregnLesekvittering([spillerId], p.lesekvittert.map((k) => k.userId)),
+    }));
   });
-  const navn = await forfatterNavnPerId(poster.map((p) => p.authorUserId));
-
-  return poster.map((p) => ({
-    id: p.id,
-    authorUserId: p.authorUserId,
-    authorNavn: navn.get(p.authorUserId) ?? "Ukjent",
-    tekst: p.tekst,
-    kind: p.kind,
-    createdAt: p.createdAt,
-    editedAt: p.editedAt,
-    vedlegg: p.vedlegg,
-    kvittering: beregnLesekvittering([spillerId], p.lesekvittert.map((k) => k.userId)),
-  }));
 }
 
 /** Marker en post som lest av viewer — idempotent (unique-indeks på postId+userId). */
@@ -460,19 +448,7 @@ export async function hentPostLesekvitteringNavnForViewer(
 
   if (post.mottakerUserId) {
     const spillerId = post.mottakerUserId;
-    const erForesatt = viewerId === spillerId ? false : await erGodkjentForesattFor(viewerId, spillerId);
-    const erTrener = viewerId === spillerId ? false : await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId);
-    if (
-      !kanSeSpillerpost({
-        viewerId,
-        spillerId,
-        viewerErGodkjentForesattForSpilleren: erForesatt,
-        viewerErTrenerForSpilleren: erTrener,
-      })
-    ) {
-      return null;
-    }
-    return hentLesekvitteringNavn(postId, [spillerId]);
+    return medTnSpillerpostData(viewerId, spillerId, () => hentLesekvitteringNavn(postId, [spillerId]));
   }
 
   return null;
@@ -576,10 +552,11 @@ export async function hentTnVedleggForViewer(attachmentId: string, viewerId: str
     if (!rolle) return null;
   } else if (post.mottakerUserId) {
     const spillerId = post.mottakerUserId;
-    if (!kanSeSpillerpost({ viewerId, spillerId,
-      viewerErGodkjentForesattForSpilleren: viewerId !== spillerId && await erGodkjentForesattFor(viewerId, spillerId),
-      viewerErTrenerForSpilleren: viewerId !== spillerId && await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId),
-    })) return null;
+    return medTnSpillerpostData(viewerId, spillerId, (tx) => tx.tnPostAttachment.findUnique({
+      where: { id: attachmentId, post: { mottakerUserId: spillerId } },
+      select: { id: true, path: true, fileName: true, fileType: true, fileSize: true,
+        post: { select: { id: true, groupId: true, mottakerUserId: true } } },
+    }));
   } else return null;
   return vedlegg;
 }

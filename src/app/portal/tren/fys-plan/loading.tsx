@@ -1,8 +1,12 @@
-/* Laster-tilstand for /portal/tren/fys-plan (Paper-port W1, fase2).
-   Fasit: playerhq-fys-plan.html — enkle skjelettlinjer i avtagende bredde. */
-
-import { V2Laster } from "@/components/v2/laster";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <LasterTilstand text="Henter FYS-planene …" />
+      </div>
+    </PlayerHQSkall>
+  );
 }

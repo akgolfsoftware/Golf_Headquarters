@@ -29,10 +29,14 @@ let gruppePerioderKall: string[] = [];
 let gruppeTimerKall: { groupId: string; fra: Date; til: Date }[] = [];
 let opprettedeGruppePerioder: unknown[] = [];
 let opprettedeOkter: { playerId: string }[] = [];
-let sessionRad: { id: string; playerId: string; status: string; isTemplate?: boolean; seriesId?: string | null } | null = {
-  id: "okt-1",
-  playerId: "spiller-1",
-  status: "DRAFT",
+type FakeSession = { id: string; playerId: string; status: string; date: string; startMinute: number; durationMinutes: number; title: string; pyramid: string; location: string | null; sourceGroupSessionId: string | null; groupId: string | null; isTemplate?: boolean; seriesId?: string | null };
+const fakeSession = (overrides: Partial<FakeSession> = {}): FakeSession => ({
+  id: "okt-1", playerId: "spiller-1", status: "DRAFT", date: "2026-10-10", startMinute: 480,
+  durationMinutes: 60, title: "Testøkt", pyramid: "TEK", location: null, sourceGroupSessionId: null, groupId: null, ...overrides,
+});
+let sessionRad: FakeSession | null = {
+  id: "okt-1", playerId: "spiller-1", status: "DRAFT", date: "2026-10-10", startMinute: 480,
+  durationMinutes: 60, title: "Testøkt", pyramid: "TEK", location: null, sourceGroupSessionId: null, groupId: null,
 };
 let flyttetKall = 0;
 let slettetKall = 0;
@@ -45,6 +49,16 @@ let trainingPlanSessionRader: { id: string; title: string; scheduledAt: Date; st
 let kilderForSpiller: { id: string; kind: string; title: string }[] = [];
 let addDrillKall: { sessionId: string; sourceId: string }[] = [];
 let serieRaderForSerie: { seriesId: string; playerId: string }[] = [];
+let trenerforslagKall: unknown[] = [];
+
+mock.module("@/lib/workbench/trenerforslag", {
+  namedExports: {
+    lagTrenerforslag: async (input: unknown) => {
+      trenerforslagKall.push(input);
+      return { ok: true, id: "forslag-1" };
+    },
+  },
+});
 
 mock.module("@/lib/domain/tn-arbeidsflate", {
   namedExports: {
@@ -146,7 +160,7 @@ function reset() {
   gruppeTimerKall = [];
   opprettedeGruppePerioder = [];
   opprettedeOkter = [];
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT", date: "2026-10-10", startMinute: 480, durationMinutes: 60, title: "Testøkt", pyramid: "TEK", location: null, sourceGroupSessionId: null, groupId: null };
   flyttetKall = 0;
   slettetKall = 0;
   publisertKall = [];
@@ -158,6 +172,7 @@ function reset() {
   kilderForSpiller = [];
   addDrillKall = [];
   serieRaderForSerie = [];
+  trenerforslagKall = [];
 }
 reset();
 
@@ -262,12 +277,14 @@ test("tnOpprettOkt: TN-COACH med personlig tilgang til aktiv TN-spiller lykkes",
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const svar = await tnOpprettOkt(coach, kontekst!, "spiller-1", { date: "2026-09-15", startMinute: 480, durationMinutes: 60, title: "Økt", pyramid: "TEK" });
   assert.equal(svar.ok, true);
-  assert.deepEqual(opprettedeOkter, [{ playerId: "spiller-1" }]);
+  assert.deepEqual(opprettedeOkter, []);
+  assert.equal(trenerforslagKall.length, 1, "øktforslaget sendes til spilleren uten å endre aktiv plan");
+  assert.equal((trenerforslagKall[0] as { handling: string }).handling, "ADD");
 });
 
 test("tnFlyttOkt/tnPubliserOkt: forfalsket sessionId som tilhører en ANNEN spiller avvises (eierskapsporten)", async () => {
   reset();
-  sessionRad = { id: "okt-annen", playerId: "en-annen-spiller-utenfor-valgt", status: "DRAFT" };
+  sessionRad = fakeSession({ id: "okt-annen", playerId: "en-annen-spiller-utenfor-valgt" });
   const { hentTnWorkbenchKontekst, tnFlyttOkt, tnPubliserOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const flytt = await tnFlyttOkt(coach, kontekst!, "spiller-1", { sessionId: "okt-annen", newDate: "2026-09-16", newStartMinute: 540 });
@@ -278,7 +295,7 @@ test("tnFlyttOkt/tnPubliserOkt: forfalsket sessionId som tilhører en ANNEN spil
   assert.equal(publisertKall.length, 0);
 });
 
-test("tnSlettOkt: krever eksplisitt SLETT-bekreftelse før noe kalles", async () => {
+test("tnSlettOkt: bekreftelse sender et avbestillingsforslag; planen slettes ikke direkte", async () => {
   reset();
   const { hentTnWorkbenchKontekst, tnSlettOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
@@ -287,7 +304,8 @@ test("tnSlettOkt: krever eksplisitt SLETT-bekreftelse før noe kalles", async ()
   assert.equal(slettetKall, 0);
   const medBekreftelse = await tnSlettOkt(coach, kontekst!, "spiller-1", "okt-1", "slett");
   assert.equal(medBekreftelse.ok, true);
-  assert.equal(slettetKall, 1);
+  assert.equal(slettetKall, 0);
+  assert.equal((trenerforslagKall[0] as { handling: string }).handling, "CANCEL");
 });
 
 test("kanRedigereTnGruppeplan/tnLagrePeriode: TN-ASSISTANT (kanAdministrere=false) nektes selv med EDIT_GROUP_PLANS-kapasitet", async () => {
@@ -382,7 +400,7 @@ test("hentTnGruppeTimer: en økt som krysser Oslo-midnatt telles på STARTDAGEN,
 
 test("tnKopierOkt: kilde som tilhører en ANNEN spiller avvises, ingen kopi opprettes", async () => {
   reset();
-  sessionRad = { id: "kilde-1", playerId: "en-annen-spiller", status: "COMPLETED" };
+  sessionRad = fakeSession({ id: "kilde-1", playerId: "en-annen-spiller", status: "COMPLETED" });
   const { hentTnWorkbenchKontekst, tnKopierOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const svar = await tnKopierOkt(coach, kontekst!, "spiller-1", { kildeSessionId: "kilde-1", nyDato: "2026-09-20", nyStartMinutt: 600 });
@@ -390,16 +408,15 @@ test("tnKopierOkt: kilde som tilhører en ANNEN spiller avvises, ingen kopi oppr
   assert.equal(kopiertFraKilde.length, 0);
 });
 
-test("tnKopierOkt: gyldig kilde for valgt spiller kopieres via createSessionFromSource med forrige-kilde-id", async () => {
+test("tnKopierOkt: gyldig kilde sendes som ADD-forslag; planen endres ikke før svar", async () => {
   reset();
   const { hentTnWorkbenchKontekst, tnKopierOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const svar = await tnKopierOkt(coach, kontekst!, "spiller-1", { kildeSessionId: "okt-1", nyDato: "2026-09-20", nyStartMinutt: 600 });
   assert.equal(svar.ok, true);
-  assert.equal(kopiertFraKilde.length, 1);
-  assert.equal(kopiertFraKilde[0]?.playerId, "spiller-1");
-  assert.equal(kopiertFraKilde[0]?.sourceId, "forrige:okt-1");
-  assert.equal(kopiertFraKilde[0]?.date, "2026-09-20");
+  assert.equal(kopiertFraKilde.length, 0);
+  assert.equal((trenerforslagKall[0] as { handling: string }).handling, "ADD");
+  assert.equal((trenerforslagKall[0] as { etter: { date: string } }).etter.date, "2026-09-20");
 });
 
 test("tnSettMal: TN-ASSISTANT nektes, TN-COACH med eierskap lykkes", async () => {
@@ -426,7 +443,7 @@ test("hentTnKilder: TN-ASSISTANT (kanAdministrere=false) får tom liste, TN-COAC
   assert.equal((await hentTnKilder(coach, kontekst!, "spiller-1")).length, 1);
 });
 
-test("tnOpprettFraMal: DRILL-kilde som IKKE finnes i spillerens eget kildepanel (f.eks. en annen spillers private øvelse) avvises FØR createSessionFromSource kalles", async () => {
+test("tnOpprettFraMal: en privat DRILL-kilde utenfor spillerens kildepanel avvises", async () => {
   reset();
   kilderForSpiller = [{ id: "drill:system-1", kind: "DRILL", title: "System-øvelse" }];
   const { hentTnWorkbenchKontekst, tnOpprettFraMal } = await modul();
@@ -436,9 +453,8 @@ test("tnOpprettFraMal: DRILL-kilde som IKKE finnes i spillerens eget kildepanel 
   assert.equal(kopiertFraKilde.length, 0, "createSessionFromSource skal ALDRI kalles for en kilde som ikke er lovlig for spilleren");
 
   const godkjent = await tnOpprettFraMal(coach, kontekst!, "spiller-1", { sourceId: "drill:system-1", dato: "2026-09-20", startMinutt: 480 });
-  assert.equal(godkjent.ok, true);
-  assert.equal(kopiertFraKilde.length, 1);
-  assert.equal(kopiertFraKilde[0]?.sourceId, "drill:system-1");
+  assert.equal(godkjent.ok, false, "detaljert øvelsesinnhold må kunne vises før/etter før dette kan foreslås");
+  assert.equal(kopiertFraKilde.length, 0);
 });
 
 test("tnLeggTilOvelseIOkt: forfalsket sessionId for annen spiller avvises FØR kildesjekk/addDrillFromSource", async () => {
@@ -446,7 +462,7 @@ test("tnLeggTilOvelseIOkt: forfalsket sessionId for annen spiller avvises FØR k
   kilderForSpiller = [{ id: "drill:system-1", kind: "DRILL", title: "System-øvelse" }];
   const { hentTnWorkbenchKontekst, tnLeggTilOvelseIOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
-  sessionRad = { id: "annen-okt", playerId: "en-annen-spiller", status: "DRAFT" };
+  sessionRad = fakeSession({ id: "annen-okt", playerId: "en-annen-spiller" });
   const avvist = await tnLeggTilOvelseIOkt(coach, kontekst!, "spiller-1", { sessionId: "annen-okt", sourceId: "drill:system-1" });
   assert.equal(avvist.ok, false);
   assert.equal(addDrillKall.length, 0);
@@ -455,7 +471,7 @@ test("tnLeggTilOvelseIOkt: forfalsket sessionId for annen spiller avvises FØR k
 test("tnLeggTilOvelseIOkt: øvelse som IKKE er i spillerens kildepanel (en annen spillers PRIVATE øvelse) avvises, selv om den delte addDrillFromSource ville funnet raden", async () => {
   reset();
   kilderForSpiller = [{ id: "drill:system-1", kind: "DRILL", title: "System-øvelse" }];
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = fakeSession();
   const { hentTnWorkbenchKontekst, tnLeggTilOvelseIOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const avvist = await tnLeggTilOvelseIOkt(coach, kontekst!, "spiller-1", { sessionId: "okt-1", sourceId: "drill:privat-hos-spiller-b" });
@@ -463,14 +479,14 @@ test("tnLeggTilOvelseIOkt: øvelse som IKKE er i spillerens kildepanel (en annen
   assert.equal(addDrillKall.length, 0, "en kilde utenfor spillerens eget kildepanel skal aldri nå frem til den delte, synlighetsblinde addDrillFromSource");
 
   const godkjent = await tnLeggTilOvelseIOkt(coach, kontekst!, "spiller-1", { sessionId: "okt-1", sourceId: "drill:system-1" });
-  assert.equal(godkjent.ok, true);
-  assert.deepEqual(addDrillKall, [{ sessionId: "okt-1", sourceId: "drill:system-1" }]);
+  assert.equal(godkjent.ok, false, "øvelsesendring er stengt inntil før/etter-innhold kan godkjennes");
+  assert.deepEqual(addDrillKall, []);
 });
 
 test("tnLeggTilOvelseIOkt: en mal-/forrige-uke-kilde (ikke DRILL) avvises — kun øvelser kan legges til en eksisterende økt", async () => {
   reset();
   kilderForSpiller = [{ id: "mal:okt-2", kind: "TEMPLATE", title: "Fast mal" }];
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = fakeSession();
   const { hentTnWorkbenchKontekst, tnLeggTilOvelseIOkt } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const avvist = await tnLeggTilOvelseIOkt(coach, kontekst!, "spiller-1", { sessionId: "okt-1", sourceId: "mal:okt-2" });
@@ -478,25 +494,25 @@ test("tnLeggTilOvelseIOkt: en mal-/forrige-uke-kilde (ikke DRILL) avvises — ku
   assert.equal(addDrillKall.length, 0);
 });
 
-test("tnRedigerOktInnhold: forfalsket sessionId for annen spiller avvises, ekte økt oppdateres med riktig policy", async () => {
+test("tnRedigerOktInnhold: forfalsket sessionId avvises; endring av flere økter avvises", async () => {
   reset();
   const { hentTnWorkbenchKontekst, tnRedigerOktInnhold } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
 
-  sessionRad = { id: "annen-okt", playerId: "en-annen-spiller", status: "DRAFT" };
+  sessionRad = fakeSession({ id: "annen-okt", playerId: "en-annen-spiller" });
   const avvist = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "annen-okt", policy: "DENNE", patch: { title: "Ny tittel" } });
   assert.equal(avvist.ok, false);
   assert.equal(seriesKall.length, 0);
 
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = fakeSession();
   const ok = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "okt-1", policy: "HELE_SERIEN", patch: { title: "Ny tittel" } });
-  assert.equal(ok.ok, true);
-  assert.equal(seriesKall[0]?.policy, "HELE_SERIEN");
+  assert.equal(ok.ok, false);
+  assert.equal(seriesKall.length, 0);
 });
 
 test("tnRedigerOktInnhold: policy!=DENNE med en serie som inneholder en ANNEN spillers økt avvises FØR updateSeriesSession kalles — det holder ikke å bare sjekke selve sessionId-en", async () => {
   reset();
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT", seriesId: "serie-1" };
+  sessionRad = fakeSession({ seriesId: "serie-1" });
   serieRaderForSerie = [
     { seriesId: "serie-1", playerId: "spiller-1" },
     { seriesId: "serie-1", playerId: "en-annen-spiller" },
@@ -508,48 +524,51 @@ test("tnRedigerOktInnhold: policy!=DENNE med en serie som inneholder en ANNEN sp
   assert.equal(seriesKall.length, 0, "en blandet serie skal aldri nå frem til den delte, spiller-blinde updateSeriesSession");
 });
 
-test("tnRedigerOktInnhold: policy=DENNE trenger ikke seriekontroll, og en serie som KUN tilhører valgt spiller godkjennes for HELE_SERIEN", async () => {
+test("tnRedigerOktInnhold: forslag for én økt kan sendes; serieendring er sperret", async () => {
   reset();
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT", seriesId: "serie-1" };
+  sessionRad = fakeSession({ seriesId: "serie-1" });
   serieRaderForSerie = [
     { seriesId: "serie-1", playerId: "spiller-1" },
     { seriesId: "serie-1", playerId: "spiller-1" },
   ];
   const { hentTnWorkbenchKontekst, tnRedigerOktInnhold } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
-  const ok = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "okt-1", policy: "HELE_SERIEN", patch: { title: "Ny tittel" } });
+  const blokkert = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "okt-1", policy: "HELE_SERIEN", patch: { title: "Ny tittel" } });
+  assert.equal(blokkert.ok, false);
+  const ok = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "okt-1", policy: "DENNE", patch: { title: "Ny tittel" } });
   assert.equal(ok.ok, true);
-  assert.equal(seriesKall.length, 1);
+  assert.equal(seriesKall.length, 0);
 });
 
-test("tnRedigerOktInnhold: tom streng i notater sendes UENDRET videre til updateSeriesSession (bevisst tømming, ikke konvertert til undefined)", async () => {
+test("tnRedigerOktInnhold: trenernotat følger begrunnelsen i endringsforslaget", async () => {
   reset();
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = fakeSession();
   const { hentTnWorkbenchKontekst, tnRedigerOktInnhold } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const ok = await tnRedigerOktInnhold(coach, kontekst!, "spiller-1", { sessionId: "okt-1", policy: "DENNE", patch: { notes: "" } });
   assert.equal(ok.ok, true);
-  assert.equal((seriesKall[0]?.patch as { notes?: string })?.notes, "", "tom streng skal bety «fjern notatet», ikke bety «ikke rør feltet» (undefined)");
+  assert.equal(seriesKall.length, 0);
+  assert.equal(trenerforslagKall.length, 1);
 });
 
 test("tnPubliserFlere: én forfalsket id i utvalget stopper HELE batchen — ingenting publiseres", async () => {
   reset();
   const { hentTnWorkbenchKontekst, tnPubliserFlere } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
-  sessionRad = { id: "okt-1", playerId: "spiller-1", status: "DRAFT" };
+  sessionRad = fakeSession();
   // "okt-1" finnes og tilhører spiller-1, men "okt-fremmed" finnes ikke i det hele tatt (loadSession-mocken kjenner kun sessionRad.id).
   const svar = await tnPubliserFlere(coach, kontekst!, "spiller-1", ["okt-1", "okt-fremmed"]);
   assert.equal(svar.ok, false);
   assert.equal(publisertKall.length, 0);
 });
 
-test("tnPubliserFlere: gyldig utvalg publiseres i én batch", async () => {
+test("tnPubliserFlere: direkte massepublisering er stengt for individuelle planer", async () => {
   reset();
   const { hentTnWorkbenchKontekst, tnPubliserFlere } = await modul();
   const kontekst = await hentTnWorkbenchKontekst(coach);
   const svar = await tnPubliserFlere(coach, kontekst!, "spiller-1", ["okt-1"]);
-  assert.equal(svar.ok, true);
-  assert.deepEqual(publisertKall, [["okt-1"]]);
+  assert.equal(svar.ok, false);
+  assert.deepEqual(publisertKall, []);
 });
 
 // ---------------------------------------------------------------------------

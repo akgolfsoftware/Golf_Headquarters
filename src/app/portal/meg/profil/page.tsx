@@ -1,11 +1,10 @@
+// PH24Profil — Precision Athletics. Data og handlinger er beholdt.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
- * PlayerHQ · Meg · Profil (W3-port av eksisterende flate).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-profil.html (§8 skjema).
+ * PlayerHQ · Meg · Profil (PH-24).
+ * Kilde: AK Golf Precision Athletics PH-24 (Meg / Profil, ui_kits/playerhq/screens/PH-24.jsx).
  *
- * Konsolidering (manifest-w3-komplett.md): profil/konto/kontakt → én flate.
- * /portal/meg/konto og /portal/meg/kontakt finnes ikke som ruter i dag, så
- * kontakt-seksjonen (e-post/mobil) bor her — ingen URL-er fjernes.
- *
+ * Profil, personalia, kontaktinformasjon og forbundsstatus.
  * Dataloader gjenbruker hentProfil (User-feltene); hentProfilEkstra legger
  * til stall-tag, runder i år, Golfbox-ID og aktivt HCP-mål.
  */
@@ -13,9 +12,8 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentProfil } from "@/app/portal/meg/actions";
-import { hentProfilEkstra, manglendeProfilFelter } from "@/lib/portal/profil-flate-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegProfilV2, type MegProfilData } from "@/components/portal/v2/MegProfilV2";
+import { hentProfilEkstra } from "@/lib/portal/profil-flate-data";
+import { PH24Profil, type PH24ProfilData } from "@/components/portal/precision/PH24Profil";
 import { lagreProfil } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +37,7 @@ export default async function ProfilPage() {
 
   const [profil, ekstra] = await Promise.all([hentProfil(), hentProfilEkstra(user.id)]);
 
-  const data: MegProfilData = {
+  const data: PH24ProfilData = {
     navn: profil.user.name,
     avatarUrl: profil.user.avatarUrl,
     epost: profil.user.email,
@@ -55,16 +53,11 @@ export default async function ProfilPage() {
     runderIAar: ekstra.runderIAar,
     ngfId: ekstra.ngfId,
     hcpMaalTekst: ekstra.hcpMaal ? formatHcpMaal(ekstra.hcpMaal) : null,
-    mangler: manglendeProfilFelter({
-      dateOfBirth: profil.user.dateOfBirth,
-      homeClub: profil.user.homeClub,
-      ambition: user.ambition,
-    }),
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
-      <MegProfilV2 data={data} lagre={lagreProfil} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH24Profil data={data} onLagre={lagreProfil} />
+    </PlayerHQSkall>
   );
 }

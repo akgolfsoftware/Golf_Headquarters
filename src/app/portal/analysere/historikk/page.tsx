@@ -1,30 +1,15 @@
 /**
- * PlayerHQ · Historikk (/portal/analysere/historikk) — Paper-port W2 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-historikk-filter-sheet.html
- * (rute per manifest-w2-filter-varsler-putting.md).
- *
- * Én samlet historikk over runder, økter, tester og TrackMan-import, med det
- * delte filter-bunnarket (HistorikkFilterSheet). ALT lastes her fra
- * EKSISTERENDE loadere (getRoundStats, hentTreningsHistorikk, getTestResults,
- * getTrackManData) — filtrering skjer klientside på det lastede
- * (manifest-vedtak: ingen ny backend, ingen nye spørringer).
- *
- * Ærlige avvik:
- *  - Økt-rader lenker ingen steder: TreningsRad.oktId er TrainingSessionV2-id,
- *    mens økt-detaljruten (/portal/gjennomfore/[id]) tar TrainingPlanSession-id
- *    (kjent id-mismatch). Ingen lenke er ærligere enn feil lenke.
- *  - Sone (tee/innspill/nærspill/putt) avledes av AK-formelens område-felt der
- *    det finnes; runder og TrackMan-import har ingen sone og faller ut når et
- *    sonefilter er aktivt — samme oppførsel som fasit-scriptet.
+ * PH16Historikk — samlet historikk i PlayerHQSkall.
+ * Runder, økter, tester og TrackMan lastes som før. Filteret er fortsatt på skjermen.
  */
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getRoundStats, getTestResults, getTrackManData } from "@/app/portal/analysere/actions";
 import { hentTreningsHistorikk } from "@/lib/portal-analyse/trenings-historikk";
 import { startOfYear } from "@/lib/uke-helpers";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { HistorikkV2, type HistorikkEntry } from "@/components/portal/v2/HistorikkV2";
 import type { HistorikkSone } from "@/components/portal/v2/HistorikkFilterSheet";
 
@@ -179,9 +164,11 @@ export default async function HistorikkPage() {
   const entries: HistorikkEntry[] = rader.map(({ _dato: _ignorert, ...e }) => e);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <HistorikkV2 entries={entries} navn={user.name ?? ""} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <Link href="/portal/analysere" className="ph-tilbake">Analyse</Link>
+        <HistorikkV2 entries={entries} navn={user.name ?? ""} />
+      </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,3 +1,4 @@
+// PH09NyRunde — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ Loggfør runde — totalscore/scorekort og valgfri manuell SG.
  * RundeNyForm deler SG-felt og validering med redigeringen på rundedetaljen.
@@ -6,7 +7,7 @@
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { Caps, Tittel, MikroMeta, Kort, StatusPill } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -14,6 +15,9 @@ import { RundeNyForm, type RundeNyFormFlyt } from "@/components/portal/runde-ny/
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 import { RUNDE_DATAQUALITY_META } from "@/lib/runde-logg/kontrakt";
+import { PHRD01MedKladd } from "@/components/portal/precision/PHRD01VelgNiva";
+import { PH09RegistrerRunde } from "@/components/portal/precision/PH09RegistrerRunde";
+import { loadPh0809Data } from "@/lib/portal-runder/load-ph08-09";
 
 type NyRundeFlyt = RundeNyFormFlyt | "slag";
 
@@ -74,19 +78,42 @@ export default async function NyRundePage({
   searchParams: Promise<{ flyt?: string | string[] | undefined }>;
 }) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const flyt = lesFlyt((await searchParams).flyt);
-  const [alleCourses, sisteBaneId] = await Promise.all([
+  const rawFlyt = (await searchParams).flyt;
+
+  // Uten valgt flyt: PH-RD-01, velg registreringsnivå (Precision Athletics).
+  // Adressene med ?flyt= (scorekort, SG, total, detaljer, slag) virker som før.
+  if (rawFlyt === undefined) {
+    let tilstand: "data" | "tom" | "feil" = "data";
+    let uleste = 0;
+    try {
+      const [antallBaner, ul] = await Promise.all([
+        prisma.courseDefinition.count(),
+        prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+      ]);
+      uleste = ul;
+      if (antallBaner === 0) tilstand = "tom";
+    } catch (feil) {
+      console.error("PH-RD-01: kunne ikke hente baner", feil);
+      tilstand = "feil";
+    }
+    return <PHRD01MedKladd tilstand={tilstand} uleste={uleste} />;
+  }
+
+  const flyt = lesFlyt(rawFlyt);
+  const [alleCourses, sisteBaneId, ph0809Data] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },
       select: { id: true, name: true, par: true },
     }),
     sisteSpilteBaneId(user.id),
+    loadPh0809Data(user.id),
   ]);
   // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
   const courses = medForst(alleCourses, sisteBaneId);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Alle runder</MikroMeta>
@@ -191,11 +218,14 @@ export default async function NyRundePage({
                 </Link>
               </div>
             </Kort>
+          ) : flyt === "scorekort" ? (
+            <PH09RegistrerRunde data={ph0809Data} />
           ) : (
             <RundeNyForm courses={courses} initialFlyt={flyt} />
           )}
         </div>
       </div>
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

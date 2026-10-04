@@ -1,3 +1,4 @@
+// FO05Samtykke — Precision Athletics. Data og handlinger er beholdt.
 /**
  * v2-forhåndsvisning — Foreldreportal · Samtykke (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
@@ -11,7 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import {
   grupperMedEksterneLesereForSpiller,
@@ -25,6 +26,7 @@ import {
   DelingSamtykkeKort,
   type DelingGruppeStatus,
 } from "@/components/portal/v2/DelingSamtykkeKort";
+import { harAutomatiskWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 
 export const dynamic = "force-dynamic";
 
@@ -80,11 +82,12 @@ export default async function V2ForelderSamtykkePreviewPage() {
   // eneste som teller i ekstern-leser-scopet.
   const delingPerBarn = new Map<
     string,
-    { navn: string; grupper: DelingGruppeStatus[] }
+    { navn: string; grupper: DelingGruppeStatus[]; automatiskWangTestdeling: boolean }
   >(
     await Promise.all(
       relasjoner.map(async (r) => {
         const grupper = await grupperMedEksterneLesereForSpiller(r.child.id);
+        const automatiskWangTestdeling = await harAutomatiskWangTestdeling(r.child.id);
         const status = await hentDelingsStatus(
           r.child.id,
           grupper.map((g) => g.id),
@@ -94,11 +97,13 @@ export default async function V2ForelderSamtykkePreviewPage() {
           r.child.id,
           {
             navn: r.child.name,
+            automatiskWangTestdeling,
             grupper: grupper.map((g) => ({
               gruppeId: g.id,
               gruppeNavn: g.name,
               testResultater: kart.get(g.id)?.testResultater ?? false,
               stats: kart.get(g.id)?.stats ?? false,
+              testResultaterAutomatisk: automatiskWangTestdeling && g.slug === "team-norway",
             })),
           },
         ] as const;
@@ -132,18 +137,12 @@ export default async function V2ForelderSamtykkePreviewPage() {
   };
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderSamtykkeV2 data={data} />
       {/* T8: delingssamtykke per barn — funksjonelt, merkes for fasit-runde. */}
       {relasjoner.map((r) => {
         const deling = delingPerBarn.get(r.child.id);
-        if (!deling || deling.grupper.length === 0) return null;
+        if (!deling || (deling.grupper.length === 0 && !deling.automatiskWangTestdeling)) return null;
         return (
           <div key={r.child.id} style={{ maxWidth: 720, margin: "16px auto 0", width: "100%" }}>
             <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
@@ -151,11 +150,12 @@ export default async function V2ForelderSamtykkePreviewPage() {
             </div>
             <DelingSamtykkeKort
               grupper={deling.grupper}
+              automatiskWangTestdeling={deling.automatiskWangTestdeling}
               modus={{ type: "foresatt", childId: r.child.id }}
             />
           </div>
         );
       })}
-    </V2Shell>
+    </ForelderSkall>
   );
 }

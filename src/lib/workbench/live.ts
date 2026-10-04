@@ -15,7 +15,7 @@ const WorkbenchLiveSnapshotSchema = z.object({
   updatedAtISO: z.string(),
   drills: z.array(LiveDrillSchema).max(100),
   seriesTargets: z.record(z.string(), z.number().int().min(1).max(12)).optional(),
-});
+}).passthrough();
 
 export type WorkbenchLiveDrill = z.infer<typeof LiveDrillSchema>;
 export type WorkbenchLiveSnapshot = z.infer<typeof WorkbenchLiveSnapshotSchema> & {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { hentSpillerpostTidslinje } from "@/lib/domain/tn-post";
+import { hentSpillerpostTidslinje, medTnSpillerpostData } from "@/lib/domain/tn-post";
 import { TN } from "@/lib/v2/team-norway";
 import { TnAvatarInitialer, TnPille } from "@/components/team-norway/core";
 import { TnShell, TnSidehode } from "@/components/team-norway/tn-shell";
@@ -29,21 +29,18 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
   const { spillerId } = await params;
   const bruker = await requirePortalUser({ allow: ["COACH", "ADMIN", "PLAYER", "PARENT"] });
 
-  const spiller = await prisma.user.findUnique({
-    where: { id: spillerId, role: "PLAYER" },
-    select: { id: true, name: true, dateOfBirth: true, requiresGuardianConsent: true },
+  const metadata = await medTnSpillerpostData(bruker.id, spillerId, async () => {
+    const [spiller, foresatte, gruppe] = await Promise.all([
+      prisma.user.findUnique({ where: { id: spillerId, role: "PLAYER", deletedAt: null, anonymisertAt: null }, select: { id: true, name: true, dateOfBirth: true, requiresGuardianConsent: true } }),
+      prisma.parentRelation.findMany({ where: { childId: spillerId, approved: true }, select: { parent: { select: { id: true, name: true } } } }),
+      prisma.group.findUnique({ where: { slug: "team-norway" }, select: { id: true } }),
+    ]);
+    return spiller && gruppe ? { spiller, foresatte, gruppe } : null;
   });
-  if (!spiller) notFound();
-
-  const [tidslinje, foresatte, gruppe] = await Promise.all([
-    hentSpillerpostTidslinje(spillerId, bruker.id),
-    prisma.parentRelation.findMany({
-      where: { childId: spillerId, approved: true },
-      select: { parent: { select: { id: true, name: true } } },
-    }),
-    prisma.group.findUnique({ where: { slug: "team-norway" }, select: { id: true } }),
-  ]);
-  if (!tidslinje || !gruppe) notFound();
+  if (!metadata) notFound();
+  const { spiller, foresatte, gruppe } = metadata;
+  const tidslinje = await hentSpillerpostTidslinje(spillerId, bruker.id);
+  if (!tidslinje) notFound();
 
   const erTrenerHer = bruker.id !== spillerId && !foresatte.some((f) => f.parent.id === bruker.id);
   const spillerAlder = alder(spiller.dateOfBirth);

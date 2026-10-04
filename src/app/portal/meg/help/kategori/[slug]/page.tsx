@@ -1,3 +1,5 @@
+// PH25HjelpKategori — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Meg · Hjelp · Kategori (/portal/meg/help/kategori/[slug]) — v2.
  * v2-port 17. juli 2026 (Team D4a): MegHelpKategoriV2 erstatter Tailwind-siden.
@@ -10,7 +12,6 @@
  */
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import {
   MegHelpKategoriV2,
@@ -265,7 +266,7 @@ export default async function KategoriPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ sort?: string }>;
 }) {
-  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  await requirePortalUser({ kreverTilgang: "INGEN" });
   const { slug } = await params;
   const sp = await searchParams;
   const sort: KategoriSort =
@@ -307,9 +308,11 @@ export default async function KategoriPage({
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
       <MegHelpKategoriV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

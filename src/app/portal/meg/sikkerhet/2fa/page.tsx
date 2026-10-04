@@ -1,3 +1,5 @@
+// PH25ToFaktor — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * /portal/meg/sikkerhet/2fa — B-pakke.
  * Status/steg først, én grønn handling per steg (i TwoFaClient).
@@ -7,14 +9,14 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, TilbakeLenke } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TwoFaClient } from "./twofa-client";
 
 export default async function TwoFaPage() {
-  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  await requirePortalUser({ kreverTilgang: "INGEN" });
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div
         style={{
           maxWidth: 640,
@@ -38,6 +40,7 @@ export default async function TwoFaPage() {
 
         <TwoFaClient />
       </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

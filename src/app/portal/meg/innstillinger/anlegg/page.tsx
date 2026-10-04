@@ -1,3 +1,5 @@
+// PH25AnleggValg — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2 — PlayerHQ Innstillinger · Mitt treningsanlegg (retning C).
  * /portal/meg/innstillinger/anlegg
@@ -15,7 +17,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerAnleggV2 } from "@/components/portal/v2/InnstillingerAnleggV2";
 
 export const dynamic = "force-dynamic";
@@ -31,8 +32,10 @@ export default async function AnleggPage() {
   const tilgjengelig: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <InnstillingerAnleggV2 data={{ tilgjengelig }} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

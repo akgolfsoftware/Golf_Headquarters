@@ -12,7 +12,7 @@
  */
 
 import { config as loadEnv } from "dotenv";
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 loadEnv({ path: ".env.local" });
 
@@ -54,11 +54,16 @@ export function hasCoachAuth(): boolean {
 
 /** Cookie-banner kan dekke hele body i headless — lukk den hvis den vises. */
 export async function dismissCookieBanner(page: Page): Promise<void> {
+  // The app intentionally hides the banner on auth routes. An existing consent
+  // cookie also means there is no delayed banner to wait for.
+  if (new URL(page.url()).pathname.startsWith("/auth")) return;
+  if ((await page.context().cookies()).some(cookie => cookie.name === "ak_cookie_consent")) return;
   const btn = page
     .getByRole("button", { name: /Kun nødvendige|Godta alle/i })
     .first();
   try {
-    if (await btn.isVisible({ timeout: 2_500 })) {
+    await btn.waitFor({ state: "visible", timeout: 2_500 });
+    if (await btn.isVisible()) {
       await btn.click();
       await btn.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => undefined);
     }
@@ -67,19 +72,29 @@ export async function dismissCookieBanner(page: Page): Promise<void> {
   }
 }
 
-async function loginWith(
+/** Velg passord fra standardvisningen med magisk lenke, som en bruker gjør. */
+export async function selectPasswordLogin(page: Page): Promise<void> {
+  // gotoAndWait stopper ved DOMContentLoaded; last også klientkoden før klikk.
+  await page.waitForLoadState("load");
+  await dismissCookieBanner(page);
+  await page.getByRole("button", { name: "Logg inn med passord", exact: true }).click();
+  await expect(page.locator('input[type="password"]')).toBeVisible();
+}
+
+export async function loginWith(
   page: Page,
   email: string,
   password: string,
 ): Promise<void> {
   await page.goto("/auth/login");
-  await dismissCookieBanner(page);
+  await selectPasswordLogin(page);
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();
-  await page.waitForURL(/\/(portal|auth\/etter-innlogging|forelder|admin)/, {
+  await page.waitForURL(/\/(portal|forelder|admin)/, {
     timeout: 25_000,
   });
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
   await dismissCookieBanner(page);
 }
 

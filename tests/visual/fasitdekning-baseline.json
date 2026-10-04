@@ -1,6 +1,6 @@
 {
-  "sitert": 140,
+  "sitert": 133,
   "av": 219,
-  "sistEndret": "2026-09-29",
-  "grunn": "Plan-hub og øktark (AG-14, AG-12) portet til Precision Athletics (7d7c2994): OktArkV2.tsx (siterte «A-14 iPhone Okt-ark Filip.dc.html») er erstattet av AG12Oktark.tsx, som siterer Precision i stedet. Én Train-lock-sitering faller bort, 141→140 (målt etter at Innboks og Spiller 360 ble lagt inn 29.09)."
+  "sistEndret": "2026-10-04",
+  "grunn": "PH-20 Gameplan og banekart er portet til Precision Athletics. Den utgåtte Train-lock-siteringen av «GP-01 Gameplan baner.dc.html» i GameplanV2 er fjernet med vilje. 134→133."
 }

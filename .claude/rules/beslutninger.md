@@ -4,6 +4,57 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
+
+Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at
+Codex fullfører resterende prosjekt, og har i denne økten bestilt en plan for gjennomføringen.
+Viderefører Precision Athletics og erstatter eldre omtale av Grok eller Claude Code som
+kodeansvarlig. Ingen nye produkt-, skjema-, tilgangs- eller publiseringsvalg følger av rollebyttet.
+
+**Arbeidet dette utløser:** [fullføringsplanen](../../docs/planer/codex-fullforing-claude-design-2026-09-30.md):
+fersk kartlegging → felles grunnlag → komplett treningskjede → øvrige spillerverktøy →
+booking/coaching → AgencyOS/AI → forelder/organisasjoner → sluttkontroll → autorisert lansering.
+Codex bruker valgte, versjonerte designleveranser, bevarer funksjoner og viser app/design
+side om side. Nye konkrete produktvalg avklares; allerede bestilt arbeid videreføres.
+Denne økten leverer planen. Implementasjons- og kontrollstatus føres separat.
+
+**Presisering i samme økt:** Anders vil at Codex planlegger arbeidet før Claude Design er
+ferdig, undersøker alle funksjoner og kontrollerer at de virker sammen. Planens PRE-01–08
+dekker funksjonsregister, isolert testmiljø, fersk teststatus, avtaler mellom moduler,
+treningskjeden, roller/booking/AI, gjenoppretting og teknisk overlevering. Endelig skjermarbeid
+følger valgt design; uavhengig funksjonsarbeid kan gjennomføres først.
+
+## ORDBOKA ER LÅST: AVVIKENE MOT PRECISION ER AVGJORT (Anders 30.09.2026, bindende)
+
+Svar på punkt 3 i §APPENS ORDBOK VINNER: alle avvik mellom masteren `docs/treningsplanlegging.md`
+og Precisions `guidelines/ordmaster.md` er lagt fram og avgjort. Masteren er rettet i samme PR.
+
+- **Stats** er fanen i PlayerHQ; i løpende tekst skrives «statistikk».
+- **Målsetning** er det spilleren sikter mot. «Mål» brukes bare om måltall (TrackMan-mål, rep-mål, resultatkrav).
+- **Venter på coach** er plan-status (bekrefter 26.09).
+- **Nivåene heter Gratis og Full** på skjerm. Pro, Premium og Plus brukes ikke; «Pro» forveksles
+  med coaching-pakken Performance Pro. TALENT / FULL / INGEN er interne tilgangsutfall.
+- **Aksene:** FYS Fysisk · TEK Teknisk · SLAG Golfslag · SPILL Spill · TURN Turnering. Banespill er
+  bare treningsområdet.
+- **Nytt i masteren:** menyene (§2.6), kategorier A–K, SG-kategorier og dagsform (§2.7), fem
+  standardplaner (§2.8), turneringstyper (§10).
+- **Kondisjon** angis med pulssone S1–S5. **Styrke** skrives «4 × 6 @ 90 kg · RIR 2».
+- **Teknisk fokus:** fortsatt ett per øvelse; en økt kan ha flere øvelser valgt fra spillerens
+  tekniske plan. TrackMan-parametere foreslås ut fra valgt fokus.
+- **Fysisk program** legger økter i planen; hver økt kan endres.
+
+**Overstyrer:** «Gratis / Pro» i masteren §2.5, «Stats → Statistikk» og «Goal → Mål» i masteren §3.
+
+**Arbeidet dette utløser:**
+
+1. **Precision (`7d7c2994`):** hele prosjektet rettes etter masteren; `guidelines/ordmaster.md` og
+   `assets/ak-vocabulary.js` blir avledede speil. Ferdig når et søk etter de forbudte ordene i
+   masteren §3 gir 0 treff i skjermtekst, og ingen fil kaller ordmasteren autoritativ.
+2. **Koden:** skjermtekst som viser nivånavn bruker Gratis / Full. Ferdig når ingen brukervendt
+   tekst viser «Pro», «TALENT» eller «FULL» som nivå.
+3. **TrackMan-forslag per fokus:** tabell legges fram for Anders før den bygges.
+4. **Fysisk program:** datamodell og flyt planlegges når fysisk trening bygges.
+
 ## APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER (Anders 29.09.2026, bindende)
 
 Anders: «docs/ordbok.md vinner». Svar på det uavklarte punktet i §PRECISION ATHLETICS om to ordlister.

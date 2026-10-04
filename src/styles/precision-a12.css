@@ -1,0 +1,39 @@
+/* PH-12 Velg treningsplan (Precision Athletics). Navnet a12 følger mønsteret som
+   tests/visual/precision/maal.mjs laster (precision-a<tall>.css). */
+.pa-root .ph12-steg { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.pa-root .ph12-steg li { min-width: 0; }
+.pa-root .ph12-steg button { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; width: 100%; min-height: 44px; cursor: pointer; }
+.pa-root .ph12-steg button:disabled { cursor: default; }
+.pa-root .ph12-steg button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.pa-root .ph12-steg__strek { height: 4px; background: var(--surface-sunken); }
+.pa-root .ph12-steg__aktiv .ph12-steg__strek { background: var(--primary); }
+.pa-root .ph12-steg__rad { display: flex; gap: 6px; align-items: baseline; min-width: 0; }
+.pa-root .ph12-steg__nr { font: 600 12px/1 var(--font-mono); color: var(--text-muted); }
+.pa-root .ph12-steg__aktiv .ph12-steg__nr { color: var(--text-primary); }
+.pa-root .ph12-steg__navn { font: 500 13px/1.2 var(--font-sans); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pa-root .ph12-steg__na .ph12-steg__navn { color: var(--text-primary); }
+@media (max-width: 640px) { .pa-root .ph12-steg li:not(.ph12-steg__na) .ph12-steg__navn { display: none; } }
+.pa-root .ph12-kolonner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+@media (min-width: 1025px) { .pa-root .ph12-kolonner { grid-template-columns: minmax(0, 1fr) 320px; } .pa-root .ph12-side { position: sticky; top: 24px; } }
+.pa-root .ph12-stabel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.pa-root .ph12-kort { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.pa-root .ph12-maler { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+.pa-root .ph12-mal { text-align: left; padding: 14px; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--surface-card); display: flex; flex-direction: column; gap: 6px; cursor: pointer; min-height: 88px; min-width: 0; font: inherit; color: inherit; }
+.pa-root .ph12-mal[aria-checked="true"] { border-color: var(--border-ink); box-shadow: inset 0 0 0 1px var(--border-ink); }
+.pa-root .ph12-mal:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.pa-root .ph12-mal__navn { font: 600 15px/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.pa-root .ph12-mal__sub { overflow-wrap: anywhere; }
+.pa-root .ph12-setning { padding: 12px; border-radius: 8px; background: var(--surface-sunken); }
+.pa-root .ph12-bar { display: flex; height: 12px; gap: 2px; }
+.pa-root .ph12-hode { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.pa-root .ph12-hode--rad { align-items: flex-start; justify-content: flex-start; gap: 12px; }
+.pa-root .ph12-nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; }
+.pa-root .ph12-to { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px; }
+.pa-root .ph12-akser { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 12px; }
+.pa-root .ph12-akse { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.pa-root .ph12-akse__hode { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pa-root .ph12-liste { display: flex; gap: 12px; flex-wrap: wrap; }
+.pa-root .ph12-liste > span { display: flex; gap: 6px; align-items: center; }
+/* Brødsmulen skal ha treffmål som resten av flaten (tegningens Breadcrumb har ingen). */
+.pa-root .ph12-krum a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+@media (min-width: 1025px) { .pa-root .ph12-krum a { min-height: 32px; min-width: 32px; } }

@@ -1,5 +1,7 @@
 "use server";
 
+import { eksporterWorkbenchData } from "@/lib/workbench/workbench-personvern";
+
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
@@ -9,6 +11,7 @@ import { emailLayout } from "@/lib/email/templates/shared";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
+import { SamlingsprogramSchema } from "@/lib/workbench/samlingsinvitasjon-kontrakt";
 
 const LagreFasilitetProfilSchema = z.object({
   fasiliteter: z.array(z.string().min(1)).max(20, "For mange fasiliteter"),
@@ -17,6 +20,11 @@ const LagreFasilitetProfilSchema = z.object({
 const DeleteUserAccountSchema = z.object({
   confirmation: z.literal("SLETT", { error: 'Du må skrive "SLETT" for å bekrefte.' }),
 });
+const TrenerforfattetForslagSchema = z.object({
+  organisasjon: z.enum(["WANG", "TEAM_NORWAY"]),
+  handling: z.enum(["ADD", "UPDATE", "CANCEL"]),
+  begrunnelse: z.string().max(1000),
+}).passthrough();
 
 const GYLDIGE_FASILITETER: DrillFasilitet[] = [
   "RADAR",
@@ -70,7 +78,7 @@ const SUPPORT_EPOST = "support@akgolf.no";
 
 /**
  * GDPR data-eksport (P20).
- * Genererer JSON-fil med all bruker-data og sender via e-post.
+ * Genererer JSON med støttede datakilder og sender en e-postbekreftelse.
  * Returnerer JSON-blob til klient som kan trigge nedlasting.
  */
 export async function exportUserData(): Promise<{
@@ -83,7 +91,7 @@ export async function exportUserData(): Promise<{
   assertNotAwaitingConsent(user);
 
   try {
-    // Samle all bruker-data fra Prisma
+    // Les alle støttede datakilder. Lesefeil skal avvise eksporten, ikke bli tomme lister.
     const fullUser = await prisma.user.findUnique({
       where: { id: user.id },
       include: {
@@ -93,13 +101,18 @@ export async function exportUserData(): Promise<{
       },
     });
 
+    if (!fullUser) throw new Error("Brukerprofilen finnes ikke lenger");
+
     const [
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,
       testResults,
+      testSessions,
+      testSessionPhotos,
       trackmanSessions,
       payments,
       notifications,
@@ -117,30 +130,102 @@ export async function exportUserData(): Promise<{
       swingVideos,
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
+      iupBesvarelser,
+      weekPlans,
+      trenerDelingsInvitasjoner,
+      workbench,
+      trenerforslag,
+      trenerforslagSkrevet,
+      samlingsinvitasjoner,
+      samlingsinvitasjonerSkrevet,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
-      prisma.round.findMany({ where: { userId: user.id } }),
+      prisma.round.findMany({
+        where: { userId: user.id },
+        include: { holeScores: true, shots: { include: { puttDetail: true, sgResults: true } } },
+      }),
+      prisma.roundDraft.findMany({ where: { userId: user.id } }),
       prisma.tournamentEntry.findMany({ where: { userId: user.id }, include: { tournament: true } }),
       prisma.seasonPlan.findMany({ where: { userId: user.id }, include: { periodBlocks: true } }),
       prisma.trainingSessionV2.findMany({ where: { studentId: user.id } }),
       prisma.testResult.findMany({ where: { userId: user.id } }),
+      prisma.testSession.findMany({ where: { userId: user.id, testId: { startsWith: "tn-v3-" } } }),
+      prisma.testSessionPhoto.findMany({ where: { userId: user.id }, select: { id: true, testSessionId: true, attemptNumber: true, storagePath: true, createdAt: true } }),
       prisma.trackManSession.findMany({ where: { userId: user.id } }),
       prisma.payment.findMany({ where: { userId: user.id } }),
       prisma.notification.findMany({ where: { userId: user.id } }),
-      prisma.healthEntry.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.equipmentBag.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.caddieMessage.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.healthEntry.findMany({ where: { userId: user.id } }),
+      prisma.equipmentBag.findMany({ where: { userId: user.id } }),
+      prisma.caddieMessage.findMany({ where: { userId: user.id } }),
       // Coach-notater OM brukeren — deres personopplysning, omfattes av innsyn.
-      prisma.coachNote.findMany({ where: { playerId: user.id } }).catch(() => []),
-      prisma.coachingSession.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.sessionRecording.findMany({ where: { playerId: user.id } }).catch(() => []),
-      prisma.leave.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.talentTracking.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.document.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.trainingLog.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.playerSwingVideo.findMany({ where: { userId: user.id } }).catch(() => []),
-      prisma.delingsSamtykke.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.coachNote.findMany({ where: { playerId: user.id } }),
+      prisma.coachingSession.findMany({ where: { userId: user.id } }),
+      prisma.sessionRecording.findMany({ where: { playerId: user.id } }),
+      prisma.leave.findMany({ where: { userId: user.id } }),
+      prisma.talentTracking.findMany({ where: { userId: user.id } }),
+      prisma.document.findMany({ where: { userId: user.id } }),
+      prisma.trainingLog.findMany({ where: { userId: user.id } }),
+      prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
+      prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
+      prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
+      // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
+      prisma.weekPlan.findMany({ where: { playerId: user.id } }),
+      prisma.trenerDelingsInvitasjon.findMany({
+        where: { OR: [{ userId: user.id }, { gittAvUserId: user.id }, { acceptedByUserId: user.id }, { mottakerEpost: user.email.trim().toLowerCase() }] },
+        // Token-hash er en sikkerhetsmekanisme, aldri eksportinnhold.
+        select: { id: true, userId: true, mottakerGruppeId: true, mottakerEpost: true, tekstVersjon: true,
+          gittAvUserId: true, gittAvRolle: true, createdAt: true, expiresAt: true, acceptedAt: true, acceptedByUserId: true, revokedAt: true },
+      }),
+      eksporterWorkbenchData(user.id),
+      prisma.planAction.findMany({
+        where: { userId: user.id, actionType: "WORKBENCH_COACH_PROPOSAL" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, actionType: true, suggestion: true, status: true, agentName: true, createdAt: true, decidedAt: true, decidedById: true },
+      }),
+      prisma.planAction.findMany({
+        where: { coachId: user.id, actionType: "WORKBENCH_COACH_PROPOSAL" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true },
+      }),
+      prisma.planAction.findMany({
+        where: { userId: user.id, actionType: "WORKBENCH_GATHERING_INVITE" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true, decidedAt: true },
+      }),
+      prisma.planAction.findMany({
+        where: { coachId: user.id, actionType: "WORKBENCH_GATHERING_INVITE" },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, suggestion: true, status: true, createdAt: true },
+      }),
     ]);
+
+    // En trener får sine egne begrunnelser, ikke øktdata fra andre spillerprofiler.
+    const trenerforslagSkrevetEksport = trenerforslagSkrevet.flatMap((rad) => {
+      const forslag = TrenerforfattetForslagSchema.safeParse(rad.suggestion);
+      return forslag.success ? [{
+        id: rad.id,
+        organisasjon: forslag.data.organisasjon,
+        handling: forslag.data.handling,
+        begrunnelse: forslag.data.begrunnelse,
+        status: rad.status,
+        opprettet: rad.createdAt.toISOString(),
+      }] : [];
+    });
+
+    const samlingsinvitasjonerEksport = samlingsinvitasjoner.flatMap((rad) => {
+      const program = SamlingsprogramSchema.safeParse(rad.suggestion);
+      return program.success ? [{
+        id: rad.id, program: program.data, status: rad.status,
+        opprettet: rad.createdAt.toISOString(), avgjort: rad.decidedAt?.toISOString() ?? null,
+      }] : [];
+    });
+    // Trenerens eksport inneholder egne publiserte programmer, ikke mottaker-ID-er.
+    const samlingsinvitasjonerSkrevetEksport = samlingsinvitasjonerSkrevet.flatMap((rad) => {
+      const program = SamlingsprogramSchema.safeParse(rad.suggestion);
+      return program.success ? [{
+        id: rad.id, program: program.data, status: rad.status, opprettet: rad.createdAt.toISOString(),
+      }] : [];
+    });
 
     // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
     // ikke bakes inn i JSON-en. Vi lister referansene så bruker vet hva som
@@ -155,6 +240,7 @@ export async function exportUserData(): Promise<{
         url: v.storagePath ?? v.videoUrl,
         id: v.id,
       })),
+      ...testSessionPhotos.map((photo) => ({ type: "testbilde", path: photo.storagePath, id: photo.id, testSessionId: photo.testSessionId, attemptNumber: photo.attemptNumber })),
     ];
 
     const exportPayload = {
@@ -162,10 +248,13 @@ export async function exportUserData(): Promise<{
       user: fullUser,
       goals,
       rounds,
+      roundDrafts,
       tournamentEntries,
       seasonPlans,
       trainingSessions,
       testResults,
+      testSessions,
+      testSessionPhotos,
       trackmanSessions,
       payments,
       notifications,
@@ -181,15 +270,23 @@ export async function exportUserData(): Promise<{
       trainingLogs,
       swingVideos,
       delingsSamtykker,
+      iupBesvarelser,
+      weekPlans,
+      trenerDelingsInvitasjoner,
+      workbench,
+      trenerforslag,
+      trenerforslagSkrevet: trenerforslagSkrevetEksport,
+      samlingsinvitasjoner: samlingsinvitasjonerEksport,
+      samlingsinvitasjonerSkrevet: samlingsinvitasjonerSkrevetEksport,
       _storageFiler: storageFiler,
       _note:
-        "Dette er en komplett eksport av dine personlige data fra AK Golf HQ per dato. " +
+        "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +
         "Iht. GDPR artikkel 15 (rett til innsyn) og art. 20 (dataportabilitet). " +
         "Lagrede filer (opptak, videoer, dokumenter) er listet under _storageFiler — " +
         "be om utlevering av selve filene på post@akgolf.no. Spørsmål: post@akgolf.no",
     };
 
-    // E-post-bekreftelse + kopi til support
+    // E-postbekreftelse etter vellykket innhenting. Ingen datakopi sendes til support.
     try {
       const klient = resendKlient();
       if (user.email) {
@@ -198,11 +295,11 @@ export async function exportUserData(): Promise<{
           to: user.email,
           subject: "Dine data er eksportert — AK Golf",
           html: emailLayout({
-            preheader: "Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.",
+            preheader: "Du har bedt om en eksport av dine data fra AK Golf HQ.",
             heading: `Hei ${user.name ?? "der"},`,
             body: `
-              <p style="margin:0 0 16px 0;">Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.</p>
-              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
+              <p style="margin:0 0 16px 0;">Du har bedt om en eksport av dine data fra AK Golf HQ.</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, ukeplaner, personlige kalenderhendelser, turneringsplaner, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
               <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
               <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
             `,
@@ -222,7 +319,7 @@ export async function exportUserData(): Promise<{
       actorId: user.id,
       action: "gdpr.data_exported",
       target: user.id,
-      metadata: { email: user.email, recordCount: Object.keys(exportPayload).length },
+      metadata: { recordCount: Object.keys(exportPayload).length },
     });
 
     return { ok: true, data: exportPayload };

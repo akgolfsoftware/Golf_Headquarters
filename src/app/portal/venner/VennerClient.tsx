@@ -4,6 +4,16 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  Search,
+  UserPlus,
+  ChevronRight,
+  Eye,
+  BarChart2,
+  Check,
+  X,
+  Clock,
+} from "lucide-react";
+import {
   sokSpillere,
   sendVenneforesporsel,
   svarPaVenneforesporsel,
@@ -12,9 +22,14 @@ import {
   type VennRad,
   type SokResultat,
 } from "@/lib/venner/actions";
-import { TL } from "@/lib/v2/train-lock";
 
-import { Caps, TomTilstand, Icon, AvatarInit, StatusPill, Kort, Rad } from "@/components/v2";
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return (name.slice(0, 2) || "AK").toUpperCase();
+}
 
 function vennSub(v: { hcp: number | null; kategori: string | null }): string {
   const deler: string[] = [];
@@ -53,21 +68,9 @@ function SokLeggTil() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <form onSubmit={utforSok} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <div
-          style={{
-            flex: 1,
-            height: 44,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            borderRadius: 9999,
-            border: `1px solid ${TL.hair}`,
-            background: TL.elev,
-            padding: "0 14px",
-          }}
-        >
-          <Icon name="search" size={15} style={{ color: TL.mute, flex: "none" }} />
+      <form onSubmit={utforSok} className="ph24v-sok-form">
+        <div className="ph24v-sok-input-wrap">
+          <Search size={16} style={{ color: "var(--text-muted)", flex: "none" }} />
           <input
             value={q}
             onChange={(e) => {
@@ -75,104 +78,47 @@ function SokLeggTil() {
               setSokt(false);
             }}
             placeholder="Søk navn…"
-            style={{
-              minWidth: 0,
-              flex: 1,
-              border: "none",
-              outline: "none",
-              background: "transparent",
-              fontFamily: TL.font.sans,
-              fontSize: 13.5,
-              color: TL.text,
-            }}
+            className="ph24v-sok-input"
+            aria-label="Søk spillere etter navn"
           />
         </div>
         <button
           type="submit"
           disabled={q.trim().length < 2 || pending}
-          style={{
-            height: 44,
-            flex: "none",
-            border: "none",
-            borderRadius: 9999,
-            background: TL.fill,
-            color: TL.onFill,
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            fontWeight: 600,
-            padding: "0 18px",
-            cursor: q.trim().length < 2 || pending ? "not-allowed" : "pointer",
-            opacity: q.trim().length < 2 || pending ? 0.4 : 1,
-          }}
+          className="pa-btn pa-btn--primary"
+          style={{ flex: "none", height: 44, padding: "0 18px" }}
         >
-          Søk
+          {pending ? "Søker…" : "Søk"}
         </button>
       </form>
 
       {sokt && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
           {treff.length === 0 ? (
-            <p style={{ margin: 0, padding: "0 4px", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
-              Ingen spillere funnet.
+            <p style={{ margin: 0, padding: "4px", font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+              Ingen spillere funnet med navnet «{q}».
             </p>
           ) : (
             treff.map((t) => (
-              <div
-                key={t.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  borderRadius: TL.radius.row,
-                  border: `1px solid ${TL.hair}`,
-                  background: TL.elev,
-                  padding: 12,
-                }}
-              >
-                <AvatarInit navn={t.name} size={36} />
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div
-                    style={{
-                      fontFamily: TL.font.sans,
-                      fontSize: 13.5,
-                      fontWeight: 600,
-                      color: TL.text,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {t.name}
-                  </div>
-                  <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
-                    {vennSub(t) || "—"}
-                  </div>
+              <div key={t.id} className="ph24v-rad">
+                <div className="ph24v-avatar">{getInitials(t.name)}</div>
+                <div className="ph24v-info">
+                  <div className="ph24v-navn">{t.name}</div>
+                  <div className="ph24v-sub">{vennSub(t) || "—"}</div>
                 </div>
                 {sendtTil.has(t.id) ? (
-                  <span style={{ flex: "none", fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>Sendt</span>
+                  <span className="pa-status pa-status--ok" style={{ flex: "none" }}>
+                    <Check size={12} style={{ marginRight: 4 }} /> Sendt
+                  </span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => inviter(t.id)}
                     disabled={pending}
-                    style={{
-                      flex: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      borderRadius: 9999,
-                      border: `1px solid ${TL.hair}`,
-                      background: "transparent",
-                      padding: "6px 12px",
-                      fontFamily: TL.font.sans,
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: TL.text,
-                      cursor: pending ? "not-allowed" : "pointer",
-                      opacity: pending ? 0.4 : 1,
-                    }}
+                    className="pa-btn pa-btn--secondary pa-btn--sm"
+                    style={{ flex: "none" }}
                   >
-                    <Icon name="user-plus" size={12} />
+                    <UserPlus size={14} style={{ marginRight: 4 }} />
                     Inviter
                   </button>
                 )}
@@ -209,81 +155,45 @@ function ForesporselInnRad({
   if (svart) return null;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        borderRadius: TL.radius.row,
-        border: `1px solid ${TL.hair}`,
-        background: TL.dock,
-        padding: 12,
-      }}
-    >
-      <AvatarInit navn={bruker.name} size={36} />
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            fontWeight: 600,
-            color: TL.text,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {bruker.name}
-        </div>
-        <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+    <div className="ph24v-rad" style={{ background: "var(--surface-sunken)" }}>
+      <div className="ph24v-avatar">{getInitials(bruker.name)}</div>
+      <div className="ph24v-info">
+        <div className="ph24v-navn">{bruker.name}</div>
+        <div className="ph24v-sub">
           {vennSub(bruker) ? `${vennSub(bruker)} · ` : ""}vil bli venn
         </div>
       </div>
-      <button
-        type="button"
-        onClick={() => svar("avslaa")}
-        disabled={pending}
-        style={{
-          flex: "none",
-          border: "none",
-          borderRadius: 9999,
-          background: "transparent",
-          padding: "6px 12px",
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          fontWeight: 600,
-          color: TL.mute,
-          cursor: pending ? "not-allowed" : "pointer",
-          opacity: pending ? 0.4 : 1,
-        }}
-      >
-        Avslå
-      </button>
-      <button
-        type="button"
-        onClick={() => svar("godkjenn")}
-        disabled={pending}
-        style={{
-          flex: "none",
-          border: "none",
-          borderRadius: 9999,
-          background: TL.fill,
-          color: TL.onFill,
-          padding: "6px 12px",
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          fontWeight: 600,
-          cursor: pending ? "not-allowed" : "pointer",
-          opacity: pending ? 0.4 : 1,
-        }}
-      >
-        Godkjenn
-      </button>
+      <div style={{ display: "flex", gap: 8, flex: "none" }}>
+        <button
+          type="button"
+          onClick={() => svar("avslaa")}
+          disabled={pending}
+          className="pa-btn pa-btn--ghost pa-btn--sm"
+        >
+          <X size={14} style={{ marginRight: 4 }} />
+          Avslå
+        </button>
+        <button
+          type="button"
+          onClick={() => svar("godkjenn")}
+          disabled={pending}
+          className="pa-btn pa-btn--primary pa-btn--sm"
+        >
+          <Check size={14} style={{ marginRight: 4 }} />
+          Godkjenn
+        </button>
+      </div>
     </div>
   );
 }
 
-function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: VennRad }) {
+function UtgaendeRad({
+  friendshipId,
+  bruker,
+}: {
+  friendshipId: string;
+  bruker: VennRad;
+}) {
   const [pending, startTransition] = useTransition();
   const [trukket, setTrukket] = useState(false);
   const router = useRouter();
@@ -301,26 +211,20 @@ function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: V
   if (trukket) return null;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-      <AvatarInit navn={bruker.name} size={28} />
-      <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{bruker.name}</span>
-      <StatusPill tone="info">Venter</StatusPill>
+    <div className="ph24v-rad">
+      <div className="ph24v-avatar">{getInitials(bruker.name)}</div>
+      <div className="ph24v-info">
+        <div className="ph24v-navn">{bruker.name}</div>
+      </div>
+      <span className="pa-status pa-status--warn" style={{ flex: "none" }}>
+        <Clock size={12} style={{ marginRight: 4 }} /> Venter
+      </span>
       <button
         type="button"
         onClick={trekkTilbake}
         disabled={pending}
-        style={{
-          border: "none",
-          background: "transparent",
-          fontFamily: TL.font.sans,
-          fontSize: 11,
-          fontWeight: 600,
-          color: TL.mute,
-          textDecoration: "underline",
-          textUnderlineOffset: 2,
-          cursor: pending ? "not-allowed" : "pointer",
-          opacity: pending ? 0.4 : 1,
-        }}
+        className="pa-btn pa-btn--ghost pa-btn--sm"
+        style={{ flex: "none" }}
       >
         Trekk tilbake
       </button>
@@ -330,90 +234,79 @@ function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: V
 
 function VennRadKomponent({ v }: { v: VennRad }) {
   return (
-    <Link
-      href={`/portal/venner/${v.id}`}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        borderRadius: TL.radius.row,
-        border: `1px solid ${TL.hair}`,
-        background: TL.elev,
-        padding: 12,
-        textDecoration: "none",
-        color: "inherit",
-      }}
-    >
-      <AvatarInit navn={v.name} size={40} />
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            fontWeight: 600,
-            color: TL.text,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {v.name}
-        </div>
-        <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
+    <Link href={`/portal/venner/${v.id}`} className="ph24v-rad">
+      <div className="ph24v-avatar">{getInitials(v.name)}</div>
+      <div className="ph24v-info">
+        <div className="ph24v-navn">{v.name}</div>
+        <div className="ph24v-sub">
           {vennSub(v) || "Ingen delte økter ennå"}
         </div>
       </div>
-      <Icon name="chevron-right" size={16} style={{ color: TL.mute, flex: "none" }} />
+      <ChevronRight size={18} style={{ color: "var(--text-muted)", flex: "none" }} aria-hidden />
     </Link>
   );
 }
 
-export function VennerClient({ initial, visLeaderboard }: { initial: VennerData; visLeaderboard: boolean }) {
+export function VennerClient({
+  initial,
+  visLeaderboard,
+}: {
+  initial: VennerData;
+  visLeaderboard: boolean;
+}) {
   const { venner, innkommende, utgaende } = initial;
 
   return (
-    <div data-paper-wave-g="venner" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Venner</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-          Søk, forespørsler og liste
-        </span>
-      </div>
-      <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Caps>Legg til venn</Caps>
+    <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%" }}>
+      <section className="ph24v-seksjon">
+        <h2 className="ph24v-seksjon-tittel">Legg til venn</h2>
         <SokLeggTil />
       </section>
 
       {innkommende.length > 0 && (
-        <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <Caps>Venneforespørsler</Caps>
+        <section className="ph24v-seksjon">
+          <h2 className="ph24v-seksjon-tittel">Venneforespørsler ({innkommende.length})</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {innkommende.map((f) => (
-              <ForesporselInnRad key={f.friendshipId} friendshipId={f.friendshipId} bruker={f.bruker} />
+              <ForesporselInnRad
+                key={f.friendshipId}
+                friendshipId={f.friendshipId}
+                bruker={f.bruker}
+              />
             ))}
           </div>
         </section>
       )}
 
       {utgaende.length > 0 && (
-        <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <Caps>Sendt, venter</Caps>
+        <section className="ph24v-seksjon">
+          <h2 className="ph24v-seksjon-tittel">Sendt, venter ({utgaende.length})</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {utgaende.map((f) => (
-              <UtgaendeRad key={f.friendshipId} friendshipId={f.friendshipId} bruker={f.bruker} />
+              <UtgaendeRad
+                key={f.friendshipId}
+                friendshipId={f.friendshipId}
+                bruker={f.bruker}
+              />
             ))}
           </div>
         </section>
       )}
 
-      <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Caps>Dine venner ({venner.length})</Caps>
+      <section className="ph24v-seksjon">
+        <h2 className="ph24v-seksjon-tittel">Dine venner ({venner.length})</h2>
         {venner.length === 0 ? (
-          <TomTilstand
-            icon="user-plus"
-            title="Ingen venner ennå"
-            sub="Søk over for å legge til den første."
-          />
+          <div className="pa-state pa-state--empty">
+            <div className="pa-state__icon">
+              <UserPlus size={22} />
+            </div>
+            <div className="pa-state__text">
+              <div className="pa-state__title">Ingen venner ennå</div>
+              <div className="pa-state__body">
+                Søk etter spillere over for å legge til din første venn.
+              </div>
+            </div>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {venner.map((v) => (
@@ -424,41 +317,27 @@ export function VennerClient({ initial, visLeaderboard }: { initial: VennerData;
       </section>
 
       {visLeaderboard && (
-        <Link href="/portal/mal/leaderboard?tab=venner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-          <Kort hover>
-            <Rad
-              leading={<Icon name="bar-chart" size={16} style={{ color: TL.mute }} />}
-              title="Se ledertavlen"
-              sub="Hvor du ligger blant venner"
-              last
-            />
-          </Kort>
+        <Link
+          href="/portal/mal/leaderboard?tab=venner"
+          className="ph24v-rad"
+          style={{ textDecoration: "none" }}
+        >
+          <div className="ph24v-avatar" style={{ background: "var(--surface-flat)" }}>
+            <BarChart2 size={18} style={{ color: "var(--text-secondary)" }} />
+          </div>
+          <div className="ph24v-info">
+            <div className="ph24v-navn">Se ledertavlen</div>
+            <div className="ph24v-sub">Hvor du ligger blant venner</div>
+          </div>
+          <ChevronRight size={18} style={{ color: "var(--text-muted)", flex: "none" }} aria-hidden />
         </Link>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 8,
-          borderTop: `1px solid ${TL.hair}`,
-          paddingTop: 14,
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          lineHeight: 1.5,
-          color: TL.mute,
-        }}
-      >
-        <Icon name="eye" size={14} style={{ color: TL.fill, marginTop: 2, flex: "none" }} />
+      <div className="ph24v-personvern">
+        <Eye size={16} style={{ color: "var(--text-secondary)", marginTop: 2, flex: "none" }} aria-hidden />
         <span>
-          Venner ser kun AT du har trent — aldri plan, fagkoder eller coach-notater. Skru av i{" "}
-          <Link
-            href="/portal/meg/innstillinger"
-            style={{ fontWeight: 600, color: TL.fill, textDecoration: "none" }}
-          >
-            Meg › Innstillinger › Varsler
-          </Link>
-          .
+          Venner ser kun AT du har trent — aldri plan, fagkoder eller coach-notater. Du kan endre synlighet under{" "}
+          <Link href="/portal/meg/innstillinger">Meg › Innstillinger</Link>.
         </span>
       </div>
     </div>
