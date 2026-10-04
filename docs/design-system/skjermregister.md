@@ -10,13 +10,13 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **529**. Unike rutemønstre i skanningen: 529. Komponentfiler: 868. Ramme- og tilstandsfiler: 249.
+Sidefiler med rute: **530**. Unike rutemønstre i skanningen: 530. Komponentfiler: 870. Ramme- og tilstandsfiler: 249.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
 | Område | Sidefiler |
 |---|---:|
-| agencyos | 165 |
+| agencyos | 166 |
 | delt-innsyn | 11 |
 | forelder | 16 |
 | inngang-og-konto | 19 |
@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 283 |
+| tegnet-skjermtype | 284 |
 | videresending | 163 |
 | teknisk-forklaring | 31 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-283 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 161 rader har et registrert avvik. 134 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+284 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 167 rader har et registrert avvik. 141 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -84,7 +84,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 |---|---|---|
 | `/admin/bookinger` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-06, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/admin/innboks` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-04, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
-| `/admin/profile` | AG-23 | Kodekommentaren sier AG-18. Skjermlisten sier AG-23. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-10, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/auth/forgot-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/auth/reset-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |

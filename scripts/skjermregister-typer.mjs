@@ -58,7 +58,7 @@ export const PRECISION_TYPER = [
   { id: "AG-21", navn: "Oppgaver", natt: false, maVise: "Prosjekter, rutiner, tildelte oppgaver", monster: ["/admin/oppgaver", "/admin/workspace/notion"] },
   { id: "AG-22", navn: "Innsikt og talent", natt: false, maVise: "Radar mot peer-snitt, opptil fire spillere side ved side", monster: ["/admin/innsikt", "/innsyn/talent/radar", "/innsyn/talent/discovery", "/innsyn/talent/sammenligning", "/innsyn/talent/wagr-import"] },
   { id: "AG-23", navn: "Oppsett", natt: false, maVise: "Åtte faner, tilgang, inviter coach, egen profil", monster: ["/admin/oppsett", "/admin/profile", "/admin/team/ekstern", "/admin/team/inviter", "/admin/marketing"] },
-  { id: "AG-24", navn: "Drift (kun admin)", natt: false, maVise: "Logg, feil, sletteforespørsler, hjelp", monster: ["/admin/audit-log", "/admin/feillogg", "/admin/gdpr", "/admin/hjelp"] },
+  { id: "AG-24", navn: "Drift (kun admin)", natt: false, maVise: "Logg, feil, sletteforespørsler, hjelp", monster: ["/admin/drift", "/admin/audit-log", "/admin/feillogg", "/admin/gdpr", "/admin/hjelp"] },
 
   { id: "FO-01", navn: "Forelder i dag", natt: false, maVise: "Dagens økt, neste booking, uke, ACWR-varsel", monster: ["/forelder", "/forelder/ukerapport", "/forelder/varsler"] },
   { id: "FO-02", navn: "Barn", natt: false, maVise: "Koblede barn, utviklingsprofil", monster: ["/forelder/barn", "/forelder/barn/[childId]"] },

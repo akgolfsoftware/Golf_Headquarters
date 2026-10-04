@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "9f92e0ae85a363a4d893525bb0e6d1799474d9e4",
+  "kodeversjon": "83bf59f3ad2812a1c3a97c4290f5c3cf53bec8a2",
   "inventar": {
-    "pageFiles": 529,
-    "uniqueRoutePatterns": 529,
-    "componentFiles": 868,
+    "pageFiles": 530,
+    "uniqueRoutePatterns": 530,
+    "componentFiles": 870,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 165,
+      "agencyos": 166,
       "inngang-og-konto": 19,
       "forelder": 16,
       "lag-og-skole": 51,
@@ -6057,19 +6057,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-24 Drift (kun admin) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-24"
     },
     {
       "screenId": "AG-06",
@@ -6329,6 +6331,51 @@
       "kodekommentar": null
     },
     {
+      "screenId": "AG-24",
+      "rute": "/admin/drift",
+      "kildefil": "src/app/admin/drift/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-26",
+      "komponentmonster": "/admin/drift",
+      "handlinger": "Logg, feil, sletteforespørsler, hjelp",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "AG-24 Drift (kun admin) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "AG-24"
+    },
+    {
       "screenId": "VIDERESENDING",
       "rute": "/admin/drills/[id]/rediger",
       "kildefil": "src/app/admin/drills/[id]/rediger/page.tsx",
@@ -6484,19 +6531,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-24 Drift (kun admin) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-24"
     },
     {
       "screenId": "VIDERESENDING",
@@ -6569,19 +6618,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-24 Drift (kun admin) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-24"
     },
     {
       "screenId": "AG-12",
@@ -7039,19 +7090,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-24 Drift (kun admin) er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-24"
     },
     {
       "screenId": "VIDERESENDING",
@@ -7816,19 +7869,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Oppsett monterer AG23Oppsett i AgencyOSSkall i Precision Athletics. Åtte faner (profil, team og tilgang, invitasjoner, eksterne trenere, varsler, integrasjoner, markedsføring og virksomhet) samlet på én adresse. Målt i Playwright med 55/55 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-23 Oppsett er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-23"
     },
     {
       "screenId": "VIDERESENDING",
@@ -8536,13 +8591,13 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Oppsett monterer AG23Oppsett i AgencyOSSkall i Precision Athletics. Åtte faner (profil, team og tilgang, invitasjoner, eksterne trenere, varsler, integrasjoner, markedsføring og virksomhet) samlet på én adresse. Målt i Playwright med 55/55 tilfeller uten avvik på 390 px og 1440 px.",
       "avvik": [
-        "Kodekommentaren sier AG-18. Skjermlisten sier AG-23. Kommentaren er opphav, ikke en ny godkjenning."
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-23 Oppsett er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -8550,7 +8605,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "AG-18"
+      "kodekommentar": "AG-23"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23315,16 +23370,16 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 529,
-    "medAvvik": 161,
-    "valgtForBygging": 283,
+    "sidefiler": 530,
+    "medAvvik": 167,
+    "valgtForBygging": 284,
     "utenEksaktType": 12,
-    "implementert": 134,
+    "implementert": 141,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 283,
+      "tegnet-skjermtype": 284,
       "videresending": 163,
       "teknisk-forklaring": 31,
       "byggeunderlag": 23
@@ -23358,7 +23413,7 @@
       "AG-01": 2,
       "AG-19": 2,
       "AG-09": 2,
-      "AG-24": 4,
+      "AG-24": 5,
       "UTEN-TEGNET-TYPE": 12,
       "AG-04": 2,
       "AG-12": 1,
