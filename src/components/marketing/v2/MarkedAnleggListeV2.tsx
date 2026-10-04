@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside ANLEGG-LISTE (/anlegg), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * Ekte copy speilet fra (mlegacy)/anlegg/page.tsx. Data (DB-lokasjoner)
  * hentes server-side i page.tsx og sendes inn som prop.
  */

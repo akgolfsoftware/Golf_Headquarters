@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside TURNERINGER-LISTE (/turneringer), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§filterrad + §kat) — retematchet med pk-tokens, tab-rad = filterrad-mønster.
  * Ekte copy + datalogikk speilet fra (mlegacy)/turneringer/page.tsx. Data
  * (DataGolf/NGF-sync via cron) hentes server-side i page.tsx.
