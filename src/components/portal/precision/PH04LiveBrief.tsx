@@ -2,79 +2,47 @@
 
 /**
  * Kilde: ui_kits/playerhq/screens/PH-04.jsx.
- * PH-04 før økta / Live-økt brief — Precision Athletics (nattmodus/fokus).
- * Handlinger og data-od-id beholdes hos kalleren.
+ * PH-04 Live-økt: brief — Precision Athletics (nattmodus/fokus).
  *
- * Ingen hex eller rgba i inline styles (kun var(--...)).
+ * Ingen hex/rgba i inline-styles (kun var(--...)).
+ * Viser øktoversikt, dagens målsetning, øvelsesliste med køller og reps,
+ * samt "Start økt"-aksjon (64px høyde).
  */
 
-import type { ReactNode } from "react";
+import React from "react";
 import Link from "next/link";
-import { X, ListPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { X, Play, ArrowLeft, ListPlus } from "lucide-react";
 import { AkseMerke, Meta, Tall } from "@/components/precision/pa";
+import type { LiveBriefData } from "@/lib/portal-live/ph04-07-data";
 import "@/styles/precision-athletics.css";
 
-export type BriefDrill = {
-  id: string;
-  name: string;
-  meta: string[];
-  notes?: string | null;
-  target?: string | null;
-};
+interface PH04LiveBriefProps {
+  data: LiveBriefData;
+  onStart?: () => void;
+  onCloseHref?: string;
+}
 
-export type SessionBriefProps = {
-  title: string;
-  durationMin: number;
-  scheduledAtISO: string;
-  location?: string | null;
-  context: string;
-  drills: BriefDrill[];
-  sections: { label: string; text: string }[];
-  action: ReactNode;
-  message?: string | null;
-  provenance?: string | null;
-  odId: string;
-};
+export function PH04LiveBrief({
+  data,
+  onStart,
+  onCloseHref = "/portal/planlegge/workbench",
+}: PH04LiveBriefProps) {
+  const router = useRouter();
+  const empty = !data.drills || data.drills.length === 0;
 
-const clock = new Intl.DateTimeFormat("nb-NO", {
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "Europe/Oslo",
-});
-
-export function SessionBrief({
-  title,
-  durationMin,
-  scheduledAtISO,
-  location,
-  context,
-  drills,
-  sections,
-  action,
-  message,
-  provenance,
-  odId,
-}: SessionBriefProps) {
-  const start = new Date(scheduledAtISO);
-  const validDate = Number.isFinite(start.getTime());
-  const end = new Date(start.getTime() + Math.max(0, durationMin) * 60_000);
-  const clockText = validDate
-    ? `${clock.format(start)}${durationMin > 0 ? `–${clock.format(end)}` : ""}`
-    : "14:30";
-
-  const goalSection = sections.find(
-    (s) => s.label.toLowerCase().includes("mål") || s.label.toLowerCase().includes("om"),
-  );
-  const focusSection = sections.find((s) => s.label.toLowerCase().includes("fokus"));
-
-  const goalText = goalSection?.text || "Stabil ballbane og god kontakt.";
-  const focusText = focusSection?.text || "Senterballtreff og jevn svingbane.";
+  const handleStart = () => {
+    if (onStart) {
+      onStart();
+    } else {
+      router.push(`/portal/live/${data.sessionId}/active`);
+    }
+  };
 
   return (
     <div
       className="pa-root ph04"
       data-theme="night"
-      data-od-id={odId}
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",
@@ -98,7 +66,7 @@ export function SessionBrief({
         }}
       >
         <Link
-          href="/portal/planlegge"
+          href={onCloseHref}
           aria-label="Lukk brief"
           style={{
             width: 56,
@@ -121,12 +89,12 @@ export function SessionBrief({
             Live-økt · brief
           </div>
           <Meta style={{ color: "var(--text-muted)" }}>
-            {clockText} · {(location || "RANGE 3").toUpperCase()}
+            {data.scheduledTime} · {data.location.toUpperCase()}
           </Meta>
         </div>
       </header>
 
-      {/* Hovedinnhold (maks 640px) */}
+      {/* Hovedinnhold med maksbredde 640px */}
       <main
         style={{
           flex: 1,
@@ -148,14 +116,15 @@ export function SessionBrief({
               color: "var(--text-primary)",
             }}
           >
-            {title}
+            {data.title}
           </h1>
           <Meta style={{ display: "block", marginTop: 6 }}>
-            {durationMin} MIN · {drills.length === 0 ? "—" : `${drills.length} ØVELSER`} · MODERAT · MIDDELS
+            {data.totalMinutes} MIN · {empty ? "—" : `${data.drills.length} ØVELSER`} ·{" "}
+            {data.belastning.toUpperCase()} · {data.press.toUpperCase()}
           </Meta>
         </div>
 
-        {drills.length === 0 ? (
+        {empty ? (
           <div
             className="pa-state pa-state--empty"
             style={{
@@ -211,7 +180,7 @@ export function SessionBrief({
                   textWrap: "pretty",
                 }}
               >
-                {goalText}
+                {data.goal}
               </div>
               <div
                 style={{
@@ -235,7 +204,7 @@ export function SessionBrief({
                     color: "var(--text-primary)",
                   }}
                 >
-                  {focusText}
+                  {data.focus}
                 </span>
                 <Meta style={{ marginLeft: "auto" }}>ÉN TEKNISK DIMENSJON</Meta>
               </div>
@@ -251,7 +220,7 @@ export function SessionBrief({
                 borderRadius: 8,
               }}
             >
-              {drills.map((drill, index) => (
+              {data.drills.map((drill, index) => (
                 <div
                   key={drill.id || index}
                   style={{
@@ -276,20 +245,14 @@ export function SessionBrief({
                       {drill.name}
                     </div>
                     <Meta>
-                      {drill.meta.join(" · ") || context}
+                      {drill.club.toUpperCase()}
+                      {drill.param ? ` · ${drill.param}` : ""}
                     </Meta>
-                    {drill.notes && (
-                      <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>
-                        {drill.notes}
-                      </div>
-                    )}
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <Tall style={{ fontSize: 17, fontWeight: 600 }}>
-                      {drill.target || "20"}
-                    </Tall>
+                    <Tall style={{ fontSize: 17, fontWeight: 600 }}>{drill.quantity}</Tall>
                     <Meta style={{ display: "block" }}>
-                      SLAG
+                      {drill.unit.toUpperCase()} · {drill.minutes} MIN
                     </Meta>
                   </div>
                 </div>
@@ -305,22 +268,16 @@ export function SessionBrief({
                 flexWrap: "wrap",
               }}
             >
-              <AkseMerke axis="slag" />
+              <AkseMerke axis={data.axis} />
               <Meta style={{ alignSelf: "center" }}>
-                TRACKMAN KOBLET · BAY 3
+                TRACKMAN KOBLET · {data.trackmanBay || "BAY 3"}
               </Meta>
             </div>
           </>
         )}
-
-        {provenance && (
-          <Meta style={{ fontSize: 12, color: "var(--text-muted)" }}>
-            {provenance}
-          </Meta>
-        )}
       </main>
 
-      {/* Bunnaksjon */}
+      {/* Bunnaksjon: Start økt eller tilbake */}
       <footer
         style={{
           position: "fixed",
@@ -335,13 +292,58 @@ export function SessionBrief({
           zIndex: 30,
         }}
       >
-        <div style={{ width: "100%", maxWidth: 640, display: "flex", flexDirection: "column", gap: 8 }}>
-          {message && (
-            <Meta style={{ textAlign: "center", color: "var(--text-secondary)", fontSize: 13 }}>
-              {message}
-            </Meta>
+        <div style={{ width: "100%", maxWidth: 640 }}>
+          {empty ? (
+            <Link
+              href={onCloseHref}
+              style={{
+                height: 64,
+                width: "100%",
+                borderRadius: 8,
+                border: "1px solid var(--border-hairline)",
+                background: "var(--surface-card)",
+                color: "var(--text-primary)",
+                font: "600 17px/1 var(--font-sans)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                textDecoration: "none",
+              }}
+            >
+              <ArrowLeft size={20} />
+              <span>Tilbake til øktarket</span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled={!data.canStart}
+              onClick={handleStart}
+              style={{
+                height: 64,
+                width: "100%",
+                borderRadius: 8,
+                border: "none",
+                background: data.canStart ? "var(--primary)" : "var(--surface-sunken)",
+                color: data.canStart ? "var(--text-on-primary)" : "var(--text-muted)",
+                font: "600 17px/1 var(--font-sans)",
+                cursor: data.canStart ? "pointer" : "not-allowed",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <Play size={20} fill={data.canStart ? "currentColor" : "none"} />
+              <span>
+                {data.blockReason === "completed"
+                  ? "Økta er fullført"
+                  : data.blockReason === "tier"
+                    ? "Oppgrader for å starte"
+                    : "Start økt"}
+              </span>
+            </button>
           )}
-          {action}
         </div>
       </footer>
     </div>

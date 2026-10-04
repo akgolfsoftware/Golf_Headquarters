@@ -1,43 +1,18 @@
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
+/**
+ * PlayerHQ · Slagteller — PH06Tapper i Precision Athletics (natt).
+ * Kilde: ui_kits/playerhq/screens/PH-06.jsx.
+ * Kølleknapper, +1/+5, angre, TrackMan siste slag og avslutning beholdes.
+ * Visningen er PH06Slagteller.
+ */
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { filterLiveCoachMessages, type LiveCoachPanelData } from "@/components/portal/live/types";
-import "@/styles/precision-athletics.css";
-
-import { TapperShell } from "./tapper-shell";
-
-/**
- * PlayerHQ · Slagteller — PH06Tapper i Precision Athletics (natt).
- * Tegningen ui_kits/playerhq/screens/PH-06.jsx ligger ikke i git.
- * Kølleknapper, +1/+5, angre, lokal kø og avslutning beholdes.
- * Tar også WorkbenchSession-id fra I dag, ikke bare plan-økt.
- *
- * Kølleknappene bygges av spillerens utstyrsbag (EquipmentBag — fritekst per
- * kategori, så knappene er kategoriene som faktisk er fylt ut). Tom bag →
- * standardoppsett. Persistering er uendret: SessionBallLog-aggregater via
- * saveTapperCounts — INGEN Shot-skriving.
- */
-
-// Fallback når utstyrsbagen er tom — samme id-er som historiske
-// session_ball_logs-rader, så gjenopptak fortsatt treffer.
-const DEFAULT_CLUBS = [
-  { id: "driver", name: "Driver" },
-  { id: "iron-7", name: "7-jern" },
-  { id: "wedge", name: "Wedge" },
-  { id: "putter", name: "Putter" },
-];
-
-// EquipmentBag-kategorier → kølleknapper (kun kategorier med innhold).
-const BAG_KATEGORIER = [
-  ["driver", "Driver"],
-  ["fairwayWoods", "Fairway"],
-  ["hybrids", "Hybrid"],
-  ["irons", "Jern"],
-  ["wedges", "Wedge"],
-  ["putter", "Putter"],
-] as const;
+import { loadPH06TapperData } from "@/lib/portal-live/load-ph04-07";
+import { PH06Slagteller } from "@/components/portal/precision/PH06Slagteller";
+import { saveTapperCounts, finishTapperSession } from "./actions";
 
 export default async function LiveTapperPage({
   params,
@@ -57,16 +32,16 @@ export default async function LiveTapperPage({
   });
 
   let playerId: string | null = null;
-  let oktLabel: string | null = null;
 
   if (plan) {
     if (!(await canAccessPlayer(user, plan.plan.userId))) {
       redirect("/portal/planlegge/workbench");
     }
     if (plan.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
-    if (!["ACTIVE", "PAUSED"].includes(plan.status)) redirect(`/portal/live/${sessionId}`);
+    if (!["ACTIVE", "PAUSED", "IN_PROGRESS"].includes(plan.status)) {
+      redirect(`/portal/live/${sessionId}`);
+    }
     playerId = plan.plan.userId;
-    oktLabel = plan.title || plan.plan.name;
   } else {
     const wb = await prisma.workbenchSession.findUnique({
       where: { id: sessionId },
@@ -79,24 +54,23 @@ export default async function LiveTapperPage({
       if (wb.status === "COMPLETED") {
         redirect(`/portal/live/${sessionId}/summary`);
       }
-      const startbar =
-        wb.status === "IN_PROGRESS";
-      if (!startbar) {
-        playerId = null;
-      } else {
-        playerId = wb.playerId;
-        oktLabel = wb.title;
-      }
+      playerId = wb.playerId;
     }
   }
 
-  // Tom tilstand — fasit-copy: slagtelleren hører til en pågående økt.
-  if (!playerId || !oktLabel) {
+  // Tom tilstand hvis ingen økt pågår
+  if (!playerId) {
     return (
       <main
         className="pa-root ph06"
         data-theme="night"
-        style={{ minHeight: "100dvh", background: "var(--surface-page)", display: "grid", placeItems: "center", padding: 16 }}
+        style={{
+          minHeight: "100dvh",
+          background: "var(--surface-page)",
+          display: "grid",
+          placeItems: "center",
+          padding: 16,
+        }}
       >
         <div
           style={{
@@ -104,23 +78,35 @@ export default async function LiveTapperPage({
             width: "100%",
             padding: "24px 16px",
             background: "var(--surface-sunken)",
-            border: `1px dashed var(--border-hairline)`,
-            borderRadius: "var(--radius)",
+            border: "1px dashed var(--border-hairline)",
+            borderRadius: 8,
           }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
+          <h3
+            style={{
+              margin: "0 0 8px",
+              fontFamily: "var(--font-sans)",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "var(--text-primary)",
+            }}
+          >
             Ingen økt pågår
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: "var(--font-sans)", fontSize: 13.5, color: "var(--text-muted)" }}>
+          <p
+            style={{
+              margin: "0 0 12px",
+              fontFamily: "var(--font-sans)",
+              fontSize: 13.5,
+              color: "var(--text-muted)",
+            }}
+          >
             Slagtelleren hører til en pågående økt. Start dagens økt, så teller
             vi derfra.
           </p>
-          {/* Kontrakt §3: tom tilstand — én aksenthandling, én vei videre. */}
           <Link
             href="/portal"
             data-od-id="tapper-tom-start"
-            data-paper-en-ting="true"
-
             style={{
               textDecoration: "none",
               display: "flex",
@@ -128,7 +114,7 @@ export default async function LiveTapperPage({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: "var(--radius)",
+              borderRadius: 8,
               background: "var(--primary)",
               color: "var(--text-on-primary)",
               fontFamily: "var(--font-sans)",
@@ -143,59 +129,32 @@ export default async function LiveTapperPage({
     );
   }
 
-  const thread = await prisma.coachingSession.findUnique({
-    where: { userId_liveSessionId: { userId: user.id, liveSessionId: sessionId } },
-    select: { messages: true },
-  });
-  const fornavn = user.name?.split(" ")[0] ?? "deg";
-  const initialer = user.name
-    ? user.name.split(" ").map((d) => d[0]).slice(0, 2).join("").toUpperCase()
-    : "DU";
-  const coachPanel: LiveCoachPanelData = {
-    sessionId,
-    kind: "plan-session",
-    tier: user.tier === "GRATIS" ? "GRATIS" : "PRO",
-    userId: user.id,
-    fornavn,
-    initialer,
-    initialMessages: filterLiveCoachMessages(thread?.messages),
-  };
+  const data = await loadPH06TapperData(sessionId, playerId);
 
-  // Kølleknapper fra SPILLERENS (øktseierens) utstyrsbag — aldri en
-  // hardkodet liste når bagen finnes.
-  const bag = await prisma.equipmentBag.findUnique({
-    where: { userId: playerId },
-    select: {
-      driver: true,
-      fairwayWoods: true,
-      hybrids: true,
-      irons: true,
-      wedges: true,
-      putter: true,
-    },
-  });
-  const bagClubs = bag
-    ? BAG_KATEGORIER.filter(([key]) => (bag[key] ?? "").trim().length > 0).map(
-        ([key, name]) => ({ id: key, name }),
-      )
-    : [];
-  const clubs = bagClubs.length > 0 ? bagClubs : DEFAULT_CLUBS;
+  async function handleAddShot(club: string, count: number) {
+    "use server";
+    try {
+      await saveTapperCounts(sessionId, [{ club, count }]);
+    } catch {
+      // Ignorer eventuelle nettfeil eller offline
+    }
+  }
 
-  // Gjenopptak: tidligere lagrede tellinger for økten (session_ball_logs).
-  const lagrede = await prisma.sessionBallLog.findMany({
-    where: { planSessionId: sessionId },
-    select: { club: true, count: true, area: true, category: true, repetitionType: true },
-  });
-  const initialCounts = Object.fromEntries(lagrede.map((r) => [r.club, r.count]));
+  async function handleFinish() {
+    "use server";
+    try {
+      await finishTapperSession(sessionId, []);
+    } catch {
+      // Ignorer
+    }
+    redirect(`/portal/live/${sessionId}/summary`);
+  }
 
   return (
-    <TapperShell
-      sessionId={sessionId}
-      oktLabel={oktLabel}
-      clubs={clubs}
-      coachPanel={coachPanel}
-      initialCounts={initialCounts}
-      initialLogs={lagrede}
+    <PH06Slagteller
+      data={data}
+      onAddShot={handleAddShot}
+      onFinish={handleFinish}
     />
   );
 }

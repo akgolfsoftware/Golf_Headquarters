@@ -1,17 +1,15 @@
 /**
  * PlayerHQ · Live-økt aktiv — PH05Live i Precision Athletics (natt).
- * Tilgang, kø og fullføring beholdes. Visningen er LiveActive.
- *
- * Henter økt + drills og rendrer LiveActive som styrer timer,
- * rep-logging og drill-fremdrift.
+ * Kilde: ui_kits/playerhq/screens/PH-05.jsx.
+ * Tilgang, stoppeklokke, øvelsesprogresjon, reps-logging og fullføring beholdes.
+ * Visningen er PH05LiveAktiv.
  */
 
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
-import { LiveActive } from "@/components/portal/live";
-import { filterLiveCoachMessages, type LiveCoachPanelData } from "@/components/portal/live/types";
+import { loadPH05ActiveData } from "@/lib/portal-live/load-ph04-07";
+import { PH05LiveAktiv } from "@/components/portal/precision/PH05LiveAktiv";
 
 export default async function LiveActivePage({
   params,
@@ -26,40 +24,31 @@ export default async function LiveActivePage({
     redirect("/portal/meg/abonnement");
   }
 
-  const result = await loadLiveSession(sessionId);
-  if (!result.ok) {
-    if (result.reason === "notfound") notFound();
-    redirect("/portal/planlegge");
-  }
-
-  // Terminal-statuser: coach kan fortsatt se; spiller sendes videre.
-  if (result.data.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
-  if (result.data.status === "CANCELLED" || result.data.status === "SKIPPED") {
-    redirect("/portal/planlegge");
-  }
-
-  // Coach ser read-only aktiv skjerm; for MVP sender vi likevel til brief.
+  // Coach ser les-modus eller sendes til brief
   if (isCoach) {
     redirect(`/portal/live/${sessionId}/brief`);
   }
 
-  const thread = await prisma.coachingSession.findUnique({
-    where: { userId_liveSessionId: { userId: user.id, liveSessionId: sessionId } },
-    select: { messages: true },
-  });
-  const fornavn = user.name?.split(" ")[0] ?? "deg";
-  const initialer = user.name
-    ? user.name.split(" ").map((d) => d[0]).slice(0, 2).join("").toUpperCase()
-    : "DU";
-  const coachPanel: LiveCoachPanelData = {
-    sessionId,
-    kind: "session-v2",
-    tier: user.tier === "GRATIS" ? "GRATIS" : "PRO",
-    userId: user.id,
-    fornavn,
-    initialer,
-    initialMessages: filterLiveCoachMessages(thread?.messages),
-  };
+  const [v2, planSession, wbRow] = await Promise.all([
+    prisma.trainingSessionV2.findUnique({
+      where: { id: sessionId },
+      select: { id: true, status: true },
+    }),
+    prisma.trainingPlanSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, status: true },
+    }),
+    prisma.workbenchSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, status: true },
+    }),
+  ]);
 
-  return <LiveActive key={result.data.sessionId} data={result.data} coachPanel={coachPanel} />;
+  if (v2?.status === "COMPLETED" || planSession?.status === "COMPLETED" || wbRow?.status === "COMPLETED") {
+    redirect(`/portal/live/${sessionId}/summary`);
+  }
+
+  const data = await loadPH05ActiveData(sessionId, user.id);
+
+  return <PH05LiveAktiv key={sessionId} data={data} />;
 }

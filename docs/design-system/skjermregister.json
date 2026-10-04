@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "f1f8599002b2f0ec3cfa4762e1fdf63c27334718",
+  "kodeversjon": "a61f32f1a843a000643c53cd376bc9415ca2ac12",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 853,
+    "componentFiles": 857,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -13243,7 +13243,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Aktiv-siden merker PH05Live og monterer LiveActive i Precision-natt. Timer, reps, pause, notater, offline og fullføring er beholdt. Caddie-panelet er fortsatt v2. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-05.jsx ligger ikke i git.",
+      "kontrollbevis": "Aktiv-siden merker PH05Live og monterer PH05LiveAktiv i Precision Athletics (nattmodus). Stoppeklokke, øvelsesgrid, aktivt kort, Angre, +5 og +1 knapper etter Claude Design PH-05.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -13253,7 +13253,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-05"
     },
     {
       "screenId": "PH-04",
@@ -13288,7 +13288,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Brief-siden merker PH04Brief og monterer SessionBrief. Start, blokkering og data-od-id er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-04.jsx ligger ikke i git.",
+      "kontrollbevis": "Brief-siden merker PH04Brief og monterer PH04LiveBrief i Precision Athletics (nattmodus). Dagens målsetning, fokus, øvelser med køller og reps, og Start økt-knapp etter Claude Design PH-04.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -13298,7 +13298,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-04"
     },
     {
       "screenId": "VIDERESENDING",
@@ -13417,7 +13417,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Oppsummeringssiden merker PH07Summary og monterer SessionSummary i Precision-natt. Tall, pyramide, notater, vurdering og lagring er beholdt. Plan-feiring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.",
+      "kontrollbevis": "Oppsummeringssiden merker PH07Summary og monterer PH07Oktoppsummering i Precision Athletics (nattmodus). Slag/tid/øvelser/dagsform, pyramidefordeling, tabell per øvelse, notat til coach og deling etter Claude Design PH-07.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -13427,7 +13427,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-07"
     },
     {
       "screenId": "PH-06",
@@ -13462,7 +13462,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Slagteller-siden merker PH06Tapper. Kølleknapper, +1/+5, angre, lokal kø og avslutning er beholdt i Precision-natt. Caddie-panelet er fortsatt v2. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-06.jsx ligger ikke i git.",
+      "kontrollbevis": "Slagteller-siden merker PH06Tapper og monterer PH06Slagteller i Precision Athletics (nattmodus). Kjempeteller, 14 køller fra bagen, TrackMan siste slag (6 metrikker), Angre, +5 og +1 slag etter Claude Design PH-06.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
