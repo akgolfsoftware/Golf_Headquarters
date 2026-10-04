@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside TURNERING-DETALJ (/turneringer/[slug]), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§detalj/§fakta) — retematchet med pk-tokens; KPI-strip og leaderboard er
  * egne mønstre (stats-tabell), ikke i katalog-malen, men følger samme
  * fargespråk/typografi. Ekte copy + datalogikk speilet fra
