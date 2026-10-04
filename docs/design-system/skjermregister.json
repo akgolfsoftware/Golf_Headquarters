@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "d2939e1333ae483c4330eeb729d325a8762f3c90",
+  "kodeversjon": "cb7974dfef22766c7f42ea622c2dab499ce2c98a",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 864,
+    "componentFiles": 865,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -8574,19 +8574,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "VIDERESENDING",
@@ -10312,19 +10314,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "VIDERESENDING",
@@ -10526,19 +10530,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "AG-11",
@@ -23259,10 +23265,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 154,
+    "medAvvik": 157,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 127,
+    "implementert": 130,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
