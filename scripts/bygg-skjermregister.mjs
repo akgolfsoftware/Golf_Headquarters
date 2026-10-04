@@ -293,6 +293,7 @@ const PRECISION_VISNING = [
   ["AG21Oppgaver", "Oppgaver og rutiner monterer AG21Oppgaver i AgencyOSSkall i Precision Athletics. Mine oppgaver med avkryssing, prosjekter med fremdrift, faste rutiner og toveis Notion-synk samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px."],
   ["AG22InnsiktTalent", "Innsikt og talent monterer AG22InnsiktTalent i AgencyOSSkall i Precision Athletics. Talentradar mot peer-snitt, opptil 4 spillere side om side, discovery og WAGR-import samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px."],
   ["AG23Oppsett", "Oppsett monterer AG23Oppsett i AgencyOSSkall i Precision Athletics. Åtte faner (profil, team og tilgang, invitasjoner, eksterne trenere, varsler, integrasjoner, markedsføring og virksomhet) samlet på én adresse. Målt i Playwright med 55/55 tilfeller uten avvik på 390 px og 1440 px."],
+  ["AG24Drift", "Drift monterer AG24Drift i AgencyOSSkall i Precision Athletics. Fire faner (sletteforespørsler etter GDPR art. 17, revisjonslogg for siste 7 dager, feillogg og hjelp) samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px."],
 ];
 
 function merkVisning(row, source) {
