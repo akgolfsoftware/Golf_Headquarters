@@ -268,6 +268,13 @@ const PRECISION_VISNING = [
   ["PH18Runder", "Runder og statistikk merker PH18Runder i PlayerHQSkall. Runder, statistikk, hull og sesonger er beholdt med brutto score og ærlig par-beregning."],
   ["PH20Gameplan", "Gameplan og banekart merker PH20Gameplan i PlayerHQSkall. Banevelger, hull-for-hull oversikt, banekart og risikoanalyse er beholdt."],
   ["PH21Innboks", "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt."],
+  ["PH19Leaderboard", "Leaderboard merker PH19Leaderboard i PlayerHQSkall. Rangering, SG-områder og egen plassering er beholdt."],
+  ["PH19Utviklingsplan", "Utviklingsplan merker PH19Utviklingsplan i PlayerHQSkall. Posisjoner P1–P10, læringstrinn og coach-forslag er beholdt."],
+  ["PHTP01TekniskPlan", "Teknisk plan merker PHTP01TekniskPlan i PlayerHQSkall. Posisjonslinje, oppgaver, felles fremdrift og repetisjonslogg er beholdt."],
+  ["PH19TalentMittNiva", "Mitt nivå merker PH19TalentMittNiva i PlayerHQSkall. Nivå og testresultater er beholdt."],
+  ["PH19TalentMinPlan", "Min plan merker PH19TalentMinPlan i PlayerHQSkall. Milepæler og treningsmål er beholdt."],
+  ["PH19TalentRoadmap", "Roadmap merker PH19TalentRoadmap i PlayerHQSkall. Sesongplan og periodeblokker er beholdt."],
+  ["PH19TalentSammenligning", "Sammenligning merker PH19TalentSammenligning i PlayerHQSkall. Coach-forvaltet sammenligning er beholdt."],
 ];
 
 function merkVisning(row, source) {
