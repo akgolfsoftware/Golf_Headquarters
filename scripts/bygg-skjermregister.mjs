@@ -278,6 +278,7 @@ const PRECISION_VISNING = [
   ["PH19TalentSammenligning", "Sammenligning merker PH19TalentSammenligning i PlayerHQSkall. Coach-forvaltet sammenligning er beholdt."],
   ["PH16Stats", "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats."],
   ["PH16bSkillMap", "Skill Map merker PH16bSkillMap i PlayerHQSkall. Skjematisk hullskisse med SG-ruter og fokusområde etter Claude Design PH-16b-skill-map."],
+  ["PH17TrackMan", "TrackMan og analyse merker PH17TrackMan i PlayerHQSkall. Fire faner (Økter, Gapping, Utstyr, Stasjon) etter Claude Design PH-17."],
 ];
 
 function merkVisning(row, source) {

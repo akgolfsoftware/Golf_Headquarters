@@ -1,56 +1,32 @@
-// PH17DgStasjon — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
- * PlayerHQ DataGolf-stasjon.
- *
- * Fasit: designsystem/train-lock/DG-14 Stasjon.dc.html
- * Avvik:
- *   - Se StasjonTrainLock.tsx — 14 slag, carry-felt, ferdig-tilstand på samme rute.
+ * PH17DgStasjon — Precision Athletics. Data og handlinger er beholdt.
+ * DataGolf stasjonsmodus for 10 slag mot PGA Tour og Kategori C.
+ * Kilde: ui_kits/playerhq/screens/PH-17.jsx (26.09.2026).
  */
+
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { StasjonTrainLock } from "@/components/portal/v2/StasjonTrainLock";
-import { hentStasjonSide } from "@/lib/datagolf/stasjon-data";
+import { PH17TrackMan } from "@/components/portal/precision/PH17TrackMan";
+import { loadPH17TrackMan } from "@/lib/portal-analyse/load-ph17-trackman";
+import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Stasjon · DataGolf · PlayerHQ" };
 
-export default async function DatagolfStasjonPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function DatagolfStasjonPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const sp = await searchParams;
-  const en = (v: string | string[] | undefined) => (typeof v === "string" ? v : null);
-
-  const data = await hentStasjonSide({
-    takParam: en(sp.tak),
-    slagParam: en(sp.slag),
-    carryParam: en(sp.carry),
-    lieParam: en(sp.lie),
-  });
+  const [data, uleste] = await Promise.all([
+    loadPH17TrackMan(user.id, user.name),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <StasjonTrainLock
-        key={
-          data.stasjon
-            ? `${data.stasjon.slag.id}-${data.valgtTak?.dgPlayerId ?? "ingen"}-${data.carryMeter}-${en(sp.lie)}`
-            : "tom"
-        }
-        stasjon={data.stasjon}
-        taker={data.taker.map((t) => ({ dgPlayerId: t.dgPlayerId, name: t.name }))}
-        valgtTakId={data.valgtTak?.dgPlayerId ?? null}
-        carryMeter={data.carryMeter}
-        lie={en(sp.lie) === "rough" ? "rough" : "fairway"}
-        andreSirkler={data.andreSirkler}
-      />
-          </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH17TrackMan data={data} initialFane="stasjon" />
     </PlayerHQSkall>
   );
 }
