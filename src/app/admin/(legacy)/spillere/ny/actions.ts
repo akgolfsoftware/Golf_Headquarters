@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * Server actions for spiller-onboarding wizard (/admin/spillere/ny).
  *
@@ -11,7 +13,6 @@
  * transaksjon, og det skrives en audit-log.
  */
 
-"use server";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
