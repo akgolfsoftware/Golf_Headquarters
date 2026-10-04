@@ -286,7 +286,16 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/admin/turnering").screenId, "AG-17");
   assert.equal(byRoute.get("/admin/turnering").status.implementert, "precision-visning");
   assert.match(byRoute.get("/admin/turnering").kontrollbevis, /AG17Turneringer/);
-  assert.equal(register.tellinger.implementert, 127);
+  assert.equal(byRoute.get("/admin/trackman").screenId, "AG-18");
+  assert.equal(byRoute.get("/admin/trackman").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/admin/trackman").kontrollbevis, /AG18TrackManVideo/);
+  assert.equal(byRoute.get("/admin/videoer").screenId, "AG-18");
+  assert.equal(byRoute.get("/admin/videoer").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/admin/videoer").kontrollbevis, /AG18TrackManVideo/);
+  assert.equal(byRoute.get("/admin/recording").screenId, "AG-18");
+  assert.equal(byRoute.get("/admin/recording").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/admin/recording").kontrollbevis, /AG18TrackManVideo/);
+  assert.equal(register.tellinger.implementert, 130);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

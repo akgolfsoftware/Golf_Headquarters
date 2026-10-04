@@ -288,6 +288,7 @@ const PRECISION_VISNING = [
   ["PH24Utstyr", "Utstyr og bag merker PH24Utstyr i PlayerHQSkall. 14-køllers bagoversikt, gapping-trapp og spesifikasjoner etter Claude Design PH-24."],
   ["AG02Ko", "Kø-siden monterer AG02Ko i AgencyOSSkall i Precision Athletics. Godkjenninger, agentkø, tester, dubletter, moderering og e-post samlet på én adresse. Målt i Playwright med 45/45 tilfeller uten avvik på 390 px og 1440 px."],
   ["AG17Turneringer", "Turneringer-siden monterer AG17Turneringer i AgencyOSSkall i Precision Athletics. Alle turneringer, mine spillere, skjematisk kart over Sør-Norge, dubletter og opprettelse samlet på én adresse. Målt i Playwright med 40/40 tilfeller uten avvik på 390 px og 1440 px."],
+  ["AG18TrackManVideo", "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px."],
 ];
 
 function merkVisning(row, source) {
