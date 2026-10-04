@@ -50,6 +50,8 @@ const ALLOW_FILES = new Set([
 const ALLOW_KATALOGER = [
   "src/components/marketing/ak/",
   "src/components/marketing/ak-sider/",
+  "src/components/wang/",
+  "src/app/team-wang/",
 ];
 
 function* walk(dir, exts = [".tsx", ".ts"]) {
