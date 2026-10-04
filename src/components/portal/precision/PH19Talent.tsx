@@ -129,13 +129,13 @@ export function PH19Talent({
             {klubb && (
               <div>
                 <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>KLUBB</span>
-                <p style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)", margin: "4px 0 0" }}>{klubb}</p>
+                <p style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)", margin: "4px 0 0" }}>{klubb}</p>
               </div>
             )}
             {region && (
               <div>
                 <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>REGION</span>
-                <p style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)", margin: "4px 0 0" }}>{region}</p>
+                <p style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)", margin: "4px 0 0" }}>{region}</p>
               </div>
             )}
           </section>
@@ -149,7 +149,7 @@ export function PH19Talent({
 
             {testNivaaer.length === 0 ? (
               <div className="pa-card" style={{ padding: 24 }}>
-                <p style={{ font: "var(--type-body-m)", color: "var(--text-secondary)", margin: 0 }}>
+                <p style={{ font: "var(--type-body)", color: "var(--text-secondary)", margin: 0 }}>
                   Ingen gjennomførte tester registrert ennå. Tester registreres sammen med coachen i treningsøkter.
                 </p>
               </div>
@@ -171,7 +171,7 @@ export function PH19Talent({
                     >
                       <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
                         <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>{t.omraadeLabel.toUpperCase()}</span>
-                        <strong style={{ font: "var(--type-body-m)", color: "var(--text-primary)" }}>{t.testNavn}</strong>
+                        <strong style={{ font: "var(--type-body)", color: "var(--text-primary)" }}>{t.testNavn}</strong>
                         <small style={{ font: "var(--type-meta)", color: "var(--text-secondary)" }}>Sist testet: {t.sisteDato}</small>
                       </div>
                       <div style={{ textAlign: "right" }}>
@@ -198,7 +198,7 @@ export function PH19Talent({
           <section className="pa-card" style={{ padding: 20 }}>
             <span style={{ font: "var(--type-kicker)", color: "var(--text-muted)" }}>Milepæler i planen</span>
             {milepaeler.length === 0 ? (
-              <p style={{ font: "var(--type-body-m)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
+              <p style={{ font: "var(--type-body)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
                 Ingen milepæler opprettet i talentplanen ennå.
               </p>
             ) : (
@@ -217,7 +217,7 @@ export function PH19Talent({
                     }}
                   >
                     <div>
-                      <strong style={{ font: "var(--type-body-m)", color: "var(--text-primary)", display: "block" }}>{m.tittel}</strong>
+                      <strong style={{ font: "var(--type-body)", color: "var(--text-primary)", display: "block" }}>{m.tittel}</strong>
                       {m.beskrivelse && <small style={{ font: "var(--type-meta)", color: "var(--text-secondary)" }}>{m.beskrivelse}</small>}
                     </div>
                     {m.dato && <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>{m.dato}</span>}
@@ -234,7 +234,7 @@ export function PH19Talent({
           <section className="pa-card" style={{ padding: 20 }}>
             <span style={{ font: "var(--type-kicker)", color: "var(--text-muted)" }}>Sesongplan og perioder</span>
             {perioder.length === 0 ? (
-              <p style={{ font: "var(--type-body-m)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
+              <p style={{ font: "var(--type-body)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
                 Ingen perioder definert i sesongplanen ennå.
               </p>
             ) : (
@@ -253,7 +253,7 @@ export function PH19Talent({
                     }}
                   >
                     <div>
-                      <strong style={{ font: "var(--type-body-m)", color: "var(--text-primary)" }}>{p.navn}</strong>
+                      <strong style={{ font: "var(--type-body)", color: "var(--text-primary)" }}>{p.navn}</strong>
                       {p.aktiv && <span style={{ marginLeft: 8 }}><StatusPille tone="ok">Aktiv</StatusPille></span>}
                     </div>
                     <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>

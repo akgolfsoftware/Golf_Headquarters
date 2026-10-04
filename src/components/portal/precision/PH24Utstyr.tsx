@@ -105,10 +105,10 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
             style={{
               minHeight: 44,
               padding: "10px 16px",
-              borderRadius: "var(--radius-md, 8px)",
-              background: redigerer ? "var(--surface-overlay)" : "var(--accent-primary, var(--surface-accent))",
-              color: redigerer ? "var(--text-primary)" : "var(--text-on-accent, var(--text-primary))",
-              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius)",
+              background: redigerer ? "var(--surface-sunken)" : "var(--primary)",
+              color: redigerer ? "var(--text-primary)" : "var(--text-on-primary)",
+              border: "1px solid var(--border-hairline)",
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -128,10 +128,10 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
         <div
           style={{
             padding: "12px 16px",
-            borderRadius: "var(--radius-md, 8px)",
-            background: "var(--surface-success, var(--surface-overlay))",
-            color: "var(--text-success, var(--text-primary))",
-            border: "1px solid var(--border-success, var(--border-subtle))",
+            borderRadius: "var(--radius)",
+            background: "var(--ok-tint)",
+            color: "var(--ok)",
+            border: "1px solid var(--ok)",
             fontSize: 14,
             display: "flex",
             alignItems: "center",
@@ -149,9 +149,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
           onSubmit={handleSave}
           style={{
             padding: 20,
-            borderRadius: "var(--radius-lg, 12px)",
-            background: "var(--surface-card, var(--surface-primary))",
-            border: "1px solid var(--border-accent, var(--border-subtle))",
+            borderRadius: "var(--radius)",
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-ink)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
@@ -179,9 +179,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                     width: "100%",
                     minHeight: 44,
                     padding: "9px 12px",
-                    borderRadius: "var(--radius-md, 8px)",
-                    background: "var(--surface-input, var(--surface-overlay))",
-                    border: "1px solid var(--border-subtle)",
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-hairline)",
                     color: "var(--text-primary)",
                     fontSize: 14,
                     fontFamily: "inherit",
@@ -203,9 +203,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "8px 16px",
-                borderRadius: "var(--radius-md, 8px)",
+                borderRadius: "var(--radius)",
                 background: "transparent",
-                border: "1px solid var(--border-subtle)",
+                border: "1px solid var(--border-hairline)",
                 color: "var(--text-secondary)",
                 fontSize: 13,
                 fontWeight: 500,
@@ -224,9 +224,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "8px 18px",
-                borderRadius: "var(--radius-md, 8px)",
-                background: "var(--accent-primary, var(--surface-accent))",
-                color: "var(--text-on-accent, var(--text-primary))",
+                borderRadius: "var(--radius)",
+                background: "var(--primary)",
+                color: "var(--text-on-primary)",
                 border: "none",
                 fontSize: 13,
                 fontWeight: 600,
@@ -246,9 +246,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
       <section
         style={{
           padding: 20,
-          borderRadius: "var(--radius-lg, 12px)",
-          background: "var(--surface-card, var(--surface-primary))",
-          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius)",
+          background: "var(--surface-card)",
+          border: "1px solid var(--border-hairline)",
           display: "flex",
           flexDirection: "column",
           gap: 16,
@@ -271,9 +271,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 key={f.label}
                 style={{
                   padding: "12px 14px",
-                  borderRadius: "var(--radius-md, 8px)",
-                  background: "var(--surface-overlay)",
-                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius)",
+                  background: "var(--surface-sunken)",
+                  border: "1px solid var(--border-hairline)",
                   display: "flex",
                   flexDirection: "column",
                   gap: 4,
@@ -294,9 +294,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 key={t.label}
                 style={{
                   padding: "12px 14px",
-                  borderRadius: "var(--radius-md, 8px)",
-                  background: "var(--surface-overlay)",
-                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius)",
+                  background: "var(--surface-sunken)",
+                  border: "1px solid var(--border-hairline)",
                   display: "flex",
                   flexDirection: "column",
                   gap: 4,
@@ -313,8 +313,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
           <div
             style={{
               padding: 24,
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--surface-overlay)",
+              borderRadius: "var(--radius)",
+              background: "var(--surface-sunken)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
@@ -335,8 +335,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
             style={{
               marginTop: 4,
               padding: "10px 14px",
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--surface-overlay)",
+              borderRadius: "var(--radius)",
+              background: "var(--surface-sunken)",
               fontSize: 13,
               color: "var(--text-secondary)",
               display: "flex",
@@ -354,9 +354,9 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
       <section
         style={{
           padding: 20,
-          borderRadius: "var(--radius-lg, 12px)",
-          background: "var(--surface-card, var(--surface-primary))",
-          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius)",
+          background: "var(--surface-card)",
+          border: "1px solid var(--border-hairline)",
           display: "flex",
           flexDirection: "column",
           gap: 16,
@@ -386,8 +386,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                   <div
                     style={{
                       height: 24,
-                      background: "var(--surface-overlay)",
-                      borderRadius: "var(--radius-sm, 4px)",
+                      background: "var(--surface-sunken)",
+                      borderRadius: "var(--radius-inner)",
                       overflow: "hidden",
                       position: "relative",
                     }}
@@ -396,8 +396,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                       style={{
                         width: `${breddeProsent}%`,
                         height: "100%",
-                        background: "var(--accent-primary, var(--surface-accent))",
-                        borderRadius: "var(--radius-sm, 4px)",
+                        background: "var(--primary)",
+                        borderRadius: "var(--radius-inner)",
                         opacity: 0.85,
                         transition: "width 0.3s ease",
                       }}
@@ -417,8 +417,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
           <div
             style={{
               padding: 24,
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--surface-overlay)",
+              borderRadius: "var(--radius)",
+              background: "var(--surface-sunken)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
@@ -446,14 +446,14 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                   key={`${g.fra}-${g.til}`}
                   style={{
                     padding: "8px 12px",
-                    borderRadius: "var(--radius-md, 8px)",
+                    borderRadius: "var(--radius)",
                     background:
                       g.status === "normal"
-                        ? "var(--surface-overlay)"
+                        ? "var(--surface-sunken)"
                         : g.status === "for-tett"
-                        ? "var(--surface-warning, var(--surface-overlay))"
-                        : "var(--surface-overlay)",
-                    border: "1px solid var(--border-subtle)",
+                        ? "var(--warn-tint)"
+                        : "var(--surface-sunken)",
+                    border: "1px solid var(--border-hairline)",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -469,12 +469,12 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                     </span>
                     <span
                       style={{
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 600,
                         padding: "2px 6px",
                         borderRadius: 4,
                         background: g.status === "normal" ? "var(--surface-card)" : "var(--surface-card)",
-                        color: g.status === "normal" ? "var(--text-secondary)" : "var(--text-warning, var(--text-primary))",
+                        color: g.status === "normal" ? "var(--text-secondary)" : "var(--warn)",
                       }}
                     >
                       {g.status === "normal" ? "OK" : g.status === "for-tett" ? "Tett" : "Stort gap"}

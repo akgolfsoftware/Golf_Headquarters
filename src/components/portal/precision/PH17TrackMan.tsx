@@ -138,7 +138,6 @@ export function PH17TrackMan({
                   ? "2px solid var(--border-ink)"
                   : "2px solid transparent",
                 marginBottom: -1,
-                whiteSpace: "nowrap",
               }}
             >
               <IkonKomp size={15} aria-hidden />

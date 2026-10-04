@@ -51,14 +51,14 @@
 .pa-a21__progress-bar {
   height: 6px;
   background: var(--surface-sunken);
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .pa-a21__progress-fill {
   height: 100%;
   background: var(--primary);
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--radius-pill);
   transition: width 0.3s ease;
 }
 
