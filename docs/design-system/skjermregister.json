@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a61f32f1a843a000643c53cd376bc9415ca2ac12",
+  "kodeversjon": "d5ddabcbec0166a57e628b0986a2e031d10a6d13",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 857,
+    "componentFiles": 858,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -13635,12 +13635,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Test gjennomfør merker PH15TestGjennomfor i Precision Athletics (nattmodus/fokus). Scorekort, avstands- og poengtasting etter Claude Design PH-15.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-15 Test: gjennomfør er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -23249,10 +23251,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 149,
+    "medAvvik": 150,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 122,
+    "implementert": 123,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

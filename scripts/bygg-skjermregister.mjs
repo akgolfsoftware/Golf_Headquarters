@@ -281,6 +281,7 @@ const PRECISION_VISNING = [
   ["PH17TrackMan", "TrackMan og analyse merker PH17TrackMan i PlayerHQSkall. Fire faner (Økter, Gapping, Utstyr, Stasjon) etter Claude Design PH-17."],
   ["PH08RundeLive", "Runde live merker PH08RundeLive i Precision Athletics (nattmodus/fokus). Hull 1-18, brutto score, slag- og putteregistrering etter Claude Design PH-08."],
   ["PH09RegistrerRunde", "Registrer runde merker PH09RegistrerRunde i Precision Athletics. Hull 1-9 Ut og 10-18 Inn, HoleCell og brutto score oppsummering etter Claude Design PH-09."],
+  ["PH15TestGjennomfor", "Test gjennomfør merker PH15TestGjennomfor i Precision Athletics (nattmodus/fokus). Scorekort, avstands- og poengtasting etter Claude Design PH-15."],
 ];
 
 function merkVisning(row, source) {
