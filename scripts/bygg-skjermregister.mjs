@@ -282,6 +282,7 @@ const PRECISION_VISNING = [
   ["PH08RundeLive", "Runde live merker PH08RundeLive i Precision Athletics (nattmodus/fokus). Hull 1-18, brutto score, slag- og putteregistrering etter Claude Design PH-08."],
   ["PH09RegistrerRunde", "Registrer runde merker PH09RegistrerRunde i Precision Athletics. Hull 1-9 Ut og 10-18 Inn, HoleCell og brutto score oppsummering etter Claude Design PH-09."],
   ["PH15TestGjennomfor", "Test gjennomfør merker PH15TestGjennomfor i Precision Athletics (nattmodus/fokus). Scorekort, avstands- og poengtasting etter Claude Design PH-15."],
+  ["PH26UtenforBanen", "Utenfor banen merker PH26UtenforBanen i PlayerHQSkall. Fem faner (FYS-økt, Utfordringer, Putte-lab, Turneringer, Ukesdigest) etter Claude Design PH-26."],
 ];
 
 function merkVisning(row, source) {
