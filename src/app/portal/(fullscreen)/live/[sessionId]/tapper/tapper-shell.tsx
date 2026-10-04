@@ -1,20 +1,15 @@
 "use client";
 
 /**
- * PlayerHQ · Slagteller- og repetisjonsshell.
- * Støtter full sving (køller), nærspill (chip, pitch, lob, bunker)
- * og putting (kortputt, mellomputt, lengdeputt), samt repetisjonstyper (full fart, lav fart, tørrsving).
- *
- * Fasit: designsystem/train-lock/PH-05 Live.dc.html
- * Avvik:
- *   - Ingen riggrad for fullskjerm-tapperen ennå; innholdet avhenger av øktas køller, rep-typer og lagrede tellinger.
- *   - Utvidet med repetisjonstyper og områder for AK-formelen.
+ * PlayerHQ · Slagteller — PH06Tapper, Precision Athletics natt.
+ * Tegningen ui_kits/playerhq/screens/PH-06.jsx ligger ikke i git.
+ * Køller, nærspill, putting, +1/+5, angre og lokal kø beholdes.
  */
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TL } from "@/lib/v2/train-lock";
+import "@/styles/precision-athletics.css";
 
 import { Icon } from "@/components/v2/icon";
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
@@ -265,7 +260,8 @@ export function TapperShell({
 
   return (
     <div
-      data-paper-slug="playerhq-live-tapper"
+      className="pa-root ph06"
+      data-theme="night"
       data-od-id="playerhq-live-tapper"
       style={{
         position: "fixed",
@@ -273,8 +269,8 @@ export function TapperShell({
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: TL.scene,
-        color: TL.text,
+        background: "var(--surface-page)",
+        color: "var(--text-primary)",
       }}
     >
       {/* Topp — tilbake + Slagteller + økt-sub */}
@@ -285,23 +281,23 @@ export function TapperShell({
           alignItems: "center",
           gap: 8,
           padding: "calc(12px + env(safe-area-inset-top)) 16px 12px",
-          borderBottom: `1px solid ${TL.hair}`,
-          background: TL.elev,
+          borderBottom: `1px solid var(--border-hairline)`,
+          background: "var(--surface-card)",
         }}
       >
         <Link
           href={`/portal/live/${sessionId}`}
           aria-label="Til live-økta"
           data-od-id="tapper-tilbake"
-          className="v2-press v2-focus"
+
           style={{
             flex: "none",
             width: 44,
             height: 44,
             display: "grid",
             placeItems: "center",
-            border: `1px solid ${TL.hair}`,
-            borderRadius: TL.radius.card,
+            border: `1px solid var(--border-hairline)`,
+            borderRadius: "var(--radius)",
             color: "inherit",
             textDecoration: "none",
           }}
@@ -309,13 +305,13 @@ export function TapperShell({
           <Icon name="chevron-left" size={18} />
         </Link>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600 }}>Slag og repetisjoner</h1>
+          <h1 style={{ margin: 0, fontFamily: "var(--font-sans)", fontSize: 17, fontWeight: 600 }}>Slag og repetisjoner</h1>
           <span
             style={{
               display: "block",
-              fontFamily: TL.font.mono,
+              fontFamily: "var(--font-mono)",
               fontSize: 10.5,
-              color: TL.mute,
+              color: "var(--text-muted)",
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -344,16 +340,16 @@ export function TapperShell({
             role="alert"
             style={{
               padding: "16px",
-              background: TL.dock,
-              border: `1px dashed ${TL.hair}`,
-              borderRadius: TL.radius.card,
+              background: "var(--surface-sunken)",
+              border: `1px dashed var(--border-hairline)`,
+              borderRadius: "var(--radius)",
               marginBottom: 12,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
               Tellingene ble ikke lagret
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
+            <p style={{ margin: "0 0 12px", fontFamily: "var(--font-sans)", fontSize: 13.5, color: "var(--text-muted)" }}>
               {lagreStatus === "gitt-opp"
                 ? "Fikk ikke synket etter flere forsøk — repetisjonene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
                 : `Nettet forsvant under lagringen. De ${totalCount} repetisjonene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`}
@@ -362,20 +358,20 @@ export function TapperShell({
               type="button"
               onClick={() => void lagre()}
               data-od-id="tapper-retry"
-              className="v2-press v2-focus"
+
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "0 16px",
-                fontFamily: TL.font.sans,
+                fontFamily: "var(--font-sans)",
                 fontSize: 14,
                 fontWeight: 500,
                 background: "transparent",
-                border: `1px solid ${TL.hair}`,
-                borderRadius: TL.radius.card,
-                color: TL.text,
+                border: `1px solid var(--border-hairline)`,
+                borderRadius: "var(--radius)",
+                color: "var(--text-primary)",
                 cursor: "pointer",
               }}
             >
@@ -389,19 +385,19 @@ export function TapperShell({
           <span
             style={{
               display: "block",
-              fontFamily: TL.font.mono,
+              fontFamily: "var(--font-mono)",
               fontSize: 10,
               fontWeight: 500,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: TL.mute,
+              color: "var(--text-muted)",
             }}
           >
             repetisjoner denne økta
           </span>
           <div
             style={{
-              fontFamily: TL.font.mono,
+              fontFamily: "var(--font-mono)",
               fontSize: 44,
               fontWeight: 600,
               fontVariantNumeric: "tabular-nums",
@@ -411,7 +407,7 @@ export function TapperShell({
           >
             {totalCount}
           </div>
-          <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 4 }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--text-muted)", marginTop: 4 }}>
             Velg område og fart nedenfor — ett tapp per slag eller repetisjon.
           </div>
         </div>
@@ -423,23 +419,23 @@ export function TapperShell({
               display: "flex",
               alignItems: "center",
               gap: 12,
-              background: TL.elev,
-              border: `1px solid ${TL.hair}`,
-              borderRadius: TL.radius.card,
+              background: "var(--surface-card)",
+              border: `1px solid var(--border-hairline)`,
+              borderRadius: "var(--radius)",
               padding: "10px 14px",
               marginBottom: 14,
               minWidth: 0,
             }}
           >
-            <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: TL.font.sans }}>
+            <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: "var(--font-sans)" }}>
               <span style={{ fontWeight: 600 }}>{tapp[0].label}</span>
               {" · sist registrert"}
               <span
                 style={{
                   display: "block",
-                  fontFamily: TL.font.mono,
+                  fontFamily: "var(--font-mono)",
                   fontSize: 10.5,
-                  color: TL.mute,
+                  color: "var(--text-muted)",
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -450,7 +446,7 @@ export function TapperShell({
               type="button"
               onClick={angre}
               data-od-id="tapper-angre"
-              className="v2-press v2-focus"
+
               style={{
                 flex: "none",
                 display: "inline-flex",
@@ -458,13 +454,13 @@ export function TapperShell({
                 justifyContent: "center",
                 minHeight: 40,
                 padding: "0 14px",
-                fontFamily: TL.font.sans,
+                fontFamily: "var(--font-sans)",
                 fontSize: 13,
                 fontWeight: 500,
                 background: "transparent",
-                border: `1px solid ${TL.hair}`,
-                borderRadius: TL.radius.card,
-                color: TL.text,
+                border: `1px solid var(--border-hairline)`,
+                borderRadius: "var(--radius)",
+                color: "var(--text-primary)",
                 cursor: "pointer",
               }}
             >
@@ -479,12 +475,12 @@ export function TapperShell({
             <span
               style={{
                 display: "block",
-                fontFamily: TL.font.mono,
+                fontFamily: "var(--font-mono)",
                 fontSize: 10,
                 fontWeight: 500,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
-                color: TL.mute,
+                color: "var(--text-muted)",
                 marginBottom: 6,
               }}
             >
@@ -499,8 +495,8 @@ export function TapperShell({
                   gap: 12,
                   padding: "8px 0",
                   fontSize: 13,
-                  fontFamily: TL.font.sans,
-                  borderBottom: i === fordelingKeys.length - 1 ? "none" : `1px solid ${TL.hair}`,
+                  fontFamily: "var(--font-sans)",
+                  borderBottom: i === fordelingKeys.length - 1 ? "none" : `1px solid var(--border-hairline)`,
                   minWidth: 0,
                 }}
               >
@@ -509,8 +505,8 @@ export function TapperShell({
                   style={{
                     flex: 1,
                     height: 6,
-                    background: TL.dock,
-                    borderRadius: TL.radius.pill,
+                    background: "var(--surface-sunken)",
+                    borderRadius: "var(--radius-pill)",
                     overflow: "hidden",
                     minWidth: 0,
                   }}
@@ -520,14 +516,14 @@ export function TapperShell({
                       display: "block",
                       height: "100%",
                       width: `${Math.round(((counts[key] ?? 0) / maks) * 100)}%`,
-                      background: TL.mute,
-                      borderRadius: TL.radius.pill,
+                      background: "var(--text-muted)",
+                      borderRadius: "var(--radius-pill)",
                     }}
                   />
                 </span>
                 <span
                   style={{
-                    fontFamily: TL.font.mono,
+                    fontFamily: "var(--font-mono)",
                     fontVariantNumeric: "tabular-nums",
                     minWidth: "3ch",
                     textAlign: "right",
@@ -546,8 +542,8 @@ export function TapperShell({
       <div
         style={{
           flex: "none",
-          borderTop: `1px solid ${TL.hair}`,
-          background: TL.elev,
+          borderTop: `1px solid var(--border-hairline)`,
+          background: "var(--surface-card)",
           padding: "10px 16px calc(10px + env(safe-area-inset-bottom))",
         }}
       >
@@ -562,15 +558,15 @@ export function TapperShell({
                   type="button"
                   onClick={() => setActiveArea(a.id)}
                   data-od-id={`tapper-omraade-${a.id.toLowerCase()}`}
-                  className="v2-press v2-focus"
+
                   style={{
                     flex: 1,
                     minHeight: 38,
-                    border: active ? `1px solid ${TL.fill}` : `1px solid ${TL.hair}`,
-                    background: active ? TL.fill : "transparent",
-                    color: active ? TL.onFill : TL.mute,
-                    borderRadius: TL.radius.card,
-                    fontFamily: TL.font.sans,
+                    border: active ? `1px solid var(--primary)` : `1px solid var(--border-hairline)`,
+                    background: active ? "var(--primary)" : "transparent",
+                    color: active ? "var(--text-on-primary)" : "var(--text-muted)",
+                    borderRadius: "var(--radius)",
+                    fontFamily: "var(--font-sans)",
                     fontSize: 13,
                     fontWeight: active ? 600 : 500,
                     cursor: "pointer",
@@ -595,14 +591,14 @@ export function TapperShell({
                   type="button"
                   onClick={() => setActiveRepType(t.id)}
                   data-od-id={`tapper-type-${t.id.toLowerCase()}`}
-                  className="v2-press v2-focus"
+
                   style={{
                     padding: "4px 10px",
-                    border: active ? `1px solid ${TL.hair}` : "1px solid transparent",
-                    background: active ? TL.dock : "transparent",
-                    color: active ? TL.text : TL.mute,
-                    borderRadius: TL.radius.pill,
-                    fontFamily: TL.font.sans,
+                    border: active ? `1px solid var(--border-hairline)` : "1px solid transparent",
+                    background: active ? "var(--surface-sunken)" : "transparent",
+                    color: active ? "var(--text-primary)" : "var(--text-muted)",
+                    borderRadius: "var(--radius-pill)",
+                    fontFamily: "var(--font-sans)",
                     fontSize: 11.5,
                     fontWeight: active ? 600 : 400,
                     cursor: "pointer",
@@ -633,14 +629,14 @@ export function TapperShell({
                   type="button"
                   onClick={() => tappElement(c.id)}
                   data-od-id={`tapper-klubb-${c.id}`}
-                  className="v2-press v2-focus"
+
                   style={{
                     minHeight: 56,
-                    border: `1px solid ${TL.hair}`,
-                    borderRadius: TL.radius.card,
-                    background: TL.scene,
-                    color: TL.text,
-                    fontFamily: TL.font.sans,
+                    border: `1px solid var(--border-hairline)`,
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-page)",
+                    color: "var(--text-primary)",
+                    fontFamily: "var(--font-sans)",
                     fontSize: 13.5,
                     fontWeight: 500,
                     cursor: "pointer",
@@ -653,7 +649,7 @@ export function TapperShell({
                   }}
                 >
                   <span>{c.name}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--text-muted)" }}>
                     {activeRepType === "FULL_SPEED"
                       ? "1 slag"
                       : activeRepType === "LOW_SPEED"
@@ -670,14 +666,14 @@ export function TapperShell({
                   type="button"
                   onClick={() => tappElement(t.baseId)}
                   data-od-id={`tapper-naerspill-${t.baseId}`}
-                  className="v2-press v2-focus"
+
                   style={{
                     minHeight: 56,
-                    border: `1px solid ${TL.hair}`,
-                    borderRadius: TL.radius.card,
-                    background: TL.scene,
-                    color: TL.text,
-                    fontFamily: TL.font.sans,
+                    border: `1px solid var(--border-hairline)`,
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-page)",
+                    color: "var(--text-primary)",
+                    fontFamily: "var(--font-sans)",
                     fontSize: 13,
                     fontWeight: 500,
                     cursor: "pointer",
@@ -690,7 +686,7 @@ export function TapperShell({
                   }}
                 >
                   <span>{t.name}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--text-muted)" }}>
                     {activeRepType === "FULL_SPEED"
                       ? "1 rep"
                       : activeRepType === "LOW_SPEED"
@@ -707,15 +703,15 @@ export function TapperShell({
                   type="button"
                   onClick={() => tappElement(p.baseId)}
                   data-od-id={`tapper-putting-${p.baseId}`}
-                  className="v2-press v2-focus"
+
                   style={{
                     minHeight: 52,
                     padding: "4px 2px",
-                    border: `1px solid ${TL.hair}`,
-                    borderRadius: TL.radius.card,
-                    background: TL.scene,
-                    color: TL.text,
-                    fontFamily: TL.font.sans,
+                    border: `1px solid var(--border-hairline)`,
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-page)",
+                    color: "var(--text-primary)",
+                    fontFamily: "var(--font-sans)",
                     fontSize: 11.5,
                     fontWeight: 500,
                     cursor: "pointer",
@@ -729,7 +725,7 @@ export function TapperShell({
                   }}
                 >
                   <span style={{ overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{p.name}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--text-muted)" }}>
                     {activeRepType === "FULL_SPEED"
                       ? "1 rep"
                       : activeRepType === "LOW_SPEED"
@@ -747,7 +743,7 @@ export function TapperShell({
             onClick={() => void avslutt()}
             data-od-id="tapper-avslutt"
             data-paper-en-ting="true"
-            className="v2-press v2-focus"
+
             style={{
               display: "flex",
               alignItems: "center",
@@ -755,10 +751,10 @@ export function TapperShell({
               minHeight: 50,
               width: "100%",
               border: "none",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
+              borderRadius: "var(--radius)",
+              background: "var(--primary)",
+              color: "var(--text-on-primary)",
+              fontFamily: "var(--font-sans)",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",

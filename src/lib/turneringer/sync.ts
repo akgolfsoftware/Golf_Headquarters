@@ -470,8 +470,8 @@ function parsePosition(p: string | undefined): number | "CUT" | "WD" | null {
 
 /**
  * Henter norsk turneringskalender fra GolfBox (NGF, Srixon, Olyo, Østlandstour m.fl.),
- * auto-kobler PlayerHQ-brukere til PublicPlayer (eksakt navn), og speiler
- * eksisterende resultater til TournamentResult for koblede brukere.
+ * rapporterer mulige navnelikheter for identitetskontroll og speiler eksisterende
+ * PublicPlayer-koblinger til TournamentResult.
  *
  * Leaderboards kjøres av GitHub Actions (`scrape-golfbox.ts`) — samme delte modul.
  */
@@ -480,6 +480,7 @@ export async function syncNgfSchedule(): Promise<{
   events: number;
   upcoming: number;
   linked: number;
+  identityCandidatesNeedingVerification: number;
   resultsMirrored: number;
 }> {
   const schedule = await syncGolfBoxSchedules(prisma);
@@ -492,6 +493,7 @@ export async function syncNgfSchedule(): Promise<{
     events: schedule.events,
     upcoming: schedule.upcoming,
     linked: link.linked,
+    identityCandidatesNeedingVerification: link.skippedUnverifiedIdentity,
     resultsMirrored: backfill.mirrored,
   };
 }

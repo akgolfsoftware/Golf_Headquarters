@@ -1,3 +1,4 @@
+// PH23BookingBekreftet — Precision Athletics PH-23.
 /**
  * PlayerHQ · Booking bekreftet (/portal/booking/bekreftet?bookingId=…) — v2.
  * v2-port 17. juli 2026 (Team G-B): `BookingBekreftetV2` erstatter legacy-
@@ -13,7 +14,7 @@ import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
 
 export const dynamic = "force-dynamic";
@@ -82,18 +83,18 @@ export default async function BekreftetPage({ searchParams }: Props) {
   });
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <BookingBekreftetV2
-        data={{
-          linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
-          coachNavn: coach?.name ?? null,
-          sted: booking.location.name,
-          varighetMin: booking.serviceType.durationMin,
-          kalenderUrl: googleKalenderUrl(booking),
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <BookingBekreftetV2
+          data={{
+            linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
+            coachNavn: coach?.name ?? null,
+            sted: booking.location.name,
+            varighetMin: booking.serviceType.durationMin,
+            kalenderUrl: googleKalenderUrl(booking),
+          }}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

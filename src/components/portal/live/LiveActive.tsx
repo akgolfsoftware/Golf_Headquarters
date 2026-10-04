@@ -1,8 +1,10 @@
 "use client";
 
-/** PH-05 Live + B2 iPad/Mac fra valgt Trainlock ZIP (4), med v3-tema.
- * Faktiske rep-kategorier beholdes; Treff/Kant/Bom krever egne produktfelt.
- * Kontroll og åpne avvik: docs/design-audit/portering-fire-flater-2026-09-10.md. */
+/**
+ * PH-05 Live aktiv — Precision Athletics, natt.
+ * Tegningen ui_kits/playerhq/screens/PH-05.jsx ligger ikke i git.
+ * Timer, rep-modell, pause, notater, offline-kø og fullføring beholdes.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Check, Pause, Play } from "lucide-react";
 import type { LiveV2Session, LiveCoachPanelData } from "./types";
@@ -11,7 +13,7 @@ import { fysVisningsrader, lesFysRegistrering } from "@/lib/portal-live/fys-regi
 import { DrillLogger } from "./DrillLogger";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { useLiveSession } from "./use-live-session";
-import s from "./live-active.module.css";
+import "@/styles/precision-athletics.css";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 import { sendOktNotatTilCoach } from "@/lib/portal-live/actions";
@@ -144,55 +146,55 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   };
 
 
-  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase} data-surface="live">
-    <header className={s.header}>
-      <h1 className={s.eyebrow}>Live · {data.title}</h1>
-      <button ref={finishButton} className={s.secondary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>
+  return <div className="pa-root ph05" data-theme="night" data-od-id="playerhq-live-active" data-phase={live.phase}>
+    <header className="ph05-top">
+      <h1 className="ph05-kicker">Live · {data.title}</h1>
+      <button ref={finishButton} className="pa-btn pa-btn--secondary" disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>
     </header>
-    <main className={s.main}>
-      <div className={s.status} role="status">
+    <main className="ph05-main">
+      <div className="ph05-status" role="status">
         {live.phase === "starting" ? "Klargjør økta …" : live.phase === "start-error" ? "Økta kunne ikke åpnes. Prøv igjen når du har nett." : live.phase === "finished" ? "Åpner oppsummeringen …" : live.saving === "local-error" ? "Kunne ikke lagre på denne enheten. Hold siden åpen og prøv igjen." : live.saving === "offline" ? "Uten nett. Registreringene venter på sending." : live.saving === "error" ? "Ikke sendt. Registreringene er lagret på denne enheten." : live.saving === "saving" ? "Lagrer registreringer …" : "Registreringene er lagret."}
-        {live.phase === "start-error" && <button className={s.textButton} onClick={live.retryStart}>Prøv å åpne igjen</button>}
-        {enabled && ["error", "local-error"].includes(live.saving) && <button className={s.textButton} onClick={live.retrySync}>Prøv lagring igjen</button>}
+        {live.phase === "start-error" && <button className="pa-btn pa-btn--ghost" onClick={live.retryStart}>Prøv å åpne igjen</button>}
+        {enabled && ["error", "local-error"].includes(live.saving) && <button className="pa-btn pa-btn--ghost" onClick={live.retrySync}>Prøv lagring igjen</button>}
       </div>
-      <div className={s.columns}>
-        <section aria-label="Økta nå" className={s.overview}>
-          <div className={s.clock} data-testid="live-clock" aria-label={`${fmt(live.totalSec)} medgått tid`}>{fmt(live.totalSec)}</div>
-          <div className={s.clockMeta}>
+      <div className="ph05-kolonner">
+        <section aria-label="Økta nå" className="ph05-oversikt">
+          <div className="ph05-klokke" data-testid="live-clock" aria-label={`${fmt(live.totalSec)} medgått tid`}>{fmt(live.totalSec)}</div>
+          <div className="ph05-klokkemeta">
             <span>{live.paused ? "På pause" : "Medgått tid"}{planned > 0 ? ` · ${planned} min planlagt` : ""}</span>
-            <button className={s.textButton} disabled={!enabled} onClick={live.togglePause} aria-pressed={live.paused}>
+            <button className="pa-btn pa-btn--ghost" disabled={!enabled} onClick={live.togglePause} aria-pressed={live.paused}>
               {live.paused ? <Play size={16} aria-hidden /> : <Pause size={16} aria-hidden />}{live.paused ? "Fortsett" : "Pause"}
             </button>
           </div>
-          <div className={s.now}>
-            <p className={s.eyebrow}>{ready ? "Klar til fullføring" : active ? `Nå · øvelse ${active.index} av ${live.drills.length}` : "Økta di"}</p>
+          <div className="pa-card ph05-na">
+            <p className="ph05-kicker">{ready ? "Klar til fullføring" : active ? `Nå · øvelse ${active.index} av ${live.drills.length}` : "Økta di"}</p>
             <h2>{ready ? "Alle øvelsene er markert ferdige" : active?.name ?? "Ingen øvelser i planen"}</h2>
             {active && <>
-              <p className={s.meta}>{[active.durationMinutes > 0 ? `${active.durationMinutes} min` : null, plannedVolumText(active)].filter(Boolean).join(" · ")}</p>
-              {active.pyramide === "FYS" ? <p className={s.description}>{aktivFys
+              <p className="ph05-meta">{[active.durationMinutes > 0 ? `${active.durationMinutes} min` : null, plannedVolumText(active)].filter(Boolean).join(" · ")}</p>
+              {active.pyramide === "FYS" ? <p className="ph05-brod">{aktivFys
                 ? fysVisningsrader(aktivFys).map(rad => `${rad.label}: ${rad.verdi}`).join(" · ")
                 : active.logNotes || "Ingen detaljer registrert"}</p> :
-                <div className={s.count}><strong>{active.repsTotal}</strong><span>{active.plannedReps > 0 ? `av ${active.plannedReps} reps` : "registrert"}{active.repsHit > 0 ? ` · ${active.repsHit} treff` : ""}</span></div>}
+                <div className="ph05-tall"><strong>{active.repsTotal}</strong><span>{active.plannedReps > 0 ? `av ${active.plannedReps} reps` : "registrert"}{active.repsHit > 0 ? ` · ${active.repsHit} treff` : ""}</span></div>}
               {active.pyramide !== "FYS" && active.plannedReps > 0 && <progress aria-label="Registreringer i aktiv øvelse" max={active.plannedReps} value={Math.min(active.repsTotal, active.plannedReps)} />}
             </>}
-            {!active && <p className={s.description}>{ready ? "Du kan rette registreringene eller avslutte når du er klar." : "Du kan bruke notater og Caddie, og avslutte økta når du er klar."}</p>}
-            {ready && <button className={s.primary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt og se oppsummering</button>}
+            {!active && <p className="ph05-brod">{ready ? "Du kan rette registreringene eller avslutte når du er klar." : "Du kan bruke notater og Caddie, og avslutte økta når du er klar."}</p>}
+            {ready && <button className="pa-btn pa-btn--primary pa-btn--lg pa-btn--full" disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt og se oppsummering</button>}
           </div>
         </section>
-        <section className={s.registration} aria-label="Registrering">
-          <div className={s.modes} role="group" aria-label="Visning i økta">
-            {([['now', 'Registrer'], ['list', 'Øvelser'], ['notes', 'Notater']] as const).map(([id, label]) => <button key={id} className={s.mode} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}{id === "list" && ` ${completedCount}/${live.drills.length}`}</button>)}
+        <section className="ph05-reg" aria-label="Registrering">
+          <div className="ph05-modus" role="group" aria-label="Visning i økta">
+            {([['now', 'Registrer'], ['list', 'Øvelser'], ['notes', 'Notater']] as const).map(([id, label]) => <button key={id} className="ph05-modusknapp" aria-pressed={mode === id} onClick={() => setMode(id)}>{label}{id === "list" && ` ${completedCount}/${live.drills.length}`}</button>)}
           </div>
           <div hidden={mode !== "now"}>
             {selected ? <>
-              <label className={s.selectLabel} htmlFor="live-drill">Registrer på øvelse</label>
-              <select className={s.select} id="live-drill" value={selected.id} disabled={!enabled} onChange={(event) => setSelectedId(event.target.value)}>{live.drills.map((d) => <option key={d.id} value={d.id}>{d.index}. {d.name}{d.status === "done" ? " · ferdig" : ""}</option>)}</select>
-              <fieldset className={s.fieldset} disabled={!enabled}>
+              <label className="ph05-feltlabel" htmlFor="live-drill">Registrer på øvelse</label>
+              <select className="ph05-velger" id="live-drill" value={selected.id} disabled={!enabled} onChange={(event) => setSelectedId(event.target.value)}>{live.drills.map((d) => <option key={d.id} value={d.id}>{d.index}. {d.name}{d.status === "done" ? " · ferdig" : ""}</option>)}</select>
+              <fieldset className="ph05-felt" disabled={!enabled}>
                 {live.drills.map((d) => <div key={d.id} hidden={d.id !== selected.id}>
                   <DrillLogger drill={d} state={d} onChange={(value) => live.change(d.id, value)} onAdjust={(bucket, delta) => live.adjust(d.id, bucket, delta)} onComplete={() => { live.mark(d.id, d.status !== "done"); setSelectedId(null); }} done={d.status === "done"} />
                 </div>)}
               </fieldset>
-              <div className={s.voiceSection}>
+              <div className="ph05-tale">
                 <VoiceRangeRecorder
                   sessionId={data.sessionId}
                   compact
@@ -218,20 +220,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                   }}
                 />
               </div>
-            </> : <p className={s.description}>Det er ingen øvelser å registrere på.</p>}
+            </> : <p className="ph05-brod">Det er ingen øvelser å registrere på.</p>}
           </div>
-          {(active?.description || active?.notes || data.maalsetning || data.coachComment) && <details className={s.context}><summary>Øvelsen og coachens beskjed</summary>{active?.description && <p>{active.description}</p>}{active?.notes && active.notes !== active.description && <p>{active.notes}</p>}{data.maalsetning && <p>{data.maalsetning}</p>}{data.coachComment && <p>{data.coachComment}</p>}</details>}
+          {(active?.description || active?.notes || data.maalsetning || data.coachComment) && <details className="ph05-kontekst"><summary>Øvelsen og coachens beskjed</summary>{active?.description && <p>{active.description}</p>}{active?.notes && active.notes !== active.description && <p>{active.notes}</p>}{data.maalsetning && <p>{data.maalsetning}</p>}{data.coachComment && <p>{data.coachComment}</p>}</details>}
           <div hidden={mode !== "list"}>
-            <ol className={s.drills}>
-              {live.drills.map((d) => <li key={d.id} className={s.drill}>
-                <button className={s.check} aria-label={`${d.status === "done" ? "Fjern ferdigmarkering for" : "Marker ferdig"} ${d.name}`} aria-pressed={d.status === "done"} disabled={!enabled} onClick={() => live.mark(d.id, d.status !== "done")}>{d.status === "done" ? <Check size={20} aria-hidden /> : d.index}</button>
-                <div><h3>{d.name}</h3><p className={s.meta}>{d.repsTotal} registrert{d.status === "active" ? " · pågår" : d.status === "done" ? " · ferdig" : ""}</p></div>
-                <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <button className={s.textButton} onClick={() => { setSelectedId(d.id); setMode("now"); }}>Registrer<span className={s.srOnly}> på {d.name}</span></button>
+            <ol className="ph05-ovelser">
+              {live.drills.map((d) => <li key={d.id} className="ph05-ovelse">
+                <button className="ph05-sjekk" aria-label={`${d.status === "done" ? "Fjern ferdigmarkering for" : "Marker ferdig"} ${d.name}`} aria-pressed={d.status === "done"} disabled={!enabled} onClick={() => live.mark(d.id, d.status !== "done")}>{d.status === "done" ? <Check size={20} aria-hidden /> : d.index}</button>
+                <div><h3>{d.name}</h3><p className="ph05-meta">{d.repsTotal} registrert{d.status === "active" ? " · pågår" : d.status === "done" ? " · ferdig" : ""}</p></div>
+                <div className="ph05-handlinger">
+                  <button className="pa-btn pa-btn--ghost" onClick={() => { setSelectedId(d.id); setMode("now"); }}>Registrer<span className="ph05-skjult"> på {d.name}</span></button>
                   {d.status !== "done" && live.drills.length > 1 && (
                     <button
-                      className={s.textButton}
-                      style={{ color: "var(--tl-mute)", padding: "4px 8px" }}
+                      className="pa-btn pa-btn--ghost"
                       title="Fjern øvelse fra denne økta"
                       onClick={() => live.removeDrill(d.id)}
                     >
@@ -241,75 +242,62 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 </div>
               </li>)}
             </ol>
-            <div style={{ marginTop: 16 }}>
+            <div className="ph05-leggtil">
               {!showAddDrill ? (
                 <button
-                  className={s.secondary}
-                  style={{ width: "100%" }}
+                  className="pa-btn pa-btn--secondary pa-btn--full"
                   disabled={!enabled}
                   onClick={() => setShowAddDrill(true)}
                 >
                   + Legg til øvelse underveis
                 </button>
               ) : (
-                <div style={{ padding: 14, borderRadius: 16, background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", display: "flex", flexDirection: "column", gap: 10 }}>
-                  <label className={s.selectLabel} htmlFor="new-drill-name">Navn på ny øvelse</label>
+                <div className="ph05-ny">
+                  <label className="ph05-feltlabel" htmlFor="new-drill-name">Navn på ny øvelse</label>
                   <input
                     id="new-drill-name"
+                    className="ph05-input"
                     type="text"
                     value={newDrillName}
                     onChange={(e) => setNewDrillName(e.target.value)}
                     placeholder="f.eks. Putting 3 meter, Wedges 60m"
-                    style={{ width: "100%", minHeight: 40, padding: "8px 12px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
                   />
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <label className={s.selectLabel} htmlFor="new-drill-min" style={{ margin: 0 }}>Varighet (min):</label>
+                  <div className="ph05-rad">
+                    <label className="ph05-feltlabel" htmlFor="new-drill-min">Varighet (min):</label>
                     <input
                       id="new-drill-min"
+                      className="ph05-input ph05-input--kort"
                       type="number"
                       min={1}
                       max={120}
                       value={newDrillMinutes}
                       onChange={(e) => setNewDrillMinutes(Number(e.target.value))}
-                      style={{ width: 64, minHeight: 36, padding: "4px 8px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
                     />
                   </div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                    {(["TEK", "SLAG", "SPILL", "FYS", "TURN"] as const).map((a) => {
-                      const on = newDrillAkse === a;
-                      return (
-                        <button
-                          key={a}
-                          type="button"
-                          onClick={() => setNewDrillAkse(a)}
-                          style={{
-                            appearance: "none",
-                            padding: "4px 8px",
-                            borderRadius: 6,
-                            border: "1px solid var(--tl-hair)",
-                            background: on ? "var(--tl-dim)" : "transparent",
-                            color: on ? "var(--tl-text)" : "var(--tl-mute)",
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            fontFamily: "var(--tl-font-mono)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {a}
-                        </button>
-                      );
-                    })}
+                  <div className="ph05-akser">
+                    {(["TEK", "SLAG", "SPILL", "FYS", "TURN"] as const).map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        className="ph05-akse"
+                        data-akse={a}
+                        aria-pressed={newDrillAkse === a}
+                        onClick={() => setNewDrillAkse(a)}
+                      >
+                        {a}
+                      </button>
+                    ))}
                   </div>
-                  <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 4 }}>
-                    <button className={s.textButton} onClick={() => setShowAddDrill(false)}>Avbryt</button>
-                    <button className={s.primary} style={{ width: "auto", minHeight: 38, padding: "8px 16px", marginTop: 0 }} disabled={!newDrillName.trim()} onClick={handleAddDrill}>Legg til</button>
+                  <div className="ph05-rad ph05-rad--slutt">
+                    <button className="pa-btn pa-btn--ghost" onClick={() => setShowAddDrill(false)}>Avbryt</button>
+                    <button className="pa-btn pa-btn--primary" disabled={!newDrillName.trim()} onClick={handleAddDrill}>Legg til</button>
                   </div>
                 </div>
               )}
             </div>
           </div>
-          <div hidden={mode !== "notes"} className={s.notes}>
-            <div style={{ marginBottom: 16 }}>
+          <div hidden={mode !== "notes"} className="ph05-notater">
+            <div className="ph05-tale">
               <VoiceRangeRecorder
                 sessionId={data.sessionId}
                 onMemoSaved={(obs) => {
@@ -328,18 +316,17 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 }}
               />
             </div>
-            <label className={s.selectLabel} htmlFor="live-note">Skriv eller rediger notat</label>
+            <label className="ph05-feltlabel" htmlFor="live-note">Skriv eller rediger notat</label>
             <textarea id="live-note" ref={noteInput} rows={4} value={text} disabled={!enabled} onChange={(event) => setText(event.target.value)} placeholder="Hva vil du huske?" />
-            <button className={s.primary} disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</button>
-            <p className={s.meta}>Notatene beholdes i denne fanen og følger med til oppsummeringen.</p>
-            {noteError && <p role="alert">Notatet kunne ikke lagres. Teksten står igjen; prøv på nytt.</p>}
-            {coachSendStatus && <p role="status" style={{ fontSize: "0.8125rem", color: "var(--tl-text)", margin: "6px 0", fontStyle: "italic" }}>{coachSendStatus}</p>}
-            {notes.length === 0 ? <p className={s.description}>Ingen notater ennå.</p> : <ol className={s.noteList}>{notes.map((note, index) => <li key={`${note.t}-${index}`}>
+            <button className="pa-btn pa-btn--primary pa-btn--lg pa-btn--full" disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</button>
+            <p className="ph05-meta">Notatene beholdes i denne fanen og følger med til oppsummeringen.</p>
+            {noteError && <p className="ph05-feil" role="alert">Notatet kunne ikke lagres. Teksten står igjen; prøv på nytt.</p>}
+            {coachSendStatus && <p className="ph05-meta" role="status">{coachSendStatus}</p>}
+            {notes.length === 0 ? <p className="ph05-brod">Ingen notater ennå.</p> : <ol className="ph05-notatliste">{notes.map((note, index) => <li key={`${note.t}-${index}`}>
               <time>{note.t}</time>
               <p>{note.tekst}</p>
               <button
-                className={s.textButton}
-                style={{ fontSize: "0.75rem", padding: "4px 0", color: "var(--tl-mute)" }}
+                className="pa-btn pa-btn--ghost"
                 onClick={() => handleSendNoteToCoach(note.tekst)}
               >
                 Send notat til trenerens innboks
@@ -350,7 +337,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       </div>
     </main>
     <LiveCoachPanel data={coachPanel} activeDrillId={active?.id} />
-    <dialog ref={dialog} className={s.dialog} tabIndex={-1} onKeyDown={(event) => {
+    <dialog ref={dialog} className="ph05-dialog" tabIndex={-1} onKeyDown={(event) => {
       if (event.key !== "Tab") return;
       const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"));
       const target = event.shiftKey ? buttons.at(-1) : buttons[0];
@@ -359,9 +346,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       <h2 id="live-finish-title">Avslutte økta?</h2>
       <p>{completedCount} av {live.drills.length} øvelser markert ferdige. Registreringene lagres før oppsummeringen åpnes.</p>
       {text.trim() && <p>Du har et notat som ikke er lagt til. Fortsett økta for å ta det med.</p>}
-      {live.phase === "finish-error" && <p className={s.error} role="alert">Fullføringen ble ikke bekreftet. Hold siden åpen. Prøv igjen når du har nett, eller fortsett økta.</p>}
-      <button className={s.primary} disabled={finishing} onClick={() => { void live.finish(); }}>{finishing ? "Lagrer og fullfører …" : live.phase === "finish-error" ? "Prøv fullføring igjen" : "Avslutt og logg økta"}</button>
-      <button ref={cancelButton} className={s.textButton} disabled={finishing} onClick={close}>Fortsett økta</button>
+      {live.phase === "finish-error" && <p className="ph05-feil" role="alert">Fullføringen ble ikke bekreftet. Hold siden åpen. Prøv igjen når du har nett, eller fortsett økta.</p>}
+      <button className="pa-btn pa-btn--primary pa-btn--lg pa-btn--full" disabled={finishing} onClick={() => { void live.finish(); }}>{finishing ? "Lagrer og fullfører …" : live.phase === "finish-error" ? "Prøv fullføring igjen" : "Avslutt og logg økta"}</button>
+      <button ref={cancelButton} className="pa-btn pa-btn--ghost" disabled={finishing} onClick={close}>Fortsett økta</button>
     </dialog>
   </div>;
 }

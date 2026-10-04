@@ -133,6 +133,6 @@ describe("spiller-synlighet", () => {
     const statuser: readonly string[] = SPILLER_SYNLIGE_STATUSER;
     assert.equal(statuser.includes("DRAFT"), false);
     assert.equal(statuser.includes("SCHEDULED"), false);
-    assert.deepEqual([...statuser], ["PUBLISHED", "IN_PROGRESS", "COMPLETED"]);
+    assert.deepEqual([...statuser], ["PUBLISHED", "IN_PROGRESS", "COMPLETED", "SKIPPED", "ABANDONED"]);
   });
 });

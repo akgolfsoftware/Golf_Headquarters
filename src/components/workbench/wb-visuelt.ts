@@ -31,6 +31,7 @@ export const STATUS_CAPS: Record<SessionStatus, string> = {
   PUBLISHED: "PUBLISERT",
   IN_PROGRESS: "PÅGÅR",
   COMPLETED: "FULLFØRT",
+  ABANDONED: "AVBRUTT",
   CANCELLED: "AVLYST",
   SKIPPED: "HOPPET OVER",
 };

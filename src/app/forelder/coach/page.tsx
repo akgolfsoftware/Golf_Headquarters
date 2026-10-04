@@ -1,3 +1,4 @@
+// FO06Coach — Precision Athletics. Data og handlinger er beholdt.
 /**
  * Foreldreportal · Coach. En ekte toveis coach-dialog for foreldre finnes ikke
  * i datamodellen ennå — CoachingSession er spiller↔coach, ikke forelder↔coach.
@@ -15,7 +16,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderCoachV2,
   type ForelderCoachData,
@@ -49,9 +50,9 @@ export default async function ForelderCoachPage() {
       supportEpost: SUPPORT_EPOST,
     };
     return (
-      <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+      <ForelderSkall>
         <ForelderCoachV2 data={data} />
-      </V2Shell>
+      </ForelderSkall>
     );
   }
 
@@ -117,8 +118,8 @@ export default async function ForelderCoachPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+    <ForelderSkall>
       <ForelderCoachV2 data={data} />
-    </V2Shell>
+    </ForelderSkall>
   );
 }

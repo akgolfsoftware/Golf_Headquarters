@@ -11,7 +11,8 @@
  * in-memory — collisjonvern still protects hard races.
  */
 
-import { Redis } from "@upstash/redis";
+import { createUpstashRedis } from "@/lib/upstash-redis";
+import type { Redis } from "@upstash/redis";
 
 export const DEFAULT_HOLD_TTL_MS = 3 * 60 * 1000; // 3 min
 export const MIN_HOLD_TTL_MS = 2 * 60 * 1000;
@@ -33,10 +34,9 @@ export type SlotHold = {
 export function slotHoldKey(parts: SlotHoldKeyParts): string {
   // Normalize to second precision so ms noise doesn't fork keys
   const start = new Date(parts.startIso);
-  const iso =
-    Number.isNaN(start.getTime())
-      ? parts.startIso
-      : new Date(Math.floor(start.getTime() / 1000) * 1000).toISOString();
+  const iso = Number.isNaN(start.getTime())
+    ? parts.startIso
+    : new Date(Math.floor(start.getTime() / 1000) * 1000).toISOString();
   return `slot-hold:${parts.serviceTypeId}:${parts.coachId}:${iso}`;
 }
 
@@ -90,16 +90,7 @@ let redisTried = false;
 function getRedis(): Redis | null {
   if (redisTried) return redis;
   redisTried = true;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token || /xxxx\.upstash\.io|YOUR_|placeholder/i.test(url + token)) {
-    return null;
-  }
-  try {
-    redis = new Redis({ url, token });
-  } catch {
-    redis = null;
-  }
+  redis = createUpstashRedis();
   return redis;
 }
 
@@ -111,7 +102,10 @@ export async function acquireHold(
   parts: SlotHoldKeyParts,
   holderId: string,
   ttlMs: number = DEFAULT_HOLD_TTL_MS,
-): Promise<{ ok: true; hold: SlotHold } | { ok: false; hold: SlotHold | null; reason: string }> {
+): Promise<
+  | { ok: true; hold: SlotHold }
+  | { ok: false; hold: SlotHold | null; reason: string }
+> {
   const key = slotHoldKey(parts);
   const ttl = clampHoldTtl(ttlMs);
   const r = getRedis();
@@ -133,7 +127,10 @@ export async function acquireHold(
       }
       const raw = await r.get<string>(key);
       if (raw) {
-        const existing = typeof raw === "string" ? (JSON.parse(raw) as SlotHold) : (raw as SlotHold);
+        const existing =
+          typeof raw === "string"
+            ? (JSON.parse(raw) as SlotHold)
+            : (raw as SlotHold);
         if (existing.holderId === holderId) {
           await r.set(key, payload, { px: ttl });
           return {
@@ -171,7 +168,10 @@ export async function releaseHold(
     try {
       const raw = await r.get<string>(key);
       if (raw) {
-        const existing = typeof raw === "string" ? (JSON.parse(raw) as SlotHold) : (raw as SlotHold);
+        const existing =
+          typeof raw === "string"
+            ? (JSON.parse(raw) as SlotHold)
+            : (raw as SlotHold);
         if (existing.holderId === holderId) {
           await r.del(key);
           memory.delete(key);
@@ -186,14 +186,19 @@ export async function releaseHold(
   return memoryRelease(key, holderId);
 }
 
-export async function getHold(parts: SlotHoldKeyParts): Promise<SlotHold | null> {
+export async function getHold(
+  parts: SlotHoldKeyParts,
+): Promise<SlotHold | null> {
   const key = slotHoldKey(parts);
   const r = getRedis();
   if (r) {
     try {
       const raw = await r.get<string>(key);
       if (raw) {
-        const existing = typeof raw === "string" ? (JSON.parse(raw) as SlotHold) : (raw as SlotHold);
+        const existing =
+          typeof raw === "string"
+            ? (JSON.parse(raw) as SlotHold)
+            : (raw as SlotHold);
         if (existing.expiresAt > Date.now()) return existing;
         await r.del(key);
         return null;

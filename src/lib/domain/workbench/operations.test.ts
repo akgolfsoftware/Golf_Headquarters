@@ -286,8 +286,15 @@ describe("måned og år", () => {
     assert.equal(addMonths("2026-01-01", -1), "2025-12-01");
   });
 
-  it("isoWeekNumber følger ISO (mandag-start)", () => {
-    assert.equal(isoWeekNumber("2026-08-24"), 35);
+  it("isoWeekNumber følger ISO ved årsskifte og hele dager (UTC/Oslo)", () => {
+    const datoer = [
+      ["2027-01-04", 1], ["2027-01-11", 2], ["2021-01-01", 53],
+      ["2024-12-30", 1], ["2026-09-28", 40], ["2026-10-05", 41],
+      ["2026-08-24", 35],
+    ] as const;
+    for (const [dato, forventetUke] of datoer) {
+      assert.equal(isoWeekNumber(dato), forventetUke, `${dato} i ${process.env.TZ ?? "lokal tid"}`);
+    }
   });
 
   it("buildMonthViewModel: maks tre linjer og +N mer", () => {

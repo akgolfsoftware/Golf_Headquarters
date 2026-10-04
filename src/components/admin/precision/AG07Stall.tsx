@@ -95,7 +95,7 @@ function SpillerRad({ r, i }: { r: StallBaandRad; i: number }) {
   const sgNaa = r.sgTrend.length ? fmtSg(r.sgTrend[r.sgTrend.length - 1]!) : "—";
   const avtale = r.avtaleUtlopIso ? `${r.pakke} · fornyes ${OSLO_DATO.format(new Date(r.avtaleUtlopIso))}` : r.pakkeAktiv ? r.pakke : "—";
   const celler: [string, string][] = [
-    ["ETTERLEVELSE · UKA", r.adhPct == null ? "—" : `${r.adhPct} %`],
+    ["ETTERLEVELSE · 4 UKER", r.adhPct == null ? "—" : `${r.adhPct} %`],
     ["SG-FORM", sgNaa],
     ["SG-ENDRING", r.sgDelta == null ? "—" : fmtSg(r.sgDelta)],
     ["SISTE AKTIVITET", r.sisteAktivitetLabel],

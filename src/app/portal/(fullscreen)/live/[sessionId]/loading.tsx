@@ -1,10 +1,10 @@
+import { LasterTilstand } from "@/components/precision/pa";
+import "@/styles/precision-athletics.css";
+
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-foreground">
-      <div className="space-y-4 text-center">
-        <div className="mx-auto h-16 w-16 animate-spin rounded-full border-4 border-background/20 border-t-accent" />
-        <p className="font-mono text-sm text-background/65">Laster økt…</p>
-      </div>
+    <div className="pa-root ph05-laster" data-theme="night">
+      <LasterTilstand text="Laster økt …" />
     </div>
   );
 }

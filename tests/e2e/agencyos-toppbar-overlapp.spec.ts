@@ -9,7 +9,7 @@
  * Testen låser to ting: (1) siden lander på toppen, ikke i bunn, og
  * (2) ingen synlig handling overlapper toppbaren.
  */
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
 import { loginAsCoach, hasCoachAuth, dismissCookieBanner } from "./_auth-helpers";
 
 test.describe("AgencyOS-konsollen — sticky toppbar", () => {
@@ -20,18 +20,18 @@ test.describe("AgencyOS-konsollen — sticky toppbar", () => {
     await loginAsCoach(page);
     await page.goto("/admin/agencyos");
     await dismissCookieBanner(page);
-    await page.locator("header[data-paper-topbar='konsoll']").waitFor();
+    await page.locator("header.pa-aos__menylinje").waitFor();
     // Autoscroll er «smooth» — vent forbi vinduet der den ev. ville kjørt.
     await page.waitForTimeout(2500);
 
     const funn = await page.evaluate(() => {
-      const topp = document.querySelector<HTMLElement>("header[data-paper-topbar='konsoll']")!;
+      const topp = document.querySelector<HTMLElement>("header.pa-aos__menylinje")!;
       const tb = topp.getBoundingClientRect();
       const dekket: string[] = [];
       document.querySelectorAll<HTMLElement>("a, button").forEach((el) => {
-        if (topp.contains(el)) return;
+        if (topp.contains(el) || el.closest("[inert]")) return;
         const r = el.getBoundingClientRect();
-        if (r.height === 0 || r.width === 0) return;
+        if (r.height <= 1 || r.width <= 1) return; // skjermleser-lenker er klippet til 1 px
         // Utenfor viewporten er uinteressant — vi ser kun på det som vises nå.
         if (r.bottom <= 0 || r.top >= window.innerHeight) return;
         if (r.top < tb.bottom && r.bottom > tb.top) {

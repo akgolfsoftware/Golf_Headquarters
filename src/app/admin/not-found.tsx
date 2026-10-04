@@ -1,11 +1,6 @@
 /**
- * 404 for /admin-treet — Paper. Fasit: designsystem/paper/fase2/system/
- * system-tilstander.html (§404), via delt <IkkeFunnet>. Erstatter den
- * gamle bespoke mørke 404-en (design-audit-funn 8, «hvit blits» i mørk
- * admin-chrome) — den bugen er lukket av tema-unifiseringen 2026-08-03
- * (html[data-v2-tema="dark"] er eneste mekanisme, og --p-*-tokene i
- * paper-tokens.css har egen mørk-blokk), så PaperTilstand rendrer nå
- * korrekt i begge temaer uten en egen mørk variant.
+ * 404 for /admin-treet. Samme Precision-ramme som SY-01, med
+ * cockpit og innlogging som veier tilbake.
  */
 
 import type { Metadata } from "next";

@@ -67,6 +67,7 @@ export interface WangFokusomraadeDb {
 }
 
 export interface WangHendelseDb {
+  id: string;
   tittel: string;
   startIso: string; // yyyy-mm-dd (Oslo)
   startTid: string; // HH:mm (Oslo)
@@ -193,6 +194,7 @@ export async function hentWangGruppe(
         schedules: {
           orderBy: { startAt: "asc" },
           select: {
+            id: true,
             title: true,
             description: true,
             startAt: true,
@@ -248,6 +250,7 @@ export async function hentWangGruppe(
     const hendelser: WangHendelseDb[] = gruppe.schedules
       .filter((s) => s.recurring !== "WEEKLY")
       .map((s) => ({
+        id: s.id,
         tittel: s.title,
         startIso: osloDato(s.startAt),
         startTid: osloTid(s.startAt),

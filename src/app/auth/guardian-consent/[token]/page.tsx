@@ -1,15 +1,8 @@
 /**
- * /auth/guardian-consent/[token]
+ * /auth/guardian-consent/[token] — AU05Verge.
  *
- * GDPR art. 8 (P17) — foreldresamtykke for mindreårig spiller.
- * Forelder mottar e-post med signing-link, klikker → kommer hit.
- * Bekrefter samtykke → spiller-konto aktiveres + ParentRelation opprettes.
- *
- * v2-redesign (2026-07-10): rendrer <GuardianConsentV2> (retning C «Presis»)
- * — se src/components/portal/v2/GuardianConsentV2.tsx. Token-oppslaget
- * (utløpt/allerede-akseptert/gyldig) SKJER FORTSATT her på server-siden;
- * resultatet styrer hvilken `state` som sendes til komponenten. Gamle
- * guardian-consent-form.tsx står urørt som fallback.
+ * GDPR art. 8. Token-oppslaget (utløpt, allerede akseptert, gyldig)
+ * skjer her. Komponenten viser tilstanden.
  */
 
 import { notFound } from "next/navigation";
@@ -44,12 +37,9 @@ export default async function GuardianConsentPage({ params }: Props) {
 
   if (!invitation) notFound();
 
-  // Sjekk om utløpt
   const expired = invitation.expiresAt < new Date();
-  // Sjekk om allerede akseptert
   const alreadyAccepted = invitation.acceptedAt !== null;
   const alreadyConsented = invitation.player.guardianConsentGivenAt !== null;
-
   const playerAge = calculateAge(invitation.player.dateOfBirth);
 
   if (expired) {

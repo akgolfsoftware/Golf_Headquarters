@@ -520,8 +520,8 @@ model User {
   // §Schema-endringer). resolveValgtCoachId i src/lib/domain/valgt-coach.ts
   // er ENESTE lovlige leser — les aldri feltet direkte i flater/agenter.
   primaryCoachId     String?
-  // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
-  // ved registrering via navn-matching. Gir spilleren turneringshistorikk i profilen.
+  // Kanonisk kobling til turneringsidentitet (PublicPlayer). Nye koblinger
+  // settes ikke automatisk via navn, da navn alene ikke beviser personidentitet.
   publicPlayerId     String?   @unique
   // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
   // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
@@ -588,14 +588,17 @@ model User {
   // PlayerHQ-relasjoner
   trainingPlans         TrainingPlan[]
   rounds                Round[]
+  roundDrafts           RoundDraft[]
   gameplanHull          GameplanHull[]
   gameplanSoner         GameplanSone[]
   testResults           TestResult[]
   testResultsAsWitness  TestResult[]         @relation("TestWitness")
   testResultsRecorded   TestResult[]         @relation("TestResultRecordedBy")
   testSessions          TestSession[]
+  testSessionPhotos     TestSessionPhoto[]
   testDaysAsCoach       TestDay[]            @relation("TestDayCoach")
   testDayParticipations TestDayParticipant[] @relation("TestDayPlayer")
+  testDayEventsAsOrganizer TestDayEvent[]    @relation("TestDayEventOrganizer")
   testAssignments       TestAssignment[]     @relation("PlayerTestAssignments")
   coachTestAssignments  TestAssignment[]     @relation("CoachTestAssignments")
   trackManSessions      TrackManSession[]
@@ -693,6 +696,9 @@ model User {
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
 
+  // Én spillereid IUP-besvarelse per skjematype/kilde/nivå/periode.
+  iupBesvarelser IupBesvarelse[]
+
   // Drill-opprettelse (taxonomy v4)
   createdExercises       ExerciseDefinition[] @relation("ExerciseCreator")
   coachDirektiverGitt    CoachDrillDirectiv[] @relation("DirektivCoach")
@@ -767,9 +773,50 @@ model User {
   @@map("users")
 }
 
-// Web Push-abonnement per enhet/browser. Én bruker kan ha flere
-// (laptop, telefon, ulike browsere). Slettes når subscription returnerer
-// 410 Gone fra push-service (gammel/avregistrert).
+// Spillereid IUP. Organisasjonenes frister og oppfølging lagres separat;
+// besvarelser kopieres aldri per skole, trener eller Team Norway-gruppe.
+model IupBesvarelse {
+  id             String        @id @default(cuid())
+  userId         String
+  type           String
+  versjon        String
+  kildeSha256    String
+  // ALLE for sesongevaluering; utviklingssjekk bruker kildekatalogens nivå.
+  niva           String
+  periodeStart   DateTime      @db.Date
+  periodeSlutt   DateTime      @db.Date
+  revisjon       Int           @default(0)
+  levertRevisjon Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revisjoner     IupRevisjon[]
+
+  @@unique([userId, type, versjon, niva, periodeStart, periodeSlutt], map: "iup_besvarelse_eier_periode_key")
+  @@index([userId, updatedAt])
+  @@map("iup_besvarelser")
+}
+
+// Append-only ved normal lagring. Både utkast og leveringer får egen revisjon.
+// Revisjonene slettes med besvarelsen ved autorisert sletting/anonymisering.
+model IupRevisjon {
+  id           String        @id @default(cuid())
+  besvarelseId String
+  revisjon     Int
+  requestId    String        @db.Uuid
+  requestHash  String
+  status       String
+  payload      Json
+  createdAt    DateTime      @default(now())
+  besvarelse   IupBesvarelse @relation(fields: [besvarelseId], references: [id], onDelete: Cascade)
+
+  @@unique([besvarelseId, revisjon], map: "iup_revisjon_nummer_key")
+  @@unique([besvarelseId, requestId], map: "iup_revisjon_request_key")
+  @@map("iup_revisjoner")
+}
+
+// Web Push-abonnement per enhet/browser. Én bruker kan ha flere.
+// Slettes når abonnementet returnerer 410 Gone fra push-tjenesten.
 model PushSubscription {
   id         String    @id @default(cuid())
   userId     String    @map("user_id")
@@ -839,6 +886,8 @@ model DelingsSamtykke {
   // TEST_RESULTATER | STATS
   scope            String
   mottakerGruppeId String
+  // Bare NAVNGITT_KOMPLETT_PROFIL: eldre gruppesamtykker har null.
+  mottakerUserId   String?
   // false = trukket (ny rad, aldri update av gamle)
   gitt             Boolean
   tekstVersjon     String
@@ -848,7 +897,32 @@ model DelingsSamtykke {
   createdAt        DateTime @default(now())
 
   @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@index([userId, scope, mottakerGruppeId, mottakerUserId, createdAt], map: "delings_samtykker_navngitt_idx")
   @@map("delings_samtykker")
+}
+
+// Navngitt deling: token lagres bare som SHA-256. Ingen innsyn før aksept.
+model TrenerDelingsInvitasjon {
+  id               String    @id
+  userId           String
+  mottakerGruppeId String
+  mottakerEpost    String
+  tokenHash        String    @unique
+  tekstVersjon     String
+  gittAvUserId     String
+  gittAvRolle      String
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+
+  @@index([userId, createdAt], map: "trener_delings_invitasjoner_owner_idx")
+  @@index([mottakerEpost, expiresAt], map: "trener_delings_invitasjoner_email_idx")
+  @@index([mottakerGruppeId], map: "trener_delings_invitasjoner_group_idx")
+  @@index([gittAvUserId], map: "trener_delings_invitasjoner_actor_idx")
+  @@index([acceptedByUserId], map: "trener_delings_invitasjoner_coach_idx")
+  @@map("trener_delings_invitasjoner")
 }
 
 // Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
@@ -1702,60 +1776,105 @@ model TrainingLog {
 }
 
 model Round {
-  id                String   @id @default(cuid())
-  userId            String
-  courseId          String
-  playedAt          DateTime
-  score             Int
-  sgTotal           Float?
-  sgOtt             Float?
-  sgApp             Float?
-  sgArg             Float?
-  sgPutt            Float?
+  id                     String          @id @default(cuid())
+  userId                 String
+  courseId               String
+  teeId                  String?
+  sgReferenceSetId       String?
+  benchmarkLevelSnapshot String?
+  playStatus             RoundPlayStatus @default(COMPLETED)
+  startedAt              DateTime?
+  finishedAt             DateTime?
+  weatherWindMps         Float?
+  weatherWindDirection   String?
+  weatherTemperatureC    Float?
+  weatherPrecipitation   String?
+  weatherSource          String?
+  sgEngineVersion        String?
+  playedAt               DateTime
+  score                  Int
+  sgTotal                Float?
+  sgOtt                  Float?
+  sgApp                  Float?
+  sgArg                  Float?
+  sgPutt                 Float?
   // Granulære SG-felter (fra taksonomien — alle valgfrie)
-  sgTee             Float?
-  sgApp200          Float?
-  sgApp150          Float?
-  sgApp100          Float?
-  sgApp50           Float?
-  sgChip            Float?
-  sgPitch           Float?
-  sgLob             Float?
-  sgBunker          Float?
-  sgPutt0_3         Float?
-  sgPutt3_5         Float?
-  sgPutt5_10        Float?
-  sgPutt10_15       Float?
-  sgPutt15_25       Float?
-  sgPutt25_40       Float?
-  sgPutt40plus      Float?
+  sgTee                  Float?
+  sgApp200               Float?
+  sgApp150               Float?
+  sgApp100               Float?
+  sgApp50                Float?
+  sgChip                 Float?
+  sgPitch                Float?
+  sgLob                  Float?
+  sgBunker               Float?
+  sgPutt0_3              Float?
+  sgPutt3_5              Float?
+  sgPutt5_10             Float?
+  sgPutt10_15            Float?
+  sgPutt15_25            Float?
+  sgPutt25_40            Float?
+  sgPutt40plus           Float?
   // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
-  sgSource          String?
+  sgSource               String?
   // Runde/SG-datakvalitet: kilde, lagringsstatus og audit for import/manuell føring.
-  source            String?
-  sourceDate        DateTime?
-  dataQuality       String?
-  status            String?
-  partialSave       Boolean  @default(false)
-  importMetadata    Json?
+  source                 String?
+  sourceDate             DateTime?
+  dataQuality            String?
+  status                 String?
+  partialSave            Boolean         @default(false)
+  importMetadata         Json?
   // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
-  roundType         String?
-  notes             String?
+  roundType              String?
+  notes                  String?
   // D6c live turneringsrunde (godkjent 2026-07-17): knytter en runde til en
   // TournamentEntry. Plain id uten @relation — additiv per gotcha-regelen.
-  tournamentEntryId String?
-  createdAt         DateTime @default(now())
+  tournamentEntryId      String?
+  createdAt              DateTime        @default(now())
 
-  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course     CourseDefinition @relation(fields: [courseId], references: [id])
-  shots      Shot[]
-  holeScores HoleScore[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course         CourseDefinition @relation(fields: [courseId], references: [id])
+  tee            CourseTee?       @relation(fields: [teeId], references: [id], onDelete: SetNull)
+  sgReferenceSet SgReferenceSet?  @relation(fields: [sgReferenceSetId], references: [id], onDelete: SetNull)
+  shots          Shot[]
+  holeScores     HoleScore[]
 
   @@index([userId, playedAt])
   @@index([userId, status])
   @@index([source])
   @@index([tournamentEntryId])
+  @@index([teeId])
+  @@index([sgReferenceSetId])
   @@map("rounds")
+}
+
+enum RoundPlayStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum RoundDraftStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+model RoundDraft {
+  id               String           @id @default(cuid())
+  userId           String
+  clientRequestId  String
+  validatedPayload Json
+  schemaVersion    Int              @default(1)
+  revision         Int              @default(1)
+  savedAt          DateTime         @default(now())
+  draftStatus      RoundDraftStatus @default(ACTIVE)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientRequestId])
+  @@index([userId, savedAt])
+  @@map("round_drafts")
 }
 
 // Per-slag statistikk (manuell wizard eller UpGame-import)
@@ -1832,20 +1951,33 @@ enum PuttFartUtfall {
 }
 
 model Shot {
-  id            String   @id @default(cuid())
-  roundId       String
-  holeNumber    Int
-  holePar       Int
-  shotNumber    Int
-  club          String?
-  lie           ShotLie
-  distanceToPin Float?
-  distanceHit   Float?
-  windDir       WindDir?
-  shotType      ShotType
-  isPenalty     Boolean  @default(false)
-  notes         String?
-  createdAt     DateTime @default(now())
+  id                   String   @id @default(cuid())
+  roundId              String
+  holeNumber           Int
+  holePar              Int
+  shotNumber           Int
+  club                 String?
+  lie                  ShotLie
+  distanceToPin        Float?
+  courseHoleId         String?
+  endLie               ShotLie?
+  endDistanceToPinM    Float?
+  holed                Boolean?
+  penaltyStrokes       Int      @default(0) @db.SmallInt
+  penaltyType          String?
+  intendedAimLateralM  Float?
+  intendedAimDistanceM Float?
+  missLateralM         Float?
+  missLongShortM       Float?
+  measurementMethod    String?
+  positionAccuracyM    Float?
+  distanceHit          Float?
+  windDir              WindDir?
+  shotType             ShotType
+  isPenalty            Boolean  @default(false)
+  notes                String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now()) @updatedAt
 
   // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — src/lib/gameplan/shot-coords.ts)
   startX      Float?
@@ -1859,11 +1991,15 @@ model Shot {
 
   endShotKategori EndShotKategori?
   puttDetail      PuttDetail?
+  returnPutts     PuttDetail[]     @relation("PuttReturn")
+  sgResults       ShotSgResult[]
 
-  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  round      Round       @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  courseHole CourseHole? @relation(fields: [courseHoleId], references: [id], onDelete: SetNull)
 
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
+  @@index([courseHoleId])
   @@map("shots")
 }
 
@@ -1876,9 +2012,13 @@ model PuttDetail {
   linjeMiss        PuttLinjeMiss?
   fartUtfall       PuttFartUtfall
   createdAt        DateTime             @default(now())
+  returnOfShotId   String?
+  puttDirection    String?
 
-  shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  shot         Shot  @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  returnOfShot Shot? @relation("PuttReturn", fields: [returnOfShotId], references: [id], onDelete: SetNull)
 
+  @@index([returnOfShotId])
   @@map("putt_details")
 }
 
@@ -1901,21 +2041,28 @@ model SessionBallLog {
 }
 
 model HoleScore {
-  id         String   @id @default(cuid())
-  roundId    String
-  holeNumber Int
-  par        Int
-  strokes    Int
-  putts      Int?
-  fairway    Boolean?
-  gir        Boolean?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  roundId               String
+  holeNumber            Int
+  par                   Int
+  strokes               Int
+  courseHoleId          String?
+  teeLengthMSnapshot    Int?
+  handicapIndexSnapshot Int?
+  penalties             Int?
+  firstPuttFt           Float?
+  putts                 Int?
+  fairway               Boolean?
+  gir                   Boolean?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
-  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  round      Round       @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  courseHole CourseHole? @relation(fields: [courseHoleId], references: [id], onDelete: SetNull)
 
   @@unique([roundId, holeNumber])
   @@index([roundId])
+  @@index([courseHoleId])
   @@map("hole_scores")
 }
 
@@ -2054,10 +2201,29 @@ model TestSession {
   test TestDefinition @relation(fields: [testId], references: [id])
 
   testDayParticipant TestDayParticipant?
+  photos             TestSessionPhoto[]
 
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
+}
+
+/// Valgfritt privat bilde knyttet til ett forsøk i en versjonert TN-test.
+/// Scorekortdeling gir ikke automatisk tilgang til bildet.
+model TestSessionPhoto {
+  id            String      @id @default(cuid())
+  userId        String
+  testSessionId String
+  attemptNumber Int
+  storagePath   String      @unique
+  createdAt     DateTime    @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testSession TestSession @relation(fields: [testSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([testSessionId, attemptNumber])
+  @@index([userId, createdAt])
+  @@map("test_session_photos")
 }
 
 /// Tildeling av en test fra coach til spiller. Spiller varsles ved opprettelse;
@@ -2118,6 +2284,10 @@ model TestDay {
   id               String        @id @default(cuid())
   groupId          String
   coachId          String
+  // Null på eldre testdager. Når satt, er denne raden én stasjon/protokoll
+  // under det felles arrangementet; gruppe og deltakerliste gjelder stasjonen.
+  eventId          String?
+  stationName      String?
   title            String
   location         String?
   scheduledAt      DateTime
@@ -2129,11 +2299,37 @@ model TestDay {
   group          Group                @relation(fields: [groupId], references: [id], onDelete: Cascade)
   coach          User                 @relation("TestDayCoach", fields: [coachId], references: [id], onDelete: Cascade)
   testDefinition TestDefinition       @relation(fields: [testDefinitionId], references: [id], onDelete: Cascade)
+  event          TestDayEvent?        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   participants   TestDayParticipant[]
 
   @@index([groupId, status])
   @@index([coachId])
+  @@index([eventId])
   @@map("test_days")
+}
+
+/// Felles testdag på tvers av WANG- og Team Norway-grupper. Hver TestDay under
+/// arrangementet er én stasjon med egen gruppe, protokoll og kø. Eldre TestDay
+/// uten eventId forblir gyldige som enkeltstående testdager.
+model TestDayEvent {
+  id               String        @id @default(cuid())
+  organizerGroupId String
+  organizerId      String
+  title            String
+  location         String?
+  scheduledAt      DateTime
+  status           TestDayStatus @default(PLANNED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  organizer Group     @relation(fields: [organizerGroupId], references: [id], onDelete: Cascade)
+  createdBy User      @relation("TestDayEventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  stations  TestDay[]
+
+  @@index([organizerGroupId, status])
+  @@index([organizerId])
+  @@index([scheduledAt])
+  @@map("test_day_events")
 }
 
 model TestDayParticipant {
@@ -3133,6 +3329,7 @@ model Bane {
   updatedAt DateTime @updatedAt
 
   holes             CourseHole[]
+  tees              CourseTee[]
   courseDefinitions CourseDefinition[]
 
   @@index([region])
@@ -3166,14 +3363,61 @@ model CourseHole {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bane Bane @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  bane       Bane            @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  tees       CourseHoleTee[]
+  shots      Shot[]
+  holeScores HoleScore[]
 
   gameplanHull  GameplanHull[]
   gameplanSoner GameplanSone[]
 
   @@unique([baneId, holeNumber])
+  @@unique([id, baneId])
   @@index([baneId])
   @@map("course_holes")
+}
+
+model CourseTee {
+  id           String    @id @default(cuid())
+  baneId       String
+  code         String
+  label        String
+  courseRating Float     @map("course_rating")
+  slopeRating  Int       @map("slope_rating")
+  par          Int?
+  source       String?
+  validFrom    DateTime? @db.Date
+  validTo      DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+
+  bane   Bane            @relation(fields: [baneId], references: [id], onDelete: Cascade)
+  holes  CourseHoleTee[]
+  rounds Round[]
+
+  @@unique([baneId, code])
+  @@unique([id, baneId])
+  @@index([baneId])
+  @@map("course_tees")
+}
+
+model CourseHoleTee {
+  teeId     String
+  holeId    String
+  baneId    String
+  lengthM   Int
+  teeLat    Float?
+  teeLng    Float?
+  source    String?
+  updatedAt DateTime @updatedAt
+
+  tee  CourseTee  @relation(fields: [teeId, baneId], references: [id, baneId], onDelete: Cascade)
+  hole CourseHole @relation(fields: [holeId, baneId], references: [id, baneId], onDelete: Cascade)
+
+  @@id([teeId, holeId])
+  @@index([holeId])
+  @@index([holeId, baneId])
+  @@index([teeId, baneId])
+  @@map("course_hole_tees")
 }
 
 // Gameplan (B30/B39-æraen — omdøpt fra "Baneguide") interaktiv hull-for-hull-planlegging.
@@ -3454,6 +3698,8 @@ model WeekPlan {
   repTargetPutting   Int?
   repTargetShortGame Int?
   repetitionTargets  Json?
+  // R06.2: versjonert ukeplan; gamle tidsbudsjetter og enumverdier beholdes.
+  planningDetails    Json?
   loadCeiling        Int?
   customNotes        String?
   createdAt          DateTime   @default(now())
@@ -3566,6 +3812,7 @@ model Group {
   members   GroupMember[]
   schedules GroupSchedule[]
   testDays  TestDay[]
+  hostedTestDayEvents TestDayEvent[]
 
   @@index([coachId])
   @@map("groups")
@@ -4378,19 +4625,90 @@ model AiSpillerminne {
   @@map("ai_memories")
 }
 
-// PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
+// To atskilte typer referanser i den eksisterende tabellen:
+// legacy: DataGolf SG per slag i yard-bøtter (IKKE forventede slag til hull).
+// expected_to_hole: vår versjonerte Broadie-baserte kurve i meter.
 model SgBaseline {
-  id              String     @id @default(cuid())
-  category        SgCategory
-  distanceBucket  String // "175-200y"
-  lie             ShotLie?
-  expectedStrokes Float
-  sampleSize      Int
-  source          String // "datagolf-approach-skill-2026Q1"
-  fetchedAt       DateTime
+  id                    String      @id @default(cuid())
+  category              SgCategory?
+  distanceBucket        String? // legacy: "175-200y"
+  lie                   ShotLie?
+  expectedStrokes       Float? // legacy: DataGolf SG per slag, historisk feilnavn
+  sampleSize            Int?
+  source                String?
+  fetchedAt             DateTime?
+  baselineKind          String      @default("legacy_sg_bucket") @map("baseline_kind")
+  baselineVersion       String?     @map("baseline_version")
+  distanceMeters        Decimal?    @map("distance_meters") @db.Decimal(7, 2)
+  lieType               String?     @map("lie_type")
+  expectedStrokesToHole Decimal?    @map("expected_strokes") @db.Decimal(7, 4)
+  sourceReference       String?     @map("source_reference")
+  quality               String?
+  isSupported           Boolean?    @map("is_supported")
 
   @@unique([category, distanceBucket, lie])
+  @@unique([baselineVersion, lieType, distanceMeters], map: "sg_baselines_version_lie_distance_key")
   @@map("sg_baselines")
+}
+
+// Versjonerte, kildeførte referansekurver for eksakt slag-SG.
+model SgReferenceSet {
+  id                      String    @id @default(cuid())
+  levelCode               String
+  label                   String
+  source                  String
+  sourceVersion           String
+  licenceNote             String?
+  validFrom               DateTime? @db.Date
+  createdAt               DateTime  @default(now())
+  publishedAt             DateTime?
+  engineCompatibleVersion String
+
+  baselines   StrokesGainedBaseline[]
+  shotResults ShotSgResult[]
+  rounds      Round[]
+
+  @@unique([levelCode, sourceVersion])
+  @@index([levelCode, publishedAt])
+  @@map("sg_reference_sets")
+}
+
+model StrokesGainedBaseline {
+  id              String     @id @default(cuid())
+  referenceSetId  String
+  phase           SgCategory
+  lie             ShotLie
+  teePar          Int        @default(0)
+  distanceM       Float
+  expectedStrokes Float
+  sampleSize      Int?
+  sourceRow       String?
+  sourceQuality   String?
+
+  referenceSet SgReferenceSet @relation(fields: [referenceSetId], references: [id], onDelete: Cascade)
+
+  @@unique([referenceSetId, phase, lie, teePar, distanceM])
+  @@map("strokes_gained_baselines")
+}
+
+model ShotSgResult {
+  shotId         String
+  referenceSetId String
+  engineVersion  String
+  phase          SgCategory
+  expectedStart  Float
+  expectedEnd    Float
+  penaltyStrokes Int        @default(0) @db.SmallInt
+  sgValue        Float
+  inputQuality   String
+  calculatedAt   DateTime   @default(now())
+
+  shot         Shot           @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  referenceSet SgReferenceSet @relation(fields: [referenceSetId], references: [id], onDelete: Restrict)
+
+  @@id([shotId, referenceSetId, engineVersion])
+  @@index([referenceSetId, phase])
+  @@map("shot_sg_results")
 }
 
 // ---------- AK Golf Stats — Fase 2 PGA Tour playground ----------
@@ -6562,21 +6880,21 @@ model WorkbenchSession {
 }
 
 model WorkbenchDrill {
-  id              String  @id @default(cuid())
-  sessionId       String
-  title           String
-  description     String?
-  durationMinutes Int
+  id               String  @id @default(cuid())
+  sessionId        String
+  title            String
+  description      String?
+  durationMinutes  Int
   // AKFormel som JSON — zod-valideres ved lesing (aldri as unknown as T).
-  akFormel        Json
-  techniqueFocus  String?
-  sourceId        String?
-  sortOrder       Int
+  akFormel         Json
+  techniqueFocus   String?
+  sourceId         String?
+  sortOrder        Int
   // Ekte kobling til øvelsesbanken (Anders 17.09.2026: «kun én database for
   // øvelser — WorkbenchDrills og øvelser skal være det eksakt samme»).
   // Nullbar i DB for additiv migrering av eksisterende rader; nye drills fra en
   // øvelse i banken skal alltid sette denne, samme kontrakt som SessionDrill.exerciseId.
-  exerciseId      String?
+  exerciseId       String?
   // Dosefelt (OW-3 fase 3 · 2026-09-17) — speiler SessionDrill sine tellemåte-,
   // volum- og L-trapp-felt. String i stedet for RepType-enum, konsistent med
   // beslutningen 16.09.2026 §6 pkt. 1 (unngå å utvide et delt enum i prod);
@@ -6748,6 +7066,14 @@ model WorkbenchTournamentPlan {
   status            String    @default("DRAFT")
   focus             String    @default("UTVIKLING")
   format            String?
+  tour              String?
+  country           String?
+  location          String?
+  holes             Int?
+  priority          String?
+  wagrPower         Float?
+  wagrSourceYear    Int?
+  wagrSource        String?
   startDate         DateTime  @db.Date
   endDate           DateTime  @db.Date
   travelStartDate   DateTime? @db.Date

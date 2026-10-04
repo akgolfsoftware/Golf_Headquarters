@@ -66,7 +66,7 @@ const RAW = {
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
     forklaring:
-      "Hvor mye av planlagt trening som faktisk ble gjennomført, i prosent. Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
+      "Gjennomførte minutter delt på planlagte minutter siste fire uker, i prosent. Bare synlige økter med passert sluttid teller. Uten forfalte minutter vises «—». Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
   },
   gjentaOkt: {
     tittel: "Gjenta",

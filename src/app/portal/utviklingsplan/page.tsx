@@ -1,21 +1,19 @@
+// PH19Utviklingsplan — Precision Athletics.
 /**
- * v2-forhåndsvisning — PlayerHQ Utviklingsplan (MERGE: talent + teknisk).
- * Egen top-level route-group (v2preview) som IKKE arver PortalShell — kun
- * root-layout. V2Shell leverer chrome-en, UtviklingsplanV2 rendrer stacken.
+ * PlayerHQ · Utviklingsplan (/portal/utviklingsplan) i Precision Athletics.
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx og ui_kits/playerhq/screens/PH-TP.jsx
  *
- * Read-only merge av to EKTE kilder (ingen ny datamodell):
- *   - TalentTracking (userId @unique) → radar + nivå/klubb/region + milepæler
- *   - TechnicalPlan → posisjoner → krav (+ TM-mål) + PlanSuggestion (AI-forslag)
- *
- * Auth-mønster gjenbrukt fra de andre v2preview-sidene (requirePortalUser).
- * Ærlig tom-tilstand der en spiller mangler talent- eller plandata.
+ * Talentradar vises aldri for spilleren (jf. beslutning 28.09).
+ * Ekte kilder beholdt:
+ *   - TalentTracking (userId @unique) → nivå/klubb/region + milepæler
+ *   - TechnicalPlan → posisjoner → krav (+ TM-mål) + PlanSuggestion (coach-forslag)
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { UtviklingsplanV2 } from "@/components/portal/v2/UtviklingsplanV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH19Utviklingsplan } from "@/components/portal/precision/PH19Utviklingsplan";
 import type {
   UtviklingsplanData,
   PlanData,
@@ -27,16 +25,12 @@ import type {
   KravData,
   Posisjon,
   SporKey,
-  TalentAkse,
   TalentMilepael,
 } from "@/components/v2";
 import type { LFase, CSNivaa, TrackStatus, SuggestionType } from "@/generated/prisma/client";
 import { faseLabel } from "@/lib/ak-formel-visning";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
-
-/* ── Oppslagstabeller (ordbok/taksonomi, ikke fabrikkert) ──────────── */
 
 const P_NAVN: Record<string, string> = {
   P1: "Adresse / Oppstilling",
@@ -51,14 +45,20 @@ const P_NAVN: Record<string, string> = {
   P10: "Fullføring og balanse",
 };
 
-// 3-trinns visnings-index (Uten ball=0 · Lav hastighet=1 · Auto=2) for læringstrappen.
 const LFASE_STEG_INDEX: Record<LFase, number> = {
-  L_KROPP: 0, L_ARM: 0, L_KOLLE: 1, L_BALL: 1, L_AUTO: 2,
+  L_KROPP: 0,
+  L_ARM: 0,
+  L_KOLLE: 1,
+  L_BALL: 1,
+  L_AUTO: 2,
 };
 
-// TrackStatus → SporChip-nøkkel. AVSLAATT (diagnostic override) vises som «står stille».
 const SPOR_MAP: Record<TrackStatus, SporKey> = {
-  PAA_VEI: "PAA_VEI", STAGNERER: "STAGNERER", FERDIG: "FERDIG", INAKTIV: "INAKTIV", AVSLAATT: "STAGNERER",
+  PAA_VEI: "PAA_VEI",
+  STAGNERER: "STAGNERER",
+  FERDIG: "FERDIG",
+  INAKTIV: "INAKTIV",
+  AVSLAATT: "STAGNERER",
 };
 
 const SUGGESTION_LABEL: Record<SuggestionType, string> = {
@@ -70,7 +70,6 @@ const SUGGESTION_LABEL: Record<SuggestionType, string> = {
   ADD_CLUB_TARGET: "Nytt kølle-mål",
 };
 
-// Kjente TrackMan-metrikker → norsk klarspråk. Ukjente vises råt (ærlig, ikke fabrikkert).
 const METRIC_LABEL: Record<string, string> = {
   dispersion_m_std: "Spredning",
   spin_axis_avg_deg: "Spinnakse",
@@ -81,9 +80,6 @@ const METRIC_LABEL: Record<string, string> = {
   face_angle_std: "Kølleblad-stabilitet",
 };
 
-/* ── Hjelpere ───────────────────────────────────────────────────────── */
-
-/** «P4.0» → «P4» (PRail/MilepaelKort bruker kortformen). */
 function pKort(pNummer: string): string {
   return pNummer.replace(/\.0+$/, "");
 }
@@ -92,15 +88,16 @@ function fmtKortDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
 }
 
-/** «6. juli 20:14» — relativ-nær tekst for når forslaget kom. */
 function fmtForeslaatt(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" }) +
-    " " + d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+  return (
+    d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" }) +
+    " " +
+    d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })
+  );
 }
 
 type TmGoalRow = { metric: string; klubb: string; inTarget: boolean };
 
-/** Bygg en lesbar TM-mål-streng fra første mål (ekte felter, ordbok-mappet metrikk). */
 function tmMaalTekst(goals: TmGoalRow[]): { tmMaal: string | null; tmNaadd: boolean } {
   const g = goals[0];
   if (!g) return { tmMaal: null, tmNaadd: false };
@@ -108,13 +105,29 @@ function tmMaalTekst(goals: TmGoalRow[]): { tmMaal: string | null; tmNaadd: bool
   return { tmMaal: `${metrikk} · ${g.klubb}`, tmNaadd: g.inTarget };
 }
 
-/* ── Loader ─────────────────────────────────────────────────────────── */
+function csLabel(cs: CSNivaa): string {
+  return cs;
+}
+
+function lesP(payload: unknown): string | null {
+  if (payload && typeof payload === "object") {
+    const rec = payload as Record<string, unknown>;
+    const cand = rec.pNummer ?? rec.p;
+    if (typeof cand === "string") return pKort(cand);
+  }
+  return null;
+}
+
+function periodeTekst(status: string, start: Date, slutt: Date | null): string {
+  const statusOrd = status === "ACTIVE" ? "Aktiv" : status === "ARCHIVED" ? "Arkivert" : "Utkast";
+  const spenn = slutt ? `${fmtKortDato(start)} → ${fmtKortDato(slutt)}` : `fra ${fmtKortDato(start)}`;
+  return `${statusOrd} · ${spenn}`;
+}
 
 async function loadData(userId: string): Promise<UtviklingsplanData> {
   const [bruker, talentRow, plan] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId }, select: { name: true } }),
     prisma.talentTracking.findUnique({ where: { userId } }),
-    // Aktiv plan først; ellers nyeste. Kun én plan trekkes til merge-visningen.
     prisma.technicalPlan.findFirst({
       where: { userId },
       orderBy: [{ status: "asc" }, { startDato: "desc" }],
@@ -138,17 +151,8 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
 
   const spillerNavn = bruker?.name ?? "Spiller";
 
-  /* ── Talent-sporet ──────────────────────────────────────────────── */
   let talent: TalentData | null = null;
   if (talentRow) {
-    const radar: TalentAkse[] = [
-      { akse: "FYS", verdi: talentRow.fysisk ?? 0 },
-      { akse: "TEK", verdi: talentRow.teknikk ?? 0 },
-      { akse: "TAK", verdi: talentRow.taktikk ?? 0 },
-      { akse: "MEN", verdi: talentRow.mental ?? 0 },
-      { akse: "MOT", verdi: talentRow.motivasjon ?? 0 },
-    ];
-    // milepaeler er Json [{ tittel, dato, beskrivelse }] — les defensivt.
     const raw = Array.isArray(talentRow.milepaeler) ? talentRow.milepaeler : [];
     const milepaeler: TalentMilepael[] = [];
     for (const item of raw) {
@@ -170,17 +174,15 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
       niva: talentRow.niva,
       klubb: talentRow.klubb,
       region: talentRow.region,
-      radar,
+      radar: [], // Talentradar aldri for spilleren
       milepaeler,
     };
   }
 
-  /* ── Teknisk spor ───────────────────────────────────────────────── */
   let planData: PlanData | null = null;
   const forslag: ForslagData[] = [];
 
   if (plan) {
-    // Posisjoner → PRail-status utledet fra tasks.
     const posisjoner: Posisjon[] = plan.positions.map((pos) => {
       const tasks = pos.tasks;
       const alleFerdig = tasks.length > 0 && tasks.every((t) => t.status === "DONE");
@@ -189,7 +191,6 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
       return { p: pKort(pos.pNummer), status, fokus: pos.hovedfokus };
     });
 
-    // Task → KravData
     const tilKrav = (t: (typeof plan.positions)[number]["tasks"][number]): KravData => {
       const { tmMaal, tmNaadd } = tmMaalTekst(t.tmGoals);
       return {
@@ -217,7 +218,6 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
         };
       });
 
-    // Aktiv P + neste krav: hovedfokus-posisjon → ellers første med aktiv task → ellers første.
     const fokusPos =
       plan.positions.find((p) => p.hovedfokus) ??
       plan.positions.find((p) => p.tasks.some((t) => t.status === "ACTIVE")) ??
@@ -228,10 +228,7 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
       plan.positions.flatMap((p) => p.tasks).find((t) => t.status === "ACTIVE") ??
       null;
     const nesteKrav = aktivTask ? tilKrav(aktivTask) : null;
-
-    // Læringstrapp: index fra aktiv task sin L-fase (ellers null → tom-tilstand).
     const laeringsAktiv = aktivTask?.lFase != null ? LFASE_STEG_INDEX[aktivTask.lFase] : null;
-
     const aktivP = fokusPos ? pKort(fokusPos.pNummer) : "";
 
     planData = {
@@ -245,14 +242,13 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
       laeringsAktiv,
     };
 
-    // PlanSuggestion → CoachGodkjenning-rader (read-only i preview).
     for (const s of plan.suggestions) {
       const p = lesP(s.payload);
       forslag.push({
         type: SUGGESTION_LABEL[s.type] ?? s.type,
         p: p ?? undefined,
-        forslag: s.reason ?? "AI Caddie foreslår en justering i planen.",
-        evidens: "AI-vurdert forslag",
+        forslag: s.reason ?? "Coach foreslår en justering i planen.",
+        evidens: "Vurdert forslag",
         foreslaatt: fmtForeslaatt(s.createdAt),
       });
     }
@@ -261,40 +257,19 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
   return { spillerNavn, talent, plan: planData, forslag };
 }
 
-/** CSNivaa-enum «CS60» er allerede visningsklar. */
-function csLabel(cs: CSNivaa): string {
-  return cs;
-}
-
-/** Prøv å lese en P-referanse fra suggestion.payload (Json) uten å anta struktur. */
-function lesP(payload: unknown): string | null {
-  if (payload && typeof payload === "object") {
-    const rec = payload as Record<string, unknown>;
-    const cand = rec.pNummer ?? rec.p;
-    if (typeof cand === "string") return pKort(cand);
-  }
-  return null;
-}
-
-function periodeTekst(status: string, start: Date, slutt: Date | null): string {
-  const statusOrd = status === "ACTIVE" ? "Aktiv" : status === "ARCHIVED" ? "Arkivert" : "Utkast";
-  const spenn = slutt ? `${fmtKortDato(start)} → ${fmtKortDato(slutt)}` : `fra ${fmtKortDato(start)}`;
-  return `${statusOrd} · ${spenn}`;
-}
-
-/* ── Side ───────────────────────────────────────────────────────────── */
-
-export default async function V2UtviklingsplanPreviewPage() {
+export default async function UtviklingsplanPage() {
   const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const data = await loadData(user.id);
+  const [data, uleste] = await Promise.all([
+    loadData(user.id),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn}>
-      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
-      <UtviklingsplanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Utviklingsplan data={data} />
+    </PlayerHQSkall>
   );
 }

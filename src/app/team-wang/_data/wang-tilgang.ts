@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { UserRole } from "@/generated/prisma/client";
+import type { Prisma, UserRole } from "@/generated/prisma/client";
 import {
   aktivtSpillerMedlemskapWhere,
   aktivtTrenerMedlemskapWhere,
@@ -49,52 +49,37 @@ export async function hentWangCoachGruppeId(
   }
 }
 
-/**
- * Felles ressursgrense for all IUP-lesing og -skriving.
- * Eleven må være aktiv spiller i WANG Toppidrett før noen rolle får tilgang.
- */
-export async function hentWangElevGruppeId(
+/** Bare et nytt, avgrenset oppslag; gruppe-ID er aldri et varig innsynsbevis. */
+export async function hentWangElevGruppeId(bruker: WangBruker, elevId: string): Promise<string | null> {
+  return medWangElevData(bruker, elevId, async (_tx, gruppeId) => gruppeId);
+}
+
+/** Beholder aktuell delingskontroll og spillerlås gjennom hele profiloppslaget. */
+export async function medWangElevData<T>(
   bruker: WangBruker,
   elevId: string,
-): Promise<string | null> {
+  les: (tx: Prisma.TransactionClient, gruppeId: string) => Promise<T>,
+): Promise<T | null> {
   try {
     const gruppeId = await hentGruppeId();
     if (!gruppeId) return null;
-
-    const elevMedlemskap = await prisma.groupMember.findFirst({
-      where: {
-        groupId: gruppeId,
-        userId: elevId,
-        ...aktivtSpillerMedlemskapWhere(),
-      },
-      select: { id: true },
-    });
-    if (!elevMedlemskap) return null;
-
-    if (bruker.role === "ADMIN") return gruppeId;
-    if (bruker.role === "PLAYER") {
-      return bruker.id === elevId ? gruppeId : null;
+    if ((bruker.role === "COACH" || bruker.role === "ADMIN") && bruker.id !== elevId) {
+      const { medNavngittProfil } = await import("@/lib/deling/profil-lesing");
+      return await medNavngittProfil(bruker.id, elevId, gruppeId, (tx) => les(tx, gruppeId));
     }
-    if (bruker.role === "PARENT") {
-      const relasjon = await prisma.parentRelation.findUnique({
-        where: {
-          parentId_childId: { parentId: bruker.id, childId: elevId },
-        },
-        select: { approved: true },
-      });
-      return relasjon?.approved === true ? gruppeId : null;
-    }
-    if (bruker.role === "COACH") {
-      const medlemskap = await prisma.groupMember.findFirst({
-        where: {
-          groupId: gruppeId,
-          ...aktivtTrenerMedlemskapWhere(bruker.id),
-        },
+    return await prisma.$transaction(async (tx) => {
+      const medlem = await tx.groupMember.findFirst({
+        where: { groupId: gruppeId, userId: elevId, ...aktivtSpillerMedlemskapWhere(), user: { deletedAt: null, anonymisertAt: null }, group: { arkivertAt: null } },
         select: { id: true },
       });
-      return medlemskap ? gruppeId : null;
-    }
-    return null;
+      if (!medlem) return null;
+      if (["PLAYER", "COACH", "ADMIN"].includes(bruker.role) && bruker.id === elevId) return les(tx, gruppeId);
+      if (bruker.role !== "PARENT") return null;
+      const relasjon = await tx.parentRelation.findUnique({
+        where: { parentId_childId: { parentId: bruker.id, childId: elevId } }, select: { approved: true },
+      });
+      return relasjon?.approved === true ? les(tx, gruppeId) : null;
+    });
   } catch (error) {
     if (error instanceof WangDataUtilgjengeligError) throw error;
     throw new WangDataUtilgjengeligError();

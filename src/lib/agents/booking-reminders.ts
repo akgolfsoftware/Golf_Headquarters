@@ -4,10 +4,11 @@
  * Sender 24-timers påminnelse til alle confirmed bookinger som starter
  * mellom 23 og 25 timer fra nå. Kjøres hver time via Vercel Cron.
  *
- * Idempotent via metadata-felt på audit-log — sjekker om vi allerede
- * har sendt påminnelse for denne bookingen.
+ * Sjekker sendeloggen før gjentakelse. Senderen bruker også en stabil
+ * leverandørnøkkel for gjentatte forsøk på samme booking og tidspunkt.
  */
 
+import { naivOsloTilTidspunkt, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { sendBookingReminder } from "@/lib/email/booking-emails";
@@ -41,9 +42,9 @@ async function bookingRemindersKjerne(): Promise<BookingRemindersResultat> {
   const candidates = await prisma.booking.findMany({
     where: {
       status: "CONFIRMED",
-      startAt: { gte: minStart, lte: maxStart },
+      startAt: { gte: tilNaivVeggklokke(minStart, "utc"), lte: tilNaivVeggklokke(maxStart, "utc") },
     },
-    select: { id: true },
+    select: { id: true, startAt: true },
   });
 
   let sent = 0;
@@ -51,6 +52,15 @@ async function bookingRemindersKjerne(): Promise<BookingRemindersResultat> {
   let failed = 0;
 
   for (const b of candidates) {
+    // Naive lagringsfelt må sammenlignes som faktiske tidspunkt, også ved sommertidsskifte.
+    try {
+      const start = naivOsloTilTidspunkt(b.startAt, "utc");
+      if (start < minStart || start > maxStart) { skipped++; continue; }
+    } catch (error) {
+      await logError({ context: "agents.bookingReminders.invalidTime", error, meta: { bookingId: b.id }, severity: "warn" });
+      failed++;
+      continue;
+    }
     // Sjekk om vi allerede har sendt påminnelse via audit-log
     const tidligereSendt = await prisma.auditLog.findFirst({
       where: {
@@ -65,7 +75,8 @@ async function bookingRemindersKjerne(): Promise<BookingRemindersResultat> {
     }
 
     try {
-      await sendBookingReminder(b.id);
+      const sendt = await sendBookingReminder(b.id, now, b.startAt);
+      if (!sendt) { skipped++; continue; }
       await audit({
         actorId: null,
         action: "booking.reminder_sent",

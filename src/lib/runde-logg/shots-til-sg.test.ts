@@ -1,88 +1,40 @@
-import { describe, it } from "node:test";
+import test from "node:test";
 import assert from "node:assert/strict";
-import { beregnSg, type SgShot } from "@/lib/domain/sg";
-import {
-  beregnSgFraShots,
-  shotsTilSgShots,
-  type DbHoleScoreRad,
-  type DbShotRad,
-} from "@/lib/runde-logg/shots-til-sg";
+import { SG_TEST_POINTS } from "../__tests__/fixtures/sg-points";
+import { beregnSgFraShots, shotsTilSgShots, type DbShotRad } from "./shots-til-sg";
 
-function slag(
-  holeNumber: number,
-  shotNumber: number,
-  lie: string,
-  distanceToPin: number | null,
-  isPenalty = false,
-  holePar = 4,
-): DbShotRad {
-  return { holeNumber, holePar, shotNumber, lie, distanceToPin, isPenalty };
-}
+const SHOTS: DbShotRad[] = [
+  { holeNumber: 1, holePar: 4, shotNumber: 1, lie: "TEE", distanceToPin: 350,
+    endLie: "FAIRWAY", endDistanceToPinM: 100, holed: false, penaltyStrokes: 0, isPenalty: false },
+  { holeNumber: 1, holePar: 4, shotNumber: 2, lie: "FAIRWAY", distanceToPin: 100,
+    endLie: "GREEN", endDistanceToPinM: 3, holed: false, penaltyStrokes: 0, isPenalty: false },
+  { holeNumber: 1, holePar: 4, shotNumber: 3, lie: "GREEN", distanceToPin: 3,
+    endLie: null, endDistanceToPinM: 0, holed: true, penaltyStrokes: 0, isPenalty: false },
+];
 
-describe("shotsTilSgShots", () => {
-  // Kjent kjede fra beregnSg-eksempelet i domain/sg.ts: drive 350→100 (FAIRWAY),
-  // approach 100→3 (GREEN), putt 3 → HOLED.
-  const kjede: DbShotRad[] = [
-    slag(1, 1, "TEE", 350),
-    slag(1, 2, "FAIRWAY", 100),
-    slag(1, 3, "GREEN", 3),
-  ];
-  const score: DbHoleScoreRad[] = [{ holeNumber: 1, strokes: 3 }];
+test("lagrede slag gir samme fulle SG som logget kjede", () => {
+  assert.equal(beregnSgFraShots(SHOTS, [{ holeNumber: 1, strokes: 3 }], SG_TEST_POINTS)?.total, 1.25);
+  const mapped = shotsTilSgShots(SHOTS, [{ holeNumber: 1, strokes: 3 }]);
+  assert.deepEqual(mapped?.map((s) => s.startLie), ["TEE", "FAIRWAY", "GREEN"]);
+});
 
-  it("gir samme tall som SG-motorens referanse-eksempel", () => {
-    const fasit: SgShot[] = [
-      { category: "OTT", distance: 350, outcome: "FAIRWAY", distanceAfter: 100 },
-      { category: "APP", distance: 100, outcome: "GREEN", distanceAfter: 3 },
-      { category: "PUTT", distance: 3, outcome: "HOLED", distanceAfter: null },
-    ];
-    const resultat = beregnSgFraShots(kjede, score);
-    assert.ok(resultat);
-    assert.deepEqual(resultat, beregnSg(fasit));
-  });
+test("straff telles én gang når både nytt felt og legacy isPenalty er satt", () => {
+  const withPenalty = [{ ...SHOTS[0], penaltyStrokes: 1, isPenalty: true }, ...SHOTS.slice(1)];
+  assert.equal(shotsTilSgShots(withPenalty, [{ holeNumber: 1, strokes: 4 }])?.length, 3);
+  assert.ok(Math.abs((beregnSgFraShots(withPenalty, [{ holeNumber: 1, strokes: 4 }], SG_TEST_POINTS)?.total ?? NaN) - 0.25) < 1e-10);
+});
 
-  it("mapper outcome fra NESTE slags lie og kjeder avstander", () => {
-    const ut = shotsTilSgShots(kjede, score);
-    assert.ok(ut);
-    assert.equal(ut.length, 3);
-    assert.deepEqual(ut[0], { category: "OTT", distance: 350, outcome: "FAIRWAY", distanceAfter: 100 });
-    assert.deepEqual(ut[2], { category: "PUTT", distance: 3, outcome: "HOLED", distanceAfter: null });
-  });
+test("eldre Shot-rader kan utlede sluttposisjon fra neste rad, men må ha komplett score", () => {
+  const legacy = SHOTS.map(({ holeNumber, holePar, shotNumber, lie, distanceToPin, isPenalty }) =>
+    ({ holeNumber, holePar, shotNumber, lie, distanceToPin, isPenalty }));
+  assert.equal(beregnSgFraShots(legacy, [{ holeNumber: 1, strokes: 3 }], SG_TEST_POINTS)?.total, 1.25);
+  assert.equal(beregnSgFraShots(legacy, [{ holeNumber: 1, strokes: 4 }], SG_TEST_POINTS), null);
+});
 
-  it("par 3 starter i APP (Broadie-konvensjon)", () => {
-    const par3 = [slag(1, 1, "TEE", 150, false, 3), slag(1, 2, "GREEN", 4, false, 3)];
-    const ut = shotsTilSgShots(par3, [{ holeNumber: 1, strokes: 2 }]);
-    assert.ok(ut);
-    assert.equal(ut[0].category, "APP");
-  });
-
-  it("straffeslag gir syntetisk −1-rad (scorekortet teller straffen)", () => {
-    const medStraffe = [
-      slag(1, 1, "TEE", 350, true), // drive i vann → straffe
-      slag(1, 2, "FAIRWAY", 100),
-      slag(1, 3, "GREEN", 3),
-    ];
-    const ut = shotsTilSgShots(medStraffe, [{ holeNumber: 1, strokes: 4 }]);
-    assert.ok(ut);
-    assert.equal(ut.length, 4);
-    const straffeRad = ut[0];
-    assert.equal(straffeRad.distance, straffeRad.distanceAfter);
-  });
-
-  it("returnerer null når et slag mangler distanceToPin (aldri delvise tall)", () => {
-    const hull = [slag(1, 1, "TEE", 350), slag(1, 2, "FAIRWAY", null), slag(1, 3, "GREEN", 3)];
-    assert.equal(shotsTilSgShots(hull, score), null);
-  });
-
-  it("returnerer null når scorekortet ikke bekrefter hole-out (strokes ≠ slag)", () => {
-    assert.equal(shotsTilSgShots(kjede, [{ holeNumber: 1, strokes: 5 }]), null);
-  });
-
-  it("returnerer null når et scoret hull mangler slag eller omvendt", () => {
-    assert.equal(shotsTilSgShots(kjede, [...score, { holeNumber: 2, strokes: 4 }]), null);
-    assert.equal(shotsTilSgShots([...kjede, slag(2, 1, "TEE", 300)], score), null);
-  });
-
-  it("returnerer null uten scorekort", () => {
-    assert.equal(shotsTilSgShots(kjede, []), null);
-  });
+test("inkonsistent start/slutt og manglende referanse gir ikke beregning", () => {
+  const broken = [{ ...SHOTS[0], endDistanceToPinM: 110 }, ...SHOTS.slice(1)];
+  assert.equal(beregnSgFraShots(broken, [{ holeNumber: 1, strokes: 3 }], SG_TEST_POINTS), null);
+  const unfinished = [...SHOTS.slice(0, 2), { ...SHOTS[2], holed: false, endLie: "GREEN", endDistanceToPinM: 0.5 }];
+  assert.equal(beregnSgFraShots(unfinished, [{ holeNumber: 1, strokes: 3 }], SG_TEST_POINTS), null);
+  assert.equal(beregnSgFraShots(SHOTS, [{ holeNumber: 1, strokes: 3 }], []), null);
 });

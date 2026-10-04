@@ -73,6 +73,7 @@ export async function approveRequestDetailed(
 
 function coachScopeWhere(coachId: string) {
   return {
+    actionType: { not: "WORKBENCH_GATHERING_INVITE" },
     OR: [{ coachId }, { coachId: null }],
   };
 }

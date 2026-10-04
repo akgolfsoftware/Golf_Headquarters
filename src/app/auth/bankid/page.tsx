@@ -1,15 +1,6 @@
 /**
- * Auth · BankID (/auth/bankid) — v2-redesign (2026-07-10).
- *
- * Rendrer <BankIDV2> (retning C «Presis») som selvstendig sentrert kort på
- * mørk auth-flate. Erstatter gamle <BankIdSkjerm> — se
- * src/components/portal/v2/BankIDV2.tsx. Placeholder: BankID-pålogging
- * kommer post-beta, CTA peker tilbake til vanlig login (samme funksjon).
- *
- * Ren presentasjon — INGEN data-loader finnes eller trengs (statisk skjerm).
- * Auth-layout (auth/layout.tsx) eier rammen; dette er en offentlig
- * auth-skjerm uten egen guard (som søsken-rutene). Gamle
- * src/components/auth/bankid-skjerm.tsx står urørt som fallback.
+ * Auth · BankID (/auth/bankid) — AU01BankId.
+ * Ærlig placeholder: BankID finnes ikke ennå. CTA går til /auth/login.
  */
 
 import type { Metadata } from "next";

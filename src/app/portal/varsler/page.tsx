@@ -1,19 +1,12 @@
 /**
- * PlayerHQ · Varsler (/portal/varsler) — Paper-port W2 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-hjem-varsler.html
- * (rute per manifest-w2-filter-varsler-putting.md).
- *
- * Én varselflate med kategori-filter: fangst av alt som venter på spilleren.
- * Samme Notification-spørring som før; her grupperes radene per dag
- * (I dag / Denne uka / Tidligere) og mappes til fasitens kategorier.
- * Marker-som-lest går via eksisterende markNotificationsRead-action.
+ * PH25Varsler — varsellisten i PlayerHQSkall.
+ * Samme Notification-spørring. Åpning markerer lest og følger lenken.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { VarslerV2, type VarslerV2Data, type VarslerV2Item, type VarselKategori } from "@/components/portal/v2/VarslerV2";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -102,9 +95,10 @@ export default async function VarslerPage() {
   const data: VarslerV2Data = { items, uleste, navn: user.name ?? "" };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="hjem" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
-      <TilbakeLenke href="/portal">I dag</TilbakeLenke>
-      <VarslerV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <div className="pa-side">
+        <VarslerV2 data={data} />
+      </div>
+    </PlayerHQSkall>
   );
 }

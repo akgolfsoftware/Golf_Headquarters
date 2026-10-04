@@ -1,23 +1,45 @@
 /**
- * PlayerHQ · TrackMan-liste — TM-01.
- * Fasit: designsystem/train-lock/TM-01 TrackMan liste.dc.html
+ * PH17TrackMan — Precision Athletics. Data og handlinger er beholdt.
+ * TrackMan-hub med 4 faner: Økter, Gapping, Utstyr og Stasjon.
+ * Kilde: ui_kits/playerhq/screens/PH-17.jsx (26.09.2026).
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TrackManListeTrainLock } from "@/components/portal/v2/TrackManListeTrainLock";
-import { hentTrackManListe } from "@/lib/trackman/liste-data";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH17TrackMan } from "@/components/portal/precision/PH17TrackMan";
+import { loadPH17TrackMan } from "@/lib/portal-analyse/load-ph17-trackman";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import type { TrackManFane } from "@/lib/portal-analyse/ph17-trackman-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "TrackMan · PlayerHQ" };
 
-export default async function TrackManListePage() {
+interface TrackManPageProps {
+  searchParams?: Promise<{
+    fane?: string;
+    tab?: string;
+  }>;
+}
+
+export default async function TrackManListePage({ searchParams }: TrackManPageProps) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const data = await hentTrackManListe(user.id);
+  if (user.role === "GUEST") redirect("/admin/kalender");
+  if (user.role === "PARENT") redirect("/forelder");
+
+  const resolvedParams = searchParams ? await searchParams : {};
+  const valgtFane = (resolvedParams.fane || resolvedParams.tab) as TrackManFane | undefined;
+  const gyldigeFaner: TrackManFane[] = ["okter", "gap", "utstyr", "stasjon"];
+  const aktivFane = gyldigeFaner.includes(valgtFane as TrackManFane) ? valgtFane : undefined;
+
+  const [data, uleste] = await Promise.all([
+    loadPH17TrackMan(user.id, user.name),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TrackManListeTrainLock data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH17TrackMan data={data} aktivFane={aktivFane} />
+    </PlayerHQSkall>
   );
 }

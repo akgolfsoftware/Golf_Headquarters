@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { bekreftLydSamtykkeViaToken } from "./actions";
+import "@/styles/precision-athletics.css";
 
 type Props = {
   token: string;
@@ -28,50 +30,37 @@ export function LydSamtykkeForm({ token, spillerNavn, ordlyd }: Props) {
 
   if (ferdig) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-12">
-        <h1 className="text-xl font-semibold text-foreground">Takk</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-          Samtykke til lydopptak for <strong className="text-foreground">{spillerNavn}</strong>{" "}
-          er registrert. Treneren kan starte opptak ved neste økt.
-        </p>
+      <div className="pa-root au-ramme" data-design="precision-athletics">
+        <div className="au-boks">
+          <Link href="/" className="au-logo">AK Golf HQ</Link>
+          <header>
+            <p className="au-kicker">Lydopptak</p>
+            <h1>Takk</h1>
+            <p>
+              Samtykke til lydopptak for {spillerNavn} er registrert. Treneren kan starte opptak ved neste økt.
+            </p>
+          </header>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">
-        Samtykke til lydopptak
-      </h1>
-      <p className="mt-2 text-[15px] text-muted-foreground">
-        For <strong className="text-foreground">{spillerNavn}</strong> — AK Golf Academy
-      </p>
-
-      <div className="mt-6 max-h-72 overflow-y-auto rounded-md border border-border bg-card p-4">
-        <pre className="whitespace-pre-wrap font-sans text-[13px] leading-relaxed text-foreground">
-          {ordlyd}
-        </pre>
+    <div className="pa-root au-ramme" data-design="precision-athletics">
+      <div className="au-boks au-boks--bred">
+        <Link href="/" className="au-logo">AK Golf HQ</Link>
+        <header>
+          <p className="au-kicker">Lydopptak</p>
+          <h1>Samtykke til lydopptak</h1>
+          <p>For {spillerNavn} — AK Golf Academy</p>
+        </header>
+        <pre className="au-ordlyd">{ordlyd}</pre>
+        <button type="button" className="pa-btn pa-btn--primary pa-btn--full" onClick={bekreft} disabled={pending}>
+          {pending ? "Lagrer …" : "Jeg samtykker"}
+        </button>
+        {feil ? <p className="au-melding" data-tone="feil" role="alert">{feil}</p> : null}
+        <p>Du kan trekke samtykket senere via treneren. Da stoppes nye opptak med en gang.</p>
       </div>
-
-      <button
-        type="button"
-        onClick={bekreft}
-        disabled={pending}
-        className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-3 text-[15px] font-semibold text-primary-foreground disabled:opacity-50"
-      >
-        {pending ? "Lagrer …" : "Jeg samtykker"}
-      </button>
-
-      {feil && (
-        <p className="mt-3 text-[13px] text-destructive" role="alert">
-          {feil}
-        </p>
-      )}
-
-      <p className="mt-4 text-[12px] text-muted-foreground">
-        Du kan trekke samtykket senere via treneren. Da stoppes nye opptak med
-        en gang.
-      </p>
     </div>
   );
 }

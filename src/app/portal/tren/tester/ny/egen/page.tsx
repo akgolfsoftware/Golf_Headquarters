@@ -1,3 +1,4 @@
+// PH14EgenTest — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Tren · Tester · Ny egen test (/portal/tren/tester/ny/egen) — v2.
@@ -7,7 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
  * ./actions.ts. Kun presentasjonslaget er nytt.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
 import { NyTestEgenV2 } from "@/components/portal/v2/NyTestEgenV2";
 
@@ -17,7 +18,8 @@ export default async function NyEgenTestPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/tren/tester">Tilbake til tester</TilbakeLenke>
       <div style={{ maxWidth: 720, width: "100%", margin: "0 auto" }}>
         <Caps>Trening · Tester</Caps>
@@ -30,6 +32,7 @@ export default async function NyEgenTestPage() {
         </p>
       </div>
       <NyTestEgenV2 rolle={user.role} />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

@@ -10,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import type { LoggetHull } from "@/lib/runde-logg/types";
-import { beregnSg } from "@/lib/domain/sg";
+import { beregnSg, type SgBaselinePoint } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { fmtSg, Kort, TomTilstand, Icon } from "@/components/v2";
 
@@ -48,13 +48,18 @@ function SgLinje({ l, v }: { l: string; v: number }) {
   );
 }
 
-export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: () => void }) {
+export function SgPanel({ hullData, sgBaselines, sgReferenceLabel, onLukk }: {
+  hullData: LoggetHull[];
+  sgBaselines: ReadonlyArray<SgBaselinePoint>;
+  sgReferenceLabel: string | null;
+  onLukk: () => void;
+}) {
   const ferdige = hullData.filter((h) => h.slag.at(-1)?.resultat.iHull === true);
 
   let sg: { total: number; ott: number; app: number; arg: number; putt: number } | null = null;
-  if (ferdige.length > 0) {
+  if (ferdige.length > 0 && ferdige.every((h) => h.syntetisk !== true)) {
     try {
-      sg = beregnSg(rundeTilSgShots(ferdige));
+      sg = beregnSg(rundeTilSgShots(ferdige), sgBaselines);
     } catch {
       sg = null;
     }
@@ -75,8 +80,8 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
         <Kort>
           <TomTilstand
             icon="trending-up"
-            title="SG kommer etter første fullførte hull"
-            sub="Strokes Gained regnes kun på komplette hull — fullfør hullet du er på, så ser du tallene her."
+            title="SG er ikke beregnbart ennå"
+            sub="Fullfør slagkjeden og registrer start- og sluttavstand. Beregningen krever også et publisert referansesett som dekker alle posisjonene."
           />
         </Kort>
       ) : (
@@ -102,7 +107,7 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
             <SgLinje l="ARG" v={sg.arg} />
             <SgLinje l="PUTT" v={sg.putt} />
             <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.5 }}>
-              Estimat på fullførte hull — serveren er fasit ved lagring.
+              {sgReferenceLabel ?? "Referanse ukjent"} · {ferdige.length} fullførte hull. Serveren beregner på nytt ved lagring.
             </div>
           </div>
         </Kort>

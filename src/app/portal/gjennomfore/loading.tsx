@@ -1,9 +1,12 @@
-/* Skjerm-speilet skeleton (P4): samme layout som GjorV2 —
-   hode · runde-kort · KPI-rad · øvelsesliste · (neste økt | avslutt-flyt).
-   Dekker /portal/gjennomfore og /portal/gjennomfore/[id]. */
-
-import { V2Laster } from "@/components/v2/laster";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="gjor" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <LasterTilstand text="Henter dagens økter …" />
+      </div>
+    </PlayerHQSkall>
+  );
 }

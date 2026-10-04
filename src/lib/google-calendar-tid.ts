@@ -40,10 +40,13 @@ const OSLO_DELER = new Intl.DateTimeFormat("en-CA", {
  * skal kun sammenlignes med andre naive tider i kodebasen (Booking.startAt,
  * uke-helpers), aldri med en rå `new Date()` i prod.
  */
-export function tilNaivVeggklokke(instant: Date): Date {
+/** `utc` brukes når lagringskontrakten eksplisitt er veggklokke i UTC-feltene. */
+export function tilNaivVeggklokke(instant: Date, felt: "local" | "utc" = "local"): Date {
   const deler = OSLO_DELER.formatToParts(instant);
   const tall = (type: string) =>
     Number(deler.find((d) => d.type === type)?.value ?? "0");
+  const delerSomTall = [tall("year"), tall("month") - 1, tall("day"), tall("hour"), tall("minute"), tall("second")] as const;
+  if (felt === "utc") return new Date(Date.UTC(...delerSomTall));
   return new Date(
     tall("year"),
     tall("month") - 1,
@@ -78,14 +81,16 @@ export function fraNaivVeggklokke(naiv: Date): string {
  * Ved høstens gjentatte klokkeslett velges første forekomst, som JavaScript Date.
  * Et klokkeslett i vårens manglende time avvises.
  */
-export function naivOsloTilTidspunkt(naiv: Date): Date {
-  const wall = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
+export function naivOsloTilTidspunkt(naiv: Date, felt: "local" | "utc" = "local"): Date {
+  const wall = (d: Date) => felt === "utc"
+    ? Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
+    : Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
   const wanted = wall(naiv);
   if (!Number.isFinite(wanted)) throw new Error("Ugyldig tidspunkt.");
   let guess = wanted;
-  for (let i = 0; i < 3; i++) guess += wanted - wall(tilNaivVeggklokke(new Date(guess)));
+  for (let i = 0; i < 3; i++) guess += wanted - wall(tilNaivVeggklokke(new Date(guess), felt));
   const matches = [guess - 3_600_000, guess, guess + 3_600_000]
-    .filter(candidate => wall(tilNaivVeggklokke(new Date(candidate))) === wanted);
+    .filter(candidate => wall(tilNaivVeggklokke(new Date(candidate), felt)) === wanted);
   if (!matches.length) throw new Error("Klokkeslettet finnes ikke ved overgang til sommertid.");
   return new Date(Math.min(...matches) + naiv.getMilliseconds());
 }

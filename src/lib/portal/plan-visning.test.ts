@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { TodaySession, WeekDay } from "@/app/portal/actions";
-import { byggPlanUke, nyPlanOktHref, plasserPlanBlokker, planTidsrom, type PlanBlokk } from "./plan-visning";
+import { byggPlanUke, nyPlanOktHref, oktOverlapperOpptattTid, plasserPlanBlokker, planTidsrom, type PlanBlokk } from "./plan-visning";
 
 const session: TodaySession = { id: "okt", title: "Teknikk", startTime: new Date("2026-03-29T06:00Z"), endTime: new Date("2026-03-29T07:00Z"), status: "COMPLETED", practiceType: "BLOKK", pyramidArea: "TEK", durationMin: 60, sted: null, maalsetning: null, drills: [], href: "/portal/live/okt/summary" };
 const week: WeekDay[] = [{ date: new Date("2026-03-29T10:00Z"), dayLabel: "Søn", dayNumber: 29, isToday: true, sessions: [session] }];
@@ -38,4 +38,16 @@ test("ny økt følger valgt dato og uke gjennom eksisterende Workbench-inngang",
   assert.equal(url.pathname, "/portal/planlegge/workbench");
   assert.equal(url.searchParams.get("uke"), "3");
   assert.equal(url.searchParams.get("start"), "2026-12-31T09:00");
+});
+
+test("økt oppå tidsatt opptatt tid er konflikt; heldag og annen økt er det ikke", () => {
+  const rad = (id: string, fra: number, til: number, lag: PlanBlokk["lag"] = "OEKTER"): PlanBlokk => ({
+    id, lag, tittel: id, dato: "2026-03-29", startMin: fra, sluttMin: til, heldag: false,
+  });
+  const heldag: PlanBlokk = { ...skole, id: "heldag", startMin: null, sluttMin: null, heldag: true };
+  const dagen = [rad("okt", 480, 540), rad("skoletime", 500, 560, "SKOLE"), rad("annen", 480, 500), rad("sen", 700, 760, "BOOKING"), heldag];
+  assert.equal(oktOverlapperOpptattTid(dagen[0], dagen), true);
+  assert.equal(oktOverlapperOpptattTid(dagen[2], dagen), false);
+  assert.equal(oktOverlapperOpptattTid(dagen[1], dagen), false);
+  assert.equal(oktOverlapperOpptattTid(heldag, dagen), false);
 });

@@ -1,0 +1,75 @@
+/**
+ * Precision Athletics — AG-23 Oppsett stilark.
+ *
+ * Kilde: Claude Design AG-23 (designsystem/precision-athletics/ui_kits/agencyos/screens/AG-23.jsx).
+ * Krav: 0 hex-farger (kun semantiske variabler), min 44 px berøringsflate.
+ */
+
+.pa-a23 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pa-a23__card {
+  max-width: 820px;
+  width: 100%;
+}
+
+.pa-a23__profile-header {
+  display: flex;
+  gap: var(--space-3, 12px);
+  align-items: center;
+}
+
+.pa-a23__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.pa-a23__switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+}
+
+.pa-a23__alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-card, 8px);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.pa-a23__alert-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.pa-a23 .pa-control {
+  min-height: 44px;
+}
+
+.pa-a23 .pa-control input,
+.pa-a23 .pa-control select {
+  min-height: 44px;
+}
+

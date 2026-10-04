@@ -1,239 +1,33 @@
 "use client";
 
 /**
- * Samtykke-venter — v2 (retning C «Presis», mørk-først). Komponert i samme
- * auth-idiom som LoginV2 (AuthRamme/BrandPanel/Felt/Knapp/Lenke — mørk
- * split-layout, IKKE V2Shell). Montert offentlig i
- * (v2preview)/v2-samtykke-venter/page.tsx (ingen auth-guard, ingen dataloader).
- *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE venterom-logikken
- * bor i src/app/auth/samtykke-venter/samtykke-venter-klient.tsx og dupliseres
- * bevisst IKKE: resend-invitasjon (server action `resendGuardianInvitation`),
- * logg-ut (server action `logout`), useTransition-state og STATUS-utledningen er
- * GJENBRUKT 1:1 herfra — ingen Supabase-kall er kopiert. Kun presentasjonen er
- * rekomponert. GDPR-gaten (16 år, art. 8) og e-post-flyten er bevart presist.
- *
- * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon) + T.* fra
- * "@/lib/v2/tokens". Auth-idiomene (BrandPanel/Felt/Knapp/Lenke) er lokale her,
- * 1:1 med LoginV2 — meldt som gap for opprykk til src/components/v2/auth.tsx.
- * Ingen rå hex (kun T.* + rgba). Norsk æøå. Lucide via Icon, ingen emoji.
- * Fluid AuthRamme: full viewport, md-breakpoint for split/stablet, ekte dark-scope.
+ * Venterom for mindreårige (AU-05). resendGuardianInvitation og logout
+ * er beholdt. Statusradene er de samme tre.
  */
 
-import { useState, useTransition, type ReactNode, type CSSProperties } from "react";
-import { TL } from "@/lib/v2/train-lock";
-import { AK } from "@/lib/v2/ak-palett";
-
-import { LogoAK, Caps, Icon } from "@/components/v2";
+import { useState, useTransition, type FormEvent } from "react";
+import Link from "next/link";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 import { logout } from "@/lib/auth/logout";
+import "@/styles/precision-athletics.css";
 
 type Props = {
   spillerNavn: string;
   invitasjonEmail: string | null;
 };
 
-/* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
-
-/** Redigerbart felt i Felt-idiomet (ekte input med ledende ikon). */
-function Felt({
-  label,
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  autoComplete,
-  required,
-  leading,
-}: {
-  label: string;
-  type?: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  autoComplete?: string;
-  required?: boolean;
-  leading?: ReactNode;
-}) {
-  const id = `v2samtykke-${label.toLowerCase().replace(/[^a-z]/g, "")}`;
-  return (
-    <div>
-      <label htmlFor={id}>
-        <Caps size={9} style={{ marginBottom: 7 }}>
-          {label}
-        </Caps>
-      </label>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          height: 44,
-          padding: "0 14px",
-          borderRadius: 12,
-          background: TL.dock,
-          border: `1px solid ${TL.hair}`,
-        }}
-      >
-        {leading}
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          required={required}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            appearance: "none",
-            background: "transparent",
-            border: "none",
-            outline: "none",
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            fontWeight: 500,
-            color: TL.text,
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-/** primary=lime CTA · ghost=panel (1:1 med LoginV2). */
-function Knapp({
-  children,
-  icon,
-  variant = "primary",
-  type = "button",
-  disabled,
-  onClick,
-}: {
-  children: ReactNode;
-  icon?: ReactNode;
-  variant?: "primary" | "ghost";
-  type?: "button" | "submit";
-  disabled?: boolean;
-  onClick?: () => void;
-}) {
-  const v: CSSProperties =
-    variant === "primary"
-      ? { background: TL.fill, color: TL.onFill, border: "none" }
-      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className="v2-press v2-focus"
-      style={{
-        appearance: "none",
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.6 : 1,
-        width: "100%",
-        height: 44,
-        borderRadius: 12,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 9,
-        fontFamily: TL.font.sans,
-        fontSize: 13.5,
-        fontWeight: 600,
-        ...v,
-      }}
-    >
-      {icon}
-      {children}
-    </button>
-  );
-}
-
-/** Venstre brand-panel (Neon/Cosmos-idiomet). Skjult under md (stablet mobil). */
-function BrandPanel() {
-  return (
-    <div
- data-paper-slug="auth-samtykke-venter"       className="hidden lg:flex"
-      style={{
-        // Deler plassen proporsjonalt. Fast 520px ga skjemaet kun 204px
-        // brukbar bredde på iPad stående (målt på prod 2026-08-15).
-        flex: "1 1 0",
-        maxWidth: 720,
-        minWidth: 420,
-        position: "relative",
-        overflow: "hidden",
-        borderRight: `1px solid ${TL.hair}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
-        flexDirection: "column",
-        padding: "34px 40px 44px",
-      }}
-    >
-      {/* subtilt motiv (Cosmos): svake konsentriske treffsirkler */}
-      <svg
-        viewBox="0 0 520 720"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-        aria-hidden
-      >
-        {[70, 130, 190, 250].map((r) => (
-          <circle
-            key={r}
-            cx="260"
-            cy="330"
-            r={r}
-            fill="none"
-            stroke="rgba(238,240,236,0.05)"
-            strokeWidth="1"
-          />
-        ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
-      </svg>
-      <div style={{ position: "relative" }}>
-        <LogoAK size={30} />
-      </div>
-      <div style={{ flex: 1 }} />
-      <div style={{ position: "relative" }}>
-        <LogoAK size={64} style={{ marginBottom: 22 }} />
-        <h2
-          style={{
-            fontFamily: TL.font.sans,
-            fontWeight: 700,
-            fontSize: 30,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.12,
-            color: TL.text,
-            margin: 0,
-          }}
-        >
-          Nesten i mål.{" "}
-          <em style={{ fontStyle: "italic", color: TL.fill }}>Ett samtykke igjen.</em>
-        </h2>
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            color: TL.mute,
-            lineHeight: 1.6,
-            margin: "14px 0 0",
-            maxWidth: 360,
-          }}
-        >
-          En forelder godkjenner kontoen din, så er hele golfutviklingen klar.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ── Venterom-kortet ───────────────────────────────────────────────── */
-
-function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
+export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
   const [isPending, startTransition] = useTransition();
   const [nyEmail, setNyEmail] = useState(invitasjonEmail ?? "");
   const [status, setStatus] = useState<{ ok: boolean; melding: string } | null>(null);
+  const epostSendt = Boolean(invitasjonEmail) || Boolean(status?.ok);
+  const statusRader = [
+    { label: "Konto opprettet", done: true },
+    { label: "E-post til forelder sendt", done: epostSendt },
+    { label: "Foreldre-samtykke", done: false },
+  ];
 
-  function onSend(e: React.FormEvent) {
+  function onSend(e: FormEvent) {
     e.preventDefault();
     if (!nyEmail.trim()) return;
     startTransition(async () => {
@@ -247,227 +41,52 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
     });
   }
 
-  // STATUS-kortets rader — avledet av eksisterende props/state (uendret logikk).
-  const epostSendt = Boolean(invitasjonEmail) || Boolean(status?.ok);
-  const statusRader: { label: string; done: boolean }[] = [
-    { label: "Konto opprettet", done: true },
-    { label: "E-post til forelder sendt", done: epostSendt },
-    { label: "Foreldre-samtykke", done: false },
-  ];
-
   return (
-    <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Mobil-logo (BrandPanel er skjult under md) */}
-      <div
-        className="md:hidden"
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "6px 0 6px" }}
-      >
-        <LogoAK size={46} />
-      </div>
-
-      {/* Hode: klokke-badge + chip + tittel */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12, marginBottom: 2 }}>
-        <span
-          aria-hidden
-          style={{
-            display: "grid",
-            placeItems: "center",
-            width: 60,
-            height: 60,
-            borderRadius: 16,
-            background: `radial-gradient(120% 120% at 30% 20%, ${TL.dim}, ${AK.farge.grafittMerke2A0} 70%), ${TL.dim}`,
-            border: `1px solid ${TL.hair}`,
-            color: TL.fill,
-          }}
-        >
-          <Icon name="clock" size={28} />
-        </span>
-
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            borderRadius: 9999,
-            padding: "4px 11px",
-            background: AK.farge.varselMerkeA14,
-            fontFamily: TL.font.mono,
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: TL.text,
-          }}
-        >
-          <Icon name="clock" size={11} />
-          Venter på samtykke
-        </span>
-
-        <h1
-          style={{
-            fontFamily: TL.font.sans,
-            fontWeight: 700,
-            fontSize: 30,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.05,
-            color: TL.text,
-            margin: 0,
-            textWrap: "balance",
-          }}
-        >
-          Nesten <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>i mål.</em>
-        </h1>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.55, color: TL.mute, margin: 0 }}>
-          Hei {spillerNavn || "der"}! Du er under 16 år, så en forelder må godkjenne kontoen din.
-          {epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""}
-        </p>
-      </div>
-
-      {/* STATUS-kort — tre rader med check/klokke */}
-      <div
-        style={{
-          background: TL.elev,
-          border: `1px solid ${TL.hair}`,
-          borderRadius: TL.radius.card,
-          padding: 18,
-          boxShadow: `inset 0 1px 0 ${AK.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
-        }}
-      >
-        <Caps size={9}>Status</Caps>
-        <div style={{ marginTop: 10, display: "flex", flexDirection: "column" }}>
-          {statusRader.map((rad) => (
-            <div key={rad.label} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0" }}>
-              <span
-                aria-hidden
-                style={{
-                  display: "grid",
-                  placeItems: "center",
-                  width: 22,
-                  height: 22,
-                  flex: "none",
-                  borderRadius: 9999,
-                  background: rad.done ? TL.fill : TL.dim,
-                  border: rad.done ? "none" : `1px solid ${TL.hair}`,
-                  color: rad.done ? TL.onFill : TL.mute,
-                }}
-              >
-                <Icon name={rad.done ? "check" : "clock"} size={13} />
-              </span>
-              <span
-                style={{
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: rad.done ? TL.text : TL.mute,
-                }}
-              >
-                {rad.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Resend / legg til forelder — eksisterende logikk, v2-felt + CTA */}
-      <form onSubmit={onSend} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <Felt
-          label={invitasjonEmail ? "Send til annen e-post" : "Legg til forelder"}
-          type="email"
-          value={nyEmail}
-          onChange={setNyEmail}
-          placeholder="forelder@example.com"
-          autoComplete="email"
-          required
-          leading={<Icon name="mail" size={14} style={{ color: TL.mute }} />}
-        />
-        <Knapp variant="primary" type="submit" disabled={isPending || !nyEmail.trim()}>
-          {isPending ? "Sender…" : invitasjonEmail ? "Send påminnelse" : "Send invitasjon"}
-        </Knapp>
-
-        {status && (
-          <p
-            role="status"
-            style={{
-              fontFamily: TL.font.mono,
-              fontSize: 12,
-              letterSpacing: "0.04em",
-              margin: 0,
-              color: status.ok ? TL.ok : TL.danger,
-            }}
-          >
-            {status.melding}
+    <div className="pa-root au-ramme" data-design="precision-athletics">
+      <div className="au-boks">
+        <Link href="/" className="au-logo">AK Golf HQ</Link>
+        <header>
+          <p className="au-kicker">Venter på samtykke</p>
+          <h1>Nesten i mål</h1>
+          <p>
+            Hei {spillerNavn || "der"}! Du er under 16 år, så en forelder må godkjenne kontoen din.
+            {epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""}
           </p>
-        )}
-      </form>
-
-      {/* Hjelpetekst */}
-      <p style={{ fontFamily: TL.font.sans, fontSize: 12, textAlign: "center", color: TL.mute, margin: "4px 0 0" }}>
-        Har du spørsmål?{" "}
-        <a
-          href="mailto:post@akgolf.no"
-          style={{ color: TL.fill, textDecoration: "none", fontWeight: 600 }}
-        >
-          post@akgolf.no
-        </a>
-      </p>
-
-      {/* Logg ut — server action (dempet mono-caps lenke) */}
-      <div style={{ textAlign: "center", marginTop: 2 }}>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="v2-focus"
-            style={{
-              appearance: "none",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: TL.font.mono,
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: TL.mute,
-            }}
-          >
-            Logg ut
+        </header>
+        <div className="au-tips">
+          <p className="au-kicker">Status</p>
+          <ul className="au-liste">
+            {statusRader.map((rad) => (
+              <li key={rad.label} data-ferdig={rad.done ? "true" : "false"}>{rad.label}</li>
+            ))}
+          </ul>
+        </div>
+        <form className="au-skjema" onSubmit={onSend}>
+          <label>
+            {invitasjonEmail ? "Send til annen e-post" : "Legg til forelder"}
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={nyEmail}
+              placeholder="forelder@example.com"
+              onChange={(e) => setNyEmail(e.target.value)}
+            />
+          </label>
+          <button type="submit" className="pa-btn pa-btn--primary pa-btn--full" disabled={isPending || !nyEmail.trim()}>
+            {isPending ? "Sender…" : invitasjonEmail ? "Send påminnelse" : "Send invitasjon"}
           </button>
+          {status ? (
+            <p className="au-melding" data-tone={status.ok ? "ok" : "feil"} role="status">{status.melding}</p>
+          ) : null}
+        </form>
+        <p>
+          Har du spørsmål? <a href="mailto:post@akgolf.no">post@akgolf.no</a>
+        </p>
+        <form action={logout}>
+          <button type="submit" className="pa-btn pa-btn--ghost">Logg ut</button>
         </form>
       </div>
-    </div>
-  );
-}
-
-/* ── Offentlig venterom-flate (dark-scope, fluid AuthRamme) ────────── */
-
-export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
-        // passordikon og rullefelt mørkt oppå en lys side.
-        colorScheme: "light",
-        color: TL.text,
-        fontFamily: TL.font.sans,
-        background: TL.scene,
-      }}
-    >
-      <BrandPanel />
-      <main
-        style={{
-          flex: 1,
-          minWidth: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
-        }}
-      >
-        <VenterKort spillerNavn={spillerNavn} invitasjonEmail={invitasjonEmail} />
-      </main>
     </div>
   );
 }

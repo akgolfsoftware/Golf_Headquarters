@@ -1,102 +1,63 @@
-/**
- * Etterlevelse — én delt teller/nevner for ukesrapport og digest (D3).
- *
- * Fasitene krever at coachens rapport, spillerens digest og foreldrenes
- * ukerapport viser SAMME tall med SAMME nevner i klartekst («14/16 · publiserte
- * økter med passert slutt»). Regelen bor derfor ett sted.
- *
- * Forskjellen fra `adherencePct` i src/lib/workbench/compliance.ts: den er
- * minutt-vektet prosent og brukes av plan-motoren. Her telles ØKTER, fordi
- * fasitene viser «4/5», ikke «83 %». Begge bygger på samme `oktCompliance`,
- * så de kan aldri komme i utakt om hva som er gjennomført.
- *
- * Hoppet vs. ulogget: hoppet er et aktivt nei fra spilleren, ulogget er
- * stillhet. Begge er utenfor telleren, men de rapporteres hver for seg —
- * fasitens D1c-regel, og digesten sier eksplisitt at hoppet «telles, det
- * gjemmes ikke».
+/** Felles etterlevelse: gjennomførte mot planlagte minutter siste fire uker.
+ * Beslutning 26.09.2026. Minutter er øktens planlagte varighet, ikke målt
+ * aktiv tid. Alle statuser må ha passert planlagt slutt før de teller.
  */
-
 import type { SessionStatus, SessionStatusV2 } from "@/generated/prisma/client";
-
-/**
- * Appen har to adskilte status-enums: `SessionStatus` (eldre
- * TrainingPlanSession) og `SessionStatusV2` (TrainingSessionV2). De deler alle
- * verdiene som betyr noe her — COMPLETED, SKIPPED, CANCELLED — og skiller seg
- * bare i de pågående/avbrutte tilstandene. Etterlevelse skal telle begge
- * slags økter, så modulen tar imot begge enum-typene framfor å tvinge fram en
- * konvertering hos hver konsument.
- */
 export type OktStatus = SessionStatus | SessionStatusV2;
+export type EtterlevelseOkt = { scheduledAt: Date; durationMin: number; status: OktStatus };
+export const ETTERLEVELSE_DAGER = 28;
+export const NEVNER_TEKST = "gjennomførte mot planlagte minutter · siste fire uker";
+const AVVIK = new Set<string>(["SKIPPED", "ABANDONED", "CANCELLED"]);
 
-export type EtterlevelseOkt = {
-  scheduledAt: Date;
-  durationMin: number;
-  status: OktStatus;
-};
+export function etterlevelseFra(now: Date): Date {
+  return new Date(now.getTime() - ETTERLEVELSE_DAGER * 86_400_000);
+}
 
-/** Aktivt nei fra spilleren — felles for begge enumene. */
-const AVVIK: ReadonlySet<string> = new Set(["SKIPPED", "ABANDONED", "CANCELLED"]);
-
-type Bøtte = "gjennomfort" | "hoppet" | "ulogget" | "fremtidig";
-
-function bøtte(okt: EtterlevelseOkt, now: Date): Bøtte {
-  if (okt.status === "COMPLETED") return "gjennomfort";
-  if (AVVIK.has(okt.status)) return "hoppet";
-  const sluttMs = okt.scheduledAt.getTime() + okt.durationMin * 60_000;
-  return sluttMs > now.getTime() ? "fremtidig" : "ulogget";
+/** Vinduet følger øktstart, med inklusiv nedre grense og passert sluttid.
+ * Ugyldig/ikke-positiv varighet gir ikke et beregningsgrunnlag. */
+export function erForfaltEtterlevelseOkt(okt: EtterlevelseOkt, now: Date): boolean {
+  const start = okt.scheduledAt.getTime();
+  return Number.isFinite(start) && Number.isFinite(okt.durationMin) && okt.durationMin > 0 &&
+    start >= etterlevelseFra(now).getTime() && start + okt.durationMin * 60_000 <= now.getTime();
 }
 
 export type Etterlevelse = {
-  /** Gjennomførte økter. */
-  teller: number;
-  /** Publiserte økter med passert sluttid. Fremtidige økter teller aldri. */
-  nevner: number;
-  /** Aktivt nei fra spilleren (SKIPPED/ABANDONED/CANCELLED). */
-  hoppet: number;
-  /** Forfalt uten logging — stillhet, ikke et nei. */
-  ulogget: number;
+  /** Øktantall beholdes for forklaring og avviksrader, ikke som prosent. */
+  teller: number; nevner: number; hoppet: number; ulogget: number;
+  gjennomfortMinutter: number; planlagtMinutter: number;
+  /** Null betyr at det mangler forfalte minutter. */
+  pct: number | null;
 };
 
-/** Nevner-teksten fasitene bruker ordrett. Vises alltid ved siden av tallet. */
-export const NEVNER_TEKST = "publiserte økter med passert slutt";
-
-/**
- * Teller økter i fire bøtter. Fremtidige økter holdes helt utenfor — de kan
- * ennå gjennomføres på plan, så å telle dem som «ikke gjennomført» ville gjort
- * nevneren uærlig tidlig i uka.
- */
-export function etterlevelse(
-  okter: readonly EtterlevelseOkt[],
-  now: Date,
-): Etterlevelse {
-  let teller = 0;
-  let hoppet = 0;
-  let ulogget = 0;
-
+export function etterlevelse(okter: readonly EtterlevelseOkt[], now: Date): Etterlevelse {
+  let teller = 0, nevner = 0, hoppet = 0, ulogget = 0;
+  let gjennomfortMinutter = 0, planlagtMinutter = 0;
   for (const okt of okter) {
-    switch (bøtte(okt, now)) {
-      case "fremtidig":
-        continue;
-      case "gjennomfort":
-        teller += 1;
-        break;
-      case "hoppet":
-        hoppet += 1;
-        break;
-      case "ulogget":
-        ulogget += 1;
-        break;
-    }
+    if (!erForfaltEtterlevelseOkt(okt, now)) continue;
+    nevner++;
+    planlagtMinutter += okt.durationMin;
+    if (okt.status === "COMPLETED") { teller++; gjennomfortMinutter += okt.durationMin; }
+    else if (AVVIK.has(okt.status)) hoppet++;
+    else ulogget++;
   }
-
-  return { teller, nevner: teller + hoppet + ulogget, hoppet, ulogget };
+  return { teller, nevner, hoppet, ulogget, gjennomfortMinutter, planlagtMinutter,
+    pct: planlagtMinutter > 0 ? Math.round(gjennomfortMinutter / planlagtMinutter * 100) : null };
 }
 
-/**
- * «4/5» — eller null når ingen økter er forfalt ennå. Null betyr «ikke målt»,
- * ikke «null gjennomført»; flatene skal vise tom tilstand, aldri «0/0».
- */
 export function etterlevelseTekst(e: Etterlevelse): string | null {
-  if (e.nevner === 0) return null;
-  return `${e.teller}/${e.nevner}`;
+  return e.pct === null ? null : `${e.pct} %`;
+}
+
+/** Stallrapporten vektes med minutter, aldri snittet av spillerprosenter. */
+export function summerEtterlevelse(resultater: readonly Etterlevelse[]): Etterlevelse {
+  const sum = resultater.reduce((total, e) => ({
+    teller: total.teller + e.teller,
+    nevner: total.nevner + e.nevner,
+    hoppet: total.hoppet + e.hoppet,
+    ulogget: total.ulogget + e.ulogget,
+    gjennomfortMinutter: total.gjennomfortMinutter + e.gjennomfortMinutter,
+    planlagtMinutter: total.planlagtMinutter + e.planlagtMinutter,
+  }), { teller: 0, nevner: 0, hoppet: 0, ulogget: 0, gjennomfortMinutter: 0, planlagtMinutter: 0 });
+  return { ...sum, pct: sum.planlagtMinutter > 0
+    ? Math.round(sum.gjennomfortMinutter / sum.planlagtMinutter * 100) : null };
 }

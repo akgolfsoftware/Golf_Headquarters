@@ -1,0 +1,3 @@
+import { defineConfig } from '@playwright/test';
+if(process.env.LOCAL_WORKBENCH_PROJECT !== 'ak-hq-workbench-20261002' || process.env.NEXT_PUBLIC_APP_URL !== 'http://127.0.0.1:3072' || process.env.NEXT_PUBLIC_SUPABASE_URL !== 'http://127.0.0.1:55721') throw new Error('Dedicated local QA environment required');
+export default defineConfig({testDir:'.',testMatch:'*.spec.ts',workers:1,retries:0,timeout:180_000,expect:{timeout:30_000},reporter:'list',outputDir:'/tmp/ak-hq-local-workbench-ui-results',use:{baseURL:'http://127.0.0.1:3072',browserName:'chromium',serviceWorkers:'block',trace:'off',screenshot:'off'},projects:[{name:'desktop',use:{viewport:{width:1440,height:900}}},{name:'mobil',use:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}}]});

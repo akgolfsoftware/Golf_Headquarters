@@ -1,22 +1,17 @@
 /**
- * PlayerHQ · FYS-plan (/portal/tren/fys-plan) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-fys-plan.html.
- *
- * Struktur per fasit: «Én ting nå»-blokk med dagens FYS-økt (TrainingPlanSession,
- * akse FYS) → aktive planer (FysiskPlan → uker → økter) → ærlig FYS-score-
- * plassholder. FYS-resultatformelen er IKKE låst — aldri fabrikkerte tall.
- * Prisma-spørringen for planene er uendret.
+ * PH26FysPlan — spillerens FYS-planer i PlayerHQSkall.
+ * Dagens FYS-økt, aktive og arkiverte planer, og ærlig score-plassholder.
+ * Ingen tall er funnet opp. Tegningen ui_kits/playerhq/screens/PH-26.jsx ligger ikke i git.
  */
 
+import Link from "next/link";
+import { Clock, Dumbbell } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay } from "@/lib/uke-helpers";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Caps, TilbakeLenke } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
-import Link from "next/link";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { Ikon, TomTilstand } from "@/components/precision/pa";
 import { NyPlanKnapp } from "./ny-plan-knapp";
 import { FysPlanKort, type FysPlanKortData } from "./fys-plan-kort";
 
@@ -31,7 +26,6 @@ type RawFysPlan = {
   uker: { okter: { id: string }[] }[];
 };
 
-// Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
 function enrichPlaner(planer: RawFysPlan[]): FysPlanKortData[] {
   const now = Date.now();
   return planer.map((p) => {
@@ -55,9 +49,8 @@ const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
 
 export default async function FysPlanListePage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
-
   const idag = new Date();
-  const [planer, dagensFys] = await Promise.all([
+  const [planer, dagensFys, ulest] = await Promise.all([
     prisma.fysiskPlan.findMany({
       where: { userId: user.id },
       orderBy: { startDato: "desc" },
@@ -70,7 +63,6 @@ export default async function FysPlanListePage() {
         },
       },
     }),
-    // Fasit: «Én ting nå» = dagens FYS-økt fra TrainingPlanSession (akse FYS).
     prisma.trainingPlanSession.findFirst({
       where: {
         plan: { userId: user.id },
@@ -81,6 +73,7 @@ export default async function FysPlanListePage() {
       orderBy: { scheduledAt: "asc" },
       select: { id: true, title: true, scheduledAt: true, durationMin: true, location: true },
     }),
+    getUnreadNotifications(user.id, 1),
   ]);
 
   const enriched = enrichPlaner(planer);
@@ -89,187 +82,75 @@ export default async function FysPlanListePage() {
   const harNoen = enriched.length > 0;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
-      <div
-        data-paper-slug="playerhq-fys-plan"
-        data-od-id="playerhq-fys-plan"
-        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
-      >
-        {/* Topp — fasit: FYS / Fysiske treningsplaner */}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side ph26-fys">
+        <header className="ph26-hode">
           <div>
-            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>FYS</h1>
-            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-              Fysiske treningsplaner
-            </span>
+            <h1>FYS</h1>
+            <p>Fysiske treningsplaner</p>
           </div>
           {harNoen && <NyPlanKnapp variant="header" />}
-        </div>
+        </header>
 
-        {/* Én ting nå — dagens FYS-økt (kun når den finnes; aldri fabrikkert) */}
         {dagensFys && (
-          <div
-            style={{
-              background: TL.dim,
-              border: `1px solid ${TL.hair}`,
-              borderRadius: TL.radius.card,
-              padding: 16,
-            }}
-          >
-            <Caps>Én ting nå</Caps>
-            <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+          <section className="pa-card ph26-kort">
+            <p className="ph26-kicker">Én ting nå</p>
+            <h2>
               {dagensFys.title}
               {" · "}
-              <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>
-                {OSLO_TID.format(dagensFys.scheduledAt)}
-              </span>
-            </h3>
-            <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
+              <span>{OSLO_TID.format(dagensFys.scheduledAt)}</span>
+            </h2>
+            <p>
               {dagensFys.location ? `${dagensFys.location} · ` : ""}
               {dagensFys.durationMin} min. Økta ligger først i dag — golfkølla venter til etterpå.
             </p>
-            {/* Kontrakt §3: skjermens ene aksenthandling */}
-            <Link
-              href={`/portal/gjennomfore/${dagensFys.id}`}
-              data-od-id="fys-start"
-              className="v2-press v2-focus"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 56,
-                width: "100%",
-                borderRadius: TL.radius.card,
-                background: TL.fill,
-                color: TL.onFill,
-                fontFamily: TL.font.sans,
-                fontSize: 14,
-                fontWeight: 600,
-              }}
-              data-paper-en-ting="true"
-            >
+            <Link href={`/portal/gjennomfore/${dagensFys.id}`} data-od-id="fys-start" className="pa-btn pa-btn--primary pa-btn--full">
               Start FYS-økta
             </Link>
-          </div>
+          </section>
         )}
 
-        {/* Aktive planer */}
         {aktive.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Caps>aktive planer · {aktive.length}</Caps>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {aktive.map((p) => (
-                <FysPlanKort key={p.id} plan={p} />
-              ))}
-            </div>
-          </div>
+          <section className="ph26-liste">
+            <p className="ph26-kicker">Aktive planer · {aktive.length}</p>
+            {aktive.map((p) => <FysPlanKort key={p.id} plan={p} />)}
+          </section>
         )}
 
-        {/* Arkiverte planer */}
         {arkiverte.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Caps>arkiverte · {arkiverte.length}</Caps>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {arkiverte.map((p) => (
-                <FysPlanKort key={p.id} plan={p} />
-              ))}
-            </div>
-          </div>
+          <section className="ph26-liste">
+            <p className="ph26-kicker">Arkiverte · {arkiverte.length}</p>
+            {arkiverte.map((p) => <FysPlanKort key={p.id} plan={p} />)}
+          </section>
         )}
 
-        {/* Tom tilstand — fasit-copy, to veier: be om plan (clay) + logg fri økt.
-            Clay kun når «Én ting nå» ikke alt bruker den (maks én per skjerm). */}
         {!harNoen && (
-          <div
-            style={{
-              padding: "24px 16px",
-              background: TL.dock,
-              border: `1px dashed ${TL.hair}`,
-              borderRadius: TL.radius.card,
-            }}
-          >
-            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-              Ingen FYS-plan ennå
-            </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-              Anders har ikke lagt en fysisk plan for deg. Du kan be om en — eller logge fri
-              fysisk trening så lenge, den teller i totalen.
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <Link
-                href="/portal/coach/melding/ny"
-                data-od-id="fys-tom-be"
-                className="v2-press v2-focus"
-                {...(!dagensFys ? { "data-paper-en-ting": "true" } : {})}
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 56,
-                  width: "100%",
-                  borderRadius: TL.radius.card,
-                  ...(!dagensFys
-                    ? { background: TL.fill, color: TL.onFill }
-                    : { background: TL.elev, color: TL.text, border: `1px solid ${TL.hair}` }),
-                  fontFamily: TL.font.sans,
-                  fontSize: 14,
-                  fontWeight: 600,
-                }}
-              >
-                Be Anders om en FYS-plan
-              </Link>
-              <Link
-                href="/portal/planlegge/workbench"
-                data-od-id="fys-tom-fri"
-                className="v2-press v2-focus"
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 56,
-                  width: "100%",
-                  borderRadius: TL.radius.card,
-                  background: TL.elev,
-                  color: TL.text,
-                  border: `1px solid ${TL.hair}`,
-                  fontFamily: TL.font.sans,
-                  fontSize: 14,
-                  fontWeight: 500,
-                }}
-              >
-                Logg fri fysisk økt
-              </Link>
-            </div>
-          </div>
+          <TomTilstand
+            icon={Dumbbell}
+            title="Ingen FYS-plan ennå"
+            text="Anders har ikke lagt en fysisk plan for deg. Du kan be om en — eller logge fri fysisk trening så lenge, den teller i totalen."
+            actions={
+              <div className="ph26-tom">
+                <Link href="/portal/coach/melding/ny" data-od-id="fys-tom-be" className={dagensFys ? "pa-btn pa-btn--secondary pa-btn--full" : "pa-btn pa-btn--primary pa-btn--full"}>
+                  Be Anders om en FYS-plan
+                </Link>
+                <Link href="/portal/planlegge/workbench" data-od-id="fys-tom-fri" className="pa-btn pa-btn--secondary pa-btn--full">
+                  Logg fri fysisk økt
+                </Link>
+              </div>
+            }
+          />
         )}
 
-        {/* FYS-score — ÆRLIG plassholder til formelen er låst (fasit-copy) */}
         {harNoen && (
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              padding: "12px 16px",
-              borderRadius: TL.radius.card,
-              background: TL.dock,
-              border: `1px solid ${TL.hair}`,
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-            }}
-          >
-            <Icon name="clock" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+          <p className="ph26-note">
+            <Ikon icon={Clock} size={16} name="clock" />
             <span>
-              FYS-score kommer. Anders bekrefter referanseverdiene før tall vises her — vi viser
-              heller ingenting enn tall som ikke stemmer.
+              FYS-score kommer. Anders bekrefter referanseverdiene før tall vises her — vi viser heller ingenting enn tall som ikke stemmer.
             </span>
-          </div>
+          </p>
         )}
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

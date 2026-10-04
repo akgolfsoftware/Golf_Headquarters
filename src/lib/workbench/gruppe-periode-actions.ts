@@ -7,6 +7,7 @@
  * (WorkbenchAarsplan gjenbrukes 1:1 på /admin/grupper/[id]/workbench).
  */
 
+import { canEditGroup } from "@/lib/workbench/group-scope";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -31,6 +32,7 @@ export async function coachLagreGruppePeriode(
 ): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
   const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
+  if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
   const parsed = PeriodeInputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig periode-input" };
   const v = parsed.data;
@@ -65,6 +67,7 @@ export async function coachSlettGruppePeriode(
 ): Promise<{ ok: boolean; error?: string }> {
   const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
+  if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
   const eier = await prisma.groupPeriodBlock.findFirst({ where: { id: periodeId, groupId }, select: { id: true } });
   if (!eier) return { ok: false, error: "Perioden finnes ikke" };
   await prisma.groupPeriodBlock.delete({ where: { id: periodeId } });
@@ -94,6 +97,7 @@ export async function coachRullUtGruppeAarsplan(
 ): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: RullUtHoppet[]; error?: string }> {
   const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
+  if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
 
   const [blokker, medlemmer] = await Promise.all([
     prisma.groupPeriodBlock.findMany({
@@ -110,7 +114,7 @@ export async function coachRullUtGruppeAarsplan(
       },
     }),
     prisma.groupMember.findMany({
-      where: { groupId, role: "PLAYER", endedAt: null },
+      where: { groupId, role: "PLAYER", endedAt: null, user: { role: "PLAYER", deletedAt: null } },
       select: { userId: true, user: { select: { name: true } } },
     }),
   ]);

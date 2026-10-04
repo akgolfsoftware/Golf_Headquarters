@@ -12,6 +12,7 @@ const medlemskapskall: Array<Record<string, unknown>> = [];
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
+      $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn((await import("@/lib/prisma")).prisma),
       group: {
         findUnique: async (args: Record<string, unknown>) => {
           kall.push(args);
@@ -33,11 +34,20 @@ mock.module("@/lib/prisma", {
   },
 });
 
+let profilDelt = true;
+mock.module("@/lib/deling/profil-lesing", { namedExports: {
+  medNavngittProfil: async (_bruker: string, _spiller: string, gruppe: string, les: (tx: unknown) => Promise<unknown>) => {
+    if (!profilDelt || !elevAktiv || gruppe !== trenergruppe) return null;
+    return les((await import("@/lib/prisma")).prisma);
+  },
+} });
+
 async function tilgang() {
   return import("./wang-tilgang");
 }
 
 test.beforeEach(() => {
+  profilDelt = true;
   gruppeFeil = null;
   gruppeFinnes = true;
   elevAktiv = true;
@@ -112,4 +122,14 @@ test("databasefeil blir trygg feil uten tekniske detaljer", async () => {
       return true;
     },
   );
+});
+
+
+test("personlig WANG-IUP krever navngitt deling også for ADMIN og etter tilbaketrekking", async () => {
+  const { hentWangElevGruppeId } = await tilgang();
+  assert.equal(await hentWangElevGruppeId({ id: "coach", role: "COACH" }, "elev-1"), "wang-top-id");
+  profilDelt = false;
+  assert.equal(await hentWangElevGruppeId({ id: "coach", role: "COACH" }, "elev-1"), null);
+  assert.equal(await hentWangElevGruppeId({ id: "admin", role: "ADMIN" }, "elev-1"), null);
+  assert.equal(await hentWangElevGruppeId({ id: "elev-1", role: "PLAYER" }, "elev-1"), "wang-top-id");
 });

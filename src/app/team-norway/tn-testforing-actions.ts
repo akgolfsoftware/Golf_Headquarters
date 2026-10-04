@@ -33,9 +33,9 @@
  *    etter fullført, avvises uttrykkelig — det er ikke det samme som å la
  *    en dobbeltklikket "Fullfør"-knapp lykkes stille.
  * 7. Protokollversjon låses til testdagen: `TestDefinition.scoringRule` må
- *    være nøyaktig dagens `TN_VERSION`. En testdag opprettet under en eldre
- *    protokollutgave avvises med en presis feilmelding — INGEN stille
- *    omtolking av gamle data mot en nyere katalogversjon. Antall forsøk er
+ *    være en støttet, eksplisitt versjon. Oppslaget bruker denne versjonen,
+ *    slik at gamle utkast beholder sine felter og regler. Ukjente utgaver
+ *    avvises uten omtolking mot dagens katalog. Antall forsøk er
  *    låst til protokollens `rows.length` på opprettelsestidspunktet, ikke
  *    hva klienten sender.
  * 8. Avbrutt utkast (`abort`) nuller `TestDayParticipant.sessionId` (raden
@@ -50,8 +50,8 @@ import { prisma } from "@/lib/prisma";
 import { TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 import { medSerialisertTestdagTransaksjon } from "@/lib/domain/tn-testdag-lock";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
-import { tnProtocol, TN_VERSION } from "@/lib/portal-tester/tn-catalog";
-import { tnScore, tnValidate, TnValuesSchema, type TnValues } from "@/lib/portal-tester/tn-scoring";
+import { tnProtocol, TN_VERSION, TN_RULES_VERSION, tnVersion } from "@/lib/portal-tester/tn-catalog";
+import { tnScore, tnValidate, tnSameValues, TnValuesSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema, type TnSaveResult } from "@/lib/portal-tester/tn-session";
 
 const TnCoachSaveSchema = z.object({
@@ -61,10 +61,6 @@ const TnCoachSaveSchema = z.object({
   notes: z.string().max(2000).default(""),
   intent: z.enum(["draft", "abort", "complete"]),
 });
-
-function likeVerdier(a: TnValues, b: TnValues): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
 
 /** Trenerførte testdag-økter — playerId/protokoll kommer ALLTID fra den autoriserte deltakerraden, aldri fra klienten. */
 export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> {
@@ -77,14 +73,16 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
     const saved = await medSerialisertTestdagTransaksjon(async (tx) => {
       const deltaker = await tx.testDayParticipant.findUnique({
         where: { id: data.testDayParticipantId },
-        include: { testDay: { include: { group: true, testDefinition: true } } },
+        include: { testDay: { include: { group: true, event: { include: { organizer: true } }, testDefinition: true } } },
       });
-      if (!deltaker || deltaker.testDay.group.slug !== TEAM_NORWAY_SLUG) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
+      const erTNTestdag = deltaker?.testDay.group.slug === TEAM_NORWAY_SLUG;
+      const erTNFellesstasjon = deltaker?.testDay.event?.organizer.slug === TEAM_NORWAY_SLUG;
+      if (!deltaker || (!erTNTestdag && !erTNFellesstasjon)) throw new Error("Fant ikke denne deltakeren i Team Norway-testdagen.");
       if (deltaker.testDay.status !== "ACTIVE") throw new Error("Testdagen er ikke aktiv og tar ikke imot nye registreringer.");
 
       if (coach.role !== "ADMIN") {
         const coachMedlem = await tx.groupMember.findFirst({
-          where: { groupId: deltaker.testDay.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() },
+          where: { groupId: erTNFellesstasjon ? deltaker.testDay.event!.organizerGroupId : deltaker.testDay.groupId, userId: coach.id, role: "COACH", ...aktivtMedlemskapWhere() },
           select: { id: true },
         });
         if (!coachMedlem) throw new Error("Du er ikke aktiv trener i Team Norway-gruppen.");
@@ -93,14 +91,14 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
         where: { groupId: deltaker.testDay.groupId, userId: deltaker.playerId, ...aktivtSpillerMedlemskapWhere() },
         select: { id: true },
       });
-      if (!spillerMedlem) throw new Error("Spilleren er ikke lenger et aktivt medlem av Team Norway-gruppen.");
+      if (!spillerMedlem) throw new Error("Spilleren er ikke lenger et aktivt medlem av stasjonsgruppen.");
 
       // Protokollversjon låst til testdagen — aldri live-katalogen.
-      if (deltaker.testDay.testDefinition.scoringRule !== TN_VERSION) {
-        throw new Error(`Testdagens protokollversjon (${deltaker.testDay.testDefinition.scoringRule}) er utdatert mot dagens ${TN_VERSION} og kan ikke føres videre.`);
+      if (![TN_VERSION, TN_RULES_VERSION].includes(deltaker.testDay.testDefinition.scoringRule ?? "")) {
+        throw new Error(`Testdagens protokollversjon (${deltaker.testDay.testDefinition.scoringRule}) er ukjent eller utdatert og kan ikke føres videre.`);
       }
       const protokollJson = deltaker.testDay.testDefinition.protocol as { protocolId?: string } | null;
-      const p = protokollJson?.protocolId ? tnProtocol(protokollJson.protocolId) : null;
+      const p = protokollJson?.protocolId ? tnProtocol(protokollJson.protocolId, undefined, deltaker.testDay.testDefinition.scoringRule ?? "") : null;
       if (!p) throw new Error("Testdagens protokoll finnes ikke i katalogen.");
       const count = p.rows.length; // låst til protokollen på opprettelsestidspunktet, ikke klienten
 
@@ -110,7 +108,7 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
         const lagretParsed = TnSessionSchema.safeParse(
           deltaker.sessionId ? (await tx.testSession.findUnique({ where: { id: deltaker.sessionId }, select: { scoringData: true } }))?.scoringData : null,
         );
-        const sammeVerdier = lagretParsed.success && likeVerdier(lagretParsed.data.values, data.values) && (lagretResultat?.notes ?? "") === data.notes;
+        const sammeVerdier = lagretParsed.success && tnSameValues(lagretParsed.data.values, data.values) && (lagretResultat?.notes ?? "") === data.notes;
         if (data.intent !== "complete" || !sammeVerdier) {
           throw new Error("Denne testen er allerede fullført. Nye verdier eller draft/avbryt kan ikke overskrive resultatet.");
         }
@@ -130,13 +128,13 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
       const existing = await tx.testSession.findUnique({ where: { id: sessionId } });
       if (existing && existing.userId !== spillerId) throw new Error("Økten er ikke tilgjengelig.");
       const state = existing ? TnSessionSchema.safeParse(existing.scoringData) : null;
-      if (existing && (!state?.success || state.data.protocolId !== p.id || state.data.count !== count)) throw new Error("Protokollen er endret. Start en ny test og behold dette utkastet.");
+      if (existing && (!state?.success || state.data.version !== tnVersion(p) || state.data.protocolId !== p.id || state.data.count !== count)) throw new Error("Protokollen er endret. Start en ny test og behold dette utkastet.");
       if (existing && existing.status !== "IN_PROGRESS") throw new Error("Utkastet var avbrutt — dette skal ikke skje uten at deltakeren fikk et nytt sessionId. Prøv igjen.");
       if (existing && state!.data!.revision !== data.revision) throw new Error("Økten er endret i en annen fane. Last siden på nytt før du fortsetter.");
       if (!existing && data.revision !== 0) throw new Error("Utkastet finnes ikke. Last siden på nytt.");
 
       const revision = data.revision + 1;
-      const scoringData = { version: TN_VERSION, protocolId: p.id, count, revision, values: data.values, notes: data.notes };
+      const scoringData = { version: tnVersion(p), protocolId: p.id, count, revision, values: data.values, notes: data.notes };
       if (!existing) {
         await tx.testSession.create({ data: { id: sessionId, userId: spillerId, testId: definitionId, scoringData } });
         // Claim: kun hvis deltakeren FORTSATT ikke har en session (matcher
@@ -185,6 +183,8 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
     // Egen try/catch, isolert fra svaret som gis til brukeren.
     try {
       revalidatePath("/team-norway/fellestesting");
+      revalidatePath("/team-norway/wang-resultater");
+      revalidatePath("/team-wang/coach/tester");
       revalidatePath("/team-norway/spillere");
       if (saved.resultId) {
         const deltaker = await prisma.testDayParticipant.findUnique({ where: { id: data.testDayParticipantId }, select: { playerId: true } });

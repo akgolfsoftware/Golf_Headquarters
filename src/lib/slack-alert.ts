@@ -15,8 +15,8 @@
  */
 
 import "server-only";
-import { Redis } from "@upstash/redis";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { createUpstashRedis } from "@/lib/upstash-redis";
 
 const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000; // 5 min
 // In-memory fallback (kun dev / uten Redis). På serverless er hver lambda-
@@ -26,12 +26,7 @@ const lastSent = new Map<string, number>();
 
 // Delt dedup-lager: samme (title+message) fra flere lambdaer under én incident
 // skal gi ÉN e-post, ikke én per instans. Bruker samme Upstash som rate-limit.
-const _redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-const _redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-const redis =
-  _redisUrl && _redisToken
-    ? new Redis({ url: _redisUrl, token: _redisToken })
-    : null;
+const redis = createUpstashRedis();
 
 /**
  * Returnerer true hvis denne alerten skal sendes (ikke sett innenfor vinduet).

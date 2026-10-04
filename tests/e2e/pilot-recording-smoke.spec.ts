@@ -9,7 +9,7 @@
  * Kjør: npm run test:e2e:pilot
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
 import {
   dismissCookieBanner,
   hasCoachAuth,
@@ -89,11 +89,11 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
 
     // Tom kø eller saker — begge er gyldig. «Løst · sjekkpunkt» bare når det finnes.
     await expect(page.locator("body")).toContainText(
-      /Godkjenning|Køen er tom|saker venter|sak venter|sjekkpunkt|Løst/i,
+      /Ingen saker under Godkjenn|VENTER \d+/i,
     );
   });
 
-  test("spillerdashboard: Før-kort (sjekkpunkt) vises eller tom-tekst", async ({
+  test("spillerprofil viser plan og åpner Workbench", async ({
     page,
   }) => {
     await loginAsCoach(page);
@@ -112,8 +112,7 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
       )
       .first();
 
-    const count = await spillerLenke.count();
-    test.skip(count === 0, "Ingen spillere i stallen — kan ikke sjekke Før-kort");
+    await expect(spillerLenke).toBeVisible();
 
     const href = await spillerLenke.getAttribute("href");
     // Naviger direkte — mer stabilt enn click under overlay/layout-shift
@@ -125,10 +124,13 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
       /Application error|Internal Server Error/i,
     );
 
-    // SpillerDashboardV2: enten aktivt Før-kort eller ærlig tom-tilstand
-    await expect(page.locator("body")).toContainText(
-      /Før neste økt|Ingen godkjent sjekkpunkt|sjekkpunkt/i,
-      { timeout: 15_000 },
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const plan = page.getByRole("main").getByRole("link", { name: "Plan", exact: true });
+    await expect(plan).toBeVisible();
+    const workbench = page.getByRole("link", { name: "Åpne Workbench", exact: true });
+    await expect(workbench).toBeVisible();
+    await workbench.click();
+    await expect(page).toHaveURL(/\/admin\/workbench\//);
+    await expect(page.getByRole("button", { name: "Ny økt", exact: true })).toBeVisible();
   });
 });

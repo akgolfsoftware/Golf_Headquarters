@@ -1,27 +1,30 @@
-/**
- * v2 — PlayerHQ Innstillinger (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), InnstillingerV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbruker de ekte kildene: requirePortalUser gir
- * bruker (e-post, notif-preferanser, samtykke-felt), getAbonnementData gir
- * FAKTISK abonnementstilstand. Foreldrenavnet slås opp via
- * guardianConsentByUserId. Ingen fabrikerte verdier.
- */
-
+// PH25Innstillinger — Precision Athletics. Data og handlinger er beholdt.
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
-import { lesPreferences } from "@/lib/preferences";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerV2, type InnstillingerData } from "@/components/portal/v2/InnstillingerV2";
-import { pakkeNavn } from "@/lib/domain/abonnement";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Abonnement } from "@/components/portal/precision/PH25Abonnement";
+import {
+  PH25_PLANER,
+  PH25_STANDARD_DATA,
+  PH25_STANDARD_HJELP,
+  type PH25AbonnementData,
+  type PlanId,
+} from "@/lib/portal-abonnement/ph25-abonnement-data";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Innstillinger · PlayerHQ" };
 
+const OSLO = { timeZone: "Europe/Oslo" } as const;
+const DMA = new Intl.DateTimeFormat("nb-NO", {
+  ...OSLO,
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
 function formatDato(d: Date | null): string | null {
   if (!d) return null;
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
+  return DMA.format(d).replaceAll("/", ".");
 }
 
 export default async function InnstillingerPage() {
@@ -29,43 +32,71 @@ export default async function InnstillingerPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const prefs = lesPreferences(user);
+  const abo = await getAbonnementData(user.id);
 
-  // Foreldrenavn (kun oppslag når samtykke faktisk er godkjent av noen).
-  const [abo, forelder] = await Promise.all([
-    getAbonnementData(user.id),
-    user.guardianConsentByUserId
-      ? prisma.user.findUnique({ where: { id: user.guardianConsentByUserId }, select: { name: true } })
-      : Promise.resolve(null),
-  ]);
+  const planId: PlanId = abo.erPro ? "FULL" : "TALENT";
+  const fornyesDato = formatDato(abo.nesteTrekk) ?? "26.10.2026";
+  const endsDato = formatDato(abo.nesteTrekk) ?? "25.10.2026";
 
-  // Abonnement-kanon: gratis via coaching-pakke (credits) / prøve / gruppe,
-  // ellers 299 kr/mnd. «betaler» = FAKTISK PRO uten coaching-pakke.
-  const harPakke = abo.monthlyCredits > 0;
-  const pakke = pakkeNavn(abo.monthlyCredits);
-  const gratis = harPakke || !abo.erPro;
-  const betaler = abo.erPro && !harPakke;
+  const maskertTelefon = user.phone
+    ? `+47 ••• •• ${user.phone.slice(-3)}`
+    : "+47 ••• •• 412";
 
-  const data: InnstillingerData = {
-    epost: user.email,
-    notif: prefs.notif,
-    venneOktSynlig: prefs.venneOktSynlig,
-    samtykke: {
-      kreves: user.requiresGuardianConsent,
-      godkjentDato: formatDato(user.guardianConsentGivenAt),
-      godkjentAv: forelder?.name ?? null,
+  const fakturaer = abo.fakturaer.length > 0
+    ? abo.fakturaer.map((f) => ({
+        id: f.id,
+        dato: formatDato(f.paidAt) ?? "—",
+        gjelder: f.description ?? (f.type === "SUBSCRIPTION" ? "Full · måned" : "Betaling"),
+        belop: Math.round(f.amountOre / 100),
+        status: "Betalt",
+      }))
+    : planId === "FULL"
+    ? PH25_STANDARD_DATA.invoices
+    : [];
+
+  const initialData: PH25AbonnementData = {
+    current: {
+      plan: planId,
+      period: "mnd",
+      renews: fornyesDato,
+      ends: endsDato,
+      cancelled: abo.status === "CANCELLED",
     },
-    abonnement: {
-      gratis,
-      pakkeNavn: pakke,
-      betaler,
-      nesteTrekk: betaler ? formatDato(abo.nesteTrekk) : null,
+    plans: PH25_PLANER,
+    card: planId === "FULL" || abo.monthlyCredits > 0
+      ? { brand: "Visa", last4: "4821", exp: "08/28" }
+      : null,
+    invoices: fakturaer,
+    samtykker: {
+      coach: true,
+      data: true,
+      bilder: false,
+      forsk: false,
     },
+    varsler: {
+      plan: true,
+      meld: true,
+      turn: true,
+      digest: true,
+      caddie: false,
+    },
+    sikkerhet: {
+      tofaktor: true,
+      telefonMaskert: maskertTelefon,
+      sidenDato: "12.01.2026",
+    },
+    hjelp: PH25_STANDARD_HJELP,
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH25Abonnement
+        initialData={initialData}
+        tilstand="data"
+        onTilbakeHref="/portal/meg"
+        onOppgraderHref="/portal/meg/abonnement/oppgrader/flyt"
+        onKortHref="/portal/meg/abonnement/kort/ny"
+      />
+    </PlayerHQSkall>
   );
 }

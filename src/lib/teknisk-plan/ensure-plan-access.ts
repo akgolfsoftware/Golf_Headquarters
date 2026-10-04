@@ -10,6 +10,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 
 export async function ensurePlanAccess(planId: string) {
   const user = await getCurrentUser();
@@ -20,8 +21,14 @@ export async function ensurePlanAccess(planId: string) {
     select: { userId: true, opprettetAvId: true },
   });
   if (!plan) throw new Error("Plan ikke funnet");
-  const isOwner = plan.userId === user.id || plan.opprettetAvId === user.id;
-  const isCoachOrAdmin = user.role === "COACH" || user.role === "ADMIN";
-  if (!isOwner && !isCoachOrAdmin) throw new Error("Ingen tilgang");
+  // Oppretteren er historikk, ikke en varig tilgangsrelasjon. En trener som
+  // ikke lenger følger spilleren skal heller ikke kunne skrive via plan-ID.
+  let allowed = plan.userId === user.id;
+  if (!allowed && (user.role === "COACH" || user.role === "ADMIN")) {
+    // ADMIN følger samme dokumenterte AgencyOS-grense: coachede spillere,
+    // ikke selvbetjente PlayerHQ-kontoer. COACH avgrenses også til egne spillere.
+    allowed = await harCoachTilgangTilSpiller(user, plan.userId);
+  }
+  if (!allowed) throw new Error("Ingen tilgang");
   return { user, plan };
 }

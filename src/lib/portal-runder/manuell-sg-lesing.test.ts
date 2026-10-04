@@ -14,10 +14,9 @@ const round = () => ({
 });
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => viewer } });
 mock.module("@/lib/auth/coached", { namedExports: { harCoachTilgangTilSpiller: async () => { scopeChecks++; return hasScope; } } });
-mock.module("@/lib/prisma", { namedExports: { prisma: { round: { findUnique: async () => exists ? round() : null } } } });
+mock.module("@/lib/prisma", { namedExports: { prisma: { round: { findUnique: async () => exists ? round() : null }, notification: { count: async () => 0 } } } });
 mock.module("next/navigation", { namedExports: { notFound: () => { throw new Error("NOT_FOUND"); } } });
-mock.module("@/components/v2/shell", { namedExports: { V2Shell: () => null, PLAYERHQ_NAV: [] } });
-mock.module("@/components/portal/v2/RundeDetaljV2", { namedExports: { RundeDetaljV2: () => null } });
+mock.module("@/components/portal/precision/PHRD08RundeFerdig", { namedExports: { PHRD08RundeFerdig: () => null } });
 let page: typeof import("@/app/portal/mal/runder/[id]/page").default;
 before(async () => { page = (await import("@/app/portal/mal/runder/[id]/page")).default; });
 beforeEach(() => { viewer = { id: "spiller-a", role: "PLAYER" }; hasScope = false; exists = true; scopeChecks = 0; });
@@ -25,11 +24,11 @@ const read = () => page({ params: Promise.resolve({ id: "runde-a" }), searchPara
 
 test("eieren får alle manuelle felt, også nullkategori og lob uten kjent total", async () => {
   const result = await read();
-  const data = result.props.children.props.data;
+  const data = result.props.data;
   assert.equal(data.erEier, true); assert.equal(scopeChecks, 0);
   assert.equal(data.sgTotal, null); assert.equal(data.sgSource, "manual");
   assert.deepEqual(data.sgKategorier, [{ akse: "PUTT", sg: 0 }]);
-  assert.equal(data.manuellSg.sgLob, -0.3); assert.equal(data.granulaerSg.lob, -0.3);
+  assert.equal(data.manuellSg.sgLob, -0.3); assert.equal(data.granulaerSg.sgLob, -0.3);
   assert.equal(Object.keys(data.manuellSg).length, 21);
 });
 
@@ -43,7 +42,7 @@ test("andre spillere, uvedkommende coach og admin uten spillerrelasjon får ikke
 
 test("coach med bekreftet spillerrelasjon kan lese, men er ikke eier", async () => {
   viewer = { id: "coach-a", role: "COACH" }; hasScope = true;
-  const result = await read(); assert.equal(result.props.children.props.data.erEier, false);
+  const result = await read(); assert.equal(result.props.data.erEier, false);
   assert.equal(scopeChecks, 1);
 });
 

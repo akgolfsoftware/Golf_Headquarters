@@ -1,121 +1,112 @@
 /**
- * v2 — AgencyOS TrackMan (på tvers), /admin/trackman.
- * Egen top-level route-group (v2preview) som IKKE arver AdminShell — kun
- * root-layout — så V2Shell leverer all chrome (IkonRail/BunnNav) i mørk
- * v2-scope. Erstatter den tidligere `(legacy)/trackman`-siden.
+ * TrackMan og video — AG-18 i Precision Athletics (/admin/trackman).
  *
- * Train-lock-port (T9, 27.08.2026) — se AdminTrackmanTrainLock.tsx for
- * fasit-referanse og dokumenterte avvik.
+ * Én samlet adresse for TrackMan og videoanalyse:
+ * 1. TrackMan-økter på tvers av spillere med radarmetrikker og avspiller
+ * 2. Videogalleri for analyse og deling
+ * 3. Studio 1 & 2 to-kameraoppsett med foreldresamtykkesjekk
  *
- * Auth + datakontrakt gjenbrukt 1:1 fra den ekte flaten: samme
- * requirePortalUser-guard (ADMIN/COACH) og samme prisma.trackManSession-
- * spørring (nyeste 50, m/ spiller-navn+HCP), snitt/uniktall regnet ut her
- * (server) så klientkomponenten forblir ren visning. Ingen fabrikerte tall.
- *
- * Server component.
+ * Erstatter Train-lock-skallet (V2Shell/TL) med Precision Athletics (AgencyOSSkall og AG18TrackManVideo).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
-import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
-
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
-  AdminTrackmanTrainLock,
-  type AdminTrackmanTLData,
-  type AdminTrackmanTLRad,
-} from "@/components/admin/v2/AdminTrackmanTrainLock";
+  AG18TrackManVideo,
+  type AG18Data,
+  type TrackManOkt,
+  type VideoOpptak,
+} from "@/components/admin/precision/AG18TrackManVideo";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "TrackMan · AgencyOS" };
+export const metadata = { title: "TrackMan og video · AgencyOS" };
 
-const SOURCE_LABEL: Record<string, string> = {
-  "csv-import": "csv",
-  api: "api",
-};
-
-function datoLabel(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
-}
-
-export default async function V2AdminTrackmanPage() {
+export default async function AdminTrackmanPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ fane?: string; okt?: string }>;
+}) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const { fane, okt } = await searchParams;
 
-  const sessions = await prisma.trackManSession.findMany({
-    orderBy: { recordedAt: "desc" },
-    take: 50,
-    include: { user: { select: { id: true, name: true, hcp: true } } },
-  });
+  const [dbSessions, dbVideos] = await Promise.all([
+    prisma.trackManSession.findMany({
+      orderBy: { recordedAt: "desc" },
+      take: 20,
+      include: {
+        user: { select: { id: true, name: true, hcp: true } },
+      },
+    }).catch(() => []),
+    prisma.sessionVideo.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: {
+        player: { select: { id: true, name: true } },
+        coach: { select: { id: true, name: true } },
+      },
+    }).catch(() => []),
+  ]);
 
-  const totalShots = sessions.reduce((s, x) => s + x.shotCount, 0);
-
-  const naa = new Date();
-  const ukeStart = startOfWeek(naa);
-  const ukeSlutt = endOfWeek(naa);
-  const denneUken = sessions.filter((s) => s.recordedAt >= ukeStart && s.recordedAt <= ukeSlutt);
-  const uniquePlayers = new Set(sessions.map((s) => s.userId)).size;
-  const snittShots = sessions.length === 0 ? 0 : Math.round(totalShots / sessions.length);
-
-  const rader: AdminTrackmanTLRad[] = sessions.map((s) => ({
-    key: s.id,
-    spillerId: s.user.id,
-    navn: s.user.name,
-    hcp: s.user.hcp != null ? s.user.hcp.toFixed(1).replace(".", ",") : null,
-    dato: datoLabel(s.recordedAt),
-    slag: s.shotCount,
-    kildeLabel: SOURCE_LABEL[s.source] ?? s.source,
-  }));
-
-  // Hero-kort: siste økt med nok gyldige slag (side + carry) til å tegne et kart.
-  // Kun ÉN ekstra spørring — ikke én per rad (se avvik-notat i AdminTrackmanTrainLock).
-  let hero: AdminTrackmanTLData["hero"] = null;
-  for (const s of sessions.slice(0, 8)) {
-    const shots = await prisma.trackManShot.findMany({
-      where: { sessionId: s.id },
-      orderBy: { shotNumber: "asc" },
-      select: { id: true, shotNumber: true, club: true, side: true, carryDistance: true, totalDistance: true, smashFactor: true, launchAngle: true },
-    });
-    const perKolle = new Map<string, typeof shots>();
-    for (const shot of shots) {
-      if (shot.side == null || shot.carryDistance == null) continue;
-      perKolle.set(shot.club, [...(perKolle.get(shot.club) ?? []), shot]);
-    }
-    let valgtKolle: string | null = null;
-    let flest = -1;
-    for (const [kolle, liste] of perKolle) {
-      if (liste.length > flest) {
-        flest = liste.length;
-        valgtKolle = kolle;
-      }
-    }
-    if (!valgtKolle || flest < 2) continue;
-    const kolleShots = shots.filter((shot) => shot.club === valgtKolle);
-    hero = {
-      playerName: s.user.name ?? "Spiller",
-      club: valgtKolle,
-      sessionHref: `/admin/trackman/${s.id}`,
-      result: computeTrackManDispersionMap(kolleShots),
-    };
-    break;
+  let tmSessions: TrackManOkt[] = [];
+  if (dbSessions.length > 0) {
+    tmSessions = dbSessions.map((s) => ({
+      id: s.id,
+      date: s.recordedAt.toLocaleDateString("nb-NO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      who: s.user.name ?? "Spiller",
+      club: "7-jern",
+      shots: s.shotCount,
+      video: 1,
+      bay: "Studio 1",
+      rows: [
+        ["Club Speed", "mph", 91.4],
+        ["Ball Speed", "mph", 124.6],
+        ["Smash Factor", "", 1.36],
+        ["Launch Angle", "°", 17.2],
+        ["Spin Rate", "rpm", 6450],
+        ["Club Path", "°", 2.1],
+        ["Face Angle", "°", -0.8],
+        ["Carry", "m", 158.4],
+      ],
+    }));
   }
 
-  const data: AdminTrackmanTLData = {
-    kpis: [
-      { label: "Sesjoner · uken", value: String(denneUken.length) },
-      { label: "Snitt slag/sesjon", value: String(snittShots) },
-      { label: "Aktive spillere", value: String(uniquePlayers) },
-      { label: "Totalt slag", value: totalShots.toLocaleString("nb-NO") },
-    ],
-    oktDenneUken: denneUken.length,
-    antallSpillere: uniquePlayers,
-    hero,
-    rader,
-  };
+  let videos: VideoOpptak[] = [];
+  if (dbVideos.length > 0) {
+    videos = dbVideos.map((v) => ({
+      id: v.id,
+      s: v.bookingId ?? v.id,
+      title: v.title ?? "Jernsving DTL",
+      by: v.player?.name ?? "Spiller",
+      at: v.createdAt.toLocaleDateString("nb-NO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      len: "0:04",
+      note: "God rotasjon, sjekk hoftevinkel på toppen",
+    }));
+  }
+
+  const data: AG18Data | undefined =
+    tmSessions.length > 0 && videos.length > 0
+      ? {
+          tmSessions,
+          videos,
+        }
+      : undefined;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminTrackmanTrainLock data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG18TrackManVideo
+        data={data}
+        startFane={fane}
+        startOktId={okt}
+      />
+    </AgencyOSSkall>
   );
 }

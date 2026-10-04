@@ -43,7 +43,7 @@ const stubbePlugin = {
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
       resolveDir: root, loader: "js",
       contents: path === "next/navigation"
-        ? 'export const useRouter=()=>({push(){},replace(){},refresh(){},back(){},prefetch(){}});export const usePathname=()=>window.__PROVE_PATH__||"/";export const useSearchParams=()=>new URLSearchParams(location.search);export const useParams=()=>({});export function redirect(){throw new Error("redirect i prøven")};export function notFound(){throw new Error("notFound i prøven")}'
+        ? 'export const useRouter=()=>({push(){},replace(){},refresh(){},back(){},prefetch(){}});export const usePathname=()=>window.__PROVE_PATH__||"/";export const useSearchParams=()=>new URLSearchParams(location.search);export const useParams=()=>({});export const unstable_rethrow=()=>{};export function redirect(){throw new Error("redirect i prøven")};export function notFound(){throw new Error("notFound i prøven")}'
         : path === "next/link"
           ? 'import{createElement}from"react";export default function Link({prefetch,scroll,replace,shallow,...p}){return createElement("a",p)}'
           : path === "next/dynamic"

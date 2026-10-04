@@ -47,7 +47,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     // anonymisere — den er en egen forpliktelse fra personvernerklæringen.
     let feilloggSlettet = 0;
     try {
-      feilloggSlettet = await slettGamleFeillogger();
+      if (!dryRun) feilloggSlettet = await slettGamleFeillogger();
     } catch (error) {
       await logError({ context: "cron.cleanup-deleted-accounts.feillogg", error });
     }

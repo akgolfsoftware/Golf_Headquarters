@@ -32,6 +32,13 @@ type Tildeling = { id: string; playerId: string; testId: string; dueDate: Date |
 let tildelinger: Tildeling[] = [];
 let planerPerBruker: Record<string, { id: string; name: string; status: string; startDate: Date; endDate: Date | null }[]> = {};
 let analyseHubPerBruker: Record<string, { dagLabel: string; vindu: null; lekkasje: null; lekkasjeLinje: null; sgAkser: { id: string; etikett: string; tekst: string; verdi: number | null }[]; trackman: { sessionId: string; klubb: string; datoKort: string; setning: string; meta: string; kpis: string; variant: string; punkter: unknown[]; ellipse: null } | null; dypere: { href: string; tittel: string; meta: string }[] }> = {};
+let wangResultatSkoler: { groupId: string; schoolName: string; playerIds: string[]; players: { id: string; name: string }[] }[] = [];
+
+mock.module("@/lib/portal-tester/wang-resultat-tilgang", {
+  namedExports: {
+    hentWangTestresultatSkolerForTeamNorway: async () => wangResultatSkoler,
+  },
+});
 
 function feltVerdi(f: TnField, row: TnRow, presis: boolean): string | number {
   if (f.choices) return f.choices[0];
@@ -64,6 +71,7 @@ function ekteResultat(protocolId: string, presis: boolean, count?: number) {
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
+      $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn((await import("@/lib/prisma")).prisma),
       group: { findUnique: async () => GRUPPE },
       groupMember: {
         findFirst: async ({ where }: { where: { userId: string; role?: string } }) => {
@@ -98,6 +106,7 @@ mock.module("@/lib/prisma", {
         findFirst: async ({ where }: { where: { id: string } }) => testDefinisjoner[where.id] ?? null,
       },
       user: {
+        findFirst: async ({where}:{where:{id:string}}) => { const m = medlemmer.find(x=>x.userId===where.id && x.aktiv); return m ? {name:m.navn} : null; },
         findUnique: async ({ where }: { where: { id: string } }) => {
           const m = medlemmer.find((x) => x.userId === where.id);
           return m ? { id: m.userId, name: m.navn, hcp: null, tier: "GRATIS" } : null;
@@ -118,6 +127,19 @@ mock.module("@/lib/prisma", {
     },
   },
 });
+
+let profilDelt = true;
+mock.module("@/lib/deling/profil-lesing", { namedExports: {
+  medNavngittProfil: async (_bruker: string, spillerId: string, _gruppe: string, les: (tx: unknown) => Promise<unknown>) => {
+    if (!profilDelt || !medlemmer.some(m=>m.userId===spillerId && m.aktiv && m.role==="PLAYER")) return null;
+    return les((await import("@/lib/prisma")).prisma);
+  },
+  lesNavngitteProfiler: async (_bruker: string, _gruppe: string, les: (tx: unknown, id: string) => Promise<unknown>) => {
+    if (!profilDelt) return [];
+    const tx = (await import("@/lib/prisma")).prisma;
+    return Promise.all(medlemmer.filter(m => m.aktiv && m.role === "PLAYER").map(m => les(tx, m.userId)));
+  },
+} });
 
 mock.module("@/lib/portal-analyse/tm-hub-data", {
   namedExports: {
@@ -158,6 +180,7 @@ before(async () => {
 });
 
 beforeEach(() => {
+  profilDelt = true;
   medlemmer = [
     { userId: "coach-1", role: "COACH", navn: "Coach", aktiv: true },
     { userId: "assistent-1", role: "ASSISTANT", navn: "Hjelpetrener", aktiv: true },
@@ -183,6 +206,7 @@ beforeEach(() => {
   tildelinger = [];
   planerPerBruker = {};
   analyseHubPerBruker = {};
+  wangResultatSkoler = [];
 });
 
 // ---------------------------------------------------------------------
@@ -301,6 +325,21 @@ test("gruppeanalyse per protokoll: spiller uten resultat er UKJENT (null), ikke 
   assert.equal(radB?.score, null);
   // Kjente resultater sorteres FØR ukjente — aldri blandet inn i selve rangeringen.
   assert.equal(resultat!.rader[resultat!.rader.length - 1].score, null);
+});
+
+test("Team Norway gruppeanalyse inkluderer resultater og manglende levering fra alle WANG-skoler", async () => {
+  const resultat = ekteResultat("putt-1-3m", true);
+  wangResultatSkoler = [
+    { groupId: "wang-oslo", schoolName: "WANG Toppidrett Oslo", playerIds: ["wang-a"], players: [{ id: "wang-a", name: "WANG-spiller A" }] },
+    { groupId: "wang-romerike", schoolName: "WANG Ung Romerike", playerIds: ["wang-b"], players: [{ id: "wang-b", name: "WANG-spiller B" }] },
+  ];
+  resultater = [{ id: "wang-result-a", userId: "wang-a", testId: "tn-v3-putt-1-3m", takenAt: new Date("2026-09-12"), score: resultat.score, details: resultat, recordedById: null }];
+  const data = await hentTnGruppeanalyseResultat({ id: "coach-1", role: "COACH", name: "Coach" }, { protokollId: "putt-1-3m" });
+  assert.ok(data);
+  assert.deepEqual(data!.rader.filter((rad) => rad.skole).map((rad) => ({ id: rad.spillerId, skole: rad.skole, score: rad.score })), [
+    { id: "wang-a", skole: "WANG Toppidrett Oslo", score: resultat.score },
+    { id: "wang-b", skole: "WANG Ung Romerike", score: null },
+  ]);
 });
 
 test("gruppeanalyse avvises for spiller uten TN-lese-rolle", async () => {
@@ -573,7 +612,8 @@ test("hentTnSpillerAktivePlaner viser MÅLSPILLERENS planer, ikke den innloggede
   };
   const tilgang = await hentTnSpillerTilgang({ id: "coach-1", role: "COACH", name: "Coach" }, "player-a");
   assert.ok(tilgang);
-  const planer = await hentTnSpillerAktivePlaner(tilgang!);
+  const planer = await hentTnSpillerAktivePlaner({ id: "coach-1", role: "COACH", name: "Coach" }, tilgang!.spillerId);
+  assert.ok(planer);
   assert.equal(planer.length, 1);
   assert.equal(planer[0].navn, "Plan A");
 });
@@ -595,7 +635,8 @@ test("hentTnSpillerAnalyseHub kaller hentAnalyseHub med MÅLSPILLERENS id og eks
   };
   const tilgang = await hentTnSpillerTilgang({ id: "coach-1", role: "COACH", name: "Coach" }, "player-a");
   assert.ok(tilgang);
-  const hub = await hentTnSpillerAnalyseHub(tilgang!);
+  const hub = await hentTnSpillerAnalyseHub({ id: "coach-1", role: "COACH", name: "Coach" }, tilgang!.spillerId);
+  assert.ok(hub);
   assert.equal(hub.sgAkser[0].tekst, "+0,5 slag");
   assert.equal(hub.trackman!.klubb, "7-jern");
   assert.equal(Object.prototype.hasOwnProperty.call(hub, "dypere"), false);
@@ -661,4 +702,15 @@ test("øvrig testdetalj UTEN resultater, men med gyldig definisjon, viser protok
   assert.equal(detalj!.historikk.length, 0);
   assert.equal(detalj!.steg.length, 1);
   assert.equal(detalj!.lowerIsBetter, true);
+});
+
+
+test("personlig TN-profil avvises uten navngitt deling, også etter tidligere oppslag", async () => {
+  const coach = { id: "coach-1", role: "COACH" as const, name: "Coach" };
+  assert.ok(await hentTnSpillerTilgang(coach, "player-a"));
+  profilDelt = false;
+  assert.equal(await hentTnSpillerTilgang(coach, "player-a"), null);
+  assert.equal(await hentTnSpillerTester(coach, "player-a"), null);
+  assert.equal(await hentTnSpillerAktivePlaner(coach, "player-a"), null);
+  assert.equal(await hentTnSpillerAnalyseHub(coach, "player-a"), null);
 });

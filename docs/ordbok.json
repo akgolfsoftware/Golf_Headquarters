@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-09-30",
+  "versjon": "2026-10-04",
   "kilder": {
     "master": "docs/treningsplanlegging.md",
     "schema": "prisma/schema.prisma",
@@ -551,6 +551,16 @@
       "FATHER",
       "MOTHER",
       "GUARDIAN"
+    ],
+    "RoundPlayStatus": [
+      "IN_PROGRESS",
+      "COMPLETED",
+      "ABANDONED"
+    ],
+    "RoundDraftStatus": [
+      "ACTIVE",
+      "COMPLETED",
+      "ABANDONED"
     ],
     "ShotLie": [
       "TEE",

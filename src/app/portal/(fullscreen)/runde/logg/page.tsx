@@ -1,53 +1,23 @@
 /**
- * Logg en runde (etterregistrering) — /portal/runde/logg (fullscreen).
- * Paper-fasit: designsystem/paper/fase1/playerhq-runde-logg.html.
- * ÉN skjerm: dato + bane, «Hull for hull | Bare totalen», og de 2 siste
- * loggførte rundene (ekte data). KUN brutto score.
+ * Logg en runde (etterregistrering) — /portal/runde/logg (PH-09 i Precision Athletics).
+ * Kilde: ui_kits/playerhq/screens/PH-09.jsx (26.09.2026).
+ * Hull-for-hull registrering med brutto score.
+ * KUN brutto score — aldri netto.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { RundeEtterregistreringKlient } from "@/components/portal/runde-logg/runde-etterregistrering-klient";
-import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
-import { medForst } from "@/lib/portal/baneliste-med-prefill";
+import { loadPh0809Data } from "@/lib/portal-runder/load-ph08-09";
+import { PH09RegistrerRunde } from "@/components/portal/precision/PH09RegistrerRunde";
 
-export const metadata = { title: "Logg en runde — AK Golf HQ" };
-
-const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", {
-  day: "2-digit",
-  month: "2-digit",
-  timeZone: "Europe/Oslo",
-});
+export const metadata = { title: "Registrer runde · PlayerHQ" };
 
 export default async function RundeLoggPage() {
-  // (fullscreen)-layouten krever kun innlogging (17.08) — tilgangsnivået
-  // håndheves her. Runde-logging står ikke på talent-allowlisten: FULL.
-  // requirePortalUser dekker også foreldresamtykket requireConsentingUser
-  // gjorde før, men REDIRECTER til venterommet i stedet for å kaste — riktig
-  // for en side (requireConsentingUser er skrevet for server actions).
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const data = await loadPh0809Data(user.id);
 
-  const [alleBaner, sisteBaneId, sisteRunder] = await Promise.all([
-    prisma.courseDefinition.findMany({
-      orderBy: { name: "asc" },
-      select: { id: true, name: true },
-    }),
-    sisteSpilteBaneId(user.id),
-    prisma.round.findMany({
-      where: { userId: user.id },
-      orderBy: { playedAt: "desc" },
-      take: 2,
-      select: { playedAt: true, score: true, course: { select: { name: true } } },
-    }),
-  ]);
-  // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
-  const baner = medForst(alleBaner, sisteBaneId);
-
-  const siste = sisteRunder.map((r) => ({
-    dato: OSLO_DATO.format(r.playedAt),
-    bane: r.course.name,
-    slag: r.score,
-  }));
-
-  return <RundeEtterregistreringKlient baner={baner} siste={siste} />;
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--surface-page)", color: "var(--text-primary)" }}>
+      <PH09RegistrerRunde data={data} />
+    </div>
+  );
 }

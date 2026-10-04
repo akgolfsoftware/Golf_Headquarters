@@ -1,3 +1,4 @@
+// PH12MalBygger — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * /portal/ai/mal-bygger — AI mål-bygger (3-stegs SMART-wizard) — v2.
  * v2-port 16. juli 2026: `AiMalByggerV2` erstatter mal-bygger-wizard (v10),
@@ -8,7 +9,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke } from "@/components/v2";
 import { AiMalByggerV2 } from "@/components/portal/v2/AiMalByggerV2";
 
@@ -27,13 +28,15 @@ export default async function MalByggerPage() {
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <AiMalByggerV2
         playerFirstName={(user.name ?? "deg").split(" ")[0]}
         defaultYearEnd={yearEnd}
         testOptions={testOptions}
       />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,0 +1,164 @@
+/*
+ * Precision Athletics — TrackMan og video (AG-18).
+ * CSS for AG18TrackManVideo: layout, metrikk-grid, videokort og opptaksflater.
+ * Kun semantiske variabler fra precision-athletics.css. Ingen hex-farger.
+ */
+
+.pa-a18-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.pa-a18-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+  align-items: start;
+}
+
+@media (min-width: 1025px) {
+  .pa-a18-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 20px;
+  }
+}
+
+/* Metrikk-grid for TrackMan data */
+.pa-a18-metrikk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 110px), 1fr));
+  gap: 12px;
+}
+
+.pa-a18-metrikk-kort {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-flat);
+  border: 1px solid var(--border-hairline);
+}
+
+.pa-a18-metrikk-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pa-a18-metrikk-verdi {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.pa-a18-metrikk-enhet {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 3px;
+}
+
+/* Videokort */
+.pa-a18-videokort {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  cursor: pointer;
+  min-width: 0;
+  transition: border-color var(--dur-fast), transform var(--dur-fast);
+}
+
+.pa-a18-videokort:hover,
+.pa-a18-videokort:focus-visible {
+  border-color: var(--border-ink);
+  outline: none;
+}
+
+.pa-a18-videokort[aria-pressed="true"] {
+  border-color: var(--border-ink);
+  box-shadow: 0 0 0 1px var(--border-ink);
+}
+
+.pa-a18-videokort-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+}
+
+.pa-a18-videokort-tid {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--surface-card);
+  color: var(--text-primary);
+}
+
+.pa-a18-videokort-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+}
+
+/* Videospiller */
+.pa-a18-spiller-ramme {
+  aspect-ratio: 16 / 9;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-sm, 6px);
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+}
+
+/* Opptaksflate */
+.pa-a18-opptak-kameraer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  .pa-a18-opptak-kameraer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pa-a18-kamera-boks {
+  aspect-ratio: 16 / 9;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-sm, 6px);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-hairline);
+  transition: border var(--dur-fast);
+}
+
+.pa-a18-kamera-boks--aktiv {
+  border: 2px solid var(--signal, #b83217);
+}

@@ -298,19 +298,6 @@ export type PosisjonsInfo = {
   fokus: string;
 };
 
-const HOVEDPOSISJON_NAVN: Record<HovedPosisjonNummer, string> = {
-  1: "Setup / Adresse",
-  2: "Takeaway (kølle parallel med bakken)",
-  3: "Baksving (venstre arm parallel)",
-  4: "Topp av baksving (turn, tilt & wrist)",
-  5: "Nedsving start (venstre arm parallel)",
-  6: "Delivery (kølle parallel i nedsving)",
-  7: "Treffpunkt / Impact",
-  8: "Gjennomsving (kølle parallel etter treff)",
-  9: "Release (høyre arm parallel med bakken)",
-  10: "Full finish & balanse",
-};
-
 const UNDERPOSISJON_DATA: Record<HovedPosisjonNummer, { navn: string; fokus: string }[]> = {
   1: [
     { navn: "P1.0 Grunnoppstilling", fokus: "Helhetlig adresseposisjon og atletisk balanse" },

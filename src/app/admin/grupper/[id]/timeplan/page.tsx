@@ -7,6 +7,7 @@
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
+import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
@@ -27,8 +28,18 @@ export default async function GruppeTimeplanPage({
   const { id } = await params;
   const { focus } = await searchParams;
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id },
+  // Samme innsyn som gruppens hovedside. Hjelpetrenere beholder lesetilgang;
+  // redigering kontrolleres fortsatt separat av gruppehandlingene.
+  const gruppe = await prisma.group.findFirst({
+    where: {
+      id,
+      ...(user.role === "COACH" ? {
+        OR: [
+          { coachId: user.id },
+          { members: { some: aktivtTrenerMedlemskapWhere(user.id) } },
+        ],
+      } : {}),
+    },
     select: { id: true, name: true, schedules: { orderBy: { startAt: "asc" } } },
   });
 

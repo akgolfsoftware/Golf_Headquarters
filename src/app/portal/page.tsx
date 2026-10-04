@@ -18,8 +18,12 @@ import { hentDagsform, hentFullfortHistorikk, hentIDagPopup } from "@/lib/portal
 import { tellUke } from "@/lib/portal/ph01-fullfort";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH01IDag, type PH01Okt, type PH01Props } from "@/components/portal/precision/PH01IDag";
+import { harEgenIupInngang } from "@/lib/iup/oversikt";
+import { KnappLenke } from "@/components/precision/pa";
 import type { Akse, TidslinjePunkt } from "@/components/precision/pa";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
+import { TrenerforslagInnboks, type SpillerTrenerforslag } from "@/components/workbench/Trenerforslag";
+import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · PlayerHQ" };
@@ -55,7 +59,7 @@ export default async function PortalHjemPage() {
   const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO.format(naa);
 
-  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup] = await Promise.all([
+  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag] = await Promise.all([
     getDashboardData(user.id, naa),
     planLaast
       ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [] as PlayerDaySession[], nextSessionId: null } })
@@ -65,6 +69,8 @@ export default async function PortalHjemPage() {
     hentDagsform(user.id, naa),
     hentFullfortHistorikk(user.id, naa),
     hentIDagPopup(user.id, naa),
+    planLaast ? Promise.resolve(false) : harEgenIupInngang(),
+    user.role === "PLAYER" ? hentMineTrenerforslag() : Promise.resolve([] as SpillerTrenerforslag[]),
   ]);
 
   const uke = ukenummer(naa);
@@ -152,7 +158,15 @@ export default async function PortalHjemPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
-      <PH01IDag {...props}><PushOptInBanner /></PH01IDag>
+      <PH01IDag {...props}>
+        <PushOptInBanner />
+        <TrenerforslagInnboks forslag={trenerforslag} />
+        {visIup && <section className="pa-card" style={{ padding: 16, gap: 12 }} aria-label="Evaluering">
+          <h2>Evaluering</h2>
+          <p>Utviklingssjekk, sesongevaluering og dine tidligere besvarelser.</p>
+          <KnappLenke variant="secondary" href="/portal/mal/evaluering">Åpne evaluering</KnappLenke>
+        </section>}
+      </PH01IDag>
     </PlayerHQSkall>
   );
 }

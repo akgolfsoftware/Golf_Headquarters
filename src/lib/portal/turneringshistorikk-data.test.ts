@@ -33,3 +33,16 @@ test("ukoblet spiller får egne registreringer uten å lese andre offentlige pro
   const h = await load("user-a");
   assert.equal(publicReads, 0); assert.equal(h.antall, 2); assert.equal(h.bestePlassering, null);
 });
+
+test("WANG-lesing bruker samme delingskontrollerte databaseklient", async () => {
+  let transactionReads = 0;
+  const transactionDb = {
+    user: { findUnique: async () => { transactionReads++; return { publicPlayerId: null }; } },
+    publicPlayerEntry: { findMany: async () => { transactionReads++; return []; } },
+    tournamentEntry: { findMany: async () => { transactionReads++; return []; } },
+  } as unknown as Parameters<typeof load>[1];
+
+  const h = await load("user-a", transactionDb);
+  assert.equal(transactionReads, 2);
+  assert.equal(h.antall, 0);
+});

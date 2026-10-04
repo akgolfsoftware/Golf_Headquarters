@@ -98,3 +98,15 @@ export function planTidsrom(dager: readonly PlanDag[]) {
 export function nyPlanOktHref(dato: string, uke: number) {
   return `/portal/planlegge/workbench?${new URLSearchParams({ uke: String(uke), start: `${dato}T09:00` })}`;
 }
+
+/** Økt som ligger oppå en annen tidsatt avtale (skole, booking, turnering, test).
+ *  Heldag og overlapp mellom to økter er ikke «opptatt tid». */
+export function oktOverlapperOpptattTid(blokk: PlanBlokk, dagen: readonly PlanBlokk[]): boolean {
+  if (blokk.forslag || blokk.lag !== "OEKTER" || blokk.heldag || blokk.startMin == null) return false;
+  const slutt = blokk.sluttMin ?? blokk.startMin;
+  return dagen.some((annen) => {
+    if (annen.id === blokk.id || annen.heldag || annen.startMin == null || annen.lag === "OEKTER") return false;
+    const annenSlutt = annen.sluttMin ?? annen.startMin;
+    return blokk.startMin! < annenSlutt && annen.startMin < slutt;
+  });
+}

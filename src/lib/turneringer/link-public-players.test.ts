@@ -2,81 +2,85 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { normalizePlayerName } from "@/lib/scrapers/player-resolve";
 
-/**
- * Eksakt-match-reglene for auto-link (uten DB):
- * - samme normalizePlayerName → kandidat
- * - >1 PublicPlayer med samme norm → hopp (tvetydig)
- */
-test("normalizePlayerName: formateringsvarianter blir like", () => {
-  assert.equal(
-    normalizePlayerName("Øyvind Rohjan"),
-    normalizePlayerName("oyvind rohjan"),
-  );
-  assert.equal(
-    normalizePlayerName("Ola Nordmann (am)"),
-    normalizePlayerName("Ola Nordmann"),
-  );
+test("name normalization only identifies formatting variants", () => {
+  assert.equal(normalizePlayerName("Øyvind Rohjan"), normalizePlayerName("oyvind rohjan"));
+  assert.equal(normalizePlayerName("Ola Nordmann (am)"), normalizePlayerName("Ola Nordmann"));
+  assert.notEqual(normalizePlayerName("Herman Wibe Sekne"), normalizePlayerName("Herman Sekne"));
 });
 
-test("normalizePlayerName: middelsnavn er ulike (skal IKKE auto-merges)", () => {
-  assert.notEqual(
-    normalizePlayerName("Herman Wibe Sekne"),
-    normalizePlayerName("Herman Sekne"),
+test("a unique name candidate is counted but never linked automatically", async () => {
+  const { linkPublicPlayersByExactName } = await import("./link-public-players");
+  const userUpdates: unknown[] = [];
+  const mockPrisma = {
+    user: {
+      findMany: async () => [{ id: "synthetic-user", name: "Ola Nordmann" }],
+      update: async (args: unknown) => userUpdates.push(args),
+    },
+    publicPlayer: {
+      findMany: async () => [{ id: "synthetic-public", name: "Ola Nordmann", linkedUser: null }],
+    },
+  };
+  const result = await linkPublicPlayersByExactName(
+    mockPrisma as unknown as Parameters<typeof linkPublicPlayersByExactName>[0],
   );
+  assert.equal(result.scannedUsers, 1);
+  assert.equal(result.linked, 0);
+  assert.equal(result.skippedUnverifiedIdentity, 1);
+  assert.deepEqual(userUpdates, []);
 });
 
-test("link-kandidat-seleksjon: 0 / 1 / mange", () => {
-  function pickCandidates(
-    userName: string,
-    players: string[],
-  ): "none" | "one" | "ambiguous" {
-    const k = normalizePlayerName(userName);
-    const hits = players.filter((p) => normalizePlayerName(p) === k);
-    if (hits.length === 0) return "none";
-    if (hits.length === 1) return "one";
-    return "ambiguous";
-  }
-
-  assert.equal(pickCandidates("Ola Nordmann", ["Kari Nordmann"]), "none");
-  assert.equal(pickCandidates("Ola Nordmann", ["Ola Nordmann (am)"]), "one");
-  assert.equal(
-    pickCandidates("Ola Nordmann", ["Ola Nordmann", "Ola Nordmann (pro)"]),
-    // normalize stripper (pro) → begge matcher → ambiguous
-    "ambiguous",
+test("ambiguous names remain separate and are reported without linking", async () => {
+  const { linkPublicPlayersByExactName } = await import("./link-public-players");
+  const userUpdates: unknown[] = [];
+  const mockPrisma = {
+    user: {
+      findMany: async () => [{ id: "synthetic-user", name: "Ola Nordmann" }],
+      update: async (args: unknown) => userUpdates.push(args),
+    },
+    publicPlayer: {
+      findMany: async () => [
+        { id: "synthetic-public-1", name: "Ola Nordmann", linkedUser: null },
+        { id: "synthetic-public-2", name: "Ola Nordmann (am)", linkedUser: null },
+      ],
+    },
+  };
+  const result = await linkPublicPlayersByExactName(
+    mockPrisma as unknown as Parameters<typeof linkPublicPlayersByExactName>[0],
   );
+  assert.equal(result.linked, 0);
+  assert.equal(result.skippedAmbiguous, 1);
+  assert.deepEqual(userUpdates, []);
 });
 
-test("linkAndSyncUserTournamentResults: koble og speile mock test", async () => {
+test("an unlinked account cannot mirror another player's matching-name results", async () => {
   const { linkAndSyncUserTournamentResults } = await import("./link-public-players");
+  const mockPrisma = {
+    user: { findUnique: async () => ({ id: "synthetic-user", publicPlayerId: null }) },
+    publicPlayer: { findMany: async () => { throw new Error("Name matching cannot verify identity"); } },
+    publicPlayerEntry: { findMany: async () => { throw new Error("No profile results should be read"); } },
+  };
+  const result = await linkAndSyncUserTournamentResults(
+    mockPrisma as unknown as Parameters<typeof linkAndSyncUserTournamentResults>[0],
+    "synthetic-user",
+  );
+  assert.deepEqual(result, { linked: false, mirrored: 0, needsVerifiedLink: true });
+});
 
-  const mockUser = { id: "u-1", name: "Viktor Hovland", publicPlayerId: null };
-  const mockPublic = [
-    { id: "pp-1", name: "Viktor Hovland", linkedUser: null },
-    { id: "pp-2", name: "Kristoffer Ventura", linkedUser: null },
-  ];
+test("an existing PublicPlayer link continues to mirror results", async () => {
+  const { linkAndSyncUserTournamentResults } = await import("./link-public-players");
+  const mockUser = { id: "synthetic-user", publicPlayerId: "public-player-1" };
   const mockEntries = [
     { tournamentId: "t-1", position: 1, scoreToPar: -12, totalScore: 276, status: "FINISHED" },
     { tournamentId: "t-2", position: 3, scoreToPar: -8, totalScore: 280, status: "FINISHED" },
   ];
-
-  let updatedUserWithPpId: string | null = null;
   const mirroredTournaments: string[] = [];
-
   const mockPrisma = {
     user: {
       findUnique: async () => mockUser,
-      findFirst: async () => mockUser,
-      update: async ({ data }: { data: { publicPlayerId: string | null } }) => {
-        updatedUserWithPpId = data.publicPlayerId;
-        return { ...mockUser, publicPlayerId: data.publicPlayerId };
-      },
+      findFirst: async () => ({ id: "synthetic-user" }),
+      update: async () => { throw new Error("Existing link should not change"); },
     },
-    publicPlayer: {
-      findMany: async () => mockPublic,
-    },
-    publicPlayerEntry: {
-      findMany: async () => mockEntries,
-    },
+    publicPlayerEntry: { findMany: async () => mockEntries },
     $transaction: async <T>(fn: (tx: unknown) => Promise<T>) => fn(mockPrisma),
     tournamentResult: {
       upsert: async ({ create }: { create: { tournamentId: string } }) => {
@@ -90,14 +94,12 @@ test("linkAndSyncUserTournamentResults: koble og speile mock test", async () => 
       update: async () => ({}),
     },
   };
-
-  const res = await linkAndSyncUserTournamentResults(
+  const result = await linkAndSyncUserTournamentResults(
     mockPrisma as unknown as Parameters<typeof linkAndSyncUserTournamentResults>[0],
-    "u-1",
+    "synthetic-user",
   );
-  assert.equal(res.linked, true);
-  assert.equal(res.publicPlayerId, "pp-1");
-  assert.equal(updatedUserWithPpId, "pp-1");
-  assert.equal(res.mirrored, 2);
+  assert.equal(result.linked, true);
+  assert.equal(result.publicPlayerId, "public-player-1");
+  assert.equal(result.mirrored, 2);
   assert.deepEqual(mirroredTournaments, ["t-1", "t-2"]);
 });

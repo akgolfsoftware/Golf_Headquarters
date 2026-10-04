@@ -7,29 +7,19 @@
 import { prisma } from "@/lib/prisma";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
-import { adherencePct } from "@/lib/workbench/compliance";
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
 import { lesTreningPreferanser } from "@/lib/onboarding/trening-preferanser";
 import type { PlayerSignals } from "./adapt-template";
 
-const ADHERENCE_VINDU_DAGER = 28;
-
 export async function hentPlayerSignals(userId: string, now = new Date()): Promise<PlayerSignals> {
-  const vinduStart = new Date(now.getTime() - ADHERENCE_VINDU_DAGER * 86_400_000);
-
   const [seasonPlan, fasiliteter, okter, nesteTurnering, user] = await Promise.all([
     prisma.seasonPlan.findFirst({
       where: { userId },
       include: { periodBlocks: { orderBy: { startDate: "asc" } } },
     }),
     prisma.facilityPrefs.findUnique({ where: { userId } }),
-    prisma.trainingPlanSession.findMany({
-      where: {
-        plan: { userId },
-        scheduledAt: { gte: vinduStart, lte: now },
-      },
-      select: { scheduledAt: true, durationMin: true, status: true },
-    }),
+    hentEtterlevelse(userId, now),
     prisma.tournamentEntry.findFirst({
       where: {
         userId,
@@ -69,7 +59,7 @@ export async function hentPlayerSignals(userId: string, now = new Date()): Promi
   return {
     fokus,
     aktivFase: aktivPeriode?.lPhase ?? null,
-    adherencePct: adherencePct(okter, now),
+    adherencePct: okter.pct,
     fasiliteter: fasiliteter
       ? {
           range: fasiliteter.range,

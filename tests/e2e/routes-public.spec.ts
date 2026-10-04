@@ -4,12 +4,19 @@
 
 import { test, expect } from "@playwright/test";
 import { gotoAndWait } from "./_helpers";
+import { selectPasswordLogin } from "./_auth-helpers";
 
 test.describe("Offentlige ruter", () => {
   test("/auth/login viser e-post + passord-felt", async ({ page }) => {
     await gotoAndWait(page, "/auth/login");
     await expect(page.locator('input[type="email"]')).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Send magisk innloggingslenke", exact: true }),
+    ).toBeVisible();
+    await selectPasswordLogin(page);
+    await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
+    await expect(page.getByRole("button", { name: "Logg inn", exact: true })).toBeDisabled();
   });
 
   test("/auth/signup rendrer", async ({ page }) => {

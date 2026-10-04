@@ -12,6 +12,7 @@
  * En portert side legger innholdet sitt i dette skallet i stedet for V2Shell.
  * Bjella viser bare et tall når siden sender det inn — aldri et anslag.
  */
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -109,6 +110,7 @@ function Skuff({ open, onClose, tittel, punkter, mer, aktiv, navn, rolle }: {
 }
 
 export function AgencyOSSkall({ children, navn, uleste = null, haster = false, natt = false }: AgencyOSSkallProps) {
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const path = usePathname() ?? "/admin/agencyos";
   const erHeadCoach = useErAdmin();
   const aktiv = aktivtAosPunkt(path);
@@ -138,7 +140,7 @@ export function AgencyOSSkall({ children, navn, uleste = null, haster = false, n
         <span title={navn}><Initialer navn={navn} size={32} /></span>
       </nav>
     </div>
-    <header className="pa-aos__menylinje">
+    <header ref={toppRef} className="pa-aos__menylinje">
       <Link href="/admin/agencyos" aria-label="AgencyOS hjem" style={{ display: "flex", alignItems: "center", minHeight: 44, minWidth: 0, overflow: "hidden" }}>{logo}</Link>
       <span style={{ flex: 1 }} />
       <Bjelle uleste={uleste} haster={haster} />

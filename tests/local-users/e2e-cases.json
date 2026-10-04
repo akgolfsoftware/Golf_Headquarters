@@ -1,0 +1,142 @@
+[
+  {
+    "file": "agencyos-toppbar-overlapp.spec.ts",
+    "title": "toppbaren dekker ingen handling ved sidelasting (390px)"
+  },
+  {
+    "file": "agencyos-toppbar-overlapp.spec.ts",
+    "title": "--ak-topbar-h er satt på /admin/innboks"
+  },
+  {
+    "file": "auth-guard.spec.ts",
+    "title": "Innlogget PLAYER på /admin/* redirect til /portal"
+  },
+  {
+    "file": "booking-drop-in.spec.ts",
+    "title": "Tjenestevalg åpner ledige tider"
+  },
+  {
+    "file": "bredde-gate.spec.ts",
+    "title": "spiller-kjernen har ingen horisontal scroll"
+  },
+  {
+    "file": "bredde-gate.spec.ts",
+    "title": "coach-kjernen har ingen horisontal scroll"
+  },
+  {
+    "file": "bredde-gate.spec.ts",
+    "title": "Team Norway-flaten har ingen horisontal scroll"
+  },
+  {
+    "file": "coach-scope-idor.spec.ts",
+    "title": "coach: selvbetjent spiller 404 på fremgang og plan"
+  },
+  {
+    "file": "cookie-banner-dokk.spec.ts",
+    "title": "PlayerHQ bunn-nav er klikkbar mens cookie-banneret vises"
+  },
+  {
+    "file": "credit-booking.spec.ts",
+    "title": "Spiller med coachingpakke ser saldo og tjenester"
+  },
+  {
+    "file": "csp-konsoll.spec.ts",
+    "title": "/admin/analyse (alle tre faner) laster uten CSP-brudd"
+  },
+  {
+    "file": "csp-konsoll.spec.ts",
+    "title": "/admin/spillere/[id] laster uten CSP-brudd"
+  },
+  {
+    "file": "i0-selvbetjent-gate.spec.ts",
+    "title": "coach kan ikke åpne selvbetjent spiller via direkte URL (spiller-360/analyse/workbench)"
+  },
+  {
+    "file": "i0-selvbetjent-gate.spec.ts",
+    "title": "selvbetjent spiller vises ikke i stall-lista"
+  },
+  {
+    "file": "idag-start-recap.spec.ts",
+    "title": "Start på I dag går til live, ikke tren/wb"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "coach-kjeden laster uten feil (mobil)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "spillerlista åpner spiller-detalj (mobil)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "spiller-kjeden laster uten feil (mobil)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "Analyselenkene åpner riktig side (mobil)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "coach-kjeden laster uten feil (desktop)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "spillerlista åpner spiller-detalj (desktop)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "spiller-kjeden laster uten feil (desktop)"
+  },
+  {
+    "file": "kjerne-klikk.spec.ts",
+    "title": "Analyselenkene åpner riktig side (desktop)"
+  },
+  {
+    "file": "lanseringskjede-knapper.spec.ts",
+    "title": "PlayerHQ-løypen har virkende knapper (mobil)"
+  },
+  {
+    "file": "lanseringskjede-knapper.spec.ts",
+    "title": "AgencyOS-løypen har virkende knapper (mobil)"
+  },
+  {
+    "file": "lanseringskjede-knapper.spec.ts",
+    "title": "PlayerHQ-løypen har virkende knapper (desktop)"
+  },
+  {
+    "file": "lanseringskjede-knapper.spec.ts",
+    "title": "AgencyOS-løypen har virkende knapper (desktop)"
+  },
+  {
+    "file": "pilot-recording-smoke.spec.ts",
+    "title": "recording-side: spiller-valg og start-flyt rendrer"
+  },
+  {
+    "file": "pilot-recording-smoke.spec.ts",
+    "title": "godkjenninger: side laster uten krasj"
+  },
+  {
+    "file": "pilot-recording-smoke.spec.ts",
+    "title": "spillerprofil viser plan og åpner Workbench"
+  },
+  {
+    "file": "portal-hubs.spec.ts",
+    "title": "workbench rendrer"
+  },
+  {
+    "file": "runde-foring.spec.ts",
+    "title": "Innlogget spiller får etterregistreringen med skjema"
+  },
+  {
+    "file": "runde-foring.spec.ts",
+    "title": "Innlogget spiller får live-føringen"
+  },
+  {
+    "file": "workbench-suggest.spec.ts",
+    "title": "Foreslå uke viser 3 varianter og kan tas i bruk"
+  },
+  {
+    "file": "credit-booking.spec.ts",
+    "title": "Full credit-flyt: book + avbestill, credits back to 4"
+  }
+]

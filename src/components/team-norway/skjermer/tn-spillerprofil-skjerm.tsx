@@ -4,7 +4,7 @@ import { Check, Minus, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerstatuser, hentTnSpillerTester, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnSpillerIup, hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerstatuser, hentTnSpillerTester, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { formaterHcp } from "@/lib/domain/hcp";
 import { alderFraFodselsdato } from "@/lib/forelder";
 import type { TilgangsNivaa } from "@/lib/feature-flags";
@@ -14,6 +14,7 @@ import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler } fr
 import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
 import { LISENS_TEKST, TnAvsluttSpiller } from "../tn-redigering-skjema";
 import { ER_COLLEGE, datoKort, datoLang, osloDag, periode } from "./felles";
+import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
 
 /**
  * TN-02 Spillerprofil. Testprotokoller, årets turneringer og dokumentstatus for én spiller.
@@ -68,11 +69,12 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
   const { kontekst } = tilgang;
   const aar = osloDag(new Date()).aar;
 
-  const [profil, tester, lisens, statuser] = await Promise.all([
-    hentTnSpillerProfil(tilgang, aar),
+  const [profil, tester, lisens, statuser, iup] = await Promise.all([
+    hentTnSpillerProfil(bruker, spillerId, aar),
     hentTnSpillerTester(bruker, spillerId),
-    kontekst.kanAdministrere ? hentTnSpillerLisens(tilgang) : Promise.resolve(null),
+    kontekst.kanAdministrere ? hentTnSpillerLisens(bruker, spillerId) : Promise.resolve(null),
     hentTnSpillerstatuser(bruker, kontekst, aar),
+    hentTnSpillerIup(bruker, spillerId),
   ]);
   const reg = statuser.get(spillerId) ?? null;
   const naa = new Date();
@@ -110,15 +112,18 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
           <TnHandlingLenke href={`/team-norway/spiller/${spillerId}`}>Skriv til spilleren</TnHandlingLenke>
           <TnHandlingLenke href={`/team-norway/spiller/${spillerId}/tester`} variant="sekundar">Tester</TnHandlingLenke>
           <TnHandlingLenke href={`/team-norway/workbench?spiller=${spillerId}`} variant="sekundar">Plan</TnHandlingLenke>
-          {kontekst.kanAdministrere ? <TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /> : null}
+          {kontekst.kanAdministrere && profil.erTnMedlem ? <TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /> : null}
         </TnKnapperekke>
       ) : null}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(360px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
+        <TnFlate style={{ gridColumn: "1 / -1" }}>
+          <LeverteIupProfil rader={iup ?? []} />
+        </TnFlate>
         <TnFlate style={{ display: "flex", flexWrap: "wrap", gap: 22, alignItems: "flex-start" }}>
           <TnInitialer navn={profil.navn} storrelse={132} />
           <div style={{ flex: "1 1 180px", minWidth: 0 }}>
-            <TnEtikett style={{ letterSpacing: "0.2em" }}>{tnRolleNavn("PLAYER")} · {kontekst.gruppe.name}</TnEtikett>
+            <TnEtikett style={{ letterSpacing: "0.2em" }}>{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} · ${kontekst.gruppe.name}` : "Profil delt med Team Norway"}</TnEtikett>
             <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(22px, 2.4vw, 26px)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.15, marginTop: 6, color: TN.navy900, overflowWrap: "anywhere" }}>{profil.navn}</div>
             <dl style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "6px 14px", margin: "14px 0 0", fontSize: 14 }}>
               <dt style={{ color: TN.textSecondary }}>Alder</dt>

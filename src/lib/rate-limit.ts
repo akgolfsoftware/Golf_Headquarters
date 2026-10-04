@@ -1,14 +1,14 @@
 // Rate-limit på Upstash Redis (sliding window). Multi-instance-safe.
 //
-// Krever env-variabler UPSTASH_REDIS_REST_URL og UPSTASH_REDIS_REST_TOKEN.
+// Bruker REDIS_URL fra Vercel-integrasjonen, med eldre REST-variabler som reserve.
 // I produksjon: fail-open (logg + in-memory soft limit per instance) med mindre
 // RATE_LIMIT_FAIL_CLOSED=1 er satt. Bygg feiler ikke uten secrets.
 //
-// Ved vedvarende Redis-feil (WRONGPASS, ENOTFOUND, …) skrus Redis AV for
-// resten av prosessens levetid (circuit open) — unngår spam + ekstra latency.
+// Etter Redis-feil brukes lokal reserve i ett minutt. Deretter får bare ett
+// kall prøve Redis igjen; en kort feil skal ikke koble tjenesten fra permanent.
 
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { createUpstashRedis } from "@/lib/upstash-redis";
 
 export type RateLimitOptions = {
   key: string;
@@ -22,33 +22,27 @@ type RateLimitResult = {
   resetAt: number;
 };
 
-const REST_URL = process.env.UPSTASH_REDIS_REST_URL;
-const REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const IS_PROD = process.env.NODE_ENV === "production";
 
-let redis: Redis | null = null;
+const redis = createUpstashRedis();
 let initError: string | null = null;
-let circuitOpen = false;
+const REDIS_RETRY_MS = 60_000;
+let retryAt = 0;
+let recoveryInFlight = false;
 
-if (REST_URL && REST_TOKEN) {
-  if (/xxxx\.upstash\.io|YOUR_|placeholder/i.test(REST_URL + REST_TOKEN)) {
-    initError =
-      "[rate-limit] UPSTASH_REDIS_* ser ut som plassholder. Soft in-memory limit.";
-  } else {
-    redis = new Redis({ url: REST_URL, token: REST_TOKEN });
-  }
-} else if (IS_PROD) {
+if (!redis && IS_PROD) {
   initError =
-    "[rate-limit] UPSTASH_REDIS_REST_URL og/eller UPSTASH_REDIS_REST_TOKEN mangler i produksjon. " +
-    "Legg til disse som Vercel Environment Variables.";
-} else {
-  console.warn("[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN ikke satt — rate-limit er no-op i dev.");
+    "[rate-limit] Gyldig REDIS_URL eller Upstash REST-konfigurasjon mangler i produksjon.";
+} else if (!redis) {
+  console.warn(
+    "[rate-limit] Redis-konfigurasjon mangler — rate-limit bruker lokal reserve i dev.",
+  );
 }
 
 const limiterCache = new Map<string, Ratelimit>();
 
 function getLimiter(max: number, windowMs: number): Ratelimit | null {
-  if (!redis || circuitOpen) return null;
+  if (!redis) return null;
   const cacheKey = `${max}:${windowMs}`;
   let limiter = limiterCache.get(cacheKey);
   if (!limiter) {
@@ -66,7 +60,11 @@ function getLimiter(max: number, windowMs: number): Ratelimit | null {
 const memoryWindows = new Map<string, number[]>();
 let lastFailOpenLogAt = 0;
 
-function memoryLimit(key: string, max: number, windowMs: number): RateLimitResult {
+function memoryLimit(
+  key: string,
+  max: number,
+  windowMs: number,
+): RateLimitResult {
   const now = Date.now();
   const cutoff = now - windowMs;
   const prev = memoryWindows.get(key) ?? [];
@@ -85,27 +83,20 @@ function memoryLimit(key: string, max: number, windowMs: number): RateLimitResul
   };
 }
 
-function logFailOpen(msg: string, key: string) {
+function logFailOpen(msg: string) {
   const now = Date.now();
   if (now - lastFailOpenLogAt > 60_000) {
     lastFailOpenLogAt = now;
-    console.error(`${msg} key=${key}`);
+    console.error(msg);
   }
 }
 
-function shouldOpenCircuit(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /WRONGPASS|unauthorized|ENOTFOUND|getaddrinfo|fetch failed|ECONNREFUSED|ETIMEDOUT|invalid or missing auth/i.test(
-    msg,
-  );
-}
-
-function openCircuit(reason: string) {
-  if (circuitOpen) return;
-  circuitOpen = true;
-  redis = null;
+function openCircuit() {
+  retryAt = Date.now() + REDIS_RETRY_MS;
   limiterCache.clear();
-  console.error(`[rate-limit] circuit OPEN — Redis disabled for process: ${reason}`);
+  logFailOpen(
+    "[rate-limit] Redis unavailable — local reserve; retry after 60 seconds.",
+  );
 }
 
 export function rateLimit(opts: RateLimitOptions): Promise<RateLimitResult> {
@@ -121,11 +112,13 @@ async function rateLimitAsync({
     if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
       throw new Error(initError);
     }
-    logFailOpen(`${initError} Soft in-memory limit (RATE_LIMIT_FAIL_CLOSED ikke satt).`, key);
+    logFailOpen(
+      `${initError} Soft in-memory limit (RATE_LIMIT_FAIL_CLOSED ikke satt).`,
+    );
     return memoryLimit(key, max, windowMs);
   }
 
-  if (circuitOpen) {
+  if (Date.now() < retryAt || recoveryInFlight) {
     return memoryLimit(key, max, windowMs);
   }
 
@@ -134,8 +127,11 @@ async function rateLimitAsync({
     return memoryLimit(key, max, windowMs);
   }
 
+  const recovering = retryAt > 0;
+  if (recovering) recoveryInFlight = true;
   try {
     const result = await limiter.limit(key);
+    retryAt = 0;
     return {
       ok: result.success,
       remaining: result.remaining,
@@ -145,11 +141,9 @@ async function rateLimitAsync({
     if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
       throw err;
     }
-    const msg = err instanceof Error ? err.message : String(err);
-    if (shouldOpenCircuit(err)) {
-      openCircuit(msg);
-    }
-    logFailOpen(`[rate-limit] Upstash call failed (${msg}) — soft in-memory limit.`, key);
+    openCircuit();
     return memoryLimit(key, max, windowMs);
+  } finally {
+    if (recovering) recoveryInFlight = false;
   }
 }

@@ -4,10 +4,15 @@
 
 | Oppgave | Inngang |
 |---|---|
+| Statisk kodeinventar, importer og databasekall (ingen nettverk/appkjøring) | `node scripts/codebase-audit.mjs --output docs/design-audit/kodebase-inventar-YYYY-MM-DD.json` |
 | Struktur, delte instrukser og dokumentlenker | `npm run prosjekt:sjekk` |
+| Skjermregister for D01 | `node scripts/bygg-skjermregister.mjs --check` |
 | Oppdater fil- og dokumentregister | `npm run prosjekt:register` |
 | Kode, designregler og bygg | `npm run verify` |
 | Enhets- og komponenttester | `npm test` |
+| IUP-lagring og navngitt trenerdeling i separat lokal database | [IUP-prøver](../tests/iup-local/README.md), `iup-local-run.mjs` og `trenerdeling-local-run.mjs` |
+| Lokal innlogging med syntetiske spillere og trenere | [isolert brukertest](../docs/utvikling/lokal-brukertest.md), `local-users-run.mjs` |
+| Design → handling → lagring og koblede lokale prøver | [koblingsgrunnlaget](../docs/planer/design-lagring-brukerreiser-2026-10-01.md), `design-data-journey-map.mjs` og `local-users-run.mjs journeys` |
 | Miljøkontroll uten å vise nøkler eller endre oppsett | `node scripts/launch-preflight.mjs` |
 | Train-lock-måling | [tests/visual/README.md](../tests/visual/README.md), `train-lock-pixel-diff.mjs` |
 | AK Golf-designverdier | `ak-golf-tokens.mjs`; endring følger designpakkens synk |
@@ -22,3 +27,9 @@
 ## Lokale driftsjobber
 
 `meg-index.sh`, `meg-index-vaults.ts`, tilhørende `.plist` og `meg-tilbakeskriving/` beholdes på sine stier. Loggfiler er lokale, ignorerte og kan være i bruk. Opprydding skal ikke stoppe jobbene eller flytte aktive loggfiler.
+
+### Lokal navngitt trenerdeling
+
+- `trenerdeling-app-local.mjs`: fire syntetiske Auth-kontoer og egen skole i IUP-testmiljøet; valgfritt `--mindrearig` for foresattreisen. Kontrollerer lokale URL-er, loopback-binding og databasemarkør. Ingen e-post.
+- `trenerdeling-iup-local.mjs`: kildevaliderte leveringer og nyere privat utkast for den syntetiske spilleren. Kjør Node 24 med `--import tsx --conditions=react-server`.
+- Se [IUP-testveiledningen](../tests/iup-local/README.md). Skriptene inngår ikke i dokumentkontrollen og må aldri få produksjonskonfigurasjon.

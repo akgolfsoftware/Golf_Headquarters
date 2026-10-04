@@ -141,6 +141,9 @@
 .a9-felt input, .a9-felt select, .a9-felt textarea,
 .a9-ovelse input, .a9-ovelse select { width: 100%; min-width: 0; height: 44px; padding: 0 12px; border-radius: var(--radius); border: 1px solid var(--border-control); background: var(--surface-card); color: var(--text-primary); font: var(--type-body); box-sizing: border-box; }
 .a9-felt textarea { height: auto; min-height: 96px; padding: 12px; resize: vertical; }
+.a9-steg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.a9-steg li { min-height: 32px; padding-top: 8px; border-top: 2px solid var(--border-hairline); color: var(--text-muted); font: var(--type-kicker); letter-spacing: var(--tracking-kicker); text-transform: uppercase; }
+.a9-steg li[aria-current="step"] { border-color: var(--text-primary); color: var(--text-primary); }
 .a9-felt input:focus-visible, .a9-felt select:focus-visible, .a9-felt textarea:focus-visible,
 .a9-ovelse input:focus-visible, .a9-ovelse select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 .a9-felt--mono input { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -167,9 +170,9 @@
 .a9-tall__boks { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: var(--surface-flat); min-width: 0; }
 .a9-tall__verdi { font: 600 19px/1.1 var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
 
-/* Visninger som ikke er portert ennå (år, periode, måned, stall, live, min kalender) */
+/* Ramme rundt års-, periode- og månedsvisninger samt historiske dyplenker. */
 .a9-arv { min-width: 0; border-radius: var(--radius); overflow: hidden; }
 .a9-arv .wb-app { min-height: 0; }
 .a9-akser .pa-choice__dot { display: none; }
-/* Gruppas årsplan (ikke portert) får 44 px treffmål på knappene. */
+/* Gruppas årsplan bruker samme treffmål. */
 .a9-arv--gruppe button { min-height: 44px; }

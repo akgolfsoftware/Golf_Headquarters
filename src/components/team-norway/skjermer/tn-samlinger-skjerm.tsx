@@ -6,6 +6,9 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
 import { TnKnapperekke } from "../tn-handlinger";
 import { TnSamlingSkjema, TnSlettSamling } from "../tn-redigering-skjema";
+import { SamlingsprogramKontroll } from "@/components/workbench/SamlingsprogramKontroll";
+import { Capability } from "@/lib/auth/cbac";
+import { canUser } from "@/lib/auth/effective-capabilities";
 import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
 
 /**
@@ -33,6 +36,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
   const bruker = await hentSkjermbruker();
   const [data, turneringsdata] = await Promise.all([hentTnSamlinger(bruker), hentTnTurneringer(bruker)]);
   if (!data) notFound();
+  const kanPublisere = await canUser(bruker, Capability.EDIT_GROUP_PLANS);
 
   const naa = new Date();
   const idag = osloDag(naa);
@@ -151,7 +155,10 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
               </div>
               <TnEtikett style={{ marginTop: 22, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Notater</TnEtikett>
               <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: "10px 0 0", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{valgt.notes ?? "Ingen notater på samlingen."}</p>
-              <TnFotnote>Dagsprogram, romfordeling og pakkeliste kan ikke registreres i AK Golf HQ ennå, og vises derfor ikke her.</TnFotnote>
+              {kanPublisere && valgt.endDate >= naa ? <SamlingsprogramKontroll organisasjon="TEAM_NORWAY" planHref={data.planHref} samlinger={[{
+                id: valgt.id, tittel: valgt.name, fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), sted: valgt.location,
+              }]} /> : null}
+              <TnFotnote>Romfordeling og pakkeliste er ikke del av samlingsprogrammet ennå.</TnFotnote>
               {data.kontekst.kanAdministrere ? (
                 <div style={{ marginTop: 18 }}>
                   <TnKnapperekke>

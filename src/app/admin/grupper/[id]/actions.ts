@@ -379,9 +379,14 @@ export async function fjernGruppemedlem(
   if (!medlem || medlem.endedAt !== null) {
     return { ok: false, feil: "Spilleren er ikke medlem av gruppen." };
   }
-  await prisma.groupMember.update({
-    where: { id: medlem.id },
-    data: { endedAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`wb-group:${groupId}`}))`;
+    await tx.groupMember.update({ where: { id: medlem.id }, data: { endedAt: new Date() } });
+    // Bare urørt planinnhold: egen tilpasning og startet/gjennomført historikk består.
+    await tx.workbenchSession.deleteMany({ where: {
+      playerId: userId, groupId, sourceGroupSessionId: { not: null },
+      localOverride: false, status: { in: ["DRAFT", "SCHEDULED", "PUBLISHED"] },
+    } });
   });
 
   await audit({
@@ -391,6 +396,7 @@ export async function fjernGruppemedlem(
   });
 
   revalidatePath(`/admin/grupper/${groupId}`);
+  revalidatePath("/portal", "layout");
   return { ok: true };
 }
 

@@ -1,18 +1,12 @@
 "use client";
 
-/* Ny FYS-plan-knapp — Paper-port W1. Planer opprettes i Workbench; knappen
-   forklarer det (toast) og navigerer dit. Clay («Én ting nå»-monopolet) kun
-   når den er skjermens eneste aksenthandling (tom tilstand uten dagens økt). */
-
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
-import { Knapp } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
-
+import { Knapp } from "@/components/precision/pa";
 
 export function NyPlanKnapp({
   variant,
-  primary = false,
 }: {
   variant: "header" | "empty-state";
   primary?: boolean;
@@ -26,15 +20,7 @@ export function NyPlanKnapp({
   }
 
   return (
-    <Knapp
-      icon="plus"
-      onClick={handleKlikk}
-      style={
-        primary
-          ? { background: TL.fill, color: TL.onFill, width: variant === "empty-state" ? "100%" : undefined, minHeight: 48 }
-          : undefined
-      }
-    >
+    <Knapp variant="secondary" icon={Plus} onClick={handleKlikk}>
       {variant === "header" ? "Ny plan" : "Lag din første plan"}
     </Knapp>
   );
