@@ -1,8 +1,7 @@
 /**
- * Innsikt og talent — AG-22 i Precision Athletics (/innsyn/talent/radar).
+ * Innsikt og talent — AG-22 i Precision Athletics (/admin/innsikt).
  *
- * Én samlet adresse for talentradar mot peer-snitt, discovery og WAGR-import.
- * Erstatter Train-lock-skallet med Precision Athletics (AgencyOSSkall og AG22InnsiktTalent).
+ * Talentradar mot peer-snitt, discovery og WAGR-import for coacher og admin.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -12,17 +11,17 @@ import { AG22InnsiktTalent } from "@/components/admin/precision/AG22InnsiktTalen
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt og talent · AgencyOS" };
 
-export default async function TalentRadarPage({
+export default async function AdminInnsiktPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ fane?: string }>;
+  searchParams: Promise<{ fane?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const sp = searchParams ? await searchParams : {};
+  const { fane } = await searchParams;
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG22InnsiktTalent startFane={sp.fane ?? "radar"} />
+      <AG22InnsiktTalent startFane={fane ?? "radar"} />
     </AgencyOSSkall>
   );
 }

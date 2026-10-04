@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "cb7974dfef22766c7f42ea622c2dab499ce2c98a",
+  "kodeversjon": "9f92e0ae85a363a4d893525bb0e6d1799474d9e4",
   "inventar": {
-    "pageFiles": 528,
-    "uniqueRoutePatterns": 528,
-    "componentFiles": 865,
+    "pageFiles": 529,
+    "uniqueRoutePatterns": 529,
+    "componentFiles": 868,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 164,
+      "agencyos": 165,
       "inngang-og-konto": 19,
       "forelder": 16,
       "lag-og-skole": 51,
@@ -7141,6 +7141,51 @@
       "kodekommentar": "AG-04"
     },
     {
+      "screenId": "AG-22",
+      "rute": "/admin/innsikt",
+      "kildefil": "src/app/admin/innsikt/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-26",
+      "komponentmonster": "/admin/innsikt",
+      "handlinger": "Radar mot peer-snitt, opptil fire spillere side ved side",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": "Innsikt og talent monterer AG22InnsiktTalent i AgencyOSSkall i Precision Athletics. Talentradar mot peer-snitt, opptil 4 spillere side om side, discovery og WAGR-import samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "AG-22 Innsikt og talent er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "AG-22"
+    },
+    {
       "screenId": "VIDERESENDING",
       "rute": "/admin/integrasjoner",
       "kildefil": "src/app/admin/integrasjoner/page.tsx",
@@ -7211,19 +7256,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Caddie og Jarvis monterer AG19CaddieHub i AgencyOSSkall i Precision Athletics. Agentkø, prosjekter, skills og Caddie-samtale med kilder samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-19 Caddie / Jarvis er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-19"
     },
     {
       "screenId": "AG-05",
@@ -7724,19 +7771,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Oppgaver og rutiner monterer AG21Oppgaver i AgencyOSSkall i Precision Athletics. Mine oppgaver med avkryssing, prosjekter med fremdrift, faste rutiner og toveis Notion-synk samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-21 Oppgaver er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-21"
     },
     {
       "screenId": "AG-23",
@@ -12693,19 +12742,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Innsikt og talent monterer AG22InnsiktTalent i AgencyOSSkall i Precision Athletics. Talentradar mot peer-snitt, opptil 4 spillere side om side, discovery og WAGR-import samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-22 Innsikt og talent er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-22"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23264,16 +23315,16 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 528,
-    "medAvvik": 157,
-    "valgtForBygging": 282,
+    "sidefiler": 529,
+    "medAvvik": 161,
+    "valgtForBygging": 283,
     "utenEksaktType": 12,
-    "implementert": 130,
+    "implementert": 134,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 282,
+      "tegnet-skjermtype": 283,
       "videresending": 163,
       "teknisk-forklaring": 31,
       "byggeunderlag": 23
@@ -23312,6 +23363,7 @@
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
+      "AG-22": 5,
       "AG-02": 1,
       "AG-23": 5,
       "AG-21": 2,
@@ -23334,7 +23386,6 @@
       "GJ-01": 4,
       "GJ-02": 2,
       "AU-06": 2,
-      "AG-22": 4,
       "SY-01": 2,
       "PH-05": 1,
       "PH-04": 1,
