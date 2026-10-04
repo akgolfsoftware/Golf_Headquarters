@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **528**. Unike rutemønstre i skanningen: 528. Komponentfiler: 848. Ramme- og tilstandsfiler: 249.
+Sidefiler med rute: **528**. Unike rutemønstre i skanningen: 528. Komponentfiler: 850. Ramme- og tilstandsfiler: 249.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 281 |
+| tegnet-skjermtype | 282 |
 | videresending | 163 |
-| teknisk-forklaring | 32 |
+| teknisk-forklaring | 31 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-281 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 145 rader har et registrert avvik. 118 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+282 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 146 rader har et registrert avvik. 119 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -51,7 +51,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
-| `/portal/analysere/skill-map` | UTEN-TEGNET-TYPE | PH-16 Analyse-hub |
 | `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
 | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
 | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |

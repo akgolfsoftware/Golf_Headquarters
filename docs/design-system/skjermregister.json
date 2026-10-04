@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a10287bebc2dc7277df24de743e960fb633386c5",
+  "kodeversjon": "7783ebedfee932554bd57d2f8d050a724ee838b7",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 848,
+    "componentFiles": 850,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -15003,7 +15003,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Analyse-huben merker PH16Analyse i PlayerHQSkall. Vindu, Broadie, SG, TrackMan-mini og dypere-lenker er beholdt. Historikk er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-16.jsx ligger ikke i git.",
+      "kontrollbevis": "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -15013,18 +15013,18 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-16"
     },
     {
-      "screenId": "UTEN-TEGNET-TYPE",
+      "screenId": "PH-16",
       "rute": "/portal/analysere/skill-map",
       "kildefil": "src/app/portal/analysere/skill-map/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
       "designversjon": "precision-athletics-2026-09-26",
-      "komponentmonster": null,
-      "handlinger": "ikke-avlest-i-D01",
+      "komponentmonster": "/portal/analysere/skill-map",
+      "handlinger": "SG per kategori, siste runder/økter, filter",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "tom",
@@ -15040,20 +15040,22 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": false,
+        "uiUtkast": true,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
-      "kobling": "teknisk-forklaring",
-      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-16 Analyse-hub, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "kontrollbevis": "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-16 Analyse-hub er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
-      "naermesteSkjermtype": "PH-16 Analyse-hub",
+      "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": null
@@ -23241,17 +23243,17 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 145,
-    "valgtForBygging": 281,
-    "utenEksaktType": 13,
-    "implementert": 118,
+    "medAvvik": 146,
+    "valgtForBygging": 282,
+    "utenEksaktType": 12,
+    "implementert": 119,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 281,
+      "tegnet-skjermtype": 282,
       "videresending": 163,
-      "teknisk-forklaring": 32,
+      "teknisk-forklaring": 31,
       "byggeunderlag": 23
     },
     "screenId": {
@@ -23284,7 +23286,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 4,
-      "UTEN-TEGNET-TYPE": 13,
+      "UTEN-TEGNET-TYPE": 12,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -23327,7 +23329,7 @@
       "PH-22": 2,
       "PH-12": 2,
       "PH-18": 7,
-      "PH-16": 2,
+      "PH-16": 3,
       "PH-23": 9,
       "PH-21": 13,
       "PH-20": 3,
