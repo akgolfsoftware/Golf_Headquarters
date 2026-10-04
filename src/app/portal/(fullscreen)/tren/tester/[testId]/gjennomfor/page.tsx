@@ -30,11 +30,9 @@ import {
   type GateForsok,
   type PeiForsok,
 } from "@/lib/domain/tester-live";
-import { TL } from "@/lib/v2/train-lock";
-
-import { ScorekortKlient } from "./scorekort-klient";
 import { GateLiveArtefakt } from "./gate-live-artefakt";
 import { PeiLiveArtefakt } from "./pei-live-artefakt";
+import { PH15TestGjennomfor } from "@/components/portal/precision/PH15TestGjennomfor";
 
 /** Norsk desimal-parsing («12,4» → 12.4). Tom/ugyldig → null. Speiler scorekort-klient.tsx. */
 function parseNorskTall(raw: string): number | null {
@@ -172,46 +170,27 @@ export default async function GjennomforTestPage({
   }
 
   return (
-    <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}>
-      <div
-        className="mx-auto w-full max-w-[460px] px-4 pb-8 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6"
-        style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
-      >
-        {/* Paper .topp — fasit playerhq-test-gjennomfor.html */}
-        <header data-paper-topp style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 4 }}>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, lineHeight: 1.2, color: TL.text }}>
-              Test
-            </h1>
-            <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
-              {test.name} · {test.pyramidArea}
-            </span>
-          </div>
-        </header>
-        <div style={{ maxWidth: 680 }}>
-          <ScorekortKlient
-            testId={test.id}
-            beskrivelse={test.description}
-            scoringRule={test.scoringRule}
-            omraade={test.pyramidArea}
-            sist={
-              forrige
-                ? {
-                    score: forrige.score,
-                    dato: new Intl.DateTimeFormat("nb-NO", {
-                      timeZone: "Europe/Oslo",
-                      day: "2-digit",
-                      month: "2-digit",
-                    }).format(forrige.takenAt),
-                  }
-                : null
+    <PH15TestGjennomfor
+      testId={test.id}
+      testNavn={test.name}
+      beskrivelse={test.description}
+      scoringRule={test.scoringRule}
+      omraade={test.pyramidArea}
+      sist={
+        forrige
+          ? {
+              score: forrige.score,
+              dato: new Intl.DateTimeFormat("nb-NO", {
+                timeZone: "Europe/Oslo",
+                day: "2-digit",
+                month: "2-digit",
+              }).format(forrige.takenAt),
             }
-            spec={spec}
-            protocol={test.protocol}
-            gjenopptak={gjenopptak}
-          />
-        </div>
-      </div>
-    </div>
+          : null
+      }
+      spec={spec}
+      protocol={test.protocol}
+      gjenopptak={gjenopptak}
+    />
   );
 }
