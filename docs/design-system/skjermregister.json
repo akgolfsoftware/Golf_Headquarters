@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "89d7e6af980eb56084372e17449785e6b67a4c96",
+  "kodeversjon": "d4661897a3e7d2b7f3e71e34c68763d88045c046",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 861,
+    "componentFiles": 862,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -19465,7 +19465,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Workbench merker PH11Workbench i PlayerHQSkall. År, periode, måned, uke, økt, volum, mål, fysisk og turnering bruker samme motor. Øktarket er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-11.jsx ligger ikke i git.",
+      "kontrollbevis": "Workbench monterer PH11Workbench i PlayerHQSkall i Precision Athletics. År, periode, måned, uke, økt, volum, mål, fysisk og turnering bruker samme motor for spiller. Målt i Playwright med 22/22 tilfeller uten avvik på 390 px og 1440 px, lys og natt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],

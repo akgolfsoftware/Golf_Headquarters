@@ -12,7 +12,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getUnreadNotifications } from "@/app/portal/actions";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { FeilTilstand } from "@/components/precision/pa";
-import { AG11Workbench, type AG11Side } from "@/components/admin/precision/AG11Workbench";
+import { PH11Workbench } from "@/components/portal/precision/PH11Workbench";
+import { type AG11Side } from "@/components/admin/precision/AG11Workbench";
 import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
 import { WorkbenchAar } from "@/components/workbench/WorkbenchAar";
 import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
@@ -149,21 +150,17 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
   if (!weekRes.ok) return <Feil uleste={uleste} melding={weekRes.error} />;
 
   const side = SIDER.find((s) => s === sp.side);
-  return <Ramme uleste={uleste}><AG11Workbench
+  return <Ramme uleste={uleste}><PH11Workbench
     planKontekst={kontekst.referanse}
     key={`${playerId}:${weekStart}:${visning}:${kontekst.referanse.okt ?? ""}`}
     playerId={playerId}
     spillerNavn={spillerNavn}
     uke={weekRes.data}
     kilder={kilderRes.ok ? kilderRes.data : []}
-    roster={[]}
-    grupper={[]}
     goals={goals}
     fys={fys}
     niva={visning === "mal" ? "mal" : visning === "vol" ? "vol" : visning === "okt" ? "okt" : "uke"}
     side={side}
     valgtOktId={kontekst.referanse.okt}
-    routeSurface="player"
-    role="player"
   /></Ramme>;
 }
