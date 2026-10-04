@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "7783ebedfee932554bd57d2f8d050a724ee838b7",
+  "kodeversjon": "dc5ca36e73c2b3dc41bc220844f9c2f6ce631eb4",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 850,
+    "componentFiles": 851,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -14878,7 +14878,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-17"
     },
     {
       "screenId": "PH-16",
@@ -15134,19 +15134,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og analyse merker PH17TrackMan i PlayerHQSkall. Fire faner (Økter, Gapping, Utstyr, Stasjon) etter Claude Design PH-17.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-17"
     },
     {
       "screenId": "PH-18",
@@ -17447,7 +17449,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-17"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23243,10 +23245,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 146,
+    "medAvvik": 147,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 119,
+    "implementert": 120,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
