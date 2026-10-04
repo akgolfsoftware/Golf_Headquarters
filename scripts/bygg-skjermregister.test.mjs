@@ -73,7 +73,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/tren/feiring/[planId]").kontrollbevis, /PH07Feiring/);
   assert.equal(byRoute.get("/portal/analysere").screenId, "PH-16");
   assert.equal(byRoute.get("/portal/analysere").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/analysere").kontrollbevis, /PH16Analyse/);
+  assert.match(byRoute.get("/portal/analysere").kontrollbevis, /PH16Stats/);
   assert.equal(byRoute.get("/portal/analysere/historikk").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/analysere/historikk").kontrollbevis, /PH16Historikk/);
   assert.equal(byRoute.get("/portal/tren/wb").screenId, "PH-02");
@@ -97,7 +97,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/tren/tester/[testId]").screenId, "PH-14");
   assert.equal(byRoute.get("/portal/tren/tester/[testId]").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/tren/tester/[testId]").kontrollbevis, /PH14Detalj/);
-  assert.equal(byRoute.get("/portal/tren/tester/[testId]/gjennomfor").status.implementert, "ikke-verifisert");
+  assert.equal(byRoute.get("/portal/tren/tester/[testId]/gjennomfor").status.implementert, "precision-visning");
   assert.equal(byRoute.get("/portal/mal").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/mal").kontrollbevis, /PH19Mal/);
   assert.equal(byRoute.get("/portal/varsler").status.implementert, "precision-visning");
@@ -177,7 +177,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/coach/tilbakemelding/[oktId]").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/coach/tilbakemelding/[oktId]").kontrollbevis, /PH21TbOkt/);
   assert.equal(byRoute.get("/portal/coach/videoer").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/coach/videoer").kontrollbevis, /PH21VideoListe/);
+  assert.match(byRoute.get("/portal/coach/videoer").kontrollbevis, /PH21Innboks/);
   assert.equal(byRoute.get("/portal/meg/abonnement").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/meg/abonnement").kontrollbevis, /PH25AboOversikt/);
   assert.equal(byRoute.get("/portal/meg/abonnement/kort/ny").status.implementert, "precision-visning");
@@ -201,13 +201,13 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/meg/innstillinger/personvern/deling").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/meg/innstillinger/personvern/deling").kontrollbevis, /PH25DelingSamtykke/);
   assert.equal(byRoute.get("/portal/meg/profil").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/meg/profil").kontrollbevis, /PH24ProfilKort/);
+  assert.match(byRoute.get("/portal/meg/profil").kontrollbevis, /PH24Profil/);
   assert.equal(byRoute.get("/portal/meg/resultater").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/meg/resultater").kontrollbevis, /PH24ResultatListe/);
   assert.equal(byRoute.get("/portal/meg/sikkerhet/2fa").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/meg/sikkerhet/2fa").kontrollbevis, /PH25ToFaktor/);
   assert.equal(byRoute.get("/portal/meg/utstyr").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/meg/utstyr").kontrollbevis, /PH24UtstyrBag/);
+  assert.match(byRoute.get("/portal/meg/utstyr").kontrollbevis, /PH24Utstyr/);
   assert.equal(byRoute.get("/portal/drills").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/drills").kontrollbevis, /PH13DrillListe/);
   assert.equal(byRoute.get("/portal/booking/ny").status.implementert, "precision-visning");
@@ -280,7 +280,7 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal/onskeligokt").screenId, "PH-21");
   assert.equal(byRoute.get("/portal/onskeligokt").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/onskeligokt").kontrollbevis, /PH21Innboks/);
-  assert.equal(register.tellinger.implementert, 103);
+  assert.equal(register.tellinger.implementert, 125);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
