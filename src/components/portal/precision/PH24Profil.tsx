@@ -92,6 +92,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
+            minHeight: 44,
             fontSize: 13,
             fontWeight: 500,
             color: "var(--text-secondary)",
@@ -183,6 +184,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                 required
                 style={{
                   width: "100%",
+                  minHeight: 44,
                   padding: "10px 12px",
                   borderRadius: "var(--radius-md, 8px)",
                   background: "var(--surface-input, var(--surface-overlay))",
@@ -200,7 +202,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                 Mobilnummer
               </label>
               <div style={{ position: "relative" }}>
-                <Phone size={14} style={{ position: "absolute", left: 12, top: 14, color: "var(--text-muted)" }} />
+                <Phone size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
                 <input
                   type="tel"
                   value={mobil}
@@ -208,6 +210,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                   placeholder="+47 000 00 000"
                   style={{
                     width: "100%",
+                    minHeight: 44,
                     padding: "10px 12px 10px 34px",
                     borderRadius: "var(--radius-md, 8px)",
                     background: "var(--surface-input, var(--surface-overlay))",
@@ -226,13 +229,14 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                 Fødselsdato
               </label>
               <div style={{ position: "relative" }}>
-                <Calendar size={14} style={{ position: "absolute", left: 12, top: 14, color: "var(--text-muted)" }} />
+                <Calendar size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
                 <input
                   type="date"
                   value={fodselsdato}
                   onChange={(e) => setFodselsdato(e.target.value)}
                   style={{
                     width: "100%",
+                    minHeight: 44,
                     padding: "10px 12px 10px 34px",
                     borderRadius: "var(--radius-md, 8px)",
                     background: "var(--surface-input, var(--surface-overlay))",
@@ -251,7 +255,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                 Hjemmeklubb
               </label>
               <div style={{ position: "relative" }}>
-                <MapPin size={14} style={{ position: "absolute", left: 12, top: 14, color: "var(--text-muted)" }} />
+                <MapPin size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
                 <input
                   type="text"
                   value={hjemmeklubb}
@@ -259,6 +263,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                   placeholder="f.eks. Losby Golfklubb"
                   style={{
                     width: "100%",
+                    minHeight: 44,
                     padding: "10px 12px 10px 34px",
                     borderRadius: "var(--radius-md, 8px)",
                     background: "var(--surface-input, var(--surface-overlay))",
@@ -417,6 +422,11 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
           <Link
             href="/portal/meg"
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 44,
+              minWidth: 80,
               padding: "10px 16px",
               borderRadius: "var(--radius-md, 8px)",
               background: "transparent",
@@ -425,6 +435,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               textDecoration: "none",
               fontSize: 14,
               fontWeight: 500,
+              boxSizing: "border-box",
             }}
           >
             Avbryt
@@ -434,6 +445,11 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
             type="submit"
             disabled={isPending}
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 44,
+              minWidth: 150,
               padding: "10px 20px",
               borderRadius: "var(--radius-md, 8px)",
               background: "var(--accent-primary, var(--surface-accent))",
@@ -442,10 +458,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               fontSize: 14,
               fontWeight: 600,
               cursor: isPending ? "not-allowed" : "pointer",
-              display: "inline-flex",
-              alignItems: "center",
               gap: 8,
               opacity: isPending ? 0.7 : 1,
+              boxSizing: "border-box",
             }}
           >
             <Save size={16} />

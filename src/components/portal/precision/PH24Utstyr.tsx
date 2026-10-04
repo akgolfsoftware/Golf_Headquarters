@@ -78,6 +78,7 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
+            minHeight: 44,
             fontSize: 13,
             fontWeight: 500,
             color: "var(--text-secondary)",
@@ -102,7 +103,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
             type="button"
             onClick={() => setRedigerer(!redigerer)}
             style={{
-              padding: "8px 14px",
+              minHeight: 44,
+              padding: "10px 16px",
               borderRadius: "var(--radius-md, 8px)",
               background: redigerer ? "var(--surface-overlay)" : "var(--accent-primary, var(--surface-accent))",
               color: redigerer ? "var(--text-primary)" : "var(--text-on-accent, var(--text-primary))",
@@ -113,6 +115,7 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
+              boxSizing: "border-box",
             }}
           >
             <Edit3 size={14} />
@@ -174,6 +177,7 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                   placeholder={f.placeholder}
                   style={{
                     width: "100%",
+                    minHeight: 44,
                     padding: "9px 12px",
                     borderRadius: "var(--radius-md, 8px)",
                     background: "var(--surface-input, var(--surface-overlay))",
@@ -194,7 +198,11 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
               type="button"
               onClick={() => setRedigerer(false)}
               style={{
-                padding: "8px 14px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 44,
+                padding: "8px 16px",
                 borderRadius: "var(--radius-md, 8px)",
                 background: "transparent",
                 border: "1px solid var(--border-subtle)",
@@ -202,6 +210,7 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: "pointer",
+                boxSizing: "border-box",
               }}
             >
               Avbryt
@@ -210,6 +219,10 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
               type="submit"
               disabled={isPending}
               style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 44,
                 padding: "8px 18px",
                 borderRadius: "var(--radius-md, 8px)",
                 background: "var(--accent-primary, var(--surface-accent))",
@@ -218,9 +231,8 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: isPending ? "not-allowed" : "pointer",
-                display: "inline-flex",
-                alignItems: "center",
                 gap: 6,
+                boxSizing: "border-box",
               }}
             >
               <Save size={14} />
