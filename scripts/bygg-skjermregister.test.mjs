@@ -301,7 +301,13 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/admin/oppgaver").screenId, "AG-21");
   assert.equal(byRoute.get("/admin/oppgaver").status.implementert, "precision-visning");
   assert.match(byRoute.get("/admin/oppgaver").kontrollbevis, /AG21Oppgaver/);
-  assert.equal(register.tellinger.implementert, 132);
+  assert.equal(byRoute.get("/admin/innsikt").screenId, "AG-22");
+  assert.equal(byRoute.get("/admin/innsikt").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/admin/innsikt").kontrollbevis, /AG22InnsiktTalent/);
+  assert.equal(byRoute.get("/innsyn/talent/radar").screenId, "AG-22");
+  assert.equal(byRoute.get("/innsyn/talent/radar").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/innsyn/talent/radar").kontrollbevis, /AG22InnsiktTalent/);
+  assert.equal(register.tellinger.implementert, 134);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });

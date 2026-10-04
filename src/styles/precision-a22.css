@@ -1,0 +1,105 @@
+/**
+ * Precision Athletics — AG-22 Innsikt og talent stilark.
+ *
+ * Kilde: Claude Design AG-22 (designsystem/precision-athletics/ui_kits/agencyos/screens/AG-22.jsx).
+ * Krav: 0 hex-farger (kun semantiske variabler), min 44 px berøringsflate.
+ */
+
+.pa-a22 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pa-a22__picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.pa-a22__pills {
+  display: flex;
+  gap: var(--space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.pa-a22 .pa-choice {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.pa-a22__radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-3, 12px);
+}
+
+.pa-a22__radar-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: 16px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card, 8px);
+}
+
+.pa-a22__radar-card-header {
+  display: flex;
+  gap: var(--space-2, 8px);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.pa-a22__radar-player-name {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1 1 auto;
+  color: var(--text-primary);
+}
+
+.pa-a22__legend {
+  display: flex;
+  gap: var(--space-4, 16px);
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: var(--space-1, 4px);
+}
+
+.pa-a22__legend-item {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pa-a22__legend-solid {
+  width: 16px;
+  height: 2px;
+  background: var(--text-primary);
+}
+
+.pa-a22__legend-dashed {
+  width: 16px;
+  border-top: 1.5px dashed var(--text-muted);
+}
+
+.pa-a22__wagr-card {
+  max-width: 720px;
+  width: 100%;
+}
+
+.pa-a22__dropzone {
+  padding: 20px;
+  border-radius: var(--radius-card, 8px);
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  align-items: flex-start;
+  background: var(--surface-card);
+}
