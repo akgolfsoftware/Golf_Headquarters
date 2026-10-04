@@ -276,6 +276,8 @@ const PRECISION_VISNING = [
   ["PH19TalentMinPlan", "Min plan merker PH19TalentMinPlan i PlayerHQSkall. Milepæler og treningsmål er beholdt."],
   ["PH19TalentRoadmap", "Roadmap merker PH19TalentRoadmap i PlayerHQSkall. Sesongplan og periodeblokker er beholdt."],
   ["PH19TalentSammenligning", "Sammenligning merker PH19TalentSammenligning i PlayerHQSkall. Coach-forvaltet sammenligning er beholdt."],
+  ["PH16Stats", "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats."],
+  ["PH16bSkillMap", "Skill Map merker PH16bSkillMap i PlayerHQSkall. Skjematisk hullskisse med SG-ruter og fokusområde etter Claude Design PH-16b-skill-map."],
 ];
 
 function merkVisning(row, source) {
