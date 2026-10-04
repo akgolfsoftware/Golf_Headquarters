@@ -6,13 +6,13 @@ import { KnappLenke, Sidehode, Meta } from "@/components/precision/pa";
 import {
   formaterDesimal,
   formaterSg,
-  STANDARD_PH16_DATA,
+  MIN_RUNDER_FOR_KONKLUSJON,
   type SgRad,
   type PH16StatsData,
 } from "@/lib/portal-analyse/ph16-stats-data";
 
 export interface PH16bSkillMapProps {
-  data?: PH16StatsData;
+  data: PH16StatsData;
   pgaTour?: boolean;
   onTilbakeHref?: string;
 }
@@ -50,25 +50,28 @@ function kortNavn(r: SgRad): string {
 }
 
 function langtNavn(r: SgRad): string {
-  if (r.g === "tee") return "Tee · par 4 og 5";
+  if (r.g === "tee") return "Tee";
   if (r.g === "innspill") return `Innspill ${r.label}`;
   if (r.g === "putt") return `Putting ${r.label}`;
   return r.label;
 }
 
 export function PH16bSkillMap({
-  data = STANDARD_PH16_DATA,
+  data,
   pgaTour = false,
   onTilbakeHref = "/portal/analysere?del=sg",
 }: PH16bSkillMapProps) {
   const alleRader: SgRad[] = data.sg.flatMap((g) => g.rows);
   const [valgtId, setValgtId] = useState<string>("i100");
 
+  const sgVerdi = (r: SgRad) => (pgaTour ? r.pga : r.c);
   const valgtRad = alleRader.find((r) => r.id === valgtId) ?? alleRader[0];
-  const verdi = pgaTour ? valgtRad.pga : valgtRad.c;
+  const verdi = sgVerdi(valgtRad);
 
-  // Finn område med lavest SG for fokusmarkering
-  const svakeste = [...alleRader].sort((a, b) => (pgaTour ? a.pga - b.pga : a.c - b.c))[0]?.id;
+  // Finn område med lavest målt SG for fokusmarkering
+  const svakeste = alleRader
+    .filter((r) => sgVerdi(r) != null)
+    .sort((a, b) => (sgVerdi(a) as number) - (sgVerdi(b) as number))[0]?.id;
 
   return (
     <div className="pa-side" style={{ maxWidth: 1000, margin: "0 auto", padding: "16px 20px" }}>
@@ -192,7 +195,7 @@ export function PH16bSkillMap({
               const geom = GEOMETRI[r.id];
               if (!geom) return null;
               const [x, y, w, h] = geom;
-              const v = pgaTour ? r.pga : r.c;
+              const v = sgVerdi(r);
               const erValgt = valgtId === r.id;
               const erSvak = r.id === svakeste;
 
@@ -305,7 +308,9 @@ export function PH16bSkillMap({
                   color: "var(--text-secondary)",
                 }}
               >
-                slag per runde mot {pgaTour ? "PGA Tour" : "Kategori C (estimat)"}
+                {pgaTour
+                  ? "slag per runde mot PGA Tour"
+                  : "mot neste kategori · referanse ikke satt"}
               </span>
             </div>
 
@@ -331,7 +336,7 @@ export function PH16bSkillMap({
                   background: "var(--text-muted)",
                 }}
               />
-              {verdi !== 0 && (
+              {verdi != null && verdi !== 0 && (
                 <span
                   style={{
                     position: "absolute",
@@ -347,8 +352,8 @@ export function PH16bSkillMap({
 
             <dl className="pa-kv">
               <div className="pa-kv__row">
-                <dt className="pa-kv__k">Slag i grunnlaget</dt>
-                <dd className="pa-kv__v is-mono">{valgtRad.n} slag</dd>
+                <dt className="pa-kv__k">Runder i grunnlaget</dt>
+                <dd className="pa-kv__v is-mono">{valgtRad.n} runder</dd>
               </div>
 
               <div className="pa-kv__row">
@@ -385,8 +390,12 @@ export function PH16bSkillMap({
                 color: "var(--text-secondary)",
               }}
             >
-              {verdi < 0
-                ? `${langtNavn(valgtRad)} koster deg ${formaterSg(verdi)} slag per runde. Legg inn målrettede øvelser i treningsplanen.`
+              {verdi == null
+                ? pgaTour
+                  ? `Ingen konklusjon ennå. ${langtNavn(valgtRad)} trenger målt SG fra minst ${MIN_RUNDER_FOR_KONKLUSJON} runder.`
+                  : "Referanse ikke satt for neste kategori. Slå på PGA Tour for å se målt SG."
+                : verdi < 0
+                ?`${langtNavn(valgtRad)} koster deg ${formaterSg(verdi)} slag per runde. Legg inn målrettede øvelser i treningsplanen.`
                 : `${langtNavn(valgtRad)} er en styrke i spillet ditt med ${formaterSg(verdi)} gevinst per runde.`}
             </p>
             <div style={{ marginTop: 8 }}>
