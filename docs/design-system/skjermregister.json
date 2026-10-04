@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a27eae681341b70db5dd6f8a4974711298010f64",
+  "kodeversjon": "d2939e1333ae483c4330eeb729d325a8762f3c90",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 863,
+    "componentFiles": 864,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -10397,19 +10397,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Turneringer-siden monterer AG17Turneringer i AgencyOSSkall i Precision Athletics. Alle turneringer, mine spillere, skjematisk kart over Sør-Norge, dubletter og opprettelse samlet på én adresse. Målt i Playwright med 40/40 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-17 Turneringer er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-17"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23257,10 +23259,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 153,
+    "medAvvik": 154,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 126,
+    "implementert": 127,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

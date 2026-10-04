@@ -283,7 +283,10 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/admin/ko").screenId, "AG-02");
   assert.equal(byRoute.get("/admin/ko").status.implementert, "precision-visning");
   assert.match(byRoute.get("/admin/ko").kontrollbevis, /AG02Ko/);
-  assert.equal(register.tellinger.implementert, 126);
+  assert.equal(byRoute.get("/admin/turnering").screenId, "AG-17");
+  assert.equal(byRoute.get("/admin/turnering").status.implementert, "precision-visning");
+  assert.match(byRoute.get("/admin/turnering").kontrollbevis, /AG17Turneringer/);
+  assert.equal(register.tellinger.implementert, 127);
   assert.equal(register.tellinger.valgtForBygging > 0, true);
   assert.equal(register.sider.some((row) => row.status.kontrollertIApp), false);
 });
