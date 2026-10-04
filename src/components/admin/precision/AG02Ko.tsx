@@ -8,16 +8,14 @@
  * Én samlet kø for alle saker som krever beslutning fra trener/admin.
  * Ingenting sendes eller publiseres før det godkjennes.
  */
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  ArrowUpDown,
   Check,
   CheckCircle2,
   GitMerge,
   House,
-  MessageSquare,
-  Pencil,
   Send,
   ShieldCheck,
   Sparkles,
@@ -38,6 +36,7 @@ import {
   type Akse,
 } from "@/components/precision/pa";
 import { Ark, Faner, Felt, Nokkelverdi } from "@/components/precision/pa-a5";
+import { utforKoHandling, type KoHandling, type KoResultat } from "./ag02-handlinger";
 import "@/styles/precision-a2.css";
 
 export type AG02Tilstand = "data" | "tom" | "laster" | "feil";
@@ -55,6 +54,8 @@ export type GodkjenningSak = {
   due?: string;
   sum?: string;
   lines?: [string, string, string][];
+  /** Hvilken kilde saken kommer fra — styrer hvilke server actions knappene kaller. */
+  kilde?: "agent" | "caddie" | "forespørsel";
 };
 
 export type AgentSak = {
@@ -69,22 +70,25 @@ export type AgentSak = {
   axis?: Akse;
 };
 
+/** Spillerforeslått test (TestDefinition) som venter på coachens godkjenning. */
 export type TestSak = {
   id: string;
   who: string;
   test: string;
   src: string;
   at: string;
-  done: number;
-  of: number;
-  result?: string;
-  prev?: string;
-  witness?: string;
+  beskrivelse?: string;
+  scoring?: string;
 };
 
+/** Manuell turnering (A, slås inn) mot beste kandidat fra ekte kilde (B, beholdes). */
 export type DublettSak = {
   id: string;
   match: string;
+  /** Manuell turnering som flyttes over og markeres som dublett. */
+  kildeId: string;
+  /** Kanonisk turnering som beholdes. null = ingen automatisk match. */
+  malId: string | null;
   a: Record<string, string>;
   b: Record<string, string>;
 };
@@ -96,6 +100,9 @@ export type ModereringSak = {
   reason: string;
   at: string;
   text: string;
+  type: "GDPR_SLETTING" | "RAPPORTERT_INNHOLD";
+  /** APPROVED + GDPR_SLETTING = godkjent, venter på at slettingen bekreftes. */
+  status: "OPEN" | "APPROVED";
 };
 
 export type EpostSak = {
@@ -126,177 +133,31 @@ export type AG02KoProps = {
   dagLabel?: string;
   startFane?: string;
   data?: AG02Data;
-  onGodkjenn?: (id: string, fane: string) => void;
-  onAvvis?: (id: string, fane: string) => void;
+  /** Fanene brukeren har tilgang til. Uten capability finnes fanen ikke. */
+  faner?: (keyof AG02Data)[];
+  /** Utfører handlingen mot serveren. Byttes bare ut i tester. */
+  utfor?: (h: KoHandling) => Promise<KoResultat>;
 };
 
 const DUBLETT_FELTER: [string, string][] = [
   ["name", "Navn"],
-  ["born", "Fødselsår"],
-  ["email", "E-post"],
-  ["phone", "Telefon"],
-  ["club", "Klubb"],
-  ["parent", "Forelder"],
+  ["dato", "Dato"],
+  ["bane", "Bane"],
+  ["pamelding", "Påmeldte"],
+  ["resultater", "Resultater"],
 ];
 
-const STANDARD_DATA: AG02Data = {
-  godkjenninger: [
-    {
-      id: "g1",
-      who: "Magnus Aasheim",
-      grp: "WANG Toppidrett",
-      title: "PlanAction · hviledag torsdag",
-      kind: "PlanAction",
-      from: "Belastningsagent",
-      at: "I dag 08:30",
-      status: "Venter",
-      axis: "fys",
-      due: "14:00",
-      sum: "ACWR 1,62 → 1,31 etter endring",
-      lines: [
-        ["To 01.10", "SLAG · Innspill 150–200 m → hvile", "−90 min"],
-        ["Ma 05.10", "SLAG · Innspill 150–200 m", "90 min"],
-      ],
-    },
-    {
-      id: "g2",
-      who: "Emil Solberg",
-      grp: "Talent U16",
-      title: "Samtykke · samling Oslo GK",
-      kind: "Samtykke",
-      from: "Forelder · Kari Solberg",
-      at: "I går 11:42",
-      status: "Signert",
-      axis: "spill",
-      due: "I dag 18:00",
-      sum: "Signert med BankID",
-      lines: [
-        ["Samling", "Oslo GK · overnatting og transport", "2 døgn"],
-        ["Deling", "TrackMan-data med NGF region", "Ja"],
-      ],
-    },
-    {
-      id: "g3",
-      who: "Thea Nilsen",
-      grp: "Talent U16",
-      title: "Bytte FYS-økt med 9 hull",
-      kind: "Økt",
-      from: "Spiller",
-      at: "I går 19:15",
-      status: "Venter",
-      axis: "spill",
-      due: "I dag",
-      sum: "«Vil teste gameplanen før klubbmesterskapet.»",
-      lines: [
-        ["Lø 03.10", "FYS · Kondisjon", "45 min"],
-        ["Erstattes av", "SPILL · 9 hull Borregaard", "120 min"],
-      ],
-    },
-  ],
-  agentko: [
-    {
-      id: "a1",
-      who: "Ingrid Berg",
-      title: "Juster innspillstrening etter turnering",
-      agent: "Caddie AI",
-      t: "08:14",
-      body: "Ingrid bommet 9 av 14 greentreff fra 50–100 m i helgens runde. Foreslår 2 ekstra wedge-økter denne uken.",
-      facts: [
-        ["Anbefaling", "2 × 45 min wedge", "SLAG"],
-        ["Bakgrunn", "Strokes Gained APP −0,9", "3 RUNDER"],
-      ],
-      out: "Forslag til ukeplan uke 40",
-      axis: "slag",
-    },
-    {
-      id: "a2",
-      who: "Sara Holm",
-      title: "Utslagstester og TrackMan-oppfølging",
-      agent: "Teknikkagent",
-      t: "I går",
-      body: "Club Path har beveget seg +3,8° mot høyre. Bør booke en kort sjekk før helgens kretsfinale.",
-      facts: [
-        ["Avvik", "Club Path +3,8°", "TRACKMAN"],
-        ["Tiltak", "Sjekk startretning P6–P7", "TEK"],
-      ],
-      out: "Notat til neste privattime",
-      axis: "tek",
-    },
-  ],
-  tester: [
-    {
-      id: "t1",
-      who: "Eira Solvang",
-      test: "Testbatteri Putting 3–6–9 fot",
-      src: "Spiller",
-      at: "I dag 09:15",
-      done: 30,
-      of: 30,
-      result: "84 % treff",
-      prev: "76 %",
-      witness: "Jonas Brekke (trener)",
-    },
-    {
-      id: "t2",
-      who: "Kasper Moen",
-      test: "Køllehastighet Driver",
-      src: "TrackMan",
-      at: "I går 16:40",
-      done: 6,
-      of: 10,
-      result: "108,4 mph snitt",
-      prev: "106,1 mph",
-      witness: "—",
-    },
-  ],
-  dubletter: [
-    {
-      id: "d1",
-      match: "To spillere med likt navn og klubb funnet",
-      a: {
-        name: "Mathias Tveit",
-        born: "2008",
-        email: "mathias.t@example.com",
-        phone: "+47 912 34 567",
-        club: "Borregaard GK",
-        parent: "Kari Tveit",
-        src: "GolfBox-synk",
-      },
-      b: {
-        name: "Mathias Tveit",
-        born: "2008",
-        email: "m.tveit@skole.no",
-        phone: "+47 912 34 567",
-        club: "Borregaard GK",
-        parent: "Kari Tveit",
-        src: "Manuell påmelding",
-      },
-    },
-  ],
-  moderering: [
-    {
-      id: "m1",
-      where: "Gruppesamtale · Talent U16",
-      who: "Anonym deltaker",
-      reason: "Upassende språkbruk i fellestråd",
-      at: "I går 21:05",
-      text: "«Dette opplegget er helt ubrukelig, ingen gidder å møte opp på morgentrening kl 07.»",
-    },
-  ],
-  epost: [
-    {
-      id: "ep1",
-      to: "Mari Solvang",
-      email: "mari.s@example.com",
-      tpl: "EP-05",
-      by: "Caddie",
-      at: "I går 15:05",
-      svc: "Privattime 60 min · fredag 25.09 kl. 14:00",
-      ready: "Klar til sending — timen var i går kl. 14.00",
-      note: "Flott økt med fokus på nærspill og wedger. Husk å opprettholde tempo i baksvingen.",
-    },
-  ],
+/** Tom kø. Produksjonsruten viser aldri demospillere — demodata bor i prøvefila. */
+export const TOM_KO: AG02Data = {
+  godkjenninger: [],
+  agentko: [],
+  tester: [],
+  dubletter: [],
+  moderering: [],
+  epost: [],
 };
+
+const ALLE_FANER: (keyof AG02Data)[] = ["godkjenninger", "agentko", "tester", "dubletter", "moderering", "epost"];
 
 function normaliserFane(raw?: string): keyof AG02Data {
   if (!raw) return "godkjenninger";
@@ -344,18 +205,22 @@ export function AG02Ko({
   tilstand = "data",
   dagLabel = "tirsdag 29. september",
   startFane,
-  data = STANDARD_DATA,
-  onGodkjenn,
-  onAvvis,
+  data = TOM_KO,
+  faner = ALLE_FANER,
+  utfor = utforKoHandling,
 }: AG02KoProps) {
-  const [fane, setFane] = useState<keyof AG02Data>(() => normaliserFane(startFane));
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [fane, setFane] = useState<keyof AG02Data>(() => {
+    const onsket = normaliserFane(startFane);
+    return faner.includes(onsket) ? onsket : (faner[0] ?? "godkjenninger");
+  });
   const [valgtId, setValgtId] = useState<string | null>(null);
-  const [sorterPrio, setSorterPrio] = useState(false);
   const [behandlede, setBehandlede] = useState<Record<string, string>>({});
-  const [fjernDialogApen, setFjernDialogApen] = useState(false);
-  const [dublettValg, setDublettValg] = useState<Record<string, Record<string, "a" | "b">>>({});
+  /** Destruktiv handling som venter på bekreftelse i dialog (rust). */
+  const [bekreft, setBekreft] = useState<{ tittel: string; tekst: string; knapp: string; handling: KoHandling; id: string; melding: string } | null>(null);
   const [epostNotat, setEpostNotat] = useState<Record<string, string>>({});
-  const [varselTekst, setVarselTekst] = useState<{ tittel: string; meta?: string } | null>(null);
+  const [varselTekst, setVarselTekst] = useState<{ tittel: string; meta?: string; feil?: boolean } | null>(null);
 
   const sakerForFane = useMemo(() => {
     if (tilstand === "tom") return [];
@@ -383,26 +248,38 @@ export function AG02Ko({
     );
   }
 
-  const lukkSak = (id: string, melding: string, meta?: string) => {
-    setBehandlede((prev) => ({ ...prev, [id]: melding }));
-    setVarselTekst({ tittel: melding, meta });
-    if (onGodkjenn) onGodkjenn(id, fane);
+  /**
+   * Kjører handlingen mot serveren. Saken lukkes og suksess vises FØRST når
+   * serveren har svart ok; ellers står saken og feilen vises.
+   */
+  const kjor = (id: string, handling: KoHandling, melding: string) => {
+    setVarselTekst(null);
+    startTransition(async () => {
+      const res = await utfor(handling);
+      if (!res.ok) {
+        setVarselTekst({ tittel: res.feil, meta: "INGENTING ER LAGRET", feil: true });
+        return;
+      }
+      setBehandlede((prev) => ({ ...prev, [id]: melding }));
+      setValgtId(null);
+      setVarselTekst({ tittel: melding, meta: res.meta });
+      router.refresh();
+    });
   };
 
-  const avvisSak = (id: string, melding: string, meta?: string) => {
-    setBehandlede((prev) => ({ ...prev, [id]: melding }));
-    setVarselTekst({ tittel: melding, meta });
-    if (onAvvis) onAvvis(id, fane);
+  const FANE_LABEL: Record<keyof AG02Data, string> = {
+    godkjenninger: "Godkjenninger",
+    agentko: "Agentforslag",
+    tester: "Tester",
+    dubletter: "Dubletter",
+    moderering: "Moderering",
+    epost: "E-postutkast",
   };
-
-  const fanerKonfig = [
-    { value: "godkjenninger", label: "Godkjenninger", count: data.godkjenninger.filter((x) => !behandlede[x.id]).length },
-    { value: "agentko", label: "Agentforslag", count: data.agentko.filter((x) => !behandlede[x.id]).length },
-    { value: "tester", label: "Tester", count: data.tester.filter((x) => !behandlede[x.id]).length },
-    { value: "dubletter", label: "Dubletter", count: data.dubletter.filter((x) => !behandlede[x.id]).length },
-    { value: "moderering", label: "Moderering", count: data.moderering.filter((x) => !behandlede[x.id]).length },
-    { value: "epost", label: "E-postutkast", count: data.epost.filter((x) => !behandlede[x.id]).length },
-  ];
+  const fanerKonfig = faner.map((f) => ({
+    value: f,
+    label: FANE_LABEL[f],
+    count: data[f].filter((x) => !behandlede[x.id]).length,
+  }));
 
   const aktivInfo = aktivSak ? hentSakInfo(aktivSak, fane) : null;
 
@@ -469,94 +346,42 @@ export function AG02Ko({
 
     if (fane === "tester") {
       const t = sak as TestSak;
-      const fullfort = t.done >= t.of;
       return (
         <>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <StatusPille tone={fullfort ? "ok" : "warn"}>
-              {fullfort ? "Til attestering" : `${t.done} av ${t.of} slag`}
-            </StatusPille>
+            <StatusPille tone="warn">Venter på godkjenning</StatusPille>
             <Meta>{t.src.toUpperCase()} · {t.at.toUpperCase()}</Meta>
           </div>
           <Nokkelverdi
             items={[
-              ["Spiller", t.who],
+              ["Foreslått av", t.who],
               ["Test", t.test],
-              ["Resultat", t.result ?? "Ikke fullført"],
-              ["Forrige", t.prev ?? "—"],
-              ["Registrert", `${t.done} av ${t.of} slag`],
-              ["Vitne", t.witness ?? "—"],
+              ["Poengregel", t.scoring ?? "—"],
+              ["Beskrivelse", t.beskrivelse ?? "—"],
             ]}
           />
-          {!fullfort && (
-            <div style={{ display: "flex", gap: 10, padding: 12, borderRadius: "var(--radius)", background: "var(--warn-tint)", alignItems: "center" }}>
-              <Ikon icon={TriangleAlert} size={18} />
-              <span style={{ font: "var(--type-body-s)", color: "var(--text-primary)" }}>
-                {t.of - t.done} slag mangler. Testen teller først når samtlige slag er fullført.
-              </span>
-            </div>
-          )}
         </>
       );
     }
 
     if (fane === "dubletter") {
       const d = sak as DublettSak;
-      const valgte = dublettValg[d.id] || {};
       return (
         <>
           <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-            {d.match}. Velg hvilke opplysninger som skal beholdes per felt. Historikk fra begge kilder beholdes.
+            {d.malId
+              ? "Påmeldinger, resultater og deltakere flyttes fra den manuelle turneringen (A) til turneringen fra kilden (B). A markeres som dublett."
+              : "Ingen automatisk match. Sammenslåing gjøres fra Turnering."}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {DUBLETT_FELTER.map(([nokkel, etikett]) => {
-              const verdiA = d.a[nokkel] || "—";
-              const verdiB = d.b[nokkel] || "—";
-              const erLik = verdiA === verdiB;
-              const valgtSide = valgte[nokkel] || (verdiA === "—" ? "b" : "a");
-
-              return (
-                <div key={nokkel} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  <Meta>{etikett.toUpperCase()}{erLik ? " · LIK" : ""}</Meta>
-                  <div role="radiogroup" aria-label={etikett} className="pa-a2-radiogroup">
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={valgtSide === "a"}
-                      disabled={erLik || verdiA === "—"}
-                      onClick={() =>
-                        setDublettValg((prev) => ({
-                          ...prev,
-                          [d.id]: { ...(prev[d.id] || {}), [nokkel]: "a" },
-                        }))
-                      }
-                      className="pa-a2-valgknapp"
-                    >
-                      A: {verdiA}
-                    </button>
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={valgtSide === "b"}
-                      disabled={erLik || verdiB === "—"}
-                      onClick={() =>
-                        setDublettValg((prev) => ({
-                          ...prev,
-                          [d.id]: { ...(prev[d.id] || {}), [nokkel]: "b" },
-                        }))
-                      }
-                      className="pa-a2-valgknapp"
-                    >
-                      B: {verdiB}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <Meta>KILDE A: {d.a.src?.toUpperCase() ?? "A"}</Meta>
-            <Meta>KILDE B: {d.b.src?.toUpperCase() ?? "B"}</Meta>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, minWidth: 0 }}>
+            {(["a", "b"] as const).map((side) => (
+              <div key={side} style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+                <Meta>
+                  {side === "a" ? "A · SLÅS INN" : "B · BEHOLDES"} · {(d[side].src ?? "—").toUpperCase()}
+                </Meta>
+                <Nokkelverdi items={DUBLETT_FELTER.map(([nokkel, etikett]) => [etikett, d[side][nokkel] || "—"])} />
+              </div>
+            ))}
           </div>
         </>
       );
@@ -568,14 +393,21 @@ export function AG02Ko({
         <>
           <Nokkelverdi
             items={[
-              ["Hvor", m.where],
-              ["Skrevet av", m.who],
-              ["Årsak til varsel", m.reason],
+              ["Type", m.type === "GDPR_SLETTING" ? "Slettforespørsel (GDPR)" : "Rapportert innhold"],
+              ["Gjelder", m.where],
+              ["Spiller", m.who],
+              ["Begrunnelse", m.reason],
               ["Tidspunkt", m.at],
             ]}
           />
-          <div className="pa-a2-sunken">{m.text}</div>
-          <Meta>NAVN ER ANONYMISERT · SAKEN GJELDER UTØVERE UNDER 18 ÅR</Meta>
+          {m.text && <div className="pa-a2-sunken">{m.text}</div>}
+          {m.type === "GDPR_SLETTING" && (
+            <Meta>
+              {m.status === "APPROVED"
+                ? "GODKJENT · SLETTINGEN MÅ BEKREFTES"
+                : "TO STEG: GODKJENNING FØRST, SELVE SLETTINGEN BEKREFTES ETTERPÅ"}
+            </Meta>
+          )}
         </>
       );
     }
@@ -586,7 +418,7 @@ export function AG02Ko({
       return (
         <>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <StatusPille tone="ok">Klar til sending</StatusPille>
+            <StatusPille tone="neutral">Utkast</StatusPille>
             <Meta>{ep.tpl} · LAGET AV {ep.by.toUpperCase()} {ep.at.toUpperCase()}</Meta>
           </div>
           <Nokkelverdi
@@ -617,27 +449,45 @@ export function AG02Ko({
     return null;
   }
 
-  /* Handlingsknapper */
+  /* Handlingsknapper — hver knapp kaller en ekte server action (ag02-handlinger.ts).
+     Handlinger uten action finnes ikke på skjermen. */
   function renderHandlinger(sak: KoSak | null) {
     if (!sak) return null;
 
     if (fane === "godkjenninger") {
       const g = sak as GodkjenningSak;
+      const kilde = g.kilde ?? "agent";
+      if (kilde === "caddie") {
+        return (
+          <div className="pa-a2-handling">
+            <Knapp fullWidth icon={Send} disabled={pending} onClick={() => kjor(g.id, { type: "caddie-send", id: g.id }, "Utkastet er godkjent og utført")}>
+              Send
+            </Knapp>
+            <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "caddie-forkast", id: g.id }, "Utkastet er forkastet")}>
+              Forkast
+            </Knapp>
+          </div>
+        );
+      }
+      if (kilde === "forespørsel") {
+        return (
+          <div className="pa-a2-handling">
+            <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-planlagt", id: g.id }, "Forespørselen er markert som planlagt")}>
+              Legg i kalenderen
+            </Knapp>
+            <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-avslaa", id: g.id }, "Forespørselen er avslått")}>
+              Kan ikke
+            </Knapp>
+          </div>
+        );
+      }
       return (
         <div className="pa-a2-handling">
-          <Knapp
-            fullWidth
-            icon={Check}
-            onClick={() => lukkSak(g.id, "Godkjent", `${g.who} · ${g.title}`.toUpperCase())}
-          >
-            {g.kind === "Samtykke" ? "Registrer samtykke" : "Godkjenn"}
+          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(g.id, { type: "plan-godkjenn", id: g.id }, "Forslaget er godkjent")}>
+            Godkjenn
           </Knapp>
-          <Knapp
-            variant="secondary"
-            fullWidth
-            onClick={() => avvisSak(g.id, "Sendt tilbake med kommentar", "UTKAST LAGRET I INNBOKS")}
-          >
-            Send tilbake
+          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "plan-avvis", id: g.id }, "Forslaget er avvist")}>
+            Avvis
           </Knapp>
         </div>
       );
@@ -647,26 +497,10 @@ export function AG02Ko({
       const a = sak as AgentSak;
       return (
         <div className="pa-a2-handling">
-          <Knapp
-            fullWidth
-            icon={Check}
-            onClick={() => lukkSak(a.id, "Godkjent og planlagt", a.out.toUpperCase())}
-          >
-            Godkjenn og send
+          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(a.id, { type: "plan-godkjenn", id: a.id }, "Forslaget er godkjent")}>
+            Godkjenn
           </Knapp>
-          <Knapp
-            variant="secondary"
-            fullWidth
-            icon={Pencil}
-            onClick={() => setVarselTekst({ tittel: "Åpnet som utkast i planbygger", meta: "REDIGER FØR GODKJENNING" })}
-          >
-            Rediger utkast
-          </Knapp>
-          <Knapp
-            variant="ghost"
-            fullWidth
-            onClick={() => avvisSak(a.id, "Forslaget er avvist", "INGENTING SENDT")}
-          >
+          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(a.id, { type: "plan-avvis", id: a.id }, "Forslaget er avvist")}>
             Avvis
           </Knapp>
         </div>
@@ -675,57 +509,46 @@ export function AG02Ko({
 
     if (fane === "tester") {
       const t = sak as TestSak;
-      const fullfort = t.done >= t.of;
       return (
         <div className="pa-a2-handling">
-          {fullfort ? (
-            <>
-              <Knapp
-                fullWidth
-                icon={ShieldCheck}
-                onClick={() => lukkSak(t.id, "Testen er attestert", `${t.who} · ${t.test}`.toUpperCase())}
-              >
-                Attester resultat
-              </Knapp>
-              <Knapp
-                variant="ghost"
-                fullWidth
-                onClick={() => avvisSak(t.id, "Sendt tilbake til spiller", "SPILLEREN TAR TESTEN PÅ NYTT")}
-              >
-                Be om ny test
-              </Knapp>
-            </>
-          ) : (
-            <Knapp
-              variant="secondary"
-              fullWidth
-              icon={MessageSquare}
-              onClick={() => setVarselTekst({ tittel: "Påminnelse klargjort i Innboks", meta: "IKKE SENDT ENNÅ" })}
-            >
-              Påminn spilleren
-            </Knapp>
-          )}
+          <Knapp fullWidth icon={ShieldCheck} disabled={pending} onClick={() => kjor(t.id, { type: "test-godkjenn", id: t.id }, "Testen er godkjent")}>
+            Godkjenn testen
+          </Knapp>
+          <Knapp
+            variant="ghost"
+            fullWidth
+            icon={Trash2}
+            disabled={pending}
+            onClick={() =>
+              setBekreft({
+                id: t.id,
+                tittel: "Avvise og slette testen?",
+                tekst: `«${t.test}» slettes, og ${t.who} får beskjed om at den ble avvist. Dette kan ikke angres.`,
+                knapp: "Avvis og slett",
+                handling: { type: "test-avvis", id: t.id },
+                melding: "Testen er avvist og slettet",
+              })
+            }
+          >
+            Avvis
+          </Knapp>
         </div>
       );
     }
 
     if (fane === "dubletter") {
       const d = sak as DublettSak;
+      if (!d.malId) return null;
+      const malId = d.malId;
       return (
         <div className="pa-a2-handling">
           <Knapp
             fullWidth
             icon={GitMerge}
-            onClick={() => lukkSak(d.id, "Profilene er slått sammen", `${d.a.name || "Spiller"} · KAN ANGRES I 30 DAGER`.toUpperCase())}
+            disabled={pending}
+            onClick={() => kjor(d.id, { type: "dublett-slaa-sammen", kildeId: d.kildeId, malId }, "Turneringene er slått sammen")}
           >
             Slå sammen
-          </Knapp>
-          <Knapp
-            variant="ghost"
-            fullWidth
-            onClick={() => avvisSak(d.id, "Merket som ikke dublett", "BEGGE PROFILER BEHOLDES")}
-          >
-            Ikke dublett
           </Knapp>
         </div>
       );
@@ -733,51 +556,44 @@ export function AG02Ko({
 
     if (fane === "moderering") {
       const m = sak as ModereringSak;
+      if (m.type === "GDPR_SLETTING" && m.status === "APPROVED") {
+        return (
+          <div className="pa-a2-handling">
+            <Knapp
+              variant="signal"
+              fullWidth
+              icon={Trash2}
+              disabled={pending}
+              onClick={() =>
+                setBekreft({
+                  id: m.id,
+                  tittel: "Bekreft GDPR-sletting?",
+                  tekst: `Profilen til ${m.who} anonymiseres: navnet blir «Slettet bruker», og e-post, telefon, profilbilde og fødselsdato fjernes. Treningsdata, bookinger og økter beholdes uten personopplysninger. Dette kan ikke angres.`,
+                  knapp: "Bekreft sletting",
+                  handling: { type: "moderering-gdpr-utfor", id: m.id },
+                  melding: "Slettingen er utført",
+                })
+              }
+            >
+              Bekreft sletting
+            </Knapp>
+          </div>
+        );
+      }
+      const gdpr = m.type === "GDPR_SLETTING";
       return (
         <div className="pa-a2-handling">
-          <Knapp
-            variant="secondary"
-            fullWidth
-            onClick={() => lukkSak(m.id, "Innlegget er beholdt", "VARSELET ER LUKKET")}
-          >
-            Behold innlegget
+          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(m.id, { type: "moderering-godkjenn", id: m.id }, "Saken er godkjent")}>
+            {gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}
           </Knapp>
-          <Knapp
-            variant="signal"
-            fullWidth
-            icon={Trash2}
-            onClick={() => setFjernDialogApen(true)}
-          >
-            Fjern innlegget
+          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(m.id, { type: "moderering-avvis", id: m.id }, "Saken er avvist")}>
+            Avvis
           </Knapp>
         </div>
       );
     }
 
-    if (fane === "epost") {
-      const ep = sak as EpostSak;
-      const notat = epostNotat[ep.id] ?? ep.note ?? "";
-      return (
-        <div className="pa-a2-handling">
-          <Knapp
-            fullWidth
-            icon={Send}
-            disabled={!notat.trim()}
-            onClick={() => lukkSak(ep.id, "E-posten er sendt", `TIL ${ep.to.toUpperCase()} · ${ep.tpl}`)}
-          >
-            Send e-post
-          </Knapp>
-          <Knapp
-            variant="ghost"
-            fullWidth
-            onClick={() => avvisSak(ep.id, "Utkastet er forkastet", "INGEN E-POST SENDT")}
-          >
-            Forkast
-          </Knapp>
-        </div>
-      );
-    }
-
+    // E-postutkast har ingen sende-action ennå: ingen knapp som later som.
     return null;
   }
 
@@ -791,19 +607,11 @@ export function AG02Ko({
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <Faner faner={fanerKonfig} value={fane} onChange={(f) => { setFane(f as keyof AG02Data); setValgtId(null); }} />
-        <Knapp
-          variant="secondary"
-          size="sm"
-          icon={ArrowUpDown}
-          onClick={() => setSorterPrio((prev) => !prev)}
-        >
-          {sorterPrio ? "Ferdig med sortering" : "Sorter prioritet"}
-        </Knapp>
       </div>
 
       {varselTekst && (
         <div
-          role="status"
+          role={varselTekst.feil ? "alert" : "status"}
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -815,7 +623,7 @@ export function AG02Ko({
           }}
         >
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <Ikon icon={CheckCircle2} size={18} />
+            <Ikon icon={varselTekst.feil ? TriangleAlert : CheckCircle2} size={18} />
             <span style={{ font: "var(--type-body-s)", color: "var(--text-primary)" }}>{varselTekst.tittel}</span>
             {varselTekst.meta && <Meta>· {varselTekst.meta}</Meta>}
           </div>
@@ -912,15 +720,15 @@ export function AG02Ko({
         </Ark>
       )}
 
-      {/* Bekreftelsesdialog for fjerning av innlegg */}
-      {fjernDialogApen && (
+      {/* Bekreftelsesdialog for destruktive handlinger */}
+      {bekreft && (
         <div className="pa-sheet-layer" role="presentation">
-          <div className="pa-sheet-scrim" onClick={() => setFjernDialogApen(false)} />
+          <div className="pa-sheet-scrim" onClick={() => setBekreft(null)} />
           <div
             className="pa-card"
             role="alertdialog"
             aria-modal="true"
-            aria-label="Fjerne innlegget?"
+            aria-label={bekreft.tittel}
             style={{
               position: "fixed",
               top: "50%",
@@ -936,22 +744,22 @@ export function AG02Ko({
               boxShadow: "var(--shadow-modal)",
             }}
           >
-            <h3 style={{ margin: 0, font: "var(--type-title-s)", color: "var(--text-primary)" }}>Fjerne innlegget?</h3>
-            <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)" }}>
-              Innlegget slettes permanent for alle deltakere i gruppen. Dette kan ikke angres.
-            </p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
-              <Knapp variant="ghost" onClick={() => setFjernDialogApen(false)}>
+            <h3 style={{ margin: 0, font: "var(--type-title-s)", color: "var(--text-primary)" }}>{bekreft.tittel}</h3>
+            <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)" }}>{bekreft.tekst}</p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", flexWrap: "wrap" }}>
+              <Knapp variant="ghost" onClick={() => setBekreft(null)}>
                 Avbryt
               </Knapp>
               <Knapp
                 variant="signal"
+                disabled={pending}
                 onClick={() => {
-                  setFjernDialogApen(false);
-                  if (aktivSak) avvisSak(aktivSak.id, "Innlegget er fjernet", "VARSLER ER SENDT");
+                  const b = bekreft;
+                  setBekreft(null);
+                  kjor(b.id, b.handling, b.melding);
                 }}
               >
-                Fjern innlegg
+                {bekreft.knapp}
               </Knapp>
             </div>
           </div>
