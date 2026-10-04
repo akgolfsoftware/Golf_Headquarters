@@ -290,6 +290,7 @@ const PRECISION_VISNING = [
   ["AG17Turneringer", "Turneringer-siden monterer AG17Turneringer i AgencyOSSkall i Precision Athletics. Alle turneringer, mine spillere, skjematisk kart over Sør-Norge, dubletter og opprettelse samlet på én adresse. Målt i Playwright med 40/40 tilfeller uten avvik på 390 px og 1440 px."],
   ["AG18TrackManVideo", "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px."],
   ["AG19CaddieHub", "Caddie og Jarvis monterer AG19CaddieHub i AgencyOSSkall i Precision Athletics. Agentkø, prosjekter, skills og Caddie-samtale med kilder samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px."],
+  ["AG21Oppgaver", "Oppgaver og rutiner monterer AG21Oppgaver i AgencyOSSkall i Precision Athletics. Mine oppgaver med avkryssing, prosjekter med fremdrift, faste rutiner og toveis Notion-synk samlet på én adresse. Målt i Playwright med 35/35 tilfeller uten avvik på 390 px og 1440 px."],
 ];
 
 function merkVisning(row, source) {

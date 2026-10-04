@@ -14,6 +14,7 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG19CaddieHub } from "@/components/admin/precision/AG19CaddieHub";
+import { velgJarvisFane } from "@/lib/admin/jarvis/faner";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Caddie · Jarvis · AgencyOS" };
@@ -25,10 +26,11 @@ export default async function JarvisPage({
 }) {
   const user = await requireCapability(Capability.USE_AGENTS);
   const { fane } = await searchParams;
+  const aktiv = velgJarvisFane(fane);
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG19CaddieHub startFane={fane} />
+      <AG19CaddieHub startFane={aktiv} />
     </AgencyOSSkall>
   );
 }
