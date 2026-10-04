@@ -211,54 +211,60 @@ export function PH26UtenforBanen({
       </div>
 
       {/* Fanevelger (Segmented 5 faner) */}
-      <div
-        role="tablist"
-        aria-label="Utenfor banen moduler"
-        style={{
-          display: "flex",
-          gap: 6,
-          background: "var(--surface-card)",
-          padding: 4,
-          borderRadius: 10,
-          border: "1px solid var(--border-subtle)",
-          overflowX: "auto",
-        }}
-      >
-        {[
-          { key: "fys", label: "FYS-økt" },
-          { key: "utf", label: "Utfordringer" },
-          { key: "putt", label: "Putte-lab" },
-          { key: "turn", label: "Turneringer" },
-          { key: "digest", label: "Ukesdigest" },
-        ].map((tab) => {
-          const aktiv = fane === tab.key;
-          return (
-            <button
-              key={tab.key}
-              role="tab"
-              aria-selected={aktiv}
-              type="button"
-              onClick={() => setFane(tab.key as PH26Fane)}
-              style={{
-                all: "unset",
-                cursor: "pointer",
-                padding: "8px 14px",
-                borderRadius: 7,
-                font: "600 13px/1.2 var(--font-sans)",
-                color: aktiv ? "var(--text-primary)" : "var(--text-secondary)",
-                background: aktiv ? "var(--surface-page, var(--surface-card))" : "transparent",
-                boxShadow: aktiv ? "0 1px 3px var(--shadow-surface, transparent)" : "none",
-                whiteSpace: "nowrap",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 38,
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+      <div style={{ width: "100%", overflowX: "hidden" }}>
+        <div
+          role="tablist"
+          aria-label="Utenfor banen moduler"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            background: "var(--surface-card)",
+            padding: 4,
+            borderRadius: 10,
+            border: "1px solid var(--border-subtle)",
+            boxSizing: "border-box",
+            maxWidth: "100%",
+          }}
+        >
+          {[
+            { key: "fys", label: "FYS-økt" },
+            { key: "utf", label: "Utfordringer" },
+            { key: "putt", label: "Putte-lab" },
+            { key: "turn", label: "Turneringer" },
+            { key: "digest", label: "Ukesdigest" },
+          ].map((tab) => {
+            const aktiv = fane === tab.key;
+            return (
+              <button
+                key={tab.key}
+                role="tab"
+                aria-selected={aktiv}
+                type="button"
+                onClick={() => setFane(tab.key as PH26Fane)}
+                style={{
+                  cursor: "pointer",
+                  padding: "10px 14px",
+                  borderRadius: 7,
+                  font: "600 13px/1.2 var(--font-sans)",
+                  color: aktiv ? "var(--text-primary)" : "var(--text-secondary)",
+                  background: aktiv ? "var(--surface-page, var(--surface-card))" : "transparent",
+                  boxShadow: aktiv ? "0 1px 3px var(--shadow-surface, transparent)" : "none",
+                  border: aktiv ? "1px solid var(--border-subtle)" : "1px solid transparent",
+                  whiteSpace: "nowrap",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 44,
+                  minWidth: 44,
+                  boxSizing: "border-box",
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Fane 1: FYS-økt */}
@@ -298,17 +304,38 @@ export function PH26UtenforBanen({
                       alignItems: "center",
                       gap: 12,
                       minHeight: 52,
+                      minWidth: 44,
                       borderTop: i ? "1px solid var(--border-hairline)" : "none",
                       cursor: "pointer",
                       padding: "4px 0",
+                      boxSizing: "border-box",
                     }}
                   >
                     <input
                       type="checkbox"
+                      className="pa-sr"
                       checked={gjort}
                       onChange={() => setFysFullfort((prev) => ({ ...prev, [i]: !prev[i] }))}
-                      style={{ width: 20, height: 20, accentColor: "var(--action-primary, var(--text-primary))", cursor: "pointer" }}
                     />
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: 5,
+                        border: `1.5px solid ${gjort ? "var(--action-primary, var(--text-primary))" : "var(--border-strong)"}`,
+                        background: gjort ? "var(--action-primary, var(--text-primary))" : "transparent",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "var(--surface-card)",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {gjort ? "✓" : ""}
+                    </span>
                     <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                       <span style={{ font: "500 14px/1.3 var(--font-sans)", color: gjort ? "var(--text-muted)" : "var(--text-primary)", textDecoration: gjort ? "line-through" : "none" }}>
                         {ovelse.navn}
@@ -452,13 +479,18 @@ export function PH26UtenforBanen({
                       onClick={() => setNyVinner(opt)}
                       style={{
                         flex: 1,
-                        height: 38,
+                        minHeight: 44,
+                        minWidth: 44,
                         borderRadius: 6,
                         border: `1px solid ${nyVinner === opt ? "var(--border-strong)" : "var(--border-subtle)"}`,
                         background: nyVinner === opt ? "var(--surface-sunken)" : "transparent",
                         color: "var(--text-primary)",
                         font: "600 12px/1 var(--font-sans)",
                         cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxSizing: "border-box",
                       }}
                     >
                       {opt}
@@ -477,13 +509,18 @@ export function PH26UtenforBanen({
                       onClick={() => setNyEnhet(u)}
                       style={{
                         flex: 1,
-                        height: 38,
+                        minHeight: 44,
+                        minWidth: 44,
                         borderRadius: 6,
                         border: `1px solid ${nyEnhet === u ? "var(--border-strong)" : "var(--border-subtle)"}`,
                         background: nyEnhet === u ? "var(--surface-sunken)" : "transparent",
                         color: "var(--text-primary)",
                         font: "600 12px/1 var(--font-sans)",
                         cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxSizing: "border-box",
                       }}
                     >
                       {u}
@@ -503,44 +540,114 @@ export function PH26UtenforBanen({
                   display: "flex",
                   flexDirection: "column",
                   gap: 4,
-                  maxHeight: 160,
+                  maxHeight: 180,
                   overflowY: "auto",
                   border: `1px solid ${provdOpprett && Object.values(valgteDeltakere).filter(Boolean).length === 0 ? "var(--signal-warn, var(--border-strong))" : "var(--border-subtle)"}`,
                   borderRadius: 8,
-                  padding: 8,
+                  padding: "4px 8px",
                 }}
               >
                 {(venner.length > 0 ? venner : [
                   { id: "v1", name: "Mats Ege" },
                   { id: "v2", name: "Henrik Norlander" },
                   { id: "v3", name: "Celine Borge" },
-                ]).map((v) => (
-                  <label key={v.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, cursor: "pointer", padding: "4px 0" }}>
-                    <input
-                      type="checkbox"
-                      checked={!!valgteDeltakere[v.name]}
-                      onChange={() => setValgteDeltakere((prev) => ({ ...prev, [v.name]: !prev[v.name] }))}
-                      style={{ accentColor: "var(--action-primary, var(--text-primary))", cursor: "pointer" }}
-                    />
-                    <span style={{ color: "var(--text-primary)" }}>{v.name}</span>
-                  </label>
-                ))}
+                ]).map((v) => {
+                  const valgt = !!valgteDeltakere[v.name];
+                  return (
+                    <label
+                      key={v.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        fontSize: 13,
+                        cursor: "pointer",
+                        minHeight: 44,
+                        minWidth: 44,
+                        boxSizing: "border-box",
+                        padding: "0 4px",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        className="pa-sr"
+                        checked={valgt}
+                        onChange={() => setValgteDeltakere((prev) => ({ ...prev, [v.name]: !prev[v.name] }))}
+                      />
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 4,
+                          border: `1.5px solid ${valgt ? "var(--action-primary, var(--text-primary))" : "var(--border-strong)"}`,
+                          background: valgt ? "var(--action-primary, var(--text-primary))" : "transparent",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "var(--surface-card)",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {valgt ? "✓" : ""}
+                      </span>
+                      <span style={{ color: "var(--text-primary)" }}>{v.name}</span>
+                    </label>
+                  );
+                })}
                 {grupper.length > 0 && (
                   <>
                     <div style={{ font: "600 10px/1 var(--font-mono)", color: "var(--text-muted)", marginTop: 6, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                       Grupper
                     </div>
-                    {grupper.map((g) => (
-                      <label key={g.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, cursor: "pointer", padding: "4px 0" }}>
-                        <input
-                          type="checkbox"
-                          checked={!!valgteDeltakere[g.name]}
-                          onChange={() => setValgteDeltakere((prev) => ({ ...prev, [g.name]: !prev[g.name] }))}
-                          style={{ accentColor: "var(--action-primary, var(--text-primary))", cursor: "pointer" }}
-                        />
-                        <span style={{ color: "var(--text-primary)" }}>{g.name} · {g.antall} spillere</span>
-                      </label>
-                    ))}
+                    {grupper.map((g) => {
+                      const valgt = !!valgteDeltakere[g.name];
+                      return (
+                        <label
+                          key={g.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            fontSize: 13,
+                            cursor: "pointer",
+                            minHeight: 44,
+                            minWidth: 44,
+                            boxSizing: "border-box",
+                            padding: "0 4px",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            className="pa-sr"
+                            checked={valgt}
+                            onChange={() => setValgteDeltakere((prev) => ({ ...prev, [g.name]: !prev[g.name] }))}
+                          />
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: 4,
+                              border: `1.5px solid ${valgt ? "var(--action-primary, var(--text-primary))" : "var(--border-strong)"}`,
+                              background: valgt ? "var(--action-primary, var(--text-primary))" : "transparent",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: "var(--surface-card)",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {valgt ? "✓" : ""}
+                          </span>
+                          <span style={{ color: "var(--text-primary)" }}>{g.name} · {g.antall} spillere</span>
+                        </label>
+                      );
+                    })}
                   </>
                 )}
               </div>
@@ -657,13 +764,19 @@ export function PH26UtenforBanen({
                         type="button"
                         onClick={() => handleAvsluttUtfordring(c.id)}
                         style={{
-                          padding: "6px 12px",
+                          minHeight: 44,
+                          minWidth: 44,
+                          padding: "10px 14px",
                           borderRadius: 6,
                           border: "1px solid var(--border-strong)",
                           background: "var(--surface-card)",
                           color: "var(--text-primary)",
                           font: "600 12px/1 var(--font-sans)",
                           cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxSizing: "border-box",
                         }}
                       >
                         Avslutt utfordring
@@ -799,13 +912,19 @@ export function PH26UtenforBanen({
                       type="button"
                       onClick={() => setStimp(s)}
                       style={{
-                        padding: "6px 12px",
+                        minHeight: 44,
+                        minWidth: 44,
+                        padding: "10px 14px",
                         borderRadius: 6,
                         border: `1px solid ${stimp === s ? "var(--border-strong)" : "var(--border-subtle)"}`,
                         background: stimp === s ? "var(--surface-sunken)" : "transparent",
                         color: "var(--text-primary)",
                         font: "600 13px/1 var(--font-mono)",
                         cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxSizing: "border-box",
                       }}
                     >
                       {s}
@@ -901,13 +1020,19 @@ export function PH26UtenforBanen({
                             showToast(`Du er påmeldt: ${t.navn}`);
                           }}
                           style={{
-                            padding: "6px 14px",
+                            minHeight: 44,
+                            minWidth: 44,
+                            padding: "10px 16px",
                             borderRadius: 6,
                             border: "1px solid var(--border-strong)",
                             background: "transparent",
                             color: "var(--text-primary)",
                             font: "600 12px/1 var(--font-sans)",
                             cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxSizing: "border-box",
                           }}
                         >
                           Meld på
@@ -1019,13 +1144,17 @@ export function PH26UtenforBanen({
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                padding: "8px 14px",
+                justifyContent: "center",
+                minHeight: 44,
+                minWidth: 44,
+                padding: "10px 16px",
                 borderRadius: 8,
                 border: "1px solid var(--border-strong)",
                 background: "transparent",
                 color: "var(--text-primary)",
                 font: "600 13px/1 var(--font-sans)",
                 textDecoration: "none",
+                boxSizing: "border-box",
               }}
             >
               Åpne ukeplan
@@ -1035,13 +1164,17 @@ export function PH26UtenforBanen({
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                padding: "8px 14px",
+                justifyContent: "center",
+                minHeight: 44,
+                minWidth: 44,
+                padding: "10px 16px",
                 borderRadius: 8,
                 border: "1px solid var(--border-subtle)",
                 background: "var(--surface-card)",
                 color: "var(--text-secondary)",
                 font: "600 13px/1 var(--font-sans)",
                 textDecoration: "none",
+                boxSizing: "border-box",
               }}
             >
               Se full statistikk
