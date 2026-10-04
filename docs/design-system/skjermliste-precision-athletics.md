@@ -1,4 +1,4 @@
-> **Status 04.10.2026:** Claude Code eier implementeringen (tok over etter Codex og Gemini). Porteringskø: [design-handoff/regler/claude-code.md](../design-handoff/regler/claude-code.md). **Bare PH-01 er visuelt godkjent av Anders.** Alle andre skjermer er kandidater til Anders har sett dem i appen. Kilde for denne lista: [design-handoff/regler/skjermliste.md](../design-handoff/regler/skjermliste.md) (IA 28.09 og IUP-radene 04.10). Beslutning: [beslutninger.md](../../.claude/rules/beslutninger.md) §PRECISION ATHLETICS.
+> **Status 04.10.2026:** Claude Code eier implementeringen (tok over etter Codex og Gemini). Porteringskø: [design-handoff/regler/claude-code.md](../design-handoff/regler/claude-code.md). **Godkjent av Anders: PH-01 (visuelt) og PH-IUP-01 (for lansering, 04.10).** Alle andre skjermer er kandidater til Anders har sett dem i appen. Kilde for denne lista: [design-handoff/regler/skjermliste.md](../design-handoff/regler/skjermliste.md) (IA 28.09 og IUP-radene 04.10). Beslutning: [beslutninger.md](../../.claude/rules/beslutninger.md) §PRECISION ATHLETICS.
 
 # Skjermliste — AK Golf Precision Athletics (26.09.2026 · IA 28.09.2026)
 
