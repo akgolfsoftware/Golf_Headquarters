@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "9f92e0ae85a363a4d893525bb0e6d1799474d9e4",
+  "kodeversjon": "d78a50e4a5f9e7f79cbae3cf7242eab6a6920444",
   "inventar": {
     "pageFiles": 529,
     "uniqueRoutePatterns": 529,
-    "componentFiles": 868,
+    "componentFiles": 869,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -7816,19 +7816,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Oppsett monterer AG23Oppsett i AgencyOSSkall i Precision Athletics. Åtte faner (profil, team og tilgang, invitasjoner, eksterne trenere, varsler, integrasjoner, markedsføring og virksomhet) samlet på én adresse. Målt i Playwright med 55/55 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-23 Oppsett er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-23"
     },
     {
       "screenId": "VIDERESENDING",
@@ -8536,13 +8538,13 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Oppsett monterer AG23Oppsett i AgencyOSSkall i Precision Athletics. Åtte faner (profil, team og tilgang, invitasjoner, eksterne trenere, varsler, integrasjoner, markedsføring og virksomhet) samlet på én adresse. Målt i Playwright med 55/55 tilfeller uten avvik på 390 px og 1440 px.",
       "avvik": [
-        "Kodekommentaren sier AG-18. Skjermlisten sier AG-23. Kommentaren er opphav, ikke en ny godkjenning."
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-23 Oppsett er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
@@ -8550,7 +8552,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "AG-18"
+      "kodekommentar": "AG-23"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23316,10 +23318,10 @@
   ],
   "tellinger": {
     "sidefiler": 529,
-    "medAvvik": 161,
+    "medAvvik": 162,
     "valgtForBygging": 283,
     "utenEksaktType": 12,
-    "implementert": 134,
+    "implementert": 136,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
