@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "dc5ca36e73c2b3dc41bc220844f9c2f6ce631eb4",
+  "kodeversjon": "f1f8599002b2f0ec3cfa4762e1fdf63c27334718",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 851,
+    "componentFiles": 853,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -13503,19 +13503,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Runde live merker PH08RundeLive i Precision Athletics (nattmodus/fokus). Hull 1-18, brutto score, slag- og putteregistrering etter Claude Design PH-08.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-08 Runde live er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-08"
     },
     {
       "screenId": "PH-09",
@@ -13546,19 +13548,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Registrer runde merker PH09RegistrerRunde i Precision Athletics. Hull 1-9 Ut og 10-18 Inn, HoleCell og brutto score oppsummering etter Claude Design PH-09.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-09 Registrer runde er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-09"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23245,10 +23249,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 147,
+    "medAvvik": 149,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 120,
+    "implementert": 122,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
