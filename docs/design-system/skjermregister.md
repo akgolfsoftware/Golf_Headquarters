@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 283 |
+| tegnet-skjermtype | 284 |
 | videresending | 164 |
-| teknisk-forklaring | 31 |
+| teknisk-forklaring | 30 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-283 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 161 rader har et registrert avvik. 135 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 11 rader har ingen eksakt type. 161 rader har et registrert avvik. 135 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -51,14 +51,13 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
-| `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/meg/deling/innsyn` | UTEN-TEGNET-TYPE | PH-24 Meg |
-| `/portal/meg/deling` | UTEN-TEGNET-TYPE | PH-24 Meg |
+| `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/meg/deling/innsyn` | UTEN-TEGNET-TYPE | PH-27 Deling |
 | `/portal/samlinger` | UTEN-TEGNET-TYPE | — |
-| `/portal/tren/teknisk-plan` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
+| `/portal/tren/teknisk-plan` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
 | `/team-norway/analyse` | TN-UTEN-RAD | — |
 | `/team-norway/fagapparat` | TN-UTEN-RAD | — |
 | `/team-norway/fellestesting/[deltakerId]` | TN-UTEN-RAD | — |

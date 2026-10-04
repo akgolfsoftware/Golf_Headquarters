@@ -17,7 +17,7 @@ test("dynamic segment names do not have to match, and an exact type beats a pref
   assert.equal(bestMatch("/innsyn/talent/discovery", PRECISION_TYPER).type.id, "AG-22");
   assert.equal(bestMatch("/stats/pga/spillere/[dg_id]", PRECISION_TYPER).type.id, "ST-03");
   assert.equal(bestMatch("/stats/pga/drive-distance", PRECISION_TYPER).type.id, "ST-05");
-  assert.equal(PRECISION_TYPER.length, 74);
+  assert.equal(PRECISION_TYPER.length, 77);
 });
 
 test("auth redirects are not screens, and a screen may import redirect", () => {
@@ -29,7 +29,7 @@ test("auth redirects are not screens, and a screen may import redirect", () => {
 
 test("every current page file gets an explanation and an owner", () => {
   const register = buildRegister(process.cwd());
-  assert.equal(register.presisjon.skjermtyper, 74);
+  assert.equal(register.presisjon.skjermtyper, 77);
   assert.equal(register.sider.length, register.inventar.pageFiles);
   assert.equal(new Set(register.sider.map((row) => row.kildefil)).size, register.sider.length);
   for (const row of register.sider) {
@@ -42,6 +42,10 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/portal").status.valgtForBygging, true);
   assert.equal(byRoute.get("/portal").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal").kontrollbevis, /PH01IDag/);
+  assert.equal(byRoute.get("/admin/ko").screenId, "AG-02");
+  assert.equal(byRoute.get("/admin/ko").status.valgtForBygging, false);
+  assert.match(byRoute.get("/admin/ko").forklaring, /utgår i IA 28\.09\.2026/);
+  assert.match(byRoute.get("/admin/spillere").forklaring, /Bare PH-01 er visuelt godkjent/);
   assert.equal(byRoute.get("/admin").kobling, "videresending");
   assert.equal(byRoute.get("/team-gfgk").screenId, "AVSLATT");
   assert.equal(byRoute.get("/").screenId, "MK-FORSIDE");

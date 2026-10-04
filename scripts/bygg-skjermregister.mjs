@@ -434,9 +434,11 @@ export function buildRegister(root) {
       row.komponentmonster = precisionHit.monster;
       row.handlinger = type.maVise;
       row.formater = formater(type.natt);
-      row.status.uiUtkast = true;
-      row.status.valgtForBygging = true;
-      row.forklaring = `${type.id} ${type.navn} er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.`;
+      row.status.uiUtkast = !type.utgar;
+      row.status.valgtForBygging = !type.utgar;
+      row.forklaring = type.utgar
+        ? `${type.id} ${type.navn} utgår i IA 28.09.2026. Funksjonen hører hjemme i ${type.utgar}. Skjermen skal ikke bygges.`
+        : `${type.id} ${type.navn} er valgt skjermtype i skjermlisten (IA 28.09.2026). ${type.id === "PH-01" ? "PH-01 er visuelt godkjent av Anders." : "Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen."} Denne ruten er ikke kontrollert i appen i D01.`;
       if (commentPrecision && commentPrecision !== type.id) {
         row.avvik.push(`Kodekommentaren sier ${commentPrecision}. Skjermlisten sier ${type.id}. Kommentaren er opphav, ikke en ny godkjenning.`);
       }
