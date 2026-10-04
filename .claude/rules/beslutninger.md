@@ -21,6 +21,27 @@ Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `reg
 
 **Arbeidet dette utløser:** porteringskøen i `docs/design-handoff/regler/claude-code.md`, punkt 1–12. Juridisk avklaring av automatisk trenerinnsyn før `navngittTrenerHarTilgang` endres.
 
+## LANSERING 05.10: SEKS AG-SKJERMER BEHOLDES, MARKEDSSIDENE FÅR PRECISION (Anders 04.10.2026, bindende)
+
+Anders 04.10 kl. 23: «De skal med. Så tar vi det heller bort igjen.» Og bestilling om at PlayerHQ,
+AgencyOS, markedssidene og innloggingen skal være lanseringsklare med riktig design 05.10.
+
+- **AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video, AG-21 Oppgaver, AG-22 Innsikt og talent
+  og AG-24 Drift beholdes** som egne skjermer i Precision, selv om IA 28.09 sa at de utgår. De kan
+  fjernes senere. PH-26 Utenfor banen er fortsatt utgått og sender til Meg.
+- **Markedssidene får Precision Athletics** (Anders 04.10: «Bytt til Precision»). Det finnes ingen
+  tegninger for dem, så de bygges med Precision-komponentene og blir kandidater til Anders har sett dem.
+- **Lansering** betyr at hovedveiene virker og følger designet, og at ingen side krasjer, ruller sidelengs
+  eller viser demodata. Port 7 (Anders har sett skjermen) gjøres fra morgenrapporten.
+- IUP-køen (PH-IUP-02 og videre) kommer etter lanseringen.
+
+**Overstyrer:** «Markedssidene venter» (23.09) under §PRECISION ATHLETICS, og «Utgår 28.09» for de
+seks AG-skjermene i skjermlisten.
+
+**Arbeidet dette utløser:** nattkjøring 04.–05.10 etter planen i økten: samle ferdige grener,
+maskinsjekk av alle sider, rette røde funn med hovedveiene først, markedssidene til Precision,
+prøvekjøring og morgenrapport.
+
 ## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
 
 Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at

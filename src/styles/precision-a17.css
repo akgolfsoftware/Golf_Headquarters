@@ -1,0 +1,146 @@
+/*
+ * Precision Athletics — Turneringer (AG-17).
+ * CSS for AG17Turneringer: layout, kartvisning, tabeller og dubletter.
+ * Kun semantiske variabler fra precision-athletics.css. Ingen hex-farger.
+ */
+
+.pa-a17-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pa-a17-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+  align-items: start;
+}
+
+@media (min-width: 1025px) {
+  .pa-a17-layout {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Skjematisk kart over Sør-Norge */
+.pa-a17-kart-beholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--surface-flat);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background-image:
+    repeating-linear-gradient(to right, var(--border-hairline) 0 1px, transparent 1px 25%),
+    repeating-linear-gradient(to bottom, var(--border-hairline) 0 1px, transparent 1px 25%);
+}
+
+.pa-a17-kart-punkt {
+  all: unset;
+  cursor: pointer;
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.pa-a17-kart-punkt:hover,
+.pa-a17-kart-punkt:focus-visible {
+  transform: scale(1.15);
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.pa-a17-kart-prikk {
+  border-radius: 999px;
+  transition: width var(--dur-fast), height var(--dur-fast);
+}
+
+.pa-a17-kart-prikk--mine {
+  background: var(--primary);
+  border: 2px solid var(--border-ink);
+}
+
+.pa-a17-kart-prikk--andre {
+  background: var(--surface-card);
+  border: 2px solid var(--border-ink);
+}
+
+.pa-a17-kart-forklaring {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.pa-a17-kart-tegn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Detaljpanel */
+.pa-a17-detalj {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+/* Data Golf boks */
+.pa-a17-dg-boks {
+  padding: 12px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-flat);
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pa-a17-dg-badge {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+}
+
+/* Dublett-kort */
+.pa-a17-dup-par {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  .pa-a17-dup-par {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pa-a17-dup-boks {
+  padding: 12px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

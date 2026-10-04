@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "10077f46091106f60d1a563107192682d18f5279",
+  "kodeversjon": "a15afaa07e148ac581df7e3f400239426c3d3fc9",
   "inventar": {
-    "pageFiles": 530,
-    "uniqueRoutePatterns": 530,
-    "componentFiles": 866,
-    "surfaceFiles": 249,
+    "pageFiles": 532,
+    "uniqueRoutePatterns": 532,
+    "componentFiles": 880,
+    "surfaceFiles": 251,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -14,11 +14,11 @@
       "agencyos": 166,
       "inngang-og-konto": 19,
       "forelder": 16,
-      "lag-og-skole": 51,
+      "lag-og-skole": 52,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 182
+      "playerhq": 183
     }
   },
   "presisjon": {
@@ -7567,19 +7567,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Kø-siden monterer AG02Ko i AgencyOSSkall i Precision Athletics. Godkjenninger, agentkø, tester, dubletter, moderering og e-post samlet på én adresse. Målt i Playwright med 45/45 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-02 Kø utgår i IA 28.09.2026. Funksjonen hører hjemme i AG-04 Innboks › Godkjenn. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-02"
     },
     {
       "screenId": "AG-04",
@@ -8676,19 +8678,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video utgår i IA 28.09.2026. Funksjonen hører hjemme i AG-08 Spiller 360 › Samtaler. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "VIDERESENDING",
@@ -10414,19 +10418,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video utgår i IA 28.09.2026. Funksjonen hører hjemme i AG-08 Spiller 360 › Samtaler. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "VIDERESENDING",
@@ -10499,19 +10505,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Turneringer-siden monterer AG17Turneringer i AgencyOSSkall i Precision Athletics. Alle turneringer, mine spillere, skjematisk kart over Sør-Norge, dubletter og opprettelse samlet på én adresse. Målt i Playwright med 40/40 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-17 Turneringer utgår i IA 28.09.2026. Funksjonen hører hjemme i Workbench og Plan. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-17"
     },
     {
       "screenId": "VIDERESENDING",
@@ -10626,19 +10634,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "TrackMan og video monterer AG18TrackManVideo i AgencyOSSkall i Precision Athletics. Økter på tvers av spillere, videogalleri for analyse og to-kamera opptaksstudio samlet på én adresse. Målt i Playwright med 30/30 tilfeller uten avvik på 390 px og 1440 px.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-18 TrackMan og video utgår i IA 28.09.2026. Funksjonen hører hjemme i AG-08 Spiller 360 › Samtaler. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-18"
     },
     {
       "screenId": "AG-11",
@@ -16775,6 +16785,49 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "PH-02"
+    },
+    {
+      "screenId": "PH-IUP-01",
+      "rute": "/portal/iup/fireukerssjekk",
+      "kildefil": "src/app/portal/iup/fireukerssjekk/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/iup/fireukerssjekk",
+      "handlinger": "Prosessmål, sju områder IUP 2027 med skala 1–5, autolagring, lever, levert. Bare WANG-/TN-gruppe",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-IUP-01 Fireukerssjekk er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "PH-10",
@@ -23269,6 +23322,49 @@
       "kodekommentar": null
     },
     {
+      "screenId": "WANG-UTEN-RAD",
+      "rute": "/team-wang/skjermer",
+      "kildefil": "src/app/team-wang/skjermer/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "elev-eller-trener",
+      "designkilde": "designsystem/wang/SKJERMREGISTER.md",
+      "designversjon": "wang-lokalt-35-ikke-59-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "VIDERESENDING",
       "rute": "/team-wang/toppidrett",
       "kildefil": "src/app/team-wang/toppidrett/page.tsx",
@@ -23357,18 +23453,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 530,
-    "medAvvik": 161,
-    "valgtForBygging": 249,
+    "sidefiler": 532,
+    "medAvvik": 166,
+    "valgtForBygging": 250,
     "utenEksaktType": 11,
-    "implementert": 135,
+    "implementert": 140,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 284,
+      "tegnet-skjermtype": 285,
       "videresending": 164,
-      "teknisk-forklaring": 30,
+      "teknisk-forklaring": 31,
       "byggeunderlag": 23
     },
     "screenId": {
@@ -23448,6 +23544,7 @@
       "PH-23": 9,
       "PH-21": 13,
       "PH-20": 3,
+      "PH-IUP-01": 1,
       "PH-10": 3,
       "PH-19": 9,
       "PH-25": 22,
@@ -23479,7 +23576,7 @@
       "TN-06": 1,
       "C5": 1,
       "C6": 1,
-      "WANG-UTEN-RAD": 2,
+      "WANG-UTEN-RAD": 3,
       "C7": 1,
       "A2": 1
     }

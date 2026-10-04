@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **530**. Unike rutemønstre i skanningen: 530. Komponentfiler: 866. Ramme- og tilstandsfiler: 249.
+Sidefiler med rute: **532**. Unike rutemønstre i skanningen: 532. Komponentfiler: 880. Ramme- og tilstandsfiler: 251.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -21,25 +21,25 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | forelder | 16 |
 | inngang-og-konto | 19 |
 | interne-eksempler | 6 |
-| lag-og-skole | 51 |
+| lag-og-skole | 52 |
 | marked-og-offentlig | 70 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
-| playerhq | 182 |
+| playerhq | 183 |
 | systemtilstand | 2 |
 
 ## Kobling
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 284 |
+| tegnet-skjermtype | 285 |
 | videresending | 164 |
-| teknisk-forklaring | 30 |
+| teknisk-forklaring | 31 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 11 rader har ingen eksakt type. 161 rader har et registrert avvik. 135 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 11 rader har ingen eksakt type. 166 rader har et registrert avvik. 140 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -76,6 +76,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/team-norway/workbench` | TN-UTEN-RAD | — |
 | `/team-wang/coach/tester` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/turneringer/[elevId]` | WANG-UTEN-RAD | — |
+| `/team-wang/skjermer` | WANG-UTEN-RAD | — |
 
 ## Kommentar mot liste
 
