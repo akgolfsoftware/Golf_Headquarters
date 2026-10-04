@@ -92,7 +92,7 @@ async function målBredde(
     if (KJENT_OVERFLYT.includes(skjerm.url)) continue;
     await page.goto(skjerm.url, { waitUntil: "load" });
     if (skjerm.url === "/auth/login") {
-      await expect(page.getByRole("heading", { name: "Logg inn på AK Golf HQ", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Logg inn", exact: true, level: 1 })).toBeVisible();
       await expect(page).toHaveURL(/\/auth\/login(?:[/?].*)?$/);
     } else {
       await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
