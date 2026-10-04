@@ -256,7 +256,7 @@ export function PH21Innboks({
       <SideHode
         kicker={`Innboks · ${data.coach?.name ?? "Anders Kristiansen"}`}
         title="Innboks"
-        sub="Hovedcoach · Fredrikstad GK. Meldinger, spørsmål, videoer og planer samlet."
+        sub="Meldinger, spørsmål, videoer og planer samlet."
         actions={
           <KnappLenke variant="secondary" icon={Sparkles} href="/portal/caddie">
             Spør Caddie
