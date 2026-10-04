@@ -67,9 +67,7 @@ export default async function BookingCoachPage({ params }: Props) {
   });
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
       <div className="pa-side">
       <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
       <BookingCoachV2
