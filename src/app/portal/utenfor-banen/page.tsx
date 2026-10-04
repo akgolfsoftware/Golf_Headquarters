@@ -5,7 +5,9 @@
  */
 
 import { redirect } from "next/navigation";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
-export default function UtenforBanenPage(): never {
+export default async function UtenforBanenPage() {
+  await requirePortalUser({ kreverTilgang: "FULL" });
   redirect("/portal/meg");
 }
