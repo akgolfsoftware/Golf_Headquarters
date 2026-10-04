@@ -283,6 +283,9 @@ const PRECISION_VISNING = [
   ["PH09RegistrerRunde", "Registrer runde merker PH09RegistrerRunde i Precision Athletics. Hull 1-9 Ut og 10-18 Inn, HoleCell og brutto score oppsummering etter Claude Design PH-09."],
   ["PH15TestGjennomfor", "Test gjennomfør merker PH15TestGjennomfor i Precision Athletics (nattmodus/fokus). Scorekort, avstands- og poengtasting etter Claude Design PH-15."],
   ["PH26UtenforBanen", "Utenfor banen merker PH26UtenforBanen i PlayerHQSkall. Fem faner (FYS-økt, Utfordringer, Putte-lab, Turneringer, Ukesdigest) etter Claude Design PH-26."],
+  ["PH24Meg", "Meg-hub merker PH24Meg i PlayerHQSkall. Profil, fasiliteter, bookinger, abonnement, foreldre, deling, helse, utstyr og coach etter Claude Design PH-24."],
+  ["PH24Profil", "Profil og personalia merker PH24Profil i PlayerHQSkall. Redigering, kontaktinfo og forbundsstatus etter Claude Design PH-24."],
+  ["PH24Utstyr", "Utstyr og bag merker PH24Utstyr i PlayerHQSkall. 14-køllers bagoversikt, gapping-trapp og spesifikasjoner etter Claude Design PH-24."],
 ];
 
 function merkVisning(row, source) {

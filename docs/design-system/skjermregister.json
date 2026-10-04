@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "242d1d06abd122a9fa31b7ee73fcedd36e65c4b2",
+  "kodeversjon": "89d7e6af980eb56084372e17449785e6b67a4c96",
   "inventar": {
     "pageFiles": 528,
     "uniqueRoutePatterns": 528,
-    "componentFiles": 859,
+    "componentFiles": 861,
     "surfaceFiles": 249,
     "byArea": {
       "interne-eksempler": 6,
@@ -18847,12 +18847,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Meg-hub merker PH24Meg i PlayerHQSkall. Profil, fasiliteter, bookinger, abonnement, foreldre, deling, helse, utstyr og coach etter Claude Design PH-24.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten 26.09.2026. Anders har godkjent Precision-skjermene som design. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -18894,7 +18896,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Profil merker PH24ProfilKort i PlayerHQSkall. lagreProfil og feltene er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Profil og personalia merker PH24Profil i PlayerHQSkall. Redigering, kontaktinfo og forbundsstatus etter Claude Design PH-24.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -18904,7 +18906,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "PH-24",
@@ -19071,7 +19073,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Utstyr merker PH24UtstyrBag i PlayerHQSkall. Lesevisning og redigering er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Utstyr og bag merker PH24Utstyr i PlayerHQSkall. 14-køllers bagoversikt, gapping-trapp og spesifikasjoner etter Claude Design PH-24.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -19081,7 +19083,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "VIDERESENDING",
@@ -23253,10 +23255,10 @@
   ],
   "tellinger": {
     "sidefiler": 528,
-    "medAvvik": 151,
+    "medAvvik": 152,
     "valgtForBygging": 282,
     "utenEksaktType": 12,
-    "implementert": 124,
+    "implementert": 125,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
