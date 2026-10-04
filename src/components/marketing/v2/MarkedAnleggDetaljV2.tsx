@@ -110,7 +110,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                       display: "block",
                       marginTop: 12,
                       fontFamily: "var(--tl-font-mono)",
-                      fontSize: 9.5,
+                      fontSize: 11,
                       fontWeight: 700,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",
@@ -134,7 +134,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                 display: "block",
                 marginBottom: 10,
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10,
+                fontSize: 11,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
                 color: "var(--tl-mute)",
@@ -199,7 +199,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
             <span
               style={{
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10.5,
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",

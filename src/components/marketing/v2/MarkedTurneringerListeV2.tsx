@@ -65,7 +65,7 @@ export function MarkedTurneringerListeV2({
             alignItems: "center",
             gap: 8,
             fontFamily: "var(--tl-font-mono)",
-            fontSize: 10.5,
+            fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
@@ -90,7 +90,7 @@ export function MarkedTurneringerListeV2({
       {norskeDenneUka.length > 0 && (
         <PkSek notop style={{ paddingBottom: 0 }}>
           <PkEyebrow>Nordmenn denne uka</PkEyebrow>
-          <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 10, marginTop: 14 }}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", paddingBottom: 10, marginTop: 14 }}>
             {norskeDenneUka.map((e) => (
               <div key={e.id} className="pk-kort pk-kort-pad" style={{ flex: "none", minWidth: 220 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

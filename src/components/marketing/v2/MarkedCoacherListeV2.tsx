@@ -179,7 +179,7 @@ function CoachCard({ c }: { c: CoachKort }) {
             display: "inline-flex",
             alignItems: "center",
             fontFamily: "var(--tl-font-mono)",
-            fontSize: 10,
+            fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.05em",
             textTransform: "uppercase",

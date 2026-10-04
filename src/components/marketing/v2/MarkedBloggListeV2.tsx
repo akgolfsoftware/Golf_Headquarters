@@ -74,7 +74,7 @@ export function MarkedBloggListeV2({ posts }: { posts: BloggPostMeta[] }) {
                   <span
                     style={{
                       fontFamily: "var(--tl-font-mono)",
-                      fontSize: 9.5,
+                      fontSize: 11,
                       fontWeight: 700,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",

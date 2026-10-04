@@ -91,7 +91,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
                       >
                         <Icon name={f.isIndoor ? "building-2" : "sprout"} size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                         {f.name}
-                        <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                        <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 11, textTransform: "uppercase" }}>
                           {f.isIndoor ? "Inne" : "Ute"}
                         </span>
                       </div>
@@ -127,7 +127,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
                   >
                     <Icon name="building-2" size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                     {sted.navn} · {sted.by}
-                    <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                    <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 11, textTransform: "uppercase" }}>
                       Inne
                     </span>
                   </div>
