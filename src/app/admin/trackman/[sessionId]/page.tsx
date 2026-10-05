@@ -10,6 +10,10 @@
  * Avvik fra fasiten (docs/natt/T9-DONE.md): viser dominerende kølle for
  * denne økta (samme regel som portal-siden), ikke et multi-kølle-sammendrag
  * — TM-10s dispersion-hero er per kølle, ikke på tvers.
+ *
+ * Avvik:
+ *   - Viser dominerende kølle for økta, ikke multi-kølle-sammendrag (T9-DONE.md).
+ *   - Tilgang: økten åpnes bare for coach med tilgang til spilleren (05.10.2026).
  */
 
 import Link from "next/link";
