@@ -5,12 +5,11 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getBookingHubData } from "@/lib/portal-booking/hub-data";
-import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH23Booking } from "@/components/portal/precision/PH23Booking";
-import { mapHubDataToPH23, type PH23Service } from "@/lib/portal-booking/ph23-booking-data";
+import { hentPH23Data } from "@/lib/portal-booking/ph23-side-data";
 import { cancelBooking } from "./actions";
+import { bekreftPH23BookingAction, flyttPH23Booking, hentPH23Slots } from "@/app/portal/booking/ph23-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Mine bookinger · AK Golf" };
@@ -23,27 +22,7 @@ export default async function MineBookingerPage({ searchParams }: Props) {
   const { state } = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const [hub, dbServices] = await Promise.all([
-    getBookingHubData(user.id),
-    prisma.serviceType.findMany({
-      where: { active: true },
-      include: { coach: { select: { id: true, name: true } } },
-      orderBy: { durationMin: "asc" },
-    }),
-  ]);
-
-  const services: PH23Service[] = dbServices.map((s) => ({
-    id: s.id,
-    name: s.name,
-    min: s.durationMin,
-    coach: s.coach?.name ?? null,
-    coachId: s.coach?.id ?? null,
-    clip: s.priceOre === 0 || hub.credits.canUseCredits,
-    price: s.priceOre > 0 ? s.priceOre / 100 : null,
-    note: s.description ?? undefined,
-  }));
-
-  const bookingData = mapHubDataToPH23(hub, user.email ?? "spiller@akgolf.test", services);
+  const bookingData = await hentPH23Data(user);
 
   async function handleCancel(bookingId: string) {
     "use server";
@@ -58,6 +37,9 @@ export default async function MineBookingerPage({ searchParams }: Props) {
       <PH23Booking
         initialData={bookingData}
         state={visningsTilstand}
+        onConfirmBooking={bekreftPH23BookingAction}
+        onHentSlots={hentPH23Slots}
+        onRescheduleBooking={flyttPH23Booking}
         onCancelBooking={handleCancel}
       />
     </PlayerHQSkall>
