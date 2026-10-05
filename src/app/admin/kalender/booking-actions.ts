@@ -10,6 +10,7 @@
 
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere, coachedPlayerWhere } from "@/lib/auth/coached";
 import { opprettOktPaaTid } from "@/app/admin/(legacy)/calendar/actions";
 
 export interface BookingValg {
@@ -51,7 +52,8 @@ export async function hentBookingValg(): Promise<BookingValg> {
       orderBy: { name: "asc" },
     }),
     prisma.user.findMany({
-      where: { role: "PLAYER" },
+      // Ikke-coachede (leads) kan bookes av alle; coachede bare av egen coach (head coach: alle).
+      where: { role: "PLAYER", OR: [{ NOT: coachedPlayerWhere() }, coachScopedPlayerWhere(aktor)] },
       select: { id: true, name: true, email: true },
       orderBy: { name: "asc" },
       take: 500,

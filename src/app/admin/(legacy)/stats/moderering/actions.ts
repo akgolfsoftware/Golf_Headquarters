@@ -24,7 +24,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { requireAdminActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
@@ -74,7 +74,7 @@ async function hentSak(id: string) {
 
 /** OPEN → APPROVED. For GDPR-saker er dette steg 1 av 2 (utføres separat). */
 export async function godkjennSak(id: string) {
-  const user = await requireCoachActionUser();
+  const user = await requireAdminActionUser();
   const sakId = idSchema.parse(id);
   const sak = await hentSak(sakId);
 
@@ -109,7 +109,7 @@ export async function godkjennSak(id: string) {
 /** OPEN → REJECTED. Avvisnings-begrunnelsen logges i audit-loggen —
  *  sakens eget begrunnelse-felt (innmelderens tekst) røres ikke. */
 export async function avvisSak(id: string, begrunnelse?: string) {
-  const user = await requireCoachActionUser();
+  const user = await requireAdminActionUser();
   const sakId = idSchema.parse(id);
   const grunn = begrunnelseSchema.parse(begrunnelse);
   const sak = await hentSak(sakId);
@@ -150,7 +150,7 @@ export async function avvisSak(id: string, begrunnelse?: string) {
  * Relasjoner og treningsdata beholdes. deletedAt settes IKKE (se filhode).
  */
 export async function utforGdprSletting(id: string) {
-  const user = await requireCoachActionUser();
+  const user = await requireAdminActionUser();
   const sakId = idSchema.parse(id);
   const sak = await hentSak(sakId);
 
