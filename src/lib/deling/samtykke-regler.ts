@@ -102,23 +102,29 @@ export type DelingSamtykkeRad = {
  * Nyeste rad per (scope, mottakerGruppe) vinner; ingen rad = ikke samtykket.
  * Med `kreverForesatt` (mindreårig) teller KUN FORESATT-rader — en SELV-rad
  * fra en mindreårig verken gir eller «skygger for» et foresatt-samtykke.
- * (Trekk håndheves likevel av at foresattes egen nyeste rad vinner: en
- * FORESATT-rad med gitt=false stopper delingen.)
+ * Trekk virker for begge: en FORESATT-rad med gitt=false, eller en nyere
+ * SELV-rad med gitt=false fra spilleren selv (D-04, art. 7-3), stopper delingen.
  */
 export function harGyldigSamtykke(
   rader: readonly DelingSamtykkeRad[],
   krav: { scope: DelingScope; mottakerGruppeId: string; kreverForesatt: boolean },
 ): boolean {
   let nyeste: DelingSamtykkeRad | null = null;
+  let nyesteEgetTrekk = -Infinity;
   for (const rad of rader) {
     if (rad.scope !== krav.scope) continue;
     if (rad.mottakerGruppeId !== krav.mottakerGruppeId) continue;
-    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") continue;
+    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") {
+      // D-04: spilleren kan alltid trekke selv (art. 7-3).
+      if (!rad.gitt) nyesteEgetTrekk = Math.max(nyesteEgetTrekk, rad.createdAt.getTime());
+      continue;
+    }
     if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) {
       nyeste = rad;
     }
   }
-  return nyeste?.gitt === true;
+  if (!nyeste?.gitt) return false;
+  return nyesteEgetTrekk < nyeste.createdAt.getTime();
 }
 
 /** Kandidat i ekstern-leser-filtreringen — én spiller med sine rader. */
@@ -154,4 +160,31 @@ export function velgSamtykkedeSpillerePerGruppe(
     }
   }
   return resultat;
+}
+
+/**
+ * D-13 (05.10.2026): WANG-elevens svar på «Del testene med Team Norway».
+ * Omfanget er bare TEST_RESULTATER mot Team Norway-gruppen.
+ *
+ * - DELT: gyldig samtykke etter `harGyldigSamtykke` (under 16: bare FORESATT teller).
+ * - VENTER_PA_FORELDER: eleven under 16 har sagt ja selv, foresatt har ikke svart.
+ *   Elevens ja gir aldri tilgang alene.
+ * - IKKE_DELT: nyeste svar er nei («Ikke nå» eller trukket).
+ * - IKKE_SVART: ingen rad. Eleven får forespørselen.
+ */
+export type WangTnTestdelingStatus = "DELT" | "VENTER_PA_FORELDER" | "IKKE_DELT" | "IKKE_SVART";
+
+export function wangTnTestdelingStatus(
+  rader: readonly DelingSamtykkeRad[],
+  krav: { mottakerGruppeId: string; kreverForesatt: boolean },
+): WangTnTestdelingStatus {
+  if (harGyldigSamtykke(rader, { scope: "TEST_RESULTATER", ...krav })) return "DELT";
+  let nyeste: DelingSamtykkeRad | null = null;
+  for (const rad of rader) {
+    if (rad.scope !== "TEST_RESULTATER" || rad.mottakerGruppeId !== krav.mottakerGruppeId) continue;
+    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) nyeste = rad;
+  }
+  if (!nyeste) return "IKKE_SVART";
+  if (krav.kreverForesatt && nyeste.gitt && nyeste.gittAvRolle === "SELV") return "VENTER_PA_FORELDER";
+  return "IKKE_DELT";
 }

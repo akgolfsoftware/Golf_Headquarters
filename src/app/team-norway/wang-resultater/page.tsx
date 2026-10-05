@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 import { TnDataTable } from "@/components/team-norway/tn-data-table";
 import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand } from "@/components/team-norway/tn-shell";
@@ -32,9 +31,11 @@ export default async function WangTestresultaterForTnPage({
 }) {
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   const valg = await hentTnGruppeanalyseValg(bruker);
-  if (!valg || valg.kontekst.erSpiller) notFound();
+  // Gamle lenker uten tilgang viser «Ingen tilgang», aldri data.
+  if (!valg || valg.kontekst.erSpiller) return <IngenTilgang />;
+  // D-04/D-13: bare elever som har sagt ja til «Del testene med Team Norway».
   const skoler = await hentWangTestresultatSkolerForTeamNorway(bruker);
-  if (skoler.length === 0) notFound();
+  if (skoler.length === 0) return <IngenTilgang />;
 
   const { side: sideParam } = await searchParams;
   const ønsketSide = Math.max(1, Number.parseInt(sideParam ?? "1", 10) || 1);
@@ -81,17 +82,17 @@ export default async function WangTestresultaterForTnPage({
       <TnSidehode
         overlinje="Delte WANG-resultater"
         tittel="Testhistorikk på tvers av skoler"
-        ingress="Alle fullførte testresultater for spillere i aktive WANG-grupper. Tilgangen gjelder testresultater, ikke øvrige spilleropplysninger."
+        ingress="Fullførte testresultater fra WANG-elever som har sagt ja til å dele testene med Team Norway. Under 16 år har også forelder godkjent. Tilgangen gjelder bare testresultater."
       />
 
-      <TnSeksjon tittel="WANG-skoler" forklaring="Resultatene følger spillernes aktive skolegruppetilknytning.">
+      <TnSeksjon tittel="WANG-skoler" forklaring="Tallet er elever som deler testene sine nå. Trekker en elev delingen, forsvinner resultatene med en gang.">
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {skoler.map((skole) => (
             <span
               key={skole.groupId}
               style={{ padding: "8px 12px", border: `1px solid ${TN.borderSubtle}`, borderRadius: 999, background: TN.white, color: TN.navy800, fontSize: 13, fontWeight: TN.weight.semibold }}
             >
-              {skole.schoolName} · {skole.players.length} spillere
+              {skole.schoolName} · {skole.players.length} deler
             </span>
           ))}
         </div>
@@ -110,15 +111,16 @@ export default async function WangTestresultaterForTnPage({
             ]}
             rader={resultater.map((rad) => ({
               skole: (skolerForSpiller.get(rad.userId) ?? []).join(", "),
-              spiller: <Link href={`/team-norway/spiller/${rad.userId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.user.name ?? "Ukjent spiller"}</Link>,
+              // Bare testene er delt: ingen lenke til profilen.
+              spiller: rad.user.name ?? "Ukjent spiller",
               test: rad.test.name,
               resultat: formaterLagretTestResultat({ testId: rad.testId, score: rad.score, details: rad.details, protocol: rad.test.protocol }),
               dato: dato.format(rad.takenAt),
             }))}
-            empty="Ingen fullførte WANG-resultater ennå."
+            empty="Ingen delte WANG-resultater ennå."
           />
         ) : (
-          <TnTomtilstand tittel="Ingen registrerte testresultater ennå" tekst="Fullførte tester fra aktive WANG-spillere vises her." />
+          <TnTomtilstand tittel="Ingen delte testresultater ennå" tekst="Testene vises her når en WANG-elev har sagt ja til å dele dem med Team Norway." />
         )}
         {sisteSide > 1 && (
           <nav aria-label="Resultatsider" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16, color: TN.textSecondary, fontSize: TN.text.sm }}>
@@ -129,5 +131,14 @@ export default async function WangTestresultaterForTnPage({
         )}
       </TnSeksjon>
     </TnShell>
+  );
+}
+
+function IngenTilgang() {
+  return (
+    <main style={{ maxWidth: 560, margin: "64px auto", padding: "0 16px", color: TN.navy800 }}>
+      <h1 style={{ fontSize: 24, fontWeight: TN.weight.semibold, margin: 0 }}>Ingen tilgang</h1>
+      <p style={{ marginTop: 12, color: TN.textSecondary }}>Du har ikke tilgang til disse testresultatene.</p>
+    </main>
   );
 }

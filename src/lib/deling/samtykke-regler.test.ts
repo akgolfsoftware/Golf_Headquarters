@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 
 import {
   harGyldigSamtykke,
+  wangTnTestdelingStatus,
   velgSamtykkedeSpillerePerGruppe,
   erDelingScope,
   DELING_SAMTYKKE_TEKST,
@@ -317,5 +318,50 @@ describe("samtykke-kanon", () => {
       [...DELING_SCOPES].sort(),
       "Et scope uten samtykketekst gir en tom samtykkedialog",
     );
+  });
+});
+
+describe("D-04/D-13: WANG-elevens testdeling med Team Norway", () => {
+  const t = (time: number) => new Date(Date.UTC(2026, 9, 5, time));
+  const tn = { mottakerGruppeId: "tn" };
+
+  it("mindreårig kan trekke selv: nyere SELV-nei stopper forelderens ja", () => {
+    const rader = [
+      rad({ mottakerGruppeId: "tn", gittAvRolle: "FORESATT", gitt: true, createdAt: t(1) }),
+      rad({ mottakerGruppeId: "tn", gittAvRolle: "SELV", gitt: false, createdAt: t(2) }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, { scope: "TEST_RESULTATER", mottakerGruppeId: "tn", kreverForesatt: true }), false);
+    assert.equal(wangTnTestdelingStatus(rader, { ...tn, kreverForesatt: true }), "IKKE_DELT");
+  });
+
+  it("forelderens nye ja etter elevens trekk gjelder igjen", () => {
+    const rader = [
+      rad({ mottakerGruppeId: "tn", gittAvRolle: "SELV", gitt: false, createdAt: t(1) }),
+      rad({ mottakerGruppeId: "tn", gittAvRolle: "FORESATT", gitt: true, createdAt: t(2) }),
+    ];
+    assert.equal(wangTnTestdelingStatus(rader, { ...tn, kreverForesatt: true }), "DELT");
+  });
+
+  it("status: ikke svart, venter på forelder, delt og ikke delt", () => {
+    assert.equal(wangTnTestdelingStatus([], { ...tn, kreverForesatt: true }), "IKKE_SVART");
+    const elevJa = [rad({ mottakerGruppeId: "tn", gittAvRolle: "SELV", gitt: true, createdAt: t(1) })];
+    assert.equal(wangTnTestdelingStatus(elevJa, { ...tn, kreverForesatt: true }), "VENTER_PA_FORELDER");
+    assert.equal(wangTnTestdelingStatus(elevJa, { ...tn, kreverForesatt: false }), "DELT");
+    const forelderNei = [...elevJa, rad({ mottakerGruppeId: "tn", gittAvRolle: "FORESATT", gitt: false, createdAt: t(2) })];
+    assert.equal(wangTnTestdelingStatus(forelderNei, { ...tn, kreverForesatt: true }), "IKKE_DELT");
+  });
+
+  it("deling med WANG gir ikke Team Norway tilgang, og omvendt", () => {
+    const wangJa = [rad({ mottakerGruppeId: "wang", gitt: true })];
+    assert.equal(harGyldigSamtykke(wangJa, { scope: "TEST_RESULTATER", mottakerGruppeId: "tn", kreverForesatt: false }), false);
+    assert.equal(wangTnTestdelingStatus(wangJa, { ...tn, kreverForesatt: false }), "IKKE_SVART");
+    const tnJa = [rad({ mottakerGruppeId: "tn", gitt: true })];
+    assert.equal(harGyldigSamtykke(tnJa, { scope: "TEST_RESULTATER", mottakerGruppeId: "wang", kreverForesatt: false }), false);
+  });
+
+  it("testsamtykke åpner aldri statistikk eller komplett profil", () => {
+    const tnJa = [rad({ mottakerGruppeId: "tn", gitt: true })];
+    assert.equal(harGyldigSamtykke(tnJa, { scope: "STATS", mottakerGruppeId: "tn", kreverForesatt: false }), false);
+    assert.equal(harGyldigSamtykke(tnJa, { scope: "KOMPLETT_PROFIL", mottakerGruppeId: "tn", kreverForesatt: false }), false);
   });
 });

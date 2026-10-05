@@ -7,7 +7,8 @@ import { audit } from "@/lib/audit";
 import { registrerHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseSamtykkeType } from "@/lib/health/samtykke-regler";
 import { registrerDelingsSamtykke } from "@/lib/deling/samtykke";
-import { erDelingScope } from "@/lib/deling/samtykke-regler";
+import { erDelingScope, type WangTnTestdelingStatus } from "@/lib/deling/samtykke-regler";
+import { registrerWangTnTestsvar } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 
 /**
@@ -235,4 +236,29 @@ export async function beOmDataSletting(
 
   revalidatePath("/forelder/samtykke");
   return { ok: true };
+}
+
+/**
+ * D-13 (05.10.2026): foresatt svarer på «Del testene med Team Norway» for et
+ * WANG-barn. Under 16 år er dette den eneste raden som gir Team Norway tilgang.
+ */
+export async function svarWangTnTestforesporselForBarn(
+  childId: string,
+  gitt: boolean,
+): Promise<{ ok: true; status: WangTnTestdelingStatus } | { ok: false; feil: string }> {
+  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  if (user.role === "PARENT") {
+    const relasjon = await prisma.parentRelation.findFirst({
+      where: { parentId: user.id, childId, approved: true },
+    });
+    if (!relasjon) return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
+  }
+  try {
+    const deling = await registrerWangTnTestsvar({ userId: childId, gitt, gittAvUserId: user.id, gittAvRolle: "FORESATT" });
+    revalidatePath("/forelder/samtykke");
+    revalidatePath("/team-norway/wang-resultater");
+    return { ok: true, status: deling.status };
+  } catch (err) {
+    return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke lagre svaret." };
+  }
 }

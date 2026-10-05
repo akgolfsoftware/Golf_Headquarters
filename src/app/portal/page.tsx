@@ -24,6 +24,8 @@ import type { Akse, TidslinjePunkt } from "@/components/precision/pa";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import { TrenerforslagInnboks, type SpillerTrenerforslag } from "@/components/workbench/Trenerforslag";
 import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
+import { hentWangTnTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { WangTnTestforesporsel } from "@/components/portal/precision/WangTnTestforesporsel";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · PlayerHQ" };
@@ -59,7 +61,7 @@ export default async function PortalHjemPage() {
   const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO.format(naa);
 
-  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag] = await Promise.all([
+  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag, wangTnTestdeling] = await Promise.all([
     getDashboardData(user.id, naa),
     planLaast
       ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [] as PlayerDaySession[], nextSessionId: null } })
@@ -71,6 +73,8 @@ export default async function PortalHjemPage() {
     hentIDagPopup(user.id, naa),
     planLaast ? Promise.resolve(false) : harEgenIupInngang(),
     user.role === "PLAYER" ? hentMineTrenerforslag() : Promise.resolve([] as SpillerTrenerforslag[]),
+    // D-13: WANG-elever som ikke har svart, får forespørselen her.
+    user.role === "PLAYER" ? hentWangTnTestdeling(user.id) : Promise.resolve(null),
   ]);
 
   const uke = ukenummer(naa);
@@ -159,6 +163,7 @@ export default async function PortalHjemPage() {
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
       <PH01IDag {...props}>
+        {wangTnTestdeling && <WangTnTestforesporsel status={wangTnTestdeling.status} kreverForesatt={wangTnTestdeling.kreverForesatt} modus={{ type: "spiller" }} bareNyForesporsel />}
         <PushOptInBanner />
         <TrenerforslagInnboks forslag={trenerforslag} />
         {visIup && <section className="pa-card" style={{ padding: 16, gap: 12 }} aria-label="Evaluering">
