@@ -277,7 +277,7 @@ export function AG19CaddieHub({
           role="status"
           style={{
             padding: "10px 14px",
-            borderRadius: "var(--radius-card, 8px)",
+            borderRadius: "var(--radius)",
             background: "var(--surface-sunken)",
             border: "1px solid var(--border-hairline)",
             fontSize: "13px",
@@ -358,7 +358,7 @@ export function AG19CaddieHub({
                         display: "flex",
                         gap: 8,
                         padding: 12,
-                        borderRadius: "var(--radius-card, 8px)",
+                        borderRadius: "var(--radius)",
                         background: "var(--warn-tint)",
                         color: "var(--warn)",
                       }}

@@ -88,7 +88,7 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                             ? "1px solid var(--ok)"
                             : "1px solid var(--border-hairline)",
                         background: erAktiv
-                          ? "var(--surface-raised)"
+                          ? "var(--surface-card)"
                           : erFerdig
                             ? "var(--surface-card)"
                             : "transparent",
@@ -111,7 +111,7 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                   style={{
                     padding: 16,
                     borderRadius: 8,
-                    background: "var(--surface-raised)",
+                    background: "var(--surface-card)",
                     border: "1px solid var(--border-hairline)",
                     display: "flex",
                     flexDirection: "column",
@@ -156,7 +156,7 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                         padding: 12,
                         borderRadius: 6,
                         border: aktiv ? "2px solid var(--primary)" : "1px solid var(--border-hairline)",
-                        background: aktiv ? "var(--surface-raised)" : "transparent",
+                        background: aktiv ? "var(--surface-card)" : "transparent",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
@@ -181,7 +181,7 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                 {plan.milepaeler.map((m) => (
                   <div key={m.p} className="pa-card" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                      <strong style={{ font: "var(--type-body-m)", color: "var(--text-primary)" }}>
+                      <strong style={{ font: "var(--type-body)", color: "var(--text-primary)" }}>
                         {m.p} · {m.navn}
                       </strong>
                       {m.hovedfokus && <StatusPille tone="ok">Hovedfokus</StatusPille>}
@@ -226,7 +226,7 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                     style={{
                       padding: 12,
                       borderRadius: 6,
-                      background: "var(--surface-raised)",
+                      background: "var(--surface-card)",
                       border: "1px solid var(--border-hairline)",
                       display: "flex",
                       flexDirection: "column",
@@ -256,13 +256,13 @@ export function PH19Utviklingsplan({ data }: PH19UtviklingsplanProps) {
                 {talent.klubb && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>HJEMMEKLUBB</span>
-                    <span style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)" }}>{talent.klubb}</span>
+                    <span style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)" }}>{talent.klubb}</span>
                   </div>
                 )}
                 {talent.region && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>REGION</span>
-                    <span style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)" }}>{talent.region}</span>
+                    <span style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)" }}>{talent.region}</span>
                   </div>
                 )}
               </div>

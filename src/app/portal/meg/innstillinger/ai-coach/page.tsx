@@ -146,7 +146,7 @@ export default async function AiCoachPage() {
                 <div
                   style={{
                     fontFamily: "var(--font-mono)",
-                    fontSize: 10.5,
+                    fontSize: 11,
                     color: "var(--text-muted)",
                     marginTop: 2,
                   }}
@@ -225,7 +225,7 @@ export default async function AiCoachPage() {
                 padding: "12px 16px",
                 borderBottom: "1px solid var(--border-hairline)",
                 fontFamily: "var(--font-mono)",
-                fontSize: 10.5,
+                fontSize: 11,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 color: "var(--text-muted)",

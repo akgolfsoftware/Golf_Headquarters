@@ -21,6 +21,7 @@ import {
   fullforTestSession,
   avbrytTestSession,
 } from "@/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/actions";
+import { usePaToast } from "@/components/precision/pa-toast";
 
 interface PH15TestGjennomforProps {
   testId: string;
@@ -74,7 +75,7 @@ export function PH15TestGjennomfor({
   const [m, setM] = useState<number>(oppsett.standardInndataVerdi);
   const [endOpen, setEndOpen] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const paToast = usePaToast();
   const [feil, setFeil] = useState<string | null>(null);
 
   // Live session ref for speiling
@@ -86,10 +87,7 @@ export function PH15TestGjennomfor({
   const inside = stats.antallInnenforGrense;
   const avg = stats.snittVerdi;
 
-  const showToast = (t: string) => {
-    setToastMsg(t);
-    setTimeout(() => setToastMsg(null), 3500);
-  };
+  const showToast = (t: string) => paToast.vis(t);
 
   // Speiling til TestSession i bakgrunnen
   const speilForsokTilServer = async (slagNr: number, verdi: number | boolean) => {
@@ -196,7 +194,7 @@ export function PH15TestGjennomfor({
       data-theme="night"
       style={{
         minHeight: "100dvh",
-        background: "var(--surface-night)",
+        background: "var(--surface-page)",
         color: "var(--text-primary)",
         fontFamily: "var(--font-sans)",
         display: "flex",
@@ -208,27 +206,7 @@ export function PH15TestGjennomfor({
     >
       <div style={{ maxWidth: 640, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Toast */}
-        {toastMsg && (
-          <div
-            role="status"
-            style={{
-              position: "fixed",
-              top: 20,
-              left: "50%",
-              transform: "translateX(-50%)",
-              background: "var(--surface-card)",
-              border: "1px solid var(--border-strong)",
-              color: "var(--text-primary)",
-              padding: "10px 18px",
-              borderRadius: 8,
-              zIndex: 100,
-              font: "600 14px/1.2 var(--font-sans)",
-              boxShadow: "0 4px 12px var(--shadow-surface, transparent)",
-            }}
-          >
-            {toastMsg}
-          </div>
-        )}
+        {paToast.el}
 
         {/* Topplinje */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -240,8 +218,8 @@ export function PH15TestGjennomfor({
               padding: "6px 10px",
               borderRadius: 4,
               background: "var(--surface-card)",
-              color: "var(--signal-warn, var(--text-primary))",
-              border: "1px solid var(--border-subtle)",
+              color: "var(--signal)",
+              border: "1px solid var(--border-hairline)",
             }}
           >
             Test
@@ -284,7 +262,7 @@ export function PH15TestGjennomfor({
               borderRadius: 8,
               background: "var(--surface-card)",
               border: "1px solid var(--border-strong)",
-              color: "var(--signal-warn, var(--text-primary))",
+              color: "var(--signal)",
               fontSize: 14,
             }}
           >
@@ -314,8 +292,8 @@ export function PH15TestGjennomfor({
           className="pa-card"
           style={{
             padding: 16,
-            borderRadius: 12,
-            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--border-hairline)",
             background: "var(--surface-card)",
           }}
         >
@@ -352,8 +330,8 @@ export function PH15TestGjennomfor({
           className="pa-card"
           style={{
             padding: 14,
-            borderRadius: 12,
-            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--border-hairline)",
             background: "var(--surface-card)",
             display: "flex",
             flexDirection: "column",
@@ -546,8 +524,8 @@ export function PH15TestGjennomfor({
             className="pa-card"
             style={{
               padding: 16,
-              borderRadius: 12,
-              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius)",
+              border: "1px solid var(--border-hairline)",
               background: "var(--surface-card)",
               display: "flex",
               flexDirection: "column",
@@ -582,10 +560,10 @@ export function PH15TestGjennomfor({
             style={{
               width: "100%",
               height: 80,
-              borderRadius: 12,
+              borderRadius: "var(--radius)",
               border: "none",
-              background: "var(--action-primary, var(--text-primary))",
-              color: "var(--surface-night)",
+              background: "var(--primary)",
+              color: "var(--surface-page)",
               font: "600 21px/1 var(--font-sans)",
               cursor: "pointer",
               display: "flex",
@@ -604,10 +582,10 @@ export function PH15TestGjennomfor({
             style={{
               width: "100%",
               height: 64,
-              borderRadius: 12,
+              borderRadius: "var(--radius)",
               border: "none",
-              background: "var(--action-primary, var(--text-primary))",
-              color: "var(--surface-night)",
+              background: "var(--primary)",
+              color: "var(--surface-page)",
               font: "600 18px/1 var(--font-sans)",
               cursor: "pointer",
               display: "flex",
@@ -626,7 +604,7 @@ export function PH15TestGjennomfor({
             style={{
               width: "100%",
               height: 64,
-              borderRadius: 12,
+              borderRadius: "var(--radius)",
               border: "1px solid var(--border-strong)",
               background: "var(--surface-card)",
               color: "var(--text-primary)",
@@ -651,7 +629,7 @@ export function PH15TestGjennomfor({
           style={{
             position: "fixed",
             inset: 0,
-            background: "var(--surface-overlay)",
+            background: "var(--scrim-modal)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -704,8 +682,8 @@ export function PH15TestGjennomfor({
                   padding: "0 18px",
                   borderRadius: 8,
                   border: "none",
-                  background: "var(--signal-warn, var(--action-primary))",
-                  color: "var(--surface-night)",
+                  background: "var(--signal)",
+                  color: "var(--surface-page)",
                   font: "600 14px/1 var(--font-sans)",
                   cursor: "pointer",
                 }}

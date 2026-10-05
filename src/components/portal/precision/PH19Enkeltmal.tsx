@@ -339,7 +339,7 @@ function FeireModal({
   return (
     <ModalSkall eyebrow="Gratulerer" tittel="Mål oppnådd" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, textAlign: "center", padding: "16px 0" }}>
-        <div style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--surface-raised)", display: "grid", placeItems: "center" }}>
+        <div style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--surface-card)", display: "grid", placeItems: "center" }}>
           <Ikon icon={Trophy} size={32} name="trophy" />
         </div>
         <div>
@@ -570,7 +570,7 @@ export function PH19Enkeltmal({ data, testOptions = [] }: PH19EnkeltmalProps) {
                     padding: "8px 12px",
                     borderRadius: 8,
                     border: erNaa ? "2px solid var(--primary)" : "1px solid var(--border-hairline)",
-                    background: erNaa ? "var(--surface-raised)" : "transparent",
+                    background: erNaa ? "var(--surface-card)" : "transparent",
                   }}
                 >
                   <span style={{ font: "700 18px/1 var(--font-sans)", color: "var(--text-primary)" }}>{trinn.code}</span>

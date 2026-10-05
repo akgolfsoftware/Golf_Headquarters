@@ -9,6 +9,7 @@
 
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   STANDARD_18_HOLES,
@@ -302,7 +303,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
           {/* Kort 1: Dato, bane, tee, antall hull */}
           <div
             style={{
-              borderRadius: 12,
+              borderRadius: "var(--radius)",
               border: "1px solid var(--border-hairline)",
               background: "var(--surface-card)",
               padding: 16,
@@ -485,7 +486,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
           {inRange(0) && (
             <div
               style={{
-                borderRadius: 12,
+                borderRadius: "var(--radius)",
                 border: "1px solid var(--border-hairline)",
                 background: "var(--surface-card)",
                 padding: 16,
@@ -532,7 +533,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
           {inRange(9) && (
             <div
               style={{
-                borderRadius: 12,
+                borderRadius: "var(--radius)",
                 border: "1px solid var(--border-hairline)",
                 background: "var(--surface-card)",
                 padding: 16,
@@ -582,7 +583,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
         {/* Høyre kolonne: Oppsummeringskort */}
         <div
           style={{
-            borderRadius: 12,
+            borderRadius: "var(--radius)",
             border: "1px solid var(--border-hairline)",
             background: "var(--surface-card)",
             padding: 16,
@@ -620,7 +621,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
                   padding: "8px 10px",
                 }}
               >
-                <div style={{ fontSize: 10, fontWeight: 600, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+                <div style={{ fontSize: 11, fontWeight: 600, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
                   {label}
                 </div>
                 <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "var(--font-mono)", marginTop: 2 }}>
@@ -635,8 +636,8 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
             <div
               style={{
                 borderRadius: 8,
-                background: "var(--signal-warn-subtle)",
-                border: "1px solid var(--signal-warn)",
+                background: "var(--signal-tint)",
+                border: "1px solid var(--signal)",
                 padding: "10px 12px",
                 fontSize: 13,
                 lineHeight: 1.4,
@@ -656,7 +657,7 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
             <div
               style={{
                 borderRadius: 8,
-                background: "var(--signal-ink-subtle)",
+                background: "var(--signal-tint)",
                 border: "1px solid var(--signal-ink)",
                 padding: "10px 12px",
                 fontSize: 13,
@@ -674,8 +675,8 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
                 style={{
                   padding: "4px 8px",
                   borderRadius: 6,
-                  background: "var(--signal-up-subtle)",
-                  color: "var(--signal-up)",
+                  background: "var(--ok-tint)",
+                  color: "var(--ok)",
                   fontWeight: 600,
                   fontSize: 12,
                 }}
@@ -707,14 +708,14 @@ export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
                 gap: 8,
               }}
             >
-              <span>✓</span>
+              <Check size={18} aria-hidden="true" />
               <span>{isPending ? "Lagrer runde …" : "Lagre runde"}</span>
             </button>
           )}
 
           <div
             style={{
-              fontSize: 10,
+              fontSize: 11,
               fontFamily: "var(--font-mono)",
               color: "var(--text-muted)",
               lineHeight: 1.4,

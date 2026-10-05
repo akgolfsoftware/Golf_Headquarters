@@ -42,6 +42,9 @@ const BesvarelseSchema = z.object({
   niva: z.enum(IUP_NIVAAER),
   status: z.enum(["UTKAST", "LEVERT"]),
   svar: z.record(z.string().min(1).max(80), z.number().int().min(1).max(5)),
+  // Fireukerssjekk (PH-IUP-01, 04.10.2026): prosessmål per Goal-ID og valgfritt notat til trenerne.
+  prosessmal: z.record(z.string().min(1).max(120), z.enum(["JA", "DELVIS", "NEI"])).optional(),
+  notat: z.string().max(2000).optional(),
 }).strict();
 
 export type IupBesvarelse = z.infer<typeof BesvarelseSchema>;

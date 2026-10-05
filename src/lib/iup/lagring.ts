@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
 import { rateLimit } from "@/lib/rate-limit";
 import { lesIupLagring, type ValidertIupLagring } from "./lagringskontrakt";
-import { aktivIupTilknytningWhere } from "./tilknytning";
+import { aktivIupTilknytningWhere, iupSynligForSpillerWhere } from "./tilknytning";
 
 export type IupLagringsresultat =
   | { ok: true; id: string; revisjon: number; gjeldendeRevisjon: number; gjentatt: boolean }
@@ -75,13 +75,13 @@ export async function lagreEgenIup(input: unknown): Promise<IupLagringsresultat>
 
 const Lesing = z.object({ id: z.string().min(1).max(120), forRevisjon: z.number().int().positive().optional() }).strict();
 
-/** Eierens historikk, 20 revisjoner per side. Fremmed ID og manglende ID svarer likt. */
+/** Eierens historikk, 20 revisjoner per side, bare ved aktivt WANG-/TN-medlemskap. Fremmed ID og manglende ID svarer likt. */
 export async function hentEgenIup(input: unknown) {
   const bruker = await requireSpillerActionUser();
   const parsed = Lesing.safeParse(input);
   if (!parsed.success) return null;
   const hode = await prisma.iupBesvarelse.findFirst({
-    where: { id: parsed.data.id, userId: bruker.id, user: { deletedAt: null, anonymisertAt: null } },
+    where: { id: parsed.data.id, userId: bruker.id, user: iupSynligForSpillerWhere(bruker.id) },
     include: { revisjoner: {
       where: parsed.data.forRevisjon ? { revisjon: { lt: parsed.data.forRevisjon } } : {},
       orderBy: { revisjon: "desc" }, take: 21,
