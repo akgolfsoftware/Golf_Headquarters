@@ -11,6 +11,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG23Oppsett } from "@/components/admin/precision/AG23Oppsett";
+import { lastOppsettData } from "@/lib/admin/oppsett/last-oppsett-data";
 import {
   synligeOppsettFaner,
   velgOppsettFane,
@@ -53,7 +54,7 @@ export default async function OppsettPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG23Oppsett startFane={startFane} />
+      <AG23Oppsett data={await lastOppsettData(user)} startFane={startFane} />
     </AgencyOSSkall>
   );
 }
