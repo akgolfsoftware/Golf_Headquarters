@@ -27,104 +27,48 @@ mock.module("next/navigation", {
 mock.module("next/link", { defaultExport: "a" });
 
 describe("AG19CaddieHub (Caddie og Jarvis AI-hub)", async () => {
-  const { AG19CaddieHub } = await import(
-    "@/components/admin/precision/AG19CaddieHub"
-  );
+  const { AG19CaddieHub } = await import("@/components/admin/precision/AG19CaddieHub");
 
-  test("rendrer agentkø med kjøringer, steg og godkjenning", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "data",
-        startFane: "ko",
-      })
-    );
+  const data = {
+    runs: [
+      { id: "r1", agent: "Testagent", st: "Kjørt" as const, t: "05.10 06:00", dur: "4 s", err: null },
+      { id: "r2", agent: "Feilagent", st: "Feilet" as const, t: "05.10 07:00", dur: "—", err: "Kjøringen feilet." },
+    ],
+    projects: [],
+    skills: [["lese-trackman", "Lese TrackMan-data", "Kun lesing", true]] as [string, string, string, boolean][],
+  };
+  const vis = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(React.createElement(AG19CaddieHub, props as never));
 
-    assert.ok(html.length > 0, "HTML skal genereres");
-    assert.match(html, /Caddie · Jarvis/);
-    assert.match(html, /Agentkø/);
-    assert.match(html, /Prosjekter/);
-    assert.match(html, /Skills/);
-    assert.match(html, /Samtale/);
-    assert.match(html, /Belastningsagent/);
-    assert.match(html, /acwr-sjekk/);
-    assert.match(html, /Kjøringsdetalj/);
-    assert.match(html, /Godkjenn og send/);
-    assert.match(html, /JARVIS SENDER OG ENDRER INGENTING SELV/);
+  test("viser ekte kjøringer uten falske godkjenninger", () => {
+    const html = vis({ tilstand: "data", startFane: "ko", data });
+    assert.match(html, /Testagent/);
+    assert.match(html, /Feilagent/);
+    assert.doesNotMatch(html, /Godkjenn og send|Forkast|Tobias|Lindvik|Oskar Vik/);
   });
 
-  test("rendrer prosjekter-fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "data",
-        startFane: "prosj",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Sesongslutt 2026/);
-    assert.match(html, /Vinterplan WANG/);
-    assert.match(html, /Rekruttering Mini/);
-    assert.match(html, /Åpne i Oppgaver/);
+  test("prosjekter ligger i Notion, skills er bare visning", () => {
+    assert.match(vis({ tilstand: "data", startFane: "prosj", data }), /Prosjekter ligger i Notion/);
+    const skills = vis({ tilstand: "data", startFane: "skills", data });
+    assert.match(skills, /Lese TrackMan-data/);
+    assert.match(skills, /IKKE KOBLET ENNÅ/);
   });
 
-  test("rendrer skills-fane med brytere", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "data",
-        startFane: "skills",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /acwr-sjekk/);
-    assert.match(html, /inaktiv-spiller/);
-    assert.match(html, /skolefravær/);
-    assert.match(html, /ukerapport-forelder/);
-    assert.match(html, /Aktiv/);
+  test("samtalen er ikke koblet og gir ingen oppdiktede svar", () => {
+    const html = vis({ tilstand: "data", startFane: "chat", data });
+    assert.match(html, /Samtalen er ikke koblet ennå/);
+    assert.match(html, /disabled/);
+    assert.doesNotMatch(html, /ACWR|Magnus Aasheim/);
   });
 
-  test("rendrer samtale-fane med Caddie", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "data",
-        startFane: "chat",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Caddie · samtale/);
-    assert.match(html, /Hvem i WANG bør ha lettere uke 40\?/);
-    assert.match(html, /Spør Caddie/);
-    assert.match(html, /Lagre som utkast/);
+  test("uten data vises tom tilstand, ikke demo", () => {
+    const html = vis({ tilstand: "tom", startFane: "ko" });
+    assert.match(html, /Ingen agentkjøringer/);
+    assert.doesNotMatch(html, /Belastningsagent|Tobias/);
   });
 
-  test("rendrer tom tilstand", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "tom",
-        startFane: "ko",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Ingen kjøringer i dag/);
-    assert.match(html, /Åpne samtale/);
-  });
-
-  test("rendrer laster- og feil-tilstand", () => {
-    const lasterHtml = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "laster",
-      })
-    );
-    assert.match(lasterHtml, /Henter agentkøen …/);
-
-    const feilHtml = renderToStaticMarkup(
-      React.createElement(AG19CaddieHub, {
-        tilstand: "feil",
-      })
-    );
-    assert.match(feilHtml, /Caddie svarer ikke/);
-    assert.match(feilHtml, /FEIL 503 · AGENTER/);
+  test("laster og feil", () => {
+    assert.match(vis({ tilstand: "laster" }), /Henter agentkjøringer/);
+    assert.match(vis({ tilstand: "feil" }), /kunne ikke hentes/);
   });
 });
