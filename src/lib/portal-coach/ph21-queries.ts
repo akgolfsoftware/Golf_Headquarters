@@ -3,7 +3,7 @@
  */
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { resolveValgtCoachId } from "@/lib/domain/valgt-coach";
+import { hentPH21MottakerCoachId } from "./ph21-mottaker";
 import { erCoachetSpiller } from "@/lib/auth/coached";
 import {
   type PH21Data,
@@ -36,36 +36,21 @@ export async function getPH21Data(userId: string): Promise<PH21Data> {
   });
   const isCoached = (await erCoachetSpiller(userId)) || userRow?.role === "COACH" || userRow?.role === "ADMIN";
 
-  // 1. Coach profil
+  // 1. Coach profil — samme mottaker som send-handlingen godtar.
   let coach: PH21Data["coach"] = null;
-  const coachId = await resolveValgtCoachId(userId);
+  const coachId = await hentPH21MottakerCoachId(userId);
 
   if (coachId) {
     const coachRow = await prisma.user.findUnique({
       where: { id: coachId },
-      select: { id: true, name: true, avatarUrl: true, role: true },
+      select: { id: true, name: true, avatarUrl: true },
     });
     if (coachRow) {
       coach = {
         id: coachRow.id,
         name: coachRow.name,
-        role: "Hovedcoach · Fredrikstad GK",
         initials: initials(coachRow.name),
         avatarUrl: coachRow.avatarUrl,
-      };
-    }
-  } else {
-    const defaultCoach = await prisma.user.findFirst({
-      where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
-      select: { id: true, name: true, avatarUrl: true, role: true },
-    });
-    if (defaultCoach) {
-      coach = {
-        id: defaultCoach.id,
-        name: defaultCoach.name,
-        role: "Hovedcoach · Fredrikstad GK",
-        initials: initials(defaultCoach.name),
-        avatarUrl: defaultCoach.avatarUrl,
       };
     }
   }

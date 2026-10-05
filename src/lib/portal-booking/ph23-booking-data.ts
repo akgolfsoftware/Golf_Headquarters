@@ -3,6 +3,8 @@
  * Kilde: Claude Design Precision Athletics (PH-23.jsx, data-meg.js).
  */
 
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
+
 export type PH23Service = {
   id: string;
   name: string;
@@ -37,6 +39,8 @@ export type PH23SlotDay = {
 export type PH23MyBooking = {
   id: string;
   svc: string;
+  /** ServiceType-id — trengs for å hente ledige tider ved flytting. */
+  serviceTypeId?: string;
   svcName: string;
   day: string;
   t: string;
@@ -58,14 +62,19 @@ export type PH23PastBooking = {
   src: string;
 };
 
+/** Ekte ledig tid: eksakt start (naiv Oslo-veggklokke, samme streng som wizarden) og coach. */
+export type PH23SlotDetalj = { startIso: string; coachId: string; coachNavn: string };
+
 export type PH23BookingData = {
-  rate: number;
+  /** Timepris brukt når tjenesten mangler fastpris. Null = ingen kjent pris («—»). */
+  rate: number | null;
   cancelHours: number;
   card: PH23BookingCard;
   services: PH23Service[];
   days: [string, string][];
   slots: Record<number, string[]>;
-  slotDetails?: Record<string, { dateIso: string; coachId: string; coachNavn: string }>;
+  /** Nøkkel `${dagIndex}|${kl}` → ekte slot. Mangler nøkkelen, kan tiden ikke bookes. */
+  slotDetails?: Record<string, PH23SlotDetalj>;
   mine: PH23MyBooking[];
   past: PH23PastBooking[];
   playerEmail: string;
@@ -77,13 +86,17 @@ export function formatKr(n: number | null | undefined): string {
   return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " kr";
 }
 
-/** Beregner pris for en gitt tjeneste basert på timepris eller fastpris. */
-export function beregnTjenestePris(service: PH23Service, rate: number): number {
+/** Beregner pris for en gitt tjeneste basert på timepris eller fastpris. Null = ukjent pris. */
+export function beregnTjenestePris(service: PH23Service, rate: number | null): number | null {
   if (service.price != null) return service.price;
+  if (rate == null) return null;
   return Math.round((rate * service.min) / 60);
 }
 
-/** Syntetiske standarddata for PH-23 ved tomt/mock-grunnlag. */
+/**
+ * Syntetiske data for PH-23 — KUN for skjermkatalog og prøvefiler.
+ * Brukes aldri i produksjonsruten: mapHubDataToPH23 faller aldri tilbake hit.
+ */
 export function getSyntheticPH23Data(empty = false): PH23BookingData {
   if (empty) {
     return {
@@ -182,8 +195,48 @@ export function getSyntheticPH23Data(empty = false): PH23BookingData {
   };
 }
 
+/** Nøkkel for slotDetails. */
+export function slotNokkel(dagIndex: number, kl: string): string {
+  return `${dagIndex}|${kl}`;
+}
+
+type SlotVinduInn = {
+  dager: { datoIso: string; tider: { kl: string; coachId: string; coachNavn: string; startIso?: string }[] }[];
+};
+
+/**
+ * Bygger dager, tider og slot-detaljer fra et ekte slot-vindu (beregnSlotVindu).
+ * Bare tider med eksakt start blir bookbare. Tomt vindu gir tomme lister — aldri demotider.
+ */
+export function byggSlotData(slotVindu: SlotVinduInn | null | undefined, antallDager = 5): {
+  days: [string, string][];
+  slots: Record<number, string[]>;
+  slotDetails: Record<string, PH23SlotDetalj>;
+} {
+  const days: [string, string][] = [];
+  const slots: Record<number, string[]> = {};
+  const slotDetails: Record<string, PH23SlotDetalj> = {};
+  const dager = (slotVindu?.dager ?? []).filter((d) => d.tider.some((t) => t.startIso)).slice(0, antallDager);
+
+  dager.forEach((d, idx) => {
+    const date = new Date(d.datoIso);
+    const dagNavn = date.toLocaleDateString("nb-NO", { weekday: "short" }).replace(".", "");
+    const dagMnd = date.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
+    days.push([dagNavn.charAt(0).toUpperCase() + dagNavn.slice(1), dagMnd]);
+    slots[idx] = [];
+    for (const t of d.tider) {
+      if (!t.startIso) continue;
+      slots[idx].push(t.kl);
+      slotDetails[slotNokkel(idx, t.kl)] = { startIso: t.startIso, coachId: t.coachId, coachNavn: t.coachNavn };
+    }
+  });
+
+  return { days, slots, slotDetails };
+}
+
 /**
  * Mapper BookingHubData fra Prisma over til PH-23 datamodell.
+ * Bare ekte data: mangler noe, blir det tomt eller «—». Ingen demodata.
  */
 export function mapHubDataToPH23(
   hub: {
@@ -196,6 +249,7 @@ export function mapHubDataToPH23(
     };
     upcoming: {
       id: string;
+      serviceTypeId?: string;
       serviceName: string;
       locationName: string;
       coachName: string | null;
@@ -211,107 +265,136 @@ export function mapHubDataToPH23(
       coachName: string | null;
       startIso: string;
       durationMin: number;
+      status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
     }[];
   },
   playerEmail: string,
   services?: PH23Service[],
-  slotVindu?: { dager: { datoIso: string; tider: { kl: string }[] }[] }
+  slotVindu?: SlotVinduInn | null,
 ): PH23BookingData {
-  const synth = getSyntheticPH23Data(false);
-
+  const harPakke = hub.credits.canUseCredits && hub.credits.monthlyCredits > 0;
   const renewsDato = hub.credits.renewsAtIso
     ? new Date(hub.credits.renewsAtIso).toLocaleDateString("nb-NO", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       })
-    : synth.card.resets;
+    : "—";
 
   const card: PH23BookingCard = {
-    pkg:
-      hub.credits.monthlyCredits === 4
+    pkg: !harPakke
+      ? "Ingen pakke"
+      : hub.credits.monthlyCredits === 4
         ? "Performance Pro"
         : hub.credits.monthlyCredits === 2
           ? "Performance"
-          : hub.credits.tier === "FULL"
-            ? "Full"
-            : "Talent",
-    total: hub.credits.monthlyCredits || synth.card.total,
-    left: hub.credits.creditsRemaining,
-    valid: renewsDato,
-    resets: renewsDato,
+          : "Coaching-pakke",
+    total: harPakke ? hub.credits.monthlyCredits : 0,
+    left: harPakke ? hub.credits.creditsRemaining : 0,
+    valid: harPakke ? renewsDato : "—",
+    resets: harPakke ? renewsDato : "—",
     covers: "Én coachet økt trekker ett klipp",
   };
 
-  const mine: PH23MyBooking[] = hub.upcoming.map((b) => {
-    const d = new Date(b.startIso);
-    const dayStr = d.toLocaleDateString("nb-NO", { weekday: "short", day: "2-digit", month: "2-digit" });
-    const capitalizedDay = dayStr.charAt(0).toUpperCase() + dayStr.slice(1);
-    const timeStr = d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-
-    return {
-      id: b.id,
-      svc: b.serviceName,
-      svcName: `${b.serviceName} · ${b.durationMin} min`,
-      day: capitalizedDay,
-      t: timeStr,
-      place: b.locationName,
-      status: b.status === "CONFIRMED" ? "Bekreftet" : "Venter",
-      pay: b.fromCredits ? "Klipp" : "Betalt",
-      coachName: b.coachName,
-    };
-  });
-
-  const past: PH23PastBooking[] = hub.past.map((b) => {
-    const d = new Date(b.startIso);
+  const dagOgTid = (iso: string, medAar: boolean) => {
+    const d = new Date(iso);
     const dayStr = d.toLocaleDateString("nb-NO", {
       weekday: "short",
       day: "2-digit",
       month: "2-digit",
-      year: "numeric",
+      ...(medAar ? { year: "numeric" as const } : {}),
     });
-    const capitalizedDay = dayStr.charAt(0).toUpperCase() + dayStr.slice(1);
-    const timeStr = d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-
     return {
-      id: b.id,
-      svc: b.serviceName,
-      svcName: `${b.serviceName} · ${b.durationMin} min`,
-      day: capitalizedDay,
-      t: timeStr,
-      ref: `BK-${b.id.slice(0, 8).toUpperCase()}`,
-      src: `${b.locationName} · ${b.coachName ?? "Uten coach"}`,
+      day: dayStr.charAt(0).toUpperCase() + dayStr.slice(1),
+      t: d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" }),
     };
-  });
+  };
 
-  // Håndter dager og slots hvis vi har slotVindu
-  let days = synth.days;
-  let slots = synth.slots;
+  const mine: PH23MyBooking[] = hub.upcoming.map((b) => ({
+    id: b.id,
+    svc: b.serviceName,
+    serviceTypeId: b.serviceTypeId,
+    svcName: `${b.serviceName} · ${b.durationMin} min`,
+    ...dagOgTid(b.startIso, false),
+    place: b.locationName,
+    status: b.status === "CONFIRMED" ? "Bekreftet" : "Venter",
+    pay: b.fromCredits ? "Klipp" : "Kort",
+    startIso: b.startIso,
+    coachName: b.coachName,
+  }));
 
-  if (slotVindu && slotVindu.dager.length > 0) {
-    days = slotVindu.dager.slice(0, 5).map((d) => {
-      const date = new Date(d.datoIso);
-      const dagNavn = date.toLocaleDateString("nb-NO", { weekday: "short" });
-      const dagMnd = date.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
-      return [dagNavn.charAt(0).toUpperCase() + dagNavn.slice(1), dagMnd];
-    });
+  const past: PH23PastBooking[] = hub.past.map((b) => ({
+    id: b.id,
+    svc: b.serviceName,
+    svcName: `${b.serviceName} · ${b.durationMin} min${b.status === "CANCELLED" ? " · Avbestilt" : ""}`,
+    ...dagOgTid(b.startIso, true),
+    ref: `BK-${b.id.slice(0, 8).toUpperCase()}`,
+    src: `${b.locationName} · ${b.coachName ?? "Uten coach"}`,
+  }));
 
-    slots = {};
-    slotVindu.dager.slice(0, 5).forEach((d, idx) => {
-      slots[idx] = d.tider.map((t) => t.kl);
-    });
-  }
+  const { days, slots, slotDetails } = byggSlotData(slotVindu);
 
   return {
-    rate: synth.rate,
-    cancelHours: synth.cancelHours,
+    rate: null,
+    cancelHours: AVBESTILLING_FRIST_TIMER,
     card,
-    services: services && services.length > 0 ? services : synth.services,
+    services: services ?? [],
     days,
     slots,
-    mine: mine.length > 0 ? mine : synth.mine,
-    past: past.length > 0 ? past : synth.past,
+    slotDetails,
+    mine,
+    past,
     playerEmail,
   };
 }
 
+export type PH23BekreftValg = {
+  serviceTypeId: string;
+  slot: PH23SlotDetalj;
+  /** Klipp bare når spilleren har klipp igjen og tjenesten dekkes; ellers kort. */
+  betaling: "Klipp" | "Kort";
+};
+
+export type PH23BekreftResultat =
+  | { type: "bekreftet"; bookingId: string }
+  | { type: "betaling"; url: string }
+  | { type: "feil"; grunn: string };
+
+export type PH23BekreftAvhengigheter = {
+  /** createCreditBooking — CONFIRMED med atomisk klipptrekk. */
+  opprettMedKlipp: (input: { serviceTypeId: string; coachId: string; start: string }) => Promise<{ bookingId: string }>;
+  /** opprettBookingMedKort — PENDING + Stripe Checkout; webhooken bekrefter. */
+  opprettMedKort: (input: {
+    serviceTypeId: string;
+    coachId: string;
+    startIso: string;
+  }) => Promise<{ ok: true; url: string } | { ok: false; grunn: string }>;
+};
+
+/**
+ * «Bekreft booking» i PH-23: kaller den ekte bookingflyten. Timen regnes som booket
+ * bare når serveren har bekreftet den (klipp), eller etter betaling hos Stripe (kort).
+ */
+export async function bekreftPH23Booking(
+  valg: PH23BekreftValg,
+  deps: PH23BekreftAvhengigheter,
+): Promise<PH23BekreftResultat> {
+  try {
+    if (valg.betaling === "Klipp") {
+      const res = await deps.opprettMedKlipp({
+        serviceTypeId: valg.serviceTypeId,
+        coachId: valg.slot.coachId,
+        start: valg.slot.startIso,
+      });
+      return { type: "bekreftet", bookingId: res.bookingId };
+    }
+    const res = await deps.opprettMedKort({
+      serviceTypeId: valg.serviceTypeId,
+      coachId: valg.slot.coachId,
+      startIso: valg.slot.startIso,
+    });
+    return res.ok ? { type: "betaling", url: res.url } : { type: "feil", grunn: res.grunn };
+  } catch (err) {
+    return { type: "feil", grunn: err instanceof Error ? err.message : "Booking feilet. Prøv igjen." };
+  }
+}
