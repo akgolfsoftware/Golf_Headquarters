@@ -3,14 +3,15 @@
  * fra (mlegacy)/booking/[slug]/bekreft/page.tsx: param-validering (notFound),
  * tjeneste-/coach-oppslag, innlogget-bruker-prefill og Europe/Oslo-formatert
  * dato/klokkeslett. Server-action (createBookingCheckout i ./actions) er
- * flyttet 1:1 uendret. Presentasjon + skjema bor i MarkedBookingBekreftV2
- * (v2, MRamme).
+ * flyttet 1:1 uendret. Presentasjon + skjema bor i BK02Bekreft
+ * (Precision Athletics, BK-02).
  */
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { MarkedBookingBekreftV2 } from "@/components/marketing/v2/MarkedBookingBekreftV2";
+import { BK02Bekreft } from "@/components/booking/precision/BK02Bekreft";
+import { krTekst, tidTekst } from "@/components/booking/precision/format";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -40,34 +41,20 @@ export default async function BekreftPage({ params, searchParams }: Props) {
 
   const innloggedBruker = await getCurrentUser();
 
-  const dato = startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const klokkeslett = startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const prisTekst = new Intl.NumberFormat("nb-NO", {
-    style: "currency",
-    currency: "NOK",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(service.priceOre / 100);
+  // Oslo-tid, ikke serverens (Vercel kjører UTC).
+  const datoIso = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(startAt);
 
   return (
-    <MarkedBookingBekreftV2
+    <BK02Bekreft
       slug={slug}
       start={start}
       coachId={coach}
       tjenesteNavn={service.name}
-      datoTekst={dato}
-      klokkeslettTekst={klokkeslett}
+      tidTekst={tidTekst(startAt.toISOString())}
+      datoIso={datoIso}
       durationMin={service.durationMin}
       coachNavn={coachUser ? (coachUser.name ?? "—") : null}
-      prisTekst={prisTekst}
+      prisTekst={krTekst(service.priceOre)}
       priceOre={service.priceOre}
       innloggetEpost={innloggedBruker?.email ?? null}
       innloggetNavn={innloggedBruker?.name ?? null}
