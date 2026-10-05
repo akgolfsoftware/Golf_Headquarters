@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **531**. Unike rutemønstre i skanningen: 531. Komponentfiler: 878. Ramme- og tilstandsfiler: 249.
+Sidefiler med rute: **532**. Unike rutemønstre i skanningen: 532. Komponentfiler: 880. Ramme- og tilstandsfiler: 252.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -25,21 +25,21 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | marked-og-offentlig | 70 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
-| playerhq | 182 |
+| playerhq | 183 |
 | systemtilstand | 2 |
 
 ## Kobling
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 284 |
-| videresending | 163 |
-| teknisk-forklaring | 32 |
+| tegnet-skjermtype | 285 |
+| videresending | 164 |
+| teknisk-forklaring | 31 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-284 rader treffer en av de 74 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 167 rader har et registrert avvik. 141 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 11 rader har ingen eksakt type. 166 rader har et registrert avvik. 140 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -51,14 +51,13 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
-| `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/mal/sg-hub/coach/[spillerId]` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
-| `/portal/meg/deling/innsyn` | UTEN-TEGNET-TYPE | PH-24 Meg |
-| `/portal/meg/deling` | UTEN-TEGNET-TYPE | PH-24 Meg |
+| `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/mal/sg-hub/coach/[spillerId]` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
+| `/portal/meg/deling/innsyn` | UTEN-TEGNET-TYPE | PH-27 Deling |
 | `/portal/samlinger` | UTEN-TEGNET-TYPE | — |
-| `/portal/tren/teknisk-plan` | UTEN-TEGNET-TYPE | PH-19 Mål og talent |
+| `/portal/tren/teknisk-plan` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
 | `/team-norway/analyse` | TN-UTEN-RAD | — |
 | `/team-norway/fagapparat` | TN-UTEN-RAD | — |
 | `/team-norway/fellestesting/[deltakerId]` | TN-UTEN-RAD | — |

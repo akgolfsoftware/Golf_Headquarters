@@ -42,7 +42,7 @@ export function PH19Malsetninger({
           <p style={{ font: "var(--type-body-s)", color: "var(--text-secondary)", margin: 0 }}>Henter målsetningene …</p>
         </header>
         <div className="pa-card" style={{ padding: 32, textAlign: "center" }}>
-          <p style={{ font: "var(--type-body-m)", color: "var(--text-secondary)" }}>Laster inn dine målsetninger …</p>
+          <p style={{ font: "var(--type-body)", color: "var(--text-secondary)" }}>Laster inn dine målsetninger …</p>
         </div>
       </div>
     );
@@ -134,7 +134,7 @@ export function PH19Malsetninger({
       >
         <Ikon icon={Sparkles} size={18} name="sparkles" />
         <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
-          <strong style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)" }}>Bygg treningsplan</strong>
+          <strong style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)" }}>Bygg treningsplan</strong>
           <small style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>Lag en plan i Workbench som følger målsetningene dine</small>
         </div>
         <Ikon icon={ChevronRight} size={16} name="chevron-right" />
@@ -182,7 +182,7 @@ export function PH19Malsetninger({
                 <span style={{ font: "var(--type-meta)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
                   <Ikon icon={Trophy} size={12} name="trophy" /> SISTE MILEPÆL
                 </span>
-                <span style={{ font: "var(--type-body-m)", fontWeight: 600, color: "var(--text-primary)" }}>{milepael.tittel}</span>
+                <span style={{ font: "var(--type-body)", fontWeight: 600, color: "var(--text-primary)" }}>{milepael.tittel}</span>
                 <small style={{ font: "var(--type-meta)", color: "var(--text-secondary)" }}>{milepael.dato}</small>
               </div>
             )}

@@ -44,7 +44,7 @@
   padding: 16px;
   background: var(--surface-card);
   border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-card, 8px);
+  border-radius: var(--radius);
 }
 
 .pa-a22__radar-card-header {
@@ -95,7 +95,7 @@
 
 .pa-a22__dropzone {
   padding: 20px;
-  border-radius: var(--radius-card, 8px);
+  border-radius: var(--radius);
   border: 1px dashed var(--border-strong);
   display: flex;
   flex-direction: column;

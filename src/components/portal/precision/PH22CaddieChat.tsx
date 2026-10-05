@@ -264,7 +264,7 @@ export function PH22CaddieChat({
             color: "var(--text-on-primary)",
             padding: "10px 16px",
             borderRadius: "var(--radius)",
-            boxShadow: "var(--shadow)",
+            boxShadow: "var(--shadow-pop)",
             zIndex: 100,
             fontSize: 13,
             fontWeight: 500,
@@ -391,7 +391,7 @@ export function PH22CaddieChat({
                   <span
                     style={{
                       fontFamily: "var(--font-mono)",
-                      fontSize: 10,
+                      fontSize: 11,
                       letterSpacing: "0.04em",
                       color: "var(--text-muted)",
                     }}
@@ -459,7 +459,7 @@ export function PH22CaddieChat({
                           alignItems: "center",
                           gap: 6,
                           fontFamily: "var(--font-mono)",
-                          fontSize: 10,
+                          fontSize: 11,
                           letterSpacing: "0.04em",
                           color: "var(--text-muted)",
                         }}
@@ -481,7 +481,7 @@ export function PH22CaddieChat({
                     <span
                       style={{
                         fontFamily: "var(--font-mono)",
-                        fontSize: 10,
+                        fontSize: 11,
                         letterSpacing: "0.04em",
                         color: "var(--text-muted)",
                       }}
@@ -498,7 +498,7 @@ export function PH22CaddieChat({
             <div
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: 10.5,
+                fontSize: 11,
                 letterSpacing: "0.04em",
                 color: "var(--text-muted)",
                 paddingLeft: 42,
@@ -555,7 +555,7 @@ export function PH22CaddieChat({
             display: "flex",
             flexDirection: "column",
             gap: 10,
-            background: "var(--surface-subtle)",
+            background: "var(--surface-sunken)",
           }}
         >
           {/* Hurtig-chips */}
@@ -585,7 +585,6 @@ export function PH22CaddieChat({
                   fontSize: 12.5,
                   fontWeight: 500,
                   cursor: sender ? "not-allowed" : "pointer",
-                  whiteSpace: "nowrap",
                   flexShrink: 0,
                 }}
               >
@@ -843,7 +842,7 @@ function PH22DraftBox({
         <span
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: "0.04em",
             textTransform: "uppercase",
             color: "var(--text-muted)",
@@ -922,7 +921,7 @@ function PH22DraftBox({
           <span
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 9.5,
+              fontSize: 11,
               letterSpacing: "0.04em",
               color: "var(--text-muted)",
             }}

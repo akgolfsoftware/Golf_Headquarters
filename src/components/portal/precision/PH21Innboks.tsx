@@ -667,7 +667,7 @@ export function PH21Innboks({
                         right: 8,
                         bottom: 8,
                         padding: "3px 6px",
-                        borderRadius: "var(--radius-sm)",
+                        borderRadius: "var(--radius-inner)",
                         background: "var(--surface-inverse)",
                         color: "var(--text-inverse)",
                         font: "500 11px/1 var(--font-mono)",

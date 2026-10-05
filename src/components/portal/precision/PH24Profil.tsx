@@ -114,15 +114,15 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
           <div
             style={{
               padding: "6px 12px",
-              borderRadius: "var(--radius-full, 9999px)",
-              background: komplett.prosent === 100 ? "var(--surface-success, var(--surface-overlay))" : "var(--surface-overlay)",
-              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-pill)",
+              background: komplett.prosent === 100 ? "var(--ok-tint)" : "var(--surface-sunken)",
+              border: "1px solid var(--border-hairline)",
               display: "flex",
               alignItems: "center",
               gap: 8,
               fontSize: 12,
               fontWeight: 600,
-              color: komplett.prosent === 100 ? "var(--text-success, var(--text-primary))" : "var(--text-secondary)",
+              color: komplett.prosent === 100 ? "var(--ok)" : "var(--text-secondary)",
             }}
           >
             {komplett.prosent === 100 ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
@@ -135,9 +135,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
         <div
           style={{
             padding: "12px 16px",
-            borderRadius: "var(--radius-md, 8px)",
-            background: "var(--surface-overlay)",
-            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius)",
+            background: "var(--surface-sunken)",
+            border: "1px solid var(--border-hairline)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -159,9 +159,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
         <section
           style={{
             padding: 20,
-            borderRadius: "var(--radius-lg, 12px)",
-            background: "var(--surface-card, var(--surface-primary))",
-            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius)",
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-hairline)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
@@ -186,9 +186,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                   width: "100%",
                   minHeight: 44,
                   padding: "10px 12px",
-                  borderRadius: "var(--radius-md, 8px)",
-                  background: "var(--surface-input, var(--surface-overlay))",
-                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius)",
+                  background: "var(--surface-card)",
+                  border: "1px solid var(--border-hairline)",
                   color: "var(--text-primary)",
                   fontSize: 14,
                   fontFamily: "inherit",
@@ -212,9 +212,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                     width: "100%",
                     minHeight: 44,
                     padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius-md, 8px)",
-                    background: "var(--surface-input, var(--surface-overlay))",
-                    border: "1px solid var(--border-subtle)",
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-hairline)",
                     color: "var(--text-primary)",
                     fontSize: 14,
                     fontFamily: "inherit",
@@ -238,9 +238,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                     width: "100%",
                     minHeight: 44,
                     padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius-md, 8px)",
-                    background: "var(--surface-input, var(--surface-overlay))",
-                    border: "1px solid var(--border-subtle)",
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-hairline)",
                     color: "var(--text-primary)",
                     fontSize: 14,
                     fontFamily: "inherit",
@@ -265,9 +265,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                     width: "100%",
                     minHeight: 44,
                     padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius-md, 8px)",
-                    background: "var(--surface-input, var(--surface-overlay))",
-                    border: "1px solid var(--border-subtle)",
+                    borderRadius: "var(--radius)",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-hairline)",
                     color: "var(--text-primary)",
                     fontSize: 14,
                     fontFamily: "inherit",
@@ -290,9 +290,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               style={{
                 width: "100%",
                 padding: "10px 12px",
-                borderRadius: "var(--radius-md, 8px)",
-                background: "var(--surface-input, var(--surface-overlay))",
-                border: "1px solid var(--border-subtle)",
+                borderRadius: "var(--radius)",
+                background: "var(--surface-card)",
+                border: "1px solid var(--border-hairline)",
                 color: "var(--text-primary)",
                 fontSize: 14,
                 fontFamily: "inherit",
@@ -307,9 +307,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
         <section
           style={{
             padding: 20,
-            borderRadius: "var(--radius-lg, 12px)",
-            background: "var(--surface-card, var(--surface-primary))",
-            border: "1px solid var(--border-subtle)",
+            borderRadius: "var(--radius)",
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-hairline)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
@@ -326,7 +326,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
               <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 Forbunds-handicap
               </span>
@@ -335,7 +335,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               </span>
             </div>
 
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
               <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 NGF Medlems-ID / GolfBox
               </span>
@@ -344,7 +344,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               </span>
             </div>
 
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
               <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 E-post (innlogging)
               </span>
@@ -353,7 +353,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               </span>
             </div>
 
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
               <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 Stall / Gruppe
               </span>
@@ -362,7 +362,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               </span>
             </div>
 
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
               <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 Runder i år
               </span>
@@ -372,7 +372,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
             </div>
 
             {data.hcpMaalTekst && (
-              <div style={{ padding: "12px 14px", borderRadius: "var(--radius-md, 8px)", background: "var(--surface-overlay)" }}>
+              <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
                 <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                   Aktivt HCP-mål
                 </span>
@@ -388,10 +388,10 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
           <div
             style={{
               padding: "12px 16px",
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--surface-danger, var(--surface-overlay))",
-              color: "var(--text-danger, var(--text-primary))",
-              border: "1px solid var(--border-danger, var(--border-subtle))",
+              borderRadius: "var(--radius)",
+              background: "var(--signal-tint)",
+              color: "var(--signal-ink)",
+              border: "1px solid var(--signal)",
               fontSize: 14,
             }}
           >
@@ -403,10 +403,10 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
           <div
             style={{
               padding: "12px 16px",
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--surface-success, var(--surface-overlay))",
-              color: "var(--text-success, var(--text-primary))",
-              border: "1px solid var(--border-success, var(--border-subtle))",
+              borderRadius: "var(--radius)",
+              background: "var(--ok-tint)",
+              color: "var(--ok)",
+              border: "1px solid var(--ok)",
               fontSize: 14,
               display: "flex",
               alignItems: "center",
@@ -428,9 +428,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               minHeight: 44,
               minWidth: 80,
               padding: "10px 16px",
-              borderRadius: "var(--radius-md, 8px)",
+              borderRadius: "var(--radius)",
               background: "transparent",
-              border: "1px solid var(--border-subtle)",
+              border: "1px solid var(--border-hairline)",
               color: "var(--text-secondary)",
               textDecoration: "none",
               fontSize: 14,
@@ -451,9 +451,9 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
               minHeight: 44,
               minWidth: 150,
               padding: "10px 20px",
-              borderRadius: "var(--radius-md, 8px)",
-              background: "var(--accent-primary, var(--surface-accent))",
-              color: "var(--text-on-accent, var(--text-primary))",
+              borderRadius: "var(--radius)",
+              background: "var(--primary)",
+              color: "var(--text-on-primary)",
               border: "none",
               fontSize: 14,
               fontWeight: 600,

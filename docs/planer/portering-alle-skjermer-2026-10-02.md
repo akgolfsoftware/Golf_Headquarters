@@ -1,14 +1,17 @@
 # Porteringsplan — alle AK Golf HQ-skjermer
 
-Sist oppdatert: 2026-10-02 13:10 CEST
-Eier: Codex for kode og kontroll · Claude Design for designkilden
+Sist oppdatert: 2026-10-04 (IA 28.09 og godkjenningsstatus)
+Eier: Claude Code for kode og kontroll (fra 04.10.2026, etter Codex og Gemini) · Claude Design for designkilden
+Porteringskø: [design-handoff/regler/claude-code.md](../design-handoff/regler/claude-code.md)
 Overordnet rekkefølge: [arbeidslisten for resterende oppgaver](arbeidsliste-restoppgaver-2026-10-02.md)
 
 Dette er en gjennomføringsplan, ikke en ny designfasit. Arbeidslisten eier prioritet og
 avhengigheter. Gjeldende designautoritet er AK Golf Precision Athletics for hovedappen,
 WANGs eget designsystem for WANG og Team Norways valgte designspråk for egne Team Norway-flater.
-Precision-skjermene er visuelt godkjent av Anders. Det som gjenstår er å portere dem til kode,
-koble ekte funksjon og kontrollere hver rute, rolle og tilstand.
+**Bare PH-01 er visuelt godkjent av Anders (04.10.2026).** Alle andre Precision-skjermer er
+kandidater til Anders har sett dem i appen. Skjermlista følger IA 28.09: skjermer merket «Utgår
+28.09» bygges ikke, og funksjonen deres flyttes dit lista sier. Det som gjenstår er å portere de
+aktive skjermene til kode, koble ekte funksjon og kontrollere hver rute, rolle og tilstand.
 
 ## 1. Omfang og sann status
 
@@ -30,8 +33,9 @@ Fersk kodeinventar fra `kartlegg-skjermer.mjs`:
 
 Designregistrene må fortsatt holdes separat fra kodeinventaret:
 
-- Precision: 74 skjermtyper og 443 ruter i det godkjente designomfanget. Alle Precision-
-  skjermene er visuelt godkjent; implementeringsstatus må registreres per rute.
+- Precision: 77 skjermtyper i registeret (IA 28.09, med PH-27, PH-IUP-01 og PH-IUP-02 fra 04.10),
+  hvorav ti er merket utgått. Bare PH-01 er visuelt godkjent; implementeringsstatus må
+  registreres per rute.
 - WANG: 59 skjermer i WANG-registeret. Prototypebevis teller ikke som app-portering.
 - Team Norway: TN-00–TN-27 og 34 dyp-lenker i det utvidede funksjonsinventaret.
 
@@ -188,7 +192,7 @@ Hele leveransen kan først kalles ferdig når:
 
 - alle 520 inventarrader er koblet til implementert skjerm, felles mønster eller dokumentert
   teknisk forklaring;
-- alle Precision-ruter er portert til godkjent design og kontrollert i appen;
+- alle aktive Precision-ruter (IA 28.09) er portert, kontrollert i appen og sett av Anders;
 - alle 59 WANG-skjermer og TN-00–TN-27/34 dyp-lenker har appbevis;
 - kritiske reiser fungerer fra plan til gjennomføring, lagring, oppsummering og analyse;
 - roller, RLS, samtykke, deling, tilbakekalling og feiltilstander er prøvd;
