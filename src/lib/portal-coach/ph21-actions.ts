@@ -4,17 +4,45 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { resolveValgtCoachId } from "@/lib/domain/valgt-coach";
 import { prisma } from "@/lib/prisma";
+import { erCoachetSpiller } from "@/lib/auth/coached";
+import { z } from "zod";
+import { hentPH21MottakerCoachId } from "./ph21-mottaker";
 import type { Prisma } from "@/generated/prisma/client";
 
-export async function sendPH21MeldingAction(coachId: string, content: string): Promise<{ ok: boolean; error?: string }> {
+const meldingInput = z.object({
+  coachId: z.string().trim().min(1).max(128),
+  content: z.string().trim().min(1, "Meldingstekst kan ikke være tom").max(4000),
+});
+
+export async function sendPH21MeldingAction(
+  coachIdInput: string,
+  contentInput: string,
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const user = await getCurrentUser();
     if (!user) return { ok: false, error: "Ikke autentisert" };
-    if (!content.trim()) return { ok: false, error: "Meldingstekst kan ikke være tom" };
+
+    const parsed = meldingInput.safeParse({ coachId: coachIdInput, content: contentInput });
+    if (!parsed.success) {
+      return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig melding" };
+    }
+    const { coachId, content } = parsed.data;
+
+    // Mottakeren avgjøres på serveren: bare coachen spilleren faktisk ser i
+    // Innboks, og bare for spillere med coach-tilknytning (samme regel som
+    // skjermen bruker for å vise skrivefeltet).
+    const [mottakerId, coachet] = await Promise.all([
+      hentPH21MottakerCoachId(user.id),
+      erCoachetSpiller(user.id),
+    ]);
+    const harCoachTilgang = coachet || user.role === "COACH" || user.role === "ADMIN";
+    if (!harCoachTilgang || !mottakerId || mottakerId !== coachId) {
+      return { ok: false, error: "Du kan bare sende melding til din egen coach" };
+    }
 
     const nyMelding: Prisma.InputJsonValue = {
       role: "user",
-      content: content.trim(),
+      content,
       ts: new Date().toISOString(),
     };
 
