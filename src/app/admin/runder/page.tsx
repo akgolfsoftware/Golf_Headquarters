@@ -12,6 +12,7 @@
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { rundeScopeWhere } from "@/lib/admin/runder-scope";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AGRD01Runder, type RundeRad, type RunderData } from "@/components/admin/precision/AGRD01Runder";
 import { dato, hcp } from "@/lib/admin-spiller/spiller360-visning";
@@ -22,8 +23,13 @@ export const metadata = { title: "Rundeanalyse · AgencyOS" };
 export default async function RunderPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
+  // Coach-scope: head coach (ADMIN) ser alle coachede spillere, assistant coach
+  // bare egne (coachScopedPlayerWhere). Uten dette så assistant coach alles runder.
+  const rundeScope = rundeScopeWhere(user);
+
   const [rounds, total] = await Promise.all([
     prisma.round.findMany({
+      where: rundeScope,
       orderBy: { playedAt: "desc" },
       take: 50,
       select: {
@@ -34,7 +40,7 @@ export default async function RunderPage() {
         _count: { select: { shots: true } },
       },
     }),
-    prisma.round.count(),
+    prisma.round.count({ where: rundeScope }),
   ]);
 
   const runder: RundeRad[] = rounds.map((r) => {

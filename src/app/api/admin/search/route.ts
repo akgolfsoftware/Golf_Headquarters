@@ -6,6 +6,8 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import type { UserRole } from "@/generated/prisma/client";
+import { filtrerHeadCoachBare } from "@/lib/agencyos/okonomi-tilgang";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -51,7 +53,7 @@ export type GlobalSearchResponse = {
 
 // Statisk rute-katalog. Brukes for navigasjons-treff i søket.
 // Match gjøres mot label + description (begge case-insensitive).
-const ROUTES: Omit<SearchRoute, "id">[] = [
+const ROUTES: (Omit<SearchRoute, "id"> & { bareHeadCoach?: true })[] = [
   { label: "Oversikt / Cockpit", description: "Daglig kontrolltårn", href: "/admin/agencyos" },
   { label: "Spillere", description: "Stall, profiler, analyse", href: "/admin/spillere" },
   { label: "Workbench", description: "Planlegging for spiller", href: "/admin/spillere" },
@@ -70,23 +72,25 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Anlegg & Tjenester", description: "Fasiliteter, priser, kapasitet", href: "/admin/anlegg" },
   { label: "Tilgjengelighet", description: "Availability grid", href: "/admin/availability" },
   { label: "Live", description: "Pågående økter", href: "/admin/agencyos/live" },
-  { label: "Rapporter", description: "Eksport og statistikk", href: "/admin/reports" },
-  { label: "Økonomi", description: "MRR, betalinger, faktura", href: "/admin/okonomi" },
+  { bareHeadCoach: true, label: "Rapporter", description: "Eksport og statistikk", href: "/admin/reports" },
+  { bareHeadCoach: true, label: "Økonomi", description: "MRR, betalinger, faktura", href: "/admin/okonomi" },
   { label: "Innstillinger", description: "API, kalender, sikkerhet", href: "/admin/settings" },
   { label: "Team", description: "Inviter og organisasjon", href: "/admin/team" },
   { label: "Caddie / AI", description: "Chat med AI-assistent", href: "/admin/agencyos/caddie" },
   { label: "Varsler", description: "Notifikasjoner", href: "/admin/varsler" },
 ];
 
-function matchRoutes(query: string): SearchRoute[] {
+/** Økonomi og rapporter er bare for head coach (ADMIN) — beslutninger.md §ØKONOMI. */
+function matchRoutes(query: string, role: UserRole): SearchRoute[] {
   const q = query.toLowerCase();
-  return ROUTES.filter(
-    (r) =>
-      r.label.toLowerCase().includes(q) ||
-      r.description.toLowerCase().includes(q),
-  )
+  return filtrerHeadCoachBare(ROUTES, role)
+    .filter(
+      (r) =>
+        r.label.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q),
+    )
     .slice(0, 6)
-    .map((r, i) => ({ id: `route-${i}`, ...r }));
+    .map(({ label, description, href }, i) => ({ id: `route-${i}`, label, description, href }));
 }
 
 export async function GET(req: Request) {
@@ -209,7 +213,7 @@ export async function GET(req: Request) {
     players,
     plans,
     bookings,
-    routes: matchRoutes(q),
+    routes: matchRoutes(q, coach.role),
   };
 
   return NextResponse.json(response);
