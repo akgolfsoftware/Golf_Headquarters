@@ -51,7 +51,7 @@ export function Kort({
       }
       style={{
         background: "var(--ak-ark)",
-        border: `1px solid ${tyngde === 1 ? "var(--ak-linje)" : "transparent"}`,
+        border: "1px solid var(--ak-linje)",
         borderRadius: "var(--ak-hjorne-md)",
         boxShadow: LOFT[tyngde],
         borderTop: aksent ? `3px solid ${aksent}` : undefined,
