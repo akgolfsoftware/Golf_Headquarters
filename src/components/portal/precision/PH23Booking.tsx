@@ -1,52 +1,80 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
+  type PH23BekreftResultat,
+  type PH23BekreftValg,
   type PH23BookingData,
   type PH23Service,
   type PH23MyBooking,
+  type PH23SlotDetalj,
   formatKr,
   beregnTjenestePris,
   getSyntheticPH23Data,
+  slotNokkel,
 } from "@/lib/portal-booking/ph23-booking-data";
+
+type PH23SlotData = Pick<PH23BookingData, "days" | "slots"> & { slotDetails?: PH23BookingData["slotDetails"] };
 
 export type PH23BookingProps = {
   initialData?: PH23BookingData;
   state?: "data" | "tom" | "laster" | "feil";
-  onBookSuccess?: (bookingId: string) => void;
+  /** Retur fra Stripe Checkout (?betalt=1 / ?avbrutt=1). */
+  betaling?: "betalt" | "avbrutt";
+  /** Ekte bookingflyt. Mangler den, kan ingenting bookes. */
+  onConfirmBooking?: (valg: PH23BekreftValg) => Promise<PH23BekreftResultat>;
+  /** Henter ekte ledige tider for en tjeneste. */
+  onHentSlots?: (serviceTypeId: string) => Promise<PH23SlotData>;
   onCancelBooking?: (bookingId: string) => Promise<boolean>;
-  onRescheduleBooking?: (bookingId: string, day: string, t: string) => Promise<boolean>;
+  /** Ekte flytting. Mangler den, vises ikke «Flytt time». */
+  onRescheduleBooking?: (bookingId: string, slot: PH23SlotDetalj) => Promise<{ ok: true } | { ok: false; grunn: string }>;
 };
 
 const STEPS = ["Tjeneste", "Tid", "Bekreft"];
 
+const TOM_SLOTDATA: PH23SlotData = { days: [], slots: {}, slotDetails: {} };
+
 export function PH23Booking({
   initialData,
   state = "data",
+  betaling,
+  onConfirmBooking,
+  onHentSlots,
   onCancelBooking,
   onRescheduleBooking,
 }: PH23BookingProps) {
+  const router = useRouter();
   const isTom = state === "tom";
   const defaultData = initialData ?? getSyntheticPH23Data(isTom);
 
-  const nextIdRef = useRef(1);
   const [step, setStep] = useState(0);
   const [svcId, setSvcId] = useState<string | null>(defaultData.services[0]?.id ?? null);
-  const [dayIndex, setDayIndex] = useState(1);
+  const [slotData, setSlotData] = useState<PH23SlotData>(defaultData);
+  const [henterSlots, setHenterSlots] = useState(false);
+  const [dayIndex, setDayIndex] = useState(0);
   const [slot, setSlot] = useState<string | null>(null);
   const [payMethod, setPayMethod] = useState<"Klipp" | "Kort">("Klipp");
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
 
-  const [mineTimer, setMineTimer] = useState<PH23MyBooking[]>(isTom ? [] : defaultData.mine);
-  const [doneBooking, setDoneBooking] = useState<PH23MyBooking | null>(null);
+  // Lokale endringer oppå serverdata; router.refresh() gir ny sannhet fra serveren.
+  const [lokaleEndringer, setLokaleEndringer] = useState<Record<string, Partial<PH23MyBooking>>>({});
+  const mineTimer: PH23MyBooking[] = isTom ? [] : defaultData.mine.map((b) => ({ ...b, ...lokaleEndringer[b.id] }));
+  const [doneBooking, setDoneBooking] = useState<(PH23MyBooking & { bookingId: string }) | null>(null);
 
-  // Sheet for flytting av time
+  // Sheet for flytting av time — tider hentes for bookingens egen tjeneste.
   const [mvBooking, setMvBooking] = useState<PH23MyBooking | null>(null);
-  const [mvDayIndex, setMvDayIndex] = useState(3);
+  const [mvSlotData, setMvSlotData] = useState<PH23SlotData>(TOM_SLOTDATA);
+  const [mvHenter, setMvHenter] = useState(false);
+  const [mvDayIndex, setMvDayIndex] = useState(0);
   const [mvSlot, setMvSlot] = useState<string | null>(null);
   const [isRescheduling, setIsRescheduling] = useState(false);
 
   // Dialog for avbestilling av time
   const [cxBooking, setCxBooking] = useState<PH23MyBooking | null>(null);
+  /** Over avbestillingsfristen ved åpning av dialogen; null = ukjent start. */
+  const [cxFoerFrist, setCxFoerFrist] = useState<boolean | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
   // Toast-feedback
@@ -59,37 +87,67 @@ export function PH23Booking({
 
   const selectedService: PH23Service | undefined = defaultData.services.find((s) => s.id === svcId);
   const currentCard = isTom ? { ...defaultData.card, left: 0, total: 0 } : defaultData.card;
-  const canUseClip = selectedService?.clip && currentCard.left > 0;
-  const servicePrice = selectedService ? beregnTjenestePris(selectedService, defaultData.rate) : 0;
+  const canUseClip = Boolean(selectedService?.clip && currentCard.left > 0);
+  const servicePrice = selectedService ? beregnTjenestePris(selectedService, defaultData.rate) : null;
+  const valgtSlot: PH23SlotDetalj | undefined = slot ? slotData.slotDetails?.[slotNokkel(dayIndex, slot)] : undefined;
+  const betalesMedKlipp = canUseClip && payMethod === "Klipp";
 
-  const getServiceLabel = (serviceId: string) => {
-    const s = defaultData.services.find((x) => x.id === serviceId);
-    if (!s) return serviceId;
-    return `${s.name} · ${s.min} min`;
+  const velgTjeneste = async (id: string) => {
+    setSvcId(id);
+    setSlot(null);
+    setDayIndex(0);
+    if (!onHentSlots || id === svcId) return;
+    setHenterSlots(true);
+    try {
+      setSlotData(await onHentSlots(id));
+    } catch {
+      setSlotData(TOM_SLOTDATA);
+      showToast("Ledige tider kunne ikke hentes", "Prøv igjen senere.");
+    } finally {
+      setHenterSlots(false);
+    }
   };
 
-  const handleConfirm = () => {
-    if (!selectedService || !slot) return;
-    const dayStr = defaultData.days[dayIndex] ? defaultData.days[dayIndex].join(" ") : "I dag";
-    const place = selectedService.id === "bay" ? "Bay 3 · Fredrikstad GK" : "Studio · Fredrikstad GK";
-    const payText = canUseClip && payMethod === "Klipp" ? "Klipp" : formatKr(servicePrice);
-
-    const generatedId = `b-new-${nextIdRef.current++}`;
-    const newBooking: PH23MyBooking = {
-      id: generatedId,
-      svc: selectedService.id,
-      svcName: `${selectedService.name} · ${selectedService.min} min`,
-      day: dayStr,
-      t: slot,
-      place,
-      status: "Bekreftet",
-      pay: payText,
-      coachName: selectedService.coach,
-    };
-
-    setMineTimer((prev) => [newBooking, ...prev]);
-    setDoneBooking(newBooking);
-    showToast("Timen er booket", `${selectedService.name} · ${dayStr} kl. ${slot}`);
+  const handleConfirm = async () => {
+    if (!selectedService || !slot || !valgtSlot || !onConfirmBooking) return;
+    setIsConfirming(true);
+    setConfirmError(null);
+    const dayStr = slotData.days[dayIndex] ? slotData.days[dayIndex].join(" ") : "—";
+    try {
+      const res = await onConfirmBooking({
+        serviceTypeId: selectedService.id,
+        slot: valgtSlot,
+        betaling: betalesMedKlipp ? "Klipp" : "Kort",
+      });
+      if (res.type === "betaling") {
+        // Kortbetaling: timen er ikke booket før Stripe og webhooken har bekreftet.
+        window.location.assign(res.url);
+        return;
+      }
+      if (res.type === "feil") {
+        setConfirmError(res.grunn);
+        return;
+      }
+      setDoneBooking({
+        id: res.bookingId,
+        bookingId: res.bookingId,
+        svc: selectedService.name,
+        serviceTypeId: selectedService.id,
+        svcName: `${selectedService.name} · ${selectedService.min} min`,
+        day: dayStr,
+        t: slot,
+        place: "—",
+        status: "Bekreftet",
+        pay: "Klipp",
+        coachName: valgtSlot.coachNavn,
+      });
+      showToast("Timen er booket", `${selectedService.name} · ${dayStr} kl. ${slot}`);
+      router.refresh();
+    } catch (err) {
+      setConfirmError(err instanceof Error ? err.message : "Booking feilet. Prøv igjen.");
+    } finally {
+      setIsConfirming(false);
+    }
   };
 
   const handleReset = () => {
@@ -98,21 +156,40 @@ export function PH23Booking({
     setSlot(null);
   };
 
+  const apneFlytt = async (m: PH23MyBooking) => {
+    setMvBooking(m);
+    setMvSlot(null);
+    setMvDayIndex(0);
+    setMvSlotData(TOM_SLOTDATA);
+    if (!onHentSlots || !m.serviceTypeId) return;
+    setMvHenter(true);
+    try {
+      setMvSlotData(await onHentSlots(m.serviceTypeId));
+    } catch {
+      showToast("Ledige tider kunne ikke hentes", "Prøv igjen senere.");
+    } finally {
+      setMvHenter(false);
+    }
+  };
+
   const handleDoReschedule = async () => {
-    if (!mvBooking || !mvSlot) return;
+    if (!mvBooking || !mvSlot || !onRescheduleBooking) return;
+    const detalj = mvSlotData.slotDetails?.[slotNokkel(mvDayIndex, mvSlot)];
+    if (!detalj) return;
     setIsRescheduling(true);
-    const dayStr = defaultData.days[mvDayIndex] ? defaultData.days[mvDayIndex].join(" ") : "Ny dag";
+    const dayStr = mvSlotData.days[mvDayIndex] ? mvSlotData.days[mvDayIndex].join(" ") : "—";
 
     try {
-      if (onRescheduleBooking) {
-        await onRescheduleBooking(mvBooking.id, dayStr, mvSlot);
+      const res = await onRescheduleBooking(mvBooking.id, detalj);
+      if (!res.ok) {
+        showToast("Kunne ikke flytte time", res.grunn);
+        return;
       }
-      setMineTimer((prev) =>
-        prev.map((b) => (b.id === mvBooking.id ? { ...b, day: dayStr, t: mvSlot } : b))
-      );
-      showToast("Timen er flyttet", `${dayStr} kl. ${mvSlot} · Coach har fått beskjed`);
+      setLokaleEndringer((prev) => ({ ...prev, [mvBooking.id]: { day: dayStr, t: mvSlot } }));
+      showToast("Timen er flyttet", `${dayStr} kl. ${mvSlot}`);
       setMvBooking(null);
       setMvSlot(null);
+      router.refresh();
     } catch {
       showToast("Kunne ikke flytte time", "Prøv igjen senere.");
     } finally {
@@ -121,23 +198,27 @@ export function PH23Booking({
   };
 
   const handleDoCancel = async () => {
-    if (!cxBooking) return;
+    if (!cxBooking || !onCancelBooking) return;
     setIsCancelling(true);
 
     try {
-      if (onCancelBooking) {
-        await onCancelBooking(cxBooking.id);
-      }
-      setMineTimer((prev) =>
-        prev.map((b) => (b.id === cxBooking.id ? { ...b, status: "Avbestilt" } : b))
-      );
-      showToast("Timen er avbestilt", "Ingen klipp trekkes");
+      await onCancelBooking(cxBooking.id);
+      setLokaleEndringer((prev) => ({ ...prev, [cxBooking.id]: { status: "Avbestilt" } }));
+      showToast("Timen er avbestilt", "Detaljer om klipp og refusjon kommer på e-post");
       setCxBooking(null);
-    } catch {
-      showToast("Kunne ikke avbestille", "Prøv igjen senere.");
+      router.refresh();
+    } catch (err) {
+      showToast("Kunne ikke avbestille", err instanceof Error ? err.message : "Prøv igjen senere.");
     } finally {
       setIsCancelling(false);
     }
+  };
+
+  /** Åpner avbestilling og avgjør fristen nå (ukjent start gir null — vi lover ingenting). */
+  const apneAvbestill = (m: PH23MyBooking) => {
+    const ms = m.startIso ? new Date(m.startIso).getTime() : NaN;
+    setCxFoerFrist(Number.isNaN(ms) ? null : ms - Date.now() > defaultData.cancelHours * 3_600_000);
+    setCxBooking(m);
   };
 
   if (state === "laster") {
@@ -212,8 +293,8 @@ export function PH23Booking({
     );
   }
 
-  const currentDaySlots = defaultData.slots[dayIndex] || [];
-  const mvDaySlots = defaultData.slots[mvDayIndex] || [];
+  const currentDaySlots = slotData.slots[dayIndex] || [];
+  const mvDaySlots = mvSlotData.slots[mvDayIndex] || [];
 
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 16px" }}>
@@ -329,6 +410,25 @@ export function PH23Booking({
             </ol>
           )}
 
+          {betaling && !doneBooking && (
+            <p
+              role="status"
+              style={{
+                margin: 0,
+                padding: "10px 12px",
+                borderRadius: "var(--radius)",
+                border: "1px solid var(--border-hairline)",
+                background: "var(--surface-sunken)",
+                font: "var(--type-body-s)",
+                color: "var(--text-primary)",
+              }}
+            >
+              {betaling === "betalt"
+                ? "Betalingen er mottatt. Timen bekreftes når betalingen er registrert, og bekreftelsen kommer på e-post."
+                : "Betalingen ble avbrutt. Ingen time er booket."}
+            </p>
+          )}
+
           {/* Steg-innhold */}
           {doneBooking ? (
             /* Bekreftet fullført-kort */
@@ -386,7 +486,7 @@ export function PH23Booking({
                     Varighet
                   </span>
                   <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
-                    {selectedService?.min ?? 60} min
+                    {selectedService?.min ?? "—"} min
                   </span>
                 </div>
                 <div>
@@ -402,7 +502,7 @@ export function PH23Booking({
                     Coach
                   </span>
                   <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
-                    {selectedService?.coach ?? "Uten coach"}
+                    {doneBooking.coachName ?? "—"}
                   </span>
                 </div>
                 <div>
@@ -413,17 +513,14 @@ export function PH23Booking({
                     {doneBooking.pay}
                   </span>
                   <span style={{ font: "var(--type-meta)", color: "var(--text-muted)", display: "block", marginTop: 2 }}>
-                    {doneBooking.pay === "Klipp"
-                      ? `${Math.max(0, currentCard.left - 1)} AV ${currentCard.total} KLIPP IGJEN ETTER TIMEN`
-                      : "FAKTURERES ETTER TIMEN"}
+                    {`${Math.max(0, currentCard.left - 1)} AV ${currentCard.total} KLIPP IGJEN ETTER TIMEN`}
                   </span>
                 </div>
               </div>
 
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={() => showToast("Lagt i kalenderen", "ICS-fil lastet ned")}
+                <a
+                  href={`/portal/booking/bekreftet?bookingId=${encodeURIComponent(doneBooking.bookingId)}`}
                   style={{
                     padding: "8px 16px",
                     borderRadius: "var(--radius)",
@@ -431,11 +528,11 @@ export function PH23Booking({
                     background: "var(--surface-card)",
                     color: "var(--text-primary)",
                     font: "500 14px/1 var(--font-sans)",
-                    cursor: "pointer",
+                    textDecoration: "none",
                   }}
                 >
                   Legg i kalender
-                </button>
+                </a>
                 <button
                   type="button"
                   onClick={handleReset}
@@ -473,7 +570,7 @@ export function PH23Booking({
                     type="button"
                     role="radio"
                     aria-checked={on}
-                    onClick={() => setSvcId(x.id)}
+                    onClick={() => void velgTjeneste(x.id)}
                     style={{
                       textAlign: "left",
                       padding: 16,
@@ -524,13 +621,13 @@ export function PH23Booking({
                 aria-label="Dag"
                 style={{
                   display: "grid",
-                  gridTemplateColumns: `repeat(${defaultData.days.length || 1}, minmax(0, 1fr))`,
+                  gridTemplateColumns: `repeat(${slotData.days.length || 1}, minmax(0, 1fr))`,
                   gap: 4,
                 }}
               >
-                {defaultData.days.map(([d, dt], i) => {
+                {slotData.days.map(([d, dt], i) => {
                   const on = i === dayIndex;
-                  const count = (defaultData.slots[i] || []).length;
+                  const count = (slotData.slots[i] || []).length;
                   return (
                     <button
                       key={dt}
@@ -565,7 +662,11 @@ export function PH23Booking({
                 })}
               </div>
 
-              {currentDaySlots.length ? (
+              {henterSlots ? (
+                <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                  Henter ledige tider …
+                </p>
+              ) : currentDaySlots.length ? (
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {currentDaySlots.map((t) => {
                     const isSelected = slot === t;
@@ -591,7 +692,9 @@ export function PH23Booking({
                 </div>
               ) : (
                 <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-                  Ingen ledige tider {defaultData.days[dayIndex]?.join(" ") ?? ""}. Velg en annen dag.
+                  {slotData.days.length
+                    ? `Ingen ledige tider ${slotData.days[dayIndex]?.join(" ") ?? ""}. Velg en annen dag.`
+                    : "Ingen ledige tider de neste 14 dagene for denne tjenesten."}
                 </p>
               )}
             </div>
@@ -628,7 +731,7 @@ export function PH23Booking({
                     Tid
                   </span>
                   <span style={{ font: "600 14px/1.3 var(--font-mono)", color: "var(--text-primary)" }}>
-                    {defaultData.days[dayIndex]?.join(" ")} kl. {slot}
+                    {slotData.days[dayIndex]?.join(" ")} kl. {slot}
                   </span>
                 </div>
                 <div>
@@ -636,7 +739,7 @@ export function PH23Booking({
                     Coach
                   </span>
                   <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
-                    {selectedService?.coach ?? "Uten coach"}
+                    {valgtSlot?.coachNavn ?? selectedService?.coach ?? "—"}
                   </span>
                 </div>
                 <div>
@@ -688,7 +791,7 @@ export function PH23Booking({
                   >
                     {currentCard.left > 0
                       ? `${currentCard.left} AV ${currentCard.total} KLIPP IGJEN · GYLDIG TIL ${currentCard.valid}`
-                      : "INGEN KLIPP IGJEN · BETALES MED KORT"}
+                      : "INGEN KLIPP IGJEN · BETALES MED KORT FØR TIMEN"}
                   </span>
                 </div>
               ) : (
@@ -699,7 +802,7 @@ export function PH23Booking({
                     letterSpacing: "0.06em",
                   }}
                 >
-                  BETALES MED KORT ETTER TIMEN · KLIPPEKORT GJELDER BARE {currentCard.covers.toUpperCase()}
+                  BETALES MED KORT FØR TIMEN · DU SENDES TIL SIKKER BETALING
                 </span>
               )}
 
@@ -713,6 +816,12 @@ export function PH23Booking({
                 GRATIS AVBESTILLING FRAM TIL {defaultData.cancelHours} TIMER FØR
               </span>
             </div>
+          )}
+
+          {confirmError && !doneBooking && step === 2 && (
+            <p role="alert" style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)" }}>
+              Timen ble ikke booket: {confirmError}
+            </p>
           )}
 
           {/* Neste / Tilbake knapper */}
@@ -763,18 +872,19 @@ export function PH23Booking({
               ) : (
                 <button
                   type="button"
-                  onClick={handleConfirm}
+                  disabled={!valgtSlot || !onConfirmBooking || isConfirming}
+                  onClick={() => void handleConfirm()}
                   style={{
                     padding: "8px 16px",
                     borderRadius: "var(--radius)",
                     border: "none",
-                    background: "var(--primary)",
-                    color: "var(--text-on-primary)",
+                    background: !valgtSlot || !onConfirmBooking || isConfirming ? "var(--surface-sunken)" : "var(--primary)",
+                    color: !valgtSlot || !onConfirmBooking || isConfirming ? "var(--text-muted)" : "var(--text-on-primary)",
                     font: "500 14px/1 var(--font-sans)",
-                    cursor: "pointer",
+                    cursor: !valgtSlot || !onConfirmBooking || isConfirming ? "not-allowed" : "pointer",
                   }}
                 >
-                  Bekreft booking
+                  {isConfirming ? "Booker …" : betalesMedKlipp ? "Bekreft booking" : "Gå til betaling"}
                 </button>
               )}
             </div>
@@ -898,7 +1008,7 @@ export function PH23Booking({
                         flex: "1 1 160px",
                       }}
                     >
-                      {getServiceLabel(m.svc)}
+                      {m.svcName}
                     </span>
                     <span
                       style={{
@@ -926,12 +1036,10 @@ export function PH23Booking({
 
                   {m.status !== "Avbestilt" && (
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
+                      {onRescheduleBooking && m.serviceTypeId && (
                       <button
                         type="button"
-                        onClick={() => {
-                          setMvBooking(m);
-                          setMvSlot(null);
-                        }}
+                        onClick={() => void apneFlytt(m)}
                         style={{
                           padding: "4px 10px",
                           borderRadius: "var(--radius)",
@@ -944,9 +1052,11 @@ export function PH23Booking({
                       >
                         Flytt time
                       </button>
+                      )}
+                      {onCancelBooking && (
                       <button
                         type="button"
-                        onClick={() => setCxBooking(m)}
+                        onClick={() => apneAvbestill(m)}
                         style={{
                           padding: "4px 10px",
                           borderRadius: "var(--radius)",
@@ -959,6 +1069,7 @@ export function PH23Booking({
                       >
                         Avbestill
                       </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1017,7 +1128,7 @@ export function PH23Booking({
                         flex: "1 1 160px",
                       }}
                     >
-                      {getServiceLabel(m.svc)}
+                      {m.svcName}
                     </span>
                     <span
                       style={{
@@ -1088,7 +1199,7 @@ export function PH23Booking({
                 id="mv-title"
                 style={{ font: "var(--type-title-s)", color: "var(--text-primary)", margin: "4px 0 0" }}
               >
-                {getServiceLabel(mvBooking.svc)}
+                {mvBooking.svcName}
               </h2>
               <span
                 style={{
@@ -1114,7 +1225,7 @@ export function PH23Booking({
                 Velg ny dag
               </span>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {defaultData.days.map(([d, dt], i) => {
+                {mvSlotData.days.map(([d, dt], i) => {
                   const on = mvDayIndex === i;
                   return (
                     <button
@@ -1152,7 +1263,11 @@ export function PH23Booking({
               >
                 Velg ny tid
               </span>
-              {mvDaySlots.length ? (
+              {mvHenter ? (
+                <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>
+                  HENTER LEDIGE TIDER …
+                </span>
+              ) : mvDaySlots.length ? (
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                   {mvDaySlots.map((t) => {
                     const on = mvSlot === t;
@@ -1201,7 +1316,7 @@ export function PH23Booking({
               >
                 {isRescheduling
                   ? "Flytter time …"
-                  : `Flytt til ${mvSlot ? `${defaultData.days[mvDayIndex]?.join(" ")} ${mvSlot}` : "valgt tid"}`}
+                  : `Flytt til ${mvSlot ? `${mvSlotData.days[mvDayIndex]?.join(" ")} ${mvSlot}` : "valgt tid"}`}
               </button>
               <button
                 type="button"
@@ -1261,8 +1376,12 @@ export function PH23Booking({
               Avbestille timen?
             </h2>
             <p style={{ font: "var(--type-body-s)", color: "var(--text-secondary)", margin: 0 }}>
-              {getServiceLabel(cxBooking.svc)} {cxBooking.day} kl. {cxBooking.t}. Mer enn{" "}
-              {defaultData.cancelHours} timer til timen, så ingen klipp trekkes.
+              {cxBooking.svcName} {cxBooking.day} kl. {cxBooking.t}.{" "}
+              {cxFoerFrist === true
+                ? `Mer enn ${defaultData.cancelHours} timer til timen, så klippet eller betalingen kommer tilbake.`
+                : cxFoerFrist === false
+                  ? `Mindre enn ${defaultData.cancelHours} timer til timen. Klipp eller betaling kommer ikke tilbake.`
+                  : `Gratis avbestilling fram til ${defaultData.cancelHours} timer før.`}
             </p>
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", paddingTop: 8 }}>
               <button
