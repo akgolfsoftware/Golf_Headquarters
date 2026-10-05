@@ -1,3 +1,5 @@
+// PH24HelseKort — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TL } from "@/lib/v2/train-lock";
 /**
  * v2 — PlayerHQ Meg · Helse (retning C). V2Shell leverer chrome-en
@@ -15,7 +17,6 @@ import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegHelseV2, type MegHelseData } from "@/components/portal/v2/MegHelseV2";
 import { lagreHelseEntry } from "./actions";
 
@@ -78,10 +79,12 @@ export default async function HelsePage() {
   // (se actions.ts) — dette er den ærlige forklaringen på hvorfor.
   if (!(await harManuellHelseSamtykke(user.id))) {
     return (
-      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
         <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <HelseSamtykkeMangler />
-      </V2Shell>
+      </div>
+    </PlayerHQSkall>
     );
   }
 
@@ -155,9 +158,11 @@ export default async function HelsePage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegHelseV2 data={data} lagre={lagreHelseEntry} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

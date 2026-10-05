@@ -1,17 +1,15 @@
 /**
- * PlayerHQ Utfordring-detalj — v2. Auth + dataloader gjenbrukt 1:1 fra
+ * PH-24d Utfordring-detalj — Precision Athletics. Auth + dataloader gjenbrukt 1:1 fra
  * legacy-skjermen; server-actions (bliMed/avslutt/registrerScore) sendes ned
- * som props. V2Shell eier chrome-en, UtfordringDetaljV2 rendrer innholdet.
+ * som props. PlayerHQSkall eier chrome-en, PH24dDetalj rendrer innholdet.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import {
-  UtfordringDetaljV2,
-  type UtfordringDetaljData,
-} from "@/components/portal/v2/UtfordringDetaljV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH24dDetalj, type PH24dDetaljData } from "@/components/portal/precision/PH24dUtfordringer";
+import { datoLang } from "@/lib/portal/utfordring-visning";
 import {
   bliMed,
   avsluttUtfordring,
@@ -54,15 +52,17 @@ export default async function UtfordringDetaljPage({
 
   const minDeltakelse = utfordring.participants.find((p) => p.userId === user.id);
 
-  const data: UtfordringDetaljData = {
+  const uleste = await prisma.notification.count({ where: { userId: user.id, readAt: null } });
+
+  const data: PH24dDetaljData = {
     id: utfordring.id,
-    name: utfordring.name,
-    description: utfordring.description,
-    eierNavn: utfordring.owner.name ?? "(ukjent)",
-    drillNavn: drill?.name ?? null,
-    status: utfordring.status,
-    startAt: utfordring.startAt,
-    endAt: utfordring.endAt,
+    navn: utfordring.name,
+    beskrivelse: utfordring.description,
+    eierNavn: utfordring.owner.name ?? "Ukjent",
+    ovelseNavn: drill?.name ?? null,
+    avsluttet: utfordring.status === "ENDED",
+    start: datoLang(utfordring.startAt),
+    slutt: datoLang(utfordring.endAt),
     erEier: utfordring.ownerId === user.id,
     erDeltaker: !!minDeltakelse,
     minScore: minDeltakelse?.score ?? null,
@@ -70,7 +70,7 @@ export default async function UtfordringDetaljPage({
     higherIsBetter: utfordring.higherIsBetter,
     deltakere: utfordring.participants.map((p) => ({
       id: p.id,
-      navn: p.user.name ?? "(uten navn)",
+      navn: p.user.name ?? "Uten navn",
       erMeg: p.userId === user.id,
       rank: p.rank,
       score: p.score,
@@ -94,15 +94,12 @@ export default async function UtfordringDetaljPage({
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <UtfordringDetaljV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH24dDetalj
+        tilstand="data"
         data={data}
-        actions={{
-          bliMed: bliMedAction,
-          avslutt: avsluttAction,
-          registrerScore: registrerScoreAction,
-        }}
+        actions={{ bliMed: bliMedAction, avslutt: avsluttAction, registrerScore: registrerScoreAction }}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

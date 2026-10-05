@@ -1,7 +1,12 @@
-/* v2-skjelett for /portal/analysere (Analysere/TrackMan/Runder/SG-fanene). */
-
-import { V2Laster } from "@/components/v2/laster";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="analyse" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <LasterTilstand text="Henter analysen …" />
+      </div>
+    </PlayerHQSkall>
+  );
 }

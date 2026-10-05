@@ -363,7 +363,7 @@ export function AnalyseHubTrainLock({ data }: { data: TmHubData }) {
             <TrackManKort data={data} />
           </div>
           <div className="hidden min-[834px]:block">
-            <Dypere rader={data.dypere.filter((r) => r.tittel !== "Tester")} />
+            <Dypere rader={data.dypere} />
           </div>
         </div>
       </div>

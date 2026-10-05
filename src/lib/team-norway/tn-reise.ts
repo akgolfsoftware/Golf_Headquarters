@@ -4,7 +4,7 @@
  */
 
 import { tnDefinitionId, tnComparableResult } from "@/lib/portal-tester/tn-integration";
-import { TN_VERSION, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { tnVersion, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 
 export const TN_REISE = [
   { steg: "oversikt", href: "/team-norway", vakt: "hentTnOversiktForBruker" },
@@ -52,7 +52,7 @@ export function tnSammeTestvariant(protokoll: TnProtocol, score: number, details
   const testId = tnDefinitionId(protokoll);
   const sammenlignbar = tnComparableResult(testId, score, details);
   if (!sammenlignbar) return null;
-  if (sammenlignbar.version !== TN_VERSION) return null;
+  if (sammenlignbar.version !== tnVersion(protokoll)) return null;
   if (sammenlignbar.protocolId !== protokoll.id) return null;
   if (sammenlignbar.count !== protokoll.rows.length) return null;
   return { testId, ...sammenlignbar };

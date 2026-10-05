@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
 import {
@@ -21,13 +22,14 @@ import {
  */
 export async function hentTurneringshistorikk(
   userId: string,
+  db: Pick<Prisma.TransactionClient, "user" | "publicPlayerEntry" | "tournamentEntry"> = prisma,
 ): Promise<Turneringshistorikk> {
-  const bruker = await prisma.user.findUnique({
+  const bruker = await db.user.findUnique({
     where: { id: userId },
     select: { publicPlayerId: true },
   });
 
-  const [entries, manuelle] = await Promise.all([bruker?.publicPlayerId ? prisma.publicPlayerEntry.findMany({
+  const [entries, manuelle] = await Promise.all([bruker?.publicPlayerId ? db.publicPlayerEntry.findMany({
     where: {
       playerId: bruker.publicPlayerId,
       // Sammenslåtte dubletter skal ikke dukke opp to ganger.
@@ -51,7 +53,7 @@ export async function hentTurneringshistorikk(
         },
       },
     },
-  }) : Promise.resolve([]), prisma.tournamentEntry.findMany({
+  }) : Promise.resolve([]), db.tournamentEntry.findMany({
     where: { userId, withdrawnAt: null, OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null } }] },
     select: { id: true, manualName: true, manualDate: true, entryStatus: true, category: true,
       tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } } },

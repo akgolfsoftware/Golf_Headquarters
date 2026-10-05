@@ -1,3 +1,4 @@
+// PH20HullPlan — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ Hull-detalj — Gameplan (B30, omdøpt fra "Baneguide"). Signaturskjerm:
  * satellitt + din spredning + KPI fra dispersion-motoren + innsikt, PLUSS en
@@ -15,7 +16,7 @@ import { getHoleDetail } from "@/lib/gameplan/queries";
 import { hentGameplanForHull } from "@/lib/gameplan/actions";
 import { CourseMap } from "@/components/gameplan/course-map";
 import { GameplanPlanlegger } from "@/components/gameplan/GameplanPlanlegger";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, KpiFlis, MikroMeta, TomTilstand } from "@/components/v2";
@@ -61,7 +62,8 @@ export default async function HoleDetailPage({
         : null;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Link
           href={`/portal/gameplan/${bane.id}`}
@@ -193,6 +195,7 @@ export default async function HoleDetailPage({
           </Kort>
         )}
       </div>
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,36 +1,32 @@
 /**
- * PlayerHQ · Gapping (D5).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-gapping.html
- *
- * Ligger under TrackMan fordi tallene kommer derfra — fasiten lenker tilbake
- * til TrackMan-lista. Leser kun.
+ * PH17Gapping — Precision Athletics. Data og handlinger er beholdt.
+ * Gapping-analyse for køller i bagen med carry, spredning og avstandsgap.
+ * Kilde: ui_kits/playerhq/screens/PH-17.jsx (26.09.2026).
  */
 
 import { redirect } from "next/navigation";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentGapping } from "@/lib/portal/gapping-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { GappingV2 } from "@/components/portal/v2/GappingV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH17TrackMan } from "@/components/portal/precision/PH17TrackMan";
+import { loadPH17TrackMan } from "@/lib/portal-analyse/load-ph17-trackman";
+import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Gapping · PlayerHQ" };
+export const metadata = { title: "Gapping · TrackMan · PlayerHQ" };
 
 export default async function GappingPage() {
   const user = await requirePortalUser();
+  if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await hentGapping(user.id);
+  const [data, uleste] = await Promise.all([
+    loadPH17TrackMan(user.id, user.name),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="analyse"
-      nav={PLAYERHQ_NAV}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
-      <GappingV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH17TrackMan data={data} initialFane="gap" />
+    </PlayerHQSkall>
   );
 }

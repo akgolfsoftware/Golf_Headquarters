@@ -1,29 +1,15 @@
+// PH19TalentMinPlan — Precision Athletics.
 /**
- * PlayerHQ · Talent · Min plan (/portal/talent/min-plan) — v2.
- * v2-port 17. juli 2026 (Team D5): `TalentMinPlanV2` erstatter athletic-
- * skjermen, ruten flyttet ut av (legacy). Feature-gate (FEATURES.TALENT) og
- * «ikke i programmet»-sjekken fra den slettede (legacy)-layouten håndheves
- * nå her i siden. Auth, Prisma-query mot TalentTracking og milepæl-parsingen
- * er uendret — kun presentasjonslaget er nytt.
+ * PlayerHQ · Talent · Min plan (/portal/talent/min-plan) i Precision Athletics.
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx
  */
 
 import { notFound } from "next/navigation";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TalentFaner } from "@/components/portal/v2/TalentFaner";
-import {
-  TalentMinPlanV2,
-  type TalentMinPlanData,
-} from "@/components/portal/v2/TalentMinPlanV2";
-import {
-  TALENT_AKSE_KEYS,
-  TALENT_AKSE_LABELS,
-  TalentIkkeIProgrammet,
-} from "@/components/portal/v2/TalentFellesV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH19Talent } from "@/components/portal/precision/PH19Talent";
 
 type Milepael = {
   tittel: string;
@@ -45,77 +31,35 @@ function parseMilepaeler(json: unknown): Milepael[] {
     .filter((m) => m.tittel.length > 0);
 }
 
-function formatDato(iso?: string): string | null {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("nb-NO", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    timeZone: "Europe/Oslo",
-  });
-}
-
 export default async function MinPlanPage() {
   if (!FEATURES.TALENT) notFound();
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
-  const tracking = await prisma.talentTracking.findUnique({
-    where: { userId: user.id },
-  });
+  const [tracking, uleste] = await Promise.all([
+    prisma.talentTracking.findUnique({ where: { userId: user.id } }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
 
   if (!tracking) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-        <TalentIkkeIProgrammet />
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+        <PH19Talent fane="min-plan" ikkeIProgrammet />
+      </PlayerHQSkall>
     );
   }
 
-  const milepaelerRaa = parseMilepaeler(tracking.milepaeler);
-  const nesteMalRaa = milepaelerRaa.find((m) => !m.fullfort);
-
-  const iProgrammetSiden = tracking.inkludertFra.toLocaleDateString("nb-NO", {
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Oslo",
-  });
-
-  const data: TalentMinPlanData = {
-    niva: tracking.niva,
-    status: [
-      { label: "Nivå", value: tracking.niva },
-      { label: "Klubb", value: tracking.klubb ?? "Ikke registrert" },
-      { label: "Region", value: tracking.region ?? "Ikke registrert" },
-      { label: "I programmet", value: iProgrammetSiden },
-    ],
-    akser: TALENT_AKSE_KEYS.map((k) => ({
-      label: TALENT_AKSE_LABELS[k],
-      verdi: tracking[k],
-    })),
-    nesteMal: nesteMalRaa
-      ? {
-          tittel: nesteMalRaa.tittel,
-          beskrivelse: nesteMalRaa.beskrivelse ?? null,
-          fristTekst: formatDato(nesteMalRaa.dato),
-        }
-      : null,
-    milepaeler: milepaelerRaa.map((m) => ({
-      tittel: m.tittel,
-      datoTekst: formatDato(m.dato),
-      beskrivelse: m.beskrivelse ?? null,
-      fullfort: m.fullfort ?? false,
-    })),
-  };
+  const milepaeler = parseMilepaeler(tracking.milepaeler);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <TalentFaner aktiv="min-plan" />
-      <TalentMinPlanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Talent
+        fane="min-plan"
+        niva={tracking.niva}
+        klubb={tracking.klubb}
+        region={tracking.region}
+        milepaeler={milepaeler}
+      />
+    </PlayerHQSkall>
   );
 }

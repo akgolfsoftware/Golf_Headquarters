@@ -56,6 +56,11 @@ export type ShotRad = {
   club: string | null;
   lie: ShotLie;
   distanceToPin: number;
+  endLie: ShotLie | null;
+  endDistanceToPinM: number;
+  holed: boolean;
+  penaltyStrokes: number;
+  intendedAimDistanceM: number | null;
   windDir: WindDir | null;
   shotType: ShotType;
   isPenalty: boolean;
@@ -70,9 +75,9 @@ export function byggShotRader(hull: LoggetHull): ShotRad[] {
   let startLie: ShotLie = "TEE";
   let startAvstand = hull.lengdeMeter;
 
-  return hull.slag.map((slag: LoggetSlag, i) => {
+  const rows = hull.slag.map((slag: LoggetSlag, i) => {
     const id = randomUUID();
-    const shotType = utledShotType(i === 0, hull.par, startLie, startAvstand);
+    const shotType = utledShotType(i === 0, hull.par, startLie, slag.pinAvstand ?? startAvstand);
     const erPutt = shotType === "PUTT";
 
     const rad: ShotRad = {
@@ -83,6 +88,11 @@ export function byggShotRader(hull: LoggetHull): ShotRad[] {
       club: slag.kolle ?? null,
       lie: startLie,
       distanceToPin: slag.pinAvstand ?? startAvstand,
+      endLie: slag.resultat.iHull ? null : slag.resultat.lie,
+      endDistanceToPinM: slag.resultat.iHull ? 0 : slag.resultat.avstandTilHull,
+      holed: slag.resultat.iHull,
+      penaltyStrokes: slag.straffe ? 1 : 0,
+      intendedAimDistanceM: slag.targetAvstand ?? null,
       windDir: slag.vind ?? null,
       shotType,
       isPenalty: slag.straffe === true,
@@ -95,7 +105,7 @@ export function byggShotRader(hull: LoggetHull): ShotRad[] {
         erPutt && slag.putt
           ? {
               shotId: id,
-              lengdeFot: Math.round(meterTilFot(startAvstand)),
+              lengdeFot: Math.round(meterTilFot(slag.pinAvstand ?? startAvstand)),
               breakRetning: slag.putt.breakRetning,
               slopeAlvorlighet: slag.putt.slopeAlvorlighet,
               linjeMiss: slag.putt.linjeMiss ?? null,
@@ -109,6 +119,11 @@ export function byggShotRader(hull: LoggetHull): ShotRad[] {
     }
     return rad;
   });
+  for (let i = 1; i < rows.length; i++) {
+    const corrected = hull.slag[i].pinAvstand;
+    if (corrected != null) rows[i - 1].endDistanceToPinM = corrected;
+  }
+  return rows;
 }
 
 /** Skiller Shot-kolonner fra PuttDetail-rader for to separate createMany-kall. */

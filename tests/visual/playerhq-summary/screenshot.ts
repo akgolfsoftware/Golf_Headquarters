@@ -19,7 +19,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   async function open(state = "fullfort", theme = "lys") {
     await page.goto(`${server.origin}/?state=${state}&theme=${theme}`);
-    await page.locator(".ph06-number, .ph06-empty-title").waitFor();
+    await page.locator(".ph07-number, .ph07-empty-title").waitFor();
     await page.evaluate(() => document.fonts.ready);
     assert(await page.evaluate(() => [...document.fonts].some((font) => font.family === "Geist" && font.status === "loaded")), "Appens Geist må faktisk være lastet");
   }
@@ -27,18 +27,18 @@ try {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 1100 });
     for (const theme of ["lys", "mork"]) for (const state of cases) {
       await open(state, theme);
-      assert(await page.locator(".ph06").evaluate((el) => el.scrollWidth <= el.clientWidth + 1), `${state}/${width}/${theme}: horisontal overflyt`);
-      if (state === "delvis") assert.match(await page.locator(".ph06-hero").innerText(), /1\s*\/\s*3/);
+      assert(await page.locator(".ph07").evaluate((el) => el.scrollWidth <= el.clientWidth + 1), `${state}/${width}/${theme}: horisontal overflyt`);
+      if (state === "delvis") assert.match(await page.locator(".ph07-hero").innerText(), /1\s*\/\s*3/);
       if (state === "lagret" || state === "vurdert") {
-        assert.match(await page.locator(".ph06-rating").innerText(), /Kvalitet: 4\/5/);
-        assert.match(await page.locator(".ph06-rating").innerText(), /Jobbe mer med korte innspill/);
+        assert.match(await page.locator(".ph07-rating").innerText(), /Kvalitet: 4\/5/);
+        assert.match(await page.locator(".ph07-rating").innerText(), /Jobbe mer med korte innspill/);
       }
       if (state === "lagret") assert.match(await page.locator('[data-od-id="etter-lagrede-ord"]').innerText(), /Fin økt med jevnt treffvindu/);
       if (state === "tapper") {
         assert.equal(await page.locator("textarea").count(), 0);
         assert.equal(await page.getByRole("button", { name: "Rediger oppsummering" }).count(), 0);
-        assert.match(await page.locator(".ph06-hero").innerText(), /37/);
-        assert.doesNotMatch(await page.locator(".ph06").innerText(), /Øvelser ferdig|Varighet/);
+        assert.match(await page.locator(".ph07-hero").innerText(), /37/);
+        assert.doesNotMatch(await page.locator(".ph07").innerText(), /Øvelser ferdig|Varighet/);
       }
       await page.screenshot({ path: resolve(out, `${state}--${theme}--${width}px.png`) }); screenshots++;
     }
@@ -48,7 +48,7 @@ try {
   for (const state of ["fullfort", "lagret", "langt"]) {
     await open(state);
     await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
-    assert(await page.locator(".ph06").evaluate((el) => el.scrollWidth <= el.clientWidth + 1));
+    assert(await page.locator(".ph07").evaluate((el) => el.scrollWidth <= el.clientWidth + 1));
     await page.getByRole("link", { name: "Lukk", exact: true }).last().scrollIntoViewIfNeeded();
     await page.screenshot({ path: resolve(out, `${state}--lys--390px-tekst-200pct.png`) }); screenshots++;
   }
@@ -57,7 +57,7 @@ try {
   await page.addInitScript(() => sessionStorage.setItem("akhq-live-notater-test-sesjon-1", JSON.stringify([{ t: "03:00", tekst: "Syntetisk notat én." }, { t: "08:00", tekst: "Syntetisk notat to." }])));
   await open();
   const note = page.getByRole("textbox", { name: "Oppsummering med dine ord" });
-  await page.waitForFunction(() => document.querySelector<HTMLTextAreaElement>('#ph06-ord')?.value.includes("Syntetisk notat to."));
+  await page.waitForFunction(() => document.querySelector<HTMLTextAreaElement>('#ph07-ord')?.value.includes("Syntetisk notat to."));
   assert.match(await note.inputValue(), /Syntetisk notat én/);
   await note.fill("Min korrigerte oppsummering.");
   await page.evaluate(() => { window.summaryHarness.mode = "throw"; });
@@ -100,14 +100,14 @@ try {
   await page.evaluate(() => window.summaryHarness.release());
   await page.getByText("Neste fokus: Bevare samme rytme.", { exact: true }).waitFor();
   await page.getByRole("button", { name: "Rediger oppsummering", exact: true }).click();
-  assert.match(await page.locator(".ph06-rating").innerText(), /Kvalitet: 4\/5/);
+  assert.match(await page.locator(".ph07-rating").innerText(), /Kvalitet: 4\/5/);
   await page.getByRole("textbox", { name: "Oppsummering med dine ord" }).fill("Ny oppsummering, samme vurdering.");
   await page.evaluate(() => { window.summaryHarness.mode = "ok"; });
   await page.getByRole("button", { name: "Lagre i loggen", exact: true }).click();
   await page.getByText("Lagret i loggen", { exact: true }).waitFor();
   await page.reload();
   await page.getByText("Ny oppsummering, samme vurdering.", { exact: true }).waitFor();
-  assert.match(await page.locator(".ph06-rating").innerText(), /Bevare samme rytme/);
+  assert.match(await page.locator(".ph07-rating").innerText(), /Bevare samme rytme/);
   passed.push("Vurdering: returfeil/nettfeil, felt/fokus, venting, nytt forsøk, bevart ved redigering og simulert gjenåpning");
 
   const close = page.getByRole("link", { name: "Lukk", exact: true }).last();

@@ -1,7 +1,6 @@
 /**
- * PlayerHQ Runde-detalj — v2. Auth-guard + Prisma-loader utvidet fra
- * legacy-skjermen (holeScores er nå sannheten for hull-for-hull, fra
- * SG slag-for-slag-pakken 10. juli — se main). V2Shell eier chrome-en.
+ * PlayerHQ Runde ferdig (PH-RD-08) — Precision Athletics. Auth-guard og Prisma-loader
+ * beholdt (holeScores er sannheten for hull-for-hull); visningen er PHRD08RundeFerdig.
  */
 
 import { notFound } from "next/navigation";
@@ -16,10 +15,11 @@ import {
   lesRundeKilde,
   lesRundeStatus,
 } from "@/lib/runde-logg/kontrakt";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { RundeDetaljV2, type RundeDetaljData } from "@/components/portal/v2/RundeDetaljV2";
+import { PHRD08RundeFerdig, type PHRD08Data } from "@/components/portal/precision/PHRD08RundeFerdig";
 
 export const dynamic = "force-dynamic";
+
+const DATO_KORT = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit", year: "numeric" });
 
 export default async function RundeDetaljPage({
   params,
@@ -67,7 +67,6 @@ export default async function RundeDetaljPage({
 
   // Delvis runde (færre hull på scorekortet): mål mot par for de SPILTE
   // hullene — «8 slag mot par 72» ville vært løgn for en 2-hulls runde.
-  const antallSpilteHull = runde.holeScores.length > 0 ? runde.holeScores.length : 18;
   const par =
     runde.holeScores.length > 0
       ? runde.holeScores.reduce((sum, h) => sum + h.par, 0)
@@ -150,52 +149,36 @@ export default async function RundeDetaljPage({
     ] as const
   ).flatMap((k) => (k.sg == null ? [] : [{ akse: k.akse, sg: k.sg }]));
 
-  const data: RundeDetaljData = {
+  const manuellSg = Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier;
+  const uleste = await prisma.notification.count({ where: { userId: user.id, readAt: null } });
+  // Straff finnes bare når slag er ført; uten slag er det ingen kilde (vises som «—»).
+  const straff = runde.shots.length > 0 ? runde.shots.filter((s) => s.isPenalty).length : null;
+
+  const data: PHRD08Data = {
     id: runde.id,
     nettoppLagret,
     baneNavn: runde.course.name,
-    datoTekst: runde.playedAt.toLocaleDateString("nb-NO", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }),
+    datoKort: DATO_KORT.format(runde.playedAt),
     score: runde.score,
     par,
-    antallSpilteHull,
     sgTotal: runde.sgTotal,
     sgKategorier,
     sgSource: runde.sgSource,
     registrering,
-    manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,
+    manuellSg,
+    granulaerSg: manuellSg,
     hull,
     erEier,
     visKjedeStatus,
     antallKomplette,
     antallHullMedScore: runde.holeScores.length,
-    hullStat,
-    granulaerSg: {
-      tee: runde.sgTee,
-      app200: runde.sgApp200,
-      app150: runde.sgApp150,
-      app100: runde.sgApp100,
-      app50: runde.sgApp50,
-      chip: runde.sgChip,
-      pitch: runde.sgPitch,
-      lob: runde.sgLob,
-      bunker: runde.sgBunker,
-      putt0_3: runde.sgPutt0_3,
-      putt3_5: runde.sgPutt3_5,
-      putt5_10: runde.sgPutt5_10,
-      putt10_15: runde.sgPutt10_15,
-      putt15_25: runde.sgPutt15_25,
-      putt25_40: runde.sgPutt25_40,
-      putt40plus: runde.sgPutt40plus,
-    },
+    putter: hullStat?.putter ?? null,
+    fairway: hullStat?.fairway ?? null,
+    gir: hullStat?.gir ?? null,
+    straff,
+    ut: hullStat ? { score: hullStat.ut.score, par: hullStat.ut.par } : null,
+    inn: hullStat && hullStat.inn.antall > 0 ? { score: hullStat.inn.score, par: hullStat.inn.par } : null,
   };
 
-  return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <RundeDetaljV2 data={data} />
-    </V2Shell>
-  );
+  return <PHRD08RundeFerdig data={data} uleste={uleste} />;
 }

@@ -58,6 +58,8 @@ export const slagSchema = z
     notat: z.string().max(500).optional(),
     endShotKategori: endShotKategoriSchema.optional(),
     putt: puttSchema.optional(),
+    targetAvstand: z.number().positive().max(700).optional(),
+    pinAvstand: z.number().positive().max(700).optional(),
   })
   // Straffe på hole-out-slaget ville blitt stille ignorert av hullTilSgShots
   // (som returnerer ved iHull før straffen leses) — avvis eksplisitt.
@@ -71,4 +73,5 @@ export const hullSchema = z.object({
   par: z.number().int().min(3).max(6),
   lengdeMeter: z.number().min(40).max(700),
   slag: z.array(slagSchema).min(1).max(25),
+  syntetisk: z.boolean().optional(),
 });

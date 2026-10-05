@@ -8,7 +8,7 @@
  * caps eyebrow, ett kort, én primær CTA.
  *
  * SG så langt regnes med samme motor som live-føringen selv bruker
- * (beregnSg/rundeTilSgShots) — kun på fullførte hull, aldri fabrikkert.
+ * SG vises ikke uten det versjonerte referansesettet fra serversiden.
  *
  * AVVIK fra GAP-1 «RU-01 Runde tom» (Fasit: designsystem/train-lock/GAP-1
  * Tilstander.dc.html): fasiten tegner en eksplisitt tom-kort med CTA
@@ -26,8 +26,6 @@ import { fmtSg } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
 import { scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
-import { beregnSg } from "@/lib/domain/sg";
-import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 const abonnerIngen = () => () => {};
@@ -81,14 +79,7 @@ export function RundeLiveArtefakt() {
   const total = kladd.hullData.length;
   const ferdige = kladd.hullData.filter((h) => scoreFraHull(h) != null);
 
-  let sgTotal: number | null = null;
-  if (ferdige.length > 0) {
-    try {
-      sgTotal = beregnSg(rundeTilSgShots(ferdige)).total;
-    } catch {
-      sgTotal = null;
-    }
-  }
+  const sgTotal: number | null = null;
 
   if (kladd.steg === "oppsummering") {
     return (

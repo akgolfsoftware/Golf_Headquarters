@@ -100,9 +100,9 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
       <button
         type="button"
         onClick={() => setÅpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary"
+        className="pa-btn pa-btn--ghost pa-btn--icon-l"
       >
-        <Upload className="h-3.5 w-3.5" />
+        <Upload className="pa-icon" size={18} aria-hidden />
         Importer fra UpGame
       </button>
 

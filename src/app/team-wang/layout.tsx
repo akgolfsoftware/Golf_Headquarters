@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Quattrocento_Sans } from "next/font/google";
 
 import "@/styles/wang-tokens.css";
+import "@/styles/wang-app.css";
 
 // WANG-merkevarens fonter — scoped til fellessiden (/team-wang), lastes ikke
 // i resten av appen. Kanon: Claude Design «WANG Toppidrett Fredrikstad Golf v2».
@@ -68,7 +69,7 @@ export default function TeamWangLayout({
 }) {
   return (
     <div
-      className={`wang-tp ${montserrat.variable} ${quattrocentoSans.variable} min-h-screen`}
+      className={`wang-tp wang-app ${montserrat.variable} ${quattrocentoSans.variable} min-h-screen`}
     >
       {children}
     </div>

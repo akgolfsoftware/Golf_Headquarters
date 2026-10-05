@@ -1,3 +1,4 @@
+// PH26PutteLab — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ · Putte-laboratoriet (/portal/trening/putte-laboratoriet) — v2.
  * v2-port 17. juli 2026 (Team D2): `PutteLabV2` erstatter legacy
@@ -7,17 +8,19 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PutteLabV2 } from "@/components/portal/v2/PutteLabV2";
 
 export const dynamic = "force-dynamic";
 
 export default async function PutteLaboratorietPage() {
-  const user = await requirePortalUser();
+  await requirePortalUser();
 
   return (
-    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <PutteLabV2 />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

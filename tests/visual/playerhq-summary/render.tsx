@@ -2,7 +2,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { SessionSummary, type SessionSummaryProps } from "@/components/portal/live/SessionSummary";
-import { LiveSessionShell } from "@/components/portal/live/LiveSessionShell";
 import { TOM_OKT, DELVIS_OKT, FULLFORT_OKT, LANGT_INNHOLD_OKT, ELDRE_OKT_UTEN_COMPLETED_IDS, EKSISTERENDE_VURDERING, NESTE_OKT } from "./fixtures";
 
 type Stored = { ord?: string; vurdering?: SessionSummaryProps["spillerVurdering"] };
@@ -48,7 +47,5 @@ window.summaryHarness = {
 };
 const saved = stored();
 createRoot(document.getElementById("root")!).render(<StrictMode>
-  <LiveSessionShell title="Etter økta" subtitle={props.data.title} backHref="/portal" closeHref="/portal">
-    <SessionSummary {...props} lagredeOrd={saved.ord ?? props.lagredeOrd} spillerVurdering={saved.vurdering ?? props.spillerVurdering} />
-  </LiveSessionShell>
+  <SessionSummary {...props} lagredeOrd={saved.ord ?? props.lagredeOrd} spillerVurdering={saved.vurdering ?? props.spillerVurdering} />
 </StrictMode>);

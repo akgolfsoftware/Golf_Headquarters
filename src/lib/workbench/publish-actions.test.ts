@@ -223,6 +223,15 @@ test("hentPubliserDiff avviser coach uten tilgang uten å lese planen", async ()
   assert.equal(lesinger, 0);
 });
 
+test("hentPubliserDiff viser Oslo-klokkeslett i selve publiseringsgrunnlaget", async () => {
+  sessions = [{ ...ukesokt("tidssone-test"), scheduledAt: new Date("2099-01-10T12:05:00Z") }];
+  const { hentPubliserDiff } = await actions();
+  const svar = await hentPubliserDiff();
+  assert.equal(svar.ok, true);
+  assert.equal(svar.diff?.lagtTil[0]?.nar, "10.1 13:05");
+  assert.equal(oppdateringer.length, 0);
+});
+
 test("spiller godtar bare egen ventende plan", async () => {
   const { acceptWorkbenchPlan } = await actions();
   planStatus = "PENDING_PLAYER";

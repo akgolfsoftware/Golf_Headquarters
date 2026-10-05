@@ -63,6 +63,8 @@ const slagSchema = z.object({
   notat: z.string().max(500).optional(),
   endShotKategori: endShotKategoriSchema.optional(),
   putt: puttSchema.optional(),
+  targetAvstand: z.number().positive().max(700).optional(),
+  pinAvstand: z.number().positive().max(700).optional(),
 });
 
 const hullSchema = z.object({
@@ -70,6 +72,7 @@ const hullSchema = z.object({
   par: z.number().int().min(3).max(6),
   lengdeMeter: z.number().min(40).max(700),
   slag: z.array(slagSchema).max(25),
+  syntetisk: z.boolean().optional(),
 });
 
 const kladdSchema = z.object({

@@ -1,11 +1,12 @@
 "use client";
 
-/* Deles av /portal/gjennomfore og /portal/gjennomfore/[id]. */
-
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { CircleAlert, RotateCw } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
+import { reportClientError } from "@/lib/report-client-error";
 
-export default function Error({
+export default function GjennomforeError({
   error,
   reset,
 }: {
@@ -13,8 +14,27 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    reportClientError({
+      context: "portal-gjennomfore-error",
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+    }).catch(() => {
+      // Varsling skal aldri krasje feilsiden selv.
+    });
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/portal" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <FeilTilstand
+          icon={CircleAlert}
+          title="Fikk ikke lastet økten"
+          text="Sjekk nettet og prøv igjen. Ingenting er endret."
+          code={error.digest ? `FEIL · ØKT · ${error.digest}` : "FEIL · ØKT"}
+          retry={<Knapp variant="secondary" icon={RotateCw} onClick={reset}>Prøv igjen</Knapp>}
+        />
+      </div>
+    </PlayerHQSkall>
+  );
 }

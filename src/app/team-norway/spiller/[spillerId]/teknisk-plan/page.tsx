@@ -1,9 +1,10 @@
+import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
-import { harTnTekniskPlanLesetilgang, hentTnTekniskPlaner, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
+import { hentTnTekniskPlaner, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
@@ -29,8 +30,9 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const harTilgang = await harTnTekniskPlanLesetilgang(bruker, kontekst, spillerId);
-  const planer = harTilgang ? await hentTnTekniskPlaner(spillerId) : [];
+  const planer = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlaner(spillerId));
+  if (!planer) notFound();
+  const harTilgang = true;
 
   return (
     <TnShell

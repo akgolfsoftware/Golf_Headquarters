@@ -1,3 +1,5 @@
+// PH25Integrasjoner — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2 — PlayerHQ Innstillinger · Integrasjoner (retning C). V2Shell leverer
  * chrome-en (IkonRail/BunnNav, aktiv «meg»), InnstillingerIntegrasjonerV2
@@ -12,7 +14,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import {
   InnstillingerIntegrasjonerV2,
   type InnstillingerIntegrasjonerData,
@@ -70,8 +71,10 @@ export default async function IntegrasjonerPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <InnstillingerIntegrasjonerV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

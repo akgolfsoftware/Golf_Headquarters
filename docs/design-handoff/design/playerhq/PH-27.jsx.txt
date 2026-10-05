@@ -1,0 +1,88 @@
+/* PH-27 Meg › Deling (runde 31) og fireukerssjekken i I dag.
+   Deling: hvem har tilgang og hva de ser. Innsyn er alt, også helse og meldinger. Delingslenke bare til @wang.no og @golfforbundet.no.
+   Under 16: forelderen må godkjenne («Venter på forelder»). WANG-elever: testresultater deles automatisk med Team Norway, kan ikke slås av. */
+(() => {
+const Sec = ({ k, meta, children, label }) => <section aria-label={label || k} className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0 }}><div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>{meta != null && React.createElement(window.PHQ.Meta, null, meta)}</div>{children}</section>;
+const Muted = ({ children }) => <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>{children}</p>;
+
+function Deling({ state, go, u16 }) {
+  const { PageHeader, Button, StatusPill, FormField, TextInput, Timeline, EmptyState, Icon, Avatar } = window.PHQ.ns();
+  const P = window.PHQ, I = window.IUP_DATA, S = I.share, { mob, cw } = P.useW(), empty = state === "tom";
+  const [acc, setAcc] = React.useState(() => empty ? [] : S.access.map((a) => ({ ...a, st: "ok" })));
+  const [req, setReq] = React.useState(empty ? [] : S.requests), [hist, setHist] = React.useState(empty ? [] : S.history);
+  const [mail, setMail] = React.useState(""), [err, setErr] = React.useState(null), [openId, setOpenId] = React.useState("wang");
+  const now = () => new Date().toTimeString().slice(0, 5);
+  const log = (title, meta) => setHist((h) => [{ day: "LØR 26.09", time: now(), title, meta }, ...h.map((x, i) => i === 0 && x.day === "LØR 26.09" ? { ...x, day: undefined } : x)]);
+  const orgOf = (e) => e.endsWith("@wang.no") ? "WANG" : "Team Norway";
+  const send = () => {
+    const e = mail.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+$/.test(e)) { setErr("Skriv hele e-postadressen til coachen."); return; }
+    if (!S.domains.some((d) => e.endsWith("@" + d))) { setErr("Lenken virker bare for adresser som slutter på @wang.no eller @golfforbundet.no."); return; }
+    const who = e.split("@")[0].split(".").map((x) => x[0].toUpperCase() + x.slice(1)).join(" ");
+    setAcc((l) => [...l, { id: "n" + Date.now(), org: orgOf(e), who, role: "Venter på at coachen åpner lenken", email: e, since: "26.09.2026", st: u16 ? "forelder" : "sendt" }]);
+    log("Delingslenke sendt · " + orgOf(e) + " · " + who, u16 ? "VENTER PÅ FORELDER · " + I.player.parent.toUpperCase() : "DU · GJELDER I 7 DAGER");
+    P.toast(u16 ? "Sendt til " + I.player.parent + " for godkjenning" : "Delingslenke sendt", e.toUpperCase());
+    setMail(""); setErr(null);
+  };
+  const accept = (r) => { setReq((l) => l.filter((x) => x.id !== r.id)); setAcc((l) => [...l, { ...r, since: "26.09.2026", st: u16 ? "forelder" : "ok" }]); log("Forespørsel godtatt · " + r.org + " · " + r.who, u16 ? "VENTER PÅ FORELDER" : "DU"); P.toast(u16 ? "Venter på forelder" : "Tilgang gitt", (r.org + " · " + r.who).toUpperCase()); };
+  const decline = (r) => { setReq((l) => l.filter((x) => x.id !== r.id)); log("Forespørsel avslått · " + r.org + " · " + r.who, "DU"); P.toast("Forespørselen er avslått", (r.org + " · " + r.who).toUpperCase()); };
+  const revoke = (a) => { setAcc((l) => l.filter((x) => x.id !== a.id)); log("Tilgang trukket · " + a.org + " · " + a.who, "DU · GJELDER STRAKS"); P.toast("Tilgangen er trukket", (a.org + " · " + a.who).toUpperCase() + " SER INGENTING LENGER"); };
+  const pill = (a) => a.auto ? <StatusPill tone="info">Gruppe</StatusPill> : a.st === "forelder" ? <StatusPill tone="warn">Venter på forelder</StatusPill> : a.st === "sendt" ? <StatusPill tone="info">Lenke sendt</StatusPill> : <StatusPill tone="ok">Har tilgang</StatusPill>;
+  const two = cw >= 1000;
+  const who = <Sec k="Hvem har tilgang" meta={empty ? "INGEN" : acc.length + (acc.length === 1 ? " COACH" : " COACHER")} label="Hvem har tilgang">
+    {!acc.length ? <Muted>Ingen coacher har tilgang. Dataene dine er bare dine.</Muted> : <div role="list">{acc.map((a, i) => <div role="listitem" key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, padding: "12px 0", borderTop: i ? "1px solid var(--border-hairline)" : "none", minWidth: 0 }}>
+      <button type="button" aria-expanded={openId === a.id} onClick={() => setOpenId(openId === a.id ? null : a.id)} style={{ all: "unset", boxSizing: "border-box", cursor: "pointer", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", minWidth: 0, minHeight: 48 }}>
+        <Avatar name={a.who} size={36} />
+        <span style={{ flex: "1 1 160px", minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}><span style={{ font: "600 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{a.org} · {a.who}</span><P.Meta s={{ overflowWrap: "anywhere" }}>{a.role.toUpperCase()} · {a.email.toUpperCase()}</P.Meta></span>
+        {pill(a)}<Icon name={openId === a.id ? "chevron-up" : "chevron-down"} size={16} />
+      </button>
+      <P.Meta>{a.auto ? "AUTOMATISK · " + a.group.toUpperCase() + " · SIDEN " + a.since : a.st === "ok" ? "SER ALT · SIDEN " + a.since : a.st === "forelder" ? I.player.parent.toUpperCase() + " MÅ GODKJENNE FØR " + a.who.toUpperCase() + " SER NOE" : "FÅR TILGANG NÅR LENKEN ÅPNES"}{a.edits ? " · ENDRER PLANEN DIREKTE, DU KAN ANGRE" : a.st === "ok" ? " · SENDER FORSLAG, DU GODTAR ELLER AVVISER" : ""}</P.Meta>
+      {openId === a.id && a.auto && <div style={{ display: "grid", gridTemplateColumns: "20px minmax(0,1fr)", gap: 8, padding: 12, borderRadius: 8, background: "var(--surface-sunken)" }}><span style={{ display: "inline-flex", paddingTop: 2, color: "var(--text-secondary)" }}><Icon name="users" size={14} /></span><span style={{ font: "var(--type-body-s)", color: "var(--text-primary)", textWrap: "pretty" }}>{a.org} ser profilen din fordi du er i gruppen {a.group}. Tilgangen følger gruppen. Går du ut av gruppen, forsvinner tilgangen og IUP med en gang.</span></div>}
+      {openId === a.id && !a.auto && <div><Button variant="signal" size="sm" icon="user-x" onClick={() => revoke(a)}>{a.st === "ok" ? "Trekk tilgang" : "Trekk tilbake"}</Button></div>}
+    </div>)}</div>}
+  </Sec>;
+  const sees = <Sec k="Hva de ser" meta="INNSYN ER ALT" label="Hva de ser">
+    <p style={{ margin: 0, font: "600 15px/1.4 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>Den du deler med ser alt. Også helse og meldinger. Du kan ikke dele bare deler.</p>
+    <div role="list">{S.sees.map((x, i) => <div role="listitem" key={x} style={{ display: "flex", gap: 10, alignItems: "center", minHeight: 40, borderTop: i ? "1px solid var(--border-hairline)" : "none" }}><Icon name="eye" size={16} /><span style={{ font: "400 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{x}</span></div>)}</div>
+  </Sec>;
+  const reqs = <Sec k="Forespørsler" meta={req.length ? req.length + " VENTER" : "INGEN"} label="Forespørsler">
+    {!req.length ? <Muted>Ingen ber om tilgang nå.</Muted> : req.map((r) => <div key={r.id} style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
+      <span style={{ font: "600 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{r.org} · {r.who} ber om innsyn</span>
+      <P.Meta s={{ overflowWrap: "anywhere" }}>{r.role.toUpperCase()} · {r.email.toUpperCase()} · {r.at}</P.Meta>
+      <Muted>Godtar du, ser {r.who.split(" ")[0]} alt, også helse og meldinger.{u16 ? " " + I.player.parent + " må godkjenne etterpå." : ""}</Muted>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Button icon="check" onClick={() => accept(r)}>Godta</Button><Button variant="ghost" onClick={() => decline(r)}>Avslå</Button></div>
+    </div>)}
+  </Sec>;
+  const link = <Sec k="Send delingslenke" meta="WANG OG TEAM NORWAY" label="Send delingslenke">
+    <FormField label="Coachens e-post" hint="Virker bare for @wang.no og @golfforbundet.no" error={err || undefined}><TextInput type="email" inputMode="email" value={mail} placeholder="fornavn.etternavn@wang.no" onChange={(e) => { setMail(e.target.value); setErr(null); }} /></FormField>
+    <div><Button icon="send" onClick={send}>Send lenke</Button></div>
+    <P.Meta>LENKEN GJELDER I 7 DAGER{u16 ? " · " + I.player.parent.toUpperCase() + " GODKJENNER FØR TILGANG" : ""}</P.Meta>
+  </Sec>;
+  const hi = <Sec k="Historikk" meta={hist.length ? hist.length + " ENDRINGER" : "—"} label="Historikk">{hist.length ? <Timeline items={hist} dense /> : <Muted>Ingen endringer.</Muted>}</Sec>;
+  return <P.Page max={1200}>
+    <PageHeader kicker="Meg · Deling" title="Deling" sub="Hvem som ser dataene dine, og hva de ser." actions={<Button variant="secondary" icon="arrow-left" onClick={() => go("PH-24")}>Meg</Button>} />
+    <P.Gate state={state} loading="Henter delinger …" error={{ title: "Delingene kunne ikke hentes", text: "Ingen tilganger er endret. Prøv igjen.", code: "FEIL 503 · DELING · " + window.PHQ_DATA.date.now }}>
+      {u16 && <div role="status" style={{ display: "grid", gridTemplateColumns: "20px minmax(0,1fr)", gap: 8, padding: 12, borderRadius: 8, border: "1px solid var(--border-hairline)", background: "var(--surface-card)" }}><Icon name="shield" size={16} /><span style={{ font: "var(--type-body-s)", color: "var(--text-primary)", textWrap: "pretty" }}>Du er under 16 år. {I.player.parent} må godkjenne hver ny deling før coachen får tilgang.</span></div>}
+      {two ? <P.Cols tpl="minmax(0,1.2fr) minmax(0,1fr)"><P.Stack>{who}{reqs}</P.Stack><P.Stack>{sees}{link}{hi}</P.Stack></P.Cols> : <P.Stack>{who}{reqs}{sees}{link}{hi}</P.Stack>}
+    </P.Gate>
+  </P.Page>;
+}
+
+/* Fireukerssjekk — kort i I dag (04.10.2026: åpner PH-IUP-01, IUP 2027 skala 1–5). Bare for WANG-/Team Norway-gruppe. */
+function Fireuker({ go, born }) {
+  const { Button } = window.PHQ.ns();
+  const P = window.PHQ, I = window.IUP27, C = window.IUP_DATA.check, B = born || window.IUP_DATA.player.born, lvl = B >= 2011 ? "ung" : "junior";
+  let s = null; try { s = JSON.parse(sessionStorage.getItem("phq-iup27-ft-" + lvl) || "null"); } catch (e) {}
+  const n = I.antall[lvl], nT = I.niva[lvl].length, draft = s ? Object.keys(s.ans || {}).length : 0, done = s && s.levert;
+  return <section aria-label="Fireukerssjekk" className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0, boxShadow: "inset 0 0 0 1px var(--border-hairline)" }}>
+    <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>Fireukerssjekk · uke {C.weeks}</span><P.Meta>{done ? "LEVERT " + s.levert : "FRIST " + C.due.toUpperCase()}</P.Meta></div>
+    <p style={{ margin: 0, font: "600 16px/1.35 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{done ? "Levert. Anders, WANG og Team Norway ser svarene." : draft ? draft + " av " + n + " svar er lagret. Fortsett der du slapp." : C.process.length + " prosessmål og " + n + " spørsmål i " + nT + " områder. Tar rundt 10 minutter."}</p>
+    <P.Meta>NIVÅ {I.nivaNavn[lvl].toUpperCase()} · SKALA 1–5 · IUP 2027</P.Meta>
+    <P.Meta>FORRIGE SJEKK {C.last.date} · {C.season.toUpperCase()}</P.Meta>
+    <div><Button size="lg" variant={done ? "secondary" : "primary"} icon={done ? "eye" : "clipboard-check"} onClick={() => go(done ? "PH-IUP-01-LEVERT" : lvl === "ung" ? "PH-IUP-01-UNG" : "PH-IUP-01")}>{done ? "Se svarene" : draft ? "Fortsett sjekken" : "Start sjekken"}</Button></div>
+  </section>;
+}
+window.PHQ_FIREUKER = Fireuker;
+window.PHQ_SCREENS["PH-27"] = { id: "PH-27", parent: "PH-24", name: "Deling", tab: "meg", route: "/portal/meg/deling", Component: (p) => <Deling {...p} /> };
+window.PHQ_SCREENS["PH-27-U16"] = { id: "PH-27-U16", parent: "PH-24", name: "Deling · under 16 år", tab: "meg", route: "/portal/meg/deling (under 16)", Component: (p) => <Deling {...p} u16 /> };
+})();

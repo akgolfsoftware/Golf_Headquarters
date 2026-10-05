@@ -1,6 +1,10 @@
+// PH25Personvern — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * /portal/meg/innstillinger/personvern — Samtykker.
  * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
+ * Avvik:
+ * - Automatisk WANG-testdeling vises separat fra frivillig profildeling etter gjeldende delingsregel.
  * Én setning per bryter, av/på, ingen mørke mønstre. Eksport/sletting nederst.
  */
 
@@ -9,7 +13,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Kort, StatusPill, Icon } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
@@ -20,6 +23,7 @@ import {
   hentDelingsStatus,
 } from "@/lib/deling/samtykke";
 import { PersonvernActions } from "./personvern-actions";
+import { harAutomatiskWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +35,7 @@ export default async function PersonvernPage() {
 
   // T8: delingssamtykke per gruppe med aktive eksterne lesere (Team Norway/WANG).
   const delingGrupper = await grupperMedEksterneLesereForSpiller(user.id);
+  const automatiskWangTestdeling = await harAutomatiskWangTestdeling(user.id);
   const delingStatus = await hentDelingsStatus(
     user.id,
     delingGrupper.map((g) => g.id),
@@ -38,7 +43,8 @@ export default async function PersonvernPage() {
   const delingKart = new Map(delingStatus.map((s) => [s.gruppeId, s]));
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
     <div
       data-paper-slug="playerhq-innstillinger"
       data-paper-portal-innstillinger-personvern
@@ -58,7 +64,9 @@ export default async function PersonvernPage() {
       />
       {/* PH-18: trygghetssetningen — aldri mørke mønstre. */}
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
-        Du kan endre alt her, når som helst. Ingenting deles uten ja.
+        {automatiskWangTestdeling
+          ? "Du styrer frivillig profildeling her. WANG-testresultater deles automatisk med Team Norway etter opptaksavtalen."
+          : "Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det."}
       </p>
 
       <HelseSamtykkeKort
@@ -84,7 +92,9 @@ export default async function PersonvernPage() {
           gruppeNavn: g.name,
           testResultater: delingKart.get(g.id)?.testResultater ?? false,
           stats: delingKart.get(g.id)?.stats ?? false,
+          testResultaterAutomatisk: automatiskWangTestdeling && g.slug === "team-norway",
         }))}
+        automatiskWangTestdeling={automatiskWangTestdeling}
         krevesForesatt={user.requiresGuardianConsent}
         modus={{ type: "spiller" }}
       />
@@ -181,6 +191,7 @@ export default async function PersonvernPage() {
         </div>
       </Kort>
     </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }
