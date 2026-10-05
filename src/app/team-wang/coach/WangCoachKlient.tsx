@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { WangAppSkall, type WangOmraade } from '@/components/wang/WangAppSkall';
 import { WangIdag } from '@/components/wang/WangIdag';
 import { WangTrening } from '@/components/wang/WangTrening';
@@ -11,23 +11,29 @@ import { WangMeldinger } from '@/components/wang/WangMeldinger';
 import { WangElever } from '@/components/wang/WangElever';
 import { WangAdmin } from '@/components/wang/WangAdmin';
 import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
+import { WangKobledeVisninger, type WangKobletElev } from '@/components/wang/WangKobledeVisninger';
+import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 
 interface WangCoachKlientProps {
-  initialOmraade?: WangOmraade;
-  initialFane?: string;
+  /** Området er avgjort av serveren (rolle og gyldighet er sjekket der). */
+  omraade: WangOmraade;
+  fane?: string;
+  rolle: WangRolle;
+  brukerNavn?: string;
+  /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
+  elever?: WangKobletElev[];
   campus?: string;
 }
 
 export function WangCoachKlient({
-  initialOmraade = 'idag',
-  initialFane,
+  omraade,
+  fane,
+  rolle,
+  brukerNavn,
+  elever = [],
   campus = 'Fredrikstad',
 }: WangCoachKlientProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const omraade = (searchParams?.get('omraade') as WangOmraade) || initialOmraade;
-  const fane = searchParams?.get('fane') || initialFane;
 
   const navigerTil = (nyttOmraade: WangOmraade, nyFane?: string) => {
     const query = new URLSearchParams();
@@ -38,6 +44,8 @@ export function WangCoachKlient({
 
   return (
     <WangAppSkall
+      rolle={rolle}
+      brukerNavn={brukerNavn}
       aktivtOmraade={omraade}
       aktivFane={fane}
       onFaneEndring={(valgtFane) => {
@@ -61,6 +69,9 @@ export function WangCoachKlient({
       )}
 
       {omraade === 'tester' && (
+        <WangKobledeVisninger elever={elever} visning="tester" />
+      )}
+      {omraade === 'tester' && (
         <WangTester
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('tester', nyFane)}
@@ -68,6 +79,9 @@ export function WangCoachKlient({
         />
       )}
 
+      {omraade === 'konkurranse' && (
+        <WangKobledeVisninger elever={elever} visning="turneringer" />
+      )}
       {omraade === 'konkurranse' && (
         <WangKonkurranse
           aktivFane={fane}
@@ -84,6 +98,9 @@ export function WangCoachKlient({
         />
       )}
 
+      {omraade === 'elever' && (
+        <WangKobledeVisninger elever={elever} visning="iup" />
+      )}
       {omraade === 'elever' && (
         <WangElever
           aktivFane={fane}
