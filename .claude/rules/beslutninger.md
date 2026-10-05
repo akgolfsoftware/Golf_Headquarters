@@ -4,6 +4,23 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG-TESTER TIL TEAM NORWAY KREVER SAMTYKKE, MEN FELLES TESTDAG GJØR DET IKKE (Anders 05.10.2026, bindende)
+
+Avklaring til D-04 og D-13 (PR #1192, designkontrollen 05.10).
+
+- **WANG-elevers testresultater deles aldri automatisk med Team Norway.** Eleven får forespørselen
+  «Del testene med Team Norway» (omfang: bare tester). Under 16 år må forelder også godkjenne;
+  elevens eget ja gir «Venter på forelder». Eleven kan alltid trekke selv, og det virker med en gang.
+- **Felles testdag krever ikke samtykke.** Anders: «Krever ikke godkjennelse for felles testdag.»
+  Team Norway ser resultatene fra testdager de selv arrangerer med WANG-stasjoner
+  (`hentTnTestdag`, `hentTnTestdager`, gruppeanalyse per testdag i `src/lib/domain/tn-arbeidsflate.ts`).
+  Det gir ikke innsyn i elevens øvrige testhistorikk.
+
+**Overstyrer:** «WANG-elevers testresultater deles automatisk med Team Norway, med navn
+(opptaksavtalen)» i §ÉN IUP OG ETT TESTBATTERI (28.09).
+
+Krever ingen ny kodeendring utover PR #1192 — felles testdag bekrefter dagens tilstand.
+
 ## CLAUDE CODE PORTERER, IUP BARE FOR AKTIVE WANG-/TN-MEDLEMMER, BARE PH-01 ER GODKJENT (Anders 04.10.2026, bindende)
 
 Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `regler/claude-code.md`).
@@ -268,8 +285,8 @@ mulighetene står i `docs/beslutningsgrunnlag/mulighetskart-wang-tn-2026-09-28.m
 - **Deling:** spilleren sender delingslenke fra Meg til trenerens e-post, bare @wang.no og
   @golfforbundet.no; forelder godkjenner under 16. Innsyn er alt, også helse og meldinger, og
   samtykkesiden sier det rett ut. Trekkes tilgangen, forsvinner treneren med en gang. Spilleren
-  betaler PlayerHQ selv. WANG-elevers testresultater deles automatisk med Team Norway, med navn
-  (opptaksavtalen).
+  betaler PlayerHQ selv. WANG-elevers testresultater deles med Team Norway bare etter samtykke
+  (§WANG-TESTER TIL TEAM NORWAY KREVER SAMTYKKE, 05.10; før: automatisk etter opptaksavtalen).
   Delingslenken gjelder i sju dager (Anders 28.09).
 - **Ranking i IUP:** WAGR og NGFs juniorranking (Anders 28.09).
 - **Poengskala** for gate-testene, VISA Express, Putt Speed og 8-ball hentes fra Team Norways
