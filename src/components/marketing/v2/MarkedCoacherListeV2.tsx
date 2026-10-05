@@ -3,6 +3,8 @@
 /**
  * AK Golf HQ — markedsside COACHER-LISTE (/coacher), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§filterrad + §kat). Ekte copy speilet fra (mlegacy)/coacher/page.tsx.
  * Data (DB-foto-berikelse) hentes server-side i page.tsx og sendes inn som prop.
  * Filterpillene teller ekte coacher — fasitens «Alle · 7» er placeholder-data.

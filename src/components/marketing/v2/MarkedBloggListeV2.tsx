@@ -3,6 +3,8 @@
 /**
  * AK Golf HQ — markedsside BLOGG-LISTE (/blogg), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§filterrad + §kat). Ekte copy speilet fra (mlegacy)/blogg/page.tsx +
  * blogg-liste.tsx. Postene (posts.ts) er uendret hjelpefil.
  */
