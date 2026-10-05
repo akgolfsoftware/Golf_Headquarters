@@ -16,6 +16,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
@@ -39,7 +40,8 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
     where: { id: sessionId },
     include: { user: { select: { id: true, name: true, hcp: true } } },
   });
-  if (!sesjon) notFound();
+  // Coach-scope: en assistant coach kan ikke åpne en annen coachs spillers økt via id.
+  if (!sesjon || !(await harCoachTilgangTilSpiller(user, sesjon.userId))) notFound();
 
   const shots = await prisma.trackManShot.findMany({
     where: { sessionId: sesjon.id },

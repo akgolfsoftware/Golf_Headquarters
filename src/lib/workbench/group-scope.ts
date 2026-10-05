@@ -21,6 +21,20 @@ export function editableGroupWhere(viewer: { id: string; role: string }): Prisma
   ] };
 }
 
+/**
+ * Innsyn i en gruppe (lesing): ADMIN ser alle; COACH ser grupper han eier eller
+ * er aktivt COACH-/ASSISTANT-medlem i (samme regel som gruppesiden). Redigering
+ * styres av `editableGroupWhere`.
+ */
+export function gruppeInnsynWhere(viewer: { id: string; role: string }): Prisma.GroupWhereInput {
+  if (viewer.role === "ADMIN") return {};
+  if (viewer.role !== "COACH") return { id: { in: [] } };
+  return { OR: [
+    { coachId: viewer.id },
+    { members: { some: { userId: viewer.id, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null } } },
+  ] };
+}
+
 export async function canEditGroup(
   viewer: { id: string; role: string }, groupId: string,
   db: Pick<Prisma.TransactionClient, "group"> = prisma,

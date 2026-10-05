@@ -11,6 +11,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
   AG18TrackManVideo,
@@ -30,8 +31,11 @@ export default async function AdminTrackmanPage({
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { fane, okt } = await searchParams;
 
+  // Coach-scope: assistant coach ser bare egne spilleres økter og videoer.
+  const spillerScope = coachScopedPlayerWhere(user);
   const [dbSessions, dbVideos] = await Promise.all([
     prisma.trackManSession.findMany({
+      where: { user: spillerScope },
       orderBy: { recordedAt: "desc" },
       take: 20,
       include: {
@@ -39,6 +43,7 @@ export default async function AdminTrackmanPage({
       },
     }).catch(() => []),
     prisma.sessionVideo.findMany({
+      where: { player: spillerScope },
       orderBy: { createdAt: "desc" },
       take: 20,
       include: {

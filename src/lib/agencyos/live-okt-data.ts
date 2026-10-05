@@ -9,6 +9,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { AnalyseResultatSchema } from "@/lib/coaching-analysis";
 
 export type LiveOktData = {
@@ -37,6 +38,25 @@ export type LiveOktData = {
   /** Coachens post-økt-vurdering 1–5 (completedSummary.coachRating), null hvis ikke satt. */
   coachRating: number | null;
 };
+
+/**
+ * Tilgang til en live-økt: head coach (ADMIN) ser alle; assistant coach (COACH)
+ * bare økter han selv leder, eller der eleven er en av hans spillere.
+ */
+export async function kanSeLiveOkt(
+  viewer: { id: string; role: string },
+  sessionId: string,
+): Promise<boolean> {
+  const okt = await prisma.trainingSessionV2.findUnique({
+    where: { id: sessionId },
+    select: { coachId: true, studentId: true },
+  });
+  if (!okt) return false;
+  if (viewer.role === "ADMIN") return true;
+  if (viewer.role !== "COACH") return false;
+  if (okt.coachId === viewer.id) return true;
+  return okt.studentId != null && harCoachTilgangTilSpiller(viewer, okt.studentId);
+}
 
 export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | null> {
   const okt = await prisma.trainingSessionV2.findUnique({
