@@ -1,0 +1,227 @@
+/* ─────────────────────────────────────────────────────────────
+   Markedssidene i «AK Golf Precision Athletics» (Anders 04.10.2026:
+   «Bytt til Precision»). Erstatter «verksted»-uttrykket (grå grunn
+   #E8E4DC, signal #B83217, IBM Plex Sans Condensed, instrumentlaget).
+
+   Hvordan: (marketing)/layout.tsx legger `.pa-root` (Precision-tokens fra
+   precision-athletics.css) sammen med `.ak-marked`. Denne fila peker de
+   gamle --ak-*-navnene (som alle markedskomponentene bruker, direkte eller
+   via --mkit-* i marked-kit.css) til Precision-verdier. Dermed bytter hele
+   markedsflaten uttrykk uten at hver side skrives om.
+
+   Regler som gjelder her (beslutninger.md §PRECISION ATHLETICS):
+   - Lyst tema. Primærknapp grafitt #141413 med hvit tekst.
+   - Rust #9B2415 er KUN signal (det som haster eller ødelegger). Markedssidene
+     har ingen slik tilstand, så rust brukes bare på feil (--ak-feil).
+     «--ak-signal» betyr her grafitt (blekk), ikke rust — navnet er arvet.
+   - Kort: radius 8, ingen skygger. Minste tekst 11 px.
+   - Farge betyr akse og ingenting annet: variantfargene er nøytrale.
+   - Instrumentlaget (rutenett, målestokk, kryss) er utgått.
+   ───────────────────────────────────────────────────────────── */
+
+.ak-marked.pa-root {
+  /* Flater */
+  --ak-grunn: var(--surface-flat);
+  --ak-grunn-senk: var(--surface-sunken);
+  --ak-ark: var(--surface-card);
+
+  /* Tekst */
+  --ak-tekst: var(--text-primary);
+  --ak-dempet: var(--text-secondary);
+  --ak-svak: var(--text-muted);
+
+  /* Linjer */
+  --ak-linje: var(--border-hairline);
+  --ak-linje-hard: var(--border-strong);
+
+  /* «Signal» = grafitt i markedet. Primærhandlingen er grafitt, ikke rust. */
+  --ak-signal: var(--graphite-700);
+  --ak-signal-fyll: var(--primary);
+  --ak-signal-tekst: var(--text-on-primary);
+  --ak-signal-myk: var(--surface-sunken);
+
+  /* Variantfarger: nøytrale. Farge betyr akse (FYS/TEK/SLAG/SPILL/TURN). */
+  --ak-fag: var(--graphite-700);
+  --ak-v-junior: var(--graphite-700);
+  --ak-v-academy: var(--graphite-900);
+  --ak-v-hq: var(--graphite-700);
+  --ak-v-org: var(--graphite-600);
+  --ak-v-produkt: var(--graphite-600);
+
+  /* Status */
+  --ak-ok: var(--ok);
+  --ak-varsel: var(--warn);
+  --ak-feil: var(--signal);
+
+  /* Skrift: Precision bruker Plex Sans (600 for tittel) og Plex Mono for tall. */
+  --ak-display: var(--font-sans);
+  --ak-sans: var(--font-sans);
+  --ak-mono: var(--font-mono);
+  --ak-v-700: 600;
+  --ak-sp-display: -0.015em;
+  --ak-sp-titt: -0.015em;
+  --ak-sp-vid: 0.08em;
+  --ak-sp-vidt: 0.08em;
+  --ak-lh-display: 1.05;
+  --ak-lh-tett: 1.2;
+
+  /* Typeskala: Precisions display er 40/56/72, tittel 28/21. */
+  --ak-t-26: 21px;
+  --ak-t-34: 28px;
+  --ak-t-48: 40px;
+  --ak-t-72: 40px;
+  --ak-t-112: 56px;
+  --ak-t-hero: clamp(36px, 2.6vw + 26px, 56px);
+  --ak-t-seksjon: clamp(24px, 0.4vw + 22.5px, 28px);
+
+  /* Seksjonsavstand: Precisions rom stopper på 80 px. */
+  --ak-r-9: 64px;
+  --ak-r-10: 80px;
+
+  /* Form: kort 8, innfelt 4. Piller bare der de alltid har vært (merkelapper). */
+  --ak-hjorne-sm: 8px;
+  --ak-hjorne-md: 8px;
+  --ak-hjorne-lg: 8px;
+
+  /* Ingen kortskygger. Bare flytende menyer får skygge. */
+  --ak-loft-1: none;
+  --ak-loft-2: none;
+  --ak-loft-3: var(--shadow-pop);
+
+  --ak-fart-rask: var(--dur-fast);
+  --ak-kurve: var(--ease-color);
+
+  /* Instrumentlaget er utgått. */
+  --ak-rute-lys: transparent;
+  --ak-rute-mork: transparent;
+
+  background: var(--ak-grunn);
+  color: var(--ak-tekst);
+  font: var(--type-body);
+  font-size: var(--ak-t-17);
+  line-height: var(--ak-lh-normal);
+  font-variant-numeric: normal;
+}
+
+/* Instrumentlaget: rutenett, målestokk og kryss vises ikke. */
+.ak-marked .ak-rutenett,
+.ak-marked .ak-maalestokk { background-image: none; }
+.ak-marked [data-ak-instrument] { display: none; }
+
+/* Etikett: Precisions kicker (sans 600, 11 px, caps, dempet) — ikke mono. */
+.ak-marked .ak-etikett {
+  font-family: var(--font-sans);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  letter-spacing: var(--tracking-kicker);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Fokus og markering i grafitt, ikke rust. */
+.ak-marked :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+.ak-marked ::selection { background: var(--graphite-900); color: var(--white); }
+
+/* Lenker uten klasse: grafitt med strek, ikke rust. */
+.ak-marked a:not([class]) {
+  color: var(--link);
+  text-decoration-color: var(--border-strong);
+}
+.ak-marked a:not([class]):hover { color: var(--text-primary); text-decoration-color: var(--text-primary); }
+.ak-marked a:not([class]):active { color: var(--graphite-700); }
+
+/* Markedets brødtekst er ikke tabellsiffer. Mål og priser står i mono via .ak-maalt. */
+.ak-marked .ak-maalt {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: normal;
+}
+
+/* ── Markedssidenes eget komponentlag (.pk-*) ── */
+.ak-marked .pk-eyebrow,
+.ak-marked .pk-meta,
+.ak-marked .pk-kpi .pk-k,
+.ak-marked .pk-tabell th {
+  font-family: var(--font-sans);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  letter-spacing: var(--tracking-kicker);
+  color: var(--text-muted);
+}
+.ak-marked .pk-tag { font-family: var(--font-sans); font-size: var(--fs-11); font-weight: 600; }
+.ak-marked .pk-kort,
+.ak-marked .pk-pris,
+.ak-marked .pk-kpi { box-shadow: none; }
+.ak-marked .pk-pris-valgt { border-color: var(--border-ink); }
+
+/* Overskrifter: Plex Sans 600 (Precision). :where gir null spesifisitet, så
+   inline-stil og komponentenes egne regler vinner. */
+.ak-marked :where(h1, h2, h3, h4) {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+/* --mk-* (globals.css) er definert på :root og ville ellers løst seg mot
+   verksted-verdiene der. Samme navn settes på nytt her, mot Precision. */
+.ak-marked.pa-root {
+  --mk-bg: var(--ak-grunn);
+  --mk-surface: var(--ak-ark);
+  --mk-soft: var(--ak-grunn-senk);
+  --mk-soft-hover: var(--ak-linje);
+  --mk-border: var(--ak-linje);
+  --mk-hairline: var(--ak-linje-hard);
+  --mk-inverse: var(--ak-tekst);
+  --mk-fg: var(--ak-tekst);
+  --mk-ink-soft: var(--ak-dempet);
+  --mk-muted: var(--ak-dempet);
+  --mk-mid: var(--ak-svak);
+  --mk-ink: var(--ak-tekst);
+  --mk-ink-2: var(--graphite-800);
+  --mk-cta: var(--ak-signal-fyll);
+  --mk-on-cta: var(--ak-signal-tekst);
+  --mk-cta-hover: var(--ak-signal);
+  --mk-accent: var(--ak-signal);
+  --mk-accent-fg: var(--ak-signal);
+  --mk-accent-soft: var(--ak-signal-myk);
+  --mk-olive: var(--ak-fag);
+  --mk-sky: var(--ak-v-hq);
+}
+
+/* Kortradius 8 også der sidene bruker Tailwind-radiuser. */
+.ak-marked .rounded-xl,
+.ak-marked .rounded-2xl,
+.ak-marked .rounded-3xl { border-radius: var(--radius); }
+.ak-marked .shadow-sm,
+.ak-marked .shadow,
+.ak-marked .shadow-md,
+.ak-marked .shadow-lg { box-shadow: none; }
+
+/* Sider som bruker Train-lock-navnene (--tl-*) via TL: samme navn, Precision-verdier. */
+.ak-marked.pa-root {
+  --tl-scene: var(--surface-flat);
+  --tl-elev: var(--surface-card);
+  --tl-dock: var(--surface-sunken);
+  --tl-hair: var(--border-hairline);
+  --tl-dim: var(--sand-300);
+  --tl-text: var(--text-primary);
+  --tl-mute: var(--text-secondary);
+  --tl-text-hover: var(--text-primary);
+  --tl-fill: var(--primary);
+  --tl-on-fill: var(--text-on-primary);
+  --tl-warm: var(--graphite-600);
+  --tl-warm-ink: var(--graphite-700);
+  --tl-warm-text: var(--graphite-700);
+  --tl-warm-tint: var(--surface-sunken);
+  --tl-warn: var(--warn);
+  --tl-danger: var(--signal);
+  --tl-ok: var(--ok);
+  --tl-r-card: 8px;
+  --tl-r-row: 8px;
+  --tl-r-field: 8px;
+  --tl-shadow-card: none;
+  --tl-font-sans: var(--font-sans);
+  --tl-font-mono: var(--font-mono);
+}

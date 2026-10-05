@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside TURNERINGER-LISTE (/turneringer), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§filterrad + §kat) — retematchet med pk-tokens, tab-rad = filterrad-mønster.
  * Ekte copy + datalogikk speilet fra (mlegacy)/turneringer/page.tsx. Data
  * (DataGolf/NGF-sync via cron) hentes server-side i page.tsx.
@@ -65,7 +67,7 @@ export function MarkedTurneringerListeV2({
             alignItems: "center",
             gap: 8,
             fontFamily: "var(--tl-font-mono)",
-            fontSize: 10.5,
+            fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
@@ -90,7 +92,7 @@ export function MarkedTurneringerListeV2({
       {norskeDenneUka.length > 0 && (
         <PkSek notop style={{ paddingBottom: 0 }}>
           <PkEyebrow>Nordmenn denne uka</PkEyebrow>
-          <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 10, marginTop: 14 }}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", paddingBottom: 10, marginTop: 14 }}>
             {norskeDenneUka.map((e) => (
               <div key={e.id} className="pk-kort pk-kort-pad" style={{ flex: "none", minWidth: 220 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
