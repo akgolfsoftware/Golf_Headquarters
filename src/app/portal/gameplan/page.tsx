@@ -1,28 +1,40 @@
 /**
- * PlayerHQ Gameplan (B30, omdøpt fra "Baneguide" 16. jul 2026) — banebibliotek.
- * V2Shell leverer chrome-en (IkonRail/BunnNav), GameplanV2 rendrer innholds-stacken.
+ * PlayerHQ Gameplan — Banebibliotek og interaktivt banekart (PH-20).
+ * Precision Athletics (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-20.jsx).
+ *
+ * Markør: PH20Gameplan
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getBaneLibrary } from "@/lib/gameplan/queries";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { GameplanV2 } from "@/components/portal/v2/GameplanV2";
-import { TilbakeLenke } from "@/components/v2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH20Gameplan } from "@/components/portal/precision/PH20Gameplan";
+import { getGameplanCourses } from "@/lib/portal-gameplan/gameplan-queries";
 
 export const dynamic = "force-dynamic";
 
-export default async function V2GameplanPreviewPage() {
+export default async function GameplanPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ baneId?: string; tilstand?: "data" | "tom" | "feil" }>;
+}) {
   const user = await requirePortalUser();
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await getBaneLibrary(user.id);
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const tilstand = resolvedParams?.tilstand ?? "data";
+  const defaultCourseId = resolvedParams?.baneId;
+
+  const courses = await getGameplanCourses(user.id);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <GameplanV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH20Gameplan
+        tilstand={tilstand}
+        courses={courses}
+        defaultCourseId={defaultCourseId}
+      />
+    </PlayerHQSkall>
   );
 }

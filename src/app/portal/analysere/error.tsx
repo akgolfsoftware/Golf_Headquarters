@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { CircleAlert, RotateCw } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
+import { reportClientError } from "@/lib/report-client-error";
 
-export default function Error({
+export default function AnalysereError({
   error,
   reset,
 }: {
@@ -11,15 +14,27 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    reportClientError({
+      context: "portal-analysere-error",
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+    }).catch(() => {
+      // Varsling skal aldri krasje feilsiden selv
+    });
   }, [error]);
 
   return (
-    <V2Feil
-      reset={reset}
-      tilbakeHref="/portal"
-      tittel="Fikk ikke hentet SG"
-      melding="Tallene dine er trygge. Prøv igjen om litt."
-    />
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <FeilTilstand
+          icon={CircleAlert}
+          title="Fikk ikke hentet SG"
+          text="Tallene dine er trygge. Prøv igjen om litt."
+          code={error.digest ? `FEIL · ANALYSE · ${error.digest}` : "FEIL · ANALYSE"}
+          retry={<Knapp variant="secondary" icon={RotateCw} onClick={reset}>Prøv igjen</Knapp>}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,36 +1,15 @@
 /**
- * PlayerHQ · Test-detalj (/portal/tren/tester/[testId]).
- * Avvik:
- * - Versjonerte Team Norway-tester åpnes i det kildekontrollerte scorekortet. Visuell retning er under arbeid.
- * Fasit: designsystem/train-lock/TE-03 TN Putt Gate detalj.dc.html
- *
- * TE-03 dekker «type A»-protokollene (TE-00 korttype A: serie OK/Bom, tappet
- * 64h) — Driver Gate/Wedge Gate/Putt Gate/Nærspill Gate/VISA Express deler
- * denne siden, ikke bare Putt Gate. Porten er derfor scoped til hit-rate/
- * count_ok-kind: giant hero-tall («N OK av M · mål K», mål fra
- * `gateMaalFraProtokoll` — reell protokoll-tekst, ikke fabrikkert) +
- * «Siste forsøk»-rutenett lest fra siste `TestResult.details.perSlag`
- * (ekte lagrede OK/BOM + V|H-data fra live-gate-artefakten, TE-04/gate-
- * live-artefakt.tsx). Andre scoring-kinds (PEI, poeng, tid …) beholder
- * forrige visning uendret — type B/C/D-korttypene (TE-07/08/09/10) er IKKE
- * portet i denne runden, se PR-notat.
- * IKKE bygget i denne runden: fast bunn-CTA (fasiten har «Start test» festet
- * nederst uansett scroll — endring til `position: fixed` her krever samme
- * `--ak-cookie-h`-forskyvning som andre bunn-dokker, se gotchas.md, og er
- * utsatt for å unngå regresjon uten skjermbilde-verifikasjon denne runden;
- * eksisterende inline CTA — «Ta første måling» i tom tilstand, «Start
- * testen» under historikken ellers — dekker samme funksjon) og «Tren mot
- * neste» (utkast-forslag til neste test — ny anbefalings-logikk, anti-scope).
- *
- * Auth + datahenting ellers uendret: requirePortalUser + testTilgangWhere +
- * parseProtocol (zod) + parseForScoring/lavereErBedre. `?lagret=1`-kvittering
- * beholdt (funksjonell retur fra gjennomføringen).
+ * PH14Detalj — testens detaljside i PlayerHQSkall.
+ * Samme tilgang, protokoll, historikk, gate-tall og startlenke.
+ * Gjennomføring og Team Norway-scorekort er ikke med.
+ * Tegningen ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.
  */
 
 import Link from "next/link";
 import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { FEATURES } from "@/lib/features";
@@ -38,19 +17,17 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
 import { gateMaalFraProtokoll } from "@/lib/domain/tester-live";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
 import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
 import { foreslaGodkjenteOvelser, ovelsesNavn, sammenlignMedForrige } from "@/lib/portal-tester/test-anbefaling";
 import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { StatusPille, TomTilstand } from "@/components/precision/pa";
+import { ClipboardList } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 const NGF_URL = "https://www.golfforbundet.no/spiller/toppidrett/skjemaer";
 
-/** Grupper forsøk på label → steg-liste (bevart fra forrige versjon). */
 function grupperSteg(
   forsok: ScorekortForsok[],
 ): { label: string; antall: number; target: string | null }[] {
@@ -63,11 +40,6 @@ function grupperSteg(
   return [...m.values()];
 }
 
-/**
- * Rent heltall til gate-heroen, der enheten står som egen tekst ved siden av
- * («7» + «OK av 10»). Alle andre verdier på siden går gjennom
- * formaterTestVerdi, som kjenner scoring-typen og dermed enheten.
- */
 function fmtNum(n: number): string {
   return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
 }
@@ -88,18 +60,20 @@ export default async function TestDetaljSpillerPage({
   searchParams: Promise<{ lagret?: string }>;
 }) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const [{ testId }, sp] = await Promise.all([params, searchParams]);
+  const [{ testId }, sp, ulest] = await Promise.all([
+    params,
+    searchParams,
+    getUnreadNotifications(user.id, 1),
+  ]);
   const tn = tnFromDefinitionId(testId);
   if (tn) redirect(`/portal/tren/tester/team-norway?test=${tn.id}${tn.variableCount ? `&count=${tn.rows.length}` : ""}`);
   const lagret = sp.lagret === "1";
 
-  // Tilgang: samme regel som katalogen — andres private tester gir 404 (K6).
   const test = await prisma.testDefinition.findFirst({
     where: { id: testId, AND: [testTilgangWhere(user.id)] },
   });
   if (!test) notFound();
 
-  // Historikk eldste→nyeste (stolpediagrammet leser venstre→høyre).
   const resultater = await prisma.testResult.findMany({
     where: { userId: user.id, testId },
     orderBy: { takenAt: "asc" },
@@ -110,10 +84,8 @@ export default async function TestDetaljSpillerPage({
   const scoringSpec = parseForScoring(test.protocol);
   const steg = spec ? grupperSteg(spec.forsok) : [];
   const enhet = scoringSpec.unit;
-  // Retning fra scoring-typen (motoren). Ukjent (fallback/uten protokoll) → nøytral trend.
   const lavere = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
 
-  // Siste 8 målinger i diagrammet — skala fra faktisk maks (aldri fabrikkert tak).
   const hist = resultater.slice(-8);
   const maks = hist.length > 0 ? Math.max(...hist.map((r) => r.score), 0) : 0;
   const siste = resultater[resultater.length - 1] ?? null;
@@ -129,14 +101,10 @@ export default async function TestDetaljSpillerPage({
     spillerKategori: null,
   }) : [];
 
-  // TE-03 type A-hero (count_ok/hit_rate — Gate-familien): «N OK av M · mål K».
   const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
   const gateMal = erGateType ? gateMaalFraProtokoll(test.protocol) : null;
   const gateShotsCount = scoringSpec.shots.length;
 
-  // «Siste forsøk» — ekte per-slag OK/BOM (+V|H) fra siste TestResult.details
-  // (TE-04 gate-live-artefakt.tsx skriver ok + miss_side). Eldre resultater
-  // uten details, eller ikke-Gate-tester, viser ikke rutenettet.
   let sisteForsok: { nr: number; ok: boolean | null; side: "V" | "H" | null }[] = [];
   if (erGateType && siste) {
     const parsedDetails = ScoringDetailsSchema.safeParse((siste as { details?: unknown }).details);
@@ -166,406 +134,162 @@ export default async function TestDetaljSpillerPage({
       };
     }
   }
-  const toneFarge = { pos: TL.ok, neg: TL.danger, flat: TL.mute } as const;
 
   const subBiter = [test.pyramidArea, enhet ? `måles i ${enhet}` : null].filter(Boolean);
-
-  /* Protokollkortet — vises ALLTID (fasit), også når spilleren mangler resultater. */
-  const protokollKort = (
-    <Kort eyebrow="protokoll">
-      {steg.length > 0 ? (
-        <div>
-          {steg.map((s, i) => (
-            <div
-              key={s.label}
-              style={{
-                display: "flex",
-                gap: 12,
-                padding: "8px 0",
-                fontSize: 13,
-                borderBottom: i === steg.length - 1 ? "none" : `1px solid ${TL.hair}`,
-              }}
-            >
-              <span
-                style={{
-                  flex: "none",
-                  width: 22,
-                  height: 22,
-                  borderRadius: TL.radius.pill,
-                  display: "grid",
-                  placeItems: "center",
-                  background: TL.dock,
-                  fontFamily: TL.font.mono,
-                  fontSize: 11,
-                  color: TL.mute,
-                }}
-              >
-                {i + 1}
-              </span>
-              <span style={{ fontFamily: TL.font.sans, color: TL.mute }}>
-                {s.label}
-                <span style={{ fontFamily: TL.font.mono, color: TL.mute }}>
-                  {" "}× {s.antall}
-                  {s.target != null ? ` · mål ${s.target}` : ""}
-                </span>
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
-            Testen har ingen steg-protokoll i systemet ennå — scoringsregelen under gjelder.
-          </p>
-          <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "inline-block", marginTop: 10 }}>
-            <MikroMeta icon="external-link">Protokoller hos NGF</MikroMeta>
-          </a>
-        </div>
-      )}
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          alignItems: "baseline",
-          marginTop: 8,
-          paddingTop: 8,
-          borderTop: `1px solid ${TL.hair}`,
-          fontSize: 13,
-        }}
-      >
-        <span style={{ fontFamily: TL.font.sans, color: TL.text }}>Scoring</span>
-        <span style={{ fontFamily: TL.font.sans, color: TL.mute }}>{test.scoringRule}</span>
-      </div>
-    </Kort>
-  );
+  const omRader: [string, string][] = [
+    ["Pyramide", test.pyramidArea],
+    ...(enhet ? [["Enhet", enhet] as [string, string]] : []),
+    ...(steg.length > 0 ? [["Øvelser", `${steg.length} steg`] as [string, string]] : []),
+  ];
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/tren/tester">Tester</TilbakeLenke>
-      <div
-        data-paper-slug="playerhq-test-detalj"
-        data-od-id="playerhq-test-detalj"
-        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
-      >
-        {/* Kvittering etter gjennomføring — fasit playerhq-test-gjennomfor.html
-            (serveren redirecter hit ved lagring; kvitteringen bor derfor her).
-            Talentprofil-lenken vises kun når talent-flaten faktisk er skrudd på. */}
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side ph14d" data-od-id="playerhq-test-detalj">
+        <Link href="/portal/tren/tester" className="ph14d-tilbake">Tester</Link>
+
         {lagret && (
-          <div
-            style={{
-              padding: "20px 16px",
-              background: TL.elev,
-              border: `1px solid ${TL.ok}`,
-              borderRadius: TL.radius.card,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <StatusPill tone="up">Lagret</StatusPill>
-              <Link href="/portal/coach/melding" style={{ textDecoration: "none", marginLeft: "auto" }}>
-                <MikroMeta icon="send">Del med coach</MikroMeta>
-              </Link>
-            </div>
-            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6 }}>
-              Resultatet er lagret og telles i historikken under. Coachen ser det i
-              stallen.
-            </p>
-            {FEATURES.TALENT && (
-              <Link
-                href="/portal/talent"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  marginTop: 12,
-                  minHeight: 44,
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: TL.text,
-                  textDecoration: "none",
-                }}
-              >
-                Se utviklingen i talentprofilen →
-              </Link>
-            )}
-          </div>
+          <section className="pa-card ph14d-kort ph14d-lagret">
+            <header>
+              <StatusPille tone="ok">Lagret</StatusPille>
+              <Link href="/portal/coach/melding">Del med coach</Link>
+            </header>
+            <p>Resultatet er lagret og telles i historikken under. Coachen ser det i stallen.</p>
+            {FEATURES.TALENT && <Link href="/portal/talent">Se utviklingen i talentprofilen</Link>}
+          </section>
         )}
 
-        {/* Topp — fasit: testnavn / AKSE · måles i [enhet] */}
-        <div>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
-            {test.name}
-          </h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            {subBiter.join(" · ")}
-          </span>
-        </div>
+        <header className="ph14d-hode">
+          <h1>{test.name}</h1>
+          <p>{subBiter.join(" · ")}</p>
+        </header>
 
-        {/* TE-03 gate-hero — kun count_ok/hit_rate med minst ett resultat.
-            Giant tall + «OK av M · mål K» (K fra ekte protokoll-tekst, aldri
-            fabrikkert), pluss «Siste forsøk»-rutenettet fra siste TestResult. */}
         {erGateType && siste && (
-          <div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 44, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text, lineHeight: 1 }}>
-                {fmtNum(siste.score)}
-              </span>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 400, color: TL.mute }}>
-                OK av {gateShotsCount}{gateMal != null ? ` · mål ${gateMal}` : ""}
-              </span>
-            </div>
-            <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-              sist {fmtDatoLang(siste.takenAt)}
-            </span>
-
+          <section className="ph14d-hero">
+            <p>
+              <strong>{fmtNum(siste.score)}</strong>
+              <span>OK av {gateShotsCount}{gateMal != null ? ` · mål ${gateMal}` : ""}</span>
+            </p>
+            <small>sist {fmtDatoLang(siste.takenAt)}</small>
             {sisteForsok.length > 0 && (
               <>
-                <span style={{ display: "block", marginTop: 18, fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
-                  Siste forsøk · {fmtDatoLang(siste.takenAt)}
-                </span>
-                <div style={{ marginTop: 6, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
+                <p className="ph14d-kicker">Siste forsøk · {fmtDatoLang(siste.takenAt)}</p>
+                <div className="ph14d-forsok">
                   {sisteForsok.map((f) => (
-                    <div key={f.nr} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: `1px solid ${TL.hair}` }}>
-                      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{f.nr}</span>
-                      <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: TL.text, opacity: f.ok === false ? 0.45 : 1 }}>
-                        {f.ok == null ? "—" : f.ok ? "OK" : f.side ? `BOM · ${f.side}` : "BOM"}
-                      </span>
-                    </div>
+                    <p key={f.nr} data-bom={f.ok === false ? "true" : undefined}>
+                      <span>{f.nr}</span>
+                      <span>{f.ok == null ? "—" : f.ok ? "OK" : f.side ? `BOM · ${f.side}` : "BOM"}</span>
+                    </p>
                   ))}
                 </div>
               </>
             )}
-          </div>
+          </section>
         )}
 
-        {/* Tom tilstand — ingen resultater ennå (protokollen står fortsatt under).
-            Fasit: clay-handlingen ligger INNE i tom-blokken, over protokollkortet. */}
         {resultater.length === 0 && (
-          <div
-            style={{
-              padding: "24px 16px",
-              background: TL.dock,
-              border: `1px dashed ${TL.hair}`,
-              borderRadius: TL.radius.card,
-            }}
-          >
-            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-              Du har ikke tatt denne testen ennå
-            </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-              Protokollen står under — første måling blir referansen din.
-            </p>
-            <Link
-              href={`/portal/tren/tester/${test.id}/gjennomfor`}
-              data-od-id="testd-tom-start"
-              data-paper-en-ting="true"
-              className="v2-press v2-focus"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 56,
-                width: "100%",
-                borderRadius: TL.radius.card,
-                background: TL.fill,
-                color: TL.onFill,
-                fontFamily: TL.font.sans,
-                fontSize: 14,
-                fontWeight: 600,
-              }}
-            >
-              Ta første måling
-            </Link>
-          </div>
+          <TomTilstand
+            icon={ClipboardList}
+            title="Du har ikke tatt denne testen ennå"
+            text="Protokollen står under — første måling blir referansen din."
+            actions={
+              <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} data-od-id="testd-tom-start" className="pa-btn pa-btn--primary pa-btn--full">
+                Ta første måling
+              </Link>
+            }
+          />
         )}
 
-        {/* Om testen — kun reelle felter (varighet/utstyr finnes ikke i skjemaet) */}
-        <Kort eyebrow="om testen">
-          {[
-            ["Pyramide", test.pyramidArea],
-            ...(enhet ? [["Enhet", enhet] as [string, string]] : []),
-            ...(steg.length > 0
-              ? [["Øvelser", `${steg.length} steg`] as [string, string]]
-              : []),
-          ].map(([k, v], i, arr) => (
-            <div
-              key={k}
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 8,
-                padding: "8px 0",
-                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
-                fontSize: 13,
-              }}
-            >
-              <span style={{ fontFamily: TL.font.sans, color: TL.text }}>{k}</span>
-              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, textAlign: "right", color: TL.text }}>{v}</span>
-            </div>
-          ))}
-          {test.description && (
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
-              {test.description}
+        <section className="pa-card ph14d-kort">
+          <p className="ph14d-kicker">Om testen</p>
+          <dl>
+            {omRader.map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+          {test.description && <p>{test.description}</p>}
+        </section>
+
+        <section className="pa-card ph14d-kort">
+          <p className="ph14d-kicker">Protokoll</p>
+          {steg.length > 0 ? (
+            <ol>
+              {steg.map((s, i) => (
+                <li key={s.label}>
+                  <span>{i + 1}</span>
+                  <span>
+                    {s.label}
+                    <small> × {s.antall}{s.target != null ? ` · mål ${s.target}` : ""}</small>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p>
+              Testen har ingen steg-protokoll i systemet ennå — scoringsregelen under gjelder.{" "}
+              <a href={NGF_URL} target="_blank" rel="noreferrer">Protokoller hos NGF</a>
             </p>
           )}
-        </Kort>
+          <p className="ph14d-scoring"><span>Scoring</span><span>{test.scoringRule}</span></p>
+        </section>
 
-        {protokollKort}
-
-        {/* Historikk — stolpediagram med siste måling uthevet + trend-tag */}
         {resultater.length > 0 && (
-          <Kort eyebrow={`din historikk · ${resultater.length} ${resultater.length === 1 ? "måling" : "målinger"}`}>
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 72, margin: "24px 0 12px" }}>
-              {hist.map((r, i) => {
-                const sisteStolpe = i === hist.length - 1;
-                return (
-                  <div
-                    key={r.id}
-                    style={{
-                      flex: 1,
-                      background: sisteStolpe ? TL.mute : TL.dock,
-                      borderRadius: "8px 8px 0 0",
-                      position: "relative",
-                      minHeight: 8,
-                      height: maks > 0 ? `${Math.round((r.score / maks) * 100)}%` : "8px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: -18,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        fontFamily: TL.font.mono,
-                        fontSize: 9.5,
-                        color: TL.mute,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {formaterTestVerdi({ kind: scoringSpec.kind, verdi: r.score, shotsCount: gateShotsCount })}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              {hist.map((r) => (
-                <span
-                  key={r.id}
-                  style={{ flex: 1, textAlign: "center", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}
-                >
-                  {fmtDatoKort(r.takenAt)}
-                </span>
+          <section className="pa-card ph14d-kort">
+            <p className="ph14d-kicker">Din historikk · {resultater.length} {resultater.length === 1 ? "måling" : "målinger"}</p>
+            <div className="ph14d-stolper" aria-hidden>
+              {hist.map((r, i) => (
+                <div key={r.id} data-siste={i === hist.length - 1 ? "true" : undefined} style={{ height: maks > 0 ? `${Math.round((r.score / maks) * 100)}%` : "8px" }}>
+                  <span>{formaterTestVerdi({ kind: scoringSpec.kind, verdi: r.score, shotsCount: gateShotsCount })}</span>
+                </div>
               ))}
             </div>
+            <div className="ph14d-datoer">
+              {hist.map((r) => <span key={r.id}>{fmtDatoKort(r.takenAt)}</span>)}
+            </div>
             {trend && (
-              <div style={{ marginTop: 12 }}>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    padding: "3px 8px",
-                    borderRadius: TL.radius.pill,
-                    fontFamily: TL.font.mono,
-                    fontSize: 10,
-                    letterSpacing: "0.04em",
-                    textTransform: "uppercase",
-                    background: TL.dock,
-                    color: toneFarge[trend.tone],
-                    border: `1px solid ${TL.hair}`,
-                  }}
-                >
-                  {trend.text}
-                </span>
-              </div>
+              <StatusPille tone={trend.tone === "pos" ? "ok" : trend.tone === "neg" ? "signal" : "neutral"}>{trend.text}</StatusPille>
             )}
-            <details data-od-id="testd-why" style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}>
-              <summary
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  minHeight: 44,
-                  padding: "0 16px",
-                  cursor: "pointer",
-                  listStyle: "none",
-                  fontFamily: TL.font.sans,
-                  fontSize: 12.5,
-                  fontWeight: 500,
-                  color: TL.mute,
-                }}
-              >
-                Hvorfor dette tallet
-              </summary>
-              <ul
-                style={{
-                  margin: 0,
-                  padding: "12px 16px 16px 24px",
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  color: TL.mute,
-                  borderTop: `1px solid ${TL.hair}`,
-                }}
-              >
-                <li style={{ marginBottom: 8 }}>
-                  Kilde: dine {resultater.length === 1 ? "logg av" : `${resultater.length} loggede målinger av`}{" "}
-                  {test.name}, sist {fmtDatoLang((siste ?? resultater[0]).takenAt)}.
-                </li>
+            <details data-od-id="testd-why">
+              <summary>Hvorfor dette tallet</summary>
+              <ul>
+                <li>Kilde: dine {resultater.length === 1 ? "logg av" : `${resultater.length} loggede målinger av`} {test.name}, sist {fmtDatoLang((siste ?? resultater[0]).takenAt)}.</li>
                 {siste && nestSiste && trend ? (
-                  <li style={{ marginBottom: 8 }}>
-                    Beregning: trenden er siste måling mot nest siste —{" "}
-                    {formaterTestVerdi({ kind: scoringSpec.kind, verdi: siste.score, shotsCount: gateShotsCount })} mot{" "}
-                    {formaterTestVerdi({ kind: scoringSpec.kind, verdi: nestSiste.score, shotsCount: gateShotsCount })}.
-                  </li>
+                  <li>Beregning: trenden er siste måling mot nest siste — {formaterTestVerdi({ kind: scoringSpec.kind, verdi: siste.score, shotsCount: gateShotsCount })} mot {formaterTestVerdi({ kind: scoringSpec.kind, verdi: nestSiste.score, shotsCount: gateShotsCount })}.</li>
                 ) : (
-                  <li style={{ marginBottom: 8 }}>
-                    {resultater.length === 1 ? "Én måling gir ingen trend." : "Historikken vises, men protokoll og testforhold kan ikke verifiseres for sikker trend."}
-                  </li>
+                  <li>{resultater.length === 1 ? "Én måling gir ingen trend." : "Historikken vises, men protokoll og testforhold kan ikke verifiseres for sikker trend."}</li>
                 )}
-                <li style={{ marginBottom: 8 }}>
-                  Forbehold: målingene er gyldige når protokollen følges likt hver gang.
-                </li>
+                <li>Forbehold: målingene er gyldige når protokollen følges likt hver gang.</li>
               </ul>
             </details>
-          </Kort>
+          </section>
         )}
 
         {siste && <ResultatKontekst />}
-        {siste && <Kort eyebrow="øvelser å vurdere">
-          <p style={{ color: TL.mute, fontSize: 13 }}>Dette er forslag etter et registrert resultat, ikke en diagnose eller automatisk planendring. Coachen velger eventuell videre trening.</p>
-          {forslag.length ? <ul>{forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => <li key={ovelse.id} style={{ marginBlock: 14 }}>
-            <strong>{ovelsesNavn(ovelse.navn)}</strong> · {ovelse.beskrivelse}
-            <p style={{ color: TL.mute, fontSize: 12 }}>{kanLeggesTil ? "Fasilitet er bekreftet. " : ""}{begrunnelse}</p>
-          </li>)}</ul> : <p>Ingen godkjent øvelse er koblet til dette testområdet ennå.</p>}
-        </Kort>}
+        {siste && (
+          <section className="pa-card ph14d-kort">
+            <p className="ph14d-kicker">Øvelser å vurdere</p>
+            <p>Dette er forslag etter et registrert resultat, ikke en diagnose eller automatisk planendring. Coachen velger eventuell videre trening.</p>
+            {forslag.length ? (
+              <ul className="ph14d-forslag">
+                {forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => (
+                  <li key={ovelse.id}>
+                    <strong>{ovelsesNavn(ovelse.navn)}</strong> · {ovelse.beskrivelse}
+                    <small>{kanLeggesTil ? "Fasilitet er bekreftet. " : ""}{begrunnelse}</small>
+                  </li>
+                ))}
+              </ul>
+            ) : <p>Ingen godkjent øvelse er koblet til dette testområdet ennå.</p>}
+          </section>
+        )}
 
-        {/* Kontrakt §3: skjermens ene aksenthandling — start testen.
-            I tom tilstand bor clay-handlingen i tom-blokken over (maks én). */}
         {resultater.length > 0 && (
-          <Link
-            href={`/portal/tren/tester/${test.id}/gjennomfor`}
-            data-od-id="testd-start"
-            data-paper-en-ting="true"
-            className="v2-press v2-focus"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 56,
-              width: "100%",
-              borderRadius: TL.radius.card,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
+          <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} data-od-id="testd-start" className="pa-btn pa-btn--primary pa-btn--full">
             Start testen
           </Link>
         )}
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

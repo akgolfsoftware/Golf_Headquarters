@@ -2,22 +2,22 @@
   "schemaVersion": 1,
   "method": "Filinventar fra src/app og src/components. Flate er foreslått fra sti, ikke tilgangsbevis. Skanner ikke API-handler, miljøfiler, kundedata eller produksjon. Filantall er ikke antall ferdige skjermer.",
   "totals": {
-    "pageFiles": 496,
-    "uniqueRoutePatterns": 496,
-    "componentFiles": 707,
-    "surfaceFiles": 230,
+    "pageFiles": 527,
+    "uniqueRoutePatterns": 527,
+    "componentFiles": 828,
+    "surfaceFiles": 242,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 163,
-      "inngang-og-konto": 18,
+      "agencyos": 164,
+      "inngang-og-konto": 19,
       "forelder": 16,
-      "lag-og-skole": 32,
+      "lag-og-skole": 51,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 171
+      "playerhq": 181
     }
   },
   "sharedRoutePatterns": [],
@@ -424,27 +424,6 @@
     {
       "source": "src/app/(marketing)/faq/page.tsx",
       "route": "/faq",
-      "groups": [
-        "(marketing)"
-      ],
-      "slots": [],
-      "requiresRouteReview": false,
-      "area": "marked-og-offentlig",
-      "legacyGroup": false,
-      "redirectCandidate": false,
-      "nearbySurfaces": [
-        "src/app/(marketing)/layout.tsx",
-        "src/app/error.tsx",
-        "src/app/global-error.tsx",
-        "src/app/layout.tsx",
-        "src/app/not-found.tsx"
-      ],
-      "designStatus": "ikke-vurdert",
-      "accessStatus": "ikke-verifisert"
-    },
-    {
-      "source": "src/app/(marketing)/forside-ak/page.tsx",
-      "route": "/forside-ak",
       "groups": [
         "(marketing)"
       ],
@@ -1703,58 +1682,6 @@
       "accessStatus": "ikke-verifisert"
     },
     {
-      "source": "src/app/admin/(fullscreen)/agencyos/live/[sessionId]/page.tsx",
-      "route": "/admin/agencyos/live/[sessionId]",
-      "groups": [
-        "(fullscreen)"
-      ],
-      "slots": [],
-      "requiresRouteReview": false,
-      "area": "agencyos",
-      "legacyGroup": false,
-      "redirectCandidate": false,
-      "nearbySurfaces": [
-        "src/app/admin/(fullscreen)/agencyos/live/error.tsx",
-        "src/app/admin/(fullscreen)/agencyos/live/loading.tsx",
-        "src/app/admin/(fullscreen)/layout.tsx",
-        "src/app/admin/error.tsx",
-        "src/app/admin/layout.tsx",
-        "src/app/admin/not-found.tsx",
-        "src/app/error.tsx",
-        "src/app/global-error.tsx",
-        "src/app/layout.tsx",
-        "src/app/not-found.tsx"
-      ],
-      "designStatus": "ikke-vurdert",
-      "accessStatus": "ikke-verifisert"
-    },
-    {
-      "source": "src/app/admin/(fullscreen)/agencyos/live/page.tsx",
-      "route": "/admin/agencyos/live",
-      "groups": [
-        "(fullscreen)"
-      ],
-      "slots": [],
-      "requiresRouteReview": false,
-      "area": "agencyos",
-      "legacyGroup": false,
-      "redirectCandidate": false,
-      "nearbySurfaces": [
-        "src/app/admin/(fullscreen)/agencyos/live/error.tsx",
-        "src/app/admin/(fullscreen)/agencyos/live/loading.tsx",
-        "src/app/admin/(fullscreen)/layout.tsx",
-        "src/app/admin/error.tsx",
-        "src/app/admin/layout.tsx",
-        "src/app/admin/not-found.tsx",
-        "src/app/error.tsx",
-        "src/app/global-error.tsx",
-        "src/app/layout.tsx",
-        "src/app/not-found.tsx"
-      ],
-      "designStatus": "ikke-vurdert",
-      "accessStatus": "ikke-verifisert"
-    },
-    {
       "source": "src/app/admin/(legacy)/agenter/page.tsx",
       "route": "/admin/agenter",
       "groups": [
@@ -2339,6 +2266,8 @@
         "src/app/admin/(legacy)/layout.tsx",
         "src/app/admin/(legacy)/loading.tsx",
         "src/app/admin/(legacy)/not-found.tsx",
+        "src/app/admin/(legacy)/spillere/[id]/rediger/error.tsx",
+        "src/app/admin/(legacy)/spillere/[id]/rediger/loading.tsx",
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
         "src/app/admin/not-found.tsx",
@@ -2642,6 +2571,58 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/admin/agencyos/live/[sessionId]/page.tsx",
+      "route": "/admin/agencyos/live/[sessionId]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "agencyos",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/admin/agencyos/error.tsx",
+        "src/app/admin/agencyos/live/[sessionId]/error.tsx",
+        "src/app/admin/agencyos/live/[sessionId]/loading.tsx",
+        "src/app/admin/agencyos/live/error.tsx",
+        "src/app/admin/agencyos/live/loading.tsx",
+        "src/app/admin/agencyos/loading.tsx",
+        "src/app/admin/error.tsx",
+        "src/app/admin/layout.tsx",
+        "src/app/admin/not-found.tsx",
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/admin/agencyos/live/page.tsx",
+      "route": "/admin/agencyos/live",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "agencyos",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/admin/agencyos/error.tsx",
+        "src/app/admin/agencyos/live/error.tsx",
+        "src/app/admin/agencyos/live/loading.tsx",
+        "src/app/admin/agencyos/loading.tsx",
+        "src/app/admin/error.tsx",
+        "src/app/admin/layout.tsx",
+        "src/app/admin/not-found.tsx",
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/admin/agencyos/okonomi/page.tsx",
       "route": "/admin/agencyos/okonomi",
       "groups": [],
@@ -2649,7 +2630,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/agencyos/error.tsx",
         "src/app/admin/agencyos/loading.tsx",
@@ -3134,7 +3115,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": true,
+      "redirectCandidate": false,
       "nearbySurfaces": [
         "src/app/admin/bookinger/error.tsx",
         "src/app/admin/bookinger/loading.tsx",
@@ -3243,6 +3224,8 @@
       "legacyGroup": false,
       "redirectCandidate": false,
       "nearbySurfaces": [
+        "src/app/admin/email-templates/[id]/rediger/error.tsx",
+        "src/app/admin/email-templates/[id]/rediger/loading.tsx",
         "src/app/admin/email-templates/error.tsx",
         "src/app/admin/email-templates/loading.tsx",
         "src/app/admin/error.tsx",
@@ -3355,6 +3338,8 @@
         "src/app/admin/error.tsx",
         "src/app/admin/gjennomfore/error.tsx",
         "src/app/admin/gjennomfore/loading.tsx",
+        "src/app/admin/gjennomfore/okter/[id]/error.tsx",
+        "src/app/admin/gjennomfore/okter/[id]/loading.tsx",
         "src/app/admin/layout.tsx",
         "src/app/admin/not-found.tsx",
         "src/app/error.tsx",
@@ -3514,6 +3499,8 @@
       "redirectCandidate": false,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
+        "src/app/admin/grupper/[id]/workbench/error.tsx",
+        "src/app/admin/grupper/[id]/workbench/loading.tsx",
         "src/app/admin/grupper/error.tsx",
         "src/app/admin/grupper/loading.tsx",
         "src/app/admin/layout.tsx",
@@ -3624,7 +3611,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": true,
+      "redirectCandidate": false,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/innboks/error.tsx",
@@ -3802,7 +3789,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
@@ -4110,15 +4097,13 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
         "src/app/admin/not-found.tsx",
         "src/app/admin/plan/error.tsx",
         "src/app/admin/plan/loading.tsx",
-        "src/app/admin/plan/maler/error.tsx",
-        "src/app/admin/plan/maler/loading.tsx",
         "src/app/error.tsx",
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
@@ -4365,7 +4350,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
@@ -4579,13 +4564,11 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
         "src/app/admin/not-found.tsx",
-        "src/app/admin/spillere/[id]/analyse/error.tsx",
-        "src/app/admin/spillere/[id]/analyse/loading.tsx",
         "src/app/admin/spillere/[id]/error.tsx",
         "src/app/admin/spillere/[id]/loading.tsx",
         "src/app/admin/spillere/error.tsx",
@@ -4651,6 +4634,35 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/admin/spillere/[id]/plan/[planId]/for-og-na/page.tsx",
+      "route": "/admin/spillere/[id]/plan/[planId]/for-og-na",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "agencyos",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/admin/error.tsx",
+        "src/app/admin/layout.tsx",
+        "src/app/admin/not-found.tsx",
+        "src/app/admin/spillere/[id]/error.tsx",
+        "src/app/admin/spillere/[id]/loading.tsx",
+        "src/app/admin/spillere/[id]/plan/[planId]/error.tsx",
+        "src/app/admin/spillere/[id]/plan/[planId]/loading.tsx",
+        "src/app/admin/spillere/[id]/plan/error.tsx",
+        "src/app/admin/spillere/[id]/plan/loading.tsx",
+        "src/app/admin/spillere/error.tsx",
+        "src/app/admin/spillere/loading.tsx",
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx",
       "route": "/admin/spillere/[id]/plan/[planId]",
       "groups": [],
@@ -4665,6 +4677,8 @@
         "src/app/admin/not-found.tsx",
         "src/app/admin/spillere/[id]/error.tsx",
         "src/app/admin/spillere/[id]/loading.tsx",
+        "src/app/admin/spillere/[id]/plan/[planId]/error.tsx",
+        "src/app/admin/spillere/[id]/plan/[planId]/loading.tsx",
         "src/app/admin/spillere/[id]/plan/error.tsx",
         "src/app/admin/spillere/[id]/plan/loading.tsx",
         "src/app/admin/spillere/error.tsx",
@@ -4685,7 +4699,7 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
@@ -4712,15 +4726,13 @@
       "requiresRouteReview": false,
       "area": "agencyos",
       "legacyGroup": false,
-      "redirectCandidate": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/admin/error.tsx",
         "src/app/admin/layout.tsx",
         "src/app/admin/not-found.tsx",
         "src/app/admin/spillere/[id]/error.tsx",
         "src/app/admin/spillere/[id]/loading.tsx",
-        "src/app/admin/spillere/[id]/tester/error.tsx",
-        "src/app/admin/spillere/[id]/tester/loading.tsx",
         "src/app/admin/spillere/error.tsx",
         "src/app/admin/spillere/loading.tsx",
         "src/app/error.tsx",
@@ -5820,6 +5832,26 @@
     {
       "source": "src/app/auth/signup/page.tsx",
       "route": "/auth/signup",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "inngang-og-konto",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/auth/error.tsx",
+        "src/app/auth/layout.tsx",
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/auth/trenerdeling/page.tsx",
+      "route": "/auth/trenerdeling",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -7615,7 +7647,7 @@
       "requiresRouteReview": false,
       "area": "playerhq",
       "legacyGroup": true,
-      "redirectCandidate": true,
+      "redirectCandidate": false,
       "nearbySurfaces": [
         "src/app/error.tsx",
         "src/app/global-error.tsx",
@@ -7829,6 +7861,31 @@
     {
       "source": "src/app/portal/analysere/page.tsx",
       "route": "/portal/analysere",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/analysere/error.tsx",
+        "src/app/portal/analysere/layout.tsx",
+        "src/app/portal/analysere/loading.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/portal/analysere/skill-map/page.tsx",
+      "route": "/portal/analysere/skill-map",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -8731,6 +8788,28 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/portal/live/page.tsx",
+      "route": "/portal/live",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/portal/mal/bygger/page.tsx",
       "route": "/portal/mal/bygger",
       "groups": [],
@@ -8747,6 +8826,30 @@
         "src/app/portal/error.tsx",
         "src/app/portal/layout.tsx",
         "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/portal/mal/evaluering/page.tsx",
+      "route": "/portal/mal/evaluering",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/mal/evaluering/error.tsx",
+        "src/app/portal/mal/evaluering/loading.tsx",
         "src/app/portal/not-found.tsx"
       ],
       "designStatus": "ikke-vurdert",
@@ -9290,6 +9393,60 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/portal/meg/deling/innsyn/page.tsx",
+      "route": "/portal/meg/deling/innsyn",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/meg/deling/error.tsx",
+        "src/app/portal/meg/deling/loading.tsx",
+        "src/app/portal/meg/error.tsx",
+        "src/app/portal/meg/layout.tsx",
+        "src/app/portal/meg/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/portal/meg/deling/page.tsx",
+      "route": "/portal/meg/deling",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/meg/deling/error.tsx",
+        "src/app/portal/meg/deling/loading.tsx",
+        "src/app/portal/meg/error.tsx",
+        "src/app/portal/meg/layout.tsx",
+        "src/app/portal/meg/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/portal/meg/dokumenter/page.tsx",
       "route": "/portal/meg/dokumenter",
       "groups": [],
@@ -9815,6 +9972,32 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/portal/meg/resultater/page.tsx",
+      "route": "/portal/meg/resultater",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/meg/error.tsx",
+        "src/app/portal/meg/layout.tsx",
+        "src/app/portal/meg/loading.tsx",
+        "src/app/portal/meg/resultater/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/portal/meg/sikkerhet/2fa/page.tsx",
       "route": "/portal/meg/sikkerhet/2fa",
       "groups": [],
@@ -10003,6 +10186,28 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/portal/periodeplan/page.tsx",
+      "route": "/portal/periodeplan",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/portal/planlegge/bygger/page.tsx",
       "route": "/portal/planlegge/bygger",
       "groups": [],
@@ -10073,6 +10278,28 @@
         "src/app/portal/planlegge/workbench/error.tsx",
         "src/app/portal/planlegge/workbench/layout.tsx",
         "src/app/portal/planlegge/workbench/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/portal/samlinger/page.tsx",
+      "route": "/portal/samlinger",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -10276,6 +10503,28 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/portal/toppidrett/page.tsx",
+      "route": "/portal/toppidrett",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/portal/trackman/[sessionId]/page.tsx",
       "route": "/portal/trackman/[sessionId]",
       "groups": [],
@@ -10462,6 +10711,31 @@
       "area": "playerhq",
       "legacyGroup": false,
       "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/portal/error.tsx",
+        "src/app/portal/layout.tsx",
+        "src/app/portal/loading.tsx",
+        "src/app/portal/not-found.tsx",
+        "src/app/portal/tren/teknisk-plan/[planId]/error.tsx",
+        "src/app/portal/tren/teknisk-plan/[planId]/loading.tsx",
+        "src/app/portal/tren/teknisk-plan/error.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/portal/tren/teknisk-plan/page.tsx",
+      "route": "/portal/tren/teknisk-plan",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "playerhq",
+      "legacyGroup": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/error.tsx",
         "src/app/global-error.tsx",
@@ -10887,6 +11161,24 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/skjermer/page.tsx",
+      "route": "/skjermer",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "marked-og-offentlig",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-gfgk/page.tsx",
       "route": "/team-gfgk",
       "groups": [],
@@ -10950,8 +11242,8 @@
       "accessStatus": "ikke-verifisert"
     },
     {
-      "source": "src/app/team-norway/apparatet/page.tsx",
-      "route": "/team-norway/apparatet",
+      "source": "src/app/team-norway/analyse/page.tsx",
+      "route": "/team-norway/analyse",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -10971,8 +11263,71 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/team-norway/apparatet/page.tsx",
+      "route": "/team-norway/apparatet",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-norway/college/page.tsx",
       "route": "/team-norway/college",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/fagapparat/page.tsx",
+      "route": "/team-norway/fagapparat",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/fellestesting/[deltakerId]/page.tsx",
+      "route": "/team-norway/fellestesting/[deltakerId]",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -11015,6 +11370,48 @@
     {
       "source": "src/app/team-norway/inviter/page.tsx",
       "route": "/team-norway/inviter",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/lisens-okonomi/page.tsx",
+      "route": "/team-norway/lisens-okonomi",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/live-watch/page.tsx",
+      "route": "/team-norway/live-watch",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -11223,8 +11620,155 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/team-norway/spiller/[spillerId]/analyse/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/analyse",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/evaluering/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/evaluering",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/oversikt/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/oversikt",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-norway/spiller/[spillerId]/page.tsx",
       "route": "/team-norway/spiller/[spillerId]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/teknisk-plan/[planId]/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/teknisk-plan/[planId]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/teknisk-plan/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/teknisk-plan",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/tester/[testId]/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/tester/[testId]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/spiller/[spillerId]/tester/page.tsx",
+      "route": "/team-norway/spiller/[spillerId]/tester",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -11283,6 +11827,27 @@
         "src/app/team-norway/loading.tsx",
         "src/app/team-norway/tilgang/error.tsx",
         "src/app/team-norway/tilgang/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/turneringer/[id]/page.tsx",
+      "route": "/team-norway/turneringer/[id]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -11351,6 +11916,48 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/team-norway/wang-resultater/page.tsx",
+      "route": "/team-norway/wang-resultater",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/workbench/page.tsx",
+      "route": "/team-norway/workbench",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-wang/coach/iup/[elevId]/page.tsx",
       "route": "/team-wang/coach/iup/[elevId]",
       "groups": [],
@@ -11373,6 +11980,46 @@
     {
       "source": "src/app/team-wang/coach/page.tsx",
       "route": "/team-wang/coach",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
+        "src/app/team-wang/layout.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-wang/coach/tester/page.tsx",
+      "route": "/team-wang/coach/tester",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
+        "src/app/team-wang/layout.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-wang/coach/turneringer/[elevId]/page.tsx",
+      "route": "/team-wang/coach/turneringer/[elevId]",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -11419,6 +12066,46 @@
       "area": "lag-og-skole",
       "legacyGroup": false,
       "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
+        "src/app/team-wang/layout.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-wang/rekruttering/page.tsx",
+      "route": "/team-wang/rekruttering",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": true,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
+        "src/app/team-wang/layout.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-wang/toppidrett/page.tsx",
+      "route": "/team-wang/toppidrett",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": true,
       "nearbySurfaces": [
         "src/app/error.tsx",
         "src/app/global-error.tsx",
@@ -11561,6 +12248,176 @@
       "isTest": false
     },
     {
+      "source": "src/components/admin/precision/AG01Cockpit.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG04Innboks.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG04MalRediger.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG05Kalender.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG05Tilg.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG06Booking.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG07Stall.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG08Faner.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG08Rediger.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG08Spiller360.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG08Stats.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG08Tester.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG10Oversikt.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG10TekniskPlan.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG11Ark.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG11Gruppe.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG11Moduler.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG11Workbench.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG12Oktark.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG13LiveOkt.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG13LiveTavle.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14MalDetalj.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14MalFelles.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14MalNy.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14MalRediger.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14Ovelseark.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG14PlanHub.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG15Tester.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG16Grupper.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AG20Okonomi.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AGRD01Runder.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AGTP01Oppgaveskjema.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/AGTP02ForOgNaa.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/precision/TreningsvolumVisning.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
       "source": "src/components/admin/recording-analyze-button.tsx",
       "family": "admin",
       "isTest": false
@@ -11596,12 +12453,22 @@
       "isTest": false
     },
     {
+      "source": "src/components/admin/stall/StallPrecisionView.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
       "source": "src/components/admin/talent/sammenligning.tsx",
       "family": "admin",
       "isTest": false
     },
     {
       "source": "src/components/admin/team/team-kit.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
+      "source": "src/components/admin/test-ovelse-valg.tsx",
       "family": "admin",
       "isTest": false
     },
@@ -11791,26 +12658,6 @@
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/AdminPlanMalDetaljV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/AdminPlanMalNyV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/AdminPlanMalRedigerV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/AdminPlanMalerV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/AdminPlanleggeV2.tsx",
       "family": "admin",
       "isTest": false
@@ -11931,11 +12778,6 @@
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/AdminTekniskPlanV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/AdminTesterV2.tsx",
       "family": "admin",
       "isTest": false
@@ -12011,6 +12853,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/admin/v2/CoachRosterBar.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
       "source": "src/components/admin/v2/CoachWorkbenchMount.tsx",
       "family": "admin",
       "isTest": false
@@ -12041,11 +12888,6 @@
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/InnboksEpostV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/InnsiktHubV2.tsx",
       "family": "admin",
       "isTest": false
@@ -12061,32 +12903,12 @@
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/LiveOktCoachTrainLock.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/LiveOktCoachV2.tsx",
       "family": "admin",
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/LiveTavleTrainLock.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/OktArkV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/PeriodeNavnV2.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/PlanHubV2.tsx",
       "family": "admin",
       "isTest": false
     },
@@ -12221,6 +13043,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/admin/v2/analyse/WorkbenchAnalyseV2.tsx",
+      "family": "admin",
+      "isTest": false
+    },
+    {
       "source": "src/components/admin/v2/caddie/caddie-approval-modal-v2.tsx",
       "family": "admin",
       "isTest": false
@@ -12251,22 +13078,12 @@
       "isTest": false
     },
     {
-      "source": "src/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
       "source": "src/components/admin/v2/godkjenninger/tl-inspektor.tsx",
       "family": "admin",
       "isTest": false
     },
     {
       "source": "src/components/admin/v2/innboks/InnboksSaker.tsx",
-      "family": "admin",
-      "isTest": false
-    },
-    {
-      "source": "src/components/admin/v2/innboks/InnboksSakerTrainLock.tsx",
       "family": "admin",
       "isTest": false
     },
@@ -12471,6 +13288,26 @@
       "isTest": false
     },
     {
+      "source": "src/components/agencyos/agent-strip.tsx",
+      "family": "agencyos",
+      "isTest": false
+    },
+    {
+      "source": "src/components/agencyos/tournament-enroll-modal.tsx",
+      "family": "agencyos",
+      "isTest": false
+    },
+    {
+      "source": "src/components/agencyos/workbench/shell.tsx",
+      "family": "agencyos",
+      "isTest": false
+    },
+    {
+      "source": "src/components/agencyos/workbench/tabs.tsx",
+      "family": "agencyos",
+      "isTest": false
+    },
+    {
       "source": "src/components/athletic/calendars/year-plan-gantt.tsx",
       "family": "athletic",
       "isTest": false
@@ -12546,6 +13383,16 @@
       "isTest": false
     },
     {
+      "source": "src/components/auth/LoginPrecisionView.tsx",
+      "family": "auth",
+      "isTest": false
+    },
+    {
+      "source": "src/components/auth/LoginView.tsx",
+      "family": "auth",
+      "isTest": false
+    },
+    {
       "source": "src/components/auth/clear-pwa-caches.tsx",
       "family": "auth",
       "isTest": false
@@ -12586,23 +13433,8 @@
       "isTest": false
     },
     {
-      "source": "src/components/coachhq/agent-strip.tsx",
-      "family": "coachhq",
-      "isTest": false
-    },
-    {
-      "source": "src/components/coachhq/tournament-enroll-modal.tsx",
-      "family": "coachhq",
-      "isTest": false
-    },
-    {
-      "source": "src/components/coachhq/workbench/shell.tsx",
-      "family": "coachhq",
-      "isTest": false
-    },
-    {
-      "source": "src/components/coachhq/workbench/tabs.tsx",
-      "family": "coachhq",
+      "source": "src/components/forelder/ForelderPrecisionView.tsx",
+      "family": "forelder",
       "isTest": false
     },
     {
@@ -12686,6 +13518,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/iup/LeverteIupProfil.tsx",
+      "family": "iup",
+      "isTest": false
+    },
+    {
       "source": "src/components/kommando/agent-chat.tsx",
       "family": "kommando",
       "isTest": false
@@ -12698,11 +13535,6 @@
     {
       "source": "src/components/kommando/task-list.tsx",
       "family": "kommando",
-      "isTest": false
-    },
-    {
-      "source": "src/components/marketing/ak-sider/ForsideAK.tsx",
-      "family": "marketing",
       "isTest": false
     },
     {
@@ -12781,17 +13613,22 @@
       "isTest": false
     },
     {
+      "source": "src/components/marketing/booking/BookingKvitteringPrecision.tsx",
+      "family": "marketing",
+      "isTest": false
+    },
+    {
+      "source": "src/components/marketing/booking/BookingPrecisionFlow.tsx",
+      "family": "marketing",
+      "isTest": false
+    },
+    {
+      "source": "src/components/marketing/ds-sider/ForsideMork.tsx",
+      "family": "marketing",
+      "isTest": false
+    },
+    {
       "source": "src/components/marketing/landing/MarkedBookingPauset.tsx",
-      "family": "marketing",
-      "isTest": false
-    },
-    {
-      "source": "src/components/marketing/landing/MarkedForside.tsx",
-      "family": "marketing",
-      "isTest": false
-    },
-    {
-      "source": "src/components/marketing/landing/MarkedForsideReise.tsx",
       "family": "marketing",
       "isTest": false
     },
@@ -13186,6 +14023,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/live/LivePrecisionView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/live/LiveSessionShell.tsx",
       "family": "portal",
       "isTest": false
@@ -13222,6 +14064,46 @@
     },
     {
       "source": "src/components/portal/portal-providers.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/PH01IDag.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/PHTP01TekniskPlan.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/iup-evaluering.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/navngitt-deling.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/trener-iup-svar.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/precision/trenerdeling-aksept.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/profil/PersonvernPrecisionView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/profil/SpillerProfilPrecisionView.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -13272,6 +14154,11 @@
     },
     {
       "source": "src/components/portal/pyramide-fordeling.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/runde-logg/ShotEntryNumpad.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -13336,6 +14223,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/runde-logg/slag-resultat-detaljer.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/runde-logg/tommel-sone.tsx",
       "family": "portal",
       "isTest": false
@@ -13376,7 +14268,57 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/skill-map/SkillMapView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/statistikk/statistikk.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/teknisk/TekniskPlanPrecisionView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/BanekartSpatialView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/HierarkiskMaalTracker.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/KategoriOversikt.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/PeriodeplanPyramideView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/StrokesGainedDeepDive.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/StyrkeProgramView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/TrackmanGappingView.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/toppidrett/YtelsesbildeScorecard.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -13626,11 +14568,6 @@
       "isTest": false
     },
     {
-      "source": "src/components/portal/v2/FullSvingFlate.tsx",
-      "family": "portal",
-      "isTest": false
-    },
-    {
       "source": "src/components/portal/v2/FysiskV2.tsx",
       "family": "portal",
       "isTest": false
@@ -13851,6 +14788,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/v2/OpprettUtfordringV2.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/v2/OpptattTidV2.tsx",
       "family": "portal",
       "isTest": false
@@ -13957,16 +14899,6 @@
     },
     {
       "source": "src/components/portal/v2/TalentSammenligningV2.tsx",
-      "family": "portal",
-      "isTest": false
-    },
-    {
-      "source": "src/components/portal/v2/TekniskPlanFullsvingShell.tsx",
-      "family": "portal",
-      "isTest": false
-    },
-    {
-      "source": "src/components/portal/v2/TekniskPlanV2.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -14141,6 +15073,81 @@
       "isTest": false
     },
     {
+      "source": "src/components/precision/AdminSkallVelger.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/AgencyOSSkall.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/Hurtigknapp.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/PlayerHQSkall.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-a2.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-a3.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-a4.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-a5.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-cockpit.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-innboks.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-planhub.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-spiller360.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa-workbench.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/pa.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
+      "source": "src/components/precision/teknisk-plan/tp-deler.tsx",
+      "family": "precision",
+      "isTest": false
+    },
+    {
       "source": "src/components/sg-hub/ClubTaggingModal.tsx",
       "family": "sg-hub",
       "isTest": false
@@ -14203,6 +15210,11 @@
     {
       "source": "src/components/sg-hub/TempoRibbon.tsx",
       "family": "sg-hub",
+      "isTest": false
+    },
+    {
+      "source": "src/components/shared/VoiceRangeRecorder.tsx",
+      "family": "shared",
       "isTest": false
     },
     {
@@ -14501,6 +15513,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/team-norway/app/TeamNorwayAppView.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
       "source": "src/components/team-norway/core.tsx",
       "family": "team-norway",
       "isTest": false
@@ -14511,17 +15528,127 @@
       "isTest": false
     },
     {
+      "source": "src/components/team-norway/skjermer/felles.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-college-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-dokumenter-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-fagapparat-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-fellestesting-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-gruppeposter-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-lisens-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-live-watch-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-manedsplan-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-oversikt-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-rangliste-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-referansenivaer-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-samlinger-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-skoler-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-spillerprofil-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-spillerutvikling-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-testprotokoller-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-turnering-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-turneringer-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/skjermer/tn-uttak-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
       "source": "src/components/team-norway/tn-data-table.tsx",
       "family": "team-norway",
       "isTest": false
     },
     {
-      "source": "src/components/team-norway/tn-dokument-opplasting.tsx",
+      "source": "src/components/team-norway/tn-felles-testdag-opprett.tsx",
       "family": "team-norway",
       "isTest": false
     },
     {
-      "source": "src/components/team-norway/tn-dokument-tabell.tsx",
+      "source": "src/components/team-norway/tn-flate.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-gruppe-klient.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-handlinger.tsx",
       "family": "team-norway",
       "isTest": false
     },
@@ -14546,12 +15673,42 @@
       "isTest": false
     },
     {
+      "source": "src/components/team-norway/tn-redigering-skjema.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
       "source": "src/components/team-norway/tn-registrerte-skjermer.tsx",
       "family": "team-norway",
       "isTest": false
     },
     {
       "source": "src/components/team-norway/tn-shell.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-skjerm.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-testdag-ko.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-testdag-opprett.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-testdag-scorecard.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-tilgang-handlinger.tsx",
       "family": "team-norway",
       "isTest": false
     },
@@ -14563,11 +15720,6 @@
     {
       "source": "src/components/team-norway/tn-tilgang-visning.tsx",
       "family": "team-norway",
-      "isTest": false
-    },
-    {
-      "source": "src/components/teknisk-plan/oppgave-modal.tsx",
-      "family": "teknisk-plan",
       "isTest": false
     },
     {
@@ -14591,8 +15743,8 @@
       "isTest": false
     },
     {
-      "source": "src/components/teknisk-plan/teknisk-plan-visning.tsx",
-      "family": "teknisk-plan",
+      "source": "src/components/tester/ResultatKontekst.tsx",
+      "family": "tester",
       "isTest": false
     },
     {
@@ -14628,6 +15780,16 @@
     {
       "source": "src/components/turneringer/live-refresher.tsx",
       "family": "turneringer",
+      "isTest": false
+    },
+    {
+      "source": "src/components/ui/OfflineBanner.tsx",
+      "family": "ui",
+      "isTest": false
+    },
+    {
+      "source": "src/components/ui/athletic-hero-card.tsx",
+      "family": "ui",
       "isTest": false
     },
     {
@@ -14702,6 +15864,11 @@
     },
     {
       "source": "src/components/ui/skeleton.tsx",
+      "family": "ui",
+      "isTest": false
+    },
+    {
+      "source": "src/components/ui/swiss-metric-grid.tsx",
       "family": "ui",
       "isTest": false
     },
@@ -14891,6 +16058,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/wang/WangRekrutteringView.tsx",
+      "family": "wang",
+      "isTest": false
+    },
+    {
       "source": "src/components/widgets/DagensOkterWidget.tsx",
       "family": "widgets",
       "isTest": false
@@ -14926,7 +16098,22 @@
       "isTest": false
     },
     {
+      "source": "src/components/workbench/OvelseSkjema.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
       "source": "src/components/workbench/PublishConfirmDialog.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/SamlingsprogramKontroll.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/SessionExecutionPanel.tsx",
       "family": "workbench",
       "isTest": false
     },
@@ -14946,6 +16133,16 @@
       "isTest": false
     },
     {
+      "source": "src/components/workbench/Trenerforslag.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/Ukeforslag.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
       "source": "src/components/workbench/VisningPiller.tsx",
       "family": "workbench",
       "isTest": false
@@ -14956,7 +16153,32 @@
       "isTest": false
     },
     {
+      "source": "src/components/workbench/WeekPlanEditor.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchAar.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchAnalyse.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
       "source": "src/components/workbench/WorkbenchFeil.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchHendelserArk.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchLastPaNytt.tsx",
       "family": "workbench",
       "isTest": false
     },
@@ -14966,7 +16188,77 @@
       "isTest": false
     },
     {
+      "source": "src/components/workbench/WorkbenchLive.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchManed.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchMinKalender.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchOkt.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchPeriode.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchPlanHandlinger.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchSamlet.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchSesongkart.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchShell.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchStall.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchTrenerbord.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchTreukerssyklus.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchTurneringsplanArk.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
       "source": "src/components/workbench/WorkbenchUke.tsx",
+      "family": "workbench",
+      "isTest": false
+    },
+    {
+      "source": "src/components/workbench/WorkbenchUkeverksted.tsx",
       "family": "workbench",
       "isTest": false
     },
@@ -14991,9 +16283,6 @@
     "src/app/(marketing)/(mlegacy)/error.tsx",
     "src/app/(marketing)/(mlegacy)/not-found.tsx",
     "src/app/(marketing)/layout.tsx",
-    "src/app/admin/(fullscreen)/agencyos/live/error.tsx",
-    "src/app/admin/(fullscreen)/agencyos/live/loading.tsx",
-    "src/app/admin/(fullscreen)/layout.tsx",
     "src/app/admin/(legacy)/error.tsx",
     "src/app/admin/(legacy)/layout.tsx",
     "src/app/admin/(legacy)/loading.tsx",
@@ -15001,6 +16290,8 @@
     "src/app/admin/(legacy)/okonomi/loading.tsx",
     "src/app/admin/(legacy)/plans/loading.tsx",
     "src/app/admin/(legacy)/reports/loading.tsx",
+    "src/app/admin/(legacy)/spillere/[id]/rediger/error.tsx",
+    "src/app/admin/(legacy)/spillere/[id]/rediger/loading.tsx",
     "src/app/admin/(legacy)/spillere/[id]/workbench/layout.tsx",
     "src/app/admin/agencyos/caddie/aktivitet/error.tsx",
     "src/app/admin/agencyos/caddie/aktivitet/loading.tsx",
@@ -15009,6 +16300,10 @@
     "src/app/admin/agencyos/caddie/error.tsx",
     "src/app/admin/agencyos/caddie/loading.tsx",
     "src/app/admin/agencyos/error.tsx",
+    "src/app/admin/agencyos/live/[sessionId]/error.tsx",
+    "src/app/admin/agencyos/live/[sessionId]/loading.tsx",
+    "src/app/admin/agencyos/live/error.tsx",
+    "src/app/admin/agencyos/live/loading.tsx",
     "src/app/admin/agencyos/loading.tsx",
     "src/app/admin/agencyos/okonomi/error.tsx",
     "src/app/admin/agencyos/okonomi/loading.tsx",
@@ -15030,13 +16325,19 @@
     "src/app/admin/bookinger/[id]/loading.tsx",
     "src/app/admin/bookinger/error.tsx",
     "src/app/admin/bookinger/loading.tsx",
+    "src/app/admin/email-templates/[id]/rediger/error.tsx",
+    "src/app/admin/email-templates/[id]/rediger/loading.tsx",
     "src/app/admin/email-templates/error.tsx",
     "src/app/admin/email-templates/loading.tsx",
     "src/app/admin/error.tsx",
     "src/app/admin/gjennomfore/error.tsx",
     "src/app/admin/gjennomfore/loading.tsx",
+    "src/app/admin/gjennomfore/okter/[id]/error.tsx",
+    "src/app/admin/gjennomfore/okter/[id]/loading.tsx",
     "src/app/admin/godkjenninger/error.tsx",
     "src/app/admin/godkjenninger/loading.tsx",
+    "src/app/admin/grupper/[id]/workbench/error.tsx",
+    "src/app/admin/grupper/[id]/workbench/loading.tsx",
     "src/app/admin/grupper/error.tsx",
     "src/app/admin/grupper/loading.tsx",
     "src/app/admin/handlingssenter/error.tsx",
@@ -15059,8 +16360,6 @@
     "src/app/admin/plan-templates/loading.tsx",
     "src/app/admin/plan/error.tsx",
     "src/app/admin/plan/loading.tsx",
-    "src/app/admin/plan/maler/error.tsx",
-    "src/app/admin/plan/maler/loading.tsx",
     "src/app/admin/plan/teknisk/error.tsx",
     "src/app/admin/plan/teknisk/loading.tsx",
     "src/app/admin/planlegge/error.tsx",
@@ -15071,16 +16370,14 @@
     "src/app/admin/reports/loading.tsx",
     "src/app/admin/runder/error.tsx",
     "src/app/admin/runder/loading.tsx",
-    "src/app/admin/spillere/[id]/analyse/error.tsx",
-    "src/app/admin/spillere/[id]/analyse/loading.tsx",
     "src/app/admin/spillere/[id]/error.tsx",
     "src/app/admin/spillere/[id]/fremgang/error.tsx",
     "src/app/admin/spillere/[id]/fremgang/loading.tsx",
     "src/app/admin/spillere/[id]/loading.tsx",
+    "src/app/admin/spillere/[id]/plan/[planId]/error.tsx",
+    "src/app/admin/spillere/[id]/plan/[planId]/loading.tsx",
     "src/app/admin/spillere/[id]/plan/error.tsx",
     "src/app/admin/spillere/[id]/plan/loading.tsx",
-    "src/app/admin/spillere/[id]/tester/error.tsx",
-    "src/app/admin/spillere/[id]/tester/loading.tsx",
     "src/app/admin/spillere/[id]/workbench/error.tsx",
     "src/app/admin/spillere/[id]/workbench/loading.tsx",
     "src/app/admin/spillere/error.tsx",
@@ -15190,11 +16487,16 @@
     "src/app/portal/kalender/loading.tsx",
     "src/app/portal/layout.tsx",
     "src/app/portal/loading.tsx",
+    "src/app/portal/mal/evaluering/error.tsx",
+    "src/app/portal/mal/evaluering/loading.tsx",
     "src/app/portal/meg/bookinger/error.tsx",
     "src/app/portal/meg/bookinger/loading.tsx",
+    "src/app/portal/meg/deling/error.tsx",
+    "src/app/portal/meg/deling/loading.tsx",
     "src/app/portal/meg/error.tsx",
     "src/app/portal/meg/layout.tsx",
     "src/app/portal/meg/loading.tsx",
+    "src/app/portal/meg/resultater/loading.tsx",
     "src/app/portal/not-found.tsx",
     "src/app/portal/planlegge/error.tsx",
     "src/app/portal/planlegge/loading.tsx",
@@ -15203,6 +16505,8 @@
     "src/app/portal/planlegge/workbench/loading.tsx",
     "src/app/portal/tren/fys-plan/error.tsx",
     "src/app/portal/tren/fys-plan/loading.tsx",
+    "src/app/portal/tren/teknisk-plan/[planId]/error.tsx",
+    "src/app/portal/tren/teknisk-plan/[planId]/loading.tsx",
     "src/app/portal/tren/teknisk-plan/error.tsx",
     "src/app/portal/tren/tester/error.tsx",
     "src/app/portal/tren/tester/loading.tsx",

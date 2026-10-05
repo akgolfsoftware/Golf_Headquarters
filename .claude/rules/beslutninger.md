@@ -4,6 +4,117 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## CLAUDE CODE PORTERER, IUP BARE FOR AKTIVE WANG-/TN-MEDLEMMER, BARE PH-01 ER GODKJENT (Anders 04.10.2026, bindende)
+
+Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `regler/claude-code.md`).
+
+- **Claude Code porterer** skjermene fra Precision Athletics til appen fra 04.10. Claude Design er fortsatt designkilde.
+- **IA 28.09 gjelder.** AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video og PH-26 Utenfor banen bygges ikke. Skjermlista i `docs/design-handoff/regler/skjermliste.md` er fasit for hva som finnes.
+- **Bare PH-01 er visuelt godkjent.** Alt annet er kandidat til Anders har sett det i appen.
+- **PH-IUP-01 Fireukerssjekk er godkjent for lansering** (Anders 04.10, etter skjermbilder 390 og 1280 px): «Det ser veldig kjedelig ut, men vi godkjenner.»
+- **Lansering først, designløft etterpå** (Anders 04.10): skjermer som virker, godkjennes for lansering selv om uttrykket er nøkternt. Videre designutvikling skjer i bakgrunnen etter lansering, og endres når demospillere har testet noen uker.
+- **IUP er et tillegg i PlayerHQ** (samme skall, ingen egen fane), og vises bare for spillere med PlayerHQ-profil som er aktive medlemmer i en WANG Toppidrett- eller Team Norway-gruppe. Ender medlemskapet, skjules IUP med en gang, også tidligere svar.
+- **Trenerinnsyn uten ja fra spiller/forelder venter** (Anders 04.10: «Del opp»). Handoffen sier at gruppen får innsyn automatisk, men kravet om samtykke, og foresattes samtykke under 16, står til Anders har avklart det juridisk.
+- **Regi per spiller i AgencyOS** (Privat · GFGK · WANG · Team Norway) bygges ikke før designet finnes.
+
+**Overstyrer:** «Codex fullfører resterende prosjekt» i §CLAUDE DESIGN EIER DESIGNET, og at tidligere IUP-besvarelser gir inngang etter utmelding (`harEgenIupInngang`).
+
+**Arbeidet dette utløser:** porteringskøen i `docs/design-handoff/regler/claude-code.md`, punkt 1–12. Juridisk avklaring av automatisk trenerinnsyn før `navngittTrenerHarTilgang` endres.
+
+## LANSERING 05.10: SEKS AG-SKJERMER BEHOLDES, MARKEDSSIDENE FÅR PRECISION (Anders 04.10.2026, bindende)
+
+Anders 04.10 kl. 23: «De skal med. Så tar vi det heller bort igjen.» Og bestilling om at PlayerHQ,
+AgencyOS, markedssidene og innloggingen skal være lanseringsklare med riktig design 05.10.
+
+- **AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video, AG-21 Oppgaver, AG-22 Innsikt og talent
+  og AG-24 Drift beholdes** som egne skjermer i Precision, selv om IA 28.09 sa at de utgår. De kan
+  fjernes senere. PH-26 Utenfor banen er fortsatt utgått og sender til Meg.
+- **Markedssidene får Precision Athletics** (Anders 04.10: «Bytt til Precision»). Det finnes ingen
+  tegninger for dem, så de bygges med Precision-komponentene og blir kandidater til Anders har sett dem.
+- **Lansering** betyr at hovedveiene virker og følger designet, og at ingen side krasjer, ruller sidelengs
+  eller viser demodata. Port 7 (Anders har sett skjermen) gjøres fra morgenrapporten.
+- IUP-køen (PH-IUP-02 og videre) kommer etter lanseringen.
+
+**Overstyrer:** «Markedssidene venter» (23.09) under §PRECISION ATHLETICS, og «Utgår 28.09» for de
+seks AG-skjermene i skjermlisten.
+
+**Arbeidet dette utløser:** nattkjøring 04.–05.10 etter planen i økten: samle ferdige grener,
+maskinsjekk av alle sider, rette røde funn med hovedveiene først, markedssidene til Precision,
+prøvekjøring og morgenrapport.
+
+## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
+
+Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at
+Codex fullfører resterende prosjekt, og har i denne økten bestilt en plan for gjennomføringen.
+Viderefører Precision Athletics og erstatter eldre omtale av Grok eller Claude Code som
+kodeansvarlig. Ingen nye produkt-, skjema-, tilgangs- eller publiseringsvalg følger av rollebyttet.
+
+**Arbeidet dette utløser:** [fullføringsplanen](../../docs/planer/codex-fullforing-claude-design-2026-09-30.md):
+fersk kartlegging → felles grunnlag → komplett treningskjede → øvrige spillerverktøy →
+booking/coaching → AgencyOS/AI → forelder/organisasjoner → sluttkontroll → autorisert lansering.
+Codex bruker valgte, versjonerte designleveranser, bevarer funksjoner og viser app/design
+side om side. Nye konkrete produktvalg avklares; allerede bestilt arbeid videreføres.
+Denne økten leverer planen. Implementasjons- og kontrollstatus føres separat.
+
+**Presisering i samme økt:** Anders vil at Codex planlegger arbeidet før Claude Design er
+ferdig, undersøker alle funksjoner og kontrollerer at de virker sammen. Planens PRE-01–08
+dekker funksjonsregister, isolert testmiljø, fersk teststatus, avtaler mellom moduler,
+treningskjeden, roller/booking/AI, gjenoppretting og teknisk overlevering. Endelig skjermarbeid
+følger valgt design; uavhengig funksjonsarbeid kan gjennomføres først.
+
+## ORDBOKA ER LÅST: AVVIKENE MOT PRECISION ER AVGJORT (Anders 30.09.2026, bindende)
+
+Svar på punkt 3 i §APPENS ORDBOK VINNER: alle avvik mellom masteren `docs/treningsplanlegging.md`
+og Precisions `guidelines/ordmaster.md` er lagt fram og avgjort. Masteren er rettet i samme PR.
+
+- **Stats** er fanen i PlayerHQ; i løpende tekst skrives «statistikk».
+- **Målsetning** er det spilleren sikter mot. «Mål» brukes bare om måltall (TrackMan-mål, rep-mål, resultatkrav).
+- **Venter på coach** er plan-status (bekrefter 26.09).
+- **Nivåene heter Gratis og Full** på skjerm. Pro, Premium og Plus brukes ikke; «Pro» forveksles
+  med coaching-pakken Performance Pro. TALENT / FULL / INGEN er interne tilgangsutfall.
+- **Aksene:** FYS Fysisk · TEK Teknisk · SLAG Golfslag · SPILL Spill · TURN Turnering. Banespill er
+  bare treningsområdet.
+- **Nytt i masteren:** menyene (§2.6), kategorier A–K, SG-kategorier og dagsform (§2.7), fem
+  standardplaner (§2.8), turneringstyper (§10).
+- **Kondisjon** angis med pulssone S1–S5. **Styrke** skrives «4 × 6 @ 90 kg · RIR 2».
+- **Teknisk fokus:** fortsatt ett per øvelse; en økt kan ha flere øvelser valgt fra spillerens
+  tekniske plan. TrackMan-parametere foreslås ut fra valgt fokus.
+- **Fysisk program** legger økter i planen; hver økt kan endres.
+
+**Overstyrer:** «Gratis / Pro» i masteren §2.5, «Stats → Statistikk» og «Goal → Mål» i masteren §3.
+
+**Arbeidet dette utløser:**
+
+1. **Precision (`7d7c2994`):** hele prosjektet rettes etter masteren; `guidelines/ordmaster.md` og
+   `assets/ak-vocabulary.js` blir avledede speil. Ferdig når et søk etter de forbudte ordene i
+   masteren §3 gir 0 treff i skjermtekst, og ingen fil kaller ordmasteren autoritativ.
+2. **Koden:** skjermtekst som viser nivånavn bruker Gratis / Full. Ferdig når ingen brukervendt
+   tekst viser «Pro», «TALENT» eller «FULL» som nivå.
+3. **TrackMan-forslag per fokus:** tabell legges fram for Anders før den bygges.
+4. **Fysisk program:** datamodell og flyt planlegges når fysisk trening bygges.
+
+## APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER (Anders 29.09.2026, bindende)
+
+Anders: «docs/ordbok.md vinner». Svar på det uavklarte punktet i §PRECISION ATHLETICS om to ordlister.
+
+- **Språket eies av repoet.** `docs/ordbok.md` peker til masteren `docs/treningsplanlegging.md`, som
+  er eneste kilde for ord, statuser, posisjonsnavn og treningsbegreper.
+- **`guidelines/ordmaster.md` i Claude Design «AK Golf Precision Athletics» (`7d7c2994`) er avledet.**
+  Den er et speil for tegningene, ikke fasit. Sier den noe annet enn masteren, rettes ordmasteren.
+- Posisjonsnavnene fra §POSISJONSNAVN FØLGER ORDMASTEREN (27.09) står nå i masteren §14.4, så
+  navnene er de samme og kilden er repoet.
+
+**Overstyrer:** Precisions `readme.md`, som kaller `guidelines/ordmaster.md` autoritativ.
+
+**Arbeidet dette utløser:**
+
+1. **Posisjonsnavn i masteren:** P1.0–P10.0 inn i `docs/treningsplanlegging.md` §14.4. Gjort i samme PR.
+2. **Precision (`7d7c2994`):** `readme.md` og toppen av `guidelines/ordmaster.md` sier at masteren i
+   repoet gjelder og at ordmasteren er avledet. Ferdig når ingen fil i prosjektet kaller ordmasteren
+   autoritativ.
+3. **Avvik mellom ordmasteren og masteren:** sammenlign ordene, legg avvikene fram for Anders, og rett
+   ordmasteren etter svaret. Ferdig når de to sier det samme om hvert ord de begge har.
+
 ## Workbench over uka: årsplan, periode og måned (Anders 28.09.2026, bindende)
 
 Anders vil ha knapper og skjema for ny årsplan, periodisering og månedsplan i Workbench.
@@ -361,7 +472,8 @@ idékilde, ikke visuell fasit: den bruker det gamle designsystemet `87aa23fb`.
   P2.0 Kølle parallell i baksving · P3.0 Venstre arm parallell i baksving · P4.0 Toppen av
   baksvingen · P5.0 Venstre arm parallell i nedsving · P6.0 Kølle parallell i nedsving · P7.0
   Treffpunktet · P8.0 Kølle parallell i gjennomføring · P9.0 Høyre arm parallell i oppfølging ·
-  P10.0 Fullføring og balanse. Kilde: `guidelines/ordmaster.md` §5 i `7d7c2994`.
+  P10.0 Fullføring og balanse. Står i `docs/treningsplanlegging.md` §14.4 (kilde fra 29.09,
+  §APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER).
 - **Kvalitetssjekken vises bare.** Anders: «Bare vises.» Den er aldri krav for å gå videre til
   neste læringssteg. Rep-mål og treffprotokoll viser også bare status (§Treningsfag).
 - **AK-formelen når en oppgave har flere læringssteg og miljøer:** formelen viser steget spilleren
@@ -680,9 +792,8 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
   Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
   `/portal` og `/admin`» (21.09).
 - Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
-- Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
-  Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
-  Posisjonsnavnene er avgjort 27.09: ordmasteren gjelder (§POSISJONSNAVN FØLGER ORDMASTEREN).
+- Ordlister: `docs/ordbok.md` (masteren `docs/treningsplanlegging.md`) vinner over prosjektets
+  `guidelines/ordmaster.md` (§APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER, 29.09).
 - Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:

@@ -1,3 +1,4 @@
+// PH18HullAnalyse — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ · Hull-analyse — v2 (rekomponert 2026-07-17, samme URL). V2Shell
  * leverer chrome-en, AnalysereHullV2 rendrer innholds-stacken (to faner:
@@ -16,7 +17,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke } from "@/components/v2";
 import {
   AnalysereHullV2,
@@ -152,9 +153,11 @@ export default async function HullAnalysePage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <AnalysereHullV2 data={data} />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }

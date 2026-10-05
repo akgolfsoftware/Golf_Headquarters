@@ -67,11 +67,17 @@ export async function slettEksterneBrukerdata(
     }
     try {
       const opptak = await prisma.sessionRecording.count({
-        where: { playerId: userId, audioUrl: { not: null } },
+        where: { playerId: userId },
       });
       plan.push(`ville fjerne ${opptak} opptak + tømme transkript/analyse`);
     } catch {
       plan.push("ville forsøke opptak-opprydding");
+    }
+    try {
+      const testbilder = await prisma.testSessionPhoto.count({ where: { userId } });
+      plan.push(`ville fjerne ${testbilder} private testbilde(r) fra Storage`);
+    } catch {
+      plan.push("ville forsøke opprydding av private testbilder");
     }
     plan.push("ville vaske guestName/guestEmail/guestPhone på egne bookinger");
     plan.push("ville slette profilkobling og oppslagslogg (dashboard.delete_profile_data)");
@@ -111,16 +117,32 @@ export async function slettEksterneBrukerdata(
 
   const sb = trySupabaseAdmin(feil);
 
+  // ── Private testbilder — fjern objekt før metadata, slik at en Storage-feil
+  // beholder stien for trygg, idempotent opprydding ved nytt forsøk. ──
+  try {
+    const testbilder = await prisma.testSessionPhoto.findMany({ where: { userId }, select: { id: true, storagePath: true } });
+    if (testbilder.length) {
+      if (!sb) throw new Error("Storage er ikke tilgjengelig.");
+      const { data, error } = await sb.storage.from("tn-test-photos").remove(testbilder.map((photo) => photo.storagePath));
+      if (error) throw error;
+      await prisma.testSessionPhoto.deleteMany({ where: { userId, id: { in: testbilder.map((photo) => photo.id) } } });
+      storageFilerFjernet += data?.length ?? 0;
+    }
+  } catch {
+    feil.push("testbilder: Storage-opprydding feilet; privat bildereferanse beholdes for nytt forsøk");
+  }
+
   // ── 1. Storage: avatar (kjent sti users/<id>.<ext> i bucket "avatars") ──
   if (sb) {
     try {
-      const { data } = await sb.storage
+      const { data, error } = await sb.storage
         .from("avatars")
         .remove([
           `users/${userId}.jpg`,
           `users/${userId}.png`,
           `users/${userId}.webp`,
         ]);
+      if (error) throw error;
       storageFilerFjernet += data?.length ?? 0;
     } catch (err) {
       feil.push(`avatar: ${meld(err)}`);
@@ -138,9 +160,10 @@ export async function slettEksterneBrukerdata(
         .map((v) => v.storagePath ?? v.videoUrl)
         .filter((s): s is string => Boolean(s));
       if (stier.length) {
-        const { data } = await sb.storage
+        const { data, error } = await sb.storage
           .from("player-swing-videos")
           .remove(stier);
+        if (error) throw error;
         storageFilerFjernet += data?.length ?? 0;
       }
     } catch (err) {
@@ -152,16 +175,17 @@ export async function slettEksterneBrukerdata(
   if (sb) {
     try {
       const opptak = await prisma.sessionRecording.findMany({
-        where: { playerId: userId, audioUrl: { not: null } },
+        where: { playerId: userId },
         select: { id: true, audioUrl: true },
       });
       const stier = opptak
         .map((o) => o.audioUrl)
         .filter((s): s is string => Boolean(s));
       if (stier.length) {
-        const { data } = await sb.storage
+        const { data, error } = await sb.storage
           .from("coaching-recordings")
           .remove(stier);
+        if (error) throw error;
         storageFilerFjernet += data?.length ?? 0;
       }
       if (opptak.length) {

@@ -1,3 +1,5 @@
+// PH21SgHubCoach — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Coach SG-hub (/portal/coach/sg-hub) — v2.
  * v2-port 17. juli 2026 (Team D3): `CoachSgHubV2` erstatter hybrid-designet,
@@ -9,7 +11,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import {
   CoachSgHubV2,
@@ -87,9 +88,11 @@ export default async function CoachSgHubPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachSgHubV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

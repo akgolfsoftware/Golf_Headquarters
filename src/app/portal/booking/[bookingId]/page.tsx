@@ -1,3 +1,4 @@
+// PH23OktDetalj — Precision Athletics PH-23.
 /**
  * PlayerHQ · Booking · Økt-detalj (/portal/booking/[bookingId]) — v2.
  * v2-port 17. juli 2026 (Team G-B): `BookingDetaljV2` erstatter legacy-siden,
@@ -11,7 +12,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke, type StatusTone } from "@/components/v2";
 import { BookingDetaljV2 } from "@/components/portal/v2/BookingDetaljV2";
 import { AVBESTILLING_FRIST_TIMER, hoursUntil } from "@/lib/booking/policy";
@@ -77,11 +78,10 @@ export default async function OktDetalj({ params }: Props) {
       : null;
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/bookinger">Mine bookinger</TilbakeLenke>
-      <BookingDetaljV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <TilbakeLenke href="/portal/meg/bookinger">Mine bookinger</TilbakeLenke>
+        <BookingDetaljV2
         data={{
           bookingId: booking.id,
           tjeneste: booking.serviceType.name,
@@ -99,6 +99,7 @@ export default async function OktDetalj({ params }: Props) {
           kanFaaRefusjon,
         }}
       />
-    </V2Shell>
+      </div>
+    </PlayerHQSkall>
   );
 }

@@ -1,36 +1,24 @@
+// PH24Utstyr — Precision Athletics. Data og handlinger er beholdt.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
- * PlayerHQ · Meg · Utstyr og bag (W3 — ny rute).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-utstyr.html (§9 tabell + trapp).
+ * PlayerHQ · Meg · Utstyr og bag (PH-24).
+ * Kilde: AK Golf Precision Athletics PH-24 (Meg / Utstyrsbag, ui_kits/playerhq/screens/PH-24.jsx).
  *
- * Konsolidering (manifest-w3-komplett.md): utstyr/bag/lengder → én flate;
- * lengdetrappa er en MODUL i flaten, ikke en egen rute.
- *
- * Redirect-konsolideringen (PORTPLAN §A1.9) er avgjort av Anders 02.09.2026:
- * `/portal/meg/utstyrsbag` er nå en redirect hit. Selve registrerings-/
- * redigeringsskjemaet (MegUtstyrsbagV2) er montert som egen seksjon under
- * lesevisningen (`somFane` skjuler dets eget «Utstyr»-hode, samme mønster
- * som STEG 15-konsolideringen) — ingen funksjonalitet er fjernet.
- *
- * Leser: EquipmentBag (rått, til redigeringsseksjonen) + målte carry-snitt
- * fra TrackMan (hentGapping, til lesevisningen).
+ * 14-køllers bag med spesifikasjoner og målte TrackMan carry-lengder (gapping-trapp).
+ * Leser EquipmentBag og gapping fra TrackMan; lagrer via lagreUtstyrsbag.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentUtstyrFlate } from "@/lib/portal/utstyr-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegUtstyrV2 } from "@/components/portal/v2/MegUtstyrV2";
-import { MegUtstyrsbagV2 } from "@/components/portal/v2/MegUtstyrsbagV2";
-import type { UtstyrsbagInput } from "@/app/portal/meg/utstyrsbag/actions";
+import { PH24Utstyr } from "@/components/portal/precision/PH24Utstyr";
+import { lagreUtstyrsbag, type UtstyrsbagInput } from "@/app/portal/meg/utstyrsbag/actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Utstyr · PlayerHQ" };
 
 export default async function UtstyrPage() {
-  // kreverTilgang: "INGEN" — hele /portal/meg står på talent-allowlisten
-  // (konto- og betalingsveien MÅ være nåbar). Manglet her i T2-sweepen;
-  // siden arvet FULL-defaulten.
   const user = await requirePortalUser({
     kreverTilgang: "INGEN",
     allow: ["PLAYER", "COACH", "ADMIN"],
@@ -55,11 +43,8 @@ export default async function UtstyrPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <MegUtstyrV2 data={data} />
-      <div id="rediger-utstyr">
-        <MegUtstyrsbagV2 data={{ utstyr }} somFane />
-      </div>
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH24Utstyr data={data} initialBag={utstyr} onLagreBag={lagreUtstyrsbag} />
+    </PlayerHQSkall>
   );
 }

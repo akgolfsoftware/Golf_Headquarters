@@ -1,13 +1,7 @@
 /**
- * Auth · Logget ut (/auth/logget-ut) — v2-redesign (2026-07-10).
- *
- * Rendrer <LoggetUtV2> (retning C «Presis») som selvstendig sentrert kort på
- * mørk auth-flate, INGEN app-sidebar. Erstatter gamle <LoggetUtSkjerm>
- * (v10-design) — se src/components/portal/v2/LoggetUtV2.tsx.
- *
- * Rent presentasjonelt — ingen Prisma/DB/auth/loader. Komponenten rendres med
- * de ekte lenkene for denne ruten; ingen liksom-data. Gamle
- * src/components/auth/logget-ut.tsx står urørt som fallback.
+ * AU01LoggetUt — utlogget flate i Precision Athletics.
+ * Kilde: ui_kits/konto/screens/AU-01-03.jsx, utlogget tilstand i AU01.
+ * Samme lenker. Hurtigbufferen tømmes som før.
  */
 
 import type { Metadata } from "next";
@@ -23,12 +17,7 @@ export default function LoggetUtPage() {
   return (
     <>
       <ClearPwaCaches />
-      <LoggetUtV2
-        hjemHref="/"
-        loggInnHref="/auth/login"
-        marketingHref="/"
-        feedbackEpost="post@akgolf.no"
-      />
+      <LoggetUtV2 hjemHref="/" loggInnHref="/auth/login" marketingHref="/" feedbackEpost="post@akgolf.no" />
     </>
   );
 }

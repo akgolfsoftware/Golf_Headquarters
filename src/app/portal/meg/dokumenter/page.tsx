@@ -1,16 +1,12 @@
 /**
- * v2 — PlayerHQ Meg · Dokumenter (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav), MegDokumenterV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbruker den ekte /portal/meg/dokumenter-siden:
- * requirePortalUser + samme Document-query (globale + egne). Datoen formateres
- * server-side (nb-NO) for konsistent tidssone.
+ * PH24Dokumenter — Meg · Dokumenter i PlayerHQSkall (Precision Athletics).
+ * Viser avtaler, samtykker, kvitteringer og veiledninger.
  */
 
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { MegDokumenterV2, type MegDokumenterData } from "@/components/portal/v2/MegDokumenterV2";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +19,16 @@ function formatDato(d: Date): string {
   });
 }
 
-export default async function DokumenterPage() {
+export default async function PH24DokumenterPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
-  const documents = await prisma.document.findMany({
-    where: { OR: [{ userId: null }, { userId: user.id }] },
-    orderBy: { createdAt: "desc" },
-  });
+  const [documents, ulest] = await Promise.all([
+    prisma.document.findMany({
+      where: { OR: [{ userId: null }, { userId: user.id }] },
+      orderBy: { createdAt: "desc" },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   const data: MegDokumenterData = {
     dokumenter: documents.map((d) => ({
@@ -42,9 +41,17 @@ export default async function DokumenterPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegDokumenterV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side ph24d">
+        <header>
+          <p className="ph24d-kicker">PlayerHQ · Meg</p>
+          <h1>Dokumenter</h1>
+          <p>Avtaler, samtykker, lisenser og kvitteringer tilknyttet din spillerprofil.</p>
+        </header>
+        <section className="pa-card ph24d-kort">
+          <MegDokumenterV2 data={data} />
+        </section>
+      </div>
+    </PlayerHQSkall>
   );
 }

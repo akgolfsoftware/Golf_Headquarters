@@ -13,7 +13,13 @@
 import { fraNaivVeggklokke, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { getAvailableSlots } from "@/lib/booking/availability";
 
-export type SlotTid = { kl: string; coachId: string; coachNavn: string };
+export type SlotTid = {
+  kl: string;
+  coachId: string;
+  coachNavn: string;
+  /** Eksakt start som naiv Oslo-veggklokke (fraNaivVeggklokke) — samme streng wizarden sender til bookingflyten. */
+  startIso: string;
+};
 export type SlotDag = { datoIso: string; tider: SlotTid[] };
 export type SlotVindu = { tjenesteId: string; dager: SlotDag[] };
 
@@ -56,7 +62,7 @@ export async function beregnSlotVindu(
         const sett = new Map<string, SlotTid>();
         for (const s of slots) {
           const kl = tilKl(s.start);
-          if (!sett.has(kl)) sett.set(kl, { kl, coachId: s.coachId, coachNavn: s.coachName });
+          if (!sett.has(kl)) sett.set(kl, { kl, coachId: s.coachId, coachNavn: s.coachName, startIso: fraNaivVeggklokke(s.start) });
         }
         const tider = Array.from(sett.values());
         return tider.length > 0 ? { datoIso: fraNaivVeggklokke(dato), tider } : null;

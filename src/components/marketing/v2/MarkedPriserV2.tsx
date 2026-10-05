@@ -71,7 +71,7 @@ export function MarkedPriserV2() {
             </div>
 
             <div className="pk-pris pk-pris-valgt">
-              <span className="pk-eyebrow">Pro · full tilgang</span>
+              <span className="pk-eyebrow">Full · all tilgang</span>
               <span className="pk-tall">
                 299 <small>kr/mnd</small>
               </span>
@@ -83,7 +83,7 @@ export function MarkedPriserV2() {
                 <li>AI-caddie og prioritert støtte</li>
               </ul>
               <Link className="pk-btn pk-btn-ink" href="/auth/signup">
-                Velg Pro
+                Velg Full
               </Link>
             </div>
           </div>

@@ -57,6 +57,9 @@ export type NyOktDrillVerdier = {
 
 export type NyOktVerdier = {
   title: string;
+  rationale?: string;
+  location?: string;
+  maalsetning?: string;
   date: string;
   startMinute: number;
   durationMinutes: number;
@@ -85,6 +88,7 @@ export function CreateSessionModal({
   onOpprett,
 }: Props) {
   const [tittel, setTittel] = useState("");
+  const [formaal, setFormaal] = useState(""); const [sted, setSted] = useState(""); const [malsetning, setMalsetning] = useState("");
   const [dag, setDag] = useState(dato);
   const [start, setStart] = useState(formatTime(startMinutt));
   const [varighet, setVarighet] = useState(60);
@@ -112,7 +116,7 @@ export function CreateSessionModal({
       // A-03: «ingen formel her» — TEK som midlertidig dominant område;
       // formelen settes på første drill i inspektøren etterpå.
       pyramid: "TEK",
-      repeatWeeks: gjentaUker,
+      repeatWeeks: gjentaUker, rationale: formaal.trim() || undefined, location: sted.trim() || undefined, maalsetning: malsetning.trim() || undefined,
     });
   }
 
@@ -135,6 +139,9 @@ export function CreateSessionModal({
               />
             </Felt>
 
+            <Felt label="Formål"><Input maxLength={1000} value={formaal} onChange={e => setFormaal(e.target.value)} /></Felt>
+            <Felt label="Sted"><Input maxLength={160} value={sted} onChange={e => setSted(e.target.value)} /></Felt>
+            <Felt label="Øktens målsetning"><Input maxLength={500} value={malsetning} onChange={e => setMalsetning(e.target.value)} /></Felt>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <Felt label={UI.dateField}>
                 <Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} />

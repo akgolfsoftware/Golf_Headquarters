@@ -1,11 +1,5 @@
 /**
- * Appens ekte «ikke funnet»-side (404) — Paper. Fasit: designsystem/paper/
- * fase2/system/system-tilstander.html (§404), via delt <IkkeFunnet>.
- *
- * Rendrer <IkkeFunnet> som selvstendig systemside uten app-sidebar. Rent
- * presentasjonelt: ingen Prisma/DB/auth — 404-siden trenger ingen data.
- * Bruker komponentens defaults (tittel/beskrivelse/CTA); hjemHref peker på
- * marketing-forsiden.
+ * Appens 404. Samme Precision-ramme som SY-01. Ingen data.
  */
 
 import type { Metadata } from "next";

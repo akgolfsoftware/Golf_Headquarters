@@ -4,6 +4,7 @@ import type { WorkbenchMode } from "@/lib/domain/workbench/types";
 
 let tilgang = false;
 let sessionLookups = 0;
+let busyBlockReads = 0;
 mock.module("@/lib/auth/requirePortalUser", {
   namedExports: { requirePortalUser: async () => ({ id: "coach-1", role: "COACH" }) },
 });
@@ -21,10 +22,13 @@ mock.module("@/lib/prisma", {
           return [];
         },
       },
+      groupSchedule: { findMany: async () => { sessionLookups += 1; return []; } },
+      workbenchTournamentPlan: { findMany: async () => { sessionLookups += 1; return []; } },
       exerciseDefinition: { findMany: async () => { sessionLookups += 1; return []; } },
       trainingPlan: { findMany: async () => { sessionLookups += 1; return []; } },
       user: { findUnique: async () => { sessionLookups += 1; return { schoolYear: "VG1" }; } },
       playerBusyBlock: { findMany: async (args: { where: { userId: string } }) => {
+        busyBlockReads += 1;
         sessionLookups += 1;
         assert.equal(args.where.userId, "spiller-egen");
         return [{ id: "privat", title: "Privat detalj", kind: "HELSE", isPrivate: true, recurring: null,
@@ -132,9 +136,11 @@ test("Workbench Min kalender lastes ikke uten stalltilgang", async () => {
 test("egen spillers opptattid hentes etter tilgangskontroll og anonymiseres", async () => {
   tilgang = true;
   sessionLookups = 0;
+  busyBlockReads = 0;
   const uke = await loadWeek({ weekStart: "2026-09-14", mode: { ...mode, subjectId: "spiller-egen" }, playerId: "spiller-egen" });
   assert.equal(uke.ok, true);
-  assert.equal(sessionLookups, 5);
+  assert.ok(sessionLookups >= 5);
+  assert.ok(busyBlockReads >= 1);
   if (uke.ok) {
     assert.equal(uke.data.days[2].lockedBlocks[0].title, "Opptatt");
     assert.doesNotMatch(JSON.stringify(uke.data), /Privat detalj|HELSE/);

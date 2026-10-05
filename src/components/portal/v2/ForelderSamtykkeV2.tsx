@@ -21,7 +21,6 @@
  */
 
 import { useState, useTransition } from "react";
-import { TL } from "@/lib/v2/train-lock";
 import {
   lagreSamtykker,
   beOmDataSletting,
@@ -43,7 +42,7 @@ import {
   FoCtaSekundar,
   FoFotnote,
   FoTom,
-} from "@/components/forelder/fo-kit";
+} from "@/components/forelder/fo-presisjon";
 
 /* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
@@ -152,7 +151,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
   if (valg.coachInnsyn) helseTyper.push("COACH_DETALJ");
 
   return (
-    <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+    <div className="fo-skille">
       <FoCaps>Helsedata</FoCaps>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {helseTyper.map((type) => (
@@ -171,11 +170,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
           />
         ))}
       </div>
-      {feil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "8px 0 0" }}>
-          {feil}
-        </p>
-      )}
+      {feil && <p className="fo-meta" data-tone="signal" role="alert">{feil}</p>}
     </div>
   );
 }
@@ -218,20 +213,9 @@ function BarnSamtykkeKort({ barn, forste }: { barn: SamtykkeBarn; forste: boolea
     <FoKort pad="18px" style={{ marginTop: forste ? 14 : 12 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <FoAvatar navn={fornavn} size={38} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>
-            {fornavn}
-          </div>
-          <div
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 13,
-              color: TL.mute,
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            Samtykke per barn du er foresatt for
-          </div>
+        <div>
+          <p className="fo-navn">{fornavn}</p>
+          <p className="fo-meta">Samtykke per barn du er foresatt for</p>
         </div>
       </div>
 
@@ -264,30 +248,14 @@ function BarnSamtykkeKort({ barn, forste }: { barn: SamtykkeBarn; forste: boolea
         </div>
       )}
       {(lagret || feil) && (
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            color: feil ? TL.danger : TL.mute,
-            margin: "10px 0 0",
-          }}
-        >
+        <p className="fo-meta" role={feil ? "alert" : "status"} data-tone={feil ? "signal" : undefined}>
           {feil ?? "Samtykker lagret. Endringer logges i revisjonsloggen."}
         </p>
       )}
 
-      <div
-        style={{
-          marginTop: 12,
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          lineHeight: 1.5,
-        }}
-      >
-        Trekker du samtykket, stopper ny lagring. Data som er nødvendig for
-        regnskap beholdes så lenge loven krever.
-      </div>
+      <p className="fo-meta">
+        Trekker du samtykket, stopper ny lagring. Data som er nødvendig for regnskap beholdes så lenge loven krever.
+      </p>
     </FoKort>
   );
 }
@@ -323,24 +291,14 @@ function SlettingSeksjon({
         <FoCaps>Sletting</FoCaps>
       </div>
       <FoKort pad="16px 18px" style={{ marginTop: 10 }}>
-        <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-          Be om sletting av data
-        </div>
-        <div
-          style={{
-            marginTop: 6,
-            fontFamily: TL.font.sans,
-            fontSize: 13,
-            color: TL.mute,
-            lineHeight: 1.5,
-          }}
-        >
+        <p className="fo-navn">Be om sletting av data</p>
+        <p className="fo-meta">
           {kvittert
             ? sisteSletting
               ? `Forespørsel sendt ${formatDato(sisteSletting.createdAt)} — vi svarer innen 30 dager.`
               : "Forespørsel sendt — vi svarer innen 30 dager."
             : "Vi svarer innen 30 dager. Forespørselen gjelder alle koblede barn."}
-        </div>
+        </p>
         {!kvittert && (
           <div style={{ marginTop: 10 }}>
             <FoCtaSekundar disabled={pending} onClick={sletteForespoersel}>
@@ -348,11 +306,7 @@ function SlettingSeksjon({
             </FoCtaSekundar>
           </div>
         )}
-        {feil && (
-          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "8px 0 0" }}>
-            {feil}
-          </p>
-        )}
+        {feil && <p className="fo-meta" role="alert" data-tone="signal">{feil}</p>}
         {/* GDPR-eksport — beholdt funksjonalitet (tillegg utover fasiten). */}
         <div style={{ marginTop: 10 }}>
           <FoCtaSekundar

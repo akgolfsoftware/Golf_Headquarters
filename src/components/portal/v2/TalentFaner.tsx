@@ -1,15 +1,8 @@
 /**
- * PlayerHQ Talent-faner — MASTERPLAN 15.13 (de 36 skjermene uten vei inn).
- *
- * Kartleggingen 30.08.2026 målte at «Mitt nivå» ikke hadde én eneste lenke
- * videre: Min plan, Roadmap og Sammenligning var ferdig bygget mot ekte data
- * og usynlige. Fire egne ruter, én fane-rad — samme mønster som
- * `admin/v2/GruppeFaner.tsx` (T8): lenker, ikke client-tabs, og aktiv fane er
- * tilstand (fill), ikke CTA.
+ * PlayerHQ Talent-faner — Precision Athletics.
  */
 
 import Link from "next/link";
-import { TL } from "@/lib/v2/train-lock";
 
 export type TalentFaneId = "mitt-niva" | "min-plan" | "roadmap" | "sammenligning";
 
@@ -31,20 +24,16 @@ export function TalentFaner({ aktiv }: { aktiv: TalentFaneId }) {
             href={f.href}
             role="tab"
             aria-selected={on}
-            className="v2-press v2-focus"
+            className={`pa-btn ${on ? "pa-btn--primary" : "pa-btn--secondary"}`}
             style={{
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
-              height: 30,
-              padding: "0 12px",
+              height: 32,
+              padding: "0 14px",
               borderRadius: 999,
-              fontSize: 12,
+              fontSize: 12.5,
               fontWeight: 600,
-              letterSpacing: "0.02em",
-              color: on ? TL.onFill : TL.mute,
-              background: on ? TL.fill : "transparent",
-              boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
               whiteSpace: "nowrap",
             }}
           >

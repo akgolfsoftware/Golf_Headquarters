@@ -8,7 +8,7 @@ type Props = {
   eksisterende?: { kvalitet: number; nesteFokus: string; folelse?: string | null; rpe?: number | null } | null;
 };
 
-/** Valgt PH-06: bevart vurdering som utfoldbar tilleggsinformasjon. */
+/** PH-07: vurdering som utfoldbar tilleggsinformasjon. Kvalitet, anstrengelse og neste fokus beholdes. */
 export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
   const id = useId();
   const [kvalitet, setKvalitet] = useState(eksisterende?.kvalitet ?? 0);
@@ -50,32 +50,32 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
     });
   }
 
-  if (lagret) return <section className="ph06-card ph06-rating" aria-label="Din vurdering">
-    <h2 className="ph06-eyebrow">Din vurdering</h2>
-    <p className="ph06-recap" role="status" tabIndex={-1} ref={savedRef}>
+  if (lagret) return <section className="ph07-card ph07-rating" aria-label="Din vurdering">
+    <h2 className="ph07-eyebrow">Din vurdering</h2>
+    <p className="ph07-recap" role="status" tabIndex={-1} ref={savedRef}>
       Kvalitet: {kvalitet}/5{rpe > 0 ? ` · Anstrengelse ${rpe}/10` : ""}{folelse ? ` · ${folelse}` : ""}
     </p>
-    {nesteFokus && <p className="ph06-recap">Neste fokus: {nesteFokus}</p>}
+    {nesteFokus && <p className="ph07-recap">Neste fokus: {nesteFokus}</p>}
   </section>;
 
-  return <details className="ph06-card ph06-details ph06-rating">
+  return <details className="ph07-card ph07-details ph07-rating">
     <summary>Hvordan var økta?</summary>
-    <p className="ph06-muted">Kvalitet og neste fokus deles med coachen. Du kan også lukke uten å vurdere.</p>
+    <p className="ph07-muted">Kvalitet og neste fokus deles med coachen. Du kan også lukke uten å vurdere.</p>
     <fieldset disabled={pending}>
       <fieldset>
         <legend>Kvalitet (1–5)</legend>
-        <div className="ph06-rating-options">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-label={`Kvalitet ${n}`} aria-pressed={kvalitet === n} onClick={() => setKvalitet(n)}>{n}</button>)}</div>
+        <div className="ph07-rating-options">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-label={`Kvalitet ${n}`} aria-pressed={kvalitet === n} onClick={() => setKvalitet(n)}>{n}</button>)}</div>
       </fieldset>
       <fieldset>
         <legend>Hvor hard var økta? (1 = veldig lett · 10 = maksimal)</legend>
-        <div className="ph06-rating-options">{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-label={`Anstrengelse ${n} av 10`} aria-pressed={rpe === n} onClick={() => setRpe(n)}>{n}</button>)}</div>
+        <div className="ph07-rating-options">{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-label={`Anstrengelse ${n} av 10`} aria-pressed={rpe === n} onClick={() => setRpe(n)}>{n}</button>)}</div>
       </fieldset>
       <label htmlFor={`${id}-folelse`}>Følelse (valgfritt)</label>
       <input id={`${id}-folelse`} value={folelse} onChange={(event) => setFolelse(event.target.value)} placeholder="F.eks. fokusert, sliten, motivert" maxLength={200} />
       <label htmlFor={`${id}-fokus`}>Neste fokus</label>
       <textarea id={`${id}-fokus`} value={nesteFokus} onChange={(event) => setNesteFokus(event.target.value)} placeholder="Hva bør neste økt prioritere?" rows={2} maxLength={500} />
-      {feil && <p className="ph06-error" role="alert" tabIndex={-1} ref={errorRef}>{feil}</p>}
-      <button type="button" className="ph06-secondary" onClick={onSubmit} disabled={pending}>{pending ? "Lagrer…" : feil ? "Prøv igjen" : "Lagre vurdering"}</button>
+      {feil && <p className="ph07-error" role="alert" tabIndex={-1} ref={errorRef}>{feil}</p>}
+      <button type="button" className="pa-btn pa-btn--secondary ph07-full" onClick={onSubmit} disabled={pending}>{pending ? "Lagrer…" : feil ? "Prøv igjen" : "Lagre vurdering"}</button>
     </fieldset>
   </details>;
 }

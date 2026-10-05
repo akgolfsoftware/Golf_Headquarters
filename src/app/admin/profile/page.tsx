@@ -1,64 +1,22 @@
 /**
- * AgencyOS Konto (Min coach-profil) — Train-lock (T13, 26.08.2026).
+ * Profil & konto — AG-23 i Precision Athletics (/admin/profile).
  *
- * Porter fra AdminProfilV2 (Paper T.*) til AdminProfilTrainLock (TL.*) —
- * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html («Konto»-raden).
- * Avvik:
- *   - ingen riggrad; selve profilskjemaet er ikke tegnet i Train-lock —
- *     full avviksliste står i AdminProfilTrainLock.
- *
- * Samme requirePortalUser-guard,
- * samme felt-kilde (User-modellen + preferences-JSON) og samme mutasjoner
- * (oppdaterCoachProfil, uploadAvatar) — designport, ikke funksjonsendring.
- * Nav-punktet lever i Cmd+K-søket («Min coach-profil»), ikke i hovedrailen —
- * `aktiv` utledes derfor av URL-en (samme mønster som /admin/team/inviter
- * og /admin/settings).
+ * Erstatter Train-lock-skallet med Precision Athletics (AgencyOSSkall og AG23Oppsett startFane="profil").
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminProfilTrainLock, type AdminProfilV2Data } from "@/components/admin/v2/oppsett/AdminProfilTrainLock";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG23Oppsett } from "@/components/admin/precision/AG23Oppsett";
 
 export const dynamic = "force-dynamic";
-
-function asStringArray(v: unknown, fallback: string[]): string[] {
-  if (Array.isArray(v)) return v.filter((s): s is string => typeof s === "string");
-  return fallback;
-}
+export const metadata = { title: "Profil · AgencyOS" };
 
 export default async function AdminProfilePage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const prefs =
-    user.preferences &&
-    typeof user.preferences === "object" &&
-    !Array.isArray(user.preferences)
-      ? (user.preferences as Record<string, unknown>)
-      : {};
-
-  const data: AdminProfilV2Data = {
-    navn: user.name,
-    epost: user.email,
-    phone: user.phone,
-    avatarUrl: user.avatarUrl,
-    hcp: user.hcp,
-    homeClub: user.homeClub,
-    bio: user.ambition ?? "",
-    certifications: asStringArray(prefs.certifications, []),
-    languages: asStringArray(prefs.languages, ["Norsk"]),
-    clubs: asStringArray(prefs.clubs, user.homeClub ? [user.homeClub] : []),
-    rolleLabel: user.role === "ADMIN" ? "Administrator" : "Coach",
-    abonnementLabel: user.tier === "PRO" ? "Pro (299 kr/mnd)" : "Gratis",
-    opprettetLabel: user.createdAt.toLocaleDateString("nb-NO", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }),
-  };
-
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <AdminProfilTrainLock data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG23Oppsett startFane="profil" />
+    </AgencyOSSkall>
   );
 }

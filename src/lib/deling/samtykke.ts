@@ -1,7 +1,9 @@
 /**
  * Delingssamtykke — data-tilgang (plan T8). Mønster: src/lib/health/samtykke.ts.
  *
- * All skriving av delingssamtykker går HER — append-only, aldri update.
+ * Gruppens delingssamtykker skrives her — append-only, aldri update.
+ * Navngitt fullprofil-deling utvider samme tabell gjennom `navngitt.ts`,
+ * med eget omfang slik at gamle gruppesamtykker aldri utvides.
  * Reglene i seg selv (nyeste-rad-vinner, FORESATT-krav) ligger i
  * `samtykke-regler.ts` og testes uten database.
  */
@@ -93,7 +95,7 @@ export async function registrerDelingsSamtykke(input: {
  */
 export async function grupperMedEksterneLesereForSpiller(
   userId: string,
-): Promise<{ id: string; name: string }[]> {
+): Promise<{ id: string; name: string; slug: string | null }[]> {
   const medlemskap = await prisma.groupMember.findMany({
     where: { userId, role: "PLAYER", endedAt: null },
     select: { groupId: true },
@@ -110,7 +112,7 @@ export async function grupperMedEksterneLesereForSpiller(
 
   return prisma.group.findMany({
     where: { id: { in: [...medLeser] } },
-    select: { id: true, name: true },
+    select: { id: true, name: true, slug: true },
     orderBy: { name: "asc" },
   });
 }

@@ -1,0 +1,104 @@
+/**
+ * Precision Athletics — AG-21 Oppgaver & kalender stilark.
+ *
+ * Kilde: Claude Design AG-21 (arkiv/2026-09-30/agencyos/screens/AG-21.jsx).
+ * Krav: 0 hex-farger (kun semantiske variabler), min 44 px berøringsflate.
+ */
+
+.pa-a21 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pa-a21__task-row {
+  display: flex;
+  gap: var(--space-3, 12px);
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 60px;
+  padding: 10px 16px;
+  background: var(--surface-card);
+  transition: opacity 0.15s ease;
+}
+
+.pa-a21__task-row + .pa-a21__task-row {
+  border-top: 1px solid var(--border-hairline);
+}
+
+.pa-a21__task-row--done {
+  opacity: 0.6;
+}
+
+.pa-a21__task-text--done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.pa-a21__task-spacer {
+  flex: 1;
+}
+
+.pa-a21__prosjekt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-3, 12px);
+}
+
+.pa-a21__progress-bar {
+  height: 6px;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.pa-a21__progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.pa-a21__rutine-row {
+  display: flex;
+  gap: var(--space-3, 12px);
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 56px;
+  padding: 10px 16px;
+  background: var(--surface-card);
+}
+
+.pa-a21__rutine-row + .pa-a21__rutine-row {
+  border-top: 1px solid var(--border-hairline);
+}
+
+.pa-a21__rutine-dag {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  width: 72px;
+  color: var(--text-secondary);
+}
+
+.pa-a21__rutine-text {
+  flex: 1 1 200px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.pa-a21__notion-card {
+  max-width: 720px;
+  width: 100%;
+}
+
+.pa-a21__actions {
+  display: flex;
+  gap: var(--space-2, 8px);
+  flex-wrap: wrap;
+  padding-top: var(--space-2, 8px);
+}

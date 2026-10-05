@@ -1,3 +1,4 @@
+// FO02BarnListe — Precision Athletics. Data og handlinger er beholdt.
 /**
  * v2-forhåndsvisning — Foreldreportal · Barn (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
@@ -13,7 +14,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderBarnV2,
   type ForelderBarnData,
@@ -223,14 +224,8 @@ export default async function V2ForelderBarnPreviewPage() {
   }
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="barn"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderBarnV2 data={data} />
-    </V2Shell>
+    </ForelderSkall>
   );
 }

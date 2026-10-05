@@ -1,50 +1,52 @@
+// PH23BookingHub — Precision Athletics PH-23.
 /**
- * PlayerHQ Booking — oversikt (/portal/booking). Train-lock
- * `BO-02 Mine bookinger.dc.html` (PX-6, 29.08.2026 — komponenten var
- * allerede TL.*-bygget, stale Paper-referanse i denne kommentaren rettet).
- * V2Shell leverer chrome-en, BookingHubV2 rendrer innholds-stacken.
+ * PlayerHQ Booking — oversikt og booking (/portal/booking).
+ * Kilde: Claude Design Precision Athletics PH-23.
  *
- * Ombygget 2026-08-04 (Anders' instruks): default-siden skal vise timer/
- * credits-status og kommende bookinger, ikke hoppe rett inn i en veiviser.
- * getBookingHubData (credits + upcoming + coacher) ble hentet her fra før,
- * men kun credits+coacher ble faktisk vist — upcoming/past var hentet og
- * aldri rendret. Bruker nå hele svaret, ingen ny query.
- *
- * Selve bookingen skjer på /portal/booking/ny (BookingNyV2) — den finnes
- * fra før og er credits-bevisst: med timer igjen brukes de, uten (eller med
- * ?betaling=1) betales timen per gang med kort — alt internt i appen.
- * Denne siden dupliserer ikke den logikken.
+ * Bare ekte data og ekte handlinger: «Bekreft booking» går til credit-flyten
+ * (klipp) eller Stripe Checkout (kort), «Flytt time» til rescheduleBooking og
+ * «Avbestill» til cancelBooking. Ingen demodata i denne ruten.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getBookingHubData } from "@/lib/portal-booking/hub-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { BookingHubV2 } from "@/components/portal/v2/BookingHubV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Booking } from "@/components/portal/precision/PH23Booking";
+import { hentPH23Data } from "@/lib/portal-booking/ph23-side-data";
+import { cancelBooking } from "@/app/portal/meg/bookinger/actions";
+import { bekreftPH23BookingAction, flyttPH23Booking, hentPH23Slots } from "./ph23-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Booking · AK Golf" };
 
-type Props = { searchParams: Promise<{ betalt?: string; avbrutt?: string }> };
+type Props = { searchParams: Promise<{ betalt?: string; avbrutt?: string; state?: string }> };
 
 export default async function BookingHubPage({ searchParams }: Props) {
-  const { betalt, avbrutt } = await searchParams;
+  const { state, betalt, avbrutt } = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   if (user.role === "PARENT") redirect("/forelder");
 
-  const hub = await getBookingHubData(user.id);
+  const bookingData = await hentPH23Data(user);
+
+  async function handleCancel(bookingId: string) {
+    "use server";
+    await cancelBooking(bookingId);
+    return true;
+  }
+
+  const visningsTilstand = state === "tom" ? "tom" : state === "feil" ? "feil" : state === "laster" ? "laster" : "data";
 
   return (
-    <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name}>
-      <BookingHubV2
-        data={{
-          credits: hub.credits,
-          upcoming: hub.upcoming,
-          coaches: hub.coaches,
-          forsteLedige: hub.forsteLedige,
-          melding: betalt === "1" ? "betalt" : avbrutt === "1" ? "avbrutt" : null,
-        }}
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH23Booking
+        initialData={bookingData}
+        state={visningsTilstand}
+        betaling={betalt === "1" ? "betalt" : avbrutt === "1" ? "avbrutt" : undefined}
+        onConfirmBooking={bekreftPH23BookingAction}
+        onHentSlots={hentPH23Slots}
+        onRescheduleBooking={flyttPH23Booking}
+        onCancelBooking={handleCancel}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }
