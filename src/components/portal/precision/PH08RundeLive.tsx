@@ -23,6 +23,7 @@ import {
 } from "@/lib/portal-runder/ph08-09-data";
 import { type Ph0809Data } from "@/lib/portal-runder/load-ph08-09";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
+import { usePaToast } from "@/components/precision/pa-toast";
 
 interface PH08RundeLiveProps {
   data: Ph0809Data;
@@ -123,7 +124,7 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
   const [meter, setMeter] = useState<number>(holes[0]?.meter || 342);
   const [fot, setFot] = useState<number>(12);
   const [endOpen, setEndOpen] = useState<boolean>(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const paToast = usePaToast();
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const activeHole = holes[holeIdx] || holes[0];
@@ -134,10 +135,7 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
   const toParStr = formatToPar(brutto - parPlayed);
   const checkSave = kanLagres(scores);
 
-  const showToast = (t: string) => {
-    setToastMsg(t);
-    setTimeout(() => setToastMsg(null), 3500);
-  };
+  const showToast = (t: string) => paToast.vis(t);
 
   // Registrer slag
   const handleRegSlag = () => {
@@ -224,26 +222,7 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
       }}
     >
       {/* Toast */}
-      {toastMsg && (
-        <div
-          role="status"
-          style={{
-            position: "fixed",
-            top: 20,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-strong)",
-            color: "var(--text-primary)",
-            padding: "10px 18px",
-            borderRadius: 8,
-            zIndex: 100,
-            font: "600 14px/1.2 var(--font-sans)",
-          }}
-        >
-          {toastMsg}
-        </div>
-      )}
+      {paToast.el}
 
       {/* Topp-bar */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -253,8 +232,8 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
             alignItems: "center",
             padding: "4px 8px",
             borderRadius: 6,
-            background: "var(--signal-up-subtle)",
-            color: "var(--signal-up)",
+            background: "var(--ok-tint)",
+            color: "var(--ok)",
             font: "600 11px/1 var(--font-mono)",
             letterSpacing: "0.05em",
             textTransform: "uppercase",
@@ -581,7 +560,7 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
           style={{
             position: "fixed",
             inset: 0,
-            background: "var(--surface-overlay)",
+            background: "var(--scrim-modal)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

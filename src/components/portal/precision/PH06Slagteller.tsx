@@ -93,7 +93,7 @@ export function PH06Slagteller({
           gap: 12,
           padding: "12px 16px",
           borderBottom: "1px solid var(--border-hairline)",
-          background: "var(--surface-header)",
+          background: "var(--surface-card)",
           position: "sticky",
           top: 0,
           zIndex: 20,
@@ -477,7 +477,7 @@ export function PH06Slagteller({
           style={{
             position: "fixed",
             inset: 0,
-            background: "var(--surface-overlay)",
+            background: "var(--scrim-modal)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

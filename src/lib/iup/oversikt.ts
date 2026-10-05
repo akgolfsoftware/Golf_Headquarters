@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
-import { aktivIupTilknytningWhere } from "./tilknytning";
+import { aktivIupTilknytningWhere, iupSynligForSpillerWhere } from "./tilknytning";
 import { IupValgSchema } from "./valg";
 
 /** Gjenoppta samme skjematype/kilde/nivå/periode også om den er utenfor første side. */
@@ -25,7 +25,7 @@ const Side = z.object({
   forId: z.string().min(1).max(120).optional(),
 }).strict().refine((p) => Boolean(p.forDato) === Boolean(p.forId));
 
-/** Kun eierens metadata. Tidligere medlemmer beholder egen historikk og eksport. */
+/** Kun eierens metadata, og bare ved aktivt WANG-/TN-medlemskap (04.10.2026). Eksport går egen vei. */
 export async function hentEgenIupOversikt(input: unknown = {}) {
   const bruker = await requireSpillerActionUser();
   const parsed = Side.safeParse(input);
@@ -46,10 +46,11 @@ export async function hentEgenIupOversikt(input: unknown = {}) {
       orderBy: [{ updatedAt: "desc" }, { id: "desc" }], take: 21,
     }),
   ]);
+  if (medlemskap === null) return null;
   const side = rader.slice(0, 20);
   const siste = side.at(-1);
   return {
-    kanSvare: medlemskap !== null,
+    kanSvare: true,
     nesteSide: rader.length > 20 && siste ? { forDato: siste.updatedAt.toISOString(), forId: siste.id } : null,
     besvarelser: side.map((rad) => ({
       id: rad.id, type: rad.type, versjon: rad.versjon, niva: rad.niva,
@@ -60,14 +61,9 @@ export async function hentEgenIupOversikt(input: unknown = {}) {
   };
 }
 
-/** Vis inngangen for aktive deltakere og eiere av tidligere besvarelser. */
+/** Vis inngangen bare for aktive WANG-/TN-deltakere. Ender medlemskapet, forsvinner den (04.10.2026). */
 export async function harEgenIupInngang() {
   const bruker = await requireSpillerActionUser();
-  const eier = await prisma.user.findFirst({
-    where: { id: bruker.id, deletedAt: null, anonymisertAt: null, OR: [
-      { groupMemberships: { some: aktivIupTilknytningWhere() } },
-      { iupBesvarelser: { some: {} } },
-    ] }, select: { id: true },
-  });
+  const eier = await prisma.user.findFirst({ where: iupSynligForSpillerWhere(bruker.id), select: { id: true } });
   return eier !== null;
 }

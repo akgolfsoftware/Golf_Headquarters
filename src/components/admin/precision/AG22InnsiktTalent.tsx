@@ -331,7 +331,7 @@ export function AG22InnsiktTalent({
         aria-label="Tilgangsinformasjon"
         style={{
           padding: "12px 16px",
-          borderRadius: "var(--radius-card, 8px)",
+          borderRadius: "var(--radius)",
           background: "var(--surface-sunken)",
           border: "1px solid var(--border-hairline)",
           fontSize: "13px",
@@ -493,7 +493,7 @@ export function AG22InnsiktTalent({
                     role="status"
                     style={{
                       padding: "14px 16px",
-                      borderRadius: "var(--radius-card, 8px)",
+                      borderRadius: "var(--radius)",
                       background: "var(--surface-sunken)",
                       border: "1px solid var(--border-hairline)",
                       display: "flex",

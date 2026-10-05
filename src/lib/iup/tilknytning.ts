@@ -14,3 +14,17 @@ export function aktivIupTilknytningWhere(): Prisma.GroupMemberWhereInput {
     },
   };
 }
+
+/**
+ * Hvem som ser IUP i PlayerHQ (Anders 04.10.2026): bare aktive, ikke-slettede
+ * spillere med aktivt WANG-/TN-medlemskap. Ender medlemskapet, skjules IUP med
+ * en gang — også tidligere svar. Eksport og sletting (GDPR) går egen vei.
+ */
+export function iupSynligForSpillerWhere(userId: string): Prisma.UserWhereInput {
+  return {
+    id: userId,
+    deletedAt: null,
+    anonymisertAt: null,
+    groupMemberships: { some: aktivIupTilknytningWhere() },
+  };
+}

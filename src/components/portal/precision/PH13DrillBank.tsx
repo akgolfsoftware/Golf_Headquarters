@@ -35,6 +35,7 @@ import {
   type PH13Drill,
 } from "@/lib/portal-drills/ph13-drills-data";
 import { PH13DrillDetalj } from "./PH13DrillDetalj";
+import { usePaToast } from "@/components/precision/pa-toast";
 
 export type PH13DrillBankProps = {
   initialDrills: PH13Drill[];
@@ -60,15 +61,10 @@ export function PH13DrillBank({
   const [sel, setSel] = useState<string | null>(initialDrills[0]?.id ?? null);
   const [visMobilModal, setVisMobilModal] = useState(false);
   const [stimp, setStimp] = useState<"8" | "10" | "12">("10");
-  const [toast, setToast] = useState<{ tittel: string; tekst?: string } | null>(
-    null
-  );
+  const paToast = usePaToast();
 
   function visToast(tittel: string, tekst?: string) {
-    setToast({ tittel, tekst });
-    setTimeout(() => {
-      setToast(null);
-    }, 3500);
+    paToast.vis(tittel, tekst);
   }
 
   function handleAcceptDraft(c: PH13Drill) {
@@ -191,35 +187,7 @@ export function PH13DrillBank({
       }}
     >
       {/* Toast-varsel */}
-      {toast && (
-        <aside
-          role="status"
-          aria-live="polite"
-          style={{
-            position: "fixed",
-            bottom: 24,
-            right: 24,
-            zIndex: 100,
-            background: "var(--surface-flat)",
-            border: "1px solid var(--border-ink)",
-            borderRadius: 8,
-            padding: "12px 16px",
-            boxShadow: "0 8px 24px var(--scrim-modal)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <span style={{ font: "600 13px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
-            {toast.tittel}
-          </span>
-          {toast.tekst && (
-            <span style={{ font: "500 11px/1.3 var(--font-mono)", color: "var(--text-muted)" }}>
-              {toast.tekst}
-            </span>
-          )}
-        </aside>
-      )}
+      {paToast.el}
 
       {/* Sidehode */}
       <div
@@ -493,7 +461,6 @@ export function PH13DrillBank({
                         : "var(--text-secondary)",
                     font: "600 12px/1.3 var(--font-mono)",
                     cursor: "pointer",
-                    whiteSpace: "nowrap",
                   }}
                 >
                   <span>{opt.label}</span>
