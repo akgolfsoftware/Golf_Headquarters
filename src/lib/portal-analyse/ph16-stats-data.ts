@@ -4,9 +4,12 @@
  *
  * Fire deler:
  * 1. Snittscore (PH-18 runde og snittscore, Kategori A-K)
- * 2. Strokes Gained (SG per område, sammenligning mot Kategori C og PGA Tour)
+ * 2. Strokes Gained (SG per område, sammenligning mot neste kategori og PGA Tour)
  * 3. Trening (volum, pyramidefordeling, TrackMan-spredningskart og parametere)
  * 4. Tester (testbatteri og protokoller)
+ *
+ * Alt bygges fra målte data (`byggPH16Stats`). Det som ikke er målt, er null
+ * (vises «—») eller en tom liste (skjermens tomtilstand). Ingen demotall.
  */
 
 export type StatsFane = "snitt" | "sg" | "tren" | "test";
@@ -15,10 +18,10 @@ export interface SgRad {
   id: string;
   label: string;
   g: "tee" | "innspill" | "naer" | "putt";
-  c: number; // SG mot Kategori C
-  pga: number; // SG mot PGA Tour
-  n: number; // antall slag
-  d: number | null; // trend (siste 10 mot 10 før)
+  c: number | null; // SG mot neste kategori — null så lenge kategorireferansen ikke er vedtatt
+  pga: number | null; // SG mot PGA Tour-referansen (snitt siste 10 runder), null under 4 runder
+  n: number; // antall runder med målt SG for området i vinduet (siste 10)
+  d: number | null; // trend (siste 10 mot 10 før), null uten nok runder i begge vinduene
   prox?: [number, number]; // [du, pga] i meter
 }
 
@@ -32,17 +35,18 @@ export interface RundeData {
   id: string;
   date: string;
   course: string;
-  par: number;
+  /** Par fra rundens hullscore (9 eller 18 hull). null når hullantallet er ukjent. */
+  par: number | null;
   score: number;
-  diff: number; // score - par
-  kind: "Tellende" | "Turnering" | "Treningsrunde";
-  sg: number;
+  diff: number | null; // score - par, null når par er ukjent
+  kind: "Turnering" | "Treningsrunde" | null;
+  sg: number | null;
   card?: number[];
 }
 
 export interface PyramideData {
   rows: Array<[kode: "fys" | "tek" | "slag" | "spill" | "turn", prosent: number, timer: number]>;
-  totalHours: number;
+  totalHours: number | null;
   src: string;
 }
 
@@ -77,11 +81,16 @@ export interface TestBatteriPost {
 export interface PH16StatsData {
   spiller: {
     navn: string;
-    kategori: string;
-    nesteKategori: string;
-    snittBrutto: number;
-    forrigeSnitt: number;
-    slagTilNesteKategori: number;
+    /** Bokstav A–K. null så lenge nivåtallene for A–K ikke er vedtatt. */
+    kategori: string | null;
+    nesteKategori: string | null;
+    /** Snitt brutto av siste 10 18-hullsrunder. null under 4 runder. */
+    snittBrutto: number | null;
+    /** Snitt brutto av de 10 18-hullsrundene før. null under 4 runder i det vinduet. */
+    forrigeSnitt: number | null;
+    slagTilNesteKategori: number | null;
+    /** Antall 18-hullsrunder i snittvinduet (maks 10). */
+    antallSnittRunder: number;
     trend: number[];
   };
   sg: SgGruppe[];
@@ -137,185 +146,235 @@ export function beregnSpredning(punkter: Array<[x: number, y: number]>): {
   return { mx, my, sdx, sdy };
 }
 
-export const STANDARD_PH16_DATA: PH16StatsData = {
-  spiller: {
-    navn: "Tobias Lindvik",
-    kategori: "D",
-    nesteKategori: "C",
-    snittBrutto: 75.2,
-    forrigeSnitt: 76.6,
-    slagTilNesteKategori: 1.2,
-    trend: [77.4, 77.0, 76.8, 76.6, 76.1, 75.8, 75.6, 75.2],
-  },
-  sg: [
-    {
-      g: "tee",
-      label: "Tee",
-      rows: [
-        { id: "tee", label: "Tee · par 4 og 5", g: "tee", c: -0.1, pga: -1.6, n: 196, d: 0.3 },
-      ],
-    },
-    {
-      g: "innspill",
-      label: "Innspill",
-      rows: [
-        { id: "i200", label: "200+ m", g: "innspill", c: -0.2, pga: -0.7, n: 38, d: 0.0, prox: [24.1, 16.2] },
-        { id: "i150", label: "150–200 m", g: "innspill", c: -0.3, pga: -1.1, n: 96, d: -0.1, prox: [14.8, 10.2] },
-        { id: "i100", label: "100–150 m", g: "innspill", c: -0.4, pga: -1.0, n: 142, d: 0.1, prox: [11.6, 7.4] },
-        { id: "i50", label: "50–100 m", g: "innspill", c: -0.1, pga: -0.5, n: 88, d: 0.1, prox: [9.4, 5.8] },
-      ],
-    },
-    {
-      g: "naer",
-      label: "Nærspill 0–50 m",
-      rows: [
-        { id: "chip", label: "Chip", g: "naer", c: -0.1, pga: -0.3, n: 58, d: 0.2, prox: [2.4, 1.6] },
-        { id: "pitch", label: "Pitch", g: "naer", c: -0.2, pga: -0.4, n: 31, d: 0.0, prox: [4.1, 2.7] },
-        { id: "lob", label: "Lob", g: "naer", c: -0.1, pga: -0.1, n: 9, d: null, prox: [3.8, 2.9] },
-        { id: "bunker", label: "Bunker", g: "naer", c: -0.1, pga: -0.3, n: 17, d: -0.1, prox: [4.6, 3.1] },
-      ],
-    },
-    {
-      g: "putt",
-      label: "Putting",
-      rows: [
-        { id: "p0", label: "0–3 fot", g: "putt", c: 0.0, pga: -0.1, n: 212, d: 0.0 },
-        { id: "p3", label: "3–6 fot", g: "putt", c: -0.3, pga: -0.5, n: 64, d: -0.2 },
-        { id: "p6", label: "6–10 fot", g: "putt", c: -0.1, pga: -0.3, n: 48, d: 0.0 },
-        { id: "p10", label: "10–20 fot", g: "putt", c: -0.1, pga: -0.2, n: 71, d: 0.1 },
-        { id: "p20", label: "20–40 fot", g: "putt", c: 0.0, pga: -0.1, n: 52, d: 0.0 },
-        { id: "p40", label: "40+ fot", g: "putt", c: -0.1, pga: -0.1, n: 19, d: null },
-      ],
-    },
-  ],
-  runder: [
-    { id: "r22", date: "20.09.2026", course: "Fredrikstad GK", par: 72, score: 76, diff: 4, kind: "Tellende", sg: -2.6 },
-    { id: "r21", date: "13.09.2026", course: "Borregaard GK", par: 71, score: 74, diff: 3, kind: "Turnering", sg: -1.7 },
-    { id: "r20", date: "06.09.2026", course: "Onsøy GK", par: 72, score: 75, diff: 3, kind: "Tellende", sg: -2.0 },
-    { id: "r19", date: "30.08.2026", course: "Fredrikstad GK", par: 72, score: 73, diff: 1, kind: "Turnering", sg: -0.9 },
-    { id: "r18", date: "23.08.2026", course: "Fredrikstad GK", par: 72, score: 77, diff: 5, kind: "Tellende", sg: -3.1 },
-    { id: "r17", date: "16.08.2026", course: "Borregaard GK", par: 71, score: 75, diff: 4, kind: "Tellende", sg: -2.3 },
-    { id: "r16", date: "09.08.2026", course: "Hvaler GK", par: 72, score: 76, diff: 4, kind: "Turnering", sg: -2.4 },
-    { id: "r15", date: "02.08.2026", course: "Fredrikstad GK", par: 72, score: 74, diff: 2, kind: "Tellende", sg: -1.4 },
-    { id: "r14", date: "26.07.2026", course: "Onsøy GK", par: 72, score: 76, diff: 4, kind: "Tellende", sg: -2.5 },
-    { id: "r13", date: "19.07.2026", course: "Fredrikstad GK", par: 72, score: 76, diff: 4, kind: "Tellende", sg: -2.2 },
-  ],
-  trening: {
-    pyramide: {
-      rows: [
-        ["fys", 22, 21.2],
-        ["tek", 5, 4.8],
-        ["slag", 45, 43.4],
-        ["spill", 23, 22.2],
-        ["turn", 5, 4.8],
-      ],
-      totalHours: 96.5,
-      src: "ØKTLOGG · UKE 31–38 · 96,5 T · 20.09.2026",
-    },
-    trackman: {
-      koller: ["7i", "PW", "Driver"],
-      data: {
-        "7i": {
-          antallSlag: 64,
-          params: [
-            { navn: "Club Path", enhet: "°", snitt: 1.8, spredning: 2.4, mal: "0 til +2°" },
-            { navn: "Face Angle", enhet: "°", snitt: -0.6, spredning: 2.1, mal: null },
-            { navn: "Face to Path", enhet: "°", snitt: -2.4, spredning: 1.9, mal: "−1 til +1°" },
-            { navn: "Attack Angle", enhet: "°", snitt: -3.2, spredning: 1.2, mal: "−4 til −2°" },
-            { navn: "Dynamic Loft", enhet: "°", snitt: 22.4, spredning: 1.6, mal: null },
-            { navn: "Club Speed", enhet: "mph", snitt: 80.3, spredning: 1.4, mal: null },
-          ],
-          shots: [
-            [-2.1, 142], [-1.2, 145], [0.4, 144], [1.1, 147], [-0.5, 143],
-            [2.3, 148], [-3.1, 139], [0.8, 146], [-1.8, 141], [1.5, 149],
-            [0.2, 145], [-0.9, 143], [1.9, 146], [-2.4, 140], [0.5, 145],
-          ],
-        },
-        PW: {
-          antallSlag: 96,
-          params: [
-            { navn: "Club Path", enhet: "°", snitt: 2.6, spredning: 2.8, mal: "0 til +2°" },
-            { navn: "Face Angle", enhet: "°", snitt: 0.4, spredning: 2.3, mal: null },
-            { navn: "Face to Path", enhet: "°", snitt: -2.2, spredning: 2.0, mal: "−1 til +1°" },
-            { navn: "Attack Angle", enhet: "°", snitt: -4.6, spredning: 1.4, mal: "−5 til −3°" },
-            { navn: "Dynamic Loft", enhet: "°", snitt: 31.8, spredning: 2.1, mal: null },
-            { navn: "Club Speed", enhet: "mph", snitt: 72.1, spredning: 1.6, mal: null },
-          ],
-          shots: [
-            [-1.1, 112], [0.2, 114], [-0.8, 111], [1.2, 115], [-1.5, 110],
-            [0.5, 113], [1.8, 116], [-0.2, 112], [-1.9, 109], [0.9, 114],
-          ],
-        },
-        Driver: {
-          antallSlag: 48,
-          params: [
-            { navn: "Club Path", enhet: "°", snitt: 3.4, spredning: 3.1, mal: null },
-            { navn: "Face Angle", enhet: "°", snitt: 1.2, spredning: 2.6, mal: null },
-            { navn: "Face to Path", enhet: "°", snitt: -2.2, spredning: 2.2, mal: null },
-            { navn: "Attack Angle", enhet: "°", snitt: 1.1, spredning: 1.8, mal: "+2 til +4°" },
-            { navn: "Dynamic Loft", enhet: "°", snitt: 14.6, spredning: 1.9, mal: null },
-            { navn: "Club Speed", enhet: "mph", snitt: 101.2, spredning: 1.8, mal: "105 mph" },
-          ],
-          shots: [
-            [-4.2, 235], [2.1, 242], [-1.8, 238], [3.5, 246], [-5.1, 230],
-            [1.2, 241], [-0.5, 239], [4.8, 248], [-2.3, 236], [0.8, 240],
-          ],
-        },
-      },
-    },
-  },
-  tester: [
-    {
-      id: "t50",
-      name: "Innspill 50–100 m",
-      sub: "10 slag · innenfor 4 m",
-      axis: "slag",
-      unit: "av 10",
-      hist: [3, 4, 4, 5, 5],
-      dates: ["02.05", "13.06", "11.07", "15.08", "12.09"],
-      norm: 7,
-      hi: true,
-      by: "Kontrollert",
-      lvl: "D",
-    },
-    {
-      id: "tp3",
-      name: "Putting 3 fot",
-      sub: "20 putter i rad",
-      axis: "slag",
-      unit: "av 20",
-      hist: [13, 14, 15, 16, 16],
-      dates: ["02.05", "13.06", "11.07", "15.08", "12.09"],
-      norm: 18,
-      hi: true,
-      by: "Egenregistrert",
-      lvl: "D",
-    },
-    {
-      id: "tch",
-      name: "Chip 10 m",
-      sub: "10 slag · innenfor 1 m",
-      axis: "slag",
-      unit: "av 10",
-      hist: [4, 5, 6],
-      dates: ["13.06", "15.08", "12.09"],
-      norm: 7,
-      hi: true,
-      by: "Kontrollert",
-      lvl: "D",
-    },
-    {
-      id: "tcs",
-      name: "Driver · Club Speed",
-      sub: "Snitt av 5 slag",
-      axis: "fys",
-      unit: "mph",
-      hist: [98.4, 99.6, 100.4, 101.2],
-      dates: ["02.05", "11.07", "15.08", "12.09"],
-      norm: 105,
-      hi: true,
-      by: "Kontrollert",
-      lvl: "D",
-    },
-  ],
+/** Under så mange runder trekkes ingen konklusjon (beslutninger.md §SKJERMENE … RUNDE 8). */
+export const MIN_RUNDER_FOR_KONKLUSJON = 4;
+/** Vindu for snitt og trend: siste 10 mot 10 før. */
+export const SNITT_VINDU = 10;
+/** Referansesettet SG-motoren regner mot (src/lib/domain/sg-reference.ts). */
+export const PGA_REFERANSE = "PGA_TOUR";
+
+/** SG-kilder appen faktisk lagrer (manuell, beregnet fra slag eller estimert). */
+const KJENTE_SG_KILDER = new Set(["manual", "beregnet", "estimert"]);
+
+export interface PH16RundeInn {
+  id: string;
+  playedAt: Date;
+  score: number;
+  roundType: string | null;
+  courseName: string | null;
+  sgTotal: number | null;
+  sgSource: string | null;
+  benchmarkLevelSnapshot: string | null;
+  holeScores: { par: number }[];
+  sgTee: number | null;
+  sgApp200: number | null;
+  sgApp150: number | null;
+  sgApp100: number | null;
+  sgApp50: number | null;
+  sgChip: number | null;
+  sgPitch: number | null;
+  sgLob: number | null;
+  sgBunker: number | null;
+  sgPutt0_3: number | null;
+  sgPutt3_5: number | null;
+  sgPutt5_10: number | null;
+  sgPutt10_15: number | null;
+  sgPutt15_25: number | null;
+  sgPutt25_40: number | null;
+  sgPutt40plus: number | null;
+}
+
+export interface PH16TmSlagInn {
+  club: string;
+  side: number | null;
+  carryDistance: number | null;
+  clubPath: number | null;
+  faceAngle: number | null;
+  faceToPath: number | null;
+  attackAngle: number | null;
+  dynamicLoft: number | null;
+  clubSpeed: number | null;
+  outlier: boolean;
+}
+
+export interface PH16Inn {
+  navn: string;
+  /** Sortert nyeste først. */
+  runder: PH16RundeInn[];
+  tmSlag: PH16TmSlagInn[];
+}
+
+type SgOmrade = {
+  id: string;
+  label: string;
+  g: SgRad["g"];
+  verdi: (r: PH16RundeInn) => number | null;
 };
+
+function sumAvKjente(...v: Array<number | null>): number | null {
+  const kjente = v.filter((x): x is number => x != null);
+  return kjente.length ? kjente.reduce((a, b) => a + b, 0) : null;
+}
+
+/** Områdene følger feltene Round faktisk lagrer (src/lib/runde-logg/granulaer-sg.ts). */
+const SG_OMRADER: SgOmrade[] = [
+  { id: "tee", label: "Tee", g: "tee", verdi: (r) => r.sgTee },
+  { id: "i200", label: "200+ m", g: "innspill", verdi: (r) => r.sgApp200 },
+  { id: "i150", label: "150–200 m", g: "innspill", verdi: (r) => r.sgApp150 },
+  { id: "i100", label: "100–150 m", g: "innspill", verdi: (r) => r.sgApp100 },
+  { id: "i50", label: "50–100 m", g: "innspill", verdi: (r) => r.sgApp50 },
+  { id: "chip", label: "Chip", g: "naer", verdi: (r) => r.sgChip },
+  { id: "pitch", label: "Pitch", g: "naer", verdi: (r) => r.sgPitch },
+  { id: "lob", label: "Lob", g: "naer", verdi: (r) => r.sgLob },
+  { id: "bunker", label: "Bunker", g: "naer", verdi: (r) => r.sgBunker },
+  { id: "p0", label: "0–3 fot", g: "putt", verdi: (r) => r.sgPutt0_3 },
+  { id: "p3", label: "3–5 fot", g: "putt", verdi: (r) => r.sgPutt3_5 },
+  { id: "p6", label: "5–10 fot", g: "putt", verdi: (r) => r.sgPutt5_10 },
+  { id: "p10", label: "10–25 fot", g: "putt", verdi: (r) => sumAvKjente(r.sgPutt10_15, r.sgPutt15_25) },
+  { id: "p20", label: "25–40 fot", g: "putt", verdi: (r) => r.sgPutt25_40 },
+  { id: "p40", label: "40+ fot", g: "putt", verdi: (r) => r.sgPutt40plus },
+];
+
+const SG_GRUPPER: Array<{ g: SgRad["g"]; label: string }> = [
+  { g: "tee", label: "Tee" },
+  { g: "innspill", label: "Innspill" },
+  { g: "naer", label: "Nærspill 0–50 m" },
+  { g: "putt", label: "Putting" },
+];
+
+function snitt(v: number[]): number | null {
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+}
+
+function avrund(v: number | null, desimaler = 1): number | null {
+  if (v == null) return null;
+  const f = Math.pow(10, desimaler);
+  return Math.round(v * f) / f;
+}
+
+/** Snitt av et vindu, eller null når vinduet har færre enn MIN_RUNDER_FOR_KONKLUSJON verdier. */
+function vinduSnitt(v: number[]): number | null {
+  return v.length >= MIN_RUNDER_FOR_KONKLUSJON ? snitt(v) : null;
+}
+
+function rundeType(t: string | null): RundeData["kind"] {
+  const n = t?.toLowerCase();
+  if (n === "turnering" || n === "tournament") return "Turnering";
+  if (n === "trening" || n === "practice") return "Treningsrunde";
+  return null;
+}
+
+const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
+function byggSg(runder: PH16RundeInn[]): SgGruppe[] {
+  // Bare runder beregnet mot PGA Tour-referansen gir tall vi vet hva betyr.
+  const pgaRunder = runder.filter((r) => r.benchmarkLevelSnapshot === PGA_REFERANSE);
+  const rader: SgRad[] = SG_OMRADER.map((o) => {
+    const verdier = pgaRunder.map(o.verdi).filter((v): v is number => v != null);
+    const siste = verdier.slice(0, SNITT_VINDU);
+    const foer = verdier.slice(SNITT_VINDU, SNITT_VINDU * 2);
+    const sisteSnitt = vinduSnitt(siste);
+    const foerSnitt = vinduSnitt(foer);
+    return {
+      id: o.id,
+      label: o.label,
+      g: o.g,
+      c: null,
+      pga: avrund(sisteSnitt, 2),
+      n: siste.length,
+      d: sisteSnitt != null && foerSnitt != null ? avrund(sisteSnitt - foerSnitt, 2) : null,
+    };
+  });
+  return SG_GRUPPER.map((gr) => ({ ...gr, rows: rader.filter((r) => r.g === gr.g) }));
+}
+
+const TM_PARAMETRE: Array<{ navn: string; enhet: string; felt: keyof PH16TmSlagInn }> = [
+  { navn: "Club Path", enhet: "°", felt: "clubPath" },
+  { navn: "Face Angle", enhet: "°", felt: "faceAngle" },
+  { navn: "Face to Path", enhet: "°", felt: "faceToPath" },
+  { navn: "Attack Angle", enhet: "°", felt: "attackAngle" },
+  { navn: "Dynamic Loft", enhet: "°", felt: "dynamicLoft" },
+  { navn: "Club Speed", enhet: "mph", felt: "clubSpeed" },
+];
+
+function byggTrackman(slag: PH16TmSlagInn[]): PH16StatsData["trening"]["trackman"] {
+  const perKolle = new Map<string, PH16TmSlagInn[]>();
+  for (const s of slag) {
+    if (s.outlier || !s.club) continue;
+    perKolle.set(s.club, [...(perKolle.get(s.club) ?? []), s]);
+  }
+  const data: Record<string, TrackManKolleData> = {};
+  for (const [kolle, liste] of perKolle) {
+    const params: TrackManKolleParam[] = [];
+    for (const p of TM_PARAMETRE) {
+      const v = liste.map((s) => s[p.felt]).filter((x): x is number => typeof x === "number");
+      const m = snitt(v);
+      if (m == null) continue;
+      const sd = Math.sqrt(v.reduce((a, x) => a + (x - m) ** 2, 0) / v.length);
+      params.push({ navn: p.navn, enhet: p.enhet, snitt: m, spredning: sd, mal: null });
+    }
+    data[kolle] = {
+      antallSlag: liste.length,
+      params,
+      shots: liste
+        .filter((s) => s.side != null && s.carryDistance != null)
+        .map((s) => [s.side as number, s.carryDistance as number]),
+    };
+  }
+  const koller = [...perKolle.keys()].sort((a, b) => data[b].antallSlag - data[a].antallSlag);
+  return { koller, data };
+}
+
+/**
+ * Bygger Stats-grunnlaget bare fra målte data.
+ * - Snitt brutto: bare 18-hullsrunder (hullscore), siste 10, minst 4.
+ * - Forrige snitt: de 10 18-hullsrundene før, minst 4 — ellers null.
+ * - Par: summen av hullscorens par (9 eller 18 hull), aldri baneregisteret.
+ * - SG: rundenes lagrede områdefelt mot PGA Tour-referansen. Neste kategori er null.
+ * - Kategori A–K: null til nivåtallene er vedtatt.
+ */
+export function byggPH16Stats(inn: PH16Inn): PH16StatsData {
+  const atten = inn.runder.filter((r) => r.holeScores.length === 18 && r.score > 0);
+  const siste = atten.slice(0, SNITT_VINDU).map((r) => r.score);
+  const foer = atten.slice(SNITT_VINDU, SNITT_VINDU * 2).map((r) => r.score);
+
+  const runder: RundeData[] = inn.runder.slice(0, SNITT_VINDU).map((r) => {
+    const kjentHullantall = r.holeScores.length === 9 || r.holeScores.length === 18;
+    const par = kjentHullantall ? r.holeScores.reduce((s, h) => s + h.par, 0) : null;
+    return {
+      id: r.id,
+      date: OSLO_DATO.format(r.playedAt),
+      course: r.courseName ?? "—",
+      par,
+      score: r.score,
+      diff: par != null ? r.score - par : null,
+      kind: rundeType(r.roundType),
+      sg: r.sgTotal != null && r.sgSource != null && KJENTE_SG_KILDER.has(r.sgSource) ? r.sgTotal : null,
+    };
+  });
+
+  return {
+    spiller: {
+      navn: inn.navn,
+      kategori: null,
+      nesteKategori: null,
+      snittBrutto: avrund(vinduSnitt(siste)),
+      forrigeSnitt: avrund(vinduSnitt(foer)),
+      slagTilNesteKategori: null,
+      antallSnittRunder: siste.length,
+      trend: [...siste].reverse(),
+    },
+    sg: byggSg(inn.runder),
+    runder,
+    trening: {
+      pyramide: { rows: [], totalHours: null, src: "ØKTLOGG IKKE KOBLET HIT ENNÅ" },
+      trackman: byggTrackman(inn.tmSlag),
+    },
+    tester: [],
+  };
+}
