@@ -3,6 +3,8 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * /portal/meg/innstillinger/personvern — Samtykker.
  * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
+ * Avvik:
+ * - D-13: kortet «Del testene med Team Norway» for WANG-elever vises over frivillig deling.
  * Én setning per bryter, av/på, ingen mørke mønstre. Eksport/sletting nederst.
  */
 
