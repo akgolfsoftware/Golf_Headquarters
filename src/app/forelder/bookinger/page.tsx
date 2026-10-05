@@ -1,3 +1,4 @@
+// FO03Bookinger — Precision Athletics. Data og handlinger er beholdt.
 /**
  * v2-forhåndsvisning — Foreldreportal · Bookinger (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
@@ -17,7 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderBookingerV2,
   type ForelderBookingerData,
@@ -109,14 +110,8 @@ export default async function V2ForelderBookingerPage() {
   };
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="oversikt"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+    <ForelderSkall>
       <ForelderBookingerV2 data={data} />
-    </V2Shell>
+    </ForelderSkall>
   );
 }

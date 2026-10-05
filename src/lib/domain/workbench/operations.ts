@@ -105,6 +105,9 @@ export function createSession(
     blockType: cmd.blockType ?? "OEKT",
     environment: cmd.environment,
     notes: cmd.notes,
+    rationale: cmd.rationale,
+    location: cmd.location,
+    maalsetning: cmd.maalsetning,
     drills,
     groupId: cmd.groupId,
     origin:
@@ -161,7 +164,12 @@ export function applySeriesPatch(
   patch: SeriesContentPatch,
   now = new Date().toISOString(),
 ): WorkbenchSession {
-  return { ...session, ...patch, updatedAt: now };
+  return { ...session, ...patch,
+    notes: patch.notes === undefined ? session.notes : patch.notes ?? undefined,
+    rationale: patch.rationale === undefined ? session.rationale : patch.rationale ?? undefined,
+    location: patch.location === undefined ? session.location : patch.location ?? undefined,
+    maalsetning: patch.maalsetning === undefined ? session.maalsetning : patch.maalsetning ?? undefined,
+    updatedAt: now };
 }
 
 // ─── Move / Resize ──────────────────────────────────────────────────────────
@@ -383,6 +391,7 @@ export function addMonths(monthStart: string, delta: number): string {
 export function isoWeekNumber(isoDate: string): number {
   const d = new Date(isoDate + "T12:00:00Z");
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  d.setUTCHours(0, 0, 0, 0);
   const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
   return Math.ceil(((d.getTime() - yearStart) / 86400000 + 1) / 7);
 }
@@ -503,6 +512,9 @@ export interface YearPeriodInput {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearEventInput {
@@ -593,6 +605,9 @@ export function buildYearViewModel(
         startDate: p.startDate,
         endDate: p.endDate,
         focus: p.focus,
+        weeklyVolMin: p.weeklyVolMin ?? null,
+        weeklyVolMax: p.weeklyVolMax ?? null,
+        sessionBudget: p.sessionBudget ?? null,
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,

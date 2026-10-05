@@ -85,6 +85,11 @@ export type WorkbenchPhysicalBlockDto = {
 
 export type WorkbenchTournamentPlanDto = {
   id: string;
+  updatedAt?: string;
+  editable?: boolean;
+  tour?: string | null; country?: string | null; location?: string | null;
+  holes?: number | null; priority?: string | null;
+  wagrPower?: number | null; wagrSourceYear?: number | null; wagrSource?: string | null;
   tournamentEntryId: string | null;
   title: string;
   status: WorkbenchPlanStatus | string;
@@ -142,6 +147,8 @@ export type WorkbenchFysTurneringData = {
   physicalBlocks: WorkbenchPhysicalBlockDto[];
   tournamentPlans: WorkbenchTournamentPlanDto[];
   openConflicts: WorkbenchPlanConflictDto[];
+  /** false når de valgfrie modultabellene ennå ikke er etablert i databasen. */
+  available?: boolean;
 };
 
 function isoDate(date: Date | null): string | null {
@@ -166,7 +173,24 @@ export async function loadFysTurneringWorkbenchData(
   const windowEnd = new Date(now);
   windowEnd.setDate(windowEnd.getDate() + 210);
 
-  const [physicalBlocks, tournamentPlans, openConflicts] = await Promise.all([
+  // Disse modulene ble lagt til etter hoved-Workbench. Enkelte miljøer har
+  // derfor ennå ikke tabellene. Sjekk dem uten å utløse tre Prisma-feil i
+  // serverloggen; selve Workbench skal fortsatt kunne åpnes.
+  const [tables] = await prisma.$queryRaw<Array<{
+    physical: string | null;
+    tournament: string | null;
+    conflicts: string | null;
+  }>>`
+    SELECT
+      to_regclass('public.workbench_physical_blocks')::text AS physical,
+      to_regclass('public.workbench_tournament_plans')::text AS tournament,
+      to_regclass('public.workbench_plan_conflicts')::text AS conflicts
+  `;
+  if (!tables?.physical || !tables.tournament || !tables.conflicts) {
+    return { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: false };
+  }
+
+  const loadRows = () => Promise.all([
     prisma.workbenchPhysicalBlock.findMany({
       where: {
         playerId,
@@ -198,7 +222,7 @@ export async function loadFysTurneringWorkbenchData(
         playerId,
         endDate: { gte: windowStart },
         startDate: { lte: windowEnd },
-        ...visibleWhere(opts?.viewer),
+        ...(opts?.viewer === "player" ? { OR: [{ createdBy: playerId }, { status: { in: [...PLAYER_VISIBLE_STATUSES] } }] } : {}),
       },
       orderBy: [{ startDate: "asc" }, { createdAt: "desc" }],
       take: 12,
@@ -220,9 +244,21 @@ export async function loadFysTurneringWorkbenchData(
     }),
   ]);
 
+  let rows: Awaited<ReturnType<typeof loadRows>>;
+  try {
+    rows = await loadRows();
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2021") {
+      return { physicalBlocks: [], tournamentPlans: [], openConflicts: [], available: false };
+    }
+    throw error;
+  }
+  const [physicalBlocks, tournamentPlans, openConflicts] = rows;
+
   const conflictDtos = openConflicts.map(mapConflict);
 
   return {
+    available: true,
     physicalBlocks: physicalBlocks.map((block) => {
       const conflicts = conflictDtos.filter((c) =>
         openConflicts.some((raw) => raw.id === c.id && raw.physicalBlockId === block.id),
@@ -293,6 +329,8 @@ export async function loadFysTurneringWorkbenchData(
     }),
     tournamentPlans: tournamentPlans.map((plan) => ({
       id: plan.id,
+      editable: opts?.viewer !== "player" || plan.createdBy === playerId, updatedAt: plan.updatedAt.toISOString(), tour: plan.tour, country: plan.country, location: plan.location,
+      holes: plan.holes, priority: plan.priority, wagrPower: plan.wagrPower, wagrSourceYear: plan.wagrSourceYear, wagrSource: plan.wagrSource,
       tournamentEntryId: plan.tournamentEntryId,
       title: plan.title,
       status: plan.status,

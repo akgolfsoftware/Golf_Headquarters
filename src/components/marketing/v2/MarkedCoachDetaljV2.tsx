@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside COACH-DETALJ (/coacher/[slug]), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html (§detalj).
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * Ekte copy speilet fra (mlegacy)/coacher/[slug]/page.tsx.
  */
 import Link from "next/link";
@@ -95,7 +97,7 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
                 display: "block",
                 marginBottom: 10,
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10,
+                fontSize: 11,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
                 color: "var(--tl-mute)",
@@ -111,7 +113,7 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
                 display: "block",
                 margin: "18px 0 10px",
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10,
+                fontSize: 11,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
                 color: "var(--tl-mute)",

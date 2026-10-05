@@ -42,6 +42,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
+import type { SgBaselinePoint } from "@/lib/domain/sg";
 import { lesKladdCached, lesKladdServer, lagreKladd, slettKladd } from "@/lib/runde-logg/draft";
 import { syntetiserHurtigHull, scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
 import { Icon } from "@/components/v2";
@@ -61,6 +62,8 @@ type Visning = "stepper" | "detalj" | "oversikt" | "sg";
 
 type RundeLiveKlientProps = {
   baner: Array<{ id: string; name: string }>;
+  sgBaselines: SgBaselinePoint[];
+  sgReferenceLabel: string | null;
 };
 
 function erFerdig(h: LoggetHull): boolean {
@@ -78,7 +81,7 @@ function scoreNavn(s: number, par: number): string {
   return `${d} over`;
 }
 
-export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
+export function RundeLiveKlient({ baner, sgBaselines, sgReferenceLabel }: RundeLiveKlientProps) {
   const eierId = useLokalDataEier();
   const [steg, setSteg] = useState<Steg>("oppsett");
   const [visning, setVisning] = useState<Visning>("stepper");
@@ -282,6 +285,8 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   if (steg === "oppsummering" && oppsett) {
     return (
       <RundeRecap
+        sgBaselines={sgBaselines}
+        sgReferenceLabel={sgReferenceLabel}
         courseId={oppsett.courseId}
         courseNavn={oppsett.courseNavn}
         playedAt={oppsett.playedAt}
@@ -816,6 +821,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
               Tilbake til hurtigføringen
             </button>
             <HullForing
+              sgBaselines={sgBaselines}
               hull={aktivtHull}
               antallHull={hullData.length}
               ferdigeFor={antallFerdige}
@@ -842,7 +848,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
           />
         )}
         {steg === "foring" && visning === "sg" && (
-          <SgPanel hullData={hullData} onLukk={() => setVisning("detalj")} />
+          <SgPanel hullData={hullData} sgBaselines={sgBaselines} sgReferenceLabel={sgReferenceLabel} onLukk={() => setVisning("detalj")} />
         )}
       </div>
 

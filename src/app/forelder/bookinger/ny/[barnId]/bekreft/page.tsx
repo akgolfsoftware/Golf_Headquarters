@@ -1,3 +1,4 @@
+// FO03NyBarnBekreft — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * Foreldreportal · Bekreft booking for barnet (STEG 9.8). Speiler
  * /portal/booking/ny/bekreft via samme byggBookingBekreftData-loader —
@@ -11,7 +12,7 @@ import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { byggBookingBekreftData } from "@/lib/portal-booking/bekreft-data";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { TilbakeLenke } from "@/components/v2";
 import { BookingNyBekreftV2 } from "@/components/portal/v2/BookingNyBekreftV2";
 
@@ -46,9 +47,11 @@ export default async function ForelderBekreftBookingPage({ params, searchParams 
   if (resultat.status === "ikke_funnet") notFound();
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+        <ForelderSkall>
+      <div className="pa-side">
       <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
       <BookingNyBekreftV2 data={{ ...resultat.data, merkelapp: "Foreldreportal" }} />
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

@@ -1,24 +1,23 @@
+// PH19Leaderboard — Precision Athletics.
 /**
- * PlayerHQ · Mål · Leaderboard (/portal/mal/leaderboard) — v2.
- * v2-port 16. juli 2026: `LeaderboardV2` erstatter wireframe-designet, ruten
- * flyttet ut av (legacy). Feature-gate (FEATURES.LEADERBOARD), auth-guard,
- * Prisma-queries og rangeringslogikken (snitt-SG per felt siste 30 dager,
- * topp 25) er uendret. Delta-rang/badges er fortsatt ikke bygget (TODO i
- * original) — v2 viser dem ikke i stedet for å vise plassholdere.
+ * PlayerHQ · Mål · Leaderboard (/portal/mal/leaderboard) i Precision Athletics.
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx
+ *
+ * Feature-gate (FEATURES.LEADERBOARD), auth-guard, Prisma-queries og
+ * rangeringslogikken (snitt-SG per felt siste 30 dager) er uendret.
  */
 
 import { notFound } from "next/navigation";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { FEATURES } from "@/lib/features";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  LeaderboardV2,
-  type LeaderboardRad,
-  type LeaderboardTab,
-  type LeaderboardSgTab,
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH19Leaderboard } from "@/components/portal/precision/PH19Leaderboard";
+import type {
+  LeaderboardRad,
+  LeaderboardTab,
+  LeaderboardSgTab,
+  LeaderboardV2Data,
 } from "@/components/portal/v2/LeaderboardV2";
 
 export default async function LeaderboardPage({
@@ -44,7 +43,6 @@ export default async function LeaderboardPage({
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  // Velg riktig SG-felt basert på aktiv kategori-tab
   const sgField =
     sgTab === "approach"
       ? "sgApp"
@@ -54,37 +52,28 @@ export default async function LeaderboardPage({
           ? "sgPutt"
           : "sgTotal";
 
-  const proBrukere = await prisma.user.findMany({
-    where: { tier: "PRO", role: "PLAYER" },
-    select: {
-      id: true,
-      name: true,
-      hcp: true,
-      homeClub: true,
-      rounds: {
-        where: {
-          playedAt: { gte: tretti },
-          [sgField]: { not: null },
-        },
-        select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
-      },
-      trainingPlans: {
-        select: {
-          sessions: {
-            where: { scheduledAt: { gte: tretti } },
-            select: { id: true },
+  const [proBrukere, uleste] = await Promise.all([
+    prisma.user.findMany({
+      where: { tier: "PRO", role: "PLAYER" },
+      select: {
+        id: true,
+        name: true,
+        hcp: true,
+        homeClub: true,
+        rounds: {
+          where: {
+            playedAt: { gte: tretti },
+            [sgField]: { not: null },
           },
+          select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
         },
       },
-    },
-  });
+    }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
 
   const rangering: LeaderboardRad[] = proBrukere
     .map((b) => {
-      const sessionCount = b.trainingPlans.reduce(
-        (acc, p) => acc + p.sessions.length,
-        0,
-      );
       const sgVerdier = b.rounds
         .map((r) => {
           if (sgTab === "approach") return r.sgApp;
@@ -100,50 +89,40 @@ export default async function LeaderboardPage({
       return {
         id: b.id,
         rank: 0,
-        navn: b.name,
-        sub: `${b.homeClub ?? "—"} · Pro`,
-        hcp:
-          b.hcp != null
-            ? (b.hcp >= 0 ? "+" : "") + b.hcp.toFixed(1).replace(".", ",")
-            : "—",
+        navn: b.name ?? "Spiller",
+        sub: b.homeClub ?? "AK Golf",
+        hcp: b.hcp != null ? b.hcp.toFixed(1) : "—",
         sg,
-        runder: sessionCount,
+        runder: b.rounds.length,
         meg: b.id === user.id,
       };
     })
-    .filter((r) => r.sg != null)
+    .filter((r) => r.runder > 0)
     .sort((a, b) => (b.sg ?? -99) - (a.sg ?? -99))
     .slice(0, 25)
     .map((r, i) => ({
       ...r,
       rank: i + 1,
       medalje:
-        i === 0
-          ? ("gull" as const)
-          : i === 1
-            ? ("solv" as const)
-            : i === 2
-              ? ("bronse" as const)
-              : undefined,
+        i === 0 ? ("gull" as const) : i === 1 ? ("solv" as const) : i === 2 ? ("bronse" as const) : undefined,
     }));
 
-  const meg = rangering.find((r) => r.meg) ?? null;
-  const fornavn = user.name.split(" ")[0];
+  const minRad = rangering.find((r) => r.meg) ?? null;
+  const fornavn = user.name?.split(" ")[0] ?? "deg";
+
+  const data: LeaderboardV2Data = {
+    fornavn,
+    minRank: minRad?.rank ?? null,
+    total: proBrukere.length,
+    tab,
+    sgTab,
+    rader: rangering,
+    meg: minRad,
+  };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-      <LeaderboardV2
-        data={{
-          fornavn,
-          minRank: meg?.rank ?? null,
-          total: rangering.length,
-          tab,
-          sgTab,
-          rader: rangering,
-          meg,
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Leaderboard data={data} />
+    </PlayerHQSkall>
   );
 }

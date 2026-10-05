@@ -1,10 +1,10 @@
+import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
 import {
-  harTnTekniskPlanLesetilgang,
   hentTnTekniskPlanDetalj,
   tnLoggRep,
   tnOpprettOppgave,
@@ -73,10 +73,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const harTilgang = await harTnTekniskPlanLesetilgang(bruker, kontekst, spillerId);
-  if (!harTilgang) notFound();
-
-  const plan = await hentTnTekniskPlanDetalj(spillerId, planId);
+  const plan = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlanDetalj(spillerId, planId));
   if (!plan) notFound();
 
   async function loggRep(form: FormData) {

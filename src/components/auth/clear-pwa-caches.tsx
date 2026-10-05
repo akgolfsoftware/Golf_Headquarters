@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { clearTnDrafts } from "@/lib/offline-queue/tn-draft-store";
 
 /**
  * Tømmer PWA-cachen ved utlogging (GDPR / delt enhet).
@@ -21,6 +22,8 @@ import { useEffect } from "react";
 export function ClearPwaCaches() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    void clearTnDrafts().catch(() => { /* Next authenticated owner clears this store too. */ });
 
     if ("caches" in window) {
       caches

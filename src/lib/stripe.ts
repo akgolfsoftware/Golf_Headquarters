@@ -1,17 +1,20 @@
 // Stripe-klient som lazy singleton. Throws hvis miljøvariabel mangler.
 
 import Stripe from "stripe";
+import { localStripeTestAuth } from "./stripe/local-test-auth";
 
 let _klient: Stripe | null = null;
 
 export function stripeKlient(): Stripe {
   if (_klient) return _klient;
   const apiKey = process.env.STRIPE_SECRET_KEY;
-  if (!apiKey) {
+  const localAuth = localStripeTestAuth(process.env);
+  if (!apiKey && !localAuth.authenticator) {
     throw new Error("STRIPE_SECRET_KEY mangler i miljø.");
   }
-  _klient = new Stripe(apiKey, {
+  _klient = new Stripe(apiKey ?? "", {
     apiVersion: "2026-04-22.dahlia",
+    ...localAuth,
   });
   return _klient;
 }

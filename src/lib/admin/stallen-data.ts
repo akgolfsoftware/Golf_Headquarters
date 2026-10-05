@@ -11,6 +11,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { Tier, UserStatus, PyramidArea } from "@/generated/prisma/client";
+import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
 import { stallenPlayerWhere } from "./stallen-scope";
 
@@ -59,9 +60,9 @@ export type StallenRow = {
   /** SG-delta (nyeste − eldste). null = for lite data. */
   sgDelta: number | null;
   sgTone: SgTone;
-  /** Pyramide-adherence per akse denne uka (% av planlagte timer). */
+  /** Pyramide-adherence per akse siste fire uker (% av forfalte minutter). */
   adherence: AxisAdh[];
-  /** Aggregert adherence-prosent denne uka. null = ingen planlagte økter. */
+  /** Etterlevelse siste fire uker. null = ingen forfalte minutter. */
   adhPct: number | null;
   status: StatusKind;
   statusLabel: string;
@@ -152,13 +153,7 @@ const TIER_MAP: Record<Tier, { kind: TierKind; label: string }> = {
   GRATIS: { kind: "mosj", label: "FREE" },
 };
 
-const PYR_TO_AXIS: Record<PyramidArea, Axis> = {
-  FYS: "fys",
-  TEK: "tek",
-  SLAG: "slag",
-  SPILL: "spill",
-  TURN: "turn",
-};
+
 const AXIS_ORDER: Axis[] = ["fys", "tek", "slag", "spill", "turn"];
 
 function isoWeek(d: Date): number {
@@ -278,6 +273,7 @@ export async function loadStallen(
     take: 400,
   });
 
+  const etterlevelser = await hentStallEtterlevelse(players.map(p => p.id), now);
   const rows: StallenRow[] = players.map((p) => {
     const days = p.lastLoginAt
       ? Math.floor((now.getTime() - p.lastLoginAt.getTime()) / 86_400_000)
@@ -326,25 +322,12 @@ export async function loadStallen(
     const oktPlanned = ukeSessions.length;
     const oktDone = ukeSessions.filter((s) => erOktGjennomfort(s.status)).length;
 
-    // Pyramide-adherence denne uka per akse: % minutter fullført av planlagt.
-    const plannedByAxis = new Map<Axis, number>();
-    const doneByAxis = new Map<Axis, number>();
-    for (const s of ukeSessions) {
-      const ax = PYR_TO_AXIS[s.pyramidArea];
-      const dur = s.durationMin ?? 0;
-      plannedByAxis.set(ax, (plannedByAxis.get(ax) ?? 0) + dur);
-      if (erOktGjennomfort(s.status))
-        doneByAxis.set(ax, (doneByAxis.get(ax) ?? 0) + dur);
-    }
-    const adherence: AxisAdh[] = AXIS_ORDER.map((axis) => {
-      const planned = plannedByAxis.get(axis) ?? 0;
-      const done = doneByAxis.get(axis) ?? 0;
-      const pct = planned > 0 ? Math.round((done / planned) * 100) : 0;
-      return { axis, pct, alarm: planned > 0 && pct < 40 };
+    const e = etterlevelser.get(p.id)!;
+    const adherence: AxisAdh[] = AXIS_ORDER.map(axis => {
+      const result = e.perAkse.get(axis.toUpperCase() as PyramidArea)!;
+      return { axis, pct: result.pct ?? 0, alarm: result.pct !== null && result.pct < 40 };
     });
-    const totalPlanned = [...plannedByAxis.values()].reduce((a, b) => a + b, 0);
-    const totalDone = [...doneByAxis.values()].reduce((a, b) => a + b, 0);
-    const adhPct = totalPlanned > 0 ? Math.round((totalDone / totalPlanned) * 100) : null;
+    const adhPct = e.pct;
 
     const wantsGuidance = p.sessionRequestsAsPlayer.length > 0;
     const { status, label: statusLabel } = statusFrom(

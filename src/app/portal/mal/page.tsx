@@ -1,66 +1,26 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Mål-hub (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), MalHubV2 rendrer innholds-stacken.
+ * PH19Mal — Målsetninger i PlayerHQSkall (Precision Athletics).
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx
  *
- * Auth + dataloader + fremdrifts-/status-mapping gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/mal/page.tsx): samme Prisma-queries (aktive Goal + siste
- * Achievement), samme beregnFremdrift/mapGoalRow-logikk, samme milepæl-titler.
+ * «Mål» heter Målsetninger.
+ * Talentradar vises aldri for spilleren.
  */
 
+import { harEgenIupInngang } from "@/lib/iup/oversikt";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MalHubV2, type MalHubData, type MalGoalStatus, type MalGoalRad } from "@/components/portal/v2/MalHubV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH19Malsetninger } from "@/components/portal/precision/PH19Malsetninger";
 import type { Goal } from "@/generated/prisma/client";
-import { TilbakeLenke } from "@/components/v2";
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
+import {
+  formatDatoKort,
+  hentKildeLabel,
+  type PH19Goal,
+  type PH19MalData,
+} from "@/lib/portal-mal/ph19-mal-data";
 
 export const dynamic = "force-dynamic";
-
-// ── Mapping ────────────────────────────────────────────────────────
-
-const TYPE_LABELS: Record<string, string> = {
-  HCP_TARGET: "HCP",
-  ROUNDS_PER_MONTH: "RUNDER",
-  SG_AREA: "SG",
-  SESSION_FREQUENCY: "ØKTER",
-  TEST_SCORE: "TEST",
-  FREE_TEXT: "MÅL",
-};
-
-function typeLabel(type: string): string {
-  return TYPE_LABELS[type] ?? "MÅL";
-}
-
-function formatKortDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
-}
-
-const STATUS_LABELS: Record<MalGoalStatus, string> = {
-  "on-track": "På sporet",
-  behind: "Bak plan",
-  achieved: "Oppnådd",
-  "no-data": "Ingen data ennå",
-};
-
-async function mapGoalRow(goal: Goal, hcp: number | null): Promise<MalGoalRad> {
-  const progress = await beregnGoalProgress(goal, { hcp });
-  const fristStr = goal.targetDate ? `Frist: ${formatKortDato(goal.targetDate)}` : "Ingen frist";
-  const statusLabel =
-    progress.status === "on-track" && progress.pct >= 80 ? "Nær mål" : STATUS_LABELS[progress.status];
-  return {
-    id: goal.id,
-    category: goal.category,
-    type: typeLabel(goal.type),
-    title: goal.title,
-    pct: progress.pct,
-    sub: progress.hasData ? `${progress.detail} · ${fristStr}` : fristStr,
-    status: progress.status,
-    statusLabel,
-    hasData: progress.hasData,
-  };
-}
 
 const ACHIEVEMENT_TITLER: Record<string, string> = {
   STREAK_7: "7 dager på rad",
@@ -73,12 +33,40 @@ const ACHIEVEMENT_TITLER: Record<string, string> = {
   ROUND_BEST: "Ny personlig rekord",
 };
 
-// ── Side ─────────────────────────────────────────────────────────────
+const STATUS_LABELS = {
+  "on-track": "På sporet",
+  behind: "Bak plan",
+  achieved: "Oppnådd",
+  "no-data": "Ingen data ennå",
+};
 
-export default async function V2MalPreviewPage() {
+async function mapTilPH19Goal(goal: Goal, hcp: number | null): Promise<PH19Goal> {
+  const progress = await beregnGoalProgress(goal, { hcp });
+  const statusLabel =
+    progress.status === "on-track" && progress.pct >= 80 ? "Nær mål" : STATUS_LABELS[progress.status];
+
+  return {
+    id: goal.id,
+    category: goal.category as "OUTCOME" | "PROCESS",
+    type: goal.type,
+    sentence: goal.title,
+    title: goal.title,
+    src: hentKildeLabel(goal.type),
+    due: goal.targetDate ? formatDatoKort(goal.targetDate) : "Ingen frist",
+    now: progress.value ?? (hcp ?? 0),
+    unit: goal.type === "HCP_TARGET" ? "HCP" : goal.type === "ROUNDS_PER_MONTH" ? "runder" : "",
+    target: goal.targetValue ?? 0,
+    pct: progress.pct,
+    status: progress.status,
+    statusLabel,
+    hasData: progress.hasData,
+  };
+}
+
+export default async function PH19MalPage() {
   const user = await requirePortalUser();
 
-  const [goals, sisteMilepael] = await Promise.all([
+  const [goals, sisteMilepael, visIup, uleste] = await Promise.all([
     prisma.goal.findMany({
       where: { userId: user.id, status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
@@ -87,25 +75,32 @@ export default async function V2MalPreviewPage() {
       where: { userId: user.id },
       orderBy: { earnedAt: "desc" },
     }),
+    ["PLAYER", "COACH", "ADMIN"].includes(user.role) ? harEgenIupInngang() : Promise.resolve(false),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
 
-  const data: MalHubData = {
-    antall: goals.length,
-    antallResultat: goals.filter((goal) => goal.category === "OUTCOME").length,
-    antallProsess: goals.filter((goal) => goal.category === "PROCESS").length,
-    goals: await Promise.all(goals.map((g) => mapGoalRow(g, user.hcp))),
+  const mappedGoals = await Promise.all(goals.map((g) => mapTilPH19Goal(g, user.hcp)));
+
+  const data: PH19MalData = {
+    antall: mappedGoals.length,
+    antallResultat: mappedGoals.filter((g) => g.category === "OUTCOME").length,
+    antallProsess: mappedGoals.filter((g) => g.category === "PROCESS").length,
+    goals: mappedGoals,
     milepael: sisteMilepael
       ? {
           tittel: ACHIEVEMENT_TITLER[sisteMilepael.kind] ?? sisteMilepael.kind,
-          dato: sisteMilepael.earnedAt.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" }),
+          dato: sisteMilepael.earnedAt.toLocaleDateString("nb-NO", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }),
         }
       : null,
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MalHubV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Malsetninger data={data} visIup={visIup} />
+    </PlayerHQSkall>
   );
 }

@@ -1,3 +1,5 @@
+// PH25NyttKort — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * /portal/meg/abonnement/kort/ny — B-pakke.
  * Status (neste belastning) først, én grønn CTA til Stripe.
@@ -9,7 +11,6 @@ import { prisma } from "@/lib/prisma";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { KortSkjemaStripe } from "./kort-skjema-stripe";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +42,8 @@ export default async function NyttKortPage() {
   const betalingFeilet = subscription.status === "PAST_DUE";
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <div
         data-paper-slug="playerhq-abonnement"
         data-paper-portal-meg-kort-ny
@@ -135,6 +137,7 @@ export default async function NyttKortPage() {
           </ul>
         </Kort>
       </div>
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

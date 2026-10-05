@@ -3,8 +3,7 @@
  *
  * Brukes når spilleren bare taster slag (evt. putter) per hull —
  * samme lagre-motor som slag-for-slag (lagreLoggetRunde) krever
- * fullført kjede. SG fra denne kjeden er grovt estimat til kjeden
- * evt. fylles ut senere (Fullfør kjeden / UpGame).
+ * fullført kjede. Posisjonene er ikke målt og skal aldri brukes som SG-grunnlag.
  */
 
 import type { LoggetHull, LoggetSlag } from "./types";
@@ -92,7 +91,7 @@ export function syntetiserHurtigHull(input: HurtigHullInput): LoggetHull {
     }
   }
 
-  return { holeNumber, par, lengdeMeter, slag };
+  return { holeNumber, par, lengdeMeter, slag, syntetisk: true };
 }
 
 /** Les score fra hurtig-syntetisert eller fullført hull. */

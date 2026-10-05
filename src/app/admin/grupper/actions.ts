@@ -82,7 +82,7 @@ export async function createGroup(
  * Sletter en gruppe. GroupMember/GroupSchedule kaskade-slettes av databasen
  * (ingen soft-delete på Group). UI-laget (SlettGruppeButton) MÅ vise antall
  * medlemmer/samlinger og be om eksplisitt bekreftelse før dette kalles —
- * denne actionen sletter ubetinget når den kalles.
+ * actionen krever i tillegg slettetilgang til akkurat denne gruppen.
  */
 export async function deleteGroup(
   groupId: string,
@@ -90,14 +90,33 @@ export async function deleteGroup(
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   await assertCapability(user, Capability.MANAGE_GROUPS);
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id: groupId },
+  const parsed = z.string().trim().min(1).max(200).safeParse(groupId);
+  if (!parsed.success) return { error: "Ugyldig gruppe-id." };
+
+  // Eierskap: sletting kaskaderer medlemmer og samlinger, så bare hovedcoach,
+  // aktivt COACH-medlem eller ADMIN får slette (samme regel som eierGruppen i
+  // [id]/actions.ts). ASSISTANT-medlemmer og andre coacher får «Fant ikke».
+  const where = {
+    id: parsed.data,
+    ...(user.role === "COACH"
+      ? {
+          OR: [
+            { coachId: user.id },
+            { members: { some: { userId: user.id, role: "COACH" as const, endedAt: null } } },
+          ],
+        }
+      : {}),
+  };
+  const gruppe = await prisma.group.findFirst({
+    where,
     select: { id: true, name: true },
   });
   if (!gruppe) return { error: "Fant ikke gruppen." };
 
   try {
-    await prisma.group.delete({ where: { id: groupId } });
+    // Samme sperre ved selve slettingen hvis eierskap/medlemskap er endret
+    // siden oppslaget. Et id-oppslag alene ville åpnet et kappløpsvindu.
+    await prisma.group.delete({ where });
   } catch (error) {
     await logError({ context: "admin.grupper.deleteGroup", error, meta: { groupId } });
     return { error: "Kunne ikke slette gruppen" };
@@ -106,12 +125,12 @@ export async function deleteGroup(
   await audit({
     actorId: user.id,
     action: "group.deleted",
-    target: `Group:${groupId}`,
+    target: `Group:${gruppe.id}`,
     metadata: { name: gruppe.name },
   });
 
   revalidatePath("/admin/grupper");
-  return { success: true, data: { groupId } };
+  return { success: true, data: { groupId: gruppe.id } };
 }
 
 /* ─── bootstrapGfgkJuniorGrupper ────────────────────────────────────── */

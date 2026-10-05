@@ -1,0 +1,43 @@
+/* Claude Design 7d7c2994 · ui_kits/testbatteri-komplett/tb.css, 02.10.2026. */
+.pa-root.tb-scorecard{padding:20px;color:var(--text-primary);background:var(--surface-page);border-radius:var(--radius);display:grid;gap:16px;min-width:0}
+.tb-scorecard .tb-topline,.tb-scorecard .tb-status,.tb-scorecard .tb-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tb-scorecard .tb-topline{justify-content:space-between}
+.tb-scorecard .tb-status{font:var(--type-body-s)}
+.tb-scorecard .tb-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+.tb-scorecard .tb-pane{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--radius);padding:20px;min-width:0}
+.tb-scorecard h2{font:var(--type-title-s);margin:0 0 12px}
+.tb-scorecard p{margin:8px 0 16px}
+.tb-scorecard .tb-attempt-title{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline}
+.tb-scorecard .tb-attempt-title span,.tb-scorecard small{font:var(--type-body-s);color:var(--text-secondary)}
+.tb-scorecard .tb-target strong{font:600 28px/1.15 var(--font-mono)}
+.tb-scorecard progress{width:100%;height:8px;accent-color:var(--text-primary);margin-bottom:20px}
+.tb-scorecard .tb-fields{margin:0;padding:0;border:0;display:grid;gap:16px;min-width:0}
+.tb-scorecard .tb-field{display:grid;gap:8px;font:var(--type-label);min-width:0}
+.tb-scorecard .tb-field input{min-height:64px;font:600 28px/1 var(--font-mono);padding:0 14px;border:2px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);width:100%;min-width:0;box-sizing:border-box}
+.tb-scorecard .tb-field textarea{min-height:100px;padding:12px;border:1px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);width:100%;box-sizing:border-box;font:var(--type-body)}
+.tb-scorecard .tb-choice{border:0;padding:0;margin:0;min-width:0}
+.tb-scorecard .tb-choice legend{font:var(--type-label);margin-bottom:8px}
+.tb-scorecard .tb-choice>div{display:flex;flex-wrap:wrap;gap:6px}
+.tb-scorecard .tb-choice button{min-height:56px;min-width:88px;flex:1;font:var(--type-label);font-size:16px;border:1px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);cursor:pointer}
+.tb-scorecard .tb-choice button[aria-pressed=true]{background:var(--primary);color:var(--text-on-primary);border-color:var(--primary)}
+.tb-scorecard .tb-navigation{margin-top:20px}
+.tb-scorecard .tb-attempts{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:420px;overflow:auto}
+.tb-scorecard .tb-attempts button{width:100%;min-height:48px;display:grid;grid-template-columns:24px minmax(0,1fr);gap:6px;align-items:center;text-align:left;border:1px solid var(--border-hairline);background:var(--surface-flat);border-radius:var(--radius);padding:8px;font:var(--type-body-s);color:var(--text-primary);cursor:pointer;overflow-wrap:anywhere}
+.tb-scorecard .tb-attempts small{display:block}
+.tb-scorecard .tb-attempts b{font:var(--type-num)}
+.tb-scorecard .tb-attempts button[aria-current=step]{border-color:var(--border-ink);box-shadow:inset 3px 0 0 var(--border-ink);background:var(--surface-card)}
+.tb-scorecard .tb-result{display:block;font:600 28px/1.15 var(--font-mono);margin:8px 0}
+.tb-scorecard .tb-notice{border:1px solid var(--border-strong);border-radius:var(--radius);padding:16px;background:var(--surface-card)}
+.tb-scorecard .tb-photo{display:grid;gap:8px;margin-top:20px;padding:16px;border:1px solid var(--border-hairline);border-radius:var(--radius);background:var(--surface-flat)}
+.tb-scorecard .tb-photo h3{margin:0;font:var(--type-label)}
+.tb-scorecard .tb-photo p{margin:0;font:var(--type-body-s);color:var(--text-secondary)}
+.tb-scorecard .tb-photo figure{margin:0;display:grid;gap:6px}
+.tb-scorecard .tb-photo img{display:block;max-width:100%;max-height:360px;object-fit:contain;border-radius:8px;background:var(--surface-card)}
+.tb-scorecard .tb-photo figcaption{font:var(--type-body-s);color:var(--text-secondary)}
+.tb-scorecard .tb-photo-pick{position:relative;display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;min-height:48px;padding:0 16px;border:1px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);font:var(--type-label);cursor:pointer}
+.tb-scorecard .tb-photo-pick input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.tb-scorecard .tb-photo-pick:has(input:disabled){cursor:not-allowed;opacity:.55}
+.tb-scorecard summary{min-height:44px;align-content:center;cursor:pointer;font:var(--type-label)}
+.tb-scorecard :is(input,textarea,button,a,summary):focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+.tb-scorecard button:disabled{cursor:not-allowed;opacity:.55}
+@media(max-width:767px){.pa-root.tb-scorecard{padding:12px}.tb-scorecard .tb-grid{grid-template-columns:1fr}.tb-scorecard .tb-pane{padding:16px}.tb-scorecard .tb-actions>*{flex:1}.tb-scorecard .tb-attempts{max-height:300px}}

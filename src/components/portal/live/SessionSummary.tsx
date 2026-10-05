@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
-import "./session-summary.css";
+import "@/styles/precision-athletics.css";
 import type { LiveV2Summary } from "./types";
 import { fysVisningsrader, golfLoggTall, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
@@ -93,12 +93,9 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
 }
 
 /**
- * Valgt PH-06 / B3 lys: tittel → hovedresultat → tillegg → oppsummering → Lukk.
- * Kilde: designsystem/train-lock/PH-06 Live ferdig.dc.html
- * Lys: designsystem/train-lock/B3 Lys resterende skjermer.dc.html
- * Felles Geist/v3-verdier videreføres. Tegningens SG og måloppnåelse erstattes
- * med lagrede øvelsesmarkeringer/tellinger; Workbench/eldre plan har lesemodus.
- * Planavvik, notater og spillerens vurdering er bevart som utfoldbare detaljer.
+ * PH-07 Øktoppsummering i Precision Athletics, natt.
+ * Tall, øvelser, pyramide, notater, vurdering og lagring er beholdt.
+ * Tegningsfilen ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.
  */
 export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }: SessionSummaryProps) {
   const eierId = useLokalDataEier();
@@ -167,32 +164,47 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
   }
 
   return (
-    <div className="ph06" data-paper-portal-live-summary data-paper-slug="playerhq-live-summary">
+    <div className="pa-root ph07" data-theme="night" data-od-id="playerhq-live-summary">
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
-      <header className="ph06-heading">
-        <p className="ph06-eyebrow">Økt ferdig{data.durationSec > 0 ? ` · ${tidTekst(minutter)}` : ""}</p>
+      <header className="ph07-heading">
+        <p className="ph07-eyebrow">Økt ferdig{data.durationSec > 0 ? ` · ${tidTekst(minutter)}` : ""}</p>
         <h1>{data.title}</h1>
       </header>
-      <div className="ph06-columns">
-        <div className="ph06-results">
-          <section className="ph06-card ph06-hero" aria-label="Øktens hovedresultat">
+      <div className="ph07-columns">
+        <div className="ph07-results">
+          <section className="ph07-card ph07-hero" aria-label="Øktens hovedresultat">
             {harTall ? <>
-              <h2 className="ph06-eyebrow">{hoved.tittel}</h2>
-              <p className="ph06-number"><span>{hoved.verdi}</span>{hoved.av !== null && <span className="ph06-denominator">/ {hoved.av}</span>}</p>
-              <p className="ph06-muted">{harOvelser
+              <h2 className="ph07-eyebrow">{hoved.tittel}</h2>
+              <p className="ph07-number"><span>{hoved.verdi}</span>{hoved.av !== null && <span className="ph07-denominator">/ {hoved.av}</span>}</p>
+              <p className="ph07-muted">{harOvelser
                 ? `${data.drillsCompleted} av ${data.drills.length} øvelser markert ferdig.`
                 : erTapper ? "Kilde: lagrede tellinger per kølle." : "Fra registreringene i denne økta."}</p>
             </> : <>
-              <h2 className="ph06-empty-title">Økta er avsluttet</h2>
-              <p className="ph06-muted">Ingen tall ble logget i denne økta. Du kan fortsatt skrive en oppsummering.</p>
+              <h2 className="ph07-empty-title">Økta er avsluttet</h2>
+              <p className="ph07-muted">Ingen tall ble logget i denne økta. Du kan fortsatt skrive en oppsummering.</p>
             </>}
           </section>
-          {!erTapper && (totalReps > 0 || data.durationSec > 0 || planReps > 0) && <dl className="ph06-metrics ph06-card">
+          {!erTapper && (totalReps > 0 || data.durationSec > 0 || planReps > 0) && <dl className="ph07-metrics ph07-card">
             {data.durationSec > 0 && <div><dt>Varighet</dt><dd>{tidTekst(minutter)}</dd>{planMinutter > 0 && <small>Planlagt {tidTekst(planMinutter)}</small>}</div>}
             {(totalReps > 0 || planReps > 0) && <div><dt>Repetisjoner</dt><dd>{totalReps}</dd>{planReps > 0 && <small>Planlagt {planReps}</small>}</div>}
             {data.existingLogs.length > 0 && totalReps > 0 && <div><dt>Markert som treff</dt><dd>{treff} <span>av {totalReps}</span></dd></div>}
           </dl>}
-          {erTapper && <p className="ph06-muted">Tid, treffkvalitet og fullføring per øvelse er ikke registrert i denne økta.</p>}
+          {erTapper && <p className="ph07-muted">Tid, treffkvalitet og fullføring per øvelse er ikke registrert i denne økta.</p>}
+          {(() => {
+            const pyramide = data.pyramidSummary ?? {};
+            const rader = (Object.entries(pyramide) as Array<[string, number]>).filter(([, n]) => n > 0);
+            if (rader.length === 0) return null;
+            return (
+              <section className="ph07-card" aria-label="Pyramidefordeling">
+                <h2 className="ph07-eyebrow">Pyramide</h2>
+                <ul className="ph07-pyramide">
+                  {rader.map(([akse, n]) => (
+                    <li key={akse} data-akse={akse}><span>{akse}</span><strong>{n}</strong></li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })()}
           {harTall && <WhyDetails odId="etter-why-tall" punkter={erTapper ? [
             "Kilde: lagrede tellinger per kølle. Summen er antall registrerte slag.",
             "Planlagt tid er ikke målt treningstid. Ingen treffkvalitet er beregnet.",
@@ -201,12 +213,12 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
             "Repetisjoner og treff summeres bare fra golføvelser. Fysisk trening vises med egne enheter per øvelse. Varighet kommer fra øktklokka, eller første og siste logg på eldre økter.",
             "Én økt er ett datapunkt. Ingen måloppnåelse eller Strokes Gained er beregnet her.",
           ]} />}
-          {harOvelser && <details className="ph06-card ph06-details">
+          {harOvelser && <details className="ph07-card ph07-details">
             <summary>Plan mot gjennomført</summary>
             {data.drills.map((drill) => {
               const log = data.existingLogs.find((l) => l.drillId === drill.id);
               const fys = drill.pyramide === "FYS" ? lesFysRegistrering(log?.notes) : null;
-              return <div key={drill.id} className="ph06-drill">
+              return <div key={drill.id} className="ph07-drill">
                 <h3>{drill.name}</h3>
                 {drill.pyramide === "FYS" ? fys ? <>
                   <dl>{fysVisningsrader(fys).map(rad => <div key={rad.label}><dt>{rad.label}</dt><dd>{rad.verdi}</dd></div>)}</dl>
@@ -216,40 +228,40 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                 {data.completedDrillIds && <small>{data.completedDrillIds.includes(drill.id) ? "Markert ferdig" : "Ikke markert ferdig"}</small>}
               </div>;
             })}
-            {planMinutter > 0 && data.durationSec > 0 && planMinutter !== minutter && <p className="ph06-muted">Avsluttet {tidTekst(Math.abs(planMinutter - minutter))} {planMinutter > minutter ? "før" : "etter"} planlagt. Avvik gir informasjon til neste plan.</p>}
+            {planMinutter > 0 && data.durationSec > 0 && planMinutter !== minutter && <p className="ph07-muted">Avsluttet {tidTekst(Math.abs(planMinutter - minutter))} {planMinutter > minutter ? "før" : "etter"} planlagt. Avvik gir informasjon til neste plan.</p>}
           </details>}
         </div>
-        <div className="ph06-reflection">
-          <section className="ph06-card" aria-label="Oppsummering">
-            <h2 className="ph06-eyebrow">Dine ord</h2>
+        <div className="ph07-reflection">
+          <section className="ph07-card" aria-label="Oppsummering">
+            <h2 className="ph07-eyebrow">Dine ord</h2>
             {lagret || erTapper ? <>
-              <p className="ph06-recap" data-od-id="etter-lagrede-ord">{ord ?? lagredeOrd ?? "Økt gjennomført."}</p>
+              <p className="ph07-recap" data-od-id="etter-lagrede-ord">{ord ?? lagredeOrd ?? "Økt gjennomført."}</p>
               {!erTapper && <>
-                <p className="ph06-saved" role="status" tabIndex={-1} ref={savedRef}><Check size={16} aria-hidden /> Lagret i loggen</p>
-                <button type="button" className="ph06-text-button" data-od-id="etter-kvitt-angre" onClick={() => setLagret(false)}>Rediger oppsummering</button>
+                <p className="ph07-saved" role="status" tabIndex={-1} ref={savedRef}><Check size={16} aria-hidden /> Lagret i loggen</p>
+                <button type="button" className="pa-btn pa-btn--ghost" data-od-id="etter-kvitt-angre" onClick={() => setLagret(false)}>Rediger oppsummering</button>
               </>}
             </> : <>
-              <label className="ph06-muted" htmlFor="ph06-ord">Utkast fra tallene og notatene dine. Endre fritt.</label>
-              <textarea id="ph06-ord" aria-label="Oppsummering med dine ord" data-od-id="etter-oppsum-tekst" value={ord ?? ""} onChange={(event) => setOrd(event.target.value)} disabled={pending} rows={4} aria-describedby={feil ? "ph06-ord-feil" : undefined} />
-              {feil && <p id="ph06-ord-feil" className="ph06-error" role="alert" tabIndex={-1} ref={errorRef}>{feil}</p>}
-              <button type="button" className="ph06-secondary" data-od-id="etter-lagre-logg" onClick={lagre} disabled={pending || ord === null}>{pending ? "Lagrer…" : feil ? "Prøv igjen" : "Lagre i loggen"}</button>
+              <label className="ph07-muted" htmlFor="ph07-ord">Utkast fra tallene og notatene dine. Endre fritt.</label>
+              <textarea id="ph07-ord" aria-label="Oppsummering med dine ord" data-od-id="etter-oppsum-tekst" value={ord ?? ""} onChange={(event) => setOrd(event.target.value)} disabled={pending} rows={4} aria-describedby={feil ? "ph07-ord-feil" : undefined} />
+              {feil && <p id="ph07-ord-feil" className="ph07-error" role="alert" tabIndex={-1} ref={errorRef}>{feil}</p>}
+              <button type="button" className="pa-btn pa-btn--secondary ph07-full" data-od-id="etter-lagre-logg" onClick={lagre} disabled={pending || ord === null}>{pending ? "Lagrer…" : feil ? "Prøv igjen" : "Lagre i loggen"}</button>
             </>}
-            {data.coachName && <p className="ph06-muted ph06-coach">{data.coachName} kan se den lagrede oppsummeringen.</p>}
+            {data.coachName && <p className="ph07-muted ph07-coach">{data.coachName} kan se den lagrede oppsummeringen.</p>}
           </section>
-          {notater.length > 0 && <details className="ph06-card ph06-details">
+          {notater.length > 0 && <details className="ph07-card ph07-details">
             <summary>Notater fra økta · {notater.length}</summary>
-            {notater.map((notat, i) => <p key={`${notat.t}-${i}`} className="ph06-recap"><small>{notat.t} inn i økta</small><br />{notat.tekst}</p>)}
+            {notater.map((notat, i) => <p key={`${notat.t}-${i}`} className="ph07-recap"><small>{notat.t} inn i økta</small><br />{notat.tekst}</p>)}
           </details>}
           {!erTapper && <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />}
-          {nesteOkt && <section className="ph06-card">
-            <h2 className="ph06-eyebrow">Neste økt</h2>
-            <Link className="ph06-next" href={nesteOkt.href} data-od-id="etter-kvitt-neste">{nesteOkt.tekst}</Link>
+          {nesteOkt && <section className="ph07-card">
+            <h2 className="ph07-eyebrow">Neste økt</h2>
+            <Link className="ph07-next" href={nesteOkt.href} data-od-id="etter-kvitt-neste">{nesteOkt.tekst}</Link>
           </section>}
         </div>
       </div>
-      <footer className="ph06-footer">
-        <Link href="/portal" className="ph06-close" data-od-id="etter-kvitt-idag">Lukk</Link>
-        <nav aria-label="Etter økta" className="ph06-links">
+      <footer className="ph07-footer">
+        <Link href="/portal" className="pa-btn pa-btn--primary ph07-full" data-od-id="etter-kvitt-idag">Lukk</Link>
+        <nav aria-label="Etter økta" className="ph07-links">
           <Link href="/portal/planlegge" data-od-id="etter-kvitt-plan">Til planen</Link>
           <Link href="/portal/analysere" data-od-id="etter-kvitt-analyse">Se utviklingen i Analyse</Link>
         </nav>

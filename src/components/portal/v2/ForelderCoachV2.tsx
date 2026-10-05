@@ -1,39 +1,21 @@
 "use client";
 
-/**
- * Foreldreportal · Coach — pikselport PX-5.
- * Fasit: designsystem/train-lock/FO-04 Coach.dc.html
- * (+ FO-04L Coach lys.dc.html — lys/mørk gjøres av tokens).
- * Coach-kort med avatar 48, siste melding og én kontakt-CTA — ikke chat.
- * Meldingen kommer fra Notification type «melding» (samme kilde som
- * coachNote i hentForelderUkerapport).
+/** Foreldreportal · Dialog med coach. Siste melding og mailto er beholdt. Ikke en chat.
+ * Historisk sitering: designsystem/train-lock/FO-04 Coach.dc.html og FO-04L Coach lys.dc.html.
  */
 
 import { useState } from "react";
-import { TL } from "@/lib/v2/train-lock";
 import {
-  FoSkjerm,
-  FoHode,
-  FoCaps,
-  FoKort,
-  FoAvatar,
-  FoCtaPrimar,
-  FoCtaSekundar,
-  FoFotnote,
-  FoTom,
-} from "@/components/forelder/fo-kit";
-
-/* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
+  FoSkjerm, FoHode, FoCaps, FoKort, FoAvatar, FoCtaPrimar, FoCtaSekundar, FoFotnote, FoTom,
+} from "@/components/forelder/fo-presisjon";
 
 export interface ForelderCoachData {
   antallBarn: number;
-  /** Forelderens navn (caps-linjen «Forelder · …»). */
   parentName?: string;
   childFirstName: string | null;
   coachNavn: string | null;
   coachAvatarUrl: string | null;
   coachEpost: string | null;
-  /** Siste melding coachen har sendt (ekte Notification, aldri fabrikert). */
   sisteMelding: { title: string; body: string | null; dato: string } | null;
   supportEpost: string;
 }
@@ -42,80 +24,35 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
   const { antallBarn, parentName, childFirstName, coachNavn, coachEpost, sisteMelding, supportEpost } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
   const [visKontakt, setVisKontakt] = useState(false);
-
   const epost = coachEpost ?? supportEpost;
 
   return (
     <FoSkjerm>
-      <FoHode
-        caps={`Forelder · ${fornavn}`}
-        tittel="Coach"
-        under="Fra siste og kommende booking"
-      />
-
+      <FoHode caps={`Forelder · ${fornavn}`} tittel="Dialog" under="Fra siste og kommende booking" />
       {antallBarn === 0 ? (
-        <FoTom
-          tittel="Ingen barn er koblet ennå"
-          sub="Coachen sender invitasjon når barnet er registrert i klubben."
-        />
+        <FoTom tittel="Ingen barn er koblet ennå" sub="Coachen sender invitasjon når barnet er registrert i klubben." />
       ) : !coachNavn ? (
-        <FoTom
-          tittel="Ingen coach registrert ennå"
-          sub="Coachen vises her når barnet har hatt eller har en booket time."
-        />
+        <FoTom tittel="Ingen coach registrert ennå" sub="Coachen vises her når barnet har hatt eller har en booket time." />
       ) : (
-        <FoKort pad="18px" style={{ marginTop: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <FoAvatar navn={coachNavn} size={48} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, color: TL.text }}>
-                {coachNavn}
-              </div>
-              <div style={{ marginTop: 1, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-                {childFirstName ? `Coach for ${childFirstName}` : "Coach"}
-              </div>
+        <FoKort>
+          <div className="fo-person">
+            <FoAvatar navn={coachNavn} />
+            <div>
+              <p className="fo-navn">{coachNavn}</p>
+              <p className="fo-meta">{childFirstName ? `Coach for ${childFirstName}` : "Coach"}</p>
             </div>
           </div>
-
           {sisteMelding && (
-            <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
+            <div className="fo-skille">
               <FoCaps>Siste melding · {sisteMelding.dato}</FoCaps>
-              <div
-                style={{
-                  marginTop: 8,
-                  fontFamily: TL.font.sans,
-                  fontSize: 15,
-                  lineHeight: 1.5,
-                  color: TL.text,
-                  textWrap: "pretty",
-                }}
-              >
-                {sisteMelding.body ?? sisteMelding.title}
-              </div>
+              <p className="fo-under">{sisteMelding.body ?? sisteMelding.title}</p>
             </div>
           )}
-
-          <div style={{ marginTop: 14 }}>
-            <FoCtaPrimar
-              onClick={() => {
-                window.location.href = `mailto:${epost}`;
-              }}
-            >
-              Kontakt coach
-            </FoCtaPrimar>
-          </div>
-          <div style={{ marginTop: 10 }}>
-            <FoCtaSekundar onClick={() => setVisKontakt((v) => !v)}>
-              {visKontakt ? epost : "Se kontaktinfo"}
-            </FoCtaSekundar>
-          </div>
+          <FoCtaPrimar onClick={() => { window.location.href = `mailto:${epost}`; }}>Kontakt coach</FoCtaPrimar>
+          <FoCtaSekundar onClick={() => setVisKontakt((v) => !v)}>{visKontakt ? epost : "Se kontaktinfo"}</FoCtaSekundar>
         </FoKort>
       )}
-
-      <FoFotnote>
-        Dette er ikke en samtaletråd. Meldinger fra coachen vises her når de
-        sendes; svar går på e-post eller telefon.
-      </FoFotnote>
+      <FoFotnote>Dette er ikke en samtaletråd. Meldinger fra coachen vises her når de sendes; svar går på e-post eller telefon.</FoFotnote>
     </FoSkjerm>
   );
 }
