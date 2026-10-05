@@ -196,6 +196,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // Uten tjenestecoach (coachId null) holdt rollen alene: assistant coach
+    // måtte ellers bevise at spilleren er i hans stall.
+    if (user.role !== "ADMIN" && coachId !== user.id && !(await harCoachTilgangTilSpiller(user, playerId))) {
+      return NextResponse.json(
+        { error: "Du har ikke tilgang til denne spilleren" },
+        { status: 403 },
+      );
+    }
+
     const sperre = await avvisUtenLydSamtykke(playerId);
     if (sperre) return sperre;
 
