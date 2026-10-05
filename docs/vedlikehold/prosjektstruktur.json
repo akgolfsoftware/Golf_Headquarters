@@ -19,7 +19,6 @@
     ".vercel",
     ".vercelignore",
     ".vscode",
-
     ".worktrees",
     "AGENTS.md",
     "CLAUDE.md",
@@ -121,6 +120,7 @@
     ".claude/skills/security-review",
     ".claude/skills/supabase-postgres-best-practices",
     ".claude/skills/stripe-docs",
-    ".claude/skills/web-security-review"
+    ".claude/skills/web-security-review",
+    "docs/design-handoff"
   ]
 }

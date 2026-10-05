@@ -10,7 +10,7 @@
  */
 
 import { useState } from "react";
-import { Download, TriangleAlert, MapPin, Check } from "lucide-react";
+import { Download, TriangleAlert, MapPin } from "lucide-react";
 import { Meta, Tall, TomTilstand, FeilTilstand, StatusPille } from "@/components/precision/pa";
 import { SideHode, Side, Stabel, Kort, Nokkelverdi } from "@/components/precision/pa-a4";
 import { formaterTall } from "@/lib/format-tall";
@@ -23,6 +23,7 @@ import {
   type GameplanCourseItem,
 } from "@/lib/portal-gameplan/ph20-data";
 import "@/styles/precision-komponenter.css";
+import { usePaToast } from "@/components/precision/pa-toast";
 
 export type PH20Props = {
   tilstand?: "data" | "tom" | "feil";
@@ -243,7 +244,7 @@ export function PH20Gameplan({
   );
   const [selectedHoleIdx, setSelectedHoleIdx] = useState<number>(0);
   const [picks, setPicks] = useState<Record<number, string>>({});
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const paToast = usePaToast();
 
   const activeCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
   const hasCourse = Boolean(activeCourse && activeCourse.holes && activeCourse.holes.length > 0);
@@ -262,10 +263,7 @@ export function PH20Gameplan({
   const activeClub = picks[selectedHoleIdx] || recommended;
   const activeClubSpec = TEE_CLUBS[activeClub] || { carry: len, hw: 6, ry: 6 };
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
-  };
+  const showToast = (msg: string) => paToast.vis(msg);
 
   const handleDownload = () => {
     showToast(`Gameplan lastet ned som PDF for ${activeCourse ? activeCourse.name : "banen"}`);
@@ -290,21 +288,7 @@ export function PH20Gameplan({
 
   return (
     <Side max={1400}>
-      {toastMessage && (
-        <div
-          role="status"
-          className="pa-toast"
-          style={{
-            position: "fixed",
-            bottom: 24,
-            right: 24,
-            zIndex: 100,
-          }}
-        >
-          <Check size={16} />
-          {toastMessage}
-        </div>
-      )}
+      {paToast.el}
 
       <SideHode
         kicker="Stats · Gameplan"
@@ -454,7 +438,7 @@ export function PH20Gameplan({
                         onClick={() => setSelectedHoleIdx(i)}
                         style={{
                           cursor: "pointer",
-                          background: isSelected ? "var(--surface-elevated)" : "transparent",
+                          background: isSelected ? "var(--surface-card)" : "transparent",
                           fontWeight: isSelected ? 600 : 400,
                         }}
                       >

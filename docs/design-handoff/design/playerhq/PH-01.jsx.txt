@@ -1,0 +1,179 @@
+/* PH-01 I dag — runde 20 (Anders 28.09). Mobil først: dagens økter øverst som like store kort, neste først, «Start» med ett trykk.
+   Under: dagsform · agenda · neste fysiske økt · neste turnering · treningstid per akse mot pyramiden · fullførte økter mot plan.
+   Pop-up bare for melding fra coach eller endring i dagens plan (Les · Ignorer). Alt annet ligger i innboksen bak bjella (skallet). PH-02 Gjør nå er slått sammen hit. */
+(() => {
+const FORM = ["Tung", "Slapp", "Ok", "God", "Topp"];
+const AX = { fys: "FYS", tek: "TEK", slag: "SLAG", spill: "SPILL", turn: "TURN" };
+const stripe = (axes) => axes.length > 1 ? "inset 2px 0 0 var(--axis-" + axes[0] + "), inset 4px 0 0 var(--axis-" + axes[1] + ")" : "inset 4px 0 0 var(--axis-" + axes[0] + ")";
+const Head = ({ k, meta }) => <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>{meta != null && <window.PHQ.Meta>{meta}</window.PHQ.Meta>}</div>;
+const Sec = ({ children, axis, label }) => <section aria-label={label} className="pa-card" style={{ padding: axis ? "16px 16px 16px 20px" : 16, gap: 12, minWidth: 0, boxShadow: axis ? "inset 4px 0 0 var(--axis-" + axis + ")" : undefined }}>{children}</section>;
+const Muted = ({ children }) => <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>{children}</p>;
+
+function OktKort({ s, next, go }) {
+  const { Button, StatusPill, AxisBadge } = window.PHQ.ns();
+  const P = window.PHQ, done = s.status === "Gjennomført";
+  return <article aria-label={s.time + " " + s.title} className="pa-card" style={{ padding: "16px 16px 16px 20px", gap: 12, boxShadow: stripe(s.axes), minWidth: 0, minHeight: 212, display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <P.Num s={{ font: "600 21px/1 var(--font-mono)" }}>{s.time}</P.Num><P.Meta>–{s.end}</P.Meta>
+      <span style={{ marginLeft: "auto", display: "inline-flex", gap: 8, alignItems: "center" }}>{next && <P.Meta s={{ color: "var(--text-primary)" }}>NESTE</P.Meta>}<StatusPill tone={done ? "ok" : "neutral"}>{s.status}</StatusPill></span>
+    </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+      <span style={{ font: "600 17px/1.3 var(--font-sans)", color: done ? "var(--text-secondary)" : "var(--text-primary)", textWrap: "pretty" }}>{s.title}</span>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>{s.axes.map((a) => <AxisBadge key={a} axis={a} />)}<P.Meta>{s.place.toUpperCase()} · {s.min} MIN · {s.n} ØVELSER</P.Meta></div>
+      <P.Meta>{s.focus.toUpperCase()}</P.Meta>
+    </div>
+    <span style={{ flex: 1 }}></span>
+    {done ? <Button variant="secondary" size="xl" fullWidth icon="list" onClick={() => { window.PHQ_SEL = { sessionId: s.id, kind: s.axes.length === 1 && s.axes[0] === "fys" ? "fys" : "golf" }; go("PH-03"); }}>Se økta</Button>
+      : <Button variant={next ? "primary" : "secondary"} size="xl" fullWidth icon="play" onClick={() => { const fys = s.axes.length === 1 && s.axes[0] === "fys"; window.PHQ_SEL = { sessionId: s.id, kind: fys ? "fys" : "golf" }; window.PHQ_SESSION = undefined; go(fys ? "PH-06" : "PH-04"); }}>Start</Button>}
+  </article>;
+}
+
+function Dagsform({ empty }) {
+  const [f, setF] = React.useState(empty ? null : 3);
+  return <Sec label="Dagsform">
+    <Head k="Dagsform" meta={f == null ? "IKKE REGISTRERT" : f + 1 + " / 5 · " + FORM[f].toUpperCase()} />
+    <div role="group" aria-label="Dagsform" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(44px,1fr))", gap: 6 }}>
+      {FORM.map((x, i) => <button key={x} type="button" aria-pressed={i === f} aria-label={i + 1 + " " + x} onClick={() => { setF(i); window.PHQ.toast("Dagsform registrert", (i + 1) + " · " + x.toUpperCase() + " · DELT MED COACH"); }} style={{ height: 52, borderRadius: 8, border: "1px solid " + (i === f ? "var(--border-ink)" : "var(--border-hairline)"), background: i === f ? "var(--primary)" : "var(--surface-card)", color: i === f ? "var(--text-on-primary)" : "var(--text-primary)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, cursor: "pointer", minWidth: 0, padding: 0 }}><span style={{ font: "600 15px/1 var(--font-mono)" }}>{i + 1}</span><span style={{ font: "500 10px/1 var(--font-sans)", opacity: .8, overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{x}</span></button>)}
+    </div>
+  </Sec>;
+}
+
+function Agenda({ empty }) {
+  const { Timeline, Checkbox } = window.PHQ.ns();
+  const P = window.PHQ, D = window.PHQ_DATA;
+  const items = empty ? [] : D.agenda.filter((a) => a.axis);
+  const [tasks, setTasks] = React.useState(empty ? [] : D.idag.tasks);
+  const open = tasks.filter((t) => !t.done).length;
+  return <Sec label="Agenda i dag">
+    <Head k="Agenda i dag" meta={empty ? "—" : items.length + " ØKTER · " + open + " OPPGAVER"} />
+    {items.length ? <Timeline items={items} dense /> : <Muted>Ingenting planlagt i dag.</Muted>}
+    {tasks.length > 0 && <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 4 }}>
+      <P.Meta>OPPGAVER FRA ANDERS</P.Meta>
+      {tasks.map((t, i) => <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 52, borderTop: i ? "1px solid var(--border-hairline)" : "none", minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0 }}><Checkbox checked={t.done} onChange={() => setTasks((l) => l.map((x) => x.id === t.id ? { ...x, done: !x.done } : x))} label={<span style={{ textDecoration: t.done ? "line-through" : "none", color: t.done ? "var(--text-muted)" : "var(--text-primary)", textWrap: "pretty" }}>{t.t}</span>} /></div>
+        <P.Meta s={{ flex: "none" }}>{t.done ? "GJENNOMFØRT" : t.due}</P.Meta>
+      </div>)}
+    </div>}
+  </Sec>;
+}
+
+function NesteFys({ empty, go }) {
+  const { Button } = window.PHQ.ns();
+  const P = window.PHQ, F = window.PHQ_DATA.idag.fys;
+  if (empty) return <Sec label="Neste fysiske økt"><Head k="Neste fysiske økt" meta="—" /><Muted>Ingen fysisk plan ennå. Fysiske økter kommer med treningsplanen.</Muted></Sec>;
+  return <Sec label="Neste fysiske økt" axis="fys">
+    <Head k={"Neste fysiske økt · " + F.when} />
+    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}><span style={{ font: "600 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{F.title}</span><P.Meta>{F.meta}</P.Meta></div>
+    <div role="list">{F.rows.map(([n, q, r], i) => <div role="listitem" key={n} style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto auto", gap: 12, alignItems: "center", minHeight: 44, borderTop: "1px solid var(--border-hairline)" }}><span style={{ font: "400 14px/1.3 var(--font-sans)", color: "var(--text-primary)", minWidth: 0 }}>{n}</span><P.Num s={{ font: "var(--type-num-s)" }}>{q}</P.Num><P.Meta>{r}</P.Meta></div>)}</div>
+    <div><Button variant="secondary" icon="arrow-right" onClick={() => go("PH-WB-FYS")}>Registrer sett</Button></div>
+  </Sec>;
+}
+
+function NesteTurn({ empty, go }) {
+  const { Button } = window.PHQ.ns();
+  const P = window.PHQ, T = window.PHQ_DATA.idag.turn;
+  if (empty) return <Sec label="Neste turnering"><Head k="Neste turnering" meta="—" /><Muted>Ingen turnering i planen.</Muted><div><Button variant="ghost" icon="plus" onClick={() => { window.WB_CMD = { cmd: "turn" }; go("PH-11") }}>Legg til turnering</Button></div></Sec>;
+  return <Sec label="Neste turnering" axis="turn">
+    <Head k="Neste turnering" />
+    <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}><span style={{ font: "600 40px/1 var(--font-mono)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>{T.days}</span><span style={{ font: "500 15px/1 var(--font-sans)", color: "var(--text-secondary)" }}>dager igjen</span></div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}><span style={{ font: "600 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{T.title} · {T.place}</span><P.Meta>{T.meta}</P.Meta></div>
+    <div><Button variant="secondary" icon="arrow-right" onClick={() => { window.WB_CMD = { cmd: "turn" }; go("PH-11") }}>Se forberedelser</Button></div>
+  </Sec>;
+}
+
+function Treningstid({ empty, go }) {
+  const { Button, AxisBadge } = window.PHQ.ns();
+  const P = window.PHQ, U = window.PHQ_DATA.idag.uke;
+  if (empty) return <Sec label="Treningstid denne uka"><Head k={"Treningstid uke " + U.week} meta="— AV — T" /><Muted>Uten treningsplan er det ingen fordeling å sammenligne med. Velg en plan, så ser du tid per akse mot det planen sier.</Muted><div><Button variant="secondary" icon="list-checks" onClick={() => go("PH-12")}>Velg treningsplan</Button></div></Sec>;
+  const done = U.axes.reduce((a, [, h]) => a + (h || 0), 0), plan = U.axes.reduce((a, [, , g]) => a + g, 0);
+  const rows = U.axes.map(([a, h, g]) => ({ a, h, g, sh: h == null ? null : Math.round(h / done * 100), ps: Math.round(g / plan * 100) }));
+  const worst = rows.filter((r) => r.sh != null).sort((x, y) => Math.abs(y.sh - y.ps) - Math.abs(x.sh - x.ps))[0];
+  const max = Math.max(...rows.map((r) => Math.max(r.g, r.h || 0))) * 1.1;
+  return <Sec label="Treningstid denne uka">
+    <Head k={"Treningstid uke " + U.week} meta={P.dec(done) + " AV " + P.dec(plan, 0) + " T"} />
+    {worst && <p style={{ margin: 0, font: "500 15px/1.4 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>Du trener {worst.sh} % {AX[worst.a]}, planen sier {worst.ps} %.</p>}
+    <div role="list" style={{ display: "flex", flexDirection: "column" }}>
+      {rows.map((r) => <div role="listitem" key={r.a} aria-label={AX[r.a] + " " + P.dec(r.h) + " av " + P.dec(r.g) + " timer"} style={{ display: "grid", gridTemplateColumns: "64px minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 52, borderTop: "1px solid var(--border-hairline)" }}>
+        <span><AxisBadge axis={r.a} size="sm" /></span>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+          <div style={{ position: "relative", height: 8, background: "var(--surface-sunken)" }}><div style={{ height: "100%", width: ((r.h || 0) / max * 100) + "%", background: "var(--primary)" }}></div><span aria-hidden="true" style={{ position: "absolute", top: -4, bottom: -4, width: 2, left: "calc(" + (r.g / max * 100) + "% - 1px)", background: "var(--text-muted)" }}></span></div>
+          <P.Meta>{r.sh == null ? "—" : r.sh + " %"} · PLAN {r.ps} %</P.Meta>
+        </div>
+        <P.Num s={{ font: "var(--type-num-s)", textAlign: "right" }}>{P.dec(r.h)} / {P.dec(r.g)} t</P.Num>
+      </div>)}
+    </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: "1px solid var(--border-hairline)", paddingTop: 8 }}><P.Meta>STREK = TIMER GJENNOMFØRT · MERKE = PLAN</P.Meta><P.Meta>{U.src}</P.Meta><P.Meta>{U.planSrc}</P.Meta></div>
+  </Sec>;
+}
+
+function Fullfort({ empty }) {
+  const { Icon } = window.PHQ.ns();
+  const P = window.PHQ, D = window.PHQ_DATA, F = D.idag.fullfort;
+  const ss = D.plan.sessions, n = empty ? null : ss.filter((s) => s.status === "Gjennomført").length, of = empty ? null : ss.length;
+  const skip = ss.filter((s) => s.status === "Hoppet over").length, left = ss.filter((s) => s.status === "Planlagt").length;
+  const pct = n == null ? null : Math.round(n / of * 100), total = empty ? null : F.total;
+  return <Sec label="Fullførte økter mot plan">
+    <Head k={"Fullførte økter · uke " + D.plan.week} meta={pct == null ? "—" : pct + " %"} />
+    <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}><span style={{ font: "600 29px/1 var(--font-mono)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>{n == null ? "—" : n}</span><span style={{ font: "500 15px/1 var(--font-sans)", color: "var(--text-secondary)" }}>av {of == null ? "—" : of} økter</span></div>
+    <div style={{ position: "relative", height: 8, background: "var(--surface-sunken)" }}><div style={{ height: "100%", width: (pct || 0) + "%", background: "var(--primary)" }}></div><span aria-hidden="true" style={{ position: "absolute", top: -4, bottom: -4, width: 2, left: "calc(70% - 1px)", background: "var(--text-muted)" }}></span></div>
+    <P.Meta>{empty ? "INGEN ØKTER I PLANEN DENNE UKA" : "MERKE = 70 % · " + left + " IGJEN · " + skip + " HOPPET OVER"}</P.Meta>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 52, borderTop: "1px solid var(--border-hairline)", flexWrap: "wrap" }}><span style={{ flex: "1 1 160px", font: "400 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>Uker på rad over 70 %</span><P.Num s={{ font: "var(--type-num-s)" }}>{empty ? "—" : F.streak + " uker"}</P.Num><P.Meta s={{ flexBasis: "100%" }}>{empty ? "—" : F.streakSrc + " · UKE " + D.plan.week + " PÅGÅR"}</P.Meta></div>
+    <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "baseline" }}><span style={{ flex: "1 1 auto", font: "400 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>Milepæler</span><P.Meta>{total == null ? "—" : total + " ØKTER TOTALT"}</P.Meta></div>
+      <div role="list" style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 8 }}>
+        {F.milestones.map(([m, d]) => { const hit = total != null && total >= m; return <div role="listitem" key={m} style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0, padding: "8px 0", borderTop: "2px solid " + (hit ? "var(--text-primary)" : "var(--border-hairline)") }}>
+          <span style={{ display: "inline-flex", gap: 4, alignItems: "center", font: "600 17px/1 var(--font-mono)", color: hit ? "var(--text-primary)" : "var(--text-muted)" }}>{m}{hit && <Icon name="check" size={16} />}</span>
+          <P.Meta>{total == null ? "—" : hit ? "NÅDD " + d.slice(0, 5) : m - total + " IGJEN"}</P.Meta>
+        </div>; })}
+      </div>
+      <P.Meta>{empty ? "—" : F.totalSrc}</P.Meta>
+    </div>
+  </Sec>;
+}
+
+function Popup({ go }) {
+  const { Dialog, Button } = window.PHQ.ns();
+  const P = window.PHQ, M = window.PHQ_DATA.idag.popup, K = "phq-popup-2609";
+  const [open, setOpen] = React.useState(() => { try { return !sessionStorage.getItem(K); } catch (e) { return true; } });
+  const close = () => { try { sessionStorage.setItem(K, "1"); } catch (e) {} setOpen(false); };
+  return <Dialog open={open} title={M.kind} width={440} onClose={close} footer={<div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}><Button variant="secondary" onClick={() => { close(); P.toast("Ligger i innboksen", "FINNES BAK BJELLA"); }}>Ignorer</Button><Button onClick={() => { close(); go("PH-21"); }}>Les</Button></div>}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}><P.Meta>{M.from.toUpperCase()} · {M.time}</P.Meta><span style={{ font: "600 17px/1.3 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{M.title}</span><Muted>{M.text}</Muted></div>
+  </Dialog>;
+}
+
+function PH01({ state, go, ak, ung, sesong }) {
+  const { PageHeader, EmptyState } = window.PHQ.ns();
+  const P = window.PHQ, { mob } = P.useW(), D = window.PHQ_DATA, empty = state === "tom";
+  const ss = empty ? [] : [...D.idag.sessions].sort((a, b) => ((a.status === "Gjennomført") - (b.status === "Gjennomført")) || a.time.localeCompare(b.time));
+  const nextId = (ss.find((s) => s.status === "Planlagt") || {}).id;
+  const left = ss.filter((s) => s.status === "Planlagt").length;
+  const two = mob ? "minmax(0,1fr)" : "repeat(2,minmax(0,1fr))";
+  return <P.Page>
+    <PageHeader kicker={D.date.kicker} title={"God morgen, " + D.player.first} sub={empty ? "Ingen økter i dag." : ss.length + " økter i dag · " + left + " igjen · neste " + (ss.find((s) => s.id === nextId) || {}).time} />
+    {window.WB3_PUB && <window.WB3_PUB.Kort go={go} from="PH-01" />}
+    <P.Gate state={state} loading="Henter dagen din …" error={{ title: "Kunne ikke hente dagens plan", text: "Tilkoblingen ble brutt. Ingenting er endret i planen din.", code: "FEIL 503 · I DAG · " + D.date.now }}>
+      {state === "data" && <Popup go={go} />}
+      <section aria-label="Dagens økter" style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
+        {empty ? <EmptyState icon="calendar-range" title="Ingen økt i dag" text="Du har ingen økter lørdag 26.09 og ingen treningsplan ennå." action="Bygg økter i Workbench" actionIcon="layers" onAction={() => go("PH-11")} secondary="Registrer runde" onSecondary={() => go("PH-RD-01")} />
+          : <div style={{ display: "grid", gridTemplateColumns: mob ? "minmax(0,1fr)" : "repeat(auto-fill,minmax(260px,1fr))", gap: 12, minWidth: 0 }}>{ss.map((s) => <OktKort key={s.id} s={s} next={s.id === nextId} go={go} />)}</div>}
+      </section>
+      {!empty && !ak && window.PHQ_FIREUKER && <window.PHQ_FIREUKER go={go} born={ung ? 2012 : undefined} />}
+      {!empty && !ak && sesong && window.PHQ_SESONGKORT && <window.PHQ_SESONGKORT go={go} />}
+      <div style={{ display: "grid", gridTemplateColumns: two, gap: 16, alignItems: "start", minWidth: 0 }}>
+        <Dagsform empty={empty} />
+        <Agenda empty={empty} />
+        <NesteFys empty={empty} go={go} />
+        <NesteTurn empty={empty} go={go} />
+        <Treningstid empty={empty} go={go} />
+        <Fullfort empty={empty} />
+      </div>
+    </P.Gate>
+  </P.Page>;
+}
+window.PHQ_SCREENS = window.PHQ_SCREENS || {};
+window.PHQ_SCREENS["PH-01"] = { id: "PH-01", name: "I dag", tab: "idag", route: "/portal", Component: PH01 };
+/* Fireukerssjekk bare for spillere i WANG-gruppe (Ung eller Toppidrett) eller Team Norway-gruppe (Anders 28.09). */
+window.PHQ_SCREENS["PH-01-UNG"] = { id: "PH-01-UNG", name: "I dag · fireukerssjekk Ung (født 2011–2013)", tab: "idag", route: "/portal", Component: (p) => <PH01 {...p} ung /> };
+window.PHQ_SCREENS["PH-01-SESONG"] = { id: "PH-01-SESONG", name: "I dag · sesongevaluering uke 42", tab: "idag", route: "/portal", Component: (p) => <PH01 {...p} sesong /> };
+window.PHQ_SCREENS["PH-01-AK"] = { id: "PH-01-AK", name: "I dag · AK-spiller uten WANG/Team Norway", tab: "idag", route: "/portal", Component: (p) => <PH01 {...p} ak /> };
+})();

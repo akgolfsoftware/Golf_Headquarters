@@ -91,7 +91,7 @@ export function SessionBrief({
           gap: 16,
           padding: "16px 20px",
           borderBottom: "1px solid var(--border-hairline)",
-          background: "var(--surface-header)",
+          background: "var(--surface-card)",
           position: "sticky",
           top: 0,
           zIndex: 20,

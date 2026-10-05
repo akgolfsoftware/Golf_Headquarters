@@ -112,10 +112,9 @@ export function PH19Leaderboard({ data }: PH19LeaderboardProps) {
                 font: "var(--type-meta)",
                 fontWeight: aktiv ? 600 : 400,
                 color: aktiv ? "var(--text-primary)" : "var(--text-secondary)",
-                background: aktiv ? "var(--surface-raised)" : "transparent",
+                background: aktiv ? "var(--surface-card)" : "transparent",
                 border: "1px solid",
                 borderColor: aktiv ? "var(--border-strong)" : "transparent",
-                whiteSpace: "nowrap",
               }}
             >
               {s.label}
@@ -135,7 +134,7 @@ export function PH19Leaderboard({ data }: PH19LeaderboardProps) {
             alignItems: "center",
             justifyContent: "space-between",
             gap: 16,
-            background: "var(--surface-raised)",
+            background: "var(--surface-card)",
             border: "2px solid var(--primary)",
           }}
         >
@@ -144,7 +143,7 @@ export function PH19Leaderboard({ data }: PH19LeaderboardProps) {
               #{minRank ?? "—"}
             </span>
             <div>
-              <strong style={{ font: "var(--type-body-m)", color: "var(--text-primary)", display: "block" }}>
+              <strong style={{ font: "var(--type-body)", color: "var(--text-primary)", display: "block" }}>
                 {meg.navn} (Deg)
               </strong>
               <small style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>
@@ -200,7 +199,7 @@ export function PH19Leaderboard({ data }: PH19LeaderboardProps) {
                     #{rad.rank}
                   </span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-                    <span style={{ font: "var(--type-body-m)", color: "var(--text-primary)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <span style={{ font: "var(--type-body)", color: "var(--text-primary)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {rad.navn} {erMeg && "(Deg)"}
                     </span>
                     <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>

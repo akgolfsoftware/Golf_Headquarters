@@ -1,0 +1,99 @@
+/* AG-08 Spiller 360 — runde 27 (Anders 28.09.2026). Spillerkort og «Dette krever deg nå» · Send melding · Åpne Workbench · Start live · IUP-samtale.
+   Faner: Plan · Stats · Teknisk plan · Tester · IUP · Samtaler · Talent. AG-09 → Stats, AG-22 → Talent (utgår 28.09). */
+(() => {
+const T = () => window.STALL, X = () => window.STALL.p360, SD = () => window.STATS_DATA;
+const TABS = [["plan", "Plan"], ["stats", "Stats"], ["tp", "Teknisk plan"], ["test", "Tester"], ["iup", "IUP"], ["samtaler", "Samtaler"], ["talent", "Talent"]];
+const sgf = (n) => n == null ? "—" : (n > 0.04 ? "+" : n < -0.04 ? "−" : "±") + Math.abs(n).toFixed(1).replace(".", ",");
+const Sec = ({ k, meta, children, gap = 8 }) => <section aria-label={k} className="pa-card" style={{ padding: 16, gap, minWidth: 0 }}><div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>{meta != null && React.createElement(window.AGQ.Meta, null, meta)}</div>{children}</section>;
+const Row = ({ children, i, tpl = "minmax(0,1fr) auto", min = 48 }) => <div role="listitem" style={{ display: "grid", gridTemplateColumns: tpl, gap: 12, alignItems: "center", minHeight: min, borderTop: i ? "1px solid var(--border-hairline)" : "none", padding: "6px 0", minWidth: 0 }}>{children}</div>;
+const Lbl = ({ a, sub }) => <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}><span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)", overflowWrap: "anywhere", textWrap: "pretty" }}>{a}</span>{sub && React.createElement(window.AGQ.Meta, null, sub)}</span>;
+const Muted = ({ children }) => <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>{children}</p>;
+const V = ({ children }) => <span style={{ font: "600 14px/1.2 var(--font-mono)", color: "var(--text-primary)", textAlign: "right" }}>{children}</span>;
+
+function PlanTab({ empty, go }) {
+  const { Button, StatusPill } = window.AGQ.ns(), A = window.AGQ, I = window.IUP_DATA.iup, E = X().planEffect;
+  return <><Sec k="Uke 39" meta="PLAN · WORKBENCH">{empty ? <Muted>Ingen plan ennå.</Muted> : <div role="list">{X().week.map(([d, n, ax, st], i) => <Row key={d} i={i} tpl="72px minmax(0,1fr) auto"><A.Meta>{d.toUpperCase()}</A.Meta><Lbl a={n} sub={ax} /><StatusPill tone={st === "Gjennomført" ? "ok" : st === "Hoppet over" ? "warn" : "neutral"}>{st}</StatusPill></Row>)}</div>}<div><Button size="sm" variant="secondary" icon="layers" onClick={() => go("AG-11")}>Åpne hele planen i Workbench</Button></div></Sec>
+    <Sec k="Turneringer" meta="PÅMELDINGER BEKREFTES IKKE HER">{empty ? <Muted>Ingen turneringer.</Muted> : <div role="list">{I.tournaments.map(([d, n, c, r], i) => <Row key={d} i={i}><Lbl a={n} sub={d + " · " + c.toUpperCase()} /><V>{r}</V></Row>)}</div>}</Sec>
+    <Sec k="Hvilken standardplan virker" meta={E.src}><div role="list">{E.rows.map(([n, cat, cnt, eff, ok], i) => <Row key={n} i={i} tpl="minmax(0,1fr) auto"><Lbl a={n} sub={"KATEGORI " + cat + " · " + cnt + " SPILLERE"} /><V>{ok ? eff : "—"}</V></Row>)}</div><A.Meta>SNITTSCORE-ENDRING PER PLAN OG KATEGORI · ESTIMAT TIL NOK DATA</A.Meta></Sec></>;
+}
+const DEL = [["snitt", "Snittscore"], ["sg", "Strokes Gained"], ["tren", "Trening"], ["test", "Tester"]];
+function StatsTab({ empty, go, state }) {
+  const { ChoicePill } = window.AGQ.ns(), A = window.AGQ, S = SD(), St = X().stall, { cw } = A.useW();
+  const [d, setD] = React.useState("sg"), SN = window.STATS_SNITT, DL = window.STATS_DELER, cols = cw >= 1100 ? "repeat(2,minmax(0,1fr))" : "minmax(0,1fr)", noop = () => {};
+  if (empty) return <Sec k="Stats"><Muted>Ingen runder registrert ennå.</Muted></Sec>;
+  const same = SN && DL ? <><div role="group" aria-label="Stats-del" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{DEL.map(([k, l]) => <ChoicePill key={k} selected={d === k} onClick={() => setD(k)}>{l}</ChoicePill>)}</div>
+    <A.Meta>SAMME STATS SOM SPILLEREN · PGA TOUR ALLTID PÅ FOR COACH</A.Meta>
+    {d === "snitt" && <SN.Snittscore state={state} go={noop} pga={true} setPga={noop} consent={true} cols={cols} />}
+    {d === "sg" && <DL.SG state={state} go={noop} pga={true} setPga={noop} cols={cols} />}
+    {d === "tren" && <DL.Trening state={state} go={noop} cols={cols} />}
+    {d === "test" && <DL.Tester state={state} go={noop} wide={cw >= 1100} />}</> : null;
+  if (same) return <>{same}<StallCmp /></>;
+  const grp = S.sg.map((g) => ({ g: g.g, l: g.label, pga: Math.round(g.rows.reduce((a, r) => a + r.pga, 0) * 10) / 10, c: Math.round(g.rows.reduce((a, r) => a + r.c, 0) * 10) / 10 }));
+  return <><Sec k="Snittscore" meta={S.snitt.src}><div role="list"><Row i={0}><Lbl a="Snitt siste 10 runder" sub={"KATEGORI " + S.snitt.cat + " · 10 RUNDER FØR " + String(S.snitt.prev).replace(".", ",")} /><V>{String(S.snitt.avg).replace(".", ",")}</V></Row><Row i={1}><Lbl a="Til Kategori C" sub="UNDER 74,0" /><V>{String((S.snitt.avg - 73.9).toFixed(1)).replace(".", ",")} slag</V></Row></div></Sec>
+    <Sec k="Strokes Gained · PGA Tour alltid på" meta={S.cmp.pga.src}><div role="list">{grp.map((g, i) => <Row key={g.g} i={i} tpl="minmax(0,1fr) auto auto"><Lbl a={g.l} sub={"MOT KATEGORI C " + sgf(g.c) + " · ESTIMAT"} /><V>{sgf(g.pga)}</V><A.Meta s={{ minWidth: 88, textAlign: "right" }}>STALLEN {sgf(St[g.g])}</A.Meta></Row>)}</div><A.Meta>SAMME STATS SOM SPILLEREN SER · {St.src}</A.Meta></Sec></>;
+}
+function StallCmp() {
+  const A = window.AGQ, S = SD(), St = X().stall;
+  const grp = S.sg.map((g) => ({ g: g.g, l: g.label, pga: Math.round(g.rows.reduce((a, r) => a + r.pga, 0) * 10) / 10 }));
+  return <Sec k="Sammenligning med stallen" meta={St.src}><div role="list">{grp.map((g, i) => <Row key={g.g} i={i} tpl="minmax(0,1fr) auto auto"><Lbl a={g.l} sub="SG MOT PGA TOUR · ESTIMAT" /><V>{sgf(g.pga)}</V><A.Meta s={{ minWidth: 96, textAlign: "right" }}>STALLEN {sgf(St[g.g])}</A.Meta></Row>)}</div><A.Meta>STALLEN = SNITT AV EGNE SPILLERE · BARE COACH SER DETTE</A.Meta></Sec>;
+}
+function TpTab({ empty, go }) {
+  const { Button, StatusPill } = window.AGQ.ns(), A = window.AGQ, L = window.COCKPIT.live, B = window.COCKPIT.after.tm;
+  const [base, setBase] = React.useState(false);
+  return <><Sec k="Teknisk plan" meta="P1.0–P10.0">{empty ? <Muted>Ingen teknisk plan ennå.</Muted> : <div role="list">{L.tasks.map(([p, t, sub], i) => <Row key={p} i={i}><Lbl a={p + " · " + t} sub={sub.toUpperCase()} /><StatusPill tone="info">Jobber med</StatusPill></Row>)}</div>}<div><Button size="sm" variant="secondary" icon="list-checks" onClick={() => go("AG-10")}>Åpne teknisk plan</Button></div></Sec>
+    <Sec k="TrackMan-baseline" meta={B.n + " SLAG · " + B.club.toUpperCase() + " · " + B.date}><Lbl a={"Første TrackMan-økt · " + B.task} sub="KAN BRUKES SOM STARTVERDI" /><div role="list">{B.rows.map(([k, v, m], i) => <Row key={k} i={i} tpl="minmax(0,1fr) auto auto"><span style={{ font: "400 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{k}</span><V>{v}</V><A.Meta s={{ minWidth: 88, textAlign: "right" }}>MÅL {m.toUpperCase()}</A.Meta></Row>)}</div>{base ? <StatusPill tone="ok">Startverdi lagret</StatusPill> : <div><Button size="sm" variant="secondary" icon="flag" onClick={() => { setBase(true); A.toast("Brukt som startverdi", B.task.toUpperCase()); }}>Bruk som startverdi</Button></div>}<A.Meta>MÅL FRA TEKNISK PLAN · ANDERS KRISTIANSEN · 12.09.2026</A.Meta></Sec></>;
+}
+function TestTab({ empty }) {
+  const { StatusPill } = window.AGQ.ns(), A = window.AGQ, L = SD().tests;
+  return <Sec k="Tester · ett batteri" meta={SD().normSrc}>{empty ? <Muted>Ingen tester tatt.</Muted> : <div role="list">{L.map((t, i) => <Row key={t.id} i={i} tpl="minmax(0,1fr) auto auto"><Lbl a={t.name} sub={t.sub.toUpperCase() + " · NIVÅ " + (t.lvl || "—") + " · C " + (t.norm == null ? "—" : t.norm) + " · ESTIMAT"} /><StatusPill tone={t.by === "Kontrollert" ? "ok" : "neutral"}>{t.by}</StatusPill><V>{String(t.hist[t.hist.length - 1]).replace(".", ",")} {t.unit}</V></Row>)}</div>}</Sec>;
+}
+function TalkTab({ empty }) {
+  const { IconButton } = window.AGQ.ns(), A = window.AGQ;
+  const [mem, setMem] = React.useState(empty ? [] : X().memory);
+  return <><Sec k="Samtaler" meta="IUP · OPPTAK · NOTATER · VIDEOER">{empty ? <Muted>Ingen samtaler ennå.</Muted> : <div role="list">{X().talks.map((t, i) => <Row key={i} i={i}><Lbl a={t.kind + " · " + t.t} sub={t.at + " · " + t.meta.toUpperCase()} /><IconButton icon="arrow-right" label={"Åpne " + t.t} variant="ghost" onClick={() => A.toast("Åpner", t.t.toUpperCase())} /></Row>)}</div>}</Sec>
+    <Sec k="Caddie husker" meta={mem.length + " PUNKTER · BARE COACH SER DETTE"}>{!mem.length ? <Muted>Caddie husker ingenting om spilleren.</Muted> : <div role="list">{mem.map(([id, t, src], i) => <Row key={id} i={i}><Lbl a={t} sub={src} /><IconButton icon="trash-2" label={"Slett: " + t} variant="ghost" onClick={() => { setMem((l) => l.filter((x) => x[0] !== id)); A.toast("Slettet fra Caddies minne", "BRUKES IKKE LENGER"); }} /></Row>)}</div>}<A.Meta>NAVN TAS UT FØR TEKSTEN SENDES TIL AI.</A.Meta></Sec></>;
+}
+function TalentTab({ empty }) {
+  const A = window.AGQ, R = X().radar, ref = X().radarRef, n = R.length, c = 130, r = 96;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [c + Math.cos(a) * r * v / 10, c + Math.sin(a) * r * v / 10]; };
+  const poly = (vals) => vals.map((v, i) => pt(i, v).map((x) => x.toFixed(1)).join(",")).join(" ");
+  return <Sec k="Talentradar · 1–10" meta="BARE COACH · SPILLEREN SER ALDRI DETTE" gap={12}>{empty ? <Muted>For lite data til talentradar.</Muted> : <>
+    <svg role="img" aria-label={"Talentradar: " + R.map(([k, v]) => k + " " + String(v).replace(".", ",")).join(", ")} viewBox="0 0 260 260" style={{ width: "100%", maxWidth: 300, height: "auto", display: "block", margin: "0 auto" }}>
+      {[2, 4, 6, 8, 10].map((l) => <polygon key={l} points={poly(R.map(() => l))} fill="none" stroke="var(--border-hairline)" />)}
+      <polygon points={poly(ref)} fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeDasharray="4 4" />
+      <polygon points={poly(R.map((x) => x[1]))} fill="var(--text-primary)" fillOpacity=".08" stroke="var(--text-primary)" strokeWidth="2" />
+      {R.map(([k, v], i) => { const [x, y] = pt(i, 12); return <text key={k} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontFamily="var(--font-mono)" fontSize="11" fill="var(--text-secondary)">{k} {String(v).replace(".", ",")}</text>; })}
+    </svg>
+    <A.Meta>STIPLET = KATEGORI C · {X().radarSrc}</A.Meta></>}</Sec>;
+}
+function AG08({ state, go, arg, ak }) {
+  const { PageHeader, Button, Avatar, StatusPill, EmptyState } = window.AGQ.ns(), A = window.AGQ, { cw } = A.useW(), empty = state === "tom";
+  const [tab, setTab] = React.useState(TABS.some((t) => t[0] === arg) ? arg : "plan");
+  const p = T().players.find((x) => x.id === "p1");
+  const two = cw >= 1000;
+  const card = <Sec k="Spiller" meta={p.grp.toUpperCase()} gap={12}>
+    <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}><Avatar name={p.name} size={48} /><span style={{ flex: "1 1 180px", minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}><A.Meta>KATEGORI {p.cat} · HCP 8,4 · FØDT {p.born}</A.Meta>{window.AG_REGI && <window.AG_REGI p={ak ? { regi: ["privat"] } : p} />}</span></div>
+    <A.Meta>{ak ? "IUP VISES IKKE · IKKE I WANG- ELLER TEAM NORWAY-GRUPPE" : "IUP AKTIV · WANG OG TEAM NORWAY SER PROFILEN AUTOMATISK (GRUPPE)"}</A.Meta>
+    <div role="list"><Row i={0}><Lbl a="Etterlevelse 4 uker" sub="ØKTLOGG · 26.09.2026" /><V>{empty ? "—" : p.adh + " %"}</V></Row><Row i={1}><Lbl a="Avtale" sub={p.clip ? "FORNYES " + p.clip[2] : "—"} /><V>{p.clip ? p.clip[0] + " av " + p.clip[1] + " klipp" : "—"}</V></Row><Row i={1}><Lbl a="Neste turnering" /><V>{p.turn || "—"}</V></Row></div>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Button size="sm" icon="send" onClick={() => A.toast("Melding", p.name.toUpperCase())}>Send melding</Button><Button size="sm" variant="secondary" icon="layers" onClick={() => go("AG-11")}>Åpne Workbench</Button><Button size="sm" variant="secondary" icon="play" onClick={() => go("AG-13")}>Start live</Button><Button size="sm" variant="secondary" icon="messages-square" onClick={() => A.toast("IUP-samtale", "NY SAMTALE · " + p.name.toUpperCase())}>IUP-samtale</Button></div>
+  </Sec>;
+  const needs = <Sec k="Dette krever deg nå" meta={empty ? "INGENTING" : X().needs.length + " SAKER"}>{empty ? <Muted>Ingenting venter.</Muted> : <div role="list">{X().needs.map(([t, sub, to], i) => <button key={t} type="button" role="listitem" onClick={() => go(to)} style={{ all: "unset", boxSizing: "border-box", cursor: "pointer", width: "100%", display: "block", minHeight: 52, padding: "8px 0", borderTop: i ? "1px solid var(--border-hairline)" : "none" }}><Lbl a={t} sub={sub.toUpperCase() + " · ÅPNES I INNBOKS"} /></button>)}</div>}</Sec>;
+  const body = tab === "plan" ? <PlanTab empty={empty} go={go} /> : tab === "stats" ? <StatsTab empty={empty} go={go} state={state} /> : tab === "tp" ? <TpTab empty={empty} go={go} /> : tab === "test" ? <TestTab empty={empty} /> : tab === "iup" ? (window.AG_IUP ? <window.AG_IUP empty={empty} ak={ak} /> : null) : tab === "samtaler" ? <TalkTab empty={empty} /> : <TalentTab empty={empty} />;
+  return <A.Page>
+    <PageHeader kicker="Stall · Spiller 360" title={p.name} />
+    <A.Gate state={state} loading="Henter spilleren …" error={{ title: "Spilleren kunne ikke hentes", text: "Ingen felt er endret. Prøv igjen.", code: "FEIL 404 · SPILLER P1" }}>
+      {two ? <A.Cols tpl="minmax(0,1.2fr) minmax(0,1fr)">{card}{needs}</A.Cols> : <A.Stack>{card}{needs}</A.Stack>}
+      <div role="tablist" aria-label="Spiller 360" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{TABS.map(([k, l]) => { const on = tab === k; return <button key={k} type="button" role="tab" aria-selected={on} onClick={() => setTab(k)} style={{ minHeight: 44, padding: "0 14px", borderRadius: 8, border: "1px solid " + (on ? "var(--border-ink)" : "var(--border-hairline)"), background: on ? "var(--primary)" : "var(--surface-card)", color: on ? "var(--text-on-primary)" : "var(--text-primary)", font: "600 14px/1 var(--font-sans)", cursor: "pointer" }}>{l}</button>; })}</div>
+      <div role="tabpanel" aria-label={TABS.find((t) => t[0] === tab)[1]} style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>{body}</div>
+    </A.Gate>
+  </A.Page>;
+}
+const S = window.AG_SCREENS;
+S["AG-08"] = { id: "AG-08", parent: "AG-07", name: "Spiller 360", route: "/admin/spillere/[id]", Component: AG08 };
+S["AG-08-PLAN"] = { id: "AG-08-PLAN", parent: "AG-08", name: "Spiller 360 › Plan", route: "/admin/spillere/[id]?fane=plan", Component: (p) => <AG08 {...p} arg="plan" /> };
+S["AG-08-IUP"] = { id: "AG-08-IUP", parent: "AG-08", name: "Spiller 360 › IUP", route: "/admin/spillere/[id]?fane=iup", Component: (p) => <AG08 {...p} arg="iup" /> };
+S["AG-08-IUP-AK"] = { id: "AG-08-IUP-AK", parent: "AG-08", name: "Spiller 360 › IUP · AK-spiller uten WANG/Team Norway", route: "/admin/spillere/[id]?fane=iup", Component: (p) => <AG08 {...p} arg="iup" ak /> };
+S["AG-08-TALENT"] = { id: "AG-08-TALENT", parent: "AG-08", name: "Spiller 360 › Talent", route: "/admin/spillere/[id]?fane=talent", Component: (p) => <AG08 {...p} arg="talent" /> };
+S["AG-09"] = { id: "AG-09", parent: "AG-08", name: "Spilleranalyse · utgår 28.09 → Spiller 360 › Stats", utgar: true, route: "/admin/spillere/[id]/analyse → ?fane=stats", Component: (p) => <AG08 {...p} arg="stats" /> };
+S["AG-22"] = { id: "AG-22", parent: "AG-08", name: "Innsikt og talent · utgår 28.09 → Spiller 360 › Talent", utgar: true, route: "/innsyn/talent/* → ?fane=talent", Component: (p) => <AG08 {...p} arg="talent" /> };
+})();

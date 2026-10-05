@@ -4,6 +4,44 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## CLAUDE CODE PORTERER, IUP BARE FOR AKTIVE WANG-/TN-MEDLEMMER, BARE PH-01 ER GODKJENT (Anders 04.10.2026, bindende)
+
+Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `regler/claude-code.md`).
+
+- **Claude Code porterer** skjermene fra Precision Athletics til appen fra 04.10. Claude Design er fortsatt designkilde.
+- **IA 28.09 gjelder.** AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video og PH-26 Utenfor banen bygges ikke. Skjermlista i `docs/design-handoff/regler/skjermliste.md` er fasit for hva som finnes.
+- **Bare PH-01 er visuelt godkjent.** Alt annet er kandidat til Anders har sett det i appen.
+- **PH-IUP-01 Fireukerssjekk er godkjent for lansering** (Anders 04.10, etter skjermbilder 390 og 1280 px): «Det ser veldig kjedelig ut, men vi godkjenner.»
+- **Lansering først, designløft etterpå** (Anders 04.10): skjermer som virker, godkjennes for lansering selv om uttrykket er nøkternt. Videre designutvikling skjer i bakgrunnen etter lansering, og endres når demospillere har testet noen uker.
+- **IUP er et tillegg i PlayerHQ** (samme skall, ingen egen fane), og vises bare for spillere med PlayerHQ-profil som er aktive medlemmer i en WANG Toppidrett- eller Team Norway-gruppe. Ender medlemskapet, skjules IUP med en gang, også tidligere svar.
+- **Trenerinnsyn uten ja fra spiller/forelder venter** (Anders 04.10: «Del opp»). Handoffen sier at gruppen får innsyn automatisk, men kravet om samtykke, og foresattes samtykke under 16, står til Anders har avklart det juridisk.
+- **Regi per spiller i AgencyOS** (Privat · GFGK · WANG · Team Norway) bygges ikke før designet finnes.
+
+**Overstyrer:** «Codex fullfører resterende prosjekt» i §CLAUDE DESIGN EIER DESIGNET, og at tidligere IUP-besvarelser gir inngang etter utmelding (`harEgenIupInngang`).
+
+**Arbeidet dette utløser:** porteringskøen i `docs/design-handoff/regler/claude-code.md`, punkt 1–12. Juridisk avklaring av automatisk trenerinnsyn før `navngittTrenerHarTilgang` endres.
+
+## LANSERING 05.10: SEKS AG-SKJERMER BEHOLDES, MARKEDSSIDENE FÅR PRECISION (Anders 04.10.2026, bindende)
+
+Anders 04.10 kl. 23: «De skal med. Så tar vi det heller bort igjen.» Og bestilling om at PlayerHQ,
+AgencyOS, markedssidene og innloggingen skal være lanseringsklare med riktig design 05.10.
+
+- **AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video, AG-21 Oppgaver, AG-22 Innsikt og talent
+  og AG-24 Drift beholdes** som egne skjermer i Precision, selv om IA 28.09 sa at de utgår. De kan
+  fjernes senere. PH-26 Utenfor banen er fortsatt utgått og sender til Meg.
+- **Markedssidene får Precision Athletics** (Anders 04.10: «Bytt til Precision»). Det finnes ingen
+  tegninger for dem, så de bygges med Precision-komponentene og blir kandidater til Anders har sett dem.
+- **Lansering** betyr at hovedveiene virker og følger designet, og at ingen side krasjer, ruller sidelengs
+  eller viser demodata. Port 7 (Anders har sett skjermen) gjøres fra morgenrapporten.
+- IUP-køen (PH-IUP-02 og videre) kommer etter lanseringen.
+
+**Overstyrer:** «Markedssidene venter» (23.09) under §PRECISION ATHLETICS, og «Utgår 28.09» for de
+seks AG-skjermene i skjermlisten.
+
+**Arbeidet dette utløser:** nattkjøring 04.–05.10 etter planen i økten: samle ferdige grener,
+maskinsjekk av alle sider, rette røde funn med hovedveiene først, markedssidene til Precision,
+prøvekjøring og morgenrapport.
+
 ## CLAUDE DESIGN EIER DESIGNET, CODEX EIER KODEN (Anders 30.09.2026, bindende)
 
 Anders: «Claude Design er ansvarlig for design fra nå og Codex tar kode.» Anders ønsker at

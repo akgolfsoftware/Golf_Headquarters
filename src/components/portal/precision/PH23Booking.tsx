@@ -159,7 +159,7 @@ export function PH23Booking({
             border: "1px solid var(--border-hairline)",
             textAlign: "center",
             color: "var(--text-secondary)",
-            font: "var(--type-body-m)",
+            font: "var(--type-body)",
           }}
         >
           Henter ledige tider …
@@ -229,7 +229,7 @@ export function PH23Booking({
             color: "var(--text-on-primary)",
             padding: "12px 20px",
             borderRadius: "var(--radius)",
-            boxShadow: "var(--shadow-lg)",
+            boxShadow: "var(--shadow-pop)",
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -1065,7 +1065,7 @@ export function PH23Booking({
               maxWidth: 420,
               background: "var(--surface-card)",
               height: "100%",
-              boxShadow: "var(--shadow-lg)",
+              boxShadow: "var(--shadow-pop)",
               padding: 24,
               display: "flex",
               flexDirection: "column",
@@ -1247,7 +1247,7 @@ export function PH23Booking({
               maxWidth: 440,
               background: "var(--surface-card)",
               borderRadius: "var(--radius)",
-              boxShadow: "var(--shadow-lg)",
+              boxShadow: "var(--shadow-pop)",
               padding: 24,
               display: "flex",
               flexDirection: "column",

@@ -1,0 +1,43 @@
+/* PH-IUP-01/02 (IUP i PlayerHQ, 04.10.2026). Bare tokens fra docs/design-handoff/tokens.css. */
+.iup27-side{max-width:1200px}
+.iup27-kol{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}
+.iup27-mobbar{display:flex;flex-direction:column;gap:6px}
+@media (min-width:1000px){.iup27-kol{grid-template-columns:280px minmax(0,1fr)}.iup27-mobbar{display:none}}
+@media (max-width:999.98px){.iup27-stegliste{display:none}}
+.iup27-levert{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}
+@media (min-width:1000px){.iup27-levert{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+.iup27-kort{display:flex;flex-direction:column;gap:12px;padding:16px;min-width:0}
+.iup27-hode{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.iup27-hode .kicker{flex:1 1 auto}
+.iup27-muted{margin:0;font:var(--type-body-s);color:var(--text-secondary);text-wrap:pretty}
+.iup27-spm{font:500 15px/1.4 var(--font-sans);color:var(--text-primary);text-wrap:pretty}
+.iup27-rad{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--border-hairline);min-width:0}
+.iup27-skala{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;max-width:360px}
+.iup27-skala button{height:44px;min-width:0;padding:0;border-radius:6px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);font:600 15px/1 var(--font-mono);cursor:pointer}
+.iup27-skala button[aria-pressed="true"]{border-color:var(--border-ink);background:var(--primary);color:var(--text-on-primary)}
+.iup27-valg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-width:360px}
+.iup27-valg button{min-height:44px;padding:0 12px;border-radius:var(--radius-pill);border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);font:var(--type-label);cursor:pointer}
+.iup27-valg button[aria-pressed="true"]{border-color:var(--border-ink);background:var(--primary);color:var(--text-on-primary)}
+.iup27-steg{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:8px;align-items:center;min-height:44px;padding:0 10px;border-radius:6px}
+.iup27-steg[aria-current="step"]{background:var(--surface-sunken)}
+.iup27-steg:focus-visible,.iup27-leverrad:focus-visible{outline:2px solid var(--border-ink);outline-offset:2px}
+.iup27-steg span:first-child{flex:1;font:500 14px/1.3 var(--font-sans);color:var(--text-primary)}
+.iup27-steg[aria-current="step"] span:first-child{font-weight:600}
+.iup27-fremdrift{height:4px;border-radius:2px;background:var(--surface-sunken);overflow:hidden}
+.iup27-fremdrift>div{height:100%;background:var(--primary)}
+.iup27-nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.iup27-nav>.iup27-fyll{flex:1}
+.iup27-lagret{display:flex;gap:8px;align-items:center;min-height:24px;color:var(--text-muted)}
+.iup27-ko{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px;border-radius:var(--radius);border:1px solid var(--border-hairline);background:var(--surface-card)}
+.iup27-ko>span{flex:1 1 200px;font:var(--type-body-s);color:var(--text-primary);text-wrap:pretty}
+.iup27-leverrad{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;min-height:44px;border-top:1px solid var(--border-hairline)}
+.iup27-leverrad:first-child{border-top:none}
+.iup27-tekstfelt{width:100%;box-sizing:border-box;resize:vertical;font:var(--type-body);min-height:88px;padding:12px;border-radius:var(--radius-inner);border:1px solid var(--border-control);background:var(--surface-card);color:var(--text-primary)}
+.iup27-tabell-rad{display:grid;grid-template-columns:minmax(0,1fr) 56px 64px 64px;gap:8px;align-items:center;min-height:44px;border-top:1px solid var(--border-hairline)}
+.iup27-tabell-hode{display:grid;grid-template-columns:minmax(0,1fr) 56px 64px 64px;gap:8px;padding-bottom:6px}
+.iup27-hoyre{text-align:right}
+.iup27-pm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:44px;border-top:1px solid var(--border-hairline)}
+.iup27-hode+.iup27-pm{border-top:none}
+.iup27-tittel{font:600 16px/1.35 var(--font-sans);color:var(--text-primary);flex:1 1 240px;text-wrap:pretty}
+.iup27-navn{font:500 14px/1.3 var(--font-sans);color:var(--text-primary)}
+@media (prefers-reduced-motion:reduce){.iup27-fremdrift>div{transition:none}}
