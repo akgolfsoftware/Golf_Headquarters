@@ -5,6 +5,11 @@
  * godkjenninger, agentforslag (AgenticOS), tester, dubletter, moderering og e-post.
  *
  * Erstatter Train-lock-skallet (V2Shell/TL) med Precision Athletics (AgencyOSSkall og AG02Ko).
+ *
+ * Knappene kaller de samme server actionene som de gamle kø-komponentene
+ * (se src/components/admin/precision/ag02-handlinger.ts). Tom kø gir ekte tom
+ * tilstand — aldri demodata. Fanene følger capability-reglene i faner.ts:
+ * mangler du capability, finnes fanen ikke.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -12,6 +17,7 @@ import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG02Ko, type AG02Data } from "@/components/admin/precision/AG02Ko";
+import type { KoFaneId } from "@/lib/admin/ko/faner";
 import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { lastAgenticosKo } from "@/lib/agencyos/last-agenticos";
 import { lastForeslatteTester } from "@/lib/admin/ko/last-foreslatte-tester";
@@ -44,6 +50,17 @@ export default async function KoPage({
   const faner = synligeFaner(harCapability);
   const aktiv = velgFane(onsket, faner);
 
+  // Agent-kø og agent-godkjenning viser de samme PlanAction-sakene og er én fane i AG-02.
+  const tilAg02Fane = (id: KoFaneId): keyof AG02Data => (id === "agentgodkjenn" ? "agentko" : id);
+  const ag02Faner = [...new Set(faner.map((f) => tilAg02Fane(f.id)))];
+
+  const datoFmt = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
   const [godkjennRes, agentkoRes, testerRes, dubletterRes, modereringRes] = await Promise.all([
     lastGodkjenninger(coach).catch(() => ({ rows: [] })),
     kanAgenter ? lastAgenticosKo(user).catch(() => null) : Promise.resolve(null),
@@ -75,6 +92,7 @@ export default async function KoPage({
       due: r.when,
       sum: r.detail,
       lines: r.diffPreview ? [["Endring", r.diffPreview, ""]] : undefined,
+      kilde: r.kilde ?? "agent",
     })),
     agentko: (agentkoRes?.venter || []).map((it) => ({
       id: it.id,
@@ -95,40 +113,46 @@ export default async function KoPage({
       who: t.forfatter || "Spiller",
       test: t.navn || "Test",
       src: "Spiller",
-      at: t.opprettet || "Nylig",
-      done: 0,
-      of: 1,
-      result: "Foreslått test",
+      at: t.opprettet || "—",
+      beskrivelse: t.beskrivelse ?? undefined,
+      scoring: t.scoring || undefined,
     })),
-    dubletter: dubletterRes.map((d) => ({
-      id: d.manual.id,
-      match: `Overlapp: ${d.forslag[0]?.name ?? "Mulig dublett"}`,
-      a: {
-        name: d.manual.name,
-        born: "—",
-        email: d.manual.createdByEmail ?? "—",
-        phone: "—",
-        club: "—",
-        parent: "—",
-        src: "Manuell",
-      },
-      b: {
-        name: d.forslag[0]?.name ?? "—",
-        born: "—",
-        email: "—",
-        phone: "—",
-        club: "—",
-        parent: "—",
-        src: d.forslag[0]?.sourceOrigin ?? "Kanonisk kilde",
-      },
-    })),
+    dubletter: dubletterRes.map((d) => {
+      const topp = d.forslag[0] ?? null;
+      return {
+        id: d.manual.id,
+        match: topp ? `Mulig dublett av «${topp.name}»` : "Ingen automatisk match",
+        kildeId: d.manual.id,
+        malId: topp?.id ?? null,
+        a: {
+          name: d.manual.name,
+          dato: datoFmt.format(new Date(d.manual.startDate)),
+          bane: d.manual.location ?? "—",
+          pamelding: String(d.manual.antallEntries),
+          resultater: String(d.manual.antallResults),
+          src: "Manuell",
+        },
+        b: (topp
+          ? {
+              name: topp.name,
+              dato: datoFmt.format(new Date(topp.startDate)),
+              bane: topp.location ?? "—",
+              pamelding: String(topp.antallEntries),
+              resultater: String(topp.antallResults),
+              src: topp.sourceOrigin ?? "—",
+            }
+          : { src: "—" }) as Record<string, string>,
+      };
+    }),
     moderering: (modereringRes.saker || []).map((m) => ({
       id: m.id,
-      where: m.mal ?? "Innlegg",
+      where: m.mal ?? "—",
       who: m.spillerNavn,
-      reason: m.begrunnelse ?? "Varslet innhold",
+      reason: m.begrunnelse ?? "—",
       at: m.mottatt,
-      text: m.begrunnelse ?? "",
+      text: "",
+      type: m.type,
+      status: m.status === "APPROVED" ? ("APPROVED" as const) : ("OPEN" as const),
     })),
     epost: [],
   };
@@ -146,6 +170,7 @@ export default async function KoPage({
         tilstand="data"
         dagLabel={dagLabel}
         startFane={aktiv ?? "godkjenninger"}
+        faner={ag02Faner}
         data={data}
       />
     </AgencyOSSkall>

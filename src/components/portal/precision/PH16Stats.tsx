@@ -25,15 +25,14 @@ import {
   formaterDesimal,
   formaterSg,
   beregnSpredning,
-  STANDARD_PH16_DATA,
+  MIN_RUNDER_FOR_KONKLUSJON,
   type StatsFane,
   type PH16StatsData,
   type SgRad,
 } from "@/lib/portal-analyse/ph16-stats-data";
 
 export interface PH16StatsProps {
-  data?: PH16StatsData;
-  initialData?: PH16StatsData;
+  data: PH16StatsData;
   aktivFane?: StatsFane;
   initialFane?: StatsFane;
   pgaTourInit?: boolean;
@@ -47,31 +46,34 @@ const FANER: ReadonlyArray<{ id: StatsFane; tittel: string; ikon: typeof Flag; i
 ];
 
 export function PH16Stats({
-  data,
-  initialData = STANDARD_PH16_DATA,
+  data: d,
   aktivFane,
   initialFane = "snitt",
   pgaTourInit = false,
 }: PH16StatsProps) {
-  const d = data ?? initialData;
   const [fane, setFane] = useState<StatsFane>(aktivFane ?? initialFane);
   const [pgaTour, setPgaTour] = useState<boolean>(pgaTourInit);
-  const [valgtKolle, setValgtKolle] = useState<string>("7i");
+  const [valgtKolle, setValgtKolle] = useState<string | null>(d.trening.trackman.koller[0] ?? null);
 
   const alleSgRader: SgRad[] = d.sg.flatMap((g) => g.rows);
+  const sgVerdi = (r: SgRad) => (pgaTour ? r.pga : r.c);
 
-  // Finn beste forbedring og største tap
+  // Finn beste forbedring og største tap — bare målte verdier
   const bestTrend = [...alleSgRader]
     .filter((r) => r.d != null && r.d > 0)
     .sort((a, b) => (b.d ?? 0) - (a.d ?? 0))[0];
 
-  const storsteTap = [...alleSgRader]
-    .sort((a, b) => (pgaTour ? a.pga - b.pga : a.c - b.c))
+  const storsteTap = alleSgRader
+    .filter((r): r is SgRad => sgVerdi(r) != null)
+    .sort((a, b) => (sgVerdi(a) as number) - (sgVerdi(b) as number))
     .slice(0, 3);
 
   // TrackMan for valgt kølle
-  const tmKolle = d.trening.trackman.data[valgtKolle] ?? d.trening.trackman.data["7i"];
-  const tmSpredning = beregnSpredning(tmKolle.shots);
+  const tmKolle = valgtKolle ? d.trening.trackman.data[valgtKolle] ?? null : null;
+  const tmSpredning = tmKolle ? beregnSpredning(tmKolle.shots) : null;
+
+  const antallSnitt = d.spiller.antallSnittRunder;
+  const manglerRunder = Math.max(0, MIN_RUNDER_FOR_KONKLUSJON - antallSnitt);
 
   const curFane = FANER.find((f) => f.id === fane) ?? FANER[0];
 
@@ -225,13 +227,20 @@ export function PH16Stats({
               Flest tapte slag
             </span>
             <Meta>
-              PER RUNDE MOT {pgaTour ? "PGA TOUR" : "KATEGORI C · ESTIMAT"}
+              PER RUNDE MOT {pgaTour ? "PGA TOUR" : "NESTE KATEGORI"}
             </Meta>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {storsteTap.length === 0 && (
+              <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                {pgaTour
+                  ? `— · Strokes Gained vises når minst ${MIN_RUNDER_FOR_KONKLUSJON} runder har målt SG.`
+                  : "— · Referanse ikke satt for neste kategori."}
+              </span>
+            )}
             {storsteTap.map((r, i) => {
-              const tapVerdi = pgaTour ? r.pga : r.c;
+              const tapVerdi = sgVerdi(r);
               return (
                 <div
                   key={r.id}
@@ -254,7 +263,7 @@ export function PH16Stats({
                     >
                       {r.label}
                     </span>
-                    <Meta>{r.n} SLAG I GRUNNLAGET</Meta>
+                    <Meta>{r.n} RUNDER I GRUNNLAGET</Meta>
                   </div>
                   <span
                     style={{
@@ -294,12 +303,12 @@ export function PH16Stats({
                 color: "var(--text-primary)",
               }}
             >
-              Sammenligner mot {pgaTour ? "PGA Tour-snitt" : "Neste kategori · Kategori C"}
+              Sammenligner mot {pgaTour ? "PGA Tour" : "Neste kategori"}
             </span>
             <Meta>
               {pgaTour
-                ? "DATA GOLF · PGA TOUR ESTIMAT"
-                : "BROADIE-BASELINE TILPASSET KATEGORI C"}
+                ? "SG-REFERANSE PGA TOUR · SISTE 10 RUNDER"
+                : "REFERANSE IKKE SATT · A–K-NIVÅENE ER IKKE VEDTATT"}
             </Meta>
           </div>
           <Bryter
@@ -335,7 +344,10 @@ export function PH16Stats({
               }}
             >
               <span className="kicker">Kategori A–K</span>
-              <Meta>10 TELLENDE RUNDER · BRUTTO SCORE</Meta>
+              <Meta>
+                {antallSnitt} AV 10 SISTE 18-HULLSRUNDER · BRUTTO SCORE
+                {d.spiller.snittBrutto != null && antallSnitt < 8 ? " · FORELØPIG" : ""}
+              </Meta>
             </div>
 
             <div
@@ -361,7 +373,7 @@ export function PH16Stats({
                   color: "var(--text-secondary)",
                 }}
               >
-                slag i snitt · Kategori {d.spiller.kategori}
+                slag i snitt · Kategori {d.spiller.kategori ?? "—"}
               </span>
             </div>
 
@@ -372,10 +384,14 @@ export function PH16Stats({
                 color: "var(--text-primary)",
               }}
             >
-              {formaterDesimal(d.spiller.slagTilNesteKategori, 1)} slag til Kategori {d.spiller.nesteKategori}
+              {manglerRunder > 0
+                ? `Registrer ${manglerRunder} ${manglerRunder === 1 ? "runde" : "runder"} til før snittet vises`
+                : d.spiller.nesteKategori != null && d.spiller.slagTilNesteKategori != null
+                ? `${formaterDesimal(d.spiller.slagTilNesteKategori, 1)} slag til Kategori ${d.spiller.nesteKategori}`
+                : "Referanse ikke satt"}
             </p>
 
-            {/* Skala for Kategori A–K (64 til 100) */}
+            {/* Skala for Kategori A–K — nivåtallene er ikke vedtatt, derfor ingen grenser */}
             <div style={{ marginTop: 8 }}>
               <div
                 style={{
@@ -410,17 +426,6 @@ export function PH16Stats({
                   );
                 })}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: 4,
-                }}
-              >
-                {[64, 72, 80, 90, 100].map((v) => (
-                  <Meta key={v}>{v}</Meta>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -448,6 +453,11 @@ export function PH16Stats({
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
+              {d.runder.length === 0 && (
+                <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                  Ingen runder registrert ennå.
+                </span>
+              )}
               {d.runder.map((r, i) => (
                 <Link
                   key={r.id}
@@ -473,12 +483,14 @@ export function PH16Stats({
                       >
                         {r.course}
                       </span>
-                      <StatusPille tone={r.kind === "Turnering" ? "ok" : "neutral"}>
-                        {r.kind}
-                      </StatusPille>
+                      {r.kind && (
+                        <StatusPille tone={r.kind === "Turnering" ? "ok" : "neutral"}>
+                          {r.kind}
+                        </StatusPille>
+                      )}
                     </div>
                     <Meta>
-                      {r.date} · PAR {r.par}
+                      {r.date} · PAR {r.par ?? "—"}
                     </Meta>
                   </div>
 
@@ -492,7 +504,13 @@ export function PH16Stats({
                       {r.score}
                     </span>
                     <Meta style={{ display: "block" }}>
-                      {r.diff >= 0 ? `+${r.diff}` : `${r.diff}`}
+                      {r.diff == null
+                        ? "—"
+                        : r.diff === 0
+                        ? "E"
+                        : r.diff > 0
+                        ? `+${r.diff}`
+                        : `−${Math.abs(r.diff)}`}
                     </Meta>
                   </div>
 
@@ -566,10 +584,11 @@ export function PH16Stats({
             }}
           >
             {d.sg.map((gruppe) => {
-              const gruppeSum =
-                Math.round(
-                  gruppe.rows.reduce((sum, r) => sum + (pgaTour ? r.pga : r.c), 0) * 10
-                ) / 10;
+              // Summen vises bare når alle områdene i gruppa er målt; ellers ville den vært for lav.
+              const gruppeVerdier = gruppe.rows.map(sgVerdi);
+              const gruppeSum = gruppeVerdier.every((v): v is number => v != null)
+                ? Math.round(gruppeVerdier.reduce((sum, v) => sum + v, 0) * 10) / 10
+                : null;
               return (
                 <div
                   key={gruppe.g}
@@ -604,7 +623,7 @@ export function PH16Stats({
 
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {gruppe.rows.map((r, i) => {
-                      const v = pgaTour ? r.pga : r.c;
+                      const v = sgVerdi(r);
                       return (
                         <div
                           key={r.id}
@@ -633,7 +652,7 @@ export function PH16Stats({
                               >
                                 {r.label}
                               </span>
-                              <Meta>{r.n} SLAG</Meta>
+                              <Meta>{r.n} RUNDER</Meta>
                             </div>
 
                             {/* SG bar */}
@@ -657,7 +676,7 @@ export function PH16Stats({
                                   background: "var(--text-muted)",
                                 }}
                               />
-                              {v !== 0 && (
+                              {v != null && v !== 0 && (
                                 <span
                                   style={{
                                     position: "absolute",
@@ -747,7 +766,9 @@ export function PH16Stats({
                   letterSpacing: "-0.02em",
                 }}
               >
-                {formaterDesimal(d.trening.pyramide.totalHours, 1)} t
+                {d.trening.pyramide.totalHours == null
+                  ? "—"
+                  : `${formaterDesimal(d.trening.pyramide.totalHours, 1)} t`}
               </span>
               <span
                 style={{
@@ -768,6 +789,11 @@ export function PH16Stats({
                 marginTop: 4,
               }}
             >
+              {d.trening.pyramide.rows.length === 0 && (
+                <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                  — · Fordelingen per akse vises når øktloggen er koblet til Stats.
+                </span>
+              )}
               {d.trening.pyramide.rows.map(([akse, pst, timer]) => (
                 <div
                   key={akse}
@@ -817,7 +843,7 @@ export function PH16Stats({
             >
               <span className="kicker">TrackMan · Slag og spredning</span>
               {/* Køllevelger */}
-              <div className="pa-seg" role="group" aria-label="Velg kølle">
+              <div className="pa-seg" role="group" aria-label="Velg kølle" style={{ flexWrap: "wrap" }}>
                 {d.trening.trackman.koller.map((k) => (
                   <button
                     key={k}
@@ -832,6 +858,11 @@ export function PH16Stats({
               </div>
             </div>
 
+            {!tmKolle || !tmSpredning ? (
+              <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                — · Ingen TrackMan-slag registrert ennå.
+              </span>
+            ) : (
             <div
               style={{
                 display: "grid",
@@ -943,6 +974,7 @@ export function PH16Stats({
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
       )}
@@ -959,6 +991,19 @@ export function PH16Stats({
             alignItems: "start",
           }}
         >
+          {d.tester.length === 0 && (
+            <div
+              className="pa-card"
+              style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}
+            >
+              <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+                — · Testresultatene vises i testbatteriet til de er koblet til Stats.
+              </span>
+              <KnappLenke variant="secondary" size="sm" href="/portal/tren/tester">
+                Gå til tester
+              </KnappLenke>
+            </div>
+          )}
           {d.tester.map((t) => {
             const sistVerdi = t.hist[t.hist.length - 1];
             const sistDato = t.dates[t.dates.length - 1];
@@ -1027,7 +1072,7 @@ export function PH16Stats({
 
                 <Meta>
                   SIST: {sistDato}
-                  {t.norm != null && ` · KATEGORI C NORM: ${t.norm} ${t.unit}`}
+                  {t.norm != null && ` · NORM: ${t.norm} ${t.unit}`}
                 </Meta>
 
                 <div style={{ marginTop: "auto", paddingTop: 8 }}>
