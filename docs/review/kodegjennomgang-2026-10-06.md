@@ -48,6 +48,23 @@ Seks funn som ble meldt fra flere områder, er slått sammen og telles én gang 
 
 Rett etter disse kommer to feil som gir **feil eller tapte data**. Sesongen regnes som kalenderår, så en WANG-årsplan for aug–jun blir usynlig fra nyttår (DI-01). Når et scorekort redigeres, slettes slag uten advarsel (DI-04). I tillegg viser tre flater **oppdiktede tall som om de var ekte**: TrackMan (DI-02), Årgang-statistikken (DI-03) og live-økta (RF-10).
 
+### Avgjort av Anders 06.10.2026
+
+Registrert som bindende beslutning i PR #1195 (`.claude/rules/beslutninger.md` §KODEGJENNOMGANGEN 06.10).
+
+| Spørsmål | Svar | Funn |
+|---|---|---|
+| WANG- og TN-trenere i spillerens plan | Kan bare anbefale endringer. Ser bare det som er delt | TO-01, TO-02, TO-04, TO-12 |
+| Coachvideo og AI-samtale | Rettes: eiersjekk | TP-01, TA-01 |
+| Under 16 år | Forelder må godkjenne innen sju dager etter at kontoen er opprettet. Full bruk de sju dagene, så låses kontoen. Deling og opptak er sperret til forelder har godkjent | TA-03, TA-04, TP-02 |
+| Data Golf | Bare for coacher (alle med coach-rollen, også WANG og TN, og ADMIN). Ikke spillere. `/stats/pga` bak innlogging for coacher | TO-07, TO-08, TO-09, TA-06 |
+| Endre tilgangsregler i fase 2 | Ja | Gruppe 1 |
+| Forelderinnsyn etter 16 år | Fortsetter til spilleren selv fjerner forelderen | TA-08 (krever ingen endring, utover at spilleren må kunne fjerne forelderen) |
+| 432 døde filer | Slettes | RY-01, RY-02 |
+| Workbench-design (M1) | De fire visningene fra 02.10 beholdes | M1, DO-02 |
+
+Fase 2 starter når Anders skriver «kjør fase 2».
+
 ### De to kjente hullene fra bestillingen
 
 | Hull | Bekreftet | PR i dag | Hva som gjenstår |
@@ -70,7 +87,7 @@ Alle PR-ene i gruppe 1 endrer tilgangsregler. Etter oppdraget stopper jeg og sp�
 | 1g | Småhull i actions og API-ruter | TA-05, TA-07, TP-08, TP-10, TP-13, TP-14–TP-21, TP-26–TP-38 | Deles i 3–4 små PR-er per område |
 | 1h | Vaktskriptet sjekker også API-ruter, og «bare innlogget» godtas ikke som tilgangssjekk | TA-12 | Hindrer at nye hull kommer inn |
 | 1i | Innlogging via Google kobler ikke over eksisterende kontoer | TA-02 | Spør først. Krever sjekk i Supabase |
-| 2 | Data Golf-sperre: én port `kanSeDataGolf`, bare analytiker | TO-07, TO-09, TA-06 | `/stats/pga` venter på din avgjørelse (TO-08) |
+| 2 | Data Golf-sperre: én port `kanSeDataGolf`, bare analytiker | TO-07, TO-09, TA-06 | Bare coacher (avgjort 06.10), også `/stats/pga` |
 | 3a | Sesong følger årsplanens datoer, ikke kalenderåret | DI-01, DI-18, DI-21, RF-14 | |
 | 3b | Ingen demotall i produksjonsveien | DI-02, DI-03, RF-10 | |
 | 3c | Scorekort-redigering sletter ikke slag stille | DI-04, DI-26 | |
@@ -80,11 +97,11 @@ Alle PR-ene i gruppe 1 endrer tilgangsregler. Etter oppdraget stopper jeg og sp�
 | 3g | Netto gjenkjennes med hviteliste, ikke «ender på N» | DI-10 | |
 | 3h | Puttavstand runder ikke 15 og 40 fot til feil SG-bøtte | DI-22 | |
 | 4 | Tester for innlogging, deling, publisering, forslag og runde | se §7 | Én PR per flyt |
-| 5 | Død kode, delt per område (P5a–P5v, maks 20 filer per PR) | RY-01–RY-08, RY-13, RY-14, RY-17–RY-19, RY-24, ST-03, ST-10, TO-10 | Krever at du bekrefter RY-02 |
+| 5 | Død kode, delt per område (P5a–P5v, maks 20 filer per PR) | RY-01–RY-08, RY-13, RY-14, RY-17–RY-19, RY-24, ST-03, ST-10, TO-10 | Godkjent 06.10 |
 | 6 | Avhengigheter: fjern ubrukte, legg til manglende, `npm audit fix` | RY-20–RY-23 | Stripe-oppgradering (22→23) holdes utenfor: spør først |
 | 7 | Forslag til skjemaendringer, merket «Krever godkjenning» og ikke kjørt | RF-04–RF-08, SP-02–SP-04 | Prod-basen mangler tabeller og kolonner som koden allerede bruker |
 | 8 | Forberedelse for designsystemet: mappe, tokens som CSS-variabler, tom plass | ST-01, ST-02, ST-04–ST-07, ST-09, ST-11 | Utseendet endres ikke |
-| 9 | Slett utgåtte dokumenter, én PR per mappe (P9a–P9j), og `docs/README.md` | DO-01–DO-13 | P9b venter på avgjørelsen om Workbench-designet (M1) |
+| 9 | Slett utgåtte dokumenter, én PR per mappe (P9a–P9j), og `docs/README.md` | DO-01–DO-13 | P9b: nivåtegningene utgår (M1 avgjort 06.10) |
 
 Betaling og økonomi som **ikke** rettes uten at du sier ja: TP-09 (kontosletting stopper ikke Stripe-abonnementet), TP-26 (avbestilling kan treffe feil abonnement), DI-09 (faktura deler beløpet 80/20 i netto og mva uten å lese det fra betalingen) og RY-15 (Tripletex-klienten bygger på antatte endepunkter).
 
