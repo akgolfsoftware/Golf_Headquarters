@@ -12,6 +12,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { formaterVarighet, miljoEtikett, oppsummerOkt } from "@/lib/trackman/okt-oppsummering";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
   AG18TrackManVideo,
@@ -31,83 +32,81 @@ export default async function AdminTrackmanPage({
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { fane, okt } = await searchParams;
 
-  // Coach-scope: assistant coach ser bare egne spilleres økter og videoer.
-  const spillerScope = coachScopedPlayerWhere(user);
+  const spillerVakt = coachScopedPlayerWhere(user);
+
   const [dbSessions, dbVideos] = await Promise.all([
-    prisma.trackManSession.findMany({
-      where: { user: spillerScope },
-      orderBy: { recordedAt: "desc" },
-      take: 20,
-      include: {
-        user: { select: { id: true, name: true, hcp: true } },
-      },
-    }).catch(() => []),
-    prisma.sessionVideo.findMany({
-      where: { player: spillerScope },
-      orderBy: { createdAt: "desc" },
-      take: 20,
-      include: {
-        player: { select: { id: true, name: true } },
-        coach: { select: { id: true, name: true } },
-      },
-    }).catch(() => []),
+    prisma.trackManSession
+      .findMany({
+        where: { user: spillerVakt },
+        orderBy: { recordedAt: "desc" },
+        take: 20,
+        include: {
+          user: { select: { id: true, name: true } },
+          shots: {
+            select: {
+              club: true,
+              outlier: true,
+              clubSpeed: true,
+              ballSpeed: true,
+              smashFactor: true,
+              launchAngle: true,
+              spinRate: true,
+              clubPath: true,
+              faceAngle: true,
+              carryDistance: true,
+            },
+          },
+        },
+      })
+      .catch(() => []),
+    prisma.sessionVideo
+      .findMany({
+        where: { player: spillerVakt },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        include: {
+          player: { select: { id: true, name: true } },
+          coach: { select: { id: true, name: true } },
+        },
+      })
+      .catch(() => []),
   ]);
 
-  let tmSessions: TrackManOkt[] = [];
-  if (dbSessions.length > 0) {
-    tmSessions = dbSessions.map((s) => ({
+  const dato = (d: Date) =>
+    d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" });
+
+  const tmSessions: TrackManOkt[] = dbSessions.map((s) => {
+    const sammendrag = oppsummerOkt(s.shots);
+    return {
       id: s.id,
-      date: s.recordedAt.toLocaleDateString("nb-NO", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),
+      date: dato(s.recordedAt),
       who: s.user.name ?? "Spiller",
-      club: "7-jern",
+      club: sammendrag.club,
       shots: s.shotCount,
-      video: 1,
-      bay: "Studio 1",
-      rows: [
-        ["Club Speed", "mph", 91.4],
-        ["Ball Speed", "mph", 124.6],
-        ["Smash Factor", "", 1.36],
-        ["Launch Angle", "°", 17.2],
-        ["Spin Rate", "rpm", 6450],
-        ["Club Path", "°", 2.1],
-        ["Face Angle", "°", -0.8],
-        ["Carry", "m", 158.4],
-      ],
-    }));
-  }
+      video: null,
+      bay: miljoEtikett(s.environment),
+      rows: sammendrag.rows,
+    };
+  });
 
-  let videos: VideoOpptak[] = [];
-  if (dbVideos.length > 0) {
-    videos = dbVideos.map((v) => ({
-      id: v.id,
-      s: v.bookingId ?? v.id,
-      title: v.title ?? "Jernsving DTL",
-      by: v.player?.name ?? "Spiller",
-      at: v.createdAt.toLocaleDateString("nb-NO", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),
-      len: "0:04",
-      note: "God rotasjon, sjekk hoftevinkel på toppen",
-    }));
-  }
+  const videos: VideoOpptak[] = dbVideos.map((v) => ({
+    id: v.id,
+    s: v.bookingId ?? v.id,
+    title: v.title,
+    player: v.player?.name ?? "Spiller",
+    by: v.coach?.name ?? null,
+    at: dato(v.createdAt),
+    len: formaterVarighet(v.durationSec),
+    note: v.notes ?? undefined,
+  }));
 
-  const data: AG18Data | undefined =
-    tmSessions.length > 0 && videos.length > 0
-      ? {
-          tmSessions,
-          videos,
-        }
-      : undefined;
+  const data: AG18Data = { tmSessions, videos };
+  const tilstand = tmSessions.length === 0 && videos.length === 0 ? "tom" : "data";
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AG18TrackManVideo
+        tilstand={tilstand}
         data={data}
         startFane={fane}
         startOktId={okt}

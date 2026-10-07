@@ -54,3 +54,67 @@ test("skjermkatalogen krever innlogging som coach eller admin", () => {
   const side = readFileSync(path.join(KATALOG, "page.tsx"), "utf8");
   assert.match(side, /requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]\s*\}\)/);
 });
+
+// ---------------------------------------------------------------------------
+// AgencyOS AG-17 til AG-24 og TrackMan (AG-18): ingen demodata i produksjonsveien.
+// Egen blokk: et annet arbeidsløp utvider testen for WANG.
+// ---------------------------------------------------------------------------
+
+const AGENCYOS_SANNHET_KOMPONENTER = [
+  "AG17Turneringer",
+  "AG18TrackManVideo",
+  "AG19CaddieHub",
+  "AG21Oppgaver",
+  "AG22InnsiktTalent",
+  "AG23Oppsett",
+  "AG24Drift",
+].map((n) => path.join(process.cwd(), "src/components/admin/precision", `${n}.tsx`));
+
+const AGENCYOS_SANNHET_SIDER = [
+  "src/app/admin/trackman/page.tsx",
+  "src/app/admin/turnering/page.tsx",
+  "src/app/admin/jarvis/page.tsx",
+  "src/app/admin/oppgaver/page.tsx",
+  "src/app/admin/innsikt/page.tsx",
+  "src/app/admin/oppsett/page.tsx",
+  "src/app/admin/drift/page.tsx",
+].map((f) => path.join(process.cwd(), f));
+
+const DEMOLITERALER: RegExp[] = [
+  /STANDARD_DATA/,
+  /Tobias Lindvik/,
+  /Magnus Aasheim/,
+  /Henrik Simonsen/,
+  /Kasper Thorsen/,
+  /Kari Demo/,
+  /\bdemo\.no\b/,
+  /000 000 000/,
+  /Hanne Lindvik/,
+];
+
+test("AG17-AG24 og TrackMan har ingen STANDARD_DATA eller oppdiktede personer", () => {
+  const treff: string[] = [];
+  for (const fil of [...AGENCYOS_SANNHET_KOMPONENTER, ...AGENCYOS_SANNHET_SIDER]) {
+    const kilde = readFileSync(fil, "utf8");
+    for (const monster of DEMOLITERALER) {
+      if (monster.test(kilde)) treff.push(`${path.relative(process.cwd(), fil)} -> ${monster}`);
+    }
+  }
+  assert.deepEqual(treff, []);
+});
+
+test("TrackMan-siden hardkoder ingen måleverdier, og turnering ingen DataGolf-rader eller fiktive koordinater", () => {
+  const trackman = readFileSync(path.join(process.cwd(), "src/app/admin/trackman/page.tsx"), "utf8");
+  assert.doesNotMatch(trackman, /7-jern|91\.4|124\.6|158\.4|hoftevinkel/);
+  const turnering = readFileSync(path.join(process.cwd(), "src/app/admin/turnering/page.tsx"), "utf8");
+  assert.doesNotMatch(turnering, /Feltstyrke|Vinn-sannsynlighet|DATAGOLF_PREDICT|58\.5 \+|8\.5 \+/);
+});
+
+test("Påmeldt er aldri rust (signal) i AG-17", () => {
+  const kilde = readFileSync(
+    path.join(process.cwd(), "src/components/admin/precision/AG17Turneringer.tsx"),
+    "utf8",
+  );
+  assert.doesNotMatch(kilde, /Påmeldt"\s*\?\s*"signal"/);
+  assert.doesNotMatch(kilde, /tone="signal"/);
+});

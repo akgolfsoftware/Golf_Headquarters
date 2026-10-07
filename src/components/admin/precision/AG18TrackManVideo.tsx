@@ -19,9 +19,7 @@ import {
   PenLine,
   Play,
   PlayCircle,
-  Radio,
   Send,
-  Square,
   Video,
 } from "lucide-react";
 import {
@@ -36,7 +34,6 @@ import {
 import {
   Ark,
   Faner,
-  InlineVarsel,
   Kort,
   KortHode,
   Nokkelverdi,
@@ -52,10 +49,12 @@ export type TrackManOkt = {
   id: string;
   date: string;
   who: string;
-  club: string;
+  /** Kølla med flest slag; null når økta ikke har lagrede slag. */
+  club: string | null;
   shots: number;
   video?: number | null;
-  bay: string;
+  /** Miljø slik det er lagret på økta; null når det ikke er registrert. */
+  bay: string | null;
   rows: TrackManRad[];
 };
 
@@ -63,9 +62,13 @@ export type VideoOpptak = {
   id: string;
   s: string; // Session ID
   title: string;
-  by: string;
+  /** Spilleren videoen tilhører. */
+  player: string;
+  /** Coachen som la opp videoen; null når den ikke er kjent. */
+  by: string | null;
   at: string;
-  len: string;
+  /** «m:ss», eller null når varigheten ikke er lagret. */
+  len: string | null;
   note?: string;
 };
 
@@ -81,7 +84,6 @@ export type AG18TrackManVideoProps = {
   data?: AG18Data;
   startFane?: string;
   startOktId?: string;
-  onDelVideo?: (videoId: string) => void;
 };
 
 const formaterTrackManVerdi = (k: string, v: number | null | undefined): string => {
@@ -93,137 +95,17 @@ const formaterTrackManVerdi = (k: string, v: number | null | undefined): string 
   return formaterTall(v, desimaler, true);
 };
 
-const STANDARD_DATA: AG18Data = {
-  tmSessions: [
-    {
-      id: "m1",
-      date: "04.10.2026",
-      who: "Tobias Lindvik",
-      club: "7-jern",
-      shots: 42,
-      video: 2,
-      bay: "Studio 1",
-      rows: [
-        ["Club Speed", "mph", 91.4],
-        ["Ball Speed", "mph", 124.6],
-        ["Smash Factor", "", 1.36],
-        ["Launch Angle", "°", 17.2],
-        ["Spin Rate", "rpm", 6450],
-        ["Club Path", "°", 2.1],
-        ["Face Angle", "°", -0.8],
-        ["Carry", "m", 158.4],
-      ],
-    },
-    {
-      id: "m2",
-      date: "03.10.2026",
-      who: "Henrik Simonsen",
-      club: "Driver",
-      shots: 28,
-      video: 1,
-      bay: "Studio 1",
-      rows: [
-        ["Club Speed", "mph", 112.8],
-        ["Ball Speed", "mph", 168.2],
-        ["Smash Factor", "", 1.49],
-        ["Launch Angle", "°", 11.4],
-        ["Spin Rate", "rpm", 2280],
-        ["Club Path", "°", 1.4],
-        ["Face Angle", "°", -0.2],
-        ["Carry", "m", 262.1],
-      ],
-    },
-    {
-      id: "m3",
-      date: "02.10.2026",
-      who: "Kasper Thorsen",
-      club: "Pitching Wedge",
-      shots: 35,
-      video: null,
-      bay: "Studio 2",
-      rows: [
-        ["Club Speed", "mph", 83.2],
-        ["Ball Speed", "mph", 102.5],
-        ["Smash Factor", "", 1.23],
-        ["Launch Angle", "°", 24.1],
-        ["Spin Rate", "rpm", 9120],
-        ["Club Path", "°", -0.5],
-        ["Face Angle", "°", 0.4],
-        ["Carry", "m", 118.2],
-      ],
-    },
-    {
-      id: "m4",
-      date: "01.10.2026",
-      who: "Magnus Berntsen",
-      club: "5-jern",
-      shots: 50,
-      video: 1,
-      bay: "Studio 1",
-      rows: [
-        ["Club Speed", "mph", 96.1],
-        ["Ball Speed", "mph", 135.2],
-        ["Smash Factor", "", 1.41],
-        ["Launch Angle", "°", 14.8],
-        ["Spin Rate", "rpm", 5180],
-        ["Club Path", "°", 3.2],
-        ["Face Angle", "°", 1.1],
-        ["Carry", "m", 182.7],
-      ],
-    },
-  ],
-  videos: [
-    {
-      id: "v1",
-      s: "m1",
-      title: "Face-on · full sving 7-jern",
-      by: "Anders Kristiansen",
-      at: "04.10.2026 14:15",
-      len: "0:08",
-      note: "P6 hofterotasjon og senkning av skaftplan.",
-    },
-    {
-      id: "v2",
-      s: "m1",
-      title: "Down-the-line · takeaway og topp",
-      by: "Anders Kristiansen",
-      at: "04.10.2026 14:18",
-      len: "0:06",
-      note: "Sjekk posisjon i P3 og håndleddsvinkel.",
-    },
-    {
-      id: "v3",
-      s: "m2",
-      title: "Driver · angrepsvinkel og launch",
-      by: "Anders Kristiansen",
-      at: "03.10.2026 16:30",
-      len: "0:07",
-      note: "Oppvinkling +2.8 grader i treff.",
-    },
-    {
-      id: "v4",
-      s: "m4",
-      title: "5-jern · impact og release",
-      by: "Anders Kristiansen",
-      at: "01.10.2026 11:20",
-      len: "0:09",
-      note: "God kompresjon og balansert finish.",
-    },
-  ],
-};
+const TOM_DATA: AG18Data = { tmSessions: [], videos: [] };
 
 export function AG18TrackManVideo({
   tilstand = "data",
-  data = STANDARD_DATA,
+  data = TOM_DATA,
   startFane = "okter",
   startOktId,
-  onDelVideo,
 }: AG18TrackManVideoProps) {
   const [fane, setFane] = useState(startFane);
   const [valgtOktId, setValgtOktId] = useState<string | null>(startOktId ?? data.tmSessions[0]?.id ?? null);
   const [valgtVideoId, setValgtVideoId] = useState<string | null>(null);
-  const [tarOpp, setTarOpp] = useState(false);
-  const [varselTekst, setVarselTekst] = useState<{ tittel: string; meta?: string } | null>(null);
 
   const erTom = tilstand === "tom";
 
@@ -270,7 +152,7 @@ export function AG18TrackManVideo({
       key: "club",
       label: "Kølle",
       mono: true,
-      render: (r) => r.club,
+      render: (r) => r.club ?? "—",
     },
     {
       key: "shots",
@@ -303,11 +185,11 @@ export function AG18TrackManVideo({
       >
         <span className="pa-a18-videokort-preview">
           <Ikon icon={Play} size={22} />
-          <span className="pa-a18-videokort-tid">{v.len}</span>
+          <span className="pa-a18-videokort-tid">{v.len ?? "—"}</span>
         </span>
         <span className="pa-a18-videokort-info">
           <span style={{ fontWeight: 600, fontSize: 13, lineHeight: 1.3 }}>{v.title}</span>
-          <Meta>{v.by.toUpperCase()} · {v.at}</Meta>
+          <Meta>{v.player.toUpperCase()} · {v.at}</Meta>
         </span>
       </button>
     );
@@ -315,14 +197,12 @@ export function AG18TrackManVideo({
 
   /* Videospiller rendering */
   function renderVideospiller(v: VideoOpptak) {
-    const tilhorendeOkt = data.tmSessions.find((s) => s.id === v.s);
-
     return (
       <Kort>
         <div className="pa-a18-spiller-ramme">
           <span style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
             <Ikon icon={PlayCircle} size={44} />
-            <Meta>VIDEO · {v.len}</Meta>
+            <Meta>VIDEO · {v.len ?? "—"}</Meta>
           </span>
         </div>
 
@@ -330,34 +210,20 @@ export function AG18TrackManVideo({
 
         <Nokkelverdi
           items={[
-            ["Spiller", tilhorendeOkt ? tilhorendeOkt.who : "Ukjent utøver"],
-            ["Tatt opp", `${v.at} · ${v.by}`],
-            ["Merknad", v.note || "Ingen merknader"],
+            ["Spiller", v.player],
+            ["Lagt opp", `${v.at} · ${v.by ?? "—"}`],
+            ["Merknad", v.note || "—"],
           ]}
         />
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minHeight: 44, alignItems: "center" }}>
-          <Knapp
-            size="sm"
-            variant="secondary"
-            icon={PenLine}
-            onClick={() => setVarselTekst({ tittel: "Tegneverktøy åpnet", meta: "LINJER OG VINKLER LAGRES PÅ VIDEOEN" })}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
+          <Knapp size="sm" variant="secondary" icon={PenLine} disabled style={{ minHeight: 44, minWidth: 44 }}>
             Tegn på video
           </Knapp>
-          <Knapp
-            size="sm"
-            variant="ghost"
-            icon={Send}
-            onClick={() => {
-              onDelVideo?.(v.id);
-              setVarselTekst({ tittel: "Utkast til spilleren", meta: "IKKE SENDT FØR DU TRYKKER SEND" });
-            }}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
+          <Knapp size="sm" variant="ghost" icon={Send} disabled style={{ minHeight: 44, minWidth: 44 }}>
             Del med spiller
           </Knapp>
+          <Meta>IKKE KOBLET ENNÅ</Meta>
         </div>
       </Kort>
     );
@@ -365,13 +231,13 @@ export function AG18TrackManVideo({
 
   /* Detaljpanel for TrackMan-økt */
   function renderOktDetaljPanel(okt: TrackManOkt) {
-    const kildeLabel = `TRACKMAN · ${okt.bay.toUpperCase()} · ${okt.date}`;
+    const kildeLabel = `TRACKMAN · ${(okt.bay ?? "MILJØ IKKE REGISTRERT").toUpperCase()} · ${okt.date}`;
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Kort>
           <KortHode
-            tittel={`${okt.who} · ${okt.club} · ${okt.shots} slag`}
+            tittel={`${okt.who} · ${okt.club ?? "—"} · ${okt.shots} slag`}
             aside={kildeLabel}
           />
 
@@ -421,55 +287,19 @@ export function AG18TrackManVideo({
   function renderOpptaksfane() {
     return (
       <Kort style={{ maxWidth: 720 }}>
-        <KortHode tittel="Nytt opptak" aside="STUDIO 1 · KAMERA 1 OG 2" />
+        <KortHode tittel="Nytt opptak" aside="STUDIO · KAMERA 1 OG 2" />
 
-        <div className="pa-a18-opptak-kameraer">
-          <div className={`pa-a18-kamera-boks ${tarOpp ? "pa-a18-kamera-boks--aktiv" : ""}`}>
-            <span style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-              <Ikon icon={Video} size={28} />
-              <Meta>FACE-ON · KAMERA 1</Meta>
-            </span>
-          </div>
-          <div className={`pa-a18-kamera-boks ${tarOpp ? "pa-a18-kamera-boks--aktiv" : ""}`}>
-            <span style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-              <Ikon icon={Video} size={28} />
-              <Meta>DOWN-THE-LINE · KAMERA 2</Meta>
-            </span>
-          </div>
-        </div>
-
-        <Nokkelverdi
-          items={[
-            ["Spiller", "Tobias Lindvik"],
-            ["Samtykke video", "Ja", "HANNE LINDVIK · BANKID · 26.09.2026"],
-            ["Knyttes til", "TrackMan-økt 04.10 · Studio 1"],
-          ]}
+        <TomTilstand
+          icon={Video}
+          title="Opptak fra studio er ikke koblet ennå"
+          text="Opptak og samtykkesjekk kobles til kameraene senere. Videoer som er lagt opp fra før, ligger under Video."
         />
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", minHeight: 44 }}>
-          <Knapp
-            variant={tarOpp ? "signal" : "primary"}
-            icon={tarOpp ? Square : Circle}
-            onClick={() => {
-              const nyStatus = !tarOpp;
-              setTarOpp(nyStatus);
-              setVarselTekst(
-                nyStatus
-                  ? { tittel: "Opptak startet", meta: "TRYKK IGJEN FOR Å STOPPE" }
-                  : { tittel: "Opptaket er lagret", meta: "KNYTTET TIL TRACKMAN-ØKTA" }
-              );
-            }}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
-            {tarOpp ? "Stopp og lagre" : "Start opptak"}
+          <Knapp variant="primary" icon={Circle} disabled style={{ minHeight: 44, minWidth: 44 }}>
+            Start opptak
           </Knapp>
-
-          {tarOpp && (
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", color: "var(--signal)" }}>
-              <Ikon icon={Radio} size={16} />
-              <Meta style={{ color: "inherit", fontWeight: 600 }}>TAR OPP · 0:04</Meta>
-            </span>
-          )}
+          <Meta>IKKE KOBLET ENNÅ</Meta>
         </div>
 
         <Meta>VIDEO AV SPILLERE UNDER 18 KREVER SAMTYKKE FRA FORELDER</Meta>
@@ -482,7 +312,7 @@ export function AG18TrackManVideo({
       <Sidehode
         kicker="TrackMan og video"
         title="TrackMan og video"
-        sub="Økter på tvers av spillere, én økt i detalj og video. Parametere står slik TrackMan viser dem."
+        sub="Økter på tvers av spillere. Verdiene er snitt av slagene i økta for kølla med flest slag."
       />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
@@ -500,21 +330,15 @@ export function AG18TrackManVideo({
         )}
       </div>
 
-      {varselTekst && (
-        <InlineVarsel tone="ok" tittel={varselTekst.tittel}>
-          {varselTekst.meta}
-        </InlineVarsel>
-      )}
-
       {/* Tilstander */}
       {tilstand === "laster" && <LasterTilstand text="Henter TrackMan-økter …" />}
 
       {tilstand === "feil" && (
         <FeilTilstand
           icon={Crosshair}
-          title="TrackMan svarer ikke"
-          text="Øktene er lagret hos TrackMan og hentes når koblingen er tilbake."
-          code="TRACKMAN API · 504"
+          title="TrackMan-øktene kunne ikke hentes"
+          text="Prøv igjen om litt."
+          code="TRACKMAN"
           retry={<Knapp variant="secondary" onClick={() => window.location.reload()}>Prøv igjen</Knapp>}
         />
       )}
@@ -522,8 +346,8 @@ export function AG18TrackManVideo({
       {tilstand === "tom" && fane !== "opptak" && (
         <TomTilstand
           icon={Crosshair}
-          title="Ingen TrackMan-økter denne uka"
-          text="Økter fra Studio 1 og 2 hentes automatisk. Start et opptak for å knytte video til en økt."
+          title="Ingen TrackMan-økter"
+          text="Økter vises her når de er importert."
           actions={
             <Knapp variant="primary" icon={Video} onClick={() => setFane("opptak")} style={{ minHeight: 44, minWidth: 44 }}>
               Nytt opptak
@@ -538,7 +362,7 @@ export function AG18TrackManVideo({
             <div className="pa-a18-layout">
               <div>
                 <Tabell
-                  caption="TrackMan-økter på tvers av spillere · siste 7 dager"
+                  caption="TrackMan-økter på tvers av spillere · siste 20"
                   columns={kolonner}
                   rows={okter}
                   selected={valgtOktId}
@@ -591,7 +415,7 @@ export function AG18TrackManVideo({
             open={!!aktivOkt}
             onClose={() => setValgtOktId(null)}
             kicker="TrackMan-økt"
-            tittel={`${aktivOkt.who} · ${aktivOkt.club}`}
+            tittel={`${aktivOkt.who} · ${aktivOkt.club ?? "—"}`}
           >
             {renderOktDetaljPanel(aktivOkt)}
           </Ark>

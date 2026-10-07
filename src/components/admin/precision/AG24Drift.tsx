@@ -13,7 +13,8 @@
  * 4. hjelp: Hjelp og vanlige spørsmål (FAQ med utfellbare detaljer)
  */
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   Download,
@@ -50,7 +51,7 @@ export type GdprForesporsel = {
   at: string;
   due: string;
   scope: string;
-  st: "Venter" | "Slettet";
+  st: "Venter" | "Godkjent" | "Slettet";
   doneAt?: string;
 };
 
@@ -75,8 +76,9 @@ export type AG24Data = {
   gdpr: GdprForesporsel[];
   audit: AuditHendelse[];
   errors: FeilloggRad[];
-  faq: [string, string][];
 };
+
+type Handlingsresultat = { ok: true } | { ok: false; feil: string };
 
 export type AG24Tilstand = "data" | "tom" | "laster" | "feil";
 
@@ -84,70 +86,40 @@ export type AG24DriftProps = {
   tilstand?: AG24Tilstand;
   data?: AG24Data;
   startFane?: string;
-  onSlettData?: (id: string) => void;
+  /** Steg 1: godkjenn forespørselen (server action). */
+  onGodkjenn?: (id: string) => Promise<Handlingsresultat>;
+  /** Steg 2: utfør anonymiseringen (server action). */
+  onSlettData?: (id: string) => Promise<Handlingsresultat>;
 };
 
-const STANDARD_DATA: AG24Data = {
-  gdpr: [
-    {
-      id: "g1",
-      who: "Mia Fjell",
-      role: "Spiller · født 2012",
-      by: "Forelder · Siv Fjell",
-      at: "22.09.2026",
-      due: "22.10.2026",
-      scope: "All spillerdata, video og testresultater",
-      st: "Venter",
-    },
-    {
-      id: "g2",
-      who: "Tidligere spiller",
-      role: "Spiller · født 2006",
-      by: "Spilleren selv",
-      at: "02.09.2026",
-      due: "02.10.2026",
-      scope: "Profil og meldinger. Faktura beholdes i 5 år (bokføringsloven).",
-      st: "Venter",
-    },
+const TOM_DATA: AG24Data = { gdpr: [], audit: [], errors: [] };
+
+const FAQ: [string, string][] = [
+  [
+    "Hvordan godkjenner jeg et utkast fra Jarvis?",
+    "Åpne Kø, les utkastet og trykk Godkjenn. Ingenting sendes før du godkjenner.",
   ],
-  audit: [
-    { id: "a1", t: "26.09 14:06", who: "Anders Kristiansen", what: "Lagret notat · øktark O13", obj: "Tobias Lindvik" },
-    { id: "a2", t: "26.09 13:48", who: "Belastningsagent", what: "Laget utkast · hviledag 01.10", obj: "Tobias Lindvik" },
-    { id: "a3", t: "26.09 11:42", who: "Hanne Lindvik", what: "Signerte samtykke · videoanalyse", obj: "Tobias Lindvik" },
-    { id: "a4", t: "26.09 08:40", who: "Anders Kristiansen", what: "Godkjente ny tid · privattime", obj: "Jonas Lie" },
-    { id: "a5", t: "25.09 20:05", who: "Anders Kristiansen", what: "Endret tjeneste · Privattime 30 min", obj: "ServiceType pt30" },
+  [
+    "Hvordan slettes en spiller?",
+    "Via sletteforespørsel her i Drift: godkjenn forespørselen først, deretter slett data. Faktura beholdes i 5 år etter bokføringsloven.",
   ],
-  errors: [
-    { id: "e1", t: "26.09 06:00", lvl: "Feil", where: "Rapportagent", msg: "Mal mangler felt {{plan.timer}} for 3 spillere", n: 3 },
-    { id: "e2", t: "25.09 16:52", lvl: "Advarsel", where: "TrackMan API", msg: "Tidsavbrudd etter 30 s · hentet på nytt 16:53", n: 1 },
-    { id: "e3", t: "24.09 23:00", lvl: "Advarsel", where: "Tripletex-eksport", msg: "Avdeling GFGK mangler i eksporten", n: 1 },
+  [
+    "Hvem ser økonomitallene?",
+    "Bare head coach. Tallene leses fra Tripletex-eksporten.",
   ],
-  faq: [
-    [
-      "Hvordan godkjenner jeg et utkast fra Jarvis?",
-      "Åpne Kø eller Caddie, les utkastet og trykk Godkjenn. Ingenting sendes før du godkjenner.",
-    ],
-    [
-      "Hvordan slettes en spiller?",
-      "Via sletteforespørsel her i Drift. Faktura beholdes i 5 år etter bokføringsloven.",
-    ],
-    [
-      "Hvem ser økonomitallene?",
-      "Bare admin. Tallene leses fra Tripletex-eksporten.",
-    ],
-  ],
-};
+];
 
 export function AG24Drift({
   tilstand = "data",
-  data = STANDARD_DATA,
+  data = TOM_DATA,
   startFane = "gdpr",
+  onGodkjenn,
   onSlettData,
 }: AG24DriftProps) {
   const [aktivFane, setAktivFane] = useState(startFane);
-  const [foresporsler, setForesporsler] = useState<GdprForesporsel[]>(
-    tilstand === "tom" ? [] : data.gdpr
-  );
+  const router = useRouter();
+  const [venter, startTransition] = useTransition();
+  const foresporsler = tilstand === "tom" ? [] : data.gdpr;
   const [sletteKandidat, setSletteKandidat] = useState<GdprForesporsel | null>(
     null
   );
@@ -179,7 +151,7 @@ export function AG24Drift({
           icon={AlertTriangle}
           title="Driftsdata kunne ikke hentes"
           text="Ingen data er slettet eller endret."
-          code="FEIL 503 · DRIFT"
+          code="DRIFT"
         />
       </div>
     );
@@ -187,26 +159,32 @@ export function AG24Drift({
 
   const ubehandledeGdpr = foresporsler.filter((g) => g.st !== "Slettet").length;
 
+  const kjor = (
+    handling: ((id: string) => Promise<Handlingsresultat>) | undefined,
+    id: string,
+    suksess: string,
+    etterpaa?: () => void,
+  ) => {
+    if (!handling) return;
+    startTransition(async () => {
+      const r = await handling(id);
+      if (r.ok) {
+        setStatusMelding(suksess);
+        etterpaa?.();
+        router.refresh();
+      } else {
+        setStatusMelding(`Ikke utført: ${r.feil}`);
+      }
+    });
+  };
+
   const handleSlett = () => {
     if (!sletteKandidat) return;
     const g = sletteKandidat;
-    setForesporsler((prev) =>
-      prev.map((x) =>
-        x.id === g.id
-          ? {
-              ...x,
-              st: "Slettet",
-              doneAt: "26.09.2026 14:00",
-            }
-          : x
-      )
-    );
-    setStatusMelding(
-      `Dataene er slettet: ${g.who} · KVITTERING SOM UTKAST TIL ${g.by.toUpperCase()}`
-    );
-    onSlettData?.(g.id);
-    setSletteKandidat(null);
-    setBekreftTekst("");
+    kjor(onSlettData, g.id, `Dataene er slettet: ${g.who}`, () => {
+      setSletteKandidat(null);
+      setBekreftTekst("");
+    });
   };
 
   const faner = [
@@ -329,27 +307,34 @@ export function AG24Drift({
                       ["Bedt om av", g.by, undefined],
                       ["Mottatt", g.at, undefined],
                       ["Frist", g.due, "30 DAGER · GDPR ART. 17"],
-                      ["Omfang", g.scope, undefined],
+                      ["Begrunnelse", g.scope, undefined],
                       ...(g.doneAt ? [["Slettet", g.doneAt, undefined] as const] : []),
                     ]}
                   />
 
-                  {g.st !== "Slettet" && (
+                  {g.st === "Venter" && (
                     <div className="pa-a24__actions">
                       <Knapp
                         variant="secondary"
-                        icon={Download}
-                        onClick={() =>
-                          setStatusMelding(
-                            "Innsynskopi laget · ZIP · SENDES SOM UTKAST"
-                          )
-                        }
+                        icon={ShieldCheck}
+                        disabled={!onGodkjenn || venter}
+                        onClick={() => kjor(onGodkjenn, g.id, `Forespørselen er godkjent: ${g.who}`)}
                       >
-                        Lag innsynskopi først
+                        Godkjenn forespørselen
                       </Knapp>
+                      <Knapp variant="ghost" icon={Download} disabled>
+                        Lag innsynskopi
+                      </Knapp>
+                      <Meta>INNSYNSKOPI ER IKKE KOBLET ENNÅ</Meta>
+                    </div>
+                  )}
+
+                  {g.st === "Godkjent" && (
+                    <div className="pa-a24__actions">
                       <Knapp
                         variant="ghost"
                         icon={Trash2}
+                        disabled={!onSlettData || venter}
                         onClick={() => {
                           setSletteKandidat(g);
                           setBekreftTekst("");
@@ -410,15 +395,12 @@ export function AG24Drift({
       {aktivFane === "hjelp" && (
         <div className="pa-a24__card" data-testid="ag24-fane-hjelp">
           <Kort>
-            {data.faq.map(([sporsmaal, svar], i) => (
+            {FAQ.map(([sporsmaal, svar], i) => (
               <details key={i} className="pa-a24__faq-details">
                 <summary className="pa-a24__faq-summary">{sporsmaal}</summary>
                 <p className="pa-a24__faq-text">{svar}</p>
               </details>
             ))}
-            <div style={{ paddingTop: 8 }}>
-              <Meta>KONTAKT · DRIFT@DEMO.NO</Meta>
-            </div>
           </Kort>
         </div>
       )}
@@ -444,7 +426,7 @@ export function AG24Drift({
             <Knapp
               variant="signal"
               fullWidth
-              disabled={bekreftTekst.trim().toUpperCase() !== "SLETT"}
+              disabled={bekreftTekst.trim().toUpperCase() !== "SLETT" || venter}
               onClick={handleSlett}
             >
               Slett permanent
@@ -472,8 +454,7 @@ export function AG24Drift({
                 color: "var(--text-primary)",
               }}
             >
-              {sletteKandidat.scope} for {sletteKandidat.who} slettes permanent.
-              Dette kan ikke angres.
+              Kontoen til {sletteKandidat.who} anonymiseres permanent. Relasjoner og treningsdata beholdes uten personopplysninger. Dette kan ikke angres.
             </p>
 
             <Felt label="Skriv SLETT for å bekrefte">

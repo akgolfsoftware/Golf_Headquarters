@@ -22,7 +22,7 @@ export default async function TalentRadarPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG22InnsiktTalent startFane={sp.fane ?? "radar"} />
+      <AG22InnsiktTalent tilstand="tom" startFane={sp.fane ?? "radar"} />
     </AgencyOSSkall>
   );
 }
