@@ -16,6 +16,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { calculateAge } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
+import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { lastLiveOktData } from "@/lib/agencyos/live-okt-data";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG12Oktark, type OktarkData, type OktarkStatus } from "@/components/admin/precision/AG12Oktark";
@@ -38,8 +39,9 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const booking = await prisma.booking.findUnique({
-    where: { id },
+  // Coach-scope: head coach (ADMIN) ser alle, assistant coach bare egne bookinger.
+  const booking = await prisma.booking.findFirst({
+    where: { id, ...coachBookingScope(coach) },
     include: {
       user: {
         select: { id: true, name: true, hcp: true, dateOfBirth: true, wagrSnapshot: { select: { rank: true } } },

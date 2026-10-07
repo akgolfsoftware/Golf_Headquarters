@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
+import { editableGroupWhere } from "@/lib/workbench/group-scope";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
@@ -15,7 +16,7 @@ export default async function SkoledataPage({ params }: { params: Promise<{ id: 
   const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
-  const gruppe = await prisma.group.findUnique({ where: { id }, select: { id: true } });
+  const gruppe = await prisma.group.findFirst({ where: { id, ...editableGroupWhere(user) }, select: { id: true } });
   if (!gruppe) notFound();
 
   return (

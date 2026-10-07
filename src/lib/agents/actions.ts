@@ -14,7 +14,7 @@ async function assertPlanActionAccess(
   action: { userId: string; coachId: string | null },
 ): Promise<void> {
   const harSpillerTilgang =
-    user.role === "COACH" ? await harCoachTilgangTilSpiller(user, action.userId) : false;
+    user.role === "COACH" || user.role === "ADMIN" ? await harCoachTilgangTilSpiller(user, action.userId) : false;
   if (
     !kanBehandlePlanAction({
       viewerId: user.id,

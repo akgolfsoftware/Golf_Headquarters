@@ -7,6 +7,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
+import { assertCoachTilgangTilSpiller, coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
 import { logError } from "@/lib/error-tracking";
@@ -86,6 +87,7 @@ export type ResultInput = {
 
 export async function addResult(tournamentId: string, input: ResultInput) {
   const user = await requireCoachActionUser();
+  await assertCoachTilgangTilSpiller(user, input.userId);
   await prisma.tournamentResult.upsert({
     where: {
       tournamentId_userId: { tournamentId, userId: input.userId },
@@ -114,6 +116,9 @@ export async function addResult(tournamentId: string, input: ResultInput) {
 
 export async function deleteResult(tournamentId: string, resultId: string) {
   const user = await requireCoachActionUser();
+  const resultat = await prisma.tournamentResult.findUnique({ where: { id: resultId }, select: { userId: true } });
+  if (!resultat) throw new Error("not_found");
+  await assertCoachTilgangTilSpiller(user, resultat.userId);
   await prisma.tournamentResult.delete({ where: { id: resultId } });
   await audit({
     actorId: user.id,
@@ -156,6 +161,8 @@ export async function meldPaSpillere(
 
   for (const p of players) {
     if (!p.userId) continue;
+    // Bare spillere i coachens stall kan meldes på (assistant coach).
+    await assertCoachTilgangTilSpiller(coach, p.userId);
     const priority = valgPrioritet(p.priority);
 
     // Finn evt. SeasonPlan for året
@@ -208,8 +215,10 @@ export async function fjernPamelding(entryId: string) {
   const coach = await requireCoachActionUser();
   const entry = await prisma.tournamentEntry.findUnique({
     where: { id: entryId },
-    select: { tournamentId: true },
+    select: { tournamentId: true, userId: true },
   });
+  if (!entry) throw new Error("not_found");
+  await assertCoachTilgangTilSpiller(coach, entry.userId);
   await prisma.tournamentEntry.delete({ where: { id: entryId } });
   await audit({
     actorId: coach.id,
@@ -226,6 +235,9 @@ export async function fjernPamelding(entryId: string) {
 export async function oppdaterPrioritet(entryId: string, priority: string) {
   const coach = await requireCoachActionUser();
   const valgt = valgPrioritet(priority);
+  const eksisterende = await prisma.tournamentEntry.findUnique({ where: { id: entryId }, select: { userId: true } });
+  if (!eksisterende) throw new Error("not_found");
+  await assertCoachTilgangTilSpiller(coach, eksisterende.userId);
   const entry = await prisma.tournamentEntry.update({
     where: { id: entryId },
     data: { priority: valgt },
@@ -560,7 +572,7 @@ export async function sendFellesmelding(
   // Sikkerhet: send kun til faktiske deltakere i denne turneringen (ignorer
   // id-er som ikke er påmeldt). Dedupliser på userId.
   const entries = await prisma.tournamentEntry.findMany({
-    where: { tournamentId: turneringId, userId: { in: spillerIds } },
+    where: { tournamentId: turneringId, userId: { in: spillerIds }, user: coachScopedPlayerWhere(coach) },
     select: { userId: true, user: { select: { name: true } } },
   });
   const mottakere = Array.from(

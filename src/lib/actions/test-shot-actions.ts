@@ -9,6 +9,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import {
   CreateTestShotInputSchema,
   TestShotSchema,
@@ -20,10 +21,25 @@ import { publicAction } from "@/lib/auth/action-guards";
 publicAction(); // Markør for gate-sjekk
 
 /**
+ * Tilgang til et testresultat: eieren selv, eller coach/admin med tilgang til
+ * spilleren (assertCanViewPlayerData). Uten dette kunne hvem som helst lese,
+ * skrive og slette slag via en direkte POST.
+ */
+async function kreverTestResultatTilgang(testResultId: string): Promise<void> {
+  const resultat = await prisma.testResult.findUnique({
+    where: { id: testResultId },
+    select: { userId: true },
+  });
+  if (!resultat) throw new Error("Testresultat finnes ikke");
+  await assertCanViewPlayerData(resultat.userId);
+}
+
+/**
  * Opprett ett testslag.
  */
 export async function createTestShot(input: unknown) {
   const validated = CreateTestShotInputSchema.parse(input);
+  await kreverTestResultatTilgang(validated.testResultId);
 
   const shot = await prisma.testShot.create({
     data: {
@@ -53,6 +69,7 @@ export async function createTestShotsTransaction(
 
   // Valider alle før vi lagrer noen
   const validated = shots.map((s) => CreateTestShotInputSchema.parse(s));
+  for (const id of new Set(validated.map((s) => s.testResultId))) await kreverTestResultatTilgang(id);
 
   const result = await prisma.$transaction(
     validated.map((s) =>
@@ -80,6 +97,7 @@ export async function createTestShotsTransaction(
 export async function getTestShots(
   testResultId: string
 ): Promise<TestShotQueryResult> {
+  await kreverTestResultatTilgang(testResultId);
   const rader = await prisma.testShot.findMany({
     where: { testResultId },
     orderBy: { shotNumber: "asc" },
@@ -102,6 +120,7 @@ export async function getTestShots(
  * Slett alle slag for en TestResult (f.eks. ved feilsøking eller omregistrering).
  */
 export async function deleteTestShotsForResult(testResultId: string) {
+  await kreverTestResultatTilgang(testResultId);
   const result = await prisma.testShot.deleteMany({
     where: { testResultId },
   });
@@ -123,6 +142,7 @@ export async function deleteTestShotsForResult(testResultId: string) {
  * Idempotent: hvis slag allerede finnes for denne TestResult, gjøres ingenting.
  */
 export async function migrateDetailsJsonToTestShots(testResultId: string) {
+  await kreverTestResultatTilgang(testResultId);
   // Sjekk om slag allerede finnes
   const existing = await prisma.testShot.count({
     where: { testResultId },

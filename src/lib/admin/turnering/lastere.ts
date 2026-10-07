@@ -163,6 +163,9 @@ export type TurneringAlleRad = {
   anlegg: string | null;
   paameldte: number;
   kilde: string | null;
+  /** Ekte koordinater fra turneringen, ellers null. */
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type TurneringAlleData = {
@@ -203,6 +206,8 @@ export async function lastAlleTurneringer(params: { sok?: string; side?: number 
         location: true,
         sourceOrigin: true,
         tour: true,
+        latitude: true,
+        longitude: true,
         course: { select: { name: true } },
       },
     }),
@@ -231,6 +236,8 @@ export async function lastAlleTurneringer(params: { sok?: string; side?: number 
     anlegg: t.course?.name ?? t.location ?? null,
     paameldte: paameldteMap.get(t.id) ?? 0,
     kilde: t.sourceOrigin ?? t.tour ?? null,
+    latitude: t.latitude,
+    longitude: t.longitude,
   }));
 
   return { rader, totalt, side, sideStorrelse: ALLE_SIDE_STORRELSE, sok };

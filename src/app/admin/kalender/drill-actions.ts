@@ -7,6 +7,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 const Schema = z.object({
@@ -26,7 +27,7 @@ export type KalenderDrillRad = {
 export async function hentKalenderDrills(
   sessionId: string,
 ): Promise<{ ok: true; title: string; drills: KalenderDrillRad[] } | { ok: false }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const parsed = Schema.safeParse({ sessionId });
   if (!parsed.success) return { ok: false };
 
@@ -35,6 +36,8 @@ export async function hentKalenderDrills(
     select: {
       id: true,
       title: true,
+      studentId: true,
+      coachId: true,
       drills: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -55,6 +58,12 @@ export async function hentKalenderDrills(
     },
   });
   if (!session) return { ok: false };
+  // Coach-scope: egen økt, eller spilleren er i coachens stall (head coach ser alt).
+  const kanSe =
+    user.role === "ADMIN" ||
+    session.coachId === user.id ||
+    (session.studentId != null && (await harCoachTilgangTilSpiller(user, session.studentId)));
+  if (!kanSe) return { ok: false };
 
   return {
     ok: true,

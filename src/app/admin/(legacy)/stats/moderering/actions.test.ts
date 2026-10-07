@@ -38,7 +38,7 @@ let notifyKall: Array<{ userId: string; body: string }> = [];
 let anonymiserKall: string[] = [];
 
 function nullstill() {
-  bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
+  bruker = { id: "admin-a", role: "ADMIN", name: "Head Coach" };
   caseUpdates = [];
   auditWrites = [];
   notifyKall = [];
@@ -48,9 +48,9 @@ function nullstill() {
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("@/lib/auth/action-guards", {
   namedExports: {
-    requireCoachActionUser: async () => {
+    requireAdminActionUser: async () => {
       if (!bruker) throw new Error("unauthenticated");
-      if (bruker.role !== "COACH" && bruker.role !== "ADMIN") throw new Error("forbidden");
+      if (bruker.role !== "ADMIN") throw new Error("forbidden");
       return bruker;
     },
   },
@@ -218,4 +218,13 @@ test("utforGdprSletting anonymiserer og setter EXECUTED for gyldig godkjent GDPR
   assert.deepEqual(anonymiserKall, ["spiller-a"]);
   assert.equal(caseUpdates[0]?.data.status, "EXECUTED");
   assert.equal(auditWrites.at(-1)?.action, "moderation.gdpr_executed");
+});
+
+test("moderering er bare for head coach: assistant coach avvises på alle tre handlinger", async () => {
+  bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
+  const a = await import("./actions");
+  await assert.rejects(() => a.godkjennSak("sak-open-gdpr"), /forbidden/);
+  await assert.rejects(() => a.avvisSak("sak-open-gdpr", "begrunnelse"), /forbidden/);
+  await assert.rejects(() => a.utforGdprSletting("sak-approved-gdpr"), /forbidden/);
+  assert.equal(caseUpdates.length, 0);
 });

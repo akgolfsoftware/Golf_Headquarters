@@ -27,6 +27,7 @@ function nullstill() {
   bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
   coachHarEditGroupPlans = true;
   entryCreates = [];
+  kanRedigereGruppe = true;
 }
 
 function formData(felter: Record<string, string>): FormData {
@@ -52,6 +53,10 @@ mock.module("@/lib/auth/effective-capabilities", {
       if (!coachHarEditGroupPlans) throw new Error("forbidden");
     },
   },
+});
+let kanRedigereGruppe = true;
+mock.module("@/lib/workbench/group-scope", {
+  namedExports: { canEditGroup: async () => kanRedigereGruppe },
 });
 const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
@@ -153,4 +158,12 @@ test("importerSkoledata importerer gyldige rader og revaliderer riktige stier", 
   assert.equal(rad.category, "EKSAMEN");
   assert.equal(rad.note, "Rom 204");
   assert.equal(rad.schoolYear, "2026/2027");
+});
+
+test("importerSkoledata avviser en gruppe coachen ikke kan redigere", async () => {
+  kanRedigereGruppe = false;
+  const { importerSkoledata } = await import("./actions");
+  const r = await importerSkoledata("gruppe-x", formData({ schoolYear: "2026/2027", data: "2026-09-01|VG1|TIME|Test|" }));
+  assert.equal(r.ok, false);
+  assert.equal(entryCreates.length, 0);
 });

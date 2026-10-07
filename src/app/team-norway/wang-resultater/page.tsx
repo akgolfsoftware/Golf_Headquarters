@@ -89,7 +89,7 @@ export default async function WangTestresultaterForTnPage({
           {skoler.map((skole) => (
             <span
               key={skole.groupId}
-              style={{ padding: "8px 12px", border: `1px solid ${TN.borderSubtle}`, borderRadius: 999, background: TN.white, color: TN.navy800, fontSize: 13, fontWeight: TN.weight.semibold }}
+              style={{ padding: "8px 12px", border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.full, background: TN.white, color: TN.navy800, fontSize: 13, fontWeight: TN.weight.semibold }}
             >
               {skole.schoolName} · {skole.players.length} spillere
             </span>

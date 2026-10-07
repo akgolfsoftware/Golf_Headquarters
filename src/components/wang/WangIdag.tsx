@@ -1,5 +1,6 @@
 "use client";
 
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from "react";
 import {
   WANG_ELEVER,
@@ -7,9 +8,6 @@ import {
   WangElev,
   WangOkt,
 } from "./wang-data";
-import {
-  CheckCircle2 as CheckCircle,
-} from "lucide-react";
 
 interface WangIdagProps {
   valgtFane?: string;
@@ -26,10 +24,9 @@ export function WangIdag({
 }: WangIdagProps) {
   const [fane, setFane] = useState(aktivFane || valgtFane);
   const [okter] = useState<WangOkt[]>(WANG_OKTER);
-  const [oppfolgingElever, setOppfolgingElever] = useState<WangElev[]>(
+  const [oppfolgingElever] = useState<WangElev[]>(
     WANG_ELEVER.filter((e) => e.trengerOppfolging)
   );
-  const [meldtFravaer, setMeldtFravaer] = useState<string | null>(null);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -78,36 +75,6 @@ export function WangIdag({
           </button>
         </div>
       </div>
-
-      {meldtFravaer && (
-        <div
-          style={{
-            backgroundColor: "var(--wang-green-tint, #EEF6F5)",
-            border: "1px solid var(--wang-green)",
-            borderRadius: "4px",
-            padding: "16px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <CheckCircle size={24} color="var(--wang-green)" />
-            <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--wang-blue)" }}>
-              {meldtFravaer}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setMeldtFravaer(null)}
-            className="wg-btn wg-btn-ghost"
-            style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
-          >
-            Lukk
-          </button>
-        </div>
-      )}
 
       {/* 2. Dagsfokus Hero (WG-01) */}
       <section
@@ -235,26 +202,24 @@ export function WangIdag({
                   </p>
                 </div>
 
-                <div style={{ display: "flex", gap: "8px" }}>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
                   <button
                     type="button"
-                    onClick={() => setMeldtFravaer(`Oppfølgingsnotat opprettet for ${elev.navn}. Sendt til kontaktlærer.`)}
+                    disabled
                     className="wg-btn wg-btn-secondary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
+                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
                   >
                     Ta oppfølging
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setOppfolgingElever(oppfolgingElever.filter((e) => e.id !== elev.id));
-                      setMeldtFravaer(`Oppfølging kvittert ut for ${elev.navn}.`);
-                    }}
+                    disabled
                     className="wg-btn wg-btn-primary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
+                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
                   >
                     Løst
                   </button>
+                  <WangIkkeKoblet />
                 </div>
               </div>
             ))}
@@ -333,12 +298,13 @@ export function WangIdag({
                   </span>
                   <button
                     type="button"
-                    onClick={() => setMeldtFravaer(`Åpner øktoversikt for ${okt.dag}.`)}
+                    disabled
                     className="wg-btn wg-btn-secondary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
+                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
                   >
                     Se økt
                   </button>
+                  <WangIkkeKoblet />
                 </div>
               </div>
             ))}
@@ -369,10 +335,10 @@ export function WangIdag({
               Snitt etterlevelse
             </span>
             <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              91 %
+              —
             </p>
             <span style={{ fontSize: "11px", color: "var(--wang-green)", fontWeight: 600 }}>
-              +3 % fra forrige uke
+              Ikke koblet ennå
             </span>
           </div>
 
@@ -381,10 +347,10 @@ export function WangIdag({
               Gjennomsnittlig oppmøte
             </span>
             <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              96 %
+              —
             </p>
             <span style={{ fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              1 fravær meldt denne uken
+              Ikke koblet ennå
             </span>
           </div>
 
@@ -393,10 +359,10 @@ export function WangIdag({
               Totalt treningsvolum
             </span>
             <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              24,5 t
+              —
             </p>
             <span style={{ fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              Snitt 14,2 t per elev
+              Ikke koblet ennå
             </span>
           </div>
 
@@ -405,10 +371,10 @@ export function WangIdag({
               Neste turnering
             </span>
             <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "20px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              Om 6 dager
+              —
             </p>
             <span style={{ fontSize: "11px", color: "var(--wang-pink)", fontWeight: 600 }}>
-              Garmin Norgescup Finale
+              Ikke koblet ennå
             </span>
           </div>
         </div>
