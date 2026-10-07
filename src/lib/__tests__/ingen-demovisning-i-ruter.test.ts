@@ -23,7 +23,6 @@ const DEMOVISNINGER: string[] = [
   "@/components/portal/profil/SpillerProfilPrecisionView",
   "@/components/portal/teknisk/TekniskPlanPrecisionView",
   "@/components/portal/toppidrett",
-  "@/components/team-norway/app/TeamNorwayAppView",
   "@/components/wang/WangRekrutteringView",
   "WangToppidrettPrecisionView",
 ];
