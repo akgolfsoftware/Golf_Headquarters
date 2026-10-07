@@ -49,7 +49,8 @@ Team Norway skal kunne bruke trenerflatene tilnærmet gratis. Spillerlisenser ko
 - `User.profilType = "TALENT"` (TalentHQ-inngangen: `?kilde=talenthq`-registrering eller
   gruppe-invitasjon). Utløper aldri.
 - ÅPENT: testbatteriet (CANON-protokollene), stats-/analyse-lesing, SG-/runderegistrering,
-  DataGolf-sammenligning, talent-flatene, **booking av enkelttimer**, konto/abonnement.
+  talent-flatene, **booking av enkelttimer**, konto/abonnement.
+- DataGolf er ikke med: Data Golf vises bare for coacher (Anders 06.10.2026, `.claude/rules/beslutninger.md` §KODEGJENNOMGANGEN).
 - ALT annet låst med oppgraderingsvei. Håndheves FAIL-CLOSED i `requirePortalUser`
   (`kreverTilgang`); rutekontrakten står i `src/lib/auth/talent-allowlist.ts`.
 - Kjøper spilleren abonnement eller meldes inn i AK-gruppe, vinner FULL automatisk.
