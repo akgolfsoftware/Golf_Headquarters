@@ -10,20 +10,16 @@ import { Client } from "@notionhq/client";
 import { prisma } from "@/lib/prisma";
 
 import { encrypt } from "./crypto";
-import { syncNotionDatabase } from "./sync";
-import { logError } from "@/lib/error-tracking";
-
-// Anders' Tasks-DB i Notion (samme verdier som tidligere session).
-const TASKS_DATABASE_ID = "1781b48bdc1a4f8fbd2c38cb10af6220";
-const TASKS_DATA_SOURCE_ID = "b0f3f0f6-98b3-45f5-a6b9-c0969f8fde69";
 
 /**
  * Hvis NOTION_INTERNAL_TOKEN er satt og det ikke finnes en NotionConnection
- * for ADMIN-brukeren, auto-opprett en + en database-link til Tasks-DB.
+ * for ADMIN-brukeren, auto-opprett en. Ingen database-link opprettes: den gamle
+ * Tasks-DB-en (data source b0f3f0f6-…) var ikke delt med integrasjonen, og
+ * synken feilet hvert femte minutt. Fjernet etter Anders' beslutning 07.10.2026.
  * Idempotent — trygt å kalle på hver request.
  *
  * Returnerer:
- *   "created"  — opprettet ny connection (og fyrte av initial sync)
+ *   "created"  — opprettet ny connection
  *   "exists"   — connection finnes allerede
  *   "skipped"  — ikke ADMIN, eller env-var mangler
  */
@@ -58,7 +54,7 @@ export async function ensureNotionConnection(
     }
   }
 
-  const conn = await prisma.notionConnection.create({
+  await prisma.notionConnection.create({
     data: {
       userId,
       accessTokenEnc: encrypt(token),
@@ -67,38 +63,6 @@ export async function ensureNotionConnection(
       workspaceName,
       workspaceIcon,
     },
-  });
-
-  // Opprett database-link til Tasks-DB.
-  const link = await prisma.notionDatabaseLink.create({
-    data: {
-      connectionId: conn.id,
-      notionDatabaseId: TASKS_DATABASE_ID,
-      notionDataSourceId: TASKS_DATA_SOURCE_ID,
-      navn: "Tasks",
-      type: "OPPGAVER",
-      propTittel: "Tittel",
-      propStatus: "Status",
-      propPrioritet: "Prioritet",
-      propSelskap: "Selskap",
-      propForfaller: "Forfaller",
-      propTildelt: "Eier",
-      propNotater: "Notater",
-      propLenke: "Lenke",
-      propProsjekt: "Prosjekt",
-      syncMode: "AUTO",
-    },
-  });
-
-  // Fire-and-forget initial sync — feiler ikke bootstrap hvis sync feiler.
-  syncNotionDatabase(link.id).catch((error) => {
-    // Ikke logg tokenet eller hele error-payload — kun melding.
-    void logError({
-      context: "notion.bootstrap.initialSync",
-      error,
-      meta: { linkId: link.id },
-      severity: "warn",
-    });
   });
 
   return "created";
