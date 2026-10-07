@@ -1,5 +1,6 @@
 "use client";
 
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from "react";
 import {
   WANG_ELEVER,
@@ -8,9 +9,6 @@ import {
   WangFysiskTest,
   WangTestResultat,
 } from "./wang-data";
-import {
-  CheckCircle2 as CheckCircle,
-} from "lucide-react";
 
 interface WangTesterProps {
   valgtFane?: string;
@@ -20,64 +18,19 @@ interface WangTesterProps {
 }
 
 export function WangTester({
-  valgtFane = "fokus",
+  valgtFane = "fysisk",
   aktivFane,
   onFaneEndret: _onFaneEndret,
   campus: _campus = "Fredrikstad",
 }: WangTesterProps) {
   const [fane, setFane] = useState(aktivFane || valgtFane);
   const [fysiskeTester] = useState<WangFysiskTest[]>(WANG_FYSISKE_TESTER);
-  const [testKo, setTestKo] = useState<WangTestResultat[]>(WANG_TEST_RESULTATER);
-  const [melding, setMelding] = useState<string | null>(null);
+  const testKo: WangTestResultat[] = WANG_TEST_RESULTATER;
 
-  // Ny resultat-registrering
+  // Skjemafelt (ingen lagring er koblet ennå)
   const [valgtElevId, setValgtElevId] = useState(WANG_ELEVER[0]?.id || "");
   const [valgtTestId, setValgtTestId] = useState(WANG_FYSISKE_TESTER[0]?.id || "");
   const [innsendtVerdi, setInnsendtVerdi] = useState("");
-
-  const handterKontroller = (id: string) => {
-    setTestKo(
-      testKo.map((t) =>
-        t.id === id ? { ...t, status: "Kontrollert", notat: "Kontrollert og godkjent av coach." } : t
-      )
-    );
-    setMelding("Resultatet er kontrollert og flyttet til elevens offisielle historikk.");
-  };
-
-  const handterAvvis = (id: string) => {
-    setTestKo(
-      testKo.map((t) =>
-        t.id === id ? { ...t, status: "Avvist", notat: "Avvist: må gjennomføres med godkjent testleder." } : t
-      )
-    );
-    setMelding("Resultatet ble avvist. Eleven har fått beskjed om omprøve.");
-  };
-
-  const handterRegistrerNytt = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!innsendtVerdi) return;
-
-    const elev = WANG_ELEVER.find((x) => x.id === valgtElevId);
-    const test = WANG_FYSISKE_TESTER.find((x) => x.id === valgtTestId);
-
-    const ny: WangTestResultat = {
-      id: `tr-${Date.now()}`,
-      testNavn: test?.navn || "Fysisk test",
-      protokoll: "WANG Fysisk Testprotokoll v2",
-      elevId: valgtElevId,
-      elevNavn: elev?.navn || "Elev",
-      verdi: innsendtVerdi,
-      enhet: test?.enhet || "",
-      dato: "04.10.2026",
-      registrertAv: "Anders Kristiansen",
-      status: "Kontrollert",
-      notat: "Registrert av coach.",
-    };
-
-    setTestKo([ny, ...testKo]);
-    setInnsendtVerdi("");
-    setMelding(`Nytt resultat registrert for ${elev?.navn}: ${innsendtVerdi} ${test?.enhet}.`);
-  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -133,36 +86,6 @@ export function WangTester({
           </button>
         </div>
       </div>
-
-      {melding && (
-        <div
-          style={{
-            backgroundColor: "var(--wang-green-tint, #EEF6F5)",
-            border: "1px solid var(--wang-green)",
-            borderRadius: "4px",
-            padding: "16px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <CheckCircle size={22} color="var(--wang-green)" />
-            <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--wang-blue)" }}>
-              {melding}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setMelding(null)}
-            className="wg-btn wg-btn-ghost"
-            style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
-          >
-            Lukk
-          </button>
-        </div>
-      )}
 
       {/* 2. WG-03: Fysiske tester (5 nasjonale tester) */}
       {(fane === "fysisk" || fane === "oversikt") && (
@@ -316,23 +239,24 @@ export function WangTester({
                 </div>
 
                 {item.status === "Ført" ? (
-                  <div style={{ display: "flex", gap: "8px" }}>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
                     <button
                       type="button"
-                      onClick={() => handterKontroller(item.id)}
+                      disabled
                       className="wg-btn wg-btn-primary"
-                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
+                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
                     >
                       Godkjenn
                     </button>
                     <button
                       type="button"
-                      onClick={() => handterAvvis(item.id)}
+                      disabled
                       className="wg-btn wg-btn-secondary"
-                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px" }}
+                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
                     >
                       Avvis
                     </button>
+                    <WangIkkeKoblet />
                   </div>
                 ) : (
                   <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)", fontWeight: 500 }}>
@@ -363,7 +287,7 @@ export function WangTester({
             Registrer nytt testresultat
           </h2>
 
-          <form onSubmit={handterRegistrerNytt} style={{ display: "grid", gap: "16px", maxWidth: "600px" }}>
+          <form onSubmit={(e) => e.preventDefault()} style={{ display: "grid", gap: "16px", maxWidth: "600px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
               <div className="wg-lbl">
                 <span>Velg elev</span>
@@ -408,9 +332,17 @@ export function WangTester({
               />
             </div>
 
-            <button type="submit" className="wg-btn wg-btn-primary" style={{ width: "fit-content" }}>
-              Lagre og godkjenn resultat
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+              <button
+                type="submit"
+                disabled
+                className="wg-btn wg-btn-primary"
+                style={{ width: "fit-content", ...IKKE_KOBLET_KNAPP_STIL }}
+              >
+                Lagre og godkjenn resultat
+              </button>
+              <WangIkkeKoblet />
+            </div>
           </form>
         </section>
       )}

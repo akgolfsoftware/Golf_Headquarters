@@ -25,7 +25,21 @@ const DEMOVISNINGER: string[] = [
   "@/components/portal/toppidrett",
   "@/components/wang/WangRekrutteringView",
   "WangToppidrettPrecisionView",
+  // Wang*-områdene tegner faste demodata (src/components/wang/wang-data.ts).
+  // Bare skjermklienten under coach/ (bak innlogging) får importere dem.
+  "@/components/wang/WangIdag",
+  "@/components/wang/WangTrening",
+  "@/components/wang/WangTester",
+  "@/components/wang/WangKonkurranse",
+  "@/components/wang/WangMeldinger",
+  "@/components/wang/WangElever",
+  "@/components/wang/WangAdmin",
+  "@/components/wang/WangSkjermoversikt",
+  "@/components/wang/wang-data",
 ];
+
+/** Filer som bevisst får importere demovisninger (bak requirePortalUser). */
+const TILLATT_I: string[] = ["src/app/team-wang/coach/WangCoachKlient.tsx"];
 
 function* walkKilder(dir: string): Generator<string> {
   for (const name of readdirSync(dir)) {
@@ -39,6 +53,7 @@ function* walkKilder(dir: string): Generator<string> {
 test("ingen rute utenfor skjermkatalogen importerer en demovisning", () => {
   const treff: string[] = [];
   for (const fil of walkKilder(APP_ROOT)) {
+    if (TILLATT_I.includes(path.relative(process.cwd(), fil))) continue;
     const importer = readFileSync(fil, "utf8")
       .split("\n")
       .filter((linje) => /^\s*(import|export)\b.*\bfrom\b/.test(linje));
@@ -53,6 +68,24 @@ test("ingen rute utenfor skjermkatalogen importerer en demovisning", () => {
 test("skjermkatalogen krever innlogging som coach eller admin", () => {
   const side = readFileSync(path.join(KATALOG, "page.tsx"), "utf8");
   assert.match(side, /requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]\s*\}\)/);
+});
+
+test("sider som rendrer WangCoachKlient krever innlogging som coach eller admin", () => {
+  const treff: string[] = [];
+  const sider = (dir: string): string[] =>
+    readdirSync(dir).flatMap((n) => {
+      const p = path.join(dir, n);
+      if (statSync(p).isDirectory()) return sider(p);
+      return n === "page.tsx" ? [p] : [];
+    });
+  for (const fil of sider(path.join(APP_ROOT, "team-wang"))) {
+    const kilde = readFileSync(fil, "utf8");
+    if (!kilde.includes("WangCoachKlient")) continue;
+    if (!/requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]/.test(kilde)) {
+      treff.push(path.relative(process.cwd(), fil));
+    }
+  }
+  assert.deepEqual(treff, []);
 });
 
 // ---------------------------------------------------------------------------
