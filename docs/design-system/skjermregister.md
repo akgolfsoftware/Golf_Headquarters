@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **532**. Unike rutemønstre i skanningen: 532. Komponentfiler: 880. Ramme- og tilstandsfiler: 252.
+Sidefiler med rute: **532**. Unike rutemønstre i skanningen: 532. Komponentfiler: 884. Ramme- og tilstandsfiler: 253.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 

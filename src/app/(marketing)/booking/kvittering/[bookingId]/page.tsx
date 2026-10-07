@@ -1,17 +1,17 @@
 /**
- * /booking/kvittering/[bookingId] — v2-port 16. juli 2026. Datalogikk
- * gjenbrukt 1:1 fra (mlegacy)/booking/kvittering/[bookingId]/page.tsx:
- * booking-oppslag (m/ tjeneste + lokasjon), CONFIRMED-sjekken, gjest→signup-
- * broen med prefilt e-post og Europe/Oslo-formatering. Stripe success_url
- * peker fortsatt hit (samme adresse). Presentasjon + PENDING-polling bor i
- * MarkedBookingKvitteringV2 (v2, MRamme) — pending-refresh.tsx er flyttet
- * inn dit.
+ * /booking/kvittering/[bookingId] — BK-03 i Precision Athletics. Stripe success_url
+ * peker hit (samme adresse som før). Datalogikken er den samme som før: oppslag av
+ * booking med tjeneste og sted, CONFIRMED-sjekken og gjest-til-konto-lenken. Nytt:
+ * coach, e-post for kvittering, avbestillingsfrist (policy.ts) og kalenderfil.
+ * Tider i basen er Oslo-veggklokke (se google-calendar-tid.ts), derfor formateres de
+ * uten tidssone-konvertering.
  */
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { MarkedBookingKvitteringV2 } from "@/components/marketing/v2/MarkedBookingKvitteringV2";
+import { cancellationDeadline } from "@/lib/booking/policy";
+import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
+import { BK03Kvittering, type BK03Detaljer } from "@/components/marketing/precision/BK03Kvittering";
 
 export const metadata: Metadata = {
   title: "Bekreftet · AK Golf",
@@ -22,57 +22,69 @@ type Props = {
   params: Promise<{ bookingId: string }>;
 };
 
+const nb = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleString("nb-NO", o);
+const tilIcs = (naiv: Date) => fraNaivVeggklokke(naiv).replace(/[-:]/g, "");
+
 export default async function Kvittering({ params }: Props) {
   const { bookingId } = await params;
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: {
-      serviceType: true,
-      location: true,
-    },
-  });
+  const booking = await prisma.booking
+    .findUnique({
+      where: { id: bookingId },
+      include: { serviceType: true, location: true, coach: { select: { name: true } }, user: { select: { email: true } } },
+    })
+    .catch(() => "feil" as const);
 
-  if (!booking) notFound();
+  if (booking === "feil") {
+    return <BK03Kvittering tilstand="feil" innlogget={false} signupHref="/auth/signup" detaljer={null} />;
+  }
+  if (!booking) {
+    return <BK03Kvittering tilstand="tom" innlogget={false} signupHref="/auth/signup" detaljer={null} />;
+  }
 
-  // Innlogget → «Mine bestillinger». Gjest → onboarding-bro til gratis konto
-  // med e-post prefilt fra bookingen. (Gjør siden per-request-dynamisk — OK.)
+  // Innlogget → «Se bookingen i PlayerHQ». Gjest → bro til gratis konto med e-posten fylt ut.
   const user = await getCurrentUser();
   const signupHref = booking.guestEmail
     ? `/auth/signup?epost=${encodeURIComponent(booking.guestEmail)}`
     : "/auth/signup";
 
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const tid = booking.startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const prisTekst = new Intl.NumberFormat("nb-NO", {
+  const dato = nb(booking.startAt, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const fra = nb(booking.startAt, { hour: "2-digit", minute: "2-digit" });
+  const til = nb(booking.endAt, { hour: "2-digit", minute: "2-digit" });
+  const betalt = new Intl.NumberFormat("nb-NO", {
     style: "currency",
     currency: "NOK",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(booking.priceOre / 100);
+  const frist = cancellationDeadline(booking.startAt);
+  const bekreftet = booking.status === "CONFIRMED";
+
+  const detaljer: BK03Detaljer = {
+    ref: `#${booking.id.slice(-8)}`,
+    tjeneste: `${booking.serviceType.name} ${booking.serviceType.durationMin} min`,
+    tid: `${dato} · ${fra}–${til}`,
+    sted: booking.location.name,
+    coach: booking.coach?.name ?? null,
+    betalt,
+    betaltVedStripe: Boolean(booking.stripePaymentIntentId ?? booking.stripeCheckoutSessionId),
+    epost: booking.guestEmail ?? booking.user?.email ?? null,
+    fristTekst: `GRATIS AVBESTILLING TIL ${nb(frist, { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }).toUpperCase()} KL. ${nb(frist, { hour: "2-digit", minute: "2-digit" })} (24 TIMER FØR)`,
+    ics: {
+      start: tilIcs(booking.startAt),
+      slutt: tilIcs(booking.endAt),
+      tittel: `${booking.serviceType.name} · AK Golf`,
+      sted: booking.location.name,
+      fil: `ak-golf-${booking.id.slice(-8)}`,
+    },
+  };
 
   return (
-    <MarkedBookingKvitteringV2
-      bekreftet={booking.status === "CONFIRMED"}
-      guestEmail={booking.guestEmail}
+    <BK03Kvittering
+      tilstand={bekreftet ? "data" : "pending"}
       innlogget={Boolean(user)}
       signupHref={signupHref}
-      detaljer={{
-        bestillingRef: `#${booking.id.slice(-8)}`,
-        tjeneste: booking.serviceType.name,
-        dato,
-        klokkeslett: `${tid} (${booking.serviceType.durationMin} min)`,
-        sted: booking.location.name,
-        prisTekst,
-      }}
+      detaljer={detaljer}
     />
   );
 }

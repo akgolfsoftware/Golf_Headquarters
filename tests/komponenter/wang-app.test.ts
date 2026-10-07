@@ -75,7 +75,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     const html = renderToStaticMarkup(
       React.createElement(
         WangAppSkall,
-        { aktivtOmraade: 'idag' },
+        { rolle: 'Trener', aktivtOmraade: 'idag' },
         React.createElement('div', { id: 'test-innhold' }, 'Innhold for I dag')
       )
     );

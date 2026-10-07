@@ -12,7 +12,6 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import {
   AG17Turneringer,
   type AG17Data,
-  type TurneringRad,
   type TurneringDublett,
 } from "@/components/admin/precision/AG17Turneringer";
 import { velgTurneringFane } from "@/lib/admin/turnering/faner";
@@ -20,6 +19,7 @@ import {
   lastAlleTurneringer,
   lastMineSpillereTurneringer,
 } from "@/lib/admin/turnering/lastere";
+import { byggTurneringRader } from "@/lib/admin/turnering/rader";
 import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
 
 export const dynamic = "force-dynamic";
@@ -51,25 +51,7 @@ export default async function TurneringPage({
     lastDubletter().catch(() => []),
   ]);
 
-  const mineSpillereSet = new Set(
-    (mineRes.rader || []).map((r) => r.navn.toLowerCase().trim())
-  );
-
-  const tournaments: TurneringRad[] = (alleRes.rader || []).map((r, i) => {
-    const erMin = mineSpillereSet.has(r.navn.toLowerCase().trim());
-    return {
-      id: r.id || `t-${i}`,
-      name: r.navn,
-      date: r.datoTekst,
-      course: r.anlegg || "Ukjent bane",
-      place: "Norge",
-      lat: 58.5 + (i % 8) * 0.2,
-      lon: 8.5 + (i % 10) * 0.3,
-      level: "Nasjonal",
-      mine: erMin ? [user.name ?? "Spiller"] : [],
-      st: erMin ? "Påmeldt" : "Åpen",
-    };
-  });
+  const tournaments = byggTurneringRader(alleRes.rader || [], mineRes.rader || []);
 
   const tDups: TurneringDublett[] = (dubletterRes || []).map((d) => ({
     id: d.manual.id,
@@ -92,28 +74,14 @@ export default async function TurneringPage({
     },
   }));
 
-  const dg = {
-    src: "DATAGOLF_PREDICT_V1",
-    rows: [
-      ["Feltstyrke", "+1.42"],
-      ["Vinn-sannsynlighet", "14.2 %"],
-      ["Cut-grense", "+3"],
-      ["Kvalifiseringskrav", "Topp 10"],
-    ] as [string, string][],
-  };
-
-  const data: AG17Data = {
-    tournaments,
-    tDups,
-    dg,
-  };
+  const data: AG17Data = { tournaments, tDups };
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AG17Turneringer
-        tilstand="data"
+        tilstand={tournaments.length === 0 && tDups.length === 0 ? "tom" : "data"}
         startFane={aktiv ?? "alle"}
-        data={tournaments.length > 0 ? data : undefined}
+        data={data}
       />
     </AgencyOSSkall>
   );
