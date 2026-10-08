@@ -8,6 +8,8 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  erTrukketEtter,
+  gyldigGittSamtykke,
   harGyldigSamtykke,
   velgSamtykkedeSpillerePerGruppe,
   erDelingScope,
@@ -263,35 +265,14 @@ describe("kanttilfeller (lagt til 2026-08-16)", () => {
     assert.equal(kart.has("gruppe-b"), false);
   });
 
-  /**
-   * KARAKTERISERING — dette er ikke en velsignelse av oppførselen.
-   *
-   * `harGyldigSamtykke` sammenligner med streng `>`, så to rader med IDENTISK
-   * createdAt avgjøres av rekkefølgen i arrayet — altså av `orderBy` i den
-   * Prisma-spørringen som tilfeldigvis hentet dem. Prisma kan skrive to rader
-   * i samme transaksjon med samme tidsstempel, så tilfellet er reelt.
-   *
-   * GDPR art. 7-3 tilsier at et TREKK bør vinne uansett rekkefølge. Å endre
-   * det er en beslutning for Anders, ikke noe denne testen avgjør — men uten
-   * denne testen kan en `orderBy`-endring snu svaret uten at noe blir rødt.
-   */
-  it("likt tidsstempel: første rad i listen vinner (rekkefølgeavhengig)", () => {
+  it("likt tidsstempel: trekket vinner uansett rekkefølge (S3, GDPR art. 7-3)", () => {
     const samtidig = new Date("2026-08-10T12:00:00Z");
-    assert.equal(
-      harGyldigSamtykke(
-        [rad({ gitt: false, createdAt: samtidig }), rad({ gitt: true, createdAt: samtidig })],
-        KRAV_VOKSEN,
-      ),
-      false,
-    );
-    assert.equal(
-      harGyldigSamtykke(
-        [rad({ gitt: true, createdAt: samtidig }), rad({ gitt: false, createdAt: samtidig })],
-        KRAV_VOKSEN,
-      ),
-      true,
-      "Samme to rader, motsatt rekkefølge, motsatt svar — se kommentaren over",
-    );
+    for (const rader of [
+      [rad({ gitt: false, createdAt: samtidig }), rad({ gitt: true, createdAt: samtidig })],
+      [rad({ gitt: true, createdAt: samtidig }), rad({ gitt: false, createdAt: samtidig })],
+    ]) {
+      assert.equal(harGyldigSamtykke(rader, KRAV_VOKSEN), false);
+    }
   });
 });
 
@@ -317,5 +298,96 @@ describe("samtykke-kanon", () => {
       [...DELING_SCOPES].sort(),
       "Et scope uten samtykketekst gir en tom samtykkedialog",
     );
+  });
+});
+
+describe("gi og trekke er to regler (S3, D-69)", () => {
+  const UNDER_16 = { ...KRAV_VOKSEN, kreverForesatt: true };
+  const d = (dag: number) => new Date(`2026-08-${String(dag).padStart(2, "0")}T10:00:00Z`);
+
+  it("under 16: spillerens eget nyere nei stopper forelderens ja", () => {
+    const rader = [
+      rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(1) }),
+      rad({ gittAvRolle: "SELV", gitt: false, createdAt: d(2) }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, UNDER_16), false);
+  });
+
+  it("under 16: forelderens nyere nei stopper", () => {
+    const rader = [
+      rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(1) }),
+      rad({ gittAvRolle: "FORESATT", gitt: false, createdAt: d(2) }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, UNDER_16), false);
+  });
+
+  it("under 16: spillerens ja kan ikke oppheve et nei, bare forelderens nye ja kan", () => {
+    const etterNei = [
+      rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(1) }),
+      rad({ gittAvRolle: "SELV", gitt: false, createdAt: d(2) }),
+      rad({ gittAvRolle: "SELV", gitt: true, createdAt: d(3) }),
+    ];
+    assert.equal(harGyldigSamtykke(etterNei, UNDER_16), false);
+    const nyttForeldreJa = [...etterNei, rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(4) })];
+    assert.equal(harGyldigSamtykke(nyttForeldreJa, UNDER_16), true);
+  });
+
+  it("under 16: et eldre nei stopper ikke et nyere foresatt-ja", () => {
+    const rader = [
+      rad({ gittAvRolle: "SELV", gitt: false, createdAt: d(1) }),
+      rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(2) }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, UNDER_16), true);
+  });
+
+  it("over 16: spilleren kan alltid trekke et ja forelderen ga før 16", () => {
+    const rader = [
+      rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(1) }),
+      rad({ gittAvRolle: "SELV", gitt: false, createdAt: d(2) }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, KRAV_VOKSEN), false);
+  });
+
+  it("nei mot en annen mottakergruppe eller et annet scope trekker ikke dette", () => {
+    const rader = [
+      rad({ gitt: true, createdAt: d(1) }),
+      rad({ gitt: false, createdAt: d(2), mottakerGruppeId: "gruppe-b" }),
+      rad({ gitt: false, createdAt: d(2), scope: "STATS" }),
+    ];
+    assert.equal(harGyldigSamtykke(rader, KRAV_VOKSEN), true);
+  });
+
+  it("nei fra en ukjent rolle teller ikke som trekk", () => {
+    const rader = [rad({ gitt: true, createdAt: d(1) }), rad({ gitt: false, gittAvRolle: "TRENER", createdAt: d(2) })];
+    assert.equal(harGyldigSamtykke(rader, KRAV_VOKSEN), true);
+  });
+
+  it("gyldigGittSamtykke gir nyeste ja fra riktig rolle; erTrukketEtter ser bare nyere nei", () => {
+    const foreldreJa = rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(2) });
+    const rader = [rad({ gittAvRolle: "SELV", gitt: true, createdAt: d(3) }), foreldreJa];
+    assert.equal(gyldigGittSamtykke(rader, UNDER_16), foreldreJa);
+    assert.equal(erTrukketEtter(rader, UNDER_16, foreldreJa), false);
+    assert.equal(
+      erTrukketEtter([...rader, rad({ gitt: false, createdAt: d(1) })], UNDER_16, foreldreJa),
+      false,
+    );
+  });
+
+  it("per gruppe: spillerens nei stopper delingen i velgSamtykkedeSpillerePerGruppe", () => {
+    const kart = velgSamtykkedeSpillerePerGruppe(
+      [
+        {
+          userId: "s1",
+          kreverForesatt: true,
+          gruppeIder: ["gruppe-a"],
+          samtykkeRader: [
+            rad({ gittAvRolle: "FORESATT", gitt: true, createdAt: d(1) }),
+            rad({ gittAvRolle: "SELV", gitt: false, createdAt: d(2) }),
+          ],
+        },
+      ],
+      "TEST_RESULTATER",
+    );
+    assert.equal(kart.has("gruppe-a"), false);
   });
 });

@@ -10,7 +10,8 @@
  * uansett hva UI-et måtte ha sluppet gjennom.
  *
  * Historikken er append-only: trekk = ny rad med gitt=false, aldri update.
- * Nyeste rad per (scope, mottakerGruppe) vinner.
+ * Gi og trekke er to regler (seniorgjennomgangen S3, D-69): et ja må komme fra
+ * riktig rolle, mens et nei fra spilleren eller forelderen alltid stopper.
  */
 
 /**
@@ -96,29 +97,66 @@ export type DelingSamtykkeRad = {
   createdAt: Date;
 };
 
+export type SamtykkeKrav = {
+  scope: DelingScope;
+  mottakerGruppeId: string;
+  /** Under 16 (User.requiresGuardianConsent): bare FORESATT kan gi. */
+  kreverForesatt: boolean;
+};
+
+function gjelder(rad: DelingSamtykkeRad, krav: SamtykkeKrav): boolean {
+  return rad.scope === krav.scope && rad.mottakerGruppeId === krav.mottakerGruppeId;
+}
+
 /**
- * Har spilleren gyldig samtykke for dette scopet mot denne mottakergruppen?
- *
- * Nyeste rad per (scope, mottakerGruppe) vinner; ingen rad = ikke samtykket.
- * Med `kreverForesatt` (mindreårig) teller KUN FORESATT-rader — en SELV-rad
- * fra en mindreårig verken gir eller «skygger for» et foresatt-samtykke.
- * (Trekk håndheves likevel av at foresattes egen nyeste rad vinner: en
- * FORESATT-rad med gitt=false stopper delingen.)
+ * GI: nyeste ja som teller for dette scopet mot denne mottakergruppen.
+ * Under 16 teller bare FORESATT-rader; en SELV-ja fra en mindreårig gir aldri
+ * deling. Over 16 teller ja fra begge roller (et foresatt-samtykke gitt før
+ * 16 gjelder videre til det trekkes).
+ */
+export function gyldigGittSamtykke(
+  rader: readonly DelingSamtykkeRad[],
+  krav: SamtykkeKrav,
+): DelingSamtykkeRad | null {
+  let nyeste: DelingSamtykkeRad | null = null;
+  for (const rad of rader) {
+    if (!rad.gitt || !gjelder(rad, krav)) continue;
+    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") continue;
+    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) nyeste = rad;
+  }
+  return nyeste;
+}
+
+/**
+ * TREKKE: finnes det et «nei» fra spilleren eller forelderen som er like nytt
+ * som eller nyere enn `ja`? Ett nei stopper delingen (D-69). Spilleren kan
+ * alltid trekke, også under 16. Ved likt tidspunkt vinner trekket (GDPR art. 7-3).
+ */
+export function erTrukketEtter(
+  rader: readonly DelingSamtykkeRad[],
+  krav: SamtykkeKrav,
+  ja: DelingSamtykkeRad,
+): boolean {
+  return rader.some(
+    (rad) =>
+      !rad.gitt &&
+      gjelder(rad, krav) &&
+      (rad.gittAvRolle === "SELV" || rad.gittAvRolle === "FORESATT") &&
+      rad.createdAt.getTime() >= ja.createdAt.getTime(),
+  );
+}
+
+/**
+ * Har spilleren gyldig samtykke for dette scopet mot denne mottakergruppen
+ * akkurat nå? Gyldig ja (gi-regelen) og ingen nyere nei (trekk-regelen).
+ * Ingen rad = ikke samtykket. Svaret gjelder nå, også for eldre resultater.
  */
 export function harGyldigSamtykke(
   rader: readonly DelingSamtykkeRad[],
-  krav: { scope: DelingScope; mottakerGruppeId: string; kreverForesatt: boolean },
+  krav: SamtykkeKrav,
 ): boolean {
-  let nyeste: DelingSamtykkeRad | null = null;
-  for (const rad of rader) {
-    if (rad.scope !== krav.scope) continue;
-    if (rad.mottakerGruppeId !== krav.mottakerGruppeId) continue;
-    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") continue;
-    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) {
-      nyeste = rad;
-    }
-  }
-  return nyeste?.gitt === true;
+  const ja = gyldigGittSamtykke(rader, krav);
+  return ja !== null && !erTrukketEtter(rader, krav, ja);
 }
 
 /** Kandidat i ekstern-leser-filtreringen — én spiller med sine rader. */

@@ -7,7 +7,7 @@
  *   1. Leseren har aktiv EksternLeserGruppe (revokedAt null) mot gruppen.
  *   2. Spilleren har aktivt PLAYER-medlemskap (endedAt null) i SAMME gruppe.
  *   3. Spilleren har gyldig DelingsSamtykke for scopet mot SAMME gruppe
- *      (nyeste rad vinner; mindreårige krever FORESATT-rad).
+ *      (gi og trekke er to regler: ja må komme fra FORESATT under 16, ett nei fra spiller eller foresatt stopper).
  *
  * Punkt 3 (nyeste-rad-vinner + FORESATT-krav) kan ikke uttrykkes rent i én
  * Prisma-where, så filtreringen skjer i to steg: DB henter kandidater,
