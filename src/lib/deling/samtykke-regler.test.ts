@@ -391,3 +391,48 @@ describe("gi og trekke er to regler (S3, D-69)", () => {
     assert.equal(kart.has("gruppe-a"), false);
   });
 });
+
+describe("forelderens nei etter 16 (Anders 08.10.2026)", () => {
+  // Født 2010-03-15 → fyller 16 2026-03-15.
+  const FODT = new Date("2010-03-15T00:00:00Z");
+  const KRAV_MED_FODSEL = { ...KRAV_VOKSEN, fodselsdato: FODT };
+  const ja = rad({ gitt: true, gittAvRolle: "FORESATT", createdAt: new Date("2026-01-10T10:00:00Z") });
+
+  it("forelderens nei lagret før 16-årsdagen stopper delingen", () => {
+    const nei = rad({ gitt: false, gittAvRolle: "FORESATT", createdAt: new Date("2026-03-14T23:00:00Z") });
+    assert.equal(harGyldigSamtykke([ja, nei], KRAV_MED_FODSEL), false);
+  });
+
+  it("forelderens nei lagret på eller etter 16-årsdagen teller ikke", () => {
+    const paaDagen = rad({ gitt: false, gittAvRolle: "FORESATT", createdAt: new Date("2026-03-15T00:00:00Z") });
+    const etter = rad({ gitt: false, gittAvRolle: "FORESATT", createdAt: new Date("2026-08-01T10:00:00Z") });
+    assert.equal(harGyldigSamtykke([ja, paaDagen], KRAV_MED_FODSEL), true);
+    assert.equal(harGyldigSamtykke([ja, etter], KRAV_MED_FODSEL), true);
+  });
+
+  it("etter 16 kan spilleren fortsatt trekke", () => {
+    const nei = rad({ gitt: false, gittAvRolle: "SELV", createdAt: new Date("2026-08-01T10:00:00Z") });
+    assert.equal(harGyldigSamtykke([ja, nei], KRAV_MED_FODSEL), false);
+  });
+
+  it("uten fødselsdato beholdes den trygge regelen: forelderens nei teller alltid", () => {
+    const nei = rad({ gitt: false, gittAvRolle: "FORESATT", createdAt: new Date("2026-08-01T10:00:00Z") });
+    assert.equal(harGyldigSamtykke([ja, nei], KRAV_VOKSEN), false);
+    assert.equal(harGyldigSamtykke([ja, nei], { ...KRAV_VOKSEN, fodselsdato: null }), false);
+  });
+
+  it("per gruppe: fødselsdatoen følger kandidaten inn i filtreringen", () => {
+    const nei = rad({ gitt: false, gittAvRolle: "FORESATT", createdAt: new Date("2026-08-01T10:00:00Z") });
+    const kandidat: SamtykkeKandidat = {
+      userId: "spiller-1",
+      kreverForesatt: false,
+      fodselsdato: FODT,
+      gruppeIder: ["gruppe-a"],
+      samtykkeRader: [ja, nei],
+    };
+    assert.deepEqual(
+      velgSamtykkedeSpillerePerGruppe([kandidat], "TEST_RESULTATER").get("gruppe-a"),
+      ["spiller-1"],
+    );
+  });
+});

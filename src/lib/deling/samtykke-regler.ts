@@ -11,8 +11,11 @@
  *
  * Historikken er append-only: trekk = ny rad med gitt=false, aldri update.
  * Gi og trekke er to regler (seniorgjennomgangen S3, D-69): et ja må komme fra
- * riktig rolle, mens et nei fra spilleren eller forelderen alltid stopper.
+ * riktig rolle, mens et nei fra spilleren alltid stopper. Forelderens nei
+ * stopper bare når det er lagret før spilleren fylte 16 (Anders 08.10.2026).
  */
+
+import { sekstenaarsdag } from "@/lib/auth/minor";
 
 /**
  * Versjon av samtykketeksten. Bump HVER gang tekstene under endres
@@ -102,6 +105,12 @@ export type SamtykkeKrav = {
   mottakerGruppeId: string;
   /** Under 16 (User.requiresGuardianConsent): bare FORESATT kan gi. */
   kreverForesatt: boolean;
+  /**
+   * Spillerens fødselsdato. Avgjør om et nei fra forelderen teller: bare nei
+   * lagret før 16-årsdagen. Mangler den, teller forelderens nei alltid
+   * (den trygge regelen).
+   */
+  fodselsdato?: Date | null;
 };
 
 function gjelder(rad: DelingSamtykkeRad, krav: SamtykkeKrav): boolean {
@@ -128,9 +137,22 @@ export function gyldigGittSamtykke(
 }
 
 /**
- * TREKKE: finnes det et «nei» fra spilleren eller forelderen som er like nytt
+ * Teller dette neiet? Spillerens nei teller alltid. Forelderens nei teller
+ * bare når det er lagret før spilleren fylte 16; etter 16 kan bare spilleren
+ * trekke (D-69, Anders 08.10.2026). Uten fødselsdato teller forelderens nei.
+ */
+function neiTeller(rad: DelingSamtykkeRad, krav: SamtykkeKrav): boolean {
+  if (rad.gittAvRolle === "SELV") return true;
+  if (rad.gittAvRolle !== "FORESATT") return false;
+  const fyller16 = sekstenaarsdag(krav.fodselsdato);
+  return fyller16 === null || rad.createdAt.getTime() < fyller16.getTime();
+}
+
+/**
+ * TREKKE: finnes det et «nei» som teller (se `neiTeller`) og er like nytt
  * som eller nyere enn `ja`? Ett nei stopper delingen (D-69). Spilleren kan
- * alltid trekke, også under 16. Ved likt tidspunkt vinner trekket (GDPR art. 7-3).
+ * alltid trekke, også under 16. Ved likt tidspunkt vinner trekket (D-69,
+ * GDPR art. 7-3).
  */
 export function erTrukketEtter(
   rader: readonly DelingSamtykkeRad[],
@@ -141,7 +163,7 @@ export function erTrukketEtter(
     (rad) =>
       !rad.gitt &&
       gjelder(rad, krav) &&
-      (rad.gittAvRolle === "SELV" || rad.gittAvRolle === "FORESATT") &&
+      neiTeller(rad, krav) &&
       rad.createdAt.getTime() >= ja.createdAt.getTime(),
   );
 }
@@ -163,6 +185,7 @@ export function harGyldigSamtykke(
 export type SamtykkeKandidat = {
   userId: string;
   kreverForesatt: boolean;
+  fodselsdato?: Date | null;
   /** Aktive medlemskap i leserens grupper. */
   gruppeIder: readonly string[];
   samtykkeRader: readonly DelingSamtykkeRad[];
@@ -184,6 +207,7 @@ export function velgSamtykkedeSpillerePerGruppe(
         scope,
         mottakerGruppeId: gruppeId,
         kreverForesatt: kandidat.kreverForesatt,
+        fodselsdato: kandidat.fodselsdato,
       });
       if (!gyldig) continue;
       const liste = resultat.get(gruppeId);
