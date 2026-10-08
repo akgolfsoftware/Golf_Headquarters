@@ -7,7 +7,7 @@
  *   1. Leseren har aktiv EksternLeserGruppe (revokedAt null) mot gruppen.
  *   2. Spilleren har aktivt PLAYER-medlemskap (endedAt null) i SAMME gruppe.
  *   3. Spilleren har gyldig DelingsSamtykke for scopet mot SAMME gruppe
- *      (nyeste rad vinner; mindreårige krever FORESATT-rad).
+ *      (gi og trekke er to regler: ja må komme fra FORESATT under 16; ett nei fra spilleren stopper, forelderens nei bare hvis det er lagret før 16-årsdagen).
  *
  * Punkt 3 (nyeste-rad-vinner + FORESATT-krav) kan ikke uttrykkes rent i én
  * Prisma-where, så filtreringen skjer i to steg: DB henter kandidater,
@@ -116,6 +116,7 @@ export async function eksternLeserSpillerIderPerGruppe(
         requiresGuardianConsent: k.requiresGuardianConsent,
         dateOfBirth: k.dateOfBirth,
       }),
+      fodselsdato: k.dateOfBirth,
       gruppeIder: k.groupMemberships.map((m) => m.groupId),
       samtykkeRader: raderPerSpiller.get(k.id) ?? [],
     })),

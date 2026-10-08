@@ -10,8 +10,12 @@
  * uansett hva UI-et måtte ha sluppet gjennom.
  *
  * Historikken er append-only: trekk = ny rad med gitt=false, aldri update.
- * Nyeste rad per (scope, mottakerGruppe) vinner.
+ * Gi og trekke er to regler (seniorgjennomgangen S3, D-69): et ja må komme fra
+ * riktig rolle, mens et nei fra spilleren alltid stopper. Forelderens nei
+ * stopper bare når det er lagret før spilleren fylte 16 (Anders 08.10.2026).
  */
+
+import { sekstenaarsdag } from "@/lib/auth/minor";
 
 /**
  * Versjon av samtykketeksten. Bump HVER gang tekstene under endres
@@ -96,35 +100,92 @@ export type DelingSamtykkeRad = {
   createdAt: Date;
 };
 
+export type SamtykkeKrav = {
+  scope: DelingScope;
+  mottakerGruppeId: string;
+  /** Under 16 (User.requiresGuardianConsent): bare FORESATT kan gi. */
+  kreverForesatt: boolean;
+  /**
+   * Spillerens fødselsdato. Avgjør om et nei fra forelderen teller: bare nei
+   * lagret før 16-årsdagen. Mangler den, teller forelderens nei alltid
+   * (den trygge regelen).
+   */
+  fodselsdato?: Date | null;
+};
+
+function gjelder(rad: DelingSamtykkeRad, krav: SamtykkeKrav): boolean {
+  return rad.scope === krav.scope && rad.mottakerGruppeId === krav.mottakerGruppeId;
+}
+
 /**
- * Har spilleren gyldig samtykke for dette scopet mot denne mottakergruppen?
- *
- * Nyeste rad per (scope, mottakerGruppe) vinner; ingen rad = ikke samtykket.
- * Med `kreverForesatt` (mindreårig) teller KUN FORESATT-rader — en SELV-rad
- * fra en mindreårig verken gir eller «skygger for» et foresatt-samtykke.
- * (Trekk håndheves likevel av at foresattes egen nyeste rad vinner: en
- * FORESATT-rad med gitt=false stopper delingen.)
+ * GI: nyeste ja som teller for dette scopet mot denne mottakergruppen.
+ * Under 16 teller bare FORESATT-rader; en SELV-ja fra en mindreårig gir aldri
+ * deling. Over 16 teller ja fra begge roller (et foresatt-samtykke gitt før
+ * 16 gjelder videre til det trekkes).
+ */
+export function gyldigGittSamtykke(
+  rader: readonly DelingSamtykkeRad[],
+  krav: SamtykkeKrav,
+): DelingSamtykkeRad | null {
+  let nyeste: DelingSamtykkeRad | null = null;
+  for (const rad of rader) {
+    if (!rad.gitt || !gjelder(rad, krav)) continue;
+    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") continue;
+    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) nyeste = rad;
+  }
+  return nyeste;
+}
+
+/**
+ * Teller dette neiet? Spillerens nei teller alltid. Forelderens nei teller
+ * bare når det er lagret før spilleren fylte 16; etter 16 kan bare spilleren
+ * trekke (D-69, Anders 08.10.2026). Uten fødselsdato teller forelderens nei.
+ */
+function neiTeller(rad: DelingSamtykkeRad, krav: SamtykkeKrav): boolean {
+  if (rad.gittAvRolle === "SELV") return true;
+  if (rad.gittAvRolle !== "FORESATT") return false;
+  const fyller16 = sekstenaarsdag(krav.fodselsdato);
+  return fyller16 === null || rad.createdAt.getTime() < fyller16.getTime();
+}
+
+/**
+ * TREKKE: finnes det et «nei» som teller (se `neiTeller`) og er like nytt
+ * som eller nyere enn `ja`? Ett nei stopper delingen (D-69). Spilleren kan
+ * alltid trekke, også under 16. Ved likt tidspunkt vinner trekket (D-69,
+ * GDPR art. 7-3).
+ */
+export function erTrukketEtter(
+  rader: readonly DelingSamtykkeRad[],
+  krav: SamtykkeKrav,
+  ja: DelingSamtykkeRad,
+): boolean {
+  return rader.some(
+    (rad) =>
+      !rad.gitt &&
+      gjelder(rad, krav) &&
+      neiTeller(rad, krav) &&
+      rad.createdAt.getTime() >= ja.createdAt.getTime(),
+  );
+}
+
+/**
+ * Har spilleren gyldig samtykke for dette scopet mot denne mottakergruppen
+ * akkurat nå? Gyldig ja (gi-regelen) og ingen nyere nei (trekk-regelen).
+ * Ingen rad = ikke samtykket. Svaret gjelder nå, også for eldre resultater.
  */
 export function harGyldigSamtykke(
   rader: readonly DelingSamtykkeRad[],
-  krav: { scope: DelingScope; mottakerGruppeId: string; kreverForesatt: boolean },
+  krav: SamtykkeKrav,
 ): boolean {
-  let nyeste: DelingSamtykkeRad | null = null;
-  for (const rad of rader) {
-    if (rad.scope !== krav.scope) continue;
-    if (rad.mottakerGruppeId !== krav.mottakerGruppeId) continue;
-    if (krav.kreverForesatt && rad.gittAvRolle !== "FORESATT") continue;
-    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) {
-      nyeste = rad;
-    }
-  }
-  return nyeste?.gitt === true;
+  const ja = gyldigGittSamtykke(rader, krav);
+  return ja !== null && !erTrukketEtter(rader, krav, ja);
 }
 
 /** Kandidat i ekstern-leser-filtreringen — én spiller med sine rader. */
 export type SamtykkeKandidat = {
   userId: string;
   kreverForesatt: boolean;
+  fodselsdato?: Date | null;
   /** Aktive medlemskap i leserens grupper. */
   gruppeIder: readonly string[];
   samtykkeRader: readonly DelingSamtykkeRad[];
@@ -146,6 +207,7 @@ export function velgSamtykkedeSpillerePerGruppe(
         scope,
         mottakerGruppeId: gruppeId,
         kreverForesatt: kandidat.kreverForesatt,
+        fodselsdato: kandidat.fodselsdato,
       });
       if (!gyldig) continue;
       const liste = resultat.get(gruppeId);
