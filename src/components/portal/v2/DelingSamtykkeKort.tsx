@@ -26,13 +26,10 @@ export type DelingGruppeStatus = {
   gruppeNavn: string;
   testResultater: boolean;
   stats: boolean;
-  testResultaterAutomatisk?: boolean;
 };
 
 export type DelingSamtykkeKortProps = {
   grupper: DelingGruppeStatus[];
-  /** Spilleren/barnet har aktiv WANG-tilknytning med automatisk TN-testdeling. */
-  automatiskWangTestdeling?: boolean;
   /** Spiller-flaten: under 16 kan ikke slå PÅ selv. */
   krevesForesatt?: boolean;
   /** Foresatt-flaten: hvilket barn samtykket gjelder. */
@@ -51,7 +48,6 @@ const SCOPE_FELT: Record<EmbedScope, "testResultater" | "stats"> = {
 
 export function DelingSamtykkeKort({
   grupper,
-  automatiskWangTestdeling = false,
   krevesForesatt = false,
   modus,
 }: DelingSamtykkeKortProps) {
@@ -121,14 +117,14 @@ export function DelingSamtykkeKort({
                 letterSpacing: "-0.02em",
               }}
             >
-              Frivillig deling
+              Deling med eksterne miljøer
             </span>
             <StatusPill tone={noeDelt ? "up" : "info"}>{noeDelt ? "På" : "Av"}</StatusPill>
           </div>
           <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
-            {automatiskWangTestdeling
-              ? "Her styrer du frivillig deling med eksterne miljøer. Testresultater fra aktive WANG-elever deles automatisk med Team Norway etter WANGs opptaksavtale og kan ikke slås av her. Annen statistikk og profildeling styres separat."
-              : "Miljøer som Team Norway og WANG kan be om innsyn i testresultater og statistikk. Bare deling du godkjenner her blir aktiv, og du kan trekke samtykket når som helst."}
+            Miljøer som Team Norway og WANG kan be om innsyn i testresultater og
+            statistikk. Ingenting deles uten samtykke her — gruppemedlemskap
+            alene gir aldri deling, og du kan ombestemme deg når som helst.
           </p>
         </div>
       </div>
@@ -148,18 +144,16 @@ export function DelingSamtykkeKort({
         >
           <Icon name="shield" size={15} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-            {automatiskWangTestdeling
-              ? "For WANG-elever under 16 år signerer foresatt opptaksavtalen. Foresatt godkjenner eventuell frivillig profildeling i foreldreportalen."
-              : "Du er under 16 år. En foresatt må godkjenne frivillig deling i foreldreportalen. Du kan alltid trekke den tilbake."}
+            Du er under 16 år. En foresatt må godkjenne delingen i
+            foreldreportalen før noe deles. Du kan alltid slå det av selv.
           </span>
         </div>
       )}
 
       {status.length === 0 ? (
         <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
-          {automatiskWangTestdeling
-            ? "Ingen annen organisasjon har bedt om frivillig innsyn ennå. Den automatiske WANG-testdelingen med Team Norway vises separat."
-            : "Ingen eksterne miljøer har bedt om innsyn ennå. Når et miljø får lesetilgang til en av gruppene dine, dukker valget opp her."}
+          Ingen eksterne miljøer har bedt om innsyn ennå. Når et miljø får
+          lesetilgang til en av gruppene dine, dukker valget opp her.
         </p>
       ) : (
         status.map((gruppe) => (
@@ -171,14 +165,6 @@ export function DelingSamtykkeKort({
               {gruppe.gruppeNavn}
             </div>
             {(Object.keys(SCOPE_FELT) as EmbedScope[]).map((scope) => {
-              if (scope === "TEST_RESULTATER" && gruppe.testResultaterAutomatisk) {
-                return (
-                  <div key={scope} role="status" style={{ marginTop: 12, padding: "10px 12px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
-                    <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>Testresultater deles automatisk</div>
-                    <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4, lineHeight: 1.45 }}>WANG-elevers fullførte tester deles med Team Norway etter opptaksavtalen. Dette kan ikke slås av her.</div>
-                  </div>
-                );
-              }
               const tekst = DELING_SAMTYKKE_TEKST[scope];
               return (
                 <div key={scope} style={{ marginTop: 12 }}>
