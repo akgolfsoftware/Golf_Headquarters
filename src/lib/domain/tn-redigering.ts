@@ -2,6 +2,8 @@ import "server-only";
 
 import { z } from "zod";
 
+import type { Prisma } from "@/generated/prisma/client";
+import { medNavngittProfil } from "@/lib/deling/profil-lesing";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 import { hentTnArbeidskontekst, type TnArbeidskontekst, type TnBruker } from "@/lib/domain/tn-arbeidsflate";
 import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
@@ -35,6 +37,26 @@ async function krevSpillerIGruppe(groupId: string, userId: string) {
   const medlem = await prisma.groupMember.findFirst({ where: { groupId, userId, ...aktivtSpillerMedlemskapWhere() }, select: { id: true } });
   if (!medlem) throw new TnSkrivFeil("Spilleren er ikke med i gruppen.");
   return medlem;
+}
+
+type SpillerdataDb = Pick<Prisma.TransactionClient, "tnSpillerstatus" | "tnCollege">;
+
+/**
+ * Spillerens egne data (lisens, helseattest, antidoping, college) skrives bare
+ * når spilleren har delt profilen med denne treneren (D-04, D-05, TO-04).
+ * Delingen kontrolleres under samme lås som tilbaketrekking. Plattform-ADMIN
+ * er AK Golf, ikke organisasjonen, og slipper gjennom som før.
+ */
+async function skrivMedDeling<T>(
+  bruker: TnBruker,
+  gruppeId: string,
+  spillerId: string,
+  skriv: (db: SpillerdataDb) => Promise<T>,
+): Promise<T> {
+  if (bruker.role === "ADMIN") return skriv(prisma);
+  const resultat = await medNavngittProfil(bruker.id, spillerId, gruppeId, async (tx) => ({ verdi: await skriv(tx) }));
+  if (!resultat) throw new TnSkrivFeil("Spilleren har ikke delt profilen med deg.");
+  return resultat.verdi;
 }
 
 async function kjor<T>(fn: () => Promise<T>, standardfeil: string): Promise<TnSkrivResultat<T>> {
@@ -283,11 +305,11 @@ export async function lagreSpillerstatus(bruker: TnBruker, input: unknown): Prom
       antidopingSignert: somDato(d.antidopingSignert),
       updatedById: bruker.id,
     };
-    await prisma.tnSpillerstatus.upsert({
+    await skrivMedDeling(bruker, kontekst.gruppe.id, d.spillerId, (db) => db.tnSpillerstatus.upsert({
       where: { groupId_userId_aar: { groupId: kontekst.gruppe.id, userId: d.spillerId, aar: d.aar } },
       create: { groupId: kontekst.gruppe.id, userId: d.spillerId, aar: d.aar, ...data },
       update: data,
-    });
+    }));
     return undefined;
   }, "Kunne ikke lagre statusen.");
 }
@@ -312,11 +334,11 @@ export async function lagreCollege(bruker: TnBruker, input: unknown): Promise<Tn
     const kontekst = await krevTrener(bruker);
     await krevSpillerIGruppe(kontekst.gruppe.id, d.spillerId);
     const data = { skole: d.skole, status: d.status, startDato: somDato(d.startDato), notat: d.notat || null, updatedById: bruker.id };
-    await prisma.tnCollege.upsert({
+    await skrivMedDeling(bruker, kontekst.gruppe.id, d.spillerId, (db) => db.tnCollege.upsert({
       where: { groupId_userId: { groupId: kontekst.gruppe.id, userId: d.spillerId } },
       create: { groupId: kontekst.gruppe.id, userId: d.spillerId, ...data },
       update: data,
-    });
+    }));
     return undefined;
   }, "Kunne ikke lagre college-statusen.");
 }
@@ -324,7 +346,8 @@ export async function lagreCollege(bruker: TnBruker, input: unknown): Promise<Tn
 export async function slettCollege(bruker: TnBruker, spillerId: string): Promise<TnSkrivResultat> {
   return kjor(async () => {
     const kontekst = await krevTrener(bruker);
-    const { count } = await prisma.tnCollege.deleteMany({ where: { groupId: kontekst.gruppe.id, userId: spillerId } });
+    const { count } = await skrivMedDeling(bruker, kontekst.gruppe.id, spillerId,
+      (db) => db.tnCollege.deleteMany({ where: { groupId: kontekst.gruppe.id, userId: spillerId } }));
     if (count === 0) throw new TnSkrivFeil("Spilleren har ingen college-status.");
     return undefined;
   }, "Kunne ikke fjerne college-statusen.");
