@@ -3,7 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { Capability } from "@/lib/auth/cbac";
 import { canUser } from "@/lib/auth/effective-capabilities";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { hentTnArbeidskontekst, hentTnSpillere, type TnBruker } from "@/lib/domain/tn-arbeidsflate";
 import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
 import {
@@ -30,14 +30,11 @@ import type { RecurrencePolicy, WorkbenchSession, SourceItem } from "@/lib/domai
  * TRE ting den delte motoren ikke selv gjør:
  *
  *  1. TN-ROLLEPORT: kun TN-rolle COACH (eller platform-ADMIN) får skrive.
- *     `harCoachTilgangTilSpiller`/`coachScopedPlayerWhere` sin tredje gren
- *     (G5) slipper et TN-ASSISTANT-medlem gjennom på lik linje med et
- *     TN-COACH-medlem — det er riktig for LESING (samme som
- *     `hentViewerRolleIGruppe` i tn-post.ts), men for SKRIVING skal
- *     ASSISTANT være innsyn, ikke redigering (samme skille som
- *     `eierGruppen` i admin/grupper/[id]/actions.ts). Wrapperne under er
- *     derfor den eksplisitte TN-rolleporten Codex ba om — de endrer og
- *     utvider ALDRI selve `coachScopedPlayerWhere`/`ensurePlanAccess`.
+ *     TN-medlemskap gir ingen innsyn i spillerens egen plan uten deling
+ *     (D-04) og aldri skriverett der (D-25, D-49): lesing går via
+ *     `harCoachLesetilgangTilSpiller`, skriving via
+ *     `harCoachTilgangTilSpiller` (egen coach-relasjon). Wrapperne under
+ *     legger TN-rolleporten oppå.
  *  2. ROSTER-PORT: den valgte spilleren må faktisk være et AKTIVT TN-
  *     spillermedlem (`kontekst.spillere`) — en personlig coach-relasjon
  *     utenfor TN gir ikke tilgang til en TN-side, og en utmeldt/ukjent
@@ -120,8 +117,9 @@ function erAktivTnSpiller(kontekst: TnWorkbenchKontekst, spillerId: string): boo
  * Full skrivetilgang til en TN-spillers PERSONLIGE plan: TN-rolle COACH
  * (eller platform-ADMIN), spilleren er et aktivt TN-medlem, OG samme
  * personlige coach-tilgang som Workbench ellers krever
- * (`harCoachTilgangTilSpiller` — G5 gir dette automatisk for et TN-COACH-
- * medlem via gruppemedlemskapet, se `coached.ts`). Alle tre må stå.
+ * (`harCoachTilgangTilSpiller`: egen enrollment eller eid gruppe). TN-
+ * medlemskap gir det ikke (D-25, D-49); en TN-trener uten egen coach-relasjon
+ * sender forslag i stedet. Alle tre må stå.
  */
 async function kanSkrivePersonligPlan(bruker: TnBruker, kontekst: TnWorkbenchKontekst, spillerId: string): Promise<boolean> {
   if (!kontekst.kanAdministrere) return false;
@@ -148,7 +146,8 @@ export async function harTnPersonligPlanLesetilgang(bruker: TnBruker, kontekst: 
   if (kontekst.erSpiller && bruker.id === spillerId) return true;
   if (!kontekst.erTrener) return false;
   if (!erAktivTnSpiller(kontekst, spillerId)) return false;
-  return harCoachTilgangTilSpiller({ id: bruker.id, role: bruker.role }, spillerId);
+  // Innsyn krever egen coach-relasjon eller uttrykkelig deling (D-04).
+  return harCoachLesetilgangTilSpiller({ id: bruker.id, role: bruker.role }, spillerId);
 }
 
 export type TnHandlingResultat = { ok: true } | { ok: false; feil: string };

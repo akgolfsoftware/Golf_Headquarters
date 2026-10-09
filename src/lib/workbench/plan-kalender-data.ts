@@ -9,7 +9,7 @@ import { tilDatoKolonne } from "./wb-map";
 
 /** Kall først ETTER eksisterende spillervakt. Bare spillerens planer og aktive grupper. */
 export async function lastPlanKalenderBlokker(playerId: string, weekStart: string, ownPlayer: boolean): Promise<LockedBlock[][]> {
-  const viewer = await planTilgang(playerId);
+  const viewer = await planTilgang(playerId, "les");
   if (!viewer) return Array.from({ length: 7 }, () => []);
   ownPlayer = viewer.id === playerId;
   const end = addDays(weekStart, 7), fromDate = tilDatoKolonne(weekStart), toDate = tilDatoKolonne(end);

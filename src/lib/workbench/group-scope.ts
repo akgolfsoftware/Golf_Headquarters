@@ -11,7 +11,12 @@ export function ownGroupPublicationWhere(): Prisma.WorkbenchSessionWhereInput {
   return { OR: [{ sourceGroupSessionId: null }, { localOverride: true }, { status: { in: [...SPILLER_SYNLIGE_STATUSER] } }] };
 }
 
-/** Samme redigeringsregel som gruppe-actions: eier, aktiv COACH eller ADMIN. */
+/**
+ * Redigering av GRUPPEplanen (gruppeøkter, gruppeperioder, samlinger): eier,
+ * aktivt COACH-medlem eller ADMIN. Gjelder også WANG/TN: organisasjonen eier
+ * gruppeplanen for sine grupper (D-49). Skriving i medlemmenes egne planer
+ * styres av `canWriteMemberPlans`.
+ */
 export function editableGroupWhere(viewer: { id: string; role: string }): Prisma.GroupWhereInput {
   if (viewer.role === "ADMIN") return { arkivertAt: null };
   if (viewer.role !== "COACH") return { id: { in: [] } };
@@ -41,5 +46,22 @@ export async function canEditGroup(
 ): Promise<boolean> {
   return Boolean(await db.group.findFirst({
     where: { id: groupId, ...editableGroupWhere(viewer) }, select: { id: true },
+  }));
+}
+
+/**
+ * Utrulling som skriver rett i hvert medlems EGEN plan (SeasonPlan/PeriodBlock):
+ * bare ADMIN eller gruppens eier (Group.coachId). Trener-medlemskap gir ingen
+ * skriverett i spillerens plan (D-25), og en organisasjonstrener kan bare
+ * foreslå endringer der (D-05, D-49).
+ */
+export async function canWriteMemberPlans(
+  viewer: { id: string; role: string }, groupId: string,
+  db: Pick<Prisma.TransactionClient, "group"> = prisma,
+): Promise<boolean> {
+  if (viewer.role !== "ADMIN" && viewer.role !== "COACH") return false;
+  return Boolean(await db.group.findFirst({
+    where: { id: groupId, arkivertAt: null, ...(viewer.role === "ADMIN" ? {} : { coachId: viewer.id }) },
+    select: { id: true },
   }));
 }

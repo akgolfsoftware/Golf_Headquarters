@@ -17,7 +17,7 @@ import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachScopedPlayerWhere, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere, harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDays,
@@ -164,11 +164,20 @@ function revalider(playerId: string): void {
 
 type Viewer = { id: string; role: string };
 
-async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null> {
+/**
+ * «les» = innsyn (lese-scope eller uttrykkelig deling, D-04); «skriv» = egen
+ * coach-relasjon (D-25). Standard er skriving, så en glemt lesesti blir
+ * strengere, aldri løsere.
+ */
+async function kreverTilgangTilSpiller(
+  playerId: string,
+  modus: "les" | "skriv" = "skriv",
+): Promise<Viewer | null> {
   const user = await requirePortalUser();
   if (user.id === playerId) return { id: user.id, role: user.role };
   if (user.role !== "COACH" && user.role !== "ADMIN") return null;
-  const harTilgang = await harCoachTilgangTilSpiller(
+  const sjekk = modus === "les" ? harCoachLesetilgangTilSpiller : harCoachTilgangTilSpiller;
+  const harTilgang = await sjekk(
     { id: user.id, role: user.role },
     playerId,
   );
@@ -179,13 +188,14 @@ async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null>
 async function hentMedTilgang(
   sessionId: string,
   db: Pick<Prisma.TransactionClient, "workbenchSession" | "group"> = prisma,
+  modus: "les" | "skriv" = "skriv",
 ): Promise<{ row: WbRow; viewer: Viewer } | { feil: string }> {
   const row = await db.workbenchSession.findUnique({
     where: { id: sessionId },
     include: { drills: true },
   });
   if (!row) return { feil: FINNES_IKKE };
-  const viewer = await kreverTilgangTilSpiller(row.playerId);
+  const viewer = await kreverTilgangTilSpiller(row.playerId, modus);
   if (!viewer) return { feil: INGEN_TILGANG };
   if (viewer.id === row.playerId && !canReadOwnGroupCopy(row)) return { feil: INGEN_TILGANG };
   if (row.groupId && !row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(row.id)) {
@@ -455,7 +465,7 @@ export async function loadWeek(params: {
   const weekStart = IsoDateSchema.safeParse(params.weekStart);
   if (!weekStart.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const mandag = mondayOf(weekStart.data);
@@ -658,7 +668,7 @@ export async function loadStallFollowup(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const from = mondayOf(parsed.data);
@@ -694,7 +704,7 @@ export async function loadWorkbenchLive(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const from = mondayOf(parsed.data);
@@ -745,7 +755,7 @@ export async function loadMinCalendar(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const access = await kreverTilgangTilSpiller(params.playerId);
+  const access = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!access) return { ok: false, error: INGEN_TILGANG };
   const viewer = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const weekStart = mondayOf(parsed.data);
@@ -893,7 +903,7 @@ export async function loadMonth(params: {
   if (!parsed.success) return { ok: false, error: "Ugyldig måned." };
   const monthStart = monthStartOf(parsed.data);
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const last = lastDayOfMonth(monthStart);
@@ -926,7 +936,7 @@ export async function loadYear(params: {
   if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
     return { ok: false, error: "Ugyldig år." };
   }
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const yearStart = new Date(Date.UTC(params.year, 0, 1));
@@ -1007,7 +1017,7 @@ export async function loadPeriod(params: {
   if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
     return { ok: false, error: "Ugyldig år." };
   }
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const yearStart = new Date(Date.UTC(params.year, 0, 1));
@@ -1081,7 +1091,7 @@ export async function loadPeriod(params: {
 export async function loadSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession | null>> {
-  const treff = await hentMedTilgang(sessionId);
+  const treff = await hentMedTilgang(sessionId, prisma, "les");
   if ("feil" in treff) {
     return treff.feil === FINNES_IKKE
       ? { ok: true, data: null }
@@ -1134,7 +1144,7 @@ export async function loadSources(params: {
   playerId: string;
   weekStart?: string;
 }): Promise<WbResultat<SourceItem[]>> {
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const ukeStart = params.weekStart
@@ -1221,7 +1231,7 @@ export async function loadPlayerDay(params: {
   const dato = IsoDateSchema.safeParse(params.date);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const rows = await prisma.workbenchSession.findMany({
