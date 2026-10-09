@@ -58,7 +58,9 @@ export async function registrerDelingsSamtykke(input: {
     gittAvRolle === "SELV"
   ) {
     throw new Error(
-      "Du er under 16 år, så en foresatt må godkjenne delingen for deg i foreldreportalen.",
+      bruker.dateOfBirth || bruker.requiresGuardianConsent
+        ? "Du er under 16 år, så en foresatt må godkjenne delingen for deg i foreldreportalen."
+        : "Legg inn fødselsdatoen din først. Under 16 år må en foresatt godkjenne delingen.",
     );
   }
 

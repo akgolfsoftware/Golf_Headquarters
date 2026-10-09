@@ -9,6 +9,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { harForelderGodkjent, maaHaForesattSamtykke } from "@/lib/auth/minor";
 
 export const LYD_SAMTYKKE_STATUS = ["GITT", "VENTER", "TRUKKET"] as const;
 export type LydSamtykkeStatus = (typeof LYD_SAMTYKKE_STATUS)[number];
@@ -30,12 +31,35 @@ export function kanStarteFangst(status: string | null | undefined): boolean {
   return status === "GITT";
 }
 
-/** Ren: bygg sjekk-resultat fra rad (eller null). */
+/**
+ * Spilleren opptaket gjelder (D-63). `kreverForesatt`: under 16 eller ukjent
+ * alder. `forelderGodkjent`: forelder har godkjent kontoen.
+ */
+export type LydSamtykkeSpiller = {
+  kreverForesatt: boolean;
+  forelderGodkjent: boolean;
+};
+
+/**
+ * Ren: bygg sjekk-resultat fra rad (eller null).
+ *
+ * Under 16 (D-63, TA-04): opptak er sperret til forelder har godkjent kontoen,
+ * og bare samtykke gitt av FORESATT teller. Et «SELV»-samtykke for et barn,
+ * også eldre rader, gir aldri opptak.
+ */
 export function byggLydSamtykkeSjekk(
-  rad: { status: string; gittAt: Date | null } | null,
+  rad: { status: string; gittAt: Date | null; gittAv?: string } | null,
+  spiller: LydSamtykkeSpiller,
 ): LydSamtykkeSjekk {
   if (!rad) {
     return { tillatt: false, status: "MANGLER", gittAt: null };
+  }
+  if (
+    rad.status === "GITT" &&
+    spiller.kreverForesatt &&
+    (!spiller.forelderGodkjent || rad.gittAv !== "FORESATT")
+  ) {
+    return { tillatt: false, status: "VENTER", gittAt: rad.gittAt };
   }
   if (rad.status === "GITT") {
     return { tillatt: true, status: "GITT", gittAt: rad.gittAt };
@@ -68,29 +92,72 @@ export function lydSamtykkeMelding(
 export async function hentLydSamtykkeStatus(
   playerId: string,
 ): Promise<LydSamtykkeSjekk> {
-  const rad = await prisma.lydSamtykke.findUnique({
-    where: { userId: playerId },
-    select: { status: true, gittAt: true },
-  });
-  return byggLydSamtykkeSjekk(rad);
+  const [rad, spillere] = await Promise.all([
+    prisma.lydSamtykke.findUnique({
+      where: { userId: playerId },
+      select: { status: true, gittAt: true, gittAv: true },
+    }),
+    hentLydSamtykkeSpillere([playerId]),
+  ]);
+  return byggLydSamtykkeSjekk(rad, spillere.get(playerId) ?? UKJENT_SPILLER);
+}
+
+/** Finnes ikke spilleren, behandles den strengest mulig. */
+const UKJENT_SPILLER: LydSamtykkeSpiller = { kreverForesatt: true, forelderGodkjent: false };
+
+async function hentLydSamtykkeSpillere(
+  playerIds: string[],
+): Promise<Map<string, LydSamtykkeSpiller>> {
+  const [brukere, relasjoner] = await Promise.all([
+    prisma.user.findMany({
+      where: { id: { in: playerIds } },
+      select: {
+        id: true,
+        role: true,
+        dateOfBirth: true,
+        requiresGuardianConsent: true,
+        guardianConsentGivenAt: true,
+      },
+    }),
+    prisma.parentRelation.findMany({
+      where: { childId: { in: playerIds }, approved: true },
+      select: { childId: true },
+    }),
+  ]);
+  const medForelder = new Set(relasjoner.map((r) => r.childId));
+  return new Map(
+    brukere.map((b) => [
+      b.id,
+      {
+        kreverForesatt: maaHaForesattSamtykke(b),
+        forelderGodkjent: harForelderGodkjent({
+          ...b,
+          harGodkjentForelder: medForelder.has(b.id),
+        }),
+      },
+    ]),
+  );
 }
 
 /**
  * Kart playerId → tillatt for UI (skjul Start-knapp).
- * Spillere uten rad får tillatt=false.
+ * Spillere uten rad får tillatt=false. Samme regel som opptaksstart.
  */
 export async function hentLydSamtykkeKart(
   playerIds: string[],
 ): Promise<Record<string, boolean>> {
   if (playerIds.length === 0) return {};
-  const rader = await prisma.lydSamtykke.findMany({
-    where: { userId: { in: playerIds } },
-    select: { userId: true, status: true },
-  });
-  const byId = new Map(rader.map((r) => [r.userId, r.status]));
+  const [rader, spillere] = await Promise.all([
+    prisma.lydSamtykke.findMany({
+      where: { userId: { in: playerIds } },
+      select: { userId: true, status: true, gittAt: true, gittAv: true },
+    }),
+    hentLydSamtykkeSpillere(playerIds),
+  ]);
+  const byId = new Map(rader.map((r) => [r.userId, r]));
   const out: Record<string, boolean> = {};
   for (const id of playerIds) {
-    out[id] = kanStarteFangst(byId.get(id));
+    out[id] = byggLydSamtykkeSjekk(byId.get(id) ?? null, spillere.get(id) ?? UKJENT_SPILLER).tillatt;
   }
   return out;
 }
