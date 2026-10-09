@@ -108,7 +108,7 @@ export function VoiceRangeRecorder({
         setSavedStatus(res.message);
         onMemoSaved?.(parsed);
       } else {
-        setErrorMsg("Kunne ikke lagre notat.");
+        setErrorMsg(res.message || "Kunne ikke lagre notat.");
       }
     } catch {
       setErrorMsg("Feil ved lagring.");

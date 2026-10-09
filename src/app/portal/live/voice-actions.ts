@@ -53,10 +53,18 @@ export async function uploadAndTranscribeRangeVoice(
 }
 
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { logError } from "@/lib/error-tracking";
+
+const MAKS_TRANSKRIPT_TEGN = 4000;
 
 /**
  * Lagrer den transkriberte observasjonen direkte som et notat på en aktiv økt,
  * eller som et CoachNote for coachen.
+ *
+ * Svarer `ok: true` BARE når noe faktisk ble lagret. Økta må tilhøre brukeren
+ * (spiller eller økt-coach), eller brukeren må være coach/admin med tilgang til
+ * spilleren (kodegjennomgang 06.10: TP-06, RF-02, RF-03).
  */
 export async function saveVoiceRangeMemo(params: {
   sessionId?: string;
@@ -66,45 +74,68 @@ export async function saveVoiceRangeMemo(params: {
   const user = await requireConsentingUser();
   const { sessionId, observation, destination } = params;
 
-  if (destination === "session" && sessionId) {
-    const notatTekst = `Talenotat (${observation.club ?? "Uspesifisert kølle"}${
-      observation.position ? ` · ${observation.position}` : ""
-    }): ${observation.rawTranscript}`;
+  const tekst = observation.rawTranscript?.trim() ?? "";
+  if (!tekst) {
+    return { ok: false, message: "Notatet er tomt og ble ikke lagret." };
+  }
+  if (tekst.length > MAKS_TRANSKRIPT_TEGN) {
+    return { ok: false, message: "Notatet er for langt og ble ikke lagret." };
+  }
 
-    try {
+  try {
+    if (destination === "session") {
+      if (!sessionId) {
+        return { ok: false, message: "Ingen økt valgt. Notatet ble ikke lagret." };
+      }
+      const notatTekst = `Talenotat (${observation.club ?? "Uspesifisert kølle"}${
+        observation.position ? ` · ${observation.position}` : ""
+      }): ${tekst}`;
+
       const existing = await prisma.trainingSessionV2.findUnique({
         where: { id: sessionId },
-        select: { notes: true },
+        select: { notes: true, studentId: true, coachId: true },
       });
-      if (existing) {
-        const updated = existing.notes ? `${existing.notes}\n\n${notatTekst}` : notatTekst;
-        await prisma.trainingSessionV2.update({
-          where: { id: sessionId },
-          data: { notes: updated },
-        });
+      const harTilgang =
+        existing != null &&
+        (existing.studentId === user.id ||
+          existing.coachId === user.id ||
+          (existing.studentId != null &&
+            (user.role === "COACH" || user.role === "ADMIN") &&
+            (await harCoachTilgangTilSpiller(user, existing.studentId))));
+      if (!existing || !harTilgang) {
+        return { ok: false, message: "Fant ikke økta. Notatet ble ikke lagret." };
       }
-    } catch {}
 
-    revalidatePath("/portal/live");
-    return { ok: true, message: "Notat lagret på økten." };
+      const updated = existing.notes ? `${existing.notes}\n\n${notatTekst}` : notatTekst;
+      await prisma.trainingSessionV2.update({
+        where: { id: sessionId },
+        data: { notes: updated },
+      });
+      revalidatePath("/portal/live");
+      return { ok: true, message: "Notat lagret på økten." };
+    }
+
+    if (destination === "coach_inbox") {
+      const coachId = await resolveCoachIdForPlayer(user.id);
+      await prisma.coachNote.create({
+        data: {
+          coachId,
+          playerId: user.id,
+          title: `Talenotat fra rangen (${observation.club ?? "Uspesifisert"}${
+            observation.position ? ` · ${observation.position}` : ""
+          })`,
+          content: tekst,
+          isPrivate: false,
+          tags: ["range-memo", observation.position ?? "range"].filter(Boolean),
+        },
+      });
+      return { ok: true, message: "Sendt til coach." };
+    }
+  } catch (error) {
+    await logError({ context: "voice.saveVoiceRangeMemo", error, userId: user.id });
+    return { ok: false, message: "Noe gikk galt. Notatet ble ikke lagret." };
   }
 
-  if (destination === "coach_inbox") {
-    const coachId = await resolveCoachIdForPlayer(user.id);
-    await prisma.coachNote.create({
-      data: {
-        coachId,
-        playerId: user.id,
-        title: `Talenotat fra rangen (${observation.club ?? "Uspesifisert"}${
-          observation.position ? ` · ${observation.position}` : ""
-        })`,
-        content: observation.rawTranscript,
-        isPrivate: false,
-        tags: ["range-memo", observation.position ?? "range"].filter(Boolean),
-      },
-    });
-    return { ok: true, message: "Sendt til coach." };
-  }
-
-  return { ok: true, message: "Observasjon registrert." };
+  // task_proposal lagrer ingenting ennå — ikke meld at det er registrert.
+  return { ok: false, message: "Dette valget lagrer ikke noe ennå. Notatet ble ikke lagret." };
 }
