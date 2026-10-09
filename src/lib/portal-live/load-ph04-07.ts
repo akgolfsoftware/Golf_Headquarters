@@ -24,6 +24,8 @@ import {
   formatTimerOgMinutter,
 } from "./ph04-07-data";
 
+// FORELDRELØS ved Workbench-økt i gang (09.10.2026): loadWbLiveAktiv viser aldri
+// demoøvelser. Brukes fortsatt som reserve for de gamle økttypene; fjernes med dem.
 const DEFAULT_DRILLS: DrillItem[] = [
   {
     id: "drill-1",

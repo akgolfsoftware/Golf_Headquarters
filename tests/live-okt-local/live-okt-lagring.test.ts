@@ -226,3 +226,34 @@ test("oppgave som tilhører en annen spiller får ingen reps", async () => {
   assert.equal(await db.positionTaskLog.count({ where: { taskId } }), 0);
   await db.technicalPlan.delete({ where: { id: plan.id } });
 });
+
+test("treningsanalysen teller reps per øvelse, og slagtellerens baller ikke to ganger", async () => {
+  const { hentTreningsanalyse } = await import("../../src/lib/portal-analyse/treningsanalyse-data");
+  const periode = { userId: SPILLER, fra: new Date("2026-10-08T00:00:00Z"), til: new Date("2026-10-11T00:00:00Z"), now: new Date("2026-10-11T00:00:00Z") };
+  await db.workbenchSession.deleteMany({ where: { playerId: SPILLER } });
+  const id = await nyOkt("analyse");
+  await live.fullforWbLiveOkt(id, [{ drillId: `${id}-d1`, reps: 25 }, { drillId: `${id}-d2`, reps: 5 }]);
+  const forBaller = await hentTreningsanalyse(periode);
+  assert.equal(forBaller.faktiskeReps, 30);
+  assert.equal(forBaller.ballerSlatt, 0);
+
+  await db.sessionBallLog.create({ data: { planSessionId: id, club: "putter", count: 40 } });
+  const medBaller = await hentTreningsanalyse(periode);
+  assert.equal(medBaller.faktiskeReps, 30);
+  assert.equal(medBaller.ballerSlatt, 40);
+  await db.sessionBallLog.deleteMany({ where: { planSessionId: id } });
+});
+
+test("coachen ser reps, kommentar og videoer for Workbench-økta i AgencyOS", async () => {
+  const { lastLiveOktData } = await import("../../src/lib/agencyos/live-okt-data");
+  const id = await nyOkt("agencyos");
+  await live.lagreWbOvelse(id, { drillId: `${id}-d1`, reps: 14, kommentar: "Tempoet sklir på lange putter" });
+  await live.lagreWbOvelseVideo(id, { drillId: `${id}-d1`, videoUrl: "https://lagring.test/a.mp4", storagePath: `${SPILLER}/a.mp4` });
+  const data = await lastLiveOktData(id);
+  assert.ok(data);
+  assert.equal(data.kilde, "wb");
+  assert.equal(data.spillerNavn, "Tobias Lindvik");
+  const [d1, d2] = data.driller;
+  assert.deepEqual([d1.reps, d1.kommentar, d1.videoer, d1.logget, d1.pyramide], [14, "Tempoet sklir på lange putter", 1, true, "SLAG"]);
+  assert.deepEqual([d2.reps, d2.kommentar, d2.logget], [null, null, false]);
+});

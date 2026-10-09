@@ -11,9 +11,13 @@
 import { prisma } from "@/lib/prisma";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { AnalyseResultatSchema } from "@/lib/coaching-analysis";
+import { wbScheduledAtISO } from "@/lib/portal-live/wb-live-map";
+import { AkFormelLeseSchema } from "@/lib/domain/workbench/schemas";
 
 export type LiveOktData = {
   id: string;
+  /** "wb": WorkbenchSession. Melding, fokuspunkt og vurdering finnes bare for "v2" ennå. */
+  kilde: "v2" | "wb";
   tittel: string;
   spillerNavn: string | null;
   coachNavn: string | null;
@@ -32,7 +36,17 @@ export type LiveOktData = {
      *  coaching-analysis (den drar med seg Anthropic SDK + fs inn i bundelen). */
     coachAnalyse: string | null;
   } | null;
-  driller: { id: string; navn: string; varighetMin: number; pyramide: string; logget: boolean }[];
+  driller: {
+    id: string;
+    navn: string;
+    varighetMin: number;
+    pyramide: string;
+    logget: boolean;
+    /** Registrerte reps og spillerens kommentar (bare Workbench-økter). */
+    reps?: number | null;
+    kommentar?: string | null;
+    videoer?: number;
+  }[];
   /** Tidligere sendt fokuspunkt til spiller (completedSummary.coachBrief), tom streng hvis ingen. */
   coachBrief: string;
   /** Coachens post-økt-vurdering 1–5 (completedSummary.coachRating), null hvis ikke satt. */
@@ -51,7 +65,14 @@ export async function kanSeLiveOkt(
     where: { id: sessionId },
     select: { coachId: true, studentId: true },
   });
-  if (!okt) return false;
+  if (!okt) {
+    // Workbench-økt (live-økt krav 2, 09.10.2026): samme regel med playerId.
+    const wb = await prisma.workbenchSession.findUnique({ where: { id: sessionId }, select: { coachId: true, playerId: true } });
+    if (!wb) return false;
+    if (viewer.role === "ADMIN") return true;
+    if (viewer.role !== "COACH") return false;
+    return wb.coachId === viewer.id || harCoachTilgangTilSpiller(viewer, wb.playerId);
+  }
   if (viewer.role === "ADMIN") return true;
   if (viewer.role !== "COACH") return false;
   if (okt.coachId === viewer.id) return true;
@@ -81,7 +102,7 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
       },
     },
   });
-  if (!okt) return null;
+  if (!okt) return lastWbLiveOktData(sessionId);
 
   // studentId/coachId har ingen navngitt Prisma-relasjon på modellen —
   // slås opp separat, ikke via include.
@@ -116,6 +137,7 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
 
   return {
     id: okt.id,
+    kilde: "v2",
     tittel: okt.title,
     spillerNavn: student?.name ?? null,
     coachNavn: coach?.name ?? null,
@@ -143,5 +165,70 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
     })),
     coachBrief,
     coachRating,
+  };
+}
+
+/** Workbench-økt: øvelser med reps, kommentar og videoer fra live-økta. */
+async function lastWbLiveOktData(sessionId: string): Promise<LiveOktData | null> {
+  const okt = await prisma.workbenchSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      id: true, title: true, playerId: true, coachId: true, date: true, startMinute: true, durationMinutes: true,
+      location: true, environment: true, practiceType: true, status: true, maalsetning: true,
+      drills: { orderBy: { sortOrder: "asc" }, select: { id: true, title: true, durationMinutes: true, akFormel: true } },
+      drillLogs: { select: { drillId: true, reps: true, kommentar: true } },
+    },
+  });
+  if (!okt) return null;
+  const [spiller, coach, opptak, videoer] = await Promise.all([
+    prisma.user.findUnique({ where: { id: okt.playerId }, select: { name: true } }),
+    prisma.user.findUnique({ where: { id: okt.coachId }, select: { name: true } }),
+    prisma.sessionRecording.findFirst({
+      where: { sessionId },
+      orderBy: { createdAt: "desc" },
+      select: { status: true, durationSec: true, transcript: true, aiAnalysis: true },
+    }),
+    prisma.playerSwingVideo.groupBy({
+      by: ["drillId"],
+      where: { liveSessionId: sessionId, liveSessionKind: "workbench" },
+      _count: { _all: true },
+    }),
+  ]);
+  return {
+    id: okt.id,
+    kilde: "wb",
+    tittel: okt.title,
+    spillerNavn: spiller?.name ?? null,
+    coachNavn: coach?.name ?? null,
+    sted: okt.location,
+    miljo: okt.environment ?? "—",
+    type: okt.practiceType ?? "—",
+    status: okt.status,
+    startTime: wbScheduledAtISO(okt.date, okt.startMinute),
+    varighetPlanlagtMin: okt.durationMinutes,
+    malsetning: okt.maalsetning,
+    opptak: opptak
+      ? {
+          status: opptak.status,
+          durationSec: opptak.durationSec,
+          transcript: opptak.transcript,
+          coachAnalyse: AnalyseResultatSchema.safeParse(opptak.aiAnalysis).data?.coachAnalyse ?? null,
+        }
+      : null,
+    driller: okt.drills.map((d) => {
+      const logg = okt.drillLogs.find((l) => l.drillId === d.id);
+      return {
+        id: d.id,
+        navn: d.title,
+        varighetMin: d.durationMinutes,
+        pyramide: AkFormelLeseSchema.safeParse(d.akFormel).data?.pyramid ?? "",
+        logget: (logg?.reps ?? 0) > 0,
+        reps: logg ? logg.reps : null,
+        kommentar: logg?.kommentar ?? null,
+        videoer: videoer.find((v) => v.drillId === d.id)?._count._all ?? 0,
+      };
+    }),
+    coachBrief: "",
+    coachRating: null,
   };
 }
