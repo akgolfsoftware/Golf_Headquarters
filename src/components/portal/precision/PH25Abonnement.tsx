@@ -258,7 +258,7 @@ export function PH25Abonnement({
             <span className="pa-alert__title">Gameplan krever Full</span>
             <span>
               Du kom hit fordi flaten er låst i Gratis. Åpent i Gratis: testbatteriet, analyse og
-              runderegistrering med SG, DataGolf-sammenligning, booking av enkelttimer og konto. Velg
+              runderegistrering med SG, booking av enkelttimer og konto. Velg
               Full for plan, Live-økt, Gameplan og Caddie.
             </span>
           </div>

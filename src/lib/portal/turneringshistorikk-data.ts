@@ -3,6 +3,7 @@ import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import {
   byggTurneringshistorikk,
   type Turneringshistorikk,
@@ -23,6 +24,12 @@ import {
 export async function hentTurneringshistorikk(
   userId: string,
   db: Pick<Prisma.TransactionClient, "user" | "publicPlayerEntry" | "tournamentEntry"> = prisma,
+  /**
+   * Resultater fra turneringer synket fra Data Golf er Data Golf-tall og tas
+   * bare med når kalleren har sjekket kanSeDataGolf (coach/admin, Anders
+   * 09.10.2026). Standard er nei.
+   */
+  { medDataGolf = false }: { medDataGolf?: boolean } = {},
 ): Promise<Turneringshistorikk> {
   const bruker = await db.user.findUnique({
     where: { id: userId },
@@ -33,7 +40,7 @@ export async function hentTurneringshistorikk(
     where: {
       playerId: bruker.publicPlayerId,
       // Sammenslåtte dubletter skal ikke dukke opp to ganger.
-      tournament: { mergedIntoId: null },
+      tournament: { mergedIntoId: null, ...(medDataGolf ? {} : UTEN_DATAGOLF_TURNERING) },
     },
     orderBy: { tournament: { startDate: "desc" } },
     select: {

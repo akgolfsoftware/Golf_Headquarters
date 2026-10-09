@@ -7,6 +7,7 @@
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { StatsNorskeV2, type NorskeTurnGruppe } from "@/components/marketing/v2/StatsNorskeV2";
 
 export const revalidate = 1800;
@@ -42,6 +43,8 @@ async function hentNorskeEntries(): Promise<NorskeTurnGruppe[]> {
         player: { country: "NO" },
         tournament: {
           OR: [{ status: "IN_PROGRESS" }, { startDate: { gte: iDag, lte: om7dager }, status: "UPCOMING" }],
+          // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+          AND: [UTEN_DATAGOLF_TURNERING],
         },
       },
       include: {

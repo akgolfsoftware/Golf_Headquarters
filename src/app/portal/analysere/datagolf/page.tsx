@@ -3,8 +3,7 @@
  * blandes aldri inn. V2Shell leverer chrome, DataGolfV2 innholdet.
  */
 
-import { redirect } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 import { hentSpillerverktoy } from "@/lib/datagolf/player-tool-data";
 import { hentUtfordringer } from "@/lib/datagolf/challenge-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -18,9 +17,8 @@ export const dynamic = "force-dynamic";
 export default async function AnalysereDataGolfPage({ searchParams }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  if (user.role === "GUEST") redirect("/admin/kalender");
-  if (user.role === "PARENT") redirect("/forelder");
+  // Data Golf er bare for coach og admin (Anders 09.10.2026).
+  const user = await krevDataGolfBruker("/portal/analysere/datagolf");
 
   const sp = await searchParams;
   const [data, historikk] = await Promise.all([hentSpillerverktoy(user.id, sp), hentUtfordringer(user.id)]);

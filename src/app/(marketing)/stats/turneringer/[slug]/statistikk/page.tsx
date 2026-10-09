@@ -11,6 +11,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, TrendingDown, Trophy, Users, Flag } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 900;
@@ -64,6 +65,8 @@ export default async function TurneringStatistikk({ params }: Props) {
     where: { slug },
     include: {
       publicEntries: {
+        // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+        where: { tournament: UTEN_DATAGOLF_TURNERING },
         select: {
           rounds: true,
           status: true,

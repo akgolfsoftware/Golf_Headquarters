@@ -83,7 +83,9 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         ? [
             lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
             lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-            { label: "DataGolf", href: "/portal/analysere/datagolf", aktiv: false },
+            // DataGolf-lenken er fjernet: Data Golf er bare for coach og admin
+            // (Anders 09.10.2026), og TN-menyen vises også for trenere uten
+            // coach-rolle. Coacher når Data Golf fra PlayerHQ/AgencyOS.
           ]
         : [],
     },
