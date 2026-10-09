@@ -7,7 +7,8 @@ import { audit } from "@/lib/audit";
 import { registrerHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseSamtykkeType } from "@/lib/health/samtykke-regler";
 import { registrerDelingsSamtykke } from "@/lib/deling/samtykke";
-import { erDelingScope } from "@/lib/deling/samtykke-regler";
+import { erDelingScope, type WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
+import { registrerWangTestsvar } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 
 /**
@@ -18,14 +19,13 @@ export async function lagreSamtykker(
   childId: string,
   samtykker: Record<string, boolean>,
 ): Promise<{ ok: true }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) throw new Error("Du er ikke godkjent foresatt for dette barnet");
-  }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) throw new Error("Du er ikke godkjent foresatt for dette barnet");
 
   // Hent eksisterende preferences og merge inn nye samtykker
   const child = await prisma.user.findUnique({
@@ -69,15 +69,14 @@ export async function settHelseSamtykkeForBarn(
   type: string,
   gitt: boolean,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) {
-      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
-    }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) {
+    return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
   }
 
   if (!erHelseSamtykkeType(type)) {
@@ -118,15 +117,14 @@ export async function settDelingsSamtykkeForBarn(
   mottakerGruppeId: string,
   gitt: boolean,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) {
-      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
-    }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) {
+    return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
   }
 
   if (!erDelingScope(scope)) {
@@ -235,4 +233,30 @@ export async function beOmDataSletting(
 
   revalidatePath("/forelder/samtykke");
   return { ok: true };
+}
+
+/**
+ * D-55 (07.10.2026): foresatt svarer på testsamtykket for et WANG-barn i én
+ * WANG-gruppe. Under 16 år er dette den eneste raden som deler testene.
+ * Bare godkjent forelder: administrator har ingen sti forbi samtykket.
+ */
+export async function svarWangTestforesporselForBarn(
+  childId: string,
+  gruppeId: string,
+  gitt: boolean,
+): Promise<{ ok: true; status: WangTestdelingStatus } | { ok: false; feil: string }> {
+  const user = await requirePortalUser({ allow: ["PARENT"] });
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
+  try {
+    const deling = await registrerWangTestsvar({ userId: childId, gruppeId, gitt, gittAvUserId: user.id, gittAvRolle: "FORESATT" });
+    revalidatePath("/forelder/samtykke");
+    revalidatePath("/team-norway/wang-resultater");
+    revalidatePath("/team-wang/coach/tester");
+    return { ok: true, status: deling.status };
+  } catch (err) {
+    return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke lagre svaret." };
+  }
 }

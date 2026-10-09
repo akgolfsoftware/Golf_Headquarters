@@ -6,6 +6,7 @@ import {
   isAwaitingGuardianConsent,
   isMinor,
   maaHaForesattSamtykke,
+  sekstenaarsdag,
 } from "./minor";
 
 // GDPR art. 8 (S-13): isAwaitingGuardianConsent er beslutningen getCurrentUser
@@ -112,5 +113,29 @@ describe("maaHaForesattSamtykke", () => {
       maaHaForesattSamtykke({ requiresGuardianConsent: false, dateOfBirth: null }, naa),
       false,
     );
+  });
+});
+
+describe("sekstenaarsdag", () => {
+  it("gir samme kalenderdag 16 år senere", () => {
+    assert.equal(
+      sekstenaarsdag(new Date("2010-03-15T00:00:00Z"))?.toISOString(),
+      "2026-03-15T00:00:00.000Z",
+    );
+  });
+
+  it("29. februar gir 29. februar 16 år senere", () => {
+    assert.equal(
+      sekstenaarsdag(new Date("2008-02-29T00:00:00Z"))?.toISOString(),
+      "2024-02-29T00:00:00.000Z",
+    );
+    assert.equal(
+      sekstenaarsdag(new Date("2012-02-29T00:00:00Z"))?.toISOString(),
+      "2028-02-29T00:00:00.000Z",
+    );
+  });
+
+  it("null uten fødselsdato", () => {
+    assert.equal(sekstenaarsdag(null), null);
   });
 });

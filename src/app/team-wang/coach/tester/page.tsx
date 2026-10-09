@@ -85,8 +85,9 @@ export default async function WangTestresultaterPage({
           <div>
             <h1>Testresultater</h1>
             <p className={styles.intro}>
-              Resultater for spillere i skolene du trener ved. Bare aktive
-              WANG-gruppetilknytninger gir innsyn.
+              Resultater for spillere i skolene du trener ved som har samtykket
+              til å dele testene. Trekker en spiller samtykket, forsvinner
+              resultatene med en gang.
             </p>
           </div>
           <div className={styles.antall}>
@@ -99,7 +100,7 @@ export default async function WangTestresultaterPage({
           {skoler.map((skole) => (
             <span className={styles.skole} key={skole.groupId}>
               {skole.schoolName}
-              <span>{skole.players.length} spillere</span>
+              <span>{skole.players.length} deler testene</span>
             </span>
           ))}
         </div>
