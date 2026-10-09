@@ -75,7 +75,7 @@ describe("R-E innlogget spillerreise", () => {
     assert.deepEqual(liveSteg("plan", planId, "PLANNED"), { href: `/portal/live/${planId}/brief`, steg: "ph04" });
 
     assert.deepEqual(liveSteg("v2", v2Id, "IN_PROGRESS"), { href: `/portal/live/${v2Id}/active`, steg: "ph05" });
-    assert.deepEqual(liveSteg("wb", wbId, "IN_PROGRESS"), { href: `/portal/live/${wbId}/tapper`, steg: "ph05" });
+    assert.deepEqual(liveSteg("wb", wbId, "IN_PROGRESS"), { href: `/portal/live/${wbId}/active`, steg: "ph05" });
     assert.deepEqual(liveSteg("plan", planId, "ACTIVE"), { href: `/portal/live/${planId}/tapper`, steg: "ph05" });
 
     for (const [kind, id] of [["v2", v2Id], ["wb", wbId], ["plan", planId]] as const) {

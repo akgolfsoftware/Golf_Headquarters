@@ -81,7 +81,7 @@ export async function startPlanSession(sessionId: string): Promise<void> {
 
   revalidatePath("/portal");
   revalidatePath(`/portal/live/${sessionId}/brief`);
-  redirect(`/portal/live/${sessionId}/tapper`);
+  redirect(`/portal/live/${sessionId}/active`);
 }
 
 /* ── Video-notat fra live-panelet (AI Golf Coach) ─────────────────────────
