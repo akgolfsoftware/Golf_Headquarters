@@ -19,14 +19,13 @@ export async function lagreSamtykker(
   childId: string,
   samtykker: Record<string, boolean>,
 ): Promise<{ ok: true }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) throw new Error("Du er ikke godkjent foresatt for dette barnet");
-  }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) throw new Error("Du er ikke godkjent foresatt for dette barnet");
 
   // Hent eksisterende preferences og merge inn nye samtykker
   const child = await prisma.user.findUnique({
@@ -70,15 +69,14 @@ export async function settHelseSamtykkeForBarn(
   type: string,
   gitt: boolean,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) {
-      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
-    }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) {
+    return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
   }
 
   if (!erHelseSamtykkeType(type)) {
@@ -119,15 +117,14 @@ export async function settDelingsSamtykkeForBarn(
   mottakerGruppeId: string,
   gitt: boolean,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+  // Bare godkjent forelder. Administrator kan ikke samtykke på vegne av forelderen.
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  if (user.role === "PARENT") {
-    const relasjon = await prisma.parentRelation.findFirst({
-      where: { parentId: user.id, childId, approved: true },
-    });
-    if (!relasjon) {
-      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
-    }
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { parentId: user.id, childId, approved: true },
+  });
+  if (!relasjon) {
+    return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
   }
 
   if (!erDelingScope(scope)) {
