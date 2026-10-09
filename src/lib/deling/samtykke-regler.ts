@@ -217,3 +217,32 @@ export function velgSamtykkedeSpillerePerGruppe(
   }
   return resultat;
 }
+
+/**
+ * D-55 (07.10.2026): status for testsamtykket en WANG-elev gir ved innmelding.
+ * Omfanget er bare TEST_RESULTATER mot WANG-gruppa. Ett gyldig ja deler
+ * testene med WANG-skolen og Team Norway.
+ *
+ * - DELT: gyldig samtykke (gi- og trekkereglene over).
+ * - VENTER_PA_FORELDER: eleven under 16 har sagt ja, forelderen har ikke.
+ *   Elevens ja gir aldri tilgang alene.
+ * - IKKE_DELT: siste svar er nei, eller samtykket er trukket.
+ * - IKKE_SVART: ingen rad. Eleven får forespørselen.
+ */
+export type WangTestdelingStatus = "DELT" | "VENTER_PA_FORELDER" | "IKKE_DELT" | "IKKE_SVART";
+
+export function wangTestdelingStatus(
+  rader: readonly DelingSamtykkeRad[],
+  krav: Omit<SamtykkeKrav, "scope">,
+): WangTestdelingStatus {
+  const fullt: SamtykkeKrav = { ...krav, scope: "TEST_RESULTATER" };
+  if (harGyldigSamtykke(rader, fullt)) return "DELT";
+  let nyeste: DelingSamtykkeRad | null = null;
+  for (const rad of rader) {
+    if (!gjelder(rad, fullt)) continue;
+    if (!nyeste || rad.createdAt.getTime() > nyeste.createdAt.getTime()) nyeste = rad;
+  }
+  if (!nyeste) return "IKKE_SVART";
+  if (krav.kreverForesatt && nyeste.gitt && nyeste.gittAvRolle === "SELV") return "VENTER_PA_FORELDER";
+  return "IKKE_DELT";
+}
