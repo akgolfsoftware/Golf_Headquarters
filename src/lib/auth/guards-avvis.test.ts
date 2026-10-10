@@ -77,6 +77,7 @@ mock.module("@/lib/auth/getCurrentUser", {
 mock.module("@/lib/auth/coached", {
   namedExports: {
     harCoachTilgangTilSpiller: async () => coachHarTilgang,
+    harCoachLesetilgangTilSpiller: async () => coachHarTilgang,
   },
 });
 

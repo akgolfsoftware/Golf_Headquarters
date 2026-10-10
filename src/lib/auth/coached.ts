@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import {
   aktivtSpillerMedlemskapWhere,
   aktivtTrenerMedlemskapWhere,
+  ikkeOrgGruppeWhere,
 } from "@/lib/domain/grupper";
 
 /**
@@ -57,22 +58,50 @@ export async function erCoachetSpiller(userId: string): Promise<boolean> {
 }
 
 /**
- * Coach-scoping (Anders 2026-07-13): en COACH ser og redigerer KUN sine egne
- * spillere. Tre lovlige veier inn (OR-grenene under):
+ * Coach-scoping (Anders 2026-07-13) — LESE-scope for lister og innsyn. Tre
+ * lovlige veier inn (OR-grenene under):
  *   1. Aktiv PlayerEnrollment med coachId = coachen.
  *   2. Aktivt spiller-medlemskap i en gruppe coachen eier (Group.coachId).
- *   3. (G5) Aktivt spiller-medlemskap i en gruppe der coachen selv er aktivt
- *      COACH- eller ASSISTANT-medlem — trenere lagt inn som gruppemedlemmer
- *      får innsyn i gruppens spillere uten å eie gruppen. Innsyn, ikke
- *      redigering av gruppen: den porten er `eierGruppen` i gruppe-actions,
- *      og den krever role COACH (ASSISTANT gir aldri redigering).
+ *   3. (G5) Aktivt spiller-medlemskap i en AK-gruppe der coachen selv er
+ *      aktivt COACH- eller ASSISTANT-medlem. Gjelder IKKE organisasjonsgrupper
+ *      (WANG/Team Norway): der gir medlemskap ingen innsyn (D-04). En
+ *      organisasjonstrener ser en spiller bare via uttrykkelig deling, se
+ *      `harCoachLesetilgangTilSpiller`.
  * ADMIN ser alle coachede spillere.
  *
- * Bruk denne i AgencyOS-loadere i stedet for `coachedPlayerWhere()` når
- * innholdet er per-spiller-data; bruk `assertCoachTilgangTilSpiller` i
- * server-actions som tar en spiller-id.
+ * Skriving i en enkelt spillers data og plan går ALDRI via gren 3 (D-25):
+ * bruk `harCoachTilgangTilSpiller` / `assertCoachTilgangTilSpiller`, som bare
+ * slipper gjennom gren 1 og 2 (`coachSkrivbarPlayerWhere`).
  */
 export function coachScopedPlayerWhere(viewer: {
+  id: string;
+  role: string;
+}): Prisma.UserWhereInput {
+  if (viewer.role !== "COACH") return coachedPlayerWhere();
+  const skrivbar = coachSkrivbarPlayerWhere(viewer);
+  return {
+    ...skrivbar,
+    OR: [
+      ...(skrivbar.OR as Prisma.UserWhereInput[]),
+      {
+        groupMemberships: {
+          some: {
+            ...aktivtSpillerMedlemskapWhere(),
+            group: { ...ikkeOrgGruppeWhere(), members: { some: aktivtTrenerMedlemskapWhere(viewer.id) } },
+          },
+        },
+      },
+    ],
+  };
+}
+
+/**
+ * SKRIVE-scope: egen AK-coach. Bare aktiv enrollment hos coachen eller
+ * spiller-medlemskap i en gruppe coachen eier. Trener-medlemskap i en gruppe
+ * gir aldri skriverett i en spillers egen plan (D-25, D-49); en
+ * organisasjonstrener som vil endre noe, sender forslag (D-05).
+ */
+export function coachSkrivbarPlayerWhere(viewer: {
   id: string;
   role: string;
 }): Prisma.UserWhereInput {
@@ -93,35 +122,29 @@ export function coachScopedPlayerWhere(viewer: {
           some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id } },
         },
       },
-      {
-        groupMemberships: {
-          some: {
-            ...aktivtSpillerMedlemskapWhere(),
-            group: { members: { some: aktivtTrenerMedlemskapWhere(viewer.id) } },
-          },
-        },
-      },
     ],
   };
 }
 
 /**
- * Har coachen/adminen tilgang til akkurat denne spilleren? Server-actions som
- * tar en spiller-id MÅ kalle denne før skriving — rolle-sjekk alene er ikke nok
- * (en coach skal ikke kunne endre en annen coachs spillere via id-parameteren).
+ * SKRIVETILGANG: kan coachen/adminen endre denne spillerens data og plan?
+ * Server-actions som tar en spiller-id MÅ kalle denne før skriving — rolle-
+ * sjekk alene er ikke nok (en coach skal ikke kunne endre en annen coachs
+ * spillere via id-parameteren). Trener-medlemskap i en gruppe teller ikke.
+ * For ren lesing: `harCoachLesetilgangTilSpiller`.
  */
 export async function harCoachTilgangTilSpiller(
   viewer: { id: string; role: string },
   playerId: string,
 ): Promise<boolean> {
   const treff = await prisma.user.findFirst({
-    where: { AND: [{ id: playerId }, coachScopedPlayerWhere(viewer)] },
+    where: { AND: [{ id: playerId }, coachSkrivbarPlayerWhere(viewer)] },
     select: { id: true },
   });
   return treff != null;
 }
 
-/** Som `harCoachTilgangTilSpiller`, men kaster ved manglende tilgang. */
+/** Som `harCoachTilgangTilSpiller` (skrivetilgang), men kaster ved manglende tilgang. */
 export async function assertCoachTilgangTilSpiller(
   viewer: { id: string; role: string },
   playerId: string,
@@ -129,4 +152,42 @@ export async function assertCoachTilgangTilSpiller(
   if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
     throw new Error("Du har ikke tilgang til denne spilleren.");
   }
+}
+
+/**
+ * LESETILGANG (innsyn, aldri skriving): lese-scope (`coachScopedPlayerWhere`)
+ * ELLER gyldig uttrykkelig deling med vieweren som organisasjonstrener
+ * (WANG/TN, D-04). Delingen kontrolleres på hvert oppslag gjennom
+ * `medNavngittProfil` (samme lås som tilbaketrekking, forelder under 16,
+ * verifisert trener-e-post), så trekk virker med en gang. Delingsgrenen
+ * gjelder bare den innloggede brukeren selv.
+ */
+export async function harCoachLesetilgangTilSpiller(
+  viewer: { id: string; role: string },
+  playerId: string,
+): Promise<boolean> {
+  if (!playerId) return false;
+  const treff = await prisma.user.findFirst({
+    where: { AND: [{ id: playerId }, coachScopedPlayerWhere(viewer)] },
+    select: { id: true },
+  });
+  if (treff != null) return true;
+  if (viewer.role !== "COACH") return false;
+  return harDeltProfilMedTrener(viewer.id, playerId);
+}
+
+/** Har spilleren en gjeldende deling med denne treneren i minst ett miljø? */
+async function harDeltProfilMedTrener(trenerId: string, playerId: string): Promise<boolean> {
+  const kandidater = await prisma.trenerDelingsInvitasjon.findMany({
+    where: { userId: playerId, acceptedByUserId: trenerId, acceptedAt: { not: null }, revokedAt: null },
+    select: { mottakerGruppeId: true },
+    distinct: ["mottakerGruppeId"],
+  });
+  if (kandidater.length === 0) return false;
+  // Lastes ved behov: modulen trekker inn innloggings- og lagringsklienter.
+  const { medNavngittProfil } = await import("@/lib/deling/profil-lesing");
+  for (const { mottakerGruppeId } of kandidater) {
+    if (await medNavngittProfil(trenerId, playerId, mottakerGruppeId, async () => true)) return true;
+  }
+  return false;
 }

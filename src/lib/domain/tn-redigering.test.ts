@@ -12,9 +12,18 @@ let sisteWhere: unknown = null;
 let oppdatert = 0;
 let slettet = 0;
 let ferdigeDeltakere = 0;
+let erMedlem = false;
+let harDelt = false;
+let statusSkrevet = 0;
 
 mock.module("@/lib/domain/tn-arbeidsflate", {
   namedExports: { hentTnArbeidskontekst: async () => kontekst },
+});
+mock.module("@/lib/deling/profil-lesing", {
+  namedExports: {
+    medNavngittProfil: async <T>(_b: string, _s: string, _g: string, les: (tx: unknown) => Promise<T>) =>
+      harDelt ? les({ tnSpillerstatus: { upsert: async () => { statusSkrevet += 1; return {}; } } }) : null,
+  },
 });
 mock.module("@/lib/storage/supabase-storage", { namedExports: { deleteFile: async () => undefined } });
 mock.module("@/lib/prisma", {
@@ -39,7 +48,8 @@ mock.module("@/lib/prisma", {
           return {};
         },
       },
-      groupMember: { findFirst: async () => null },
+      groupMember: { findFirst: async () => (erMedlem ? { id: "m1" } : null) },
+      tnSpillerstatus: { upsert: async () => { statusSkrevet += 1; return {}; } },
     },
   },
 });
@@ -111,4 +121,22 @@ test("Uttak for en som ikke er spiller i gruppen avvises", async () => {
   kontekst = trener;
   const r = await lagreUttak(bruker, { spillerId: "fremmed", arrangement: "EM 2027", status: "UTTATT" });
   assert.deepEqual(r, { ok: false, feil: "Spilleren er ikke med i gruppen." });
+});
+
+test("TO-04: helse- og lisensdata skrives bare når spilleren har delt profilen med treneren", async () => {
+  const { lagreSpillerstatus } = await skriv();
+  kontekst = trener;
+  erMedlem = true;
+  const input = { spillerId: "elev", aar: 2026, helseattestUtloper: "2027-01-01" };
+  harDelt = false;
+  const før = statusSkrevet;
+  assert.deepEqual(await lagreSpillerstatus(bruker, input), { ok: false, feil: "Spilleren har ikke delt profilen med deg." });
+  assert.equal(statusSkrevet, før, "ingenting skrevet uten deling");
+  harDelt = true;
+  assert.equal((await lagreSpillerstatus(bruker, input)).ok, true);
+  assert.equal(statusSkrevet, før + 1);
+  // Plattform-ADMIN er AK Golf, ikke organisasjonen.
+  harDelt = false;
+  assert.equal((await lagreSpillerstatus({ ...bruker, role: "ADMIN" as const }, input)).ok, true);
+  erMedlem = false;
 });

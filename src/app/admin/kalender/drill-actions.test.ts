@@ -34,6 +34,8 @@ const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
   user: { findFirst: async () => null },
+  // Ingen deling med org-trener: lesetilgangens delingsgren finner ingenting.
+  trenerDelingsInvitasjon: { findMany: async () => [] },
   trainingSessionV2: {
     findUnique: async ({ where }: { where: { id: string } }) => {
       if (where.id === "okt-a") {

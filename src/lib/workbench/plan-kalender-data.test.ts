@@ -6,7 +6,7 @@ let access: { id: string; role: string } | null = viewer;
 let busyRows: Array<Record<string, unknown>> = [];
 let capturedUserId: string | undefined;
 mock.module("./plan-tilgang", { namedExports: { planTilgang: async () => access } });
-mock.module("@/lib/auth/coached", { namedExports: { harCoachTilgangTilSpiller: async () => true } });
+mock.module("@/lib/auth/coached", { namedExports: { harCoachTilgangTilSpiller: async () => true, harCoachLesetilgangTilSpiller: async () => true } });
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   groupSchedule: { findMany: async () => [] },
   playerBusyBlock: { findMany: async ({ where }: { where: { userId: string } }) => { capturedUserId = where.userId; return busyRows; } },

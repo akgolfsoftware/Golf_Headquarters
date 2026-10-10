@@ -1,7 +1,7 @@
 import { permanentRedirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 
 /**
  * Gammel plan-detalj (TrainingPlan, pensjonert modell) → Workbench.
@@ -23,6 +23,6 @@ export default async function AdminPlanDetailRedirect({
   });
 
   // Ikke avslør eier-id for spillere utenfor coachens stall.
-  const harTilgang = plan != null && (await harCoachTilgangTilSpiller(user, plan.userId));
+  const harTilgang = plan != null && (await harCoachLesetilgangTilSpiller(user, plan.userId));
   permanentRedirect(plan && harTilgang ? `/admin/workbench/${plan.userId}` : "/admin/planlegge");
 }

@@ -25,7 +25,10 @@ mock.module("next/navigation", {
   namedExports: { redirect: (to: string) => { throw new Error(`REDIRECT:${to}`); } },
 });
 mock.module("@/lib/auth/coached", {
-  namedExports: { harCoachTilgangTilSpiller: async () => harCoachTilgangResultat },
+  namedExports: {
+    harCoachTilgangTilSpiller: async () => harCoachTilgangResultat,
+    harCoachLesetilgangTilSpiller: async () => harCoachTilgangResultat,
+  },
 });
 mock.module("@/app/portal/tren/teknisk-plan/actions", {
   namedExports: {

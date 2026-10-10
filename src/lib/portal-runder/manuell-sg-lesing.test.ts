@@ -13,7 +13,7 @@ const round = () => ({
   sgSource: "manual", sgTotal: null, sgPutt: 0, sgLob: -0.3, sgPutt40plus: -0.2,
 });
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => viewer } });
-mock.module("@/lib/auth/coached", { namedExports: { harCoachTilgangTilSpiller: async () => { scopeChecks++; return hasScope; } } });
+mock.module("@/lib/auth/coached", { namedExports: { harCoachLesetilgangTilSpiller: async () => { scopeChecks++; return hasScope; } } });
 mock.module("@/lib/prisma", { namedExports: { prisma: { round: { findUnique: async () => exists ? round() : null }, notification: { count: async () => 0 } } } });
 mock.module("next/navigation", { namedExports: { notFound: () => { throw new Error("NOT_FOUND"); } } });
 mock.module("@/components/portal/precision/PHRD08RundeFerdig", { namedExports: { PHRD08RundeFerdig: () => null } });

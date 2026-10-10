@@ -3,15 +3,17 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { LesSyklusSchema, LagreSyklusSchema, KopierSyklusSchema, OpplosSyklusSchema, type TreukerssyklusData } from "./treukerssyklus";
 import { SyklusFeil, lesSyklusCore, offentligSyklus, lagreSyklusCore, kopierSyklusCore, laasSyklus } from "./treukerssyklus-core";
 import { isoUkeIdentitet } from "./ukeplan-schema";
 import type { WbResultat } from "./wb-actions";
-async function tilgang(playerId: string) {
+/** «les» = innsyn (D-04); «skriv» = egen coach-relasjon (D-25). */
+async function tilgang(playerId: string, modus: "les" | "skriv" = "skriv") {
   const user = await requirePortalUser();
   if (user.role === "PLAYER" && user.id === playerId) return user;
-  if ((user.role === "COACH" || user.role === "ADMIN") && await harCoachTilgangTilSpiller(user, playerId)) return user;
+  const sjekk = modus === "les" ? harCoachLesetilgangTilSpiller : harCoachTilgangTilSpiller;
+  if ((user.role === "COACH" || user.role === "ADMIN") && await sjekk(user, playerId)) return user;
   throw new SyklusFeil("Du har ikke tilgang til denne spillerens syklus.");
 }
 function revalider(playerId: string) { revalidatePath(`/admin/workbench/${playerId}`); revalidatePath("/portal/planlegge/workbench"); }
@@ -22,7 +24,7 @@ function feil(error: unknown): WbResultat<never> {
 }
 export async function lastTreukerssyklus(input: unknown): Promise<WbResultat<TreukerssyklusData>> {
   const parsed = LesSyklusSchema.safeParse(input); if (!parsed.success) return { ok: false, error: "Velg en gyldig spiller og mandag." };
-  try { await tilgang(parsed.data.playerId); return await prisma.$transaction(async db => ({ ok: true as const, data: { weeks: offentligSyklus(await lesSyklusCore(db, parsed.data.playerId, parsed.data.anchorWeek)), ...(parsed.data.targetWeek ? { targets: offentligSyklus(await lesSyklusCore(db, parsed.data.playerId, parsed.data.targetWeek)) } : {}) } }), { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }); } catch (error) { return feil(error); }
+  try { await tilgang(parsed.data.playerId, "les"); return await prisma.$transaction(async db => ({ ok: true as const, data: { weeks: offentligSyklus(await lesSyklusCore(db, parsed.data.playerId, parsed.data.anchorWeek)), ...(parsed.data.targetWeek ? { targets: offentligSyklus(await lesSyklusCore(db, parsed.data.playerId, parsed.data.targetWeek)) } : {}) } }), { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }); } catch (error) { return feil(error); }
 }
 export async function lagreTreukerssyklus(input: unknown): Promise<WbResultat<TreukerssyklusData>> {
   const parsed = LagreSyklusSchema.safeParse(input); if (!parsed.success) return { ok: false, error: "Treukerssyklusen har ugyldige felt." };

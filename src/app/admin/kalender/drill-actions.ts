@@ -7,7 +7,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 const Schema = z.object({
@@ -62,7 +62,7 @@ export async function hentKalenderDrills(
   const kanSe =
     user.role === "ADMIN" ||
     session.coachId === user.id ||
-    (session.studentId != null && (await harCoachTilgangTilSpiller(user, session.studentId)));
+    (session.studentId != null && (await harCoachLesetilgangTilSpiller(user, session.studentId)));
   if (!kanSe) return { ok: false };
 
   return {
