@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { medWangElevData } from "@/app/team-wang/_data/wang-tilgang";
 import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
+import { kanSeDataGolf } from "@/lib/auth/datagolf-regel";
 import { resultatKilde, resultatStatus } from "@/lib/domain/turneringsresultat";
 import { IconChip } from "@/app/team-wang/_components/primitiver";
 
@@ -61,7 +62,7 @@ export default async function WangTurneringerPage({
     });
     if (!elev) return null;
 
-    const historikk = await hentTurneringshistorikk(elevId, tx);
+    const historikk = await hentTurneringshistorikk(elevId, tx, { medDataGolf: kanSeDataGolf(bruker) });
     const elevNavn = elev.name?.trim() || elev.email;
 
     return (

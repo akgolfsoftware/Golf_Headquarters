@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { LiveRefresher } from "@/components/turneringer/live-refresher";
 import {
   MarkedTurneringDetaljV2,
@@ -55,6 +56,8 @@ export default async function TurneringDetaljSideV2({ params }: Props) {
     where: { slug },
     include: {
       publicEntries: {
+        // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+        where: { tournament: UTEN_DATAGOLF_TURNERING },
         include: {
           player: { select: { id: true, name: true, slug: true, country: true, tier: true, photoUrl: true } },
         },

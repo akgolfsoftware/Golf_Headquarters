@@ -26,9 +26,12 @@ import { SparkBars } from "@/components/stats/spark-bars";
 import { StatsBtn } from "@/components/stats/btn";
 import { PuttPreview, type PuttRow } from "@/components/stats/putt-preview";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
 // ─── ISR ────────────────────────────────────────────────────────────────────
-export const revalidate = 3600;
+// Data Golf-tall: bare for innlogget coach og admin (Anders 09.10.2026).
+// Dynamisk per forespørsel — ingen felles hurtigbuffer som kan nå uinnloggede.
+export const dynamic = "force-dynamic";
 
 // ─── Metadata ───────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -183,6 +186,7 @@ async function hentSgLeaderboard(): Promise<SgRow[]> {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default async function PgaStatsHub() {
+  await krevDataGolfBruker("/stats/pga");
   const [kategorier, sgRows] = await Promise.all([
     hentKategoriData(),
     hentSgLeaderboard(),

@@ -16,8 +16,11 @@ import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { SpillerTabell } from "./spiller-tabell";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export const revalidate = 3600;
+// Data Golf-tall: bare for innlogget coach og admin (Anders 09.10.2026).
+// Dynamisk per forespørsel — ingen felles hurtigbuffer som kan nå uinnloggede.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "PGA Tour Spillerdatabase: alle spillere | AK Golf Stats",
@@ -79,6 +82,7 @@ async function hentSpillerData() {
 // ---------------------------------------------------------------------------
 
 export default async function PGASpillerbasePage() {
+  await krevDataGolfBruker("/stats/pga/spillere");
   const { pga, euro, kft, spillere } = await hentSpillerData();
 
   const total = pga + euro + kft;

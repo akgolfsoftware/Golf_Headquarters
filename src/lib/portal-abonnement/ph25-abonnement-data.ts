@@ -85,7 +85,6 @@ export const PH25_PLANER: readonly PlanDefinisjon[] = [
       "Åpent testbatteri",
       "Analyse og runderegistrering med SG",
       "Booking av enkelttimer",
-      "DataGolf-sammenligning",
     ],
   },
   {

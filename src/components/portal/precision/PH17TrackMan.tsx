@@ -31,6 +31,11 @@ export interface PH17TrackManProps {
   initialData?: PH17TrackManData;
   initialFane?: TrackManFane;
   aktivFane?: TrackManFane;
+  /**
+   * Stasjon-fanen sammenligner med PGA Tour-tall fra Data Golf, og vises bare
+   * for coach og admin (Anders 09.10.2026). Settes av siden med kanSeDataGolf.
+   */
+  visDataGolf?: boolean;
 }
 
 const TABS: ReadonlyArray<{
@@ -50,9 +55,14 @@ export function PH17TrackMan({
   initialData = STANDARD_PH17_DATA,
   initialFane = "okter",
   aktivFane,
+  visDataGolf = false,
 }: PH17TrackManProps) {
   const d = data ?? initialData;
-  const [fane, setFane] = useState<TrackManFane>(aktivFane ?? initialFane);
+  const faner = visDataGolf ? TABS : TABS.filter((t) => t.id !== "stasjon");
+  const onsketFane = aktivFane ?? initialFane;
+  const [fane, setFane] = useState<TrackManFane>(
+    faner.some((t) => t.id === onsketFane) ? onsketFane : "okter",
+  );
   const [valgtSessionId, setValgtSessionId] = useState<string>(
     d.sessions[0]?.id ?? "tm1"
   );
@@ -113,7 +123,7 @@ export function PH17TrackMan({
           overflowX: "auto",
         }}
       >
-        {TABS.map((tab) => {
+        {faner.map((tab) => {
           const aktiv = fane === tab.id;
           const IkonKomp = tab.ikon;
           return (
@@ -718,7 +728,7 @@ export function PH17TrackMan({
       )}
 
       {/* Fane 4: Stasjon */}
-      {fane === "stasjon" && (
+      {visDataGolf && fane === "stasjon" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div className="pa-card" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
             <div

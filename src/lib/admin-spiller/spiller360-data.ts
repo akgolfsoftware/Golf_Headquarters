@@ -267,7 +267,7 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
       take: STANDARD_VINDU * 2,
       select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),
-    hentTurneringshistorikk(id),
+    hentTurneringshistorikk(id, undefined, { medDataGolf: true }),
     hentVekstrateData(id),
     getPlayerBenchmarkGaps(id).catch(() => []),
     stallSnitt(viewer),

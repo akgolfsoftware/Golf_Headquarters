@@ -17,7 +17,7 @@ import { PkShell } from "./kit/PkShell";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Hvordan får jeg PlayerHQ gratis?",
-    a: "Testbatteriet, DataGolf-verktøyet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato og uten kort. Resten av appen følger med coaching-pakke (Performance eller Performance Pro) eller gruppe via AK Golf, for eksempel WANG eller klubbtrening. Vil du prøve full app på egen hånd, får du én uke gratis mot at du legger inn kort — den går over til 299 kr på dag åtte hvis du ikke sier opp.",
+    a: "Testbatteriet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato og uten kort. Resten av appen følger med coaching-pakke (Performance eller Performance Pro) eller gruppe via AK Golf, for eksempel WANG eller klubbtrening. Vil du prøve full app på egen hånd, får du én uke gratis mot at du legger inn kort — den går over til 299 kr på dag åtte hvis du ikke sier opp.",
   },
   {
     q: "Hva er forskjellen på coaching-pakker og appen?",
@@ -29,7 +29,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Hva skjer etter prøveperioden?",
-    a: "Du beholder testbatteriet, DataGolf-verktøyet og runde- og statistikkføringen gratis, uten tidsbegrensning. Vil du ha resten av appen, velger du selv: 299 kr per måned, en coaching-pakke der appen er inkludert, eller la det ligge. Dataene dine slettes ikke.",
+    a: "Du beholder testbatteriet og runde- og statistikkføringen gratis, uten tidsbegrensning. Vil du ha resten av appen, velger du selv: 299 kr per måned, en coaching-pakke der appen er inkludert, eller la det ligge. Dataene dine slettes ikke.",
   },
 ];
 
@@ -41,7 +41,7 @@ export function MarkedPriserV2() {
           <span className="pk-eyebrow">Priser</span>
           <h1 className="pk-hero">Enkelt og ærlig.</h1>
           <p className="pk-ing">
-            Testbatteriet og DataGolf-verktøyet er gratis, uten utløpsdato. Resten av appen
+            Testbatteriet er gratis, uten utløpsdato. Resten av appen
             koster 299 kr i måneden. Coaching-pakker med antall økter kjøpes separat, de er
             ikke app-nivåer.
           </p>
@@ -57,7 +57,6 @@ export function MarkedPriserV2() {
               </p>
               <ul>
                 <li>Hele testbatteriet, med resultatene dine over tid</li>
-                <li>DataGolf-verktøyet: sammenlign deg med proffene</li>
                 <li>Logg runder og se hvor du taper slagene</li>
                 <li>Book enkelttimer med coach</li>
               </ul>
