@@ -20,6 +20,10 @@ export interface DrillItem {
   axis: AkseType;
   repsCompleted?: number;
   hits?: number;
+  /** Spillerens kommentar til øvelsen (lagret i live-økta). */
+  kommentar?: string;
+  /** Antall videoer lagret for øvelsen i denne økta. */
+  videoer?: number;
 }
 
 export interface TrackManShot {
@@ -57,6 +61,10 @@ export interface LiveAktivData {
   initialSeconds?: number;
   drills: DrillItem[];
   currentDrillIndex?: number;
+  /** "workbench": reps, kommentar og video lagres per øvelse. Uten: bare visning. */
+  lagring?: "workbench";
+  /** Klokka går bare når økta er aktiv, ikke på pause. */
+  pauset?: boolean;
 }
 
 export interface SlagtellerData {

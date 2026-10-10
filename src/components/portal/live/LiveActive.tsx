@@ -1,4 +1,5 @@
 "use client";
+// FORELDRELØS (09.10.2026, live-økt krav 2): ingen side viser denne komponenten lenger. Fjernes i en egen opprydding; ikke bygg videre på den.
 
 /**
  * PH-05 Live aktiv — Precision Athletics, natt.

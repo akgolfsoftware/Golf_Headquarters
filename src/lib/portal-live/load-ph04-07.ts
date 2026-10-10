@@ -10,6 +10,9 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { AkFormelLeseSchema } from "@/lib/domain/workbench/schemas";
+import { executionSeconds, readSessionExecution } from "@/lib/workbench/wb-session-life";
+import { planlagtMengde } from "./wb-ovelse-logg";
 import {
   type LiveBriefData,
   type LiveAktivData,
@@ -21,6 +24,8 @@ import {
   formatTimerOgMinutter,
 } from "./ph04-07-data";
 
+// FORELDRELØS ved Workbench-økt i gang (09.10.2026): loadWbLiveAktiv viser aldri
+// demoøvelser. Brukes fortsatt som reserve for de gamle økttypene; fjernes med dem.
 const DEFAULT_DRILLS: DrillItem[] = [
   {
     id: "drill-1",
@@ -214,9 +219,64 @@ export async function loadPH05ActiveData(
     sessionId,
     title: brief.title,
     totalMinutes: brief.totalMinutes,
-    initialSeconds: 1452, // 24:12 tilsvarende Claude Design
+    // Ingen lagret starttid for disse økttypene: klokka starter på null.
+    initialSeconds: 0,
     drills: brief.drills,
     currentDrillIndex: 0,
+  };
+}
+
+/**
+ * PH-05 for en WorkbenchSession som er i gang: ekte øvelser, lagrede reps,
+ * kommentarer og videoer, og klokke fra økt-gjennomføringen. Ingen
+ * demoøvelser. Kalleren har allerede sjekket at spilleren eier økta.
+ */
+export async function loadWbLiveAktiv(sessionId: string): Promise<LiveAktivData | null> {
+  const wb = await prisma.workbenchSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      id: true, title: true, pyramid: true, durationMinutes: true, liveSnapshot: true,
+      drills: { orderBy: { sortOrder: "asc" }, select: { id: true, title: true, description: true, durationMinutes: true, repAntall: true, repSett: true, repReps: true, akFormel: true } },
+      drillLogs: { select: { drillId: true, reps: true, kommentar: true } },
+    },
+  });
+  if (!wb) return null;
+  const videoer = await prisma.playerSwingVideo.groupBy({
+    by: ["drillId"],
+    where: { liveSessionId: sessionId, liveSessionKind: "workbench" },
+    _count: { _all: true },
+  });
+  const execution = readSessionExecution(wb.liveSnapshot);
+  const akse = (p: string | null): DrillItem["axis"] => {
+    const a = p?.toLowerCase();
+    return a === "fys" || a === "tek" || a === "slag" || a === "spill" || a === "turn" ? a : "slag";
+  };
+  return {
+    sessionId: wb.id,
+    title: wb.title,
+    totalMinutes: wb.durationMinutes,
+    initialSeconds: execution ? executionSeconds(execution) : 0,
+    pauset: execution?.phase === "PAUSED",
+    lagring: "workbench",
+    currentDrillIndex: 0,
+    drills: wb.drills.map((d, i) => {
+      const logg = wb.drillLogs.find((l) => l.drillId === d.id);
+      const formel = AkFormelLeseSchema.safeParse(d.akFormel);
+      return {
+        id: d.id,
+        code: `DR-${String(i + 1).padStart(2, "0")}`,
+        name: d.title,
+        club: "",
+        param: d.description ?? undefined,
+        quantity: planlagtMengde(d) ?? 0,
+        unit: "reps",
+        minutes: d.durationMinutes,
+        axis: akse(formel.success ? formel.data.pyramid : wb.pyramid),
+        repsCompleted: logg?.reps ?? 0,
+        kommentar: logg?.kommentar ?? undefined,
+        videoer: videoer.find((v) => v.drillId === d.id)?._count._all ?? 0,
+      };
+    }),
   };
 }
 

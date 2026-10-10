@@ -1,4 +1,5 @@
 "use client";
+// FORELDRELØS (09.10.2026, live-økt krav 2): brukes bare av LiveCoachPanel; video per øvelse går via lagreWbOvelseVideo. Fjernes i en egen opprydding; ikke bygg videre på den.
 
 import { useCallback, useState } from "react";
 import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
