@@ -16,6 +16,6 @@ test("Plan beholder Workbench-identitet, mål og norsk klokkeslett sommer/vinter
   }
 });
 test("Plan følger øktens aktive og fullførte status", () => {
-  assert.equal(workbenchWeekSession(row("2026-09-10", "IN_PROGRESS")).href, "/portal/live/same-session/tapper");
+  assert.equal(workbenchWeekSession(row("2026-09-10", "IN_PROGRESS")).href, "/portal/live/same-session/active");
   assert.equal(workbenchWeekSession(row("2026-09-10", "COMPLETED")).href, "/portal/live/same-session/summary");
 });
