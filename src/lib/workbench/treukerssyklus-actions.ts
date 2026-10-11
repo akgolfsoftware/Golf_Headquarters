@@ -12,8 +12,12 @@ import type { WbResultat } from "./wb-actions";
 async function tilgang(playerId: string, modus: "les" | "skriv" = "skriv") {
   const user = await requirePortalUser();
   if (user.role === "PLAYER" && user.id === playerId) return user;
-  const sjekk = modus === "les" ? harCoachLesetilgangTilSpiller : harCoachTilgangTilSpiller;
-  if ((user.role === "COACH" || user.role === "ADMIN") && await sjekk(user, playerId)) return user;
+  if (user.role === "COACH" || user.role === "ADMIN") {
+    const harTilgang = modus === "les"
+      ? await harCoachLesetilgangTilSpiller(user, playerId)
+      : await harCoachTilgangTilSpiller(user, playerId);
+    if (harTilgang) return user;
+  }
   throw new SyklusFeil("Du har ikke tilgang til denne spillerens syklus.");
 }
 function revalider(playerId: string) { revalidatePath(`/admin/workbench/${playerId}`); revalidatePath("/portal/planlegge/workbench"); }

@@ -176,11 +176,10 @@ async function kreverTilgangTilSpiller(
   const user = await requirePortalUser();
   if (user.id === playerId) return { id: user.id, role: user.role };
   if (user.role !== "COACH" && user.role !== "ADMIN") return null;
-  const sjekk = modus === "les" ? harCoachLesetilgangTilSpiller : harCoachTilgangTilSpiller;
-  const harTilgang = await sjekk(
-    { id: user.id, role: user.role },
-    playerId,
-  );
+  const viewer = { id: user.id, role: user.role };
+  const harTilgang = modus === "les"
+    ? await harCoachLesetilgangTilSpiller(viewer, playerId)
+    : await harCoachTilgangTilSpiller(viewer, playerId);
   return harTilgang ? { id: user.id, role: user.role } : null;
 }
 
