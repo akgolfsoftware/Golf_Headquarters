@@ -30,13 +30,15 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
     let signalsWritten = 0;
 
     for (const row of rader) {
-      if (!row.plan.isActive) continue;
+      if (!row.plan || !row.plan.isActive) continue;
 
-      const lavCompletion = row.completionRate < COMPLETION_TERSKEL;
+      const rate = row.complianceRate ?? row.completionRate ?? 0;
+      const lavCompletion = rate < COMPLETION_TERSKEL;
       const negativSg =
         row.sgTotalDelta != null && row.sgTotalDelta < SG_DELTA_TERSKEL;
       if (!lavCompletion && !negativSg) continue;
 
+      if (!row.planId) continue;
       const dup = await prisma.planAction.findFirst({
         where: {
           userId: row.userId,
@@ -49,9 +51,10 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
 
       const coachId = await resolveCoachIdForPlayer(row.userId);
       const forklaring = lavCompletion
-        ? `Plan «${row.plan.name}»: bare ${Math.round(row.completionRate * 100)} % økter fullført — vurder revisjon.`
+        ? `Plan «${row.plan.name}»: bare ${Math.round(rate * 100)} % økter fullført — vurder revisjon.`
         : `Plan «${row.plan.name}»: SG-total ${row.sgTotalDelta?.toFixed(2)} etter plan — vurder justering.`;
 
+      const dato = (row.computedAt ?? row.createdAt).toISOString();
       const created = await prisma.planAction.create({
         data: {
           userId: row.userId,
@@ -62,19 +65,19 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
           suggestion: {
             forklaring,
             signalSnapshot: {
-              completionRate: row.completionRate,
+              completionRate: rate,
               sgTotalDelta: row.sgTotalDelta,
             },
           },
           provenance: byggProvenance({
             kilde: "PLAN",
-            rader: [{ id: row.id, dato: row.computedAt.toISOString() }],
+            rader: [{ id: row.id, dato }],
             regel: lavCompletion
               ? `completionRate under terskel ${COMPLETION_TERSKEL}`
               : `sgTotalDelta under terskel ${SG_DELTA_TERSKEL}`,
             terskel: lavCompletion ? COMPLETION_TERSKEL : SG_DELTA_TERSKEL,
             maaltVerdi: lavCompletion
-              ? row.completionRate
+              ? rate
               : (row.sgTotalDelta ?? undefined),
           }),
         },

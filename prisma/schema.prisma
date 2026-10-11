@@ -1390,7 +1390,7 @@ model TrainingPlan {
   sessions      TrainingPlanSession[]
   planActions   PlanAction[]
   aiGeneration  AiPlanGeneration?     @relation(fields: [aiGenerationId], references: [id])
-  effectiveness PlanEffectiveness?
+  effectiveness PlanEffectiveness[]
 
   @@index([userId, isActive])
   @@index([status])
@@ -1675,40 +1675,124 @@ model PlanTemplateSession {
   @@map("plan_template_sessions")
 }
 
-// Effektivitets-tracking — etter fullført TrainingPlan: pre/post SG-deltas
-// + completion-rate. AI bruker dette til å lære hvilke templates som virker.
+// ============================================================================
+// AK GOLF HQ — MASTERBRAIN EFFECTIVENESS & FEEDBACK ENGINE
+// ============================================================================
+
+/// De 19 offisielle treningsområdene etter AK-formel v2
+enum TrainingAreaCode {
+  TEE_TOTAL
+  INNSPILL_200
+  INNSPILL_150
+  INNSPILL_100
+  INNSPILL_50
+  CHIP
+  PITCH
+  LOB
+  BUNKER
+  PUTT_0_3
+  PUTT_3_5
+  PUTT_5_10
+  PUTT_10_25
+  PUTT_25_40
+  PUTT_40_PLUSS
+  STYRKE
+  KONDISJON
+  BEVEGELIGHET
+  BANE
+}
+
+/// Ferdighetskategorier (A = elite/under 68 snitt, K = nybegynner/100+)
+enum PlayerCategory {
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  I
+  J
+  K
+}
+
+/// Statistisk pålitelighetsgrad for datagrunnlaget
+enum ConfidenceLevel {
+  LOW        // Under 8 runder — retningssignal / tentativt
+  MEDIUM     // 8–15 runder — moderat pålitelig trend
+  HIGH       // 16+ runder (24+ for nærspill/putt) — statistisk signifikant
+}
+
+/// Måler effekten av en intervensjon (øvelse eller treningsområde) over en periode
 model PlanEffectiveness {
-  id         String  @id @default(cuid())
-  planId     String  @unique
-  templateId String? // hvilken template ble brukt som baseline
-  userId     String
+  id                  String           @id @default(cuid())
+  userId              String
+  planId              String?          // Kobling til overordnet 4-ukers plan (hvis aktuelt)
 
-  // Pre/post snapshots
-  preSnapshot  Json // {sgTotal, sgOTT, sgAPP, sgARG, sgPUTT, hcp, kategori}
-  postSnapshot Json // samme felter etter plan
+  // 1. Intervensjonsdefinisjon (Strengt typet mot Masterbrain)
+  pyramidArea         PyramidArea?
+  trainingArea        TrainingAreaCode?
+  drillId             String?          // Kebab-case ID fra ovelsesbank/godkjent/
 
-  // Beregnet effekt
-  sgTotalDelta Float?
-  sgOttDelta   Float?
-  sgAppDelta   Float?
-  sgArgDelta   Float?
-  sgPuttDelta  Float?
-  hcpDelta     Float?
+  // 2. Evalueringsperiode (Standard: 4-ukers mikrosyklus)
+  periodStart         DateTime?
+  periodEnd           DateTime?
 
-  completionRate Float // 0-1 — andel økter fullført
-  selfRating     Float? // 1-5 spillerens egen vurdering
-  coachRating    Float? // 1-5 coachens vurdering
+  // 3. Gjennomføring og etterlevelse (Compliance)
+  plannedSessions     Int?             // Antall planlagte økter
+  completedSessions   Int?             // Faktisk fullførte økter
+  totalTimeMinutes    Int?             // Faktisk tid brukt (i minutter)
+  repsCompleted       Int?             // Antall slag/repetisjoner
+  complianceRate      Float?           // completedSessions / plannedSessions (0.0 til 1.0)
 
-  notes String? // coach-notater om hva som virket / ikke virket
+  // 4. Strokes Gained & Statistisk robusthet
+  baselineSg          Float?           // SG snitt ved periodens start
+  finalSg             Float?           // SG snitt ved periodens slutt
+  sgDelta             Float?           // finalSg - baselineSg
+  roundsSampledStart  Int?             // Antall runder som utgjorde baseline
+  roundsSampledEnd    Int?             // Antall runder spilt i/etter perioden
+  confidence          ConfidenceLevel? // Beregnet ut fra antall runder for gjeldende område
 
-  computedAt DateTime @default(now())
+  // 5. Kontekst & Algoritmisk læring
+  playerCategory      PlayerCategory?  // Kategori ved start (A–K)
+  effectivenessScore  Float?           // Normalisert poengsum (-1.0 til +1.0)
+  weightInModel       Float            @default(1.0) // Hvor mye denne observasjonen skal vekte
 
-  plan     TrainingPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
-  template PlanTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 6. Trenerkontroll (Human-in-the-loop)
+  coachOverride       Boolean          @default(false)
+  coachNotes          String?          // Begrunnelse dersom treneren overstyrer AI-ens tolkning
 
-  @@index([userId])
+  // Valgfrie felter for bakoverkompatibilitet med eldre plan-templates
+  templateId          String?
+  preSnapshot         Json?
+  postSnapshot        Json?
+  sgTotalDelta        Float?
+  sgOttDelta          Float?
+  sgAppDelta          Float?
+  sgArgDelta          Float?
+  sgPuttDelta         Float?
+  hcpDelta            Float?
+  completionRate      Float?
+  selfRating          Float?
+  coachRating         Float?
+  notes               String?
+  computedAt          DateTime?        @default(now())
+
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  // Relasjoner
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                TrainingPlan?    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  template            PlanTemplate?    @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  // Indekser optimalisert for contextual bandit-oppslag og rapportering
+  @@index([drillId, playerCategory, confidence])
+  @@index([trainingArea, playerCategory])
+  @@index([userId, periodEnd])
   @@index([templateId])
+  @@unique([userId, drillId, periodStart, periodEnd])
   @@map("plan_effectiveness")
 }
 

@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-10-04",
+  "versjon": "2026-10-11",
   "kilder": {
     "master": "docs/treningsplanlegging.md",
     "schema": "prisma/schema.prisma",
@@ -551,6 +551,45 @@
       "FATHER",
       "MOTHER",
       "GUARDIAN"
+    ],
+    "TrainingAreaCode": [
+      "TEE_TOTAL",
+      "INNSPILL_200",
+      "INNSPILL_150",
+      "INNSPILL_100",
+      "INNSPILL_50",
+      "CHIP",
+      "PITCH",
+      "LOB",
+      "BUNKER",
+      "PUTT_0_3",
+      "PUTT_3_5",
+      "PUTT_5_10",
+      "PUTT_10_25",
+      "PUTT_25_40",
+      "PUTT_40_PLUSS",
+      "STYRKE",
+      "KONDISJON",
+      "BEVEGELIGHET",
+      "BANE"
+    ],
+    "PlayerCategory": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K"
+    ],
+    "ConfidenceLevel": [
+      "LOW",
+      "MEDIUM",
+      "HIGH"
     ],
     "RoundPlayStatus": [
       "IN_PROGRESS",

@@ -248,7 +248,7 @@ async function modusSession(sessionId: string, now: Date): Promise<number> {
   console.log(row("plan.status", session.plan.status));
   console.log(row("remainingSessions", `${planGjenst} (totalt ${planTotal})`));
   if (session.status === "COMPLETED") {
-    console.log(row("PlanEffectiveness", session.plan.effectiveness ? `YES (id: ${session.plan.effectiveness.id})` : "NO"));
+    console.log(row("PlanEffectiveness", session.plan.effectiveness?.length ? `YES (id: ${session.plan.effectiveness[0].id})` : "NO"));
     console.log(
       row("Plan auto-arkivert", session.plan.status === "ARCHIVED" ? "YES" : `NO (${planGjenst} økter igjen)`),
     );

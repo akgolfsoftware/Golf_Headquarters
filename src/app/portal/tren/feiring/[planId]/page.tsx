@@ -88,7 +88,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
 
   // Forsøk å hente PlanEffectiveness. Hvis den ikke finnes ennå, regn den ut
   // best-effort her — feiringssiden bør alltid kunne vise data.
-  let eff = await prisma.planEffectiveness.findUnique({ where: { planId } });
+  let eff = await prisma.planEffectiveness.findFirst({ where: { planId } });
   if (!eff) {
     try {
       eff = await computeEffectiveness(planId);
@@ -154,7 +154,9 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     take: 20,
   });
   const forrigeEtterlevelse =
-    tidligere.length > 0 ? Math.round(tidligere[0].completionRate * 100) : null;
+    tidligere.length > 0 && tidligere[0].completionRate !== null
+      ? Math.round(tidligere[0].completionRate * 100)
+      : null;
   const tidligereSgTotal = tidligere
     .map((t) => t.sgTotalDelta)
     .filter((v): v is number => v !== null);

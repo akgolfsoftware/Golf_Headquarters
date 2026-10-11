@@ -176,35 +176,43 @@ export async function computeEffectiveness(
     }
   }
 
-  // 5) Upsert
-  const rad = await prisma.planEffectiveness.upsert({
+  // 5) Upsert basert på planId
+  const existing = await prisma.planEffectiveness.findFirst({
     where: { planId },
-    create: {
-      planId,
-      userId: plan.userId,
-      templateId,
-      preSnapshot: preSnapshotJson,
-      postSnapshot: postSnapshotJson,
-      sgTotalDelta: delta(postSnapshot.sgTotal, preSnapshot.sgTotal),
-      sgOttDelta: delta(postSnapshot.sgOtt, preSnapshot.sgOtt),
-      sgAppDelta: delta(postSnapshot.sgApp, preSnapshot.sgApp),
-      sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
-      sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
-      completionRate,
-    },
-    update: {
-      templateId,
-      preSnapshot: preSnapshotJson,
-      postSnapshot: postSnapshotJson,
-      sgTotalDelta: delta(postSnapshot.sgTotal, preSnapshot.sgTotal),
-      sgOttDelta: delta(postSnapshot.sgOtt, preSnapshot.sgOtt),
-      sgAppDelta: delta(postSnapshot.sgApp, preSnapshot.sgApp),
-      sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
-      sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
-      completionRate,
-      computedAt: new Date(),
-    },
+    select: { id: true },
   });
+
+  const rad = existing
+    ? await prisma.planEffectiveness.update({
+        where: { id: existing.id },
+        data: {
+          templateId,
+          preSnapshot: preSnapshotJson,
+          postSnapshot: postSnapshotJson,
+          sgTotalDelta: delta(postSnapshot.sgTotal, preSnapshot.sgTotal),
+          sgOttDelta: delta(postSnapshot.sgOtt, preSnapshot.sgOtt),
+          sgAppDelta: delta(postSnapshot.sgApp, preSnapshot.sgApp),
+          sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
+          sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
+          completionRate,
+          computedAt: new Date(),
+        },
+      })
+    : await prisma.planEffectiveness.create({
+        data: {
+          planId,
+          userId: plan.userId,
+          templateId,
+          preSnapshot: preSnapshotJson,
+          postSnapshot: postSnapshotJson,
+          sgTotalDelta: delta(postSnapshot.sgTotal, preSnapshot.sgTotal),
+          sgOttDelta: delta(postSnapshot.sgOtt, preSnapshot.sgOtt),
+          sgAppDelta: delta(postSnapshot.sgApp, preSnapshot.sgApp),
+          sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
+          sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
+          completionRate,
+        },
+      });
 
   // 6) Oppdater effectivenessAvg på PlanTemplate hvis vi har templateId
   if (templateId && rad.sgTotalDelta !== null) {
