@@ -46,6 +46,7 @@ export function HullRedigerForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [trengerBekreftelse, setTrengerBekreftelse] = useState(false);
 
   const [hull, setHull] = useState<HullVerdi[]>(initial);
   const [visDetaljer, setVisDetaljer] = useState(() =>
@@ -79,9 +80,10 @@ export function HullRedigerForm({
   const diff = sum.score - sum.par;
   const harHull = hull.length > 0;
 
-  function lagre() {
+  function lagre(bekreftSlettSlag = false) {
     if (!harHull) return;
     setError(null);
+    setTrengerBekreftelse(false);
     startTransition(async () => {
       try {
         const res = await lagreHullScorer(
@@ -94,11 +96,13 @@ export function HullRedigerForm({
             fairway: h.fairway,
             gir: h.gir,
           })),
+          bekreftSlettSlag,
         );
         if (res.ok) {
           router.push(`/portal/mal/runder/${roundId}`);
           router.refresh();
         } else {
+          setTrengerBekreftelse(res.krevBekreftelse === true);
           setError(res.error ?? "Kunne ikke lagre. Prøv igjen.");
         }
       } catch {
@@ -200,9 +204,20 @@ export function HullRedigerForm({
         </div>
       )}
 
+      {trengerBekreftelse && (
+        <button
+          type="button"
+          onClick={() => lagre(true)}
+          disabled={pending}
+          className="mb-2 inline-flex h-11 w-full items-center justify-center rounded-full border border-destructive/40 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-destructive transition-colors hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-60"
+        >
+          Slett slagene og lagre scorekortet
+        </button>
+      )}
+
       <button
         type="button"
-        onClick={lagre}
+        onClick={() => lagre()}
         disabled={pending}
         className="mt-6 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(20,20,19,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60"
       >
