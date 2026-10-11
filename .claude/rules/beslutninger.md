@@ -4,6 +4,56 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## KODEGJENNOMGANGEN 06.10: TRENERE FORESLÅR, FORELDER GODKJENNER INNEN SJU DAGER, DATA GOLF BARE FOR COACHER (Anders 06.10.2026, bindende)
+
+Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` (grenen `review/kodegjennomgang`).
+
+- **WANG- og Team Norway-trenere kan bare anbefale endringer.** De ser bare det spilleren har delt,
+  og skriver aldri direkte i spillerens plan. Gruppemedlemskap alene gir verken innsyn eller skriverett.
+  Endringer går som forslag spilleren godtar eller avviser (`lagTrenerforslag`).
+- **Coachvideo, AI-samtaler og andre spillerdata krever eiersjekk.** En coach når bare egne spillere.
+  En bruker når bare egne samtaler.
+- **Under 16 år: forelder må godkjenne innen sju dager etter at kontoen er opprettet.** Barnet kan
+  bruke appen fullt ut de sju dagene. Er forelder ikke godkjent innen da, låses kontoen til
+  godkjenningen kommer. Deling og opptak er alltid sperret til forelder har godkjent. Fødselsdato
+  kreves for spillere og kan ikke skrives om av spilleren selv.
+- **Data Golf er bare for coacher**: alle med coach-rollen, også WANG- og Team Norway-trenere, og
+  ADMIN. Spillere ser det aldri, heller ikke Talent-profilen. `/stats/pga` og annen Data Golf-visning
+  flyttes bak innlogging for coacher; det åpne søket viser ikke Data Golf-tall.
+- **Forelderens innsyn fortsetter etter 16 år**, til spilleren selv fjerner forelderen.
+- **Gamle filer som ingen levende kode bruker, slettes** (432 filer, liste i
+  `docs/review/vedlegg/doedkode-filliste.txt`), i små samlede endringer på høyst 20 filer.
+- **Workbench beholder de fire visningene fra 02.10** (Sesongkart · Ukeverksted · Trenerbord · Stats).
+  Detaljene fra nivåtegningene (Gjenta-arket, «Egen»-merket, øktarket, periode- og månedsskjema)
+  tegnes inn i dem. Svar på M1 i Workbench-beskrivelsen.
+- **Tilgangsreglene kan endres i fase 2** av kodegjennomgangen, etter planen i dokumentet.
+
+**Overstyrer:** «DataGolf vises aldri for andre enn Anders» i §PIPELINES ER ENESTE KILDE og D-19
+(«bare analytiker»), «DataGolf-sammenligning» i Talent-profilen (BUSINESS-RULES §TALENT),
+«Powered by Data Golf på alle offentlige statistikkflater» under §Data, den automatiske
+gruppetilgangen for trenermedlemmer i `src/lib/auth/coached.ts` (G5, tredje gren), og
+nivåtegningene som Workbench-ramme i `docs/workbench-handover.md` og handoff 04.10.
+
+**Arbeidet dette utløser** (fase 2 i kodegjennomgangen, én PR per punkt, ingen legges inn uten Anders' ja):
+
+1. **Org-trenere foreslår, skriver ikke** (PR 1a): `coachScopedPlayerWhere` og `editableGroupWhere`
+   skiller AK-grupper fra WANG/TN-grupper; org-grupper krever `DelingsSamtykke` for innsyn og
+   bruker forslag for endring. Testen `coached.test.ts:78` skrives om. Ferdig når en WANG-trener
+   uten deling avvises i AgencyOS, låst med test (funn TO-01, TO-02, TO-04, TO-12).
+2. **Eiersjekk** på AI-samtale (PR 1b, TA-01), coachvideo (PR 1c, TP-01), talenotat og slag
+   (PR 1d, TP-06, TP-05).
+3. **Sju dagers forelderfrist** (PR 1e): fødselsdato påkrevd for PLAYER, ikke redigerbar for
+   spilleren, lås etter sju dager uten godkjent forelder, lydsamtykke for under 16 bare via forelder.
+   Ferdig når en 13-åring uten godkjenning låses dag 8, og coach ikke kan registrere «SELV» for et barn
+   (TA-03, TA-04, TP-02). Krever additivt felt eller bruk av `createdAt`; avklares i PR-en.
+4. **Data Golf-port `kanSeDataGolf`** (PR 2): coach-rolle eller ADMIN. Brukes på
+   `/portal/analysere/datagolf*`, `/stats/pga*`, `/api/stats/search` og inngangene i Analyse og
+   TN-menyen. Ferdig når en spiller og en uinnlogget avvises, låst med test (TO-07, TO-08, TA-06).
+5. **Forelderinnsyn etter 16:** krever ingen kodeendring — bekrefter dagens tilstand (TA-08).
+   Spilleren må kunne fjerne forelderen selv; finnes ikke den knappen, bygges den i PR 1g.
+6. **Sletting av døde filer** (PR 5a–5v) etter lista i vedlegget.
+7. **Workbench-dokumenter** for nivåene merkes utgått og slettes i PR 9b.
+
 ## CLAUDE CODE PORTERER, IUP BARE FOR AKTIVE WANG-/TN-MEDLEMMER, BARE PH-01 ER GODKJENT (Anders 04.10.2026, bindende)
 
 Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `regler/claude-code.md`).
@@ -773,7 +823,7 @@ Rekkefølge og kontroller står i analysen §7; her er det beslutningen krever:
    (analysen §6 og §7 steg 6 og 10). Ingen kobling mot `wang-toppidrett`.
 
 Uendret: `public.*` er fortsatt det appen leser; Prisma eier kolonnene, og pipelines legger
-aldri til kolonner. DataGolf vises aldri for andre enn Anders.
+aldri til kolonner. DataGolf vises bare for coacher (§KODEGJENNOMGANGEN 06.10).
 
 ## PRECISION ATHLETICS ER DESIGNSYSTEMET FOR AK GOLF HQ (Anders 26.09.2026, bindende)
 
@@ -1071,7 +1121,7 @@ og ikke kan dras ut av syne.
 - `position` er aldri persentil. Aldersstige bare fra 16 år.
 - Barnevern: spillere født 2008 eller senere uten samtykke vises aldri åpent; manglende fødselsår vises ikke.
 - Alt appen sier om en spiller skal ha måling, dato og kilde (TruthLayer); estimat merkes.
-- Kohortsammenligning er kun coachens verktøy. «Powered by Data Golf» på alle offentlige statistikkflater.
+- Kohortsammenligning er kun coachens verktøy. «Powered by Data Golf» der Data Golf-tall vises; de vises bare for coacher (§KODEGJENNOMGANGEN 06.10).
 - Økonomitall leses fra Tripletex-eksport, aldri estimert.
 
 ## Åpent (ikke besluttet, ikke bygg som fasit)
