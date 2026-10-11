@@ -17,6 +17,7 @@ const bodySchema = z.object({
  * betalingsmåte — på kunden (fremtidige fakturaer) OG på alle kundens
  * aktive abonnement (samme effekt som Billing Portal ga tidligere).
  */
+// tilgang: eier sjekkes mot Stripe-kunden (setupIntent.customer må være brukerens egen kunde)
 export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) {

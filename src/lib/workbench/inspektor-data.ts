@@ -7,6 +7,7 @@ import { loadSession } from "./wb-actions";
 /** Read the same canonical session as the calendar, including custom drills. */
 export async function hentOktInspektor(sessionId: string) {
   await requirePortalUser();
+  // tilgang: eier/coach sjekkes i loadSession (wb-actions)
   const tilgang = await loadSession(sessionId);
   if (!tilgang.ok || !tilgang.data) return { ok: false as const };
   const okt = await prisma.workbenchSession.findUnique({

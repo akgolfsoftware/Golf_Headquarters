@@ -9,6 +9,7 @@ import { avsluttTilgang, leggTilTrener, settTilgang, type TnAvsluttResultat, typ
  * Team Norway-gruppen sjekkes på nytt i domenelaget. Ingen plattformrolle
  * kreves: trener i TN-gruppen er nok (Anders 26.09.2026).
  */
+// tilgang: sportssjef i TN-gruppen sjekkes i domenelaget (lib/domain/tn-tilgang)
 export async function avsluttTilgangAction(groupId: string, targetUserId: string): Promise<TnAvsluttResultat> {
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   const resultat = await avsluttTilgang({ caller: { id: bruker.id, role: bruker.role }, groupId, targetUserId });
@@ -16,6 +17,7 @@ export async function avsluttTilgangAction(groupId: string, targetUserId: string
   return resultat;
 }
 
+// tilgang: sportssjef i TN-gruppen sjekkes i domenelaget (lib/domain/tn-tilgang)
 export async function settTilgangAction(input: {
   groupId: string;
   targetUserId: string;
