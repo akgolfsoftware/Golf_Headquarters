@@ -5,10 +5,10 @@
  * Visningen er PH05LiveAktiv.
  */
 
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { loadPH05ActiveData } from "@/lib/portal-live/load-ph04-07";
+import { loadPH05ActiveData, loadWbLiveAktiv } from "@/lib/portal-live/load-ph04-07";
 import { PH05LiveAktiv } from "@/components/portal/precision/PH05LiveAktiv";
 
 export default async function LiveActivePage({
@@ -40,9 +40,20 @@ export default async function LiveActivePage({
     }),
     prisma.workbenchSession.findUnique({
       where: { id: sessionId },
-      select: { id: true, status: true },
+      select: { id: true, status: true, playerId: true, hiddenByPlayer: true },
     }),
   ]);
+
+  // WorkbenchSession: bare eieren logger, og bare når økta er i gang.
+  if (!v2 && !planSession && wbRow) {
+    if (wbRow.playerId !== user.id) redirect("/portal/planlegge/workbench");
+    if (wbRow.hiddenByPlayer || wbRow.status === "DRAFT") notFound();
+    if (wbRow.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
+    if (wbRow.status !== "IN_PROGRESS") redirect(`/portal/live/${sessionId}/brief`);
+    const wbData = await loadWbLiveAktiv(sessionId);
+    if (!wbData) notFound();
+    return <PH05LiveAktiv key={sessionId} data={wbData} />;
+  }
 
   if (v2?.status === "COMPLETED" || planSession?.status === "COMPLETED" || wbRow?.status === "COMPLETED") {
     redirect(`/portal/live/${sessionId}/summary`);
