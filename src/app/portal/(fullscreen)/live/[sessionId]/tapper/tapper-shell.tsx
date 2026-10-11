@@ -1,4 +1,5 @@
 "use client";
+// FORELDRELØS (09.10.2026, live-økt krav 2): slagtellersiden bruker PH06Slagteller. Fjernes i en egen opprydding; ikke bygg videre på den.
 
 /**
  * PlayerHQ · Slagteller — PH06Tapper, Precision Athletics natt.

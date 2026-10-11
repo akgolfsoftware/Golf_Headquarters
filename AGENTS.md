@@ -48,6 +48,8 @@ Les `.claude/rules/gotchas.md` før databasearbeid. Migrasjonshistorikken bygger
 
 ## Git-arbeidsflyt
 
+Følg [arbeidsflyten for begge Mac-er](docs/vedlikehold/git-arbeidsflyt.md). Før ny implementasjon: søk i eksisterende grener/PR-er og les [den aktive hovedplanen](docs/plan-ferdigstilling.md). Kjør `npm run repo:status -- --fetch --label <maskin>` i den aktuelle klonen; rapporten gjelder ikke den andre maskinen. Én gren har én ansvarlig skriver om gangen. Før overlevering bekreft push med faktisk remote SHA. Registrer uavklart eller blokkert arbeid eksplisitt; det skal ikke bygges på nytt bare fordi det ikke er i main.
+
 Arbeid på egen gren (`codex/` for Codex). Bevar andres endringer. Kontroller diffen før commit. Ikke push direkte til main. Push, pull request, merge, publisering og deploy som trengs for en allerede bestilt oppgave følger den stående forhåndsgodkjenningen over. Aldri omgå kontrollene med `--no-verify`.
 
 `npm run verify` er kvalitetskontrollen; `npm test` kjører testene. De gjeldende kommandoene står i `package.json`. For dokument- og mappearbeid: kjør også `npm run prosjekt:sjekk`. Rapporter hva som faktisk er testet, og hva som fortsatt er uverifisert.
