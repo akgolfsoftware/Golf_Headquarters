@@ -12,6 +12,7 @@ import { StatsWrappedPlayer } from "@/components/stats/stats-wrapped-player";
 import type { WrappedSlideData } from "@/components/stats/stats-wrapped-slide";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 import { kanVisesOffentlig } from "@/lib/stats/offentlig-spiller";
+import { ryddProfilResultater } from "@/lib/stats/profil-resultater";
 
 export const revalidate = 86400;
 
@@ -45,7 +46,7 @@ async function getPlayer(slug: string) {
 
 async function getEntries(playerId: string, aar: number) {
   try {
-    return await prisma.publicPlayerEntry.findMany({
+    const rader = await prisma.publicPlayerEntry.findMany({
       where: {
         playerId,
         tournament: {
@@ -58,6 +59,7 @@ async function getEntries(playerId: string, aar: number) {
       include: { tournament: true },
       orderBy: { tournament: { startDate: "asc" } },
     });
+    return ryddProfilResultater(rader);
   } catch {
     return [];
   }
