@@ -9,6 +9,10 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import {
+  assertCoachTilgangTilSpiller,
+  harCoachTilgangTilSpiller,
+} from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notifications";
@@ -63,6 +67,8 @@ export async function uploadVideo(formData: FormData): Promise<UploadVideoResult
     select: { id: true, name: true },
   });
   if (!player) throw new Error("Spiller finnes ikke.");
+  // TP-01: spilleren må være coachens egen (ADMIN slipper gjennom).
+  await assertCoachTilgangTilSpiller(user, player.id);
 
   // Opprett DB-rad først (få ID til filnavn)
   const ext = EXT_FOR_TYPE[fil.type];
@@ -129,12 +135,16 @@ export async function getSignedVideoUrl(videoId: string): Promise<string> {
 
   const video = await prisma.sessionVideo.findUnique({
     where: { id: videoId },
-    select: { id: true, videoUrl: true, playerId: true, coachId: true },
+    select: { id: true, videoUrl: true, playerId: true },
   });
   if (!video) throw new Error("not-found");
 
+  // TP-01: spilleren selv, eller coach/admin med tilgang til akkurat denne spilleren.
   const erStaff = user.role === "ADMIN" || user.role === "COACH";
-  if (video.playerId !== user.id && video.coachId !== user.id && !erStaff) {
+  const harTilgang =
+    video.playerId === user.id ||
+    (erStaff && (await harCoachTilgangTilSpiller(user, video.playerId)));
+  if (!harTilgang) {
     throw new Error("forbidden");
   }
 
@@ -163,9 +173,19 @@ export async function deleteVideo(videoId: string): Promise<{ ok: true }> {
     select: { id: true, videoUrl: true, playerId: true },
   });
   if (!video) throw new Error("not-found");
+  // TP-01: bare coach med tilgang til spilleren (eller admin).
+  await assertCoachTilgangTilSpiller(user, video.playerId);
 
+  // RF-13: Supabase kaster ikke, men returnerer { error }. Ved feil beholdes
+  // databaseraden så filen ikke blir foreldreløs i lagringen.
   const sb = supabaseAdmin();
-  await sb.storage.from("coaching-videos").remove([video.videoUrl]).catch(() => {});
+  // Rader uten fil (videoUrl tom, opplasting aldri fullført) har ingenting å fjerne.
+  const { error: fjernFeil } = video.videoUrl
+    ? await sb.storage.from("coaching-videos").remove([video.videoUrl])
+    : { error: null };
+  if (fjernFeil) {
+    throw new Error(`Kunne ikke slette videofilen: ${fjernFeil.message}`);
+  }
   await prisma.sessionVideo.delete({ where: { id: video.id } });
 
   revalidatePath("/admin/recording");
