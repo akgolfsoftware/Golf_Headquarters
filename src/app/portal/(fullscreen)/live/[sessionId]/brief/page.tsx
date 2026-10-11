@@ -52,7 +52,7 @@ export default async function LiveBriefPage({
       redirect(`/portal/live/${sessionId}/summary`);
     }
     if (wbRow.status === "IN_PROGRESS") {
-      redirect(`/portal/live/${sessionId}/tapper`);
+      redirect(`/portal/live/${sessionId}/active`);
     }
     const data = mapWbToLiveSessionData({
       id: wbRow.id,

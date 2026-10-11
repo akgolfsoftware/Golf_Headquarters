@@ -77,7 +77,8 @@ export function coachScopedPlayerWhere(viewer: {
   id: string;
   role: string;
 }): Prisma.UserWhereInput {
-  if (viewer.role !== "COACH") return coachedPlayerWhere();
+  if (viewer.role === "ADMIN") return coachedPlayerWhere();
+  if (viewer.role !== "COACH") return { id: { in: [] } };
   const skrivbar = coachSkrivbarPlayerWhere(viewer);
   return {
     ...skrivbar,
@@ -105,7 +106,8 @@ export function coachSkrivbarPlayerWhere(viewer: {
   id: string;
   role: string;
 }): Prisma.UserWhereInput {
-  if (viewer.role !== "COACH") return coachedPlayerWhere();
+  if (viewer.role === "ADMIN") return coachedPlayerWhere();
+  if (viewer.role !== "COACH") return { id: { in: [] } };
   return {
     role: "PLAYER",
     // Samme soft-delete-port som coachedPlayerWhere — myk-slettede skal aldri
@@ -119,7 +121,7 @@ export function coachSkrivbarPlayerWhere(viewer: {
       },
       {
         groupMemberships: {
-          some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id } },
+          some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id, ...ikkeOrgGruppeWhere() } },
         },
       },
     ],

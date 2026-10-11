@@ -105,6 +105,7 @@ test("ADMIN og spillere går aldri via delingsgrenen", async () => {
 
 test("gruppeplan (D-49): trener-medlem kan endre gruppeplanen, men ikke rulle ut i spillernes egne planer", async () => {
   const { editableGroupWhere, canWriteMemberPlans } = await import("@/lib/workbench/group-scope");
+  const { ikkeOrgGruppeWhere } = await import("@/lib/domain/grupper");
   const trener = { id: "wang-trener", role: "COACH" };
   // Gruppeplanen: eier ELLER aktivt COACH-medlem, også i WANG/TN-grupper.
   assert.deepEqual(editableGroupWhere(trener), {
@@ -117,7 +118,7 @@ test("gruppeplan (D-49): trener-medlem kan endre gruppeplanen, men ikke rulle ut
     group: { findFirst: async ({ where }: { where: Where }) => { sisteWhere = where; return null; } },
   } as unknown as Parameters<typeof canWriteMemberPlans>[2];
   assert.equal(await canWriteMemberPlans(trener, "g1", db), false);
-  assert.deepEqual(sisteWhere, { id: "g1", arkivertAt: null, coachId: "wang-trener" });
+  assert.deepEqual(sisteWhere, { id: "g1", arkivertAt: null, coachId: "wang-trener", ...ikkeOrgGruppeWhere() });
   assert.equal(harMedlemskapsgren(sisteWhere ?? {}), false, "medlemskap teller ikke");
   await canWriteMemberPlans({ id: "a", role: "ADMIN" }, "g1", db);
   assert.deepEqual(sisteWhere, { id: "g1", arkivertAt: null });

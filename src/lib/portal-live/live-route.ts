@@ -53,6 +53,9 @@ export function liveHrefForStatus(
   }
 
   if (status === "COMPLETED") return `/portal/live/${sessionId}/summary`;
+  // Workbench-økt i gang logges per øvelse på live-skjermen (krav 2, 09.10.2026);
+  // slagtelleren nås derfra.
+  if (kind === "wb" && status === "IN_PROGRESS") return `/portal/live/${sessionId}/active`;
   if (status === "ACTIVE" || status === "PAUSED" || status === "IN_PROGRESS") {
     return `/portal/live/${sessionId}/tapper`;
   }

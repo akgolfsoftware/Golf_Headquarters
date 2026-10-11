@@ -51,7 +51,7 @@ export async function hentTreningsanalyse(input: {
   const visibleSessions = await loadVisibleSessionRange(userId, fra.toISOString(), til.toISOString());
   const v2Ids = visibleSessions.filter(session => session.model === "v2").map(session => session.id);
   const wbIds = visibleSessions.filter(session => session.model === "wb").map(session => session.id);
-  const [sessions, workbench, ballCounts] = await Promise.all([
+  const [sessions, workbench, ballCounts, wbLogger] = await Promise.all([
     v2Ids.length === 0
       ? []
       : prisma.trainingSessionV2.findMany({
@@ -81,6 +81,7 @@ export async function hentTreningsanalyse(input: {
             id: true,
             drills: {
               select: {
+                id: true,
                 repType: true,
                 repAntall: true,
                 repMinutter: true,
@@ -96,6 +97,13 @@ export async function hentTreningsanalyse(input: {
           by: ["planSessionId"],
           where: { planSessionId: { in: wbIds } },
           _sum: { count: true },
+        }),
+    // Reps per øvelse fra live-økta (krav 2, 09.10.2026).
+    wbIds.length === 0
+      ? []
+      : prisma.workbenchDrillLog.findMany({
+          where: { sessionId: { in: wbIds }, playerId: userId },
+          select: { sessionId: true, drillId: true, reps: true, motorikk: true },
         }),
   ]);
 
@@ -177,10 +185,27 @@ export async function hentTreningsanalyse(input: {
       repTypeMap.set(type, bucket);
     }
   }
+  // Økter med reps per øvelse teller faktiske reps derfra; slagtellerens
+  // baller for samme økt telles da bare som baller, ikke som reps to ganger.
+  const oekterMedOvelseslogg = new Set<string>();
+  for (const logg of wbLogger) {
+    if (logg.reps <= 0) continue;
+    oekterMedOvelseslogg.add(logg.sessionId);
+    faktiskeReps += logg.reps;
+    if (logg.motorikk === "UTEN_BALL") svingerUtenBall += logg.reps;
+    const session = visibleSessions.find(item => item.id === logg.sessionId);
+    if (session) akseMap.get(session.pyramidArea)!.faktiskReps += logg.reps;
+    const drill = workbench.find(w => w.id === logg.sessionId)?.drills.find(d => d.id === logg.drillId);
+    const type: RepType | "UKJENT" = (drill?.repType as RepType | null) ?? "UKJENT";
+    const bucket = repTypeMap.get(type) ?? { planlagt: 0, faktisk: 0 };
+    bucket.faktisk += logg.reps;
+    repTypeMap.set(type, bucket);
+  }
   for (const row of ballCounts) {
     const actual = row._sum.count ?? 0;
-    faktiskeReps += actual;
     ballerSlatt += actual;
+    if (oekterMedOvelseslogg.has(row.planSessionId)) continue;
+    faktiskeReps += actual;
     const session = visibleSessions.find(item => item.id === row.planSessionId);
     if (session) akseMap.get(session.pyramidArea)!.faktiskReps += actual;
     const bucket = repTypeMap.get("BALLER_SLATT") ?? { planlagt: 0, faktisk: 0 };

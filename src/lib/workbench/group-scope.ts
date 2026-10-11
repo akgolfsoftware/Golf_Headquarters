@@ -1,6 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { SPILLER_SYNLIGE_STATUSER } from "./wb-map";
+import { ikkeOrgGruppeWhere } from "@/lib/domain/grupper";
 
 /** Et tilbaketrukket gruppeutkast kan ikke hentes gjennom spillerens generelle planhandlinger. */
 export function canReadOwnGroupCopy(row: { sourceGroupSessionId: string | null; localOverride: boolean; status: string }): boolean {
@@ -61,7 +62,7 @@ export async function canWriteMemberPlans(
 ): Promise<boolean> {
   if (viewer.role !== "ADMIN" && viewer.role !== "COACH") return false;
   return Boolean(await db.group.findFirst({
-    where: { id: groupId, arkivertAt: null, ...(viewer.role === "ADMIN" ? {} : { coachId: viewer.id }) },
+    where: { id: groupId, arkivertAt: null, ...(viewer.role === "ADMIN" ? {} : { coachId: viewer.id, ...ikkeOrgGruppeWhere() }) },
     select: { id: true },
   }));
 }

@@ -71,7 +71,7 @@ test("coach-scoping: COACH ser kun egne via gruppe (Group.coachId) — kun aktiv
     (s) => typeof s.group === "object" && s.group != null && "coachId" in s.group,
   );
   assert.ok(some, "eier-grenen finnes");
-  assert.deepEqual(some.group, { coachId: "coach-1" }, "gruppen må eies av coachen selv");
+  assert.deepEqual(some.group, { coachId: "coach-1", ...ikkeOrgGruppeWhere() }, "bare egen AK-gruppe gir innsyn uten deling");
   assert.equal(some.endedAt, null, "utmeldte er stengt ute (soft-end, plan G1)");
   assert.equal(some.role, "PLAYER", "kun spiller-medlemskap gir coach-innsyn");
 });
@@ -135,7 +135,7 @@ test("skrive-scope (D-25): bare enrollment og eid gruppe — trener-medlemskap g
     gruppeGrener(w).every((s) => !(typeof s.group === "object" && s.group != null && "members" in s.group)),
     "ingen gren slipper inn via gruppemedlemskap",
   );
-  assert.deepEqual(gruppeGrener(w)[0]?.group, { coachId: "coach-1" });
+  assert.deepEqual(gruppeGrener(w)[0]?.group, { coachId: "coach-1", ...ikkeOrgGruppeWhere() });
 });
 
 test("skrive-scope: lese-scope er skrive-scope pluss medlemskapsgrenen, ingenting annet", () => {
@@ -148,4 +148,12 @@ test("skrive-scope: lese-scope er skrive-scope pluss medlemskapsgrenen, ingentin
 
 test("skrive-scope: ADMIN faller tilbake til basisporten", () => {
   assert.deepEqual(coachSkrivbarPlayerWhere({ id: "admin-1", role: "ADMIN" }), coachedPlayerWhere());
+});
+
+test("rolle uten coach-/adminrettigheter får aldri spiller-scope", () => {
+  for (const role of ["PLAYER", "PARENT", "GUEST", "ukjent"]) {
+    const viewer = { id: "bruker-1", role };
+    assert.deepEqual(coachScopedPlayerWhere(viewer), { id: { in: [] } });
+    assert.deepEqual(coachSkrivbarPlayerWhere(viewer), { id: { in: [] } });
+  }
 });
