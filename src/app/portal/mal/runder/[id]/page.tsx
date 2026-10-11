@@ -6,7 +6,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import {
   RUNDE_SG_KILDE,
@@ -44,7 +44,7 @@ export default async function RundeDetaljPage({
 
   if (!runde) notFound();
   if (runde.userId !== user.id &&
-    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
+    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachLesetilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
 

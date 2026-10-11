@@ -8,9 +8,9 @@ import { osloDatoOgMinutt } from "./min-calendar";
 import { samletOsloMidnatt } from "./workbench-samlet-volum";
 import { gyldigPlanDato } from "./plan-kontekst";
 
-async function tilgangFor(playerId: string) {
+async function tilgangFor(playerId: string, modus: "les" | "skriv" = "skriv") {
   const actor = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
-  const viewer = await planTilgang(playerId);
+  const viewer = await planTilgang(playerId, modus);
   return viewer?.id === actor.id ? viewer : null;
 }
 
@@ -41,7 +41,7 @@ export async function slettWorkbenchHendelse(input: z.infer<typeof SlettSchema>)
 }
 export async function lastWorkbenchHendelser(playerId: string, fra: string, til: string) {
   if (!gyldigPlanDato(fra) || !gyldigPlanDato(til) || fra >= til) return { ok: false as const, error: "Ugyldig datovindu." };
-  const viewer = await tilgangFor(playerId); if (!viewer) return { ok: false as const, error: "Ingen tilgang til denne spilleren." };
+  const viewer = await tilgangFor(playerId, "les"); if (!viewer) return { ok: false as const, error: "Ingen tilgang til denne spilleren." };
   const rows = await prisma.playerBusyBlock.findMany({ where: { userId: playerId, startAt: { lt: samletOsloMidnatt(til) },
     OR: [{ endAt: { gt: samletOsloMidnatt(fra) } }, { recurring: "WEEKLY" }] }, orderBy: [{ startAt: "asc" }, { id: "asc" }] });
   return { ok: true as const, data: rows.map(r => {

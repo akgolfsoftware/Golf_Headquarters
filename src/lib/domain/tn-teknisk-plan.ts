@@ -2,7 +2,7 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import type { TnBruker } from "@/lib/domain/tn-arbeidsflate";
 import { logReps, createTask, updateTaskBasics, deleteTask, type TaskInput } from "@/app/portal/tren/teknisk-plan/actions";
 import type { TnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
@@ -65,7 +65,8 @@ export async function harTnTekniskPlanLesetilgang(bruker: TnBruker, kontekst: Tn
   if (kontekst.erSpiller && bruker.id === spillerId) return true;
   if (!kontekst.erTrener) return false;
   if (!kontekst.spillere.some((s) => s.id === spillerId)) return false;
-  return harCoachTilgangTilSpiller({ id: bruker.id, role: bruker.role }, spillerId);
+  // Innsyn krever egen coach-relasjon eller uttrykkelig deling (D-04).
+  return harCoachLesetilgangTilSpiller({ id: bruker.id, role: bruker.role }, spillerId);
 }
 
 /** Kan viewer SKRIVE (logge reps, opprette/redigere/slette oppgaver) på denne spillerens plan? Kun TN-COACH/ADMIN (`kontekst.kanAdministrere`, global rolle allerede sjekket der) — ASSISTANT er lesende. */
