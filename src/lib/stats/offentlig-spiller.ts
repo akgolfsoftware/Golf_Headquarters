@@ -52,8 +52,12 @@ export function sisteTryggeFodselsaar(naa: Date = new Date()): number {
 export function offentligSpillerFilter(naa: Date = new Date()): Prisma.PublicPlayerWhereInput {
   return {
     OR: [
-      // DataGolf-proffer: voksne på offentlige tourer, unntatt fail-closed.
-      { dataGolfId: { not: null } },
+      // DataGolf-proffer: voksne på offentlige tourer, unntatt fail-closed. DataGolf-
+      // resultater vises aldri (lisens), så proffen må ha minst ett annet resultat.
+      {
+        dataGolfId: { not: null },
+        entries: { some: { tournament: { sourceOrigin: { not: "DATAGOLF" } } } },
+      },
       // Alle andre: må ha et troverdig fødselsår som gjør dem garantert myndige.
       {
         birthYear: {
