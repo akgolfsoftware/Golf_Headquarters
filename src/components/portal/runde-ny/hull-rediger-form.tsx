@@ -46,7 +46,7 @@ export function HullRedigerForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [trengerBekreftelse, setTrengerBekreftelse] = useState(false);
+  const [bekreftelse, setBekreftelse] = useState<string | undefined>();
 
   const [hull, setHull] = useState<HullVerdi[]>(initial);
   const [visDetaljer, setVisDetaljer] = useState(() =>
@@ -80,10 +80,10 @@ export function HullRedigerForm({
   const diff = sum.score - sum.par;
   const harHull = hull.length > 0;
 
-  function lagre(bekreftSlettSlag = false) {
+  function lagre(bekreftSlettSlag?: string) {
     if (!harHull) return;
     setError(null);
-    setTrengerBekreftelse(false);
+    setBekreftelse(undefined);
     startTransition(async () => {
       try {
         const res = await lagreHullScorer(
@@ -102,7 +102,7 @@ export function HullRedigerForm({
           router.push(`/portal/mal/runder/${roundId}`);
           router.refresh();
         } else {
-          setTrengerBekreftelse(res.krevBekreftelse === true);
+          setBekreftelse(res.krevBekreftelse ? res.bekreftelse : undefined);
           setError(res.error ?? "Kunne ikke lagre. Prøv igjen.");
         }
       } catch {
@@ -204,10 +204,10 @@ export function HullRedigerForm({
         </div>
       )}
 
-      {trengerBekreftelse && (
+      {bekreftelse && (
         <button
           type="button"
-          onClick={() => lagre(true)}
+          onClick={() => lagre(bekreftelse)}
           disabled={pending}
           className="mb-2 inline-flex h-11 w-full items-center justify-center rounded-full border border-destructive/40 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-destructive transition-colors hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-60"
         >

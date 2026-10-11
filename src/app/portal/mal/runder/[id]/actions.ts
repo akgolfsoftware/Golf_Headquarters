@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createHash } from "node:crypto";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
@@ -21,7 +22,7 @@ import {
   lesRundeKilde,
   rundeRegistreringFelter,
 } from "@/lib/runde-logg/kontrakt";
-import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
+import { Prisma, ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
@@ -420,9 +421,9 @@ const manuellHullListe = z
 export async function lagreHullScorer(
   roundId: string,
   hull: unknown,
-  /** Må være true for å lagre når registrerte slag ville blitt slettet. */
-  bekreftSlettSlag = false,
-): Promise<{ ok: boolean; error?: string; krevBekreftelse?: boolean }> {
+  /** Bekreftelsen gjelder nøyaktig innholdet vist i forrige svar. */
+  bekreftSlettSlag?: string,
+): Promise<{ ok: boolean; error?: string; krevBekreftelse?: boolean; bekreftelse?: string }> {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
@@ -436,29 +437,35 @@ export async function lagreHullScorer(
     fairway: h.par === 3 ? null : h.fairway,
   }));
 
-  // Aldri stille sletting: finn registrerte slag som går tapt og krev
-  // bekreftelse først (DI-04, DI-26).
-  const [eksisterende, slagGrupper] = await Promise.all([
-    prisma.holeScore.findMany({
-      where: { roundId },
-      select: { holeNumber: true, strokes: true },
-    }),
-    prisma.shot.groupBy({
-      by: ["holeNumber"],
-      where: { roundId },
-      _count: { _all: true },
-    }),
-  ]);
-  const plan = planSlagSletting(
-    eksisterende,
-    data,
-    slagGrupper.map((g) => ({ holeNumber: g.holeNumber, antall: g._count._all })),
-  );
-  if (plan.tapteSlag.length > 0 && !bekreftSlettSlag) {
-    return { ok: false, krevBekreftelse: true, error: beskrivTapteSlag(plan.tapteSlag) };
-  }
+  const resultat = await prisma.$transaction(async (tx) => {
+    // Les og skriv samme konsistente grunnlag. Endring underveis skal ikke
+    // kunne slette nye slag som brukeren aldri fikk beskjed om.
+    const [eksisterende, slag] = await Promise.all([
+      tx.holeScore.findMany({
+        where: { roundId },
+        select: { holeNumber: true, strokes: true },
+      }),
+      tx.shot.findMany({
+        where: { roundId },
+        select: { id: true, holeNumber: true },
+        orderBy: { id: "asc" },
+      }),
+    ]);
+    const antall = new Map<number, number>();
+    for (const s of slag) antall.set(s.holeNumber, (antall.get(s.holeNumber) ?? 0) + 1);
+    const plan = planSlagSletting(
+      eksisterende,
+      data,
+      [...antall].map(([holeNumber, antall]) => ({ holeNumber, antall })),
+    );
+    const slettes = new Set(plan.slettSlagFor);
+    const bekreftelse = createHash("sha256").update(JSON.stringify({
+      roundId, data, plan, slag: slag.filter(s => slettes.has(s.holeNumber)),
+    })).digest("hex");
+    if (plan.tapteSlag.length > 0 && bekreftSlettSlag !== bekreftelse) {
+      return { ok: false, krevBekreftelse: true, bekreftelse, error: beskrivTapteSlag(plan.tapteSlag) };
+    }
 
-  await prisma.$transaction(async (tx) => {
     for (const h of data) {
       await tx.holeScore.upsert({
         where: { roundId_holeNumber: { roundId, holeNumber: h.holeNumber } },
@@ -493,7 +500,10 @@ export async function lagreHullScorer(
       where: { id: roundId },
       data: { score: data.reduce((sum, h) => sum + h.strokes, 0) },
     });
-  });
+    return { ok: true };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+
+  if (!resultat.ok) return resultat;
 
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);

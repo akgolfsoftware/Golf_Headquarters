@@ -10,16 +10,18 @@
  * Ingen hex eller rgba.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play, Pause, Undo2, ArrowRight, Check } from "lucide-react";
+import { Play, Pause, Undo2, ArrowRight, Check, Video } from "lucide-react";
 import { AkseMerke, StatusPille, Meta, Tall } from "@/components/precision/pa";
 import {
   type LiveAktivData,
   formatClock,
   beregnProsent,
 } from "@/lib/portal-live/ph04-07-data";
+import { fullforWbLiveOkt, lagreWbOvelse, lagreWbOvelseVideo } from "@/lib/portal-live/wb-live-actions";
+import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import "@/styles/precision-athletics.css";
 
 interface PH05LiveAktivProps {
@@ -36,9 +38,97 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
   const [reps, setReps] = useState<number[]>(() =>
     drills.map((d) => d.repsCompleted || 0),
   );
-  const [pause, setPause] = useState(false);
+  const [pause, setPause] = useState(data.pauset ?? false);
   const [endOpen, setEndOpen] = useState(false);
   const [seconds, setSeconds] = useState(data.initialSeconds || 0);
+
+  // Workbench-økt: reps, kommentar og video lagres per øvelse (krav 2).
+  const lagrer = data.lagring === "workbench";
+  const [kommentarer, setKommentarer] = useState<string[]>(() => drills.map((d) => d.kommentar ?? ""));
+  const [videoer, setVideoer] = useState<number[]>(() => drills.map((d) => d.videoer ?? 0));
+  const [lagreStatus, setLagreStatus] = useState<"lagret" | "lagrer" | "feil" | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [videoBusy, setVideoBusy] = useState(false);
+  const [fullforer, setFullforer] = useState(false);
+  const venter = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+  const videoInput = useRef<HTMLInputElement>(null);
+
+  const lagreOvelse = async (idx: number, verdier: { reps: number; kommentar?: string }) => {
+    const drill = drills[idx];
+    if (!lagrer || !drill) return;
+    setLagreStatus("lagrer");
+    try {
+      const res = await lagreWbOvelse(data.sessionId, { drillId: drill.id, ...verdier });
+      setLagreStatus(res.ok ? "lagret" : "feil");
+      setFeil(res.ok ? null : res.error);
+    } catch {
+      setLagreStatus("feil");
+      setFeil("Ikke lagret. Sjekk nettet; tallet sendes igjen ved neste endring.");
+    }
+  };
+
+  // Lagrer hele tallet etter en kort pause i trykkingen.
+  const planleggLagring = (idx: number, verdi: number) => {
+    if (!lagrer) return;
+    const forrige = venter.current.get(idx);
+    if (forrige) clearTimeout(forrige);
+    venter.current.set(idx, setTimeout(() => {
+      venter.current.delete(idx);
+      void lagreOvelse(idx, { reps: verdi });
+    }, 700));
+  };
+
+  const lastOppVideo = async (file: File) => {
+    const drill = drills[cur];
+    if (!drill) return;
+    setVideoBusy(true);
+    setFeil(null);
+    try {
+      const form = new FormData();
+      form.append("bucket", STORAGE_BUCKETS.PLAYER_SWING_VIDEOS);
+      form.append("file", file);
+      const up = await fetch("/api/upload", { method: "POST", body: form });
+      const body = (await up.json()) as { ok?: boolean; url?: string; path?: string; error?: string };
+      if (!up.ok || !body.ok || !body.url || !body.path) {
+        setFeil(body.error ?? "Videoen ble ikke lastet opp.");
+        return;
+      }
+      const res = await lagreWbOvelseVideo(data.sessionId, { drillId: drill.id, videoUrl: body.url, storagePath: body.path });
+      if (!res.ok) {
+        setFeil(res.error);
+        return;
+      }
+      setVideoer((prev) => prev.map((v, i) => (i === cur ? v + 1 : v)));
+    } catch {
+      setFeil("Videoen ble ikke lastet opp.");
+    } finally {
+      setVideoBusy(false);
+    }
+  };
+
+  const fullforOgLagre = async () => {
+    if (!lagrer) return false;
+    setFullforer(true);
+    setFeil(null);
+    for (const t of venter.current.values()) clearTimeout(t);
+    venter.current.clear();
+    try {
+      const res = await fullforWbLiveOkt(
+        data.sessionId,
+        drills.map((d, i) => ({ drillId: d.id, reps: reps[i] || 0, kommentar: kommentarer[i] ?? "" })),
+      );
+      if (!res.ok) {
+        setFeil(res.error);
+        return true;
+      }
+      router.push(res.href);
+    } catch {
+      setFeil("Økta ble ikke lagret. Sjekk nettet og prøv igjen.");
+    } finally {
+      setFullforer(false);
+    }
+    return true;
+  };
 
   // Stoppeklokke
   useEffect(() => {
@@ -50,9 +140,9 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
   }, [pause, empty]);
 
   const add = (n: number) => {
-    setReps((prev) =>
-      prev.map((val, idx) => (idx === cur ? Math.max(0, val + n) : val)),
-    );
+    const neste = Math.max(0, (reps[cur] || 0) + n);
+    setReps((prev) => prev.map((val, idx) => (idx === cur ? neste : val)));
+    planleggLagring(cur, neste);
   };
 
   const activeDrill = drills[cur] || {
@@ -70,7 +160,9 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
 
   const handleNextOrFinish = () => {
     if (isLast) {
-      if (onFinish) {
+      if (lagrer) {
+        void fullforOgLagre();
+      } else if (onFinish) {
         onFinish(reps);
       } else {
         router.push(`/portal/live/${data.sessionId}/summary`);
@@ -82,7 +174,9 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
 
   const handleEndConfirmed = () => {
     setEndOpen(false);
-    if (onFinish) {
+    if (lagrer) {
+      void fullforOgLagre();
+    } else if (onFinish) {
       onFinish(reps);
     } else {
       router.push(`/portal/live/${data.sessionId}/summary`);
@@ -330,7 +424,7 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
               {curReps}
             </span>
             <Tall style={{ color: "var(--text-muted)", fontSize: 16 }}>
-              / {activeDrill.quantity} {activeDrill.unit}
+              / {activeDrill.quantity > 0 ? activeDrill.quantity : "—"} {activeDrill.unit}
             </Tall>
           </div>
 
@@ -413,6 +507,75 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
           </button>
         </div>
 
+        {lagrer && drills[cur] && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <label htmlFor="ph05-kommentar" style={{ font: "var(--type-label)", color: "var(--text-secondary)" }}>
+              Kommentar til øvelsen
+            </label>
+            <textarea
+              id="ph05-kommentar"
+              rows={3}
+              maxLength={1000}
+              value={kommentarer[cur] ?? ""}
+              onChange={(e) => {
+                const verdi = e.target.value;
+                setKommentarer((prev) => prev.map((k, i) => (i === cur ? verdi : k)));
+              }}
+              onBlur={() => void lagreOvelse(cur, { reps: reps[cur] || 0, kommentar: kommentarer[cur] ?? "" })}
+              style={{
+                width: "100%",
+                minWidth: 0,
+                boxSizing: "border-box",
+                padding: 12,
+                borderRadius: 8,
+                border: "1px solid var(--border-hairline)",
+                background: "var(--surface-card)",
+                color: "var(--text-primary)",
+                font: "var(--type-body)",
+                resize: "vertical",
+              }}
+            />
+            <input
+              ref={videoInput}
+              type="file"
+              accept="video/*"
+              capture="environment"
+              hidden
+              onChange={(e) => {
+                const fil = e.target.files?.[0];
+                e.target.value = "";
+                if (fil) void lastOppVideo(fil);
+              }}
+            />
+            <button
+              type="button"
+              disabled={videoBusy}
+              onClick={() => videoInput.current?.click()}
+              style={{
+                minHeight: 56,
+                borderRadius: 8,
+                border: "1px solid var(--border-hairline)",
+                background: "var(--surface-card)",
+                color: "var(--text-primary)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                font: "600 15px/1 var(--font-sans)",
+                cursor: videoBusy ? "default" : "pointer",
+                opacity: videoBusy ? 0.6 : 1,
+              }}
+            >
+              <Video size={18} />
+              <span>{videoBusy ? "Laster opp …" : "Legg til video"}</span>
+              {(videoer[cur] ?? 0) > 0 && <Meta>{videoer[cur]} lagret</Meta>}
+            </button>
+            <p role="status" aria-live="polite" style={{ margin: 0, minHeight: 20, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+              {feil ?? (lagreStatus === "lagrer" ? "Lagrer …" : lagreStatus === "lagret" ? "Lagret" : "")}
+            </p>
+          </div>
+        )}
+
         {/* Snarvei til slagtelleren */}
         <Link
           href={`/portal/live/${data.sessionId}/tapper`}
@@ -450,6 +613,7 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
           <button
             type="button"
             onClick={handleNextOrFinish}
+            disabled={fullforer}
             style={{
               height: 64,
               width: "100%",

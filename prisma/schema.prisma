@@ -5522,6 +5522,9 @@ model PositionTaskLog {
   // Logger — fra hvilken kontekst
   // Optional fordi reps kan logges manuelt uten session-kontekst
   sessionV2Id    String? // TrainingSessionV2 (live-økt counter)
+  // WorkbenchSession (live-økt, 09.10.2026). Unik med taskId + hastighet, slik
+  // at en fullført økt aldri teller mot oppgaven mer enn én gang.
+  workbenchSessionId String?
   trackmanShotId String? @unique // hvis fra TrackMan-import
   loggedByUserId String // hvem klikket logg-knappen / importerte
 
@@ -5539,7 +5542,9 @@ model PositionTaskLog {
   trackmanShot TrackManShot? @relation(fields: [trackmanShotId], references: [id])
 
   @@index([taskId, loggedAt])
+  @@unique([taskId, workbenchSessionId, hastighet])
   @@index([sessionV2Id])
+  @@index([workbenchSessionId])
   @@map("position_task_logs")
 }
 
@@ -6867,7 +6872,8 @@ model WorkbenchSession {
   perceivedEffort Int?
   actualMinutes   Int?
 
-  drills WorkbenchDrill[]
+  drills    WorkbenchDrill[]
+  drillLogs WorkbenchDrillLog[]
 
   @@index([playerId, date])
   @@index([coachId, date])
@@ -6922,6 +6928,37 @@ model WorkbenchDrill {
   @@index([positionTaskId])
   @@index([exerciseId])
   @@map("workbench_drills")
+}
+
+// Live-økt (krav 2, 09.10.2026): det spilleren faktisk gjorde per øvelse i en
+// WorkbenchSession. Én rad per øvelse i økta; hver lagring skriver hele tallet
+// på nytt (idempotent ved retry). drillId er løs referanse (ingen @relation),
+// slik at loggen overlever om øvelsen senere fjernes fra planen. Område, sted,
+// avstand og motorikk er kopiert fra øvelsens AK-formel ved lagring — null når
+// øvelsen ikke har dem, aldri gjettet. Video ligger i PlayerSwingVideo
+// (liveSessionKind "workbench", drillId = WorkbenchDrill.id).
+model WorkbenchDrillLog {
+  id          String   @id @default(cuid())
+  sessionId   String
+  drillId     String
+  playerId    String
+  loggedById  String
+  drillTittel String
+  reps        Int      @default(0)
+  // UTEN_BALL | LAV_HAST | AUTO — fra øvelsens AK-formel.
+  motorikk    String?
+  omraade     String?
+  sted        String?
+  avstand     String?
+  kommentar   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session WorkbenchSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, drillId])
+  @@index([playerId, updatedAt])
+  @@map("workbench_drill_logs")
 }
 
 // Workbench fysisk plan + turnering (Precision Athletics, 27.09.2026).
