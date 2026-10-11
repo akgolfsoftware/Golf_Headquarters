@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createHash } from "node:crypto";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
@@ -11,6 +12,7 @@ import { beregnShotSg } from "@/lib/domain/sg";
 import { shotsTilSgShotsMedMeta } from "@/lib/runde-logg/shots-til-sg";
 import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
+import { beskrivTapteSlag, planSlagSletting } from "@/lib/portal-runder/scorekort-slag";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
@@ -20,7 +22,7 @@ import {
   lesRundeKilde,
   rundeRegistreringFelter,
 } from "@/lib/runde-logg/kontrakt";
-import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
+import { Prisma, ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
@@ -421,7 +423,9 @@ const manuellHullListe = z
 export async function lagreHullScorer(
   roundId: string,
   hull: unknown,
-): Promise<{ ok: boolean; error?: string }> {
+  /** Bekreftelsen gjelder nøyaktig innholdet vist i forrige svar. */
+  bekreftSlettSlag?: string,
+): Promise<{ ok: boolean; error?: string; krevBekreftelse?: boolean; bekreftelse?: string }> {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
@@ -435,12 +439,34 @@ export async function lagreHullScorer(
     fairway: h.par === 3 ? null : h.fairway,
   }));
 
-  await prisma.$transaction(async (tx) => {
-    const eksisterende = await tx.holeScore.findMany({
-      where: { roundId },
-      select: { holeNumber: true, strokes: true },
-    });
-    const eksStrokes = new Map(eksisterende.map((e) => [e.holeNumber, e.strokes]));
+  const resultat = await prisma.$transaction(async (tx) => {
+    // Les og skriv samme konsistente grunnlag. Endring underveis skal ikke
+    // kunne slette nye slag som brukeren aldri fikk beskjed om.
+    const [eksisterende, slag] = await Promise.all([
+      tx.holeScore.findMany({
+        where: { roundId },
+        select: { holeNumber: true, strokes: true },
+      }),
+      tx.shot.findMany({
+        where: { roundId },
+        select: { id: true, holeNumber: true },
+        orderBy: { id: "asc" },
+      }),
+    ]);
+    const antall = new Map<number, number>();
+    for (const s of slag) antall.set(s.holeNumber, (antall.get(s.holeNumber) ?? 0) + 1);
+    const plan = planSlagSletting(
+      eksisterende,
+      data,
+      [...antall].map(([holeNumber, antall]) => ({ holeNumber, antall })),
+    );
+    const slettes = new Set(plan.slettSlagFor);
+    const bekreftelse = createHash("sha256").update(JSON.stringify({
+      roundId, data, plan, slag: slag.filter(s => slettes.has(s.holeNumber)),
+    })).digest("hex");
+    if (plan.tapteSlag.length > 0 && bekreftSlettSlag !== bekreftelse) {
+      return { ok: false, krevBekreftelse: true, bekreftelse, error: beskrivTapteSlag(plan.tapteSlag) };
+    }
 
     for (const h of data) {
       await tx.holeScore.upsert({
@@ -459,24 +485,16 @@ export async function lagreHullScorer(
     }
 
     // Hull som ble fjernet fra scorekortet (f.eks. 18 → 9 hull).
-    const beholdt = new Set(data.map((h) => h.holeNumber));
-    const fjernet = eksisterende
-      .filter((e) => !beholdt.has(e.holeNumber))
-      .map((e) => e.holeNumber);
-    if (fjernet.length > 0) {
-      await tx.holeScore.deleteMany({ where: { roundId, holeNumber: { in: fjernet } } });
+    if (plan.fjernedeHull.length > 0) {
+      await tx.holeScore.deleteMany({
+        where: { roundId, holeNumber: { in: plan.fjernedeHull } },
+      });
     }
 
-    // Slag-kjeder som nå motsier scorekortet: endret slag-tall eller fjernet hull.
-    const endretStrokes = data
-      .filter((h) => {
-        const gamle = eksStrokes.get(h.holeNumber);
-        return gamle != null && gamle !== h.strokes;
-      })
-      .map((h) => h.holeNumber);
-    const slettSlagFor = [...endretStrokes, ...fjernet];
-    if (slettSlagFor.length > 0) {
-      await tx.shot.deleteMany({ where: { roundId, holeNumber: { in: slettSlagFor } } });
+    // Slag-kjeder som nå motsier scorekortet (endret slag-tall eller fjernet
+    // hull). Hull med uendret slag-tall beholder kjeden sin.
+    if (plan.slettSlagFor.length > 0) {
+      await tx.shot.deleteMany({ where: { roundId, holeNumber: { in: plan.slettSlagFor } } });
     }
 
     // Brutto totalscore = summen av scorekortet.
@@ -484,7 +502,10 @@ export async function lagreHullScorer(
       where: { id: roundId },
       data: { score: data.reduce((sum, h) => sum + h.strokes, 0) },
     });
-  });
+    return { ok: true };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+
+  if (!resultat.ok) return resultat;
 
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
