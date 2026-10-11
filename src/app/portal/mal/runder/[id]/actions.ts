@@ -260,7 +260,9 @@ export async function deleteShot(roundId: string, shotId: string) {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
-  await prisma.shot.delete({ where: { id: shotId } });
+  // Slaget må tilhøre runden som eiersjekken gjelder (TP-05).
+  const slettet = await prisma.shot.deleteMany({ where: { id: shotId, roundId } });
+  if (slettet.count === 0) throw new Error("forbidden");
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
