@@ -32,6 +32,6 @@ test("godkjenning og rolle gjelder før startknappen tilbys", async () => {
   access = false; await assert.rejects(open, /redirect:\/portal\/planlegge\/workbench/);
 });
 test("startet eller fullført Workbench-økt følger eksisterende rute", async () => {
-  row.status = "IN_PROGRESS"; await assert.rejects(open, /redirect:\/portal\/live\/wb\/tapper/);
+  row.status = "IN_PROGRESS"; await assert.rejects(open, /redirect:\/portal\/live\/wb\/active/);
   row.status = "COMPLETED"; await assert.rejects(open, /redirect:\/portal\/live\/wb\/summary/);
 });

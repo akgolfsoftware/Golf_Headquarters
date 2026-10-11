@@ -1,5 +1,6 @@
 'use client';
 
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from 'react';
 import {
   WANG_KANDIDATER,
@@ -18,8 +19,7 @@ export function WangAdmin({
   campus = 'Fredrikstad',
 }: WangAdminProps) {
   const [fane, setFane] = useState(aktivFane);
-  const [kandidater, setKandidater] = useState<WangKandidat[]>(WANG_KANDIDATER);
-  const [kandidatKvittering, setKandidatKvittering] = useState<string | null>(null);
+  const kandidater: WangKandidat[] = WANG_KANDIDATER;
 
   // Ny kandidat tilstand
   const [nyttNavn, setNyttNavn] = useState('');
@@ -29,36 +29,6 @@ export function WangAdmin({
   const byttFane = (nyFane: string) => {
     setFane(nyFane);
     if (onFaneEndret) onFaneEndret(nyFane);
-  };
-
-  const oppdaterStatus = (id: string, nyStatus: WangKandidat['status']) => {
-    setKandidater(
-      kandidater.map((k) => (k.id === id ? { ...k, status: nyStatus } : k))
-    );
-    setKandidatKvittering(`Status oppdatert til ${nyStatus}.`);
-    setTimeout(() => setKandidatKvittering(null), 3000);
-  };
-
-  const leggTilKandidat = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nyttNavn.trim() || !nyttHcp.trim()) return;
-
-    const ny: WangKandidat = {
-      id: 'k-' + Date.now(),
-      navn: nyttNavn,
-      klubb: nyKlubb || 'Gamle Fredrikstad GK',
-      handicap: parseFloat(nyttHcp) || 4.0,
-      onsketCampus: campus,
-      status: 'sokt',
-      notat: 'Registrert av sportssjef',
-    };
-
-    setKandidater([...kandidater, ny]);
-    setNyttNavn('');
-    setNyKlubb('');
-    setNyttHcp('');
-    setKandidatKvittering(`Kandidat ${ny.navn} er lagt til.`);
-    setTimeout(() => setKandidatKvittering(null), 4000);
   };
 
   return (
@@ -93,12 +63,6 @@ export function WangAdmin({
           </button>
         ))}
       </div>
-
-      {kandidatKvittering && (
-        <div style={{ padding: '12px 16px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '14px' }}>
-          {kandidatKvittering}
-        </div>
-      )}
 
       {/* ========================================================== */}
       {/* WANG-19: Trenere og roller                                 */}
@@ -153,36 +117,11 @@ export function WangAdmin({
             </h2>
           </div>
 
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 80px 140px 140px 140px', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Elev</span>
-              <span>Klasse</span>
-              <span>Foto & Sosiale Medier</span>
-              <span>Helse / Skadejournal</span>
-              <span>Foresatt-godkjenning</span>
-            </div>
-            {[
-              { navn: 'Sofie Rasmussen', kl: 'VG1', foto: true, helse: true, for: true },
-              { navn: 'Mikkel Thon', kl: 'VG1', foto: true, helse: true, for: true },
-              { navn: 'Celine Brovold', kl: 'VG2', foto: true, helse: true, for: true },
-              { navn: 'Felix Sanden', kl: 'VG2', foto: false, helse: true, for: true },
-              { navn: 'Emma Lind', kl: 'VG3', foto: true, helse: true, for: true },
-              { navn: 'Oskar Dahl', kl: 'VG3', foto: true, helse: true, for: true },
-            ].map((s, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 80px 140px 140px 140px', padding: '16px', borderTop: '1px solid #E6E8EA', alignItems: 'center', fontSize: '13px' }}>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{s.navn}</span>
-                <span style={{ color: '#5B7793' }}>{s.kl}</span>
-                <span style={{ color: s.foto ? '#2E857D' : '#D12A5C', fontWeight: 500 }}>
-                  {s.foto ? 'Innvilget' : 'Ikke samtykket'}
-                </span>
-                <span style={{ color: s.helse ? '#2E857D' : '#D12A5C', fontWeight: 500 }}>
-                  {s.helse ? 'Innvilget' : 'Mangler'}
-                </span>
-                <span style={{ color: s.for ? '#2E857D' : '#D12A5C', fontWeight: 500 }}>
-                  {s.for ? 'Signert digitalt' : 'Utestående'}
-                </span>
-              </div>
-            ))}
+          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <p style={{ margin: 0, fontSize: '14px', color: '#17446F' }}>
+              Samtykkestatus per elev vises her når skjermen er koblet til delingssamtykke i basen. Ingen status er vist før det, for en feil status i en personvernskjerm er verre enn ingen.
+            </p>
+            <WangIkkeKoblet />
           </div>
         </div>
       )}
@@ -241,7 +180,7 @@ export function WangAdmin({
           {/* Legg til kandidat */}
           <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
             <h3 style={{ margin: '0 0 14px', fontSize: '16px', color: '#17446F' }}>Registrer ny søker / kandidat</h3>
-            <form onSubmit={leggTilKandidat} style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end' }}>
+            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F', minWidth: '180px' }}>
                 Navn
                 <input
@@ -275,7 +214,9 @@ export function WangAdmin({
               </label>
               <button
                 type="submit"
+                disabled
                 style={{
+                  ...IKKE_KOBLET_KNAPP_STIL,
                   minHeight: '44px',
                   padding: '0 20px',
                   borderRadius: '6px',
@@ -289,6 +230,7 @@ export function WangAdmin({
               >
                 Legg til
               </button>
+              <WangIkkeKoblet />
             </form>
           </div>
 
@@ -324,22 +266,28 @@ export function WangAdmin({
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                   <button
-                    onClick={() => oppdaterStatus(k.id, 'provespill')}
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', cursor: 'pointer' }}
+                    type="button"
+                    disabled
+                    title="Ikke koblet ennå"
+                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
                   >
                     Prøvespill
                   </button>
                   <button
-                    onClick={() => oppdaterStatus(k.id, 'intervju')}
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', cursor: 'pointer' }}
+                    type="button"
+                    disabled
+                    title="Ikke koblet ennå"
+                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
                   >
                     Intervju
                   </button>
                   <button
-                    onClick={() => oppdaterStatus(k.id, 'tilbudt')}
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #2E857D', background: '#2E857D', color: '#FFFFFF', fontSize: '11px', cursor: 'pointer' }}
+                    type="button"
+                    disabled
+                    title="Ikke koblet ennå"
+                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #2E857D', background: '#2E857D', color: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
                   >
-                    Tilby plass
+                    Tilby plass (ikke koblet ennå)
                   </button>
                 </div>
               </div>

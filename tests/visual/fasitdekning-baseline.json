@@ -1,6 +1,6 @@
 {
-  "sitert": 133,
+  "sitert": 132,
   "av": 219,
-  "sistEndret": "2026-10-04",
-  "grunn": "PH-20 Gameplan og banekart er portet til Precision Athletics. Den utgåtte Train-lock-siteringen av «GP-01 Gameplan baner.dc.html» i GameplanV2 er fjernet med vilje. 134→133."
+  "sistEndret": "2026-10-05",
+  "grunn": "Oppstart (AU-04) portert til Precision Athletics (7d7c2994): onboarding-wizard.tsx siterte «designsystem/train-lock/PH-19 Onboarding.dc.html» og er erstattet av SpillerOppstart.tsx. Én Train-lock-sitering faller bort, 133→132 (målt etter fletting med main 05.10)."
 }

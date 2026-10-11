@@ -21,7 +21,7 @@ export default async function AdminInnsiktPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG22InnsiktTalent startFane={fane ?? "radar"} />
+      <AG22InnsiktTalent tilstand="tom" startFane={fane ?? "radar"} />
     </AgencyOSSkall>
   );
 }

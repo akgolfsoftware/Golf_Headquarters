@@ -27,7 +27,6 @@ import { LoginPrecisionView } from "@/components/auth/LoginPrecisionView";
 import { PersonvernPrecisionView } from "@/components/portal/profil/PersonvernPrecisionView";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { IkkeFunnet } from "@/components/system/ikke-funnet";
-import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
 import { PeriodeplanPyramideView } from "@/components/portal/toppidrett/PeriodeplanPyramideView";
 import { TekniskPlanPrecisionView } from "@/components/portal/teknisk/TekniskPlanPrecisionView";
 
@@ -41,7 +40,6 @@ interface SkjermDefinisjon {
     | "BOOKING"
     | "WANG"
     | "KONTO"
-    | "TEAM_NORWAY"
     | "SYSTEM";
   rute: string;
 
@@ -308,90 +306,6 @@ const ALLE_SKJERMER: SkjermDefinisjon[] = [
       </div>
     ),
   },
-  {
-    id: "tn-01",
-    tittel: "TN-01 Landslagsoversikt",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway",
-    beskrivelse:
-      "Offisielt landslagsdashbord med neste samling (Mar Menor), fellestest-status, tidsfrister og meldinger fra landslagsledelsen.",
-    testpunkter: [
-      "Se neste samling med påmeldingsfrist FRIST 14.10",
-      "Sjekk fellestest-fremdrift STENGER 04.10",
-      "Se meldinger fra Head Coach Øyvind Rojahn",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-01" visNavigasjon={false} />,
-  },
-  {
-    id: "tn-02",
-    tittel: "TN-02 Spillerprofil & Ytelse",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway/spiller/demo",
-    beskrivelse:
-      "Utøverkort for landslagsspiller med kvadratisk avatar, 5 tester målt mot landslagsstandard og formell lisens/antidoping-status.",
-    testpunkter: [
-      "Se utøverprofil (20 år, college, WAGR #48)",
-      "Inspiser 5 testprotokoller mot referansekrav",
-      "Sjekk godkjent helseattest og antidoping-samtykke",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-02" visNavigasjon={false} />,
-  },
-  {
-    id: "tn-03",
-    tittel: "TN-03 Fellestesting & Protokoller",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway/fellestesting",
-    beskrivelse:
-      "Interaktiv resultatpunching for nasjonale tester (Trapbar, Knebøy, 3000m, Ballhastighet) med live evaluering mot aldersklasse-standard.",
-    testpunkter: [
-      "Bytt mellom Herrer, Damer, Gutter U18 og Jenter U18",
-      "Skriv inn testverdier for umiddelbar statusberegning",
-      "Se 'Bestått krav' og 'Under krav' fargekoding",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-03" visNavigasjon={false} />,
-  },
-  {
-    id: "tn-04",
-    tittel: "TN-04 Samlinger & Månedsplan",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway/samlinger",
-    beskrivelse:
-      "Årshjul over samlinger, detaljert dagsplan med dagsfaner, og avhukbar obligatorisk pakkeliste for landslagsreiser.",
-    testpunkter: [
-      "Utforsk årshjulet for 2026/2027",
-      "Bytt mellom dagsfanene (rød aktiv indikator)",
-      "Kryss av i den obligatoriske pakkelisten",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-04" visNavigasjon={false} />,
-  },
-  {
-    id: "tn-05",
-    tittel: "TN-05 Uttak & Kriterier",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway/uttak",
-    beskrivelse:
-      "Uttakskriterier for EM og VM med dynamisk cut-off og offisiell WAGR-rangliste. Klikk på #1 åpner spillerprofilen.",
-    testpunkter: [
-      "Veksle mellom Lag-EM og VM Eisenhower (cut-off endres)",
-      "Studer WAGR-rangering og uttaksstatus for 6 utøvere",
-      "Klikk på #1 Eirik Lindstrøm for å åpne spillerprofilen",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-05" visNavigasjon={false} />,
-  },
-  {
-    id: "tn-06",
-    tittel: "TN-06 Toppidrettsskoler (WANG)",
-    kategori: "TEAM_NORWAY",
-    rute: "/team-norway/skoler",
-    beskrivelse:
-      "Komplett nasjonal oversikt over alle WANG Toppidrett og WANG Ung-skoler, leverte tester, neste planlagte test og utøverresultater.",
-    testpunkter: [
-      "Veksle mellom Alle skoler (11), WANG Toppidrett VGS (5) og WANG Ung (6)",
-      "Klikk på en skole for å se elevprotokoll og testresultater",
-      "Se sammenligning mot landslagsstandard for styrke, kondisjon og ballhastighet",
-    ],
-    komponent: <TeamNorwayAppView initialSkjerm="TN-06" visNavigasjon={false} />,
-  },
 ];
 
 
@@ -519,8 +433,7 @@ export function SkjermKatalog() {
         {/* Hurtigvalg av kategori */}
         <div className="max-w-7xl mx-auto mt-2 pt-2 border-t border-[#E4DFD5] flex items-center gap-1.5 overflow-x-auto text-xs pb-1 scrollbar-none">
           {[
-            { id: "ALLE", label: "Alle skjermer (17)" },
-            { id: "TEAM_NORWAY", label: "Team Norway (5)" },
+            { id: "ALLE", label: "Alle skjermer (14)" },
             { id: "PLAYERHQ", label: "PlayerHQ (Spiller)" },
             { id: "AGENCYOS", label: "AgencyOS (Trener)" },
             { id: "FORELDER", label: "Foreldreportal" },

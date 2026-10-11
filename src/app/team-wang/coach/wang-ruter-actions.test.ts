@@ -3,7 +3,8 @@ import { mock, test } from "node:test";
 
 const IKKE_FUNNET = new Error("IKKE_FUNNET");
 
-let bruker = { id: "coach-1", role: "COACH" };
+let bruker: { id: string; role: string; name?: string } | null = { id: "coach-1", role: "COACH" };
+let sisteAllow: string[] | undefined;
 let coachGruppeId: string | null = "wang-top-id";
 let elevGruppeId: string | null = "wang-top-id";
 let tilgangFeil = false;
@@ -37,7 +38,15 @@ mock.module("next/cache", {
 });
 
 mock.module("@/lib/auth/requirePortalUser", {
-  namedExports: { requirePortalUser: async () => bruker },
+  namedExports: {
+    // Speiler den ekte vakten: uinnlogget og feil rolle sendes bort.
+    requirePortalUser: async (opts: { allow?: string[]; redirectTo?: string } = {}) => {
+      sisteAllow = opts.allow;
+      if (!bruker) throw new Error(`REDIRECT:${opts.redirectTo ?? "/auth/login"}`);
+      if (opts.allow && !opts.allow.includes(bruker.role)) throw new Error("REDIRECT:/portal");
+      return bruker;
+    },
+  },
 });
 
 mock.module("@/lib/auth/getCurrentUser", {
@@ -80,7 +89,13 @@ mock.module("@/app/team-wang/_data/hent-wang-gruppe", {
   namedExports: {
     hentWangGruppe: async () => {
       liveKall += 1;
-      return { gruppeId: "wang-top-id" };
+      return {
+        gruppeId: "wang-top-id",
+        elever: [
+          { id: "elev-1", navn: "Test Elev", rolle: "PLAYER" },
+          { id: "trener-1", navn: "Test Trener", rolle: "COACH" },
+        ],
+      };
     },
   },
 });
@@ -138,6 +153,7 @@ async function action() {
 
 test.beforeEach(() => {
   bruker = { id: "coach-1", role: "COACH" };
+  sisteAllow = undefined;
   coachGruppeId = "wang-top-id";
   elevGruppeId = "wang-top-id";
   tilgangFeil = false;
@@ -230,4 +246,66 @@ test("IUP-action lagrer når både aktør, elev, mål og perioder er innenfor gr
   assert.equal(goalCreates, 0);
   assert.equal(goalDeletes, 0);
   assert.equal(periodeWheres[0]?.groupId, "wang-top-id");
+});
+
+// ---- Rolle og tilgang i /team-wang (sikkerhet 05.10.2026) ----
+
+async function skjermerPage() {
+  return (await import("../skjermer/page")).default;
+}
+
+type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }> };
+function propsFra(element: unknown): KlientProps {
+  return (element as { props: KlientProps }).props;
+}
+
+test("trener kan ikke åpne Administrasjon: sendes til I dag", async () => {
+  const side = await coachPage();
+  await assert.rejects(
+    side({ searchParams: Promise.resolve({ omraade: "admin" }) }),
+    /REDIRECT:\/team-wang\/coach\?omraade=idag/,
+  );
+});
+
+test("sportssjef (ADMIN) får Administrasjon og rollen Sportssjef fra serveren", async () => {
+  bruker = { id: "admin-1", role: "ADMIN" };
+  const side = await coachPage();
+  const props = propsFra(await side({ searchParams: Promise.resolve({ omraade: "admin" }) }));
+  assert.equal(props.omraade, "admin");
+  assert.equal(props.rolle, "Sportssjef");
+});
+
+test("rollen kan ikke velges via adressen: trener forblir Trener", async () => {
+  const side = await coachPage();
+  const props = propsFra(
+    await side({ searchParams: Promise.resolve({ omraade: "idag", rolle: "Sportssjef" } as never) }),
+  );
+  assert.equal(props.rolle, "Trener");
+});
+
+test("coachruten gir bare spillere videre til lenker mot ekte data", async () => {
+  const side = await coachPage();
+  const props = propsFra(await side());
+  assert.deepEqual(props.elever, [{ id: "elev-1", navn: "Test Elev" }]);
+});
+
+test("skjermoversikten krever innlogget trener eller sportssjef", async () => {
+  const side = await skjermerPage();
+  bruker = null;
+  await assert.rejects(side(), /REDIRECT:\/team-wang\/logg-inn/);
+  bruker = { id: "elev-1", role: "PLAYER" };
+  await assert.rejects(side(), /REDIRECT:\/portal/);
+  bruker = { id: "foresatt-1", role: "PARENT" };
+  await assert.rejects(side(), /REDIRECT:/);
+});
+
+test("skjermoversikten kaller vakten med ADMIN/COACH og krever WANG-gruppe", async () => {
+  const side = await skjermerPage();
+  coachGruppeId = null;
+  await assert.rejects(side(), (error) => error === IKKE_FUNNET);
+  assert.deepEqual(sisteAllow, ["ADMIN", "COACH"]);
+  coachGruppeId = "wang-top-id";
+  const props = propsFra(await side());
+  assert.equal(props.omraade, "system");
+  assert.equal(props.rolle, "Trener");
 });

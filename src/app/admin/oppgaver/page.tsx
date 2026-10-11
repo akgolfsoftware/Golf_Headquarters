@@ -38,7 +38,7 @@ export default async function OppgaverPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG21Oppgaver startFane={startFane} />
+      <AG21Oppgaver tilstand="tom" startFane={startFane} />
     </AgencyOSSkall>
   );
 }

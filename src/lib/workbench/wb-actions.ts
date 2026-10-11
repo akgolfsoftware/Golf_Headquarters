@@ -99,7 +99,7 @@ import {
   tekniskOppgaveToSourceItem,
   templateToSourceItem,
 } from "@/lib/workbench/sources-map";
-import { canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
+import { canEditGroup, canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/lib/workbench/group-scope";
 import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
@@ -1309,6 +1309,8 @@ export async function createSession(
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
   if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  // groupId fra klienten må være en gruppe viewer faktisk kan redigere.
+  if (cmd.groupId && !(await canEditGroup(viewer, cmd.groupId))) return { ok: false, error: INGEN_TILGANG };
   for (const drill of cmd.drills ?? []) {
     const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
     if (!ref.ok) return ref;
@@ -1359,6 +1361,8 @@ export async function createSessionSeries(
 
   const viewer = await kreverTilgangTilSpiller(cmd.playerId);
   if (!viewer || !["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  // groupId fra klienten må være en gruppe viewer faktisk kan redigere.
+  if (cmd.groupId && !(await canEditGroup(viewer, cmd.groupId))) return { ok: false, error: INGEN_TILGANG };
   for (const drill of cmd.drills ?? []) {
     const ref = await hentBankReferanser(drill, viewer, cmd.playerId);
     if (!ref.ok) return ref;

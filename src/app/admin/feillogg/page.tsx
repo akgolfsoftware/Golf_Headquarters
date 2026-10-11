@@ -7,6 +7,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG24Drift } from "@/components/admin/precision/AG24Drift";
+import { lastDriftData } from "@/lib/admin/drift/last-drift-data";
+import { godkjennGdprForesporsel, utforGdprForesporsel } from "@/app/admin/drift/actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Feillogg · AgencyOS" };
@@ -16,7 +18,7 @@ export default async function AdminFeilloggPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Admin"}>
-      <AG24Drift startFane="feil" />
+      <AG24Drift data={await lastDriftData()} onGodkjenn={godkjennGdprForesporsel} onSlettData={utforGdprForesporsel} startFane="feil" />
     </AgencyOSSkall>
   );
 }

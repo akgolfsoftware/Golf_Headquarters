@@ -1,10 +1,14 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { CoachArsplan } from "@/app/team-wang/coach/coach-arsplan";
 import { hentWangGruppe } from "@/app/team-wang/_data/hent-wang-gruppe";
 import { hentWangCoachGruppeId } from "@/app/team-wang/_data/wang-tilgang";
+import {
+  kanSeWangAdministrasjon,
+  wangRolleFor,
+} from "@/app/team-wang/_data/wang-rolle";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
@@ -27,6 +31,18 @@ interface WangCoachPageProps {
   }>;
 }
 
+// «system» (skjermoversikten) har egen rute under /team-wang/skjermer.
+const GYLDIGE_OMRAADER: WangOmraade[] = [
+  "idag",
+  "trening",
+  "tester",
+  "konkurranse",
+  "meldinger",
+  "elever",
+  "admin",
+  "system",
+];
+
 export default async function WangCoachPage({ searchParams }: WangCoachPageProps = {}) {
   const params = searchParams ? await searchParams : {};
   const bruker = await requirePortalUser({
@@ -45,27 +61,30 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     return <CoachArsplan live={live} kanPublisere={kanPublisere} />;
   }
 
-  // Standard: Nytt WANG Precision Athletic-skall med alle 71 skjermer
-  const gyldigeOmraader: WangOmraade[] = [
-    "idag",
-    "trening",
-    "tester",
-    "konkurranse",
-    "meldinger",
-    "elever",
-    "admin",
-    "system",
-  ];
+  // Rollen avgjøres her på serveren og kan ikke velges i nettleseren.
+  const rolle = wangRolleFor(bruker);
 
   const aktivtOmraade: WangOmraade =
-    params.omraade && gyldigeOmraader.includes(params.omraade as WangOmraade)
+    params.omraade && GYLDIGE_OMRAADER.includes(params.omraade as WangOmraade)
       ? (params.omraade as WangOmraade)
       : "idag";
 
+  // Administrasjon er bare for sportssjef. Trener sendes tilbake til I dag.
+  if (aktivtOmraade === "admin" && !kanSeWangAdministrasjon(rolle)) {
+    redirect("/team-wang/coach?omraade=idag");
+  }
+
+  const elever = live.elever
+    .filter((e) => e.rolle === "PLAYER")
+    .map((e) => ({ id: e.id, navn: e.navn }));
+
   return (
     <WangCoachKlient
-      initialOmraade={aktivtOmraade}
-      initialFane={params.fane}
+      omraade={aktivtOmraade}
+      fane={params.fane}
+      rolle={rolle}
+      brukerNavn={bruker.name ?? undefined}
+      elever={elever}
       campus="Fredrikstad"
     />
   );

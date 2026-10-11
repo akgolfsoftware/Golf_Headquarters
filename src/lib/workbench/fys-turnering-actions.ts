@@ -321,6 +321,15 @@ export async function opprettTurneringsplan(input: unknown): Promise<{ ok: boole
   const tilgang = await requireCoachAccess(parsed.data.playerId);
   if (!tilgang.ok) return tilgang;
 
+  if (parsed.data.tournamentEntryId) {
+    // Påmeldingen må tilhøre spilleren planen opprettes for.
+    const entry = await prisma.tournamentEntry.findFirst({
+      where: { id: parsed.data.tournamentEntryId, userId: parsed.data.playerId },
+      select: { id: true },
+    });
+    if (!entry) return { ok: false, error: "Fant ikke turneringspåmeldingen for spilleren." };
+  }
+
   const start = toDate(parsed.data.startDate);
   const end = toDate(parsed.data.endDate);
   if (end < start) return { ok: false, error: "Sluttdato må være etter startdato." };
@@ -408,6 +417,15 @@ export async function lagreTurneringsrunde(input: unknown): Promise<{ ok: boolea
     sourceDate: parsed.data.sourceDate ? new Date(parsed.data.sourceDate) : null,
     notes: parsed.data.notes ?? null,
   };
+
+  if (parsed.data.roundId) {
+    // roundId må tilhøre samme turneringsplan som er tilgangssjekket over.
+    const eier = await prisma.workbenchTournamentRound.findFirst({
+      where: { id: parsed.data.roundId, planId: plan.id },
+      select: { id: true },
+    });
+    if (!eier) return { ok: false, error: "Fant ikke runden i denne turneringsplanen." };
+  }
 
   const round = parsed.data.roundId
     ? await prisma.workbenchTournamentRound.update({ where: { id: parsed.data.roundId }, data, select: { id: true } })

@@ -29,99 +29,57 @@ mock.module("next/navigation", {
 mock.module("next/link", { defaultExport: "a" });
 
 describe("AG22InnsiktTalent (Innsikt og talent)", async () => {
-  const { AG22InnsiktTalent } = await import(
-    "@/components/admin/precision/AG22InnsiktTalent"
-  );
+  const { AG22InnsiktTalent } = await import("@/components/admin/precision/AG22InnsiktTalent");
+  const vis = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(React.createElement(AG22InnsiktTalent, props as never));
 
-  test("rendrer radar-fane med spillere og peer-snitt", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, {
-        tilstand: "data",
-        startFane: "radar",
-      })
-    );
+  const data = {
+    src: "TESTER · ESTIMAT",
+    axes: ["FYS", "TEK", "SLAG", "SPILL", "TURN"],
+    peer: { label: "Peer-snitt", v: [60, 60, 60, 60, 60] },
+    players: [
+      { id: "a", name: "Voksen Spiller", born: 2005, consent: false, v: [60, 61, 62, 63, 64] },
+      { id: "b", name: "Barn Uten Samtykke", born: 2010, consent: false, v: [50, 50, 50, 50, 50] },
+      { id: "c", name: "Barn Med Samtykke", born: 2010, consent: true, v: [55, 55, 55, 55, 55] },
+      { id: "d", name: "Ukjent Alder", born: null, consent: true, v: [50, 50, 50, 50, 50] },
+    ],
+    discovery: [
+      { id: "x", kilde: "Talentdag", spiller: "Skjult Barn", fodt: 2013, resultat: "—", samtykke: false },
+      { id: "y", kilde: "Talentdag", spiller: "Synlig Barn", fodt: 2013, resultat: "—", samtykke: true },
+    ],
+    wagr: null,
+  };
 
-    assert.ok(html.length > 0, "HTML skal genereres");
-    assert.match(html, /Innsikt og talent/);
-    assert.match(html, /Bare for coach/);
-    assert.match(html, /Spillere født 2008 eller senere uten samtykke vises aldri/);
+  test("personvernregelen gjelder ekte data: født 2008+ uten samtykke og manglende fødselsår skjules", () => {
+    const html = vis({ tilstand: "data", startFane: "radar", data });
+    assert.match(html, /Voksen Spiller/);
+    assert.match(html, /Barn Med Samtykke/);
+    assert.doesNotMatch(html, /Barn Uten Samtykke|Ukjent Alder/);
     assert.match(html, /2 spillere er skjult/);
-    assert.match(html, /VELG OPPTIL FIRE SPILLERE/);
-    assert.match(html, /Tobias Lindvik/);
-    assert.match(html, /Magnus Aasheim/);
-    assert.match(html, /Ingrid Berg/);
-    assert.match(html, /FØDT 2009/);
-    assert.match(html, /PEER-SNITT KATEGORI D · 14 SPILLERE/);
-    assert.match(html, /TESTER OG RUNDER · 20\.09\.2026 · ESTIMAT/);
   });
 
-  test("skjuler spillere uten samtykke (ak-personvern)", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, {
-        tilstand: "data",
-        startFane: "radar",
-      })
-    );
-
-    // Sara Holm (født 2009, consent: false) skal IKKE finnes
-    assert.doesNotMatch(html, /Sara Holm/);
-    // Ukjent fødselsår skal IKKE finnes
-    assert.doesNotMatch(html, /Ukjent fødselsår/);
+  test("discovery skjuler barn uten samtykke", () => {
+    const html = vis({ tilstand: "data", startFane: "disc", data });
+    assert.match(html, /Synlig Barn/);
+    assert.doesNotMatch(html, /Skjult Barn/);
   });
 
-  test("rendrer discovery-fane med samtykkestatus", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, {
-        tilstand: "data",
-        startFane: "disc",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Discovery · talentdager og søknader/);
-    assert.match(html, /Emil Strand/);
-    assert.match(html, /Vår 2026 · Talentdag Borregaard/);
+  test("WAGR uten importert fil viser ingen oppdiktet fil", () => {
+    const html = vis({ tilstand: "data", startFane: "wagr", data });
+    assert.match(html, /INGEN FIL IMPORTERT/);
+    assert.doesNotMatch(html, /wagr-export|Emil Strand/);
   });
 
-  test("rendrer wagr-import fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, {
-        tilstand: "data",
-        startFane: "wagr",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /WAGR-import/);
-    assert.match(html, /Last opp CSV fra WAGR/);
-    assert.match(html, /WAGR-EXPORT-2026-09-21\.CSV · 3 RADER/);
-    assert.match(html, /Importer fil/);
-  });
-
-  test("rendrer tom tilstand med handling", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, {
-        tilstand: "tom",
-        startFane: "radar",
-      })
-    );
-
-    assert.ok(html.length > 0);
+  test("uten data vises ingen demospillere", () => {
+    const html = vis({ tilstand: "tom", startFane: "radar" });
     assert.match(html, /Ingen talentprofiler/);
-    assert.match(html, /Talentradaren bygges fra tester og runder/);
-    assert.match(html, /Åpne Tester/);
+    assert.doesNotMatch(html, /Tobias|Magnus|Ingrid|Henrik/);
+    const standard = vis({ startFane: "radar" });
+    assert.doesNotMatch(standard, /Tobias|Magnus|Ingrid|Henrik/);
   });
 
-  test("rendrer laster- og feiltilstander", () => {
-    const lasterHtml = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, { tilstand: "laster" })
-    );
-    assert.match(lasterHtml, /Henter talentprofiler/);
-
-    const feilHtml = renderToStaticMarkup(
-      React.createElement(AG22InnsiktTalent, { tilstand: "feil" })
-    );
-    assert.match(feilHtml, /Talentdata kunne ikke hentes/);
-    assert.match(feilHtml, /FEIL 503 · TALENT/);
+  test("laster og feil", () => {
+    assert.match(vis({ tilstand: "laster" }), /Henter talentprofiler/);
+    assert.match(vis({ tilstand: "feil" }), /Talentdata kunne ikke hentes/);
   });
 });

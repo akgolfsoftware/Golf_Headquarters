@@ -52,6 +52,21 @@ export function isMinor(
 }
 
 /**
+ * Dagen spilleren fyller 16 (UTC-dato, samme kalenderdag som fødselsdatoen).
+ * Null hvis fødselsdato mangler.
+ */
+export function sekstenaarsdag(dateOfBirth: Date | null | undefined): Date | null {
+  if (!dateOfBirth) return null;
+  return new Date(
+    Date.UTC(
+      dateOfBirth.getUTCFullYear() + GDPR_SAMTYKKE_ALDER,
+      dateOfBirth.getUTCMonth(),
+      dateOfBirth.getUTCDate(),
+    ),
+  );
+}
+
+/**
  * Kan spilleren gi samtykke selv, eller må en foresatt gjøre det?
  *
  * To uavhengige signaler, og vi stoler på det strengeste: flagget

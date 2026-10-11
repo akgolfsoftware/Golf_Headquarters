@@ -27,81 +27,56 @@ mock.module("next/link", { defaultExport: "a" });
 describe("AG17Turneringer (Turneringer)", async () => {
   const { AG17Turneringer } = await import("@/components/admin/precision/AG17Turneringer");
 
-  test("rendrer turneringer med standard faner og tabell", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "data",
-        startFane: "alle",
-      })
-    );
+  const data = {
+    tournaments: [
+      { id: "t1", name: "Testturnering A", date: "9. jun", course: "Testbane", lat: 59.2, lon: 10.9, paameldte: 2, st: "Påmeldt" as const },
+      { id: "t2", name: "Testturnering B", date: "10. jun", course: null, lat: null, lon: null, paameldte: null, st: null },
+    ],
+    tDups: [
+      {
+        id: "d1",
+        match: "Overlapp: X",
+        a: { src: "Manuell", name: "A", date: "1", course: "—" },
+        b: { src: "NGF", name: "B", date: "1", course: "—" },
+      },
+    ],
+  };
 
-    assert.ok(html.length > 0, "HTML skal genereres");
-    assert.match(html, /Turneringer/);
-    assert.match(html, /Alle/);
-    assert.match(html, /Mine spillere/);
-    assert.match(html, /Kart/);
-    assert.match(html, /Dubletter/);
-    assert.match(html, /Ny turnering/);
-    assert.match(html, /Srixon Tour 5/);
-    assert.match(html, /Borregaard GK/);
+  const vis = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(React.createElement(AG17Turneringer, props as never));
+
+  test("rendrer bare turneringene den får, med — der data mangler", () => {
+    const html = vis({ tilstand: "data", startFane: "alle", data });
+    assert.match(html, /Testturnering A/);
+    assert.match(html, /Testturnering B/);
+    assert.match(html, /—/);
+    assert.doesNotMatch(html, /Srixon|Borregaard|Feltstyrke|Data Golf/);
   });
 
-  test("rendrer kartvisning over Sør-Norge", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "data",
-        startFane: "kart",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Kart · Sør-Norge/);
-    assert.match(html, /SKJEMATISK · IKKE MÅLESTOKK/);
-    assert.match(html, /MINE SPILLERE/);
-    assert.match(html, /INGEN AV MINE/);
+  test("kartet viser bare turneringer med ekte koordinater", () => {
+    const html = vis({ tilstand: "data", startFane: "kart", data });
+    assert.match(html, /Testturnering A på Testbane/);
+    assert.doesNotMatch(html, /Testturnering B på/);
   });
 
-  test("rendrer dubletter fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "data",
-        startFane: "dup",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Mulig dublett/);
-    assert.match(html, /Slå sammen/);
-    assert.match(html, /Ikke dublett/);
-  });
-
-  test("rendrer tom tilstand", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "tom",
-        startFane: "alle",
-      })
-    );
-
-    assert.ok(html.length > 0);
+  test("uten data vises ingen demoturneringer", () => {
+    const html = vis({ tilstand: "tom", startFane: "alle" });
     assert.match(html, /Ingen turneringer/);
-    assert.match(html, /Ny turnering/);
+    assert.doesNotMatch(html, /Srixon|Simonsen|Thorsen/);
   });
 
-  test("rendrer laster- og feil-tilstand", () => {
-    const lasterHtml = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "laster",
-      })
-    );
-    assert.match(lasterHtml, /Henter turneringer …/);
+  test("Påmeldt er nøytral, ikke rust", () => {
+    const html = vis({ tilstand: "data", startFane: "alle", data });
+    assert.doesNotMatch(html, /pa-status--signal/);
+  });
 
-    const feilHtml = renderToStaticMarkup(
-      React.createElement(AG17Turneringer, {
-        tilstand: "feil",
-      })
-    );
-    assert.match(feilHtml, /Turneringene kunne ikke hentes/);
-    assert.match(feilHtml, /GOLFBOX · 504/);
+  test("dubletter lenker til dublettlista, ny turnering til skjemaet", () => {
+    assert.match(vis({ tilstand: "data", startFane: "dup", data }), /\/admin\/tournaments\/dubletter/);
+    assert.match(vis({ tilstand: "data", startFane: "ny", data }), /\/admin\/tournaments\/ny/);
+  });
+
+  test("laster og feil", () => {
+    assert.match(vis({ tilstand: "laster" }), /Henter turneringer/);
+    assert.match(vis({ tilstand: "feil" }), /Turneringene kunne ikke hentes/);
   });
 });

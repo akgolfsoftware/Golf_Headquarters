@@ -6,6 +6,8 @@ import { pushBooking } from "@/lib/google-calendar-kilder";
 import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
+import { coachBookingScope } from "@/lib/auth/booking-scope";
+import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 
@@ -59,6 +61,11 @@ export async function opprettOktPaaTid(
 
   if (!spiller) throw new Error("Spiller finnes ikke");
   if (spiller.role !== "PLAYER") throw new Error("Valgt bruker er ikke en spiller");
+  // Coach-scope: en coachet spiller kan bare bookes av egen coach (head coach ser alt).
+  // Bevisst unntak (coached.ts): leads/ikke-coachede spillere kan bookes av alle coacher.
+  if ((await erCoachetSpiller(spiller.id)) && !(await harCoachTilgangTilSpiller(aktor, spiller.id))) {
+    throw new Error("Du har ikke tilgang til denne spilleren");
+  }
   if (!serviceType) throw new Error("Tjeneste finnes ikke");
   if (!location) throw new Error("Lokasjon finnes ikke");
 
@@ -155,8 +162,8 @@ export async function moveSession(
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
   const aktor = await requireCoachActionUser();
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, ...coachBookingScope(aktor) },
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };
@@ -230,8 +237,8 @@ export async function cancelSession(
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
   const aktor = await requireCoachActionUser();
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, ...coachBookingScope(aktor) },
     select: { id: true, status: true, userId: true, startAt: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };

@@ -19,6 +19,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { TRIGGERS } from "@/lib/notifications/triggers";
 import { sendPush } from "@/lib/push/send";
@@ -63,6 +64,17 @@ export async function inviterSpiller(
   // tilbake til coachId for backward-compat.
   const hostId = session.hostId ?? session.coachId;
   if (hostId !== me.id) return { ok: false, error: "unauthorized" };
+
+  // Mottaker: aktiv spiller. Coach/admin som vert kan bare invitere egne spillere
+  // (ellers kunne en coach sende invitasjon og push til hvem som helst).
+  const mal = await prisma.user.findFirst({
+    where: { id: opts.userId, role: "PLAYER", deletedAt: null },
+    select: { id: true },
+  });
+  if (!mal) return { ok: false, error: "unauthorized" };
+  if ((me.role === "COACH" || me.role === "ADMIN") && !(await harCoachTilgangTilSpiller(me, opts.userId))) {
+    return { ok: false, error: "unauthorized" };
+  }
 
   // Kapasitet-sjekk (maxParticipants er nullable — null = ingen grense)
   if (

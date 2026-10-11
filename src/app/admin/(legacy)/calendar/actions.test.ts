@@ -71,6 +71,8 @@ function nullstill() {
   pushBookingKall = [];
   varsleKall = [];
   bookings["booking-1"].status = "CONFIRMED";
+  coachetSpillere = new Set();
+  stallTilgang = new Set();
 }
 
 class BookingKollisjonStub extends Error {}
@@ -83,6 +85,14 @@ mock.module("@/lib/auth/action-guards", {
       if (bruker.role !== "COACH" && bruker.role !== "ADMIN") throw new Error("forbidden");
       return bruker;
     },
+  },
+});
+let coachetSpillere = new Set<string>();
+let stallTilgang = new Set<string>();
+mock.module("@/lib/auth/coached", {
+  namedExports: {
+    erCoachetSpiller: async (id: string) => coachetSpillere.has(id),
+    harCoachTilgangTilSpiller: async (_v: unknown, id: string) => stallTilgang.has(id),
   },
 });
 mock.module("@/lib/booking/kollisjonsvern", {
@@ -133,7 +143,11 @@ Object.assign(prismaMock, {
     findUnique: async ({ where }: { where: { id: string } }) => facilities[where.id] ?? null,
   },
   booking: {
-    findUnique: async ({ where }: { where: { id: string } }) => bookings[where.id] ?? null,
+    findFirst: async ({ where }: { where: { id: string; OR?: unknown } }) => {
+      const b = bookings[where.id] ?? null;
+      if (b && where.OR && bruker?.role === "COACH" && b.coachId !== bruker.id) return null;
+      return b;
+    },
     create: async ({ data }: { data: { id?: string } }) => {
       bookingCreates.push(data);
       return { id: "booking-ny" };
@@ -300,4 +314,24 @@ test("cancelSession kansellerer booking for COACH", async () => {
   assert.equal(svar.ok, true);
   assert.equal((bookingUpdates[0]?.data as { status: string }).status, "CANCELLED");
   assert.equal(auditWrites.at(-1)?.action, "booking.cancelled");
+});
+
+test("moveSession og cancelSession: assistant coach får ikke røre en annen coachs booking", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  const a = await actions();
+  assert.deepEqual(await a.moveSession("booking-1", "2026-09-21T10:00:00Z"), { ok: false, feil: "Booking ikke funnet" });
+  assert.deepEqual(await a.cancelSession("booking-1"), { ok: false, feil: "Booking ikke funnet" });
+  assert.equal(bookingUpdates.length, 0);
+});
+
+test("opprettOktPaaTid: coachet spiller utenfor stallen avvises, lead (ikke coachet) tillates", async () => {
+  const a = await actions();
+  const input = {
+    spillerId: "spiller-a", serviceTypeId: "svc-a", locationId: "sted-a",
+    startAt: new Date("2026-09-22T10:00:00Z"), varighetMin: 60,
+  };
+  coachetSpillere = new Set(["spiller-a"]);
+  await assert.rejects(() => a.opprettOktPaaTid(input), /ikke tilgang/);
+  stallTilgang = new Set(["spiller-a"]);
+  await a.opprettOktPaaTid(input);
 });

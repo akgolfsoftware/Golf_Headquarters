@@ -164,16 +164,19 @@ export async function hentDelingsStatus(
       scope: "TEST_RESULTATER",
       mottakerGruppeId: gruppeId,
       kreverForesatt,
+      fodselsdato: bruker?.dateOfBirth,
     }),
     stats: harGyldigSamtykke(rader, {
       scope: "STATS",
       mottakerGruppeId: gruppeId,
       kreverForesatt,
+      fodselsdato: bruker?.dateOfBirth,
     }),
     komplettProfil: harGyldigSamtykke(rader, {
       scope: "KOMPLETT_PROFIL",
       mottakerGruppeId: gruppeId,
       kreverForesatt,
+      fodselsdato: bruker?.dateOfBirth,
     }),
   }));
 }

@@ -26,6 +26,7 @@ import {
 import {
   FeilTilstand,
   Knapp,
+  KnappLenke,
   LasterTilstand,
   Meta,
   Sidehode,
@@ -35,39 +36,28 @@ import {
 import {
   Ark,
   Faner,
-  Felt,
-  InlineVarsel,
   Kort,
   KortHode,
   Nokkelverdi,
   Tabell,
-  TekstFelt,
-  ValgFelt,
   type Kolonne,
 } from "@/components/precision/pa-a5";
 import "@/styles/precision-a17.css";
 
 export type TurneringStatus = "Påmeldt" | "Åpen" | "Spilt";
 
-export type ResultatRad = {
-  0: string; // Spiller
-  1: string; // Runder
-  2: string; // Brutto
-  3: string; // Plass
-};
-
+/** Alle felt som ikke finnes i basen er null og vises som «—». Aldri oppdiktet. */
 export type TurneringRad = {
   id: string;
   name: string;
   date: string;
-  course: string;
-  place: string;
-  lat: number;
-  lon: number;
-  level: string;
-  mine: string[];
-  st: TurneringStatus;
-  result?: ResultatRad[];
+  course: string | null;
+  /** Bare ekte koordinater fra turneringen; null = vises ikke på kartet. */
+  lat: number | null;
+  lon: number | null;
+  /** Antall påmeldte fra stallen (basen), eller null når det ikke er kjent. */
+  paameldte: number | null;
+  st: TurneringStatus | null;
 };
 
 export type TurneringDublett = {
@@ -77,15 +67,9 @@ export type TurneringDublett = {
   b: { src: string; name: string; date: string; course: string };
 };
 
-export type DataGolfInfo = {
-  src: string;
-  rows: [string, string][];
-};
-
 export type AG17Data = {
   tournaments: TurneringRad[];
   tDups: TurneringDublett[];
-  dg: DataGolfInfo;
 };
 
 export type AG17Tilstand = "data" | "tom" | "laster" | "feil";
@@ -94,172 +78,26 @@ export type AG17TurneringerProps = {
   tilstand?: AG17Tilstand;
   data?: AG17Data;
   startFane?: string;
-  onOpprettTurnering?: (data: { name: string; date: string; course: string; level: string }) => void;
 };
 
-const BANER = [
-  "Borregaard GK",
-  "Fredrikstad GK",
-  "Hvaler GK",
-  "Onsøy GK",
-  "Oslo GK",
-  "Larvik GK",
-  "Miklagard GK",
-  "Stavanger GK",
-];
-
-const NIVAER = ["Klubb", "Regional", "Nasjonal", "Internasjonal"];
-
-const STANDARD_DATA: AG17Data = {
-  tournaments: [
-    {
-      id: "t-01",
-      name: "Srixon Tour 5 — Borregaard",
-      date: "20.09.2026",
-      course: "Borregaard GK",
-      place: "Sarpsborg",
-      lat: 59.28,
-      lon: 11.11,
-      level: "Nasjonal",
-      mine: ["Henrik Simonsen", "Kasper Thorsen"],
-      st: "Spilt",
-      result: [
-        { 0: "Henrik Simonsen", 1: "71-69 (140)", 2: "-4", 3: "1" },
-        { 0: "Kasper Thorsen", 1: "73-72 (145)", 2: "+1", 3: "T4" },
-        { 0: "Magnus Berntsen", 1: "76-74 (150)", 2: "+6", 3: "12" },
-      ],
-    },
-    {
-      id: "t-02",
-      name: "Garmin Norgescup 4",
-      date: "03.10.2026",
-      course: "Fredrikstad GK",
-      place: "Fredrikstad",
-      lat: 59.22,
-      lon: 10.93,
-      level: "Nasjonal",
-      mine: ["Henrik Simonsen"],
-      st: "Påmeldt",
-    },
-    {
-      id: "t-03",
-      name: "Klubbmesterskap Onsøy",
-      date: "10.10.2026",
-      course: "Onsøy GK",
-      place: "Gressvik",
-      lat: 59.25,
-      lon: 10.82,
-      level: "Klubb",
-      mine: [],
-      st: "Åpen",
-    },
-    {
-      id: "t-04",
-      name: "Titleist Tour Finale",
-      date: "17.10.2026",
-      course: "Larvik GK",
-      place: "Larvik",
-      lat: 59.05,
-      lon: 10.03,
-      level: "Nasjonal",
-      mine: ["Kasper Thorsen"],
-      st: "Påmeldt",
-    },
-    {
-      id: "t-05",
-      name: "Nordic Golf League Kvalik",
-      date: "24.10.2026",
-      course: "Miklagard GK",
-      place: "Kløfta",
-      lat: 60.07,
-      lon: 11.14,
-      level: "Internasjonal",
-      mine: [],
-      st: "Åpen",
-    },
-    {
-      id: "t-06",
-      name: "Vestfold Junior Open",
-      date: "31.10.2026",
-      course: "Hvaler GK",
-      place: "Skjærhalden",
-      lat: 59.03,
-      lon: 11.02,
-      level: "Regional",
-      mine: ["Henrik Simonsen"],
-      st: "Påmeldt",
-    },
-  ],
-  tDups: [
-    {
-      id: "dup-1",
-      match: "Høstpokalen 2026",
-      a: {
-        src: "GolfBox",
-        name: "Høstpokalen Borregaard 2026",
-        date: "17.10.2026",
-        course: "Borregaard GK",
-      },
-      b: {
-        src: "Manuell",
-        name: "Høstpokalen",
-        date: "17.10.2026",
-        course: "Borregaard GK",
-      },
-    },
-    {
-      id: "dup-2",
-      match: "Fredrikstad Juniorcup",
-      a: {
-        src: "GolfBox",
-        name: "Fredrikstad Juniorcup — Runde 2",
-        date: "24.10.2026",
-        course: "Fredrikstad GK",
-      },
-      b: {
-        src: "Manuell",
-        name: "Juniorcup Fredrikstad",
-        date: "24.10.2026",
-        course: "Fredrikstad GK",
-      },
-    },
-  ],
-  dg: {
-    src: "DATAGOLF_PREDICT_V1",
-    rows: [
-      ["Feltstyrke", "+1.42"],
-      ["Vinn-sannsynlighet", "14.2 %"],
-      ["Cut-grense", "+3"],
-      ["Kvalifiseringskrav", "Topp 10"],
-    ],
-  },
-};
+const TOM_DATA: AG17Data = { tournaments: [], tDups: [] };
 
 export function AG17Turneringer({
   tilstand = "data",
-  data = STANDARD_DATA,
+  data = TOM_DATA,
   startFane = "alle",
-  onOpprettTurnering,
 }: AG17TurneringerProps) {
   const [fane, setFane] = useState(startFane);
-  const [turneringer, setTurneringer] = useState<TurneringRad[]>(data.tournaments);
-  const [dubletter, setDubletter] = useState<TurneringDublett[]>(data.tDups);
+  const turneringer = data.tournaments;
+  const dubletter = data.tDups;
   const [valgtId, setValgtId] = useState<string | null>(null);
-  const [varselTekst, setVarselTekst] = useState<{ tittel: string; meta?: string } | null>(null);
-
-  // Ny turnering skjemastilstand
-  const [nyNavn, setNyNavn] = useState("");
-  const [nyDato, setNyDato] = useState("");
-  const [nyBane, setNyBane] = useState(BANER[0]);
-  const [nyNiva, setNyNiva] = useState(NIVAER[1]);
-  const [feil, setFeil] = useState<{ navn?: string; dato?: string }>({});
 
   const erTom = tilstand === "tom";
 
   const synligeTurneringer = useMemo(() => {
     if (erTom) return [];
     if (fane === "mine") {
-      return turneringer.filter((t) => t.mine.length > 0);
+      return turneringer.filter((t) => (t.paameldte ?? 0) > 0);
     }
     return turneringer;
   }, [turneringer, fane, erTom]);
@@ -274,73 +112,12 @@ export function AG17Turneringer({
     {
       value: "mine",
       label: "Mine spillere",
-      count: erTom ? undefined : turneringer.filter((t) => t.mine.length > 0).length,
+      count: erTom ? undefined : turneringer.filter((t) => (t.paameldte ?? 0) > 0).length,
     },
     { value: "kart", label: "Kart" },
     { value: "dup", label: "Dubletter", count: erTom ? undefined : dubletter.length },
     { value: "ny", label: "Ny turnering" },
   ];
-
-  /* Slå sammen dublett */
-  function slaSammen(dupId: string, navn: string) {
-    setDubletter((prev) => prev.filter((d) => d.id !== dupId));
-    setVarselTekst({
-      tittel: "Turneringene er slått sammen",
-      meta: navn.toUpperCase(),
-    });
-  }
-
-  /* Ikke dublett */
-  function beholdBegge(dupId: string) {
-    setDubletter((prev) => prev.filter((d) => d.id !== dupId));
-    setVarselTekst({
-      tittel: "Merket som ikke dublett",
-      meta: "BEGGE BEHOLDES",
-    });
-  }
-
-  /* Håndter oppretting av turnering */
-  function opprettTurnering() {
-    const nyeFeil: { navn?: string; dato?: string } = {};
-    if (!nyNavn.trim()) {
-      nyeFeil.navn = "Skriv navnet på turneringen.";
-    }
-    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(nyDato.trim())) {
-      nyeFeil.dato = "Skriv dato som DD.MM.ÅÅÅÅ, for eksempel 17.10.2026.";
-    }
-
-    setFeil(nyeFeil);
-    if (Object.keys(nyeFeil).length > 0) return;
-
-    const nyTurnering: TurneringRad = {
-      id: `t-${Date.now()}`,
-      name: nyNavn.trim(),
-      date: nyDato.trim(),
-      course: nyBane,
-      place: "—",
-      lat: 59.2,
-      lon: 10.9,
-      level: nyNiva,
-      mine: [],
-      st: "Åpen",
-    };
-
-    setTurneringer((prev) => [...prev, nyTurnering]);
-    onOpprettTurnering?.({
-      name: nyNavn.trim(),
-      date: nyDato.trim(),
-      course: nyBane,
-      level: nyNiva,
-    });
-
-    setNyNavn("");
-    setNyDato("");
-    setFane("alle");
-    setVarselTekst({
-      tittel: "Turneringen er lagt til",
-      meta: "SJEKKES MOT GOLFBOX I NATT",
-    });
-  }
 
   /* Kolonner for DataTable */
   const kolonner: Kolonne<TurneringRad>[] = [
@@ -360,87 +137,45 @@ export function AG17Turneringer({
     {
       key: "course",
       label: "Bane",
-      render: (r) => r.course,
-    },
-    {
-      key: "level",
-      label: "Nivå",
-      render: (r) => r.level,
+      render: (r) => r.course ?? "—",
     },
     {
       key: "mine",
-      label: "Mine spillere",
+      label: "Påmeldte",
       align: "right",
       mono: true,
-      render: (r) => (r.mine.length > 0 ? r.mine.length : null),
+      render: (r) => (r.paameldte != null && r.paameldte > 0 ? r.paameldte : "—"),
     },
     {
       key: "st",
       label: "Status",
-      render: (r) => {
-        const tone = r.st === "Spilt" ? "ok" : r.st === "Påmeldt" ? "signal" : "neutral";
-        return <StatusPille tone={tone}>{r.st}</StatusPille>;
-      },
+      render: (r) => (r.st ? <StatusPille tone={r.st === "Spilt" ? "ok" : "neutral"}>{r.st}</StatusPille> : "—"),
     },
   ];
 
   /* Detaljpanel innhold */
   function renderDetaljPanel(turnering: TurneringRad) {
-    const tone = turnering.st === "Spilt" ? "ok" : turnering.st === "Påmeldt" ? "signal" : "neutral";
-
     return (
       <div className="pa-a17-detalj" aria-label={`Detaljer for ${turnering.name}`}>
         <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap", justifyContent: "space-between" }}>
           <span style={{ font: "var(--type-title-s, 600 16px/1.3 var(--font-sans))", flex: "1 1 200px" }}>
             {turnering.name}
           </span>
-          <StatusPille tone={tone}>{turnering.st}</StatusPille>
+          {turnering.st && (
+            <StatusPille tone={turnering.st === "Spilt" ? "ok" : "neutral"}>{turnering.st}</StatusPille>
+          )}
         </div>
 
         <Nokkelverdi
           items={[
             ["Dato", turnering.date],
-            ["Bane", `${turnering.course} · ${turnering.place}`],
-            ["Nivå", turnering.level],
-            ["Mine spillere", turnering.mine.length ? turnering.mine.join(", ") : "Ingen påmeldt"],
+            ["Bane", turnering.course ?? "—"],
+            [
+              "Påmeldte spillere",
+              turnering.paameldte != null && turnering.paameldte > 0 ? String(turnering.paameldte) : "—",
+            ],
           ]}
         />
-
-        {turnering.result && turnering.result.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Meta>RESULTAT · BRUTTO · GOLFBOX · {turnering.date}</Meta>
-            <table className="pa-table" style={{ width: "100%", fontSize: 13 }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "left" }}>Spiller</th>
-                  <th style={{ textAlign: "left" }} className="is-mono">Runder</th>
-                  <th style={{ textAlign: "right" }} className="is-mono">Brutto</th>
-                  <th style={{ textAlign: "right" }} className="is-mono">Plass</th>
-                </tr>
-              </thead>
-              <tbody>
-                {turnering.result.map((res, i) => (
-                  <tr key={i}>
-                    <td>{res[0]}</td>
-                    <td className="is-mono">{res[1]}</td>
-                    <td className="is-mono" style={{ textAlign: "right" }}>{res[2]}</td>
-                    <td className="is-mono" style={{ textAlign: "right", fontWeight: 600 }}>{res[3]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {turnering.result && (
-          <div className="pa-a17-dg-boks">
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-              <Meta>BARE SYNLIG FOR ANDERS KRISTIANSEN</Meta>
-              <span className="pa-a17-dg-badge">Powered by Data Golf</span>
-            </div>
-            <Nokkelverdi items={data.dg.rows.map(([k, v]) => [k, v, data.dg.src])} kolonner={2} />
-          </div>
-        )}
 
         <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 8 }}>
           <Knapp variant="ghost" size="sm" onClick={() => setValgtId(null)} icon={X}>
@@ -455,23 +190,27 @@ export function AG17Turneringer({
   function renderKart() {
     const la = [58, 60.2];
     const lo = [7.6, 11.6];
+    const medKoordinat = turneringer.filter(
+      (t) =>
+        t.lat != null && t.lon != null && t.lat >= la[0] && t.lat <= la[1] && t.lon >= lo[0] && t.lon <= lo[1],
+    );
 
     return (
       <div className="pa-a17-layout">
         <Kort>
           <KortHode tittel="Kart · Sør-Norge" aside="SKJEMATISK · IKKE MÅLESTOKK" />
           <div className="pa-a17-kart-beholder" role="region" aria-label="Geografisk kart over turneringer i Sør-Norge">
-            {turneringer.map((t) => {
-              const x = ((t.lon - lo[0]) / (lo[1] - lo[0])) * 100;
-              const y = (1 - (t.lat - la[0]) / (la[1] - la[0])) * 100;
+            {medKoordinat.map((t) => {
+              const x = (((t.lon as number) - lo[0]) / (lo[1] - lo[0])) * 100;
+              const y = (1 - ((t.lat as number) - la[0]) / (la[1] - la[0])) * 100;
               const erValgt = t.id === valgtId;
-              const harMine = t.mine.length > 0;
+              const harMine = (t.paameldte ?? 0) > 0;
 
               return (
                 <button
                   key={t.id}
                   type="button"
-                  aria-label={`${t.name} på ${t.course}`}
+                  aria-label={`${t.name} på ${t.course ?? "ukjent bane"}`}
                   aria-pressed={erValgt}
                   onClick={() => setValgtId(t.id)}
                   className="pa-a17-kart-punkt"
@@ -492,14 +231,18 @@ export function AG17Turneringer({
             })}
           </div>
 
+          {medKoordinat.length === 0 && (
+            <Meta>INGEN TURNERINGER HAR KOORDINATER ENNÅ</Meta>
+          )}
+
           <div className="pa-a17-kart-forklaring">
             <span className="pa-a17-kart-tegn">
               <span className="pa-a17-kart-prikk pa-a17-kart-prikk--mine" style={{ width: 10, height: 10 }} />
-              <Meta>MINE SPILLERE</Meta>
+              <Meta>MED PÅMELDTE</Meta>
             </span>
             <span className="pa-a17-kart-tegn">
               <span className="pa-a17-kart-prikk pa-a17-kart-prikk--andre" style={{ width: 10, height: 10 }} />
-              <Meta>INGEN AV MINE</Meta>
+              <Meta>INGEN PÅMELDTE</Meta>
             </span>
           </div>
         </Kort>
@@ -524,7 +267,7 @@ export function AG17Turneringer({
         <TomTilstand
           icon={Check}
           title="Ingen dubletter"
-          text="Turneringer fra GolfBox og manuelle oppføringer sammenlignes hver natt."
+          text="Manuelle oppføringer som ligner en turnering fra en kilde, vises her."
         />
       );
     }
@@ -545,30 +288,13 @@ export function AG17Turneringer({
                 </div>
               ))}
             </div>
-
-            <Meta>A BEHOLDES SOM HOVEDOPPFØRING · PÅMELDINGER FRA BEGGE FLYTTES</Meta>
-
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minHeight: 44, alignItems: "center" }}>
-              <Knapp
-                variant="primary"
-                size="sm"
-                icon={GitMerge}
-                onClick={() => slaSammen(d.id, d.a.name)}
-                style={{ minHeight: 44, minWidth: 44 }}
-              >
-                Slå sammen
-              </Knapp>
-              <Knapp
-                variant="ghost"
-                size="sm"
-                onClick={() => beholdBegge(d.id)}
-                style={{ minHeight: 44, minWidth: 44 }}
-              >
-                Ikke dublett
-              </Knapp>
-            </div>
           </Kort>
         ))}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minHeight: 44, alignItems: "center" }}>
+          <KnappLenke href="/admin/tournaments/dubletter" icon={GitMerge}>
+            Slå sammen i dubletter-lista
+          </KnappLenke>
+        </div>
       </div>
     );
   }
@@ -577,59 +303,14 @@ export function AG17Turneringer({
   function renderNyTurnering() {
     return (
       <Kort style={{ maxWidth: 640 }}>
-        <KortHode tittel="Ny turnering" aside="/ADMIN/TURNERINGER/NY" />
-
-        {Object.keys(feil).length > 0 && (
-          <InlineVarsel tone="warn" tittel="Turneringen er ikke lagret">
-            Rett feltene under.
-          </InlineVarsel>
-        )}
-
-        <Felt label="Navn" hint="Navnet på turneringen" error={feil.navn}>
-          <TekstFelt
-            value={nyNavn}
-            onChange={(e) => setNyNavn(e.target.value)}
-            placeholder="Høstpokalen"
-            style={{ minHeight: 44 }}
-          />
-        </Felt>
-
-        <Felt label="Dato" hint="DD.MM.ÅÅÅÅ" error={feil.dato}>
-          <TekstFelt
-            value={nyDato}
-            onChange={(e) => setNyDato(e.target.value)}
-            placeholder="17.10.2026"
-            style={{ minHeight: 44, fontVariantNumeric: "tabular-nums" }}
-          />
-        </Felt>
-
-        <Felt label="Bane">
-          <ValgFelt
-            value={nyBane}
-            onChange={(e) => setNyBane(e.target.value)}
-            options={BANER}
-            style={{ minHeight: 44 }}
-          />
-        </Felt>
-
-        <Felt label="Nivå">
-          <ValgFelt
-            value={nyNiva}
-            onChange={(e) => setNyNiva(e.target.value)}
-            options={NIVAER}
-            style={{ minHeight: 44 }}
-          />
-        </Felt>
-
+        <KortHode tittel="Ny turnering" aside="/ADMIN/TOURNAMENTS/NY" />
+        <p style={{ margin: 0, fontSize: 14, color: "var(--text-secondary)" }}>
+          Turneringer legges inn i skjemaet for ny turnering. Det lagrer i basen.
+        </p>
         <div style={{ paddingTop: 8 }}>
-          <Knapp
-            variant="primary"
-            icon={Check}
-            onClick={opprettTurnering}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
-            Legg til turnering
-          </Knapp>
+          <KnappLenke href="/admin/tournaments/ny" icon={Plus}>
+            Åpne skjema for ny turnering
+          </KnappLenke>
         </div>
       </Kort>
     );
@@ -639,9 +320,9 @@ export function AG17Turneringer({
     <div className="pa-a17-side">
       {/* Topphode */}
       <Sidehode
-        kicker="Turneringer · høst 2026"
+        kicker="Turneringer"
         title="Turneringer"
-        sub="Kun brutto score. Resultater hentes fra GolfBox."
+        sub="Kun brutto score. Dato, bane og påmeldte står slik de ligger i basen."
       />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
@@ -659,12 +340,6 @@ export function AG17Turneringer({
         )}
       </div>
 
-      {varselTekst && (
-        <InlineVarsel tone="ok" tittel={varselTekst.tittel}>
-          {varselTekst.meta}
-        </InlineVarsel>
-      )}
-
       {/* Tilstandshåndtering */}
       {tilstand === "laster" && <LasterTilstand text="Henter turneringer …" />}
 
@@ -672,8 +347,8 @@ export function AG17Turneringer({
         <FeilTilstand
           icon={Calendar}
           title="Turneringene kunne ikke hentes"
-          text="GolfBox svarer ikke. Påmeldinger du har gjort er lagret."
-          code="GOLFBOX · 504"
+          text="Prøv igjen om litt."
+          code="TURNERINGER"
           retry={<Knapp variant="secondary" onClick={() => window.location.reload()}>Prøv igjen</Knapp>}
         />
       )}

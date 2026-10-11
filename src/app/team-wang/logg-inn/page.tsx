@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Logg inn — WANG Toppidrett Fredrikstad Golf",
   description:
-    "Innlogging for elever og foreldre i golfgruppa ved WANG Toppidrett Fredrikstad.",
+    "Innlogging for trenere og sportssjef i golfgruppa ved WANG Toppidrett Fredrikstad.",
   robots: { index: false, follow: false },
 };
 

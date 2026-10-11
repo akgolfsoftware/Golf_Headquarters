@@ -30,97 +30,55 @@ mock.module("next/navigation", {
 });
 mock.module("next/link", { defaultExport: "a" });
 
-describe("AG24Drift (Drift · kun admin)", async () => {
-  const { AG24Drift } = await import(
-    "@/components/admin/precision/AG24Drift"
-  );
+describe("AG24Drift (Drift)", async () => {
+  const { AG24Drift } = await import("@/components/admin/precision/AG24Drift");
+  const vis = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(React.createElement(AG24Drift, props as never));
 
-  test("rendrer sletteforespørsler fane (GDPR art. 17)", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG24Drift, {
-        tilstand: "data",
-        startFane: "gdpr",
-      })
-    );
+  const data = {
+    gdpr: [
+      { id: "g1", who: "Testbruker A", role: "Spiller", by: "Brukeren selv", at: "01.10.2026", due: "31.10.2026", scope: "Test", st: "Venter" as const },
+      { id: "g2", who: "Testbruker B", role: "Spiller", by: "Brukeren selv", at: "01.10.2026", due: "31.10.2026", scope: "Test", st: "Godkjent" as const },
+    ],
+    audit: [{ id: "a1", t: "05.10 08:00", who: "Testadmin", what: "moderation.approved", obj: "ModerationCase:1" }],
+    errors: [{ id: "e1", t: "05.10 06:00", lvl: "Feil" as const, where: "stripe.webhook", msg: "Testfeil", n: 2 }],
+  };
 
-    assert.ok(html.length > 0, "HTML skal genereres");
-    assert.match(html, /Drift · kun admin/);
-    assert.match(html, /Sletteforespørsler/);
-    assert.match(html, /Mia Fjell/);
-    assert.match(html, /Forelder · Siv Fjell/);
-    assert.match(html, /30 DAGER · GDPR ART\. 17/);
-    assert.match(html, /Lag innsynskopi først/);
+  test("viser ekte sletteforespørsler med to steg; sletting krever godkjenning først", () => {
+    const html = vis({ tilstand: "data", startFane: "gdpr", data, onGodkjenn: async () => ({ ok: true }), onSlettData: async () => ({ ok: true }) });
+    assert.match(html, /Testbruker A/);
+    assert.match(html, /Godkjenn forespørselen/);
     assert.match(html, /Slett data/);
+    assert.doesNotMatch(html, /Mia Fjell|Siv Fjell|Lag innsynskopi først/);
   });
 
-  test("rendrer revisjonslogg fane (AuditLog)", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG24Drift, {
-        tilstand: "data",
-        startFane: "audit",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Revisjonslogg · siste 7 dager/);
-    assert.match(html, /Anders Kristiansen/);
-    assert.match(html, /Belastningsagent/);
-    assert.match(html, /Tobias Lindvik/);
+  test("uten koblede handlinger er knappene deaktivert", () => {
+    const html = vis({ tilstand: "data", startFane: "gdpr", data });
+    assert.match(html, /Godkjenn forespørselen/);
+    assert.match(html, /disabled/);
   });
 
-  test("rendrer feillogg fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG24Drift, {
-        tilstand: "data",
-        startFane: "feil",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Feillogg · siste 7 dager/);
-    assert.match(html, /Rapportagent/);
-    assert.match(html, /TrackMan API/);
-    assert.match(html, /Tripletex-eksport/);
+  test("revisjonslogg og feillogg viser ekte rader", () => {
+    assert.match(vis({ tilstand: "data", startFane: "audit", data }), /moderation\.approved/);
+    const feil = vis({ tilstand: "data", startFane: "feil", data });
+    assert.match(feil, /Testfeil/);
+    assert.doesNotMatch(feil, /Rapportagent|Tripletex-eksport/);
   });
 
-  test("rendrer hjelp fane med FAQ", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG24Drift, {
-        tilstand: "data",
-        startFane: "hjelp",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Hvordan godkjenner jeg et utkast fra Jarvis\?/);
-    assert.match(html, /Hvordan slettes en spiller\?/);
-    assert.match(html, /Hvem ser økonomitallene\?/);
-    assert.match(html, /KONTAKT · DRIFT@DEMO\.NO/);
+  test("hjelp har ingen demokontakt", () => {
+    const html = vis({ tilstand: "data", startFane: "hjelp", data });
+    assert.match(html, /Hvordan godkjenner jeg/);
+    assert.doesNotMatch(html, /DEMO\.NO|demo\.no/);
   });
 
-  test("rendrer tom tilstand", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG24Drift, {
-        tilstand: "tom",
-        startFane: "gdpr",
-      })
-    );
-
-    assert.ok(html.length > 0);
+  test("uten data vises tom tilstand, ikke demo", () => {
+    const html = vis({ startFane: "gdpr" });
     assert.match(html, /Ingen sletteforespørsler/);
-    assert.match(html, /Forespørsler fra spillere og foreldre kommer hit/);
+    assert.doesNotMatch(html, /Mia Fjell/);
   });
 
-  test("rendrer laster- og feiltilstander", () => {
-    const lasterHtml = renderToStaticMarkup(
-      React.createElement(AG24Drift, { tilstand: "laster" })
-    );
-    assert.match(lasterHtml, /Henter driftsdata/);
-
-    const feilHtml = renderToStaticMarkup(
-      React.createElement(AG24Drift, { tilstand: "feil" })
-    );
-    assert.match(feilHtml, /Driftsdata kunne ikke hentes/);
-    assert.match(feilHtml, /FEIL 503 · DRIFT/);
+  test("laster og feil", () => {
+    assert.match(vis({ tilstand: "laster" }), /Henter driftsdata/);
+    assert.match(vis({ tilstand: "feil" }), /Driftsdata kunne ikke hentes/);
   });
 });

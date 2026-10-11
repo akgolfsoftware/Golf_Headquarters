@@ -33,12 +33,15 @@ mock.module("@/lib/auth/requirePortalUser", {
 const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
+  user: { findFirst: async () => null },
   trainingSessionV2: {
     findUnique: async ({ where }: { where: { id: string } }) => {
       if (where.id === "okt-a") {
         return {
           id: "okt-a",
           title: "Teknikk-økt",
+          coachId: "coach-a",
+          studentId: "spiller-a",
           drills: [
             {
               id: "drill-1", name: "Chip 10m", pyramide: "TEK", durationMinutes: 15,
@@ -101,4 +104,10 @@ test("hentKalenderDrills returnerer drills med riktig fallback for planlagte rep
   assert.equal(svar.drills[0]?.faktiskeReps, 17);
   assert.equal(svar.drills[1]?.plannedReps, 12); // repAntall-fallback
   assert.equal(svar.drills[1]?.faktiskeReps, null); // ingen logg ennå
+});
+
+test("hentKalenderDrills: annen coach uten spiller i stallen får ikke se økta", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  const { hentKalenderDrills } = await actions();
+  assert.deepEqual(await hentKalenderDrills("okt-a"), { ok: false });
 });

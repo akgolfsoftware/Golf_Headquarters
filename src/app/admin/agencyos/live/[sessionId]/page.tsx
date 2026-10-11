@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG13LiveOkt } from "@/components/admin/precision/AG13LiveOkt";
-import { lastLiveOktData } from "@/lib/agencyos/live-okt-data";
+import { kanSeLiveOkt, lastLiveOktData } from "@/lib/agencyos/live-okt-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Live-økt · AgencyOS" };
@@ -18,6 +18,7 @@ export const metadata = { title: "Live-økt · AgencyOS" };
 export default async function LiveOktPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { sessionId } = await params;
+  if (!(await kanSeLiveOkt(user, sessionId))) notFound();
   const data = await lastLiveOktData(sessionId);
   if (!data) notFound();
 

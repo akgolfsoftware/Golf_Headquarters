@@ -28,102 +28,40 @@ mock.module("next/navigation", {
 mock.module("next/link", { defaultExport: "a" });
 
 describe("AG21Oppgaver (Oppgaver og rutiner)", async () => {
-  const { AG21Oppgaver } = await import(
-    "@/components/admin/precision/AG21Oppgaver"
-  );
+  const { AG21Oppgaver } = await import("@/components/admin/precision/AG21Oppgaver");
+  const vis = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(React.createElement(AG21Oppgaver, props as never));
 
-  test("rendrer mine oppgaver med avkryssing og metadata", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, {
-        tilstand: "data",
-        startFane: "mine",
-      })
-    );
+  const data = {
+    mine: [{ id: "o1", t: "Testoppgave", due: "01.10", p: "Testprosjekt", by: "Notion", done: false }],
+    projects: [["Testprosjekt", 4, 1, "31.10.2026"]] as [string, number, number, string][],
+    routines: [["Mandag", "Testrutine", "—", false]] as [string, string, string, boolean][],
+    notion: null,
+  };
 
-    assert.ok(html.length > 0, "HTML skal genereres");
-    assert.match(html, /Oppgaver/);
-    assert.match(html, /Mine oppgaver/);
-    assert.match(html, /Prosjekter/);
-    assert.match(html, /Rutiner/);
-    assert.match(html, /Notion/);
-    assert.match(html, /Godkjenn ukeplan uke 40 · Tobias Lindvik/);
-    assert.match(html, /Oppdater nivåstige Team Norway 2027/);
-    assert.match(html, /SESONGSLUTT 2026/);
-    assert.match(html, /VINTERPLAN WANG/);
+  test("viser oppgaver den får, og Ny oppgave er deaktivert", () => {
+    const html = vis({ tilstand: "data", startFane: "mine", data });
+    assert.match(html, /Testoppgave/);
+    assert.match(html, /IKKE KOBLET ENNÅ/);
+    assert.doesNotMatch(html, /Kari Demo|Tobias|Sesongslutt/);
   });
 
-  test("rendrer prosjekter-fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, {
-        tilstand: "data",
-        startFane: "prosj",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Sesongslutt 2026/);
-    assert.match(html, /Vinterplan WANG/);
-    assert.match(html, /Rekruttering Mini/);
-    assert.match(html, /2 AV 6 FERDIG · FRIST 31\.10\.2026/);
+  test("prosjekter og rutiner", () => {
+    assert.match(vis({ tilstand: "data", startFane: "prosj", data }), /Testprosjekt/);
+    assert.match(vis({ tilstand: "data", startFane: "rutiner", data }), /Testrutine/);
   });
 
-  test("rendrer rutiner-fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, {
-        tilstand: "data",
-        startFane: "rutiner",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Publiser ukeplaner/);
-    assert.match(html, /Svar i Innboks innen 24 t/);
-    assert.match(html, /Sjekk ACWR for WANG/);
-    assert.match(html, /Godkjenn ukerapporter/);
-    assert.match(html, /Gjort denne uka/);
-    assert.match(html, /Marker gjort/);
+  test("uten data og uten Notion-kobling vises tom tilstand, ingen demo", () => {
+    const html = vis({ tilstand: "tom", startFane: "mine" });
+    assert.match(html, /Ingen oppgaver å vise/);
+    assert.doesNotMatch(html, /Kari Demo|Sesongslutt|Tobias/);
+    const notion = vis({ tilstand: "data", startFane: "notion" });
+    assert.match(notion, /IKKE KOBLET/);
+    assert.doesNotMatch(notion, /simulert|Coach-arbeidsflate/);
   });
 
-  test("rendrer notion-fane", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, {
-        tilstand: "data",
-        startFane: "notion",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Notion-arbeidsflate/);
-    assert.match(html, /AK Golf · Coach-arbeidsflate/);
-    assert.match(html, /SIST SYNKET 26\.09\.2026 14:00/);
-    assert.match(html, /Spillerdata synkes aldri til Notion/);
-    assert.match(html, /Åpne i Notion/);
-    assert.match(html, /Synk nå/);
-  });
-
-  test("rendrer tom tilstand", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, {
-        tilstand: "tom",
-        startFane: "mine",
-      })
-    );
-
-    assert.ok(html.length > 0);
-    assert.match(html, /Ingen oppgaver/);
-    assert.match(html, /Oppgaver du får tildelt, eller lager selv, samles her/);
-  });
-
-  test("rendrer laster- og feiltilstander", () => {
-    const lasterHtml = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, { tilstand: "laster" })
-    );
-    assert.match(lasterHtml, /Henter oppgaver/);
-
-    const feilHtml = renderToStaticMarkup(
-      React.createElement(AG21Oppgaver, { tilstand: "feil" })
-    );
-    assert.match(feilHtml, /Oppgavene kunne ikke hentes/);
-    assert.match(feilHtml, /NOTION API · 502/);
+  test("laster og feil", () => {
+    assert.match(vis({ tilstand: "laster" }), /Henter oppgaver/);
+    assert.match(vis({ tilstand: "feil" }), /Oppgavene kunne ikke hentes/);
   });
 });

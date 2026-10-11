@@ -1,5 +1,6 @@
 'use client';
 
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from 'react';
 import {
   WANG_ELEVER,
@@ -30,12 +31,10 @@ export function WangElever({
   const [invNavn, setInvNavn] = useState('');
   const [invEpost, setInvEpost] = useState('');
   const [invKlasse, setInvKlasse] = useState('VG1');
-  const [invKvittering, setInvKvittering] = useState<string | null>(null);
 
   // Samtale tilstand (WANG-44)
   const [nySamtaleTema, setNySamtaleTema] = useState('');
   const [nySamtaleDato, setNySamtaleDato] = useState('2026-10-05');
-  const [samtaleLagret, setSamtaleLagret] = useState<string | null>(null);
 
   const byttFane = (nyFane: string) => {
     setFane(nyFane);
@@ -49,23 +48,6 @@ export function WangElever({
     if (sokeord && !e.navn.toLowerCase().includes(sokeord.toLowerCase())) return false;
     return true;
   });
-
-  const sendInvitasjon = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!invNavn.trim() || !invEpost.trim()) return;
-    setInvKvittering(`Invitasjon sendt til ${invNavn} (${invEpost}) for ${invKlasse} ved WANG ${campus}.`);
-    setInvNavn('');
-    setInvEpost('');
-    setTimeout(() => setInvKvittering(null), 5000);
-  };
-
-  const lagreSamtale = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nySamtaleTema.trim()) return;
-    setSamtaleLagret(`Utviklingssamtale lagret for ${aktivElev.navn}.`);
-    setNySamtaleTema('');
-    setTimeout(() => setSamtaleLagret(null), 4000);
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -304,7 +286,7 @@ export function WangElever({
                   <div style={{ fontSize: '16px', fontWeight: 600, color: '#17446F' }}>{aktivElev.iup.nesteEvaluering}</div>
                 </div>
                 <div style={{ fontSize: '13px', color: '#2E857D', fontWeight: 500 }}>
-                  Godkjent av sportssjef og elev
+                  Godkjenning: ikke koblet ennå
                 </div>
               </div>
             </div>
@@ -360,13 +342,8 @@ export function WangElever({
           {profilUnderFane === 'samtaler' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-                <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>Loggfør samtale med {aktivElev.navn}</h3>
-                {samtaleLagret && (
-                  <div style={{ padding: '10px 14px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '13px', marginBottom: '12px' }}>
-                    {samtaleLagret}
-                  </div>
-                )}
-                <form onSubmit={lagreSamtale} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>Registrer samtale med {aktivElev.navn}</h3>
+                <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px' }}>
                     <input
                       type="date"
@@ -384,7 +361,9 @@ export function WangElever({
                   </div>
                   <button
                     type="submit"
+                    disabled
                     style={{
+                      ...IKKE_KOBLET_KNAPP_STIL,
                       alignSelf: 'flex-start',
                       minHeight: '44px',
                       padding: '0 20px',
@@ -399,6 +378,7 @@ export function WangElever({
                   >
                     Lagre samtale
                   </button>
+                  <WangIkkeKoblet />
                 </form>
               </div>
             </div>
@@ -409,7 +389,7 @@ export function WangElever({
             <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
               <h3 style={{ margin: '0 0 12px', fontSize: '16px', color: '#17446F' }}>Turneringshistorikk</h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#5B7793' }}>
-                Eleven har deltatt i 4 turneringer denne sesongen med et gjennomsnitt på 72.5 slag brutto per runde.
+                Turneringshistorikk vises per elev under Konkurranse (koblet til ekte data).
               </p>
             </div>
           )}
@@ -492,9 +472,9 @@ export function WangElever({
           </div>
           <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
             <div style={{ fontSize: '14px', color: '#17446F', lineHeight: 1.6 }}>
-              <strong>Gjeldende IUP-skjema:</strong> Versjon 2.4 (Revidert 28.09.2026)<br />
-              <strong>Gjeldende Nasjonalt Testbatteri:</strong> Versjon 3.1 (Toppidrett 2026)<br />
-              <strong>DataGolf API Integrasjon:</strong> v1.2 Live
+              <strong>Gjeldende IUP-skjema:</strong> —<br />
+              <strong>Gjeldende testbatteri:</strong> —<br />
+              <strong>DataGolf-integrasjon:</strong> —
             </div>
           </div>
         </div>
@@ -545,8 +525,8 @@ export function WangElever({
               <div key={e.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 100px 140px 140px', padding: '14px 16px', borderTop: '1px solid #E6E8EA', alignItems: 'center', fontSize: '14px' }}>
                 <span style={{ fontWeight: 600, color: '#17446F' }}>{e.navn}</span>
                 <span style={{ color: '#5B7793' }}>{e.klasse}</span>
-                <span style={{ color: '#17446F', fontWeight: 500 }}>2.4%</span>
-                <span style={{ color: '#2E857D', fontWeight: 600 }}>14 dager (Turnering)</span>
+                <span style={{ color: '#5B7793', fontWeight: 500 }}>—</span>
+                <span style={{ color: '#5B7793', fontWeight: 600 }}>—</span>
               </div>
             ))}
           </div>
@@ -598,21 +578,15 @@ export function WangElever({
             </h2>
           </div>
 
-          {invKvittering && (
-            <div style={{ padding: '12px 16px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '14px' }}>
-              {invKvittering}
-            </div>
-          )}
-
           <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '24px', maxWidth: '600px' }}>
-            <form onSubmit={sendInvitasjon} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
                 Elevens fulle navn
                 <input
                   type="text"
                   value={invNavn}
                   onChange={(e) => setInvNavn(e.target.value)}
-                  placeholder="F.eks. Henrik Hovland"
+                  placeholder="Fornavn Etternavn"
                   style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
                 />
               </label>
@@ -640,7 +614,9 @@ export function WangElever({
               </label>
               <button
                 type="submit"
+                disabled
                 style={{
+                  ...IKKE_KOBLET_KNAPP_STIL,
                   minHeight: '44px',
                   padding: '0 24px',
                   borderRadius: '6px',
@@ -655,6 +631,7 @@ export function WangElever({
               >
                 Send invitasjonslenke
               </button>
+              <WangIkkeKoblet />
             </form>
           </div>
         </div>

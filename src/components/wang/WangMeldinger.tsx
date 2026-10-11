@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import {
   WANG_MELDINGER,
   WANG_ELEVER,
@@ -19,43 +20,16 @@ export function WangMeldinger({
   campus = 'Fredrikstad',
 }: WangMeldingerProps) {
   const [fane, setFane] = useState(aktivFane);
-  const [meldinger, setMeldinger] = useState<WangMelding[]>(WANG_MELDINGER);
+  const [meldinger] = useState<WangMelding[]>(WANG_MELDINGER);
 
   // Ny gruppepost tilstand
   const [nyTittel, setNyTittel] = useState('');
   const [nyttInnhold, setNyttInnhold] = useState('');
-  const mottakerType: 'gruppe' | 'elev' | 'forelder' = fane === 'WANG-13' ? 'gruppe' : fane === 'WANG-14' ? 'elev' : 'forelder';
   const [nyMottakerNavn, setNyMottakerNavn] = useState('VG1 Golf ' + campus);
-  const [sendtKvittering, setSendtKvittering] = useState<string | null>(null);
 
   const byttFane = (nyFane: string) => {
     setFane(nyFane);
     if (onFaneEndret) onFaneEndret(nyFane);
-  };
-
-  const sendPost = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nyTittel.trim() || !nyttInnhold.trim()) return;
-
-    const ny: WangMelding = {
-      id: 'm-' + Date.now(),
-      avsender: 'Anders Kristiansen',
-      rolle: 'Sportssjef',
-      mottakerType: mottakerType,
-      mottakerNavn: nyMottakerNavn,
-      tittel: nyTittel,
-      innhold: nyttInnhold,
-      opprettetDato: 'Akkurat nå',
-      status: 'publisert',
-      lestAvAntall: 0,
-      totaltMottakere: mottakerType === 'gruppe' ? 6 : 1,
-    };
-
-    setMeldinger([ny, ...meldinger]);
-    setNyTittel('');
-    setNyttInnhold('');
-    setSendtKvittering(`Melding "${ny.tittel}" er publisert til ${ny.mottakerNavn}.`);
-    setTimeout(() => setSendtKvittering(null), 5000);
   };
 
   const synligeMeldinger = meldinger.filter((m) => {
@@ -96,12 +70,6 @@ export function WangMeldinger({
         ))}
       </div>
 
-      {sendtKvittering && (
-        <div style={{ padding: '12px 16px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '14px' }}>
-          {sendtKvittering}
-        </div>
-      )}
-
       {/* ========================================================== */}
       {/* WANG-13 / WANG-14 / WANG-15 Felles oppretting og liste     */}
       {/* ========================================================== */}
@@ -129,7 +97,7 @@ export function WangMeldinger({
               {fane === 'WANG-14' && 'Skriv melding til elev'}
               {fane === 'WANG-15' && 'Opprett innkalling / melding til foresatte'}
             </h3>
-            <form onSubmit={sendPost} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
                   Mottaker
@@ -192,7 +160,9 @@ export function WangMeldinger({
               </label>
               <button
                 type="submit"
+                disabled
                 style={{
+                  ...IKKE_KOBLET_KNAPP_STIL,
                   alignSelf: 'flex-start',
                   minHeight: '44px',
                   padding: '0 24px',
@@ -202,11 +172,11 @@ export function WangMeldinger({
                   color: '#FFFFFF',
                   fontWeight: 600,
                   fontSize: '14px',
-                  cursor: 'pointer',
                 }}
               >
                 Publiser melding
               </button>
+              <WangIkkeKoblet />
             </form>
           </div>
 
@@ -236,7 +206,7 @@ export function WangMeldinger({
                     <div style={{ textAlign: 'right', fontSize: '12px', color: '#5B7793' }}>
                       <div>{m.opprettetDato}</div>
                       <div style={{ color: '#2E857D', fontWeight: 500 }}>
-                        Lest av {m.lestAvAntall} av {m.totaltMottakere}
+                        Lest av: —
                       </div>
                     </div>
                   </div>
@@ -298,8 +268,11 @@ export function WangMeldinger({
                 <span style={{ color: '#5B7793' }}>{d.kat}</span>
                 <span style={{ color: '#5B7793', fontSize: '13px' }}>{d.dato}</span>
                 <button
-                  onClick={() => alert(`Laster ned ${d.navn}...`)}
+                  type="button"
+                  disabled
+                  title="Ikke koblet ennå"
                   style={{
+                    ...IKKE_KOBLET_KNAPP_STIL,
                     minHeight: '44px',
                     padding: '0 12px',
                     borderRadius: '6px',
@@ -308,10 +281,9 @@ export function WangMeldinger({
                     color: '#17446F',
                     fontSize: '12px',
                     fontWeight: 500,
-                    cursor: 'pointer',
                   }}
                 >
-                  Last ned
+                  Last ned (ikke koblet ennå)
                 </button>
               </div>
             ))}

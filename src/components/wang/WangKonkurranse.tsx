@@ -1,11 +1,11 @@
 'use client';
 
+import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from 'react';
 import {
   WANG_TURNERINGER,
   WANG_ELEVER,
 } from './wang-data';
-import { formaterTall } from '@/lib/format-tall';
 
 interface WangKonkurranseProps {
   aktivFane?: string;
@@ -21,8 +21,6 @@ export function WangKonkurranse({
   const [fane, setFane] = useState(aktivFane);
   const [kalenderFilter, setKalenderFilter] = useState<'kommende' | 'gjennomfort'>('kommende');
   const [valgtTurneringId, setValgtTurneringId] = useState<string>(WANG_TURNERINGER[0]?.id || 't1');
-  const [pipelineSistSynket, setPipelineSistSynket] = useState<string>('I dag 08:30');
-  const [synkMelding, setSynkMelding] = useState<string | null>(null);
 
   // Turneringsrapportering tilstand
   const [rapportElevId, setRapportElevId] = useState<string>('sofie');
@@ -32,7 +30,6 @@ export function WangKonkurranse({
   const [rapportGir, setRapportGir] = useState<string>('12');
   const [rapportPutter, setRapportPutter] = useState<string>('29');
   const [rapportNotat, setRapportNotat] = useState<string>('');
-  const [rapportKvittering, setRapportKvittering] = useState<string | null>(null);
 
   const byttFane = (nyFane: string) => {
     setFane(nyFane);
@@ -42,18 +39,6 @@ export function WangKonkurranse({
   const gjeldendeTurnering = WANG_TURNERINGER.find((t) => t.id === valgtTurneringId) || WANG_TURNERINGER[0];
   const kommendeTurneringer = WANG_TURNERINGER.filter((t) => t.status === 'kommende');
   const gjennomforteTurneringer = WANG_TURNERINGER.filter((t) => t.status === 'gjennomfort');
-
-  const synkPipeline = () => {
-    setPipelineSistSynket('Akkurat nå');
-    setSynkMelding('Resultater og starttider er oppdatert fra AK Golf Pipeline og GolfBox.');
-    setTimeout(() => setSynkMelding(null), 4000);
-  };
-
-  const lagreRapport = (e: React.FormEvent) => {
-    e.preventDefault();
-    setRapportKvittering(`Rapport lagret for ${WANG_ELEVER.find((el) => el.id === rapportElevId)?.navn || 'elev'} (Runde ${rapportRunde}, Brutto ${rapportScore}).`);
-    setTimeout(() => setRapportKvittering(null), 5000);
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -87,12 +72,6 @@ export function WangKonkurranse({
         ))}
       </div>
 
-      {synkMelding && (
-        <div style={{ padding: '12px 16px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '14px' }}>
-          {synkMelding}
-        </div>
-      )}
-
       {/* ========================================================== */}
       {/* WANG-10: Turneringskalender                                */}
       {/* ========================================================== */}
@@ -108,9 +87,10 @@ export function WangKonkurranse({
               </h2>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '13px', color: '#5B7793' }}>Pipeline: {pipelineSistSynket}</span>
+              <span style={{ fontSize: '13px', color: '#5B7793' }}>Pipeline: —</span>
               <button
-                onClick={synkPipeline}
+                type="button"
+                disabled
                 style={{
                   minHeight: '44px',
                   padding: '0 16px',
@@ -121,11 +101,12 @@ export function WangKonkurranse({
                   fontFamily: 'Montserrat, sans-serif',
                   fontSize: '13px',
                   fontWeight: 500,
-                  cursor: 'pointer',
+                  ...IKKE_KOBLET_KNAPP_STIL,
                 }}
               >
                 Hent resultater
               </button>
+              <WangIkkeKoblet />
             </div>
           </div>
 
@@ -258,18 +239,12 @@ export function WangKonkurranse({
             </button>
           </div>
 
-          {rapportKvittering && (
-            <div style={{ padding: '12px 16px', background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', color: '#1B5E57', fontSize: '14px' }}>
-              {rapportKvittering}
-            </div>
-          )}
-
           {/* Registrering av treners rapport */}
           <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
             <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>
               Registrer rundeoppfølging for elev (WANG-notat)
             </h3>
-            <form onSubmit={lagreRapport} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
                   Elev
@@ -344,7 +319,9 @@ export function WangKonkurranse({
               </label>
               <button
                 type="submit"
+                disabled
                 style={{
+                  ...IKKE_KOBLET_KNAPP_STIL,
                   alignSelf: 'flex-start',
                   minHeight: '44px',
                   padding: '0 20px',
@@ -354,11 +331,11 @@ export function WangKonkurranse({
                   color: '#FFFFFF',
                   fontWeight: 600,
                   fontSize: '14px',
-                  cursor: 'pointer',
                 }}
               >
                 Lagre runderapport
               </button>
+              <WangIkkeKoblet />
             </form>
           </div>
 
@@ -448,11 +425,11 @@ export function WangKonkurranse({
             {WANG_ELEVER.map((el, i) => (
               <div key={el.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 100px 100px 100px 100px 100px', padding: '14px 16px', borderTop: i > 0 ? '1px solid #E6E8EA' : 'none', alignItems: 'center', fontSize: '14px' }}>
                 <span style={{ fontWeight: 600, color: '#17446F' }}>{el.navn}</span>
-                <span style={{ color: '#5B7793' }}>14</span>
-                <span style={{ fontWeight: 700, color: '#17446F' }}>{formaterTall(71.5 + i * 0.8, 1)}</span>
-                <span style={{ color: '#17446F' }}>{68 - i * 2}%</span>
-                <span style={{ color: '#17446F' }}>{formaterTall(Math.round(72 - i * 2.5), 0)}%</span>
-                <span style={{ color: '#17446F' }}>{formaterTall(28.8 + i * 0.4, 1)}</span>
+                <span style={{ color: '#5B7793' }}>—</span>
+                <span style={{ fontWeight: 700, color: '#17446F' }}>—</span>
+                <span style={{ color: '#17446F' }}>—</span>
+                <span style={{ color: '#17446F' }}>—</span>
+                <span style={{ color: '#17446F' }}>—</span>
               </div>
             ))}
           </div>

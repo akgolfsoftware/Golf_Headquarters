@@ -1,0 +1,39 @@
+/* TnDataTable: tabell som stables til kortrader på smal bredde (aldri sidelengs rulling). */
+.tabell { width: 100%; border-collapse: collapse; font-family: var(--tn-font-body); font-size: 14px; }
+.tett { font-size: 13px; }
+.tabell th, .tabell td { padding: 14px 18px; text-align: left; overflow-wrap: anywhere; }
+.tett th, .tett td { padding: 10px 14px; }
+.tabell th {
+  background: var(--tn-ink-50);
+  font-family: var(--tn-font-mono);
+  font-size: var(--tn-text-micro);
+  letter-spacing: var(--tn-tracking-eyebrow);
+  font-weight: var(--tn-weight-medium);
+  color: var(--tn-ink-500);
+  border-bottom: 1px solid var(--tn-border-subtle);
+  white-space: nowrap;
+}
+.tabell td { color: var(--tn-ink-900); border-bottom: 1px solid var(--tn-ink-100); }
+.tabell tbody tr:last-child td { border-bottom: none; }
+.hoyre { text-align: right !important; }
+.tall { font-family: var(--tn-font-mono); font-variant-numeric: tabular-nums; }
+.uthevet { background: var(--tn-navy-50); box-shadow: inset 3px 0 0 var(--tn-red-600); }
+
+@media (max-width: 700px) {
+  .tabell thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .tabell, .tabell tbody, .tabell tr, .tabell td { display: block; width: 100%; }
+  .tabell tr { padding: 10px 0; border-bottom: 1px solid var(--tn-ink-100); }
+  .tabell tbody tr:last-child { border-bottom: none; }
+  .tabell td { display: flex; gap: 12px; justify-content: space-between; border: 0 !important; padding: 4px 18px; text-align: right; }
+  .tabell td::before {
+    content: attr(data-etikett);
+    flex: 0 0 42%;
+    text-align: left;
+    font-family: var(--tn-font-mono);
+    font-size: var(--tn-text-micro);
+    letter-spacing: var(--tn-tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--tn-ink-500);
+  }
+  .hoyre { text-align: right !important; }
+}

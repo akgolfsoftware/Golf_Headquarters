@@ -15,6 +15,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useErAdmin } from "@/components/v2/rolle";
 import {
   ArrowUpDown,
   CalendarDays,
@@ -81,6 +82,8 @@ type ActionKind =
   | { type: "logout" };
 
 type Action = {
+  /** Bare head coach (ADMIN) ser handlingen — beslutninger.md §ØKONOMI BARE FOR HEAD COACH. */
+  bareHeadCoach?: true;
   id: string;
   label: string;
   description: string;
@@ -265,7 +268,7 @@ const ACTIONS: Action[] = [
   { id: "s-ny-spiller", label: "Ny spiller", description: "Legg til spiller i stallen", keywords: ["ny", "spiller", "legg til", "opprett"], icon: UserPlus, kind: { type: "navigate", href: "/admin/spillere/ny" } },
   { id: "s-talent-radar", label: "Talent-radar", description: "Talentoversikt", keywords: ["talent", "radar", "potensial"], icon: Star, kind: { type: "navigate", href: "/innsyn/talent/radar" } },
   { id: "s-talent-sml", label: "Talent-sammenligning", description: "Sammenlign talenter", keywords: ["talent", "sammenlign", "compare"], icon: Crosshair, kind: { type: "navigate", href: "/innsyn/talent/sammenligning" } },
-  { id: "s-okonomi", label: "Økonomi", description: "Belegg, inntekt, abonnement, faktura", keywords: ["okonomi", "økonomi", "penger", "inntekt", "faktura", "mrr", "abonnement", "belegg"], icon: CreditCard, kind: { type: "navigate", href: "/admin/agencyos/okonomi" } },
+  { id: "s-okonomi", bareHeadCoach: true, label: "Økonomi", description: "Belegg, inntekt, abonnement, faktura", keywords: ["okonomi", "økonomi", "penger", "inntekt", "faktura", "mrr", "abonnement", "belegg"], icon: CreditCard, kind: { type: "navigate", href: "/admin/agencyos/okonomi" } },
   { id: "s-tjenester", label: "Tjenester og priser", description: "Prisliste og tjenester", keywords: ["tjeneste", "pris", "priser", "service"], icon: CreditCard, kind: { type: "navigate", href: "/admin/services" } },
   { id: "s-team", label: "Team", description: "Coacher og roller", keywords: ["team", "coach", "ansatt", "rolle"], icon: Users, kind: { type: "navigate", href: "/admin/team" } },
   { id: "s-innstillinger", label: "Innstillinger", description: "Systeminnstillinger", keywords: ["innstilling", "settings", "oppsett", "drift"], icon: Settings, kind: { type: "navigate", href: "/admin/oppsett" } },
@@ -383,10 +386,11 @@ function initials(name: string): string {
  * Filtrer ACTIONS lokalt på label + description + keywords.
  * Tom query gir hele lista (max 8 for ikke å oversvømme).
  */
-function matchActions(query: string): Action[] {
+function matchActions(query: string, erHeadCoach: boolean): Action[] {
   const q = query.trim().toLowerCase();
-  if (q.length === 0) return ACTIONS.slice(0, 8);
-  return ACTIONS.filter((a) => {
+  const synlige = ACTIONS.filter((a) => erHeadCoach || !a.bareHeadCoach);
+  if (q.length === 0) return synlige.slice(0, 8);
+  return synlige.filter((a) => {
     if (a.label.toLowerCase().includes(q)) return true;
     if (a.description.toLowerCase().includes(q)) return true;
     return a.keywords.some((k) => k.includes(q));
@@ -394,6 +398,7 @@ function matchActions(query: string): Action[] {
 }
 
 export function GlobalSearchModal() {
+  const erHeadCoach = useErAdmin();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -408,7 +413,7 @@ export function GlobalSearchModal() {
 
   // Hurtig-handlinger filtreres lokalt og vises alltid øverst.
   // Med tom query: 8 første actions som "starting point".
-  const matchedActions = useMemo(() => matchActions(query), [query]);
+  const matchedActions = useMemo(() => matchActions(query, erHeadCoach), [query, erHeadCoach]);
 
   // Flate ut alle resultater til én liste i visnings-rekkefølge.
   // Brukes for tastaturnav (pilene) og Enter-navigasjon.

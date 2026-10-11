@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
+import s from "./tn-data-table.module.css";
 
 /**
  * Fasit: components/data/DataTable.jsx i Claw-designsystemet (a03bf94a…).
@@ -38,7 +39,6 @@ export function TnDataTable({
 }) {
   const pad = dense ? "10px 14px" : "14px 18px";
   const skall: React.CSSProperties = {
-    overflowX: "auto",
     minWidth: 0,
     borderRadius: TN.radius.lg,
     border: `1px solid ${TN.borderSubtle}`,
@@ -80,28 +80,13 @@ export function TnDataTable({
   }
 
   return (
-    <div style={skall} role="region" aria-label={caption ?? "Tabell"} tabIndex={0}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TN.font.body, fontSize: dense ? 13 : 14 }}>
+    <div style={skall} role="region" aria-label={caption ?? "Tabell"}>
+      <table className={dense ? `${s.tabell} ${s.tett}` : s.tabell}>
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
           <tr>
             {kolonner.map((k) => (
-              <th
-                key={k.key}
-                scope="col"
-                style={{
-                  textAlign: k.align === "right" ? "right" : "left",
-                  padding: pad,
-                  background: TN.ink50,
-                  fontFamily: TN.font.mono,
-                  fontSize: TN.text.micro,
-                  letterSpacing: TN.tracking.eyebrow,
-                  fontWeight: TN.weight.medium,
-                  color: TN.ink500,
-                  borderBottom: `1px solid ${TN.borderSubtle}`,
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <th key={k.key} scope="col" className={k.align === "right" ? s.hoyre : undefined}>
                 {k.label.toUpperCase()}
               </th>
             ))}
@@ -109,19 +94,9 @@ export function TnDataTable({
         </thead>
         <tbody>
           {rader.map((rad, ri) => (
-            <tr key={ri} style={{ background: ri === highlightRow ? TN.navy50 : undefined, boxShadow: ri === highlightRow ? `inset 3px 0 0 ${TN.red600}` : undefined }}>
+            <tr key={ri} className={ri === highlightRow ? s.uthevet : undefined}>
               {kolonner.map((k) => (
-                <td
-                  key={k.key}
-                  style={{
-                    padding: pad,
-                    textAlign: k.align === "right" ? "right" : "left",
-                    fontFamily: k.align === "right" ? TN.font.mono : TN.font.body,
-                    fontVariantNumeric: k.align === "right" ? "tabular-nums" : undefined,
-                    color: TN.ink900,
-                    borderBottom: ri === rader.length - 1 ? "none" : `1px solid ${TN.ink100}`,
-                  }}
-                >
+                <td key={k.key} data-etikett={k.label} className={k.align === "right" ? `${s.hoyre} ${s.tall}` : undefined}>
                   {rad[k.key]}
                 </td>
               ))}

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import {
   FeilTilstand,
-  Knapp,
+  KnappLenke,
   LasterTilstand,
   Meta,
   Sidehode,
@@ -37,6 +37,7 @@ import {
   Tabell,
   type Kolonne,
 } from "@/components/precision/pa-a5";
+import { filtrerSynligeDiscovery, filtrerSynligeTalenter } from "@/lib/talent/personvern-filter";
 import "@/styles/precision-a22.css";
 
 export type SpillerTalent = {
@@ -51,7 +52,7 @@ export type DiscoveryRad = {
   id: string;
   kilde: string;
   spiller: string;
-  fodt: number;
+  fodt: number | null;
   resultat: string;
   samtykke: boolean;
 };
@@ -62,7 +63,8 @@ export type AG22Data = {
   peer: { label: string; v: number[] };
   players: SpillerTalent[];
   discovery: DiscoveryRad[];
-  wagr: { file: string; rows: number; match: number; src: string };
+  /** Null når ingen WAGR-fil er importert. */
+  wagr: { file: string; rows: number; match: number; src: string } | null;
 };
 
 export type AG22Tilstand = "data" | "tom" | "laster" | "feil";
@@ -71,48 +73,15 @@ export type AG22InnsiktTalentProps = {
   tilstand?: AG22Tilstand;
   data?: AG22Data;
   startFane?: string;
-  onNavigerTilTester?: () => void;
 };
 
-const STANDARD_DATA: AG22Data = {
-  src: "TESTER OG RUNDER · 20.09.2026 · ESTIMAT",
+const TOM_DATA: AG22Data = {
+  src: "",
   axes: ["FYS", "TEK", "SLAG", "SPILL", "TURN"],
-  peer: {
-    label: "Peer-snitt kategori D · 14 spillere",
-    v: [60, 58, 63, 57, 52],
-  },
-  players: [
-    { id: "p1", name: "Tobias Lindvik", born: 2009, consent: true, v: [64, 61, 70, 59, 55] },
-    { id: "p2", name: "Magnus Aasheim", born: 2008, consent: true, v: [72, 69, 75, 68, 66] },
-    { id: "p4", name: "Ingrid Berg", born: 2010, consent: true, v: [58, 62, 64, 61, 50] },
-    { id: "p3", name: "Sara Holm", born: 2009, consent: false, v: [55, 50, 58, 56, 48] },
-    { id: "p13", name: "Henrik Dahl", born: 2007, consent: false, v: [70, 71, 72, 70, 69] },
-    { id: "px", name: "Ukjent fødselsår", born: null, consent: true, v: [50, 50, 50, 50, 50] },
-  ],
-  discovery: [
-    {
-      id: "d1",
-      kilde: "Vår 2026 · Talentdag Borregaard",
-      spiller: "Emil Strand",
-      fodt: 2012,
-      resultat: "SLAG 68 · 3 av 5 tester",
-      samtykke: true,
-    },
-    {
-      id: "d2",
-      kilde: "Vår 2026 · Talentdag Borregaard",
-      spiller: "Anonym spiller",
-      fodt: 2013,
-      resultat: "—",
-      samtykke: false,
-    },
-  ],
-  wagr: {
-    file: "wagr-export-2026-09-21.csv",
-    rows: 3,
-    match: 2,
-    src: "WAGR · 21.09.2026",
-  },
+  peer: { label: "Peer-snitt", v: [0, 0, 0, 0, 0] },
+  players: [],
+  discovery: [],
+  wagr: null,
 };
 
 function RadarDiagram({
@@ -226,13 +195,13 @@ function RadarDiagram({
 
 export function AG22InnsiktTalent({
   tilstand = "data",
-  data = STANDARD_DATA,
+  data = TOM_DATA,
   startFane = "radar",
-  onNavigerTilTester,
 }: AG22InnsiktTalentProps) {
   const [aktivFane, setAktivFane] = useState(startFane);
-  const [valgteSpillere, setValgteSpillere] = useState<string[]>(["p1", "p2"]);
-  const [importert, setImportert] = useState(false);
+  const [valgteSpillere, setValgteSpillere] = useState<string[]>(() =>
+    data.players.slice(0, 2).map((p) => p.id),
+  );
 
   if (tilstand === "laster") {
     return (
@@ -270,9 +239,7 @@ export function AG22InnsiktTalent({
   const synligeSpillere =
     tilstand === "tom"
       ? []
-      : data.players.filter(
-          (p) => p.born != null && (p.born < 2008 || p.consent)
-        );
+      : filtrerSynligeTalenter(data.players);
   const skjulteAntall =
     tilstand === "tom" ? 0 : data.players.length - synligeSpillere.length;
 
@@ -299,7 +266,7 @@ export function AG22InnsiktTalent({
   const discoveryKolonner: Kolonne<DiscoveryRad>[] = [
     { key: "kilde", label: "Kilde", render: (r) => r.kilde, lead: true },
     { key: "spiller", label: "Spiller", render: (r) => r.spiller },
-    { key: "fodt", label: "Født", render: (r) => String(r.fodt), mono: true },
+    { key: "fodt", label: "Født", render: (r) => (r.fodt != null ? String(r.fodt) : "—"), mono: true },
     { key: "resultat", label: "Resultat", render: (r) => r.resultat, mono: true },
     {
       key: "samtykke",
@@ -316,7 +283,7 @@ export function AG22InnsiktTalent({
   const synligeDiscovery =
     tilstand === "tom"
       ? []
-      : data.discovery.filter((r) => r.fodt < 2008 || r.samtykke);
+      : filtrerSynligeDiscovery(data.discovery);
 
   return (
     <div className="pa-a22" data-testid="ag22-innsikt-talent">
@@ -364,12 +331,9 @@ export function AG22InnsiktTalent({
           title="Ingen talentprofiler"
           text="Talentradaren bygges fra tester og runder. Tildel testbatteriet i Tester."
           actions={
-            <Knapp
-              icon={ClipboardList}
-              onClick={() => onNavigerTilTester?.()}
-            >
+            <KnappLenke href="/admin/tester" icon={ClipboardList}>
               Åpne Tester
-            </Knapp>
+            </KnappLenke>
           }
         />
       ) : (
@@ -475,65 +439,15 @@ export function AG22InnsiktTalent({
           {aktivFane === "wagr" && (
             <div className="pa-a22__wagr-card" data-testid="ag22-fane-wagr">
               <Kort>
-                <KortHode tittel="WAGR-import" aside={data.wagr.src} />
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "14px",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.45,
-                  }}
-                >
-                  Last opp CSV fra WAGR. Spillere matches på navn og fødselsår.
-                  Umatchede rader lagres ikke.
+                <KortHode tittel="WAGR-import" aside={data.wagr ? data.wagr.src : "INGEN FIL IMPORTERT"} />
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.45 }}>
+                  {data.wagr
+                    ? `${data.wagr.file} · ${data.wagr.match} av ${data.wagr.rows} rader matchet.`
+                    : "Ingen WAGR-fil er importert. Import gjøres i WAGR-importen."}
                 </p>
-
-                {importert ? (
-                  <div
-                    role="status"
-                    style={{
-                      padding: "14px 16px",
-                      borderRadius: "var(--radius)",
-                      background: "var(--surface-sunken)",
-                      border: "1px solid var(--border-hairline)",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 4,
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        color: "var(--ok, var(--text-primary))",
-                      }}
-                    >
-                      Importert {data.wagr.match} av {data.wagr.rows} rader
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      {data.wagr.file} · 1 rad uten treff i stallen ble hoppet
-                      over.
-                    </div>
-                  </div>
-                ) : (
-                  <div className="pa-a22__dropzone">
-                    <Meta>
-                      {data.wagr.file.toUpperCase()} · {data.wagr.rows} RADER
-                    </Meta>
-                    <Knapp
-                      variant="secondary"
-                      icon={Upload}
-                      onClick={() => setImportert(true)}
-                    >
-                      Importer fil
-                    </Knapp>
-                  </div>
-                )}
+                <KnappLenke href="/innsyn/talent/wagr-import" variant="secondary" icon={Upload}>
+                  Åpne WAGR-import
+                </KnappLenke>
               </Kort>
             </div>
           )}

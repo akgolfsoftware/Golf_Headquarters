@@ -4,7 +4,7 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
  * /portal/meg/innstillinger/personvern — Samtykker.
  * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
  * Avvik:
- * - Automatisk WANG-testdeling vises separat fra frivillig profildeling etter gjeldende delingsregel.
+ * - D-55: kortet «Del testresultatene med WANG og Team Norway» for WANG-elever vises over frivillig deling.
  * Én setning per bryter, av/på, ingen mørke mønstre. Eksport/sletting nederst.
  */
 
@@ -23,7 +23,8 @@ import {
   hentDelingsStatus,
 } from "@/lib/deling/samtykke";
 import { PersonvernActions } from "./personvern-actions";
-import { harAutomatiskWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,7 @@ export default async function PersonvernPage() {
 
   // T8: delingssamtykke per gruppe med aktive eksterne lesere (Team Norway/WANG).
   const delingGrupper = await grupperMedEksterneLesereForSpiller(user.id);
-  const automatiskWangTestdeling = await harAutomatiskWangTestdeling(user.id);
+  const wangTestdeling = await hentWangTestdeling(user.id);
   const delingStatus = await hentDelingsStatus(
     user.id,
     delingGrupper.map((g) => g.id),
@@ -64,9 +65,7 @@ export default async function PersonvernPage() {
       />
       {/* PH-18: trygghetssetningen — aldri mørke mønstre. */}
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
-        {automatiskWangTestdeling
-          ? "Du styrer frivillig profildeling her. WANG-testresultater deles automatisk med Team Norway etter opptaksavtalen."
-          : "Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det."}
+        Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det.
       </p>
 
       <HelseSamtykkeKort
@@ -86,15 +85,17 @@ export default async function PersonvernPage() {
         }}
       />
 
+      {wangTestdeling.map((d) => (
+        <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />
+      ))}
+
       <DelingSamtykkeKort
         grupper={delingGrupper.map((g) => ({
           gruppeId: g.id,
           gruppeNavn: g.name,
           testResultater: delingKart.get(g.id)?.testResultater ?? false,
           stats: delingKart.get(g.id)?.stats ?? false,
-          testResultaterAutomatisk: automatiskWangTestdeling && g.slug === "team-norway",
         }))}
-        automatiskWangTestdeling={automatiskWangTestdeling}
         krevesForesatt={user.requiresGuardianConsent}
         modus={{ type: "spiller" }}
       />

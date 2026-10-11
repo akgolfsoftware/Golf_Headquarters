@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { logout } from '@/lib/auth/logout';
 import {
   Sun,
   Activity,
@@ -31,6 +32,9 @@ export type WangOmraade =
 export type WangRolle = 'Trener' | 'Sportssjef';
 
 interface WangAppSkallProps {
+  /** Avgjort på serveren. Skallet kan ikke endre den. */
+  rolle: WangRolle;
+  brukerNavn?: string;
   aktivtOmraade: WangOmraade;
   aktivFane?: string;
   onFaneEndring?: (fane: string) => void;
@@ -39,13 +43,14 @@ interface WangAppSkallProps {
 }
 
 export function WangAppSkall({
+  rolle,
+  brukerNavn,
   aktivtOmraade,
   aktivFane,
   onFaneEndring,
   faner = [],
   children,
 }: WangAppSkallProps) {
-  const [rolle, setRolle] = useState<WangRolle>('Trener');
   const [visMobilMeny, setVisMobilMeny] = useState(false);
 
   const hovedMeny = [
@@ -205,7 +210,7 @@ export function WangAppSkall({
                 flex: 'none',
               }}
             >
-              AK
+              {initialer(brukerNavn)}
             </span>
             <div style={{ minWidth: 0, flex: 1 }}>
               <span
@@ -220,7 +225,7 @@ export function WangAppSkall({
                   textOverflow: 'ellipsis',
                 }}
               >
-                Anders Kristiansen
+                {brukerNavn ?? 'Innlogget bruker'}
               </span>
               <span
                 style={{
@@ -235,62 +240,6 @@ export function WangAppSkall({
             </div>
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '6px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '11px',
-                color: 'rgba(255, 255, 255, 0.65)',
-                fontFamily: 'var(--font-wang-brand, Montserrat, sans-serif)',
-              }}
-            >
-              Rolle:
-            </span>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                type="button"
-                onClick={() => setRolle('Trener')}
-                style={{
-                  minHeight: '28px',
-                  padding: '0 8px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  backgroundColor:
-                    rolle === 'Trener' ? 'var(--wang-mint)' : 'rgba(255, 255, 255, 0.15)',
-                  color: rolle === 'Trener' ? 'var(--wang-blue)' : '#FFFFFF',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Trener
-              </button>
-              <button
-                type="button"
-                onClick={() => setRolle('Sportssjef')}
-                style={{
-                  minHeight: '28px',
-                  padding: '0 8px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  backgroundColor:
-                    rolle === 'Sportssjef' ? 'var(--wang-mint)' : 'rgba(255, 255, 255, 0.15)',
-                  color: rolle === 'Sportssjef' ? 'var(--wang-blue)' : '#FFFFFF',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Sportssjef
-              </button>
-            </div>
-          </div>
         </div>
       </aside>
 
@@ -329,15 +278,17 @@ export function WangAppSkall({
               <Shield size={16} color="var(--wang-green)" />
               {rolle}
             </span>
-            <Link
-              href="/auth/logout"
-              className="wg-btn wg-btn-ghost"
-              style={{ minHeight: '36px', padding: '0 10px', fontSize: '12px' }}
-              title="Logg ut"
-            >
-              <LogOut size={16} />
-              <span>Logg ut</span>
-            </Link>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="wg-btn wg-btn-ghost"
+                style={{ minHeight: '36px', padding: '0 10px', fontSize: '12px' }}
+                title="Logg ut"
+              >
+                <LogOut size={16} />
+                <span>Logg ut</span>
+              </button>
+            </form>
           </div>
         </header>
 
@@ -608,37 +559,20 @@ export function WangAppSkall({
                 <span>Åpen fellesside</span>
               </Link>
 
-              <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--wang-grey-line)' }}>
-                <span style={{ fontSize: '12px', color: 'var(--wang-text-muted)', display: 'block', marginBottom: '6px' }}>
-                  Aktiv rolle:
-                </span>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRolle('Trener');
-                      setVisMobilMeny(false);
-                    }}
-                    className={`wg-chip ${rolle === 'Trener' ? 'wg-chip-pa' : ''}`}
-                  >
-                    Trener
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRolle('Sportssjef');
-                      setVisMobilMeny(false);
-                    }}
-                    className={`wg-chip ${rolle === 'Sportssjef' ? 'wg-chip-pa' : ''}`}
-                  >
-                    Sportssjef
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+function initialer(navn?: string): string {
+  if (!navn) return '–';
+  return navn
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((del) => del[0]?.toUpperCase() ?? '')
+    .join('');
 }
