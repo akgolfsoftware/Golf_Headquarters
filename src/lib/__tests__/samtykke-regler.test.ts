@@ -70,11 +70,38 @@ test("flagget vinner også når fødselsdatoen sier voksen (strengeste signal gj
   );
 });
 
-test("ukjent fødselsdato uten flagg antas voksen", () => {
+// D-63/TA-03: ukjent alder er ikke lenger voksen for en spiller.
+test("ukjent fødselsdato uten flagg krever foresatt (fail-closed)", () => {
   assert.equal(
     maaHaForesattSamtykke({ requiresGuardianConsent: false, dateOfBirth: null }, NAA),
-    false,
+    true,
   );
+  assert.equal(
+    maaHaForesattSamtykke(
+      { requiresGuardianConsent: false, dateOfBirth: null, role: "PLAYER" },
+      NAA,
+    ),
+    true,
+  );
+});
+
+test("ukjent fødselsdato hos coach, admin og forelder gir ikke foresatt-krav", () => {
+  for (const role of ["COACH", "ADMIN", "PARENT"]) {
+    assert.equal(
+      maaHaForesattSamtykke({ requiresGuardianConsent: false, dateOfBirth: null, role }, NAA),
+      false,
+    );
+  }
+});
+
+test("spiller uten fødselsdato kan ikke gi helsesamtykke selv", () => {
+  const feil = validerSamtykkeHandling({
+    bruker: { requiresGuardianConsent: false, dateOfBirth: null },
+    rolle: "SELV",
+    gitt: true,
+    naa: NAA,
+  });
+  assert.match(feil ?? "", /fødselsdatoen/);
 });
 
 /* ── validerSamtykkeHandling ───────────────────────────────────────── */

@@ -143,6 +143,9 @@ export function validerSamtykkeHandling(input: {
   if (!gitt) return null;
 
   if (maaHaForesattSamtykke(bruker, naa) && rolle === "SELV") {
+    if (!bruker.dateOfBirth && !bruker.requiresGuardianConsent) {
+      return "Legg inn fødselsdatoen din først. Under 16 år må en foresatt godkjenne dette.";
+    }
     return "Du er under 16 år, så en foresatt må godkjenne dette for deg.";
   }
   return null;

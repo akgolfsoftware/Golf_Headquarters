@@ -32,11 +32,13 @@ function settOppPrismaMock(t: TestContext) {
             {
               id: SPILLER_MED_SAMTYKKE,
               requiresGuardianConsent: false,
+              dateOfBirth: new Date("1995-01-01"),
               groupMemberships: [{ groupId: TEAM_NORWAY_GROUP_ID }],
             },
             {
               id: SPILLER_UTEN_SAMTYKKE,
               requiresGuardianConsent: false,
+              dateOfBirth: new Date("1995-01-01"),
               groupMemberships: [{ groupId: TEAM_NORWAY_GROUP_ID }],
             },
           ],

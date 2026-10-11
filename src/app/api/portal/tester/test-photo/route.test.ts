@@ -3,8 +3,8 @@ import { mock, test } from "node:test";
 import sharp from "sharp";
 import { TN_VERSION, tnProtocol } from "@/lib/portal-tester/tn-catalog";
 
-let user: { id: string; role: "PLAYER" | "COACH"; requiresGuardianConsent: boolean; guardianConsentGivenAt: Date | null } | null = {
-  id: "player-synthetic", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null,
+let user: { id: string; role: "PLAYER" | "COACH"; requiresGuardianConsent: boolean; guardianConsentGivenAt: Date | null; dateOfBirth?: Date | null } | null = {
+  id: "player-synthetic", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null, dateOfBirth: new Date("1995-01-01"),
 };
 let sessionAvailable = true;
 let existingPhoto = false;
@@ -36,7 +36,7 @@ mock.module("@/lib/supabase/admin", { namedExports: { supabaseAdmin: () => ({ st
 }) } }) } });
 
 function reset() {
-  user = { id: "player-synthetic", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null };
+  user = { id: "player-synthetic", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null, dateOfBirth: new Date("1995-01-01") };
   sessionAvailable = true; existingPhoto = false; uploaded = []; removed = []; uploadThrows = false; removeThrows = false; signedUrlThrows = false; createThrows = false;
 }
 async function routes() { return import("./route"); }
@@ -57,7 +57,7 @@ async function testImage(mime = "image/png") {
 test("uinnlogget, trener og mindreårig uten foresattesamtykke avvises før lagring", async () => {
   reset(); const POST = required((await routes()).POST);
   user = null; assert.equal((await response(POST(bodyRequest(await testImage())))).status, 401);
-  user = { id: "coach-synthetic", role: "COACH", requiresGuardianConsent: false, guardianConsentGivenAt: null };
+  user = { id: "coach-synthetic", role: "COACH", requiresGuardianConsent: false, guardianConsentGivenAt: null, dateOfBirth: new Date("1995-01-01") };
   assert.equal((await response(POST(bodyRequest(await testImage())))).status, 403);
   user = { id: "minor-synthetic", role: "PLAYER", requiresGuardianConsent: true, guardianConsentGivenAt: null };
   assert.equal((await response(POST(bodyRequest(await testImage())))).status, 403);
@@ -118,13 +118,13 @@ test("ugyldige bytes avvises og flere bilder per forsøk må slettes først", as
 
 test("bildet kan bare hentes og slettes på spillerens egen konto", async () => {
   reset(); existingPhoto = true; const GET = required((await routes()).GET); const DELETE = required((await routes()).DELETE);
-  user = { id: "other-player", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null };
+  user = { id: "other-player", role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null, dateOfBirth: new Date("1995-01-01") };
   assert.equal((await response(GET(new Request("http://localhost:3000/api/portal/tester/test-photo?sessionId=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&attempt=1")))).status, 404);
   const deleted = await response(DELETE(deleteRequest()));
   assert.equal(deleted.status, 404);
   assert.deepEqual(removed, []);
 
-  user = { id: ownerId, role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null };
+  user = { id: ownerId, role: "PLAYER", requiresGuardianConsent: false, guardianConsentGivenAt: null, dateOfBirth: new Date("1995-01-01") };
   const own = await response(GET(new Request("http://localhost:3000/api/portal/tester/test-photo?sessionId=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&attempt=1")));
   assert.equal(own.status, 200);
   assert.match((await own.json() as { url: string }).url, /^https:\/\/private-storage\.invalid\//);

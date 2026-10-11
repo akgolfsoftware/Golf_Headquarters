@@ -15,6 +15,7 @@ import { logError } from "@/lib/error-tracking";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { APP_URL } from "@/lib/app-url";
 import { isSameOriginAction } from "@/lib/security/same-origin";
+import { maaHaForesattSamtykke } from "@/lib/auth/minor";
 import { LYD_SAMTYKKE_ORDLYD, LYD_SAMTYKKE_ORDLYD_VERSJON } from "./lyd-samtykke-ordlyd";
 import { byggLydSamtykkeForesattEpost } from "./lyd-samtykke-email";
 import {
@@ -42,6 +43,9 @@ const PlayerIdSchema = z.object({
   playerId: z.string().min(1),
 });
 
+const KREVER_FORESATT_LENKE =
+  "Spilleren er under 16 år eller mangler fødselsdato. Foresatt må gi samtykket selv via lenken.";
+
 export type LydSamtykkeActionResult =
   | { ok: true; message?: string; consentUrl?: string }
   | { ok: false; error: string; consentUrl?: string };
@@ -68,6 +72,7 @@ async function guardCoachSpiller(
 
 /**
  * Registrer status GITT med låst ordlyd-kopi (myndig SELV, eller manuell pilot/nød).
+ * Bare for myndige spillere (16 år og eldre, med kjent fødselsdato).
  */
 export async function registrerLydSamtykkeGitt(
   input: z.infer<typeof GittSchema>,
@@ -89,6 +94,17 @@ export async function registrerLydSamtykkeGitt(
 
   const denied = await guardCoachSpiller(coach, playerId);
   if (denied) return denied;
+
+  // D-63/TA-04: under 16, eller ukjent alder, gir bare forelder samtykke, og
+  // bare via lenken. Coachen kan aldri registrere det, verken som «SELV» eller
+  // som manuelt foresatt-samtykke.
+  const spiller = await prisma.user.findUnique({
+    where: { id: playerId },
+    select: { role: true, dateOfBirth: true, requiresGuardianConsent: true },
+  });
+  if (!spiller || maaHaForesattSamtykke(spiller)) {
+    return { ok: false, error: KREVER_FORESATT_LENKE };
+  }
 
   const now = new Date();
   await prisma.lydSamtykke.upsert({
