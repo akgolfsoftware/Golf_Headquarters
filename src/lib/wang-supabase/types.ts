@@ -1,4 +1,15 @@
 export type WangSportStatus = "active" | "future";
+export type WangRole =
+  | "central_admin"
+  | "school_leader"
+  | "principal"
+  | "head_of_sports"
+  | "sports_director"
+  | "coach"
+  | "student"
+  | "guardian"
+  | "club_coach"
+  | "readonly";
 export type WangPlanLevel = "year" | "period" | "month" | "week" | "session";
 export type WangPlanStatus = "draft" | "published" | "archived";
 export type WangEventSource = "school" | "wang" | "student" | "club";
@@ -69,4 +80,18 @@ export interface WangGolfDemoData {
   students: WangDemoStudent[];
   plans: WangDemoPlanNode[];
   events: WangDemoEvent[];
+}
+
+export interface WangAuthenticatedProfile {
+  id: string;
+  displayName: string;
+  role: WangRole;
+  schoolId: string | null;
+  schoolName: string | null;
+}
+
+export interface WangStartMetric {
+  label: string;
+  value: string;
+  detail: string;
 }
