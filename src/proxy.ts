@@ -8,6 +8,8 @@ import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
 import { erSperretTeamWangSti } from "@/lib/auth/team-wang-sperre";
+import { oppdaterWangProxySesjon } from "@/lib/wang-supabase/proxy";
+import { erBeskyttetWangAppSti } from "@/lib/wang-supabase/routes";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -178,6 +180,17 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = buildCsp(nonce);
   const response = await updateSession(request, nonce, csp);
+
+  if (erBeskyttetWangAppSti(path)) {
+    const wangSession = await oppdaterWangProxySesjon(request, response);
+    if (wangSession.status === "unauthenticated") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/team-wang/app/logg-inn";
+      url.search = "";
+      url.searchParams.set("next", `${path}${request.nextUrl.search}`);
+      return NextResponse.redirect(url);
+    }
+  }
 
   // /team-wang: fellessiden er ÅPEN uten innlogging — den skal kunne deles med
   // elever og foreldre. Det er trygt fordi siden ikke viser navn:
