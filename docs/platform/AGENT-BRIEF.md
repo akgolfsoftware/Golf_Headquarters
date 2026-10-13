@@ -48,6 +48,7 @@ Les den installerte Next.js-dokumentasjonen i `node_modules/next/dist/docs/` fø
 | Design i appen | `src/styles/`, `src/lib/v2/`, `src/app/globals.css` |
 | Generert databaseklient | `src/generated/` — regenereres, ikke håndredigeres |
 | Personlig ME-database | `supabase-meg/` — separat skjema, ikke del av appens Prisma-migrasjoner |
+| WANG-database | `supabase-wang/` og `src/lib/wang-supabase/` — separat Supabase-prosjekt, ikke del av AK Golf HQs Prisma-database |
 | Tester | tester ved koden i `src/`, samt `tests/` |
 | Verktøy | [scripts/README.md](../../scripts/README.md) |
 
