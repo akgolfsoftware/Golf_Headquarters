@@ -3,19 +3,15 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 
 import { WANG_ROLE_DEFINITIONS } from "@/lib/wang-supabase/roles";
-import type { WangAuthenticatedProfile, WangRole, WangStartMetric } from "@/lib/wang-supabase/types";
+import {
+  WANG_ROLES,
+  type WangAuthenticatedProfile,
+  type WangRole,
+  type WangStartMetric,
+} from "@/lib/wang-supabase/types";
 import { WangRoleStart } from "../../app/WangRoleStart";
 
-const roleSchema = z.enum([
-  "central_admin",
-  "principal",
-  "head_of_sports",
-  "sports_director",
-  "coach",
-  "student",
-  "guardian",
-  "club_coach",
-]);
+const roleSchema = z.enum(WANG_ROLES);
 
 export const dynamic = "force-dynamic";
 

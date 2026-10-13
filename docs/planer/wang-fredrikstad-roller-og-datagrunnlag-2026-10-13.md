@@ -141,3 +141,16 @@ Levert i dette steget:
 - komplett prosjektkontroll med 185 komponenttester og godkjent produksjonsbygg
 
 Neste avgrensede steg er å bygge administrasjon av syntetiske testkontoer og rolletildeling, slik at hver startside kan prøves ende til ende før ekte brukere vurderes.
+
+## 11. Rolleforhåndsvisning kontrollert 13. oktober 2026
+
+Produksjonskontrollen av alle ti roller fant at `school_leader` og `readonly` ga 404 fordi den offentlige forhåndsvisningen hadde en egen, ufullstendig rolleliste. Rollenavnene er nå samlet i én felles fasit som brukes av typekontroll, innlogging og forhåndsvisning.
+
+Lokal kontroll etter rettingen:
+
+- `school_leader` viser `Skoleoversikt` med fiktive data og uten gitt tilgang
+- `readonly` viser `Delt oversikt` med fiktive data og uten gitt tilgang
+- begge rutene returnerer 200 ved 1280 piksler, uten vannrett overflyt eller konsollfeil
+- målrettet rolletest, typekontroll, lint og `git diff --check` er grønne
+
+Rettelsen ligger bare på lokal arbeidsgren og er ikke publisert uten ny eksplisitt godkjenning.

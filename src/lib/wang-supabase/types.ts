@@ -1,15 +1,17 @@
 export type WangSportStatus = "active" | "future";
-export type WangRole =
-  | "central_admin"
-  | "school_leader"
-  | "principal"
-  | "head_of_sports"
-  | "sports_director"
-  | "coach"
-  | "student"
-  | "guardian"
-  | "club_coach"
-  | "readonly";
+export const WANG_ROLES = [
+  "central_admin",
+  "school_leader",
+  "principal",
+  "head_of_sports",
+  "sports_director",
+  "coach",
+  "student",
+  "guardian",
+  "club_coach",
+  "readonly",
+] as const;
+export type WangRole = (typeof WANG_ROLES)[number];
 export type WangPlanLevel = "year" | "period" | "month" | "week" | "session";
 export type WangPlanStatus = "draft" | "published" | "archived";
 export type WangEventSource = "school" | "wang" | "student" | "club";

@@ -1,9 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { hentWangRolledefinisjon, WANG_MODULES } from "./roles";
+import { hentWangRolledefinisjon, WANG_MODULES, WANG_ROLE_DEFINITIONS } from "./roles";
+import { WANG_ROLES } from "./types";
 
 describe("WANG-roller", () => {
+  it("alle støttede roller har en komplett rolledefinisjon", () => {
+    assert.deepEqual(Object.keys(WANG_ROLE_DEFINITIONS).sort(), [...WANG_ROLES].sort());
+  });
+
   it("sentral admin får samlet oversikt uten elevmodul", () => {
     const role = hentWangRolledefinisjon("central_admin");
     assert.equal(role.modules.includes("schools"), true);

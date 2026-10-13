@@ -4,20 +4,14 @@ import { z } from "zod";
 
 import { WANG_ROLE_DEFINITIONS } from "./roles";
 import { opprettWangServerKlient } from "./server";
-import type { WangAuthenticatedProfile, WangRole, WangStartMetric } from "./types";
+import {
+  WANG_ROLES,
+  type WangAuthenticatedProfile,
+  type WangRole,
+  type WangStartMetric,
+} from "./types";
 
-const wangRoleSchema = z.enum([
-  "central_admin",
-  "school_leader",
-  "principal",
-  "head_of_sports",
-  "sports_director",
-  "coach",
-  "student",
-  "guardian",
-  "club_coach",
-  "readonly",
-]);
+const wangRoleSchema = z.enum(WANG_ROLES);
 
 const profileSchema = z.object({
   id: z.uuid(),
