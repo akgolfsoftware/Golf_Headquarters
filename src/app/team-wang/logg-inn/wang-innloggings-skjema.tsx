@@ -7,8 +7,9 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./wang-login.module.css";
 
-export function WangInnloggingsSkjema({ loggInn }: {
+export function WangInnloggingsSkjema({ loggInn, variant = "golf" }: {
   loggInn: (input: { epost: string; passord: string }) => Promise<{ ok: boolean }>;
+  variant?: "golf" | "app";
 }) {
   const id = useId();
   const [epost, settEpost] = useState("");
@@ -36,16 +37,18 @@ export function WangInnloggingsSkjema({ loggInn }: {
 
   return <main className={styles.side}>
     <header className={styles.hode}>
-      <Link href="/team-wang" aria-label="WANG Golf – fellessiden" className={styles.merke}>
+      <Link href="/team-wang" aria-label="WANG Toppidrett – fellessiden" className={styles.merke}>
         <Image src="/team-wang/wang-crest.svg" alt="" width={34} height={44} />
-        <span><strong>WANG Toppidrett Fredrikstad</strong><span>Golf</span></span>
+        <span><strong>WANG Toppidrett Fredrikstad</strong><span>{variant === "app" ? "Skoleplattform" : "Golf"}</span></span>
       </Link>
     </header>
     <div className={styles.innhold}>
       <div className={styles.kolonne}>
         <section className={styles.hero} aria-labelledby={`${id}-tittel`}>
           <h1 id={`${id}-tittel`}>Logg inn</h1>
-          <p>Fellessiden er åpen for alle. Logg inn for å åpne innholdet kontoen din har tilgang til.</p>
+          <p>{variant === "app"
+            ? "Logg inn med WANG-kontoen din. Rollen på kontoen avgjør hva du kan se og gjøre."
+            : "Fellessiden er åpen for alle. Logg inn for å åpne innholdet kontoen din har tilgang til."}</p>
         </section>
         <form onSubmit={send} className={styles.kort} aria-busy={travel} aria-labelledby={`${id}-tittel`}>
           {harFeil && <p id={`${id}-feil`} role="alert" className={styles.feil}>
@@ -64,20 +67,38 @@ export function WangInnloggingsSkjema({ loggInn }: {
           </div>
           <button type="submit" className={styles.primaer} disabled={travel}>{status === "ferdig" ? "Åpner WANG …" : status === "venter" ? "Logger inn …" : "Logg inn"}</button>
           <span role="status" className={styles.status}>{status === "ferdig" ? "Du er logget inn." : status === "venter" ? "Logger inn" : ""}</span>
-          <Link href="/auth/forgot-password" className={styles.tekstlenke}>Glemt passord</Link>
+          {variant === "golf"
+            ? <Link href="/auth/forgot-password" className={styles.tekstlenke}>Glemt passord</Link>
+            : <p className={styles.passordhjelp}>Trenger du nytt passord, kontakt WANG-administrasjonen.</p>}
         </form>
-        <p className={styles.hjelp}>Bruk kontoen du har fått tilgang med. Mangler du tilgang, kontakt treneren din.</p>
-        <Link href="/team-wang" className={styles.sekundaer}>Fortsett uten å logge inn</Link>
+        <p className={styles.hjelp}>{variant === "app"
+          ? "Mangler du rolle eller skoletilknytning, kontakt WANG-administrasjonen."
+          : "Bruk kontoen du har fått tilgang med. Mangler du tilgang, kontakt treneren din."}</p>
+        <Link href={variant === "app" ? "/team-wang/demo" : "/team-wang"} className={styles.sekundaer}>
+          {variant === "app" ? "Se Golf-demo uten innlogging" : "Fortsett uten å logge inn"}
+        </Link>
       </div>
       <aside className={styles.kort} aria-labelledby={`${id}-tilgang`}>
         <h2 id={`${id}-tilgang`}>Hvem ser hva</h2>
         <dl className={styles.roller}>
-          <div><dt>Uten innlogging</dt><dd>Felles årsplan, kalender og praktisk informasjon. Ingen elevnavn eller individuelle resultater.</dd></div>
-          <div><dt>Elever og foresatte</dt><dd>Personlig innhold følger tilgangen på kontoen din.</dd></div>
-          <div><dt>Trenere</dt><dd>Trenerverktøy krever innlogging og tilgang.</dd></div>
+          {variant === "app" ? <>
+            <div><dt>WANG sentralt</dt><dd>Samlet status uten automatisk tilgang til navngitte elever.</dd></div>
+            <div><dt>Skoleledelse</dt><dd>Alle idretter og elevprofiler ved egen skole, men ikke søvn og dagsform.</dd></div>
+            <div><dt>Sportssjef og trener</dt><dd>Workbench og utøveroppfølging for idretter de er tildelt.</dd></div>
+            <div><dt>Elev og inviterte</dt><dd>Bare egen profil eller innhold som er uttrykkelig delt.</dd></div>
+          </> : <>
+            <div><dt>Uten innlogging</dt><dd>Felles årsplan, kalender og praktisk informasjon. Ingen elevnavn eller individuelle resultater.</dd></div>
+            <div><dt>Elever og foresatte</dt><dd>Personlig innhold følger tilgangen på kontoen din.</dd></div>
+            <div><dt>Trenere</dt><dd>Trenerverktøy krever innlogging og tilgang.</dd></div>
+          </>}
         </dl>
-        <Link href="/team-wang/coach" className={styles.tekstlenke}>Åpne trenerflaten</Link>
-        <Link href="/admin/spillere" className={styles.tekstlenke}>Elevadministrasjon</Link>
+        {variant === "app" ? <>
+          <Link href="/team-wang" className={styles.tekstlenke}>Åpne felles årsplan</Link>
+          <Link href="/team-wang/demo" className={styles.tekstlenke}>Åpne Golf-demo</Link>
+        </> : <>
+          <Link href="/team-wang/coach" className={styles.tekstlenke}>Åpne trenerflaten</Link>
+          <Link href="/admin/spillere" className={styles.tekstlenke}>Elevadministrasjon</Link>
+        </>}
       </aside>
     </div>
   </main>;

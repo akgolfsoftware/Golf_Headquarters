@@ -1,4 +1,4 @@
-# SKJERMREGISTER — alle 35 skjermer i `/team-wang`
+# SKJERMREGISTER — 35 grunnskjermer og én koblet Golf-demo i `/team-wang`
 
 > **Gjeldende interaktiv prototype ligger i Claude Design, ikke her.**
 > Prosjektet «WANG Toppidrett Designsystem», mappa `templates/wang-coach-demo/`.
@@ -9,7 +9,9 @@
 > Registeret under er fortsatt gyldig som **byggeunderlag** for `/team-wang`: ruter, roller,
 > tilgang og datamodell. De 35 radene er elev- og foresattflaten. Trenerflaten —
 > arbeidsbenk, oppmøte, testdag, testkø, rangering, samtykke, organisasjon og
-> helsepersonellvisning — finnes bare i prototypen.
+> helsepersonellvisning — finnes bare i prototypen. A7 kobler den implementerte Golf-demoen
+> til Claude Design-filen «Golf v1 - start og demo-reise.dc.html». Koblingen dokumenterer
+> opphav og rute, ikke faglig eller visuell godkjenning.
 
 Én rad per skjerm. Sortert etter status: **bygget** → **kan bygges nå** → **venter på datamodell**
 → **venter på beslutning**. Innenfor hver gruppe i skjerm-ID-rekkefølge.
@@ -29,6 +31,7 @@ Alle skjermer er tegnet i **mobil 390 og desktop 1280**.
 | A3 | Årsplan | `skjermer/a3-arsplan.html` | `/team-wang?fane=trening` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget |
 | A4 | Periode | `skjermer/a4-periode.html` | `/team-wang?fane=trening` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget |
 | A6 | Uke | `skjermer/a6-uke.html` | `/team-wang?fane=kalender` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget · «i dag» er hardkodet |
+| A7 | Golf-demo · sportssjef | Claude Design: `Golf v1 - start og demo-reise.dc.html` | `/team-wang/demo` | Åpen demo | Suksess, laster, tom, feil, økt-preview | 390 · 1280 | Bygget · syntetiske data · ikke faglig godkjent |
 
 ## Kan bygges nå — modellen finnes
 
@@ -81,11 +84,11 @@ Alle skjermer er tegnet i **mobil 390 og desktop 1280**.
 
 | Status | Antall |
 |---|---|
-| Bygget | 5 |
+| Bygget | 6 |
 | Kan bygges nå | 9 |
 | Venter på datamodell | 19 |
 | Venter på beslutning | 2 |
-| **Sum** | **35** |
+| **Sum** | **36** |
 
 De ni «kan bygges nå» er den første porteringsbølgen. `B3` og `C5` henger sammen: bygg
 kildelinje-komponenten én gang (`PORTING.md` §3), så treffer den fem skjermer.
