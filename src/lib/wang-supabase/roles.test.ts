@@ -13,7 +13,14 @@ describe("WANG-roller", () => {
     const role = hentWangRolledefinisjon("central_admin");
     assert.equal(role.modules.includes("schools"), true);
     assert.equal(role.modules.includes("athletes"), false);
+    assert.equal(role.modules.includes("test-profiles"), true);
     assert.match(role.privacyNotice, /Navngitte elever åpnes ikke/);
+  });
+
+  it("ingen andre roller får administrasjon av testprofiler", () => {
+    for (const role of WANG_ROLES.filter((role) => role !== "central_admin")) {
+      assert.equal(hentWangRolledefinisjon(role).modules.includes("test-profiles"), false);
+    }
   });
 
   it("rektor og toppidrettssjef får samme moduler uten morgeninnsjekk", () => {
