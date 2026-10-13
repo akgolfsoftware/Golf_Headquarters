@@ -10,9 +10,23 @@ personvernerklæring i `src/components/marketing/v2/MarkedPersonvernV2.tsx`).
 
 Lagringssteder:
 - **Database:** Supabase Postgres (EU) via Prisma — alle modellene under.
+- **WANG-database:** separat Supabase Postgres i EU, med egen Auth og RLS. Skjemakilden ligger i `supabase-wang/`.
 - **Filer:** Supabase Storage-buckets (bl.a. `message-attachments`, `coaching-recordings`, video-buckets).
 - **Auth:** Supabase Auth (`auth.users`, koblet via `User.authId`).
 - **Tredjeparter:** Stripe (betaling), Resend (e-post), Anthropic (AI), Deepgram (transkripsjon), Google (kalender-sync), Notion (sync), Vercel (hosting/logger).
+
+### WANG-database — tillegg 13.10.2026
+
+Den separate WANG-databasen har tabeller for skole, idretter, skoleidretter, roller, grupper,
+utøvere, foresattrelasjoner, planhierarki, kalenderhendelser og daglig innsjekk. Tilgang styres med
+RLS per skole, idrett, gruppe, utøver og foresattrelasjon. Den åpne `/team-wang/demo` kan bare lese
+idrettskatalogen og rader som eksplisitt er merket `is_demo = true`; disse radene bruker kun
+syntetiske navn og demoinnhold. Daglig innsjekk, søvn, helse, kontaktpersoner og autentiserte
+profiler er ikke offentlig lesbare.
+
+**AVKLAR før ekte elevdata:** behandlingsgrunnlag, opplysningstekst, foresattes rolle, art. 9-samtykke
+for søvn/form, lagringstid, eksport, retting og full sletting må være besluttet og bygget. Dagens
+databasegrunnlag og demo er ikke godkjenning til å importere ekte elever.
 
 ## 1. Identitet og profil
 

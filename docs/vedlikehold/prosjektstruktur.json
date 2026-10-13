@@ -54,6 +54,7 @@
     "serwist.config.mjs",
     "src",
     "supabase-meg",
+    "supabase-wang",
     "test-results",
     "tests",
     "tmp",

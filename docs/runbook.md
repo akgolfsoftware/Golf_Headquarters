@@ -7,7 +7,7 @@
 - `src/instrumentation.ts` og relevante feilhåndterere: appens logging og rapportering.
 - `src/lib/rate-limit.ts`: faktisk oppførsel ved trafikkbegrensning.
 - `vercel.json` og `.github/workflows/`: drift og byggrutiner slik de er konfigurert i Git.
-- `prisma/` og `supabase-meg/`: separate skjemakilder. En SQL-fil beviser ikke at den er kjørt.
+- `prisma/`, `supabase-meg/` og `supabase-wang/`: separate skjemakilder. En SQL-fil beviser ikke at den er kjørt.
 - [Sikkerhetsrutiner](../SECURITY.md) og [personverndokumentasjon](gdpr/behandlingsregister.md).
 
 ## Ved en hendelse
