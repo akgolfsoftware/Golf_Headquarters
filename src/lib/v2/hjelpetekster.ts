@@ -283,7 +283,7 @@ const RAW = {
   tigerFive: {
     tittel: "Tiger Five — bortkastede slag",
     forklaring:
-      "De fem feilene som koster flest slag: dobbeltbogey eller verre, tre putt, straffeslag, ikke opp-og-ned fra kort avstand, og par 5 uten birdiesjanse. Fjerner du disse, faller scoren raskt — uten at svingen må endres.",
+      "De fem feilene som koster flest slag: dobbeltbogey eller verre, tre putt, straffeslag, ikke up and down fra kort avstand, og par 5 uten birdiesjanse. Fjerner du disse, faller scoren raskt — uten at svingen må endres.",
   },
   ballhastighet: {
     tittel: "Ballhastighet",

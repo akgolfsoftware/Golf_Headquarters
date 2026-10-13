@@ -13,16 +13,16 @@ Svar etter utkast 2 og 3 av I dag (PH-01), https://claude.ai/artifact/8qmhVSf3pQ
   øvelser. Trykk på kortet åpner hele økta med hvorfor, utstyr og alle øvelser.
 - **Progresjonen står øverst på I dag** (målsetninger, prosessmål og uka), med snarvei til neste
   økt rett under tittelen.
-- **«Opp og ned» (også «opp-og-ned» og «up and down») brukes ikke i skjermtekst.** Beskriv det
-  konkret, for eksempel «i hull på to slag». Står i masteren `docs/treningsplanlegging.md` §3.
-- **Uavklart:** hva Tiger 5-regelen «Bom på enkel opp-og-ned» (§Åpne punkter etter runde 19–26,
-  og `src/lib/v2/hjelpetekster.ts`) skal hete nå. Venter på Anders.
+- **«Opp og ned» og «opp-og-ned» brukes ikke i skjermtekst. Ordet er «up and down»** (Anders
+  14.10). Står i masteren `docs/treningsplanlegging.md` §3. Tiger 5-regelen heter
+  «Bom på enkel up and down».
 
 **Overstyrer:** «Øktkort er nøytrale med aksefarget stripe på venstre kant» i §FARGE BETYR AKSE (26.09).
 
 **Arbeidet dette utløser:** PH-01 tegnes etter utkast 3 i Precision (`7d7c2994`) og porteres når
-Anders har godkjent den (port 7). Søk etter «opp og ned» i skjermtekst skal gi 0 treff når Tiger
-5-navnet er avgjort.
+Anders har godkjent den (port 7). «opp-og-ned» er rettet i `hjelpetekster.ts` og to
+toppidrett-visninger. Den publiserte GFGK Junior-teksten (`src/app/gfgk-junior/_data/`) venter til
+Anders sier fra, som for periodenavnene.
 
 ## KODEGJENNOMGANGEN 06.10: TRENERE FORESLÅR, FORELDER GODKJENNER INNEN SJU DAGER, DATA GOLF BARE FOR COACHER (Anders 06.10.2026, bindende)
 
@@ -422,7 +422,7 @@ reglene.
   navngitte spillere** (Anders 28.09 etter runde 22: «fjern sammenligning for nå»). Sammenligning
   med andre spillere og talentradaren er bare for coach (§Data uendret). Sammenligning mot neste
   kategori (Broadie, ESTIMAT) og PGA Tour i Stats består.
-- **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel opp-og-ned» er bekreftet (28.09).
+- **Tiger 5-reglene** «Bogey fra innenfor 130 m» og «Bom på enkel up and down» er bekreftet (28.09, ordet rettet 14.10).
 - **Live-økt:** økt- og drillklokke, fire tellere per drill (Uten ball · Lav hastighet ·
   Automatikk · Slag) mot plan, neste drill åpnes automatisk. Fysisk økt: spilleren fører vekt,
   reps og serier. Etter økta (Anders 28.09): fysisk økt får «Hvor tungt» 1–10 (opplevd belastning);
