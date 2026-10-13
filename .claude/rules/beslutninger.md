@@ -4,6 +4,26 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## FYLTE ØKTKORT, ØKTA ÅPNES MED ETT TRYKK, OG «OPP OG NED» BRUKES IKKE (Anders 14.10.2026, bindende)
+
+Svar etter utkast 2 og 3 av I dag (PH-01), https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP.
+
+- **Øktkort er fylte flater i aksefargen.** Anders 13.10: ja til fylte øktkort, bekreftet 14.10.
+- **Øktkortet er en forhåndsvisning med nøkkelinfo:** akse, tid, navn, varighet, sted og antall
+  øvelser. Trykk på kortet åpner hele økta med hvorfor, utstyr og alle øvelser.
+- **Progresjonen står øverst på I dag** (målsetninger, prosessmål og uka), med snarvei til neste
+  økt rett under tittelen.
+- **«Opp og ned» (også «opp-og-ned» og «up and down») brukes ikke i skjermtekst.** Beskriv det
+  konkret, for eksempel «i hull på to slag». Står i masteren `docs/treningsplanlegging.md` §3.
+- **Uavklart:** hva Tiger 5-regelen «Bom på enkel opp-og-ned» (§Åpne punkter etter runde 19–26,
+  og `src/lib/v2/hjelpetekster.ts`) skal hete nå. Venter på Anders.
+
+**Overstyrer:** «Øktkort er nøytrale med aksefarget stripe på venstre kant» i §FARGE BETYR AKSE (26.09).
+
+**Arbeidet dette utløser:** PH-01 tegnes etter utkast 3 i Precision (`7d7c2994`) og porteres når
+Anders har godkjent den (port 7). Søk etter «opp og ned» i skjermtekst skal gi 0 treff når Tiger
+5-navnet er avgjort.
+
 ## KODEGJENNOMGANGEN 06.10: TRENERE FORESLÅR, FORELDER GODKJENNER INNEN SJU DAGER, DATA GOLF BARE FOR COACHER (Anders 06.10.2026, bindende)
 
 Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` (grenen `review/kodegjennomgang`).
@@ -753,7 +773,7 @@ Anders: «den ser både svart hvit og med farger». Regelen gjelder hele Precisi
 - Farge betyr alltid aksen FYS · TEK · SLAG · SPILL · TURN.
 - Årskurven viser aksefordelingen per uke i aksefargene, dempet. Periodene er et tynt tekstbånd,
   ikke fylte blokker.
-- Øktkort er nøytrale med aksefarget stripe på venstre kant, ikke fargede flater.
+- ~~Øktkort er nøytrale med aksefarget stripe på venstre kant, ikke fargede flater.~~ Overstyrt 14.10: fylte øktkort (§FYLTE ØKTKORT).
 - Fremdriftsstreker er grafitt. Grønt og rødt er bare statussignal.
 
 **Arbeidet dette utløser:** rettes i Claude Design-prosjektet `7d7c2994` i runde 5 (alle tegnede
