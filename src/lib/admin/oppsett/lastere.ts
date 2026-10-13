@@ -333,9 +333,6 @@ export function lastSikkerhetData(user: PortalUser): AdminSecurityV2Data {
 
 // ── Integrasjoner (fra /admin/integrasjoner, uendret) ───────────────────────
 
-function nokFormat(ore: number): string {
-  return new Intl.NumberFormat("nb-NO", { style: "currency", currency: "NOK", maximumFractionDigits: 0 }).format(ore / 100);
-}
 
 export async function lastIntegrasjonerData(me: PortalUser): Promise<IntegrasjonKort[]> {
   const googleConn = await prisma.googleCalendarConnection.findUnique({
@@ -345,15 +342,6 @@ export async function lastIntegrasjonerData(me: PortalUser): Promise<Integrasjon
   const googleKreverPalogging = googleConn?.status === "ERROR";
 
   const stripeAktiv = Boolean(process.env.STRIPE_SECRET_KEY);
-  const tretti = new Date();
-  tretti.setDate(tretti.getDate() - 30);
-  const stripeSum = stripeAktiv
-    ? await prisma.booking.aggregate({
-        _sum: { priceOre: true },
-        where: { stripePaymentIntentId: { not: null }, startAt: { gte: tretti } },
-      })
-    : null;
-  const stripeBelop = stripeSum?._sum.priceOre ?? 0;
 
   const anthropicAktiv = Boolean(process.env.ANTHROPIC_API_KEY);
   const resendAktiv = Boolean(process.env.RESEND_API_KEY);
@@ -379,9 +367,9 @@ export async function lastIntegrasjonerData(me: PortalUser): Promise<Integrasjon
       title: "Stripe",
       icon: "credit-card",
       status: (stripeAktiv ? "active" : "disconnected") as IntegrasjonStatus,
-      statusLabel: stripeAktiv ? "Aktiv" : "Ikke konfigurert",
+      statusLabel: stripeAktiv ? "Konfigurert" : "Ikke konfigurert",
       description: "Betaling for bookinger, abonnement og fakturering.",
-      meta: stripeAktiv ? `${nokFormat(stripeBelop)} siste 30 dager` : undefined,
+      meta: stripeAktiv ? "Betalingsoppsettet er konfigurert. Faktiske betalinger vises i Økonomi." : undefined,
       ctaLabel: "Se økonomi",
       ctaHref: "/admin/finance",
     },
@@ -402,7 +390,7 @@ export async function lastIntegrasjonerData(me: PortalUser): Promise<Integrasjon
       title: "Anthropic (AI)",
       icon: "sparkles",
       status: (anthropicAktiv ? "active" : "disconnected") as IntegrasjonStatus,
-      statusLabel: anthropicAktiv ? "Aktiv" : "Ikke konfigurert",
+      statusLabel: anthropicAktiv ? "Konfigurert" : "Ikke konfigurert",
       description: "Claude-modeller for AI-agenter, godkjennelser og innholdsgenerering.",
       ctaLabel: "Se agenter",
       ctaHref: "/admin/agenticos",
@@ -412,7 +400,7 @@ export async function lastIntegrasjonerData(me: PortalUser): Promise<Integrasjon
       title: "Resend (E-post)",
       icon: "mail",
       status: (resendAktiv ? "active" : "disconnected") as IntegrasjonStatus,
-      statusLabel: resendAktiv ? "Aktiv" : "Ikke konfigurert",
+      statusLabel: resendAktiv ? "Konfigurert" : "Ikke konfigurert",
       description: "Transaksjonell e-post — bekreftelser, påminnelser, maler.",
       ctaLabel: "E-postmaler",
       ctaHref: "/admin/email-templates",
@@ -422,9 +410,9 @@ export async function lastIntegrasjonerData(me: PortalUser): Promise<Integrasjon
       title: "Supabase",
       icon: "database",
       status: "active",
-      statusLabel: "Aktiv",
+      statusLabel: "Appens datatjeneste",
       description: "Postgres-database og autentisering. Kjernen i hele plattformen.",
-      meta: "Always-on",
+      meta: "Driftsstatus kontrolleres på tjenestens statusside",
       ctaLabel: "Status",
       ctaHref: "https://status.supabase.com",
       ctaExternal: true,

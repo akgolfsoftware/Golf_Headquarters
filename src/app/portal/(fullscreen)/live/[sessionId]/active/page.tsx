@@ -7,7 +7,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
+import { loadAuthorizedLiveSource } from "@/lib/portal-live/session-source";
 import { loadPH05ActiveData, loadWbLiveAktiv } from "@/lib/portal-live/load-ph04-07";
 import { PH05LiveAktiv } from "@/components/portal/precision/PH05LiveAktiv";
 
@@ -29,34 +29,24 @@ export default async function LiveActivePage({
     redirect(`/portal/live/${sessionId}/brief`);
   }
 
-  const [v2, planSession, wbRow] = await Promise.all([
-    prisma.trainingSessionV2.findUnique({
-      where: { id: sessionId },
-      select: { id: true, status: true },
-    }),
-    prisma.trainingPlanSession.findUnique({
-      where: { id: sessionId },
-      select: { id: true, status: true },
-    }),
-    prisma.workbenchSession.findUnique({
-      where: { id: sessionId },
-      select: { id: true, status: true, playerId: true, hiddenByPlayer: true },
-    }),
-  ]);
-
-  // WorkbenchSession: bare eieren logger, og bare når økta er i gang.
-  if (!v2 && !planSession && wbRow) {
-    if (wbRow.playerId !== user.id) redirect("/portal/planlegge/workbench");
-    if (wbRow.hiddenByPlayer || wbRow.status === "DRAFT") notFound();
-    if (wbRow.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
-    if (wbRow.status !== "IN_PROGRESS") redirect(`/portal/live/${sessionId}/brief`);
+  // Bruk den samme innsynsporten som brief og registrering før status avgjøres.
+  // En fremmed økt skal ikke kunne avsløre sin status gjennom en omdirigering.
+  let source: Awaited<ReturnType<typeof loadAuthorizedLiveSource>>;
+  try { source = await loadAuthorizedLiveSource(sessionId); }
+  catch (error) {
+    if (error instanceof Error && ["forbidden", "not-found"].includes(error.message)) notFound();
+    throw error;
+  }
+  if (source.kind === "workbench" && source.row.playerId !== user.id) redirect("/portal/planlegge/workbench");
+  if (source.row.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
+  const aktiv = source.kind === "plan"
+    ? source.row.status === "ACTIVE" || source.row.status === "PAUSED"
+    : source.row.status === "IN_PROGRESS";
+  if (!aktiv) redirect(`/portal/live/${sessionId}/brief`);
+  if (source.kind === "workbench") {
     const wbData = await loadWbLiveAktiv(sessionId);
     if (!wbData) notFound();
     return <PH05LiveAktiv key={sessionId} data={wbData} />;
-  }
-
-  if (v2?.status === "COMPLETED" || planSession?.status === "COMPLETED" || wbRow?.status === "COMPLETED") {
-    redirect(`/portal/live/${sessionId}/summary`);
   }
 
   const data = await loadPH05ActiveData(sessionId, user.id);

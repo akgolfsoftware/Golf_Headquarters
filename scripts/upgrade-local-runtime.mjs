@@ -25,8 +25,11 @@ if (command === "schema") {
     finally { client.release(); }
   } finally { await pool.end(); }
 } else if (command === "dev" || command === "verify" || command === "build") {
+  // Lokale funksjonsprøver skal aldri arve ekte AI-, betalings- eller utsendingsnøkler.
+  const localEnv = Object.fromEntries(Object.entries(process.env).filter(([name]) =>
+    !/(?:KEY|TOKEN|SECRET|PASSWORD|DATABASE_URL|DIRECT_URL|SUPABASE|STRIPE|RESEND|SENDGRID|DATAGOLF|UPSTASH|OPENAI|ANTHROPIC|AI_GATEWAY|SMTP|MAILGUN)/.test(name)));
   const child = spawn("npm", command === "dev" ? ["run", "dev", "--", "--hostname", "127.0.0.1", "--port", "3300"] : ["run", command], {
-    stdio: "inherit", env: { ...process.env, DATABASE_URL: status.DB_URL, DIRECT_URL: status.DB_URL,
+    stdio: "inherit", env: { ...localEnv, DATABASE_URL: status.DB_URL, DIRECT_URL: status.DB_URL,
       NEXT_PUBLIC_SUPABASE_URL: status.API_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
       SUPABASE_SERVICE_ROLE_KEY: status.SERVICE_ROLE_KEY, NEXT_PUBLIC_APP_URL: "http://127.0.0.1:3300",
       VEDLIKEHOLD: "0", NEXT_TELEMETRY_DISABLED: "1" },

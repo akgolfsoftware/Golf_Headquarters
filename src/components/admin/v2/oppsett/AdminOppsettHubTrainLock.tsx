@@ -1,33 +1,11 @@
 "use client";
 
-/**
- * AgencyOS Oppsett-hub — Train-lock (T13, 26.08.2026).
- *
- * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html (3 skall).
- * AG-13 er historikk (eldre variant, HANDOFF §16); AG-18 er gjeldende.
- * Avvik:
- *   - AG-13 (eldre variant) er historikk, ikke fasit.
- * Fem rader — Akademi, Varsler, Tilgang og roller, Klubb og steder, Konto —
- * INGEN hvit primær-CTA («kjedelig er riktig», ingenting å utføre på
- * hub-nivå). Varsler og Konto navigerer ut til egne, eksisterende ruter
- * (/admin/varsler, /admin/profile); Akademi/Tilgang/Klubb har detalj inni
- * hub-en via `?rad=`.
- *
- * /admin/team folder inn i «Tilgang og roller» (T13-oppgaven) — samme
- * medlemsliste/tellinger som AdminTeamV2, portet til TL. /admin/team
- * redirecter hit.
- *
- * Master–detalj (A2, beslutninger.md §PP-A): desktop viser radlisten +
- * valgt rads detalj i 380px-panelet (samme MasterDetalj-primitiv som T3).
- * Mobil: radlisten alene; velges en rad navigerer siden til `?rad=` og
- * viser KUN detaljen med en TlTilbake til hub-en (fasitens push-mønster).
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import Link from "next/link";
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
-import { MasterDetalj, TlCaps, TlInspektorBlokk, TlInspektorKpi, TlInspektorLinje, TlInspektorpanel, TlKnapp, TlRad, TlRadGruppe, TlTilbake, TlTittel, TlToggleRad, useInspektorSynlig } from "./tl-kit";
+import { MasterDetalj, TlInspektorBlokk, TlInspektorKpi, TlInspektorLinje, TlInspektorpanel, TlKnapp, TlRad, TlRadGruppe, TlTilbake, TlTittel, TlToggleRad, useInspektorSynlig } from "./tl-kit";
 
 export type OppsettRadKey = "akademi" | "varsler" | "tilgang" | "klubb" | "konto";
 
@@ -113,7 +91,7 @@ function TilgangPanel({ data }: { data: AdminOppsettHubData["tilgang"] }) {
 
       <TlInspektorBlokk label="Medlemmer">
         {data.medlemmer.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 12.5, color: TL.mute }}>Ingen coacher eller administratorer registrert ennå.</p>
+          <p style={{ margin: 0, fontSize: 14, color: TL.mute }}>Ingen coacher eller administratorer registrert ennå.</p>
         ) : (
           data.medlemmer.map((m) => (
             <TlInspektorLinje
@@ -146,7 +124,7 @@ function KlubbPanel({ data }: { data: AdminOppsettHubData["klubb"] }) {
       </div>
 
       {data.lokasjoner.length === 0 ? (
-        <p style={{ margin: 0, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>Ingen klubber eller anlegg registrert ennå.</p>
+        <p style={{ margin: 0, fontSize: 14, color: TL.mute, lineHeight: 1.5 }}>Ingen klubber eller anlegg registrert ennå.</p>
       ) : (
         <TlInspektorBlokk label="Steder">
           {data.lokasjoner.map((l) => (
@@ -156,9 +134,9 @@ function KlubbPanel({ data }: { data: AdminOppsettHubData["klubb"] }) {
       )}
 
       <div style={{ background: TL.dock, borderRadius: 14, padding: 14 }}>
-        <TlCaps size={9}>Simulator</TlCaps>
+        <TlCaps size={13}>Simulator</TlCaps>
         <div style={{ marginTop: 6, fontSize: 13, fontWeight: 600, color: TL.text }}>Bookbar ressurs: nei</div>
-        <div style={{ marginTop: 4, fontSize: 12, color: TL.mute }}>Simulator er ikke et produkt. Data kommer fra coaching-økter.</div>
+        <div style={{ marginTop: 4, fontSize: 13, color: TL.mute }}>Simulator er ikke et produkt. Data kommer fra coaching-økter.</div>
       </div>
 
       <Link href={data.fasiliteterHref} style={{ textDecoration: "none" }}>

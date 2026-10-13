@@ -205,3 +205,100 @@
 .mal-group-publication .mal-rollout__recipients strong,.mal-group-publication .mal-rollout__recipients small { display:block; }
 .mal-group-publication .mal-rollout__recipients small { margin-top:6px; color:var(--text-secondary); font:var(--type-source); }
 @media(max-width:767px) { .mal-rollout { padding:20px 16px; } .mal-rollout__fields { grid-template-columns:minmax(0,1fr); } .mal-rollout>.pa-btn,.mal-rollout__preview>.pa-btn { width:100%; justify-content:center; } }
+/* Godkjent dagsplan 13.10.2026: tydelig tekst, oppgave først, fylt navigasjon.
+   Bruker Precision-verdiene; organisasjonenes egne skrifter og profil beholdes. */
+.pa-root .pa-pagehead__title {
+  font: var(--type-display);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.08;
+  margin: 0;
+  max-width: 28ch;
+  letter-spacing: var(--tracking-display);
+}
+.pa-root .pa-pagehead__context {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font: var(--type-source);
+  text-wrap: pretty;
+}
+.pa-root .pa-pagehead__sub {
+  font: var(--type-instruction);
+  max-width: 65ch;
+  margin-top: 12px;
+}
+.pa-root .kicker {
+  font: 500 var(--fs-15)/1.4 var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.pa-root .ph01-seksjonshode {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pa-root .ph01-seksjonshode h2 {
+  margin: 0;
+  font: var(--type-title-s);
+}
+.pa-root .ph01-side > section > .pa-state--empty {
+  border: 0;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  padding: clamp(24px, 4vw, 40px);
+  --text-primary: var(--text-on-primary);
+  --text-secondary: var(--text-on-primary);
+}
+.pa-root .ph01-side > section > .pa-state--empty .pa-state__title {
+  font: var(--type-title-l);
+}
+.pa-root .ph01-side > section > .pa-state--empty .pa-state__body {
+  font: var(--type-instruction);
+  max-width: 65ch;
+}
+.pa-root .ph01-side > section > .pa-state--empty .pa-state__icon {
+  background: transparent;
+  color: inherit;
+}
+.pa-root .ph01-side > section > .pa-state--empty .pa-btn--primary {
+  background: var(--surface-card);
+  color: var(--primary);
+}
+.pa-root .ph01-side > section > .pa-state--empty .pa-btn--ghost { color: inherit; }
+.pa-root .ph01-kom-i-gang {
+  border-top: 1px solid var(--border-ink);
+  padding-top: 16px;
+}
+.pa-root .ph01-kom-i-gang > summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font: var(--type-label);
+  cursor: pointer;
+}
+.pa-root .ph01-kom-i-gang[open] > summary { margin-bottom: 20px; }
+.pa-root .pa-rail__label { display: none; }
+@media(min-width:1024px) {
+  .pa-root.pa-skall .pa-skall__skinne { width: 184px; background: var(--surface-page); }
+  .pa-root.pa-skall .pa-skall__bjellecelle { justify-content: start; padding-left: 24px; background: var(--surface-page); }
+  .pa-root.pa-skall .pa-skall__main { margin-left: 184px; }
+  .pa-root.pa-skall .pa-skall__skinne .pa-rail { width: 184px; align-items: stretch; padding: 24px 16px; background: var(--surface-page); gap: 8px; }
+  .pa-root.pa-skall .pa-skall__skinne .pa-rail__item { width: 100%; height: 52px; justify-content: start; padding: 12px; gap: 12px; font: var(--type-label); text-decoration: none; }
+  .pa-root.pa-skall .pa-rail__label { display: inline; }
+  .pa-root.pa-skall .pa-rail__item[aria-current="page"] { background: var(--primary); color: var(--text-on-primary); box-shadow: none; }
+}
+:where(.pa-root) .pa-card { border: 0; background: var(--surface-flat); }
+:where(.pa-root) .pa-card .pa-card { background: transparent; }
+.pa-root .ph01-side > section > .pa-state--empty .pa-btn--ghost:hover { background: var(--primary-hover); color: var(--text-on-primary); }
+.pa-root .pa-aos__railetikett { display: none; }
+@media(min-width:1024px) {
+  .pa-root.pa-aos .pa-aos__skinne { width: 184px; }
+  .pa-root.pa-aos .pa-aos__main { margin-left: 184px; }
+  .pa-root.pa-aos .pa-aos__bjellecelle { justify-content: start; padding-left: 24px; background: var(--surface-page); }
+  .pa-root.pa-aos .pa-aos__rail { align-items: stretch; padding: 24px 16px; gap: 8px; background: var(--surface-page); }
+  .pa-root.pa-aos .pa-aos__railpunkt { width: 100%; height: 52px; display: flex; align-items: center; justify-content: start; gap: 12px; padding: 12px; font: var(--type-label); text-decoration: none; }
+  .pa-root.pa-aos .pa-aos__railetikett { display: inline; }
+}
+
+.pa-root .ph01-okt--prioritert .pa-badge { color:var(--text-on-primary); }

@@ -1,4 +1,5 @@
 "use client";
+import { CoachLabel as Caps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS · Innstillinger · Periodenavn.
@@ -10,8 +11,8 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, StatusPill, Knapp, Icon } from "@/components/v2";
-import { Velger } from "@/components/v2/skjema";
+import { Tittel, Kort, Knapp, Icon } from "@/components/v2";
+import { StatusPille } from "@/components/precision/pa";
 import type { PeriodeType } from "@/generated/prisma/client";
 import { leggTilPeriodeNavnMapping, slettPeriodeNavnMapping, type PeriodeNavnOversikt } from "@/app/admin/settings/periode-navn/actions";
 import type { PeriodeNavnLabel } from "@/app/admin/settings/periode-navn/labels";
@@ -26,7 +27,6 @@ export function PeriodeNavnV2({
   /** True når komponenten står som «Perioder»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
   somFane?: boolean;
 }) {
-  const statusTone = oversikt.ukjente.length > 0 ? ("warn" as const) : ("lime" as const);
   const statusTekst =
     oversikt.ukjente.length > 0
       ? `${oversikt.ukjente.length} ukjent${oversikt.ukjente.length === 1 ? "" : "e"}`
@@ -43,12 +43,10 @@ export function PeriodeNavnV2({
             </>
           )}
           <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: somFane ? 0 : "10px 0 0", maxWidth: 680 }}>
-            Et periodenavn som ikke gjenkjennes (f.eks. «Sommersamling») valideres aldri mot
-            CANON — heller ikke, det gjettes ikke feil krav. Koble navnet til en periodetype her
-            for å slå på validering for den perioden.
+            Koble egne periodenavn til riktig periodetype. Da kan planens krav kontrolleres etter CANON. Navn som ikke er koblet, får ingen gjettede krav.
           </p>
         </div>
-        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
+        <StatusPille tone={oversikt.ukjente.length > 0 ? "warn" : "neutral"}>{statusTekst}</StatusPille>
       </div>
 
       {oversikt.ukjente.length > 0 && (
@@ -69,11 +67,11 @@ export function PeriodeNavnV2({
 
       <Kort pad="18px 20px">
         <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, display: "block", marginBottom: 14 }}>
-          Lagrede mappinger
+          Lagrede navnkoblinger
         </span>
         {oversikt.lagrede.length === 0 ? (
           <div style={{ textAlign: "center", padding: "16px 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-            Ingen egne mappinger lagt til ennå.
+            Ingen egne navnkoblinger er lagt til ennå.
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -107,18 +105,18 @@ function UkjentNavnRad({ navn, typer }: { navn: string; typer: PeriodeNavnLabel[
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 8, padding: "6px 10px" }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 8, padding: "6px 10px" }}>
         {navn}
       </span>
       <div style={{ width: 200 }}>
-        <Velger
-          options={typer.map((t) => ({ value: t.verdi, label: t.navn }))}
-          value={valgt}
-          onChange={(v) => setValgt(v as PeriodeType)}
-        />
+        <label className="pa-field"><span className="pa-field__label">Periodetype</span>
+          <select className="pa-control" style={{ padding: "0 12px", width: "100%" }} value={valgt} disabled={pending} onChange={e => setValgt(e.target.value as PeriodeType)}>
+            {typer.map(t => <option key={t.verdi} value={t.verdi}>{t.navn}</option>)}
+          </select>
+        </label>
       </div>
       <Knapp onClick={lagre} disabled={pending}>{pending ? "Lagrer…" : "Koble til"}</Knapp>
-      {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</span>}
+      {feil && <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{feil}</span>}
     </div>
   );
 }
@@ -143,11 +141,11 @@ function LagretNavnRad({ navn, periodeTypeLabel }: { navn: string; periodeTypeLa
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>{navn}</span>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>→ {periodeTypeLabel}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{navn}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>→ {periodeTypeLabel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</span>}
+        {feil && <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{feil}</span>}
         <Knapp ghost onClick={slett} disabled={pending}>{pending ? "Fjerner…" : "Fjern"}</Knapp>
       </div>
     </div>

@@ -37,8 +37,8 @@ const SERVER_ONLY = /^(server-only|@\/lib\/prisma|@\/lib\/auth\/.*|next\/headers
 const stubbePlugin = {
   name: "prove-grenser",
   setup(b) {
-    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => path === "@/lib/auth/minor" ? undefined : ({ path, namespace: "stub-tom" }));
-    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};export async function logout(){throw new Error('Ingen ekte innlogging i prøven')}" }));
+    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => ["@/lib/auth/minor", "@/lib/auth/cbac"].includes(path) ? undefined : ({ path, namespace: "stub-tom" }));
+    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export async function getCurrentUser(){throw new Error('Ingen ekte innlogging i prøven')};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};export async function logout(){throw new Error('Ingen ekte innlogging i prøven')}" }));
     b.onResolve({ filter: /^next\/(link|navigation|image|dynamic)$/ }, ({ path }) => ({ path, namespace: "next-stub" }));
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
       resolveDir: root, loader: "js",
@@ -53,7 +53,7 @@ const stubbePlugin = {
     // «use server»-moduler: behold eksportnavnene, bytt innholdet med ufarlige stubber.
     b.onLoad({ filter: /\.(ts|tsx)$/ }, ({ path }) => {
       const src = readFileSync(path, "utf8");
-      if (!/^\s*["']use server["']/.test(src)) return undefined;
+      if (!/^(?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*(?:\n|$))*["']use server["']/.test(src)) return undefined;
       const navn = [...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+(\w+)/g)].map((m) => m[1]);
       return { loader: "js", contents: navn.map((n) => `export async function ${n}(){return {ok:true}}`).join("\n") };
     });

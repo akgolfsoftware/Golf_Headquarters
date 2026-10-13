@@ -6,7 +6,6 @@
  */
 
 import Link from "next/link";
-import { TL } from "@/lib/v2/train-lock";
 
 export type GruppeFaneId = "medlemmer" | "workbench" | "arsplan" | "timeplan" | "skoledata";
 
@@ -19,37 +18,7 @@ const FANER: { id: GruppeFaneId; l: string; href: (groupId: string) => string }[
 ];
 
 export function GruppeFaner({ groupId, aktiv }: { groupId: string; aktiv: GruppeFaneId }) {
-  return (
-    <div role="tablist" aria-label="Gruppe" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-      {FANER.map((f) => {
-        const on = f.id === aktiv;
-        return (
-          <Link
-            key={f.id}
-            href={f.href(groupId)}
-            role="tab"
-            aria-selected={on}
-            className="v2-press v2-focus"
-            style={{
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              height: 30,
-              padding: "0 12px",
-              borderRadius: 999,
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.02em",
-              color: on ? TL.onFill : TL.mute,
-              background: on ? TL.fill : "transparent",
-              boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {f.l}
-          </Link>
-        );
-      })}
-    </div>
-  );
+  return <nav className="group-nav" aria-label="Gruppe">
+    {FANER.map((f) => <Link key={f.id} href={f.href(groupId)} aria-current={f.id === aktiv ? "page" : undefined}>{f.l}</Link>)}
+  </nav>;
 }

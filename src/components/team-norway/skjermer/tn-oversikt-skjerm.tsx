@@ -89,23 +89,23 @@ export async function TnOversiktSkjerm() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, max(340px, calc((100% - 20px) / 2))), 1fr))", gap: 20 }}>
         <section style={{ background: TN.navy900, color: TN.white, borderRadius: TN.radius.lg, padding: "clamp(18px, 2.2vw, 26px)", display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-          <TnEtikett style={{ color: TN.navy300, fontSize: 12, letterSpacing: "0.22em" }}>Neste samling</TnEtikett>
+          <TnEtikett style={{ color: TN.navy300, fontSize: 13, letterSpacing: "0.22em" }}>Neste samling</TnEtikett>
           {neste ? (
             <>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(24px, 3vw, 30px)", letterSpacing: "0.1em", textTransform: "uppercase", lineHeight: 1.1, overflowWrap: "anywhere" }}>{neste.location ?? neste.name}</div>
+                <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(24px, 3vw, 30px)", letterSpacing: 0, textTransform: "none", lineHeight: 1.1, overflowWrap: "anywhere" }}>{neste.location ?? neste.name}</div>
                 <div style={{ fontSize: 14.5, color: TN.navy100, marginTop: 6, overflowWrap: "anywhere" }}>
                   {neste.location ? `${neste.name} · ` : ""}{neste.antallDeltakere} {neste.antallDeltakere === 1 ? "spiller" : "spillere"}
                 </div>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "6px 10px", padding: "14px 0", borderTop: `1px solid ${TN.navy700}`, borderBottom: `1px solid ${TN.navy700}` }}>
                 <span style={{ fontFamily: TN.font.mono, fontSize: 44, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{dagerIgjen}</span>
-                <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: TN.navy100 }}>
+                <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.18em", textTransform: "none", color: TN.navy100 }}>
                   {dagerIgjen === 0 ? "pågår" : dagerIgjen === 1 ? "dag igjen" : "dager igjen"} · {periode(neste.startDate, neste.endDate, true)}
                 </span>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                <Link href={`/team-norway/samlinger/${neste.id}`} style={{ background: TN.white, color: TN.navy900, borderRadius: TN.radius.sm, padding: "0 18px", fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", textDecoration: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>
+                <Link href={`/team-norway/samlinger/${neste.id}`} style={{ background: TN.white, color: TN.navy900, borderRadius: TN.radius.sm, padding: "0 18px", fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", textDecoration: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>
                   Se samlingen
                 </Link>
               </div>
@@ -120,7 +120,7 @@ export async function TnOversiktSkjerm() {
             <>
               <TnFlatehode tittel="Fellestesting" />
               <TnMangler>Trenerteamet fører testdagene. Egne Team Norway-tester registrerer du i PlayerHQ.</TnMangler>
-              <Link href="/portal/tren/tester/team-norway" style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
+              <Link href="/portal/tren/tester/team-norway" style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
                 Mine tester →
               </Link>
             </>
@@ -143,12 +143,12 @@ export async function TnOversiktSkjerm() {
                     <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{d.spillerNavn}</div>
                     <div style={{ fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{klubbPerSpiller.get(d.spillerId) ?? "Klubb ikke registrert"}</div>
                   </div>
-                  <div style={{ fontFamily: TN.font.mono, fontSize: 11.5, color: TN.textSecondary, textAlign: "right", whiteSpace: "nowrap" }}>{MANGEL[d.status as keyof typeof MANGEL]}</div>
+                  <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, textAlign: "right", whiteSpace: "nowrap" }}>{MANGEL[d.status as keyof typeof MANGEL]}</div>
                 </div>
               ))}
               {mangler.length === 0 ? <TnMangler>Alle på testdagen har gjennomført.</TnMangler> : null}
               {mangler.length > 6 ? <TnFotnote>Og {mangler.length - 6} til.</TnFotnote> : null}
-              <Link href={`/team-norway/fellestesting?dag=${testdag.dag.id}`} style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
+              <Link href={`/team-norway/fellestesting?dag=${testdag.dag.id}`} style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
                 Punch resultater →
               </Link>
             </>
@@ -156,7 +156,7 @@ export async function TnOversiktSkjerm() {
             <>
               <TnFlatehode tittel="Fellestesting" />
               <TnMangler>Ingen testdag er planlagt for gruppen.</TnMangler>
-              <Link href="/team-norway/fellestesting" style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
+              <Link href="/team-norway/fellestesting" style={{ alignSelf: "flex-start", color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
                 Til fellestesting →
               </Link>
             </>
@@ -176,7 +176,7 @@ export async function TnOversiktSkjerm() {
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
                     <span style={{ fontSize: 14.5, fontWeight: 700 }}>{p.authorNavn}</span>
-                    <span style={{ fontFamily: TN.font.mono, fontSize: 10.5, letterSpacing: "0.08em", color: TN.textSecondary, textTransform: "uppercase" }}>
+                    <span style={{ fontFamily: TN.font.body, fontSize: 13, letterSpacing: 0, color: TN.textSecondary }}>
                       {postside.forfatterRoller[p.authorUserId] ?? "Trener"} · {postTid(p.createdAt, naa)}
                     </span>
                   </div>
@@ -186,7 +186,7 @@ export async function TnOversiktSkjerm() {
             ))
           )}
           {postside ? (
-            <Link href={`/team-norway/${kontekst.gruppe.id}`} style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
+            <Link href={`/team-norway/${kontekst.gruppe.id}`} style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
               Alle gruppeposter →
             </Link>
           ) : null}

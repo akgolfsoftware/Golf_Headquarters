@@ -1,20 +1,6 @@
 "use client";
 
-/**
- * AgencyOS — Integrasjoner, Train-lock (T13-detaljer, 27.08.2026).
- *
- * Port av `V2IntegrasjonerPage` sitt inline JSX (Paper/T.*) til Train-lock
- * (TL.*) — CLAUDE.md invariant 2. Data/logikk (env-sjekker, Prisma-tall,
- * NOK-format, CTA-adresser) er hentet ferdig fra page.tsx (server component)
- * og sendt inn som `cards` — denne komponenten er ren visning, ingen ny
- * datahenting.
- *
- * Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html (GAP-2d/e,
- * PX-7 2026-08-29) — "error"-status er re-autentiserings-tilstanden:
- * danger-prikk + caps "Krever pålogging", aldri fylt flate. Utledet fra
- * GoogleCalendarConnection.status (finnes allerede i skjemaet — ingen ny
- * datamodell), ikke en påfunnet tilstand.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
@@ -55,7 +41,7 @@ function StatusMerke({ status, label }: { status: IntegrasjonStatus; label: stri
         borderRadius: 999,
         background: TL.dim,
         color: TL.text,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: 600,
       }}
     >
@@ -135,7 +121,7 @@ function IntegrasjonKortView({ card }: { card: IntegrasjonKort }) {
         <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{card.title}</div>
         <p style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: TL.mute }}>{card.description}</p>
         {card.meta && (
-          <p style={{ marginTop: 14, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{card.meta}</p>
+          <p style={{ marginTop: 14, fontFamily: TL.font.mono, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{card.meta}</p>
         )}
       </div>
 

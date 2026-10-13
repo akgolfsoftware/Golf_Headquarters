@@ -152,7 +152,7 @@ function VedleggChip({
           background: pdf ? TN.status.redBg : type === "JPG" ? TN.navy50 : TN.ink100,
           color: pdf ? TN.status.redText : type === "JPG" ? TN.navy700 : TN.ink700,
           fontFamily: TN.font.mono,
-          fontSize: TN.text.micro,
+          fontSize: 13,
           fontWeight: TN.weight.bold,
           display: "flex",
           alignItems: "center",
@@ -177,7 +177,7 @@ function VedleggChip({
           {fileName}
         </div>
         {storrelse && (
-          <div style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.textTertiary, marginTop: 1 }}>
+          <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textTertiary, marginTop: 1 }}>
             {storrelse}
           </div>
         )}
@@ -279,9 +279,9 @@ export function TnPostTidslinje({
                 <div
                   style={{
                     fontFamily: TN.font.mono,
-                    fontSize: TN.text.micro,
+                    fontSize: 13,
                     letterSpacing: TN.tracking.eyebrow,
-                    textTransform: "uppercase",
+                    textTransform: "none",
                     color: TN.textTertiary,
                     marginTop: 2,
                   }}

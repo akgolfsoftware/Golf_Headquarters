@@ -1,4 +1,17 @@
 import { z } from "zod";
+
+// Gir plass til multipart-feltene under Vercel Functions sin grense på 4,5 MB.
+export const MAX_RECORDING_PART_BYTES = 3 * 1024 * 1024;
+
+/** Del bare nye opptaksblobber; lagrede køindekser skal ikke endres. */
+export function splitRecordingBlob(blob: Blob): Blob[] {
+  const parts: Blob[] = [];
+  for (let offset = 0; offset < blob.size; offset += MAX_RECORDING_PART_BYTES) {
+    parts.push(blob.slice(offset, offset + MAX_RECORDING_PART_BYTES, blob.type));
+  }
+  return parts;
+}
+
 export const RecordingChunkSchema = z.object({ idx: z.number().int().min(0).max(1440), path: z.string().min(1),
   size: z.number().int().min(1).max(10 * 1024 * 1024), mimeType: z.enum(["audio/webm", "audio/mp4"]).optional(), sha256: z.string().regex(/^[a-f0-9]{64}$/).optional() });
 export type RecordingChunk = z.infer<typeof RecordingChunkSchema>;

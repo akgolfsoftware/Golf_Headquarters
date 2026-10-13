@@ -10,7 +10,7 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { GroupContextShell } from "@/components/admin/precision/grupper/GroupContextShell";
 import {
   GruppeDetaljV2,
   type GruppeDetaljV2Data,
@@ -145,7 +145,7 @@ export default async function GruppeDetaljPage({
   });
   const trenerKandidater = trenerKandidaterRaw.map((k) => ({ ...k, name: k.name ?? "Ukjent" }));
 
-  const nesteSamling = gruppe.schedules.find((s) => s.startAt > naa) ?? gruppe.schedules[0] ?? null;
+  const nesteSamling = gruppe.schedules.find((s) => s.startAt > naa) ?? null;
   const kommendeSamlinger = gruppe.schedules.filter((s) => s.startAt > naa).slice(0, 5);
 
   const snittHcpVerdi = snittHcp(gruppe.members.map((m) => m.user.hcp));
@@ -170,7 +170,7 @@ export default async function GruppeDetaljPage({
     id: gruppe.id,
     navn: gruppe.name,
     type: typeLabel(gruppe.level),
-    antallMedlemmer: gruppe._count.members,
+    antallMedlemmer: gruppe.members.length,
     antallHjelpetrenere: gruppe.members.filter((m) => m.role === "ASSISTANT").length,
     snittHcp: snittHcpVerdi,
     totalRunder,
@@ -228,7 +228,7 @@ export default async function GruppeDetaljPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <GroupContextShell group={gruppe} user={user}>
       <GruppeDetaljV2
         data={data}
         ekstra={
@@ -248,6 +248,6 @@ export default async function GruppeDetaljPage({
           SlettGruppeButton,
         }}
       />
-    </V2Shell>
+    </GroupContextShell>
   );
 }

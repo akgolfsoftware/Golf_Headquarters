@@ -1,0 +1,7 @@
+.datorad { min-width: 0; }
+.radhandling { display: flex; gap: 8px; align-items: center; min-width: 0; flex-wrap: wrap; }
+.datorad :is(a, button):focus-visible { outline: 3px solid var(--tn-red-600); outline-offset: 3px; }
+@media (max-width: 600px) {
+  .datorad { grid-template-columns: minmax(0, 96px) minmax(0, 1fr) !important; }
+  .radhandling { grid-column: 2; }
+}

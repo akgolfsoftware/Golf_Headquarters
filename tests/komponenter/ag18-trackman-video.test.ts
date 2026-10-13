@@ -65,9 +65,11 @@ describe("AG18TrackManVideo (TrackMan og video)", async () => {
     assert.doesNotMatch(html, /0:04|God rotasjon/);
   });
 
-  test("opptak er ikke koblet og har ingen oppdiktet spiller eller samtykke", () => {
+  test("opptak åpner den faktiske lydfunksjonen og viser studioets grense", () => {
     const html = vis({ tilstand: "data", startFane: "opptak", data });
-    assert.match(html, /IKKE KOBLET ENNÅ/);
+    assert.match(html, /href="\/admin\/recording"/);
+    assert.match(html, /lydsamtykke kontrolleres/);
+    assert.match(html, /To-kamerastudioet er ikke koblet/);
     assert.doesNotMatch(html, /Tobias|Lindvik|BANKID/);
   });
 

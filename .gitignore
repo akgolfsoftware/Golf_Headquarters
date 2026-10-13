@@ -126,3 +126,6 @@ graphify-out/
 .design-sync/pkg/types/
 .design-sync/pkg/css/
 .design-sync/pkg/fonts/
+
+# Private synthetic design-review captures
+.impeccable/review/

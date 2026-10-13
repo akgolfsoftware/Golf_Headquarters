@@ -1,20 +1,11 @@
 "use client";
 
-/**
- * AgencyOS Innstillinger · Sikkerhet — Train-lock (T13, 27.08.2026).
- *
- * Designport av `AdminSecurityV2` (Paper) — ingen egen fasit tegner
- * sikkerhet-skjermen, så layouten er en mønster-port til tl-kit. Egen
- * rolle/e-post (mini-stats), Setup2FA (gjenbrukt fra PlayerHQ som-den-er,
- * ingen egen styling å porte), lenke til «glemt passord»-flyten, og en
- * ærlig tom-tilstand for aktive økter (kommer når vi logger auth-events).
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
 import { Setup2FA } from "@/app/portal/meg/sikkerhet/setup-2fa";
-import { TlCaps, TlKnapp, TlKort, TlRad, TlTittel, TlTomTilstand } from "./tl-kit";
+import { TlKnapp, TlKort, TlRad, TlTittel, TlTomTilstand } from "./tl-kit";
 
 export interface AdminSecurityV2Data {
   rolle: "ADMIN" | "COACH";
@@ -25,9 +16,9 @@ export interface AdminSecurityV2Data {
 function TlStat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <TlCaps size={9}>{label}</TlCaps>
+      <TlCaps size={13}>{label}</TlCaps>
       <div style={{ marginTop: 8, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{value}</div>
-      {sub && <div style={{ marginTop: 4, fontSize: 12.5, color: TL.mute }}>{sub}</div>}
+      {sub && <div style={{ marginTop: 4, fontSize: 14, color: TL.mute }}>{sub}</div>}
     </div>
   );
 }
@@ -47,8 +38,7 @@ export function AdminSecurityTrainLock({
       <div>
         {!somFane && <TlTittel sub="AgencyOS">Sikkerhet</TlTittel>}
         <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: somFane ? 0 : "10px 0 0", maxWidth: 560 }}>
-          Kontoen din virker grei. Sjekk likevel listen under — første gang du ser en rar
-          IP er ofte siste sjanse.
+          Administrer totrinnsinnlogging og passord for din egen konto.
         </p>
       </div>
 
@@ -59,7 +49,7 @@ export function AdminSecurityTrainLock({
         </div>
       </TlKort>
 
-      <TlKort eyebrow="To-faktor" action={<TlCaps size={9}>Konfigurer for høyere sikkerhet</TlCaps>}>
+      <TlKort eyebrow="To-faktor" action={<TlCaps size={13}>Konfigurer for høyere sikkerhet</TlCaps>}>
         <Setup2FA />
       </TlKort>
 
@@ -77,11 +67,11 @@ export function AdminSecurityTrainLock({
         />
       </TlKort>
 
-      <TlKort eyebrow="Aktive økter" action={<TlCaps size={9}>Kommer når vi logger auth-events</TlCaps>}>
+      <TlKort eyebrow="Aktive økter" action={<TlCaps size={13}>Enhetsoversikt er ikke tilgjengelig</TlCaps>}>
         <TlTomTilstand
           icon="monitor"
-          title="Ikke bygget ennå"
-          sub="Liste over enheter som er logget inn vises her når audit-laget for auth-events er på plass."
+          title="Ingen enhetsoversikt"
+          sub="Denne siden viser ikke hvilke enheter som er innlogget."
         />
       </TlKort>
     </div>

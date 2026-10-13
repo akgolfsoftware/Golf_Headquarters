@@ -13,7 +13,7 @@ import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
-import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { GroupContextShell } from "@/components/admin/precision/grupper/GroupContextShell";
 import { AG11Gruppe } from "@/components/admin/precision/AG11Gruppe";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
@@ -44,7 +44,7 @@ export default async function GruppeWorkbenchPage({ params, searchParams }: { pa
     where: { id, ...editableGroupWhere(user) },
     select: {
       id: true,
-      name: true,
+      name: true, slug: true, program: true,
       _count: { select: { members: { where: { endedAt: null } } } },
       schedules: { select: { startAt: true, endAt: true, location: true }, orderBy: { startAt: "asc" }, take: 6 },
     },
@@ -92,7 +92,7 @@ export default async function GruppeWorkbenchPage({ params, searchParams }: { pa
     select: { id: true, title: true, date: true, startMinute: true, durationMinutes: true, status: true } });
 
   return (
-    <AgencyOSSkall navn={user.name ?? "Coach"}>
+    <GroupContextShell group={gruppe} user={user}>
       <AG11Gruppe
         key={`${gruppe.id}:${month}:${query.niva}`}
         initialMonth={month}
@@ -119,6 +119,6 @@ export default async function GruppeWorkbenchPage({ params, searchParams }: { pa
           </div>
         }
       />
-    </AgencyOSSkall>
+    </GroupContextShell>
   );
 }

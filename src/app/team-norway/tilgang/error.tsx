@@ -25,7 +25,7 @@ export default function TilgangFeil({ reset }: { error: Error; reset: () => void
             fontFamily: "var(--tn-font-mono)",
             fontSize: "var(--tn-text-micro)",
             letterSpacing: "var(--tn-tracking-eyebrow)",
-            textTransform: "uppercase",
+            textTransform: "none",
             color: "var(--tn-status-red-text)",
             fontWeight: 600,
           }}

@@ -29,7 +29,8 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
 import { AnalyseHode } from "@/components/admin/v2/analyse/AnalyseHode";
 import { InnsiktHubV2 } from "@/components/admin/v2/InnsiktHubV2";
 import { InnsiktStallV2 } from "@/components/admin/v2/InnsiktStallV2";
@@ -82,11 +83,11 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
   })();
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
       <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
         {hode}
         {innhold}
       </div>
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

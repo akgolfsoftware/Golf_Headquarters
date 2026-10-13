@@ -47,7 +47,7 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
           <div role="table" aria-label={`Rangliste ${aar}`}>
             <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "10px 0", borderBottom: `1px solid ${TN.navy100}` }}>
               {["#", "Spiller", "Starter", "Snittpl.", "Brutto"].map((k, i) => (
-                <TnEtikett key={k} style={{ fontSize: 10.5, textAlign: i >= 2 ? "right" : undefined }}><span role="columnheader">{k}</span></TnEtikett>
+                <TnEtikett key={k} style={{ fontSize: 13, textAlign: i >= 2 ? "right" : undefined }}><span role="columnheader">{k}</span></TnEtikett>
               ))}
             </div>
             {rader.map((r, i) => (
@@ -57,7 +57,7 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
                   <span className="hidden sm:inline-flex"><TnInitialer navn={r.navn} storrelse={32} /></span>
                   <span style={{ minWidth: 0 }}>
                     <Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere" }}>{r.navn}</Link>
-                    <span style={{ display: "block", fontSize: 12.5, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.koblet ? (r.klubb ?? "Klubb ikke registrert") : "Ikke koblet til resultatprofil"}</span>
+                    <span style={{ display: "block", fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.koblet ? (r.klubb ?? "Klubb ikke registrert") : "Ikke koblet til resultatprofil"}</span>
                   </span>
                 </span>
                 <span role="cell" style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 14 }}>{r.starter > 0 ? r.starter : "—"}</span>

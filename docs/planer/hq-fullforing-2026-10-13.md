@@ -8,7 +8,7 @@ Arbeidet bygger videre på den riktige hovedappen og funksjonene som allerede er
 
 Codex har ansvar for felles designregler, Live og PlayerHQ, sammensetting, sluttkontroll og publisering. Hjelpeagent 1 har ansvar for AgencyOS. Hjelpeagent 2 har ansvar for WANG og Team Norway. Støtteflatene fordeles med navngitt ansvar etter at hovedflatene er fordelt. Maksimalt tre arbeidsspor kjører samtidig, inkludert Codex.
 
-Hjelpeagentene arbeider i hver sin arbeidskopi fra det samme lagrede grunnlaget. Én skriver eier hver arbeidsversjon. Felles komponenter og designregler styres av Codex, og hjelpeagentene beholder andres arbeid. Bruk av de to hjelpeagentene venter på Anders' uttrykkelige godkjenning.
+Hjelpeagentene arbeider i hver sin arbeidskopi fra det samme lagrede grunnlaget. Én skriver eier hver arbeidsversjon. Felles komponenter og designregler styres av Codex, og hjelpeagentene beholder andres arbeid. De to hjelpeagentene er uttrykkelig godkjent av Anders. Utførelsen startet kl. 10.44; klokkeslettene under viser den opprinnelige dagsplanen og er arbeidsmål, ikke påståtte ferdigtider.
 
 ## 1 Kl 09.00 til 10.30 Ferdigstill det visuelle grunnlaget
 
@@ -70,7 +70,7 @@ Kl. 21.30–23.00 er reserve for konkrete feil fra sluttkontroll eller publiseri
 
 ## Det Anders trenger å gjøre
 
-Godkjenne arbeidsdelingen med to hjelpeagenter. Deretter gi én samlet vurdering av designversjonen og gjennomføre den korte telefonprøven. Codex tar resten av arbeidet og hele GitHub- og publiseringsløpet.
+Arbeidsdelingen og bevaring/samordning av nye WANG-endringer er godkjent. Deretter gi én samlet vurdering av designversjonen og gjennomføre den korte telefonprøven. Codex tar resten av arbeidet og hele GitHub- og publiseringsløpet.
 
 Grunnlag: [Godkjent oppgraderingsplan](https://chatgpt.com/space/page_d834001ea07c819187a85ef5f367ac29).
 

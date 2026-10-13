@@ -5,7 +5,7 @@ export function WorkbenchAnalyseV2({ data }: { data: WorkbenchAnalyseData }) {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 18 }}>
-        <span style={{ fontSize: 11, fontWeight: TL.vekt.caps, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute }}>
+        <span style={{ fontSize: 13, fontWeight: TL.vekt.caps, letterSpacing: 0, textTransform: "none", color: TL.mute }}>
           Workbench · siste 90 dager
         </span>
         <h2 style={{ margin: "6px 0 0", fontSize: 20, fontWeight: 700, color: TL.text }}>Treningsdata og turnering</h2>
@@ -26,7 +26,7 @@ export function WorkbenchAnalyseV2({ data }: { data: WorkbenchAnalyseData }) {
       </div>
 
       <div style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 14 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: TL.text }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: TL.text }}>
           {data.apneKonflikter === 0 ? "Ingen åpne plan-konflikter i Workbench." : `${data.apneKonflikter} åpne plan-konflikter må avklares.`}
         </span>
       </div>
@@ -37,7 +37,7 @@ export function WorkbenchAnalyseV2({ data }: { data: WorkbenchAnalyseData }) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: "13px 14px" }}>
-      <div style={{ fontSize: 10, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute, fontWeight: TL.vekt.caps }}>{label}</div>
+      <div style={{ fontSize: 13, letterSpacing: 0, textTransform: "none", color: TL.mute, fontWeight: TL.vekt.caps }}>{label}</div>
       <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 24, color: TL.text }}>{value}</div>
     </div>
   );

@@ -15,6 +15,7 @@ import {
   Trophy,
   UserRound,
   UsersRound,
+  UserCog,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -41,6 +42,7 @@ const MODULE_ICONS: Record<WangModuleId, LucideIcon> = {
   calendar: CalendarDays,
   plans: Activity,
   contacts: UserRound,
+  "test-profiles": UserCog,
 };
 
 export function WangRoleStart({

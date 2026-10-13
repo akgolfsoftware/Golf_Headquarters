@@ -10,7 +10,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { NyBookingWizard } from "@/components/admin/bookinger/ny-booking-wizard";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
 import { policyBannerTexts } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
@@ -117,7 +118,7 @@ export default async function NyBookingPage({
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
       <NyBookingWizard
         spillere={spillere.map((s) => ({
           id: s.id,
@@ -153,6 +154,6 @@ export default async function NyBookingPage({
         defaultStart={start}
         policyHint={policy.cancel}
       />
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

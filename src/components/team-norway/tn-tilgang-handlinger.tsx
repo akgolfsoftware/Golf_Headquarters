@@ -17,9 +17,9 @@ const knapp = (fylt: boolean): CSSProperties => ({
   background: fylt ? TN.navy900 : TN.white,
   color: fylt ? TN.white : TN.navy900,
   fontFamily: TN.font.display,
-  fontSize: 12,
-  letterSpacing: "0.14em",
-  textTransform: "uppercase",
+  fontSize: 13,
+  letterSpacing: 0,
+  textTransform: "none",
   cursor: "pointer",
 });
 
@@ -75,7 +75,7 @@ export function TnLeggTilTrener({ leggTil }: { leggTil: (epost: string, rolle: T
   const [venter, start] = useTransition();
 
   const felt: CSSProperties = { width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.navy300}`, borderRadius: TN.radius.sm, background: TN.white, fontFamily: TN.font.body, fontSize: 15, color: TN.textPrimary };
-  const etikett: CSSProperties = { display: "block", fontFamily: TN.font.display, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.textSecondary, marginBottom: 6 };
+  const etikett: CSSProperties = { display: "block", fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.textSecondary, marginBottom: 6 };
 
   return (
     <form

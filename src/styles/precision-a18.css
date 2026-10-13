@@ -162,3 +162,6 @@
 .pa-a18-kamera-boks--aktiv {
   border: 2px solid var(--signal, #b83217);
 }
+
+/* Valg har fyll; tastaturfokus følger fortsatt det felles kontrollmønsteret. */
+.pa-root .pa-a18-side .pa-tab[aria-selected="true"] { background: var(--primary); color: var(--text-on-primary); border-bottom-color: transparent; }

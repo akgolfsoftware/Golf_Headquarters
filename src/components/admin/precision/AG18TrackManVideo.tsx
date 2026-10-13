@@ -14,7 +14,6 @@
 
 import { useState, useMemo } from "react";
 import {
-  Circle,
   Crosshair,
   PenLine,
   Play,
@@ -26,6 +25,7 @@ import {
   FeilTilstand,
   Ikon,
   Knapp,
+  KnappLenke,
   LasterTilstand,
   Meta,
   Sidehode,
@@ -283,26 +283,17 @@ export function AG18TrackManVideo({
     );
   }
 
-  /* Opptaksfane rendering */
+  /* Tilgjengelig coachingopptak; studioets to kameraer har ingen tilkoblet kilde. */
   function renderOpptaksfane() {
     return (
       <Kort style={{ maxWidth: 720 }}>
-        <KortHode tittel="Nytt opptak" aside="STUDIO · KAMERA 1 OG 2" />
-
-        <TomTilstand
-          icon={Video}
-          title="Opptak fra studio er ikke koblet ennå"
-          text="Opptak og samtykkesjekk kobles til kameraene senere. Videoer som er lagt opp fra før, ligger under Video."
-        />
-
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", minHeight: 44 }}>
-          <Knapp variant="primary" icon={Circle} disabled style={{ minHeight: 44, minWidth: 44 }}>
-            Start opptak
-          </Knapp>
-          <Meta>IKKE KOBLET ENNÅ</Meta>
-        </div>
-
-        <Meta>VIDEO AV SPILLERE UNDER 18 KREVER SAMTYKKE FRA FORELDER</Meta>
+        <KortHode tittel="Coachingopptak" />
+        <p>Ta opp lyd fra coachingøkten. Velg spiller; lydsamtykke kontrolleres før opptaket starter.</p>
+        <KnappLenke href="/admin/recording" variant="primary" icon={Video}>
+          Åpne coachingopptak
+        </KnappLenke>
+        <p>To-kamerastudioet er ikke koblet til. Videoer lastes opp og spilles av på videosiden.</p>
+        <KnappLenke href="/admin/videoer" variant="secondary">Åpne videoer</KnappLenke>
       </Kort>
     );
   }

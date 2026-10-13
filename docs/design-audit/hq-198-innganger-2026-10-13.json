@@ -1,0 +1,2904 @@
+{
+  "dato": "2026-10-13",
+  "grunnlag": "Eksport8s 111PH/AG +40WG/TNG +30støtte +17interneDG-innganger, avstemt mot faktisk samordnet kode. Dette er ikke198 visuelt godkjente skjermer.",
+  "grunnlagMain": "c87f7f76df4f968c066bc400ebb386c82a549875",
+  "antall": 198,
+  "entries": [
+    {
+      "id": "PH-01",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal"
+      ],
+      "kodefiler": [
+        "src/app/portal/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Prioritert pågående/neste økt først; ekte dagsformkvittering; forslag samles. Anonymt treningsfoto.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-03",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/gjennomfore/[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/gjennomfore/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Handling og øktinstruksjon først, normal overskrift og utfoldbar AK-formel.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-IUP-01",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/iup/fireukerssjekk"
+      ],
+      "kodefiler": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-IUP-02",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/evaluering?ny=SESONGEVALUERING"
+      ],
+      "kodefiler": [
+        "src/app/portal/iup/sesongevaluering/page.tsx",
+        "src/app/portal/mal/evaluering/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Beskyttet inngang til eksisterende sesongevaluering.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-01-DELING",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal"
+      ],
+      "kodefiler": [
+        "src/app/portal/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-01-TESTER-TN",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal"
+      ],
+      "kodefiler": [
+        "src/app/portal/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-01-OPPGAVE",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal"
+      ],
+      "kodefiler": [
+        "src/app/portal/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-04",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/live/[id]/brief"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/brief/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Live prioriteres og implementeres av hoved-/Live-agenten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-05",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/live/[id]/active"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/active/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Live prioriteres og implementeres av hoved-/Live-agenten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-06",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/live/[id]/tapper"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/tapper/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Live prioriteres og implementeres av hoved-/Live-agenten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-07",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/live/[id]/summary"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/summary/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Live prioriteres og implementeres av hoved-/Live-agenten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-08",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/runde/live"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-09",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/runde/logg"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/runde/logg/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-01",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/ny"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-02",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/runde/logg"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/runde/logg/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-03",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/runde/live"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-04",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/[id]/slag"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/[id]/slag/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-05",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/runde/live"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-06",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/ny"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-07",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/ny"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-08",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-RD-09",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder/[id]/hull"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/[id]/rediger/page.tsx",
+        "src/app/portal/mal/runder/[id]/hull/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Beskyttet inngang til eksisterende redigering; målruten kontrollerer runde-eierskap.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-15",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/tester/[testId]/gjennomfor"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Hele protokollen med målt verdi, flere felt, select, checkbox og gjenopptak. Ingen oppdiktet grense på 4 m eller standardmåling. Fylte valg, bekreftet fullføring, registreringer beholdes ved feil.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-15-TN",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/tester/[testId]/gjennomfor"
+      ],
+      "kodefiler": [
+        "src/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Hele protokollen med målt verdi, flere felt, select, checkbox og gjenopptak. Ingen oppdiktet grense på 4 m eller standardmåling. Fylte valg, bekreftet fullføring, registreringer beholdes ved feil.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-10",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-AR",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=ar"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-NY",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=ar"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-PER",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=periode"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-PERSKJEMA",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=periode"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-MND",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=maned"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-MNDSKJEMA",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=maned"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-UKE",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-DAG",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=dag"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Dagsvisningen åpnes også fra registerets niva=dag.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-BIBLIOTEK",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?bibliotek=1"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Bibliotekarket kan åpnes direkte fra inngangen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-GJENTA",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Gjenta-/kopierfunksjonen bruker eksisterende ukemotor. Ingen økt er fullført på grunn av kalenderdato.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-PUBLISER",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Publiser-arket åpnes fra Publiser; bare faktisk utkastmengde og eksisterende serverbekreftelse.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-FORSLAG",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende forslag-/svarflyt bevarer spillergodkjenning og organisasjonens ansvar.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-START",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-FYS",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?okt=[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Velg faktisk økt i kalenderen. Skjema, mengde og øvelser redigeres i fokusert ark.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-TURNERING",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?pille=turn"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende turneringsplan, prioritering og reise; ingen påmelding automatisk.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-PANEL",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?panel=plan"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Ukeplan-knappen åpner eksisterende typed skjema; måned lagres i egen modell.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-TEK",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-FYSUKE",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?pille=fys"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-FYSVELG",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?pille=fys"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-FYSLIVE",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-OKT",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=okt"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Velg faktisk økt i kalenderen. Skjema, mengde og øvelser redigeres i fokusert ark.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-MAL",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=malsetninger&klassisk=1"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-MAL-IUP",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/evaluering"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "IUP har eksisterende rettigheter, lagring, historikk og leveringsstatus.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-UKEMAL",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke&klassisk=1&side=maler"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Fungerende maler/legge-til-handlinger i eksisterende Workbench er beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-11-OKTMAL",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/workbench?niva=uke&klassisk=1&side=maler"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Fungerende maler/legge-til-handlinger i eksisterende Workbench er beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-12",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/planlegge/bygger"
+      ],
+      "kodefiler": [
+        "src/app/portal/planlegge/bygger/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-13",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/drills"
+      ],
+      "kodefiler": [
+        "src/app/portal/drills/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Reell bank uten syntetiske øvelser. Søk og oppskrift først; velg kommende eget utkast og bekreft faktisk tillegg.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-WB-FYS",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/fys-plan"
+      ],
+      "kodefiler": [
+        "src/app/portal/tren/fys-plan/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-WB-TURN",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/turneringer/[id]"
+      ],
+      "kodefiler": [
+        "src/app/portal/tren/turneringer/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-WB-TURN-KAT",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/turneringer"
+      ],
+      "kodefiler": [
+        "src/app/portal/tren/turneringer/katalog/page.tsx",
+        "src/app/portal/tren/turneringer/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Katalog og personlig plan er én eksisterende funksjon. Registerets separate kataloginngang er koblet dit.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-TP-01",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/teknisk-plan/[planId]"
+      ],
+      "kodefiler": [
+        "src/app/portal/tren/teknisk-plan/[planId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-16",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/analysere"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Resultat, valgt periode, datamengde og kilde først. Korrekte knappegrupper.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-14",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/tren/tester"
+      ],
+      "kodefiler": [
+        "src/app/portal/tren/tester/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-17",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/analysere/trackman"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/trackman/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Kun egne målte data; ukjent er null; hver økt har egne målinger. Ingen oppdiktet bay/fitting eller DataGolf-stasjon.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-18",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/mal/runder"
+      ],
+      "kodefiler": [
+        "src/app/portal/mal/runder/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende runder og registrering gjenbrukes; korrekte knappegrupper.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-20",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/gameplan"
+      ],
+      "kodefiler": [
+        "src/app/portal/gameplan/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-24",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/meg"
+      ],
+      "kodefiler": [
+        "src/app/portal/meg/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Forutsigbare grupper Din hverdag / Team, deling og innstillinger; direkte innboks.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-24-TEAM",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/meg/deling"
+      ],
+      "kodefiler": [
+        "src/app/portal/meg/team/page.tsx",
+        "src/app/portal/meg/deling/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Team-/tilgangsoversikten bruker den eksisterende navngitte delingen og godkjenningsflyten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-27",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/meg/deling"
+      ],
+      "kodefiler": [
+        "src/app/portal/meg/deling/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-25",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/meg/abonnement"
+      ],
+      "kodefiler": [
+        "src/app/portal/meg/abonnement/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Ekte tilgang/fakturaer; ingen demo-Visa, fake dato, 2FA eller lokal abonnements-/slettekvittering. Reelle sikre betalings-/personvernflyter.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-21",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/coach"
+      ],
+      "kodefiler": [
+        "src/app/portal/coach/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Skrivefelt beholdes ved feil. Sendt/planstatus endres bare etter faktisk svar; ønske bruker valgt dato.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-23",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/booking"
+      ],
+      "kodefiler": [
+        "src/app/portal/booking/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende tjeneste/tid/bekreftelse og Stripe-flow beholdes. Ingen demofallback; avbestilling krever positivt svar; gamle slot-svar ignoreres.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-01",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/agencyos"
+      ],
+      "kodefiler": [
+        "src/app/admin/agencyos/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Nyttig neste handling fra kalender/kø først; valgt spiller beholdes i videre arbeid.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-04",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/innboks"
+      ],
+      "kodefiler": [
+        "src/app/admin/kommunikasjon/page.tsx",
+        "src/app/admin/innboks/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-07",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/spillere"
+      ],
+      "kodefiler": [
+        "src/app/admin/spillere/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Reelle oppfølgingsrader; tomme skjemafelter fjernet; meldingsark med felles fokus og bekreftet sending.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-08",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/spillere/[id]"
+      ],
+      "kodefiler": [
+        "src/app/admin/spillere/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Krav/plan/registrerte data gjenbrukes. Ekte kilde/periode i Stats, valgt spiller til Live, anonymt sportsfoto.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-08-IUP",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/spillere/[id]?fane=iup"
+      ],
+      "kodefiler": [
+        "src/app/admin/spillere/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende typed IUP og navngitt coachinnsyn gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-05",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/kalender"
+      ],
+      "kodefiler": [
+        "src/app/admin/kalender/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-AR",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=ar"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-NY",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=ar"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-PER",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=periode"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-PERSKJEMA",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=periode"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-MND",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=maned"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-UKE",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-UTKAST",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Publiser-arket åpnes fra Publiser; bare faktisk utkastmengde og eksisterende serverbekreftelse.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-SVAR",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende forslag-/svarflyt bevarer spillergodkjenning og organisasjonens ansvar.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-GRUPPE",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/grupper/[groupId]/workbench"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksakt gruppescope; Årsplan/Månedsplan, faste tider og lagrede gruppeutkast. Personlige maløkter sendes som forslag; publiserte gruppeoriginaler får lenkede medlemskopier innen gruppetid.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-TEK",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=live&klassisk=1&okt=[id]"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-FYS",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?pille=fys"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-MNDSKJEMA",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?niva=maned"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-11-GRUPPE-AR",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/grupper/[groupId]/workbench"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksakt gruppescope; Årsplan/Månedsplan, faste tider og lagrede gruppeutkast. Personlige maløkter sendes som forslag; publiserte gruppeoriginaler får lenkede medlemskopier innen gruppetid.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-14",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/plan"
+      ],
+      "kodefiler": [
+        "src/app/admin/plan/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Valgt mal-ID følger til beskyttet utrullingsside. Reelle mottakere, kildefestet forhåndsvisning/bekreftelse, spillerforslag og D49-gruppeutkast med faktisk publisering.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-WB-FYS",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?pille=fys"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-WB-TURN",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/workbench/[playerId]?pille=turn"
+      ],
+      "kodefiler": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende turneringsplan, prioritering og reise; ingen påmelding automatisk.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-10",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/plan/teknisk"
+      ],
+      "kodefiler": [
+        "src/app/admin/plan/teknisk/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-TP-01",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/spillere/[id]/plan/[planId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/spillere/[id]/plan/[planId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-TP-02",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/spillere/[id]/plan/[planId]/for-og-na"
+      ],
+      "kodefiler": [
+        "src/app/admin/spillere/[id]/plan/[planId]/for-og-na/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-13",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/agencyos/live/[sessionId]"
+      ],
+      "kodefiler": [
+        "src/app/admin/agencyos/live/[sessionId]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Live prioriteres og implementeres av hoved-/Live-agenten.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-12",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/gjennomfore/okter/[id]"
+      ],
+      "kodefiler": [
+        "src/app/admin/gjennomfore/okter/[id]/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-A02",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/analyse"
+      ],
+      "kodefiler": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-A03",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/analyse"
+      ],
+      "kodefiler": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-A04",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/analyse"
+      ],
+      "kodefiler": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-A05",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/analyse"
+      ],
+      "kodefiler": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-A06",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/analyse"
+      ],
+      "kodefiler": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-RD-01",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/runder"
+      ],
+      "kodefiler": [
+        "src/app/admin/runder/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-RD-02",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/runder"
+      ],
+      "kodefiler": [
+        "src/app/admin/runder/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-06",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/bookinger"
+      ],
+      "kodefiler": [
+        "src/app/admin/bookinger/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-15",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/tester"
+      ],
+      "kodefiler": [
+        "src/app/admin/tester/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Resultat-/pågår-omfang og sammenligningsgrunnlag først; dato og originalenheter beholdes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-16",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/grupper"
+      ],
+      "kodefiler": [
+        "src/app/admin/grupper/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Gruppe først; medlems-/planseksjoner har reelle overskrifter og tydelige innganger.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-20",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/agencyos/okonomi"
+      ],
+      "kodefiler": [
+        "src/app/admin/agencyos/okonomi/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Regnskap/kilde først; budsjett/avvik vises bare med faktisk grunnlag; ingen løfte om eksport som ikke finnes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AG-23",
+      "familie": "coach",
+      "hovedapp": [
+        "/admin/oppsett"
+      ],
+      "kodefiler": [
+        "src/app/admin/oppsett/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Egen profil, tilgang og koblede tjenester er tydelig beskrevet; eksisterende tilgangssikrede innstillinger gjenbrukes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-FORMEL",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/formel"
+      ],
+      "kodefiler": [
+        "src/app/portal/formel/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Ny interaktiv pyramide og alle 19 områder fra kanonisk v2; ingen ny CS-skala.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-IUP-01-LEVERT",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/iup/fireukerssjekk"
+      ],
+      "kodefiler": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "PH-IUP-01-UNG",
+      "familie": "spiller",
+      "hovedapp": [
+        "/portal/iup/fireukerssjekk"
+      ],
+      "kodefiler": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "kilde": "docs/planer/hq-ph-ag-dekning.json",
+      "avstemming": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-01",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=idag"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-wang/coach?omraade=idag · faktisk dag/gruppeøkter",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-02",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=elever"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-wang/coach?omraade=elever · roster, trinn, navngitt profil- og testsamtykke",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-03",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach/spiller/[elevId]"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/spiller/[elevId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-wang/coach/spiller/[elevId] · delt profil/plan/teknikk/Stats",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-04",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-wang/coach?omraade=trening · hele planhierarkiet",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-06",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach/tester"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/tester/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-wang/coach/tester · eksisterende samtykkede resultater",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-07",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=konkurranse",
+        "/team-wang/coach/turneringer/[elevId]"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx",
+        "src/app/team-wang/coach/turneringer/[elevId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=konkurranse + /coach/turneringer/[elevId]",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-08",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=meldinger",
+        "/team-wang/meldinger"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx",
+        "src/app/team-wang/meldinger/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=meldinger og /team-wang/meldinger · samme gruppeposter/vedlegg",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-09",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=meldinger"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=meldinger · eksisterende TrenerforslagSkjema",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-10",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=admin"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=admin · sportssjef + eksisterende gruppe-/rolleadministrasjon",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-11",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=elever"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=elever · aktuell, selvstendig profil-/testdeling",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-12",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening&fane=skole",
+        "/team-wang/coach?omraade=trening&fane=periode"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "omraade=trening&fane=skole og fane=periode · faktiske skolehendelser/kompetansemål",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-14",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening&fane=samlinger"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "fane=samlinger · faktiske datoer, program/reisetekst og samlingsaksept",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-15",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening&fane=oppgaver"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "fane=oppgaver · publiserte gruppekopier, individuelle oppgavemål",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-16",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening&fane=belastning"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "fane=belastning · registrert tid/reps, ingen antatt helseverdi",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-17",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach/iup/[elevId]"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/iup/[elevId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/coach/iup/[elevId] · eksisterende IUP-samtale/versjonert spillerforslag",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-WB",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach/spiller/[elevId]?fane=plan"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/spiller/[elevId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/coach/spiller/[elevId]?fane=plan · skrivebeskyttet planhierarki",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-TP-01",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach/spiller/[elevId]?fane=teknisk-plan"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/spiller/[elevId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/coach/spiller/[elevId]?fane=teknisk-plan · faktiske P-posisjoner/oppgaver",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "WG-04-OKT",
+      "familie": "WANG",
+      "hovedapp": [
+        "/team-wang/coach?omraade=trening&fane=dag"
+      ],
+      "kodefiler": [
+        "src/app/team-wang/coach/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "fane=dag · publisert gruppeøkt i detalj med faktiske øvelser/oppgaver",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-01",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-norway · eksisterende Oversikt med felles D-47-skall",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-02",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/spillere"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/spillere/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-norway/spillere · eksisterende, aktuelle navngitte profiler",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-03",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/spiller/[spillerId]/oversikt"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/spiller/[spillerId]/oversikt/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-norway/spiller/[spillerId]/oversikt + spillerfaner",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-04",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/samlinger/[id]"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/samlinger/[id]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/team-norway/samlinger/[id] · eksisterende samlingsprogram/aksept",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-05",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/fellestesting",
+        "/team-norway/wang-resultater"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/fellestesting/page.tsx",
+        "src/app/team-norway/wang-resultater/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/fellestesting og /wang-resultater · testdager/nasjonal levering",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-06",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/turneringer/[id]",
+        "/team-norway/turneringer"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/turneringer/[id]/page.tsx",
+        "src/app/team-norway/turneringer/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/turneringer/[id] og /turneringer · faktisk katalog",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-07",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/rangliste",
+        "/team-norway/referansenivaer"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/rangliste/page.tsx",
+        "src/app/team-norway/referansenivaer/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/rangliste og /referansenivaer · eksisterende kildevisninger",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-08",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/analyse"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/analyse/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/analyse · kompatible faktiske testmålinger",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-09",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/uttak"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/uttak/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/uttak · eksisterende kriterier/vurderinger",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-10",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/workbench?spiller=[id]"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/workbench/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/workbench?spiller=[id] · eksisterende godkjenningsforslag",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-11",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/[groupId]",
+        "/team-norway/spiller/[id]"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/[groupId]/page.tsx",
+        "src/app/team-norway/spiller/[spillerId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/[groupId] og /spiller/[id] · eksisterende gruppe-/personlige poster",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-12",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/tilgang",
+        "/team-norway/apparatet"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/apparatet/page.tsx",
+        "src/app/team-norway/tilgang/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/tilgang og /apparatet · eksisterende roller/invitasjoner",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-13",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/oppsett"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/oppsett/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/oppsett · gruppekontekst, faste rettigheter og eksisterende adminveier",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-WB",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/workbench?spiller=[id]"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/workbench/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/workbench?spiller=[id] · navngitt personlig innsyn/godkjenningsforslag",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-14",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/lisens-okonomi"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/lisens-okonomi/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/lisens-okonomi · eksisterende faktiske lisensstatus per spiller/år",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-15",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/deling"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/deling/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/deling · aktuelle navngitte profiler og separat WANG-testdeling",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-16",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/college"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/college/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/college · eksisterende faktisk collegeoppfølging",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-17",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/manedsplan",
+        "/team-norway/workbench?visning=maned"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/manedsplan/page.tsx",
+        "src/app/team-norway/workbench/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/manedsplan og /workbench?visning=maned · felles MonthPlan",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-18",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/oppgaver"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/oppgaver/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/oppgaver · individuelle oppgaver i publisert gruppetid/samling",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-19",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/belastning"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/belastning/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/belastning · faktiske gruppekopier/logg",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-20",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/spiller/[spillerId]/samtale"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/spiller/[spillerId]/samtale/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/spiller/[spillerId]/samtale · reelt evalueringsgrunnlag + avtalt godkjenningsforslag",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "TNG-TP-01",
+      "familie": "Team Norway",
+      "hovedapp": [
+        "/team-norway/spiller/[id]/teknisk-plan/[planId]"
+      ],
+      "kodefiler": [
+        "src/app/team-norway/spiller/[spillerId]/teknisk-plan/[planId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/org-oppgradering-2026-10-12.md",
+      "avstemming": "/spiller/[id]/teknisk-plan/[planId] · eksisterende teknisk plan, D-47",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder"
+      ],
+      "kodefiler": [
+        "src/app/forelder/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`ForelderV2`, godkjent barnevalg, avvist ukjent barn før detaljlesing, ForelderSkall med barn i navigasjon.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-02",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder/barn",
+        "/forelder/barn/[childId]"
+      ],
+      "kodefiler": [
+        "src/app/forelder/barn/[childId]/page.tsx",
+        "src/app/forelder/barn/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende `ForelderBarnV2` / `ForelderBarnDetaljV2` og eierskap beholdt; nytt felles skall og styling. Barn-ID følger profilens lenker. Meldinger gjelder faktisk forelder-mottaker.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-03",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder/bookinger",
+        "/forelder/bookinger/ny/[barnId]",
+        "/forelder/bookinger/bekreftet",
+        "/forelder/bookinger/[bookingId]"
+      ],
+      "kodefiler": [
+        "src/app/forelder/bookinger/[bookingId]/page.tsx",
+        "src/app/forelder/bookinger/bekreftet/page.tsx",
+        "src/app/forelder/bookinger/ny/[barnId]/page.tsx",
+        "src/app/forelder/bookinger/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Valgt barn avgrenser listen med ID, ikke fornavn. Ny beskyttet detalj med registrert status, pris og betalingsstatus. Klikkbare rader. Pending, avlyst og gjennomført vises ikke som ny bekreftelse. Bestilt varighet og veggklokke beholdes. Sikker retur fra Stripe bruker tilfeldig referanse og lokal HttpOnly-cookie, med ny forelder-/relasjonssjekk.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-04",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder/okonomi",
+        "/forelder/fakturaer"
+      ],
+      "kodefiler": [
+        "src/app/forelder/fakturaer/page.tsx",
+        "src/app/forelder/okonomi/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Skiller COACHING fra PLAYERHQ-abonnement. Periode er ikke påstått neste belastning. Registrert utestående er ikke automatisk forfalt. Betalingslisten følger barnet.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-05",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder/samtykke",
+        "/forelder/samtykke/deling/[childId]",
+        "/forelder/samtykke/eksport"
+      ],
+      "kodefiler": [
+        "src/app/forelder/samtykke/deling/[childId]/page.tsx",
+        "src/app/forelder/samtykke/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende serverhandlinger / helse- / testdeling beholdt. Godkjente relasjoner og eksplisitte boolske preferanser brukes; ukjent barn faller aldri tilbake til et annet.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "FO-06",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/forelder/coach",
+        "/forelder/innstillinger",
+        "/forelder/varsler",
+        "/forelder/ukerapport"
+      ],
+      "kodefiler": [
+        "src/app/forelder/coach/page.tsx",
+        "src/app/forelder/innstillinger/page.tsx",
+        "src/app/forelder/ukerapport/page.tsx",
+        "src/app/forelder/varsler/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Kontakt bygger på faktisk tildelt bookingcoach. Ingen simulert foreldresamtale. Varsler leses for den innloggede forelderen; barnets private innboks brukes ikke som forelderdialog.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/auth/login",
+        "/auth/etter-innlogging"
+      ],
+      "kodefiler": [
+        "src/app/auth/etter-innlogging/page.tsx",
+        "src/app/auth/login/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende `LoginView` og reell rollefordeling beholdt; aktiv support-styling på auth-layout.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-02",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/auth/signup",
+        "/auth/check-email"
+      ],
+      "kodefiler": [
+        "src/app/auth/check-email/page.tsx",
+        "src/app/auth/signup/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`SignupV2`: faktisk PlayerHQ-pris og prøvevilkår fra gjeldende regler. Uverifiserte coachingpriser/popularitet fjernet. Transportfeil gir ikke påstått kontoopprettelse.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-03",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/auth/forgot-password",
+        "/auth/reset-password"
+      ],
+      "kodefiler": [
+        "src/app/auth/forgot-password/page.tsx",
+        "src/app/auth/reset-password/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Begge feltene beholdes ved nettfeil. Ingen falsk sendt-kvittering. Etter nytt passord brukes rollefordelingen i `/auth/etter-innlogging`. Eksisterende passordkrav beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-04",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/auth/onboarding",
+        "/auth/onboarding/forelder"
+      ],
+      "kodefiler": [
+        "src/app/auth/onboarding/forelder/page.tsx",
+        "src/app/auth/onboarding/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Reelle wizarder og gjenopptakssteg beholdt, samme auth-familie. Rolle-/organisasjonsvalg er ikke klientautorisering.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-05",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/auth/guardian-consent/[token]"
+      ],
+      "kodefiler": [
+        "src/app/auth/guardian-consent/[token]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`GuardianConsentV2`: utløpt lenke viser ingen navn/alder/e-post eller samtykkeskjema. Aktiv tokenregel og bekreftelseshandling beholdt; nettfeil gir ikke falskt lagret samtykke.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "AU-06",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/innsyn",
+        "/innsyn/[spillerId]"
+      ],
+      "kodefiler": [
+        "src/app/innsyn/[spillerId]/page.tsx",
+        "src/app/innsyn/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Lys leseflate, større treffmål og kildeavgrenset innsyn. Eksisterende capability, medlemskap og særskilt delingsscope beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "BK-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/booking"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/booking/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`BK01Booking`, virkelige tjenester og tilgjengelighet. Ingen oppdiktet coach/pris fra gammel katalog. Public-pause/Acuity-broen beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "BK-02",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/booking/[slug]",
+        "/booking/[slug]/bekreft"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/booking/[slug]/bekreft/page.tsx",
+        "src/app/(marketing)/booking/[slug]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende hold, kollisjonsvern, checkout og Stripe-regler beholdt. Begge UI-flyter har trykkvakt og transportfeil. Beløp beholder øre. Ingen påstått hold før hold finnes.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "BK-03",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/booking/kvittering/[bookingId]"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`BK03Kvittering`: feil/pending påstår ikke lagring, betaling eller sendt e-post. Pris og registrert e-post vises som slike. Reell kvitteringsadgang og betaling/statusavstemming avhenger av hovedagentens sikkerhetsbatch.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats",
+        "/stats/sok"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/page.tsx",
+        "src/app/(marketing)/stats/sok/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Ny lys `MarkedStatsHubV2` uten demostørrelser. Alle tall kan være ukjent. Kilde / tidspunkt forklares. Root eier reell offentlig kildeavgrensing og loaderfeil.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-02",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats/spillere"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/spillere/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`StatsSpillereV2` / `StatsListe` arver aktiv lys StatsRamme; eksisterende søk, filter, utvalg og offentlig spillerfilter beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-03",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats/spillere/[slug]"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/spillere/[slug]/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende profilsiden og `StatsLegacyShell`; lyse semantiske graf- og rammetokens. Ingen nye DataGolf-referanser eller demotall.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-04",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats/turneringer/[slug]",
+        "/stats/turneringer/[slug]/statistikk"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/turneringer/[slug]/page.tsx",
+        "src/app/(marketing)/stats/turneringer/[slug]/statistikk/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`StatsLegacyShell`, faktisk turneringsinnhold og resultatnavigasjon beholdt. Tillatt kilde avgrenses i root-batchen.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-05",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats/pga"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/pga/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende kategorisider / `pga-kategori-page`, lys ramme og graffarger. Offentlig DataGolf-grunnlag må stenges av D-19-guarden; ny designramme gir ingen adgang.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "ST-06",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/stats/verktoy",
+        "/stats/quiz",
+        "/stats/regions"
+      ],
+      "kodefiler": [
+        "src/app/(marketing)/stats/quiz/page.tsx",
+        "src/app/(marketing)/stats/regions/page.tsx",
+        "src/app/(marketing)/stats/verktoy/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Eksisterende verktøy og visualiseringer. Kart er tastaturbetjent når det har en faktisk handling; valg får fylt flate. Ingen utgående dataeksport er lovet.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "GJ-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/gfgk-junior",
+        "/gruppe/[gruppe]",
+        "/treningsplaner"
+      ],
+      "kodefiler": [
+        "src/app/gfgk-junior/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Fire eksisterende grupper beholdt. Ingen oppdiktet universell treningshyppighet eller gratisutstyr. Ukeplan merker gjeldende klubbkilde eller foreløpig tid. Rollegrupper er ikke nye AK-stigetrinn.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "GJ-02",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/gfgk-junior/veileder",
+        "/veileder/[slug]"
+      ],
+      "kodefiler": [
+        "src/app/gfgk-junior/veileder/page.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Egen GFGK-ramme / leseflater beholdt. Utgått avsnitt om L-fasene fjernet i `mest-ut-av-trening` etter Anders' AK-formel v2-instruksjon. Ingen erstatningsmodell er oppdiktet.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "SY-01",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/offline",
+        "/vedlikehold"
+      ],
+      "kodefiler": [
+        "src/app/offline/page.tsx",
+        "src/app/vedlikehold/page.tsx",
+        "src/app/not-found.tsx",
+        "src/app/error.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "`PrecisionTilstand`: tydelig viderehandling, større tekst/treffmål. Offline påstår bare bevaring for Live-utkast der den finnes; lover ikke at hele appen fungerer uten nett.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-01",
+      "familie": "Støtte",
+      "hovedapp": [],
+      "kodefiler": [
+        "src/lib/email.ts"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Aktiv `epostSkall`, større tittel / én handling. Lagrede maler, faktisk status, dato, leverandørfeil og idempotens beholdt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-02",
+      "familie": "Støtte",
+      "hovedapp": [],
+      "kodefiler": [
+        "src/lib/email.ts"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Samme aktive ramme, faktisk ny/gammel tid og virkelige betalingsopplysninger. Ingen ny sending.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-03",
+      "familie": "Støtte",
+      "hovedapp": [],
+      "kodefiler": [
+        "src/lib/email.ts"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Aktiv ramme og faktisk 24t-påminnelsesregel. Kun eksisterende avsender-/template-/statusregler sender.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-04",
+      "familie": "Støtte",
+      "hovedapp": [],
+      "kodefiler": [
+        "src/lib/email.ts"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Faktisk registrert avbestilling / refusjon / klipp beholdt, med aktive lyse/mørke e-postflater.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-05",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/admin/innboks"
+      ],
+      "kodefiler": [
+        "src/lib/email/coaching-oppfolging.ts",
+        "src/lib/email/coaching-oppfolging-queue.ts",
+        "src/lib/email/coaching-oppfolging-actions.ts",
+        "src/components/admin/precision/AG04Innboks.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Bekreftet kilde: 24t-takk og 14d-oppfølging finnes i eksisterende godkjenningskø; egen coach må gjennomgå og godkjenne. Ingen automatisk utsending er prøvd eller tillatt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "EP-06",
+      "familie": "Støtte",
+      "hovedapp": [
+        "/admin/innboks"
+      ],
+      "kodefiler": [
+        "src/lib/email/coaching-oppfolging.ts",
+        "src/lib/email/coaching-oppfolging-queue.ts",
+        "src/lib/email/coaching-oppfolging-actions.ts",
+        "src/components/admin/precision/AG04Innboks.tsx"
+      ],
+      "kilde": "docs/design-audit/support-oppgradering-2026-10-12.md",
+      "avstemming": "Bekreftet kilde: 24t-takk og 14d-oppfølging finnes i eksisterende godkjenningskø; egen coach må gjennomgå og godkjenne. Ingen automatisk utsending er prøvd eller tillatt.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-01",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-01"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Oversikt · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-02",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-02"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Spillere · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-03",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-03"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Spillerprofil · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-04",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-04"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Rangering · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-05",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-05"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Sammenlign · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-06",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-06"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Innspill · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-07",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-07"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Rundehistorikk · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-08",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-08"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Turneringskalender · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-09",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-09"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Turneringsanalyse · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-10",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-10"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Live · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-11",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-11"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Modell · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-12",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-12"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Bane og felt · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-13",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-13"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Trender · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-14",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-14"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Datautforsker · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-15",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-15"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Kilder og dekning · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-16",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-16"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Videre til plan · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    },
+    {
+      "id": "DG-17",
+      "familie": "Intern analyse",
+      "hovedapp": [
+        "/portal/analysere/datagolf?flate=DG-17"
+      ],
+      "kodefiler": [
+        "src/app/portal/analysere/datagolf/page.tsx",
+        "src/components/datagolf/InternalDataGolfWorkspace.tsx",
+        "src/lib/datagolf/analysis-views.ts",
+        "src/lib/datagolf/access.ts"
+      ],
+      "kilde": "src/lib/datagolf/analysis-views.ts",
+      "avstemming": "Spesialanalyse · D19: kun navngitt intern Anders-konto + lukket featureflag; ingen kilde er simulert. DG08/DG10/DG17 viser uttrykkelig fravær av fremtidig/live/odds-kilde.",
+      "visuellGodkjenning": false,
+      "kontrollstatus": "Kodeinngang avstemt; familieprøver dokumenteres separat. Ikke visuelt godkjent av Anders."
+    }
+  ],
+  "avgrensninger": [
+    "Vedtatt utsettelse av Talent/Caddie videreføres; ingen nye funksjoner markeres ferdige.",
+    "Avviklede WANG fraværs-/rekrutteringskonsepter er ikke nye leveranser.",
+    "Nye WANG Auth-/demoruter fra hovedversjonen bevares som separat datagrunnlag, uten automatisk HQ-tilgang.",
+    "Direkte rutekobling og grønt bygg er ikke kontroll av visning, lagring eller faktisk telefon."
+  ],
+  "kontroll": "198 unike innganger, alle med eksisterende kodefiler. Ingen automatisk ferdig- eller godkjent-markering."
+}

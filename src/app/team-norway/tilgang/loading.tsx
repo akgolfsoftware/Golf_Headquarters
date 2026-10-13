@@ -32,7 +32,7 @@ export default function TilgangLaster() {
             fontFamily: "var(--tn-font-mono)",
             fontSize: "var(--tn-text-micro)",
             letterSpacing: "var(--tn-tracking-eyebrow)",
-            textTransform: "uppercase",
+            textTransform: "none",
             color: "var(--tn-text-secondary)",
           }}
         >

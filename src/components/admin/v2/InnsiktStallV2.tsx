@@ -1,25 +1,6 @@
 "use client";
 
-/**
- * AgencyOS Innsikt · stall — Train-lock (T11, 27.08.2026).
- *
- * Fasit: `AG-12 Innsikt stall.dc.html`. Erstatter `AdminLagSnittV2` (Paper
- * T.*-tokens) på `/admin/lag-snitt` — den gamle ruten flettes inn her og
- * redirecter til `/admin/analyse/stall` (se `(legacy)/lag-snitt/page.tsx`).
- *
- * Tokens: KUN TL (src/lib/v2/train-lock.ts) — se CLAUDE.md invariant 2.
- * Motor: Broadie-SG fra Round (sgOtt/sgApp/sgArg/sgPutt) — samme motor som
- * AG-07, aldri blandet med DataGolf/TrackMan/PEI.
- *
- * Fasiten viser kun mobil (390×844). Denne komponenten er responsiv utover
- * det (samme kortbredde skalerer opp), men uten egen iPad/Mac-fasit portes
- * layoutet 1:1 fra mobil-fasiten på alle bredder — ingen ny struktur oppfunnet.
- *
- * MASTERPLAN 15.8 (31.08.2026): dette er nå den nestede `?visning=trend`
- * under «stall»-fanen på `/admin/analyse` (uendret spørring/innhold —
- * `/admin/analyse/stall` er en ren redirect dit). `somFane` skjuler egen h1
- * («Innsikt») når sidens `AnalyseHode` allerede viser den.
- */
+/** Coachinnsikt med eksisterende datakilder. Visningsruten avgrenser Precision-stilen; eldre V2-navn er beholdt for importene. */
 
 import { TL } from "@/lib/v2/train-lock";
 
@@ -46,10 +27,10 @@ function CapsLabel({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: TL.vekt.caps,
-        letterSpacing: TL.track.capsSm,
-        textTransform: "uppercase",
+        letterSpacing: 0,
+        textTransform: "none",
         color: TL.mute,
       }}
     >
@@ -64,7 +45,7 @@ function KpiKort({ verdi, label }: { verdi: string; label: string }) {
       <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text, fontVariantNumeric: "tabular-nums" }}>
         {verdi}
       </div>
-      <div style={{ marginTop: 7, fontSize: 9, fontWeight: TL.vekt.caps, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute }}>
+      <div style={{ marginTop: 7, fontSize: 13, fontWeight: TL.vekt.caps, letterSpacing: 0, textTransform: "none", color: TL.mute }}>
         {label}
       </div>
     </div>
@@ -81,15 +62,15 @@ function KategoriBar({ k }: { k: InnsiktStallV2Kategori }) {
         )}
       </div>
       <div style={{ height: 1, background: TL.hair }} />
-      <div style={{ height: 36, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
+      <div style={{ height: 48, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
         {k.negativ && (
-          <div style={{ width: 22, height: barHoyde, borderRadius: "0 0 4px 4px", background: TL.text, opacity: 0.4 }} />
+          <div style={{ width: 22, height: barHoyde, borderRadius: "0 0 4px 4px", background: TL.text, opacity: 1 }} />
         )}
       </div>
-      <div style={{ marginTop: 4, fontSize: 9, fontWeight: TL.vekt.caps, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute }}>
+      <div style={{ marginTop: 4, fontSize: 13, fontWeight: TL.vekt.caps, letterSpacing: 0, textTransform: "none", color: TL.mute }}>
         {k.label}
       </div>
-      <div style={{ marginTop: 2, fontSize: 11, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text, opacity: k.negativ ? TL.opasitet.negativ : 1 }}>
+      <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text, opacity: 1 }}>
         {k.verdi}
       </div>
     </div>
@@ -122,7 +103,7 @@ function TrendSparkline({ verdier }: { verdier: number[] }) {
 
 export function InnsiktStallV2({ data, somFane }: { data: InnsiktStallV2Data; somFane?: boolean }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 460 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 1040 }}>
       {!somFane && (
         <div>
           <h1 style={{ margin: 0, fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Innsikt</h1>
@@ -137,7 +118,7 @@ export function InnsiktStallV2({ data, somFane }: { data: InnsiktStallV2Data; so
       <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <CapsLabel>SG per kategori · stallen</CapsLabel>
-          <span style={{ fontSize: 11, fontWeight: TL.vekt.caps, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: 13, fontWeight: TL.vekt.caps, letterSpacing: 0, textTransform: "none", color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
             4 uker
           </span>
         </div>
@@ -162,7 +143,7 @@ export function InnsiktStallV2({ data, somFane }: { data: InnsiktStallV2Data; so
       <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <CapsLabel>SG stall · trend</CapsLabel>
-          <span style={{ fontSize: 11, fontWeight: TL.vekt.caps, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: 13, fontWeight: TL.vekt.caps, letterSpacing: 0, textTransform: "none", color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
             8 uker
           </span>
         </div>

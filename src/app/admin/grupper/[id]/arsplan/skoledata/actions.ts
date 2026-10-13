@@ -1,5 +1,6 @@
 "use server";
 
+import { gyldigPlanDato } from "@/lib/workbench/plan-kontekst";
 import { prisma } from "@/lib/prisma";
 import { canEditGroup } from "@/lib/workbench/group-scope";
 import { revalidatePath } from "next/cache";
@@ -40,7 +41,7 @@ function parseLinjer(
     const [datoStr, trinnStr, kategoriStr, tittelStr, notatStr] = deler;
     const linjenr = i + 1;
 
-    if (!datoStr || Number.isNaN(Date.parse(datoStr))) {
+    if (!gyldigPlanDato(datoStr)) {
       feil.push(`Linje ${linjenr}: ugyldig dato «${datoStr ?? ""}»`);
       return;
     }
@@ -62,7 +63,7 @@ function parseLinjer(
     rader.push({
       classYear: trinn || null,
       schoolYear,
-      date: new Date(`${datoStr}T00:00:00`),
+      date: new Date(`${datoStr}T00:00:00Z`),
       category: kategori,
       title: tittelStr,
       note: notatStr || null,

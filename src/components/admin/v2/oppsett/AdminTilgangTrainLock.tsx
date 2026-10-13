@@ -1,16 +1,6 @@
 "use client";
 
-/**
- * AgencyOS Tilgang & roller — Train-lock (T13, 27.08.2026), «Roller»-fanen.
- *
- * Designport av `AdminTilgangV2` (Paper) — read-only CBAC-matrise. Ingen
- * egen fasit tegner denne skjermen, så layouten er en mønster-port til
- * tl-kit, ikke pixel.
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2. Ikonet for «tillatt» bruker
- * TL.text (ikke en fargekodet grønn) — invariantens forbud mot generell
- * fargekoding gjelder også her.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import Link from "next/link";
 import type { UserRole } from "@/generated/prisma/client";
@@ -44,11 +34,11 @@ function TilgangTabell({ roller, rader }: { roller: UserRole[]; rader: AdminTilg
   const th: React.CSSProperties = {
     padding: "9px 12px",
     textAlign: "left",
-    fontFamily: TL.font.mono,
-    fontSize: 9,
+    fontFamily: TL.font.sans,
+    fontSize: 13,
     fontWeight: 700,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
+    letterSpacing: 0,
+    textTransform: "none",
     color: TL.mute,
     borderBottom: `1px solid ${TL.hair}`,
     whiteSpace: "nowrap",
@@ -59,7 +49,7 @@ function TilgangTabell({ roller, rader }: { roller: UserRole[]; rader: AdminTilg
       <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
         <thead>
           <tr>
-            <th style={th}>Capability</th>
+            <th style={th}>Handling</th>
             {roller.map((rolle) => (
               <th key={rolle} style={thSentrert}>
                 {ROLLE_LABEL[rolle]}
@@ -79,7 +69,7 @@ function TilgangTabell({ roller, rader }: { roller: UserRole[]; rader: AdminTilg
               <tr key={rad.id}>
                 <td style={bd}>
                   <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: TL.text }}>{rad.beskrivelse}</span>
-                  <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 1, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 1, textTransform: "none", letterSpacing: 0 }}>
                     {rad.id}
                   </span>
                 </td>
@@ -113,22 +103,21 @@ export function AdminTilgangTrainLock({
         {!somFane && <TlTittel sub="AgencyOS">Tilgang</TlTittel>}
         <p style={{ marginTop: somFane ? 0 : 10, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>Hvilke handlinger hver rolle kan utføre i plattformen.</p>
       </div>
-      <TlBadge>Read-only</TlBadge>
+      <TlBadge>Bare visning</TlBadge>
     </div>
   );
 
   const primaerCta = (
     <TlKnapp variant="primaer" icon="shield" href="/admin/audit-log" full>
-      Åpne audit-log
+      Se tilgangsloggen
     </TlKnapp>
   );
 
   const infoRad = (
     <div style={{ display: "flex", alignItems: "flex-start", gap: 12, borderRadius: TL.radius.card, background: TL.dock, boxShadow: `inset 0 0 0 1px ${TL.hair}`, padding: "14px 16px" }}>
       <Icon name="info" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
-      <p style={{ margin: 0, fontSize: 12.5, color: TL.mute, lineHeight: 1.6 }}>
-        <span style={{ fontWeight: 700, color: TL.text }}>Read-only.</span> For å endre tilgang, kontakt utvikler. Alle senere endringer
-        logges i AuditLog med hvem og når.
+      <p style={{ margin: 0, fontSize: 14, color: TL.mute, lineHeight: 1.6 }}>
+        <span style={{ fontWeight: 700, color: TL.text }}>Bare visning.</span> Tabellen viser standarden for hver rolle. Individuelle coachtilganger kan endres i listen under. Endringer registreres i tilgangsloggen.
       </p>
     </div>
   );
@@ -139,11 +128,10 @@ export function AdminTilgangTrainLock({
         <Icon name="shield" size={16} style={{ color: TL.text, flex: "none", marginTop: 2 }} />
         <div>
           <div style={{ fontSize: 15, fontWeight: 700, color: TL.text }}>Hvordan tilgangsstyring fungerer</div>
-          <p style={{ marginTop: 8, fontSize: 12.5, color: TL.mute, lineHeight: 1.6 }}>
-            CBAC (Capability-Based Access Control) kobler hver rolle til et sett tillatte handlinger. Endringer på matrisen krever
-            koderefaktor i dag, men er forberedt for per-organisasjons overrides i databasen. Alle endringer logges og kan granskes på{" "}
+          <p style={{ marginTop: 8, fontSize: 14, color: TL.mute, lineHeight: 1.6 }}>
+            Hver rolle har et sett tillatte handlinger. Standardene vises i tabellen. Endringer for den enkelte coach registreres i{" "}
             <Link href="/admin/audit-log" style={{ color: TL.text, fontWeight: 700, textDecoration: "underline" }}>
-              /admin/audit-log
+              tilgangsloggen
             </Link>
             .
           </p>

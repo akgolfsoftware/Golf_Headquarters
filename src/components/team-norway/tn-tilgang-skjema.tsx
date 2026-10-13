@@ -112,9 +112,9 @@ export function TnTilgangSkjema({
         <span
           style={{
             fontFamily: TN.font.mono,
-            fontSize: TN.text.micro,
+            fontSize: 13,
             letterSpacing: TN.tracking.eyebrow,
-            textTransform: "uppercase",
+            textTransform: "none",
             color: TN.textSecondary,
           }}
         >
@@ -155,9 +155,9 @@ export function TnTilgangSkjema({
         <span
           style={{
             fontFamily: TN.font.mono,
-            fontSize: TN.text.micro,
+            fontSize: 13,
             letterSpacing: TN.tracking.eyebrow,
-            textTransform: "uppercase",
+            textTransform: "none",
             color: TN.textSecondary,
           }}
         >

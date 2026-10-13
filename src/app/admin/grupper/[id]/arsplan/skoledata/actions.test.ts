@@ -167,3 +167,13 @@ test("importerSkoledata avviser en gruppe coachen ikke kan redigere", async () =
   assert.equal(r.ok, false);
   assert.equal(entryCreates.length, 0);
 });
+
+
+test("skoleimport avviser normalisert februardato og lagrer gyldig kalenderdag uten lokal forskyvning", async () => {
+  const { importerSkoledata } = await actions();
+  const svar = await importerSkoledata("gruppe-a", formData({ schoolYear:"2026/2027", data:"2026-02-30|VG1|PROVE|Ugyldig\n2026-10-19|VG1|PROVE|Gyldig" }));
+  assert.equal(svar.ok,true);
+  if (svar.ok) { assert.equal(svar.antall,1); assert.equal(svar.feil.length,1); }
+  assert.equal(entryCreates.length,1);
+  assert.equal((entryCreates[0] as { date: Date }).date.toISOString(),"2026-10-19T00:00:00.000Z");
+});

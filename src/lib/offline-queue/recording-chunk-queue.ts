@@ -15,6 +15,7 @@ import {
 } from "./recording-chunk-kladd";
 import { erGyldigEierId, filtrerEideRader } from "./eier-scope";
 import { z } from "zod";
+import { recordingChunkUploadForms, recordingChunkUploadConfirmed, type RecordingChunkUploadResult } from "@/lib/recording/chunk-fragments";
 
 const DB_NAVN = "akgolf-recording-chunks";
 const DB_VERSJON = 3;
@@ -156,7 +157,27 @@ export type ChunkUploadFn = (
   recordingId: string,
   index: number,
   blob: Blob,
-) => Promise<{ ok: boolean }>;
+) => Promise<RecordingChunkUploadResult>;
+
+/** Store, tidligere reserverte lydbiter sendes som fragmenter med samme chunk-indeks. */
+export async function uploadRecordingChunk(recordingId: string, index: number, blob: Blob): Promise<RecordingChunkUploadResult> {
+  try {
+    const upload = await recordingChunkUploadForms(recordingId, index, blob);
+    for (const form of upload.forms) {
+      const response = await fetch("/api/recording/upload-chunk", { method: "POST", body: form });
+      const parsed = z.object({ ok: z.boolean(), chunkComplete: z.boolean(), recordingId: z.string(), chunkIdx: z.number(),
+        wholeSHA256: z.string().optional(), wholeSize: z.number().optional() }).safeParse(await response.json().catch(() => null));
+      if (!response.ok || !parsed.success || !parsed.data.ok || parsed.data.recordingId !== recordingId || parsed.data.chunkIdx !== index) {
+        return { ok: false, chunkComplete: false };
+      }
+      if (parsed.data.chunkComplete) {
+        const confirmed = parsed.data.wholeSHA256 === upload.wholeSHA256 && parsed.data.wholeSize === upload.wholeSize;
+        return { ok: confirmed, chunkComplete: confirmed };
+      }
+    }
+  } catch { /* Hold hele originalbiten i køen ved uavklart svar. */ }
+  return { ok: false, chunkComplete: false };
+}
 
 /**
  * Prøv å laste opp alle ventende chunks for en recording.
@@ -176,7 +197,7 @@ export async function tomChunkKo(
     const res = await lastOpp(rad.recordingId, rad.index, blob).catch(() => ({
       ok: false,
     }));
-    if (res.ok) {
+    if (recordingChunkUploadConfirmed(res)) {
       await fjernChunkFraKo(eierId, rad.recordingId, rad.index);
       continue;
     }

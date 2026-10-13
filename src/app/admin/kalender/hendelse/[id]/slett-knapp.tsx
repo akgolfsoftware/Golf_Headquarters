@@ -1,42 +1,21 @@
 "use client";
-
 import { useState, useTransition } from "react";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Knapp } from "@/components/v2/core";
+import { Knapp } from "@/components/precision/pa";
 import { slettHendelse } from "@/lib/kalender-hendelse/actions";
-
 export function SlettKnapp({ id }: { id: string }) {
   const [bekreft, setBekreft] = useState(false);
-  const [pending, startPending] = useTransition();
-
-  if (!bekreft) {
-    return (
-      <Knapp ghost onClick={() => setBekreft(true)}>
-        <span style={{ color: TL.text }}>Slett hendelse</span>
-      </Knapp>
-    );
-  }
-
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>Sikker?</span>
-      <Knapp ghost onClick={() => setBekreft(false)} disabled={pending}>Avbryt</Knapp>
-      <Knapp
-        disabled={pending}
-        onClick={() =>
-          startPending(async () => {
-            try {
-              await slettHendelse(id);
-            } catch (err) {
-              if (err instanceof Error && err.message.includes("NEXT_REDIRECT")) return;
-              throw err;
-            }
-          })
+  const [pending, start] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+  return <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+    {!bekreft ? <Knapp variant="ghost" onClick={() => setBekreft(true)}>Slett hendelse</Knapp> : <>
+      <p>Vil du slette denne hendelsen fra kalenderen?</p>
+      <Knapp variant="ghost" onClick={() => { setBekreft(false); setFeil(null); }} disabled={pending}>Avbryt</Knapp>
+      <Knapp loading={pending} loadingText="Sletter …" onClick={() => start(async () => {
+        setFeil(null); try { await slettHendelse(id); } catch (err) {
+          if (err instanceof Error && err.message.includes("NEXT_REDIRECT")) return;
+          setFeil("Hendelsen kunne ikke slettes. Prøv igjen.");
         }
-      >
-        {pending ? "Sletter …" : "Ja, slett"}
-      </Knapp>
-    </div>
-  );
+      })}>Slett hendelse</Knapp>
+    </>}{feil && <p role="alert">{feil}</p>}
+  </div>;
 }

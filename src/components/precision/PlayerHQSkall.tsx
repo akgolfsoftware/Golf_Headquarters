@@ -75,6 +75,7 @@ export function PlayerHQSkall({ children, innboksHref, uleste }: { children: Rea
         </Link>
         {FANER.map((f) => <Link key={f.href} href={f.href} className="pa-rail__item" aria-label={f.label} aria-current={erAktiv(path, f.href) ? "page" : undefined}>
           <Ikon icon={f.icon} size={20} name={f.name} />
+          <span className="pa-rail__label">{f.label}</span>
         </Link>)}
       </div>
     </nav>

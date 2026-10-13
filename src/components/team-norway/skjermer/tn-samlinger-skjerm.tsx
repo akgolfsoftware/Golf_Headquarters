@@ -76,10 +76,10 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
 
       <TnFlate>
         <TnFlatehode tittel={`Årshjul ${aar}`}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontSize: 12.5, color: TN.textSecondary, alignItems: "center" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontSize: 13, color: TN.textSecondary, alignItems: "center" }}>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: TN.navy900 }} />Samling</span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: TN.navy100, border: `1px solid ${TN.navy300}` }} />Turnering</span>
-            <span style={{ display: "flex", gap: 10, fontFamily: TN.font.mono, fontSize: 12 }}>
+            <span style={{ display: "flex", gap: 10, fontFamily: TN.font.mono, fontSize: 13 }}>
               <Link href={lenke(aar - 1, 12)} style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>← {aar - 1}</Link>
               <Link href={lenke(aar + 1, 1)} style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{aar + 1} →</Link>
             </span>
@@ -100,7 +100,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
                   scroll={false}
                   aria-current={aktiv ? "true" : undefined}
                   aria-label={`${MANEDER_LANG[i]} ${aar}, ${hendelserIManed.length} hendelser`}
-                  style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900, textDecoration: "none", minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}
+                  style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.18em", color: TN.navy900, textDecoration: "none", minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}
                 >
                   {navn}
                 </Link>
@@ -108,12 +108,12 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
                   <Link
                     key={`${h.type}-${h.id}`}
                     href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`}
-                    style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 11.5, lineHeight: 1.3, padding: "4px 6px", borderRadius: TN.radius.sm, background: h.type === "samling" ? TN.navy900 : TN.navy100, color: h.type === "samling" ? TN.white : TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}
+                    style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 13, lineHeight: 1.3, padding: "4px 6px", borderRadius: TN.radius.sm, background: h.type === "samling" ? TN.navy900 : TN.navy100, color: h.type === "samling" ? TN.white : TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}
                   >
                     {h.tittel}
                   </Link>
                 ))}
-                {hendelserIManed.length > 3 ? <Link href={lenke(aar, m)} scroll={false} style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}>+{hendelserIManed.length - 3} til</Link> : null}
+                {hendelserIManed.length > 3 ? <Link href={lenke(aar, m)} scroll={false} style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}>+{hendelserIManed.length - 3} til</Link> : null}
               </div>
             );
           })}

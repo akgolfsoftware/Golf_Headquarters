@@ -54,7 +54,7 @@ export function TallFlis({ k, v, enhet, kilde }: { k: string; v: ReactNode; enhe
     <div className="a8-tall">
       <span className="a8-tall__k">{k}</span>
       <span style={{ display: "flex", alignItems: "baseline", gap: 4 }}><span className="a8-tall__v">{v}</span>{enhet && <span className="a8-tall__e">{enhet}</span>}</span>
-      <Meta style={{ fontSize: 10 }}>{kilde ?? "—"}</Meta>
+      <Meta>{kilde ?? "—"}</Meta>
     </div>
   );
 }

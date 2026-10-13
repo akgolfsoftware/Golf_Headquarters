@@ -67,9 +67,9 @@ export function TnPostKomponer({
             <span
               style={{
                 fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
+                fontSize: 13,
                 letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
+                textTransform: "none",
                 color: TN.textSecondary,
               }}
             >
@@ -81,9 +81,9 @@ export function TnPostKomponer({
             <span
               style={{
                 fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
+                fontSize: 13,
                 letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
+                textTransform: "none",
                 color: TN.navy700,
                 background: TN.navy50,
                 borderRadius: TN.radius.xs,

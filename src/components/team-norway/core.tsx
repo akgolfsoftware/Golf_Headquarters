@@ -75,10 +75,10 @@ export function TnKort({
   return (
     <div
       style={{
-        background: TN.surfaceCard,
+        background: TN.navy50,
         borderRadius: TN.radius.lg,
         // Systemet har ingen skygger. Flater skilles med én hårstrek.
-        border: `1px solid ${TN.borderSubtle}`,
+        border: "none",
         padding,
         fontFamily: TN.font.body,
         ...style,
@@ -239,7 +239,7 @@ export function TnMenygruppe({ gruppe, alltidApen = false, onVelg }: { gruppe: T
   const hode = (
     <>
       <Icon name={gruppe.ikon} size={18} style={{ color: gruppe.aktiv ? TN.rail.on : TN.rail.muted, flexShrink: 0 }} />
-      <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase" }}>{gruppe.label}</span>
+      <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.display, fontSize: 14, fontWeight: TN.weight.medium }}>{gruppe.label}</span>
     </>
   );
   const punkter = gruppe.punkter.map((p) => <TnMenyrad key={p.href} punkt={p} onClick={onVelg} />);
@@ -256,7 +256,7 @@ export function TnMenygruppe({ gruppe, alltidApen = false, onVelg }: { gruppe: T
     <details open={gruppe.aktiv} className="group">
       <summary className="list-none [&::-webkit-details-marker]:hidden" style={{ ...hodeStil, cursor: "pointer" }}>
         {hode}
-        <span className="group-open:hidden" style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.rail.muted }}>{gruppe.punkter.length}</span>
+        <span className="group-open:hidden" style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.rail.muted }}>{gruppe.punkter.length}</span>
         <Icon name="chevron-right" size={14} className="group-open:rotate-90" style={{ color: TN.rail.muted, flexShrink: 0 }} />
       </summary>
       {punkter}
@@ -314,10 +314,10 @@ export function TnRail({
           <div
             style={{
               fontFamily: TN.font.mono,
-              fontSize: TN.text.micro,
+              fontSize: 13,
               letterSpacing: TN.tracking.eyebrow,
               color: TN.rail.muted,
-              textTransform: "uppercase",
+              textTransform: "none",
             }}
           >
             {orgUndertittel}
@@ -339,9 +339,9 @@ export function TnRail({
           <div
             style={{
               fontFamily: TN.font.mono,
-              fontSize: TN.text.micro,
+              fontSize: 13,
               letterSpacing: TN.tracking.eyebrow,
-              textTransform: "uppercase",
+              textTransform: "none",
               color: TN.rail.muted,
               marginTop: 1,
             }}

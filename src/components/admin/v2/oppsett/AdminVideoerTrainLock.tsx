@@ -16,7 +16,8 @@
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { uploadVideo, deleteVideo, getSignedVideoUrl } from "@/lib/storage/video";
+import { createVideoUploadTicket, confirmVideoUpload, deleteVideo, getSignedVideoUrl, type CoachingVideoUploadTicket } from "@/lib/storage/video";
+import { uploadSignedVideo } from "@/lib/storage/direct-video-client";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { TlCaps, TlKnapp, TlKort, TlRad, TlTittel, TlTomTilstand, TL_PRESS } from "./tl-kit";
@@ -243,6 +244,8 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const uploadAttemptRef = useRef<{ file: File; metadataKey: string; ticket: CoachingVideoUploadTicket; uploaded: boolean } | null>(null);
+  const submitBusyRef = useRef(false);
 
   const [title, setTitle] = useState("");
   const [playerId, setPlayerId] = useState("");
@@ -272,6 +275,7 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitBusyRef.current) return;
     setError(null);
     setSuccess(false);
     if (!file) return;
@@ -283,16 +287,31 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
       setError("Velg hvilken spiller videoen skal deles med.");
       return;
     }
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("title", title);
-    formData.append("playerId", playerId);
-    formData.append("tag", tag);
-    formData.append("bookingId", bookingId);
-    formData.append("notes", notes);
+    const metadata = { title, playerId, tag, bookingId, notes, sizeBytes: file.size, mimeType: file.type as "video/mp4" | "video/quicktime" | "video/webm" };
+    const metadataKey = JSON.stringify(metadata);
+    submitBusyRef.current = true;
     startTransition(async () => {
       try {
-        await uploadVideo(formData);
+        let attempt = uploadAttemptRef.current;
+        if (!attempt || attempt.file !== file || attempt.metadataKey !== metadataKey) {
+          const ticket = await createVideoUploadTicket(metadata);
+          attempt = { file, metadataKey, ticket, uploaded: false };
+          uploadAttemptRef.current = attempt;
+        }
+        if (!attempt.uploaded) {
+          try {
+            await uploadSignedVideo(file, attempt.ticket);
+            attempt.uploaded = true;
+          } catch (uploadError) {
+            // Et mistet svar kan skjule en vellykket sending. Bekreft filen
+            // før coachen må forsøke samme opplasting på nytt.
+            try { await confirmVideoUpload(attempt.ticket.videoId); attempt.uploaded = true; }
+            catch { throw uploadError; }
+          }
+        }
+        const confirmed = await confirmVideoUpload(attempt.ticket.videoId);
+        if (confirmed.ok !== true || confirmed.videoId !== attempt.ticket.videoId) throw new Error("Videoen er ikke bekreftet lagret. Prøv igjen.");
+        uploadAttemptRef.current = null;
         setSuccess(true);
         setFile(null);
         setTitle("");
@@ -304,6 +323,8 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
         router.refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Opplasting feilet.");
+      } finally {
+        submitBusyRef.current = false;
       }
     });
   }

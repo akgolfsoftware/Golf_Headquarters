@@ -5,14 +5,14 @@
  * flatene — ingen personlig spillerdata her heller.
  */
 
-import Link from "next/link";
+import { Sidehode, KnappLenke } from "@/components/precision/pa";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { GroupContextShell } from "@/components/admin/precision/grupper/GroupContextShell";
+import { TlTilbake } from "@/components/admin/precision/grupper/group-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
@@ -34,30 +34,21 @@ export default async function GruppeArsplanPage({
   const { id } = await params;
   const { trinn } = await searchParams;
 
-  const gruppe = await prisma.group.findFirst({ where: { id, ...gruppeInnsynWhere(user) }, select: { id: true, name: true } });
+  const gruppe = await prisma.group.findFirst({ where: { id, ...gruppeInnsynWhere(user) }, select: { id: true, name: true, slug: true, program: true } });
   if (!gruppe) notFound();
 
   const data = await hentGruppeKalenderData(gruppe.name);
   const basePath = `/admin/grupper/${id}/arsplan`;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <GroupContextShell group={gruppe} user={user}>
       <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
 
       <div className="flex flex-col gap-4">
         <GruppeFaner groupId={id} aktiv="arsplan" />
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              {gruppe.name}
-            </p>
-            <h1 className="font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Årsplan</h1>
-          </div>
-          <Link href={`${basePath}/skoledata`} className="font-mono text-[11px] font-semibold text-primary hover:underline">
-            Legg inn skoledata →
-          </Link>
-        </div>
+        <Sidehode title="Årsplan" kicker={gruppe.name} />
+        <KnappLenke variant="secondary" href={`${basePath}/skoledata`}>Legg inn skoledata</KnappLenke>
 
         {data ? (
           <div className="space-y-4">
@@ -71,6 +62,6 @@ export default async function GruppeArsplanPage({
           </p>
         )}
       </div>
-    </V2Shell>
+    </GroupContextShell>
   );
 }

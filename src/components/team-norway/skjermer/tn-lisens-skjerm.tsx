@@ -50,7 +50,7 @@ export async function TnLisensSkjerm() {
         <TnFlatehode tittel={`Lisens og dokumenter ${aar}`} merknad={`${status.size} / ${spillerside.rader.length} REGISTRERT`} />
         <div role="table" aria-label={`Lisens og dokumenter ${aar}`}>
           <div role="row" className="hidden md:grid" style={{ gridTemplateColumns: KOLONNER, gap: 12, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}` }}>
-            {["Spiller", "Lisens", "Helseattest", "Antidoping", ""].map((k, i) => <TnEtikett key={i} style={{ fontSize: 10.5 }}><span role="columnheader">{k}</span></TnEtikett>)}
+            {["Spiller", "Lisens", "Helseattest", "Antidoping", ""].map((k, i) => <TnEtikett key={i} style={{ fontSize: 13 }}><span role="columnheader">{k}</span></TnEtikett>)}
           </div>
           {spillerside.rader.map((r) => {
             const s = status.get(r.id) ?? tom;
@@ -60,11 +60,11 @@ export async function TnLisensSkjerm() {
                 <span role="cell" style={{ minWidth: 0 }}>
                   {kontekst.erSpiller ? <span style={{ fontSize: 14.5, fontWeight: 700 }}>{r.navn}</span> : <Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", overflowWrap: "anywhere" }}>{r.navn}</Link>}
                 </span>
-                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: s.lisensStatus === "BETALT" || s.lisensStatus === "FRITAK" ? TN.status.greenText : TN.textSecondary }}>
+                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 13, color: s.lisensStatus === "BETALT" || s.lisensStatus === "FRITAK" ? TN.status.greenText : TN.textSecondary }}>
                   {s.lisensStatus ? `${LISENS_TEKST[s.lisensStatus] ?? s.lisensStatus}${s.lisensBetaltDato ? ` ${datoKort(s.lisensBetaltDato)}` : ""}` : "Ikke registrert"}
                 </span>
-                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: helse.farge }}>{helse.tekst}</span>
-                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: s.antidopingSignert ? TN.status.greenText : TN.textSecondary }}>{s.antidopingSignert ? `Signert ${datoLang(s.antidopingSignert)}` : "Ikke registrert"}</span>
+                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 13, color: helse.farge }}>{helse.tekst}</span>
+                <span role="cell" style={{ fontFamily: TN.font.mono, fontSize: 13, color: s.antidopingSignert ? TN.status.greenText : TN.textSecondary }}>{s.antidopingSignert ? `Signert ${datoLang(s.antidopingSignert)}` : "Ikke registrert"}</span>
                 <span role="cell">
                   {kontekst.kanAdministrere ? (
                     <TnSpillerstatusSkjema spillerId={r.id} spillerNavn={r.navn} aar={aar} standard={{ lisensStatus: s.lisensStatus ?? "", lisensBetaltDato: dagStreng(s.lisensBetaltDato), helseattestUtloper: dagStreng(s.helseattestUtloper), antidopingSignert: dagStreng(s.antidopingSignert) }} />

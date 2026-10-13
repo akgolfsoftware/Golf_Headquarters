@@ -55,7 +55,7 @@ function Statuslinje({ rad }: { rad: Statusrad }) {
         <div style={{ fontSize: 14.5, fontWeight: 700 }}>{rad.tittel}</div>
         <div style={{ fontSize: 13, color: TN.textSecondary, marginTop: 2, overflowWrap: "anywhere" }}>{rad.tekst}</div>
       </div>
-      <span style={{ whiteSpace: "nowrap", fontFamily: TN.font.mono, fontSize: 11, letterSpacing: "0.06em", color: farge, textAlign: "right" }}>{rad.merke}</span>
+      <span style={{ whiteSpace: "nowrap", fontFamily: TN.font.mono, fontSize: 13, letterSpacing: 0, color: farge, textAlign: "right" }}>{rad.merke}</span>
     </div>
   );
 }
@@ -123,8 +123,8 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
         <TnFlate style={{ display: "flex", flexWrap: "wrap", gap: 22, alignItems: "flex-start" }}>
           <TnInitialer navn={profil.navn} storrelse={132} />
           <div style={{ flex: "1 1 180px", minWidth: 0 }}>
-            <TnEtikett style={{ letterSpacing: "0.2em" }}>{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} · ${kontekst.gruppe.name}` : "Profil delt med Team Norway"}</TnEtikett>
-            <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(22px, 2.4vw, 26px)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.15, marginTop: 6, color: TN.navy900, overflowWrap: "anywhere" }}>{profil.navn}</div>
+            <TnEtikett style={{ letterSpacing: 0 }}>{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} · ${kontekst.gruppe.name}` : "Profil delt med Team Norway"}</TnEtikett>
+            <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(22px, 2.4vw, 26px)", letterSpacing: 0, textTransform: "none", lineHeight: 1.15, marginTop: 6, color: TN.navy900, overflowWrap: "anywhere" }}>{profil.navn}</div>
             <dl style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "6px 14px", margin: "14px 0 0", fontSize: 14 }}>
               <dt style={{ color: TN.textSecondary }}>Alder</dt>
               <dd style={{ margin: 0 }}>{alder !== null && profil.fodselsdato ? `${alder} år · født ${datoLang(profil.fodselsdato)}` : "Ikke registrert"}</dd>
@@ -142,7 +142,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
             ].map(([etikett, verdi]) => (
               <div key={etikett} style={{ background: TN.white, padding: "12px 14px", minWidth: 0 }}>
                 <div style={{ fontFamily: TN.font.mono, fontSize: 22, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
-                <TnEtikett style={{ fontSize: 10.5, marginTop: 4 }}>{etikett}</TnEtikett>
+                <TnEtikett style={{ fontSize: 13, marginTop: 4 }}>{etikett}</TnEtikett>
               </div>
             ))}
           </div>
@@ -152,7 +152,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
           <TnFlatehode tittel="Status" />
           {status.map((rad) => <Statuslinje key={rad.tittel} rad={rad} />)}
           {kontekst.kanAdministrere ? (
-            <Link href="/team-norway/lisens-okonomi" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>Endre i Lisens og dokumenter →</Link>
+            <Link href="/team-norway/lisens-okonomi" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>Endre i Lisens og dokumenter →</Link>
           ) : null}
         </TnFlate>
 
@@ -164,7 +164,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
             <div role="table" aria-label="Siste testprotokoller">
               <div role="row" style={{ display: "grid", gridTemplateColumns: TESTKOLONNER, gap: 8, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}` }}>
                 {["Protokoll", "Siste", "Beste", "Dato"].map((k, i) => (
-                  <TnEtikett key={k} style={{ fontSize: 10.5, letterSpacing: "0.12em", textAlign: i > 0 ? "right" : undefined }}><span role="columnheader">{k}</span></TnEtikett>
+                  <TnEtikett key={k} style={{ fontSize: 13, letterSpacing: 0, textAlign: i > 0 ? "right" : undefined }}><span role="columnheader">{k}</span></TnEtikett>
                 ))}
               </div>
               {testrader.slice(0, 5).map((r, i) => (
@@ -178,7 +178,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
             </div>
           )}
           {testrader.length > 5 ? (
-            <Link href={`/team-norway/spiller/${spillerId}/tester`} style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
+            <Link href={`/team-norway/spiller/${spillerId}/tester`} style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center", marginTop: 8 }}>
               Alle {testrader.length} protokoller →
             </Link>
           ) : null}
@@ -198,7 +198,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
               <div key={`${t.navn}-${i}`} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto auto", gap: "6px 18px", alignItems: "baseline", padding: "13px 0", borderBottom: `1px solid ${TN.navy100}` }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{t.navn}</div>
-                  <div style={{ fontFamily: TN.font.mono, fontSize: 11.5, color: TN.textSecondary, marginTop: 2 }}>
+                  <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>
                     {periode(t.start, t.slutt ?? t.start)} · {t.runder === 0 ? "ingen fullførte runder" : `${t.runder} ${t.runder === 1 ? "runde" : "runder"}`}{t.status === "CUT" ? " (kutt)" : ""}
                   </div>
                 </div>

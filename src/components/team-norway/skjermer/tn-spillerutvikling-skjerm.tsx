@@ -54,7 +54,7 @@ function Framdrift({ s }: { s: TnSpillerRad }) {
           <span aria-hidden="true" style={{ flex: "1 1 60px", maxWidth: 120, height: 3, background: TN.navy100 }}>
             <span style={{ display: "block", height: 3, width: `${(uke.denne / uke.antall) * 100}%`, background: TN.navy900 }} />
           </span>
-          <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, whiteSpace: "nowrap" }}>uke {uke.denne} av {uke.antall}</span>
+          <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, whiteSpace: "nowrap" }}>uke {uke.denne} av {uke.antall}</span>
         </div>
       ) : null}
     </div>
@@ -149,7 +149,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
                     <Navnecelle s={s} />
                     <div style={{ textAlign: "right", flex: "none" }}>
                       <div style={{ fontFamily: TN.font.mono, fontSize: 16 }}>{hcp(s.hcp)}</div>
-                      <TnEtikett style={{ fontSize: 10 }}>HCP</TnEtikett>
+                      <TnEtikett style={{ fontSize: 13 }}>HCP</TnEtikett>
                     </div>
                   </div>
                   <Framdrift s={s} />

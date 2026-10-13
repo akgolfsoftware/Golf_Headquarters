@@ -38,9 +38,9 @@ export async function TnFagapparatSkjerm() {
               <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
                 <TnInitialer navn={rad.user.name ?? "?"} storrelse={64} mork />
                 <div style={{ minWidth: 0 }}>
-                  <TnEtikett style={{ fontSize: 10.5, letterSpacing: "0.14em" }}>{tnRolleNavn(rad.role)} · {data.kontekst.gruppe.name}</TnEtikett>
+                  <TnEtikett style={{ fontSize: 13, letterSpacing: 0 }}>{tnRolleNavn(rad.role)} · {data.kontekst.gruppe.name}</TnEtikett>
                   <div style={{ fontFamily: TN.font.display, fontSize: 19, letterSpacing: "0.04em", color: TN.navy900, marginTop: 4, lineHeight: 1.2, overflowWrap: "anywhere" }}>{rad.user.name ?? "Navn mangler"}</div>
-                  <div style={{ fontFamily: TN.font.mono, fontSize: 11.5, color: TN.textSecondary, marginTop: 6 }}>AKTIV SIDEN {datoLang(rad.joinedAt)}</div>
+                  <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 6 }}>AKTIV SIDEN {datoLang(rad.joinedAt)}</div>
                 </div>
               </div>
               {data.kontekst.kanAdministrere && rad.user.email ? (

@@ -1,7 +1,7 @@
 # WANG Fredrikstad — roller og datagrunnlag
 
 Dato: 13. oktober 2026
-Status: De tre rollevalgene er godkjent og bygget i database og separat WANG-innlogging. Ingen ekte brukere eller elevdata er lagt inn.
+Status: Rollegrunnlaget og sikre testprofiler er bygget. Separat WANG-innlogging er bevart. Ingen ekte brukere, kontoer eller elevdata er lagt inn.
 
 ## 1. Formål
 
@@ -140,7 +140,7 @@ Levert i dette steget:
 - synlig tastaturfokus med 3 piksler fokusramme og uten konsollfeil på WANG-innloggingen
 - komplett prosjektkontroll med 185 komponenttester og godkjent produksjonsbygg
 
-Neste avgrensede steg er å bygge administrasjon av syntetiske testkontoer og rolletildeling, slik at hver startside kan prøves ende til ende før ekte brukere vurderes.
+Neste avgrensede steg er å koble de godkjente rollene til faktiske grunnskjermer og Workbench-struktur for de aktive idrettene, uten å finne på idrettsfaglige modeller.
 
 ## 11. Rolleforhåndsvisning kontrollert 13. oktober 2026
 
@@ -153,4 +153,28 @@ Lokal kontroll etter rettingen:
 - begge rutene returnerer 200 ved 1280 piksler, uten vannrett overflyt eller konsollfeil
 - målrettet rolletest, typekontroll, lint og `git diff --check` er grønne
 
-Rettelsen ligger bare på lokal arbeidsgren og er ikke publisert uten ny eksplisitt godkjenning.
+Rettelsen ble lagt inn i hovedversjonen i PR #1218 og er kontrollert i produksjon.
+
+## 12. Sikre testprofiler bygget 13. oktober 2026
+
+Det finnes nå én fast, tydelig fiktiv testprofil for hver av de ti støttede rollene. Profilene har eksplisitt omfang for skole, idrett, søvn og dagsform samt eventuell sluttdato for lesetilgang.
+
+Sikkerhetsgrenser:
+
+- testprofilene oppretter ingen kontoer og kan ikke brukes til innlogging
+- ingen e-post, telefonnummer eller ekte navn ligger i testprofilene
+- sentral admin er eneste rolle som kan åpne administrasjonssiden `/team-wang/app/testprofiler`
+- alle andre roller avvises før profillisten rendres
+- offentlig rolleforhåndsvisning viser bare de samme fiktive profilene og gir ingen tilgang
+
+Kontrollert i denne arbeidsbolken:
+
+- nøyaktig én testprofil per rolle og unike profil-ID-er
+- sentral admin uten automatisk tilgang til navngitte elever
+- rektor, toppidrettssjef og skoleleder uten søvn og dagsform
+- sportssjef, trener og elev med riktig avgrenset tilgang
+- foresatt, klubbtrener og leser med skjult søvn og dagsform
+- klubbtrener og øvrige eksterne lesere med sluttdato i testomfanget
+- alle ti rollevisninger i Chromium på 1280 og 390 piksler uten vannrett overflyt
+- tydelig tastaturfokus med minst 3 piksler fokusramme
+- ingen konsollfeil i den kontrollerte desktopreisen

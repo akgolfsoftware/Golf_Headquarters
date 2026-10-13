@@ -1,3 +1,6 @@
+import { WangAppSkall } from "@/components/wang/WangAppSkall";
+import { wangRolleFor } from "@/app/team-wang/_data/wang-rolle";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -71,16 +74,15 @@ export default async function WangTestresultaterPage({
     }
   }
   return (
-    <main className={styles.side}>
+    <WangAppSkall rolle={wangRolleFor(bruker)} brukerNavn={bruker.name ?? undefined} aktivtOmraade="tester"><div className={styles.side}>
       <header className={styles.topp}>
         <Link className={styles.tilbake} href="/team-wang/coach">
-          <span aria-hidden="true">←</span> Trenerflate
+          <ArrowLeft size={18} aria-hidden /> Trenerflate
         </Link>
         <span className={styles.merke}>WANG GOLF</span>
       </header>
 
       <section className={styles.innhold}>
-        <p className={styles.overlinje}>MÅLING · UTVIKLING</p>
         <div className={styles.tittelRad}>
           <div>
             <h1>Testresultater</h1>
@@ -159,6 +161,6 @@ export default async function WangTestresultaterPage({
           </nav>
         )}
       </section>
-    </main>
+    </div></WangAppSkall>
   );
 }

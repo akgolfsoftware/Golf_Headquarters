@@ -29,7 +29,7 @@ const tall = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumF
 function Felt({ etikett, children, mono = false }: { etikett: string; children: React.ReactNode; mono?: boolean }) {
   return (
     <div style={{ minWidth: 0 }}>
-      <TnEtikett style={{ fontSize: 10.5, letterSpacing: "0.14em" }}>{etikett}</TnEtikett>
+      <TnEtikett style={{ fontSize: 13, letterSpacing: 0 }}>{etikett}</TnEtikett>
       <div style={{ fontSize: mono ? 14.5 : 14, fontFamily: mono ? TN.font.mono : undefined, fontVariantNumeric: "tabular-nums", marginTop: 4, overflowWrap: "anywhere" }}>{children}</div>
     </div>
   );

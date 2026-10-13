@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **551**. Unike rutemønstre i skanningen: 551. Komponentfiler: 901. Ramme- og tilstandsfiler: 259.
+Sidefiler med rute: **552**. Unike rutemønstre i skanningen: 552. Komponentfiler: 910. Ramme- og tilstandsfiler: 273.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -21,7 +21,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | forelder | 17 |
 | inngang-og-konto | 19 |
 | interne-eksempler | 6 |
-| lag-og-skole | 63 |
+| lag-og-skole | 64 |
 | marked-og-offentlig | 70 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
@@ -34,12 +34,12 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 |---|---:|
 | tegnet-skjermtype | 284 |
 | videresending | 170 |
-| teknisk-forklaring | 44 |
+| teknisk-forklaring | 45 |
 | byggeunderlag | 24 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 14 rader har ingen eksakt type. 163 rader har et registrert avvik. 137 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 14 rader har ingen eksakt type. 160 rader har et registrert avvik. 134 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -84,6 +84,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/team-norway/workbench` | TN-UTEN-RAD | — |
 | `/team-wang/app/logg-inn` | WANG-UTEN-RAD | — |
 | `/team-wang/app` | WANG-UTEN-RAD | — |
+| `/team-wang/app/testprofiler` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/spiller/[elevId]` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/tester` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/turneringer/[elevId]` | WANG-UTEN-RAD | — |

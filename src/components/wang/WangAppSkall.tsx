@@ -106,7 +106,7 @@ export function WangAppSkall({
                   color: 'var(--wang-mint)',
                 }}
               >
-                Golf · Fredrikstad
+                Fredrikstad
               </span>
             </div>
           </div>
@@ -305,7 +305,7 @@ export function WangAppSkall({
                 color: 'var(--wang-mint)',
               }}
             >
-              Golf · Fredrikstad
+              Fredrikstad
             </p>
             <p
               style={{

@@ -68,7 +68,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
             <TnKnapperekke>
               {valgt.kontekst.kanAdministrere && !dag.eventId && (dag.status === "PLANNED" || dag.status === "ACTIVE") ? <TnTestdagEndre id={dag.id} tittel={dag.title} sted={dag.location ?? ""} tidspunktLokal={lokalTid(dag.scheduledAt)} /> : null}
               {valgt.kontekst.kanAdministrere && !dag.eventId && fort === 0 ? <TnSlettTestdag id={dag.id} navn={dag.title} /> : null}
-              <Link href="/team-norway/fellestesting" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle testdager</Link>
+              <Link href="/team-norway/fellestesting" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle testdager</Link>
             </TnKnapperekke>
           }
         />
@@ -156,7 +156,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
           <div role="table" aria-label="Minstekrav per klasse">
             <div role="row" style={{ display: "grid", gridTemplateColumns: STANDARDKOLONNER, gap: 6, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}` }}>
               {["Test", ...KLASSER].map((k, i) => (
-                <TnEtikett key={k} style={{ fontSize: 10.5, letterSpacing: "0.1em", textAlign: i > 0 ? "right" : undefined, overflowWrap: "anywhere" }}><span role="columnheader">{k}</span></TnEtikett>
+                <TnEtikett key={k} style={{ fontSize: 13, letterSpacing: 0, textAlign: i > 0 ? "right" : undefined, overflowWrap: "anywhere" }}><span role="columnheader">{k}</span></TnEtikett>
               ))}
             </div>
             {klare.map((r) => (

@@ -13,6 +13,8 @@ import { fullforWbLiveOkt, lagreWbOvelse, lagreWbOvelseVideo } from "./wb-live-a
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { getSignedUrl } from "@/lib/storage/supabase-storage";
+import { storedVideoHeaderMatches } from "@/lib/storage/video-content";
+import { canAttachLiveVideo } from "./video-access";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZES, STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import { LiveSessionIdSchema, loadAuthorizedLiveSource, type LiveSource } from "./session-source";
 import { LiveDrillProgressSchema, LiveProgressListSchema, LiveReflectionSchema, readPrecisionProgress, type LiveDrillProgress } from "./session-progress";
@@ -151,8 +153,7 @@ export async function lagreLiveOvelseVideo(sessionId: string, input: unknown): P
   if (!path.startsWith(`${user.id}/`) || path.includes("..") || path.includes("\\") || path.includes("%")) return { ok: false, error: "Ugyldig video." };
   try {
     const source = await loadAuthorizedLiveSource(sessionId);
-    const own = source.ownerId === user.id || source.kind === "v2" && source.row.participants.some((p) => p.userId === user.id && ["ACCEPTED", "ATTENDED"].includes(p.status));
-    if (!own || !active(source) || !source.row.drills.some((d) => d.id === parsed.data.drillId)) return errorResult();
+    if (!canAttachLiveVideo(source, user.id, parsed.data.drillId)) return errorResult();
     const bucket = STORAGE_BUCKETS.PLAYER_SWING_VIDEOS;
     const file = await supabaseAdmin().storage.from(bucket).info(path);
     const contentType = file.data?.contentType ?? file.data?.metadata?.mimetype;
@@ -163,6 +164,7 @@ export async function lagreLiveOvelseVideo(sessionId: string, input: unknown): P
     const videoUrl = await getSignedUrl(bucket, path);
     const existing = await prisma.playerSwingVideo.findFirst({ where: { userId: user.id, storagePath: path, liveSessionId: sessionId, drillId: parsed.data.drillId }, select: { id: true } });
     if (existing) return { ok: true };
+    if (!(await storedVideoHeaderMatches(videoUrl, contentType, size))) return { ok: false, error: "Filinnholdet er ikke en støttet video. Velg originalvideoen og prøv igjen." };
     if (source.kind === "workbench") return lagreWbOvelseVideo(sessionId, { drillId: parsed.data.drillId, storagePath: path, videoUrl });
     await prisma.playerSwingVideo.create({ data: { userId: user.id, videoUrl, storagePath: path, liveSessionId: sessionId,
       liveSessionKind: source.kind === "v2" ? "session-v2" : "plan-session", drillId: parsed.data.drillId, status: "PROCESSING",

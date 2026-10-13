@@ -1,3 +1,5 @@
+import { WangAppSkall } from "@/components/wang/WangAppSkall";
+import { wangRolleFor } from "@/app/team-wang/_data/wang-rolle";
 import { notFound } from "next/navigation";
 
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
@@ -162,6 +164,8 @@ export default async function IupPage({
     return (
       <>
       <IupSamtale
+        kanRedigere={bruker.role === "COACH" || bruker.role === "ADMIN"}
+        tilbakeHref={bruker.role === "PARENT" ? "/forelder" : bruker.role === "PLAYER" ? "/portal" : "/team-wang/coach?omraade=elever"}
         elevId={elev.id}
         elevNavn={elev.name?.trim() || elev.email}
         avsluttende={avsluttende}
@@ -207,5 +211,7 @@ export default async function IupPage({
     );
   });
   if (visning === null) notFound();
-  return visning;
+  return bruker.role === "COACH" || bruker.role === "ADMIN"
+    ? <WangAppSkall rolle={wangRolleFor(bruker)} brukerNavn={bruker.name ?? undefined} aktivtOmraade="elever">{visning}</WangAppSkall>
+    : visning;
 }

@@ -214,7 +214,7 @@ export function NyBookingWizard({
     startTransition(async () => {
       try {
         if (isGroup && groupId) {
-          // For gruppe: opprett GroupSchedule med antall deltagere
+          // For gruppe: opprett GroupSchedule med antall deltakere
           const { opprettGruppeTrening } = await import("@/app/admin/grupper/[id]/actions");
           const varighetMin = valgtTjeneste.durationMin;
           const endAt = new Date(startAt.getTime() + varighetMin * 60000);
@@ -247,17 +247,17 @@ export function NyBookingWizard({
   }
 
   return (
-    <div className="mx-auto max-w-[960px] px-6 py-8" data-paper-slug="agencyos-bookinger">
+    <div className="mx-auto w-full max-w-[1040px] py-2" data-paper-slug="agencyos-bookinger">
       <Link
         href="/admin/bookinger"
-        className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1.5 font-sans text-[13px] font-bold tracking-normal text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
         Tilbake til bookinger
       </Link>
 
-      <h1 className="mt-3 font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">
-        Ny <em className="font-normal italic text-primary">booking</em>
+      <h1 className="mt-3 font-sans text-[36px] font-bold leading-tight tracking-[-0.02em] text-foreground">
+        Ny booking
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {viewerErAdmin
@@ -276,7 +276,7 @@ export function NyBookingWizard({
             <li key={s.n} className="flex items-center gap-2">
               <span
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em]",
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-sans text-[13px] font-extrabold tracking-normal",
                   aktiv
                     ? "border-primary bg-primary text-primary-foreground"
                     : ferdig
@@ -305,15 +305,16 @@ export function NyBookingWizard({
             {isGroup && group ? (
               <div className="p-4 border rounded bg-accent/10">
                 <div className="font-bold">{group.name}</div>
-                <div className="text-sm text-muted-foreground">Gruppe trening • max {group.maxParticipants || "ubegrenset"} deltagere</div>
-                <div className="text-xs mt-1">Antall deltagere: <input type="number" value={antallDeltagere || ""} onChange={e => setAntallDeltagere(e.target.value ? parseInt(e.target.value) : null)} className="border px-1 w-20" /></div>
+                <div className="text-sm text-muted-foreground">Gruppetrening · maks {group.maxParticipants || "ubegrenset"} deltakere</div>
+                <div className="text-xs mt-1">Antall deltakere: <input type="number" value={antallDeltagere || ""} onChange={e => setAntallDeltagere(e.target.value ? parseInt(e.target.value) : null)} className="border px-1 w-20" /></div>
               </div>
             ) : (
               <>
-                <label className="flex h-10 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground">
+                <label className="flex min-h-11 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground">
                   <Search className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
                   <input
                     type="search"
+                    aria-label="Søk etter spiller"
                     value={sok}
                     onChange={(e) => setSok(e.target.value)}
                     placeholder="Søk navn, e-post eller klubb"
@@ -327,22 +328,23 @@ export function NyBookingWizard({
                       <button
                         key={s.id}
                         type="button"
+                        aria-pressed={s.id === spillerId}
                         onClick={() => setSpillerId(s.id)}
                         className={cn(
                           "flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
                           valgt
-                            ? "border-primary bg-accent/10"
+                            ? "border-primary bg-primary/10"
                             : "border-border bg-background hover:border-input",
                         )}
                       >
-                        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-display text-xs font-bold text-foreground">
+                        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-sans text-xs font-bold text-foreground">
                           {initials(s.name)}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-sm font-bold tracking-[-0.005em] text-foreground">
                             {s.name}
                           </span>
-                          <span className="block truncate font-mono text-[10px] tracking-[0.02em] text-muted-foreground">
+                          <span className="block truncate font-sans text-[13px] tracking-[0.02em] text-muted-foreground">
                             {[s.homeClub, s.email].filter(Boolean).join(" · ")}
                           </span>
                         </span>
@@ -353,7 +355,7 @@ export function NyBookingWizard({
                     );
                   })}
                   {filtrerteSpillere.length === 0 && (
-                    <Tom tekst="Ingen spillere matcher søket." />
+                    <div><Tom tekst={spillere.length ? "Ingen spillere matcher søket. Prøv et annet navn eller tøm søket." : "Ingen spillere er koblet til deg ennå."} />{spillere.length === 0 && <Link className="pa-btn pa-btn--secondary" href="/admin/spillere/ny">Legg til spiller</Link>}</div>
                   )}
                 </div>
               </>
@@ -380,7 +382,7 @@ export function NyBookingWizard({
                     setTjenesteId(null);
                   }}
                   className={cn(
-                    "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                    "inline-flex items-center rounded-full border px-2.5 py-1 font-sans text-[13px] font-bold tracking-normal",
                     coachFilterId === null
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-muted-foreground hover:bg-secondary",
@@ -397,7 +399,7 @@ export function NyBookingWizard({
                       setTjenesteId(null);
                     }}
                     className={cn(
-                      "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                      "inline-flex items-center rounded-full border px-2.5 py-1 font-sans text-[13px] font-bold tracking-normal",
                       coachFilterId === c.id
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-muted-foreground hover:bg-secondary",
@@ -418,11 +420,12 @@ export function NyBookingWizard({
                     <button
                       key={tj.id}
                       type="button"
+                      aria-pressed={tj.id === tjenesteId}
                       onClick={() => setTjenesteId(tj.id)}
                       className={cn(
                         "flex flex-col gap-2 rounded-lg border p-3.5 text-left transition-colors",
                         valgt
-                          ? "border-primary bg-accent/10"
+                          ? "border-primary bg-primary/10"
                           : "border-border bg-background hover:border-input",
                       )}
                     >
@@ -434,7 +437,7 @@ export function NyBookingWizard({
                           <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" strokeWidth={2} aria-hidden />
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-3 font-sans text-[13px] tracking-normal text-muted-foreground">
                         <span className="inline-flex items-center gap-1">
                           <Clock className="h-3 w-3" strokeWidth={1.75} aria-hidden />
                           {tj.durationMin} min
@@ -467,7 +470,7 @@ export function NyBookingWizard({
         {steg === 3 && (
           <StegRamme tittel="Velg lokasjon" sub="Og eventuelt en spesifikk fasilitet.">
             {lokasjoner.length === 0 ? (
-              <Tom tekst="Ingen aktive lokasjoner. Legg til under Anlegg." />
+              <div><Tom tekst="Ingen aktive steder er registrert." /><Link className="pa-btn pa-btn--secondary" href="/admin/anlegg">Åpne steder og anlegg</Link></div>
             ) : (
               <div className="space-y-2">
                 {lokasjoner.map((l) => {
@@ -475,6 +478,7 @@ export function NyBookingWizard({
                   return (
                     <div key={l.id}>
                       <button
+                        aria-pressed={l.id === lokasjonId}
                         type="button"
                         onClick={() => {
                           setLokasjonId(l.id);
@@ -483,7 +487,7 @@ export function NyBookingWizard({
                         className={cn(
                           "flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
                           valgt
-                            ? "border-primary bg-accent/10"
+                            ? "border-primary bg-primary/10"
                             : "border-border bg-background hover:border-input",
                         )}
                       >
@@ -494,7 +498,7 @@ export function NyBookingWizard({
                           <span className="block truncate text-sm font-bold tracking-[-0.005em] text-foreground">
                             {l.name}
                           </span>
-                          <span className="block truncate font-mono text-[10px] tracking-[0.02em] text-muted-foreground">
+                          <span className="block truncate font-sans text-[13px] tracking-[0.02em] text-muted-foreground">
                             {l.address}
                           </span>
                         </span>
@@ -507,9 +511,10 @@ export function NyBookingWizard({
                         <div className="ml-12 mt-2 flex flex-wrap gap-1.5">
                           <button
                             type="button"
+                            aria-pressed={fasilitetId === null}
                             onClick={() => setFasilitetId(null)}
                             className={cn(
-                              "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                              "inline-flex items-center rounded-full border px-2.5 py-1 font-sans text-[13px] font-bold tracking-normal",
                               fasilitetId === null
                                 ? "border-primary bg-primary text-primary-foreground"
                                 : "border-border bg-card text-muted-foreground hover:bg-secondary",
@@ -521,9 +526,10 @@ export function NyBookingWizard({
                             <button
                               key={f.id}
                               type="button"
+                              aria-pressed={fasilitetId === f.id}
                               onClick={() => setFasilitetId(f.id)}
                               className={cn(
-                                "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                                "inline-flex items-center rounded-full border px-2.5 py-1 font-sans text-[13px] font-bold tracking-normal",
                                 fasilitetId === f.id
                                   ? "border-primary bg-primary text-primary-foreground"
                                   : "border-border bg-card text-muted-foreground hover:bg-secondary",
@@ -565,7 +571,7 @@ export function NyBookingWizard({
               </Felt>
             </div>
             {valgtTjeneste && (
-              <p className="mt-3 font-mono text-[11px] tracking-[0.04em] text-muted-foreground">
+              <p className="mt-3 font-sans text-[13px] tracking-[0.04em] text-muted-foreground">
                 Varighet: <span className="font-bold text-foreground">{valgtTjeneste.durationMin} min</span>
                 {dato && tid && (
                   <> · slutt ca. {sluttTid(dato, tid, valgtTjeneste.durationMin)}</>
@@ -582,13 +588,13 @@ export function NyBookingWizard({
               />
             </Felt>
             {isGroup && (
-              <Felt label="Antall deltagere (max)" className="mt-4">
+              <Felt label="Antall deltakere (max)" className="mt-4">
                 <input
                   type="number"
                   value={antallDeltagere || ""}
                   onChange={(e) => setAntallDeltagere(e.target.value ? parseInt(e.target.value) : null)}
                   className={inputCls}
-                  placeholder="Antall deltagere"
+                  placeholder="Antall deltakere"
                 />
               </Felt>
             )}
@@ -629,7 +635,7 @@ export function NyBookingWizard({
             {policyHint && (
               <p
                 data-od-id="ny-booking-policy"
-                className="mt-4 rounded-lg border border-border bg-secondary/40 px-3 py-2 font-mono text-[10px] leading-relaxed tracking-[0.02em] text-muted-foreground"
+                className="mt-4 rounded-lg border border-border bg-secondary/40 px-3 py-2 font-sans text-[13px] leading-relaxed tracking-[0.02em] text-muted-foreground"
               >
                 {policyHint}
               </p>
@@ -652,7 +658,7 @@ export function NyBookingWizard({
             type="button"
             onClick={forrige}
             disabled={steg === 1 || pending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-foreground transition-colors hover:bg-secondary disabled:opacity-40"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 font-sans text-[13px] font-extrabold tracking-normal text-foreground transition-colors hover:bg-secondary disabled:opacity-40"
           >
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             Forrige
@@ -663,7 +669,7 @@ export function NyBookingWizard({
               type="button"
               onClick={neste}
               disabled={!kanVidere || pending}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-sans text-[13px] font-extrabold tracking-normal text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               Neste
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -673,7 +679,7 @@ export function NyBookingWizard({
               type="button"
               onClick={opprett}
               disabled={pending}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-sans text-[13px] font-extrabold tracking-normal text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
               {pending ? "Oppretter…" : "Opprett booking"}
@@ -714,8 +720,8 @@ function StegRamme({
   return (
     <div>
       <div className="mb-4">
-        <h2 className="font-display text-lg font-bold tracking-[-0.015em] text-foreground">{tittel}</h2>
-        <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <h2 className="font-sans text-lg font-bold tracking-[-0.015em] text-foreground">{tittel}</h2>
+        <p className="mt-0.5 font-sans text-[13px] tracking-normal text-muted-foreground">
           {sub}
         </p>
       </div>
@@ -737,7 +743,7 @@ function Felt({
 }) {
   return (
     <label className={cn("block", className)}>
-      <span className="mb-1.5 inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+      <span className="mb-1.5 inline-flex items-center gap-1.5 font-sans text-[13px] font-bold tracking-normal text-muted-foreground">
         {Icon && <Icon className="h-3 w-3" strokeWidth={1.75} aria-hidden />}
         {label}
       </span>
@@ -749,7 +755,7 @@ function Felt({
 function Oppsummer({ label, verdi }: { label: string; verdi: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4 px-4 py-3">
-      <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+      <dt className="font-sans text-[13px] font-bold tracking-normal text-muted-foreground">
         {label}
       </dt>
       <dd className="text-right text-sm font-semibold tracking-[-0.005em] text-foreground">{verdi}</dd>

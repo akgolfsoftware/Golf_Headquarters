@@ -1,36 +1,6 @@
 "use client";
 
-/**
- * AgencyOS Innsikt-hub — Train-lock (T11, 27.08.2026).
- *
- * Fasit: `AG-07 Innsikt-hub.dc.html` (AG-07a iPhone / AG-07b iPad / AG-07c
- * Mac). Erstatter `AdminAnalyseV2` (Paper T.*-tokens) på `/admin/analyse`.
- *
- * Tokens: KUN TL (src/lib/v2/train-lock.ts) — se CLAUDE.md invariant 2.
- * Ingen InnsiktHubNav-pillrad her: fasiten viser ingen subnav på AG-07 —
- * navigasjon skjer via V2Shell-railen («Innsikt» er allerede aktiv) og de
- * seks/syv «Gå dypere»-radene under.
- *
- * Motor-skille (harde regel, se fasit-bildetekst «blandes aldri i samme
- * tall»): SG-tallene her er Broadie-SG fra egne runder (Round.sgTotal/sgOtt/
- * sgApp/sgArg/sgPutt). DataGolf, TrackMan og Fys/tester er ALLTID push-rader
- * til egne flater med egne motorer — aldri smeltet inn i disse KPI-ene.
- *
- * Avvik fra fasiten (dokumentert, se docs/natt/T11-DONE.md):
- * - «Udekket» (Mac-KPI 3) er definert som spillere uten planlagt økt inneværende
- *   uke — nærmeste ærlige tolkning appen har data til, ikke fasitens ordrette
- *   kilde (som ikke er spesifisert i fasit-bildeteksten).
- * - DataGolf og Fys og last har ingen egen stall-nivå-flate i appen ennå —
- *   radene lenker til Spiller 360 (`/admin/spillere`) der per-spiller-data
- *   finnes, i påvente av egne flater.
- *
- * MASTERPLAN 15.8 (31.08.2026): dette er nå «stall»-fanen på `/admin/analyse`
- * (standardfanen, uendret spørring/innhold). `somFane` skjuler egen
- * caps+h1 («Academy · stallen» / «Innsikt») når sidens `AnalyseHode` allerede
- * viser dem — kun brukt fra `/admin/analyse/page.tsx`. «Åpne stall-innsikt»
- * peker nå på `?fane=stall&visning=trend` (samme adresse, nestet visning)
- * i stedet for den nå-redirectede `/admin/analyse/stall`.
- */
+/** Coachinnsikt med eksisterende datakilder. Visningsruten avgrenser Precision-stilen; eldre V2-navn er beholdt for importene. */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -79,14 +49,14 @@ export type InnsiktHubV2Data = {
   lekkasjeTekst: string | null;
 };
 
-function CapsLabel({ children, size = 11 }: { children: React.ReactNode; size?: number }) {
+function CapsLabel({ children, size = 13 }: { children: React.ReactNode; size?: number }) {
   return (
     <span
       style={{
-        fontSize: size,
+        fontSize: Math.max(13, size),
         fontWeight: TL.vekt.caps,
-        letterSpacing: TL.track.capsSm,
-        textTransform: "uppercase",
+        letterSpacing: 0,
+        textTransform: "none",
         color: TL.mute,
       }}
     >
@@ -109,12 +79,12 @@ function KpiKort({ verdi, unit, label }: { verdi: string; unit?: string; label: 
   );
 }
 
-/** Søylediagram for SG per kategori — negativ verdi er opacity 0.4 på søylen, aldri rødt. */
+/** Lik skala og lesbarhet på begge sider av null. */
 function KategoriBar({ k, hoyde }: { k: InnsiktHubV2Kategori; hoyde: number }) {
   const barHoyde = Math.max(4, Math.round((Math.min(Math.abs(k.pct), 100) / 100) * (hoyde / 2)));
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <span style={{ fontSize: 13, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums", opacity: k.negativ ? TL.opasitet.negativ : 1 }}>
+      <span style={{ fontSize: 13, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums", opacity: 1 }}>
         {k.verdi}
       </span>
       <div style={{ position: "relative", width: "100%", height: hoyde, marginTop: 8 }}>
@@ -129,7 +99,7 @@ function KategoriBar({ k, hoyde }: { k: InnsiktHubV2Kategori; hoyde: number }) {
               top: hoyde / 2 + 1,
               height: barHoyde,
               background: TL.text,
-              opacity: 0.4,
+              opacity: 1,
               borderRadius: "0 0 4px 4px",
             }}
           />
@@ -191,43 +161,38 @@ export function InnsiktHubV2({ data, somFane }: { data: InnsiktHubV2Data; somFan
   const regular = storrelse === "regular";
 
   const spiller360Rad: PushRad = { navn: "Spiller 360", verdi: String(data.nSpillere), href: "/admin/spillere" };
-  const dataGolfRad: PushRad = { navn: "DataGolf", verdi: "egen motor", href: "/admin/spillere" };
   const trackmanRad: PushRad = {
     navn: "TrackMan",
     verdi: data.trackmanOkter > 0 ? `${data.trackmanOkter} økter` : "—",
     href: "/admin/trackman",
   };
-  const fysRad: PushRad = { navn: "Fys og last", verdi: "ACWR", href: "/admin/spillere" };
-  const testerRad: PushRad = { navn: "Tester", verdi: "TN-batteri", href: "/admin/tester" };
-  const okonomiRad: PushRad = { navn: "Økonomi", verdi: "YTD", href: "/admin/agencyos/okonomi" };
+  const fysRad: PushRad = { navn: "Fysisk trening", verdi: "Registreringer", href: "/admin/spillere" };
+  const testerRad: PushRad = { navn: "Tester", verdi: "Protokoller og resultater", href: "/admin/tester" };
   const stallInnsiktRad: PushRad = { navn: "Stall-innsikt", verdi: "SG per kategori", href: ANALYSE_STALL_TREND_HREF };
 
   const dypereRader: PushRad[] = wide
-    ? [spiller360Rad, dataGolfRad, trackmanRad, fysRad, testerRad, okonomiRad]
-    : [stallInnsiktRad, spiller360Rad, dataGolfRad, trackmanRad, fysRad, testerRad];
+    ? [spiller360Rad, trackmanRad, fysRad, testerRad]
+    : [stallInnsiktRad, spiller360Rad, trackmanRad, fysRad, testerRad];
 
   const kpis = wide
     ? [
         { verdi: data.sgSnitt, label: "SG snitt" },
         { verdi: String(data.okterDenneUken), label: "Økter denne uken" },
-        { verdi: String(data.udekket), label: "Udekket" },
+        { verdi: String(data.udekket), label: "Uten planlagt økt" },
         { verdi: String(data.trackmanOkter), label: "TrackMan-økter" },
       ]
     : regular
       ? [
           { verdi: data.sgSnitt, label: "SG snitt" },
           { verdi: String(data.okterDenneUken), label: "Økter denne uken" },
-          { verdi: String(data.udekket), label: "Udekket" },
+          { verdi: String(data.udekket), label: "Uten planlagt økt" },
         ]
       : [
           { verdi: data.sgSnitt, label: "SG snitt" },
           { verdi: String(data.okterDenneUken), label: "Økter denne uken" },
         ];
 
-  const motorTekst =
-    storrelse === "wide"
-      ? "Fire motorer, fire flater: Broadie-SG · DataGolf · PEI · TrackMan. Aldri samme tall."
-      : "Broadie-SG, DataGolf, PEI og TrackMan blandes aldri i samme tall.";
+  const motorTekst = "SG er beregnet fra spillernes registrerte runder. TrackMan og testresultater vises separat med eget målegrunnlag.";
 
   const kategoriKort = data.harKategoriData ? (
     <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: wide ? 24 : 20, display: "flex", flexDirection: "column" }}>

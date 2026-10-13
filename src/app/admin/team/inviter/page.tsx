@@ -9,17 +9,19 @@
 
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
+import { KnappLenke } from "@/components/precision/pa";
 import { AdminInviterCoachTrainLock } from "@/components/admin/v2/oppsett/AdminInviterCoachTrainLock";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+
 
 export default async function V2AdminInviterCoachPage() {
   const user = await requireCapability(Capability.INVITE_USERS);
 
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/team">Team</TlTilbake>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
+      <KnappLenke variant="ghost" href="/admin/oppsett?fane=tilgang">Til oppsett</KnappLenke>
       <AdminInviterCoachTrainLock kanTildeleTilganger={user.role === "ADMIN"} />
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

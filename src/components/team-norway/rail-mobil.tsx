@@ -49,7 +49,7 @@ export function TnRailMobil({ grupper, bunn, brukerNavn, orgNavn }: { grupper: T
     borderBottom: "none",
     color: aktiv ? TN.rail.on : TN.rail.text,
     fontFamily: TN.font.body,
-    fontSize: 11.5,
+    fontSize: 13,
     fontWeight: aktiv ? TN.weight.bold : TN.weight.regular,
     cursor: "pointer",
     padding: 0,
@@ -72,7 +72,7 @@ export function TnRailMobil({ grupper, bunn, brukerNavn, orgNavn }: { grupper: T
           style={{ position: "fixed", left: 0, right: 0, top: 0, bottom: "calc(59px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", zIndex: 40, background: TN.rail.bg, overflowY: "auto", padding: "12px 12px 20px", display: "flex", flexDirection: "column", gap: 10 }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 0 0 10px" }}>
-            <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.rail.on }}>Meny</span>
+            <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.rail.on }}>Meny</span>
             <button type="button" onClick={() => { setMer(false); merRef.current?.focus(); }} aria-label="Lukk meny" style={{ minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer" }}>
               <Icon name="x" size={20} style={{ color: TN.rail.on }} />
             </button>

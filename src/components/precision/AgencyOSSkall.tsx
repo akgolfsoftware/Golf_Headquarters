@@ -134,9 +134,11 @@ export function AgencyOSSkall({ children, navn, uleste = null, haster = false, n
         </Link>
         {AOS_MENY.map((m) => <Link key={m.id} href={m.href} aria-label={m.label} title={m.label} className="pa-aos__railpunkt" aria-current={aktiv.punkt === m.id ? "page" : undefined}>
           <Ikon icon={IKON[m.id][0]} size={20} name={IKON[m.id][1]} />
+          <span className="pa-aos__railetikett">{m.label}</span>
         </Link>)}
         <button type="button" aria-label="Mer" title="Mer" className="pa-aos__railpunkt" aria-current={aktiv.punkt === "mer" ? "page" : undefined} aria-expanded={merSkuff} onClick={() => setMerSkuff(true)}>
           <Ikon icon={Ellipsis} size={20} name="ellipsis" />
+          <span className="pa-aos__railetikett">Mer</span>
         </button>
         <span style={{ flex: 1 }} />
         <span title={navn}><Initialer navn={navn} size={32} /></span>

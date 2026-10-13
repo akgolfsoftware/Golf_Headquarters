@@ -1,5 +1,5 @@
 "use client";
-import { AK } from "@/lib/v2/ak-palett";
+import styles from "./iup-samtale.module.css";
 
 /**
  * IUP-samtalen — tre steg i én skjerm.
@@ -98,6 +98,8 @@ export function IupSamtale({
   evalueringer: startEval,
   nyeStart,
   maalinger,
+  kanRedigere = true,
+  tilbakeHref = "/team-wang/coach",
 }: {
   elevId: string;
   elevNavn: string;
@@ -106,6 +108,8 @@ export function IupSamtale({
   evalueringer: EvalRad[];
   nyeStart: NyRad[];
   maalinger: IupMaaling[];
+  kanRedigere?: boolean;
+  tilbakeHref?: string;
 }) {
   const [rader, setRader] = useState<EvalRad[]>(startEval);
   const [nye, setNye] = useState<NyRad[]>(nyeStart);
@@ -121,6 +125,7 @@ export function IupSamtale({
     setRader((r) => r.map((x) => (x.id === id ? { ...x, ...endring } : x)));
 
   const lagre = () => {
+    if (!kanRedigere) return;
     setMelding(null);
     setFeil(null);
     if (!neste) {
@@ -132,6 +137,7 @@ export function IupSamtale({
       return;
     }
     start(async () => {
+      try {
       const svar = await lagreIupSamtale({
         elevId,
         evalueringer: rader.map((r) => ({
@@ -156,15 +162,20 @@ export function IupSamtale({
         requestId.current = crypto.randomUUID();
       }
       else setFeil(svar.feil);
+      } catch {
+        setFeil("Vurderingen kunne ikke lagres. Innholdet ditt er beholdt her. Prøv å lagre igjen.");
+      }
     });
   };
 
   return (
     <div
+      className={styles.side}
+      data-org="wang"
       style={{
         minHeight: "100vh",
         background: "var(--bg-app)",
-        padding: "clamp(16px,4vw,32px) clamp(16px,4vw,40px) 72px",
+        padding: kanRedigere ? "0 0 72px" : "clamp(16px,4vw,32px) clamp(16px,4vw,40px) 72px",
       }}
     >
       <div
@@ -177,7 +188,7 @@ export function IupSamtale({
         }}
       >
         <Link
-          href="/team-wang/coach"
+          href={tilbakeHref}
           className="wang-pressable"
           style={{
             alignSelf: "flex-start",
@@ -186,42 +197,37 @@ export function IupSamtale({
             gap: 7,
             minHeight: 44,
             padding: "0 16px",
-            borderRadius: 999,
+            borderRadius: 8,
             background: "var(--surface-card)",
-            boxShadow: "var(--shadow-card-sm)",
-            fontFamily: "var(--font-brand)",
+            boxShadow: "none",
+            fontFamily: "var(--font-wang-brand)",
             fontWeight: 600,
             fontSize: 13,
             color: "var(--text-primary)",
             textDecoration: "none",
           }}
         >
-          <ArrowLeft size={16} strokeWidth={2.2} aria-hidden /> Tilbake til
-          årsplanen
+          <ArrowLeft size={16} strokeWidth={2.2} aria-hidden /> Tilbake
         </Link>
 
         {/* Hero */}
         <section
+          className={styles.innledning}
           style={{
-            background: "var(--grad-hero-line)",
-            boxShadow: "var(--shadow-hero)",
-            borderRadius: "var(--radius-card)",
+            background: "var(--wang-navy)",
+            boxShadow: "none",
+            borderRadius: 4,
             padding: "clamp(20px,4vw,26px)",
             color: "var(--text-on-dark)",
           }}
         >
-          <span
-            className="t-label"
-            style={{ display: "block", color: "var(--wang-mint)" }}
-          >
-            IUP-samtale · {elevNavn}
-          </span>
+          <h1 className={styles.tittel}>IUP-samtale med {elevNavn}</h1>
           <span
             style={{
               display: "block",
-              fontFamily: "var(--font-brand)",
-              fontWeight: 800,
-              fontSize: "clamp(21px,4vw,28px)",
+              fontFamily: "var(--font-wang-brand)",
+              fontWeight: 600,
+              fontSize: 18,
               letterSpacing: "-0.015em",
               marginTop: 6,
             }}
@@ -244,6 +250,7 @@ export function IupSamtale({
 
           <div
             style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}
+            aria-label="Samtalens tre steg"
           >
             {STEG.map((s, i) => (
               <span
@@ -254,11 +261,11 @@ export function IupSamtale({
                   gap: 7,
                   height: 28,
                   padding: "0 13px",
-                  borderRadius: 999,
-                  background: AK.farge.hvitA14,
-                  fontFamily: "var(--font-brand)",
+                  borderRadius: 8,
+                  background: "var(--overlay-on-dark-12)",
+                  fontFamily: "var(--font-wang-brand)",
                   fontWeight: 700,
-                  fontSize: 12,
+                  fontSize: 13,
                 }}
               >
                 <span
@@ -268,11 +275,11 @@ export function IupSamtale({
                     justifyContent: "center",
                     width: 18,
                     height: 18,
-                    borderRadius: 999,
+                    borderRadius: 8,
                     background: "var(--wang-mint)",
                     color: "var(--wang-navy)",
                     fontWeight: 800,
-                    fontSize: 10,
+                    fontSize: 13,
                   }}
                 >
                   {i + 1}
@@ -283,7 +290,8 @@ export function IupSamtale({
           </div>
         </section>
 
-        <div className="wang-okt-kolonner" style={{ display: "grid", gap: 18 }}>
+        {!kanRedigere ? <p className={styles.lesetilstand} role="note">Du leser den delte IUP-samtalen. Vurderinger og forslag endres av treneren. Nye fokusområder legges først i årsplanen når spilleren godkjenner.</p> : null}
+        <div className={styles.kolonner}>
           {/* Steg 1 og 2: evaluering + målte tall */}
           <div
             style={{
@@ -293,7 +301,7 @@ export function IupSamtale({
               minWidth: 0,
             }}
           >
-            <section className="wang-card" style={{ padding: "16px 18px" }}>
+            <section className={styles.seksjon} style={{ padding: "20px 22px" }}>
               <div
                 style={{
                   display: "flex",
@@ -304,12 +312,12 @@ export function IupSamtale({
                   marginBottom: 6,
                 }}
               >
-                <span
-                  className="t-label"
+                <h2
+                  className={styles.seksjonTittel}
                   style={{ color: "var(--text-secondary)" }}
                 >
                   {avsluttende?.navn ?? "Perioden"} · slik gikk det
-                </span>
+                </h2>
                 <span style={{ display: "flex", gap: 12 }}>
                   <Nokkel farge="var(--wang-teal)" tekst="Egenvurdering" />
                   <Nokkel farge="var(--wang-navy)" tekst="Trener" />
@@ -347,12 +355,12 @@ export function IupSamtale({
                         minWidth: 0,
                       }}
                     >
-                      <AkseChip akse={r.akse} />
+                      <AkseChip akse={r.akse} size={13} />
                       <span
                         style={{
                           flex: 1,
                           minWidth: 0,
-                          fontFamily: "var(--font-brand)",
+                          fontFamily: "var(--font-wang-brand)",
                           fontWeight: 700,
                           fontSize: 13,
                           color: "var(--text-primary)",
@@ -361,9 +369,10 @@ export function IupSamtale({
                       >
                         {r.tittel}
                       </span>
-                      <MaalStatusChip status={r.status} />
+                      <MaalStatusChip status={r.status} size={13} />
                     </div>
 
+                    {kanRedigere ? <>
                     <div
                       style={{
                         display: "flex",
@@ -376,13 +385,15 @@ export function IupSamtale({
                       <Skala
                         label="Egenvurdering"
                         verdi={r.egenvurdering}
-                        farge="var(--wang-teal)"
+                        farge="var(--wang-teal-text)"
+                        deaktivert={!kanRedigere || lagrer}
                         onVelg={(v) => settEval(r.id, { egenvurdering: v })}
                       />
                       <Skala
                         label="Trener"
                         verdi={r.trenervurdering}
                         farge="var(--wang-navy)"
+                        deaktivert={!kanRedigere || lagrer}
                         onVelg={(v) => settEval(r.id, { trenervurdering: v })}
                       />
                       <label
@@ -390,12 +401,13 @@ export function IupSamtale({
                           display: "inline-flex",
                           alignItems: "center",
                           gap: 7,
-                          fontSize: 11.5,
+                          fontSize: 13,
                           color: "var(--text-secondary)",
                         }}
                       >
                         Status
                         <select
+                          disabled={!kanRedigere || lagrer}
                           value={r.status}
                           onChange={(e) =>
                             settEval(r.id, {
@@ -412,14 +424,24 @@ export function IupSamtale({
                         </select>
                       </label>
                     </div>
+                    <label className={styles.kommentar}>
+                      Kommentar til vurderingen
+                      <textarea value={r.kommentar ?? ""} disabled={!kanRedigere || lagrer} onChange={event => settEval(r.id, { kommentar: event.target.value })} placeholder="Hva ligger bak vurderingen?" rows={3} />
+                    </label>
+                    </> : <dl className={styles.leseverdier}>
+                      <div><dt>Egenvurdering</dt><dd>{r.egenvurdering === null ? "Ikke vurdert" : `${r.egenvurdering} av 5`}</dd></div>
+                      <div><dt>Trener</dt><dd>{r.trenervurdering === null ? "Ikke vurdert" : `${r.trenervurdering} av 5`}</dd></div>
+                      <div><dt>Status</dt><dd>{STATUS_TEKST[r.status]}</dd></div>
+                      <div><dt>Kommentar til vurderingen</dt><dd>{r.kommentar?.trim() || "Ingen kommentar registrert"}</dd></div>
+                    </dl>}
                   </div>
                 ))
               )}
             </section>
 
-            <section className="wang-card" style={{ padding: "16px 18px" }}>
-              <span
-                className="t-label"
+            <section className={styles.seksjon} style={{ padding: "20px 22px" }}>
+              <h2
+                className={styles.seksjonTittel}
                 style={{
                   display: "block",
                   color: "var(--text-secondary)",
@@ -427,7 +449,7 @@ export function IupSamtale({
                 }}
               >
                 Målt i perioden
-              </span>
+              </h2>
               {maalinger.length === 0 ? (
                 <p
                   style={{
@@ -456,12 +478,12 @@ export function IupSamtale({
                       minWidth: 0,
                     }}
                   >
-                    <AkseChip akse={m.akse} />
+                    <AkseChip akse={m.akse} size={13} />
                     <span style={{ flex: 1, minWidth: 0 }}>
                       <b
                         style={{
                           display: "block",
-                          fontFamily: "var(--font-brand)",
+                          fontFamily: "var(--font-wang-brand)",
                           fontWeight: 700,
                           fontSize: 13,
                           color: "var(--text-primary)",
@@ -473,7 +495,7 @@ export function IupSamtale({
                         className="wang-num"
                         style={{
                           display: "block",
-                          fontSize: 11.5,
+                          fontSize: 13,
                           color: "var(--text-secondary)",
                         }}
                       >
@@ -484,7 +506,7 @@ export function IupSamtale({
                       className="wang-num"
                       style={{
                         flex: "none",
-                        fontFamily: "var(--font-brand)",
+                        fontFamily: "var(--font-wang-brand)",
                         fontWeight: 800,
                         fontSize: 15,
                         color: "var(--wang-teal-text)",
@@ -500,8 +522,8 @@ export function IupSamtale({
 
           {/* Steg 3: nye fokusområder + den ene primære handlingen */}
           <section
-            className="wang-card"
-            style={{ padding: "16px 18px", alignSelf: "start", minWidth: 0 }}
+            className={styles.seksjon}
+            style={{ padding: "20px 22px", alignSelf: "start", minWidth: 0 }}
           >
             <div
               style={{
@@ -512,18 +534,18 @@ export function IupSamtale({
                 flexWrap: "wrap",
               }}
             >
-              <span
-                className="t-label"
+              <h2
+                className={styles.seksjonTittel}
                 style={{ color: "var(--text-secondary)" }}
               >
                 Fokusområder for {neste?.navn.toLowerCase() ?? "neste periode"}
-              </span>
+              </h2>
               <span
                 className="wang-num"
                 style={{
-                  fontFamily: "var(--font-brand)",
+                  fontFamily: "var(--font-wang-brand)",
                   fontWeight: 700,
-                  fontSize: 12,
+                  fontSize: 13,
                   color: "var(--wang-teal-text)",
                 }}
               >
@@ -531,6 +553,10 @@ export function IupSamtale({
               </span>
             </div>
 
+            {!kanRedigere ? (nye.length ? nye.map((n, i) => <div key={i} className={styles.lesefokus}>
+              <AkseChip akse={n.akse} size={13} /><h3>{n.tittel}</h3>
+              <dl className={styles.leseverdier}><div><dt>Egentid</dt><dd>{formaterEgentid(n.egentidMinUke)}/uke</dd></div><div><dt>Målemetode</dt><dd>{n.maalemetode?.trim() || "Ingen målemetode registrert"}</dd></div></dl>
+            </div>) : <p>Ingen nye fokusområder registrert.</p>) : <>
             {nye.map((n, i) => (
               <div
                 key={i}
@@ -551,6 +577,7 @@ export function IupSamtale({
                   }}
                 >
                   <select
+                          disabled={!kanRedigere || lagrer}
                     value={n.akse}
                     onChange={(e) =>
                       setNye((v) =>
@@ -571,6 +598,7 @@ export function IupSamtale({
                     ))}
                   </select>
                   <input
+                    disabled={!kanRedigere || lagrer}
                     value={n.tittel}
                     onChange={(e) =>
                       setNye((v) =>
@@ -587,6 +615,7 @@ export function IupSamtale({
                     type="button"
                     onClick={() => setNye((v) => v.filter((_, j) => j !== i))}
                     aria-label="Fjern fokusområde"
+                    disabled={!kanRedigere || lagrer}
                     className="wang-pressable"
                     style={{
                       flex: "none",
@@ -595,7 +624,7 @@ export function IupSamtale({
                       justifyContent: "center",
                       width: 44,
                       height: 44,
-                      borderRadius: 999,
+                      borderRadius: 8,
                       border: "none",
                       cursor: "pointer",
                       background: "transparent",
@@ -611,12 +640,13 @@ export function IupSamtale({
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
-                      fontSize: 11.5,
+                      fontSize: 13,
                       color: "var(--text-secondary)",
                     }}
                   >
                     Egentid
                     <select
+                          disabled={!kanRedigere || lagrer}
                       value={n.egentidMinUke}
                       onChange={(e) =>
                         setNye((v) =>
@@ -637,6 +667,7 @@ export function IupSamtale({
                     </select>
                   </label>
                   <input
+                    disabled={!kanRedigere || lagrer}
                     value={n.maalemetode ?? ""}
                     onChange={(e) =>
                       setNye((v) =>
@@ -655,6 +686,7 @@ export function IupSamtale({
 
             <button
               type="button"
+              disabled={!kanRedigere || lagrer}
               onClick={() =>
                 setNye((v) => [
                   ...v,
@@ -674,11 +706,11 @@ export function IupSamtale({
                 gap: 8,
                 minHeight: 44,
                 padding: "0 16px",
-                borderRadius: 999,
+                borderRadius: 8,
                 border: "1px dashed var(--neutral-300)",
                 cursor: "pointer",
                 background: "transparent",
-                fontFamily: "var(--font-brand)",
+                fontFamily: "var(--font-wang-brand)",
                 fontWeight: 700,
                 fontSize: 13,
                 color: "var(--text-secondary)",
@@ -687,6 +719,7 @@ export function IupSamtale({
               <Plus size={16} strokeWidth={2.2} aria-hidden /> Legg til
               fokusområde
             </button>
+            </>}
 
             <div
               style={{
@@ -698,16 +731,17 @@ export function IupSamtale({
               <p
                 style={{
                   margin: "0 0 10px",
-                  fontSize: 12,
+                  fontSize: 13,
                   color: "var(--text-secondary)",
                 }}
               >
                 Spilleren får se før og etter i PlayerHQ og velger selv om forslaget skal inn i årsplanen.
               </p>
-              <button
+              {!neste ? <p className={styles.lesetilstand}>Ingen neste periode er registrert. Gruppen må ha en periode før nye fokusområder kan deles.{kanRedigere ? <> <Link href="/team-wang/coach?omraade=trening&fane=periode">Åpne gruppeperiodene</Link>.</> : null}</p> : null}
+              {kanRedigere ? <button
                 type="button"
                 onClick={lagre}
-                disabled={lagrer || !neste}
+                disabled={lagrer || !neste || !kanRedigere}
                 className="wang-pressable"
                 style={{
                   display: "inline-flex",
@@ -716,26 +750,26 @@ export function IupSamtale({
                   minHeight: 44,
                   width: "100%",
                   padding: "0 20px",
-                  borderRadius: "var(--radius-chip)",
+                  borderRadius: 8,
                   border: "none",
                   cursor: lagrer || !neste ? "default" : "pointer",
                   opacity: lagrer || !neste ? 0.6 : 1,
-                  background: "var(--wang-navy)",
-                  color: "var(--white)",
-                  fontFamily: "var(--font-brand)",
+                  background: "var(--action)",
+                  color: "var(--action-text)",
+                  fontFamily: "var(--font-wang-brand)",
                   fontWeight: 800,
                   fontSize: 14,
                 }}
               >
                 {lagrer ? "Lagrer …" : `Lagre og del med ${fornavn}`}
-              </button>
+              </button> : null}
 
               {melding ? (
                 <p
                   role="status"
                   style={{
                     margin: "10px 0 0",
-                    fontSize: 12.5,
+                    fontSize: 14,
                     color: "var(--wang-teal-text)",
                     fontWeight: 700,
                   }}
@@ -748,7 +782,7 @@ export function IupSamtale({
                   role="alert"
                   style={{
                     margin: "10px 0 0",
-                    fontSize: 12.5,
+                    fontSize: 14,
                     color: "var(--cat-pink)",
                     fontWeight: 700,
                   }}
@@ -768,16 +802,16 @@ export function IupSamtale({
 
 function feltStil(bredde: number): React.CSSProperties {
   return {
-    height: 40,
+    minHeight: 44,
     width: bredde || undefined,
     padding: "0 12px",
-    borderRadius: 12,
+    borderRadius: 8,
     border: "1px solid var(--border-subtle)",
     background: "var(--neutral-50)",
-    fontFamily: "var(--font-body)",
+    fontFamily: "var(--font-wang-body)",
     fontSize: 13,
     color: "var(--text-primary)",
-    outline: "none",
+
   };
 }
 
@@ -788,33 +822,35 @@ function Nokkel({ farge, tekst }: { farge: string; tekst: string }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        fontSize: 11,
+        fontSize: 13,
         color: "var(--text-secondary)",
       }}
     >
       <span
-        style={{ width: 8, height: 8, borderRadius: 999, background: farge }}
+        style={{ width: 8, height: 8, borderRadius: 8, background: farge }}
       />
       {tekst}
     </span>
   );
 }
 
-/** 1–5 som trykkbare prikker. Samme visning som elevens, men redigerbar. */
+/** 1–5 som tallvalg med en fylt valgt verdi. Samme visning som elevens, men redigerbar. */
 function Skala({
   label,
   verdi,
   farge,
   onVelg,
+  deaktivert = false,
 }: {
   label: string;
   verdi: number | null;
   farge: string;
   onVelg: (v: number | null) => void;
+  deaktivert?: boolean;
 }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontSize: 11.5, color: "var(--text-secondary)" }}>
+    <span className={styles.skala}>
+      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
         {label}
       </span>
       <span style={{ display: "inline-flex", gap: 4 }}>
@@ -824,30 +860,27 @@ function Skala({
             type="button"
             onClick={() => onVelg(verdi === i ? null : i)}
             aria-label={`${label} ${i} av 5`}
+            disabled={deaktivert}
             aria-pressed={verdi === i}
             className="wang-pressable"
             style={{
-              width: 26,
-              height: 26,
-              borderRadius: 999,
+              width: 44,
+              height: 44,
+              borderRadius: 8,
               border: "none",
               cursor: "pointer",
               padding: 0,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "transparent",
+              background: verdi === i ? farge : "var(--neutral-100)",
+              color: verdi === i ? "var(--white)" : "var(--wang-navy)",
+              fontFamily: "var(--font-wang-brand)",
+              fontWeight: 700,
+              fontSize: 15,
             }}
           >
-            <span
-              style={{
-                width: 13,
-                height: 13,
-                borderRadius: 999,
-                background:
-                  verdi !== null && i <= verdi ? farge : "var(--neutral-200)",
-              }}
-            />
+            {i}
           </button>
         ))}
       </span>

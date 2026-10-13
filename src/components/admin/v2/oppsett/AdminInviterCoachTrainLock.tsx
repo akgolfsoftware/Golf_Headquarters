@@ -1,20 +1,14 @@
 "use client";
 
-/**
- * AgencyOS — Inviter coach, Train-lock (T13-detaljer, 27.08.2026).
- *
- * Port av `AdminInviterCoachV2` (Paper/T.*) til Train-lock (TL.*) —
- * CLAUDE.md invariant 2. Samme ekte server action `inviterCoach`, samme
- * validering og samme «redirect til /admin/team etter vellykket
- * invitasjon»-oppførsel — designport, ikke funksjonsendring.
- */
+/** Eksisterende teamfunksjon med uendrede tilgangsvakter og handlinger, innen Precision. */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
 import { Capability, CAPABILITY_BESKRIVELSER } from "@/lib/auth/cbac";
 import { inviterCoach } from "@/app/admin/(legacy)/team/actions";
-import { TlCaps, TlKnapp, TlKort, TlTittel } from "./tl-kit";
+import { TlKnapp, TlKort, TlTittel } from "./tl-kit";
 
 // G6: ekstra-tilganger utover COACH-defaulten som ADMIN kan gi ved invitasjon.
 // Skrives som GRANT-overrides i user_capabilities av inviterCoach.
@@ -46,6 +40,7 @@ function TlFelt({
       <div style={{ marginBottom: 8 }}><TlCaps size={10}>{label}</TlCaps></div>
       <input
         type={type}
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -62,7 +57,7 @@ function TlFelt({
           border: "none",
         }}
       />
-      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.text }}>{feil}</p>}
+      {feil && <p style={{ margin: "6px 0 0", fontSize: 13, color: TL.text }}>{feil}</p>}
     </div>
   );
 }
@@ -70,7 +65,7 @@ function TlFelt({
 function TlAvkryssing({ label, checked, onChange }: { label: string; checked: boolean; onChange: (on: boolean) => void }) {
   return (
     <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: 14, color: TL.text }}>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} style={{ width: 18, height: 18, accentColor: TL.fill }} />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} style={{ width: 20, height: 20, minHeight: 20, accentColor: TL.fill }} />
       {label}
     </label>
   );
@@ -107,6 +102,7 @@ export function AdminInviterCoachTrainLock({
     const epostVerdi = epost.trim();
 
     startTransition(async () => {
+      try {
       const res = await inviterCoach(
         epostVerdi,
         navnVerdi,
@@ -120,9 +116,10 @@ export function AdminInviterCoachTrainLock({
       setSuccess(
         res.epostSendt
           ? "Coach invitert. Invitasjons-e-post er sendt."
-          : "Coach opprettet. E-post ble ikke sendt (Resend ikke konfigurert).",
+          : "Coach opprettet. Invitasjons-e-post ble ikke sendt.",
       );
       setTimeout(() => router.push("/admin/team"), 1500);
+      } catch { setError("Invitasjonen kunne ikke bekreftes. Opplysningene er beholdt. Prøv igjen."); }
     });
   }
 
@@ -130,8 +127,7 @@ export function AdminInviterCoachTrainLock({
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 560, margin: "0 auto", width: "100%" }}>
       <TlTittel sub="AgencyOS">Inviter coach</TlTittel>
       <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.55, maxWidth: 460 }}>
-        Coachen får en e-post med innloggingslink og kan logge inn umiddelbart
-        med samme e-post.
+        Opprett coachen og klargjør invitasjonen. Resultatet viser om invitasjons-e-posten faktisk ble sendt.
       </p>
 
       <TlKort pad="18px 20px" style={{ gap: 14 }}>
@@ -142,7 +138,7 @@ export function AdminInviterCoachTrainLock({
           {kanTildeleTilganger && (
             <div>
               <TlCaps size={10}>Ekstra tilganger</TlCaps>
-              <p style={{ margin: "4px 0 10px", fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+              <p style={{ margin: "4px 0 10px", fontSize: 14, color: TL.mute, lineHeight: 1.5 }}>
                 Standard trenertilgang (grupper, planer, tester, spillerdata,
                 booking) følger med automatisk. Kryss av for det ekstra denne
                 treneren skal ha.
@@ -161,9 +157,9 @@ export function AdminInviterCoachTrainLock({
           )}
 
           {error && !Object.keys(fieldErrors).length && (
-            <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.text }}>{error}</p>
+            <p role="alert" style={{ margin: 0, fontSize: 13, color: TL.text }}>{error}</p>
           )}
-          {success && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.mute }}>{success}</p>}
+          {success && <p role="status" style={{ margin: 0, fontSize: 13, color: TL.mute }}>{success}</p>}
 
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
             <TlKnapp type="submit" icon="user-plus" variant="primaer" disabled={pending}>

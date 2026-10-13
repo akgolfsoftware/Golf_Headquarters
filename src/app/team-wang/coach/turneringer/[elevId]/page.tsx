@@ -1,3 +1,5 @@
+import { WangAppSkall } from "@/components/wang/WangAppSkall";
+import { wangRolleFor } from "@/app/team-wang/_data/wang-rolle";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -74,7 +76,7 @@ export default async function WangTurneringerPage({
           <div style={{ minWidth: 0 }}>
             <div
               style={{
-                fontFamily: "var(--font-brand)",
+                fontFamily: "var(--font-wang-brand)",
                 fontWeight: 800,
                 fontSize: 19,
                 color: "var(--text-primary)",
@@ -96,7 +98,7 @@ export default async function WangTurneringerPage({
             className="wang-card"
             style={{
               padding: "22px 20px",
-              fontFamily: "var(--font-body)",
+              fontFamily: "var(--font-wang-body)",
               fontSize: 13.5,
               color: "var(--text-secondary)",
               textAlign: "center",
@@ -110,7 +112,7 @@ export default async function WangTurneringerPage({
               <div>
                 <div
                   className="wang-num"
-                  style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
+                  style={{ fontFamily: "var(--font-wang-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
                 >
                   {historikk.antall}
                 </div>
@@ -119,7 +121,7 @@ export default async function WangTurneringerPage({
               <div>
                 <div
                   className="wang-num"
-                  style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
+                  style={{ fontFamily: "var(--font-wang-brand)", fontWeight: 800, fontSize: 24, color: "var(--text-primary)" }}
                 >
                   {historikk.bestePlassering != null ? `${historikk.bestePlassering}.` : "—"}
                 </div>
@@ -131,7 +133,7 @@ export default async function WangTurneringerPage({
               <section key={aar.aar}>
                 <div
                   style={{
-                    fontFamily: "var(--font-brand)",
+                    fontFamily: "var(--font-wang-brand)",
                     fontWeight: 700,
                     fontSize: 15,
                     color: "var(--text-primary)",
@@ -150,7 +152,7 @@ export default async function WangTurneringerPage({
                       <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                         <div
                           style={{
-                            fontFamily: "var(--font-brand)",
+                            fontFamily: "var(--font-wang-brand)",
                             fontWeight: 700,
                             fontSize: 14,
                             color: "var(--text-primary)",
@@ -166,9 +168,9 @@ export default async function WangTurneringerPage({
                           className="wang-num"
                           style={{
                             flexShrink: 0,
-                            fontFamily: "var(--font-brand)",
+                            fontFamily: "var(--font-wang-brand)",
                             fontWeight: 700,
-                            fontSize: 12.5,
+                            fontSize: 14,
                             color: "var(--text-secondary)",
                             whiteSpace: "nowrap",
                           }}
@@ -181,8 +183,8 @@ export default async function WangTurneringerPage({
                           display: "flex",
                           alignItems: "center",
                           gap: 10,
-                          fontFamily: "var(--font-body)",
-                          fontSize: 12.5,
+                          fontFamily: "var(--font-wang-body)",
+                          fontSize: 14,
                           color: "var(--text-secondary)",
                           flexWrap: "wrap",
                         }}
@@ -214,5 +216,7 @@ export default async function WangTurneringerPage({
     );
   });
   if (visning === null) notFound();
-  return visning;
+  return bruker.role === "COACH" || bruker.role === "ADMIN"
+    ? <WangAppSkall rolle={wangRolleFor(bruker)} brukerNavn={bruker.name ?? undefined} aktivtOmraade="elever">{visning}</WangAppSkall>
+    : visning;
 }

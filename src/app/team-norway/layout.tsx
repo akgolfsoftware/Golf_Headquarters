@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Jost, Lato } from "next/font/google";
+import { TnBrandFrame } from "@/components/precision/brand/TnBrandFrame";
 
 /**
  * Team Norway — egen flate, egen designfasit.
@@ -15,20 +15,6 @@ import { Jost, Lato } from "next/font/google";
  * Schibsted Grotesk er ute av systemet. IBM Plex Mono gjenbrukes fra
  * root-layout — se src/styles/team-norway-tokens.css for begrunnelsen.
  */
-const jost = Jost({
-  variable: "--font-jost",
-  weight: ["300", "400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const lato = Lato({
-  variable: "--font-lato",
-  weight: ["300", "400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export default function TeamNorwayLayout({ children }: { children: ReactNode }) {
-  return <div data-org="team-norway" className={`pa-root tn-app ${jost.variable} ${lato.variable}`}>{children}</div>;
+  return <TnBrandFrame>{children}</TnBrandFrame>;
 }

@@ -1,10 +1,11 @@
+import { Sidehode } from "@/components/precision/pa";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { editableGroupWhere } from "@/lib/workbench/group-scope";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { GroupContextShell } from "@/components/admin/precision/grupper/GroupContextShell";
+import { TlTilbake } from "@/components/admin/precision/grupper/group-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
 import { SkoledataForm } from "./skoledata-form";
 
@@ -16,26 +17,26 @@ export default async function SkoledataPage({ params }: { params: Promise<{ id: 
   const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
-  const gruppe = await prisma.group.findFirst({ where: { id, ...editableGroupWhere(user) }, select: { id: true } });
+  const gruppe = await prisma.group.findFirst({ where: { id, ...editableGroupWhere(user) }, select: { id: true, name: true, slug: true, program: true } });
   if (!gruppe) notFound();
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <GroupContextShell group={gruppe} user={user}>
       <TlTilbake href={`/admin/grupper/${id}/arsplan`}>Årsplan</TlTilbake>
 
       <div className="flex flex-col gap-4">
         <GruppeFaner groupId={id} aktiv="skoledata" />
 
         <div>
-          <h1 className="mb-1 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Legg inn skoledata</h1>
-          <p className="mb-4 max-w-2xl text-[13px] text-muted-foreground">
-            Lim inn skolerute, timeplan eller prøveplan — ett rad per linje. Brukes til å legge inn
+          <Sidehode title="Legg inn skoledata" kicker={gruppe.name} />
+          <p className="mb-4 max-w-2xl text-base text-muted-foreground">
+            Lim inn skolerute, timeplan eller prøveplan — én rad per linje. Brukes til å legge inn
             strukturen fra skolens prøveplan/timeplan når den er publisert.
           </p>
 
           <SkoledataForm groupId={id} />
         </div>
       </div>
-    </V2Shell>
+    </GroupContextShell>
   );
 }

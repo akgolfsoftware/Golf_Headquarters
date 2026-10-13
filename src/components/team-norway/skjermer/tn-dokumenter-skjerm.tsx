@@ -79,7 +79,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
                 <span style={{ display: "block", fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{d.kategori ?? (d.kilde === "LASTET_OPP" ? "Uten kategori" : "Fra innlegg")}</span>
               </span>
             </a>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", alignItems: "baseline", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, minWidth: 0 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", alignItems: "baseline", fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, minWidth: 0 }}>
               <span style={{ color: TN.navy900 }}>{filtype(d.fileName)}</span>
               <span>{datoLang(d.oppdatert)}</span>
               <span style={{ fontFamily: TN.font.body, fontSize: 13, overflowWrap: "anywhere" }}>{d.opplasterNavn}</span>
@@ -91,7 +91,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
         ))}
         {liste.length === 0 ? (
           <div style={{ padding: "clamp(16px, 2vw, 24px)" }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
+            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "10px 0 0", maxWidth: "60ch" }}>
               {dokumenter.length > 0
                 ? "Ingen dokumenter i denne kategorien."

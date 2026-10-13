@@ -61,6 +61,12 @@ mock.module("@/app/team-wang/coach/WangCoachKlient", {
   namedExports: { WangCoachKlient: () => null },
 });
 
+// Klientskallet har sin egen renderkontroll. Ressursgrensetesten kjører
+// Reacts serverbetingelse og skal aldri laste Nexts klient-Image/Context.
+mock.module("@/components/wang/WangAppSkall", {
+  namedExports: { WangAppSkall: () => null },
+});
+
 mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
   namedExports: { IupSamtale: () => null },
 });

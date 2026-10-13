@@ -1,18 +1,6 @@
 "use client";
 
-/**
- * G6 — «Per trener»-fanen på AgencyOS Tilgang, Train-lock (T13, 27.08.2026).
- * ADMIN velger en coach og toggler capabilities; bryteren viser EFFEKTIV
- * tilstand (rolle-default ± override). Toggle skriver GRANT/REVOKE-override
- * — eller sletter overriden når valget matcher defaulten
- * (settCapabilityOverride, UENDRET fra Paper-versjonen).
- *
- * Designport av `AdminTilgangPerTrenerV2` — ingen egen fasit, mønster-port
- * til tl-kit. Funksjonelt — trenger fasit-runde for endelig utseende
- * (samme forbehold som Paper-versjonen hadde).
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -72,7 +60,7 @@ export function AdminTilgangPerTrenerTrainLock({ trenere }: { trenere: PerTrener
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <TlKort>
-        <label htmlFor="g6-velg-coach-tl" style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: TL.text, marginBottom: 6 }}>
+        <label htmlFor="g6-velg-coach-tl" style={{ display: "block", fontSize: 14, fontWeight: 600, color: TL.text, marginBottom: 6 }}>
           Velg trener
         </label>
         <select
@@ -107,12 +95,12 @@ export function AdminTilgangPerTrenerTrainLock({ trenere }: { trenere: PerTrener
             <div style={{ fontSize: 15, fontWeight: 700, color: TL.text }}>Tilganger for {valgt.navn}</div>
             {pending && <TlBadge>Lagrer…</TlBadge>}
           </div>
-          <p style={{ margin: "0 0 8px", fontSize: 11.5, color: TL.mute, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 8px", fontSize: 14, color: TL.mute, lineHeight: 1.55 }}>
             Bryteren viser effektiv tilgang. Avvik fra trener-standarden lagres som unntak for denne treneren og kan slås tilbake når
             som helst.
           </p>
           {feil && (
-            <p role="alert" style={{ margin: "0 0 8px", fontSize: 12, color: TL.text, fontWeight: 600 }}>
+            <p role="alert" style={{ margin: "0 0 8px", fontSize: 13, color: TL.text, fontWeight: 600 }}>
               {feil}
             </p>
           )}

@@ -15,7 +15,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
 import {
   AdminBookingDetaljV2,
   type AdminBookingDetaljV2Data,
@@ -79,8 +80,8 @@ export default async function AdminBookingDetaljPage({ params }: Props) {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
       <AdminBookingDetaljV2 data={data} />
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

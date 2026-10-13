@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { checkedRecordingChunks, chooseRecordingMime, hasAudioHeader, recordingElapsedMs } from "./chunk-contract";
+import { checkedRecordingChunks, chooseRecordingMime, hasAudioHeader, MAX_RECORDING_PART_BYTES, recordingElapsedMs, splitRecordingBlob } from "./chunk-contract";
 const chunk = (idx: number) => ({ idx, path: `owner/recording/chunk-${String(idx).padStart(5, "0")}.webm`, size: 100 });
 test("manglende lydbit, duplikat, ukjent hale eller fremmed sti kan ikke fullføres", () => {
   assert.equal(checkedRecordingChunks([chunk(0), chunk(2)], "owner", "recording", 3), null);
@@ -23,4 +23,23 @@ test("pausetid inngår ikke etter gjenopptaking", () => {
   assert.equal(recordingElapsedMs(15000, null, 100000), 15000);
   assert.equal(recordingElapsedMs(15000, 100000, 102000), 17000);
   assert.equal(recordingElapsedMs(15000, 102000, 100000), 15000);
+});
+
+test("sammensatt opptaksblob over 6 MiB deles uten tap av bytes eller MIME-type", async () => {
+  const first = Uint8Array.from({ length: MAX_RECORDING_PART_BYTES + 17 }, (_, i) => i % 251);
+  const second = Uint8Array.from({ length: MAX_RECORDING_PART_BYTES + 31 }, (_, i) => (i * 7) % 256);
+  for (const mime of ["audio/webm;codecs=opus", "audio/mp4"]) {
+    const original = new Blob([first, second], { type: mime });
+    const parts = splitRecordingBlob(original);
+    assert.deepEqual(parts.map(part => part.size), [MAX_RECORDING_PART_BYTES, MAX_RECORDING_PART_BYTES, 48]);
+    assert.ok(parts.every(part => part.size <= MAX_RECORDING_PART_BYTES && part.type === original.type));
+    assert.deepEqual(new Uint8Array(await new Blob(parts).arrayBuffer()), new Uint8Array(await original.arrayBuffer()));
+  }
+});
+
+test("opptaksblob ved størrelsesgrensen er én del, og tom lyd gir ingen deler å indeksere", () => {
+  const exact = new Blob([new Uint8Array(MAX_RECORDING_PART_BYTES)], { type: "audio/webm" });
+  assert.equal(splitRecordingBlob(exact).length, 1);
+  assert.equal(splitRecordingBlob(exact)[0].size, MAX_RECORDING_PART_BYTES);
+  assert.deepEqual(splitRecordingBlob(new Blob([], { type: "audio/webm" })), []);
 });

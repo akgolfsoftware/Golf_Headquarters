@@ -39,7 +39,7 @@ export async function TnReferansenivaerSkjerm() {
         <div role="table" aria-label="Referansenivåer" style={{ marginTop: 16 }}>
           <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "10px 0", borderBottom: `1px solid ${TN.navy100}` }}>
             {["Test · protokoll", "Minstekrav", "Landslagsmål", "Internasjonalt"].map((k, i) => (
-              <TnEtikett key={k} style={{ fontSize: 10.5, textAlign: i > 0 ? "right" : undefined, overflowWrap: "anywhere" }}><span role="columnheader">{k}</span></TnEtikett>
+              <TnEtikett key={k} style={{ fontSize: 13, textAlign: i > 0 ? "right" : undefined, overflowWrap: "anywhere" }}><span role="columnheader">{k}</span></TnEtikett>
             ))}
           </div>
           {klare.map((r) => (

@@ -44,7 +44,7 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
         tittel="Turneringer og reiselogistikk"
         ingress="Mesterskap og kvalifiseringsturneringer, med datoer, påmeldte og resultater."
         handling={data.kontekst.erSpiller ? (
-          <Link href="/team-norway/turneringer/ny" style={{ minHeight: 44, padding: "0 16px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
+          <Link href="/team-norway/turneringer/ny" style={{ minHeight: 44, padding: "0 16px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", textDecoration: "none", display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
             Legg inn turnering
           </Link>
         ) : undefined}
@@ -63,11 +63,11 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(max(84px, calc(100% / 12)), 1fr))", borderTop: `1px solid ${TN.navy100}`, borderLeft: `1px solid ${TN.navy100}`, marginTop: 16 }}>
           {perManed.map((m) => (
             <div key={m.navn} style={{ background: TN.white, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "10px 8px 12px", minHeight: 96, display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
-              <span style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900 }}>{m.navn}</span>
+              <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.18em", color: TN.navy900 }}>{m.navn}</span>
               {m.turneringer.slice(0, 3).map((t) => (
-                <Link key={t.id} href={`/team-norway/turneringer/${t.id}`} style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 11.5, lineHeight: 1.3, padding: "3px 6px", borderRadius: TN.radius.sm, background: TN.navy100, color: TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}>{t.name}</Link>
+                <Link key={t.id} href={`/team-norway/turneringer/${t.id}`} style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 13, lineHeight: 1.3, padding: "3px 6px", borderRadius: TN.radius.sm, background: TN.navy100, color: TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}>{t.name}</Link>
               ))}
-              {m.turneringer.length > 3 ? <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary }}>+{m.turneringer.length - 3} til</span> : null}
+              {m.turneringer.length > 3 ? <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>+{m.turneringer.length - 3} til</span> : null}
             </div>
           ))}
         </div>

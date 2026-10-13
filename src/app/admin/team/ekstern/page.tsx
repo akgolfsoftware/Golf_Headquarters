@@ -6,12 +6,14 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
+import { KnappLenke } from "@/components/precision/pa";
 import {
   AdminEksternLeserTrainLock,
   type EksternLeserRad,
 } from "@/components/admin/v2/oppsett/AdminEksternLeserTrainLock";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+
 
 export const dynamic = "force-dynamic";
 
@@ -55,9 +57,9 @@ export default async function AdminEksternLeserPage() {
         }));
 
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
-      <TlTilbake href="/admin/team">Team</TlTilbake>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
+      <KnappLenke variant="ghost" href="/admin/oppsett?fane=tilgang">Til oppsett</KnappLenke>
       <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

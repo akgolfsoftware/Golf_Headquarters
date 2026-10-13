@@ -1,35 +1,11 @@
 "use client";
 
-/**
- * AgencyOS Innstillinger · Klubb og steder — Train-lock (T13, 27.08.2026).
- *
- * KONSOLIDERER to tidligere separate v2-skjermer til ÉN flate (Anders,
- * oppgavebrief 27.08.2026 — "(legacy)/anlegg konsolider mot klubb, ikke to"):
- *   - AdminKlubbInnstillingerV2 (org-innstillinger + klubb-liste, enkel
- *     fasilitet-TELLING)
- *   - AdminAnleggV2 (full fasilitet-CRUD med type-ikon/kapasitet/bookinger
- *     denne uka)
- * Klubb-kortet her viser BEGGE: org-profil øverst, så per-klubb-kort med
- * full inline fasilitet-liste (samme info som AdminAnleggV2 sin
- * FasilitetKort) — ingen egen "Anlegg"-skjerm lenger.
- *
- * Ingen egen Train-lock-fasit tegner denne skjermen — mønster-port til
- * tl-kit (kort/rad/knapp), ikke pixel. Data/mutasjoner UENDRET:
- *   - addClub / updateClubSettings / removeClub / lagreClubSettings
- *     (../../app/admin/(legacy)/klubb/innstillinger/actions) — dekker
- *     opprett/rediger/deaktiver klubb (samme Location-tabell som anlegg
- *     brukte, bare via klubb-actionen — createLocation/updateLocation/
- *     setLocationActive fra anlegg er derfor IKKE importert her, ville vært
- *     duplisert funksjonalitet)
- *   - createFacility / updateFacility / setFacilityActive
- *     (../../app/admin/(legacy)/anlegg/location-actions)
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/v2/icon";
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
 import {
   addClub,
@@ -43,7 +19,7 @@ import {
   setFacilityActive,
 } from "@/app/admin/(legacy)/anlegg/location-actions";
 import { FASILITET_TYPER, type FasilitetType } from "@/components/admin/v2/AdminLocationFormV2";
-import { TlBadge, TlCaps, TlKnapp, TlKort, TlTittel, TlTomTilstand, TL_PRESS } from "./tl-kit";
+import { TlBadge, TlKnapp, TlKort, TlTittel, TlTomTilstand, TL_PRESS } from "./tl-kit";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
 export interface KlubbFasilitet {
@@ -114,10 +90,11 @@ function TlInndata({
   return (
     <div>
       <div style={{ marginBottom: 8 }}>
-        <TlCaps size={10}>{label}</TlCaps>
+        <TlCaps size={13}>{label}</TlCaps>
       </div>
       <input
         type={type}
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -152,10 +129,11 @@ function TlVelger({
   return (
     <div>
       <div style={{ marginBottom: 8 }}>
-        <TlCaps size={10}>{label}</TlCaps>
+        <TlCaps size={13}>{label}</TlCaps>
       </div>
       <div style={{ position: "relative" }}>
         <select
+          aria-label={label}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           style={{
@@ -191,7 +169,7 @@ function TlBryter({ label, sub, checked, onChange }: { label: string; sub?: stri
   return (
     <div>
       <div style={{ marginBottom: 8 }}>
-        <TlCaps size={10}>{label}</TlCaps>
+        <TlCaps size={13}>{label}</TlCaps>
       </div>
       <button
         type="button"
@@ -345,7 +323,7 @@ function OrgKort({ settings, onEdit }: { settings: ClubSettingsData; onEdit: () 
           <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
             <Icon name={r.icon} size={14} style={{ color: TL.mute, flex: "none" }} />
             <div style={{ minWidth: 0 }}>
-              <TlCaps size={9}>{r.label}</TlCaps>
+              <TlCaps size={13}>{r.label}</TlCaps>
               <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {r.value || "—"}
               </div>
@@ -650,7 +628,7 @@ function FasilitetKort({ f, onEdit }: { f: KlubbFasilitet; onEdit: () => void })
         {!f.active && <TlBadge tone="fare">Deaktivert</TlBadge>}
       </div>
       <div style={{ fontSize: 14, fontWeight: 600, color: TL.text }}>{f.name}</div>
-      <div style={{ fontSize: 11, color: TL.mute, fontFamily: TL.font.mono }}>
+      <div style={{ fontSize: 13, color: TL.mute, fontFamily: TL.font.mono }}>
         {f.active ? (
           <span style={{ color: TL.text }}>
             {f.bookinger} {f.bookinger === 1 ? "booking" : "bookinger"} denne uka
@@ -692,7 +670,7 @@ function KlubbSeksjon({
             <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{klubb.name}</span>
             <TlBadge tone={klubb.active ? "nøytral" : "fare"}>{klubb.active ? "Aktiv" : "Inaktiv"}</TlBadge>
           </div>
-          <div style={{ marginTop: 6, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: TL.mute }}>
+          <div style={{ marginTop: 6, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: TL.mute }}>
             <Icon name="map-pin" size={12} />
             {klubb.address}
           </div>
@@ -721,7 +699,7 @@ function KlubbSeksjon({
       </div>
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <TlCaps size={10}>Fasiliteter</TlCaps>
+        <TlCaps size={13}>Fasiliteter</TlCaps>
         <TlKnapp variant="tertiaer" icon="plus" onClick={onNyFasilitet}>
           Ny fasilitet
         </TlKnapp>
@@ -745,11 +723,11 @@ function KlubbSeksjon({
 function StatCelle({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div style={{ minWidth: 0 }}>
-      <TlCaps size={9}>{label}</TlCaps>
+      <TlCaps size={13}>{label}</TlCaps>
       <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {value}
       </div>
-      {sub && <div style={{ fontSize: 11, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 13, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub}</div>}
     </div>
   );
 }

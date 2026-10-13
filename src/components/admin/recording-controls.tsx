@@ -40,8 +40,10 @@ import {
   readRecordingDraftMeta,
   saveRecordingDraftMeta,
   verifiedPendingRecordingChunks,
+  uploadRecordingChunk,
 } from "@/lib/offline-queue/recording-chunk-queue";
-import { chooseRecordingMime, recordingElapsedMs } from "@/lib/recording/chunk-contract";
+import { recordingChunkUploadConfirmed, type RecordingChunkUploadResult } from "@/lib/recording/chunk-fragments";
+import { chooseRecordingMime, recordingElapsedMs, splitRecordingBlob } from "@/lib/recording/chunk-contract";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
@@ -293,20 +295,8 @@ export function RecordingControls({
     recordingId: string,
     idx: number,
     blob: Blob,
-  ): Promise<{ ok: boolean }> {
-    const form = new FormData();
-    form.append("recordingId", recordingId);
-    form.append("chunkIdx", String(idx));
-    form.append("chunk", blob, `chunk-${idx}.webm`);
-    try {
-      const res = await fetch("/api/recording/upload-chunk", {
-        method: "POST",
-        body: form,
-      });
-      return { ok: res.ok };
-    } catch {
-      return { ok: false };
-    }
+  ): Promise<RecordingChunkUploadResult> {
+    return uploadRecordingChunk(recordingId, idx, blob);
   }
 
   function uploadChunk(idx: number, blob: Blob): Promise<void> {
@@ -321,7 +311,7 @@ export function RecordingControls({
         stored = await leggChunkIKo(eierId, id, idx, blob).catch(() => false);
       }
       const res = await lastOppChunkHttp(id, idx, blob);
-      if (res.ok) {
+      if (recordingChunkUploadConfirmed(res)) {
         pendingMemoryRef.current.delete(idx);
         if (eierId) await fjernChunkFraKo(eierId, id, idx).catch(() => undefined);
         setChunkInfo("Lyd lagret til " + formatTimer(durationSec));
@@ -336,7 +326,7 @@ export function RecordingControls({
   async function flushBeforeComplete(id: string): Promise<void> {
     for (const [idx, blob] of [...pendingMemoryRef.current].sort(([a], [b]) => a - b)) {
       const res = await lastOppChunkHttp(id, idx, blob);
-      if (!res.ok) throw new Error("Lydbiter venter på opplasting. Prøv igjen når nettet er tilbake.");
+      if (!recordingChunkUploadConfirmed(res)) throw new Error("Lydbiter venter på opplasting. Prøv igjen når nettet er tilbake.");
       pendingMemoryRef.current.delete(idx);
       if (eierId) await fjernChunkFraKo(eierId, id, idx);
     }
@@ -437,10 +427,14 @@ export function RecordingControls({
       if (eierId) await saveRecordingDraftMeta(eierId, id, { expectedChunks: 0, durationSec: 0, mimeType: mimeRef.current }).catch(() => false);
 
       recorder.ondataavailable = (ev) => {
-        if (!ev.data || ev.data.size === 0) return;
-        const idx = chunkIdxRef.current;
-        chunkIdxRef.current = idx + 1;
-        void uploadChunk(idx, ev.data);
+        if (!ev.data) return;
+        // Reserver alle delindekser synkront, før den eksisterende lagrings- og
+        // opplastingskøen kjører. Neste recorder-hendelse fortsetter etter dem.
+        for (const part of splitRecordingBlob(ev.data)) {
+          const idx = chunkIdxRef.current;
+          chunkIdxRef.current = idx + 1;
+          void uploadChunk(idx, part);
+        }
       };
 
       recorder.start(CHUNK_MS);

@@ -3,3 +3,6 @@ _archive
 .next
 tmp
 .env*.local
+
+# Private visuelle kontrollfangster skal ikke lastes opp som appkode.
+.impeccable/review

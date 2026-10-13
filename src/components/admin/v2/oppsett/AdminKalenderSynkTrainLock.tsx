@@ -1,22 +1,6 @@
 "use client";
 
-/**
- * AgencyOS · Innstillinger · Kalender-synk — Train-lock (T13, 27.08.2026).
- *
- * Designport av `AdminKalenderSynkV2` (Paper) — ingen egen fasit tegner
- * kalender-synk-skjermen, så layouten er en mønster-port til tl-kit, ikke
- * pixel. Actions gjenbrukes 1:1 fra
- * src/app/admin/(legacy)/settings/calendar/actions.ts — ingen endring i
- * forretningslogikk.
- *
- * Ærlige tomrom: «Siste sync» viser «Aldri» når feltet er null. En kalender
- * med invalid_grant vises som feil (TL.danger/TL.warn), ikke skjules.
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2. `TL.ok`/`TL.warm` er reservert til
- * godkjenning/fullført-hake og brukes derfor IKKE for generelle
- * suksessmeldinger her — «koblet til» og «lagret» vises nøytralt (TL.text),
- * kun feil (TL.danger) og ikke-sperrende varsel (TL.warn) er fargekodet.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -26,8 +10,9 @@ import {
   refreshCalendarList,
 } from "@/app/admin/(legacy)/settings/calendar/actions";
 import { Icon } from "@/components/v2/icon";
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
-import { TlBadge, TlCaps, TlKnapp, TlKort, TlRad, TlSwitchRad, TlTittel, TlTomTilstand } from "./tl-kit";
+import { TlBadge, TlKnapp, TlKort, TlRad, TlSwitchRad, TlTittel, TlTomTilstand } from "./tl-kit";
 
 /* ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────────── */
 export interface KalenderRad {
@@ -76,7 +61,7 @@ function Varselboks({
         background: tone === "nøytral" ? TL.dock : `color-mix(in srgb, ${farge} 10%, transparent)`,
         boxShadow: tone === "nøytral" ? `inset 0 0 0 1px ${TL.hair}` : `inset 0 0 0 1px ${tone === "advarsel" ? TL.warnHair : farge}`,
         padding: "12px 14px",
-        fontSize: 12.5,
+        fontSize: 14,
         color: TL.text,
         lineHeight: 1.5,
       }}
@@ -237,13 +222,13 @@ export function AdminKalenderSynkTrainLock({
           />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, margin: "14px 0" }}>
             <div>
-              <TlCaps size={9}>Siste sync</TlCaps>
+              <TlCaps size={13}>Siste sync</TlCaps>
               <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>
                 {connection.lastSyncAt ?? "Aldri"}
               </div>
             </div>
             <div>
-              <TlCaps size={9}>Antall kalendere</TlCaps>
+              <TlCaps size={13}>Antall kalendere</TlCaps>
               <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>
                 {subscriptions.length}
               </div>
@@ -309,8 +294,8 @@ export function AdminKalenderSynkTrainLock({
 
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <div>
-              <TlCaps size={9}>Dine kalendere</TlCaps>
-              <p style={{ marginTop: 4, fontSize: 12.5, color: TL.mute }}>
+              <TlCaps size={13}>Dine kalendere</TlCaps>
+              <p style={{ marginTop: 4, fontSize: 14, color: TL.mute }}>
                 Velg én kalender for nye bookinger og hvilke som skal blokkere ledige tider.
               </p>
             </div>
@@ -380,7 +365,7 @@ export function AdminKalenderSynkTrainLock({
           </div>
 
           <TlKort eyebrow="Slik fungerer det">
-            <ol style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, fontSize: 12.5, color: TL.mute, lineHeight: 1.6 }}>
+            <ol style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, fontSize: 14, color: TL.mute, lineHeight: 1.6 }}>
               <li>
                 <span style={{ fontFamily: TL.font.mono, color: TL.text }}>1.</span> Kalenderen med bryteren på i første liste blokkerer ledige slots i AK Golf HQ.
               </li>

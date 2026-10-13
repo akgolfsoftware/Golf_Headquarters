@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-13T00:18:57.179176+00:00",
+  "generatedAt": "2026-10-13T12:34:54.710762+00:00",
   "title": "Design System: AK Golf HQ",
   "extensions": {
     "colorMeta": {
@@ -229,6 +229,26 @@
       "clock-run": {
         "displayName": "clock-run",
         "purpose": "Tall og måling."
+      },
+      "page-heading": {
+        "displayName": "page-heading",
+        "purpose": "Sidens navn før kontekst; skalerer med skjermbredden."
+      },
+      "wang-title": {
+        "displayName": "wang-title",
+        "purpose": "WANGs Montserrat-tittel."
+      },
+      "wang-body": {
+        "displayName": "wang-body",
+        "purpose": "WANGs Quattrocento Sans-tekst."
+      },
+      "tn-title": {
+        "displayName": "tn-title",
+        "purpose": "Team Norways Jost-tittel."
+      },
+      "tn-body": {
+        "displayName": "tn-body",
+        "purpose": "Team Norways Lato-tekst."
       }
     },
     "shadows": [
@@ -287,6 +307,10 @@
       {
         "name": "desktop-shell",
         "value": "1024px"
+      },
+      {
+        "name": "group-small",
+        "value": "767px"
       }
     ]
   },
@@ -335,16 +359,17 @@
       "name": "Arbeidskort",
       "kind": "card",
       "refersTo": "card",
-      "description": "Flatt kort med presis avgrensning.",
+      "description": "Gjeldende flatt arbeidskort; organisasjonen styrer hjørnene.",
       "html": "<article class=\"ds-card\"><h2>Øktplan</h2><p>Fokus og målegrunnlag</p></article>",
-      "css": ".ds-card{padding:16px;border:1px solid var(--border-hairline,#ddd9d1);border-radius:var(--radius,8px);background:var(--surface-card,#fff);color:var(--text-primary,#141413);box-shadow:none}.ds-card h2{font:var(--type-title-s,600 1.0625rem/1.25 \"IBM Plex Sans\",sans-serif);margin:0 0 12px}.ds-card p{font:var(--type-body,400 .875rem/1.5 \"IBM Plex Sans\",sans-serif);margin:0}"
+      "css": ".ds-card{padding:16px;border:0;border-radius:var(--radius-card,8px);background:var(--surface-flat,#faf8f3);color:var(--text-primary,#141413);box-shadow:none}.ds-card h2{font:var(--type-title-s,600 1.0625rem/1.25 \"IBM Plex Sans\",sans-serif);margin:0 0 12px}.ds-card p{font:var(--type-body,400 .875rem/1.5 \"IBM Plex Sans\",sans-serif);margin:0}"
     },
     {
       "name": "Venstreskinne",
       "kind": "nav",
-      "description": "Felles AK-skinne med aktiv side og separat fokus.",
-      "html": "<nav class=\"ds-rail\" aria-label=\"Hovedmeny\"><a href=\"#idag\" aria-current=\"page\" aria-label=\"I dag\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2\"/></svg></a></nav>",
-      "css": ".ds-rail{width:56px;padding:8px 0;background:var(--surface-flat,#faf8f3);border-right:1px solid var(--border-hairline,#ddd9d1);display:flex;justify-content:center}.ds-rail a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius,8px);color:var(--text-muted,#686560)}.ds-rail a[aria-current=\"page\"]{background:var(--surface-card,#fff);color:var(--text-primary,#141413);box-shadow:inset 0 0 0 1px var(--border-hairline,#ddd9d1)}.ds-rail a:hover{background:var(--surface-hover,#f1eee8)}.ds-rail a:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}"
+      "description": "AKs brede desktopmeny med ikon, navn og fylt aktiv side.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Hovedmeny\"><a href=\"#idag\" aria-current=\"page\" aria-label=\"I dag\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2\"/></svg><span>I dag</span></a></nav>",
+      "css": ".ds-rail{width:184px;padding:24px 16px;background:var(--surface-page,#fff);border-right:1px solid var(--border-hairline,#ddd9d1);display:flex;flex-direction:column;gap:8px}.ds-rail a{display:flex;align-items:center;gap:12px;height:52px;padding:12px;border-radius:var(--radius,8px);color:var(--text-muted,#686560);font:var(--type-label,500 .8125rem/1.25 \"IBM Plex Sans\",sans-serif);text-decoration:none}.ds-rail a:hover{background:var(--surface-hover,#f1eee8)}.ds-rail a[aria-current=\"page\"]{background:var(--primary,#141413);color:var(--text-on-primary,#fff);box-shadow:none}.ds-rail a:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}",
+      "refersTo": "desktop-navigation"
     },
     {
       "name": "Statusmerke",
@@ -352,11 +377,27 @@
       "description": "Tilstandsnavn og prikk; ikke en handling.",
       "html": "<span class=\"ds-status\"><span></span>Lagret</span>",
       "css": ".ds-status{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-pill,999px);font:500 .8125rem/1 var(--font-sans,\"IBM Plex Sans\",sans-serif);white-space:nowrap;color:var(--ok,#2f6b3a);background:var(--ok-tint,#eaf2ea)}.ds-status>span{width:6px;height:6px;border-radius:999px;background:currentColor}"
+    },
+    {
+      "name": "WANG primærhandling",
+      "kind": "button",
+      "refersTo": "wang-button-action",
+      "description": "Rosa handling i WANGs gruppeinnhold; navy beholdes til valg.",
+      "html": "<button class=\"ds-wang-action\">Lagre og del</button>",
+      "css": ".ds-wang-action{height:44px;padding:0 16px;border:0;border-radius:var(--radius,8px);background:var(--action,#D12A5C);color:var(--action-text,#fff);font:var(--type-button,600 .875rem/1 \"Montserrat\",sans-serif);cursor:pointer}.ds-wang-action:hover{background:var(--action-hover,#B32450)}.ds-wang-action:active{background:var(--action-press,#9C1F46)}.ds-wang-action:focus-visible{outline:2px solid var(--focus-ring,#007DB1);outline-offset:3px}"
+    },
+    {
+      "name": "Valgt gruppefilter",
+      "kind": "chip",
+      "refersTo": "group-filter-selected",
+      "description": "Fylt medlemsfilter med organisasjonens pill-radius; TN bruker små hjørner.",
+      "html": "<a class=\"ds-filter ds-selected\" href=\"?\">Alle</a>",
+      "css": ".ds-filter{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:var(--radius-pill,999px);font:600 13px var(--font-sans,\"IBM Plex Sans\",sans-serif);background:transparent;color:var(--text-secondary,#46443f);box-shadow:inset 0 0 0 1px var(--border-ink,#141413);text-decoration:none}.ds-filter:hover{background:var(--surface-hover,#f1eee8)}.ds-filter.ds-selected{background:var(--primary,#141413);color:var(--text-on-primary,#fff);box-shadow:none}.ds-filter:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}"
     }
   ],
   "narrative": {
     "northStar": "Precision Athletics",
-    "overview": "Precision Athletics er den fastlagte retningen i beslutning HQ-UPGRADE-2026-10-12. Lyse arbeidsflater, grafitt som handling og Precision natt i Live videreføres fra eksisterende kode. WANG og Team Norway beholder egen skrift, farge og form gjennom hele innholdet.\n\nDette er en registrering av den lokale oppgraderingskoden, ikke en erklæring om publisert produksjon. Ingen konseptroll eller ferdig skjermkomposisjon hevdes godkjent. Skjermprøvene ved 390/1440 px og avslutningen av åtte konkrete review-funn gir avgrenset bevis; alle 198 innganger, fysisk telefon, mikrofon, VoiceOver og produksjon er ikke godkjent av dette dokumentet.",
+    "overview": "Precision Athletics er den fastlagte retningen i beslutning HQ-UPGRADE-2026-10-12. Lyse arbeidsflater, grafitt som handling og Precision natt i Live videreføres fra eksisterende kode. WANG og Team Norway beholder egen skrift, farge og form gjennom hele innholdet.\n\nDette dokumentet registrerer den samordnede lokale koden etter fem reviewrettinger 13.10.2026. Reviewerens «ship» gjelder disse fem rettingene og 45 syntetiske skjermprøver ved 390, 1440 og 1882 px i `.impeccable/review/calibration-20261013/`. Det er ikke bevis på full kontroll av alle 198 innganger, Anders' visuelle godkjenning, fysisk telefon, mikrofon, VoiceOver, backendlagring, CI eller publisert produksjon.",
     "keyCharacteristics": [
       "Ord og tall har ulike skriftroller.",
       "Lyst arbeid, natt for aktiv gjennomføring.",
@@ -378,10 +419,18 @@
         "name": "Flate før skygge",
         "body": "Arbeidsinnhold skilles med tone, luft og presise linjer; popover og modal kan ha den etablerte myke skyggen. Team Norway er uten skygger.",
         "section": "elevation"
+      },
+      {
+        "name": "Overskrift før kontekst",
+        "body": "Oppgave eller sidens navn leder; dato, område og forklaring følger under.",
+        "section": "typography"
       }
     ],
     "dos": [
       "Do bruk organisasjonens profil også i felt, tabeller og arbeidsinnhold.",
+      "Do sett sidens navn før kontekst og behold synlige navn i desktopmenyen.",
+      "Do skill WANGs rosa handling fra navy valgt kontroll.",
+      "Do vis delte IUP-verdier som tekst for leseren og kontroller for coachen.",
       "Do bruk fyll og tydelig tekst eller hake for valg, og egen fokusmarkering.",
       "Do behold tydelig navn og bredde på knappen mens lagring pågår.",
       "Do bruk faktiske sportsfoto som atmosfære med dokumentert proveniens."

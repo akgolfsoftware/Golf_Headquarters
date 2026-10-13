@@ -59,11 +59,11 @@ export async function TnUttakSkjerm() {
           <TnKorttittel overlinje="Uttakskriterier" tittel="Tre kriterier, hver for seg" />
           {UTTAKSKRITERIER.map((k, i) => (
             <div key={k.nummer} style={{ display: "grid", gridTemplateColumns: "72px minmax(0, 1fr)", gap: 14, padding: "14px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "baseline" }}>
-              <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: TN.navy900 }}>{String(i + 1).padStart(2, "0")}</span>
+              <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.navy900 }}>{String(i + 1).padStart(2, "0")}</span>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 14.5, fontWeight: 700 }}>{k.tittel}</div>
                 <div style={{ fontSize: 13.5, lineHeight: 1.55, color: TN.textSecondary, marginTop: 2 }}>{k.tekst}</div>
-                <div style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, marginTop: 6 }}>{k.kilde}</div>
+                <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 6 }}>{k.kilde}</div>
               </div>
             </div>
           ))}
@@ -72,7 +72,7 @@ export async function TnUttakSkjerm() {
 
         <TnFlate>
           <TnFlatehode tittel="Rangliste · resultatgrunnlag" merknad="Kun brutto" />
-          <div style={{ display: "grid", gridTemplateColumns: kolonner, gap: 10, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.textSecondary }}>
+          <div style={{ display: "grid", gridTemplateColumns: kolonner, gap: 10, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.textSecondary }}>
             <span>#</span><span>Spiller</span><span style={{ textAlign: "right" }}>Start</span><span style={{ textAlign: "right" }}>Plass</span><span style={{ textAlign: "right" }}>Brutto</span>
           </div>
           {rader.map((r, i) => (
@@ -80,7 +80,7 @@ export async function TnUttakSkjerm() {
               <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>{r.snittplassering === null ? "—" : i + 1}</span>
               <span style={{ minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{r.navn}</span>
-                <span style={{ display: "block", fontSize: 12.5, color: TN.textSecondary, marginTop: 3 }}>{r.klubb ?? "Klubb ikke registrert"}</span>
+                <span style={{ display: "block", fontSize: 13, color: TN.textSecondary, marginTop: 3 }}>{r.klubb ?? "Klubb ikke registrert"}</span>
               </span>
               <span style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 13.5, fontVariantNumeric: "tabular-nums" }}>{r.starter}</span>
               <span style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 13.5, fontVariantNumeric: "tabular-nums" }}>{r.snittplassering === null ? "—" : tall.format(r.snittplassering)}</span>
@@ -96,7 +96,7 @@ export async function TnUttakSkjerm() {
         <TnFlatehode tittel="Uttak" merknad={`${uttak.length} REGISTRERT`} />
         {arrangementer.map((a) => (
           <div key={a} style={{ marginTop: 18 }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.navy900, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{a}</div>
+            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{a}</div>
             {uttak.filter((u) => u.arrangement === a).map((u) => {
               const navn = spillernavn.get(u.spillerId) ?? "Tidligere spiller";
               return (

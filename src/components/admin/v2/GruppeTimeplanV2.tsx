@@ -5,9 +5,10 @@
  * Samme datakontrakt og server-action-skjema som før.
  */
 
-import { useState } from "react";
-import { TL } from "@/lib/v2/train-lock";
-import { TlBadge, TlKort, TlKnapp, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
+import { useState, useTransition } from "react";
+import { TL } from "@/components/admin/precision/grupper/group-kit";
+import { TlBadge, TlKort, TlKnapp, TlTittel, TlTomTilstand } from "@/components/admin/precision/grupper/group-kit";
+import { gruppeNesteUke } from "@/lib/workbench/group-schedule-time";
 import { GruppeFaner } from "./GruppeFaner";
 
 export type TimeplanRad = {
@@ -50,14 +51,13 @@ function storForbokstav(s: string): string {
 }
 
 const inputStyle: React.CSSProperties = {
-  height: 36,
-  borderRadius: 8,
+  minHeight: 44,
+  borderRadius: "var(--radius-inner)",
   border: `1px solid ${TL.hair}`,
   background: TL.elev,
   color: TL.text,
   padding: "0 10px",
-  fontSize: 13,
-  outline: "none",
+  fontSize: 15,
   width: "100%",
 };
 
@@ -66,7 +66,7 @@ function TimeplanSeksjon({
   rader,
   focusId,
   fast = false,
-  dempet = false,
+  dempet: _dempet = false,
   onDupliser,
 }: {
   tittel: string;
@@ -74,19 +74,17 @@ function TimeplanSeksjon({
   focusId: string | null;
   fast?: boolean;
   dempet?: boolean;
-  onDupliser: (scheduleId: string, newStart: string) => Promise<void>;
+  onDupliser: (scheduleId: string, newStart: string) => Promise<{ ok: true } | { ok: false; feil: string }>;
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, opacity: dempet ? 0.7 : 1 }}>
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, opacity: 1 }}>
+      <h2 style={{ font:"var(--type-title-s)", margin:0, color: TL.text }}>
         {tittel} · {rader.length}
-      </div>
+      </h2>
       <TlKort pad="6px 18px">
         {rader.map((s, i) => {
           const erFokus = s.id === focusId;
-          const defaultNewStart = new Date(new Date(s.startAt).getTime() + 7 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 16);
+          const defaultNewStart = gruppeNesteUke(s.startAt);
           return (
             <div
               key={s.id}
@@ -106,7 +104,7 @@ function TimeplanSeksjon({
                       <TlBadge>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</TlBadge>
                     )}
                   </div>
-                  <p style={{ fontSize: 12, color: TL.mute, margin: "6px 0 0", fontVariantNumeric: "tabular-nums" }}>
+                  <p style={{ fontSize: 15, color: TL.mute, margin: "6px 0 0", fontVariantNumeric: "tabular-nums" }}>
                     {storForbokstav(NB_WEEKDAY.format(new Date(s.startAt)))} · {NB_TIME.format(new Date(s.startAt))}–
                     {NB_TIME.format(new Date(s.endAt))} · {varighet(s.startAt, s.endAt)}
                     {!fast && ` · ${NB_DATE.format(new Date(s.startAt))}`}
@@ -114,21 +112,10 @@ function TimeplanSeksjon({
                     {s.maxParticipants != null && ` · Maks ${s.maxParticipants} deltagere`}
                   </p>
                   {s.description && (
-                    <p style={{ fontSize: 13, color: TL.mute, marginTop: 8, maxWidth: "60ch" }}>{s.description}</p>
+                    <p style={{ fontSize: 15, color: TL.mute, marginTop: 8, maxWidth: "60ch" }}>{s.description}</p>
                   )}
                 </div>
-                <form
-                  action={async (fd: FormData) => {
-                    const newStart = fd.get("newStart") as string;
-                    await onDupliser(s.id, newStart);
-                  }}
-                  style={{ display: "flex", alignItems: "flex-end", gap: 6 }}
-                >
-                  <input type="datetime-local" name="newStart" className="v2-focus" required defaultValue={defaultNewStart} style={{ ...inputStyle, width: 180 }} />
-                  <TlKnapp type="submit" variant="tertiaer">
-                    Dupliser
-                  </TlKnapp>
-                </form>
+                <DupliserTid schedule={s} defaultNewStart={defaultNewStart} onDupliser={onDupliser} />
               </div>
             </div>
           );
@@ -138,6 +125,27 @@ function TimeplanSeksjon({
   );
 }
 
+function DupliserTid({ schedule, defaultNewStart, onDupliser }: {
+  schedule: TimeplanRad; defaultNewStart: string;
+  onDupliser: (id: string, start: string) => Promise<{ ok: true } | { ok: false; feil: string }>;
+}) {
+  const [pending, start] = useTransition();
+  const [melding, setMelding] = useState<string | null>(null);
+  const [feil, setFeil] = useState(false);
+  return <form onSubmit={event => {
+    event.preventDefault();
+    const verdi = String(new FormData(event.currentTarget).get("newStart") ?? "");
+    start(async () => {
+      try { const svar = await onDupliser(schedule.id, verdi); setFeil(!svar.ok); setMelding(svar.ok ? "Gruppetiden er duplisert." : svar.feil); }
+      catch { setFeil(true); setMelding("Kunne ikke duplisere. Tidspunktet er beholdt; prøv igjen."); }
+    });
+  }} style={{ display:"flex", flexWrap:"wrap", alignItems:"end", gap:12, maxWidth:"100%" }}>
+    <label className="group-field">Ny dato og tid<input type="datetime-local" name="newStart" required defaultValue={defaultNewStart} disabled={pending} /></label>
+    <TlKnapp type="submit" variant="tertiaer" disabled={pending}>{pending ? "Dupliserer …" : "Dupliser"}</TlKnapp>
+    {melding && <p role={feil ? "alert" : "status"}>{melding}</p>}
+  </form>;
+}
+
 export function GruppeTimeplanV2({
   data,
   onOpprett,
@@ -145,9 +153,11 @@ export function GruppeTimeplanV2({
 }: {
   data: GruppeTimeplanV2Data;
   onOpprett: (fd: FormData) => Promise<{ ok: true } | { ok: false; feil: string }>;
-  onDupliser: (scheduleId: string, newStart: string) => Promise<void>;
+  onDupliser: (scheduleId: string, newStart: string) => Promise<{ ok: true } | { ok: false; feil: string }>;
 }) {
   const [opprettFeil, setOpprettFeil] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+  const [opprettet, setOpprettet] = useState(false);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <GruppeFaner groupId={data.groupId} aktiv="timeplan" />
@@ -157,29 +167,39 @@ export function GruppeTimeplanV2({
 
       <TlKort eyebrow="Opprett gruppetrening">
         <form
-          action={async (fd: FormData) => {
-            const res = await onOpprett(fd);
-            setOpprettFeil(res.ok ? null : res.feil);
+          onSubmit={event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const fd = new FormData(form);
+            setOpprettet(false);
+            start(async () => {
+              try {
+                const res = await onOpprett(fd);
+                setOpprettFeil(res.ok ? null : res.feil);
+                if (res.ok) { form.reset(); setOpprettet(true); }
+              } catch { setOpprettFeil("Kunne ikke opprette gruppetreningen. Feltene er beholdt; prøv igjen."); }
+            });
           }}
           className="grid grid-cols-1 md:grid-cols-2"
           style={{ gap: 10 }}
         >
-          <input name="title" className="v2-focus" placeholder="Tittel (f.eks. Gruppetrening)" required style={inputStyle} />
-          <input name="description" className="v2-focus" placeholder="Beskrivelse" style={inputStyle} />
-          <input type="date" name="dato" className="v2-focus" required style={inputStyle} />
-          <input type="time" name="tid" className="v2-focus" required style={inputStyle} />
-          <input type="number" name="varighetMin" className="v2-focus" placeholder="Varighet min" defaultValue="60" required style={inputStyle} />
-          <input name="location" className="v2-focus" placeholder="Sted" style={inputStyle} />
-          <select name="recurring" className="v2-focus" style={inputStyle}>
+          <label className="group-field">Tittel<input name="title" className="v2-focus" placeholder="Tittel (f.eks. Gruppetrening)" required disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Beskrivelse<input name="description" className="v2-focus" placeholder="Beskrivelse" disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Dato<input type="date" name="dato" className="v2-focus" required disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Klokkeslett · norsk tid<input type="time" name="tid" className="v2-focus" required disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Varighet i minutter<input type="number" name="varighetMin" className="v2-focus" placeholder="Varighet min" defaultValue="60" required disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Sted<input name="location" className="v2-focus" placeholder="Sted" disabled={pending} style={inputStyle} /></label>
+          <label className="group-field">Gjentakelse<select disabled={pending} name="recurring" className="v2-focus" style={inputStyle}>
             <option value="NONE">Engang (spesifikt tidspunkt)</option>
             <option value="WEEKLY">Ukentlig</option>
-          </select>
-          <input type="number" name="maxParticipants" className="v2-focus" placeholder="Antall deltagere (max)" style={inputStyle} />
+          </select></label>
+          <label className="group-field">Maks antall deltakere<input type="number" name="maxParticipants" className="v2-focus" placeholder="Antall deltagere (max)" disabled={pending} style={inputStyle} /></label>
           <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <TlKnapp type="submit" variant="primaer">
-              Opprett
+            <TlKnapp type="submit" variant="primaer" disabled={pending}>
+              {pending ? "Oppretter …" : "Opprett"}
             </TlKnapp>
-            {opprettFeil && <span style={{ fontSize: 13, color: TL.text }}>{opprettFeil}</span>}
+            {opprettFeil && <span role="alert">{opprettFeil}</span>}
+            {opprettet && <span role="status">Gruppetreningen er opprettet.</span>}
           </div>
         </form>
       </TlKort>

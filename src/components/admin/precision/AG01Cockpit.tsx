@@ -127,8 +127,8 @@ function NesteHandling({ data }: { data: AG01Data }) {
   const ventende = data.venter.totalt;
   return <section className="ag01-prioritet" aria-label="Neste handling">
     <div>
-      <Meta>{neste?.status === "pagar" ? "Pågår nå" : neste ? "Neste avtale" : ventende ? "Venter på deg" : "Dagen er åpen"}</Meta>
       <h2>{neste ? neste.tittel : ventende ? `${ventende} ${ventende === 1 ? "sak trenger" : "saker trenger"} et svar` : "Planlegg neste økt"}</h2>
+      {neste?.status === "pagar" ? <Meta>Pågår nå</Meta> : null}
       <p>{neste ? `${neste.start}–${neste.slutt} · ${neste.hvem}${neste.sted ? ` · ${neste.sted}` : ""}` : ventende ? "Se godkjenninger, forespørsler og utkast samlet i køen." : "Åpne stallen for å arbeide med en spiller, eller kalenderen for å planlegge dagen."}</p>
     </div>
     <KnappLenke href={neste?.href ?? (ventende ? "/admin/ko" : "/admin/spillere")} variant="primary" iconRight={ArrowRight}>

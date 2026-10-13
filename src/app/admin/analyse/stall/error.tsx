@@ -1,21 +1,3 @@
 "use client";
-
-/* Tynn error.tsx (T11, 27.08.2026) — logger error.digest, rendrer V2Feil.
-   Endre visuelt uttrykk i src/components/v2/feil-laste.tsx, ikke her. */
-
-import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
-
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
-  }, [error]);
-
-  return <V2Feil reset={reset} tilbakeHref="/admin/analyse" />;
-}
+import { CoachError } from "@/components/admin/precision/agency-completion/CoachRouteState";
+export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) { return <CoachError reset={reset} title="Resultatene kunne ikke hentes" href="/admin/analyse" />; }

@@ -92,10 +92,10 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
         <span
           style={{
             fontFamily: TN.font.mono,
-            fontSize: TN.text.micro,
+            fontSize: 13,
             fontWeight: TN.weight.semibold,
             letterSpacing: TN.tracking.eyebrow,
-            textTransform: "uppercase",
+            textTransform: "none",
             color: TN.navy700,
             flexShrink: 0,
           }}

@@ -20,10 +20,10 @@ type Feilbart = { ok: true } | { ok: false; feil: string };
 
 const MAKS_TEGN = 2000;
 
-const seksjonstittel: CSSProperties = { fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0 };
-const etikett: CSSProperties = { fontFamily: TN.font.display, fontSize: 10.5, letterSpacing: "0.14em", textTransform: "uppercase", color: TN.textSecondary };
-const sekundaerKnapp: CSSProperties = { minHeight: 44, padding: "0 14px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontFamily: TN.font.display, fontSize: 11.5, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" };
-const primaerKnapp: CSSProperties = { minHeight: 44, padding: "0 18px", border: "none", borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" };
+const seksjonstittel: CSSProperties = { fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900, margin: 0 };
+const etikett: CSSProperties = { fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.textSecondary };
+const sekundaerKnapp: CSSProperties = { minHeight: 44, padding: "0 14px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" };
+const primaerKnapp: CSSProperties = { minHeight: 44, padding: "0 18px", border: "none", borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", cursor: "pointer", whiteSpace: "nowrap" };
 const feilboks: CSSProperties = { marginTop: 12, padding: "10px 12px", borderLeft: `3px solid ${TN.status.redText}`, background: TN.status.redBg, color: TN.status.redText, fontSize: 14 };
 
 const OSLO = { timeZone: "Europe/Oslo" } as const;
@@ -56,7 +56,7 @@ export function TnInnleggSkjema({ send, forfatterNavn, mottakere }: { send: (inp
     <section id="ny-post" style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, padding: "clamp(16px, 2vw, 24px)", minWidth: 0 }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 8, alignItems: "baseline", paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>
         <h2 style={seksjonstittel}>Nytt innlegg</h2>
-        <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, textTransform: "uppercase", overflowWrap: "anywhere" }}>Som {forfatterNavn}</span>
+        <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, textTransform: "none", overflowWrap: "anywhere" }}>Som {forfatterNavn}</span>
       </div>
       <textarea
         value={tekst}
@@ -69,13 +69,13 @@ export function TnInnleggSkjema({ send, forfatterNavn, mottakere }: { send: (inp
       />
       <div style={{ ...etikett, marginTop: 14 }}>Mottakere</div>
       <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
-        <span style={{ minHeight: 44, padding: "0 16px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", maxWidth: "100%", overflowWrap: "anywhere" }}>
+        <span style={{ minHeight: 44, padding: "0 16px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", display: "inline-flex", alignItems: "center", maxWidth: "100%", overflowWrap: "anywhere" }}>
           {mottakere}
         </span>
       </div>
       {feil ? <div role="alert" style={feilboks}>{feil}</div> : null}
       <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: tekst.length > MAKS_TEGN ? TN.status.redText : TN.textSecondary }}>{tekst.length} / {MAKS_TEGN}</span>
+        <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: tekst.length > MAKS_TEGN ? TN.status.redText : TN.textSecondary }}>{tekst.length} / {MAKS_TEGN}</span>
         <button type="button" onClick={publiser} disabled={pending} style={{ ...primaerKnapp, opacity: pending ? 0.6 : 1 }}>{pending ? "Publiserer …" : "Publiser"}</button>
       </div>
     </section>
@@ -151,10 +151,10 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
             <span style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{innlegg.forfatter}</span>
-            <span style={{ fontFamily: TN.font.mono, fontSize: 10.5, letterSpacing: "0.06em", color: TN.textSecondary, textTransform: "uppercase" }}>{innlegg.rolle} · {tid(innlegg.tidIso)}{innlegg.endret ? " · endret" : ""}</span>
+            <span style={{ fontFamily: TN.font.body, fontSize: 13, letterSpacing: 0, color: TN.textSecondary }}>{innlegg.rolle} · {tid(innlegg.tidIso)}{innlegg.endret ? " · endret" : ""}</span>
           </div>
           <div style={{ marginTop: 6, display: "flex" }}>
-            <span style={{ fontSize: 12, padding: "3px 8px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.xs }}>Til hele gruppen</span>
+            <span style={{ fontSize: 13, padding: "3px 8px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.xs }}>Til hele gruppen</span>
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
       ) : null}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 14px", alignItems: "center", marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TN.navy100}` }}>
         <div style={{ flex: "1 1 200px", minWidth: 0 }}>
-          <div style={{ fontFamily: TN.font.mono, fontSize: 12.5 }}>{innlegg.lest} av {innlegg.totalt} har lest</div>
+          <div style={{ fontFamily: TN.font.mono, fontSize: 13 }}>{innlegg.lest} av {innlegg.totalt} har lest</div>
           <div style={{ height: 4, background: TN.navy100, borderRadius: TN.radius.xs, marginTop: 6, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${andel}%`, background: TN.navy900 }} />
           </div>
@@ -219,7 +219,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
                 {data.apnet.map((r) => (
                   <div key={r.userId} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0", borderBottom: `1px solid ${TN.navy100}`, fontSize: 14 }}>
                     <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{r.navn}</span>
-                    <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, whiteSpace: "nowrap" }}>{tid(r.readAt)}</span>
+                    <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, whiteSpace: "nowrap" }}>{tid(r.readAt)}</span>
                   </div>
                 ))}
                 {data.apnet.length === 0 ? <div style={{ padding: "8px 0", fontSize: 14, color: TN.textSecondary }}>Ingen har lest ennå.</div> : null}
@@ -242,7 +242,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
 function Initialer({ navn }: { navn: string }) {
   const tegn = navn.split(/\s+/).filter(Boolean).slice(0, 2).map((d) => d[0]?.toUpperCase() ?? "").join("");
   return (
-    <span aria-hidden="true" style={{ width: 44, height: 44, flex: "none", borderRadius: TN.radius.xs, background: TN.navy50, border: `1px solid ${TN.navy100}`, color: TN.navy900, fontFamily: TN.font.display, fontSize: 14, letterSpacing: "0.08em", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <span aria-hidden="true" style={{ width: 44, height: 44, flex: "none", borderRadius: TN.radius.xs, background: TN.navy50, border: `1px solid ${TN.navy100}`, color: TN.navy900, fontFamily: TN.font.display, fontSize: 14, letterSpacing: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {tegn || "?"}
     </span>
   );
@@ -291,7 +291,7 @@ export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: str
     <section style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, padding: "clamp(16px, 2vw, 24px)", minWidth: 0 }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 8, alignItems: "baseline", paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>
         <h2 style={seksjonstittel}>Last opp dokument</h2>
-        <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary }}>PDF, XLSX, JPG, PNG · MAKS {maksMb} MB</span>
+        <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>PDF, XLSX, JPG, PNG · MAKS {maksMb} MB</span>
       </div>
       <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
         <div style={{ flex: "1 1 260px", minWidth: 0 }}>

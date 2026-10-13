@@ -106,7 +106,7 @@ export default async function WangTestresultaterForTnPage({
 
   return (
     <TnShell
-      aktiv="analyse"
+      aktiv="wang-resultater"
       brukerNavn={bruker.name ?? "Ukjent"}
       rolle={valg.kontekst.rolle === "COACH" ? "Trener" : valg.kontekst.rolle === "ASSISTANT" ? "Hjelpetrener" : "Administrator"}
       groupId={valg.kontekst.gruppe.id}

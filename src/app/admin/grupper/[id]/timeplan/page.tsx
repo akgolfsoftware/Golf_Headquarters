@@ -4,15 +4,16 @@
  * bevart 1:1 fra legacy via ../actions.
  */
 
+import { gruppeSkjemaTid, gruppeDupliseringTid } from "@/lib/workbench/group-schedule-time";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { GroupContextShell } from "@/components/admin/precision/grupper/GroupContextShell";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { TlTilbake } from "@/components/admin/precision/grupper/group-kit";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Timeplan · Grupper · AgencyOS" };
@@ -40,7 +41,7 @@ export default async function GruppeTimeplanPage({
         ],
       } : {}),
     },
-    select: { id: true, name: true, schedules: { orderBy: { startAt: "asc" } } },
+    select: { id: true, name: true, slug: true, program: true, schedules: { orderBy: { startAt: "asc" } } },
   });
 
   if (!gruppe) notFound();
@@ -83,7 +84,8 @@ export default async function GruppeTimeplanPage({
     const recurring = formData.get("recurring") as string;
     const maxParticipants = formData.get("maxParticipants") ? parseInt(formData.get("maxParticipants") as string) : null;
 
-    const startAt = new Date(`${dato}T${tid}`);
+    let startAt: Date;
+    try { startAt = gruppeSkjemaTid(dato, tid); } catch (error) { return { ok: false, feil: error instanceof Error ? error.message : "Ugyldig dato eller klokkeslett." }; }
     const endAt = new Date(startAt.getTime() + varighetMin * 60000);
 
     // Resultatet returneres til klienten så feil (ugyldig dato/tid, DB) vises ved skjemaet.
@@ -100,13 +102,15 @@ export default async function GruppeTimeplanPage({
 
   async function dupliserAction(scheduleId: string, newStart: string) {
     "use server";
-    await dupliserGruppeTime(groupId, scheduleId, newStart);
+    let startAt: Date;
+    try { startAt = gruppeDupliseringTid(newStart); } catch (error) { return { ok: false as const, feil: error instanceof Error ? error.message : "Ugyldig dato eller klokkeslett." }; }
+    return dupliserGruppeTime(groupId, scheduleId, startAt);
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <GroupContextShell group={gruppe} user={user}>
       <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
       <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
-    </V2Shell>
+    </GroupContextShell>
   );
 }

@@ -28,3 +28,6 @@
 .uke { display: grid; gap: 1rem; }
 .arbeidsflate :is(a, button, input, select):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 @media (max-width: 640px) { .seksjon { padding: 1rem; } .maned { grid-template-columns: repeat(2, minmax(0, 1fr)); } .manedsdag { min-height: 90px; } }
+
+.faner a[aria-current="page"] { background: var(--wang-blue); color: var(--wang-white); }
+.hode { overflow-wrap: anywhere; }

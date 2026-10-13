@@ -117,7 +117,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
               <h1 style={{ margin: 0, fontFamily: TN.font.display, fontSize: TN.text.h2, letterSpacing: TN.tracking.heading, color: TN.navy900 }}>{deltaker.spillerNavn}</h1>
               <TnPille tone={statusPilleTone}>{statusEtikett}</TnPille>
             </div>
-            <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>
+            <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: 13, letterSpacing: TN.tracking.eyebrow, textTransform: "none", color: TN.textSecondary }}>
               {p.name} · {deltaker.testDagTitle}
             </p>
           </div>
@@ -148,7 +148,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
                 {p.rows.map((row, i) => (
                   <fieldset key={i} style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.md, padding: 12, minWidth: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                    <legend style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary, padding: 0 }}>
+                    <legend style={{ fontFamily: TN.font.mono, fontSize: 13, letterSpacing: TN.tracking.eyebrow, textTransform: "none", color: TN.textSecondary, padding: 0 }}>
                       {/* row.label har allerede «Forsøk N · …» for protokoller som nummererer selv (f.eks. putt-1-3m) — unngå Forsøk 1 · Forsøk 1 · 1 m. */}
                       {row.label.startsWith("Forsøk ") ? row.label : `Forsøk ${i + 1} · ${row.label}`}
                     </legend>

@@ -16,7 +16,8 @@ export type WangModuleId =
   | "competitions"
   | "calendar"
   | "plans"
-  | "contacts";
+  | "contacts"
+  | "test-profiles";
 
 export interface WangRoleDefinition {
   label: string;
@@ -110,6 +111,11 @@ export const WANG_MODULES: Record<
     href: null,
     description: "Inviterte kontakter og tilgangsperiode bygges i neste modul.",
   },
+  "test-profiles": {
+    label: "Testprofiler",
+    href: "/team-wang/app/testprofiler",
+    description: "Sikre, fiktive rolleprofiler uten kontoer, e-post eller ekte persondata.",
+  },
 };
 
 export const WANG_ROLE_DEFINITIONS: Record<WangRole, WangRoleDefinition> = {
@@ -119,7 +125,7 @@ export const WANG_ROLE_DEFINITIONS: Record<WangRole, WangRoleDefinition> = {
     description: "Samlet status for skoler, idretter og planer.",
     privacyNotice:
       "Du ser samlet status. Navngitte elever åpnes ikke automatisk for sentral admin.",
-    modules: ["overview", "schools", "plans", "messages"],
+    modules: ["overview", "schools", "plans", "messages", "test-profiles"],
   },
   school_leader: {
     label: "Skoleleder",

@@ -63,7 +63,7 @@ export async function TnSkolerSkjerm() {
               {s.spillere.map((p) => (
                 <Link key={p.id} href={`/team-norway/spiller/${p.id}/oversikt`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}>
                   {p.navn}
-                  {s.skole !== IKKE_REGISTRERT ? <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>{p.skolear ?? "—"}</span> : null}
+                  {s.skole !== IKKE_REGISTRERT ? <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>{p.skolear ?? "—"}</span> : null}
                 </Link>
               ))}
             </div>

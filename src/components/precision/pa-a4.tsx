@@ -284,8 +284,8 @@ export function SideHode({ kicker, title, sub, actions }: { kicker?: ReactNode; 
     <div className="pa-pagehead">
       <div className="pa-pagehead__row">
         <div className="pa-pagehead__text">
-          {kicker && <span className="kicker pa-pagehead__kicker">{kicker}</span>}
           <h1 className="pa-pagehead__title">{title}</h1>
+          {kicker && kicker !== title && <div className="pa-pagehead__context">{kicker}</div>}
           {sub && <p className="pa-pagehead__sub">{sub}</p>}
         </div>
         {actions && <div className="pa-pagehead__actions">{actions}</div>}

@@ -37,7 +37,6 @@ export async function lastOppsettData(viewer: Viewer): Promise<AG23Data> {
       where: { role: { in: ["ADMIN", "COACH"] }, deletedAt: null },
       orderBy: { name: "asc" },
       select: { id: true, name: true, email: true, role: true },
-    })
-    .catch(() => []);
+    });
   return byggOppsettData(viewer, ansatte);
 }

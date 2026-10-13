@@ -77,9 +77,11 @@ export function Tidslinje({ items, dense }: { items: readonly TidslinjePunkt[]; 
 }
 
 export function Sidehode({ kicker, title, sub }: { kicker?: ReactNode; title: ReactNode; sub?: ReactNode }) {
+  const sammeTekst = typeof kicker === "string" && typeof title === "string"
+    && kicker.trim().toLocaleLowerCase("nb-NO") === title.trim().toLocaleLowerCase("nb-NO");
   return <header className="pa-pagehead"><div className="pa-pagehead__row"><div className="pa-pagehead__text">
-    {kicker && <div className="kicker pa-pagehead__kicker">{kicker}</div>}
     <h1 className="pa-pagehead__title">{title}</h1>
+    {kicker && !sammeTekst && <div className="pa-pagehead__context">{kicker}</div>}
     {sub && <p className="pa-pagehead__sub">{sub}</p>}
   </div></div></header>;
 }

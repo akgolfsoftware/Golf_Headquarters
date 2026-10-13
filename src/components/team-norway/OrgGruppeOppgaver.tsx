@@ -6,7 +6,7 @@ import type { OrgGruppeOppgaverData } from '@/lib/domain/org-gruppeoppgaver-kont
 import { oppsummerOrgBelastning } from '@/lib/domain/org-gruppeoppgaver-kontrakt';
 import { endreOrgGruppeOppgave } from '@/lib/domain/org-gruppeoppgaver';
 import styles from './org-gruppeoppgaver.module.css';
-const STATUS: Record<string, string> = { SCHEDULED: 'Planlagt', PUBLISHED: 'Publisert', IN_PROGRESS: 'Pågår', COMPLETED: 'Fullført' };
+const STATUS: Record<string, string> = { SCHEDULED: 'Planlagt', PUBLISHED: 'Publisert', IN_PROGRESS: 'Pågår', COMPLETED: 'Gjennomført' };
 function tid(min: number) { return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`; }
 
 export function OrgGruppeOppgaver({ data, visning = 'oppgaver', kanRedigere = false }: { data: OrgGruppeOppgaverData; visning?: 'oppgaver' | 'belastning'; kanRedigere?: boolean }) {

@@ -58,12 +58,12 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
               <TnInitialer navn={r.navn} storrelse={40} />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 15, fontWeight: 700, overflowWrap: "anywhere" }}>{r.navn}</div>
-                <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.epost}</div>
+                <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.epost}</div>
               </div>
             </div>
             <div style={{ flex: "0 1 200px", minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 700 }}>{rolleNavn(r.rolle)}</div>
-              <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>
+              <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>
                 Siden {dato.format(r.joinedAt)}{r.endedAt ? ` · til ${dato.format(r.endedAt)}` : ""}
               </div>
             </div>
@@ -92,7 +92,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
             <div key={r.userId} style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 16px", padding: "12px 0", borderBottom: `1px solid ${TN.navy100}`, fontSize: 14 }}>
               <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{r.navn} · {rolleNavn(r.rolle)}</span>
               <span style={{ display: "inline-flex", gap: 12, alignItems: "center" }}>
-                <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>Avsluttet {r.endedAt ? dato.format(r.endedAt) : "—"}</span>
+                <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>Avsluttet {r.endedAt ? dato.format(r.endedAt) : "—"}</span>
                 <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy700 }}>Endre</Link>
               </span>
             </div>

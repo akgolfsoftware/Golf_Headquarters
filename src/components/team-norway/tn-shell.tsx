@@ -40,7 +40,10 @@ export type TnAktivSide =
   | "analyse"
   | "workbench"
   | "oppgaver"
-  | "belastning";
+  | "belastning"
+  | "deling"
+  | "oppsett"
+  | "wang-resultater";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
   return { label, href, aktiv: aktiv === id };
@@ -94,14 +97,15 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
       label: "Plan og fag",
       ikon: "clock",
       punkter: [
+        ...(t ? [lenke("Workbench", "/team-norway/workbench", "workbench", aktiv)] : []),
         lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
         ...(t
           ? [
               lenke("Individuelle oppgaver", "/team-norway/oppgaver", "oppgaver", aktiv),
               lenke("Gruppebelastning", "/team-norway/belastning", "belastning", aktiv),
-              { label: "Delingsoversikt", href: "/team-norway/deling", aktiv: false },
-              { label: "Organisasjonsoppsett", href: "/team-norway/oppsett", aktiv: false },
-              { label: "Nasjonal testoversikt", href: "/team-norway/wang-resultater", aktiv: false },
+              lenke("Delingsoversikt", "/team-norway/deling", "deling", aktiv),
+              lenke("Organisasjonsoppsett", "/team-norway/oppsett", "oppsett", aktiv),
+              lenke("Nasjonal testoversikt", "/team-norway/wang-resultater", "wang-resultater", aktiv),
               lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
               lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
               lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),

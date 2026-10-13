@@ -10,8 +10,10 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
+import { KnappLenke } from "@/components/precision/pa";
+import { SideHode } from "@/components/precision/pa-a4";
 import { TL } from "@/lib/v2/train-lock";
 
 import { SlettKnapp } from "./slett-knapp";
@@ -20,6 +22,7 @@ export const dynamic = "force-dynamic";
 
 function fmt(d: Date): string {
   return new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -41,21 +44,15 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
   const kanSlette = user.role === "ADMIN" || hendelse.coachId === user.id;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
-      <div style={{ marginTop: 12, marginBottom: 20 }}>
-        <Caps>Hendelse</Caps>
-        <div style={{ marginTop: 6 }}>
-          <Tittel mobile={false}>{hendelse.title}</Tittel>
-        </div>
-      </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
+      <SideHode title={hendelse.title} sub="Kalenderhendelse" actions={<KnappLenke variant="ghost" href="/admin/kalender">Til kalenderen</KnappLenke>} />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 420 }}>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 760 }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute }}>
           {fmt(hendelse.startAt)} – {fmt(hendelse.endAt)}
         </span>
         {hendelse.notes && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8 }}>{hendelse.notes}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute, marginTop: 8 }}>{hendelse.notes}</span>
         )}
       </div>
 
@@ -64,6 +61,6 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
           <SlettKnapp id={hendelse.id} />
         </div>
       )}
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

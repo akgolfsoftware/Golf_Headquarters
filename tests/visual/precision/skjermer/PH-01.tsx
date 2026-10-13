@@ -19,13 +19,16 @@ const base: PH01Props = {
   godkjenninger: [],
   dagsform: null,
   agenda: [{ id: "a1", time: "14:30", title: "Putting", meta: "ØKTER", axis: "spill" }],
-  fys: null, turn: null, trening: null, fullfort: null, popup: null,
+  fys: null, turn: null, trening: null,
+  fullfort: { uke: 40, gjennomfort: 1, totalt: 2, igjen: 1, hoppetOver: 0, rekke: 0, rekkeKilde: "Ingen tidligere uker registrert", total: 1, totalKilde: "Syntetisk øktlogg",
+    milepaeler: [{ antall: 10, naadd: null }, { antall: 50, naadd: null }, { antall: 100, naadd: null }] },
+  popup: null,
 };
 
 const Vis = (p: Partial<PH01Props>) => <PlayerHQSkall innboksHref="#" uleste={3}><PH01IDag {...base} {...p} /></PlayerHQSkall>;
 
 export const tilstander = {
   data: <Vis />,
-  tom: <Vis tilstand="tom" okter={[]} agenda={[]} />,
+  tom: <Vis tilstand="tom" okter={[]} agenda={[]} sub="Ingen økter i dag." />,
   feil: <Vis tilstand="feil" />,
 };

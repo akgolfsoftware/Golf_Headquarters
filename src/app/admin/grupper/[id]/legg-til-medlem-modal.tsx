@@ -112,13 +112,12 @@ export function LeggTilMedlemModal({
     }
     setFeil(null);
     startTransition(async () => {
-      const res = await leggTilGruppemedlem(groupId, valgt, rolle);
-      if (!res.ok) {
-        setFeil(res.feil);
-        return;
-      }
-      router.refresh();
-      lukk();
+      try {
+        const res = await leggTilGruppemedlem(groupId, valgt, rolle);
+        if (!res.ok) { setFeil(res.feil); return; }
+        router.refresh();
+        lukk();
+      } catch { setFeil("Kunne ikke legge til medlemmet. Valget er beholdt; prøv igjen."); }
     });
   }
 
@@ -169,13 +168,13 @@ export function LeggTilMedlemModal({
       onClose={onClose}
       aria-modal="true"
       aria-labelledby="legg-til-medlem-title"
-      className="m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-[560px] sm:rounded-2xl sm:border sm:border-border"
+      className="group-members-dialog m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-[560px] sm:rounded-2xl sm:border sm:border-border"
     >
       <div className="p-4 sm:p-8">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="text-sm text-muted-foreground">
               Gruppe · legg til medlem
             </div>
             <h3
@@ -189,7 +188,7 @@ export function LeggTilMedlemModal({
           <button
             type="button"
             onClick={lukk}
-            className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="pa-iconbtn"
             aria-label="Lukk"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
@@ -198,7 +197,7 @@ export function LeggTilMedlemModal({
 
         {/* Rollevalg (G5) */}
         <div
-          role="radiogroup"
+          role="group"
           aria-label="Rolle i gruppen"
           className="mb-4 flex flex-wrap items-center gap-2"
         >
@@ -208,13 +207,12 @@ export function LeggTilMedlemModal({
               <button
                 key={r.rolle}
                 type="button"
-                role="radio"
-                aria-checked={aktiv}
+                aria-pressed={aktiv}
                 onClick={() => velgRolle(r.rolle)}
-                className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+                className={`pa-btn pa-btn--secondary ${
                   aktiv
-                    ? "border-transparent bg-primary text-primary-foreground"
-                    : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "group-choice-selected"
+                    : "group-choice"
                 }`}
               >
                 {r.label}
@@ -260,8 +258,8 @@ export function LeggTilMedlemModal({
                 return (
                   <li key={k.id}>
                     <label
-                      className={`flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors ${
-                        erValgt ? "bg-primary/5" : "hover:bg-secondary"
+                      className={`flex min-h-14 cursor-pointer items-center gap-2 px-4 py-2 transition-colors ${
+                        erValgt ? "group-choice-selected" : "group-choice"
                       }`}
                     >
                       <input
@@ -273,7 +271,7 @@ export function LeggTilMedlemModal({
                         aria-label={`Velg ${k.name}`}
                       />
                       <span
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-semibold text-white"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-mono text-[13px] font-semibold text-white"
                         style={{ background: avatarBg(k.name) }}
                         aria-hidden="true"
                       >
@@ -283,7 +281,7 @@ export function LeggTilMedlemModal({
                         <span className="block truncate text-[13px] font-medium text-foreground">
                           {k.name}
                         </span>
-                        <span className="block truncate font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                        <span className="block truncate font-mono text-[13px] text-muted-foreground">
                           {k.homeClub ?? "Uten klubb"} · HCP{" "}
                           <span className="tabular-nums">{fmtHcp(k.hcp)}</span>
                         </span>
@@ -308,7 +306,7 @@ export function LeggTilMedlemModal({
         {/* Inviter på e-post (plan T3) — funksjonell inngang, gjenbruker
             modalens eksisterende idiom. Skjermen skal gjennom fasit-runde. */}
         <div className="mt-6 border-t border-border pt-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="text-sm text-muted-foreground">
             Eller inviter på e-post
           </div>
           <p className="mt-1 text-xs text-muted-foreground">

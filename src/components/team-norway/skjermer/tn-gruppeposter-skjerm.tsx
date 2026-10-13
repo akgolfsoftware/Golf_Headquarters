@@ -67,7 +67,7 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
 
         {innlegg.length === 0 ? (
           <section style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, padding: "clamp(16px, 2vw, 24px)" }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900 }}>Ingen innlegg ennå</div>
+            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900 }}>Ingen innlegg ennå</div>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "10px 0 0", maxWidth: "60ch" }}>
               {erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
             </p>

@@ -1,0 +1,80 @@
+.content {
+  --tl-scene: var(--surface-page);
+  --tl-elev: var(--surface-flat);
+  --tl-dock: var(--surface-sunken);
+  --tl-dim: var(--surface-hover);
+  --tl-hair: var(--border-hairline);
+  --tl-text: var(--text-primary);
+  --tl-mute: var(--text-secondary);
+  --tl-text-hover: var(--text-primary);
+  --tl-fill: var(--primary);
+  --tl-on-fill: var(--text-on-primary);
+  --tl-avatar: var(--surface-inverse);
+  --tl-on-avatar: var(--text-inverse);
+  --tl-warm: var(--signal);
+  --tl-warm-ink: var(--signal);
+  --tl-warm-text: var(--text-primary);
+  --tl-warn: var(--text-primary);
+  --tl-warn-hair: var(--border-strong);
+  --tl-danger: var(--signal);
+  --tl-ok: var(--text-primary);
+  --tl-on-danger: var(--text-on-signal);
+  --tl-r-card: var(--radius-card);
+  --tl-r-pill: var(--radius);
+  --tl-r-row: var(--radius-inner);
+  --tl-r-field: var(--radius);
+  --tl-r-sheet: var(--radius-modal);
+  --tl-font-sans: var(--font-sans);
+  --tl-font-mono: var(--font-mono);
+  --tl-text-body: 15px;
+  --tl-text-meta: 13px;
+  --tl-text-caps: 13px;
+  --tl-tracking-caps: 0;
+  --tl-tracking-caps-sm: 0;
+  --tl-tap: 44px;
+  --tl-tap-cta: 44px;
+  --tl-scrim: var(--scrim-modal);
+  width: 100%;
+  min-width: 0;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+.content :is(h1,h2,h3) { font-family: var(--font-sans); overflow-wrap: anywhere; }
+.content :is(button,input,select,textarea) { font: inherit; }
+.content :is(button,input,select) { min-height: 44px; }
+.content :is(input,select,textarea) { min-width: 0; max-width: 100%; }
+.content :is(a,button,input,select,textarea):focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.content :is(p,label) { overflow-wrap: anywhere; }
+.content [role="alert"] { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.panel { background: var(--surface-flat); border-radius: var(--radius-card); padding: 24px; min-width: 0; }
+.panel h2 { margin: 0 0 8px; font: 600 22px/1.2 var(--font-sans); }
+.panel p { margin: 0 0 16px; }
+.rows { display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: minmax(130px,1fr) minmax(0,2fr); gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border-hairline); }
+.row dt { color: var(--text-secondary); }
+.row dd { margin: 0; overflow-wrap: anywhere; }
+@media(max-width:767px) { .content { padding: 20px 16px; gap: 20px; } .panel { padding: 20px 16px; } .row { grid-template-columns: 1fr; gap: 4px; } }
+
+.content :global(button[aria-pressed="true"]) { background: var(--primary); color: var(--text-on-primary); border-color: var(--primary); }
+.content :global(button[aria-pressed="true"] span), .content :global(button[aria-pressed="true"] svg) { color: inherit; }
+.content :global(.pa-pagehead__title) { font-size: clamp(32px,3vw,48px); line-height: 1.08; }
+.content :global(.pa-tabs) { gap: 8px; border-bottom: 0; padding-bottom: 8px; }
+.content :global(.pa-tab) { min-height: 44px; background: var(--surface-flat); border-radius: var(--radius); padding: 0 16px; border-bottom: 0; font-family: var(--font-sans); font-size: 14px; }
+.content :global(.pa-tab[aria-current="page"]) { background: var(--primary); color: var(--text-on-primary); }
+
+.content input[type="checkbox"] { min-height: 20px; width: 20px; height: 20px; flex: none; }
+.content label:has(input[type="checkbox"]) { min-height: 44px; }
+/* Disse eldre skjemaene bruker Tailwind-klasser som ellers arver markedssidens rustfarge. */
+.content :global(.bg-primary) { background-color: var(--primary); }
+.content :global(.text-primary-foreground) { color: var(--text-on-primary); }
+.content :global(.text-primary) { color: var(--text-primary); }
+.content :global(.border-primary) { border-color: var(--border-ink); }

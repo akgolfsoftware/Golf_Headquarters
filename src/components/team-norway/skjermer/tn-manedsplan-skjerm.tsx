@@ -81,7 +81,7 @@ function periodeFarge(navn: string | undefined) {
 function Periodebaand({ navn, hoyre }: { navn?: string; hoyre: string }) {
   const farge = periodeFarge(navn);
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 12px", padding: "7px 10px", background: farge.bg, color: farge.fg, border: navn ? "none" : `1px dashed ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 11.5, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 12px", padding: "7px 10px", background: farge.bg, color: farge.fg, border: navn ? "none" : `1px dashed ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none" }}>
       <span>{navn ?? "Periode ikke satt"}</span>
       <span style={{ fontFamily: TN.font.mono, letterSpacing: "0.04em" }}>{hoyre}</span>
     </div>
@@ -169,12 +169,12 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
       >
         <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: d.iManed ? TN.navy900 : TN.textSecondary }}>{d.dag}</span>
         {d.hendelser.slice(0, 2).map((h, i) => (
-          <span key={`${h.id}-${i}`} style={{ display: "block", minWidth: 0, fontSize: 11.5, lineHeight: 1.3, padding: "2px 5px", borderRadius: TN.radius.sm, background: hendelseStil[h.type].bg, color: hendelseStil[h.type].fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", opacity: d.iManed ? 1 : 0.6 }}>
+          <span key={`${h.id}-${i}`} style={{ display: "block", minWidth: 0, fontSize: 13, lineHeight: 1.3, padding: "2px 5px", borderRadius: TN.radius.sm, background: hendelseStil[h.type].bg, color: hendelseStil[h.type].fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", opacity: d.iManed ? 1 : 0.6 }}>
             {h.tid ? <span style={{ fontFamily: TN.font.mono }}>{h.tid} </span> : null}
             {h.tittel}
           </span>
         ))}
-        {d.hendelser.length > 2 ? <span style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary }}>+{d.hendelser.length - 2} til</span> : null}
+        {d.hendelser.length > 2 ? <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>+{d.hendelser.length - 2} til</span> : null}
       </Link>
     );
   };
@@ -197,7 +197,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
       </div>
       <aside style={{ background: TN.white, border: `1px solid ${TN.navy100}`, padding: 20, minWidth: 0 }}>
         <TnEtikett>{`Uke ${valgtUke.nr} · ${valgtUke.periode?.navn ?? "Periode ikke satt"}`}</TnEtikett>
-        <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 24, letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
+        <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 24, letterSpacing: 0, textTransform: "none", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
         <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 4 }}>{`${dm(valgtNokkel)}.${valgtNokkel.slice(0, 4)}`}</div>
         <div style={{ marginTop: 14 }}>
           {valgtDag.hendelser.map(rad)}
@@ -215,7 +215,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
           return (
             <div key={u.fra} style={{ background: TN.white, border: `1px solid ${TN.navy100}`, minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={`${dm(u.fra)}–${dm(u.til)}`} />
-              <div style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.navy900, padding: "10px 14px 0" }}>Uke {u.nr}</div>
+              <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900, padding: "10px 14px 0" }}>Uke {u.nr}</div>
               <div style={{ padding: "0 14px 6px" }}>
                 {dager.map((d) => (
                   <div key={d.nokkel} style={{ display: "grid", gridTemplateColumns: "52px minmax(0, 1fr)", gap: 10, alignItems: "start" }}>

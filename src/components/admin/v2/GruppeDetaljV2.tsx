@@ -6,8 +6,8 @@
  */
 
 import Link from "next/link";
-import { TL } from "@/lib/v2/train-lock";
-import { TlBadge, TlKort, TlKnapp, TlRad, TlTilbake, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
+import { TL } from "@/components/admin/precision/grupper/group-kit";
+import { TlBadge, TlKort, TlKnapp, TlRad, TlTilbake, TlTittel, TlTomTilstand } from "@/components/admin/precision/grupper/group-kit";
 import { GruppeFaner } from "./GruppeFaner";
 
 export type SamlingRad = {
@@ -109,7 +109,7 @@ export function GruppeDetaljV2({
       <GruppeFaner groupId={data.id} aktiv="medlemmer" />
 
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-        <div>
+        <div style={{ flex:"1 1 320px", minWidth:0 }}>
           <TlTittel sub={`${data.antallMedlemmer} medlemmer · Snitt-HCP ${data.snittHcp} · Coach ${data.coachNavn ?? "ikke satt"}`}>
             {data.navn}
           </TlTittel>
@@ -153,13 +153,13 @@ export function GruppeDetaljV2({
           { l: "PRO-andel", v: `${data.proAndel} %`, s: undefined },
         ].map((k) => (
           <TlKort key={k.l} pad="14px 16px">
-            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+            <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "0", color: TL.mute }}>
               {k.l}
             </div>
             <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text }}>
               {k.v}
             </div>
-            {k.s && <div style={{ marginTop: 4, fontSize: 12, color: TL.mute }}>{k.s}</div>}
+            {k.s && <div style={{ marginTop: 4, fontSize: 13, color: TL.mute }}>{k.s}</div>}
           </TlKort>
         ))}
       </div>
@@ -209,12 +209,12 @@ export function GruppeDetaljV2({
                   className="v2-press v2-focus"
                   style={{
                     textDecoration: "none",
-                    height: 28,
+                    minHeight: 44,
                     padding: "0 12px",
-                    borderRadius: 999,
+                    borderRadius: "var(--radius-pill)",
                     display: "inline-flex",
                     alignItems: "center",
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 600,
                     color: on ? TL.onFill : TL.mute,
                     background: on ? TL.fill : "transparent",

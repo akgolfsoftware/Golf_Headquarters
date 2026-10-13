@@ -12,6 +12,7 @@
 import "server-only";
 
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { videoHeaderMatches } from "./video-header";
 import {
   ALLOWED_MIME_TYPES,
   MAX_FILE_SIZES,
@@ -82,6 +83,10 @@ export async function uploadFile(opts: UploadInput): Promise<UploadResult> {
     throw new Error(
       `MIME-type "${contentType}" er ikke tillatt for "${bucket}". Tillatte: ${allowed.join(", ")}`,
     );
+  }
+
+  if (bucket === STORAGE_BUCKETS.PLAYER_SWING_VIDEOS && !videoHeaderMatches(bytes, contentType)) {
+    throw new Error("Filinnholdet er ikke en støttet MP4-, MOV- eller WEBM-fil. Velg originalvideoen og prøv igjen.");
   }
 
   const sb = supabaseAdmin();

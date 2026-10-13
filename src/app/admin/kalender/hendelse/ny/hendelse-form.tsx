@@ -10,14 +10,14 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
 
-import { Caps, Knapp } from "@/components/v2/core";
+import { Knapp } from "@/components/precision/pa";
 import { opprettHendelse } from "@/lib/kalender-hendelse/actions";
 
 const feltStil: React.CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   fontFamily: TL.font.sans,
-  fontSize: 13,
+  fontSize: 15,
   color: TL.text,
   background: TL.dock,
   border: `1px solid ${TL.hair}`,
@@ -27,7 +27,7 @@ const feltStil: React.CSSProperties = {
 
 const labelStil: React.CSSProperties = {
   fontFamily: TL.font.sans,
-  fontSize: 11.5,
+  fontSize: 14,
   fontWeight: 600,
   color: TL.mute,
   marginBottom: 6,
@@ -63,7 +63,7 @@ export function HendelseForm({
     }
     const startAt = new Date(`${sDato}T${sTid}`);
     const endAt = new Date(`${eDato}T${eTid}`);
-    if (endAt <= startAt) {
+    if (!Number.isFinite(startAt.getTime()) || !Number.isFinite(endAt.getTime()) || endAt <= startAt) {
       setFeil("Slutt må være etter start");
       return;
     }
@@ -79,7 +79,7 @@ export function HendelseForm({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 420 }}>
+    <fieldset disabled={pending} aria-busy={pending} style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 680, border: 0, padding: 0, margin: 0 }}>
       <div>
         <label style={labelStil} htmlFor="hendelse-tittel">Tittel</label>
         <input
@@ -96,12 +96,12 @@ export function HendelseForm({
         <div>
           <label style={labelStil} htmlFor="hendelse-start-dato">Start</label>
           <input id="hendelse-start-dato" type="date" style={{ ...feltStil, marginBottom: 8 }} value={sDato} onChange={(e) => setSDato(e.target.value)} />
-          <input type="time" style={feltStil} value={sTid} onChange={(e) => setSTid(e.target.value)} />
+          <input aria-label="Starttid" type="time" style={feltStil} value={sTid} onChange={(e) => setSTid(e.target.value)} />
         </div>
         <div>
           <label style={labelStil} htmlFor="hendelse-slutt-dato">Slutt</label>
           <input id="hendelse-slutt-dato" type="date" style={{ ...feltStil, marginBottom: 8 }} value={eDato} onChange={(e) => setEDato(e.target.value)} />
-          <input type="time" style={feltStil} value={eTid} onChange={(e) => setETid(e.target.value)} />
+          <input aria-label="Sluttid" type="time" style={feltStil} value={eTid} onChange={(e) => setETid(e.target.value)} />
         </div>
       </div>
 
@@ -116,12 +116,12 @@ export function HendelseForm({
         />
       </div>
 
-      {feil && <Caps style={{ color: TL.text }}>{feil}</Caps>}
+      {feil && <p role="alert">{feil}</p>}
 
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-        <Knapp ghost onClick={() => router.push("/admin/kalender")}>Avbryt</Knapp>
+        <Knapp variant="ghost" onClick={() => router.push("/admin/kalender")}>Avbryt</Knapp>
         <Knapp onClick={submit} disabled={pending}>{pending ? "Lagrer …" : "Lagre hendelse"}</Knapp>
       </div>
-    </div>
+    </fieldset>
   );
 }

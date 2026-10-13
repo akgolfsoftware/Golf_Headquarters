@@ -7,8 +7,10 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel } from "@/components/v2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { CoachContent } from "@/components/admin/precision/agency-completion/CoachContent";
+import { KnappLenke } from "@/components/precision/pa";
+import { SideHode } from "@/components/precision/pa-a4";
 import { HendelseForm } from "./hendelse-form";
 
 export const dynamic = "force-dynamic";
@@ -16,12 +18,9 @@ export const dynamic = "force-dynamic";
 type SearchParams = Promise<{ start?: string }>;
 
 function dagensDatoOgTid(): { dato: string; tid: string } {
-  const now = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return {
-    dato: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`,
-    tid: `${pad(now.getHours())}:00`,
-  };
+  const deler = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+  const verdi = (type: string) => deler.find(p => p.type === type)?.value ?? "";
+  return { dato: `${verdi("year")}-${verdi("month")}-${verdi("day")}`, tid: `${verdi("hour")}:00` };
 }
 
 export default async function NyHendelsePage({ searchParams }: { searchParams: SearchParams }) {
@@ -32,12 +31,9 @@ export default async function NyHendelsePage({ searchParams }: { searchParams: S
   const [dato, tid] = start?.includes("T") ? start.split("T") : [fallback.dato, fallback.tid];
 
   return (
-    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
-      <div style={{ marginTop: 12, marginBottom: 20 }}>
-        <Tittel mobile={false}>Ny hendelse</Tittel>
-      </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}><CoachContent>
+      <SideHode title="Ny hendelse" sub="Reserver tid i coachkalenderen." actions={<KnappLenke variant="ghost" href="/admin/kalender">Til kalenderen</KnappLenke>} />
       <HendelseForm startDato={dato} startKlokkeslett={tid} />
-    </V2Shell>
+    </CoachContent></AgencyOSSkall>
   );
 }

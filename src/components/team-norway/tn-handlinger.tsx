@@ -26,9 +26,9 @@ const knappGrunn: CSSProperties = {
   padding: "0 18px",
   borderRadius: 2,
   fontFamily: TN.font.display,
-  fontSize: 12,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
+  fontSize: 13,
+  letterSpacing: 0,
+  textTransform: "none",
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -70,7 +70,7 @@ const feltStil: CSSProperties = {
 };
 
 function Etikett({ children }: { children: ReactNode }) {
-  return <span style={{ fontFamily: TN.font.display, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.textSecondary }}>{children}</span>;
+  return <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.textSecondary }}>{children}</span>;
 }
 
 export function TnFelt({ etikett, navn, type = "text", standard, pakrevd, hint, plassholder, maks }: { etikett: string; navn: string; type?: "text" | "date" | "time" | "datetime-local" | "email"; standard?: string; pakrevd?: boolean; hint?: string; plassholder?: string; maks?: number }) {
@@ -154,7 +154,7 @@ export function TnSkjemaArk({ knapp, knappVariant = "primar", tittel, send, lagr
       <button type="button" onClick={apne} style={tnKnappStil(knappVariant)}>{knapp}</button>
       <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
         <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: 16, padding: "clamp(18px, 3vw, 26px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0, paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900, margin: 0, paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>{tittel}</h2>
           {children}
           {feil ? <div role="alert" style={{ fontSize: 13.5, color: TN.status.redText, padding: "10px 12px", background: TN.navy50, borderLeft: `3px solid ${TN.status.red}`, borderRadius: 2 }}>{feil}</div> : null}
           <TnKnapperekke>
@@ -202,7 +202,7 @@ export function TnSlettKnapp({ knapp, tittel, tekst, bekreft, handling, videre, 
       <button type="button" onClick={() => { setFeil(null); ref.current?.showModal(); }} style={tnKnappStil(variant)}>{knapp}</button>
       <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderTop: `3px solid ${TN.red600}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "clamp(18px, 3vw, 24px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: 0, textTransform: "none", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
           {feil ? <div role="alert" style={{ fontSize: 13.5, color: TN.status.redText }}>{feil}</div> : null}
           <TnKnapperekke>

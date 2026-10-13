@@ -16,19 +16,18 @@
 .overlinje {
   margin: 0;
   font-family: var(--tn-font-display);
-  font-size: .8125rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: .875rem;
+  letter-spacing: 0;
   color: var(--tn-text-secondary);
 }
 .tittel {
-  margin: 12px 0 0;
+  margin: 0;
   font-family: var(--tn-font-display);
-  font-weight: var(--tn-weight-light);
-  font-size: clamp(26px, 5vw, 36px);
+  font-weight: var(--tn-weight-medium);
+  font-size: clamp(30px, 4vw, 46px);
   line-height: 1.1;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
   color: var(--tn-text-primary);
 }
 .ingress {
@@ -103,9 +102,8 @@
   margin: 0;
   font-family: var(--tn-font-display);
   font-weight: var(--tn-weight-regular);
-  font-size: 15px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: 20px;
+  letter-spacing: 0;
   color: var(--tn-navy-900);
 }
 .seksjonAntall { font-family: var(--tn-font-mono); font-size: .875rem; color: var(--tn-text-secondary); }
@@ -120,10 +118,9 @@
   overflow-wrap: anywhere;
 }
 .tabell th {
-  font-family: var(--tn-font-mono);
-  font-size: .8125rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--tn-font-body);
+  font-size: .875rem;
+  letter-spacing: 0;
   color: var(--tn-text-secondary);
   font-weight: var(--tn-weight-regular);
 }
@@ -135,17 +132,17 @@
 .merkelapp {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
-  border: 1px solid var(--tn-border-subtle);
-  font-family: var(--tn-font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  padding: 5px 9px;
+  border: 0;
+  background: var(--tn-ink-100);
+  font-family: var(--tn-font-body);
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--tn-ink-700);
   white-space: nowrap;
 }
-.merkelappOk { border-color: var(--tn-status-green); color: var(--tn-status-green-text); }
-.merkelappVent { border-color: var(--tn-red-700); color: var(--tn-red-700); }
+.merkelappOk { background: var(--tn-status-green-bg); color: var(--tn-status-green-text); }
+.merkelappVent { background: var(--tn-status-red-bg); color: var(--tn-red-700); }
 .merkelappNavy { background: var(--tn-navy-900); border-color: var(--tn-navy-900); color: var(--tn-white); }
 
 .fotnote { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--tn-text-secondary); }
@@ -155,28 +152,26 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 20px;
 }
-.panel { border: 1px solid var(--tn-border-subtle); padding: 24px; min-width: 0; }
+.panel { background: var(--tn-ink-50); padding: 24px; min-width: 0; }
 .panelHode {
   margin: 0;
   font-family: var(--tn-font-display);
-  font-size: 9.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--tn-text-secondary);
 }
 .panelTittel {
   margin: 10px 0 0;
   font-family: var(--tn-font-display);
   font-size: 19px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
 }
 .panelTekst { margin: 11px 0 0; font-size: 14px; line-height: 1.6; }
 .panelFot { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--tn-border-subtle); }
 .kilde {
   margin: 0;
-  font-family: var(--tn-font-mono);
-  font-size: .8125rem;
+  font-family: var(--tn-font-body);
+  font-size: .875rem;
   line-height: 1.7;
   letter-spacing: 0.04em;
   color: var(--tn-text-secondary);
@@ -192,10 +187,9 @@
   .tabell td::before {
     content: attr(data-etikett);
     flex: 0 0 42%;
-    font-family: var(--tn-font-mono);
-    font-size: .8125rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--tn-font-body);
+    font-size: .875rem;
+    letter-spacing: 0;
     color: var(--tn-text-secondary);
   }
   .tallKolonne { text-align: left; }
@@ -212,3 +206,7 @@
 .ark::backdrop {
   background: color-mix(in srgb, var(--tn-navy-900) 45%, transparent);
 }
+
+.overlinje { margin-top: .75rem; font-family: var(--tn-font-body); }
+.sidehode, .panel { overflow-wrap: anywhere; }
+.tabell a:focus-visible { outline: 3px solid var(--tn-red-600); outline-offset: 3px; }

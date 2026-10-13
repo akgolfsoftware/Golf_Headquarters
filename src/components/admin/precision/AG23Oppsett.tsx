@@ -11,7 +11,8 @@
  * Faner: profil, team, inviter, ekstern, varsler, integr, mark, virks.
  */
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { FanerLenker, SideHode } from "@/components/precision/pa-a4";
 import { ArrowRight, Settings } from "lucide-react";
 import {
   FeilTilstand,
@@ -46,6 +47,9 @@ export type AG23OppsettProps = {
   tilstand?: AG23Tilstand;
   data?: AG23Data;
   startFane?: string;
+  /** Reell serverlastet fane; eldre isolerte prøver bruker visningsmodus. */
+  children?: ReactNode;
+  faner?: ReadonlyArray<{ href: string; navn: string; aktiv: boolean }>;
 };
 
 const TOM_DATA: AG23Data = { team: [], profil: null };
@@ -80,8 +84,14 @@ function IkkeKoblet({ tittel, tekst, href, lenke }: { tittel: string; tekst: str
   );
 }
 
-export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "team" }: AG23OppsettProps) {
+export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "team", children, faner }: AG23OppsettProps) {
   const [aktivFane, setAktivFane] = useState(startFane);
+
+  if (faner) return <div className="pa-a23">
+    <SideHode title="Oppsett" sub={SUB} />
+    <FanerLenker faner={faner} />
+    {children}
+  </div>;
 
   if (tilstand === "laster") {
     return (

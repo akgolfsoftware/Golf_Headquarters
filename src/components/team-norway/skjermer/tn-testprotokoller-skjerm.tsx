@@ -89,7 +89,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
               >
                 <span style={{ minWidth: 0 }}>
                   <span style={{ display: "block", fontSize: 15, fontWeight: 700, overflowWrap: "anywhere" }}>{p.navn}</span>
-                  <span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, marginTop: 2 }}>{p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
+                  <span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
                 </span>
                 <TnStatusmerke farge={p.status === "KLAR" ? TN.navy900 : TN.textSecondary}>{p.status}</TnStatusmerke>
               </Link>
@@ -121,11 +121,11 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
 
               <TnEtikett style={{ marginTop: 24, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Dette registreres</TnEtikett>
               <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: "0 16px" }}>
-                {["Felt", "Format"].map((k) => <TnEtikett key={k} style={{ padding: "10px 0 6px", fontSize: 10.5 }}>{k}</TnEtikett>)}
+                {["Felt", "Format"].map((k) => <TnEtikett key={k} style={{ padding: "10px 0 6px", fontSize: 13 }}>{k}</TnEtikett>)}
                 {feltene.map((f) => (
                   <div key={f.key} style={{ display: "contents" }}>
                     <span style={{ fontSize: 14, padding: "8px 0", borderTop: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{f.label}{f.optional ? " (valgfritt)" : ""}</span>
-                    <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: TN.textSecondary, padding: "8px 0", borderTop: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{format(f)}</span>
+                    <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, padding: "8px 0", borderTop: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{format(f)}</span>
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
                   Utkast kan ikke brukes i fellestesting ennå. {detalj.blocked}
                 </p>
               ) : (
-                <Link href={`/portal/tren/tester/team-norway?test=${encodeURIComponent(detalj.id)}`} style={{ marginTop: 18, minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 20px", background: TN.navy900, color: TN.white, borderRadius: TN.radius.sm, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", textDecoration: "none" }}>
+                <Link href={`/portal/tren/tester/team-norway?test=${encodeURIComponent(detalj.id)}`} style={{ marginTop: 18, minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 20px", background: TN.navy900, color: TN.white, borderRadius: TN.radius.sm, fontFamily: TN.font.display, fontSize: 13, letterSpacing: 0, textTransform: "none", textDecoration: "none" }}>
                   Bruk i fellestesting
                 </Link>
               )}

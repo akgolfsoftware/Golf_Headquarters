@@ -51,6 +51,7 @@ function safeFileName(name: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9.\-_]/g, "-")
     .replace(/-+/g, "-")
+    .replace(/\.{2,}/g, ".")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80) || "file";
 }
@@ -117,6 +118,10 @@ export async function POST(req: Request) {
   let path: string;
   if (typeof customPath === "string" && customPath.trim().length > 0) {
     path = customPath.trim().replace(/^\/+/, "");
+    if (path.includes("\\") || path.includes("%") || path.split("/").some(part => !part || part === "." || part === "..")) {
+      return NextResponse.json({ ok: false, error: "Ugyldig filsti." }, { status: 400 });
+    }
+
     // For player-buckets: ikke-staff må holde seg innenfor sin egen prefix.
     if (
       !erStaff &&

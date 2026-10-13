@@ -14,6 +14,7 @@ let failPlanLog = false;
 let planLog: Record<string, unknown> | null = null;
 let categoryLog: Record<string, unknown> | null = null;
 let missingVideo = false;
+let validVideoHeader = true;
 let awaitingConsent = false;
 let storageReads = 0;
 let videoWrites = 0;
@@ -48,6 +49,7 @@ mock.module("@/lib/supabase/admin", { namedExports: { supabaseAdmin: () => ({ st
   storageReads++; return missingVideo ? { data: null, error: { message: "Not found" } } : { data: { name: path, contentType: "video/mp4", size: 100 }, error: null };
 } }) } }) } });
 mock.module("@/lib/storage/supabase-storage", { namedExports: { getSignedUrl: async (_bucket: string, path: string) => `https://storage.example.test/${path}?server-signature` } });
+mock.module("@/lib/storage/video-content", { namedExports: { storedVideoHeaderMatches: async () => validVideoHeader } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
 mock.module("@/lib/workbench/wb-actions", { namedExports: { startSession: async () => { status = "IN_PROGRESS"; return { ok: true }; } } });
 mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { mutateSessionExecution: async () => ({ ok: true }) } });
@@ -59,7 +61,7 @@ mock.module("@/app/portal/(fullscreen)/live/[sessionId]/actions", { namedExports
 } });
 let actions: typeof import("./session-actions");
 before(async () => { actions = await import("./session-actions"); });
-beforeEach(() => { kind = "plan"; viewer = { id: "player", role: "PLAYER" }; coachAccess = false; status = "ACTIVE"; snapshot = { other: "Bevares" }; updatedAt = new Date(0); writes = 0; failPlanLog = false; planLog = null; categoryLog = null; missingVideo = false; awaitingConsent = false; storageReads = 0; videoWrites = 0; savedVideo = null; });
+beforeEach(() => { kind = "plan"; viewer = { id: "player", role: "PLAYER" }; coachAccess = false; status = "ACTIVE"; snapshot = { other: "Bevares" }; updatedAt = new Date(0); writes = 0; failPlanLog = false; planLog = null; categoryLog = null; missingVideo = false; validVideoHeader = true; awaitingConsent = false; storageReads = 0; videoWrites = 0; savedVideo = null; });
 
 test("servervalgt modell avviser fremmed spiller og uvedkommende coach før lagring", async () => {
   for (const model of ["plan", "workbench", "v2"] as const) {
@@ -157,4 +159,10 @@ test("en ikke-opplastet fil bekreftes ikke; faktisk fil får serverens URL og t�
   assert.equal(savedVideo?.videoUrl, "https://storage.example.test/player/synthetic.mp4?server-signature");
   assert.equal(savedVideo?.liveSessionKind, "plan-session");
   assert.equal((await actions.lagreLiveOvelseVideo("s", input)).ok, true); assert.equal(videoWrites, 1);
+});
+
+test("video med feil filinnhold kan ikke kobles selv om metadata oppgir video", async () => {
+  validVideoHeader = false;
+  assert.equal((await actions.lagreLiveOvelseVideo("s", { drillId: "d1", storagePath: "player/synthetic.mp4" })).ok, false);
+  assert.equal(videoWrites, 0);
 });

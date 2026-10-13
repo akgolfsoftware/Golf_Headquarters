@@ -62,7 +62,7 @@ const hairTop = "1px solid var(--border-hairline)";
 const t = (n: number | null, d = 1) => formaterTall(n, d, true);
 
 function Hode({ k, meta }: { k: string; meta?: string }) {
-  return <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>{meta != null && <Meta>{meta}</Meta>}</div>;
+  return <div className="ph01-seksjonshode"><h2>{k}</h2>{meta != null && <Meta>{meta}</Meta>}</div>;
 }
 function Seksjon({ label, children }: { label: string; akse?: Akse; children: React.ReactNode }) {
   return <section aria-label={label} className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0 }}>{children}</section>;
@@ -262,7 +262,7 @@ export function PH01IDag(p: PH01Props) {
       <section aria-label="Dagens økter" style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
         {p.okter.length === 0 && godkj.length === 0
           ? <TomTilstand icon={CalendarRange} title="Ingen økt i dag" text={p.tomTekst} actions={<>
-              <KnappLenke href="/portal/planlegge/workbench" variant="secondary" icon={Layers} iconName="layers">Bygg økter i Workbench</KnappLenke>
+              <KnappLenke href="/portal/planlegge/workbench" variant="primary" icon={Layers} iconName="layers">Bygg økter i Workbench</KnappLenke>
               <KnappLenke href="/portal/runde/logg" variant="ghost">Registrer runde</KnappLenke>
             </>} />
           : <>
@@ -274,11 +274,15 @@ export function PH01IDag(p: PH01Props) {
       <div className="ph01-to">
         <Dagsform start={p.dagsform} tom={tom} toast={toast} />
         <Agenda items={p.agenda} tom={tom} />
-        <NesteFys fys={tom ? null : p.fys} />
-        <NesteTurn turn={tom ? null : p.turn} />
-        <Treningstid tr={tom ? null : p.trening} uke={p.fullfort?.uke ?? 0} />
-        <Fullfort f={tom ? null : p.fullfort} uke={p.fullfort?.uke ?? 0} />
+        {!tom && <NesteFys fys={p.fys} />}
+        {!tom && <NesteTurn turn={p.turn} />}
+        {!tom && <Treningstid tr={p.trening} uke={p.fullfort?.uke ?? 0} />}
+        {!tom && <Fullfort f={p.fullfort} uke={p.fullfort?.uke ?? 0} />}
       </div>
+      {tom && <details className="ph01-kom-i-gang"><summary>Plan, turneringer og treningshistorikk</summary><div className="ph01-to">
+        <NesteFys fys={null} /><NesteTurn turn={null} />
+        <Treningstid tr={null} uke={p.fullfort?.uke ?? 0} /><Fullfort f={null} uke={p.fullfort?.uke ?? 0} />
+      </div></details>}
     </>}
     {p.children}
     {toastEl}

@@ -12,6 +12,7 @@ import { FysPrecisionLogger } from "@/components/portal/live/FysPrecisionLogger"
 import { lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import { type LiveAktivData, beregnProsent, formatClock } from "@/lib/portal-live/ph04-07-data";
 import { lagreLiveOvelseVideo } from "@/lib/portal-live/session-actions";
+import { uploadSignedVideo, type VideoUploadTicket } from "@/lib/storage/direct-video-client";
 import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import "@/styles/precision-athletics.css";
 import "@/styles/precision-live.css";
@@ -46,12 +47,11 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
     setVideoFeedback("");
     const index = live.current;
     try {
-      const form = new FormData();
-      form.append("bucket", STORAGE_BUCKETS.PLAYER_SWING_VIDEOS);
-      form.append("file", file);
-      const response = await fetch("/api/upload", { method: "POST", body: form });
-      const upload: { ok?: boolean; path?: string; error?: string } = await response.json();
-      if (!response.ok || !upload.ok || !upload.path) { setVideoFeedback(upload.error ?? "Videoen ble ikke lastet opp."); return; }
+      const response = await fetch("/api/portal/live-video/upload", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: data.sessionId, drillId: drill.id, mimeType: file.type, size: file.size }) });
+      const upload: Partial<VideoUploadTicket> & { ok?: boolean; error?: string } = await response.json();
+      if (!response.ok || !upload.ok || !upload.path || !upload.token || upload.bucket !== STORAGE_BUCKETS.PLAYER_SWING_VIDEOS) { setVideoFeedback(upload.error ?? "Videoen ble ikke lastet opp."); return; }
+      await uploadSignedVideo(file, { path: upload.path, token: upload.token, bucket: upload.bucket });
       const result = await lagreLiveOvelseVideo(data.sessionId, { drillId: drill.id, storagePath: upload.path });
       if (!result.ok) { setVideoFeedback(result.error); return; }
       setVideoCounts((values) => values.map((count, n) => n === index ? count + 1 : count));

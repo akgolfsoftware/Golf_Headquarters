@@ -1,39 +1,12 @@
 "use client";
+import { CoachLabel as Caps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
-/**
- * AgencyOS Compliance — treningsetterlevelse i stallen (PX-6, 29.08.2026).
- *
- * Ingen Train-lock-fasit — etterlevelse er ikke tegnet. Filhodet siterte
- * tidligere EC-02 (rettet 05.09.2026, fase 1 økt 8): den tegningen er
- * selskapets MVA-terminer, årsregnskap og skattemelding (AS-etterlevelse i
- * Økonomi), ikke plan-mot-virkelighet for spillere. Skjermen er bygget av
- * `TL.*` (train-lock.ts) + DESIGN-SYSTEM.md-komponentene — ingen ad-hoc UI,
- * ingen rå hex — og tegnes som canvas før neste omtegning (beslutning
- * 30.08 «tegn skjermen før du bygger den»). Plan møter virkelighet på
- * tvers av stallen, drevet av EKTE ComplianceData fra loadComplianceData
- * (Prisma).
- *
- * Tre nivåer i samme språk (bevart fra v10-flaten):
- *   1) spillerpanel  — plan-fullføring for ÉN spiller (ring + uke-strip + akse-barometer + diagnose)
- *   2) stall-liste   — etterlevelse-% per spiller m/ uke-sparkline + sist-logget
- *   3) drill-økt      — planlagte drills i siste loggede økt for valgt spiller
- *
- * Ærlige tomrom bevares: panel/drillSession = null og tomme lister gir
- * TomTilstand — aldri fabrikerte tall. Periode- og spillervalg er server-drevet
- * (router.push med ?periode / ?studentId), fordi panelet + drill-økten kun
- * beregnes for valgt spiller i loaderen.
- *
- * MASTERPLAN 15.8 (31.08.2026): dette er nå «etterlevelse»-fanen på
- * `/admin/analyse` (uendret spørring/innhold — `/admin/analysere/compliance`
- * er en ren redirect dit, ?periode/?studentId bevart). `somFane` skjuler
- * egen h1+«AgencyOS»-etikett når sidens `AnalyseHode` allerede viser tittelen
- * — periodevelgeren (`PillVelger`) beholdes uendret.
- */
+/** Coachinnsikt med eksisterende datakilder. Visningsruten avgrenser Precision-stilen; eldre V2-navn er beholdt for importene. */
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
-import { Caps, Kort, Rad, KpiFlis, AvatarInit, AkseBar, AkseChip, RingMaaler, ProgresjonsBar, InnsiktChip, TomTilstand, PillVelger, Icon, Knapp, UkeStripe, HjelpTips, etterlevFarge, type EtterlevBand } from "@/components/v2";
+import { Kort, Rad, KpiFlis, AvatarInit, AkseBar, AkseChip, RingMaaler, ProgresjonsBar, InnsiktChip, TomTilstand, PillVelger, Icon, Knapp, UkeStripe, HjelpTips, etterlevFarge, type EtterlevBand } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 import type { ComplianceData, ComplianceAxis, StallRow } from "@/lib/admin-compliance/compliance-data";
 
@@ -174,7 +147,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
             <AvatarInit navn={panel.playerName} size={44} />
             <div style={{ minWidth: 0 }}>
               <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>{panel.playerName}</div>
-              {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
+              {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
             </div>
           </div>
           <TomTilstand icon="calendar" title="Ingen planlagte økter" sub="Ingen synlige økter med passert sluttid siste fire uker." />
@@ -197,10 +170,10 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
                 <AvatarInit navn={panel.playerName} size={38} />
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{panel.playerName}</div>
-                  {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
+                  {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
                 </div>
               </div>
-              <div style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+              <div style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 14, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 {panel.totalDone} av {panel.totalPlanned} minutter gjennomført · siste fire uker
               </div>
             </div>
@@ -258,7 +231,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
       ) : (
         <>
           <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{ds.title}</div>
-          <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.mute, marginTop: 4 }}>
             {ds.playerName} · {ds.dateLabel} · {ds.durationMin} min
           </div>
           <div style={{ marginTop: 14 }}>
@@ -363,7 +336,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
           }}
         />
         {meldingFeil && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>{meldingFeil}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.text }}>{meldingFeil}</span>
         )}
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Knapp ghost onClick={() => setMeldingTil(null)}>Avbryt</Knapp>

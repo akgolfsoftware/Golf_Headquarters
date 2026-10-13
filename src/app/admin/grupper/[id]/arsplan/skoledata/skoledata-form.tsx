@@ -1,72 +1,36 @@
 "use client";
-
-import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
+import { useId, useState, useTransition } from "react";
+import { Knapp } from "@/components/precision/pa";
+import { osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import { importerSkoledata } from "./actions";
 
-const EKSEMPEL = `# YYYY-MM-DD|TRINN(valgfritt)|KATEGORI|Tittel|Notat(valgfritt)
-# KATEGORI: TIME | PROVE | HELDAGSPROVE | EKSAMEN | FERIE | SKOLETUR | ANNET
-2026-10-05|VG1|PROVE|Norsk HM|
-2026-10-19||FERIE|Høstferie|Hele uken
-2026-02-23|VG2|SKOLETUR|Tur til Oslo|`;
-
+const EKSEMPEL = "YYYY-MM-DD|VG1|PROVE|Tittel|Notat\nYYYY-MM-DD||FERIE|Tittel|Notat";
+function skoleaar() { const dato = osloPlanDato(); const aar = Number(dato.slice(0,4)) - (Number(dato.slice(5,7)) < 8 ? 1 : 0); return `${aar}/${aar+1}`; }
 export function SkoledataForm({ groupId }: { groupId: string }) {
+  const id = useId();
   const [pending, startTransition] = useTransition();
+  const [schoolYear, setSchoolYear] = useState(skoleaar);
+  const [data, setData] = useState("");
   const [resultat, setResultat] = useState<{ ok: boolean; melding: string; feil: string[] } | null>(null);
-
-  function send(formData: FormData) {
+  return <form onSubmit={event => {
+    event.preventDefault();
+    const fd = new FormData(event.currentTarget);
     startTransition(async () => {
-      const svar = await importerSkoledata(groupId, formData);
-      setResultat(
-        svar.ok
-          ? { ok: true, melding: `${svar.antall} rader lagt inn.`, feil: svar.feil }
-          : { ok: false, melding: "Importen feilet.", feil: svar.feil },
-      );
+      try {
+        const svar = await importerSkoledata(groupId, fd);
+        setResultat(svar.ok ? { ok:true, melding:`${svar.antall} rader lagt inn.`, feil:svar.feil } : { ok:false, melding:"Importen feilet. Innholdet er beholdt.", feil:svar.feil });
+      } catch { setResultat({ ok:false, melding:"Kunne ikke importere. Innholdet er beholdt; prøv igjen.", feil:[] }); }
     });
-  }
-
-  return (
-    <form action={send} className="space-y-4">
-      <div>
-        <label className="mb-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Skoleår
-        </label>
-        <input
-          name="schoolYear"
-          defaultValue="2026/2027"
-          className="w-40 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
-        />
-      </div>
-
-      <div>
-        <label className="mb-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Data — ett rad per linje
-        </label>
-        <textarea
-          name="data"
-          rows={14}
-          defaultValue={EKSEMPEL}
-          spellCheck={false}
-          className="w-full rounded-lg border border-border bg-background p-3 font-mono text-[12px] text-foreground"
-        />
-      </div>
-
-      <Button type="submit" disabled={pending}>
-        {pending ? "Importerer …" : "Importer"}
-      </Button>
-
-      {resultat && (
-        <div className={`rounded-lg border p-3 text-[13px] ${resultat.ok ? "border-emerald-600/40 bg-emerald-600/10" : "border-destructive/40 bg-destructive/10"}`}>
-          <p className="font-semibold text-foreground">{resultat.melding}</p>
-          {resultat.feil.length > 0 && (
-            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-muted-foreground">
-              {resultat.feil.map((f, i) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-    </form>
-  );
+  }} className="space-y-6">
+    <label className="group-field" htmlFor={`${id}-year`}>Skoleår<input id={`${id}-year`} name="schoolYear" required pattern="[0-9]{4}/[0-9]{4}" disabled={pending} value={schoolYear} onChange={e=>{setSchoolYear(e.target.value);setResultat(null);}} /></label>
+    <div>
+      <label className="group-field" htmlFor={`${id}-data`}>Data · én rad per linje<textarea id={`${id}-data`} name="data" rows={14} required spellCheck={false} disabled={pending} value={data} placeholder={EKSEMPEL} aria-describedby={`${id}-help`} onChange={e=>{setData(e.target.value);setResultat(null);}} /></label>
+      <p id={`${id}-help`}>Dato | trinn | kategori | tittel | notat. Trinn kan være VG1, VG2, VG3 eller tomt. Kategorier: TIME, PROVE, HELDAGSPROVE, EKSAMEN, FERIE, SKOLETUR, ANNET.</p>
+    </div>
+    <Knapp type="submit" disabled={pending || !data.trim() || resultat?.ok === true} loading={pending} loadingText="Importerer …">Importer skoledata</Knapp>
+    {resultat && <div className={resultat.ok ? "group-card p-4" : "group-error"} role={resultat.ok ? "status" : "alert"}>
+      <p>{resultat.melding}</p>
+      {resultat.feil.length>0 && <><p>Disse radene ble ikke lagt inn. Behold bare dem i feltet før neste import.</p><ul>{resultat.feil.map((f,i)=><li key={i}>{f}</li>)}</ul></>}
+    </div>}
+  </form>;
 }

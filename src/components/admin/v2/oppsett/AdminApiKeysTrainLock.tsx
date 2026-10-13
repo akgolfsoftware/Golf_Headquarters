@@ -1,25 +1,15 @@
 "use client";
 
-/**
- * AgencyOS Innstillinger · API-nøkler — Train-lock (T13, 27.08.2026).
- *
- * Designport av `AdminApiKeysV2` (Paper) — ingen egen fasit tegner API-
- * nøkkel-skjermen, så layouten er en mønster-port til tl-kit (kort/rad/
- * knapp), ikke pixel. Mutasjonene (opprett/revoker) er UENDRET — samme
- * server actions fra legacy-mappen (createApiKey/revokeApiKey).
- *
- * Sikkerhetskritisk UX bevart 1:1: den fulle nøkkelen («secret») vises KUN
- * i det ene øyeblikket den opprettes.
- *
- * Tokens: KUN TL — CLAUDE.md invariant 2.
- */
+/** Eksisterende coachfunksjon med uendrede serverhandlinger. Precision avgrenses av CoachContent; navnet er en beholdt importkontrakt. */
 
+import { Ark } from "@/components/precision/pa-a4";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/v2/icon";
+import { CoachLabel as TlCaps } from "@/components/admin/precision/agency-completion/CoachLabel";
 import { TL } from "@/lib/v2/train-lock";
 import { createApiKey, revokeApiKey } from "@/app/admin/(legacy)/settings/api/actions";
-import { TlBadge, TlCaps, TlKnapp, TlKort, TlRad, TlTittel, TlTomTilstand, TL_PRESS } from "./tl-kit";
+import { TlBadge, TlKnapp, TlKort, TlRad, TlTittel, TlTomTilstand, TL_PRESS } from "./tl-kit";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
 export interface AdminApiKeysV2Nokkel {
@@ -47,8 +37,8 @@ const SCOPE_VALG = [
 ];
 
 function scopeOppsummering(scopes: string[]) {
-  if (scopes.length === 0) return "Ingen scopes";
-  return scopes.length === 1 ? "1 scope" : `${scopes.length} scopes`;
+  if (scopes.length === 0) return "Ingen valgte tilganger";
+  return scopes.length === 1 ? "1 tilgang" : `${scopes.length} tilganger`;
 }
 
 function TlInndata({
@@ -65,10 +55,11 @@ function TlInndata({
   return (
     <div>
       <div style={{ marginBottom: 8 }}>
-        <TlCaps size={10}>{label}</TlCaps>
+        <TlCaps size={13}>{label}</TlCaps>
       </div>
       <input
         type="text"
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -90,28 +81,7 @@ function TlInndata({
 }
 
 function TlAvkryssing({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
-  return (
-    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-      <span
-        aria-hidden
-        style={{
-          width: 20,
-          height: 20,
-          borderRadius: 6,
-          flex: "none",
-          background: checked ? TL.fill : TL.dock,
-          boxShadow: checked ? "none" : `inset 0 0 0 1px ${TL.hair}`,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {checked && <Icon name="check" size={13} style={{ color: TL.onFill }} />}
-      </span>
-      <input type="checkbox" checked={checked} onChange={onChange} style={{ display: "none" }} />
-      <span style={{ fontSize: 14, color: TL.text }}>{label}</span>
-    </label>
-  );
+  return <label style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 44, cursor: "pointer" }}><input type="checkbox" checked={checked} onChange={onChange} style={{ width: 20, height: 20, minHeight: 20, accentColor: "var(--primary)" }} /><span>{label}</span></label>;
 }
 
 /* ── KopierPrefixKnapp ────────────────────────────────────────── */
@@ -139,8 +109,8 @@ function KopierPrefixKnapp({ prefix }: { prefix: string }) {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        width: 28,
-        height: 28,
+        width: 44,
+        height: 44,
         borderRadius: 8,
         background: TL.dock,
         boxShadow: `inset 0 0 0 1px ${TL.hair}`,
@@ -210,7 +180,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
       return;
     }
     if (valgteScopes.length === 0) {
-      setFeil("Velg minst én scope.");
+      setFeil("Velg minst én verktøytilgang.");
       return;
     }
     setFeil(null);
@@ -236,40 +206,9 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ny-api-nokkel-tl-tittel"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 80,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "0 16px",
-        background: TL.scrim,
-      }}
-      onClick={() => {
-        if (!pending) onClose();
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: "100%",
-          maxWidth: 440,
-          borderRadius: TL.radius.sheet,
-          background: TL.elev,
-          boxShadow: `inset 0 0 0 1px ${TL.hair}`,
-          padding: "20px 22px",
-        }}
-      >
+    <Ark open title={secret ? "Lagre nøkkelen nå" : "Ny API-nøkkel"} onClose={() => { if (!pending) onClose(); }}>
         {secret ? (
           <>
-            <h2 id="ny-api-nokkel-tl-tittel" style={{ margin: 0, fontSize: 18, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
-              Lagre nøkkelen nå
-            </h2>
             <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
               Dette er den eneste gangen du kan se hele nøkkelen. Lagre den i passordforvalter —
               den vises aldri igjen.
@@ -285,7 +224,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
                   boxShadow: `inset 0 0 0 1px ${TL.hair}`,
                   padding: "12px 14px",
                   fontFamily: TL.font.mono,
-                  fontSize: 12,
+                  fontSize: 13,
                   color: TL.text,
                 }}
               >
@@ -301,8 +240,8 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 36,
-                  height: 36,
+                  width: 44,
+                  height: 44,
                   borderRadius: TL.radius.field,
                   background: TL.dock,
                   boxShadow: `inset 0 0 0 1px ${TL.hair}`,
@@ -322,9 +261,6 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
           </>
         ) : (
           <>
-            <h2 id="ny-api-nokkel-tl-tittel" style={{ margin: 0, fontSize: 18, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
-              Ny API-nøkkel
-            </h2>
             <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "6px 0 16px" }}>
               For tredjeparts-integrasjoner mot AgencyOS.
             </p>
@@ -332,7 +268,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
             <TlInndata label="Navn" value={navn} onChange={setNavn} placeholder="f.eks. GolfBox-sync" />
 
             <div style={{ marginTop: 16 }}>
-              <TlCaps size={9}>Scopes</TlCaps>
+              <TlCaps size={13}>Verktøytilganger</TlCaps>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
                 {SCOPE_VALG.map((s) => (
                   <TlAvkryssing key={s.value} label={s.label} checked={valgteScopes.includes(s.value)} onChange={() => toggleScope(s.value)} />
@@ -356,8 +292,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
             </div>
           </>
         )}
-      </div>
-    </div>
+    </Ark>
   );
 }
 
@@ -373,6 +308,7 @@ export function AdminApiKeysTrainLock({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [visModal, setVisModal] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
 
   function lukkModal() {
     setVisModal(false);
@@ -382,8 +318,9 @@ export function AdminApiKeysTrainLock({
   function revoker(id: string) {
     if (!confirm("Sikker på at du vil revokere denne nøkkelen?")) return;
     startTransition(async () => {
-      await revokeApiKey(id);
-      router.refresh();
+      setFeil(null);
+      try { await revokeApiKey(id); router.refresh(); }
+      catch { setFeil("Nøkkelen kunne ikke deaktiveres. Prøv igjen."); }
     });
   }
 
@@ -405,18 +342,18 @@ export function AdminApiKeysTrainLock({
           />
         </TlKort>
       ) : (
-        <TlKort eyebrow="API-nøkler" action={<TlCaps size={9}>Brukes av eksterne verktøy</TlCaps>} pad="6px 20px 8px">
+        <TlKort eyebrow="API-nøkler" action={<TlCaps size={13}>Brukes av eksterne verktøy</TlCaps>} pad="6px 20px 8px">
           {data.nokler.map((n, i) => (
             <NokkelRad key={n.id} n={n} last={i === data.nokler.length - 1} onRevoke={revoker} pending={pending} />
           ))}
         </TlKort>
       )}
 
-      <p style={{ fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
-        Trackman, FlightScope, Garmin, Zapier og NGF Golfbox kommer som egne integrasjoner senere.
-        Inntil da brukes API-nøkler over.
+      <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
+        En nøkkel gir de valgte verktøytilgangene. Deaktiver nøkler som ikke skal brukes lenger.
       </p>
 
+      {feil && <p role="alert">{feil}</p>}
       {visModal && <NyNokkelModal onClose={lukkModal} />}
     </div>
   );
