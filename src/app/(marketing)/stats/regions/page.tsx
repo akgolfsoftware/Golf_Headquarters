@@ -1,3 +1,4 @@
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/regions — Region-explorer oversikt med Norgeskart
  * Pixel-perfect port av design-brief 25-regions.md
@@ -60,7 +61,7 @@ const REGION_NAVN_TIL_SLUG: Record<string, string> = {
 async function hentNorgeTotalt() {
   const [totalSpillere, totalTurneringer, klubbPerRegion] = await Promise.all([
     prisma.publicPlayer.count({ where: { country: "NO", isActive: true } }).catch(() => 0),
-    prisma.tournament.count({ where: { country: "NO", status: "COMPLETED" } }).catch(() => 0),
+    prisma.tournament.count({ where: { ...publicTournamentSourceWhere(),  country: "NO", status: "COMPLETED" } }).catch(() => 0),
     prisma.bane
       .groupBy({ by: ["region"], _count: { _all: true } })
       .catch(() => [] as Array<{ region: string; _count: { _all: number } }>),

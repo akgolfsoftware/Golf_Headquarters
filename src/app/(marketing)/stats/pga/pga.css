@@ -354,7 +354,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted-foreground);
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--s-border);
   padding: 8px 4px;
 }
 .lb-rank {

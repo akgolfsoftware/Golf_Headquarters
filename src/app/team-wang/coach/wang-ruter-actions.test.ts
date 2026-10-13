@@ -67,6 +67,7 @@ mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
 
 mock.module("@/app/team-wang/_data/wang-tilgang", {
   namedExports: {
+    WANG_TOPPIDRETT_SLUG: "wang-toppidrett",
     WangDataUtilgjengeligError: TestWangDataUtilgjengeligError,
     medWangElevData: async (_bruker: unknown, _id: string, les: (tx: unknown, gruppe: string) => Promise<unknown>) => {
       if (tilgangFeil) throw new TestWangDataUtilgjengeligError();
@@ -99,6 +100,21 @@ mock.module("@/app/team-wang/_data/hent-wang-gruppe", {
     },
   },
 });
+
+mock.module("@/lib/domain/org-gruppeoppgaver", { namedExports: { hentOrgGruppeOppgaver: async () => ({ ok: true, data: { groupId: "wang-top-id", groupName: "WANG test", oppgaver: [] } }) } });
+
+mock.module("@/lib/domain/tn-post", { namedExports: { hentGruppepostSide: async () => null } });
+
+let profilDelt = false;
+let testerDelt = false;
+mock.module("@/lib/deling/profil-lesing", { namedExports: { lesNavngitteProfiler: async () => profilDelt ? [{ id: "elev-1" }] : [] } });
+mock.module("@/lib/portal-tester/wang-resultat-tilgang", { namedExports: { hentWangTestresultatSkolerForTrener: async () => testerDelt ? [{ groupId: "wang-top-id", playerIds: ["elev-1"] }] : [] } });
+
+let kalenderGruppeId = "wang-top-id";
+mock.module("@/lib/gruppe-kalender/hent-data", {
+  namedExports: { hentGruppeKalenderData: async () => ({ gruppeId: kalenderGruppeId, perioder: [], faste: [], samlinger: [], skoleHendelser: [], turneringer: [] }) },
+});
+mock.module("@/lib/auth/effective-capabilities", { namedExports: { canUser: async () => false } });
 
 mock.module("@/lib/audit", {
   namedExports: { audit: async () => undefined },
@@ -165,6 +181,8 @@ test.beforeEach(() => {
   goalDeletes = 0;
   periodeCount = 1;
   maalRader = [];
+  kalenderGruppeId = "wang-top-id";
+  profilDelt = false; testerDelt = false;
   periodeWheres.length = 0;
 });
 
@@ -286,7 +304,7 @@ test("rollen kan ikke velges via adressen: trener forblir Trener", async () => {
 test("coachruten gir bare spillere videre til lenker mot ekte data", async () => {
   const side = await coachPage();
   const props = propsFra(await side());
-  assert.deepEqual(props.elever, [{ id: "elev-1", navn: "Test Elev" }]);
+  assert.deepEqual(props.elever, [{ id: "elev-1", navn: "Test Elev", trinn: null, kanSeProfil: false, delerTester: false }]);
 });
 
 test("skjermoversikten krever innlogget trener eller sportssjef", async () => {
@@ -308,4 +326,20 @@ test("skjermoversikten kaller vakten med ADMIN/COACH og krever WANG-gruppe", asy
   const props = propsFra(await side());
   assert.equal(props.omraade, "system");
   assert.equal(props.rolle, "Trener");
+});
+
+test("coachruten avviser kalender fra en annen gruppe", async () => {
+  const side = await coachPage();
+  kalenderGruppeId = "annen-gruppe";
+  await assert.rejects(side(), error => error === IKKE_FUNNET);
+});
+
+test("profilinnsyn og testdeling avgjøres uavhengig fra sine aktuelle porter", async () => {
+  const side = await coachPage();
+  testerDelt = true;
+  let resultat = propsFra(await side());
+  assert.deepEqual(resultat.elever, [{ id: "elev-1", navn: "Test Elev", trinn: null, kanSeProfil: false, delerTester: true }]);
+  profilDelt = true; testerDelt = false;
+  resultat = propsFra(await side());
+  assert.deepEqual(resultat.elever, [{ id: "elev-1", navn: "Test Elev", trinn: null, kanSeProfil: true, delerTester: false }]);
 });

@@ -6,7 +6,7 @@ import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared
 import { IUP_NIVAAER, IUP_VERSJONER, hentUtviklingssporsmal } from "@/lib/iup/utviklingssjekk";
 import { hentSesongsporsmal } from "@/lib/iup/sesongevaluering";
 
-for (const path of ["src/styles/iup-evaluering.css", "src/styles/precision-athletics.css"]) {
+for (const path of ["src/styles/iup-evaluering.css", "src/styles/precision-athletics.css", "src/styles/precision-live.css", "src/styles/precision-player-coach-upgrade.css"]) {
   mock.module(new URL(`../../${path}`, import.meta.url).pathname, { defaultExport: {} });
 }
 mock.module(new URL("../../src/app/portal/mal/evaluering/actions.ts", import.meta.url).pathname, {

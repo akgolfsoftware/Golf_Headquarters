@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/norske — Norske i aksjon (v2, retning C)
  * Swap av (mlegacy)/stats/norske/page.tsx → v2-utseende. Data-lag
@@ -38,12 +39,12 @@ async function hentNorskeEntries(): Promise<NorskeTurnGruppe[]> {
 
   try {
     const entries = await prisma.publicPlayerEntry.findMany({
-      where: {
+      where: { AND: [publicEntrySourceWhere(), {
         player: { country: "NO" },
         tournament: {
           OR: [{ status: "IN_PROGRESS" }, { startDate: { gte: iDag, lte: om7dager }, status: "UPCOMING" }],
         },
-      },
+      }] },
       include: {
         player: { select: { id: true, name: true, slug: true, tier: true } },
         tournament: {

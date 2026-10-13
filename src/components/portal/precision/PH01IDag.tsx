@@ -19,10 +19,12 @@
  *   - Neste fysiske økt viser sett × reps og kilo, ikke RIR: fysisk plan lagrer ikke RIR per rad.
  */
 import Link from "next/link";
+import { SportsCover } from "@/components/precision/SportsCover";
 import { useEffect, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CalendarRange, Check, CircleAlert, Layers, List, ListChecks, Play, Plus, RotateCw, X } from "lucide-react";
+import { ArrowRight, CalendarRange, Check, CircleAlert, Layers, List, ListChecks, Play, Plus, RotateCw } from "lucide-react";
 import { AkseMerke, FeilTilstand, Ikon, Knapp, KnappLenke, Meta, Sidehode, StatusPille, Tall, Tidslinje, TomTilstand, type Akse, type TidslinjePunkt } from "@/components/precision/pa";
+import { Dialogboks } from "@/components/precision/pa-a4";
 import { AKSE_NAVN } from "@/components/precision/pa";
 import { formaterTall } from "@/lib/format-tall";
 import { lagreDagsform } from "@/app/portal/dagsform-actions";
@@ -38,7 +40,7 @@ export type PH01Okt = {
 export type PH01Godkjenning = { id: string; tittel: string; tid: string; min: number; akse: Akse; sted: string | null; fraGruppe: boolean };
 export type PH01Fys = { tittel: string; meta: string; rader: [string, string, string][]; href: string };
 export type PH01Turn = { dager: number; tittel: string; sted: string | null; meta: string; href: string };
-export type PH01Trening = { uke: number; akser: [Akse, number | null, number][]; kilde: string; planKilde: string };
+export type PH01Trening = { uke: number; akser: [Akse, number | null, number][]; kilde: string; planKilde: string; registrertMinutter?: number | null; manglerRegistrering?: number };
 export type PH01Fullfort = {
   uke: number; gjennomfort: number; totalt: number; igjen: number; hoppetOver: number;
   rekke: number; rekkeKilde: string; total: number; totalKilde: string;
@@ -55,7 +57,6 @@ export type PH01Props = {
   children?: React.ReactNode;
 };
 
-const stripe = (a: Akse) => `inset 4px 0 0 var(--axis-${a})`;
 const muted = { margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" } as const;
 const hairTop = "1px solid var(--border-hairline)";
 const t = (n: number | null, d = 1) => formaterTall(n, d, true);
@@ -63,8 +64,8 @@ const t = (n: number | null, d = 1) => formaterTall(n, d, true);
 function Hode({ k, meta }: { k: string; meta?: string }) {
   return <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}><span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>{meta != null && <Meta>{meta}</Meta>}</div>;
 }
-function Seksjon({ label, akse, children }: { label: string; akse?: Akse; children: React.ReactNode }) {
-  return <section aria-label={label} className="pa-card" style={{ padding: akse ? "16px 16px 16px 20px" : 16, gap: 12, minWidth: 0, boxShadow: akse ? stripe(akse) : undefined }}>{children}</section>;
+function Seksjon({ label, children }: { label: string; akse?: Akse; children: React.ReactNode }) {
+  return <section aria-label={label} className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0 }}>{children}</section>;
 }
 
 function useToast() {
@@ -77,17 +78,17 @@ function useToast() {
   return { vis, el };
 }
 
-function OktKort({ s, neste }: { s: PH01Okt; neste: boolean }) {
+function OktKort({ s, neste, prioritert = false }: { s: PH01Okt; neste: boolean; prioritert?: boolean }) {
   const ferdig = s.status === "Gjennomført";
-  return <article aria-label={`${s.tid} ${s.tittel}`} className="pa-card" style={{ padding: "16px 16px 16px 20px", gap: 12, boxShadow: stripe(s.akse), minWidth: 0, minHeight: 212, display: "flex", flexDirection: "column" }}>
+  return <article aria-label={`${s.tid} ${s.tittel}`} className={`pa-card ph01-okt${prioritert ? " ph01-okt--prioritert" : ""}`} style={{ padding: 16, gap: 12, minWidth: 0, minHeight: prioritert ? 240 : 172, display: "flex", flexDirection: "column" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
       <Tall style={{ font: "600 21px/1 var(--font-mono)" }}>{s.tid}</Tall><Meta>–{s.slutt}</Meta>
       <span style={{ marginLeft: "auto", display: "inline-flex", gap: 8, alignItems: "center" }}>{neste && <Meta style={{ color: "var(--text-primary)" }}>NESTE</Meta>}<StatusPille tone={ferdig ? "ok" : "neutral"}>{s.status}</StatusPille></span>
     </div>
     <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
-      <span style={{ font: "600 17px/1.3 var(--font-sans)", color: ferdig ? "var(--text-secondary)" : "var(--text-primary)", textWrap: "pretty" }}>{s.tittel}</span>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}><AkseMerke axis={s.akse} /><Meta>{[s.sted?.toUpperCase(), `${s.min} MIN`, `${s.antallOvelser} ØVELSER`].filter(Boolean).join(" · ")}</Meta></div>
-      {s.fokus && <Meta>{s.fokus.toUpperCase()}</Meta>}
+      <h2 className="ph01-okt__tittel" style={{ margin: 0, font: prioritert ? "600 clamp(24px, 3vw, 36px)/1.12 var(--font-sans)" : "600 18px/1.3 var(--font-sans)", color: ferdig ? "var(--text-secondary)" : "var(--text-primary)", textWrap: "pretty" }}>{s.tittel}</h2>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}><AkseMerke axis={s.akse} /><Meta>{[s.sted, `${s.min} min`, `${s.antallOvelser} ${s.antallOvelser === 1 ? "øvelse" : "øvelser"}`].filter(Boolean).join(" · ")}</Meta></div>
+      {s.fokus && <p className="ph01-okt__fokus" style={muted}>{s.fokus}</p>}
     </div>
     <span style={{ flex: 1 }} />
     {ferdig ? <KnappLenke href={s.href} variant="secondary" size="xl" fullWidth icon={List} iconName="list">Se økta</KnappLenke>
@@ -103,15 +104,15 @@ function GodkjenningKort({ g, onSvar }: { g: PH01Godkjenning; onSvar: (id: strin
       onSvar(g.id, res.ok, res.ok ? undefined : res.error);
     } catch { onSvar(g.id, false, "Svaret ble ikke bekreftet. Prøv igjen."); }
   });
-  return <article aria-label={`Forslag: ${g.tittel}`} aria-busy={pending} className="pa-card" style={{ padding: "16px 16px 16px 20px", gap: 12, boxShadow: stripe(g.akse), minWidth: 0, minHeight: 212, display: "flex", flexDirection: "column" }}>
+  return <article aria-label={`Forslag: ${g.tittel}`} aria-busy={pending} className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0, minHeight: 212, display: "flex", flexDirection: "column" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
       <Tall style={{ font: "600 21px/1 var(--font-mono)" }}>{g.tid}</Tall>
       <span style={{ marginLeft: "auto" }}><StatusPille tone="warn">Venter på deg</StatusPille></span>
     </div>
     <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
       <span style={{ font: "600 17px/1.3 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{g.tittel}</span>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}><AkseMerke axis={g.akse} /><Meta>{[g.sted?.toUpperCase(), `${g.min} MIN`].filter(Boolean).join(" · ")}</Meta></div>
-      <Meta>{g.fraGruppe ? "FORSLAG FRA GRUPPEN" : "FORSLAG FRA COACH"} · AVVIS SKJULER DET FRA PLANEN</Meta>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}><AkseMerke axis={g.akse} /><Meta>{[g.sted, `${g.min} min`].filter(Boolean).join(" · ")}</Meta></div>
+      <Meta>{g.fraGruppe ? "Forslag fra gruppen" : "Forslag fra coach"} · Avvis skjuler det fra planen</Meta>
     </div>
     <span style={{ flex: 1 }} />
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -128,9 +129,11 @@ function Dagsform({ start, tom, toast }: { start: number | null; tom: boolean; t
     const forrige = f;
     setF(i);
     begin(async () => {
-      const res = await lagreDagsform({ verdi: i + 1 });
-      if (res.ok) toast("Dagsform registrert", `${i + 1} · ${FORM[i]!.toUpperCase()} · LAGRET`);
-      else { setF(forrige); toast(res.feil, "IKKE LAGRET"); }
+      try {
+        const res = await lagreDagsform({ verdi: i + 1 });
+        if (res.ok) toast("Dagsform registrert", `${i + 1} · ${FORM[i]!} · Lagret`);
+        else { setF(forrige); toast(res.feil, "Ikke lagret"); }
+      } catch { setF(forrige); toast("Dagsformen ble ikke bekreftet. Prøv igjen.", "Ikke lagret"); }
     });
   };
   return <Seksjon label="Dagsform">
@@ -138,7 +141,7 @@ function Dagsform({ start, tom, toast }: { start: number | null; tom: boolean; t
     <div role="group" aria-label="Dagsform" style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 6 }}>
       {FORM.map((x, i) => <button key={x} type="button" className="ph01-form" disabled={pending} aria-pressed={i === f} aria-label={`${i + 1} ${x}`} onClick={() => velg(i)}>
         <span style={{ font: "600 15px/1 var(--font-mono)" }}>{i + 1}</span>
-        <span style={{ font: "500 10px/1 var(--font-sans)", opacity: .8, overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{x}</span>
+        <span style={{ font: "500 13px/1.2 var(--font-sans)", maxWidth: "100%" }}>{x}</span>
       </button>)}
     </div>
   </Seksjon>;
@@ -176,12 +179,15 @@ function NesteTurn({ turn }: { turn: PH01Turn | null }) {
 
 function Treningstid({ tr, uke }: { tr: PH01Trening | null; uke: number }) {
   if (!tr) return <Seksjon label="Treningstid denne uka"><Hode k={`Treningstid uke ${uke}`} meta="— AV — T" /><p style={muted}>Uten treningsplan er det ingen fordeling å sammenligne med. Velg en plan, så ser du tid per akse mot det planen sier.</p><div><KnappLenke href="/portal/planlegge" variant="secondary" icon={ListChecks} iconName="list-checks">Velg treningsplan</KnappLenke></div></Seksjon>;
-  const gjort = tr.akser.reduce((a, [, h]) => a + (h ?? 0), 0), plan = tr.akser.reduce((a, [, , g]) => a + g, 0);
-  const rader = tr.akser.map(([a, h, g]) => ({ a, h, g, sh: h == null || gjort === 0 ? null : Math.round(h / gjort * 100), ps: plan === 0 ? 0 : Math.round(g / plan * 100) }));
+  const gjort = tr.registrertMinutter === undefined ? tr.akser.reduce((a, [, h]) => a + (h ?? 0), 0) : tr.registrertMinutter === null ? null : tr.registrertMinutter / 60;
+  const plan = tr.akser.reduce((a, [, , g]) => a + g, 0);
+  const rader = tr.akser.map(([a, h, g]) => ({ a, h, g, sh: h == null || gjort == null || gjort === 0 ? null : Math.round(h / gjort * 100), ps: plan === 0 ? 0 : Math.round(g / plan * 100) }));
   const verst = rader.filter((r) => r.sh != null).sort((x, y) => Math.abs(y.sh! - y.ps) - Math.abs(x.sh! - x.ps))[0];
   const maks = Math.max(...rader.map((r) => Math.max(r.g, r.h ?? 0)), 0.1) * 1.1;
   return <Seksjon label="Treningstid denne uka">
     <Hode k={`Treningstid uke ${tr.uke}`} meta={`${t(gjort)} AV ${formaterTall(plan, 0)} T`} />
+    {gjort === null && <p style={muted}>Ingen registrert treningstid ennå.</p>}
+    {!!tr.manglerRegistrering && <p style={muted}>{tr.manglerRegistrering} {tr.manglerRegistrering === 1 ? "økt mangler" : "økter mangler"} registrert aktivitetstid. Planlagt varighet er ikke regnet som gjennomført tid.</p>}
     {verst && <p style={{ margin: 0, font: "500 15px/1.4 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>Du trener {verst.sh} % {AKSE_NAVN[verst.a]}, planen sier {verst.ps} %.</p>}
     <div role="list" style={{ display: "flex", flexDirection: "column" }}>
       {rader.map((r) => <div role="listitem" key={r.a} aria-label={`${AKSE_NAVN[r.a]} ${t(r.h)} av ${t(r.g)} timer`} style={{ display: "grid", gridTemplateColumns: "64px minmax(0,1fr) auto", gap: 12, alignItems: "center", minHeight: 52, borderTop: hairTop }}>
@@ -193,7 +199,7 @@ function Treningstid({ tr, uke }: { tr: PH01Trening | null; uke: number }) {
         <Tall style={{ font: "var(--type-num-s)", textAlign: "right" }}>{t(r.h)} / {t(r.g)} t</Tall>
       </div>)}
     </div>
-    <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: hairTop, paddingTop: 8 }}><Meta>STREK = TIMER GJENNOMFØRT · MERKE = PLAN</Meta><Meta>{tr.kilde}</Meta><Meta>{tr.planKilde}</Meta></div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: hairTop, paddingTop: 8 }}><Meta>STREK = REGISTRERT TID · MERKE = PLAN</Meta><Meta>{tr.kilde}</Meta><Meta>{tr.planKilde}</Meta></div>
   </Seksjon>;
 }
 
@@ -227,23 +233,9 @@ function Popup({ p, toast }: { p: PH01Popup; toast: (t: string, m: string) => vo
   const sett = useSyncExternalStore(ingenAbonnement, () => { try { return sessionStorage.getItem(K) != null; } catch { return false; } }, () => true);
   const open = !lukket && !sett;
   const lukk = () => { try { sessionStorage.setItem(K, "1"); } catch { /* privat modus */ } setLukket(true); };
-  useEffect(() => {
-    if (!open) return;
-    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") lukk(); };
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  });
-  if (!open) return null;
-  return <div className="pa-scrim" onClick={lukk}>
-    <div className="pa-dialog" role="dialog" aria-modal="true" aria-label={p.kind} style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
-      <div className="pa-dialog__head"><div className="pa-dialog__title">{p.kind}</div><button type="button" className="pa-iconbtn" aria-label="Lukk" onClick={lukk}><Ikon icon={X} size={18} name="x" /></button></div>
-      <div className="pa-dialog__body"><div style={{ display: "flex", flexDirection: "column", gap: 8 }}><Meta>{p.tid}</Meta><span style={{ font: "600 17px/1.3 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{p.title}</span>{p.body && <p style={muted}>{p.body}</p>}</div></div>
-      <div className="pa-dialog__foot"><div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}>
-        <Knapp variant="secondary" onClick={() => { lukk(); toast("Ligger i varslene", "FINNES BAK BJELLA"); }}>Ignorer</Knapp>
-        <Link href={p.href} className="pa-btn pa-btn--primary" onClick={lukk}>Les</Link>
-      </div></div>
-    </div>
-  </div>;
+  return <Dialogboks open={open} onClose={lukk} title={p.kind} footer={<><Knapp variant="secondary" onClick={() => { lukk(); toast("Ligger i varslene", "Les den senere"); }}>Les senere</Knapp><Link href={p.href} className="pa-btn pa-btn--primary" onClick={lukk}>Les</Link></>}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}><Meta>{p.tid}</Meta><h2 style={{ font: "var(--type-title-s)", margin: 0 }}>{p.title}</h2>{p.body && <p style={muted}>{p.body}</p>}</div>
+  </Dialogboks>;
 }
 
 export function PH01IDag(p: PH01Props) {
@@ -252,13 +244,18 @@ export function PH01IDag(p: PH01Props) {
   const [besvart, setBesvart] = useState<string[]>([]);
   const tom = p.tilstand === "tom";
   const godkj = p.godkjenninger.filter((g) => !besvart.includes(g.id));
+  const prioritert = p.okter.find((s) => s.status === "Pågår")
+    ?? p.okter.find((s) => s.id === p.nesteId && s.status !== "Gjennomført")
+    ?? p.okter.find((s) => s.status !== "Gjennomført");
+  const andreOkter = p.okter.filter((s) => s.id !== prioritert?.id);
   const onSvar = (id: string, ok: boolean, feil?: string) => {
     if (!ok) { toast(feil ?? "Svaret ble ikke lagret.", "PRØV IGJEN"); return; }
     setBesvart((l) => [...l, id]);
     router.refresh();
   };
-  return <div className="pa-side">
+  return <div className="pa-side ph01-side">
     <Sidehode kicker={p.kicker} title={p.tittel} sub={p.sub} />
+    <SportsCover compact priority />
     {p.tilstand === "feil" ? <FeilTilstand icon={CircleAlert} title="Kunne ikke hente dagens plan" text="Tilkoblingen ble brutt. Ingenting er endret i planen din." code={p.feilKode}
       retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={() => router.refresh()}>Prøv igjen</Knapp>} /> : <>
       {p.popup && <Popup p={p.popup} toast={toast} />}
@@ -268,10 +265,11 @@ export function PH01IDag(p: PH01Props) {
               <KnappLenke href="/portal/planlegge/workbench" variant="secondary" icon={Layers} iconName="layers">Bygg økter i Workbench</KnappLenke>
               <KnappLenke href="/portal/runde/logg" variant="ghost">Registrer runde</KnappLenke>
             </>} />
-          : <div className="ph01-okter">
-              {godkj.map((g) => <GodkjenningKort key={g.id} g={g} onSvar={onSvar} />)}
-              {p.okter.map((s) => <OktKort key={s.id} s={s} neste={s.id === p.nesteId} />)}
-            </div>}
+          : <>
+              {prioritert && <OktKort s={prioritert} neste={prioritert.id === p.nesteId} prioritert />}
+              {godkj.length > 0 && <details className="ph01-forslag" open={!prioritert}><summary>{godkj.length} forslag venter på deg</summary><div className="ph01-okter">{godkj.map((g) => <GodkjenningKort key={g.id} g={g} onSvar={onSvar} />)}</div></details>}
+              {andreOkter.length > 0 && <div className="ph01-okter" aria-label="Øvrige økter i dag">{andreOkter.map((s) => <OktKort key={s.id} s={s} neste={s.id === p.nesteId} />)}</div>}
+            </>}
       </section>
       <div className="ph01-to">
         <Dagsform start={p.dagsform} tom={tom} toast={toast} />

@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * AK Golf HQ v2 — delt STATS-RAMME (retning C «Presis», mørk-først).
- * Chrome + maler for de 45 offentlige DataGolf-rutene under /stats. Bygger på
+ * AK Golf HQ — delt lys STATS-RAMME for de offentlige statistikkrutene.
+ * DataGolf-entitlement kontrolleres av serveren og åpnes ikke av rammen. Bygger på
  * MRamme (samme toppnav/footer som resten av markedssidene) og legger til en
  * stats-egen subnav for hovedfamiliene. To delte innholdsmaler dekker nesten
  * alle 45 rutene:
@@ -85,29 +85,7 @@ export function StatsStatusBar({
  * alltid, uansett import-rekkefølge.
  */
 const STATS_LEGACY_VARS = {
-  colorScheme: "dark",
-  // 1) shadcn-trippel (HSL-triple, konsumeres via hsl(var(--x)))
-  "--background": "120 3.7% 5.3%", // TL.scene
-  "--foreground": "90 11.8% 93.3%", // TL.text
-  "--card": "120 4.5% 8.6%", // TL.elev
-  "--card-foreground": "90 11.8% 93.3%",
-  "--popover": "120 4.5% 8.6%",
-  "--popover-foreground": "90 11.8% 93.3%",
-  "--primary": "48 33% 97%", // #FAF9F5 = Paper --tl-fill (mørk)
-  "--primary-foreground": "60 2.6% 7.6%", // #141413 = Paper --tl-on-fill
-  "--accent": "87 23% 61%", // #9DB284 = Paper --tl-ok (mørk) — høydepunkt
-  "--accent-foreground": "60 2.6% 7.6%", // #141413 = blekk på fylt --tl-ok
-  "--secondary": "120 5% 7.8%", // TL.dock
-  "--secondary-foreground": "90 11.8% 93.3%",
-  "--muted": "120 5% 7.8%",
-  "--muted-foreground": "90 3.4% 65.1%", // TL.mute
-  "--destructive": "14.2 85.6% 59.2%", // TL.danger
-  "--destructive-foreground": "0 0% 100%",
-  "--warning": "41.9 78.9% 57.3%", // TL.warn
-  "--warning-foreground": "120 3.7% 5.3%",
-  "--border": "0 0% 100% / 0.08", // TL.hair
-  "--input": "0 0% 100% / 0.08",
-  "--ring": "15 63% 60%", // #D97757 = Paper --tl-viz-target
+  colorScheme: "light",
   // 3) DS-semantiske aliaser (rå verdier — det Tailwind-utilities faktisk bruker)
   "--bg": TL.scene,
   "--surface": TL.elev,
@@ -135,18 +113,18 @@ const STATS_LEGACY_VARS = {
   "--s-muted-fg": TL.mute,
   "--s-tier-college-bg": AK.tierCollegeBg,
   "--s-tier-college-fg": TL.fill,
-  "--s-border": "rgba(255, 255, 255, 0.08)",
-  "--s-border-strong": "rgba(255, 255, 255, 0.14)",
-  "--s-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.28)",
-  "--s-shadow-md": "0 2px 8px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.28)",
-  "--s-shadow-lg": "0 12px 32px rgba(0, 0, 0, 0.44), 0 2px 6px rgba(0, 0, 0, 0.3)",
-  "--s-shadow-hover": "0 8px 24px rgba(20, 20, 19, 0.16)",
+  "--s-border": "var(--border-hairline)",
+  "--s-border-strong": "var(--border-control)",
+  "--s-shadow-sm": "none",
+  "--s-shadow-md": "none",
+  "--s-shadow-lg": "none",
+  "--s-shadow-hover": "none",
   // --s-r-* (radius) er geometri, ikke tema — uendret fra kilden
-  "--s-r-sm": "8px",
-  "--s-r-md": "12px",
-  "--s-r-lg": "16px",
-  "--s-r-xl": "20px",
-  "--s-r-2xl": "24px",
+  "--s-r-sm": "var(--radius)",
+  "--s-r-md": "var(--radius)",
+  "--s-r-lg": "var(--radius)",
+  "--s-r-xl": "var(--radius)",
+  "--s-r-2xl": "var(--radius)",
   background: "var(--s-bg)",
   color: "var(--s-fg)",
 } as CSSProperties;
@@ -187,7 +165,7 @@ export type StatsFamilie = "spillere" | "turneringer" | "klubber" | "baner" | "l
 
 const STATS_NAV: { id: StatsFamilie; l: string; href: string; icon: string }[] = [
   { id: "spillere", l: "Spillere", href: "/stats/spillere", icon: "users" },
-  { id: "turneringer", l: "Turneringer", href: "/turneringer", icon: "trophy" },
+  { id: "turneringer", l: "Turneringer", href: "/stats/turneringer", icon: "trophy" },
   { id: "klubber", l: "Klubber", href: "/stats/klubber", icon: "building-2" },
   { id: "baner", l: "Baner", href: "/stats/baner", icon: "flag" },
   { id: "leaderboards", l: "Leaderboards", href: "/stats/leaderboards", icon: "list" },
@@ -196,14 +174,15 @@ const STATS_NAV: { id: StatsFamilie; l: string; href: string; icon: string }[] =
 
 export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsFamilie }) {
   return (
-    <div
+    <nav aria-label="Statistikkfamilier" className="support-stats-nav"
       style={{
         display: "flex",
         alignItems: "center",
         gap: 8,
         padding: mobile ? "12px 22px" : "14px 64px",
         borderBottom: `1px solid ${TL.hair}`,
-        overflowX: "auto",
+        flexWrap: "wrap",
+        maxWidth: "100%",
       }}
     >
       <Link
@@ -212,11 +191,11 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          fontFamily: TL.font.mono,
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
+          fontFamily: TL.font.sans,
+          fontSize: 13,
+          fontWeight: 600,
+          minHeight: 44,
+          minWidth: 44,
           color: TL.mute,
           textDecoration: "none",
           flex: "none",
@@ -246,6 +225,9 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
               padding: "7px 14px",
               textDecoration: "none",
               whiteSpace: "nowrap",
+              minHeight: 44,
+              minWidth: 44,
+              boxSizing: "border-box",
             }}
           >
             <Icon name={n.icon} size={13} style={{ color: on ? TL.fill : TL.mute }} />
@@ -253,7 +235,7 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }
 
@@ -299,22 +281,25 @@ export function StatsRamme({
   aktiv,
   children,
   waveId,
+  dataGolf = false,
 }: {
   mobile: boolean;
   aktiv?: StatsFamilie;
   children: ReactNode;
   waveId?: string;
+  /** Bare en eksplisitt intern, adgangskontrollert analyseflate bruker attribusjonen. */
+  dataGolf?: boolean;
 }) {
   return (
-    <MRamme
+    <div className="pa-root support-stats" data-design="precision-athletics"><MRamme
       mobile={mobile}
       aktiv="stats"
       waveId={waveId ?? (aktiv ? `stats-${aktiv}` : "stats-hub")}
     >
       <StatsSubnav mobile={mobile} aktiv={aktiv} />
       {children}
-      <DataGolfAttribusjon />
-    </MRamme>
+      {dataGolf && <DataGolfAttribusjon />}
+    </MRamme></div>
   );
 }
 
@@ -340,6 +325,7 @@ export function StatsSok({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+          aria-label={placeholder}
         style={{
           width: "100%",
           boxSizing: "border-box",

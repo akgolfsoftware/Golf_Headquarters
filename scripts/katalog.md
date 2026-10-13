@@ -24,6 +24,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-testday-events-2026-10-02.ts](<add-tn-testday-events-2026-10-02.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-vedlegg-kategori-2026-09-27.ts](<add-tn-vedlegg-kategori-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-workbench-drill-log-2026-10-09.ts](<add-workbench-drill-log-2026-10-09.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-workbench-fys-turnering-2026-09-27.ts](<add-workbench-fys-turnering-2026-09-27.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |
@@ -61,6 +62,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/com.akgolf.meg-index.plist](<com.akgolf.meg-index.plist>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/create-storage-buckets.ts](<create-storage-buckets.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/create-tn-test-photos-bucket.ts](<create-tn-test-photos-bucket.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/db-retting-2026-10-07.sql](<db-retting-2026-10-07.sql>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/dedupe-player-names.ts](<dedupe-player-names.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/dedupe-tournament-data.ts](<dedupe-tournament-data.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/design-audit.mjs](<design-audit.mjs>) |
@@ -146,6 +148,8 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Test / bilde — kontroller miljø og testkonto | [scripts/public-shot.mjs](<public-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/qa-links.sh](<qa-links.sh>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/reimport-stripe.ts](<reimport-stripe.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/repo-status.mjs](<repo-status.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/repo-status.test.mjs](<repo-status.test.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/report-tournament-completeness.ts](<report-tournament-completeness.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/reset-auth-passwords.ts](<reset-auth-passwords.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/retag-drill-kategorier.ts](<retag-drill-kategorier.ts>) |
@@ -234,6 +238,8 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/trenerdeling-app-local.mjs](<trenerdeling-app-local.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/trenerdeling-iup-local.mjs](<trenerdeling-iup-local.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/trenerdeling-local-run.mjs](<trenerdeling-local-run.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/upgrade-local-runtime.mjs](<upgrade-local-runtime.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/upgrade-local-seed.ts](<upgrade-local-seed.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/verify-agent-loop.ts](<verify-agent-loop.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/verify-godkjenninger-ui.ts](<verify-godkjenninger-ui.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/verify-live-session.ts](<verify-live-session.ts>) |

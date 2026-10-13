@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 import { AK } from "@/lib/v2/ak-palett";
 
 /**
@@ -51,7 +52,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
       ? prisma.publicPlayer.findUnique({
           where: { slug: slugA },
           include: {
-            entries: {
+            entries: { where: publicEntrySourceWhere(),
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,
@@ -63,7 +64,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
       ? prisma.publicPlayer.findUnique({
           where: { slug: slugB },
           include: {
-            entries: {
+            entries: { where: publicEntrySourceWhere(),
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,
@@ -107,7 +108,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 style={{
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "hsl(var(--primary))",
+                  color: "var(--s-primary)",
                 }}
               >
                 to
@@ -117,7 +118,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
             <p
               style={{
                 fontSize: 18,
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
                 marginTop: 20,
                 maxWidth: 560,
                 lineHeight: 1.5,
@@ -167,8 +168,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       fontFamily: "var(--font-display)",
                       fontSize: 48,
                       fontStyle: "italic",
-                      color: "hsl(var(--primary-foreground))",
-                      background: "hsl(var(--primary))",
+                      color: "var(--s-primary-fg)",
+                      background: "var(--s-primary)",
                       width: 72,
                       height: 72,
                       display: "grid",
@@ -201,8 +202,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       alignItems: "center",
                       gap: 8,
                       padding: "14px 32px",
-                      background: "hsl(var(--primary))",
-                      color: "hsl(var(--primary-foreground))",
+                      background: "var(--s-primary)",
+                      color: "var(--s-primary-fg)",
                       border: "none",
                       borderRadius: 999,
                       fontSize: 15,
@@ -237,8 +238,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
         // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
-            background: "hsl(var(--primary))",
-            color: "hsl(var(--background))",
+            background: "var(--s-primary)",
+            color: "var(--s-bg)",
             "--accent": "87 24% 38%",
           } as React.CSSProperties
         }
@@ -262,13 +263,13 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 fontWeight: 600,
                 letterSpacing: "-0.025em",
                 marginTop: 12,
-                color: "hsl(var(--background))",
+                color: "var(--s-bg)",
                 lineHeight: 1.1,
               }}
             >
               Vil du{" "}
               <em
-                style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--accent))" }}
+                style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-accent)" }}
               >
                 også
               </em>{" "}
@@ -324,7 +325,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                     width: 5,
                     height: 5,
                     borderRadius: "50%",
-                    background: "hsl(var(--accent))",
+                    background: "var(--s-accent)",
                     marginTop: 6,
                     flexShrink: 0,
                   }}
@@ -358,7 +359,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       style={{
                         fontStyle: "italic",
                         fontWeight: 400,
-                        color: "hsl(var(--primary))",
+                        color: "var(--s-primary)",
                       }}
                     >
                       sammenligner
@@ -396,12 +397,12 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                         alignItems: "center",
                         gap: 10,
                         padding: "14px 16px",
-                        background: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
+                        background: "var(--s-card)",
+                        border: "1px solid var(--s-border)",
                         borderRadius: 12,
                         textDecoration: "none",
                         transition: "all 0.18s",
-                        color: "hsl(var(--foreground))",
+                        color: "var(--s-fg)",
                       }}
                     >
                       <span
@@ -417,7 +418,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                         style={{
                           fontFamily: "var(--font-display)",
                           fontStyle: "italic",
-                          color: "hsl(var(--primary))",
+                          color: "var(--s-primary)",
                           fontSize: 13,
                         }}
                       >
@@ -434,7 +435,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       </span>
                       <ArrowRight
                         size={12}
-                        color="hsl(var(--muted-foreground))"
+                        color="var(--s-muted-fg)"
                         style={{ marginLeft: "auto" }}
                       />
                     </Link>

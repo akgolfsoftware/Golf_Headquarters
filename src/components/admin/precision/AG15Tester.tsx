@@ -48,7 +48,7 @@ export function AG15Tester({ data }: AG15Props) {
   ];
 
   return <div className="pa-side">
-    <Sidehode kicker="Tester · coach" title="Tester" sub="Resultater fra stallen. Testen teller først når spilleren har registrert alle forsøk." />
+    <Sidehode kicker="Tester · coach" title="Tester" sub="Se siste testresultat, endringen og datoen. Åpne en spiller for detaljene, eller tildel neste test." />
     <div className="pa-a5-stat-grid">
       {data.kpis.map((k) => <div key={k.label} className="pa-a5-stat">
         <span className="pa-a5-stat__label">{k.label}</span>
@@ -61,8 +61,9 @@ export function AG15Tester({ data }: AG15Props) {
       <KnappLenke href="/admin/tester/benchmarks" variant="ghost" icon={Target} iconName="target">Fasiter</KnappLenke>
     </div>
     <Faner faner={faner} value={filter} onChange={setFilter} />
+    <p className="ag15-grunnlag">{rader.filter(row => row.status !== "Pågår").length} resultater · {rader.filter(row => row.status === "Pågår").length} pågående tester · {filter === "alle" ? "Alle tester" : filter}. Endring sammenlignes med spillerens forrige resultat i samme test.</p>
     {rader.length === 0 ? <TomTilstand icon={ClipboardList} title="Ingen tester registrert ennå" text="Resultater dukker opp her når spillerne gjennomfører tester." /> : <>
-      <Tabell caption={`Testresultater · siste gjennomføring · ${rader.length}`} columns={cols} rows={rader}
+      <Tabell caption={`Testresultater og pågående tester · ${rader.length}`} columns={cols} rows={rader}
         onSelect={(r) => router.push(`/admin/spillere/${r.spillerId}`)} />
       <Meta>{rader.length} RAD{rader.length === 1 ? "" : "ER"} · TRYKK EN RAD FOR SPILLERENS SIDE</Meta>
     </>}

@@ -65,11 +65,15 @@ test("samme protokoll, antall og versjon følger lagret resultat, eldre regler t
   assert.equal(tnSammeTestvariant(p, result.score, { ...result, protocolId: "annen" }), null);
 });
 
-test("hentViewerRolleIGruppe og gruppepost avviser annen kanonisk gruppe", async () => {
+test("WANG og TN bruker samme aktive gruppeport; fremmed gruppe avvises", async () => {
   mock.module("@/lib/prisma", {
     namedExports: {
       prisma: {
         group: {
+          findFirst: async ({ where }: { where: { id: string; arkivertAt: null } }) => {
+            assert.equal(where.arkivertAt, null);
+            return ["gruppe-tn", "gruppe-wang"].includes(where.id) ? { id: where.id } : null;
+          },
           findUnique: async ({ where }: { where: { id: string } }) =>
             where.id === "gruppe-tn"
               ? { slug: "team-norway", name: "Team Norway Golf" }
@@ -85,10 +89,11 @@ test("hentViewerRolleIGruppe og gruppepost avviser annen kanonisk gruppe", async
     },
   });
   const { hentViewerRolleIGruppe, hentGruppetidslinje, opprettGruppepost } = await import("@/lib/domain/tn-post");
-  assert.equal(await hentViewerRolleIGruppe("gruppe-wang", "coach-a"), null);
-  assert.equal(await hentGruppetidslinje("gruppe-wang", "coach-a"), null);
+  assert.equal(await hentViewerRolleIGruppe("gruppe-wang", "coach-a"), "TRENER");
+  assert.equal(await hentViewerRolleIGruppe("gruppe-fremmed", "coach-a"), null);
+  assert.equal(await hentGruppetidslinje("gruppe-fremmed", "coach-a"), null);
   await assert.rejects(
-    () => opprettGruppepost({ forfatterId: "coach-a", groupId: "gruppe-wang", tekst: "Hei", kind: "TEKST" }),
+    () => opprettGruppepost({ forfatterId: "coach-a", groupId: "gruppe-fremmed", tekst: "Hei", kind: "TEKST" }),
     /ikke trener/i,
   );
   assert.equal(await hentViewerRolleIGruppe("gruppe-tn", "coach-a"), "TRENER");

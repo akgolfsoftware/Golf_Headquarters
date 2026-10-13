@@ -46,13 +46,13 @@ async function navnForStudentIds(ids: (string | null)[]): Promise<Map<string, st
   return new Map(brukere.map((b) => [b.id, b.name ?? "Spiller"]));
 }
 
-export async function hentLiveTavle(coachId: string, erAdmin: boolean): Promise<LiveTavleData> {
+export async function hentLiveTavle(coachId: string, erAdmin: boolean, playerId?: string): Promise<LiveTavleData> {
   const naa = new Date();
   const eierFilter = erAdmin ? {} : { coachId };
 
   const [liveRader, kommerRader, wbLive] = await Promise.all([
     prisma.trainingSessionV2.findMany({
-      where: { status: "IN_PROGRESS", ...eierFilter },
+      where: { status: "IN_PROGRESS", ...eierFilter, ...(playerId ? { studentId: playerId } : {}) },
       orderBy: { startTime: "asc" },
       select: { id: true, title: true, studentId: true, startTime: true, endTime: true },
     }),
@@ -61,6 +61,7 @@ export async function hentLiveTavle(coachId: string, erAdmin: boolean): Promise<
         status: "PLANNED",
         startTime: { gt: naa, gte: startOfDay(naa), lte: endOfDay(naa) },
         ...eierFilter,
+        ...(playerId ? { studentId: playerId } : {}),
       },
       orderBy: { startTime: "asc" },
       take: 6,
@@ -68,7 +69,7 @@ export async function hentLiveTavle(coachId: string, erAdmin: boolean): Promise<
     }),
     // Workbench-økter i gang (live-økt krav 2, 09.10.2026). Samme eierfilter.
     prisma.workbenchSession.findMany({
-      where: { status: "IN_PROGRESS", isTemplate: false, ...eierFilter },
+      where: { status: "IN_PROGRESS", isTemplate: false, ...eierFilter, ...(playerId ? { playerId } : {}) },
       orderBy: [{ date: "asc" }, { startMinute: "asc" }],
       take: 20,
       select: { id: true, title: true, playerId: true, date: true, startMinute: true, durationMinutes: true },

@@ -1,3 +1,4 @@
+import { independentSgInputWhere } from "@/lib/datagolf/round-provenance";
 /**
  * /stats/min-progresjon — v2. Swap av (mlegacy)-motparten. Auth-gate
  * (getCurrentUser + redirect) og Prisma-spørringene videreført 1:1 —
@@ -19,13 +20,13 @@ export const metadata: Metadata = {
 
 async function hentBrukerProgresjon(userId: string) {
   const sammenligninger = await prisma.brukerSammenligning.findMany({
-    where: { userId },
+    where: { userId, id: { in: [] } },
     orderBy: { createdAt: "desc" },
     take: 20,
   });
 
   const sgInputs = await prisma.brukerSgInput.findMany({
-    where: { userId },
+    where: { userId, ...independentSgInputWhere() },
     orderBy: { dato: "asc" },
     take: 30,
   });

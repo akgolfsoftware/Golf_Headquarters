@@ -36,6 +36,7 @@ import type { PyramidArea, RecurrencePolicy, WorkbenchMode, SourceItem } from "@
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
+import { MonthPlan } from "@/components/workbench/MonthPlan";
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 
 export const dynamic = "force-dynamic";
@@ -353,7 +354,7 @@ function pilleLenkeStil(aktiv: boolean): CSSProperties {
   return {
     display: "inline-flex",
     alignItems: "center",
-    minHeight: 36,
+    minHeight: 44,
     padding: "6px 14px",
     borderRadius: TN.radius.full,
     fontSize: TN.text.sm,
@@ -463,14 +464,17 @@ async function renderGruppeplan(args: {
     );
   }
 
-  // maned / uke — GroupSchedule i vinduet
-  const referanse = datoRaw && ISO_DATO.test(datoRaw) ? datoRaw : idag;
+  // Måned, uke og dag leser nøyaktig det valgte vinduet.
+  const referanse = datoRaw && ISO_DATO.test(datoRaw) ? datoRaw : datoRaw && /^\d{4}-\d{2}$/.test(datoRaw) ? `${datoRaw}-01` : idag;
   const fraTil = visning === "uke"
     ? { fra: mondayOf(referanse), til: addDays(mondayOf(referanse), 6) }
-    : { fra: monthStartOf(referanse), til: lastDayOfMonth(monthStartOf(referanse)) };
+    : visning === "dag"
+      ? { fra: referanse, til: referanse }
+      : { fra: monthStartOf(referanse), til: lastDayOfMonth(monthStartOf(referanse)) };
   const timer = await hentTnGruppeTimer(kontekst.gruppeId, fraTil.fra, fraTil.til);
   return (
-    <TnSeksjon tittel={visning === "uke" ? `Uke — ${fmtDato(new Date(`${fraTil.fra}T12:00:00Z`))}` : `Måned — ${fraTil.fra.slice(0, 7)}`}>
+    <TnSeksjon tittel={visning === "dag" ? `Dag — ${fmtDato(new Date(`${fraTil.fra}T12:00:00Z`))}` : visning === "uke" ? `Uke — ${fmtDato(new Date(`${fraTil.fra}T12:00:00Z`))}` : `Måned — ${fraTil.fra.slice(0, 7)}`}>
+      {visning === "maned" && <MonthPlan owner={{ kind: "group", groupId: kontekst.gruppeId }} year={Number(fraTil.fra.slice(0,4))} month={Number(fraTil.fra.slice(5,7))} />}
       {timer.length === 0 ? (
         <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen faste gruppetider i dette vinduet.</p></TnKort>
       ) : timer.map((t) => (
@@ -864,4 +868,4 @@ async function renderLeggTilOvelse(args: {
 }
 
 const feltLabelStil: CSSProperties = { display: "flex", flexDirection: "column", gap: 4, fontSize: TN.text.xs, color: TN.textSecondary };
-const feltInputStil: CSSProperties = { minHeight: 40, padding: "6px 10px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, fontSize: TN.text.sm, background: TN.white, color: TN.navy900 };
+const feltInputStil: CSSProperties = { minHeight: 44, padding: "6px 10px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, fontSize: TN.text.sm, background: TN.white, color: TN.navy900 };

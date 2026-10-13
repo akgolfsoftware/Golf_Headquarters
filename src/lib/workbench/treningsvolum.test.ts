@@ -2,6 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { summerTreningsvolum, VOLUM_AKSER, type TreningsvolumOkt } from "./treningsvolum";
 
+test("ekte ferdigkvittering samme dag teller en tidlig gjennomført økt, mens ukvittert framtid beholdes som plan", () => {
+  const naa = new Date("2026-10-02T00:30:00Z");
+  const early = okt({ date: new Date("2026-10-02"), startMinute: 9 * 60, durationMinutes: 50,
+    actualMinutes: 6, fullfortAt: new Date("2026-10-02T00:15:00Z") });
+  const range = { fraDato: new Date("2026-10-02"), tilDato: new Date("2026-10-03"), naa };
+  assert.equal(summerTreningsvolum([early], range).total.faktiskMinutter, 6);
+  assert.equal(summerTreningsvolum([{ ...early, fullfortAt: null }], range).total.faktiskMinutter, null);
+  assert.equal(summerTreningsvolum([{ ...early, fullfortAt: new Date("2026-10-02T10:00:00Z") }], range).total.faktiskMinutter, null);
+});
+
 const vindu = {
   fraDato: new Date("2026-09-28T00:00:00Z"),
   tilDato: new Date("2026-10-05T00:00:00Z"),

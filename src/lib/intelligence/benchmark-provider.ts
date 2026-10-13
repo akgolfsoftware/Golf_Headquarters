@@ -1,3 +1,4 @@
+import { independentSgInputWhere } from "@/lib/datagolf/round-provenance";
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
@@ -90,7 +91,7 @@ export async function benchmarksAvailable(): Promise<boolean> {
 export async function getPlayerBenchmarkGaps(userId: string): Promise<CategoryGap[]> {
   const [latest, benchmarks] = await Promise.all([
     prisma.brukerSgInput.findFirst({
-      where: { userId },
+      where: { userId, ...independentSgInputWhere() },
       orderBy: { dato: "desc" },
       select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),

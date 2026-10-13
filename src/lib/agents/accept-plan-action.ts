@@ -7,6 +7,7 @@ import {
 import { isEditedSuggestion } from "./canonical-json";
 import { executePlanAction } from "./plan-action-executor";
 import { planActionFeilSpor, planActionOkSpor } from "./plan-action-spor";
+import { COACHING_EMAIL_DRAFT } from "@/lib/email/coaching-oppfolging-kontrakt";
 
 export type AcceptPlanActionResult = {
   status: "ACCEPTED" | "REJECTED" | "UNCHANGED";
@@ -39,6 +40,10 @@ export async function acceptAndApplyPlanAction(
     where: { id: actionId },
   });
   if (!action) throw new Error("not-found");
+  if (action.actionType === COACHING_EMAIL_DRAFT) {
+    const { godkjennCoachingUtkast } = await import("@/lib/email/coaching-oppfolging-queue");
+    return godkjennCoachingUtkast(actionId, typeof coachNoteSuggestion?.body === "string" ? coachNoteSuggestion.body : undefined);
+  }
   if (action.status !== "PENDING") {
     return {
       status:

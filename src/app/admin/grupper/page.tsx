@@ -19,6 +19,8 @@ import { AG16Grupper } from "@/components/admin/precision/AG16Grupper";
 import type { GrupperData, GruppeV2, FastTid } from "@/components/admin/v2/GrupperV2";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
+import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
+import { aktivtSpillerMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Grupper · AgencyOS" };
@@ -55,15 +57,16 @@ export default async function V2GrupperPage() {
   });
   const coaches = coachesRaw.map((c) => ({ id: c.id, name: c.name ?? "Ukjent" }));
 
-  // Coach-scoping: en COACH ser kun grupper hun eier (Group.coachId) — samme
-  // eierskapsmodell som coachScopedPlayerWhere allerede bygger på. ADMIN ser
-  // alle, inkludert grupper uten tildelt coach.
+  // Samme innsyn som gruppedetaljen: eier eller aktiv trener/assistent.
+  // Arkiverte grupper er historikk og holdes utenfor den aktive oversikten.
   const groups = await prisma.group.findMany({
-    where: user.role === "COACH" ? { coachId: user.id } : {},
+    where: { AND: [{ arkivertAt: null }, gruppeInnsynWhere(user)] },
     select: {
       id: true,
       name: true,
-      _count: { select: { members: { where: { endedAt: null } } } },
+      program: true,
+      slug: true,
+      _count: { select: { members: { where: aktivtSpillerMedlemskapWhere() } } },
       schedules: {
         where: { recurring: "WEEKLY" },
         select: { id: true, title: true, startAt: true, endAt: true, location: true },
@@ -114,6 +117,8 @@ export default async function V2GrupperPage() {
       id: g.id,
       navn: g.name,
       antallMedlemmer: g._count.members,
+      miljoHref: g.program === "WANG_TOPPIDRETT" || g.program === "WANG_UNG" ? "/team-wang/coach" : g.slug === TEAM_NORWAY_SLUG ? "/team-norway" : undefined,
+      miljoNavn: g.program === "WANG_TOPPIDRETT" || g.program === "WANG_UNG" ? "WANG" : g.slug === TEAM_NORWAY_SLUG ? "Team Norway" : undefined,
       nesteOkt,
       faste: faste.map(({ _ukedag, _min, ...rest }) => rest),
     };

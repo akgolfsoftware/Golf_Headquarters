@@ -1,0 +1,9 @@
+/* GJ-01/GJ-02 beholder GFGKs egen profil og Source Sans, med roligere leseflater. */
+.gfgk-jr{--shadow-sm:none;--shadow-md:none;--shadow-lg:none;--shadow-gold:none}
+.gfgk-jr h1,.gfgk-jr h2{font-family:var(--font-jr-sans);text-wrap:balance}
+.gfgk-jr p{overflow-wrap:anywhere}
+.gfgk-jr input,.gfgk-jr select,.gfgk-jr textarea{min-height:48px;font-size:16px}
+.gfgk-jr button,.gfgk-jr .jr-link{min-height:44px}
+.gfgk-jr .jr-kilde{font:400 15px/1.55 var(--font-jr-sans);color:var(--fg-2);padding:16px 20px;background:var(--n-50);border-radius:var(--r-sm);max-width:76ch;overflow-wrap:anywhere}
+.gfgk-jr a:focus-visible,.gfgk-jr input:focus-visible,.gfgk-jr select:focus-visible{outline:2px solid var(--teal-600);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.gfgk-jr .jr-fade-up{animation:none;opacity:1;transform:none}.gfgk-jr *{scroll-behavior:auto!important}}

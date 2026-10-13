@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { lagTrenerforslag, svarPaTrenerforslag } from "@/lib/workbench/trenerforslag";
 import { TN } from "@/lib/v2/team-norway";
@@ -21,11 +21,11 @@ function erIupFokusforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is
 }
 
 const felt: React.CSSProperties = { display: "grid", gap: 5, minWidth: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" };
-const input: React.CSSProperties = { minHeight: 40, minWidth: 0, padding: "8px 10px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-1)", color: "var(--text-primary)", font: "inherit" };
+const input: React.CSSProperties = { minHeight: 44, minWidth: 0, padding: "8px 10px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-1)", color: "var(--text-primary)", font: "inherit" };
 const panel: React.CSSProperties = { display: "grid", gap: 12, padding: 16, border: "1px solid var(--border-default)", borderRadius: 12, background: "var(--surface-1)" };
 const tnPanel: React.CSSProperties = { ...panel, borderColor: TN.borderSubtle, borderRadius: 0, background: TN.surfaceCard, fontFamily: TN.font.body };
 const wangPanel: React.CSSProperties = { ...panel, borderColor: "var(--border-subtle)", borderRadius: 8, background: "var(--surface-card)", fontFamily: "var(--font-body)" };
-const stdKnapp: React.CSSProperties = { minHeight: 40, border: 0, borderRadius: 8, background: "var(--surface-inverse)", color: "var(--text-inverse)", padding: "8px 14px", font: "var(--type-body-s)", cursor: "pointer" };
+const stdKnapp: React.CSSProperties = { minHeight: 44, border: 0, borderRadius: 8, background: "var(--surface-inverse)", color: "var(--text-inverse)", padding: "8px 14px", font: "var(--type-body-s)", cursor: "pointer" };
 const tnKnapp: React.CSSProperties = { ...stdKnapp, borderRadius: 0, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontSize: TN.text.sm };
 const wangKnapp: React.CSSProperties = { ...stdKnapp, background: "var(--wang-navy)", color: "var(--white)" };
 
@@ -34,6 +34,7 @@ function vis(o: Partial<Innslag> | null) { return !o ? "Ingen eksisterende økt"
 
 export function TrenerforslagSkjema({ organisasjon, spillerId, sessions = [] }: { organisasjon: "WANG" | "TEAM_NORWAY"; spillerId: string; sessions?: { id: string; label: string }[] }) {
   const [pending, start] = useTransition(); const [melding, setMelding] = useState(""); const router = useRouter();
+  const busy = useRef(false);
   const [handling, setHandling] = useState<"ADD" | "UPDATE" | "CANCEL">("ADD");
   const orgStyle = organisasjon === "TEAM_NORWAY" ? tnPanel : wangPanel;
   const knapp = organisasjon === "TEAM_NORWAY" ? tnKnapp : wangKnapp;
@@ -42,12 +43,17 @@ export function TrenerforslagSkjema({ organisasjon, spillerId, sessions = [] }: 
   return <section aria-label="Foreslå treningsendring" style={orgStyle}>
     <div><h2 style={{ margin: 0, fontSize: organisasjon === "TEAM_NORWAY" ? TN.text.h3 : undefined, fontWeight: organisasjon === "TEAM_NORWAY" ? TN.weight.semibold : undefined, fontFamily: organisasjon === "TEAM_NORWAY" ? TN.font.display : "inherit", color: organisasjon === "TEAM_NORWAY" ? TN.textPrimary : "var(--text-primary)" }}>Foreslå treningsendring</h2>
       <p style={{ margin: "4px 0 0", color: organisasjon === "TEAM_NORWAY" ? TN.textSecondary : "var(--text-secondary)", font: "var(--type-body-s)" }}>Forslaget endrer ikke planen før spilleren godkjenner det.</p></div>
-    <form style={{ display: "grid", gap: 10 }} onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const handling = String(f.get("handling")) as "ADD" | "UPDATE" | "CANCEL";
+    <form style={{ display: "grid", gap: 10 }} onSubmit={(e) => { e.preventDefault(); if (busy.current) return; const f = new FormData(e.currentTarget); const handling = String(f.get("handling")) as "ADD" | "UPDATE" | "CANCEL";
       const sessionId = String(f.get("sessionId") || "");
       const [h, m] = String(f.get("time") || "09:00").split(":").map(Number);
       const etter = handling === "CANCEL" ? undefined : { date: String(f.get("date")), startMinute: h * 60 + m, durationMinutes: Number(f.get("durationMinutes")), title: String(f.get("title")), pyramid: String(f.get("pyramid")) as "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN", location: String(f.get("location") || "") || null };
-      start(async () => { const result = await lagTrenerforslag({ organisasjon, spillerId, handling, sessionId: sessionId || undefined, etter, begrunnelse: String(f.get("begrunnelse")) });
-        setMelding(result.ok ? "Forslaget er sendt til spillerens Workbench." : result.feil); if (result.ok) router.refresh(); }); }}>
+      busy.current = true;
+      start(async () => { try {
+        const result = await lagTrenerforslag({ organisasjon, spillerId, handling, sessionId: sessionId || undefined, etter, begrunnelse: String(f.get("begrunnelse")) });
+        setMelding(result.ok ? "Forslaget er sendt til spillerens Workbench." : result.feil); if (result.ok) router.refresh();
+      } catch { setMelding("Forslaget ble ikke sendt. Feltene er beholdt; prøv igjen."); }
+      finally { busy.current = false; } }); }}>
+      <fieldset disabled={pending} style={{ border: 0, padding: 0, margin: 0, display: "grid", gap: 10 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 10 }}>
         <label style={fieldStyle}>Handling<select name="handling" value={handling} onChange={e => setHandling(e.target.value as typeof handling)} style={inputStyle}><option value="ADD">Foreslå ny økt</option><option value="UPDATE">Foreslå endring</option><option value="CANCEL">Foreslå å ta bort økt</option></select></label>
         <label style={fieldStyle}>Eksisterende økt<select name="sessionId" defaultValue="" required={handling !== "ADD"} disabled={handling === "ADD" || sessions.length === 0} style={inputStyle}><option value="">{sessions.length ? "Velg økt ved endring/fjerning" : "Ingen redigerbare økter"}</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
@@ -58,8 +64,9 @@ export function TrenerforslagSkjema({ organisasjon, spillerId, sessions = [] }: 
         <label style={fieldStyle}>Tittel<input name="title" maxLength={120} required={handling !== "CANCEL"} disabled={handling === "CANCEL"} style={inputStyle} /></label>
         <label style={fieldStyle}>Sted<input name="location" maxLength={120} disabled={handling === "CANCEL"} style={inputStyle} /></label>
       </div>
-      <label style={fieldStyle}>Begrunnelse<textarea name="begrunnelse" minLength={5} maxLength={1000} required rows={3} style={{ ...inputStyle, resize: "vertical" }} /></label>
+      <label style={fieldStyle}>Avtalt tiltak og begrunnelse<textarea name="begrunnelse" minLength={5} maxLength={1000} required rows={4} placeholder="Hva er avtalt, hvem har ansvar, og når skal dere følge opp?" style={{ ...inputStyle, resize: "vertical" }} /></label>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}><button type="submit" disabled={pending} style={{ ...knapp, opacity: pending ? 0.65 : 1 }}>{pending ? "Sender …" : "Send forslag"}</button>{melding && <span role="status" style={{ color: organisasjon === "TEAM_NORWAY" ? TN.textSecondary : "var(--text-secondary)", font: "var(--type-body-s)" }}>{melding}</span>}</div>
+      </fieldset>
     </form>
   </section>;
 }

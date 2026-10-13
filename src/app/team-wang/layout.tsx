@@ -9,7 +9,7 @@ import "@/styles/wang-app.css";
 const montserrat = Montserrat({
   variable: "--font-wang-brand",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["300", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -69,7 +69,8 @@ export default function TeamWangLayout({
 }) {
   return (
     <div
-      className={`wang-tp wang-app ${montserrat.variable} ${quattrocentoSans.variable} min-h-screen`}
+      data-org="wang"
+      className={`pa-root wang-tp wang-app ${montserrat.variable} ${quattrocentoSans.variable} min-h-screen`}
     >
       {children}
     </div>

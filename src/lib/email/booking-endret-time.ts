@@ -40,6 +40,7 @@ export type EndretTimeInput = {
   /** Trukket fra abonnement (klipp). */
   erKlipp: boolean;
   stripePaymentIntentId: string | null;
+  stripeCheckoutSessionId?: string | null;
   /** Innlogget spiller (appbruker) eller gjest uten konto. */
   harKonto: boolean;
   dark?: boolean;
@@ -125,7 +126,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
 
   const endreLenke = input.harKonto
     ? `${input.appUrl}/portal/meg/bookinger`
-    : `${input.appUrl}/booking/kvittering/${input.bookingId}`;
+    : `${input.appUrl}/booking/kvittering/${input.bookingId}${input.stripeCheckoutSessionId ? `?session_id=${encodeURIComponent(input.stripeCheckoutSessionId)}` : ""}`;
 
   const body =
     (input.introHtml ?? avsnitt(`Hei ${esc(input.fornavn ?? "der")}. Timen din har fått ny tid.`, c)) +

@@ -29,10 +29,10 @@ import { hentAlleGfgkGrupper } from "./_data/hent-gfgk-data";
 export const revalidate = 300;
 
 const NOKKELTALL: { tall: string; label: string }[] = [
-  { tall: "4 grupper", label: "6–19 år, alle nivåer" },
+  { tall: `${GRUPPE_KEYS.length} grupper`, label: "Se alder og nivå for hver gruppe" },
   { tall: "Apr–Okt", label: "utesesong på GFGK" },
-  { tall: "2 økter", label: "per uke i hver gruppe" },
-  { tall: "Gratis", label: "lånekøller og baller" },
+  { tall: "Treningsplan", label: "Se tid og sted for valgt gruppe" },
+  { tall: "Utstyr", label: "Avklar lånekøller med treneren" },
 ];
 
 function osloIdag(): string {
@@ -299,7 +299,7 @@ export default async function GfgkJuniorForside() {
           tittel="Slik foregår en treningsuke"
           ingress="Oversikt over faste treningsøkter per aldersgruppe."
         />
-        <Treningsuke ukeplaner={ukeplaner} notater={UKE_NOTATER} />
+        <Treningsuke ukeplaner={ukeplaner} notater={UKE_NOTATER} kilder={Object.fromEntries(GRUPPE_KEYS.map((key) => [key, grupper[key].kilde]))} />
       </section>
 
       {/* 04 Trenere */}

@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * Data for SpillerProfilPanel (Paper-fasit: designsystem/paper/fase1/
  * spillerprofil.html) — artefaktpanelet som åpnes fra /admin/spillere.
@@ -125,17 +126,17 @@ export async function loadSpillerProfilPanel(
     loadSpillerDetaljOversikt(player.id),
     loadSpillerDashboardEkstra(player.id),
     // Speiler [id]-sidens runde-spørring (siste 4).
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: player.id },
       orderBy: { playedAt: "desc" },
       take: 4,
-      select: {
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},
         playedAt: true,
         score: true,
         sgTotal: true,
         course: { select: { name: true } },
       },
-    }),
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     // Speiler [id]-sidens test-spørring (siste 4).
     prisma.testResult.findMany({
       where: { userId: player.id },

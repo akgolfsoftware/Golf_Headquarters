@@ -72,11 +72,12 @@ function KommerRad({ k }: { k: LiveTavleData["kommerIDag"][number] }) {
   );
 }
 
-export function AG13LiveTavle({ data }: { data: LiveTavleData }) {
+export function AG13LiveTavle({ data, selectedPlayer }: { data: LiveTavleData; selectedPlayer?: { id: string; name: string | null } | null }) {
   const n = data.liveOkter.length;
   return (
     <div className="pa-side">
-      <Sidehode kicker="Live-tavle" title="Tavle" sub={n > 0 ? <StatusPille tone="live">{`Live · ${n} ${n === 1 ? "økt" : "økter"}`}</StatusPille> : undefined} />
+      <Sidehode kicker="Live-tavle" title={selectedPlayer?.name ?? "Live-økter"} sub={n > 0 ? <StatusPille tone="live">{`Live · ${n} ${n === 1 ? "økt" : "økter"}`}</StatusPille> : undefined} />
+      {selectedPlayer && <div><KnappLenke variant="secondary" href={`/admin/workbench/${selectedPlayer.id}`}>Åpne spillerens plan</KnappLenke></div>}
       {n === 0 ? (
         <TomTilstand icon={Radio} title="Ingen økter pågår nå" text="Økter som settes i gang, vises her." actions={<KnappLenke variant="secondary" icon={CalendarDays} href="/admin/kalender">Åpne Kalender</KnappLenke>} />
       ) : (

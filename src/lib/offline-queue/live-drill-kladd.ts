@@ -15,6 +15,8 @@ export type LiveDrillReps = {
   /** Medgått tid på drillen (sekunder). Følger med i offline-køen så tiden
    * ikke går tapt når økta kjøres uten nett. */
   actualDurationSec?: number;
+  /** Enkel registrering fra ny Live-UI inneholder ikke motorik-/treffmålinger. */
+  quantityOnly?: boolean;
 };
 
 export type LiveDrillKoRad = {

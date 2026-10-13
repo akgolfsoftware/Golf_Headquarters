@@ -1,8 +1,10 @@
 "use server";
 
 import { eksporterWorkbenchData } from "@/lib/workbench/workbench-personvern";
+import { eksporterMaanedsplaner } from "@/lib/workbench/month-plan-personvern";
 
 import { z } from "zod";
+import { withoutDataGolfExport } from "@/lib/datagolf/export-projection";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
@@ -132,6 +134,7 @@ export async function exportUserData(): Promise<{
       delingsSamtykker,
       iupBesvarelser,
       weekPlans,
+      monthlyPlans,
       trenerDelingsInvitasjoner,
       workbench,
       trenerforslag,
@@ -142,7 +145,7 @@ export async function exportUserData(): Promise<{
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({
         where: { userId: user.id },
-        include: { holeScores: true, shots: { include: { puttDetail: true, sgResults: true } } },
+        include: { holeScores: true, sgReferenceSet: { select: { source: true, sourceVersion: true } }, shots: { include: { puttDetail: true, sgResults: { include: { referenceSet: { select: { source: true, sourceVersion: true } } } } } } },
       }),
       prisma.roundDraft.findMany({ where: { userId: user.id } }),
       prisma.tournamentEntry.findMany({ where: { userId: user.id }, include: { tournament: true } }),
@@ -170,6 +173,7 @@ export async function exportUserData(): Promise<{
       prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
       // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
       prisma.weekPlan.findMany({ where: { playerId: user.id } }),
+      eksporterMaanedsplaner(user.id),
       prisma.trenerDelingsInvitasjon.findMany({
         where: { OR: [{ userId: user.id }, { gittAvUserId: user.id }, { acceptedByUserId: user.id }, { mottakerEpost: user.email.trim().toLowerCase() }] },
         // Token-hash er en sikkerhetsmekanisme, aldri eksportinnhold.
@@ -272,6 +276,7 @@ export async function exportUserData(): Promise<{
       delingsSamtykker,
       iupBesvarelser,
       weekPlans,
+      monthlyPlans,
       trenerDelingsInvitasjoner,
       workbench,
       trenerforslag,
@@ -322,7 +327,7 @@ export async function exportUserData(): Promise<{
       metadata: { recordCount: Object.keys(exportPayload).length },
     });
 
-    return { ok: true, data: exportPayload };
+    return { ok: true, data: withoutDataGolfExport(exportPayload) };
   } catch (error) {
     await logError({ context: "gdpr.export", error, userId: user.id });
     return { ok: false, error: "Eksport feilet. Prøv igjen eller kontakt support." };

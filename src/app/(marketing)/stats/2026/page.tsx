@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 import { AK } from "@/lib/v2/ak-palett";
 /**
  * /stats/2026 — Sesongoversikt "2026 i tall"
@@ -54,15 +56,15 @@ async function getSesongData() {
 
     const [turneringer, entries] = await Promise.all([
       prisma.tournament.findMany({
-        where: { startDate: { gte: startDato, lte: sluttDato } },
+        where: { ...publicTournamentSourceWhere(),  startDate: { gte: startDato, lte: sluttDato } },
         orderBy: { startDate: "asc" },
         take: 200,
       }),
       prisma.publicPlayerEntry.findMany({
-        where: {
+        where: { AND: [publicEntrySourceWhere(), {
           tournament: { startDate: { gte: startDato, lte: sluttDato } },
           status: "FINISHED",
-        },
+        }] },
         include: {
           player: true,
           tournament: true,
@@ -446,10 +448,10 @@ export default async function Sesong2026Page() {
       )}
 
       {/* Mersalg */}
-      <section className="stats-section stats-section-divider stats-mersalg" style={{ background: "var(--s-primary)", color: "hsl(var(--background))" }}>
+      <section className="stats-section stats-section-divider stats-mersalg" style={{ background: "var(--s-primary)", color: "var(--s-bg)" }}>
         <div style={{ textAlign: "center" }}>
           <StatsEyebrow tone="lime">Vær med i neste års oversikt</StatsEyebrow>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 600, color: "hsl(var(--background))", marginTop: 16, marginBottom: 16 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 600, color: "var(--s-bg)", marginTop: 16, marginBottom: 16 }}>
             Logg dine egne runder i {AAR}.
           </h2>
           <p style={{ fontSize: 16, color: AK.farge.sandLysA70, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>

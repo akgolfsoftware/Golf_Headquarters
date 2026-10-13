@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 import { activateTnDraftOwner } from "./tn-draft-store";
+import { activateSummaryDraftOwner } from "./summary-draft-store";
 
 const LokalDataEierContext = createContext<string | null>(null);
 
@@ -16,7 +17,7 @@ export function LokalDataEierProvider({
   const [readyOwner, setReadyOwner] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
-    void activateTnDraftOwner(eierId).catch(() => { /* Scorecard reports unavailable storage. */ }).then(() => { if (active) setReadyOwner(eierId); });
+    void Promise.allSettled([activateTnDraftOwner(eierId), activateSummaryDraftOwner(eierId)]).then(() => { if (active) setReadyOwner(eierId); });
     return () => { active = false; };
   }, [eierId]);
   return (

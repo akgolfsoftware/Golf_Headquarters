@@ -1,16 +1,17 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { isSameOrigin } from "./same-origin";
+const configuredOrigin = new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no").origin;
 
 // Testene kjører med NODE_ENV != "production", så localhost og manglende
 // origin/referer aksepteres (samme policy som isSameOriginAction deler).
 function req(headers: Record<string, string>): Request {
-  return new Request("https://akgolf.no/x", { headers });
+  return new Request(`${configuredOrigin}/x`, { headers });
 }
 
 describe("isSameOrigin (CSRF-vern)", () => {
-  it("godtar konfigurert prod-origin", () => {
-    assert.equal(isSameOrigin(req({ origin: "https://akgolf.no" })), true);
+  it("godtar den konfigurerte app-origin i både test og produksjon", () => {
+    assert.equal(isSameOrigin(req({ origin: configuredOrigin })), true);
   });
 
   it("godtar localhost i ikke-produksjon", () => {
@@ -23,7 +24,7 @@ describe("isSameOrigin (CSRF-vern)", () => {
 
   it("faller tilbake til referer når origin mangler", () => {
     assert.equal(
-      isSameOrigin(req({ referer: "https://akgolf.no/auth/guardian-consent/abc" })),
+      isSameOrigin(req({ referer: `${configuredOrigin}/auth/guardian-consent/abc` })),
       true,
     );
   });

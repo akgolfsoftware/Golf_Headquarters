@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats — AK Golf Stats hub-landingsside (v2, retning C)
  * Swap av (mlegacy)/stats/page.tsx → v2-utseende. Data-lag (hentLiveSnapshot,
@@ -41,19 +43,19 @@ async function hentLiveSnapshot() {
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
 
-  const [norskeIAksjon, kommendeTurneringer, sisteDataGolfSync] =
+  const [norskeIAksjon, kommendeTurneringer, sisteTillatteSync] =
     await Promise.all([
       prisma.publicPlayerEntry.count({
-        where: {
+        where: { AND: [publicEntrySourceWhere(), {
           player: { country: "NO" },
           tournament: {
             startDate: { lte: ukeSlutt },
             endDate: { gte: now },
           },
-        },
+        }] },
       }),
       prisma.tournament.count({
-        where: {
+        where: { ...publicTournamentSourceWhere(),
           startDate: {
             gte: now,
             lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
@@ -62,7 +64,7 @@ async function hentLiveSnapshot() {
         },
       }),
       prisma.tournament.findFirst({
-        where: { sourceOrigin: "DATAGOLF", lastSyncAt: { not: null } },
+        where: { ...publicTournamentSourceWhere(),  lastSyncAt: { not: null } },
         orderBy: { lastSyncAt: "desc" },
         select: { lastSyncAt: true },
       }),
@@ -71,7 +73,7 @@ async function hentLiveSnapshot() {
   return {
     norskeIAksjon,
     kommendeTurneringer,
-    sisteSyncDato: sisteDataGolfSync?.lastSyncAt ?? null,
+    sisteSyncDato: sisteTillatteSync?.lastSyncAt ?? null,
   };
 }
 

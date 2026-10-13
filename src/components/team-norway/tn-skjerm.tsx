@@ -13,8 +13,8 @@ export function TnSidehodeDS({ overlinje, tittel, ingress, handling }: { overlin
   return (
     <header className={s.sidehode}>
       <div className={s.sidehodeTekst}>
-        <p className={s.overlinje}>{overlinje}</p>
         <h1 className={s.tittel}>{tittel}</h1>
+        <p className={s.overlinje}>{overlinje}</p>
         {ingress ? <p className={s.ingress}>{ingress}</p> : null}
       </div>
       {handling ? <div className={s.handling}>{handling}</div> : null}

@@ -37,10 +37,10 @@ test("avskriften sendes uten spillerens navn, referatet får navnet tilbake", as
     spillerKontekst: {
       navn: "Tobias Lindvik",
       hcp: 4.2,
-      ambisjon: null,
+      ambisjon: "Tobias vil spille college.",
       alder: 16,
       sisteFireUkerSummary: "8 økter",
-      aktivPlan: null,
+      aktivPlan: "Tobias Lindvik · individuell plan",
     },
     transkripsjon: "Tobias, se på low point. Bra, Tobias Lindvik. Perfekt treff.",
     varighetMin: 60,

@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/uka — Ukentlig editorial roundup (v2, retning C)
  * Swap av (mlegacy)/stats/uka/page.tsx → v2-utseende. Data-lag (getUkesData)
@@ -47,12 +49,12 @@ async function getUkesData() {
 
   try {
     const turneringer = await prisma.tournament.findMany({
-      where: {
+      where: { ...publicTournamentSourceWhere(),
         startDate: { gte: monday, lte: sunday },
         publicEntries: { some: {} },
       },
       include: {
-        publicEntries: {
+        publicEntries: { where: publicEntrySourceWhere(),
           include: { player: true },
           orderBy: { position: "asc" },
           take: 5,
@@ -79,7 +81,7 @@ async function getUkesData() {
     );
 
     const kommendeNeste = await prisma.tournament.findMany({
-      where: { startDate: { gte: nextMon, lte: nextSun } },
+      where: { ...publicTournamentSourceWhere(),  startDate: { gte: nextMon, lte: nextSun } },
       orderBy: { startDate: "asc" },
       take: 8,
     });

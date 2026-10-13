@@ -1,3 +1,4 @@
+import { independentRoundSgWhere, withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * Data for Spiller 360 (AG-08) i Precision Athletics.
  *
@@ -235,7 +236,7 @@ async function lastPlan(viewer: Viewer, id: string): Promise<S360Plan> {
 async function stallSnitt(viewer: Viewer): Promise<Record<SgCategory, number | null>> {
   const grense = new Date(Date.now() - 56 * DAG);
   const agg = await prisma.round.aggregate({
-    where: { playedAt: { gte: grense }, user: { AND: [coachScopedPlayerWhere(viewer), { role: "PLAYER" }] } },
+    where: { AND: [{ playedAt: { gte: grense }, user: { AND: [coachScopedPlayerWhere(viewer), { role: "PLAYER" }] } }, independentRoundSgWhere()] },
     _avg: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
   });
   return { OTT: agg._avg.sgOtt, APP: agg._avg.sgApp, ARG: agg._avg.sgArg, PUTT: agg._avg.sgPutt };
@@ -250,23 +251,23 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
   const [minGolf, workbench, runder, sgRunder, turneringer, vekstrate, gaps, stallen, volum, korrelasjon, ukeOkter] = await Promise.all([
     loadMinGolf(id, "elite"),
     loadAnalyticsWorkbenchData(id),
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: id },
       orderBy: { playedAt: "desc" },
       take: 30,
-      select: {
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},
         id: true, playedAt: true, score: true, sgTotal: true, tournamentEntryId: true,
         course: { select: { name: true, par: true } },
         holeScores: { select: { par: true } },
         _count: { select: { shots: true } },
       },
-    }),
-    prisma.round.findMany({
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
+    (prisma.round.findMany({
       where: { userId: id },
       orderBy: { playedAt: "desc" },
       take: STANDARD_VINDU * 2,
-      select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-    }),
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     hentTurneringshistorikk(id),
     hentVekstrateData(id),
     getPlayerBenchmarkGaps(id).catch(() => []),

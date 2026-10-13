@@ -1,566 +1,110 @@
 "use client";
 
-/**
- * Kilde: ui_kits/playerhq/screens/PH-07.jsx.
- * PH-07 Øktoppsummering — Precision Athletics (nattmodus/fokus).
- *
- * Oppsummering etter gjennomført live-økt:
- * - 4 metrikker: Slag og putter, Tid mot planlagt, Øvelser, Dagsform
- * - Pyramidefordeling med søyler og mållinje (FYS, TEK, SLAG, SPILL, TURN)
- * - Tabell over øvelser med mengde, tid og treff
- * - Notat til coach og delingsbryter "Del med Anders Kristiansen"
- * - "Lagre økt" knapp (64 px) med lagret-status og overgang til I dag
- *
- * Ingen hex eller rgba.
- */
-
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { X, Check, ArrowRight, CircleDashed } from "lucide-react";
-import { AkseMerke, StatusPille, Meta, Tall } from "@/components/precision/pa";
-import {
-  type OktoppsummeringData,
-  formatTimerOgMinutter,
-} from "@/lib/portal-live/ph04-07-data";
+import { ArrowLeft } from "lucide-react";
+import { AkseMerke, Knapp, Tall } from "@/components/precision/pa";
+import { MicButton } from "@/components/shared/mic-button";
+import { type OktoppsummeringData, formatTimerOgMinutter } from "@/lib/portal-live/ph04-07-data";
+import { lagreLiveOppsummering } from "@/lib/portal-live/session-actions";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import { clearSavedSummaryDraft, readSummaryDraft, writeSummaryDraft } from "@/lib/offline-queue/summary-draft-store";
 import "@/styles/precision-athletics.css";
+import "@/styles/precision-live.css";
 
+type Resultat = { ok: true } | { ok: false; error: string };
 interface PH07OktoppsummeringProps {
   data: OktoppsummeringData;
-  onSave?: (note: string, shareWithCoach: boolean) => Promise<void> | void;
+  onSave?: (note: string, shareWithCoach: boolean) => Promise<Resultat | void> | Resultat | void;
   onCloseHref?: string;
 }
 
-export function PH07Oktoppsummering({
-  data,
-  onSave,
-  onCloseHref = "/portal",
-}: PH07OktoppsummeringProps) {
-  const empty = data.totalShots === 0 && data.completedDrillsCount === 0;
-
-  const [share, setShare] = useState(true);
-  const [savedMessage, setSavedMessage] = useState<string | null>(null);
-  const [note, setNote] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      if (onSave) {
-        await onSave(note, share);
+export function PH07Oktoppsummering({ data, onSave, onCloseHref = "/portal" }: PH07OktoppsummeringProps) {
+  const [note, setNote] = useState(data.note ?? "");
+  const [share, setShare] = useState(data.shareWithCoach ?? false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [localFeedback, setLocalFeedback] = useState("");
+  const [draftReady, setDraftReady] = useState(!data.eierUserId);
+  const ownerId = useLokalDataEier();
+  const draftToken = useRef<string | null>(null);
+  const draftValue = useRef({ note: data.note ?? "", share: data.shareWithCoach ?? false });
+  const localWrites = useRef<Promise<void>>(Promise.resolve());
+  const changeNumber = useRef(0);
+  const canEdit = draftReady && (!data.eierUserId || ownerId === data.eierUserId);
+  useEffect(() => {
+    if (!data.eierUserId || ownerId !== data.eierUserId) return;
+    let active = true;
+    readSummaryDraft(ownerId, data.sessionId).then(draft => {
+      if (!active) return;
+      draftToken.current = draft?.token ?? null;
+      if (draft) {
+        draftValue.current = { note: draft.note, share: draft.shareWithCoach };
+        setNote(draft.note); setShare(draft.shareWithCoach);
+        setLocalFeedback("Privat utkast gjenåpnet fra denne enheten. Det er ikke sendt eller delt.");
       }
-      const timeStr = new Intl.DateTimeFormat("nb-NO", {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "Europe/Oslo",
-      }).format(new Date());
-
-      const msg = `LAGRET ${timeStr}${share ? " · DELT MED COACH" : " · IKKE DELT"}`;
-      setSavedMessage(msg);
-    } catch {
-      setSavedMessage("LAGRET LOKALT");
-    } finally {
-      setIsSaving(false);
-    }
+    }).catch(() => { if (active) setLocalFeedback("Lokal lagring er ikke tilgjengelig. Behold siden åpen frem til lagring er bekreftet."); })
+      .finally(() => { if (active) setDraftReady(true); });
+    return () => { active = false; };
+  }, [data.eierUserId, data.sessionId, ownerId]);
+  const changeDraft = (nextNote: string, nextShare: boolean) => {
+    setNote(nextNote); setShare(nextShare); setSaved(false); setFeedback("");
+    draftValue.current = { note: nextNote, share: nextShare };
+    const change = ++changeNumber.current;
+    if (!data.eierUserId || ownerId !== data.eierUserId) return;
+    setLocalFeedback("Lagrer privat utkast på enheten …");
+    localWrites.current = localWrites.current.then(async () => {
+      try {
+        const draft = await writeSummaryDraft(ownerId, data.sessionId, draftToken.current, nextNote, nextShare);
+        draftToken.current = draft.token;
+        if (change === changeNumber.current) setLocalFeedback("Privat utkast lagret på denne enheten. Det er ikke sendt eller delt.");
+      } catch (error) { if (change === changeNumber.current) setLocalFeedback(error instanceof Error ? error.message : "Utkastet kunne ikke lagres. Behold siden åpen."); }
+    });
   };
-
-  return (
-    <div
-      className="pa-root ph07"
-      data-theme="night"
-      style={{
-        minHeight: "100dvh",
-        background: "var(--surface-page)",
-        color: "var(--text-primary)",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Fokus-topp */}
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          padding: "16px 20px",
-          borderBottom: "1px solid var(--border-hairline)",
-          background: "var(--surface-card)",
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-        }}
-      >
-        <Link
-          href={onCloseHref}
-          aria-label="Lukk oppsummering"
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 8,
-            border: "1px solid var(--border-hairline)",
-            background: "var(--surface-card)",
-            color: "var(--text-primary)",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textDecoration: "none",
-            flexShrink: 0,
-          }}
-        >
-          <X size={22} />
-        </Link>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="kicker" style={{ color: "var(--text-secondary)" }}>
-            Øktoppsummering
-          </div>
-          <Meta style={{ color: "var(--text-muted)" }}>
-            {data.dateStr} · {data.timeRangeStr}
-          </Meta>
-        </div>
-      </header>
-
-      {/* Hovedinnhold (maksbredde 720px) */}
-      <main
-        style={{
-          flex: 1,
-          width: "100%",
-          maxWidth: 720,
-          margin: "0 auto",
-          padding: "24px 20px 120px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-        }}
-      >
-        {/* Tittel og status */}
-        <div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            {!empty && <StatusPille tone="ok">Gjennomført</StatusPille>}
-            <Meta>{data.title.toUpperCase()}</Meta>
-          </div>
-          <h1
-            style={{
-              margin: "8px 0 0",
-              font: "var(--type-title-l)",
-              color: "var(--text-primary)",
-            }}
-          >
-            {empty ? "Ingen slag registrert" : `Bra jobbet, ${data.playerName}`}
-          </h1>
-        </div>
-
-        {empty && (
-          <div
-            className="pa-state pa-state--empty"
-            style={{
-              padding: 24,
-              background: "var(--surface-card)",
-              borderRadius: 8,
-              border: "1px dashed var(--border-hairline)",
-              textAlign: "center",
-            }}
-          >
-            <CircleDashed
-              size={32}
-              style={{ color: "var(--text-muted)", marginBottom: 8 }}
-            />
-            <div style={{ fontWeight: 600, fontSize: 16 }}>
-              Økta har ingen registreringer
-            </div>
-            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>
-              Det er ikke registrert slag eller putter. Gå tilbake og registrer,
-              eller marker økta som hoppet over.
-            </div>
-          </div>
-        )}
-
-        {/* 4 Nøkkelmetrikker */}
-        <div
-          className="pa-card"
-          style={{
-            padding: 16,
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-hairline)",
-            borderRadius: 8,
-          }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-              gap: 16,
-            }}
-          >
-            <div>
-              <Meta style={{ display: "block", marginBottom: 4 }}>Slag og putter</Meta>
-              <Tall style={{ fontSize: 24, fontWeight: 700 }}>
-                {empty ? "—" : data.totalShots}
-              </Tall>
-            </div>
-            <div>
-              <Meta style={{ display: "block", marginBottom: 4 }}>Tid</Meta>
-              <Tall style={{ fontSize: 24, fontWeight: 700 }}>
-                {empty ? "—" : formatTimerOgMinutter(data.actualMinutes)}
-              </Tall>
-              <Meta style={{ display: "block", fontSize: 11, marginTop: 2 }}>
-                PLAN {formatTimerOgMinutter(data.plannedMinutes).toUpperCase()}
-              </Meta>
-            </div>
-            <div>
-              <Meta style={{ display: "block", marginBottom: 4 }}>Øvelser</Meta>
-              <Tall style={{ fontSize: 24, fontWeight: 700 }}>
-                {empty ? "—" : `${data.completedDrillsCount} av ${data.totalDrillsCount}`}
-              </Tall>
-            </div>
-            <div>
-              <Meta style={{ display: "block", marginBottom: 4 }}>Dagsform</Meta>
-              <Tall style={{ fontSize: 24, fontWeight: 700 }}>
-                {empty ? "—" : data.dagsform}
-              </Tall>
-            </div>
-          </div>
-        </div>
-
-        {/* Pyramidefordeling */}
-        <div
-          className="pa-card"
-          style={{
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-hairline)",
-            borderRadius: 8,
-          }}
-        >
-          <div>
-            <div className="kicker" style={{ color: "var(--text-secondary)" }}>
-              Pyramidefordeling
-            </div>
-            <div style={{ fontWeight: 600, fontSize: 16 }}>Minutter per akse</div>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {data.axes.map((ax) => {
-              const maxScale = 60;
-              const actualPct = Math.min(100, (ax.actualMin / maxScale) * 100);
-              const goalPct = Math.min(100, (ax.plannedMin / maxScale) * 100);
-
-              return (
-                <div
-                  key={ax.axis}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "70px minmax(0, 1fr) 50px",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  <AkseMerke axis={ax.axis} size="sm" />
-
-                  {/* Stolpe med mållinje */}
-                  <div
-                    style={{
-                      position: "relative",
-                      height: 20,
-                      background: "var(--surface-sunken)",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {/* Faktisk utført bar */}
-                    <div
-                      style={{
-                        height: "100%",
-                        width: `${actualPct}%`,
-                        background: "var(--primary)",
-                        transition: "width 200ms ease-out",
-                      }}
-                    />
-
-                    {/* Mållinje */}
-                    {ax.plannedMin > 0 && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          bottom: 0,
-                          left: `${goalPct}%`,
-                          width: 2,
-                          background: "var(--text-primary)",
-                          zIndex: 2,
-                        }}
-                        title={`Planlagt: ${ax.plannedMin} min`}
-                      />
-                    )}
-                  </div>
-
-                  <div style={{ textAlign: "right" }}>
-                    <Tall style={{ fontSize: 13, fontWeight: 600 }}>
-                      {ax.actualMin}
-                    </Tall>
-                    <Meta style={{ fontSize: 11, marginLeft: 2 }}>min</Meta>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <Meta style={{ fontSize: 11, color: "var(--text-muted)" }}>
-            MÅL-LINJE = PLANLAGT
-          </Meta>
-        </div>
-
-        {/* Tabell per øvelse */}
-        {!empty && data.drillRows.length > 0 && (
-          <div
-            className="pa-card"
-            style={{
-              padding: 16,
-              background: "var(--surface-card)",
-              border: "1px solid var(--border-hairline)",
-              borderRadius: 8,
-              overflowX: "auto",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 600,
-                fontSize: 15,
-                marginBottom: 12,
-                color: "var(--text-secondary)",
-              }}
-            >
-              Per øvelse
-            </div>
-
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: 14,
-                textAlign: "left",
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    borderBottom: "1px solid var(--border-hairline)",
-                    color: "var(--text-muted)",
-                    fontSize: 12,
-                  }}
-                >
-                  <th style={{ padding: "8px 4px", fontWeight: 500 }}>Øvelse</th>
-                  <th style={{ padding: "8px 4px", fontWeight: 500 }}>Mengde</th>
-                  <th style={{ padding: "8px 4px", fontWeight: 500, textAlign: "right" }}>
-                    Tid
-                  </th>
-                  <th style={{ padding: "8px 4px", fontWeight: 500, textAlign: "right" }}>
-                    Treff
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.drillRows.map((row) => (
-                  <tr
-                    key={row.id}
-                    style={{
-                      borderBottom: "1px solid var(--border-hairline)",
-                    }}
-                  >
-                    <td style={{ padding: "10px 4px", fontWeight: 500 }}>{row.name}</td>
-                    <td
-                      style={{
-                        padding: "10px 4px",
-                        fontFamily: "var(--font-mono)",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      {row.quantityText}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px 4px",
-                        fontFamily: "var(--font-mono)",
-                        textAlign: "right",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      {row.timeText}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px 4px",
-                        fontFamily: "var(--font-mono)",
-                        textAlign: "right",
-                        color: "var(--text-primary)",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {row.hitsText}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Notat til coach og delingsbryter */}
-        {!empty && (
-          <div
-            className="pa-card"
-            style={{
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-              background: "var(--surface-card)",
-              border: "1px solid var(--border-hairline)",
-              borderRadius: 8,
-            }}
-          >
-            <div>
-              <label
-                htmlFor="coach-note"
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  marginBottom: 4,
-                }}
-              >
-                Notat til coach <Meta style={{ fontWeight: 400 }}>(valgfritt)</Meta>
-              </label>
-              <Meta style={{ display: "block", marginBottom: 8, fontSize: 12 }}>
-                Kort om hvordan det gikk.
-              </Meta>
-              <input
-                id="coach-note"
-                type="text"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Lengdekontroll satt bedre på 50 m enn 100 m"
-                style={{
-                  width: "100%",
-                  height: 48,
-                  padding: "0 12px",
-                  borderRadius: 8,
-                  border: "1px solid var(--border-hairline)",
-                  background: "var(--surface-sunken)",
-                  color: "var(--text-primary)",
-                  fontSize: 14,
-                  outline: "none",
-                }}
-              />
-            </div>
-
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-                paddingTop: 8,
-                borderTop: "1px solid var(--border-hairline)",
-              }}
-            >
-              <span style={{ fontSize: 14, fontWeight: 500 }}>
-                Del med coach
-              </span>
-              <input
-                type="checkbox"
-                checked={share}
-                onChange={(e) => setShare(e.target.checked)}
-                style={{
-                  width: 20,
-                  height: 20,
-                  accentColor: "var(--primary)",
-                  cursor: "pointer",
-                }}
-              />
-            </label>
-          </div>
-        )}
-      </main>
-
-      {/* Bunnaksjon: Lagre økt eller gå videre */}
-      <footer
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: "var(--surface-page)",
-          borderTop: "1px solid var(--border-hairline)",
-          padding: "12px 16px",
-          display: "flex",
-          justifyContent: "center",
-          zIndex: 30,
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: 720 }}>
-          {savedMessage ? (
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
-                flexWrap: "wrap",
-                minHeight: 64,
-              }}
-            >
-              <StatusPille tone="ok">Lagret</StatusPille>
-              <Meta style={{ color: "var(--text-primary)" }}>{savedMessage}</Meta>
-              <span style={{ flex: 1 }} />
-              <Link
-                href="/portal"
-                style={{
-                  height: 48,
-                  padding: "0 20px",
-                  borderRadius: 8,
-                  border: "1px solid var(--border-hairline)",
-                  background: "var(--surface-card)",
-                  color: "var(--text-primary)",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                  gap: 6,
-                }}
-              >
-                <span>Til I dag</span>
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-          ) : (
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={handleSave}
-              style={{
-                height: 64,
-                width: "100%",
-                borderRadius: 8,
-                border: "none",
-                background: "var(--primary)",
-                color: "var(--text-on-primary)",
-                font: "600 17px/1 var(--font-sans)",
-                cursor: isSaving ? "wait" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Check size={20} />
-              <span>{isSaving ? "Lagrer …" : "Lagre økt"}</span>
-            </button>
-          )}
-        </div>
-      </footer>
-    </div>
-  );
+  const sending = useRef(false);
+  const scale = Math.max(1, ...data.axes.flatMap((a) => [a.actualMin ?? 0, a.plannedMin]));
+  const save = async () => {
+    if (sending.current || !canEdit) return;
+    sending.current = true; setSaving(true); setFeedback("");
+    try {
+      await localWrites.current;
+      const result = onSave ? await onSave(note, share) : await lagreLiveOppsummering(data.sessionId, { note, shareWithCoach: share });
+      if (!result?.ok) { setFeedback(result && !result.ok ? result.error : "Lagringen er ikke bekreftet. Prøv igjen."); return; }
+      setSaved(true);
+      if (ownerId && ownerId === data.eierUserId) {
+        await clearSavedSummaryDraft(ownerId, data.sessionId, note, share).catch(() => undefined);
+        draftToken.current = null; setLocalFeedback("");
+      }
+      setFeedback(share ? "Kommentaren er lagret og delt med coach." : "Kommentaren er lagret privat.");
+    } catch { setFeedback("Kommentaren ble ikke lagret. Teksten er beholdt her; prøv igjen."); }
+    finally { sending.current = false; setSaving(false); }
+  };
+  return <div className="pa-root pa-live ph07" data-theme="night" data-design="precision-athletics">
+    <header className="pa-live__top"><Link href={onCloseHref} className="pa-iconbtn" aria-label="Til I dag"><ArrowLeft size={20} /></Link><span className="pa-live__context">Oppsummering</span></header>
+    <main className="pa-live__main pa-live__main--summary">
+      <div><p className="pa-live__source">{data.dateStr}{data.timeRangeStr ? " · " + data.timeRangeStr : ""}</p><h1>{data.title}</h1><p className="pa-live__instruction">Dette er registreringene fra økta.</p></div>
+      <dl className="pa-live__summary">
+        <div><dt>Slag og putter</dt><dd>{data.totalShots}</dd></div>
+        <div><dt>Registrert tid</dt><dd>{data.actualMinutes == null ? "—" : formatTimerOgMinutter(data.actualMinutes)}</dd><p className="pa-live__help">{data.plannedMinutes > 0 ? "Planlagt " + formatTimerOgMinutter(data.plannedMinutes) : "Ingen planlagt varighet"}</p></div>
+        <div><dt>Øvelser fullført</dt><dd>{data.completedDrillsCount} av {data.totalDrillsCount}</dd></div>
+        {data.dagsform && <div><dt>Dagsform</dt><dd>{data.dagsform}</dd></div>}
+      </dl>
+      {data.drillRows.length > 0 ? <section className="pa-live__rows" aria-label="Registrering per øvelse">
+        {data.drillRows.map((r) => <article key={r.id}><div><h3>{r.name}</h3><div className="pa-live__row-values"><span>Mengde: {r.quantityText}</span><span>Tid: {r.timeText}</span><span>Treff: {r.hitsText}</span></div></div></article>)}
+      </section> : <section><h2>Ingen registreringer</h2><p>Økta har ingen lagrede øvelseslogger. Manglende målinger vises ikke som gjennomført arbeid.</p></section>}
+      <details className="pa-live__notes"><summary>Planlagt og registrert per akse</summary><div className="pa-live__note-body">
+        {data.axes.map((a) => <div key={a.axis} className="pa-live__axis-row"><AkseMerke axis={a.axis} /><progress max={scale} value={a.actualMin ?? 0} aria-label={a.axis.toUpperCase() + " registrerte minutter"} /><Tall>{a.actualMin == null ? "—" : a.actualMin} min</Tall><span className="pa-live__help" style={{ gridColumn: "2 / -1" }}>Planlagt {a.plannedMin} min{a.actualMin == null ? " · registrert tid er ukjent" : ""}</span></div>)}
+      </div></details>
+      <section className="pa-live__note-body" aria-labelledby="ph07-comment-title">
+        <div className="pa-live__fieldhead"><label id="ph07-comment-title" htmlFor="ph07-note">Din kommentar</label><MicButton variant="suffix" disabled={saving || !canEdit} onResult={(text) => changeDraft((draftValue.current.note ? draftValue.current.note + " " : "") + text, draftValue.current.share)} /></div>
+        <textarea id="ph07-note" value={note} maxLength={2000} rows={3} disabled={saving || !canEdit} onChange={(e) => changeDraft(e.target.value, share)} placeholder="Hva merket du i økta?" />
+        <label className="pa-live__share" htmlFor="ph07-share"><input id="ph07-share" type="checkbox" checked={share} disabled={saving || !canEdit} onChange={(e) => changeDraft(note, e.target.checked)} /><span>Del denne kommentaren med coach</span></label>
+        <p className="pa-live__help">Se gjennom teksten før du lagrer. Delingsvalget gjelder denne kommentaren.</p>
+        <p role={saved ? "status" : "alert"} className="pa-live__status">{feedback}</p>
+        <p role="status" className="pa-live__help">{canEdit ? localFeedback : "Henter privat kommentarutkast …"}</p>
+      </section>
+    </main>
+    <footer className="pa-live__footer"><div>{saved ? <Link href={onCloseHref} className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full">Til I dag</Link> : <Knapp fullWidth size="xl" disabled={!canEdit} loading={saving} loadingText="Lagrer …" onClick={() => void save()}>Lagre kommentar</Knapp>}</div></footer>
+  </div>;
 }

@@ -21,8 +21,8 @@ test("eldre plan bevarer identitet, faktiske felt, drillrekkefølge og redigerin
 
 test("eldre status styrer fortsett/oppsummering og teller aldri avlyst som gjennomført", () => {
   for (const [status, mapped, suffix] of [
-    ["PLANNED", "PLANNED", "/brief"], ["ACTIVE", "IN_PROGRESS", "/tapper"],
-    ["PAUSED", "IN_PROGRESS", "/tapper"], ["COMPLETED", "COMPLETED", "/summary"],
+    ["PLANNED", "PLANNED", "/brief"], ["ACTIVE", "IN_PROGRESS", "/active"],
+    ["PAUSED", "IN_PROGRESS", "/active"], ["COMPLETED", "COMPLETED", "/summary"],
   ] as const) {
     const s = planWeekSession(row({ status }))!;
     assert.equal(s.status, mapped); assert.equal(s.href, `/portal/live/eldre-plan${suffix}`);

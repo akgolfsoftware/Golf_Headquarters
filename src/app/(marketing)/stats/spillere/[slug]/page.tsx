@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/spillere/[slug] — Spillerprofil
  *
@@ -50,7 +51,7 @@ async function hentSpiller(slug: string) {
       bio: true,
       photoUrl: true,
       country: true,
-      entries: {
+      entries: { where: publicEntrySourceWhere(),
         orderBy: { tournament: { startDate: "desc" } },
         select: {
           id: true,

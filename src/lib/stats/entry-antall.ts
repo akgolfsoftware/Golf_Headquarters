@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * Antall turneringsdeltakelser per spiller — for en KJENT liste med spiller-ider.
  *
@@ -25,7 +26,7 @@ export async function hentEntryAntall(
 
   const rader = await prisma.publicPlayerEntry.groupBy({
     by: ["playerId"],
-    where: { playerId: { in: ider } },
+    where: { AND: [publicEntrySourceWhere(), { playerId: { in: ider } }] },
     _count: { _all: true },
   });
 

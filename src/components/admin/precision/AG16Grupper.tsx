@@ -29,7 +29,7 @@ export type AG16Props = {
 function Seksjon({ k, meta, children }: { k: string; meta?: string; children: ReactNode }) {
   return <section aria-label={k} className="pa-card" style={{ padding: 16, gap: 8, minWidth: 0 }}>
     <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
-      <span className="kicker" style={{ flex: "1 1 auto", minWidth: 0 }}>{k}</span>
+      <h2 style={{ flex: "1 1 auto", minWidth: 0, margin: 0, font: "var(--type-title-s)" }}>{k}</h2>
       {meta && <Meta>{meta}</Meta>}
     </div>
     {children}
@@ -51,6 +51,7 @@ function GruppeValgt({ g }: { g: GruppeV2 }) {
       {g.antallMedlemmer === 0 ? "Ingen medlemmer ennå. Legg til spillere på gruppesiden." : "Medlemslisten og innmelding ligger på gruppesiden."}
     </p>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {g.miljoHref && <KnappLenke href={g.miljoHref}>Åpne {g.miljoNavn}</KnappLenke>}
       <KnappLenke size="sm" href={`/admin/grupper/${g.id}`} icon={Users} iconName="users">Åpne gruppen</KnappLenke>
     </div>
   </Seksjon>;
@@ -76,7 +77,7 @@ export function AG16Grupper({ tilstand, data, nyGruppeKnapp, gfgkBootstrapKnapp 
   const valgt = data.grupper.find((g) => g.id === valgtId) ?? data.grupper[0] ?? null;
   const totalt = data.grupper.reduce((s, g) => s + g.antallMedlemmer, 0);
   return <div className="pa-side">
-    <Sidehode kicker="Mer · Grupper" title="Grupper" />
+    <Sidehode kicker="Mer · Grupper" title="Grupper" sub="Velg gruppen for medlemmer, felles plan og faste treningstider." />
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{nyGruppeKnapp}{gfgkBootstrapKnapp}</div>
     {tilstand === "tom" || !valgt ? <TomTilstand icon={Users} title="Ingen grupper ennå" text="Lag en gruppe og legg inn spillere. Gruppen styrer faste tider og årsplan." actions={<KnappLenke href="/admin/spillere" variant="secondary" icon={Users}>Åpne Stall</KnappLenke>} /> : <div className="pa-a5-stack">
       <div role="group" aria-label="Velg gruppe" style={{ display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0 }}>

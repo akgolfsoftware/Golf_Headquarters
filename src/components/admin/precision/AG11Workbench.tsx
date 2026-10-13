@@ -307,7 +307,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
       </div>)}
     </div>}
     <Knapp variant="secondary" size="sm" icon={Plus} disabled={travel} onClick={() => { setDrillTilRedigering(null); setOvelseFor(aktivOkt); }}>Egen øvelse i {AKSE_NAVN[bankAkse]}</Knapp>
-    <span className="kicker">{UI.formulaTitle}</span>
+    <details className="a9-informasjon"><summary>{UI.formulaTitle}, formål og sted</summary>
     <Nokkelverdi items={[
       [UI.pyramid, aktivOkt.drills[0]?.akFormel.pyramid ?? aktivOkt.pyramid],
       [UI.drillArea, aktivOkt.drills[0] ? AREA_LABEL[aktivOkt.drills[0].akFormel.area] : aktivOkt.skillArea ?? "—"],
@@ -315,7 +315,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
       ["Formål", aktivOkt.rationale ?? "—"], ["Sted", aktivOkt.location ?? "—"], ["Øktens målsetning", aktivOkt.maalsetning ?? "—"],
       ...(aktivOkt.drills[0]?.techniqueFocus ? [["Historisk fokus / kildeposisjon", aktivOkt.drills[0].techniqueFocus] as const] : []),
       [UI.formelMate, aktivOkt.drills[0]?.description ?? "—"],
-    ]} />
+    ]} /></details>
   </>;
 
   /* ---------- Målsetninger ---------- */
@@ -414,7 +414,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
   </>;
 
   const sidefelt = <section aria-label="Sidefelt" className="pa-card a9-sidefelt">
-    <div role="tablist" aria-label="Sidefelt" className="a9-faner">{SIDEFELT.map(([k, l]) => <Valgpille key={k} rolle="tab" valgt={side === k} onClick={() => setSide(k)}>{l}</Valgpille>)}</div>
+    <div role="group" aria-label="Sidefelt" className="a9-faner">{SIDEFELT.map(([k, l]) => <Valgpille key={k} rolle="button" valgt={side === k} onClick={() => setSide(k)}>{l}</Valgpille>)}</div>
     {sideInnhold}
   </section>;
 
@@ -442,10 +442,10 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
         onNeste={roster.length > 1 ? () => router.push(spillerHref(roster[(idx + 1) % roster.length].id)) : undefined}
         onSok={() => setVelger("spiller")}
         meta={`${roster.length} ${roster.length === 1 ? "SPILLER" : "SPILLERE"} I STALLEN`} /> : <Caps>DIN PLAN · {spillerNavn.toUpperCase()}</Caps>}
-      <div role="tablist" aria-label="Nivå" className="a9-faner">
+      <div role="group" aria-label="Nivå" className="a9-faner">
         {nivaaer.map(([k, l, mal]) => mal === "uke" || mal === "okt" || mal === "vol" || mal === "mal"
-          ? <Valgpille key={k} rolle="tab" valgt={niva === mal} controlId={`workbench-niva-${k}`} onClick={() => byttNiva(mal as AG11Niva)}>{l}</Valgpille>
-          : <Valgpille key={k} rolle="tab" valgt={false} controlId={`workbench-niva-${k}`} href={mal}>{l}</Valgpille>)}
+          ? <Valgpille key={k} rolle="button" valgt={niva === mal} controlId={`workbench-niva-${k}`} onClick={() => byttNiva(mal as AG11Niva)}>{l}</Valgpille>
+          : <Valgpille key={k} rolle="button" valgt={false} controlId={`workbench-niva-${k}`} href={mal}>{l}</Valgpille>)}
       </div>
       <div className="a9-snarveier" role="group" aria-label="Snarveier">
         {snarveier.map(([ic, l, fn]) => <Knapp key={l} variant="secondary" size="sm" icon={ic} onClick={fn}>{l}</Knapp>)}
@@ -468,7 +468,7 @@ export function AG11Workbench({ playerId, spillerNavn, uke, kilder, roster, grup
       {drag.kind === "akse" ? AKSE_NAVN[drag.akse] : klokke(drag.session.startMinute)}
     </div>}
     {mer && <Ark open onClose={() => setMer(false)} kicker={`Workbench · ${spillerNavn}`} title="Mer" footer={<Knapp variant="ghost" fullWidth onClick={() => setMer(false)}>Lukk</Knapp>}>
-      <div role="list" className="a9-liste">{snarveier.map(([ic, l, fn], i) => <button key={l} type="button" role="listitem" className={`a9-listerad${i ? " a9-listerad--skille" : ""}`} style={{ all: "unset", boxSizing: "border-box", cursor: "pointer", display: "flex", gap: 12, alignItems: "center", minHeight: 52, width: "100%", borderTop: i ? "1px solid var(--border-hairline)" : "none", font: "500 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}
+      <div role="list" className="a9-liste">{snarveier.map(([ic, l, fn], i) => <button key={l} type="button" role="listitem" className={`a9-listerad${i ? " a9-listerad--skille" : ""}`} style={{ appearance: "none", border: 0, padding: 0, background: "transparent", boxSizing: "border-box", cursor: "pointer", display: "flex", gap: 12, alignItems: "center", minHeight: 52, width: "100%", borderTop: i ? "1px solid var(--border-hairline)" : "none", font: "500 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}
         onClick={() => { setMer(false); fn(); }}><Ikon icon={ic} size={18} />{l}</button>)}</div>
     </Ark>}
     {arkSession && <OktArk key={`${arkSession.id}:${arkSession.date}:${arkSession.startMinute}:${arkSession.durationMinutes}`} session={arkSession} spillerNavn={spillerNavn} motor={motor}

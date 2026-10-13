@@ -25,6 +25,7 @@ import {
 import { provenanceLesbarTekst } from "@/lib/agents/provenance";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { caddieDraftAvgjortWhere, caddieDraftKoWhere } from "@/lib/caddie/draft-eier";
+import { COACHING_EMAIL_DRAFT, CoachingEmailDraft } from "@/lib/email/coaching-oppfolging-kontrakt";
 import type {
   AdminGodkjenningerV2Data,
   AdminGodkjenningV2Row,
@@ -151,7 +152,7 @@ export async function lastGodkjenninger(
         id: a.id,
         actionType: a.actionType,
         playerId: a.user.id,
-        who: a.user.name ?? "Spiller",
+        who: a.actionType === COACHING_EMAIL_DRAFT ? "Bookingens bestiller" : a.user.name ?? "Spiller",
         title:
           sugg?.title ??
           sugg?.tittel ??
@@ -183,6 +184,8 @@ export async function lastGodkjenninger(
         when: narTekst(a.createdAt),
         urgent: erHasterHandling(a.actionType),
         lowRisk: LOW_RISK_ACTION_TYPES.has(a.actionType),
+        ...(a.actionType === COACHING_EMAIL_DRAFT && CoachingEmailDraft.safeParse(a.suggestion).success
+          ? { epostUtkast: CoachingEmailDraft.parse(a.suggestion).body } : {}),
         hvorfor: provenanceLesbarTekst(a.provenance),
       };
     }),

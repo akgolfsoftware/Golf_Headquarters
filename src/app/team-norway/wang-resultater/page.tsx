@@ -7,6 +7,8 @@ import { hentTnGruppeanalyseValg } from "@/lib/domain/tn-arbeidsflate";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { oppsummerTestlevering, testleveringStatus, type Testlevering } from "@/components/team-norway/tn-testlevering";
+import { osloInstant } from "@/lib/jarvis/dagen";
 import { prisma } from "@/lib/prisma";
 import { TN } from "@/lib/v2/team-norway";
 
@@ -23,6 +25,12 @@ const dato = new Intl.DateTimeFormat("nb-NO", {
   year: "numeric",
   timeZone: "Europe/Oslo",
 });
+
+// Tildelinger har dato, ikke klokkeslett: forfall er slutten av Oslo-dagen.
+function sluttPaOsloDag(d: Date): Date {
+  const [aar, maned, dag] = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(d).split("-").map(Number);
+  return new Date(osloInstant(aar, maned, dag + 1, 0, 0).getTime() - 1);
+}
 
 export default async function WangTestresultaterForTnPage({
   searchParams,
@@ -61,6 +69,32 @@ export default async function WangTestresultaterForTnPage({
     },
   });
 
+  // Vis kun testdata for elevene den eksisterende samtykkeporten slipper inn.
+  // Notater, plan, helse og coachens fritekst hentes ikke.
+  const naa = new Date();
+  const aar = Number(new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo", year: "numeric" }).format(naa));
+  const fra = osloInstant(aar, 1, 1, 0, 0);
+  const til = osloInstant(aar + 1, 1, 1, 0, 0);
+  const [tildelinger, testdager] = spillerIder.length ? await Promise.all([
+    prisma.testAssignment.findMany({
+      where: { playerId: { in: spillerIder }, status: { not: "CANCELLED" }, OR: [{ dueDate: { gte: fra, lt: til } }, { dueDate: null, createdAt: { gte: fra, lt: til } }] },
+      select: { id: true, playerId: true, testId: true, dueDate: true, status: true, completedResultId: true, test: { select: { name: true } } },
+    }),
+    prisma.testDayParticipant.findMany({
+      where: { OR: skoler.map(skole => ({ playerId: { in: skole.playerIds }, testDay: { groupId: skole.groupId, status: { not: "CANCELLED" as const }, scheduledAt: { gte: fra, lt: til } } })) },
+      select: { id: true, playerId: true, status: true, resultId: true, result: { select: { id: true, userId: true, testId: true } }, testDay: { select: { testDefinitionId: true, scheduledAt: true, status: true, testDefinition: { select: { name: true } } } } },
+    }),
+  ]) : [[], []] as const;
+  const resultatIder = tildelinger.flatMap(t => t.completedResultId ? [t.completedResultId] : []);
+  const koblede = resultatIder.length ? await prisma.testResult.findMany({ where: { id: { in: resultatIder }, userId: { in: spillerIder } }, select: { id: true, userId: true, testId: true } }) : [];
+  const leveringer: Testlevering[] = [
+    ...tildelinger.map(t => ({ id: t.id, playerId: t.playerId, testId: t.testId, testName: t.test.name, scheduledAt: t.dueDate, source: "Tildeling" as const,
+      status: testleveringStatus({ fullfort: t.status === "COMPLETED", harResultat: koblede.some(r => r.id === t.completedResultId && r.userId === t.playerId && r.testId === t.testId), frist: t.dueDate ? sluttPaOsloDag(t.dueDate) : null, naa }) })),
+    ...testdager.map(t => ({ id: t.id, playerId: t.playerId, testId: t.testDay.testDefinitionId, testName: t.testDay.testDefinition.name, scheduledAt: t.testDay.scheduledAt, source: "Testdag" as const,
+      status: testleveringStatus({ fullfort: t.status === "DONE", harResultat: !!t.result && t.result.userId === t.playerId && t.result.testId === t.testDay.testDefinitionId, frist: t.testDay.status === "ACTIVE" ? null : sluttPaOsloDag(t.testDay.scheduledAt), avsluttet: t.testDay.status === "COMPLETED", fravaerende: t.status === "ABSENT" || t.status === "SKIPPED", naa }) })),
+  ];
+  const sammendrag = oppsummerTestlevering(leveringer);
+
   const skolerForSpiller = new Map<string, string[]>();
   for (const skole of skoler) {
     for (const spillerId of skole.playerIds) {
@@ -81,21 +115,22 @@ export default async function WangTestresultaterForTnPage({
     >
       <TnSidehode
         overlinje="Delte WANG-resultater"
-        tittel="Testhistorikk på tvers av skoler"
+        tittel="Nasjonal testoversikt"
         ingress="Fullførte testresultater fra WANG-elever som har samtykket til å dele testene med WANG-skolen og Team Norway. Under 16 år har også forelder godkjent. Tilgangen gjelder bare testresultater."
       />
 
-      <TnSeksjon tittel="WANG-skoler" forklaring="Tallet er elever som deler testene sine nå. Trekker en elev delingen, forsvinner resultatene med en gang.">
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {skoler.map((skole) => (
-            <span
-              key={skole.groupId}
-              style={{ padding: "8px 12px", border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.full, background: TN.white, color: TN.navy800, fontSize: 13, fontWeight: TN.weight.semibold }}
-            >
-              {skole.schoolName} · {skole.players.length} deler
-            </span>
-          ))}
-        </div>
+      <TnSeksjon tittel={`Testlevering ${aar}`} forklaring="Faktiske tildelinger og testdagplasser for elever som deler testene. Mangler betyr passert frist eller avsluttet testdag uten koblet resultat. Resultater uten tildeling inngår bare i historikken.">
+        <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 16, margin: 0 }}>
+          {[ ["Tildelt", sammendrag.tildelt], ["Fullført", sammendrag.fullfort], ["Planlagt", sammendrag.planlagt], ["Mangler", sammendrag.mangler], ["Leveringsgrad", sammendrag.leveringsgrad === null ? "—" : `${Math.round(sammendrag.leveringsgrad * 100)} %`] ].map(([navn, verdi]) => <div key={String(navn)}><dt style={{ color: TN.textSecondary }}>{navn}</dt><dd style={{ margin: "8px 0 0", fontFamily: TN.font.mono, fontSize: TN.text.h1 }}>{verdi}</dd></div>)}
+        </dl>
+      </TnSeksjon>
+      <TnSeksjon tittel="Skoler og leveringsgrad" forklaring="Tallene gjelder gyldig testdeling nå. Trekking skjuler også tidligere resultater og tildelinger.">
+        <TnDataTable caption={`Testlevering per skole i ${aar}`} kolonner={[{ key: "skole", label: "Skole" }, { key: "elever", label: "Deler", align: "right" }, { key: "tildelt", label: "Tildelt", align: "right" }, { key: "fullfort", label: "Fullført", align: "right" }, { key: "planlagt", label: "Planlagt", align: "right" }, { key: "mangler", label: "Mangler", align: "right" }]} rader={skoler.map(skole => { const tall = oppsummerTestlevering(leveringer.filter(l => skole.playerIds.includes(l.playerId))); return { skole: skole.schoolName, elever: skole.playerIds.length, tildelt: tall.tildelt, fullfort: tall.fullfort, planlagt: tall.planlagt, mangler: tall.mangler }; })} empty="Ingen skoler tilgjengelig." />
+      </TnSeksjon>
+      <TnSeksjon tittel="Fra skole til spiller og test">
+        {skoler.map(skole => <details key={skole.groupId} style={{ background: TN.surfaceCard, padding: 16 }}><summary style={{ minHeight: 44, cursor: "pointer", fontFamily: TN.font.display }}>{skole.schoolName} · {skole.playerIds.length} deler</summary>
+          <TnDataTable caption={`Testlevering · ${skole.schoolName}`} kolonner={[{ key: "spiller", label: "Spiller" }, { key: "test", label: "Test / protokoll" }, { key: "status", label: "Status" }, { key: "dato", label: "Frist / testdag" }, { key: "kilde", label: "Grunnlag" }]} rader={leveringer.filter(l => skole.playerIds.includes(l.playerId)).map(l => ({ spiller: skole.players.find(p => p.id === l.playerId)?.name ?? "Ukjent spiller", test: l.testName, status: l.status, dato: l.scheduledAt ? dato.format(l.scheduledAt) : "Ingen frist", kilde: l.source }))} empty="Ingen tildelinger eller testdagplasser i dette året. Leveringsgrad er ukjent." />
+        </details>)}
       </TnSeksjon>
 
       <TnSeksjon tittel={`Resultathistorikk · ${antall}`}>

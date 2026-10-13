@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "458015810620a48707989eb3478b1e6c09c25aa4",
+  "kodeversjon": "a1aa2b18382f59d4aef73c9450ad8528e1a491f9",
   "inventar": {
-    "pageFiles": 532,
-    "uniqueRoutePatterns": 532,
-    "componentFiles": 885,
-    "surfaceFiles": 253,
+    "pageFiles": 547,
+    "uniqueRoutePatterns": 547,
+    "componentFiles": 901,
+    "surfaceFiles": 255,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 166,
+      "agencyos": 168,
       "inngang-og-konto": 19,
-      "forelder": 16,
-      "lag-og-skole": 52,
+      "forelder": 17,
+      "lag-og-skole": 59,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 183
+      "playerhq": 188
     }
   },
   "presisjon": {
@@ -950,7 +950,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "BK-03"
+      "kodekommentar": null
     },
     {
       "screenId": "BK-01",
@@ -8056,6 +8056,49 @@
       "kodekommentar": "AG-14"
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/admin/plan-templates/[id]/rull-ut",
+      "kildefil": "src/app/admin/plan-templates/[id]/rull-ut/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er AG-14 Plan-hub, maler og øvelser, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "AG-14 Plan-hub, maler og øvelser",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "AG-14",
       "rute": "/admin/plan-templates/ny",
       "kildefil": "src/app/admin/plan-templates/ny/page.tsx",
@@ -8648,6 +8691,49 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "AG-03"
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/admin/recording/coaching",
+      "kildefil": "src/app/admin/recording/coaching/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er AG-18 TrackMan og video, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "AG-18 TrackMan og video",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "AG-18",
@@ -11664,6 +11750,49 @@
     },
     {
       "screenId": "FO-03",
+      "rute": "/forelder/bookinger/[bookingId]",
+      "kildefil": "src/app/forelder/bookinger/[bookingId]/page.tsx",
+      "omrade": "forelder",
+      "rolle": "foresatt",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/forelder/bookinger*",
+      "handlinger": "Velg barn, tjeneste, tid, bekreft",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "FO-03 Booking for barn er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "FO-03",
       "rute": "/forelder/bookinger/bekreftet",
       "kildefil": "src/app/forelder/bookinger/bekreftet/page.tsx",
       "omrade": "forelder",
@@ -11923,7 +12052,6 @@
       "eier": "D01-skjermregister",
       "kontrollbevis": "Dialog merker FO06Coach. Siste melding, mailto og visning av e-post er beholdt. Det er ikke en chat. Krever foresatt-økt og database, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
-        "Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -11932,7 +12060,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "FO-04"
+      "kodekommentar": null
     },
     {
       "screenId": "FO-04",
@@ -13588,7 +13716,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-06"
+      "kodekommentar": null
     },
     {
       "screenId": "PH-08",
@@ -14958,20 +15086,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-17",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/analysere/datagolf/stasjon",
       "kildefil": "src/app/portal/analysere/datagolf/stasjon/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/analysere/datagolf/stasjon",
-      "handlinger": "Øktliste, spredningskart, gapping, utstyrshelse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /admin/kalender",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -14982,25 +15109,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "DataGolf-stasjon merker PH17DgStasjon i PlayerHQSkall. Slag, carry og lie er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/kalender. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-17"
+      "videresendingMal": "/admin/kalender",
+      "kodekommentar": null
     },
     {
       "screenId": "PH-16",
@@ -16502,16 +16627,57 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Øvelsesbanken merker PH13DrillListe i PlayerHQSkall. AK-formel, søk, aksefilter, Caddie-utkast, Putting Break-tabell og detaljpanel er implementert etter Claude Design PH-13.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-13 Øvelsesbank er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/formel",
+      "kildefil": "src/app/portal/formel/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -16827,6 +16993,48 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/iup/sesongevaluering",
+      "kildefil": "src/app/portal/iup/sesongevaluering/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/mal/evaluering",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/mal/evaluering. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/mal/evaluering",
       "kodekommentar": null
     },
     {
@@ -17265,6 +17473,48 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/mal/runder/[id]/rediger",
+      "kildefil": "src/app/portal/mal/runder/[id]/rediger/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/mal/runder/${encodeURIComponent(id)}/hull",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/mal/runder/${encodeURIComponent(id)}/hull. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/mal/runder/${encodeURIComponent(id)}/hull",
       "kodekommentar": null
     },
     {
@@ -18713,20 +18963,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-25",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/innstillinger",
       "kildefil": "src/app/portal/meg/innstillinger/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/innstillinger*",
-      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /forelder",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -18737,24 +18986,22 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Innstillinger og abonnement merker PH25Innstillinger i PlayerHQSkall. Samtykke, varsler, 2FA, faktura og profilinnstillinger er beholdt etter Claude Design PH-25.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /forelder. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/forelder",
       "kodekommentar": null
     },
     {
@@ -19197,6 +19444,48 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": "/portal/meg/innstillinger/sikkerhet",
+      "kodekommentar": null
+    },
+    {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/meg/team",
+      "kildefil": "src/app/portal/meg/team/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg/deling",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/deling. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/meg/deling",
       "kodekommentar": null
     },
     {
@@ -20811,6 +21100,48 @@
       "kodekommentar": null
     },
     {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/tren/turneringer/katalog",
+      "kildefil": "src/app/portal/tren/turneringer/katalog/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/tren/turneringer",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/tren/turneringer. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/tren/turneringer",
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-26",
       "rute": "/portal/tren/turneringer",
       "kildefil": "src/app/portal/tren/turneringer/page.tsx",
@@ -21597,6 +21928,49 @@
       "kodekommentar": "TN-09"
     },
     {
+      "screenId": "TN-UTEN-RAD",
+      "rute": "/team-norway/belastning",
+      "kildefil": "src/app/team-norway/belastning/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "team-norway",
+      "designkilde": "designsystem/team-norway/handover/SKJERMREGISTER.md",
+      "designversjon": "tn-handover-00-21-ikke-visuell-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes uten rad i handover TN-00–TN-21 og uten TN-kommentar i filhodet. Den slettes ikke. D04 må koble den til TN-22–TN-27 eller en dyp-lenke.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "TN-15",
       "rute": "/team-norway/college",
       "kildefil": "src/app/team-norway/college/page.tsx",
@@ -21640,6 +22014,49 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "TN-06"
+    },
+    {
+      "screenId": "TN-UTEN-RAD",
+      "rute": "/team-norway/deling",
+      "kildefil": "src/app/team-norway/deling/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "team-norway",
+      "designkilde": "designsystem/team-norway/handover/SKJERMREGISTER.md",
+      "designversjon": "tn-handover-00-21-ikke-visuell-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes uten rad i handover TN-00–TN-21 og uten TN-kommentar i filhodet. Den slettes ikke. D04 må koble den til TN-22–TN-27 eller en dyp-lenke.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "TN-UTEN-RAD",
@@ -21951,6 +22368,92 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "TN-11"
+    },
+    {
+      "screenId": "TN-UTEN-RAD",
+      "rute": "/team-norway/oppgaver",
+      "kildefil": "src/app/team-norway/oppgaver/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "team-norway",
+      "designkilde": "designsystem/team-norway/handover/SKJERMREGISTER.md",
+      "designversjon": "tn-handover-00-21-ikke-visuell-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes uten rad i handover TN-00–TN-21 og uten TN-kommentar i filhodet. Den slettes ikke. D04 må koble den til TN-22–TN-27 eller en dyp-lenke.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "TN-UTEN-RAD",
+      "rute": "/team-norway/oppsett",
+      "kildefil": "src/app/team-norway/oppsett/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "team-norway",
+      "designkilde": "designsystem/team-norway/handover/SKJERMREGISTER.md",
+      "designversjon": "tn-handover-00-21-ikke-visuell-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes uten rad i handover TN-00–TN-21 og uten TN-kommentar i filhodet. Den slettes ikke. D04 må koble den til TN-22–TN-27 eller en dyp-lenke.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "TN-02",
@@ -22485,6 +22988,49 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "TN-10"
+    },
+    {
+      "screenId": "TN-UTEN-RAD",
+      "rute": "/team-norway/spiller/[spillerId]/samtale",
+      "kildefil": "src/app/team-norway/spiller/[spillerId]/samtale/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "team-norway",
+      "designkilde": "designsystem/team-norway/handover/SKJERMREGISTER.md",
+      "designversjon": "tn-handover-00-21-ikke-visuell-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes uten rad i handover TN-00–TN-21 og uten TN-kommentar i filhodet. Den slettes ikke. D04 må koble den til TN-22–TN-27 eller en dyp-lenke.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "TN-UTEN-RAD",
@@ -23102,6 +23648,49 @@
     },
     {
       "screenId": "WANG-UTEN-RAD",
+      "rute": "/team-wang/coach/spiller/[elevId]",
+      "kildefil": "src/app/team-wang/coach/spiller/[elevId]/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "elev-eller-trener",
+      "designkilde": "designsystem/wang/SKJERMREGISTER.md",
+      "designversjon": "wang-lokalt-35-ikke-59-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "WANG-UTEN-RAD",
       "rute": "/team-wang/coach/tester",
       "kildefil": "src/app/team-wang/coach/tester/page.tsx",
       "omrade": "lag-og-skole",
@@ -23223,6 +23812,49 @@
       "avvik": [],
       "kobling": "byggeunderlag",
       "forklaring": "Lokal WANG-rad C7 Logg inn og tilgang. De 59 skjermene i Claude Design er fasit og ligger ikke i git. Lokal rad er byggeunderlag for rute og rolle, ikke visuell godkjenning, og appen er ikke kontrollert i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "WANG-UTEN-RAD",
+      "rute": "/team-wang/meldinger",
+      "kildefil": "src/app/team-wang/meldinger/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "elev-eller-trener",
+      "designkilde": "designsystem/wang/SKJERMREGISTER.md",
+      "designversjon": "wang-lokalt-35-ikke-59-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -23453,18 +24085,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 532,
-    "medAvvik": 166,
-    "valgtForBygging": 250,
-    "utenEksaktType": 11,
-    "implementert": 140,
+    "sidefiler": 547,
+    "medAvvik": 163,
+    "valgtForBygging": 249,
+    "utenEksaktType": 14,
+    "implementert": 137,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 285,
-      "videresending": 164,
-      "teknisk-forklaring": 31,
+      "tegnet-skjermtype": 284,
+      "videresending": 170,
+      "teknisk-forklaring": 41,
       "byggeunderlag": 23
     },
     "screenId": {
@@ -23485,7 +24117,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 164,
+      "VIDERESENDING": 170,
       "AG-05": 4,
       "AG-06": 3,
       "AG-08": 3,
@@ -23497,7 +24129,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
-      "UTEN-TEGNET-TYPE": 11,
+      "UTEN-TEGNET-TYPE": 14,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -23516,7 +24148,7 @@
       "AU-05": 4,
       "AU-04": 2,
       "FO-02": 2,
-      "FO-03": 5,
+      "FO-03": 6,
       "FO-06": 2,
       "FO-04": 2,
       "FO-01": 3,
@@ -23534,7 +24166,7 @@
       "PH-15": 1,
       "PH-03": 2,
       "PH-02": 2,
-      "PH-17": 5,
+      "PH-17": 4,
       "PH-26": 11,
       "PH-13": 4,
       "PH-22": 2,
@@ -23547,7 +24179,7 @@
       "PH-IUP-01": 1,
       "PH-10": 3,
       "PH-19": 9,
-      "PH-25": 22,
+      "PH-25": 21,
       "PH-27": 1,
       "PH-24": 11,
       "PH-01": 1,
@@ -23556,7 +24188,7 @@
       "AVSLATT": 1,
       "TN-11": 1,
       "TN-09": 1,
-      "TN-UTEN-RAD": 16,
+      "TN-UTEN-RAD": 21,
       "TN-15": 1,
       "TN-03": 1,
       "TN-19": 1,
@@ -23576,7 +24208,7 @@
       "TN-06": 1,
       "C5": 1,
       "C6": 1,
-      "WANG-UTEN-RAD": 3,
+      "WANG-UTEN-RAD": 5,
       "C7": 1,
       "A2": 1
     }

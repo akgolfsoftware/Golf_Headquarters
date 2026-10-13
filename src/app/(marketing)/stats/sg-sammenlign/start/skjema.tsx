@@ -62,8 +62,8 @@ function StepDots({ step }: { step: number }) {
               width: 28,
               height: 28,
               borderRadius: "50%",
-              background: i === step ? "hsl(var(--primary))" : i < step ? "hsl(var(--accent))" : "hsl(var(--border))",
-              color: i === step ? "hsl(var(--accent))" : i < step ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
+              background: i === step ? "var(--s-primary)" : i < step ? "var(--s-accent)" : "var(--s-border)",
+              color: i === step ? "var(--s-accent)" : i < step ? "var(--s-primary)" : "var(--s-muted-fg)",
               display: "grid",
               placeItems: "center",
               fontFamily: "var(--font-mono)",
@@ -80,7 +80,7 @@ function StepDots({ step }: { step: number }) {
               fontSize: 10,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: i === step ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))",
+              color: i === step ? "var(--s-fg)" : "var(--s-muted-fg)",
             }}
           >
             {label}
@@ -90,7 +90,7 @@ function StepDots({ step }: { step: number }) {
               style={{
                 width: 32,
                 height: 1,
-                background: step > i ? "hsl(var(--accent))" : "hsl(var(--border))",
+                background: step > i ? "var(--s-accent)" : "var(--s-border)",
                 marginLeft: 4,
               }}
             />
@@ -206,7 +206,7 @@ export function SgStartSkjema({
                 fontSize: 10,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
-                color: "hsl(var(--primary))",
+                color: "var(--s-primary)",
                 marginBottom: 12,
               }}
             >
@@ -226,7 +226,7 @@ export function SgStartSkjema({
                 style={{
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "hsl(var(--primary))",
+                  color: "var(--s-primary)",
                 }}
               >
                 referansespiller
@@ -235,7 +235,7 @@ export function SgStartSkjema({
             <p
               style={{
                 fontSize: 15,
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
                 marginTop: 12,
                 maxWidth: 500,
                 margin: "12px auto 0",
@@ -267,7 +267,7 @@ export function SgStartSkjema({
                 transition: "border-color 0.15s",
               }}
             >
-              <Search size={16} color="hsl(var(--muted-foreground))" />
+              <Search size={16} color="var(--s-muted-fg)" />
               <input
                 type="text"
                 placeholder="Søk spiller, f.eks. «McIlroy» eller «Hovland»"
@@ -279,7 +279,7 @@ export function SgStartSkjema({
                   outline: "none",
                   background: "transparent",
                   fontSize: 15,
-                  color: "hsl(var(--foreground))",
+                  color: "var(--s-fg)",
                 }}
               />
               {refSpiller && (
@@ -287,7 +287,7 @@ export function SgStartSkjema({
                   style={{
                     fontFamily: "var(--font-mono)",
                     fontSize: 11,
-                    color: "hsl(var(--primary))",
+                    color: "var(--s-primary)",
                     fontWeight: 600,
                     letterSpacing: "0.04em",
                     background: AK.farge.forestMerkeA8,
@@ -344,13 +344,13 @@ export function SgStartSkjema({
                         width: 32,
                         height: 32,
                         borderRadius: "50%",
-                        background: "hsl(var(--secondary))",
+                        background: "var(--s-secondary)",
                         display: "grid",
                         placeItems: "center",
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
                         fontWeight: 600,
-                        color: "hsl(var(--primary))",
+                        color: "var(--s-primary)",
                         flexShrink: 0,
                       }}
                     >
@@ -362,7 +362,7 @@ export function SgStartSkjema({
                           fontSize: 14,
                           fontWeight: 600,
                           fontFamily: "var(--font-display)",
-                          color: "hsl(var(--foreground))",
+                          color: "var(--s-fg)",
                         }}
                       >
                         {s.name}
@@ -370,7 +370,7 @@ export function SgStartSkjema({
                       <div
                         style={{
                           fontSize: 12,
-                          color: "hsl(var(--muted-foreground))",
+                          color: "var(--s-muted-fg)",
                           fontFamily: "var(--font-mono)",
                         }}
                       >
@@ -390,7 +390,7 @@ export function SgStartSkjema({
               fontSize: 10,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "hsl(var(--muted-foreground))",
+              color: "var(--s-muted-fg)",
               textAlign: "center",
               marginBottom: 20,
             }}
@@ -419,7 +419,7 @@ export function SgStartSkjema({
                     alignItems: "center",
                     gap: 10,
                     padding: "12px 14px",
-                    background: selected ? "hsl(var(--primary))" : "var(--paper)",
+                    background: selected ? "var(--s-primary)" : "var(--paper)",
                     border: selected
                       ? "1.5px solid var(--forest)"
                       : "1.5px solid var(--s-border)",
@@ -438,13 +438,13 @@ export function SgStartSkjema({
                       width: 36,
                       height: 36,
                       borderRadius: "50%",
-                      background: selected ? "hsl(var(--accent))" : "hsl(var(--secondary))",
+                      background: selected ? "var(--s-accent)" : "var(--s-secondary)",
                       display: "grid",
                       placeItems: "center",
                       fontFamily: "var(--font-mono)",
                       fontSize: 11,
                       fontWeight: 700,
-                      color: "hsl(var(--primary))",
+                      color: "var(--s-primary)",
                       flexShrink: 0,
                     }}
                   >
@@ -456,7 +456,7 @@ export function SgStartSkjema({
                         fontFamily: "var(--font-display)",
                         fontSize: 13,
                         fontWeight: 600,
-                        color: selected ? "hsl(var(--accent))" : "hsl(var(--foreground))",
+                        color: selected ? "var(--s-accent)" : "var(--s-fg)",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -468,7 +468,7 @@ export function SgStartSkjema({
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
-                        color: selected ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "hsl(var(--muted-foreground))",
+                        color: selected ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "var(--s-muted-fg)",
                         marginTop: 1,
                       }}
                     >
@@ -478,7 +478,7 @@ export function SgStartSkjema({
                   {selected && (
                     <Trophy
                       size={14}
-                      color="hsl(var(--accent))"
+                      color="var(--s-accent)"
                       style={{ marginLeft: "auto", flexShrink: 0 }}
                     />
                   )}
@@ -496,8 +496,8 @@ export function SgStartSkjema({
                 alignItems: "center",
                 gap: 8,
                 padding: "14px 28px",
-                background: refSpiller ? "hsl(var(--primary))" : "hsl(var(--border))",
-                color: refSpiller ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))",
+                background: refSpiller ? "var(--s-primary)" : "var(--s-border)",
+                color: refSpiller ? "var(--s-accent)" : "var(--s-muted-fg)",
                 border: "none",
                 borderRadius: 999,
                 fontFamily: "var(--font-sans)",
@@ -524,7 +524,7 @@ export function SgStartSkjema({
                 fontSize: 10,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
-                color: "hsl(var(--primary))",
+                color: "var(--s-primary)",
                 marginBottom: 12,
               }}
             >
@@ -545,7 +545,7 @@ export function SgStartSkjema({
                 style={{
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "hsl(var(--primary))",
+                  color: "var(--s-primary)",
                 }}
               >
                 dine tall
@@ -554,7 +554,7 @@ export function SgStartSkjema({
             <p
               style={{
                 fontSize: 15,
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
                 marginTop: 12,
                 maxWidth: 500,
                 margin: "12px auto 0",
@@ -576,7 +576,7 @@ export function SgStartSkjema({
             <div
               style={{
                 display: "inline-flex",
-                background: "hsl(var(--secondary))",
+                background: "var(--s-secondary)",
                 borderRadius: 999,
                 padding: 3,
                 border: "1px solid var(--s-border)",
@@ -601,8 +601,8 @@ export function SgStartSkjema({
                     fontFamily: "var(--font-sans)",
                     cursor: "pointer",
                     transition: "all 0.2s",
-                    background: modus === id ? "hsl(var(--primary))" : "transparent",
-                    color: modus === id ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))",
+                    background: modus === id ? "var(--s-primary)" : "transparent",
+                    color: modus === id ? "var(--s-accent)" : "var(--s-muted-fg)",
                     boxShadow:
                       modus === id ? `0 2px 6px ${AK.farge.forestMerkeA25}` : "none",
                   }}
@@ -632,7 +632,7 @@ export function SgStartSkjema({
                   fontSize: 10,
                   letterSpacing: "0.16em",
                   textTransform: "uppercase",
-                  color: "hsl(var(--muted-foreground))",
+                  color: "var(--s-muted-fg)",
                   marginBottom: 8,
                 }}
               >
@@ -644,7 +644,7 @@ export function SgStartSkjema({
                   fontSize: 72,
                   fontWeight: 500,
                   lineHeight: 1,
-                  color: "hsl(var(--foreground))",
+                  color: "var(--s-fg)",
                   marginBottom: 24,
                 }}
               >
@@ -670,7 +670,7 @@ export function SgStartSkjema({
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontSize: 10,
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                     }}
                   >
                     60
@@ -679,7 +679,7 @@ export function SgStartSkjema({
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontSize: 10,
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                     }}
                   >
                     130
@@ -710,7 +710,7 @@ export function SgStartSkjema({
                         fontSize: 10,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "hsl(var(--muted-foreground))",
+                        color: "var(--s-muted-fg)",
                         marginBottom: 4,
                       }}
                     >
@@ -732,9 +732,9 @@ export function SgStartSkjema({
                         border: "1px solid var(--s-border)",
                         borderRadius: 8,
                         padding: "8px 12px",
-                        background: "hsl(var(--background))",
+                        background: "var(--s-bg)",
                         textAlign: "center",
-                        color: "hsl(var(--foreground))",
+                        color: "var(--s-fg)",
                       }}
                     />
                   </div>
@@ -747,7 +747,7 @@ export function SgStartSkjema({
                       fontSize: 10,
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                       marginBottom: 4,
                     }}
                   >
@@ -758,7 +758,7 @@ export function SgStartSkjema({
                       fontFamily: "var(--font-mono)",
                       fontSize: 28,
                       fontWeight: 500,
-                      color: "hsl(var(--foreground))",
+                      color: "var(--s-fg)",
                     }}
                   >
                     {hcp.toFixed(1)}
@@ -772,7 +772,7 @@ export function SgStartSkjema({
                       fontSize: 10,
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                       marginBottom: 4,
                     }}
                   >
@@ -783,7 +783,7 @@ export function SgStartSkjema({
                       fontFamily: "var(--font-mono)",
                       fontSize: 28,
                       fontWeight: 500,
-                      color: "hsl(var(--primary))",
+                      color: "var(--s-primary)",
                     }}
                   >
                     {tourEqv}
@@ -794,7 +794,7 @@ export function SgStartSkjema({
               <p
                 style={{
                   fontSize: 12,
-                  color: "hsl(var(--muted-foreground))",
+                  color: "var(--s-muted-fg)",
                   marginTop: 20,
                   fontFamily: "var(--font-mono)",
                   letterSpacing: "0.04em",
@@ -846,7 +846,7 @@ export function SgStartSkjema({
                         fontSize: 10,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "hsl(var(--muted-foreground))",
+                        color: "var(--s-muted-fg)",
                         marginBottom: 8,
                       }}
                     >
@@ -875,8 +875,8 @@ export function SgStartSkjema({
                           border: "1px solid var(--s-border)",
                           borderRadius: 8,
                           padding: "8px 12px",
-                          background: "hsl(var(--background))",
-                          color: f.value >= 0 ? "hsl(var(--primary))" : "hsl(var(--destructive))",
+                          background: "var(--s-bg)",
+                          color: f.value >= 0 ? "var(--s-primary)" : "hsl(var(--destructive))",
                         }}
                       />
                     </div>
@@ -907,7 +907,7 @@ export function SgStartSkjema({
                     fontSize: 10,
                     letterSpacing: "0.16em",
                     textTransform: "uppercase",
-                    color: "hsl(var(--muted-foreground))",
+                    color: "var(--s-muted-fg)",
                   }}
                 >
                   SG TOTAL
@@ -917,7 +917,7 @@ export function SgStartSkjema({
                     fontFamily: "var(--font-mono)",
                     fontSize: 24,
                     fontWeight: 600,
-                    color: sgTotal >= 0 ? "hsl(var(--primary))" : "hsl(var(--destructive))",
+                    color: sgTotal >= 0 ? "var(--s-primary)" : "hsl(var(--destructive))",
                   }}
                 >
                   {sgTotal >= 0 ? "+" : ""}
@@ -945,8 +945,8 @@ export function SgStartSkjema({
                 alignItems: "center",
                 gap: 8,
                 padding: "12px 20px",
-                background: "hsl(var(--secondary))",
-                color: "hsl(var(--foreground))",
+                background: "var(--s-secondary)",
+                color: "var(--s-fg)",
                 border: "1px solid var(--s-border)",
                 borderRadius: 999,
                 fontFamily: "var(--font-sans)",
@@ -968,8 +968,8 @@ export function SgStartSkjema({
                 alignItems: "center",
                 gap: 8,
                 padding: "14px 28px",
-                background: "hsl(var(--primary))",
-                color: "hsl(var(--primary-foreground))",
+                background: "var(--s-primary)",
+                color: "var(--s-primary-fg)",
                 border: "none",
                 borderRadius: 999,
                 fontFamily: "var(--font-sans)",

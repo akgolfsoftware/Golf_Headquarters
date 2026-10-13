@@ -1,3 +1,4 @@
+import { requireDataGolfAnalyst } from "@/lib/datagolf/access";
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
@@ -31,6 +32,7 @@ async function lesKilde<T>(hent: () => Promise<T[]>): Promise<Kilderesultat<T>> 
 }
 
 export async function hentProffer(): Promise<Proff[]> {
+  await requireDataGolfAnalyst();
   const raw = await prisma.$queryRaw<unknown[]>`
     select distinct on (s.dg_id) s.dg_id as "dgId", p.name, p.country_iso3 as country,
       s.as_of as "asOf", s.sg_total as total, s.sg_ott as ott, s.sg_app as app,
@@ -48,6 +50,7 @@ export async function hentProffer(): Promise<Proff[]> {
 }
 
 export async function hentProffRunder(dgId: number, limit: number): Promise<HistoriskRunde[]> {
+  await requireDataGolfAnalyst();
   if (!Number.isSafeInteger(dgId) || dgId <= 0) return [];
   const antall = Math.max(1, Math.min(50, Math.trunc(limit) || 24));
   const raw = await prisma.$queryRaw<unknown[]>`
@@ -72,6 +75,7 @@ export async function hentProffRunder(dgId: number, limit: number): Promise<Hist
 }
 
 export async function hentSpillerverktoy(userId: string, sp: Record<string, string | string[] | undefined>) {
+  await requireDataGolfAnalyst(userId);
   const valg = lesValg(sp);
   const [profferResult, user, egne, taker, turneringshistorikk] = await Promise.all([
     lesKilde(hentProffer),

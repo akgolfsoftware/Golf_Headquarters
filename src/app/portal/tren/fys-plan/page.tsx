@@ -14,6 +14,7 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { Ikon, TomTilstand } from "@/components/precision/pa";
 import { NyPlanKnapp } from "./ny-plan-knapp";
 import { FysPlanKort, type FysPlanKortData } from "./fys-plan-kort";
+import { SportsCover } from "@/components/precision/SportsCover";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +92,7 @@ export default async function FysPlanListePage() {
           </div>
           {harNoen && <NyPlanKnapp variant="header" />}
         </header>
+        <SportsCover compact scene="physical" />
 
         {dagensFys && (
           <section className="pa-card ph26-kort">

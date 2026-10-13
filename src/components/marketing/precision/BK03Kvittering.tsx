@@ -31,6 +31,7 @@ export type BK03Detaljer = {
   sted: string;
   coach: string | null;
   betalt: string;
+  betaling?: string;
   betaltVedStripe: boolean;
   epost: string | null;
   fristTekst: string | null;
@@ -38,10 +39,11 @@ export type BK03Detaljer = {
 };
 
 export type BK03Props = {
-  tilstand: "data" | "pending" | "tom" | "feil" | "laster";
+  tilstand: "data" | "pending" | "tom" | "feil" | "laster" | "denied" | "cancelled" | "completed";
   innlogget: boolean;
   signupHref: string;
   detaljer: BK03Detaljer | null;
+  bookingerHref?: string;
 };
 
 const h1 = { margin: 0, font: "600 26px/1.2 var(--font-sans)", letterSpacing: "var(--tracking-display)", color: "var(--text-primary)" } as const;
@@ -87,13 +89,15 @@ function lastNedIcs(i: BK03Detaljer["ics"]) {
   URL.revokeObjectURL(url);
 }
 
-export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer }: BK03Props) {
+export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer, bookingerHref = "/portal/meg/bookinger" }: BK03Props) {
   const router = useRouter();
+  if (tilstand === "denied") return <BK03Ramme><TomTilstand icon={Receipt} title="Kvitteringen krever tilgang" text="Logg inn som bestiller eller foresatt, eller bruk den fullstendige lenken fra betalingssteget."
+    actions={<KnappLenke href="/auth/login">Logg inn</KnappLenke>} /></BK03Ramme>;
   if (tilstand === "laster") return <BK03Ramme><LasterTilstand text="Henter kvitteringen …" /></BK03Ramme>;
   if (tilstand === "feil" || (!detaljer && tilstand !== "tom")) {
     return (
       <BK03Ramme>
-        <FeilTilstand icon={RotateCw} title="Kvitteringen kunne ikke hentes" text="Bookingen er lagret. Kvitteringen ligger også i e-posten din."
+        <FeilTilstand icon={RotateCw} title="Kvitteringen kunne ikke hentes" text="Vi fikk ikke bekreftet bookingstatusen. Prøv igjen for å hente den registrerte statusen."
           code="FEIL 502 · KVITTERING" retry={<Knapp variant="secondary" icon={RotateCw} onClick={() => router.refresh()}>Prøv igjen</Knapp>} />
       </BK03Ramme>
     );
@@ -108,14 +112,16 @@ export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer }: BK
   }
   const d = detaljer;
   const bekreftet = tilstand === "data";
+  const ventende = tilstand === "pending";
+  const avbestilt = tilstand === "cancelled";
   return (
     <BK03Ramme>
-      {!bekreftet && <SpoerPaaNytt />}
+      {ventende && <SpoerPaaNytt />}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-        {bekreftet ? <StatusPille tone="ok">Bekreftet</StatusPille> : <StatusPille>Behandler</StatusPille>}
+        {bekreftet ? <StatusPille tone="ok">Bekreftet</StatusPille> : <StatusPille>{avbestilt ? "Avbestilt" : tilstand === "completed" ? "Gjennomført" : "Venter"}</StatusPille>}
       </div>
-      <h1 style={h1}>{bekreftet ? "Timen er bekreftet" : "Behandler bestillingen …"}</h1>
-      {!bekreftet && <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)", textWrap: "pretty" }} role="status">Betalingen ser ut til å gå gjennom. Siden oppdaterer seg selv.</p>}
+      <h1 style={h1}>{bekreftet ? "Timen er bekreftet" : avbestilt ? "Timen er avbestilt" : tilstand === "completed" ? "Timen er gjennomført" : "Venter på bekreftelse"}</h1>
+      {ventende && <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)", textWrap: "pretty" }} role="status">Bookingstatusen er ikke bekreftet ennå. Siden henter statusen på nytt.</p>}
       <div style={{ padding: 16, borderRadius: 8, background: "var(--surface-flat)", border: "1px solid var(--border-hairline)", display: "flex", flexDirection: "column", gap: 4 }}>
         <Meta>REFERANSE</Meta>
         <span style={{ font: "600 22px/1.2 var(--font-mono)", letterSpacing: ".04em", overflowWrap: "anywhere" }}>{d.ref}</span>
@@ -125,8 +131,9 @@ export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer }: BK
         <Rad k="Tid" v={d.tid} />
         <Rad k="Sted" v={d.sted} />
         <Rad k="Coach" v={d.coach} />
-        <Rad k="Betalt" v={d.betalt} mono hint={d.betaltVedStripe ? "VIA STRIPE" : undefined} />
-        <Rad k="Kvittering sendt til" v={d.epost} />
+        <Rad k="Pris" v={d.betalt} mono hint={d.betaltVedStripe ? "Betalingsleverandør: Stripe" : undefined} />
+        {d.betaling && <Rad k="Betaling" v={d.betaling} />}
+        <Rad k="Registrert e-post" v={d.epost} />
       </dl>
       {bekreftet && (
         <>
@@ -136,7 +143,7 @@ export function BK03Kvittering({ tilstand, innlogget, signupHref, detaljer }: BK
           {d.fristTekst && <Meta>{d.fristTekst}</Meta>}
           {innlogget ? (
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-              <KnappLenke variant="secondary" icon={ArrowUpRight} href="/portal/meg/bookinger">Se bookingen i PlayerHQ</KnappLenke>
+              <KnappLenke variant="secondary" icon={ArrowUpRight} href={bookingerHref}>Se bookingen</KnappLenke>
             </div>
           ) : (
             <div className="pa-card" style={{ padding: 16, gap: 10, background: "var(--surface-flat)", boxShadow: "none" }}>

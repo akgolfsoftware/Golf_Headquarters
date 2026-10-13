@@ -137,10 +137,10 @@ export async function analyserCoachingSesjon(
 ): Promise<AnalyseResultat> {
   const klient = anthropicKlient();
   const { anonymisert, mapping } = anonymiserNavn(
-    input.transkripsjon,
+    byggBrukerPrompt(input),
     navnIAvskrift(input.spillerKontekst.navn),
   );
-  const brukerPrompt = byggBrukerPrompt({ ...input, transkripsjon: anonymisert });
+  const brukerPrompt = anonymisert;
 
   const respons = await klient.messages.create({
     model: COACH_MODEL,

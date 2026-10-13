@@ -12,6 +12,8 @@ import { transkriber } from "@/lib/transcribe";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // Whisper kan ta tid for 50-min økter
@@ -56,6 +58,9 @@ export async function POST(request: Request) {
   if (rec.uploadedById !== user.id && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
   }
+  if (!rec.playerId || !(await harCoachTilgangTilSpiller(user, rec.playerId))
+    || !(await hentLydSamtykkeStatus(rec.playerId)).tillatt)
+    return NextResponse.json({ error: "Mangler gjeldende tilgang eller lydsamtykke" }, { status: 403 });
 
   if (!rec.audioUrl) {
     return NextResponse.json(
@@ -83,7 +88,7 @@ export async function POST(request: Request) {
       data: { status: "FAILED" },
     });
     return NextResponse.json(
-      { error: `Storage-feil: ${dlErr?.message ?? "ukjent"}` },
+      { error: "Lydfilen kunne ikke hentes. Prøv igjen." },
       { status: 500 },
     );
   }
@@ -92,7 +97,7 @@ export async function POST(request: Request) {
   try {
     const { text, durationSec, language } = await transkriber({
       audioBlob: blob,
-      filename: "final.webm",
+      filename: rec.audioUrl.endsWith(".m4a") ? "final.m4a" : "final.webm",
     });
 
     await prisma.sessionRecording.update({
@@ -142,14 +147,13 @@ export async function POST(request: Request) {
       transcript: text,
       durationSec,
     });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
+  } catch (_err) {
     await prisma.sessionRecording.update({
       where: { id: recordingId },
       data: { status: "FAILED" },
     });
     return NextResponse.json(
-      { error: `Whisper-feil: ${msg}` },
+      { error: "Transkripsjonen kunne ikke fullføres. Prøv igjen." },
       { status: 500 },
     );
   }

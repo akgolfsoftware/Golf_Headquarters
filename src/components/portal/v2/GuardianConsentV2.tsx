@@ -22,7 +22,7 @@ export type GuardianConsentV2Props =
       playerEmail: string;
       guardianEmail: string;
     }
-  | { state: "expired"; playerName: string; playerAge: number | null; email: string }
+  | { state: "expired"; playerName?: string; playerAge?: number | null; email?: string }
   | { state: "success"; playerName: string; playerAge: number | null };
 
 function InfoSeksjon() {
@@ -35,7 +35,7 @@ function InfoSeksjon() {
           Du kan trekke samtykket når som helst ved å kontakte oss på{" "}
           <a href="mailto:post@akgolf.no">post@akgolf.no</a>.
         </li>
-        <li>Du får tilgang til en foreldreportal som lar deg følge barnets utvikling, fakturaer og kommunikasjon med coach.</li>
+        <li>Foreldreportalen viser plan, oppmøte, booking og økonomi. Du finner også kontaktinformasjon til coachen.</li>
       </ul>
       <p>
         Mer info i <Link href="/personvern">personvernerklæringen</Link> og{" "}
@@ -58,11 +58,11 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
   );
 }
 
-function ExpiredKort({ email }: { email: string }) {
+function ExpiredKort() {
   return (
-    <p className="au-melding" data-tone="feil" role="alert">
-      Invitasjonen er utløpt. Lenken er ikke lenger gyldig. Be spilleren sende deg en ny invitasjon til {email}.
-    </p>
+    <div><p className="au-melding" data-tone="feil" role="alert">
+      Invitasjonen er utløpt. Be om en ny invitasjon fra spilleren eller coachen.
+    </p><Link href="/kontakt" className="pa-btn pa-btn--primary pa-btn--full">Kontakt oss om ny invitasjon</Link></div>
   );
 }
 
@@ -110,12 +110,11 @@ function ConsentKort({
       return;
     }
     startTransition(async () => {
-      const result = await confirmGuardianConsent({ token, guardianName: navn.trim() });
-      if (!result.ok) {
-        setFeil(result.error ?? "Noe gikk galt. Prøv igjen.");
-        return;
-      }
-      router.push("/auth/login?guardian_consent_given=1");
+      try {
+        const result = await confirmGuardianConsent({ token, guardianName: navn.trim() });
+        if (!result.ok) { setFeil(result.error ?? "Samtykket ble ikke lagret. Prøv igjen."); return; }
+        router.push("/auth/login?guardian_consent_given=1");
+      } catch { setFeil("Vi fikk ikke bekreftet samtykket. Kontroller nettet og prøv igjen."); }
     });
   }
 
@@ -162,9 +161,9 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
     <div className="pa-root au-ramme" data-design="precision-athletics">
       <div className="au-boks au-boks--bred">
         <Link href="/" className="au-logo">AK Golf HQ</Link>
-        <Hode playerName={props.playerName} playerAge={props.playerAge} />
+        {props.state === "expired" ? <header><p className="au-kicker">Foreldresamtykke</p><h1>Lenken er utløpt</h1></header> : <Hode playerName={props.playerName} playerAge={props.playerAge} />}
         {props.state === "expired" ? (
-          <ExpiredKort email={props.email} />
+          <ExpiredKort />
         ) : props.state === "success" ? (
           <SuccessKort playerName={props.playerName} />
         ) : (

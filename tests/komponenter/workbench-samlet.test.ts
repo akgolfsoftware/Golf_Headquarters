@@ -24,7 +24,7 @@ const replacements: string[] = [];
 mock.module("next/navigation", { namedExports: { useRouter: () => ({ push() {}, refresh() {}, replace: (url: string) => replacements.push(url) }) } });
 mock.module("next/link", { defaultExport: "a" });
 mock.module("sonner", { namedExports: { toast: { success() {}, error() {} } } });
-for (const css of ["precision-a4.css", "precision-a8.css"]) mock.module(`@/styles/${css}`, { namedExports: {} });
+for (const css of ["precision-a4.css", "precision-a8.css", "precision-month.css"]) mock.module(`@/styles/${css}`, { namedExports: {} });
 mock.module("@/components/workbench/workbench-samlet.css", { namedExports: {} });
 mock.module("@/components/precision/pa-a4", { namedExports: { Ark: "sheet", Dialogboks: "dialog" } });
 mock.module("@/components/admin/precision/AG11Ark", { namedExports: {
@@ -36,6 +36,9 @@ let saveFails = false;
 type GroupPayload = { groupId: string; requestId: string; drills: { sourceId?: string; exerciseId?: string; positionTaskId?: string }[] };
 const groupSaved: GroupPayload[] = []; let groupError: string | null = null; let groupSession: WorkbenchSession | null = null;
 const unused = async () => { throw new Error("Uventet handling"); };
+mock.module("@/lib/workbench/month-plan-actions", { namedExports: {
+  hentMaanedsplan: unused, lagreMaanedsplan: unused, svarMaanedsplanForslag: unused, evaluerMaanedsplan: unused,
+} });
 mock.module("@/lib/workbench/wb-actions", { namedExports: {
   addDrill: unused, addDrillFromSource: unused, createSession: unused, createSessionFromSource: unused,
   createSessionSeries: async (input: CreateSessionSeriesInput) => { created.push(input); return saveFails ? { ok: false, error: "Syntetisk lagringsfeil" } : { ok: true, data: [{ id: "lagret-tiltak" }] }; },
@@ -190,8 +193,8 @@ test("evaluering og utviklingssjekk har reelle spillerlenker og autoriserte tren
   assert.equal(player.find(x => x.id === "X11")?.href, "/portal/mal/evaluering?ny=UTVIKLINGSSJEKK");
   const coach = samletMerRegister({ ...fixture(), role: "coach", routeSurface: "agency" });
   assert.equal(coach.find(x => x.id === "X04")?.href, "/admin/spillere/syntetisk-p1?vis=360&fane=iup");
-  assert.equal(coach.find(x => x.id === "X11")?.href, "/admin/spillere/syntetisk-p1?vis=360&fane=talent");
-  for (const id of ["X04", "X11"]) assert.match(coach.find(x => x.id === id)!.detalj, /ikke ferdig/);
+  assert.equal(coach.find(x => x.id === "X11")?.href, "/admin/spillere/syntetisk-p1?vis=360&fane=iup");
+  for (const id of ["X04", "X11"]) assert.match(coach.find(x => x.id === id)!.detalj, /spillerens IUP/);
   for (const role of ["player", "coach"] as const) {
     const data: WorkbenchSamletData = { ...fixture(), role, routeSurface: role === "coach" ? "agency" : "player" };
     const render = () => draw(`mer-${role}`, () => {
@@ -207,12 +210,13 @@ test("evaluering og utviklingssjekk har reelle spillerlenker og autoriserte tren
     }
   }
 });
-test("samlet spillerbord har bare serverens egen rad og nav viser Stats", () => {
+test("samlet spillerbord har bare egen rad og navigasjon for fem planhorisonter", () => {
   const text = html(draw("bord", () => WorkbenchTrenerbord({ data: fixture() }))); assert.match(text, /1 spiller/); assert.ok(!text.includes("Gruppeøkter"));
   const n = draw("skall", () => WorkbenchSamlet({ data: { ...fixture(), flate: "analyse", analyse: null } }));
   const markup = renderToStaticMarkup(n);
-  for (const navn of ["Sesongkart", "Ukeverksted", "Trenerbord", "Stats"]) assert.ok(markup.includes(`aria-label="${navn}"`));
-  assert.match(html(n), /Stats.*Mer/); assert.ok(!markup.includes('aria-label="Analyse"'));
+  const nav = markup.match(/<nav[^>]*aria-label="Planhorisont"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  for (const navn of ["År", "Periode", "Måned", "Uke", "Dag", "Analyse"]) assert.ok(nav.includes(`>${navn}</a>`), navn);
+  assert.ok(!nav.includes("Trenerbord")); assert.match(nav, /Analyse.*Mer/);
 });
 test("valg av økt og periode følger URL uten å miste kalender og zoom", () => {
   const d = fixture();

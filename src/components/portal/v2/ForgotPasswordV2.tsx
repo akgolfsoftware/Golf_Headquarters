@@ -28,18 +28,16 @@ export function ForgotPasswordV2() {
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
+    if (pending) return;
     setFeil(null);
     setPending(true);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${origin}/auth/reset-password`,
-    });
-    setPending(false);
-    if (err) {
-      setFeil(oversettResetFeil(err.message));
-      return;
-    }
-    setSent(true);
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/reset-password` });
+      if (err) { setFeil(oversettResetFeil(err.message)); return; }
+      setSent(true);
+    } catch { setFeil("Forespørselen kunne ikke sendes. Kontroller nettet og prøv igjen."); }
+    finally { setPending(false); }
   }
 
   return (
@@ -52,8 +50,8 @@ export function ForgotPasswordV2() {
               <p className="au-kicker">Passord</p>
               <h1>Sjekk e-posten</h1>
               <p>
-                Vi har sendt en lenke til <strong>{email || "e-postadressen din"}</strong>.
-                Lenken er gyldig i 30 minutter.
+                Hvis en konto finnes for <strong>{email || "e-postadressen din"}</strong>, får du en lenke for å sette nytt passord.
+                Be om en ny lenke hvis den er brukt eller utløpt.
               </p>
             </header>
             <div className="au-tips">

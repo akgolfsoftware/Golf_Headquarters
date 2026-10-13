@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { logout } from '@/lib/auth/logout';
@@ -81,22 +82,8 @@ export function WangAppSkall({
       {/* 1. Desktop Venstremeny */}
       <aside className="wg-side">
         <div style={{ padding: '28px 24px 16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '4px',
-                backgroundColor: 'var(--wang-green)',
-                display: 'grid',
-                placeItems: 'center',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '16px',
-              }}
-            >
-              W
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+            <Image src="/team-wang/wang-toppidrett-horisontal-hvit.png" alt="WANG TOPPIDRETT" width={1609} height={230} style={{ width: 'min(100%, 180px)', height: 'auto' }} priority />
             <div>
               <span
                 style={{
@@ -109,7 +96,7 @@ export function WangAppSkall({
                   lineHeight: 1.1,
                 }}
               >
-                WANG TOPPIDRETT
+                Golf
               </span>
               <span
                 style={{
@@ -261,7 +248,7 @@ export function WangAppSkall({
               textOverflow: 'ellipsis',
             }}
           >
-            /team-wang/coach · {omraadeNavnMap[aktivtOmraade]}
+            WANG · {omraadeNavnMap[aktivtOmraade]}
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -282,7 +269,7 @@ export function WangAppSkall({
               <button
                 type="submit"
                 className="wg-btn wg-btn-ghost"
-                style={{ minHeight: '36px', padding: '0 10px', fontSize: '12px' }}
+                style={{ minHeight: '44px', padding: '0 12px', fontSize: '14px' }}
                 title="Logg ut"
               >
                 <LogOut size={16} />
@@ -296,10 +283,8 @@ export function WangAppSkall({
         <header className="wg-mtop">
           <div
             style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '4px',
-              backgroundColor: 'var(--wang-green)',
+              width: '86px',
+              height: '32px',
               display: 'grid',
               placeItems: 'center',
               color: '#FFFFFF',
@@ -308,7 +293,7 @@ export function WangAppSkall({
               flex: 'none',
             }}
           >
-            W
+            <Image src="/team-wang/wang-toppidrett-horisontal-hvit.png" alt="WANG Toppidrett" width={1609} height={230} style={{ width: '100%', height: 'auto' }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <p

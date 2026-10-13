@@ -1,0 +1,43 @@
+/* Månedsplanen har ett samlet innhold og åpner bare delen som redigeres. */
+.month-plan { margin: 20px 0 28px; padding: clamp(18px, 3vw, 32px); background: var(--surface-card); border-radius: var(--radius-card, 8px); }
+.month-plan__head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.month-plan__head h2 { margin:4px 0 0; font-size:clamp(26px, 3vw, 36px); line-height:1.15; text-transform:capitalize; }
+.month-plan__status { padding:8px 12px; background:var(--surface-flat); border-radius:var(--radius-card, 8px); font-size:13px; }
+.month-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin:0; }
+.month-summary dt { color:var(--text-secondary); font-size:13px; margin-bottom:6px; }
+.month-summary dd { margin:0; font-size:clamp(20px, 2vw, 28px); font-weight:500; font-variant-numeric:tabular-nums; }
+.month-source { margin:12px 0 24px; }
+.month-content > p:first-child { font-size:20px; line-height:1.5; max-width:60ch; }
+.month-content ul { padding-left:20px; line-height:1.6; }
+.month-content .ws-kv dd { overflow-wrap:anywhere; }
+.month-plan details { margin:16px 0; }
+.month-plan summary { min-height:44px; padding:10px 0; font-weight:500; cursor:pointer; }
+.month-edit-actions { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 12px; }
+.month-proposal { padding:20px; background:var(--surface-flat); border-radius:var(--radius-card,8px); margin:24px 0; }
+.month-proposal h3 { margin-top:0; }
+.month-receipt { padding:12px 16px; background:var(--surface-flat); border-radius:var(--radius-card,8px); }
+.month-evaluations { margin-top:28px; padding-top:20px; border-top:1px solid var(--border-hairline); }
+.month-evaluation-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.month-evaluation-grid h4 { margin-bottom:8px; }
+.month-note { white-space:pre-wrap; overflow-wrap:anywhere; }
+.month-events ul { list-style:none; margin:0; padding:0; }
+.month-events li { display:flex; align-items:baseline; gap:16px; padding:10px 0; }
+.month-events time { font-variant-numeric:tabular-nums; min-width:58px; }
+.month-events small { margin-left:auto; color:var(--text-secondary); }
+.month-fields { display:grid; gap:18px; }
+.month-fields .ws-field { width:100%; }
+.month-fields textarea { resize:vertical; min-height:100px; }
+.month-fields small { color:var(--text-secondary); font-size:13px; line-height:1.5; }
+.month-priority-fields,.month-volume-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.month-scores { display:flex; gap:8px; margin-bottom:20px; }
+.month-scores button { flex:1; min-width:44px; min-height:44px; background:var(--surface-flat); color:var(--text-primary); border:0; border-radius:var(--radius-card,8px); cursor:pointer; }
+.month-scores button[aria-pressed="true"] { background:var(--primary); color:var(--text-on-primary); }
+@media (max-width:600px) {
+  .month-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .month-plan__head { display:block; }
+  .month-plan__status { display:inline-block; margin-top:12px; }
+  .month-priority-fields,.month-volume-fields,.month-evaluation-grid { grid-template-columns:minmax(0,1fr); }
+  .month-edit-actions .pa-btn { width:100%; justify-content:center; }
+  .month-events li { flex-wrap:wrap; gap:8px; }
+}
+.month-plan__num,.month-summary dd,.month-scores button,.month-events time{font-family:var(--font-mono);font-variant-numeric:tabular-nums}

@@ -27,6 +27,8 @@ import { useErAdmin } from "@/components/v2/rolle";
 import { AOS_HURTIG, AOS_MENY, aktivtAosPunkt, synligeMer, type AosMerId, type AosPunktId } from "@/lib/agencyos/precision-ia";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
+import "@/styles/precision-live.css";
+import "@/styles/precision-player-coach-upgrade.css";
 
 const IKON: Record<AosPunktId | AosMerId, [LucideIcon, string]> = {
   cockpit: [Gauge, "gauge"], innboks: [Inbox, "inbox"], stall: [Users, "users"], kalender: [CalendarDays, "calendar-days"],

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { clearTnDrafts } from "@/lib/offline-queue/tn-draft-store";
+import { clearSummaryDrafts } from "@/lib/offline-queue/summary-draft-store";
 
 /**
  * Tømmer PWA-cachen ved utlogging (GDPR / delt enhet).
@@ -24,6 +25,7 @@ export function ClearPwaCaches() {
     if (typeof window === "undefined") return;
 
     void clearTnDrafts().catch(() => { /* Next authenticated owner clears this store too. */ });
+    void clearSummaryDrafts().catch(() => { /* Neste innloggede eier rydder denne butikken også. */ });
 
     if ("caches" in window) {
       caches

@@ -16,14 +16,14 @@ export default function OfflinePage() {
     <PrecisionTilstand
       kicker="Offline"
       tittel="Du er uten nett"
-      tekst="Vi mistet forbindelsen. Alt du har registrert på denne enheten er lagret lokalt, og sendes inn automatisk når nettet er tilbake."
+      tekst="Du er uten nett. Live-utkast som er lagret på denne enheten, sendes når forbindelsen er tilbake. Kontroller lagringstilstanden i økta. Andre skjemaer og nye data kan kreve nett."
       linjer={[
-        { label: "Dagens økt", verdi: "lagret lokalt" },
-        { label: "Slagregistrering", verdi: "virker" },
+        { label: "Live-utkast", verdi: "beholdes etter bekreftet lokal lagring" },
+        { label: "Slagregistrering", verdi: "tilgjengelig i en allerede lastet økt" },
         { label: "Plan og analyse", verdi: "krever nett" },
       ]}
-      primar={{ label: "Prøv igjen", href: "/offline" }}
-      sekundar={{ label: "Fortsett økta", href: "/portal" }}
+      primar={{ label: "Åpne appen", href: "/portal" }}
+      sekundar={{ label: "Til forsiden", href: "/" }}
     />
   );
 }

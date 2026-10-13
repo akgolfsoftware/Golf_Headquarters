@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere, publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/sok — v2. Swap av (mlegacy)/stats/sok/page.tsx. Prisma-søket
  * (serverSok) videreført 1:1 — kun presentasjonen er byttet (SokV2).
@@ -31,23 +32,23 @@ async function serverSok(q: string): Promise<SokServerResultater | null> {
         take: 10,
         select: { slug: true, name: true, tier: true, bio: true },
       })
-      .catch(() => []),
+      ,
     prisma.pgaPlayerSeason
       .findMany({
-        where: { playerName: { contains: q, mode: "insensitive" }, year: 2026 },
+        where: { ...publicPgaSourceWhere(), playerName: { contains: q, mode: "insensitive" }, year: 2026 },
         take: 10,
         orderBy: { sgTotal: "desc" },
         select: { playerName: true, dgPlayerId: true, sgTotal: true },
       })
-      .catch(() => []),
+      ,
     prisma.tournament
       .findMany({
-        where: { name: { contains: q, mode: "insensitive" }, mergedIntoId: null },
+        where: { ...publicTournamentSourceWhere(), name: { contains: q, mode: "insensitive" }, mergedIntoId: null },
         orderBy: { startDate: "desc" },
         take: 10,
         select: { slug: true, name: true, startDate: true, tour: true },
       })
-      .catch(() => []),
+      ,
   ]);
 
   return { norskeSpillere, pgaSpillere, turneringer };

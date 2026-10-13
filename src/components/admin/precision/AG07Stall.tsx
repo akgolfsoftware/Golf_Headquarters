@@ -12,11 +12,12 @@
  * Bare ekte data: det appen ikke har (neste turnering, planens sluttdato, ACWR,
  * drill-for-drill-repetisjoner) vises som «—» eller er utelatt.
  */
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { CalendarClock, Flag, Search, Send, UserPlus, Users, X } from "lucide-react";
+import { CalendarClock, Flag, Search, Send, UserPlus, Users } from "lucide-react";
 import { Sidehode, Knapp, KnappLenke, StatusPille, TomTilstand, Meta } from "@/components/precision/pa";
-import { Sokefelt, SegmentertValg, IkonKnapp } from "@/components/precision/pa-a2";
+import { Sokefelt, SegmentertValg } from "@/components/precision/pa-a2";
+import { Ark } from "@/components/precision/pa-a4";
 import type { StallBaandRad } from "@/lib/admin/stall-precision-data";
 import { fmtSg } from "@/lib/v2/format";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
@@ -79,7 +80,7 @@ function Sparkline({ verdier, label }: { verdier: readonly number[]; label: stri
 function Baand({ tittel, meta, children }: { tittel: string; meta: string; children: React.ReactNode }) {
   return <section aria-label={tittel} className="pa-card" style={{ padding: 16, gap: 8, minWidth: 0 }}>
     <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
-      <span className="kicker" style={{ flex: "1 1 auto" }}>{tittel}</span>
+      <h2 style={{ flex: "1 1 auto", margin: 0, font: "var(--type-title-s)" }}>{tittel}</h2>
       <Meta>{meta}</Meta>
     </div>
     {children}
@@ -95,14 +96,11 @@ function SpillerRad({ r, i }: { r: StallBaandRad; i: number }) {
   const sgNaa = r.sgTrend.length ? fmtSg(r.sgTrend[r.sgTrend.length - 1]!) : "—";
   const avtale = r.avtaleUtlopIso ? `${r.pakke} · fornyes ${OSLO_DATO.format(new Date(r.avtaleUtlopIso))}` : r.pakkeAktiv ? r.pakke : "—";
   const celler: [string, string][] = [
-    ["ETTERLEVELSE · 4 UKER", r.adhPct == null ? "—" : `${r.adhPct} %`],
-    ["SG-FORM", sgNaa],
-    ["SG-ENDRING", r.sgDelta == null ? "—" : fmtSg(r.sgDelta)],
-    ["SISTE AKTIVITET", r.sisteAktivitetLabel],
-    ["NESTE TURNERING", "—"],
-    ["PLAN SLUTTER", "—"],
-    ["AVTALE", r.skylder ? `${avtale} · betaling feilet` : avtale],
-    ["ACWR", "—"],
+    ["Etterlevelse · 4 uker", r.adhPct == null ? "—" : `${r.adhPct} %`],
+    ["SG-form", sgNaa],
+    ["SG-endring", r.sgDelta == null ? "—" : fmtSg(r.sgDelta)],
+    ["Siste aktivitet", r.sisteAktivitetLabel],
+    ["Avtale", r.skylder ? `${avtale} · betaling feilet` : avtale],
   ];
   return <Link role="listitem" href={`/admin/spillere/${r.id}`} aria-label={`${r.name} · ${r.statusLabel}`} style={{ ...radLenke, display: "flex", flexDirection: "column", gap: 8, padding: "12px 0", borderTop: skille(i) }}>
     <span style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
@@ -136,46 +134,28 @@ function MeldingArk({ r, onClose }: { r: StallBaandRad; onClose: () => void }) {
   const [sendt, setSendt] = useState(false);
   const [sender, start] = useTransition();
   const melding = valgt ?? fritekst.trim();
-  const send = () => start(async () => {
-    setFeil(null);
-    const res = await sendMeldingTilSpiller(r.id, melding);
-    if (res.ok) setSendt(true);
-    else setFeil(res.error ?? "Kunne ikke sende meldingen.");
-  });
-  return <div className="pa-sheet-layer">
-    <div className="pa-sheet-scrim" onClick={onClose} />
-    <div role="dialog" aria-modal="true" aria-label={`Melding til ${r.name}`} className="pa-sheet pa-sheet--auto">
-      <header className="pa-sheet__head">
-        <span className="pa-sheet__grip" aria-hidden="true" />
-        <div className="pa-sheet__titles">
-          <div className="kicker">Under økta · {r.paagaaende?.tittel ?? "—"}</div>
-          <div className="pa-sheet__title">Melding til {r.name}</div>
-        </div>
-        <IkonKnapp icon={X} name="x" aria-label="Lukk" onClick={onClose} />
-      </header>
-      <div className="pa-sheet__body">
-        {sendt ? <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-body)" }}>Meldingen er sendt til {r.name}.</p> : <>
-          <Meta>HURTIGMELDING</Meta>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {HURTIG.map((h) => <button key={h} type="button" className="pa-choice" aria-pressed={valgt === h} onClick={() => { setValgt(valgt === h ? null : h); setFritekst(""); }}>{h}</button>)}
-          </div>
-          <label className="pa-field">
-            <span className="pa-field__label">Eller skriv selv</span>
-            <span className="pa-control"><input value={fritekst} maxLength={2000} placeholder="Kort melding" onChange={(e) => { setFritekst(e.target.value); setValgt(null); }} /></span>
-          </label>
-          {feil && <p role="alert" style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)" }}>{feil}</p>}
-        </>}
-      </div>
-      <div className="pa-sheet__foot">
-        {sendt
-          ? <Knapp variant="secondary" fullWidth onClick={onClose}>Lukk</Knapp>
-          : <>
-            <Knapp fullWidth icon={Send} iconName="send" disabled={!melding || sender} loading={sender} loadingText="Sender …" onClick={send}>Send melding</Knapp>
-            <Knapp variant="ghost" fullWidth onClick={onClose}>Avbryt</Knapp>
-          </>}
-      </div>
-    </div>
-  </div>;
+  const busy = useRef(false);
+  const send = () => {
+    if (busy.current || !melding) return;
+    busy.current = true;
+    start(async () => {
+      setFeil(null);
+      try {
+        const result = await sendMeldingTilSpiller(r.id, melding);
+        if (result.ok) setSendt(true); else setFeil(result.error ?? "Kunne ikke sende meldingen.");
+      } catch { setFeil("Sendingen kunne ikke bekreftes. Meldingen er beholdt her."); }
+      finally { busy.current = false; }
+    });
+  };
+  return <Ark open title={`Melding til ${r.name}`} kicker={r.paagaaende ? `Under økta · ${r.paagaaende.tittel}` : "Direkte melding"} onClose={() => { if (!busy.current) onClose(); }}
+    footer={sendt ? <Knapp variant="secondary" fullWidth onClick={onClose}>Lukk</Knapp> : <><Knapp fullWidth icon={Send} iconName="send" disabled={!melding || sender} loading={sender} loadingText="Sender …" onClick={send}>Send melding</Knapp><Knapp variant="ghost" fullWidth disabled={sender} onClick={onClose}>Avbryt</Knapp></>}>
+    {sendt ? <p role="status">Meldingen er sendt til {r.name}.</p> : <>
+      <h3 style={{ font: "var(--type-label)", margin: "0 0 12px" }}>Hurtigmelding</h3>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{HURTIG.map(h => <button key={h} type="button" className="pa-choice" aria-pressed={valgt === h} disabled={sender} onClick={() => { setValgt(valgt === h ? null : h); setFritekst(""); }}>{h}</button>)}</div>
+      <label className="pa-field"><span className="pa-field__label">Eller skriv selv</span><span className="pa-control"><input value={fritekst} disabled={sender} maxLength={2000} placeholder="Kort melding" onChange={e => { setFritekst(e.target.value); setValgt(null); }} /></span></label>
+      {feil && <p role="alert">{feil}</p>}
+    </>}
+  </Ark>;
 }
 
 export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStallen, nyttGruppeFilter }: AG07Props) {

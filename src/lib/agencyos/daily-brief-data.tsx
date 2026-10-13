@@ -1,5 +1,9 @@
+import { independentRoundSgWhere } from '@/lib/datagolf/round-provenance';
 /**
  * Data-loader for AgencyOS-cockpiten (/admin/agencyos).
+ * Avvik:
+ * - D19 filtrerer DG-avledet SG før KPI-er beregnes. Kommentarer om
+ *   rekkefølge/tellere er funksjonsinventar, ikke dagens designautoritet.
  * Henter ekte Prisma-data og mapper til CockpitData (serialiserbar —
  * ikoner som navn, rik tekst som segmenter; krysser server→client-grensen).
  *
@@ -284,11 +288,11 @@ export async function loadDailyBrief(coach: {
     // STALL-SG: snitt sgTotal for coachede spillere siste 30 d (scope, ikke hele DB).
     prisma.round.aggregate({
       _avg: { sgTotal: true },
-      where: {
+      where: { AND: [{
         playedAt: { gte: tretti },
         sgTotal: { not: null },
         user: coachScopedPlayerWhere(coach),
-      },
+      }, independentRoundSgWhere()] },
     }),
     // PLAN-ETTERLEVELSE: planlagte vs fullførte plan-økter siste 30 d (forfalt i vinduet).
     // Én groupBy på status erstatter to counts.

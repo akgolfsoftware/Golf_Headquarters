@@ -11,6 +11,8 @@ export type TreningsvolumOkt = {
   pyramid: string;
   durationMinutes: number;
   actualMinutes: number | null;
+  /** Eksplisitt serverkvittering for gjennomføring; gjør tidlig gjennomføring samme dag tellbar. */
+  fullfortAt?: Date | null;
   status: string;
   isTemplate?: boolean;
   hiddenByPlayer?: boolean;
@@ -122,7 +124,12 @@ export function summerTreningsvolum(
         // Et klokkeslett i sommertidshullet skal rettes, aldri flyttes/gjettes.
       }
     }
-    const framtid = start !== null && start > vindu.naa;
+    const fullfortDato = okt.fullfortAt && Number.isFinite(okt.fullfortAt.getTime())
+      ? new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(okt.fullfortAt) : null;
+    const planDato = okt.date.toISOString().slice(0, 10);
+    const kvittertSammeDag = okt.status === "COMPLETED" && okt.fullfortAt != null
+      && okt.fullfortAt <= vindu.naa && fullfortDato === planDato;
+    const framtid = start !== null && start > vindu.naa && !kvittertSammeDag;
     const slutt = start !== null ? new Date(start.getTime() + okt.durationMinutes * 60_000) : null;
     const forventet = start !== null && !framtid && (okt.status === "COMPLETED" || (slutt !== null && slutt <= vindu.naa));
     const akse = akser.find(a => a.akse === okt.pyramid.toLowerCase()) ?? utenAkse;

@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * src/lib/stats/turnering-queries.ts
  *
@@ -145,7 +147,7 @@ export async function hentTurneringerForListe(
   const tourWhere = tourWhereClause(tour);
 
   const rows = await prisma.tournament.findMany({
-    where: {
+    where: { ...publicTournamentSourceWhere(),
       mergedIntoId: null,
       ...tidWhere,
       ...tourWhere,
@@ -167,7 +169,7 @@ export async function hentTurneringerForListe(
       _count: {
         select: {
           publicEntries: {
-            where: { player: { country: "NO" } },
+            where: { AND: [publicEntrySourceWhere(), { player: { country: "NO" } }] },
           },
         },
       },
@@ -225,7 +227,7 @@ export async function hentTurneringCounts(): Promise<
     tourKeys.map(async (key) => {
       const tourWhere = tourWhereClause(key);
       const count = await prisma.tournament.count({
-        where: {
+        where: { ...publicTournamentSourceWhere(),
           mergedIntoId: null,
           startDate: { lte: new Date(now.getTime() + 90 * 86400 * 1000) },
           ...tourWhere,
@@ -245,8 +247,8 @@ export async function hentTurneringCounts(): Promise<
 export async function hentTurneringBySlug(
   slug: string
 ): Promise<TurneringsDetalj | null> {
-  const row = await prisma.tournament.findUnique({
-    where: { slug },
+  const row = await prisma.tournament.findFirst({
+    where: { slug, ...publicTournamentSourceWhere() },
     select: {
       id: true,
       slug: true,
@@ -271,7 +273,7 @@ export async function hentTurneringBySlug(
           rating: true,
         },
       },
-      publicEntries: {
+      publicEntries: { where: publicEntrySourceWhere(),
         select: {
           id: true,
           status: true,
@@ -293,7 +295,7 @@ export async function hentTurneringBySlug(
       _count: {
         select: {
           publicEntries: {
-            where: { player: { country: "NO" } },
+            where: { AND: [publicEntrySourceWhere(), { player: { country: "NO" } }] },
           },
         },
       },
@@ -381,7 +383,7 @@ export async function hentNorskeDenneUka(): Promise<
   const { mandag, sondag } = getUkeVindu();
 
   const turneringer = await prisma.tournament.findMany({
-    where: {
+    where: { ...publicTournamentSourceWhere(),
       mergedIntoId: null,
       OR: [
         { startDate: { gte: mandag, lte: sondag } },
@@ -400,7 +402,7 @@ export async function hentNorskeDenneUka(): Promise<
       location: true,
       startDate: true,
       publicEntries: {
-        where: { player: { country: "NO" } },
+        where: { AND: [publicEntrySourceWhere(), { player: { country: "NO" } }] },
         select: {
           status: true,
           position: true,

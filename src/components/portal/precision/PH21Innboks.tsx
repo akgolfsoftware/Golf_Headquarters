@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Send, Check, Sparkles, Video, CalendarRange, AlertCircle, HelpCircle } from "lucide-react";
 import { KnappLenke, StatusPille, TomTilstand, FeilTilstand, Meta } from "@/components/precision/pa";
@@ -48,141 +48,66 @@ export function PH21Innboks({
 
   // Meldinger-tilstand
   const [msgTxt, setMsgTxt] = useState("");
-  const [messages, setMessages] = useState(data.messages);
+  const messages = data.messages;
 
   // Spørsmål-tilstand
   const [qTxt, setQTxt] = useState("");
-  const [questions, setQuestions] = useState(data.questions);
+  const questions = data.questions;
 
   // Tilbakemelding-tilstand
   const [fbSessionId, setFbSessionId] = useState(data.recentSessions[0]?.value || "");
   const [fbRating, setFbRating] = useState<number | null>(null);
   const [fbTxt, setFbTxt] = useState("");
-  const [feedbackList, setFeedbackList] = useState(data.feedback);
+  const feedbackList = data.feedback;
 
   // Videoer og Planer-tilstand
-  const [videos] = useState(data.videos);
-  const [plans, setPlans] = useState(data.plans);
+  const videos = data.videos;
+  const plans = data.plans;
 
   // Ønske-tilstand
-  const [wDay, setWDay] = useState("Man 28.09");
+  const [wDay, setWDay] = useState("");
   const [wArea, setWArea] = useState("Innspill");
   const [wTxt, setWTxt] = useState("");
   const [wSent, setWSent] = useState(false);
 
   const counts = computePH21TabCounts({ plans, videos });
 
-  // Håndterere
+  const sending = useRef(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const send = (action: () => Promise<{ ok: boolean; error?: string }>, confirmed: () => void) => {
+    if (sending.current) return;
+    sending.current = true; setSendError(null);
+    startTransition(async () => {
+      try {
+        const result = await action();
+        if (!result.ok) { setSendError(result.error ?? "Innholdet kunne ikke sendes."); return; }
+        confirmed(); router.refresh();
+      } catch { setSendError("Vi kunne ikke bekrefte sendingen. Innholdet er beholdt i skrivefeltet."); }
+      finally { sending.current = false; }
+    });
+  };
   const handleSendMelding = () => {
     if (!msgTxt.trim() || !data.coach?.id) return;
-    const textToSend = msgTxt.trim();
-    setMsgTxt("");
-
-    const tempMsg = {
-      id: `temp-${Date.now()}`,
-      role: "me" as const,
-      text: textToSend,
-      t: "Nå",
-    };
-    setMessages((prev) => [...prev, tempMsg]);
-
-    startTransition(async () => {
-      const res = await sendPH21MeldingAction(data.coach!.id, textToSend);
-      if (res.ok) {
-        showToast("Meldingen er sendt", data.coach!.name.toUpperCase());
-        router.refresh();
-      } else {
-        showToast("Kunne ikke sende", res.error || "Feil oppsto");
-      }
-    });
+    const content = msgTxt.trim(); const coach = data.coach;
+    send(() => sendPH21MeldingAction(coach.id, content), () => { setMsgTxt(""); showToast("Meldingen er sendt", coach.name); });
   };
-
   const handleSendSporsmal = () => {
     if (!qTxt.trim()) return;
-    const textToSend = qTxt.trim();
-    setQTxt("");
-
-    const tempQ = {
-      id: `temp-q-${Date.now()}`,
-      t: textToSend,
-      date: "I dag",
-      status: "Venter på svar" as const,
-      answer: null,
-    };
-    setQuestions((prev) => [tempQ, ...prev]);
-
-    startTransition(async () => {
-      const res = await sendPH21SporsmalAction(textToSend);
-      if (res.ok) {
-        showToast("Spørsmålet er sendt", "STATUS · VENTER PÅ SVAR");
-        router.refresh();
-      } else {
-        showToast("Kunne ikke sende", res.error || "Feil oppsto");
-      }
-    });
+    const content = qTxt.trim();
+    send(() => sendPH21SporsmalAction(content), () => { setQTxt(""); showToast("Spørsmålet er sendt", "Venter på svar"); });
   };
-
   const handleSendTilbakemelding = () => {
-    if (!fbRating) return;
-    const selectedSession = data.recentSessions.find((s) => s.value === fbSessionId);
-    const sessionLabel = selectedSession?.label || "Gjennomført økt";
-
-    const tempFb = {
-      id: `temp-fb-${Date.now()}`,
-      session: sessionLabel,
-      from: "me" as const,
-      rating: fbRating,
-      text: fbTxt.trim() || "—",
-      t: "I dag",
-    };
-    setFeedbackList((prev) => [tempFb, ...prev]);
-    const r = fbRating;
-    const t = fbTxt;
-    setFbRating(null);
-    setFbTxt("");
-
-    startTransition(async () => {
-      const res = await sendPH21TilbakemeldingAction(fbSessionId, r, t);
-      if (res.ok) {
-        showToast("Tilbakemeldingen er sendt", sessionLabel.toUpperCase());
-        router.refresh();
-      } else {
-        showToast("Kunne ikke sende", res.error || "Feil oppsto");
-      }
-    });
+    if (!fbRating || !fbSessionId) return;
+    const rating = fbRating, text = fbTxt, session = fbSessionId;
+    send(() => sendPH21TilbakemeldingAction(session, rating, text), () => { setFbRating(null); setFbTxt(""); showToast("Tilbakemeldingen er sendt"); });
   };
-
   const handleSendOnske = () => {
-    if (!wTxt.trim()) return;
-    setWSent(true);
-
-    startTransition(async () => {
-      const res = await sendPH21OnskeAction({ day: wDay, area: wArea, text: wTxt.trim() });
-      if (res.ok) {
-        showToast("Ønsket er sendt til Anders", `${wDay.toUpperCase()} · ${wArea.toUpperCase()}`);
-        router.refresh();
-      } else {
-        showToast("Kunne ikke sende", res.error || "Feil oppsto");
-        setWSent(false);
-      }
-    });
+    if (!wTxt.trim() || !wDay) return;
+    const value = { day: wDay, area: wArea, text: wTxt.trim() };
+    send(() => sendPH21OnskeAction(value), () => { setWSent(true); showToast("Ønsket er sendt til coachen"); });
   };
-
   const handlePlanResponse = (planId: string, status: "Godtatt" | "Avvist") => {
-    setPlans((prev) => prev.map((p) => (p.id === planId ? { ...p, status } : p)));
-
-    startTransition(async () => {
-      const res = await respondPH21PlanAction(planId, status);
-      if (res.ok) {
-        showToast(
-          status === "Godtatt" ? "Planen er godtatt" : "Planen er avvist",
-          status === "Godtatt" ? "AKTIV FRA MANDAG" : "ANDERS FÅR BESKJED",
-        );
-        router.refresh();
-      } else {
-        showToast("Kunne ikke oppdatere plan", res.error || "Feil oppsto");
-      }
-    });
+    send(() => respondPH21PlanAction(planId, status), () => showToast(status === "Godtatt" ? "Planen er godtatt" : "Planen er avvist"));
   };
 
   if (tilstand === "feil") {
@@ -192,7 +117,7 @@ export function PH21Innboks({
         <FeilTilstand
           icon={AlertCircle}
           title="Meldingene kunne ikke hentes"
-          text={feilTekst || "Det du skriver lagres og sendes når forbindelsen er tilbake."}
+          text={feilTekst || "Prøv å åpne innboksen på nytt. Meldinger sendes når du bekrefter dem."}
           code="FEIL 503 · MELDINGER"
         />
       </Side>
@@ -202,7 +127,7 @@ export function PH21Innboks({
   if (tilstand === "laster") {
     return (
       <Side max={1200}>
-        <SideHode kicker="Innboks" title="Innboks" sub="Henter samtalen med Anders …" />
+        <SideHode kicker="Innboks" title="Innboks" sub="Henter samtalen med coachen …" />
         <Kort pad={24}>
           <div style={{ textAlign: "center" }}>
             <Meta>Henter meldinger og planer …</Meta>
@@ -244,7 +169,7 @@ export function PH21Innboks({
     <Side max={1200}>
       {toast && (
         <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 1000 }}>
-          <div className="pa-toast">
+          <div className="pa-toast" role="status">
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <span>{toast.title}</span>
               {toast.meta && <span className="pa-toast__meta">{toast.meta}</span>}
@@ -254,9 +179,9 @@ export function PH21Innboks({
       )}
 
       <SideHode
-        kicker={`Innboks · ${data.coach?.name ?? "Anders Kristiansen"}`}
+        kicker={`Innboks · ${data.coach?.name ?? "Coachen din"}`}
         title="Innboks"
-        sub="Meldinger, spørsmål, videoer og planer samlet."
+        sub="Samtalen med coachen, svar på spørsmål og planer som venter på deg."
         actions={
           <KnappLenke variant="secondary" icon={Sparkles} href="/portal/caddie">
             Spør Caddie
@@ -264,16 +189,18 @@ export function PH21Innboks({
         }
       />
 
+      {sendError && <p role="alert" className="ph21-sendefeil">{sendError}</p>}
+
       {/* Faner */}
-      <div className="pa-tabs" role="tablist">
+      <div className="pa-tabs" role="group" aria-label="Velg innhold i innboksen">
         {PH21_TABS.map((t) => {
           const count = t.value === "plan" ? counts.plan : t.value === "vid" ? counts.vid : undefined;
           return (
             <button
               key={t.value}
               type="button"
-              role="tab"
-              aria-selected={tab === t.value}
+
+              aria-pressed={tab === t.value}
               className="pa-tab"
               onClick={() => setTab(t.value)}
               style={{ minWidth: 44, minHeight: 44 }}
@@ -370,6 +297,8 @@ export function PH21Innboks({
             <input
               type="text"
               aria-label={`Melding til ${data.coach?.name ?? "coachen"}`}
+              maxLength={4000}
+              disabled={isPending}
               value={msgTxt}
               onChange={(e) => setMsgTxt(e.target.value)}
               placeholder={`Skriv til ${data.coach?.name?.split(" ")[0] ?? "Anders"} …`}
@@ -415,6 +344,8 @@ export function PH21Innboks({
               Ett spørsmål om gangen. {data.coach?.name?.split(" ")[0] ?? "Anders"} svarer skriftlig eller i neste time.
             </p>
             <textarea
+              aria-label="Ditt spørsmål"
+              disabled={isPending}
               value={qTxt}
               onChange={(e) => setQTxt(e.target.value)}
               placeholder="Hvordan varmer jeg opp før tidlig start?"
@@ -586,7 +517,7 @@ export function PH21Innboks({
             <div>
               <button
                 type="button"
-                disabled={!fbRating || isPending}
+                disabled={!fbRating || !fbSessionId || isPending}
                 onClick={handleSendTilbakemelding}
                 className="pa-btn pa-btn--primary"
                 style={{ minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}
@@ -756,33 +687,12 @@ export function PH21Innboks({
             passer.
           </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <label style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>DAG</label>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["Man 28.09", "Tir 29.09", "Ons 30.09", "Tor 01.10"].map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => setWDay(d)}
-                  style={{
-                    minHeight: 44,
-                    padding: "0 14px",
-                    borderRadius: "var(--radius-pill)",
-                    border: wDay === d ? "1px solid var(--primary)" : "1px solid var(--border-strong)",
-                    background: wDay === d ? "var(--primary)" : "var(--surface-card)",
-                    color: wDay === d ? "var(--text-on-primary)" : "var(--text-primary)",
-                    font: "var(--type-label)",
-                    cursor: "pointer",
-                  }}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-          </div>
+          <label className="ph21-dagvalg">Ønsket dato
+            <input type="date" value={wDay} disabled={isPending} onChange={e => { setWDay(e.target.value); setWSent(false); }} />
+          </label>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <label style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>OMRÅDE</label>
+            <label style={{ font: "var(--type-label)", color: "var(--text-secondary)" }}>Tema</label>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {["Utslag", "Innspill", "Nærspill", "Putting", "Banespill"].map((a) => (
                 <button
@@ -836,7 +746,7 @@ export function PH21Innboks({
             <div>
               <button
                 type="button"
-                disabled={!wTxt.trim() || isPending}
+                disabled={!wTxt.trim() || !wDay || isPending}
                 onClick={handleSendOnske}
                 className="pa-btn pa-btn--primary"
                 style={{ minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}

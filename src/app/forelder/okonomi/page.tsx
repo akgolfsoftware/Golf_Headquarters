@@ -12,8 +12,11 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
+import { velgBarnFraGodkjente } from "@/lib/forelder-kontekst";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { prisma } from "@/lib/prisma";
 import { hentBarnOkonomiSummer } from "@/lib/forelder-okonomi";
+import { planNavn } from "@/lib/domain/abonnement";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderOkonomiV2,
@@ -22,9 +25,14 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export default async function V2ForelderOkonomiPreviewPage() {
+export default async function V2ForelderOkonomiPreviewPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
-  const barn = await hentBarnForForelder(user.id);
+  const alle = await hentBarnForForelder(user.id);
+  const valgt = (await searchParams)?.barn;
+  const utvalg = velgBarnFraGodkjente(alle, valgt);
+  const valgListe = alle.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (!utvalg.gyldig) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
+  const barn = utvalg.barn;
   const childIds = barn.map((b) => b.child.id);
 
   // Tomtilstand — ingen barn koblet (samme kontrakt, barnAntall 0).
@@ -54,12 +62,15 @@ export default async function V2ForelderOkonomiPreviewPage() {
         currentPeriodEnd: true,
         monthlyCredits: true,
         creditsRemaining: true,
+        kind: true,
+        plan: true,
       },
     }),
     hentBarnOkonomiSummer(childIds),
   ]);
 
-  const abonnementPerBarn = new Map(abonnementer.map((a) => [a.userId, a]));
+  const abonnementPerBarn = new Map(abonnementer.filter((a) => a.kind === "COACHING").map((a) => [a.userId, a]));
+  const appPerBarn = new Map(abonnementer.filter((a) => a.kind === "PLAYERHQ" && a.plan != null).map((a) => [a.userId, a]));
 
   const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
     timeZone: "Europe/Oslo",
@@ -74,6 +85,7 @@ export default async function V2ForelderOkonomiPreviewPage() {
     abonnement: barn.map((b) => {
       const fornavn = b.child.name.split(" ")[0] ?? b.child.name;
       const ab = abonnementPerBarn.get(b.child.id);
+      const app = appPerBarn.get(b.child.id);
       const okonomi = okonomiPerBarn.get(b.child.id);
       const betaltIAarOre = okonomi?.betaltIAarOre ?? 0;
       const utestaaendeOre = okonomi?.utestaaendeOre ?? 0;
@@ -87,12 +99,14 @@ export default async function V2ForelderOkonomiPreviewPage() {
         creditsRemaining: ab?.creditsRemaining ?? 0,
         betaltIAarOre,
         utestaaendeOre,
+        appAbonnement: app ? { navn: planNavn(app.plan) ?? "PlayerHQ", status: app.status, periodeTil: app.currentPeriodEnd ? NB_DATO.format(app.currentPeriodEnd) : null } : null,
       };
     }),
   };
 
   return (
     <ForelderSkall>
+      <ForelderBarnValg barn={valgListe} valgt={valgt ?? null} alle />
       <ForelderOkonomiV2 data={data} />
     </ForelderSkall>
   );

@@ -1,3 +1,5 @@
+import 'server-only';
+import { requireDataGolfAnalyst } from '@/lib/datagolf/access';
 /**
  * Read-only lesemodul mot `dashboard`-schemaet i akgolf-hq sin egen Supabase-
  * database (prosjekt `dcnxoztjtdqoidaekxry`, London). `dashboard` er talenthq
@@ -56,6 +58,7 @@ function parseRader<T>(schema: z.ZodType<T>, rader: unknown[]): T[] {
 
 /** Ett enkelt DataGolf-spillersøk på `dg_id`. */
 export async function hentDgSpiller(dgId: number): Promise<DgSpiller | null> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select dg_id, name, country_iso3, birth_year, amateur, wagr_id, created_at, updated_at
     from dashboard.dg_players
@@ -71,6 +74,7 @@ export async function sokDgSpillere(
   navnSok: string,
   opts: { limit?: number; offset?: number } = {},
 ): Promise<DgSpiller[]> {
+  await requireDataGolfAnalyst();
   const limit = trygLimit(opts.limit);
   const offset = Math.max(0, opts.offset ?? 0);
   const rader = await prisma.$queryRaw<unknown[]>`
@@ -94,6 +98,7 @@ export async function hentDgRunderForSpiller(
   dgId: number,
   opts: { limit?: number; offset?: number; fraDato?: Date; tilDato?: Date } = {},
 ): Promise<DgRundeMedSg[]> {
+  await requireDataGolfAnalyst();
   const limit = trygLimit(opts.limit);
   const offset = Math.max(0, opts.offset ?? 0);
   const fraDato = opts.fraDato ?? null;
@@ -119,6 +124,7 @@ export async function hentDgRunderForSpiller(
 
 /** Alle runder (med SG) for én event, uansett spiller — brukt for feltoversikt. */
 export async function hentDgRunderForEvent(eventId: string): Promise<DgRundeMedSg[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select
       r.id, r.event_id, r.dg_id, r.round_num, r.course_id, r.score, r.to_par,
@@ -141,6 +147,7 @@ export async function hentTurneringsresultaterForSpiller(
   dgId: number,
   opts: { limit?: number; offset?: number } = {},
 ): Promise<Turneringsresultat[]> {
+  await requireDataGolfAnalyst();
   const limit = trygLimit(opts.limit);
   const offset = Math.max(0, opts.offset ?? 0);
   const rader = await prisma.$queryRaw<unknown[]>`
@@ -158,6 +165,7 @@ export async function hentTurneringsresultaterForSpiller(
 export async function hentTurneringsresultaterForTurnering(
   turneringId: number,
 ): Promise<Turneringsresultat[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select id, tournament_id, player_name, dg_id, wagr_id, class_code, segment,
       finish_pos, total_score, to_par, rounds, created_at, score_type
@@ -172,6 +180,7 @@ export async function hentTurneringsresultaterForTurnering(
 
 /** Kanonisk spiller-mapping (DataGolf/WAGR/NCAA/Srixon) på `dg_id`. */
 export async function hentKanoniskSpillerForDgId(dgId: number): Promise<KanoniskSpiller | null> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select canonical_id, birth_year, dg_id, wagr_id, has_ncaa, has_wagr, has_srixon, source_names
     from dashboard.mv_canonical_players
@@ -184,6 +193,7 @@ export async function hentKanoniskSpillerForDgId(dgId: number): Promise<Kanonisk
 
 /** Kanonisk spiller-mapping direkte på `canonical_id`. */
 export async function hentKanoniskSpiller(canonicalId: string): Promise<KanoniskSpiller | null> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select canonical_id, birth_year, dg_id, wagr_id, has_ncaa, has_wagr, has_srixon, source_names
     from dashboard.mv_canonical_players
@@ -200,6 +210,7 @@ export async function hentKanoniskSpiller(canonicalId: string): Promise<Kanonisk
 export async function hentSpillerAarsstatistikk(
   canonicalId: string,
 ): Promise<SpillerAarsstatistikk[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select canonical_id, year, segment, n_rounds, avg_score, best_score, avg_to_par, best_to_par
     from dashboard.mv_player_yearly_stats
@@ -216,6 +227,7 @@ export async function hentKohortBaseline(
   segment: string,
   year: number,
 ): Promise<KohortBaseline | null> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select segment, year, n_players, n_player_years, avg, stddev, p10, p25, p50, p75, p90, ci95_half_width
     from dashboard.mv_cohort_baselines
@@ -230,6 +242,7 @@ export async function hentKohortBaseline(
 
 /** År-over-år-vekst for én spiller, nyeste år først. */
 export async function hentSpillerVekstrate(canonicalId: string): Promise<SpillerVekstrate[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select canonical_id, year, segment, avg_score, prev_year_score, yoy_delta
     from dashboard.mv_player_growth_rate
@@ -243,6 +256,7 @@ export async function hentSpillerVekstrate(canonicalId: string): Promise<Spiller
 
 /** Klubb-aggregater for ett år (alle klubber), sortert på snittscore. */
 export async function hentKlubbAggregaterForAar(year: number): Promise<KlubbAggregat[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select club, year, segment, n_players, top25_count, club_avg
     from dashboard.mv_club_aggregates
@@ -258,6 +272,7 @@ export async function hentKlubbAggregaterForAar(year: number): Promise<KlubbAggr
 export async function hentCollegePipelineForAar(
   graduationYear: number,
 ): Promise<CollegePipeline[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select university, division, gender, graduation_year, n_norwegian, pre_college_avg
     from dashboard.mv_college_pipeline
@@ -271,6 +286,7 @@ export async function hentCollegePipelineForAar(
 
 /** Progresjon for ett fødselsår, alle år, eldste først. */
 export async function hentKohortProgresjon(birthYear: number): Promise<KohortProgresjon[]> {
+  await requireDataGolfAnalyst();
   const rader = await prisma.$queryRaw<unknown[]>`
     select birth_year, year, active, top25, has_wagr_count, in_college
     from dashboard.mv_cohort_progression
@@ -287,6 +303,7 @@ export async function hentSpillerTidslinje(
   canonicalId: string,
   opts: { limit?: number; offset?: number } = {},
 ): Promise<SpillerTidslinjeRad[]> {
+  await requireDataGolfAnalyst();
   const limit = trygLimit(opts.limit);
   const offset = Math.max(0, opts.offset ?? 0);
   const rader = await prisma.$queryRaw<unknown[]>`

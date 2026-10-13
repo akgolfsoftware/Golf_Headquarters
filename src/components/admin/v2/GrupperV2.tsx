@@ -20,6 +20,8 @@ export interface GruppeV2 {
   id: string;
   navn: string;
   antallMedlemmer: number;
+  miljoHref?: string;
+  miljoNavn?: string;
   nesteOkt: string | null;
   faste: FastTid[];
 }

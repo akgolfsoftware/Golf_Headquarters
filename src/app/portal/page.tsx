@@ -26,6 +26,10 @@ import { TrenerforslagInnboks, type SpillerTrenerforslag } from "@/components/wo
 import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
+import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
+import { lastSamletVolumgrunnlag } from "@/lib/workbench/workbench-samlet-volum";
+import { summerTreningsvolum } from "@/lib/workbench/treningsvolum";
+import { tilDatoKolonne } from "@/lib/workbench/wb-map";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · PlayerHQ" };
@@ -106,12 +110,17 @@ export default async function PortalHjemPage() {
   });
 
   const wp = data.weekProgress;
-  const trening: PH01Props["trening"] = planLaast || wp.plannedMin === 0 ? null : {
+  const grenser = osloUkeGrenser(naa);
+  const volumVindu = { fraDato: OSLO_ISO.format(grenser.start), tilDato: OSLO_ISO.format(grenser.slutt) };
+  const volumgrunnlag = planLaast ? null : await lastSamletVolumgrunnlag(user.id, user.id, volumVindu);
+  const volum = volumgrunnlag ? summerTreningsvolum(volumgrunnlag.okter, {
+    fraDato: tilDatoKolonne(volumVindu.fraDato), tilDato: tilDatoKolonne(volumVindu.tilDato), naa,
+  }) : null;
+  const trening: PH01Props["trening"] = !volum || volum.total.planlagtMinutter === 0 ? null : {
     uke,
-    akser: (["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((k) => {
-      const plan = wp.plannedByAxis[k] ?? 0, gjort = wp.completedByAxis[k] ?? 0;
-      return [AKSE[k]!, plan === 0 && gjort === 0 ? null : gjort / 60, plan / 60];
-    }),
+    akser: volum.akser.map((a) => [a.akse, a.faktiskMinutter === null ? null : a.faktiskMinutter / 60, a.planlagtMinutter / 60]),
+    registrertMinutter: volum.total.faktiskMinutter,
+    manglerRegistrering: volum.total.ukjentOkter + volum.total.legacyAnslagOkter,
     kilde: `ØKTLOGG · UKE ${uke} · ${OSLO_DMA.format(naa)} ${tid(naa)}`,
     planKilde: `PLAN · ØKTENE I UKE ${uke}`,
   };

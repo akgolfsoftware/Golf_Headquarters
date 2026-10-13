@@ -9,7 +9,7 @@
    (lys topplinje, ingen footer) i stedet for mørk MRamme. Én primær CTA:
    «Betal …». Tokens: TL, aldri T. */
 
-import { useState, useTransition, type ReactNode } from "react";
+import { useRef, useState, useTransition, type ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon, Kort, Caps, Knapp, TilbakeLenke } from "@/components/v2";
 import { Inndata, TekstOmraade } from "@/components/v2/skjema";
@@ -80,9 +80,11 @@ function BekreftSkjema({
   const [notes, setNotes] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const sender = useRef(false);
 
   function send(e: React.FormEvent) {
     e.preventDefault();
+    if (sender.current || pending) return;
     if (!name.trim()) {
       setError("Navn er påkrevd.");
       return;
@@ -96,7 +98,9 @@ function BekreftSkjema({
       return;
     }
     setError(null);
+    sender.current = true;
     startTransition(async () => {
+      try {
       const result = await createBookingCheckout({
         slug,
         start,
@@ -112,14 +116,17 @@ function BekreftSkjema({
       }
       // Naviger til Stripe Checkout
       window.location.href = result.url;
+      } catch {
+        setError("Vi fikk ikke bekreftet bestillingen. Kontroller nettet og prøv igjen.");
+      } finally { sender.current = false; }
     });
   }
 
   const prisTekst = new Intl.NumberFormat("nb-NO", {
     style: "currency",
     currency: "NOK",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: priceOre % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
   }).format(priceOre / 100);
 
   return (
@@ -226,7 +233,7 @@ export function MarkedBookingBekreftV2({
           </Kort>
 
           <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
-            Tiden er holdt for deg i 15 minutter. Du betaler trygt via Stripe. Avbestilling senest 24 timer før gir full refusjon.
+            Tiden kontrolleres før du sendes til betaling. Bookingstatusen vises i kvitteringen når bekreftelsen er registrert.
           </p>
         </div>
       </Seksjon>

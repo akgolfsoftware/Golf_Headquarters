@@ -20,6 +20,9 @@ import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
 import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
 import { dagNavnKort } from "@/lib/uke-helpers";
+import { osloPlanDato } from "@/lib/workbench/plan-kontekst";
+import { RullUtMalPanel } from "@/components/admin/v2/RullUtMalPanel";
+import { GruppeMalPublisering } from "@/components/admin/v2/GruppeMalPublisering";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Gruppe-workbench · AgencyOS" };
@@ -30,10 +33,12 @@ const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
   minute: "2-digit",
 });
 
-export default async function GruppeWorkbenchPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function GruppeWorkbenchPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ maned?: string; niva?: string; mal?: string }> }) {
   // G6: gruppe-workbench redigerer gruppens årsplan → EDIT_GROUP_PLANS.
   const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
+  const query = await searchParams;
+  const month = query.maned && /^\d{4}-(0[1-9]|1[0-2])$/.test(query.maned) && Number(query.maned.slice(0, 4)) >= 1900 && Number(query.maned.slice(0, 4)) <= 9998 ? query.maned : osloPlanDato().slice(0, 7);
 
   const gruppe = await prisma.group.findFirst({
     where: { id, ...editableGroupWhere(user) },
@@ -74,16 +79,27 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
 
   // Samme eierskap som /admin/grupper: en coach ser gruppene hun eier, admin alle.
   const grupper = await prisma.group.findMany({
-    where: user.role === "COACH" ? { coachId: user.id } : {},
+    where: editableGroupWhere(user),
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
 
+  const maler = await prisma.planTemplate.findMany({ where: { approved: true }, orderBy: { name: "asc" },
+    select: { id: true, name: true, varighetUker: true, _count: { select: { sessions: true } } } });
+  const gruppeokter = await prisma.workbenchSession.findMany({ where: { groupId: id, origin: "GROUP", sourceGroupSessionId: null,
+    id: { startsWith: "wb-group-" }, date: { gte: new Date(`${osloPlanDato()}T00:00:00Z`) }, status: { in: ["DRAFT","SCHEDULED","PUBLISHED"] } },
+    orderBy: [{ date: "asc" },{ startMinute: "asc" }], take: 101,
+    select: { id: true, title: true, date: true, startMinute: true, durationMinutes: true, status: true } });
+
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AG11Gruppe
+        key={`${gruppe.id}:${month}:${query.niva}`}
+        initialMonth={month}
+        initialMode={query.niva === "maned" ? "maned" : "aar"}
         gruppe={{ id: gruppe.id, navn: gruppe.name, medlemmer: gruppe._count.members }}
         grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))}
+        malUtrulling={<><RullUtMalPanel groupId={gruppe.id} maler={maler.map(m => ({ ...m, sessionCount: m._count.sessions }))} initialTemplateId={query.mal} /><GruppeMalPublisering groupId={gruppe.id} rows={gruppeokter.slice(0,100).map(s => ({ ...s, date: s.date.toISOString().slice(0,10) }))} flere={gruppeokter.length > 100} /></>}
         faste={gruppe.schedules.map((s, i) => ({
           id: String(i),
           dag: dagNavnKort(s.startAt),

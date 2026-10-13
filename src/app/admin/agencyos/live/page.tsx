@@ -13,17 +13,28 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG13LiveTavle } from "@/components/admin/precision/AG13LiveTavle";
 import { hentLiveTavle } from "@/lib/agencyos/live-tavle-data";
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Live-tavle · AgencyOS" };
 
-export default async function LiveTavlePage() {
+export default async function LiveTavlePage({ searchParams }: {
+  searchParams: Promise<{ playerId?: string }>;
+}) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const data = await hentLiveTavle(user.id, user.role === "ADMIN");
+  const { playerId } = await searchParams;
+  if (playerId && !(await canAccessPlayer(user, playerId))) notFound();
+  const selectedPlayer = playerId
+    ? await prisma.user.findUnique({ where: { id: playerId }, select: { id: true, name: true } })
+    : null;
+  if (playerId && !selectedPlayer) notFound();
+  const data = await hentLiveTavle(user.id, user.role === "ADMIN", playerId);
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG13LiveTavle data={data} />
+      <AG13LiveTavle data={data} selectedPlayer={selectedPlayer} />
     </AgencyOSSkall>
   );
 }

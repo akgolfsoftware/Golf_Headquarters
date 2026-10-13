@@ -7,6 +7,7 @@
  */
 
 export const HANDLINGSTYPE_LABEL: Record<string, string> = {
+  COACHING_EMAIL_DRAFT: "E-postutkast etter coaching",
   PYRAMID_ADJUST: "Juster pyramide",
   TRAINING_GAP: "Treningsgap",
   SESSION_ADD: "Legg til økt",

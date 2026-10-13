@@ -23,6 +23,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { anonymiserWorkbenchData } from "@/lib/workbench/workbench-personvern";
 import { anonymiserUkeplandetaljer } from "@/lib/workbench/ukeplan-personvern";
+import { anonymiserMaanedsplaner } from "@/lib/workbench/month-plan-personvern";
 import {
   slettEksterneBrukerdata,
   type EksternSlettingResultat,
@@ -222,6 +223,7 @@ export async function anonymiserBruker(
   }
 
   await anonymiserTnTestdata(userId);
+  await anonymiserMaanedsplaner(userId);
   const vasketWorkbench = await anonymiserWorkbenchData(userId);
 
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);

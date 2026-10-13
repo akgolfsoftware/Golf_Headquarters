@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-13T00:18:57.179176+00:00",
+  "title": "Design System: AK Golf HQ",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "primary"
+      },
+      "primary-hover": {
+        "role": "secondary",
+        "displayName": "primary-hover"
+      },
+      "primary-press": {
+        "role": "secondary",
+        "displayName": "primary-press"
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "white"
+      },
+      "surface-flat": {
+        "role": "neutral",
+        "displayName": "surface-flat"
+      },
+      "surface-sunken": {
+        "role": "neutral",
+        "displayName": "surface-sunken"
+      },
+      "border-hairline": {
+        "role": "neutral",
+        "displayName": "border-hairline"
+      },
+      "border-control": {
+        "role": "neutral",
+        "displayName": "border-control"
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "text-secondary"
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "text-muted"
+      },
+      "signal": {
+        "role": "secondary",
+        "displayName": "signal"
+      },
+      "signal-hover": {
+        "role": "secondary",
+        "displayName": "signal-hover"
+      },
+      "signal-tint": {
+        "role": "secondary",
+        "displayName": "signal-tint"
+      },
+      "ok": {
+        "role": "secondary",
+        "displayName": "ok"
+      },
+      "ok-tint": {
+        "role": "secondary",
+        "displayName": "ok-tint"
+      },
+      "warn": {
+        "role": "secondary",
+        "displayName": "warn"
+      },
+      "warn-tint": {
+        "role": "secondary",
+        "displayName": "warn-tint"
+      },
+      "info": {
+        "role": "secondary",
+        "displayName": "info"
+      },
+      "info-tint": {
+        "role": "secondary",
+        "displayName": "info-tint"
+      },
+      "night-page": {
+        "role": "neutral",
+        "displayName": "night-page"
+      },
+      "night-flat": {
+        "role": "neutral",
+        "displayName": "night-flat"
+      },
+      "night-card": {
+        "role": "neutral",
+        "displayName": "night-card"
+      },
+      "night-selected": {
+        "role": "neutral",
+        "displayName": "night-selected"
+      },
+      "night-secondary": {
+        "role": "neutral",
+        "displayName": "night-secondary"
+      },
+      "night-body": {
+        "role": "neutral",
+        "displayName": "night-body"
+      },
+      "axis-fys": {
+        "role": "secondary",
+        "displayName": "axis-fys"
+      },
+      "axis-tek": {
+        "role": "secondary",
+        "displayName": "axis-tek"
+      },
+      "axis-slag": {
+        "role": "secondary",
+        "displayName": "axis-slag"
+      },
+      "axis-spill": {
+        "role": "secondary",
+        "displayName": "axis-spill"
+      },
+      "axis-turn": {
+        "role": "secondary",
+        "displayName": "axis-turn"
+      },
+      "wang-navy": {
+        "role": "secondary",
+        "displayName": "wang-navy"
+      },
+      "wang-action": {
+        "role": "secondary",
+        "displayName": "wang-action"
+      },
+      "wang-action-hover": {
+        "role": "secondary",
+        "displayName": "wang-action-hover"
+      },
+      "wang-active": {
+        "role": "secondary",
+        "displayName": "wang-active"
+      },
+      "wang-page": {
+        "role": "secondary",
+        "displayName": "wang-page"
+      },
+      "wang-secondary": {
+        "role": "secondary",
+        "displayName": "wang-secondary"
+      },
+      "tn-navy": {
+        "role": "secondary",
+        "displayName": "tn-navy"
+      },
+      "tn-navy-hover": {
+        "role": "secondary",
+        "displayName": "tn-navy-hover"
+      },
+      "tn-red": {
+        "role": "secondary",
+        "displayName": "tn-red"
+      },
+      "tn-page": {
+        "role": "secondary",
+        "displayName": "tn-page"
+      },
+      "tn-ink": {
+        "role": "secondary",
+        "displayName": "tn-ink"
+      },
+      "tn-secondary": {
+        "role": "secondary",
+        "displayName": "tn-secondary"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "display",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "title-l": {
+        "displayName": "title-l",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "title-m": {
+        "displayName": "title-m",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "title-s": {
+        "displayName": "title-s",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "body": {
+        "displayName": "body",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "instruction": {
+        "displayName": "instruction",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "source": {
+        "displayName": "source",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "label": {
+        "displayName": "label",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "button": {
+        "displayName": "button",
+        "purpose": "Ord og lesbar tekst."
+      },
+      "num": {
+        "displayName": "num",
+        "purpose": "Tall og måling."
+      },
+      "metric": {
+        "displayName": "metric",
+        "purpose": "Tall og måling."
+      },
+      "metric-l": {
+        "displayName": "metric-l",
+        "purpose": "Tall og måling."
+      },
+      "clock-run-s": {
+        "displayName": "clock-run-s",
+        "purpose": "Tall og måling."
+      },
+      "clock-run": {
+        "displayName": "clock-run",
+        "purpose": "Tall og måling."
+      }
+    },
+    "shadows": [
+      {
+        "name": "raised",
+        "value": "0 1px 2px rgba(20,20,19,.08)",
+        "purpose": "Svakt løftet kontroll i lyst AK; none i natt."
+      },
+      {
+        "name": "pop",
+        "value": "0 8px 24px rgba(20,20,19,.12),0 1px 2px rgba(20,20,19,.08)",
+        "purpose": "Popover i lyst AK."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 64px rgba(20,20,19,.24)",
+        "purpose": "Modal i lyst AK."
+      }
+    ],
+    "motion": [
+      {
+        "name": "dur-1",
+        "value": "120ms",
+        "purpose": "Kort respons."
+      },
+      {
+        "name": "dur-2",
+        "value": "160ms",
+        "purpose": "Trykk og fargeskift."
+      },
+      {
+        "name": "dur-3",
+        "value": "200ms",
+        "purpose": "Innholdsbytte."
+      },
+      {
+        "name": "dur-4",
+        "value": "240ms",
+        "purpose": "Etablert øvre normaltrinn."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.23,1,.32,1)",
+        "purpose": "Inn og trykkrespons."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "live-small",
+        "value": "480px"
+      },
+      {
+        "name": "month-small",
+        "value": "600px"
+      },
+      {
+        "name": "desktop-shell",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primærknapp",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Felles Precision-variant med separat fokus og trykkrespons.",
+      "html": "<button class=\"ds-btn ds-primary\">Lagre</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-h,44px);padding:0 16px;border:1px solid transparent;border-radius:var(--radius,8px);font:var(--type-button,500 .875rem/1 \"IBM Plex Sans\",sans-serif);cursor:pointer;transition:background-color var(--dur-fast,160ms) ease,transform var(--dur-press,160ms) var(--ease-out,cubic-bezier(.23,1,.32,1))}.ds-btn:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}.ds-btn:active:not(:disabled){transform:scale(var(--press-scale,.96))}.ds-btn:disabled{opacity:.4;cursor:not-allowed}.ds-primary{background:var(--primary,#141413);color:var(--text-on-primary,#fff)}.ds-primary:hover:not(:disabled){background:var(--primary-hover,#3a3935)}"
+    },
+    {
+      "name": "Sekundærknapp",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Felles Precision-variant med separat fokus og trykkrespons.",
+      "html": "<button class=\"ds-btn ds-secondary\">Lagre</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-h,44px);padding:0 16px;border:1px solid transparent;border-radius:var(--radius,8px);font:var(--type-button,500 .875rem/1 \"IBM Plex Sans\",sans-serif);cursor:pointer;transition:background-color var(--dur-fast,160ms) ease,transform var(--dur-press,160ms) var(--ease-out,cubic-bezier(.23,1,.32,1))}.ds-btn:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}.ds-btn:active:not(:disabled){transform:scale(var(--press-scale,.96))}.ds-btn:disabled{opacity:.4;cursor:not-allowed}.ds-secondary{background:var(--surface-card,#fff);color:var(--text-primary,#141413);border-color:var(--border-strong,#c9c4ba)}.ds-secondary:hover:not(:disabled){border-color:var(--border-ink,#141413)}"
+    },
+    {
+      "name": "Ghost-knapp",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Felles Precision-variant med separat fokus og trykkrespons.",
+      "html": "<button class=\"ds-btn ds-ghost\">Lagre</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-h,44px);padding:0 16px;border:1px solid transparent;border-radius:var(--radius,8px);font:var(--type-button,500 .875rem/1 \"IBM Plex Sans\",sans-serif);cursor:pointer;transition:background-color var(--dur-fast,160ms) ease,transform var(--dur-press,160ms) var(--ease-out,cubic-bezier(.23,1,.32,1))}.ds-btn:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}.ds-btn:active:not(:disabled){transform:scale(var(--press-scale,.96))}.ds-btn:disabled{opacity:.4;cursor:not-allowed}.ds-ghost{background:transparent;color:var(--text-primary,#141413)}.ds-ghost:hover:not(:disabled){background:var(--surface-hover,#f1eee8)}"
+    },
+    {
+      "name": "Signalknapp",
+      "kind": "button",
+      "refersTo": "button-signal",
+      "description": "Felles Precision-variant med separat fokus og trykkrespons.",
+      "html": "<button class=\"ds-btn ds-signal\">Lagre</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-h,44px);padding:0 16px;border:1px solid transparent;border-radius:var(--radius,8px);font:var(--type-button,500 .875rem/1 \"IBM Plex Sans\",sans-serif);cursor:pointer;transition:background-color var(--dur-fast,160ms) ease,transform var(--dur-press,160ms) var(--ease-out,cubic-bezier(.23,1,.32,1))}.ds-btn:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}.ds-btn:active:not(:disabled){transform:scale(var(--press-scale,.96))}.ds-btn:disabled{opacity:.4;cursor:not-allowed}.ds-signal{background:var(--signal,#9b2415);color:var(--white,#fff)}.ds-signal:hover:not(:disabled){background:var(--signal-hover,#7d1c10)}"
+    },
+    {
+      "name": "Tekstfelt",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Kontrollkant, lesbar tekst og separat fokus.",
+      "html": "<input class=\"ds-input\" aria-label=\"Notat\" placeholder=\"Skriv notat\">",
+      "css": ".ds-input{height:44px;padding:0 12px;background:var(--surface-card,#fff);color:var(--text-primary,#141413);border:1px solid var(--border-control,#686560);border-radius:var(--radius,8px);font:400 1rem/1.5 var(--font-sans,\"IBM Plex Sans\",sans-serif)}.ds-input::placeholder{color:var(--text-faint,#686560)}.ds-input:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px;border-color:var(--border-ink,#141413)}"
+    },
+    {
+      "name": "Arbeidskort",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flatt kort med presis avgrensning.",
+      "html": "<article class=\"ds-card\"><h2>Øktplan</h2><p>Fokus og målegrunnlag</p></article>",
+      "css": ".ds-card{padding:16px;border:1px solid var(--border-hairline,#ddd9d1);border-radius:var(--radius,8px);background:var(--surface-card,#fff);color:var(--text-primary,#141413);box-shadow:none}.ds-card h2{font:var(--type-title-s,600 1.0625rem/1.25 \"IBM Plex Sans\",sans-serif);margin:0 0 12px}.ds-card p{font:var(--type-body,400 .875rem/1.5 \"IBM Plex Sans\",sans-serif);margin:0}"
+    },
+    {
+      "name": "Venstreskinne",
+      "kind": "nav",
+      "description": "Felles AK-skinne med aktiv side og separat fokus.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Hovedmeny\"><a href=\"#idag\" aria-current=\"page\" aria-label=\"I dag\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2\"/></svg></a></nav>",
+      "css": ".ds-rail{width:56px;padding:8px 0;background:var(--surface-flat,#faf8f3);border-right:1px solid var(--border-hairline,#ddd9d1);display:flex;justify-content:center}.ds-rail a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius,8px);color:var(--text-muted,#686560)}.ds-rail a[aria-current=\"page\"]{background:var(--surface-card,#fff);color:var(--text-primary,#141413);box-shadow:inset 0 0 0 1px var(--border-hairline,#ddd9d1)}.ds-rail a:hover{background:var(--surface-hover,#f1eee8)}.ds-rail a:focus-visible{outline:2px solid var(--focus-ring,#1d3557);outline-offset:3px}"
+    },
+    {
+      "name": "Statusmerke",
+      "kind": "chip",
+      "description": "Tilstandsnavn og prikk; ikke en handling.",
+      "html": "<span class=\"ds-status\"><span></span>Lagret</span>",
+      "css": ".ds-status{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-pill,999px);font:500 .8125rem/1 var(--font-sans,\"IBM Plex Sans\",sans-serif);white-space:nowrap;color:var(--ok,#2f6b3a);background:var(--ok-tint,#eaf2ea)}.ds-status>span{width:6px;height:6px;border-radius:999px;background:currentColor}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Precision Athletics",
+    "overview": "Precision Athletics er den fastlagte retningen i beslutning HQ-UPGRADE-2026-10-12. Lyse arbeidsflater, grafitt som handling og Precision natt i Live videreføres fra eksisterende kode. WANG og Team Norway beholder egen skrift, farge og form gjennom hele innholdet.\n\nDette er en registrering av den lokale oppgraderingskoden, ikke en erklæring om publisert produksjon. Ingen konseptroll eller ferdig skjermkomposisjon hevdes godkjent. Skjermprøvene ved 390/1440 px og avslutningen av åtte konkrete review-funn gir avgrenset bevis; alle 198 innganger, fysisk telefon, mikrofon, VoiceOver og produksjon er ikke godkjent av dette dokumentet.",
+    "keyCharacteristics": [
+      "Ord og tall har ulike skriftroller.",
+      "Lyst arbeid, natt for aktiv gjennomføring.",
+      "Organisasjonens profil følger innholdet, ikke bare logoen.",
+      "Rolige flater, fylt valg og separat fokus."
+    ],
+    "rules": [
+      {
+        "name": "Ord og tall",
+        "body": "Instruksjon, navigasjon og forklaring bruker tekstfonten; mål, tid og mengde bruker IBM Plex Mono med tabelltall.",
+        "section": "typography"
+      },
+      {
+        "name": "Farge har oppgave",
+        "body": "Grafitt bærer AK-handling. Rust bærer viktige signaler. Aksefarger identifiserer treningsinnhold, ikke knapper.",
+        "section": "colors"
+      },
+      {
+        "name": "Flate før skygge",
+        "body": "Arbeidsinnhold skilles med tone, luft og presise linjer; popover og modal kan ha den etablerte myke skyggen. Team Norway er uten skygger.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do bruk organisasjonens profil også i felt, tabeller og arbeidsinnhold.",
+      "Do bruk fyll og tydelig tekst eller hake for valg, og egen fokusmarkering.",
+      "Do behold tydelig navn og bredde på knappen mens lagring pågår.",
+      "Do bruk faktiske sportsfoto som atmosfære med dokumentert proveniens."
+    ],
+    "donts": [
+      "Don't bruk aksefarger som generell handlingsfarge.",
+      "Don't bruk monoskrift til vanlig instruksjon eller generell navigasjon.",
+      "Don't legg viktig instruksjon oppå sportsfoto.",
+      "Don't arve overskriftens kicker eller eyebrow som ny husstil."
+    ]
+  }
+}

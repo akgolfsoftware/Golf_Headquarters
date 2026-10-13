@@ -120,7 +120,7 @@ export function AG11Fysisk({ playerId, spillerNavn, data, actions, routeSurface 
     {melding && <InlineVarsel tone="warn">{melding}</InlineVarsel>}
     {!blokk ? <TomTilstand icon={Dumbbell} title="Ingen fysisk plan ennå" text="Lag en blokk med uker og økter. Øktene publiseres til spillerens Plan og I dag."
       actions={<Knapp icon={Plus} disabled={!actions.opprettFysiskBlokk} onClick={() => setNyBlokk(true)}>Legg til fysisk blokk</Knapp>} /> : <>
-      {blokker.length > 1 && <div role="tablist" aria-label="Blokker" className="a9-faner">{blokker.map((b) => <Valgpille key={b.id} rolle="tab" valgt={b.id === blokk.id} onClick={() => { setBlokkId(b.id); setUkeId(b.weeks[0]?.id ?? ""); }}>{`${b.title} · ${spenn(b.startDate, b.endDate)}`}</Valgpille>)}</div>}
+      {blokker.length > 1 && <div role="group" aria-label="Blokker" className="a9-faner">{blokker.map((b) => <Valgpille key={b.id} rolle="button" valgt={b.id === blokk.id} onClick={() => { setBlokkId(b.id); setUkeId(b.weeks[0]?.id ?? ""); }}>{`${b.title} · ${spenn(b.startDate, b.endDate)}`}</Valgpille>)}</div>}
       {blokk.changedAfterPublish && <InlineVarsel tone="warn" tittel="Endret etter publisering">Spilleren ser forrige publiserte versjon. Publiser på nytt for å sende endringene.</InlineVarsel>}
       {blokk.conflicts.map((c) => <InlineVarsel key={c.id} tone="warn" tittel={c.title}>{[c.date ? ddmm(c.date) : null, c.details].filter(Boolean).join(" · ") || "—"}</InlineVarsel>)}
       <div className="a9-to">
@@ -226,7 +226,7 @@ export function AG11Fysisk({ playerId, spillerNavn, data, actions, routeSurface 
       <div role="list" className="a9-liste">{DAGNAVN.map((d, i) => {
         const dato = pluss(uke.weekStart, i);
         return <button key={d} type="button" role="listitem" className={`a9-listerad${i ? " a9-listerad--skille" : ""}`} disabled={flytt.date === dato || pending}
-          style={{ all: "unset", boxSizing: "border-box", cursor: "pointer", display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", width: "100%", minHeight: 48, alignItems: "center", borderTop: i ? "1px solid var(--border-hairline)" : "none", opacity: flytt.date === dato ? 0.5 : 1 }}
+          style={{ appearance: "none", border: 0, padding: 0, background: "transparent", boxSizing: "border-box", cursor: "pointer", display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", width: "100%", minHeight: 48, alignItems: "center", borderTop: i ? "1px solid var(--border-hairline)" : "none", opacity: flytt.date === dato ? 0.5 : 1 }}
           onClick={() => { const id = flytt.id; setFlytt(null); flyttTil(id, dato); }}>
           <span className="a9-listerad__tittel">{d} {ddmm(dato)}</span><span className="a9-caps">{uke.sessions.filter((s) => s.date === dato).length} FYS-ØKTER</span>
         </button>;
@@ -275,7 +275,7 @@ export function AG11Turnering({ playerId, spillerNavn, data, actions, routeSurfa
         </button>)}</div>
       </section>
       <section className="pa-card a9-kort" aria-label={plan.title}>
-        <div role="tablist" aria-label="Turneringsplan" className="a9-faner">{FANER.map((f) => <Valgpille key={f} rolle="tab" valgt={fane === f} onClick={() => setFane(f)}>{f}</Valgpille>)}</div>
+        <div role="group" aria-label="Turneringsplan" className="a9-faner">{FANER.map((f) => <Valgpille key={f} rolle="button" valgt={fane === f} onClick={() => setFane(f)}>{f}</Valgpille>)}</div>
         {fane === "Forberedelse" && (plan.preparations.length === 0 ? <Caps>INGEN FORBEREDELSER REGISTRERT</Caps> : <div role="list" className="a9-liste">{plan.preparations.map((p, i) => <Listerad key={p.id} forste={i === 0} tittel={p.title} under={`${dagOgDato(p.date)} · ${p.category}`.toUpperCase()} verdi={p.completedAt ? "Gjort" : "—"} />)}</div>)}
         {fane === "Turneringsdager" && <>
           <Nokkelverdi items={[

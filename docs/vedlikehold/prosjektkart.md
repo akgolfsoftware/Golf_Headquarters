@@ -32,6 +32,7 @@ Hele prosjektmappen er kartlagt på filnivå, inkludert ignorerte filer og gener
 | `supabase-meg/` | Separat personlig databaseskjema. Beholdt på stabil sti. |
 | `designsystem/` | Train-lock, AK Golf, WANG, Team Norway og canvas. Alle leverte filer er bevart byte for byte; nytt kart ligger på rotnivå. |
 | `docs/` | Samordnet dokumentinngang, aktiv arbeidsliste, daterte underlag og tydelig arkiv. Hele registeret lenker til hvert dokument. |
+| `PRODUCT.md`, `DESIGN.md` | Produktkontekst og dokumentasjon av det bygde designsystemet. Beskriver oppgraderingen; erstatter ikke produktregler eller valgt designautoritet. |
 | `scripts/` | Kontroller, dataimport, bildeverktøy og lokale driftsjobber. Aktive stier beholdt; komplett katalog; utgått designverktøy flyttet. |
 | `scripts/arkiv/` | Historiske engangsverktøy, inkludert utgåtte designverktøy. Ikke aktive npm-innganger. |
 | `tests/` | Nettleser-, komponent- og visuelle tester. Testkoden beholdt. Lokale bilder er arkivert utenfor Git. |

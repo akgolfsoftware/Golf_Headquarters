@@ -20,6 +20,8 @@ import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { logout } from "@/lib/auth/logout";
 import { TL } from "@/lib/v2/train-lock";
+import "@/styles/precision-athletics.css";
+import "@/styles/precision-support-upgrade.css";
 
 
 export const metadata: Metadata = {
@@ -47,6 +49,8 @@ export default async function InnsynLayout({
 
   return (
     <div
+      className="pa-root support-innsyn"
+      data-design="precision-athletics"
       style={{
         minHeight: "100dvh",
         background: TL.scene,

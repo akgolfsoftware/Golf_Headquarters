@@ -9,6 +9,7 @@
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { forelderKontekstHref } from "@/lib/forelder-kontekst";
 import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { byggBookingNyData } from "@/lib/portal-booking/ny-wizard-data";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
@@ -40,9 +41,9 @@ export default async function ForelderNyBookingPage({ params, searchParams }: Pr
 
   if (resultat.ingenTjenester) {
     return (
-            <ForelderSkall>
+            <ForelderSkall barnId={barnId}>
         <div className="pa-side">
-        <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
+        <TilbakeLenke href={forelderKontekstHref("/forelder/bookinger", barnId)}>Bookinger</TilbakeLenke>
         <Kort>
           <TomTilstand
             icon="target"
@@ -56,9 +57,9 @@ export default async function ForelderNyBookingPage({ params, searchParams }: Pr
   }
 
   return (
-        <ForelderSkall>
+        <ForelderSkall barnId={barnId}>
       <div className="pa-side">
-      <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
+      <TilbakeLenke href={forelderKontekstHref("/forelder/bookinger", barnId)}>Bookinger</TilbakeLenke>
       <BookingNyV2 data={{ ...resultat.data, merkelapp: "Foreldreportal" }} />
           </div>
     </ForelderSkall>

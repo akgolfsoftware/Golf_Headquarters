@@ -10,7 +10,7 @@ import { byggEierNokkel, erGyldigEierId, filtrerEideRader } from "./eier-scope";
 const DB_NAVN = "akgolf-live-drill-ko";
 const DB_VERSJON = 2;
 const BUTIKK = "live-drill-ko-v2";
-export type LiveDrillLagreFn = (sessionId: string, drills: LiveDrillReps[]) => Promise<{ ok: boolean }>;
+export type LiveDrillLagreFn = (sessionId: string, drills: LiveDrillReps[], snapshot: LiveDrillKoRad) => Promise<{ ok: boolean }>;
 export type LiveSyncResult = "tom" | "synket" | "venter" | "feilet" | "gitt-opp";
 
 function apneDb(): Promise<IDBDatabase | null> {
@@ -55,7 +55,8 @@ export async function lagreLiveDrillUtkast(eierId: string, sessionId: string, dr
     const req = store.get(byggEierNokkel(eierId, sessionId));
     req.onsuccess = () => {
       const previous: LiveDrillKoRad | undefined = req.result;
-      const changed = !previous || JSON.stringify(previous.drills) !== JSON.stringify(drills);
+      const changed = !previous || JSON.stringify(previous.drills) !== JSON.stringify(drills)
+        || previous.totalSec !== totalSec || previous.paused !== clock?.paused;
       const row: LiveDrillKoRad = {
         ...(previous ?? byggLiveDrillKoRad(eierId, sessionId, drills, totalSec, new Date())),
         drills, totalSec, ...clock,
@@ -91,7 +92,7 @@ export function synkLiveDrillKo(eierId: string, sessionId: string, save: LiveDri
   const run = async (): Promise<LiveSyncResult> => {
     const row = await lesLiveDrillUtkast(eierId, sessionId);
     if (!row || (row.synketRevision != null && row.synketRevision === row.revision)) return "tom";
-    const response = await save(row.sessionId, row.drills).catch(() => ({ ok: false }));
+    const response = await save(row.sessionId, row.drills, row).catch(() => ({ ok: false }));
     return await transaksjon<LiveSyncResult>("readwrite", (store, result) => {
       const req = store.get(sendingKey);
       req.onsuccess = () => {

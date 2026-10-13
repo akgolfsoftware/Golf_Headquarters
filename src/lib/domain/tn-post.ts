@@ -17,6 +17,7 @@ import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
   TEAM_NORWAY_SLUG,
+  orgGruppeWhere,
 } from "@/lib/domain/grupper";
 import {
   beregnLesekvittering,
@@ -29,12 +30,9 @@ import {
   type TnPostKind,
 } from "@/lib/domain/tn-post-regler";
 
-async function erTeamNorwayGruppe(groupId: string): Promise<boolean> {
-  const gruppe = await prisma.group.findUnique({
-    where: { id: groupId },
-    select: { slug: true },
-  });
-  return gruppe?.slug === TEAM_NORWAY_SLUG;
+async function erOrgGruppe(groupId: string): Promise<boolean> {
+  const gruppe = await prisma.group.findFirst({ where: { id: groupId, arkivertAt: null, AND: [orgGruppeWhere()] }, select: { id: true } });
+  return gruppe !== null;
 }
 
 async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean> {
@@ -55,7 +53,7 @@ export type TnViewerRolle = "TRENER" | "SPILLER" | "FORESATT" | null;
  * `kanSeGruppepost`, men med rollen synlig for UI-et.
  */
 export async function hentViewerRolleIGruppe(groupId: string, viewerId: string): Promise<TnViewerRolle> {
-  if (!(await erTeamNorwayGruppe(groupId))) return null;
+  if (!(await erOrgGruppe(groupId))) return null;
   const medlemskap = await prisma.groupMember.findFirst({
     where: { groupId, userId: viewerId, ...aktivtMedlemskapWhere() },
     select: { role: true },
@@ -108,7 +106,7 @@ export async function opprettGruppepost(input: {
   tekst: string;
   kind: TnPostKind;
 }): Promise<{ id: string }> {
-  if (!(await erTeamNorwayGruppe(input.groupId))) {
+  if (!(await erOrgGruppe(input.groupId))) {
     throw new Error("Du er ikke trener i denne gruppen");
   }
   const lovlig = await erAktivtMedlem(input.groupId, input.forfatterId);
@@ -499,7 +497,7 @@ export async function sendPaaminnelse(postId: string, trenerId: string): Promise
   const mottakere = (await gruppensSpillerIder(post.groupId)).filter((id) => !lest.has(id));
   if (mottakere.length === 0) throw new Error("Alle har lest innlegget");
 
-  const gruppe = await prisma.group.findUnique({ where: { id: post.groupId }, select: { name: true } });
+  const gruppe = await prisma.group.findUnique({ where: { id: post.groupId }, select: { name: true, slug: true } });
   await Promise.all(
     mottakere.map((userId) =>
       notify({
@@ -507,7 +505,7 @@ export async function sendPaaminnelse(postId: string, trenerId: string): Promise
         type: "melding",
         title: "Påminnelse: nytt innlegg fra trenerteamet",
         body: gruppe ? `Les innlegget i ${gruppe.name}.` : undefined,
-        link: `/team-norway/${post.groupId}`,
+        link: gruppe?.slug === TEAM_NORWAY_SLUG ? `/team-norway/${post.groupId}` : "/team-wang/meldinger",
         groupKey: tnPaaminnelseNokkel(postId),
       }),
     ),
@@ -517,7 +515,7 @@ export async function sendPaaminnelse(postId: string, trenerId: string): Promise
 
 /** Samme ressursport brukes før filskriving og før postlagring. */
 export async function krevDokumentOpplastingstilgang(groupId: string, forfatterId: string): Promise<void> {
-  if (!(await erTeamNorwayGruppe(groupId))) {
+  if (!(await erOrgGruppe(groupId))) {
     throw new Error("Du er ikke trener i denne gruppen");
   }
   const lovlig = await erAktivtMedlem(groupId, forfatterId);

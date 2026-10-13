@@ -36,6 +36,7 @@ export interface WangElev {
   /** Bruker-id. Trengs for å åpne IUP-samtalen for én elev fra trenerflaten. */
   id: string;
   navn: string;
+  trinn?: string | null;
   rolle: string; // PLAYER | ASSISTANT | COACH (kanon: src/lib/domain/grupper.ts)
 }
 
@@ -188,7 +189,7 @@ export async function hentWangGruppe(
           orderBy: { joinedAt: "asc" },
           select: {
             role: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true, email: true, ...(medElevnavn ? { schoolYear: true as const } : {}) } },
           },
         },
         schedules: {
@@ -230,6 +231,7 @@ export async function hentWangGruppe(
             id: m.user.id,
             navn: m.user.name?.trim() || m.user.email,
             rolle: m.role,
+            trinn: m.user.schoolYear ?? null,
           }))
           .filter((e) => e.navn)
           .sort((a, b) => a.navn.localeCompare(b.navn, "nb"))

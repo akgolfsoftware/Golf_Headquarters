@@ -53,8 +53,8 @@ export default async function BekreftPage({ params, searchParams }: Props) {
   const prisTekst = new Intl.NumberFormat("nb-NO", {
     style: "currency",
     currency: "NOK",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: service.priceOre % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
   }).format(service.priceOre / 100);
 
   return (

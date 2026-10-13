@@ -3,6 +3,7 @@
 // skal indekseres av søkemotorer (P15 — datasikkerhets-audit + GDPR).
 
 import type { Metadata } from "next";
+import "@/styles/precision-support-upgrade.css";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },

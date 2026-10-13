@@ -1,12 +1,13 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * SG-broen (T6): syncer spillerens runde-SG inn i BrukerSgInput slik at
- * DataGolf-sammenligningen («Deg mot touren») får grunnlag uten at spilleren
+ * vanlig spilleranalyse får et kildekontrollert grunnlag uten at spilleren
  * må taste tallene manuelt på /stats/sg-sammenlign/start.
  *
  * Aggregerer de siste 20 rundene med SG-data (sgTotal registrert) til snitt
  * per kategori + snittscore + periode, og skriver ÉN BrukerSgInput-rad med
- * kilde "PLAYERHQ": nyeste PLAYERHQ-rad oppdateres hvis den finnes, ellers
- * opprettes ny (modellen har ingen unik nøkkel per kilde). Manuelle rader
+ * kilde "PLAYERHQ_INDEPENDENT_V1": nyeste kildekontrollerte rad oppdateres hvis den finnes, ellers
+ * opprettes ny (modellen har ingen unik nøkkel per kilde). Den gamle PLAYERHQ-kopien brukes ikke. Manuelle rader
  * (kilde MANUELL/TRACKMAN/NLB) røres aldri.
  *
  * Best-effort: `synkroniserSgFraRunder` kaster ALDRI — runde-lagringen skal
@@ -20,7 +21,7 @@ import { logError } from "@/lib/error-tracking";
 const MAKS_RUNDER = 20;
 
 /** Kilde-verdien broen eier i BrukerSgInput. */
-export const SG_BRO_KILDE = "PLAYERHQ";
+export const SG_BRO_KILDE = "PLAYERHQ_INDEPENDENT_V1";
 
 export type SgBroRunde = {
   playedAt: Date;
@@ -82,11 +83,11 @@ export function beregnSgAggregat(runder: SgBroRunde[]): SgAggregat | null {
  */
 export async function synkroniserSgFraRunder(userId: string): Promise<void> {
   try {
-    const runder = await prisma.round.findMany({
+    const runder = await (prisma.round.findMany({
       where: { userId, sgTotal: { not: null } },
       orderBy: { playedAt: "desc" },
       take: MAKS_RUNDER,
-      select: {
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},
         playedAt: true,
         score: true,
         sgTotal: true,
@@ -95,7 +96,7 @@ export async function synkroniserSgFraRunder(userId: string): Promise<void> {
         sgArg: true,
         sgPutt: true,
       },
-    });
+    })).then(rows => rows.map(withoutDataGolfRoundSg));
 
     const aggregat = beregnSgAggregat(runder);
     if (!aggregat) return;

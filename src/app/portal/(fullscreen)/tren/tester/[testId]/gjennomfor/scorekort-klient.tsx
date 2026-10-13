@@ -2,42 +2,19 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Test-gjennomføring — Paper-port PP-3 (fase 1).
- * Fasit: designsystem/paper/fase1/playerhq-test-gjennomfor.html.
- * Avvik:
- * - Funksjonell retting: obligatoriske felt, valgverdier og fullstendig test før fullføring.
- * - Feilvisningen gir tilgang til å rette registreringene. Visuell retning er fortsatt åpen.
- *
- * ETT skjermbilde (fasiten har ingen stegmaskin): protokoll-kortet
- * (beskrivelse-prosa + Scoring/Område/Foreslått mål med «Hvorfor dette
- * tallet»-details) og scorekortet på samme flate. Forsøksrad = nr | label |
- * én stor knapp som sykler uregistrert → OK → bom → uregistrert
- * (aria-pressed). Løpende score over radene. Clay-CTA «Lagre testen» i fast
- * bunn-dokk — blokkerer med toast når ingenting er registrert.
- *
- * Felter som ikke passer OK/bom-syklusen (målt verdi, poeng, flere felter)
- * beholder feltinput inline i raden — ingen funksjon fjernes. Kontekst og
- * notat består (sammenslått under scorekortet).
- *
- * Lagring: serveren krever verdi på alle innsendte forsøk, så «lagre når som
- * helst» sendes som de registrerte forsøkene alene — og kun når de er en
- * sammenhengende rekke fra forsøk 1 (avbrutt test = stoppet underveis). Da er
- * indeks-paringen mot protokollens mål per slag fortsatt korrekt for alle
- * scoring-typer. Hull i rekka → forklarende toast, aldri korrupt lagring.
- *
- * Live-økt (T5, TestSession): første registrering starter en IN_PROGRESS-økt;
- * hvert førte forsøk speiles dit (debounced, best effort — klient-staten er
- * fasit). Går du ut midt i testen, gjenopptas økta med det som var ført.
- * «Lagre testen» fullfører økta (TestResult + COMPLETED + talent-sync);
- * «Avbryt uten å lagre» setter den ABORTED.
- *
- * Ved suksess redirecter serveren til testsiden (?lagret=1) — kvitteringen
- * bor der (samme mønster som før porten).
+ * Hele den validerte protokollen i Precision-fokusrammen. Visningen og
+ * serveren bruker samme scoremotor. Resultatet fullføres først når alle
+ * obligatoriske felt er ført; feil beholder registreringene i fanen.
+ * Eksisterende TestSession-speiling støtter gjenopptak når lagringen lykkes.
+ * Serverens redirect til testsiden er den bekreftede resultatkvitteringen.
  */
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, unstable_rethrow } from "next/navigation";
+import { Dialogboks } from "@/components/precision/pa-a4";
+import { Knapp as PrecisionKnapp } from "@/components/precision/pa";
+import { osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import { Knapp, TekstOmraade } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
@@ -72,12 +49,7 @@ function parseNorsk(raw: string): number | null {
 
 const fmt = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 });
 
-function iDagISO(): string {
-  const d = new Date();
-  const m = `${d.getMonth() + 1}`.padStart(2, "0");
-  const dag = `${d.getDate()}`.padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${dag}`;
-}
+function iDagISO(): string { return osloPlanDato(); }
 
 /** Stripper tomme kontekst-felter; returnerer undefined hvis alt er tomt. */
 function renKontekst(k: Kontekst): Record<string, string> | undefined {
@@ -94,11 +66,9 @@ function renKontekst(k: Kontekst): Record<string, string> | undefined {
 /* ── Delte stiler ─────────────────────────────────────────────── */
 
 const lblStil: CSSProperties = {
-  fontFamily: TL.font.mono,
-  fontSize: 9,
-  fontWeight: 700,
-  letterSpacing: "0.10em",
-  textTransform: "uppercase",
+  fontFamily: TL.font.sans,
+  fontSize: 13,
+  fontWeight: 500,
   color: TL.mute,
 };
 
@@ -120,7 +90,7 @@ const inputStil: CSSProperties = {
 export function ScorekortKlient({
   testId,
   beskrivelse,
-  scoringRule,
+  scoringRule: _scoringRule,
   omraade,
   sist,
   spec,
@@ -142,12 +112,14 @@ export function ScorekortKlient({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const actionLock = useRef(false);
 
   const [verdier, setVerdier] = useState<Verdier>(gjenopptak?.verdier ?? {});
   const [historikk, setHistorikk] = useState<Verdier[]>([]);
   const [notat, setNotat] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [cancelOpen, setCancelOpen] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [kontekst, setKontekst] = useState<Kontekst>({
     dato: iDagISO(),
@@ -275,12 +247,6 @@ export function ScorekortKlient({
     ? `av ${antallForsok}`
     : (motor.details.unit ?? spec.unit ?? null);
 
-  /** Fasitens foreslåtte mål: forrige resultat pluss én (kun telle-tester). */
-  const foreslaatt =
-    erTelling && sist !== null
-      ? Math.min(Math.round(sist.score) + 1, antallForsok)
-      : null;
-
   // ── State-oppdatering med angre-historikk ──────────────────────
   function pushHistorikk() {
     setHistorikk((h) => [...h.slice(-(MAKS_HISTORIKK - 1)), verdier]);
@@ -320,20 +286,22 @@ export function ScorekortKlient({
     setHistorikk(historikk.slice(0, -1));
   }
 
-  // ── Lagring — «du kan lagre når som helst», serverkontrakten uendret ──
+  // Fullstendig protokoll; kvitteringen kommer fra serveren.
   function lagre() {
+    if (actionLock.current) return;
     if (antallFort === 0) {
       visToast("Registrer minst ett forsøk først.");
       return;
     }
     if (!alleFort || !erPrefiks) {
-      visToast("Fyll ut alle forsøk før fullføring. Registreringene kan gjenopptas fra utkastet.");
+      visToast("Fyll ut alle forsøk før fullføring. Registreringene er beholdt her.");
       return;
     }
     setFeil(null);
     const kontekstInn = renKontekst(kontekst);
     // Fullføring sender alle forsøk i protokollens rekkefølge.
     const sendes = forsokData.filter((_, i) => fortMaske[i]);
+    actionLock.current = true;
     startTransition(async () => {
       try {
         const res = await fullforTestSession({
@@ -344,26 +312,29 @@ export function ScorekortKlient({
         });
         // Ved suksess redirecter action til testsiden (?lagret=1).
         if (res && !res.ok) setFeil(res.error);
-      } catch {
-        setFeil("Kunne ikke lagre resultatet. Prøv igjen.");
-      }
+      } catch (error) {
+        unstable_rethrow(error);
+        setFeil("Kunne ikke bekrefte lagringen. Registreringene er beholdt her.");
+      } finally { actionLock.current = false; }
     });
   }
 
   /** «Avbryt uten å lagre» — setter en påbegynt økt ABORTED før retur. */
   function avbryt() {
+    if (actionLock.current) return;
     if (speilTimer.current) clearTimeout(speilTimer.current);
     skitneForsok.current.clear();
     const sid = sessionIdRef.current;
+    actionLock.current = true;
     startTransition(async () => {
-      if (sid) {
-        try {
-          await avbrytTestSession({ sessionId: sid });
-        } catch {
-          // Best effort — økta ryddes uansett ved neste fullføring.
+      try {
+        if (sid) {
+          const result = await avbrytTestSession({ sessionId: sid });
+          if (!result.ok) { setFeil(result.error); return; }
         }
-      }
-      router.push(`/portal/tren/tester/${testId}`);
+        router.push(`/portal/tren/tester/${testId}`);
+      } catch { setFeil("Avslutningen kunne ikke bekreftes. Registreringene er beholdt her."); }
+      finally { actionLock.current = false; }
     });
   }
 
@@ -391,7 +362,7 @@ export function ScorekortKlient({
           }}
         >
           <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-            Klarte ikke å lagre testen
+            Kunne ikke bekrefte handlingen
           </h3>
           <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
             {feil} Registreringene er fortsatt i denne fanen.
@@ -419,63 +390,20 @@ export function ScorekortKlient({
       style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: TL.text, minWidth: 0 }}
     >
       {/* ── Protokollen — kilde: TestDefinition ── */}
-      <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, marginTop: 16 }}>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 16, marginTop: 16 }}>
         <span style={lblStil}>Protokoll</span>
         {beskrivelse && (
           <p style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.6, color: TL.mute }}>
             {beskrivelse}
           </p>
         )}
-        <ProtokollRad k="Scoring" v={scoringRule} />
+        {sist && <ProtokollRad k="Forrige resultat" v={`${fmt.format(sist.score)}${spec.unit ? ` ${spec.unit}` : ""} · ${sist.dato}`} />}
         <ProtokollRad k="Område" v={omraade} />
-        {foreslaatt !== null && (
-          <ProtokollRad k="Foreslått mål" v={`${foreslaatt} av ${antallForsok}`} last />
-        )}
-        {foreslaatt !== null && sist !== null && (
-          <details
-            style={{ margin: "12px 0 0", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}
-          >
-            <summary
-              className="v2-focus"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                minHeight: 44,
-                padding: "0 16px",
-                cursor: "pointer",
-                listStyle: "none",
-                fontSize: 12.5,
-                fontWeight: 500,
-                color: TL.mute,
-              }}
-            >
-              Hvorfor dette tallet
-            </summary>
-            <ul
-              style={{
-                margin: 0,
-                padding: "12px 16px 16px 26px",
-                fontFamily: TL.font.sans,
-                fontSize: 13,
-                color: TL.mute,
-                lineHeight: 1.55,
-              }}
-            >
-              <li style={{ marginBottom: 8 }}>
-                Kilde: forrige resultat {sist.dato} — {fmt.format(sist.score)} av {antallForsok} — og IUP-en din.
-              </li>
-              <li style={{ marginBottom: 8 }}>Beregning: målet er forrige resultat pluss én.</li>
-              <li>
-                Forbehold: foreslått, aldri låst fasit. Testen er like gyldig uansett hva
-                resultatet blir.
-              </li>
-            </ul>
-          </details>
-        )}
+
       </div>
 
       {/* ── Kontekst — funksjon beholdt, sammenslått på flata ── */}
-      <details style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, background: TL.elev }}>
+      <details style={{ marginTop: 12, borderRadius: TL.radius.card, background: TL.elev }}>
         <summary
           className="v2-focus"
           style={{
@@ -498,7 +426,7 @@ export function ScorekortKlient({
       </details>
 
       {/* ── Scorekortet — løpende score + én rad per forsøk ── */}
-      <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, marginTop: 12 }}>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 16, marginTop: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span style={lblStil}>Scorekort</span>
           <span style={{ flex: 1 }} />
@@ -590,7 +518,7 @@ export function ScorekortKlient({
       <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
         <button
           type="button"
-          onClick={avbryt}
+          onClick={() => setCancelOpen(true)}
           disabled={pending}
           className="v2-focus"
           style={{
@@ -613,16 +541,14 @@ export function ScorekortKlient({
         </button>
       </div>
 
-      <FysPlassholderNote />
+      <Dialogboks open={cancelOpen} title="Avslutte testen?" onClose={() => { if (!pending) setCancelOpen(false); }} footer={<><PrecisionKnapp variant="secondary" disabled={pending} onClick={() => setCancelOpen(false)}>Fortsett</PrecisionKnapp><PrecisionKnapp variant="signal" disabled={pending} loading={pending} onClick={avbryt}>Avslutt testen</PrecisionKnapp></>}><p>{antallFort} av {antallForsok} forsøk er ført. Testen teller først når alle obligatoriske felt er fylt ut og resultatet er lagret.</p></Dialogboks>
 
-      {/* ── Fast bunn-dokk — skjermens ene clay-handling ── */}
+      {/* Fullføring etter feltene, uten å dekke notat eller protokoll. */}
       <div
         style={{
-          position: "sticky",
-          bottom: 0,
           marginTop: 12,
           padding: "12px 0 calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
-          background: `linear-gradient(to top, ${TL.scene} 70%, transparent)`,
+          background: TL.scene,
         }}
       >
         <Knapp
@@ -694,15 +620,6 @@ function ProtokollRad({ k, v, last }: { k: string; v: string; last?: boolean }) 
         {v}
       </span>
     </div>
-  );
-}
-
-/** Bunn-note fra Live Test-fasit — gjør FYS-plassholder-status eksplisitt. */
-function FysPlassholderNote() {
-  return (
-    <p style={{ margin: "20px 0 0", borderTop: `1px solid ${TL.hair}`, paddingTop: 14, textAlign: "center", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
-      FYS-resultater er plassholderverdier · formelen er ikke låst
-    </p>
   );
 }
 
@@ -795,16 +712,16 @@ function ForsokRad({
             alignItems: "center",
             justifyContent: "center",
             gap: 4,
-            border: `1px solid ${erOk ? TL.ok : TL.hair}`,
-            borderRadius: 9999,
-            background: erOk ? TL.dock : "transparent",
+            border: `1px solid ${erOk || erBom ? "transparent" : TL.hair}`,
+            borderRadius: TL.radius.field,
+            background: erOk || erBom ? TL.fill : TL.dock,
             cursor: "pointer",
-            fontFamily: TL.font.mono,
-            fontSize: 11,
-            color: erOk || erBom ? TL.text : TL.mute,
+            fontFamily: TL.font.sans,
+            fontSize: 13,
+            color: erOk || erBom ? TL.onFill : TL.mute,
           }}
         >
-          {erOk && <Icon name="check" size={14} style={{ color: TL.text }} />}
+          {erOk && <Icon name="check" size={14} />}
           {erOk ? "OK" : erBom ? "bom" : "—"}
         </button>
       </div>
@@ -871,7 +788,7 @@ function KontekstForm({
   onSett: <K extends keyof Kontekst>(key: K, verdi: Kontekst[K]) => void;
 }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))", gap: 10 }}>
       <Felt label="Dato">
         <input
           type="date"
@@ -974,11 +891,9 @@ function PillValg({
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 11,
-              fontFamily: TL.font.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              fontWeight: 500,
               background: on ? TL.fill : TL.dock,
               border: `1px solid ${on ? "transparent" : TL.hair}`,
               color: on ? TL.onFill : TL.mute,
@@ -1021,11 +936,9 @@ function FeltInput({
       justifyContent: "center",
       gap: 4,
       borderRadius: 11,
-      fontFamily: TL.font.mono,
-      fontSize: 10,
-      fontWeight: 700,
-      letterSpacing: "0.06em",
-      textTransform: "uppercase",
+      fontFamily: TL.font.sans,
+      fontSize: 13,
+      fontWeight: 500,
       background: on ? TL.fill : TL.dock,
       border: `1px solid ${on ? "transparent" : TL.hair}`,
       color: on ? TL.onFill : TL.mute,
@@ -1052,10 +965,7 @@ function FeltInput({
             aria-label={`Bom, forsøk ${forsokNr}`}
             className="v2-press v2-focus"
             style={{
-              ...valgStil(false),
-              ...(verdi === false
-                ? { background: TL.dim, border: `1px solid ${TL.hair}`, color: TL.text }
-                : null),
+              ...valgStil(verdi === false),
             }}
           >
             <Icon name="x" size={14} />
@@ -1134,7 +1044,7 @@ function FeltInput({
           value={typeof verdi === "string" ? verdi : ""}
           onFocus={onSnapshot}
           onChange={(e) => onSett(e.target.value, false)}
-          placeholder="0"
+          placeholder="Målt verdi"
           aria-label={`${felt.label}, forsøk ${forsokNr}`}
           style={{ minWidth: 0, flex: 1, border: 0, background: "transparent", padding: 0, outline: "none", fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text }}
         />

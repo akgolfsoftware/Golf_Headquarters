@@ -25,8 +25,24 @@ export function Sokefelt({ value, onChange, placeholder = "Søk etter navn", lab
 }
 
 export function SegmentertValg<T extends string>({ value, options, onChange, label }: { value: T; options: readonly { id: T; label: string }[]; onChange: (v: T) => void; label: string }) {
-  return <div className="pa-seg" role="group" aria-label={label}>
-    {options.map((o) => <button key={o.id} type="button" className="pa-seg__opt" aria-pressed={value === o.id} onClick={() => onChange(o.id)}>{o.label}</button>)}
+  const valgt = options.findIndex((o) => o.id === value);
+  return <div className="pa-seg" role="radiogroup" aria-label={label} data-single-select>
+    {options.map((o, index) => <button key={o.id} type="button" className="pa-seg__opt" role="radio" aria-checked={value === o.id}
+      tabIndex={index === (valgt < 0 ? 0 : valgt) ? 0 : -1}
+      onClick={() => { if (value !== o.id) onChange(o.id); }}
+      onKeyDown={(event) => {
+        let neste: number;
+        switch (event.key) {
+          case "ArrowRight": case "ArrowDown": neste = (index + 1) % options.length; break;
+          case "ArrowLeft": case "ArrowUp": neste = (index - 1 + options.length) % options.length; break;
+          case "Home": neste = 0; break;
+          case "End": neste = options.length - 1; break;
+          default: return;
+        }
+        event.preventDefault();
+        event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[neste]?.focus();
+        if (options[neste].id !== value) onChange(options[neste].id);
+      }}>{o.label}</button>)}
   </div>;
 }
 

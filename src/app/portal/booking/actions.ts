@@ -25,6 +25,7 @@ import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booki
 import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { APP_URL } from "@/lib/app-url";
+import { opprettForelderBookingRetur } from "@/lib/portal-booking/forelder-retur";
 
 
 export async function hentSlotVindu(tjenesteId: string): Promise<SlotVindu> {
@@ -215,6 +216,9 @@ export async function opprettBookingMedKort(
   }
 
   const appUrl = APP_URL;
+  const retur = input.retururlBase === "/forelder/bookinger" && input.barnId
+    ? await opprettForelderBookingRetur(user.id, eierId)
+    : null;
   const payment = await startBookingPayment(booking.id, {
     mode: "payment",
     customer_email: user.email,
@@ -232,8 +236,8 @@ export async function opprettBookingMedKort(
       },
     ],
     metadata: { bookingId: booking.id, kilde: "portal", ...(input.barnId ? { paaVegneAv: eierId } : {}) },
-    success_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?betalt=1`,
-    cancel_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?avbrutt=1`,
+    success_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?betalt=1${retur ? `&retur=${encodeURIComponent(retur)}` : ""}`,
+    cancel_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?avbrutt=1${retur ? `&retur=${encodeURIComponent(retur)}` : ""}`,
     expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
   });
   if (!payment.ok) {

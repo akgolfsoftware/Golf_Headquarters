@@ -9,9 +9,11 @@
  */
 
 import Link from "next/link";
+import { useState } from "react";
 import { Check, Layers, Plus, Trash2 } from "lucide-react";
 import { AkseMerke, Ikon, Meta, StatusPille } from "@/components/precision/pa";
 import type { PH13Drill } from "@/lib/portal-drills/ph13-drills-data";
+import { PH13LeggTilOkt } from "./PH13LeggTilOkt";
 
 export type PH13DrillDetaljProps = {
   drill: PH13Drill;
@@ -28,6 +30,7 @@ export function PH13DrillDetalj({
   onAddToSession,
 }: PH13DrillDetaljProps) {
   const parts = drill.code ? drill.code.split("_") : [];
+  const [velgOkt, setVelgOkt] = useState(false);
 
   const kvItems: { label: string; value: string | null; isMono?: boolean }[] = [
     { label: "Pyramide", value: drill.axis.toUpperCase() },
@@ -51,14 +54,21 @@ export function PH13DrillDetalj({
         {drill.draft ? (
           <StatusPille tone="neutral">Utkast</StatusPille>
         ) : (
-          <Meta>{drill.src === "mine" ? "LAGET AV DEG" : "FRA ANDERS"}</Meta>
+          <Meta>{drill.src === "mine" ? "Laget av deg" : "Fra øvelsesbanken"}</Meta>
         )}
       </div>
 
+      <section className="ph13-oppskrift" aria-label="Oppskrift">
+        <h3>Slik gjennomfører du øvelsen</h3>
+        <p>{drill.desc || "Ingen instruksjon er lagt til for denne øvelsen ennå."}</p>
+        <p className="ph13-mengde">{drill.qty} · {drill.min} min</p>
+        {drill.goal && drill.goal !== "—" && <p><strong>Mål:</strong> {drill.goal}</p>}
+      </section>
+
       {/* AK-formelen chips */}
       {parts.length > 0 && (
-        <div>
-          <span className="kicker">AK-formelen</span>
+        <details className="ph13-formeldetaljer">
+          <summary>AK-formelen og kildekode</summary>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
             {parts.map((p, i) => (
               <span
@@ -82,7 +92,7 @@ export function PH13DrillDetalj({
               </span>
             ))}
           </div>
-        </div>
+        </details>
       )}
 
       {/* Nøkkelfakta (KeyValue dl) */}
@@ -111,11 +121,8 @@ export function PH13DrillDetalj({
           >
             <dt
               style={{
-                font: "var(--type-meta)",
-                color: "var(--text-muted)",
-                letterSpacing: "var(--tracking-kicker)",
-                textTransform: "uppercase",
-                whiteSpace: "nowrap",
+                font: "var(--type-body-s)",
+                color: "var(--text-secondary)",
               }}
             >
               {item.label}
@@ -136,20 +143,6 @@ export function PH13DrillDetalj({
           </div>
         ))}
       </dl>
-
-      {/* Beskrivelse */}
-      {drill.desc && (
-        <p
-          style={{
-            margin: 0,
-            font: "var(--type-body)",
-            color: "var(--text-body)",
-            textWrap: "pretty",
-          }}
-        >
-          {drill.desc}
-        </p>
-      )}
 
       {/* Hvorfor Caddie foreslår denne (hvis utkast) */}
       {drill.why && (
@@ -199,7 +192,7 @@ export function PH13DrillDetalj({
           <>
             <button
               type="button"
-              onClick={() => onAddToSession?.(drill)}
+              onClick={() => onAddToSession ? onAddToSession(drill) : setVelgOkt(true)}
               className="pa-btn pa-btn--primary pa-btn--full"
             >
               <Ikon icon={Plus} size={16} name="plus" />
@@ -215,6 +208,7 @@ export function PH13DrillDetalj({
           </>
         )}
       </div>
+      {velgOkt && <PH13LeggTilOkt exerciseId={drill.id} title={drill.name} onClose={() => setVelgOkt(false)} />}
     </div>
   );
 }

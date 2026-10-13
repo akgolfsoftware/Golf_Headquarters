@@ -1,9 +1,11 @@
+import { requireDataGolfAnalyst } from "@/lib/datagolf/access";
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { hentStasjonSide } from "./stasjon-data";
 import { gyldigStart, lesUtfordring, utfordringInput } from "./challenge";
 
 export async function hentUtfordringer(userId: string) {
+  await requireDataGolfAnalyst(userId);
   const logs = await prisma.trainingPlanSessionLog.findMany({
     where: { session: { planId: `datagolf-praksis-${userId}`, plan: { userId } } },
     orderBy: { completedAt: "desc" }, take: 20,
@@ -17,6 +19,7 @@ export async function hentUtfordringer(userId: string) {
 
 /** Eierskap kommer kun fra innlogget bruker. Én attemptId gir én lagret økt. */
 export async function lagreUtfordringForBruker(userId: string, input: unknown) {
+  await requireDataGolfAnalyst(userId);
   const parsed = utfordringInput.safeParse(input);
   if (!parsed.success) return { ok: false as const, message: "Registrer alle 10 ballene og kontroller avstanden." };
   const v = parsed.data;

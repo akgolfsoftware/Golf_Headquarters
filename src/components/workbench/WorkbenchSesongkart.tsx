@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbenchHendelserArk } from "./WorkbenchHendelserArk";
+import { MonthPlan } from "./MonthPlan";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type CSSProperties } from "react";
@@ -55,6 +56,12 @@ export function WorkbenchSesongkart({ data }: { data: WorkbenchSamletData }) {
       <div className="ws-row"><Knapp variant="secondary" onClick={() => setHendelser(true)}>Hendelser</Knapp><Link className="pa-btn pa-btn--secondary" href={`${klassiskWorkbenchUrl(data.player.id, "uke", referanse, data.routeSurface)}&pille=turn`}>Turneringsplan</Link>{[["aar", "År"], ["periode", "Periode"], ["maned", "Måned"]].map(([niva, label]) => <Link key={niva} className="pa-btn pa-btn--secondary" aria-current={zoom === niva ? "page" : undefined} href={samletWorkbenchUrl(data.player.id, "sesong", referanse, data.routeSurface, {}, { niva: niva === "aar" ? "aar" : niva === "periode" ? "periode" : "maned" })}>{label}</Link>)}</div>
       <Knapp variant="secondary" onClick={() => setRediger("sesong")}>{s.plan ? "Sesonggrenser" : "Opprett årsplan"}</Knapp><Knapp icon={Plus} disabled={!s.plan} onClick={() => setRediger("ny")}>Ny periode</Knapp>
     </div>
+    {zoom === "maned" && <MonthPlan owner={{ kind: "player", playerId: data.player.id }} year={Number(month.slice(0, 4))} month={Number(month.slice(5, 7))}
+      volume={s.maneder.find(m => m.monthStart === month)?.volum}
+      summary={{ plannedMinutes: s.maneder.find(m => m.monthStart === month)?.volum.total.planlagtMinutter ?? null, registeredMinutes: s.maneder.find(m => m.monthStart === month)?.volum.total.faktiskMinutter ?? null,
+        tournaments: s.hendelser.filter(h => h.kind === "turnering" && inni(h.fraDato, h.tilDato)).length, tests: s.hendelser.filter(h => h.kind === "test" && inni(h.fraDato, h.tilDato)).length,
+        source: "Planlagt mengde fra ukeplaner og økter. Registrert mengde fra øktloggen. Ønsket månedsramme vises separat." }}
+      events={s.hendelser.filter(h => inni(h.fraDato, h.tilDato)).map(h => ({ id: h.id, title: h.navn, date: h.fraDato, kind: h.kind }))} />}
     <div className="ws-season"><main aria-label="Sesongtidslinje" className="ws-panel">
       {zoom === "maned" ? <section className="ws-section"><h2>{new Intl.DateTimeFormat("nb-NO", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${month}T12:00:00Z`))}</h2><div className="ws-month-grid" aria-label="Månedskalender">
         {Array.from({ length: offset }, (_, i) => <span key={`tom-${i}`} />)}{monthDays.map(d => { const okter = s.sessions.filter(o => o.date === d && o.status !== "CANCELLED"); return <Link key={d} className="ws-month-cell" data-selected={d === data.uke.weekStart} href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: d }, data.routeSurface)}><strong className="ws-num">{Number(d.slice(8))}</strong>{okter.slice(0, 3).map(o => <small key={o.id}>{o.pyramid} · {o.title}</small>)}{okter.length > 3 && <small>+{okter.length - 3} økter</small>}{s.hendelser.filter(h => h.fraDato.slice(0, 10) === d).map(h => <small key={h.id}>{h.navn}</small>)}</Link>; })}

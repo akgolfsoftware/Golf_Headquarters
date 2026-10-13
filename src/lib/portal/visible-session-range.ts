@@ -7,7 +7,6 @@ import { workbenchWeekSession } from "./workbench-week";
 import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
 import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
 import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
-import { translateMiljo } from "./translate-taxonomy";
 import { v2DbSessionHref } from "./session-hrefs";
 import type { TodaySession } from "@/app/portal/actions";
 import type { PracticeType, PyramidArea } from "@/generated/prisma/client";
@@ -33,7 +32,7 @@ export const loadVisibleSessionRange = cache(async (playerId: string, startISO: 
       orderBy: { startTime: "asc" },
       select: {
         id: true, generertFra: true, generertFraId: true, title: true, startTime: true, endTime: true,
-        status: true, avbruddAarsak: true, practiceType: true, miljo: true, maalsetning: true,
+        status: true, avbruddAarsak: true, practiceType: true, location: true, maalsetning: true,
         drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
       },
     }),
@@ -58,7 +57,7 @@ export const loadVisibleSessionRange = cache(async (playerId: string, startISO: 
       title: s.title, startTime: s.startTime, endTime: s.endTime, status: s.status, avbruddAarsak: s.avbruddAarsak,
       practiceType: s.practiceType, pyramidArea: AXIS[s.practiceType],
       durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
-      sted: s.miljo ? translateMiljo(s.miljo) : null, maalsetning: s.maalsetning, drills: s.drills,
+      sted: s.location ?? null, maalsetning: s.maalsetning, drills: s.drills,
       href: v2DbSessionHref(s.id, s.status),
     })),
     ...wb.map(workbenchWeekSession), ...legacy,

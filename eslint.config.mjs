@@ -234,6 +234,9 @@ const eslintConfig = defineConfig([
     ".vercel/**",
     "out/**",
     "build/**",
+    // Gitignored QA-output inneholder kompilerte tredjepartsbiblioteker.
+    // Kildekode og håndskrevne kontrollskript blir fortsatt kontrollert.
+    "tmp/**",
     "next-env.d.ts",
     // Nestede git worktrees (codex/claude-agenter) lever fysisk inne i repo-treet
     // og har egne .next-/build-mapper — uten dette leser lint fra rot deres

@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/pga/spillere — PGA Spillerdatabase (design 21)
  * Pixel-perfect port av design-handoff-stats-2026-05-25/project/js/pages-d.jsx (PGASpillerbase)
@@ -40,16 +41,16 @@ const CURRENT_YEAR = 2026;
 
 async function hentSpillerData() {
   const [pga, euro, kft, spillere] = await Promise.all([
-    prisma.pgaPlayerSeason.count({ where: { tour: "pga", year: CURRENT_YEAR } }),
-    prisma.pgaPlayerSeason.count({ where: { tour: "euro", year: CURRENT_YEAR } }),
+    prisma.pgaPlayerSeason.count({ where: { ...publicPgaSourceWhere(),  tour: "pga", year: CURRENT_YEAR } }),
+    prisma.pgaPlayerSeason.count({ where: { ...publicPgaSourceWhere(),  tour: "euro", year: CURRENT_YEAR } }),
     prisma.pgaPlayerSeason.count({
-      where: {
+      where: { ...publicPgaSourceWhere(),
         tour: { in: ["kft", "korn-ferry"] },
         year: CURRENT_YEAR,
       },
     }),
     prisma.pgaPlayerSeason.findMany({
-      where: {
+      where: { ...publicPgaSourceWhere(),
         year: CURRENT_YEAR,
         sgTotal: { not: null },
       },
@@ -98,12 +99,12 @@ export default async function PGASpillerbasePage() {
           gir: s.girPct ?? 0,
           scoring: s.avgScore ?? 0,
         }))
-      : SEED_SPILLERE;
+      : [];
 
-  const pgaDisplay = pga || 433;
-  const euroDisplay = euro || 433;
-  const kftDisplay = kft || 433;
-  const totalDisplay = total > 0 ? total : 1299;
+  const pgaDisplay = pga;
+  const euroDisplay = euro;
+  const kftDisplay = kft;
+  const totalDisplay = total;
 
   return (
     <StatsLegacyShell>
@@ -152,7 +153,7 @@ export default async function PGASpillerbasePage() {
 
       {/* ── Søk + tabell (klient) ── */}
       <section className="spillere-section spillere-section-divider">
-        <SpillerTabell spillere={spillerData} />
+        {spillerData.length ? <SpillerTabell spillere={spillerData} /> : <p>Ingen tillatt offentlig PGA-kilde er koblet til. Manglende målinger vises ikke som null.</p>}
       </section>
 
       {/* ── Mersalg ── */}
@@ -188,25 +189,3 @@ export default async function PGASpillerbasePage() {
     </StatsLegacyShell>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Seed-data (brukes når DB er tom)
-// ---------------------------------------------------------------------------
-
-export const SEED_SPILLERE = [
-  { dgId: 14321, navn: "Scottie Scheffler",   land: "us", tour: "PGA", runder: 81, sgTotal: 2.45, drive: 298.4, fairway: 62.1, gir: 71.2, scoring: 68.4 },
-  { dgId: 12345, navn: "Rory McIlroy",         land: "ie", tour: "PGA", runder: 87, sgTotal: 2.34, drive: 318.5, fairway: 58.4, gir: 71.2, scoring: 70.2 },
-  { dgId: 17654, navn: "Xander Schauffele",    land: "us", tour: "PGA", runder: 78, sgTotal: 1.92, drive: 301.4, fairway: 64.2, gir: 72.1, scoring: 69.8 },
-  { dgId: 18901, navn: "Jon Rahm",             land: "es", tour: "PGA", runder: 72, sgTotal: 1.89, drive: 305.2, fairway: 60.8, gir: 70.4, scoring: 70.8 },
-  { dgId: 16789, navn: "Collin Morikawa",      land: "us", tour: "PGA", runder: 80, sgTotal: 1.74, drive: 291.8, fairway: 68.4, gir: 73.2, scoring: 70.4 },
-  { dgId: 19234, navn: "Hideki Matsuyama",     land: "jp", tour: "PGA", runder: 64, sgTotal: 1.68, drive: 295.1, fairway: 65.4, gir: 70.8, scoring: 70.5 },
-  { dgId: 11290, navn: "Viggo Halvorsen",      land: "no", tour: "PGA", runder: 65, sgTotal: 1.62, drive: 294.8, fairway: 64.1, gir: 70.5, scoring: 70.9 },
-  { dgId: 15432, navn: "Tommy Fleetwood",      land: "gb", tour: "PGA", runder: 71, sgTotal: 1.41, drive: 298.6, fairway: 61.4, gir: 69.8, scoring: 70.8 },
-  { dgId: 13456, navn: "Sungjae Im",           land: "kr", tour: "PGA", runder: 84, sgTotal: 1.28, drive: 292.3, fairway: 63.7, gir: 70.2, scoring: 70.6 },
-  { dgId: 14567, navn: "Patrick Cantlay",      land: "us", tour: "PGA", runder: 68, sgTotal: 1.22, drive: 290.1, fairway: 64.8, gir: 71.4, scoring: 70.3 },
-  { dgId: 20001, navn: "Viktor Hovland",       land: "no", tour: "PGA", runder: 74, sgTotal: 1.18, drive: 302.4, fairway: 60.1, gir: 69.5, scoring: 71.0 },
-  { dgId: 20002, navn: "Kristoffer Vangen",    land: "no", tour: "PGA", runder: 52, sgTotal: 0.94, drive: 289.2, fairway: 63.5, gir: 68.9, scoring: 71.4 },
-  { dgId: 20003, navn: "Sean Devlin",          land: "ie", tour: "EURO", runder: 88, sgTotal: 2.34, drive: 281.4, fairway: 70.2, gir: 71.8, scoring: 68.9 },
-  { dgId: 20004, navn: "Osamu Yamagata",       land: "jp", tour: "EURO", runder: 76, sgTotal: 2.11, drive: 278.1, fairway: 68.9, gir: 70.4, scoring: 69.1 },
-  { dgId: 20005, navn: "Anders Nordli",        land: "no", tour: "EURO", runder: 61, sgTotal: 1.31, drive: 285.4, fairway: 65.8, gir: 69.2, scoring: 70.8 },
-];

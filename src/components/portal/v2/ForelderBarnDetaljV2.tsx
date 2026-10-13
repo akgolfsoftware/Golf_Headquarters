@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
+import { forelderKontekstHref } from "@/lib/forelder-kontekst";
 import { fmtSg, Caps, Tittel, Kort, KpiFlis, Pyramide, TomTilstand, AvatarFoto, TilbakeLenke, StatusPill, HjelpTips, Icon, Knapp, Rad, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
 
@@ -155,10 +156,10 @@ const TURNERING_STATUS: Record<string, string> = {
 
 const FASIT_FANER: { label: string; href: (barnId: string) => string; aktiv?: true }[] = [
   { label: "Uka", href: (id) => `/forelder/barn/${id}`, aktiv: true },
-  { label: "Plan", href: () => "/forelder/ukerapport" },
-  { label: "Økonomi", href: () => "/forelder/okonomi" },
-  { label: "Varsler", href: () => "/forelder/varsler" },
-  { label: "Samtykke", href: () => "/forelder/samtykke" },
+  { label: "Plan", href: (id) => forelderKontekstHref("/forelder/ukerapport", id) },
+  { label: "Økonomi", href: (id) => forelderKontekstHref("/forelder/okonomi", id) },
+  { label: "Varsler", href: (id) => forelderKontekstHref("/forelder/varsler", id) },
+  { label: "Samtykke", href: (id) => forelderKontekstHref("/forelder/samtykke", id) },
 ];
 
 function FaneRad({ barnId }: { barnId: string }) {
@@ -217,7 +218,7 @@ function Personvernlinje({ fornavn }: { fornavn: string }) {
   );
 }
 
-function UtenSamtykke({ fornavn }: { fornavn: string }) {
+function UtenSamtykke({ fornavn, barnId }: { fornavn: string; barnId: string }) {
   return (
     <>
       <Kort>
@@ -227,7 +228,7 @@ function UtenSamtykke({ fornavn }: { fornavn: string }) {
           sub={`${fornavn} har laget konto, men den åpnes ikke før foreldresamtykket er bekreftet. Sjekk e-posten din for lenken, eller les hva vi lagrer.`}
         />
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
-          <Link href="/forelder/samtykke" style={{ textDecoration: "none" }}>
+          <Link href={forelderKontekstHref("/forelder/samtykke", barnId)} style={{ textDecoration: "none" }}>
             <Knapp icon="shield-check">Gå til samtykke</Knapp>
           </Link>
           <Link href="/personvern" style={{ textDecoration: "none" }}>
@@ -448,7 +449,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
       <FaneRad barnId={barn.id} />
 
       {!data.samtykkeGitt ? (
-        <UtenSamtykke fornavn={fornavn} />
+        <UtenSamtykke fornavn={fornavn} barnId={barn.id} />
       ) : (
         <>
           <Personvernlinje fornavn={fornavn} />
@@ -516,16 +517,16 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
 
           {data.nesteTurnering && (
             <Rad
-              onClick={() => router.push("/forelder/ukerapport")}
+              onClick={() => router.push(forelderKontekstHref("/forelder/ukerapport", barn.id))}
               title={data.nesteTurnering.navn}
               sub={`${NB_KORT.format(data.nesteTurnering.dato)} · ${TURNERING_STATUS[data.nesteTurnering.status] ?? data.nesteTurnering.status}`}
               trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />}
             />
           )}
 
-          <Link href="/forelder/coach" style={{ textDecoration: "none" }}>
+          <Link href={forelderKontekstHref("/forelder/coach", barn.id)} style={{ textDecoration: "none" }}>
             <Knapp icon="message-circle" full>
-              Send melding til coach
+              Kontakt coach
             </Knapp>
           </Link>
         </>

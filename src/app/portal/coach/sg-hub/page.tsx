@@ -1,3 +1,4 @@
+import { independentSgInputWhere } from "@/lib/datagolf/round-provenance";
 // PH21SgHubCoach — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
@@ -34,7 +35,7 @@ export default async function CoachSgHubPage() {
 
   // Siste SG-input for spilleren
   const sgInput = await prisma.brukerSgInput.findFirst({
-    where: { userId: user.id },
+    where: { userId: user.id, ...independentSgInputWhere() },
     orderBy: { dato: "desc" },
   });
 

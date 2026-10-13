@@ -8,13 +8,14 @@ import { ownGroupPublicationWhere } from "./group-scope";
 import { visibleV2Where } from "@/lib/portal/visible-v2";
 import type { TreningsvolumOkt } from "./treningsvolum";
 import type { SamletVindu } from "./workbench-samlet-typer";
+import { recordedCompletionMinutes, recordedCompletionAt } from "./recorded-duration";
 
 export function samletOsloMidnatt(dato: string): Date {
   const [aar, maned, dag] = dato.split("-").map(Number);
   return osloInstant(aar, maned, dag, 0, 0);
 }
 
-/** Intern leser ETTER loadWorkbenchSamletData sin eier-/samtykkevakt.
+/** Intern leser ETTER sidens eller loadWorkbenchSamletData sin eier-/samtykkevakt.
  * Kalenderplan og volum bruker samme halvåpne datovindu. */
 export async function lastSamletVolumgrunnlag(playerId: string, viewerId: string, vindu: SamletVindu) {
   const v2Where = await visibleV2Where(playerId);
@@ -32,14 +33,14 @@ export async function lastSamletVolumgrunnlag(playerId: string, viewerId: string
         scheduledAt: { gte: samletOsloMidnatt(vindu.fraDato), lt: samletOsloMidnatt(vindu.tilDato) },
       },
       select: {
-        id: true, scheduledAt: true, durationMin: true, pyramidArea: true, status: true, updatedAt: true,
+        id: true, scheduledAt: true, durationMin: true, pyramidArea: true, status: true, updatedAt: true, liveSnapshot: true,
         log: { select: { startedAt: true, completedAt: true } },
       },
     }),
     prisma.trainingSessionV2.findMany({
       where: { ...v2Where, startTime: { gte: samletOsloMidnatt(vindu.fraDato), lt: samletOsloMidnatt(vindu.tilDato) } },
       select: { id: true, startTime: true, endTime: true, practiceType: true, status: true,
-        generertFra: true, generertFraId: true, updatedAt: true },
+        generertFra: true, generertFraId: true, updatedAt: true, completedSummary: true },
     }),
   ]);
   const legacyIds = legacy.map(r => r.id);
@@ -63,7 +64,10 @@ export async function lastSamletVolumgrunnlag(playerId: string, viewerId: string
   const erstattetV2 = new Set(v2Migrerte.map(r => r.migrertFraTrainingPlanSessionId));
   const okter: TreningsvolumOkt[] = rows.map(r => ({
     id: r.id, date: r.date, startMinute: r.startMinute, pyramid: r.pyramid,
-    durationMinutes: r.durationMinutes, actualMinutes: r.actualMinutes, status: r.status,
+    durationMinutes: r.durationMinutes,
+    actualMinutes: r.actualMinutes ?? (r.status === "COMPLETED" ? recordedCompletionMinutes(r.liveSnapshot, "plan") : null),
+    fullfortAt: r.status === "COMPLETED" ? recordedCompletionAt(r.liveSnapshot, "plan") : null,
+    status: r.status,
     updatedAt: r.updatedAt, isTemplate: r.isTemplate, hiddenByPlayer: r.hiddenByPlayer,
     needsPlayerApproval: r.needsPlayerApproval, approvalStatus: r.approvalStatus,
     migrertFraTrainingPlanSessionId: r.migrertFraTrainingPlanSessionId, kilde: "workbench",
@@ -76,7 +80,8 @@ export async function lastSamletVolumgrunnlag(playerId: string, viewerId: string
     okter.push({
       id: r.id, date: new Date(Date.UTC(oslo.getFullYear(), oslo.getMonth(), oslo.getDate())),
       startMinute: oslo.getHours() * 60 + oslo.getMinutes(), pyramid: r.pyramidArea,
-      durationMinutes: r.durationMin, actualMinutes: null,
+      durationMinutes: r.durationMin, actualMinutes: r.status === "COMPLETED" ? recordedCompletionMinutes(r.liveSnapshot, "plan") : null,
+      fullfortAt: r.log?.completedAt ?? null,
       status: r.status === "ACTIVE" || r.status === "PAUSED" ? "IN_PROGRESS" : r.status,
       updatedAt: r.updatedAt, kilde: "legacy",
       // Loggens klokketid er et kildeanslag, ikke målt aktivitet eller planvarighet.
@@ -92,7 +97,9 @@ export async function lastSamletVolumgrunnlag(playerId: string, viewerId: string
       date: new Date(Date.UTC(oslo.getFullYear(), oslo.getMonth(), oslo.getDate())),
       startMinute: oslo.getHours() * 60 + oslo.getMinutes(), pyramid: akser[r.practiceType],
       durationMinutes: Math.max(0, (r.endTime.getTime() - r.startTime.getTime()) / 60_000),
-      actualMinutes: null, status: r.status, updatedAt: r.updatedAt, kilde: "legacy",
+      actualMinutes: r.status === "COMPLETED" ? recordedCompletionMinutes(r.completedSummary, "v2") : null,
+      fullfortAt: r.status === "COMPLETED" ? recordedCompletionAt(r.completedSummary, "v2") : null,
+      status: r.status, updatedAt: r.updatedAt, kilde: "legacy",
     });
   }
   return { okter, sessions: rows.map(mapSession) };

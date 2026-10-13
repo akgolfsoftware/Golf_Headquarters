@@ -50,15 +50,15 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
         marginBottom: 24,
       }}>
         {sporsmal.valg.map((v, i) => {
-          let bg = "#FFFFFF";
-          let border = "hsl(var(--border))";
-          let color = "hsl(var(--foreground))";
+          let bg = "var(--s-card)";
+          let border = "var(--s-border)";
+          let color = "var(--s-fg)";
 
           if (besvart && i === valgt) {
-            if (v.korrekt) { bg = "hsl(var(--accent))"; border = "#B8E020"; color = "hsl(var(--foreground))"; }
+            if (v.korrekt) { bg = "var(--surface-selected)"; border = "var(--border-control)"; color = "var(--s-fg)"; }
             else { bg = "#FEE2E2"; border = "#F87171"; color = "#7F1D1D"; }
           } else if (besvart && v.korrekt) {
-            bg = "hsl(var(--accent))"; border = "#B8E020"; color = "hsl(var(--foreground))";
+            bg = "var(--surface-selected)"; border = "var(--border-control)"; color = "var(--s-fg)";
           }
 
           return (
@@ -72,7 +72,7 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
                 border: `2px solid ${border}`,
                 background: bg,
                 color,
-                fontFamily: "var(--font-mono)",
+                fontFamily: "var(--font-sans)",
                 fontSize: 20,
                 fontWeight: 600,
                 cursor: besvart ? "default" : "pointer",
@@ -94,9 +94,9 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
         <div style={{
           padding: "20px 24px",
           borderRadius: 12,
-          background: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--accent))" : AK.farge.feilBakgrunn,
+          background: sporsmal.valg[valgt]?.korrekt ? "var(--surface-selected)" : AK.farge.feilBakgrunn,
           border: `1px solid ${sporsmal.valg[valgt]?.korrekt ? "${AK.farge.limeMerke2}" : "${AK.farge.feilLys}"}`,
-          color: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--foreground))" : AK.farge.feilTekstMork,
+          color: sporsmal.valg[valgt]?.korrekt ? "var(--s-fg)" : AK.farge.feilTekstMork,
           animation: "stats-quiz-fadein 0.3s ease",
         }}>
           <div style={{

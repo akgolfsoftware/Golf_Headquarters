@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from "@/lib/datagolf/round-provenance";
 import { prisma } from "@/lib/prisma";
 import { byggPH16Stats, SNITT_VINDU, type PH16StatsData } from "./ph16-stats-data";
 
@@ -22,7 +23,8 @@ export async function loadPH16Stats(
         score: true,
         roundType: true,
         sgTotal: true,
-        sgSource: true,
+        source: true, sgSource: true,
+        sgReferenceSet: { select: { source: true, sourceVersion: true } },
         benchmarkLevelSnapshot: true,
         sgTee: true,
         sgApp200: true,
@@ -74,7 +76,7 @@ export async function loadPH16Stats(
 
   return byggPH16Stats({
     navn: user?.name || brukerNavn || "",
-    runder: rounds.map(({ course, ...r }) => ({ ...r, courseName: course?.name ?? null })),
+    runder: rounds.map(withoutDataGolfRoundSg).map(({ course, ...r }) => ({ ...r, courseName: course?.name ?? null })),
     tmSlag: tmSessions.flatMap((s) => s.shots),
   });
 }

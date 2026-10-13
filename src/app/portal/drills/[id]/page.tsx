@@ -15,8 +15,6 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { Ikon, TomTilstand } from "@/components/precision/pa";
 import { PH13DrillDetalj } from "@/components/portal/precision/PH13DrillDetalj";
 import {
-  SYNTETISKE_PH13_DRILLS,
-  SYNTETISKE_PH13_CADDIE_FORSLAG,
   type PH13Drill,
   type PH13Akse,
 } from "@/lib/portal-drills/ph13-drills-data";
@@ -83,14 +81,6 @@ export default async function DrillDetailPage({
           ? `brukt i ${okterSiste30} ${okterSiste30 === 1 ? "økt" : "økter"} siste 30 dager`
           : "ny for deg",
     };
-  } else {
-    // Sjekk syntetiske drills eller forslag
-    const matchSyntetisk =
-      SYNTETISKE_PH13_DRILLS.find((d) => d.id === id) ||
-      SYNTETISKE_PH13_CADDIE_FORSLAG.find((d) => d.id === id);
-    if (matchSyntetisk) {
-      drill = matchSyntetisk;
-    }
   }
 
   return (

@@ -17,7 +17,8 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { hentBarnForForelder } from "@/lib/forelder";
+import { velgGodkjentBarn } from "@/lib/forelder";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { ukenummer } from "@/lib/uke-helpers";
 import { tilDatoKolonne, fraDatoKolonne } from "@/lib/workbench/wb-map";
 import { klokkeslett } from "@/lib/domain/kalender-lag";
@@ -76,9 +77,12 @@ function dagLang(d: Date): string {
   return `${s.charAt(0).toUpperCase() + s.slice(1)} ${OSLO_DAG.format(d)}.`;
 }
 
-export default async function ForelderPage() {
+export default async function ForelderPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
-  const barn = await hentBarnForForelder(user.id);
+  const valgt = (await searchParams)?.barn;
+  const { alle: barn, fokus } = await velgGodkjentBarn(user.id, valgt);
+  const valgListe = barn.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (valgt && !fokus) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
 
   let data: ForelderIdagData = {
     childFirstName: null,
@@ -89,8 +93,7 @@ export default async function ForelderPage() {
     coachNavn: null,
   };
 
-  if (barn.length > 0) {
-    const fokus = barn[0];
+  if (fokus) {
     const childId = fokus.child.id;
     const childFirstName = fokus.child.name.split(" ")[0] ?? fokus.child.name;
 
@@ -113,6 +116,7 @@ export default async function ForelderPage() {
           playerId: childId,
           status: { in: ["PUBLISHED", "IN_PROGRESS", "COMPLETED"] },
           isTemplate: false,
+          hiddenByPlayer: false,
           date: { gte: mandagUtc, lte: sondagUtc },
         },
         orderBy: [{ date: "asc" }, { startMinute: "asc" }],
@@ -185,7 +189,8 @@ export default async function ForelderPage() {
   }
 
   return (
-    <ForelderSkall>
+    <ForelderSkall barnId={fokus?.child.id}>
+      <ForelderBarnValg barn={valgListe} valgt={fokus?.child.id ?? null} />
       <ForelderV2 data={data} />
     </ForelderSkall>
   );

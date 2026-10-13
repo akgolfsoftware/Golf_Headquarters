@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * PGA Tour stats-sync for /stats/pga (Fase 2 playground).
  *
@@ -141,7 +142,7 @@ export async function getPgaTopN(
   const isLowerBetter = category === "avgScore" || category === "puttsPerRound";
 
   return prisma.pgaPlayerSeason.findMany({
-    where: {
+    where: { ...publicPgaSourceWhere(),
       tour,
       year,
       // DataGolf skill-ratings har rounds=null; minRounds<=0 dropper filteret.
@@ -175,7 +176,7 @@ export async function getPgaTourAverage(
   const minRounds = options.minRounds ?? 20;
 
   const agg = await prisma.pgaPlayerSeason.aggregate({
-    where: {
+    where: { ...publicPgaSourceWhere(),
       tour,
       year,
       // DataGolf skill-ratings har rounds=null; minRounds<=0 dropper filteret.

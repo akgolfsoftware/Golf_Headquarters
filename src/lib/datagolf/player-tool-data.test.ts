@@ -10,6 +10,7 @@ let ownRounds: unknown[] = [];
 let ownDgId: number | null = null;
 let lastRoundParameters: unknown[] = [];
 const imported = { aar: [], kilde: "syntetisk" };
+mock.module("@/lib/datagolf/access", { namedExports: { requireDataGolfAnalyst: async (expected?: string) => ({ id: expected ?? "syntetisk-analytiker", role: "ADMIN" }) } });
 mock.module("@/lib/portal/turneringshistorikk-data", { namedExports: {
   hentTurneringshistorikk: async () => imported,
 } });

@@ -7,12 +7,15 @@ import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
 import { planActionAvvisSpor } from "./plan-action-spor";
 import { kanBehandlePlanAction } from "./plan-action-tilgang";
+import { COACHING_EMAIL_DRAFT } from "@/lib/email/coaching-oppfolging-kontrakt";
 
 /** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
 async function assertPlanActionAccess(
   user: { id: string; role: string },
-  action: { userId: string; coachId: string | null },
+  action: { userId: string; coachId: string | null; actionType?: string },
 ): Promise<void> {
+  if (action.actionType === COACHING_EMAIL_DRAFT &&
+    ((user.role !== "COACH" && user.role !== "ADMIN") || action.userId !== user.id || action.coachId !== user.id)) throw new Error("forbidden");
   const harSpillerTilgang =
     user.role === "COACH" || user.role === "ADMIN" ? await harCoachTilgangTilSpiller(user, action.userId) : false;
   if (

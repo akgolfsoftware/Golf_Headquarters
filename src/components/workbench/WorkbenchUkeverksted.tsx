@@ -24,7 +24,7 @@ import { UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
 const AKSER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 const KILDER: Record<SourceItem["kind"], string> = { DRILL: "Øvelser", TEMPLATE: "Øktmaler", PROGRAM: "Program", PREVIOUS_WEEK: "Tidligere uker", TEK: "Teknisk plan" };
 
-export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
+export function WorkbenchUkeverksted({ data, dayView = false, initialLibraryOpen = false, initialDay }: { data: WorkbenchSamletData; dayView?: boolean; initialLibraryOpen?: boolean; initialDay?: string }) {
   const motor = useUkeMotor({ playerId: data.player.id, uke: data.uke });
   const { week, travel } = motor;
   const router = useRouter();
@@ -35,7 +35,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   // Et nytt servervalg (og Tilbake/Frem) skifter økt, uten å nullstille åpne ark.
   const valgtId = valg.propId === propValgtId ? valg.id : propValgtId;
   if (valg.propId !== propValgtId) setValg({ propId: propValgtId, id: propValgtId });
-  const [dag, setDag] = useState(week.days.find(d => d.date === osloPlanDato())?.date ?? week.weekStart);
+  const [dag, setDag] = useState(week.days.find(d => d.date === initialDay)?.date ?? week.days.find(d => d.date === osloPlanDato())?.date ?? week.weekStart);
   const [q, setQ] = useState("");
   const [akse, setAkse] = useState<string>("ALLE");
   const [kilde, setKilde] = useState<SourceItem | null>(null);
@@ -47,7 +47,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   const [syklus, setSyklus] = useState(false);
   const [hendelser, setHendelser] = useState(false);
   const [notat, setNotat] = useState(false);
-  const [mobilPanel, setMobilPanel] = useState<"bibliotek" | "detaljer" | null>(null);
+  const [mobilPanel, setMobilPanel] = useState<"bibliotek" | "detaljer" | null>(initialLibraryOpen ? "bibliotek" : null);
   const [plassertid, setPlassertid] = useState("16:00");
   const valgt = motor.alleOkter.find(s => s.id === valgtId) ?? null;
   const synlige = motor.alleOkter.filter(s => s.status !== "CANCELLED");
@@ -67,7 +67,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   });
   const velgOkt = (id: string | null) => {
     setValg({ propId: propValgtId, id });
-    if (id) router.replace(samletWorkbenchUrl(data.player.id, "uke", { ...referanse, okt: id }, data.routeSurface, {}, { niva: data.planKontekst.visning }), { scroll: false });
+    if (id) router.replace(samletWorkbenchUrl(data.player.id, "uke", { ...referanse, okt: id, uke: dayView ? motor.alleOkter.find(session => session.id === id)?.date ?? referanse.uke : referanse.uke }, data.routeSurface, {}, { niva: data.planKontekst.visning }) + (dayView ? "&dag=1" : ""), { scroll: false });
   };
   const plasser = (dato: string, startMinute: number) => {
     if (kilde) {
@@ -118,20 +118,20 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   const dagvalg = <div className="ws-day-tabs" role="group" aria-label="Velg dag">{week.days.map(d => <button type="button" key={d.date} aria-pressed={dag === d.date} onClick={() => setDag(d.date)}><small>{new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: "UTC" }).format(new Date(`${d.date}T12:00:00Z`))}</small><strong className="ws-num">{Number(d.date.slice(8))}</strong><span className="ws-day-dots" aria-hidden>{d.sessions.filter(s => s.status !== "CANCELLED").slice(0, 5).map(s => <i key={s.id} style={{ background: `var(--axis-${s.pyramid.toLowerCase()})` }} />)}</span></button>)}</div>;
   const ukeVolum = <section className="ws-section"><h3>Ukens mengde</h3><p className="ws-muted">{data.volumKilde}</p><TreningsvolumVisning volum={data.volum} /></section>;
   return <>
-    <div className="ws-mobile-day-selector">{dagvalg}</div>
+    <div className={`ws-mobile-day-selector${dayView ? " ws-day-selector--all" : ""}`}>{dagvalg}</div>
     <div className="ws-toolbar ws-week-toolbar">
-      <Link className="pa-iconbtn" aria-label="Forrige uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, -1) }, data.routeSurface)}><ChevronLeft size={18} /></Link>
+      <Link className="pa-iconbtn" aria-label="Forrige uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, -1) }, data.routeSurface) + (dayView ? "&dag=1" : "")}><ChevronLeft size={18} /></Link>
       <h2><span className="ws-week-desktop">Uke {isoWeekNumber(week.weekStart)} <span className="ws-muted">{dagOgDato(week.weekStart)} · {typeNavn}</span></span><span className="ws-week-mobile">{new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${dag}T12:00:00Z`))}<small>Uke {isoWeekNumber(week.weekStart)} · {typeNavn}</small></span></h2>
-      <Link className="pa-iconbtn" aria-label="Neste uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, 1) }, data.routeSurface)}><ChevronRight size={18} /></Link>
+      <Link className="pa-iconbtn" aria-label="Neste uke" href={samletWorkbenchUrl(data.player.id, "uke", { ...referanse, uke: flyttPlanUke(week.weekStart, 1) }, data.routeSurface) + (dayView ? "&dag=1" : "")}><ChevronRight size={18} /></Link>
       <div className="ws-week-actions"><Knapp variant="secondary" onClick={() => setHendelser(true)}>Hendelser</Knapp><Knapp variant="secondary" disabled={travel} onClick={() => setSyklus(true)}>Treukerssyklus</Knapp><Knapp variant="secondary" onClick={() => setUkeplan(true)}>Ukeplan</Knapp>
       <Knapp icon={Plus} disabled={travel} onClick={() => setNy({ dato: dag, startMinutt: 16 * 60, pyramide: null })}>Ny økt</Knapp>
       <Knapp variant="secondary" icon={Send} disabled={travel || motor.utkast.length === 0} onClick={() => setPubliser(true)}>Publiser · {motor.utkast.length}</Knapp></div>
     </div>
     {week.legacyWeekPlanCandidate && <div className="ws-pad"><InlineVarsel tone="warn" tittel="Eldre ukeplan må gjennomgås">En eldre plan finnes med originalåret {week.legacyWeekPlanCandidate.isoYear} og uke {week.legacyWeekPlanCandidate.weekNumber}. {week.legacyWeekPlanCandidate.warning}</InlineVarsel></div>}
     {motor.feil && <div className="ws-pad"><InlineVarsel tone="warn" tittel="Endringen kunne ikke fullføres">{motor.feil}</InlineVarsel><Knapp variant="ghost" onClick={() => void motor.lastPaaNytt()}>Prøv igjen</Knapp></div>}
-    <div className="ws-week" aria-busy={travel}>
+    <div className={`ws-week${dayView ? " ws-week--day" : ""}`} aria-busy={travel}>
       <aside className="ws-library" aria-label="Bibliotek">{bibliotek}</aside>
-      <main className="ws-panel" aria-label="Ukekalender">
+      <main className="ws-panel" aria-label={dayView ? "Dagskalender" : "Ukekalender"}>
         <div className="ws-calendar-scroll"><div className="ws-calendar ws-continuous-calendar" style={{ minWidth: `${50 + dagBredder.reduce((sum, w) => sum + w, 0)}px`, gridTemplateColumns: `50px ${dagBredder.map(w => `minmax(${w}px,1fr)`).join(" ")}` }}>
           <div className="ws-calendar-head">Kl.</div>{week.days.map(d => <div className="ws-calendar-head" data-selected={d.date === dag} key={d.date}>{dagOgDato(d.date)}</div>)}
           <div className="ws-week-hours" style={{ height: `${timer.length * 48}px` }}>{timer.map((h, i) => <span className="ws-num" key={h} style={{ top: `${i * 48}px` }}>{klokke(h * 60)}</span>)}</div>

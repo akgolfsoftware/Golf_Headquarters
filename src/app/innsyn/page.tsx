@@ -56,12 +56,12 @@ export default async function InnsynPage() {
   const spillerKart = new Map(spillere.map((s) => [s.id, s]));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <div className="pa-root support-innsyn" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
         <h1
           style={{
             fontFamily: TL.font.sans,
-            fontSize: 22,
+            fontSize: 32,
             fontWeight: 700,
             letterSpacing: "-0.02em",
             margin: 0,
@@ -69,7 +69,7 @@ export default async function InnsynPage() {
         >
           Delte spillerdata
         </h1>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 16, color: TL.mute, margin: "8px 0 0", lineHeight: 1.5 }}>
           Du ser kun spillere som selv (eller foresatt) har samtykket til deling
           — og kun {[harTester && "testresultater", harStats && "statistikk"].filter(Boolean).join(" og ")}.
         </p>
