@@ -2,7 +2,9 @@
    Bruk: <template id="skjerm"><div class="app" data-fane="plan">…<main class="innhold">…</main>…</div></template>
    og AKUtkast.start({ for: { mob: 'bilder/design-PH-10-390.jpg', pc: 'bilder/design-PH-10-1440.jpg' }, etter: function (app) {} }).
    data-fane: idag | plan | stats | meg gir topplinje, sidemeny og bunnmeny. data-skall="tilbake" gir tilbakelinje i stedet (undersider).
-   Velgere på siden: data-versjon (etter|for), data-bredde (mob|pc), data-spill (av|paa), data-tema (lys|natt). */
+   Velgere på siden: data-versjon (etter|for), data-bredde (mob|pc), data-spill (av|paa), data-tema (lys|natt).
+   Flere skjermer i én fil: AKUtkast.start({ skjermer: { uke: { mal: 'uke', for: {…}, etter: fn }, … }, start: 'uke' }),
+   velger med data-skjerm="uke", og lenker inne i skjermen med data-gaa="uke". */
 (function () {
   var IKON = {
     idag: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
@@ -45,6 +47,27 @@
     app.insertBefore(bunn, s.nextSibling);
   }
 
+  /* Tom, laster og feil: beholder skjermens topp ([data-behold]) og bytter resten.
+     Skjermen oppgir tom: { tittel, tekst, knapp }, laster: 'Henter …', feil: 'Planen kunne ikke hentes'. */
+  function tilstandsflate(app, o, t, tilbake) {
+    var main = app.querySelector('.innhold'), behold = main.querySelectorAll(':scope > [data-behold]');
+    var blokk = document.createElement('div');
+    blokk.className = 'tilstand-blokk';
+    if (t === 'laster') {
+      blokk.setAttribute('aria-busy', 'true');
+      blokk.innerHTML = '<p class="forklar">' + (o.laster || 'Henter …') + '</p><i class="skjelett" style="height:120px"></i><i class="skjelett" style="height:72px"></i><i class="skjelett" style="height:72px"></i>';
+    } else if (t === 'feil') {
+      blokk.innerHTML = '<div class="kort dempet"><b class="undertittel">' + (o.feil || 'Kunne ikke hentes') + '</b><p class="forklar">Ingenting er endret. Sjekk nettet og prøv igjen.</p><div class="knapper"><button type="button" class="knapp pri">Prøv igjen</button></div></div>';
+      blokk.querySelector('button').addEventListener('click', tilbake);
+    } else {
+      blokk.innerHTML = '<div class="kort dempet"><b class="undertittel">' + o.tom.tittel + '</b><p class="forklar">' + o.tom.tekst + '</p><div class="knapper"><button type="button" class="knapp pri">' + o.tom.knapp + '</button></div></div>';
+      blokk.querySelector('button').addEventListener('click', tilbake);
+    }
+    main.innerHTML = '';
+    behold.forEach(function (b) { main.appendChild(b); });
+    main.appendChild(blokk);
+  }
+
   var redusert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Fyll stolper ([data-til]) og tell opp tall ([data-tell], komma som desimaltegn) */
@@ -80,25 +103,39 @@
 
   function start(opt) {
     opt = opt || {};
-    var tilstand = { versjon: 'etter', bredde: 'mob', spill: false, tema: opt.tema || 'lys' };
+    var tilstand = { tilstand: 'data', versjon: 'etter', bredde: 'mob', spill: false, tema: opt.tema || 'lys', skjerm: opt.start || (opt.skjermer ? Object.keys(opt.skjermer)[0] : null) };
     var ramme = document.getElementById('ramme'), skaler = null;
+    function valgt() { return opt.skjermer ? opt.skjermer[tilstand.skjerm] : opt; }
+    function gaa(id) {
+      if (!opt.skjermer || !opt.skjermer[id]) return;
+      tilstand.skjerm = id;
+      document.querySelectorAll('[data-skjerm]').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.skjerm === id ? 'true' : 'false'); });
+      tegn();
+      if (ramme.getBoundingClientRect().top < 0) ramme.scrollIntoView({ block: 'start' });
+    }
     function tegn() {
+      var o = valgt();
       skaler = null; ramme.className = 'ramme ' + tilstand.bredde; ramme.innerHTML = ''; ramme.style.height = '';
-      if (tilstand.versjon === 'for' && opt.for) {
+      if (tilstand.versjon === 'for' && o.for) {
         var img = document.createElement('img');
         img.className = 'for-bilde';
-        img.src = tilstand.bredde === 'mob' ? opt.for.mob : opt.for.pc;
+        img.src = tilstand.bredde === 'mob' ? o.for.mob : o.for.pc;
         img.alt = 'Dagens design';
         ramme.appendChild(img);
         return;
       }
-      var mal = document.getElementById(opt.mal || 'skjerm');
+      var mal = document.getElementById(o.mal || 'skjerm');
       var app = mal.content.firstElementChild.cloneNode(true);
       skall(app);
       if (tilstand.spill) app.classList.add('med-spill');
-      if (tilstand.tema === 'natt') app.classList.add('natt');
+      if (tilstand.tema === 'natt' || o.tema === 'natt') app.classList.add('natt');
       velgere(app);
-      if (opt.etter) opt.etter(app, tilstand);
+      if (tilstand.tilstand && tilstand.tilstand !== 'data' && o.tom) { tilstandsflate(app, o, tilstand.tilstand, function () { tilstand.tilstand = 'data'; document.querySelectorAll('[data-tilstand]').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.tilstand === 'data' ? 'true' : 'false'); }); tegn(); }); }
+      app.addEventListener('click', function (e) {
+        var g = e.target.closest('[data-gaa]');
+        if (g) { e.preventDefault(); gaa(g.dataset.gaa); }
+      });
+      if (o.etter && (!tilstand.tilstand || tilstand.tilstand === 'data' || !o.tom)) o.etter(app, tilstand);
       if (tilstand.bredde === 'mob') { ramme.appendChild(app); anim(app); return; }
       var s = document.createElement('div');
       s.className = 'skala'; s.appendChild(app); ramme.appendChild(s);
@@ -116,11 +153,14 @@
         if (b.dataset.bredde) tilstand.bredde = b.dataset.bredde;
         if (b.dataset.spill) tilstand.spill = b.dataset.spill === 'paa';
         if (b.dataset.tema) tilstand.tema = b.dataset.tema;
+        if (b.dataset.skjerm) tilstand.skjerm = b.dataset.skjerm;
+        if (b.dataset.tilstand) tilstand.tilstand = b.dataset.tilstand;
         tegn();
       });
     });
+    window.AKUtkast._gaa = gaa;
     tegn();
   }
 
-  window.AKUtkast = { start: start, anim: anim, redusert: redusert };
+  window.AKUtkast = { start: start, anim: anim, redusert: redusert, gaa: function (id) { if (window.AKUtkast._gaa) window.AKUtkast._gaa(id); } };
 })();
