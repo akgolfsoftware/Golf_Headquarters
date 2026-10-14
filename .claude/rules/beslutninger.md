@@ -4,6 +4,44 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PLANNIVÅENE HENGER SAMMEN: EN ENDRING ETT STED OPPDATERER ALLE DE ANDRE (Anders 14.10.2026, bindende)
+
+Anders 14.10: «Månedsplanen og ukeplaner er basert på periodiseringen i årsplanen. Når en endring gjøres
+i enten årsplan, periodisering, månedsplan, ukeplan og øktplaner så må alle deler oppdateres.»
+Bekreftet som beslutning samme dag, etter at pakke 3 Plan og Workbench (utkast 2) ble godkjent (port 7).
+
+- **Kjeden er årsplan → periode → måned → uke → økt.** Måned og uke bygger på periodiseringen i årsplanen.
+- **Nedover:** endres årsplanen, en periode eller en måned, får nivåene under nye timer per akse. Endringen
+  gjelder fra og med inneværende uke. Uker som er gått, endres aldri; gjennomført tid står.
+- **En uke måneden har tilpasset, beholder månedens tall** når perioden senere endres. Den merkes «Endret i måneden».
+- **Oppover:** økter som legges inn, flyttes, gjentas eller slettes, teller med en gang i uka, måneden, perioden,
+  årsplanen og Plan. Gjentatte økter teller i hver uke de ligger i.
+- **Brukeren ser hva som ble oppdatert** når en endring lagres (f.eks. «8 uker, oktober og november og
+  årsplanen er oppdatert»). Endrer spilleren noe coachen la inn, får coachen beskjed (§SKJERMENE … RUNDE 8).
+- **Uka viser «lagt inn mot fordelt»**, der fordelt alltid kommer fra nivået over, aldri fra et fast tall.
+  Forslag er fortsatt ikke sperrer (§Treningsfag): Workbench sier fra om avvik, men stopper ingenting.
+
+Fasit for oppførselen er `docs/design-system/utkast-playerhq/plan.html` (`lagrePeriode`, månedsskjemaets
+Lagre, `lagtInn`).
+
+**Arbeidet dette utløser** (i dag henger nivåene ikke sammen i appen):
+
+1. **Perioden fordeler timer per akse.** `PeriodBlock` har bare `weeklyVolMin`/`weeklyVolMax` og øktbudsjett
+   (`weeklySessionBudget`), ikke minutter per akse. Additivt felt via `db execute` (gotchas §Database).
+   Ferdig når en periode lagrer FYS · TEK · SLAG · SPILL · TURN per vanlig uke og per lett uke.
+2. **Månedsplanen** (`MonthPlan`, punkt 3 i §Workbench over uka, 28.09) får timer per akse per uke, arvet fra
+   perioden og overstyrbar per uke.
+3. **Lagring av periode og måned skriver nedover** til `WeekPlan.plannedHours*` fra inneværende uke, uten å røre
+   gåtte uker eller uker måneden har overstyrt. I dag oppdaterer ingen periodehandling (`periode-core.ts`,
+   `gruppe-periode-actions.ts`) ukeplanene. Ferdig når en test låser at en endret periode gir nye timer i
+   kommende uker og uendrede tall i gåtte uker.
+4. **Gruppas årsplan** følger samme kjede: endres gruppeperioden, oppdateres medlemmenes arvede perioder og
+   uker, men ikke det spilleren har merket «Egen».
+5. **Én sum oppover:** uke, måned, periode, årsplan, Plan og I dag leser lagt inn og gjennomført fra
+   `WorkbenchSession`, med samme regel som etterlevelse (§KARTLEGGINGSØKT FJERNES, punkt 4).
+6. **Kvittering ved lagring** som lister nivåene som ble oppdatert, og beskjed til coach når spilleren endrer
+   noe coachen la inn.
+
 ## FYLTE ØKTKORT, ØKTA ÅPNES MED ETT TRYKK, OG «OPP OG NED» BRUKES IKKE (Anders 14.10.2026, bindende)
 
 Svar etter utkast 2 og 3 av I dag (PH-01), https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP.

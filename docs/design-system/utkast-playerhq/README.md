@@ -52,7 +52,7 @@ De ble tatt 14.10.2026 fra skjermregisteret (Precision 3.1.0-l), 43 skjermer i 3
 - Bilder aldri med tekst oppå.
 - Bevegelse: `.tegn` (linjer tegnes), `.vokse` (søyler), `[data-til]` (stolper fylles), `[data-tell]` (tall teller opp),
   trykk gir `scale(.97)`. Alt slås av ved «reduser bevegelse».
-- Alle plannivåer henger sammen (Anders 14.10): endres årsplan, periode, måned, uke eller økt, oppdateres resten.
+- Alle plannivåer henger sammen (Anders 14.10, beslutning i `.claude/rules/beslutninger.md`): endres årsplan, periode, måned, uke eller økt, oppdateres resten.
   Nedover: periode og måned gir ukene nye timer fra og med denne uka; uker som er gått, røres ikke. Oppover: økter teller
   i uka, måneden, perioden og året. I `plan.html`: `lagrePeriode`, månedsskjemaets Lagre, `EGNE` og `lagtInn`.
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md` («up and down», Målsetning, Gjennomført, Stats).
