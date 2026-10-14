@@ -1,6 +1,8 @@
 /**
  * Felles biter for TrackMan-skjermene i pakke 6 (PH-17): datoformat, «Alle tall» og tilbakelenke.
  * Fasit: docs/design-system/utkast-playerhq/stats-dybde.html.
+ * Avvik:
+ *   - Ingen egne avvik; avvikene per skjerm står i PH17TmOkter, PH17TmOkt og PH17TmKoller.
  */
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
