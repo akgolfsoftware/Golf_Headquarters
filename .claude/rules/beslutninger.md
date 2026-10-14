@@ -4,6 +4,31 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
+
+Anders 14.10 under pakke 2 Treningsøkten: «Fjern mørk modus på live øktene», og senere: «La alltid lyst tema».
+
+- **Live-økt (PH-04 brief, PH-05 aktiv, PH-06 fysisk, PH-07 etter økten) og Øktark (PH-03) tegnes og bygges
+  lyse.** Ingen nattvelger og ingen automatisk natt. Fasit er `docs/design-system/utkast-playerhq/treningsokt.html`
+  (utkast 1, PR #1230; port 7 gjenstår).
+- **Uavklart: slagregistrering ute** (`ShotEntryNumpad`) var sammen med Live-økt tenkt som natt (26.09, §PRECISION
+  ATHLETICS punkt 4). Anders sa bare «live øktene». Spørres før den endres.
+
+**Overstyrer:** natt i Live-økt i §PRECISION ATHLETICS punkt 4 (26.09) og i §Design under (21.09).
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Live-sidene i appen** bruker i dag `data-theme="night"`: `src/app/portal/(fullscreen)/live/[sessionId]/tapper/page.tsx:66`
+   og `tapper-shell.tsx:265`, `.../live/[sessionId]/loading.tsx:6`, `.../summary/loading.tsx:6`,
+   `.../summary/error.tsx:28`, og `src/app/admin/agencyos/live/[sessionId]/loading.tsx:9` (coachens Live-økt).
+   Bytt til lyst. Ferdig når ingen av dem har `data-theme="night"` og skjermene er sett i 390 og desktop (port 7).
+2. **Porteringen av PH-04 til PH-07** bygges lys fra første linje, etter utkastet i punkt over. Natt-tokens
+   (`--night-*`, `.pa-root[data-theme="night"]` i `src/styles/precision-athletics.css`) beholdes til slagregistrering
+   er avgjort.
+3. **Åpent for Anders:** skal slagregistrering ute (`src/components/portal/runde-logg/ShotEntryNumpad.tsx:90`) også
+   være lys? Svar avgjør om natt-tokens kan fjernes.
+4. **Ikke berørt:** Team Norway-scorekortet har egen natt-bryter (`src/app/portal/tren/tester/team-norway/scorecard.tsx:24`).
+
 ## PLANNIVÅENE HENGER SAMMEN: EN ENDRING ETT STED OPPDATERER ALLE DE ANDRE (Anders 14.10.2026, bindende)
 
 Anders 14.10: «Månedsplanen og ukeplaner er basert på periodiseringen i årsplanen. Når en endring gjøres
@@ -928,9 +953,9 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
   `#9B2415` brukes bare på det som haster eller ødelegger (sletting, trekk tilbake), Live-pillen
   og tellere som krever coachens handling — maks én per skjerm. Overstyrer «Rust følger
   handlingen, ikke ordet» (22.09).
-- **Lyst tema er standard** i `/portal` og `/admin`. Nattema (`data-theme="night"`) brukes i
-  Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
-  `/portal` og `/admin`» (21.09).
+- **Lyst tema er standard** i `/portal` og `/admin`. ~~Nattema brukes i Live-økt og slagregistrering ute.~~
+  Overstyrt 14.10: Live-økt er alltid lyst (§LIVE-ØKTENE ER ALLTID LYSE); slagregistrering ute er uavklart.
+  Overstyrer «Mørk er standard på `/portal` og `/admin`» (21.09).
 - Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
 - Ordlister: `docs/ordbok.md` (masteren `docs/treningsplanlegging.md`) vinner over prosjektets
   `guidelines/ordmaster.md` (§APPENS ORDBOK VINNER OVER PRECISIONS ORDMASTER, 29.09).
@@ -949,8 +974,8 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
    laster og feil. Claude Code styrer prosjektet via Chrome. Ferdig per skjerm når målingen viser
    `scrollWidth === clientWidth` i alle bredder og Anders har sett den (port 7).
 4. **Temastandard i koden:** `erMorkFlate()` i `src/lib/v2/tema-default.ts` gjør `/admin` mørk
-   uten lagret valg — skal bli lys. Nattema for Live-økt og slagregistrering bygges sammen med
-   de skjermene.
+   uten lagret valg — skal bli lys. Nattema for Live-økt er utgått (14.10, §LIVE-ØKTENE ER ALLTID LYSE);
+   slagregistrering ute er uavklart.
 5. **38 skjermer fra «App design» må tegnes på nytt.** Blokken «AG-03b» under viser til dem,
    men prosjektet er borte. Funksjonsfunnene i den blokken (datamodell, navnevalg, hull) står
    fortsatt; bare tegningene mangler. Dekkes av punkt 3.
@@ -1129,7 +1154,7 @@ Knøtt som det andre, skal skrives om. Den endrer publisert markedstekst og vent
 - Konkret skjermvariant innen systemet kan Anders fortsatt velge før bygging.
 - Ferdig skjerm = funksjonen virker og Anders har sett den (mobil 390 px + desktop, lys og mørk, tom/laster/feil).
 - Paper er fjernet fra plattformen; vakten `scripts/check-ingen-paper.mjs` kjører i `npm run verify`.
-- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Lys er standard overalt; natt i Live-økt og slagregistrering (`src/lib/v2/tema-default.ts`, se §PRECISION ATHLETICS punkt 4).
+- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Lys er standard overalt, også i Live-økt (§LIVE-ØKTENE ER ALLTID LYSE, 14.10); slagregistrering ute er uavklart (`src/lib/v2/tema-default.ts`).
 - Ikke bruk `accent` som tekstfarge på `primary`; bruk `-foreground`-paret.
 
 ## Aldri sidelengs rulling (Anders 22.09.2026, bindende)
