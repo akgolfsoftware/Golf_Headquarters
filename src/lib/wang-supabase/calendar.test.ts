@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  byggWangUtoverprofilplan,
   erWangKalenderRolle,
   filtrerWangKalenderhendelser,
   velgWangKalenderfeed,
@@ -82,5 +83,55 @@ describe("WANG-kalender", () => {
       data.feeds[0].id,
     );
     assert.equal(velgWangKalenderfeed({ feeds: [] }, data.feeds[0].id), null);
+  });
+
+  it("bygger uke og kommende konkurranser uten helse- eller kontaktdata", () => {
+    const previousSundayCamp: WangCalendarEvent = {
+      ...baseEvent,
+      id: "00000000-0000-4000-8000-000000000031",
+      kind: "camp",
+      title: "Fiktiv samling",
+      startsAt: "2026-10-11T16:00:00+02:00",
+      endsAt: "2026-10-12T10:00:00+02:00",
+    };
+    const competition: WangCalendarEvent = {
+      ...baseEvent,
+      id: "00000000-0000-4000-8000-000000000032",
+      kind: "competition",
+      title: "Fiktiv konkurranse",
+      startsAt: "2026-10-17T08:00:00+02:00",
+      endsAt: "2026-10-17T12:00:00+02:00",
+    };
+    const nextMonthCompetition: WangCalendarEvent = {
+      ...competition,
+      id: "00000000-0000-4000-8000-000000000033",
+      startsAt: "2026-11-02T08:00:00+01:00",
+      endsAt: "2026-11-02T12:00:00+01:00",
+    };
+    const archived = {
+      ...competition,
+      id: "00000000-0000-4000-8000-000000000034",
+      status: "archived" as const,
+    };
+
+    const schedule = byggWangUtoverprofilplan(
+      [nextMonthCompetition, archived, competition, previousSundayCamp, baseEvent],
+      new Date("2026-10-14T12:00:00+02:00"),
+    );
+
+    assert.equal(schedule.weekStartsAt, "2026-10-11T22:00:00.000Z");
+    assert.equal(schedule.weekEndsAt, "2026-10-18T22:00:00.000Z");
+    assert.deepEqual(
+      schedule.weekEvents.map((event) => event.id),
+      [previousSundayCamp.id, baseEvent.id, competition.id],
+    );
+    assert.deepEqual(
+      schedule.upcomingCompetitions.map((event) => event.id),
+      [competition.id, nextMonthCompetition.id],
+    );
+    assert.doesNotMatch(
+      JSON.stringify(schedule),
+      /sleep|readiness|checkin|email|phone|statusLabel|contact/i,
+    );
   });
 });

@@ -190,7 +190,8 @@
   line-height: 1.55;
 }
 
-.moduleGrid article > span {
+.moduleGrid article > span,
+.moduleGrid article > a {
   display: inline-flex;
   margin-top: 16px;
   padding: 5px 9px;
@@ -199,6 +200,50 @@
   color: var(--wang-text-muted);
   font-size: 11px;
   font-weight: 700;
+}
+
+.moduleGrid article > a {
+  min-height: 44px;
+  align-items: center;
+  color: var(--wang-blue) !important;
+  text-decoration: none !important;
+}
+
+.eventList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eventRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--wang-grey-line);
+}
+
+.eventRow div > span,
+.eventRow strong {
+  display: block;
+}
+
+.eventRow div > span,
+.eventRow time {
+  color: var(--wang-text-muted);
+  font-size: 11px;
+}
+
+.eventRow strong {
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.eventRow time {
+  text-align: right;
 }
 
 .page a:focus-visible {
@@ -230,5 +275,14 @@
   .factGrid,
   .moduleGrid {
     grid-template-columns: 1fr;
+  }
+
+  .eventRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .eventRow time {
+    text-align: left;
   }
 }

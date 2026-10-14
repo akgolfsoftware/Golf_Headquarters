@@ -217,3 +217,15 @@ Utøverlisten åpner nå en beskyttet grunnprofil under `/team-wang/app/utovere/
 - fiktive elever er tydelig merket som demonstrasjonsdata
 - kalender, konkurranser og skoledata er synlige som ærlige ikke-koblede tilstander uten oppdiktet innhold
 - lenker og profilside har minimum 44 piksler trykkflate og tydelig tastaturfokus
+
+## 16. Kalender- og konkurransegrunnlag i utøverprofil bygget 14. oktober 2026
+
+Den beskyttede utøverprofilen viser nå registrerte kalenderhendelser innenfor samme rolleomfang.
+
+- `Denne uken` viser kalenderhendelser som overlapper inneværende Oslo-uke
+- `Konkurranser` viser inntil tre kommende konkurranser fra godkjent kalendergrunnlag
+- `Skole` viser registrerte skoletimer, prøver og innleveringer for inneværende uke
+- tomme tilstander sier at ingenting er registrert; systemet finner ikke på hendelser
+- data hentes bare for elevens gruppe, idrett eller egen elev-ID og kontrolleres av eksisterende databasevern
+- arkiverte hendelser skjules, mens godkjent ledelse og sportsteam kan se utkast i eget omfang
+- søvn, dagsform, morgeninnsjekk, kontaktdata og annen helseinformasjon hentes fortsatt ikke

@@ -2,8 +2,13 @@ import "server-only";
 
 import { z } from "zod";
 
+import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
+
+import { hentWangUtoverprofil } from "./data";
 import { opprettWangServerKlient } from "./server";
 import type {
+  WangAthleteProfileSchedule,
+  WangAthleteProfileWithSchedule,
   WangAuthenticatedProfile,
   WangCalendarAccessKind,
   WangCalendarData,
@@ -120,6 +125,25 @@ function sorterHendelser(events: WangCalendarEvent[]): WangCalendarEvent[] {
 
 function unikeHendelser(events: WangCalendarEvent[]): WangCalendarEvent[] {
   return [...new Map(events.map((event) => [event.id, event])).values()];
+}
+
+export function byggWangUtoverprofilplan(
+  events: WangCalendarEvent[],
+  now: Date,
+): WangAthleteProfileSchedule {
+  const { start, slutt } = osloUkeGrenser(now);
+  const visibleEvents = filtrerWangKalenderhendelser("staff", unikeHendelser(events));
+
+  return {
+    weekStartsAt: start.toISOString(),
+    weekEndsAt: slutt.toISOString(),
+    weekEvents: visibleEvents.filter(
+      (event) => new Date(event.endsAt) > start && new Date(event.startsAt) < slutt,
+    ),
+    upcomingCompetitions: visibleEvents
+      .filter((event) => event.kind === "competition" && new Date(event.startsAt) >= now)
+      .slice(0, 3),
+  };
 }
 
 export function erWangKalenderRolle(
@@ -382,4 +406,59 @@ export async function hentWangKalender(
     return hentSportsteamKalender(profile);
   }
   return hentElevkalender(profile);
+}
+
+export async function hentWangUtoverprofilMedPlan(
+  profile: WangAuthenticatedProfile,
+  studentId: string,
+  now = new Date(),
+): Promise<WangAthleteProfileWithSchedule | null> {
+  const athlete = await hentWangUtoverprofil(profile, studentId);
+  if (!athlete) return null;
+
+  const supabase = await opprettWangServerKlient();
+  const { start } = osloUkeGrenser(now);
+  const horizon = new Date(now);
+  horizon.setUTCDate(horizon.getUTCDate() + 180);
+  const fields =
+    "id, school_sport_id, group_id, student_id, plan_node_id, source, kind, title, starts_at, ends_at, place, locked_for_student, status";
+
+  const [groupEventsResult, sportEventsResult, studentEventsResult] = await Promise.all([
+    supabase
+      .from("wang_calendar_events")
+      .select(fields)
+      .eq("group_id", athlete.group.id)
+      .is("student_id", null)
+      .gte("ends_at", start.toISOString())
+      .lt("starts_at", horizon.toISOString()),
+    supabase
+      .from("wang_calendar_events")
+      .select(fields)
+      .eq("school_sport_id", athlete.sport.schoolSportId)
+      .is("group_id", null)
+      .is("student_id", null)
+      .gte("ends_at", start.toISOString())
+      .lt("starts_at", horizon.toISOString()),
+    supabase
+      .from("wang_calendar_events")
+      .select(fields)
+      .eq("student_id", athlete.id)
+      .gte("ends_at", start.toISOString())
+      .lt("starts_at", horizon.toISOString()),
+  ]);
+
+  if (groupEventsResult.error || sportEventsResult.error || studentEventsResult.error) {
+    throw new Error("Utøverens kalendergrunnlag kunne ikke hentes.");
+  }
+
+  const events = [
+    ...validerRader(calendarEventSchema, groupEventsResult.data, "gruppehendelser"),
+    ...validerRader(calendarEventSchema, sportEventsResult.data, "idrettshendelser"),
+    ...validerRader(calendarEventSchema, studentEventsResult.data, "elevhendelser"),
+  ].map(mapEvent);
+
+  return {
+    athlete,
+    schedule: byggWangUtoverprofilplan(events, now),
+  };
 }

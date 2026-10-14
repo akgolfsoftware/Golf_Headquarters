@@ -145,6 +145,18 @@ export interface WangAthleteProfileData {
   };
 }
 
+export interface WangAthleteProfileSchedule {
+  weekStartsAt: string;
+  weekEndsAt: string;
+  weekEvents: WangCalendarEvent[];
+  upcomingCompetitions: WangCalendarEvent[];
+}
+
+export interface WangAthleteProfileWithSchedule {
+  athlete: WangAthleteProfileData;
+  schedule: WangAthleteProfileSchedule;
+}
+
 export type WangCalendarAccessKind = "self" | "shared" | "staff";
 
 export interface WangCalendarEvent extends WangDemoEvent {
