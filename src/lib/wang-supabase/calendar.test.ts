@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  byggWangSkolekalender,
   byggWangUtoverprofilplan,
   erWangKalenderRolle,
   filtrerWangKalenderhendelser,
@@ -27,11 +28,66 @@ const baseEvent: WangCalendarEvent = {
 
 describe("WANG-kalender", () => {
   it("åpnes bare for roller med kalenderbehov", () => {
-    for (const role of ["sports_director", "coach", "student", "guardian", "club_coach"] as const) {
+    for (const role of [
+      "school_leader",
+      "principal",
+      "head_of_sports",
+      "sports_director",
+      "coach",
+      "student",
+      "guardian",
+      "club_coach",
+    ] as const) {
       assert.equal(erWangKalenderRolle(role), true);
     }
     assert.equal(erWangKalenderRolle("central_admin"), false);
     assert.equal(erWangKalenderRolle("readonly"), false);
+  });
+
+  it("bygger skolekalender for alle aktive idretter uten elevspesifikke hendelser", () => {
+    const secondSchoolSportId = "00000000-0000-4000-8000-000000000041";
+    const studentEvent: WangCalendarEvent = {
+      ...baseEvent,
+      id: "00000000-0000-4000-8000-000000000042",
+      studentId: "00000000-0000-4000-8000-000000000043",
+      source: "student",
+      kind: "self_training",
+      lockedForStudent: false,
+    };
+    const data = byggWangSkolekalender(
+      [
+        {
+          id: baseEvent.schoolSportId!,
+          sport_id: "00000000-0000-4000-8000-000000000044",
+          school_year: "2026/2027",
+        },
+        {
+          id: secondSchoolSportId,
+          sport_id: "00000000-0000-4000-8000-000000000045",
+          school_year: "2026/2027",
+        },
+      ],
+      [
+        { id: "00000000-0000-4000-8000-000000000044", name: "Golf" },
+        { id: "00000000-0000-4000-8000-000000000045", name: "Apparatturn" },
+      ],
+      [{
+        id: baseEvent.groupId!,
+        school_sport_id: baseEvent.schoolSportId!,
+        name: "Fiktiv gruppe",
+        grade: "VG1",
+        school_year: "2026/2027",
+      }],
+      [studentEvent, baseEvent],
+    );
+
+    assert.equal(data.feeds.length, 2);
+    assert.equal(data.feeds[0].label, "Apparatturn");
+    assert.deepEqual(data.feeds[0].events, []);
+    assert.equal(data.feeds[1].label, "Golf · Fiktiv gruppe");
+    assert.equal(data.feeds[1].accessKind, "leadership");
+    assert.deepEqual(data.feeds[1].events.map((event) => event.id), [baseEvent.id]);
+    assert.doesNotMatch(JSON.stringify(data), /sleep|readiness|checkin|email|phone|contact/i);
   });
 
   it("skjuler utkast for delte lesere, men beholder elevens egne hendelser", () => {

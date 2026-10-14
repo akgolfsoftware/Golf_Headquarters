@@ -128,6 +128,7 @@ export default async function WangKalenderPage({
   const events = activeFeed ? filterEvents(activeFeed.events, view) : [];
   const camps = activeFeed?.events.filter((event) => event.kind === "camp") ?? [];
   const isShared = activeFeed?.accessKind === "shared";
+  const isLeadership = activeFeed?.accessKind === "leadership";
 
   return (
     <main className={styles.page}>
@@ -146,7 +147,9 @@ export default async function WangKalenderPage({
           </span>
         </div>
         <p className={styles.intro}>
-          Skole- og WANG-hendelser er låst for eleven. Egen- og klubbtrening kan bare endres av eleven som opprettet dem.
+          {isLeadership
+            ? "Skoleledelsen ser skole- og WANG-hendelser for aktive idretter ved egen skole. Elevens helse- og kontaktdata er ikke med."
+            : "Skole- og WANG-hendelser er låst for eleven. Egen- og klubbtrening kan bare endres av eleven som opprettet dem."}
         </p>
       </header>
 
@@ -160,7 +163,9 @@ export default async function WangKalenderPage({
         <>
           <section className={styles.scopeCard} aria-label="Aktiv kalender">
             <div>
-              <span className={styles.eyebrow}>{isShared ? "Delt kalender" : "Aktiv kalender"}</span>
+              <span className={styles.eyebrow}>
+                {isShared ? "Delt kalender" : isLeadership ? "Skolekalender" : "Aktiv kalender"}
+              </span>
               <strong>{activeFeed?.label}</strong>
               <small>{activeFeed?.detail}</small>
             </div>
@@ -169,6 +174,8 @@ export default async function WangKalenderPage({
                 ? `Tilgang til ${formatAccessExpiry(activeFeed.accessExpiresAt)}`
                 : activeFeed?.accessKind === "staff"
                   ? "Tilgang via aktiv sportstildeling"
+                  : isLeadership
+                    ? "Lesetilgang via skoleledelse"
                   : "Elevens egen kalender"}
             </p>
           </section>
@@ -225,7 +232,7 @@ export default async function WangKalenderPage({
                           {event.lockedForStudent ? (
                             <span className={styles.lockBadge}><LockKeyhole size={13} aria-hidden /> Låst</span>
                           ) : null}
-                          {activeFeed?.accessKind === "staff" ? (
+                          {activeFeed?.accessKind === "staff" || isLeadership ? (
                             <span className={styles.statusBadge}>{event.status}</span>
                           ) : null}
                         </div>
@@ -253,7 +260,7 @@ export default async function WangKalenderPage({
               )) : (
                 <p className={styles.emptyText}>Ingen samlinger er publisert i kalenderen.</p>
               )}
-              {isShared ? (
+              {isShared || isLeadership ? (
                 <p className={styles.privacyNote}>
                   Søvn, dagsform og helseopplysninger deles ikke i denne visningen.
                 </p>

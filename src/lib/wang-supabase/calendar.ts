@@ -17,6 +17,9 @@ import type {
 } from "./types";
 
 const calendarRoles = [
+  "school_leader",
+  "principal",
+  "head_of_sports",
   "sports_director",
   "coach",
   "student",
@@ -159,7 +162,7 @@ export function filtrerWangKalenderhendelser(
   return sorterHendelser(
     events.filter((event) => {
       if (event.status === "archived") return false;
-      if (accessKind === "staff") return true;
+      if (accessKind === "staff" || accessKind === "leadership") return true;
       if (accessKind === "shared") return event.status === "published";
       return (
         event.status === "published" ||
@@ -167,6 +170,108 @@ export function filtrerWangKalenderhendelser(
         event.source === "club"
       );
     }),
+  );
+}
+
+export function byggWangSkolekalender(
+  schoolSports: z.infer<typeof schoolSportSchema>[],
+  sports: z.infer<typeof sportSchema>[],
+  groups: z.infer<typeof groupSchema>[],
+  events: WangCalendarEvent[],
+): WangCalendarData {
+  const leadershipEvents = filtrerWangKalenderhendelser(
+    "leadership",
+    events.filter((event) => event.studentId === null),
+  );
+
+  const feeds = schoolSports.flatMap((schoolSport) => {
+      const sport = sports.find((candidate) => candidate.id === schoolSport.sport_id);
+      if (!sport) throw new Error("WANG-idretten mangler katalogdata.");
+      const sportGroups = groups.filter(
+        (group) => group.school_sport_id === schoolSport.id,
+      );
+
+      if (sportGroups.length === 0) {
+        return [{
+          id: `school-sport-${schoolSport.id}`,
+          label: sport.name,
+          detail: schoolSport.school_year,
+          accessKind: "leadership" as const,
+          accessExpiresAt: null,
+          events: leadershipEvents.filter(
+            (event) => event.schoolSportId === schoolSport.id && event.groupId === null,
+          ),
+        }];
+      }
+
+      return sportGroups.map((group) => ({
+        id: group.id,
+        label: `${sport.name} · ${group.name}`,
+        detail: group.school_year,
+        accessKind: "leadership" as const,
+        accessExpiresAt: null,
+        events: leadershipEvents.filter(
+          (event) =>
+            event.groupId === group.id ||
+            (event.groupId === null && event.schoolSportId === schoolSport.id),
+        ),
+      }));
+    });
+
+  return {
+    feeds: feeds.sort((left, right) => left.label.localeCompare(right.label, "nb")),
+  };
+}
+
+async function hentSkoleledelseKalender(
+  profile: WangAuthenticatedProfile,
+): Promise<WangCalendarData> {
+  if (!profile.schoolId) return { feeds: [] };
+
+  const supabase = await opprettWangServerKlient();
+  const schoolSportsResult = await supabase
+    .from("wang_school_sports")
+    .select("id, sport_id, school_year")
+    .eq("school_id", profile.schoolId)
+    .eq("status", "active")
+    .order("school_year", { ascending: false });
+
+  if (schoolSportsResult.error) throw new Error("WANG-idrettene kunne ikke hentes.");
+  const schoolSports = validerRader(
+    schoolSportSchema,
+    schoolSportsResult.data,
+    "skoleidretter",
+  );
+  if (schoolSports.length === 0) return { feeds: [] };
+
+  const schoolSportIds = schoolSports.map((schoolSport) => schoolSport.id);
+  const sportIds = [...new Set(schoolSports.map((schoolSport) => schoolSport.sport_id))];
+  const [sportsResult, groupsResult, eventsResult] = await Promise.all([
+    supabase.from("wang_sports").select("id, name").in("id", sportIds).order("name"),
+    supabase
+      .from("wang_groups")
+      .select("id, school_sport_id, name, grade, school_year")
+      .in("school_sport_id", schoolSportIds)
+      .order("name"),
+    supabase
+      .from("wang_calendar_events")
+      .select(
+        "id, school_sport_id, group_id, student_id, plan_node_id, source, kind, title, starts_at, ends_at, place, locked_for_student, status",
+      )
+      .in("school_sport_id", schoolSportIds)
+      .is("student_id", null)
+      .order("starts_at"),
+  ]);
+
+  if (sportsResult.error || groupsResult.error || eventsResult.error) {
+    throw new Error("Skolekalenderen kunne ikke hentes.");
+  }
+
+  return byggWangSkolekalender(
+    schoolSports,
+    validerRader(sportSchema, sportsResult.data, "idretter"),
+    validerRader(groupSchema, groupsResult.data, "grupper"),
+    validerRader(calendarEventSchema, eventsResult.data, "hendelser").map(mapEvent),
   );
 }
 
@@ -402,6 +507,13 @@ export async function hentWangKalender(
   profile: WangAuthenticatedProfile,
 ): Promise<WangCalendarData> {
   if (!erWangKalenderRolle(profile.role)) return { feeds: [] };
+  if (
+    profile.role === "school_leader" ||
+    profile.role === "principal" ||
+    profile.role === "head_of_sports"
+  ) {
+    return hentSkoleledelseKalender(profile);
+  }
   if (profile.role === "sports_director" || profile.role === "coach") {
     return hentSportsteamKalender(profile);
   }
