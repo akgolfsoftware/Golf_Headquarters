@@ -57,7 +57,8 @@
     "prosjekt:register": "node scripts/prosjekt-register.mjs --write",
     "check:workbench-handover": "node scripts/check-workbench-handover.mjs",
     "repo:status": "node scripts/repo-status.mjs",
-    "test:repo-status": "node --test scripts/repo-status.test.mjs"
+    "test:repo-status": "node --test scripts/repo-status.test.mjs",
+    "wang:testprofiler:koble": "tsx scripts/wang-koble-testprofiler.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",

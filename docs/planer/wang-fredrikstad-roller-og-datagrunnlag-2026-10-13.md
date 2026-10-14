@@ -178,3 +178,18 @@ Kontrollert i denne arbeidsbolken:
 - alle ti rollevisninger i Chromium på 1280 og 390 piksler uten vannrett overflyt
 - tydelig tastaturfokus med minst 3 piksler fokusramme
 - ingen konsollfeil i den kontrollerte desktopreisen
+
+## 13. Trygg kontokobling klargjort 14. oktober 2026
+
+Koblingsverktøyet `npm run wang:testprofiler:koble -- --input <privat-json>` lager som standard bare en kontrollrapport. Det skriver ingenting før `--apply` er lagt til.
+
+Sikkerhetsgrenser:
+
+- verktøyet godtar bare den godkjente WANG-databasen `uwuhkgkaqnuerlkqvrpw`
+- inputfilen inneholder bare bruker-ID-er og ID-en til én eksisterende demo-elev, aldri navn, e-post eller passord
+- alle ti Auth-brukere må allerede finnes med fast `example.invalid`-adresse og riktig syntetisk profilmarkør
+- valgt elev må være en eksisterende demo-elev i Golf ved WANG Fredrikstad 2026/2027
+- koblingen er additiv og kan ikke opprette Auth-brukere, sende e-post, slette data eller koble over en elev som allerede tilhører en annen profil
+- foresatt og klubbtrener får tidsbegrenset lesetilgang uten søvn og dagsform
+
+Ingen kontoer eller databasekoblinger er opprettet i denne arbeidsbolken. Neste handling krever en eksplisitt bekreftelse mens de syntetiske Auth-kontoene opprettes.
