@@ -1,6 +1,6 @@
 # WANG Toppidrett i nytt design: trenerskjermene
 
-Status: **pakke 1 Grunnmur er utkast 1 (14.10.2026) og venter på Anders' ja til aksefargene.** Ingen andre pakker er tegnet.
+Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakke 2 I dag tegnes.**
 
 Gjelder trenerflaten i `/team-wang` i AK Golf HQ. Claude Design stenger 14.12, så Anders godkjente 14.10 at WANG tegnes i
 repoet som HTML-utkast publisert som private Artifacts, samme metode som [PlayerHQ](../utkast-playerhq/README.md).
@@ -19,7 +19,7 @@ Anders går gjennom alt samlet til slutt (port 7).
 - **Bare syntetiske data.** Elevene er mindreårige: «Elev 04», «Trener 1». Aldri ekte navn.
 - Aldri sidelengs rulling. Tekst minst 4,5:1 i kontrast (stor tekst 3:1).
 
-## Aksefargene (spørsmålet til Anders)
+## Aksefargene (godkjent av Anders 14.10.2026)
 
 | Akse | Farge | Søyle og prikk | Flate med tekst | Tekst på flaten |
 |---|---|---|---|---|
@@ -39,7 +39,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 
 | Pakke | Skjermer | Fil | Status | Lenke |
 |---|---|---|---|---|
-| 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Utkast 1**, venter på ja til aksefargene | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
+| 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders) | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
 | 2 I dag | Dagens økter, det som krever handling, oppmøte på morgentrening, fravær | `idag.html` | | |
 | 3 Trening | WANG-42 oversikt (planlagt mot gjennomført 4 uker, etterlevelse, per område og elev), årsplan, periode, måned, uke, økt | `trening.html` | | |
 | 4 Tester | Testbatteriet, testdag-føring, resultater per elev, A–K-nivå, fysisk test hver sjette uke | `tester.html` | | |
