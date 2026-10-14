@@ -8,6 +8,8 @@
 .header,
 .summaryGrid,
 .privacyNotice,
+.alertPanel,
+.alertPanelClear,
 .sportList,
 .emptyState {
   width: min(100%, 1180px);
@@ -156,6 +158,111 @@
 .privacyNotice strong,
 .privacyNotice span {
   display: block;
+}
+
+.alertPanel,
+.alertPanelClear {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--cat-pink) 34%, var(--wang-grey-line));
+  border-radius: 12px;
+  background: var(--tint-pink);
+}
+
+.alertPanelClear {
+  border-color: color-mix(in srgb, var(--wang-green) 30%, var(--wang-grey-line));
+  background: var(--tint-teal);
+}
+
+.alertHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alertHeading h2 {
+  margin: 3px 0 0;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 20px;
+}
+
+.alertHeading > strong {
+  min-width: 34px;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  border-radius: 999px;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+}
+
+.alertIcon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 10px;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+}
+
+.alertList {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alertList a {
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, auto) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--cat-pink) 26%, var(--wang-grey-line));
+  border-radius: 9px;
+  background: var(--wang-white);
+  color: var(--wang-blue) !important;
+  text-decoration: none !important;
+}
+
+.alertList a:hover {
+  border-color: var(--wang-blue);
+}
+
+.alertList span,
+.alertList strong,
+.alertList small {
+  display: block;
+}
+
+.alertList span:nth-child(2) {
+  font-weight: 700;
+}
+
+.alertList small,
+.alertEmpty,
+.alertPrivacy {
+  color: var(--wang-text-muted);
+  font-size: 12px;
+}
+
+.alertList small {
+  margin-top: 3px;
+}
+
+.alertEmpty {
+  margin: 14px 0 0;
+}
+
+.alertPrivacy {
+  margin: 14px 0 0;
+  line-height: 1.45;
 }
 
 .privacyNotice span {
@@ -355,6 +462,11 @@
 
   .athleteLink {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .alertList a {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .athleteList small {

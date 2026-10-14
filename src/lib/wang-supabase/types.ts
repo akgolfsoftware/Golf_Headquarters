@@ -126,6 +126,18 @@ export interface WangAthleteOverview {
   sports: WangAthleteSport[];
 }
 
+export interface WangWellbeingAlert {
+  studentId: string;
+  athleteName: string;
+  grade: "VG1" | "VG2" | "VG3";
+  isDemo: boolean;
+  groupName: string;
+  sportName: string;
+  streakStartsOn: string;
+  streakEndsOn: string;
+  consecutiveDays: number;
+}
+
 export interface WangAthleteProfileData {
   id: string;
   name: string;

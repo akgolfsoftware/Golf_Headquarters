@@ -241,3 +241,15 @@ Skoleleder, rektor og toppidrettssjef kan nå åpne den beskyttede kalenderen fr
 - søvn, dagsform, morgeninnsjekk, telefonnummer, e-post og kontaktdata hentes ikke
 - sentral admin og invitert leser får fortsatt ikke skolekalender gjennom denne rollen
 - eksisterende databasevern avgrenser lesingen til rollen sin skole
+
+## 18. Helsevarsel for sportsteam bygget 14. oktober 2026
+
+Utøveroversikten viser nå et aktivt varsel til tildelt sportssjef og trener når en elev har registrert under seks timers søvn tre kalenderdager på rad.
+
+- nøyaktig seks timer utløser ikke varsel
+- en manglende dag eller en dag med seks timer eller mer bryter rekken
+- varselet må slutte i dag eller i går for å være aktivt; eldre rekker vises ikke som nåværende varsel
+- oversikten viser elev, idrett, gruppe, trinn, datoperiode og antall dager, men ikke eksakte søvntall eller dagsform
+- skoleleder, rektor, toppidrettssjef, foresatt, klubbtrener og invitert leser får aldri varselet
+- databasevernet begrenser lesing til elever i idretter der sportssjef eller trener har aktiv tildeling
+- demoelever er tydelig merket, og ingen ekte elevdata er lagt til
