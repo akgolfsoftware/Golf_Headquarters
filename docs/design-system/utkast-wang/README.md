@@ -1,6 +1,8 @@
 # WANG Toppidrett i nytt design: trenerskjermene
 
-Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakkene 2–9 tegnes som utkast 1 natt til 15.10 og venter på port 7. Åpne spørsmål står samlet nederst.**
+Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakkene 2–8 og samlesiden er utkast 1 (14.–15.10) og venter på port 7. Åpne spørsmål står samlet nederst.**
+
+Samleside: https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB
 
 Gjelder trenerflaten i `/team-wang` i AK Golf HQ. Claude Design stenger 14.12, så Anders godkjente 14.10 at WANG tegnes i
 repoet som HTML-utkast publisert som private Artifacts, samme metode som [PlayerHQ](../utkast-playerhq/README.md).
@@ -47,7 +49,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8Y6rzYYoHj7czvmD5BtiX6 |
 | 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/7QC4YH8zeeLSFHXGULBf4q |
 | 8 Administrasjon | Trenere og roller (WANG-19), Samtykke og deling (WANG-34), Timeplan med kollisjoner (WANG-26), Opptak med plasser og kandidater (WANG-31, -32), Koordinering mellom skolene (WANG-33). Trener får «Denne siden er lukket» | `administrasjon.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/G36K5CamEitxYEiQBGENPB |
-| 9 Samleside | Alle lenker på én side | `index.html` | | |
+| 9 Samleside | Alle åtte pakker, det viktigste å ta stilling til, feil i dagens kode | `index.html` | **Ferdig** (15.10) | https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB |
 
 Én fil og én PR per pakke. Hver skjerm i 390 og 1280, med tom, laster og feil.
 Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TILGANGSMATRISE.md` og vedtakene i
