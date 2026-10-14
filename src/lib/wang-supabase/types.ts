@@ -157,7 +157,7 @@ export interface WangAthleteProfileWithSchedule {
   schedule: WangAthleteProfileSchedule;
 }
 
-export type WangCalendarAccessKind = "self" | "shared" | "staff";
+export type WangCalendarAccessKind = "self" | "shared" | "staff" | "leadership";
 
 export interface WangCalendarEvent extends WangDemoEvent {
   schoolSportId: string | null;

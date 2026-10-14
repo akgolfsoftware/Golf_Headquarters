@@ -229,3 +229,15 @@ Den beskyttede utøverprofilen viser nå registrerte kalenderhendelser innenfor 
 - data hentes bare for elevens gruppe, idrett eller egen elev-ID og kontrolleres av eksisterende databasevern
 - arkiverte hendelser skjules, mens godkjent ledelse og sportsteam kan se utkast i eget omfang
 - søvn, dagsform, morgeninnsjekk, kontaktdata og annen helseinformasjon hentes fortsatt ikke
+
+## 17. Skoleledelsens kalender bygget 14. oktober 2026
+
+Skoleleder, rektor og toppidrettssjef kan nå åpne den beskyttede kalenderen fra egen WANG-navigasjon.
+
+- visningen inneholder alle aktive idretter og grupper ved rollen sin egen skole
+- hver idrett uten registrert gruppe får en ærlig tom kalender i stedet for oppdiktede hendelser
+- skole- og WANG-hendelser på idretts- eller gruppenivå vises, inkludert utkast og publiseringsstatus
+- elevspesifikk egentrening, klubbtrening og andre personlige hendelser er utelatt fra skoleoversikten
+- søvn, dagsform, morgeninnsjekk, telefonnummer, e-post og kontaktdata hentes ikke
+- sentral admin og invitert leser får fortsatt ikke skolekalender gjennom denne rollen
+- eksisterende databasevern avgrenser lesingen til rollen sin skole

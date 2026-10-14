@@ -32,6 +32,7 @@ describe("WANG-roller", () => {
     const principal = hentWangRolledefinisjon("principal");
     const headOfSports = hentWangRolledefinisjon("head_of_sports");
     assert.deepEqual(principal.modules, headOfSports.modules);
+    assert.equal(principal.modules.includes("calendar"), true);
     assert.match(principal.privacyNotice, /sportssjef og trener/);
   });
 
