@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { opprettWangServerKlient } from "./server";
 import type {
+  WangAthleteOverview,
   WangAuthenticatedProfile,
   WangGolfDemoData,
   WangRole,
@@ -87,6 +88,20 @@ const assignedSportSchema = sportSchema.extend({ id: z.uuid() });
 const assignedGroupSchema = groupSchema.extend({ school_sport_id: z.uuid() });
 const assignedPlanSchema = planSchema.extend({ school_sport_id: z.uuid() });
 const assignedEventSchema = eventSchema.extend({ school_sport_id: z.uuid().nullable() });
+
+const athleteSchoolSportSchema = schoolSportSchema.extend({ school_id: z.uuid() });
+const athleteStudentSchema = z.object({
+  id: z.uuid(),
+  profile_id: z.uuid().nullable(),
+  group_id: z.uuid(),
+  demo_name: z.string().nullable(),
+  grade: z.enum(["VG1", "VG2", "VG3"]),
+  is_demo: z.boolean(),
+});
+const athleteProfileSchema = z.object({
+  id: z.uuid(),
+  display_name: z.string().min(1),
+});
 
 function validerRader<T>(schema: z.ZodType<T>, data: unknown, navn: string): T[] {
   const resultat = z.array(schema).safeParse(data ?? []);
@@ -203,6 +218,185 @@ export function erWangWorkbenchRolle(
   role: WangRole,
 ): role is "sports_director" | "coach" {
   return role === "sports_director" || role === "coach";
+}
+
+export function erWangUtoveroversiktRolle(
+  role: WangRole,
+): role is "school_leader" | "principal" | "head_of_sports" | "sports_director" | "coach" {
+  return (
+    role === "school_leader" ||
+    role === "principal" ||
+    role === "head_of_sports" ||
+    role === "sports_director" ||
+    role === "coach"
+  );
+}
+
+type AthleteSchoolSportRow = z.infer<typeof athleteSchoolSportSchema>;
+type AthleteSportRow = z.infer<typeof assignedSportSchema>;
+type AthleteGroupRow = z.infer<typeof assignedGroupSchema>;
+type AthleteStudentRow = z.infer<typeof athleteStudentSchema>;
+type AthleteProfileRow = z.infer<typeof athleteProfileSchema>;
+
+export function byggWangUtoveroversikt(
+  schoolSports: AthleteSchoolSportRow[],
+  sports: AthleteSportRow[],
+  groups: AthleteGroupRow[],
+  students: AthleteStudentRow[],
+  profiles: AthleteProfileRow[],
+): WangAthleteOverview {
+  const profileNames = new Map(profiles.map((profile) => [profile.id, profile.display_name]));
+
+  return {
+    sports: schoolSports
+      .map((schoolSport) => {
+        const sport = sports.find((candidate) => candidate.id === schoolSport.sport_id);
+        if (!sport) throw new Error("WANG-idretten mangler katalogdata.");
+
+        return {
+          schoolSportId: schoolSport.id,
+          schoolYear: schoolSport.school_year,
+          sportCode: sport.code,
+          sportName: sport.name,
+          groups: groups
+            .filter((group) => group.school_sport_id === schoolSport.id)
+            .map((group) => ({
+              id: group.id,
+              code: group.code,
+              name: group.name,
+              grade: group.grade,
+              schoolYear: group.school_year,
+              athletes: students
+                .filter((student) => student.group_id === group.id)
+                .map((student) => {
+                  const name = student.is_demo
+                    ? student.demo_name
+                    : student.profile_id
+                      ? profileNames.get(student.profile_id)
+                      : null;
+                  if (!name) throw new Error("WANG-utøveren mangler visningsnavn.");
+
+                  return {
+                    id: student.id,
+                    name,
+                    grade: student.grade,
+                    isDemo: student.is_demo,
+                  };
+                })
+                .sort((a, b) => a.name.localeCompare(b.name, "nb")),
+            }))
+            .sort((a, b) => a.code.localeCompare(b.code, "nb")),
+        };
+      })
+      .sort((a, b) => a.sportName.localeCompare(b.sportName, "nb")),
+  };
+}
+
+export async function hentWangUtoveroversikt(
+  profile: WangAuthenticatedProfile,
+): Promise<WangAthleteOverview> {
+  if (!erWangUtoveroversiktRolle(profile.role)) return { sports: [] };
+
+  const supabase = await opprettWangServerKlient();
+  let allowedSchoolSportIds: string[] | null = null;
+
+  if (profile.role === "sports_director" || profile.role === "coach") {
+    const membershipsResult = await supabase
+      .from("wang_staff_memberships")
+      .select("school_sport_id, role")
+      .eq("profile_id", profile.id)
+      .eq("active", true);
+
+    if (membershipsResult.error) throw new Error("WANG-tilgangene kunne ikke hentes.");
+    const memberships = validerRader(
+      staffMembershipSchema,
+      membershipsResult.data,
+      "sportstildelinger",
+    );
+    allowedSchoolSportIds = [
+      ...new Set(
+        memberships
+          .filter((membership) => membership.role === profile.role)
+          .map((membership) => membership.school_sport_id),
+      ),
+    ];
+    if (allowedSchoolSportIds.length === 0) return { sports: [] };
+  } else if (!profile.schoolId) {
+    return { sports: [] };
+  }
+
+  let schoolSportsQuery = supabase
+    .from("wang_school_sports")
+    .select("id, school_id, sport_id, school_year, status, workbench_enabled")
+    .eq("status", "active")
+    .order("school_year", { ascending: false });
+
+  schoolSportsQuery = allowedSchoolSportIds
+    ? schoolSportsQuery.in("id", allowedSchoolSportIds)
+    : schoolSportsQuery.eq("school_id", profile.schoolId!);
+
+  const schoolSportsResult = await schoolSportsQuery;
+  if (schoolSportsResult.error) throw new Error("WANG-idrettene kunne ikke hentes.");
+
+  const schoolSports = validerRader(
+    athleteSchoolSportSchema,
+    schoolSportsResult.data,
+    "skoleidretter",
+  );
+  if (schoolSports.length === 0) return { sports: [] };
+
+  const schoolSportIds = schoolSports.map((schoolSport) => schoolSport.id);
+  const sportIds = [...new Set(schoolSports.map((schoolSport) => schoolSport.sport_id))];
+  const [sportsResult, groupsResult] = await Promise.all([
+    supabase
+      .from("wang_sports")
+      .select("id, code, name, family, workbench_status, mapping_approved")
+      .in("id", sportIds)
+      .order("name"),
+    supabase
+      .from("wang_groups")
+      .select("id, school_sport_id, code, name, grade, school_year")
+      .in("school_sport_id", schoolSportIds)
+      .order("code"),
+  ]);
+
+  if (sportsResult.error || groupsResult.error) {
+    throw new Error("WANG-utøveroversikten kunne ikke hentes.");
+  }
+
+  const sports = validerRader(assignedSportSchema, sportsResult.data, "idretter");
+  const groups = validerRader(assignedGroupSchema, groupsResult.data, "grupper");
+  if (groups.length === 0) {
+    return byggWangUtoveroversikt(schoolSports, sports, [], [], []);
+  }
+
+  const studentsResult = await supabase
+    .from("wang_students")
+    .select("id, profile_id, group_id, demo_name, grade, is_demo")
+    .in("group_id", groups.map((group) => group.id))
+    .order("demo_name");
+  if (studentsResult.error) throw new Error("WANG-utøverne kunne ikke hentes.");
+
+  const students = validerRader(athleteStudentSchema, studentsResult.data, "utøvere");
+  const profileIds = [
+    ...new Set(
+      students.flatMap((student) =>
+        !student.is_demo && student.profile_id ? [student.profile_id] : [],
+      ),
+    ),
+  ];
+
+  let profiles: AthleteProfileRow[] = [];
+  if (profileIds.length > 0) {
+    const profilesResult = await supabase
+      .from("wang_profiles")
+      .select("id, display_name")
+      .in("id", profileIds);
+    if (profilesResult.error) throw new Error("WANG-utøverprofilene kunne ikke hentes.");
+    profiles = validerRader(athleteProfileSchema, profilesResult.data, "utøverprofiler");
+  }
+
+  return byggWangUtoveroversikt(schoolSports, sports, groups, students, profiles);
 }
 
 export function velgWangWorkbenchGruppe(

@@ -58,8 +58,8 @@ export const WANG_MODULES: Record<
   },
   athletes: {
     label: "Utøvere",
-    href: "/team-wang/demo",
-    description: "Golf-demoen bruker bare fiktive utøvere.",
+    href: "/team-wang/app/utovere",
+    description: "Rolleavgrenset elevliste for egen skole eller tildelt idrett.",
   },
   analysis: {
     label: "Analyse og tester",

@@ -98,6 +98,34 @@ export interface WangWorkbenchAssignment {
   events: WangDemoEvent[];
 }
 
+export interface WangAthleteListItem {
+  id: string;
+  name: string;
+  grade: "VG1" | "VG2" | "VG3";
+  isDemo: boolean;
+}
+
+export interface WangAthleteGroup {
+  id: string;
+  code: string;
+  name: string;
+  grade: string | null;
+  schoolYear: string;
+  athletes: WangAthleteListItem[];
+}
+
+export interface WangAthleteSport {
+  schoolSportId: string;
+  schoolYear: string;
+  sportCode: string;
+  sportName: string;
+  groups: WangAthleteGroup[];
+}
+
+export interface WangAthleteOverview {
+  sports: WangAthleteSport[];
+}
+
 export type WangCalendarAccessKind = "self" | "shared" | "staff";
 
 export interface WangCalendarEvent extends WangDemoEvent {

@@ -193,3 +193,15 @@ Sikkerhetsgrenser:
 - foresatt og klubbtrener får tidsbegrenset lesetilgang uten søvn og dagsform
 
 Ingen kontoer eller databasekoblinger er opprettet i denne arbeidsbolken. Neste handling krever en eksplisitt bekreftelse mens de syntetiske Auth-kontoene opprettes.
+
+## 14. Rolleavgrenset utøveroversikt bygget 14. oktober 2026
+
+Den beskyttede siden `/team-wang/app/utovere` er koblet til WANG-databasen.
+
+- skoleleder, rektor og toppidrettssjef ser bare aktive idretter, grupper og utøvere ved egen skole
+- sportssjef og trener ser bare aktive idretter og grupper de er tildelt
+- sentral admin, elev, foresatt, klubbtrener og invitert leser avvises før elevlisten lastes
+- siden henter bare navn, trinn, gruppe, idrett og skoleår
+- søvn, dagsform, innsjekkstatus, telefonnummer og e-post hentes ikke
+- fiktive elever er tydelig merket som fiktive data
+- utøverprofil er ikke gjort klikkbar før en egen tilgangskontrollert profilside finnes
