@@ -44,7 +44,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/TwDR654TtsNY2reVdzuynX |
 | 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/VNK9zkWkgwc7TnvPSeXYzA |
 | 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Cpp3vn3XuJXeYmbSzLU15x |
-| 6 Meldinger | Innboks, gruppeposter, post til én elev (foresatt leser under 18) | `meldinger.html` | | |
+| 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8Y6rzYYoHj7czvmD5BtiX6 |
 | 7 Elever | Elevliste, elevark, IUP-fanen (hentet fra PlayerHQ), fireukerssjekk, forslag til elevens plan | `elever.html` | | |
 | 8 Administrasjon | Trenere og roller, samtykke og deling, timeplanføring, opptak (bare sportssjef) | `administrasjon.html` | | |
 | 9 Samleside | Alle lenker på én side | `index.html` | | |
@@ -114,3 +114,8 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 1. Skal WANG-trenere se Data Golf-sammenligningen (WANG-50)? Vedtaket 06.10 sier alle med coach-rollen, også WANG-trenere. Utkastet viser den, merket «Powered by Data Golf» og «Bare for trenere».
 2. Hvem publiserer uttaket til samlinger? Utkastet lar trener lagre kladd og bare sportssjef publisere.
 3. Dagens kode viser «College D1 snitt» som referanse i turneringsanalysen (`WangKonkurranse.tsx`). Kilden er ukjent. Utkastet bruker neste kategori (Broadie, estimat) og Data Golf.
+
+### Pakke 6 Meldinger
+1. Skal Meldinger i WANG være samme innboks som i AgencyOS, eller egen? Utkastet viser egen, bare med WANG-samtaler.
+2. Skal foreldremøter også sendes på e-post? Utkastet sender bare i PlayerHQ.
+3. Dagens meldingsflate i appen (`/team-wang/app/meldinger`) er skrivebeskyttet. Utkastet tegner sending; det krever byggearbeid og en sjekk av at foresattes lesetilgang faller bort ved 18.
