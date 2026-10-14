@@ -52,7 +52,7 @@ async function hentKohortPerSesong(country: string, birthYear: number): Promise<
  */
 export async function hentVekstrateData(userId: string): Promise<VekstrateData> {
   const [minKurve, bruker] = await Promise.all([
-    hentMinKurve(userId, "alle"),
+    hentMinKurve(userId, "alle", { medDataGolf: true }),
     prisma.user.findUnique({
       where: { id: userId },
       select: { publicPlayer: { select: { country: true, birthYear: true } } },

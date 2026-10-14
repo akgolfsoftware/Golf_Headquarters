@@ -15,9 +15,14 @@ const AUTH_IMPORT = /from\s+["']@\/lib\/(?:auth\/(?:action-guards|assert-own-or-
 // Unngår falske treff på "use server" nevnt inne i kommentarer/dok-strenger.
 const USE_SERVER = /^\s*["']use server["'];?\s*$/m;
 
+// Bare den blokkerende Data Golf-vakten er godkjent her. En import av den
+// rene predikaten kanSeDataGolf er ikke autorisasjon og må fortsatt avvises.
+const DATAGOLF_AUTH_IMPORT = /import\s*\{\s*krevDataGolfBruker\s*\}\s*from\s+["']@\/lib\/auth\/datagolf-tilgang["']/;
+
 /** Runtime-vakter. En import uten kall er ikke autorisasjon (R-I / REV-F10). */
 const AUTH_FNS = [
   "requireCoachActionUser",
+  "krevDataGolfBruker",
   "requireAdminActionUser",
   "requireSpillerActionUser",
   "requireParentActionUser",
@@ -99,7 +104,7 @@ for (const root of ROOTS) {
     // Skip non-action helpers that happened to have the directive
     if (rel.endsWith("/constants.ts") || rel.includes("/lib/periode-helpers")) continue;
     if (PUBLIC_ALLOW.has(rel)) continue;
-    const hasAuthImport = AUTH_IMPORT.test(txt);
+    const hasAuthImport = AUTH_IMPORT.test(txt) || DATAGOLF_AUTH_IMPORT.test(txt);
     const hasPublicActionMarker =
       txt.includes("publicAction") && txt.includes("@/lib/auth/action-guards");
     if (!hasAuthImport && !hasPublicActionMarker) {

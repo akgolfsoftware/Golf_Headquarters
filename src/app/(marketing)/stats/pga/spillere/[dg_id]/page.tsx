@@ -20,16 +20,11 @@ import type { FlagCode } from "@/components/stats/flag-glyph";
 import { StatsBigRadar } from "@/components/stats/stats-big-radar";
 import { StatsBtn } from "@/components/stats/btn";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export const revalidate = 3600;
-
-// ---------------------------------------------------------------------------
-// Static params — seed-IDer + noen kjente DG IDs
-// ---------------------------------------------------------------------------
-
-export function generateStaticParams() {
-  return SEED_SPILLERE.map((s) => ({ dg_id: s.dgId.toString() }));
-}
+// Data Golf-tall: bare for innlogget coach og admin (Anders 09.10.2026).
+// Dynamisk per forespørsel — ingen felles hurtigbuffer som kan nå uinnloggede.
+export const dynamic = "force-dynamic";
 
 // ---------------------------------------------------------------------------
 // Metadata
@@ -172,6 +167,7 @@ export default async function SpillerProfilPage({
   params: Promise<{ dg_id: string }>;
 }) {
   const { dg_id } = await params;
+  await krevDataGolfBruker(`/stats/pga/spillere/${encodeURIComponent(dg_id)}`);
   const dgId = parseInt(dg_id, 10);
   if (isNaN(dgId)) notFound();
 

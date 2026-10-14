@@ -23,8 +23,12 @@ import { StatsBtn } from "@/components/stats/btn";
 import { StatsLeaderboardCard } from "@/components/stats/stats-leaderboard-card";
 import { LeaderboardsSearchBox, LeaderboardsKategoriStrip } from "./leaderboards-client";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export const revalidate = 3600;
+// PGA-listene er Data Golf-tall: hele siden er bare for innlogget coach og admin
+// (Anders 09.10.2026). Strengeste valg — siden blander Data Golf og norske lister,
+// og er dessuten skjult i produksjon som prototype (proxy.ts).
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Leaderboards | AK Golf Stats",
@@ -287,6 +291,7 @@ async function hentLeaderboardData() {
 // ---------------------------------------------------------------------------
 
 export default async function LeaderboardsPage() {
+  await krevDataGolfBruker("/stats/leaderboards");
   const data = await hentLeaderboardData();
 
   return (

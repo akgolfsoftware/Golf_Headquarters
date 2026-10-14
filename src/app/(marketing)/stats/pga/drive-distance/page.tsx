@@ -18,8 +18,11 @@ import {
 import { PgaKategoriDetaljPage } from "@/components/stats/pga-kategori-page";
 import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export const revalidate = 3600;
+// Data Golf-tall: bare for innlogget coach og admin (Anders 09.10.2026).
+// Dynamisk per forespørsel — ingen felles hurtigbuffer som kan nå uinnloggede.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Drive Distance: PGA Tour 2026 | AK Golf Stats",
@@ -45,6 +48,7 @@ const RELATERTE: RelatertKategori[] = [
 ];
 
 export default async function DriveDistancePage() {
+  await krevDataGolfBruker("/stats/pga/drive-distance");
   const [topp, snittData] = await Promise.all([
     getPgaTopN("driveDist", { limit: 100 }),
     getPgaTourAverage("driveDist"),

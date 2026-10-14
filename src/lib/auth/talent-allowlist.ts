@@ -4,7 +4,7 @@
  * fail-closed: en ny rute er låst til den eksplisitt legges hit.
  *
  * Besluttet av Anders 2026-08-16: åpent = testregistrering (kun CANON-20),
- * stats-lesing, SG-/runderegistrering, DataGolf-sammenligning, talent-flatene,
+ * stats-lesing, SG-/runderegistrering, talent-flatene,
  * BOOKING (direkte inntektskanal — enkelttimer betales per stk) og konto.
  *
  * Prefiks-match: en oppføring dekker ruten selv og alt under.
@@ -30,6 +30,9 @@ export const TALENT_APNE_PREFIKSER: readonly string[] = [
   // runder den ikke hadde noen vei til å logge.
   "/portal/mal/runder",
   "/portal/runde",
+  // Bare en videresending til /portal/analysere/datagolf. Data Golf er
+  // ROLLESTYRT, ikke nivåstyrt: siden slipper bare inn coach og admin
+  // (kanSeDataGolf, Anders 09.10.2026). Spillere kommer aldri inn, uansett nivå.
   "/portal/datagolf",
   // Talent-flatene (det gamle TalentHQ-produktet).
   "/portal/talent",

@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import { StatsWrappedPlayer } from "@/components/stats/stats-wrapped-player";
 import type { WrappedSlideData } from "@/components/stats/stats-wrapped-slide";
@@ -54,6 +55,8 @@ async function getEntries(playerId: string, aar: number) {
             gte: new Date(`${aar}-01-01`),
             lt: new Date(`${aar + 1}-01-01`),
           },
+          // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+          AND: [UTEN_DATAGOLF_TURNERING],
         },
       },
       include: { tournament: true },
