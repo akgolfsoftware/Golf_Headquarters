@@ -103,10 +103,8 @@ export const PUBLIC_ROUTES = new Map([
  * Listen skal bare krympe. Rettes hullet, fjern oppføringen (skriptet krever det).
  */
 export const KJENT_GJELD = new Map([
-  ["src/app/api/coach/ai-chat/route.ts#POST", "TA-01"],
   ["src/app/api/parse-date/route.ts#POST", "TA-07"],
   ["src/app/api/upload/route.ts#POST", "TA-05"],
-  ["src/app/api/portal/swing-video/upload/route.ts#POST", "TA-21"],
 ]);
 
 function* walk(dir) {

@@ -18,6 +18,7 @@ const UploadBody = z.object({
 });
 
 export async function POST(req: Request) {
+  // tilgang: videoen eies alltid av innlogget bruker; opptak sperret via venterPaaForelder (TA-21)
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
