@@ -178,6 +178,50 @@
 .prikker i.inn{background:var(--green-700)}
 .tm-tab{display:grid;gap:var(--r2)}
 
+/* TrackMan og Resultater */
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r3)}
+.grp{display:grid;gap:8px}
+.grp + .grp{margin-top:14px}
+.kolle-liste,.slag-liste,.turn-liste,.runde-liste{display:grid;gap:var(--r2)}
+.kolle-kort{border:1px solid var(--sand-300);border-left:6px solid var(--slag);border-radius:12px;background:var(--white);padding:14px 16px}
+.kolle-kort.tom{border-left-color:var(--sand-300);display:grid;gap:6px}
+.kolle-kort summary,.slag-rad summary{list-style:none;cursor:pointer}
+.kolle-kort summary::-webkit-details-marker,.slag-rad summary::-webkit-details-marker{display:none}
+.kolle-kort summary{display:grid;gap:10px}
+.kolle-kort > .grp:first-of-type{margin-top:14px}
+.kk-topp{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3);flex-wrap:wrap}
+.kk-topp b{font:600 16px/1.3 var(--sans)}
+.kk-rad{display:grid;gap:10px}
+.kk-carry{font:600 34px/1 var(--mono);letter-spacing:-.03em}
+.kk-carry small{font:500 13px/1 var(--mono);color:var(--graphite-600);margin-left:4px;letter-spacing:0}
+.kk-tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font:600 15px/1.2 var(--mono)}
+.kk-tre small{display:block;font:400 12px/1.3 var(--sans);color:var(--graphite-600);margin-top:2px}
+.kk-mer{font:500 14px/1 var(--sans);text-decoration:underline;text-underline-offset:3px;min-height:36px;display:flex;align-items:center}
+.kolle-kort[open] .kk-mer{display:none}
+.slag-rad{border:1px solid var(--sand-300);border-radius:10px;background:var(--white);padding:8px 12px}
+.slag-rad.ekstrem{border-color:var(--amber-700)}
+.slag-rad summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:44px}
+.slag-rad summary b{font:600 14px/1.3 var(--sans)}
+.slag-rad summary small{display:block;font-size:12.5px;line-height:1.4;color:var(--graphite-600)}
+.slag-rad > .grp:first-of-type{margin-top:10px}
+.sr-h{text-align:right}
+.sr-h b{font:600 16px/1.2 var(--mono)}
+.turn-kort{display:grid;grid-template-columns:60px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--sand-300);border-left:6px solid var(--turn);background:var(--white)}
+.tk-plass b{display:block;font:600 26px/1 var(--mono)}
+.tk-plass small,.tk-sum small{display:block;font-size:12px;line-height:1.3;color:var(--graphite-600);margin-top:3px}
+.tk-midt strong{display:block;font:600 15px/1.3 var(--sans)}
+.tk-midt small{display:block;font-size:12.5px;line-height:1.4;color:var(--graphite-600)}
+.tk-runder{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px;font:500 12.5px/1.3 var(--mono);color:var(--graphite-800)}
+.tk-sum{text-align:right}
+.tk-sum b{display:block;font:600 20px/1 var(--mono)}
+.runde-rad{display:grid;grid-template-columns:minmax(0,1fr) auto 20px;gap:var(--r3);align-items:center;padding:10px 14px;border-radius:10px;border:1px solid var(--sand-300);background:var(--white);color:inherit;text-decoration:none;min-height:56px}
+.runde-rad b{font:600 14px/1.3 var(--sans)}
+.runde-rad small{display:block;font-size:12.5px;line-height:1.4;color:var(--graphite-600)}
+.runde-rad .ikon{color:var(--graphite-600)}
+.rr-h{text-align:right}
+.rr-h b{font:600 18px/1 var(--mono)}
+.rr-h small{font-size:12px;color:var(--graphite-600)}
+
 @container (min-width:900px){
   .topp.med-bilde{grid-template-columns:minmax(0,1fr) 380px;align-items:end;gap:var(--r6)}
   .topp.med-bilde img{height:170px;grid-column:2;grid-row:1/3}
@@ -195,7 +239,7 @@
   <div class="hode">
     <span class="meta-s">PlayerHQ · pakke 6 · PH-14, PH-15 og PH-17 · utkast 1 · 14.10.2026</span>
     <h1>Stats i dybden</h1>
-    <p>Åtte skjermer i én fil: Tester med en enkelt test, gjennomføring av tester (godkjent eller bom, og carry og side med poeng og PEI), Trening, TrackMan og én TrackMan-økt. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+    <p>Ti skjermer i én fil: Tester med en enkelt test, gjennomføring av tester (godkjent eller bom, og carry og side med poeng og PEI), Trening, TrackMan med alle økter, én økt og alle køller, og Resultater. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
   </div>
   <div class="kontroller">
     <div class="velger skjermvalg" role="group" aria-label="Skjerm">
@@ -205,8 +249,10 @@
       <button type="button" aria-pressed="false" data-skjerm="tn8">PH-15-TN 8-ball</button>
       <button type="button" aria-pressed="false" data-skjerm="hand">PH-15-TN Nærspill Gate</button>
       <button type="button" aria-pressed="false" data-skjerm="trening">PH-17 Trening</button>
-      <button type="button" aria-pressed="false" data-skjerm="trackman">TrackMan</button>
-      <button type="button" aria-pressed="false" data-skjerm="tmokt">TrackMan-økt</button>
+      <button type="button" aria-pressed="false" data-skjerm="trackman">TrackMan: økter</button>
+      <button type="button" aria-pressed="false" data-skjerm="tmokt">Én TrackMan-økt</button>
+      <button type="button" aria-pressed="false" data-skjerm="koller">Alle køller</button>
+      <button type="button" aria-pressed="false" data-skjerm="resultater">Resultater</button>
     </div>
   </div>
   <div class="kontroller">
@@ -224,7 +270,11 @@
         <li><b>Én test</b> viser poeng over tid som fylt graf, snitt og beste, og hvilken slagtype som gir minst. Poengskalaen står på skjermen.</li>
         <li><b>Gjennomføring i to typer:</b> gate-testene (Wedge Gate, Nærspill Gate, VISA Express) føres som godkjent eller bom i et rutenett (launch × carry). 8-ball og PEI-testene føres med carry og side, og appen regner ut avstand fra hullet, PEI og poeng.</li>
         <li><b>Trening</b> viser gjennomført mot planen per akse, mengde trening mot Strokes Gained, og hvor du trener. Én Filter-knapp med brikker.</li>
-        <li><b>TrackMan</b> har spredningskart, parametere, gapping, utstyrshelse og økter. Velg kølle øverst.</li>
+        <li><b>TrackMan, alle økter:</b> filter med brikker (periode, kølle, sted, hastighet, akse, teknisk plan, ekstreme slag) som gjelder alle TrackMan-sidene, og utvikling over tid for ett valgt tall per kølle.</li>
+        <li><b>Én TrackMan-økt:</b> fane per kølle med spredningskart mot målet, treffpunkt på køllebladet, alle 17 TrackMan-tall og slag for slag. Ekstreme slag er merket og holdes utenfor snittet.</li>
+        <li><b>Alle køller:</b> ett kort per kølle med carry, spredning, Club Speed og Smash Factor, og «Alle tall» for resten. Gapping regnes bare fra full hastighet.</li>
+        <li><b>Resultater:</b> turneringer med plassering, felt og runder, og alle registrerte runder. Brutto snitt 73,1 av 18 runder, som i Stats.</li>
+        <li><b>8-ball</b> viser PGA Tour-snitt for samme slag i turnering når en slagtype er ferdig. Står som «—» til tallene er hentet.</li>
         <li>Lyst tema også under testen, som for live-øktene (vedtak 14.10).</li>
       </ul>
     </div>
@@ -319,6 +369,7 @@
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Per slagtype</h2><span class="kilde">Poeng av 15 · PEI</span></div>
           <div class="sl-liste" data-slagtyper></div>
           <div class="uthev akse-bg-slag"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Bunker 20 m gir minst:</b> 4 av 15 poeng, PEI 11,9 %. Chip 10 m gir mest: 11 av 15.</span></div>
+          <p class="kildetekst">PGA Tour: snittet for samme slag i turnering, hentet fra PGA Tours statistikk. Står som «—» til tallene er hentet inn.</p>
         </section>
       </div>
       <div class="kol">
@@ -550,42 +601,104 @@
 </div>
 </template>
 
-<!-- ================= PH-17 TrackMan ================= -->
+<!-- ================= PH-17 TrackMan: alle økter ================= -->
 <template id="trackman">
 <div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Trening">
   <main class="innhold">
     <div class="topp" data-behold>
       <div class="dato">Stats · Trening · TrackMan</div>
       <h1 class="tittel">TrackMan</h1>
-      <div class="valg" role="group" aria-label="Kølle" data-kolle><button type="button" aria-pressed="false" data-k="driver">Driver</button><button type="button" aria-pressed="true" data-k="jern7">7-jern</button><button type="button" aria-pressed="false" data-k="w54">54°</button></div>
+      <div class="hoved"><strong data-tm-slag>—</strong><span class="forklar" data-tm-slag-tekst>slag</span></div>
     </div>
+    <div class="filterlinje" data-behold><button type="button" class="knapp sek" data-tmf-apne><svg class="ikon" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</button><span class="filterlinje" data-tmf-brikker></span></div>
     <div class="to-kol">
       <div class="kol">
-        <section class="kort">
-          <div class="hoved"><strong data-k-carry>156<small>m carry</small></strong><span class="trend opp" data-k-trend>+3 m siden juli</span></div>
-          <svg class="graf" viewBox="0 0 320 260" role="img" data-k-kart aria-label="Spredningskart"></svg>
-          <div class="lg-rad"><span class="lg"><i style="background:var(--slag);border-radius:50%"></i>Ett slag</span><span class="lg"><i style="border:2px dashed var(--graphite-900);background:transparent"></i>Spredning</span></div>
-          <p class="forklar" data-k-spredning></p>
-          <p class="kildetekst" data-k-kilde></p>
-        </section>
-        <section class="kort">
-          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Parametere</h2><span class="kilde">Snitt</span></div>
-          <div class="param" data-k-param></div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Økter</h2><span class="kilde" data-tm-antall></span></div>
+          <div class="okt-liste" data-tm-okter></div>
         </section>
       </div>
+      <div class="kol">
+        <button type="button" class="tm-kort" data-gaa="koller">
+          <span><b>Alle køller</b><span>Snitt for alle tall, gapping og utstyr</span></span>
+          <strong data-tm-koller>—</strong>
+        </button>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Utvikling over tid</h2></div>
+          <div class="to-felt"><div class="felt"><label for="tm-u-kolle">Kølle</label><select id="tm-u-kolle" data-tm-u-kolle></select></div><div class="felt"><label for="tm-u-param">Tall</label><select id="tm-u-param" data-tm-u-param></select></div></div>
+          <div class="valg" role="group" aria-label="Hastighet" data-tm-u-hast><button type="button" aria-pressed="true" data-h="Full">Full hastighet</button><button type="button" aria-pressed="false" data-h="Lav">Lav hastighet</button></div>
+          <svg class="graf" viewBox="0 0 320 170" role="img" data-tm-utv></svg>
+          <p class="kildetekst" data-tm-utv-tekst></p>
+        </section>
+      </div>
+    </div>
+    <div data-tmf></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-17 TrackMan: alle køller ================= -->
+<template id="koller">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="TrackMan">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · TrackMan</div>
+      <h1 class="tittel">Alle køller</h1>
+      <div class="hoved"><strong data-k-antall>—</strong><span class="forklar" data-k-tekst>køller</span></div>
+    </div>
+    <div class="filterlinje" data-behold><button type="button" class="knapp sek" data-tmf-apne><svg class="ikon" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</button><span class="filterlinje" data-tmf-brikker></span></div>
+    <div class="to-kol">
+      <div class="kol"><div class="kolle-liste" data-k-kort></div></div>
       <div class="kol">
         <section class="kort">
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Gapping</h2><span class="kilde">Carry, snitt</span></div>
           <div class="gap-liste" data-gap></div>
-          <p class="kildetekst">TrackMan · siste 90 dager · 1 140 slag</p>
+          <p class="kildetekst" data-gap-kilde></p>
         </section>
         <section class="kort">
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Utstyrshelse</h2></div>
           <div data-helse></div>
         </section>
+      </div>
+    </div>
+    <div data-tmf></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-17 Én TrackMan-økt ================= -->
+<template id="tmokt">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="TrackMan">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato" data-o-dato></div>
+      <h1 class="tittel" data-o-navn></h1>
+    </div>
+    <div class="fylt" data-o-fylt></div>
+    <div class="valg" role="group" aria-label="Kølle" data-o-koller></div>
+    <div class="to-kol">
+      <div class="kol">
+        <section class="kort">
+          <div class="hoved" data-o-hoved></div>
+          <svg class="graf" viewBox="0 0 320 260" role="img" data-o-kart></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--slag);border-radius:50%"></i>Ett slag</span><span class="lg"><i style="background:var(--amber-700);border-radius:50%"></i>Ekstremt slag</span><span class="lg"><i style="border:2px dashed var(--graphite-900);background:transparent"></i>Spredning</span></div>
+          <p class="forklar" data-o-spredning></p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Treffpunkt</h2><span class="kilde">Køllebladet</span></div>
+          <svg class="graf" viewBox="0 0 320 170" role="img" data-o-treff></svg>
+          <p class="forklar" data-o-treff-tekst></p>
+        </section>
+      </div>
+      <div class="kol">
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Alle tall</h2><span class="kilde" data-o-snitt-kilde>Snitt</span></div>
+          <div data-o-param></div>
+        </section>
         <section class="seksjon">
-          <div class="sek-topp"><h2>Økter</h2><span class="kilde">Siste 4 uker</span></div>
-          <div class="okt-liste" data-tm-okter></div>
+          <div class="sek-topp"><h2>Slag for slag</h2><span class="kilde" data-o-slag-antall></span></div>
+          <div class="slag-liste" data-o-slag></div>
+          <button type="button" class="knapp sek" data-o-flere hidden>Vis alle slag</button>
         </section>
       </div>
     </div>
@@ -593,34 +706,34 @@
 </div>
 </template>
 
-<!-- ================= PH-17 TrackMan-økt ================= -->
-<template id="tmokt">
-<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="TrackMan">
+<!-- ================= Stats › Resultater ================= -->
+<template id="resultater">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
   <main class="innhold">
-    <div class="topp" data-behold>
-      <div class="dato">TrackMan · mandag 28. september</div>
-      <h1 class="tittel">Lengdekontroll i simulator</h1>
+    <div class="topp med-bilde" data-behold>
+      <div>
+        <div class="dato">Stats · Resultater</div>
+        <h1 class="tittel">Resultater</h1>
+      </div>
+      <img src="bilder/turn-tee.jpg" alt="" width="1600" height="1067">
+      <div class="hoved"><strong data-r-snitt>—</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></svg>1,5 bedre enn 2025</span></div>
     </div>
+    <p class="forklar" data-behold data-r-under></p>
+    <div class="valg" role="group" aria-label="Vis" data-r-valg data-behold><button type="button" aria-pressed="true" data-r="alle">Alle runder</button><button type="button" aria-pressed="false" data-r="turn">Turneringer</button><button type="button" aria-pressed="false" data-r="egen">Egne runder</button></div>
     <div class="to-kol">
-      <div class="kol">
-        <div class="fylt tek">
-          <span class="akse-tekst">TEK · INNSPILL 100–150 M · SIMULATOR</span>
-          <div class="rad"><span class="stor"><span data-tell="21">21</span><small>/ 30 i målet</small></span><span class="trend">Mål nådd</span></div>
-          <p>Målet var minst 20 av 30 innenfor målområdet (±3 m). Lav hastighet, 50 % av Club Speed.</p>
-        </div>
-        <section class="kort">
-          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slag for slag</h2><span class="kilde">Grønt er i målet</span></div>
-          <div class="prikker" data-tm-prikker aria-label="21 av 30 slag i målet"></div>
-          <div class="lg-rad"><span class="lg"><i style="background:var(--green-700);border-radius:50%"></i>I målet</span><span class="lg"><i style="background:var(--sand-300);border-radius:50%"></i>Utenfor</span></div>
-          <p class="forklar">Øvelsen var 30 slag med 7-jern. De ni bommene var korte, i snitt 4 m.</p>
+      <div class="kol" data-r-turn-kol>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Turneringer</h2><span class="kilde" data-r-turn-antall></span></div>
+          <div class="turn-liste" data-r-turn></div>
+          <p class="kildetekst">Brutto · resultater fra GolfBox via AK Golf · plassering slik arrangøren har publisert den</p>
         </section>
       </div>
-      <div class="kol">
-        <section class="kort">
-          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Per kølle</h2></div>
-          <div class="tm-tab" data-tm-kolle></div>
+      <div class="kol" data-r-egen-kol>
+        <section class="seksjon">
+          <div class="sek-topp"><h2 data-r-runder-tittel>Alle runder</h2><span class="kilde" data-r-runder-antall></span></div>
+          <div class="runde-liste" data-r-runder></div>
+          <p class="kildetekst">Brutto · 12. april–4. oktober · GolfBox og egne registreringer</p>
         </section>
-        <p class="kildetekst">TrackMan · simulator · 84 slag · 45 min · lagt inn av Anders Kristiansen</p>
       </div>
     </div>
   </main>
@@ -728,7 +841,7 @@
     var siste = [11, 8, 10, 7, 9, 6, 6, 4], pei = ['4,2 %', '5,1 %', '4,8 %', '5,6 %', '6,0 %', '6,9 %', '8,4 %', '11,9 %'];
     app.querySelector('[data-slagtyper]').innerHTML = SLAGTYPER.map(function (s, i) {
       var v = siste[i], kl = v === 11 ? ' sterkest' : v === 4 ? ' svakest' : '';
-      return '<div class="slr' + kl + '"><span><b style="font-weight:' + (kl ? 600 : 400) + '">' + s + '</b><small class="kilde" style="display:block">PEI ' + pei[i] + '</small></span><span class="stolpe"><span data-til="' + (v / 15 * 100).toFixed(1) + '%" style="width:' + (v / 15 * 100).toFixed(1) + '%"></span></span><span class="v">' + v + '</span></div>';
+      return '<div class="slr' + kl + '"><span><b style="font-weight:' + (kl ? 600 : 400) + '">' + s + '</b><small class="kilde" style="display:block">PEI ' + pei[i] + ' · PGA Tour —</small></span><span class="stolpe"><span data-til="' + (v / 15 * 100).toFixed(1) + '%" style="width:' + (v / 15 * 100).toFixed(1) + '%"></span></span><span class="v">' + v + '</span></div>';
     }).join('');
     app.querySelector('[data-skala]').innerHTML = SKALA.map(function (s) { return '<div class="skala-rad"><span>' + s[0] + '</span><b>' + s[1] + ' poeng</b></div>'; }).join('');
     /* Poeng (høyere er bedre) og PEI (lavere er bedre) for de samme fire målingene */
@@ -821,7 +934,7 @@
           else baller += '<span class="ball tom' + (i === n ? ' naa' : '') + '">' + (i === n ? 'Nå' : '—') + '</span>';
         }
         var ferdige = Math.min(3, Math.max(0, n - g * 3));
-        return '<div class="slaggruppe"><b class="undertittel">' + s + '</b><span class="sum">' + (noen ? ps + ' p · ' + k(peiSnitt(g * 3 + ferdige, g * 3), 1) + ' %' : '—') + '</span><span class="baller">' + baller + '</span></div>';
+        return '<div class="slaggruppe"><b class="undertittel">' + s + '</b><span class="sum">' + (noen ? ps + ' p · ' + k(peiSnitt(g * 3 + ferdige, g * 3), 1) + ' %' : '—') + '</span><span class="baller">' + baller + '</span>' + (ferdige === 3 ? '<small class="kilde" style="grid-column:1/-1">PGA Tour, samme slag i turnering: —</small>' : '') + '</div>';
       }).join('');
       app.querySelector('[data-t-lagre]').disabled = !ferdig;
       app.querySelector('[data-t-regel]').textContent = ferdig ? 'Alle 24 slag er ført. Resultatet blir ' + sum() + ' poeng og PEI ' + k(peiSnitt(24), 1) + ' %.' : 'Testen teller når alle 24 slag er registrert. ' + n + ' av 24 er ført.';
@@ -907,83 +1020,359 @@
     pyr(); brikker();
   }
 
-  /* ---------- PH-17 TrackMan ---------- */
-  var KOLLE = {
-    driver: { carry: 228, trend: ['+4 m siden juli', 'opp'], side: 15, lengde: 9, n: 62, skala: 260,
-      p: [['Club Speed', '106,9 mph'], ['Ball Speed', '157,2 mph'], ['Smash Factor', '1,47'], ['Launch Angle', '12,4°'], ['Spin Rate', '2 640 rpm'], ['Attack Angle', '+1,2°'], ['Club Path', '+2,4°'], ['Face to Path', '−0,8°'], ['Carry', '228 m']] },
-    jern7: { carry: 156, trend: ['+3 m siden juli', 'opp'], side: 7, lengde: 6, n: 84, skala: 180,
-      p: [['Club Speed', '86,4 mph'], ['Ball Speed', '117,8 mph'], ['Smash Factor', '1,36'], ['Launch Angle', '17,9°'], ['Spin Rate', '6 820 rpm'], ['Attack Angle', '−4,1°'], ['Club Path', '+1,8°'], ['Face to Path', '−0,6°'], ['Carry', '156 m']] },
-    w54: { carry: 94, trend: ['Lik som i juli', ''], side: 5, lengde: 4, n: 48, skala: 110,
-      p: [['Club Speed', '74,1 mph'], ['Ball Speed', '86,9 mph'], ['Smash Factor', '1,17'], ['Launch Angle', '30,2°'], ['Spin Rate', '8 940 rpm'], ['Attack Angle', '−5,2°'], ['Club Path', '+0,9°'], ['Face to Path', '−0,4°'], ['Carry', '94 m']] }
+  /* ---------- PH-17 TrackMan ----------
+     Alle tall regnes ut fra slagene (demodata), aldri skrevet inn for hånd. Feltene følger TrackManShot i prisma/schema.prisma. */
+  var BAG = ['Driver', '3-tre', 'Hybrid 4', '5-jern', '6-jern', '7-jern', '8-jern', '9-jern', 'PW', '50°', '54°', '58°'];
+  /* carry, total, sidespredning, lengdespredning (m), Club Speed, Ball Speed (mph), Launch Angle, Spin Rate, Apex Height, Land Angle, Attack Angle, Club Path, Face Angle, Dynamic Loft — full hastighet */
+  var KB = {
+    'Driver': [228, 247, 15, 9, 106.9, 157.2, 12.4, 2640, 31, 38, 1.2, 2.4, 1.6, 14.8],
+    '3-tre': [211, 226, 12, 8, 101.5, 148.0, 11.6, 3480, 29, 41, -1.4, 1.9, 1.2, 15.6],
+    'Hybrid 4': [192, 203, 10, 7, 95.0, 136.4, 13.4, 4300, 27, 44, -2.6, 1.5, 0.9, 18.9],
+    '5-jern': [184, 192, 9, 7, 91.8, 128.5, 13.9, 5060, 27, 46, -3.2, 1.6, 1.0, 19.5],
+    '6-jern': [170, 177, 8, 6, 89.0, 123.0, 15.8, 5900, 28, 48, -3.6, 1.7, 1.1, 22.0],
+    '7-jern': [156, 161, 7, 6, 86.4, 117.8, 17.9, 6820, 28, 50, -4.1, 1.8, 1.2, 24.6],
+    '8-jern': [145, 149, 6, 5, 84.0, 111.2, 19.8, 7480, 28, 51, -4.3, 1.6, 1.1, 28.0],
+    '9-jern': [133, 136, 6, 5, 81.6, 104.4, 22.3, 8150, 28, 52, -4.6, 1.4, 1.0, 31.5],
+    'PW': [121, 123, 5, 5, 79.4, 97.6, 25.1, 8700, 27, 53, -4.8, 1.2, 0.9, 35.2],
+    '50°': [108, 110, 5, 4, 77.2, 92.0, 27.6, 8950, 26, 53, -5.0, 1.1, 0.8, 38.4],
+    '54°': [94, 95, 5, 4, 74.1, 86.9, 30.2, 8940, 24, 52, -5.2, 0.9, 0.5, 43.0],
+    '58°': [79, 80, 4, 3, 71.0, 79.6, 33.4, 9200, 21, 51, -5.5, 0.7, 0.4, 48.0]
   };
-  var GAP = [['Driver', 228], ['3-tre', 211], ['Hybrid 4', 192], ['5-jern', 184], ['6-jern', 170], ['7-jern', 156], ['8-jern', 145], ['9-jern', 133], ['PW', 121], ['50°', 108], ['54°', 94], ['58°', 79]];
-  var TM_OKTER = [
-    { a: 'tek', navn: 'Lengdekontroll i simulator', dag: 'Man. 28. sep.', sted: 'Simulator', slag: 84, k: '7-jern, 54°', bilde: 'slag-simulator', gaa: 'tmokt' },
-    { a: 'tek', navn: 'Face to Path med 7-jern', dag: 'Man. 21. sep.', sted: 'Range', slag: 96, k: '7-jern', bilde: 'tek-video' },
-    { a: 'slag', navn: 'Driver: startretning', dag: 'Man. 14. sep.', sted: 'Simulator', slag: 62, k: 'Driver', bilde: 'slag-utslag' },
-    { a: 'slag', navn: 'Wedge-stigen 50–90 m', dag: 'Ons. 9. sep.', sted: 'Range', slag: 70, k: '50°, 54°, 58°', bilde: 'naerspill-wedge' }
+  /* Øktene. d = [måned, dag]. k = kølle: antall slag. mal = målavstand per kølle (m), når økta hadde mål. */
+  var OKTER = [
+    { id: 'o1', d: [9, 28], dag: 'Man. 28. sep.', navn: 'Lengdekontroll i simulator', a: 'tek', sted: 'Simulator', hast: 'Lav', plan: 'Lengdekontroll', bilde: 'slag-simulator', min: 45, k: { '7-jern': 54, '54°': 30 }, mal: { '7-jern': 75, '54°': 45 } },
+    { id: 'o2', d: [9, 21], dag: 'Man. 21. sep.', navn: 'Face to Path med 7-jern', a: 'tek', sted: 'Range', hast: 'Lav', plan: 'Face to Path', bilde: 'tek-video', min: 40, k: { '7-jern': 96 } },
+    { id: 'o3', d: [9, 14], dag: 'Man. 14. sep.', navn: 'Driver: startretning', a: 'slag', sted: 'Simulator', hast: 'Full', plan: null, bilde: 'slag-utslag', min: 30, k: { 'Driver': 62 } },
+    { id: 'o4', d: [9, 9], dag: 'Ons. 9. sep.', navn: 'Wedge-stigen 75–105 m', a: 'slag', sted: 'Range', hast: 'Full', plan: null, bilde: 'naerspill-wedge', min: 40, k: { '50°': 24, '54°': 24, '58°': 22 }, mal: { '50°': 105, '54°': 90, '58°': 75 } },
+    { id: 'o5', d: [8, 31], dag: 'Man. 31. aug.', navn: 'Gapping hele bagen', a: 'slag', sted: 'Simulator', hast: 'Full', plan: null, bilde: 'slag-simulator', min: 60, k: { 'Driver': 10, '3-tre': 10, 'Hybrid 4': 10, '5-jern': 10, '6-jern': 10, '7-jern': 10, '8-jern': 10, '9-jern': 10, 'PW': 10, '50°': 10, '54°': 10, '58°': 10 } },
+    { id: 'o6', d: [8, 24], dag: 'Man. 24. aug.', navn: 'Face to Path med 7-jern', a: 'tek', sted: 'Range', hast: 'Lav', plan: 'Face to Path', bilde: 'tek-video', min: 40, k: { '7-jern': 80 } },
+    { id: 'o7', d: [8, 17], dag: 'Man. 17. aug.', navn: 'Innspill 100–150 m', a: 'slag', sted: 'Simulator', hast: 'Full', plan: null, bilde: 'slag-simulator', min: 45, k: { '8-jern': 30, '9-jern': 30, 'PW': 30 }, mal: { '8-jern': 145, '9-jern': 130, 'PW': 120 } },
+    { id: 'o8', d: [8, 10], dag: 'Man. 10. aug.', navn: 'Driver og 3-tre', a: 'slag', sted: 'Range', hast: 'Full', plan: null, bilde: 'slag-utslag', min: 40, k: { 'Driver': 40, '3-tre': 30 } },
+    { id: 'o9', d: [5, 18], dag: 'Man. 18. mai', navn: 'Gapping før sesongen', a: 'slag', sted: 'Simulator', hast: 'Full', plan: null, bilde: 'slag-simulator', min: 45, k: { 'Driver': 20, '7-jern': 20, '54°': 20 } }
   ];
-  /* Fast tilfeldighet, så kartet er likt hver gang */
+  /* Formen utvikler seg litt over sesongen: Club Speed og carry øker mot høsten */
+  function form(o) { var t = (o.d[0] * 31 + o.d[1] - 138) / (271 - 138); return t; }
   function rng(s) { return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
   function gauss(r) { return (r() + r() + r() - 1.5) / 0.5; }
-  function trackman(app) {
-    var valgt = 'jern7';
-    function kart(id) {
-      var d = KOLLE[id], r = rng(id.length * 97 + d.n), cx = 160;
-      /* Kartet viser carry ±4 × lengdespredning og side ±2,5 × sidespredning, så skyen fyller kartet */
-      function y(c) { return 128 - (c - d.carry) * (100 / (d.lengde * 4)); }
-      function x(sd) { return cx + sd * (140 / (d.side * 2.5)); }
-      var s = '<rect x="10" y="20" width="300" height="220" rx="8" fill="var(--sand-100)"/>';
-      [-3, 0, 3].forEach(function (f) { var c = d.carry + f * d.lengde; s += '<line x1="20" x2="300" y1="' + y(c) + '" y2="' + y(c) + '" stroke="var(--sand-300)"/><text x="22" y="' + (y(c) - 4) + '" class="gt">' + c + ' m</text>'; });
-      s += '<line x1="' + cx + '" x2="' + cx + '" y1="24" y2="236" stroke="var(--graphite-600)" stroke-dasharray="4 3"/>';
-      s += '<ellipse cx="' + x(1) + '" cy="' + y(d.carry) + '" rx="' + (d.side * 140 / (d.side * 2.5)) + '" ry="' + (d.lengde * 100 / (d.lengde * 4)) + '" fill="var(--slag)" fill-opacity=".1" stroke="var(--graphite-900)" stroke-width="1.5" stroke-dasharray="5 4"/>';
-      for (var i = 0; i < d.n; i++) {
-        var sx = 1 + gauss(r) * d.side / 2, sy = d.carry + gauss(r) * d.lengde / 2;
-        s += '<circle class="inn" style="animation-delay:' + (i * 8) + 'ms" cx="' + x(sx).toFixed(1) + '" cy="' + y(sy).toFixed(1) + '" r="4" fill="var(--slag)" fill-opacity=".75"/>';
-      }
-      s += '<text x="20" y="254" class="gt">Venstre</text><text x="300" y="254" text-anchor="end" class="gt">Høyre</text><text x="' + cx + '" y="254" text-anchor="middle" class="gt">Mållinje</text>';
-      return s;
+  var SLAGBUF = {};
+  function slagFor(o, kolle) {
+    var nok = o.id + kolle; if (SLAGBUF[nok]) return SLAGBUF[nok];
+    var b = KB[kolle], n = o.k[kolle], f = o.hast === 'Lav' ? 0.5 : 1, fc = Math.pow(f, 1.1), t = form(o);
+    var seed = 0; for (var c = 0; c < nok.length; c++) seed = (seed * 31 + nok.charCodeAt(c)) % 233280;
+    var r = rng(seed + 7), ut = [];
+    var mal = o.mal && o.mal[kolle] ? o.mal[kolle] : null;
+    for (var i = 0; i < n; i++) {
+      var ekstrem = n >= 20 && (i === n - 4 || (n >= 60 && i === 17));
+      var cs = b[4] * f * (0.985 + 0.015 * t) + gauss(r) * 0.9 * f;
+      var smash = b[5] / b[4] + gauss(r) * 0.01 - (ekstrem ? 0.12 : 0);
+      var bs = cs * smash;
+      var carryBase = (mal || b[0] * fc * (0.985 + 0.02 * t));
+      var carry = carryBase + gauss(r) * b[3] * fc / 2 - (mal ? b[3] * fc * 0.25 : 0);
+      var path = b[11] + gauss(r) * 0.9, face = b[12] + gauss(r) * 0.8, ftp = face - path;
+      var side = (1 + ftp * 2.2 + gauss(r) * b[2] / 2.4) * f;
+      if (ekstrem) { carry *= 0.72; side = (side > 0 ? 1 : -1) * b[2] * 1.4 * f; }
+      var launch = b[6] + gauss(r) * 0.9, spin = b[7] * (0.6 + 0.4 * f) + gauss(r) * b[7] * 0.05;
+      ut.push({ nr: i + 1, kolle: kolle, mal: mal, ekstrem: ekstrem,
+        cs: cs, bs: bs, smash: smash, launch: launch, ldir: face * 0.85 + gauss(r) * 0.4, spin: spin, saxis: ftp * 2.6 + gauss(r) * 0.8,
+        carry: carry, total: carry + (b[1] - b[0]) * fc + gauss(r) * 1.2, side: side, apex: b[8] * Math.pow(f, 1.8) + gauss(r) * 0.8, land: b[9] + gauss(r) * 1.2,
+        aa: b[10] + gauss(r) * 0.5, path: path, face: face, ftp: ftp, dl: b[13] + gauss(r) * 0.8,
+        sx: Math.max(-0.9, Math.min(0.9, ekstrem ? 0.82 : 0.06 + gauss(r) * 0.22)), sy: Math.max(-0.9, Math.min(0.9, ekstrem ? -0.6 : -0.05 + gauss(r) * 0.2)) });
     }
-    function tegn() {
-      var d = KOLLE[valgt], navn = { driver: 'Driver', jern7: '7-jern', w54: '54°' }[valgt];
-      app.querySelector('[data-k-carry]').innerHTML = d.carry + '<small>m carry</small>';
-      var tr = app.querySelector('[data-k-trend]'); tr.className = 'trend ' + d.trend[1]; tr.textContent = d.trend[0];
-      var svg = app.querySelector('[data-k-kart]'); svg.innerHTML = kart(valgt); svg.setAttribute('aria-label', 'Spredningskart ' + navn + ', ' + d.n + ' slag, ±' + d.side + ' m til siden og ±' + d.lengde + ' m i lengde');
-      app.querySelector('[data-k-spredning]').innerHTML = 'Spredning: <b class="mono">±' + d.side + ' m</b> til siden og <b class="mono">±' + d.lengde + ' m</b> i lengde.';
-      app.querySelector('[data-k-kilde]').textContent = navn + ' · ' + d.n + ' slag · 7. sep.–4. okt. · TrackMan';
-      app.querySelector('[data-k-param]').innerHTML = d.p.map(function (p) { return '<div><span>' + p[0] + '</span><b>' + p[1] + '</b></div>'; }).join('');
-      AKUtkast.anim(app);
-    }
-    app.querySelector('[data-kolle]').addEventListener('click', function (e) { var b = e.target.closest('[data-k]'); if (!b) return; valgt = b.dataset.k; tegn(); });
-    app.querySelector('[data-gap]').innerHTML = GAP.map(function (g, i) {
-      var w = (g[1] / 228 * 100).toFixed(1), mellom = '';
-      if (i) { var gp = GAP[i - 1][1] - g[1]; mellom = '<div class="gap-mellom' + (gp < 10 ? ' smal' : '') + '"><span></span><span>' + (gp < 10 ? '↕ ' + gp + ' m · kort gap' : '↕ ' + gp + ' m') + '</span></div>'; }
-      return mellom + '<div class="gap-rad"><span>' + g[0] + '</span><span class="stolpe"><span data-til="' + w + '%" style="width:' + w + '%"></span></span><span class="v">' + g[1] + ' m</span></div>';
+    SLAGBUF[nok] = ut; return ut;
+  }
+  /* Avstand fra målet og PEI = avstand / målavstand */
+  function fraMal(s) { return s.mal ? Math.sqrt(Math.pow(s.carry - s.mal, 2) + s.side * s.side) : null; }
+  var PARAM = [
+    ['bs', 'Ball Speed', 'mph', 1, 'Ballen'], ['smash', 'Smash Factor', '', 2, 'Ballen'], ['launch', 'Launch Angle', '°', 1, 'Ballen'], ['ldir', 'Launch Direction', '°', 1, 'Ballen', 's'], ['spin', 'Spin Rate', 'rpm', 0, 'Ballen', 't'], ['saxis', 'Spin Axis', '°', 1, 'Ballen', 's'],
+    ['carry', 'Carry', 'm', 0, 'Ballbanen'], ['total', 'Total', 'm', 0, 'Ballbanen'], ['side', 'Side', 'm', 1, 'Ballbanen', 'side'], ['apex', 'Apex Height', 'm', 0, 'Ballbanen'], ['land', 'Land Angle', '°', 0, 'Ballbanen'],
+    ['cs', 'Club Speed', 'mph', 1, 'Kølla'], ['aa', 'Attack Angle', '°', 1, 'Kølla', 's'], ['path', 'Club Path', '°', 1, 'Kølla', 's'], ['face', 'Face Angle', '°', 1, 'Kølla', 's'], ['ftp', 'Face to Path', '°', 1, 'Kølla', 's'], ['dl', 'Dynamic Loft', '°', 1, 'Kølla']
+  ];
+  function pnavn(key) { for (var i = 0; i < PARAM.length; i++) if (PARAM[i][0] === key) return PARAM[i]; }
+  function visTall(p, v) {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    if (p[5] === 'side') return Math.abs(v) < 0.05 ? '0,0 m' : (v < 0 ? 'V ' : 'H ') + k(Math.abs(v), 1) + ' m';
+    var s = p[5] === 't' ? String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : k(v, p[3]);
+    if (p[5] === 's' && v > 0.04) s = '+' + s;
+    return s + (p[2] === '°' ? '°' : p[2] ? ' ' + p[2] : '');
+  }
+  function snitt(slag) {
+    var u = {}; if (!slag.length) return null;
+    PARAM.forEach(function (p) { u[p[0]] = slag.reduce(function (a, s) { return a + s[p[0]]; }, 0) / slag.length; });
+    return u;
+  }
+  function sd(slag, key) { var m = slag.reduce(function (a, s) { return a + s[key]; }, 0) / slag.length; return Math.sqrt(slag.reduce(function (a, s) { return a + Math.pow(s[key] - m, 2); }, 0) / slag.length); }
+  function paramHtml(u) {
+    var grupper = ['Ballen', 'Ballbanen', 'Kølla'];
+    return grupper.map(function (g) {
+      return '<div class="grp"><b class="undertittel">' + g + '</b><div class="param">' + PARAM.filter(function (p) { return p[4] === g; }).map(function (p) { return '<div><span>' + p[1] + '</span><b>' + (u ? visTall(p, u[p[0]]) : '—') + '</b></div>'; }).join('') + '</div></div>';
     }).join('');
+  }
+
+  /* Felles filter for TrackMan-sidene. Lever mellom skjermene. */
+  var PERIODER = { 'Siste 4 uker': 9 * 31 + 7, 'Siste 90 dager': 7 * 31 + 7, 'Sesong': 0 };
+  var FILT = { periode: 'Siste 90 dager', kolle: [], sted: [], hast: [], akse: [], koblet: [], ekstreme: 'Skjul' };
+  var VALGT_OKT = 'o1';
+  function oktOk(o, utenKolle) {
+    if (o.d[0] * 31 + o.d[1] < PERIODER[FILT.periode]) return false;
+    if (FILT.sted.length && FILT.sted.indexOf(o.sted) < 0) return false;
+    if (FILT.hast.length && FILT.hast.indexOf(o.hast + ' hastighet') < 0) return false;
+    if (FILT.akse.length && FILT.akse.indexOf(AKSE[o.a]) < 0) return false;
+    if (FILT.koblet.length && FILT.koblet.indexOf(o.plan ? 'Koblet til teknisk plan' : 'Ikke koblet') < 0) return false;
+    if (!utenKolle && FILT.kolle.length && !Object.keys(o.k).some(function (x) { return FILT.kolle.indexOf(x) > -1; })) return false;
+    return true;
+  }
+  function kollerI(o) { return Object.keys(o.k).filter(function (x) { return !FILT.kolle.length || FILT.kolle.indexOf(x) > -1; }); }
+  function tell(slag) { return FILT.ekstreme === 'Skjul' ? slag.filter(function (s) { return !s.ekstrem; }) : slag; }
+  function filterArk(app, ved) {
+    var plass = app.querySelector('[data-tmf]');
+    var grupper = [['periode', 'Periode', Object.keys(PERIODER), false], ['kolle', 'Kølle', BAG, true], ['sted', 'Sted', ['Range', 'Simulator'], true], ['hast', 'Hastighet', ['Lav hastighet', 'Full hastighet'], true], ['akse', 'Akse', ['TEK', 'SLAG'], true], ['koblet', 'Teknisk plan', ['Koblet til teknisk plan', 'Ikke koblet'], true], ['ekstreme', 'Ekstreme slag', ['Skjul', 'Vis'], false]];
+    plass.outerHTML = '<div class="ark-lag" data-tmf-ark hidden><div class="ark" role="dialog" aria-label="Filter"><div class="ark-topp"><h2>Filter</h2><button type="button" class="lukk" data-lukk aria-label="Lukk">' + KRYSS + '</button></div>' +
+      grupper.map(function (g) {
+        return '<div class="felt"><span class="etikett">' + g[1] + '</span><div class="velg-brikker" data-f="' + g[0] + '"' + (g[3] ? ' data-flere' : '') + '>' + g[2].map(function (v) {
+          var paa = g[3] ? FILT[g[0]].indexOf(v) > -1 : FILT[g[0]] === v;
+          return '<button type="button" aria-pressed="' + paa + '">' + v + '</button>';
+        }).join('') + '</div></div>';
+      }).join('') + '<div class="knapper"><button type="button" class="knapp pri" data-f-bruk>Vis</button><button type="button" class="knapp sek" data-f-null>Nullstill</button></div></div></div>';
+    var arkEl = app.querySelector('[data-tmf-ark]');
+    function brikker() {
+      var b = '<span class="brikke fast">' + FILT.periode + '</span>';
+      ['kolle', 'sted', 'hast', 'akse', 'koblet'].forEach(function (f) { FILT[f].forEach(function (x) { b += '<button type="button" class="brikke" data-fjern="' + f + '|' + x + '">' + x + KRYSS + '</button>'; }); });
+      if (FILT.ekstreme === 'Vis') b += '<button type="button" class="brikke" data-fjern="ekstreme|Vis">Med ekstreme slag' + KRYSS + '</button>';
+      app.querySelector('[data-tmf-brikker]').innerHTML = b;
+    }
+    app.querySelector('[data-tmf-apne]').addEventListener('click', function () { ark(app, '[data-tmf-ark]', true); });
+    arkEl.querySelector('[data-lukk]').addEventListener('click', function () { ark(app, '[data-tmf-ark]', false); });
+    arkEl.querySelectorAll('[data-f]').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        if (g.hasAttribute('data-flere')) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        else g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      });
+    });
+    function les() {
+      arkEl.querySelectorAll('[data-f]').forEach(function (g) {
+        var valgt = [].map.call(g.querySelectorAll('[aria-pressed="true"]'), function (b) { return b.textContent; });
+        FILT[g.dataset.f] = g.hasAttribute('data-flere') ? valgt : valgt[0];
+      });
+    }
+    function synk() {
+      arkEl.querySelectorAll('[data-f]').forEach(function (g) {
+        g.querySelectorAll('button').forEach(function (b) { var v = FILT[g.dataset.f]; b.setAttribute('aria-pressed', String(Array.isArray(v) ? v.indexOf(b.textContent) > -1 : v === b.textContent)); });
+      });
+    }
+    arkEl.querySelector('[data-f-bruk]').addEventListener('click', function () { les(); ark(app, '[data-tmf-ark]', false); brikker(); ved(); AKUtkast.anim(app); });
+    arkEl.querySelector('[data-f-null]').addEventListener('click', function () { FILT = { periode: 'Siste 90 dager', kolle: [], sted: [], hast: [], akse: [], koblet: [], ekstreme: 'Skjul' }; synk(); });
+    app.querySelector('[data-tmf-brikker]').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-fjern]'); if (!b) return;
+      var d = b.dataset.fjern.split('|');
+      if (d[0] === 'ekstreme') FILT.ekstreme = 'Skjul'; else FILT[d[0]] = FILT[d[0]].filter(function (x) { return x !== d[1]; });
+      synk(); brikker(); ved();
+    });
+    brikker();
+  }
+
+  function trackman(app) {
+    var uKolle = app.querySelector('[data-tm-u-kolle]'), uParam = app.querySelector('[data-tm-u-param]'), uHast = 'Full';
+    uKolle.innerHTML = BAG.map(function (b) { return '<option' + (b === 'Driver' ? ' selected' : '') + '>' + b + '</option>'; }).join('');
+    uParam.innerHTML = PARAM.map(function (p) { return '<option value="' + p[0] + '"' + (p[0] === 'cs' ? ' selected' : '') + '>' + p[1] + '</option>'; }).join('');
+    function okter() {
+      var liste = OKTER.filter(function (o) { return oktOk(o); }), sum = 0;
+      app.querySelector('[data-tm-okter]').innerHTML = liste.length ? liste.map(function (o, i) {
+        var kl = kollerI(o), n = kl.reduce(function (a, x) { return a + tell(slagFor(o, x)).length; }, 0); sum += n;
+        return '<button type="button" class="okt mini ' + o.a + ' inn" style="animation-delay:' + (i * 40) + 'ms" data-okt="' + o.id + '"><img src="bilder/' + o.bilde + '.jpg" alt="">' +
+          '<span class="okt-tekst"><span class="akse-tekst">' + AKSE[o.a] + ' · ' + o.dag.toUpperCase() + '</span><span class="navn">' + o.navn + '</span>' +
+          '<span class="okt-info"><span>' + n + ' slag</span><span>' + (kl.length > 3 ? kl.length + ' køller' : kl.join(', ')) + '</span><span>' + o.sted + '</span><span>' + o.hast + ' hastighet</span></span></span></button>';
+      }).join('') : '<div class="kort dempet"><b class="undertittel">Ingen økter passer filteret</b><p class="forklar">Fjern en brikke eller velg en lengre periode.</p></div>';
+      app.querySelector('[data-tm-slag]').textContent = liste.length ? String(sum).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '—';
+      app.querySelector('[data-tm-slag-tekst]').textContent = 'slag · ' + FILT.periode.toLowerCase() + (FILT.ekstreme === 'Skjul' ? ', uten ekstreme slag' : '');
+      app.querySelector('[data-tm-antall]').textContent = liste.length + ' økter';
+      var kl = {}; liste.forEach(function (o) { kollerI(o).forEach(function (x) { kl[x] = 1; }); });
+      app.querySelector('[data-tm-koller]').innerHTML = Object.keys(kl).length + '<small style="font:500 13px/1 var(--mono);margin-left:4px;opacity:.8">køller</small>';
+    }
+    function utvikling() {
+      var kolle = uKolle.value, key = uParam.value, p = pnavn(key);
+      var pkt = OKTER.filter(function (o) { return o.k[kolle] && o.hast === uHast && oktOk(o, true); }).slice().reverse()
+        .map(function (o) { return { o: o, v: snitt(tell(slagFor(o, kolle)))[key] }; });
+      var svg = app.querySelector('[data-tm-utv]'), txt = app.querySelector('[data-tm-utv-tekst]');
+      if (pkt.length < 2) {
+        svg.innerHTML = '<rect x="10" y="20" width="300" height="120" rx="8" fill="var(--sand-100)"/><text x="160" y="84" text-anchor="middle" class="gt" style="font-size:13px;fill:var(--graphite-800)">' + (pkt.length ? 'Bare én økt: ' + visTall(p, pkt[0].v) : 'Ingen økter') + '</text>';
+        txt.textContent = kolle + ' · ' + uHast.toLowerCase() + ' hastighet · trenger minst to økter for å vise utvikling.';
+        return;
+      }
+      var vs = pkt.map(function (x) { return x.v; }), mn = Math.min.apply(null, vs), mx = Math.max.apply(null, vs), sp = (mx - mn) || Math.abs(mx) * 0.05 || 1;
+      var X = function (i) { return 40 + i * (250 / (pkt.length - 1)); }, Y = function (v) { return 130 - (v - mn) / sp * 90; };
+      var g = '<line x1="30" x2="300" y1="130" y2="130" stroke="var(--sand-300)"/><line x1="30" x2="300" y1="40" y2="40" stroke="var(--sand-300)"/>';
+      g += '<text x="26" y="44" text-anchor="end" class="gt">' + visTall(p, mx).replace(/ \S+$/, '') + '</text><text x="26" y="134" text-anchor="end" class="gt">' + visTall(p, mn).replace(/ \S+$/, '') + '</text>';
+      var d = pkt.map(function (x, i) { return X(i).toFixed(1) + ',' + Y(x.v).toFixed(1); });
+      g += '<path d="M' + d.join(' L') + ' L' + X(pkt.length - 1) + ',130 L40,130 Z" fill="var(--slag)" opacity=".18"/><path class="tegn" d="M' + d.join(' L') + '" fill="none" stroke="var(--slag)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+      pkt.forEach(function (x, i) {
+        g += '<circle cx="' + X(i) + '" cy="' + Y(x.v).toFixed(1) + '" r="4.5" fill="var(--slag)"/>';
+        g += '<text x="' + X(i) + '" y="' + (Y(x.v) - 10).toFixed(1) + '" text-anchor="middle" class="gt" style="fill:var(--slag-ink);font-weight:600">' + visTall(p, x.v).replace(/ (mph|m|rpm)$/, '') + '</text>';
+        g += '<text x="' + X(i) + '" y="152" text-anchor="middle" class="gt">' + x.o.dag.replace(/^\S+ /, '') + '</text>';
+      });
+      svg.innerHTML = g; svg.setAttribute('aria-label', p[1] + ' med ' + kolle + ' per økt: ' + pkt.map(function (x) { return x.o.dag + ' ' + visTall(p, x.v); }).join(', '));
+      txt.textContent = kolle + ' · ' + p[1] + ' · ' + uHast.toLowerCase() + ' hastighet · snitt per økt · ' + pkt.length + ' økter';
+    }
+    uKolle.addEventListener('change', utvikling); uParam.addEventListener('change', utvikling);
+    app.querySelector('[data-tm-u-hast]').addEventListener('click', function (e) { var b = e.target.closest('[data-h]'); if (b) { uHast = b.dataset.h; utvikling(); AKUtkast.anim(app); } });
+    app.querySelector('[data-tm-okter]').addEventListener('click', function (e) { var b = e.target.closest('[data-okt]'); if (b) { VALGT_OKT = b.dataset.okt; AKUtkast.gaa('tmokt'); } });
+    filterArk(app, function () { okter(); utvikling(); });
+    okter(); utvikling();
+  }
+
+  function koller(app) {
+    function tegn() {
+      var hast = FILT.hast.length ? FILT.hast.map(function (h) { return h.split(' ')[0]; }) : ['Full'];
+      var data = BAG.filter(function (b) { return !FILT.kolle.length || FILT.kolle.indexOf(b) > -1; }).map(function (b) {
+        var slag = [], okt = 0;
+        OKTER.forEach(function (o) { if (o.k[b] && hast.indexOf(o.hast) > -1 && oktOk(o, true)) { slag = slag.concat(tell(slagFor(o, b))); okt++; } });
+        return { b: b, slag: slag, okt: okt, u: snitt(slag) };
+      });
+      var med = data.filter(function (x) { return x.slag.length; });
+      app.querySelector('[data-k-antall]').textContent = med.length || '—';
+      app.querySelector('[data-k-tekst]').textContent = 'køller med slag · ' + FILT.periode.toLowerCase() + ' · ' + hast.join(' og ').toLowerCase() + ' hastighet';
+      app.querySelector('[data-k-kort]').innerHTML = data.map(function (x, i) {
+        if (!x.slag.length) return '<div class="kolle-kort tom"><div class="kk-topp"><b>' + x.b + '</b><span class="kilde">Ingen slag i perioden</span></div><span class="kk-carry">—</span></div>';
+        var u = x.u;
+        return '<details class="kolle-kort inn" style="animation-delay:' + (i * 30) + 'ms"><summary><span class="kk-topp"><b>' + x.b + '</b><span class="kilde">' + x.slag.length + ' slag · ' + x.okt + (x.okt === 1 ? ' økt' : ' økter') + '</span></span>' +
+          '<span class="kk-rad"><span class="kk-carry">' + Math.round(u.carry) + '<small>m carry</small></span><span class="kk-tre"><span>±' + Math.round(2 * sd(x.slag, 'side')) + ' m<small>Spredning</small></span><span>' + k(u.cs, 1) + '<small>Club Speed</small></span><span>' + k(u.smash, 2) + '<small>Smash</small></span></span></span>' +
+          '<span class="kk-mer">Alle tall</span></summary>' + paramHtml(u) + '</details>';
+      }).join('');
+      /* Gapping: bare full hastighet, ellers blir carry misvisende */
+      var full = BAG.map(function (b) {
+        var slag = []; OKTER.forEach(function (o) { if (o.k[b] && o.hast === 'Full' && oktOk(o, true)) slag = slag.concat(tell(slagFor(o, b))); });
+        return { b: b, n: slag.length, carry: slag.length ? snitt(slag).carry : null };
+      }).filter(function (g) { return !FILT.kolle.length || FILT.kolle.indexOf(g.b) > -1; });
+      var maks = Math.max.apply(null, full.map(function (g) { return g.carry || 0; })) || 1, forrige = null, tot = 0;
+      app.querySelector('[data-gap]').innerHTML = full.map(function (g) {
+        tot += g.n;
+        var w = g.carry ? (g.carry / maks * 100).toFixed(1) : 0, mellom = '';
+        if (g.carry && forrige !== null) { var gp = Math.round(forrige - g.carry); mellom = '<div class="gap-mellom' + (gp < 10 ? ' smal' : '') + '"><span></span><span>' + (gp < 10 ? '↕ ' + gp + ' m · kort gap' : '↕ ' + gp + ' m') + '</span></div>'; }
+        if (g.carry) forrige = g.carry;
+        return mellom + '<div class="gap-rad"><span>' + g.b + '</span><span class="stolpe"><span data-til="' + w + '%" style="width:' + w + '%"></span></span><span class="v">' + (g.carry ? Math.round(g.carry) + ' m' : '—') + '</span></div>';
+      }).join('');
+      app.querySelector('[data-gap-kilde]').textContent = 'TrackMan · full hastighet · ' + FILT.periode.toLowerCase() + ' · ' + tot + ' slag';
+    }
     app.querySelector('[data-helse]').innerHTML = [
-      ['54°: Spin Rate ned 610 rpm siden april', 'Fra 9 550 til 8 940 rpm med lik Club Speed. Rillene kan være slitt.', '<span class="pille vent"><i></i>Sjekk</span>'],
-      ['Driver: Smash Factor stabil', '1,47 i snitt, likt de siste tre månedene.', '<span class="pille ok"><i></i>Bra</span>'],
+      ['54°: Spin Rate ned 610 rpm siden mai', 'Fra 9 550 til 8 940 rpm med lik Club Speed. Rillene kan være slitt.', '<span class="pille vent"><i></i>Sjekk</span>'],
+      ['Driver: Smash Factor stabil', '1,47 i snitt, likt i alle øktene siden mai.', '<span class="pille ok"><i></i>Bra</span>'],
       ['Lie og loft', '—<br>Ikke målt. Be coachen sjekke jernene neste gang.', '<span class="pille noy"><i></i>Ukjent</span>']
     ].map(function (h, i) { return '<div class="helse"' + (i ? '' : ' style="border-top:0;padding-top:0"') + '><span><strong>' + h[0] + '</strong><small>' + h[1] + '</small></span>' + h[2] + '</div>'; }).join('');
-    app.querySelector('[data-tm-okter]').innerHTML = TM_OKTER.map(function (o, i) {
-      return '<button type="button" class="okt mini ' + o.a + ' inn" style="animation-delay:' + (i * 50) + 'ms"' + (o.gaa ? ' data-gaa="' + o.gaa + '"' : ' data-tm-ikke') + '><img src="bilder/' + o.bilde + '.jpg" alt="">' +
-        '<span class="okt-tekst"><span class="akse-tekst">' + AKSE[o.a] + ' · ' + o.dag.toUpperCase() + '</span><span class="navn">' + o.navn + '</span><span class="okt-info"><span>' + o.slag + ' slag</span><span>' + o.k + '</span><span>' + o.sted + '</span></span></span></button>';
-    }).join('');
-    app.querySelector('[data-tm-okter]').addEventListener('click', function (e) { if (e.target.closest('[data-tm-ikke]')) toast(app, 'I utkastet er bare økta 28. september tegnet.'); });
+    filterArk(app, tegn);
     tegn();
   }
 
-  /* ---------- TrackMan-økt 28. sep. ---------- */
+  /* ---------- Én TrackMan-økt ---------- */
   function tmokt(app) {
-    var inn = [1,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,1,0,1,1,1,0,1,0];
-    app.querySelector('[data-tm-prikker]').innerHTML = inn.map(function (x, i) { return '<i class="' + (x ? 'inn' : '') + '" title="Slag ' + (i + 1) + '"></i>'; }).join('');
-    app.querySelector('[data-tm-kolle]').innerHTML = [
-      ['7-jern', '54 slag · mål 75 m', [['Carry', '74 m'], ['Spredning', '±3 m'], ['Club Speed', '43,2 mph']]],
-      ['54°', '30 slag · mål 45 m', [['Carry', '44 m'], ['Spredning', '±2 m'], ['Club Speed', '37,1 mph']]]
-    ].map(function (r, i) {
-      return '<div' + (i ? ' style="border-top:1px solid var(--sand-300);padding-top:12px"' : '') + '><b class="undertittel">' + r[0] + '</b><span class="kildetekst" style="display:block;margin-bottom:8px">' + r[1] + '</span><div class="param">' + r[2].map(function (p) { return '<div><span>' + p[0] + '</span><b>' + p[1] + '</b></div>'; }).join('') + '</div></div>';
-    }).join('');
+    var o = OKTER.filter(function (x) { return x.id === VALGT_OKT; })[0] || OKTER[0];
+    var kl = Object.keys(o.k), valgt = kl[0], antall = 12;
+    app.querySelector('[data-o-dato]').textContent = 'TrackMan · ' + o.dag.replace('Man.', 'mandag').replace('Ons.', 'onsdag');
+    app.querySelector('[data-o-navn]').textContent = o.navn;
+    var alle = kl.reduce(function (a, x) { return a + o.k[x]; }, 0);
+    var fylt = app.querySelector('[data-o-fylt]'); fylt.classList.add(o.a);
+    fylt.innerHTML = '<span class="akse-tekst">' + AKSE[o.a] + ' · ' + o.sted.toUpperCase() + ' · ' + o.hast.toUpperCase() + ' HASTIGHET</span>' +
+      '<div class="rad"><span class="stor">' + alle + '<small>slag</small></span><span class="trend">' + kl.length + (kl.length === 1 ? ' kølle' : ' køller') + ' · ' + o.min + ' min</span></div>' +
+      '<p>' + (o.plan ? 'Koblet til teknisk plan: ' + o.plan + '. ' : '') + (o.hast === 'Lav' ? 'Lav hastighet, 50 % av Club Speed.' : 'Full hastighet.') + '</p>';
+    var kv = app.querySelector('[data-o-koller]');
+    kv.innerHTML = kl.map(function (x) { return '<button type="button" aria-pressed="' + (x === valgt) + '" data-k="' + x + '">' + x + ' · ' + o.k[x] + '</button>'; }).join('');
+    function kart(slag, mal) {
+      var u = snitt(tell(slag)), sideS = sd(tell(slag), 'side') || 1, lenS = sd(tell(slag), 'carry') || 1, midt = mal || u.carry, cx = 160;
+      var spennY = Math.max(lenS * 4, 6), spennX = Math.max(sideS * 3, 5);
+      function y(c) { return 128 - (c - midt) * (100 / spennY); } function x(s) { return cx + s * (140 / spennX); }
+      var s = '<rect x="10" y="20" width="300" height="220" rx="8" fill="var(--sand-100)"/>';
+      [-0.75, 0, 0.75].forEach(function (f) { var c = Math.round(midt + f * spennY); s += '<line x1="20" x2="300" y1="' + y(c).toFixed(1) + '" y2="' + y(c).toFixed(1) + '" stroke="var(--sand-300)"/><text x="22" y="' + (y(c) - 4).toFixed(1) + '" class="gt">' + c + ' m</text>'; });
+      s += '<line x1="' + cx + '" x2="' + cx + '" y1="24" y2="236" stroke="var(--graphite-600)" stroke-dasharray="4 3"/>';
+      if (mal) { var ry = 3 * 100 / spennY; s += '<ellipse cx="' + cx + '" cy="' + y(mal).toFixed(1) + '" rx="' + (3 * 140 / spennX).toFixed(1) + '" ry="' + ry.toFixed(1) + '" fill="none" stroke="var(--green-700)" stroke-width="2"/><text x="' + cx + '" y="' + Math.max(32, y(mal) - ry - 6).toFixed(1) + '" text-anchor="middle" class="gt" style="fill:var(--green-700);font-weight:600">Mål ' + mal + ' m ±3</text>'; }
+      s += '<ellipse cx="' + x(u.side).toFixed(1) + '" cy="' + y(u.carry).toFixed(1) + '" rx="' + (2 * sideS * 140 / spennX).toFixed(1) + '" ry="' + (2 * lenS * 100 / spennY).toFixed(1) + '" fill="var(--slag)" fill-opacity=".08" stroke="var(--graphite-900)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+      slag.forEach(function (sl, i) {
+        var px = Math.max(16, Math.min(304, x(sl.side))), py = Math.max(24, Math.min(236, y(sl.carry)));
+        s += '<circle class="inn" style="animation-delay:' + (i * 6) + 'ms" cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="4" fill="' + (sl.ekstrem ? 'var(--amber-700)' : 'var(--slag)') + '" fill-opacity="' + (sl.ekstrem ? 1 : .75) + '"/>';
+      });
+      s += '<text x="20" y="254" class="gt">Venstre</text><text x="300" y="254" text-anchor="end" class="gt">Høyre</text><text x="' + cx + '" y="254" text-anchor="middle" class="gt">Mållinje</text>';
+      return s;
+    }
+    function treff(slag) {
+      var s = '<rect x="50" y="20" width="220" height="120" rx="26" fill="var(--sand-100)" stroke="var(--graphite-500)"/><line x1="160" x2="160" y1="26" y2="134" stroke="var(--sand-300)"/><line x1="56" x2="264" y1="80" y2="80" stroke="var(--sand-300)"/>';
+      slag.forEach(function (sl) { s += '<circle cx="' + (160 + sl.sx * 100).toFixed(1) + '" cy="' + (80 - sl.sy * 52).toFixed(1) + '" r="4" fill="' + (sl.ekstrem ? 'var(--amber-700)' : 'var(--slag)') + '" fill-opacity=".7"/>'; });
+      s += '<text x="44" y="84" text-anchor="end" class="gt">Hæl</text><text x="276" y="84" class="gt">Tå</text><text x="160" y="160" text-anchor="middle" class="gt">Sett forfra</text>';
+      return s;
+    }
+    function tegn() {
+      var slag = slagFor(o, valgt), med = tell(slag), u = snitt(med), mal = o.mal ? o.mal[valgt] : null, ekstr = slag.filter(function (s) { return s.ekstrem; }).length;
+      var hoved = app.querySelector('[data-o-hoved]');
+      if (mal) {
+        var inne = med.filter(function (s) { return fraMal(s) <= 3; }).length, pei = med.reduce(function (a, s) { return a + fraMal(s) / s.mal; }, 0) / med.length * 100;
+        hoved.innerHTML = '<strong>' + inne + '<small>/ ' + med.length + ' i målet</small></strong><span class="trend">PEI ' + k(pei, 1) + ' %</span>';
+      } else hoved.innerHTML = '<strong>' + Math.round(u.carry) + '<small>m carry</small></strong><span class="trend">' + med.length + ' slag</span>';
+      var svg = app.querySelector('[data-o-kart]'); svg.innerHTML = kart(slag, mal); svg.setAttribute('aria-label', 'Spredningskart for ' + valgt + ', ' + slag.length + ' slag');
+      app.querySelector('[data-o-spredning]').innerHTML = 'Spredning: <b class="mono">±' + Math.round(2 * sd(med, 'side')) + ' m</b> til siden og <b class="mono">±' + Math.round(2 * sd(med, 'carry')) + ' m</b> i lengde' + (mal ? '. Målet er grønt, ±3 m.' : '.') + (ekstr ? ' ' + ekstr + (ekstr === 1 ? ' ekstremt slag er' : ' ekstreme slag er') + (FILT.ekstreme === 'Skjul' ? ' vist i gult, men ikke med i snittet.' : ' med i snittet.') : '');
+      var ts = app.querySelector('[data-o-treff]'); ts.innerHTML = treff(slag); ts.setAttribute('aria-label', 'Treffpunkt på køllebladet for ' + slag.length + ' slag');
+      var midtX = med.reduce(function (a, s) { return a + s.sx; }, 0) / med.length;
+      app.querySelector('[data-o-treff-tekst]').textContent = Math.abs(midtX) < 0.08 ? 'Treffene ligger midt på bladet.' : 'Treffene ligger litt mot ' + (midtX > 0 ? 'tåa' : 'hælen') + '.';
+      app.querySelector('[data-o-param]').innerHTML = paramHtml(u);
+      app.querySelector('[data-o-snitt-kilde]').textContent = 'Snitt av ' + med.length + ' slag';
+      var liste = slag.slice(0, antall);
+      app.querySelector('[data-o-slag-antall]').textContent = slag.length + ' slag med ' + valgt;
+      app.querySelector('[data-o-slag]').innerHTML = liste.map(function (sl) {
+        var fm = fraMal(sl);
+        return '<details class="slag-rad' + (sl.ekstrem ? ' ekstrem' : '') + '"><summary><span><b>Slag ' + sl.nr + '</b>' + (sl.ekstrem ? '<span class="pille vent" style="margin-left:8px"><i></i>Ekstremt</span>' : '') + '<small>' + visTall(pnavn('cs'), sl.cs) + ' · ' + visTall(pnavn('ftp'), sl.ftp) + ' Face to Path</small></span>' +
+          '<span class="sr-h"><b>' + Math.round(sl.carry) + ' m</b><small>' + visTall(pnavn('side'), sl.side) + (fm !== null ? ' · PEI ' + k(fm / sl.mal * 100, 1) + ' %' : '') + '</small></span></summary>' + paramHtml(sl) + '</details>';
+      }).join('');
+      var fl = app.querySelector('[data-o-flere]'); fl.hidden = slag.length <= antall; fl.textContent = 'Vis alle ' + slag.length + ' slag';
+      AKUtkast.anim(app);
+    }
+    kv.addEventListener('click', function (e) { var b = e.target.closest('[data-k]'); if (!b) return; valgt = b.dataset.k; antall = 12; tegn(); });
+    app.querySelector('[data-o-flere]').addEventListener('click', function () { antall = 999; tegn(); });
+    tegn();
   }
+
+  /* ---------- Stats › Resultater ----------
+     Brutto, par 72. 10 turneringsrunder og 8 egne runder = 18 tellende runder, snitt 73,1 (som Stats). */
+  var TURN = [
+    { navn: 'Srixon Tour 4', bane: 'Borre GK', dato: '26.–27. sep.', r: [73, 72], plass: 11, felt: 60 },
+    { navn: 'Srixon Tour 3', bane: 'Larvik GK', dato: '12.–13. sep.', r: [74, 72], plass: 9, felt: 62 },
+    { navn: 'Østlandstour 5', bane: 'Kongsvinger GK', dato: '29. aug.', r: [71], plass: 4, felt: 48 },
+    { navn: 'Klubbmesterskap', bane: 'Gamle Fredrikstad GK', dato: '15.–16. aug.', r: [72, 75], plass: 2, felt: 18 },
+    { navn: 'Srixon Tour 2', bane: 'Stavanger GK', dato: '1.–2. aug.', r: [75, 74], plass: 21, felt: 66 },
+    { navn: 'Østlandstour 3', bane: 'Drøbak GK', dato: '11. juli', r: [76], plass: null, felt: null }
+  ];
+  var EGNE = [
+    { dato: '3. okt.', bane: 'Gamle Fredrikstad GK', s: 73 }, { dato: '19. sep.', bane: 'Gamle Fredrikstad GK', s: 72 }, { dato: '5. sep.', bane: 'Onsøy GK', s: 71 },
+    { dato: '22. aug.', bane: 'Gamle Fredrikstad GK', s: 74 }, { dato: '25. juli', bane: 'Hvaler GK', s: 73 }, { dato: '27. juni', bane: 'Gamle Fredrikstad GK', s: 72 },
+    { dato: '30. mai', bane: 'Onsøy GK', s: 74 }, { dato: '12. april', bane: 'Gamle Fredrikstad GK', s: 73 }
+  ];
+  function tilPar(s, n) { var d = s - 72 * n; return d === 0 ? 'E' : (d > 0 ? '+' : '−') + Math.abs(d); }
+  function resultater(app) {
+    var alle = [];
+    TURN.forEach(function (t) { t.r.forEach(function (s, i) { alle.push({ s: s }); }); });
+    EGNE.forEach(function (e) { alle.push({ s: e.s }); });
+    var snittV = alle.reduce(function (a, x) { return a + x.s; }, 0) / alle.length;
+    app.querySelector('[data-r-snitt]').innerHTML = k(snittV, 1) + '<small>brutto</small>';
+    app.querySelector('[data-r-under]').textContent = 'Snitt av ' + alle.length + ' tellende runder i sesongen, ' + TURN.length + ' turneringer. Beste plassering: 2. i klubbmesterskapet.';
+    app.querySelector('[data-r-turn-antall]').textContent = TURN.length + ' turneringer';
+    app.querySelector('[data-r-turn]').innerHTML = TURN.map(function (t, i) {
+      var sum = t.r.reduce(function (a, b) { return a + b; }, 0);
+      return '<div class="turn-kort inn" style="animation-delay:' + (i * 40) + 'ms"><div class="tk-plass"><b>' + (t.plass ? t.plass + '.' : '—') + '</b><small>' + (t.felt ? 'av ' + t.felt : 'Ikke publisert') + '</small></div>' +
+        '<div class="tk-midt"><strong>' + t.navn + '</strong><small>' + t.bane + ' · ' + t.dato + '</small><span class="tk-runder">' + t.r.map(function (s, j) { return '<span>R' + (j + 1) + ' <b>' + s + '</b></span>'; }).join('') + '</span></div>' +
+        '<div class="tk-sum"><b>' + sum + '</b><small>' + tilPar(sum, t.r.length) + '</small></div></div>';
+    }).join('');
+    var RUNDER = [];
+    TURN.forEach(function (t) { t.r.forEach(function (s, j) { RUNDER.push({ type: 'turn', tittel: t.navn + ', runde ' + (j + 1), bane: t.bane, dato: t.dato, s: s }); }); });
+    EGNE.forEach(function (e) { RUNDER.push({ type: 'egen', tittel: 'Egen runde', bane: e.bane, dato: e.dato, s: e.s }); });
+    var valg = 'alle';
+    function runder() {
+      var vis = RUNDER.filter(function (r) { return valg === 'alle' || r.type === valg; });
+      app.querySelector('[data-r-turn-kol]').hidden = valg === 'egen';
+      app.querySelector('[data-r-runder-tittel]').textContent = valg === 'turn' ? 'Turneringsrunder' : valg === 'egen' ? 'Egne runder' : 'Alle runder';
+      app.querySelector('[data-r-runder-antall]').textContent = vis.length + ' runder · snitt ' + k(vis.reduce(function (a, r) { return a + r.s; }, 0) / vis.length, 1);
+      app.querySelector('[data-r-runder]').innerHTML = vis.map(function (r) {
+        return '<a class="runde-rad" href="#"><span><b>' + r.tittel + '</b><small>' + r.bane + ' · ' + r.dato + '</small></span><span class="rr-h"><b>' + r.s + '</b><small>' + tilPar(r.s, 1) + '</small></span>' + PIL + '</a>';
+      }).join('');
+    }
+    app.querySelector('[data-r-valg]').addEventListener('click', function (e) { var b = e.target.closest('[data-r]'); if (b) { valg = b.dataset.r; runder(); } });
+    runder();
+  }
+
 
   function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
   var INGEN_TEST = { tittel: 'Ingen test i gang', tekst: 'Velg en test i Stats › Tester. Coachen kan også legge en test inn i planen din.', knapp: 'Se testene' };
@@ -997,7 +1386,9 @@
       hand: m('PH-15-TN', 'hand', gateMotor('hand'), INGEN_TEST, 'Henter testen …', 'Testen kunne ikke hentes. Slagene du har ført, er lagret på telefonen.'),
       trening: m('PH-17', 'trening', trening, { tittel: 'Ingen trening registrert ennå', tekst: 'Når du har gjennomført en økt, ser du tiden mot planen, hvor du trener og hvordan det henger sammen med Strokes Gained.', knapp: 'Åpne Workbench' }, 'Henter treningen …', 'Treningen kunne ikke hentes'),
       trackman: m('PH-17', 'trackman', trackman, { tittel: 'Ingen TrackMan-økter ennå', tekst: 'Legg til en økt med TrackMan, så kommer spredning, gapping og parametere her.', knapp: 'Legg til TrackMan-økt' }, 'Henter TrackMan-øktene …', 'TrackMan-øktene kunne ikke hentes'),
-      tmokt: m('PH-17', 'tmokt', tmokt, null)
+      tmokt: m('PH-17', 'tmokt', tmokt, null, 'Henter økta …', 'Økta kunne ikke hentes'),
+      koller: m('PH-17', 'koller', koller, { tittel: 'Ingen køller med slag ennå', tekst: 'Legg til en TrackMan-økt, så kommer snitt, gapping og alle tall per kølle her.', knapp: 'Legg til TrackMan-økt' }, 'Henter køllene …', 'Køllene kunne ikke hentes'),
+      resultater: m('PH-16', 'resultater', resultater, { tittel: 'Ingen runder ennå', tekst: 'Registrer en runde, eller finn deg i turneringsresultatene under Meg. Snittet regnes fra fire runder.', knapp: 'Registrer runde' }, 'Henter resultatene …', 'Resultatene kunne ikke hentes')
     }
   });
 })();
