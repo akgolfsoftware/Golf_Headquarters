@@ -1,0 +1,109 @@
+/*
+ * PlayerHQ pakke 6 «Stats i dybden» (godkjent av Anders 14.10.2026, PR #1251).
+ * Portert fra docs/design-system/utkast-playerhq/stats-dybde.html.
+ * Bygger på src/styles/playerhq-ny.css (tokens og felles flater) og er avgrenset til .phn.
+ */
+
+.phn .phn-mono { font-family: var(--phn-mono); }
+.phn .phn-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 4px; margin: -8px 0 -16px -4px; border-radius: 8px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; }
+.phn .phn-tilbake:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-to-kol, .phn .phn-kol { display: grid; gap: 24px; align-content: start; }
+.phn .phn-kort.dempet { background: var(--phn-sand-100); }
+.phn .phn-kort h2 { margin: 0; font: 600 17px/1.25 var(--phn-sans); }
+.phn .phn-graf { display: block; width: 100%; height: auto; overflow: visible; }
+.phn .phn-graf .gt, .phn .phn-green .gt { font: 500 10px/1 var(--phn-sans); fill: var(--phn-g600); }
+.phn .phn-stolpe { height: 10px; border-radius: 5px; background: var(--phn-sand-150); overflow: hidden; position: relative; }
+.phn .phn-stolpe span { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--phn-slag); }
+.phn .phn-to-felt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+/* Fylt toppkort i aksefarge med ett stort tall */
+.phn .phn-fylt { display: grid; gap: 8px; padding: 18px; border-radius: 12px; color: #fff; background: var(--phn-slag); }
+.phn .phn-fylt.tek { background: var(--phn-tek-ink); }
+.phn .phn-fylt.slag { background: var(--phn-slag); }
+.phn .phn-fylt .phn-akse-tekst { font: 600 12px/1.3 var(--phn-sans); letter-spacing: .05em; opacity: .95; }
+.phn .phn-fylt .phn-stor { font: 600 52px/1 var(--phn-mono); letter-spacing: -.04em; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.phn .phn-fylt .phn-stor small { font: 500 18px/1 var(--phn-mono); letter-spacing: 0; opacity: .9; }
+.phn .phn-fylt p { font-size: 14px; line-height: 1.45; opacity: .95; }
+.phn .phn-fylt .phn-rad { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.phn .phn-fylt .phn-trend { background: rgba(255, 255, 255, .2); color: #fff; }
+
+/* Felles filter med brikker */
+.phn .phn-filterlinje { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.phn .phn-brikke { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 6px 0 12px; border-radius: 999px; background: var(--phn-sand-150); font: 500 13px/1 var(--phn-sans); color: var(--phn-g900); border: 0; cursor: pointer; text-decoration: none; }
+.phn .phn-brikke .phn-ikon { width: 16px; height: 16px; }
+.phn .phn-brikke.fast { padding-right: 12px; cursor: default; }
+.phn .phn-velg-brikker { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-velg-brikker button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--phn-g500); background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; }
+.phn .phn-velg-brikker button[aria-pressed="true"] { background: var(--phn-g900); color: var(--phn-hvit); border-color: var(--phn-g900); }
+.phn .phn-etikett { font: 600 14px/1.3 var(--phn-sans); }
+
+/* TrackMan: økter */
+.phn .phn-okt-liste { display: grid; gap: 8px; }
+.phn .phn-okt-info { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; line-height: 1.45; opacity: .92; }
+.phn .phn-tm-kort { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px; border-radius: 12px; background: var(--phn-g900); color: #fff; text-decoration: none; }
+.phn .phn-tm-kort b { display: block; font: 600 17px/1.3 var(--phn-sans); }
+.phn .phn-tm-kort span span { font-size: 14px; opacity: .85; }
+.phn .phn-tm-kort strong { font: 600 30px/1 var(--phn-mono); letter-spacing: -.02em; white-space: nowrap; }
+.phn .phn-tm-kort strong small { font: 500 13px/1 var(--phn-mono); margin-left: 4px; opacity: .8; letter-spacing: 0; }
+.phn .phn-tm-kort:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+/* Alle tall */
+.phn .phn-grp { display: grid; gap: 8px; }
+.phn .phn-grp + .phn-grp { margin-top: 14px; }
+.phn .phn-param { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.phn .phn-param div { padding: 10px 12px; border-radius: 10px; background: var(--phn-sand-100); display: grid; gap: 4px; }
+.phn .phn-param dt { font-size: 12.5px; color: var(--phn-g800); }
+.phn .phn-param dd { margin: 0; font: 600 18px/1 var(--phn-mono); }
+
+/* Alle køller */
+.phn .phn-kolle-liste, .phn .phn-slag-liste { display: grid; gap: 8px; }
+.phn .phn-kolle-kort { border: 1px solid var(--phn-sand-300); border-left: 6px solid var(--phn-slag); border-radius: 12px; background: var(--phn-hvit); padding: 14px 16px; }
+.phn .phn-kolle-kort summary, .phn .phn-slag-rad summary { list-style: none; cursor: pointer; }
+.phn .phn-kolle-kort summary::-webkit-details-marker, .phn .phn-slag-rad summary::-webkit-details-marker { display: none; }
+.phn .phn-kolle-kort summary { display: grid; gap: 10px; }
+.phn .phn-kolle-kort > .phn-grp:first-of-type { margin-top: 14px; }
+.phn .phn-kk-topp { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.phn .phn-kk-topp b { font: 600 16px/1.3 var(--phn-sans); }
+.phn .phn-kk-rad { display: grid; gap: 10px; }
+.phn .phn-kk-carry { font: 600 34px/1 var(--phn-mono); letter-spacing: -.03em; }
+.phn .phn-kk-carry small { font: 500 13px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 4px; letter-spacing: 0; }
+.phn .phn-kk-tre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font: 600 15px/1.2 var(--phn-mono); }
+.phn .phn-kk-tre small { display: block; font: 400 12px/1.3 var(--phn-sans); color: var(--phn-g600); margin-top: 2px; }
+.phn .phn-kk-mer { font: 500 14px/1 var(--phn-sans); text-decoration: underline; text-underline-offset: 3px; min-height: 44px; display: flex; align-items: center; }
+.phn .phn-kolle-kort[open] .phn-kk-mer { display: none; }
+.phn .phn-gap-liste { display: grid; gap: 6px; }
+.phn .phn-gap-rad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 52px; gap: 10px; align-items: center; font-size: 14px; }
+.phn .phn-gap-rad .phn-stolpe { height: 16px; border-radius: 3px; }
+.phn .phn-gap-rad .v { font: 600 14px/1 var(--phn-mono); text-align: right; }
+.phn .phn-gap-mellom { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; font: 500 12px/1.2 var(--phn-mono); color: var(--phn-g600); }
+.phn .phn-helse { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-helse:first-child { border-top: 0; padding-top: 0; }
+.phn .phn-helse strong { display: block; font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-helse small { display: block; font: 400 13px/1.45 var(--phn-sans); color: var(--phn-g800); }
+
+/* Én TrackMan-økt */
+.phn .phn-slag-rad { border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); padding: 8px 12px; }
+.phn .phn-slag-rad.ekstrem { border-color: var(--phn-amber-700); }
+.phn .phn-slag-rad summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 44px; }
+.phn .phn-slag-rad summary b { font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-slag-rad summary small { display: block; font-size: 12.5px; line-height: 1.4; color: var(--phn-g600); }
+.phn .phn-slag-rad > .phn-grp:first-of-type { margin-top: 10px; }
+.phn .phn-sr-h { text-align: right; }
+.phn .phn-sr-h b { font: 600 16px/1.2 var(--phn-mono); }
+.phn .phn-green-ramme { --phn-green-flate: #9cc77e; --phn-green-kant: #c4e0a8; position: relative; border-radius: 12px; overflow: hidden; background: #6f9a5a; }
+.phn .phn-green { display: block; width: 100%; height: auto; }
+.phn .phn-sikte { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.phn .phn-sikte input { width: 100%; height: 44px; min-height: 44px; margin: 0; accent-color: var(--phn-g900); }
+.phn .phn-sikte .phn-knapp { padding: 0 12px; }
+
+/* Bevegelse */
+.phn .phn-inn { animation: phn-inn 360ms var(--phn-ut) both; }
+.phn .phn-tegn { stroke-dasharray: 1000; animation: phn-tegn 900ms var(--phn-ut) both; }
+@keyframes phn-inn { from { opacity: 0; transform: translateY(8px); } }
+@keyframes phn-tegn { from { stroke-dashoffset: 1000; } }
+
+@container (min-width: 900px) {
+  .phn .phn-to-kol { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
+  .phn .phn-param { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .phn .phn-kort .phn-graf { max-width: 440px; justify-self: center; }
+}
