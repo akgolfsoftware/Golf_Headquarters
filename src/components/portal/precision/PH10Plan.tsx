@@ -7,11 +7,12 @@
  * Samme data og handlinger som før: forslag fra coach, flytting av Workbench-økt,
  * ny økt og redigering i Workbench.
  *
- * Bevisste avvik fra utkastet:
+ * Avvik:
  *   - Øktkortene har ikke bilde ennå. Bildene i utkastet er ikke avklart (designbrevet, punkt 2).
  *   - Laget «Google-kalender» og radene «Google-kalender er koblet» og «Be coach endre planen»
  *     er ikke med: appen har ingen Google-kobling eller slik forespørsel i dag.
  *   - År og Måned åpner Workbench, som i utkastet; Dag viser én dag av uka.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-10.
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
