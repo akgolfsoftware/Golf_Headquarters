@@ -1010,6 +1010,7 @@ export async function loadYear(params: {
     sessionBudget: parseSessionBudget(b.weeklySessionBudget),
     axisMinutes: parseAxisMinutes(b.axisMinutes),
     axisMinutesLight: parseAxisMinutes(b.axisMinutesLight),
+    fraGruppe: b.sourceGroupId !== null,
   }));
   const tournamentEvents = tournamentEntries
     .map((e) => {
