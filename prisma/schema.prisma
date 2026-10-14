@@ -3660,6 +3660,9 @@ model GroupPeriodBlock {
   weeklyVolMin        Int?
   weeklyVolMax        Int?
   weeklySessionBudget Json?
+  /// Minutter per akse (FYS/TEK/SLAG/SPILL/TURN) for vanlig og lett uke, som PeriodBlock.
+  axisMinutes         Json?
+  axisMinutesLight    Json?
   notes               String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt

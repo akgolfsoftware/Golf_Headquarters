@@ -16,6 +16,7 @@ import { assertCapability } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { PeriodeInputSchema } from "@/lib/workbench/perioder";
 import { skalHoppeOverPeriode } from "@/lib/domain/gruppeplan-dedup";
+import { oppdaterArvedePerioder, type ArvKvittering } from "@/lib/workbench/gruppe-arv";
 
 /** YYYY-MM-DD → UTC-midnatt. MÅ være UTC, ikke serverens lokale midnatt:
  * lokal dev (Oslo) skriver ellers 22:00Z dagen FØR til samme DB som prod
@@ -25,11 +26,17 @@ function lokalDag(s: string): Date {
   return new Date(Date.UTC(y, m - 1, d));
 }
 
+/** undefined = ikke rør; null/tomt = nullstill (Prisma.DbNull). */
+function akseData(v: Record<string, number | undefined> | null | undefined) {
+  if (v === undefined) return undefined;
+  return v && Object.keys(v).length > 0 ? v : Prisma.DbNull;
+}
+
 export async function coachLagreGruppePeriode(
   groupId: string,
   input: unknown,
   periodeId?: string,
-): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
+): Promise<{ ok: boolean; periodeId?: string; error?: string; arv?: ArvKvittering }> {
   const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
@@ -47,14 +54,30 @@ export async function coachLagreGruppePeriode(
     // Prisma.DbNull nullstiller Json?-feltet ved update (undefined = «ikke rør»).
     // Leses tilbake som null — parseSessionBudget håndterer det.
     weeklySessionBudget: budsjett ?? Prisma.DbNull,
+    // undefined = ikke rør; null/tomt = nullstill.
+    axisMinutes: akseData(v.axisMinutes),
+    axisMinutesLight: akseData(v.axisMinutesLight),
   };
 
   if (periodeId) {
-    const eier = await prisma.groupPeriodBlock.findFirst({ where: { id: periodeId, groupId }, select: { id: true } });
-    if (!eier) return { ok: false, error: "Perioden finnes ikke" };
+    const foer = await prisma.groupPeriodBlock.findFirst({
+      where: { id: periodeId, groupId },
+      select: {
+        lPhase: true, startDate: true, endDate: true, focus: true, weeklyVolMin: true,
+        weeklyVolMax: true, weeklySessionBudget: true, axisMinutes: true, axisMinutesLight: true,
+      },
+    });
+    if (!foer) return { ok: false, error: "Perioden finnes ikke" };
     await prisma.groupPeriodBlock.update({ where: { id: periodeId }, data });
+    // Gruppa er lagret; feil i nedstrøms oppdatering angrer ikke lagringen.
+    let arv: ArvKvittering | undefined;
+    try {
+      arv = await oppdaterArvedePerioder(groupId, foer, data);
+    } catch {
+      arv = { perioder: 0, egne: 0, uker: 0, feilet: -1 };
+    }
     revalidatePath(`/admin/grupper/${groupId}/workbench`);
-    return { ok: true, periodeId };
+    return { ok: true, periodeId, arv };
   }
   const blokk = await prisma.groupPeriodBlock.create({ data: { groupId, ...data }, select: { id: true } });
   revalidatePath(`/admin/grupper/${groupId}/workbench`);
@@ -115,6 +138,8 @@ export async function coachRullUtGruppeAarsplan(
         weeklyVolMin: true,
         weeklyVolMax: true,
         weeklySessionBudget: true,
+        axisMinutes: true,
+        axisMinutesLight: true,
       },
     }),
     prisma.groupMember.findMany({
@@ -177,6 +202,8 @@ export async function coachRullUtGruppeAarsplan(
             weeklyVolMin: b.weeklyVolMin,
             weeklyVolMax: b.weeklyVolMax,
             weeklySessionBudget: b.weeklySessionBudget ?? undefined,
+            axisMinutes: b.axisMinutes ?? undefined,
+            axisMinutesLight: b.axisMinutesLight ?? undefined,
             sourceGroupId: groupId,
           },
         });
