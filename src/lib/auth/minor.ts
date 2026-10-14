@@ -146,7 +146,9 @@ export function isAwaitingGuardianConsent(
   u: ForelderGodkjenningGrunnlag,
   naa: Date = new Date(),
 ): boolean {
-  const kjentUnder16 = u.requiresGuardianConsent || isMinor(u.dateOfBirth, naa);
+  // Låsen slipper ved 16 år (Anders 14.10): er fødselsdatoen kjent, avgjør den.
+  // Flagget brukes bare når datoen mangler.
+  const kjentUnder16 = u.dateOfBirth ? isMinor(u.dateOfBirth, naa) : u.requiresGuardianConsent;
   if (!kjentUnder16 || harForelderGodkjent(u)) return false;
   if (!u.createdAt) return true;
   return naa.getTime() >= forelderFrist(u.createdAt).getTime();

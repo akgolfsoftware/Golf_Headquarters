@@ -37,6 +37,36 @@ describe("isAwaitingGuardianConsent (GDPR-gate)", () => {
     );
   });
 
+  it("slipper låsen ved 16 år, også når flagget fortsatt står på og fristen er ute", () => {
+    assert.equal(
+      isAwaitingGuardianConsent(
+        {
+          requiresGuardianConsent: true,
+          guardianConsentGivenAt: null,
+          dateOfBirth: new Date("2010-03-01"),
+          createdAt: new Date("2026-01-01"),
+        },
+        new Date("2026-10-14"),
+      ),
+      false,
+    );
+  });
+
+  it("låser fortsatt et barn under 16 etter at fristen er ute", () => {
+    assert.equal(
+      isAwaitingGuardianConsent(
+        {
+          requiresGuardianConsent: true,
+          guardianConsentGivenAt: null,
+          dateOfBirth: new Date("2012-03-01"),
+          createdAt: new Date("2026-01-01"),
+        },
+        new Date("2026-10-14"),
+      ),
+      true,
+    );
+  });
+
   it("slipper gjennom voksen (ingen samtykke-krav)", () => {
     assert.equal(
       isAwaitingGuardianConsent({
