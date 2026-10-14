@@ -104,7 +104,7 @@ import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./dr
 import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
-import { parseSessionBudget } from "@/lib/workbench/perioder";
+import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
 import {
   isoUkeIdentitet,
   isoUkeMandag,
@@ -398,6 +398,8 @@ export async function createSeasonPlan(
           weeklyVolMin: period.weeklyVolMin,
           weeklyVolMax: period.weeklyVolMax,
           weeklySessionBudget: period.weeklySessionBudget ?? undefined,
+          axisMinutes: period.axisMinutes ?? undefined,
+          axisMinutesLight: period.axisMinutesLight ?? undefined,
           notes: period.notes,
           sourceGroupId: period.sourceGroupId,
         })),
@@ -978,6 +980,8 @@ export async function loadYear(params: {
     weeklyVolMin: b.weeklyVolMin,
     weeklyVolMax: b.weeklyVolMax,
     sessionBudget: parseSessionBudget(b.weeklySessionBudget),
+    axisMinutes: parseAxisMinutes(b.axisMinutes),
+    axisMinutesLight: parseAxisMinutes(b.axisMinutesLight),
   }));
   const tournamentEvents = tournamentEntries
     .map((e) => {
@@ -1054,6 +1058,8 @@ export async function loadPeriod(params: {
     weeklyVolMin: block.weeklyVolMin,
     weeklyVolMax: block.weeklyVolMax,
     sessionBudget: parseSessionBudget(block.weeklySessionBudget),
+    axisMinutes: parseAxisMinutes(block.axisMinutes),
+    axisMinutesLight: parseAxisMinutes(block.axisMinutesLight),
   }));
   const tournamentEvents = tournamentEntries
     .map((entry) => {

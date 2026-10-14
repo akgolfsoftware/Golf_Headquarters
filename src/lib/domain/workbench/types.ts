@@ -653,6 +653,9 @@ export interface YearPeriodBand {
   weeklyVolMin?: number | null;
   weeklyVolMax?: number | null;
   sessionBudget?: Partial<Record<PyramidArea, number>> | null;
+  /** Minutter per akse, vanlig og lett uke. */
+  axisMinutes?: Partial<Record<PyramidArea, number>> | null;
+  axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
   /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
   widthPct: number;
   /** Var perioden aktiv på «i dag» ved bygging. */

@@ -186,6 +186,12 @@ function PeriodSummary({ periode, compact = false }: { periode: PeriodViewModel;
 }
 
 const TOMT_BUDSJETT = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 };
+type AkseNokkel = keyof typeof TOMT_BUDSJETT;
+
+/** Alt på 0 = ikke satt (null), så perioden ikke lagres med en falsk fordeling. */
+function tilAkseMinutter(m: Record<AkseNokkel, number>): Record<AkseNokkel, number> | null {
+  return Object.values(m).some((v) => v > 0) ? m : null;
+}
 
 function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
   playerId: string;
@@ -201,6 +207,8 @@ function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
   const [min, setMin] = useState(period?.weeklyVolMin != null ? String(period.weeklyVolMin) : "");
   const [max, setMax] = useState(period?.weeklyVolMax != null ? String(period.weeklyVolMax) : "");
   const [budget, setBudget] = useState({ ...TOMT_BUDSJETT, ...(period?.sessionBudget ?? {}) });
+  const [vanlig, setVanlig] = useState<Record<AkseNokkel, number>>({ ...TOMT_BUDSJETT, ...(period?.axisMinutes ?? {}) });
+  const [lett, setLett] = useState<Record<AkseNokkel, number>>({ ...TOMT_BUDSJETT, ...(period?.axisMinutesLight ?? {}) });
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -215,6 +223,8 @@ function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
       ukevolumMin: min === "" ? null : Number(min),
       ukevolumMax: max === "" ? null : Number(max),
       budsjett: budget,
+      axisMinutes: tilAkseMinutter(vanlig),
+      axisMinutesLight: tilAkseMinutter(lett),
     } });
     if (!result.ok) { setError(result.error); return; }
     onSaved();
@@ -243,6 +253,10 @@ function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
       <div className="a9-feltrad">{(Object.keys(TOMT_BUDSJETT) as Array<keyof typeof TOMT_BUDSJETT>).map((key) => <label className="a9-felt" key={key}>{key}<input type="number" min={0} max={21} value={budget[key]} onChange={(e) => setBudget((b) => ({ ...b, [key]: Number(e.target.value) }))} /></label>)}</div>
       <span className="kicker">Tid per uke · minutter</span>
       <div className="a9-feltrad"><label className="a9-felt">Minimum<input type="number" min={0} max={3000} value={min} onChange={(e) => setMin(e.target.value)} /></label><label className="a9-felt">Maksimum<input type="number" min={0} max={3000} value={max} onChange={(e) => setMax(e.target.value)} /></label></div>
+      <span className="kicker">Timer per vanlig uke · minutter per akse</span>
+      <div className="a9-feltrad">{(Object.keys(TOMT_BUDSJETT) as AkseNokkel[]).map((key) => <label className="a9-felt" key={key}>{key}<input type="number" min={0} max={3000} step={15} value={vanlig[key]} onChange={(e) => setVanlig((m) => ({ ...m, [key]: Number(e.target.value) }))} /></label>)}</div>
+      <span className="kicker">Timer per lett uke · minutter per akse</span>
+      <div className="a9-feltrad">{(Object.keys(TOMT_BUDSJETT) as AkseNokkel[]).map((key) => <label className="a9-felt" key={key}>{key}<input type="number" min={0} max={3000} step={15} value={lett[key]} onChange={(e) => setLett((m) => ({ ...m, [key]: Number(e.target.value) }))} /></label>)}</div>
       <InlineVarsel tone="info">TEK er antall planlagte teknikkøkter. Oppgaver og repetisjoner endrer ikke dette tallet automatisk.</InlineVarsel>
     </div>
   </Ark>;

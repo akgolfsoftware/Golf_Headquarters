@@ -20,6 +20,12 @@ function lokalDag(s: string): Date {
   return new Date(Date.UTC(y, m - 1, d));
 }
 
+/** undefined = ikke rør (gammel kaller); null/tomt = nullstill (Prisma.DbNull). */
+function akseData(v: Record<string, number | undefined> | null | undefined) {
+  if (v === undefined) return undefined;
+  return v && Object.keys(v).length > 0 ? v : Prisma.DbNull;
+}
+
 function tilData(input: PeriodeInput) {
   const budsjett = input.budsjett && Object.keys(input.budsjett).length > 0 ? input.budsjett : null;
   return {
@@ -32,6 +38,8 @@ function tilData(input: PeriodeInput) {
     // Prisma.DbNull nullstiller Json?-feltet ved update (undefined = «ikke rør»).
     // Leses tilbake som null — parseSessionBudget håndterer det.
     weeklySessionBudget: budsjett ?? Prisma.DbNull,
+    axisMinutes: akseData(input.axisMinutes),
+    axisMinutesLight: akseData(input.axisMinutesLight),
   };
 }
 
