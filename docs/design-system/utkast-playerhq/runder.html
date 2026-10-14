@@ -269,6 +269,17 @@ textarea.csv{font:400 13px/1.5 var(--mono)!important;min-height:120px}
 .akse-prikk.turn{background:var(--turn)}
 .hullrad .trinn output:not(.tom){color:var(--spill-ink)}
 
+/* Nivåkort: fast rytme (Anders 14.10: «Fiks spacing på tekst»). Tittel og tid tett, så innhold, så datakvalitet bak en strek. */
+.nivaakort .nk-tekst{gap:14px;padding:16px 18px 18px}
+.nivaakort .nk-topp{display:grid;gap:2px}
+.nivaakort .nk-navn{font:600 18px/1.3 var(--sans)}
+.nivaakort .nk-tid{font:400 13px/1.4 var(--sans);color:var(--graphite-600);white-space:normal}
+.nivaakort .hvaer{margin-bottom:-8px}
+.nivaakort ul{padding-left:0;list-style:none;gap:6px}
+.nivaakort li{position:relative;padding-left:16px;line-height:1.4}
+.nivaakort li::before{content:"";position:absolute;left:2px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--spill)}
+.nivaakort .kvalitet{padding-top:12px;border-top:1px solid var(--sand-300)}
+
 @container (min-width:900px){
   .festet{bottom:0}
   .ark-lag{position:sticky;bottom:24px;margin:0;justify-items:center}
