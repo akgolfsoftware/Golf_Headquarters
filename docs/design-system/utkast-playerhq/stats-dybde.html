@@ -29,6 +29,14 @@
 .fylt p{font-size:14px;line-height:1.45;opacity:.95}
 .fylt .rad{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--r3);flex-wrap:wrap}
 .fylt .trend{background:rgba(255,255,255,.2);color:#fff}
+.to-tall{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r3);align-items:end}
+.to-tall > div{display:grid;gap:4px;min-width:0}
+.to-tall .stor{font-size:44px}
+.to-tall .etikett{font:500 13px/1.3 var(--sans);opacity:.92}
+.ball{flex-direction:column;height:auto;min-height:44px;padding:5px 8px;gap:2px}
+.ball small{font:500 11px/1 var(--mono);color:var(--graphite-600)}
+.slagliste .slaggruppe .baller{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.slagliste .slaggruppe .ball{min-width:0;font-size:12px;line-height:1.3;padding:6px 4px}
 .hvit-pille{display:inline-block;height:20px;padding:0 7px;border-radius:4px;background:#fff;font:600 11px/20px var(--sans);vertical-align:3px;margin-left:6px}
 .fylt.fys .hvit-pille{color:var(--fys-ink)} .fylt.tek .hvit-pille{color:var(--tek-ink)} .fylt.slag .hvit-pille{color:var(--slag-ink)}
 .fylt.fys{background:var(--fys-ink)} .fylt.tek{background:var(--tek-ink)} .fylt.slag{background:var(--slag)} .fylt.spill{background:var(--spill-ink)}
@@ -295,21 +303,14 @@
       <div class="kol">
         <div class="fylt slag">
           <span class="akse-tekst">SLAG · POENG OG PEI</span>
-          <div class="rad"><span class="stor"><span data-tell="61">61</span><small>/ 120 poeng</small></span><span class="trend"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>+3 siden 24. aug.</span></div>
+          <div class="to-tall"><div><span class="stor"><span data-tell="61">61</span><small>/ 120</small></span><span class="etikett">Poeng · +3 siden 24. aug.</span></div><div><span class="stor"><span data-tell="6.4" data-fra="12">6,4</span><small>%</small></span><span class="etikett">PEI · 1,2 bedre siden 24. aug.</span></div></div>
           <p>Personlig rekord · 28. sep. · Kontrollert av Anders Kristiansen</p>
         </div>
         <section class="kort">
-          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Poeng over tid</h2></div>
-          <svg class="graf" viewBox="0 0 320 150" role="img" aria-label="Poeng per måling: 52 i juni, 55 i juli, 58 i august, 61 i september">
-            <text x="22" y="24" text-anchor="end" class="gt">70</text><text x="22" y="64" text-anchor="end" class="gt">60</text><text x="22" y="104" text-anchor="end" class="gt">50</text>
-            <line x1="28" x2="312" y1="60" y2="60" stroke="var(--sand-300)"/><line x1="28" x2="312" y1="100" y2="100" stroke="var(--sand-300)"/>
-            <path d="M36,108 L128,96 L220,84 L304,72 L304,128 L36,128 Z" fill="var(--slag)" opacity=".22"/>
-            <path class="tegn" d="M36,108 L128,96 L220,84 L304,72" fill="none" stroke="var(--slag)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="36" cy="108" r="4" fill="var(--slag)"/><circle cx="128" cy="96" r="4" fill="var(--slag)"/><circle cx="220" cy="84" r="4" fill="var(--slag)"/><circle cx="304" cy="72" r="5.5" fill="var(--slag)"/>
-            <text x="304" y="62" text-anchor="end" class="gt" style="fill:var(--slag-ink);font-weight:600">61</text>
-            <text x="36" y="145" class="gt">8. juni</text><text x="128" y="145" text-anchor="middle" class="gt">13. juli</text><text x="220" y="145" text-anchor="middle" class="gt">24. aug.</text><text x="304" y="145" text-anchor="end" class="gt">28. sep.</text>
-          </svg>
-          <div class="nokkel"><div><b>56,5</b><span>Snitt, 4 målinger</span></div><div><b>61</b><span>Beste</span></div><div><b>6,4 %</b><span>PEI siste test</span></div></div>
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Over tid</h2><div class="valg" role="group" aria-label="Vis" data-t-graf-valg><button type="button" aria-pressed="true" data-v="poeng">Poeng</button><button type="button" aria-pressed="false" data-v="pei">PEI</button></div></div>
+          <svg class="graf" viewBox="0 0 320 150" role="img" data-t-graf></svg>
+          <p class="kildetekst" data-t-graf-tekst></p>
+          <div class="nokkel"><div><b>56,5</b><span>Snitt poeng, 4 målinger</span></div><div><b>8,1 %</b><span>Snitt PEI</span></div><div><b>61</b><span>Beste poeng, med PEI 6,4 %</span></div></div>
           <p class="kildetekst">Nivå mot Kategori B: — (referanse ikke satt, A–K-nivåtallene er ikke vedtatt)</p>
         </section>
         <section class="kort">
@@ -393,7 +394,8 @@
     <div class="motor">
       <div class="fylt slag full">
         <span class="akse-tekst">SLAG · CARRY OG SIDE</span>
-        <div class="rad"><span class="stor"><span data-t-sum>27</span><small>poeng</small></span><span class="trend" data-t-igjen>14 slag igjen</span></div>
+        <div class="to-tall"><div><span class="stor"><span data-t-sum>27</span><small>p</small></span><span class="etikett">Poeng</span></div><div><span class="stor"><span data-t-pei>4,9</span><small>%</small></span><span class="etikett">PEI, snitt</span></div></div>
+        <span class="trend" data-t-igjen style="justify-self:start">14 slag igjen</span>
         <p data-t-under>Etter 10 av 24 slag. Høyst 4 poeng per slag. Rekorden din er 61.</p>
       </div>
       <div style="display:grid;gap:var(--r4)">
@@ -409,7 +411,7 @@
         <div class="skala-liste" data-t-skala></div>
       </div>
       <section class="kort">
-        <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slagene</h2><span class="kilde">Fra hullet og poeng</span></div>
+        <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slagene</h2><span class="kilde">Poeng · PEI · fra hullet</span></div>
         <div class="slagliste" data-t-liste></div>
       </section>
       <div class="lagre-felt full">
@@ -658,7 +660,7 @@
   /* ---------- PH-14 Tester ----------
      Ett batteri for AK Golf, WANG og Team Norway (vedtak 28.09). v = målinger, eldste først. h = høyere er bedre. */
   var TESTER = [
-    { a: 'slag', navn: '8-ball blocked', v: [52, 55, 58, 61], vis: '61 poeng', dato: '28. sep.', av: 'Kontrollert', gaa: 'test', pr: true },
+    { a: 'slag', navn: '8-ball blocked', v: [52, 55, 58, 61], vis: '61 p · 6,4 %', dato: '28. sep.', av: 'Kontrollert', gaa: 'test', pr: true },
     { a: 'slag', navn: 'Innspill Basis · gutter 145 m', v: [], vis: null, sist: 'Ikke tatt' },
     { a: 'slag', navn: 'Wedge Variation', v: [], vis: null, sist: 'Ikke tatt' },
     { a: 'slag', navn: 'Driver basic · 270 m', v: [], vis: null, sist: 'Ikke tatt' },
@@ -727,7 +729,25 @@
       return '<div class="slr' + kl + '"><span><b style="font-weight:' + (kl ? 600 : 400) + '">' + s + '</b><small class="kilde" style="display:block">PEI ' + pei[i] + '</small></span><span class="stolpe"><span data-til="' + (v / 15 * 100).toFixed(1) + '%" style="width:' + (v / 15 * 100).toFixed(1) + '%"></span></span><span class="v">' + v + '</span></div>';
     }).join('');
     app.querySelector('[data-skala]').innerHTML = SKALA.map(function (s) { return '<div class="skala-rad"><span>' + s[0] + '</span><b>' + s[1] + ' poeng</b></div>'; }).join('');
-    var M = [['28. sep.', 61, 'Kontrollert · Anders Kristiansen', true], ['24. aug.', 58, 'Egenført'], ['13. juli', 55, 'Kontrollert · Anders Kristiansen'], ['8. juni', 52, 'Egenført']];
+    /* Poeng (høyere er bedre) og PEI (lavere er bedre) for de samme fire målingene */
+    var SERIE = { poeng: { v: [52, 55, 58, 61], min: 40, max: 70, f: function (x) { return x; }, tekst: 'Poeng av 120. Høyere er bedre.' },
+                  pei: { v: [9.6, 8.7, 7.6, 6.4], min: 4, max: 12, f: function (x) { return k(x, 1) + ' %'; }, tekst: 'PEI er avstanden fra hullet delt på slaglengden. Lavere er bedre.' } };
+    var DATO = ['8. juni', '13. juli', '24. aug.', '28. sep.'], XS = [36, 128, 220, 304];
+    function graf(id) {
+      var S = SERIE[id], y = function (v) { return 128 - (v - S.min) / (S.max - S.min) * 108; };
+      var pts = S.v.map(function (v, i) { return XS[i] + ',' + y(v).toFixed(1); });
+      var g = [S.min, (S.min + S.max) / 2, S.max].map(function (t) { return '<line x1="28" x2="312" y1="' + y(t) + '" y2="' + y(t) + '" stroke="var(--sand-300)"/><text x="22" y="' + (y(t) + 4) + '" text-anchor="end" class="gt">' + t + '</text>'; }).join('');
+      g += '<path d="M' + pts.join(' L') + ' L304,128 L36,128 Z" fill="var(--slag)" opacity=".22"/><path class="tegn" d="M' + pts.join(' L') + '" fill="none" stroke="var(--slag)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+      g += S.v.map(function (v, i) { return '<circle cx="' + XS[i] + '" cy="' + y(v).toFixed(1) + '" r="' + (i === 3 ? 5.5 : 4) + '" fill="var(--slag)"/>'; }).join('');
+      g += '<text x="304" y="' + (y(S.v[3]) - 10).toFixed(1) + '" text-anchor="end" class="gt" style="fill:var(--slag-ink);font-weight:600">' + S.f(S.v[3]) + '</text>';
+      g += DATO.map(function (d, i) { return '<text x="' + XS[i] + '" y="145" text-anchor="' + (i === 0 ? 'start' : i === 3 ? 'end' : 'middle') + '" class="gt">' + d + '</text>'; }).join('');
+      var svg = app.querySelector('[data-t-graf]'); svg.innerHTML = g;
+      svg.setAttribute('aria-label', (id === 'pei' ? 'PEI' : 'Poeng') + ' per måling: ' + S.v.map(S.f).join(', '));
+      app.querySelector('[data-t-graf-tekst]').textContent = S.tekst;
+    }
+    app.querySelector('[data-t-graf-valg]').addEventListener('click', function (e) { var b = e.target.closest('[data-v]'); if (b) { graf(b.dataset.v); AKUtkast.anim(app); } });
+    graf('poeng');
+    var M = [['28. sep.', '61 p · 6,4 %', 'Kontrollert · Anders Kristiansen', true], ['24. aug.', '58 p · 7,6 %', 'Egenført'], ['13. juli', '55 p · 8,7 %', 'Kontrollert · Anders Kristiansen'], ['8. juni', '52 p · 9,6 %', 'Egenført']];
     app.querySelector('[data-malinger]').innerHTML = M.map(function (m) { return '<div class="maaling"><div><strong>' + m[0] + (m[3] ? '<span class="pr-merke">Rekord</span>' : '') + '</strong><small>' + m[2] + '</small></div><span class="tv">' + m[1] + '</span></div>'; }).join('');
   }
 
@@ -776,10 +796,13 @@
     function d(r, i) { return r[2] ? 0 : fraHull(r[0], r[1], L(i)); }
     function p(r, i) { return poengFor(d(r, i), r[2]); }
     function sum() { return res.reduce(function (s, r, i) { return s + p(r, i); }, 0); }
+    function pei(r, i) { return d(r, i) / L(i) * 100; }
+    function peiSnitt(n, fra) { fra = fra || 0; var t = 0; for (var i = fra; i < n; i++) t += pei(res[i], i); return t / (n - fra); }
     function skala(aktiv) { app.querySelector('[data-t-skala]').innerHTML = SKALA.map(function (s, i) { return '<div class="skala-rad' + (i === aktiv ? ' aktiv' : '') + '"><span>' + s[0] + '</span><b>' + s[1] + '</b></div>'; }).join(''); }
     function tegn() {
       var n = res.length, ferdig = n === 24;
       app.querySelector('[data-t-sum]').textContent = sum();
+      app.querySelector('[data-t-pei]').textContent = n ? k(peiSnitt(res.length), 1) : '—';
       app.querySelector('[data-t-igjen]').textContent = ferdig ? 'Alle slag ført' : (24 - n) + ' slag igjen';
       app.querySelector('[data-t-under]').textContent = (ferdig ? 'Alle 24 slag er ført.' : 'Etter ' + n + ' av 24 slag.') + ' Høyst 5 poeng per slag. Rekorden din er 61.';
       app.querySelector('[data-t-naa]').innerHTML = ferdig
@@ -792,13 +815,14 @@
         var baller = '', ps = 0, noen = false;
         for (var b = 0; b < 3; b++) {
           var i = g * 3 + b;
-          if (i < n) { var r = res[i], pp = p(r, i); ps += pp; noen = true; baller += '<span class="ball">' + (r[2] ? 'I hull' : k(d(r, i), 1) + ' m') + ' <b>' + pp + '</b></span>'; }
+          if (i < n) { var r = res[i], pp = p(r, i); ps += pp; noen = true; baller += '<span class="ball"><b>' + pp + ' p</b><span>' + k(pei(r, i), 1) + ' %</span><small>' + (r[2] ? 'I hull' : k(d(r, i), 1) + ' m') + '</small></span>'; }
           else baller += '<span class="ball tom' + (i === n ? ' naa' : '') + '">' + (i === n ? 'Nå' : '—') + '</span>';
         }
-        return '<div class="slaggruppe"><b class="undertittel">' + s + '</b><span class="sum">' + (noen ? ps : '—') + '</span><span class="baller">' + baller + '</span></div>';
+        var ferdige = Math.min(3, Math.max(0, n - g * 3));
+        return '<div class="slaggruppe"><b class="undertittel">' + s + '</b><span class="sum">' + (noen ? ps + ' p · ' + k(peiSnitt(g * 3 + ferdige, g * 3), 1) + ' %' : '—') + '</span><span class="baller">' + baller + '</span></div>';
       }).join('');
       app.querySelector('[data-t-lagre]').disabled = !ferdig;
-      app.querySelector('[data-t-regel]').textContent = ferdig ? 'Alle 24 slag er ført. Resultatet blir ' + sum() + ' poeng.' : 'Testen teller når alle 24 slag er registrert. ' + n + ' av 24 er ført.';
+      app.querySelector('[data-t-regel]').textContent = ferdig ? 'Alle 24 slag er ført. Resultatet blir ' + sum() + ' poeng og PEI ' + k(peiSnitt(24), 1) + ' %.' : 'Testen teller når alle 24 slag er registrert. ' + n + ' av 24 er ført.';
       forhand();
     }
     function tall(x) { return parseFloat(String(x.value).replace(',', '.')); }
@@ -819,7 +843,7 @@
     app.querySelector('[data-t-reg]').addEventListener('click', reg);
     app.querySelector('[data-t-hull]').addEventListener('click', function () { if (res.length < 24) { res.push([L(res.length), 0, true]); ic.value = ''; is.value = ''; tegn(); } });
     app.querySelector('[data-t-angre]').addEventListener('click', function () { res.pop(); tegn(); });
-    app.querySelector('[data-t-lagre]').addEventListener('click', function () { toast(app, '8-ball er lagret: ' + sum() + ' poeng.'); });
+    app.querySelector('[data-t-lagre]').addEventListener('click', function () { toast(app, '8-ball er lagret: ' + sum() + ' poeng og PEI ' + k(peiSnitt(24), 1) + ' %.'); });
     avbryt(app); tegn();
   }
 
