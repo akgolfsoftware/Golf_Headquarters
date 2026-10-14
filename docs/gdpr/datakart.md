@@ -26,9 +26,11 @@ profiler er ikke offentlig lesbare.
 
 `wang_message_threads`, `wang_message_participants` og `wang_messages` gir et skrivebeskyttet
 grunnlag for rolleavgrensede elevsamtaler. Innloggede klienter har bare leserett, og bare når
-kontoen er aktiv deltaker med fortsatt gyldig elevtilgang. Sentral admin og generell lesetilgang
-får ikke automatisk innsyn. Eksterne mottakere trenger aktiv deling med eksplisitt `messages`-omfang.
-Ingen meldingsrader eller kontaktopplysninger ble lagt til da grunnlaget ble opprettet.
+kontoen er aktiv deltaker med fortsatt gyldig elevtilgang. Den beskyttede detaljvisningen kan vise
+lagret meldingstekst og avsenderetikett til denne deltakeren, men henter ikke e-post, telefon,
+søvn eller dagsform. Sentral admin og generell lesetilgang får ikke automatisk innsyn. Eksterne
+mottakere trenger aktiv deling med eksplisitt `messages`-omfang. Ingen meldingsrader eller
+kontaktopplysninger ble lagt til da grunnlaget eller detaljvisningen ble opprettet.
 
 `wang_external_access` lagrer hvilken foresatt eller klubbtrener som er invitert til hvilken elev,
 rolle, eksplisitte leseområder, start, sluttdato, tilbakekalling, inviterende profil og tekniske
