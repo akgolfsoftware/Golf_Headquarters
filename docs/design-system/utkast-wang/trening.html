@@ -31,8 +31,9 @@
   .elevtab .stolpe{grid-column:2 / -1;height:6px}
   .periodebaand{display:flex;height:44px;border-radius:12px;overflow:hidden;gap:2px}
   .periodebaand span{display:flex;align-items:center;justify-content:center;font:800 10px/1 var(--brand);letter-spacing:.04em;overflow:hidden;white-space:nowrap}
-  .p-grunn{background:var(--navy);color:#fff} .p-spesial{background:var(--teal-tekst);color:#fff} .p-turn{background:var(--lilla);color:#fff}
-  .p-eval{background:var(--gul);color:var(--navy-dyp)} .p-rest{background:var(--tint-mint);color:var(--navy-dyp-tekst)} .p-ferie{background:var(--n200);color:var(--tekst)}
+  /* Periodene er ikke akser: nøytrale toner, aldri aksefargene (farge betyr akse) */
+  .p-grunn{background:var(--n300);color:var(--navy-dyp)} .p-spesial{background:var(--n200);color:var(--navy-dyp)} .p-turn{background:var(--tint-navy);color:var(--navy-dyp)}
+  .p-eval{background:var(--gul);color:var(--navy-dyp)} .p-rest{background:var(--tint-mint);color:var(--navy-dyp-tekst)} .p-ferie{background:var(--tint-graa);color:var(--tekst-2)}
   .periode{display:grid;gap:10px;padding:16px;border-radius:var(--r-kort-s);background:#fff;box-shadow:var(--skygge-s);border-left:8px solid var(--n300)}
   .periode.na{box-shadow:0 0 0 3px var(--mint),var(--skygge)}
   .periode-topp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
@@ -290,7 +291,7 @@
     { n: 'Ferie', k: 'ferie', fra: 26, til: 32, uker: 7, t: '—', fokus: 'Sommerferie. Egen plan for elever som spiller turneringer.', hend: [] }
   ];
   var PKL = { turn: 'p-turn', eval: 'p-eval', rest: 'p-rest', grunn: 'p-grunn', ferie: 'p-ferie', spesial: 'p-spesial' };
-  var PFARGE = { turn: 'var(--lilla)', eval: 'var(--gul)', rest: 'var(--mint)', grunn: 'var(--navy)', ferie: 'var(--n300)', spesial: 'var(--teal-tekst)' };
+  var PFARGE = { turn: 'var(--n400)', eval: 'var(--gul)', rest: 'var(--mint)', grunn: 'var(--n500)', ferie: 'var(--n200)', spesial: 'var(--n300)' };
 
   function arsplan(app) {
     app.querySelector('[data-baand]').innerHTML = PERIODER.map(function (p) { return '<span class="' + PKL[p.k] + '" style="flex:' + p.uker + '" title="' + p.n + '">' + (p.uker >= 7 ? p.n.split(' ')[0].replace('periode', '') : '') + '</span>'; }).join('');

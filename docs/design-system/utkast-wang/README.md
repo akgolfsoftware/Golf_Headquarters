@@ -45,7 +45,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/VNK9zkWkgwc7TnvPSeXYzA |
 | 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Cpp3vn3XuJXeYmbSzLU15x |
 | 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8Y6rzYYoHj7czvmD5BtiX6 |
-| 7 Elever | Elevliste, elevark, IUP-fanen (hentet fra PlayerHQ), fireukerssjekk, forslag til elevens plan | `elever.html` | | |
+| 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/7QC4YH8zeeLSFHXGULBf4q |
 | 8 Administrasjon | Trenere og roller, samtykke og deling, timeplanføring, opptak (bare sportssjef) | `administrasjon.html` | | |
 | 9 Samleside | Alle lenker på én side | `index.html` | | |
 
@@ -67,7 +67,8 @@ Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TI
    måler sidelengs rulling i 390 og 360 px, samler JS-feil og måler kontrasten på all tekst, for hver skjerm i fila. Se på bildene før publisering.
    Tekst over gradient eller bilde måles ikke automatisk (står som «manuelt»); helteflatens lyseste punkt gir 6,1:1 for hvit tekst.
 6. Bruk aldri aksenavnene (`fys`, `tek`, `slag`, `spill`, `turn`) som egne klassenavn i en skjerm. De styrer fargen på `.akse`, `.okt` og `.bg-*`.
-7. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
+7. Farge betyr akse også her: perioder, status, elevens og trenerens prikker og grupper bruker aldri aksefargene. Mint og gul er status, grå er nøytralt.
+8. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
 
 Bildene i `bilder/` er kopier fra PlayerHQ-utkastene (FYS-bildet er Unsplash, Victor Freitas). Logoene er fra
 `designsystem/wang/assets/`.
@@ -119,3 +120,9 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 1. Skal Meldinger i WANG være samme innboks som i AgencyOS, eller egen? Utkastet viser egen, bare med WANG-samtaler.
 2. Skal foreldremøter også sendes på e-post? Utkastet sender bare i PlayerHQ.
 3. Dagens meldingsflate i appen (`/team-wang/app/meldinger`) er skrivebeskyttet. Utkastet tegner sending; det krever byggearbeid og en sjekk av at foresattes lesetilgang faller bort ved 18.
+
+### Pakke 7 Elever
+1. Skole og fravær (WANG-05) er ikke tegnet som egen skjerm: timeplan og prøver hører til eleven i PlayerHQ. Skal treneren se elevens prøveplan?
+2. Invitasjon til PlayerHQ fra WANG (WANG-20) venter til delingen virker (vedtaket 28.09). Utkastet viser bare «Minn eleven på det» når eleven ikke har delt.
+3. Hvilke 41 spørsmål og hvilke områder utviklingssjekken har, kommer fra Team Norways ark. Områdene i utkastet (Teknikk, Slag og spill, Fysisk, Mental forberedelse, Livsstil og skole) er plassholdere.
+4. Dagens kode har realistiske fornavn og etternavn på demoelever (`src/components/wang/wang-data.ts`). Elevene er mindreårige; tegningene bruker «Elev 04».
