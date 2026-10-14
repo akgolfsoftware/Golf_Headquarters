@@ -1,0 +1,571 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Treningsøkten i PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Treningsøkten (PH-03 til PH-07) ---------- */
+.skjermvalg{max-width:100%}
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.app .valg button{min-height:44px}
+.smal{width:100%;max-width:720px;margin-inline:auto}
+.live{display:grid;gap:var(--r5);align-content:start}
+.kolonne{display:grid;gap:var(--r5);align-content:start}
+.pille.lv{background:var(--rust);color:#fff}
+.pille.lv i{background:#fff}
+.pille.hopp{background:var(--sand-150);color:var(--graphite-800)} .pille.hopp i{background:var(--graphite-600)}
+.tilbakelinje .pille{margin-right:var(--r2)}
+
+/* Hode */
+.hode-okt{display:grid;gap:var(--r2)}
+.hode-okt .rad{display:flex;flex-wrap:wrap;gap:var(--r2);align-items:center}
+.hode-okt h1{margin:0;font:700 28px/1.12 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+.sub{font:400 13px/1.4 var(--sans);color:var(--graphite-600)}
+.mono{font-family:var(--mono)}
+.okt.stille{cursor:default}
+.okt.stille:active{transform:none}
+
+/* Øvelsesrader med AK-formel */
+.ovelser{display:grid;gap:var(--r2);margin:0;padding:0;list-style:none}
+.ovelse{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:var(--r3);align-items:start;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.ovelse .nr{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--mono);background:var(--sand-150)}
+.ovelse b{display:block;font:600 15px/1.35 var(--sans)}
+.ovelse .min{font:500 13px/1.3 var(--mono);white-space:nowrap;color:var(--graphite-800)}
+.ovelse.valgt{border-color:var(--graphite-900);border-width:2px;padding:11px 13px}
+.formel{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}
+.formel span{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:4px;background:var(--sand-150);font:500 12px/1 var(--sans);color:var(--graphite-800)}
+.formel span.ak{color:#fff}
+.formel span.ak.fys{background:var(--fys-ink)} .formel span.ak.slag{background:var(--slag)} .formel span.ak.tek{background:var(--tek-ink)}
+.gruppe-h{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3);font:600 12px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--graphite-600);padding-top:var(--r2)}
+.stat{display:inline-flex;align-items:center;gap:6px;font:500 12px/1.3 var(--sans);color:var(--graphite-800)}
+.stat svg{width:16px;height:16px}
+
+/* Hopp over-årsak */
+.arsaker{display:flex;flex-wrap:wrap;gap:var(--r2)}
+.arsaker button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--graphite-500);background:var(--white);color:var(--graphite-900);font:500 14px/1 var(--sans);cursor:pointer}
+.arsaker button[aria-pressed="true"]{background:var(--graphite-900);color:var(--white);border-color:var(--graphite-900)}
+
+/* Klokker og tellere (PH-05) */
+.klokkerad{display:flex;justify-content:space-between;align-items:center;gap:var(--r3);flex-wrap:wrap}
+.oktklokke{display:inline-flex;align-items:center;gap:8px;font:500 15px/1 var(--mono)}
+.oktklokke span{color:var(--graphite-600);font:500 12px/1 var(--mono);letter-spacing:.06em}
+.pausebtn{width:44px;height:44px;border-radius:8px;border:1px solid var(--graphite-500);background:var(--white);color:var(--graphite-900);display:grid;place-items:center;cursor:pointer}
+.stripe{display:flex;gap:6px;flex-wrap:wrap}
+.stripe .fan{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px}
+.stripe .fan:focus-visible{outline:3px solid var(--graphite-900);outline-offset:2px}
+.stripe i{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;border:1px solid var(--sand-300);font:600 15px/1 var(--mono);font-style:normal;color:var(--graphite-600)}
+.stripe i.na{border:2px solid var(--graphite-900);color:var(--graphite-900)}
+.stripe i.ok{background:var(--green-50);color:var(--green-700);border-color:var(--green-50)}
+.app.natt .stripe i.ok{background:#1e2e21;color:#9fd2a8;border-color:#1e2e21}
+.stripe i.hopp{background:var(--sand-150);text-decoration:line-through}
+.stor-tall{display:flex;align-items:baseline;gap:var(--r3);flex-wrap:wrap}
+.stor-tall strong{font:600 52px/1 var(--mono);letter-spacing:-.04em}
+.stor-tall small{font:500 16px/1 var(--mono);color:var(--graphite-600)}
+.tellere{display:grid;gap:var(--r2)}
+.teller{display:grid;gap:10px;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.teller-topp{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3)}
+.teller-topp b{font:600 15px/1.3 var(--sans)}
+.teller-topp .sub{display:block}
+.teller-tall{font:600 26px/1 var(--mono);letter-spacing:-.02em;white-space:nowrap}
+.teller-tall small{font:500 14px/1 var(--mono);color:var(--graphite-600);margin-left:4px}
+.teller.over .teller-tall{color:var(--green-700)}
+.app.natt .teller.over .teller-tall{color:#9fd2a8}
+.trinn{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.trinn button{min-height:48px;border-radius:8px;border:1px solid var(--graphite-500);background:var(--white);color:var(--graphite-900);font:600 16px/1 var(--mono);cursor:pointer;transition:transform 160ms var(--ut)}
+.trinn button:active{transform:scale(.97)}
+.teller.av{opacity:.6}
+.teknisk{display:grid;gap:var(--r3)}
+.teknisk img{display:block;width:100%;height:150px;object-fit:cover;border-radius:10px}
+.rekke{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:8px 0;border-bottom:1px solid var(--sand-300)}
+.rekke:last-child{border-bottom:0}
+.rekke .nr{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 13px/1 var(--mono);background:var(--sand-150)}
+.rekke b{font:600 14px/1.3 var(--sans);display:block}
+.flytt{display:flex;gap:4px}
+.flytt button{width:44px;height:44px;border-radius:8px;border:1px solid var(--sand-300);background:var(--white);color:var(--graphite-900);display:grid;place-items:center;cursor:pointer}
+.flytt button[disabled]{opacity:.35;cursor:default}
+.rekke.ferdig b{text-decoration:line-through;color:var(--graphite-600)}
+
+/* Fysisk (PH-06) */
+.settrad{display:grid;grid-template-columns:20px minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr) 44px;gap:6px;align-items:center}
+.settrad.hode{font:500 11px/1 var(--mono);letter-spacing:.08em;color:var(--graphite-600);text-align:center}
+.settrad .sn{font:600 15px/1 var(--mono);color:var(--graphite-600)}
+.settrad input{min-height:52px;width:100%;padding:0 4px;text-align:center;border:1px solid var(--graphite-500);border-radius:8px;background:var(--white);color:var(--graphite-900);font:600 18px/1 var(--mono)}
+.settrad input::placeholder{color:var(--graphite-500)}
+.settrad .ok{width:44px;height:52px;border-radius:8px;border:1px solid var(--graphite-500);background:var(--white);color:var(--graphite-600);display:grid;place-items:center;cursor:pointer}
+.settrad .ok[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.settvalg{display:flex;align-items:center;justify-content:center;gap:var(--r3)}
+.settvalg button{width:48px;height:48px;border-radius:8px;border:1px solid var(--graphite-500);background:var(--white);color:var(--graphite-900);display:grid;place-items:center;cursor:pointer}
+.settvalg b{font:600 14px/1 var(--sans)}
+
+/* Etter økten (PH-07) */
+.vurdering{display:grid;gap:var(--r2)}
+.vurdering label{font:600 15px/1.3 var(--sans)}
+.vurdering .skala-rad{display:flex;justify-content:space-between;gap:var(--r3);font:400 12.5px/1.3 var(--sans);color:var(--graphite-600)}
+.vurdering .verdi{font:600 34px/1 var(--mono);letter-spacing:-.03em}
+.vurdering .verdi small{font:500 15px/1 var(--mono);color:var(--graphite-600);margin-left:4px}
+.vurdering .topp-rad{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3)}
+.vurdering input[type=range]{width:100%;height:44px;accent-color:var(--graphite-900);margin:0}
+.resultat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.resultat:last-child{border-bottom:0}
+.resultat b{font:600 15px/1.35 var(--sans)}
+.resultat .tall{font:600 15px/1.35 var(--mono);text-align:right;white-space:nowrap}
+.resultat .sub{grid-column:1/-1}
+.resultat.hoppet b{color:var(--graphite-600)}
+.ring{display:flex;align-items:center;gap:var(--r4)}
+.ring svg{width:72px;height:72px;flex:none}
+.tekstfelt{width:100%;min-height:96px;padding:10px 12px;border:1px solid var(--graphite-500);border-radius:8px;background:var(--white);color:var(--graphite-900);font:400 16px/1.4 var(--sans);resize:vertical}
+.startbar{position:sticky;bottom:0;z-index:4;margin-inline:calc(var(--r4)*-1);padding:var(--r3) var(--r4);background:var(--white);border-top:1px solid var(--sand-300);display:grid;gap:var(--r2)}
+.toast{position:sticky;bottom:72px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast button{margin-left:auto;border:0;background:none;color:var(--white);font:600 14px/1 var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px;padding:0 4px}
+@container (min-width:900px){
+  .to-kol{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+  .smal{max-width:1040px}
+  .startbar{margin-inline:0;border:1px solid var(--sand-300);border-radius:12px;position:static}
+}
+</style>
+</head><body>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 2 · PH-03 til PH-07 · utkast 1 · 14.10.2026</span>
+    <h1>Treningsøkten</h1>
+    <p>Fem skjermer i én fil, i natt-tema (Øktarket kan også vises lyst). Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett: mandag 5. oktober, golføkten «Innspill og nærspill» kl. 15:30 og den fysiske økten «Styrke bein og kjerne» kl. 17:30, begge fra uke 41 i Plan. Spill gjennom økten fra Øktark til Etter økten: tellerne, klokkene og oppsummeringen henger sammen.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="okt">PH-03 Øktark</button>
+      <button type="button" aria-pressed="false" data-skjerm="brief">PH-04 Live-brief</button>
+      <button type="button" aria-pressed="false" data-skjerm="aktiv">PH-05 Live aktiv</button>
+      <button type="button" aria-pressed="false" data-skjerm="fys">PH-06 Live fysisk</button>
+      <button type="button" aria-pressed="false" data-skjerm="ferdig">PH-07 Etter økten</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+    <div class="velger" role="group" aria-label="Tema"><button type="button" aria-pressed="true" data-tema="natt">Natt</button><button type="button" aria-pressed="false" data-tema="lys">Lys (bare Øktark)</button></div>
+    <div class="velger" role="group" aria-label="Spill-elementer"><button type="button" aria-pressed="true" data-spill="av">Spill-elementer av</button><button type="button" aria-pressed="false" data-spill="paa">Spill-elementer på</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Øktarket (PH-03)</b> er et fylt øktkort i aksefargen med bilde, og under det målet for økten, hvorfor den ligger i uka, utstyr og alle øvelsene med AK-formelen skrevet ut. «Start økten» fører til Live-brief. «Hopp over økten» ber om årsak, og Anders ser den.</li>
+        <li><b>Live-brief (PH-04)</b> har ett stort tall: hvor lang økten er. Under står øvelsene i rekkefølge, med mengde og minutter, og «Start økten» ligger fast nederst.</li>
+        <li><b>Live aktiv (PH-05)</b> har klokke for hele økten og egen klokke for øvelsen. Hver øvelse har fire tellere: Uten ball, Lav hastighet, Automatikk og Slag, med −1, +1 og +5 og «40 av 60» mot planen. «Gjennomført» stopper klokka, og neste øvelse åpnes av seg selv. Du kan hoppe over og flytte øvelser som ikke er startet.</li>
+        <li><b>Live fysisk (PH-06)</b> følger programmet. Du fører vekt, reps og RIR per serie, legger til eller tar bort serier, og kan kopiere forrige serie. Styrke skrives «4 × 6 @ 120 kg · RIR 2».</li>
+        <li><b>Etter økten (PH-07)</b> leser tid, reps og status fra samme økt som du nettopp spilte. «Gjennomført» er skilt fra «Lagret». Golføkt: Belastning og Fokus 1–10. Fysisk økt: «Hvor tungt» 1–10. Etter «Lagre» står det hvilke nivåer som er oppdatert.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Farge betyr akse: SLAG er blå, FYS er grønn. Rust bare på Live-pillen. Alle andre knapper er grafitt.</li>
+        <li>Ett stort tall per flate: øktens lengde i brief, øvelsesklokka i aktiv, gjennomført tid i oppsummeringen.</li>
+        <li>Ord fra masteren: Øvelse, Registrere, Gjennomført, Målsetning, Måleutstyr. «Økten» (ikke «økta»), slik avvikslista V18 anbefaler.</li>
+        <li>Hastighet i læringssteg er 25, 50, 75 og 100 % av Club Speed. Automatikk er 100 %. Uten ball har ingen hastighet.</li>
+        <li>Timetallene stemmer med Plan: golføkten er 75 min og den fysiske 45 min. Etter at begge er lagret har uke 41 2 t av 14 t 5 min. Årsplanen oppdateres nedover og oppover (beslutning 14.10).</li>
+        <li>Alle tellere og knapper er minst 44 px. Bevegelse slås av ved «reduser bevegelse». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Ikke avgjort, ikke tegnet</span>
+      <ul>
+        <li>Spill-elementer (lukk ringen) ligger bak «Spill-elementer på». Rekke og rekord er ikke tegnet.</li>
+        <li>Hva «Slag» er ved siden av Automatikk er tegnet som en egen teller (slag mot ball). Si fra hvis den skal være summen av de andre.</li>
+        <li>Årsakene til «Hopp over» og de tre faste øvelsene i den fysiske økten er demodata.</li>
+        <li>I demoen settes tiden på en gjennomført øvelse til planlagt tid, fordi ingen venter 20 minutter på en klokke. I appen er det klokka som teller.</li>
+        <li>Egen video og bilde i den tekniske oppgaven (B6) er tegnet som knapper uten opptak.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<template id="mal-okt"></template>
+<template id="mal-brief"></template>
+<template id="mal-aktiv"></template>
+<template id="mal-fys"></template>
+<template id="mal-ferdig"></template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  /* ---------- Demodata: Øyvind Rohjan, mandag 5. oktober 2026, uke 41 (som plan.html) ---------- */
+  var BILDER = { golf: 'bilder/naerspill-wedge.jpg', fys: 'bilder/fys-styrke.jpg', put: 'bilder/slag-putting.jpg', tek: 'bilder/tek-video.jpg' };
+  var UKE = { plan: 14 * 60 + 5, saltFor: 0 };   // 14 t 5 min fordelt i uke 41, 0 min gjennomført før dagens økter
+  var OKT = {
+    golf: {
+      akse: 'slag', aksenavn: 'SLAG', navn: 'Innspill og nærspill', fra: '15:30', til: '16:45', min: 75, sted: 'Range 3 · Fredrikstad GK',
+      bilde: BILDER.golf, utstyr: 'PW, 54°, 58° og putter. 110 slag og 50 putter.',
+      mal: '7 av 10 innspill 50–100 m innenfor 4 m',
+      coach: 'Hold samme rytme på alle lengder. Kort baksving, full gjennomføring. Vi ser på tallene sammen mandag.',
+      hvorfor: [
+        ['Nærspilløkt 1 av 3 i uke 41', 'Prosessmål: 3 nærspilløkter per uke.'],
+        ['Støtter innspilltesten', 'Resultatmål: 13 av 20 innenfor 8 m innen 25. okt. Nå 11 av 20.']
+      ],
+      ov: [
+        { n: 'Oppvarming · Halv swing fra 50 m', k: 'PW', min: 10, mengde: '10 slag', omr: 'Innspill 50–100 m', steg: 'Lav hastighet 50 %', miljo: 'Treningsområde', press: 'Alene', hva: 'Rolig rytme. Full gjennomføring, halv baksving.', plan: { uten: 5, lav: 5, auto: 0, slag: 10 } },
+        { n: 'Innspill 100–150 m · Lengdekontroll', k: 'PW', min: 20, mengde: '30 slag', omr: 'Innspill 100–150 m', steg: 'Automatikk 100 %', miljo: 'Treningsområde', press: 'Observert', hva: 'Tre mål på 100, 125 og 150 m. Kort baksving, samme rytme.', plan: { uten: 5, lav: 10, auto: 15, slag: 30 }, tek: 'Hold P6.0 til P8.0 flatt. Kort baksving, full gjennomføring.' },
+        { n: 'Innspill 50–100 m · Lengdekontroll', k: '54°', min: 20, mengde: '40 slag', omr: 'Innspill 50–100 m', steg: 'Automatikk 100 %', miljo: 'Treningsområde', press: 'Observert', hva: 'Mål innenfor 4 m. Tell treff i økten.', plan: { uten: 0, lav: 10, auto: 10, slag: 40 }, tek: 'Samme rytme på alle lengder. Se på landingspunktet, ikke på ballen.' },
+        { n: 'Pitch · Landingspunkt', k: '58°', min: 15, mengde: '30 slag', omr: 'Pitch', steg: 'Lav hastighet 75 %', miljo: 'Treningsområde', press: 'Alene', hva: 'Velg landingspunkt, la ballen rulle ut.', plan: { uten: 0, lav: 5, auto: 10, slag: 30 } },
+        { n: 'Putting 3–5 fot · Ballstart', k: 'Putter', min: 10, mengde: '50 putter', omr: 'Putting 3–5 fot', steg: 'Automatikk 100 %', miljo: 'Treningsområde', press: 'Alene', hva: 'Ballstart over en linje på bakken. Tell putter.', plan: { uten: 0, lav: 0, auto: 0, slag: 50 } }
+      ],
+      demoBrukt: [10, 21, 20, 14, 10],
+      demoSlag: { 3: 28 }
+    },
+    fys: {
+      akse: 'fys', aksenavn: 'FYS', navn: 'Styrke bein og kjerne', fra: '17:30', til: '18:15', min: 45, sted: 'Styrkerommet',
+      bilde: BILDER.fys, utstyr: 'Trapbar, manualer, stang, medisinball 4 kg.',
+      mal: 'Trapbar markløft 4 × 6 @ 120 kg',
+      coach: 'Rolig opp, rask fram. Hold RIR 2 på alle serier. Rotasjonskast med full hastighet.',
+      hvorfor: [
+        ['FYS-økt 1 av 2 i uke 41', 'Prosessmål: 2 FYS-økter per uke.'],
+        ['Kraft i rotasjonen', 'Trapbar og rotasjonskast følger fysisk program for Grunnperiode 1.']
+      ],
+      ov: [
+        { n: 'Trapbar markløft', k: 'Trapbar', min: 15, serier: 4, reps: 6, kg: 120, rir: 2, omr: 'Styrke', steg: 'Pause 2:00', hva: 'Trapbar · pause 2:00' },
+        { n: 'Bulgarsk utfall', k: 'Manualer', min: 12, serier: 3, reps: 8, kg: 24, rir: 2, omr: 'Styrke', steg: 'Pause 1:30', hva: 'Manualer · pause 1:30' },
+        { n: 'Hoftehev', k: 'Stang', min: 10, serier: 3, reps: 10, kg: 80, rir: 2, omr: 'Styrke', steg: 'Pause 1:30', hva: 'Stang · pause 1:30' },
+        { n: 'Rotasjonskast', k: 'Medisinball', min: 8, serier: 3, reps: 6, kg: 4, rir: null, omr: 'Kraft', steg: 'Pause 1:00', hva: 'Medisinball 4 kg · full hastighet' }
+      ]
+    }
+  };
+  var TELLER = [['uten', 'Uten ball', null], ['lav', 'Lav hastighet', 'pct'], ['auto', 'Automatikk', '100 % av Club Speed'], ['slag', 'Slag', null]];
+  var AARSAKER = ['Syk eller skadet', 'Ikke tid', 'Dårlig vær', 'Anlegget er stengt', 'Annet'];
+  var IKON = {
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>', check: '<path d="M20 6 9 17l-5-5"/>', x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    plus: '<path d="M5 12h14M12 5v14"/>', minus: '<path d="M5 12h14"/>', opp: '<path d="m5 12 7-7 7 7M12 19V5"/>', ned: '<path d="M12 5v14m7-7-7 7-7-7"/>',
+    hopp: '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/>', pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+    video: '<path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/>', bilde: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+    kopi: '<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>', undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>'
+  };
+  function ik(n) { return '<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true">' + IKON[n] + '</svg>'; }
+
+  /* ---------- Tilstand som deles mellom skjermene ---------- */
+  var TYPE = 'golf';
+  var KLOKKE = { okt: 1021, ov: 421, pause: false, fys: 600 };   // 17:01 inn i økten, 7:01 på øvelse 2 (10:00 + 7:01)
+  var SESS = nySess();
+  var LAGRET = { golf: false, fys: false };
+  var VURD = { golf: { bel: 7, fokus: 8, notat: '' }, fys: { tung: 7, notat: '' } };
+  var SKIPPET = null;      // { arsak } når økten er hoppet over (PH-03)
+  var HOPPARK = false;
+  var VALGT_ARSAK = null;
+
+  function nySess() {
+    var g = OKT.golf.ov.map(function (o, i) { return { status: i === 0 ? 'ferdig' : i === 1 ? 'pagar' : 'planlagt', brukt: i === 0 ? 10 : 0, t: i === 0 ? { uten: 5, lav: 5, auto: 0, slag: 10 } : i === 1 ? { uten: 5, lav: 10, auto: 15, slag: 10 } : { uten: 0, lav: 0, auto: 0, slag: 0 } }; });
+    var f = OKT.fys.ov.map(function (o, i) {
+      var sett = []; for (var s = 0; s < o.serier; s++) sett.push({ reps: o.reps, kg: s === 0 ? o.kg : (i === 0 ? 117.5 : o.kg), rir: s === 0 && o.rir !== null ? o.rir : null, ok: i === 0 && s === 0 });
+      return { sett: sett };
+    });
+    return { golf: { ov: g, rek: [0, 1, 2, 3, 4], cur: 1, ferdig: false, startet: true }, fys: { ov: f, cur: 0, ferdig: false } };
+  }
+  function fresh() { KLOKKE.okt = 1021; KLOKKE.ov = 421; KLOKKE.pause = false; SESS = nySess(); LAGRET.golf = false; }
+  function freshFys() { var s = nySess(); SESS.fys = s.fys; KLOKKE.fys = 600; LAGRET.fys = false; }
+
+  /* ---------- Hjelpere ---------- */
+  function fmt(m) { var t = Math.floor(m / 60), r = m % 60; return t && r ? t + ' t ' + r + ' min' : t ? t + ' t' : r + ' min'; }
+  function mmss(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function kgTxt(n) { return String(n).replace('.', ','); }
+  function mengdeFys(o) { return o.serier + ' × ' + o.reps + ' @ ' + kgTxt(o.kg) + ' kg' + (o.rir !== null ? ' · RIR ' + o.rir : ''); }
+  function sumPlan(t) { return t.uten + t.lav + t.auto + t.slag; }
+  function toast(app, tekst) {
+    var g = app.querySelector('.toast'); if (g) g.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.innerHTML = '<span>' + tekst + '</span>';
+    app.querySelector('.innhold').appendChild(t);
+  }
+  function typeValg() {
+    return '<div class="valg" role="group" aria-label="Økttype"><button type="button" data-type="golf" aria-pressed="' + (TYPE === 'golf') + '">Golføkt</button><button type="button" data-type="fys" aria-pressed="' + (TYPE === 'fys') + '">Fysisk økt</button></div>';
+  }
+  function formelChips(o, akse) {
+    return '<div class="formel"><span class="ak ' + akse + '">' + (akse === 'fys' ? 'FYS' : 'SLAG') + '</span><span>' + o.omr + '</span><span>' + o.steg + '</span>' + (o.miljo ? '<span>' + o.miljo + '</span><span>' + o.press + '</span>' : '') + '</div>';
+  }
+  function ovelserListe(t, valgt) {
+    var d = OKT[t];
+    return '<ol class="ovelser">' + d.ov.map(function (o, i) {
+      var mengde = t === 'golf' ? o.mengde : mengdeFys(o);
+      return '<li class="ovelse' + (valgt === i ? ' valgt' : '') + '"><span class="nr">' + (i + 1) + '</span><div><b>' + mengde + ' · ' + o.n + '</b><span class="sub">' + o.k + (t === 'golf' ? '' : ' · ' + o.hva) + '</span>' + formelChips(o, d.akse) + '</div><span class="min">' + o.min + ' min</span></li>';
+    }).join('') + '</ol>';
+  }
+  function aksePille(a) { return '<span class="akse-merke akse-bg-' + a + '" style="background:var(--' + a + (a === 'slag' ? '' : '-ink') + ')"><i></i>' + (a === 'fys' ? 'FYS' : 'SLAG') + '</span>'; }
+
+  /* Mal-HTML per skjerm. Hodet (data-behold) står igjen i tom, laster og feil. */
+  function mal(id) {
+    var d = OKT[TYPE], tilbake = id === 'okt' ? 'I dag' : id === 'brief' ? 'Øktark' : 'I dag';
+    var hoyre = '';
+    var hode = '';
+    if (id === 'okt') {
+      hode = '<div class="hode-okt"><span class="dato">I dag ' + d.fra + '–' + d.til + ' · ' + d.sted + '</span>' + typeValg() + '</div>';
+    } else if (id === 'brief') {
+      hode = '<div class="hode-okt"><span class="dato">Live · Før start</span>' + typeValg() + '</div>';
+    } else if (id === 'aktiv') {
+      var g = OKT.golf;
+      hoyre = '&lt;span class=&quot;pille lv&quot;&gt;&lt;i&gt;&lt;/i&gt;Live&lt;/span&gt;';
+      hode = '<div class="hode-okt"><span class="dato">Live · ' + g.fra + '–' + g.til + ' · ' + g.sted + '</span><h1>' + g.navn + '</h1></div>';
+    } else if (id === 'fys') {
+      var f = OKT.fys;
+      hoyre = '&lt;span class=&quot;pille lv&quot;&gt;&lt;i&gt;&lt;/i&gt;Live&lt;/span&gt;';
+      hode = '<div class="hode-okt"><span class="dato">Live · ' + f.fra + '–' + f.til + ' · ' + f.sted + '</span><h1>' + f.navn + '</h1></div>';
+    } else {
+      hode = '<div class="hode-okt"><span class="dato">Etter økten · ' + d.navn + '</span>' + typeValg() + '</div>';
+    }
+    return '<div class="app" data-skall="tilbake" data-tilbake="' + tilbake + '" data-hoyre="' + hoyre + '"><main class="innhold smal"><div data-behold>' + hode + '</div><div class="live" data-live></div></main></div>';
+  }
+  function oppdaterMaler() {
+    ['okt', 'brief', 'aktiv', 'fys', 'ferdig'].forEach(function (id) { document.getElementById('mal-' + id).innerHTML = mal(id); });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-type]'); if (!b) return;
+    TYPE = b.dataset.type; oppdaterMaler();
+    var v = document.querySelector('.skjermvalg [aria-pressed="true"]');
+    AKUtkast.gaa(v ? v.dataset.skjerm : 'okt');
+  });
+
+  /* ---------- PH-03 Øktark ---------- */
+  function okt(app) {
+    var d = OKT[TYPE], el = app.querySelector('[data-live]');
+    var hoppet = !!SKIPPET;
+    var hero = '<div class="okt ' + d.akse + ' stille"><img src="' + d.bilde + '" alt="" width="640" height="264"><div class="okt-tekst"><div class="okt-rad"><span class="okt-tid">' + d.fra + '<small>–' + d.til + '</small></span>' + '<span class="akse-merke"><i></i>' + d.aksenavn + '</span>' + '</div><span class="navn">' + d.navn + '</span><div class="okt-info"><span>' + d.min + ' min</span><span>' + d.ov.length + ' øvelser</span><span>' + d.sted + '</span></div></div></div>';
+    var maalKort = '<section class="kort" aria-label="Mål for økten"><span class="dato">Mål for økten</span><b class="undertittel" style="font-size:18px;line-height:1.35">' + d.mal + '</b><p class="forklar">' + d.coach + '</p><span class="kilde">Fra Anders</span></section>';
+    var hvorfor = '<section class="kort dempet" aria-label="Hvorfor"><span class="dato">Hvorfor den ligger i uka</span>' + d.hvorfor.map(function (h) { return '<div><b class="undertittel">' + h[0] + '</b><p class="forklar">' + h[1] + '</p></div>'; }).join('<div class="skille"></div>') + '<div class="skille"></div><p class="forklar"><b class="undertittel">Utstyr</b><br>' + d.utstyr + '</p></section>';
+    var liste = '<section class="seksjon" aria-label="Øvelser"><div class="sek-topp"><h2>Øvelser</h2><span class="kildetekst">AK-formelen står under hver øvelse</span></div>' + ovelserListe(TYPE, -1) + '</section>';
+    var handling;
+    if (hoppet) {
+      handling = '<div class="kort dempet"><span class="pille hopp"><i></i>Hoppet over</span><p class="forklar">Årsak: ' + SKIPPET.arsak + '. Anders ser årsaken og kan flytte økten.</p><div class="knapper"><button type="button" class="knapp sek" data-angre>' + ik('undo') + 'Angre</button></div></div>';
+    } else if (HOPPARK) {
+      handling = '<div class="kort"><b class="undertittel">Hvorfor hopper du over økten?</b><p class="forklar">Velg årsak. Anders ser den og kan flytte økten.</p><div class="arsaker" role="group" aria-label="Årsak">' + AARSAKER.map(function (a) { return '<button type="button" data-arsak="' + a + '" aria-pressed="' + (VALGT_ARSAK === a) + '">' + a + '</button>'; }).join('') + '</div><div class="knapper"><button type="button" class="knapp pri" data-bekreft' + (VALGT_ARSAK ? '' : ' disabled style="opacity:.4"') + '>Hopp over økten</button><button type="button" class="knapp sek" data-avbryt>Avbryt</button></div></div>';
+    } else {
+      handling = '<div class="knapper"><button type="button" class="knapp pri stor" data-gaa="brief">' + ik('play') + 'Start økten</button><button type="button" class="knapp sek stor" data-hopp>Hopp over økten</button></div>';
+    }
+    el.innerHTML = '<div class="to-kol live" style="display:grid;gap:var(--r5)"><div class="kolonne">' + hero + maalKort + hvorfor + '</div><div class="kolonne">' + liste + handling + '</div></div>';
+    el.onclick = function (e) {
+      var t = e.target.closest('button'); if (!t) return;
+      if (t.hasAttribute('data-hopp')) { HOPPARK = true; VALGT_ARSAK = null; okt(app); }
+      else if (t.dataset.arsak) { VALGT_ARSAK = t.dataset.arsak; okt(app); }
+      else if (t.hasAttribute('data-avbryt')) { HOPPARK = false; okt(app); }
+      else if (t.hasAttribute('data-bekreft') && VALGT_ARSAK) { SKIPPET = { arsak: VALGT_ARSAK }; HOPPARK = false; okt(app); toast(app, 'Økten er hoppet over. Anders får beskjed.'); }
+      else if (t.hasAttribute('data-angre')) { SKIPPET = null; okt(app); }
+    };
+  }
+
+  /* ---------- PH-04 Live-brief ---------- */
+  function brief(app) {
+    var d = OKT[TYPE], el = app.querySelector('[data-live]');
+    var del1 = d.ov.slice(0, TYPE === 'golf' ? 1 : 0), m1 = del1.reduce(function (s, o) { return s + o.min; }, 0);
+    var liste;
+    if (TYPE === 'golf') {
+      var rad = function (o, i) { return '<li class="ovelse"><span class="nr">' + (i + 1) + '</span><div><b>' + o.mengde + '</b><span class="sub">' + o.n.replace(/^Oppvarming · /, '') + ' · ' + o.k + '</span></div><span class="min">' + o.min + ' min</span></li>'; };
+      liste = '<div class="gruppe-h"><span>Oppvarming</span><span>10 min</span></div><ol class="ovelser">' + d.ov.slice(0, 1).map(function (o, i) { return rad(o, i); }).join('') + '</ol>' +
+        '<div class="gruppe-h"><span>Hoveddel</span><span>' + (d.min - m1) + ' min</span></div><ol class="ovelser">' + d.ov.slice(1).map(function (o, i) { return rad(o, i + 1); }).join('') + '</ol>';
+    } else {
+      liste = '<div class="gruppe-h"><span>Program</span><span>' + d.min + ' min</span></div><ol class="ovelser">' + d.ov.map(function (o, i) { return '<li class="ovelse"><span class="nr">' + (i + 1) + '</span><div><b>' + o.n + '</b><span class="sub">' + mengdeFys(o) + ' · ' + o.k + '</span></div><span class="min">' + o.min + ' min</span></li>'; }).join('') + '</ol>';
+    }
+    el.innerHTML = '<section class="kort"><div class="hoved"><strong>' + d.min + '<small>min</small></strong>' + aksePille(d.akse) + '</div><div><b class="undertittel" style="font-size:18px">' + d.navn + '</b><p class="forklar">' + d.fra + '–' + d.til + ' · ' + d.sted + '</p><p class="forklar">' + d.utstyr + '</p></div></section>' +
+      '<section class="seksjon" aria-label="Øvelser"><div class="sek-topp"><h2>' + d.ov.length + ' øvelser</h2><span class="kildetekst">' + (TYPE === 'golf' ? 'Mål: ' + d.mal : d.mal) + '</span></div>' + liste + '</section>' +
+      '<div class="startbar"><button type="button" class="knapp pri stor" data-start>' + ik('play') + 'Start økten</button></div>';
+    el.querySelector('[data-start]').addEventListener('click', function () {
+      if (TYPE === 'golf') { fresh(); AKUtkast.gaa('aktiv'); } else { freshFys(); AKUtkast.gaa('fys'); }
+    });
+  }
+
+  /* ---------- PH-05 Live aktiv ---------- */
+  var timer = null;
+  function aktiv(app) {
+    var d = OKT.golf, S = SESS.golf, el = app.querySelector('[data-live]');
+    if (S.ferdig) {
+      el.innerHTML = '<div class="kort"><span class="pille ok"><i></i>Gjennomført</span><b class="undertittel" style="font-size:18px">Økten er gjennomført</b><p class="forklar">Alle øvelsene er håndtert. Se oppsummeringen og lagre økten.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="ferdig" data-type-golf>Se oppsummering</button><button type="button" class="knapp sek" data-gaa="brief">Start på nytt</button></div></div>';
+      el.querySelector('[data-type-golf]').addEventListener('click', function () { TYPE = 'golf'; oppdaterMaler(); });
+      return;
+    }
+    var idx = S.rek[S.cur], o = d.ov[idx], st = S.ov[idx];
+    function tegn() {
+      var tot = sumPlan(o.plan), nå = sumPlan(st.t);
+      var stripe = '<div class="stripe" aria-label="Øvelser">' + S.rek.map(function (k, p) {
+        var s = S.ov[k].status; return '<i class="' + (p === S.cur ? 'na' : s === 'ferdig' ? 'ok' : s === 'hoppet' ? 'hopp' : '') + '" aria-label="Øvelse ' + (p + 1) + (s === 'ferdig' ? ', gjennomført' : s === 'hoppet' ? ', hoppet over' : p === S.cur ? ', pågår' : '') + '">' + (s === 'ferdig' ? ik('check') : p + 1) + '</i>';
+      }).join('') + '</div>';
+      var tellere = TELLER.filter(function (t) { return o.plan[t[0]] > 0; }).map(function (t) {
+        var k = t[0], pl = o.plan[k], v = st.t[k], sub = t[2] === 'pct' ? o.steg.replace('Lav hastighet ', '') + ' av Club Speed' : t[2];
+        return '<div class="teller' + (v >= pl ? ' over' : '') + '" data-k="' + k + '"><div class="teller-topp"><div><b>' + t[1] + '</b>' + (sub ? '<span class="sub">' + sub + '</span>' : '') + '</div><span class="teller-tall"><span data-v>' + v + '</span><small>av ' + pl + '</small></span></div><div class="trinn"><button type="button" data-d="-1" aria-label="' + t[1] + ' minus 1">−1</button><button type="button" data-d="1" aria-label="' + t[1] + ' pluss 1">+1</button><button type="button" data-d="5" aria-label="' + t[1] + ' pluss 5">+5</button></div></div>';
+      }).join('');
+      var tek = o.tek ? '<section class="kort teknisk" aria-label="Teknisk oppgave"><span class="dato">Teknisk oppgave · fra Anders</span><img src="' + BILDER.tek + '" alt="Videoeksempel fra coach" width="640" height="300"><p class="forklar">' + o.tek + '</p><div class="knapper"><button type="button" class="knapp sek">' + ik('video') + 'Legg ved egen video</button><button type="button" class="knapp sek">' + ik('bilde') + 'Legg ved bilde</button></div></section>' : '';
+      var rek = '<section class="kort" aria-label="Rekkefølge"><span class="dato">Rekkefølge</span>' + S.rek.map(function (k, p) {
+        var s = S.ov[k].status, kan = p > S.cur;
+        return '<div class="rekke ' + (s === 'ferdig' ? 'ferdig' : '') + '"><span class="nr">' + (s === 'ferdig' ? ik('check') : p + 1) + '</span><div><b>' + d.ov[k].n + '</b><span class="sub">' + (s === 'ferdig' ? 'Gjennomført · ' + S.ov[k].brukt + ' av ' + d.ov[k].min + ' min' : s === 'hoppet' ? 'Hoppet over' : p === S.cur ? 'Pågår' : d.ov[k].min + ' min') + '</span></div><div class="flytt">' + (kan ? '<button type="button" data-flytt="' + p + ':-1"' + (p - 1 <= S.cur ? ' disabled' : '') + ' aria-label="Flytt opp">' + ik('opp') + '</button><button type="button" data-flytt="' + p + ':1"' + (p + 1 >= S.rek.length ? ' disabled' : '') + ' aria-label="Flytt ned">' + ik('ned') + '</button>' : '') + '</div></div>';
+      }).join('') + '</section>';
+      el.innerHTML = '<section class="kort"><div class="klokkerad"><span class="oktklokke"><span>ØKTEN</span><b data-okt>' + mmss(KLOKKE.okt) + '</b><span>AV ' + d.min + ':00</span></span><button type="button" class="pausebtn" data-pause aria-label="' + (KLOKKE.pause ? 'Fortsett' : 'Pause') + '">' + (KLOKKE.pause ? ik('play') : ik('pause')) + '</button></div>' + stripe + '</section>' +
+        '<div class="to-kol live" style="display:grid;gap:var(--r5)"><div class="kolonne">' +
+        '<section class="kort"><div class="klokkerad"><span class="dato">Øvelse ' + (S.cur + 1) + ' av ' + S.rek.length + '</span>' + aksePille('slag') + '</div><b class="undertittel" style="font-size:18px;line-height:1.35">' + o.n + '</b><div class="stor-tall"><strong data-ov>' + mmss(KLOKKE.ov) + '</strong><small>av ' + o.min + ':00 · ' + o.k + '</small></div><div class="stolpe" aria-hidden="true"><span data-stolpe style="width:' + Math.min(100, KLOKKE.ov / (o.min * 60) * 100) + '%"></span></div>' + formelChips(o, 'slag') + '<p class="forklar">' + o.hva + '</p></section>' +
+        '<section class="seksjon" aria-label="Tellere"><div class="sek-topp"><h2>Tellere</h2><span class="mono" style="font-weight:600" data-sum>' + nå + ' av ' + tot + '</span></div><div class="tellere">' + tellere + '</div></section>' +
+        '<div class="knapper"><button type="button" class="knapp pri stor" data-ferdig>' + ik('check') + 'Gjennomført</button><button type="button" class="knapp sek stor" data-hopp>' + ik('hopp') + 'Hopp over</button></div>' +
+        '</div><div class="kolonne">' + tek + rek + '</div></div>';
+    }
+    tegn();
+    el.onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.d) {
+        var k = b.closest('.teller').dataset.k, v = Math.max(0, st.t[k] + (+b.dataset.d)); st.t[k] = v;
+        var tr = b.closest('.teller'); tr.querySelector('[data-v]').textContent = v; tr.classList.toggle('over', v >= o.plan[k]);
+        el.querySelector('[data-sum]').textContent = sumPlan(st.t) + ' av ' + sumPlan(o.plan);
+      } else if (b.hasAttribute('data-pause')) { KLOKKE.pause = !KLOKKE.pause; tegn(); }
+      else if (b.dataset.flytt) { var p = b.dataset.flytt.split(':'), a = +p[0], n = a + (+p[1]); var tmp = S.rek[a]; S.rek[a] = S.rek[n]; S.rek[n] = tmp; tegn(); }
+      else if (b.hasAttribute('data-ferdig') || b.hasAttribute('data-hopp')) {
+        var hopp = b.hasAttribute('data-hopp');
+        st.status = hopp ? 'hoppet' : 'ferdig'; st.brukt = hopp ? 0 : o.min;   // demo: klokka går ikke i 20 minutter, så planlagt tid settes
+        if (S.cur < S.rek.length - 1) {
+          S.cur++; S.ov[S.rek[S.cur]].status = 'pagar'; KLOKKE.ov = 0;
+          aktiv(app); toast(app, (hopp ? 'Øvelsen er hoppet over. ' : 'Øvelsen er gjennomført. ') + 'Neste øvelse er åpnet.');
+        } else { S.ferdig = true; TYPE = 'golf'; oppdaterMaler(); AKUtkast.gaa('ferdig'); }
+      }
+    };
+    if (timer) clearInterval(timer);
+    timer = setInterval(function () {
+      var okEl = el.querySelector('[data-okt]'); if (!okEl || !document.body.contains(okEl)) { clearInterval(timer); return; }
+      if (KLOKKE.pause || S.ferdig) return;
+      KLOKKE.okt++; KLOKKE.ov++;
+      okEl.textContent = mmss(KLOKKE.okt);
+      var ovEl = el.querySelector('[data-ov]'); if (ovEl) ovEl.textContent = mmss(KLOKKE.ov);
+      var sp = el.querySelector('[data-stolpe]'); if (sp) sp.style.width = Math.min(100, KLOKKE.ov / (o.min * 60) * 100) + '%';
+    }, 1000);
+  }
+
+  /* ---------- PH-06 Live fysisk ---------- */
+  function fysisk(app) {
+    var d = OKT.fys, S = SESS.fys, el = app.querySelector('[data-live]');
+    if (S.ferdig) {
+      el.innerHTML = '<div class="kort"><span class="pille ok"><i></i>Gjennomført</span><b class="undertittel" style="font-size:18px">Økten er gjennomført</b><p class="forklar">Se oppsummeringen og lagre økten.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="ferdig" data-type-fys>Se oppsummering</button></div></div>';
+      el.querySelector('[data-type-fys]').addEventListener('click', function () { TYPE = 'fys'; oppdaterMaler(); });
+      return;
+    }
+    function ferdigOv(i) { return S.ov[i].sett.every(function (s) { return s.ok; }); }
+    function tegn() {
+      var o = d.ov[S.cur], sett = S.ov[S.cur].sett, siste = S.cur === d.ov.length - 1;
+      var tabs = '<div class="stripe" role="tablist" aria-label="Øvelser">' + d.ov.map(function (x, i) {
+        return '<button type="button" role="tab" data-fan="' + i + '" aria-selected="' + (i === S.cur) + '" class="fan"><i class="' + (i === S.cur ? 'na' : ferdigOv(i) ? 'ok' : '') + '">' + (ferdigOv(i) && i !== S.cur ? ik('check') : i + 1) + '</i></button>';
+      }).join('') + '</div>';
+      var rader = sett.map(function (s, i) {
+        return '<div class="settrad" data-s="' + i + '"><span class="sn">' + (i + 1) + '</span><input inputmode="numeric" aria-label="Serie ' + (i + 1) + ' reps" data-f="reps" value="' + s.reps + '"><input inputmode="decimal" aria-label="Serie ' + (i + 1) + ' kg" data-f="kg" value="' + kgTxt(s.kg) + '"><input inputmode="numeric" aria-label="Serie ' + (i + 1) + ' RIR" data-f="rir" placeholder="RIR" value="' + (s.rir === null ? '' : s.rir) + '"' + (o.rir === null ? ' disabled' : '') + '><button type="button" class="ok" data-ok="' + i + '" aria-pressed="' + s.ok + '" aria-label="Serie ' + (i + 1) + ' registrert">' + ik('check') + '</button></div>';
+      }).join('');
+      var gjort = S.ov.reduce(function (n, x) { return n + x.sett.filter(function (s) { return s.ok; }).length; }, 0), alle = S.ov.reduce(function (n, x) { return n + x.sett.length; }, 0);
+      el.innerHTML = '<section class="kort"><div class="klokkerad"><span class="oktklokke"><span>ØKTEN</span><b data-fklokke>' + mmss(KLOKKE.fys) + '</b><span>AV ' + d.min + ':00</span></span><span class="stat">' + gjort + ' av ' + alle + ' serier</span></div>' + tabs + '</section>' +
+        '<div class="to-kol live" style="display:grid;gap:var(--r5)"><div class="kolonne"><section class="kort"><div class="klokkerad"><span class="dato">Øvelse ' + (S.cur + 1) + ' av ' + d.ov.length + '</span>' + aksePille('fys') + '</div><b class="undertittel" style="font-size:20px">' + o.n + '</b><div class="stor-tall"><strong style="font-size:28px;line-height:1.2">' + mengdeFys(o) + '</strong></div><p class="forklar">' + o.hva + ' · ' + o.min + ' min</p></section>' +
+        '<section class="kort" aria-label="Serier"><div class="settrad hode"><span></span><span>REPS</span><span>KG</span><span>RIR</span><span></span></div>' + rader + '<div class="settvalg"><button type="button" data-sett="-1" aria-label="Færre serier">' + ik('minus') + '</button><b>Serier</b><button type="button" data-sett="1" aria-label="Flere serier">' + ik('plus') + '</button></div></section>' +
+        '<div class="knapper"><button type="button" class="knapp sek" data-kopi>' + ik('kopi') + 'Samme som forrige serie</button></div></div><div class="kolonne">' +
+        '<div class="knapper"><button type="button" class="knapp pri stor" data-neste>' + (siste ? ik('check') + 'Avslutt økten' : 'Neste øvelse') + '</button></div></div></div>';
+    }
+    tegn();
+    el.onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      var o = d.ov[S.cur], sett = S.ov[S.cur].sett;
+      if (b.dataset.fan) { S.cur = +b.dataset.fan; tegn(); }
+      else if (b.dataset.ok !== undefined) { var s = sett[+b.dataset.ok]; s.ok = !s.ok; tegn(); }
+      else if (b.dataset.sett) {
+        if (b.dataset.sett === '1') { var l = sett[sett.length - 1]; sett.push({ reps: l.reps, kg: l.kg, rir: null, ok: false }); }
+        else if (sett.length > 1) sett.pop();
+        tegn();
+      }
+      else if (b.hasAttribute('data-kopi')) {
+        var i = sett.findIndex(function (s) { return !s.ok; }); if (i < 1) i = sett.length - 1;
+        if (i > 0) { sett[i].reps = sett[i - 1].reps; sett[i].kg = sett[i - 1].kg; if (o.rir !== null) sett[i].rir = sett[i - 1].rir; }
+        tegn();
+      }
+      else if (b.hasAttribute('data-neste')) {
+        if (S.cur < d.ov.length - 1) { S.cur++; tegn(); }
+        else { S.ferdig = true; TYPE = 'fys'; oppdaterMaler(); AKUtkast.gaa('ferdig'); }
+      }
+    };
+    if (timer) clearInterval(timer);
+    timer = setInterval(function () {
+      var f = el.querySelector('[data-fklokke]'); if (!f || !document.body.contains(f)) { clearInterval(timer); return; }
+      KLOKKE.fys++; f.textContent = mmss(KLOKKE.fys);
+    }, 1000);
+    el.oninput = function (e) {
+      var inp = e.target.closest('input'); if (!inp) return;
+      var s = S.ov[S.cur].sett[+inp.closest('.settrad').dataset.s], f = inp.dataset.f, v = inp.value.replace(',', '.');
+      s[f] = v === '' ? null : (isNaN(+v) ? s[f] : +v);
+    };
+  }
+
+  /* ---------- PH-07 Etter økten ---------- */
+  function resultatGolf() {
+    var d = OKT.golf, S = SESS.golf, spilt = S.ferdig;
+    return d.ov.map(function (o, i) {
+      if (spilt) { var s = S.ov[i]; return { n: o.n, min: o.min, brukt: s.brukt, status: s.status === 'hoppet' ? 'hoppet' : 'ferdig', t: s.t, plan: o.plan }; }
+      var t = {}; Object.keys(o.plan).forEach(function (k) { t[k] = o.plan[k]; }); if (d.demoSlag[i] !== undefined) t.slag = d.demoSlag[i];
+      return { n: o.n, min: o.min, brukt: d.demoBrukt[i], status: 'ferdig', t: t, plan: o.plan };
+    });
+  }
+  function resultatFys() {
+    var d = OKT.fys, S = SESS.fys;
+    return d.ov.map(function (o, i) {
+      var sett = S.ferdig ? S.ov[i].sett : null;
+      var gjort = sett ? sett.filter(function (s) { return s.ok; }).length : o.serier;
+      var maks = sett ? sett.reduce(function (m, s) { return Math.max(m, s.kg || 0); }, 0) : o.kg;
+      return { n: o.n, min: o.min, brukt: gjort ? o.min : 0, status: gjort ? 'ferdig' : 'hoppet', serier: gjort, plan: sett ? sett.length : o.serier, kg: maks, reps: o.reps };
+    });
+  }
+  function slider(id, tittel, lav, hoy, verdi, hjelp) {
+    return '<div class="vurdering"><div class="topp-rad"><label for="' + id + '">' + tittel + '</label><span class="verdi"><span data-vis="' + id + '">' + verdi + '</span><small>av 10</small></span></div><input type="range" id="' + id + '" min="1" max="10" step="1" value="' + verdi + '"><div class="skala-rad"><span>1 · ' + lav + '</span><span>10 · ' + hoy + '</span></div>' + (hjelp ? '<span class="sub">' + hjelp + '</span>' : '') + '</div>';
+  }
+  function ferdig(app) {
+    var el = app.querySelector('[data-live]'), golf = TYPE === 'golf', d = OKT[TYPE];
+    var r = golf ? resultatGolf() : resultatFys();
+    var planMin = d.min, brukt = r.reduce(function (s, x) { return s + x.brukt; }, 0);
+    var hoppet = r.filter(function (x) { return x.status === 'hoppet'; }).length;
+    var lag = LAGRET[TYPE], v = VURD[TYPE];
+    function rader() {
+      if (golf) return r.map(function (x) {
+        var sum = sumPlan(x.t), pl = sumPlan(x.plan);
+        var del = TELLER.filter(function (t) { return x.plan[t[0]] > 0; }).map(function (t) { return t[1] + ' ' + x.t[t[0]] + ' av ' + x.plan[t[0]]; }).join(' · ');
+        return '<div class="resultat' + (x.status === 'hoppet' ? ' hoppet' : '') + '"><b>' + x.n + '</b><span class="tall">' + (x.status === 'hoppet' ? 'Hoppet over' : x.brukt + ' av ' + x.min + ' min') + '</span><span class="sub">' + (x.status === 'hoppet' ? 'Ikke gjennomført' : 'Gjennomført · reps ' + sum + ' av ' + pl + ' · ' + del) + '</span></div>';
+      }).join('');
+      return r.map(function (x) {
+        return '<div class="resultat' + (x.status === 'hoppet' ? ' hoppet' : '') + '"><b>' + x.n + '</b><span class="tall">' + x.serier + ' av ' + x.plan + ' serier</span><span class="sub">' + (x.status === 'hoppet' ? 'Ikke gjennomført' : 'Gjennomført · ' + x.reps + ' reps @ ' + kgTxt(x.kg) + ' kg · ' + x.brukt + ' av ' + x.min + ' min') + '</span></div>';
+      }).join('');
+    }
+    var statusPille = '<div style="display:flex;flex-wrap:wrap;gap:8px"><span class="pille ok"><i></i>Gjennomført</span><span class="pille ' + (lag ? 'ok' : 'noy') + '" data-lagret><i></i>' + (lag ? 'Lagret' : 'Ikke lagret ennå') + '</span></div>';
+    var storTall = golf ? '<div class="hoved"><strong>' + brukt + '<small>av ' + planMin + ' min</small></strong>' + (hoppet ? '<span class="trend">' + hoppet + ' hoppet over</span>' : '<span class="trend opp">Alle øvelser gjennomført</span>') + '</div>'
+      : '<div class="hoved"><strong>' + r.reduce(function (s, x) { return s + x.serier; }, 0) + '<small>serier · ' + brukt + ' av ' + planMin + ' min</small></strong></div>';
+    var vurd = golf
+      ? slider('bel', 'Belastning', 'svært lett', 'maks', v.bel, 'Hvor tung økten føltes.') + slider('fokus', 'Fokus', 'ukonsentrert', 'helt til stede i hvert slag', v.fokus, '')
+      : slider('tung', 'Hvor tungt', 'svært lett', 'maks', v.tung, '');
+    var saltEtter = (LAGRET.golf ? OKT.golf.min : 0) + (LAGRET.fys ? OKT.fys.min : 0);
+    var ringPct = Math.round(saltEtter / UKE.plan * 100);
+    var C = 2 * Math.PI * 30;
+    el.innerHTML = '<section class="kort">' + statusPille + storTall + '<p class="kilde">Fra økten du nettopp spilte. Tid, reps og status er samme tall som i Live.</p></section>' +
+      '<div class="to-kol live" style="display:grid;gap:var(--r5)"><div class="kolonne"><section class="kort" aria-label="Resultat per øvelse"><span class="dato">Per øvelse mot planen</span>' + rader() + '</section></div>' +
+      '<div class="kolonne"><section class="kort" aria-label="Hvordan var økten">' + vurd + '<div class="felt"><label for="notat">Notat (valgfritt)</label><textarea id="notat" class="tekstfelt" maxlength="400">' + v.notat + '</textarea></div><div class="knapper"><button type="button" class="knapp pri stor" data-lagre' + (lag ? ' disabled style="opacity:.55"' : '') + '>' + ik('check') + (lag ? 'Lagret' : 'Lagre økten') + '</button></div><p class="sub">Coach ser økten.</p></section>' +
+      '<section class="kort dempet" aria-label="Uka" ' + (lag ? '' : 'hidden') + ' data-uka><span class="dato">Oppdatert</span><b class="undertittel" style="font-size:17px">Uke 41: ' + fmt(saltEtter) + ' av ' + fmt(UKE.plan) + '</b><p class="forklar">Uka, måneden, perioden og årsplanen er oppdatert.</p><div class="knapper"><button type="button" class="knapp sek" data-gaa="okt">Til øktene i dag</button></div></section>' +
+      '<section class="spill kort" aria-label="Lukk ringen"><span class="dato">Lukk ringen</span><div class="ring"><svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="30" fill="none" stroke="var(--sand-150)" stroke-width="8"/><circle cx="36" cy="36" r="30" fill="none" stroke="var(--graphite-900)" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + (C * Math.max(ringPct, 2) / 100).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 36 36)"/></svg><div><b class="undertittel" style="font-size:17px">' + ringPct + ' % av uka</b><p class="forklar">' + fmt(saltEtter) + ' av ' + fmt(UKE.plan) + ' i uke 41.</p></div></div></section></div></div>';
+    el.oninput = function (e) {
+      var inp = e.target.closest('input[type=range]'); if (!inp) return;
+      el.querySelector('[data-vis="' + inp.id + '"]').textContent = inp.value;
+      if (inp.id === 'bel') v.bel = +inp.value; else if (inp.id === 'fokus') v.fokus = +inp.value; else v.tung = +inp.value;
+    };
+    el.onclick = function (e) {
+      var b = e.target.closest('[data-lagre]'); if (!b || LAGRET[TYPE]) return;
+      v.notat = el.querySelector('#notat').value;
+      LAGRET[TYPE] = true; ferdig(app);
+      toast(app, 'Økten er lagret. Coach ser den.');
+    };
+  }
+
+  /* ---------- Oppsett ---------- */
+  function m(id, navn, etter, tom, laster, feil, tema) {
+    return { mal: 'mal-' + id, tema: tema, for: { mob: 'screenshots/' + navn + '-390.jpg', pc: 'screenshots/' + navn + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil };
+  }
+  oppdaterMaler();
+  AKUtkast.start({
+    tema: 'natt',
+    start: 'okt',
+    skjermer: {
+      okt: m('okt', 'PH-03', okt, { tittel: 'Ingen økter i dag', tekst: 'Bygg økter i Workbench, så dukker de opp her.', knapp: 'Åpne Workbench' }, 'Henter økten …', 'Økten kunne ikke hentes'),
+      brief: m('brief', 'PH-04', brief, { tittel: 'Økten har ingen øvelser', tekst: 'Legg til øvelser i Workbench, så kan du starte økten.', knapp: 'Legg til øvelse' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
+      aktiv: m('aktiv', 'PH-05', aktiv, { tittel: 'Ingen økt pågår', tekst: 'Start en økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
+      fys: m('fys', 'PH-06', fysisk, { tittel: 'Ingen økt pågår', tekst: 'Start en fysisk økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
+      ferdig: m('ferdig', 'PH-07', ferdig, { tittel: 'Ingen økt å oppsummere', tekst: 'Når du har gjennomført en økt, står resultatet her.', knapp: 'Til I dag' }, 'Henter oppsummeringen …', 'Oppsummeringen kunne ikke hentes', 'natt')
+    }
+  });
+})();
+</script>
+</body></html>
