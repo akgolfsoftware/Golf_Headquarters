@@ -12,3 +12,13 @@ export function planlagtMinutter(okter: readonly TidOkt[]): number {
 export function gjennomfortMinutter(okter: readonly TidOkt[]): number {
   return planlagtMinutter(okter.filter((s) => s.status === "COMPLETED"));
 }
+
+/**
+ * Fremdrift («gjennomført av planlagt hittil») teller alt som ikke er avlyst.
+ * Hoppet over teller som avvik: Workbench-økter har ingen registrert årsak, og
+ * hoppet over uten årsak er et ekte avvik (src/lib/domain/okt-status.ts).
+ * Samme regel som I dag og Plan bruker for økter uten årsak.
+ */
+export function tellerIFremdrift(okt: { status: string }): boolean {
+  return okt.status !== "CANCELLED";
+}

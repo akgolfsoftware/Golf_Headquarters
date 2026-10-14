@@ -38,7 +38,7 @@ import {
   type SeasonVolumeSummary,
   type BudgetWarning,
 } from "./warnings";
-import { gjennomfortMinutter, planlagtMinutter } from "./tid-sum";
+import { gjennomfortMinutter, planlagtMinutter, tellerIFremdrift } from "./tid-sum";
 
 export {
   computeBudgetWarnings,
@@ -479,7 +479,9 @@ export function buildMonthViewModel(
   const budget = computeBudget(inMonth);
   budget.targetMinutes = targetMinutes;
   const cutoff = todayIso ?? last;
-  const toDate = inMonth.filter((session) => session.date <= cutoff);
+  const toDate = sessions.filter(
+    (s) => tellerIFremdrift(s) && s.date >= monthStart && s.date <= last && s.date <= cutoff,
+  );
   const plannedToDateMinutes = planlagtMinutter(toDate);
   const completed = toDate.filter((session) => session.status === "COMPLETED");
   const completedMinutes = planlagtMinutter(completed);
@@ -578,7 +580,10 @@ export function buildYearViewModel(
   const idagDag = idagIso ? dagNummer(idagIso) : dagNummer(`${year}-01-01`) - 1; // aldri aktiv uten idag
   const cutoff = idagIso ?? `${year - 1}-12-31`;
   const aarsOkter = aktiveOkter(sessions).filter((session) => session.date.startsWith(`${year}-`));
-  const hittil = aarsOkter.filter((session) => session.date <= cutoff);
+  const aarsHittil = sessions.filter(
+    (s) => tellerIFremdrift(s) && s.date.startsWith(`${year}-`) && s.date <= cutoff,
+  );
+  const hittil = aarsHittil;
   const plannedToDateMinutes = planlagtMinutter(hittil);
   const gjennomfort = hittil.filter((session) => session.status === "COMPLETED");
   const completedMinutes = planlagtMinutter(gjennomfort);
@@ -599,7 +604,7 @@ export function buildYearViewModel(
           balanseTimer[s.pyramid] += s.durationMinutes / 60;
         }
       }
-      const periodeHittil = periodeOkter.filter((session) => session.date <= cutoff);
+      const periodeHittil = aarsHittil.filter((s) => s.date >= p.startDate && s.date <= p.endDate);
       for (const e of tournaments) {
         if (e.dato >= p.startDate && e.dato <= p.endDate) turneringer.push(e);
       }
@@ -646,7 +651,9 @@ export function buildPeriodViewModel(
 
   const active = aktiveOkter(sessions).filter((s) => s.date >= period.startDate && s.date <= period.endDate);
   const plannedMinutes = planlagtMinutter(active);
-  const toDate = active.filter((s) => s.date <= todayIso);
+  const toDate = sessions.filter(
+    (s) => tellerIFremdrift(s) && s.date >= period.startDate && s.date <= period.endDate && s.date <= todayIso,
+  );
   const plannedToDateMinutes = planlagtMinutter(toDate);
   const completedMinutes = gjennomfortMinutter(toDate);
 
