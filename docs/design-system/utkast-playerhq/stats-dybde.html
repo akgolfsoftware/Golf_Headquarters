@@ -178,6 +178,13 @@
 .prikker i.inn{background:var(--green-700)}
 .tm-tab{display:grid;gap:var(--r2)}
 
+/* Spredning på green: bildet er 1100 × 970 punkter, greenen 25 m bred = 715 punkter */
+.green-ramme{position:relative;border-radius:12px;overflow:hidden;background:var(--sand-150)}
+.green-ramme img{display:block;width:100%;height:auto}
+.green-ramme svg{position:absolute;inset:0;width:100%;height:100%}
+.sikte{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r2);align-items:center}
+.sikte input{width:100%;min-height:44px;accent-color:var(--graphite-900)}
+.sikte .knapp{padding:0 12px}
 /* TrackMan og Resultater */
 .to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r3)}
 .grp{display:grid;gap:8px}
@@ -272,6 +279,7 @@
         <li><b>Trening</b> viser gjennomført mot planen per akse, mengde trening mot Strokes Gained, og hvor du trener. Én Filter-knapp med brikker.</li>
         <li><b>TrackMan, alle økter:</b> filter med brikker (periode, kølle, sted, hastighet, akse, teknisk plan, ekstreme slag) som gjelder alle TrackMan-sidene, og utvikling over tid for ett valgt tall per kølle.</li>
         <li><b>Én TrackMan-økt:</b> fane per kølle med spredningskart mot målet, treffpunkt på køllebladet, alle 17 TrackMan-tall og slag for slag. Ekstreme slag er merket og holdes utenfor snittet.</li>
+        <li><b>Spredning på green:</b> slagene fra økta lagt over en ekte green (25 m bred). Flytt siktelinjen til venstre eller høyre, så flytter spredningen seg med, og appen teller hvor mange slag som ville landet på greenen.</li>
         <li><b>Alle køller:</b> ett kort per kølle med carry, spredning, Club Speed og Smash Factor, og «Alle tall» for resten. Gapping regnes bare fra full hastighet.</li>
         <li><b>Resultater:</b> turneringer med plassering, felt og runder, og alle registrerte runder. Brutto snitt 73,1 av 18 runder, som i Stats.</li>
         <li><b>8-ball</b> viser PGA Tour-snitt for samme slag i turnering når en slagtype er ferdig. Står som «—» til tallene er hentet.</li>
@@ -296,6 +304,7 @@
         <li><b>A–K-nivåtall per test</b> er ikke vedtatt. Til da står nivå mot Kategori B som «—».</li>
         <li><b>9 hull lengde</b> er sperret: måleenheten for målavstand er ikke avgjort. Raden sier det i stedet for å vise et tall.</li>
         <li><b>Utstyrshelse:</b> forslaget er å vise endringer i TrackMan-tallene per kølle (Spin Rate, Smash Factor) og når lie og loft sist ble målt. Er det dette du vil ha?</li>
+        <li><b>Greenbildet</b> er kartutsnittet du sendte. I appen trengs et eget eller lisensiert bilde per green, med målt bredde, og hvilken vei spilleren slår inn mot greenen.</li>
         <li><b>Gapping:</b> «kort gap» er satt til under 10 m mellom to køller i utkastet. Grensen er ikke bestemt.</li>
       </ul>
     </div>
@@ -683,6 +692,16 @@
           <svg class="graf" viewBox="0 0 320 260" role="img" data-o-kart></svg>
           <div class="lg-rad"><span class="lg"><i style="background:var(--slag);border-radius:50%"></i>Ett slag</span><span class="lg"><i style="background:var(--amber-700);border-radius:50%"></i>Ekstremt slag</span><span class="lg"><i style="border:2px dashed var(--graphite-900);background:transparent"></i>Spredning</span></div>
           <p class="forklar" data-o-spredning></p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Spredning på green</h2><span class="kilde">Greenen er 25 m bred</span></div>
+          <div class="green-ramme"><img src="bilder/green-25m.jpg" alt="Greenen sett ovenfra, med to bunkere" width="1100" height="970"><svg viewBox="0 0 1100 970" data-o-green aria-hidden="true"></svg></div>
+          <div class="sikte">
+            <button type="button" class="knapp sek" data-sikt="-1" aria-label="Flytt siktelinjen 1 m til venstre"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>1 m</button>
+            <input type="range" min="-10" max="10" step="0.5" value="0" data-sikt-skala aria-label="Siktelinje i meter. Minus er venstre, pluss er høyre">
+            <button type="button" class="knapp sek" data-sikt="1" aria-label="Flytt siktelinjen 1 m til høyre">1 m<svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="forklar" data-o-green-tekst aria-live="polite"></p>
         </section>
         <section class="kort">
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Treffpunkt</h2><span class="kilde">Køllebladet</span></div>
@@ -1297,7 +1316,31 @@
       s += '<text x="44" y="84" text-anchor="end" class="gt">Hæl</text><text x="276" y="84" class="gt">Tå</text><text x="160" y="160" text-anchor="middle" class="gt">Sett forfra</text>';
       return s;
     }
+    /* Spredning på green. Siktelinjen flytter hele spredningen sidelengs; carry mot målet (eller snittet) gir lengden. */
+    var sikt = 0, GRONN = [[340,250],[420,190],[520,175],[640,200],[760,250],[900,290],[1010,330],[1045,410],[1010,520],[920,600],[780,650],[640,710],[520,760],[430,730],[370,640],[335,500],[330,340]];
+    var GX = 660, GY = 470, PM = 715 / 25;
+    function iGreen(x, y) { var inn = false; for (var i = 0, j = GRONN.length - 1; i < GRONN.length; j = i++) { var a = GRONN[i], b = GRONN[j]; if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) inn = !inn; } return inn; }
+    function green() {
+      var slag = slagFor(o, valgt), med = tell(slag), mal = o.mal ? o.mal[valgt] : null, ref = mal || snitt(med).carry;
+      var px = function (sl) { return GX + (sl.side + sikt) * PM; }, py = function (sl) { return GY - (sl.carry - ref) * PM; };
+      var sx = GX + sikt * PM, u = snitt(med), sdS = sd(med, 'side'), sdL = sd(med, 'carry'), paa = 0;
+      var g = '<line x1="' + sx + '" y1="970" x2="' + sx + '" y2="' + GY + '" stroke="#fff" stroke-width="5" stroke-dasharray="18 12" opacity=".95"/>';
+      g += '<ellipse cx="' + (GX + (u.side + sikt) * PM).toFixed(1) + '" cy="' + (GY - (u.carry - ref) * PM).toFixed(1) + '" rx="' + (2 * sdS * PM).toFixed(1) + '" ry="' + (2 * sdL * PM).toFixed(1) + '" fill="rgba(37,99,235,.18)" stroke="#fff" stroke-width="4" stroke-dasharray="14 10"/>';
+      slag.forEach(function (sl) {
+        var x = px(sl), y = py(sl), tell1 = !sl.ekstrem || FILT.ekstreme === 'Vis';
+        if (tell1 && iGreen(x, y)) paa++;
+        g += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="13" fill="' + (sl.ekstrem ? 'var(--amber-700)' : 'var(--slag)') + '" stroke="#fff" stroke-width="4"/>';
+      });
+      g += '<circle cx="' + sx + '" cy="' + GY + '" r="26" fill="none" stroke="#fff" stroke-width="6"/><circle cx="' + sx + '" cy="' + GY + '" r="7" fill="#fff"/>';
+      app.querySelector('[data-o-green]').innerHTML = g;
+      app.querySelector('[data-sikt-skala]').value = sikt;
+      var hvor = sikt === 0 ? 'midt på greenen' : k(Math.abs(sikt), Math.abs(sikt) % 1 ? 1 : 0) + ' m til ' + (sikt < 0 ? 'venstre' : 'høyre');
+      app.querySelector('[data-o-green-tekst]').innerHTML = 'Siktelinje: <b>' + hvor + '</b> · <b class="mono">' + paa + ' av ' + med.length + '</b> slag ville landet på greenen.' + (mal ? '' : ' Lengden er målt mot snittet ditt, siden økta ikke hadde mål.');
+    }
+    app.querySelectorAll('[data-sikt]').forEach(function (b) { b.addEventListener('click', function () { sikt = Math.max(-10, Math.min(10, sikt + +b.dataset.sikt)); green(); }); });
+    app.querySelector('[data-sikt-skala]').addEventListener('input', function (e) { sikt = parseFloat(e.target.value); green(); });
     function tegn() {
+      green();
       var slag = slagFor(o, valgt), med = tell(slag), u = snitt(med), mal = o.mal ? o.mal[valgt] : null, ekstr = slag.filter(function (s) { return s.ekstrem; }).length;
       var hoved = app.querySelector('[data-o-hoved]');
       if (mal) {
