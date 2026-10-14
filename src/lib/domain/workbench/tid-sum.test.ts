@@ -22,7 +22,7 @@ test("uka og de andre nivåene gir samme gjennomførte tall for samme økter", (
 });
 
 test("negativ varighet teller som null", () => {
-  assert.equal(planlagtMinutter([{ durationMinutes: -5, status: "COMPLETED" }]), 0);
+  assert.equal(planlagtMinutter([{ durationMinutes: -5 }]), 0);
 });
 
 import { tellerIFremdrift } from "./tid-sum";
