@@ -35,6 +35,19 @@ Svar på spørsmålet etter PR 1a (#1206): «Trenere i AK-grupper (GFGK) mister 
 
 **Arbeidet dette utløser:** `coachSkrivbarPlayerWhere` (`src/lib/auth/coached.ts`) har en tredje gren, låst i `coached.test.ts` og `coach-tilgang-org.test.ts`. Uavklart: `canWriteMemberPlans` (`src/lib/workbench/group-scope.ts`) lar fortsatt bare gruppeeieren rulle ut i medlemmenes planer; vurderes når Anders har svart på spørsmålet om gruppeplanen.
 
+**Gjenstår (14.10):** spør Anders (1) om Assist Coach i en AK-gruppe også skal skrive i medlemmenes plan, og (2) om COACH-medlem skal kunne rulle ut gruppeplanen i medlemmenes egne planer (`canWriteMemberPlans`).
+
+## ORDBOKA DEKKER HELE AK GOLF HQ, AVVIKENE VENTER PÅ ANDERS (14.10.2026, bestilt)
+
+Bestilling 14.10: `docs/treningsplanlegging.md` er masteren for alle ord i hele appen, ikke bare trening. §22–§28 og MASTER-STATUS er lagt til (PR #1227).
+
+**Arbeidet dette utløser:**
+
+1. **Anders tar valgene V1–V18** og de fire mindre valgene i `docs/ordbok-avvik-2026-10-14.md`. Ferdig når hvert valg har svar og masteren er rettet etter dem.
+2. **Retting i koden** av A1–A32, i små PR-er per flate etter Anders' ja. Publisert tekst (marked, GFGK Junior) rettes bare med eget ja.
+3. **Faktafeil F1–F4:** fristen i forelder-e-posten (F1), Caddies instruks (F2), seed-e-postene (F3) og sitatfeltene på leaderboards (F4).
+4. **Ikke kartlagt ennå:** e-postmalenes brødtekst, sidetitler og metadata, Stripe-portalen, push-varsler og `hjelpetekster.ts` mot §2.3.
+
 ## KODEGJENNOMGANGEN 06.10: TRENERE FORESLÅR, FORELDER GODKJENNER INNEN SJU DAGER, DATA GOLF BARE FOR COACHER (Anders 06.10.2026, bindende)
 
 Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` (grenen `review/kodegjennomgang`).
@@ -84,6 +97,14 @@ nivåtegningene som Workbench-ramme i `docs/workbench-handover.md` og handoff 04
    Spilleren må kunne fjerne forelderen selv; finnes ikke den knappen, bygges den i PR 1g.
 6. **Sletting av døde filer** (PR 5a–5v) etter lista i vedlegget.
 7. **Workbench-dokumenter** for nivåene merkes utgått og slettes i PR 9b.
+
+**Status 14.10.2026:** PR 1a (#1206, rettet av #1224), 1b, 1c, 1d, 1e (#1211), 1h (#1213), 2 (#1207) og 3c er lagt inn. Gjenstår, i denne rekkefølgen:
+
+8. **Fødselsdato for eksisterende spillere** (punkt 3): nye spillere må fylle den inn i oppstarten. Spillere som har fullført oppstarten uten dato, er bare sperret fra deling og opptak. Anders 14.10: alle uten fødselsdato, også voksne, skal fylle den inn. Krever en enkel skjerm som spør om datoen før portalen åpnes (venter på designbrevet). Ferdig når en spiller uten dato sendes dit og slipper inn etter lagring, låst med test.
+9. **Kjent gjeld i vaktskriptet:** TA-01 (`api/coach/ai-chat`) og TA-21 (`api/portal/swing-video/upload`) står fortsatt i `KJENT_GJELD` (`scripts/check-tilgang-vakt.mjs`), fordi skriptet ikke ser eiersjekken som vakt. Ferdig når begge er ute av lista og skriptet er grønt.
+10. **Resten av fase 2:** 1f TN testdag, 1g småhull (TA-05, TA-07, TP-…), S5 IUP-kø uten spiller-ID, gruppe 3 (sesong, demotall, «—», dato, stille feil, netto, putt), 4 tester, 5 døde filer, 6 avhengigheter, 8, 9. 1i Google-innlogging og betaling: spør Anders først.
+11. **Typesjekken i pre-commit går tom for minne** (4 GB) på Anders' maskin. Lagring krever i dag `NODE_OPTIONS=--max-old-space-size=8192`. Ferdig når hooken setter minnet selv eller sjekker bare endrede filer.
+12. **Oppfølging fra #1207:** markedssidene lenker til `/stats/pga`; TN-arbeidsflate og rangliste mangler Data Golf-filter; `/stats/sammenlign-spillere` mangler barnevernsfilter.
 
 ## CLAUDE CODE PORTERER, IUP BARE FOR AKTIVE WANG-/TN-MEDLEMMER, BARE PH-01 ER GODKJENT (Anders 04.10.2026, bindende)
 
