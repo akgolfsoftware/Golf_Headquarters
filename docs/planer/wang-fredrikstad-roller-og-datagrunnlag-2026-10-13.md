@@ -79,7 +79,7 @@ Følgende grunnstruktur finnes i den separate WANG-databasen:
 
 Mangler før full rolleflyt:
 
-- meldingstråder, mottakere og e-postspeiling
+- sikker sending, svar, varsling og e-postspeiling for meldingstråder
 - kontaktopplysninger med tydelig formål og tilgang
 - samlingsdetaljer som reise, bosted, transport, regler og dagsplan
 - kompetansemål og koblingen mellom kompetansemål og treningsøkt
@@ -253,3 +253,18 @@ Utøveroversikten viser nå et aktivt varsel til tildelt sportssjef og trener n�
 - skoleleder, rektor, toppidrettssjef, foresatt, klubbtrener og invitert leser får aldri varselet
 - databasevernet begrenser lesing til elever i idretter der sportssjef eller trener har aktiv tildeling
 - demoelever er tydelig merket, og ingen ekte elevdata er lagt til
+
+## 19. Skrivebeskyttet meldingsgrunnlag bygget 14. oktober 2026
+
+Den beskyttede siden `/team-wang/app/meldinger` viser en rolleavgrenset innboks uten å åpne sending eller e-post.
+
+- bare aktive deltakere med fortsatt gyldig tilgang til den navngitte eleven kan se en samtale
+- sentral admin og generell lesetilgang får ikke automatisk innsyn i navngitte elevsamtaler
+- skoleleder, rektor, toppidrettssjef, sportssjef og trener er de eneste rollene som senere kan starte en samtale
+- elev, foresatt og klubbtrener kan senere bare svare i en eksisterende samtale; elever kan ikke starte elev-til-elev-samtaler
+- foresatt og klubbtrener må ha aktiv, tidsbegrenset deling med eksplisitt `messages`-omfang
+- oversikten henter samtaleemne, elevnavn, status og oppdateringstid, men aldri meldingsinnhold, e-post, telefon, søvn eller dagsform
+- de tre nye meldingstabellene gir bare leserett til innloggede klienter; ingen oppretting, svar, endring eller sletting er åpnet
+- ingen meldingsrader, Auth-kontoer, e-postvarsler eller ekte elevdata er opprettet i denne arbeidsbolken
+
+Neste meldingssteg er en egen kontrollert skriveflyt med validerte mottakere, logging, lagringstid, eksport og sletting før e-postvarsling vurderes.

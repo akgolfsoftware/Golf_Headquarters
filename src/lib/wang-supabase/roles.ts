@@ -73,8 +73,8 @@ export const WANG_MODULES: Record<
   },
   messages: {
     label: "Meldinger",
-    href: "/team-wang/demo",
-    description: "Demoen viser mottakere uten å sende ekte meldinger.",
+    href: "/team-wang/app/meldinger",
+    description: "Rolleavgrenset, skrivebeskyttet innboks. Sending og e-post er ikke aktivert.",
   },
   "my-week": {
     label: "Min uke",
@@ -125,7 +125,7 @@ export const WANG_ROLE_DEFINITIONS: Record<WangRole, WangRoleDefinition> = {
     description: "Samlet status for skoler, idretter og planer.",
     privacyNotice:
       "Du ser samlet status. Navngitte elever åpnes ikke automatisk for sentral admin.",
-    modules: ["overview", "schools", "plans", "messages", "test-profiles"],
+    modules: ["overview", "schools", "plans", "test-profiles"],
   },
   school_leader: {
     label: "Skoleleder",

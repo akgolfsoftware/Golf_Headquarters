@@ -24,6 +24,12 @@ idrettskatalogen og rader som eksplisitt er merket `is_demo = true`; disse raden
 syntetiske navn og demoinnhold. Daglig innsjekk, søvn, helse, kontaktpersoner og autentiserte
 profiler er ikke offentlig lesbare.
 
+`wang_message_threads`, `wang_message_participants` og `wang_messages` gir et skrivebeskyttet
+grunnlag for rolleavgrensede elevsamtaler. Innloggede klienter har bare leserett, og bare når
+kontoen er aktiv deltaker med fortsatt gyldig elevtilgang. Sentral admin og generell lesetilgang
+får ikke automatisk innsyn. Eksterne mottakere trenger aktiv deling med eksplisitt `messages`-omfang.
+Ingen meldingsrader eller kontaktopplysninger ble lagt til da grunnlaget ble opprettet.
+
 `wang_external_access` lagrer hvilken foresatt eller klubbtrener som er invitert til hvilken elev,
 rolle, eksplisitte leseområder, start, sluttdato, tilbakekalling, inviterende profil og tekniske
 tidsstempler. Eleven kan bare oppdatere tilbakekallingsfeltet på egne delinger. Tabellen inneholder
@@ -31,7 +37,8 @@ ingen invitasjonstoken og sender ingen e-post. Sentral admin får ikke automatis
 navngitte elever. Morgeninnsjekk kan bare leses av eleven selv og tildelt sportssjef eller trener.
 
 **AVKLAR før ekte elevdata:** behandlingsgrunnlag, opplysningstekst, foresattes rolle, art. 9-samtykke
-for søvn/form, lagringstid, eksport, retting og full sletting må være besluttet og bygget. Dagens
+for søvn/form, lagringstid, eksport, retting og full sletting må være besluttet og bygget. Dette
+gjelder også meldingsinnhold, deltakere og samtalehistorikk før skriving åpnes. Dagens
 databasegrunnlag, rolleinnlogging og demo er ikke godkjenning til å importere ekte elever.
 
 ## 1. Identitet og profil
