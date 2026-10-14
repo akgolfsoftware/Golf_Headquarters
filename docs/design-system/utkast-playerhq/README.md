@@ -1,6 +1,6 @@
 # PlayerHQ i nytt design — utkast
 
-Status: **utkast. Pakke 3 Plan og Workbench, pakke 4 Øvelser og teknikk pakke 5 Runder og pakke 7 Kommunikasjon er godkjent 14.10; pakke 2 Treningsøkta er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
+Status: **utkast. Pakke 3 Plan og Workbench, pakke 4 Øvelser og teknikk, pakke 5 Runder og pakke 7 Kommunikasjon er godkjent 14.10; pakke 2 Treningsøkta er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
 Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-knapp for sammenligning.
 
 ## Plan (Anders 14.10.2026: «Ok»)
