@@ -246,7 +246,7 @@
   <div class="hode">
     <span class="meta-s">PlayerHQ · pakke 6 · PH-14, PH-15 og PH-17 · utkast 1 · 14.10.2026</span>
     <h1>Stats i dybden</h1>
-    <p>Ti skjermer i én fil: Tester med en enkelt test, gjennomføring av tester (godkjent eller bom, og carry og side med poeng og PEI), Trening, TrackMan med alle økter, én økt og alle køller, og Resultater. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+    <p>Ti skjermer i én fil: Tester med en enkelt test, gjennomføring av tester (godkjent eller bom, og meter fra hullet med poeng og PEI), Trening, TrackMan med alle økter, én økt og alle køller, og Resultater. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
   </div>
   <div class="kontroller">
     <div class="velger skjermvalg" role="group" aria-label="Skjerm">
@@ -275,7 +275,7 @@
         <li><b>Tester åpner med fremgang:</b> ett stort tall, «5 av 6 tester bedre enn forrige måling». Så kommer neste testdag (testuka, uke 43) og alle 18 testene i aksefargene, med siste resultat og en liten progresjonslinje.</li>
         <li><b>Ett testbatteri</b> for AK Golf, WANG og Team Norway. Hver måling er merket «Kontrollert» (coachen førte) eller «Egenført».</li>
         <li><b>Én test</b> viser poeng over tid som fylt graf, snitt og beste, og hvilken slagtype som gir minst. Poengskalaen står på skjermen.</li>
-        <li><b>Gjennomføring i to typer:</b> gate-testene (Wedge Gate, Nærspill Gate, VISA Express) føres som godkjent eller bom i et rutenett (launch × carry). 8-ball og PEI-testene føres med carry og side, og appen regner ut avstand fra hullet, PEI og poeng.</li>
+        <li><b>Gjennomføring i to typer:</b> gate-testene (Wedge Gate, Nærspill Gate, VISA Express) føres som godkjent eller bom i et rutenett (launch × carry). 8-ball føres med meter fra hullet (for eksempel 2,4), og appen regner ut poeng og PEI. De andre PEI-testene føres med carry og side.</li>
         <li><b>Trening</b> viser gjennomført mot planen per akse, mengde trening mot Strokes Gained, og hvor du trener. Én Filter-knapp med brikker.</li>
         <li><b>TrackMan, alle økter:</b> filter med brikker (periode, kølle, sted, hastighet, akse, teknisk plan, ekstreme slag) som gjelder alle TrackMan-sidene, og utvikling over tid for ett valgt tall per kølle.</li>
         <li><b>Én TrackMan-økt:</b> fane per kølle med spredningskart mot målet, treffpunkt på køllebladet, alle 17 TrackMan-tall og slag for slag. Ekstreme slag er merket og holdes utenfor snittet.</li>
@@ -290,7 +290,7 @@
       <span class="meta-s">Reglene som er fulgt</span>
       <ul>
         <li>En test teller bare når alle slag er registrert. «Lagre resultat» er låst til da. Avbryter du, lagres ingen resultat.</li>
-        <li>8-ball og alle PEI-tester føres med carry og side (Anders 14.10). Appen regner ut avstand fra hullet og PEI. 8-ball gir 5 poeng i hull, 3 innenfor 1 m, 2 innenfor 2 m, 1 innenfor 3 m og 0 lenger unna. Tester med treff eller ikke føres som «Godkjent» eller «Bom». Nærspill Gate og VISA Express føres også som godkjent eller bom. Wedge Gate: «X / 9 godkjent».</li>
+        <li>8-ball føres med meter fra hullet, med komma eller punktum (Anders 14.10). De andre PEI-testene føres med carry og side. Appen regner ut avstand fra hullet og PEI. 8-ball gir 5 poeng i hull, 3 innenfor 1 m, 2 innenfor 2 m, 1 innenfor 3 m og 0 lenger unna. Tester med treff eller ikke føres som «Godkjent» eller «Bom». Nærspill Gate og VISA Express føres også som godkjent eller bom. Wedge Gate: «X / 9 godkjent».</li>
         <li>Nivå mot neste kategori vises som «—» med «Referanse ikke satt», fordi A–K-nivåtallene ikke er vedtatt. Landslagsnivå vises bare for Team Norway-spillere, når tallene kommer fra Team Norway.</li>
         <li>Ingen sammenligning med andre spillere. Strokes Gained mot Kategori B er merket «Estimat».</li>
         <li>Farge betyr akse. Grønt er bare godkjent, i hull og nådd mål. Rust bare på «Avbryt uten resultat», i en egen dialog.</li>
@@ -384,9 +384,9 @@
       <div class="kol">
         <section class="kort">
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slik telles poengene</h2></div>
-          <p class="forklar">24 slag, tre like om gangen. Du fører carry og side. Appen regner ut hvor langt fra hullet ballen landet, feilprosenten (PEI) og poengene:</p>
+          <p class="forklar">24 slag, tre like om gangen. Du fører hvor mange meter fra hullet ballen ligger, for eksempel 2,4. Appen regner ut feilprosenten (PEI) og poengene:</p>
           <div class="skala-liste" data-skala></div>
-          <p class="kildetekst">PEI er avstanden fra hullet delt på slaglengden. 5 m til høyre på et slag på 30 m gir 16,7 %.</p>
+          <p class="kildetekst">PEI er avstanden fra hullet delt på slaglengden. Ligger ballen 5 m fra hullet etter et slag på 30 m, er PEI 16,7 %.</p>
         </section>
         <section class="kort">
           <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Målinger</h2></div>
@@ -445,7 +445,7 @@
 </div>
 </template>
 
-<!-- ================= PH-15-TN 8-ball: carry og side gir avstand, PEI og poeng ================= -->
+<!-- ================= PH-15-TN 8-ball: meter fra hullet gir PEI og poeng ================= -->
 <template id="tn8">
 <div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
   <main class="innhold">
@@ -455,19 +455,15 @@
     </div>
     <div class="motor">
       <div class="fylt slag full">
-        <span class="akse-tekst">SLAG · CARRY OG SIDE</span>
+        <span class="akse-tekst">SLAG · METER FRA HULLET</span>
         <div class="to-tall"><div><span class="stor"><span data-t-sum>27</span><small>p</small></span><span class="etikett">Poeng</span></div><div><span class="stor"><span data-t-pei>4,9</span><small>%</small></span><span class="etikett">PEI, snitt</span></div></div>
         <span class="trend" data-t-igjen style="justify-self:start">14 slag igjen</span>
         <p data-t-under>Etter 10 av 24 slag. Høyst 4 poeng per slag. Rekorden din er 61.</p>
       </div>
       <div style="display:grid;gap:var(--r4)">
         <div class="slag-naa" data-t-naa></div>
-        <div class="to-inn">
-          <div class="felt"><label for="t-carry">Carry, m</label><input id="t-carry" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"></div>
-          <div class="felt"><label for="t-side">Side, m</label><input id="t-side" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0"></div>
-        </div>
-        <div class="valg" role="group" aria-label="Side" data-t-vh><button type="button" aria-pressed="false" data-vh="-1">Venstre</button><button type="button" aria-pressed="true" data-vh="1">Høyre</button></div>
-        <p class="forhand" data-t-forhand aria-live="polite">Skriv carry og side, så ser du avstand, PEI og poeng før du registrerer.</p>
+        <div class="felt"><label for="t-meter">Meter fra hullet</label><input id="t-meter" type="text" inputmode="decimal" autocomplete="off" placeholder="f.eks. 2,4" style="font:600 28px/1 var(--mono);min-height:60px"><span class="hjelp">Komma eller punktum: 2,4 og 2.4 er det samme.</span></div>
+        <p class="forhand" data-t-forhand aria-live="polite">Skriv avstanden, så ser du PEI og poeng før du registrerer.</p>
         <div class="tb"><button type="button" class="bom" data-t-reg style="background:var(--graphite-900);color:#fff;border:0">Registrer</button><button type="button" class="treff" data-t-hull>I hull</button></div>
         <button type="button" class="angre" data-t-angre><svg class="ikon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Angre siste</button>
         <div class="skala-liste" data-t-skala></div>
@@ -852,8 +848,6 @@
   var SKALA = [['I hull', 5], ['Innenfor 1 m', 3], ['Innenfor 2 m', 2], ['Innenfor 3 m', 1], ['Lenger unna', 0]];
   function poengFor(d, hull) { return hull ? 5 : d <= 1 ? 3 : d <= 2 ? 2 : d <= 3 ? 1 : 0; }
   function trinn(d, hull) { return hull ? 0 : d <= 1 ? 1 : d <= 2 ? 2 : d <= 3 ? 3 : 4; }
-  /* Avstand fra hullet ut fra carry og side, og PEI = avstand / slaglengde */
-  function fraHull(carry, side, lengde) { return Math.sqrt(Math.pow(carry - lengde, 2) + side * side); }
   var SLAGTYPER = ['Chip 10 m', 'Chip 30 m', 'Wedge 20 m', 'Wedge 40 m', 'Lobb 15 m', 'Lobb 25 m', 'Bunker 10 m', 'Bunker 20 m'];
   var LENGDE = [10, 30, 20, 40, 15, 25, 10, 20];
   function test(app) {
@@ -923,14 +917,14 @@
 
   /* ---------- PH-15-TN 8-ball: 24 slag, tre like om gangen, meter fra hull gir poeng ---------- */
   function tn8(app) {
-    /* [carry, side (minus = venstre), i hull] */
-    var res = [[9.6, 0.3], [10, 0, true], [11.1, -0.4], [28.6, 0.8], [30.5, -0.6], [32.1, 1.2], [19.4, 0.3], [20.2, 0.6], [21.3, -0.5], [39.2, 0.4]];
-    var vh = 1, ic = app.querySelector('#t-carry'), is = app.querySelector('#t-side'), fh = app.querySelector('[data-t-forhand]');
+    /* [meter fra hullet, i hull] (Anders 14.10: ikke høyre og venstre, bare avstand) */
+    var res = [[0.5], [0, true], [1.2], [1.6], [0.8], [2.4], [0.7], [0.6], [1.4], [0.9]];
+    var im = app.querySelector('#t-meter'), fh = app.querySelector('[data-t-forhand]');
     function L(i) { return LENGDE[Math.floor(i / 3)]; }
-    function d(r, i) { return r[2] ? 0 : fraHull(r[0], r[1], L(i)); }
-    function p(r, i) { return poengFor(d(r, i), r[2]); }
+    function d(r) { return r[1] ? 0 : r[0]; }
+    function p(r) { return poengFor(d(r), r[1]); }
     function sum() { return res.reduce(function (s, r, i) { return s + p(r, i); }, 0); }
-    function pei(r, i) { return d(r, i) / L(i) * 100; }
+    function pei(r, i) { return d(r) / L(i) * 100; }
     function peiSnitt(n, fra) { fra = fra || 0; var t = 0; for (var i = fra; i < n; i++) t += pei(res[i], i); return t / (n - fra); }
     function skala(aktiv) { app.querySelector('[data-t-skala]').innerHTML = SKALA.map(function (s, i) { return '<div class="skala-rad' + (i === aktiv ? ' aktiv' : '') + '"><span>' + s[0] + '</span><b>' + s[1] + '</b></div>'; }).join(''); }
     function tegn() {
@@ -942,14 +936,14 @@
       app.querySelector('[data-t-naa]').innerHTML = ferdig
         ? '<span class="nr">Ferdig</span><span class="hva">' + sum() + ' av 120 poeng<small>Lagre for å få resultatet i Stats.</small></span>'
         : '<span class="nr">Slag ' + (n + 1) + ' av 24</span><span class="hva">' + SLAGTYPER[Math.floor(n / 3)] + '<small>Ball ' + (n % 3 + 1) + ' av 3 · slaglengde ' + L(n) + ' m</small></span>';
-      [ic, is].forEach(function (x) { x.disabled = ferdig; });
+      im.disabled = ferdig;
       app.querySelectorAll('[data-t-reg], [data-t-hull]').forEach(function (b) { b.disabled = ferdig; b.style.opacity = ferdig ? .4 : 1; });
       app.querySelector('[data-t-angre]').disabled = !n;
       app.querySelector('[data-t-liste]').innerHTML = SLAGTYPER.map(function (s, g) {
         var baller = '', ps = 0, noen = false;
         for (var b = 0; b < 3; b++) {
           var i = g * 3 + b;
-          if (i < n) { var r = res[i], pp = p(r, i); ps += pp; noen = true; baller += '<span class="ball"><b>' + pp + ' p</b><span>' + k(pei(r, i), 1) + ' %</span><small>' + (r[2] ? 'I hull' : k(d(r, i), 1) + ' m') + '</small></span>'; }
+          if (i < n) { var r = res[i], pp = p(r, i); ps += pp; noen = true; baller += '<span class="ball"><b>' + pp + ' p</b><span>' + k(pei(r, i), 1) + ' %</span><small>' + (r[1] ? 'I hull' : k(d(r), 1) + ' m') + '</small></span>'; }
           else baller += '<span class="ball tom' + (i === n ? ' naa' : '') + '">' + (i === n ? 'Nå' : '—') + '</span>';
         }
         var ferdige = Math.min(3, Math.max(0, n - g * 3));
@@ -959,23 +953,24 @@
       app.querySelector('[data-t-regel]').textContent = ferdig ? 'Alle 24 slag er ført. Resultatet blir ' + sum() + ' poeng og PEI ' + k(peiSnitt(24), 1) + ' %.' : 'Testen teller når alle 24 slag er registrert. ' + n + ' av 24 er ført.';
       forhand();
     }
-    function tall(x) { return parseFloat(String(x.value).replace(',', '.')); }
+    /* Godtar både komma og punktum: «2,4» og «2.4» */
+    function tall() { var t = String(im.value).trim().replace(',', '.'); return /^\d+(\.\d+)?$/.test(t) ? parseFloat(t) : NaN; }
     function forhand() {
-      var c = tall(ic), sd = tall(is) || 0;
-      if (isNaN(c) || res.length >= 24) { fh.textContent = 'Skriv carry og side, så ser du avstand, PEI og poeng før du registrerer.'; skala(-1); return; }
-      var lg = L(res.length), a = fraHull(c, sd, lg);
+      var a = tall();
+      if (isNaN(a) || res.length >= 24) { fh.textContent = im.value.trim() && res.length < 24 ? 'Skriv bare tall, for eksempel 2,4.' : 'Skriv avstanden, så ser du PEI og poeng før du registrerer.'; skala(-1); return; }
+      var lg = L(res.length);
       fh.innerHTML = '<b>' + k(a, 1) + ' m</b> fra hullet · PEI <b>' + k(a / lg * 100, 1) + ' %</b> · <b>' + poengFor(a) + ' poeng</b>';
       skala(trinn(a));
     }
-    [ic, is].forEach(function (x) { x.addEventListener('input', forhand); x.addEventListener('keydown', function (e) { if (e.key === 'Enter') reg(); }); });
-    app.querySelector('[data-t-vh]').addEventListener('click', function (e) { var b = e.target.closest('[data-vh]'); if (b) vh = +b.dataset.vh; });
+    im.addEventListener('input', forhand);
+    im.addEventListener('keydown', function (e) { if (e.key === 'Enter') reg(); });
     function reg() {
-      var c = tall(ic);
-      if (isNaN(c) || c < 0) { fh.textContent = 'Skriv carry i meter, for eksempel 29,4.'; ic.focus(); return; }
-      if (res.length < 24) { res.push([c, (Math.abs(tall(is)) || 0) * vh]); ic.value = ''; is.value = ''; tegn(); }
+      var a = tall();
+      if (isNaN(a)) { fh.textContent = 'Skriv meter fra hullet, for eksempel 2,4.'; im.focus(); return; }
+      if (res.length < 24) { res.push([a]); im.value = ''; tegn(); }
     }
     app.querySelector('[data-t-reg]').addEventListener('click', reg);
-    app.querySelector('[data-t-hull]').addEventListener('click', function () { if (res.length < 24) { res.push([L(res.length), 0, true]); ic.value = ''; is.value = ''; tegn(); } });
+    app.querySelector('[data-t-hull]').addEventListener('click', function () { if (res.length < 24) { res.push([0, true]); im.value = ''; tegn(); } });
     app.querySelector('[data-t-angre]').addEventListener('click', function () { res.pop(); tegn(); });
     app.querySelector('[data-t-lagre]').addEventListener('click', function () { toast(app, '8-ball er lagret: ' + sum() + ' poeng og PEI ' + k(peiSnitt(24), 1) + ' %.'); });
     avbryt(app); tegn();

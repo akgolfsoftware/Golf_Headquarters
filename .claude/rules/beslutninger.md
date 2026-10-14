@@ -14,12 +14,13 @@ Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller
 
 Krever ingen kodeendring, fordi koden gjør dette allerede: `rescheduleBooking` (`src/app/portal/meg/bookinger/actions.ts`) sjekker at tiden er ledig og innenfor coachens tilgjengelighet (`isSlotStillAvailable`). Den krever i tillegg mer enn 24 timer til opprinnelig start (`rescheduleOutcome`), samme frist som gratis avbestilling. Utkastet `docs/design-system/utkast-playerhq/kommunikasjon.html` er tegnet slik.
 
-## TESTER FØRES MED CARRY OG SIDE, 8-BALL GIR 5 POENG I HULL, TREFF HETER GODKJENT (Anders 14.10.2026, bindende)
+## PEI-TESTER FØRES MED CARRY OG SIDE, 8-BALL MED METER FRA HULLET OG 5 POENG I HULL, TREFF HETER GODKJENT (Anders 14.10.2026, bindende)
 
 Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utkast-playerhq/stats-dybde.html`, PR #1251).
 
-- **8-ball føres med carry og side per slag**, og «I hull» når ballen går i på ett slag. Appen regner ut
-  avstanden fra hullet (Pythagoras mot slaglengden) og PEI.
+- **8-ball føres med meter fra hullet**, for eksempel 2,4, og «I hull» når ballen går i på ett slag. Ingen høyre eller
+  venstre (Anders 14.10, kommentar på utkastet: «Kun PEI på hvor langt unna hullet i avstand»). Feltet godtar alltid både
+  komma og punktum («2,4» og «2.4»). Appen regner PEI = meter fra hullet / slaglengde, og poeng.
 - **8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.
 - **Alle PEI-tester føres med carry og side.** Appen regner selv ut avstand fra hullet og feilprosenten
   (PEI = avstand fra hullet / slaglengde). Eksempel: riktig lengde, 5 m til høyre, gir 5 m fra hullet.
@@ -31,10 +32,10 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
 
-1. **8-ball i koden:** `POENG_8BALL` (`src/lib/domain/pei/poeng-tabeller.ts`) får den nye skalaen med 5 for i hull,
-   og `attBall` (`src/lib/domain/pei/protokoll-definisjoner.ts`) tar carry og side i stedet for «Resultat, meter fra hull».
-   Avstanden regnes med `avstandTilMal` (`pei-beregning.ts`). Ferdig når en test låser 5 / 3 / 2 / 1 / 0 og at 5 m til siden
-   på riktig lengde gir 5 m fra hullet. Lagrede 8-ball-resultater med gammel skala beholdes og merkes med regelversjon.
+1. **8-ball i koden:** `POENG_8BALL` (`src/lib/domain/pei/poeng-tabeller.ts`) får den nye skalaen med 5 for i hull.
+   `attBall` (`src/lib/domain/pei/protokoll-definisjoner.ts`) beholder «Resultat, meter fra hull», og legger til «I hull».
+   Tallfeltet godtar komma og punktum. Ferdig når en test låser 5 / 3 / 2 / 1 / 0, at «2,4» og «2.4» gir samme resultat, og PEI = meter / slaglengde.
+   Lagrede 8-ball-resultater med gammel skala beholdes og merkes med regelversjon.
 2. **PEI-testene** (`pei-*` i `src/lib/portal-tester/tn-catalog.ts`) bruker allerede carry og side; kontroller at
    alle viser avstand fra hullet og PEI rett etter hvert slag.
 3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
