@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **541**. Unike rutemønstre i skanningen: 541. Komponentfiler: 886. Ramme- og tilstandsfiler: 257.
+Sidefiler med rute: **543**. Unike rutemønstre i skanningen: 543. Komponentfiler: 886. Ramme- og tilstandsfiler: 258.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -21,7 +21,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | forelder | 16 |
 | inngang-og-konto | 19 |
 | interne-eksempler | 6 |
-| lag-og-skole | 61 |
+| lag-og-skole | 63 |
 | marked-og-offentlig | 70 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
@@ -34,7 +34,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 |---|---:|
 | tegnet-skjermtype | 285 |
 | videresending | 164 |
-| teknisk-forklaring | 39 |
+| teknisk-forklaring | 41 |
 | byggeunderlag | 24 |
 | felles-monster | 22 |
 | intern-flate | 7 |
@@ -76,6 +76,8 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/team-norway/workbench` | TN-UTEN-RAD | — |
 | `/team-wang/app/kalender` | WANG-UTEN-RAD | — |
 | `/team-wang/app/logg-inn` | WANG-UTEN-RAD | — |
+| `/team-wang/app/meldinger/[threadId]` | WANG-UTEN-RAD | — |
+| `/team-wang/app/meldinger` | WANG-UTEN-RAD | — |
 | `/team-wang/app` | WANG-UTEN-RAD | — |
 | `/team-wang/app/testprofiler` | WANG-UTEN-RAD | — |
 | `/team-wang/app/utovere/[elevId]` | WANG-UTEN-RAD | — |

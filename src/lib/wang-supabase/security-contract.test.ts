@@ -27,6 +27,22 @@ const calendarScopeMigration = readFileSync(
   "utf8",
 );
 
+const messageFoundationMigration = readFileSync(
+  path.join(
+    process.cwd(),
+    "supabase-wang/migrations/20261014140000_wang_message_foundation_readonly.sql",
+  ),
+  "utf8",
+);
+
+const messageIndexMigration = readFileSync(
+  path.join(
+    process.cwd(),
+    "supabase-wang/migrations/20261014142000_wang_message_created_by_index.sql",
+  ),
+  "utf8",
+);
+
 test("sentral admin får oversikt uten automatisk tilgang til elever", () => {
   const studentFunction = migration.match(
     /create or replace function private\.wang_can_access_student[\s\S]*?\n\$\$;/,
@@ -79,4 +95,61 @@ test("eksterne lesere trenger aktivt calendar-scope for kalenderhendelser", () =
     calendarScopeMigration,
     /private\.wang_event_scope_is_consistent\(school_sport_id, group_id, student_id\)/,
   );
+});
+
+test("meldinger er begrenset til navngitt elev og aktiv rolle", () => {
+  const accessFunction = messageFoundationMigration.match(
+    /create or replace function private\.wang_profile_can_message_student[\s\S]*?\n\$\$;/,
+  );
+  assert.ok(accessFunction);
+  assert.doesNotMatch(accessFunction[0], /central_admin|readonly/);
+  assert.match(accessFunction[0], /student\.profile_id = profile\.id/);
+  assert.match(accessFunction[0], /membership\.active = true/);
+  assert.match(accessFunction[0], /external_access\.reader_profile_id = profile\.id/);
+  assert.match(accessFunction[0], /external_access\.starts_at <= now\(\)/);
+  assert.match(accessFunction[0], /external_access\.expires_at > now\(\)/);
+  assert.match(accessFunction[0], /external_access\.revoked_at is null/);
+  assert.match(accessFunction[0], /'messages' = any\(external_access\.scopes\)/);
+});
+
+test("bare godkjente voksne kan starte en WANG-samtale", () => {
+  const starterFunction = messageFoundationMigration.match(
+    /create or replace function private\.wang_profile_can_start_message[\s\S]*?\n\$\$;/,
+  );
+  assert.ok(starterFunction);
+  assert.match(starterFunction[0], /school_leader/);
+  assert.match(starterFunction[0], /principal/);
+  assert.match(starterFunction[0], /head_of_sports/);
+  assert.match(starterFunction[0], /sports_director/);
+  assert.match(starterFunction[0], /coach/);
+  assert.doesNotMatch(
+    starterFunction[0],
+    /'(student|guardian|club_coach|central_admin|readonly)'/,
+  );
+});
+
+test("meldingsgrunnlaget er skrivebeskyttet for innloggede klienter", () => {
+  assert.doesNotMatch(messageFoundationMigration, /wang_current_profile_id/);
+  assert.equal(
+    messageFoundationMigration.match(/private\.wang_is_message_thread_participant\(\(select auth\.uid\(\)\),/g)?.length,
+    3,
+  );
+  for (const table of [
+    "wang_message_threads",
+    "wang_message_participants",
+    "wang_messages",
+  ]) {
+    assert.match(
+      messageFoundationMigration,
+      new RegExp(`revoke all on public\\.${table} from public, anon, authenticated`),
+    );
+    assert.match(
+      messageFoundationMigration,
+      new RegExp(`grant select on public\\.${table} to authenticated`),
+    );
+  }
+  assert.doesNotMatch(messageFoundationMigration, /grant (insert|update|delete|all)/i);
+  assert.doesNotMatch(messageFoundationMigration, /for (insert|update|delete|all)\s+to authenticated/i);
+  assert.doesNotMatch(messageFoundationMigration, /email|phone|sleep|readiness|checkin/i);
+  assert.match(messageIndexMigration, /wang_message_threads \(created_by\)/);
 });

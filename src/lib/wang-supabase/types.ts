@@ -197,6 +197,34 @@ export interface WangAuthenticatedProfile {
   schoolName: string | null;
 }
 
+export interface WangMessageThreadSummary {
+  id: string;
+  subject: string;
+  studentName: string;
+  isDemo: boolean;
+  updatedAt: string;
+  closedAt: string | null;
+}
+
+export interface WangMessageInbox {
+  threads: WangMessageThreadSummary[];
+  canStartConversation: boolean;
+  emailNotificationsEnabled: false;
+}
+
+export interface WangMessageItem {
+  id: string;
+  senderLabel: string;
+  isCurrentUser: boolean;
+  body: string;
+  createdAt: string;
+}
+
+export interface WangMessageConversation extends WangMessageThreadSummary {
+  messages: WangMessageItem[];
+  canReply: false;
+}
+
 export interface WangStartMetric {
   label: string;
   value: string;
