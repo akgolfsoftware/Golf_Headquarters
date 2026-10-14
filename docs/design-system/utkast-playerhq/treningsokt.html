@@ -129,7 +129,7 @@
   <div class="hode">
     <span class="meta-s">PlayerHQ · pakke 2 · PH-03 til PH-07 · utkast 1 · 14.10.2026</span>
     <h1>Treningsøkten</h1>
-    <p>Fem skjermer i én fil, i natt-tema (Øktarket kan også vises lyst). Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett: mandag 5. oktober, golføkten «Innspill og nærspill» kl. 15:30 og den fysiske økten «Styrke bein og kjerne» kl. 17:30, begge fra uke 41 i Plan. Spill gjennom økten fra Øktark til Etter økten: tellerne, klokkene og oppsummeringen henger sammen.</p>
+    <p>Fem skjermer i én fil, i lyst tema også under live (Anders 14.10: ingen mørk modus på live-øktene). Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett: mandag 5. oktober, golføkten «Innspill og nærspill» kl. 15:30 og den fysiske økten «Styrke bein og kjerne» kl. 17:30, begge fra uke 41 i Plan. Spill gjennom økten fra Øktark til Etter økten: tellerne, klokkene og oppsummeringen henger sammen.</p>
   </div>
   <div class="kontroller">
     <div class="velger skjermvalg" role="group" aria-label="Skjerm">
@@ -144,7 +144,6 @@
     <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
     <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
     <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
-    <div class="velger" role="group" aria-label="Tema"><button type="button" aria-pressed="true" data-tema="natt">Natt</button><button type="button" aria-pressed="false" data-tema="lys">Lys (bare Øktark)</button></div>
     <div class="velger" role="group" aria-label="Spill-elementer"><button type="button" aria-pressed="true" data-spill="av">Spill-elementer av</button><button type="button" aria-pressed="false" data-spill="paa">Spill-elementer på</button></div>
   </div>
   <div class="scene"><div class="ramme mob" id="ramme"></div></div>
@@ -162,6 +161,7 @@
     <div class="endringer">
       <span class="meta-s">Reglene som er fulgt</span>
       <ul>
+        <li>Lyst tema overalt, også under live (Anders 14.10). Mørk modus er fjernet fra live-øktene. Dette avviker fra beslutningen 28.09 om natt i Live-økt, og må registreres.</li>
         <li>Farge betyr akse: SLAG er blå, FYS er grønn. Rust bare på Live-pillen. Alle andre knapper er grafitt.</li>
         <li>Ett stort tall per flate: øktens lengde i brief, øvelsesklokka i aktiv, gjennomført tid i oppsummeringen.</li>
         <li>Ord fra masteren: Øvelse, Registrere, Gjennomført, Målsetning, Måleutstyr. «Økten» (ikke «økta»), slik avvikslista V18 anbefaler.</li>
@@ -556,14 +556,13 @@
   }
   oppdaterMaler();
   AKUtkast.start({
-    tema: 'natt',
     start: 'okt',
     skjermer: {
       okt: m('okt', 'PH-03', okt, { tittel: 'Ingen økter i dag', tekst: 'Bygg økter i Workbench, så dukker de opp her.', knapp: 'Åpne Workbench' }, 'Henter økten …', 'Økten kunne ikke hentes'),
-      brief: m('brief', 'PH-04', brief, { tittel: 'Økten har ingen øvelser', tekst: 'Legg til øvelser i Workbench, så kan du starte økten.', knapp: 'Legg til øvelse' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
-      aktiv: m('aktiv', 'PH-05', aktiv, { tittel: 'Ingen økt pågår', tekst: 'Start en økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
-      fys: m('fys', 'PH-06', fysisk, { tittel: 'Ingen økt pågår', tekst: 'Start en fysisk økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes', 'natt'),
-      ferdig: m('ferdig', 'PH-07', ferdig, { tittel: 'Ingen økt å oppsummere', tekst: 'Når du har gjennomført en økt, står resultatet her.', knapp: 'Til I dag' }, 'Henter oppsummeringen …', 'Oppsummeringen kunne ikke hentes', 'natt')
+      brief: m('brief', 'PH-04', brief, { tittel: 'Økten har ingen øvelser', tekst: 'Legg til øvelser i Workbench, så kan du starte økten.', knapp: 'Legg til øvelse' }, 'Henter økten …', 'Økten kunne ikke hentes'),
+      aktiv: m('aktiv', 'PH-05', aktiv, { tittel: 'Ingen økt pågår', tekst: 'Start en økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes'),
+      fys: m('fys', 'PH-06', fysisk, { tittel: 'Ingen økt pågår', tekst: 'Start en fysisk økt fra I dag, så åpnes den her.', knapp: 'Til I dag' }, 'Henter økten …', 'Økten kunne ikke hentes'),
+      ferdig: m('ferdig', 'PH-07', ferdig, { tittel: 'Ingen økt å oppsummere', tekst: 'Når du har gjennomført en økt, står resultatet her.', knapp: 'Til I dag' }, 'Henter oppsummeringen …', 'Oppsummeringen kunne ikke hentes')
     }
   });
 })();
