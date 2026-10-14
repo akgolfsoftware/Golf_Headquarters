@@ -101,7 +101,7 @@
   }
   function velgere(app) {
     app.addEventListener('click', function (e) {
-      var b = e.target.closest('.valg button');
+      var b = e.target.closest('.valg button, [data-gruppe] > button');
       if (!b) return;
       b.parentNode.querySelectorAll(':scope > button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
     });
