@@ -38,6 +38,7 @@ import {
   type SeasonVolumeSummary,
   type BudgetWarning,
 } from "./warnings";
+import { gjennomfortMinutter, planlagtMinutter } from "./tid-sum";
 
 export {
   computeBudgetWarnings,
@@ -261,7 +262,7 @@ export function addDrill(
     // optional: grow duration if drills exceed current length
     durationMinutes: Math.max(
       session.durationMinutes,
-      reindexed.reduce((sum, d) => sum + d.durationMinutes, 0)
+      planlagtMinutter(reindexed)
     ),
     updatedAt: now,
   };
@@ -446,7 +447,7 @@ export function buildMonthViewModel(
       const aktive = aktiveOkter(dags);
       const erIManeden = date >= monthStart && date <= last;
       if (erIManeden) {
-        weekMinutes += aktive.reduce((n, s) => n + s.durationMinutes, 0);
+        weekMinutes += planlagtMinutter(aktive);
         weekCount += aktive.length;
       }
       const shown = aktive.slice(0, MAX_MONTH_LINES);
@@ -479,9 +480,9 @@ export function buildMonthViewModel(
   budget.targetMinutes = targetMinutes;
   const cutoff = todayIso ?? last;
   const toDate = inMonth.filter((session) => session.date <= cutoff);
-  const plannedToDateMinutes = toDate.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const plannedToDateMinutes = planlagtMinutter(toDate);
   const completed = toDate.filter((session) => session.status === "COMPLETED");
-  const completedMinutes = completed.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const completedMinutes = planlagtMinutter(completed);
   const completedByPyramid = { ...TOM_BALANSE };
   for (const session of completed) completedByPyramid[session.pyramid] += session.durationMinutes;
 
@@ -552,13 +553,13 @@ export function buildYearViewModel(
     const start = `${year}-${String(m).padStart(2, "0")}-01`;
     const last = lastDayOfMonth(start);
     const list = aktiveOkter(sessions).filter((s) => s.date >= start && s.date <= last);
-    const minutes = list.reduce((n, s) => n + s.durationMinutes, 0);
+    const minutes = planlagtMinutter(list);
     if (minutes > maxMin) maxMin = minutes;
     perMonth.push({ start, list });
   }
   for (let i = 0; i < 12; i++) {
     const { start, list } = perMonth[i];
-    const minutes = list.reduce((n, s) => n + s.durationMinutes, 0);
+    const minutes = planlagtMinutter(list);
     months.push({
       monthStart: start,
       monthIndex: i + 1,
@@ -578,9 +579,9 @@ export function buildYearViewModel(
   const cutoff = idagIso ?? `${year - 1}-12-31`;
   const aarsOkter = aktiveOkter(sessions).filter((session) => session.date.startsWith(`${year}-`));
   const hittil = aarsOkter.filter((session) => session.date <= cutoff);
-  const plannedToDateMinutes = hittil.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const plannedToDateMinutes = planlagtMinutter(hittil);
   const gjennomfort = hittil.filter((session) => session.status === "COMPLETED");
-  const completedMinutes = gjennomfort.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const completedMinutes = planlagtMinutter(gjennomfort);
   const completedByPyramid = { ...TOM_BALANSE };
   for (const session of gjennomfort) completedByPyramid[session.pyramid] += session.durationMinutes;
 
@@ -616,9 +617,9 @@ export function buildYearViewModel(
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,
-        plannedMinutes: periodeOkter.reduce((sum, session) => sum + session.durationMinutes, 0),
-        plannedToDateMinutes: periodeHittil.reduce((sum, session) => sum + session.durationMinutes, 0),
-        completedMinutes: periodeHittil.filter((session) => session.status === "COMPLETED").reduce((sum, session) => sum + session.durationMinutes, 0),
+        plannedMinutes: planlagtMinutter(periodeOkter),
+        plannedToDateMinutes: planlagtMinutter(periodeHittil),
+        completedMinutes: gjennomfortMinutter(periodeHittil),
         turneringer: turneringer.sort((a, b) => (a.dato < b.dato ? -1 : 1)),
       };
     });
@@ -644,10 +645,10 @@ export function buildPeriodViewModel(
   }
 
   const active = aktiveOkter(sessions).filter((s) => s.date >= period.startDate && s.date <= period.endDate);
-  const plannedMinutes = active.reduce((sum, s) => sum + s.durationMinutes, 0);
+  const plannedMinutes = planlagtMinutter(active);
   const toDate = active.filter((s) => s.date <= todayIso);
-  const plannedToDateMinutes = toDate.reduce((sum, s) => sum + s.durationMinutes, 0);
-  const completedMinutes = toDate.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0);
+  const plannedToDateMinutes = planlagtMinutter(toDate);
+  const completedMinutes = gjennomfortMinutter(toDate);
 
   const weeks: PeriodViewModel["weeks"] = [];
   for (let cursor = mondayOf(period.startDate); cursor <= period.endDate; cursor = addDays(cursor, 7)) {
@@ -656,8 +657,8 @@ export function buildPeriodViewModel(
     weeks.push({
       weekStart: cursor,
       weekNumber: isoWeekNumber(cursor),
-      minutes: list.reduce((sum, s) => sum + s.durationMinutes, 0),
-      completedMinutes: list.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0),
+      minutes: planlagtMinutter(list),
+      completedMinutes: gjennomfortMinutter(list),
       sessionCount: list.length,
       dominantPyramid: dominantPyramid(list),
     });
@@ -665,11 +666,11 @@ export function buildPeriodViewModel(
 
   const distribution = PYRAMID_ORDER.map((pyramid) => {
     const list = active.filter((s) => s.pyramid === pyramid);
-    const planned = list.reduce((sum, s) => sum + s.durationMinutes, 0);
+    const planned = planlagtMinutter(list);
     return {
       pyramid,
       plannedMinutes: planned,
-      completedMinutes: list.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0),
+      completedMinutes: gjennomfortMinutter(list),
       sharePct: plannedMinutes > 0 ? Math.round(planned / plannedMinutes * 100) : 0,
       focus: planned > 0 && period.focus ? period.focus : null,
     };
