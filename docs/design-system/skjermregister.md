@@ -34,8 +34,8 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 |---|---:|
 | tegnet-skjermtype | 285 |
 | videresending | 164 |
-| teknisk-forklaring | 41 |
-| byggeunderlag | 24 |
+| byggeunderlag | 37 |
+| teknisk-forklaring | 28 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
@@ -74,19 +74,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/team-norway/turneringer/[id]` | TN-UTEN-RAD | — |
 | `/team-norway/wang-resultater` | TN-UTEN-RAD | — |
 | `/team-norway/workbench` | TN-UTEN-RAD | — |
-| `/team-wang/app/kalender` | WANG-UTEN-RAD | — |
-| `/team-wang/app/logg-inn` | WANG-UTEN-RAD | — |
-| `/team-wang/app/meldinger/[threadId]` | WANG-UTEN-RAD | — |
-| `/team-wang/app/meldinger` | WANG-UTEN-RAD | — |
-| `/team-wang/app` | WANG-UTEN-RAD | — |
-| `/team-wang/app/testprofiler` | WANG-UTEN-RAD | — |
-| `/team-wang/app/utovere/[elevId]` | WANG-UTEN-RAD | — |
-| `/team-wang/app/utovere` | WANG-UTEN-RAD | — |
-| `/team-wang/app/workbench` | WANG-UTEN-RAD | — |
-| `/team-wang/coach/tester` | WANG-UTEN-RAD | — |
-| `/team-wang/coach/turneringer/[elevId]` | WANG-UTEN-RAD | — |
-| `/team-wang/demo/roller` | WANG-UTEN-RAD | — |
-| `/team-wang/skjermer` | WANG-UTEN-RAD | — |
 
 ## Kommentar mot liste
 
