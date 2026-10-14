@@ -1,0 +1,352 @@
+.page {
+  min-height: 100dvh;
+  padding: 32px;
+  background: var(--wang-blue-tint);
+  color: var(--wang-blue);
+}
+
+.header,
+.summaryGrid,
+.privacyNotice,
+.sportList,
+.emptyState {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.backLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  color: var(--wang-blue) !important;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.headingIcon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 12px;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+}
+
+.headingRow h1,
+.sportHeading h2,
+.groupHeading h3,
+.emptyState h2 {
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+}
+
+.headingRow h1 {
+  margin: 5px 0 0;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.05;
+}
+
+.eyebrow {
+  color: var(--wang-text-muted);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.databaseBadge {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--tint-teal);
+  color: var(--wang-teal-text);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.intro {
+  max-width: 780px;
+  margin: 18px 0 0;
+  color: var(--wang-text-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.summaryGrid article,
+.sportCard,
+.groupCard,
+.emptyState {
+  border: 1px solid var(--wang-grey-line);
+  background: var(--wang-white);
+}
+
+.summaryGrid article {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 12px;
+}
+
+.summaryGrid article > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--wang-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.summaryGrid strong,
+.summaryGrid small {
+  display: block;
+}
+
+.summaryGrid strong {
+  margin-top: 12px;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 30px;
+}
+
+.summaryGrid small {
+  margin-top: 3px;
+  color: var(--wang-text-muted);
+}
+
+.privacyNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--wang-teal-text) 22%, transparent);
+  border-radius: 12px;
+  background: var(--tint-teal);
+  color: var(--wang-teal-text);
+}
+
+.privacyNotice svg {
+  flex: none;
+}
+
+.privacyNotice strong,
+.privacyNotice span {
+  display: block;
+}
+
+.privacyNotice span {
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sportList {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.sportCard {
+  min-width: 0;
+  padding: 22px;
+  border-radius: 14px;
+}
+
+.sportHeading,
+.groupHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sportHeading h2 {
+  margin: 5px 0 0;
+  font-size: 26px;
+}
+
+.sportHeading > span,
+.groupHeading > strong {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--wang-blue-tint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.groupCard {
+  min-width: 0;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.groupHeading span {
+  color: var(--wang-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.groupHeading h3 {
+  margin: 4px 0 0;
+  font-size: 16px;
+}
+
+.athleteList {
+  display: grid;
+  gap: 0;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.athleteList li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid var(--wang-grey-line);
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.athleteList strong,
+.athleteList div > span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.athleteList strong {
+  font-size: 14px;
+}
+
+.athleteList div > span,
+.athleteList small,
+.emptyText {
+  color: var(--wang-text-muted);
+  font-size: 11px;
+}
+
+.athleteList div > span {
+  margin-top: 3px;
+}
+
+.athleteList small {
+  text-align: right;
+}
+
+.emptyState {
+  margin-top: 24px;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.emptyState svg {
+  color: var(--wang-orange);
+}
+
+.emptyState h2 {
+  margin: 12px 0 6px;
+}
+
+.emptyState p,
+.emptyText {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.emptyState p {
+  color: var(--wang-text-muted);
+}
+
+.page a:focus-visible {
+  outline: 3px solid var(--wang-mint);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .groupGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 24px 20px 56px;
+  }
+
+  .headingRow,
+  .sportHeading,
+  .groupHeading {
+    align-items: flex-start;
+  }
+
+  .headingRow,
+  .sportHeading {
+    flex-direction: column;
+  }
+
+  .databaseBadge {
+    margin-left: 0;
+  }
+
+  .summaryGrid,
+  .groupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .athleteList li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .athleteList small {
+    grid-column: 2;
+    text-align: left;
+  }
+}
