@@ -126,6 +126,25 @@ export interface WangAthleteOverview {
   sports: WangAthleteSport[];
 }
 
+export interface WangAthleteProfileData {
+  id: string;
+  name: string;
+  grade: "VG1" | "VG2" | "VG3";
+  isDemo: boolean;
+  schoolName: string | null;
+  group: {
+    id: string;
+    code: string;
+    name: string;
+    schoolYear: string;
+  };
+  sport: {
+    schoolSportId: string;
+    code: string;
+    name: string;
+  };
+}
+
 export type WangCalendarAccessKind = "self" | "shared" | "staff";
 
 export interface WangCalendarEvent extends WangDemoEvent {

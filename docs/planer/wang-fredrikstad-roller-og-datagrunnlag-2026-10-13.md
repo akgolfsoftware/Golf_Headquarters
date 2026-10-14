@@ -205,3 +205,15 @@ Den beskyttede siden `/team-wang/app/utovere` er koblet til WANG-databasen.
 - søvn, dagsform, innsjekkstatus, telefonnummer og e-post hentes ikke
 - fiktive elever er tydelig merket som fiktive data
 - utøverprofil er ikke gjort klikkbar før en egen tilgangskontrollert profilside finnes
+
+## 15. Rolleavgrenset utøverprofil bygget 14. oktober 2026
+
+Utøverlisten åpner nå en beskyttet grunnprofil under `/team-wang/app/utovere/[elevId]`.
+
+- profilen kan bare åpnes når eleven allerede finnes i den innloggede rollens skole- eller idrettsomfang
+- ukjent elev-ID og elev utenfor omfanget gir samme nøytrale svar og røper ikke om eleven finnes
+- siden viser bare navn, trinn, skole, idrett, gruppe og skoleår
+- søvn, dagsform, morgeninnsjekk, telefonnummer, e-post og andre kontaktopplysninger hentes ikke
+- fiktive elever er tydelig merket som demonstrasjonsdata
+- kalender, konkurranser og skoledata er synlige som ærlige ikke-koblede tilstander uten oppdiktet innhold
+- lenker og profilside har minimum 44 piksler trykkflate og tydelig tastaturfokus

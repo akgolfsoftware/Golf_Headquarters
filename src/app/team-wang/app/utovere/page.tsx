@@ -155,12 +155,18 @@ export default async function WangUtoverePage() {
                           <ul className={styles.athleteList}>
                             {group.athletes.map((athlete) => (
                               <li key={athlete.id}>
-                                <span className={styles.avatar} aria-hidden>{initials(athlete.name)}</span>
-                                <div>
-                                  <strong>{athlete.name}</strong>
-                                  <span>{athlete.grade}</span>
-                                </div>
-                                {athlete.isDemo ? <small>Fiktive data</small> : null}
+                                <Link
+                                  href={`/team-wang/app/utovere/${athlete.id}`}
+                                  className={styles.athleteLink}
+                                  aria-label={`Åpne profil for ${athlete.name}`}
+                                >
+                                  <span className={styles.avatar} aria-hidden>{initials(athlete.name)}</span>
+                                  <div>
+                                    <strong>{athlete.name}</strong>
+                                    <span>{athlete.grade}</span>
+                                  </div>
+                                  {athlete.isDemo ? <small>Fiktive data</small> : null}
+                                </Link>
                               </li>
                             ))}
                           </ul>

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { opprettWangServerKlient } from "./server";
 import type {
   WangAthleteOverview,
+  WangAthleteProfileData,
   WangAuthenticatedProfile,
   WangGolfDemoData,
   WangRole,
@@ -397,6 +398,51 @@ export async function hentWangUtoveroversikt(
   }
 
   return byggWangUtoveroversikt(schoolSports, sports, groups, students, profiles);
+}
+
+export function finnWangUtoverprofil(
+  overview: WangAthleteOverview,
+  studentId: string,
+  schoolName: string | null,
+): WangAthleteProfileData | null {
+  for (const sport of overview.sports) {
+    for (const group of sport.groups) {
+      const athlete = group.athletes.find((candidate) => candidate.id === studentId);
+      if (!athlete) continue;
+
+      return {
+        id: athlete.id,
+        name: athlete.name,
+        grade: athlete.grade,
+        isDemo: athlete.isDemo,
+        schoolName,
+        group: {
+          id: group.id,
+          code: group.code,
+          name: group.name,
+          schoolYear: group.schoolYear,
+        },
+        sport: {
+          schoolSportId: sport.schoolSportId,
+          code: sport.sportCode,
+          name: sport.sportName,
+        },
+      };
+    }
+  }
+
+  return null;
+}
+
+export async function hentWangUtoverprofil(
+  profile: WangAuthenticatedProfile,
+  studentId: string,
+): Promise<WangAthleteProfileData | null> {
+  if (!erWangUtoveroversiktRolle(profile.role)) return null;
+  if (!z.uuid().safeParse(studentId).success) return null;
+
+  const overview = await hentWangUtoveroversikt(profile);
+  return finnWangUtoverprofil(overview, studentId, profile.schoolName);
 }
 
 export function velgWangWorkbenchGruppe(
