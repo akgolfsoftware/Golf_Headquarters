@@ -43,7 +43,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/SnvRTBqBURfaAwGeB8Fd4k |
 | 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/TwDR654TtsNY2reVdzuynX |
 | 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/VNK9zkWkgwc7TnvPSeXYzA |
-| 5 Konkurranse | Turneringer, resultater per elev, samlinger med uttak | `konkurranse.html` | | |
+| 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Cpp3vn3XuJXeYmbSzLU15x |
 | 6 Meldinger | Innboks, gruppeposter, post til én elev (foresatt leser under 18) | `meldinger.html` | | |
 | 7 Elever | Elevliste, elevark, IUP-fanen (hentet fra PlayerHQ), fireukerssjekk, forslag til elevens plan | `elever.html` | | |
 | 8 Administrasjon | Trenere og roller, samtykke og deling, timeplanføring, opptak (bare sportssjef) | `administrasjon.html` | | |
@@ -109,3 +109,8 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 2. Landslagsnivå per klasse må komme fra Team Norway. Til da «—».
 3. Dagens kode har knebøy og CMJ i WANGs fysiske tester (`src/components/wang/wang-data.ts`). Vedtaket 28.09 sier benkpress, markløft trapbar, lengdehopp, rotasjonskast og Club Speed. Utkastet følger vedtaket.
 4. WANG-39 «nasjonal rangering og persentiler» er ikke tegnet: posisjon er aldri persentil, og en trener ser ikke andre skolers elever. Rangering i egen gruppe ligger i «Én test». Skal en nasjonal rangering finnes, må tallene komme fra Team Norway.
+
+### Pakke 5 Konkurranse
+1. Skal WANG-trenere se Data Golf-sammenligningen (WANG-50)? Vedtaket 06.10 sier alle med coach-rollen, også WANG-trenere. Utkastet viser den, merket «Powered by Data Golf» og «Bare for trenere».
+2. Hvem publiserer uttaket til samlinger? Utkastet lar trener lagre kladd og bare sportssjef publisere.
+3. Dagens kode viser «College D1 snitt» som referanse i turneringsanalysen (`WangKonkurranse.tsx`). Kilden er ukjent. Utkastet bruker neste kategori (Broadie, estimat) og Data Golf.
