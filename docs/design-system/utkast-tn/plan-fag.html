@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Norway Plan og fag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@300;400;500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/tn.css">
+<style>
+  .perioder{display:flex;flex-wrap:wrap;border:1px solid var(--ink-200)}
+  .perioder span{display:flex;align-items:center;min-height:30px;flex-basis:max-content;padding:0 8px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;border-right:1px solid var(--ink-200);background:var(--hvit);color:var(--ink-700)}
+  .perioder span.naa{background:var(--navy-900);color:var(--hvit)}
+  .uker{display:grid;gap:var(--r2)}
+  .uke{display:grid;gap:8px;padding:14px;border:1px solid var(--ink-200);background:var(--hvit)}
+  .uke .topp{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;align-items:baseline}
+  .uke b{font:500 15px/1 var(--mono);letter-spacing:.06em;color:var(--navy-900)}
+  .uke .fordeling{display:flex;height:22px;background:var(--ink-100)}
+  .uke .fordeling span{display:block;height:100%}
+  .uke.lett{background:var(--ink-50)}
+  .lg i.fys{background:var(--fys)} .lg i.tek{background:var(--tek)} .lg i.slag{background:var(--slag)} .lg i.spill{background:var(--spill)} .lg i.turn{background:var(--turn)}
+  .ukedager{display:grid;gap:var(--r2)}
+  .dag{display:grid;gap:6px}
+  .dag h3{margin:0;font:500 12px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-700)}
+  .dag .tom{padding:10px 12px;border:1px dashed var(--ink-300);font-size:13.5px;color:var(--ink-500)}
+  @container (min-width:900px){.ukedager{grid-template-columns:repeat(7,minmax(0,1fr));align-items:start}}
+  .okt.mini{padding:10px 12px;gap:3px}
+  .okt.mini .okt-tid{font-size:16px}
+  .okt.mini .navn{font-size:14.5px;font-family:var(--tekst);font-weight:700;letter-spacing:0}
+  .okt.forslag{outline:2px dashed var(--navy-900);outline-offset:2px;opacity:.92}
+  .forslag-kort{display:grid;gap:var(--r3);border:2px solid var(--navy-900)}
+  .foer-etter{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+  .foer-etter > div{display:grid;gap:4px;padding:10px;border:1px solid var(--ink-200)}
+  .foer-etter small{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+  .foer-etter b{font:700 14.5px/1.3 var(--tekst)}
+  .foer-etter .pil{font:500 18px/1 var(--mono);color:var(--navy-900)}
+  .lagt{display:grid;gap:8px}
+  .lagt-rad{display:grid;grid-template-columns:56px minmax(0,1fr) 84px;gap:10px;align-items:center}
+  .lagt-rad .tall{font:500 13px/1 var(--mono);text-align:right;white-space:nowrap}
+  .stolpe.ramme-s{background:var(--ink-100)}
+  .prot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center;text-decoration:none;color:inherit}
+  .prot:last-child{border-bottom:0}
+  .prot b{font:700 15px/1.3 var(--tekst)}
+  .felt-liste{display:grid;gap:6px}
+  .felt-liste div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 12px;background:var(--ink-50);border:1px solid var(--ink-200)}
+  .felt-liste b{font:700 14px/1.3 var(--tekst)}
+  .felt-liste span{font:500 13px/1.3 var(--mono);color:var(--ink-700)}
+  .forsok-liste{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .forsok-liste span{display:grid;gap:2px;padding:8px;border:1px solid var(--ink-200);font:500 15px/1 var(--mono);color:var(--navy-900)}
+  .forsok-liste small{font:500 10.5px/1 var(--mono);color:var(--ink-500)}
+  @container (min-width:900px){.forsok-liste{grid-template-columns:repeat(8,minmax(0,1fr))}}
+  .ref{display:grid;border-top:1px solid var(--ink-200)}
+  .ref-rad{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:8px;padding:10px 0;border-bottom:1px solid var(--ink-200);font:500 14px/1.25 var(--mono);align-items:center}
+  .ref-rad span:first-child{font:700 14px/1.3 var(--tekst)}
+  .ref-rad.hode{font:500 10.5px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500)}
+  .ref-rad.hode span:first-child{font:inherit}
+  .ref-rad span:not(:first-child){text-align:right}
+  .person{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .person:last-child{border-bottom:0}
+  .person b{font:700 15px/1.3 var(--tekst)}
+  .soyler{display:grid;gap:8px}
+  .soyle{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;gap:10px;align-items:center}
+  .soyle .tall{font:500 14px/1 var(--mono);text-align:right}
+  .soyle .navn{font:700 13.5px/1.2 var(--tekst)}
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 5 Plan og fag · utkast 1 · 14.10.2026</span>
+    <h1>Plan og fag: månedsplan, Workbench, protokoller og fagapparat</h1>
+    <p>Åtte skjermer fra menygruppen Plan og fag. Team Norway-trenere foreslår endringer, spilleren bestemmer. Bare syntetiske data.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Skjerm">
+      <button type="button" data-skjerm="maned" aria-pressed="true">Månedsplan</button>
+      <button type="button" data-skjerm="workbench" aria-pressed="false">Workbench</button>
+      <button type="button" data-skjerm="protokoller" aria-pressed="false">Testprotokoller</button>
+      <button type="button" data-skjerm="protokoll" aria-pressed="false">Én protokoll</button>
+      <button type="button" data-skjerm="referanse" aria-pressed="false">Referansenivåer</button>
+      <button type="button" data-skjerm="fagapparat" aria-pressed="false">Fagapparat</button>
+      <button type="button" data-skjerm="analyse" aria-pressed="false">Analyse</button>
+      <button type="button" data-skjerm="katalog" aria-pressed="false">Trenerkatalog</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde">
+      <button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button>
+      <button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-tilstand="data" aria-pressed="true">Med data</button>
+      <button type="button" data-tilstand="tom" aria-pressed="false">Tom</button>
+      <button type="button" data-tilstand="laster" aria-pressed="false">Laster</button>
+      <button type="button" data-tilstand="feil" aria-pressed="false">Feil</button>
+    </div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva som er nytt</h2>
+      <ul>
+        <li><b>Månedsplan</b> viser periodene som et tynt bånd og timer per akse per uke, arvet fra perioden. Lette uker er merket.</li>
+        <li><b>Workbench</b> for Team Norway-treneren: uka med øktkort i aksefargen. Endringer blir forslag med før og etter, som spilleren godtar eller avviser. «Lagt inn mot fordelt» per akse.</li>
+        <li><b>Protokoller og referansenivåer</b> viser versjon og kilde. Mangler Team Norways tall, står det en strek og «Uten referanse».</li>
+        <li><b>Analyse</b> sammenligner bare én protokoll eller én testdag om gangen.</li>
+        <li><b>Trenerkatalogen</b> er en liste over hvem som finnes. Den gir ingen tilgang.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Skal Workbench og Månedsplan for Team Norway være én skjerm? I dag er de to menypunkter.</li>
+        <li>Fagapparatet (fysio, mental trener) har ingen egen rolle i koden. Utkastet viser rollen som tekst.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ============ MÅNEDSPLAN ============ -->
+<template id="maned">
+<div class="app" data-aktiv="manedsplan">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Team Norway Junior · oktober 2026</span>
+    <h1 class="tittel">Månedsplan</h1>
+    <p class="ingress">Gruppas plan, arvet fra årsplanen. Spillerne tilpasser sin egen plan i PlayerHQ.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <div class="valg" role="group" aria-label="Velg måned"><button type="button" aria-pressed="false">September</button><button type="button" aria-pressed="true">Oktober</button><button type="button" aria-pressed="false">November</button></div>
+    <div class="valg" role="group" aria-label="Velg visning"><button type="button" aria-pressed="true">Måned</button><button type="button" aria-pressed="false">Uke</button></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Perioder</h2><button type="button" class="knapp stille">Endre</button></div>
+    <div class="perioder"><span style="flex-grow:3">Turneringsperiode</span><span class="naa" style="flex-grow:2">Evaluering</span><span style="flex-grow:4">Grunnperiode</span></div>
+    <p class="kilde">Evaluering 5.–25. oktober, Grunnperiode fra 26. oktober.</p>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Ukene</h2><span class="kilde">Timer per spiller</span></div>
+    <div class="uker" id="uker"></div>
+    <div class="lg-rad"><span class="lg"><i class="fys"></i>FYS</span><span class="lg"><i class="tek"></i>TEK</span><span class="lg"><i class="slag"></i>SLAG</span><span class="lg"><i class="spill"></i>SPILL</span><span class="lg"><i class="turn"></i>TURN</span></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Aktivitet</h2><a class="lenke" href="#">Se samlinger</a></div>
+    <div class="kort">
+      <div class="rad"><span><span class="navn">Fellestest, TN-batteriet</span><br><span class="kilde">7. okt · Bossum</span></span><span class="merke ok"><i></i>Gjennomført</span></div>
+      <div class="rad"><span><span class="navn">Høstsamling Bossum</span><br><span class="kilde">26.–28. okt</span></span><span class="merke info"><i></i>Samling</span></div>
+    </div>
+    <div class="knapper"><button type="button" class="knapp pri">Ny økt</button></div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ WORKBENCH ============ -->
+<template id="workbench">
+<div class="app" data-aktiv="workbench">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Workbench · Mathea Lund · uke 43</span>
+    <h1 class="tittel">Uka</h1>
+    <p class="ingress">Du ser det Mathea har delt. Direkte endring er slått av: endringer blir forslag hun godtar eller avviser.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <div class="valg" role="group" aria-label="Spiller"><button type="button" aria-pressed="true">Mathea Lund</button><button type="button" aria-pressed="false">Sander Vik</button><button type="button" aria-pressed="false">Gruppa</button></div>
+    <div class="valg" role="group" aria-label="Uke"><button type="button" aria-pressed="false">Uke 42</button><button type="button" aria-pressed="true">Uke 43</button><button type="button" aria-pressed="false">Uke 44</button></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Lagt inn mot fordelt</h2><span class="kilde">Fordelt fra Grunnperiode</span></div>
+    <div class="kort lagt" id="lagt"></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Øktene</h2><button type="button" class="knapp sek">Ny økt fra mal eller øvelse</button></div>
+    <div class="ukedager">
+      <div class="dag"><h3>Man 19.</h3><button type="button" class="okt mini tek"><span class="okt-tid">16:00<small>90</small></span><span class="navn">P6.0 treffpunkt</span></button></div>
+      <div class="dag"><h3>Tir 20.</h3><button type="button" class="okt mini fys"><span class="okt-tid">07:00<small>60</small></span><span class="navn">Styrke, RFD</span></button><button type="button" class="okt mini slag"><span class="okt-tid">16:00<small>90</small></span><span class="navn">Wedge 40–90 m</span></button></div>
+      <div class="dag"><h3>Ons 21.</h3><span class="tom">Hviledag</span></div>
+      <div class="dag"><h3>Tor 22.</h3><button type="button" class="okt mini spill forslag"><span class="okt-tid">15:00<small>120</small></span><span class="navn">9 hull, forslag</span></button></div>
+      <div class="dag"><h3>Fre 23.</h3><button type="button" class="okt mini slag"><span class="okt-tid">16:00<small>60</small></span><span class="navn">Putting 1–3 m</span></button></div>
+      <div class="dag"><h3>Lør 24.</h3><button type="button" class="okt mini turn"><span class="okt-tid">08:00<small>R1</small></span><span class="navn">Norgescup finale</span></button></div>
+      <div class="dag"><h3>Søn 25.</h3><button type="button" class="okt mini turn"><span class="okt-tid">08:30<small>R2</small></span><span class="navn">Norgescup finale</span></button></div>
+    </div>
+    <p class="kilde">Stiplet ramme: forslag fra deg som venter på Mathea.</p>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Nytt forslag</h2></div>
+    <div class="kort forslag-kort">
+      <span class="undertittel">Flytt økt</span>
+      <div class="foer-etter"><div><small>Før</small><b>Wedge 40–90 m</b><span class="kilde">Tirsdag 20. kl. 16:00</span></div><span class="pil">→</span><div><small>Etter</small><b>Wedge 40–90 m</b><span class="kilde">Onsdag 21. kl. 16:00</span></div></div>
+      <div class="felt"><label for="wb-hvorfor">Hvorfor (vises for Mathea)</label><input id="wb-hvorfor" value="Styrke og wedge samme dag blir mye før turneringen."></div>
+      <div class="knapper"><button type="button" class="knapp pri">Send flytteforslag</button><button type="button" class="knapp stille">Avbryt</button></div>
+    </div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ PROTOKOLLER ============ -->
+<template id="protokoller">
+<div class="app" data-aktiv="protokoller">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Versjon tn-excel-v3 · 2. oktober 2026</span>
+    <h1 class="tittel">Testprotokoller</h1>
+    <p class="ingress">De nasjonale testene slik de skal gjennomføres. Bare protokoller med status Klar kan brukes i fellestesting.</p>
+  </header>
+  <div class="valg" role="group" aria-label="Filtrer på status" data-behold><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">Klar</button><button type="button" aria-pressed="false">Utkast</button></div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Golfslag</h2></div>
+    <div class="kort">
+      <a class="prot" href="#" data-gaa="protokoll"><span><b>8-ball variasjon</b><br><span class="kilde">8 slag · carry og side · poeng og PEI</span></span><span class="merke ok"><i></i>Klar</span></a>
+      <div class="prot"><span><b>8-ball blokk</b><br><span class="kilde">8 slag · carry og side</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Wedge Gate</b><br><span class="kilde">9 slag · Godkjent eller Bom</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Nærspill Gate</b><br><span class="kilde">15 slag · Godkjent eller Bom</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>VISA Express</b><br><span class="kilde">Godkjent eller Bom</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Driver basic · 270 m</b><br><span class="kilde">5 slag</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>9 hull lengde</b><br><span class="kilde">Restavstand i fot</span></span><span class="merke vent"><i></i>Utkast</span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Fysisk</h2><span class="kilde">Etter 6-årsløpet</span></div>
+    <div class="kort">
+      <div class="prot"><span><b>Benkpress</b><br><span class="kilde">1RM estimert · kg</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Markløft trapbar</b><br><span class="kilde">kg</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Lengdehopp</b><br><span class="kilde">m</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Rotasjonskast</b><br><span class="kilde">m</span></span><span class="merke ok"><i></i>Klar</span></div>
+      <div class="prot"><span><b>Club Speed</b><br><span class="kilde">mph, driver</span></span><span class="merke ok"><i></i>Klar</span></div>
+    </div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ ÉN PROTOKOLL ============ -->
+<template id="protokoll">
+<div class="app" data-aktiv="protokoller" data-skall="tilbake" data-tilbake="Testprotokoller">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Protokoll · versjon tn-excel-v3 · Klar</span>
+    <h1 class="tittel">8-ball variasjon</h1>
+    <p class="ingress">Åtte slag med ulik lengde i fast rekkefølge. Måler presisjon på innspill fra 40 til 110 meter.</p>
+  </header>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Forsøk og mål</h2><span class="kilde">8 slag</span></div>
+    <div class="forsok-liste"><span><small>1</small>40 m</span><span><small>2</small>50 m</span><span><small>3</small>60 m</span><span><small>4</small>70 m</span><span><small>5</small>80 m</span><span><small>6</small>90 m</span><span><small>7</small>100 m</span><span><small>8</small>110 m</span></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Dette registreres</h2></div>
+    <div class="felt-liste">
+      <div><b>Carry</b><span>meter</span></div>
+      <div><b>Side</b><span>meter, venstre − / høyre +</span></div>
+      <div><b>Til hull</b><span>regnes ut</span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Resultat</h2></div>
+    <div class="kort">
+      <p class="forklar">Poeng per slag: 5 i hull, 3 innen 1 meter, deretter 2, 1 og 0. Totalen er summen av åtte slag, høyst 40. PEI er snittavstand til hull delt på slaglengde.</p>
+      <p class="kilde">Kilde: Scorekort GolfslagTester!A4:I35. Vedtak om carry og side 14.10.2026. Grensene for 2 og 1 poeng er ikke skrevet ned.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Historikk</h2></div>
+    <div class="kort">
+      <div class="rad"><span><span class="navn">tn-excel-v3</span><br><span class="kilde">2. okt 2026 · carry og side</span></span><span class="merke ok"><i></i>Gjeldende</span></div>
+      <div class="rad"><span><span class="navn">tn-excel-v3</span><br><span class="kilde">10. sep 2026 · bare til hull</span></span><span class="merke noy"><i></i>Utgått</span></div>
+    </div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ REFERANSENIVÅER ============ -->
+<template id="referanse">
+<div class="app" data-aktiv="referansenivaer">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Fra protokollkilden</span>
+    <h1 class="tittel">Referansenivåer</h1>
+    <p class="ingress">Målverdiene per test og klasse. De endres bare når protokollen får ny versjon.</p>
+  </header>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Nivåer per test</h2><span class="merke kontur">Tall fra Team Norway mangler</span></div>
+    <div class="kort">
+      <div class="ref">
+        <div class="ref-rad hode"><span>Test</span><span>AK kat. B</span><span>AK kat. A</span><span>TN junior</span></div>
+        <div class="ref-rad"><span>8-ball variasjon</span><span>—</span><span>—</span><span>—</span></div>
+        <div class="ref-rad"><span>Wedge Gate</span><span>—</span><span>—</span><span>—</span></div>
+        <div class="ref-rad"><span>Club Speed</span><span>—</span><span>—</span><span>—</span></div>
+        <div class="ref-rad"><span>Lengdehopp</span><span>—</span><span>—</span><span>—</span></div>
+      </div>
+      <p class="kilde">A–K-nivåtallene er ikke vedtatt, og landslagsnivået må komme fra Team Norway. Ingen tall lages på antakelse.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Uten referanse · protokoll i utkast</h2></div>
+    <div class="kort"><div class="rad"><span class="navn">9 hull lengde</span><span class="merke vent"><i></i>Utkast</span></div></div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ FAGAPPARAT ============ -->
+<template id="fagapparat">
+<div class="app" data-aktiv="fagapparat">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Team Norway Junior</span>
+    <h1 class="tittel">Fagapparat</h1>
+    <p class="ingress">Hvem i trenerteamet som følger landslagsspillerne.</p>
+  </header>
+  <div class="knapper" data-behold><button type="button" class="knapp sek">Legg til trener</button></div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Fagteam</h2><span class="kilde">4 personer</span></div>
+    <div class="kort">
+      <div class="person"><span class="avatar">IH</span><span><b>Ida Hovland</b><br><span class="kilde">Sportssjef · alle 14 spillere</span></span><span class="merke info"><i></i>Sportssjef</span></div>
+      <div class="person"><span class="avatar">TA</span><span><b>Tor Aune</b><br><span class="kilde">Trener · gutter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
+      <div class="person"><span class="avatar">KS</span><span><b>Kari Solberg</b><br><span class="kilde">Trener · jenter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
+      <div class="person"><span class="avatar">PR</span><span><b>Petter Ruud</b><br><span class="kilde">Fysisk trener · samlinger</span></span><span class="merke noy"><i></i>Assist Coach</span></div>
+    </div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ ANALYSE ============ -->
+<template id="analyse">
+<div class="app" data-aktiv="analyse">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Gruppeanalyse</span>
+    <h1 class="tittel">Sammenlign kompatible målinger</h1>
+    <p class="ingress">Velg én testdag eller én protokoll. Ulike protokoller blandes aldri i samme sammenligning.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <div class="valg" role="group" aria-label="Velg grunnlag"><button type="button" aria-pressed="true">Testdag 7. okt</button><button type="button" aria-pressed="false">Én protokoll</button></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>8-ball variasjon</h2><span class="kilde">11 spillere · 7. okt</span></div>
+    <div class="kort">
+      <div class="hoved"><strong>16,4<small>poeng snitt</small></strong></div>
+      <div class="soyler" id="soyler"></div>
+      <p class="kilde">Poeng av 40. Tre spillere mangler testen. Kilde: fellestest 7. oktober, alle kontrollert.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>WANG-skolene</h2><span class="kilde">Delte resultater, samme protokoll</span></div>
+    <div class="kort">
+      <div class="rad"><span><span class="navn">WANG Fredrikstad</span><br><span class="kilde">6 elever</span></span><span class="tall">14,1</span></div>
+      <div class="rad"><span><span class="navn">WANG Oslo</span><br><span class="kilde">5 elever</span></span><span class="tall">13,6</span></div>
+      <div class="rad"><span><span class="navn">WANG Bergen</span><br><span class="kilde">2 elever, for få til snitt</span></span><span class="tall">—</span></div>
+    </div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ TRENERKATALOG ============ -->
+<template id="katalog">
+<div class="app" data-aktiv="fagapparat">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Trenerkatalog</span>
+    <h1 class="tittel">Apparatet</h1>
+    <p class="ingress">Trenere og fagfolk i Team Norway-nettverket. Katalogen gir ingen tilgang til spillere.</p>
+  </header>
+  <div class="sok" data-behold style="display:grid;gap:8px"><div class="felt"><label for="k-sok">Søk</label><input id="k-sok" placeholder="Navn, rolle eller region"></div></div>
+  <section class="kort">
+    <div class="person"><span class="avatar">IH</span><span><b>Ida Hovland</b><br><span class="kilde">Sportssjef junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
+    <div class="person"><span class="avatar">LM</span><span><b>Lars Moen</b><br><span class="kilde">Regiontrener · Vest</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
+    <div class="person"><span class="avatar">AB</span><span><b>Anne Bakke</b><br><span class="kilde">Mental trener · Olympiatoppen</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
+    <div class="person"><span class="avatar">TA</span><span><b>Tor Aune</b><br><span class="kilde">Trener junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
+  </section>
+  <p class="kilde">Tilgang gis under Trenere og tilgang, og bare med e-post som slutter på @golfforbundet.no.</p>
+</main>
+</div>
+</template>
+
+<script src="felles/tn.js"></script>
+<script>
+var F = { fys: '#0D6E6A', tek: '#0A5199', slag: '#4B3F9E', spill: '#8A2A72', turn: '#A80126' };
+var UKER = [['Uke 40', '28. sep–4. okt', [2, 2, 3, 2, 3], false], ['Uke 41', '5.–11. okt', [2, 2, 2, 1, 0], true], ['Uke 42', '12.–18. okt', [2, 3, 3, 2, 0], false], ['Uke 43', '19.–25. okt', [3, 2, 2, 1, 2], false], ['Uke 44', '26. okt–1. nov', [3, 3, 3, 1, 0], false]];
+var NOKLER = ['fys', 'tek', 'slag', 'spill', 'turn'];
+function k(x) { return String(x).replace('.', ','); }
+TNUtkast.start({
+  start: 'maned',
+  skjermer: {
+    maned: { mal: 'maned', etter: function (a) {
+        a.querySelector('#uker').innerHTML = UKER.map(function (u) {
+          var sum = u[2].reduce(function (s, x) { return s + x; }, 0);
+          return '<div class="uke' + (u[3] ? ' lett' : '') + '"><div class="topp"><b>' + u[0] + '</b><span class="kilde">' + u[1] + (u[3] ? ' · lett uke' : '') + '</span><span class="tall" style="font:500 15px/1 var(--mono)">' + sum + ' t</span></div><div class="fordeling" role="img" aria-label="' + NOKLER.map(function (n, i) { return n.toUpperCase() + ' ' + u[2][i] + ' t'; }).join(', ') + '">' + u[2].map(function (t, i) { return t ? '<span style="width:' + (t / 14 * 100) + '%;background:' + F[NOKLER[i]] + '"></span>' : ''; }).join('') + '</div><span class="kilde">' + NOKLER.map(function (n, i) { return n.toUpperCase() + ' ' + u[2][i]; }).join(' · ') + '</span></div>';
+        }).join('');
+      }, laster: 'Henter månedsplanen …', feil: 'Månedsplanen kunne ikke hentes',
+      tom: { tittel: 'Ingen økter denne måneden', tekst: 'Gruppas årsplan har ingen perioder i oktober. Legg inn en periode, så får ukene timer.', knapp: 'Legg inn første økt' } },
+    workbench: { mal: 'workbench', etter: function (a) {
+        var L = [['FYS', 'fys', 1, 3], ['TEK', 'tek', 1.5, 2], ['SLAG', 'slag', 2.5, 2], ['SPILL', 'spill', 2, 1], ['TURN', 'turn', 2, 2]];
+        a.querySelector('#lagt').innerHTML = L.map(function (l) {
+          return '<div class="lagt-rad"><span class="akse-tekst ' + l[1] + '">' + l[0] + '</span><span class="stolpe ramme-s"><span data-til="' + Math.min(100, l[2] / 3 * 100) + '%" style="width:' + Math.min(100, l[2] / 3 * 100) + '%;background:' + F[l[1]] + '"></span><span style="left:' + (l[3] / 3 * 100) + '%;width:2px;background:var(--ink-900)"></span></span><span class="tall">' + k(l[2]) + ' / ' + l[3] + ' t</span></div>';
+        }).join('') + '<p class="kilde">Strek: fordelt fra perioden. FYS har 2 t mindre enn fordelt, SLAG og SPILL mer. Workbench sier fra, men stopper ingenting.</p>';
+      }, laster: 'Henter uka …', feil: 'Forslaget ble ikke sendt',
+      tom: { tittel: 'Spilleren har ikke delt planen', tekst: 'Mathea har ikke delt profilen med deg. Du kan sende en forespørsel om deling.', knapp: 'Be om deling' } },
+    protokoller: { mal: 'protokoller', laster: 'Henter protokollene …', feil: 'Protokollene kunne ikke hentes',
+      tom: { tittel: 'Ingen testprotokoller er publisert', tekst: 'Protokollene kommer fra Team Norways scorekort-ark. Se fellestesting når de er klare.', knapp: 'Se fellestesting' } },
+    protokoll: { mal: 'protokoll', laster: 'Henter protokollen …', feil: 'Protokollen kunne ikke hentes',
+      tom: { tittel: 'Protokollen er tom', tekst: 'Forsøk og felt legges inn fra protokollkilden.', knapp: 'Testprotokoller' } },
+    referanse: { mal: 'referanse', laster: 'Henter nivåene …', feil: 'Referansenivåene kunne ikke hentes',
+      tom: { tittel: 'Ingen referansenivåer', tekst: 'Nivåene vises når protokollene har tall per klasse.', knapp: 'Testprotokoller' } },
+    fagapparat: { mal: 'fagapparat', laster: 'Henter fagteamet …', feil: 'Fagapparatet kunne ikke hentes',
+      tom: { tittel: 'Ingen aktive trenere', tekst: 'Ingen aktive trenere er registrert i Team Norway-gruppen.', knapp: 'Legg til trener' } },
+    analyse: { mal: 'analyse', etter: function (a) {
+        var S = [['Mathea L.', 19], ['Hedda N.', 18], ['Ingrid S.', 18], ['Sander V.', 17], ['Ola S.', 16], ['Jonas H.', 13]];
+        a.querySelector('#soyler').innerHTML = S.map(function (s) { return '<div class="soyle"><span class="navn">' + s[0] + '</span><span class="stolpe"><span data-til="' + (s[1] / 40 * 100) + '%" style="width:' + (s[1] / 40 * 100) + '%"></span></span><span class="tall">' + s[1] + '</span></div>'; }).join('') + '<p class="kilde">Viser 6 av 11. Snitt 16,4.</p>';
+      }, laster: 'Henter grunnlaget …', feil: 'Fant ikke grunnlaget',
+      tom: { tittel: 'Velg en testdag eller en protokoll', tekst: 'Sammenligningen vises når du har valgt grunnlag med minst to spillere.', knapp: 'Velg grunnlag' } },
+    katalog: { mal: 'katalog', laster: 'Henter katalogen …', feil: 'Katalogen kunne ikke hentes',
+      tom: { tittel: 'Ingen i katalogen', tekst: 'Katalogen fylles fra Team Norways IUP-ark.', knapp: 'Fagapparat' } }
+  }
+});
+</script>
+</body>
+</html>
