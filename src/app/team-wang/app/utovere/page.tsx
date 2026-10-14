@@ -8,6 +8,7 @@ import {
   GraduationCap,
   LockKeyhole,
   ShieldCheck,
+  TriangleAlert,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -18,6 +19,10 @@ import {
   hentWangUtoveroversikt,
 } from "@/lib/wang-supabase/data";
 import { hentWangRolledefinisjon } from "@/lib/wang-supabase/roles";
+import {
+  erWangHelsevarselRolle,
+  hentWangHelsevarsler,
+} from "@/lib/wang-supabase/wellbeing";
 
 import appStyles from "../app.module.css";
 import styles from "./utovere.module.css";
@@ -37,6 +42,14 @@ function initials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("");
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("nb-NO", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Europe/Oslo",
+  }).format(new Date(`${value}T12:00:00+02:00`));
 }
 
 export default async function WangUtoverePage() {
@@ -63,6 +76,10 @@ export default async function WangUtoverePage() {
   }
 
   const overview = await hentWangUtoveroversikt(context.profile);
+  const canViewWellbeing = erWangHelsevarselRolle(context.profile.role);
+  const wellbeingAlerts = canViewWellbeing
+    ? await hentWangHelsevarsler(context.profile, overview)
+    : [];
   const role = hentWangRolledefinisjon(context.profile.role);
   const groups = overview.sports.flatMap((sport) => sport.groups);
   const athleteCount = groups.reduce((sum, group) => sum + group.athletes.length, 0);
@@ -82,7 +99,9 @@ export default async function WangUtoverePage() {
           <span className={styles.databaseBadge}><Database size={16} aria-hidden /> Databasekoblet</span>
         </div>
         <p className={styles.intro}>
-          {role.label} ser bare elever ved egen skole eller i tildelt idrett. Listen viser ikke søvn, dagsform eller kontaktopplysninger.
+          {canViewWellbeing
+            ? `${role.label} ser bare elever og aktive helsevarsler i tildelt idrett. Eksakte søvntall, dagsform og kontaktopplysninger vises ikke i oversikten.`
+            : `${role.label} ser bare elever ved egen skole. Listen viser ikke søvn, dagsform eller kontaktopplysninger.`}
         </p>
       </header>
 
@@ -108,9 +127,53 @@ export default async function WangUtoverePage() {
         <ShieldCheck size={20} aria-hidden />
         <div>
           <strong>Minste nødvendige innsyn</strong>
-          <span>Helse, morgeninnsjekk, foresatte og klubbkontakter åpnes ikke fra denne listen.</span>
+          <span>
+            {canViewWellbeing
+              ? "Bare utløst tre-dagersregel vises. Eksakte søvntall, dagsform, foresatte og klubbkontakter åpnes ikke fra listen."
+              : "Helse, morgeninnsjekk, foresatte og klubbkontakter åpnes ikke fra denne listen."}
+          </span>
         </div>
       </aside>
+
+      {canViewWellbeing ? (
+        <section
+          className={wellbeingAlerts.length > 0 ? styles.alertPanel : styles.alertPanelClear}
+          aria-labelledby="wang-wellbeing-alerts-title"
+        >
+          <div className={styles.alertHeading}>
+            <span className={styles.alertIcon}><TriangleAlert size={22} aria-hidden /></span>
+            <div>
+              <span className={styles.eyebrow}>Kun tildelt sportsteam</span>
+              <h2 id="wang-wellbeing-alerts-title">Helsevarsler</h2>
+            </div>
+            <strong>{wellbeingAlerts.length}</strong>
+          </div>
+          {wellbeingAlerts.length > 0 ? (
+            <ul className={styles.alertList}>
+              {wellbeingAlerts.map((alert) => (
+                <li key={alert.studentId}>
+                  <Link href={`/team-wang/app/utovere/${alert.studentId}`}>
+                    <span>
+                      <strong>{alert.athleteName}</strong>
+                      <small>{alert.sportName} · {alert.groupName} · {alert.grade}</small>
+                    </span>
+                    <span>
+                      Under seks timer i {alert.consecutiveDays} dager
+                      <small>{formatDate(alert.streakStartsOn)}–{formatDate(alert.streakEndsOn)}</small>
+                    </span>
+                    {alert.isDemo ? <small>Fiktive data</small> : null}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.alertEmpty}>Ingen aktive varsler etter tre-dagersregelen.</p>
+          )}
+          <p className={styles.alertPrivacy}>
+            Varslet viser bare at regelen er utløst. Skoleledelse, foresatte og eksterne lesere får ikke denne informasjonen.
+          </p>
+        </section>
+      ) : null}
 
       {overview.sports.length === 0 ? (
         <section className={styles.emptyState} aria-labelledby="wang-athletes-empty-title">
