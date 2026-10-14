@@ -19,7 +19,7 @@ import { mondayOf, weekRefDate } from "@/lib/workbench/session-move-math";
 import { logError } from "@/lib/error-tracking";
 import { generateWeekSuggestions, VariantSchema, type WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
-import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { varsleCoachOmPlanendring } from "@/lib/notifications/plan-endring";
 import {
   createWbSession,
@@ -596,7 +596,7 @@ export async function duplicateWorkbenchWeek(
 export async function lagreWorkbenchPeriode(
   input: unknown,
   periodeId?: string,
-): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
+): Promise<{ ok: boolean; periodeId?: string; error?: string } & FordeltPeriodeResultat> {
   const user = await requirePortalUser();
   const result = periodeId
     ? await oppdaterPeriodeCore(user.id, periodeId, input)

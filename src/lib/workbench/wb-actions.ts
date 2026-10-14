@@ -103,7 +103,7 @@ import { canEditGroup, canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/l
 import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
-import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
 import {
   isoUkeIdentitet,
@@ -419,24 +419,27 @@ export async function saveSeasonPeriod(input: {
   periodId?: string;
   seasonPlanId?: string;
   data: unknown;
-}): Promise<WbResultat<{ periodId: string }>> {
+}): Promise<WbResultat<{ periodId: string } & Pick<FordeltPeriodeResultat, "fordeling" | "fordelingFeilet">>> {
   const viewer = await kreverTilgangTilSpiller(input.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
   if (input.seasonPlanId !== undefined && !["PLAYER", "COACH", "ADMIN"].includes(viewer.role))
     return { ok: false, error: INGEN_TILGANG };
   let periodId = input.periodId;
+  let fordeling: Pick<FordeltPeriodeResultat, "fordeling" | "fordelingFeilet"> = {};
   if (periodId) {
     const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data, input.seasonPlanId);
     if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke lagre perioden." };
+    fordeling = { ...(result.fordeling && { fordeling: result.fordeling }), ...(result.fordelingFeilet && { fordelingFeilet: true }) };
   } else {
     const result = await opprettPeriodeCore(input.playerId, input.data, input.seasonPlanId);
     if (!result.ok || !result.periodeId) return { ok: false, error: result.error ?? "Kunne ikke opprette perioden." };
     periodId = result.periodeId;
+    fordeling = { ...(result.fordeling && { fordeling: result.fordeling }), ...(result.fordelingFeilet && { fordelingFeilet: true }) };
   }
   revalider(input.playerId);
   revalidatePath(`/admin/workbench/${input.playerId}`);
   revalidatePath("/portal/planlegge/workbench");
-  return { ok: true, data: { periodId } };
+  return { ok: true, data: { periodId, ...fordeling } };
 }
 
 export async function deleteSeasonPeriod(input: {
