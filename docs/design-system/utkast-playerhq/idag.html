@@ -274,6 +274,12 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 @keyframes opp{from{opacity:0;transform:translateY(24px)}}
 @container (min-width:900px){.oktvisning:not([hidden]){animation-name:fra-hoyre}}
 @keyframes fra-hoyre{from{opacity:0;transform:translateX(40px)}}
+/* Tallet i ringen: vokser fram mens ringen fylles, «av uka» kommer etter */
+.app.anim .hero-ring .ring-tall strong{animation:tall-inn 700ms cubic-bezier(.34,1.4,.64,1) 200ms both}
+.app.anim .hero-ring .ring-tall > span{animation:inn 400ms cubic-bezier(.23,1,.32,1) 650ms both}
+.app.anim .hero-ring svg{animation:ring-inn 800ms cubic-bezier(.23,1,.32,1) both}
+@keyframes tall-inn{from{opacity:0;transform:scale(.6)}}
+@keyframes ring-inn{from{transform:rotate(-180deg) scale(.92)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 
 /* Bilde per økttype */
@@ -303,7 +309,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     <div class="endringer">
       <span class="meta-s">Hva som er nytt i utkast 4</span>
       <ul>
-        <li><b>Ett stort tall øverst:</b> uka som ring, delt i aksefargene, med 31 % i stort. Stolpene per akse viser gjennomført mot plan.</li>
+        <li><b>Ett stort tall øverst:</b> uka som ring, delt i aksefargene, med prosenten i stort (0 % mandag før dagens økter). Ringen roterer inn, tallet vokser fram og «av uka» kommer etter. Stolpene per akse viser gjennomført mot plan.</li>
         <li><b>Mindre grå småtekst:</b> kildelinjene er vanlig skrift i stedet for maskinskrift, og overflødige linjer er fjernet. Kilde og dato står fortsatt der appen påstår noe om spilleren.</li>
         <li><b>Endring fra Anders (14.10):</b> AK-coachens endring av teknisk oppgave er lagt inn med en gang. Øyvind kan angre, men trenger ikke godta (vedtak 28.09). Bare WANG-trenerens forslag venter på svar.</li>
         <li><b>Bevegelse:</b> ringen og stolpene fylles når skjermen åpnes, og tallet teller opp. Kort og knapper gir etter litt når du trykker. Godta og Avvis får forslaget til å gli bort, med «Angre». Hele økta glir inn.</li>
@@ -558,6 +564,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   var UT='cubic-bezier(.23,1,.32,1)';
   function anim(app){
     if(redusert)return;
+    app.classList.add('anim');
     var segs=app.querySelectorAll('.seg'),bars=app.querySelectorAll('[data-til]'),tall=app.querySelector('[data-tell]');
     segs.forEach(function(g){g.dataset.da=g.getAttribute('stroke-dasharray');g.style.strokeDasharray='0 415';});
     bars.forEach(function(b){b.style.width='0%';});
