@@ -1,6 +1,6 @@
 # Designbrev — AK Golf HQ (13.10.2026)
 
-Status: **utkast, venter på Anders' ja.** Når det er godkjent, er dette brevet målestokken for
+Status: **godkjent av Anders 14.10.2026.** Brevet er målestokken for
 alt skjermarbeid i Precision Athletics (`7d7c2994`) og skjermregisteret (`3b49e40a`). En skjerm
 er ikke ferdig fordi tekniske kontroller består. Den er ferdig når den følger dette brevet og
 Anders har sagt ja (port 7).
@@ -58,12 +58,13 @@ Grafitt primærknapp med hvit tekst, rust bare som signal (høyst én per flate)
 Mono, lyst tema som standard, aldri sidelengs rulling, ordboka i `docs/treningsplanlegging.md`,
 tomme, lastende og feilende tilstander på hver skjerm.
 
-## Må avgjøres av Anders før brevet gjelder
+## Avgjort og åpent
 
-1. **Fylte øktkort.** Vedtaket 26.09 (§FARGE BETYR AKSE) sier at øktkort er nøytrale med
+1. **Fylte øktkort: ja** (Anders 14.10, §FYLTE ØKTKORT i `.claude/rules/beslutninger.md`).
+   Opprinnelig spørsmål: **Fylte øktkort.** Vedtaket 26.09 (§FARGE BETYR AKSE) sier at øktkort er nøytrale med
    aksefarget stripe på venstre kant, og at fremdriftsstreker er grafitt. Punkt 1 over overstyrer
    dette. Ja eller nei?
-2. **Bilder.** Precision har ingen bildebank med ekte golfbilder. Hvem leverer bildene: egne
+2. **Bilder (åpent).** Precision har ingen bildebank med ekte golfbilder. Hvem leverer bildene: egne
    bilder fra AK Golf, eller lisensierte bilder?
 
 ## Arbeidsrekkefølge etter godkjenning
