@@ -46,5 +46,6 @@ test("computeWeeklyLoad summerer opplevd belastning på tvers av uken", () => {
   assert.equal(res.ratedSessionsCount, 3);
   assert.equal(res.totalSessionsCount, 4);
   assert.equal(res.averageEffort, 5); // (4+6+5)/3 = 5.0
-  assert.equal(res.completedMinutes, 60 + 80 + 45); // 185
+  // Gjennomført tid er planlagt varighet, som i måned, periode og år.
+  assert.equal(res.completedMinutes, 60 + 90 + 45); // 195
 });
