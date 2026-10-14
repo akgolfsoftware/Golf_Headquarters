@@ -1,0 +1,1109 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Runder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Runder (PH-RD-01–09, PH-18) ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:72px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900)}
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:44px;padding:0 14px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 15px/1 var(--sans);color:var(--graphite-800);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.chips.feil button{border-color:var(--amber-700)}
+.etikett-rad{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3);flex-wrap:wrap}
+.etikett-rad .etikett{font:600 14px/1.3 var(--sans)}
+.paakrevd{font:500 12px/1 var(--sans);color:var(--graphite-600)}
+.paakrevd.mangler{color:var(--amber-700);font-weight:600}
+.knapp.tekst{background:transparent;border:0;color:var(--graphite-900);text-decoration:underline;text-underline-offset:3px;padding:0 6px}
+.knapp[disabled]{opacity:.45;cursor:not-allowed}
+.ruter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ruter button{min-height:56px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:500 15px/1.2 var(--sans);color:var(--graphite-900);cursor:pointer;display:grid;place-items:center;padding:6px}
+.ruter.to{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ruter.lav button{min-height:48px;font-size:14px;text-align:center}
+.ruter button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.ruter button:active{transform:scale(.97)}
+
+/* Hullhode og hullstripe */
+.hullhode{display:grid;gap:6px}
+.hullhode .dato{display:flex;gap:6px;flex-wrap:wrap}
+.hullhode h1{margin:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font:700 30px/1.1 var(--sans);letter-spacing:-.025em}
+.hullhode h1 small{font:500 16px/1.3 var(--sans);letter-spacing:0;color:var(--graphite-800)}
+.stilling{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stripe{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
+.stripe button,.stripe div{min-height:52px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);display:grid;place-items:center;align-content:center;gap:3px;padding:4px 0;font:inherit;color:var(--graphite-900);cursor:pointer}
+.stripe i{font:500 11px/1 var(--sans);font-style:normal;color:var(--graphite-600)}
+.stripe b{font:600 15px/1 var(--mono)}
+.stripe .naa{border:2px solid var(--graphite-900)}
+.stripe .ikke b{color:var(--graphite-500);font-weight:500}
+
+/* Score-merker på scorekortet: ring = under par, firkant = over par. Ingen farge (farge betyr akse). */
+.sk{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 2px;font:600 14px/1 var(--mono)}
+.sk.b{border:1.5px solid var(--graphite-900);border-radius:50%}
+.sk.e{border:1.5px solid var(--graphite-900);border-radius:50%;box-shadow:0 0 0 2px var(--white),0 0 0 3.5px var(--graphite-900)}
+.sk.bo{border:1.5px solid var(--graphite-900);border-radius:2px}
+.sk.db{border:1.5px solid var(--graphite-900);border-radius:2px;box-shadow:0 0 0 2px var(--white),0 0 0 3.5px var(--graphite-900)}
+
+/* Avstand: stort tall som kan trykkes og rettes */
+.avstand{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;gap:8px;align-items:stretch}
+.avstand button{border:1px solid var(--graphite-500);border-radius:10px;background:var(--white);font:600 18px/1 var(--mono);color:var(--graphite-900);cursor:pointer;min-height:72px}
+.avstand label{display:flex;align-items:baseline;justify-content:center;gap:6px;border-radius:10px;background:var(--sand-150);padding:0 8px;cursor:text}
+.avstand input{width:100%;max-width:4.2ch;border:0;background:transparent;font:600 52px/72px var(--mono);letter-spacing:-.04em;text-align:right;color:var(--graphite-900);padding:0;-moz-appearance:textfield}
+.avstand input::-webkit-inner-spin-button,.avstand input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.avstand input:focus{outline:none}
+.avstand label:focus-within{outline:3px solid var(--graphite-900);outline-offset:2px}
+.avstand .enhet{font:500 16px/1 var(--mono);color:var(--graphite-600)}
+.hopp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hopp button{min-height:44px;border:1px solid var(--sand-300);border-radius:8px;background:var(--sand-100);font:600 14px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+
+/* Slag på hullet */
+.slagliste{display:grid;border-top:1px solid var(--sand-300)}
+.slagliste button{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:52px;padding:8px 2px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:var(--graphite-900);cursor:pointer}
+.slagliste .nr{font:600 14px/1 var(--mono);color:var(--graphite-600)}
+.slagliste b{font:600 15px/1.3 var(--sans)}
+.slagliste .v{font:600 15px/1 var(--mono)}
+.slagliste .straff{display:inline-block;margin-left:6px;height:20px;padding:0 7px;border-radius:4px;background:var(--sand-150);font:600 11px/20px var(--sans)}
+.handlinger{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:8px}
+.handlinger .knapp{min-height:56px;font-size:16px}
+.smaa{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+
+/* SG-stolper, symmetriske rundt null (samme som Stats) */
+.sg-liste{display:grid;gap:12px}
+.sgr{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) 48px;gap:10px;align-items:center}
+.sgn{font-size:14px;line-height:1.3;display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center}
+.sgn small{font:500 11px/1 var(--mono);color:var(--graphite-600)}
+.sgbar{position:relative;height:14px;border-radius:3px;background:var(--sand-150)}
+.sgbar .null{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--graphite-600)}
+.sgbar span{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--spill-ink);opacity:.45}
+.sgr.svakest .sgbar span{opacity:1}
+.sgv{font:600 15px/1 var(--mono);text-align:right}
+.dekning{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:3px}
+.dekning i{height:8px;border-radius:2px;background:var(--sand-150)}
+.dekning i.med{background:var(--graphite-900)}
+
+/* Nivåkort (PH-RD-01) */
+.nivaa{display:grid;gap:var(--r3)}
+.nivaakort{display:grid;gap:10px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);padding:16px 18px 18px;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;transition:transform 160ms var(--ut)}
+.nivaakort:active{transform:scale(.98)}
+.nivaakort[aria-pressed="true"]{border:2px solid var(--graphite-900);box-shadow:0 0 0 3px var(--sand-150)}
+.nivaakort .nk-topp{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:var(--r3)}
+.nivaakort .nk-navn{font:600 18px/1.25 var(--sans)}
+.nivaakort .nk-tid{font:500 13px/1.3 var(--mono);color:var(--graphite-600);white-space:nowrap}
+.nivaakort ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-height:1.45;color:var(--graphite-800)}
+.kvalitet{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--graphite-800)}
+.kvalitet .prikker{display:inline-flex;gap:3px}
+.kvalitet .prikker i{width:22px;height:6px;border-radius:3px;background:var(--sand-300)}
+.kvalitet .prikker i.paa{background:var(--graphite-900)}
+.hvaer{font:600 12px/1.3 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--graphite-600)}
+
+/* Kladd */
+.kladd{display:grid;gap:12px;border:1px solid var(--sand-300);border-radius:12px;padding:16px 18px 18px;background:var(--sand-100)}
+.kladd .k-topp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.kladd .k-ikon{width:40px;height:40px;border-radius:10px;background:var(--white);border:1px solid var(--sand-300);display:grid;place-items:center}
+
+/* Runde gjennomført */
+.helt{display:grid;border-radius:12px;overflow:hidden;color:#fff;background:var(--spill-ink)}
+.helt img{display:block;width:100%;height:132px;object-fit:cover;object-position:50% 55%}
+.helt .t{padding:var(--r4) 18px 20px;display:grid;gap:10px}
+.helt .stort{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.helt .stort strong{font:600 64px/1 var(--mono);letter-spacing:-.04em}
+.helt .stort span{font:600 22px/1 var(--mono)}
+.helt .trend{background:rgba(255,255,255,.18);color:#fff}
+.helt .stort .trend{font:600 13px/1 var(--sans);align-self:center}
+.helt .info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;opacity:.92}
+.helt .navn{font:600 19px/1.25 var(--sans)}
+.fakta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fakta div{border:1px solid var(--sand-300);border-radius:10px;padding:12px;display:grid;gap:4px}
+.fakta b{font:600 22px/1 var(--mono);white-space:nowrap}
+.fakta b small{font:500 12px/1 var(--mono);color:var(--graphite-600);margin-left:3px}
+.fakta span{font-size:13px;line-height:1.3;color:var(--graphite-800)}
+.tiger{display:grid;border-top:1px solid var(--sand-300)}
+.tiger div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--sand-300);align-items:center}
+.tiger b{font:600 15px/1.3 var(--sans)}
+.tiger span{font-size:13px;color:var(--graphite-600)}
+.tiger .v{font:600 18px/1 var(--mono);text-align:right}
+.tiger .v.null{color:var(--graphite-500);font-weight:500}
+.oppdat{display:grid;gap:10px;border:1px solid var(--sand-300);border-radius:12px;padding:16px 18px 18px;background:var(--sand-100)}
+.oppdat .o-topp{display:flex;align-items:center;gap:10px;font:600 15px/1.3 var(--sans)}
+.oppdat .o-ikon{width:32px;height:32px;border-radius:8px;background:var(--graphite-900);color:var(--white);display:grid;place-items:center}
+.oppdat .o-ikon .ikon{width:18px;height:18px}
+
+/* Scorekort uten sidelengs rulling: to rader à ni hull */
+.scorekort{display:grid;gap:var(--r4)}
+.sktab{width:100%;border-collapse:collapse;table-layout:fixed}
+.sktab th,.sktab td{padding:6px 0;text-align:center;border-bottom:1px solid var(--sand-300)}
+.sktab th:first-child,.sktab td:first-child{text-align:left;width:15%;font:500 12px/1.2 var(--sans);color:var(--graphite-600)}
+.sktab th:last-child,.sktab td:last-child{width:12%;font-weight:600}
+.sktab thead th{font:600 12px/1 var(--mono);color:var(--graphite-800)}
+.sktab td{font:500 13px/1 var(--mono)}
+.sktab tr.par td{color:var(--graphite-600)}
+.sktab tr.score td{height:40px}
+.sktab button{border:0;background:transparent;padding:0;cursor:pointer;font:inherit;color:inherit;min-height:40px;width:100%;display:grid;place-items:center;border-radius:6px}
+.sktab button[aria-pressed="true"]{background:var(--sand-150);outline:2px solid var(--graphite-900);outline-offset:-2px}
+.sk-sum{display:flex;justify-content:space-between;gap:var(--r3);flex-wrap:wrap;font-size:14px}
+.sk-sum b{font:600 15px/1 var(--mono)}
+.sk-forklar{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--graphite-600);align-items:center}
+.sk-forklar span{display:inline-flex;align-items:center;gap:6px}
+.sk-forklar .sk{min-width:18px;height:18px;font-size:11px}
+
+/* Rask score */
+.hullrader{display:grid;border-top:1px solid var(--sand-300)}
+.hullrad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.hullrad b{font:600 15px/1.3 var(--sans)}
+.hullrad span{font-size:13px;color:var(--graphite-600)}
+.trinn{display:grid;grid-template-columns:44px 48px 44px;align-items:center;gap:4px}
+.trinn button{min-height:44px;border:1px solid var(--graphite-500);border-radius:8px;background:var(--white);font:600 18px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+.trinn output{font:600 22px/1 var(--mono);text-align:center}
+.trinn output.tom{color:var(--graphite-500);font-weight:500}
+.ekstra{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ekstra .lite{display:grid;gap:4px;font-size:12.5px;color:var(--graphite-600)}
+.ekstra select{min-height:40px;width:100%;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:500 14px/1 var(--sans);padding:0 8px;color:var(--graphite-900)}
+.flere{border:1px solid var(--sand-300);border-radius:12px;padding:0 14px}
+.flere summary{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:var(--r3);cursor:pointer;font:600 15px/1.3 var(--sans);list-style:none}
+.flere summary::-webkit-details-marker{display:none}
+.flere[open] summary{border-bottom:1px solid var(--sand-300)}
+.flere .innmat{display:grid;gap:var(--r4);padding:14px 0 16px}
+.sgfelt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r3)}
+.sjekk{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.45}
+.sjekk.ok{background:var(--green-50);color:var(--green-700)}
+.sjekk.vent{background:var(--amber-50);color:var(--graphite-900);border:1px dashed var(--amber-700)}
+.sjekk .ikon{flex:none;margin-top:1px}
+.laast{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:var(--graphite-800)}
+
+/* Import */
+.stegrad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.stegrad span{display:grid;gap:4px;font:500 13px/1.3 var(--sans);color:var(--graphite-600)}
+.stegrad span::before{content:"";height:4px;border-radius:2px;background:var(--sand-300)}
+.stegrad span.ferdig,.stegrad span.naa{color:var(--graphite-900)}
+.stegrad span.ferdig::before,.stegrad span.naa::before{background:var(--graphite-900)}
+.slipp{display:grid;justify-items:center;gap:8px;border:1.5px dashed var(--graphite-500);border-radius:12px;padding:22px 16px;text-align:center;background:var(--sand-100)}
+.slipp b{font:600 15px/1.3 var(--sans)}
+textarea.csv{font:400 13px/1.5 var(--mono)!important;min-height:120px}
+.kobling{display:grid;border-top:1px solid var(--sand-300)}
+.kobling div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.kobling b{font:600 14px/1.3 var(--mono);overflow-wrap:anywhere}
+.kobling span{display:block;font-size:12.5px;color:var(--graphite-600)}
+.kobling select{min-height:44px;border:1px solid var(--graphite-500);border-radius:8px;background:var(--white);font:500 15px/1 var(--sans);padding:0 8px;color:var(--graphite-900);width:100%}
+.forhand{display:grid;border-top:1px solid var(--sand-300)}
+.forhand div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.forhand b{font:600 15px/1.3 var(--sans)}
+.forhand span{font-size:13px;color:var(--graphite-600)}
+.forhand > div > span:first-child > span{display:block}
+.forhand .v{font:600 15px/1 var(--mono);text-align:right}
+.forhand .avvik span{color:var(--amber-700);font-weight:600}
+
+/* PH-18 Runder */
+.rundeliste{display:grid;border-top:1px solid var(--sand-300)}
+.rundeliste button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;min-height:64px;padding:12px 2px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:var(--graphite-900);cursor:pointer}
+.rundeliste b{font:600 15px/1.3 var(--sans)}
+.rundeliste span{font-size:13px;color:var(--graphite-600)}
+.rundeliste .v{font:600 17px/1 var(--mono);text-align:right}
+.rundeliste .v small{display:block;margin-top:4px;font:500 12px/1 var(--mono);color:var(--graphite-600)}
+.merke{display:inline-block;height:20px;padding:0 7px;border-radius:4px;background:var(--sand-150);font:600 11px/20px var(--sans);color:var(--graphite-800);margin-left:6px;vertical-align:1px}
+.partype{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.partype div{border:1px solid var(--sand-300);border-radius:10px;padding:12px;display:grid;gap:4px}
+.partype b{font:600 22px/1 var(--mono)}
+.partype span{font-size:13px;color:var(--graphite-800)}
+
+.festet{position:sticky;bottom:64px;z-index:4;padding:var(--r3) 0 0;background:linear-gradient(transparent,var(--white) 30%)}
+.liv-grid,.ferdig-grid,.red-grid,.runder-grid,.oppsett-grid{display:grid;gap:var(--r6);align-content:start}
+.liv-grid > div,.ferdig-grid > div,.red-grid > div,.runder-grid > div{display:grid;gap:var(--r6);align-content:start}
+
+@container (min-width:900px){
+  .festet{bottom:0}
+  .ark-lag{position:sticky;bottom:24px;margin:0;justify-items:center}
+  .ark-lag .ark{width:100%;max-width:560px;border-radius:16px}
+  .liv-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}
+  .ferdig-grid,.red-grid,.runder-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .helt{grid-template-columns:minmax(0,.9fr) minmax(0,1fr)}
+  .helt img{height:100%;min-height:220px}
+  .nivaa{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .smal{max-width:760px}
+}
+</style>
+</head><body>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 5 · PH-RD-01–09 og PH-18 · utkast 1 · 14.10.2026</span>
+    <h1>Runder</h1>
+    <p>Ti skjermer i én fil: registrere en runde (nivå, oppsett, slag, putt, SG hittil, rask score, import), runden etterpå (gjennomført, rediger) og alle rundene i Stats. Demodata for Øyvind Rohjan, Kategori C. I dag er mandag 5. oktober kl. 14:20; Øyvind spiller en treningsrunde på ni hull og står på hull 7.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="niva">RD-01 Velg nivå</button>
+      <button type="button" aria-pressed="false" data-skjerm="oppsett">RD-02 Oppsett</button>
+      <button type="button" aria-pressed="false" data-skjerm="slag">RD-03 Slag</button>
+      <button type="button" aria-pressed="false" data-skjerm="putt">RD-04 Putt</button>
+      <button type="button" aria-pressed="false" data-skjerm="sg">RD-05 SG hittil</button>
+      <button type="button" aria-pressed="false" data-skjerm="rask">RD-06 Rask score</button>
+      <button type="button" aria-pressed="false" data-skjerm="import">RD-07 Import</button>
+      <button type="button" aria-pressed="false" data-skjerm="ferdig">RD-08 Gjennomført</button>
+      <button type="button" aria-pressed="false" data-skjerm="rediger">RD-09 Rediger</button>
+      <button type="button" aria-pressed="false" data-skjerm="runder">PH-18 Runder</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Alt er lyst, også ute på banen</b> (vedtak 14.10). Ingen nattmodus i slag- og puttføringen.</li>
+        <li><b>Tre nivåer med svar på «Hva får du ut av dette?»</b>: Rask score, Importer eller før SG selv, og Slag for slag. Hvert nivå viser datakvaliteten det gir. En runde som ikke er ferdig, ligger øverst med «Fortsett».</li>
+        <li><b>Slag:</b> avstand, underlag og kølle er påkrevd (vedtak 28.09; dagens design har kølle som valgfritt). Avstanden er ett stort tall du trykker på for å rette. Velger du Green, går føringen over til putt. Straffeslag og «I hull» er ett trykk.</li>
+        <li><b>Putt:</b> lengde i fot, break, helling, resultat, og ved bom fart og retning (Venstre · Høyre · På linja).</li>
+        <li><b>SG hittil</b> er et ark over føringen: bare fullførte hull, hvor mange hull som er med, og merket «Estimat».</li>
+        <li><b>Runde gjennomført</b> viser brutto score, SG per kategori og Tiger 5 med en gang, og sier hva som oppdateres i planen. Forslaget kommer i Innboks, og Øyvind godkjenner selv.</li>
+        <li><b>Scorekortet bryter i to rader à ni hull</b>, så det aldri ruller sidelengs. Ring betyr under par, firkant over par.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Bare brutto score. Snittet 73,1 og de 18 rundene er de samme som i Stats (`stats.html`).</li>
+        <li>Farge betyr akse: runder er SPILL. Ingen farge på scorekortet. Grønt bare for at noe stemmer. Rust bare på «Slett runden» og «Forkast runden».</li>
+        <li>SG mot neste kategori (B), merket «Estimat». Under fire runder ingen konklusjon. Manglende tall vises som «—».</li>
+        <li>Tiger 5-reglene «Bogey fra innenfor 130 m» og «Bom på enkel up and down» (vedtak 28.09, ordet rettet 14.10).</li>
+        <li>Ingen GPS eller banekart. Runden lagres på telefonen underveis.</li>
+        <li>Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Tiger 5, de tre andre reglene:</b> utkastet bruker koden (Dobbeltbogey eller verre, Tre putt, Bogey på par 5). Hjelpeteksten i appen sier straffeslag og «par 5 uten birdiesjanse» i stedet. Hvilke fem gjelder?</li>
+        <li><b>Putt:</b> skjermlisten har fire break-verdier (venstre–høyre, høyre–venstre, oppover, nedover). Utkastet deler dem i to valg, sideveis og helling, med «Rett» og «Flat» i tillegg. Riktig?</li>
+        <li><b>Underlaget «Recovery»</b> (slag fra et sted der du ikke kan slå mot hullet) har ikke noe norsk ord i masteren.</li>
+        <li><b>Ni-hullsrunder</b> teller ikke i snittscoren i utkastet. Bekreft.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PH-RD-01 Velg nivå ================= -->
+<template id="niva">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Runder">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Registrer runde · steg 1 av 2</div>
+        <h1 class="tittel">Hvor mye vil du føre?</h1>
+        <p class="ingress">Jo mer du fører, jo mer kan appen si om spillet ditt. Du kan alltid føre mindre på neste runde.</p>
+      </div>
+    </div>
+    <section class="kladd" aria-label="Runde som ikke er ferdig">
+      <div class="k-topp">
+        <span class="k-ikon"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h12l-2 4 2 4H4"/></svg></span>
+        <span><b class="undertittel">Runde i gang · Fredrikstad GK</b><span class="kildetekst" style="display:block">Hull 7 av 9 · slag for slag · lagret på telefonen kl. 14:18</span></span>
+      </div>
+      <button type="button" class="knapp sek" data-gaa="slag">Fortsett runden</button>
+    </section>
+    <section class="seksjon" aria-label="Nivå">
+      <div class="nivaa" data-gruppe>
+        <button type="button" class="nivaakort" aria-pressed="false" data-niva="rask">
+          <span class="nk-topp"><span class="nk-navn">Rask score</span><span class="nk-tid">10 sek per hull</span></span>
+          <span class="hvaer">Hva får du ut av dette?</span>
+          <ul><li>Snittscore og kategori</li><li>Putter, fairway og GIR hvis du fører dem</li><li>Ingen Strokes Gained</li></ul>
+          <span class="kvalitet"><span class="prikker" aria-hidden="true"><i class="paa"></i><i></i><i></i></span>Datakvalitet: lav</span>
+        </button>
+        <button type="button" class="nivaakort" aria-pressed="false" data-niva="import">
+          <span class="nk-topp"><span class="nk-navn">Importer eller før SG selv</span><span class="nk-tid">2 min per runde</span></span>
+          <span class="hvaer">Hva får du ut av dette?</span>
+          <ul><li>Runder fra en annen app (CSV)</li><li>Strokes Gained per kategori hvis appen din har det</li><li>Ingen tall per slag</li></ul>
+          <span class="kvalitet"><span class="prikker" aria-hidden="true"><i class="paa"></i><i class="paa"></i><i></i></span>Datakvalitet: middels</span>
+        </button>
+        <button type="button" class="nivaakort" aria-pressed="true" data-niva="slag">
+          <span class="nk-topp"><span class="nk-navn">Slag for slag</span><span class="nk-tid">30 sek per hull</span></span>
+          <span class="hvaer">Hva får du ut av dette?</span>
+          <ul><li>Strokes Gained per slag og kategori</li><li>Tiger 5 og hvor slagene forsvinner</li><li>Planen din kan justeres etter runden</li></ul>
+          <span class="kvalitet"><span class="prikker" aria-hidden="true"><i class="paa"></i><i class="paa"></i><i class="paa"></i></span>Datakvalitet: høy</span>
+        </button>
+      </div>
+      <p class="kildetekst">12 av dine 18 runder i år er ført slag for slag. Nærspill og putting blir sikre fra 24.</p>
+    </section>
+    <div class="festet"><button type="button" class="knapp pri stor" data-niva-videre>Videre med Slag for slag</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-02 Oppsett ================= -->
+<template id="oppsett">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Velg nivå">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Registrer runde · steg 2 av 2 · Slag for slag</div>
+        <h1 class="tittel">Ny runde</h1>
+      </div>
+    </div>
+    <section class="kladd" aria-label="Runde som ikke er ferdig" data-kladd>
+      <div class="k-topp">
+        <span class="k-ikon"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h12l-2 4 2 4H4"/></svg></span>
+        <span><b class="undertittel">Du har en runde som ikke er ferdig</b><span class="kildetekst" style="display:block">Fredrikstad GK · hull 7 av 9 · lagret på telefonen kl. 14:18</span></span>
+      </div>
+      <div class="knapper"><button type="button" class="knapp sek" data-gaa="slag">Gjenopprett</button><button type="button" class="knapp tekst" data-forkast>Forkast</button></div>
+    </section>
+    <div class="oppsett-grid">
+      <div class="felt"><label for="o-bane">Bane</label><select id="o-bane"><option>Fredrikstad GK</option><option>Borre GK</option><option>Larvik GK</option><option>Miklagard GK</option></select></div>
+      <div class="felt"><label for="o-tee">Tee</label><select id="o-tee"><option>Gul · 6 266 m · par 72</option><option>Rød · 5 412 m · par 72</option><option>Hvit · 6 590 m · par 72</option></select></div>
+      <div class="felt"><label for="o-dato">Dato</label><input id="o-dato" type="date" value="2026-10-05"></div>
+      <div class="felt"><span class="etikett">Type</span><div class="valg" role="group" aria-label="Type" data-o-type><button type="button" aria-pressed="false" data-t="turn">Turnering</button><button type="button" aria-pressed="true" data-t="tren">Trening</button></div></div>
+      <div class="felt" data-o-turnering hidden><label for="o-turn">Turnering fra planen din</label><select id="o-turn"><option>Østlandstour 5 · Borre GK · 10.–11. okt</option></select><span class="hjelp">Bare offisielle turneringer. Interne konkurranser føres som trening.</span></div>
+      <div class="to-felt">
+        <div class="felt"><span class="etikett">Antall hull</span><div class="valg" role="group" aria-label="Antall hull"><button type="button" aria-pressed="true">9</button><button type="button" aria-pressed="false">18</button></div></div>
+        <div class="felt"><span class="etikett">Start på hull</span><div class="valg" role="group" aria-label="Start på hull"><button type="button" aria-pressed="true">1</button><button type="button" aria-pressed="false">10</button></div></div>
+      </div>
+      <p class="laast"><svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Runden lagres på telefonen etter hvert slag. Faller nettet ut, mister du ingenting.</span></p>
+    </div>
+    <div class="festet"><button type="button" class="knapp pri stor" data-gaa="slag">Start runden</button></div>
+    <div class="ark-lag" data-forkast-ark hidden>
+      <div class="ark" role="dialog" aria-label="Forkast runden">
+        <div class="ark-topp"><h2>Forkaste runden på Fredrikstad GK?</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <p class="forklar">Seks hull og 23 slag slettes fra telefonen. Det kan ikke angres.</p>
+        <div class="knapper"><button type="button" class="knapp rust" data-forkast-ja>Forkast runden</button><button type="button" class="knapp sek" data-lukk>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-03 Live runde · slag (og RD-05 som ark) ================= -->
+<template id="slag">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Avslutt" data-hoyre='<button type="button" class="knapp sek" data-sg-apne style="min-height:40px">SG hittil</button>'>
+  <main class="innhold">
+    <div class="hullhode" data-behold>
+      <div class="dato"><span>Treningsrunde · Fredrikstad GK · gul tee</span></div>
+      <h1>Hull 7 <small>Par 3 · 172 m · <span data-slagnr>slag 1</span></small></h1>
+      <div class="stilling"><span class="pille noy"><i></i>+1 etter 6 hull</span><span class="kildetekst">25 slag · lagret 14:18</span></div>
+    </div>
+    <div class="liv-grid">
+      <div>
+        <div class="stripe" data-stripe aria-label="Hullene"></div>
+        <section class="seksjon" aria-label="Slaget">
+          <div class="felt"><div class="etikett-rad"><span class="etikett">Underlag</span><span class="paakrevd">Påkrevd</span></div>
+            <div class="ruter" data-gruppe data-lie>
+              <button type="button" aria-pressed="true" data-v="Tee">Tee</button><button type="button" aria-pressed="false" data-v="Fairway">Fairway</button><button type="button" aria-pressed="false" data-v="Rough">Rough</button>
+              <button type="button" aria-pressed="false" data-v="Bunker">Bunker</button><button type="button" aria-pressed="false" data-v="Recovery">Recovery</button><button type="button" aria-pressed="false" data-v="Green">Green</button>
+            </div></div>
+          <div class="felt"><div class="etikett-rad"><span class="etikett" id="l-avst">Avstand til hullet</span><span class="paakrevd">Påkrevd · trykk på tallet for å rette</span></div>
+            <div class="avstand"><button type="button" data-d="-1" aria-label="En meter kortere">−</button><label><input type="number" inputmode="numeric" min="1" max="600" value="172" aria-labelledby="l-avst" data-avst><span class="enhet">m</span></label><button type="button" data-d="1" aria-label="En meter lengre">+</button></div>
+            <div class="hopp"><button type="button" data-d="-10">−10</button><button type="button" data-d="-5">−5</button><button type="button" data-d="5">+5</button><button type="button" data-d="10">+10</button></div></div>
+          <div class="felt"><div class="etikett-rad"><span class="etikett">Kølle</span><span class="paakrevd" data-kolle-krav>Påkrevd</span></div>
+            <div class="chips" data-gruppe data-kolle></div></div>
+          <div class="handlinger"><button type="button" class="knapp pri" data-neste>Neste slag</button><button type="button" class="knapp sek" data-ihull><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h12l-2 4 2 4H4"/></svg>I hull</button></div>
+          <div class="smaa"><button type="button" class="knapp sek" data-straff>+ Straffeslag</button><button type="button" class="knapp tekst" data-angre>Angre siste</button></div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon" aria-label="Slag på hullet">
+          <div class="sek-topp"><h2>Hull 7 så langt</h2><span class="kildetekst" data-hull-sum>Ingen slag ennå</span></div>
+          <div class="slagliste" data-slagliste></div>
+          <p class="kildetekst">Trykk på et slag for å rette det. Neste slag starter av seg selv.</p>
+        </section>
+      </div>
+    </div>
+    <div class="ark-lag" data-sg-ark hidden>
+      <div class="ark" role="dialog" aria-label="SG hittil">
+        <div class="ark-topp"><h2>SG hittil</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="hoved"><strong>−0,4</strong><span class="estimat">Estimat</span><span class="forelopig">Ingen konklusjon</span></div>
+        <p class="forklar">Slag mot Kategori B på de seks hullene du har fullført. Hull 7 kommer med når du er i hull.</p>
+        <div class="sg-liste" data-sg-liste></div>
+        <div class="felt"><span class="etikett">Hull med i tallet: 6 av 9</span><div class="dekning" aria-hidden="true"><i class="med"></i><i class="med"></i><i class="med"></i><i class="med"></i><i class="med"></i><i class="med"></i><i></i><i></i><i></i></div></div>
+        <p class="kildetekst">23 slag ført i dag. Én runde gir ingen konklusjon; Stats bruker snittet av mange runder.</p>
+        <button type="button" class="knapp pri stor" data-lukk>Fortsett runden</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-04 Live runde · putt ================= -->
+<template id="putt">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Avslutt" data-hoyre='<button type="button" class="knapp sek" data-gaa="sg" style="min-height:40px">SG hittil</button>'>
+  <main class="innhold">
+    <div class="hullhode" data-behold>
+      <div class="dato"><span>Treningsrunde · Fredrikstad GK · gul tee</span></div>
+      <h1>Hull 7 <small>Par 3 · <span data-puttnr>slag 2 · putt 1</span></small></h1>
+      <div class="stilling"><span class="pille noy"><i></i>På green i 1</span><span class="kildetekst">6-jern fra 172 m</span></div>
+    </div>
+    <div class="liv-grid">
+      <div>
+        <section class="seksjon" aria-label="Putten">
+          <div class="felt"><div class="etikett-rad"><span class="etikett" id="l-putt">Lengde</span><span class="paakrevd">Påkrevd · i fot</span></div>
+            <div class="avstand"><button type="button" data-d="-1" aria-label="En fot kortere">−</button><label><input type="number" inputmode="numeric" min="1" max="120" value="24" aria-labelledby="l-putt" data-avst><span class="enhet">fot</span></label><button type="button" data-d="1" aria-label="En fot lengre">+</button></div>
+            <div class="hopp"><button type="button" data-sett="3">3</button><button type="button" data-sett="6">6</button><button type="button" data-sett="10">10</button><button type="button" data-sett="20">20</button></div></div>
+          <div class="felt"><div class="etikett-rad"><span class="etikett">Break</span><span class="paakrevd">Påkrevd</span></div>
+            <div class="ruter lav" role="group" aria-label="Break" data-gruppe><button type="button" aria-pressed="false">Venstre til høyre</button><button type="button" aria-pressed="true">Rett</button><button type="button" aria-pressed="false">Høyre til venstre</button></div></div>
+          <div class="felt"><div class="etikett-rad"><span class="etikett">Helling</span><span class="paakrevd">Påkrevd</span></div>
+            <div class="ruter lav" role="group" aria-label="Helling" data-gruppe><button type="button" aria-pressed="true">Oppover</button><button type="button" aria-pressed="false">Flat</button><button type="button" aria-pressed="false">Nedover</button></div></div>
+          <div class="felt"><div class="etikett-rad"><span class="etikett">Resultat</span><span class="paakrevd">Påkrevd</span></div>
+            <div class="ruter" data-gruppe data-resultat style="grid-template-columns:repeat(2,minmax(0,1fr))"><button type="button" aria-pressed="false" data-v="inn">I hull</button><button type="button" aria-pressed="true" data-v="bom">Bom</button></div></div>
+          <div data-bom class="seksjon">
+            <div class="felt"><span class="etikett">Fart</span><div class="ruter lav to" role="group" aria-label="Fart" data-gruppe><button type="button" aria-pressed="true">Kort</button><button type="button" aria-pressed="false">Lang</button></div></div>
+            <div class="felt"><span class="etikett">Bom</span><div class="ruter lav" role="group" aria-label="Bom" data-gruppe><button type="button" aria-pressed="false">Venstre</button><button type="button" aria-pressed="true">Høyre</button><button type="button" aria-pressed="false">På linja</button></div></div>
+          </div>
+          <button type="button" class="knapp pri stor" data-putt-lagre>Neste putt</button>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon" aria-label="Slag på hullet">
+          <div class="sek-topp"><h2>Hull 7 så langt</h2><span class="kildetekst" data-hull-sum>1 slag</span></div>
+          <div class="slagliste" data-slagliste></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-06 Etterregistrering · rask score ================= -->
+<template id="rask">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Velg nivå">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Rask score · Fredrikstad GK · gul tee · tirsdag 29. september</div>
+        <h1 class="tittel">Før scoren</h1>
+      </div>
+    </div>
+    <div class="kort dempet">
+      <div class="hoved"><strong data-rask-sum>—</strong><span class="trend" data-rask-par>Ingen hull ført</span></div>
+      <p class="kildetekst" data-rask-hull>0 av 9 hull · brutto</p>
+    </div>
+    <div class="seksjon">
+      <div class="felt"><span class="etikett">Antall hull</span><div class="valg" role="group" aria-label="Antall hull" data-rask-antall><button type="button" aria-pressed="true" data-n="9">9</button><button type="button" aria-pressed="false" data-n="18">18</button></div></div>
+      <div class="felt"><span class="etikett">Føring</span><div class="valg" role="group" aria-label="Føring" data-rask-modus><button type="button" aria-pressed="false" data-m="total" disabled>Total</button><button type="button" aria-pressed="true" data-m="hull">Hull for hull</button></div></div>
+    </div>
+    <p class="kildetekst" data-rask-regel>Ni hull føres hull for hull, så runden kan settes sammen med en annen ni-hullsrunde.</p>
+    <section class="seksjon" aria-label="Hull" data-rask-hullvisning>
+      <div class="hullrader" data-hullrader></div>
+    </section>
+    <section class="seksjon" aria-label="Total" data-rask-totalvisning hidden>
+      <div class="hullrad"><span><b>Brutto score</b><span style="display:block">Hele runden</span></span><div class="trinn" data-total-trinn><button type="button" data-d="-1" aria-label="Ett slag færre">−</button><output data-total>74</output><button type="button" data-d="1" aria-label="Ett slag til">+</button></div></div>
+    </section>
+    <details class="flere">
+      <summary>Strokes Gained fra en annen app <span class="kildetekst">Valgfritt</span></summary>
+      <div class="innmat">
+        <p class="forklar">Har appen din regnet ut SG for runden, kan du føre tallene her. De lagres med kilden du oppgir, og merkes som ført for hånd.</p>
+        <div class="sgfelt">
+          <div class="felt"><label for="sg-ott">Utslag (OTT)</label><input id="sg-ott" inputmode="decimal" value="+0,3" data-sgk></div>
+          <div class="felt"><label for="sg-app">Innspill (APP)</label><input id="sg-app" inputmode="decimal" value="−0,8" data-sgk></div>
+          <div class="felt"><label for="sg-arg">Nærspill (ARG)</label><input id="sg-arg" inputmode="decimal" value="+0,1" data-sgk></div>
+          <div class="felt"><label for="sg-putt">Putting (PUTT)</label><input id="sg-putt" inputmode="decimal" value="0,0" data-sgk></div>
+        </div>
+        <div class="to-felt">
+          <div class="felt"><label for="sg-tot">Total</label><input id="sg-tot" inputmode="decimal" value="−0,4" data-sgtot></div>
+          <div class="felt"><label for="sg-kilde">Kilde</label><select id="sg-kilde"><option>Arccos</option><option>Shot Scope</option><option>Golfshot</option><option>Annen app</option></select></div>
+        </div>
+        <div class="sjekk" data-sumkontroll></div>
+      </div>
+    </details>
+    <div class="kort dempet">
+      <span class="kvalitet"><span class="prikker" aria-hidden="true"><i class="paa"></i><i></i><i></i></span>Datakvalitet: lav</span>
+      <p class="forklar">Rask score gir snittscore og kategori. Runden får ikke Strokes Gained fra appen, med mindre du fører SG over.</p>
+    </div>
+    <div class="festet"><button type="button" class="knapp pri stor" data-rask-lagre>Lagre runden</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-07 Import fra annen app ================= -->
+<template id="import">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Velg nivå">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Registrer runde · importer</div>
+        <h1 class="tittel">Hent runder fra en annen app</h1>
+        <p class="ingress">Last ned rundene som CSV i appen du bruker i dag, og legg fila inn her. Ingenting lagres før du har sett over.</p>
+      </div>
+    </div>
+    <div class="stegrad" data-stegrad><span class="naa">1 Fil</span><span>2 Kolonner</span><span>3 Sjekk</span></div>
+    <section class="seksjon" aria-label="Fil" data-i-steg="1">
+      <div class="slipp">
+        <svg class="ikon" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+        <b>Velg CSV-fil</b><span class="kildetekst">Eller dra fila hit. Høyst 500 runder.</span>
+        <button type="button" class="knapp sek">Velg fil</button>
+      </div>
+      <div class="felt"><label for="i-csv">Eller lim inn</label><textarea id="i-csv" class="csv" rows="6">Date;Course;Gross;Holes;Putts;SG Total
+2026-09-27;Borre GK;72;18;31;+0.6
+2026-09-20;Fredrikstad GK;71;18;30;+1.1
+2026-09-13;Larvik GK;73;18;32;−0.2
+2026-09-06;;72;18;31;+0.4
+2026-08-30;Miklagard GK;71;18;29;+0.9</textarea></div>
+      <button type="button" class="knapp pri stor" data-i-les>Les inn</button>
+    </section>
+    <section class="seksjon" aria-label="Kolonner" data-i-steg="2" hidden>
+      <div class="sek-topp"><h2>Hva betyr kolonnene?</h2><span class="kildetekst">Gjettet fra overskriftene</span></div>
+      <div class="kobling">
+        <div><span><b>Date</b><span>2026-09-27</span></span><select aria-label="Felt for Date"><option>Dato · påkrevd</option><option>Ikke bruk</option></select></div>
+        <div><span><b>Course</b><span>Borre GK</span></span><select aria-label="Felt for Course"><option>Bane · påkrevd</option><option>Ikke bruk</option></select></div>
+        <div><span><b>Gross</b><span>72</span></span><select aria-label="Felt for Gross"><option>Brutto score · påkrevd</option><option>Ikke bruk</option></select></div>
+        <div><span><b>Holes</b><span>18</span></span><select aria-label="Felt for Holes"><option>Antall hull · valgfritt</option><option>Ikke bruk</option></select></div>
+        <div><span><b>Putts</b><span>31</span></span><select aria-label="Felt for Putts"><option>Putter · valgfritt</option><option>Ikke bruk</option></select></div>
+        <div><span><b>SG Total</b><span>+0.6</span></span><select aria-label="Felt for SG Total"><option>SG total · valgfritt</option><option>Ikke bruk</option></select></div>
+      </div>
+      <p class="kildetekst">Netto score importeres ikke. Fila har ingen kolonne for fairway, GIR eller SG per kategori.</p>
+      <button type="button" class="knapp pri stor" data-i-sjekk>Se over rundene</button>
+    </section>
+    <section class="seksjon" aria-label="Sjekk" data-i-steg="3" hidden>
+      <div class="hoved"><strong>4<small>av 5</small></strong><span class="trend">kan lagres</span></div>
+      <div class="forhand">
+        <div><span><b>Borre GK</b><span>27. september · 18 hull · 31 putter</span></span><span class="v">72</span></div>
+        <div><span><b>Fredrikstad GK</b><span>20. september · 18 hull · 30 putter</span></span><span class="v">71</span></div>
+        <div><span><b>Larvik GK</b><span>13. september · 18 hull · 32 putter</span></span><span class="v">73</span></div>
+        <div class="avvik"><span><b>Bane mangler</b><span>6. september · lagres ikke før banen er valgt</span></span><span class="v">72</span></div>
+        <div><span><b>Miklagard GK</b><span>30. august · 18 hull · 29 putter</span></span><span class="v">71</span></div>
+      </div>
+      <div class="sjekk vent"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>Tre av rundene finnes allerede fra GolfBox. De slås sammen, og GolfBox-scoren gjelder.</span></div>
+      <button type="button" class="knapp pri stor" data-i-lagre>Importer 4 runder</button>
+    </section>
+    <section class="seksjon" aria-label="Resultat" data-i-steg="4" hidden>
+      <div class="sjekk ok"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span><b>4 runder er lagret.</b> 1 ny, 3 slått sammen med GolfBox. SG total er ført for alle fire, merket «Importert».</span></div>
+      <div class="kort dempet">
+        <b class="undertittel">Hva som mangler</b>
+        <ul style="margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px">
+          <li>6. september: bane mangler. Runden ble ikke lagret.</li>
+          <li>Ingen SG per kategori. Stats bruker bare runder ført slag for slag til Utslag, Innspill, Nærspill og Putting.</li>
+        </ul>
+      </div>
+      <button type="button" class="knapp sek" data-gaa="runder">Se rundene</button>
+    </section>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-08 Runde gjennomført ================= -->
+<template id="ferdig">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Runder" data-hoyre='<button type="button" class="knapp sek" data-gaa="rediger" style="min-height:40px">Rediger</button>'>
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Runde gjennomført · søndag 4. oktober</div>
+        <h1 class="tittel">Fredrikstad GK</h1>
+      </div>
+    </div>
+    <div class="ferdig-grid">
+      <div>
+        <section class="helt" aria-label="Brutto score">
+          <img src="bilder/spill-bane.jpg" alt="" width="640" height="264">
+          <div class="t">
+            <span class="akse-merke"><i></i>SPILL · TRENINGSRUNDE</span>
+            <div class="stort"><strong data-tell="72">72</strong><span>E</span><span class="trend">1,1 bedre enn snittet</span></div>
+            <div class="info"><span>Brutto · gul tee · par 72</span><span>Slag for slag · 18 av 18 hull</span></div>
+          </div>
+        </section>
+        <div class="fakta">
+          <div><b>32</b><span>putter</span></div>
+          <div><b>9<small>av 14</small></b><span>fairway</span></div>
+          <div><b>11<small>av 18</small></b><span>GIR</span></div>
+        </div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Strokes Gained</h2><span class="estimat">Estimat</span></div>
+          <div class="hoved"><strong>−0,6</strong><span class="forklar">slag mot Kategori B</span></div>
+          <div class="sg-liste" data-sg-runde></div>
+          <p class="kildetekst">Innspill tapte mest, 1,1 slag, mest fra 100–150 m. Én runde gir ingen konklusjon.</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2>Tiger 5</h2><span class="kildetekst">3 bortkastede slag</span></div>
+          <div class="tiger" data-tiger></div>
+        </section>
+      </div>
+      <div>
+        <section class="oppdat">
+          <div class="o-topp"><span class="o-ikon"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>Planen din oppdateres</div>
+          <p class="forklar">Innspill har tapt mest tre runder på rad. Caddie lager et forslag om å bytte onsdagens Utslag-økt med Innspill 100–150 m.</p>
+          <p class="kildetekst">Forslaget kommer i Innboks. Du godkjenner selv.</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2>Scorekort</h2><span class="kildetekst">Ført i appen · 4. oktober kl. 17:42</span></div>
+          <div class="scorekort" data-scorekort></div>
+        </section>
+        <section class="seksjon" aria-label="Notat">
+          <div class="felt"><label for="f-notat">Notat <span class="paakrevd">valgfritt</span></label><textarea id="f-notat" rows="3" maxlength="400" placeholder="Hva tar du med deg fra runden?">Driveren satt. Lange innspill korte hele dagen.</textarea><span class="hjelp">Coachen ser notatet.</span></div>
+          <button type="button" class="knapp pri stor" data-ferdig-lagre>Lagre runden</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-RD-09 Rediger runde ================= -->
+<template id="rediger">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Runden">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Rediger runde · Fredrikstad GK · 4. oktober</div>
+        <h1 class="tittel">Rediger runde</h1>
+        <p class="ingress">Trykk på et hull i scorekortet for å rette det.</p>
+      </div>
+    </div>
+    <div class="red-grid">
+      <div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Scorekort</h2><span class="kildetekst" data-red-sum>72 · E</span></div>
+          <div class="scorekort" data-scorekort></div>
+        </section>
+        <section class="kort" aria-label="Valgt hull">
+          <div class="sek-topp"><h2 data-red-tittel>Hull 13 · par 5 · 467 m</h2></div>
+          <div class="to-felt">
+            <div class="felt"><span class="etikett">Score</span><div class="trinn" data-red-score><button type="button" data-d="-1" aria-label="Ett slag færre">−</button><output>5</output><button type="button" data-d="1" aria-label="Ett slag til">+</button></div></div>
+            <div class="felt"><span class="etikett">Putter</span><div class="trinn" data-red-putt><button type="button" data-d="-1" aria-label="Én putt færre">−</button><output>2</output><button type="button" data-d="1" aria-label="Én putt til">+</button></div></div>
+          </div>
+          <div class="slagliste" data-red-slag></div>
+          <p class="kildetekst">Endrer du scoren, må slagene stemme med den før du lagrer.</p>
+        </section>
+      </div>
+      <div>
+        <section class="kort dempet">
+          <div class="sek-topp"><h2>Strokes Gained</h2><span class="pille noy"><i></i>Låst</span></div>
+          <p class="laast"><svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Regnet fra slagene dine: −0,6 mot Kategori B. Kan ikke føres for hånd når runden er ført slag for slag. Rett slagene, så regnes SG på nytt.</span></p>
+        </section>
+        <section class="seksjon" aria-label="Endringer">
+          <div class="sek-topp"><h2>Endringer og kilde</h2></div>
+          <div class="forhand">
+            <div><span><b>Hull 8: tre putter i stedet for to</b><span>Øyvind · i dag kl. 09:12</span></span><span class="v">+1</span></div>
+            <div><span><b>Runden ført slag for slag</b><span>Øyvind i appen · 4. oktober kl. 13:05–17:42</span></span><span class="v">72</span></div>
+          </div>
+          <p class="kildetekst">Runden finnes ikke i GolfBox. Treningsrunder hentes ikke derfra.</p>
+        </section>
+        <button type="button" class="knapp pri stor" data-red-lagre>Lagre endringene</button>
+        <button type="button" class="knapp rust" data-slett style="justify-self:start">Slett runden</button>
+      </div>
+    </div>
+    <div class="ark-lag" data-slett-ark hidden>
+      <div class="ark" role="dialog" aria-label="Slett runden">
+        <div class="ark-topp"><h2>Slette runden 4. oktober?</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <p class="forklar">Runden, 72 slag og notatet slettes. Snittscoren og SG regnes på nytt uten den. Det kan ikke angres.</p>
+        <div class="knapper"><button type="button" class="knapp rust" data-slett-ja>Slett runden</button><button type="button" class="knapp sek" data-lukk>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-18 Stats › Snittscore · runder ================= -->
+<template id="runder">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Stats · snittscore</div>
+        <h1 class="tittel">Runder</h1>
+      </div>
+    </div>
+    <div class="runder-grid">
+      <div>
+        <section class="kort">
+          <div class="hoved"><strong data-tell="73.1">73,1</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>1,5 bedre enn 2025</span></div>
+          <p class="forklar">Brutto snitt · Kategori C. Siste 5 runder: <b>72,0</b>. Under 72 gir Kategori B.</p>
+          <svg class="graf" viewBox="0 0 320 150" role="img" aria-label="Brutto score per runde, 18 runder, fra 75 til 72. Snitt 73,1."><rect x="26" y="10" width="286" height="44.2" fill="var(--sand-150)"/><line x1="26" x2="312" y1="54.2" y2="54.2" stroke="var(--graphite-600)" stroke-dasharray="4 3" stroke-width="1"/><text x="32" y="22" class="gt">Kategori B: under 72</text><text x="20" y="28.8" text-anchor="end" class="gt">70</text><text x="20" y="58.2" text-anchor="end" class="gt">72</text><text x="20" y="87.8" text-anchor="end" class="gt">74</text><text x="20" y="117.2" text-anchor="end" class="gt">76</text>
+            <path class="tegn" d="M26.0,98.5 L42.8,83.8 L59.6,113.2 L76.5,69.0 L93.3,83.8 L110.1,98.5 L126.9,54.2 L143.8,83.8 L160.6,69.0 L177.4,54.2 L194.2,83.8 L211.1,39.5 L227.9,69.0 L244.7,54.2 L261.5,69.0 L278.4,39.5 L295.2,54.2 L312.0,54.2" fill="none" stroke="var(--graphite-500)" stroke-width="1.5" stroke-linejoin="round"/>
+            <path class="tegn" d="M26.0,98.5 L42.8,91.1 L59.6,98.5 L76.5,91.1 L93.3,89.7 L110.1,89.7 L126.9,83.8 L143.8,77.8 L160.6,77.8 L177.4,72.0 L194.2,69.0 L211.1,66.0 L227.9,63.1 L244.7,60.2 L261.5,63.1 L278.4,54.2 L295.2,57.2 L312.0,54.2" fill="none" stroke="var(--graphite-900)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="312.0" cy="54.2" r="4.5" fill="var(--graphite-900)"/><text x="26" y="145" class="gt">12. april</text><text x="312" y="145" text-anchor="end" class="gt">4. oktober</text></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--graphite-900);height:3px"></i>Snitt siste 5 runder</span><span class="lg"><i style="background:var(--graphite-500);height:2px"></i>Hver runde</span></div>
+          <p class="kildetekst">Brutto · 18 tellende runder · GolfBox og egne registreringer</p>
+        </section>
+        <section class="seksjon" aria-label="Snitt per par">
+          <div class="sek-topp"><h2>Snitt per hull</h2><span class="kildetekst">18 runder</span></div>
+          <div class="partype">
+            <div><b>3,13</b><span>Par 3 · +0,13</span></div>
+            <div><b>4,09</b><span>Par 4 · +0,09</span></div>
+            <div><b>4,92</b><span>Par 5 · −0,08</span></div>
+          </div>
+          <p class="kildetekst">Par 3 koster mest per hull. Tallene er fra runder ført hull for hull eller slag for slag.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon" aria-label="Rundene">
+          <div class="sek-topp"><h2>Rundene <span class="antall">18</span></h2><div class="valg" role="group" aria-label="Filter"><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">Turnering</button><button type="button" aria-pressed="false">Trening</button></div></div>
+          <div class="rundeliste" data-rundeliste></div>
+          <button type="button" class="knapp sek" data-flere-runder>Vis alle 18</button>
+        </section>
+      </div>
+    </div>
+    <div class="festet"><button type="button" class="knapp pri stor" data-gaa="niva">Registrer runde</button></div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function ikon(d) { return '<svg class="ikon" viewBox="0 0 24 24">' + d + '</svg>'; }
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3200);
+  }
+  function ark(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('button, input'); if (f) f.focus({ preventScroll: true }); }
+  }
+  function lukkbar(app, sel) {
+    app.querySelectorAll(sel + ' [data-lukk]').forEach(function (b) { b.addEventListener('click', function () { ark(app, sel, false); }); });
+  }
+  function komma(v, fortegn) {
+    var s = Math.abs(v).toFixed(1).replace('.', ',');
+    if (!fortegn) return s;
+    return (v > 0.04 ? '+' : v < -0.04 ? '−' : '') + s;
+  }
+  function tilPar(d) { return d === 0 ? 'E' : d > 0 ? '+' + d : '−' + Math.abs(d); }
+
+  /* Fredrikstad GK, gul tee. Par og lengde per hull. */
+  var PAR = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 4, 3, 5, 4, 4, 3, 4, 5];
+  var LEN = [356, 372, 158, 478, 341, 389, 172, 365, 492, 344, 401, 149, 467, 362, 330, 184, 395, 511];
+  /* Runden 4. oktober: 72 (E), 32 putter. Samme som siste runde i Stats. */
+  var SCORE = [4, 5, 3, 5, 4, 4, 3, 5, 4, 4, 4, 2, 5, 4, 4, 3, 4, 5];
+  var PUTT = [2, 2, 2, 2, 1, 2, 2, 3, 2, 2, 1, 1, 2, 2, 1, 2, 1, 2];
+  /* Dagens runde: 9 hull, hull 1–6 ført. */
+  var I_DAG = [5, 4, 3, 5, 4, 4];
+  var BAG = ['Driver', '3-tre', '4-hybrid', '5-jern', '6-jern', '7-jern', '8-jern', '9-jern', 'PW', '52°', '56°', '60°', 'Putter'];
+  var SG_HITTIL = [['Utslag', 'OTT', 0.2], ['Innspill', 'APP', -0.6], ['Nærspill', 'ARG', 0.1], ['Putting', 'PUTT', -0.1]];
+  var SG_RUNDE = [['Utslag', 'OTT', 0.4], ['Innspill', 'APP', -1.1], ['Nærspill', 'ARG', -0.2], ['Putting', 'PUTT', 0.3]];
+  var TIGER = [
+    ['Dobbeltbogey eller verre', 'Ingen', 0],
+    ['Tre putt', 'Hull 8 · 34 fot', 1],
+    ['Bogey på par 5', 'Ingen', 0],
+    ['Bogey fra innenfor 130 m', 'Hull 8 · 118 m', 1],
+    ['Bom på enkel up and down', 'Hull 2 · 12 m fra kanten', 1]
+  ];
+  /* De 18 tellende rundene i sesongen, eldste først. Samme verdier som grafen i Stats. */
+  var RUNDER = [
+    ['12. april', 'Fredrikstad GK', 'Trening', 75, 'GolfBox'], ['26. april', 'Borre GK', 'Turnering', 74, 'GolfBox'], ['3. mai', 'Larvik GK', 'Turnering', 76, 'GolfBox'],
+    ['17. mai', 'Fredrikstad GK', 'Trening', 73, 'Ført i appen'], ['24. mai', 'Miklagard GK', 'Turnering', 74, 'GolfBox'], ['31. mai', 'Fredrikstad GK', 'Trening', 75, 'Ført i appen'],
+    ['2. juni', 'Fredrikstad GK', 'Trening', 72, 'Slag for slag'], ['14. juni', 'Borre GK', 'Turnering', 74, 'Slag for slag'], ['28. juni', 'Fredrikstad GK', 'Trening', 73, 'Slag for slag'],
+    ['12. juli', 'Larvik GK', 'Turnering', 72, 'Slag for slag'], ['26. juli', 'Fredrikstad GK', 'Trening', 74, 'Slag for slag'], ['9. august', 'Miklagard GK', 'Turnering', 71, 'Slag for slag'],
+    ['23. august', 'Fredrikstad GK', 'Trening', 73, 'Slag for slag'], ['6. september', 'Borre GK', 'Turnering', 72, 'Slag for slag'], ['13. september', 'Larvik GK', 'Turnering', 73, 'Slag for slag'],
+    ['20. september', 'Fredrikstad GK', 'Trening', 71, 'Slag for slag'], ['27. september', 'Borre GK', 'Turnering', 72, 'Slag for slag'], ['4. oktober', 'Fredrikstad GK', 'Trening', 72, 'Slag for slag']
+  ];
+
+  function skMerke(s, p) {
+    var d = s - p, k = d <= -2 ? 'e' : d === -1 ? 'b' : d === 1 ? 'bo' : d >= 2 ? 'db' : '';
+    return '<span class="sk ' + k + '">' + s + '</span>';
+  }
+  function sum(a, fra, til) { var n = 0; for (var i = fra; i < til; i++) n += a[i] || 0; return n; }
+
+  /* Scorekort: to tabeller à ni hull. Velgbar = knapper i scoreraden (Rediger). */
+  function scorekort(boks, score, putt, valgt) {
+    function tab(fra, navn) {
+      var h = '<table class="sktab"><thead><tr><th scope="col">Hull</th>';
+      for (var i = fra; i < fra + 9; i++) h += '<th scope="col">' + (i + 1) + '</th>';
+      h += '<th scope="col">' + navn + '</th></tr></thead><tbody><tr class="par"><td>Par</td>';
+      for (i = fra; i < fra + 9; i++) h += '<td>' + PAR[i] + '</td>';
+      h += '<td>' + sum(PAR, fra, fra + 9) + '</td></tr><tr class="score"><td>Score</td>';
+      for (i = fra; i < fra + 9; i++) h += '<td>' + (valgt != null ? '<button type="button" data-hull="' + i + '" aria-pressed="' + (i === valgt) + '" aria-label="Hull ' + (i + 1) + ', ' + score[i] + ' slag">' + skMerke(score[i], PAR[i]) + '</button>' : skMerke(score[i], PAR[i])) + '</td>';
+      h += '<td>' + sum(score, fra, fra + 9) + '</td></tr><tr class="par"><td>Putter</td>';
+      for (i = fra; i < fra + 9; i++) h += '<td>' + putt[i] + '</td>';
+      return h + '<td>' + sum(putt, fra, fra + 9) + '</td></tr></tbody></table>';
+    }
+    var tot = sum(score, 0, 18);
+    boks.innerHTML = tab(0, 'Ut') + tab(9, 'Inn') +
+      '<div class="sk-sum"><span>Brutto <b>' + tot + '</b> (' + tilPar(tot - 72) + ')</span><span>Putter <b>' + sum(putt, 0, 18) + '</b></span></div>' +
+      '<div class="sk-forklar"><span><span class="sk b">3</span>Birdie</span><span><span class="sk bo">5</span>Bogey</span><span><span class="sk db">6</span>Dobbel eller verre</span></div>';
+  }
+
+  function sgListe(boks, data) {
+    var maks = 1.5, svak = data.reduce(function (a, b) { return b[2] < a[2] ? b : a; });
+    boks.innerHTML = data.map(function (r) {
+      var v = r[2], w = Math.min(Math.abs(v) / maks, 1) * 50, venstre = v < 0 ? 50 - w : 50;
+      return '<div class="sgr' + (r === svak ? ' svakest' : '') + '"><span class="sgn">' + r[0] + '<small>' + r[1] + '</small></span><span class="sgbar"><i class="null"></i><span style="left:' + venstre + '%;width:' + w + '%"></span></span><span class="sgv">' + komma(v, true) + '</span></div>';
+    }).join('');
+  }
+
+  /* ---------- RD-01 ---------- */
+  function niva(app) {
+    var NAVN = { rask: 'Rask score', 'import': 'Importer eller før SG selv', slag: 'Slag for slag' }, MAL = { rask: 'rask', 'import': 'import', slag: 'oppsett' };
+    var valgt = 'slag', knapp = app.querySelector('[data-niva-videre]');
+    app.querySelector('.nivaa').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-niva]'); if (!b) return;
+      valgt = b.dataset.niva; knapp.textContent = 'Videre med ' + NAVN[valgt];
+    });
+    knapp.addEventListener('click', function () { AKUtkast.gaa(MAL[valgt]); });
+  }
+
+  /* ---------- RD-02 ---------- */
+  function oppsett(app) {
+    app.querySelector('[data-o-type]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (b) app.querySelector('[data-o-turnering]').hidden = b.dataset.t !== 'turn';
+    });
+    app.querySelector('[data-forkast]').addEventListener('click', function () { ark(app, '[data-forkast-ark]', true); });
+    lukkbar(app, '[data-forkast-ark]');
+    app.querySelector('[data-forkast-ja]').addEventListener('click', function () {
+      ark(app, '[data-forkast-ark]', false); app.querySelector('[data-kladd]').remove();
+      toast(app, 'Runden på Fredrikstad GK er forkastet.');
+    });
+  }
+
+  /* ---------- RD-03 Slag (og RD-05 SG hittil) ---------- */
+  function stripe(app, naa) {
+    var h = '';
+    for (var i = 0; i < 9; i++) {
+      var s = I_DAG[i];
+      h += '<div class="' + (i === naa ? 'naa' : s == null ? 'ikke' : '') + '" aria-label="Hull ' + (i + 1) + (s != null ? ', ' + s + ' slag' : '') + '"><i>' + (i + 1) + '</i><b>' + (s != null ? skMerke(s, PAR[i]) : i === naa ? '•' : '—') + '</b></div>';
+    }
+    app.querySelector('[data-stripe]').innerHTML = h;
+  }
+  function slagRader(boks, slag, enhet) {
+    if (!slag.length) { boks.innerHTML = '<p class="kildetekst" style="padding:12px 0">Ingen slag ennå.</p>'; return; }
+    boks.innerHTML = slag.map(function (s, i) {
+      return '<button type="button" data-i="' + i + '"><span class="nr">' + (i + 1) + '</span><span><b>' + s.lie + (s.straff ? '<span class="straff">+1 straff</span>' : '') + '</b><span class="kildetekst" style="display:block">' + s.kolle + '</span></span><span class="v">' + s.avst + ' ' + (s.enhet || enhet) + '</span></button>';
+    }).join('');
+  }
+  function avstandsfelt(app, min, maks) {
+    var inp = app.querySelector('[data-avst]');
+    app.querySelectorAll('.avstand [data-d], .hopp [data-d]').forEach(function (b) {
+      b.addEventListener('click', function () { inp.value = Math.max(min, Math.min(maks, (+inp.value || 0) + (+b.dataset.d))); });
+    });
+    app.querySelectorAll('.hopp [data-sett]').forEach(function (b) { b.addEventListener('click', function () { inp.value = b.dataset.sett; }); });
+    return inp;
+  }
+  function slag(app, t, aapneSg) {
+    var st = { slag: [], kolle: null };
+    var inp = avstandsfelt(app, 1, 600), liste = app.querySelector('[data-slagliste]'), krav = app.querySelector('[data-kolle-krav]');
+    stripe(app, 6);
+    app.querySelector('[data-kolle]').innerHTML = BAG.filter(function (k) { return k !== 'Putter'; }).map(function (k) { return '<button type="button" aria-pressed="false" data-k="' + k + '">' + k + '</button>'; }).join('');
+    app.querySelector('[data-kolle]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return; st.kolle = b.dataset.k; krav.textContent = 'Påkrevd'; krav.classList.remove('mangler'); app.querySelector('[data-kolle]').classList.remove('feil');
+    });
+    function lie() { var b = app.querySelector('[data-lie] [aria-pressed="true"]'); return b ? b.dataset.v : null; }
+    app.querySelector('[data-lie]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (b && b.dataset.v === 'Green') { toast(app, 'På green: putten føres i fot.'); setTimeout(function () { AKUtkast.gaa('putt'); }, 500); }
+    });
+    function tegnListe() {
+      slagRader(liste, st.slag, 'm');
+      var n = st.slag.length + st.slag.filter(function (s) { return s.straff; }).length;
+      app.querySelector('[data-hull-sum]').textContent = n ? n + (n === 1 ? ' slag' : ' slag') : 'Ingen slag ennå';
+      app.querySelector('[data-slagnr]').textContent = 'slag ' + (n + 1);
+    }
+    function gyldig() {
+      if (!(+inp.value > 0)) { toast(app, 'Før avstanden til hullet.'); inp.focus(); return false; }
+      if (!st.kolle) { krav.textContent = 'Velg kølle'; krav.classList.add('mangler'); app.querySelector('[data-kolle]').classList.add('feil'); toast(app, 'Velg køllen du slo med.'); return false; }
+      return true;
+    }
+    function legg() {
+      st.slag.push({ lie: lie(), avst: +inp.value, kolle: st.kolle });
+      st.kolle = null; app.querySelectorAll('[data-kolle] button').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+    }
+    app.querySelector('[data-neste]').addEventListener('click', function () {
+      if (!gyldig()) return; legg();
+      app.querySelectorAll('[data-lie] button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.v === 'Fairway' ? 'true' : 'false'); });
+      inp.value = ''; inp.focus({ preventScroll: true }); tegnListe();
+    });
+    app.querySelector('[data-ihull]').addEventListener('click', function () {
+      if (!gyldig()) return; legg(); tegnListe();
+      var n = st.slag.length + st.slag.filter(function (s) { return s.straff; }).length;
+      I_DAG[6] = n; stripe(app, 7);
+      toast(app, 'Hull 7: ' + n + ' slag (' + tilPar(n - 3) + '). Neste: hull 8, par 4.');
+    });
+    app.querySelector('[data-straff]').addEventListener('click', function () {
+      if (!st.slag.length) { toast(app, 'Før slaget først, så legger du til straffeslaget.'); return; }
+      st.slag[st.slag.length - 1].straff = true; tegnListe(); toast(app, 'Ett straffeslag lagt til på slag ' + st.slag.length + '.');
+    });
+    app.querySelector('[data-angre]').addEventListener('click', function () {
+      if (!st.slag.length) return; var s = st.slag.pop(); inp.value = s.avst; tegnListe(); toast(app, 'Slag ' + (st.slag.length + 1) + ' er tatt bort.');
+    });
+    liste.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-i]'); if (!b) return; var s = st.slag[+b.dataset.i];
+      inp.value = s.avst; inp.focus(); toast(app, 'Rett avstanden for slag ' + (+b.dataset.i + 1) + ', og trykk Neste slag.');
+    });
+    tegnListe();
+    sgListe(app.querySelector('[data-sg-liste]'), SG_HITTIL);
+    app.querySelector('[data-sg-apne]').addEventListener('click', function () { ark(app, '[data-sg-ark]', true); });
+    lukkbar(app, '[data-sg-ark]');
+    if (aapneSg) ark(app, '[data-sg-ark]', true);
+  }
+
+  /* ---------- RD-04 Putt ---------- */
+  function putt(app) {
+    var st = { slag: [{ lie: 'Tee', avst: 172, kolle: '6-jern', enhet: 'm' }] };
+    var inp = avstandsfelt(app, 1, 120), liste = app.querySelector('[data-slagliste]'), bom = app.querySelector('[data-bom]'), knapp = app.querySelector('[data-putt-lagre]');
+    function res() { return app.querySelector('[data-resultat] [aria-pressed="true"]').dataset.v; }
+    function tegn() {
+      slagRader(liste, st.slag, 'fot');
+      app.querySelector('[data-hull-sum]').textContent = st.slag.length + ' slag';
+      var p = st.slag.length; app.querySelector('[data-puttnr]').textContent = 'slag ' + (p + 1) + ' · putt ' + p;
+    }
+    app.querySelector('[data-resultat]').addEventListener('click', function () {
+      setTimeout(function () { var inn = res() === 'inn'; bom.hidden = inn; knapp.textContent = inn ? 'Ferdig med hull 7' : 'Neste putt'; }, 0);
+    });
+    knapp.addEventListener('click', function () {
+      if (!(+inp.value > 0)) { toast(app, 'Før lengden på putten i fot.'); inp.focus(); return; }
+      st.slag.push({ lie: 'Green', avst: +inp.value, kolle: 'Putter', enhet: 'fot' });
+      if (res() === 'inn') {
+        var n = st.slag.length; tegn();
+        toast(app, 'Hull 7: ' + n + ' slag, ' + (n - 1) + (n - 1 === 1 ? ' putt (' : ' putter (') + tilPar(n - 3) + '). Neste: hull 8.');
+        return;
+      }
+      tegn(); inp.value = 3; toast(app, 'Putt ' + (st.slag.length - 1) + ' er ført. Før neste.');
+    });
+    tegn();
+  }
+
+  /* ---------- RD-06 Rask score ---------- */
+  function rask(app) {
+    var st = { n: 9, modus: 'hull', score: [4, 5, 3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], total: 74 };
+    var rader = app.querySelector('[data-hullrader]');
+    function tegnRader() {
+      var h = '';
+      for (var i = 0; i < st.n; i++) {
+        var s = st.score[i];
+        h += '<div class="hullrad"><span><b>Hull ' + (i + 1) + '</b><span style="display:block">Par ' + PAR[i] + ' · ' + LEN[i] + ' m</span></span>' +
+          '<div class="trinn" data-h="' + i + '"><button type="button" data-d="-1" aria-label="Hull ' + (i + 1) + ', ett slag færre">−</button><output class="' + (s == null ? 'tom' : '') + '">' + (s == null ? '—' : s) + '</output><button type="button" data-d="1" aria-label="Hull ' + (i + 1) + ', ett slag til">+</button></div>' +
+          '<div class="ekstra"><label class="lite">Putter <select aria-label="Putter hull ' + (i + 1) + '"><option>—</option><option>0</option><option>1</option><option' + (s != null ? ' selected' : '') + '>2</option><option>3</option><option>4</option></select></label>' +
+          (PAR[i] > 3 ? '<label class="lite">Fairway <select aria-label="Fairway hull ' + (i + 1) + '"><option>—</option><option' + (s != null ? ' selected' : '') + '>Ja</option><option>Venstre</option><option>Høyre</option></select></label>' : '') +
+          '<label class="lite">GIR <select aria-label="GIR hull ' + (i + 1) + '"><option>—</option><option' + (s != null ? ' selected' : '') + '>Ja</option><option>Nei</option></select></label></div></div>';
+      }
+      rader.innerHTML = h; summer();
+    }
+    function summer() {
+      var big = app.querySelector('[data-rask-sum]'), par = app.querySelector('[data-rask-par]'), linje = app.querySelector('[data-rask-hull]');
+      if (st.modus === 'total') { big.textContent = st.total; par.textContent = tilPar(st.total - 72); linje.textContent = '18 hull · brutto · ført som total'; return; }
+      var ført = 0, s = 0, p = 0;
+      for (var i = 0; i < st.n; i++) if (st.score[i] != null) { ført++; s += st.score[i]; p += PAR[i]; }
+      big.textContent = ført ? s : '—'; par.textContent = ført ? tilPar(s - p) + ' etter ' + ført + ' hull' : 'Ingen hull ført';
+      linje.textContent = ført + ' av ' + st.n + ' hull · brutto';
+    }
+    rader.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-d]'), t = b && b.closest('[data-h]'); if (!t) return;
+      var i = +t.dataset.h, s = st.score[i];
+      st.score[i] = s == null ? PAR[i] : Math.max(1, Math.min(15, s + (+b.dataset.d)));
+      var o = t.querySelector('output'); o.textContent = st.score[i]; o.classList.remove('tom'); summer();
+    });
+    function settModus() {
+      app.querySelector('[data-rask-hullvisning]').hidden = st.modus !== 'hull';
+      app.querySelector('[data-rask-totalvisning]').hidden = st.modus !== 'total';
+      var tot = app.querySelector('[data-m="total"]');
+      tot.disabled = st.n === 9;
+      app.querySelector('[data-rask-regel]').hidden = st.n !== 9;
+      app.querySelectorAll('[data-rask-modus] button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.m === st.modus ? 'true' : 'false'); });
+      summer();
+    }
+    app.querySelector('[data-rask-antall]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return; st.n = +b.dataset.n; if (st.n === 9) st.modus = 'hull'; tegnRader(); settModus();
+    });
+    app.querySelector('[data-rask-modus]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b || b.disabled) return; st.modus = b.dataset.m; settModus();
+    });
+    app.querySelector('[data-total-trinn]').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-d]'); if (!b) return; st.total = Math.max(50, st.total + (+b.dataset.d)); app.querySelector('[data-total]').textContent = st.total; summer();
+    });
+    function tall(s) { var v = parseFloat(String(s).replace('−', '-').replace(',', '.')); return isNaN(v) ? null : v; }
+    function kontroll() {
+      var deler = [].map.call(app.querySelectorAll('[data-sgk]'), function (x) { return tall(x.value); }), tot = tall(app.querySelector('[data-sgtot]').value), boks = app.querySelector('[data-sumkontroll]');
+      if (deler.some(function (d) { return d == null; }) || tot == null) { boks.className = 'sjekk vent'; boks.innerHTML = ikon('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>') + '<span>Fyll inn alle fire kategoriene og totalen, eller la hele seksjonen stå tom.</span>'; return; }
+      var s = deler.reduce(function (a, b) { return a + b; }, 0);
+      if (Math.abs(s - tot) < 0.05) { boks.className = 'sjekk ok'; boks.innerHTML = ikon('<path d="M5 12l5 5L20 7"/>') + '<span>Summen stemmer: ' + komma(s, true) + '.</span>'; }
+      else { boks.className = 'sjekk vent'; boks.innerHTML = ikon('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>') + '<span>Kategoriene blir ' + komma(s, true) + ', men totalen er ' + komma(tot, true) + '. De må være like før runden lagres.</span>'; }
+    }
+    app.querySelectorAll('[data-sgk],[data-sgtot]').forEach(function (x) { x.addEventListener('input', kontroll); });
+    app.querySelector('[data-rask-lagre]').addEventListener('click', function () {
+      var ført = st.score.slice(0, st.n).filter(function (s) { return s != null; }).length;
+      if (st.modus === 'hull' && ført < st.n) { toast(app, 'Før alle ' + st.n + ' hull først. ' + (st.n - ført) + ' mangler.'); return; }
+      toast(app, 'Runden er lagret. Snittscoren er oppdatert.');
+    });
+    tegnRader(); settModus(); kontroll();
+  }
+
+  /* ---------- RD-07 Import ---------- */
+  function imp(app) {
+    function steg(n) {
+      app.querySelectorAll('[data-i-steg]').forEach(function (s) { s.hidden = +s.dataset.iSteg > n; });
+      app.querySelectorAll('[data-stegrad] span').forEach(function (s, i) { s.className = i + 1 < n ? 'ferdig' : i + 1 === n ? 'naa' : ''; });
+      var siste = app.querySelector('[data-i-steg="' + n + '"]'); if (siste) siste.scrollIntoView({ block: 'nearest' });
+    }
+    app.querySelector('[data-i-les]').addEventListener('click', function () { steg(2); });
+    app.querySelector('[data-i-sjekk]').addEventListener('click', function () { steg(3); });
+    app.querySelector('[data-i-lagre]').addEventListener('click', function () {
+      app.querySelectorAll('[data-i-steg]').forEach(function (s) { s.hidden = s.dataset.iSteg !== '4'; });
+      app.querySelectorAll('[data-stegrad] span').forEach(function (s) { s.className = 'ferdig'; });
+    });
+  }
+
+  /* ---------- RD-08 Runde gjennomført ---------- */
+  function ferdig(app) {
+    sgListe(app.querySelector('[data-sg-runde]'), SG_RUNDE);
+    app.querySelector('[data-tiger]').innerHTML = TIGER.map(function (t) {
+      return '<div><span><b>' + t[0] + '</b><span style="display:block">' + t[1] + '</span></span><span class="v' + (t[2] ? '' : ' null') + '">' + t[2] + '</span></div>';
+    }).join('');
+    scorekort(app.querySelector('[data-scorekort]'), SCORE, PUTT, null);
+    app.querySelector('[data-ferdig-lagre]').addEventListener('click', function () { toast(app, 'Runden er lagret. Anders ser den i AgencyOS.'); });
+  }
+
+  /* ---------- RD-09 Rediger ---------- */
+  function rediger(app) {
+    var score = SCORE.slice(), putt = PUTT.slice(), valgt = 12, boks = app.querySelector('[data-scorekort]');
+    var SLAG13 = [['Tee', '467 m', 'Driver'], ['Fairway', '205 m', '4-hybrid'], ['Fairway', '48 m', '56°'], ['Green', '18 fot', 'Putter'], ['Green', '2 fot', 'Putter']];
+    function tegn() {
+      scorekort(boks, score, putt, valgt);
+      var tot = sum(score, 0, 18);
+      app.querySelector('[data-red-sum]').textContent = tot + ' · ' + tilPar(tot - 72);
+      app.querySelector('[data-red-tittel]').textContent = 'Hull ' + (valgt + 1) + ' · par ' + PAR[valgt] + ' · ' + LEN[valgt] + ' m';
+      app.querySelector('[data-red-score] output').textContent = score[valgt];
+      app.querySelector('[data-red-putt] output').textContent = putt[valgt];
+      var sl = valgt === 12 ? SLAG13 : null;
+      app.querySelector('[data-red-slag]').innerHTML = sl ? sl.map(function (s, i) { return '<button type="button"><span class="nr">' + (i + 1) + '</span><span><b>' + s[0] + '</b><span class="kildetekst" style="display:block">' + s[2] + '</span></span><span class="v">' + s[1] + '</span></button>'; }).join('')
+        : '<p class="kildetekst" style="padding:12px 0">' + score[valgt] + ' slag ført. Trykk Rediger slag for å se dem.</p>';
+    }
+    boks.addEventListener('click', function (e) { var b = e.target.closest('[data-hull]'); if (b) { valgt = +b.dataset.hull; tegn(); } });
+    app.querySelector('[data-red-score]').addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (!b) return; score[valgt] = Math.max(1, score[valgt] + (+b.dataset.d)); tegn(); });
+    app.querySelector('[data-red-putt]').addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (!b) return; putt[valgt] = Math.max(0, Math.min(score[valgt] - 1, putt[valgt] + (+b.dataset.d))); tegn(); });
+    app.querySelector('[data-red-lagre]').addEventListener('click', function () { toast(app, 'Endringene er lagret. SG og snittscore er regnet på nytt.'); });
+    app.querySelector('[data-slett]').addEventListener('click', function () { ark(app, '[data-slett-ark]', true); });
+    lukkbar(app, '[data-slett-ark]');
+    app.querySelector('[data-slett-ja]').addEventListener('click', function () { ark(app, '[data-slett-ark]', false); toast(app, 'Runden 4. oktober er slettet.'); });
+    tegn();
+  }
+
+  /* ---------- PH-18 Runder ---------- */
+  function runder(app) {
+    var boks = app.querySelector('[data-rundeliste]'), alle = false, filter = 'Alle';
+    function tegn() {
+      var liste = RUNDER.slice().reverse().filter(function (r) { return filter === 'Alle' || r[2] === filter; });
+      var vis = alle ? liste : liste.slice(0, 6);
+      boks.innerHTML = vis.map(function (r) {
+        return '<button type="button" data-gaa="ferdig"><span><b>' + r[1] + (r[4] === 'Slag for slag' ? '<span class="merke">SG</span>' : '') + '</b><span style="display:block">' + r[0] + ' · ' + r[2] + ' · ' + r[4] + '</span></span><span class="v">' + r[3] + '<small>' + tilPar(r[3] - 72) + '</small></span></button>';
+      }).join('');
+      var k = app.querySelector('[data-flere-runder]'); k.hidden = alle || liste.length <= 6; k.textContent = 'Vis alle ' + liste.length;
+    }
+    app.querySelector('[data-flere-runder]').addEventListener('click', function () { alle = true; tegn(); });
+    app.querySelector('.sek-topp .valg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; filter = b.textContent; tegn(); });
+    tegn();
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  var INGEN_RUNDE = { tittel: 'Ingen runde i gang', tekst: 'Start en runde, så fører du den her. Den lagres på telefonen underveis.', knapp: 'Registrer runde' };
+  AKUtkast.start({
+    start: 'niva',
+    skjermer: {
+      niva: m('PH-RD-01', 'niva', niva, { tittel: 'Ingen runder ennå', tekst: 'Velg hvor mye du vil føre. Du kan starte med rask score og føre mer senere.', knapp: 'Rask score' }, 'Henter rundene dine …', 'Rundene kunne ikke hentes'),
+      oppsett: m('PH-RD-02', 'oppsett', oppsett, { tittel: 'Ingen baner å velge', tekst: 'Banelisten er tom. Skriv banenavnet selv, så legges den til.', knapp: 'Skriv inn bane' }, 'Henter banene …', 'Banene kunne ikke hentes'),
+      slag: m('PH-RD-03', 'slag', slag, INGEN_RUNDE, 'Henter runden …', 'Runden kunne ikke hentes. Slagene er trygge på telefonen'),
+      putt: m('PH-RD-04', 'putt', putt, INGEN_RUNDE, 'Henter runden …', 'Runden kunne ikke hentes. Slagene er trygge på telefonen'),
+      sg: m('PH-RD-05', 'slag', function (app, t) { slag(app, t, true); }, { tittel: 'Ingen hull ferdige ennå', tekst: 'SG hittil kommer når du har fullført første hull.', knapp: 'Fortsett runden' }, 'Regner ut SG …', 'SG kunne ikke regnes ut'),
+      rask: m('PH-RD-06', 'rask', rask, { tittel: 'Ingen bane valgt', tekst: 'Velg bane og tee først, så får du hullene med par.', knapp: 'Velg bane' }, 'Henter banen …', 'Banen kunne ikke hentes'),
+      'import': m('PH-RD-07', 'import', imp, { tittel: 'Ingen runder i fila', tekst: 'Fila hadde ingen rader vi kunne lese. Sjekk at den er CSV med en rad per runde.', knapp: 'Prøv en annen fil' }, 'Leser fila …', 'Fila kunne ikke leses'),
+      ferdig: m('PH-RD-08', 'ferdig', ferdig, { tittel: 'Ingen runde å vise', tekst: 'Runden finnes ikke lenger. Den kan være slettet.', knapp: 'Se alle runder' }, 'Henter runden …', 'Runden kunne ikke hentes'),
+      rediger: m('PH-RD-09', 'rediger', rediger, { tittel: 'Ingen runde å redigere', tekst: 'Runden finnes ikke lenger. Den kan være slettet.', knapp: 'Se alle runder' }, 'Henter runden …', 'Runden kunne ikke hentes'),
+      runder: m('PH-18', 'runder', runder, { tittel: 'Ingen runder ennå', tekst: 'Snittscoren kommer når du har registrert en runde. GolfBox-runder hentes automatisk når du har funnet deg i turneringsresultatene.', knapp: 'Registrer runde' }, 'Henter rundene …', 'Rundene kunne ikke hentes')
+    }
+  });
+})();
+</script>
+</body></html>
