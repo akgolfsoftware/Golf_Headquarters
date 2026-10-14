@@ -66,13 +66,9 @@ export function computeWeeklyLoad(sessions: SessionLoadInput[]): WeeklyLoadResul
   let completedMinutes = 0;
 
   for (const s of sessions) {
-    const min =
-      s.actualMinutes != null && s.actualMinutes >= 0
-        ? s.actualMinutes
-        : Math.max(0, s.durationMinutes);
-
+    // Gjennomført tid er øktens planlagte varighet, som i måned, periode og år.
     if (s.status === "COMPLETED") {
-      completedMinutes += min;
+      completedMinutes += Math.max(0, s.durationMinutes);
     }
 
     const load = computeSessionLoad(s);
