@@ -1,6 +1,6 @@
 # PlayerHQ i nytt design — utkast
 
-Status: **utkast. Pakke 3 Plan og Workbench og pakke 4 Øvelser og teknikk er godkjent 14.10; pakke 2 Treningsøkta og pakke 5 Runder er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
+Status: **utkast. Pakke 3 Plan og Workbench, pakke 4 Øvelser og teknikk og pakke 5 Runder er godkjent 14.10; pakke 2 Treningsøkta er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
 Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-knapp for sammenligning.
 
 ## Plan (Anders 14.10.2026: «Ok»)
@@ -13,7 +13,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | **Godkjent 14.10** (port 7, Anders), utkast 2 i `plan.html` | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
 | 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (lyst tema også i Live, Anders 14.10), `treningsokt.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ |
 | 4 Øvelser og teknikk | PH-12, PH-13 (+ øvelse, break-tabell), PH-TP-01 (+ utkast fra coach), `ovelser.html` | **Godkjent 14.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/8uJAzvbeaaSTCp9jsNZKTR |
-| 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD), `runder.html`, lyst også ute på banen | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/WubERezBPiponAixBHRoem |
+| 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD), `runder.html`, lyst også ute på banen | **Godkjent 14.10** (port 7, Anders), utkast 2 med farge | https://claude.ai/artifact/WubERezBPiponAixBHRoem |
 | 6 Stats i dybden | PH-14, PH-15 (+TN), PH-17 | | |
 | 7 Kommunikasjon | PH-21 Innboks, PH-22 Caddie, PH-23 Booking | | |
 | 8 Meg | PH-24, PH-25, PH-27 | | |
