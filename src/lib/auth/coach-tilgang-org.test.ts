@@ -83,14 +83,14 @@ test("egen AK-coach (enrollment eller eid gruppe): leser og skriver som før, ut
   assert.equal(delingssjekker.length, 0);
 });
 
-test("trener-medlem i AK-gruppe: lesing via medlemskapsgrenen, aldri skriving (D-25)", async () => {
+test("COACH-medlem i AK-gruppe: leser og skriver via medlemskapsgrenen (Anders 14.10)", async () => {
   nullstill();
   // Databasen finner spilleren bare når medlemskapsgrenen er med i spørringen.
   finnSpiller = harMedlemskapsgren;
   const { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } = await import("./coached");
-  const assistent = { id: "ak-assistent", role: "COACH" };
-  assert.equal(await harCoachLesetilgangTilSpiller(assistent, "spiller-1"), true);
-  assert.equal(await harCoachTilgangTilSpiller(assistent, "spiller-1"), false);
+  const trener = { id: "ak-trener", role: "COACH" };
+  assert.equal(await harCoachLesetilgangTilSpiller(trener, "spiller-1"), true);
+  assert.equal(await harCoachTilgangTilSpiller(trener, "spiller-1"), true);
 });
 
 test("ADMIN og spillere går aldri via delingsgrenen", async () => {

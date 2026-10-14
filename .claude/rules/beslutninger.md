@@ -24,6 +24,17 @@ Anders har godkjent den (port 7). «opp-og-ned» er rettet i `hjelpetekster.ts` 
 toppidrett-visninger. Den publiserte GFGK Junior-teksten (`src/app/gfgk-junior/_data/`) venter til
 Anders sier fra, som for periodenavnene.
 
+## TRENERE I AK-GRUPPER SKRIVER I MEDLEMMENES PLAN (Anders 14.10.2026, bindende)
+
+Svar på spørsmålet etter PR 1a (#1206): «Trenere i AK-grupper (GFGK) mister skriverett i spillerens plan — riktig?» Anders: «Feil.»
+
+- **COACH-medlem i en AK-gruppe (GFGK, Academy, Junior Academy) kan skrive i medlemmenes plan.** Regelen gjelder bare gruppetyper utenfor WANG og Team Norway.
+- **WANG- og Team Norway-trenere er uendret:** de leser bare det spilleren har delt og sender forslag (§KODEGJENNOMGANGEN 06.10).
+- **Assistent-medlemskap gir fortsatt bare lesing.** Uavklart: skal Assist Coach i en AK-gruppe også skrive? Spørres Anders om.
+- **Overstyrer:** D-25 («trener-medlemskap gir aldri skriverett») for AK-grupper, og punkt 1 i §KODEGJENNOMGANGEN 06.10.
+
+**Arbeidet dette utløser:** `coachSkrivbarPlayerWhere` (`src/lib/auth/coached.ts`) har en tredje gren, låst i `coached.test.ts` og `coach-tilgang-org.test.ts`. Uavklart: `canWriteMemberPlans` (`src/lib/workbench/group-scope.ts`) lar fortsatt bare gruppeeieren rulle ut i medlemmenes planer; vurderes når Anders har svart på spørsmålet om gruppeplanen.
+
 ## KODEGJENNOMGANGEN 06.10: TRENERE FORESLÅR, FORELDER GODKJENNER INNEN SJU DAGER, DATA GOLF BARE FOR COACHER (Anders 06.10.2026, bindende)
 
 Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` (grenen `review/kodegjennomgang`).
