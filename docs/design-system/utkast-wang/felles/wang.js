@@ -147,6 +147,7 @@
       ramme.className = 'ramme ' + tilstand.bredde; ramme.innerHTML = ''; ramme.style.height = '';
       var mal = document.getElementById(o.mal || 'skjerm');
       var app = mal.content.firstElementChild.cloneNode(true);
+      app.classList.add('rolle-' + tilstand.rolle);
       skall(app, tilstand.rolle);
       velgere(app);
       var vanlig = !tilstand.tilstand || tilstand.tilstand === 'data' || !o.tom;

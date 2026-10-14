@@ -63,6 +63,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   position:relative;container-type:inline-size;background:var(--bg);color:var(--tekst);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 .app *{min-width:0}
 .app p{margin:0}
+.app [hidden]{display:none!important}
 .ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- Skall: topplinje + bunnmeny på mobil, sidemeny på PC ---------- */
@@ -88,6 +89,9 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .mer-ark .teller{margin-left:auto}
 .tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;background:#fff;box-shadow:0 1px 0 var(--linje);position:sticky;top:0;z-index:4}
 .tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;border:0;background:transparent;font:700 15px/1 var(--brand);color:var(--navy);cursor:pointer;border-radius:var(--r-ikon);text-decoration:none}
+
+/* Rolle: [data-bare=sportssjef] vises bare når rollevelgeren står på Sportssjef */
+.app:not(.rolle-sportssjef) [data-bare=sportssjef]{display:none!important}
 
 /* ---------- Tekst ---------- */
 .dato{font:700 12px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}

@@ -81,6 +81,17 @@ const KONTRAST = () => {
   await p.setViewportSize({ width: 360, height: 900 });
   await p.click('[data-bredde=mob]'); await p.waitForTimeout(900);
   console.log('360', JSON.stringify(await mal()));
+  // Flere skjermer i én fil: mål hver skjerm i 390 og 360 px, kontrast og skjermbilder
+  const skjermer = await p.$$eval('[data-skjerm]', (b) => b.map((x) => x.dataset.skjerm));
+  for (const sk of skjermer) {
+    for (const [w, br] of [[1300, 'pc'], [1300, 'mob'], [360, 'mob']]) {
+      await p.setViewportSize({ width: w, height: 2400 });
+      await p.click(`[data-bredde=${br}]`); await p.click(`[data-skjerm=${sk}]`); await p.waitForTimeout(900);
+      if (w === 1300) await (await p.$('#ramme')).screenshot({ path: `${ut}-${sk}-${br}.png` });
+      const k = await p.evaluate(KONTRAST);
+      console.log(sk, br, w, JSON.stringify(await mal()), 'kontrast', JSON.stringify(k.under));
+    }
+  }
   console.log('feil', fe);
   await b.close();
 })();

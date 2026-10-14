@@ -1,6 +1,6 @@
 # WANG Toppidrett i nytt design: trenerskjermene
 
-Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakke 2 I dag tegnes.**
+Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakke 2 I dag er utkast 1 (14.10).**
 
 Gjelder trenerflaten i `/team-wang` i AK Golf HQ. Claude Design stenger 14.12, så Anders godkjente 14.10 at WANG tegnes i
 repoet som HTML-utkast publisert som private Artifacts, samme metode som [PlayerHQ](../utkast-playerhq/README.md).
@@ -40,7 +40,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | Pakke | Skjermer | Fil | Status | Lenke |
 |---|---|---|---|---|
 | 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders) | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
-| 2 I dag | Dagens økter, det som krever handling, oppmøte på morgentrening, fravær | `idag.html` | | |
+| 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/SnvRTBqBURfaAwGeB8Fd4k |
 | 3 Trening | WANG-42 oversikt (planlagt mot gjennomført 4 uker, etterlevelse, per område og elev), årsplan, periode, måned, uke, økt | `trening.html` | | |
 | 4 Tester | Testbatteriet, testdag-føring, resultater per elev, A–K-nivå, fysisk test hver sjette uke | `tester.html` | | |
 | 5 Konkurranse | Turneringer, resultater per elev, samlinger med uttak | `konkurranse.html` | | |
@@ -62,8 +62,9 @@ Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TI
 4. `<script src="felles/wang.js"></script><script>WANGUtkast.start({ etter: fn, tom: {tittel, tekst, knapp}, laster: '…', feil: '…' })</script>`.
    Flere skjermer i én fil: `WANGUtkast.start({ skjermer: { id: { mal, etter, tom, laster, feil } } })` med velger `data-skjerm` og lenker `data-gaa`.
    Velgerne på siden: `data-bredde` (mob, pc), `data-rolle` (trener, sportssjef), `data-tilstand` (data, tom, laster, feil).
+   Innhold bare for sportssjef: `data-bare="sportssjef"`. Skjult med `hidden` virker også på kort.
 5. Kontroll: `NODE_PATH=<hovedrepo>/node_modules node kilder/sjekk.js $PWD/<fil>.html <ut>` gir skjermbilder,
-   måler sidelengs rulling i 390 og 360 px, samler JS-feil og måler kontrasten på all tekst. Se på bildene før publisering.
+   måler sidelengs rulling i 390 og 360 px, samler JS-feil og måler kontrasten på all tekst, for hver skjerm i fila. Se på bildene før publisering.
    Tekst over gradient eller bilde måles ikke automatisk (står som «manuelt»); helteflatens lyseste punkt gir 6,1:1 for hvit tekst.
 6. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
 
