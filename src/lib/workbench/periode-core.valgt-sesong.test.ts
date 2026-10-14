@@ -33,6 +33,11 @@ const db = {
       return blokker.find(b => b.id === where.id && (!where.seasonPlanId || b.seasonPlanId === where.seasonPlanId)
         && (!where.seasonPlan || planer.some(p => p.id === b.seasonPlanId && p.userId === where.seasonPlan!.userId))) ?? null;
     },
+    findUnique: async ({ where }: { where: { id: string } }) => {
+      const b = blokker.find(b => b.id === where.id); if (!b) return null;
+      const plan = planer.find(p => p.id === b.seasonPlanId);
+      return { startDate: b.startDate ?? dato("2027-01-04"), endDate: b.endDate ?? dato("2027-02-28"), axisMinutes: b.axisMinutes ?? null, axisMinutesLight: b.axisMinutesLight ?? null, seasonPlan: { id: b.seasonPlanId, userId: plan?.userId ?? "spiller" } };
+    },
     create: async ({ data }: { data: Omit<Blokk, "id"> & { seasonPlanId: string } }) => { writes++; const b = { ...data, id: "ny-periode" }; blokker.push(b); return b; },
     updateMany: async ({ where, data }: { where: { id: string; seasonPlanId: string }; data: Record<string, unknown> }) => {
       const b = blokker.find(b => b.id === where.id && b.seasonPlanId === where.seasonPlanId);
@@ -65,7 +70,7 @@ beforeEach(() => {
 
 test("ekte action oppretter januarperioden i valgt sesong over årsskiftet og bevarer tallverdien 0", async () => {
   const r = await actions.saveSeasonPeriod({ playerId: "spiller", seasonPlanId: "plan-2026", data: nyPeriode });
-  assert.deepEqual(r, { ok: true, data: { periodId: "ny-periode" } });
+  assert.deepEqual(r, { ok: true, data: { periodId: "ny-periode", fordeling: { antallUker: 0, fraUke: null, tilUke: null } } });
   const b = blokker.at(-1)!;
   assert.equal(b.seasonPlanId, "plan-2026"); assert.equal(b.weeklyVolMin, 0); assert.deepEqual(b.weeklySessionBudget, { TEK: 0 });
   assert.equal(planer.length, 3); assert.deepEqual(txOptions, { isolationLevel: "Serializable" }); assert.ok(revalidert.length > 0);

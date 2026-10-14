@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { fordelingKvittering } from "@/lib/workbench/periode-ukefordeling-regler";
 import { validateWeek } from "@/lib/domain/workbench/operations";
 import { formatHours, UI } from "@/lib/domain/workbench/labels";
 import type { PeriodType, PeriodViewModel, PlanningGoalSummary, SourceItem } from "@/lib/domain/workbench/types";
@@ -227,6 +228,8 @@ function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
       axisMinutesLight: tilAkseMinutter(lett),
     } });
     if (!result.ok) { setError(result.error); return; }
+    const kvittering = fordelingKvittering(result.data.fordeling, result.data.fordelingFeilet);
+    if (kvittering) (result.data.fordelingFeilet ? toast.error : toast.success)(kvittering);
     onSaved();
   });
 
