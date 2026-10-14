@@ -29,7 +29,10 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
    alle viser avstand fra hullet og PEI rett etter hvert slag.
 3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
    skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.
-4. **Uavklart:** om Nærspill Gate og VISA Express også skal føres som godkjent eller bom, eller fortsatt med poeng for hånd.
+4. **Nærspill Gate og VISA Express føres også som godkjent eller bom** (Anders 14.10: «Ja»), ikke med poeng for hånd.
+   Overstyrer «poeng føres for hånd per slag og appen summerer» (§Åpne punkter etter runde 19–26) og runde 29 i
+   skjermlista PH-15. `tn-catalog.ts` får `kind: "gate"` med `choice("ok", …)` for begge. Ferdig når
+   `tn-scoring.test.ts` låser «X / 9 godkjent» for begge.
 
 ## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
 
