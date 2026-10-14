@@ -53,8 +53,8 @@ export const WANG_MODULES: Record<
   },
   workbench: {
     label: "Workbench",
-    href: "/team-wang/demo",
-    description: "Golf-demoen viser årsplan, periode, måned, uke og økt.",
+    href: "/team-wang/app/workbench",
+    description: "Årsplan, periode, måned, uke og økt for tildelte grupper.",
   },
   athletes: {
     label: "Utøvere",
