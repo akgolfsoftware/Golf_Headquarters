@@ -159,7 +159,13 @@ export function OnboardingWizard({
         return;
       }
       try {
-        await completeOnboarding(subscribe);
+        const svar = await completeOnboarding(subscribe);
+        if (svar && !svar.ok) {
+          setTilstand("data");
+          setMelding(svar.feil);
+          setSteg(1);
+          return;
+        }
       } catch {
         router.push(ferdigMaal);
         router.refresh();

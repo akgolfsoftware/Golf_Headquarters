@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { venterPaaForelder } from "@/lib/auth/minor";
 import { hentTnVedleggForViewer } from "@/lib/domain/tn-post";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
@@ -8,7 +8,7 @@ import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 export async function GET(_request: Request, context: { params: Promise<{ attachmentId: string }> }) {
   const bruker = await getCurrentUser();
   if (!bruker) return new Response("Logg inn for å laste ned filen.", { status: 401 });
-  if (isAwaitingGuardianConsent(bruker)) return new Response("Foresattes samtykke mangler.", { status: 403 });
+  if (venterPaaForelder(bruker)) return new Response("Foresattes samtykke mangler.", { status: 403 });
   const { attachmentId } = await context.params;
   if (!z.string().regex(/^[a-zA-Z0-9_-]{1,200}$/).safeParse(attachmentId).success) return new Response("Fant ikke filen.", { status: 404 });
   const vedlegg = await hentTnVedleggForViewer(attachmentId, bruker.id);

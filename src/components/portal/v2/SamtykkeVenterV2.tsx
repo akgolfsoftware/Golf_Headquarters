@@ -50,6 +50,7 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
           <h1>Nesten i mål</h1>
           <p>
             Hei {spillerNavn || "der"}! Du er under 16 år, så en forelder må godkjenne kontoen din.
+            Det skulle skje innen sju dager etter at du opprettet den, og kontoen er låst til forelderen har godkjent.
             {epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""}
           </p>
         </header>

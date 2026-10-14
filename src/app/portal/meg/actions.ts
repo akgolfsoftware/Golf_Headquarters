@@ -14,6 +14,12 @@ import { prisma } from "@/lib/prisma";
 import { lesPreferences, lesRaaPreferences, type UserPreferences } from "@/lib/preferences";
 import type { ProfileData } from "@/components/portal/profile/ProfileShell";
 import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
+import {
+  FODSELSDATO_LAAST_MELDING,
+  isMinor,
+  maaHaForesattSamtykke,
+  vurderEgenFodselsdato,
+} from "@/lib/auth/minor";
 
 export async function hentProfil(): Promise<ProfileData> {
   const user = await requireConsentingUser();
@@ -61,6 +67,11 @@ export async function oppdaterProfil(input: {
 }) {
   const user = await requireConsentingUser();
 
+  // D-63/TP-02: fødselsdatoen settes én gang og endres aldri av spilleren selv.
+  const datoEndring = vurderEgenFodselsdato(user.dateOfBirth, input.dateOfBirth);
+  if (datoEndring === "avvist") throw new Error(FODSELSDATO_LAAST_MELDING);
+  const nyFodselsdato = datoEndring === "sett" ? (input.dateOfBirth ?? null) : user.dateOfBirth;
+
   await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -72,7 +83,9 @@ export async function oppdaterProfil(input: {
       homeClub: input.homeClub === "" ? null : input.homeClub ?? user.homeClub,
       school: input.school === "" ? null : input.school ?? user.school,
       prevSeasonAvgScore: input.prevSeasonAvgScore ?? user.prevSeasonAvgScore,
-      dateOfBirth: input.dateOfBirth ?? user.dateOfBirth,
+      dateOfBirth: nyFodselsdato,
+      // Flagget nullstilles aldri, men settes når datoen viser under 16.
+      requiresGuardianConsent: user.requiresGuardianConsent || isMinor(nyFodselsdato),
     },
   });
 
@@ -125,19 +138,22 @@ export async function settEgetLydSamtykke(): Promise<
   { ok: true } | { ok: false; feil: string }
 > {
   const { requireSpillerActionUser } = await import("@/lib/auth/action-guards");
-  const { isMinor } = await import("@/lib/auth/minor");
   const { LYD_SAMTYKKE_ORDLYD } = await import("@/lib/recording/lyd-samtykke-ordlyd");
   const { audit } = await import("@/lib/audit");
 
   const user = await requireSpillerActionUser();
   const full = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { dateOfBirth: true },
+    select: { dateOfBirth: true, requiresGuardianConsent: true, role: true },
   });
-  if (isMinor(full?.dateOfBirth)) {
+  // Strengeste signal: flagget, fødselsdatoen, og ukjent alder regnes som
+  // under 16 (D-63, TA-04/TP-03).
+  if (!full || maaHaForesattSamtykke(full)) {
     return {
       ok: false,
-      feil: "Du er under 16 år. Foresatt må gi lydsamtykke via lenke fra treneren.",
+      feil: full?.dateOfBirth
+        ? "Du er under 16 år. Foresatt må gi lydsamtykke via lenke fra treneren."
+        : "Legg inn fødselsdatoen din først. Under 16 år må foresatt gi lydsamtykke.",
     };
   }
 
