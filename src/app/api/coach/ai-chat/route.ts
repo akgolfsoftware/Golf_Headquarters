@@ -20,6 +20,7 @@ type RequestBody = {
 };
 
 export async function POST(req: Request) {
+  // tilgang: eier sjekkes mot coachingSession.findFirst({ userId: user.id, kind: "AI" }) (TA-01)
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
