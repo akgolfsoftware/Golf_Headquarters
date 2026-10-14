@@ -1,0 +1,80 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlayerHQ samleside</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* Samleside: alle PlayerHQ-utkastene med status. Bruker sidelaget i felles.css (.ytre, --side-*). */
+:root{--side-ok:#2f6b3a;--side-ok-bg:#eaf3e9;--side-vent:#7e6110;--side-vent-bg:#fbf4e4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-ok:#9fd3a6;--side-ok-bg:#1f3322;--side-vent:#e8c770;--side-vent-bg:#3a3018}}
+:root[data-theme="dark"]{--side-ok:#9fd3a6;--side-ok-bg:#1f3322;--side-vent:#e8c770;--side-vent-bg:#3a3018}
+.tall{display:flex;flex-wrap:wrap;gap:10px}
+.tall div{display:grid;gap:2px;min-width:130px;padding:14px 16px;border:1px solid var(--side-linje);border-radius:10px;background:var(--side-kort)}
+.tall b{font:600 34px/1 var(--mono);letter-spacing:-.03em}
+.tall span{font-size:13.5px;color:var(--side-dempet)}
+.pakker{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}
+.pakke{display:grid;gap:10px;align-content:start;padding:16px 18px 18px;border:1px solid var(--side-linje);border-radius:10px;background:var(--side-kort);min-width:0}
+.pakke .topp{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pakke .nr{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--side-dempet)}
+.pakke h2{margin:2px 0 0;font:600 19px/1.25 var(--sans)}
+.pakke p{margin:0;font-size:14.5px;line-height:1.5;color:var(--side-dempet)}
+.pakke code{font:500 13px/1 var(--mono)}
+.status{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font:600 12.5px/1 var(--sans);white-space:nowrap;flex:none}
+.status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.ok{background:var(--side-ok-bg);color:var(--side-ok)}
+.status.vent{background:var(--side-vent-bg);color:var(--side-vent)}
+.aapne{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;background:var(--side-valgt);color:var(--side-paa-valgt);font:600 14px/1 var(--sans);text-decoration:none;justify-self:start}
+.aapne:focus-visible{outline:3px solid #1d3557;outline-offset:2px}
+.ingen{font:500 14px/1.4 var(--sans);color:var(--side-dempet)}
+h2.del{margin:8px 0 0;font:600 22px/1.25 var(--sans)}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 10 · samleside · 14.10.2026</span>
+    <h1>PlayerHQ i nytt design</h1>
+    <p>Alle utkastene på én side, med status per pakke. Målestokken er designbrevet 13.10: farge bærer innholdet, golfbilder, store tall først og mindre småtekst. En pakke er ferdig når Anders har sett den og sagt ja.</p>
+  </div>
+  <div class="tall">
+    <div><b>6</b><span>pakker godkjent</span></div>
+    <div><b>5</b><span>venter på gjennomgang</span></div>
+    <div><b>67</b><span>skjermer tegnet</span></div>
+  </div>
+
+  <h2 class="del">Venter på gjennomgang</h2>
+  <div class="pakker">
+    <article class="pakke"><div class="topp"><div><span class="nr">Startskjerm</span><h2>PH-01 I dag</h2></div><span class="status vent"><i></i>Utkast 4</span></div><p>Dagens økter som fylte kort, progresjonen øverst og snarvei til neste økt.</p><a class="aapne" href="https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Stats</span><h2>PH-16 Stats</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Fire like deler: Snittscore, Strokes Gained, Trening og Tester.</p><a class="aapne" href="https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 2</span><h2>Treningsøkta</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>PH-03 til PH-07: øktark, brief, aktiv økt, fysisk økt og etter økta. Lyst tema også i Live. <code>treningsokt.html</code></p><a class="aapne" href="https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 8</span><h2>Meg</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>PH-24 Meg, profil, fasiliteter, utstyr, helse og foreldre. PH-25 abonnement og innstillinger. PH-27 deling, også under 16. <code>meg.html</code></p><a class="aapne" href="https://claude.ai/artifact/3LLqsVrsgjq5KxwysoGxg3">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 9</span><h2>IUP og gameplan</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>PH-IUP-01 Fireukerssjekk, PH-IUP-02 Sesongevaluering og PH-20 Gameplan med hull for hull. <code>iup.html</code></p><a class="aapne" href="https://claude.ai/artifact/6ALZka6wvTpvKvnboZXb5E">Åpne</a></article>
+  </div>
+
+  <h2 class="del">Godkjent</h2>
+  <div class="pakker">
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 1</span><h2>Grunnmur</h2></div><span class="status ok"><i></i>Ferdig</span></div><p>Felles stil og skall for alle utkastene, og dagens design for sammenligning. <code>felles/</code></p><span class="ingen">Ingen egen lenke</span></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 3</span><h2>Plan og Workbench</h2></div><span class="status ok"><i></i>Godkjent</span></div><p>PH-10, PH-11 med årsplan, ny årsplan, periode, måned, maler og Gjenta. <code>plan.html</code></p><a class="aapne" href="https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 4</span><h2>Øvelser og teknikk</h2></div><span class="status ok"><i></i>Godkjent</span></div><p>PH-12, PH-13 med øvelse og break-tabell, PH-TP-01 teknisk plan. <code>ovelser.html</code></p><a class="aapne" href="https://claude.ai/artifact/8uJAzvbeaaSTCp9jsNZKTR">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 5</span><h2>Runder</h2></div><span class="status ok"><i></i>Godkjent</span></div><p>PH-RD-01 til 09 og PH-18. Registrering slag for slag, lyst også ute på banen. <code>runder.html</code></p><a class="aapne" href="https://claude.ai/artifact/WubERezBPiponAixBHRoem">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 6</span><h2>Stats i dybden</h2></div><span class="status ok"><i></i>Godkjent</span></div><p>PH-14 Tester, PH-15 Wedge Gate og TN-testene, PH-17 Trening og TrackMan, resultater. <code>stats-dybde.html</code></p><a class="aapne" href="https://claude.ai/artifact/TCAjvtfCSbP55GXGq2UNcL">Åpne</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Pakke 7</span><h2>Kommunikasjon</h2></div><span class="status ok"><i></i>Godkjent</span></div><p>PH-21 Innboks og meldinger, PH-22 Caddie, PH-23 Booking med flytt og avbestill. <code>kommunikasjon.html</code></p><a class="aapne" href="https://claude.ai/artifact/2Dtxo3nS4rwN2yBaaRTpTD">Åpne</a></article>
+  </div>
+
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Slik går du gjennom</span>
+      <ul>
+        <li>Hver lenke åpner én pakke. Øverst velger du skjerm, mobil eller PC, og tilstand: med data, tom, laster eller feil.</li>
+        <li>«Dagens design» viser skjermen slik den ser ut i appen i dag, for sammenligning.</li>
+        <li>Under hver pakke står hva som er nytt, reglene som er fulgt, og det som er åpent hos deg.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Neste</span>
+      <ul>
+        <li>AgencyOS tegnes i samme metode, i <code>utkast-agencyos/</code>, med egen samleside.</li>
+        <li>Etter tegningen: en gjennomgang av alle skjermene med Emil Kowalski- og Apple-design-skillene.</li>
+        <li>Godkjente pakker porteres til appen etter porteringsplanen.</li>
+      </ul>
+    </div>
+  </div>
+</div>

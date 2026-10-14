@@ -75,5 +75,8 @@ tomme, lastende og feilende tilstander på hver skjerm.
 4. Cockpit (AG-01) og Spiller 360 (AG-08).
 5. WANG og Team Norway til slutt.
 
+Status 14.10.2026: PlayerHQ er tegnet i alle pakker. Oversikt med lenker og status: samlesiden i
+`utkast-playerhq/samleside.html` (README-tabellen har lenken). AgencyOS tegnes i `utkast-agencyos/`.
+
 Claude Design kan brukes til 14.12.2026 (tjenesten flyttes til Artifacts). Designkilden må være
 flyttet ut før da.
