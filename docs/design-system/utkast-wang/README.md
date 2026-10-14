@@ -42,7 +42,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders) | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
 | 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/SnvRTBqBURfaAwGeB8Fd4k |
 | 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/TwDR654TtsNY2reVdzuynX |
-| 4 Tester | Testbatteriet, testdag-føring, resultater per elev, A–K-nivå, fysisk test hver sjette uke | `tester.html` | | |
+| 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/VNK9zkWkgwc7TnvPSeXYzA |
 | 5 Konkurranse | Turneringer, resultater per elev, samlinger med uttak | `konkurranse.html` | | |
 | 6 Meldinger | Innboks, gruppeposter, post til én elev (foresatt leser under 18) | `meldinger.html` | | |
 | 7 Elever | Elevliste, elevark, IUP-fanen (hentet fra PlayerHQ), fireukerssjekk, forslag til elevens plan | `elever.html` | | |
@@ -66,7 +66,8 @@ Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TI
 5. Kontroll: `NODE_PATH=<hovedrepo>/node_modules node kilder/sjekk.js $PWD/<fil>.html <ut>` gir skjermbilder,
    måler sidelengs rulling i 390 og 360 px, samler JS-feil og måler kontrasten på all tekst, for hver skjerm i fila. Se på bildene før publisering.
    Tekst over gradient eller bilde måles ikke automatisk (står som «manuelt»); helteflatens lyseste punkt gir 6,1:1 for hvit tekst.
-6. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
+6. Bruk aldri aksenavnene (`fys`, `tek`, `slag`, `spill`, `turn`) som egne klassenavn i en skjerm. De styrer fargen på `.akse`, `.okt` og `.bg-*`.
+7. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
 
 Bildene i `bilder/` er kopier fra PlayerHQ-utkastene (FYS-bildet er Unsplash, Victor Freitas). Logoene er fra
 `designsystem/wang/assets/`.
@@ -102,3 +103,9 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 1. Ligger morgentreningene (WANG-04) fast i timeplanen, eller kan trener flytte dem i uka? Utkastet lar trener endre dem som vanlige økter.
 2. Skal en WANG-elev kunne ha «Egen» uke i gruppas plan, eller sender treneren bare forslag? Utkastet viser at eleven arver gruppas plan og at endringer fra trener er forslag (vedtaket 06.10).
 3. Periodene i årsplanen er et forslag: Turneringsperiode uke 33–41, Evaluering uke 42, Restitusjon uke 43, Grunnperiode uke 44–51 og 2–9, Spesialperiode uke 10–17, Turneringsperiode uke 18–25, Ferie. Fasit for WANG 2026/27 er årshjulet i repoet; tallene her er syntetiske.
+
+### Pakke 4 Tester
+1. Nivåtallene for A–K per test er ikke vedtatt. Utkastet viser «—» og «Referanse ikke satt».
+2. Landslagsnivå per klasse må komme fra Team Norway. Til da «—».
+3. Dagens kode har knebøy og CMJ i WANGs fysiske tester (`src/components/wang/wang-data.ts`). Vedtaket 28.09 sier benkpress, markløft trapbar, lengdehopp, rotasjonskast og Club Speed. Utkastet følger vedtaket.
+4. WANG-39 «nasjonal rangering og persentiler» er ikke tegnet: posisjon er aldri persentil, og en trener ser ikke andre skolers elever. Rangering i egen gruppe ligger i «Én test». Skal en nasjonal rangering finnes, må tallene komme fra Team Norway.

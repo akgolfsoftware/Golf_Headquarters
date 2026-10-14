@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG Tester</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  .faner{display:flex;flex-wrap:wrap;gap:6px}
+  .faner a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:var(--r-chip);background:#fff;box-shadow:var(--skygge-s);font:700 14px/1 var(--brand);color:var(--tekst-2);text-decoration:none}
+  .faner a.aktiv{background:var(--navy);color:#fff}
+  .testliste{display:grid;gap:10px}
+  .test{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:14px 16px;border-radius:var(--r-kort-s);background:#fff;box-shadow:var(--skygge-s);border:0;text-align:left;font:inherit;cursor:pointer;width:100%}
+  .test b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .test .sma{display:block;font-size:13px;color:var(--tekst-2)}
+  .test .tall{font:800 15px/1.2 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
+  .test .tall span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
+  .kosak{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;padding:14px 0;align-items:center}
+  .kosak + .kosak{border-top:1px solid var(--linje)}
+  .kosak b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .kosak p{grid-column:1 / -1;font-size:14px;color:var(--tekst-2)}
+  .kosak .knapper{grid-column:1 / -1}
+  .kosak .knapp{min-height:40px;font-size:13px;padding:0 16px}
+  .resultat-stort{font:800 40px/1 var(--brand);color:var(--navy-dyp);letter-spacing:-.02em}
+  .slagrad{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:8px 0}
+  .slagrad + .slagrad{border-top:1px solid var(--linje)}
+  .slagrad .nr{font:800 13px/1.2 var(--brand);color:var(--navy-dyp)}
+  .slagrad .nr span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
+  .poeng{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+  .poeng button{min-height:44px;border-radius:12px;border:1.5px solid var(--n300);background:#fff;font:800 14px/1 var(--brand);color:var(--navy-dyp);cursor:pointer}
+  .poeng button[aria-pressed=true]{background:var(--slag-fyll);color:var(--slag-paa);border-color:var(--slag-fyll)}
+  .poeng-hjelp{display:flex;flex-wrap:wrap;gap:4px 14px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .sum{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .rang{display:grid;grid-template-columns:28px auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0}
+  .rang + .rang{border-top:1px solid var(--linje)}
+  .rang .plass{font:800 14px/1 var(--brand);color:var(--tekst-2);text-align:right}
+  .rang b{font:700 14px/1.2 var(--brand);color:var(--navy-dyp)}
+  .rang .stolpe{margin-top:6px;height:7px}
+  .rang .v{font:800 15px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap;text-align:right}
+  .rang .v span{display:block;font:700 11px/1.3 var(--brand);color:var(--tekst-2)}
+  .profil-topp{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .profil-topp .avatar{width:56px;height:56px;font-size:16px}
+  .ptest{display:grid;grid-template-columns:minmax(0,1fr) 96px auto;gap:12px;align-items:center;padding:10px 0}
+  .ptest + .ptest{border-top:1px solid var(--linje)}
+  .ptest b{font:700 14px/1.3 var(--brand);color:var(--navy-dyp)}
+  .ptest .sma{display:block;font-size:13px;color:var(--tekst-2)}
+  .ptest svg{width:96px;height:32px;display:block}
+  .ptest .v{font:800 15px/1.1 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
+  .merk{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font:700 11px/1 var(--brand)}
+  .merk.egen{background:var(--tint-gul);color:var(--gul-tekst)}
+  .merk.kontr{background:var(--tint-mint);color:var(--navy-dyp-tekst)}
+  @container (min-width:900px){
+    .testliste.to{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 4 Tester · utkast 1 · 14.10.2026</p>
+    <h1>Tester</h1>
+    <p>Ett testbatteri for AK Golf, WANG og Team Norway. Testbatteriet, kontrollkøen for egenførte resultater (WANG-37), føring på testdag (WANG-48B), resultater for én test og testprofilen til én elev. Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Skjerm"><button type="button" data-skjerm="batteri" aria-pressed="true">Testbatteriet</button><button type="button" data-skjerm="ko" aria-pressed="false">Til kontroll</button><button type="button" data-skjerm="foring" aria-pressed="false">Før test</button><button type="button" data-skjerm="resultat" aria-pressed="false">Én test</button><button type="button" data-skjerm="elev" aria-pressed="false">Én elev</button></div>
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="true">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="false">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva skjermene gjør</h2>
+      <ul>
+        <li><b>Testbatteriet:</b> golftestene fra NGFs 6-årsløp og de fem fysiske testene (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed). Fysisk test hver sjette uke i grunnperioden.</li>
+        <li><b>Til kontroll:</b> elevene fører selv («Egenført»). Treneren kontrollerer eller avviser. Kontrollerte resultater merkes «Kontrollert».</li>
+        <li><b>Før test:</b> 8-ball føres slag for slag, 5 poeng i hull, 3 innen 1 m, så 2, 1 og 0. Testen teller bare når alle slag er ført.</li>
+        <li><b>Én test:</b> gruppas resultater, best først, med endring fra forrige test. Nivåreferansen for A–K står som «—» til tallene er vedtatt.</li>
+        <li><b>Én elev:</b> siste resultat og utvikling per test. Deles automatisk med Team Norway (opptaksavtalen).</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Nivåtallene for A–K per test er ikke vedtatt. Utkastet viser «Referanse ikke satt».</li>
+        <li>Landslagsnivå per klasse må komme fra Team Norway. Til da vises «—».</li>
+        <li>Rangering mot elever ved andre WANG-skoler vises ikke: en trener ser aldri en annen skoles elever.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ================= Testbatteriet ================= -->
+<template id="s-batteri">
+<div class="app" data-fane="tester">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div>
+      <p class="dato">WANG Golf · neste testuke: uke 47</p>
+      <h1 class="tittel">Tester</h1>
+    </div>
+    <nav class="faner" aria-label="Tester"><a href="#" class="aktiv">Testbatteriet</a><a href="#" data-gaa="ko">Til kontroll <span class="teller">4</span></a></nav>
+  </section>
+  <section class="helt">
+    <div><p class="dato">Testuke 47 · 16.–20. november</p><h2 class="tittel" style="font-size:24px">Fysisk test og 8-ball</h2><p class="ingress">Fem fysiske tester og 8-ball for 11 elever. Planlagt i årsplanen, Grunnperiode 1.</p></div>
+    <div class="knapper"><button type="button" class="knapp mint" data-gaa="foring">Start testdag</button></div>
+  </section>
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Golf</h2><span class="kilde">NGFs 6-årsløp</span></div>
+      <div class="testliste" data-golf></div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fysisk</h2><span class="kilde">Hver 6. uke i grunnperioden</span></div>
+      <div class="testliste" data-fysisk></div>
+    </section>
+  </div>
+  <p class="kilde">WANG-elevers testresultater deles automatisk med Team Norway, med navn (opptaksavtalen).</p>
+</main>
+</div>
+</template>
+
+<!-- ================= Til kontroll ================= -->
+<template id="s-ko">
+<div class="app" data-fane="tester">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div>
+      <p class="dato">WANG Golf · egenførte resultater</p>
+      <h1 class="tittel">Til kontroll</h1>
+      <p class="ingress">Elevene fører tester selv. Du kontrollerer dem før de teller i IUP og deles med Team Norway.</p>
+    </div>
+    <nav class="faner" aria-label="Tester"><a href="#" data-gaa="batteri">Testbatteriet</a><a href="#" class="aktiv">Til kontroll <span class="teller">4</span></a></nav>
+  </section>
+  <div class="kort" data-ko></div>
+</main>
+</div>
+</template>
+
+<!-- ================= Før test (8-ball) ================= -->
+<template id="s-foring">
+<div class="app" data-fane="tester" data-skall="tilbake" data-tilbake="Tester">
+<main class="innhold">
+  <section data-behold>
+    <p class="dato">Testdag · onsdag 14. oktober · Innendørshallen</p>
+    <h1 class="tittel">8-ball</h1>
+  </section>
+  <div class="to-kol">
+    <div class="kort">
+      <div class="felt"><label for="t-elev">Elev</label><select id="t-elev"><option>Elev 04 · VG2</option><option>Elev 05 · VG2</option><option>Elev 06 · VG2</option></select><span class="hjelp">3 av 11 elever er ført i dag.</span></div>
+      <div class="poeng-hjelp"><span>5 i hull</span><span>3 innen 1 m</span><span>2 innen 2 m</span><span>1 innen 3 m</span><span>0 lenger</span></div>
+      <div data-slag></div>
+    </div>
+    <div class="kort">
+      <div class="sum"><span class="etikett">Poeng</span><span class="pille vent" data-status><i></i>3 av 8 slag</span></div>
+      <div class="resultat-stort" data-sum>0</div>
+      <p class="forklar">Testen teller bare når alle åtte slag er ført. Avsluttes den før, blir det ikke noe resultat.</p>
+      <div class="knapper"><button type="button" class="knapp pri" data-lagre disabled>Lagre og neste elev</button><button type="button" class="knapp sek">Avbryt testen</button></div>
+      <div class="kort dempet" data-kvittering hidden><b class="undertittel">Lagret for Elev 04</b><p class="forklar">Ført av trener, merket «Kontrollert». Eleven ser resultatet i PlayerHQ.</p></div>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Én test ================= -->
+<template id="s-resultat">
+<div class="app" data-fane="tester" data-skall="tilbake" data-tilbake="Testbatteriet">
+<main class="innhold">
+  <section data-behold>
+    <p class="dato">Fysisk · siste test uke 41</p>
+    <h1 class="tittel">Benkpress</h1>
+    <p class="ingress">3RM med stopp på brystet. 11 av 11 elever testet.</p>
+  </section>
+  <div class="to-kol">
+    <div class="kort">
+      <div class="hoved"><strong>58 <small>kg</small></strong><span class="trend opp">+4 kg</span></div>
+      <p class="forklar">Snitt i gruppa, mot 54 kg i uke 35</p>
+      <div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Uke 41</span><span class="lg"><i style="background:var(--n300)"></i>Uke 35</span></div>
+      <div data-rang></div>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Nivå</b>
+      <div class="rad" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="forklar">Referanse for Kategori D</span><b class="undertittel">—</b></div>
+      <div class="rad" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="forklar">Landslagsnivå, junior</span><b class="undertittel">—</b></div>
+      <span class="estimat">Referanse ikke satt</span>
+      <p class="kilde">Nivåtallene for A–K er ikke vedtatt. Landslagsnivå kommer fra Team Norway.</p>
+      <div class="skille"></div>
+      <b class="undertittel">Merking</b>
+      <p class="forklar"><span class="merk kontr">Kontrollert</span> 9 resultater ført eller kontrollert av trener. <span class="merk egen">Egenført</span> 2 venter på kontroll.</p>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Én elev ================= -->
+<template id="s-elev">
+<div class="app" data-fane="tester" data-skall="tilbake" data-tilbake="Tester">
+<main class="innhold">
+  <section class="profil-topp" data-behold>
+    <span class="avatar">04</span>
+    <div><p class="dato">VG2 · Kategori D</p><h1 class="tittel">Elev 04</h1></div>
+  </section>
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Golf</h2></div>
+      <div class="kort" data-pgolf></div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fysisk</h2></div>
+      <div class="kort" data-pfys></div>
+    </section>
+  </div>
+  <p class="kilde">Siste fem tester per linje. Kilde: testresultater i PlayerHQ. Delt med Team Norway.</p>
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  var GOLF = [
+    ['8-ball', 'slag', 'Nærspill, 8 slag', '30 p', 'snitt uke 41'],
+    ['Wedge Gate', 'slag', 'Godkjent eller bom per slag', '6 av 9', 'snitt uke 41'],
+    ['Nærspill Gate', 'slag', 'Godkjent eller bom per slag', '—', 'ikke testet i år'],
+    ['VISA Express', 'slag', 'Godkjent eller bom per slag', '—', 'ikke testet i år'],
+    ['Driver basic', 'slag', '5 slag, 220 eller 270 m', '231 m', 'snitt carry uke 37'],
+    ['Innspill Basis', 'slag', '5 slag, 125–160 m', '6,8 m', 'snitt til hull uke 37'],
+    ['Putt Speed', 'tek', 'Lengdekontroll', '—', 'ikke testet i år'],
+    ['9 hull lengde', 'tek', 'Putt, restavstand i fot', '3,1 ft', 'snitt uke 39'],
+    ['Golfslag bane', 'spill', '30 slag på bane', '—', 'neste: uke 18'],
+    ['18 hull', 'spill', 'Brutto score', '74,6', 'snitt uke 36']
+  ];
+  var FYS = [['Benkpress', '58 kg', '+4 kg'], ['Markløft trapbar', '121 kg', '+9 kg'], ['Lengdehopp', '2,31 m', '+0,05 m'], ['Rotasjonskast', '11,4 m', '+0,6 m'], ['Club Speed', '108 mph', '+2 mph']];
+
+  function batteri(app) {
+    app.querySelector('[data-golf]').innerHTML = GOLF.map(function (t) {
+      return '<button type="button" class="test" data-gaa="foring"><span class="akse ' + t[1] + '">' + t[1].toUpperCase() + '</span><div><b>' + t[0] + '</b><span class="sma">' + t[2] + '</span></div><span class="tall">' + t[3] + '<span>' + t[4] + '</span></span></button>';
+    }).join('');
+    app.querySelector('[data-fysisk]').innerHTML = FYS.map(function (t) {
+      return '<button type="button" class="test" data-gaa="resultat"><span class="akse fys">FYS</span><div><b>' + t[0] + '</b><span class="sma">Snitt uke 41 · ' + t[2] + ' siden uke 35</span></div><span class="tall">' + t[1] + '<span>snitt</span></span></button>';
+    }).join('');
+  }
+
+  function ko(app) {
+    var K = [['05', '8-ball', '34 poeng', 'Ført av eleven tirsdag 13.10 kl. 15:40. 8 av 8 slag.'], ['01', 'Benkpress', '52 kg', 'Ført av eleven mandag 12.10. Uten vitne.'], ['08', 'Club Speed', '114 mph', 'Ført av eleven søndag 11.10. Bilde fra TrackMan vedlagt.'], ['03', '9 hull lengde', '2,4 ft', 'Ført av eleven fredag 9.10. 9 av 9 putter.']];
+    var box = app.querySelector('[data-ko]');
+    box.innerHTML = K.map(function (k) {
+      return '<div class="kosak"><span class="avatar">' + k[0] + '</span><div><b>Elev ' + k[0] + ' · ' + k[1] + ': ' + k[2] + '</b> <span class="merk egen">Egenført</span></div><p>' + k[3] + '</p><div class="knapper"><button type="button" class="knapp pri" data-ok>Kontrollert</button><button type="button" class="knapp sek">Endre verdi</button><button type="button" class="knapp flat" data-avvis>Avvis</button></div></div>';
+    }).join('');
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ok],[data-avvis]'); if (!b) return;
+      var s = b.closest('.kosak');
+      s.querySelector('.knapper').outerHTML = b.hasAttribute('data-ok') ? '<p><span class="merk kontr">Kontrollert</span> av Trener 1 nå. Teller i IUP og deles med Team Norway.</p>' : '<p><span class="pille noy"><i></i>Avvist</span> Eleven får beskjed i PlayerHQ og kan føre testen på nytt.</p>';
+    });
+  }
+
+  function foring(app) {
+    var L = [['1', '10 m', 5], ['2', '15 m', 3], ['3', '20 m', 2], ['4', '10 m · bunker', -1], ['5', '15 m · bunker', -1], ['6', '20 m · rough', -1], ['7', '25 m', -1], ['8', '30 m', -1]];
+    var box = app.querySelector('[data-slag]');
+    box.innerHTML = L.map(function (s, i) {
+      return '<div class="slagrad"><span class="nr">Slag ' + s[0] + '<span>' + s[1] + '</span></span><div class="poeng" role="group" aria-label="Poeng slag ' + s[0] + '">' + [5, 3, 2, 1, 0].map(function (p) { return '<button type="button" data-p="' + p + '" aria-pressed="' + (s[2] === p) + '">' + p + '</button>'; }).join('') + '</div></div>';
+    }).join('');
+    function sum() {
+      var valgt = box.querySelectorAll('[aria-pressed=true]'), t = 0;
+      valgt.forEach(function (b) { t += +b.dataset.p; });
+      app.querySelector('[data-sum]').textContent = t;
+      var ferdig = valgt.length === 8, st = app.querySelector('[data-status]');
+      st.className = 'pille ' + (ferdig ? 'ok' : 'vent'); st.innerHTML = '<i></i>' + valgt.length + ' av 8 slag';
+      app.querySelector('[data-lagre]').disabled = !ferdig;
+    }
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('.poeng button'); if (!b) return;
+      b.parentNode.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      sum();
+    });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; });
+    sum();
+  }
+
+  function resultat(app) {
+    var R = [['08', 72, 68], ['10', 68, 62], ['11', 66, 64], ['06', 62, 58], ['04', 60, 56], ['05', 58, 52], ['09', 55, 54], ['07', 52, 48], ['03', 50, 46], ['01', 48, 46, 1], ['02', 47, 44, 1]];
+    app.querySelector('[data-rang]').innerHTML = R.map(function (r, i) {
+      return '<div class="rang"><span class="plass">' + (i + 1) + '</span><span class="avatar">' + r[0] + '</span><div><b>Elev ' + r[0] + '</b>' + (r[3] ? ' <span class="merk egen">Egenført</span>' : '') + '<div class="stolpe"><span class="bg-fys" style="width:' + (r[1] / 72 * 100) + '%"></span></div><div class="stolpe" style="margin-top:3px"><span style="width:' + (r[2] / 72 * 100) + '%;background:var(--n300)"></span></div></div><span class="v">' + r[1] + ' kg<span>+' + (r[1] - r[2]) + ' kg</span></span></div>';
+    }).join('');
+  }
+
+  function spark(verdier, farge) {
+    var mn = Math.min.apply(null, verdier), mx = Math.max.apply(null, verdier), d = mx - mn || 1;
+    var pts = verdier.map(function (v, i) { return (4 + i * 22) + ',' + (28 - (v - mn) / d * 22).toFixed(1); });
+    return '<svg viewBox="0 0 96 32" aria-hidden="true"><polyline points="' + pts.join(' ') + '" fill="none" stroke="' + farge + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="' + pts[pts.length - 1].split(',')[0] + '" cy="' + pts[pts.length - 1].split(',')[1] + '" r="3.5" fill="' + farge + '"/></svg>';
+  }
+  function elev(app) {
+    var G = [['8-ball', 'Uke 41', [24, 26, 25, 28, 31], '31 p', 'var(--slag)'], ['Wedge Gate', 'Uke 41', [4, 5, 5, 6, 7], '7 av 9', 'var(--slag)'], ['Driver basic', 'Uke 37', [218, 222, 226, 229, 234], '234 m', 'var(--slag)'], ['9 hull lengde', 'Uke 39', [4.2, 3.9, 3.6, 3.4, 2.9], '2,9 ft', 'var(--tek)'], ['18 hull', 'Uke 36', [78, 77, 76, 75, 74], '74', 'var(--spill)']];
+    var F = [['Benkpress', 'Uke 41', [48, 52, 54, 56, 60], '60 kg'], ['Markløft trapbar', 'Uke 41', [100, 108, 112, 118, 124], '124 kg'], ['Lengdehopp', 'Uke 41', [2.18, 2.22, 2.25, 2.28, 2.33], '2,33 m'], ['Rotasjonskast', 'Uke 41', [10.1, 10.4, 10.9, 11.0, 11.6], '11,6 m'], ['Club Speed', 'Uke 41', [101, 103, 104, 106, 109], '109 mph']];
+    function rad(t, f) { return '<div class="ptest"><div><b>' + t[0] + '</b><span class="sma">' + t[1] + ' · <span class="merk kontr">Kontrollert</span></span></div>' + spark(t[2], f || t[4]) + '<span class="v">' + t[3] + '</span></div>'; }
+    app.querySelector('[data-pgolf]').innerHTML = G.map(function (t) { return rad(t); }).join('');
+    app.querySelector('[data-pfys]').innerHTML = F.map(function (t) { return rad(t, 'var(--fys)'); }).join('') + '<p class="kilde">Referanse for Kategori D: — (ikke vedtatt).</p>';
+  }
+
+  WANGUtkast.start({
+    start: 'batteri',
+    skjermer: {
+      batteri: { mal: 's-batteri', etter: batteri, tom: { tittel: 'Ingen tester planlagt', tekst: 'Legg en testuke inn i årsplanen, så kommer den her.', knapp: 'Gå til årsplanen' }, laster: 'Henter testbatteriet …', feil: 'Testbatteriet kunne ikke hentes' },
+      ko: { mal: 's-ko', etter: ko, tom: { tittel: 'Ingenting til kontroll', tekst: 'Når en elev fører en test selv, kommer den hit.', knapp: 'Til testbatteriet' }, laster: 'Henter egenførte resultater …', feil: 'Køen kunne ikke hentes' },
+      foring: { mal: 's-foring', etter: foring, tom: { tittel: 'Ingen elever å teste', tekst: 'Gruppa har ingen aktive elever.', knapp: 'Gå til Elever' }, laster: 'Henter testprotokollen …', feil: 'Resultatet kunne ikke lagres. Slagene ligger fortsatt på skjermen.' },
+      resultat: { mal: 's-resultat', etter: resultat, tom: { tittel: 'Ingen har tatt testen ennå', tekst: 'Resultatene kommer når første elev er ført.', knapp: 'Start testdag' }, laster: 'Henter resultatene …', feil: 'Resultatene kunne ikke hentes' },
+      elev: { mal: 's-elev', etter: elev, tom: { tittel: 'Elev 04 har ingen tester ennå', tekst: 'Første testuke er uke 47.', knapp: 'Se testbatteriet' }, laster: 'Henter testprofilen …', feil: 'Testprofilen kunne ikke hentes' }
+    }
+  });
+})();
+</script>
+</body>
+</html>
