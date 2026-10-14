@@ -4,6 +4,33 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TESTER FØRES MED CARRY OG SIDE, 8-BALL GIR 5 POENG I HULL, TREFF HETER GODKJENT (Anders 14.10.2026, bindende)
+
+Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utkast-playerhq/stats-dybde.html`, PR #1251).
+
+- **8-ball føres med carry og side per slag**, og «I hull» når ballen går i på ett slag. Appen regner ut
+  avstanden fra hullet (Pythagoras mot slaglengden) og PEI.
+- **8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.
+- **Alle PEI-tester føres med carry og side.** Appen regner selv ut avstand fra hullet og feilprosenten
+  (PEI = avstand fra hullet / slaglengde). Eksempel: riktig lengde, 5 m til høyre, gir 5 m fra hullet.
+- **Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».
+
+**Overstyrer:** 8-ball-skalaen (under 0,1 m = 4 · 0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0) i
+§Åpne punkter etter runde 19–26, og «Treff eller Bom» / «X / 9 treff» for Wedge Gate (skjermlista PH-15 og
+§ØKONOMI BARE FOR HEAD COACH).
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **8-ball i koden:** `POENG_8BALL` (`src/lib/domain/pei/poeng-tabeller.ts`) får den nye skalaen med 5 for i hull,
+   og `attBall` (`src/lib/domain/pei/protokoll-definisjoner.ts`) tar carry og side i stedet for «Resultat, meter fra hull».
+   Avstanden regnes med `avstandTilMal` (`pei-beregning.ts`). Ferdig når en test låser 5 / 3 / 2 / 1 / 0 og at 5 m til siden
+   på riktig lengde gir 5 m fra hullet. Lagrede 8-ball-resultater med gammel skala beholdes og merkes med regelversjon.
+2. **PEI-testene** (`pei-*` i `src/lib/portal-tester/tn-catalog.ts`) bruker allerede carry og side; kontroller at
+   alle viser avstand fra hullet og PEI rett etter hvert slag.
+3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
+   skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.
+4. **Uavklart:** om Nærspill Gate og VISA Express også skal føres som godkjent eller bom, eller fortsatt med poeng for hånd.
+
 ## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
 
 Anders 14.10 under pakke 2 Treningsøkten: «Fjern mørk modus på live øktene», og senere: «La alltid lyst tema».
