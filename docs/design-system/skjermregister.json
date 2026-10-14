@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "f572a0858a4c6ab01759185a72f39a1ae8809e3c",
+  "kodeversjon": "d3157ffd0e7dc09f513ea51aa3249febe4bf5a15",
   "inventar": {
-    "pageFiles": 540,
-    "uniqueRoutePatterns": 540,
+    "pageFiles": 541,
+    "uniqueRoutePatterns": 541,
     "componentFiles": 885,
     "surfaceFiles": 257,
     "byArea": {
@@ -14,7 +14,7 @@
       "agencyos": 166,
       "inngang-og-konto": 19,
       "forelder": 16,
-      "lag-og-skole": 60,
+      "lag-og-skole": 61,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
@@ -23188,6 +23188,49 @@
     },
     {
       "screenId": "WANG-UTEN-RAD",
+      "rute": "/team-wang/app/utovere/[elevId]",
+      "kildefil": "src/app/team-wang/app/utovere/[elevId]/page.tsx",
+      "omrade": "lag-og-skole",
+      "rolle": "elev-eller-trener",
+      "designkilde": "designsystem/wang/SKJERMREGISTER.md",
+      "designversjon": "wang-lokalt-35-ikke-59-fasit",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "WANG-UTEN-RAD",
       "rute": "/team-wang/app/utovere",
       "kildefil": "src/app/team-wang/app/utovere/page.tsx",
       "omrade": "lag-og-skole",
@@ -23797,7 +23840,7 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 540,
+    "sidefiler": 541,
     "medAvvik": 166,
     "valgtForBygging": 250,
     "utenEksaktType": 11,
@@ -23808,7 +23851,7 @@
       "felles-monster": 22,
       "tegnet-skjermtype": 285,
       "videresending": 164,
-      "teknisk-forklaring": 38,
+      "teknisk-forklaring": 39,
       "byggeunderlag": 24
     },
     "screenId": {
@@ -23918,7 +23961,7 @@
       "TN-17": 1,
       "TN-13": 1,
       "TN-06": 1,
-      "WANG-UTEN-RAD": 10,
+      "WANG-UTEN-RAD": 11,
       "C5": 1,
       "C6": 1,
       "A7": 1,

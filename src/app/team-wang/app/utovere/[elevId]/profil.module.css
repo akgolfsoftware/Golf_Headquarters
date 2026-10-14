@@ -1,0 +1,234 @@
+.page {
+  min-height: 100dvh;
+  padding: 32px;
+  background: var(--wang-blue-tint);
+  color: var(--wang-blue);
+}
+
+.header,
+.factGrid,
+.privacyNotice,
+.moduleSection {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.backLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  color: var(--wang-blue) !important;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.profileHeading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.avatar {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.eyebrow {
+  color: var(--wang-text-muted);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profileHeading h1,
+.moduleSection h2,
+.moduleGrid h3 {
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+}
+
+.profileHeading h1 {
+  margin: 5px 0 0;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.05;
+}
+
+.profileHeading p {
+  margin: 8px 0 0;
+  color: var(--wang-text-muted);
+}
+
+.databaseBadge {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--tint-teal);
+  color: var(--wang-teal-text);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.factGrid,
+.moduleGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.factGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 30px;
+}
+
+.factGrid article,
+.moduleGrid article {
+  min-width: 0;
+  border: 1px solid var(--wang-grey-line);
+  border-radius: 12px;
+  background: var(--wang-white);
+}
+
+.factGrid article {
+  padding: 18px;
+}
+
+.factGrid svg,
+.moduleGrid svg {
+  color: var(--wang-teal-text);
+}
+
+.factGrid span,
+.factGrid strong {
+  display: block;
+}
+
+.factGrid span {
+  margin-top: 12px;
+  color: var(--wang-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.factGrid strong {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.privacyNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--wang-teal-text) 22%, transparent);
+  border-radius: 12px;
+  background: var(--tint-teal);
+  color: var(--wang-teal-text);
+}
+
+.privacyNotice svg {
+  flex: none;
+}
+
+.privacyNotice strong,
+.privacyNotice span {
+  display: block;
+}
+
+.privacyNotice span {
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.moduleSection {
+  margin-top: 32px;
+}
+
+.moduleSection h2 {
+  margin: 6px 0 16px;
+  font-size: 26px;
+}
+
+.moduleGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.moduleGrid article {
+  padding: 20px;
+}
+
+.moduleGrid h3 {
+  margin: 16px 0 8px;
+  font-size: 18px;
+}
+
+.moduleGrid p {
+  margin: 0;
+  color: var(--wang-text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.moduleGrid article > span {
+  display: inline-flex;
+  margin-top: 16px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--wang-blue-tint);
+  color: var(--wang-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.page a:focus-visible {
+  outline: 3px solid var(--wang-mint);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .factGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 24px 20px 56px;
+  }
+
+  .profileHeading {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .databaseBadge {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .factGrid,
+  .moduleGrid {
+    grid-template-columns: 1fr;
+  }
+}

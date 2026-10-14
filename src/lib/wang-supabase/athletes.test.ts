@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   byggWangUtoveroversikt,
   erWangUtoveroversiktRolle,
+  finnWangUtoverprofil,
 } from "./data";
 
 const SCHOOL_ID = "00000000-0000-4000-8000-000000000001";
@@ -96,5 +97,83 @@ describe("WANG-utøveroversikt", () => {
     );
     const serialized = JSON.stringify(overview);
     assert.doesNotMatch(serialized, /sleep|readiness|checkin|email|phone|statusLabel/i);
+  });
+
+  it("finner bare en profil som allerede er i rolleomfanget", () => {
+    const overview = byggWangUtoveroversikt(
+      [
+        {
+          id: SCHOOL_SPORT_ID,
+          school_id: SCHOOL_ID,
+          sport_id: SPORT_ID,
+          school_year: "2026/2027",
+          status: "active",
+          workbench_enabled: true,
+        },
+      ],
+      [
+        {
+          id: SPORT_ID,
+          code: "golf",
+          name: "Golf",
+          family: "presisjon",
+          workbench_status: "active",
+          mapping_approved: true,
+        },
+      ],
+      [
+        {
+          id: GROUP_ID,
+          school_sport_id: SCHOOL_SPORT_ID,
+          code: "FRE-GO-G1",
+          name: "Golf VG1",
+          grade: "VG1",
+          school_year: "2026/2027",
+        },
+      ],
+      [
+        {
+          id: DEMO_STUDENT_ID,
+          profile_id: null,
+          group_id: GROUP_ID,
+          demo_name: "Demo Elev",
+          grade: "VG1",
+          is_demo: true,
+        },
+      ],
+      [],
+    );
+
+    const profile = finnWangUtoverprofil(overview, DEMO_STUDENT_ID, "WANG Fredrikstad");
+    assert.deepEqual(profile, {
+      id: DEMO_STUDENT_ID,
+      name: "Demo Elev",
+      grade: "VG1",
+      isDemo: true,
+      schoolName: "WANG Fredrikstad",
+      group: {
+        id: GROUP_ID,
+        code: "FRE-GO-G1",
+        name: "Golf VG1",
+        schoolYear: "2026/2027",
+      },
+      sport: {
+        schoolSportId: SCHOOL_SPORT_ID,
+        code: "golf",
+        name: "Golf",
+      },
+    });
+    assert.equal(
+      finnWangUtoverprofil(
+        overview,
+        "00000000-0000-4000-8000-000000000099",
+        "WANG Fredrikstad",
+      ),
+      null,
+    );
+    assert.doesNotMatch(
+      JSON.stringify(profile),
+      /sleep|readiness|checkin|email|phone|statusLabel|contact/i,
+    );
   });
 });
