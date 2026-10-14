@@ -78,6 +78,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .pille{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font:500 12px/1 var(--sans);white-space:nowrap;flex:none}
 .pille i{width:6px;height:6px;border-radius:50%}
 .pille.ok{background:var(--green-50);color:var(--green-700)} .pille.ok i{background:var(--green-700)}
+.pille.noy{background:var(--sand-150);color:var(--graphite-800)} .pille.noy i{background:var(--graphite-600)}
 .pille.vent{background:var(--amber-50);color:var(--amber-700)} .pille.vent i{background:var(--amber-700)}
 .spor{position:relative;height:10px;border-radius:5px;background:var(--sand-150);margin-top:var(--r1)}
 .spor span{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--graphite-900)}
@@ -273,6 +274,12 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 @keyframes opp{from{opacity:0;transform:translateY(24px)}}
 @container (min-width:900px){.oktvisning:not([hidden]){animation-name:fra-hoyre}}
 @keyframes fra-hoyre{from{opacity:0;transform:translateX(40px)}}
+/* Tallet i ringen: vokser fram mens ringen fylles, «av uka» kommer etter */
+.app.anim .hero-ring .ring-tall strong{animation:tall-inn 700ms cubic-bezier(.34,1.4,.64,1) 200ms both}
+.app.anim .hero-ring .ring-tall > span{animation:inn 400ms cubic-bezier(.23,1,.32,1) 650ms both}
+.app.anim .hero-ring svg{animation:ring-inn 800ms cubic-bezier(.23,1,.32,1) both}
+@keyframes tall-inn{from{opacity:0;transform:scale(.6)}}
+@keyframes ring-inn{from{transform:rotate(-180deg) scale(.92)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 
 /* Bilde per økttype */
@@ -302,8 +309,9 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     <div class="endringer">
       <span class="meta-s">Hva som er nytt i utkast 4</span>
       <ul>
-        <li><b>Ett stort tall øverst:</b> uka som ring, delt i aksefargene, med 31 % i stort. Stolpene per akse viser gjennomført mot plan.</li>
+        <li><b>Ett stort tall øverst:</b> uka som ring, delt i aksefargene, med prosenten i stort (0 % mandag før dagens økter). Ringen roterer inn, tallet vokser fram og «av uka» kommer etter. Stolpene per akse viser gjennomført mot plan.</li>
         <li><b>Mindre grå småtekst:</b> kildelinjene er vanlig skrift i stedet for maskinskrift, og overflødige linjer er fjernet. Kilde og dato står fortsatt der appen påstår noe om spilleren.</li>
+        <li><b>Endring fra Anders (14.10):</b> AK-coachens endring av teknisk oppgave er lagt inn med en gang. Øyvind kan angre, men trenger ikke godta (vedtak 28.09). Bare WANG-trenerens forslag venter på svar.</li>
         <li><b>Bevegelse:</b> ringen og stolpene fylles når skjermen åpnes, og tallet teller opp. Kort og knapper gir etter litt når du trykker. Godta og Avvis får forslaget til å gli bort, med «Angre». Hele økta glir inn.</li>
         <li>Bevegelsen slås av for brukere som har valgt «reduser bevegelse» på telefonen.</li>
         <li>Fra utkast 3: progresjon øverst, snarvei til neste økt, fylte øktkort med bilde per treningsområde.</li>
@@ -365,12 +373,12 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 
       <section class="kort hero a-hero" aria-label="Uke 41">
         <div class="hero-ring" role="img" aria-label="0 prosent av ukas plan gjennomført. Ukas plan vises lyst per akse.">
-          <svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="66" fill="none" stroke="var(--sand-150)" stroke-width="16"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--fys)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="42.2 414.7" stroke-dashoffset="0.0"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--tek)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="86.3 414.7" stroke-dashoffset="-44.2"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--slag)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="108.4 414.7" stroke-dashoffset="-132.5"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--spill)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="169.8 414.7" stroke-dashoffset="-242.9"/></svg>
+          <svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="66" fill="none" stroke="var(--sand-150)" stroke-width="16"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--spill)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="169.8 414.7" stroke-dashoffset="0.0"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--slag)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="108.4 414.7" stroke-dashoffset="-171.8"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--tek)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="86.3 414.7" stroke-dashoffset="-282.2"/><circle class="seg" cx="80" cy="80" r="66" fill="none" stroke="var(--fys)" stroke-opacity=".28" stroke-width="16" stroke-dasharray="42.2 414.7" stroke-dashoffset="-370.5"/></svg>
           <div class="ring-tall"><strong><span data-tell="0">0</span><small>%</small></strong><span>av uka</span></div>
         </div>
         <div class="hero-tekst">
           <div class="hero-topp"><h2>Uke 41</h2><span>0 min av 14 t 5 min</span></div>
-          <div class="akser"><div class="akse"><b style="color:var(--fys-ink)">FYS</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--fys)"></span></div><span class="t">0 / 1 t 30</span></div><div class="akse"><b style="color:var(--tek-ink)">TEK</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--tek)"></span></div><span class="t">0 / 3 t</span></div><div class="akse"><b style="color:var(--slag-ink)">SLAG</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--slag)"></span></div><span class="t">0 / 3 t 45</span></div><div class="akse"><b style="color:var(--spill-ink)">SPILL</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--spill)"></span></div><span class="t">0 / 5 t 50</span></div></div>
+          <div class="akser"><div class="akse"><b style="color:var(--spill-ink)">SPILL</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--spill)"></span></div><span class="t">0 / 5 t 50</span></div><div class="akse"><b style="color:var(--slag-ink)">SLAG</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--slag)"></span></div><span class="t">0 / 3 t 45</span></div><div class="akse"><b style="color:var(--tek-ink)">TEK</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--tek)"></span></div><span class="t">0 / 3 t</span></div><div class="akse"><b style="color:var(--fys-ink)">FYS</b><div class="stolpe"><span data-til="0%" style="width:0%;background:var(--fys)"></span></div><span class="t">0 / 1 t 30</span></div></div>
         </div>
         <p class="spill lukk hero-lukk" style="padding:10px 12px;border-radius:8px;background:var(--sand-150)">Lukk ringen: 11 t 16 min igjen til 80 %. Dagens to økter gir 2 t.</p>
       </section>
@@ -434,14 +442,14 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
         </div>
       </section>
 
-      <section class="kort a-forslag" aria-label="Forslag som venter">
-        <div class="sek-topp"><h2>Forslag som venter <span class="antall" data-antall>2</span></h2></div>
+      <section class="kort a-forslag" aria-label="Forslag og endringer">
+        <div class="sek-topp"><h2>Forslag og endringer <span class="antall" data-antall>1</span></h2></div>
         <div class="forslag">
-          <div class="fs">
-            <div class="fs-topp"><div><strong>Anders Kristiansen · AK-coach</strong><small>Sendt i dag kl. 07:40</small></div><span class="pille vent"><i></i>Venter på spiller</span></div>
+          <div class="fs endret">
+            <div class="fs-topp"><div><strong>Anders Kristiansen · AK-coach</strong><small>Endret i dag kl. 07:40</small></div><span class="pille ok" data-endret-status><i></i>Lagt inn</span></div>
             <div class="endring"><span style="color:var(--graphite-600)">Teknisk oppgave</span><span>→</span><strong>P7.0 Treffpunktet</strong></div>
             <p class="sitat">«Ballstarten går til høyre på de siste 20 slagene.»</p>
-            <div class="knapper"><button class="knapp pri" type="button"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Godta</button><button class="knapp sek" type="button"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Avvis</button></div>
+            <div class="knapper"><button class="knapp sek" type="button" data-angre-endring>Angre</button></div>
           </div>
           <div class="fs">
             <div class="fs-topp"><div><strong>WANG Toppidrett · Trener</strong><small>Sendt i går kl. 20:41</small></div><span class="pille vent"><i></i>Venter på spiller</span></div>
@@ -556,6 +564,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   var UT='cubic-bezier(.23,1,.32,1)';
   function anim(app){
     if(redusert)return;
+    app.classList.add('anim');
     var segs=app.querySelectorAll('.seg'),bars=app.querySelectorAll('[data-til]'),tall=app.querySelector('[data-tell]');
     segs.forEach(function(g){g.dataset.da=g.getAttribute('stroke-dasharray');g.style.strokeDasharray='0 415';});
     bars.forEach(function(b){b.style.width='0%';});
@@ -604,7 +613,8 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     app.addEventListener('click',function(e){
       if(e.target.closest('[data-aapne-okt]')){visning.hidden=false;visning.scrollTop=0;ramme.scrollIntoView({block:'start'});visning.querySelector('[data-lukk-okt]').focus();}
       else if(e.target.closest('[data-lukk-okt]')){visning.hidden=true;}
-      else{var k=e.target.closest('.fs .knapp');if(k)svar(k.closest('.fs'),k.classList.contains('pri'));}
+      else if(e.target.closest('[data-angre-endring]')){var fe=e.target.closest('.fs');fe.querySelector('[data-endret-status]').className='pille noy';fe.querySelector('[data-endret-status]').innerHTML='<i></i>Angret';fe.querySelector('.knapper').remove();}
+      else{var k=e.target.closest('.fs:not(.endret) .knapp');if(k)svar(k.closest('.fs'),k.classList.contains('pri'));}
     });
     if(bredde==='mob'){ramme.appendChild(app);anim(app);return;}
     var skala=document.createElement('div');skala.className='skala';skala.appendChild(app);ramme.appendChild(skala);

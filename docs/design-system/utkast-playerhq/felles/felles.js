@@ -104,7 +104,7 @@
   function start(opt) {
     opt = opt || {};
     var tilstand = { tilstand: 'data', versjon: 'etter', bredde: 'mob', spill: false, tema: opt.tema || 'lys', skjerm: opt.start || (opt.skjermer ? Object.keys(opt.skjermer)[0] : null) };
-    var ramme = document.getElementById('ramme'), skaler = null;
+    var ramme = document.getElementById('ramme'), skaler = null, obs = null;
     function valgt() { return opt.skjermer ? opt.skjermer[tilstand.skjerm] : opt; }
     function gaa(id) {
       if (!opt.skjermer || !opt.skjermer[id]) return;
@@ -115,7 +115,7 @@
     }
     function tegn() {
       var o = valgt();
-      skaler = null; ramme.className = 'ramme ' + tilstand.bredde; ramme.innerHTML = ''; ramme.style.height = '';
+      skaler = null; if (obs) { obs.disconnect(); obs = null; } ramme.className = 'ramme ' + tilstand.bredde; ramme.innerHTML = ''; ramme.style.height = '';
       if (tilstand.versjon === 'for' && o.for) {
         var img = document.createElement('img');
         img.className = 'for-bilde';
@@ -142,7 +142,7 @@
       function pass() { var f = ramme.clientWidth / 1280; s.style.transform = 'scale(' + f + ')'; ramme.style.height = (s.offsetHeight * f) + 'px'; }
       pass(); anim(app); skaler = pass;
       app.querySelectorAll('img').forEach(function (i) { i.addEventListener('load', pass); });
-      if (window.ResizeObserver) new ResizeObserver(pass).observe(app);
+      if (window.ResizeObserver) { obs = new ResizeObserver(pass); obs.observe(app); }
     }
     window.addEventListener('resize', function () { if (skaler) skaler(); });
     document.querySelectorAll('.velger').forEach(function (v) {
