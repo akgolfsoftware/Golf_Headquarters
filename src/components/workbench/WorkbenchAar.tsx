@@ -116,7 +116,7 @@ function YearSummary({ playerId, year, periode, referanse, routeSurface, compact
   return <section className="wb-week-summary wb-year-summary"><span className="wb-kicker">{UI.selectedPeriodTitle}</span><h2>{PERIODE_LABEL[periode.type]}</h2><p>uke {uker} · {timer(periode.plannedMinutes)}</p>{!compact && <><dl><div><dt>Dato</dt><dd>{datoKort(periode.startDate)}–{datoKort(periode.endDate)}</dd></div><div><dt>Fokus</dt><dd>{periode.focus ?? "—"}</dd></div><div><dt>Planlagt hittil</dt><dd>{timer(periode.plannedToDateMinutes)}</dd></div><div><dt>Gjennomført</dt><dd>{timer(periode.completedMinutes)}</dd></div><div><dt>Turneringer</dt><dd>{periode.turneringer.length || "—"}</dd></div></dl>{periode.turneringer.length > 0 && <ul>{periode.turneringer.map((turnering) => <li key={`${turnering.dato}:${turnering.navn}`}>{datoKort(turnering.dato)} · {turnering.navn}</li>)}</ul>}</>}<div className="wb-mobile-actions"><Link className="wb-quiet" href={workbenchUrl(playerId, "periode", { ...referanse, aar: String(year), periode: periode.id }, routeSurface)}>{UI.openPeriod}</Link></div></section>;
 }
 
-function AarsplanOppretter({ playerId, year, onClose }: { playerId: string; year: number; onClose: () => void }) {
+export function AarsplanOppretter({ playerId, year, onClose }: { playerId: string; year: number; onClose: () => void }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [source, setSource] = useState<"EMPTY" | "PREVIOUS">("EMPTY");

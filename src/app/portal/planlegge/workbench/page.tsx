@@ -15,7 +15,8 @@ import { FeilTilstand } from "@/components/precision/pa";
 import { PH11Workbench } from "@/components/portal/precision/PH11Workbench";
 import { type AG11Side } from "@/components/admin/precision/AG11Workbench";
 import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
-import { WorkbenchAar } from "@/components/workbench/WorkbenchAar";
+import { PH11Aarsplan } from "@/components/portal/precision/PH11Aarsplan";
+import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
 import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
 import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
 import {
@@ -85,7 +86,10 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />}</Ramme>;
   }
 
-  if (brukSamletWorkbench(sp)) {
+  // PH-11-AR (nytt design, godkjent 14.10): nivået År åpner den nye årsplanen.
+  // Sesongkartet nås fortsatt med flate=sesong fra den samlede Workbench.
+  const nyArsplan = parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis")) === "aar" && !queryVerdi(sp, "flate");
+  if (!nyArsplan && brukSamletWorkbench(sp)) {
     const data = await loadWorkbenchSamletData({
       playerId, routeSurface: "player", query: sp,
       flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
@@ -107,12 +111,9 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
 
   if (visning === "aar") {
     const year = kontekst.year;
-    const [yearRes, kilderRes] = await Promise.all([
-      loadYear({ year, mode, playerId }),
-      loadSources({ playerId, weekStart }),
-    ]);
+    const yearRes = await loadYear({ year, mode, playerId });
     if (!yearRes.ok) return <Feil uleste={uleste} melding={yearRes.error} />;
-    return <Ramme uleste={uleste}><Arv><WorkbenchAar key={`${playerId}:${year}:${kontekst.referanse.periode ?? ""}`} planKontekst={kontekst.referanse} playerId={playerId} spillerNavn={spillerNavn} aar={yearRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} routeSurface="player" /></Arv></Ramme>;
+    return <Ramme uleste={uleste}><PH11Aarsplan key={`${playerId}:${year}`} playerId={playerId} aar={yearRes.data} referanse={kontekst.referanse} idag={OSLO_YMD_FMT.format(now)} /></Ramme>;
   }
 
   if (visning === "maned") {

@@ -20,6 +20,7 @@ import type {
   MonthWeekRow,
   MonthDayCell,
   YearViewModel,
+  YearWeekRow,
   YearMonthRow,
   YearPeriodBand,
   PeriodType,
@@ -521,6 +522,7 @@ export interface YearPeriodInput {
   /** Minutter per akse, vanlig og lett uke (plannivåene henger sammen, 14.10.2026). */
   axisMinutes?: Partial<Record<PyramidArea, number>> | null;
   axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
+  fraGruppe?: boolean;
 }
 
 export interface YearEventInput {
@@ -626,10 +628,22 @@ export function buildYearViewModel(
         plannedToDateMinutes: planlagtMinutter(periodeHittil),
         completedMinutes: gjennomfortMinutter(periodeHittil),
         turneringer: turneringer.sort((a, b) => (a.dato < b.dato ? -1 : 1)),
+        fraGruppe: p.fraGruppe ?? false,
       };
     });
 
-  return { year, months, periods, budget, plannedToDateMinutes, completedMinutes, completedByPyramid, mode };
+  // Ukene der torsdagen ligger i året (ISO), samme regel for lagt inn og gjennomført som uka.
+  const weeks: YearWeekRow[] = [];
+  const aktive = aktiveOkter(sessions);
+  for (let cursor = mondayOf(`${year}-01-04`); addDays(cursor, 3) <= `${year}-12-31`; cursor = addDays(cursor, 7)) {
+    const end = addDays(cursor, 6);
+    const list = aktive.filter((s) => s.date >= cursor && s.date <= end);
+    const plannedByPyramid = { ...TOM_BALANSE };
+    for (const s of list) plannedByPyramid[s.pyramid] += planlagtMinutter([s]);
+    weeks.push({ weekStart: cursor, weekNumber: isoWeekNumber(cursor), plannedByPyramid, completedMinutes: gjennomfortMinutter(list) });
+  }
+
+  return { year, months, periods, budget, plannedToDateMinutes, completedMinutes, completedByPyramid, weeks, mode };
 }
 
 /** Periodevisning fra lagrede PeriodBlock-data og faktiske Workbench-økter. */
