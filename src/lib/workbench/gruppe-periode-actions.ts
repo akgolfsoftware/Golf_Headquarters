@@ -70,11 +70,14 @@ export async function coachLagreGruppePeriode(
     if (!foer) return { ok: false, error: "Perioden finnes ikke" };
     await prisma.groupPeriodBlock.update({ where: { id: periodeId }, data });
     // Gruppa er lagret; feil i nedstrøms oppdatering angrer ikke lagringen.
+    // Skriver i medlemmenes egne planer: bare gruppens eier/ADMIN, som ved utrulling (D-25, D-49).
     let arv: ArvKvittering | undefined;
-    try {
-      arv = await oppdaterArvedePerioder(groupId, foer, data);
-    } catch {
-      arv = { perioder: 0, egne: 0, uker: 0, feilet: -1 };
+    if (await canWriteMemberPlans(aktor, groupId)) {
+      try {
+        arv = await oppdaterArvedePerioder(groupId, foer, data);
+      } catch {
+        arv = { perioder: 0, egne: 0, uker: 0, feilet: -1 };
+      }
     }
     revalidatePath(`/admin/grupper/${groupId}/workbench`);
     return { ok: true, periodeId, arv };
