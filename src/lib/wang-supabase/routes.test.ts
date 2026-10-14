@@ -7,6 +7,7 @@ describe("WANG app-ruter", () => {
   it("beskytter appen, men lar den separate innloggingen være åpen", () => {
     assert.equal(erBeskyttetWangAppSti("/team-wang/app"), true);
     assert.equal(erBeskyttetWangAppSti("/team-wang/app/utovere"), true);
+    assert.equal(erBeskyttetWangAppSti("/team-wang/app/meldinger"), true);
     assert.equal(erBeskyttetWangAppSti("/team-wang/app/logg-inn"), false);
     assert.equal(erBeskyttetWangAppSti("/team-wang/app/logg-inn/hjelp"), false);
     assert.equal(erBeskyttetWangAppSti("/team-wang/app-ond"), false);

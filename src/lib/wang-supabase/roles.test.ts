@@ -18,6 +18,7 @@ describe("WANG-roller", () => {
     const role = hentWangRolledefinisjon("central_admin");
     assert.equal(role.modules.includes("schools"), true);
     assert.equal(role.modules.includes("athletes"), false);
+    assert.equal(role.modules.includes("messages"), false);
     assert.equal(role.modules.includes("test-profiles"), true);
     assert.match(role.privacyNotice, /Navngitte elever åpnes ikke/);
   });
@@ -60,6 +61,13 @@ describe("WANG-roller", () => {
     assert.equal(WANG_MODULES.camps.href, "/team-wang/app/kalender?visning=samlinger");
     assert.equal(hentWangModulHref("calendar", true), "/team-wang/demo");
     assert.equal(hentWangModulHref("calendar", false), "/team-wang/app/kalender");
+  });
+
+  it("kobler meldingsroller til skrivebeskyttet innboks", () => {
+    assert.equal(WANG_MODULES.messages.href, "/team-wang/app/meldinger");
+    assert.match(WANG_MODULES.messages.description, /skrivebeskyttet/);
+    assert.equal(hentWangModulHref("messages", true), "/team-wang/demo");
+    assert.equal(hentWangModulHref("messages", false), "/team-wang/app/meldinger");
   });
 
   it("planlagte moduler er tydelig merket uten død lenke", () => {
