@@ -190,7 +190,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 
 /* PC fra 900 px containerbredde: navy sidemeny 252 px med menygrupper */
 @container (min-width:900px){
-  .topplinje,.bunnmeny{display:none}
+  .topplinje,.bunnmeny,.tilbake-mob{display:none}
   .skall{display:grid;grid-template-columns:252px 1fr;min-height:900px}
   .meny{display:flex;flex-direction:column;gap:2px;padding:20px 0 16px;background:var(--rail-bg);color:var(--rail-tekst)}
   .meny .logo{height:44px;margin:0 20px 6px;align-self:flex-start}

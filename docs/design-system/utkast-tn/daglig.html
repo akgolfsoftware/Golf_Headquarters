@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Norway Daglig</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@300;400;500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/tn.css">
+<style>
+  .neste{display:grid;gap:var(--r4)}
+  .neste .sted{font:300 26px/1.1 var(--display);letter-spacing:.1em;text-transform:uppercase}
+  .neste .linje{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;padding:14px 0;border-block:1px solid var(--navy-700)}
+  .neste .linje strong{font:500 46px/1 var(--mono)}
+  .neste .linje span{font:500 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--rail-tekst)}
+  .neste p{color:var(--rail-tekst)}
+  .knapp.hvit{background:var(--hvit);color:var(--navy-900);border-color:var(--hvit)}
+  .fremdrift{height:8px;background:var(--navy-100)}
+  .fremdrift span{display:block;height:100%;background:var(--navy-900)}
+  .post{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--ink-200)}
+  .post:last-child{border-bottom:0}
+  .post .hvem{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
+  .post .hvem b{font:700 14.5px/1.3 var(--tekst)}
+  .post .hvem span{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
+  .post p{margin-top:4px!important;font-size:14.5px;line-height:1.6}
+  .fordeling{display:flex;height:28px;background:var(--ink-100)}
+  .fordeling span{display:block;height:100%}
+  .lg i.fys{background:var(--fys)} .lg i.tek{background:var(--tek)} .lg i.slag{background:var(--slag)} .lg i.spill{background:var(--spill)} .lg i.turn{background:var(--turn)}
+  /* Årshjul */
+  .aar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .aar button{display:grid;gap:6px;align-content:start;min-height:64px;padding:8px;border:1px solid var(--ink-200);border-radius:2px;background:var(--hvit);text-align:left;cursor:pointer;font:inherit;color:var(--ink-900)}
+  .aar button b{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+  .aar button[aria-pressed="true"]{border-color:var(--navy-900);border-width:2px;padding:7px}
+  .aar .prikker{display:flex;flex-wrap:wrap;gap:3px}
+  .aar .prikker i{width:10px;height:10px;display:block}
+  .aar i.s{background:var(--navy-900)} .aar i.t{background:var(--turn)}
+  .aar button.gaatt{background:var(--ink-50);color:var(--ink-500)}
+  @container (min-width:900px){.aar{grid-template-columns:repeat(12,minmax(0,1fr))}}
+  .hendelse{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--ink-200);text-decoration:none;color:inherit}
+  .hendelse:last-child{border-bottom:0}
+  .hendelse .dag{display:grid;justify-items:start;font:500 22px/1 var(--mono);color:var(--navy-900)}
+  .hendelse .dag small{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+  .hendelse b{font:700 15px/1.3 var(--tekst)}
+  .strek{width:4px;align-self:stretch}
+  /* Samlingsprogram */
+  .dag-blokk{display:grid;gap:var(--r2)}
+  .dag-blokk h3{margin:0;font:500 13px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-700)}
+  .okt-liste{display:grid;gap:var(--r2);grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+  .okt.liten{padding:12px 14px;gap:4px}
+  .okt.liten .okt-tid{font-size:20px}
+  .okt.liten .navn{font-size:16px}
+  .egentid{display:grid;gap:2px;padding:12px 14px;border:1px dashed var(--ink-300);background:var(--hvit)}
+  .egentid b{font:500 20px/1 var(--mono);color:var(--ink-700)}
+  /* Resultattabell */
+  .res{display:grid;border-top:1px solid var(--ink-200)}
+  .res-rad{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .res-rad .plass{font:500 20px/1 var(--mono);color:var(--navy-900)}
+  .res-rad .runder{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px 14px;font:500 13.5px/1.2 var(--mono);color:var(--ink-700)}
+  .res-rad .tot{grid-row:1;grid-column:3;font:500 18px/1 var(--mono);text-align:right}
+  .res-rad .tot small{display:block;font:500 12px/1.3 var(--mono);color:var(--ink-500)}
+  .res-hode{display:none}
+  @container (min-width:900px){
+    .res-hode,.res-rad{grid-template-columns:56px minmax(0,1fr) repeat(3,64px) 96px}
+    .res-rad .tot{grid-row:auto;grid-column:auto}
+    .res-hode{display:grid;gap:12px;padding:8px 0;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+    .res-rad .runder{display:contents}
+    .res-rad .runder span{text-align:right}
+    .res-rad .runder em{display:none}
+    .res-hode span:nth-child(n+3){text-align:right}
+  }
+  .runder em{font-style:normal;color:var(--ink-500)}
+  .reise{display:grid;gap:10px}
+  .reise div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px}
+  .reise dt,.reise span.k{font:500 12px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500)}
+  .skjema{display:grid;gap:var(--r4)}
+  .to-felt{display:grid;gap:var(--r4);grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+  .live-rad{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--ink-200)}
+  .live-rad:last-child{border-bottom:0}
+  .live-rad .verdi{text-align:right;font:500 18px/1.1 var(--mono)}
+  .live-rad .verdi small{display:block;font:500 11.5px/1.3 var(--mono);color:var(--ink-500)}
+  .puls{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--turn)}
+  .puls i{width:8px;height:8px;background:var(--turn)}
+  .app.anim .puls i{animation:puls 1.6s ease-in-out infinite}
+  @keyframes puls{50%{opacity:.25}}
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 2 Daglig · utkast 1 · 14.10.2026</span>
+    <h1>Daglig: oversikt, samlinger, turneringer og Live Watch</h1>
+    <p>Syv skjermer fra menygruppen Daglig, i de godkjente aksefargene. Bare syntetiske data. Bytt skjerm, bredde og tilstand under.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Skjerm">
+      <button type="button" data-skjerm="oversikt" aria-pressed="true">Oversikt</button>
+      <button type="button" data-skjerm="samlinger" aria-pressed="false">Samlinger</button>
+      <button type="button" data-skjerm="samling" aria-pressed="false">Én samling</button>
+      <button type="button" data-skjerm="turneringer" aria-pressed="false">Turneringer</button>
+      <button type="button" data-skjerm="turnering" aria-pressed="false">Én turnering</button>
+      <button type="button" data-skjerm="ny" aria-pressed="false">Legg inn turnering</button>
+      <button type="button" data-skjerm="live" aria-pressed="false">Live Watch</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde">
+      <button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button>
+      <button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-tilstand="data" aria-pressed="true">Med data</button>
+      <button type="button" data-tilstand="tom" aria-pressed="false">Tom</button>
+      <button type="button" data-tilstand="laster" aria-pressed="false">Laster</button>
+      <button type="button" data-tilstand="feil" aria-pressed="false">Feil</button>
+    </div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva som er nytt</h2>
+      <ul>
+        <li><b>Oversikt</b> har de samme tre tingene som i dag (neste samling, fellestesten, gruppeposter), og i tillegg gruppas trening siste fire uker fordelt på aksene.</li>
+        <li><b>Samlinger</b> får et årshjul med tolv måneder. Navy rute er samling, mørk rød er turnering. Trykk på en måned for lista.</li>
+        <li><b>Én samling</b> viser programmet dag for dag som øktkort i aksefargen, med egentid stiplet, og hvem som har svart.</li>
+        <li><b>Turneringer</b> viser frist, påmeldte og kilde. Resultat er alltid brutto. Mangler et tall, står det en strek.</li>
+        <li><b>Live Watch</b> sier rett ut at live-score ikke er koblet til. Den viser hvem som spiller i dag og siste registrerte runde.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Spørsmål til deg</h2>
+      <ul>
+        <li>Skal oversikten vise gruppas fordeling på aksene, eller holde seg til de tre tingene den har i dag?</li>
+        <li>Reise (avreise, overnatting, ansvarlig) er tegnet inn på turneringen. Koden har ingen felt for det ennå. Skal det med?</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ============ OVERSIKT ============ -->
+<template id="oversikt">
+<div class="app" data-aktiv="oversikt">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Team Norway Junior · onsdag 14. oktober</span>
+    <h1 class="tittel">Landslagsoversikt</h1>
+    <p class="ingress">Neste samling, fellestesten og det siste fra trenerteamet.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <button type="button" class="knapp pri">Ny samling</button>
+    <button type="button" class="knapp sek">Ny økt</button>
+    <button type="button" class="knapp sek">Ny testdag</button>
+    <button type="button" class="knapp sek">Nytt innlegg</button>
+  </div>
+  <div class="to-kol">
+    <section class="kort navy neste">
+      <span class="overlinje" style="color:var(--rail-tekst)">Neste samling</span>
+      <div><div class="sted">Bossum</div><p>Høstsamling · 12 spillere</p></div>
+      <div class="linje"><strong>12</strong><span>dager igjen · 26.–28. okt</span></div>
+      <p>9 har svart ja, 2 venter, 1 kan ikke.</p>
+      <div class="knapper"><a class="knapp hvit" href="#" data-gaa="samling">Se samlingen</a></div>
+    </section>
+    <section class="kort">
+      <div class="sek-topp"><span class="undertittel">Fellestest · TN-batteriet</span><span class="kilde">Testdag 7. okt</span></div>
+      <div class="hoved"><strong>11<small>/ 14</small></strong><span class="forklar">har gjennomført</span></div>
+      <div class="fremdrift" role="progressbar" aria-label="Gjennomført" aria-valuemin="0" aria-valuemax="14" aria-valuenow="11"><span data-til="78.6%" style="width:78.6%"></span></div>
+      <div class="rader">
+        <div class="rad"><span><span class="navn">Emil Berg</span><br><span class="kilde">Moss GK</span></span><span class="merke vent"><i></i>Ikke møtt</span></div>
+        <div class="rad"><span><span class="navn">Ingrid Sæther</span><br><span class="kilde">Bærum GK</span></span><span class="merke vent"><i></i>Mangler Putt Speed</span></div>
+        <div class="rad"><span><span class="navn">Jonas Haug</span><br><span class="kilde">Stavanger GK</span></span><span class="merke noy"><i></i>Syk</span></div>
+      </div>
+      <a class="lenke" href="#">Før resultater</a>
+    </section>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Gruppas trening</h2><span class="kilde">14 spillere, uke 38–41</span></div>
+    <div class="kort">
+      <div class="hoved"><strong>412<small>t</small></strong><span class="forklar">gjennomført av 468 t planlagt</span></div>
+      <div class="fordeling" aria-hidden="true"><span style="width:22%;background:var(--fys)"></span><span style="width:24%;background:var(--tek)"></span><span style="width:30%;background:var(--slag)"></span><span style="width:16%;background:var(--spill)"></span><span style="width:8%;background:var(--turn)"></span></div>
+      <div class="lg-rad"><span class="lg"><i class="fys"></i>FYS 91 t</span><span class="lg"><i class="tek"></i>TEK 99 t</span><span class="lg"><i class="slag"></i>SLAG 124 t</span><span class="lg"><i class="spill"></i>SPILL 66 t</span><span class="lg"><i class="turn"></i>TURN 32 t</span></div>
+      <p class="kilde">Bare det spillerne har delt med Team Norway. 2 spillere deler ikke treningen. Kilde: PlayerHQ, 14.10.2026.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Gruppeposter</h2><span class="kilde">Siste 3</span></div>
+    <div class="kort">
+      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · i går 18:40</span></div><p>Programmet for Bossum er lagt ut. Ta med regntøy og treningsdagbok. Svar på oppmøte innen fredag.</p></div></div>
+      <div class="post"><span class="avatar">TA</span><div><div class="hvem"><b>Tor Aune</b><span>Trener · 12. okt</span></div><p>Resultatene fra fellestesten 7. oktober er ført. Se egen profil i PlayerHQ.</p></div></div>
+      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · 9. okt</span></div><p>Påmeldingsfristen for Spanish International U18 er 20. oktober. To er påmeldt så langt.</p></div></div>
+    </div>
+    <a class="lenke" href="#">Alle gruppeposter</a>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ SAMLINGER ============ -->
+<template id="samlinger">
+<div class="app" data-aktiv="samlinger">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Sesong 2026</span>
+    <h1 class="tittel">Samlinger og terminliste</h1>
+    <p class="ingress">Hele sesongen på ett ark. Velg en måned for detaljer.</p>
+  </header>
+  <div class="knapper" data-behold><button type="button" class="knapp pri">Ny samling</button></div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Årshjulet</h2><span class="lg-rad"><span class="lg"><i style="background:var(--navy-900)"></i>Samling</span><span class="lg"><i style="background:var(--turn)"></i>Turnering</span></span></div>
+    <div class="aar" id="aar"></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2 id="maaned-tittel">Oktober</h2><span class="kilde" id="maaned-antall">1 samling · 2 turneringer</span></div>
+    <div class="kort" id="maaned-liste"></div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ ÉN SAMLING ============ -->
+<template id="samling">
+<div class="app" data-aktiv="samlinger" data-skall="tilbake" data-tilbake="Samlinger">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Samling · 26.–28. oktober</span>
+    <h1 class="tittel">Høstsamling Bossum</h1>
+    <p class="ingress">Tre dager med fellesøkter og egentid. Programmet er publisert til spillerne 13. oktober.</p>
+  </header>
+  <div class="knapper" data-behold><button type="button" class="knapp pri">Endre program</button><button type="button" class="knapp sek">Send påminnelse</button></div>
+  <div class="rutenett">
+    <div class="kort"><span class="overlinje">Svar</span><div class="hoved"><strong>9<small>/ 12 ja</small></strong></div><p class="kilde">2 venter, 1 kan ikke</p></div>
+    <div class="kort"><span class="overlinje">Program</span><div class="hoved"><strong>14<small>t</small></strong></div><p class="kilde">10 t fellesøkter, 4 t egentid</p></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Programmet</h2></div>
+    <div class="dag-blokk"><h3>Mandag 26. oktober</h3>
+      <div class="okt-liste">
+        <button type="button" class="okt liten fys"><span class="okt-rad"><span class="akse-merke">FYS</span><span class="okt-tid">09:00<small>60 min</small></span></span><span class="navn">Fysisk test, 6-årsløpet</span><span class="okt-info"><span>Styrkerommet</span></span></button>
+        <button type="button" class="okt liten tek"><span class="okt-rad"><span class="akse-merke">TEK</span><span class="okt-tid">11:00<small>90 min</small></span></span><span class="navn">P6.0 og treffpunkt</span><span class="okt-info"><span>Rangen, matte 1–6</span></span></button>
+        <div class="egentid"><span class="overlinje">Egentid</span><b>14:00 · 120 min</b><span class="kilde">Etter egen teknisk plan</span></div>
+      </div>
+    </div>
+    <div class="dag-blokk"><h3>Tirsdag 27. oktober</h3>
+      <div class="okt-liste">
+        <button type="button" class="okt liten slag"><span class="okt-rad"><span class="akse-merke">SLAG</span><span class="okt-tid">08:30<small>90 min</small></span></span><span class="navn">Wedge Gate og 8-ball</span><span class="okt-info"><span>Kortspillsområdet</span></span></button>
+        <button type="button" class="okt liten spill"><span class="okt-rad"><span class="akse-merke">SPILL</span><span class="okt-tid">12:00<small>180 min</small></span></span><span class="navn">18 hull, presisjonsstrategi</span><span class="okt-info"><span>Bossum, hull 1–18</span></span></button>
+      </div>
+    </div>
+    <div class="dag-blokk"><h3>Onsdag 28. oktober</h3>
+      <div class="okt-liste">
+        <button type="button" class="okt liten turn"><span class="okt-rad"><span class="akse-merke">TURN</span><span class="okt-tid">09:00<small>240 min</small></span></span><span class="navn">Intern matchspill</span><span class="okt-info"><span>Scorekort, brutto</span></span></button>
+        <div class="egentid"><span class="overlinje">Egentid</span><b>14:00 · 120 min</b><span class="kilde">Evaluering med trener</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Deltakere</h2><span class="kilde">12 tatt ut</span></div>
+    <div class="kort"><div class="rader">
+      <div class="rad"><span class="navn">Mathea Lund</span><span class="merke ok"><i></i>Ja</span></div>
+      <div class="rad"><span class="navn">Sander Vik</span><span class="merke ok"><i></i>Ja</span></div>
+      <div class="rad"><span class="navn">Emil Berg</span><span class="merke vent"><i></i>Venter på svar</span></div>
+      <div class="rad"><span class="navn">Ingrid Sæther</span><span class="merke vent"><i></i>Venter på svar</span></div>
+      <div class="rad"><span class="navn">Jonas Haug</span><span class="merke noy"><i></i>Kan ikke, skole</span></div>
+    </div><a class="lenke" href="#">Alle 12</a></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Notater</h2></div>
+    <div class="kort dempet"><p class="forklar">Romfordeling og pakkeliste er ikke en del av samlingsprogrammet ennå. Skriv dem i gruppeposten.</p></div>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ TURNERINGER ============ -->
+<template id="turneringer">
+<div class="app" data-aktiv="turneringer">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Team Norway Junior</span>
+    <h1 class="tittel">Turneringer og reise</h1>
+    <p class="ingress">Mesterskap og kvalifiseringsturneringer, med datoer, påmeldte og resultater.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <div class="valg" role="group" aria-label="Vis turneringer"><button type="button" aria-pressed="true">Kommende</button><button type="button" aria-pressed="false">Gjennomført</button><button type="button" aria-pressed="false">Alle</button></div>
+    <a class="knapp sek" href="#" data-gaa="ny">Legg inn turnering</a>
+  </div>
+  <section class="seksjon">
+    <div class="kort">
+      <a class="hendelse" href="#" data-gaa="turnering"><span class="dag">12<small>okt</small></span><span><b>Junior Open Halmstad</b><br><span class="kilde">Halmstad GK, Sverige · runde 3 av 3</span></span><span class="puls"><i></i>Pågår</span></a>
+      <a class="hendelse" href="#"><span class="dag">24<small>okt</small></span><span><b>Norgescup finale</b><br><span class="kilde">Kristiansand GK · 6 påmeldt · GolfBox</span></span><span class="merke noy"><i></i>Frist passert</span></a>
+      <a class="hendelse" href="#"><span class="dag">07<small>nov</small></span><span><b>Spanish International U18</b><br><span class="kilde">La Manga · 2 påmeldt · Manuell</span></span><span class="merke vent"><i></i>Frist 20. okt</span></a>
+      <a class="hendelse" href="#"><span class="dag">05<small>des</small></span><span><b>Orange Bowl</b><br><span class="kilde">Miami, USA · 0 påmeldt · Manuell</span></span><span class="merke info"><i></i>Frist 1. nov</span></a>
+    </div>
+    <p class="kilde">GolfBox-turneringer hentes hver mandag. Manuelle er lagt inn av trenerteamet.</p>
+  </section>
+</main>
+</div>
+</template>
+
+<!-- ============ ÉN TURNERING ============ -->
+<template id="turnering">
+<div class="app" data-aktiv="turneringer" data-skall="tilbake" data-tilbake="Turneringer">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">12.–14. oktober · Halmstad GK, Sverige</span>
+    <h1 class="tittel">Junior Open Halmstad</h1>
+    <p class="ingress">Tre runder slagspill, par 72. Kilde: manuelt lagt inn av Tor Aune 12. okt.</p>
+  </header>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Landslagsspillere</h2><span class="kilde">Plass · brutto</span></div>
+    <div class="kort">
+      <div class="res">
+        <div class="res-hode"><span>Plass</span><span>Spiller</span><span>R1</span><span>R2</span><span>R3</span><span>Totalt</span></div>
+        <div class="res-rad"><span class="plass">4</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Mathea Lund</span><span class="runder"><span><em>R1 </em>71</span><span><em>R2 </em>71</span><span><em>R3 </em>—</span></span><span class="tot">142<small>−2</small></span></div>
+        <div class="res-rad"><span class="plass">19</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Sander Vik</span><span class="runder"><span><em>R1 </em>74</span><span><em>R2 </em>73</span><span><em>R3 </em>—</span></span><span class="tot">147<small>+3</small></span></div>
+        <div class="res-rad"><span class="plass">—</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Ingrid Sæther</span><span class="runder"><span><em>R1 </em>76</span><span><em>R2 </em>—</span><span><em>R3 </em>—</span></span><span class="tot">76<small>+4</small></span></div>
+      </div>
+      <p class="kilde">Plass og score står slik de er registrert. Mangler et tall, står det en strek. Runde 2 for Ingrid er ikke ført.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Reise</h2><span class="merke kontur">Nytt felt, ikke i koden</span></div>
+    <div class="kort">
+      <div class="reise">
+        <div><span class="k">Avreise</span><span>Søndag 11. okt, 07:10 fra Gardermoen</span></div>
+        <div><span class="k">Overnatting</span><span>Hotell Tylösand, 3 netter</span></div>
+        <div><span class="k">Ansvarlig</span><span>Tor Aune, trener</span></div>
+        <div><span class="k">Hjemreise</span><span>Onsdag 14. okt, etter siste runde</span></div>
+      </div>
+    </div>
+  </section>
+  <div class="knapper"><button type="button" class="knapp pri">Før resultat</button><button type="button" class="knapp sek">Endre turnering</button><button type="button" class="knapp slett">Slett turnering</button></div>
+</main>
+</div>
+</template>
+
+<!-- ============ LEGG INN TURNERING ============ -->
+<template id="ny">
+<div class="app" data-aktiv="turneringer" data-skall="tilbake" data-tilbake="Turneringer">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Manuell kilde</span>
+    <h1 class="tittel">Legg inn turnering selv</h1>
+    <p class="ingress">Brukes når turneringen ikke finnes i GolfBox. Resultater føres brutto.</p>
+  </header>
+  <form class="kort skjema" onsubmit="return false">
+    <div class="felt"><label for="t-navn">Navn på turneringen</label><input id="t-navn" value="Spanish International U18"></div>
+    <div class="to-felt">
+      <div class="felt"><label for="t-fra">Første dag</label><input id="t-fra" value="07.11.2026" inputmode="numeric"></div>
+      <div class="felt"><label for="t-til">Siste dag</label><input id="t-til" value="09.11.2026" inputmode="numeric"></div>
+    </div>
+    <div class="to-felt">
+      <div class="felt"><label for="t-bane">Bane</label><input id="t-bane" value="La Manga Club, Spania"></div>
+      <div class="felt"><label for="t-par">Par</label><input id="t-par" value="72" inputmode="numeric"><span class="hjelp">Brukes til å regne slag over eller under par.</span></div>
+    </div>
+    <div class="felt"><label for="t-type">Turneringstype</label><select id="t-type"><option>Internasjonal junior</option><option>Norgescup</option><option>Mesterskap</option><option>Annen</option></select></div>
+    <div class="felt feil"><label for="t-frist">Påmeldingsfrist</label><input id="t-frist" value="20.10.2025" inputmode="numeric"><span class="feiltekst">Fristen kan ikke ligge før i dag (14.10.2026).</span></div>
+    <div class="felt"><label for="t-kilde">Kilde for resultatene</label><input id="t-kilde" value="https://www.rfegolf.es"><span class="hjelp">Lenke til resultatlista. Vises ved hvert resultat.</span></div>
+    <div class="knapper"><button type="submit" class="knapp pri">Lagre turnering</button><a class="knapp stille" href="#" data-gaa="turneringer">Avbryt</a></div>
+  </form>
+</main>
+</div>
+</template>
+
+<!-- ============ LIVE WATCH ============ -->
+<template id="live">
+<div class="app" data-aktiv="live-watch">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Onsdag 14. oktober</span>
+    <h1 class="tittel">Live Watch</h1>
+    <p class="ingress">Landslagsspillere i turnering akkurat nå.</p>
+  </header>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>I turnering nå</h2><span class="puls"><i></i>3 spillere</span></div>
+    <div class="kort">
+      <div class="sek-topp"><span class="undertittel">Junior Open Halmstad · runde 3</span><a class="lenke" href="#" data-gaa="turnering">Turneringen</a></div>
+      <div class="live-rad"><span class="avatar">ML</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Mathea Lund</span><br><span class="kilde">Starttid 08:20, hull 1</span></span><span class="verdi">4<small>etter R2 · −2</small></span></div>
+      <div class="live-rad"><span class="avatar">SV</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Sander Vik</span><br><span class="kilde">Starttid 09:40, hull 10</span></span><span class="verdi">19<small>etter R2 · +3</small></span></div>
+      <div class="live-rad"><span class="avatar">IS</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Ingrid Sæther</span><br><span class="kilde">Starttid 10:10, hull 1</span></span><span class="verdi">—<small>R2 ikke ført</small></span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Live-score</h2><span class="merke noy"><i></i>Ikke koblet til</span></div>
+    <div class="kort dempet"><p class="forklar">Hull for hull fra turneringen hentes ikke ennå. Plassering og score over er siste registrerte runde. Resultater legges inn etter runden og vises under Turneringer og reise.</p></div>
+  </section>
+</main>
+</div>
+</template>
+
+<script src="felles/tn.js"></script>
+<script>
+var MND = [['jan', [], []], ['feb', [], []], ['mar', ['Vintersamling Spania'], []], ['apr', [], ['Norgescup 1']], ['mai', ['Vårsamling Bossum'], ['Norgescup 2', 'Junior-NM lag']], ['jun', [], ['Norgescup 3', 'European Young Masters']], ['jul', ['Sommersamling Oslo'], ['Junior-NM']], ['aug', [], ['Norgescup 4', 'Nordic Junior']], ['sep', [], ['Norgescup 5']], ['okt', ['Høstsamling Bossum'], ['Junior Open Halmstad', 'Norgescup finale']], ['nov', [], ['Spanish International U18']], ['des', ['Juleavslutning'], ['Orange Bowl']]];
+var NAVN = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
+var DETALJ = {
+  9: [['12', 'okt', 'Junior Open Halmstad', 'Halmstad GK, Sverige · 3 spillere', 't', 'turnering'], ['24', 'okt', 'Norgescup finale', 'Kristiansand GK · 6 påmeldt', 't', null], ['26', 'okt', 'Høstsamling Bossum', '26.–28. okt · 12 spillere', 's', 'samling']]
+};
+function samlingerEtter(app) {
+  var aar = app.querySelector('#aar'), liste = app.querySelector('#maaned-liste');
+  aar.innerHTML = MND.map(function (m, i) {
+    var p = m[1].map(function () { return '<i class="s"></i>'; }).join('') + m[2].map(function () { return '<i class="t"></i>'; }).join('');
+    return '<button type="button" data-m="' + i + '" aria-pressed="' + (i === 9) + '"' + (i < 9 ? ' class="gaatt"' : '') + ' aria-label="' + NAVN[i] + ': ' + m[1].length + ' samlinger, ' + m[2].length + ' turneringer"><b>' + m[0] + '</b><span class="prikker">' + p + '</span></button>';
+  }).join('');
+  function vis(i) {
+    var m = MND[i], rader = DETALJ[i] || m[1].map(function (n) { return ['—', m[0], n, 'Samling', 's', null]; }).concat(m[2].map(function (n) { return ['—', m[0], n, 'Turnering', 't', null]; }));
+    app.querySelector('#maaned-tittel').textContent = NAVN[i];
+    app.querySelector('#maaned-antall').textContent = m[1].length + (m[1].length === 1 ? ' samling' : ' samlinger') + ' · ' + m[2].length + (m[2].length === 1 ? ' turnering' : ' turneringer');
+    liste.innerHTML = rader.length ? rader.map(function (r) {
+      return '<a class="hendelse" href="#"' + (r[5] ? ' data-gaa="' + r[5] + '"' : '') + '><span class="dag">' + r[0] + '<small>' + r[1] + '</small></span><span><b>' + r[2] + '</b><br><span class="kilde">' + r[3] + '</span></span><span class="merke ' + (r[4] === 's' ? 'info' : 'noy') + '"><i' + (r[4] === 't' ? ' style="background:var(--turn)"' : '') + '></i>' + (r[4] === 's' ? 'Samling' : 'Turnering') + '</span></a>';
+    }).join('') : '<p class="forklar">Ingen aktivitet i terminlisten denne måneden.</p>';
+  }
+  aar.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    aar.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    vis(+b.dataset.m);
+  });
+  vis(9);
+}
+TNUtkast.start({
+  start: 'oversikt',
+  skjermer: {
+    oversikt: { mal: 'oversikt', laster: 'Henter oversikten …', feil: 'Oversikten kunne ikke hentes',
+      tom: { tittel: 'Ingen samlinger eller testdager ennå', tekst: 'Når trenerteamet legger inn en samling eller en testdag, vises den her. Gruppeposter vises når noen har skrevet.', knapp: 'Ny samling' } },
+    samlinger: { mal: 'samlinger', etter: samlingerEtter, laster: 'Henter terminlisten …', feil: 'Terminlisten kunne ikke hentes',
+      tom: { tittel: 'Ingen samlinger i 2026', tekst: 'Legg inn den første samlingen. Turneringer fra GolfBox kommer inn av seg selv hver mandag.', knapp: 'Ny samling' } },
+    samling: { mal: 'samling', laster: 'Henter samlingen …', feil: 'Samlingen kunne ikke hentes',
+      tom: { tittel: 'Programmet er tomt', tekst: 'Legg inn økter og egentid dag for dag. Spillerne ser programmet når du publiserer.', knapp: 'Legg inn første økt' } },
+    turneringer: { mal: 'turneringer', laster: 'Henter turneringer …', feil: 'Turneringene kunne ikke hentes',
+      tom: { tittel: 'Ingen kommende turneringer', tekst: 'Ingen spillere i gruppa er påmeldt noe ennå. Finnes turneringen ikke i GolfBox, kan du legge den inn selv.', knapp: 'Legg inn turnering' } },
+    turnering: { mal: 'turnering', laster: 'Henter resultatene …', feil: 'Turneringen kunne ikke hentes',
+      tom: { tittel: 'Ingen landslagsspillere her', tekst: 'Ingen spillere i gruppa er påmeldt eller har resultat i denne turneringen.', knapp: 'Alle turneringer' } },
+    ny: { mal: 'ny', laster: 'Åpner skjemaet …', feil: 'Turneringen ble ikke lagret',
+      tom: { tittel: 'Skjemaet er tomt', tekst: 'Fyll inn navn, datoer og bane. Resten kan legges inn senere.', knapp: 'Start' } },
+    live: { mal: 'live', laster: 'Henter dagens turneringer …', feil: 'Live Watch kunne ikke hentes',
+      tom: { tittel: 'Ingen i turnering i dag', tekst: 'Ingen landslagsspillere er i turnering i dag, etter datoene som er registrert.', knapp: 'Turneringer og reise' } }
+  }
+});
+</script>
+</body>
+</html>
