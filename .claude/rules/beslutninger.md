@@ -4,6 +4,16 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
+
+Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller skal kunne booke om timen sin om det er ledig i bookingsystemet. Men det er kun innenfor tilgjengeligheten som er satt hos coach.»
+
+- **Spilleren flytter en booket time selv** til en ledig tid. Det er ingen forespørsel som coachen må godkjenne.
+- **Bare tider innenfor coachens tilgjengelighet** vises og kan velges.
+- Coachen får beskjed om den nye tiden. Flytting trekker ikke klipp.
+
+Krever ingen kodeendring, fordi koden gjør dette allerede: `rescheduleBooking` (`src/app/portal/meg/bookinger/actions.ts`) sjekker at tiden er ledig og innenfor coachens tilgjengelighet (`isSlotStillAvailable`). Den krever i tillegg mer enn 24 timer til opprinnelig start (`rescheduleOutcome`), samme frist som gratis avbestilling. Utkastet `docs/design-system/utkast-playerhq/kommunikasjon.html` er tegnet slik.
+
 ## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
 
 Anders 14.10 under pakke 2 Treningsøkten: «Fjern mørk modus på live øktene», og senere: «La alltid lyst tema».
