@@ -36,6 +36,7 @@ describe("WANG-roller", () => {
     assert.deepEqual(sportsDirector.modules, coach.modules);
     assert.equal(coach.modules.includes("workbench"), true);
     assert.equal(coach.modules.includes("analysis"), true);
+    assert.equal(WANG_MODULES.workbench.href, "/team-wang/app/workbench");
   });
 
   it("foresatt og klubbtrener får ikke utøverlisten eller analyse", () => {
