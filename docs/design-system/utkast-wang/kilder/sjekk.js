@@ -1,6 +1,7 @@
 // Bruk: NODE_PATH=<hovedrepo>/node_modules node sjekk.js <fil.html> <ut-prefiks>
 // Gir skjermbilder (mobil, PC, sportssjef-meny), måler sidelengs rulling i 390 og 360 px,
-// samler JS-feil og måler kontrast for all tekst i skjermen (krav 4,5:1, stor tekst 3:1).
+// samler JS-feil og måler kontrast. ROLLE=sportssjef måler skjermlista som sportssjef.
+// Samler JS-feil og måler kontrast for all tekst i skjermen (krav 4,5:1, stor tekst 3:1).
 const { chromium } = require('playwright');
 
 const KONTRAST = () => {
@@ -82,6 +83,7 @@ const KONTRAST = () => {
   await p.click('[data-bredde=mob]'); await p.waitForTimeout(900);
   console.log('360', JSON.stringify(await mal()));
   // Flere skjermer i én fil: mål hver skjerm i 390 og 360 px, kontrast og skjermbilder
+  if (process.env.ROLLE) await p.click(`[data-rolle=${process.env.ROLLE}]`);
   const skjermer = await p.$$eval('[data-skjerm]', (b) => b.map((x) => x.dataset.skjerm));
   for (const sk of skjermer) {
     for (const [w, br] of [[1300, 'pc'], [1300, 'mob'], [360, 'mob']]) {

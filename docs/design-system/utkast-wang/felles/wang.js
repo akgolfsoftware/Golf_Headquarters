@@ -4,7 +4,7 @@
    og WANGUtkast.start({ etter: function (app, tilstand) {}, tom: {…}, laster: '…', feil: '…' }).
    data-fane: idag | trening | tester | konkurranse | meldinger | elever | admin.
    data-skall="tilbake" gir tilbakelinje i stedet (undersider), data-tilbake="Elever" setter teksten.
-   Velgere på siden: data-bredde (mob|pc), data-rolle (trener|sportssjef), data-tilstand (data|tom|laster|feil), data-skjerm.
+   Velgere på siden: data-bredde (mob|pc), data-rolle (trener|sportssjef; start med opt.rolle), data-tilstand (data|tom|laster|feil), data-skjerm.
    Menyen (beslutninger.md 27.09): seks hovedpunkter, Administrasjon bare for sportssjef.
    Mobil: I dag · Trening · Tester · Elever · Mer. Konkurranse, Meldinger og Administrasjon ligger under Mer. */
 (function () {
@@ -131,7 +131,7 @@
 
   function start(opt) {
     opt = opt || {};
-    var tilstand = { tilstand: 'data', bredde: 'mob', rolle: 'trener', skjerm: opt.start || (opt.skjermer ? Object.keys(opt.skjermer)[0] : null) };
+    var tilstand = { tilstand: 'data', bredde: 'mob', rolle: opt.rolle || 'trener', skjerm: opt.start || (opt.skjermer ? Object.keys(opt.skjermer)[0] : null) };
     var ramme = document.getElementById('ramme'), skaler = null, obs = null;
     function valgt() { return opt.skjermer ? opt.skjermer[tilstand.skjerm] : opt; }
     function gaa(id) {

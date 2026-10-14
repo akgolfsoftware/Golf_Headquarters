@@ -46,7 +46,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Cpp3vn3XuJXeYmbSzLU15x |
 | 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8Y6rzYYoHj7czvmD5BtiX6 |
 | 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/7QC4YH8zeeLSFHXGULBf4q |
-| 8 Administrasjon | Trenere og roller, samtykke og deling, timeplanføring, opptak (bare sportssjef) | `administrasjon.html` | | |
+| 8 Administrasjon | Trenere og roller (WANG-19), Samtykke og deling (WANG-34), Timeplan med kollisjoner (WANG-26), Opptak med plasser og kandidater (WANG-31, -32), Koordinering mellom skolene (WANG-33). Trener får «Denne siden er lukket» | `administrasjon.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/G36K5CamEitxYEiQBGENPB |
 | 9 Samleside | Alle lenker på én side | `index.html` | | |
 
 Én fil og én PR per pakke. Hver skjerm i 390 og 1280, med tom, laster og feil.
@@ -61,9 +61,9 @@ Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TI
    `felles/wang.js` bygger topplinje, sidemeny, bunnmeny og Mer-arket. Undersider: `data-skall="tilbake" data-tilbake="Elever"`.
 4. `<script src="felles/wang.js"></script><script>WANGUtkast.start({ etter: fn, tom: {tittel, tekst, knapp}, laster: '…', feil: '…' })</script>`.
    Flere skjermer i én fil: `WANGUtkast.start({ skjermer: { id: { mal, etter, tom, laster, feil } } })` med velger `data-skjerm` og lenker `data-gaa`.
-   Velgerne på siden: `data-bredde` (mob, pc), `data-rolle` (trener, sportssjef), `data-tilstand` (data, tom, laster, feil).
+   Velgerne på siden: `data-bredde` (mob, pc), `data-rolle` (trener, sportssjef; `rolle: 'sportssjef'` i `start` for sider som starter som sportssjef), `data-tilstand` (data, tom, laster, feil).
    Innhold bare for sportssjef: `data-bare="sportssjef"`. Skjult med `hidden` virker også på kort.
-5. Kontroll: `NODE_PATH=<hovedrepo>/node_modules node kilder/sjekk.js $PWD/<fil>.html <ut>` gir skjermbilder,
+5. Kontroll: `[ROLLE=sportssjef] NODE_PATH=<hovedrepo>/node_modules node kilder/sjekk.js $PWD/<fil>.html <ut>` gir skjermbilder,
    måler sidelengs rulling i 390 og 360 px, samler JS-feil og måler kontrasten på all tekst, for hver skjerm i fila. Se på bildene før publisering.
    Tekst over gradient eller bilde måles ikke automatisk (står som «manuelt»); helteflatens lyseste punkt gir 6,1:1 for hvit tekst.
 6. Bruk aldri aksenavnene (`fys`, `tek`, `slag`, `spill`, `turn`) som egne klassenavn i en skjerm. De styrer fargen på `.akse`, `.okt` og `.bg-*`.
@@ -126,3 +126,8 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 2. Invitasjon til PlayerHQ fra WANG (WANG-20) venter til delingen virker (vedtaket 28.09). Utkastet viser bare «Minn eleven på det» når eleven ikke har delt.
 3. Hvilke 41 spørsmål og hvilke områder utviklingssjekken har, kommer fra Team Norways ark. Områdene i utkastet (Teknikk, Slag og spill, Fysisk, Mental forberedelse, Livsstil og skole) er plassholdere.
 4. Dagens kode har realistiske fornavn og etternavn på demoelever (`src/components/wang/wang-data.ts`). Elevene er mindreårige; tegningene bruker «Elev 04».
+
+### Pakke 8 Administrasjon
+1. Hvilke vurderingspunkter skal opptaket bruke (D1)? Utkastet viser fire plassholdere: Spill, Teknikk, Fysisk, Holdning og skole.
+2. Skal sportssjef kunne invitere trenere selv, eller går det via AK Golf? Utkastet lar sportssjef invitere.
+3. Opptak og koordinering trenger nye tabeller (kandidat, stjernemerke per skole, kontaktlogg uten innhold), se `designsystem/wang/DATAMODELL.md` og vedtaket 26.09.
