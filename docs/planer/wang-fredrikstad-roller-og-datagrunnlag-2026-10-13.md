@@ -283,3 +283,20 @@ Den beskyttede ruten `/team-wang/app/meldinger/[threadId]` viser lagret meldings
 
 Neste meldingssteg er fortsatt en kontrollert skriveflyt. Den kan ikke åpnes før eksport, sletting,
 lagringstid og revisjonsspor er besluttet og testet.
+
+## 21. Rolleforhåndsvisning kontrollert 14. oktober 2026
+
+Alle ti fiktive rollevisninger under `/team-wang/demo/roller` er kontrollert på desktop og mobil.
+
+- kontrollen dekker sentral admin, skoleleder, rektor, toppidrettssjef, sportssjef, trener, elev, foresatt, klubbtrener og invitert lesetilgang
+- desktop er kontrollert ved 1280 × 720 piksler og mobil ved 390 × 844 piksler
+- ingen av rollevisningene har vannrett overflyt
+- alle synlige lenker og knapper har minst 44 × 44 piksler trykkflate
+- første tastaturstopp er synlig og bruker en tre piksler bred fokusmarkering
+- automatisk tilgjengelighetskontroll finner ingen alvorlige eller kritiske brudd
+- nettleserkonsollen er uten feil i rollevisningene
+- en reell kontrastfeil i sekundærtekst ble rettet ved å bruke den godkjente WANG-fargen `#475569`
+- kontrollen bruker bare fiktive rolledata og oppretter ingen bruker, elev, tilgang eller databaserad
+
+Dette bekrefter de offentlige rolleforhåndsvisningene, ikke de innloggede rolleskjermene. Full rolle- og
+databasetest krever fortsatt eksplisitt godkjenning til å opprette de syntetiske Auth-kontoene.
