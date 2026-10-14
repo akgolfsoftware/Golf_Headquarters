@@ -10,7 +10,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 1 Grunnmur | `felles/felles.css`, `felles/felles.js`, dagens design for alle PH-skjermer | Ferdig 14.10 | — |
 | — | PH-01 I dag (utkast 4) | Utkast | https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP |
 | — | PH-16 Stats (utkast 1) | Utkast | https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC |
-| 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | Utkast 14.10 (`plan.html`) | LENKE |
+| 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | Utkast 14.10 (`plan.html`) | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
 | 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (natt-tema) | **Neste** | |
 | 4 Øvelser og teknikk | PH-12, PH-13, PH-TP-01 | | |
 | 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD) | | |
