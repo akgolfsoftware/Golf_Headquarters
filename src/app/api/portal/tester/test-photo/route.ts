@@ -29,6 +29,7 @@ async function viewer() {
   return { user };
 }
 
+// tilgang: eier sjekkes i ownAttempt (økta må tilhøre innlogget spiller), PLAYER-rolle kreves i innloggingshjelperen over
 async function ownAttempt(userId: string, sessionId: string, attempt: number) {
   const session = await prisma.testSession.findFirst({
     where: { id: sessionId, userId, testId: { startsWith: "tn-v3-" }, status: { in: ["IN_PROGRESS", "COMPLETED"] } },

@@ -48,6 +48,7 @@ export async function opprettRapport(
   begrunnelse: string,
 ) {
   const meg = await requirePortalUser();
+  // tilgang: alle innloggede kan rapportere; eget innhold avvises under
   const parsed = rapportSchema.safeParse({ targetType, targetId, begrunnelse });
   if (!parsed.success) {
     return { ok: false as const, error: parsed.error.issues[0]?.message ?? "Ugyldig rapport." };

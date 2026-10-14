@@ -47,6 +47,7 @@ type EierskapResultat =
   | { ok: false; httpStatus: number };
 
 /** Verifiserer at brukeren eier/deltar i live-økta. Speiler live-actions sin eierskap-logikk. */
+// tilgang: eier/deltaker av økta sjekkes i verifiserOkt, og tråden er scopet til (bruker, økt)
 async function verifiserOkt(
   sessionId: string,
   kind: LiveSessionKind,
