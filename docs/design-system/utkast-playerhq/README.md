@@ -12,7 +12,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | — | PH-16 Stats (utkast 1) | Utkast | https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC |
 | 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | **Godkjent 14.10** (port 7, Anders), utkast 2 i `plan.html` | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
 | 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (lyst tema også i Live, Anders 14.10), `treningsokt.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ |
-| 4 Øvelser og teknikk | PH-12, PH-13, PH-TP-01 | | |
+| 4 Øvelser og teknikk | PH-12, PH-13 (+ øvelse, break-tabell), PH-TP-01 (+ utkast fra coach), `ovelser.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8uJAzvbeaaSTCp9jsNZKTR |
 | 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD) | | |
 | 6 Stats i dybden | PH-14, PH-15 (+TN), PH-17 | | |
 | 7 Kommunikasjon | PH-21 Innboks, PH-22 Caddie, PH-23 Booking | | |
