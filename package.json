@@ -150,7 +150,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --max-warnings 0 --no-warn-ignored",
-      "bash -c 'tsc --noEmit'"
+      "bash -c 'NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit'"
     ]
   }
 }
