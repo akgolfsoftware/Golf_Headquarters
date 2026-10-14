@@ -1,0 +1,978 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats i dybden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Stats i dybden (PH-14, PH-15, PH-15-TN, PH-17) ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.topp{display:grid;gap:var(--r3)}
+.to-kol,.kol{display:grid;gap:var(--r5);align-content:start}
+.topp img{display:block;width:100%;height:132px;object-fit:cover;object-position:50% 45%;border-radius:12px}
+.toast{position:sticky;bottom:72px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900)}
+.uthev{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:12px 14px;border-radius:10px;color:#fff;font-size:14px;line-height:1.45}
+.uthev b{font-weight:600}
+.akse-bg-fys{background:var(--fys-ink)} .akse-bg-tek{background:var(--tek-ink)} .akse-bg-slag{background:var(--slag)} .akse-bg-spill{background:var(--spill-ink)} .akse-bg-turn{background:var(--turn)}
+
+/* Fylt toppkort i aksefarge med ett stort tall */
+.fylt{display:grid;gap:var(--r2);padding:18px;border-radius:12px;color:#fff}
+.fylt .akse-tekst{opacity:.95}
+.fylt h2{margin:0;font:600 19px/1.25 var(--sans)}
+.fylt .stor{font:600 52px/1 var(--mono);letter-spacing:-.04em;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.fylt .stor small{font:500 18px/1 var(--mono);letter-spacing:0;opacity:.9}
+.fylt p{font-size:14px;line-height:1.45;opacity:.95}
+.fylt .rad{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--r3);flex-wrap:wrap}
+.fylt .trend{background:rgba(255,255,255,.2);color:#fff}
+.hvit-pille{display:inline-block;height:20px;padding:0 7px;border-radius:4px;background:#fff;font:600 11px/20px var(--sans);vertical-align:3px;margin-left:6px}
+.fylt.fys .hvit-pille{color:var(--fys-ink)} .fylt.tek .hvit-pille{color:var(--tek-ink)} .fylt.slag .hvit-pille{color:var(--slag-ink)}
+.fylt.fys{background:var(--fys-ink)} .fylt.tek{background:var(--tek-ink)} .fylt.slag{background:var(--slag)} .fylt.spill{background:var(--spill-ink)}
+
+/* PH-14 Tester */
+.nokkel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.nokkel div{padding:12px;border-radius:10px;background:var(--sand-100);display:grid;gap:4px}
+.nokkel b{font:600 22px/1 var(--mono);letter-spacing:-.02em}
+.nokkel span{font-size:12.5px;line-height:1.35;color:var(--graphite-800)}
+.gruppe{display:grid;gap:var(--r2)}
+.gruppe-topp{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.gruppe-topp h3{margin:0;display:flex;align-items:center;gap:8px;font:600 16px/1.3 var(--sans)}
+.gruppe-topp h3 i{width:12px;height:12px;border-radius:3px}
+.test-rad{display:grid;grid-template-columns:minmax(0,1fr) auto 20px;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--sand-300);background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;transition:transform 160ms var(--ut);border-left-width:6px}
+.test-rad:active{transform:scale(.98)}
+.test-rad.fys{border-left-color:var(--fys)} .test-rad.tek{border-left-color:var(--tek)} .test-rad.slag{border-left-color:var(--slag)} .test-rad.spill{border-left-color:var(--spill)}
+.test-rad strong{display:block;font:600 15px/1.3 var(--sans)}
+.test-rad small{display:block;font:400 12.5px/1.45 var(--sans);color:var(--graphite-600)}
+.test-rad .verdi{display:grid;justify-items:end;gap:2px}
+.test-rad .verdi b{font:600 18px/1 var(--mono);white-space:nowrap}
+.test-rad .verdi svg{width:64px;height:20px}
+.test-rad .ikon{color:var(--graphite-600)}
+.test-rad.ikke .verdi b{color:var(--graphite-600);font-family:var(--sans);font-size:14px;font-weight:500}
+.test-rad .sperret{color:var(--amber-700)}
+.neste{display:grid;grid-template-columns:auto 1fr;gap:var(--r3);align-items:center}
+.neste .dag{width:56px;height:56px;border-radius:12px;background:var(--fys-ink);color:#fff;display:grid;place-items:center;text-align:center;font:600 11px/1.2 var(--sans)}
+.neste .dag b{display:block;font:600 22px/1 var(--mono)}
+
+/* Testdetalj */
+.sl-liste{display:grid;gap:10px}
+.slr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 52px;gap:10px;align-items:center;font-size:14px}
+.slr .stolpe{height:14px;border-radius:3px}
+.slr .stolpe span{background:var(--slag);opacity:.55;border-radius:3px}
+.slr.svakest .stolpe span,.slr.sterkest .stolpe span{opacity:1}
+.slr .v{font:600 15px/1 var(--mono);text-align:right}
+.slr.svakest b{color:var(--slag-ink)}
+.skala-liste{display:grid;gap:6px}
+.skala-rad{display:flex;justify-content:space-between;gap:var(--r3);padding:8px 12px;border-radius:8px;background:var(--sand-100);font-size:14px}
+.skala-rad b{font:600 14px/1.4 var(--mono)}
+.skala-rad.aktiv{background:var(--slag);color:#fff}
+.maaling{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-top:1px solid var(--sand-300)}
+.maaling strong{display:block;font:600 14px/1.3 var(--sans)}
+.maaling small{display:block;font:400 12.5px/1.45 var(--sans);color:var(--graphite-600)}
+.maaling .tv{font:600 16px/1 var(--mono)}
+.niva{display:grid;gap:4px;padding:12px 14px;border-radius:10px;border:1px dashed var(--graphite-500)}
+.niva b{font:600 22px/1 var(--mono)}
+
+/* PH-15 Test: gjennomfør */
+.motor{display:grid;gap:var(--r4)}
+.slag-naa{display:grid;gap:6px;padding:16px;border-radius:12px;border:2px solid var(--graphite-900);background:var(--white)}
+.slag-naa .nr{font:600 13px/1 var(--sans);color:var(--graphite-600)}
+.slag-naa .hva{font:600 24px/1.2 var(--sans);letter-spacing:-.01em}
+.slag-naa .hva small{display:block;font:500 15px/1.4 var(--sans);color:var(--graphite-800);letter-spacing:0;margin-top:2px}
+.tb{display:grid;grid-template-columns:1fr 1fr;gap:var(--r3)}
+.tb button{min-height:72px;border-radius:12px;font:600 19px/1 var(--sans);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 160ms var(--ut)}
+.tb button:active{transform:scale(.97)}
+.tb .treff{background:var(--green-700);color:#fff;border:0}
+.tb .bom{background:var(--white);color:var(--graphite-900);border:2px solid var(--graphite-500)}
+.tb .ikon{width:24px;height:24px}
+.matrise{display:grid;grid-template-columns:72px repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
+.matrise .h{font:500 12px/1.3 var(--sans);color:var(--graphite-600);display:flex;align-items:center}
+.matrise .h.k{justify-content:center}
+.celle{min-height:52px;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;font:600 13px/1 var(--sans);color:var(--graphite-600)}
+.celle.treff{background:var(--green-700);color:#fff}
+.celle.bom{background:var(--white);border:1px solid var(--graphite-500);color:var(--graphite-900)}
+.celle.naa{outline:3px solid var(--graphite-900);outline-offset:-3px;background:var(--white);color:var(--graphite-900)}
+.celle .ikon{width:18px;height:18px}
+.angre{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;border:0;background:transparent;font:500 15px/1 var(--sans);color:var(--graphite-900);cursor:pointer;justify-self:start;border-radius:8px}
+.angre[disabled]{color:var(--graphite-500);cursor:default}
+.lagre-felt{display:grid;gap:var(--r2)}
+.knapp[disabled]{background:var(--sand-150);border-color:var(--sand-300);color:var(--graphite-600);cursor:not-allowed}
+.hvem{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);flex-wrap:wrap}
+.innfelt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r2);align-items:end}
+.innfelt .felt input{font:600 28px/1 var(--mono);min-height:60px}
+.innfelt .knapp{min-height:60px}
+.forhand{font-size:14px;color:var(--graphite-800);min-height:20px}
+.forhand b{font-family:var(--mono)}
+.slagliste{display:grid;gap:var(--r2)}
+.slaggruppe{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px var(--r3);align-items:center;padding:10px 12px;border-radius:10px;background:var(--sand-100)}
+.slaggruppe .baller{display:flex;gap:6px;flex-wrap:wrap;grid-column:1/-1}
+.ball{min-width:56px;height:36px;padding:0 8px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font:500 12.5px/1 var(--mono);background:var(--white);border:1px solid var(--sand-300);color:var(--graphite-800)}
+.ball b{font-weight:600;color:var(--graphite-900);margin-left:4px}
+.ball.tom{border-style:dashed;color:var(--graphite-500)}
+.ball.naa{border:2px solid var(--graphite-900)}
+.slaggruppe .sum{font:600 15px/1 var(--mono)}
+.poengrad{display:grid;grid-template-columns:32px minmax(0,1fr) 96px;gap:var(--r3);align-items:center;padding:8px 0;border-top:1px solid var(--sand-300)}
+.poengrad .nr{font:600 14px/1 var(--mono);color:var(--graphite-600)}
+.poengrad b{display:block;font:600 14px/1.3 var(--sans)}
+.poengrad small{display:block;font-size:12.5px;color:var(--graphite-600)}
+.poengrad input{min-height:44px;width:100%;padding:6px 10px;border:1px solid var(--graphite-500);border-radius:8px;font:600 18px/1 var(--mono);text-align:right;background:var(--white);color:var(--graphite-900)}
+
+/* PH-17 Trening og TrackMan */
+.filterlinje{display:flex;flex-wrap:wrap;gap:var(--r2);align-items:center}
+.brikke{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 6px 0 12px;border-radius:999px;background:var(--sand-150);font:500 13px/1 var(--sans);color:var(--graphite-900);border:0;cursor:pointer}
+.brikke .ikon{width:16px;height:16px}
+.brikke.fast{padding-right:12px;cursor:default}
+.velg-brikker{display:flex;flex-wrap:wrap;gap:6px}
+.velg-brikker button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--graphite-500);background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-900);cursor:pointer}
+.velg-brikker button[aria-pressed="true"]{background:var(--graphite-900);color:var(--white);border-color:var(--graphite-900)}
+.pyr{display:grid;gap:12px}
+.pyr-rad{display:grid;gap:6px}
+.pyr-rad .topp-l{display:flex;justify-content:space-between;align-items:baseline;gap:var(--r3);font-size:14px}
+.pyr-rad .topp-l b{font:600 13px/1 var(--sans);letter-spacing:.05em}
+.pyr-rad .topp-l span{font:500 13.5px/1.2 var(--mono);color:var(--graphite-800);text-align:right}
+.pyr-bar{position:relative;height:18px;border-radius:4px;background:var(--sand-150)}
+.pyr-bar span{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.pyr-bar i{position:absolute;top:-4px;bottom:-4px;width:3px;border-radius:2px;background:var(--graphite-900)}
+.sted{display:grid;gap:10px}
+.sted-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px var(--r3);align-items:center;font-size:14px}
+.sted-rad .stolpe{grid-column:1/-1}
+.sted-rad .v{font:500 13.5px/1 var(--mono);text-align:right;white-space:nowrap}
+.tm-kort{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:16px;border-radius:12px;background:var(--graphite-900);color:#fff;text-decoration:none;cursor:pointer;border:0;font:inherit;text-align:left;width:100%;transition:transform 160ms var(--ut)}
+.tm-kort:active{transform:scale(.98)}
+.tm-kort b{display:block;font:600 17px/1.3 var(--sans)}
+.tm-kort span{font-size:14px;opacity:.85}
+.tm-kort strong{font:600 30px/1 var(--mono);letter-spacing:-.02em}
+.param{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.param div{padding:10px 12px;border-radius:10px;background:var(--sand-100);display:grid;gap:4px}
+.param span{font-size:12.5px;color:var(--graphite-800)}
+.param b{font:600 18px/1 var(--mono)}
+.gap-liste{display:grid;gap:6px}
+.gap-rad{display:grid;grid-template-columns:64px minmax(0,1fr) 52px;gap:10px;align-items:center;font-size:14px}
+.gap-rad .stolpe{height:16px;border-radius:3px}
+.gap-rad .stolpe span{background:var(--slag);border-radius:3px}
+.gap-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.gap-mellom{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;font:500 12px/1.2 var(--mono);color:var(--graphite-600);padding-left:0}
+.gap-mellom.smal{color:var(--amber-700)}
+.helse{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px var(--r3);align-items:center;padding:12px 0;border-top:1px solid var(--sand-300)}
+.helse strong{display:block;font:600 14px/1.3 var(--sans)}
+.helse small{display:block;font:400 13px/1.45 var(--sans);color:var(--graphite-800)}
+.okt-liste{display:grid;gap:var(--r2)}
+.okt.mini .okt-info{font-size:13px}
+.prikker{display:flex;flex-wrap:wrap;gap:5px}
+.prikker i{width:18px;height:18px;border-radius:50%;background:var(--sand-300)}
+.prikker i.inn{background:var(--green-700)}
+.tm-tab{display:grid;gap:var(--r2)}
+
+@container (min-width:900px){
+  .topp.med-bilde{grid-template-columns:minmax(0,1fr) 380px;align-items:end;gap:var(--r6)}
+  .topp.med-bilde img{height:170px;grid-column:2;grid-row:1/3}
+  .to-kol{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:var(--r5);align-items:start}
+  .kol{display:grid;gap:var(--r5);align-content:start}
+  .motor{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:var(--r5)}
+  .motor > .full{grid-column:1/-1}
+  .param{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .kort .graf{max-width:440px;justify-self:center}
+  .toast{bottom:24px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 6 · PH-14, PH-15 og PH-17 · utkast 1 · 14.10.2026</span>
+    <h1>Stats i dybden</h1>
+    <p>Åtte skjermer i én fil: Tester med en enkelt test, gjennomføring av tre testtyper (treff eller bom, Team Norways poengskala, poeng for hånd), Trening, TrackMan og én TrackMan-økt. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="tester">PH-14 Tester</button>
+      <button type="button" aria-pressed="false" data-skjerm="test">Én test</button>
+      <button type="button" aria-pressed="false" data-skjerm="gate">PH-15 Wedge Gate</button>
+      <button type="button" aria-pressed="false" data-skjerm="tn8">PH-15-TN 8-ball</button>
+      <button type="button" aria-pressed="false" data-skjerm="hand">PH-15-TN Nærspill Gate</button>
+      <button type="button" aria-pressed="false" data-skjerm="trening">PH-17 Trening</button>
+      <button type="button" aria-pressed="false" data-skjerm="trackman">TrackMan</button>
+      <button type="button" aria-pressed="false" data-skjerm="tmokt">TrackMan-økt</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Tester åpner med fremgang:</b> ett stort tall, «5 av 6 tester bedre enn forrige måling». Så kommer neste testdag (testuka, uke 43) og alle 18 testene i aksefargene, med siste resultat og en liten progresjonslinje.</li>
+        <li><b>Ett testbatteri</b> for AK Golf, WANG og Team Norway. Hver måling er merket «Kontrollert» (coachen førte) eller «Egenført».</li>
+        <li><b>Én test</b> viser poeng over tid som fylt graf, snitt og beste, og hvilken slagtype som gir minst. Poengskalaen står på skjermen.</li>
+        <li><b>Gjennomføring i tre typer:</b> Wedge Gate med treff eller bom i et rutenett (launch × carry), 8-ball der appen gir poeng fra meter til hull, og Nærspill Gate der poeng føres for hånd og appen summerer.</li>
+        <li><b>Trening</b> viser gjennomført mot planen per akse, mengde trening mot Strokes Gained, og hvor du trener. Én Filter-knapp med brikker.</li>
+        <li><b>TrackMan</b> har spredningskart, parametere, gapping, utstyrshelse og økter. Velg kølle øverst.</li>
+        <li>Lyst tema også under testen, som for live-øktene (vedtak 14.10).</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>En test teller bare når alle slag er registrert. «Lagre resultat» er låst til da. Avbryter du, lagres ingen resultat.</li>
+        <li>Team Norways poengskala fra scorekort-arket: 8-ball 4–3–2–1–0 poeng etter meter fra hull. Nærspill Gate og VISA Express har ingen skala i arket, så poeng føres for hånd. Wedge Gate teller treff: «X / 9 treff».</li>
+        <li>Nivå mot neste kategori vises som «—» med «Referanse ikke satt», fordi A–K-nivåtallene ikke er vedtatt. Landslagsnivå vises bare for Team Norway-spillere, når tallene kommer fra Team Norway.</li>
+        <li>Ingen sammenligning med andre spillere. Strokes Gained mot Kategori B er merket «Estimat».</li>
+        <li>Farge betyr akse. Grønt er bare treff og nådd mål. Rust bare på «Avbryt uten resultat», i en egen dialog.</li>
+        <li>Timetallene stemmer med årsplanen i Plan: 48 t 10 min av 52 t 20 min i uke 37–40, og planen per akse kommer fra Evaluering og Grunnperiode 1.</li>
+        <li>Manglende verdi vises som «—», aldri som null. Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>A–K-nivåtall per test</b> er ikke vedtatt. Til da står nivå mot Kategori B som «—».</li>
+        <li><b>9 hull lengde</b> er sperret: måleenheten for målavstand er ikke avgjort. Raden sier det i stedet for å vise et tall.</li>
+        <li><b>Utstyrshelse:</b> forslaget er å vise endringer i TrackMan-tallene per kølle (Spin Rate, Smash Factor) og når lie og loft sist ble målt. Er det dette du vil ha?</li>
+        <li><b>Gapping:</b> «kort gap» er satt til under 10 m mellom to køller i utkastet. Grensen er ikke bestemt.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PH-14 Tester ================= -->
+<template id="tester">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp med-bilde" data-behold>
+      <div>
+        <div class="dato">Stats · Tester</div>
+        <h1 class="tittel">Tester</h1>
+      </div>
+      <img src="bilder/naerspill-wedge.jpg" alt="" width="1600" height="1067">
+      <div class="hoved"><strong data-tell="5">5</strong><span class="forklar" style="max-width:22ch">av 6 tester bedre enn forrige måling</span></div>
+    </div>
+    <div class="to-kol">
+      <div class="kol">
+        <div class="valg" role="group" aria-label="Akse" data-akse-valg></div>
+        <div data-testliste style="display:grid;gap:var(--r5)"></div>
+        <p class="kildetekst">Testbatteri for AK Golf, WANG og Team Norway · 18 tester · 8 tatt siden 8. juni</p>
+      </div>
+      <div class="kol">
+        <div class="kort neste">
+          <span class="dag">Uke<b>43</b></span>
+          <span><b class="undertittel">Neste testdag: testuka</b><span class="forklar" style="display:block">Fysisk test 19.–25. oktober: Club Speed, benkpress, markløft trapbar, lengdehopp og rotasjonskast. Hver sjette uke i grunnperioden.</span></span>
+        </div>
+        <div class="fylt fys">
+          <span class="akse-tekst">FYS · SISTE REKORD</span>
+          <h2>Club Speed<span class="hvit-pille">Personlig rekord</span></h2>
+          <div class="rad"><span class="stor">108,4<small>mph</small></span><svg viewBox="0 0 120 40" width="120" height="40" role="img" aria-label="Club Speed siste 5 tester, fra 104,1 til 108,4"><path class="tegn" d="M4.0,30.1 L32.0,25.3 L60.0,17.3 L88.0,18.9 L116.0,7.2" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="116" cy="7.2" r="3.5" fill="#fff"/></svg></div>
+          <p>+1,9 siden juli · 28. sep. · TrackMan · Kontrollert</p>
+        </div>
+        <div class="niva">
+          <span class="undertittel">Nivå mot Kategori B</span>
+          <b>—</b>
+          <span class="forklar">Referanse ikke satt. Nivåtallene for kategori A–K er ikke vedtatt ennå. Når de er det, ser du nivået per test her.</span>
+        </div>
+        <button type="button" class="knapp sek" data-gaa="tn8">Ta en test</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-14 Én test ================= -->
+<template id="test">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · Tester · Golfslag</div>
+      <h1 class="tittel">8-ball blocked</h1>
+    </div>
+    <div class="to-kol">
+      <div class="kol">
+        <div class="fylt slag">
+          <span class="akse-tekst">SLAG · TEAM NORWAYS POENGSKALA</span>
+          <div class="rad"><span class="stor"><span data-tell="61">61</span><small>/ 96 poeng</small></span><span class="trend"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>+3 siden 24. aug.</span></div>
+          <p>Personlig rekord · 28. sep. · Kontrollert av Anders Kristiansen</p>
+        </div>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Poeng over tid</h2></div>
+          <svg class="graf" viewBox="0 0 320 150" role="img" aria-label="Poeng per måling: 52 i juni, 55 i juli, 58 i august, 61 i september">
+            <text x="22" y="24" text-anchor="end" class="gt">70</text><text x="22" y="64" text-anchor="end" class="gt">60</text><text x="22" y="104" text-anchor="end" class="gt">50</text>
+            <line x1="28" x2="312" y1="60" y2="60" stroke="var(--sand-300)"/><line x1="28" x2="312" y1="100" y2="100" stroke="var(--sand-300)"/>
+            <path d="M36,108 L128,96 L220,84 L304,72 L304,128 L36,128 Z" fill="var(--slag)" opacity=".22"/>
+            <path class="tegn" d="M36,108 L128,96 L220,84 L304,72" fill="none" stroke="var(--slag)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="36" cy="108" r="4" fill="var(--slag)"/><circle cx="128" cy="96" r="4" fill="var(--slag)"/><circle cx="220" cy="84" r="4" fill="var(--slag)"/><circle cx="304" cy="72" r="5.5" fill="var(--slag)"/>
+            <text x="304" y="62" text-anchor="end" class="gt" style="fill:var(--slag-ink);font-weight:600">61</text>
+            <text x="36" y="145" class="gt">8. juni</text><text x="128" y="145" text-anchor="middle" class="gt">13. juli</text><text x="220" y="145" text-anchor="middle" class="gt">24. aug.</text><text x="304" y="145" text-anchor="end" class="gt">28. sep.</text>
+          </svg>
+          <div class="nokkel"><div><b>56,5</b><span>Snitt, 4 målinger</span></div><div><b>61</b><span>Beste</span></div><div><b>—</b><span>Nivå mot Kategori B</span></div></div>
+          <p class="kildetekst">Nivå: referanse ikke satt. A–K-nivåtallene er ikke vedtatt.</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Per slagtype</h2><span class="kilde">Poeng av 12</span></div>
+          <div class="sl-liste" data-slagtyper></div>
+          <div class="uthev akse-bg-slag"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Bunker 20 m gir minst:</b> 4 av 12 poeng. Chip 10 m gir mest: 11 av 12.</span></div>
+        </section>
+      </div>
+      <div class="kol">
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slik telles poengene</h2></div>
+          <p class="forklar">24 slag, tre like om gangen. Du fører meter fra hull, og appen gir poeng:</p>
+          <div class="skala-liste" data-skala></div>
+          <p class="kildetekst">Team Norways scorekort-ark, fanen Referens</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Målinger</h2></div>
+          <div data-malinger></div>
+        </section>
+        <div class="niva">
+          <span class="undertittel">Landslagsnivå for klassen</span>
+          <b>—</b>
+          <span class="forklar">Vises for spillere i en Team Norway-gruppe når Team Norway har sendt tallene.</span>
+        </div>
+        <button type="button" class="knapp pri stor" data-gaa="tn8">Ta testen</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-15 Wedge Gate: treff eller bom ================= -->
+<template id="gate">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · Tester · Teknikk</div>
+      <h1 class="tittel">Wedge Gate</h1>
+    </div>
+    <div class="motor">
+      <div class="fylt tek full">
+        <span class="akse-tekst">TEK · TREFF ELLER BOM</span>
+        <div class="rad"><span class="stor"><span data-g-treff>3</span><small>/ 9 treff</small></span><span class="trend" data-g-igjen>4 slag igjen</span></div>
+        <p>Treff når både utslagsvinkel og carry er innenfor sonen. Forrige gang: 4 / 9 treff (24. aug.).</p>
+      </div>
+      <div style="display:grid;gap:var(--r4)">
+        <div class="slag-naa" data-g-naa></div>
+        <div class="tb"><button type="button" class="treff" data-g="1"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Treff</button><button type="button" class="bom" data-g="0"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Bom</button></div>
+        <button type="button" class="angre" data-g-angre><svg class="ikon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Angre siste</button>
+      </div>
+      <section class="kort">
+        <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Ni slag</h2><span class="kilde">Launch × carry ±3 m</span></div>
+        <div class="matrise" data-g-matrise></div>
+      </section>
+      <div class="lagre-felt full">
+        <div class="hvem"><span class="pille noy"><i></i>Egenført</span><span class="kildetekst">Blir «Kontrollert» når coachen fører testen.</span></div>
+        <button type="button" class="knapp pri stor" data-g-lagre disabled>Lagre resultat</button>
+        <p class="kildetekst" data-g-regel>Testen teller når alle 9 slag er registrert.</p>
+        <button type="button" class="knapp sek" data-avbryt>Avbryt testen</button>
+      </div>
+    </div>
+    <div class="ark-lag" data-avbryt-ark hidden>
+      <div class="ark" role="dialog" aria-label="Avbryt testen">
+        <div class="ark-topp"><h2>Avbryte testen?</h2><button type="button" class="lukk" data-lukk aria-label="Lukk"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <p class="forklar">Slagene du har ført, blir ikke et resultat. En test teller bare når alle slag er registrert.</p>
+        <div class="knapper"><button type="button" class="knapp rust" data-avbryt-ok>Avbryt uten resultat</button><button type="button" class="knapp sek" data-lukk>Fortsett testen</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-15-TN 8-ball: Team Norways poengskala ================= -->
+<template id="tn8">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · Tester · Golfslag</div>
+      <h1 class="tittel">8-ball blocked</h1>
+    </div>
+    <div class="motor">
+      <div class="fylt slag full">
+        <span class="akse-tekst">SLAG · TEAM NORWAYS POENGSKALA</span>
+        <div class="rad"><span class="stor"><span data-t-sum>27</span><small>poeng</small></span><span class="trend" data-t-igjen>14 slag igjen</span></div>
+        <p data-t-under>Etter 10 av 24 slag. Høyst 4 poeng per slag. Rekorden din er 61.</p>
+      </div>
+      <div style="display:grid;gap:var(--r4)">
+        <div class="slag-naa" data-t-naa></div>
+        <div class="innfelt">
+          <div class="felt"><label for="t-meter">Meter fra hull</label><input id="t-meter" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0,00"></div>
+          <button type="button" class="knapp pri" data-t-reg>Registrer</button>
+        </div>
+        <p class="forhand" data-t-forhand aria-live="polite">Skriv avstanden, så ser du poengene før du registrerer.</p>
+        <button type="button" class="angre" data-t-angre><svg class="ikon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Angre siste</button>
+        <div class="skala-liste" data-t-skala></div>
+      </div>
+      <section class="kort">
+        <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slagene</h2><span class="kilde">Poeng av 12 per slagtype</span></div>
+        <div class="slagliste" data-t-liste></div>
+      </section>
+      <div class="lagre-felt full">
+        <div class="hvem"><span class="pille noy"><i></i>Egenført</span><span class="kildetekst">Blir «Kontrollert» når coachen fører testen.</span></div>
+        <button type="button" class="knapp pri stor" data-t-lagre disabled>Lagre resultat</button>
+        <p class="kildetekst" data-t-regel>Testen teller når alle 24 slag er registrert.</p>
+        <button type="button" class="knapp sek" data-avbryt>Avbryt testen</button>
+      </div>
+    </div>
+    <div class="ark-lag" data-avbryt-ark hidden>
+      <div class="ark" role="dialog" aria-label="Avbryt testen">
+        <div class="ark-topp"><h2>Avbryte testen?</h2><button type="button" class="lukk" data-lukk aria-label="Lukk"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <p class="forklar">Slagene du har ført, blir ikke et resultat. En test teller bare når alle slag er registrert.</p>
+        <div class="knapper"><button type="button" class="knapp rust" data-avbryt-ok>Avbryt uten resultat</button><button type="button" class="knapp sek" data-lukk>Fortsett testen</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-15-TN Nærspill Gate: poeng for hånd ================= -->
+<template id="hand">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · Tester · Teknikk</div>
+      <h1 class="tittel">Nærspill Gate</h1>
+    </div>
+    <div class="motor">
+      <div class="fylt tek full">
+        <span class="akse-tekst">TEK · POENG FOR HÅND</span>
+        <div class="rad"><span class="stor"><span data-h-sum>9</span><small>poeng</small></span><span class="trend" data-h-igjen>5 slag igjen</span></div>
+        <p>Appen summerer poengene du fører. Forrige gang: 14 poeng (24. aug.).</p>
+      </div>
+      <div class="kort dempet full" style="gap:6px">
+        <b class="undertittel">Ingen poengskala i arket</b>
+        <p class="forklar">Team Norways scorekort har ingen skala for Nærspill Gate. Før poengene per slag slik coachen har avtalt. Det samme gjelder VISA Express.</p>
+      </div>
+      <section class="kort full">
+        <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Ni slag</h2><span class="kilde">Launch og carry-sone</span></div>
+        <div data-h-rader></div>
+      </section>
+      <div class="lagre-felt full">
+        <div class="hvem"><span class="pille noy"><i></i>Egenført</span><span class="kildetekst">Blir «Kontrollert» når coachen fører testen.</span></div>
+        <button type="button" class="knapp pri stor" data-h-lagre disabled>Lagre resultat</button>
+        <p class="kildetekst" data-h-regel>Testen teller når alle 9 slag har poeng.</p>
+        <button type="button" class="knapp sek" data-avbryt>Avbryt testen</button>
+      </div>
+    </div>
+    <div class="ark-lag" data-avbryt-ark hidden>
+      <div class="ark" role="dialog" aria-label="Avbryt testen">
+        <div class="ark-topp"><h2>Avbryte testen?</h2><button type="button" class="lukk" data-lukk aria-label="Lukk"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <p class="forklar">Slagene du har ført, blir ikke et resultat. En test teller bare når alle slag er registrert.</p>
+        <div class="knapper"><button type="button" class="knapp rust" data-avbryt-ok>Avbryt uten resultat</button><button type="button" class="knapp sek" data-lukk>Fortsett testen</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-17 Trening ================= -->
+<template id="trening">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp med-bilde" data-behold>
+      <div>
+        <div class="dato">Stats · Trening</div>
+        <h1 class="tittel">Trening</h1>
+      </div>
+      <img src="bilder/slag-simulator.jpg" alt="" width="1600" height="1067">
+      <div class="hoved"><strong>48<small>t 10 min</small></strong><span class="trend">92 % av plan</span></div>
+    </div>
+    <div class="filterlinje" data-behold>
+      <button type="button" class="knapp sek" data-filter-apne><svg class="ikon" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</button>
+      <span data-brikker class="filterlinje"></span>
+    </div>
+    <div class="to-kol">
+      <div class="kol">
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Pyramiden mot planen</h2><span class="kilde">Gjennomført · plan</span></div>
+          <div class="pyr" data-pyr></div>
+          <div class="uthev akse-bg-spill" data-pyr-uthev><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>SPILL er 14 t 35 min under planen.</b> Planen hadde mye banespill i evalueringsukene 37 og 38.</span></div>
+          <p class="kildetekst">Gjennomført tid · uke 37–40 · plan fra Evaluering og Grunnperiode 1</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Mengde mot Strokes Gained</h2><span class="estimat">Estimat</span></div>
+          <p class="forklar">Innspill 100–150 m: timer trent per måned, og slag tapt per runde mot Kategori B.</p>
+          <svg class="graf" viewBox="0 0 320 170" role="img" aria-label="Innspill: 3 timer i juli, 4 timer 30 i august, 7 timer 15 i september. Strokes Gained innspill −1,3 i juli, −1,1 i august, −0,9 i september.">
+            <line x1="30" x2="290" y1="130" y2="130" stroke="var(--graphite-600)"/>
+            <rect class="vokse" x="52" y="108" width="48" height="22" fill="var(--slag)" style="transform-origin:76px 130px"/>
+            <rect class="vokse" x="136" y="97" width="48" height="33" fill="var(--slag)" style="transform-origin:160px 130px;animation-delay:80ms"/>
+            <rect class="vokse" x="220" y="77" width="48" height="53" fill="var(--slag)" style="transform-origin:244px 130px;animation-delay:160ms"/>
+            <path class="tegn" d="M76,48 L160,38 L244,28" fill="none" stroke="var(--graphite-900)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="76" cy="48" r="5" fill="var(--white)" stroke="var(--graphite-900)" stroke-width="2.5"/><circle cx="160" cy="38" r="5" fill="var(--white)" stroke="var(--graphite-900)" stroke-width="2.5"/><circle cx="244" cy="28" r="5" fill="var(--white)" stroke="var(--graphite-900)" stroke-width="2.5"/>
+            <text x="76" y="34" text-anchor="middle" class="gt" style="font-family:var(--mono);font-size:11px;fill:var(--graphite-900);font-weight:600">−1,3</text>
+            <text x="160" y="24" text-anchor="middle" class="gt" style="font-family:var(--mono);font-size:11px;fill:var(--graphite-900);font-weight:600">−1,1</text>
+            <text x="244" y="14" text-anchor="middle" class="gt" style="font-family:var(--mono);font-size:11px;fill:var(--graphite-900);font-weight:600">−0,9</text>
+            <text x="76" y="148" text-anchor="middle" class="gt">Juli</text><text x="160" y="148" text-anchor="middle" class="gt">August</text><text x="244" y="148" text-anchor="middle" class="gt">September</text>
+            <text x="76" y="164" text-anchor="middle" class="gt" style="font-family:var(--mono);fill:var(--slag-ink);font-weight:600">3 t</text><text x="160" y="164" text-anchor="middle" class="gt" style="font-family:var(--mono);fill:var(--slag-ink);font-weight:600">4 t 30</text><text x="244" y="164" text-anchor="middle" class="gt" style="font-family:var(--mono);fill:var(--slag-ink);font-weight:600">7 t 15</text>
+          </svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--slag)"></i>Timer trent</span><span class="lg"><i style="background:var(--graphite-900);height:3px"></i>SG Innspill mot Kategori B</span></div>
+          <p class="forklar">Mer innspillstrening hver måned. I samme tid har tapet på innspill gått ned fra 1,3 til 0,9 slag per runde.</p>
+          <p class="kildetekst">12 runder slag for slag · 2. juni–4. oktober · Workbench</p>
+        </section>
+      </div>
+      <div class="kol">
+        <button type="button" class="tm-kort" data-gaa="trackman">
+          <span><b>TrackMan</b><span>4 økter siste 4 uker · spredning, gapping og utstyr</span></span>
+          <strong>312<small style="font:500 13px/1 var(--mono);margin-left:4px;opacity:.8">slag</small></strong>
+        </button>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Hvor du trener</h2></div>
+          <div class="sted" data-sted></div>
+          <p class="kildetekst">Sted fra øktene i Workbench · uke 37–40</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Læringssteg i TEK</h2></div>
+          <div class="pyr" data-steg></div>
+          <p class="kildetekst">Tid per motorikk i TEK-øktene · uke 37–40</p>
+        </section>
+      </div>
+    </div>
+    <div class="ark-lag" data-filter-ark hidden>
+      <div class="ark" role="dialog" aria-label="Filter">
+        <div class="ark-topp"><h2>Filter</h2><button type="button" class="lukk" data-lukk aria-label="Lukk"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <div class="felt"><span class="etikett">Periode</span><div class="velg-brikker" data-f="periode"><button type="button" aria-pressed="true">Siste 4 uker</button><button type="button" aria-pressed="false">Grunnperiode 1</button><button type="button" aria-pressed="false">Sesong</button></div></div>
+        <div class="felt"><span class="etikett">Akse</span><div class="velg-brikker" data-f="akse" data-flere><button type="button" aria-pressed="false">FYS</button><button type="button" aria-pressed="false">TEK</button><button type="button" aria-pressed="false">SLAG</button><button type="button" aria-pressed="false">SPILL</button><button type="button" aria-pressed="false">TURN</button></div></div>
+        <div class="felt"><span class="etikett">Sted</span><div class="velg-brikker" data-f="sted" data-flere><button type="button" aria-pressed="false">Range</button><button type="button" aria-pressed="false">Simulator</button><button type="button" aria-pressed="false">Nærspillsområde</button><button type="button" aria-pressed="false">Golfbane</button><button type="button" aria-pressed="false">Styrkerom</button></div></div>
+        <div class="knapper"><button type="button" class="knapp pri" data-filter-bruk>Vis</button><button type="button" class="knapp sek" data-filter-null>Nullstill</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-17 TrackMan ================= -->
+<template id="trackman">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Trening">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">Stats · Trening · TrackMan</div>
+      <h1 class="tittel">TrackMan</h1>
+      <div class="valg" role="group" aria-label="Kølle" data-kolle><button type="button" aria-pressed="false" data-k="driver">Driver</button><button type="button" aria-pressed="true" data-k="jern7">7-jern</button><button type="button" aria-pressed="false" data-k="w54">54°</button></div>
+    </div>
+    <div class="to-kol">
+      <div class="kol">
+        <section class="kort">
+          <div class="hoved"><strong data-k-carry>156<small>m carry</small></strong><span class="trend opp" data-k-trend>+3 m siden juli</span></div>
+          <svg class="graf" viewBox="0 0 320 260" role="img" data-k-kart aria-label="Spredningskart"></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--slag);border-radius:50%"></i>Ett slag</span><span class="lg"><i style="border:2px dashed var(--graphite-900);background:transparent"></i>Spredning</span></div>
+          <p class="forklar" data-k-spredning></p>
+          <p class="kildetekst" data-k-kilde></p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Parametere</h2><span class="kilde">Snitt</span></div>
+          <div class="param" data-k-param></div>
+        </section>
+      </div>
+      <div class="kol">
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Gapping</h2><span class="kilde">Carry, snitt</span></div>
+          <div class="gap-liste" data-gap></div>
+          <p class="kildetekst">TrackMan · siste 90 dager · 1 140 slag</p>
+        </section>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Utstyrshelse</h2></div>
+          <div data-helse></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Økter</h2><span class="kilde">Siste 4 uker</span></div>
+          <div class="okt-liste" data-tm-okter></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-17 TrackMan-økt ================= -->
+<template id="tmokt">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="TrackMan">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="dato">TrackMan · mandag 28. september</div>
+      <h1 class="tittel">Lengdekontroll i simulator</h1>
+    </div>
+    <div class="to-kol">
+      <div class="kol">
+        <div class="fylt tek">
+          <span class="akse-tekst">TEK · INNSPILL 100–150 M · SIMULATOR</span>
+          <div class="rad"><span class="stor"><span data-tell="21">21</span><small>/ 30 i målet</small></span><span class="trend">Mål nådd</span></div>
+          <p>Målet var minst 20 av 30 innenfor målområdet (±3 m). Lav hastighet, 50 % av Club Speed.</p>
+        </div>
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Slag for slag</h2><span class="kilde">Grønt er i målet</span></div>
+          <div class="prikker" data-tm-prikker aria-label="21 av 30 slag i målet"></div>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--green-700);border-radius:50%"></i>I målet</span><span class="lg"><i style="background:var(--sand-300);border-radius:50%"></i>Utenfor</span></div>
+          <p class="forklar">Øvelsen var 30 slag med 7-jern. De ni bommene var korte, i snitt 4 m.</p>
+        </section>
+      </div>
+      <div class="kol">
+        <section class="kort">
+          <div class="sek-topp"><h2 style="margin:0;font:600 17px/1.25 var(--sans)">Per kølle</h2></div>
+          <div class="tm-tab" data-tm-kolle></div>
+        </section>
+        <p class="kildetekst">TrackMan · simulator · 84 slag · 45 min · lagt inn av Anders Kristiansen</p>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  var AKSE = { fys: 'FYS', tek: 'TEK', slag: 'SLAG', spill: 'SPILL', turn: 'TURN' };
+  var PIL = '<svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+  var HAKE = '<svg class="ikon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>';
+  var KRYSS = '<svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  function k(n, d) { return (d === undefined ? String(n) : n.toFixed(d)).replace('.', ',').replace('-', '−'); }
+  function tid(min) { var t = Math.floor(min / 60), m = min % 60; return t ? t + ' t' + (m ? ' ' + m + ' min' : '') : m + ' min'; }
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3200);
+  }
+  function ark(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('button, input'); if (f) f.focus({ preventScroll: true }); }
+  }
+  function spark(v, farge) {
+    if (v.length < 2) return '';
+    var min = Math.min.apply(null, v), max = Math.max.apply(null, v), sp = max - min || 1;
+    var p = v.map(function (x, i) { return (2 + i * 60 / (v.length - 1)).toFixed(1) + ',' + (17 - (x - min) / sp * 14).toFixed(1); });
+    return '<svg viewBox="0 0 64 20" aria-hidden="true"><path d="M' + p.join(' L') + '" fill="none" stroke="var(--' + farge + ')" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  /* Felles for testskjermene: avbryt-dialogen */
+  function avbryt(app) {
+    app.querySelector('[data-avbryt]').addEventListener('click', function () { ark(app, '[data-avbryt-ark]', true); });
+    app.querySelectorAll('[data-avbryt-ark] [data-lukk]').forEach(function (b) { b.addEventListener('click', function () { ark(app, '[data-avbryt-ark]', false); }); });
+    app.querySelector('[data-avbryt-ok]').addEventListener('click', function () { AKUtkast.gaa('tester'); });
+  }
+
+  /* ---------- PH-14 Tester ----------
+     Ett batteri for AK Golf, WANG og Team Norway (vedtak 28.09). v = målinger, eldste først. h = høyere er bedre. */
+  var TESTER = [
+    { a: 'slag', navn: '8-ball blocked', v: [52, 55, 58, 61], vis: '61 poeng', dato: '28. sep.', av: 'Kontrollert', gaa: 'test', pr: true },
+    { a: 'slag', navn: 'Innspill Basis · gutter 145 m', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'slag', navn: 'Wedge Variation', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'slag', navn: 'Driver basic · 270 m', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'slag', navn: 'Putt 1–3 m', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'tek', navn: 'Wedge Gate', v: [4], vis: '4 / 9 treff', dato: '24. aug.', av: 'Egenført', gaa: 'gate', note: 'Første måling som treff' },
+    { a: 'tek', navn: 'Nærspill Gate', v: [11, 14], vis: '14 poeng', dato: '24. aug.', av: 'Egenført', gaa: 'hand' },
+    { a: 'tek', navn: 'Driver Gate', v: [4, 4], vis: '4 / 6', dato: '24. aug.', av: 'Kontrollert', lik: true },
+    { a: 'tek', navn: 'Putt Gate', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'tek', navn: 'VISA Express', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'spill', navn: '9 hull lengde', v: [], vis: null, sperret: 'Kan ikke fullføres ennå: måleenheten er ikke avgjort' },
+    { a: 'spill', navn: '18 hull', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'spill', navn: 'Golfslag bane', v: [], vis: null, sist: 'Ikke tatt' },
+    { a: 'fys', navn: 'Club Speed', v: [104.1, 105.2, 106.6, 106.3, 108.4], vis: '108,4 mph', dato: '28. sep.', av: 'Kontrollert', pr: true },
+    { a: 'fys', navn: 'Markløft trapbar', v: [130, 140], vis: '140 kg', dato: '21. sep.', av: 'Egenført' },
+    { a: 'fys', navn: 'Lengdehopp', v: [2.42, 2.48], vis: '2,48 m', dato: '21. sep.', av: 'Kontrollert' },
+    { a: 'fys', navn: 'Rotasjonskast', v: [11.2], vis: '11,2 m', dato: '21. sep.', av: 'Egenført', note: 'Første måling' },
+    { a: 'fys', navn: 'Benkpress', v: [], vis: null, sist: 'Ikke tatt' }
+  ];
+  var GRUPPER = [['slag', 'Golfslag'], ['tek', 'Teknikk'], ['spill', 'Spill'], ['fys', 'Fysisk']];
+  function tester(app) {
+    var valgt = null, boks = app.querySelector('[data-testliste]'), velg = app.querySelector('[data-akse-valg]');
+    velg.innerHTML = '<button type="button" aria-pressed="true" data-a="">Alle</button>' + GRUPPER.map(function (g) { return '<button type="button" aria-pressed="false" data-a="' + g[0] + '">' + AKSE[g[0]] + '</button>'; }).join('');
+    function rad(t, i) {
+      var tatt = t.v.length > 0, under;
+      if (t.sperret) under = '<small class="sperret">' + t.sperret + '</small>';
+      else if (!tatt) under = '<small>Ikke tatt ennå</small>';
+      else under = '<small>' + t.dato + ' · ' + t.av + (t.note ? ' · ' + t.note : '') + '</small>';
+      var hoyre = tatt ? '<b>' + t.vis + (t.pr ? '' : '') + '</b>' + spark(t.v, t.a) : '<b>—</b>';
+      return '<button type="button" class="test-rad ' + t.a + (tatt ? '' : ' ikke') + ' inn" style="animation-delay:' + (i * 30) + 'ms" data-t="' + TESTER.indexOf(t) + '">' +
+        '<span><strong>' + t.navn + (t.pr ? '<span class="pr-merke">Rekord</span>' : '') + '</strong>' + under + '</span>' +
+        '<span class="verdi">' + hoyre + '</span>' + PIL + '</button>';
+    }
+    function tegn() {
+      boks.innerHTML = GRUPPER.filter(function (g) { return !valgt || g[0] === valgt; }).map(function (g) {
+        var liste = TESTER.filter(function (t) { return t.a === g[0]; }), tatt = liste.filter(function (t) { return t.v.length; }).length;
+        return '<section class="gruppe"><div class="gruppe-topp"><h3><i class="akse-bg-' + g[0] + '"></i>' + g[1] + '</h3><span class="kilde">' + tatt + ' av ' + liste.length + ' tatt</span></div>' +
+          liste.map(rad).join('') + '</section>';
+      }).join('');
+      AKUtkast.anim(app);
+    }
+    velg.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; valgt = b.dataset.a || null; tegn(); });
+    boks.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-t]'); if (!b) return;
+      var t = TESTER[+b.dataset.t];
+      if (t.gaa) AKUtkast.gaa(t.gaa);
+      else if (t.sperret) toast(app, '9 hull lengde åpner når måleenheten for målavstand er avgjort.');
+      else if (!t.v.length) toast(app, t.navn + ': testen starter her i appen. I utkastet er 8-ball, Wedge Gate og Nærspill Gate tegnet.');
+      else AKUtkast.gaa('test');
+    });
+    tegn();
+  }
+
+  /* ---------- Én test: 8-ball blocked ---------- */
+  var SKALA = [['Under 0,10 m', 4], ['0,10–0,99 m', 3], ['1,00–1,99 m', 2], ['2,00–2,99 m', 1], ['3 m eller mer', 0]];
+  function poengFor(m) { return m < 0.1 ? 4 : m < 1 ? 3 : m < 2 ? 2 : m < 3 ? 1 : 0; }
+  var SLAGTYPER = ['Chip 10 m', 'Chip 30 m', 'Wedge 20 m', 'Wedge 40 m', 'Lobb 15 m', 'Lobb 25 m', 'Bunker 10 m', 'Bunker 20 m'];
+  function test(app) {
+    var siste = [11, 8, 10, 7, 9, 6, 6, 4];
+    app.querySelector('[data-slagtyper]').innerHTML = SLAGTYPER.map(function (s, i) {
+      var v = siste[i], kl = v === 11 ? ' sterkest' : v === 4 ? ' svakest' : '';
+      return '<div class="slr' + kl + '"><b style="font-weight:' + (kl ? 600 : 400) + '">' + s + '</b><span class="stolpe"><span data-til="' + (v / 12 * 100).toFixed(1) + '%" style="width:' + (v / 12 * 100).toFixed(1) + '%"></span></span><span class="v">' + v + '</span></div>';
+    }).join('');
+    app.querySelector('[data-skala]').innerHTML = SKALA.map(function (s) { return '<div class="skala-rad"><span>' + s[0] + '</span><b>' + s[1] + ' poeng</b></div>'; }).join('');
+    var M = [['28. sep.', 61, 'Kontrollert · Anders Kristiansen', true], ['24. aug.', 58, 'Egenført'], ['13. juli', 55, 'Kontrollert · Anders Kristiansen'], ['8. juni', 52, 'Egenført']];
+    app.querySelector('[data-malinger]').innerHTML = M.map(function (m) { return '<div class="maaling"><div><strong>' + m[0] + (m[3] ? '<span class="pr-merke">Rekord</span>' : '') + '</strong><small>' + m[2] + '</small></div><span class="tv">' + m[1] + '</span></div>'; }).join('');
+  }
+
+  /* ---------- PH-15 Wedge Gate: 9 slag, tre like launch om gangen, carry 40/50/60 m ---------- */
+  var LAUNCH = ['Lav, under 26°', 'Medium, 28–30°', 'Høy, over 32°'], CARRY = [40, 50, 60];
+  function gate(app) {
+    var res = [1, 0, 1, 1, 0];
+    function tegn() {
+      var n = res.length, treff = res.filter(Boolean).length, ferdig = n === 9;
+      app.querySelector('[data-g-treff]').textContent = treff;
+      app.querySelector('[data-g-igjen]').textContent = ferdig ? 'Alle slag ført' : (9 - n) + ' slag igjen';
+      var naa = app.querySelector('[data-g-naa]');
+      naa.innerHTML = ferdig
+        ? '<span class="nr">Ferdig</span><span class="hva">' + treff + ' / 9 treff<small>Forrige gang 4 / 9. Lagre for å få resultatet i Stats.</small></span>'
+        : '<span class="nr">Slag ' + (n + 1) + ' av 9</span><span class="hva">Carry ' + CARRY[n % 3] + ' m ±3<small>Launch ' + LAUNCH[Math.floor(n / 3)].toLowerCase() + '</small></span>';
+      app.querySelectorAll('[data-g]').forEach(function (b) { b.disabled = ferdig; b.style.opacity = ferdig ? .4 : 1; });
+      app.querySelector('[data-g-angre]').disabled = !n;
+      var m = '<span></span>' + CARRY.map(function (c) { return '<span class="h k">' + c + ' m</span>'; }).join('');
+      for (var r = 0; r < 3; r++) {
+        m += '<span class="h">' + LAUNCH[r].split(',')[0] + '</span>';
+        for (var c = 0; c < 3; c++) {
+          var i = r * 3 + c, cl = i < n ? (res[i] ? 'treff' : 'bom') : i === n ? 'naa' : '';
+          m += '<span class="celle ' + cl + '" aria-label="Slag ' + (i + 1) + (i < n ? (res[i] ? ', treff' : ', bom') : '') + '">' + (i < n ? (res[i] ? HAKE : KRYSS) : i + 1) + '</span>';
+        }
+      }
+      app.querySelector('[data-g-matrise]').innerHTML = m;
+      app.querySelector('[data-g-lagre]').disabled = !ferdig;
+      app.querySelector('[data-g-regel]').textContent = ferdig ? 'Alle 9 slag er ført. Resultatet blir ' + treff + ' / 9 treff.' : 'Testen teller når alle 9 slag er registrert. ' + n + ' av 9 er ført.';
+    }
+    app.querySelectorAll('[data-g]').forEach(function (b) { b.addEventListener('click', function () { if (res.length < 9) { res.push(+b.dataset.g); tegn(); } }); });
+    app.querySelector('[data-g-angre]').addEventListener('click', function () { res.pop(); tegn(); });
+    app.querySelector('[data-g-lagre]').addEventListener('click', function () { toast(app, 'Wedge Gate er lagret: ' + res.filter(Boolean).length + ' / 9 treff. Anders ser det i AgencyOS.'); });
+    avbryt(app); tegn();
+  }
+
+  /* ---------- PH-15-TN 8-ball: 24 slag, tre like om gangen, meter fra hull gir poeng ---------- */
+  function tn8(app) {
+    var res = [0.4, 0.08, 1.2, 1.6, 0.9, 2.4, 0.6, 0.05, 1.1, 0.7];
+    var inp = app.querySelector('#t-meter'), fh = app.querySelector('[data-t-forhand]');
+    function sum() { return res.reduce(function (s, m) { return s + poengFor(m); }, 0); }
+    function tegn() {
+      var n = res.length, ferdig = n === 24;
+      app.querySelector('[data-t-sum]').textContent = sum();
+      app.querySelector('[data-t-igjen]').textContent = ferdig ? 'Alle slag ført' : (24 - n) + ' slag igjen';
+      app.querySelector('[data-t-under]').textContent = ferdig ? 'Alle 24 slag er ført. Rekorden din er 61.' : 'Etter ' + n + ' av 24 slag. Høyst 4 poeng per slag. Rekorden din er 61.';
+      var naa = app.querySelector('[data-t-naa]');
+      naa.innerHTML = ferdig
+        ? '<span class="nr">Ferdig</span><span class="hva">' + sum() + ' av 96 poeng<small>Lagre for å få resultatet i Stats.</small></span>'
+        : '<span class="nr">Slag ' + (n + 1) + ' av 24</span><span class="hva">' + SLAGTYPER[Math.floor(n / 3)] + '<small>Ball ' + (n % 3 + 1) + ' av 3</small></span>';
+      app.querySelector('[data-t-reg]').disabled = ferdig; inp.disabled = ferdig;
+      app.querySelector('[data-t-angre]').disabled = !n;
+      app.querySelector('[data-t-liste]').innerHTML = SLAGTYPER.map(function (s, g) {
+        var baller = '', ps = 0, noen = false;
+        for (var b = 0; b < 3; b++) {
+          var i = g * 3 + b;
+          if (i < n) { var p = poengFor(res[i]); ps += p; noen = true; baller += '<span class="ball">' + k(res[i], 2) + ' m <b>' + p + '</b></span>'; }
+          else baller += '<span class="ball tom' + (i === n ? ' naa' : '') + '">' + (i === n ? 'Nå' : '—') + '</span>';
+        }
+        return '<div class="slaggruppe"><b class="undertittel">' + s + '</b><span class="sum">' + (noen ? ps : '—') + '</span><span class="baller">' + baller + '</span></div>';
+      }).join('');
+      app.querySelector('[data-t-lagre]').disabled = !ferdig;
+      app.querySelector('[data-t-regel]').textContent = ferdig ? 'Alle 24 slag er ført. Resultatet blir ' + sum() + ' poeng.' : 'Testen teller når alle 24 slag er registrert. ' + n + ' av 24 er ført.';
+      forhand();
+    }
+    function forhand() {
+      var v = parseFloat(String(inp.value).replace(',', '.')), aktiv = isNaN(v) ? -1 : 4 - poengFor(v);
+      fh.innerHTML = isNaN(v) ? 'Skriv avstanden, så ser du poengene før du registrerer.' : k(v, 2) + ' m gir <b>' + poengFor(v) + ' poeng</b>.';
+      app.querySelector('[data-t-skala]').innerHTML = SKALA.map(function (s, i) { return '<div class="skala-rad' + (i === aktiv ? ' aktiv' : '') + '"><span>' + s[0] + '</span><b>' + s[1] + '</b></div>'; }).join('');
+    }
+    inp.addEventListener('input', forhand);
+    function reg() {
+      var v = parseFloat(String(inp.value).replace(',', '.'));
+      if (isNaN(v) || v < 0) { fh.textContent = 'Skriv avstanden i meter, for eksempel 0,45.'; inp.focus(); return; }
+      if (res.length < 24) { res.push(v); inp.value = ''; tegn(); }
+    }
+    app.querySelector('[data-t-reg]').addEventListener('click', reg);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') reg(); });
+    app.querySelector('[data-t-angre]').addEventListener('click', function () { res.pop(); tegn(); });
+    app.querySelector('[data-t-lagre]').addEventListener('click', function () { toast(app, '8-ball er lagret: ' + sum() + ' poeng. Delt med Team Norway etter opptaksavtalen.'); });
+    avbryt(app); tegn();
+  }
+
+  /* ---------- PH-15-TN Nærspill Gate: 9 slag, launch lav/middels/høy × carry-sone 2/3/4 m, fritt poengfelt ---------- */
+  function hand(app) {
+    var res = [3, 2, 1, 3, null, null, null, null, null];
+    var L = ['Lav', 'Middels', 'Høy'], S = ['2 m', '3 m', '4 m'];
+    var boks = app.querySelector('[data-h-rader]');
+    boks.innerHTML = res.map(function (v, i) {
+      return '<div class="poengrad"><span class="nr">' + (i + 1) + '</span><span><b>Launch ' + L[Math.floor(i / 3)].toLowerCase() + '</b><small>Carry-sone ' + S[i % 3] + '</small></span>' +
+        '<input type="number" inputmode="numeric" min="0" step="1" aria-label="Poeng slag ' + (i + 1) + '" placeholder="—" value="' + (v === null ? '' : v) + '" data-i="' + i + '"></div>';
+    }).join('');
+    function tegn() {
+      var ford = res.filter(function (v) { return v !== null; }), ferdig = ford.length === 9, s = ford.reduce(function (a, b) { return a + b; }, 0);
+      app.querySelector('[data-h-sum]').textContent = s;
+      app.querySelector('[data-h-igjen]').textContent = ferdig ? 'Alle slag ført' : (9 - ford.length) + ' slag igjen';
+      app.querySelector('[data-h-lagre]').disabled = !ferdig;
+      app.querySelector('[data-h-regel]').textContent = ferdig ? 'Alle 9 slag har poeng. Resultatet blir ' + s + ' poeng.' : 'Testen teller når alle 9 slag har poeng. ' + ford.length + ' av 9 er ført.';
+    }
+    boks.addEventListener('input', function (e) {
+      var i = e.target.dataset.i; if (i === undefined) return;
+      var v = parseInt(e.target.value, 10); res[+i] = isNaN(v) || v < 0 ? null : v; tegn();
+    });
+    app.querySelector('[data-h-lagre]').addEventListener('click', function () { toast(app, 'Nærspill Gate er lagret: ' + res.reduce(function (a, b) { return a + b; }, 0) + ' poeng.'); });
+    avbryt(app); tegn();
+  }
+
+  /* ---------- PH-17 Trening ----------
+     Gjennomført uke 37–40 = 48 t 10 min (som Stats og I dag). Plan = Evaluering (uke 37–38) + Grunnperiode 1 (lett uke 39, vanlig uke 40), fra plan.html. */
+  var PYR = [['fys', 540, 360], ['tek', 660, 600], ['slag', 1015, 855], ['spill', 450, 1325], ['turn', 225, 0]];
+  var STED = [['Range', 860], ['Simulator', 580], ['Styrkerom', 540], ['Nærspillsområde', 495], ['Golfbane', 415]];
+  var STEG = [['Uten ball', 95], ['Lav hastighet', 355], ['Automatikk', 210]];
+  function trening(app) {
+    var filt = { periode: 'Siste 4 uker', akse: [], sted: [] };
+    var maks = 1325;
+    function pyr() {
+      var vis = PYR.filter(function (p) { return !filt.akse.length || filt.akse.indexOf(AKSE[p[0]]) > -1; });
+      app.querySelector('[data-pyr]').innerHTML = vis.map(function (p) {
+        var w = (p[1] / maks * 100).toFixed(1), pl = (p[2] / maks * 100).toFixed(1);
+        return '<div class="pyr-rad"><div class="topp-l"><b style="color:var(--' + (p[0] === 'tek' ? 'tek-ink' : p[0] === 'fys' ? 'fys-ink' : p[0] === 'spill' ? 'spill-ink' : p[0]) + ')">' + AKSE[p[0]] + '</b><span>' + tid(p[1]) + ' · ' + (p[2] ? tid(p[2]) : 'ikke i planen') + '</span></div>' +
+          '<div class="pyr-bar"><span class="akse-bg-' + p[0] + '" data-til="' + w + '%" style="width:' + w + '%"></span>' + (p[2] ? '<i style="left:calc(' + pl + '% - 1px)" title="Plan"></i>' : '') + '</div></div>';
+      }).join('');
+      app.querySelector('[data-pyr-uthev]').hidden = filt.akse.length && filt.akse.indexOf('SPILL') < 0;
+    }
+    function brikker() {
+      var b = '<span class="brikke fast">' + filt.periode + '</span>';
+      filt.akse.concat(filt.sted).forEach(function (x) { b += '<button type="button" class="brikke" data-fjern="' + x + '">' + x + KRYSS + '</button>'; });
+      app.querySelector('[data-brikker]').innerHTML = b;
+    }
+    app.querySelector('[data-sted]').innerHTML = STED.map(function (s) {
+      var w = (s[1] / 860 * 100).toFixed(1);
+      return '<div class="sted-rad"><span>' + s[0] + '</span><span class="v">' + tid(s[1]) + '</span><span class="stolpe"><span data-til="' + w + '%" style="width:' + w + '%"></span></span></div>';
+    }).join('');
+    app.querySelector('[data-steg]').innerHTML = STEG.map(function (s) {
+      var w = (s[1] / 660 * 100).toFixed(1);
+      return '<div class="pyr-rad"><div class="topp-l"><span style="font-family:var(--sans);color:var(--graphite-900)">' + s[0] + '</span><span>' + tid(s[1]) + '</span></div><div class="pyr-bar" style="height:12px"><span class="akse-bg-tek" data-til="' + w + '%" style="width:' + w + '%"></span></div></div>';
+    }).join('');
+    app.querySelector('[data-filter-apne]').addEventListener('click', function () { ark(app, '[data-filter-ark]', true); });
+    app.querySelectorAll('[data-filter-ark] [data-lukk]').forEach(function (b) { b.addEventListener('click', function () { ark(app, '[data-filter-ark]', false); }); });
+    app.querySelectorAll('[data-f]').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        if (g.hasAttribute('data-flere')) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        else g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      });
+    });
+    function les() {
+      filt.periode = app.querySelector('[data-f="periode"] [aria-pressed="true"]').textContent;
+      ['akse', 'sted'].forEach(function (f) { filt[f] = [].map.call(app.querySelectorAll('[data-f="' + f + '"] [aria-pressed="true"]'), function (b) { return b.textContent; }); });
+    }
+    app.querySelector('[data-filter-bruk]').addEventListener('click', function () { les(); ark(app, '[data-filter-ark]', false); pyr(); brikker(); AKUtkast.anim(app); });
+    app.querySelector('[data-filter-null]').addEventListener('click', function () {
+      app.querySelectorAll('[data-f] button').forEach(function (b, i) { b.setAttribute('aria-pressed', 'false'); });
+      app.querySelector('[data-f="periode"] button').setAttribute('aria-pressed', 'true');
+    });
+    app.querySelector('[data-brikker]').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-fjern]'); if (!b) return;
+      var x = b.dataset.fjern;
+      app.querySelectorAll('[data-f] button').forEach(function (y) { if (y.textContent === x) y.setAttribute('aria-pressed', 'false'); });
+      les(); pyr(); brikker();
+    });
+    pyr(); brikker();
+  }
+
+  /* ---------- PH-17 TrackMan ---------- */
+  var KOLLE = {
+    driver: { carry: 228, trend: ['+4 m siden juli', 'opp'], side: 15, lengde: 9, n: 62, skala: 260,
+      p: [['Club Speed', '106,9 mph'], ['Ball Speed', '157,2 mph'], ['Smash Factor', '1,47'], ['Launch Angle', '12,4°'], ['Spin Rate', '2 640 rpm'], ['Attack Angle', '+1,2°'], ['Club Path', '+2,4°'], ['Face to Path', '−0,8°'], ['Carry', '228 m']] },
+    jern7: { carry: 156, trend: ['+3 m siden juli', 'opp'], side: 7, lengde: 6, n: 84, skala: 180,
+      p: [['Club Speed', '86,4 mph'], ['Ball Speed', '117,8 mph'], ['Smash Factor', '1,36'], ['Launch Angle', '17,9°'], ['Spin Rate', '6 820 rpm'], ['Attack Angle', '−4,1°'], ['Club Path', '+1,8°'], ['Face to Path', '−0,6°'], ['Carry', '156 m']] },
+    w54: { carry: 94, trend: ['Lik som i juli', ''], side: 5, lengde: 4, n: 48, skala: 110,
+      p: [['Club Speed', '74,1 mph'], ['Ball Speed', '86,9 mph'], ['Smash Factor', '1,17'], ['Launch Angle', '30,2°'], ['Spin Rate', '8 940 rpm'], ['Attack Angle', '−5,2°'], ['Club Path', '+0,9°'], ['Face to Path', '−0,4°'], ['Carry', '94 m']] }
+  };
+  var GAP = [['Driver', 228], ['3-tre', 211], ['Hybrid 4', 192], ['5-jern', 184], ['6-jern', 170], ['7-jern', 156], ['8-jern', 145], ['9-jern', 133], ['PW', 121], ['50°', 108], ['54°', 94], ['58°', 79]];
+  var TM_OKTER = [
+    { a: 'tek', navn: 'Lengdekontroll i simulator', dag: 'Man. 28. sep.', sted: 'Simulator', slag: 84, k: '7-jern, 54°', bilde: 'slag-simulator', gaa: 'tmokt' },
+    { a: 'tek', navn: 'Face to Path med 7-jern', dag: 'Man. 21. sep.', sted: 'Range', slag: 96, k: '7-jern', bilde: 'tek-video' },
+    { a: 'slag', navn: 'Driver: startretning', dag: 'Man. 14. sep.', sted: 'Simulator', slag: 62, k: 'Driver', bilde: 'slag-utslag' },
+    { a: 'slag', navn: 'Wedge-stigen 50–90 m', dag: 'Ons. 9. sep.', sted: 'Range', slag: 70, k: '50°, 54°, 58°', bilde: 'naerspill-wedge' }
+  ];
+  /* Fast tilfeldighet, så kartet er likt hver gang */
+  function rng(s) { return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
+  function gauss(r) { return (r() + r() + r() - 1.5) / 0.5; }
+  function trackman(app) {
+    var valgt = 'jern7';
+    function kart(id) {
+      var d = KOLLE[id], r = rng(id.length * 97 + d.n), cx = 160;
+      /* Kartet viser carry ±4 × lengdespredning og side ±2,5 × sidespredning, så skyen fyller kartet */
+      function y(c) { return 128 - (c - d.carry) * (100 / (d.lengde * 4)); }
+      function x(sd) { return cx + sd * (140 / (d.side * 2.5)); }
+      var s = '<rect x="10" y="20" width="300" height="220" rx="8" fill="var(--sand-100)"/>';
+      [-3, 0, 3].forEach(function (f) { var c = d.carry + f * d.lengde; s += '<line x1="20" x2="300" y1="' + y(c) + '" y2="' + y(c) + '" stroke="var(--sand-300)"/><text x="22" y="' + (y(c) - 4) + '" class="gt">' + c + ' m</text>'; });
+      s += '<line x1="' + cx + '" x2="' + cx + '" y1="24" y2="236" stroke="var(--graphite-600)" stroke-dasharray="4 3"/>';
+      s += '<ellipse cx="' + x(1) + '" cy="' + y(d.carry) + '" rx="' + (d.side * 140 / (d.side * 2.5)) + '" ry="' + (d.lengde * 100 / (d.lengde * 4)) + '" fill="var(--slag)" fill-opacity=".1" stroke="var(--graphite-900)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+      for (var i = 0; i < d.n; i++) {
+        var sx = 1 + gauss(r) * d.side / 2, sy = d.carry + gauss(r) * d.lengde / 2;
+        s += '<circle class="inn" style="animation-delay:' + (i * 8) + 'ms" cx="' + x(sx).toFixed(1) + '" cy="' + y(sy).toFixed(1) + '" r="4" fill="var(--slag)" fill-opacity=".75"/>';
+      }
+      s += '<text x="20" y="254" class="gt">Venstre</text><text x="300" y="254" text-anchor="end" class="gt">Høyre</text><text x="' + cx + '" y="254" text-anchor="middle" class="gt">Mållinje</text>';
+      return s;
+    }
+    function tegn() {
+      var d = KOLLE[valgt], navn = { driver: 'Driver', jern7: '7-jern', w54: '54°' }[valgt];
+      app.querySelector('[data-k-carry]').innerHTML = d.carry + '<small>m carry</small>';
+      var tr = app.querySelector('[data-k-trend]'); tr.className = 'trend ' + d.trend[1]; tr.textContent = d.trend[0];
+      var svg = app.querySelector('[data-k-kart]'); svg.innerHTML = kart(valgt); svg.setAttribute('aria-label', 'Spredningskart ' + navn + ', ' + d.n + ' slag, ±' + d.side + ' m til siden og ±' + d.lengde + ' m i lengde');
+      app.querySelector('[data-k-spredning]').innerHTML = 'Spredning: <b class="mono">±' + d.side + ' m</b> til siden og <b class="mono">±' + d.lengde + ' m</b> i lengde.';
+      app.querySelector('[data-k-kilde]').textContent = navn + ' · ' + d.n + ' slag · 7. sep.–4. okt. · TrackMan';
+      app.querySelector('[data-k-param]').innerHTML = d.p.map(function (p) { return '<div><span>' + p[0] + '</span><b>' + p[1] + '</b></div>'; }).join('');
+      AKUtkast.anim(app);
+    }
+    app.querySelector('[data-kolle]').addEventListener('click', function (e) { var b = e.target.closest('[data-k]'); if (!b) return; valgt = b.dataset.k; tegn(); });
+    app.querySelector('[data-gap]').innerHTML = GAP.map(function (g, i) {
+      var w = (g[1] / 228 * 100).toFixed(1), mellom = '';
+      if (i) { var gp = GAP[i - 1][1] - g[1]; mellom = '<div class="gap-mellom' + (gp < 10 ? ' smal' : '') + '"><span></span><span>' + (gp < 10 ? '↕ ' + gp + ' m · kort gap' : '↕ ' + gp + ' m') + '</span></div>'; }
+      return mellom + '<div class="gap-rad"><span>' + g[0] + '</span><span class="stolpe"><span data-til="' + w + '%" style="width:' + w + '%"></span></span><span class="v">' + g[1] + ' m</span></div>';
+    }).join('');
+    app.querySelector('[data-helse]').innerHTML = [
+      ['54°: Spin Rate ned 610 rpm siden april', 'Fra 9 550 til 8 940 rpm med lik Club Speed. Rillene kan være slitt.', '<span class="pille vent"><i></i>Sjekk</span>'],
+      ['Driver: Smash Factor stabil', '1,47 i snitt, likt de siste tre månedene.', '<span class="pille ok"><i></i>Bra</span>'],
+      ['Lie og loft', '—<br>Ikke målt. Be coachen sjekke jernene neste gang.', '<span class="pille noy"><i></i>Ukjent</span>']
+    ].map(function (h, i) { return '<div class="helse"' + (i ? '' : ' style="border-top:0;padding-top:0"') + '><span><strong>' + h[0] + '</strong><small>' + h[1] + '</small></span>' + h[2] + '</div>'; }).join('');
+    app.querySelector('[data-tm-okter]').innerHTML = TM_OKTER.map(function (o, i) {
+      return '<button type="button" class="okt mini ' + o.a + ' inn" style="animation-delay:' + (i * 50) + 'ms"' + (o.gaa ? ' data-gaa="' + o.gaa + '"' : ' data-tm-ikke') + '><img src="bilder/' + o.bilde + '.jpg" alt="">' +
+        '<span class="okt-tekst"><span class="akse-tekst">' + AKSE[o.a] + ' · ' + o.dag.toUpperCase() + '</span><span class="navn">' + o.navn + '</span><span class="okt-info"><span>' + o.slag + ' slag</span><span>' + o.k + '</span><span>' + o.sted + '</span></span></span></button>';
+    }).join('');
+    app.querySelector('[data-tm-okter]').addEventListener('click', function (e) { if (e.target.closest('[data-tm-ikke]')) toast(app, 'I utkastet er bare økta 28. september tegnet.'); });
+    tegn();
+  }
+
+  /* ---------- TrackMan-økt 28. sep. ---------- */
+  function tmokt(app) {
+    var inn = [1,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,1,0,1,1,1,0,1,0];
+    app.querySelector('[data-tm-prikker]').innerHTML = inn.map(function (x, i) { return '<i class="' + (x ? 'inn' : '') + '" title="Slag ' + (i + 1) + '"></i>'; }).join('');
+    app.querySelector('[data-tm-kolle]').innerHTML = [
+      ['7-jern', '54 slag · mål 75 m', [['Carry', '74 m'], ['Spredning', '±3 m'], ['Club Speed', '43,2 mph']]],
+      ['54°', '30 slag · mål 45 m', [['Carry', '44 m'], ['Spredning', '±2 m'], ['Club Speed', '37,1 mph']]]
+    ].map(function (r, i) {
+      return '<div' + (i ? ' style="border-top:1px solid var(--sand-300);padding-top:12px"' : '') + '><b class="undertittel">' + r[0] + '</b><span class="kildetekst" style="display:block;margin-bottom:8px">' + r[1] + '</span><div class="param">' + r[2].map(function (p) { return '<div><span>' + p[0] + '</span><b>' + p[1] + '</b></div>'; }).join('') + '</div></div>';
+    }).join('');
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  var INGEN_TEST = { tittel: 'Ingen test i gang', tekst: 'Velg en test i Stats › Tester. Coachen kan også legge en test inn i planen din.', knapp: 'Se testene' };
+  AKUtkast.start({
+    start: 'tester',
+    skjermer: {
+      tester: m('PH-14', 'tester', tester, { tittel: 'Ingen tester ennå', tekst: 'Testbatteriet har 18 tester for AK Golf, WANG og Team Norway. Ta en når du vil, eller vent til testuka i uke 43.', knapp: 'Ta en test' }, 'Henter testene …', 'Testene kunne ikke hentes'),
+      test: m('PH-14', 'test', test, { tittel: 'Ingen målinger ennå', tekst: 'Når du har tatt 8-ball blocked, ser du poengene og hvilken slagtype som gir minst.', knapp: 'Ta testen' }, 'Henter målingene …', 'Målingene kunne ikke hentes'),
+      gate: m('PH-15', 'gate', gate, INGEN_TEST, 'Henter testen …', 'Testen kunne ikke hentes. Slagene du har ført, er lagret på telefonen.'),
+      tn8: m('PH-15-TN', 'tn8', tn8, INGEN_TEST, 'Henter testen …', 'Testen kunne ikke hentes. Slagene du har ført, er lagret på telefonen.'),
+      hand: m('PH-15-TN', 'hand', hand, INGEN_TEST, 'Henter testen …', 'Testen kunne ikke hentes. Slagene du har ført, er lagret på telefonen.'),
+      trening: m('PH-17', 'trening', trening, { tittel: 'Ingen trening registrert ennå', tekst: 'Når du har gjennomført en økt, ser du tiden mot planen, hvor du trener og hvordan det henger sammen med Strokes Gained.', knapp: 'Åpne Workbench' }, 'Henter treningen …', 'Treningen kunne ikke hentes'),
+      trackman: m('PH-17', 'trackman', trackman, { tittel: 'Ingen TrackMan-økter ennå', tekst: 'Legg til en økt med TrackMan, så kommer spredning, gapping og parametere her.', knapp: 'Legg til TrackMan-økt' }, 'Henter TrackMan-øktene …', 'TrackMan-øktene kunne ikke hentes'),
+      tmokt: m('PH-17', 'tmokt', tmokt, null)
+    }
+  });
+})();
+</script>
