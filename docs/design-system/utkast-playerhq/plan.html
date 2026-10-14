@@ -189,7 +189,7 @@
 .hendelse small{font:500 12.5px/1 var(--mono);color:var(--graphite-600);white-space:nowrap}
 .sitat{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px;line-height:1.5}
 .sitat b{font:600 13px/1.3 var(--sans)}
-.uketab{display:grid;grid-template-columns:62px repeat(4,minmax(0,1fr));gap:6px;align-items:center}
+.uketab{display:grid;grid-template-columns:62px repeat(var(--n,4),minmax(0,1fr));gap:6px;align-items:center}
 .uketab .h{font:600 12px/1.2 var(--sans);text-align:center;color:var(--graphite-800)}
 .uketab .h small{display:block;font:400 11px/1.2 var(--sans);color:var(--graphite-600)}
 .uketab b{font:600 12px/1 var(--sans);letter-spacing:.05em;display:flex;align-items:center;gap:6px}
@@ -296,7 +296,7 @@
 
 <div class="ytre">
   <div class="hode">
-    <span class="meta-s">PlayerHQ · pakke 3 · PH-10 og PH-11 · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">PlayerHQ · pakke 3 · PH-10 og PH-11 · utkast 2 · 14.10.2026</span>
     <h1>Plan og Workbench</h1>
     <p>Elleve skjermer i én fil. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41. Velg skjerm, og bytt mellom utkast og dagens design, mellom mobil og PC.</p>
   </div>
@@ -331,6 +331,8 @@
         <li><b>Årsplanen viser aksene uke for uke</b>, med periodene som et tynt tekstbånd, samlinger og tester som eget lag, og månedene som knapper.</li>
         <li><b>Veilederen «Opprett årsplan»</b> med fire utgangspunkt, tidsrom og navn. Forslaget er skoleåret, fordi Øyvind er i WANG.</li>
         <li><b>Måneden har eget innhold:</b> fokus, målsetninger, timer per akse fordelt på ukene, tester og samlinger, notat og evaluering fra både spiller og coach.</li>
+        <li><b>Alle ni periodene og alle elleve månedene kan åpnes</b> fra årsplanen, med piler fram og tilbake. Ferdige perioder og måneder viser gjennomført tid og evaluering. Kommende viser fordelt tid. Fra januar finnes ingen månedsplan ennå, bare timene fra perioden og knappen «Lag månedsplan».</li>
+        <li><b>Restitusjon er med i årsplanen</b> som siste uke (uke 25), etter vedtaket 28.09.</li>
         <li><b>Målsetninger viser fremdrift fra ekte data</b>, med start, nå og streken for hvor du burde vært i dag.</li>
       </ul>
     </div>
@@ -342,15 +344,14 @@
         <li>Gruppeøkter arves. En tilpasset gruppeøkt er merket «Egen».</li>
         <li>Coach ser bare at Øyvind er opptatt, aldri hva. Endrer Øyvind en økt Anders la inn, får Anders beskjed.</li>
         <li>Forslag er aldri sperrer. Workbench sier fra om overskudd, men stopper ingenting.</li>
-        <li>Tallene henger sammen: uke 41 har 14 t 5 min i alle skjermene, og perioden fordeler det samme per akse.</li>
+        <li>Tallene henger sammen: uke 41 har 14 t 5 min i alle skjermene, september har 48 t 10 min av 52 t 20 min som i I dag og Stats, og alle timetall regnes fra samme årsplan.</li>
       </ul>
     </div>
     <div class="endringer">
       <span class="meta-s">Ikke tegnet her</span>
       <ul>
         <li>Selve økta (åpne, starte, live) kommer i pakke 2. Trykk på et øktkort gjør ingenting ennå.</li>
-        <li>Bare oktober er tegnet som måned, og bare Grunnperiode 1 som periode.</li>
-        <li>I dag-utkastet sier «4 t 25 min av 14 t 5 min» for uke 41. Det kan ikke stemme mandag kl. 14:20 før dagens økter. Rettes når I dag endres neste gang.</li>
+        <li>Bare uke 41 er tegnet i Workbench. Andre uker åpnes ikke ennå.</li>
       </ul>
     </div>
   </div>
@@ -366,7 +367,7 @@
         <h1 class="tittel">Plan</h1>
       </div>
       <div class="topp-rad">
-        <div class="valg" role="group" aria-label="Visning" data-zoom><button type="button" data-gaa="ar">År</button><button type="button" data-gaa="mnd">Måned</button><button type="button" aria-pressed="true" data-z="uke">Uke</button><button type="button" data-z="dag">Dag</button></div>
+        <div class="valg" role="group" aria-label="Visning" data-zoom><button type="button" data-gaa="ar">År</button><button type="button" data-gaa="mnd" data-m="2">Måned</button><button type="button" aria-pressed="true" data-z="uke">Uke</button><button type="button" data-z="dag">Dag</button></div>
         <div class="knapper"><span class="pil"><button type="button" aria-label="Forrige uke"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" aria-label="Neste uke"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></span><a class="knapp pri" href="#" data-gaa="uke"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Rediger</a></div>
       </div>
     </div>
@@ -466,7 +467,7 @@
         <div>
           <div class="dato">Workbench · Skoleåret 2026/27</div>
           <h1 class="tittel">Årsplan</h1>
-          <p class="ingress">17. august 2026–27. juni 2027 · 45 uker · 554 t planlagt</p>
+          <p class="ingress" data-ar-ingress></p>
         </div>
         <div class="knapper"><a class="knapp pri" href="#" data-gaa="perskjema"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ny periode</a><a class="knapp sek" href="#" data-gaa="ny">Ny årsplan</a></div>
       </div>
@@ -475,8 +476,8 @@
 
     <div class="ar-grid">
       <section class="kort" aria-label="Året uke for uke">
-        <div class="hoved"><strong>86<small>t 42 min</small></strong><span class="trend opp">92 % av plan</span></div>
-        <p class="forklar">Gjennomført siden 17. august, av 94 t 20 min planlagt til nå.</p>
+        <div class="hoved"><strong data-ar-tall></strong><span class="trend opp" data-ar-trend></span></div>
+        <p class="forklar" data-ar-forklar></p>
         <div>
           <svg class="aarsgraf" viewBox="0 0 360 110" role="img" aria-label="Planlagt tid per uke i aksefargene. Gjennomførte uker er mørke, kommende uker lyse." data-aarsgraf></svg>
           <div class="band" data-band></div>
@@ -567,11 +568,11 @@
     <div class="topp" data-behold>
       <div class="topp-rad">
         <div>
-          <div class="dato">Workbench · uke 39–46 · Fra Anders</div>
-          <h1 class="tittel">Grunnperiode 1</h1>
-          <p class="ingress">21. september–15. november. Bygge kapasitet, teknisk grunnlag og treningsvaner.</p>
+          <div class="dato" data-p-dato></div>
+          <h1 class="tittel" data-p-navn></h1>
+          <p class="ingress" data-p-ingress></p>
         </div>
-        <div class="knapper"><a class="knapp sek" href="#" data-gaa="perskjema"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Endre periode</a></div>
+        <div class="knapper"><span class="pil"><button type="button" aria-label="Forrige periode" data-p-steg="-1"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" aria-label="Neste periode" data-p-steg="1"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></span><a class="knapp sek" href="#" data-gaa="perskjema"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Endre periode</a></div>
       </div>
       <div data-nivaer="per"></div>
     </div>
@@ -579,15 +580,15 @@
     <div class="per-grid">
       <div class="seksjon" style="gap:var(--r5)">
         <section class="kort" aria-label="Perioden i tall">
-          <div class="hoved"><strong>100<small>t 25 min</small></strong><span class="trend">93 % gjennomført så langt</span></div>
-          <p class="forklar">Planlagt i perioden. 22 t 25 min gjennomført av 24 t 5 min planlagt til nå.</p>
+          <div class="hoved"><strong data-p-tall></strong><span class="trend" data-p-trend></span></div>
+          <p class="forklar" data-p-forklar></p>
           <span class="undertittel">Timer per vanlig uke</span>
           <div class="akserader" data-periode-akser></div>
-          <p class="kildetekst">Lett uke 39, 43 og 46: 10 t. Uke 43 er testuke.</p>
+          <p class="kildetekst" data-p-lette></p>
         </section>
 
         <section class="kort" aria-label="Ukene">
-          <div class="sek-topp"><h2>Ukene</h2><span class="kilde">Fordelt per akse</span></div>
+          <div class="sek-topp"><h2>Ukene</h2><span class="kilde" data-p-ukekilde></span></div>
           <div class="ukerader" data-periode-uker></div>
         </section>
       </div>
@@ -595,15 +596,16 @@
       <div class="seksjon" style="gap:var(--r5)">
         <section class="kort" aria-label="Fokus">
           <span class="undertittel">Fokus</span>
-          <p class="fokus">Innspill 100–150 m og styrke i underkroppen</p>
-          <div class="knytt">
-            <a href="#" data-gaa="mal"><span><b>SG Innspill til 0,0</b><br>Resultatmål · nå −0,9</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
-            <a href="#" data-gaa="mal"><span><b>2 FYS-økter per uke</b><br>Prosessmål · 2 av 2 i uke 40</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
-          </div>
+          <p class="fokus" data-p-fokus></p>
+          <div class="knytt" data-p-knytt></div>
         </section>
-        <section class="kort" aria-label="Notat">
+        <section class="kort" aria-label="Notat" data-p-notatkort>
           <span class="undertittel">Notat</span>
-          <div class="sitat"><b>Anders Kristiansen · 18. sep.</b>Innspill med TrackMan to ganger i uka. Styrke to ganger i uka. Hver fjerde uke er lett, så kroppen tar igjen.</div>
+          <div class="sitat" data-p-notat></div>
+        </section>
+        <section class="kort" aria-label="Evaluering" data-p-evalkort>
+          <span class="undertittel">Evaluering</span>
+          <div class="seksjon" style="gap:var(--r2)" data-p-eval></div>
         </section>
       </div>
     </div>
@@ -618,10 +620,10 @@
     <div class="topp" data-behold>
       <div class="topp-rad">
         <div>
-          <div class="dato">Workbench · Grunnperiode 1 · uke 41–44</div>
-          <h1 class="tittel">Oktober</h1>
+          <div class="dato" data-m-dato></div>
+          <h1 class="tittel" data-m-navn></h1>
         </div>
-        <div class="knapper"><a class="knapp sek" href="#" data-gaa="mndskjema"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Endre måned</a></div>
+        <div class="knapper"><span class="pil"><button type="button" aria-label="Forrige måned" data-m-steg="-1"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" aria-label="Neste måned" data-m-steg="1"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></span><a class="knapp sek" href="#" data-gaa="mndskjema" data-m-endre><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Endre måned</a></div>
       </div>
       <div data-nivaer="mnd"></div>
     </div>
@@ -629,45 +631,32 @@
     <div class="per-grid">
       <div class="seksjon" style="gap:var(--r5)">
         <section class="kort" aria-label="Måneden i tall">
-          <div class="hoved"><strong>52<small>t 15 min</small></strong><span class="trend">4 uker</span></div>
-          <p class="forklar">Fordelt i oktober. 25 t 5 min er lagt inn som økter så langt.</p>
-          <div class="fordeling" role="img" aria-label="FYS 6 t, TEK 11 t, SLAG 13 t 45 min, SPILL 21 t 30 min"><i class="akse-bg-fys" style="flex:360"></i><i class="akse-bg-tek" style="flex:660"></i><i class="akse-bg-slag" style="flex:825"></i><i class="akse-bg-spill" style="flex:1290"></i></div>
-          <div class="lg-rad"><span class="lg"><i style="background:var(--fys)"></i>FYS 6 t</span><span class="lg"><i style="background:var(--tek)"></i>TEK 11 t</span><span class="lg"><i style="background:var(--slag)"></i>SLAG 13 t 45 min</span><span class="lg"><i style="background:var(--spill)"></i>SPILL 21 t 30 min</span></div>
+          <div class="hoved"><strong data-m-tall></strong><span class="trend" data-m-trend></span></div>
+          <p class="forklar" data-m-forklar></p>
+          <div class="seksjon" style="gap:var(--r2)" data-m-fordeling></div>
         </section>
-        <section class="kort" aria-label="Ukene i oktober">
-          <div class="sek-topp"><h2>Uke for uke</h2><span class="kilde">Lagt inn mot fordelt</span></div>
+        <section class="kort" aria-label="Uke for uke">
+          <div class="sek-topp"><h2>Uke for uke</h2><span class="kilde" data-m-ukekilde></span></div>
           <div class="ukerader" data-mnd-uker></div>
           <p class="kildetekst">Uka arver fordelingen. Workbench viser hvor mye som mangler.</p>
         </section>
         <section class="kort" aria-label="Tester og samlinger">
           <div class="sek-topp"><h2>Tester og samlinger</h2></div>
-          <div class="liste">
-            <div class="hendelse"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 21l9-18 9 18Z"/></svg><span><b>Treningssamling Larvik GK</b><br><span class="kilde">Banespill og nærspill · 2 økter</span></span><small>10.–11. okt.</small></div>
-            <div class="hendelse"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg><span><b>Testuke</b><br><span class="kilde">Club Speed, markløft trapbar, lengdehopp, rotasjonskast og innspilltest 100–150 m</span></span><small>19.–25. okt.</small></div>
-            <div class="hendelse"><svg class="ikon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0Z"/></svg><span><b>Ingen turneringer i oktober</b><br><span class="kilde">Neste: Klubbmesterskap innendørs, 17. nov.</span></span><small></small></div>
-          </div>
+          <div class="liste" data-m-hend></div>
         </section>
       </div>
       <div class="seksjon" style="gap:var(--r5)">
         <section class="kort" aria-label="Fokus og målsetninger">
           <span class="undertittel">Fokus</span>
-          <p class="fokus">Lengdekontroll 100–150 m med TrackMan</p>
-          <div class="knytt">
-            <a href="#" data-gaa="mal"><span><b>Innspilltest: 13 av 20 innenfor 8 m</b><br>Resultatmål · frist 25. okt. · nå 11 av 20</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
-            <a href="#" data-gaa="mal"><span><b>3 nærspilløkter per uke</b><br>Prosessmål · 3 lagt inn i uke 41</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
-          </div>
+          <div class="seksjon" style="gap:var(--r3)" data-m-fokus></div>
         </section>
-        <section class="kort" aria-label="Notat">
+        <section class="kort" aria-label="Notat" data-m-notatkort>
           <span class="undertittel">Notat</span>
-          <div class="sitat"><b>Øyvind · 2. okt.</b>Skoleuke med tentamen 20.–22. okt. Tar lett uke da, og flytter innspill til helga.</div>
+          <div class="sitat" data-m-notat></div>
         </section>
         <section class="kort" aria-label="Evaluering">
           <span class="undertittel">Evaluering</span>
-          <p class="forklar">Evalueringen av oktober åpner søndag 1. november. Du og Anders skriver hver deres.</p>
-          <div class="skille"></div>
-          <span class="undertittel">September</span>
-          <div class="sitat"><b>Øyvind</b>Mye turneringsgolf tidlig i måneden. Innspillene fra 100–150 m var for korte.</div>
-          <div class="sitat"><b>Anders Kristiansen · coach</b>God gjennomføring i evalueringsukene. Lengdekontroll blir hovedfokus i grunnperioden.</div>
+          <div class="seksjon" style="gap:var(--r2)" data-m-eval></div>
         </section>
       </div>
     </div>
@@ -677,21 +666,18 @@
 
 <!-- ================= PH-11-MNDSKJEMA Månedsskjema ================= -->
 <template id="mndskjema">
-<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Oktober">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Måned">
   <main class="innhold smal">
     <div class="topp" data-behold>
       <div>
-        <div class="dato">Workbench · oktober · uke 41–44</div>
-        <h1 class="tittel">Endre månedsplan</h1>
+        <div class="dato" data-ms-dato></div>
+        <h1 class="tittel" data-ms-tittel>Endre månedsplan</h1>
       </div>
     </div>
-    <div class="felt"><label for="m-fokus">Fokus</label><textarea id="m-fokus" rows="2">Lengdekontroll 100–150 m med TrackMan</textarea></div>
+    <div class="felt"><label for="m-fokus">Fokus</label><textarea id="m-fokus" rows="2" placeholder="Hva skal måneden handle om?"></textarea></div>
     <div class="felt">
       <span class="etikett">Målsetninger</span>
-      <div class="knytt">
-        <div><span><b>Innspilltest: 13 av 20 innenfor 8 m</b><br>Resultatmål · frist 25. okt.</span><button type="button" class="fjern" aria-label="Fjern fra måneden"><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-        <div><span><b>3 nærspilløkter per uke</b><br>Prosessmål</span><button type="button" class="fjern" aria-label="Fjern fra måneden"><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-      </div>
+      <div class="knytt" data-ms-knytt></div>
       <a class="lenke" href="#"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Knytt en målsetning</a>
     </div>
     <div class="felt">
@@ -702,14 +688,11 @@
     </div>
     <div class="felt">
       <span class="etikett">Tester og samlinger</span>
-      <div class="liste">
-        <div class="hendelse"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 21l9-18 9 18Z"/></svg><span><b>Treningssamling Larvik GK</b></span><small>10.–11. okt.</small></div>
-        <div class="hendelse"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg><span><b>Testuke</b></span><small>19.–25. okt.</small></div>
-      </div>
+      <div class="liste" data-ms-hend></div>
       <div class="knapper"><a class="lenke" href="#"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Legg til test</a><a class="lenke" href="#"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Legg til turnering</a></div>
     </div>
-    <div class="felt"><label for="m-notat">Notat</label><textarea id="m-notat" rows="3">Skoleuke med tentamen 20.–22. okt. Tar lett uke da, og flytter innspill til helga.</textarea></div>
-    <div class="ark-fot"><a class="knapp pri stor" href="#" data-gaa="mnd">Lagre månedsplan</a><a class="knapp sek stor" href="#" data-gaa="mnd">Avbryt</a></div>
+    <div class="felt"><label for="m-notat">Notat</label><textarea id="m-notat" rows="3" placeholder="Skoleuker, reiser, ting coach bør vite"></textarea></div>
+    <div class="ark-fot"><a class="knapp pri stor" href="#" data-gaa="mnd" data-ms-lagre>Lagre månedsplan</a><a class="knapp sek stor" href="#" data-gaa="mnd">Avbryt</a></div>
   </main>
 </div>
 </template>
@@ -808,7 +791,10 @@
     var el = app.querySelector('[data-nivaer]'); if (!el) return;
     var a = el.dataset.nivaer, n = [['ar', 'År'], ['per', 'Periode'], ['mnd', 'Måned'], ['uke', 'Uke'], ['mal', 'Målsetninger']];
     el.className = 'valg nivaer'; el.setAttribute('role', 'group'); el.setAttribute('aria-label', 'Nivå');
-    el.innerHTML = n.map(function (x) { return '<button type="button" aria-pressed="' + (x[0] === a) + '" data-gaa="' + x[0] + '">' + x[1] + '</button>'; }).join('');
+    var mal = a === 'per' ? { mnd: MANEDER.indexOf(MANEDER.filter(function (m) { var p = PERIODER[VALGT.p]; return p.tid === 'na' ? m.tid === 'na' : p.i0 >= m.i0 && p.i0 < m.i0 + m.n; })[0]) } :
+      a === 'mnd' ? { per: PERIODER.indexOf(MANEDER[VALGT.m].tid === 'na' ? periodeFor(NA_I) : periodeFor(MANEDER[VALGT.m].i0)) } :
+      a === 'ar' ? {} : { per: PERIODER.indexOf(periodeFor(NA_I)), mnd: 2 };
+    el.innerHTML = n.map(function (x) { var d = x[0] === 'per' && mal.per != null ? ' data-p="' + mal.per + '"' : x[0] === 'mnd' && mal.mnd != null ? ' data-m="' + mal.mnd + '"' : ''; return '<button type="button" aria-pressed="' + (x[0] === a) + '" data-gaa="' + x[0] + '"' + d + '>' + x[1] + '</button>'; }).join('');
   }
 
   /* Ark (mobil) og dialog (PC) inne i skjermen */
@@ -1078,26 +1064,99 @@
     });
   }
 
-  /* ---------- PH-11-AR Årsplan ---------- */
-  var PERIODER = [
-    { navn: 'Turneringsperiode', uker: 3, fra: 'uke 34–36', dato: '17. aug.–6. sep.', kilde: 'Fra gruppa', m: { fys: 60, tek: 60, slag: 240, spill: 240, turn: 240 } },
-    { navn: 'Evaluering', uker: 2, fra: 'uke 37–38', dato: '7.–20. sep.', kilde: 'Egen', m: { fys: 90, tek: 150, slag: 240, spill: 365, turn: 0 } },
-    { navn: 'Grunnperiode 1', uker: 8, fra: 'uke 39–46', dato: '21. sep.–15. nov.', kilde: 'Fra Anders', na: true, gaa: 'per' },
-    { navn: 'Spesialperiode', uker: 4, fra: 'uke 47–50', dato: '16. nov.–13. des.', kilde: 'Fra Anders', m: { fys: 90, tek: 150, slag: 300, spill: 240, turn: 0 } },
-    { navn: 'Ferie', uker: 3, fra: 'uke 51–53', dato: '14. des.–3. jan.', kilde: 'Egen', m: { fys: 60, tek: 0, slag: 0, spill: 0, turn: 0 } },
-    { navn: 'Grunnperiode 2', uker: 9, fra: 'uke 1–9', dato: '4. jan.–7. mars', kilde: 'Fra gruppa', m: { fys: 150, tek: 240, slag: 300, spill: 60, turn: 0 } },
-    { navn: 'Spesialperiode', uker: 8, fra: 'uke 10–17', dato: '8. mars–2. mai', kilde: 'Fra gruppa', m: { fys: 90, tek: 150, slag: 300, spill: 240, turn: 0 } },
-    { navn: 'Turneringsperiode', uker: 8, fra: 'uke 18–25', dato: '3. mai–27. juni', kilde: 'Fra gruppa', m: { fys: 60, tek: 60, slag: 240, spill: 240, turn: 240 } }
-  ];
+  /* ---------- Året: perioder, uker og måneder ----------
+     45 uker fra mandag 17. august 2026 (uke 34) til søndag 27. juni 2027 (uke 25).
+     Indeks 7 er uke 41, «nå». Uke 34–40 er gjennomført. */
+  var NA_I = 7;
   var LETT = { fys: 90, tek: 120, slag: 150, spill: 240, turn: 0 };
   var GRUNN1 = [LETT, FORDELT, FORDELT, FORDELT, LETT, FORDELT, FORDELT, LETT];
+  var TURN = { fys: 60, tek: 60, slag: 240, spill: 240, turn: 240 };
+  var EVAL = { fys: 90, tek: 150, slag: 240, spill: 365, turn: 0 };
+  var SPES = { fys: 90, tek: 150, slag: 300, spill: 240, turn: 0 };
+  var SPES_L = { fys: 60, tek: 90, slag: 180, spill: 150, turn: 0 };
+  var GRUNN2 = { fys: 150, tek: 240, slag: 300, spill: 60, turn: 0 };
+  var GRUNN2_L = { fys: 120, tek: 150, slag: 180, spill: 30, turn: 0 };
+  var FERIE = { fys: 60, tek: 0, slag: 0, spill: 0, turn: 0 };
+  var REST = { fys: 90, tek: 0, slag: 60, spill: 0, turn: 0 };
+  function rep(m, n) { return Array.apply(null, Array(n)).map(function () { return m; }); }
   var UTFORT = [792, 820, 700, 765, 780, 680, 665]; // uke 34–40
-  function aarsuker() {
-    var u = [];
-    PERIODER.forEach(function (p) { for (var k = 0; k < p.uker; k++) u.push(p.navn === 'Grunnperiode 1' ? GRUNN1[k] : p.m); });
-    return u;
+  var LAGT = { 7: 845, 8: 600, 9: 360 };            // lagt inn som økter, uke 41–43
+  var MERKE = { 39: 'Lett uke', 41: 'Nå', 43: 'Testuke', 46: 'Lett uke', 47: 'Turnering', 4: 'Lett uke', 6: 'Testuke', 8: 'Lett uke', 12: 'Påske', 16: 'Lett uke' };
+  var GRUPPA = 'WANG Toppidrett · gruppeplan';
+  var MALLENKE = function (k) { return '<a href="#" data-gaa="mal"><span><b>' + k[0] + '</b><br>' + k[1] + '</span>' + PIL + '</a>'; };
+
+  var PERIODER = [
+    { navn: 'Turneringsperiode', type: 'Turneringsperiode', m: TURN, uker: rep(TURN, 3), kilde: 'Fra gruppa',
+      formaal: 'Spille turneringer og holde formen fra sommeren.', fokus: 'Turneringsrunder med slag for slag-registrering',
+      knytt: [['Registrer alle runder slag for slag', 'Prosessmål · hele året']],
+      notat: [GRUPPA, 'Turneringer i helgene. Korte økter i uka, og hvile dagen før start.'],
+      eval: [['Øyvind', 'Tre turneringer på tre helger. Puttingen var god, innspillene var for korte.'], ['Anders Kristiansen · coach', 'God turneringsrytme. Lengdekontroll 100–150 m tas inn i høstplanen.']] },
+    { navn: 'Evaluering', type: 'Evaluering', m: EVAL, uker: [EVAL, Object.assign({}, EVAL, { spill: 370 })], kilde: 'Egen',
+      formaal: 'Se tilbake på sesongen og sette målsetninger for året.', fokus: 'Sesongevaluering og nye målsetninger',
+      knytt: [['HCP under 3,0', 'Resultatmål · frist 31. mai 2027'], ['SG Innspill til 0,0', 'Resultatmål · frist 31. mai 2027']],
+      notat: ['Øyvind · 6. sep.', 'Mer banespill disse to ukene, så jeg har noe å evaluere fra.'],
+      eval: [['Anders Kristiansen · coach', 'God gjennomføring i evalueringsukene. Lengdekontroll blir hovedfokus i grunnperioden.']] },
+    { navn: 'Grunnperiode 1', type: 'Grunnperiode', m: FORDELT, uker: GRUNN1, kilde: 'Fra Anders',
+      formaal: 'Bygge kapasitet, teknisk grunnlag og treningsvaner.', fokus: 'Innspill 100–150 m og styrke i underkroppen',
+      knytt: [['SG Innspill til 0,0', 'Resultatmål · nå −0,9'], ['2 FYS-økter per uke', 'Prosessmål · 2 av 2 i uke 40']],
+      notat: ['Anders Kristiansen · 18. sep.', 'Innspill med TrackMan to ganger i uka. Styrke to ganger i uka. Hver fjerde uke er lett, så kroppen tar igjen.'] },
+    { navn: 'Spesialperiode', type: 'Spesialperiode', m: SPES, uker: rep(SPES, 4), kilde: 'Fra Anders',
+      formaal: 'Gjøre teknikken om til golfslag under press.', fokus: 'Innspill og nærspill med poeng og konkurranse',
+      knytt: [['SG Innspill til 0,0', 'Resultatmål · frist 31. mai 2027']],
+      notat: ['Anders Kristiansen · 18. sep.', 'Klubbmesterskapet 17. november er første test på press. Spill det fullt, uten å trappe ned uka før.'] },
+    { navn: 'Ferie', type: 'Ferie', m: FERIE, uker: rep(FERIE, 3), kilde: 'Egen',
+      formaal: 'Fri fra golf. Kroppen holdes i gang med korte styrkeøkter.', fokus: 'Hvile og to korte styrkeøkter i uka', knytt: [] },
+    { navn: 'Grunnperiode 2', type: 'Grunnperiode', m: GRUNN2, uker: [GRUNN2, GRUNN2, GRUNN2, GRUNN2_L, GRUNN2, GRUNN2, GRUNN2, GRUNN2_L, GRUNN2], kilde: 'Fra gruppa',
+      formaal: 'Ny runde med teknikk og styrke før sesongen.', fokus: 'P7.0 Treffpunktet og styrke i underkroppen',
+      knytt: [['SG Innspill til 0,0', 'Resultatmål · frist 31. mai 2027'], ['Club Speed 110 mph', 'Resultatmål · testuke 6']],
+      notat: [GRUPPA, 'Fellestrening tirsdag og torsdag. Testuke i uke 6.'] },
+    { navn: 'Spesialperiode', type: 'Spesialperiode', m: SPES, uker: [SPES, SPES, SPES_L, SPES, SPES, SPES, SPES_L, SPES], kilde: 'Fra gruppa',
+      formaal: 'Gjøre teknikken om til golfslag under press.', fokus: 'Banespill og scoring fra 100 m og inn',
+      knytt: [['SG Innspill til 0,0', 'Resultatmål · frist 31. mai 2027']],
+      notat: [GRUPPA, 'Ute på banen så snart den åpner. Påskeuka er lett.'] },
+    { navn: 'Turneringsperiode', type: 'Turneringsperiode', m: TURN, uker: rep(TURN, 7), kilde: 'Fra gruppa',
+      formaal: 'Spille turneringer og levere på målsetningene.', fokus: 'Turneringer, og korte økter mellom dem',
+      knytt: [['HCP under 3,0', 'Resultatmål · frist 31. mai 2027'], ['Registrer alle runder slag for slag', 'Prosessmål · hele året']],
+      notat: [GRUPPA, 'Terminlista legges inn når den er klar.'] },
+    { navn: 'Restitusjon', type: 'Restitusjon', m: REST, uker: [REST], kilde: 'Egen',
+      formaal: 'En lett uke etter første del av sesongen.', fokus: 'Mobilitet, lett styrke og litt putting', knytt: [] }
+  ];
+  var START = Date.UTC(2026, 7, 17), DAG = 864e5;
+  var MK = ['jan.', 'feb.', 'mars', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'nov.', 'des.'];
+  var ML = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+  var UDL = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
+  function ukeNr(i) { return i < 20 ? 34 + i : i - 19; }
+  function mandag(i) { return new Date(START + i * 7 * DAG); }
+  function isoD(d) { return d.toISOString().slice(0, 10); }
+  function spenn(a, b, lang) {
+    var n = lang ? ML : MK;
+    return a.getUTCMonth() === b.getUTCMonth() ? a.getUTCDate() + '.–' + b.getUTCDate() + '. ' + n[b.getUTCMonth()] : a.getUTCDate() + '. ' + n[a.getUTCMonth()] + '–' + b.getUTCDate() + '. ' + n[b.getUTCMonth()];
   }
+  function ukespenn(i0, n) { return n === 1 ? 'uke ' + ukeNr(i0) : 'uke ' + ukeNr(i0) + '–' + ukeNr(i0 + n - 1); }
+  (function () { var i = 0; PERIODER.forEach(function (p) { p.i0 = i; p.n = p.uker.length; i += p.n; }); })();
+  PERIODER.forEach(function (p) {
+    var a = mandag(p.i0), b = new Date(mandag(p.i0 + p.n - 1).getTime() + 6 * DAG);
+    p.fra = ukespenn(p.i0, p.n); p.dato = spenn(a, b); p.lang = spenn(a, b, true); p.isoFra = isoD(a); p.isoTil = isoD(b);
+    p.tid = p.i0 + p.n <= NA_I ? 'for' : p.i0 > NA_I ? 'etter' : 'na';
+  });
+  function aarsuker() { return PERIODER.reduce(function (u, p) { return u.concat(p.uker); }, []); }
+  function periodeFor(i) { return PERIODER.filter(function (p) { return i >= p.i0 && i < p.i0 + p.n; })[0]; }
   function sumAkse(m) { return AKSER.reduce(function (s, a) { return s + m[a]; }, 0); }
+  function sumUker(i0, n, f) { var s = 0; for (var i = i0; i < i0 + n; i++) s += f(i); return s; }
+  function planUke(i) { return sumAkse(aarsuker()[i]); }
+  function stor(m) { var t = Math.floor(m / 60), r = m % 60; return t ? t + '<small>t' + (r ? ' ' + r + ' min' : '') + '</small>' : r + '<small>min</small>'; }
+  function pst(a, b) { return Math.round(a / b * 100); }
+  function liste(x) { return x.length > 1 ? x.slice(0, -1).join(', ') + ' og ' + x[x.length - 1] : x[0]; }
+
+  /* Hvilken periode og måned som vises. Settes av data-p og data-m før skjermen tegnes. */
+  var VALGT = { p: 2, m: 2 };
+  document.addEventListener('click', function (e) {
+    var p = e.target.closest('[data-p]'), m = e.target.closest('[data-m]');
+    if (p) VALGT.p = +p.dataset.p;
+    if (m) VALGT.m = +m.dataset.m;
+  }, true);
+
+  /* ---------- PH-11-AR Årsplan ---------- */
   function aar(app) {
     var uker = aarsuker(), W = 360 / uker.length, maks = 900, H = 100;
     var svg = '';
@@ -1109,17 +1168,21 @@
         svg += '<rect class="vokse" x="' + (i * W + .8).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (W - 1.6).toFixed(1) + '" height="' + hoy.toFixed(1) + '" fill="var(--' + a + ')"' + (fortid ? '' : ' opacity=".38"') + ' style="transform-origin:0 ' + H + 'px;animation-delay:' + i * 12 + 'ms"/>';
       });
     });
-    var nx = (7 + .5) * W;
+    var nx = (NA_I + .5) * W;
     svg += '<line x1="' + nx + '" x2="' + nx + '" y1="0" y2="' + H + '" stroke="var(--graphite-900)" stroke-width="1.5"/><text x="' + (nx + 4) + '" y="9" class="gt" style="fill:var(--graphite-900);font-weight:600">Nå · uke 41</text>';
     app.querySelector('[data-aarsgraf]').innerHTML = svg;
-    app.querySelector('[data-band]').innerHTML = PERIODER.map(function (p) { return '<span style="--u:' + p.uker + '"' + (p.na ? ' class="na"' : '') + ' title="' + p.navn + ', ' + p.fra + '">' + (p.uker >= 4 ? p.navn : '') + '</span>'; }).join('');
+    var tot = sumUker(0, uker.length, planUke), tilNa = sumUker(0, NA_I, planUke), gj = UTFORT.reduce(function (s, x) { return s + x; }, 0);
+    app.querySelector('[data-ar-ingress]').textContent = '17. august 2026–27. juni 2027 · ' + uker.length + ' uker · ' + Math.round(tot / 60) + ' t planlagt';
+    app.querySelector('[data-ar-tall]').innerHTML = stor(gj);
+    app.querySelector('[data-ar-trend]').textContent = pst(gj, tilNa) + ' % av plan';
+    app.querySelector('[data-ar-forklar]').textContent = 'Gjennomført siden 17. august, av ' + fmt(tilNa) + ' planlagt til nå.';
+    app.querySelector('[data-band]').innerHTML = PERIODER.map(function (p, i) { return '<span style="--u:' + p.n + '"' + (p.tid === 'na' ? ' class="na"' : '') + ' title="' + p.navn + ', ' + p.fra + '">' + (p.n >= 4 ? p.navn : '') + '</span>'; }).join('');
     var hend = [[7, '', 'Treningssamling'], [9, 'test', 'Testuke'], [13, 'konk', 'Klubbmesterskap'], [25, 'test', 'Testuke']];
     app.querySelector('[data-hendelser]').innerHTML = hend.map(function (x) { return '<i class="' + x[1] + '" style="left:' + ((x[0] + .5) / uker.length * 100) + '%"></i>'; }).join('');
-    var mnd = ['Aug.', 'Sep.', 'Okt.', 'Nov.', 'Des.', 'Jan.', 'Feb.', 'Mars', 'Apr.', 'Mai', 'Juni'];
-    app.querySelector('[data-mnd-knapper]').innerHTML = mnd.map(function (m) { return '<button type="button"' + (m === 'Okt.' ? ' class="na" data-gaa="mnd"' : '') + '>' + m + '</button>'; }).join('');
-    app.querySelector('[data-periodeliste]').innerHTML = PERIODER.map(function (p) {
+    app.querySelector('[data-mnd-knapper]').innerHTML = MANEDER.map(function (m, i) { return '<button type="button"' + (i === 2 ? ' class="na"' : '') + ' data-gaa="mnd" data-m="' + i + '">' + m.kort + '</button>'; }).join('');
+    app.querySelector('[data-periodeliste]').innerHTML = PERIODER.map(function (p, i) {
       var pil = p.kilde === 'Egen' ? 'noy' : p.kilde === 'Fra gruppa' ? 'vent' : 'ok';
-      return '<button type="button" class="prad' + (p.na ? ' na' : '') + '"' + (p.gaa ? ' data-gaa="' + p.gaa + '"' : '') + '><b>' + p.navn + '</b><small>' + p.fra + ' · ' + p.dato + '</small><span class="pille ' + pil + '"><i></i>' + p.kilde + '</span></button>';
+      return '<button type="button" class="prad' + (p.tid === 'na' ? ' na' : '') + '" data-gaa="per" data-p="' + i + '"><b>' + p.navn + '</b><small>' + p.fra + ' · ' + p.dato + '</small><span class="pille ' + pil + '"><i></i>' + p.kilde + '</span></button>';
     }).join('');
     app.querySelector('[data-hendelseliste]').innerHTML = [['Treningssamling Larvik GK', 'uke 41 · 10.–11. okt.'], ['Testuke', 'uke 43 · 19.–25. okt.'], ['Klubbmesterskap innendørs', 'uke 47 · tir. 17. nov. · konkurransedag'], ['Testuke', 'uke 6 · 8.–14. feb.']].map(function (x) { return '<div class="prad" style="cursor:default"><b>' + x[0] + '</b><small>' + x[1] + '</small></div>'; }).join('');
   }
@@ -1149,60 +1212,212 @@
     el.innerHTML = AKSER.map(function (a) { return '<div class="akserad"><b>' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" data-til="' + (m[a] / maks * 100) + '%" style="width:' + (m[a] / maks * 100) + '%"></span></span><span class="v">' + (m[a] ? fmt(m[a]) : '—') + '</span></div>'; }).join('');
   }
   function fordelingHtml(m, lys) { return '<span class="fordeling' + (lys ? ' lys' : '') + '">' + AKSER.filter(function (a) { return m[a]; }).map(function (a) { return '<i class="akse-bg-' + a + '" style="flex:' + m[a] + '"></i>'; }).join('') + '</span>'; }
+  function sitater(x) { return x.map(function (s) { return '<div class="sitat"><b>' + s[0] + '</b>' + s[1] + '</div>'; }).join(''); }
+  function bla(app, attr, n, felt, skjerm) {
+    app.querySelectorAll('[' + attr + ']').forEach(function (b) {
+      var ny = VALGT[felt] + +b.getAttribute(attr);
+      b.disabled = ny < 0 || ny >= n;
+      b.addEventListener('click', function () { if (b.disabled) return; VALGT[felt] = ny; AKUtkast.gaa(skjerm); });
+    });
+  }
+  function ukerad(i, s, etiketter) {
+    var u = ukeNr(i), m = aarsuker()[i], tekst = MERKE[u] && etiketter ? '<small>' + MERKE[u] + '</small>' : '', v;
+    if (i < NA_I) v = fmt(UTFORT[i]) + '<small>' + pst(UTFORT[i], s) + ' % av ' + fmt(s) + '</small>';
+    else if (i === NA_I) v = fmt(s) + '<small>11 økter lagt inn</small>';
+    else v = fmt(s) + '<small>' + (LAGT[i] ? fmt(LAGT[i]) + ' lagt inn' : 'fordelt') + '</small>';
+    return '<button type="button" class="ukerad' + (i === NA_I ? ' na' : '') + '"' + (i === NA_I ? ' data-gaa="uke"' : '') + '><span>Uke ' + u + tekst + '</span>' + fordelingHtml(m, i > NA_I) + '<span class="v">' + v + '</span></button>';
+  }
   function periode(app) {
-    akseRader(FORDELT, app.querySelector('[data-periode-akser]'));
-    var navn = ['Lett uke', '', 'Nå', '', 'Testuke', '', '', 'Lett uke'];
-    app.querySelector('[data-periode-uker]').innerHTML = GRUNN1.map(function (m, k) {
-      var u = 39 + k, s = sumAkse(m), gj = k === 0 ? 680 : k === 1 ? 665 : null;
-      var v = gj ? fmt(gj) + '<small>' + Math.round(gj / s * 100) + ' % av ' + fmt(s) + '</small>' : fmt(s) + '<small>' + (k === 2 ? '11 økter lagt inn' : 'fordelt') + '</small>';
-      return '<button type="button" class="ukerad' + (k === 2 ? ' na' : '') + '"' + (k === 2 ? ' data-gaa="uke"' : '') + '><span>Uke ' + u + (navn[k] ? '<small>' + navn[k] + '</small>' : '') + '</span>' + fordelingHtml(m, k > 2) + '<span class="v">' + v + '</span></button>';
-    }).join('');
+    var p = PERIODER[VALGT.p], uker = aarsuker(), q = function (s) { return app.querySelector(s); };
+    var tot = sumUker(p.i0, p.n, planUke);
+    q('[data-p-dato]').textContent = 'Workbench · ' + p.fra + ' · ' + p.kilde;
+    q('[data-p-navn]').textContent = p.navn;
+    q('[data-p-ingress]').textContent = p.lang.charAt(0).toUpperCase() + p.lang.slice(1) + '. ' + p.formaal;
+    if (p.tid === 'for') {
+      var gj = sumUker(p.i0, p.n, function (i) { return UTFORT[i]; });
+      q('[data-p-tall]').innerHTML = stor(gj);
+      q('[data-p-trend]').textContent = pst(gj, tot) + ' % av plan';
+      q('[data-p-forklar]').textContent = 'Gjennomført av ' + fmt(tot) + ' planlagt. Perioden er ferdig.';
+    } else if (p.tid === 'na') {
+      var forbi = NA_I - p.i0, gjN = sumUker(p.i0, forbi, function (i) { return UTFORT[i]; }), plN = sumUker(p.i0, forbi, planUke);
+      q('[data-p-tall]').innerHTML = stor(tot);
+      q('[data-p-trend]').textContent = pst(gjN, plN) + ' % gjennomført så langt';
+      q('[data-p-forklar]').textContent = 'Planlagt i perioden. ' + fmt(gjN) + ' gjennomført av ' + fmt(plN) + ' planlagt til nå.';
+    } else {
+      var om = p.i0 - NA_I;
+      q('[data-p-tall]').innerHTML = stor(tot);
+      q('[data-p-trend]').textContent = 'Starter om ' + om + (om === 1 ? ' uke' : ' uker');
+      q('[data-p-forklar]').textContent = 'Planlagt i perioden. Hver uke arver timene herfra.';
+    }
+    akseRader(p.m, q('[data-periode-akser]'));
+    var vanlig = sumAkse(p.m), lette = [], testuker = [];
+    for (var i = p.i0; i < p.i0 + p.n; i++) {
+      if (sumAkse(uker[i]) < vanlig) lette.push({ u: ukeNr(i), s: sumAkse(uker[i]) });
+      if (MERKE[ukeNr(i)] === 'Testuke') testuker.push(ukeNr(i));
+    }
+    var lt = lette.length ? 'Lett uke ' + liste(lette.map(function (x) { return x.u; })) + ': ' + fmt(lette[0].s) + '.' : '';
+    if (testuker.length) lt += (lt ? ' ' : '') + 'Uke ' + liste(testuker) + ' er testuke.';
+    q('[data-p-lette]').textContent = lt;
+    q('[data-p-lette]').hidden = !lt;
+    q('[data-p-ukekilde]').textContent = p.tid === 'for' ? 'Gjennomført per akse' : 'Fordelt per akse';
+    var rader = '';
+    for (var k = p.i0; k < p.i0 + p.n; k++) rader += ukerad(k, planUke(k), true);
+    q('[data-periode-uker]').innerHTML = rader;
+    q('[data-p-fokus]').textContent = p.fokus;
+    q('[data-p-knytt]').innerHTML = p.knytt.length ? p.knytt.map(MALLENKE).join('') : '<p class="forklar">Ingen målsetninger i denne perioden.</p>';
+    q('[data-p-notatkort]').hidden = !p.notat;
+    if (p.notat) q('[data-p-notat]').innerHTML = '<b>' + p.notat[0] + '</b>' + p.notat[1];
+    q('[data-p-evalkort]').hidden = p.tid !== 'for';
+    if (p.eval) q('[data-p-eval]').innerHTML = sitater(p.eval);
+    bla(app, 'data-p-steg', PERIODER.length, 'p', 'per');
   }
 
   /* Periodeskjema: ark på mobil, dialog på PC. Rust bare på «Slett periode». */
   function periodeskjema(app) {
     periode(app);
-    var m = Object.assign({}, FORDELT);
+    var p = PERIODER[VALGT.p], m = Object.assign({}, p.m);
     var typer = ['Grunnperiode', 'Spesialperiode', 'Turneringsperiode', 'Evaluering', 'Ferie', 'Restitusjon'];
-    var html = '<div class="ark-topp"><div><span class="meta-s">Periode · Fra Anders</span><h2>Grunnperiode 1</h2></div><button type="button" class="lukk" data-lukk aria-label="Lukk">' + ikon('<path d="M18 6L6 18M6 6l12 12"/>') + '</button></div>' +
-      '<div class="felt"><span class="etikett">Type</span><div class="valg" role="group" aria-label="Type">' + typer.map(function (t, i) { return '<button type="button" aria-pressed="' + !i + '">' + t + '</button>'; }).join('') + '</div></div>' +
-      '<div class="to-felt"><div class="felt"><label for="p-fra">Første dag</label><input id="p-fra" type="date" value="2026-09-21"></div><div class="felt"><label for="p-til">Siste dag</label><input id="p-til" type="date" value="2026-11-15"></div></div>' +
-      '<div class="felt"><label for="p-fokus">Fokus</label><input id="p-fokus" type="text" value="Innspill 100–150 m og styrke i underkroppen"></div>' +
+    var sist = p.kilde === 'Fra Anders' ? 'Sist endret av Anders Kristiansen 18. sep. Anders får beskjed når du lagrer.' : p.kilde === 'Fra gruppa' ? 'Fra gruppas årsplan. Endrer du, gjelder det bare deg, og perioden merkes «Egen».' : 'Laget av deg. Anders ser endringen.';
+    var lette = p.uker.filter(function (x) { return sumAkse(x) < sumAkse(p.m); });
+    var html = '<div class="ark-topp"><div><span class="meta-s">Periode · ' + p.kilde + '</span><h2>' + p.navn + '</h2></div><button type="button" class="lukk" data-lukk aria-label="Lukk">' + ikon('<path d="M18 6L6 18M6 6l12 12"/>') + '</button></div>' +
+      '<div class="felt"><span class="etikett">Type</span><div class="valg" role="group" aria-label="Type">' + typer.map(function (t) { return '<button type="button" aria-pressed="' + (t === p.type) + '">' + t + '</button>'; }).join('') + '</div></div>' +
+      '<div class="to-felt"><div class="felt"><label for="p-fra">Første dag</label><input id="p-fra" type="date" value="' + p.isoFra + '"></div><div class="felt"><label for="p-til">Siste dag</label><input id="p-til" type="date" value="' + p.isoTil + '"></div></div>' +
+      '<div class="felt"><label for="p-fokus">Fokus</label><input id="p-fokus" type="text" value="' + p.fokus + '"></div>' +
       '<div class="felt"><span class="etikett">Timer per vanlig uke</span><div class="seksjon" style="gap:6px" data-steppere></div><p class="forklar" data-ps></p></div>' +
-      '<div class="felt"><label for="p-notat">Notat</label><textarea id="p-notat" rows="2">Innspill med TrackMan to ganger i uka. Styrke to ganger i uka. Hver fjerde uke er lett.</textarea></div>' +
-      '<p class="kildetekst">Sist endret av Anders Kristiansen 18. sep. Anders får beskjed når du lagrer.</p>' +
+      '<div class="felt"><label for="p-notat">Notat</label><textarea id="p-notat" rows="2">' + (p.notat ? p.notat[1] : '') + '</textarea></div>' +
+      '<p class="kildetekst">' + sist + '</p>' +
       '<div class="ark-fot"><button type="button" class="knapp pri stor" data-lukk>Lagre periode</button></div>' +
       '<div class="rust-sone"><button type="button" class="knapp rust">Slett periode</button><span class="kildetekst">Øktene i perioden blir liggende i uka.</span></div>';
     aapneArk(app, html, function (ark) {
       function tegnS() {
         var maks = 420;
-        ark.querySelector('[data-steppere]').innerHTML = AKSER.map(function (a) { return '<div class="stepper"><b><i class="akse-bg-' + a + '"></i>' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" style="width:' + (m[a] / maks * 100) + '%"></span></span><button type="button" data-a="' + a + '" data-d="-15" aria-label="15 minutter mindre ' + NAVN[a] + '">−</button><output>' + (m[a] ? fmt(m[a]) : '0') + '</output><button type="button" data-a="' + a + '" data-d="15" aria-label="15 minutter mer ' + NAVN[a] + '">+</button></div>'; }).join('');
-        ark.querySelector('[data-ps]').textContent = 'Sum ' + fmt(sumAkse(m)) + ' per uke. Lette uker får 10 t.';
+        ark.querySelector('[data-steppere]').innerHTML = AKSER.map(function (a) { return '<div class="stepper"><b><i class="akse-bg-' + a + '"></i>' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" style="width:' + Math.min(100, m[a] / maks * 100) + '%"></span></span><button type="button" data-a="' + a + '" data-d="-15" aria-label="15 minutter mindre ' + NAVN[a] + '">−</button><output>' + (m[a] ? fmt(m[a]) : '0') + '</output><button type="button" data-a="' + a + '" data-d="15" aria-label="15 minutter mer ' + NAVN[a] + '">+</button></div>'; }).join('');
+        ark.querySelector('[data-ps]').textContent = 'Sum ' + fmt(sumAkse(m)) + ' per uke.' + (lette.length ? ' Lette uker får ' + fmt(sumAkse(lette[0])) + '.' : '');
       }
       ark.addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (!b) return; var a = b.dataset.a; m[a] = Math.max(0, m[a] + +b.dataset.d); tegnS(); });
       tegnS();
     });
   }
 
-  /* ---------- PH-11-MND og MNDSKJEMA ---------- */
-  var MNDUKER = [[41, FORDELT, 845], [42, FORDELT, 600], [43, LETT, 360], [44, FORDELT, 0]];
+  /* ---------- PH-11-MND og MNDSKJEMA ----------
+     En uke hører til måneden mandagen ligger i. Januar og senere har ingen månedsplan ennå:
+     timene kommer fra perioden, fokus og målsetninger settes når måneden nærmer seg. */
+  var IKON = {
+    samling: '<path d="M3 21l9-18 9 18Z"/>',
+    test: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+    turnering: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0Z"/>',
+    kal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
+  };
+  var TESTER = 'Club Speed, markløft trapbar, lengdehopp, rotasjonskast og innspilltest 100–150 m';
+  var MANEDER = [
+    { navn: 'August', ar: 2026, n: 3, fokus: 'Turneringsrunder med slag for slag-registrering',
+      knytt: [['Registrer alle runder slag for slag', 'Prosessmål · 7 av 7 runder i august']],
+      hend: [['turnering', '3 turneringer', '7 runder, alle registrert slag for slag', 'aug.']],
+      eval: [['Øyvind', 'Tre turneringer på tre helger. Puttingen var god, innspillene var for korte.'], ['Anders Kristiansen · coach', 'God turneringsrytme. Lengdekontroll 100–150 m tas inn i høstplanen.']] },
+    { navn: 'September', ar: 2026, n: 4, fokus: 'Sesongevaluering og nye målsetninger for året',
+      knytt: [['HCP under 3,0', 'Resultatmål · satt 15. sep.'], ['SG Innspill til 0,0', 'Resultatmål · satt 15. sep.']],
+      hend: [['kal', 'Sesongevaluering med Anders', 'Gjennomgang av sesongen og målsetninger for året', '15. sep.']],
+      notat: ['Øyvind · 6. sep.', 'Mer banespill i evalueringsukene, så jeg har noe å evaluere fra.'],
+      eval: [['Øyvind', 'Mye turneringsgolf tidlig i måneden. Innspillene fra 100–150 m var for korte.'], ['Anders Kristiansen · coach', 'God gjennomføring i evalueringsukene. Lengdekontroll blir hovedfokus i grunnperioden.']] },
+    { navn: 'Oktober', ar: 2026, n: 4, fokus: 'Lengdekontroll 100–150 m med TrackMan',
+      knytt: [['Innspilltest: 13 av 20 innenfor 8 m', 'Resultatmål · frist 25. okt. · nå 11 av 20'], ['3 nærspilløkter per uke', 'Prosessmål · 3 lagt inn i uke 41']],
+      hend: [['samling', 'Treningssamling Larvik GK', 'Banespill og nærspill · 2 økter', '10.–11. okt.'], ['test', 'Testuke', TESTER, '19.–25. okt.']],
+      neste: 'Neste: Klubbmesterskap innendørs, 17. nov.',
+      notat: ['Øyvind · 2. okt.', 'Skoleuke med tentamen 20.–22. okt. Tar lett uke da, og flytter innspill til helga.'] },
+    { navn: 'November', ar: 2026, n: 5, fokus: 'Innspill under press før Klubbmesterskapet',
+      knytt: [['SG Innspill til 0,0', 'Resultatmål · frist 31. mai 2027']],
+      hend: [['turnering', 'Klubbmesterskap innendørs', 'Konkurransedag', '17. nov.']],
+      notat: ['Anders Kristiansen · 12. okt.', 'Siste uke i grunnperioden er lett. Fra uke 47 spiller vi med poeng på simulator.'] },
+    { navn: 'Desember', ar: 2026, n: 4, fokus: 'Hold kroppen i gang i ferien', knytt: [],
+      hend: [['kal', 'Juleferie', 'Fri fra golf. To korte styrkeøkter i uka.', '14. des.–3. jan.']] },
+    { navn: 'Januar', ar: 2027, n: 4, hend: [], neste: 'Neste: Testuke, 8.–14. feb.' },
+    { navn: 'Februar', ar: 2027, n: 4, hend: [['test', 'Testuke', TESTER, '8.–14. feb.']] },
+    { navn: 'Mars', ar: 2027, n: 5, hend: [['kal', 'Påske', 'Lett uke', '22.–28. mars']] },
+    { navn: 'April', ar: 2027, n: 4, hend: [], neste: 'Neste: Turneringsperioden starter 3. mai.' },
+    { navn: 'Mai', ar: 2027, n: 5, hend: [['turnering', 'Turneringsperioden starter', 'Turneringene legges inn når terminlista er klar', '3. mai']] },
+    { navn: 'Juni', ar: 2027, n: 3, hend: [['kal', 'Restitusjon', 'Lett uke etter første del av sesongen', '21.–27. juni']] }
+  ];
+  (function () { var i = 0; MANEDER.forEach(function (m) { m.i0 = i; i += m.n; m.kort = m.navn.length > 4 ? m.navn.slice(0, 3) + '.' : m.navn; m.tid = m.i0 + m.n <= NA_I ? 'for' : m.i0 > NA_I ? 'etter' : 'na'; }); })();
+  function periodenavn(i0, n) {
+    var p = []; for (var i = i0; i < i0 + n; i++) { var x = periodeFor(i); if (p.indexOf(x) < 0) p.push(x); }
+    return p;
+  }
+  function hendHtml(h, neste) {
+    if (!h.length) return '<div class="hendelse">' + ikon(IKON.kal) + '<span><b>Ingen tester eller samlinger</b>' + (neste ? '<br><span class="kilde">' + neste + '</span>' : '') + '</span><small></small></div>';
+    return h.map(function (x) { return '<div class="hendelse">' + ikon(IKON[x[0]]) + '<span><b>' + x[1] + '</b><br><span class="kilde">' + x[2] + '</span></span><small>' + x[3] + '</small></div>'; }).join('') +
+      (neste ? '<div class="hendelse">' + ikon(IKON.turnering) + '<span><b>Ingen turneringer i ' + MANEDER[VALGT.m].navn.toLowerCase() + '</b><br><span class="kilde">' + neste + '</span></span><small></small></div>' : '');
+  }
   function maned(app) {
-    app.querySelector('[data-mnd-uker]').innerHTML = MNDUKER.map(function (x) {
-      var s = sumAkse(x[1]);
-      return '<button type="button" class="ukerad' + (x[0] === 41 ? ' na' : '') + '"' + (x[0] === 41 ? ' data-gaa="uke"' : '') + '><span>Uke ' + x[0] + (x[0] === 43 ? '<small>Testuke</small>' : x[0] === 41 ? '<small>Nå</small>' : '') + '</span><span class="lagtinn">' + fordelingHtml(x[1]) + '<em style="left:' + (x[2] / s * 100) + '%"></em></span><span class="v">' + fmt(x[2] || 0) + '<small>av ' + fmt(s) + '</small></span></button>';
-    }).join('');
+    var mn = MANEDER[VALGT.m], q = function (s) { return app.querySelector(s); }, uker = aarsuker();
+    var nav = mn.navn.toLowerCase(), tot = sumUker(mn.i0, mn.n, planUke);
+    var per = periodenavn(mn.i0, mn.n);
+    q('[data-m-dato]').textContent = 'Workbench · ' + per.map(function (p) { return p.navn; }).join(' og ') + ' · ' + ukespenn(mn.i0, mn.n);
+    q('[data-m-navn]').textContent = mn.navn + (mn.ar === 2027 ? ' 2027' : '');
+    var akse = {}; AKSER.forEach(function (a) { akse[a] = sumUker(mn.i0, mn.n, function (i) { return uker[i][a]; }); });
+    if (mn.tid === 'for') {
+      var gj = sumUker(mn.i0, mn.n, function (i) { return UTFORT[i]; });
+      q('[data-m-tall]').innerHTML = stor(gj);
+      q('[data-m-trend]').textContent = pst(gj, tot) + ' % av plan';
+      q('[data-m-forklar]').textContent = 'Gjennomført i ' + nav + ', av ' + fmt(tot) + ' planlagt.';
+    } else {
+      var lagt = sumUker(mn.i0, mn.n, function (i) { return i < NA_I ? 0 : i === NA_I ? 845 : LAGT[i] || 0; });
+      q('[data-m-tall]').innerHTML = stor(tot);
+      q('[data-m-trend]').textContent = mn.n + ' uker';
+      q('[data-m-forklar]').textContent = 'Fordelt i ' + nav + '. ' + (lagt ? fmt(lagt) + ' er lagt inn som økter så langt.' : 'Ingen økter er lagt inn ennå.');
+    }
+    var med = AKSER.filter(function (a) { return akse[a]; });
+    q('[data-m-fordeling]').innerHTML = '<div class="fordeling" role="img" aria-label="' + med.map(function (a) { return NAVN[a] + ' ' + fmt(akse[a]); }).join(', ') + '">' + med.map(function (a) { return '<i class="akse-bg-' + a + '" style="flex:' + akse[a] + '"></i>'; }).join('') + '</div>' +
+      '<div class="lg-rad">' + med.map(function (a) { return '<span class="lg"><i style="background:var(--' + a + ')"></i>' + NAVN[a] + ' ' + fmt(akse[a]) + '</span>'; }).join('') + '</div>';
+    q('[data-m-ukekilde]').textContent = mn.tid === 'for' ? 'Gjennomført mot planlagt' : mn.tid === 'na' ? 'Lagt inn mot fordelt' : 'Fordelt fra perioden';
+    var rader = '';
+    for (var i = mn.i0; i < mn.i0 + mn.n; i++) {
+      var s = planUke(i), u = ukeNr(i), merke = MERKE[u] ? '<small>' + MERKE[u] + '</small>' : '';
+      if (mn.tid === 'na') {
+        var li = i === NA_I ? 845 : LAGT[i] || 0;
+        rader += '<button type="button" class="ukerad' + (i === NA_I ? ' na' : '') + '"' + (i === NA_I ? ' data-gaa="uke"' : '') + '><span>Uke ' + u + merke + '</span><span class="lagtinn">' + fordelingHtml(uker[i]) + '<em style="left:' + Math.min(100, li / s * 100) + '%"></em></span><span class="v">' + fmt(li) + '<small>av ' + fmt(s) + '</small></span></button>';
+      } else rader += ukerad(i, s, true);
+    }
+    q('[data-mnd-uker]').innerHTML = rader;
+    q('[data-m-hend]').innerHTML = hendHtml(mn.hend, mn.neste);
+    var f = q('[data-m-fokus]');
+    if (mn.fokus) f.innerHTML = '<p class="fokus">' + mn.fokus + '</p>' + (mn.knytt.length ? '<div class="knytt">' + mn.knytt.map(MALLENKE).join('') + '</div>' : '');
+    else f.innerHTML = '<p class="forklar">Ingen månedsplan ennå. Timene kommer fra perioden, og periodens fokus gjelder: ' + per[0].fokus + '.</p><a class="knapp sek" href="#" data-gaa="mndskjema">Lag månedsplan</a>';
+    q('[data-m-endre]').hidden = !mn.fokus;
+    q('[data-m-notatkort]').hidden = !mn.notat;
+    if (mn.notat) q('[data-m-notat]').innerHTML = '<b>' + mn.notat[0] + '</b>' + mn.notat[1];
+    var ev = q('[data-m-eval]');
+    if (mn.tid === 'for') ev.innerHTML = sitater(mn.eval);
+    else {
+      var neste = new Date(Date.UTC(mn.ar + (VALGT.m === 4 ? 1 : 0), (ML.indexOf(nav) + 1) % 12, 1));
+      ev.innerHTML = '<p class="forklar">Evalueringen av ' + nav + ' åpner ' + UDL[neste.getUTCDay()] + ' ' + neste.getUTCDate() + '. ' + ML[neste.getUTCMonth()] + '. Du og Anders skriver hver deres.</p>' +
+        (mn.tid === 'na' ? '<div class="skille"></div><span class="undertittel">' + MANEDER[VALGT.m - 1].navn + '</span>' + sitater(MANEDER[VALGT.m - 1].eval) : '');
+    }
+    bla(app, 'data-m-steg', MANEDER.length, 'm', 'mnd');
   }
   function manedskjema(app) {
-    var el = app.querySelector('[data-uketab]'), u = MNDUKER.map(function (x) { return Object.assign({}, x[1]); });
+    var mn = MANEDER[VALGT.m], uker = aarsuker(), q = function (s) { return app.querySelector(s); };
+    var nav = mn.navn.toLowerCase();
+    var tb = app.querySelector('.tilbakelinje .tilbake'); if (tb) tb.lastChild.textContent = mn.navn;
+    q('[data-ms-dato]').textContent = 'Workbench · ' + nav + ' · ' + ukespenn(mn.i0, mn.n);
+    q('[data-ms-tittel]').textContent = mn.fokus ? 'Endre månedsplan' : 'Lag månedsplan';
+    q('#m-fokus').value = mn.fokus || '';
+    q('#m-notat').value = mn.notat ? mn.notat[1] : '';
+    q('[data-ms-knytt]').innerHTML = (mn.knytt || []).map(function (k) { return '<div><span><b>' + k[0] + '</b><br>' + k[1].split(' · ')[0] + '</span><button type="button" class="fjern" aria-label="Fjern fra måneden">' + ikon('<path d="M18 6L6 18M6 6l12 12"/>') + '</button></div>'; }).join('');
+    q('[data-ms-hend]').innerHTML = mn.hend.length ? mn.hend.map(function (x) { return '<div class="hendelse">' + ikon(IKON[x[0]]) + '<span><b>' + x[1] + '</b></span><small>' + x[3] + '</small></div>'; }).join('') : '<p class="forklar">Ingen ennå.</p>';
+    var ix = []; for (var i = mn.i0; i < mn.i0 + mn.n; i++) ix.push(i);
+    var u = ix.map(function (i) { return Object.assign({}, uker[i]); });
+    var el = q('[data-uketab]');
+    el.style.setProperty('--n', ix.length);
     function hh(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
-    var html = '<span></span>' + MNDUKER.map(function (x) { return '<span class="h">Uke ' + x[0] + (x[0] === 43 ? '<small>Testuke</small>' : '') + '</span>'; }).join('');
-    AKSER.forEach(function (a) { html += '<b><i class="akse-bg-' + a + '"></i>' + NAVN[a] + '</b>' + u.map(function (m, k) { return '<input inputmode="numeric" aria-label="' + NAVN[a] + ' uke ' + MNDUKER[k][0] + '" data-k="' + k + '" data-a="' + a + '" value="' + hh(m[a]) + '">'; }).join(''); });
+    var html = '<span></span>' + ix.map(function (i) { var w = ukeNr(i); return '<span class="h">Uke ' + w + (MERKE[w] && MERKE[w] !== 'Nå' ? '<small>' + MERKE[w] + '</small>' : '') + '</span>'; }).join('');
+    AKSER.forEach(function (a) { html += '<b><i class="akse-bg-' + a + '"></i>' + NAVN[a] + '</b>' + u.map(function (m, k) { return '<input inputmode="numeric" aria-label="' + NAVN[a] + ' uke ' + ukeNr(ix[k]) + '" data-k="' + k + '" data-a="' + a + '" value="' + hh(m[a]) + '">'; }).join(''); });
     html += '<span class="undertittel">Sum</span>' + u.map(function (_, k) { return '<span class="s" data-s="' + k + '"></span>'; }).join('');
     el.innerHTML = html;
+    var fraPer = sumUker(mn.i0, mn.n, planUke);
     function sum() {
       var tot = 0;
-      u.forEach(function (m, k) { var s = sumAkse(m), f = sumAkse(MNDUKER[k][1]); tot += s; var c = el.querySelector('[data-s="' + k + '"]'); c.textContent = hh(s); c.className = 's' + (s !== f ? ' av' : ''); });
-      app.querySelector('[data-uketab-sum]').textContent = 'Fordelt i oktober: ' + fmt(tot) + '. Perioden gir 52 t 15 min.';
+      u.forEach(function (m, k) { var s = sumAkse(m), f = planUke(ix[k]); tot += s; var c = el.querySelector('[data-s="' + k + '"]'); c.textContent = hh(s); c.className = 's' + (s !== f ? ' av' : ''); });
+      q('[data-uketab-sum]').textContent = 'Fordelt i ' + nav + ': ' + fmt(tot) + '. Perioden gir ' + fmt(fraPer) + '.';
     }
     el.addEventListener('input', function (e) { var i = e.target; var p = i.value.split(':'); var v = (+p[0] || 0) * 60 + (+p[1] || 0); if (!isNaN(v)) { u[+i.dataset.k][i.dataset.a] = v; sum(); } });
     sum();
@@ -1292,7 +1507,7 @@
       ny: m('PH-11-NY', 'ny', ny),
       per: m('PH-11-PER', 'per', periode, { tittel: 'Ingen periode her', tekst: 'Periodene lages fra årsplanen.', knapp: 'Ny periode' }, 'Henter perioden …', 'Perioden kunne ikke hentes'),
       perskjema: m('PH-11-PERSKJEMA', 'per', periodeskjema),
-      mnd: m('PH-11-MND', 'mnd', maned, { tittel: 'Ingen månedsplan for oktober', tekst: 'Sett fokus og målsetninger for måneden. Timene hentes fra perioden.', knapp: 'Lag månedsplan' }, 'Henter oktober …', 'Månedsplanen kunne ikke hentes'),
+      mnd: m('PH-11-MND', 'mnd', maned, { tittel: 'Ingen månedsplan ennå', tekst: 'Sett fokus og målsetninger for måneden. Timene hentes fra perioden.', knapp: 'Lag månedsplan' }, 'Henter måneden …', 'Månedsplanen kunne ikke hentes'),
       mndskjema: m('PH-11-MNDSKJEMA', 'mndskjema', manedskjema),
       mal: m('PH-11-MAL', 'mal', maal, { tittel: 'Ingen målsetninger ennå', tekst: 'Sett en målsetning for året, perioden, måneden, uka eller en økt.', knapp: 'Ny målsetning' }, 'Henter målsetningene …', 'Målsetningene kunne ikke hentes'),
       iup: m('PH-11-MAL-IUP', 'iup', iup, { tittel: 'Ingen måltall ennå', tekst: 'IUP-måltallene fylles automatisk når du registrerer runder og tester.', knapp: 'Registrer runde' }, 'Henter IUP-måltallene …', 'IUP-måltallene kunne ikke hentes')
