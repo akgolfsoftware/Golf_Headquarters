@@ -63,7 +63,7 @@ async function medFordeling<T extends { ok: boolean }>(res: T, periodeId: string
 }
 
 /** Eksplisitt årsplan styrer også når sesongen krysser kalenderår. */
-async function lagreIValgtSesong(userId: string, seasonPlanId: string, input: PeriodeInput, periodeId?: string) {
+async function lagreIValgtSesong(userId: string, seasonPlanId: string, input: PeriodeInput, periodeId?: string): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
   const planId = z.string().trim().min(1).max(200).safeParse(seasonPlanId);
   if (!planId.success || !gyldigPlanDato(input.startDato) || !gyldigPlanDato(input.sluttDato))
     return { ok: false, error: "Ugyldig årsplan eller periodedato." };
