@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import source from "./fixtures/tn-excel-v3.json";
-import { TN_CATALOG, TN_VERSION, tnProtocol } from "./tn-catalog";
-import { tnScore, tnValidate, tnFormat, type TnValues } from "./tn-scoring";
+import { TN_CATALOG, TN_GODKJENT_VERSION, TN_RULES_VERSION, TN_VERSION, tnProtocol } from "./tn-catalog";
+import { tnScore, tnValidate, tnFormat, tnRowPreview, type TnValues } from "./tn-scoring";
 import { validateCompletion } from "./validate-completion";
 import { scoreTest } from "./test-scoring";
 
@@ -43,12 +43,95 @@ test("utkast tillater hull i rekkefølgen; fullføring avviser mangler og ekstra
   assert.ok(tnValidate(p, { "1": { strokes: Infinity } }, false));
   assert.ok(tnValidate(p, { "1": { score: 100 } }, false));
 });
-test("8-ball bruker meter og terskler uten å runde input", () => {
-  const p = tnProtocol("8-ball-variation")!;
+test("lagret 8-ball fra før 14.10 regnes fortsatt med meter fra hull og gammel skala", () => {
+  const p = tnProtocol("8-ball-variation", undefined, TN_VERSION)!;
   const values = Object.fromEntries(p.rows.map((_, i) => [String(i + 1), { result: 0.1 }]));
   assert.equal(tnScore(p, values).metrics.find(m => m.label === "Totalt antall poeng")!.value, 72);
   values["1"].result = 1;
   assert.equal(tnScore(p, values).metrics.find(m => m.label === "Totalt antall poeng")!.value, 71);
+  assert.equal(tnScore(p, values).version, TN_VERSION);
+});
+
+const atteBall = (row: (target: number) => TnValues[string]) => {
+  const p = tnProtocol("8-ball-blocked")!;
+  return { p, values: Object.fromEntries(p.rows.map((r, i) => [String(i + 1), row(r.target!)])) as TnValues };
+};
+test("8-ball føres med carry og side: i hull 5, innenfor 1 m 3, 2 m 2, 3 m 1, lenger unna 0", () => {
+  for (const [side, points] of [[0, 3], [0.999, 3], [1, 2], [1.999, 2], [2, 1], [2.999, 1], [3, 0], [12, 0]]) {
+    const { p, values } = atteBall(target => ({ carry: target, side }));
+    const r = tnScore(p, values);
+    assert.equal(r.version, TN_GODKJENT_VERSION);
+    assert.equal(r.unit, "poeng");
+    assert.equal(r.score, points * 24, `side ${side} m`);
+  }
+  const { p, values } = atteBall(() => ({ holed: "I hull" }));
+  const r = tnScore(p, values);
+  assert.equal(r.score, 5 * 24);
+  assert.equal(r.metrics.find(m => m.label === "Gjennomsnittlig PEI")!.value, 0);
+  assert.equal(r.metrics.find(m => m.label === "Forventede putter · Excel")!.value, 0);
+});
+test("8-ball: 5 m til siden på riktig lengde er 5 m fra hullet, og vises rett etter slaget", () => {
+  const { p, values } = atteBall(target => ({ carry: target, side: 5 }));
+  const wedge40 = p.rows.findIndex(r => r.label === "Wedge40");
+  values[String(wedge40 + 1)] = { carry: 40, side: -5 };
+  assert.deepEqual(tnRowPreview(p, wedge40, values[String(wedge40 + 1)]), { distance: 5, pei: 0.125, points: 0 });
+  assert.deepEqual(tnRowPreview(p, 0, { carry: 7, side: 4 }), { distance: 5, pei: 0.5, points: 0 });
+  assert.deepEqual(tnRowPreview(p, 0, { holed: "I hull" }), { distance: 0, pei: 0, points: 5 });
+  assert.equal(tnRowPreview(p, 0, { carry: 7 }), null);
+  assert.equal(tnScore(p, values).metrics.find(m => m.label === "Gjennomsnittlig restavstand")!.value, 5);
+});
+test("8-ball krever carry og side, eller i hull, men ikke begge", () => {
+  const { p, values } = atteBall(target => ({ carry: target, side: 0 }));
+  values["1"] = { carry: 10 };
+  assert.match(tnValidate(p, values, true)!, /sideavvik/);
+  values["1"] = { carry: 10, side: 0, holed: "I hull" };
+  assert.match(tnValidate(p, values, true)!, /Fjern carry og side/);
+  values["1"] = { result: 2 };
+  assert.match(tnValidate(p, values, true)!, /Ukjent felt/);
+  values["1"] = { holed: "I hull" };
+  assert.equal(tnValidate(p, values, true), null);
+});
+test("PEI-testene viser avstand fra hullet og PEI rett etter hvert slag", () => {
+  for (const p of TN_CATALOG.filter(p => p.id.startsWith("pei-") && p.kind === "carry")) {
+    const i = 0;
+    const target = p.rows[i].target ?? 100;
+    const row = { ...(p.rows[i].target === undefined ? { target } : {}), carry: target, side: 5 };
+    assert.deepEqual(tnRowPreview(p, i, row), { distance: 5, pei: 5 / target }, p.id);
+  }
+});
+
+const gate = (id: string, hits: number): TnValues => {
+  const p = tnProtocol(id)!;
+  return Object.fromEntries(p.rows.map((_, i) => [String(i + 1), {
+    ok: i < hits ? "Godkjent" : "Bom",
+    ...(id === "putt-gate" ? { speedZone: "Ja", ...(i >= hits ? { miss: "Venstre" } : {}) } : {}),
+  }]));
+};
+for (const id of ["wedge-gate", "naerspill-gate", "visa-express"]) test(`${id} føres som godkjent eller bom: «X / 9 godkjent»`, () => {
+  const p = tnProtocol(id)!;
+  assert.equal(p.kind, "gate");
+  assert.equal(p.version, TN_GODKJENT_VERSION);
+  assert.equal(p.blocked, undefined);
+  assert.equal(p.rows.length, 9);
+  assert.ok(p.rows.every(r => r.fields.length === 1 && r.fields[0].key === "ok" && r.fields[0].choices!.join() === "Godkjent,Bom"));
+  const r = tnScore(p, gate(id, 3));
+  assert.equal(r.score, 3);
+  assert.equal(tnFormat(r.metrics[0]), "3 / 9 godkjent");
+  assert.equal(tnFormat(tnScore(p, gate(id, 0)).metrics[0]), "0 / 9 godkjent");
+  assert.equal(tnFormat(tnScore(p, gate(id, 9)).metrics[0]), "9 / 9 godkjent");
+  assert.match(tnValidate(p, { "1": { ok: "Ja" } }, false)!, /gyldig verdi/);
+});
+test("ingen gate-test viser treff som resultatord", () => {
+  for (const p of TN_CATALOG.filter(p => p.kind === "gate")) {
+    assert.ok(p.rows.every(r => r.fields.every(f => !f.label.toLowerCase().includes("treff") && !(f.choices ?? []).includes("Ja") || f.key === "speedZone")), p.id);
+    const r = tnScore(p, gate(p.id, 1));
+    assert.ok(r.metrics.every(m => !`${m.label} ${m.unit}`.toLowerCase().includes("treff")), p.id);
+    assert.equal(tnFormat(r.metrics[0]), `1 / ${p.rows.length} godkjent`);
+  }
+  // Utkast og resultater ført med «Ja» før 14.10 leses fortsatt med sin egen regelversjon.
+  const old = tnProtocol("naerspill-gate", undefined, TN_RULES_VERSION)!;
+  assert.equal(old.kind, "points");
+  assert.equal(tnValidate(old, { "1": { points: 1 } }, false), null);
 });
 test("ukjente gate-regler produserer ikke falsk standardscore", () => {
   const p = tnProtocol("naerspill-gate", undefined, TN_VERSION)!;

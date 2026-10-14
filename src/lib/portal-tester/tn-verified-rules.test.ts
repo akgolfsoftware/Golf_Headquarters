@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { TN_VERSION, TN_RULES_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
+import { TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, tnSameScore, tnSameValues, type TnValues } from "./tn-scoring";
 import { tnDefinitionId, tnFromDefinitionId, tnComparableResult } from "./tn-integration";
 import { TnSessionSchema } from "./tn-session";
@@ -8,7 +8,7 @@ import { TnSessionSchema } from "./tn-session";
 function gate(id: string, hits: number): TnValues {
   const p = tnProtocol(id)!;
   return Object.fromEntries(p.rows.map((_, i) => [String(i + 1), {
-    ok: i < hits ? "Ja" : "Nei",
+    ok: i < hits ? "Godkjent" : "Bom",
     ...(id === "putt-gate" ? { speedZone: "Ja", ...(i >= hits ? { miss: "Venstre" } : {}) } : {}),
   }]));
 }
@@ -19,8 +19,8 @@ for (const [id, hits, count] of [["driver-gate", 3, 6], ["wedge-gate", 6, 9], ["
     assert.equal(p.rows.length, count);
     const r = tnScore(p, gate(id, hits));
     assert.equal(r.score, hits);
-    assert.equal(r.unit, "treff");
-    assert.equal(r.version, TN_RULES_VERSION);
+    assert.equal(r.unit, `/ ${count} godkjent`);
+    assert.equal(r.version, TN_GODKJENT_VERSION);
     assert.equal(tnFormat(r.metrics[1]), `${(100 * hits / count).toLocaleString("nb-NO", { maximumFractionDigits: 2 })} %`);
     assert.equal(tnScore(p, gate(id, 0)).score, 0);
     assert.equal(tnScore(p, gate(id, count)).score, count);
@@ -31,12 +31,12 @@ for (const [id, hits, count] of [["driver-gate", 3, 6], ["wedge-gate", 6, 9], ["
 test("rett putt utenfor lengdesonen er et gyldig, mislykket forsøk uten sidebom", () => {
   const p = tnProtocol("putt-gate")!;
   const values = gate(p.id, 10);
-  values["1"] = { ok: "Ja", speedZone: "Nei" };
+  values["1"] = { ok: "Godkjent", speedZone: "Nei" };
   assert.equal(tnValidate(p, values, true), null);
   assert.equal(tnScore(p, values).score, 9);
   values["1"].miss = "Venstre";
   assert.match(tnValidate(p, values, true)!, /Fjern bomretning/);
-  values["1"] = { ok: "Nei", speedZone: "Ja" };
+  values["1"] = { ok: "Bom", speedZone: "Ja" };
   assert.match(tnValidate(p, values, true)!, /bomretning/);
 });
 
