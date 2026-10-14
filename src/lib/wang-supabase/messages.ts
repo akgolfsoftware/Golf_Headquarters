@@ -2,9 +2,11 @@ import "server-only";
 
 import { z } from "zod";
 
+import { WANG_ROLE_DEFINITIONS } from "./roles";
 import { opprettWangServerKlient } from "./server";
 import type {
   WangAuthenticatedProfile,
+  WangMessageConversation,
   WangMessageInbox,
   WangMessageThreadSummary,
   WangRole,
@@ -44,10 +46,22 @@ const studentSchema = z.object({
   is_demo: z.boolean(),
 });
 const profileSchema = z.object({ id: z.uuid(), display_name: z.string().min(1) });
+const conversationParticipantSchema = z.object({
+  profile_id: z.uuid(),
+  participant_role: z.enum(MESSAGE_ROLES),
+});
+const messageSchema = z.object({
+  id: z.uuid(),
+  sender_profile_id: z.uuid().nullable(),
+  body: z.string().min(1).max(5000),
+  created_at: z.iso.datetime({ offset: true }),
+});
 
 type MessageThreadRow = z.infer<typeof threadSchema>;
 type MessageStudentRow = z.infer<typeof studentSchema>;
 type MessageProfileRow = z.infer<typeof profileSchema>;
+type ConversationParticipantRow = z.infer<typeof conversationParticipantSchema>;
+type MessageRow = z.infer<typeof messageSchema>;
 
 function validerRader<T>(schema: z.ZodType<T>, data: unknown, label: string): T[] {
   const result = z.array(schema).safeParse(data ?? []);
@@ -97,6 +111,57 @@ export function byggWangMeldingsinnboks(
     threads: summaries.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
     canStartConversation: kanStarteWangSamtale(role),
     emailNotificationsEnabled: false,
+  };
+}
+
+export function byggWangMeldingssamtale(
+  currentProfileId: string,
+  thread: MessageThreadRow,
+  student: MessageStudentRow,
+  participants: ConversationParticipantRow[],
+  messages: MessageRow[],
+  profiles: MessageProfileRow[],
+): WangMessageConversation {
+  if (student.id !== thread.student_id) {
+    throw new Error("WANG-samtalen har ugyldig elevkobling.");
+  }
+
+  const profileNameById = new Map(profiles.map((profile) => [profile.id, profile.display_name]));
+  const participantRoleById = new Map(
+    participants.map((participant) => [participant.profile_id, participant.participant_role]),
+  );
+  const studentName = student.is_demo
+    ? student.demo_name
+    : student.profile_id
+      ? profileNameById.get(student.profile_id)
+      : null;
+  if (!studentName) throw new Error("WANG-samtalen mangler elevnavn.");
+
+  return {
+    id: thread.id,
+    subject: thread.subject,
+    studentName,
+    isDemo: student.is_demo,
+    updatedAt: thread.updated_at,
+    closedAt: thread.closed_at,
+    canReply: false,
+    messages: messages.map((message) => {
+      const senderRole = message.sender_profile_id
+        ? participantRoleById.get(message.sender_profile_id)
+        : null;
+      const senderLabel = message.sender_profile_id
+        ? profileNameById.get(message.sender_profile_id)
+          ?? (senderRole ? WANG_ROLE_DEFINITIONS[senderRole].label : "Tidligere deltaker")
+        : "Tidligere deltaker";
+
+      return {
+        id: message.id,
+        senderLabel,
+        isCurrentUser: message.sender_profile_id === currentProfileId,
+        body: message.body,
+        createdAt: message.created_at,
+      };
+    }),
   };
 }
 
@@ -162,4 +227,78 @@ export async function hentWangMeldingsinnboks(
   }
 
   return byggWangMeldingsinnboks(profile.role, threads, students, profiles);
+}
+
+export async function hentWangMeldingssamtale(
+  profile: WangAuthenticatedProfile,
+  threadId: string,
+): Promise<WangMessageConversation | null> {
+  if (!erWangMeldingsrolle(profile.role) || !z.uuid().safeParse(threadId).success) {
+    return null;
+  }
+
+  const supabase = await opprettWangServerKlient();
+  const threadResult = await supabase
+    .from("wang_message_threads")
+    .select("id, student_id, subject, updated_at, closed_at")
+    .eq("id", threadId)
+    .maybeSingle();
+  if (threadResult.error) throw new Error("WANG-samtalen kunne ikke hentes.");
+  if (!threadResult.data) return null;
+
+  const parsedThread = threadSchema.safeParse(threadResult.data);
+  if (!parsedThread.success) throw new Error("WANG-samtalen har ugyldige data.");
+
+  const [studentResult, participantsResult, messagesResult] = await Promise.all([
+    supabase
+      .from("wang_students")
+      .select("id, profile_id, demo_name, is_demo")
+      .eq("id", parsedThread.data.student_id)
+      .maybeSingle(),
+    supabase
+      .from("wang_message_participants")
+      .select("profile_id, participant_role")
+      .eq("thread_id", parsedThread.data.id),
+    supabase
+      .from("wang_messages")
+      .select("id, sender_profile_id, body, created_at")
+      .eq("thread_id", parsedThread.data.id)
+      .order("created_at", { ascending: true }),
+  ]);
+  if (studentResult.error || participantsResult.error || messagesResult.error) {
+    throw new Error("WANG-samtalen kunne ikke hentes.");
+  }
+  const parsedStudent = studentSchema.safeParse(studentResult.data);
+  if (!parsedStudent.success) throw new Error("WANG-samtalen har ugyldig elevkobling.");
+  const participants = validerRader(
+    conversationParticipantSchema,
+    participantsResult.data,
+    "samtaledeltakere",
+  );
+  const messages = validerRader(messageSchema, messagesResult.data, "meldinger");
+
+  const profileIds = [
+    ...new Set([
+      ...participants.map((participant) => participant.profile_id),
+      ...(parsedStudent.data.profile_id ? [parsedStudent.data.profile_id] : []),
+    ]),
+  ];
+  let profiles: MessageProfileRow[] = [];
+  if (profileIds.length > 0) {
+    const profilesResult = await supabase
+      .from("wang_profiles")
+      .select("id, display_name")
+      .in("id", profileIds);
+    if (profilesResult.error) throw new Error("WANG-samtalen kunne ikke hentes.");
+    profiles = validerRader(profileSchema, profilesResult.data, "samtaleprofiler");
+  }
+
+  return byggWangMeldingssamtale(
+    profile.id,
+    parsedThread.data,
+    parsedStudent.data,
+    participants,
+    messages,
+    profiles,
+  );
 }

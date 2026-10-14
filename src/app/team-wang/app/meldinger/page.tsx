@@ -132,14 +132,16 @@ export default async function WangMeldingerPage() {
           <ul className={styles.threadList}>
             {inbox.threads.map((thread) => (
               <li key={thread.id}>
-                <div>
-                  <strong>{thread.subject}</strong>
-                  <span>{thread.studentName}</span>
-                </div>
-                <div>
-                  <span>{thread.closedAt ? "Avsluttet" : "Aktiv"}</span>
-                  <time dateTime={thread.updatedAt}>Oppdatert {formatDateTime(thread.updatedAt)}</time>
-                </div>
+                <Link href={`/team-wang/app/meldinger/${thread.id}`} className={styles.threadLink}>
+                  <div>
+                    <strong>{thread.subject}</strong>
+                    <span>{thread.studentName}</span>
+                  </div>
+                  <div>
+                    <span>{thread.closedAt ? "Avsluttet" : "Aktiv"}</span>
+                    <time dateTime={thread.updatedAt}>Oppdatert {formatDateTime(thread.updatedAt)}</time>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>

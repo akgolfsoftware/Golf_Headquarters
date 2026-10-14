@@ -27,6 +27,8 @@ skrivebeskyttede tabellene `wang_message_threads`, `wang_message_participants` o
 dagens kontoeksport eller sletteløp i AK Golf HQ. Ingen ekte WANG-profiler eller elevdata skal
 opprettes før eksport, retting, tilbakekalling og sletting er koblet og prøvd mot den separate basen.
 Meldingstabellene har ingen skriverett for innloggede klienter og inneholder ingen rader fra denne leveransen.
+En aktiv deltaker kan lese lagret samtaleinnhold i den beskyttede WANG-flaten, men innholdet inngår
+fortsatt ikke i eksport- eller sletteløpet. Skriving, e-postvarsling og ekte testkontoer er ikke åpnet.
 
 ### Finnes
 

@@ -268,3 +268,18 @@ Den beskyttede siden `/team-wang/app/meldinger` viser en rolleavgrenset innboks 
 - ingen meldingsrader, Auth-kontoer, e-postvarsler eller ekte elevdata er opprettet i denne arbeidsbolken
 
 Neste meldingssteg er en egen kontrollert skriveflyt med validerte mottakere, logging, lagringstid, eksport og sletting før e-postvarsling vurderes.
+
+## 20. Skrivebeskyttet samtaledetalj bygget 14. oktober 2026
+
+Den beskyttede ruten `/team-wang/app/meldinger/[threadId]` viser lagret meldingsinnhold uten å åpne sending.
+
+- ukjent samtale og samtale uten gyldig deltakertilgang gir samme nøytrale svar
+- databasen kontrollerer aktivt deltakermedlemskap og fortsatt elevtilgang ved hvert oppslag
+- meldinger vises kronologisk med tidspunkt og navn når rollen allerede kan lese profilen; ellers brukes bare deltakerrollen
+- siden henter ikke e-post, telefonnummer, søvn eller dagsform
+- tom samtale har en tydelig tomtilstand, og avsluttet samtale er tydelig merket
+- det finnes ingen svarfelt, opprettingsknapp, sletting eller e-postvarsling
+- ingen nye tabeller, rettigheter, Auth-kontoer, meldingsrader eller ekte elevdata er lagt til
+
+Neste meldingssteg er fortsatt en kontrollert skriveflyt. Den kan ikke åpnes før eksport, sletting,
+lagringstid og revisjonsspor er besluttet og testet.

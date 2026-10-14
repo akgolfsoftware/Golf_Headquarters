@@ -212,6 +212,19 @@ export interface WangMessageInbox {
   emailNotificationsEnabled: false;
 }
 
+export interface WangMessageItem {
+  id: string;
+  senderLabel: string;
+  isCurrentUser: boolean;
+  body: string;
+  createdAt: string;
+}
+
+export interface WangMessageConversation extends WangMessageThreadSummary {
+  messages: WangMessageItem[];
+  canReply: false;
+}
+
 export interface WangStartMetric {
   label: string;
   value: string;
