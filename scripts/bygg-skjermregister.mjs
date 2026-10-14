@@ -371,7 +371,7 @@ const OVERLEGG = [
 
 export function buildRegister(root) {
   const data = inventory(root);
-  const wang = loadNamedRoutes(readFileSync(resolve(root, "designsystem/wang/SKJERMREGISTER.md"), "utf8"), /^[ABCD]\d+$/);
+  const wang = loadNamedRoutes(readFileSync(resolve(root, "designsystem/wang/SKJERMREGISTER.md"), "utf8"), /^(?:[ABCD]\d+|APP-\d+)$/);
   const tn = loadNamedRoutes(readFileSync(resolve(root, "designsystem/team-norway/handover/SKJERMREGISTER.md"), "utf8"), /^TN-\d+$/);
   const tnById = new Map(tn.rows.filter((row) => row.path).map((row) => [row.id, row]));
   const wangTypes = [...wang.byPath.entries()].map(([path, rows]) => ({
@@ -454,7 +454,7 @@ export function buildRegister(root) {
         row.screenId = primary.id;
         row.rolle = primary.roller;
         row.designkilde = "designsystem/wang/SKJERMREGISTER.md";
-        row.designversjon = "wang-lokalt-35-ikke-59-fasit";
+        row.designversjon = "wang-lokalt-49-ikke-59-fasit";
         row.handlinger = primary.navn;
         row.sammeSidefil = matches.filter((item) => item.id !== primary.id).map((item) => `${item.id} ${item.navn}`);
         row.forklaring = `Lokal WANG-rad ${primary.id} ${primary.navn}. De 59 skjermene i Claude Design er fasit og ligger ikke i git. Lokal rad er byggeunderlag for rute og rolle, ikke visuell godkjenning, og appen er ikke kontrollert i denne bolken.`;
@@ -463,8 +463,8 @@ export function buildRegister(root) {
         row.kobling = "teknisk-forklaring";
         row.screenId = "WANG-UTEN-RAD";
         row.designkilde = "designsystem/wang/SKJERMREGISTER.md";
-        row.designversjon = "wang-lokalt-35-ikke-59-fasit";
-        row.forklaring = "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.";
+        row.designversjon = "wang-lokalt-49-ikke-59-fasit";
+        row.forklaring = "App-ruten finnes, men ingen av de 49 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.";
       }
     } else if (route.startsWith("/team-norway")) {
       const hit = bestMatch(route, tnTypes);

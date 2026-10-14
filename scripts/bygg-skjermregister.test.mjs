@@ -49,6 +49,14 @@ test("every current page file gets an explanation and an owner", () => {
   assert.equal(byRoute.get("/").screenId, "MK-FORSIDE");
   assert.equal(byRoute.get("/team-norway/college").screenId, "TN-15");
   assert.match(byRoute.get("/team-norway/college").avvik.join(" "), /TN-06/);
+  assert.equal(byRoute.get("/team-wang/app").screenId, "APP-01");
+  assert.equal(byRoute.get("/team-wang/app/workbench").screenId, "APP-04");
+  assert.equal(byRoute.get("/team-wang/app/utovere/[elevId]").screenId, "APP-07");
+  assert.equal(byRoute.get("/team-wang/demo/roller").screenId, "APP-12");
+  assert.deepEqual(
+    register.sider.filter((row) => row.rute.startsWith("/team-wang") && row.screenId === "WANG-UTEN-RAD"),
+    [],
+  );
   assert.equal(byRoute.get("/portal/planlegge").screenId, "PH-10");
   assert.equal(byRoute.get("/portal/planlegge").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/planlegge").kontrollbevis, /PH10Plan/);
