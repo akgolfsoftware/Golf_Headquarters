@@ -3646,6 +3646,32 @@ model PeriodBlock {
   @@map("period_blocks")
 }
 
+// Plannivåene henger sammen (Anders 14.10.2026, punkt 2): månedsplan. Én rad per
+// spiller, år og måned. `weekAxisMinutes` er {"ÅÅÅÅ-Uxx": {FYS,TEK,SLAG,SPILL,TURN}};
+// en uke som står der er «Endret i måneden» og beholder månedens tall når perioden
+// endres. JSON — zod-valideres ved lesing (lib/workbench/maanedsplan.ts).
+// Plain userId/seasonPlanId (FK håndheves i DB-DDL; ingen @relation for å holde
+// endringen isolert — jf. gotcha-regelen for additive tabeller).
+model MonthPlan {
+  id              String   @id @default(cuid())
+  userId          String
+  seasonPlanId    String?
+  year            Int
+  /// 1–12
+  month           Int
+  focus           String?
+  notes           String?
+  evaluation      String?
+  weekAxisMinutes Json?
+  createdById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, year, month])
+  @@index([userId])
+  @@map("month_plans")
+}
+
 // 8c.1 (Anders 2026-07-12): gruppens EGEN årsplan — samme tidslinje-UI som
 // spillerens, lagret på gruppenivå. Spillerne beholder individuelle planer.
 // Plain groupId (FK håndheves i DB-DDL; ingen @relation for å holde

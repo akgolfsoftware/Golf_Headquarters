@@ -8,14 +8,18 @@ import { osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import {
   minutterForUke, ukeTimerFraMinutter, ukerForPeriode, type FordelingKvittering,
 } from "@/lib/workbench/periode-ukefordeling-regler";
+import { overstyrteUkenokler, ukeNokkel } from "@/lib/workbench/maanedsplan-regler";
 
 /**
  * Skriv periodens timer per akse til ukeplanene fra og med inneværende uke.
  * Perioden må være lagret. Tom fordeling (ingen axisMinutes) røres ikke.
+ * Uker en måned har tilpasset («Endret i måneden») beholder månedens tall.
+ * `kunUker` (nøkler «ÅÅÅÅ-Uxx») begrenser skrivingen til disse ukene.
  */
 export async function fordelPeriodeTilUker(
   periodeId: string,
   now: Date = new Date(),
+  kunUker?: ReadonlySet<string>,
 ): Promise<FordelingKvittering> {
   const tom: FordelingKvittering = { antallUker: 0, fraUke: null, tilUke: null };
   const periode = await prisma.periodBlock.findUnique({
@@ -40,13 +44,24 @@ export async function fordelPeriodeTilUker(
   if (uker.length === 0) return tom;
 
   const playerId = periode.seasonPlan.userId;
+  const maaneder = await prisma.monthPlan.findMany({
+    where: { userId: playerId },
+    select: { weekAxisMinutes: true },
+  });
+  const tilpasset = overstyrteUkenokler(maaneder);
+  const aktuelle = uker.filter((u) => {
+    const nokkel = ukeNokkel(u.isoYear, u.weekNumber);
+    return !tilpasset.has(nokkel) && (!kunUker || kunUker.has(nokkel));
+  });
+  if (aktuelle.length === 0) return tom;
+
   const eksisterende = await prisma.weekPlan.findMany({
-    where: { playerId, isoYear: { in: [...new Set(uker.map((u) => u.isoYear))] } },
+    where: { playerId, isoYear: { in: [...new Set(aktuelle.map((u) => u.isoYear))] } },
     select: { isoYear: true, weekNumber: true, weekType: true },
   });
   const typeForUke = new Map(eksisterende.map((w) => [`${w.isoYear}-${w.weekNumber}`, w.weekType]));
 
-  const skrives = uker.flatMap((u) => {
+  const skrives = aktuelle.flatMap((u) => {
     const lett = typeForUke.get(`${u.isoYear}-${u.weekNumber}`) === "VEDLIKEHOLD";
     const minutter = minutterForUke(tall, lett);
     return minutter ? [{ uke: u, data: ukeTimerFraMinutter(minutter) }] : [];
