@@ -105,6 +105,8 @@ import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } 
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
+import { hentMaaned, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
+import type { MaanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import {
   isoUkeIdentitet,
   isoUkeMandag,
@@ -917,16 +919,39 @@ export async function loadMonth(params: {
   const [y, m] = monthStart.split("-").map(Number);
   const label = `${UI.monthNames[m - 1]} ${y}`;
   const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  const maanedsplan = await hentMaaned(params.playerId, y, m);
   return {
     ok: true,
-    data: buildMonthViewModel(
-      monthStart,
-      sessions,
-      params.mode,
-      params.targetMinutes ?? 0,
-      label,
-      idagIso,
-    ),
+    data: {
+      ...buildMonthViewModel(
+        monthStart,
+        sessions,
+        params.mode,
+        params.targetMinutes ?? 0,
+        label,
+        idagIso,
+      ),
+      maanedsplan,
+    },
+  };
+}
+
+/**
+ * Lagre månedsplanen (fokus, notat, evaluering og uker måneden tilpasser) og skriv
+ * tilpassede timer til ukeplanene fra og med inneværende uke. Samme tilgang som perioder.
+ */
+export async function saveMonthPlan(input: {
+  playerId: string;
+  data: unknown;
+}): Promise<WbResultat<{ kvittering: MaanedKvittering; fordelingFeilet?: boolean }>> {
+  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  const result = await lagreMaanedCore(input.playerId, viewer.id, input.data);
+  if (!result.ok) return { ok: false, error: result.error };
+  revalider(input.playerId);
+  return {
+    ok: true,
+    data: { kvittering: result.kvittering, ...(result.fordelingFeilet && { fordelingFeilet: true }) },
   };
 }
 

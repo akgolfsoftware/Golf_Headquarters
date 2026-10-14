@@ -4,10 +4,12 @@ import { before, beforeEach, mock, test } from "node:test";
 type Uke = { playerId: string; isoYear: number; weekNumber: number; weekType: string; plannedHoursFys: number | null; plannedHoursTek: number | null; seasonPlanId?: string };
 let uker: Uke[];
 let periode: Record<string, unknown> | null;
+let maaneder: Array<{ weekAxisMinutes: unknown }>;
 
 const nokkel = (u: { isoYear: number; weekNumber: number }) => `${u.isoYear}-${u.weekNumber}`;
 const prisma = {
   periodBlock: { findUnique: async () => periode },
+  monthPlan: { findMany: async () => maaneder },
   weekPlan: {
     findMany: async () => uker.map((u) => ({ isoYear: u.isoYear, weekNumber: u.weekNumber, weekType: u.weekType })),
     upsert: async ({ where, create, update }: { where: { playerId_isoYear_weekNumber: { playerId: string; isoYear: number; weekNumber: number } }; create: Uke; update: Partial<Uke> }) => {
@@ -27,6 +29,7 @@ const uke = (weekNumber: number, weekType = "UTVIKLING", fys: number | null = 9)
   ({ playerId: "spiller", isoYear: 2026, weekNumber, weekType, plannedHoursFys: fys, plannedHoursTek: null });
 
 beforeEach(() => {
+  maaneder = [];
   uker = [uke(40), uke(41), uke(43, "VEDLIKEHOLD")];
   periode = {
     startDate: new Date("2026-09-28T00:00:00Z"), endDate: new Date("2026-11-01T00:00:00Z"),
@@ -58,4 +61,20 @@ test("periode uten minutter per akse lar ukene stå", async () => {
   const k = await modul.fordelPeriodeTilUker("p1", iDag);
   assert.equal(k.antallUker, 0);
   assert.deepEqual(uker.map((u) => u.plannedHoursFys), [9, 9, 9]);
+});
+
+test("uke måneden har tilpasset beholder månedens tall når perioden endres", async () => {
+  uker.push(uke(42, "UTVIKLING", 5));
+  maaneder = [{ weekAxisMinutes: { "2026-U42": { FYS: 300 } } }];
+  const k = await modul.fordelPeriodeTilUker("p1", iDag);
+  assert.equal(uker.find((u) => u.weekNumber === 42)!.plannedHoursFys, 5);
+  assert.equal(uker.find((u) => u.weekNumber === 44)!.plannedHoursFys, 2);
+  assert.deepEqual(k, { antallUker: 2, fraUke: "2026-U43", tilUke: "2026-U44" });
+});
+
+test("kunUker begrenser skrivingen til de nevnte ukene", async () => {
+  const k = await modul.fordelPeriodeTilUker("p1", iDag, new Set(["2026-U44"]));
+  assert.equal(uker.find((u) => u.weekNumber === 44)!.plannedHoursFys, 2);
+  assert.equal(uker.find((u) => u.weekNumber === 43)!.plannedHoursFys, 9);
+  assert.equal(k.antallUker, 1);
 });

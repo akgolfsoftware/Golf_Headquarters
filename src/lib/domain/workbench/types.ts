@@ -618,6 +618,16 @@ export interface MonthViewModel {
   completedByPyramid: Record<PyramidArea, number>;
   empty: boolean;
   mode: WorkbenchMode;
+  /** Månedsplanen (fokus, notat og uker måneden har tilpasset). Satt av loadMonth. */
+  maanedsplan?: MaanedsplanVisning | null;
+}
+
+/** Lagret månedsplan. `uker`: «ÅÅÅÅ-Uxx» → minutter per akse; en uke her er «Endret i måneden». */
+export interface MaanedsplanVisning {
+  fokus: string | null;
+  notat: string | null;
+  evaluering: string | null;
+  uker: Record<string, Partial<Record<PyramidArea, number>>>;
 }
 
 export interface YearMonthRow {
