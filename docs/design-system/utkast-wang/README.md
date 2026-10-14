@@ -1,6 +1,6 @@
 # WANG Toppidrett i nytt design: trenerskjermene
 
-Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakke 2 I dag er utkast 1 (14.10).**
+Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakkene 2–9 tegnes som utkast 1 natt til 15.10 og venter på port 7. Åpne spørsmål står samlet nederst.**
 
 Gjelder trenerflaten i `/team-wang` i AK Golf HQ. Claude Design stenger 14.12, så Anders godkjente 14.10 at WANG tegnes i
 repoet som HTML-utkast publisert som private Artifacts, samme metode som [PlayerHQ](../utkast-playerhq/README.md).
@@ -41,7 +41,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 |---|---|---|---|---|
 | 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders) | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
 | 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/SnvRTBqBURfaAwGeB8Fd4k |
-| 3 Trening | WANG-42 oversikt (planlagt mot gjennomført 4 uker, etterlevelse, per område og elev), årsplan, periode, måned, uke, økt | `trening.html` | | |
+| 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/TwDR654TtsNY2reVdzuynX |
 | 4 Tester | Testbatteriet, testdag-føring, resultater per elev, A–K-nivå, fysisk test hver sjette uke | `tester.html` | | |
 | 5 Konkurranse | Turneringer, resultater per elev, samlinger med uttak | `konkurranse.html` | | |
 | 6 Meldinger | Innboks, gruppeposter, post til én elev (foresatt leser under 18) | `meldinger.html` | | |
@@ -93,3 +93,12 @@ Bildene i `bilder/` er kopier fra PlayerHQ-utkastene (FYS-bildet er Unsplash, Vi
 ## Nytt i utkastet som ikke finnes i `wang-tokens.css`
 
 - `--rosa-tekst: #A81F49`: rosa tekst på rosa tint. WANGs `#D12A5C` gir bare 4,2:1 der. Forslag til nytt token.
+
+## Åpne spørsmål til Anders
+
+Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). Ingen av dem stopper tegningen.
+
+### Pakke 3 Trening
+1. Ligger morgentreningene (WANG-04) fast i timeplanen, eller kan trener flytte dem i uka? Utkastet lar trener endre dem som vanlige økter.
+2. Skal en WANG-elev kunne ha «Egen» uke i gruppas plan, eller sender treneren bare forslag? Utkastet viser at eleven arver gruppas plan og at endringer fra trener er forslag (vedtaket 06.10).
+3. Periodene i årsplanen er et forslag: Turneringsperiode uke 33–41, Evaluering uke 42, Restitusjon uke 43, Grunnperiode uke 44–51 og 2–9, Spesialperiode uke 10–17, Turneringsperiode uke 18–25, Ferie. Fasit for WANG 2026/27 er årshjulet i repoet; tallene her er syntetiske.

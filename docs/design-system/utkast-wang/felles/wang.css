@@ -193,7 +193,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .lg-rad{display:flex;flex-wrap:wrap;gap:6px 14px}
 .lg{display:inline-flex;align-items:center;gap:6px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
 .lg i{width:10px;height:10px;border-radius:3px}
-.bg-fys{background:var(--fys)} .bg-tek{background:var(--tek)} .bg-slag{background:var(--slag)} .bg-spill{background:var(--spill)} .bg-turn{background:var(--turn)}
+.app .bg-fys{background:var(--fys)} .app .bg-tek{background:var(--tek)} .app .bg-slag{background:var(--slag)} .app .bg-spill{background:var(--spill)} .app .bg-turn{background:var(--turn)}
 .fyll-fys{background:var(--fys-fyll);color:var(--fys-paa)} .fyll-tek{background:var(--tek-fyll);color:var(--tek-paa)} .fyll-slag{background:var(--slag-fyll);color:var(--slag-paa)}
 .fyll-spill{background:var(--spill-fyll);color:var(--spill-paa)} .fyll-turn{background:var(--turn-fyll);color:var(--turn-paa)}
 
