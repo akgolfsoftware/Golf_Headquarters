@@ -1,0 +1,243 @@
+/* Felles grunnmur for WANG-utkastene (trenerflaten i /team-wang).
+   Samme metode som utkast-playerhq, men bare WANGs egne farger og skrifter.
+   Kilde for verdiene: src/styles/wang-tokens.css og PY_AXES/AKSE_FARGE i
+   src/app/team-wang/_components/ak-primitiver.tsx. Ingen AK-farger (rust, sand, grafitt, Precision-akser).
+   To lag: .ytre = siden rundt skjermen (velgere, notater), .app = selve skjermen.
+   PC fra 900 px containerbredde. */
+
+:root{
+  --side-bg:#F4F6F8; --side-tekst:#1E293B; --side-dempet:#475569; --side-linje:#DCE3EA; --side-kort:#FFFFFF; --side-valgt:#17446F; --side-paa-valgt:#FFFFFF;
+  --brand:"Montserrat",system-ui,-apple-system,sans-serif; --body:"Quattrocento Sans",system-ui,-apple-system,sans-serif;
+  --ut:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-bg:#0F172A;--side-tekst:#E9EDF1;--side-dempet:#94A3B8;--side-linje:#334155;--side-kort:#1E293B;--side-valgt:#49CA9F;--side-paa-valgt:#0F172A;color-scheme:dark}}
+:root[data-theme="dark"]{--side-bg:#0F172A;--side-tekst:#E9EDF1;--side-dempet:#94A3B8;--side-linje:#334155;--side-kort:#1E293B;--side-valgt:#49CA9F;--side-paa-valgt:#0F172A;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.5 var(--body)}
+
+/* ---------- Siden rundt skjermen ---------- */
+.ytre{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:20px}
+.hode{display:grid;gap:8px;max-width:72ch}
+.meta-s{font:700 12px/1.4 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--side-dempet)}
+.hode h1{margin:0;font:800 clamp(1.6rem,4.5vw,2.3rem)/1.15 var(--brand);letter-spacing:-.02em;text-wrap:balance}
+.hode p{margin:0;color:var(--side-dempet)}
+.kontroller{display:flex;flex-wrap:wrap;gap:10px}
+.velger{display:inline-flex;flex-wrap:wrap;border:1px solid var(--side-linje);border-radius:999px;padding:3px;gap:3px;background:var(--side-kort)}
+.velger button{font:600 14px/1 var(--brand);min-height:40px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:var(--side-tekst);cursor:pointer}
+.velger button[aria-pressed="true"]{background:var(--side-valgt);color:var(--side-paa-valgt)}
+.velger button:focus-visible{outline:3px solid #49CA9F;outline-offset:2px}
+.scene{display:flex;justify-content:center;min-width:0}
+.ramme{border:1px solid var(--side-linje);border-radius:20px;overflow:hidden;background:#F4F6F8;box-shadow:0 12px 32px rgba(15,42,68,.14);position:relative}
+.ramme.mob{width:390px;max-width:100%}
+.ramme.pc{width:100%}
+.skala{width:1280px;transform-origin:top left}
+.notater{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start}
+.endringer{background:var(--side-kort);border:1px solid var(--side-linje);border-radius:16px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.endringer h2{margin:0;font:700 17px/1.3 var(--brand)}
+.endringer ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.endringer p{margin:0}
+
+/* ---------- Skjermen: WANG-tokens ---------- */
+.app{
+  /* Merkevarekjerne (wang-tokens.css) */
+  --navy:#17446F; --teal:#2E857D; --teal-tekst:#226F67; --mint:#49CA9F; --navy-dyp-tekst:#0D3050;
+  --orange:#F47B20; --orange-tekst:#B4571A; --gul:#FCD700; --gul-tekst:#7A6200; --rosa:#D12A5C; --blaa:#007DB1; --blaa-tekst:#00618A; --lilla:#7F1975; --graa:#D2D2D2;
+  /* Ny i utkastet: rosa som tekst på rosa tint. #D12A5C gir bare 4,2:1 der. Forslag, ikke i wang-tokens.css ennå. */
+  --rosa-tekst:#A81F49;
+  --bg:#F4F6F8; --kort:#FFFFFF; --tekst:#1E293B; --tekst-2:#475569; --navy-dyp:#0F172A; --linje:#E9EDF1;
+  --n100:#E9EDF1; --n200:#DCE3EA; --n300:#C5D0DA; --n400:#94A3B8; --n500:#64748B;
+  --tint-navy:color-mix(in srgb,var(--navy) 12%,white); --tint-teal:color-mix(in srgb,var(--teal) 13%,white); --tint-mint:color-mix(in srgb,var(--mint) 13%,white);
+  --tint-orange:color-mix(in srgb,var(--orange) 9%,white); --tint-gul:color-mix(in srgb,var(--gul) 9%,white); --tint-rosa:color-mix(in srgb,var(--rosa) 10%,white);
+  --tint-blaa:color-mix(in srgb,var(--blaa) 10%,white); --tint-lilla:color-mix(in srgb,var(--lilla) 10%,white); --tint-graa:#F1F4F7;
+  --grad-hero:linear-gradient(160deg,color-mix(in srgb,var(--navy) 82%,white) 0%,var(--navy) 55%,color-mix(in srgb,var(--navy) 82%,black) 100%);
+  --grad-score:linear-gradient(135deg,var(--teal) 0%,var(--mint) 100%);
+  --r-kort:26px; --r-kort-s:20px; --r-felt:16px; --r-chip:999px; --r-ikon:14px;
+  --skygge:0 8px 24px rgba(23,68,111,.08); --skygge-s:0 4px 14px rgba(23,68,111,.06); --skygge-flyt:0 12px 32px rgba(15,42,68,.18);
+  /* Aksene. Samme fargevalg som AKSE_FARGE (ak-primitiver.tsx).
+     --x = ren farge (søyler, prikker). --x-fyll = flate med tekst. --x-paa = tekst på fyllet. --x-tekst = tekst på hvitt/tint. */
+  --fys:var(--navy);   --fys-fyll:var(--navy);        --fys-paa:#FFFFFF;          --fys-tekst:var(--navy);        --fys-tint:var(--tint-navy);
+  --tek:var(--teal);   --tek-fyll:var(--teal-tekst);  --tek-paa:#FFFFFF;          --tek-tekst:var(--teal-tekst);  --tek-tint:var(--tint-teal);
+  --slag:var(--orange);--slag-fyll:var(--orange);     --slag-paa:var(--navy-dyp); --slag-tekst:var(--orange-tekst);--slag-tint:var(--tint-orange);
+  --spill:var(--blaa); --spill-fyll:var(--blaa);      --spill-paa:#FFFFFF;        --spill-tekst:var(--blaa-tekst);--spill-tint:var(--tint-blaa);
+  --turn:var(--lilla); --turn-fyll:var(--lilla);      --turn-paa:#FFFFFF;         --turn-tekst:var(--lilla);      --turn-tint:var(--tint-lilla);
+  position:relative;container-type:inline-size;background:var(--bg);color:var(--tekst);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.app *{min-width:0}
+.app p{margin:0}
+.ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Skall: topplinje + bunnmeny på mobil, sidemeny på PC ---------- */
+.topplinje{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 8px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);box-shadow:0 1px 0 var(--linje)}
+.logo{display:block;height:34px;width:auto}
+.topp-hoyre{display:flex;align-items:center;gap:4px}
+.rolle{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--r-chip);background:var(--tint-navy);color:var(--navy);font:700 11px/1 var(--brand);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.bjelle{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-ikon);color:var(--navy);background:transparent;border:0;cursor:pointer}
+.bjelle b{position:absolute;top:5px;right:4px;min-width:18px;height:18px;border-radius:9px;background:var(--rosa);color:#fff;font:700 11px/18px var(--brand);text-align:center}
+.skall{display:block}
+.meny{display:none}
+.innhold{padding:20px 16px 32px;display:grid;gap:28px;align-content:start}
+.bunnmeny{position:sticky;bottom:0;z-index:4;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;box-shadow:0 -1px 0 var(--linje),0 -8px 24px rgba(23,68,111,.06)}
+.bunnmeny a,.bunnmeny button{display:grid;justify-items:center;gap:4px;padding:9px 0 12px;font:700 11px/1 var(--brand);color:var(--n500);text-decoration:none;border:0;background:transparent;cursor:pointer;position:relative}
+.bunnmeny .aktiv{color:var(--navy)}
+.bunnmeny .aktiv::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--mint)}
+.mer-ark{position:absolute;inset:0;z-index:6;display:grid;align-items:end;background:rgba(15,23,42,.42)}
+.mer-ark[hidden]{display:none}
+.mer-ark .ark{border-radius:26px 26px 0 0;background:#fff;padding:12px 16px 24px;display:grid;gap:4px;box-shadow:var(--skygge-flyt)}
+.mer-ark .ark::before{content:"";justify-self:center;width:40px;height:4px;border-radius:2px;background:var(--n200);margin-bottom:8px}
+.mer-ark a{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 12px;border-radius:var(--r-felt);color:var(--tekst);text-decoration:none;font:700 16px/1 var(--brand)}
+.mer-ark a.aktiv{background:var(--tint-navy);color:var(--navy)}
+.mer-ark .teller{margin-left:auto}
+.tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;background:#fff;box-shadow:0 1px 0 var(--linje);position:sticky;top:0;z-index:4}
+.tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;border:0;background:transparent;font:700 15px/1 var(--brand);color:var(--navy);cursor:pointer;border-radius:var(--r-ikon);text-decoration:none}
+
+/* ---------- Tekst ---------- */
+.dato{font:700 12px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
+.tittel{margin:4px 0 0;font:800 28px/1.12 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
+.ingress{margin-top:8px!important;font-size:16px;line-height:1.55;color:var(--tekst-2);max-width:52ch}
+.seksjon{display:grid;gap:12px}
+.sek-topp{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sek-topp h2{margin:0;font:800 19px/1.25 var(--brand);color:var(--navy-dyp)}
+.kilde{font:400 13px/1.45 var(--body);color:var(--tekst-2)}
+.lenke{display:inline-flex;align-items:center;gap:4px;min-height:44px;font:700 14px/1 var(--brand);color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.forklar{font-size:15px;line-height:1.5;color:var(--tekst-2)}
+.undertittel{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+.etikett{font:700 11px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
+
+/* Helteflate: navy med WANGs linjegradient (fasitens hero) */
+.helt{border-radius:var(--r-kort);background:var(--grad-hero);color:#fff;padding:22px 20px;display:grid;gap:14px;box-shadow:0 18px 40px rgba(15,23,42,.22);overflow:hidden;position:relative}
+.helt .dato{color:rgba(255,255,255,.85)}
+.helt .tittel{color:#fff}
+.helt .ingress{color:rgba(255,255,255,.85)}
+.helt-tall{display:flex;flex-wrap:wrap;gap:10px 24px}
+.helt-tall div{display:grid;gap:2px}
+.helt-tall strong{font:800 30px/1 var(--brand);letter-spacing:-.02em}
+.helt-tall span{font:700 11px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+
+/* ---------- Flater: hvite kort, myk navy-skygge, ingen kantlinje ---------- */
+.kort{border-radius:var(--r-kort);background:var(--kort);box-shadow:var(--skygge);padding:18px;display:grid;gap:14px;align-content:start}
+.kort.dempet{background:var(--tint-graa);box-shadow:none}
+.skille{height:1px;background:var(--linje)}
+
+/* Ett stort tall per flate */
+.hoved{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.hoved strong{font:800 48px/1 var(--brand);letter-spacing:-.03em;color:var(--navy-dyp)}
+.hoved strong small{font:700 18px/1 var(--brand);letter-spacing:0;margin-left:4px;color:var(--tekst-2)}
+.trend{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:var(--r-chip);font:700 13px/1 var(--brand);background:var(--tint-graa);color:var(--tekst)}
+.trend.opp{background:var(--tint-mint);color:var(--navy-dyp-tekst)}
+.trend.ned{background:var(--tint-rosa);color:var(--rosa-tekst)}
+.trend .ikon{width:16px;height:16px}
+
+/* ---------- Merker ---------- */
+/* Status bruker IKKE aksefargene: mint = ok, gul = venter, rosa = haster/feil, grå = nøytral */
+.pille{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:var(--r-chip);font:700 12px/1 var(--brand);white-space:nowrap;flex:none}
+.pille i{width:7px;height:7px;border-radius:50%}
+.pille.ok{background:var(--tint-mint);color:var(--navy-dyp-tekst)} .pille.ok i{background:var(--mint)}
+.pille.vent{background:var(--tint-gul);color:var(--gul-tekst)} .pille.vent i{background:var(--gul)}
+.pille.haster{background:var(--tint-rosa);color:var(--rosa-tekst)} .pille.haster i{background:var(--rosa)}
+.pille.noy{background:var(--n100);color:var(--tekst-2)} .pille.noy i{background:var(--n400)}
+.kategori{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:8px;background:var(--navy);color:#fff;font:800 12px/1 var(--brand);letter-spacing:.04em;white-space:nowrap;flex:none}
+.estimat{display:inline-flex;height:22px;align-items:center;padding:0 8px;border-radius:6px;border:1px dashed var(--n500);font:700 11px/1 var(--brand);color:var(--tekst-2);width:max-content}
+.teller{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--rosa);color:#fff;font:800 12px/1 var(--brand)}
+/* Aksemerke: firkantet chip fylt i aksefargen, samme fyll og tekst som øktkortet */
+.akse{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:24px;padding:0 8px;border-radius:7px;font:800 11px/1 var(--brand);letter-spacing:.05em;flex:none}
+.akse.fys{background:var(--fys-fyll);color:var(--fys-paa)} .akse.tek{background:var(--tek-fyll);color:var(--tek-paa)}
+.akse.slag{background:var(--slag-fyll);color:var(--slag-paa)} .akse.spill{background:var(--spill-fyll);color:var(--spill-paa)}
+.akse.turn{background:var(--turn-fyll);color:var(--turn-paa)}
+.avatar{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--tint-navy);color:var(--navy);font:800 12px/1 var(--brand);flex:none}
+
+/* ---------- Knapper: pille-form, navy primær, rosa bare for det som sletter eller avslutter ---------- */
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:var(--r-chip);font:700 14px/1 var(--brand);cursor:pointer;text-decoration:none;border:2px solid transparent}
+.knapp.pri{background:var(--navy);color:#fff}
+.knapp.sek{background:#fff;color:var(--navy);border-color:var(--navy)}
+.knapp.mint{background:var(--mint);color:var(--navy-dyp)}
+.knapp.fare{background:var(--rosa);color:#fff}
+.knapp.flat{background:transparent;color:var(--navy);padding:0 12px}
+.knapp[disabled]{background:var(--n100);color:var(--tekst-2);cursor:not-allowed}
+.knapp.stor{min-height:54px;font-size:16px;width:100%}
+.knapp:focus-visible,.valg button:focus-visible,.okt:focus-visible,.bunnmeny a:focus-visible,.meny a:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.knapper{display:flex;gap:8px;flex-wrap:wrap}
+.valg{display:inline-flex;flex-wrap:wrap;gap:3px;padding:4px;border-radius:var(--r-chip);background:#fff;box-shadow:var(--skygge-s);justify-self:start}
+.valg button{min-height:40px;padding:0 16px;border:0;border-radius:var(--r-chip);background:transparent;font:700 14px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
+.valg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+
+/* ---------- Øktkort: fylt flate i aksefargen, bilde øverst, aldri tekst oppå bildet ---------- */
+.okt{display:grid;border-radius:var(--r-kort-s);overflow:hidden;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;text-align:left;font:inherit;box-shadow:var(--skygge)}
+.okt.fys{background:var(--fys-fyll);color:var(--fys-paa)} .okt.tek{background:var(--tek-fyll);color:var(--tek-paa)}
+.okt.slag{background:var(--slag-fyll);color:var(--slag-paa)} .okt.spill{background:var(--spill-fyll);color:var(--spill-paa)}
+.okt.turn{background:var(--turn-fyll);color:var(--turn-paa)}
+.okt img{display:block;width:100%;height:120px;object-fit:cover;object-position:50% 45%}
+.okt-tekst{padding:14px 18px 18px;display:grid;gap:6px}
+.okt-rad{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.okt-tid{font:800 30px/1.05 var(--brand);letter-spacing:-.02em;white-space:nowrap}
+.okt-tid small{font:700 14px/1 var(--brand);letter-spacing:0;margin-left:6px}
+.okt .navn{display:block;font:800 18px/1.25 var(--brand)}
+.okt-info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15px;line-height:1.45}
+.okt-merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--r-chip);font:800 11px/1 var(--brand);letter-spacing:.08em;background:rgba(15,23,42,.22)}
+.okt.slag .okt-merke{background:rgba(255,255,255,.4)}
+.okt-merke i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.okt.mini{grid-template-columns:76px 1fr}
+.okt.mini img{height:100%;min-height:76px}
+.okt.mini .okt-tekst{padding:10px 14px;gap:2px}
+.okt.mini .navn{font-size:15px}
+
+/* ---------- Søyler, stolper og grafer ---------- */
+.stolpe{height:10px;border-radius:5px;background:var(--n100);overflow:hidden;position:relative}
+.stolpe span{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--navy)}
+.band{display:flex;height:30px;border-radius:10px;overflow:hidden;background:var(--n100)}
+.band span{display:flex;align-items:center;justify-content:center;font:800 11px/1 var(--brand);letter-spacing:.04em;overflow:hidden}
+.graf{display:block;width:100%;height:auto;overflow:visible}
+.gt{font:700 10px/1 var(--brand);fill:var(--tekst-2)}
+.lg-rad{display:flex;flex-wrap:wrap;gap:6px 14px}
+.lg{display:inline-flex;align-items:center;gap:6px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+.lg i{width:10px;height:10px;border-radius:3px}
+.bg-fys{background:var(--fys)} .bg-tek{background:var(--tek)} .bg-slag{background:var(--slag)} .bg-spill{background:var(--spill)} .bg-turn{background:var(--turn)}
+.fyll-fys{background:var(--fys-fyll);color:var(--fys-paa)} .fyll-tek{background:var(--tek-fyll);color:var(--tek-paa)} .fyll-slag{background:var(--slag-fyll);color:var(--slag-paa)}
+.fyll-spill{background:var(--spill-fyll);color:var(--spill-paa)} .fyll-turn{background:var(--turn-fyll);color:var(--turn-paa)}
+
+/* ---------- Skjema ---------- */
+.felt{display:grid;gap:6px}
+.felt label,.felt .etikett-felt{font:700 14px/1.3 var(--brand);color:var(--navy-dyp)}
+.felt input,.felt select,.felt textarea{min-height:48px;padding:10px 14px;border:1.5px solid var(--n300);border-radius:var(--r-felt);background:#fff;color:var(--tekst);font:400 16px/1.4 var(--body);width:100%}
+.felt input:focus,.felt select:focus,.felt textarea:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px var(--tint-mint)}
+.felt .hjelp{font-size:13px;color:var(--tekst-2)}
+.felt.feil input{border-color:var(--rosa)}
+.felt .feiltekst{font:700 13px/1.3 var(--brand);color:var(--rosa-tekst)}
+
+/* ---------- Tom, laster og feil ---------- */
+.tilstand-blokk{display:grid;gap:12px}
+.skjelett{display:block;border-radius:var(--r-kort-s);background:linear-gradient(90deg,var(--n100) 0%,#F7F9FB 50%,var(--n100) 100%);background-size:200% 100%;animation:skjelett 1.4s linear infinite}
+@keyframes skjelett{to{background-position:-200% 0}}
+
+/* ---------- Bevegelse: bare transform og opasitet ---------- */
+.okt,.knapp,.valg button{transition:transform 140ms var(--ut)}
+.okt:active,.knapp:active,.valg button:active{transform:scale(.97)}
+.tegn{stroke-dasharray:1000;stroke-dashoffset:0}
+.app.anim .tegn{animation:tegn 1100ms var(--ut) both}
+.app.anim .vokse{transform-origin:bottom;animation:vokse 600ms var(--ut) both}
+.app.anim .inn{animation:inn 360ms var(--ut) both}
+@keyframes tegn{from{stroke-dashoffset:1000}}
+@keyframes vokse{from{transform:scaleY(0)}}
+@keyframes inn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- PC fra 900 px containerbredde ---------- */
+@container (min-width:900px){
+  .topplinje{display:none}
+  .skall{display:grid;grid-template-columns:248px 1fr;min-height:900px}
+  .meny{display:flex;flex-direction:column;gap:4px;padding:22px 14px;background:#fff;box-shadow:1px 0 0 var(--linje)}
+  .meny .logo{height:40px;margin:2px 10px 6px}
+  .meny .gruppe{margin:0 12px 18px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .meny a{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:var(--r-chip);color:var(--tekst-2);text-decoration:none;font:700 15px/1 var(--brand)}
+  .meny a.aktiv{background:var(--navy);color:#fff}
+  .meny .teller{margin-left:auto}
+  .meny .del{margin:14px 12px 6px}
+  .meny .bruker{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--r-felt);background:var(--tint-graa)}
+  .meny .bruker b{display:block;font:700 14px/1.2 var(--brand);color:var(--navy-dyp)}
+  .meny .bruker span{font-size:13px;color:var(--tekst-2)}
+  .innhold{padding:32px 40px 48px}
+  .bunnmeny{display:none}
+  .mer-ark{display:none!important}
+  .to-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+  .tre-kol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+  .helt{padding:30px 32px}
+  .tittel{font-size:34px}
+}
