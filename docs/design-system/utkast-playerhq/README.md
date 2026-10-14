@@ -16,7 +16,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD), `runder.html`, lyst også ute på banen | **Godkjent 14.10** (port 7, Anders), utkast 2 med farge | https://claude.ai/artifact/WubERezBPiponAixBHRoem |
 | 6 Stats i dybden | PH-14, PH-15 (+TN), PH-17 | | |
 | 7 Kommunikasjon | PH-21 Innboks (+ meldinger), PH-22 Caddie, PH-23 Booking (+ book time, bekreftet, flytt og avbestill), `kommunikasjon.html` | **Godkjent 14.10** (port 7, Anders), utkast 2 | https://claude.ai/artifact/2Dtxo3nS4rwN2yBaaRTpTD |
-| 8 Meg | PH-24, PH-25, PH-27 | | |
+| 8 Meg | PH-24 (+ profil, fasiliteter, utstyr, helse, foreldre), PH-25 (+ innstillinger), PH-27 (+ under 16), `meg.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/3LLqsVrsgjq5KxwysoGxg3 |
 | 9 IUP og gameplan | PH-IUP-01, PH-IUP-02, PH-20 | | |
 | 10 Samleside | Alle lenker på én side, designbrevet oppdatert | | |
 
