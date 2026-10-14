@@ -78,6 +78,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .pille{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font:500 12px/1 var(--sans);white-space:nowrap;flex:none}
 .pille i{width:6px;height:6px;border-radius:50%}
 .pille.ok{background:var(--green-50);color:var(--green-700)} .pille.ok i{background:var(--green-700)}
+.pille.noy{background:var(--sand-150);color:var(--graphite-800)} .pille.noy i{background:var(--graphite-600)}
 .pille.vent{background:var(--amber-50);color:var(--amber-700)} .pille.vent i{background:var(--amber-700)}
 .spor{position:relative;height:10px;border-radius:5px;background:var(--sand-150);margin-top:var(--r1)}
 .spor span{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--graphite-900)}
@@ -304,6 +305,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
       <ul>
         <li><b>Ett stort tall øverst:</b> uka som ring, delt i aksefargene, med 31 % i stort. Stolpene per akse viser gjennomført mot plan.</li>
         <li><b>Mindre grå småtekst:</b> kildelinjene er vanlig skrift i stedet for maskinskrift, og overflødige linjer er fjernet. Kilde og dato står fortsatt der appen påstår noe om spilleren.</li>
+        <li><b>Endring fra Anders (14.10):</b> AK-coachens endring av teknisk oppgave er lagt inn med en gang. Øyvind kan angre, men trenger ikke godta (vedtak 28.09). Bare WANG-trenerens forslag venter på svar.</li>
         <li><b>Bevegelse:</b> ringen og stolpene fylles når skjermen åpnes, og tallet teller opp. Kort og knapper gir etter litt når du trykker. Godta og Avvis får forslaget til å gli bort, med «Angre». Hele økta glir inn.</li>
         <li>Bevegelsen slås av for brukere som har valgt «reduser bevegelse» på telefonen.</li>
         <li>Fra utkast 3: progresjon øverst, snarvei til neste økt, fylte øktkort med bilde per treningsområde.</li>
@@ -434,14 +436,14 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
         </div>
       </section>
 
-      <section class="kort a-forslag" aria-label="Forslag som venter">
-        <div class="sek-topp"><h2>Forslag som venter <span class="antall" data-antall>2</span></h2></div>
+      <section class="kort a-forslag" aria-label="Forslag og endringer">
+        <div class="sek-topp"><h2>Forslag og endringer <span class="antall" data-antall>1</span></h2></div>
         <div class="forslag">
-          <div class="fs">
-            <div class="fs-topp"><div><strong>Anders Kristiansen · AK-coach</strong><small>Sendt i dag kl. 07:40</small></div><span class="pille vent"><i></i>Venter på spiller</span></div>
+          <div class="fs endret">
+            <div class="fs-topp"><div><strong>Anders Kristiansen · AK-coach</strong><small>Endret i dag kl. 07:40</small></div><span class="pille ok" data-endret-status><i></i>Lagt inn</span></div>
             <div class="endring"><span style="color:var(--graphite-600)">Teknisk oppgave</span><span>→</span><strong>P7.0 Treffpunktet</strong></div>
             <p class="sitat">«Ballstarten går til høyre på de siste 20 slagene.»</p>
-            <div class="knapper"><button class="knapp pri" type="button"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Godta</button><button class="knapp sek" type="button"><svg class="ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Avvis</button></div>
+            <div class="knapper"><button class="knapp sek" type="button" data-angre-endring>Angre</button></div>
           </div>
           <div class="fs">
             <div class="fs-topp"><div><strong>WANG Toppidrett · Trener</strong><small>Sendt i går kl. 20:41</small></div><span class="pille vent"><i></i>Venter på spiller</span></div>
@@ -604,7 +606,8 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     app.addEventListener('click',function(e){
       if(e.target.closest('[data-aapne-okt]')){visning.hidden=false;visning.scrollTop=0;ramme.scrollIntoView({block:'start'});visning.querySelector('[data-lukk-okt]').focus();}
       else if(e.target.closest('[data-lukk-okt]')){visning.hidden=true;}
-      else{var k=e.target.closest('.fs .knapp');if(k)svar(k.closest('.fs'),k.classList.contains('pri'));}
+      else if(e.target.closest('[data-angre-endring]')){var fe=e.target.closest('.fs');fe.querySelector('[data-endret-status]').className='pille noy';fe.querySelector('[data-endret-status]').innerHTML='<i></i>Angret';fe.querySelector('.knapper').remove();}
+      else{var k=e.target.closest('.fs:not(.endret) .knapp');if(k)svar(k.closest('.fs'),k.classList.contains('pri'));}
     });
     if(bredde==='mob'){ramme.appendChild(app);anim(app);return;}
     var skala=document.createElement('div');skala.className='skala';skala.appendChild(app);ramme.appendChild(skala);
