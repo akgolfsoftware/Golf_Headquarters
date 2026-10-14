@@ -37,9 +37,7 @@ Ikke med: pakke 2 Treningsøkta, PH-01 I dag (utkast 4), PH-16 Stats og pakke 6�
 | 9 | PH-18 og PH-RD-01–09 (pakke 5), lyst også ute på banen | |
 | 10 | Samlet kontroll og README-status | |
 
-## Avklaring som trengs
+## Avklart 14.10
 
-Workbench for spilleren åpner i dag den samlede visningen med fire flater (Sesongkart · Ukeverksted · Trenerbord · Stats, vedtatt 06.10).
-Det godkjente designet har nivåene År · Periode · Måned · Uke · Målsetninger. Steg 2 lar nivået År fra Plan åpne den nye årsplanen,
-mens den samlede visningen fortsatt finnes. Før steg 6 må Anders avgjøre om spilleren skal ha nivåene i stedet for de fire flatene.
-Coachens Workbench (AgencyOS) er ikke berørt.
+Spilleren får nivåene År · Periode · Måned · Uke · Målsetninger; coachen beholder de fire flatene.
+Se `.claude/rules/beslutninger.md` §SPILLERENS WORKBENCH FÅR NIVÅENE.
