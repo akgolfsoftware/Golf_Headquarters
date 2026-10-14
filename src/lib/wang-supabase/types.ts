@@ -98,6 +98,26 @@ export interface WangWorkbenchAssignment {
   events: WangDemoEvent[];
 }
 
+export type WangCalendarAccessKind = "self" | "shared" | "staff";
+
+export interface WangCalendarEvent extends WangDemoEvent {
+  schoolSportId: string | null;
+  studentId: string | null;
+}
+
+export interface WangCalendarFeed {
+  id: string;
+  label: string;
+  detail: string;
+  accessKind: WangCalendarAccessKind;
+  accessExpiresAt: string | null;
+  events: WangCalendarEvent[];
+}
+
+export interface WangCalendarData {
+  feeds: WangCalendarFeed[];
+}
+
 export interface WangAuthenticatedProfile {
   id: string;
   displayName: string;

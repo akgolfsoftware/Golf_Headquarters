@@ -19,7 +19,12 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { hentWangRolledefinisjon, WANG_MODULES, type WangModuleId } from "@/lib/wang-supabase/roles";
+import {
+  hentWangModulHref,
+  hentWangRolledefinisjon,
+  WANG_MODULES,
+  type WangModuleId,
+} from "@/lib/wang-supabase/roles";
 import type { WangAuthenticatedProfile, WangStartMetric } from "@/lib/wang-supabase/types";
 
 import { WangLoggUtKnapp } from "./WangLoggUtKnapp";
@@ -70,9 +75,7 @@ export function WangRoleStart({
         <nav className={styles.navigation} aria-label={`Navigasjon for ${role.label}`}>
           {role.modules.map((moduleId) => {
             const moduleDefinition = WANG_MODULES[moduleId];
-            const moduleHref = preview && moduleId === "workbench"
-              ? "/team-wang/demo"
-              : moduleDefinition.href;
+            const moduleHref = hentWangModulHref(moduleId, preview);
             const Icon = MODULE_ICONS[moduleId];
             if (moduleHref) {
               return (
@@ -155,9 +158,7 @@ export function WangRoleStart({
             <div className={styles.moduleGrid}>
               {role.modules.map((moduleId) => {
                 const moduleDefinition = WANG_MODULES[moduleId];
-                const moduleHref = preview && moduleId === "workbench"
-                  ? "/team-wang/demo"
-                  : moduleDefinition.href;
+                const moduleHref = hentWangModulHref(moduleId, preview);
                 const Icon = MODULE_ICONS[moduleId];
                 const body = (
                   <>

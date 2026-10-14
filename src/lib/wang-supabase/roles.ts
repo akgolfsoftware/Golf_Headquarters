@@ -68,8 +68,8 @@ export const WANG_MODULES: Record<
   },
   camps: {
     label: "Samlinger",
-    href: "/team-wang/demo",
-    description: "Golf-demoen viser samlinger i samme kalender.",
+    href: "/team-wang/app/kalender?visning=samlinger",
+    description: "Samlinger i kalenderen for tildelte grupper eller delt elev.",
   },
   messages: {
     label: "Meldinger",
@@ -78,8 +78,8 @@ export const WANG_MODULES: Record<
   },
   "my-week": {
     label: "Min uke",
-    href: null,
-    description: "Elevens samlede uke bygges etter rolleinnloggingen.",
+    href: "/team-wang/app/kalender",
+    description: "Skole, WANG-trening, konkurranser og egen trening samlet.",
   },
   school: {
     label: "Skole",
@@ -88,18 +88,18 @@ export const WANG_MODULES: Record<
   },
   "my-training": {
     label: "Min trening",
-    href: null,
-    description: "Egen- og klubbtrening bygges i elevmodulen.",
+    href: "/team-wang/app/kalender?visning=trening",
+    description: "WANG-, egen- og klubbtrening i elevens kalender.",
   },
   competitions: {
     label: "Konkurranser",
-    href: null,
-    description: "Elevens kommende konkurranser bygges i elevmodulen.",
+    href: "/team-wang/app/kalender?visning=konkurranser",
+    description: "Kommende konkurranser i den delte kalenderen.",
   },
   calendar: {
     label: "Kalender",
-    href: null,
-    description: "Invitert lesevisning bygges uten søvn og dagsform.",
+    href: "/team-wang/app/kalender",
+    description: "Avgrenset lesevisning uten søvn, dagsform eller helseopplysninger.",
   },
   plans: {
     label: "Planer",
@@ -196,4 +196,10 @@ export const WANG_ROLE_DEFINITIONS: Record<WangRole, WangRoleDefinition> = {
 
 export function hentWangRolledefinisjon(role: WangRole): WangRoleDefinition {
   return WANG_ROLE_DEFINITIONS[role];
+}
+
+export function hentWangModulHref(moduleId: WangModuleId, preview: boolean): string | null {
+  const href = WANG_MODULES[moduleId].href;
+  if (preview && href?.startsWith("/team-wang/app")) return "/team-wang/demo";
+  return href;
 }

@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { hentWangRolledefinisjon, WANG_MODULES, WANG_ROLE_DEFINITIONS } from "./roles";
+import {
+  hentWangModulHref,
+  hentWangRolledefinisjon,
+  WANG_MODULES,
+  WANG_ROLE_DEFINITIONS,
+} from "./roles";
 import { WANG_ROLES } from "./types";
 
 describe("WANG-roller", () => {
@@ -45,6 +50,14 @@ describe("WANG-roller", () => {
       assert.equal(definition.modules.includes("athletes"), false);
       assert.equal(definition.modules.includes("analysis"), false);
     }
+  });
+
+  it("kobler elev, eksterne lesere og sportsteam til den beskyttede kalenderen", () => {
+    assert.equal(WANG_MODULES["my-week"].href, "/team-wang/app/kalender");
+    assert.equal(WANG_MODULES.calendar.href, "/team-wang/app/kalender");
+    assert.equal(WANG_MODULES.camps.href, "/team-wang/app/kalender?visning=samlinger");
+    assert.equal(hentWangModulHref("calendar", true), "/team-wang/demo");
+    assert.equal(hentWangModulHref("calendar", false), "/team-wang/app/kalender");
   });
 
   it("planlagte moduler er tydelig merket uten død lenke", () => {
