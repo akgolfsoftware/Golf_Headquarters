@@ -1,6 +1,6 @@
 # Team Norway i nytt design — utkast
 
-Status: **pakke 1 Grunnmur er utkast 1 (14.10.2026). Aksefargene er et forslag og venter på Anders' ja.**
+Status: **pakke 1 Grunnmur er utkast 1 (14.10.2026). Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»).**
 Gjelder trenerskjermene under `/team-norway/*`. Spilleren bruker PlayerHQ (§ÉN IUP OG ETT TESTBATTERI).
 
 Bakgrunn: Claude Design stenger 14.12 og prosjektet «Team Norway App» ble aldri laget. Anders godkjente 14.10 at
@@ -17,7 +17,7 @@ Rød `#D70232` er identitet, aldri status og aldri akse.
 Alt i Team Norway-skjermene, også pyramiden FYS · TEK · SLAG · SPILL · TURN, har Team Norway-designets farger.
 Ingen AK Golf-farger (rust `#9B2415`, sand, AK-aksefargene), og pyramiden er ikke bare flaggets rød, hvit og blå.
 
-### Aksefargene (forslag, venter på ja)
+### Aksefargene (godkjent 14.10)
 
 | Akse | Fyll (hvit tekst) | Lys (på navy) | Tint (bakgrunn) | Hvit på fyll | Fyll på tint | Lys på navy |
 |---|---|---|---|---|---|---|
@@ -29,7 +29,7 @@ Ingen AK Golf-farger (rust `#9B2415`, sand, AK-aksefargene), og pyramiden er ikk
 
 Kontrast etter WCAG 2.1, alle over 4,5 : 1. Fargene er laget av TN-navy og TN-rød: TEK og TURN er palettens egne
 toner, SPILL er navy blandet med rød, og FYS og SLAG ligger i samme dybde på hver side. Aksenavnet står alltid ved
-fargen, så fargen er aldri eneste bærer. Åpent: TURN ligger nær statusrød `#C2352B`; alternativet er TURN i navy.
+fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10). Statusrød vises alltid med ordet ved seg.
 
 ## Slik lages en skjerm
 
@@ -65,7 +65,7 @@ fargen, så fargen er aldri eneste bærer. Åpent: TURN ligger nær statusrød `
 
 | Pakke | Skjermer (rute) | Fil | Status | Lenke |
 |---|---|---|---|---|
-| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status | `grunnmur.html` | **Utkast 1**, venter på ja | https://claude.ai/artifact/EjcY2cu91S4ydhCCjGWYSE |
+| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status | `grunnmur.html` | **Utkast 1**, aksefarger godkjent 14.10 | https://claude.ai/artifact/EjcY2cu91S4ydhCCjGWYSE |
 | 2 Daglig | Oversikt (`/team-norway`), Samlinger (`/samlinger`, `/samlinger/[id]`), Turneringer og reise (`/turneringer`, `/turneringer/[id]`, `/turneringer/ny`), Live Watch (`/live-watch`) | `daglig.html` | | |
 | 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | | |
 | 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | | |

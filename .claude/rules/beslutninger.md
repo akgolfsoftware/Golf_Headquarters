@@ -4,6 +4,21 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY FÅR EGNE AKSEFARGER FRA TN-PALETTEN (Anders 14.10.2026, bindende)
+
+Anders 14.10: «Ja til aksefargene», etter grunnmuren for Team Norway (PR #1256, `docs/design-system/utkast-tn/grunnmur.html`).
+
+- **Under `/team-norway/*` har aksene egne farger:** FYS `#0D6E6A` · TEK `#0A5199` · SLAG `#4B3F9E` · SPILL `#8A2A72` · TURN `#A80126`.
+  Lyse varianter på navy: `#6FD3C9` · `#8DBDF0` · `#B9B0F2` · `#EBA3D8` · `#FF9CB0`. Alle målt over 4,5 : 1.
+- **Ingen AK Golf-farger i Team Norway**, heller ikke i pyramiden. Logorøden `#D70232` er aldri akse.
+- **TURN blir i mørk rød**, ikke navy. Statusrød vises alltid med ordet ved seg.
+
+**Arbeidet dette utløser:**
+
+1. **Trenerskjermene tegnes** pakke for pakke etter `docs/design-system/utkast-tn/README.md` (pakke 2–8), én PR per pakke.
+2. **Kode når skjermene porteres:** `--tn-akse-*` i `src/styles/team-norway-tokens.css` og speil i `src/lib/v2/team-norway.ts`.
+   Ferdig når pyramiden under `/team-norway/*` vises i disse fargene og ingen TN-fil bruker AK-aksefargene.
+
 ## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
 
 Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller skal kunne booke om timen sin om det er ledig i bookingsystemet. Men det er kun innenfor tilgjengeligheten som er satt hos coach.»
