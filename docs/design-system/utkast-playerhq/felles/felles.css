@@ -103,8 +103,9 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .akse-merke i{width:7px;height:7px;border-radius:50%;background:#fff}
 .akse-tekst{font:600 12px/1 var(--sans);letter-spacing:.05em}
 .pr-merke{display:inline-block;height:20px;padding:0 7px;border-radius:4px;background:var(--graphite-900);color:var(--white);font:600 11px/20px var(--sans);margin-left:6px;vertical-align:2px}
-.spill{display:none!important}
-.app.med-spill .spill{display:grid!important}
+/* Spill-elementer (av/på). Ikke aksen SPILL: den bruker .okt.spill, .blokk.spill osv. */
+.spill:not(.okt):not(.blokk):not(.dra):not(button):not(.akse-bg-spill){display:none!important}
+.app.med-spill .spill:not(.okt):not(.blokk):not(.dra):not(button){display:grid!important}
 .app.med-spill span.spill,.app.med-spill .pr-merke.spill{display:inline-block!important}
 
 /* Knapper: grafitt primær, rust bare for det som avslutter eller sletter */
@@ -150,6 +151,11 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .felt .hjelp{font-size:13px;color:var(--graphite-600)}
 .ark{border-radius:16px 16px 0 0;border:1px solid var(--sand-300);background:var(--white);box-shadow:0 -12px 40px rgba(0,0,0,.12);padding:var(--r3) var(--r4) var(--r5);display:grid;gap:var(--r4)}
 .ark::before{content:"";justify-self:center;width:40px;height:4px;border-radius:2px;background:var(--sand-300)}
+
+/* Tom, laster og feil */
+.tilstand-blokk{display:grid;gap:var(--r3)}
+.skjelett{display:block;border-radius:12px;background:linear-gradient(90deg,var(--sand-150) 0%,var(--sand-100) 50%,var(--sand-150) 100%);background-size:200% 100%;animation:skjelett 1.4s linear infinite}
+@keyframes skjelett{to{background-position:-200% 0}}
 
 /* Bevegelse: bare transform og opasitet, rask ut-kurve, under 300 ms for svar på trykk */
 .okt,.knapp,.valg button,.snarvei{transition:transform 160ms var(--ut)}

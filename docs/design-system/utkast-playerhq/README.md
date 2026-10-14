@@ -10,8 +10,8 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 1 Grunnmur | `felles/felles.css`, `felles/felles.js`, dagens design for alle PH-skjermer | Ferdig 14.10 | — |
 | — | PH-01 I dag (utkast 4) | Utkast | https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP |
 | — | PH-16 Stats (utkast 1) | Utkast | https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC |
-| 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | **Neste** | |
-| 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (natt-tema) | | |
+| 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | Utkast 14.10 (`plan.html`), alle 9 perioder og 11 måneder | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
+| 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (natt-tema) | **Neste** | |
 | 4 Øvelser og teknikk | PH-12, PH-13, PH-TP-01 | | |
 | 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD) | | |
 | 6 Stats i dybden | PH-14, PH-15 (+TN), PH-17 | | |
@@ -36,6 +36,8 @@ De ble tatt 14.10.2026 fra skjermregisteret (Precision 3.1.0-l), 43 skjermer i 3
    `felles.js` bygger topplinje, sidemeny og bunnmeny. Undersider: `data-skall="tilbake" data-tilbake="Plan"`.
 4. `<script src="felles/felles.js"></script><script>AKUtkast.start({for:{mob:'screenshots/PH-10-390.jpg',pc:'screenshots/PH-10-1440.jpg'}})</script>`.
    Valgfritt `etter: function (app, tilstand) {}` for skjermens egen oppførsel. `tema:'natt'` for live-økt og runde.
+   Flere skjermer i én fil: `AKUtkast.start({ skjermer: { id: { mal, for, etter, tom, laster, feil } } })` med
+   velger `data-skjerm`, lenker `data-gaa` og tilstandsvelger `data-tilstand` (tom, laster, feil). Mal: `plan.html`.
 5. Kontroll: `NODE_PATH=<hovedrepo>/node_modules node kilder/sjekk.js $PWD/plan.html <ut>` gir skjermbilder
    (mobil, PC) og måler sidelengs rulling i 390 og 360 px. Se på bildene før publisering.
 6. Publiser med Artifact: `file_path` = skjermfila, `root` = denne mappen, `files` = `felles/*` og bildene den bruker.
@@ -50,10 +52,16 @@ De ble tatt 14.10.2026 fra skjermregisteret (Precision 3.1.0-l), 43 skjermer i 3
 - Bilder aldri med tekst oppå.
 - Bevegelse: `.tegn` (linjer tegnes), `.vokse` (søyler), `[data-til]` (stolper fylles), `[data-tell]` (tall teller opp),
   trykk gir `scale(.97)`. Alt slås av ved «reduser bevegelse».
+- Alle plannivåer henger sammen (Anders 14.10): endres årsplan, periode, måned, uke eller økt, oppdateres resten.
+  Nedover: periode og måned gir ukene nye timer fra og med denne uka; uker som er gått, røres ikke. Oppover: økter teller
+  i uka, måneden, perioden og året. I `plan.html`: `lagrePeriode`, månedsskjemaets Lagre, `EGNE` og `lagtInn`.
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md` («up and down», Målsetning, Gjennomført, Stats).
-- Demodata: Øyvind Rohjan, Kategori C, mandag 5. oktober, uke 41, 48 t 10 min av 52 t 20 min siste 4 uker.
+- Demodata: Øyvind Rohjan, Kategori C, mandag 5. oktober kl. 14:20, uke 41, 48 t 10 min av 52 t 20 min siste 4 uker (uke 37–40).
+  Uka er 0 min av 14 t 5 min før dagens økter. Årsplanen i `plan.html` (`PERIODER`, `MANEDER`) er fasit for timetallene;
+  andre skjermer skal stemme med den.
 
 ## Åpent hos Anders
 
 - Spill-elementer (plan-rekke, personlig rekord, lukk ringen): ikke avgjort. Utkastene har dem bak en av/på-knapp.
+- Grunnmurens klasse `.spill` (spill-elementer) kolliderte med aksen SPILL. Rettet i `felles.css`; bør få eget navn ved neste opprydding.
 - `idag.html` er laget før grunnmuren og har sin egen stilkopi. Flyttes over når I dag endres neste gang.
