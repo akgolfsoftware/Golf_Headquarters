@@ -51,3 +51,14 @@ test("økt oppå tidsatt opptatt tid er konflikt; heldag og annen økt er det ik
   assert.equal(oktOverlapperOpptattTid(dagen[1], dagen), false);
   assert.equal(oktOverlapperOpptattTid(heldag, dagen), false);
 });
+
+test("egne avtaler blir rader i Oslo-tid, privat avtale får nøytral tittel", async () => {
+  const { egneAvtalerIPlan } = await import("./plan-visning");
+  const [a, b] = egneAvtalerIPlan([
+    { tittel: "Tannlege", start: new Date("2026-10-08T06:30:00Z"), slutt: new Date("2026-10-08T08:00:00Z") },
+    { tittel: null, start: new Date("2026-10-09T21:00:00Z"), slutt: new Date("2026-10-09T23:30:00Z") },
+  ]);
+  assert.deepEqual([a.dato, a.startMin, a.sluttMin, a.tittel], ["2026-10-08", 510, 600, "Tannlege"]);
+  // 23:00–01:30 Oslo går over midnatt og klemmes til dagens slutt.
+  assert.deepEqual([b.dato, b.startMin, b.sluttMin, b.tittel], ["2026-10-09", 1380, 1440, "Privat avtale"]);
+});

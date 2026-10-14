@@ -1,0 +1,171 @@
+/*
+ * PlayerHQ i nytt design (designbrevet 13.10.2026, godkjent av Anders 14.10).
+ * Portert fra docs/design-system/utkast-playerhq/felles/felles.css og plan.html.
+ *
+ * Alt er avgrenset til .phn, slik at AgencyOS og andre Precision-flater ikke
+ * endres. Skjermen styres av container-spørring: PC fra 900 px bredde.
+ * Farge betyr akse. Grønt/rødt er bare status. Rust bare som signal.
+ */
+
+.phn {
+  /* Utkastets mørkere aksefarger: hvit tekst på fylte øktkort må leses. */
+  --phn-fys: #788c5d; --phn-fys-ink: #556740;
+  --phn-tek: #b8852a; --phn-tek-ink: #825d15;
+  --phn-slag: #2563eb; --phn-slag-ink: #1d4fd0;
+  --phn-spill: #c46686; --phn-spill-ink: #954661;
+  --phn-turn: #a32d2d;
+  --phn-sand-100: #faf8f3; --phn-sand-150: #f1eee8; --phn-sand-300: #ddd9d1; --phn-hvit: #ffffff;
+  --phn-g900: #141413; --phn-g800: #2a2926; --phn-g600: #46443f; --phn-g500: #686560;
+  --phn-amber-700: #7e6110; --phn-amber-50: #fbf4e4; --phn-green-700: #2f6b3a; --phn-green-50: #eaf3e9;
+  --phn-rust: #9b2415; --phn-rust-50: #fbe9e7;
+  --phn-sans: var(--font-sans, "IBM Plex Sans", system-ui, sans-serif);
+  --phn-mono: var(--font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  --phn-ut: cubic-bezier(.23, 1, .32, 1);
+
+  container-type: inline-size;
+  display: grid;
+  gap: 32px;
+  align-content: start;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  min-width: 0;
+  padding: 24px 16px 104px;
+  background: var(--phn-hvit);
+  color: var(--phn-g900);
+  font: 400 15px/1.5 var(--phn-sans);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+.phn * { min-width: 0; }
+.phn p { margin: 0; }
+.phn [hidden] { display: none !important; }
+.phn .phn-ikon { width: 20px; height: 20px; flex: none; }
+
+/* Tekst */
+.phn .phn-dato { font: 500 12px/1.3 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--phn-g600); }
+.phn .phn-tittel { margin: 4px 0 0; font: 700 30px/1.1 var(--phn-sans); letter-spacing: -.025em; }
+.phn .phn-seksjon { display: grid; gap: 12px; }
+.phn .phn-sek-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.phn .phn-sek-topp h2 { margin: 0; font: 600 18px/1.25 var(--phn-sans); }
+.phn .phn-kilde { font: 400 12.5px/1.45 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-forklar { font-size: 14px; line-height: 1.5; color: var(--phn-g800); }
+
+/* Flater */
+.phn .phn-kort { border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); padding: 16px 18px 18px; display: grid; gap: 16px; align-content: start; }
+
+/* Ett stort tall per flate */
+.phn .phn-hoved { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.phn .phn-hoved strong { font: 600 52px/1 var(--phn-mono); letter-spacing: -.04em; }
+.phn .phn-hoved strong small { font: 500 18px/1 var(--phn-mono); letter-spacing: 0; margin-left: 4px; color: var(--phn-g600); }
+.phn .phn-trend { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px; border-radius: 999px; font: 600 13px/1.2 var(--phn-sans); background: var(--phn-sand-150); color: var(--phn-g900); }
+
+/* Merker */
+.phn .phn-pille { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font: 500 12px/1 var(--phn-sans); white-space: nowrap; flex: none; }
+.phn .phn-pille.ok { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn .phn-pille.vent { background: var(--phn-amber-50); color: var(--phn-amber-700); }
+.phn .phn-pille.noy { background: var(--phn-sand-150); color: var(--phn-g800); }
+.phn .phn-lys-merke { display: inline-block; height: 20px; padding: 0 7px; border-radius: 4px; background: rgba(255,255,255,.22); font: 600 11px/20px var(--phn-sans); margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+
+/* Knapper: grafitt primær, rust bare for det som avslutter eller sletter */
+.phn .phn-knapp { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 8px; font: 600 14px/1 var(--phn-sans); cursor: pointer; text-decoration: none; }
+.phn .phn-knapp.pri { background: var(--phn-g900); color: var(--phn-hvit); border: 1px solid var(--phn-g900); }
+.phn .phn-knapp.sek { background: var(--phn-hvit); color: var(--phn-g900); border: 1px solid var(--phn-g500); }
+.phn .phn-knapp:disabled { opacity: .55; cursor: default; }
+.phn .phn-knapper { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.phn .phn-valg { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border-radius: 8px; background: var(--phn-sand-150); justify-self: start; }
+.phn .phn-valg > * { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 14px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; text-decoration: none; }
+.phn .phn-valg > [aria-pressed="true"], .phn .phn-valg > [aria-current="page"] { background: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-pil { display: inline-flex; gap: 6px; }
+.phn .phn-pil > * { width: 44px; height: 44px; border: 1px solid var(--phn-sand-300); border-radius: 8px; background: var(--phn-hvit); display: grid; place-items: center; color: var(--phn-g900); }
+.phn :is(.phn-knapp, .phn-valg > *, .phn-pil > *, .phn-okt, .phn-rad-lenke, .phn-lag button):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+/* Fylt øktkort i aksefarge (Anders 14.10): forhåndsvisning, trykk åpner hele økta */
+.phn .phn-okt { display: grid; border-radius: 12px; overflow: hidden; color: #fff; text-decoration: none; cursor: pointer; border: 0; padding: 0; width: 100%; text-align: left; font: inherit; background: var(--phn-g800); }
+.phn .phn-okt.fys { background: var(--phn-fys-ink); }
+.phn .phn-okt.tek { background: var(--phn-tek-ink); }
+.phn .phn-okt.slag { background: var(--phn-slag); }
+.phn .phn-okt.spill { background: var(--phn-spill-ink); }
+.phn .phn-okt.turn { background: var(--phn-turn); }
+.phn .phn-okt-tekst { padding: 10px 12px; display: grid; gap: 2px; }
+.phn .phn-okt-s { font: 500 13px/1.3 var(--phn-mono); opacity: .92; }
+.phn .phn-okt .phn-navn { display: block; font: 600 15px/1.25 var(--phn-sans); }
+.phn .phn-okt-sted { font-size: 13px; line-height: 1.35; opacity: .9; }
+.phn .phn-okt[data-forslag="true"] { outline: 2px dashed var(--phn-g900); outline-offset: 2px; }
+
+/* Stolper og forklaring */
+.phn .phn-fordeling { display: flex; height: 16px; border-radius: 8px; overflow: hidden; gap: 2px; background: var(--phn-sand-150); }
+.phn .phn-fordeling i { display: block; height: 100%; }
+.phn .phn-lg-rad { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.phn .phn-lg { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1.3 var(--phn-sans); color: var(--phn-g800); }
+.phn .phn-lg i { width: 10px; height: 10px; border-radius: 2px; }
+.phn .akse-fys { background: var(--phn-fys); }
+.phn .akse-tek { background: var(--phn-tek); }
+.phn .akse-slag { background: var(--phn-slag); }
+.phn .akse-spill { background: var(--phn-spill); }
+.phn .akse-turn { background: var(--phn-turn); }
+
+/* Skjema og ark */
+.phn .phn-felt { display: grid; gap: 6px; font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-felt input, .phn .phn-felt select, .phn .phn-felt textarea { min-height: 48px; padding: 10px 12px; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); color: var(--phn-g900); font: 400 16px/1.4 var(--phn-sans); width: 100%; }
+.phn .phn-ark { width: min(600px, 100%); max-height: 88vh; margin: auto auto 0; padding: 12px 16px 24px; border: 1px solid var(--phn-sand-300); border-radius: 16px 16px 0 0; background: var(--phn-hvit); color: var(--phn-g900); box-shadow: 0 -12px 40px rgba(0,0,0,.12); overflow: auto; }
+.phn .phn-ark::backdrop { background: rgba(20,20,19,.45); }
+.phn .phn-ark-kropp { display: grid; gap: 16px; }
+.phn .phn-ark-topp { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.phn .phn-ark-topp h2 { margin: 2px 0 0; font: 600 20px/1.25 var(--phn-sans); }
+.phn .phn-lukk { width: 44px; height: 44px; border: 1px solid var(--phn-sand-300); border-radius: 8px; background: var(--phn-hvit); display: grid; place-items: center; cursor: pointer; flex: none; color: var(--phn-g900); }
+.phn .phn-melding { font-size: 14px; }
+/* Tom melding-sone skal ikke gi et tomt mellomrom i rutenettet, men må finnes for skjermleser. */
+.phn .phn-meldinger:empty { position: absolute; width: 1px; height: 1px; overflow: hidden; }
+.phn .phn-melding[role="alert"] { color: #8a2a1c; }
+
+/* Tom, laster og feil */
+.phn .phn-skjelett { display: block; border-radius: 12px; background: linear-gradient(90deg, var(--phn-sand-150) 0%, var(--phn-sand-100) 50%, var(--phn-sand-150) 100%); background-size: 200% 100%; animation: phn-skjelett 1.4s linear infinite; }
+@keyframes phn-skjelett { to { background-position: -200% 0; } }
+
+/* Bevegelse: bare transform, rask ut-kurve */
+.phn :is(.phn-okt, .phn-knapp, .phn-valg > *) { transition: transform 160ms var(--phn-ut); }
+.phn :is(.phn-okt, .phn-knapp, .phn-valg > *):active { transform: scale(.97); }
+@media (prefers-reduced-motion: reduce) { .phn * { animation: none !important; transition: none !important; } }
+
+/* ---------- PH-10 Plan ---------- */
+.phn .phn-topp { display: grid; gap: 12px; }
+.phn .phn-topp-rad { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.phn .phn-lag { display: flex; flex-wrap: wrap; gap: 8px; }
+.phn .phn-lag button { min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--phn-sand-300); background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: var(--phn-g800); }
+.phn .phn-lag button[aria-pressed="true"] { background: var(--phn-g900); color: var(--phn-hvit); border-color: var(--phn-g900); }
+.phn .phn-lag button i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.phn .phn-dager { display: grid; gap: 24px; }
+.phn .phn-dag { display: grid; gap: 8px; align-content: start; }
+.phn .phn-dag-topp { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phn-dag-topp b { font: 600 16px/1.3 var(--phn-sans); }
+.phn .phn-dag-topp > span { font: 500 13px/1 var(--phn-mono); color: var(--phn-g600); white-space: nowrap; }
+.phn .phn-idag-merke { margin-left: 8px; display: inline-block; height: 22px; padding: 0 8px; border-radius: 11px; background: var(--phn-g900); color: var(--phn-hvit); font: 600 11px/22px var(--phn-sans); vertical-align: 2px; }
+.phn .phn-opptatt { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; padding: 10px 12px; border-radius: 10px; background: repeating-linear-gradient(135deg, var(--phn-sand-150) 0 6px, var(--phn-sand-100) 6px 12px); font-size: 14px; color: var(--phn-g800); border: 0; text-align: left; width: 100%; text-decoration: none; }
+.phn .phn-opptatt small { font: 500 12px/1 var(--phn-mono); white-space: nowrap; }
+.phn .phn-heldag { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 12px; border-radius: 10px; background: var(--phn-g900); color: var(--phn-hvit); font: 500 14px/1.35 var(--phn-sans); border: 0; text-align: left; width: 100%; text-decoration: none; cursor: pointer; }
+.phn .phn-tom-dag { font-size: 14px; color: var(--phn-g600); padding: 6px 0; }
+.phn .phn-rad-lenke { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 10px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); color: var(--phn-g900); text-decoration: none; font-size: 14px; line-height: 1.4; text-align: left; width: 100%; }
+.phn .phn-rad-lenke b { display: block; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-rad-lenke .phn-ikon { color: var(--phn-g600); }
+.phn .phn-plan-fot { display: grid; gap: 12px; }
+.phn .phn-detalj { display: grid; gap: 12px; }
+.phn .phn-detalj ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.phn .phn-detalj dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.phn .phn-detalj dt { font: 600 12px/1 var(--phn-sans); letter-spacing: .05em; }
+.phn .phn-detalj dd { margin: 4px 0 0; font: 500 14px/1 var(--phn-mono); }
+.phn .phn-flytt { display: grid; gap: 12px; }
+
+@container (min-width: 900px) {
+  .phn { padding: 32px 40px 48px; }
+  .phn .phn-plan-hode { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; align-items: end; }
+  .phn .phn-dager:not(.kun-dag) { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+  .phn .phn-dager:not(.kun-dag) .phn-okt-tekst { padding: 8px 10px 10px; }
+  .phn .phn-dager:not(.kun-dag) .phn-navn { font-size: 14px; }
+  .phn .phn-dager:not(.kun-dag) .phn-opptatt { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; font-size: 13px; }
+  .phn .phn-dager:not(.kun-dag) .phn-heldag { font-size: 13px; padding: 8px 10px; }
+  .phn .phn-dager:not(.kun-dag) .phn-dag-topp { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .phn .phn-dager:not(.kun-dag) .phn-dag-topp b { font-size: 15px; }
+  .phn .phn-plan-fot { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .phn .phn-ark { margin: auto; border-radius: 16px; }
+}

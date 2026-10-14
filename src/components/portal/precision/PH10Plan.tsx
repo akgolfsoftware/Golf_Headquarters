@@ -1,43 +1,59 @@
 "use client";
 
 /**
- * PH-10 Plan: uke — Precision Athletics (7d7c2994, overlevering/codex.md).
- * Tegningen ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git.
+ * PH-10 Plan: uka — nytt design (pakke 3, godkjent av Anders 14.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/plan.html, mal «plan». Stil: src/styles/playerhq-ny.css.
  *
- * Samme data og handlinger som den tidligere ukevisningen: forslag,
- * flytting av Workbench-økt, ny økt og redigering i Workbench.
+ * Samme data og handlinger som før: forslag fra coach, flytting av Workbench-økt,
+ * ny økt og redigering i Workbench.
  *
- * Bevisste avvik:
- *   - År, måned og eget dagsrutenett fra designrunden 28.09 er ikke denne flaten.
- *     Mobil viser valgt dag. År og måned åpnes i Workbench.
- *   - /portal/kalender og /portal/kalender/opptatt er fortsatt egne flater.
- *   - Caddie-knappen er ikke med. Caddie er en egen skjerm.
- *   - Konflikt er tidsatt overlapp mot skole, booking, turnering eller test.
- *     Heldag merkes ikke som konflikt på hver økt. Rust brukes ikke her.
+ * Avvik:
+ *   - Øktkortene har ikke bilde ennå. Bildene i utkastet er ikke avklart (designbrevet, punkt 2).
+ *   - Laget «Google-kalender» og radene «Google-kalender er koblet» og «Be coach endre planen»
+ *     er ikke med: appen har ingen Google-kobling eller slik forespørsel i dag.
+ *   - År og Måned åpner Workbench, som i utkastet; Dag viser én dag av uka.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-10.
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition, type CSSProperties, type FormEvent } from "react";
-import { CalendarRange, ChevronLeft, ChevronRight, CircleAlert, LockKeyhole, Plus, Target } from "lucide-react";
-import { AkseMerke, FeilTilstand, Ikon, Knapp, KnappLenke, Meta, Sidehode, StatusPille, Tall, TomTilstand, type Akse } from "@/components/precision/pa";
+import { useRef, useState, useTransition, type FormEvent } from "react";
+import { ChevronLeft, ChevronRight, LockKeyhole, Pencil, Plus, X } from "lucide-react";
 import type { TodaySession, WeekDay } from "@/app/portal/actions";
-import type { KalenderHendelse, KalenderLag } from "@/lib/domain/kalender-lag";
+import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
 import type { UkePeriode } from "@/lib/portal-plan/uke-periode";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
 import { formatKlokkePunkt } from "@/lib/portal/idag-visning";
+import { formaterVarighet } from "@/lib/format-tall";
 import {
-  byggPlanUke, nyPlanOktHref, oktOverlapperOpptattTid, plasserPlanBlokker, planSessionFraSvar, planTidsrom,
-  PLAN_TIME_PX, type PlanBlokk, type PlanForslag,
+  byggPlanUke, nyPlanOktHref, oktOverlapperOpptattTid, planSessionFraSvar,
+  type PlanBlokk, type PlanForslag, type PlanOpptatt,
 } from "@/lib/portal/plan-visning";
 import { moveSession, resolvePlayerApproval } from "@/lib/workbench/wb-actions";
+import "@/styles/playerhq-ny.css";
 
 const dagformat = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "long", day: "numeric", month: "long" });
+const kortDag = new Intl.DateTimeFormat("nb-NO", { timeZone: "UTC", weekday: "long", day: "numeric", month: "short" });
 const datoformat = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "long" });
 const AKSER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
-const AKSENAVN = { FYS: "Fysisk", TEK: "Teknikk", SLAG: "Slag", SPILL: "Spill", TURN: "Turnering" };
-const AKSE: Record<string, Akse> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
+const AKSE_KLASSE: Record<string, string> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
 const datoTekst = (dato: string) => dagformat.format(new Date(`${dato}T12:00:00Z`));
+const dagTittel = (dato: string) => { const t = kortDag.format(new Date(`${dato}T00:00:00Z`)); return t.charAt(0).toUpperCase() + t.slice(1); };
 const tid = (min: number) => formatKlokkePunkt(min);
+const tidsrom = (fra: number | null, til: number | null) => fra === null ? "Hele dagen" : til === null ? tid(fra) : `${tid(fra)}–${tid(til)}`;
+
+type Lag = "golf" | "fys" | "samling" | "opptatt";
+const LAG_VALG: { id: Lag; navn: string; farge: string }[] = [
+  { id: "golf", navn: "Golf", farge: "var(--phn-slag)" },
+  { id: "fys", navn: "Fysisk", farge: "var(--phn-fys)" },
+  { id: "samling", navn: "Samlinger og turneringer", farge: "var(--phn-g900)" },
+  { id: "opptatt", navn: "Opptatt tid", farge: "var(--phn-sand-300)" },
+];
+function lagFor(b: PlanBlokk): Lag {
+  if (b.session) return b.session.pyramidArea === "FYS" ? "fys" : "golf";
+  if (b.lag === "SKOLE") return "opptatt";
+  if (b.lag === "TURNERING" || b.lag === "TESTER") return "samling";
+  return "golf";
+}
 
 function statusTekst(b: PlanBlokk) {
   if (b.forslag) return "Forslag";
@@ -46,17 +62,11 @@ function statusTekst(b: PlanBlokk) {
   return s === "COMPLETED" ? "Fullført" : s === "CANCELLED" ? "Avlyst" : s === "SKIPPED" ? "Hoppet over" : s === "IN_PROGRESS" ? "Pågår" : null;
 }
 
-function Status({ blokk, konflikt }: { blokk: PlanBlokk; konflikt: boolean }) {
-  const tekst = konflikt ? "Konflikt" : statusTekst(blokk);
-  if (!tekst) return null;
-  const tone = tekst === "Fullført" ? "ok" : tekst === "Pågår" ? "live" : tekst === "Konflikt" ? "warn" : "neutral";
-  return <StatusPille tone={tone}>{blokk.lag === "SKOLE" ? <Ikon icon={LockKeyhole} size={12} /> : null}{tekst}</StatusPille>;
-}
-
 export type PH10Props = {
   data: { weekNumber: number; week: WeekDay[] };
   kalender?: KalenderHendelse[];
   forslag?: PlanForslag[];
+  opptatt?: PlanOpptatt[];
   ukeOffset?: number;
   depthMode?: "simple" | "deep";
   periode?: UkePeriode | null;
@@ -64,11 +74,13 @@ export type PH10Props = {
   tilstand?: "data" | "feil";
 };
 
-export function PH10Plan({ data, kalender = [], forslag = [], ukeOffset = 0, depthMode = "simple", periode = null, harTekniskPlan = false, tilstand = "data" }: PH10Props) {
+export function PH10Plan({ data, kalender = [], forslag = [], opptatt = [], ukeOffset = 0, depthMode = "simple", periode = null, harTekniskPlan = false, tilstand = "data" }: PH10Props) {
   const router = useRouter();
   const [endringer, setEndringer] = useState<Record<string, TodaySession | null>>({});
   const [besvart, setBesvart] = useState<string[]>([]);
-  const [valgtDag, setValgtDag] = useState(data.week.find((d) => d.isToday) ? OSLO_YMD_FMT.format(data.week.find((d) => d.isToday)!.date) : data.week[0] ? OSLO_YMD_FMT.format(data.week[0].date) : "");
+  const idag = data.week.find((d) => d.isToday);
+  const [kunDag, setKunDag] = useState(false);
+  const [skjulteLag, setSkjulteLag] = useState<Lag[]>([]);
   const [valgtId, setValgtId] = useState<string | null>(null);
   const [melding, setMelding] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
@@ -91,21 +103,22 @@ export function PH10Plan({ data, kalender = [], forslag = [], ukeOffset = 0, dep
   ] }));
   const ventende = forslag.filter((f) => !besvart.includes(f.session.id));
   const plan = byggPlanUke(week, kalender, ventende);
-  const dag = plan.dager.find((d) => d.dato === valgtDag) ?? plan.dager[0];
   const alleBlokker = plan.dager.flatMap((d) => d.blokker);
+  const valgt = alleBlokker.find((b) => b.id === valgtId);
   const konflikt = (b: PlanBlokk) => oktOverlapperOpptattTid(b, plan.dager.find((d) => d.dato === b.dato)?.blokker ?? []);
-  const valgt = alleBlokker.find((b) => b.id === valgtId) ?? dag?.blokker.find((b) => b.session?.status === "IN_PROGRESS" && !b.forslag) ?? dag?.blokker.find((b) => b.session?.status === "PLANNED" && !b.forslag) ?? dag?.blokker[0];
-  const tidsrom = planTidsrom(plan.dager);
-  const prosent = plan.fremdrift.andel === null ? null : Math.round(plan.fremdrift.andel * 100);
-  const nyHref = nyPlanOktHref(dag?.dato ?? "", ukeOffset);
+  const dagDato = idag ? OSLO_YMD_FMT.format(idag.date) : plan.dager[0]?.dato;
+  const nyHref = nyPlanOktHref(dagDato ?? "", ukeOffset);
   const ukeTekst = data.week.length ? datoformat.formatRange(data.week[0].date, data.week[data.week.length - 1].date) : "";
-  const harOkter = week.some((d) => d.sessions.length > 0);
-  const timer = Array.from({ length: Math.max(0, tidsrom.endHour - tidsrom.startHour) }, (_, i) => tidsrom.startHour + i);
-  const hoyde = (tidsrom.endHour - tidsrom.startHour) * PLAN_TIME_PX;
+  const okter = week.flatMap((d) => d.sessions);
+  const iDag = idag ? week.find((d) => d.isToday)?.sessions.length ?? 0 : 0;
+  const perAkse = AKSER.map((a) => ({ akse: a, min: plan.minutter.plannedByAxis[a] ?? 0 })).filter((x) => x.min > 0);
+  const totalt = perAkse.reduce((s, x) => s + x.min, 0);
+  const [timer, ...rest] = formaterVarighet(totalt).split(" ");
+  const visDager = kunDag ? plan.dager.filter((d) => d.dato === dagDato) : plan.dager;
 
-  function velg(b: PlanBlokk, medArk = false) {
-    setValgtId(b.id); setValgtDag(b.dato); setFlytting(false); setFeil(null);
-    if (medArk) ark.current?.showModal();
+  function velg(b: PlanBlokk) {
+    setValgtId(b.id); setFlytting(false); setFeil(null);
+    ark.current?.showModal();
   }
   function lagreSvar(f: PlanForslag, decision: "ACCEPTED" | "REJECTED") {
     if (laas.current) return;
@@ -137,133 +150,172 @@ export function PH10Plan({ data, kalender = [], forslag = [], ukeOffset = 0, dep
         const result = await moveSession({ sessionId, newDate: flytteDato, newStartMinute: h * 60 + m });
         if (!result.ok) { setFeil(result.error); return; }
         setEndringer((v) => ({ ...v, [sessionId]: planSessionFraSvar(result.data) }));
-        setValgtDag(result.data.date); setFlytting(false); setMelding("Økten er flyttet."); router.refresh();
+        setValgtId(`okt-${sessionId}`); setFlytting(false); setMelding("Økten er flyttet."); router.refresh();
       } catch { setFeil("Flyttingen ble ikke bekreftet. Datoen du valgte er beholdt. Prøv igjen."); }
       finally { laas.current = false; }
     });
   }
 
   function svarKnapper(f: PlanForslag) {
-    return <div className="ph10-handlinger">
-      <Knapp variant="primary" disabled={pending} loading={pending} loadingText="Lagrer …" onClick={() => lagreSvar(f, "ACCEPTED")}>Legg i planen</Knapp>
-      <Knapp variant="secondary" disabled={pending} onClick={() => lagreSvar(f, "REJECTED")}>Ikke denne uka</Knapp>
+    return <div className="phn-knapper">
+      <button type="button" className="phn-knapp pri" disabled={pending} onClick={() => lagreSvar(f, "ACCEPTED")}>{pending ? "Lagrer …" : "Legg i planen"}</button>
+      <button type="button" className="phn-knapp sek" disabled={pending} onClick={() => lagreSvar(f, "REJECTED")}>Ikke denne uka</button>
     </div>;
   }
 
-  function detaljer(b?: PlanBlokk) {
-    if (!b) return <TomTilstand icon={Target} title="Velg en økt" text="Trykk på en avtale i uken for å se detaljene." />;
+  function detaljer(b: PlanBlokk) {
     const s = b.session;
     const hvile = s?.title.trim().toLocaleLowerCase("nb-NO") === "hvile";
     const avsluttet = s?.status === "COMPLETED" || s?.status === "CANCELLED" || s?.status === "SKIPPED";
-    const akse = s ? AKSE[s.pyramidArea] : undefined;
-    const maks = Math.max(1, ...AKSER.map((a) => plan.minutter.plannedByAxis[a] ?? 0));
-    return <div className="ph10-detalj">
-      <Meta>{b.forslag ? (b.forslag.coachName ? `Forslag fra ${b.forslag.coachName}` : "Forslag fra coach") : "Valgt avtale"}</Meta>
-      <h2>{b.tittel}</h2>
-      <p className="ph10-meta">{datoTekst(b.dato)}{b.startMin !== null ? ` · ${tid(b.startMin)}` : " · Hele dagen"}{s ? ` · ${s.durationMin} min` : ""}{s?.sted ? ` · ${s.sted}` : ""}</p>
-      <div className="ph10-merker">{akse && <AkseMerke axis={akse} />}<Status blokk={b} konflikt={konflikt(b)} /></div>
-      {s?.maalsetning && <div><Meta>Mål for økten</Meta><p>{s.maalsetning}</p></div>}
-      {s && <div>
-        <Meta>Ukens balanse</Meta>
-        <div className="ph10-balanse" aria-hidden>{AKSER.map((a) => <span key={a} style={{ height: `${(plan.minutter.plannedByAxis[a] ?? 0) / maks * 48}px`, background: a === s.pyramidArea ? `var(--axis-${AKSE[a]})` : "var(--border-hairline)" }} />)}</div>
-        <dl className="ph10-minutter">{AKSER.map((a) => <div key={a}><dt>{a}</dt><dd><Tall>{plan.minutter.plannedByAxis[a] ?? 0}</Tall> min</dd></div>)}</dl>
-        <Meta>Planlagt varighet denne uken</Meta>
+    const status = konflikt(b) ? "Konflikt" : statusTekst(b);
+    return <div className="phn-detalj">
+      <p className="phn-forklar">{datoTekst(b.dato)} · {tidsrom(b.startMin, b.heldag ? null : b.sluttMin)}{s?.sted ? ` · ${s.sted}` : ""}</p>
+      {(s || status) && <div className="phn-knapper">
+        {s && <span className={`phn-pille noy`}><i className={`akse-${AKSE_KLASSE[s.pyramidArea]}`} style={{ width: 8, height: 8, borderRadius: 4 }} />{s.pyramidArea}</span>}
+        {status && <span className={`phn-pille ${status === "Fullført" ? "ok" : status === "Konflikt" || status === "Forslag" ? "vent" : "noy"}`}>{b.lag === "SKOLE" && <LockKeyhole size={12} aria-hidden />}{status}</span>}
       </div>}
-      {s && <section aria-label="Oppskrift"><Meta>Oppskrift</Meta>{s.drills.length ? s.drills.map((d, i) => <div className="ph10-ovelse" key={d.id}><span>{i + 1}. {d.name}</span><Meta>{d.durationMinutes} min</Meta></div>) : <p className="ph10-meta">Ingen øvelser lagt til ennå.</p>}</section>}
-      {b.lag === "SKOLE" && <p className="ph10-meta">Skoleavtalen vises fra timeplanen.</p>}
-      {b.forslag ? svarKnapper(b.forslag) : s && !hvile ? <div className="ph10-handlinger">
-        {s.status !== "CANCELLED" && s.status !== "SKIPPED" && <KnappLenke href={s.href}>{s.status === "COMPLETED" ? "Se oppsummering" : s.status === "IN_PROGRESS" ? "Fortsett økt" : "Start økt"}</KnappLenke>}
-        {!avsluttet && s.model === "wb" && !flytting && <Knapp variant="secondary" onClick={() => startFlytting(b)}>Flytt økt</Knapp>}
-        {!avsluttet && s.planSessionId && <KnappLenke variant="ghost" href={`/portal/planlegge/workbench?${new URLSearchParams({ uke: String(ukeOffset), okt: s.planSessionId })}`}>Rediger økt</KnappLenke>}
-      </div> : b.href ? <KnappLenke href={b.href}>Åpne avtale</KnappLenke> : null}
-      {flytting && s?.model === "wb" && <form onSubmit={flytt} className="ph10-flytt">
-        <label>Dato<input type="date" required value={flytteDato} onChange={(e) => setFlytteDato(e.target.value)} /></label>
-        <label>Klokkeslett<input type="time" required value={flytteTid} onChange={(e) => setFlytteTid(e.target.value)} /></label>
-        <Knapp disabled={pending} loading={pending} type="submit">Lagre tidspunkt</Knapp>
-        <Knapp variant="ghost" disabled={pending} onClick={() => setFlytting(false)}>Avbryt</Knapp>
+      {b.forslag && <p className="phn-kilde">{b.forslag.coachName ? `Forslag fra ${b.forslag.coachName}` : "Forslag fra coach"}</p>}
+      {s?.maalsetning && <p className="phn-forklar">{s.maalsetning}</p>}
+      {s && (s.drills.length
+        ? <section aria-label="Øvelser"><h3 className="phn-kilde">Øvelser</h3><ol>{s.drills.map((d) => <li key={d.id}>{d.name} <span className="phn-kilde">{d.durationMinutes} min</span></li>)}</ol></section>
+        : <p className="phn-kilde">Ingen øvelser lagt til ennå.</p>)}
+      {b.lag === "SKOLE" && <p className="phn-kilde">Skoleavtalen vises fra timeplanen.</p>}
+      {b.forslag ? svarKnapper(b.forslag) : s && !hvile ? <div className="phn-knapper">
+        {s.status !== "CANCELLED" && s.status !== "SKIPPED" && <Link className="phn-knapp pri" href={s.href}>{s.status === "COMPLETED" ? "Se oppsummering" : s.status === "IN_PROGRESS" ? "Fortsett økt" : "Start økt"}</Link>}
+        {!avsluttet && s.model === "wb" && !flytting && <button type="button" className="phn-knapp sek" onClick={() => startFlytting(b)}>Flytt økt</button>}
+        {!avsluttet && s.planSessionId && <Link className="phn-knapp sek" href={`/portal/planlegge/workbench?${new URLSearchParams({ uke: String(ukeOffset), okt: s.planSessionId })}`}>Rediger økt</Link>}
+      </div> : b.href ? <Link className="phn-knapp pri" href={b.href}>Åpne avtale</Link> : null}
+      {flytting && s?.model === "wb" && <form onSubmit={flytt} className="phn-flytt">
+        <label className="phn-felt">Dato<input type="date" required value={flytteDato} onChange={(e) => setFlytteDato(e.target.value)} /></label>
+        <label className="phn-felt">Klokkeslett<input type="time" required value={flytteTid} onChange={(e) => setFlytteTid(e.target.value)} /></label>
+        <div className="phn-knapper">
+          <button type="submit" className="phn-knapp pri" disabled={pending}>{pending ? "Lagrer …" : "Lagre tidspunkt"}</button>
+          <button type="button" className="phn-knapp sek" disabled={pending} onClick={() => setFlytting(false)}>Avbryt</button>
+        </div>
       </form>}
     </div>;
   }
 
+  function blokkKort(b: PlanBlokk) {
+    const lag = lagFor(b);
+    const skjult = skjulteLag.includes(lag);
+    if (b.session) {
+      const status = konflikt(b) ? "Konflikt" : statusTekst(b);
+      return <button type="button" key={b.id} hidden={skjult} className={`phn-okt ${AKSE_KLASSE[b.session.pyramidArea] ?? ""}`} data-forslag={b.forslag ? "true" : undefined} aria-haspopup="dialog" onClick={() => velg(b)} aria-label={`${b.tittel}, ${tidsrom(b.startMin, b.sluttMin)}${status ? `, ${status}` : ""}`}>
+        <span className="phn-okt-tekst">
+          <span className="phn-okt-s">{tidsrom(b.startMin, b.sluttMin)}</span>
+          <span className="phn-navn">{b.tittel}{status && <span className="phn-lys-merke">{status}</span>}</span>
+          {b.session.sted && <span className="phn-okt-sted">{b.session.sted}</span>}
+        </span>
+      </button>;
+    }
+    if (b.heldag || lag === "samling") {
+      return <button type="button" key={b.id} hidden={skjult} className="phn-heldag" aria-haspopup="dialog" onClick={() => velg(b)}>
+        {b.lag === "SKOLE" && <LockKeyhole size={14} aria-hidden />}<span>{b.tittel}{!b.heldag && <> · {tidsrom(b.startMin, b.sluttMin)}</>}</span>
+      </button>;
+    }
+    return <button type="button" key={b.id} hidden={skjult} className="phn-opptatt" aria-haspopup="dialog" onClick={() => velg(b)}>
+      <span>{b.tittel}</span><small>{tidsrom(b.startMin, b.sluttMin)}</small>
+    </button>;
+  }
+
   const kicker = `Uke ${data.weekNumber}${ukeTekst ? ` · ${ukeTekst}` : ""}`;
-  return <div className="pa-side ph10" data-od-id="plan-root" aria-busy={pending}>
-    <div className="ph10-hode">
-      <Sidehode kicker={kicker} title="Plan" sub={harOkter ? `${plan.fremdrift.gjennomfort} av ${plan.fremdrift.planlagt} økter denne uken` : "Ingen økter denne uken."} />
-      <div className="ph10-hode-handlinger">
-        <KnappLenke href={nyHref} icon={Plus} iconName="plus">Ny økt</KnappLenke>
+  return <div className="phn" data-od-id="plan-root" aria-busy={pending}>
+    <header className="phn-topp phn-plan-hode">
+      <div>
+        <div className="phn-dato">{kicker}</div>
+        <h1 className="phn-tittel">Plan</h1>
       </div>
-    </div>
-    {tilstand === "feil" ? <FeilTilstand icon={CircleAlert} title="Kunne ikke hente uken" text="Tilkoblingen ble brutt. Ingenting er endret i planen." code="FEIL · PLAN" retry={<Knapp variant="secondary" onClick={() => router.refresh()}>Prøv igjen</Knapp>} /> : <>
-      <nav className="ph10-ukenav" aria-label="Velg uke">
-        <Link className="pa-btn pa-btn--secondary pa-btn--sm" aria-label="Forrige uke" href={`/portal/planlegge?uke=${Math.max(-52, ukeOffset - 1)}`}><Ikon icon={ChevronLeft} size={16} /></Link>
-        <Link className="pa-btn pa-btn--ghost pa-btn--sm" href="/portal/planlegge">Denne uken</Link>
-        <Link className="pa-btn pa-btn--secondary pa-btn--sm" aria-label="Neste uke" href={`/portal/planlegge?uke=${Math.min(52, ukeOffset + 1)}`}><Ikon icon={ChevronRight} size={16} /></Link>
-      </nav>
-      <Fremdrift gjennomfort={plan.fremdrift.gjennomfort} planlagt={plan.fremdrift.planlagt} prosent={prosent} />
-      <div className="ph10-meldinger" aria-live="polite">{melding && <p role="status">{melding}</p>}{feil && <p role="alert">{feil}</p>}</div>
-      <div className="ph10-kompakt">
-        <div className="ph10-piller" aria-label="Dager i uken">{plan.dager.map((d) => <button type="button" key={d.dato} aria-label={datoTekst(d.dato)} aria-pressed={d.dato === dag?.dato} onClick={() => { setValgtDag(d.dato); setValgtId(null); }}><span>{d.navn.slice(0, 1)}</span><strong>{d.datoTall}</strong></button>)}</div>
-        <section aria-label={dag ? datoTekst(dag.dato) : "Denne uken"}>
-          <h2 className="ph10-dagtittel">{dag ? datoTekst(dag.dato) : "Denne uken"}</h2>
-          <div className="ph10-agenda">{dag?.blokker.filter((b) => !b.forslag).map((b) => <button type="button" key={b.id} className="ph10-rad" onClick={() => velg(b, true)} aria-haspopup="dialog">
-            <span className="ph10-rad-tid">{b.startMin === null ? "Heldag" : tid(b.startMin)}</span>
-            <span><strong>{b.tittel}</strong><Meta>{b.undertekst ?? (b.lag === "SKOLE" ? "Timeplan" : b.lag === "TURNERING" ? "Turnering" : LAG[b.lag] ?? "")}</Meta></span>
-            <Status blokk={b} konflikt={konflikt(b)} />
-          </button>)}</div>
-          {!dag?.blokker.some((b) => !b.forslag) && <TomTilstand icon={harOkter ? CalendarRange : Target} title={harOkter ? "Ingen avtaler denne dagen" : "Plass til en god uke"} text={harOkter ? "Du kan legge inn en økt når det passer." : "Legg inn din første økt, eller åpne planleggeren sammen med coachen din."} actions={<KnappLenke href={nyHref} icon={Plus} iconName="plus">Legg inn en økt</KnappLenke>} />}
-        </section>
-        {ventende.length > 0 && <section aria-label="Forslag fra coach" className="ph10-forslag">
-          <h2>Venter på svar</h2>
-          {ventende.map((f) => <article key={f.session.id} className="pa-card ph10-forslagkort">
-            <Meta>{f.coachName ? `Forslag fra ${f.coachName}` : "Forslag fra coach"}</Meta>
-            <button type="button" className="ph10-forslagtittel" aria-haspopup="dialog" onClick={() => velg(alleBlokker.find((b) => b.forslag?.session.id === f.session.id)!, true)}>{f.session.title}</button>
-            <p className="ph10-meta">{datoformat.format(f.session.startTime)} · {f.session.durationMin} min{f.session.sted ? ` · ${f.session.sted}` : ""}</p>
-            {svarKnapper(f)}
-          </article>)}
-        </section>}
-      </div>
-      <div className="ph10-layout">
-        <div className="ph10-desktop pa-card" aria-label="Ukerutenett">
-          <div className="ph10-grid" style={{ gridTemplateColumns: `48px repeat(${plan.dager.length || 1}, minmax(0,1fr))` }}>
-            <div />
-            {plan.dager.map((d) => <div key={d.dato} className={d.idag ? "ph10-daghode ph10-daghode--idag" : "ph10-daghode"}><span>{d.navn}</span><strong>{d.datoTall}</strong></div>)}
-            <div className="ph10-timer" style={{ height: hoyde }}>{timer.map((h) => <span key={h} style={{ top: (h - tidsrom.startHour) * PLAN_TIME_PX }}>{tid(h * 60)}</span>)}</div>
-            {plan.dager.map((d) => <div key={d.dato} className="ph10-kolonne" style={{ height: hoyde }}>{plasserPlanBlokker(d.blokker).map(({ blokk: b, fra, til, spor, antallSpor }) => {
-              const px = (til - fra) / 60 * PLAN_TIME_PX;
-              const stil: CSSProperties = { top: (fra - tidsrom.startHour * 60) / 60 * PLAN_TIME_PX, height: px, left: `calc(${spor / antallSpor * 100}% + 3px)`, width: `calc(${100 / antallSpor}% - 6px)`, boxShadow: b.session ? `inset 3px 0 0 var(--axis-${AKSE[b.session.pyramidArea] ?? "tek"})` : undefined };
-              return <button type="button" key={b.id} className="ph10-blokk" data-forslag={b.forslag ? "true" : undefined} aria-label={`${b.tittel}, ${datoTekst(b.dato)}, ${tid(fra)}${statusTekst(b) ? `, ${statusTekst(b)}` : ""}${konflikt(b) ? ", Konflikt" : ""}`} aria-pressed={valgt?.id === b.id} onClick={() => velg(b)} style={stil}>{px >= 48 && <small>{b.session ? AKSENAVN[b.session.pyramidArea] : b.lag === "BOOKING" ? "Coaching" : "Avtale"}</small>}<strong>{b.tittel}</strong></button>;
-            })}</div>)}
-          </div>
-          {plan.dager.some((d) => d.blokker.some((b) => b.heldag)) && <div className="ph10-heldag"><Meta>Heldag</Meta><div>{plan.dager.map((d) => <div key={d.dato}>{d.blokker.filter((b) => b.heldag).map((b) => <button type="button" key={b.id} aria-pressed={valgt?.id === b.id} onClick={() => velg(b)}>{b.lag === "SKOLE" && <Ikon icon={LockKeyhole} size={12} />}{b.tittel}</button>)}</div>)}</div></div>}
+      <div className="phn-topp-rad">
+        <div className="phn-valg" role="group" aria-label="Visning">
+          <Link href="/portal/planlegge/workbench?niva=ar">År</Link>
+          <Link href="/portal/planlegge/workbench?niva=maned">Måned</Link>
+          <button type="button" aria-pressed={!kunDag} onClick={() => setKunDag(false)}>Uke</button>
+          <button type="button" aria-pressed={kunDag} onClick={() => setKunDag(true)}>Dag</button>
         </div>
-        <aside className="ph10-inspektor pa-card" aria-label="Detaljer om valgt avtale">{detaljer(valgt)}</aside>
+        <div className="phn-knapper">
+          <span className="phn-pil">
+            <Link aria-label="Forrige uke" href={`/portal/planlegge?uke=${Math.max(-52, ukeOffset - 1)}`}><ChevronLeft className="phn-ikon" aria-hidden /></Link>
+            <Link aria-label="Neste uke" href={`/portal/planlegge?uke=${Math.min(52, ukeOffset + 1)}`}><ChevronRight className="phn-ikon" aria-hidden /></Link>
+          </span>
+          {ukeOffset !== 0 && <Link className="phn-knapp sek" href="/portal/planlegge">Denne uka</Link>}
+          <Link className="phn-knapp sek" href={nyHref}><Plus className="phn-ikon" aria-hidden />Ny økt</Link>
+          <Link className="phn-knapp pri" href={`/portal/planlegge/workbench?uke=${ukeOffset}`}><Pencil className="phn-ikon" aria-hidden />Rediger</Link>
+        </div>
       </div>
-      {depthMode === "deep" && periode && <p className="ph10-meta"><Meta>{periode.navn}</Meta>{periode.fokus ? ` ${periode.fokus}` : ""}</p>}
-      <div className="ph10-innganger">
-        <KnappLenke variant="secondary" href={`/portal/planlegge/workbench?uke=${ukeOffset}`} iconRight={ChevronRight}>Åpne planleggeren</KnappLenke>
-        <KnappLenke variant="ghost" href="/portal/kalender">Kalender</KnappLenke>
-        <KnappLenke variant="ghost" href="/portal/kalender/opptatt">Opptatt tid</KnappLenke>
-        {harTekniskPlan && <KnappLenke variant="ghost" href="/portal/tren/teknisk-plan">Teknisk plan</KnappLenke>}
-      </div>
+    </header>
+
+    {tilstand === "feil" ? <section className="phn-kort" role="alert">
+      <h2 className="phn-sek-topp" style={{ margin: 0 }}>Kunne ikke hente uka</h2>
+      <p className="phn-forklar">Tilkoblingen ble brutt. Ingenting er endret i planen.</p>
+      <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => router.refresh()}>Prøv igjen</button></div>
+    </section> : <>
+      <section className="phn-kort" aria-label="Uka i tall">
+        <div className="phn-hoved">
+          <strong>{totalt === 0 ? "0" : timer}<small>{totalt === 0 ? "min" : rest.join(" ")}</small></strong>
+          {periode && <span className="phn-trend">{periode.navn} · uke {periode.uke} av {periode.antallUker}</span>}
+        </div>
+        <p className="phn-forklar">{okter.length === 0
+          ? "Ingen økter denne uka."
+          : `Planlagt denne uka, ${okter.length} ${okter.length === 1 ? "økt" : "økter"}.${idag ? ` ${iDag === 0 ? "Ingen" : iDag === 1 ? "Én" : iDag} av dem i dag.` : ""}${plan.fremdrift.gjennomfort > 0 ? ` ${plan.fremdrift.gjennomfort} gjennomført.` : ""}`}</p>
+        {okter.length === 0 && <div className="phn-knapper"><Link className="phn-knapp pri" href={nyHref}><Plus className="phn-ikon" aria-hidden />Legg inn en økt</Link></div>}
+        {perAkse.length > 0 && <>
+          <div className="phn-fordeling" role="img" aria-label={perAkse.map((x) => `${x.akse} ${formaterVarighet(x.min)}`).join(", ")}>
+            {perAkse.map((x) => <i key={x.akse} className={`akse-${AKSE_KLASSE[x.akse]}`} style={{ flex: x.min }} />)}
+          </div>
+          <div className="phn-lg-rad">{perAkse.map((x) => <span key={x.akse} className="phn-lg"><i className={`akse-${AKSE_KLASSE[x.akse]}`} />{x.akse} {formaterVarighet(x.min)}</span>)}</div>
+        </>}
+        {depthMode === "deep" && periode?.fokus && <p className="phn-kilde">Fokus i perioden: {periode.fokus}</p>}
+      </section>
+
+      <div className="phn-meldinger" aria-live="polite">{melding && <p className="phn-melding" role="status">{melding}</p>}{feil && <p className="phn-melding" role="alert">{feil}</p>}</div>
+
+      {ventende.length > 0 && <section className="phn-seksjon" aria-label="Forslag fra coach">
+        <div className="phn-sek-topp"><h2>Venter på svar</h2></div>
+        {ventende.map((f) => <article key={f.session.id} className="phn-kort">
+          <p className="phn-kilde">{f.coachName ? `Forslag fra ${f.coachName}` : "Forslag fra coach"}</p>
+          <div><b>{f.session.title}</b><p className="phn-forklar">{datoformat.format(f.session.startTime)} · {f.session.durationMin} min{f.session.sted ? ` · ${f.session.sted}` : ""}</p></div>
+          {svarKnapper(f)}
+        </article>)}
+      </section>}
+
+      <section className="phn-seksjon" aria-label="Uka">
+        <div className="phn-lag" role="group" aria-label="Vis lag">
+          {LAG_VALG.map((l) => <button key={l.id} type="button" aria-pressed={!skjulteLag.includes(l.id)} onClick={() => setSkjulteLag((v) => v.includes(l.id) ? v.filter((x) => x !== l.id) : [...v, l.id])}><i style={{ background: l.farge }} />{l.navn}</button>)}
+        </div>
+        <div className={kunDag ? "phn-dager kun-dag" : "phn-dager"}>
+          {visDager.map((d) => {
+            const sum = week.find((w) => OSLO_YMD_FMT.format(w.date) === d.dato)?.sessions.reduce((s, o) => s + o.durationMin, 0) ?? 0;
+            const egne = opptatt.filter((o) => o.dato === d.dato);
+            const rader = [
+              ...d.blokker.map((b) => ({ t: b.heldag ? -1 : b.startMin ?? 0, id: b.id, el: blokkKort(b) })),
+              ...egne.map((o) => ({ t: o.startMin, id: o.id, el: <div key={o.id} className="phn-opptatt" hidden={skjulteLag.includes("opptatt")}><span>{o.tittel}</span><small>{tidsrom(o.startMin, o.sluttMin)}</small></div> })),
+            ].sort((a, b) => a.t - b.t || a.id.localeCompare(b.id));
+            return <div key={d.dato} className="phn-dag">
+              <div className="phn-dag-topp"><b>{dagTittel(d.dato)}{d.idag && <span className="phn-idag-merke">I dag</span>}</b><span>{sum ? formaterVarighet(sum) : "Hvile"}</span></div>
+              {rader.length ? rader.map((r) => r.el) : <p className="phn-tom-dag">Ingenting planlagt</p>}
+            </div>;
+          })}
+        </div>
+      </section>
+
+      <nav className="phn-plan-fot" aria-label="Mer i Plan">
+        {harTekniskPlan && <Link className="phn-rad-lenke" href="/portal/tren/teknisk-plan"><span><b>Teknisk plan</b><span className="phn-kilde">Oppgavene fra coachen din</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>}
+        <Link className="phn-rad-lenke" href="/portal/kalender"><span><b>Kalender</b><span className="phn-kilde">Alle avtaler, dag for dag</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
+        <Link className="phn-rad-lenke" href="/portal/kalender/opptatt"><span><b>Opptatt tid</b><span className="phn-kilde">Legg inn tider du ikke kan trene</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
+      </nav>
     </>}
-    <dialog ref={ark} className="ph10-ark" aria-label="Detaljer om avtalen" onClose={() => setFlytting(false)} onKeyDown={(e) => {
-      if (e.key !== "Tab") return;
-      const felt = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),[tabindex="0"]')).filter((el) => el.getClientRects().length > 0);
-      if (!felt.length) { e.preventDefault(); return; }
-      if (e.shiftKey && document.activeElement === felt[0]) { e.preventDefault(); felt.at(-1)?.focus(); }
-      else if (!e.shiftKey && document.activeElement === felt.at(-1)) { e.preventDefault(); felt[0].focus(); }
-    }} onClick={(e) => { if (e.target === ark.current) ark.current?.close(); }}>
-      <div className="ph10-ark-hode"><Meta>Plan</Meta><button type="button" className="pa-iconbtn" aria-label="Lukk øktdetaljer" onClick={() => ark.current?.close()}>×</button></div>
-      <div className="ph10-ark-kropp">{detaljer(valgt)}{feil && <p role="alert">{feil}</p>}{melding && <p role="status">{melding}</p>}</div>
+
+    <dialog ref={ark} className="phn-ark" aria-label="Detaljer om avtalen" onClose={() => setFlytting(false)} onClick={(e) => { if (e.target === ark.current) ark.current?.close(); }}>
+      {valgt && <div className="phn-ark-kropp">
+        <div className="phn-ark-topp">
+          <h2>{valgt.tittel}</h2>
+          <button type="button" className="phn-lukk" aria-label="Lukk" onClick={() => ark.current?.close()}><X className="phn-ikon" aria-hidden /></button>
+        </div>
+        {detaljer(valgt)}
+        {feil && <p className="phn-melding" role="alert">{feil}</p>}
+        {melding && <p className="phn-melding" role="status">{melding}</p>}
+      </div>}
     </dialog>
-  </div>;
-}
-
-const LAG: Partial<Record<KalenderLag, string>> = { SKOLE: "Timeplan", TURNERING: "Turnering", TESTER: "Test", BOOKING: "Booking", OEKTER: "Økt" };
-
-function Fremdrift({ gjennomfort, planlagt, prosent }: { gjennomfort: number; planlagt: number; prosent: number | null }) {
-  return <div className="ph10-fremdrift" aria-label="Ukens økter">
-    <div><span>{gjennomfort} av {planlagt} økter</span>{prosent !== null && <Tall>{prosent} %</Tall>}</div>
-    <div className="ph10-spor" role={prosent === null ? undefined : "progressbar"} aria-label="Fullførte økter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={prosent ?? undefined}><span style={{ width: `${prosent ?? 0}%` }} /></div>
   </div>;
 }
