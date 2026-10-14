@@ -332,6 +332,7 @@
         <li><b>Veilederen «Opprett årsplan»</b> med fire utgangspunkt, tidsrom og navn. Forslaget er skoleåret, fordi Øyvind er i WANG.</li>
         <li><b>Måneden har eget innhold:</b> fokus, målsetninger, timer per akse fordelt på ukene, tester og samlinger, notat og evaluering fra både spiller og coach.</li>
         <li><b>Alle ni periodene og alle elleve månedene kan åpnes</b> fra årsplanen, med piler fram og tilbake. Ferdige perioder og måneder viser gjennomført tid og evaluering. Kommende viser fordelt tid. Fra januar finnes ingen månedsplan ennå, bare timene fra perioden og knappen «Lag månedsplan».</li>
+        <li><b>Alle nivåene henger sammen.</b> Lagrer du en periode, får ukene og månedene i den nye timer. Lagrer du en måned, får ukene nye timer, og perioden viser «Endret i måneden». En økt du legger inn i Workbench, teller i uka, måneden, perioden og Plan. Prøv: endre timene i Periodeskjema, lagre, og åpne oktober og Workbench.</li>
         <li><b>Restitusjon er med i årsplanen</b> som siste uke (uke 25), etter vedtaket 28.09.</li>
         <li><b>Målsetninger viser fremdrift fra ekte data</b>, med start, nå og streken for hvor du burde vært i dag.</li>
       </ul>
@@ -778,6 +779,14 @@
   var HELDAG = [{ fra: 5, til: 6, navn: 'Treningssamling · Larvik GK' }];
   var FORDELT = { fys: 90, tek: 180, slag: 225, spill: 350, turn: 0 }; // per vanlig uke i Grunnperiode 1
   var IDAG = 0, NA = 14 * 60 + 20;
+  /* Alt henger sammen: økter i Workbench teller i uka, måneden, perioden og året (oppover).
+     Lagres en periode eller måned, får ukene under nye timer (nedover). Uka i Workbench leser
+     fordelingen fra årsplanen, aldri et fast tall. */
+  var EGNE = [];          // økter lagt inn i Workbench denne økta, uke 41
+  var ENDRET = {};        // ukeindeks → 'måned' når månedsskjemaet har overstyrt periodens fordeling
+  var MELDING = null;     // vises som toast på neste skjerm etter lagring
+  function okterSum(liste) { return liste.reduce(function (s, o) { return s + min(o.til) - min(o.fra); }, 0); }
+  function visMelding(app) { if (MELDING) { toast(app, MELDING); MELDING = null; } }
 
   function min(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
   function tid(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
@@ -834,6 +843,14 @@
       ting.sort(function (a, b) { return a.t - b.t; });
       return '<div class="dag' + (i === IDAG ? ' idag' : '') + '"><div class="dag-topp"><b>' + DAGNAVN[i] + ' ' + dg[1] + '. okt.</b><span>' + (sum ? fmt(sum) : 'Hvile') + '</span></div>' + (ting.length ? ting.map(function (x) { return x.h; }).join('') : '<p class="tom-dag">Ingenting planlagt</p>') + '</div>';
     }).join('');
+    var okter = OKTER.concat(EGNE), lagt = okterSum(okter), ford = aarsuker()[NA_I], fs = sumAkse(ford), kort = app.querySelector('[aria-label="Uka i tall"]');
+    var pr = {}; AKSER.forEach(function (a) { pr[a] = okterSum(okter.filter(function (o) { return o.a === a; })); });
+    var med = AKSER.filter(function (a) { return pr[a]; });
+    kort.querySelector('.hoved strong').innerHTML = stor(lagt);
+    kort.querySelector('.forklar').textContent = 'Planlagt denne uka, ' + okter.length + ' økter. To av dem i dag.' + (lagt !== fs ? ' Perioden har fordelt ' + fmt(fs) + '.' : '');
+    kort.querySelector('.fordeling').innerHTML = med.map(function (a) { return '<i class="akse-bg-' + a + '" style="flex:' + pr[a] + '"></i>'; }).join('');
+    kort.querySelector('.fordeling').setAttribute('aria-label', med.map(function (a) { return NAVN[a] + ' ' + fmt(pr[a]); }).join(', '));
+    kort.querySelector('.lg-rad').innerHTML = med.map(function (a) { return '<span class="lg"><i style="background:var(--' + a + ')"></i>' + NAVN[a] + ' ' + fmt(pr[a]) + '</span>'; }).join('');
     app.querySelector('[data-lagvalg]').addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return;
       var paa = b.getAttribute('aria-pressed') !== 'true';
@@ -859,7 +876,7 @@
 
   function workbench(app, tilstand, start) {
     var mob = tilstand.bredde === 'mob', h = 48, fraT = 6, tilT = 22;
-    var egne = [], valgtDag = start && start.dag !== undefined ? start.dag : IDAG, valgtAkse = null;
+    var egne = start && start.dropp ? [] : EGNE, valgtDag = start && start.dag !== undefined ? start.dag : IDAG, valgtAkse = null;
     var rut = app.querySelector('[data-rutenett]');
 
     function alle() { return OKTER.concat(egne); }
@@ -869,13 +886,13 @@
       return s;
     }
     function tall() {
-      var s = summer(), tot = AKSER.reduce(function (x, a) { return x + s[a]; }, 0), ford = 845;
+      var s = summer(), tot = AKSER.reduce(function (x, a) { return x + s[a]; }, 0), F = aarsuker()[NA_I], ford = sumAkse(F);
       var t = Math.floor(tot / 60), r = tot % 60;
       app.querySelector('[data-sum]').innerHTML = t + '<small>t' + (r ? ' ' + r + ' min' : '') + '</small>';
-      app.querySelector('[data-sum-tekst]').textContent = tot > ford ? 'Lagt inn. Det er ' + fmt(tot - ford) + ' mer enn de 14 t 5 min perioden har fordelt.' : 'Lagt inn av 14 t 5 min fordelt fra perioden.';
-      app.querySelector('[data-akserader]').innerHTML = AKSER.filter(function (a) { return FORDELT[a] || s[a]; }).map(function (a) {
-        var maks = Math.max(FORDELT[a], s[a]), over = s[a] > FORDELT[a];
-        return '<div class="akserad"><b style="color:var(--' + a + '-ink,var(--' + a + '))">' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" style="width:' + (s[a] / maks * 100) + '%"></span><em style="left:calc(' + (FORDELT[a] / maks * 100) + '% - 1px)"></em></span><span class="v' + (over ? ' over' : '') + '">' + fmt(s[a]) + ' av ' + fmt(FORDELT[a]) + '</span></div>';
+      app.querySelector('[data-sum-tekst]').textContent = tot > ford ? 'Lagt inn. Det er ' + fmt(tot - ford) + ' mer enn de ' + fmt(ford) + ' ' + (ENDRET[NA_I] ? 'måneden' : 'perioden') + ' har fordelt.' : 'Lagt inn av ' + fmt(ford) + ' fordelt fra ' + (ENDRET[NA_I] ? 'måneden' : 'perioden') + '.';
+      app.querySelector('[data-akserader]').innerHTML = AKSER.filter(function (a) { return F[a] || s[a]; }).map(function (a) {
+        var maks = Math.max(F[a], s[a], 1), over = s[a] > F[a];
+        return '<div class="akserad"><b style="color:var(--' + a + '-ink,var(--' + a + '))">' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" style="width:' + (s[a] / maks * 100) + '%"></span><em style="left:calc(' + (F[a] / maks * 100) + '% - 1px)"></em></span><span class="v' + (over ? ' over' : '') + '">' + fmt(s[a]) + ' av ' + fmt(F[a]) + '</span></div>';
       }).join('');
     }
     function stripe() {
@@ -948,8 +965,11 @@
       tegn();
       gjenta(app, o, start && start.slutt, function (n) {
         var serie = egne.filter(function (x) { return x !== o; }).length;
-        toast(app, n + (n === 1 ? ' økt' : ' økter') + ' lagt inn. ' + NAVN[a] + ' er nå ' + fmt(summer()[a]) + ' av ' + fmt(FORDELT[a]) + ' denne uka.', function () { egne.splice(egne.indexOf(o), 1); tegn(); });
+        toast(app, n + (n === 1 ? ' økt' : ' økter') + ' lagt inn. ' + NAVN[a] + ' er nå ' + fmt(summer()[a]) + ' av ' + fmt(aarsuker()[NA_I][a]) + ' denne uka. Oktober og Grunnperiode 1 er oppdatert.', function () { egne.splice(egne.indexOf(o), 1); (o.fram || []).forEach(function (i) { LAGT[i] -= min(o.til) - min(o.fra); }); tegn(); });
         if (n > 1) o.serie = 'gjentas';
+        var varig = min(o.til) - min(o.fra), fram = [];
+        if (!(start && start.dropp)) for (var k = 1; k < n; k++) { LAGT[NA_I + k] = (LAGT[NA_I + k] || 0) + varig; fram.push(NA_I + k); }
+        o.fram = fram;
         tegn();
       });
     }
@@ -1080,7 +1100,8 @@
   var REST = { fys: 90, tek: 0, slag: 60, spill: 0, turn: 0 };
   function rep(m, n) { return Array.apply(null, Array(n)).map(function () { return m; }); }
   var UTFORT = [792, 820, 700, 765, 780, 680, 665]; // uke 34–40
-  var LAGT = { 7: 845, 8: 600, 9: 360 };            // lagt inn som økter, uke 41–43
+  var LAGT = { 8: 600, 9: 360 };                    // lagt inn som økter, uke 42–43
+  function lagtInn(i) { return i === NA_I ? okterSum(OKTER.concat(EGNE)) : LAGT[i] || 0; }
   var MERKE = { 39: 'Lett uke', 41: 'Nå', 43: 'Testuke', 46: 'Lett uke', 47: 'Turnering', 4: 'Lett uke', 6: 'Testuke', 8: 'Lett uke', 12: 'Påske', 16: 'Lett uke' };
   var GRUPPA = 'WANG Toppidrett · gruppeplan';
   var MALLENKE = function (k) { return '<a href="#" data-gaa="mal"><span><b>' + k[0] + '</b><br>' + k[1] + '</span>' + PIL + '</a>'; };
@@ -1221,9 +1242,9 @@
     });
   }
   function ukerad(i, s, etiketter) {
-    var u = ukeNr(i), m = aarsuker()[i], tekst = MERKE[u] && etiketter ? '<small>' + MERKE[u] + '</small>' : '', v;
+    var u = ukeNr(i), m = aarsuker()[i], merke = ENDRET[i] ? 'Endret i måneden' : MERKE[u], tekst = merke && etiketter ? '<small>' + merke + '</small>' : '', v;
     if (i < NA_I) v = fmt(UTFORT[i]) + '<small>' + pst(UTFORT[i], s) + ' % av ' + fmt(s) + '</small>';
-    else if (i === NA_I) v = fmt(s) + '<small>11 økter lagt inn</small>';
+    else if (i === NA_I) v = fmt(lagtInn(i)) + '<small>' + (OKTER.length + EGNE.length) + ' økter · av ' + fmt(s) + '</small>';
     else v = fmt(s) + '<small>' + (LAGT[i] ? fmt(LAGT[i]) + ' lagt inn' : 'fordelt') + '</small>';
     return '<button type="button" class="ukerad' + (i === NA_I ? ' na' : '') + '"' + (i === NA_I ? ' data-gaa="uke"' : '') + '><span>Uke ' + u + tekst + '</span>' + fordelingHtml(m, i > NA_I) + '<span class="v">' + v + '</span></button>';
   }
@@ -1270,6 +1291,23 @@
     q('[data-p-evalkort]').hidden = p.tid !== 'for';
     if (p.eval) q('[data-p-eval]').innerHTML = sitater(p.eval);
     bla(app, 'data-p-steg', PERIODER.length, 'p', 'per');
+    visMelding(app);
+  }
+
+  /* Lagrer perioden nedover fra og med denne uka: vanlige uker får ny fordeling, lette uker
+     beholder sin andel av den. Uker som er gått, og uker måneden har overstyrt, røres ikke. */
+  function lagrePeriode(p, m) {
+    var gml = sumAkse(p.m), ny = sumAkse(m), uker = p.uker.slice(), endret = 0;
+    for (var k = 0; k < p.n; k++) {
+      var i = p.i0 + k, w = uker[k];
+      if (ENDRET[i] || i < NA_I) continue;
+      if (sumAkse(w) === gml) uker[k] = Object.assign({}, m);
+      else { var f = ny ? sumAkse(w) / ny : 0, l = {}; AKSER.forEach(function (a) { l[a] = Math.round(m[a] * f / 15) * 15; }); uker[k] = l; }
+      endret++;
+    }
+    p.m = Object.assign({}, m); p.uker = uker;
+    var fra = Math.max(p.i0, NA_I), mnd = MANEDER.filter(function (x) { return x.i0 < p.i0 + p.n && x.i0 + x.n > fra; }).map(function (x) { return x.navn.toLowerCase(); });
+    MELDING = p.navn + ' er lagret. ' + (endret ? endret + (endret === 1 ? ' uke' : ' uker') + ', ' + liste(mnd) + ' og årsplanen er oppdatert.' : 'Perioden er ferdig, så ingen uker er endret.') + (p.kilde === 'Fra Anders' ? ' Anders får beskjed.' : '');
   }
 
   /* Periodeskjema: ark på mobil, dialog på PC. Rust bare på «Slett periode». */
@@ -1286,7 +1324,7 @@
       '<div class="felt"><span class="etikett">Timer per vanlig uke</span><div class="seksjon" style="gap:6px" data-steppere></div><p class="forklar" data-ps></p></div>' +
       '<div class="felt"><label for="p-notat">Notat</label><textarea id="p-notat" rows="2">' + (p.notat ? p.notat[1] : '') + '</textarea></div>' +
       '<p class="kildetekst">' + sist + '</p>' +
-      '<div class="ark-fot"><button type="button" class="knapp pri stor" data-lukk>Lagre periode</button></div>' +
+      '<div class="ark-fot"><button type="button" class="knapp pri stor" data-lagre>Lagre periode</button></div>' +
       '<div class="rust-sone"><button type="button" class="knapp rust">Slett periode</button><span class="kildetekst">Øktene i perioden blir liggende i uka.</span></div>';
     aapneArk(app, html, function (ark) {
       function tegnS() {
@@ -1294,7 +1332,10 @@
         ark.querySelector('[data-steppere]').innerHTML = AKSER.map(function (a) { return '<div class="stepper"><b><i class="akse-bg-' + a + '"></i>' + NAVN[a] + '</b><span class="spor"><span class="akse-bg-' + a + '" style="width:' + Math.min(100, m[a] / maks * 100) + '%"></span></span><button type="button" data-a="' + a + '" data-d="-15" aria-label="15 minutter mindre ' + NAVN[a] + '">−</button><output>' + (m[a] ? fmt(m[a]) : '0') + '</output><button type="button" data-a="' + a + '" data-d="15" aria-label="15 minutter mer ' + NAVN[a] + '">+</button></div>'; }).join('');
         ark.querySelector('[data-ps]').textContent = 'Sum ' + fmt(sumAkse(m)) + ' per uke.' + (lette.length ? ' Lette uker får ' + fmt(sumAkse(lette[0])) + '.' : '');
       }
-      ark.addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (!b) return; var a = b.dataset.a; m[a] = Math.max(0, m[a] + +b.dataset.d); tegnS(); });
+      ark.addEventListener('click', function (e) {
+        if (e.target.closest('[data-lagre]')) { lagrePeriode(p, m); AKUtkast.gaa('per'); return; }
+        var b = e.target.closest('[data-d]'); if (!b) return; var a = b.dataset.a; m[a] = Math.max(0, m[a] + +b.dataset.d); tegnS();
+      });
       tegnS();
     });
   }
@@ -1360,7 +1401,7 @@
       q('[data-m-trend]').textContent = pst(gj, tot) + ' % av plan';
       q('[data-m-forklar]').textContent = 'Gjennomført i ' + nav + ', av ' + fmt(tot) + ' planlagt.';
     } else {
-      var lagt = sumUker(mn.i0, mn.n, function (i) { return i < NA_I ? 0 : i === NA_I ? 845 : LAGT[i] || 0; });
+      var lagt = sumUker(mn.i0, mn.n, function (i) { return i < NA_I ? 0 : lagtInn(i); });
       q('[data-m-tall]').innerHTML = stor(tot);
       q('[data-m-trend]').textContent = mn.n + ' uker';
       q('[data-m-forklar]').textContent = 'Fordelt i ' + nav + '. ' + (lagt ? fmt(lagt) + ' er lagt inn som økter så langt.' : 'Ingen økter er lagt inn ennå.');
@@ -1371,9 +1412,9 @@
     q('[data-m-ukekilde]').textContent = mn.tid === 'for' ? 'Gjennomført mot planlagt' : mn.tid === 'na' ? 'Lagt inn mot fordelt' : 'Fordelt fra perioden';
     var rader = '';
     for (var i = mn.i0; i < mn.i0 + mn.n; i++) {
-      var s = planUke(i), u = ukeNr(i), merke = MERKE[u] ? '<small>' + MERKE[u] + '</small>' : '';
+      var s = planUke(i), u = ukeNr(i), merke = ENDRET[i] ? '<small>Endret</small>' : MERKE[u] ? '<small>' + MERKE[u] + '</small>' : '';
       if (mn.tid === 'na') {
-        var li = i === NA_I ? 845 : LAGT[i] || 0;
+        var li = lagtInn(i);
         rader += '<button type="button" class="ukerad' + (i === NA_I ? ' na' : '') + '"' + (i === NA_I ? ' data-gaa="uke"' : '') + '><span>Uke ' + u + merke + '</span><span class="lagtinn">' + fordelingHtml(uker[i]) + '<em style="left:' + Math.min(100, li / s * 100) + '%"></em></span><span class="v">' + fmt(li) + '<small>av ' + fmt(s) + '</small></span></button>';
       } else rader += ukerad(i, s, true);
     }
@@ -1393,6 +1434,7 @@
         (mn.tid === 'na' ? '<div class="skille"></div><span class="undertittel">' + MANEDER[VALGT.m - 1].navn + '</span>' + sitater(MANEDER[VALGT.m - 1].eval) : '');
     }
     bla(app, 'data-m-steg', MANEDER.length, 'm', 'mnd');
+    visMelding(app);
   }
   function manedskjema(app) {
     var mn = MANEDER[VALGT.m], uker = aarsuker(), q = function (s) { return app.querySelector(s); };
@@ -1420,6 +1462,18 @@
       q('[data-uketab-sum]').textContent = 'Fordelt i ' + nav + ': ' + fmt(tot) + '. Perioden gir ' + fmt(fraPer) + '.';
     }
     el.addEventListener('input', function (e) { var i = e.target; var p = i.value.split(':'); var v = (+p[0] || 0) * 60 + (+p[1] || 0); if (!isNaN(v)) { u[+i.dataset.k][i.dataset.a] = v; sum(); } });
+    q('[data-ms-lagre]').addEventListener('click', function () {
+      var berort = [];
+      u.forEach(function (w, k) {
+        var i = ix[k], p = periodeFor(i);
+        if (sumAkse(w) === planUke(i) && AKSER.every(function (a) { return w[a] === uker[i][a]; })) return;
+        p.uker = p.uker.slice(); p.uker[i - p.i0] = w; ENDRET[i] = 'måned';
+        if (berort.indexOf(p.navn) < 0) berort.push(p.navn);
+      });
+      mn.fokus = q('#m-fokus').value.trim() || mn.fokus; if (!mn.knytt) mn.knytt = [];
+      var nt = q('#m-notat').value.trim(); if (nt) mn.notat = ['Øyvind · 5. okt.', nt];
+      MELDING = mn.navn + ' er lagret.' + (berort.length ? ' ' + ukespenn(mn.i0, mn.n).replace('uke', 'Uke') + ', ' + liste(berort) + ' og årsplanen er oppdatert.' : '');
+    });
     sum();
   }
 

@@ -52,6 +52,9 @@ De ble tatt 14.10.2026 fra skjermregisteret (Precision 3.1.0-l), 43 skjermer i 3
 - Bilder aldri med tekst oppå.
 - Bevegelse: `.tegn` (linjer tegnes), `.vokse` (søyler), `[data-til]` (stolper fylles), `[data-tell]` (tall teller opp),
   trykk gir `scale(.97)`. Alt slås av ved «reduser bevegelse».
+- Alle plannivåer henger sammen (Anders 14.10): endres årsplan, periode, måned, uke eller økt, oppdateres resten.
+  Nedover: periode og måned gir ukene nye timer fra og med denne uka; uker som er gått, røres ikke. Oppover: økter teller
+  i uka, måneden, perioden og året. I `plan.html`: `lagrePeriode`, månedsskjemaets Lagre, `EGNE` og `lagtInn`.
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md` («up and down», Målsetning, Gjennomført, Stats).
 - Demodata: Øyvind Rohjan, Kategori C, mandag 5. oktober kl. 14:20, uke 41, 48 t 10 min av 52 t 20 min siste 4 uker (uke 37–40).
   Uka er 0 min av 14 t 5 min før dagens økter. Årsplanen i `plan.html` (`PERIODER`, `MANEDER`) er fasit for timetallene;
