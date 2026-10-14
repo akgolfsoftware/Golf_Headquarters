@@ -6,13 +6,17 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
-import { isAwaitingGuardianConsent } from "./minor";
+import { isAwaitingGuardianConsent, maaHaForesattSamtykke } from "./minor";
 import { resolveTilgang, type Tilgang } from "@/lib/feature-flags";
 import { aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
 import type { SubscriptionStatus, User } from "@/generated/prisma/client";
 
-/** Prisma-bruker + beregnet tilgangsnivå (A3). tier er alltid EFFEKTIV tier. */
-export type UserMedTilgang = User & { tilgang: Tilgang };
+/**
+ * Prisma-bruker + beregnet tilgangsnivå (A3). tier er alltid EFFEKTIV tier.
+ * `harGodkjentForelder` er satt for spillere som må ha foresatt og mangler
+ * `guardianConsentGivenAt` (D-63: godkjent ParentRelation teller også).
+ */
+export type UserMedTilgang = User & { tilgang: Tilgang; harGodkjentForelder?: boolean };
 
 const TILLATTE_ABONNEMENTSSTATUSER = new Set<SubscriptionStatus>([
   "ACTIVE",
@@ -112,15 +116,28 @@ export const getCurrentUserRaw = cache(async (): Promise<UserMedTilgang | null> 
       await prisma.user
         .update({ where: { id: user.id }, data: { lastLoginAt: now } })
         .catch(() => null);
-      return withEffektivTilgang({ ...user, lastLoginAt: now });
+      return medForelderGodkjenning(await withEffektivTilgang({ ...user, lastLoginAt: now }));
     }
-    return withEffektivTilgang(user);
+    return medForelderGodkjenning(await withEffektivTilgang(user));
   }
 
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);
-  return ny ? withEffektivTilgang(ny) : null;
+  return ny ? medForelderGodkjenning(await withEffektivTilgang(ny)) : null;
 });
+
+// D-63: en godkjent ParentRelation teller som forelderens godkjenning, også når
+// `guardianConsentGivenAt` mangler (forelder koblet via invitasjonslenken).
+// Slås bare opp når det betyr noe, så de fleste innlogginger koster ingenting.
+async function medForelderGodkjenning(user: UserMedTilgang): Promise<UserMedTilgang> {
+  if (user.role !== "PLAYER" || user.guardianConsentGivenAt) return user;
+  if (!maaHaForesattSamtykke(user)) return user;
+  const relasjon = await prisma.parentRelation.findFirst({
+    where: { childId: user.id, approved: true },
+    select: { id: true },
+  });
+  return { ...user, harGodkjentForelder: relasjon !== null };
+}
 
 // GDPR art. 8 (S-13): standard innloggings-sti for portal/admin. Identisk med
 // getCurrentUserRaw, men håndhever foreldresamtykke for mindreårige sentralt —

@@ -233,6 +233,8 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                 <input
                   type="date"
                   value={fodselsdato}
+                  readOnly={Boolean(data.fodselsdatoISO)}
+                  aria-describedby={data.fodselsdatoISO ? "ph24-fodselsdato-hjelp" : undefined}
                   onChange={(e) => setFodselsdato(e.target.value)}
                   style={{
                     width: "100%",
@@ -248,6 +250,11 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
                   }}
                 />
               </div>
+              {data.fodselsdatoISO ? (
+                <p id="ph24-fodselsdato-hjelp" style={{ margin: "6px 0 0", fontSize: 12, color: "var(--text-secondary)" }}>
+                  Fødselsdatoen kan ikke endres her. Be coachen din om å rette den.
+                </p>
+              ) : null}
             </div>
 
             <div>

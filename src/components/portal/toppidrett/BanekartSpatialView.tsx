@@ -69,7 +69,7 @@ export function BanekartSpatialView({ className = "" }: { className?: string }) 
       planlagtTreningTimer: 14,
       gjennomfortTreningTimer: 15,
       status: "gevinst",
-      detaljer: "Solid opp-og-ned rate (61 %). Bunker krever fortsatt fokus.",
+      detaljer: "Solid up and down-andel (61 %). Bunker krever fortsatt fokus.",
     },
     {
       id: "GREEN",

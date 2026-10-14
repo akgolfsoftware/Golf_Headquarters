@@ -70,12 +70,15 @@ export function WangRoleStart({
         <nav className={styles.navigation} aria-label={`Navigasjon for ${role.label}`}>
           {role.modules.map((moduleId) => {
             const moduleDefinition = WANG_MODULES[moduleId];
+            const moduleHref = preview && moduleId === "workbench"
+              ? "/team-wang/demo"
+              : moduleDefinition.href;
             const Icon = MODULE_ICONS[moduleId];
-            if (moduleDefinition.href) {
+            if (moduleHref) {
               return (
                 <Link
                   key={moduleId}
-                  href={moduleDefinition.href}
+                  href={moduleHref}
                   className={moduleId === "overview" ? styles.navItemActive : styles.navItem}
                   aria-current={moduleId === "overview" ? "page" : undefined}
                 >
@@ -152,6 +155,9 @@ export function WangRoleStart({
             <div className={styles.moduleGrid}>
               {role.modules.map((moduleId) => {
                 const moduleDefinition = WANG_MODULES[moduleId];
+                const moduleHref = preview && moduleId === "workbench"
+                  ? "/team-wang/demo"
+                  : moduleDefinition.href;
                 const Icon = MODULE_ICONS[moduleId];
                 const body = (
                   <>
@@ -160,13 +166,13 @@ export function WangRoleStart({
                       <strong>{moduleDefinition.label}</strong>
                       <p>{moduleDefinition.description}</p>
                     </div>
-                    <span className={moduleDefinition.href ? styles.liveStatus : styles.plannedStatus}>
-                      {moduleDefinition.href ? "Åpen" : "Neste modul"}
+                    <span className={moduleHref ? styles.liveStatus : styles.plannedStatus}>
+                      {moduleHref ? "Åpen" : "Neste modul"}
                     </span>
                   </>
                 );
-                return moduleDefinition.href ? (
-                  <Link key={moduleId} href={moduleDefinition.href} className={styles.moduleCard}>
+                return moduleHref ? (
+                  <Link key={moduleId} href={moduleHref} className={styles.moduleCard}>
                     {body}
                   </Link>
                 ) : (

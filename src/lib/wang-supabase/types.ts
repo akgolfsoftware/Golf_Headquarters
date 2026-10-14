@@ -84,6 +84,20 @@ export interface WangGolfDemoData {
   events: WangDemoEvent[];
 }
 
+export interface WangWorkbenchAssignment {
+  schoolSportId: string;
+  schoolYear: string;
+  sportCode: string;
+  sportName: string;
+  sportFamily: string | null;
+  workbenchStatus: WangSportStatus;
+  workbenchEnabled: boolean;
+  mappingApproved: boolean;
+  groups: WangDemoGroup[];
+  plans: WangDemoPlanNode[];
+  events: WangDemoEvent[];
+}
+
 export interface WangAuthenticatedProfile {
   id: string;
   displayName: string;

@@ -6,7 +6,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { venterPaaForelder } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -30,8 +30,10 @@ export async function POST(req: Request) {
     );
   }
 
-
-  if (isAwaitingGuardianConsent(user)) {
+  // D-63/TA-21: opptak er sperret til forelder har godkjent (under 16, eller
+  // ukjent alder). Gjelder også de sju første dagene.
+  const sperret = venterPaaForelder(user);
+  if (sperret) {
     return NextResponse.json(
       { error: "guardian_consent_required" },
       { status: 403 },
@@ -61,7 +63,7 @@ export async function POST(req: Request) {
       liveSessionKind: parsed.data.liveSessionKind,
       drillId: parsed.data.drillId,
       status: "PROCESSING",
-      consentVerified: !user.requiresGuardianConsent,
+      consentVerified: !sperret,
       analysis: {
         create: { status: "PENDING" },
       },
