@@ -9,6 +9,7 @@ export const natt = ["utenOpptak", "medOpptak"];
 
 const base: LiveOktData = {
   id: "s1",
+  kilde: "v2",
   tittel: "Wedge 50–90 m",
   spillerNavn: "Testspiller Én",
   coachNavn: "Test Coach",

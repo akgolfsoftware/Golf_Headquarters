@@ -5,6 +5,7 @@
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { StatsUkaV2 } from "@/components/marketing/v2/StatsUkaV2";
 
 export const revalidate = 86400;
@@ -50,6 +51,8 @@ async function getUkesData() {
       where: {
         startDate: { gte: monday, lte: sunday },
         publicEntries: { some: {} },
+        // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+        AND: [UTEN_DATAGOLF_TURNERING],
       },
       include: {
         publicEntries: {

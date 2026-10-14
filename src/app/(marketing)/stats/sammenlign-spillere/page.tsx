@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { SammenlignResultat } from "./resultat";
@@ -52,6 +53,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           where: { slug: slugA },
           include: {
             entries: {
+              // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+              where: { tournament: UTEN_DATAGOLF_TURNERING },
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,
@@ -64,6 +67,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           where: { slug: slugB },
           include: {
             entries: {
+              // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+              where: { tournament: UTEN_DATAGOLF_TURNERING },
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,

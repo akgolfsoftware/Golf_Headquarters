@@ -16,7 +16,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { kanSeSpillerprofil } from "@/lib/auth/spiller-side-tilgang";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -39,7 +39,7 @@ export default async function SpillerDetaljPage({ params }: Props) {
   const erCoachMedTilgang =
     user.id !== spillerId &&
     (user.role === "ADMIN" || user.role === "COACH") &&
-    (await harCoachTilgangTilSpiller(user, spillerId));
+    (await harCoachLesetilgangTilSpiller(user, spillerId));
   if (!kanSeSpillerprofil(user, spillerId, erCoachMedTilgang)) notFound();
 
   const spiller = await prisma.user.findFirst({

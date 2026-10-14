@@ -10,6 +10,7 @@ let rows: Record<string, unknown>[] = [];
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => viewer } });
 mock.module("@/lib/auth/coached", { namedExports: {
   harCoachTilgangTilSpiller: async () => access,
+  harCoachLesetilgangTilSpiller: async () => access,
   coachScopedPlayerWhere: () => ({ id: playerId }),
 } });
 mock.module("@/lib/admin/stallen-data", { namedExports: { loadStallen: async () => [] } });

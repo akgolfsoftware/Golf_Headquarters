@@ -7,7 +7,7 @@
  * (WorkbenchAarsplan gjenbrukes 1:1 på /admin/grupper/[id]/workbench).
  */
 
-import { canEditGroup } from "@/lib/workbench/group-scope";
+import { canEditGroup, canWriteMemberPlans } from "@/lib/workbench/group-scope";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -98,6 +98,10 @@ export async function coachRullUtGruppeAarsplan(
   const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
+  // Utrullingen skriver i hvert medlems egen årsplan — bare eier/ADMIN (D-25, D-49).
+  if (!(await canWriteMemberPlans(aktor, groupId))) {
+    return { ok: false, error: "Bare gruppens eier kan rulle ut perioder til spillernes egne planer." };
+  }
 
   const [blokker, medlemmer] = await Promise.all([
     prisma.groupPeriodBlock.findMany({

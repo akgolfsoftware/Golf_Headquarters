@@ -3,6 +3,10 @@
  *
  * Returnerer søkeresultater fra PublicPlayer, PgaPlayerSeason og Tournament.
  * Brukes av /stats/sok SokClient (live debounced søk).
+ *
+ * PgaPlayerSeason er Data Golf-tall (SG, Data Golf-ID). De leveres bare til
+ * innlogget coach og admin (kanSeDataGolf, Anders 09.10.2026). Alle andre —
+ * også uinnloggede — får `pgaSpillere: []`.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -10,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security/same-origin";
 import { offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
+import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 
 export const runtime = "nodejs";
 
@@ -29,6 +34,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ norskeSpillere: [], pgaSpillere: [], turneringer: [] });
   }
 
+  const visDataGolf = await innloggetKanSeDataGolf();
+
   const [norskeSpillere, pgaSpillere, turneringer] = await Promise.all([
     prisma.publicPlayer
       .findMany({
@@ -44,17 +51,19 @@ export async function GET(req: NextRequest) {
       })
       .catch(() => []),
 
-    prisma.pgaPlayerSeason
-      .findMany({
-        where: {
-          playerName: { contains: q, mode: "insensitive" },
-          year: 2026,
-        },
-        take: 10,
-        orderBy: { sgTotal: "desc" },
-        select: { playerName: true, sgTotal: true, dgPlayerId: true },
-      })
-      .catch(() => []),
+    visDataGolf
+      ? prisma.pgaPlayerSeason
+          .findMany({
+            where: {
+              playerName: { contains: q, mode: "insensitive" },
+              year: 2026,
+            },
+            take: 10,
+            orderBy: { sgTotal: "desc" },
+            select: { playerName: true, sgTotal: true, dgPlayerId: true },
+          })
+          .catch(() => [])
+      : Promise.resolve([]),
 
     prisma.tournament
       .findMany({

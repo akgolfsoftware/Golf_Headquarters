@@ -1,4 +1,5 @@
 "use client";
+// FORELDRELØS (09.10.2026, live-økt krav 2): brukes bare av LiveActive og tapper-shell, som begge er foreldreløse. Fjernes i en egen opprydding; ikke bygg videre på den.
 import { TL } from "@/lib/v2/train-lock";
 // AI Golf Coach — utfellbart chat-panel under en AKTIV live-økt (plan-session
 // eller session-v2). Flyter over bunn/høyre som en fast boks, blokkerer aldri

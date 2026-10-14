@@ -6,6 +6,7 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH17TrackMan } from "@/components/portal/precision/PH17TrackMan";
 import { loadPH17TrackMan } from "@/lib/portal-analyse/load-ph17-trackman";
@@ -39,7 +40,7 @@ export default async function TrackManListePage({ searchParams }: TrackManPagePr
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
-      <PH17TrackMan data={data} aktivFane={aktivFane} />
+      <PH17TrackMan data={data} aktivFane={aktivFane} visDataGolf={kanSeDataGolf(user)} />
     </PlayerHQSkall>
   );
 }

@@ -31,10 +31,10 @@ describe("live-route", () => {
     });
   });
 
-  it("wb IN_PROGRESS → tapper", () => {
+  it("wb IN_PROGRESS → active (logging per øvelse)", () => {
     assert.equal(
       liveHrefForStatus("wb", "IN_PROGRESS", "wb-1"),
-      "/portal/live/wb-1/tapper",
+      "/portal/live/wb-1/active",
     );
   });
 

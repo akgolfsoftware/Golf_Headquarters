@@ -14,6 +14,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay } from "@/lib/uke-helpers";
+import { wbScheduledAtISO } from "@/lib/portal-live/wb-live-map";
 
 export type LiveTavleOkt = {
   id: string;
@@ -49,7 +50,7 @@ export async function hentLiveTavle(coachId: string, erAdmin: boolean): Promise<
   const naa = new Date();
   const eierFilter = erAdmin ? {} : { coachId };
 
-  const [liveRader, kommerRader] = await Promise.all([
+  const [liveRader, kommerRader, wbLive] = await Promise.all([
     prisma.trainingSessionV2.findMany({
       where: { status: "IN_PROGRESS", ...eierFilter },
       orderBy: { startTime: "asc" },
@@ -65,7 +66,21 @@ export async function hentLiveTavle(coachId: string, erAdmin: boolean): Promise<
       take: 6,
       select: { id: true, title: true, studentId: true, startTime: true },
     }),
+    // Workbench-økter i gang (live-økt krav 2, 09.10.2026). Samme eierfilter.
+    prisma.workbenchSession.findMany({
+      where: { status: "IN_PROGRESS", isTemplate: false, ...eierFilter },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+      take: 20,
+      select: { id: true, title: true, playerId: true, date: true, startMinute: true, durationMinutes: true },
+    }),
   ]);
+
+  const wbRader = wbLive.map((r) => {
+    const startTime = new Date(wbScheduledAtISO(r.date, r.startMinute));
+    return { id: r.id, title: r.title, studentId: r.playerId, startTime, endTime: new Date(startTime.getTime() + r.durationMinutes * 60_000) };
+  });
+  liveRader.push(...wbRader);
+  liveRader.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
   const navnKart = await navnForStudentIds([...liveRader.map((r) => r.studentId), ...kommerRader.map((r) => r.studentId)]);
 

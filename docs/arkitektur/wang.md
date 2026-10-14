@@ -3,6 +3,11 @@
 Dato: 26. september 2026
 Plassering i kodebasen: `src/app/team-wang/`, `src/app/team-wang/_data/`, `src/app/team-wang/_components/`
 
+> **Status 13. oktober 2026:** Beskrivelsen under dokumenterer den tidligere golfflaten og er ikke
+> lenger målbildet for hele WANG-systemet. Gjeldende rolle- og datakontrakt er
+> `docs/planer/wang-fredrikstad-roller-og-datagrunnlag-2026-10-13.md`. Den separate WANG-databasen
+> og den sammenhengende Golf-demoen er etablert, men ekte brukere og elevdata er ikke koblet til.
+
 ---
 
 ## 1. Hva WANG-flaten er

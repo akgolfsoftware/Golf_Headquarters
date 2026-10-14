@@ -107,7 +107,6 @@ export const KJENT_GJELD = new Map([
   ["src/app/api/parse-date/route.ts#POST", "TA-07"],
   ["src/app/api/upload/route.ts#POST", "TA-05"],
   ["src/app/api/portal/swing-video/upload/route.ts#POST", "TA-21"],
-  ["src/lib/storage/video.ts#uploadVideo", "TP-01"],
 ]);
 
 function* walk(dir) {

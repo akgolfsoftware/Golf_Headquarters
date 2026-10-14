@@ -5,7 +5,7 @@
 import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { PlanDocument, type PlanPdfData } from "@/lib/pdf/plan-document";
 
@@ -60,7 +60,10 @@ export async function GET(
   if (!plan) {
     return NextResponse.json({ error: "not-found" }, { status: 404 });
   }
-  await assertCoachTilgangTilSpiller(viewer, plan.userId);
+  // Eksport er lesing: samme innsynsport som planvisningen.
+  if (!(await harCoachLesetilgangTilSpiller(viewer, plan.userId))) {
+    throw new Error("Du har ikke tilgang til denne spilleren.");
+  }
 
   // Coach = brukeren som opprettet planen (createdById). Ikke FK i v1, så
   // vi slår opp manuelt og tillater null-fallback.
