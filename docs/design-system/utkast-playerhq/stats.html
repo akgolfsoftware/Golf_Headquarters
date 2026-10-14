@@ -1,0 +1,147 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats – nytt utkast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Stats ---------- */
+.s-hode{display:grid;gap:var(--r4)}
+.sammenlign button,.del{transition:transform 160ms var(--ut)}
+.sammenlign button:active{transform:scale(.97)}
+.s-hode img{display:block;width:100%;height:150px;object-fit:cover;object-position:50% 45%;border-radius:12px}
+.deler{display:grid;gap:var(--r4)}
+.del{border:1px solid var(--sand-300);border-radius:12px;background:var(--white);padding:18px;display:grid;gap:var(--r3);align-content:start}
+.del-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.del-topp h2{margin:0;font:600 17px/1.25 var(--sans)}
+.del-topp a{font:500 14px/1 var(--sans);color:var(--graphite-900);text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
+.sammenlign{display:inline-flex;flex-wrap:wrap;gap:3px;padding:3px;border-radius:8px;border:1px solid var(--sand-300)}
+.sammenlign button{min-height:36px;padding:0 12px;border:0;border-radius:6px;background:transparent;font:500 13px/1 var(--sans);color:var(--graphite-800);cursor:pointer}
+.sammenlign button[aria-pressed="true"]{background:var(--slag);color:#fff}
+.sg-liste{display:grid;gap:10px}
+.sgr{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) 44px;gap:10px;align-items:center}
+.sgn{font-size:14px;line-height:1.3;display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center}
+.sgn small{font:500 11px/1 var(--mono);color:var(--graphite-600)}
+.sgbar{position:relative;height:14px;border-radius:3px;background:var(--sand-150)}
+.sgbar .null{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--graphite-600)}
+.sgbar span{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--slag);opacity:.45}
+.sgr.svakest .sgbar span,.sgr.sterkest .sgbar span{opacity:1}
+.sgv{font:600 15px/1 var(--mono);text-align:right}
+.sgr.svakest .sgv{color:var(--slag-ink)}
+.uthev{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:12px 14px;border-radius:10px;background:var(--slag);color:#fff;font-size:14px;line-height:1.45}
+.uthev b{font-weight:600}
+.test-topp{display:grid;grid-template-columns:1fr auto;gap:var(--r3);align-items:end;padding:14px;border-radius:10px;background:var(--fys-ink);color:#fff}
+.test-topp strong{display:block;font:600 15px/1.3 var(--sans)}
+.test-topp .stor{font:600 40px/1 var(--mono);letter-spacing:-.03em;margin-top:6px;display:block}
+.test-topp .stor small{display:inline;font:500 15px/1 var(--mono);margin-left:4px;opacity:.85;letter-spacing:0}
+.test-topp small{display:block;font:400 12.5px/1.45 var(--sans);opacity:.9;margin-top:4px}
+.test-topp svg{width:120px;height:40px}
+.pr{display:inline-block;height:20px;padding:0 7px;border-radius:4px;background:#fff;color:var(--fys-ink);font:600 11px/20px var(--sans);margin-left:6px;vertical-align:2px}
+.tr{display:grid;grid-template-columns:1fr auto;gap:var(--r3);align-items:center;padding:10px 0;border-top:1px solid var(--sand-300)}
+.tr strong{display:block;font:600 14px/1.3 var(--sans)}
+.tr small{display:block;font:400 12.5px/1.45 var(--sans);color:var(--graphite-600)}
+.tr-h{display:grid;justify-items:end;gap:2px}
+.tv{font:600 16px/1 var(--mono)}
+.tt{font-size:12.5px;color:var(--graphite-800)}
+.datanote{font-size:13px;line-height:1.5;color:var(--graphite-800);padding:12px 14px;border-radius:10px;border:1px dashed var(--graphite-500)}
+@container (min-width:900px){
+  .s-hode{grid-template-columns:minmax(0,1fr) 380px;align-items:end;gap:var(--r6)}
+  .s-hode img{height:180px;grid-row:span 2;grid-column:2;grid-row:1/3}
+  .deler{grid-template-columns:1fr 1fr;gap:var(--r5)}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · PH-16 · utkast 1 · 14.10.2026</span>
+    <h1>Stats: fire deler, ett tall hver</h1>
+    <p>Demodata for Øyvind Rohjan, Kategori C. Bytt mellom utkast og dagens design, og mellom mobil og PC.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Fire like deler</b> som vedtatt 28.09: Snittscore, Strokes Gained, Trening og Tester. Dagens design viser bare Strokes Gained.</li>
+        <li><b>Ett stort tall per del</b>, med trend og én tydelig graf.</li>
+        <li><b>Strokes Gained som søyler</b> fra null, så sterkest og svakest område synes med en gang. Svakest område er uthevet og koblet til treningen.</li>
+        <li><b>Trening i aksefargene</b>, uke for uke, mot planlinjen.</li>
+        <li><b>Golfbilde i toppen</b>, med tittelen ved siden av og ikke oppå.</li>
+        <li>Grafene tegnes og søylene vokser når skjermen åpnes. Bevegelsen slås av for brukere som har valgt «reduser bevegelse».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Bare brutto score. Kategorien settes på brutto snitt: 73,1 gir C, og B er under 72.</li>
+        <li>Sammenligning mot neste kategori er standard og merket «Estimat». PGA Tour kan slås på. Ingen sammenligning med andre spillere.</li>
+        <li>Nok data: utslag og innspill er sikre fra 12 runder, nærspill og putting fra 24. Under 24 runder står «Foreløpig».</li>
+        <li>Alle tall har periode og kilde. Fargene følger aksene: SLAG for Strokes Gained, aksefargene for trening og FYS for fysiske tester.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<template id="skjerm">
+<div class="app" data-fane="stats">
+    <main class="innhold">
+      <div class="s-hode">
+        <div>
+          <div class="dato">Sesong 2026 · Kategori C</div>
+          <h1 class="tittel">Stats</h1>
+        </div>
+        <img src="bilder/stats-topp.jpg" alt="" width="1600" height="1067">
+        <div class="valg" role="group" aria-label="Periode"><button type="button" aria-pressed="false">Siste 5 runder</button><button type="button" aria-pressed="false">Siste 20</button><button type="button" aria-pressed="true">Sesong</button></div>
+      </div>
+
+      <div class="deler">
+        <section class="del" aria-label="Snittscore">
+          <div class="del-topp"><h2>Snittscore</h2><a href="#">Alle runder</a></div>
+          <div class="hoved"><strong data-tell="73.1" data-fra="79.1">73,1</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></svg>1,5 bedre enn 2025</span></div>
+          <p class="forklar">Siste 5 runder: <b>72,0</b>. Snitt under 72 gir Kategori B.</p>
+          <svg class="graf" viewBox="0 0 320 150" role="img" aria-label="Brutto score per runde, 18 runder, fra 75 til 72. Snitt 73,1."><rect x="26" y="10" width="286" height="44.2" fill="var(--sand-150)"/><line x1="26" x2="312" y1="54.2" y2="54.2" stroke="var(--graphite-600)" stroke-dasharray="4 3" stroke-width="1"/><text x="32" y="22" class="gt">Kategori B: under 72</text><text x="20" y="28.8" text-anchor="end" class="gt">70</text><text x="20" y="58.2" text-anchor="end" class="gt">72</text><text x="20" y="87.8" text-anchor="end" class="gt">74</text><text x="20" y="117.2" text-anchor="end" class="gt">76</text>
+<path class="tegn" d="M26.0,98.5 L42.8,83.8 L59.6,113.2 L76.5,69.0 L93.3,83.8 L110.1,98.5 L126.9,54.2 L143.8,83.8 L160.6,69.0 L177.4,54.2 L194.2,83.8 L211.1,39.5 L227.9,69.0 L244.7,54.2 L261.5,69.0 L278.4,39.5 L295.2,54.2 L312.0,54.2" fill="none" stroke="var(--graphite-500)" stroke-width="1.5" stroke-linejoin="round"/>
+<path class="tegn" d="M26.0,98.5 L42.8,91.1 L59.6,98.5 L76.5,91.1 L93.3,89.7 L110.1,89.7 L126.9,83.8 L143.8,77.8 L160.6,77.8 L177.4,72.0 L194.2,69.0 L211.1,66.0 L227.9,63.1 L244.7,60.2 L261.5,63.1 L278.4,54.2 L295.2,57.2 L312.0,54.2" fill="none" stroke="var(--graphite-900)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="312.0" cy="54.2" r="4.5" fill="var(--graphite-900)"/>
+<text x="26" y="145" class="gt">Runde 1</text><text x="312" y="145" text-anchor="end" class="gt">Runde 18</text></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--graphite-900);height:3px"></i>Snitt siste 5 runder</span><span class="lg"><i style="background:var(--graphite-500);height:2px"></i>Hver runde</span></div>
+          <p class="kildetekst">Brutto · 18 tellende runder · 12. april–4. oktober · GolfBox og egne registreringer</p>
+        </section>
+
+        <section class="del" aria-label="Strokes Gained">
+          <div class="del-topp"><h2>Strokes Gained</h2><a href="#">Per område</a></div>
+          <div class="hoved"><strong>−1,1</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>0,4 bedre siden juli</span></div>
+          <p class="forklar">Slag per runde mot Kategori B. <span class="estimat">Estimat</span></p>
+          <div class="sammenlign" role="group" aria-label="Sammenlign med"><button type="button" aria-pressed="true">Kategori B</button><button type="button" aria-pressed="false">PGA Tour</button></div>
+          <div class="sg-liste"><div class="sgr sterkest"><span class="sgn"><b>Utslag</b> <small>OTT</small></span><span class="sgbar"><i class="null"></i><span data-til="8.3%" style="left:50.0%;width:8.3%"></span></span><span class="sgv">+0,2</span></div><div class="sgr svakest"><span class="sgn"><b>Innspill</b> <small>APP</small></span><span class="sgbar"><i class="null"></i><span data-til="37.5%" style="left:12.5%;width:37.5%"></span></span><span class="sgv">−0,9</span></div><div class="sgr"><span class="sgn"><b>Nærspill</b> <small>ARG</small><span class="forelopig">Foreløpig</span></span><span class="sgbar"><i class="null"></i><span data-til="16.7%" style="left:33.3%;width:16.7%"></span></span><span class="sgv">−0,4</span></div><div class="sgr"><span class="sgn"><b>Putting</b> <small>PUTT</small><span class="forelopig">Foreløpig</span></span><span class="sgbar"><i class="null"></i><span data-til="0.0%" style="left:50.0%;width:0.0%"></span></span><span class="sgv">0,0</span></div></div>
+          <div class="uthev"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Innspill taper mest:</b> 0,9 slag per runde, mest fra 100–150 m. Dagens økt kl. 15:30 trener dette.</span></div>
+          <p class="kildetekst">12 runder slag for slag · 2. juni–4. oktober · nærspill og putting er sikre fra 24 runder</p>
+        </section>
+
+        <section class="del" aria-label="Trening">
+          <div class="del-topp"><h2>Trening</h2><a href="#">Til Plan</a></div>
+          <div class="hoved"><strong>48<small>t 10 min</small></strong><span class="trend">92 % av plan</span></div>
+          <p class="forklar">Siste 4 uker, av 52 t 20 min planlagt.</p>
+          <svg class="graf" viewBox="0 0 300 140" role="img" aria-label="Trening per uke, uke 37 til 40, fordelt på akse"><rect class="vokse" x="43.0" y="101.7" width="39.0" height="18.3" fill="var(--fys)" style="transform-origin:62.5px 120px;animation-delay:0ms"/><rect class="vokse" x="43.0" y="80.9" width="39.0" height="20.8" fill="var(--tek)" style="transform-origin:62.5px 120px;animation-delay:0ms"/><rect class="vokse" x="43.0" y="49.1" width="39.0" height="31.8" fill="var(--slag)" style="transform-origin:62.5px 120px;animation-delay:0ms"/><rect class="vokse" x="43.0" y="36.9" width="39.0" height="12.2" fill="var(--spill)" style="transform-origin:62.5px 120px;animation-delay:0ms"/><rect class="vokse" x="43.0" y="27.1" width="39.0" height="9.8" fill="var(--turn)" style="transform-origin:62.5px 120px;animation-delay:0ms"/><text x="62.5" y="135" text-anchor="middle" class="gt">Uke 37</text><rect class="vokse" x="108.0" y="100.4" width="39.0" height="19.6" fill="var(--fys)" style="transform-origin:127.5px 120px;animation-delay:80ms"/><rect class="vokse" x="108.0" y="78.4" width="39.0" height="22.0" fill="var(--tek)" style="transform-origin:127.5px 120px;animation-delay:80ms"/><rect class="vokse" x="108.0" y="45.4" width="39.0" height="33.0" fill="var(--slag)" style="transform-origin:127.5px 120px;animation-delay:80ms"/><rect class="vokse" x="108.0" y="30.8" width="39.0" height="14.7" fill="var(--spill)" style="transform-origin:127.5px 120px;animation-delay:80ms"/><rect class="vokse" x="108.0" y="24.1" width="39.0" height="6.7" fill="var(--turn)" style="transform-origin:127.5px 120px;animation-delay:80ms"/><text x="127.5" y="135" text-anchor="middle" class="gt">Uke 38</text><rect class="vokse" x="173.0" y="109.0" width="39.0" height="11.0" fill="var(--fys)" style="transform-origin:192.5px 120px;animation-delay:160ms"/><rect class="vokse" x="173.0" y="90.7" width="39.0" height="18.3" fill="var(--tek)" style="transform-origin:192.5px 120px;animation-delay:160ms"/><rect class="vokse" x="173.0" y="61.3" width="39.0" height="29.3" fill="var(--slag)" style="transform-origin:192.5px 120px;animation-delay:160ms"/><rect class="vokse" x="173.0" y="47.9" width="39.0" height="13.4" fill="var(--spill)" style="transform-origin:192.5px 120px;animation-delay:160ms"/><rect class="vokse" x="173.0" y="36.9" width="39.0" height="11.0" fill="var(--turn)" style="transform-origin:192.5px 120px;animation-delay:160ms"/><text x="192.5" y="135" text-anchor="middle" class="gt">Uke 39</text><rect class="vokse" x="238.0" y="102.9" width="39.0" height="17.1" fill="var(--fys)" style="transform-origin:257.5px 120px;animation-delay:240ms"/><rect class="vokse" x="238.0" y="83.3" width="39.0" height="19.6" fill="var(--tek)" style="transform-origin:257.5px 120px;animation-delay:240ms"/><rect class="vokse" x="238.0" y="53.4" width="39.0" height="29.9" fill="var(--slag)" style="transform-origin:257.5px 120px;animation-delay:240ms"/><rect class="vokse" x="238.0" y="38.7" width="39.0" height="14.7" fill="var(--spill)" style="transform-origin:257.5px 120px;animation-delay:240ms"/><text x="257.5" y="135" text-anchor="middle" class="gt">Uke 40</text><line x1="26" x2="296" y1="24.1" y2="24.1" stroke="var(--graphite-900)" stroke-dasharray="4 3"/><text x="296" y="20.1" text-anchor="end" class="gt">Plan 13 t 5 min per uke</text></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--fys)"></i>FYS 9 t</span><span class="lg"><i style="background:var(--tek)"></i>TEK 11 t</span><span class="lg"><i style="background:var(--slag)"></i>SLAG 16 t 55 min</span><span class="lg"><i style="background:var(--spill)"></i>SPILL 7 t 30 min</span><span class="lg"><i style="background:var(--turn)"></i>TURN 3 t 45 min</span></div>
+          <p class="kildetekst">Gjennomført tid · uke 37–40 · 7. sep.–4. okt.</p>
+        </section>
+
+        <section class="del" aria-label="Tester">
+          <div class="del-topp"><h2>Tester</h2><a href="#">Alle tester</a></div>
+          <div class="test-topp">
+            <div><strong>Club Speed<span class="pr">Personlig rekord</span></strong><span class="stor">108,4<small>mph</small></span><small>+1,9 siden juli · 28. sep. · TrackMan · Kontrollert</small></div>
+            <svg viewBox="0 0 120 40" role="img" aria-label="Club Speed siste 5 tester, fra 104,1 til 108,4"><path class="tegn" d="M4.0,30.1 L32.0,25.3 L60.0,17.3 L88.0,18.9 L116.0,7.2" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="116" cy="7.2" r="3.5" fill="#fff"/></svg>
+          </div>
+          <div class="tr"><div><strong>Markløft trapbar</strong><small>21. sep. · Egenført</small></div><div class="tr-h"><span class="tv">140 kg</span><span class="tt">+10 kg siden juli</span></div></div><div class="tr"><div><strong>Lengdehopp</strong><small>21. sep. · Kontrollert</small></div><div class="tr-h"><span class="tv">2,48 m</span><span class="tt">+0,06 m siden juli</span></div></div><div class="tr"><div><strong>Rotasjonskast</strong><small>21. sep. · Egenført</small></div><div class="tr-h"><span class="tv">11,2 m</span><span class="tt">Første måling</span></div></div>
+          <p class="kildetekst">Testbatteri AK Golf · neste fysiske test i uke 43</p>
+        </section>
+      </div>
+    </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>AKUtkast.start({for:{mob:'screenshots/PH-16-390.jpg',pc:'screenshots/PH-16-1440.jpg'}});</script>

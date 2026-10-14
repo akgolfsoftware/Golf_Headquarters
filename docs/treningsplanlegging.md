@@ -248,6 +248,7 @@ plan eller mengde.
 | Ferdig som universell status | Den presise statusen: lagret, publisert, gjennomført eller utført |
 | Pro / Premium / Plus | Gratis eller Full |
 | Emoji i UI | Tekst eller et relevant ikon |
+| Opp og ned / opp-og-ned | Up and down (Anders 14.10.2026) |
 
 ## 4. Handlinger, statuser og meldinger
 
