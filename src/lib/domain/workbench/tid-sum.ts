@@ -5,7 +5,7 @@
  */
 type TidOkt = { durationMinutes: number; status: string };
 
-export function planlagtMinutter(okter: readonly TidOkt[]): number {
+export function planlagtMinutter(okter: readonly { durationMinutes: number }[]): number {
   return okter.reduce((sum, s) => sum + Math.max(0, s.durationMinutes), 0);
 }
 
