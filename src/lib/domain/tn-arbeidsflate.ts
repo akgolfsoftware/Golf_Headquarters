@@ -17,6 +17,7 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
+import { kanSeDataGolf, UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 
@@ -28,6 +29,11 @@ import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
  */
 
 export type TnBruker = { id: string; role: UserRole; name: string | null };
+
+/** Data Golf-resultater er bare for coacher og admin (Anders 09.10.2026); alle andre får dem filtrert bort. */
+function utenDataGolfForBruker(bruker: TnBruker): typeof UTEN_DATAGOLF_TURNERING | Record<string, never> {
+  return kanSeDataGolf(bruker) ? {} : UTEN_DATAGOLF_TURNERING;
+}
 
 export type TnArbeidskontekst = {
   gruppe: { id: string; name: string };
@@ -247,12 +253,17 @@ async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string)
  */
 export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   return lesTnProfiler(bruker, async (tx, spillerId) => {
-    const data = await lesTnRanglisteRad(tx, spillerId, aar);
+    const data = await lesTnRanglisteRad(tx, spillerId, aar, utenDataGolfForBruker(bruker));
     return data.rader[0] ?? null;
   });
 }
 
-async function lesTnRanglisteRad(tx: Prisma.TransactionClient, spillerId: string, aar?: number) {
+async function lesTnRanglisteRad(
+  tx: Prisma.TransactionClient,
+  spillerId: string,
+  aar: number | undefined,
+  datagolfFilter: ReturnType<typeof utenDataGolfForBruker>,
+) {
   const rader = await lesTnSpillerRader(tx, spillerId);
   const spillerside = { rader };
   const koblinger = await tx.user.findMany({
@@ -262,7 +273,7 @@ async function lesTnRanglisteRad(tx: Prisma.TransactionClient, spillerId: string
   const entries = await tx.publicPlayerEntry.findMany({
     where: {
       playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
-      tournament: { mergedIntoId: null, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
+      tournament: { mergedIntoId: null, ...datagolfFilter, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
     },
     select: {
       playerId: true, status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
@@ -1340,7 +1351,7 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
     const entries = await tx.publicPlayerEntry.findMany({
       where: {
         playerId: spiller.publicPlayerId,
-        tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
+        tournament: { mergedIntoId: null, ...utenDataGolfForBruker(bruker), startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
       },
       select: {
         status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
