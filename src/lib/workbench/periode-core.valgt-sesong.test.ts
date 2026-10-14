@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
+import { Prisma } from "@/generated/prisma/client";
 
 type Plan = { id: string; userId: string; year: number; startDate: Date; endDate: Date };
 type Blokk = { id: string; seasonPlanId: string; [key: string]: unknown };
@@ -14,6 +15,9 @@ let me: { id: string; role: string };
 let coachTilgang: boolean;
 const revalidert: string[] = [];
 const nyPeriode = { lPhase: "GRUNN", startDato: "2027-01-04", sluttDato: "2027-02-28", fokus: "Syntetisk fokus", ukevolumMin: 0, budsjett: { TEK: 0 } };
+
+/** Prisma ignorerer undefined i data (= ikke rør); mocken må gjøre det samme. */
+const utenUndefined = (d: Record<string, unknown>) => Object.fromEntries(Object.entries(d).filter(([, v]) => v !== undefined));
 
 const db = {
   seasonPlan: {
@@ -32,10 +36,10 @@ const db = {
     create: async ({ data }: { data: Omit<Blokk, "id"> & { seasonPlanId: string } }) => { writes++; const b = { ...data, id: "ny-periode" }; blokker.push(b); return b; },
     updateMany: async ({ where, data }: { where: { id: string; seasonPlanId: string }; data: Record<string, unknown> }) => {
       const b = blokker.find(b => b.id === where.id && b.seasonPlanId === where.seasonPlanId);
-      if (!b) return { count: 0 }; writes++; Object.assign(b, data); return { count: 1 };
+      if (!b) return { count: 0 }; writes++; Object.assign(b, utenUndefined(data)); return { count: 1 };
     },
     update: async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
-      const b = blokker.find(b => b.id === where.id); if (!b) throw new Error("Mangler testperiode"); writes++; Object.assign(b, data); return b;
+      const b = blokker.find(b => b.id === where.id); if (!b) throw new Error("Mangler testperiode"); writes++; Object.assign(b, utenUndefined(data)); return b;
     },
   },
 };
@@ -125,4 +129,21 @@ test("transaksjonskonflikt gir ingen bekreftet lagring eller revalidering og sam
   txFeil = false;
   assert.equal((await actions.saveSeasonPeriod({ playerId: "spiller", seasonPlanId: "plan-2026", data: nyPeriode })).ok, true);
   assert.equal(writes, 1);
+});
+
+test("minutter per akse lagres ved opprett, røres ikke av en gammel kaller og nullstilles med null", async () => {
+  const vanlig = { FYS: 60, TEK: 120, SLAG: 90, SPILL: 150, TURN: 0 };
+  const lett = { FYS: 30, TEK: 60, SLAG: 45, SPILL: 75, TURN: 0 };
+  const r = await actions.saveSeasonPeriod({ playerId: "spiller", seasonPlanId: "plan-2026", data: { ...nyPeriode, axisMinutes: vanlig, axisMinutesLight: lett } });
+  assert.equal(r.ok, true);
+  const b = blokker.at(-1)!;
+  assert.deepEqual(b.axisMinutes, vanlig); assert.deepEqual(b.axisMinutesLight, lett);
+
+  const gammel = await actions.saveSeasonPeriod({ playerId: "spiller", seasonPlanId: "plan-2026", periodId: "ny-periode", data: { ...nyPeriode, fokus: "Nytt fokus" } });
+  assert.equal(gammel.ok, true);
+  assert.deepEqual(b.axisMinutes, vanlig, "undefined = ikke rør"); assert.deepEqual(b.axisMinutesLight, lett);
+
+  const tom = await actions.saveSeasonPeriod({ playerId: "spiller", seasonPlanId: "plan-2026", periodId: "ny-periode", data: { ...nyPeriode, axisMinutes: null, axisMinutesLight: {} } });
+  assert.equal(tom.ok, true);
+  assert.equal(String(b.axisMinutes), String(Prisma.DbNull)); assert.equal(String(b.axisMinutesLight), String(Prisma.DbNull));
 });

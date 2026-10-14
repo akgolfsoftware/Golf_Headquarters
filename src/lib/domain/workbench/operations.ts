@@ -515,6 +515,9 @@ export interface YearPeriodInput {
   weeklyVolMin?: number | null;
   weeklyVolMax?: number | null;
   sessionBudget?: Partial<Record<PyramidArea, number>> | null;
+  /** Minutter per akse, vanlig og lett uke (plannivåene henger sammen, 14.10.2026). */
+  axisMinutes?: Partial<Record<PyramidArea, number>> | null;
+  axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearEventInput {
@@ -608,6 +611,8 @@ export function buildYearViewModel(
         weeklyVolMin: p.weeklyVolMin ?? null,
         weeklyVolMax: p.weeklyVolMax ?? null,
         sessionBudget: p.sessionBudget ?? null,
+        axisMinutes: p.axisMinutes ?? null,
+        axisMinutesLight: p.axisMinutesLight ?? null,
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,
