@@ -97,10 +97,11 @@ export function coachScopedPlayerWhere(viewer: {
 }
 
 /**
- * SKRIVE-scope: egen AK-coach. Bare aktiv enrollment hos coachen eller
- * spiller-medlemskap i en gruppe coachen eier. Trener-medlemskap i en gruppe
- * gir aldri skriverett i en spillers egen plan (D-25, D-49); en
- * organisasjonstrener som vil endre noe, sender forslag (D-05).
+ * SKRIVE-scope: egen AK-coach. Aktiv enrollment hos coachen, spiller-medlemskap
+ * i en gruppe coachen eier, eller spiller-medlemskap i en AK-gruppe der coachen
+ * er aktivt COACH-medlem (Anders 14.10.2026, overstyrer D-25). Assistent-
+ * medlemskap gir bare lesing. Organisasjonstrenere (WANG/TN) skriver aldri i
+ * spillerens plan; de sender forslag (D-05, D-49).
  */
 export function coachSkrivbarPlayerWhere(viewer: {
   id: string;
@@ -122,6 +123,19 @@ export function coachSkrivbarPlayerWhere(viewer: {
       {
         groupMemberships: {
           some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id, ...ikkeOrgGruppeWhere() } },
+        },
+      },
+      // Anders 14.10.2026: COACH-medlem i en AK-gruppe (GFGK m.fl.) skriver i
+      // medlemmenes plan. Gjelder aldri WANG/Team Norway (ikkeOrgGruppeWhere).
+      {
+        groupMemberships: {
+          some: {
+            ...aktivtSpillerMedlemskapWhere(),
+            group: {
+              ...ikkeOrgGruppeWhere(),
+              members: { some: { userId: viewer.id, role: "COACH", endedAt: null } },
+            },
+          },
         },
       },
     ],
