@@ -78,6 +78,33 @@ Coachen beholder de fire flatene.»
    får et sted i nivåene eller i Plan, Stats eller Meg før steg 6 legges inn. Ferdig når lista er gått
    gjennom og ingen inngang mangler.
 
+## AKGOLF.NO FLYTTES IKKE FØR HELE NETTSIDEN ER GODKJENT (Anders 15.10.2026, bindende)
+
+Anders 15.10, etter revisjonen av markedssidene: «ikke flytt domene før siden er godkjent.» Svar på
+planen for akgolf.no som animert reise, der domeneflytting sto som steg 1.
+
+- **akgolf.no peker i dag til Acuity** (`akgolfgroup.as.me`) og er ikke koblet til Vercel-prosjektet
+  `akgolf-hq`. Det forblir slik til hele nettsiden er godkjent.
+- **Godkjent betyr:** Anders har sett alle markedssidene på `akgolf-hq.vercel.app` i mobil og
+  desktop (port 7) og sagt ja til helheten, og bookingen er røyktestet med én ekte betaling.
+- **Alt arbeid med den nye markedssiden bygges og vises på `akgolf-hq.vercel.app`.** Ingen
+  omdirigering, DNS- eller domeneendring underveis.
+
+**Overstyrer:** steg 1 i første utkast av `docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md`
+(rettet i samme PR; domenet er nå steg 10).
+
+**Arbeidet dette utløser:**
+
+1. **Planen følges i rekkefølgen 1–10** i `docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md`:
+   utkast 2 med reisen → bevegelsesgrunnmur → forsiden → undersidene → innhold → kontroll →
+   godkjenning → røyktest → domene. Ferdig når hvert steg har Anders' ja der planen krever det.
+2. **Domeneflytting (steg 10)** gjøres først når steg 8 og 9 er dokumentert. Ferdig når
+   `curl -I https://akgolf.no` gir 200 fra appen, ikke 307 til Acuity, og Acuity-lenkene er
+   borte fra nettsiden.
+3. **Uavklart:** hvor omdirigeringen fra akgolf.no til Acuity faktisk ligger (ikke i `vercel.json`,
+   `next.config.ts` eller `proxy.ts`; svaret kommer fra Vercel, men domenet står ikke på
+   `akgolf-hq`). Må finnes før steg 10.
+
 ## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
 
 Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller skal kunne booke om timen sin om det er ledig i bookingsystemet. Men det er kun innenfor tilgjengeligheten som er satt hos coach.»
