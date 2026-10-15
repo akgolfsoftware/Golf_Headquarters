@@ -18,9 +18,9 @@ export default async function SpillerTestDetaljPage({ params }: { params: Promis
   const { spillerId, testId } = await params;
   const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
   const data = await hentTnSpillerTestDetalj(bruker, spillerId, testId);
-  if (data) return <TnVisning spillerId={spillerId} data={data} />;
+  if (data) return <TnVisning spillerId={spillerId} data={data} brukerNavn={bruker.name ?? "Ukjent"} />;
 
   const ovrig = await hentTnSpillerOvrigTestDetalj(bruker, spillerId, testId);
   if (!ovrig) notFound();
-  return <TnOvrigVisning spillerId={spillerId} data={ovrig} />;
+  return <TnOvrigVisning spillerId={spillerId} data={ovrig} brukerNavn={bruker.name ?? "Ukjent"} />;
 }
