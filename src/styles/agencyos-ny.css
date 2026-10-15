@@ -101,7 +101,7 @@
 .agn-s .undertittel { font: 600 14px/1.3 var(--sans); }
 .agn-s .topp { display: grid; gap: var(--r3); }
 .agn-s .topp-rad { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--r3); flex-wrap: wrap; }
-.agn-s .ag-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font: 500 15px/1 var(--sans); color: var(--graphite-900); text-decoration: none; justify-self: start; cursor: pointer; border: 0; background: none; padding: 0; }
+.agn-s .ag-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font: 500 15px/1 var(--sans); color: var(--graphite-900); text-decoration: none; justify-self: start; cursor: pointer; border: 0; background: none; padding: 0 8px 0 0; min-width: 44px; }
 
 /* Flater */
 .agn-s .kort { border: 1px solid var(--sand-300); border-radius: 12px; background: var(--white); padding: var(--r4) 18px 18px; display: grid; gap: var(--r4); align-content: start; }
@@ -139,10 +139,10 @@
 .agn-s .knapp:focus-visible, .agn-s button:focus-visible, .agn-s a:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
 .agn-s .knapper { display: flex; gap: var(--r2); flex-wrap: wrap; }
 .agn-s .valg { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border-radius: 8px; background: var(--sand-150); justify-self: start; }
-.agn-s .valg > button, .agn-s .valg > a { min-height: 40px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
+.agn-s .valg > button, .agn-s .valg > a { min-height: 44px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
 .agn-s .valg > [aria-pressed="true"], .agn-s .valg > [aria-current="page"] { background: var(--graphite-900); color: var(--white); }
 .agn-s .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.agn-s .chips > button, .agn-s .chips > a { min-height: 40px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 999px; background: var(--white); font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.agn-s .chips > button, .agn-s .chips > a { min-height: 44px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 999px; background: var(--white); font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
 .agn-s .chips b { font: 600 12px/1 var(--mono); }
 .agn-s .chips > [aria-pressed="true"], .agn-s .chips > [aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
 .agn-s .faner { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--sand-300); }
@@ -247,3 +247,25 @@
 .agn-s .laast { display: inline-flex; align-items: center; gap: 4px; font: 600 11.5px/1 var(--sans); color: var(--graphite-600); }
 @media (hover: hover) and (pointer: fine) { .agn-s .mer-kort:hover { background: var(--sand-100); } }
 @media (min-width: 900px) { .agn-s .mer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Spøkelsesknapp, varsel og nøkkelverdier (src/components/admin/agencyos-ny/ny.tsx) */
+.agn-s .knapp.spok { background: transparent; color: var(--graphite-900); border: 1px solid transparent; text-decoration: underline; text-underline-offset: 3px; }
+.agn-s .varsel { display: grid; gap: 4px; padding: 12px 14px; border-radius: 10px; background: var(--sand-100); border-left: 4px solid var(--graphite-500); }
+.agn-s .varsel.ok { border-left-color: var(--green-700); background: var(--green-50); }
+.agn-s .varsel.advarsel { border-left-color: var(--rust); background: var(--rust-50); }
+.agn-s .nv { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--sand-300); }
+.agn-s .nv > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--r3); padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .nv dt { font-size: 13.5px; color: var(--graphite-600); }
+.agn-s .nv dd { margin: 0; font: 500 14.5px/1.4 var(--sans); }
+
+/* Eldre Precision-skjermer i AgencyOS-skallet får samme sidehode, kort og luft
+   som skjermene i nytt design, til de er tegnet om én for én. */
+.agn .pa-side { max-width: none; padding: var(--r5) var(--r4) calc(104px + env(safe-area-inset-bottom)); gap: var(--r5); }
+.agn .pa-pagehead__kicker { font: 500 12px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
+.agn .pa-pagehead__title { font: 700 30px/1.1 var(--sans); letter-spacing: -.025em; margin-top: 4px; }
+.agn .pa-pagehead__sub { font-size: 15px; line-height: 1.55; color: var(--graphite-800); }
+.agn .pa-card { border-radius: 12px; border-color: var(--sand-300); box-shadow: none; }
+.agn .pa-sheet { border-radius: 16px 16px 0 0; }
+@media (min-width: 900px) {
+  .agn .pa-side { padding: var(--r4) 40px 96px; }
+}

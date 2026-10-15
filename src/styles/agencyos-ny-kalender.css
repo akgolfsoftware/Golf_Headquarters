@@ -1,0 +1,56 @@
+/* AgencyOS pakke 3: AG-05 Kalender og AG-06 Booking.
+   Portert fra docs/design-system/utkast-agencyos/kalender.html. Gjelder bare inni .agn-s. */
+.agn-s .kal-topp { display: flex; flex-wrap: wrap; gap: var(--r2); align-items: center; justify-content: space-between; }
+.agn-s .kal-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.agn-s .kal-nav a { min-width: 44px; height: 44px; padding: 0 10px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); display: grid; place-items: center; color: var(--graphite-900); text-decoration: none; font: 600 14px/1 var(--sans); }
+.agn-s .kal-nav b { font: 600 16px/1.2 var(--sans); padding: 0 8px; }
+
+/* Mobil: kort per dag */
+.agn-s .ukevis { display: grid; gap: var(--r2); }
+.agn-s .ukedag { display: grid; align-content: start; gap: 6px; padding: 10px; border: 1px solid var(--sand-300); border-radius: 12px; background: var(--white); }
+.agn-s .ukedag.idag { border: 2px solid var(--graphite-900); }
+.agn-s .ukedag h3 { margin: 0; display: flex; justify-content: space-between; font: 600 14px/1.2 var(--sans); }
+.agn-s .ukedag h3 span { font: 500 12.5px/1.2 var(--mono); color: var(--graphite-600); }
+.agn-s .u-okt { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; padding: 8px 10px; border-radius: 7px; color: #fff; background: var(--graphite-800); font: inherit; font-size: 13px; line-height: 1.3; text-align: left; border: 0; cursor: pointer; min-height: 44px; align-items: center; }
+.agn-s .u-okt b { font: 600 12.5px/1.3 var(--mono); }
+.agn-s .u-okt span { overflow-wrap: anywhere; }
+.agn-s .u-okt.kolliderer, .agn-s .k-okt.kolliderer { box-shadow: inset 0 0 0 2px var(--amber-50), inset 4px 0 0 var(--amber-700); }
+
+/* PC: tidsrutenett */
+.agn-s .uke-rutenett { --time: 44px; display: grid; grid-template-columns: 44px repeat(var(--kol), minmax(0, 1fr)); border: 1px solid var(--sand-300); border-radius: 12px; overflow: hidden; background: var(--white); }
+.agn-s .uke-rutenett .hd { display: flex; align-items: center; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--sand-300); border-left: 1px solid var(--sand-300); background: var(--sand-100); font: 600 13.5px/1.2 var(--sans); }
+.agn-s .uke-rutenett .hd.tom { border-left: 0; }
+.agn-s .uke-rutenett .hd.idag { background: var(--graphite-900); color: var(--white); }
+.agn-s .uke-rutenett .timer { display: grid; grid-auto-rows: var(--time); background: var(--sand-100); }
+.agn-s .uke-rutenett .timer span { font: 500 11px/1 var(--mono); color: var(--graphite-600); padding: 4px 0 0 4px; border-top: 1px solid var(--sand-300); }
+.agn-s .uke-rutenett .kol { position: relative; min-height: calc(var(--time) * 14); border-left: 1px solid var(--sand-300); background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--time) - 1px), var(--sand-150) calc(var(--time) - 1px), var(--sand-150) var(--time)); }
+.agn-s .k-okt { position: absolute; left: 3px; right: 3px; display: grid; align-content: start; gap: 1px; padding: 4px 7px; border-radius: 7px; color: #fff; background: var(--graphite-800); overflow: hidden; text-align: left; border: 0; font: inherit; cursor: pointer; z-index: 1; }
+.agn-s .k-okt b { font: 600 12.5px/1.2 var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .k-okt span { font: 500 11.5px/1.25 var(--sans); opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .k-okt .lag { opacity: .75; }
+.agn-s .heldag { position: absolute; top: 2px; left: 3px; right: 3px; display: grid; gap: 2px; z-index: 2; }
+.agn-s .heldag .heldag-okt { position: static; background: var(--sand-150); color: var(--graphite-900); border: 1px solid var(--sand-300); min-height: 32px; }
+
+/* Måned */
+.agn-s .mnd { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.agn-s .mnd .ukedn { font: 600 11.5px/1 var(--sans); color: var(--graphite-600); text-align: center; padding: 4px 0; }
+.agn-s .mnd .d { display: grid; align-content: start; gap: 4px; min-height: 64px; padding: 5px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: inherit; text-decoration: none; }
+.agn-s .mnd .d.ut { opacity: .4; }
+.agn-s .mnd .d.idag { border: 2px solid var(--graphite-900); }
+.agn-s .mnd .d b { font: 600 12.5px/1 var(--mono); }
+.agn-s .mnd .ant { font: 500 11px/1.2 var(--sans); color: var(--graphite-600); overflow-wrap: anywhere; }
+
+.agn-s .bare-pc { display: none; }
+@media (min-width: 900px) {
+  .agn-s .bare-mobil { display: none; }
+  .agn-s .bare-pc { display: grid; }
+  .agn-s .mnd .d { min-height: 96px; }
+}
+.agn-s .kal-innhold { background: transparent; display: grid; gap: var(--r3); }
+.agn-s .k-okt { gap: 0; padding: 3px 7px; }
+.agn-s .k-okt b, .agn-s .k-okt span { line-height: 1.2; }
+.agn-s .bk-rad { cursor: pointer; }
+.agn-s .bk-rad[aria-pressed="true"] { background: var(--sand-150); }
+.agn-s .to-felt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--r2); }
+.agn-s .faner .antall { margin-left: 6px; }
+.agn-s .ikonboks { font: 600 12px/1 var(--mono); }

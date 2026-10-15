@@ -91,6 +91,7 @@ export function PH16Stats({
         }}
       >
         <div style={{ flex: 1, minWidth: 240 }}>
+          <Link href="/portal/analysere" className="pa-btn pa-btn--ghost" style={{ marginBottom: 8 }}>Tilbake til oversikten</Link>
           <Sidehode
             kicker={`Stats · ${curFane.tittel}`}
             title="Stats"
