@@ -77,11 +77,14 @@ await build({
 });
 
 // Samme rekkefølge som skallene: komponentstilene først, så Precision-laget.
-// Basestilene alltid, pluss enhver bolk-egen stil (precision-a1.css, precision-a4.css, …) og PlayerHQs nye design (playerhq-ny.css og playerhq-ny-stats.css, avgrenset til .phn)
+// Basestilene alltid, pluss enhver bolk-egen stil (precision-a1.css, precision-a4.css, …) og PlayerHQs nye design (playerhq-ny.css og alle playerhq-ny-*.css)
 // bolkene legger i src/styles/ ved siden av sin egen visning.
 import { readdirSync } from "node:fs";
 const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp|iup|bk)\.css$/.test(f)).sort();
-const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", "playerhq-ny-stats.css"].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// playerhq-ny.css først (tokens), så alle playerhq-ny-*.css som pakkene legger til, og AgencyOS i nytt design (agencyos-ny*.css).
+const phnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^playerhq-ny-[a-z0-9-]+\.css$/.test(f)).sort();
+const agnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^agencyos-ny.*\.css$/.test(f)).sort();
+const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
