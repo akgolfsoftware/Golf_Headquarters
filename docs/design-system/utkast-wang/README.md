@@ -2,7 +2,7 @@
 
 Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakkene 2–8 og samlesiden er utkast 1 (14.–15.10) og venter på port 7. Åpne spørsmål står samlet nederst.**
 
-Samleside: https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB
+Samleside: https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB (oppdatert 15.10 med pakke 10)
 
 Gjelder trenerflaten i `/team-wang` i AK Golf HQ. Claude Design stenger 14.12, så Anders godkjente 14.10 at WANG tegnes i
 repoet som HTML-utkast publisert som private Artifacts, samme metode som [PlayerHQ](../utkast-playerhq/README.md).
@@ -66,6 +66,7 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 | 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/7QC4YH8zeeLSFHXGULBf4q |
 | 8 Administrasjon | Trenere og roller (WANG-19), Samtykke og deling (WANG-34), Timeplan med kollisjoner (WANG-26), Opptak med plasser og kandidater (WANG-31, -32), Koordinering mellom skolene (WANG-33). Trener får «Denne siden er lukket» | `administrasjon.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/G36K5CamEitxYEiQBGENPB |
 | 9 Samleside | Alle åtte pakker, det viktigste å ta stilling til, feil i dagens kode | `index.html` | **Ferdig** (15.10) | https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB |
+| 10 Data Golf | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Elev mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Under Konkurranse › Data Golf (WANG-50). Samme skjermer og regler som AgencyOS pakke 10 | `datagolf.html` | **Utkast 1** (15.10), venter på port 7 og lisens | https://claude.ai/artifact/9Wj9yJqkEXBKomyCQ1D97Q |
 
 Én fil og én PR per pakke. Hver skjerm i 390 og 1280, med tom, laster og feil.
 Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TILGANGSMATRISE.md` og vedtakene i
@@ -128,6 +129,12 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 2. Landslagsnivå per klasse må komme fra Team Norway. Til da «—».
 3. Dagens kode har knebøy og CMJ i WANGs fysiske tester (`src/components/wang/wang-data.ts`). Vedtaket 28.09 sier benkpress, markløft trapbar, lengdehopp, rotasjonskast og Club Speed. Utkastet følger vedtaket.
 4. WANG-39 «nasjonal rangering og persentiler» er ikke tegnet: posisjon er aldri persentil, og en trener ser ikke andre skolers elever. Rangering i egen gruppe ligger i «Én test». Skal en nasjonal rangering finnes, må tallene komme fra Team Norway.
+
+### Pakke 10 Data Golf
+1. **Lisensen er ikke avklart.** Data Golfs bruksrett dekker Anders' egen bruk i AgencyOS; kundedistribusjon til WANG-trenere er ikke dokumentert (kontroll 02.10, krav 1). Utkastet er tegnet, men bygges ikke før bruksretten er avklart. DG-09 viser status, og `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` er felles grunnlag.
+2. Skal WANG-trenere se Data Golf i det hele tatt? Vedtaket 06.10 sier alle med coach-rollen. Alternativet er bare sportssjef, eller bare «Mot PGA Tour» i Sesongen (pakke 5).
+3. Innspill-tak som øvelse: sirkelen er proffens nærhet rett av. Skal elever under kategori C få et trinn (for eksempel proffens tall + 30 %)?
+4. Underpunktene WANG-50.10–50.17 (live, modellanalyse, bane og felt, trend, datautforsker, kilde, tiltak, spesialistdata) er kuttet i `src/components/wang/wang-data.ts`; de ni som står igjen har navnene fra skjermlista. `WangKonkurranse.tsx` viser fortsatt den gamle WANG-50-fanen og er ikke endret.
 
 ### Pakke 5 Konkurranse
 1. Skal WANG-trenere se Data Golf-sammenligningen (WANG-50)? Vedtaket 06.10 sier alle med coach-rollen, også WANG-trenere. Utkastet viser den, merket «Powered by Data Golf» og «Bare for trenere».
