@@ -1,730 +1,287 @@
 "use client";
 
 /**
- * PH-09 Registrer runde — Precision Athletics (26.09.2026).
- * Kilde: ui_kits/playerhq/screens/PH-09.jsx.
- * Hull-for-hull registrering med brutto score, ingen hex-farger.
- * KUN brutto score — aldri netto.
+ * PH-RD-06 Rask score (etterregistrering) — nytt design (pakke 5, godkjent av Anders 14.10.2026, utkast 2 med farge).
+ * Fasit: docs/design-system/utkast-playerhq/runder.html, skjerm «rask». Stil: playerhq-ny-runder.css.
+ * Lagres med logRoundManual. Bare brutto score.
+ *
+ * Avvik:
+ *   - Bane og dato velges på skjermen (tegningen har dem fra oppsettet). Tee og type runde er tatt ut: logRoundManual lagrer dem ikke.
+ *   - Par og lengde per hull hentes fra banens hull (hentBaneHull). Mangler banen hulldata, velger du par selv per hull
+ *     og lengden vises ikke. Den faste hull-lista (STANDARD_18_HOLES) brukes ikke lenger: den var gjettet.
+ *   - Ni hull kan være første eller siste ni (som før). «Total» er bare for 18 hull, som i tegningen.
+ *   - «Kilde» for SG fra en annen app er tatt ut: runden lagrer ikke hvilken app tallene kom fra, bare at de er ført for hånd.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-RD-06.
  */
 
-import React, { useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  STANDARD_18_HOLES,
-  type CourseHoleDef,
-  formatToPar,
-  beregnBruttoScore,
-  beregnParForSpilteHull,
-  tellSpilteHull,
-  finnManglendeHull,
-} from "@/lib/portal-runder/ph08-09-data";
-import { type Ph0809Data } from "@/lib/portal-runder/load-ph08-09";
+import { CircleAlert, Check } from "lucide-react";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
+import { hentBaneHull } from "@/app/portal/(legacy)/mal/runder/logg/actions";
+import type { Ph0809Data } from "@/lib/portal-runder/load-ph08-09";
+import { hullNumre, lesSgTekst, raskSum, stegScore, tilHullDetaljer, type RaskHull } from "@/lib/portal-runder/rask-score";
+import { formaterFortegn } from "@/lib/format-tall";
+import { Tilbake, tilParTekst } from "./PHRunderFelles";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-runder.css";
 
-interface PH09RegistrerRundeProps {
+type Valg = "18" | "ut" | "inn";
+type Fort = Omit<RaskHull, "nr" | "lengde">;
+type BaneHull = { holeNumber: number; par: number | null; lengdeMeter: number | null };
+
+const SG_FELT = [
+  { key: "sgOtt", navn: "Utslag (OTT)" },
+  { key: "sgApp", navn: "Innspill (APP)" },
+  { key: "sgArg", navn: "Nærspill (ARG)" },
+  { key: "sgPutt", navn: "Putting (PUTT)" },
+] as const;
+type SgKey = (typeof SG_FELT)[number]["key"] | "sgTotal";
+
+const iDag = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
+const tomFort = (): Fort => ({ par: null, score: null, putter: null, fairway: null, gir: null });
+
+export interface PH09RegistrerRundeProps {
   data: Ph0809Data;
+  /** Hvor «Tilbake» går. */
+  tilbakeHref?: string;
+  /** true på fullskjermsruta uten PlayerHQ-skall (ingen fanelinje nederst). */
+  fullskjerm?: boolean;
 }
 
-const BTN_STEP_STYLE: React.CSSProperties = {
-  width: 44,
-  height: 44,
-  borderRadius: 8,
-  border: "1px solid var(--border-strong)",
-  background: "var(--surface-card)",
-  color: "var(--text-primary)",
-  font: "600 17px/1 var(--font-mono)",
-  cursor: "pointer",
-  flex: "none",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-function HoleCell({
-  i,
-  par,
-  len,
-  v,
-  err,
-  onChange,
-}: {
-  i: number;
-  par: number;
-  len: number;
-  v: number | null;
-  err: boolean;
-  onChange: (val: number) => void;
-}) {
-  const diff = v == null ? null : v - par;
-
-  return (
-    <div
-      style={{
-        border: "1px solid " + (err ? "var(--signal-ink)" : "var(--border-hairline)"),
-        borderRadius: 8,
-        background: "var(--surface-card)",
-        padding: 8,
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-        minWidth: 0,
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 4 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
-          HULL {i + 1}
-        </span>
-        <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-          PAR {par} · {len} M
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <button
-          type="button"
-          style={BTN_STEP_STYLE}
-          aria-label={`Hull ${i + 1} ett slag mindre`}
-          disabled={v == null || v <= 1}
-          onClick={() => onChange((v ?? par) - 1)}
-        >
-          −
-        </button>
-        <div style={{ flex: 1, textAlign: "center", minWidth: 0 }}>
-          <span
-            style={{
-              font: "600 21px/1 var(--font-mono)",
-              color: v == null ? "var(--text-muted)" : "var(--text-primary)",
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {v == null ? "—" : v}
-          </span>
-          {diff != null && (
-            <span
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontFamily: "var(--font-mono)",
-                color: "var(--text-muted)",
-                marginTop: 2,
-              }}
-            >
-              {formatToPar(diff)}
-            </span>
-          )}
-        </div>
-        <button
-          type="button"
-          style={BTN_STEP_STYLE}
-          aria-label={`Hull ${i + 1} ett slag mer`}
-          onClick={() => onChange(v == null ? par : v + 1)}
-        >
-          +
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export function PH09RegistrerRunde({ data }: PH09RegistrerRundeProps) {
+export function PH09RegistrerRunde({ data, tilbakeHref = "/portal/mal/runder/ny", fullskjerm = false }: PH09RegistrerRundeProps) {
+  const rot = fullskjerm ? "phn phr-fullskjerm" : "phn";
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [lagrer, startLagring] = useTransition();
+  const [baneId, setBaneId] = useState(data.baner[0]?.id ?? "");
+  const [dato, setDato] = useState(iDag);
+  const [valg, setValg] = useState<Valg>("18");
+  const [modus, setModus] = useState<"hull" | "total">("hull");
+  const [total, setTotal] = useState<number | null>(null);
+  const [fort, setFort] = useState<Record<number, Fort>>({});
+  const [baneHull, setBaneHull] = useState<{ id: string; hull: BaneHull[] } | null>(null);
+  const [sg, setSg] = useState<Record<SgKey, string>>({ sgOtt: "", sgApp: "", sgArg: "", sgPutt: "", sgTotal: "" });
+  const [feil, setFeil] = useState<string | null>(null);
+  const [requestId] = useState(() => crypto.randomUUID());
 
-  const holesDef: CourseHoleDef[] = data.valgtBane?.hull || STANDARD_18_HOLES;
-  const initialCourse = data.valgtBane?.navn || data.baner[0]?.navn || "Fredrikstad Golfklubb";
-  const initialCourseId = data.valgtBane?.id || data.baner[0]?.id || "fredrikstad-gk";
+  useEffect(() => {
+    if (!baneId) return;
+    let aktiv = true;
+    hentBaneHull(baneId)
+      .then((h) => { if (aktiv) setBaneHull({ id: baneId, hull: Array.isArray(h) ? h : [] }); })
+      .catch(() => { if (aktiv) setBaneHull({ id: baneId, hull: [] }); });
+    return () => { aktiv = false; };
+  }, [baneId]);
 
-  // State
-  const [day, setDay] = useState<"I dag" | "I går" | "Velg dato">("I dag");
-  const [_selectedCourse, setSelectedCourse] = useState<string>(initialCourse);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(initialCourseId);
-  const [courseQuery, setCourseQuery] = useState<string>("");
-  const [tee, setTee] = useState<string>("Gul");
-  const [holesMode, setHolesMode] = useState<"18 hull" | "9 hull · ut" | "9 hull · inn">("18 hull");
-  const [roundType, setRoundType] = useState<"Treningsrunde" | "Tellende">("Treningsrunde");
+  const bane = data.baner.find((b) => b.id === baneId) ?? null;
+  const hullLaster = baneHull?.id !== baneId;
+  const hull: RaskHull[] = useMemo(() => hullNumre(valg).map((nr) => {
+    const fra = baneHull?.id === baneId ? baneHull.hull.find((h) => h.holeNumber === nr) : undefined;
+    const f = fort[nr] ?? tomFort();
+    return { nr, lengde: fra?.lengdeMeter ?? null, ...f, par: fra?.par ?? f.par };
+  }), [valg, baneHull, baneId, fort]);
 
-  // Beregn intervall
-  const range: [number, number] =
-    holesMode === "9 hull · ut" ? [0, 9] : holesMode === "9 hull · inn" ? [9, 18] : [0, 18];
-  const inRange = (i: number) => i >= range[0] && i < range[1];
-  const nH = range[1] - range[0];
+  const sum = raskSum(hull);
+  const totalModus = modus === "total" && valg === "18";
 
-  // Hull-scores state: array med 18 elementer
-  const [scores, setScores] = useState<(number | null)[]>(() => {
-    // Forhåndsutfyll med par for de relevante hullene som en start-verdi for rask registrering
-    return holesDef.map((h, i) => (inRange(i) ? h.par : null));
-  });
+  const endre = (nr: number, endring: Partial<Fort>) =>
+    setFort((f) => ({ ...f, [nr]: { ...(f[nr] ?? tomFort()), ...endring } }));
 
-  const [tried, setTried] = useState<boolean>(false);
-  const [saved, setSaved] = useState<boolean>(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  // SG-kontroll: alle fire og totalen, eller ingenting.
+  const sgTall = Object.fromEntries((Object.keys(sg) as SgKey[]).map((k) => [k, lesSgTekst(sg[k])])) as Record<SgKey, number | null | undefined>;
+  const sgUgyldig = Object.values(sgTall).some((v) => v === undefined);
+  const sgFylt = Object.values(sgTall).filter((v) => v != null).length;
+  const sgDelsum = SG_FELT.reduce((s, f) => s + (sgTall[f.key] ?? 0), 0);
+  const sgStemmer = sgFylt === 5 && Math.abs(sgDelsum - (sgTall.sgTotal ?? 0)) < 0.05;
+  const sgOk = !sgUgyldig && (sgFylt === 0 || sgStemmer);
 
-  const missing = finnManglendeHull(scores, range[0], range[1]);
-  const playedCount = tellSpilteHull(scores, range[0], range[1]);
-  const brutto = beregnBruttoScore(scores, range[0], range[1]);
-  const parList = holesDef.map((h) => h.par);
-  const parPlayed = beregnParForSpilteHull(parList, scores, range[0], range[1]);
-  const toParStr = formatToPar(brutto - parPlayed);
-
-  const sumUt = beregnBruttoScore(scores, 0, 9);
-  const sumInn = beregnBruttoScore(scores, 9, 18);
-
-  // Filtrert baneliste
-  const filtrerteBaner = data.baner.filter((b) =>
-    b.navn.toLowerCase().includes(courseQuery.toLowerCase())
-  );
-
-  const handleHolesModeChange = (newMode: "18 hull" | "9 hull · ut" | "9 hull · inn") => {
-    setHolesMode(newMode);
-    const newRange: [number, number] =
-      newMode === "9 hull · ut" ? [0, 9] : newMode === "9 hull · inn" ? [9, 18] : [0, 18];
-    setScores((prev) =>
-      holesDef.map((h, i) => (i >= newRange[0] && i < newRange[1] ? prev[i] || h.par : null))
-    );
-  };
-
-  const handleSave = () => {
-    setTried(true);
-    setSaveError(null);
-
-    if (missing.length > 0 || !selectedCourseId) {
+  const lagre = () => {
+    setFeil(null);
+    if (!bane) { setFeil("Velg bane først."); return; }
+    if (!sgOk) { setFeil("Strokes Gained: fyll inn alle fire kategoriene og totalen, eller la hele seksjonen stå tom."); return; }
+    const detaljer = totalModus ? null : tilHullDetaljer(hull);
+    if (!totalModus && !detaljer) {
+      setFeil(`Før alle ${hull.length} hull først. ${hull.length - sum.ført} mangler.`);
       return;
     }
-
-    startTransition(async () => {
+    if (totalModus && total == null) { setFeil("Før brutto score for runden."); return; }
+    const score = totalModus ? (total as number) : sum.brutto;
+    startLagring(async () => {
       try {
-        const playedDate = new Date();
-        if (day === "I går") {
-          playedDate.setDate(playedDate.getDate() - 1);
-        }
-
-        const hullDetaljer = holesDef
-          .map((h, i) => {
-            if (!inRange(i)) return null;
-            const s = scores[i];
-            if (s == null || s <= 0) return null;
-            return {
-              nr: h.nummer,
-              par: h.par,
-              strokes: s,
-              putts: null,
-              fairway: null,
-              gir: null,
-            };
-          })
-          .filter((h): h is NonNullable<typeof h> => h !== null);
-
         await logRoundManual({
-          courseId: selectedCourseId,
-          playedAt: playedDate.toISOString(),
-          score: brutto,
-          holeScores: scores.filter((s): s is number => s !== null && s > 0),
-          hullDetaljer,
+          requestId,
+          courseId: bane.id,
+          playedAt: dato,
+          score,
+          ...(detaljer ? { hullDetaljer: detaljer } : {}),
+          ...(sgFylt ? { sgTotal: sgTall.sgTotal, sgOtt: sgTall.sgOtt, sgApp: sgTall.sgApp, sgArg: sgTall.sgArg, sgPutt: sgTall.sgPutt } : {}),
         });
-
-        setSaved(true);
         router.push("/portal/mal/runder");
       } catch (err: unknown) {
         console.error("Kunne ikke lagre runden:", err);
-        const melding = err instanceof Error ? err.message : "Kunne ikke lagre runden over nett.";
-        setSaveError(melding);
+        setFeil(err instanceof Error ? err.message : "Runden kunne ikke lagres. Prøv igjen.");
       }
     });
   };
 
+  if (data.feil || data.baner.length === 0) {
+    return (
+      <div className={rot}>
+        <Tilbake href={tilbakeHref} tekst="Velg nivå" />
+        <div className="phr-topp"><div className="phn-dato">Rask score</div><h1 className="phn-tittel">Før scoren</h1></div>
+        <section className="phn-kort phr-kort-dempet" role={data.feil ? "alert" : undefined}>
+          <h2 className="phr-undertittel">{data.feil ? "Banene kunne ikke hentes" : "Ingen baner å velge"}</h2>
+          <p className="phn-forklar">{data.feil ? "Ingenting er lagret. Prøv igjen om litt." : "Det finnes ingen baner i AK Golf ennå, så runden kan ikke lagres. Si fra til coachen din."}</p>
+          {data.feil && <div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/runde/logg">Prøv igjen</Link></div>}
+        </section>
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        maxWidth: 1080,
-        margin: "0 auto",
-        padding: "24px 16px 48px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
-      }}
-    >
-      {/* Sidehode */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
-          <div>
-            <div
-              style={{
-                font: "600 11px/1 var(--font-mono)",
-                color: "var(--text-secondary)",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                marginBottom: 6,
-              }}
-            >
-              Etter runden · Brutto score
-            </div>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, fontFamily: "var(--font-sans)" }}>
-              Registrer runde
-            </h1>
-            <p style={{ margin: "6px 0 0", fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-              Dato, bane og antall slag per hull. Putter og slag på banen registreres live under runden.
-            </p>
-          </div>
-          <Link
-            href="/portal/runde/live"
-            style={{
-              height: 44,
-              padding: "0 16px",
-              borderRadius: 8,
-              border: "1px solid var(--border-strong)",
-              background: "var(--surface-card)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              fontWeight: 600,
-              fontSize: 14,
-            }}
-          >
-            <span>●</span>
-            <span>Registrer live</span>
-          </Link>
-        </div>
+    <div className={rot}>
+      <Tilbake href={tilbakeHref} tekst="Velg nivå" />
+      <div className="phr-topp phr-smal">
+        <div className="phn-dato">Rask score{bane ? ` · ${bane.navn}` : ""}</div>
+        <h1 className="phn-tittel">Før scoren</h1>
       </div>
 
-      {/* 2-kolonners layout */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-          gap: 20,
-          alignItems: "start",
-        }}
-      >
-        {/* Venstre kolonne: Skjema og hullkort */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {/* Kort 1: Dato, bane, tee, antall hull */}
-          <div
-            style={{
-              borderRadius: "var(--radius)",
-              border: "1px solid var(--border-hairline)",
-              background: "var(--surface-card)",
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 18,
-            }}
-          >
-            {/* Dato */}
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                Dato
-              </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                {(["I dag", "I går", "Velg dato"] as const).map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDay(d)}
-                    style={{
-                      height: 38,
-                      padding: "0 14px",
-                      borderRadius: 8,
-                      border: "1px solid " + (day === d ? "var(--border-ink)" : "var(--border-hairline)"),
-                      background: day === d ? "var(--primary)" : "var(--surface-sunken)",
-                      color: day === d ? "var(--text-on-primary)" : "var(--text-primary)",
-                      fontWeight: 600,
-                      fontSize: 13,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Bane */}
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-                Bane
-              </div>
-              <input
-                type="text"
-                value={courseQuery}
-                onChange={(e) => setCourseQuery(e.target.value)}
-                placeholder="Søk bane …"
-                style={{
-                  width: "100%",
-                  height: 42,
-                  padding: "0 12px",
-                  borderRadius: 8,
-                  border: "1px solid var(--border-hairline)",
-                  background: "var(--surface-sunken)",
-                  color: "var(--text-primary)",
-                  fontSize: 14,
-                  boxSizing: "border-box",
-                  marginBottom: 10,
-                }}
-              />
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflowY: "auto" }}>
-                {filtrerteBaner.map((b) => {
-                  const on = selectedCourseId === b.id;
-                  return (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCourse(b.navn);
-                        setSelectedCourseId(b.id);
-                      }}
-                      style={{
-                        padding: "6px 12px",
-                        borderRadius: 8,
-                        border: "1px solid " + (on ? "var(--border-ink)" : "var(--border-hairline)"),
-                        background: on ? "var(--primary)" : "var(--surface-sunken)",
-                        color: on ? "var(--text-on-primary)" : "var(--text-primary)",
-                        fontWeight: 500,
-                        fontSize: 13,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {b.navn}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Valg-grid: Tee, Antall hull, Type runde */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))", gap: 14 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 6 }}>
-                  Tee
-                </div>
-                <div style={{ display: "flex", gap: 4, background: "var(--surface-sunken)", padding: 3, borderRadius: 8 }}>
-                  {(["Hvit", "Gul", "Blå", "Rød"] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setTee(t)}
-                      style={{
-                        flex: 1,
-                        height: 36,
-                        borderRadius: 6,
-                        border: "none",
-                        background: tee === t ? "var(--surface-card)" : "transparent",
-                        color: tee === t ? "var(--text-primary)" : "var(--text-secondary)",
-                        fontWeight: 600,
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 6 }}>
-                  Antall hull
-                </div>
-                <div style={{ display: "flex", gap: 4, background: "var(--surface-sunken)", padding: 3, borderRadius: 8 }}>
-                  {(["18 hull", "9 hull · ut", "9 hull · inn"] as const).map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => handleHolesModeChange(m)}
-                      style={{
-                        flex: 1,
-                        height: 36,
-                        borderRadius: 6,
-                        border: "none",
-                        background: holesMode === m ? "var(--surface-card)" : "transparent",
-                        color: holesMode === m ? "var(--text-primary)" : "var(--text-secondary)",
-                        fontWeight: 600,
-                        fontSize: 11,
-                        cursor: "pointer",
-                        padding: "0 4px",
-                      }}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 6 }}>
-                  Type runde
-                </div>
-                <div style={{ display: "flex", gap: 4, background: "var(--surface-sunken)", padding: 3, borderRadius: 8 }}>
-                  {(["Treningsrunde", "Tellende"] as const).map((k) => (
-                    <button
-                      key={k}
-                      type="button"
-                      onClick={() => setRoundType(k)}
-                      style={{
-                        flex: 1,
-                        height: 36,
-                        borderRadius: 6,
-                        border: "none",
-                        background: roundType === k ? "var(--surface-card)" : "transparent",
-                        color: roundType === k ? "var(--text-primary)" : "var(--text-secondary)",
-                        fontWeight: 600,
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {k}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Hull 1–9 · Ut */}
-          {inRange(0) && (
-            <div
-              style={{
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border-hairline)",
-                background: "var(--surface-card)",
-                padding: 16,
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                  Hull 1–9 · Ut
-                </span>
-                <span style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                  PAR {holesDef.slice(0, 9).reduce((a, b) => a + b.par, 0)}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-                  gap: 8,
-                }}
-              >
-                {holesDef.slice(0, 9).map((h, k) => (
-                  <HoleCell
-                    key={h.nummer}
-                    i={k}
-                    par={h.par}
-                    len={h.meter}
-                    v={scores[k]}
-                    err={tried && (scores[k] == null || scores[k]! <= 0)}
-                    onChange={(val) => {
-                      const ny = [...scores];
-                      ny[k] = val;
-                      setScores(ny);
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Hull 10–18 · Inn */}
-          {inRange(9) && (
-            <div
-              style={{
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border-hairline)",
-                background: "var(--surface-card)",
-                padding: 16,
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                  Hull 10–18 · Inn
-                </span>
-                <span style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                  PAR {holesDef.slice(9, 18).reduce((a, b) => a + b.par, 0)}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-                  gap: 8,
-                }}
-              >
-                {holesDef.slice(9, 18).map((h, k) => {
-                  const idx = 9 + k;
-                  return (
-                    <HoleCell
-                      key={h.nummer}
-                      i={idx}
-                      par={h.par}
-                      len={h.meter}
-                      v={scores[idx]}
-                      err={tried && (scores[idx] == null || scores[idx]! <= 0)}
-                      onChange={(val) => {
-                        const ny = [...scores];
-                        ny[idx] = val;
-                        setScores(ny);
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Høyre kolonne: Oppsummeringskort */}
-        <div
-          style={{
-            borderRadius: "var(--radius)",
-            border: "1px solid var(--border-hairline)",
-            background: "var(--surface-card)",
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 14,
-            position: "sticky",
-            top: 24,
-          }}
-        >
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-            Brutto score
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 44, fontWeight: 700, fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-              {playedCount > 0 ? brutto : "—"}
-            </span>
-            <span style={{ fontSize: 14, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-              {playedCount > 0 ? `slag (${toParStr})` : "slag"}
+      <div className="phr-grid phr-smal">
+        <section className="phr-fylt" aria-label="Brutto score">
+          <div className="phn-hoved">
+            <strong>{totalModus ? (total ?? "—") : sum.ført ? sum.brutto : "—"}</strong>
+            <span className="phn-trend">
+              {totalModus ? (total != null && bane ? tilParTekst(total - bane.par) : "Ingen score ført") : sum.ført ? `${tilParTekst(sum.brutto - sum.par)} etter ${sum.ført} hull` : "Ingen hull ført"}
             </span>
           </div>
+          <p className="phn-kilde">{totalModus ? "18 hull · brutto · ført som total" : `${sum.ført} av ${hull.length} hull · brutto`}</p>
+        </section>
 
-          {/* UT / INN / HULL bokser */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-            {[
-              ["UT", inRange(0) ? sumUt : "—"],
-              ["INN", inRange(9) ? sumInn : "—"],
-              ["HULL", `${playedCount} / ${nH}`],
-            ].map(([label, val]) => (
-              <div
-                key={label}
-                style={{
-                  background: "var(--surface-sunken)",
-                  borderRadius: 8,
-                  padding: "8px 10px",
-                }}
-              >
-                <div style={{ fontSize: 11, fontWeight: 600, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                  {label}
-                </div>
-                <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "var(--font-mono)", marginTop: 2 }}>
-                  {val}
-                </div>
-              </div>
-            ))}
+        <section className="phn-seksjon" aria-label="Runden">
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 12 }}>
+            <label className="phn-felt">Bane
+              <select value={baneId} onChange={(e) => setBaneId(e.target.value)}>
+                {data.baner.map((b) => <option key={b.id} value={b.id}>{b.navn}</option>)}
+              </select>
+            </label>
+            <label className="phn-felt">Dato
+              <input type="date" value={dato} max={iDag()} onChange={(e) => setDato(e.target.value)} />
+            </label>
           </div>
-
-          {/* Valideringsvarsel hvis mangler */}
-          {tried && missing.length > 0 && (
-            <div
-              style={{
-                borderRadius: 8,
-                background: "var(--signal-tint)",
-                border: "1px solid var(--signal)",
-                padding: "10px 12px",
-                fontSize: 13,
-                lineHeight: 1.4,
-                color: "var(--text-primary)",
-              }}
-            >
-              <strong>
-                {missing.length === 1 ? `Hull ${missing[0]} mangler score` : `${missing.length} hull mangler score`}
-              </strong>
-              <div style={{ marginTop: 2, fontSize: 12 }}>
-                Fyll inn alle {nH} hull, eller velg 9 hull under Antall hull.
+          <div className="phr-felt">
+            <span className="phr-etikett">Antall hull</span>
+            <div className="phn-valg phr-valg" role="group" aria-label="Antall hull">
+              <button type="button" aria-pressed={valg !== "18"} onClick={() => { setValg("ut"); setModus("hull"); }}>9</button>
+              <button type="button" aria-pressed={valg === "18"} onClick={() => setValg("18")}>18</button>
+            </div>
+          </div>
+          {valg !== "18" ? (
+            <div className="phr-felt">
+              <span className="phr-etikett">Hvilke ni</span>
+              <div className="phn-valg phr-valg" role="group" aria-label="Hvilke ni">
+                <button type="button" aria-pressed={valg === "ut"} onClick={() => setValg("ut")}>Hull 1–9</button>
+                <button type="button" aria-pressed={valg === "inn"} onClick={() => setValg("inn")}>Hull 10–18</button>
               </div>
-            </div>
-          )}
-
-          {saveError && (
-            <div
-              style={{
-                borderRadius: 8,
-                background: "var(--signal-tint)",
-                border: "1px solid var(--signal-ink)",
-                padding: "10px 12px",
-                fontSize: 13,
-                color: "var(--text-primary)",
-              }}
-            >
-              {saveError}
-            </div>
-          )}
-
-          {/* Lagreknapp */}
-          {saved ? (
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <span
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: 6,
-                  background: "var(--ok-tint)",
-                  color: "var(--ok)",
-                  fontWeight: 600,
-                  fontSize: 12,
-                }}
-              >
-                Lagret
-              </span>
-              <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
-                SENDT TIL ANALYSE
-              </span>
+              <p className="phn-kilde">Ni hull føres hull for hull. De teller ikke i snittscoren.</p>
             </div>
           ) : (
-            <button
-              type="button"
-              disabled={isPending}
-              onClick={handleSave}
-              style={{
-                height: 48,
-                borderRadius: 8,
-                border: "none",
-                background: "var(--primary)",
-                color: "var(--text-on-primary)",
-                fontWeight: 650,
-                fontSize: 15,
-                cursor: isPending ? "not-allowed" : "pointer",
-                opacity: isPending ? 0.6 : 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Check size={18} aria-hidden="true" />
-              <span>{isPending ? "Lagrer runde …" : "Lagre runde"}</span>
-            </button>
+            <div className="phr-felt">
+              <span className="phr-etikett">Føring</span>
+              <div className="phn-valg phr-valg" role="group" aria-label="Føring">
+                <button type="button" aria-pressed={modus === "total"} onClick={() => setModus("total")}>Total</button>
+                <button type="button" aria-pressed={modus === "hull"} onClick={() => setModus("hull")}>Hull for hull</button>
+              </div>
+            </div>
           )}
+        </section>
 
-          <div
-            style={{
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-muted)",
-              lineHeight: 1.4,
-              letterSpacing: "0.03em",
-            }}
-          >
-            BRUTTO · TIL PAR REGNES AV PAR PÅ SPILTE HULL ({parPlayed || "—"})
+        {totalModus ? (
+          <section className="phn-seksjon" aria-label="Total">
+            <div className="phr-hullrad">
+              <span><b>Brutto score</b><span>Hele runden</span></span>
+              <div className="phr-trinn">
+                <button type="button" aria-label="Ett slag færre" onClick={() => setTotal((t) => Math.max(50, (t ?? (bane?.par ?? 72)) - 1))}>−</button>
+                <output className={total == null ? "tom" : ""}>{total ?? "—"}</output>
+                <button type="button" aria-label="Ett slag til" onClick={() => setTotal((t) => (t == null ? (bane?.par ?? 72) : Math.min(200, t + 1)))}>+</button>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="phn-seksjon" aria-label="Hull" aria-busy={hullLaster}>
+            {hullLaster && <p className="phn-kilde" role="status">Henter par og lengde for banen …</p>}
+            <div className="phr-hullrader">
+              {hull.map((h) => {
+                const harBanePar = baneHull?.id === baneId && baneHull.hull.some((b) => b.holeNumber === h.nr && b.par != null);
+                return (
+                  <div className="phr-hullrad" key={h.nr}>
+                    <span><b>Hull {h.nr}</b><span>{h.par != null ? `Par ${h.par}` : "Velg par"}{h.lengde != null ? ` · ${h.lengde} m` : ""}</span></span>
+                    <div className="phr-trinn">
+                      <button type="button" disabled={h.par == null} aria-label={`Hull ${h.nr}, ett slag færre`} onClick={() => endre(h.nr, { score: stegScore(h, -1) })}>−</button>
+                      <output className={h.score == null ? "tom" : ""}>{h.score ?? "—"}</output>
+                      <button type="button" disabled={h.par == null} aria-label={`Hull ${h.nr}, ett slag til`} onClick={() => endre(h.nr, { score: stegScore(h, 1) })}>+</button>
+                    </div>
+                    {!harBanePar && (
+                      <div className="phn-valg phr-valg" role="group" aria-label={`Par hull ${h.nr}`} style={{ gridColumn: "1 / -1" }}>
+                        {[3, 4, 5].map((p) => <button key={p} type="button" aria-pressed={h.par === p} onClick={() => endre(h.nr, { par: p })}>Par {p}</button>)}
+                      </div>
+                    )}
+                    <div className="phr-ekstra">
+                      <label>Putter
+                        <select aria-label={`Putter hull ${h.nr}`} value={h.putter ?? ""} onChange={(e) => endre(h.nr, { putter: e.target.value === "" ? null : Number(e.target.value) })}>
+                          <option value="">—</option>{[0, 1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
+                        </select>
+                      </label>
+                      {h.par !== 3 && (
+                        <label>Fairway
+                          <select aria-label={`Fairway hull ${h.nr}`} value={h.fairway ?? ""} onChange={(e) => endre(h.nr, { fairway: (e.target.value || null) as Fort["fairway"] })}>
+                            <option value="">—</option><option value="ja">Ja</option><option value="venstre">Venstre</option><option value="hoyre">Høyre</option>
+                          </select>
+                        </label>
+                      )}
+                      <label>GIR
+                        <select aria-label={`GIR hull ${h.nr}`} value={h.gir == null ? "" : h.gir ? "ja" : "nei"} onChange={(e) => endre(h.nr, { gir: e.target.value === "" ? null : e.target.value === "ja" })}>
+                          <option value="">—</option><option value="ja">Ja</option><option value="nei">Nei</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        <details className="phn-kort phr-kort">
+          <summary className="phr-undertittel" style={{ minHeight: 44, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, cursor: "pointer" }}>
+            Strokes Gained fra en annen app <span className="phn-kilde">Valgfritt</span>
+          </summary>
+          <div className="phr-grid" style={{ gap: 16, marginTop: 12 }}>
+            <p className="phn-forklar">Har appen din regnet ut SG for runden, kan du føre tallene her. De merkes som ført for hånd.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
+              {[...SG_FELT, { key: "sgTotal", navn: "Total" } as const].map((f) => (
+                <label className="phn-felt" key={f.key}>{f.navn}
+                  <input inputMode="decimal" value={sg[f.key]} placeholder="—" onChange={(e) => setSg((s) => ({ ...s, [f.key]: e.target.value }))} />
+                </label>
+              ))}
+            </div>
+            {sgFylt > 0 && (
+              <div className={`phr-sjekk ${sgStemmer && !sgUgyldig ? "ok" : "vent"}`}>
+                {sgStemmer && !sgUgyldig ? <Check className="phn-ikon" aria-hidden /> : <CircleAlert className="phn-ikon" aria-hidden />}
+                <span>{sgUgyldig ? "Skriv tallene som −0,8 eller +0,3." : sgFylt < 5 ? "Fyll inn alle fire kategoriene og totalen, eller la hele seksjonen stå tom."
+                  : sgStemmer ? `Summen stemmer: ${formaterFortegn(sgDelsum, 1)}.` : `Kategoriene blir ${formaterFortegn(sgDelsum, 1)}, men totalen er ${formaterFortegn(sgTall.sgTotal, 1)}. De må være like.`}</span>
+              </div>
+            )}
           </div>
-        </div>
+        </details>
+
+        <section className="phn-kort phr-kort-dempet">
+          <span className="phr-kvalitet"><span className="phr-prikker" aria-hidden><i className="paa" /><i /><i /></span>Datakvalitet: lav</span>
+          <p className="phn-forklar">Rask score gir snittscore og kategori. Runden får ikke Strokes Gained fra appen, med mindre du fører SG over.</p>
+        </section>
+
+        <div className="phn-meldinger" aria-live="polite">{feil && <p className="phr-melding" role="alert">{feil}</p>}</div>
+        <div className="phr-festet"><button type="button" className="phn-knapp pri phr-knapp-stor" disabled={lagrer} onClick={lagre}>{lagrer ? "Lagrer …" : "Lagre runden"}</button></div>
       </div>
     </div>
   );
