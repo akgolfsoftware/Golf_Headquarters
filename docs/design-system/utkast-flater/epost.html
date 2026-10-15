@@ -1,0 +1,169 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bookinge-poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 6: Bookinge-postene · EP-01 til EP-06 ----------
+   Selve e-posten er en e-postsikker mal: tabeller, inline-stil, 600 px, ingen skript, ingen bakgrunnsbilder.
+   Stilene her gjelder bare rammen rundt i utkastet (avsender, emne, forhåndstekst). */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.ep-hode{display:grid;gap:4px;margin:0 var(--r4);padding:12px 14px;border-radius:10px;background:var(--white);border:1px solid var(--sand-300);font-size:13.5px;line-height:1.45}
+.ep-hode b{font-weight:600}
+.ep-hode .emne{font:600 15px/1.3 var(--sans)}
+.ep-hode .for{color:var(--graphite-600)}
+.ep-flate{padding:0 var(--r2)}
+.utkast-merke{display:flex;gap:10px;align-items:center;margin:0 var(--r4);padding:10px 14px;border-radius:10px;background:var(--amber-50);color:var(--amber-700);font:500 13.5px/1.4 var(--sans)}
+@container (min-width:900px){.ep-hode,.utkast-merke{margin:0 auto;width:600px}}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">E-post · gruppe 6 · EP-01 til EP-06 · utkast 1 · 15.10.2026</span>
+    <h1>Bookinge-poster</h1>
+    <p>Sju e-poster i én mal: bekreftelse til gjest og til appbruker, endret time, påminnelse, avbestilling, takk etter coachingtime og oppfølging etter 14 dager. E-postsikker: tabeller, inline-stil og 600 px bredde. Mottakerne er oppdiktet.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="ep01g">EP-01 Bekreftelse gjest</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep01a">EP-01 Bekreftelse appbruker</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep02">EP-02 Endret time</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep03">EP-03 Påminnelse</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep04">EP-04 Avbestilling</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep05">EP-05 Takk etter timen</button>
+      <button type="button" aria-pressed="false" data-skjerm="ep06">EP-06 Oppfølging</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Én mal for alle bookinge-postene</b>, i Precision: logo øverst, overskrift, tidskort i grafitt med dag og klokkeslett stort i mono, detaljer i rader, én grafitt knapp.</li>
+        <li><b>Gjesten får tilbud om PlayerHQ</b> i bekreftelsen, takk-e-posten og oppfølgingen. Appbrukeren får lenke til bookingen i appen.</li>
+        <li><b>Endret time</b> viser gammel tid gjennomstreket og ny tid stort.</li>
+        <li><b>Takk etter timen</b> er utkast hos coachen. Merket i utkastet med «Utkast hos coach, sendes med ett trykk».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Bekreftet med en gang når tiden er ledig og betalt. Ingen ventestatus (vedtak 27.09).</li>
+        <li>EP-05 klar som utkast hos coachen innen 24 timer etter timen. Én oppfølging (EP-06) etter 14 dager, bare hvis kunden verken har booket eller kjøpt PlayerHQ. Deretter ingenting mer.</li>
+        <li>Kontolenken har ikke e-posten i adressen. Jarvis forbereder, et menneske sender.</li>
+        <li>E-postsikker mal: tabeller, inline-stil, systemskrift som reserve for IBM Plex, ingen skript, ingen bakgrunnsbilder, alt-tekst på logo. Lesbar i 320 px.</li>
+        <li>Ingen markedsføringsklisjeer, ingen svarløfte. Priser er eksempler.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Avsender:</b> tegnet som «Anders Kristiansen, AK Golf» fra post@akgolf.no. Ikke avgjort om avsender skal være coachen eller AK Golf.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Én template per e-post. Innholdet bygges av epost() under, så alle sju bruker samme e-postsikre mal. -->
+<template id="ep01g"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep01g"></main></div></template>
+<template id="ep01a"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep01a"></main></div></template>
+<template id="ep02"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep02"></main></div></template>
+<template id="ep03"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep03"></main></div></template>
+<template id="ep04"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep04"></main></div></template>
+<template id="ep05"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep05"></main></div></template>
+<template id="ep06"><div class="app" data-skall="epost"><main class="innhold" data-ep="ep06"></main></div></template>
+
+<script src="felles/flater.js"></script>
+<script>
+/* ---------- E-postsikker mal ---------- */
+var F = "'IBM Plex Sans',Helvetica,Arial,sans-serif", M = "'IBM Plex Mono',Menlo,Consolas,monospace";
+var C = { tekst: '#141413', dempet: '#5E5D58', linje: '#DDD9D1', sand: '#FAF8F3', bunn: '#EDEAE4', hvit: '#FFFFFF', gronn: '#2F6B3A', gronnBg: '#EAF3E9' };
+function p(t, stil) { return '<p style="margin:0 0 14px;font-family:' + F + ';font-size:16px;line-height:1.55;color:' + C.tekst + ';' + (stil || '') + '">' + t + '</p>'; }
+function knapp(t) { return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 18px"><tr><td bgcolor="' + C.tekst + '" style="border-radius:8px"><a href="#" style="display:inline-block;padding:14px 22px;font-family:' + F + ';font-size:16px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:8px">' + t + '</a></td></tr></table>'; }
+function lenke(t) { return '<a href="#" style="color:' + C.tekst + ';text-decoration:underline">' + t + '</a>'; }
+function merke(t) { return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px"><tr><td bgcolor="' + C.gronnBg + '" style="padding:5px 10px;border-radius:999px;font-family:' + F + ';font-size:12px;font-weight:600;color:' + C.gronn + '">' + t + '</td></tr></table>'; }
+function tidskort(dag, tid, linje, gammel) {
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px"><tr><td bgcolor="' + C.tekst + '" style="padding:20px 20px 18px;border-radius:12px">' +
+    (gammel ? '<p style="margin:0 0 8px;font-family:' + M + ';font-size:14px;color:#BFBDB6;text-decoration:line-through">' + gammel + '</p>' : '') +
+    '<p style="margin:0;font-family:' + M + ';font-size:30px;line-height:1.1;font-weight:600;color:#FFFFFF;letter-spacing:-.5px">' + dag + '</p>' +
+    '<p style="margin:2px 0 10px;font-family:' + M + ';font-size:30px;line-height:1.1;font-weight:600;color:#FFFFFF">' + tid + '</p>' +
+    '<p style="margin:0;font-family:' + F + ';font-size:15px;line-height:1.45;color:#E8E6DF">' + linje + '</p></td></tr></table>';
+}
+function rader(r) {
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px;border-top:1px solid ' + C.linje + '">' + r.map(function (x) {
+    return '<tr><td style="padding:10px 0;border-bottom:1px solid ' + C.linje + ';font-family:' + F + ';font-size:14px;color:' + C.dempet + '">' + x[0] + '</td><td align="right" style="padding:10px 0;border-bottom:1px solid ' + C.linje + ';font-family:' + (x[2] ? M : F) + ';font-size:14px;font-weight:600;color:' + C.tekst + '">' + x[1] + '</td></tr>';
+  }).join('') + '</table>';
+}
+function boks(tittel, tekst, kn) {
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 18px"><tr><td bgcolor="' + C.sand + '" style="padding:18px 20px;border:1px solid ' + C.linje + ';border-radius:12px">' +
+    '<p style="margin:0 0 6px;font-family:' + F + ';font-size:16px;font-weight:600;color:' + C.tekst + '">' + tittel + '</p>' + p(tekst, 'font-size:15px') + (kn ? knapp(kn) : '') + '</td></tr></table>';
+}
+function epost(o) {
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.bunn + '"><tr><td align="center" style="padding:16px 8px 28px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px" bgcolor="' + C.hvit + '"><tr><td style="padding:22px 24px 6px;border-bottom:1px solid ' + C.linje + '">' +
+    '<img src="bilder/logo-ak-golf-hq.svg" width="110" height="24" alt="AK Golf" style="display:block;border:0;height:24px;width:auto"></td></tr>' +
+    '<tr><td style="padding:24px 24px 8px">' + (o.merke ? merke(o.merke) : '') +
+    '<h1 style="margin:0 0 14px;font-family:' + F + ';font-size:26px;line-height:1.2;font-weight:700;color:' + C.tekst + ';letter-spacing:-.4px">' + o.tittel + '</h1>' + o.innhold + '</td></tr>' +
+    '<tr><td style="padding:18px 24px 24px;border-top:1px solid ' + C.linje + '"><p style="margin:0 0 6px;font-family:' + F + ';font-size:13px;line-height:1.5;color:' + C.dempet + '">AK Golf Academy · Fredrikstad · post@akgolf.no</p>' +
+    '<p style="margin:0;font-family:' + F + ';font-size:13px;line-height:1.5;color:' + C.dempet + '">' + (o.fot || 'Du får denne e-posten fordi du har booket en time hos AK Golf.') + '</p></td></tr></table></td></tr></table>';
+}
+
+var E = {
+  ep01g: { fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'Bekreftet: coaching torsdag 8. oktober kl. 17:00', forh: 'Timen er bekreftet og betalt. Her er det du trenger.',
+    merke: 'Bekreftet og betalt', tittel: 'Timen er booket, Jon',
+    innhold: function () { return tidskort('Tor 8. okt', '17:00–18:00', 'Coaching 60 min med Anders Kristiansen<br>Simulator, Fredrikstad') +
+      rader([['Referanse', 'AK-4822-JB', 1], ['Betalt', '1 200 kr', 1], ['Gratis avbestilling til', 'ons 7. okt kl. 17:00']]) +
+      knapp('Legg i kalender') + p('Må du endre eller avbestille, bruk ' + lenke('lenken til bookingen') + '.', 'font-size:15px') +
+      boks('Fortsett i PlayerHQ', 'Se notatene fra timen, registrer runder og book neste time uten å fylle inn på nytt. Gratis å starte. Denne bookingen blir med inn på kontoen.', 'Opprett konto'); } },
+  ep01a: { fra: 'Anders Kristiansen, AK Golf', til: 'oyvind.rohjan@eksempel.no', emne: 'Bekreftet: coaching torsdag 8. oktober kl. 17:00', forh: 'Timen står i Plan i PlayerHQ.',
+    merke: 'Bekreftet', tittel: 'Timen er booket, Øyvind',
+    innhold: function () { return tidskort('Tor 8. okt', '17:00–18:00', 'Coaching 60 min med Anders Kristiansen<br>Simulator, Fredrikstad') +
+      rader([['Referanse', 'AK-4823-ØR', 1], ['Betalt med', '1 klipp · 2 av 4 igjen', 1], ['Gratis avbestilling til', 'ons 7. okt kl. 17:00']]) +
+      knapp('Se bookingen i PlayerHQ') + p('Timen står i Plan, og Anders har fått beskjed.', 'font-size:15px'); } },
+  ep02: { fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'Ny tid: coaching fredag 9. oktober kl. 15:00', forh: 'Timen din er flyttet. Ny tid står øverst.',
+    tittel: 'Timen er flyttet',
+    innhold: function () { return p('Hei Jon. Timen din har fått ny tid.') + tidskort('Fre 9. okt', '15:00–16:00', 'Coaching 60 min med Anders Kristiansen<br>Simulator, Fredrikstad', 'Før: tor 8. okt kl. 17:00') +
+      rader([['Referanse', 'AK-4822-JB', 1], ['Gratis avbestilling til', 'tor 8. okt kl. 15:00']]) +
+      knapp('Legg ny tid i kalender') + p('Passer ikke den nye tiden? Bruk ' + lenke('lenken til bookingen') + ' for å velge en annen eller avbestille uten kostnad.', 'font-size:15px'); } },
+  ep03: { fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'I morgen kl. 17:00: coaching med Anders', forh: 'Påminnelse om timen i morgen.',
+    tittel: 'Timen er i morgen',
+    innhold: function () { return tidskort('I morgen', '17:00–18:00', 'Coaching 60 min med Anders Kristiansen<br>Simulator, Fredrikstad') +
+      rader([['Ta med', 'Køllene du bruker mest'], ['Kom', '10 minutter før'], ['Referanse', 'AK-4822-JB', 1]]) +
+      knapp('Veibeskrivelse') + p('Gratis avbestilling er ute. Blir du syk, si fra på post@akgolf.no.', 'font-size:15px'); } },
+  ep04: { fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'Avbestilt: coaching torsdag 8. oktober', forh: 'Timen er avbestilt og pengene tilbakebetalt.',
+    tittel: 'Timen er avbestilt',
+    innhold: function () { return p('Hei Jon. Timen torsdag 8. oktober kl. 17:00 er avbestilt.') +
+      rader([['Tjeneste', 'Coaching 60 min'], ['Referanse', 'AK-4822-JB', 1], ['Tilbakebetalt', '1 200 kr', 1], ['Til kortet', 'innen 5–10 virkedager']]) +
+      knapp('Book ny time') + p('Avbestilte du ikke selv, svar på denne e-posten.', 'font-size:15px'); } },
+  ep05: { utkast: true, fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'Takk for timen i dag', forh: 'Det vi jobbet med, og hvordan du kan fortsette.',
+    tittel: 'Takk for timen, Jon',
+    innhold: function () { return p('Takk for timen i dag. Vi jobbet med startlinja på jernslagene og lengdekontroll med wedgene fra 60 til 90 meter.') +
+      rader([['Carry 7-jern, snitt', '142 m', 1], ['Spredning fra mål, wedge', '6,8 m', 1], ['Målt med', 'TrackMan, 8. okt']]) +
+      p('Til neste gang: 20 slag om dagen med wedge mot tre mål, med fokus på samme avslutning.') +
+      boks('Fortsett i PlayerHQ', 'Planen og tallene fra timen ligger klare i PlayerHQ. Der kan du følge øvelsene, registrere runder og booke neste time.', 'Opprett konto') +
+      p('Hilsen Anders', 'margin-top:4px'); },
+    fot: 'Du får denne e-posten fordi du hadde en coachingtime hos AK Golf 8. oktober.' },
+  ep06: { fra: 'Anders Kristiansen, AK Golf', til: 'jon.berg@eksempel.no', emne: 'To uker siden timen', forh: 'Hvordan har treningen gått?',
+    tittel: 'To uker siden timen',
+    innhold: function () { return p('Hei Jon. Det er to uker siden timen 8. oktober. Har du fått trent på wedgene?') +
+      p('Vil du fortsette, kan du booke en ny time eller følge planen i PlayerHQ.') +
+      knapp('Book ny time') + p('Eller ' + lenke('start gratis i PlayerHQ') + ' og se tallene fra timen.', 'font-size:15px') +
+      p('Dette er den eneste oppfølgingen du får fra oss om timen.', 'font-size:14px;color:' + C.dempet); },
+    fot: 'Du får denne e-posten én gang, 14 dager etter timen. Du får ingen flere.' }
+};
+
+function bygg(app) {
+  var main = app.querySelector('[data-ep]'), o = E[main.dataset.ep];
+  main.innerHTML = (o.utkast ? '<div class="utkast-merke">Utkast hos coach. Ligger i Innboks i AgencyOS og sendes med ett trykk.</div>' : '') +
+    '<div class="ep-hode"><span><b>Fra:</b> ' + o.fra + ' &lt;post@akgolf.no&gt;</span><span><b>Til:</b> ' + o.til + '</span><span class="emne">' + o.emne + '</span><span class="for">' + o.forh + '</span></div>' +
+    '<div class="ep-flate">' + epost({ merke: o.merke, tittel: o.tittel, innhold: o.innhold(), fot: o.fot }) + '</div>';
+}
+var tom = { tittel: 'Malen mangler eller er deaktivert', tekst: 'E-posten sendes ikke før malen er aktiv. Bookingen er lagret.' };
+var sk = {};
+Object.keys(E).forEach(function (k) { sk[k] = { etter: bygg, tom: tom, laster: 'Bygger e-posten …', feil: 'E-postleverandøren avviste meldingen', feilTekst: 'Bookingen er lagret. E-posten prøves sendt på nytt om fem minutter.' }; });
+AKFlate.start({ start: 'ep01g', skjermer: sk });
+</script>
