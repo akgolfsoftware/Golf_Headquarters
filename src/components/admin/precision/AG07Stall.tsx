@@ -10,6 +10,11 @@
  *
  * Bare ekte data: det appen ikke har (neste turnering, planens sluttdato, ACWR,
  * drill-for-drill-repetisjoner) vises som «—» eller er utelatt.
+ *
+ * Avvik:
+ *   - I dag og Trener nå er nøytrale (grafitt): raden har ingen akse å farge etter.
+ *   - Trener nå viser ikke tellere per drill; repetisjonene finnes ikke i stalldataene.
+ *   - Neste turnering, plan slutter og ACWR mangler i stalldataene og er utelatt.
  */
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
