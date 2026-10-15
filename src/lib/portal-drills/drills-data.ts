@@ -119,7 +119,7 @@ function buildMeta(d: {
  * Hent coach-IDer spilleren er enrollert under (aktive enrolleringer).
  * Returnerer tom liste hvis spilleren ikke har noen aktiv coach.
  */
-async function getMyCoachIds(userId: string): Promise<string[]> {
+export async function getMyCoachIds(userId: string): Promise<string[]> {
   const enrollments = await prisma.playerEnrollment.findMany({
     where: { userId, endedAt: null, coachId: { not: null } },
     select: { coachId: true },
@@ -134,7 +134,7 @@ async function getMyCoachIds(userId: string): Promise<string[]> {
  * PLAYER). Sikkerhetskritisk — deles av alle drill-lastere så gatingen aldri
  * kan divergere mellom listen (/portal/drills) og detalj-varianten (v2).
  */
-function drillAccessWhere(
+export function drillAccessWhere(
   userId: string,
   coachIds: string[],
 ): Prisma.ExerciseDefinitionWhereInput {

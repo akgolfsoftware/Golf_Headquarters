@@ -232,7 +232,8 @@ export type TpTmRad = {
   sistMaalt: string;
 };
 
-export type TpProtokoll = { type: Protokolltype; navn: string; tekst: string; naa: string };
+/** `siste`: treff av de siste slagene i rullende vindu, ellers null. */
+export type TpProtokoll = { type: Protokolltype; navn: string; tekst: string; naa: string; siste: { treff: number; antall: number } | null };
 
 export type TpOppgave = {
   id: string;
@@ -246,6 +247,10 @@ export type TpOppgave = {
   status: string;
   formel: string | null;
   familie: "FULLSVING" | "BUNKER" | "ANNET";
+  /** Læringssteget oppgaven står på nå (bare fullsving), f.eks. «Lav hastighet». */
+  stegNaa: string | null;
+  /** Hovedmiljøet for oppgaven, f.eks. «Treningsområde». */
+  miljoNaa: string | null;
   steg: TpSteg[];
   miljo: TpMiljo[];
   gjort: number;
@@ -411,7 +416,8 @@ function protokollFor(goals: readonly TpTmInn[]): TpProtokoll | null {
   if (type === "BEST_OF_N") naa = g.bestHits != null ? `beste serie ${g.bestHits} av ${g.windowSize ?? "—"}` : "—";
   else if (type === "STREAK") naa = g.currentStreak != null ? `rekke ${g.currentStreak}` : "—";
   else if (g.currentHits != null && g.currentBatchSize != null) naa = `${g.currentHits} av ${g.currentBatchSize}`;
-  return { type, navn: PROTOKOLL_NAVN[type], tekst: protokollTekst(type, g.windowSize, g.requiredHits), naa };
+  const siste = type === "ROLLING_WINDOW" && g.currentHits != null && g.currentBatchSize ? { treff: g.currentHits, antall: g.currentBatchSize } : null;
+  return { type, navn: PROTOKOLL_NAVN[type], tekst: protokollTekst(type, g.windowSize, g.requiredHits), naa, siste };
 }
 
 export function oppgaveVisning(t: TpOppgaveInn, pNummer: string): TpOppgave {
@@ -430,6 +436,8 @@ export function oppgaveVisning(t: TpOppgaveInn, pNummer: string): TpOppgave {
     status: OPPGAVESTATUS[t.status],
     formel: formelFor({ pyramide: t.pyramide, omraadeKode: kode, motorikk: t.motorikk, belastning: t.belastning, press: t.press }),
     familie,
+    stegNaa: familie === "FULLSVING" && t.motorikk ? MOTORIKK_LABEL[t.motorikk] : null,
+    miljoNaa: t.belastning ? BELASTNING_LABEL[t.belastning] : null,
     steg,
     miljo: miljoFor(t),
     gjort: steg.reduce((s, x) => s + x.gjort, 0),
