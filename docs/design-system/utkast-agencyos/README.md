@@ -1,6 +1,6 @@
 # AgencyOS i nytt design — utkast
 
-Status: **utkast. Ingen pakke er godkjent ennå.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
+Status: **utkast 1 av alle pakker er tegnet 15.10. Ingen pakke er godkjent ennå.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
 Samme metode som [PlayerHQ-utkastene](../utkast-playerhq/README.md): én HTML-fil og én PR per pakke, publisert som privat Artifact til Anders.
 AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger coachen med farge, ikke bare tekst (designbrevet punkt 5).
 
@@ -17,7 +17,7 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 6 Teknisk plan og runder | AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02, `teknisk.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/5Zue1iXogFbYvTu7hGHp8f |
 | 7 Mer | Mer, AG-15, AG-16 (+ gruppa), AG-A03, AG-20 (bare head coach, + AG-20-ASS), AG-23, `mer.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/3f8o54VRQF2j7oKn6YKCYs |
 | 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GjxtcH7JeoeMARfSMxu5SG |
-| 9 Samleside | Alle lenker på én side, `samleside.html` | | |
+| 9 Samleside | Alle lenker på én side, `samleside.html` | **Ferdig** (15.10) | https://claude.ai/artifact/Ursvr6vJ7qgptHq7V6sxuF |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` og vedtakene i `.claude/rules/beslutninger.md`.
 Ord: `docs/treningsplanlegging.md` §2.6 og §22. Det finnes ingen skjermbilder av dagens AgencyOS i registeret, så utkastene har ingen «Dagens design»-knapp.
