@@ -48,7 +48,6 @@ export async function TnUttakSkjerm() {
   return (
     <SkjermRamme aktiv="uttak" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
-        rute="/team-norway/uttak"
         tittel="Uttak og kriterier"
         ingress="Kriteriene er kjent på forhånd. Ranglisten viser hvor hver spiller står i dag."
         handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnUttakSkjema spillere={spillervalg} knapp="Registrer uttak" /> : undefined}

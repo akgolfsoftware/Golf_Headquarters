@@ -1,19 +1,22 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { TnKort, TnPille, TnRail, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
-import { TnRailMobil } from "./rail-mobil";
+import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
+import { TnRailMobil, initialer } from "./rail-mobil";
+import s from "./tn-skall.module.css";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
 
 /**
  * TN-01 Organisasjonsskall — felles skall for alle Team Norway-ruter.
- * Fasit: designsystem/team-norway/templates/tn-skall/TnSkall.dc.html
+ * Fasit: docs/design-system/utkast-tn/grunnmur.html og felles/tn.css (pakke 1).
+ * Navy sidemeny 252 px fra 900 px med seks grupper, ellers navy topplinje og
+ * hvit bunnmeny med fire valg pluss «Mer».
  * Avvik:
  *   - Menypunkter uten egen datamodell åpner en ærlig tomtilstand, ikke demo-data.
  *   - Analyse (14.09.2026) er TN-egen gruppeanalyse (/team-norway/analyse),
  *     ikke lenger den innloggede brukerens PlayerHQ-analyse.
- *   - Ingen riggrad: den visuelle riggen dekker ikke Claw ennå.
+ *   - Topplinjen på mobil har ingen varselbjelle: Team Norway har ingen varsler ennå.
  */
 
 export type TnAktivSide =
@@ -57,7 +60,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "daglig",
       label: "Daglig",
-      ikon: "calendar",
+      ikon: "kalender",
       punkter: [
         lenke("Oversikt", "/team-norway", "oversikt", aktiv),
         lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
@@ -68,7 +71,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "spillere",
       label: "Spillere",
-      ikon: "users",
+      ikon: "spillere",
       punkter: [
         ...(t ? [lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv), lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
         lenke("College og USA", "/team-norway/college", "college", aktiv),
@@ -78,7 +81,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "uttak",
       label: "Uttak",
-      ikon: "check",
+      ikon: "uttak",
       punkter: t
         ? [
             lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
@@ -92,7 +95,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "plan",
       label: "Plan og fag",
-      ikon: "clock",
+      ikon: "plan",
       punkter: [
         lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
         ...(t
@@ -108,7 +111,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "gruppe",
       label: "Gruppe",
-      ikon: "mail",
+      ikon: "gruppe",
       punkter: groupId
         ? [lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv), lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv)]
         : [],
@@ -116,7 +119,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
     {
       id: "admin",
       label: t ? "Meg og admin" : "Meg",
-      ikon: "user",
+      ikon: "meg",
       punkter: [
         lenke("Lisens og økonomi", "/team-norway/lisens-okonomi", "lisens", aktiv),
         { label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling", aktiv: false },
@@ -131,16 +134,16 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
 export function tnBunnmeny({ aktiv, visTrenerflater }: MenyValg): TnBunnValg[] {
   return visTrenerflater
     ? [
-        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
-        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "calendar" },
-        { label: "Uttak", href: "/team-norway/uttak", aktiv: aktiv === "uttak" || aktiv === "rangliste", ikon: "check" },
-        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "fellestesting" || aktiv === "skoler", ikon: "users" },
+        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "oversikt" },
+        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "kalender" },
+        { label: "Uttak", href: "/team-norway/uttak", aktiv: aktiv === "uttak" || aktiv === "rangliste", ikon: "uttak" },
+        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "fellestesting" || aktiv === "skoler", ikon: "spillere" },
       ]
     : [
-        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
-        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "calendar" },
-        { ...lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv), ikon: "external-link" },
-        { ...lenke("Lisens", "/team-norway/lisens-okonomi", "lisens", aktiv), ikon: "file-text" },
+        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "oversikt" },
+        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "kalender" },
+        { ...lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv), ikon: "plan" },
+        { ...lenke("Lisens", "/team-norway/lisens-okonomi", "lisens", aktiv), ikon: "meg" },
       ];
 }
 
@@ -183,21 +186,40 @@ export function TnShell({
   const valg = { aktiv, groupId, visTrenerflater, kanAdministrere };
   const grupper = tnHovedmeny(valg);
   return (
-    <div style={{ display: "flex", minHeight: "100dvh", background: TN.surfacePage, color: TN.textPrimary, fontFamily: TN.font.body }}>
+    <div className={s.skall}>
       <TnRail grupper={grupper} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <TnRailMobil grupper={grupper} bunn={tnBunnmeny(valg)} brukerNavn={brukerNavn} orgNavn="Team Norway Golf" />
-        {flate === "full" ? (
-          children
-        ) : (
-          <main style={{ width: "100%", maxWidth: TN.maxContent, padding: "clamp(20px, 4vw, 48px)", display: "flex", flexDirection: "column", gap: 24 }}>
-            {children}
-          </main>
-        )}
-        {/* Plass til den faste bunnlinjen på mobil, så siste rad aldri skjules bak den. */}
-        <div className="lg:hidden" aria-hidden="true" style={{ flex: "none", height: "calc(64px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))" }} />
+      <div className={s.kolonne}>
+        <TnRailMobil grupper={grupper} bunn={tnBunnmeny(valg)} brukerNavn={brukerNavn} rolle={rolle} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
+        {flate === "full" ? children : <main className={s.innhold}>{children}</main>}
+        {/* Plass til den faste bunnmenyen på mobil, så siste rad aldri skjules bak den. */}
+        <div className={s.bunnplass} aria-hidden="true" />
       </div>
     </div>
+  );
+}
+
+/**
+ * Navy sidemeny 252 px (PC). Gruppene står åpne med etikett i mono; aktiv rad
+ * har lysere navy bak og rød markør 3 px. Brukeren står nederst med kvadratisk avatar.
+ */
+function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyGruppe[]; bruker: { navn: string; rolle: string }; orgNavn: string; orgUndertittel: string }) {
+  return (
+    <nav aria-label="Hovedmeny" className={s.meny}>
+      <span className={s.menyLogo}><TnLogo hoyde={44} prioritet paaMork /></span>
+      <span className={s.org}><span className="sr-only">{orgNavn}</span><span className={s.orgUnder}>{orgUndertittel}</span></span>
+      {grupper.map((g) => (
+        <div key={g.id}>
+          <span className={s.gruppe}>{g.label}</span>
+          {g.punkter.map((p) => (
+            <a key={p.href} href={p.href} className={s.lenke} aria-current={p.aktiv ? "page" : undefined}>{p.label}</a>
+          ))}
+        </div>
+      ))}
+      <div className={s.bruker}>
+        <span className={s.avatar} aria-hidden="true">{initialer(bruker.navn)}</span>
+        <span><span className={s.brukerNavn}>{bruker.navn}</span><span className={s.brukerRolle}>{bruker.rolle}</span></span>
+      </div>
+    </nav>
   );
 }
 
@@ -209,14 +231,14 @@ export function TnMetrikk({ etikett, verdi, forklaring, tone = "navy" }: { etike
   return (
     <TnKort>
       <TnPille tone={tone}>{etikett}</TnPille>
-      <div style={{ marginTop: 14, fontFamily: TN.font.mono, fontSize: TN.text.h1, fontWeight: TN.weight.bold, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
-      {forklaring ? <p style={{ margin: "8px 0 0", color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>{forklaring}</p> : null}
+      <div style={{ marginTop: 12, fontFamily: TN.font.mono, fontSize: 30, fontWeight: 500, lineHeight: 1.05, letterSpacing: "-0.02em", color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
+      {forklaring ? <p style={{ margin: "8px 0 0", color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>{forklaring}</p> : null}
     </TnKort>
   );
 }
 
 export function TnMetrikkRutenett({ children }: { children: ReactNode }) {
-  return <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))", gap: 16 }}>{children}</section>;
+  return <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", gap: 8 }}>{children}</section>;
 }
 
 export function TnSeksjon({ tittel, forklaring, children }: { tittel: string; forklaring?: string; children: ReactNode }) {
@@ -225,9 +247,9 @@ export function TnSeksjon({ tittel, forklaring, children }: { tittel: string; fo
 
 export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tekst: string; handling?: ReactNode }) {
   return (
-    <TnKort style={{ border: `1px solid ${TN.borderSubtle}` }}>
-      <h2 style={{ margin: 0, color: TN.navy900, fontSize: TN.text.h3 }}>{tittel}</h2>
-      <p style={{ margin: "8px 0 0", maxWidth: 680, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{tekst}</p>
+    <TnKort style={{ background: TN.ink50 }}>
+      <h2 style={{ margin: 0, color: TN.ink900, fontFamily: TN.font.body, fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{tittel}</h2>
+      <p style={{ margin: "8px 0 0", maxWidth: 680, color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>{tekst}</p>
       {handling ? <div style={{ marginTop: 16 }}>{handling}</div> : null}
     </TnKort>
   );
@@ -235,7 +257,7 @@ export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tek
 
 export function TnLenke({ href, children, fremhevet = false }: { href: string; children: ReactNode; fremhevet?: boolean }) {
   return (
-    <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.full, background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy700, fontWeight: TN.weight.semibold, fontSize: TN.text.sm, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
+    <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.sm, border: fremhevet ? `1px solid ${TN.navy900}` : "none", background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy600, fontWeight: TN.weight.bold, fontSize: 14, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
       {children}
     </Link>
   );
