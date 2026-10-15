@@ -57,7 +57,7 @@ export default async function CoachAiPage({
   const fornavn = user.name?.split(" ")[0] ?? "deg";
 
   return (
-    <PlayerHQSkall innboksHref="/portal/coach" uleste={0}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
       <PH22CaddieChat
         tier={user.tier}
         fornavn={fornavn}

@@ -15,7 +15,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
+import { PH23Bekreftet } from "@/components/portal/precision/PH23Bekreftet";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
 
@@ -84,17 +85,18 @@ export default async function BekreftetPage({ searchParams }: Props) {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <BookingBekreftetV2
-          data={{
-            linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
-            coachNavn: coach?.name ?? null,
-            sted: booking.location.name,
-            varighetMin: booking.serviceType.durationMin,
-            kalenderUrl: googleKalenderUrl(booking),
-          }}
-        />
-      </div>
+      <PH23Bekreftet
+        data={{
+          tjeneste: booking.serviceType.name,
+          dag: dato.charAt(0).toUpperCase() + dato.slice(1),
+          klokkeslett,
+          coachNavn: coach?.name ?? null,
+          sted: booking.location.name,
+          varighetMin: booking.serviceType.durationMin,
+          kalenderUrl: googleKalenderUrl(booking),
+          avbestillingTimer: AVBESTILLING_FRIST_TIMER,
+        }}
+      />
     </PlayerHQSkall>
   );
 }
