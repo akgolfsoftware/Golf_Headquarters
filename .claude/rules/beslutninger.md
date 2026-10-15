@@ -98,10 +98,16 @@ planen for akgolf.no som animert reise, der domeneflytting sto som steg 1.
 1. **Planen følges i rekkefølgen 1–10** i `docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md`:
    utkast 2 med reisen → bevegelsesgrunnmur → forsiden → undersidene → innhold → kontroll →
    godkjenning → røyktest → domene. Ferdig når hvert steg har Anders' ja der planen krever det.
-2. **Domeneflytting (steg 10)** gjøres først når steg 8 og 9 er dokumentert. Ferdig når
+2. **Bookingsystemet er komplett i AgencyOS før lansering** (Anders 15.10: «komplett booking system
+   og alle funksjoner … må være fungerende i AgencyOS før vi lanserer. Lag en kopi av Acuity
+   funksjoner om vi enda ikke har dette»). Gap mot Acuity og ti steg står i
+   `docs/planer/booking-komplett-agencyos-plan-2026-10-15.md`. Ferdig når coachen gjør alt uten gamle
+   sider eller Acuity, gjesten kan endre og avbestille fra e-postlenke, duo og gavekort kan bookes,
+   og én ekte betaling av hver type er røyktestet.
+3. **Domeneflytting (steg 10)** gjøres først når punkt 2 og nettstedsplanens steg 8 er dokumentert. Ferdig når
    `curl -I https://akgolf.no` gir 200 fra appen, ikke 307 til Acuity, og Acuity-lenkene er
    borte fra nettsiden.
-3. **Uavklart:** hvor omdirigeringen fra akgolf.no til Acuity faktisk ligger (ikke i `vercel.json`,
+4. **Uavklart:** hvor omdirigeringen fra akgolf.no til Acuity faktisk ligger (ikke i `vercel.json`,
    `next.config.ts` eller `proxy.ts`; svaret kommer fra Vercel, men domenet står ikke på
    `akgolf-hq`). Må finnes før steg 10.
 
