@@ -415,3 +415,19 @@
 @media (max-width: 420px) {
   .wang-app .wg-maltall { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Stolper og elevrader (pakke 3 og videre) */
+.wang-app .wg-stolpe { height: 10px; border-radius: 5px; background: var(--wg-n100); overflow: hidden; position: relative; }
+.wang-app .wg-stolpe > span { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: var(--wg-navy); }
+.wang-app .wg-stolpe > span.wg-lav { background: var(--wg-rosa); }
+.wang-app .wg-rader { padding: 4px 18px; display: grid; }
+.wang-app .wg-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 12px 0; align-items: center; }
+.wang-app .wg-rad + .wg-rad { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-rad b { font: 700 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-rad .wg-stolpe { grid-column: 1 / -1; }
+.wang-app .wg-rad .wg-tall { font: 800 16px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-rutenett { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.wang-app .wg-rutenett > .wg-kort { padding: 16px; display: grid; gap: 6px; align-content: start; }
+.wang-app .wg-rutenett h3 { margin: 0; font: 800 16px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-rutenett > .wg-kort.wg-naa { border: 2px solid var(--wg-navy); }
+.wang-app .wg-filter { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
