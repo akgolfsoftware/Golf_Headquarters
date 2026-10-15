@@ -25,7 +25,7 @@ export default function SummaryError({
   }, [error]);
 
   return (
-    <div className="pa-root ph07-feilside" data-theme="night">
+    <div className="pa-root ph07-feilside" data-theme="light">
       <FeilTilstand
         icon={CircleAlert}
         title="Oppsummeringen kunne ikke hentes"
