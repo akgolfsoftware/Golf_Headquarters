@@ -1,0 +1,135 @@
+/* Skall for de øvrige flatene (forelder, innlogging, booking, statistikk, GFGK Junior, system, e-post, marked).
+   Bygger på PlayerHQ-grunnmuren (felles.css er en lenke til utkast-playerhq/felles/felles.css).
+   data-skall på .app: forelder | offentlig | gfgk | konto | epost | system.
+   PC fra 900 px containerbredde. Farge betyr akse. Rust bare som signal, høyst én per flate. */
+
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.pc-bare{display:none!important}
+
+/* ---------- Felles topplinje ---------- */
+.fl-topp{display:flex;align-items:center;justify-content:space-between;gap:var(--r2);padding:6px var(--r3);border-bottom:1px solid var(--sand-300);background:var(--white);position:sticky;top:0;z-index:8;min-height:57px}
+.fl-topp .venstre,.fl-topp .hoyre{display:flex;align-items:center;gap:4px}
+.fl-ikonknapp{width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--graphite-900);cursor:pointer;position:relative}
+.fl-ikonknapp:focus-visible{outline:3px solid var(--graphite-900);outline-offset:2px}
+.fl-ikonknapp b{position:absolute;top:6px;right:5px;min-width:18px;height:18px;border-radius:9px;background:var(--graphite-900);color:var(--white);font:600 11px/18px var(--mono);text-align:center;padding:0 4px}
+.fl-pc-meny{display:none}
+.fl-skuff{position:sticky;top:57px;z-index:9;height:0}
+.fl-skuff nav{position:absolute;left:0;right:0;top:0;display:grid;gap:2px;padding:var(--r3);background:var(--white);border-bottom:1px solid var(--sand-300);box-shadow:0 16px 32px rgba(0,0,0,.12);animation:inn 200ms var(--ut)}
+.fl-lenke{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border-radius:8px;color:var(--graphite-800);text-decoration:none;font:500 15px/1 var(--sans);border:0;background:transparent;cursor:pointer;width:100%;text-align:left}
+.fl-lenke.aktiv{background:var(--graphite-900);color:var(--white)}
+.fl-skuff .skille{margin:6px 0}
+.fl-skuff .knapp{margin-top:6px}
+.fl-tilbake{display:inline-flex;align-items:center;gap:6px;min-height:40px;font:500 15px/1 var(--sans);color:var(--graphite-900);text-decoration:none;justify-self:start;cursor:pointer;border:0;background:none;padding:0}
+.fl-avatar{width:36px;height:36px;border-radius:50%;background:var(--graphite-900);color:var(--white);display:grid;place-items:center;font:600 13px/1 var(--sans);flex:none}
+
+/* Mer-meny på PC (forelder) */
+.fl-mer{position:relative}
+.fl-mer-liste{position:absolute;right:0;top:48px;width:240px;display:grid;gap:2px;padding:8px;border-radius:12px;background:var(--white);border:1px solid var(--sand-300);box-shadow:0 16px 40px rgba(0,0,0,.16);z-index:9;animation:inn 180ms var(--ut)}
+
+/* ---------- Offentlig bunn ---------- */
+.fl-bunn{border-top:1px solid var(--sand-300);background:var(--sand-100);padding:var(--r6) var(--r4);display:grid;gap:var(--r5)}
+.fl-bunn .kol{display:grid;gap:6px;align-content:start}
+.fl-bunn .kol b{font:600 13px/1.3 var(--sans);color:var(--graphite-600);margin-bottom:4px}
+.fl-bunn a{font-size:14.5px;color:var(--graphite-900);text-decoration:none;min-height:28px;display:inline-flex;align-items:center}
+.fl-bunn .jur{display:flex;flex-wrap:wrap;gap:6px 18px;padding-top:var(--r4);border-top:1px solid var(--sand-300);font-size:13px;color:var(--graphite-600)}
+.fl-bunn .jur a{font-size:13px;color:var(--graphite-600)}
+.merkelapper{display:flex;flex-wrap:wrap;gap:6px}
+.merkelapp{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--sand-300);background:var(--white);font:600 12px/1 var(--sans)}
+
+/* ---------- Konto (innlogging, oppstart) ---------- */
+.app[data-skall="konto"] .innhold{max-width:480px;margin:0 auto;width:100%}
+.fl-konto-topp{display:flex;align-items:center;justify-content:space-between;gap:var(--r2);padding:14px var(--r4);border-bottom:1px solid var(--sand-300)}
+.fl-konto-topp a{font:500 14px/1 var(--sans);color:var(--graphite-900)}
+
+/* ---------- E-post (600 px, tabeller og inline-stil i selve malen) ---------- */
+.app[data-skall="epost"]{background:#EDEAE4}
+.app[data-skall="epost"] .innhold{padding:var(--r4) 0 var(--r6);gap:var(--r3)}
+.ep-meta{display:grid;gap:4px;padding:0 var(--r4);font-size:13px;color:var(--graphite-800)}
+.ep-meta b{font-weight:600}
+
+/* ---------- Felles byggeklosser ---------- */
+.topp{display:grid;gap:var(--r3)}
+.topp-rad{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--r3);flex-wrap:wrap}
+.toast{position:sticky;bottom:24px;z-index:9;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast button{margin-left:auto;border:0;background:transparent;color:var(--white);font:600 14px/1 var(--sans);text-decoration:underline;cursor:pointer;min-height:32px}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--sans);flex:none;background:var(--graphite-900);color:var(--white)}
+.avatar.lys{background:var(--sand-150);color:var(--graphite-900)}
+.avatar.stor{width:64px;height:64px;font-size:22px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:40px;padding:0 12px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chips button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.liste{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.liste > *{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:56px;padding:10px 14px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:inherit;text-decoration:none;width:100%}
+.liste > *:last-child{border-bottom:0}
+.liste b{display:block;font:600 15px/1.3 var(--sans)}
+.liste .kilde{display:block}
+.liste > button{cursor:pointer}
+.ikonboks{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150);color:var(--graphite-900);flex:none}
+.ikonboks .ikon{width:18px;height:18px}
+.teller-rad{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.teller{display:grid;gap:4px;align-content:start;padding:14px;border-radius:12px;border:1px solid var(--sand-300);background:var(--white);text-align:left;font:inherit;color:inherit;min-height:96px}
+.teller span.e{font-size:13px;color:var(--graphite-600)}
+.teller b.t{font:600 32px/1 var(--mono);letter-spacing:-.03em}
+.teller .s{font-size:13px;line-height:1.35;color:var(--graphite-800)}
+.akse-prikk{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.a-fys{background:var(--fys-ink)} .a-tek{background:var(--tek-ink)} .a-slag{background:var(--slag)} .a-spill{background:var(--spill-ink)} .a-turn{background:var(--turn)}
+.stolpe span.a-fys{background:var(--fys-ink)} .stolpe span.a-tek{background:var(--tek-ink)} .stolpe span.a-slag{background:var(--slag)} .stolpe span.a-spill{background:var(--spill-ink)} .stolpe span.a-turn{background:var(--turn)}
+.bryter{position:relative;width:52px;height:32px;border-radius:16px;border:0;background:var(--sand-300);cursor:pointer;flex:none;transition:background 160ms var(--ut)}
+.bryter::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform 200ms var(--ut)}
+.bryter[aria-checked="true"]{background:var(--graphite-900)}
+.bryter[aria-checked="true"]::after{transform:translateX(20px)}
+.faner{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--sand-300)}
+.faner button{min-height:44px;padding:0 12px;border:0;border-bottom:3px solid transparent;background:transparent;font:500 15px/1 var(--sans);color:var(--graphite-600);cursor:pointer}
+.faner button[aria-pressed="true"]{color:var(--graphite-900);border-bottom-color:var(--graphite-900);font-weight:600}
+.to-del,.tre-del{display:grid;gap:var(--r5);align-content:start}
+.to-del > div,.tre-del > div{display:grid;gap:var(--r5);align-content:start}
+.dialog-lag{position:sticky;bottom:0;z-index:10;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)}
+.dialog{border-radius:16px;background:var(--white);padding:var(--r5) var(--r4) var(--r4);display:grid;gap:var(--r4);box-shadow:0 12px 40px rgba(0,0,0,.25);animation:inn 240ms var(--ut)}
+.dialog h2{margin:0;font:600 19px/1.25 var(--sans)}
+.dialog .knapper{display:grid;gap:var(--r2)}
+.steg-linje{display:flex;gap:4px}
+.steg-linje i{flex:1;height:4px;border-radius:2px;background:var(--sand-300)}
+.steg-linje i.ja{background:var(--graphite-900)}
+.avkrysning{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--sand-300);border-radius:10px;cursor:pointer;font-size:14.5px;line-height:1.45}
+.avkrysning input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--graphite-900)}
+.avkrysning b{display:block;font-weight:600}
+.valgkort{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:64px}
+.valgkort b{font:600 16px/1.3 var(--sans)}
+.valgkort[aria-pressed="true"]{border:2px solid var(--graphite-900);padding:13px 15px;background:var(--sand-100)}
+.valg-grid{display:grid;gap:var(--r2)}
+.referanse{font:600 20px/1.2 var(--mono);letter-spacing:.04em}
+.eksempel{display:inline-flex;height:20px;align-items:center;padding:0 7px;border-radius:4px;border:1px dashed var(--graphite-500);font:500 11px/1 var(--sans);color:var(--graphite-600);width:max-content;vertical-align:1px}
+.toppbilde{display:block;width:100%;height:180px;object-fit:cover;border-radius:12px}
+.dl{display:grid;gap:0;margin:0;border-top:1px solid var(--sand-300)}
+.dl > div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.dl dt{color:var(--graphite-600)} .dl dd{margin:0;font-weight:600;text-align:right}
+.dl dd.mono{font-family:var(--mono)}
+
+@container (min-width:900px){
+  .pc-bare{display:inline-flex!important}
+  .mob-bare{display:none!important}
+  /* Forelder: topplinje med fire mål og Mer. Ingen hamburgermeny. */
+  .fl-topp{padding:10px 40px;min-height:64px}
+  .fl-topp [data-skuff]{display:none}
+  .fl-pc-meny{display:flex;align-items:center;gap:4px;margin-left:24px}
+  .fl-pc-meny a,.fl-pc-meny > .fl-mer > button{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:8px;color:var(--graphite-800);text-decoration:none;font:500 15px/1 var(--sans);border:0;background:transparent;cursor:pointer}
+  .fl-pc-meny a.aktiv{background:var(--graphite-900);color:var(--white)}
+  .fl-skuff{display:none}
+  .innhold{padding:var(--r6) 40px 64px}
+  .app[data-skall="forelder"] .innhold,.app[data-skall="offentlig"] .innhold,.app[data-skall="gfgk"] .innhold,.app[data-skall="system"] .innhold{max-width:1200px;margin:0 auto;width:100%}
+  .app[data-skall="konto"] .innhold{padding:56px 0 80px}
+  .fl-bunn{grid-template-columns:1.4fr 1fr 1fr 1fr;padding:48px 40px}
+  .fl-bunn .jur{grid-column:1/-1}
+  .teller-rad{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .to-del{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .to-del.bred-v{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+  .tre-del{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r5);align-items:start}
+  .valg-grid.to{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .valg-grid.tre{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dialog-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .dialog{width:100%;max-width:560px}
+  .toppbilde{height:260px}
+  .app .innhold.smal{max-width:820px}
+  .smal{max-width:820px}
+}
