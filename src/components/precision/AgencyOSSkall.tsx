@@ -13,6 +13,10 @@
  * V2Shell bruker det for AgencyOS (src/components/v2/shell.tsx). Lyst tema er
  * standard; Live coachingøkt er også lys (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE).
  * Bjella viser bare et tall når siden sender det inn, aldri et anslag.
+ *
+ * Avvik:
+ *   - Menyen viser innboks-tallet bare når siden sender det inn (utkastet viser alltid 7).
+ *   - Hurtigknappen er den felles komponenten (Hurtigknapp.tsx) med fast posisjon i vinduet.
  */
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import Image from "next/image";
