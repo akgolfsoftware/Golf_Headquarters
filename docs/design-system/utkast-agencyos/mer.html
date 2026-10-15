@@ -1,0 +1,429 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Mer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 7: Mer · AG-15, AG-16, AG-A03, AG-20 (bare head coach), AG-23 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.mer-grid{display:grid;gap:var(--r2)}
+.mer-kort{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:76px;padding:12px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.mer-kort b{display:block;font:600 17px/1.25 var(--sans)}
+.mer-kort .ikonboks{width:44px;height:44px;border-radius:12px}
+.mer-kort .ikonboks .ikon{width:22px;height:22px}
+.laast{display:inline-flex;align-items:center;gap:4px;font:600 11.5px/1 var(--sans);color:var(--graphite-600)}
+
+/* Tester */
+.test-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.test-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.test-rad:last-child{border-bottom:0}
+.normer{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.norm{display:grid;grid-template-columns:40px minmax(0,1fr) 120px;gap:var(--r2);align-items:center;padding:8px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.norm b{font:600 14px/1 var(--mono)}
+.norm .v{font:500 13px/1.2 var(--sans);color:var(--graphite-600);text-align:right}
+.skala-tab{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.skala-tab div{display:grid;gap:2px;justify-items:center;padding:8px 4px;border-radius:8px;background:var(--sand-100);text-align:center}
+.skala-tab b{font:600 18px/1 var(--mono)}
+.skala-tab span{font:500 11px/1.25 var(--sans);color:var(--graphite-600)}
+.tildel{display:grid;gap:var(--r2)}
+.tildel .chips button{min-height:40px}
+
+/* Grupper */
+.gruppe-kort{display:grid;gap:var(--r2);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.gruppe-kort .rad{display:flex;justify-content:space-between;align-items:center;gap:var(--r2);flex-wrap:wrap}
+.gruppe-kort b.n{font:600 17px/1.25 var(--sans)}
+.trinn-rad{display:flex;flex-wrap:wrap;gap:6px}
+.trinn-rad span{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:6px;background:var(--sand-150);font:600 12.5px/1 var(--sans)}
+.trinn-rad span.ved{background:transparent;border:1px dashed var(--graphite-500)}
+.sok-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.sok-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.hak{display:flex;flex-wrap:wrap;gap:6px}
+.hak label{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid var(--sand-300);border-radius:8px;font:500 13px/1 var(--sans);cursor:pointer}
+.hak input{width:18px;height:18px;margin:0;accent-color:var(--graphite-900)}
+.tider{display:grid;gap:6px}
+.tid-rad{display:grid;grid-template-columns:80px minmax(0,1fr);gap:var(--r3);align-items:center;font-size:14px}
+.tid-rad b{font:600 13.5px/1.2 var(--mono)}
+
+/* Gruppeanalyse */
+.ga-rad{display:grid;grid-template-columns:110px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:14px}
+.stolpe span.a-fys{background:var(--fys-ink)} .stolpe span.a-tek{background:var(--tek-ink)} .stolpe span.a-slag{background:var(--slag)} .stolpe span.a-spill{background:var(--spill-ink)} .stolpe span.a-turn{background:var(--turn)}
+.ga-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.dekning{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px}
+.dekning i{aspect-ratio:1;border-radius:3px;background:var(--sand-150)}
+.dekning i.ja{background:var(--graphite-900)}
+.dekning i.delvis{background:var(--graphite-500)}
+
+/* Økonomi */
+.oko-rad{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px;gap:var(--r2);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.oko-rad.hode{font:600 12.5px/1.2 var(--sans);color:var(--graphite-600)}
+.oko-rad .v{font:600 14px/1.2 var(--mono);text-align:right}
+.oko-rad .v.under{color:#8a2a1c}
+.oko-rad .v small{display:block;font:500 11px/1.2 var(--mono);color:var(--graphite-600)}
+.kilde-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 14px;border:1px solid var(--sand-300);border-radius:10px}
+.kilde-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.sperret{display:grid;justify-items:start;gap:var(--r3);padding:var(--r5) var(--r4);border-radius:12px;background:var(--sand-100)}
+
+/* Oppsett */
+.team-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.team-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.team-rad:last-child{border-bottom:0}
+.logg{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.logg li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:var(--r2);padding:8px 0;border-bottom:1px solid var(--sand-300);font-size:13.5px}
+.logg time{font:500 12px/1.5 var(--mono);color:var(--graphite-600)}
+
+@container (min-width:900px){
+  .mer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 7 · Mer, AG-15, AG-16, AG-A03, AG-20, AG-23 · utkast 1 · 15.10.2026</span>
+    <h1>Mer</h1>
+    <p>Åtte skjermer i én fil: Mer med fem punkter, Tester, Grupper med AK-stigen, gruppeanalysen, Økonomi for head coach, det assistant coach ser i stedet, og Oppsett med team, GDPR og logger. Coach Anders Kristiansen (head coach). Mandag 5. oktober, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="mer">Mer</button>
+      <button type="button" aria-pressed="false" data-skjerm="tester">AG-15 Tester</button>
+      <button type="button" aria-pressed="false" data-skjerm="grupper">AG-16 Grupper</button>
+      <button type="button" aria-pressed="false" data-skjerm="gruppe">Gruppa</button>
+      <button type="button" aria-pressed="false" data-skjerm="analyse">AG-A03 Gruppeanalyse</button>
+      <button type="button" aria-pressed="false" data-skjerm="okonomi">AG-20 Økonomi</button>
+      <button type="button" aria-pressed="false" data-skjerm="okonomiass">AG-20-ASS</button>
+      <button type="button" aria-pressed="false" data-skjerm="oppsett">AG-23 Oppsett</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Mer har fem punkter:</b> Booking · Grupper · Tester · Økonomi · Oppsett. Jarvis ligger i hurtigknappen, ikke her.</li>
+        <li><b>Tester:</b> tildel test til spiller eller gruppe, normer per kategori A–K («Referanse ikke satt» til tallene er vedtatt), Team Norways poengskala og tildelte TrackMan-økter.</li>
+        <li><b>Grupper:</b> AK-stigen med fire trinn og Knøtt og WANG ved siden av. Søk opp spillere med PlayerHQ og hak av gruppene. Gruppa har medlemmer, faste tider, skoledata og lenke til gruppeplanen.</li>
+        <li><b>Gruppeanalyse:</b> snitt for gruppa på nivå, datadekning, belastning og gjennomføring. Ingen rangering av spillerne.</li>
+        <li><b>Økonomi</b> per tjeneste: Coaching privat · Grupper · GFGK-avtalen · Gruppetimer · Andre tjenester. Budsjett mot regnskap, med kilde og dato.</li>
+        <li><b>Oppsett:</b> profil, team og invitasjoner, GDPR, logger, markedsføring og hjelp. Rollene er head coach og assistant coach.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Økonomi vises bare for head coach. Assistant coach ser verken punktet i Mer eller siden (AG-20-ASS).</li>
+        <li>Økonomitall leses fra budsjettet, Tripletex-eksporten og Stripe, aldri anslått. Mangler tallet, står «—». Tallene i utkastet er merket «Eksempeltall».</li>
+        <li>Wedge Gate teller treff. Putt 9 hull lengde følger skalaen fra Team Norways scorekort-ark.</li>
+        <li>Rust bare i slettedialogen i Oppsett. Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>A–K-nivåtallene</b> for testene er ikke vedtatt. Normene viser «Referanse ikke satt».</li>
+        <li><b>GFGK Junior Knøtt U12</b> finnes ikke i basen ennå. Gruppa er tegnet ved siden av stigen.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Mer ================= -->
+<template id="mer">
+<div class="app" data-fane="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">AgencyOS</div><h1 class="tittel">Mer</h1></div></div>
+    <div class="mer-grid">
+      <button type="button" class="mer-kort"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Booking</b><span class="kilde">23 denne uka · tjenester og priser</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort" data-gaa="grupper"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span><span><b>Grupper</b><span class="kilde">7 grupper · AK-stigen</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort" data-gaa="tester"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span><b>Tester</b><span class="kilde">4 tildelt, ikke tatt</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort" data-gaa="okonomi"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span><b>Økonomi</b><span class="kilde">Budsjett mot regnskap · september</span></span><span class="laast">Bare head coach</span></button>
+      <button type="button" class="mer-kort" data-gaa="oppsett"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg></span><span><b>Oppsett</b><span class="kilde">Profil, team, GDPR og logger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-15 Tester ================= -->
+<template id="tester">
+<div class="app" data-fane="mer" data-tilbake="Mer" data-tilbake-gaa="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Mer · tester</div><h1 class="tittel">Tester</h1></div><button type="button" class="knapp pri" data-tildel>Tildel test</button></div></div>
+    <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="tildelt">Tildelt</button><button type="button" aria-pressed="false" data-p="normer">Normer</button><button type="button" aria-pressed="false" data-p="skala">Poengskala</button></div>
+    <div data-panel="tildelt" style="display:grid;gap:var(--r4)">
+      <div class="hoved"><strong>4</strong><span class="forklar">tildelt og ikke tatt</span></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="test-rad"><span class="avatar liten">TL</span><span><b>Thea Lund · 8-ball</b><span class="kilde">Testtime fredag 13:00 · tildelt fra bookingen</span></span><span class="pille vent"><i></i>Planlagt</span></div>
+        <div class="test-rad"><span class="avatar liten wang">W</span><span><b>WANG Ung · Club Speed og rotasjonskast</b><span class="kilde">I dag 19:00 · 12 spillere</span></span><span class="pille vent"><i></i>Planlagt</span></div>
+        <div class="test-rad"><span class="avatar liten">ØR</span><span><b>Øyvind Rohjan · Benkpress</b><span class="kilde">Uke 44 · fysisk test i blokka</span></span><span class="pille noy"><i></i>Ikke tatt</span></div>
+        <div class="test-rad"><span class="avatar liten">SM</span><span><b>Sander Moe · TrackMan-økt: gapping</b><span class="kilde">Tildelt 1. okt</span></span><span class="pille noy"><i></i>Ikke tatt</span></div>
+      </div>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Siste resultater</h2></div>
+        <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+          <div class="test-rad"><span class="avatar liten">ØR</span><span><b>Øyvind · Wedge Gate</b><span class="kilde">28. sep · egenført</span></span><span class="mono">6 av 9 treff</span></div>
+          <div class="test-rad"><span class="avatar liten">SR</span><span><b>Selma · Putt 9 hull lengde</b><span class="kilde">27. sep · kontrollert</span></span><span class="mono">31 p</span></div>
+        </div>
+      </section>
+    </div>
+    <div data-panel="normer" hidden style="display:grid;gap:var(--r4)">
+      <div class="felt"><label for="t-test">Test</label><select id="t-test"><option>8-ball</option><option>Wedge Gate</option><option>Club Speed driver</option></select></div>
+      <div class="normer" data-normer></div>
+      <p class="kildetekst">A–K-nivåtallene er ikke vedtatt. Normene fylles inn når de er det.</p>
+    </div>
+    <div data-panel="skala" hidden style="display:grid;gap:var(--r4)">
+      <section class="seksjon"><div class="sek-topp"><h2>Putt 9 hull lengde</h2><span class="kilde">Restavstand i fot</span></div>
+        <div class="skala-tab"><div><b>6</b><span>senket</span></div><div><b>3</b><span>til 1 fot</span></div><div><b>1</b><span>til 2 fot</span></div><div><b>0,5</b><span>til 4 fot</span></div><div><b>0</b><span>over 4 fot</span></div></div>
+      </section>
+      <section class="seksjon"><div class="sek-topp"><h2>Wedge Gate</h2></div><p class="forklar">Hvert forsøk føres som treff eller bom. Resultatet er antall treff av 9.</p></section>
+      <p class="kildetekst">Kilde: Team Norways scorekort-ark, fanen Referens.</p>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark tildel" role="dialog" aria-label="Tildel test">
+        <div class="ark-topp"><h2>Tildel test</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><label for="td-test">Test</label><select id="td-test"><option>8-ball</option><option>Wedge Gate</option><option>TrackMan-økt: gapping</option><option>Benkpress</option></select></div>
+        <span class="undertittel">Til</span>
+        <div class="chips" role="group" data-gruppe><button type="button" aria-pressed="true">Én spiller</button><button type="button" aria-pressed="false">En gruppe</button></div>
+        <div class="felt"><label for="td-hvem">Spiller eller gruppe</label><input id="td-hvem" value="Øyvind Rohjan"></div>
+        <div class="felt"><label for="td-uke">Når</label><select id="td-uke"><option>Uke 42</option><option>Uke 43</option><option>Uke 44</option></select></div>
+        <button type="button" class="knapp pri stor" data-tildel-ok>Tildel</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-16 Grupper ================= -->
+<template id="grupper">
+<div class="app" data-fane="mer" data-tilbake="Mer" data-tilbake-gaa="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Mer · grupper</div><h1 class="tittel">Grupper</h1></div><button type="button" class="knapp pri">Ny gruppe</button></div></div>
+    <div class="gruppe-kort">
+      <b class="n">AK-stigen</b>
+      <div class="trinn-rad"><span>Mini</span><span>Basis</span><span>Utvikling</span><span>Elite</span></div>
+      <span class="kilde">Ved siden av stigen</span>
+      <div class="trinn-rad"><span class="ved">Knøtt 11–12 år</span><span class="ved">WANG Toppidrett</span><span class="ved">WANG Ung</span></div>
+    </div>
+    <div class="to-del">
+      <div class="seksjon">
+        <button type="button" class="gruppe-kort" style="text-align:left;font:inherit;cursor:pointer" data-gaa="gruppe"><span class="rad"><b class="n">WANG Toppidrett</b><span class="pille noy"><i></i>12 spillere</span></span><span class="kilde">Man–fre 07:00 · Fredrikstad GK · etterlevelse 88 %</span></button>
+        <div class="gruppe-kort"><span class="rad"><b class="n">WANG Ung</b><span class="pille noy"><i></i>12 spillere</span></span><span class="kilde">Tir og tor 16:00 · etterlevelse 74 %</span></div>
+        <div class="gruppe-kort"><span class="rad"><b class="n">GFGK Junior Utvikling</b><span class="pille noy"><i></i>10 spillere</span></span><span class="kilde">Man 15:30 · Gamle Fredrikstad GK · etterlevelse 66 %</span></div>
+        <div class="gruppe-kort"><span class="rad"><b class="n">GFGK Junior Basis</b><span class="pille noy"><i></i>12 spillere</span></span><span class="kilde">Man 17:00 · Markus · etterlevelse —</span></div>
+        <div class="gruppe-kort"><span class="rad"><b class="n">AK Golf Academy</b><span class="pille noy"><i></i>7 spillere</span></span><span class="kilde">Privat coaching · etterlevelse 87 %</span></div>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Legg spillere i grupper</h2></div>
+          <div class="felt"><label for="g-sok">Søk spillere med PlayerHQ</label><input id="g-sok" type="search" value="Ida"></div>
+          <div>
+            <div class="sok-rad"><span class="avatar liten">IL</span><span><b>Ida Lie</b><span class="kilde">Kategori E · har PlayerHQ</span><span class="hak" style="margin-top:6px"><label><input type="checkbox" checked>GFGK Junior Utvikling</label><label><input type="checkbox">AK Golf Academy</label></span></span><span></span></div>
+          </div>
+          <button type="button" class="knapp sek" style="justify-self:start" data-lagre-g>Lagre</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-16 Gruppa ================= -->
+<template id="gruppe">
+<div class="app" data-fane="mer" data-tilbake="Grupper" data-tilbake-gaa="grupper">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Gruppe · head coach Anders · Assist Coach Markus</div><h1 class="tittel">WANG Toppidrett</h1></div><a class="knapp sek" href="#">Åpne gruppeplanen</a></div></div>
+    <div class="faner" role="group" aria-label="Del"><button type="button" aria-pressed="true">Medlemmer</button><button type="button" aria-pressed="false">Faste tider</button><button type="button" aria-pressed="false">Skoledata</button><button type="button" aria-pressed="false" data-gaa="analyse">Stats</button></div>
+    <div class="to-del">
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px" data-medlemmer></div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Faste tider</h2></div>
+          <div class="tider">
+            <div class="tid-rad"><b>Man 07:00</b><span>Morgenøkt · Fredrikstad GK range</span></div>
+            <div class="tid-rad"><b>Tir 07:00</b><span>Styrke · treningsrommet</span></div>
+            <div class="tid-rad"><b>Ons 07:00</b><span>Morgenøkt · Fredrikstad GK</span></div>
+            <div class="tid-rad"><b>Tor 07:00</b><span>Styrke · treningsrommet</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tildel til gruppa</h2></div>
+          <div class="knapper"><button type="button" class="knapp sek" data-gaa="tester">Tildel test</button><button type="button" class="knapp sek">Tildel TrackMan-økt</button></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-A03 Gruppeanalyse ================= -->
+<template id="analyse">
+<div class="app" data-fane="mer" data-tilbake="WANG Toppidrett" data-tilbake-gaa="gruppe">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">WANG Toppidrett · 12 spillere · uke 37–40</div><h1 class="tittel">Gruppeanalyse</h1></div></div>
+    <div class="to-del">
+      <div>
+        <section class="kort">
+          <div class="hoved"><strong>88 %</strong><span class="forklar">gjennomført tid mot planlagt, snitt for gruppa</span></div>
+          <div class="akserader" style="display:grid;gap:10px">
+            <div class="ga-rad"><span>FYS</span><div class="stolpe"><span class="a-fys" data-til="91%" style="width:91%"></span></div><span class="v">91 %</span></div>
+            <div class="ga-rad"><span>TEK</span><div class="stolpe"><span class="a-tek" data-til="84%" style="width:84%"></span></div><span class="v">84 %</span></div>
+            <div class="ga-rad"><span>SLAG</span><div class="stolpe"><span class="a-slag" data-til="90%" style="width:90%"></span></div><span class="v">90 %</span></div>
+            <div class="ga-rad"><span>SPILL</span><div class="stolpe"><span class="a-spill" data-til="82%" style="width:82%"></span></div><span class="v">82 %</span></div>
+            <div class="ga-rad"><span>TURN</span><div class="stolpe"><span class="a-turn" data-til="96%" style="width:96%"></span></div><span class="v">96 %</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Nivå</h2></div>
+          <div class="kort" style="gap:6px"><div class="hoved"><strong style="font-size:40px">73,8</strong><span class="forklar">snittscore for gruppa, brutto</span></div><p class="kildetekst">Kategori C i snitt. 9 av 12 har minst 4 runder.</p></div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Datadekning</h2><span class="kilde">Siste 4 uker</span></div>
+          <div class="dekning" aria-label="Datadekning per spiller"><i class="ja"></i><i class="ja"></i><i class="ja"></i><i class="delvis"></i><i class="ja"></i><i class="ja"></i><i class="ja"></i><i class="delvis"></i><i class="ja"></i><i></i><i class="ja"></i><i class="delvis"></i></div>
+          <p class="forklar">8 med alle økter og runder registrert, 3 delvis, 1 uten registreringer. Ingen navn i denne visningen.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Belastning</h2></div>
+          <div class="kort" style="gap:6px"><div class="hoved"><strong style="font-size:40px">6,1</strong><span class="forklar">snitt «hvor tungt» etter økt, 1–10</span></div><p class="kildetekst">Fra spillernes egne svar etter økta. Opp fra 5,4 i uke 37.</p></div>
+        </section>
+        <p class="kildetekst">Gruppeanalysen viser snitt. Den rangerer ikke spillerne.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-20 Økonomi ================= -->
+<template id="okonomi">
+<div class="app" data-fane="mer" data-tilbake="Mer" data-tilbake-gaa="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Mer · bare head coach</div><h1 class="tittel">Økonomi</h1></div><span class="estimat">Eksempeltall</span></div></div>
+    <div class="valg" role="group" aria-label="Periode" data-gruppe><button type="button" aria-pressed="true">September</button><button type="button" aria-pressed="false">Hittil i år</button></div>
+    <div class="to-del bred-v">
+      <div>
+        <section class="kort">
+          <div class="hoved"><strong>214 800</strong><span class="forklar">kr i inntekt · budsjett 230 000 kr</span></div>
+          <div class="oko-rad hode"><span>Tjeneste</span><span style="text-align:right">Regnskap</span><span style="text-align:right">Budsjett</span></div>
+          <div class="oko-rad"><span>Coaching privat</span><span class="v">96 400</span><span class="v">90 000</span></div>
+          <div class="oko-rad"><span>Grupper</span><span class="v under">58 200<small>−17 %</small></span><span class="v">70 000</span></div>
+          <div class="oko-rad"><span>GFGK-avtalen</span><span class="v">40 000</span><span class="v">40 000</span></div>
+          <div class="oko-rad"><span>Gruppetimer</span><span class="v">20 200</span><span class="v">20 000</span></div>
+          <div class="oko-rad"><span>Andre tjenester fra AK Golf</span><span class="v">—</span><span class="v">10 000</span></div>
+          <p class="kildetekst">Regnskap fra Tripletex-eksporten 3. oktober. Andre tjenester mangler i eksporten.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Kilder</h2></div>
+          <div class="kilde-rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span><b>Tripletex-eksport</b><span class="kilde">September · lastet opp 3. okt</span></span><button type="button" class="knapp sek">Last opp oktober</button></div>
+          <div class="kilde-rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><span><b>Stripe</b><span class="kilde">Betalinger lest 08:00 i dag</span></span><span class="pille ok"><i></i>Koblet</span></div>
+          <div class="kilde-rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span><span><b>Budsjett 2026</b><span class="kilde">Lagt inn 12. jan</span></span><button type="button" class="knapp sek">Endre</button></div>
+        </section>
+        <div class="kort dempet"><b class="undertittel">Avvik over 10 %</b><p class="forklar">Grupper er 17 % under budsjett. WANG Ung hadde to avlyste økter i september.</p></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-20-ASS ================= -->
+<template id="okonomiass">
+<div class="app" data-fane="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Markus · Assist Coach</div><h1 class="tittel">Mer</h1></div></div>
+    <div class="mer-grid">
+      <button type="button" class="mer-kort"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Booking</b><span class="kilde">Dine bookinger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span><b>Grupper</b><span class="kilde">2 grupper du coacher</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span><b>Tester</b><span class="kilde">1 tildelt</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="mer-kort"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></span><span><b>Oppsett</b><span class="kilde">Din profil</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="sperret"><b class="undertittel">Åpner Markus adressen til Økonomi</b><p class="forklar">sendes han til Cockpit. Økonomi står ikke i Mer for assistant coach.</p></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-23 Oppsett ================= -->
+<template id="oppsett">
+<div class="app" data-fane="mer" data-tilbake="Mer" data-tilbake-gaa="mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Mer · oppsett</div><h1 class="tittel">Oppsett</h1></div></div>
+    <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="team">Team</button><button type="button" aria-pressed="false" data-p="profil">Profil</button><button type="button" aria-pressed="false" data-p="gdpr">GDPR</button><button type="button" aria-pressed="false" data-p="logg">Logger</button><button type="button" aria-pressed="false" data-p="hjelp">Markedsføring og hjelp</button></div>
+    <div data-panel="team" style="display:grid;gap:var(--r4)">
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="team-rad"><span class="avatar liten">AK</span><span><b>Anders Kristiansen</b><span class="kilde">Head coach · ser alt, også Økonomi</span></span><span class="pille ok"><i></i>Aktiv</span></div>
+        <div class="team-rad"><span class="avatar liten">MA</span><span><b>Markus</b><span class="kilde">Assist Coach · egne økter og gruppeøkter</span></span><span class="pille ok"><i></i>Aktiv</span></div>
+        <div class="team-rad"><span class="avatar liten lys">?</span><span><b>Invitasjon sendt</b><span class="kilde">ny.coach@akgolf.no · Assist Coach · gjelder til 12. okt</span></span><span class="pille vent"><i></i>Venter</span></div>
+      </div>
+      <button type="button" class="knapp pri" style="justify-self:start">Inviter coach</button>
+    </div>
+    <div data-panel="profil" hidden style="display:grid;gap:var(--r4)">
+      <div class="felt"><label for="op-navn">Navn</label><input id="op-navn" value="Anders Kristiansen"></div>
+      <div class="felt"><label for="op-tittel">Tittel på bookingsiden</label><input id="op-tittel" value="Head coach, AK Golf Academy"></div>
+      <button type="button" class="knapp pri" style="justify-self:start">Lagre</button>
+    </div>
+    <div data-panel="gdpr" hidden style="display:grid;gap:var(--r4)">
+      <div class="hoved"><strong data-gdpr-ant>1</strong><span class="forklar">sletteforespørsel venter</span></div>
+      <div class="kort" data-gdpr-sak><div class="team-rad" style="border:0"><span class="avatar liten lys">KN</span><span><b>Kasper Nilsen ba om å slette kontoen</b><span class="kilde">Sendt 3. okt · fra Meg › Innstillinger</span></span><span></span></div><div class="knapper"><button type="button" class="knapp sek" data-slett>Slett kontoen</button><button type="button" class="knapp sek">Skriv til Kasper</button></div></div>
+    </div>
+    <div data-panel="logg" hidden style="display:grid;gap:var(--r4)">
+      <ul class="logg"><li><time>08:24</time><span>Anders publiserte fysisk plan for Øyvind</span></li><li><time>08:22</time><span>E-post sendt fra post@akgolf.no etter godkjenning</span></li><li><time>06:00</time><span>Motoren foreslo lettere uke for Sander</span></li><li><time>i går</time><span>Markus flyttet GFGK Junior Basis til 17:00</span></li></ul>
+    </div>
+    <div data-panel="hjelp" hidden style="display:grid;gap:var(--r4)">
+      <div class="liste"><a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg></span><span><b>Markedsføring</b><span class="kilde">Bookingside og e-postmaler</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a><a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span><span><b>Hjelp</b><span class="kilde">Spørsmål og svar for coacher</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a></div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="sl-tittel">
+        <h2 id="sl-tittel">Slette kontoen til Kasper Nilsen?</h2>
+        <p class="forklar">Planen, øktene, rundene, testene og meldingene slettes. Det kan ikke angres. Kasper får e-post når det er gjort.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-sl-ok>Slett kontoen</button><button type="button" class="knapp sek stor" data-sl-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var D = window.AKDemo, A = window.AKAgency;
+  function faner(app) {
+    var f = app.querySelector('[data-faner]'); if (!f) return;
+    f.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b || !b.dataset.p) return; app.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.p; }); });
+  }
+  function tester(app) {
+    faner(app);
+    app.querySelector('[data-normer]').innerHTML = 'ABCDEFGHIJK'.split('').map(function (k) { return '<div class="norm"><b>' + k + '</b><span>Kategori ' + k + '</span><span class="v">Referanse ikke satt</span></div>'; }).join('');
+    app.querySelector('[data-tildel]').addEventListener('click', function () { A.vis(app, '[data-ark]', true); });
+    app.querySelector('[data-ark] [data-lukk]').addEventListener('click', function () { A.vis(app, '[data-ark]', false); });
+    app.querySelector('[data-tildel-ok]').addEventListener('click', function () { A.vis(app, '[data-ark]', false); A.toast(app, 'Tildelt. Testen ligger i planen og i Workbench.'); });
+  }
+  function grupper(app) { app.querySelector('[data-lagre-g]').addEventListener('click', function () { A.toast(app, 'Lagret. Ida er i GFGK Junior Utvikling.'); }); }
+  function gruppe(app) {
+    var w = D.stall.filter(function (s) { return s.gruppe === 'WANG Toppidrett'; });
+    app.querySelector('[data-medlemmer]').innerHTML = w.map(function (s) { return '<div class="team-rad"><span class="avatar liten">' + s.i + '</span><span><b>' + s.navn + '</b><span class="kilde">Kategori ' + s.kat + ' · etterlevelse ' + s.etl + ' %</span></span><span class="pille ok"><i></i>Har PlayerHQ</span></div>'; }).join('') + '<div class="team-rad"><span class="avatar liten lys">+8</span><span><b>8 til</b><span class="kilde">Ingen av dem rangeres</span></span><span></span></div>';
+  }
+  function oppsett(app) {
+    faner(app);
+    app.querySelector('[data-slett]').addEventListener('click', function () { A.vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-sl-nei]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-sl-ok]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); app.querySelector('[data-gdpr-sak]').innerHTML = '<span class="pille ok" style="justify-self:start"><i></i>Kontoen er slettet. Kasper har fått e-post.</span>'; app.querySelector('[data-gdpr-ant]').textContent = '0'; });
+  }
+  A.start({
+    start: 'mer',
+    skjermer: {
+      mer: { etter: null, tom: null },
+      tester: { etter: tester, tom: { tittel: 'Ingen tester tildelt', tekst: 'Tildel en test til en spiller eller en gruppe. Den legges i planen.', knapp: 'Tildel test' }, laster: 'Henter testene …', feil: 'Testene kunne ikke hentes' },
+      grupper: { etter: grupper, tom: { tittel: 'Ingen grupper', tekst: 'Lag en gruppe, og legg inn spillere med PlayerHQ.', knapp: 'Ny gruppe' }, laster: 'Henter gruppene …', feil: 'Gruppene kunne ikke hentes' },
+      gruppe: { etter: gruppe, tom: { tittel: 'Ingen medlemmer', tekst: 'Søk opp spillere med PlayerHQ og legg dem i gruppa.', knapp: 'Legg til spillere' }, laster: 'Henter gruppa …', feil: 'Gruppa kunne ikke hentes' },
+      analyse: { etter: null, tom: { tittel: 'For lite data', tekst: 'Gruppeanalysen kommer når minst fire spillere har registrert økter i fire uker.', knapp: null }, laster: 'Henter analysen …', feil: 'Analysen kunne ikke hentes' },
+      okonomi: { etter: null, tom: { tittel: 'Ingen tall ennå', tekst: 'Last opp Tripletex-eksporten for måneden og legg inn budsjettet. Tall anslås aldri.', knapp: 'Last opp eksport' }, laster: 'Henter tallene …', feil: 'Tallene kunne ikke hentes' },
+      okonomiass: { etter: null, tom: null },
+      oppsett: { etter: oppsett, tom: null }
+    }
+  });
+})();
+</script>
