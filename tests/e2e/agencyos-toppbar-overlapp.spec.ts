@@ -20,12 +20,12 @@ test.describe("AgencyOS-konsollen — sticky toppbar", () => {
     await loginAsCoach(page);
     await page.goto("/admin/agencyos");
     await dismissCookieBanner(page);
-    await page.locator("header.pa-aos__menylinje").waitFor();
+    await page.locator("header.agn-topp").waitFor();
     // Autoscroll er «smooth» — vent forbi vinduet der den ev. ville kjørt.
     await page.waitForTimeout(2500);
 
     const funn = await page.evaluate(() => {
-      const topp = document.querySelector<HTMLElement>("header.pa-aos__menylinje")!;
+      const topp = document.querySelector<HTMLElement>("header.agn-topp")!;
       const tb = topp.getBoundingClientRect();
       const dekket: string[] = [];
       document.querySelectorAll<HTMLElement>("a, button").forEach((el) => {

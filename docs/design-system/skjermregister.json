@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "6855cdbd1a4a86bb0e63b804246986f48b0df929",
+  "kodeversjon": "0389d3c2e1cf0365ef7f3ec81d08c5de69afd70c",
   "inventar": {
-    "pageFiles": 544,
-    "uniqueRoutePatterns": 544,
-    "componentFiles": 894,
+    "pageFiles": 545,
+    "uniqueRoutePatterns": 545,
+    "componentFiles": 895,
     "surfaceFiles": 260,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 166,
+      "agencyos": 167,
       "inngang-og-konto": 19,
       "forelder": 16,
       "lag-og-skole": 63,
@@ -5223,7 +5223,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "AG-13"
+      "kodekommentar": null
     },
     {
       "screenId": "AG-13",
@@ -7663,6 +7663,49 @@
       "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AG-23 Oppsett er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/admin/mer",
+      "kildefil": "src/app/admin/mer/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -23968,10 +24011,10 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 544,
+    "sidefiler": 545,
     "medAvvik": 166,
     "valgtForBygging": 249,
-    "utenEksaktType": 12,
+    "utenEksaktType": 13,
     "implementert": 139,
     "kontrollertIApp": 0,
     "kobling": {
@@ -23979,7 +24022,7 @@
       "felles-monster": 22,
       "tegnet-skjermtype": 284,
       "videresending": 165,
-      "teknisk-forklaring": 29,
+      "teknisk-forklaring": 30,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24012,7 +24055,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
-      "UTEN-TEGNET-TYPE": 12,
+      "UTEN-TEGNET-TYPE": 13,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
