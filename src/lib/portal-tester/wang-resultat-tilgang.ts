@@ -11,10 +11,11 @@ import {
   type WangTestdelingStatus,
 } from "@/lib/deling/samtykke-regler";
 import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
+import { erDemokonto, gruppeSlugForEpost, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
+import { hentTnGruppeForBruker } from "@/lib/domain/tn-tilgang";
 import { prisma } from "@/lib/prisma";
 
 const WANG_PROGRAM = ["WANG_UNG", "WANG_TOPPIDRETT"] as const;
-const TN_SLUG = "team-norway";
 
 /**
  * D-55 (07.10.2026): en WANG-elev samtykker én gang ved innmelding (forelder
@@ -126,11 +127,12 @@ export type WangResultatSkoleScope = {
  * eller manglende samtykke faller ut i filteret. Skolen vises selv om ingen
  * elever har samtykket.
  */
-async function hentWangSkolerMedSamtykke(groupIds?: string[]): Promise<WangResultatSkoleScope[]> {
+async function hentWangSkolerMedSamtykke(groupIds?: string[], demo = false): Promise<WangResultatSkoleScope[]> {
   const grupper = await prisma.group.findMany({
     where: {
       ...(groupIds ? { id: { in: groupIds } } : {}),
-      program: { in: [...WANG_PROGRAM] },
+      // Demogruppa har ikke WANG-program og nås bare av demokontoene.
+      ...(demo ? { slug: WANG_DEMO_SLUG } : { program: { in: [...WANG_PROGRAM] } }),
       arkivertAt: null,
     },
     orderBy: { name: "asc" },
@@ -180,6 +182,16 @@ export async function hentWangTestresultatSkolerForTrener(
   if (bruker.role === "ADMIN") return hentWangSkolerMedSamtykke();
   if (bruker.role !== "COACH") return [];
 
+  const epost = (await prisma.user.findUnique({ where: { id: bruker.id }, select: { email: true } }))?.email;
+  if (erDemokonto(epost)) {
+    const slug = gruppeSlugForEpost(epost, "WANG");
+    const demo = slug ? await prisma.groupMember.findFirst({
+      where: { ...aktivtTrenerMedlemskapWhere(bruker.id), group: { slug, arkivertAt: null } },
+      select: { groupId: true },
+    }) : null;
+    return demo ? hentWangSkolerMedSamtykke([demo.groupId], true) : [];
+  }
+
   const medlemskap = await prisma.groupMember.findMany({
     where: {
       ...aktivtTrenerMedlemskapWhere(bruker.id),
@@ -201,13 +213,18 @@ export async function hentWangTestresultatSkolerForTeamNorway(
 ): Promise<WangResultatSkoleScope[]> {
   if (bruker.role !== "ADMIN" && bruker.role !== "COACH") return [];
   if (bruker.role === "COACH") {
-    const gruppe = await prisma.group.findUnique({ where: { slug: TN_SLUG }, select: { id: true } });
+    const gruppe = await hentTnGruppeForBruker(bruker.id);
     if (!gruppe) return [];
     const medlemskap = await prisma.groupMember.findFirst({
       where: { groupId: gruppe.id, ...aktivtTrenerMedlemskapWhere(bruker.id) },
       select: { id: true },
     });
     if (!medlemskap) return [];
+    // Demokontoen ser bare WANG-demogruppa, aldri ekte WANG-elever.
+    if (gruppe.slug === TN_DEMO_SLUG) {
+      const demo = await prisma.group.findUnique({ where: { slug: WANG_DEMO_SLUG }, select: { id: true } });
+      return demo ? hentWangSkolerMedSamtykke([demo.id], true) : [];
+    }
   }
   return hentWangSkolerMedSamtykke();
 }

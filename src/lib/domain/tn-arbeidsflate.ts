@@ -6,6 +6,7 @@ import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
+import { erTnGruppeSlug, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
 import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { TN_CATALOG, TN_GODKJENT_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
@@ -417,10 +418,15 @@ export type TnTestdagGruppevalg = {
 export async function hentTnFellesTestdagGrupper(bruker: TnBruker): Promise<TnTestdagGruppevalg[] | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
+  const erDemo = (await prisma.group.findUnique({ where: { id: kontekst.gruppe.id }, select: { slug: true } }))?.slug === TN_DEMO_SLUG;
   const grupper = await prisma.group.findMany({
     where: {
       arkivertAt: null,
-      OR: [
+      // Demogruppa ser bare WANG-demogruppa, aldri ekte WANG-skoler.
+      OR: erDemo ? [
+        { id: kontekst.gruppe.id, slug: TN_DEMO_SLUG },
+        { slug: WANG_DEMO_SLUG },
+      ] : [
         { id: kontekst.gruppe.id, slug: "team-norway" },
         { program: { in: ["WANG_UNG", "WANG_TOPPIDRETT"] } },
       ],
@@ -439,11 +445,11 @@ export async function hentTnFellesTestdagGrupper(bruker: TnBruker): Promise<TnTe
     },
   });
   return grupper
-    .filter((gruppe) => gruppe.id === kontekst.gruppe.id || gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT")
+    .filter((gruppe) => gruppe.id === kontekst.gruppe.id || (erDemo ? gruppe.slug === WANG_DEMO_SLUG : gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT"))
     .map((gruppe) => ({
       id: gruppe.id,
       navn: gruppe.name,
-      type: gruppe.slug === "team-norway" ? "TEAM_NORWAY" as const : "WANG" as const,
+      type: erTnGruppeSlug(gruppe.slug) ? "TEAM_NORWAY" as const : "WANG" as const,
       spillere: gruppe.members.map(({ user }) => ({ id: user.id, navn: user.name ?? "Ukjent spiller" })),
     }));
 }
