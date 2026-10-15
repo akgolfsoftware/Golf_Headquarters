@@ -16,9 +16,7 @@ export default async function CoachPlanerPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <PH21Innboks data={data} initialTab="plan" />
-      </div>
+      <PH21Innboks data={data} initialTab="plan" />
     </PlayerHQSkall>
   );
 }

@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **544**. Unike rutemønstre i skanningen: 544. Komponentfiler: 893. Ramme- og tilstandsfiler: 260.
+Sidefiler med rute: **544**. Unike rutemønstre i skanningen: 544. Komponentfiler: 897. Ramme- og tilstandsfiler: 263.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -93,6 +93,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | Kodekommentaren sier PH-17, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/personvern` | PH-25 | Kodekommentaren sier PH-18. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/portal/varsler` | PH-25 | Kodekommentaren sier PH-21. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/team-norway/[groupId]/dokumenter` | TN-11 | Kodekommentaren sier TN-14, som i handover er «Samlingspunkt» på /team-norway/samlinger/[id]. Handover-ruten beholder TN-11. Kommentaren er opphav, ikke godkjenning. |
 | `/team-norway/[groupId]` | TN-09 | Kodekommentaren sier TN-13, som i handover er «Turneringsoversikt» på /team-norway/turneringer. Handover-ruten beholder TN-09. Kommentaren er opphav, ikke godkjenning. |
 | `/team-norway/college` | TN-15 | Kodekommentaren sier TN-06, som i handover er «Uttaksliste» på /team-norway/uttak. Handover-ruten beholder TN-15. Kommentaren er opphav, ikke godkjenning. |
