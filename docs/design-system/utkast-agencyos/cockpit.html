@@ -1,0 +1,482 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 1: AG-01 Cockpit og AG-04 Innboks ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+
+/* Dagens kalender 05–22 */
+.dag{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.dag .timer{display:grid;grid-auto-rows:var(--time);border-right:1px solid var(--sand-300);background:var(--sand-100)}
+.dag .timer span{font:500 11px/1 var(--mono);color:var(--graphite-600);padding:4px 0 0 6px;border-top:1px solid var(--sand-300)}
+.dag .timer span:first-child{border-top:0}
+.dag .bane{position:relative;background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--time) - 1px),var(--sand-150) calc(var(--time) - 1px),var(--sand-150) var(--time))}
+.dag{--time:38px}
+.blokk-okt{position:absolute;left:6px;right:6px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-content:start;gap:2px 8px;padding:6px 10px;border-radius:8px;color:#fff;overflow:hidden;text-align:left;border:0;font:inherit;cursor:pointer}
+.blokk-okt.fys{background:var(--fys-ink)} .blokk-okt.tek{background:var(--tek-ink)} .blokk-okt.slag{background:var(--slag)} .blokk-okt.spill{background:var(--spill-ink)} .blokk-okt.turn{background:var(--turn)}
+.blokk-okt b{font:600 14px/1.25 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blokk-okt .t{font:600 12.5px/1.2 var(--mono);opacity:.9;white-space:nowrap}
+.blokk-okt .i{grid-column:1 / -1;font-size:12.5px;line-height:1.3;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blokk-okt .live{grid-row:1 / span 2;grid-column:2;align-self:center;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:6px;background:#fff;color:var(--graphite-900);font:600 13px/1 var(--sans)}
+.blokk-okt .live i{width:8px;height:8px;border-radius:50%;background:var(--green-700)}
+.na-linje{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--graphite-900);z-index:2}
+.na-linje::before{content:"08:20";position:absolute;left:-44px;top:-9px;width:40px;text-align:center;font:600 11px/16px var(--mono);background:var(--graphite-900);color:var(--white);border-radius:4px}
+
+/* Følger ikke planen */
+.etl-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);text-decoration:none;color:inherit;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;font:inherit;text-align:left;width:100%}
+.etl-rad:last-child{border-bottom:0}
+.etl-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.etl-uker{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.etl-uker span{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:5px;font:600 12px/1 var(--mono);background:var(--rust-50);color:#8a2a1c;white-space:nowrap}
+.etl-prosent{font:600 22px/1 var(--mono);color:#8a2a1c}
+.oppgave{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--sand-300);cursor:pointer}
+.oppgave:last-child{border-bottom:0}
+.oppgave input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--graphite-900)}
+.oppgave b{display:block;font:500 15px/1.35 var(--sans)}
+.oppgave.gjort b{text-decoration:line-through;color:var(--graphite-600)}
+.frist.forfalt{color:#8a2a1c;font-weight:600}
+.turn-kort{display:grid;grid-template-columns:72px minmax(0,1fr);border-radius:12px;overflow:hidden;background:var(--turn);color:#fff}
+.turn-kort img{width:100%;height:100%;min-height:72px;object-fit:cover}
+.turn-kort div{padding:10px 12px;display:grid;gap:2px}
+.turn-kort b{font:600 15px/1.3 var(--sans)}
+.turn-kort span{font-size:13px;opacity:.92}
+.svar-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:start;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.svar-rad:last-child{border-bottom:0}
+.svar-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.svar-rad .sitat{font-size:14px;color:var(--graphite-800);line-height:1.4}
+.svar-rad time{font:500 12.5px/1.3 var(--mono);color:var(--graphite-600);white-space:nowrap}
+.haster-pille{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--rust);color:#fff;font:600 12px/1 var(--sans);white-space:nowrap}
+.kort-svar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.kort-svar input{flex:1;min-width:0;min-height:40px;padding:8px 10px;border:1px solid var(--graphite-500);border-radius:8px;font:400 15px/1.3 var(--sans)}
+.nokkel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.nokkel div{display:grid;gap:2px;padding:12px;border-radius:10px;background:var(--sand-100)}
+.nokkel b{font:600 24px/1.1 var(--mono)}
+.nokkel span{font-size:12.5px;color:var(--graphite-600)}
+
+/* Innboks */
+.saker{display:grid;gap:var(--r2)}
+.sak{display:grid;gap:var(--r3);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.sak.haster{border:2px solid var(--rust)}
+.sak-topp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:start}
+.sak-topp b{display:block;font:600 15.5px/1.3 var(--sans)}
+.sak-topp .fra{display:block;font-size:13px;color:var(--graphite-600)}
+.sak-topp time{font:500 12.5px/1.3 var(--mono);color:var(--graphite-600);white-space:nowrap}
+.sak .sitat{font-size:14.5px;line-height:1.5;color:var(--graphite-800)}
+.type{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:5px;background:var(--sand-150);font:600 11.5px/1 var(--sans);color:var(--graphite-800);letter-spacing:.02em}
+.utkast{display:grid;gap:8px;padding:12px 14px;border-radius:10px;background:var(--sand-100);border:1px dashed var(--graphite-500)}
+.utkast .hode{display:flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--graphite-800)}
+.utkast .hode .ikon{width:16px;height:16px}
+.utkast p{font-size:14.5px;line-height:1.5}
+.utkast textarea{min-height:120px;padding:10px 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 15px/1.5 var(--sans);width:100%;resize:vertical;background:var(--white)}
+.okt-endring{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.okt-endring .okt.mini{grid-template-columns:1fr}
+.okt-endring .okt.mini img{display:none}
+.okt-endring .okt.mini .okt-tekst{padding:8px 10px;gap:2px}
+.okt-endring .okt-tid{font-size:17px}
+.okt-endring .navn{font-size:13.5px!important}
+.okt-endring .gml{opacity:.55}
+.okt-endring .gml .okt-tid{text-decoration:line-through}
+.status-rad{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.innboks-grid{display:grid;gap:var(--r5);align-content:start}
+.innboks-grid > aside{display:grid;gap:var(--r4);align-content:start}
+.under-filter{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-radius:12px;background:var(--sand-100)}
+.under-filter button{min-height:36px;padding:0 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:500 13.5px/1 var(--sans);cursor:pointer;color:var(--graphite-900);display:inline-flex;align-items:center;gap:6px}
+.under-filter button b{font:600 12px/1 var(--mono)}
+.under-filter button[aria-pressed="true"]{background:var(--graphite-900);color:var(--white);border-color:var(--graphite-900)}
+.folg-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.folg-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.status-merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font:600 12px/1 var(--sans);white-space:nowrap}
+.status-merke.risiko{background:var(--rust-50);color:#8a2a1c}
+.status-merke.folg{background:var(--amber-50);color:var(--amber-700)}
+.status-merke.sjekk{background:var(--sand-150);color:var(--graphite-800)}
+.status-merke.lost{background:var(--green-50);color:var(--green-700)}
+.status-merke.lead{background:#e8eefc;color:var(--slag-ink)}
+
+.cockpit-grid{display:grid;gap:var(--r5);align-content:start}
+.cockpit-grid > div{display:grid;gap:var(--r5);align-content:start}
+@container (min-width:900px){
+  .cockpit-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .dag{--time:44px}
+  .innboks-grid{grid-template-columns:minmax(0,1fr) 320px;gap:var(--r6);align-items:start}
+  .innboks-grid > aside{position:sticky;top:24px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 1 · AG-01 og AG-04 · utkast 1 · 14.10.2026</span>
+    <h1>Cockpit og Innboks</h1>
+    <p>Fem skjermer i én fil: Cockpit som startskjerm, Innboks med alle saker, en e-post med utkast fra Jarvis, et spørsmål som haster uten utkast, og Oppfølging med Risiko, Følg med, Sjekk, Løst og Leads. Coach Anders Kristiansen, head coach. Mandag 5. oktober kl. 08:20, uke 41. Første skjermer i nytt AgencyOS-skall: sidemeny på PC, hamburgermeny på mobil, bjelle og flyttbar hurtigknapp.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="cockpit">AG-01 Cockpit</button>
+      <button type="button" aria-pressed="false" data-skjerm="innboks">AG-04 Innboks</button>
+      <button type="button" aria-pressed="false" data-skjerm="sak">Sak med utkast</button>
+      <button type="button" aria-pressed="false" data-skjerm="haster">AG-04-HASTER</button>
+      <button type="button" aria-pressed="false" data-skjerm="oppfolging">Oppfølging</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Cockpit er startskjermen.</b> Fire tellere øverst. Meldingen som har ventet over 24 timer er det eneste i rust.</li>
+        <li><b>Dagens kalender 05–22</b> med fylte økter i aksefargen, nålinje kl. 08:20 og «Åpne live» på økta som pågår.</li>
+        <li><b>Følger ikke planen</b> viser de to siste ukene per spiller, laveste først, med lenke til Spiller 360 (vedtak 28.09).</li>
+        <li><b>Oppgaver kommer bare fra Notion.</b> Huk av i Cockpit, så krysses de av i Notion. Forfalt står først.</li>
+        <li><b>Én innboks</b> for e-post (post@akgolf.no og akgolfgroup@gmail.com), spillere, godkjenninger, oppfølging, varsler og leads. Haster først, deretter nyeste.</li>
+        <li><b>Jarvis forbereder, coachen sender.</b> Utkast står åpent i saken med Send · Rediger · Forkast. Uten utkast: tomt skrivefelt og «Lag utkast».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Hurtigknappen har fem handlinger og kan dras.</li>
+        <li>Rust høyst én gang per skjerm: telleren i Cockpit og saken som haster i Innboks. Bjelletallet er rust når noe haster, men grafitt på skjermer som allerede viser saken i rust.</li>
+        <li>Spillerspørsmål ubesvart over 24 timer haster. Ingen økonomi i Cockpit. Etterlevelse er tid mot plan, siste fire uker.</li>
+        <li>Filtrene Risiko · Følg med · Sjekk · Løst · Leads ligger under Oppfølging. «Watch» brukes ikke.</li>
+        <li>Navn tas ut før tekst sendes til AI. Manglende verdi vises som «—».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>V1:</b> om coachens assistent heter Jarvis og spillerens Caddie, er ikke avgjort. Utkastet bruker Jarvis i AgencyOS.</li>
+        <li><b>Inntektsanslag</b> på forslag til ny gruppeøkt er merket «Eksempel». Hvor tallet hentes fra, er ikke bestemt.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-01 Cockpit ================= -->
+<template id="cockpit">
+<div class="app" data-fane="cockpit">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Mandag 5. oktober · uke 41</div><h1 class="tittel">God morgen, Anders</h1></div>
+    </div>
+    <div class="teller-rad">
+      <button type="button" class="teller signal" data-gaa="haster"><span class="e">Meldinger venter</span><b class="t">4</b><span class="s">1 har ventet over 24 t</span></button>
+      <button type="button" class="teller" data-gaa="oppfolging"><span class="e">Følger ikke planen</span><b class="t" data-ant-folger>3</b><span class="s">under 70 % to uker</span></button>
+      <button type="button" class="teller"><span class="e">Turneringer</span><b class="t">2</b><span class="s">denne uka</span></button>
+      <button type="button" class="teller" data-gaa="innboks"><span class="e">Forslag venter</span><b class="t">3</b><span class="s">til godkjenning</span></button>
+    </div>
+    <div class="cockpit-grid">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>I dag</h2><span class="kilde">6 økter · 05–22</span></div>
+          <div class="dag" data-dag></div>
+          <div class="lg-rad"><span class="lg"><i class="a-fys"></i>FYS</span><span class="lg"><i class="a-tek"></i>TEK</span><span class="lg"><i class="a-slag"></i>SLAG</span><span class="lg"><i class="a-spill"></i>SPILL</span><span class="lg"><i class="a-turn"></i>TURN</span></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Venter på svar</h2><a class="lenke" href="#" data-gaa="innboks">Hele innboksen</a></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="svar-rad"><span class="avatar liten">IL</span><span><b>Ida Lie</b><span class="sitat">«Skal jeg trene putting eller nærspill i morgen når det regner?»</span></span><span style="display:grid;gap:4px;justify-items:end"><time>26 t</time></span></div>
+            <div class="svar-rad"><span class="avatar liten">ØR</span><span><b>Øyvind Rohjan</b><span class="sitat">Video: driver fra i går, 14 sek</span><div class="kort-svar"><input id="ks-oyvind" aria-label="Kort svar til Øyvind" placeholder="Kort svar"><button type="button" class="knapp sek" data-kort-svar>Send</button></div></span><time>17 t</time></div>
+            <div class="svar-rad"><span class="avatar liten">JB</span><span><b>Jonas Berg</b><span class="sitat">«Kan FYS flyttes fra fredag til torsdag?»</span></span><time>9 t</time></div>
+            <div class="svar-rad"><span class="avatar liten wang">W</span><span><b>WANG Toppidrett</b><span class="sitat">Kari: «Range 2 er booket av VG1 torsdag.»</span></span><time>12 t</time></div>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Følger ikke planen</h2><span class="kilde">Siste to uker</span></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px" data-folger></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Oppgaver</h2><span class="kilde">Fra Notion · Tasks</span></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <label class="oppgave"><input type="checkbox"><span><b>Send sportsplan v2.1 til GFGK-styret</b><span class="kilde frist forfalt">Forfalt fredag 2. okt · GFGK</span></span></label>
+            <label class="oppgave"><input type="checkbox"><span><b>Agenda til sportssjefsmøtet onsdag</b><span class="kilde">Frist i dag · WANG Toppidrett</span></span></label>
+            <label class="oppgave"><input type="checkbox"><span><b>Bestill rangeballer til vintersesongen</b><span class="kilde">Frist i dag · AK Golf Academy</span></span></label>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Turneringer denne uka</h2></div>
+          <div class="turn-kort"><img src="bilder/turn-tee.jpg" alt=""><div><b>Srixon Tour finale</b><span>Lørdag og søndag · om 5 dager</span><span>Øyvind Rohjan, Selma Ruud</span></div></div>
+          <div class="turn-kort"><img src="bilder/turn-tee.jpg" alt=""><div><b>Regionstour 4</b><span>Søndag · om 6 dager</span><span>Filip Aas</span></div></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Stallen</h2><span class="kilde">Denne uka</span></div>
+          <div class="nokkel"><div><b>14</b><span>aktive spillere</span></div><div><b>61</b><span>økter lagt inn</span></div><div><b data-snitt-etl>82 %</b><span>snitt etterlevelse</span></div></div>
+          <p class="kildetekst">Etterlevelse: gjennomført tid mot planlagt, uke 37–40. To spillere uten forfalte økter er ikke med.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-04 Innboks ================= -->
+<template id="innboks">
+<div class="app" data-fane="innboks">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Innboks · haster først</div><h1 class="tittel">Innboks</h1></div>
+    </div>
+    <div class="innboks-grid">
+      <div class="saker">
+        <div class="hoved"><strong data-venter>9</strong><span class="forklar">saker venter på deg</span></div>
+        <div class="chips" data-filter role="group" aria-label="Vis">
+          <button type="button" aria-pressed="true" data-f="alle">Alle <b>9</b></button>
+          <button type="button" aria-pressed="false" data-f="spiller">Spillere <b>3</b></button>
+          <button type="button" aria-pressed="false" data-f="epost">E-post <b>1</b></button>
+          <button type="button" aria-pressed="false" data-f="godkjenn">Godkjenn <b>3</b></button>
+          <button type="button" aria-pressed="false" data-gaa="oppfolging">Oppfølging <b>5</b></button>
+          <button type="button" aria-pressed="false" data-f="varsel">Varsler <b>2</b></button>
+        </div>
+
+        <article class="sak haster" data-type="spiller">
+          <div class="sak-topp"><span class="avatar liten">IL</span><span><b>Ida Lie spør om morgendagens økt</b><span class="fra">Spiller · GFGK Junior Utvikling</span></span><span class="haster-pille">Haster · 26 t</span></div>
+          <p class="sitat">«Skal jeg trene putting eller nærspill i morgen når det regner?»</p>
+          <div class="knapper"><button type="button" class="knapp pri" data-gaa="haster">Svar</button></div>
+        </article>
+
+        <article class="sak" data-type="epost">
+          <div class="sak-topp"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>Vintertrening for en 13-åring?</b><span class="fra">E-post til post@akgolf.no · forelder</span></span><time>07:12</time></div>
+          <div class="utkast"><span class="hode"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Utkast fra Jarvis</span><p>Hei, og takk for at du tar kontakt. Vi har vintergruppe for juniorer i simulator hver tirsdag …</p></div>
+          <div class="knapper"><button type="button" class="knapp pri" data-gaa="sak">Åpne og send</button><button type="button" class="knapp sek" data-forkast>Forkast</button></div>
+        </article>
+
+        <article class="sak" data-type="godkjenn">
+          <div class="sak-topp"><span class="avatar liten">SM</span><span><b>Lettere uke for Sander Moe</b><span class="fra">Forslag fra motoren · Workbench</span></span><time>06:00</time></div>
+          <p class="sitat">Gjennomført tid er over 130 % av planen to uker på rad (134 % og 138 %). Forslag: uke 42 ned fra 12 t til 9 t, FYS og SLAG kortes ned.</p>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godkjenn>Godkjenn</button><button type="button" class="knapp sek" data-avvis>Avvis</button></div>
+        </article>
+
+        <article class="sak" data-type="godkjenn">
+          <div class="sak-topp"><span class="avatar liten">SM</span><span><b>Sammendrag fra live-økta fredag</b><span class="fra">Opptak · utkast til deg</span></span><time>fre 18:40</time></div>
+          <p class="sitat">P7.0: ballstarten rettere etter drill med stang. Hjemmelekse: 3 × 20 slag med lav hastighet før neste time.</p>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godkjenn>Godkjenn og send til Sander</button><button type="button" class="knapp sek">Rediger</button></div>
+        </article>
+
+        <article class="sak" data-type="godkjenn">
+          <div class="sak-topp"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span><b>Ny gruppeøkt: nærspill tirsdag 18:00</b><span class="fra">Forslag til gruppeøkt</span></span><time>i går</time></div>
+          <p class="sitat">6 spillere har ønsket mer nærspill og har tirsdag kveld ledig. Anslag 4 800 kr i måneden <span class="estimat">Eksempel</span></p>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godkjenn>Opprett gruppeøkt</button><button type="button" class="knapp sek" data-avvis>Ikke nå</button></div>
+        </article>
+
+        <article class="sak" data-type="spiller">
+          <div class="sak-topp"><span class="avatar liten">JB</span><span><b>Jonas Berg vil flytte FYS</b><span class="fra">Ønske om planendring</span></span><time>i går 23:10</time></div>
+          <div class="okt-endring">
+            <div class="okt mini fys gml"><div class="okt-tekst"><span class="okt-tid">Fre 15:00</span><span class="navn">Styrke 60 min</span></div></div>
+            <svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <div class="okt mini fys"><div class="okt-tekst"><span class="okt-tid">Tor 15:00</span><span class="navn">Styrke 60 min</span></div></div>
+          </div>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godkjenn>Flytt økta</button><button type="button" class="knapp sek">Svar</button></div>
+        </article>
+
+        <article class="sak" data-type="spiller">
+          <div class="sak-topp"><span class="avatar liten">ØR</span><span><b>Video fra Øyvind</b><span class="fra">Driver fra simulatoren, 14 sek</span></span><time>i går 15:40</time></div>
+          <div class="knapper"><button type="button" class="knapp pri">Se og svar</button></div>
+        </article>
+
+        <article class="sak" data-type="varsel">
+          <div class="sak-topp"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span><span><b>Øyvind flyttet en økt du la inn</b><span class="fra">Nærspill torsdag 15:30 til onsdag 15:30</span></span><time>i går</time></div>
+          <div class="knapper"><button type="button" class="knapp sek" data-ferdig>Ferdig</button></div>
+        </article>
+        <article class="sak" data-type="varsel">
+          <div class="sak-topp"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V3l12 4-12 4"/></svg></span><span><b>Selma er påmeldt Srixon Tour finale</b><span class="fra">Fra turneringsdataene · påmeldinger bekreftes ikke her</span></span><time>lør</time></div>
+          <div class="knapper"><button type="button" class="knapp sek" data-ferdig>Ferdig</button></div>
+        </article>
+        <p class="kildetekst" data-tom-filter hidden>Ingen saker her.</p>
+      </div>
+      <aside>
+        <div class="kort dempet">
+          <b class="undertittel">Kontoer</b>
+          <p class="forklar">post@akgolf.no og akgolfgroup@gmail.com hentes hit. Jarvis lager utkast. Ingenting sendes før du trykker Send.</p>
+        </div>
+        <a class="lenke" href="#">Snakk med Jarvis</a>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-04 Sak med utkast ================= -->
+<template id="sak">
+<div class="app" data-fane="innboks" data-tilbake="Innboks" data-tilbake-gaa="innboks">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">E-post · post@akgolf.no · i dag 07:12</div><h1 class="tittel">Vintertrening for en 13-åring?</h1></div>
+    </div>
+    <div class="kort">
+      <div class="sak-topp"><span class="avatar lys">F</span><span><b>Forelder</b><span class="fra">Ikke kunde ennå · lead</span></span><span class="status-merke lead">Lead</span></div>
+      <p class="forklar">«Hei! Datteren min er 13 og har spilt to sesonger i GFGK. Har dere noe for henne i vinter, og hva koster det? Hun er mest interessert i å bli bedre på korte slag.»</p>
+    </div>
+    <div class="utkast" data-utkast>
+      <span class="hode"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Utkast fra Jarvis · ikke sendt</span>
+      <textarea id="utkast-tekst" aria-label="Utkast" readonly>Hei, og takk for at du tar kontakt.
+
+Vi har vintergruppe for juniorer i simulator hver tirsdag kl. 17:00, med vekt på nærspill og putting. Prisen står på akgolf.no/booking.
+
+Vil du at hun skal prøve en gang først, kan hun booke en time direkte der.
+
+Vennlig hilsen
+Anders Kristiansen, AK Golf Academy</textarea>
+      <p class="kildetekst">Jarvis brukte tjenestelista og timeplanen for vintergruppa. Prisen er ikke skrevet inn, fordi den hentes fra tjenestelista.</p>
+    </div>
+    <div class="knapper" data-handlinger><button type="button" class="knapp pri" data-send>Send</button><button type="button" class="knapp sek" data-rediger>Rediger</button><button type="button" class="knapp sek" data-forkast>Forkast</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-04-HASTER Svar uten utkast ================= -->
+<template id="haster">
+<div class="app" data-fane="innboks" data-tilbake="Innboks" data-tilbake-gaa="innboks">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Spiller · GFGK Junior Utvikling</div><h1 class="tittel">Ida Lie</h1></div><span class="haster-pille">Haster · ubesvart 26 t</span></div>
+    </div>
+    <div class="kort">
+      <p class="forklar" style="font-size:16px">«Skal jeg trene putting eller nærspill i morgen når det regner?»</p>
+      <p class="kildetekst">Søndag 4. oktober kl. 06:14 · fra PlayerHQ</p>
+    </div>
+    <div class="kort dempet">
+      <b class="undertittel">Morgendagens plan for Ida</b>
+      <div class="okt mini slag"><img src="bilder/slag-putting.jpg" alt=""><div class="okt-tekst"><span class="okt-tid" style="font-size:22px">16:00</span><span class="navn">Nærspill og putting, 60 min</span><span class="okt-info"><span>Chippinggreen · ute</span></span></div></div>
+      <p class="kildetekst">Etterlevelse 54 % siste fire uker. 49 % forrige uke.</p>
+    </div>
+    <div class="felt"><label for="svar-felt">Ditt svar</label><textarea id="svar-felt" rows="5" placeholder="Skriv til Ida"></textarea></div>
+    <div class="knapper"><button type="button" class="knapp pri" data-send-svar>Send</button><button type="button" class="knapp sek" data-lag-utkast>Lag utkast</button></div>
+    <p class="kildetekst">«Lag utkast» lar Jarvis skrive et forslag ut fra planen. Navnet tas ut før teksten sendes til AI. Du sender selv.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-04 Oppfølging ================= -->
+<template id="oppfolging">
+<div class="app" data-fane="innboks">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Innboks · oppfølging</div><h1 class="tittel">Oppfølging</h1></div>
+    </div>
+    <div class="chips" role="group" aria-label="Vis">
+      <button type="button" aria-pressed="false" data-gaa="innboks">Alle</button>
+      <button type="button" aria-pressed="true">Oppfølging <b>5</b></button>
+    </div>
+    <div class="under-filter" data-under role="group" aria-label="Oppfølging">
+      <button type="button" aria-pressed="true" data-u="alle">Alle <b>6</b></button>
+      <button type="button" aria-pressed="false" data-u="risiko">Risiko <b>1</b></button>
+      <button type="button" aria-pressed="false" data-u="folg">Følg med <b>2</b></button>
+      <button type="button" aria-pressed="false" data-u="sjekk">Sjekk <b>1</b></button>
+      <button type="button" aria-pressed="false" data-u="lost">Løst <b>1</b></button>
+      <button type="button" aria-pressed="false" data-u="lead">Leads <b>1</b></button>
+    </div>
+    <div class="saker" data-folg-liste>
+      <div class="folg-rad" data-u="risiko"><span class="avatar liten">IL</span><span><b>Ida Lie</b><span class="kilde">58 % og 49 % de to siste ukene · spørsmål ubesvart · plan slutter om 12 dager</span></span><span class="status-merke risiko">Risiko</span></div>
+      <div class="folg-rad" data-u="folg"><span class="avatar liten">MS</span><span><b>Mia Strand</b><span class="kilde">64 % og 59 % · ingen økt siden torsdag</span></span><span class="status-merke folg">Følg med</span></div>
+      <div class="folg-rad" data-u="folg"><span class="avatar liten">FA</span><span><b>Filip Aas</b><span class="kilde">68 % og 65 % · turnering søndag</span></span><span class="status-merke folg">Følg med</span></div>
+      <div class="folg-rad" data-u="sjekk"><span class="avatar liten">KN</span><span><b>Kasper Nilsen</b><span class="kilde">Skade registrert 23. sep · ingen økter siden</span></span><span class="status-merke sjekk">Sjekk</span></div>
+      <div class="folg-rad" data-u="lost"><span class="avatar liten">TL</span><span><b>Thea Lund</b><span class="kilde">Løst av deg 30. sep · tilbake på 91 %</span></span><span class="status-merke lost">Løst</span></div>
+      <div class="folg-rad" data-u="lead"><span class="avatar lys liten">PH</span><span><b>Ny flexkunde</b><span class="kilde">Booket Flex 50 min torsdag · ingen konto ennå · takk-utkast lages etter timen</span></span><span class="status-merke lead">Lead</span></div>
+    </div>
+    <div class="kort dempet">
+      <b class="undertittel">Slik settes statusen</b>
+      <p class="forklar">Du setter Risiko, Følg med, Sjekk og Løst med ett trykk i saken. Løst settes aldri av seg selv når spilleren følger planen igjen.</p>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var D = window.AKDemo, A = window.AKAgency;
+  function min(k) { var p = k.split(':'); return +p[0] * 60 + +p[1]; }
+
+  function cockpit(app) {
+    var dag = app.querySelector('[data-dag]'), tid = parseFloat(getComputedStyle(dag).getPropertyValue('--time')) || 38;
+    var timer = ''; for (var h = 5; h < 22; h++) timer += '<span>' + (h < 10 ? '0' : '') + h + '</span>';
+    dag.innerHTML = '<div class="timer">' + timer + '</div><div class="bane" style="height:' + (17 * tid) + 'px"></div>';
+    var bane = dag.querySelector('.bane');
+    D.idagKalender.forEach(function (o) {
+      var top = (min(o.fra) - 300) / 60 * tid, h = (min(o.til) - min(o.fra)) / 60 * tid;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'blokk-okt ' + o.a;
+      b.style.top = (top + 2) + 'px'; b.style.height = (h - 4) + 'px';
+      b.innerHTML = '<b>' + o.hvem + '</b><span class="t">' + o.fra + '–' + o.til + '</span><span class="i">' + o.tittel + ' · ' + o.sted + (o.plasser ? ' · ' + o.plasser : '') + '</span>' + (o.pagaar ? '<span class="live"><i></i>Åpne live</span>' : '');
+      if (o.pagaar) { b.style.gridTemplateColumns = 'minmax(0,1fr) auto'; }
+      bane.appendChild(b);
+    });
+    var na = document.createElement('div'); na.className = 'na-linje'; na.style.top = ((min(D.kl) - 300) / 60 * tid) + 'px'; bane.appendChild(na);
+
+    var folger = D.stall.filter(function (s) { return s.to[0] !== null && s.to[0] < 70 && s.to[1] < 70; }).sort(function (a, b) { return a.etl - b.etl; });
+    app.querySelector('[data-folger]').innerHTML = folger.map(function (s) {
+      return '<a class="etl-rad" href="#"><span class="avatar liten">' + s.i + '</span><span><b>' + s.navn + '</b><span class="kilde">Kategori ' + s.kat + ' · ' + s.gruppe + '</span><span class="etl-uker"><span>Uke 39 · ' + s.to[0] + ' %</span><span>Uke 40 · ' + s.to[1] + ' %</span></span></span><span class="etl-prosent">' + s.etl + ' %</span></a>';
+    }).join('');
+    var m = D.stall.filter(function (s) { return s.etl !== null; });
+    app.querySelector('[data-snitt-etl]').textContent = Math.round(m.reduce(function (x, s) { return x + s.etl; }, 0) / m.length) + ' %';
+    app.querySelectorAll('.oppgave input').forEach(function (c) { c.addEventListener('change', function () { c.closest('.oppgave').classList.toggle('gjort', c.checked); if (c.checked) A.toast(app, 'Krysset av i Notion.', function () { c.checked = false; c.closest('.oppgave').classList.remove('gjort'); }); }); });
+    app.querySelector('[data-kort-svar]').addEventListener('click', function () { var f = app.querySelector('#ks-oyvind'); if (!f.value.trim()) { f.focus(); return; } A.toast(app, 'Sendt til Øyvind.'); f.value = ''; });
+  }
+
+  function innboks(app) {
+    var venter = app.querySelector('[data-venter]');
+    function ned() { venter.textContent = Math.max(0, +venter.textContent - 1); }
+    app.querySelector('[data-filter]').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-f]'); if (!b) return;
+      app.querySelectorAll('[data-filter] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      var n = 0; app.querySelectorAll('.sak').forEach(function (s) { var v = b.dataset.f === 'alle' || s.dataset.type === b.dataset.f; s.hidden = !v; if (v) n++; });
+      app.querySelector('[data-tom-filter]').hidden = n > 0;
+    });
+    app.querySelectorAll('[data-svar]').forEach(function (s) {
+      s.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b || !(b.hasAttribute('data-godkjenn') || b.hasAttribute('data-avvis'))) return;
+        var sak = s.closest('.sak'), ok = b.hasAttribute('data-godkjenn');
+        s.innerHTML = '<span class="pille ' + (ok ? 'ok' : 'noy') + '"><i></i>' + (ok ? 'Godkjent' : 'Avvist') + '</span>';
+        ned(); A.toast(app, ok ? 'Godkjent. Spilleren får beskjed.' : 'Avvist.', function () { A.gaa('innboks'); });
+        setTimeout(function () { sak.style.opacity = '.5'; }, 400);
+      });
+    });
+    app.querySelectorAll('[data-ferdig], [data-forkast]').forEach(function (b) { b.addEventListener('click', function () { var s = b.closest('.sak'); s.hidden = true; ned(); A.toast(app, b.hasAttribute('data-forkast') ? 'Utkastet er forkastet.' : 'Tatt ut av innboksen.', function () { s.hidden = false; venter.textContent = +venter.textContent + 1; }); }); });
+  }
+
+  function sak(app) {
+    var t = app.querySelector('#utkast-tekst');
+    app.querySelector('[data-rediger]').addEventListener('click', function () { t.readOnly = false; t.focus(); });
+    app.querySelector('[data-send]').addEventListener('click', function () {
+      app.querySelector('[data-utkast] .hode').lastChild.textContent = 'Sendt fra post@akgolf.no i dag 08:22';
+      t.readOnly = true; app.querySelector('[data-handlinger]').innerHTML = '<span class="pille ok"><i></i>Sendt</span><button type="button" class="knapp sek" data-gaa="innboks">Til innboksen</button>';
+      A.toast(app, 'Sendt.');
+    });
+    app.querySelector('[data-forkast]').addEventListener('click', function () { A.toast(app, 'Utkastet er forkastet. E-posten ligger fortsatt i innboksen.'); });
+  }
+
+  function haster(app) {
+    var f = app.querySelector('#svar-felt');
+    app.querySelector('[data-lag-utkast]').addEventListener('click', function () {
+      f.value = 'Hei! Ta nærspill og putting under tak i morgen: simulatoren er ledig 16:00–17:00. Samme øvelser som i planen, bare inne. Si fra hvis det ikke passer.';
+      A.toast(app, 'Jarvis har laget et utkast. Les det før du sender.');
+    });
+    app.querySelector('[data-send-svar]').addEventListener('click', function () { if (!f.value.trim()) { f.focus(); return; } A.toast(app, 'Sendt til Ida.'); f.value = ''; });
+  }
+
+  function oppfolging(app) {
+    app.querySelector('[data-under]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      app.querySelectorAll('[data-under] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      app.querySelectorAll('[data-folg-liste] .folg-rad').forEach(function (r) { r.hidden = !(b.dataset.u === 'alle' || r.dataset.u === b.dataset.u); });
+    });
+  }
+
+  A.start({
+    start: 'cockpit',
+    skjermer: {
+      cockpit: { etter: cockpit, tom: { tittel: 'Ingenting i dag', tekst: 'Ingen økter, meldinger eller oppgaver i dag. Legg inn spillere i Stallen for å komme i gang.', knapp: 'Til Stallen' }, laster: 'Henter dagen …', feil: 'Cockpit kunne ikke hentes' },
+      innboks: { etter: innboks, tom: { tittel: 'Alt er håndtert.', tekst: 'Nye meldinger, e-post, forslag og varsler kommer hit.', knapp: null }, laster: 'Henter innboksen …', feil: 'Innboksen kunne ikke hentes' },
+      sak: { etter: sak, tom: null },
+      haster: { etter: haster, tom: null },
+      oppfolging: { etter: oppfolging, tom: { tittel: 'Ingen å følge opp', tekst: 'Spillere som faller under 70 % to uker på rad, kommer hit. Du setter statusen selv.', knapp: null }, laster: 'Henter oppfølgingen …', feil: 'Oppfølgingen kunne ikke hentes' }
+    }
+  });
+})();
+</script>

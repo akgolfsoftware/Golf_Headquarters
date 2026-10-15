@@ -1,0 +1,469 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Kalender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 3: AG-05 Kalender og AG-06 Booking ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.kal-topp{display:flex;flex-wrap:wrap;gap:var(--r2);align-items:center;justify-content:space-between}
+.kal-nav{display:flex;align-items:center;gap:4px}
+.kal-nav button{width:40px;height:40px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900)}
+.kal-nav b{font:600 16px/1.2 var(--sans);padding:0 8px}
+.synk{display:inline-flex;align-items:center;gap:6px;font:500 13px/1.3 var(--sans);color:var(--green-700)}
+.synk .ikon{width:16px;height:16px}
+
+/* Dag: kolonne per coach */
+.dagvis{display:grid;grid-template-columns:40px repeat(var(--kol),minmax(0,1fr));border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white);--time:40px}
+.dagvis .hd{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 8px;border-bottom:1px solid var(--sand-300);border-left:1px solid var(--sand-300);background:var(--sand-100);font:600 13.5px/1.2 var(--sans)}
+.dagvis .hd.tom{border-left:0}
+.dagvis .timer{display:grid;grid-auto-rows:var(--time);background:var(--sand-100)}
+.dagvis .timer span{font:500 11px/1 var(--mono);color:var(--graphite-600);padding:4px 0 0 4px;border-top:1px solid var(--sand-300)}
+.dagvis .kol{position:relative;border-left:1px solid var(--sand-300);background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--time) - 1px),var(--sand-150) calc(var(--time) - 1px),var(--sand-150) var(--time))}
+.k-okt{position:absolute;left:3px;right:3px;display:grid;align-content:start;gap:1px;padding:4px 7px;border-radius:7px;color:#fff;overflow:hidden;text-align:left;border:0;font:inherit;cursor:pointer}
+.k-okt.fys{background:var(--fys-ink)} .k-okt.tek{background:var(--tek-ink)} .k-okt.slag{background:var(--slag)} .k-okt.spill{background:var(--spill-ink)} .k-okt.turn{background:var(--turn)}
+.k-okt b{font:600 12.5px/1.2 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-okt span{font:500 11.5px/1.25 var(--sans);opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-okt.privat{background:var(--sand-150);color:var(--graphite-600);border:1px solid var(--sand-300);cursor:default}
+.k-okt.forslag{background:transparent;color:var(--graphite-800);border:2px dashed var(--graphite-500)}
+.k-okt.valgt{outline:3px solid var(--graphite-900);outline-offset:1px}
+.k-na{position:absolute;left:0;right:0;border-top:2px solid var(--graphite-900);z-index:3}
+.forslag-knapp{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);flex-wrap:wrap;padding:12px 14px;border:2px dashed var(--graphite-500);border-radius:12px}
+.forslag-knapp b{font:600 15px/1.3 var(--sans)}
+
+/* Uke */
+.ukevis{display:grid;gap:var(--r2)}
+.ukedag{display:grid;align-content:start;gap:6px;padding:10px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.ukedag.idag{border:2px solid var(--graphite-900)}
+.ukedag h3{margin:0;display:flex;justify-content:space-between;font:600 14px/1.2 var(--sans)}
+.ukedag h3 span{font:500 12.5px/1.2 var(--mono);color:var(--graphite-600)}
+.u-okt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 8px;padding:6px 8px;border-radius:7px;color:#fff;font-size:12.5px;line-height:1.3}
+.u-okt.fys{background:var(--fys-ink)} .u-okt.tek{background:var(--tek-ink)} .u-okt.slag{background:var(--slag)} .u-okt.spill{background:var(--spill-ink)} .u-okt.turn{background:var(--turn)}
+.u-okt b{font:600 12.5px/1.3 var(--mono)}
+.u-okt span{overflow-wrap:anywhere}
+.samling{display:grid;gap:2px;padding:10px 12px;border-radius:10px;border:2px solid var(--turn);background:#fbecec;color:var(--graphite-900)}
+.samling b{font:600 14.5px/1.3 var(--sans)}
+
+/* Måned */
+.mnd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.mnd .ukedn{font:600 11.5px/1 var(--sans);color:var(--graphite-600);text-align:center;padding:4px 0}
+.mnd .d{display:grid;align-content:start;gap:4px;min-height:64px;padding:5px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white)}
+.mnd .d.ut{opacity:.4}
+.mnd .d.idag{border:2px solid var(--graphite-900)}
+.mnd .d b{font:600 12.5px/1 var(--mono)}
+.mnd .prikker{display:flex;flex-wrap:wrap;gap:2px}
+.mnd .prikker i{width:8px;height:8px;border-radius:2px}
+.mnd .ant{font:500 11px/1 var(--sans);color:var(--graphite-600)}
+
+/* År */
+.arvis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.ar-mnd{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.ar-mnd b{font:600 14px/1.2 var(--sans)}
+.ar-mnd .stablet{display:flex;height:12px;border-radius:4px;overflow:hidden;background:var(--sand-150)}
+.ar-mnd .stablet i{display:block;height:100%}
+.ar-mnd span{font:500 12.5px/1.3 var(--mono);color:var(--graphite-600)}
+.ar-mnd.naa{border:2px solid var(--graphite-900)}
+
+/* Booking */
+.bk-rad{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:64px;padding:10px 0;border-bottom:1px solid var(--sand-300);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;font:inherit;color:inherit;text-align:left;width:100%}
+.bk-rad .d{display:grid;justify-items:center;gap:2px;border-radius:10px;background:var(--sand-100);padding:8px 0}
+.bk-rad .d b{font:600 18px/1 var(--mono)}
+.bk-rad .d span{font:500 11.5px/1 var(--sans);color:var(--graphite-600)}
+.bk-rad b.n{display:block;font:600 15px/1.3 var(--sans)}
+.steg-liste{display:flex;flex-wrap:wrap;gap:6px}
+.steg-liste span{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:var(--sand-150);font:600 13px/1 var(--sans);color:var(--graphite-600)}
+.steg-liste span.aktiv{background:var(--graphite-900);color:var(--white)}
+.steg-liste span.ferdig{background:var(--green-50);color:var(--green-700)}
+.valgliste{display:grid;gap:var(--r2)}
+.valgliste button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:60px;padding:10px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.valgliste button b{display:block;font:600 15px/1.3 var(--sans)}
+.valgliste button .pris{font:600 14px/1.2 var(--mono);white-space:nowrap}
+.valgliste button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.tider{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tider button{min-height:48px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 15px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+.tider button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.oppsummering{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600}
+.booking-helt{display:grid;border-radius:12px;overflow:hidden;background:var(--graphite-900);color:#fff}
+.booking-helt img{display:block;width:100%;height:130px;object-fit:cover}
+.booking-helt .bt{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.booking-helt .bt-tid{font:600 36px/1 var(--mono);letter-spacing:-.03em}
+.booking-helt .pille.ok{background:#e3f1e3;justify-self:start}
+
+@container (min-width:900px){
+  .dagvis{--time:46px}
+  .ukevis{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .arvis{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mnd .d{min-height:96px}
+  .booking-helt{grid-template-columns:minmax(0,.9fr) minmax(0,1fr)}
+  .booking-helt img{height:100%;min-height:200px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 3 · AG-05 og AG-06 · utkast 1 · 15.10.2026</span>
+    <h1>Kalender og Booking</h1>
+    <p>Åtte skjermer i én fil: kalenderen som dag med kolonne per coach, uke, måned og år, visningen for assistant coach, bookingene, ny booking i fire steg og én booking med avlysning. Coach Anders Kristiansen (head coach) og Markus (Assist Coach). Mandag 5. oktober kl. 08:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="dag">AG-05 Dag</button>
+      <button type="button" aria-pressed="false" data-skjerm="uke">AG-05-UKE</button>
+      <button type="button" aria-pressed="false" data-skjerm="mnd">AG-05-MND</button>
+      <button type="button" aria-pressed="false" data-skjerm="ar">AG-05-AR</button>
+      <button type="button" aria-pressed="false" data-skjerm="ass">AG-05-ASS</button>
+      <button type="button" aria-pressed="false" data-skjerm="bookinger">AG-06 Booking</button>
+      <button type="button" aria-pressed="false" data-skjerm="ny">AG-06-NY</button>
+      <button type="button" aria-pressed="false" data-skjerm="detalj">Bookingen</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Alle bookinger i AK Golf</b> i én kalender: dag, uke, måned og år. Dag har en kolonne per coach, med filter på coach.</li>
+        <li><b>Farge er akse, aldri coach.</b> Økta viser spiller eller gruppe, tjeneste og påmeldte mot plasser. Spillerens private hendelser fra Google står bare som «Opptatt».</li>
+        <li><b>Flytt økt:</b> trykk økta, velg ny tid. «Varsler 11 spillere · Angre» står i 10 sekunder før varselet går.</li>
+        <li><b>Forslag til ny gruppeøkt</b> står stiplet i kalenderen, med «Se forslag». Samme forslag ligger i Innboks.</li>
+        <li><b>Treningssamling</b> er en egen blokk i uka. Året viser timer per akse per måned.</li>
+        <li><b>Ny booking:</b> spiller, tjeneste, tid, bekreft. En test-tjeneste tildeler testen automatisk. Offentlig booking er bekreftet når den er betalt. Coachen kan avlyse og angre.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Head coach ser alt. Assistant coach ser egne økter og gruppeøkter, ikke privattimene til andre coacher.</li>
+        <li>Google-kalenderen er koblet begge veier. Synk og nålinje kl. 08:20.</li>
+        <li>Priser er merket «Eksempel». I appen leses de fra tjenestelista.</li>
+        <li>Rust bare i avlys-dialogen. Ingen rust i selve kalenderen.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px: på mobil står coach-kolonnene ved siden av hverandre, og uka blir en liste.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Påmeldte mot plasser</b> vises på gruppeøkter. Om privattimer også skal vise «1 / 1», er ikke avgjort. Utkastet viser ingenting på privattimer.</li>
+        <li><b>V8:</b> knappen heter «Bekreft booking» når klipp trekkes og «Send betalingslenke» når spilleren skal betale. Ikke avgjort.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-05 Dag ================= -->
+<template id="dag">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="kal-topp"><div><div class="dato">Uke 41</div><h1 class="tittel">Kalender</h1></div><span class="synk"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Google synket 08:18</span></div>
+      <div class="kal-topp">
+        <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="true">Dag</button><button type="button" aria-pressed="false" data-gaa="uke">Uke</button><button type="button" aria-pressed="false" data-gaa="mnd">Måned</button><button type="button" aria-pressed="false" data-gaa="ar">År</button></div>
+        <div class="kal-nav"><button type="button" aria-label="Forrige dag"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><b>Mandag 5. okt</b><button type="button" aria-label="Neste dag"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
+      </div>
+      <div class="chips" data-coachfilter role="group" aria-label="Coach"><button type="button" aria-pressed="true" data-c="alle">Alle coacher</button><button type="button" aria-pressed="false" data-c="AK">Anders</button><button type="button" aria-pressed="false" data-c="MA">Markus</button></div>
+    </div>
+    <div class="dagvis" data-dagvis></div>
+    <div class="forslag-knapp"><span><b>Forslag: nærspillgruppe tirsdag 18:00</b><span class="kilde" style="display:block">6 spillere har ønsket det · stiplet i uka</span></span><button type="button" class="knapp sek" data-gaa="uke">Se forslag</button></div>
+    <p class="kildetekst">Trykk en økt for å flytte den. Spillerne får varsel i appen, ellers e-post.</p>
+    <div class="ark-lag" data-flytt-ark hidden>
+      <div class="ark" role="dialog" aria-label="Flytt økt">
+        <div class="ark-topp"><h2 data-flytt-tittel>Flytt økt</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <p class="forklar" data-flytt-hvem></p>
+        <div class="tider" data-flytt-tider><button type="button" aria-pressed="false">16:00</button><button type="button" aria-pressed="true">16:30</button><button type="button" aria-pressed="false">17:00</button></div>
+        <button type="button" class="knapp pri stor" data-flytt-ok>Flytt</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-05-UKE ================= -->
+<template id="uke">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="kal-topp"><div><div class="dato">5.–11. oktober</div><h1 class="tittel">Uke 41</h1></div><span class="synk"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Google synket 08:18</span></div>
+      <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="false" data-gaa="dag">Dag</button><button type="button" aria-pressed="true">Uke</button><button type="button" aria-pressed="false" data-gaa="mnd">Måned</button><button type="button" aria-pressed="false" data-gaa="ar">År</button></div>
+    </div>
+    <div class="hoved"><strong>31</strong><span class="forklar">økter denne uka, alle coacher</span></div>
+    <div class="samling"><b>Treningssamling WANG Toppidrett · torsdag og fredag</b><span class="kilde">Larvik GK · 11 spillere · Anders og Markus</span></div>
+    <div class="ukevis" data-ukevis></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-05-MND ================= -->
+<template id="mnd">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Alle coacher</div><h1 class="tittel">Oktober 2026</h1></div>
+      <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="false" data-gaa="dag">Dag</button><button type="button" aria-pressed="false" data-gaa="uke">Uke</button><button type="button" aria-pressed="true">Måned</button><button type="button" aria-pressed="false" data-gaa="ar">År</button></div>
+    </div>
+    <div class="hoved"><strong>128</strong><span class="forklar">økter i oktober</span></div>
+    <div class="mnd" data-mnd></div>
+    <div class="lg-rad"><span class="lg"><i class="a-fys"></i>FYS</span><span class="lg"><i class="a-tek"></i>TEK</span><span class="lg"><i class="a-slag"></i>SLAG</span><span class="lg"><i class="a-spill"></i>SPILL</span><span class="lg"><i class="a-turn"></i>TURN</span></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-05-AR ================= -->
+<template id="ar">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Alle coacher · timer per akse</div><h1 class="tittel">2026</h1></div>
+      <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="false" data-gaa="dag">Dag</button><button type="button" aria-pressed="false" data-gaa="uke">Uke</button><button type="button" aria-pressed="false" data-gaa="mnd">Måned</button><button type="button" aria-pressed="true">År</button></div>
+    </div>
+    <div class="hoved"><strong>1 284</strong><span class="forklar">coachede økter i 2026</span></div>
+    <div class="arvis" data-arvis></div>
+    <p class="kildetekst">Oktober–desember er planlagt, ikke gjennomført.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-05-ASS ================= -->
+<template id="ass">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="kal-topp"><div><div class="dato">Markus · Assist Coach</div><h1 class="tittel">Kalender</h1></div><span class="synk"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Google synket 08:18</span></div>
+      <div class="kort dempet" style="gap:6px"><b class="undertittel">Du ser dine økter og gruppeøktene</b><p class="forklar">Privattimene til andre coacher står som «Opptatt». Head coach ser hele kalenderen.</p></div>
+    </div>
+    <div class="dagvis" data-dagvis></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-06 Bookinger ================= -->
+<template id="bookinger">
+<div class="app" data-fane="mer" data-tilbake="Mer">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Mer · booking</div><h1 class="tittel">Booking</h1></div><button type="button" class="knapp pri" data-gaa="ny">Ny booking</button></div>
+    </div>
+    <div class="hoved"><strong>23</strong><span class="forklar">bookinger denne uka</span></div>
+    <div class="chips" role="group" aria-label="Vis" data-gruppe><button type="button" aria-pressed="true">Kommende</button><button type="button" aria-pressed="false">Tidligere</button><button type="button" aria-pressed="false">Avlyst</button></div>
+    <div>
+      <button type="button" class="bk-rad" data-gaa="detalj"><span class="d"><b>5</b><span>man</span></span><span><b class="n">Sander Moe · Performance Pro</b><span class="kilde">10:00–11:30 · Simulator 2 · Anders · 1 klipp</span></span><span class="pille ok"><i></i>Bekreftet</span></button>
+      <button type="button" class="bk-rad"><span class="d"><b>5</b><span>man</span></span><span><b class="n">Nora Bakke · Performance</b><span class="kilde">14:00–15:00 · Chippinggreen · Anders · 1 klipp</span></span><span class="pille ok"><i></i>Bekreftet</span></button>
+      <button type="button" class="bk-rad"><span class="d"><b>8</b><span>tor</span></span><span><b class="n">Flexkunde · Flex 50 min</b><span class="kilde">09:00–09:50 · Simulator 1 · Markus · betalt på nett</span></span><span class="pille ok"><i></i>Bekreftet</span></button>
+      <button type="button" class="bk-rad"><span class="d"><b>9</b><span>fre</span></span><span><b class="n">Øyvind Rohjan · Performance Pro</b><span class="kilde">16:00–17:30 · Simulator 2 · Anders · 1 klipp</span></span><span class="pille ok"><i></i>Bekreftet</span></button>
+      <button type="button" class="bk-rad"><span class="d"><b>9</b><span>fre</span></span><span><b class="n">Thea Lund · Testtime 8-ball</b><span class="kilde">13:00–14:00 · Range · Markus · testen er tildelt</span></span><span class="pille vent"><i></i>Venter på betaling</span></button>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Tjenester</h2><span class="kilde">Fra tjenestelista</span></div>
+      <div class="liste">
+        <div><span class="akse-prikk" style="background:var(--graphite-900)"></span><span><b>Privattime 60 min</b><span class="kilde">Anders og Markus</span></span><span class="mono">950 kr <span class="estimat">Eksempel</span></span></div>
+        <div><span class="akse-prikk" style="background:var(--graphite-900)"></span><span><b>Flex 50 min</b><span class="kilde">Offentlig booking uten konto</span></span><span class="mono">790 kr <span class="estimat">Eksempel</span></span></div>
+        <div><span class="akse-prikk" style="background:var(--graphite-900)"></span><span><b>Testtime</b><span class="kilde">Tildeler testen automatisk</span></span><span class="mono">650 kr <span class="estimat">Eksempel</span></span></div>
+      </div>
+    </section>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-06-NY ================= -->
+<template id="ny">
+<div class="app" data-fane="mer" data-tilbake="Booking" data-tilbake-gaa="bookinger">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Booking</div><h1 class="tittel">Ny booking</h1></div></div>
+    <div class="steg-liste" data-steg><span class="aktiv">Spiller</span><span>Tjeneste</span><span>Tid</span><span>Bekreft</span></div>
+    <div data-innhold style="display:grid;gap:var(--r4)"></div>
+    <div class="knapper"><button type="button" class="knapp sek" data-forrige>Tilbake</button><button type="button" class="knapp pri" data-neste>Neste</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-06 Bookingen ================= -->
+<template id="detalj">
+<div class="app" data-fane="mer" data-tilbake="Booking" data-tilbake-gaa="bookinger">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Booking</div><h1 class="tittel">Sander Moe · Performance Pro</h1></div></div>
+    <div class="booking-helt">
+      <img src="bilder/slag-simulator.jpg" alt="">
+      <div class="bt">
+        <span class="pille ok" data-status><i></i>Bekreftet</span>
+        <span style="font:600 15px/1.2 var(--sans);opacity:.9">Mandag 5. oktober</span>
+        <span class="bt-tid">10:00<small style="font:500 15px/1 var(--mono);opacity:.8;margin-left:6px">90 min</small></span>
+        <span style="font-size:14px;opacity:.92">Simulator 2, Fredrikstad · 1 klipp</span>
+      </div>
+    </div>
+    <ul class="oppsummering">
+      <li><span>Coach</span><b>Anders Kristiansen</b></li>
+      <li><span>Betaling</span><b>1 klipp, Performance Pro · 3 igjen i oktober</b></li>
+      <li><span>Tema</span><b>P7.0 og Face to Path, fra teknisk plan</b></li>
+      <li><span>Bekreftet</span><b>Automatisk 28. sep kl. 19:02</b></li>
+    </ul>
+    <div class="knapper" data-handlinger><button type="button" class="knapp pri">Start live</button><button type="button" class="knapp sek">Flytt</button><button type="button" class="knapp sek" data-avlys>Avlys</button></div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="av-tittel">
+        <h2 id="av-tittel">Avlyse timen med Sander kl. 10:00?</h2>
+        <p class="forklar">Sander får beskjed med en gang, og klippet går tilbake til klippekortet. Du kan angre i 10 sekunder.</p>
+        <div class="felt"><label for="av-grunn">Beskjed til Sander</label><textarea id="av-grunn" rows="2">Beklager, jeg må avlyse i dag. Jeg sender forslag til ny tid.</textarea></div>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-av-ok>Avlys timen</button><button type="button" class="knapp sek stor" data-av-nei>Behold timen</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var D = window.AKDemo, A = window.AKAgency;
+  function min(k) { var p = k.split(':'); return +p[0] * 60 + +p[1]; }
+  /* Markus' dag. c = coach-initialer. */
+  var MARKUS = [
+    { fra: '09:00', til: '09:50', a: 'tek', hvem: 'Flexkunde', tittel: 'Flex 50 min', sted: 'Simulator 1' },
+    { fra: '12:00', til: '13:00', a: 'slag', hvem: 'Kasper Nilsen', tittel: 'Privattime', sted: 'Range', privat: true },
+    { fra: '15:30', til: '17:00', a: 'spill', hvem: 'GFGK Junior Utvikling', tittel: 'Ni hull', sted: 'Gamle Fredrikstad GK', plasser: '8 / 10', gruppe: true },
+    { fra: '17:00', til: '18:30', a: 'slag', hvem: 'GFGK Junior Basis', tittel: 'Nærspill', sted: 'Chippinggreen', plasser: '10 / 12', gruppe: true }
+  ];
+  var ANDERS = D.idagKalender.map(function (o) { return Object.assign({ gruppe: !!o.plasser }, o); });
+
+  function dagvis(app, opt) {
+    var el = app.querySelector('[data-dagvis]'), tid = parseFloat(getComputedStyle(el).getPropertyValue('--time')) || 40, fra = 6, til = 21;
+    var kol = opt.kolonner, h = '<div class="hd tom"></div>';
+    kol.forEach(function (k) { h += '<div class="hd"><span class="avatar liten">' + k.i + '</span>' + k.navn + '</div>'; });
+    var t = ''; for (var x = fra; x < til; x++) t += '<span>' + (x < 10 ? '0' : '') + x + '</span>';
+    h += '<div class="timer">' + t + '</div>';
+    kol.forEach(function (k, ki) { h += '<div class="kol" data-k="' + ki + '" style="height:' + ((til - fra) * tid) + 'px"></div>'; });
+    el.style.setProperty('--kol', kol.length); el.innerHTML = h;
+    kol.forEach(function (k, ki) {
+      var c = el.querySelector('[data-k="' + ki + '"]');
+      k.okter.forEach(function (o, oi) {
+        var b = document.createElement('button'); b.type = 'button';
+        var skjul = opt.skjulPrivat && o.privat;
+        b.className = 'k-okt ' + (skjul ? 'privat' : o.forslag ? 'forslag' : o.a);
+        b.style.top = ((min(o.fra) - fra * 60) / 60 * tid + 2) + 'px'; b.style.height = ((min(o.til) - min(o.fra)) / 60 * tid - 4) + 'px';
+        b.innerHTML = skjul ? '<b>Opptatt</b>' : '<b>' + o.hvem + '</b><span>' + o.fra + ' · ' + o.tittel + (o.plasser ? ' · ' + o.plasser : '') + '</span>';
+        b.dataset.okt = ki + ':' + oi; c.appendChild(b);
+      });
+      var na = document.createElement('div'); na.className = 'k-na'; na.style.top = ((min(D.kl) - fra * 60) / 60 * tid) + 'px'; c.appendChild(na);
+    });
+    return kol;
+  }
+
+  function dag(app) {
+    var kol = [{ i: 'AK', navn: 'Anders', okter: ANDERS }, { i: 'MA', navn: 'Markus', okter: MARKUS }], valgt = null;
+    function tegn(f) { dagvis(app, { kolonner: f === 'alle' ? kol : kol.filter(function (k) { return k.i === f; }) }); }
+    tegn('alle');
+    app.querySelector('[data-coachfilter]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; app.querySelectorAll('[data-coachfilter] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); tegn(b.dataset.c); });
+    app.querySelector('[data-dagvis]').addEventListener('click', function (e) {
+      var b = e.target.closest('.k-okt'); if (!b || b.classList.contains('privat')) return;
+      app.querySelectorAll('.k-okt.valgt').forEach(function (x) { x.classList.remove('valgt'); }); b.classList.add('valgt');
+      var p = b.dataset.okt.split(':'), o = kol[+p[0]].okter[+p[1]]; valgt = o;
+      app.querySelector('[data-flytt-tittel]').textContent = 'Flytt ' + o.hvem + ' ' + o.fra;
+      var n = o.plasser ? parseInt(o.plasser, 10) : 1;
+      app.querySelector('[data-flytt-hvem]').textContent = o.tittel + ' · ' + o.sted + '. ' + (n > 1 ? n + ' spillere får varsel.' : 'Spilleren får varsel.') + ' Ledige tider samme dag:';
+      A.vis(app, '[data-flytt-ark]', true);
+    });
+    app.querySelector('[data-flytt-tider]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; app.querySelectorAll('[data-flytt-tider] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); });
+    app.querySelector('[data-flytt-ark] [data-lukk]').addEventListener('click', function () { A.vis(app, '[data-flytt-ark]', false); });
+    app.querySelector('[data-flytt-ok]').addEventListener('click', function () {
+      A.vis(app, '[data-flytt-ark]', false);
+      var n = valgt && valgt.plasser ? parseInt(valgt.plasser, 10) : 1, ny = app.querySelector('[data-flytt-tider] [aria-pressed="true"]').textContent;
+      A.toast(app, 'Flyttet til ' + ny + '. Varsler ' + n + (n > 1 ? ' spillere' : ' spiller') + ' om 10 sek.', function () { A.toast(app, 'Angret. Ingen varsel sendt.'); });
+    });
+  }
+
+  /* Uke 41: økter per dag (fra, akse, tekst). */
+  var UKE = [
+    ['Man 5', true, [['07:00', 'slag', 'WANG morgenøkt · 11/12'], ['10:00', 'tek', 'Sander · Performance Pro'], ['14:00', 'slag', 'Nora · Performance'], ['15:30', 'spill', 'GFGK Junior Utvikling · 8/10'], ['17:30', 'tek', 'Mia · Performance'], ['19:00', 'fys', 'WANG Ung · fysisk test']]],
+    ['Tir 6', false, [['07:00', 'fys', 'WANG styrke · 12/12'], ['15:00', 'slag', 'Thea · Performance'], ['17:00', 'tek', 'Vilde · Performance'], ['18:00', 'forslag', 'Forslag: nærspillgruppe']]],
+    ['Ons 7', false, [['07:00', 'slag', 'WANG morgenøkt · 12/12'], ['11:00', 'tek', 'Sportssjefsmøte'], ['16:00', 'spill', 'GFGK Junior Basis · 10/12']]],
+    ['Tor 8', false, [['09:00', 'tek', 'Flexkunde · Markus'], ['10:00', 'turn', 'Samling Larvik, dag 1']]],
+    ['Fre 9', false, [['10:00', 'turn', 'Samling Larvik, dag 2'], ['13:00', 'slag', 'Thea · testtime 8-ball'], ['16:00', 'tek', 'Øyvind · Performance Pro']]],
+    ['Lør 10', false, [['08:00', 'turn', 'Srixon Tour finale · 2 spillere']]],
+    ['Søn 11', false, [['09:00', 'turn', 'Srixon Tour finale'], ['10:00', 'turn', 'Regionstour 4 · Filip']]]
+  ];
+  function uke(app) {
+    app.querySelector('[data-ukevis]').innerHTML = UKE.map(function (d) {
+      return '<div class="ukedag' + (d[1] ? ' idag' : '') + '"><h3>' + d[0] + '<span>' + d[2].filter(function (o) { return o[1] !== 'forslag'; }).length + '</span></h3>' + d[2].map(function (o) {
+        return o[1] === 'forslag' ? '<div class="u-okt" style="background:transparent;color:var(--graphite-800);border:2px dashed var(--graphite-500)"><b>' + o[0] + '</b><span>' + o[2] + '</span></div>' : '<div class="u-okt ' + o[1] + '"><b>' + o[0] + '</b><span>' + o[2] + '</span></div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+  function mnd(app) {
+    var h = ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'].map(function (d) { return '<span class="ukedn">' + d + '</span>'; }).join('');
+    var start = 3, akser = ['fys', 'tek', 'slag', 'spill', 'turn'];
+    for (var i = 0; i < 35; i++) {
+      var dg = i - start + 1, ut = dg < 1 || dg > 31, n = ut ? 0 : (dg % 7 === 3 || dg % 7 === 4 ? 2 : 4 + (dg * 7 % 3));
+      var p = ''; for (var k = 0; k < n; k++) p += '<i class="a-' + akser[(dg + k) % 5] + '"></i>';
+      h += '<div class="d' + (ut ? ' ut' : '') + (dg === 5 ? ' idag' : '') + '"><b>' + (ut ? (dg < 1 ? 30 + dg : dg - 31) : dg) + '</b>' + (n ? '<span class="prikker">' + p + '</span><span class="ant">' + n + ' økter</span>' : '') + '</div>';
+    }
+    app.querySelector('[data-mnd]').innerHTML = h;
+  }
+  var AR = [['Januar', [8, 20, 40, 12, 0], 96], ['Februar', [9, 22, 42, 10, 0], 101], ['Mars', [10, 24, 44, 14, 2], 112], ['April', [10, 22, 40, 18, 8], 118], ['Mai', [8, 18, 36, 24, 16], 124], ['Juni', [6, 14, 30, 26, 24], 120], ['Juli', [4, 8, 18, 20, 22], 72], ['August', [8, 16, 34, 24, 18], 122], ['September', [10, 20, 38, 20, 12], 126], ['Oktober', [12, 22, 40, 14, 4], 128], ['November', [14, 24, 40, 10, 0], null], ['Desember', [10, 16, 26, 6, 0], null]];
+  function ar(app) {
+    var ak = ['fys', 'tek', 'slag', 'spill', 'turn'];
+    app.querySelector('[data-arvis]').innerHTML = AR.map(function (m, i) {
+      var s = m[1].reduce(function (a, b) { return a + b; }, 0);
+      return '<div class="ar-mnd' + (i === 9 ? ' naa' : '') + '"><b>' + m[0] + '</b><div class="stablet">' + m[1].map(function (v, k) { return '<i class="a-' + ak[k] + '" style="width:' + (v / s * 100) + '%"></i>'; }).join('') + '</div><span>' + (m[2] === null ? '— gjennomført' : m[2] + ' økter') + '</span></div>';
+    }).join('');
+  }
+  function ass(app) {
+    dagvis(app, { skjulPrivat: false, kolonner: [{ i: 'MA', navn: 'Markus', okter: MARKUS }, { i: 'AK', navn: 'Anders', okter: ANDERS.map(function (o) { return Object.assign({}, o, { privat: !o.gruppe }); }) }] });
+    app.querySelectorAll('[data-k="1"] .k-okt').forEach(function (b, i) { if (!ANDERS[i].gruppe) { b.className = 'k-okt privat'; b.innerHTML = '<b>Opptatt</b>'; } });
+  }
+
+  /* AG-06-NY: spiller → tjeneste → tid → bekreft */
+  var TJ = [['Performance Pro 90 min', '1 klipp · Sander har 3', 'klipp'], ['Privattime 60 min', 'Betaling', '950 kr'], ['Testtime 8-ball', 'Tildeler testen', '650 kr']];
+  function ny(app) {
+    var st = { steg: 0, sp: 'sander', tj: 0, kl: '13:00' }, navn = ['Spiller', 'Tjeneste', 'Tid', 'Bekreft'];
+    var boks = app.querySelector('[data-innhold]');
+    function tegn() {
+      app.querySelectorAll('[data-steg] span').forEach(function (s, i) { s.className = i < st.steg ? 'ferdig' : i === st.steg ? 'aktiv' : ''; });
+      var sp = D.stall.filter(function (s) { return s.id === st.sp; })[0], h = '';
+      if (st.steg === 0) h = '<div class="felt"><label for="ny-sok">Søk spiller</label><input id="ny-sok" type="search" value="" placeholder="Navn"></div><div class="valgliste">' + D.stall.slice(0, 6).map(function (s) { return '<button type="button" aria-pressed="' + (s.id === st.sp) + '" data-sp="' + s.id + '"><span class="avatar liten">' + s.i + '</span><span><b>' + s.navn + '</b><span class="kilde">' + s.avtale + '</span></span><span></span></button>'; }).join('') + '</div>';
+      if (st.steg === 1) h = '<div class="valgliste">' + TJ.map(function (t, i) { return '<button type="button" aria-pressed="' + (i === st.tj) + '" data-tj="' + i + '"><span class="akse-prikk" style="background:var(--graphite-900)"></span><span><b>' + t[0] + '</b><span class="kilde">' + t[1] + '</span></span><span class="pris">' + t[2] + (t[2] === 'klipp' ? '' : ' <span class="estimat">Eksempel</span>') + '</span></button>'; }).join('') + '</div><p class="kildetekst">Fra tjenestelista. Sander har Performance Pro, så første valg trekker et klipp.</p>';
+      if (st.steg === 2) h = '<p class="forklar">Ledige tider for Anders, tirsdag 6. oktober.</p><div class="tider" data-tider>' + ['09:00', '11:00', '13:00', '14:00', '15:30', '19:00'].map(function (k) { return '<button type="button" aria-pressed="' + (k === st.kl) + '">' + k + '</button>'; }).join('') + '</div>';
+      if (st.steg === 3) h = '<ul class="oppsummering"><li><span>Spiller</span><b>' + sp.navn + '</b></li><li><span>Tjeneste</span><b>' + TJ[st.tj][0] + '</b></li><li><span>Tid</span><b>Tirsdag 6. oktober kl. ' + st.kl + '</b></li><li><span>Betaling</span><b>' + (st.tj === 0 ? '1 klipp · 2 igjen etterpå' : 'Spilleren får betalingslenke') + '</b></li>' + (st.tj === 2 ? '<li><span>Test</span><b>8-ball tildeles automatisk</b></li>' : '') + '</ul><p class="kildetekst">' + (st.tj === 0 ? 'Bekreftes med en gang.' : 'Bekreftes når betalingen er gjennomført.') + ' Spilleren får beskjed.</p>';
+      boks.innerHTML = h;
+      var n = app.querySelector('[data-neste]'); n.textContent = st.steg === 3 ? (st.tj === 0 ? 'Bekreft booking' : 'Send betalingslenke') : 'Neste';
+      app.querySelector('[data-forrige]').hidden = st.steg === 0;
+    }
+    boks.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.sp) st.sp = b.dataset.sp; else if (b.dataset.tj) st.tj = +b.dataset.tj; else if (b.closest('[data-tider]')) st.kl = b.textContent;
+      tegn();
+    });
+    app.querySelector('[data-neste]').addEventListener('click', function () { if (st.steg < 3) { st.steg++; tegn(); } else { A.toast(app, st.tj === 0 ? 'Booket og bekreftet. Spilleren har fått beskjed.' : 'Betalingslenken er sendt.'); A.gaa('bookinger'); } });
+    app.querySelector('[data-forrige]').addEventListener('click', function () { if (st.steg) { st.steg--; tegn(); } });
+    tegn();
+  }
+  function detalj(app) {
+    app.querySelector('[data-avlys]').addEventListener('click', function () { A.vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-av-nei]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-av-ok]').addEventListener('click', function () {
+      A.vis(app, '[data-dialog]', false);
+      var s = app.querySelector('[data-status]'), gml = s.outerHTML;
+      s.className = 'pille noy'; s.style.background = '#fff'; s.innerHTML = '<i></i>Avlyst';
+      A.toast(app, 'Avlyst. Sander får beskjed om 10 sek.', function () { s.outerHTML = gml; A.toast(app, 'Angret. Timen står.'); });
+    });
+  }
+
+  A.start({
+    start: 'dag',
+    skjermer: {
+      dag: { etter: dag, tom: { tittel: 'Ingen økter i dag', tekst: 'Ingen coacher har økter mandag 5. oktober. Gruppeøkter og bookinger kommer hit.', knapp: 'Ny booking' }, laster: 'Henter kalenderen …', feil: 'Kalenderen kunne ikke hentes' },
+      uke: { etter: uke, tom: { tittel: 'Ingen økter i uke 41', tekst: 'Legg inn faste gruppeøkter, eller book en time.', knapp: 'Ny booking' }, laster: 'Henter uka …', feil: 'Uka kunne ikke hentes' },
+      mnd: { etter: mnd, tom: { tittel: 'Ingen økter i oktober', tekst: 'Økter og bookinger kommer hit.', knapp: null }, laster: 'Henter måneden …', feil: 'Måneden kunne ikke hentes' },
+      ar: { etter: ar, tom: { tittel: 'Ingen økter i 2026', tekst: 'Året fylles når det finnes økter.', knapp: null }, laster: 'Henter året …', feil: 'Året kunne ikke hentes' },
+      ass: { etter: ass, tom: { tittel: 'Ingen økter i dag', tekst: 'Du har ingen egne økter eller gruppeøkter i dag.', knapp: null }, laster: 'Henter kalenderen …', feil: 'Kalenderen kunne ikke hentes' },
+      bookinger: { etter: null, tom: { tittel: 'Ingen bookinger', tekst: 'Bookinger fra spillere, flexkunder og deg selv kommer hit.', knapp: 'Ny booking' }, laster: 'Henter bookingene …', feil: 'Bookingene kunne ikke hentes' },
+      ny: { etter: ny, tom: { tittel: 'Ingen ledige tider', tekst: 'Ingen coacher har ledige tider de neste sju dagene. Åpne flere tider i Oppsett.', knapp: null }, laster: 'Henter ledige tider …', feil: 'Ledige tider kunne ikke hentes' },
+      detalj: { etter: detalj, tom: null }
+    }
+  });
+})();
+</script>
