@@ -17,40 +17,41 @@
   .skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
   .hode-rad{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--r2) var(--r3);flex-wrap:wrap}
   .dg-kilde{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);letter-spacing:.06em;color:var(--ink-500);white-space:nowrap}
-  .dg-kilde i{width:8px;height:8px;background:var(--slag);flex:none}
+  .dg-kilde i{width:8px;height:8px;background:var(--navy-900);flex:none}
 
-  /* Fylt flate i slag */
-  .kort.fylt{background:var(--slag);border-color:var(--slag);color:#fff}
+  /* Fylt flate i navy med flaggstrek */
+  .kort.fylt{background:var(--navy-900);border-color:var(--navy-900);color:#fff}
+  .kort.fylt > .flaggstrek{margin:calc(-1 * var(--r4)) -18px 0}
   .kort.fylt .hoved strong{color:#fff}
   .kort.fylt .hoved strong small{color:rgba(255,255,255,.8)}
   .kort.fylt .kilde,.kort.fylt .forklar{color:rgba(255,255,255,.86)}
   .kort.fylt .merke.noy{background:rgba(255,255,255,.18);color:#fff}.kort.fylt .merke.noy i{background:#fff}
   .kort.fylt .merke.ok{background:#fff;color:var(--ok-tekst)}
   .kort.fylt .merke.kontur{border-color:rgba(255,255,255,.75);color:#fff}
-  .kort.fylt .knapp.pri{background:#fff;color:var(--slag);border-color:#fff}
+  .kort.fylt .knapp.pri{background:#fff;color:var(--navy-900);border-color:#fff}
   .kort.fylt .knapp.sek{background:transparent;color:#fff;border-color:#fff}
   .kort.fylt .sg-spor{background:rgba(255,255,255,.16)}.kort.fylt .sg-spor::before{background:rgba(255,255,255,.75)}.kort.fylt .sg-spor i{background:#fff}
-  .kort.fylt .flagg{background:#fff;color:var(--slag)}
+  .kort.fylt .flagg{background:#fff;color:var(--navy-900)}
   .stor{font:500 24px/1.2 var(--display);letter-spacing:.02em}
   .radinfo{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;line-height:1.45}
 
   /* Tellere */
   .tellere{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
   .teller{display:grid;gap:4px;align-content:start;padding:14px;border:1px solid var(--ink-200);border-radius:2px;background:var(--hvit);text-align:left;font:inherit;color:inherit;cursor:pointer}
-  .teller.slag{background:var(--slag-tint);border-color:var(--slag-tint)}
-  .teller.live{border-color:var(--slag)}
+  .teller.tint{background:var(--navy-100);border-color:var(--navy-100)}
+  .teller.live{border-color:var(--navy-900)}
   .teller .e{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
   .teller .t{font:500 30px/1 var(--mono);color:var(--navy-900)}
-  .teller.slag .t{color:var(--slag)}
+  .teller.tint .t{color:var(--navy-900)}
   .teller .s{font-size:13px;line-height:1.4;color:var(--ink-700)}
-  .puls{display:inline-flex;align-items:center;gap:6px;font:700 12px/1 var(--tekst);color:var(--slag);white-space:nowrap}
-  .puls i{width:8px;height:8px;background:var(--slag);animation:puls 1.6s ease-in-out infinite}
+  .puls{display:inline-flex;align-items:center;gap:6px;font:700 12px/1 var(--tekst);color:var(--navy-900);white-space:nowrap}
+  .puls i{width:8px;height:8px;background:var(--navy-900);animation:puls 1.6s ease-in-out infinite}
   @keyframes puls{50%{opacity:.3}}
 
   /* Innganger */
   .innganger{display:grid;gap:var(--r2)}
   .inngang{display:grid;grid-template-columns:40px minmax(0,1fr) 20px;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--ink-200);border-radius:2px;background:var(--hvit);text-align:left;font:inherit;color:inherit;cursor:pointer}
-  .inngang .boks{display:grid;place-items:center;width:40px;height:40px;background:var(--slag-tint);color:var(--slag)}
+  .inngang .boks{display:grid;place-items:center;width:40px;height:40px;background:var(--navy-100);color:var(--navy-900)}
   .inngang b{display:block;font:700 15px/1.3 var(--tekst)}
   .inngang .kilde{display:block}
 
@@ -60,7 +61,7 @@
   .sg-rad .v{font:500 14px/1 var(--mono);text-align:right}
   .sg-spor{position:relative;height:14px;background:var(--ink-100)}
   .sg-spor::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--ink-500)}
-  .sg-spor i{position:absolute;top:2px;bottom:2px;background:var(--slag)}
+  .sg-spor i{position:absolute;top:2px;bottom:2px;background:var(--navy-900)}
 
   /* Lister og tabellrader */
   .liste{display:grid;border-top:1px solid var(--ink-200)}
@@ -77,18 +78,15 @@
   .flagg{display:inline-grid;place-items:center;width:30px;height:20px;background:var(--ink-100);font:500 10.5px/1 var(--mono);color:var(--ink-700)}
   .flagg.no{background:var(--navy-100);color:var(--navy-900)}
   .avatar.lys{background:var(--ink-100);color:var(--ink-700)}
-  .avatar.slag{background:var(--slag);color:#fff}
+  .avatar.navy{background:var(--navy-900);color:#fff}
 
-  /* Filtre: brikker og valg i slag */
+  /* Filtre: brikker og valg i navy */
   .brikker{display:flex;flex-wrap:wrap;gap:6px}
   .brikker button{min-height:36px;padding:0 12px;border:1px solid var(--ink-300);border-radius:2px;background:var(--hvit);font:700 13px/1 var(--tekst);color:var(--ink-700);cursor:pointer}
-  .brikker button[aria-pressed="true"]{background:var(--slag);border-color:var(--slag);color:#fff}
-  .valg.slag{border-color:var(--slag)}
-  .valg.slag button{border-right-color:var(--slag);color:var(--slag)}
-  .valg.slag button[aria-pressed="true"]{background:var(--slag);color:#fff}
+  .brikker button[aria-pressed="true"]{background:var(--navy-900);border-color:var(--navy-900);color:#fff}
   .faner{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--ink-200)}
   .faner button{min-height:44px;padding:0 14px;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;background:transparent;font:700 14px/1 var(--tekst);color:var(--ink-500);cursor:pointer}
-  .faner button[aria-pressed="true"]{color:var(--slag);border-bottom-color:var(--slag)}
+  .faner button[aria-pressed="true"]{color:var(--navy-900);border-bottom-color:var(--navy-900)}
   .filtre{display:flex;flex-wrap:wrap;gap:8px}
   .panel{display:grid;gap:var(--r3)}
   .panel[hidden]{display:none}
@@ -103,12 +101,12 @@
   .sammen-hode .mot{font:500 12px/1 var(--mono);letter-spacing:.1em;color:var(--ink-500)}
   .gap-rad{display:grid;grid-template-columns:72px 50px minmax(0,1fr) 50px 50px;gap:6px;align-items:center;font-size:13.5px}
   .gap-rad .v{font:500 13.5px/1 var(--mono);text-align:right;white-space:nowrap}
-  .gap-rad .v.gap{color:var(--slag)}
+  .gap-rad .v.gap{color:var(--navy-900)}
   .gap-rad.hode{font:500 10.5px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
   .gap-rad.hode span{text-align:right}.gap-rad.hode span:first-child{text-align:left}
   .gap-spor{position:relative;height:12px;background:var(--ink-100)}
   .gap-spor::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--ink-500)}
-  .gap-spor i{position:absolute;top:2px;bottom:2px;background:var(--slag)}
+  .gap-spor i{position:absolute;top:2px;bottom:2px;background:var(--navy-900)}
   .maal-rad{display:grid;grid-template-columns:minmax(0,1fr) 76px 76px 44px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ink-200);font-size:14px}
   .maal-rad:last-child{border-bottom:0}
   .maal-rad .v{font:500 14px/1 var(--mono);text-align:right;white-space:nowrap}
@@ -126,13 +124,13 @@
   .band-rad.hode{font:500 10.5px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);padding:0 0 6px}
   .band-rad.hode span{text-align:right}.band-rad.hode span:first-child{text-align:left}
   .band-rad .knapp{min-height:36px;padding:0 10px;font-size:13px}
-  .maalflate{display:grid;place-items:center;align-content:center;gap:2px;width:112px;height:112px;background:var(--slag-tint);border:2px solid var(--slag);justify-self:center;text-align:center}
-  .maalflate b{font:500 28px/1 var(--mono);color:var(--slag)}
+  .maalflate{display:grid;place-items:center;align-content:center;gap:2px;width:112px;height:112px;background:var(--navy-100);border:2px solid var(--navy-900);justify-self:center;text-align:center}
+  .maalflate b{font:500 28px/1 var(--mono);color:var(--navy-900)}
   .maalflate span{font:700 11px/1.3 var(--tekst);color:var(--ink-700)}
 
   /* Funn og forslag */
-  .funn{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;padding:14px 16px;background:var(--slag-tint);border-left:4px solid var(--slag)}
-  .funn .boks{display:grid;place-items:center;width:40px;height:40px;background:var(--slag);color:#fff}
+  .funn{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;padding:14px 16px;background:var(--navy-100);border-left:4px solid var(--navy-900)}
+  .funn .boks{display:grid;place-items:center;width:40px;height:40px;background:var(--navy-900);color:#fff}
   .funn b{display:block;font:700 16px/1.3 var(--tekst)}
   .funn .kilde{display:block;color:var(--ink-700)}
   .kvitt{display:grid;gap:6px;padding:14px 16px;background:var(--ink-50);border:1px solid var(--ink-200)}
@@ -176,13 +174,13 @@
   /* Ark (dialog) og kvittering. Ark er egen flate over skjermen. */
   .ark-lag{position:absolute;inset:0;z-index:5;background:rgba(1,43,93,.55);display:grid;align-items:end}
   .ark-lag[hidden]{display:none}
-  .ark{background:var(--hvit);padding:var(--r5) var(--r4) var(--r6);display:grid;gap:var(--r3);border-top:3px solid var(--slag);width:100%}
+  .ark{background:var(--hvit);padding:var(--r5) var(--r4) var(--r6);display:grid;gap:var(--r3);border-top:3px solid var(--navy-900);width:100%}
   .ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r2)}
   .ark h2{margin:0;font:500 22px/1.2 var(--display);letter-spacing:.02em;color:var(--navy-900)}
   .ark .velg-rad{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border:0;border-bottom:1px solid var(--ink-200);background:none;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
   .ark .velg-rad b{display:block;font:700 15px/1.3 var(--tekst)}
   .ark .velg-rad .kilde{display:block}
-  .toast{position:absolute;left:16px;right:16px;bottom:88px;z-index:6;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--navy-900);color:#fff;font-size:14px;line-height:1.45;border-left:4px solid var(--slag)}
+  .toast{position:absolute;left:16px;right:16px;bottom:88px;z-index:6;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--navy-900);color:#fff;font-size:14px;line-height:1.45;border-left:4px solid var(--navy-900)}
   .toast button{min-height:36px;padding:0 10px;border:1px solid #fff;background:transparent;color:#fff;font:700 13px/1 var(--tekst);cursor:pointer;flex:none}
   .knapp.stor{width:100%}
 
@@ -196,7 +194,7 @@
     .band-rad.pr{grid-template-columns:140px 84px 84px 64px}
     .maal-rad{grid-template-columns:minmax(0,1fr) 110px 110px 64px}
     .ark-lag{align-items:center;justify-items:center}
-    .ark{max-width:520px;border:1px solid var(--ink-200);border-top:3px solid var(--slag)}
+    .ark{max-width:520px;border:1px solid var(--ink-200);border-top:3px solid var(--navy-900)}
     .toast{left:auto;right:44px;bottom:32px;max-width:520px}
     .knapp.stor{width:auto}
   }
@@ -276,15 +274,15 @@
     <span class="overlinje">Analyse · Data Golf</span>
     <div class="hode-rad"><h1 class="tittel">Data Golf</h1><span class="dg-kilde"><i></i>Powered by Data Golf</span></div>
   </header>
-  <div class="kort fylt">
+  <div class="kort fylt"><div class="flaggstrek"></div>
     <div class="radinfo" style="justify-content:space-between"><span class="merke noy"><i></i>Ferdighetsmodell 12. okt</span><span class="merke ok"><i></i>Synket mandag 05:00</span></div>
     <div class="stor">412 proffer med ferdighetsprofil og innspill per avstand</div>
     <div class="radinfo"><span>PGA Tour · DP World · Korn Ferry</span><span>6 norske</span><span>Resultater for norske fra mandag</span></div>
     <div class="knapper"><button type="button" class="knapp pri" data-gaa="sammen">Spiller mot proff</button><button type="button" class="knapp sek" data-gaa="katalog">Finn proff</button></div>
   </div>
   <div class="tellere">
-    <button type="button" class="teller slag" data-gaa="katalog"><span class="e">Proffer</span><b class="t">412</b><span class="s">med SG-profil</span></button>
-    <button type="button" class="teller slag" data-gaa="norske"><span class="e">Norske</span><b class="t">6</b><span class="s">koblet til Data Golf</span></button>
+    <button type="button" class="teller tint" data-gaa="katalog"><span class="e">Proffer</span><b class="t">412</b><span class="s">med SG-profil</span></button>
+    <button type="button" class="teller tint" data-gaa="norske"><span class="e">Norske</span><b class="t">6</b><span class="s">koblet til Data Golf</span></button>
     <button type="button" class="teller live" data-gaa="norske"><span class="e"><span class="puls"><i></i>Live</span></span><b class="t">3</b><span class="s">norske i spill nå</span></button>
     <button type="button" class="teller" data-gaa="kilde"><span class="e">Siste synk</span><b class="t" style="font-size:22px;padding-top:6px">12.10</b><span class="s">05:00 · én feilet</span></button>
   </div>
@@ -318,7 +316,7 @@
   </header>
   <div class="felt"><label for="k-sok">Søk</label><input id="k-sok" placeholder="Navn" data-sok></div>
   <div class="brikker" role="group" aria-label="Filter" data-filter><button type="button" aria-pressed="true" data-f="alle">Alle</button><button type="button" aria-pressed="false" data-f="no">Norske</button><button type="button" aria-pressed="false" data-f="pga">PGA Tour</button><button type="button" aria-pressed="false" data-f="dp">DP World</button><button type="button" aria-pressed="false" data-f="topp">Topp 50</button></div>
-  <div class="valg slag" role="group" aria-label="Sorter"><button type="button" aria-pressed="true">SG total</button><button type="button" aria-pressed="false">Innspill</button><button type="button" aria-pressed="false">Driver</button><button type="button" aria-pressed="false">Navn</button></div>
+  <div class="valg" role="group" aria-label="Sorter"><button type="button" aria-pressed="true">SG total</button><button type="button" aria-pressed="false">Innspill</button><button type="button" aria-pressed="false">Driver</button><button type="button" aria-pressed="false">Navn</button></div>
   <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
     <div class="dg-rad hode"><span></span><span></span><span>Proff</span><span class="v">SG total</span></div>
     <div data-liste style="display:contents"></div>
@@ -333,7 +331,7 @@
 <div class="app" data-aktiv="analyse" data-skall="tilbake" data-tilbake="Proffkatalog">
 <main class="innhold">
   <header data-behold><span class="overlinje">Analyse · Data Golf · proff</span></header>
-  <div class="kort fylt">
+  <div class="kort fylt"><div class="flaggstrek"></div>
     <div class="radinfo" style="justify-content:space-between"><span class="merke noy"><i></i>Ferdighetsmodell 12. okt</span><span class="flagg">NOR</span></div>
     <div class="stor">Viktor Hovland</div>
     <div class="radinfo"><span>PGA Tour</span><span>Data Golf-rang 9</span><span>OWGR 11</span></div>
@@ -349,7 +347,7 @@
   </div>
   <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="innspill">Innspill</button><button type="button" aria-pressed="false" data-p="sesong">Sesong</button><button type="button" aria-pressed="false" data-p="res">Resultater</button></div>
   <div class="panel" data-panel="innspill">
-    <div class="sek-topp"><h2>Innspill per avstand</h2><div class="valg slag" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
+    <div class="sek-topp"><h2>Innspill per avstand</h2><div class="valg" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
     <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
       <div class="band-rad pr hode"><span>Avstand</span><span>Nærhet</span><span>SG/slag</span><span>GIR</span></div>
       <div data-band style="display:contents"></div>
@@ -357,7 +355,7 @@
     <p class="kilde">Nærhet er justert for hvor vanskelig slaget var, i meter. Intervallene er Data Golfs (yards), omregnet. 12. oktober, siste 12 måneder.</p>
   </div>
   <div class="panel" data-panel="sesong" hidden>
-    <div class="valg slag" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div>
+    <div class="valg" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div>
     <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
       <div class="maal-rad hode"><span>PGA Tour 2026</span><span>Verdi</span><span>Tour-snitt</span><span>Runder</span></div>
       <div class="maal-rad"><span>Snittscore</span><span class="v">69,8</span><span class="v">70,9</span><span class="v">62</span></div>
@@ -391,7 +389,7 @@
     <div class="hode-rad"><h1 class="tittel">Topplister</h1><span class="dg-kilde"><i></i>Målt · sesong</span></div>
   </header>
   <div class="brikker" role="group" aria-label="Kategori" data-kat><button type="button" aria-pressed="true" data-k="sg">SG total</button><button type="button" aria-pressed="false" data-k="snitt">Snittscore</button><button type="button" aria-pressed="false" data-k="driver">Driver</button><button type="button" aria-pressed="false" data-k="fw">Fairway %</button><button type="button" aria-pressed="false" data-k="gir">GIR %</button><button type="button" aria-pressed="false" data-k="putt">Putt per runde</button></div>
-  <div class="filtre"><div class="valg slag" role="group" aria-label="Tour"><button type="button" aria-pressed="true">PGA Tour</button><button type="button" aria-pressed="false">DP World</button><button type="button" aria-pressed="false">Korn Ferry</button></div><div class="valg slag" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div></div>
+  <div class="filtre"><div class="valg" role="group" aria-label="Tour"><button type="button" aria-pressed="true">PGA Tour</button><button type="button" aria-pressed="false">DP World</button><button type="button" aria-pressed="false">Korn Ferry</button></div><div class="valg" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div></div>
   <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
     <div class="dg-rad hode"><span>#</span><span></span><span>Proff</span><span class="v" data-kat-navn>SG total</span></div>
     <div data-topp style="display:contents"></div>
@@ -415,13 +413,13 @@
         <div class="sammen-hode">
           <div class="hvem"><span class="avatar">EB</span><b>Emil Berg</b><span class="kilde">Kategori C · Junior gutter</span></div>
           <span class="mot">MOT</span>
-          <div class="hvem"><span class="avatar slag">VH</span><b>Viktor Hovland</b><span class="kilde">PGA Tour · rang 9</span></div>
+          <div class="hvem"><span class="avatar navy">VH</span><b>Viktor Hovland</b><span class="kilde">PGA Tour · rang 9</span></div>
         </div>
         <div class="knapper" style="justify-content:center"><button type="button" class="knapp sek" data-bytt-s>Bytt spiller</button><button type="button" class="knapp sek" data-gaa="katalog">Bytt proff</button></div>
       </div>
       <section class="seksjon">
         <div class="sek-topp"><h2>Gap per område</h2><span class="kilde">Slag per runde</span></div>
-        <div class="kort fylt">
+        <div class="kort fylt"><div class="flaggstrek"></div>
           <div class="hoved"><strong>−3,1</strong><span class="forklar">slag per runde bak Viktor, samlet <span class="merke kontur">Estimat</span></span></div>
           <p class="forklar">Størst gap i innspill. Nærspill og putting er på høyde.</p>
         </div>
@@ -438,7 +436,7 @@
     </div>
     <div style="display:grid;gap:var(--r5)">
       <section class="seksjon">
-        <div class="sek-topp"><h2>Målinger</h2><div class="valg slag" role="group" aria-label="Runder"><button type="button" aria-pressed="true">12</button><button type="button" aria-pressed="false">24</button><button type="button" aria-pressed="false">50</button></div></div>
+        <div class="sek-topp"><h2>Målinger</h2><div class="valg" role="group" aria-label="Runder"><button type="button" aria-pressed="true">12</button><button type="button" aria-pressed="false">24</button><button type="button" aria-pressed="false">50</button></div></div>
         <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
           <div class="maal-rad hode"><span>Måling</span><span>Emil</span><span>Viktor</span><span>Diff</span></div>
           <div class="maal-rad"><span>Snittscore, brutto</span><span class="v">73,1<small>12 r · GolfBox</small></span><span class="v">69,8<small>62 r · Data Golf</small></span><span class="v">—</span></div>
@@ -476,7 +474,7 @@
   </header>
   <div class="to-kol">
     <div style="display:grid;gap:var(--r3)">
-      <div class="sek-topp"><h2 style="margin:0;font:500 19px/1.25 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--navy-900)">Per avstand</h2><div class="valg slag" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
+      <div class="sek-topp"><h2 style="margin:0;font:500 19px/1.25 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--navy-900)">Per avstand</h2><div class="valg" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
       <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
         <div class="band-rad hode"><span>Avstand</span><span>Viktor</span><span>Emil</span><span class="gap-spor" style="height:auto;background:none">Gap</span><span></span></div>
         <div data-band style="display:contents"></div>
