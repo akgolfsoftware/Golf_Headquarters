@@ -10,7 +10,7 @@ Funksjoner beskrives av prosjektets produkt- og fagkilder. Filinventaret beskriv
 
 **Atletisk intelligens.** PlayerHQ kan være sportslig, oppslukende og fotografisk i utvalgte øyeblikk. AgencyOS er operativt rolig og presist. Tid, rekkefølge og neste handling bærer hverdagsflytene. Mørk fokusmodus brukes når Live, fordypning eller synlig AI-arbeid krever konsentrasjon.
 
-Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Arbeidet startet blankt med Design System v0.1. Ved videreføring fullføres siste faktiske kandidat, og nyere rettinger bevares. Valg for bygging gjelder konkret versjon og omfang; Team Norway Claw er valgt for egne `/team-norway/*`-skjermer 13.09.2026 og overstyres ikke av den generelle utforskingen.
+Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Arbeidet startet blankt med Design System v0.1 og endte i Claude Design «AK Golf Precision Athletics» (`7d7c2994`), valgt 26.09.2026 og låst (`docs/design-system/design-autoritet.md`). Team Norway følger «Team Norway App» fra 22.09.2026 (Claw er overstyrt). Nye tegninger viderefører det valgte systemet.
 
 | Brukerflate | Viktigste utfall | Designhensyn |
 |---|---|---|
