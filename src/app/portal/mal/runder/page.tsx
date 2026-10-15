@@ -65,7 +65,7 @@ export default async function PH18RunderPage() {
         tilstand={tilstand}
         modell={modell}
         registrerHref="/portal/mal/runder/ny"
-        liveHref="/portal/runde-live"
+        liveHref="/portal/runde/live"
       />
     </PlayerHQSkall>
   );

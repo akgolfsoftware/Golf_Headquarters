@@ -1,7 +1,5 @@
 /**
- * AG-05 Kalender i Precision Athletics (bolk A4). Erstatter V2Shell +
- * KalenderLagUkeV2/StallDagV2-visningen med AgencyOSSkall + Precision-
- * komponenter. Samme fem faner, samme guard, samme datakilder som før —
+ * AG-05 Kalender i nytt design (designbrevet 13.10.2026, utkast-agencyos/kalender.html). Samme fem faner, samme guard, samme datakilder som før —
  * Faner er ekte lenker (`?fane=`), så bare den aktive fanen laster data.
  *
  * «Tilgjengelighet» er en ny, femte fane (AG-05-tegningen, 28.09.2026) — se
@@ -10,7 +8,8 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Side, SideHode, FanerLenker } from "@/components/precision/pa-a4";
+import Link from "next/link";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
@@ -66,28 +65,26 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
   } else if (fane === "maned") {
     const data = await hentKalenderLagManed(sp.maaned, { lag: startLag });
     periode = data.periode;
-    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} />;
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={data.periode} />;
     innhold = <AG05Maned data={data} startLag={startLag} />;
   } else {
     const data = await hentKalenderLagUke(sp.uke, { lag: startLag, visning: fane, dato: sp.dato });
     periode = data.periode;
-    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} />;
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={data.periode} />;
     innhold = <AG05Uke data={data} dagIso={sp.dato} startLag={startLag} />;
   }
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <Side max={1480}>
-        <SideHode
-          kicker={`Kalender · ${periode}`}
-          title="Kalender"
-          sub="Åpne en hendelse for å se detaljene og gå videre til den."
-          actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />}
-        />
-        <FanerLenker faner={KALENDER_FANER.map((f) => ({ href: kalenderHref(f.id), navn: f.label, aktiv: f.id === fane }))} />
+      <div className="agn-s">
+        <Topp dato={`Kalender · ${periode}`} tittel="Kalender"
+          handlinger={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
+        <nav className="faner" aria-label="Visning">
+          {KALENDER_FANER.map((f) => <Link key={f.id} href={kalenderHref(f.id)} aria-current={f.id === fane ? "page" : undefined}>{f.label}</Link>)}
+        </nav>
         {navigasjon}
-        {innhold}
-      </Side>
+        <div className="pa-root kal-innhold">{innhold}</div>
+      </div>
     </AgencyOSSkall>
   );
 }

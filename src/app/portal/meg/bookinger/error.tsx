@@ -1,18 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { PHKommunikasjonFeil } from "@/components/portal/precision/PHKommunikasjonFeil";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
-  }, [error]);
-
-  return <V2Feil reset={reset} tilbakeHref="/portal/meg" />;
+export default function MineBookingerError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  return <PHKommunikasjonFeil error={error} reset={reset} kontekst="portal-mine-bookinger-error"
+    tittel="Fikk ikke hentet bookingene" tekst="Ingen timer er endret. Sjekk nettet og prøv igjen." />;
 }

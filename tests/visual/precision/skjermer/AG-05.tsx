@@ -1,8 +1,6 @@
 /** Prøvefil for AG-05 Kalender. Syntetiske data, ingen ekte spillere. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { LasterTilstand, FeilTilstand } from "@/components/precision/pa";
-import { CalendarX } from "lucide-react";
-import { Side, SideHode, FanerLenker } from "@/components/precision/pa-a4";
+import { Feil, Laster, Topp } from "@/components/admin/agencyos-ny/ny";
 import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
@@ -62,12 +60,12 @@ const FANER = [
 
 const Skjelett = ({ children, periode }: { children: React.ReactNode; periode: string }) => (
   <AgencyOSSkall navn="Test Coach">
-    <Side max={1480}>
-      <SideHode kicker={`Kalender · ${periode}`} title="Kalender" sub="Åpne en hendelse for å se detaljene og gå videre til den." actions={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
-      <FanerLenker faner={FANER} />
-      {periode !== "Tilgjengelighet" && <AG05Periode forrige="#" idag="#" neste="#" />}
-      {children}
-    </Side>
+    <div className="agn-s">
+      <Topp dato={`Kalender · ${periode}`} tittel="Kalender" handlinger={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
+      <nav className="faner" aria-label="Visning">{FANER.map((f) => <a key={f.href} href={f.href} aria-current={f.aktiv ? "page" : undefined}>{f.navn}</a>)}</nav>
+      {periode !== "Tilgjengelighet" && <AG05Periode forrige="#" idag="#" neste="#" tekst={periode} />}
+      <div className="pa-root kal-innhold">{children}</div>
+    </div>
   </AgencyOSSkall>
 );
 
@@ -76,7 +74,7 @@ export const tilstander = {
   dag: <Skjelett periode={dagData.periode}><AG05Uke data={dagData} dagIso="2026-09-29" /></Skjelett>,
   maned: <Skjelett periode={manedData.periode}><AG05Maned data={manedData} /></Skjelett>,
   tilg: <Skjelett periode="Tilgjengelighet"><AG05Tilg rader={tilgRader} /></Skjelett>,
-  laster: <Skjelett periode={ukeData.periode}><LasterTilstand text="Henter kalenderen …" /></Skjelett>,
-  feil: <Skjelett periode={ukeData.periode}><FeilTilstand icon={CalendarX} title="Kalenderen kunne ikke hentes" text="Ingen hendelser er endret." /></Skjelett>,
+  laster: <Skjelett periode={ukeData.periode}><Laster tekst="Henter kalenderen …" /></Skjelett>,
+  feil: <Skjelett periode={ukeData.periode}><Feil tittel="Kalenderen kunne ikke hentes" tekst="Ingen hendelser er endret." /></Skjelett>,
   tom: <Skjelett periode={ukeData.periode}><AG05Uke data={{ ...ukeData, hendelser: [] }} /></Skjelett>,
 };
