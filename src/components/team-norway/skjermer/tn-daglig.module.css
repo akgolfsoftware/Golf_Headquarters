@@ -1,0 +1,53 @@
+/* Pakke 2 Daglig. Fasit: docs/design-system/utkast-tn/daglig.html. */
+
+/* Årshjulet: 4 kolonner på mobil, 12 fra 900 px. */
+.aar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.maned {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 64px;
+  padding: 8px;
+  border: 1px solid var(--tn-ink-200);
+  border-radius: var(--tn-radius-sm);
+  background: var(--tn-white);
+  color: var(--tn-ink-900);
+  text-decoration: none;
+}
+.maned b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 12px; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }
+.maned[aria-current="true"] { border: 2px solid var(--tn-navy-900); padding: 7px; }
+.maned:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
+.gaatt { background: var(--tn-ink-50); color: var(--tn-ink-500); }
+.prikker { display: flex; flex-wrap: wrap; gap: 3px; }
+.prikker i { display: block; width: 10px; height: 10px; }
+.forklaring { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.forklaring span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--tn-ink-700); }
+.forklaring i { width: 10px; height: 10px; flex: none; }
+.aarsvalg { display: flex; gap: 4px; }
+
+.dagBlokk { display: grid; gap: 8px; }
+.dagBlokk h3 { margin: 0; font-family: var(--tn-font-mono); font-weight: 500; font-size: 13px; line-height: 1.3; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-ink-700); }
+.oktListe { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+
+/* Resultattabell som blir kortrader på mobil */
+.res { display: grid; border-top: 1px solid var(--tn-ink-200); }
+.resRad { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--tn-ink-200); align-items: center; }
+.plass { font-family: var(--tn-font-mono); font-weight: 500; font-size: 20px; line-height: 1; color: var(--tn-navy-900); }
+.navn { font-size: 15px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+.tot { font-family: var(--tn-font-mono); font-weight: 500; font-size: 18px; line-height: 1; text-align: right; }
+.tot small { display: block; font-size: 12px; line-height: 1.3; color: var(--tn-ink-500); }
+.status { grid-column: 2 / -1; font-size: 12.5px; color: var(--tn-ink-500); }
+
+.puls { display: inline-flex; align-items: center; gap: 6px; font-family: var(--tn-font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-akse-turn); }
+.puls i { width: 8px; height: 8px; background: var(--tn-akse-turn); animation: puls 1.6s ease-in-out infinite; }
+@keyframes puls { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .puls i { animation: none; } }
+
+.liveRad { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--tn-ink-200); }
+.liveRad:last-child { border-bottom: 0; }
+.verdi { text-align: right; font-family: var(--tn-font-mono); font-weight: 500; font-size: 18px; line-height: 1.1; }
+.verdi small { display: block; font-size: 11.5px; line-height: 1.3; color: var(--tn-ink-500); }
+
+@media (min-width: 900px) {
+  .aar { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
