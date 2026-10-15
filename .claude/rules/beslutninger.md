@@ -4,6 +4,18 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLERPROFILEN HETER IUP I TEAM NORWAY (Anders 15.10.2026, bindende)
+
+Anders 15.10: «For Team Norway skjerm skal det hete IUP som spiller profil.»
+
+- **Under `/team-norway/*` heter spillerprofilen «IUP».** Menyvalg, tilbakelenker og overskrifter sier IUP, ikke «Profil» eller spillerens navn alene.
+- Fanen som i koden heter «Evaluering», heter **«Fireukerssjekk»**, fordi hele profilen nå er IUP-en.
+- Gjelder Team Norway. Spiller 360 i AgencyOS og WANG er ikke endret av dette.
+
+**Arbeidet dette utløser:** når TN-skjermene porteres, får `/team-norway/spiller/[spillerId]` tittelen IUP og fanene i
+`TnSpillerFaner` (`src/components/team-norway/tn-shell.tsx`) bytter «Evaluering» til «Fireukerssjekk». Utkastene i
+`docs/design-system/utkast-tn/spillere.html` og `gruppe.html` er rettet (utkast 2).
+
 ## TEAM NORWAY FÅR EGNE AKSEFARGER FRA TN-PALETTEN (Anders 14.10.2026, bindende)
 
 Anders 14.10: «Ja til aksefargene», etter grunnmuren for Team Norway (PR #1256, `docs/design-system/utkast-tn/grunnmur.html`).

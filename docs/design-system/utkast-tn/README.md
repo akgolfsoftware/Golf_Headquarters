@@ -106,18 +106,19 @@ Hver pakke er én PR som bygger på den forrige, så diffen bare viser pakken: #
 
 ## Åpne spørsmål til Anders (14.10)
 
+Avklart 15.10: spillerprofilen heter IUP i Team Norway (Anders: «For Team Norway skjerm skal det hete IUP som spiller profil»).
+
 1. Oversikt: skal gruppas trening fordelt på aksene være med, eller bare de tre tingene den har i dag? (pakke 2)
 2. Reise (avreise, overnatting, ansvarlig) på turneringen: koden har ingen felt. Skal det med? (pakke 2)
-3. Profilfanen heter «Evaluering» i koden, vedtaket 28.09 sier «IUP». Utkastet bruker «IUP». (pakke 3)
-4. 8-ball: grensene for 2 og 1 poeng er ikke skrevet ned. Utkastet viser bare totalen og slagene. (pakke 3 og 5)
-5. Landslagsnivå per klasse og A–K-nivåtall mangler. Utkastet viser strek der de skulle stått. (pakke 3, 4 og 5)
-6. Kriterium 3 «Prosess og adferd» i uttaket har ingen vurderingsmodell. Hvem lager den? (pakke 4)
-7. Kjønn i ranglisten venter til delingen virker. Utkastet filtrerer på klasse. (pakke 4)
-8. Workbench og Månedsplan for Team Norway: én skjerm eller to? (pakke 5)
-9. Fagapparatet (fysio, mental trener) har ingen egen rolle i koden. (pakke 5)
-10. Sperren uten foresatt på poster: under 18 eller under 16? (pakke 6)
-11. Stipend og budsjett: hvor kommer tallene fra, og skal treneren se dem? (pakke 7)
-12. Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (pakke 7, B2)
+3. 8-ball: grensene for 2 og 1 poeng er ikke skrevet ned. Utkastet viser bare totalen og slagene. (pakke 3 og 5)
+4. Landslagsnivå per klasse og A–K-nivåtall mangler. Utkastet viser strek der de skulle stått. (pakke 3, 4 og 5)
+5. Kriterium 3 «Prosess og adferd» i uttaket har ingen vurderingsmodell. Hvem lager den? (pakke 4)
+6. Kjønn i ranglisten venter til delingen virker. Utkastet filtrerer på klasse. (pakke 4)
+7. Workbench og Månedsplan for Team Norway: én skjerm eller to? (pakke 5)
+8. Fagapparatet (fysio, mental trener) har ingen egen rolle i koden. (pakke 5)
+9. Sperren uten foresatt på poster: under 18 eller under 16? (pakke 6)
+10. Stipend og budsjett: hvor kommer tallene fra, og skal treneren se dem? (pakke 7)
+11. Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (pakke 7, B2)
 
 ## Avvik i koden (målt 14.10.2026, ikke rettet)
 
