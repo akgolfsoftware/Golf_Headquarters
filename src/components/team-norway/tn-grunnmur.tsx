@@ -9,6 +9,8 @@ import s from "./tn-grunnmur.module.css";
  * fremdriftsstolpe, fylte øktkort, aksefordeling og pyramiden.
  * Fasit: docs/design-system/utkast-tn/grunnmur.html. Fargen er aldri alene:
  * aksenavnet står alltid ved fargen. Ingen AK Golf-farger.
+ * Avvik:
+ *   - Gruppeøkter har ingen akse i datamodellen. Da blir øktkortet nøytralt med «Økt».
  */
 
 export const TN_AKSER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;

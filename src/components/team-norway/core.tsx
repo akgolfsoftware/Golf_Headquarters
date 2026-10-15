@@ -13,6 +13,9 @@ import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/te
  * (pakke 1 grunnmur, 14.10.2026). Bruker KUN TN.* (aldri AK-, Train-lock- eller
  * Precision-tokens). Hjørner 0 · 2 · 4, ingen skygger, ingen sirkler.
  * Skallet (sidemeny, topplinje, bunnmeny) bor i tn-shell.tsx og rail-mobil.tsx.
+ * Avvik:
+ *   - TnPille heter fortsatt «pille» i koden, men tegnes som grunnmurens merke:
+ *     kantete 24 px med kvadratisk prikk, aldri runde ender.
  */
 
 // ───────────────────────── Kort ─────────────────────────
