@@ -12,21 +12,43 @@ import { TN } from "@/lib/v2/team-norway";
 import type { TnTestdagDeltakerDetalj } from "@/lib/domain/tn-arbeidsflate";
 
 /**
+ * Gate-test: hvert forsøk har ett påkrevd valg Godkjent/Bom (eldre protokollversjoner:
+ * Ja/Nei). Gjelder Wedge Gate, Nærspill Gate, VISA Express o.l. Da føres testen med
+ * to store knapper (vedtak 14.10: «Godkjent» og «Bom»). Verdien lagres slik
+ * protokollen definerer den.
+ */
+type Gate = { key: string; ok: string; bom: string };
+function gatefelt(p: TnProtocol): Gate | null {
+  const per = p.rows.map((r): Gate | null => {
+    const pakrevd = r.fields.filter((f) => !f.optional);
+    const c = pakrevd.length === 1 ? pakrevd[0]?.choices : undefined;
+    if (!c || c.length !== 2 || !pakrevd[0]) return null;
+    if (c.includes("Godkjent") && c.includes("Bom")) return { key: pakrevd[0].key, ok: "Godkjent", bom: "Bom" };
+    if (c.includes("Ja") && c.includes("Nei")) return { key: pakrevd[0].key, ok: "Ja", bom: "Nei" };
+    return null;
+  });
+  const forste = per[0];
+  return forste && per.every((g) => g && g.key === forste.key && g.ok === forste.ok) ? forste : null;
+}
+
+/**
  * TN-03 — trenerførings-scorecard for ÉN deltaker i en testdag. Bevisst
  * separat fra PlayerHQs `TnScorecard` (portal) — ingen felles klientkode,
  * fordi autorisasjon/aktør er fundamentalt forskjellig (coach fører på
  * vegne av spiller, ikke spilleren selv).
  *
- * Visuelt mot Claw 13.09 (designsystem/team-norway/templates/tn-fellestesting):
- * spilleren fremheves i et kort med rød identitetsstrek («denne utøveren»,
- * TN.red600 — tillatt her, jf. regelen i team-norway.ts), fremdrift vises
- * både som tekst og en tynn linje, og hovedhandlingen («Før og neste» /
+ * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Før resultat (pakke 3).
+ * Gate-tester føres med to store knapper og en rad med forsøkene; andre
+ * protokoller med feltene per forsøk. Hovedhandlingen («Før og neste» /
  * «Fullfør siste test») står RETT ETTER målefeltene — ikke nederst under
  * notat og resultat — slik at den er lett å nå selv med 25 forsøksrader.
  * Ingen fast/sticky bunnlinje: den ville ha dekket innhold på 390 px uten
  * samme `--ak-cookie-h`-mønster som resten av appen (gotchas.md), og er
  * utenfor denne avgrensede oppgaven å bygge. Funksjonsmodellen (props,
  * feltnavn, valideringsflyt, lagringsflyt) er urørt.
+ * Avvik:
+ *   - Protokoller som ikke er gate-tester føres fortsatt med feltene per forsøk.
+ *   - Alle forsøk og valgfrie felt (som bomretning) ligger under en åpne-lenke i gate-modus.
  */
 export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { deltaker: TnTestdagDeltakerDetalj; protocol: TnProtocol; testDagId: string }) {
   const router = useRouter();
@@ -102,27 +124,29 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
     });
   }
 
+  const gate = gatefelt(p);
+  const nesteGate = gate ? p.rows.findIndex((_, i) => !raw[String(i + 1)]?.[gate.key]) : -1;
+  const sisteGate = gate ? p.rows.reduce((siste, _, i) => (raw[String(i + 1)]?.[gate.key] ? i : siste), -1) : -1;
+  const settGate = (i: number, verdi: string) => {
+    if (!gate || i < 0) return;
+    setRaw((v) => ({ ...v, [String(i + 1)]: { ...v[String(i + 1)], [gate.key]: verdi } }));
+  };
+
   const statusPilleTone = deltaker.status === "DONE" ? "green" : deltaker.status === "PENDING" ? "amber" : "nøytral";
   const statusEtikett = deltaker.status === "PENDING" ? "I kø" : deltaker.status === "DONE" ? "Ført" : deltaker.status === "SKIPPED" ? "Hoppet over" : "Ikke møtt";
 
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 18, color: TN.navy900, fontFamily: TN.font.body }}>
       {/* Også øverst — coachen skal ikke måtte skrolle forbi 25 forsøksfelt for å komme tilbake til køen. */}
-      <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, alignSelf: "flex-start", color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>Tilbake til køen</Link>
-      <TnKort padding={0} style={{ overflow: "hidden" }}>
-        <div style={{ display: "flex", gap: 12, padding: "16px 18px" }}>
-          <span aria-hidden="true" style={{ width: 4, alignSelf: "stretch", borderRadius: TN.radius.xs, background: TN.red600, flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0, fontFamily: TN.font.display, fontSize: TN.text.h2, letterSpacing: TN.tracking.heading, color: TN.navy900 }}>{deltaker.spillerNavn}</h1>
-              <TnPille tone={statusPilleTone}>{statusEtikett}</TnPille>
-            </div>
-            <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>
-              {p.name} · {deltaker.testDagTitle}
-            </p>
-          </div>
+      <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, alignSelf: "flex-start", color: TN.navy600, fontSize: 14, fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 4 }}>Tilbake til køen</Link>
+      <header style={{ display: "grid", gap: 4 }}>
+        <span style={{ fontFamily: TN.font.mono, fontSize: 12, lineHeight: 1.3, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{p.name} · {deltaker.testDagTitle}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{deltaker.spillerNavn}</h1>
+          <TnPille tone={statusPilleTone}>{statusEtikett}</TnPille>
         </div>
-      </TnKort>
+        {gate && deltaker.status === "PENDING" ? <p style={{ margin: "4px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>Trykk Godkjent eller Bom etter hvert slag. Testen teller bare når alle {p.rows.length} er ført.</p> : null}
+      </header>
 
       {deltaker.utkastFeil && <p role="alert" style={{ margin: 0, color: TN.status.redText, fontSize: TN.text.sm }}>{deltaker.utkastFeil}</p>}
 
@@ -134,14 +158,46 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
         </TnKort>
       ) : (
         <>
+          {gate ? (
+            <TnKort style={{ display: "grid", gap: 16 }}>
+              <span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900 }}>
+                {nesteGate === -1 ? `Alle ${p.rows.length} ført` : `Slag ${nesteGate + 1} av ${p.rows.length}`}
+              </span>
+              <div aria-label="Ført så langt" style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(p.rows.length, 9)}, minmax(0, 1fr))`, gap: 4 }}>
+                {p.rows.map((_, i) => {
+                  const v = raw[String(i + 1)]?.[gate.key];
+                  const stil = v === gate.ok
+                    ? { background: TN.status.greenBg, color: TN.status.greenText }
+                    : v === gate.bom
+                      ? { background: TN.status.redBg, color: TN.status.redText }
+                      : i === nesteGate
+                        ? { border: `2px solid ${TN.navy900}`, background: TN.white, color: TN.navy900 }
+                        : { background: TN.ink100, color: TN.ink700 };
+                  return <span key={i} aria-label={`Slag ${i + 1}: ${v === gate.ok ? "Godkjent" : v === gate.bom ? "Bom" : "ikke ført"}`} style={{ display: "grid", placeItems: "center", height: 40, fontFamily: TN.font.mono, fontWeight: 500, fontSize: 13, ...stil }}>{v === gate.ok ? "G" : v === gate.bom ? "B" : i + 1}</span>;
+                })}
+              </div>
+              {deltaker.status === "PENDING" && deltaker.kanSkrive ? (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    <button type="button" disabled={felterDisabled || nesteGate === -1} onClick={() => settGate(nesteGate, gate.ok)} style={{ minHeight: 88, border: `2px solid ${TN.status.green}`, borderRadius: TN.radius.sm, background: TN.status.greenBg, color: TN.status.greenText, fontFamily: TN.font.body, fontSize: 20, fontWeight: 700, cursor: "pointer" }}>Godkjent</button>
+                    <button type="button" disabled={felterDisabled || nesteGate === -1} onClick={() => settGate(nesteGate, gate.bom)} style={{ minHeight: 88, border: `2px solid ${TN.status.red}`, borderRadius: TN.radius.sm, background: TN.status.redBg, color: TN.status.redText, fontFamily: TN.font.body, fontSize: 20, fontWeight: 700, cursor: "pointer" }}>Bom</button>
+                  </div>
+                  <div><TnKnapp variant="tekst" disabled={felterDisabled || sisteGate === -1} onClick={() => settGate(sisteGate, "")}>Angre siste</TnKnapp></div>
+                </>
+              ) : null}
+              <p style={{ margin: 0, fontSize: 12.5, color: TN.ink500 }}>Føres som «Kontrollert», fordi en trener fører. G er Godkjent, B er Bom.</p>
+            </TnKort>
+          ) : null}
+          <details open={!gate}>
+            {gate ? <summary style={{ cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center", fontSize: 14, fontWeight: 700, color: TN.navy600 }}>Alle forsøk og valgfrie felt</summary> : null}
           <TnKort>
             <fieldset disabled={felterDisabled} style={{ border: 0, padding: 0, margin: 0, minWidth: 0, display: "flex", flexDirection: "column", gap: 16 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
                   <span style={{ fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{ferdigAntall} av {p.rows.length} forsøk registrert</span>
                 </div>
-                <div style={{ height: 6, borderRadius: TN.radius.xs, background: TN.ink100, overflow: "hidden" }} role="progressbar" aria-valuenow={fremdriftPct} aria-valuemin={0} aria-valuemax={100}>
-                  <div style={{ width: `${fremdriftPct}%`, height: "100%", background: TN.navy600, borderRadius: TN.radius.xs }} />
+                <div style={{ height: 8, background: TN.navy100, overflow: "hidden" }} role="progressbar" aria-valuenow={fremdriftPct} aria-valuemin={0} aria-valuemax={100}>
+                  <div style={{ width: `${fremdriftPct}%`, height: "100%", background: TN.navy900 }} />
                 </div>
               </div>
 
@@ -187,6 +243,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
               </div>
             </fieldset>
           </TnKort>
+          </details>
 
           {deltaker.status === "PENDING" && deltaker.kanSkrive && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -205,7 +262,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
                 ? "Denne testdagen er ikke aktiv og tar ikke imot nye registreringer."
                 : deltaker.utkastFeil
                   ? "Utkastet kan ikke føres videre — se feilmeldingen over."
-                  : "Du har innsyn som hjelpetrener og kan ikke føre testen selv."}
+                  : "Du har innsyn som Assist Coach og kan ikke føre testen selv."}
             </p>
           )}
 
@@ -238,11 +295,11 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
 
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", borderTop: `1px solid ${TN.borderSubtle}`, paddingTop: 14 }}>
         {deltaker.forrigePendingDeltakerId ? (
-          <Link href={`/team-norway/fellestesting/${deltaker.forrigePendingDeltakerId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>← Forrige i køen</Link>
+          <Link href={`/team-norway/fellestesting/${deltaker.forrigePendingDeltakerId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy600, fontSize: 14, fontWeight: 700 }}>← Forrige i køen</Link>
         ) : <span />}
-        <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>Tilbake til køen</Link>
+        <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Tilbake til køen</Link>
         {deltaker.nestePendingDeltakerId ? (
-          <Link href={`/team-norway/fellestesting/${deltaker.nestePendingDeltakerId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>Neste i køen →</Link>
+          <Link href={`/team-norway/fellestesting/${deltaker.nestePendingDeltakerId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Neste i køen →</Link>
         ) : <span />}
       </nav>
     </section>

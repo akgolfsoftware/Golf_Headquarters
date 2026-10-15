@@ -3,18 +3,13 @@ import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnGruppeanalyseValg, hentTnGruppeanalyseResultat } from "@/lib/domain/tn-arbeidsflate";
-import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand, tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnKort } from "@/components/team-norway/core";
+import { TnStortTall } from "@/components/team-norway/tn-grunnmur";
 import { TnDataTable } from "@/components/team-norway/tn-data-table";
 import { TN } from "@/lib/v2/team-norway";
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", timeZone: "Europe/Oslo" });
-
-function rolleNavn(rolle: string) {
-  if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
-  if (rolle === "PLAYER") return "Spiller";
-  return rolle;
-}
 
 function statusTekst(status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE" | "IKKE_TESTDAG"): string {
   if (status === "PENDING") return "Ikke ført ennå";
@@ -26,9 +21,15 @@ function statusTekst(status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE" | "IKKE_T
 
 // minWidth:0 hindrer <select> med lange protokollnavn fra å presse raden
 // utenfor 390px — uten den vinner selectens egen innholdsbredde over flex.
-const feltStil: React.CSSProperties = { minHeight: 44, minWidth: 0, maxWidth: "100%", padding: "0 12px", border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontSize: TN.text.sm };
+const feltStil: React.CSSProperties = { minHeight: 48, minWidth: 0, maxWidth: "100%", padding: "0 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.ink900, fontSize: 16 };
+const visKnapp: React.CSSProperties = { minHeight: 48, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontSize: 14, fontWeight: 700, cursor: "pointer", alignSelf: "flex-end" };
+const komma = (n: number) => (Math.round(n * 10) / 10).toString().replace(".", ",");
 
 /**
+ * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Analyse (pakke 5).
+ * Avvik:
+ *   - Snitt per WANG-skole står ikke; skolene står i tabellen og i WANG-resultater.
+ *
  * TN-utvidelse 14.09.2026: gruppeanalyse gjelder ALLTID en valgt testdag
  * (faktiske deltakere) eller en valgt protokoll (beste resultat per aktiv
  * spiller på nøyaktig den protokollen) — aldri en sammenslått, tverr-
@@ -46,16 +47,16 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
   const ugyldigValg = (sp.protokoll || sp.dag) && !resultat;
 
   return (
-    <TnShell aktiv="analyse" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(valg.kontekst.rolle)} groupId={valg.kontekst.gruppe.id} visTrenerflater={!valg.kontekst.erSpiller} kanAdministrere={valg.kontekst.kanAdministrere}>
+    <TnShell aktiv="analyse" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(valg.kontekst.rolle)} groupId={valg.kontekst.gruppe.id} visTrenerflater={!valg.kontekst.erSpiller} kanAdministrere={valg.kontekst.kanAdministrere}>
       <TnSidehode overlinje="Gruppeanalyse" tittel="Sammenlign kompatible målinger" ingress="Velg én testdag eller én protokoll. Ulike protokoller blandes aldri i samme sammenligning." />
 
       {!valg.kontekst.erSpiller && (
         <TnSeksjon tittel="WANG-skolene">
-          <p style={{ margin: "0 0 12px", color: TN.textSecondary, fontSize: TN.text.sm }}>
+          <p style={{ margin: "0 0 4px", color: TN.ink700, fontSize: 14.5 }}>
             Åpne full historikk for fullførte testresultater fra alle aktive WANG-grupper.
           </p>
-          <Link href="/team-norway/wang-resultater" style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>
-            Se alle WANG-resultater →
+          <Link href="/team-norway/wang-resultater" style={{ color: TN.navy600, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center", textDecoration: "underline", textUnderlineOffset: 4 }}>
+            Se alle WANG-resultater
           </Link>
         </TnSeksjon>
       )}
@@ -63,24 +64,24 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
       <TnSeksjon tittel="Velg grunnlag">
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <form method="get" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", minWidth: 0 }}>
-            <label style={{ fontSize: TN.text.sm, color: TN.textSecondary, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 14, fontWeight: 700, color: TN.ink900, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
               Testdag
               <select name="dag" defaultValue={sp.dag ?? ""} style={feltStil}>
                 <option value="">Velg testdag</option>
                 {valg.testdager.map((d) => <option key={d.id} value={d.id}>{d.title} · {dato.format(d.scheduledAt)}</option>)}
               </select>
             </label>
-            <button type="submit" style={{ ...feltStil, fontWeight: TN.weight.semibold, cursor: "pointer" }}>Vis</button>
+            <button type="submit" style={visKnapp}>Vis</button>
           </form>
           <form method="get" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", minWidth: 0 }}>
-            <label style={{ fontSize: TN.text.sm, color: TN.textSecondary, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 14, fontWeight: 700, color: TN.ink900, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
               Protokoll
               <select name="protokoll" defaultValue={sp.protokoll ?? ""} style={feltStil}>
                 <option value="">Velg protokoll</option>
                 {valg.protokoller.map((p) => <option key={p.id} value={p.id}>{p.navn}</option>)}
               </select>
             </label>
-            <button type="submit" style={{ ...feltStil, fontWeight: TN.weight.semibold, cursor: "pointer" }}>Vis</button>
+            <button type="submit" style={visKnapp}>Vis</button>
           </form>
         </div>
       </TnSeksjon>
@@ -92,12 +93,33 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
           tittel={resultat.protokollNavn}
           forklaring={`${resultat.lowerIsBetter ? "Lavere tall er bedre." : "Høyere tall er bedre."} Grunnlag: ${resultat.grunnlag.type === "testdag" ? `testdagen «${resultat.grunnlag.navn}»` : `beste gyldige resultat per spiller på protokollen`}${resultat.grunnlag.dato ? " · " + dato.format(resultat.grunnlag.dato) : ""}.`}
         >
+          {(() => {
+            const tall = resultat.rader.filter((r) => r.score !== null).map((r) => r.score as number);
+            const maks = tall.length ? Math.max(...tall.map((t) => Math.abs(t))) : 0;
+            return tall.length ? (
+              <TnKort style={{ display: "grid", gap: 12, marginBottom: 12 }}>
+                <TnStortTall verdi={komma(tall.reduce((a, b) => a + b, 0) / tall.length)} enhet="snitt">
+                  <span style={{ fontSize: 14.5, color: TN.ink700 }}>{tall.length} av {resultat.rader.length} med resultat</span>
+                </TnStortTall>
+                <div style={{ display: "grid", gap: 8 }}>
+                  {resultat.rader.filter((r) => r.score !== null).slice(0, 12).map((r) => (
+                    <div key={r.spillerId} style={{ display: "grid", gridTemplateColumns: "minmax(0, 120px) minmax(0, 1fr) auto", gap: 10, alignItems: "center" }}>
+                      <span style={{ fontSize: 13.5, fontWeight: 700, overflowWrap: "anywhere" }}>{r.spillerNavn}</span>
+                      <span aria-hidden="true" style={{ height: 10, background: TN.ink100 }}><span style={{ display: "block", height: "100%", width: `${maks ? (Math.abs(r.score as number) / maks) * 100 : 0}%`, background: TN.navy900 }} /></span>
+                      <span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 14, textAlign: "right" }}>{r.formatert ?? "—"}</span>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ margin: 0, fontSize: 12.5, color: TN.ink500 }}>Stolpene viser hvert resultat mot det høyeste i grunnlaget. {resultat.lowerIsBetter ? "Lavere er bedre her, så kortere stolpe er bedre." : ""} Manglende resultater står i tabellen under.</p>
+              </TnKort>
+            ) : null;
+          })()}
           <TnDataTable
             caption={resultat.protokollNavn}
             kolonner={[{ key: "skole", label: "Skole" }, { key: "spiller", label: "Spiller" }, { key: "score", label: "Resultat", align: "right" }]}
             rader={resultat.rader.map((rad) => ({
               skole: rad.skole ?? "Team Norway",
-              spiller: rad.skole ? rad.spillerNavn : <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{rad.spillerNavn}</Link>,
+              spiller: rad.skole ? rad.spillerNavn : <Link href={`/team-norway/spiller/${rad.spillerId}/oversikt`} style={{ color: TN.navy900, fontWeight: 700, textUnderlineOffset: 4 }}>{rad.spillerNavn}</Link>,
               score: rad.formatert ?? statusTekst(rad.status),
             }))}
             empty="Ingen spillere i grunnlaget."
