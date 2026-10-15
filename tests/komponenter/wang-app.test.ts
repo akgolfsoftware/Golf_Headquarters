@@ -136,7 +136,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     );
 
     assert.ok(html.includes('Gruppeposter'), 'Skal vise gruppeposter');
-    assert.ok(html.includes('WANG-13'), 'Skal referere til WANG-13');
+    assert.ok(html.includes('Ny gruppepost'), 'Skal ha skjema for gruppepost');
     assert.ok(html.includes('Publiser melding'), 'Skal ha knapp for publisering');
   });
 
