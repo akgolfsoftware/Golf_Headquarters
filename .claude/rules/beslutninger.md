@@ -4,6 +4,33 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLERENS WORKBENCH FÅR NIVÅENE, COACHEN BEHOLDER DE FIRE FLATENE (Anders 14.10.2026, bindende)
+
+Svar på avklaringen i `docs/planer/portering-godkjente-skjermer-2026-10-14.md`: «Spilleren får nivåene
+År · Periode · Måned · Uke · Målsetninger fra det godkjente designet i stedet for de fire flatene.
+Coachen beholder de fire flatene.»
+
+- **PlayerHQ:** Workbench (`/portal/planlegge/workbench`) har nivåene År · Periode · Måned · Uke ·
+  Målsetninger, tegnet etter pakke 3 (`docs/design-system/utkast-playerhq/plan.html`, godkjent 14.10).
+- **AgencyOS:** coachens Workbench (`/admin/workbench/[playerId]`) beholder Sesongkart · Ukeverksted ·
+  Trenerbord · Stats (`WorkbenchSamlet`).
+- Ingen funksjon forsvinner for spilleren: det de fire flatene gir i dag, skal finnes i et nivå eller i
+  Plan, Stats eller Meg.
+
+**Overstyrer:** «Workbench beholder de fire visningene fra 02.10» i §KODEGJENNOMGANGEN 06.10, for spilleren.
+
+**Arbeidet dette utløser** (steg i porteringsplanen):
+
+1. **År:** `PH11Aarsplan` (#1255). Ferdig når `?niva=ar` viser den og Anders har sett den (port 7).
+2. **Periode og periodeskjema** (steg 3), **måned og månedsskjema** (steg 4), **opprett årsplan** (steg 5):
+   nye komponenter i `src/components/portal/precision/`, koblet i `src/app/portal/planlegge/workbench/page.tsx`.
+3. **Uke og Gjenta** (steg 6): spilleren slutter å bruke `WorkbenchSamlet`. `brukSamletWorkbench`
+   (`src/lib/workbench/samlet-url.ts`) gjelder da bare coach. Ferdig når ingen `/portal`-adresse viser
+   `WorkbenchSamlet`, og gamle `flate=`-lenker for spilleren sender til riktig nivå, låst med test.
+4. **Målsetninger og IUP-måltall** (steg 7).
+5. **Mer-registeret** (`samletMerRegister`, 18 innganger) og «Trenerbord»/«Stats» for spilleren: hver inngang
+   får et sted i nivåene eller i Plan, Stats eller Meg før steg 6 legges inn. Ferdig når lista er gått
+   gjennom og ingen inngang mangler.
 ## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
 
 Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller skal kunne booke om timen sin om det er ledig i bookingsystemet. Men det er kun innenfor tilgjengeligheten som er satt hos coach.»
@@ -171,9 +198,10 @@ Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` 
 - **Forelderens innsyn fortsetter etter 16 år**, til spilleren selv fjerner forelderen.
 - **Gamle filer som ingen levende kode bruker, slettes** (432 filer, liste i
   `docs/review/vedlegg/doedkode-filliste.txt`), i små samlede endringer på høyst 20 filer.
-- **Workbench beholder de fire visningene fra 02.10** (Sesongkart · Ukeverksted · Trenerbord · Stats).
+- **Coachens Workbench beholder de fire visningene fra 02.10** (Sesongkart · Ukeverksted · Trenerbord · Stats).
   Detaljene fra nivåtegningene (Gjenta-arket, «Egen»-merket, øktarket, periode- og månedsskjema)
-  tegnes inn i dem. Svar på M1 i Workbench-beskrivelsen.
+  tegnes inn i dem. Svar på M1 i Workbench-beskrivelsen. Spilleren får nivåene i stedet
+  (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10).
 - **Tilgangsreglene kan endres i fase 2** av kodegjennomgangen, etter planen i dokumentet.
 
 **Overstyrer:** «DataGolf vises aldri for andre enn Anders» i §PIPELINES ER ENESTE KILDE og D-19
