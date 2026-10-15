@@ -83,6 +83,10 @@
 .toppOrg b { font-family: var(--tn-font-display); font-weight: 500; font-size: 13px; line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; }
 .toppOrg span { font-size: 12px; line-height: 1; color: var(--tn-rail-muted); }
 
+.tilbakelinje { display: flex; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--tn-ink-200); background: var(--tn-white); }
+.tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px; font-size: 15px; font-weight: 700; color: var(--tn-navy-900); text-decoration: none; }
+.tilbake:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: -3px; }
+
 .bunnmeny {
   position: fixed;
   left: 0;
@@ -158,6 +162,6 @@
     color: var(--tn-rail-text);
   }
   .menyLogo { margin: 0 20px 6px; align-self: flex-start; }
-  .topplinje, .bunnmeny, .bunnplass, .ark { display: none; }
+  .topplinje, .bunnmeny, .bunnplass, .ark, .tilbakelinje { display: none; }
   .innhold { padding: 32px 44px 48px; }
 }

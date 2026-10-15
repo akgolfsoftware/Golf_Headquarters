@@ -8,9 +8,9 @@ export async function hentSkjermbruker() {
   return requirePortalUser({ kreverTilgang: "INGEN" });
 }
 
-export function SkjermRamme({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string | null; kontekst: TnArbeidskontekst; children: ReactNode }) {
+export function SkjermRamme({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string | null; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {
   return (
-    <TnShell aktiv={aktiv} brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
+    <TnShell aktiv={aktiv} brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} tilbake={tilbake}>
       {children}
     </TnShell>
   );
