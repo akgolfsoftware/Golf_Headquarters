@@ -1,0 +1,457 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Åpen statistikk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 4: Statistikk (åpne sider) · ST-01 til ST-06 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.st-nav{display:flex;flex-wrap:wrap;gap:4px;padding-bottom:var(--r2);border-bottom:1px solid var(--sand-300)}
+.st-nav a{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:8px;font:500 14px/1 var(--sans);color:var(--graphite-800)!important;text-decoration:none}
+.st-nav a.aktiv{background:var(--graphite-900);color:#fff!important}
+.st-nav a .ikon{width:14px;height:14px}
+.sokefelt{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 14px;border:1px solid var(--graphite-500);border-radius:10px;background:var(--white)}
+.sokefelt input{border:0;outline:0;font:400 16px/1 var(--sans);flex:1;background:transparent;color:var(--graphite-900);min-height:48px}
+.live{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:12px;background:var(--graphite-900);color:#fff}
+.live .rad{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.live-pille{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--rust);font:600 12px/1 var(--sans)}
+.live-pille i{width:7px;height:7px;border-radius:50%;background:#fff;animation:puls 1.4s infinite}
+@keyframes puls{50%{opacity:.3}}
+.live-liste{display:grid;gap:0}
+.live-liste div{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.15);font-size:14.5px}
+.live-liste .pos{font:600 15px/1 var(--mono);opacity:.8}
+.live-liste .til{font:600 18px/1 var(--mono)}
+.live-liste span.k{display:block;font-size:12.5px;opacity:.75}
+.innganger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.inngang{display:grid;gap:6px;align-content:start;padding:14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit!important;min-height:104px}
+.inngang b{font:600 16px/1.25 var(--sans)}
+.inngang .t{font:600 24px/1 var(--mono)}
+.inngang .kilde{font-size:12.5px}
+.inngang.laast{background:var(--sand-100)}
+.filter{display:flex;flex-wrap:wrap;gap:6px}
+.filter select{min-height:44px;padding:0 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-900)}
+.rader{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.rad-k{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-bottom:1px solid var(--sand-300);text-decoration:none;color:inherit!important}
+.rad-k:last-child{border-bottom:0}
+.rad-k b{display:block;font:600 15px/1.3 var(--sans)}
+.rad-k .v{font:600 18px/1 var(--mono);text-align:right}
+.rad-k .v small{display:block;font:500 11.5px/1.3 var(--sans);color:var(--graphite-600)}
+.rad-k .hode-tabell{display:none}
+.tabellhode{display:none}
+.barnevern{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:13.5px;color:var(--graphite-800)}
+.barnevern .ikon{width:18px;height:18px;flex:none;margin-top:1px}
+.profil-topp{display:grid;gap:var(--r3)}
+.nokkeltall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.res-rad{display:grid;grid-template-columns:minmax(0,1fr) 48px 64px;gap:var(--r2);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.res-rad:last-child{border-bottom:0}
+.res-rad b{display:block;font-weight:600}
+.res-rad .p{font:600 14px/1 var(--mono);text-align:right;color:var(--graphite-600)}
+.res-rad .s{font:600 17px/1 var(--mono);text-align:right}
+.lb{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.lb-rad{display:grid;grid-template-columns:40px minmax(0,1fr) 48px 52px;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.lb-rad:last-child{border-bottom:0}
+.lb-rad.hode{font:600 12px/1.2 var(--sans);color:var(--graphite-600);background:var(--sand-100);min-height:0}
+.lb-rad .pos{font:600 15px/1 var(--mono)}
+.lb-rad .t{font:500 13px/1 var(--mono);text-align:right;color:var(--graphite-600)}
+.lb-rad .til{font:600 17px/1 var(--mono);text-align:right}
+.lb-rad .til.under{color:var(--green-700)}
+.lb-rad b{display:block;font-weight:600}
+.lb-rad .k{font-size:12.5px;color:var(--graphite-600)}
+.fordeling{display:grid;gap:8px}
+.ford-rad{display:grid;grid-template-columns:92px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:14px}
+.ford-rad .v{font:600 13.5px/1 var(--mono);text-align:right;white-space:nowrap}
+.stolpe span.eagle{background:var(--slag)} .stolpe span.birdie{background:var(--slag-ink)} .stolpe span.par{background:var(--graphite-600)} .stolpe span.bogey{background:var(--tek-ink)} .stolpe span.dobbel{background:var(--turn)}
+.dg{display:inline-flex;align-items:center;gap:6px;font:500 12.5px/1 var(--sans);color:var(--graphite-600)}
+.dg b{font-weight:700;color:var(--graphite-900)}
+.coachlinje{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-radius:10px;background:var(--sand-150);font-size:13.5px}
+.pct{display:grid;gap:10px}
+.pct-rad{display:grid;grid-template-columns:110px minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:14px}
+.pct-bane{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--sand-150),var(--sand-300))}
+.pct-bane i{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--slag);transform:translateX(-2px)}
+.pct-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.sammenlign{display:grid;grid-template-columns:minmax(0,1fr) 72px 72px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.sammenlign.hode{font:600 12.5px/1.2 var(--sans);color:var(--graphite-600)}
+.sammenlign .v{font:600 15px/1 var(--mono);text-align:right}
+.sammenlign .v.best{color:var(--green-700)}
+.verktoy-kort{display:grid;gap:6px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit!important}
+.verktoy-kort b{font:600 16px/1.3 var(--sans)}
+.kalk{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:12px;background:var(--sand-100)}
+.kalk .svar{display:grid;gap:4px;padding:var(--r4);border-radius:10px;background:var(--slag);color:#fff}
+.kalk .svar b{font:600 44px/1 var(--mono);letter-spacing:-.03em}
+.wrapped{display:grid;gap:var(--r3)}
+.wr-kort{display:grid;gap:6px;padding:var(--r5) 18px;border-radius:16px;color:#fff}
+.wr-kort b{font:600 56px/1 var(--mono);letter-spacing:-.04em}
+.wr-kort span{font-size:15px;opacity:.92}
+.wr-kort.slag{background:var(--slag)} .wr-kort.spill{background:var(--spill-ink)} .wr-kort.turn{background:var(--turn)} .wr-kort.tek{background:var(--tek-ink)}
+.quiz-valg{display:grid;gap:var(--r2)}
+.quiz-valg button{min-height:52px;padding:0 16px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:500 15px/1.3 var(--sans);text-align:left;cursor:pointer;color:var(--graphite-900)}
+.quiz-valg button[aria-pressed="true"]{border:2px solid var(--green-700);background:var(--green-50)}
+@container (min-width:900px){
+  .innganger{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .nokkeltall{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tabellhode{display:grid;grid-template-columns:auto minmax(0,1fr) 120px 120px 100px;gap:var(--r3);padding:10px 14px;background:var(--sand-100);font:600 12.5px/1.2 var(--sans);color:var(--graphite-600);border-bottom:1px solid var(--sand-300)}
+  .rad-k.bred{grid-template-columns:auto minmax(0,1fr) 120px 120px 100px}
+  .rad-k.bred .hode-tabell{display:block;font:500 14px/1.2 var(--mono);text-align:right}
+  .lb-rad{grid-template-columns:56px minmax(0,1fr) 80px 80px 80px 80px 64px}
+  .lb-rad .pc{display:block!important}
+}
+.lb-rad .pc{display:none}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">Statistikk · gruppe 4 · ST-01 til ST-06 · utkast 1 · 15.10.2026</span>
+    <h1>Åpen statistikk</h1>
+    <p>Tolv skjermer: hub og søk, spillerliste, turneringsliste, spillerprofil, klubb, turnering med leaderboard, PGA-sammenligning og spillersammenligning for coacher, det en spiller ser i stedet, verktøy, quiz og sesongoppsummering. Alle navn og tall er oppdiktet. Søndag 4. oktober, uke 40.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="hub">ST-01 Hub</button>
+      <button type="button" aria-pressed="false" data-skjerm="sok">ST-01 Søk</button>
+      <button type="button" aria-pressed="false" data-skjerm="spillere">ST-02 Spillere</button>
+      <button type="button" aria-pressed="false" data-skjerm="turneringer">ST-02 Turneringer</button>
+      <button type="button" aria-pressed="false" data-skjerm="profil">ST-03 Spiller</button>
+      <button type="button" aria-pressed="false" data-skjerm="klubb">ST-03 Klubb</button>
+      <button type="button" aria-pressed="false" data-skjerm="turnering">ST-04 Turnering</button>
+      <button type="button" aria-pressed="false" data-skjerm="pga">ST-05 PGA (coach)</button>
+      <button type="button" aria-pressed="false" data-skjerm="sammenlign">ST-05 Sammenlign (coach)</button>
+      <button type="button" aria-pressed="false" data-skjerm="sperret">ST-05 Spiller ser</button>
+      <button type="button" aria-pressed="false" data-skjerm="verktoy">ST-06 Verktøy</button>
+      <button type="button" aria-pressed="false" data-skjerm="quiz">ST-06 Quiz</button>
+      <button type="button" aria-pressed="false" data-skjerm="wrapped">ST-06 Sesongen</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Egen undermeny</b> for statistikk: Oversikt · Spillere · Turneringer · Klubber · Baner · Verktøy, og PGA med lås.</li>
+        <li><b>Norske i aksjon</b> som mørkt kort øverst med Live-pille, plass og til par.</li>
+        <li><b>Tabeller blir kortrader</b> på mobil og tabell med kolonner på PC. Filtrene bryter linje.</li>
+        <li><b>Leaderboard</b> med scorefordeling i farger (eagle og birdie blå, bogey og dobbel varm).</li>
+        <li><b>Sesongoppsummeringen</b> er fylte kort med ett stort tall hver.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Kun brutto. Nettoklasser er filtrert bort med liste over faktiske nettokoder, ikke «ender på N».</li>
+        <li>Barnevern: spillere født 2008 eller senere uten samtykke vises aldri åpent. Manglende fødselsår vises ikke. Det står forklart der lista er kortere enn feltet.</li>
+        <li>Data Golf bare for coacher (vedtak 06.10): PGA, sammenligning og SG-sammenligning ligger bak innlogging. Spilleren og uinnloggede ser låst inngang. «Powered by Data Golf» der tallene vises.</li>
+        <li>Til par fra resultatlinja, aldri fra baneregisteret. Plass er plass, ikke persentil. Under 4 runder gir ingen snitt.</li>
+        <li>Rust bare på Live-pillen.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Min progresjon og SG-sammenligning</b> ligger i ST-05. Tegnet bak coach-innlogging som resten av Data Golf. Bør de flyttes til PlayerHQ Stats for spilleren?</li>
+        <li><b>Quiz og sesongoppsummering</b> er beholdt. Ikke avgjort om de skal være med etter lansering.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ST-01 Hub ================= -->
+<template id="hub">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <nav class="st-nav" data-behold><a href="#" class="aktiv">Oversikt</a><a href="#" data-gaa="spillere">Spillere</a><a href="#" data-gaa="turneringer">Turneringer</a><a href="#" data-gaa="klubb">Klubber</a><a href="#">Baner</a><a href="#" data-gaa="verktoy">Verktøy</a><a href="#" data-gaa="sperret"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>PGA</a></nav>
+  <div class="topp" data-behold><span class="dato">AK Golf Stats</span><h1 class="tittel">Norsk golf i tall</h1><p class="ingress">Resultater, spillere og baner fra norske turneringer. Bare brutto score.</p></div>
+  <label class="sokefelt" data-gaa="sok"><svg class="ikon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="sok1" placeholder="Søk etter spiller, klubb, bane eller turnering"></label>
+  <section class="live inn">
+    <div class="rad"><b class="undertittel">Denne uken · norske i aksjon</b><span class="live-pille"><i></i>Live</span></div>
+    <div class="live-liste">
+      <div><span class="pos">T4</span><span>Henrik Solberg<span class="k">Challenge Tour · runde 3 av 4</span></span><span class="til">−7</span></div>
+      <div><span class="pos">T12</span><span>Marius Aune<span class="k">Korn Ferry Tour · runde 2 av 4</span></span><span class="til">−3</span></div>
+      <div><span class="pos">22</span><span>Lene Dahl<span class="k">LET · runde 3 av 3</span></span><span class="til">+1</span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Utforsk</h2></div>
+    <div class="innganger">
+      <a href="#" class="inngang" data-gaa="spillere"><b>Spillere</b><span class="t">4 812</span><span class="kilde">Søk, filter, sammenlign</span></a>
+      <a href="#" class="inngang" data-gaa="turneringer"><b>Turneringer</b><span class="t">1 306</span><span class="kilde">Norske tourer og klubb</span></a>
+      <a href="#" class="inngang" data-gaa="klubb"><b>Klubber</b><span class="t">178</span><span class="kilde">Spillere og resultater per klubb</span></a>
+      <a href="#" class="inngang"><b>Baner</b><span class="t">164</span><span class="kilde">Slope, CR og scorefordeling</span></a>
+      <a href="#" class="inngang"><b>Leaderboards</b><span class="t">10</span><span class="kilde">Topp 10 i seks kategorier</span></a>
+      <a href="#" class="inngang"><b>Årganger</b><span class="t">—</span><span class="kilde">Fra 16 år</span></a>
+      <a href="#" class="inngang" data-gaa="verktoy"><b>Verktøy</b><span class="t">6</span><span class="kilde">Score til HCP, WHS, SG-estimator</span></a>
+      <a href="#" class="inngang laast" data-gaa="sperret"><b>PGA og Data Golf</b><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="kilde">For coacher. Logg inn.</span></a>
+    </div>
+  </section>
+  <p class="kilde">Kilde: turneringsresultatene, oppdatert hver mandag. Live-tall fra tourenes egne resultatsider.</p>
+</main></div>
+</template>
+
+<!-- ================= ST-01 Søk ================= -->
+<template id="sok">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <nav class="st-nav" data-behold><a href="#" data-gaa="hub">Oversikt</a><a href="#" data-gaa="spillere">Spillere</a><a href="#" data-gaa="turneringer">Turneringer</a><a href="#" data-gaa="klubb">Klubber</a><a href="#">Baner</a><a href="#" data-gaa="verktoy">Verktøy</a></nav>
+  <label class="sokefelt" data-behold><svg class="ikon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="sok2" value="solberg"></label>
+  <div class="chips" data-gruppe><button type="button" aria-pressed="true">Alle <b>5</b></button><button type="button" aria-pressed="false">Spillere <b>3</b></button><button type="button" aria-pressed="false">Klubber <b>1</b></button><button type="button" aria-pressed="false">Turneringer <b>1</b></button></div>
+  <div class="rader">
+    <a href="#" class="rad-k" data-gaa="profil"><span class="avatar lys">HS</span><span><b>Henrik Solberg</b><span class="kilde">Spiller · 2002 · Solberg GK</span></span><span class="v">72,4<small>snitt brutto</small></span></a>
+    <a href="#" class="rad-k"><span class="avatar lys">KS</span><span><b>Kari Solberg</b><span class="kilde">Spiller · 1988 · Oslo GK</span></span><span class="v">79,8<small>snitt brutto</small></span></a>
+    <a href="#" class="rad-k"><span class="avatar lys">PS</span><span><b>Per Solberg</b><span class="kilde">Spiller · 1975 · Borre GK</span></span><span class="v">—<small>under 4 runder</small></span></a>
+    <a href="#" class="rad-k" data-gaa="klubb"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V3l12 4-12 4"/></svg></span><span><b>Solberg Golfklubb</b><span class="kilde">Klubb · Viken</span></span><span class="v">212<small>spillere</small></span></a>
+    <a href="#" class="rad-k" data-gaa="turnering"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/></svg></span><span><b>Solberg Open 2026</b><span class="kilde">Turnering · 22.–23. august</span></span><span class="v">96<small>spillere</small></span></a>
+  </div>
+  <div class="barnevern"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Spillere født 2008 eller senere vises bare når de har gitt samtykke. Søket viser ikke Data Golf-tall.</div>
+</main></div>
+</template>
+
+<!-- ================= ST-02 Spillere ================= -->
+<template id="spillere">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <nav class="st-nav" data-behold><a href="#" data-gaa="hub">Oversikt</a><a href="#" class="aktiv">Spillere</a><a href="#" data-gaa="turneringer">Turneringer</a><a href="#" data-gaa="klubb">Klubber</a><a href="#">Baner</a><a href="#" data-gaa="verktoy">Verktøy</a></nav>
+  <div class="topp" data-behold><h1 class="tittel">Spillere</h1><p class="ingress">Snittscore er brutto, 2026, alle tellende runder.</p></div>
+  <div class="filter" data-behold><select aria-label="Kjønn" id="f1"><option>Alle kjønn</option></select><select aria-label="Region" id="f2"><option>Alle regioner</option></select><select aria-label="Årgang" id="f3"><option>Alle årganger</option></select><select aria-label="Sorter" id="f4"><option>Lavest snitt</option></select></div>
+  <div class="rader">
+    <div class="tabellhode"><span>#</span><span>Spiller</span><span style="text-align:right">Runder</span><span style="text-align:right">Beste</span><span style="text-align:right">Snitt</span></div>
+    <a href="#" class="rad-k bred" data-gaa="profil"><span class="mono" style="font-weight:600;width:24px">1</span><span><b>Henrik Solberg</b><span class="kilde">2002 · Solberg GK</span></span><span class="hode-tabell">31</span><span class="hode-tabell">66</span><span class="v">72,4</span></a>
+    <a href="#" class="rad-k bred"><span class="mono" style="font-weight:600;width:24px">2</span><span><b>Jonas Haugen</b><span class="kilde">2004 · Larvik GK</span></span><span class="hode-tabell">24</span><span class="hode-tabell">67</span><span class="v">73,0</span></a>
+    <a href="#" class="rad-k bred"><span class="mono" style="font-weight:600;width:24px">3</span><span><b>Marte Lie</b><span class="kilde">2005 · Bærum GK</span></span><span class="hode-tabell">28</span><span class="hode-tabell">68</span><span class="v">73,6</span></a>
+    <a href="#" class="rad-k bred"><span class="mono" style="font-weight:600;width:24px">4</span><span><b>Erik Moen</b><span class="kilde">2001 · Miklagard GK</span></span><span class="hode-tabell">19</span><span class="hode-tabell">69</span><span class="v">74,1</span></a>
+    <a href="#" class="rad-k bred"><span class="mono" style="font-weight:600;width:24px">5</span><span><b>Thea Berg</b><span class="kilde">2006 · Stavanger GK</span></span><span class="hode-tabell">22</span><span class="hode-tabell">69</span><span class="v">74,5</span></a>
+  </div>
+  <div class="barnevern"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Spillere født 2008 eller senere uten samtykke er ikke med i lista. Det er derfor færre juniorer enn i turneringsfeltene.</div>
+  <div class="knapper"><button type="button" class="knapp sek">Vis 25 til</button></div>
+</main></div>
+</template>
+
+<!-- ================= ST-02 Turneringer ================= -->
+<template id="turneringer">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <nav class="st-nav" data-behold><a href="#" data-gaa="hub">Oversikt</a><a href="#" data-gaa="spillere">Spillere</a><a href="#" class="aktiv">Turneringer</a><a href="#" data-gaa="klubb">Klubber</a><a href="#">Baner</a><a href="#" data-gaa="verktoy">Verktøy</a></nav>
+  <div class="topp" data-behold><h1 class="tittel">Turneringer</h1></div>
+  <div class="faner" data-gruppe data-behold><button type="button" aria-pressed="false">Kommende</button><button type="button" aria-pressed="true">Resultater</button></div>
+  <div class="filter" data-behold><select aria-label="Tour" id="tf1"><option>Alle tourer</option></select><select aria-label="Sesong" id="tf2"><option>2026</option></select><select aria-label="Region" id="tf3"><option>Alle regioner</option></select></div>
+  <div class="rader">
+    <a href="#" class="rad-k" data-gaa="turnering"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/></svg></span><span><b>Østlandstour 6 · Moss</b><span class="kilde">3.–4. oktober · 2 runder · 112 spillere</span></span><span class="pille ok"><i></i>Ferdig</span></a>
+    <a href="#" class="rad-k"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/></svg></span><span><b>NM Klubblag senior</b><span class="kilde">26.–27. september · 2 runder · 64 spillere</span></span><span class="pille ok"><i></i>Ferdig</span></a>
+    <a href="#" class="rad-k"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/></svg></span><span><b>Solberg Open 2026</b><span class="kilde">22.–23. august · 2 runder · 96 spillere</span></span><span class="pille ok"><i></i>Ferdig</span></a>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= ST-03 Spillerprofil ================= -->
+<template id="profil">
+<div class="app" data-skall="offentlig" data-tilbake="Spillere" data-tilbake-gaa="spillere"><main class="innhold">
+  <div class="profil-topp" data-behold>
+    <div style="display:flex;gap:var(--r3);align-items:center"><span class="avatar stor">HS</span><span><span class="dato">2002 · Solberg Golfklubb</span><h1 class="tittel" style="margin:4px 0 0">Henrik Solberg</h1></span></div>
+  </div>
+  <div class="nokkeltall">
+    <div class="teller"><span class="e">Snittscore 2026</span><b class="t">72,4</b><span class="trend opp" style="justify-self:start">−0,9</span></div>
+    <div class="teller"><span class="e">Beste runde</span><b class="t">66</b><span class="s">Moss, 4. okt</span></div>
+    <div class="teller"><span class="e">Runder</span><b class="t">31</b><span class="s">12 turneringer</span></div>
+    <div class="teller"><span class="e">Beste plass</span><b class="t">1</b><span class="s">Østlandstour 6</span></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Snittscore per sesong</h2><span class="kilde">brutto</span></div>
+    <div class="kort">
+      <svg class="graf" viewBox="0 0 320 120" aria-label="Snittscore 2022 til 2026"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb" stop-opacity=".35"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></linearGradient></defs><path d="M10 20 L85 42 L160 58 L235 74 L310 86 L310 104 L10 104Z" fill="url(#g2)"/><path class="tegn" d="M10 20 L85 42 L160 58 L235 74 L310 86" fill="none" stroke="#2563eb" stroke-width="3"/><g fill="#2563eb"><circle cx="310" cy="86" r="5"/></g><text class="gt" x="4" y="118">2022</text><text class="gt" x="150" y="118">2024</text><text class="gt" x="292" y="118">2026</text><text class="gt" x="4" y="14">77,1</text><text class="gt" x="282" y="78">72,4</text></svg>
+      <p class="kilde">Lavere er bedre. 2022: 77,1 · 2026: 72,4.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Siste resultater</h2></div>
+    <div class="kort">
+      <div class="res-rad"><span><b>Østlandstour 6 · Moss</b><span class="kilde">4. oktober · 69, 66</span></span><span class="p">1</span><span class="s">−9</span></div>
+      <div class="res-rad"><span><b>Solberg Open 2026</b><span class="kilde">23. august · 72, 71</span></span><span class="p">T3</span><span class="s">−1</span></div>
+      <div class="res-rad"><span><b>NM Slag</b><span class="kilde">8. august · 74, 73, 75</span></span><span class="p">T18</span><span class="s">+6</span></div>
+    </div>
+    <p class="kilde">Plass og til par fra resultatlista. Kilde: turneringsresultatene, oppdatert mandag 5. oktober.</p>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= ST-03 Klubb ================= -->
+<template id="klubb">
+<div class="app" data-skall="offentlig" data-tilbake="Klubber" data-tilbake-gaa="hub"><main class="innhold">
+  <div class="topp" data-behold><span class="dato">Klubb · Viken</span><h1 class="tittel">Solberg Golfklubb</h1></div>
+  <div class="teller-rad">
+    <div class="teller"><span class="e">Spillere med resultater</span><b class="t">212</b></div>
+    <div class="teller"><span class="e">Turneringer i 2026</span><b class="t">14</b></div>
+    <div class="teller"><span class="e">Beste snitt</span><b class="t">72,4</b><span class="s">Henrik Solberg</span></div>
+    <div class="teller"><span class="e">Klubbens snitt</span><b class="t">84,6</b><span class="s">brutto</span></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Klubbens beste i 2026</h2></div>
+    <div class="rader">
+      <a href="#" class="rad-k" data-gaa="profil"><span class="mono" style="font-weight:600">1</span><span><b>Henrik Solberg</b><span class="kilde">31 runder</span></span><span class="v">72,4</span></a>
+      <a href="#" class="rad-k"><span class="mono" style="font-weight:600">2</span><span><b>Ola Nygård</b><span class="kilde">18 runder</span></span><span class="v">76,0</span></a>
+      <a href="#" class="rad-k"><span class="mono" style="font-weight:600">3</span><span><b>Siri Vang</b><span class="kilde">12 runder</span></span><span class="v">77,3</span></a>
+    </div>
+  </section>
+  <div class="barnevern"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Spillere født 2008 eller senere uten samtykke vises ikke.</div>
+</main></div>
+</template>
+
+<!-- ================= ST-04 Turnering ================= -->
+<template id="turnering">
+<div class="app" data-skall="offentlig" data-tilbake="Turneringer" data-tilbake-gaa="turneringer"><main class="innhold">
+  <div class="topp" data-behold><span class="dato">Østlandstour 6 · Moss og Rygge GK · par 72</span><h1 class="tittel">Leaderboard</h1></div>
+  <div class="faner" data-gruppe data-behold><button type="button" aria-pressed="true">Resultat</button><button type="button" aria-pressed="false">Statistikk</button></div>
+  <div class="lb">
+    <div class="lb-rad hode"><span>Plass</span><span>Spiller</span><span class="pc" style="text-align:right">R1</span><span class="pc" style="text-align:right">R2</span><span class="pc" style="text-align:right">Totalt</span><span style="text-align:right">Hull</span><span style="text-align:right">Par</span></div>
+    <div class="lb-rad"><span class="pos">1</span><span><b>Henrik Solberg</b><span class="k">Solberg GK</span></span><span class="t pc">69</span><span class="t pc">66</span><span class="t pc">135</span><span class="t">F</span><span class="til under">−9</span></div>
+    <div class="lb-rad"><span class="pos">2</span><span><b>Jonas Haugen</b><span class="k">Larvik GK</span></span><span class="t pc">70</span><span class="t pc">68</span><span class="t pc">138</span><span class="t">F</span><span class="til under">−6</span></div>
+    <div class="lb-rad"><span class="pos">T3</span><span><b>Erik Moen</b><span class="k">Miklagard GK</span></span><span class="t pc">71</span><span class="t pc">69</span><span class="t pc">140</span><span class="t">F</span><span class="til under">−4</span></div>
+    <div class="lb-rad"><span class="pos">T3</span><span><b>Marte Lie</b><span class="k">Bærum GK</span></span><span class="t pc">72</span><span class="t pc">68</span><span class="t pc">140</span><span class="t">F</span><span class="til under">−4</span></div>
+    <div class="lb-rad"><span class="pos">5</span><span><b>Thea Berg</b><span class="k">Stavanger GK</span></span><span class="t pc">73</span><span class="t pc">69</span><span class="t pc">142</span><span class="t">F</span><span class="til under">−2</span></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Scorefordeling</h2><span class="kilde">alle hull, 112 spillere</span></div>
+    <div class="kort fordeling">
+      <div class="ford-rad"><span>Eagle eller bedre</span><div class="stolpe"><span class="eagle" data-til="2%"></span></div><span class="v">0,4 %</span></div>
+      <div class="ford-rad"><span>Birdie</span><div class="stolpe"><span class="birdie" data-til="38%"></span></div><span class="v">14,8 %</span></div>
+      <div class="ford-rad"><span>Par</span><div class="stolpe"><span class="par" data-til="100%"></span></div><span class="v">48,1 %</span></div>
+      <div class="ford-rad"><span>Bogey</span><div class="stolpe"><span class="bogey" data-til="60%"></span></div><span class="v">28,9 %</span></div>
+      <div class="ford-rad"><span>Dobbel eller verre</span><div class="stolpe"><span class="dobbel" data-til="16%"></span></div><span class="v">7,8 %</span></div>
+    </div>
+  </section>
+  <p class="kilde">Kun brutto. Til par fra resultatlista. 4 spillere født 2008 eller senere uten samtykke er skjult, plassene står uendret.</p>
+</main></div>
+</template>
+
+<!-- ================= ST-05 PGA (coach) ================= -->
+<template id="pga">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="coachlinje" data-behold><span>Innlogget som coach · Anders Kristiansen</span><span class="dg">Powered by <b>Data Golf</b></span></div>
+  <nav class="st-nav" data-behold><a href="#" class="aktiv">PGA Tour</a><a href="#" data-gaa="sammenlign">Sammenlign spillere</a><a href="#">SG-sammenligning</a><a href="#">Putt-utforsker</a><a href="#">Min progresjon</a></nav>
+  <div class="topp" data-behold><h1 class="tittel">Strokes Gained totalt</h1></div>
+  <div class="chips" data-gruppe data-behold><button type="button" aria-pressed="true">SG totalt</button><button type="button" aria-pressed="false">Scoring</button><button type="button" aria-pressed="false">Drive</button><button type="button" aria-pressed="false">Fairway</button><button type="button" aria-pressed="false">GIR</button><button type="button" aria-pressed="false">Putter</button></div>
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Topp 5 · 2026</h2><span class="kilde">navn er eksempler</span></div>
+      <div class="rader">
+        <div class="rad-k"><span class="mono" style="font-weight:600">1</span><span><b>Spiller A</b><span class="kilde">62 runder</span></span><span class="v">+2,41</span></div>
+        <div class="rad-k"><span class="mono" style="font-weight:600">2</span><span><b>Spiller B</b><span class="kilde">58 runder</span></span><span class="v">+2,06</span></div>
+        <div class="rad-k"><span class="mono" style="font-weight:600">3</span><span><b>Spiller C</b><span class="kilde">71 runder</span></span><span class="v">+1,88</span></div>
+        <div class="rad-k"><span class="mono" style="font-weight:600">4</span><span><b>Spiller D</b><span class="kilde">64 runder</span></span><span class="v">+1,72</span></div>
+        <div class="rad-k"><span class="mono" style="font-weight:600">5</span><span><b>Spiller E</b><span class="kilde">55 runder</span></span><span class="v">+1,65</span></div>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Henrik Solberg mot PGA Tour</h2></div>
+      <div class="kort">
+        <div class="hoved"><strong>34<small>persentil</small></strong></div>
+        <div class="pct">
+          <div class="pct-rad"><span>Utslag</span><div class="pct-bane"><i style="left:58%"></i></div><span class="v">58</span></div>
+          <div class="pct-rad"><span>Innspill</span><div class="pct-bane"><i style="left:31%"></i></div><span class="v">31</span></div>
+          <div class="pct-rad"><span>Nærspill</span><div class="pct-bane"><i style="left:22%"></i></div><span class="v">22</span></div>
+          <div class="pct-rad"><span>Putting</span><div class="pct-bane"></div><span class="v">—</span></div>
+        </div>
+        <p class="kilde">Egne tall mot Data Golfs fordeling, aldri egen formel. Putting mangler i dataene og vises som «—».</p>
+      </div>
+    </section>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= ST-05 Sammenlign spillere (coach) ================= -->
+<template id="sammenlign">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="coachlinje" data-behold><span>Innlogget som coach · Anders Kristiansen</span><span class="dg">Powered by <b>Data Golf</b></span></div>
+  <nav class="st-nav" data-behold><a href="#" data-gaa="pga">PGA Tour</a><a href="#" class="aktiv">Sammenlign spillere</a><a href="#">SG-sammenligning</a><a href="#">Putt-utforsker</a><a href="#">Min progresjon</a></nav>
+  <div class="topp" data-behold><h1 class="tittel">Sammenlign spillere</h1></div>
+  <div class="kort">
+    <div class="sammenlign hode"><span>Kategori</span><span style="text-align:right">H. Solberg</span><span style="text-align:right">J. Haugen</span></div>
+    <div class="sammenlign"><span>Snittscore 2026</span><span class="v best">72,4</span><span class="v">73,0</span></div>
+    <div class="sammenlign"><span>SG utslag</span><span class="v best">+0,9</span><span class="v">+0,4</span></div>
+    <div class="sammenlign"><span>SG innspill</span><span class="v">−0,2</span><span class="v best">+0,3</span></div>
+    <div class="sammenlign"><span>SG nærspill</span><span class="v">−0,4</span><span class="v best">−0,1</span></div>
+    <div class="sammenlign"><span>SG putting</span><span class="v">—</span><span class="v">—</span></div>
+    <div class="sammenlign" style="border-bottom:0"><span>Runder</span><span class="v">31</span><span class="v">24</span></div>
+    <p class="kilde">Grønt er best av de to. Barnevernfilter gjelder også her: spillere født 2008 eller senere uten samtykke kan ikke velges.</p>
+  </div>
+  <div class="knapper"><button type="button" class="knapp sek">Legg til spiller</button></div>
+</main></div>
+</template>
+
+<!-- ================= ST-05 Spiller ser ================= -->
+<template id="sperret">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <span class="ikonboks" style="width:56px;height:56px;border-radius:16px"><svg class="ikon" viewBox="0 0 24 24" style="width:28px;height:28px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+  <div class="topp" data-behold><h1 class="tittel">PGA og Data Golf er for coacher</h1><p class="ingress">Sammenligning mot PGA Tour og andre spillere er et verktøy for coachen din. Snakk med coachen hvis du vil se hvordan tallene dine står seg.</p></div>
+  <div class="knapper"><a href="#" class="knapp pri">Logg inn som coach</a><a href="#" class="knapp sek" data-gaa="hub">Til statistikk</a></div>
+  <p class="kilde">Spillere ser egne tall mot neste kategori i PlayerHQ › Stats.</p>
+</main></div>
+</template>
+
+<!-- ================= ST-06 Verktøy ================= -->
+<template id="verktoy">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <nav class="st-nav" data-behold><a href="#" data-gaa="hub">Oversikt</a><a href="#" data-gaa="spillere">Spillere</a><a href="#" data-gaa="turneringer">Turneringer</a><a href="#" data-gaa="klubb">Klubber</a><a href="#">Baner</a><a href="#" class="aktiv">Verktøy</a></nav>
+  <div class="topp" data-behold><h1 class="tittel">Verktøy</h1></div>
+  <div class="to-del">
+    <div class="kalk">
+      <b class="undertittel">Score til handicap</b>
+      <div class="to-del" style="gap:var(--r3)"><div class="felt"><label for="k1">Brutto score</label><input id="k1" value="81" style="font-family:var(--mono)"></div><div class="felt"><label for="k2">Bane</label><select id="k2"><option>Moss og Rygge · gul tee</option></select></div></div>
+      <div class="svar"><span>Rundens handicapresultat</span><b>8,7</b><span style="font-size:13px;opacity:.9">Slope 128 · CR 71,4 · WHS-formelen</span></div>
+    </div>
+    <div style="display:grid;gap:var(--r2)">
+      <a href="#" class="verktoy-kort"><b>Tour-ekvivalent</b><span class="kilde">Hva scoren din tilsvarer på tour</span></a>
+      <a href="#" class="verktoy-kort"><b>WHS-kalkulator</b><span class="kilde">Handicap fra de 20 siste</span></a>
+      <a href="#" class="verktoy-kort"><b>SG-estimator</b><span class="kilde">Strokes Gained fra fire tall <span class="estimat">Estimat</span></span></a>
+      <a href="#" class="verktoy-kort"><b>Avstand</b><span class="kilde">Meter, yards og fot</span></a>
+      <a href="#" class="verktoy-kort" data-gaa="quiz"><b>Quiz</b><span class="kilde">Ti spørsmål om norsk golf</span></a>
+    </div>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= ST-06 Quiz ================= -->
+<template id="quiz">
+<div class="app" data-skall="offentlig" data-tilbake="Verktøy" data-tilbake-gaa="verktoy"><main class="innhold smal">
+  <div class="steghode" data-behold style="display:grid;gap:10px"><span class="dato">Spørsmål 3 av 10 · 2 riktige</span><div class="steg-linje"><i class="ja"></i><i class="ja"></i><i class="ja"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <h1 class="tittel" data-behold>Hvor stor andel av alle hull i Østlandstour 6 endte på par?</h1>
+  <div class="quiz-valg" data-gruppe><button type="button" aria-pressed="false">Omtrent 30 %</button><button type="button" aria-pressed="true">Omtrent 48 %</button><button type="button" aria-pressed="false">Omtrent 65 %</button></div>
+  <div class="kort dempet"><b class="undertittel">Riktig</b><p class="forklar">48,1 % av hullene endte på par. Kilde: scorefordelingen fra turneringen.</p></div>
+  <button type="button" class="knapp pri stor">Neste spørsmål</button>
+</main></div>
+</template>
+
+<!-- ================= ST-06 Sesongoppsummering ================= -->
+<template id="wrapped">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <div class="topp" data-behold><span class="dato">Sesongen 2026</span><h1 class="tittel">Henrik Solbergs sesong</h1></div>
+  <div class="wrapped">
+    <div class="wr-kort slag inn"><b>31</b><span>turneringsrunder, 12 turneringer</span></div>
+    <div class="wr-kort turn inn"><b>66</b><span>beste runde, Moss 4. oktober. Ny personlig rekord.</span></div>
+    <div class="wr-kort spill inn"><b>−0,9</b><span>slag lavere snitt enn i 2025. Fra 73,3 til 72,4.</span></div>
+    <div class="wr-kort tek inn"><b>14,6 %</b><span>av hullene ble birdie eller bedre</span></div>
+  </div>
+  <div class="knapper"><button type="button" class="knapp pri" data-del>Kopier lenke</button></div>
+  <p class="kilde">Bare brutto. Kilde: turneringsresultatene til 4. oktober.</p>
+</main></div>
+</template>
+
+<script src="felles/flater.js"></script>
+<script>
+var std = { laster: 'Henter statistikk …', feil: 'Statistikken kunne ikke hentes', feilTekst: 'Prøv igjen om litt. Resultatene oppdateres hver mandag.' };
+function m(o) { var r = {}; for (var k in std) r[k] = std[k]; for (var j in o) r[j] = o[j]; return r; }
+AKFlate.start({
+  start: 'hub',
+  skjermer: {
+    hub: m({ tom: { tittel: 'Ingen norske i aksjon denne uken', tekst: 'Neste turneringer står under Turneringer › Kommende.' } }),
+    sok: m({ tom: { tittel: 'Ingen treff på «solberg»', tekst: 'Sjekk stavingen. Spillere født 2008 eller senere uten samtykke vises ikke.' }, laster: 'Søker …' }),
+    spillere: m({ tom: { tittel: 'Ingen spillere med dette filteret', tekst: 'Fjern et filter for å se flere.', knapp: 'Fjern filtrene' } }),
+    turneringer: m({ tom: { tittel: 'Ingen turneringer i 2026 ennå', tekst: 'Resultatene kommer hver mandag.' } }),
+    profil: m({ tom: { tittel: 'For lite data', tekst: 'Under 4 runder gir ingen snittscore.' } }),
+    klubb: m({ tom: { tittel: 'Ingen resultater for klubben', tekst: 'Klubben har ingen spillere med turneringsrunder i 2026.' } }),
+    turnering: m({ tom: { tittel: 'Ingen resultater ennå', tekst: 'Første runde starter lørdag 3. oktober kl. 08:00.' }, laster: 'Henter leaderboard …' }),
+    pga: m({ tom: { tittel: 'Ingen tall fra Data Golf', tekst: 'Tallene hentes hver natt. Prøv igjen i morgen.' }, laster: 'Henter fra Data Golf …', feil: 'Data Golf svarer ikke' }),
+    sammenlign: m({ tom: { tittel: 'Velg to spillere', tekst: 'Legg til spillere for å sammenligne.', knapp: 'Legg til spiller' } }),
+    sperret: m({ tom: { tittel: 'Logg inn', tekst: 'PGA og Data Golf er bare for coacher.' } }),
+    verktoy: m({ tom: { tittel: 'Fyll inn score', tekst: 'Skriv brutto score og velg bane.' } }),
+    quiz: m({ tom: { tittel: 'Quizen er ikke klar', tekst: 'Prøv igjen senere.' } }),
+    wrapped: m({ etter: function (app) { app.querySelector('[data-del]').addEventListener('click', function () { AKFlate.toast(app, 'Lenken er kopiert.'); }); }, tom: { tittel: 'For få runder i 2026', tekst: 'Sesongoppsummeringen krever minst 4 turneringsrunder.' } })
+  }
+});
+</script>
