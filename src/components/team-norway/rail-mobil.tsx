@@ -10,6 +10,9 @@ import s from "./tn-skall.module.css";
  * «Mer» åpner et navy ark med alle menygruppene og brukeren nederst.
  * Fasit: docs/design-system/utkast-tn/felles/tn.css og tn.js (pakke 1 grunnmur).
  * Bunnmenyen er fast og legger til `--ak-cookie-h` og safe-area (gotchas §UI).
+ * Avvik:
+ *   - Topplinjen har ingen varselbjelle: Team Norway har ingen varsler ennå.
+ *   - Brukeren står nederst i Mer-arket, fordi topplinjen ikke har plass til navnet.
  */
 export function TnRailMobil({ grupper, bunn, brukerNavn, rolle, orgNavn, orgUndertittel }: { grupper: TnMenyGruppe[]; bunn: TnBunnValg[]; brukerNavn: string; rolle: string; orgNavn: string; orgUndertittel: string }) {
   const [mer, setMer] = useState(false);
