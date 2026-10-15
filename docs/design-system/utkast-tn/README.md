@@ -74,6 +74,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 | 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/9yQPdj6UaCUK7fDHfK66wC |
 | 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/FVETdiC9sYtCcxBdc2ZmPZ |
 | 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 1** (14.10) | https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF |
+| 9 Data Golf | Analyse âº Data Golf, bare for trenere med coach-rollen: DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Innholdsfasit: `../utkast-agencyos/datagolf.html` og `../datagolf-coach-datakart-og-skjermliste.md` (PR #1340). **Bygges ikke fÃ¸r lisensen er avklart.** | `datagolf.html` | **Utkast 2** (16.10, hoveddata i rÃ¸d, hvit og navy, godkjent av Anders 16.10), venter pÃ¥ port 7 og lisens | https://claude.ai/artifact/JYRbsvoVNqrEStsoEfFgFx |
 
 ### De 16 rutene uten tegning
 
@@ -118,6 +119,8 @@ Avklart 15.10: spillerprofilen heter IUP i Team Norway (Anders: «For Team Norwa
 8. Sperren uten foresatt på poster: under 18 eller under 16? (pakke 6)
 9. Stipend og budsjett: hvor kommer tallene fra, og skal treneren se dem? (pakke 7)
 10. Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (pakke 7, B2)
+11. Lisens for Data Golf til Team Norway-trenere er ikke avklart. Kundedistribusjon av Data Golf-tall er ikke dokumentert (kontroll 02.10). Pakke 9 er tegnet, men bygges ikke fÃ¸r bruksretten er avklart. (pakke 9)
+12. Data Golf-lenken tilbake i Analyse-menyen bare for trenere med coach-rollen; andre TN-trenere ser den ikke. Riktig? (pakke 9)
 
 ## Avvik i koden (målt 14.10.2026, ikke rettet)
 
