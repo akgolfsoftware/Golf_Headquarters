@@ -46,6 +46,9 @@ function gatefelt(p: TnProtocol): Gate | null {
  * samme `--ak-cookie-h`-mønster som resten av appen (gotchas.md), og er
  * utenfor denne avgrensede oppgaven å bygge. Funksjonsmodellen (props,
  * feltnavn, valideringsflyt, lagringsflyt) er urørt.
+ * Avvik:
+ *   - Protokoller som ikke er gate-tester føres fortsatt med feltene per forsøk.
+ *   - Alle forsøk og valgfrie felt (som bomretning) ligger under en åpne-lenke i gate-modus.
  */
 export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { deltaker: TnTestdagDeltakerDetalj; protocol: TnProtocol; testDagId: string }) {
   const router = useRouter();

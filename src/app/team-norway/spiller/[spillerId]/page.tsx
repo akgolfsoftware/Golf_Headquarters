@@ -23,6 +23,8 @@ function alder(dateOfBirth: Date | null): string | null {
  * Fasit: docs/design-system/utkast-tn/spillere.html (pakke 3). «SYNLIG FOR»
  * viser foresatt i selve mottakerlinjen for mindreårige — idrettens
  * åpenhetsprinsipp, ikke et info-ikon å klikke bort.
+ * Avvik:
+ *   - Tegningen har ingen egen Post-skjerm. Den bruker IUP-fanene og grunnmurens kort.
  */
 export default async function SpillerpostPage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
