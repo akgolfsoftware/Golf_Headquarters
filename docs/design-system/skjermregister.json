@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "57c1b30af3230f7ba21346fc9d3a9a1871e14fcb",
+  "kodeversjon": "4543ff9c8af1e6b7323badc1cc3c91e0ba3e9d38",
   "inventar": {
-    "pageFiles": 545,
-    "uniqueRoutePatterns": 545,
-    "componentFiles": 904,
-    "surfaceFiles": 269,
+    "pageFiles": 546,
+    "uniqueRoutePatterns": 546,
+    "componentFiles": 910,
+    "surfaceFiles": 271,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 184
+      "playerhq": 185
     }
   },
   "presisjon": {
@@ -15181,6 +15181,49 @@
       "kodekommentar": "PH-16"
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/analysere/resultater",
+      "kildefil": "src/app/portal/analysere/resultater/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-16 Stats, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-16 Stats",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-16",
       "rute": "/portal/analysere/skill-map",
       "kildefil": "src/app/portal/analysere/skill-map/page.tsx",
@@ -20658,14 +20701,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Testdetaljen merker PH14Detalj i PlayerHQSkall. Protokoll, historikk, gate-tall, øvelsesforslag og start er beholdt. Gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20793,14 +20834,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Tester-huben merker PH14Hub i PlayerHQSkall. Grupper, forfall, Team Norway-lenke, egen test og tom tilstand er beholdt. Gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20843,14 +20882,16 @@
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
-      "avvik": [],
+      "avvik": [
+        "Kodekommentaren sier PH-15. Skjermlisten sier PH-14. Kommentaren er opphav, ikke en ny godkjenning."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-15"
     },
     {
       "screenId": "PH-26",
@@ -24012,18 +24053,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 545,
-    "medAvvik": 166,
+    "sidefiler": 546,
+    "medAvvik": 165,
     "valgtForBygging": 249,
-    "utenEksaktType": 13,
-    "implementert": 139,
+    "utenEksaktType": 14,
+    "implementert": 137,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
       "tegnet-skjermtype": 284,
       "videresending": 165,
-      "teknisk-forklaring": 30,
+      "teknisk-forklaring": 31,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24056,7 +24097,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
-      "UTEN-TEGNET-TYPE": 13,
+      "UTEN-TEGNET-TYPE": 14,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
