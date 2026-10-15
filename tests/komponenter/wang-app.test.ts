@@ -146,7 +146,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     );
 
     assert.ok(html.includes('Elever'), 'Skal vise elevliste');
-    assert.ok(html.includes('WANG-07'), 'Skal referere til WANG-07');
+    assert.ok(html.includes('Åpne IUP'), 'Skal lenke til IUP');
     assert.ok(html.includes('4-ukers etterlevelse'), 'Skal ha etterlevelseskolonne');
   });
 
