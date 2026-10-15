@@ -69,7 +69,7 @@
   <div class="hode">
     <span class="meta-s">Booking · gruppe 3 · BK-01 til BK-03 · utkast 1 · 15.10.2026</span>
     <h1>Offentlig booking</h1>
-    <p>Sju skjermer: velg tjeneste, mellomtilstanden mens bookingen er pauset, velg tid, dine opplysninger og betaling, og kvitteringen for gjest og for appbruker. Kunden er flexkunden Jon Berg uten konto. Priser er eksempler.</p>
+    <p>Sju skjermer: velg tjeneste, mellomtilstanden mens bookingen er pauset, velg tid, dine opplysninger og betaling med kort eller Apple Pay, og kvitteringen for gjest og for appbruker. Kunden er flexkunden Jon Berg uten konto. Priser er eksempler.</p>
   </div>
   <div class="kontroller">
     <div class="velger skjermvalg" role="group" aria-label="Skjerm">
@@ -101,6 +101,7 @@
       <span class="meta-s">Reglene som er fulgt</span>
       <ul>
         <li>Booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført. Ingen «Venter på bekreftelse fra coach» (vedtak 27.09).</li>
+        <li>Betaling med kort eller Apple Pay, ingen andre betalingsmåter (Anders 15.10).</li>
         <li>Hovedknappen heter «Book time». Kartleggingsøkt finnes ikke.</li>
         <li>Priser leses fra tjenestelista i appen. Beløpene i utkastet er merket «Eksempel».</li>
         <li>Lenken til å opprette konto har ikke e-posten i adressen. E-posten fylles ut på registreringssiden fra bookingen.</li>
@@ -112,7 +113,7 @@
       <span class="meta-s">Åpent hos Anders</span>
       <ul>
         <li><b>Aldersgrensen for samtykke i booking:</b> dagens tekst sier «Under 18 krever samtykke fra foresatt». PlayerHQ bruker 16 år. Beholdt som publisert til Anders avgjør.</li>
-        <li><b>Vipps:</b> skjermlista nevner Vipps. Tegnet som valg ved siden av kort. Ikke avgjort om Vipps kommer.</li>
+        
       </ul>
     </div>
   </div>
@@ -238,8 +239,8 @@
   </div>
   <section class="seksjon">
     <span class="undertittel">Betal med</span>
-    <div class="betal" data-gruppe><button type="button" aria-pressed="true"><span class="merke">KORT</span>Kort</button><button type="button" aria-pressed="false"><span class="merke">VIPPS</span>Vipps</button></div>
-    <p class="kilde">Kortbetaling skjer i en sikker betalingsside. Vi lagrer ikke kortnummeret.</p>
+    <div class="betal" data-gruppe><button type="button" aria-pressed="true"><span class="merke">KORT</span>Kort</button><button type="button" aria-pressed="false"><span class="merke">PAY</span>Apple Pay</button></div>
+    <p class="kilde">Kort og Apple Pay betales i en sikker betalingsside. Vi lagrer ikke kortnummeret.</p>
   </section>
   <button type="button" class="knapp pri stor" data-gaa="kvittering">Betal 1 200 kr</button>
   <p class="kilde">Timen holdes av for deg i 10 minutter mens du betaler.</p>
@@ -292,7 +293,7 @@ AKFlate.start({
     pauset: { tom: { tittel: 'Bookingen er stengt', tekst: 'Ta kontakt på post@akgolf.no.' } },
     tid: { tom: { tittel: 'Ingen ledige tider de neste sju dagene', tekst: 'Ta kontakt på post@akgolf.no, så finner vi noe.', knapp: 'Neste uke' }, laster: 'Henter ledige tider …', feil: 'Klarte ikke hente ledige tider', feilTekst: 'Prøv igjen, eller ta kontakt på post@akgolf.no.' },
     bekreft: { tom: { tittel: 'Tiden er ikke lenger ledig', tekst: 'En annen booket den like før. Velg en ny tid.', knapp: 'Velg annen tid' }, laster: 'Sender deg til betaling …', feil: 'Ett felt mangler', feilTekst: 'Se over før du betaler.' },
-    betaling: { tom: { tittel: 'Tiden gikk ut', tekst: 'Timen var holdt av i 10 minutter. Velg tid på nytt.', knapp: 'Velg tid' }, laster: 'Venter på betalingen …', feil: 'Betalingen gikk ikke gjennom', feilTekst: 'Ingenting er trukket, og timen er ikke booket. Prøv igjen eller velg Vipps.' },
+    betaling: { tom: { tittel: 'Tiden gikk ut', tekst: 'Timen var holdt av i 10 minutter. Velg tid på nytt.', knapp: 'Velg tid' }, laster: 'Venter på betalingen …', feil: 'Betalingen gikk ikke gjennom', feilTekst: 'Ingenting er trukket, og timen er ikke booket. Prøv igjen, eller betal med Apple Pay.' },
     kvittering: { etter: ics, tom: { tittel: 'Fant ikke bookingen', tekst: 'Sjekk lenken i e-posten. Referansen står der.' }, laster: 'Bekrefter betalingen …', feil: 'Kvitteringen kunne ikke vises', feilTekst: 'Betalingen er registrert. Bekreftelsen kommer på e-post.' },
     kvitteringapp: { etter: ics, tom: { tittel: 'Fant ikke bookingen', tekst: 'Se under Plan i PlayerHQ.' }, laster: 'Bekrefter …', feil: 'Kvitteringen kunne ikke vises', feilTekst: 'Bookingen er lagret. Se Plan i PlayerHQ.' }
   }

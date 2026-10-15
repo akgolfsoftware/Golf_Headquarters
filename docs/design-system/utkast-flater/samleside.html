@@ -1,0 +1,70 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Øvrige flater samleside</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* Samleside: alle utkastene for de øvrige flatene med status. Bruker sidelaget i felles.css (.ytre, --side-*). */
+:root{--side-ok:#2f6b3a;--side-ok-bg:#eaf3e9;--side-vent:#7e6110;--side-vent-bg:#fbf4e4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-ok:#9fd3a6;--side-ok-bg:#1f3322;--side-vent:#e8c770;--side-vent-bg:#3a3018}}
+:root[data-theme="dark"]{--side-ok:#9fd3a6;--side-ok-bg:#1f3322;--side-vent:#e8c770;--side-vent-bg:#3a3018}
+.tall{display:flex;flex-wrap:wrap;gap:10px}
+.tall div{display:grid;gap:2px;min-width:130px;padding:14px 16px;border:1px solid var(--side-linje);border-radius:10px;background:var(--side-kort)}
+.tall b{font:600 34px/1 var(--mono);letter-spacing:-.03em}
+.tall span{font-size:13.5px;color:var(--side-dempet)}
+.pakker{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}
+.pakke{display:grid;gap:10px;align-content:start;padding:16px 18px 18px;border:1px solid var(--side-linje);border-radius:10px;background:var(--side-kort);min-width:0}
+.pakke .topp{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pakke .nr{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--side-dempet)}
+.pakke h2{margin:2px 0 0;font:600 19px/1.25 var(--sans)}
+.pakke p{margin:0;font-size:14.5px;line-height:1.5;color:var(--side-dempet)}
+.pakke code{font:500 13px/1 var(--mono)}
+.status{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font:600 12.5px/1 var(--sans);white-space:nowrap;flex:none}
+.status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.vent{background:var(--side-vent-bg);color:var(--side-vent)}
+.aapne{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;background:var(--side-valgt);color:var(--side-paa-valgt);font:600 14px/1 var(--sans);text-decoration:none;justify-self:start}
+.aapne:focus-visible{outline:3px solid #1d3557;outline-offset:2px}
+h2.del{margin:8px 0 0;font:600 22px/1.25 var(--sans)}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">Øvrige flater · gruppe 8 · samleside · 15.10.2026</span>
+    <h1>Øvrige flater i nytt design</h1>
+    <p>Alt som ikke er PlayerHQ, AgencyOS, WANG eller Team Norway: forelder, innlogging og oppstart, offentlig booking, åpen statistikk, GFGK Junior og systemsider, bookinge-postene og markedssidene. Samme grunnmur som PlayerHQ. Ingen gruppe er godkjent ennå.</p>
+  </div>
+  <div class="tall">
+    <div><b>0</b><span>grupper godkjent</span></div>
+    <div><b>7</b><span>venter på gjennomgang</span></div>
+    <div><b>81</b><span>skjermer og maler tegnet</span></div>
+  </div>
+
+  <h2 class="del">Venter på gjennomgang</h2>
+  <div class="pakker">
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 1</span><h2>Forelder</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>FO-01 I dag og ukerapport, FO-02 barn og utviklingsprofil, FO-03 booking for barn, FO-04 økonomi, FO-05 samtykke og deling, FO-06 coach og innstillinger. Felles skall med hamburgermeny og topplinje.</p><p><code>forelder.html</code> · 11 skjermer</p><a class="aapne" href="https://claude.ai/artifact/XFq2WsW4DFkducF38Fj7KY">Åpne forelder</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 2</span><h2>Innlogging og oppstart</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Logg inn, registrer, passord, alle sju oppstartsteg, fødselsdato før portalen åpnes, samtykke via lenke og innsyn for ekstern leser.</p><p><code>innlogging.html</code> · 20 skjermer</p><a class="aapne" href="https://claude.ai/artifact/72u3oF9w8Ggb6qAuXFhzdx">Åpne innlogging</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 3</span><h2>Offentlig booking</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Velg tjeneste, pauset, velg tid, opplysninger, betaling og kvittering for gjest og appbruker. Bekreftes med en gang når betalt.</p><p><code>booking.html</code> · 7 skjermer</p><a class="aapne" href="https://claude.ai/artifact/CoZHQC9iWy9DGCSWraGFcS">Åpne booking</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 4</span><h2>Åpen statistikk</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Hub og søk, lister, spiller og klubb, turnering med scorefordeling, Data Golf bak coach-innlogging, verktøy, quiz og sesongen. Kun brutto, barnevern.</p><p><code>statistikk.html</code> · 13 skjermer</p><a class="aapne" href="https://claude.ai/artifact/65vftfHuExDhcsZQj3eCRK">Åpne statistikk</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 5</span><h2>GFGK Junior og system</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Forside, gruppe, treningsplaner, kalender, kunnskapsbase og artikkel. Systemsidene 404, 500, vedlikehold, ikke tilgang og frakoblet.</p><p><code>gfgk-system.html</code> · 11 skjermer</p><a class="aapne" href="https://claude.ai/artifact/XoX64HHB4yBazhdTWPYCtZ">Åpne GFGK og system</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 6</span><h2>Bookinge-postene</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Bekreftelse til gjest og appbruker, endret time, påminnelse, avbestilling, takk etter timen og én oppfølging. E-postsikker mal, 600 px.</p><p><code>epost.html</code> · 7 e-poster</p><a class="aapne" href="https://claude.ai/artifact/BdnNgxqZDqXPX7RM6DxzkH">Åpne e-postene</a></article>
+    <article class="pakke"><div class="topp"><div><span class="nr">Gruppe 7</span><h2>Markedssidene</h2></div><span class="status vent"><i></i>Utkast 1</span></div><p>Én mal per sidetype: forside, tjenester, priser, produkt, junior, innholdsside, om oss, kontakt, artikler, juridisk og Mulligan som eget merke. Publisert tekst ordrett.</p><p><code>marked.html</code> · 12 maler</p><a class="aapne" href="https://claude.ai/artifact/1rY9iXperGRR4PXgZTtDTA">Åpne markedssidene</a></article>
+  </div>
+
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Slik går du gjennom</span>
+      <ul>
+        <li>Hver lenke åpner én gruppe. Øverst velger du skjerm, mobil eller PC, og tilstand: med data, tom, laster eller feil.</li>
+        <li>Under skjermen står hva som er nytt, reglene som er fulgt, og det som er åpent hos deg.</li>
+      <li>Avgjort 15.10: innlogging bare med Google eller e-post og passord, betaling bare med kort eller Apple Pay.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Det viktigste som er åpent</span>
+      <ul>
+        <li>Publisert tekst som bryter vedtak: «fem trinn» på Junior, svarløfte på Kontakt og GFGK, sitat på Om oss, gammel nivåtekst i vilkårene.</li>
+        <li>Samtykkealder i booking (18 i publisert tekst, 16 i PlayerHQ).</li>
+        <li>Innholdet i de fem standardplanene. Hvor Min progresjon og SG-sammenligning skal bo.</li>
+      </ul>
+    </div>
+  </div>
+</div>
