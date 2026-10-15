@@ -13,6 +13,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
 import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { osloLokalTilDato } from "@/lib/admin/gruppe-tid";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Timeplan · Grupper · AgencyOS" };
@@ -83,7 +84,9 @@ export default async function GruppeTimeplanPage({
     const recurring = formData.get("recurring") as string;
     const maxParticipants = formData.get("maxParticipants") ? parseInt(formData.get("maxParticipants") as string) : null;
 
-    const startAt = new Date(`${dato}T${tid}`);
+    // Skjemaet sender Oslo-tid; serveren kjører UTC (gotchas §Tid og datoer).
+    const startAt = osloLokalTilDato(dato, tid);
+    if (!startAt) return { ok: false, feil: "Ugyldig dato eller tid." };
     const endAt = new Date(startAt.getTime() + varighetMin * 60000);
 
     // Resultatet returneres til klienten så feil (ugyldig dato/tid, DB) vises ved skjemaet.
@@ -100,7 +103,9 @@ export default async function GruppeTimeplanPage({
 
   async function dupliserAction(scheduleId: string, newStart: string) {
     "use server";
-    await dupliserGruppeTime(groupId, scheduleId, newStart);
+    const startAt = osloLokalTilDato(newStart);
+    if (!startAt) return;
+    await dupliserGruppeTime(groupId, scheduleId, startAt);
   }
 
   return (
