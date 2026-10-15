@@ -3,20 +3,22 @@ import { notFound } from "next/navigation";
 
 import { hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnEtikett, TnFilterknapper, TnFlate, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
-import { TnHandlingLenke } from "../tn-handlinger";
+import { TnPille } from "../core";
+import { TnFilterknapper, TnFlate, TnFotnote, TnInitialer, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
 import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
+import st from "./tn-spillere.module.css";
 
 /**
  * TN-12 Spillerutvikling.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-12.
+ * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Spillerutvikling (pakke 3).
  *
  * Avvik:
  *   - Filtrene Herrer og Damer finnes ikke: spillerprofilen har ikke kjønn.
  *     Alle og U18 (fra fødselsdato) står igjen.
- *   - Gruppekolonnen er tatt bort av samme grunn — det finnes ingen
- *     undergruppe i Team Norway-gruppen å vise.
- *   - Testfrister («Frist 04.10 · mangler») har ingen datamodell og vises ikke.
+ *   - Kategori A–K og «Plan %» (etterlevelse) står ikke i lista; aktiv plan og
+ *     uke i planen står i stedet. «Mangler test» og «Ikke delt» som filter har
+ *     ingen datakilde i lista.
  *   - Søk og filter ligger i adressen (?q=&filter=) og virker uten JavaScript.
  */
 
@@ -43,49 +45,6 @@ function planUke(s: TnSpillerRad) {
   return { denne, antall };
 }
 
-function Framdrift({ s }: { s: TnSpillerRad }) {
-  if (!s.aktivPlan) return <span style={{ color: TN.textSecondary }}>Ingen aktiv plan</span>;
-  const uke = planUke(s);
-  return (
-    <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, overflowWrap: "anywhere" }}>{s.aktivPlan}</div>
-      {uke ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 6 }}>
-          <span aria-hidden="true" style={{ flex: "1 1 60px", maxWidth: 120, height: 3, background: TN.navy100 }}>
-            <span style={{ display: "block", height: 3, width: `${(uke.denne / uke.antall) * 100}%`, background: TN.navy900 }} />
-          </span>
-          <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, whiteSpace: "nowrap" }}>uke {uke.denne} av {uke.antall}</span>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function SisteTest({ s }: { s: TnSpillerRad }) {
-  if (!s.sisteTest) return <span style={{ color: TN.textSecondary }}>Ingen tester</span>;
-  return (
-    <div style={{ minWidth: 0 }}>
-      <div style={{ fontFamily: TN.font.mono, fontSize: 13 }}>{datoLang(s.sisteTest)}</div>
-      <div style={{ fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{s.sisteTestNavn}</div>
-    </div>
-  );
-}
-
-function Navnecelle({ s }: { s: TnSpillerRad }) {
-  const aar = alder(s.fodselsdato);
-  return (
-    <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
-      <TnInitialer navn={s.navn} storrelse={40} />
-      <div style={{ minWidth: 0 }}>
-        <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
-        <div style={{ fontSize: 13, color: TN.textSecondary, overflowWrap: "anywhere" }}>{[s.klubb ?? "Klubb ikke registrert", aar === null ? null : `${aar} år`].filter(Boolean).join(" · ")}</div>
-      </div>
-    </div>
-  );
-}
-
-const KOLONNER = "minmax(0, 2.2fr) 72px minmax(0, 2fr) 64px minmax(0, 1.4fr)";
-
 export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametre: Record<string, string | string[] | undefined> }) {
   const bruker = await hentSkjermbruker();
   const data = await hentTnSpillere(bruker);
@@ -99,14 +58,25 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
   };
 
   const sortert = [...data.rader].sort((a, b) => (a.hcp ?? Infinity) - (b.hcp ?? Infinity) || a.navn.localeCompare(b.navn, "nb"));
-  const rader = sortert.filter((s) => (filter === "alle" || erU18(s)) && (!q || s.navn.toLowerCase().includes(q.toLowerCase())));
+  const rader = sortert.filter((s) => (filter === "alle" || erU18(s)) && (!q || `${s.navn} ${s.klubb ?? ""}`.toLowerCase().includes(q.toLowerCase())));
   const adresse = (f: string) => `/team-norway/spillere?${new URLSearchParams({ filter: f, ...(q ? { q } : {}) }).toString()}`;
 
   return (
     <SkjermRamme aktiv="spillere" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/spillere" tittel="Spillerutvikling" ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter">Inviter spiller</TnHandlingLenke> : undefined} />
+      <TnSkjermhode
+        overlinje={`${data.kontekst.gruppe.name} · ${data.rader.length} ${data.rader.length === 1 ? "spiller" : "spillere"}`}
+        tittel="Spillerutvikling"
+        ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk. Trykk på en spiller for å åpne IUP-en."
+      />
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+      <div className={st.sok}>
+        <form action="/team-norway/spillere" className={st.sok} style={{ flex: "1 1 260px" }}>
+          <input type="hidden" name="filter" value={filter} />
+          <label>
+            Søk etter spiller
+            <input type="search" name="q" defaultValue={q} placeholder="Navn eller klubb" />
+          </label>
+        </form>
         <TnFilterknapper
           etikett="Filtrer spillere"
           valg={[
@@ -114,65 +84,40 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
             { href: adresse("u18"), label: "U18", aktiv: filter === "u18", antall: data.rader.filter(erU18).length },
           ]}
         />
-        <form action="/team-norway/spillere" style={{ flex: "0 1 320px", minWidth: 0, display: "flex" }}>
-          <input type="hidden" name="filter" value={filter} />
-          <label style={{ flex: 1, minWidth: 0 }}>
-            <span className="sr-only">Søk etter spiller</span>
-            <input type="search" name="q" defaultValue={q} placeholder="Søk etter spiller" style={{ width: "100%", minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy300}`, borderRadius: TN.radius.sm, background: TN.white, fontFamily: TN.font.body, fontSize: 15, color: TN.textPrimary }} />
-          </label>
-        </form>
       </div>
 
-      <TnFlate style={{ padding: 0 }}>
-        {rader.length > 0 ? (
-          <>
-            <div className="hidden lg:block">
-              <div role="table" aria-label="Spillerutvikling">
-                <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 16, padding: "12px 20px", borderBottom: `2px solid ${TN.navy900}` }}>
-                  {["Spiller", "HCP", "Aktiv treningsplan", "Tester", "Siste test"].map((k) => <TnEtikett key={k}><span role="columnheader">{k}</span></TnEtikett>)}
-                </div>
-                {rader.map((s) => (
-                  <div role="row" key={s.id} style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 16, padding: "14px 20px", borderBottom: `1px solid ${TN.navy100}`, alignItems: "center" }}>
-                    <div role="cell" style={{ minWidth: 0 }}><Navnecelle s={s} /></div>
-                    <div role="cell" style={{ fontFamily: TN.font.mono, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>{hcp(s.hcp)}</div>
-                    <div role="cell" style={{ minWidth: 0 }}><Framdrift s={s} /></div>
-                    <div role="cell" style={{ fontFamily: TN.font.mono, fontSize: 15 }}>{s.tester}</div>
-                    <div role="cell" style={{ minWidth: 0 }}><SisteTest s={s} /></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="lg:hidden">
-              {rader.map((s) => (
-                <div key={s.id} style={{ padding: 16, borderBottom: `1px solid ${TN.navy100}`, display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
-                    <Navnecelle s={s} />
-                    <div style={{ textAlign: "right", flex: "none" }}>
-                      <div style={{ fontFamily: TN.font.mono, fontSize: 16 }}>{hcp(s.hcp)}</div>
-                      <TnEtikett style={{ fontSize: 10 }}>HCP</TnEtikett>
-                    </div>
-                  </div>
-                  <Framdrift s={s} />
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", fontSize: 13, color: TN.textSecondary }}>
-                    <span><span style={{ fontFamily: TN.font.mono, color: TN.textPrimary }}>{s.tester}</span> tester</span>
-                    <span>Siste {s.sisteTest ? <><span style={{ fontFamily: TN.font.mono }}>{datoLang(s.sisteTest)}</span>{s.sisteTestNavn ? ` · ${s.sisteTestNavn}` : ""}</> : "ingen"}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : data.rader.length === 0 ? (
-          <div style={{ padding: 20 }}>
-            <TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen. <Link href="/team-norway/uttak" style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Se uttakskriterier</Link></TnMangler>
-          </div>
-        ) : (
-          <div style={{ padding: 20 }}>
-            <TnMangler>Ingen spillere passer søket i denne gruppen. <Link href="/team-norway/spillere" style={{ color: TN.navy700 }}>Nullstill filter</Link></TnMangler>
-          </div>
-        )}
+      <TnFlate style={{ paddingBlock: 4 }}>
+        {rader.map((s) => {
+          const a = alder(s.fodselsdato);
+          const uke = planUke(s);
+          return (
+            <Link key={s.id} href={`/team-norway/spiller/${s.id}/oversikt`} className={st.spillerrad}>
+              <TnInitialer navn={s.navn} />
+              <span>
+                <span className={st.navn}>{s.navn}</span>
+                <span className={st.kilde}>{[s.klubb ?? "Klubb ikke registrert", a === null ? null : `${a} år`].filter(Boolean).join(" · ")}</span>
+              </span>
+              <span className={st.info}>
+                <span>HCP {hcp(s.hcp)}</span>
+                <span>{s.aktivPlan ? `${s.aktivPlan}${uke ? ` · uke ${uke.denne} av ${uke.antall}` : ""}` : "Ingen aktiv plan"}</span>
+                <span>{s.sisteTest ? `Test ${datoLang(s.sisteTest)}` : "Ingen test"}</span>
+              </span>
+              <span className={st.hoyre}><TnPille tone={s.tester > 0 ? "info" : "amber"}>{s.tester} {s.tester === 1 ? "test" : "tester"}</TnPille></span>
+            </Link>
+          );
+        })}
+        {rader.length === 0 && data.rader.length === 0 ? (
+          <TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen.</TnMangler>
+        ) : rader.length === 0 ? (
+          <TnMangler>Ingen spillere passer søket. <Link href="/team-norway/spillere" style={{ color: TN.navy600, fontWeight: 700 }}>Nullstill filter</Link></TnMangler>
+        ) : null}
       </TnFlate>
 
-      <TnFotnote>{rader.length} {rader.length === 1 ? "spiller" : "spillere"} · sortert etter HCP, pluss-HCP øverst. Tester teller alle registrerte testresultater. Kjønn står ikke i spillerprofilen, derfor finnes ikke filtrene Herrer og Damer.</TnFotnote>
+      <TnFotnote>Sortert etter HCP, pluss-HCP øverst. Tester teller alle registrerte testresultater. Kjønn står ikke i spillerprofilen, derfor finnes ikke filtrene Herrer og Damer.</TnFotnote>
+      <TnKnapperekke>
+        {data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter" variant="sekundar">Inviter spiller</TnHandlingLenke> : null}
+        <TnTekstlenke href="/team-norway/uttak">Se uttakskriterier</TnTekstlenke>
+      </TnKnapperekke>
     </SkjermRamme>
   );
 }

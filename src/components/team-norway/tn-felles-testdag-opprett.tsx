@@ -82,7 +82,7 @@ export function TnFellesTestdagOpprett({ grupper, protokoller }: { grupper: TnTe
       <TnInput label="Sted (valgfritt)" value={location} onChange={setLocation} placeholder="F.eks. Fredrikstad Golfklubb" />
       <TnInput label="Tidspunkt" type="datetime-local" value={scheduledAt} onChange={setScheduledAt} required />
 
-      <fieldset style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.md, padding: 14 }}>
+      <fieldset style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, padding: 14 }}>
         <legend style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900, padding: "0 4px" }}>
           Skoler og grupper ({stasjoner.length} stasjoner)
         </legend>
@@ -92,7 +92,7 @@ export function TnFellesTestdagOpprett({ grupper, protokoller }: { grupper: TnTe
             const valgt = valgte.has(gruppe.id);
             const valgteSpillere = spillerIder[gruppe.id] ?? new Set<string>();
             return (
-              <section key={gruppe.id} style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.md, padding: 12 }}>
+              <section key={gruppe.id} style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, padding: 12 }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>
                   <input type="checkbox" checked={valgt} onChange={(event) => velgGruppe(gruppe.id, event.target.checked)} />
                   {gruppe.navn} <span style={{ color: TN.textSecondary, fontWeight: TN.weight.regular }}>· {gruppe.type === "WANG" ? "WANG" : "Team Norway"}</span>
@@ -101,7 +101,7 @@ export function TnFellesTestdagOpprett({ grupper, protokoller }: { grupper: TnTe
                   <div style={{ display: "grid", gap: 12, paddingTop: 8 }}>
                     <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>
                       Protokoll for {gruppe.navn}
-                      <select value={protokollIder[gruppe.id] ?? protokoller[0]?.id ?? ""} onChange={(event) => setProtokollIder((forrige) => ({ ...forrige, [gruppe.id]: event.target.value }))} style={{ minHeight: 44, borderRadius: TN.radius.md, border: `1px solid ${TN.borderSubtle}`, padding: "0 12px", fontSize: TN.text.sm }}>
+                      <select value={protokollIder[gruppe.id] ?? protokoller[0]?.id ?? ""} onChange={(event) => setProtokollIder((forrige) => ({ ...forrige, [gruppe.id]: event.target.value }))} style={{ minHeight: 44, borderRadius: TN.radius.sm, border: `1px solid ${TN.borderSubtle}`, padding: "0 12px", fontSize: TN.text.sm }}>
                         {protokoller.map((protokoll) => <option key={protokoll.id} value={protokoll.id}>{protokoll.navn}</option>)}
                       </select>
                     </label>

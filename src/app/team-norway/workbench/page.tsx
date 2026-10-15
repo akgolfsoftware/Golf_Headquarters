@@ -35,6 +35,7 @@ import { PYRAMID_LABEL, STATUS_LABEL, BLOCK_LABEL } from "@/lib/domain/workbench
 import type { PyramidArea, RecurrencePolicy, WorkbenchMode, SourceItem } from "@/lib/domain/workbench/types";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnOktkort, erTnAkse } from "@/components/team-norway/tn-grunnmur";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 
@@ -297,9 +298,9 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       kanAdministrere={kontekst.kanAdministrere}
     >
       <TnSidehode
-        overlinje={`TN-22 · ${kontekst.gruppeNavn}`}
-        tittel="Workbench"
-        ingress="Gruppens årsplan og faste tider, og — når du har personlig trener-tilgang til spilleren — plan, uke og øktdetalj."
+        overlinje={spillerId ? `IUP · ${kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? ""} · Plan` : `Workbench · ${kontekst.gruppeNavn}`}
+        tittel={spillerId ? "Plan" : "Workbench"}
+        ingress={spillerId ? "Du ser det spilleren har delt. Direkte endring er slått av: endringer blir forslag spilleren godtar eller avviser." : "Gruppens årsplan og faste tider, og spillernes plan når du har personlig trener-tilgang."}
       />
 
       {spillerId && (
@@ -308,6 +309,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
           spillerNavn={kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? spillerId}
           aktiv="workbench"
           kanAdministrere={!kontekst.erSpiller}
+          kompakt
         />
       )}
 
@@ -353,15 +355,15 @@ function pilleLenkeStil(aktiv: boolean): CSSProperties {
   return {
     display: "inline-flex",
     alignItems: "center",
-    minHeight: 36,
-    padding: "6px 14px",
-    borderRadius: TN.radius.full,
-    fontSize: TN.text.sm,
-    fontWeight: TN.weight.semibold,
+    minHeight: 44,
+    padding: "0 14px",
+    borderRadius: TN.radius.sm,
+    fontSize: 13.5,
+    fontWeight: 700,
     textDecoration: "none",
     background: aktiv ? TN.navy900 : TN.white,
     color: aktiv ? TN.white : TN.navy900,
-    border: `1px solid ${aktiv ? TN.navy900 : TN.borderDefault}`,
+    border: `1px solid ${TN.navy900}`,
   };
 }
 
@@ -482,7 +484,7 @@ async function renderGruppeplan(args: {
         </TnKort>
       ))}
       {kanRedigere && (
-        <Link href={`/admin/grupper/${kontekst.gruppeId}/timeplan`} style={{ color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>
+        <Link href={`/admin/grupper/${kontekst.gruppeId}/timeplan`} style={{ color: TN.navy600, fontSize: 14, fontWeight: 700 }}>
           Rediger faste gruppetider i AgencyOS →
         </Link>
       )}
@@ -622,7 +624,7 @@ async function renderPersonligPlan(args: {
 
           {kanSkrive && await renderLeggTilOvelse({ spillerId, sessionId: s.id, bruker, kontekst, leggTilOvelse })}
 
-          <Link href={tnWorkbenchHref({ spiller: spillerId, visning: "uke", dato: s.date })} style={{ color: TN.navy700, fontSize: TN.text.sm }}>← Tilbake til uken</Link>
+          <Link href={tnWorkbenchHref({ spiller: spillerId, visning: "uke", dato: s.date })} style={{ color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Tilbake til uken</Link>
         </TnSeksjon>
       );
     }
@@ -738,15 +740,22 @@ async function renderPersonligPlan(args: {
 
       {dagsokter.length === 0 ? (
         <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen økter i dette vinduet.</p></TnKort>
-      ) : dagsokter.map((s) => (
-        <Link key={s.id} href={tnWorkbenchHref({ spiller: spillerId, visning: "dag", dato: s.date, okt: s.id })} style={{ textDecoration: "none" }}>
-          <TnKort>
-            <p style={{ margin: 0, fontSize: TN.text.sm }}>
-              <strong>{s.date} {fmtMinutt(s.startMinute)}</strong> · {s.title} · {PYRAMID_LABEL[s.pyramid]} · <TnPille tone={s.status === "COMPLETED" ? "green" : "nøytral"}>{STATUS_LABEL[s.status]}</TnPille>
-            </p>
-          </TnKort>
-        </Link>
-      ))}
+      ) : (
+        <div style={{ display: "grid", gap: 8, gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))" }}>
+          {dagsokter.map((s) => (
+            <TnOktkort
+              key={s.id}
+              liten
+              akse={erTnAkse(s.pyramid) ? s.pyramid : null}
+              tid={fmtMinutt(s.startMinute)}
+              varighet={`${s.durationMinutes} min`}
+              navn={s.title}
+              info={[s.date, STATUS_LABEL[s.status]]}
+              href={tnWorkbenchHref({ spiller: spillerId, visning: "dag", dato: s.date, okt: s.id })}
+            />
+          ))}
+        </div>
+      )}
 
       {kanSkrive && ikkePublisert.length > 0 && <TnKort>
         <p style={{ margin: 0, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Ventende utkast</p>
@@ -863,5 +872,5 @@ async function renderLeggTilOvelse(args: {
   );
 }
 
-const feltLabelStil: CSSProperties = { display: "flex", flexDirection: "column", gap: 4, fontSize: TN.text.xs, color: TN.textSecondary };
-const feltInputStil: CSSProperties = { minHeight: 40, padding: "6px 10px", border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, fontSize: TN.text.sm, background: TN.white, color: TN.navy900 };
+const feltLabelStil: CSSProperties = { display: "flex", flexDirection: "column", gap: 6, fontSize: 14, fontWeight: 700, color: TN.ink900 };
+const feltInputStil: CSSProperties = { minHeight: 48, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, fontSize: 16, fontWeight: 400, background: TN.white, color: TN.ink900 };

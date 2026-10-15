@@ -4,6 +4,50 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## COACH SOM AVLYSER GIR ALLTID FULL REFUSJON ELLER KLIPPET TILBAKE (Anders 15.10.2026, bindende)
+
+Svar på utkast-PR #1010 (kalender og booking), som Anders sa ja til 15.10.
+
+- **Avlyser coachen en booking, får kunden alltid alt tilbake**, uansett hvor nær timen er: hele beløpet i Stripe
+  (AK Golf dekker gebyret) eller klippet tilbake til pakken. 24-timersfristen gjelder bare spillerens egen avbestilling.
+  `cancelOutcome` (`src/lib/booking/policy.ts`) gjør dette allerede for staff; det som mangler, er knappen i AgencyOS.
+- **Betalingsmåte på booking:** Stripe · Klipp · Faktura · Gratis. Faktura er bare et merke; fakturaen lages i Tripletex av Anders.
+- **Coach foreslår ny tid** på en booket time. Tiden endres først når spilleren godtar i PlayerHQ. Spilleren flytter
+  fortsatt selv innenfor coachens tilgjengelighet (§SPILLEREN FLYTTER TIMEN SELV, 14.10).
+- **Avvisning med begrunnelse blir et utkast i Innboks.** Ingenting sendes automatisk; coachen sender selv.
+
+**Arbeidet dette utløser:**
+
+1. **Tre tillegg i basen**, additivt via `db execute` (gotchas §Database): `bookings."paymentMethod"`
+   (`BookingPaymentMethod`), `bookings."proposedStartAt"`/`"proposedEndAt"`/`"proposedAt"`/`"proposedById"` og
+   `innboks_epost."bookingId"`. Skriptet `scripts/add-booking-betaling-flytting-utkast-2026-09-29.ts` fra #1010.
+   Ferdig når Anders har kjørt det og feltene finnes. Koden som leser feltene legges ikke inn før det.
+2. **Avlys i AG-06 Booking** (`src/components/admin/precision/AG06Booking.tsx`): ny handling som avlyser, refunderer
+   eller fører klippet tilbake i én transaksjon, med varig refusjonsjobb ved Stripe-feil. Ferdig når en test låser full
+   refusjon under 24 timer for coach.
+3. **Betalingsmåte i coachens booking** (`bookIKalender`, `src/app/admin/kalender/booking-actions.ts`): Klipp trekker
+   ett klipp atomisk, Faktura og Gratis merkes.
+4. **Flytteforslag:** coach foreslår i AG-05 Kalender, spilleren godtar eller avslår i PlayerHQ-bookingen.
+5. **Avvis med utkast i Innboks**, og GDPR-anonymisering vasker utkastene (`src/lib/gdpr/anonymiser-bruker.ts`).
+## INNLOGGING BARE MED GOOGLE OG PASSORD, BETALING BARE MED KORT OG APPLE PAY (Anders 15.10.2026, bindende)
+
+Anders 15.10, etter utkastene til innlogging og offentlig booking: «Kun innlogging med Google og passord. Betaling via kortbetaling og Apple Pay».
+
+- **Innlogging:** Google eller e-post og passord. **Ingen BankID.**
+- **Betaling:** kort og Apple Pay, gjennom Stripe. **Ingen Vipps og ingen faktura.**
+- Gjelder alle flater: PlayerHQ, AgencyOS, forelder, offentlig booking og markedssidene.
+
+**Overstyrer:** BankID-plassholderen i AU-01 og «Stripe, Vipps» i BK-02 (`docs/design-handoff/regler/skjermliste.md`, rettet), og spørsmålet om innlogging og betaling i punkt 10 (1i) under §KODEGJENNOMGANGEN 06.10.
+
+Design er rettet i samme PR: `docs/design-system/utkast-flater/innlogging.html` og `booking.html`.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **BankID ut av koden:** `src/app/auth/bankid/page.tsx` og `src/components/portal/v2/BankIDV2.tsx` fjernes, lenken i `src/components/portal/v2/LoginV2.tsx:545` tas bort, og `/auth/bankid` sender til `/auth/login`. Ferdig når ingen side lenker til BankID og adressen sender videre.
+2. **Vipps og faktura ut av forelderoppstarten:** `src/app/auth/onboarding/forelder/forelder-wizard.tsx` har i dag `VIPPS` (forhåndsvalgt og «anbefalt») og `FAKTURA`. Bare kort står igjen, betalt gjennom Stripe. Sjekk at `saveForelderOnboardingStep` ikke lagrer andre verdier. Ferdig når valget ikke finnes og en test låser det.
+3. **Teksten om Vipps:** `src/app/portal/meg/help/data.ts:83`, `src/app/portal/meg/help/kategori/[slug]/page.tsx:159` («betale med Vipps eller kort») og `src/components/marketing/booking/BookingPrecisionFlow.tsx:460` («Sikker betaling med Stripe eller Vipps») sier «kort eller Apple Pay». Ferdig når et søk etter «Vipps» i `src/` gir 0 treff i skjermtekst.
+4. **Apple Pay i Stripe (Anders):** Stripe Checkout (`src/lib/booking/payment-start.ts`, `src/app/api/stripe/checkout/route.ts`) setter ikke betalingsmåter selv, så Apple Pay vises når det er slått på i Stripe og domenet er bekreftet. Anders slår på Apple Pay og bekrefter domenet i Stripe. Ferdig når Apple Pay vises i Checkout på en iPhone, verifisert sist sammen med Stripe-live (§Produkt og tilgang).
+
 ## SPILLERPROFILEN HETER IUP I TEAM NORWAY (Anders 15.10.2026, bindende)
 
 Anders 15.10: «For Team Norway skjerm skal det hete IUP som spiller profil.»
@@ -262,7 +306,7 @@ nivåtegningene som Workbench-ramme i `docs/workbench-handover.md` og handoff 04
 
 8. **Fødselsdato for eksisterende spillere** (punkt 3): nye spillere må fylle den inn i oppstarten. Spillere som har fullført oppstarten uten dato, er bare sperret fra deling og opptak. Anders 14.10: alle uten fødselsdato, også voksne, skal fylle den inn. Krever en enkel skjerm som spør om datoen før portalen åpnes (venter på designbrevet). Ferdig når en spiller uten dato sendes dit og slipper inn etter lagring, låst med test.
 9. **Kjent gjeld i vaktskriptet:** TA-01 (`api/coach/ai-chat`) og TA-21 (`api/portal/swing-video/upload`) står fortsatt i `KJENT_GJELD` (`scripts/check-tilgang-vakt.mjs`), fordi skriptet ikke ser eiersjekken som vakt. Ferdig når begge er ute av lista og skriptet er grønt.
-10. **Resten av fase 2:** 1f TN testdag, 1g småhull (TA-05, TA-07, TP-…), S5 IUP-kø uten spiller-ID, gruppe 3 (sesong, demotall, «—», dato, stille feil, netto, putt), 4 tester, 5 døde filer, 6 avhengigheter, 8, 9. 1i Google-innlogging og betaling: spør Anders først.
+10. **Resten av fase 2:** 1f TN testdag, 1g småhull (TA-05, TA-07, TP-…), S5 IUP-kø uten spiller-ID, gruppe 3 (sesong, demotall, «—», dato, stille feil, netto, putt), 4 tester, 5 døde filer, 6 avhengigheter, 8, 9. 1i Google-innlogging og betaling: avgjort 15.10, se §INNLOGGING BARE MED GOOGLE OG PASSORD.
 11. **Typesjekken i pre-commit går tom for minne** (4 GB) på Anders' maskin. Lagring krever i dag `NODE_OPTIONS=--max-old-space-size=8192`. Ferdig når hooken setter minnet selv eller sjekker bare endrede filer.
 12. **Oppfølging fra #1207:** markedssidene lenker til `/stats/pga`; TN-arbeidsflate og rangliste mangler Data Golf-filter; `/stats/sammenlign-spillere` mangler barnevernsfilter.
 

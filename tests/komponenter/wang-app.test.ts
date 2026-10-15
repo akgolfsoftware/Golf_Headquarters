@@ -41,11 +41,11 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   const { WangAdmin } = await import('@/components/wang/WangAdmin');
   const { WangSkjermoversikt } = await import('@/components/wang/WangSkjermoversikt');
 
-  test('wang-data: har registrert samtlige 71 WANG-skjermer i katalogen', () => {
-    assert.strictEqual(WANG_SKJERMER_KATALOG.length, 71, 'Skal ha nøyaktig 71 skjermer i katalogen');
+  test('wang-data: har registrert samtlige 63 WANG-skjermer i katalogen', () => {
+    assert.strictEqual(WANG_SKJERMER_KATALOG.length, 63, 'Skal ha nøyaktig 63 skjermer i katalogen (WANG-50 kuttet til DG-01–09, 15.10.2026)');
 
     const unikeIder = new Set(WANG_SKJERMER_KATALOG.map((s) => s.id));
-    assert.strictEqual(unikeIder.size, 71, 'Alle 71 skjerm-IDer skal være unike');
+    assert.strictEqual(unikeIder.size, 63, 'Alle 63 skjerm-IDer skal være unike');
 
     // Sjekk at sentrale skjermer finnes
     assert.ok(unikeIder.has('WANG-43'), 'WANG-43 I dag skal finnes');
@@ -160,12 +160,12 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(html.includes('Sportssjef'), 'Skal vise sportssjef-rolle');
   });
 
-  test('WangSkjermoversikt (WANG-00): lister alle 71 skjermer med søk og filter', () => {
+  test('WangSkjermoversikt (WANG-00): lister alle 63 skjermer med søk og filter', () => {
     const html = renderToStaticMarkup(
       React.createElement(WangSkjermoversikt, {})
     );
 
-    assert.ok(html.includes('Skjermoversikt (71 skjermer)'), 'Skal vise 71 skjermer');
+    assert.ok(html.includes('Skjermoversikt (63 skjermer)'), 'Skal vise 63 skjermer');
     assert.ok(html.includes('WANG-00'), 'Skal referere til WANG-00');
     assert.ok(html.includes('Åpne skjerm'), 'Skal ha direkte åpne-knapper');
   });

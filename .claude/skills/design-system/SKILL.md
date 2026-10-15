@@ -2,13 +2,13 @@
 name: design-system
 description: Lag, vurder og videreutvikle AK Golf HQs produktdesignsystem for PlayerHQ, AgencyOS og AgenticOS. Bruk ved designverdier, komponenter, tema/modus, Claude Design-systemarbeid og design-til-kode-overlevering.
 metadata:
-  version: "1"
-  reviewed: "2026-09-11"
+  version: "2"
+  reviewed: "2026-10-15"
 ---
 
 # AK Golf HQ Design System
 
-Bruk `ak-hq-design` som samlet arbeidsmåte og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders starter blankt i Claude Design. Eksisterende implementerte design- og merkevareverdier er ikke produktets nye designfasit.
+Bruk `ak-hq-design` som samlet arbeidsmåte. **Designsystemet er valgt og låst:** Claude Design «AK Golf Precision Athletics» (`7d7c2994`), Anders 26.09.2026, jf. `docs/design-system/design-autoritet.md`. Grafitt primærknapp, rust bare som signal, lyst tema overalt (også Live, 14.10.2026). Det utforskes ikke lenger fra blankt lerret; «Design System v0.1» under er historikk for hvordan systemet ble bygget, og brukes bare når Precision mangler en komponent eller en kontrakt. Eksisterende implementerte merkevareverdier (verkstedet) er ikke produktets designfasit.
 
 ## Målet
 

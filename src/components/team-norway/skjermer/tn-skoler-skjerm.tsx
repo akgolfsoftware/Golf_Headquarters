@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 
 import { hentTnSkoler } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnListerad, TnMangler, TnSkjermhode } from "../tn-flate";
 import { ER_COLLEGE, SkjermRamme, hentSkjermbruker } from "./felles";
 
 /**
  * TN-17 Skoleoversikt.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-17.
+ * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Skoler (pakke 3).
+ * Skoler med færre enn tre spillere slås sammen til én rad uten navn, så ingen
+ * mindreårig kan pekes ut av skolen alene. Spillerne finnes i Spillerutvikling.
  *
  * Avvik:
  *   - Skoletype (videregående / høyere utdanning) er ikke eget felt. Filtrene
@@ -36,18 +38,26 @@ export async function TnSkolerSkjerm() {
       trinn.set(t, (trinn.get(t) ?? 0) + 1);
     }
   }
+  // Små skoler (under tre spillere) vises samlet og uten navn. «Ikke registrert» vises alltid, så hullene i profilene synes.
+  const store = skoler.filter((s) => s.skole === IKKE_REGISTRERT || s.spillere.length >= 3);
+  const sma = skoler.filter((s) => s.skole !== IKKE_REGISTRERT && s.spillere.length < 3);
+  const trinnTekst = (spillere: { skolear: string | null }[]) => {
+    const m = new Map<string, number>();
+    for (const p of spillere) m.set(p.skolear?.trim() || "trinn —", (m.get(p.skolear?.trim() || "trinn —") ?? 0) + 1);
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], "nb")).map(([t, n]) => `${t} ${n}`).join(" · ");
+  };
   const uregistrert = skoler.find((s) => s.skole === IKKE_REGISTRERT)?.spillere.length ?? 0;
   const tall = [...[...trinn.entries()].sort((a, b) => a[0].localeCompare(b[0], "nb")), ...(uregistrert ? [[IKKE_REGISTRERT, uregistrert] as [string, number]] : [])];
 
   return (
     <SkjermRamme aktiv="skoler" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/skoler" tittel="Skoleoversikt" ingress="Skole og trinn slik spillerne har registrert det i profilen. Bruk den når samlinger skal legges utenom eksamen." />
+      <TnSkjermhode overlinje="Fra spillerprofilene" tittel="Skoleoversikt" ingress="Skole og trinn slik spillerne har registrert det i profilen. Bruk den når samlinger skal legges utenom eksamen." />
 
       {tall.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 1, background: TN.ink200, border: `1px solid ${TN.ink200}` }}>
           {tall.map(([etikett, antall]) => (
             <div key={etikett} style={{ background: TN.white, padding: "14px 16px", minWidth: 0 }}>
-              <div style={{ fontFamily: TN.font.mono, fontSize: 26, color: etikett === IKKE_REGISTRERT ? TN.textSecondary : TN.navy900 }}>{antall}</div>
+              <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: etikett === IKKE_REGISTRERT ? TN.ink500 : TN.navy900 }}>{antall}</div>
               <TnEtikett style={{ marginTop: 4, overflowWrap: "anywhere" }}>{etikett}</TnEtikett>
             </div>
           ))}
@@ -55,24 +65,30 @@ export async function TnSkolerSkjerm() {
       ) : null}
 
       <TnFlate>
-        <TnFlatehode tittel="Skoler og trinn" merknad="Fra spillerprofilene" />
-        {skoler.map((s) => (
-          <div key={s.skole} style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", padding: "14px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "baseline" }}>
-            <div style={{ flex: "1 1 240px", minWidth: 0, fontSize: 15, fontWeight: 700, color: s.skole === IKKE_REGISTRERT ? TN.textSecondary : TN.textPrimary, overflowWrap: "anywhere" }}>{s.skole}</div>
-            <div style={{ flex: "2 1 300px", minWidth: 0, display: "flex", flexWrap: "wrap", gap: "4px 14px", fontSize: 14 }}>
-              {s.spillere.map((p) => (
-                <Link key={p.id} href={`/team-norway/spiller/${p.id}/oversikt`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  {p.navn}
-                  {s.skole !== IKKE_REGISTRERT ? <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>{p.skolear ?? "—"}</span> : null}
-                </Link>
-              ))}
-            </div>
-            <span style={{ fontFamily: TN.font.mono, fontSize: 14 }}>{s.spillere.length}</span>
-          </div>
+        <TnFlatehode tittel="Skoler og trinn" merknad={`${skoler.reduce((n, s) => n + s.spillere.length, 0)} spillere, ${skoler.filter((s) => s.skole !== IKKE_REGISTRERT).length} skoler`} />
+        {store.map((s) => (
+          <TnListerad
+            key={s.skole}
+            tittel={<span style={{ color: s.skole === IKKE_REGISTRERT ? TN.ink500 : TN.ink900 }}>{s.skole}</span>}
+            tekst={<>
+              {trinnTekst(s.spillere)}
+              <span style={{ display: "flex", flexWrap: "wrap", gap: "0 12px" }}>
+                {s.spillere.map((p) => <Link key={p.id} href={`/team-norway/spiller/${p.id}/oversikt`} style={{ color: TN.navy600, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center", textUnderlineOffset: 4 }}>{p.navn}</Link>)}
+              </span>
+            </>}
+            hoyre={<span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 15 }}>{s.spillere.length}</span>}
+          />
         ))}
+        {sma.length > 0 ? (
+          <TnListerad
+            tittel={`${sma.length} ${sma.length === 1 ? "annen skole" : "andre skoler"}`}
+            tekst="Færre enn tre spillere per skole, vises ikke enkeltvis."
+            hoyre={<span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 15 }}>{sma.reduce((n, s) => n + s.spillere.length, 0)}</span>}
+          />
+        ) : null}
         {skoler.length === 0 ? <TnMangler>Ingen spillere i gruppen ennå. Skolene vises her når spillerne er lagt inn.</TnMangler> : null}
         <TnFotnote>
-          {college > 0 ? <>{college} {college === 1 ? "spiller" : "spillere"} på college i USA står under <Link href="/team-norway/college" style={{ color: TN.navy700 }}>College og USA</Link>. </> : null}
+          {college > 0 ? <>{college} {college === 1 ? "spiller" : "spillere"} på college i USA står under <Link href="/team-norway/college" style={{ color: TN.navy600, fontWeight: 700 }}>College og USA</Link>. </> : null}
           «Ikke registrert» er spillere uten skole i profilen. Den raden skjules ikke, så hullene i profilene synes.
         </TnFotnote>
       </TnFlate>

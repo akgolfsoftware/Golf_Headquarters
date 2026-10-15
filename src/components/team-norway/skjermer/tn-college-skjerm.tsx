@@ -11,7 +11,7 @@ import { ER_COLLEGE, SkjermRamme, datoLang, hentSkjermbruker, periode } from "./
 
 /**
  * TN-06 College og USA.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-06.
+ * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm College (pakke 3).
  *
  * Avvik:
  *   - Konferanse, klasse, WAGR og siste college-resultat er ikke registrert.
@@ -29,8 +29,8 @@ const tall = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumF
 function Felt({ etikett, children, mono = false }: { etikett: string; children: React.ReactNode; mono?: boolean }) {
   return (
     <div style={{ minWidth: 0 }}>
-      <TnEtikett style={{ fontSize: 10.5, letterSpacing: "0.14em" }}>{etikett}</TnEtikett>
-      <div style={{ fontSize: mono ? 14.5 : 14, fontFamily: mono ? TN.font.mono : undefined, fontVariantNumeric: "tabular-nums", marginTop: 4, overflowWrap: "anywhere" }}>{children}</div>
+      <TnEtikett style={{ fontSize: 11 }}>{etikett}</TnEtikett>
+      <div style={{ fontSize: mono ? 18 : 14, fontWeight: mono ? 500 : 700, fontFamily: mono ? TN.font.mono : undefined, color: mono ? TN.navy900 : TN.ink900, fontVariantNumeric: "tabular-nums", marginTop: 4, overflowWrap: "anywhere" }}>{children}</div>
     </div>
   );
 }
@@ -48,7 +48,7 @@ export async function TnCollegeSkjerm() {
 
   return (
     <SkjermRamme aktiv="college" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/college" tittel="College-gruppen" ingress="Landslagsspillere på college i USA. Hvem kan stille på samling, og hvem er bundet av college-kalenderen."
+      <TnSkjermhode overlinje={`College og USA · ${spillere.length} ${spillere.length === 1 ? "spiller" : "spillere"}`} tittel="College-gruppen" ingress="Landslagsspillere på college i USA. Hvem kan stille på samling, og hvem er bundet av college-kalenderen."
         handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnCollegeSkjema spillere={spillervalg} knapp="Legg til college" /> : undefined}
       />
 
@@ -57,12 +57,12 @@ export async function TnCollegeSkjerm() {
         {spillere.map((s) => {
           const reg = college.get(s.id);
           return (
-          <div key={s.id} style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", padding: "16px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "center" }}>
+          <div key={s.id} style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", padding: "14px 0", borderBottom: `1px solid ${TN.ink200}`, alignItems: "center" }}>
             <div style={{ flex: "1 1 280px", minWidth: 0, display: "flex", gap: 14, alignItems: "center" }}>
               <TnInitialer navn={s.navn} />
               <div style={{ minWidth: 0 }}>
-                <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center" }}>{s.navn}</Link>
-                <div style={{ fontSize: 13.5, color: TN.textSecondary, marginTop: 2, overflowWrap: "anywhere" }}>{reg?.skole ?? s.skole}</div>
+                <Link href={`/team-norway/spiller/${s.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.ink900, overflowWrap: "anywhere", minHeight: 44, display: "inline-flex", alignItems: "center", textUnderlineOffset: 4 }}>{s.navn}</Link>
+                <div style={{ fontSize: 12.5, color: TN.ink500, overflowWrap: "anywhere" }}>{reg?.skole ?? s.skole}</div>
                 {reg?.notat ? <div style={{ fontSize: 13, marginTop: 4, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{reg.notat}</div> : null}
               </div>
             </div>

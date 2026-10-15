@@ -40,7 +40,7 @@ export function TnDataTable({
   const pad = dense ? "10px 14px" : "14px 18px";
   const skall: React.CSSProperties = {
     minWidth: 0,
-    borderRadius: TN.radius.lg,
+    borderRadius: TN.radius.sm,
     border: `1px solid ${TN.borderSubtle}`,
     background: TN.white,
   };

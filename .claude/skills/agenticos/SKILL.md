@@ -6,17 +6,15 @@ description: >
   Trigger: agenticos, dispatch, multi-ai, Caddie, PlanAction, agent-team,
   AI-hub, hvilken AI, orkestrer, prompt engineer (pek til skill), worktree,
   checkpoint, hvor jobbes hva, veileder-rolle, Claude Code-arbeidsdisiplin.
-  Versjon 2026-09-11. CoachHQ forbudt
+  Versjon 2026-10-15. CoachHQ forbudt
   i UI. Inspirert av Anthropic effective agents.
 ---
 
-Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design: `docs/design-system/design-autoritet.md` (Precision Athletics); historiske skill-eksempler overstyrer ikke disse kildene.
 
 # AgenticOS — Anders sitt AI-operativsystem
 
 **Ett språk. Én godkjenningsregel. Enkelhet før kompleksitet.**
-
-Referanse: `~/Documents/Claude/inbox/agenticos-verdensklasse-inspirasjon.md`
 
 ## Gullregler
 
@@ -33,7 +31,7 @@ Referanse: `~/Documents/Claude/inbox/agenticos-verdensklasse-inspirasjon.md`
 | Mønster | Når | Hos oss |
 |---------|-----|---------|
 | Single call | Én klar oppgave | Chat / Meg |
-| Routing | Ulike sakstyper | dispatch + ai-ruting + cockpit-panel |
+| Routing | Ulike sakstyper | cockpit AI-dispatch + Innboks |
 | Chaining | Faste steg | agent-team Grok→Claude→Gemini |
 | Evaluator-optimizer | Trenger polish | Gemini-review / prompt 2. pass |
 | Orchestrator-workers | Uforutsigbart | Claude Code / Grok multi-step |
@@ -41,16 +39,17 @@ Referanse: `~/Documents/Claude/inbox/agenticos-verdensklasse-inspirasjon.md`
 
 ## Skill-kart
 
-| Behov | Skill |
+Bare skills som faktisk finnes. Tidligere pekere til `ak-dispatch`, `ai-ruting`,
+`agent-oppdrag`, `kalenderos` og `hq-godkjenning` er fjernet 15.10.2026 (skillene fantes ikke).
+
+| Behov | Skill / kilde |
 |-------|--------|
-| Morgen / prioriter | `ak-dispatch` |
-| **Prompter i verdensklasse** | **`prompt-engineer`** |
-| Hvilken AI | `ai-ruting` |
-| Lim-klar oppgave | `agent-oppdrag` |
-| Kalender | `kalenderos` |
-| Godkjenningskø | `hq-godkjenning` |
+| **Prompter i verdensklasse** | **`prompt-engineer`** (inngang: `ak-prompt-master`) |
+| Hvilken AI / modell | `CLAUDE.md` §Forbruk: Sonnet er standard, Opus/Fable krever begrunnelse |
+| Godkjenningskø | `/admin/godkjenninger` — regler i `agencyos-arkitektur` §AI-laget |
 | Cockpit-panel | `agenticos-cockpit` |
 | AgencyOS-kode | `agencyos-arkitektur` |
+| Signaler, agenter, PlanAction | `playerhq-agents` (global) — kode i `src/lib/agents/` |
 
 ## AI-flåte
 
@@ -85,15 +84,13 @@ Ved all AgencyOS-arbeid: behold AgenticOS synlig på Hjem + Kø.
 
 ## Visuell integrasjon
 
-Ved design av AgenticOS-flater: les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). AgenticOS arver AgencyOS-systemet og får ikke en separat «AI-magisk» stil. Vis transparens gjennom kilde, begrunnelse, konsekvens og eksakt status. Kontrollert dybde eller mørk fokusmodus kan markere aktivt arbeid, men neon, robotgrafikk og glød skal aldri erstatte forståelig status.
+Ved design av AgenticOS-flater: bruk `ak-hq-design` og Precision Athletics (`docs/design-system/design-autoritet.md`). AgenticOS arver AgencyOS-systemet og får ikke en separat «AI-magisk» stil. Vis transparens gjennom kilde, begrunnelse, konsekvens og eksakt status. Kontrollert dybde eller mørk fokusmodus kan markere aktivt arbeid, men neon, robotgrafikk og glød skal aldri erstatte forståelig status.
 
 ## Dispatch-flyt
 
-1. `ak-dispatch` ritual  
-2. AI-dispatch-tabell (maks 4)  
-3. Ved svak prompt-behov: `prompt-engineer`  
-4. Kalender: `kalenderos` etter ja  
-5. Kø: `hq-godkjenning`  
+1. Cockpit `/admin/agencyos`: AI-dispatch-tabell (maks 4), «én ting NÅ»  
+2. Ved svak prompt-behov: `prompt-engineer`  
+3. Kø: `/admin/godkjenninger` — coach godkjenner, system utfører  
 
 ## Claude Code — arbeidsdisiplin (claude-code-raden i AI-flåten, utdypet)
 
@@ -111,10 +108,10 @@ kopiere tall/regler som allerede finnes der.
    arbeid er en feilet økt. Selve branch→commit→push→PR-flyten og push-timingen
    («committ ofte, push samlet») eies av `CLAUDE.md` §Arbeidsregler — ikke
    duplisert her.
-3. **Modell + effort for selve kodejobben** følger samme ruting som når en
-   prompt designes for den — se `prompt-engineer` §«Claude-flåten i detalj»
-   (Sonnet 5 / Opus 5 / Fable 5 + effort-nivåer). Ikke to tabeller med samme
-   informasjon; denne skillen refererer, `prompt-engineer` eier tallene.
+3. **Modell + effort for selve kodejobben** følger `CLAUDE.md` §Forbruk: Sonnet
+   er standard, Opus og Fable krever bevisst valg med begrunnelse, Fable aldri i
+   lange økter. `prompt-engineer` har ingen modelltabell (fjernet med vilje);
+   nye modellråd verifiseres mot gjeldende dokumentasjon, aldri fra hukommelsen.
 4. **Hvor jobbes hva:**
 
    | Sted | Brukes til |

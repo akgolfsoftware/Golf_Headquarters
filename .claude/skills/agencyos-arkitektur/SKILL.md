@@ -62,7 +62,7 @@ Cockpit AI-dispatch → lenker til kø / team / caddie
 Agent-team: Grok → Claude → Gemini (/admin/agent-team)
 ```
 
-Skills: `agenticos`, `agenticos-cockpit`, `hq-godkjenning`, `playerhq-agents` (pipeline; kode i `src/lib/agents/`).
+Skills: `agenticos`, `agenticos-cockpit`, `playerhq-agents` (pipeline; kode i `src/lib/agents/`). Køens regler står her, i §AI-laget; det finnes ingen egen kø-skill.
 
 **Regel:** AI foreslår, coach godkjenner, system utfører. Aldri stille auto-publiser plan.
 
@@ -81,10 +81,10 @@ Skills: `agenticos`, `agenticos-cockpit`, `hq-godkjenning`, `playerhq-agents` (p
 
 ## Design
 
-- Les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md) og bruk `ak-hq-design` ved design og UI.
-- AgencyOS er den rolige, operative modusen i samme nye designsystem som PlayerHQ. Lys eller mørk standard avgjøres av valgt Claude Design-versjon; dagens implementerte tokens er ikke visuell fasit.
-- Mørk fokusmodus kan brukes for fordypning og synlig AgenticOS-arbeid når oppgaven begrunner det. Ikke gjør hele coachflaten mørk av vane.
-- Under utforsking starter Claude Design blankt. Ved implementering kartlegges den valgte versjonen til faktiske delte komponenter; eksisterende komponentmapper er teknisk underlag, ikke designordre.
+- Bruk `ak-hq-design` ved design og UI. Designsystemet er Claude Design «AK Golf Precision Athletics» (`7d7c2994`), valgt 26.09.2026 og låst: `docs/design-system/design-autoritet.md`.
+- AgencyOS er den rolige, operative modusen i samme designsystem som PlayerHQ. Lyst tema er standard; grafitt primærknapp, rust bare som signal (maks én per skjerm).
+- Ingen mørk modus av vane. Live-øktene er alltid lyse (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10.2026).
+- Ved implementering porteres den godkjente tegningen fra Precision til faktiske delte komponenter; eksisterende komponentmapper er teknisk underlag, ikke designordre. En skjerm er ferdig når Anders har sett den (port 7).
 - Ingen emoji i UI — Lucide
 - Norsk bokmål
 

@@ -3,18 +3,11 @@ import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTester, hentTnSpillerAnalyseHub } from "@/lib/domain/tn-arbeidsflate";
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett, tnRolleNavn } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { TN } from "@/lib/v2/team-norway";
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", timeZone: "Europe/Oslo" });
-
-function rolleNavn(rolle: string) {
-  if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
-  if (rolle === "PLAYER") return "Spiller";
-  return rolle;
-}
 
 function trend(rad: { sisteScore: number | null; forrigeScore: number | null; lowerIsBetter: boolean | null }): { tekst: string; tone: "green" | "amber" | "nøytral" } {
   if (rad.sisteScore === null || rad.lowerIsBetter === null) return { tekst: "Uforenlig data", tone: "amber" };
@@ -42,9 +35,9 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
   if (!hub) notFound();
 
   return (
-    <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
-      <TnSidehode overlinje="Analyse" tittel="Utvikling per protokoll" ingress="Hver protokoll vises for seg — ingen sammenslått totalscore på tvers av ulike måleenheter." />
+    <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
+      <TnSidehode overlinje={`IUP · ${data.tilgang.spillerNavn} · Analyse`} tittel="Utvikling per protokoll" ingress="Hver protokoll vises for seg. Ingen sammenslått totalscore på tvers av ulike måleenheter." />
+      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} kompakt />
 
       {(hub.sgAkser.some((a) => a.verdi !== null) || hub.trackman) && (
         <TnSeksjon tittel="Strokes Gained / TrackMan">
@@ -55,7 +48,7 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
           </TnMetrikkRutenett>
           {hub.trackman && (
             <TnKort>
-              <p style={{ margin: 0, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{hub.trackman.klubb} · {hub.trackman.datoKort}</p>
+              <p style={{ margin: 0, fontWeight: 700, color: TN.ink900 }}>{hub.trackman.klubb} · {hub.trackman.datoKort}</p>
               <p style={{ margin: "6px 0 0", color: TN.textSecondary, fontSize: TN.text.sm }}>{hub.trackman.setning} — {hub.trackman.meta}</p>
             </TnKort>
           )}
@@ -71,14 +64,14 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
             return (
               <TnKort key={rad.testId}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap" }}>
-                  <h3 style={{ margin: 0, fontSize: TN.text.h3, color: TN.navy900 }}>{rad.protokollNavn}</h3>
+                  <h3 style={{ margin: 0, fontFamily: TN.font.body, fontSize: 15, fontWeight: 700, lineHeight: 1.3, color: TN.ink900 }}>{rad.protokollNavn}</h3>
                   <TnPille tone={t.tone}>{t.tekst}</TnPille>
                 </div>
-                <p style={{ margin: "10px 0 0", fontFamily: TN.font.mono, fontSize: TN.text.h2, fontWeight: TN.weight.bold, color: TN.navy900 }}>{rad.sisteFormatert ?? "—"}</p>
-                <p style={{ margin: "4px 0 0", color: TN.textSecondary, fontSize: TN.text.sm }}>
+                <p style={{ margin: "10px 0 0", fontFamily: TN.font.mono, fontSize: 30, fontWeight: 500, lineHeight: 1.05, letterSpacing: "-0.02em", color: TN.navy900 }}>{rad.sisteFormatert ?? "—"}</p>
+                <p style={{ margin: "4px 0 0", color: TN.ink500, fontSize: 12.5 }}>
                   {rad.besteFormatert ? `Beste: ${rad.besteFormatert} · ` : `${rad.antallUtelatt} resultat(er) kunne ikke valideres · `}{dato.format(rad.sisteDato)}
                 </p>
-                <Link href={`/team-norway/spiller/${spillerId}/tester/${rad.testId}`} style={{ display: "inline-block", marginTop: 10, color: TN.navy700, fontWeight: TN.weight.semibold, fontSize: TN.text.sm }}>Se full historikk →</Link>
+                <Link href={`/team-norway/spiller/${spillerId}/tester/${rad.testId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy600, fontWeight: 700, fontSize: 14, textDecoration: "underline", textUnderlineOffset: 4 }}>Se full historikk</Link>
               </TnKort>
             );
           })}

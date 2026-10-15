@@ -1,8 +1,10 @@
-# Atletisk intelligens — aktiv retning og videreføring
+# Atletisk intelligens — retningen bak Precision Athletics (historisk fra 26.09.2026)
 
-Status 13.09.2026: Dette er Anders' aktive smaks- og arbeidsretning for produktdesignet. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater kobles til systemet gjennom navngitte profiler og mønstre. Arbeidet startet fra blankt lerret med v0.1. Ved videreføring skal Claude Design fullføre siste faktiske kandidat, ikke starte på nytt. Den samlede kandidaten er ikke valgt bare fordi enkeltflater er tegnet eller testet.
+**Status 15.10.2026:** Dette dokumentet beskriver smaks- og arbeidsretningen som Precision Athletics ble bygget på. Utforskingen er avsluttet. **Visuell fasit er Claude Design «AK Golf Precision Athletics» (`7d7c2994`), valgt av Anders 26.09.2026**, jf. [design-autoritet.md](../../../../docs/design-system/design-autoritet.md). Bruk denne fila for å forstå hvorfor systemet ser ut som det gjør, ikke som tillatelse til å starte blankt eller lage en ny kandidat.
 
-**Valgt delomfang:** Team Norways Claw-pakke er visuell fasit for egne `/team-norway/*`-skjermer, jf. [beslutningen 13.09.2026](../../../../docs/design-system/team-norway-claw-valgt-2026-09-13.md). Logo, typografi, farger, navigasjon og komponentmønstre følger den valgte pakken. Den generelle utforskingsfriheten nedenfor overstyrer ikke dette valget.
+**Team Norway:** `/team-norway/*` følger Claude Design «Team Norway App» (Anders 22.09.2026, beslutninger.md §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Claw-valget 13.09 er overstyrt; lenken under er historikk: [beslutningen 13.09.2026](../../../../docs/design-system/team-norway-claw-valgt-2026-09-13.md).
+
+Opprinnelig status 13.09.2026: Dette var Anders' aktive smaks- og arbeidsretning for produktdesignet. PlayerHQ, AgencyOS, Team Norway og WANG var obligatoriske kjerner. Arbeidet startet fra blankt lerret med v0.1 og ble videreført til Precision Athletics.
 
 Historiske produktuttrykk i koden kan brukes til å finne funksjoner, tilstander og tekniske avhengigheter. De er ikke automatisk visuell fasit. Ved videreføring beholdes kandidatens fungerende designvalg og rettinger, mens konkrete svakheter forbedres. Nye uttrykkelige valg registreres for sitt omfang.
 

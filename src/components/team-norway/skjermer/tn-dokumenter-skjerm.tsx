@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { FileText } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
@@ -14,7 +13,7 @@ import { datoLang, hentSkjermbruker } from "./felles";
 
 /**
  * TN-14 Dokumenter. Gruppens filer samlet på ett sted.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-14.
+ * Fasit: docs/design-system/utkast-tn/gruppe.html, skjermene Dokumenter og Last opp (pakke 6).
  *
  * Avvik:
  *   - Vedlegg i innlegg har ingen kategori. De vises under Alle, merket «Fra innlegg».
@@ -55,7 +54,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
 
   return (
     <TnShell aktiv="dokumenter" brukerNavn={bruker.name ?? "Ukjent"} rolle={erTrener ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt"} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
-      <TnSkjermhode rute={base} tittel="Dokumenter" ingress={`Sesongplan, uttakskriterier og reiseinfo for ${gruppe.name}. Alle i gruppen finner filene her.`} />
+      <TnSkjermhode overlinje={gruppe.name} tittel="Dokumenter" ingress={`Program, planer og avtaler for gruppa.${erTrener ? " Du ser hvor mange som har åpnet hvert dokument." : ""}`} />
 
       {erTrener ? <TnDokumentSkjema groupId={groupId} maksMb={maksMb} kategorier={[...TN_DOKUMENT_KATEGORIER]} /> : null}
 
@@ -67,12 +66,12 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
         ]}
       />
 
-      <section aria-label="Dokumenter" style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, minWidth: 0 }}>
+      <section aria-label="Dokumenter" style={{ background: TN.white, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, minWidth: 0 }}>
         {liste.map((d) => (
-          <div key={d.attachmentId} style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 20px", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${TN.navy100}` }}>
+          <div key={d.attachmentId} style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 20px", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${TN.ink200}` }}>
             <a href={`/api/team-norway/vedlegg/${encodeURIComponent(d.attachmentId)}`} style={{ flex: "1 1 260px", minWidth: 0, minHeight: 44, display: "flex", gap: 12, alignItems: "center", color: TN.textPrimary, textDecoration: "none" }}>
-              <span aria-hidden="true" style={{ width: 36, height: 36, flex: "none", borderRadius: TN.radius.xs, background: TN.navy50, border: `1px solid ${TN.navy100}`, color: TN.navy900, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <FileText size={18} />
+              <span aria-hidden="true" style={{ width: 40, height: 40, flex: "none", background: TN.navy100, color: TN.navy900, fontFamily: TN.font.mono, fontWeight: 500, fontSize: 10.5, letterSpacing: "0.08em", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {filtype(d.fileName).slice(0, 4)}
               </span>
               <span style={{ minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{d.fileName}</span>
@@ -80,8 +79,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
               </span>
             </a>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", alignItems: "baseline", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, minWidth: 0 }}>
-              <span style={{ color: TN.navy900 }}>{filtype(d.fileName)}</span>
-              <span>{datoLang(d.oppdatert)}</span>
+                            <span>{datoLang(d.oppdatert)}</span>
               <span style={{ fontFamily: TN.font.body, fontSize: 13, overflowWrap: "anywhere" }}>{d.opplasterNavn}</span>
               <span>{storrelse(d.fileSize)}</span>
               {erTrener ? <span>{d.kvittering.apnet}/{d.kvittering.totalt} åpnet</span> : null}
@@ -90,9 +88,9 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
           </div>
         ))}
         {liste.length === 0 ? (
-          <div style={{ padding: "clamp(16px, 2vw, 24px)" }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "10px 0 0", maxWidth: "60ch" }}>
+          <div style={{ padding: "16px 18px 18px" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
+            <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
               {dokumenter.length > 0
                 ? "Ingen dokumenter i denne kategorien."
                 : erTrener

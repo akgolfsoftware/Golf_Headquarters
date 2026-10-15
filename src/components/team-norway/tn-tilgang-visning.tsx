@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TnAvsluttResultat, TnLeggTilResultat, TnTilgangRad, TnTilgangStatus, TnTrenerRolle } from "@/lib/domain/tn-tilgang";
+import { TnPille } from "./core";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "./tn-flate";
 import { TnAvsluttTilgang, TnLeggTilTrener } from "./tn-tilgang-handlinger";
@@ -48,27 +49,27 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
 
   return (
     <TnShell aktiv="tilgang" brukerNavn={brukerNavn} rolle="Trener" groupId={gruppeId} visTrenerflater kanAdministrere>
-      <TnSkjermhode rute="/team-norway/tilgang" tittel="Trenere og tilgang" ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med." />
+      <TnSkjermhode overlinje={`Administrasjon · ${gruppeNavn}`} tittel="Trenere og tilgang" ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med." />
 
       <TnFlate>
         <TnFlatehode tittel={`Tilgang til ${gruppeNavn}`} merknad={`Trener ${trenere} · Assist Coach ${aktive.length - trenere}`} />
         {aktive.map((r) => (
-          <div key={r.userId} style={{ display: "flex", flexWrap: "wrap", gap: "12px 16px", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${TN.navy100}` }}>
+          <div key={r.userId} style={{ display: "flex", flexWrap: "wrap", gap: "12px 16px", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${TN.ink200}` }}>
             <div style={{ flex: "1 1 260px", minWidth: 0, display: "flex", gap: 12, alignItems: "center" }}>
               <TnInitialer navn={r.navn} storrelse={40} />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 15, fontWeight: 700, overflowWrap: "anywhere" }}>{r.navn}</div>
-                <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, overflowWrap: "anywhere" }}>{r.epost}</div>
+                <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.ink500, overflowWrap: "anywhere" }}>{r.epost}</div>
               </div>
             </div>
             <div style={{ flex: "0 1 200px", minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 700 }}>{rolleNavn(r.rolle)}</div>
-              <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>
+              <TnPille tone={r.rolle === "COACH" ? "info" : "nøytral"}>{rolleNavn(r.rolle)}</TnPille>
+              <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.ink500 }}>
                 Siden {dato.format(r.joinedAt)}{r.endedAt ? ` · til ${dato.format(r.endedAt)}` : ""}
               </div>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-              <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 6px", color: TN.navy700, fontSize: 14 }}>Endre</Link>
+              <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 6px", color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Endre</Link>
               {r.userId === egenId ? <TnEtikett style={{ padding: "0 6px" }}>Deg</TnEtikett> : avslutt ? <TnAvsluttTilgang navn={r.navn} avslutt={avslutt.bind(null, r.userId)} /> : null}
             </div>
           </div>
@@ -79,7 +80,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
       {valgt && skjema ? (
         <TnFlate>
           <TnFlatehode tittel={`Endre ${valgt.navn}`}>
-            <Link href="/team-norway/tilgang" style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy700, fontSize: 14 }}>Lukk</Link>
+            <Link href="/team-norway/tilgang" style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Lukk</Link>
           </TnFlatehode>
           <div style={{ marginTop: 16, maxWidth: 520 }}>{skjema}</div>
         </TnFlate>
@@ -89,11 +90,11 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
         <TnFlate>
           <TnFlatehode tittel="Avsluttet tilgang" merknad={String(avsluttede.length)} />
           {avsluttede.map((r) => (
-            <div key={r.userId} style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 16px", padding: "12px 0", borderBottom: `1px solid ${TN.navy100}`, fontSize: 14 }}>
+            <div key={r.userId} style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 16px", padding: "12px 0", borderBottom: `1px solid ${TN.ink200}`, fontSize: 14 }}>
               <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{r.navn} · {rolleNavn(r.rolle)}</span>
               <span style={{ display: "inline-flex", gap: 12, alignItems: "center" }}>
-                <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary }}>Avsluttet {r.endedAt ? dato.format(r.endedAt) : "—"}</span>
-                <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy700 }}>Endre</Link>
+                <span style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.ink500 }}>Avsluttet {r.endedAt ? dato.format(r.endedAt) : "—"}</span>
+                <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy600, fontWeight: 700 }}>Endre</Link>
               </span>
             </div>
           ))}
@@ -111,9 +112,9 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
       <TnFlate>
         <TnFlatehode tittel="Hva rollene ser" />
         {ROLLER.map(([rolle, tekst]) => (
-          <div key={rolle} style={{ display: "grid", gridTemplateColumns: "minmax(0, 140px) minmax(0, 1fr)", gap: 16, padding: "12px 0", borderBottom: `1px solid ${TN.navy100}` }}>
+          <div key={rolle} style={{ display: "grid", gridTemplateColumns: "minmax(0, 140px) minmax(0, 1fr)", gap: 16, padding: "12px 0", borderBottom: `1px solid ${TN.ink200}` }}>
             <span style={{ fontSize: 14, fontWeight: 700 }}>{rolle}</span>
-            <span style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary }}>{tekst}</span>
+            <span style={{ fontSize: 14, lineHeight: 1.6, color: TN.ink500 }}>{tekst}</span>
           </div>
         ))}
       </TnFlate>

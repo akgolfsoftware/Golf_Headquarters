@@ -9,6 +9,7 @@ import { useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import { TlBadge, TlKort, TlKnapp, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "./GruppeFaner";
+import { datoTilOsloLokal } from "@/lib/admin/gruppe-tid";
 
 export type TimeplanRad = {
   id: string;
@@ -84,9 +85,7 @@ function TimeplanSeksjon({
       <TlKort pad="6px 18px">
         {rader.map((s, i) => {
           const erFokus = s.id === focusId;
-          const defaultNewStart = new Date(new Date(s.startAt).getTime() + 7 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 16);
+          const defaultNewStart = datoTilOsloLokal(new Date(new Date(s.startAt).getTime() + 7 * 24 * 60 * 60 * 1000));
           return (
             <div
               key={s.id}
