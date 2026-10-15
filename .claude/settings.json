@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "Edit",
       "Bash(git status)",
@@ -14,14 +15,35 @@
       "Bash(npm install*)",
       "Bash(npx prisma validate*)",
       "Bash(npx prisma generate*)",
-      "Bash(npx tsc*)"
+      "Bash(npx tsc*)",
+      "Bash(npm run *)",
+      "Bash(npx prisma *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push -u origin *)",
+      "Bash(git push origin *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)"
+    ],
+    "deny": [
+      "Bash(git push origin main*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push *:main*)",
+      "Bash(git push *+*)",
+      "Bash(git push * --force*)"
     ],
     "ask": [
       "Bash(git checkout main)",
       "Bash(git checkout master)",
       "Bash(git reset*)",
       "Bash(gh pr merge*)",
-      "Bash(rm -rf*)"
+      "Bash(rm -rf*)",
+      "Bash(gh pr merge *)",
+      "Bash(git merge *)",
+      "Bash(npx prisma db *)",
+      "Bash(npx prisma migrate *)"
     ]
   },
   "hooks": {
