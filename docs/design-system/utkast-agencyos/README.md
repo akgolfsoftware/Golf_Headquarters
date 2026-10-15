@@ -16,7 +16,7 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 5 Live coachingøkt | AG-13 (+ AG-13-U uten samtykke), AG-12, `live.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/NvmKeAQwkUAnJPLfEya1VL |
 | 6 Teknisk plan og runder | AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02, `teknisk.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/5Zue1iXogFbYvTu7hGHp8f |
 | 7 Mer | Mer, AG-15, AG-16 (+ gruppa), AG-A03, AG-20 (bare head coach, + AG-20-ASS), AG-23, `mer.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/3f8o54VRQF2j7oKn6YKCYs |
-| 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | | |
+| 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GjxtcH7JeoeMARfSMxu5SG |
 | 9 Samleside | Alle lenker på én side, `samleside.html` | | |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` og vedtakene i `.claude/rules/beslutninger.md`.
