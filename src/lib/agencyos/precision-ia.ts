@@ -16,6 +16,7 @@ export const AOS_MENY: ReadonlyArray<{ id: AosPunktId; label: string; href: stri
   { id: "stall", label: "Stall", href: "/admin/spillere" },
   { id: "kalender", label: "Kalender", href: "/admin/kalender" },
   { id: "workbench", label: "Workbench", href: "/admin/planlegge" },
+  { id: "mer", label: "Mer", href: "/admin/mer" },
 ];
 
 export const AOS_MER: ReadonlyArray<{ id: AosMerId; label: string; href: string; bareHeadCoach?: true }> = [
@@ -36,6 +37,7 @@ export const AOS_HURTIG: ReadonlyArray<{ id: string; label: string; href: string
 
 /** Adresser som hører til et menypunkt uten å ligge under punktets egen adresse. */
 const PREFIKS: ReadonlyArray<[string, AosPunktId | AosMerId]> = [
+  ["/admin/mer", "mer"],
   ["/admin/agencyos/okonomi", "okonomi"],
   ["/admin/agencyos", "cockpit"],
   ["/admin/innboks", "innboks"], ["/admin/ko", "innboks"], ["/admin/queue", "innboks"],
@@ -56,6 +58,7 @@ const under = (path: string, p: string) => path === p || path.startsWith(p + "/"
 export function aktivtAosPunkt(path: string): { punkt: AosPunktId | null; mer: AosMerId | null } {
   const treff = PREFIKS.filter(([p]) => under(path, p)).sort((a, b) => b[0].length - a[0].length)[0]?.[1] ?? null;
   if (!treff) return { punkt: null, mer: null };
+  if (treff === "mer") return { punkt: "mer", mer: null };
   if (AOS_MER.some((m) => m.id === treff)) return { punkt: "mer", mer: treff as AosMerId };
   return { punkt: treff as AosPunktId, mer: null };
 }
