@@ -18,7 +18,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 7 Kommunikasjon | PH-21 Innboks (+ meldinger), PH-22 Caddie, PH-23 Booking (+ book time, bekreftet, flytt og avbestill), `kommunikasjon.html` | **Godkjent 14.10** (port 7, Anders), utkast 2 | https://claude.ai/artifact/2Dtxo3nS4rwN2yBaaRTpTD |
 | 8 Meg | PH-24 (+ profil, fasiliteter, utstyr, helse, foreldre), PH-25 (+ innstillinger), PH-27 (+ under 16), `meg.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/3LLqsVrsgjq5KxwysoGxg3 |
 | 9 IUP og gameplan | PH-IUP-01 (+ levert), PH-IUP-02 (+ levert), PH-20 (+ hull), `iup.html` | **Godkjent 15.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/6ALZka6wvTpvKvnboZXb5E |
-| 10 Samleside | Alle lenker på én side, designbrevet oppdatert | | |
+| 10 Samleside | Alle lenker på én side med status, `samleside.html`; designbrevet peker hit | **Ferdig** (14.10) | https://claude.ai/artifact/PkWg8LfsczoCwWaRsUpnus |
 
 Rekkefølgen er 3 først (Anders minst fornøyd med Workbench). Én fersk økt per pakke.
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` og vedtakene i
