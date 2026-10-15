@@ -11,7 +11,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error]);
 
   return (
-    <AgencyOSSkall navn="Coach" natt>
+    <AgencyOSSkall navn="Coach">
       <div className="pa-side">
         <FeilTilstand
           icon={RadioTower}
