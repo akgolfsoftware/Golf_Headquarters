@@ -263,7 +263,7 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
         <div className="pa-dialog__body"><p style={{ margin: 0 }}>{totalRepsSum} repetisjoner er registrert. Øvelser som ikke er fullført lagres som ikke gjennomført.</p></div>
         <div className="pa-dialog__foot"><div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}>
           <button type="button" className="pa-btn pa-btn--secondary" onClick={() => setEndOpen(false)}>Fortsett</button>
-          <button type="button" className="pa-btn pa-btn--danger" onClick={handleEndConfirmed}>Avslutt og lagre</button>
+          <button type="button" className="pa-btn pa-btn--signal" onClick={handleEndConfirmed}>Avslutt og lagre</button>
         </div></div>
       </div>
     </div>}

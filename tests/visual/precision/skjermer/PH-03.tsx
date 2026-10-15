@@ -16,7 +16,7 @@ const DRILLS = [
 const data = (status: "planned" | "done"): OktDetaljData => ({
   found: true, id: "o1", tittel: "SLAG · Innspill og nærspill", emTittel: "Innspill og nærspill", pyramide: "SLAG",
   dagTekst: "Mandag 5.10", ukeNr: 41, tidTekst: "15:30–16:45", varighetMin: 75, sted: "Range 3 · Fredrikstad GK",
-  status, statusLabel: status === "done" ? "Gjennomført" : "Planlagt", statusTone: status === "done" ? "ok" : "neutral",
+  status, statusLabel: status === "done" ? "Gjennomført" : "Planlagt", statusTone: "lime",
   kanStarte: status !== "done", startLabel: "Start økten", startHref: "#",
   publisertAv: "Anders Kristiansen · 03.10", maal: "7 av 10 innspill 50–100 m innenfor 4 m",
   hvorfor: "Hold samme rytme på alle lengder. Kort baksving, full gjennomføring.",
@@ -24,7 +24,7 @@ const data = (status: "planned" | "done"): OktDetaljData => ({
   resultat: status === "done" ? { fullfortKl: "16:41", totalReps: 160, drillsFullfort: 4, antallDrills: 5 } : null,
   notat: status === "done" ? "Bedre lengdekontroll på 54°." : null,
   deltakere: [], invite: null,
-} as OktDetaljData);
+} as unknown as OktDetaljData);
 
 const Vis = ({ d }: { d: OktDetaljData }) => <PlayerHQSkall innboksHref="#" uleste={2}><PH03Oktark data={d} userId="u1" nesteTekst={null} nesteHref="#" harNeste /></PlayerHQSkall>;
 
