@@ -20,14 +20,17 @@ function erIupFokusforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is
   return "kind" in forslag && forslag.kind === "IUP_FOCUS";
 }
 
-const felt: React.CSSProperties = { display: "grid", gap: 5, minWidth: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" };
-const input: React.CSSProperties = { minHeight: 40, minWidth: 0, padding: "8px 10px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-1)", color: "var(--text-primary)", font: "inherit" };
 const panel: React.CSSProperties = { display: "grid", gap: 12, padding: 16, border: "1px solid var(--border-default)", borderRadius: 12, background: "var(--surface-1)" };
-const tnPanel: React.CSSProperties = { ...panel, borderColor: TN.borderSubtle, borderRadius: 0, background: TN.surfaceCard, fontFamily: TN.font.body };
-const wangPanel: React.CSSProperties = { ...panel, borderColor: "var(--border-subtle)", borderRadius: 8, background: "var(--surface-card)", fontFamily: "var(--font-body)" };
-const stdKnapp: React.CSSProperties = { minHeight: 40, border: 0, borderRadius: 8, background: "var(--surface-inverse)", color: "var(--text-inverse)", padding: "8px 14px", font: "var(--type-body-s)", cursor: "pointer" };
-const tnKnapp: React.CSSProperties = { ...stdKnapp, borderRadius: 0, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontSize: TN.text.sm };
-const wangKnapp: React.CSSProperties = { ...stdKnapp, background: "var(--wang-navy)", color: "var(--white)" };
+// Skjemaet får tema fra systemet det vises i (WANG- eller Team Norway-tokens).
+// `panel` og `stdKnapp` over brukes bare av innboksen i PlayerHQ.
+const tnPanel: React.CSSProperties = { display: "grid", gap: 12, padding: "16px 18px 18px", border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, background: TN.surfaceCard, fontFamily: TN.font.body };
+const wangPanel: React.CSSProperties = { display: "grid", gap: 12, padding: 16, border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-card-sm)", background: "var(--surface-card)", fontFamily: "var(--font-body)" };
+const tnKnapp: React.CSSProperties = { minHeight: 44, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, cursor: "pointer" };
+const wangKnapp: React.CSSProperties = { minHeight: 44, padding: "0 16px", border: 0, borderRadius: "var(--radius-input)", background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, cursor: "pointer" };
+const tnFelt: React.CSSProperties = { display: "grid", gap: 6, minWidth: 0, color: TN.ink900, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700 };
+const wangFelt: React.CSSProperties = { display: "grid", gap: 5, minWidth: 0, color: "var(--text-secondary)", fontFamily: "var(--font-body)", fontSize: 13 };
+const tnInput: React.CSSProperties = { minHeight: 48, minWidth: 0, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.ink900, fontFamily: TN.font.body, fontSize: 16, fontWeight: 400 };
+const wangInput: React.CSSProperties = { minHeight: 44, minWidth: 0, padding: "8px 10px", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-input)", background: "var(--surface-card)", color: "var(--text-primary)", fontFamily: "var(--font-body)", fontSize: 15 };
 
 function tid(minutter: number) { return `${String(Math.floor(minutter / 60)).padStart(2, "0")}:${String(minutter % 60).padStart(2, "0")}`; }
 function vis(o: Partial<Innslag> | null) { return !o ? "Ingen eksisterende økt" : [o.date, o.startMinute == null ? null : tid(o.startMinute), o.title, o.durationMinutes == null ? null : `${o.durationMinutes} min`, o.pyramid].filter(Boolean).join(" · "); }
@@ -35,13 +38,15 @@ function vis(o: Partial<Innslag> | null) { return !o ? "Ingen eksisterende økt"
 export function TrenerforslagSkjema({ organisasjon, spillerId, sessions = [] }: { organisasjon: "WANG" | "TEAM_NORWAY"; spillerId: string; sessions?: { id: string; label: string }[] }) {
   const [pending, start] = useTransition(); const [melding, setMelding] = useState(""); const router = useRouter();
   const [handling, setHandling] = useState<"ADD" | "UPDATE" | "CANCEL">("ADD");
-  const orgStyle = organisasjon === "TEAM_NORWAY" ? tnPanel : wangPanel;
-  const knapp = organisasjon === "TEAM_NORWAY" ? tnKnapp : wangKnapp;
-  const fieldStyle = organisasjon === "TEAM_NORWAY" ? { ...felt, color: TN.textSecondary, fontFamily: TN.font.body } : felt;
-  const inputStyle = organisasjon === "TEAM_NORWAY" ? { ...input, borderRadius: 0, borderColor: TN.borderDefault, background: TN.surfaceCard, color: TN.textPrimary, fontFamily: TN.font.body } : input;
+  const tn = organisasjon === "TEAM_NORWAY";
+  const orgStyle = tn ? tnPanel : wangPanel;
+  const knapp = tn ? tnKnapp : wangKnapp;
+  const fieldStyle = tn ? tnFelt : wangFelt;
+  const inputStyle = tn ? tnInput : wangInput;
+  const dempet = tn ? TN.ink700 : "var(--text-secondary)";
   return <section aria-label="Foreslå treningsendring" style={orgStyle}>
-    <div><h2 style={{ margin: 0, fontSize: organisasjon === "TEAM_NORWAY" ? TN.text.h3 : undefined, fontWeight: organisasjon === "TEAM_NORWAY" ? TN.weight.semibold : undefined, fontFamily: organisasjon === "TEAM_NORWAY" ? TN.font.display : "inherit", color: organisasjon === "TEAM_NORWAY" ? TN.textPrimary : "var(--text-primary)" }}>Foreslå treningsendring</h2>
-      <p style={{ margin: "4px 0 0", color: organisasjon === "TEAM_NORWAY" ? TN.textSecondary : "var(--text-secondary)", font: "var(--type-body-s)" }}>Forslaget endrer ikke planen før spilleren godkjenner det.</p></div>
+    <div><h2 style={tn ? { margin: 0, fontFamily: TN.font.display, fontSize: 19, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900 } : { margin: 0, fontFamily: "var(--font-brand)", fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>Foreslå treningsendring</h2>
+      <p style={{ margin: "4px 0 0", color: dempet, fontSize: 14, lineHeight: 1.5 }}>Forslaget endrer ikke planen før spilleren godkjenner det.</p></div>
     <form style={{ display: "grid", gap: 10 }} onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const handling = String(f.get("handling")) as "ADD" | "UPDATE" | "CANCEL";
       const sessionId = String(f.get("sessionId") || "");
       const [h, m] = String(f.get("time") || "09:00").split(":").map(Number);
@@ -59,7 +64,7 @@ export function TrenerforslagSkjema({ organisasjon, spillerId, sessions = [] }: 
         <label style={fieldStyle}>Sted<input name="location" maxLength={120} disabled={handling === "CANCEL"} style={inputStyle} /></label>
       </div>
       <label style={fieldStyle}>Begrunnelse<textarea name="begrunnelse" minLength={5} maxLength={1000} required rows={3} style={{ ...inputStyle, resize: "vertical" }} /></label>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}><button type="submit" disabled={pending} style={{ ...knapp, opacity: pending ? 0.65 : 1 }}>{pending ? "Sender …" : "Send forslag"}</button>{melding && <span role="status" style={{ color: organisasjon === "TEAM_NORWAY" ? TN.textSecondary : "var(--text-secondary)", font: "var(--type-body-s)" }}>{melding}</span>}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}><button type="submit" disabled={pending} style={{ ...knapp, opacity: pending ? 0.65 : 1 }}>{pending ? "Sender …" : "Send forslag"}</button>{melding && <span role="status" style={{ color: dempet, fontSize: 14 }}>{melding}</span>}</div>
     </form>
   </section>;
 }
