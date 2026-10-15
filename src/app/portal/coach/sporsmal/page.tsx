@@ -84,9 +84,7 @@ export default async function CoachSporsmalPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <PH21Innboks data={data} initialTab="q" />
-      </div>
+      <PH21Innboks data={data} initialTab="q" />
     </PlayerHQSkall>
   );
 }

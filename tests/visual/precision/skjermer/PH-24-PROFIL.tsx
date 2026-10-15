@@ -1,57 +1,45 @@
-/** Prøvefil for PH-24 Profil. Syntetiske data. */
+/** Prøvefil for PH-24 Profil i nytt design. Syntetiske data. */
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH24Profil, type PH24ProfilData } from "@/components/portal/precision/PH24Profil";
-import { Natt } from "./_natt";
+import { PH24MegFeil, PH24MegLaster } from "@/components/portal/precision/PH24MegTilstand";
 
 export const sti = "/portal/meg/profil";
 
 const demoData: PH24ProfilData = {
   navn: "Øyvind Rohjan",
   avatarUrl: null,
-  epost: "oyvind.rohjan@eksempel.no",
+  epost: "oyvind.rohjan.med.lang.adresse@eksempel.no",
   mobil: "+47 900 00 000",
-  hcp: 3.4,
+  hcp: 3.6,
   homeClub: "Gamle Fredrikstad Golfklubb",
-  fodselsdatoISO: "2009-03-14",
+  fodselsdatoISO: "2009-03-12",
   ambition: "Spille Srixon Tour og kvalifisere meg til NM junior.",
-  spillerSiden: "mars 2024",
-  stallNavn: "Elite Junior",
+  spillerSiden: "august 2025",
+  stallNavn: "WANG Toppidrett Fredrikstad",
   runderIAar: 42,
   ngfId: "123-4567",
-  hcpMaalTekst: "HCP 2,0 innen 01.11.2026",
+  hcpMaalTekst: "2,0 innen november 2026",
+  turneringer: {
+    koblet: true, tomGrunn: "",
+    rader: [
+      { id: "t1", navn: "Srixon Tour 5, Kongsberg", dato: "27. sep. 2026", runder: "72, 74", brutto: 146, plassering: "9" },
+      { id: "t2", navn: "Østlandstouren 4, Larvik golfklubb med et langt navn", dato: "13. sep. 2026", runder: "71, 73", brutto: 144, plassering: "4" },
+    ],
+  },
 };
 
 const tomData: PH24ProfilData = {
-  navn: "Ny Spiller",
-  avatarUrl: null,
-  epost: "spiller@eksempel.no",
-  mobil: null,
-  hcp: null,
-  homeClub: null,
-  fodselsdatoISO: null,
-  ambition: null,
-  spillerSiden: "oktober 2026",
-  stallNavn: null,
-  runderIAar: 0,
-  ngfId: null,
-  hcpMaalTekst: null,
+  navn: "Ny Spiller", avatarUrl: null, epost: "spiller@eksempel.no", mobil: null, hcp: null, homeClub: null, fodselsdatoISO: null,
+  ambition: null, spillerSiden: "oktober 2026", stallNavn: null, runderIAar: 0, ngfId: null, hcpMaalTekst: null,
+  turneringer: { koblet: false, rader: [], tomGrunn: "Profilen din er ikke koblet til turneringsresultatene ennå. Coachen din kobler den." },
 };
 
 const lagre = async () => ({ ok: true as const });
-
-const Vis = ({ data = demoData, nattModus = false }: { data?: PH24ProfilData; nattModus?: boolean }) => {
-  const comp = (
-    <PlayerHQSkall innboksHref="#" uleste={0}>
-      <PH24Profil data={data} onLagre={lagre} />
-    </PlayerHQSkall>
-  );
-  return nattModus ? <Natt>{comp}</Natt> : comp;
-};
+const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}>{children}</PlayerHQSkall>;
 
 export const tilstander = {
-  data: <Vis />,
-  tom: <Vis data={tomData} />,
-  natt: <Vis nattModus />,
+  data: <Skall><PH24Profil data={demoData} onLagre={lagre} /></Skall>,
+  tom: <Skall><PH24Profil data={tomData} onLagre={lagre} /></Skall>,
+  laster: <Skall><PH24MegLaster /></Skall>,
+  feil: <Skall><PH24MegFeil tittel="Profilen kunne ikke hentes" /></Skall>,
 };
-
-export const natt = ["natt"];

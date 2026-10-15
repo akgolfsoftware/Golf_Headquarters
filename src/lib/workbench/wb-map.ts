@@ -33,6 +33,17 @@ export function tilDatoKolonne(iso: string): Date {
   return new Date(Date.UTC(y, m - 1, d));
 }
 
+/**
+ * Samme kalenderdag flyttet et antall år (kopi av fjorårets årsplan). 29. februar
+ * blir 28. februar i år uten skuddår, ikke 1. mars.
+ */
+export function flyttAar(d: Date, aar: number): Date {
+  const neste = new Date(d);
+  neste.setUTCFullYear(neste.getUTCFullYear() + aar);
+  if (neste.getUTCMonth() !== d.getUTCMonth()) neste.setUTCDate(0);
+  return neste;
+}
+
 /** Date (@db.Date, UTC-midnatt) → «YYYY-MM-DD». */
 export function fraDatoKolonne(d: Date): string {
   return d.toISOString().slice(0, 10);

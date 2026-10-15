@@ -1,179 +1,211 @@
 "use client";
 
 /**
- * PH-12 Velg treningsplan (Planbygger), Precision Athletics. Tegning: Claude Design
- * 7d7c2994, ui_kits/playerhq/screens/PH-12.jsx (etag 1790520214001258).
+ * PH-12 Velg treningsplan i nytt design (pakke 4, godkjent av Anders 14.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/ovelser.html, skjerm «velg». Stil: playerhq-ny-ovelser.css.
  *
- * Fire steg: Mal, SMART-mål, Periode og volum, Oppsummering. Spilleren sender
- * planen til coach; coachen bygger øktene i Workbench.
+ * Spilleren velger selv en standardplan for kategorien sin (vedtak 28.09) og kan alltid bygge uka
+ * selv i Workbench. Ingen AI-planbygger. Valget lagres med sendPlanTilCoachV2: en plan uten økter med
+ * fordeling per akse, og målsetningen spilleren skriver. Coachen legger inn øktene i Workbench.
  *
- * Avvik fra tegningen (se PR): «Foreslå med Caddie» er ikke med (ingen AI-planbygger
- * ved lansering); malene kommer fra PlanTemplate i stedet for de fire eksempelmalene;
- * timer per uke starter på 12 fordi malene ikke har timer; startukene regnes fra i dag;
- * «Sendt» viser klokkeslett fra klokka, ikke navn på coach.
+ * Avvik:
+ *   - Det store tallet på kortet er økter per uke, ikke timer per uke: standardplanene (PlanTemplate)
+ *     har bare antall økter. Fordelingen er malens egen. Kortet merkes «Eksempel» som i utkastet,
+ *     fordi innholdet i standardplanene ikke er skrevet ennå (åpent hos Anders).
+ *   - «Velg» åpner et ark med start, lengde, timer per uke, fordeling og målsetning før valget lagres:
+ *     planen trenger dette for å kunne lagres. Utkastet lagrer med ett trykk.
+ *   - Planen lagres som utkast hos coachen (plan uten økter). Utkastet sier at planen gjelder med en
+ *     gang; i appen legger coachen inn øktene først. «Send til coach» som eget steg er fjernet.
+ *   - Anbefalt plan er malen appen anbefaler for kategorien og perioden, ikke ut fra turneringsnivået.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-12.
  */
-import { useState, useTransition } from "react";
-import { ArrowLeft, ArrowRight, Layers, Send } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { Check, ChevronDown, ChevronRight, ChartLine, X } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { AkseMerke, Knapp, KnappLenke, Meta, Tall } from "@/components/precision/pa";
-import { Nokkelverdi } from "@/components/precision/pa-a4";
-import { SegmentertValg } from "@/components/precision/pa-a2";
-import { Felt, Inndata, Varsel } from "@/components/precision/pa-planhub";
-import { Teller } from "@/components/precision/teknisk-plan/tp-deler";
-import {
-  JEVN_FORDELING, VELG_AKSER, fordelingSum, maalSetning, tusenskille, validerMaal,
-  type Fordeling, type SmartMaal, type StartUke, type VelgAkse,
-} from "@/lib/plan-builder/velg-plan";
 import { formaterTall } from "@/lib/format-tall";
+import { oktBilde } from "@/lib/portal/okt-bilde";
+import {
+  VELG_AKSER, fordelingSum, validerMaal, type Fordeling, type MaalFeil, type SmartMaal, type StartUke, type VelgAkse,
+} from "@/lib/plan-builder/velg-plan";
 import type { SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
-import "@/styles/precision-a12.css";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-ovelser.css";
 
-export type VelgPlanMal = { id: string; navn: string; sub: string; uker: number; timer: number; fordeling: Fordeling };
+export type VelgPlanMal = {
+  id: string; navn: string; beskrivelse: string | null; uker: number; okterPerUke: number; fordeling: Fordeling; anbefalt: boolean;
+};
 export type PH12Props = {
   maler: readonly VelgPlanMal[];
+  /** null: spilleren har ingen kategori ennå (for få runder og ingen HCP). */
+  kategori: { navn: string; snitt: number | null } | null;
   startUker: readonly StartUke[];
   uleste: number;
   onSend: (input: SendPlanInput) => Promise<{ ok: true; planId: string } | { ok: false; error: string }>;
   workbenchHref: string;
-  /** Skjermprøven: åpne på et bestemt steg. */
-  startSteg?: number;
+  /** Skjermprøven: åpne arket for valgt plan ved første visning. */
+  startMedArk?: boolean;
 };
 
-const STEG = ["Mal", "SMART-mål", "Periode og volum", "Oppsummering"] as const;
-const TOM: VelgPlanMal = { id: "tom", navn: "Tom plan", sub: "Bygg alt selv i Workbench", uker: 8, timer: 12, fordeling: JEVN_FORDELING };
-const SMART = [
-  ["s", "Spesifikt", "Hva vil du bli bedre på?", "Bedre lengdekontroll på innspill ca. 50 m"],
-  ["m", "Målbart", "Hvilket tall viser at du er der?", "7 av 10 innenfor 4 m i test"],
-  ["a", "Oppnåelig", "Hvor er du i dag, og hvorfor går det?", "Hvor er du i dag?"],
-  ["r", "Relevant", "Hvorfor betyr dette noe for scoren?", "Hvorfor betyr det noe for scoren?"],
-] as const;
-const desimal = (n: number) => formaterTall(n, 1, true);
-const klokke = () => new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date()).replace(".", ":");
+const KODE: Record<VelgAkse, string> = { fys: "FYS", tek: "TEK", slag: "SLAG", spill: "SPILL", turn: "TURN" };
 
-function Fordelingsbar({ f }: { f: Fordeling }) {
-  return <div className="ph12-bar" aria-hidden>{VELG_AKSER.map((a) => f[a] > 0 && <span key={a} title={`${a.toUpperCase()} ${f[a]} %`} style={{ flex: f[a], background: `var(--axis-${a})` }} />)}</div>;
+function storsteAkse(f: Fordeling): VelgAkse {
+  return VELG_AKSER.reduce((a, k) => (f[k] > f[a] ? k : a), VELG_AKSER[0]);
 }
 
-export function PH12VelgPlan({ maler, startUker, uleste, onSend, workbenchHref, startSteg = 0 }: PH12Props) {
-  const tomtGrunnlag = maler.length === 0;
-  const valg = tomtGrunnlag ? [TOM] : [...maler, TOM];
-  const [steg, setSteg] = useState(startSteg);
-  const [malId, setMalId] = useState((tomtGrunnlag ? TOM : valg[0]).id);
-  const mal = valg.find((x) => x.id === malId) ?? TOM;
-  const [g, setG] = useState<SmartMaal>({ s: "", m: "", a: "", r: "", t: "" });
-  const [forsokt, setForsokt] = useState(false);
-  const [uker, setUker] = useState(mal.uker);
-  const [timer, setTimer] = useState(mal.timer);
-  const [start, setStart] = useState(startUker[0]?.verdi ?? "");
-  const [mix, setMix] = useState<Fordeling>(mal.fordeling);
-  const [sendt, setSendt] = useState<string | null>(null);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [pending, run] = useTransition();
+function Fordelingsstrek({ f }: { f: Fordeling }) {
+  return (
+    <span className="phn-ov-fordeling" role="img" aria-label={`Fordeling: ${VELG_AKSER.map((a) => `${KODE[a]} ${f[a]} %`).join(", ")}`}>
+      {VELG_AKSER.map((a) => f[a] > 0 && <i key={a} className={`akse-${a}`} style={{ width: `${f[a]}%` }} />)}
+    </span>
+  );
+}
 
-  const velg = (x: VelgPlanMal) => { setMalId(x.id); setUker(x.uker); setTimer(x.timer); setMix(x.fordeling); };
-  const errs = validerMaal(g);
-  const harFeil = Object.keys(errs).length > 0;
-  const sum = fordelingSum(mix);
-  const setning = maalSetning(g);
-  const startLabel = startUker.find((u) => u.verdi === start)?.label ?? null;
+export function PH12VelgPlan({ maler, kategori, startUker, uleste, onSend, workbenchHref, startMedArk }: PH12Props) {
+  const [valgtId, setValgtId] = useState(maler.find((m) => m.anbefalt)?.id ?? maler[0]?.id ?? "");
+  const [ark, setArk] = useState(!!startMedArk && maler.length > 0);
+  const [melding, setMelding] = useState<string | null>(null);
+  const valgt = maler.find((m) => m.id === valgtId) ?? null;
 
-  const neste = () => {
-    if (steg === 1) { setForsokt(true); if (harFeil) return; }
-    if (steg === 2 && sum !== 100) return;
-    setSteg(Math.min(3, steg + 1));
-    document.getElementById("pa-innhold")?.scrollTo(0, 0);
-  };
-  const send = () => run(async () => {
-    setFeil(null);
-    const r = await onSend({ malNavn: mal.navn, malId: mal.id === TOM.id ? null : mal.id, maal: g, startDato: start, uker, timerPerUke: timer, fordeling: mix });
-    if (r.ok) setSendt(klokke()); else setFeil(r.error);
-  });
-
-  const aside = <div className="pa-card ph12-kort ph12-side" style={{ gap: 12 }}>
-    <span className="kicker">Planen så langt</span>
-    <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Mål", setning, { mono: false }], ["Start", steg >= 2 ? startLabel : null], ["Lengde", steg >= 2 ? `${uker} uker` : null], ["Volum", steg >= 2 ? `${timer} t/uke` : null], ["Totalt", steg >= 2 ? `${tusenskille(uker * timer)} t` : null]]} />
-  </div>;
-
-  return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-    <div className="pa-side" style={{ maxWidth: 1200 }}>
-      <header className="pa-pagehead"><div className="pa-pagehead__row"><div className="pa-pagehead__text">
-        <nav className="pa-crumbs ph12-krum" aria-label="Brødsmulesti"><ol><li><a href="/portal/planlegge">Plan</a><span aria-hidden>/</span></li><li aria-current="page">Planbygger</li></ol></nav>
-        <span className="kicker pa-pagehead__kicker">Plan · Planbygger</span>
-        <h1 className="pa-pagehead__title">Lag en plan</h1>
-        <p className="pa-pagehead__sub">Fire steg. Coachen din godkjenner planen før den blir aktiv.</p>
-      </div></div></header>
-
-      <ol aria-label="Steg" className="ph12-steg">{STEG.map((n, i) => {
-        const on = i === steg, done = i < steg;
-        return <li key={n} className={on ? "ph12-steg__na ph12-steg__aktiv" : done ? "ph12-steg__aktiv" : undefined}>
-          <button type="button" aria-current={on ? "step" : undefined} disabled={i > steg || !!sendt} onClick={() => setSteg(i)}>
-            <span className="ph12-steg__strek" />
-            <span className="ph12-steg__rad"><span className="ph12-steg__nr">{done ? "✓" : i + 1}</span><span className="ph12-steg__navn">{n}</span></span>
-          </button>
-        </li>;
-      })}</ol>
-
-      <div className="ph12-kolonner">
-        <div className="ph12-stabel">
-          {steg === 0 && <div className="pa-card ph12-kort">
-            <span className="kicker">Velg utgangspunkt</span>
-            <div role="radiogroup" aria-label="Mal" className="ph12-maler">{valg.map((x) => <button key={x.id} type="button" role="radio" aria-checked={x.id === malId} className="ph12-mal" onClick={() => velg(x)}>
-              <span className="ph12-mal__navn">{x.navn}</span><Meta style={{ overflowWrap: "anywhere" }}>{x.sub.toUpperCase()}</Meta>
-            </button>)}</div>
-            {tomtGrunnlag && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen maler passer nivået ditt ennå. Du kan starte med en tom plan.</p>}
-          </div>}
-
-          {steg === 1 && <div className="pa-card ph12-kort" style={{ gap: 20 }}>
-            <div><span className="kicker">SMART-mål</span><p style={{ margin: "6px 0 0", font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>Ett mål per plan. Målet skal kunne testes.</p></div>
-            {SMART.map(([k, l, hint, ph]) => <Felt key={k} label={l} hint={hint} required={k === "s" || k === "m"} valgfritt={k === "a" || k === "r"} error={forsokt && (k === "s" || k === "m") ? errs[k] : undefined}>
-              <Inndata value={g[k]} placeholder={ph} onChange={(e) => setG({ ...g, [k]: e.target.value })} />
-            </Felt>)}
-            <Felt label="Tidsbestemt" hint="Datoen målet skal være nådd." required error={forsokt ? errs.t : undefined}>
-              <Inndata mono type="date" value={g.t} onChange={(e) => setG({ ...g, t: e.target.value })} />
-            </Felt>
-            <div className="ph12-setning"><Meta>SLIK LESES MÅLET</Meta><p style={{ margin: "6px 0 0", font: "500 15px/1.4 var(--font-sans)", color: setning ? "var(--text-primary)" : "var(--text-muted)", textWrap: "pretty" }}>{setning ?? "—"}</p></div>
-          </div>}
-
-          {steg === 2 && <div className="pa-card ph12-kort" style={{ gap: 20 }}>
-            <div className="pa-field"><span className="pa-field__label">Start</span>
-              <SegmentertValg label="Start" value={start} options={startUker.map((u) => ({ id: u.verdi, label: u.label }))} onChange={setStart} /></div>
-            <div className="ph12-to">
-              <Teller label="Antall uker" verdi={uker} min={2} maks={52} storrelse="md" format={(v) => `${v} uker`} onEndre={setUker} />
-              <Teller label="Timer per uke" verdi={timer} min={4} maks={30} storrelse="md" format={(v) => `${v} t`} onEndre={setTimer} />
-            </div>
-            <div>
-              <div className="ph12-hode" style={{ marginBottom: 12 }}><span className="pa-field__label">Fordeling per akse</span><Meta style={{ color: sum === 100 ? "var(--text-muted)" : "var(--warn)" }}>{sum} % AV 100 %</Meta></div>
-              <div style={{ marginBottom: 12 }}><Fordelingsbar f={mix} /></div>
-              <div className="ph12-akser">{VELG_AKSER.map((a: VelgAkse) => <div key={a} className="ph12-akse">
-                <span className="ph12-akse__hode"><AkseMerke axis={a} /><Meta>{desimal((timer * mix[a]) / 100)} T/UKE</Meta></span>
-                <Teller label={`${a.toUpperCase()} prosent`} verdi={mix[a]} min={0} maks={80} steg={5} storrelse="sm" format={(v) => `${v} %`} onEndre={(v) => setMix({ ...mix, [a]: v })} />
-              </div>)}</div>
-              {sum !== 100 && <div style={{ marginTop: 12 }}><Varsel tone="warn" tittel={`Fordelingen er ${sum} %`}>Juster aksene til summen er 100 % før du går videre.</Varsel></div>}
-            </div>
-          </div>}
-
-          {steg === 3 && <div className="pa-card ph12-kort" style={{ gap: 16 }}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-              <span className={`pa-status${sendt ? " pa-status--info" : ""}`}><span className="pa-status__dot" />{sendt ? "Venter på coach" : "Utkast"}</span>
-              <Meta>{sendt ? `SENDT TIL COACH ${sendt}` : "IKKE SENDT"}</Meta>
-            </div>
-            <p style={{ margin: 0, font: "600 17px/1.4 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{setning ?? "Ingen mål satt."}</p>
-            <Nokkelverdi items={[["Mal", mal.navn, { mono: false }], ["Start", startLabel], ["Lengde", `${uker} uker`], ["Volum", `${timer} t/uke`], ["Totalt", `${tusenskille(uker * timer)} t`], ["Oppnåelig", g.a.trim() || null, { mono: false }], ["Relevant", g.r.trim() || null, { mono: false }]]} />
-            <Fordelingsbar f={mix} />
-            <div className="ph12-liste">{VELG_AKSER.map((a) => <span key={a}><AkseMerke axis={a} /><Tall style={{ font: "var(--type-num-s)" }}>{mix[a]} %</Tall></span>)}</div>
-            {feil && <Varsel tone="signal" tittel="Planen ble ikke sendt">{feil}</Varsel>}
-            {sendt && <div><KnappLenke variant="secondary" icon={Layers} iconName="layers" href={workbenchHref}>Åpne i Workbench</KnappLenke></div>}
-          </div>}
-
-          <div className="ph12-nav">
-            <Knapp variant="ghost" icon={ArrowLeft} iconName="arrow-left" disabled={steg === 0 || !!sendt} onClick={() => setSteg(steg - 1)}>Tilbake</Knapp>
-            {steg < 3
-              ? <Knapp iconRight={ArrowRight} disabled={steg === 2 && sum !== 100} onClick={neste}>Neste: {STEG[steg + 1]}</Knapp>
-              : <Knapp icon={Send} iconName="send" disabled={!!sendt} loading={pending} loadingText="Sender …" onClick={send}>Send til coach</Knapp>}
-          </div>
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <div className="phn">
+        <div className="phn-ov-topp">
+          <span className="phn-dato">Plan · treningsplan</span>
+          <h1 className="phn-tittel">Velg treningsplan</h1>
+          <p className="phn-ov-ingress">
+            {kategori ? `Standardplaner tilpasset ${kategori.navn}. Du velger selv, og kan alltid endre øktene i Workbench.` : "Du velger selv, og kan alltid endre øktene i Workbench."}
+          </p>
         </div>
-        {aside}
+
+        {melding && <p className="phn-ov-status" role="status"><Check className="phn-ikon" aria-hidden /><span>{melding} <Link href={workbenchHref}>Åpne Workbench</Link></span></p>}
+
+        {kategori && (
+          <div className="phn-kort phn-ov-malkort" style={{ background: "var(--phn-sand-100)" }}>
+            <span className="phn-ov-ikonboks"><ChartLine className="phn-ikon" aria-hidden /></span>
+            <span><b className="phn-ov-under">{kategori.navn} · snitt {kategori.snitt != null ? formaterTall(kategori.snitt, 1, true) : "—"}</b>
+              <span className="phn-kilde" style={{ display: "block" }}>{kategori.snitt != null ? "Brutto snitt av rundene i sesongen. Planene tilpasses kategorien." : "Ingen runder i sesongen ennå. Kategorien er satt fra handicap."}</span></span>
+          </div>
+        )}
+
+        {maler.length === 0
+          ? <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
+              <b className="phn-ov-under">{kategori ? `Ingen standardplaner for ${kategori.navn} ennå` : "Ingen kategori ennå"}</b>
+              <p className="phn-forklar">{kategori ? "Standardplanene for kategorien er ikke klare. Bygg uka selv i Workbench så lenge." : "Kategorien settes fra brutto snittscore. Registrer minst fire runder, så tilpasses planene deg."}</p>
+              {!kategori && <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/mal/runder/ny">Registrer runde</Link></div>}
+            </section>
+          : <section className="phn-seksjon" aria-label="Standardplaner">
+              <div className="phn-ov-planer">
+                {maler.map((m) => {
+                  const b = oktBilde(KODE[storsteAkse(m.fordeling)], m.navn);
+                  return (
+                    <button key={m.id} type="button" className="phn-ov-plankort" aria-pressed={m.id === valgtId} onClick={() => setValgtId(m.id)}>
+                      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+                      <img src={b.src} alt="" width={1400} height={933} loading="lazy" style={{ objectPosition: b.posisjon }} />
+                      <span className="phn-ov-pk-tekst">
+                        <span className="phn-ov-pk-rad">
+                          <span><span className="phn-ov-pk-navn">{m.navn}</span>{m.anbefalt && <span className="phn-kilde" style={{ display: "block" }}>Anbefalt for kategorien din</span>}</span>
+                          <span className="phn-ov-pk-tall">{m.okterPerUke}<small>økter/uke</small></span>
+                        </span>
+                        <span className="phn-forklar">{m.beskrivelse ?? `${m.uker} uker.`}</span>
+                        <Fordelingsstrek f={m.fordeling} />
+                        <span className="phn-ov-pk-rad"><span className="phn-ov-estimat">Eksempel</span><span className="phn-ov-valgt"><Check className="phn-ikon" aria-hidden />Valgt</span></span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>}
+
+        <Link className="phn-rad-lenke" href={workbenchHref}>
+          <span><b>Bygg uka selv i Workbench</b><span className="phn-kilde">Uten standardplan. Kopier forrige uke, eller legg inn øktene selv.</span></span>
+          <ChevronRight className="phn-ikon" aria-hidden />
+        </Link>
+
+        {valgt && <div className="phn-ov-festet"><button type="button" className="phn-knapp pri phn-ov-knapp-stor" onClick={() => setArk(true)}>Velg {valgt.navn}</button></div>}
+        {ark && valgt && <VelgArk mal={valgt} startUker={startUker} onSend={onSend} onLukk={() => setArk(false)} onValgt={(t) => { setArk(false); setMelding(t); }} />}
       </div>
+    </PlayerHQSkall>
+  );
+}
+
+const TOM_MAAL: SmartMaal = { s: "", m: "", a: "", r: "", t: "" };
+
+function VelgArk({ mal, startUker, onSend, onLukk, onValgt }: {
+  mal: VelgPlanMal; startUker: readonly StartUke[]; onSend: PH12Props["onSend"]; onLukk: () => void; onValgt: (tekst: string) => void;
+}) {
+  const ark = useRef<HTMLDialogElement>(null);
+  const [start, setStart] = useState(startUker[0]?.verdi ?? "");
+  const [uker, setUker] = useState(mal.uker);
+  const [timer, setTimer] = useState(12);
+  const [mix, setMix] = useState<Fordeling>(mal.fordeling);
+  const [g, setG] = useState<SmartMaal>(TOM_MAAL);
+  const [forsokt, setForsokt] = useState<MaalFeil | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [lagrer, run] = useTransition();
+  useEffect(() => { ark.current?.showModal(); }, []);
+  const sum = fordelingSum(mix);
+  const startNavn = startUker.find((u) => u.verdi === start)?.label ?? start;
+
+  const lagre = () => {
+    const errs = validerMaal(g);
+    setForsokt(errs);
+    if (Object.keys(errs).length > 0 || sum !== 100 || !start) return;
+    run(async () => {
+      setFeil(null);
+      const r = await onSend({ malNavn: mal.navn, malId: mal.id, maal: g, startDato: start, uker, timerPerUke: timer, fordeling: mix });
+      if (r.ok) onValgt(`${mal.navn} er valgt fra ${startNavn.toLowerCase()}. Coachen din legger inn øktene i Workbench. Ukene før er ikke endret.`);
+      else setFeil(r.error);
+    });
+  };
+
+  const stepper = (navn: string, verdi: number, min: number, maks: number, steg: number, sett: (v: number) => void, vis: string, klasse?: string) => (
+    <div className="phn-stepper">
+      <b>{klasse && <i className={klasse} />}{navn}</b>
+      <span className="phn-spor"><span className={klasse ?? "akse-tek"} style={{ width: `${Math.min(100, ((verdi - min) / (maks - min)) * 100)}%`, background: klasse ? undefined : "var(--phn-g900)" }} /></span>
+      <button type="button" aria-label={`${navn} ned`} disabled={verdi <= min} onClick={() => sett(Math.max(min, verdi - steg))}>−</button>
+      <output>{vis}</output>
+      <button type="button" aria-label={`${navn} opp`} disabled={verdi >= maks} onClick={() => sett(Math.min(maks, verdi + steg))}>+</button>
     </div>
-  </PlayerHQSkall>;
+  );
+
+  return (
+    <dialog ref={ark} className="phn-ark" aria-label={`Velg ${mal.navn}`} onClose={onLukk} onClick={(e) => { if (e.target === ark.current) ark.current?.close(); }}>
+      <div className="phn-ark-kropp">
+        <div className="phn-ark-topp">
+          <div><span className="phn-dato">Treningsplan</span><h2>{mal.navn}</h2></div>
+          <button type="button" className="phn-lukk" aria-label="Lukk" onClick={() => ark.current?.close()}><X className="phn-ikon" aria-hidden /></button>
+        </div>
+        {feil && <p className="phn-melding" role="alert">{feil}</p>}
+        <div className="phn-felt"><span>Start</span>
+          <div className="phn-valg" role="group" aria-label="Start">{startUker.map((u) => <button key={u.verdi} type="button" aria-pressed={u.verdi === start} onClick={() => setStart(u.verdi)}>{u.label}</button>)}</div>
+        </div>
+        <div className="phn-seksjon" style={{ gap: 6 }}>
+          {stepper("Uker", uker, 2, 52, 1, setUker, `${uker} uker`)}
+          {stepper("Timer", timer, 4, 30, 1, setTimer, `${timer} t/uke`)}
+        </div>
+        <div className="phn-felt"><span>Fordeling per akse · {sum} % av 100 %</span>
+          <div className="phn-seksjon" style={{ gap: 6 }}>
+            {VELG_AKSER.map((a) => <div key={a}>{stepper(KODE[a], mix[a], 0, 80, 5, (v) => setMix((x) => ({ ...x, [a]: v })), `${mix[a]} %`, `akse-${a}`)}</div>)}
+          </div>
+          {sum !== 100 && <p className="phn-melding" role="alert">Juster aksene til summen er 100 %.</p>}
+        </div>
+        <label className="phn-felt">Målsetning: hva vil du bli bedre på?<input type="text" value={g.s} maxLength={300} placeholder="Bedre lengdekontroll på innspill 50–100 m" onChange={(e) => setG({ ...g, s: e.target.value })} /></label>
+        {forsokt?.s && <p className="phn-melding" role="alert">{forsokt.s}</p>}
+        <label className="phn-felt">Hvilket tall viser at du er der?<input type="text" value={g.m} maxLength={300} placeholder="7 av 10 innenfor 4 m i test" onChange={(e) => setG({ ...g, m: e.target.value })} /></label>
+        {forsokt?.m && <p className="phn-melding" role="alert">{forsokt.m}</p>}
+        <label className="phn-felt">Dato målsetningen skal være nådd<input type="date" value={g.t} onChange={(e) => setG({ ...g, t: e.target.value })} /></label>
+        {forsokt?.t && <p className="phn-melding" role="alert">{forsokt.t}</p>}
+        <details className="phn-ov-flere">
+          <summary>Flere felt <ChevronDown className="phn-ikon" aria-hidden /></summary>
+          <div className="phn-ov-innmat">
+            <label className="phn-felt">Hvor er du i dag?<input type="text" value={g.a} maxLength={500} onChange={(e) => setG({ ...g, a: e.target.value })} /></label>
+            <label className="phn-felt">Hvorfor betyr det noe for scoren?<input type="text" value={g.r} maxLength={500} onChange={(e) => setG({ ...g, r: e.target.value })} /></label>
+          </div>
+        </details>
+        <p className="phn-kilde">Planen gjelder fra {startNavn.toLowerCase()}. Ukene før er ikke endret.</p>
+        <button type="button" className="phn-knapp pri phn-ov-knapp-stor" disabled={lagrer} onClick={lagre}>{lagrer ? "Lagrer …" : `Velg ${mal.navn}`}</button>
+      </div>
+    </dialog>
+  );
 }

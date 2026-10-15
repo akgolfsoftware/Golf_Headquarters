@@ -147,7 +147,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   };
 
 
-  return <div className="pa-root ph05" data-theme="night" data-od-id="playerhq-live-active" data-phase={live.phase}>
+  return <div className="pa-root ph05" data-theme="light" data-od-id="playerhq-live-active" data-phase={live.phase}>
     <header className="ph05-top">
       <h1 className="ph05-kicker">Live · {data.title}</h1>
       <button ref={finishButton} className="pa-btn pa-btn--secondary" disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>

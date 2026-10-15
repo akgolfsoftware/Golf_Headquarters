@@ -89,6 +89,7 @@ import {
   mapSession,
   tilDatoKolonne,
   fraDatoKolonne,
+  flyttAar,
   type WbRow,
 } from "@/lib/workbench/wb-map";
 import {
@@ -371,11 +372,7 @@ export async function createSeasonPlan(
   }
 
   const yearShift = previous ? year - previous.year : 0;
-  const shiftYear = (date: Date) => {
-    const next = new Date(date);
-    next.setUTCFullYear(next.getUTCFullYear() + yearShift);
-    return next;
-  };
+  const shiftYear = (date: Date) => flyttAar(date, yearShift);
 
   const plan = await prisma.$transaction(async (tx) => {
     const row = existing

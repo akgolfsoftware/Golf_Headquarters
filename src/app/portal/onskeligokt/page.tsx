@@ -16,9 +16,7 @@ export default async function OnskeligOktPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <PH21Innboks data={data} initialTab="ønske" />
-      </div>
+      <PH21Innboks data={data} initialTab="ønske" />
     </PlayerHQSkall>
   );
 }

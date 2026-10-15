@@ -80,7 +80,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
       )
     );
 
-    assert.ok(html.includes('WANG TOPPIDRETT'), 'Skal vise WANG Toppidrett merkevare');
+    assert.ok(html.includes('alt="WANG Toppidrett"'), 'Skal vise WANG Toppidrett merkevare');
     assert.ok(html.includes('I dag'), 'Skal inneholde menylenke I dag');
     assert.ok(html.includes('Trening'), 'Skal inneholde menylenke Trening');
     assert.ok(html.includes('Tester'), 'Skal inneholde menylenke Tester');

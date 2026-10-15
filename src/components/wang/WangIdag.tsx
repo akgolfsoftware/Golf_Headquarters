@@ -51,7 +51,7 @@ export function WangIdag({
           </h1>
         </div>
 
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           <button
             type="button"
             onClick={() => setFane("fokus")}

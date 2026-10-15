@@ -2,7 +2,7 @@
 
 /**
  * Kilde: ui_kits/playerhq/screens/PH-06.jsx.
- * PH-06 Slagteller — Precision Athletics (nattmodus/fokus).
+ * PH-06 Slagteller — Precision Athletics, alltid lyst tema (Anders 14.10, §LIVE-ØKTENE ER ALLTID LYSE).
  *
  * Kjempeteller (56px mono), køllevelger fra bagen, TrackMan siste slag (6 metrikker),
  * store trykkflater: Angre ett slag (72x72), +5 slag (72px) og +1 slag (96px).
@@ -35,7 +35,7 @@ export function PH06Slagteller({
 }: PH06SlagtellerProps) {
   const router = useRouter();
 
-  const [club, setClub] = useState(data.selectedClub || "PW");
+  const [club, setClub] = useState(data.selectedClub || data.bagClubs[0] || "");
   const [reps, setReps] = useState(data.currentShots || 0);
   const [endOpen, setEndOpen] = useState(false);
   const [toastText, setToastText] = useState<string | null>(null);
@@ -76,7 +76,7 @@ export function PH06Slagteller({
   return (
     <div
       className="pa-root ph06"
-      data-theme="night"
+      data-theme="light"
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",
@@ -282,7 +282,7 @@ export function PH06Slagteller({
               TrackMan · siste slag
             </span>
             <Meta>
-              {tm ? `AUTO-IMPORT · ${tm.timestamp || "14:41"}` : "—"}
+              {tm ? `AUTO-IMPORT · ${tm.timestamp || "—"}` : "—"}
             </Meta>
           </div>
 

@@ -2,10 +2,10 @@
 
 /* Deles av /portal/meg og alle undersider (abonnement, dokumenter,
    feedback, foreldre, help, helse, innstillinger, profil, sikkerhet,
-   utstyrsbag) som ikke har egen error.tsx. */
+   utstyrsbag) som ikke har egen error.tsx. Nytt design: PH24MegFeil. */
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { PH24MegFeil } from "@/components/portal/precision/PH24MegTilstand";
 
 export default function Error({
   error,
@@ -15,15 +15,13 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    console.error("[meg/error]", error.digest, error);
   }, [error]);
 
   return (
-    <V2Feil
-      reset={reset}
-      tilbakeHref="/portal/meg"
-      tittel="Fikk ikke lastet innstillingene"
-      melding="Profilen vises fra siste lagrede versjon."
+    <PH24MegFeil
+      tittel="Siden kunne ikke hentes"
+      handling={<button type="button" className="phn-knapp sek" onClick={reset} style={{ justifySelf: "start" }}>Prøv igjen</button>}
     />
   );
 }
