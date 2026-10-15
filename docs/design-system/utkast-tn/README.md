@@ -1,6 +1,7 @@
 # Team Norway i nytt design — utkast
 
-Status: **pakke 1 Grunnmur er utkast 1 (14.10.2026). Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»).**
+Status: **alle sju pakker er tegnet (utkast 1, 14.10.2026), 41 skjermer. Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»). Resten venter på port 7.**
+Samleside: https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF (`index.html`).
 Gjelder trenerskjermene under `/team-norway/*`. Spilleren bruker PlayerHQ (§ÉN IUP OG ETT TESTBATTERI).
 
 Bakgrunn: Claude Design stenger 14.12 og prosjektet «Team Norway App» ble aldri laget. Anders godkjente 14.10 at
@@ -56,8 +57,8 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 - Flaggstreken (`.flaggstrek`) er det eneste motivet, og brukes sparsomt.
 - Kilde og dato der appen påstår noe om en spiller. Estimat merkes (`.merke.kontur`).
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md`.
-- Fagregler som skjermene må følge: Wedge Gate og gate-testene føres som Godkjent eller Bom; 8-ball og PEI-testene føres med
-  carry og side (vedtak 14.10); Data Golf vises bare for coacher, og TN-menyen har ingen Data Golf-lenke (§KODEGJENNOMGANGEN 06.10).
+- Fagregler som skjermene må følge: Wedge Gate og gate-testene føres som Godkjent eller Bom; 8-ball føres med
+  meter fra hullet og «I hull» (5 / 3 / 2 / 1 / 0 poeng), andre PEI-tester med carry og side (vedtak 14.10); Data Golf vises bare for coacher, og TN-menyen har ingen Data Golf-lenke (§KODEGJENNOMGANGEN 06.10).
 
 ## Pakkeplan (fase 2, etter ja til aksefargene)
 
@@ -72,7 +73,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 | 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/UyH7hFkJVAtUo5Ds68eJFN |
 | 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/9yQPdj6UaCUK7fDHfK66wC |
 | 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/FVETdiC9sYtCcxBdc2ZmPZ |
-| 8 Samleside | Alle lenker på én side | `index.html` | | |
+| 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 1** (14.10) | https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF |
 
 ### De 16 rutene uten tegning
 
@@ -97,6 +98,26 @@ De tegnes fra bunnen i pakken over, ut fra dagens kode og vedtakene:
 | `/team-norway/workbench` | 5 |
 
 Rutene med tegning i Claw (TN-01 til TN-21) tegnes også på nytt: Claw er funksjonsinventar, ikke visuell fasit.
+
+## PR-rekken
+
+Hver pakke er én PR som bygger på den forrige, så diffen bare viser pakken: #1256 grunnmur → #1260 Daglig → #1266 Spillere →
+#1268 Uttak → #1271 Plan og fag → #1272 Gruppe → #1274 Meg og admin → samlesiden. Legges inn i den rekkefølgen, etter port 7.
+
+## Åpne spørsmål til Anders (14.10)
+
+Avklart 15.10: spillerprofilen heter IUP i Team Norway (Anders: «For Team Norway skjerm skal det hete IUP som spiller profil»). Avklart 14.10 i main: 8-ball føres med meter fra hullet, poeng 5 i hull, 3 innenfor 1 m, 2 innenfor 2 m, 1 innenfor 3 m, ellers 0.
+
+1. Oversikt: skal gruppas trening fordelt på aksene være med, eller bare de tre tingene den har i dag? (pakke 2)
+2. Reise (avreise, overnatting, ansvarlig) på turneringen: koden har ingen felt. Skal det med? (pakke 2)
+3. Landslagsnivå per klasse og A–K-nivåtall mangler. Utkastet viser strek der de skulle stått. (pakke 3, 4 og 5)
+4. Kriterium 3 «Prosess og adferd» i uttaket har ingen vurderingsmodell. Hvem lager den? (pakke 4)
+5. Kjønn i ranglisten venter til delingen virker. Utkastet filtrerer på klasse. (pakke 4)
+6. Workbench og Månedsplan for Team Norway: én skjerm eller to? (pakke 5)
+7. Fagapparatet (fysio, mental trener) har ingen egen rolle i koden. (pakke 5)
+8. Sperren uten foresatt på poster: under 18 eller under 16? (pakke 6)
+9. Stipend og budsjett: hvor kommer tallene fra, og skal treneren se dem? (pakke 7)
+10. Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (pakke 7, B2)
 
 ## Avvik i koden (målt 14.10.2026, ikke rettet)
 
