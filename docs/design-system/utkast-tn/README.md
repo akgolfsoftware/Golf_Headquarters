@@ -70,7 +70,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 | 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Gf7q9rdUHQmQZ8cZvfm4MY |
 | 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/BG1Pn6RHrg9XU3C8FDnGYX |
 | 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/UyH7hFkJVAtUo5Ds68eJFN |
-| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | | |
+| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/9yQPdj6UaCUK7fDHfK66wC |
 | 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | | |
 | 8 Samleside | Alle lenker på én side | `index.html` | | |
 
