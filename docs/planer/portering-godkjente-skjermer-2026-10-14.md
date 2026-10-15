@@ -27,8 +27,8 @@ Ikke med: pakke 2 Treningsøkta, PH-01 I dag (utkast 4), PH-16 Stats og pakke 6�
 | Steg | Skjerm | Status |
 |---|---|---|
 | 1 | PH-10 Plan | Lagt inn (#1247) |
-| 2 | PH-11-AR Årsplan | Denne PR-en |
-| 3 | PH-11-PER Periode og PH-11-PERSKJEMA | |
+| 2 | PH-11-AR Årsplan | Lagt inn (#1255) |
+| 3 | PH-11-PER Periode og PH-11-PERSKJEMA | Til gjennomgang |
 | 4 | PH-11-MND Måned og PH-11-MNDSKJEMA | |
 | 5 | PH-11-NY Opprett årsplan (veileder) | Kopi av fjoråret og standardplan finnes ikke i koden |
 | 6 | PH-11 Workbench uke og Gjenta | Størst; erstatter Ukeverkstedet for spilleren |
