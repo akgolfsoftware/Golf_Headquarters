@@ -21,6 +21,7 @@ export function TnScorecard({ protocol: p, initial, savedResult, localSessionId,
   const draft = useTnDraft(p, initial, save, localSessionId);
   const [attempt, setAttempt] = useState(0);
   const [screen, setScreen] = useState<"auto" | "attempt" | "summary">("auto");
+  const [night, setNight] = useState(false);
   const [photo, setPhoto] = useState<{ id: string; url: string; attempt: number } | null>(null);
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoMessage, setPhotoMessage] = useState("");
@@ -78,9 +79,8 @@ export function TnScorecard({ protocol: p, initial, savedResult, localSessionId,
     } catch (error) { setPhotoMessage(error instanceof Error ? error.message : "Bildet kunne ikke slettes."); }
     finally { setPhotoBusy(false); }
   }
-  // Alltid lyst, også ute (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10.2026).
-  return <section className="pa-root tb-scorecard" data-theme="light" aria-label="Scorekort">
-    <div className="tb-topline"><Link href="/portal/tren/tester/team-norway">Til testoversikten</Link></div>
+  return <section className="pa-root tb-scorecard" data-theme={night ? "night" : "light"} aria-label="Scorekort">
+    <div className="tb-topline"><Link href="/portal/tren/tester/team-norway">Til testoversikten</Link><Knapp variant="ghost" aria-pressed={night} onClick={() => setNight(!night)}>{night ? "Lyst tema" : "Nattema"}</Knapp></div>
     <Sidehode kicker="Testbatteri · Team Norway" title={p.name} sub={closed ? draft.status === "COMPLETED" ? "Gjennomført" : "Avsluttet ufullstendig" : `${completeRows} av ${p.rows.length} forsøk registrert`} />
     <div className="tb-status"><StatusPille>{closed ? draft.status === "COMPLETED" ? "Gjennomført" : "Ufullstendig" : "Egenført"}</StatusPille><span role="status" aria-live="polite">{closed && !draft.ready ? "Registreringene er lagret på kontoen." : draft.message}</span></div>
     {p.blocked && <p className="tb-notice" role="note">{p.blocked} Råverdier kan lagres som utkast.</p>}
