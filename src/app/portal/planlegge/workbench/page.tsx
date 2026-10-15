@@ -17,7 +17,7 @@ import { type AG11Side } from "@/components/admin/precision/AG11Workbench";
 import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
 import { PH11Aarsplan } from "@/components/portal/precision/PH11Aarsplan";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
-import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
+import { PH11Periode } from "@/components/portal/precision/PH11Periode";
 import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
 import {
   loadMonth,
@@ -86,10 +86,9 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />}</Ramme>;
   }
 
-  // PH-11-AR (nytt design, godkjent 14.10): nivået År åpner den nye årsplanen.
-  // Sesongkartet nås fortsatt med flate=sesong fra den samlede Workbench.
-  const nyArsplan = parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis")) === "aar" && !queryVerdi(sp, "flate");
-  if (!nyArsplan && brukSamletWorkbench(sp)) {
+  // Spilleren får nivåene (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10): År og Periode er portert.
+  const nyttNiva = ["aar", "periode"].includes(parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))) && !queryVerdi(sp, "flate");
+  if (!nyttNiva && brukSamletWorkbench(sp)) {
     const data = await loadWorkbenchSamletData({
       playerId, routeSurface: "player", query: sp,
       flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
@@ -127,9 +126,8 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
   }
 
   if (visning === "periode") {
-    const kilderRes = await loadSources({ playerId, weekStart });
     if (!periodRes?.ok) return <Feil uleste={uleste} melding={periodRes?.error ?? "Perioden kunne ikke lastes"} />;
-    return <Ramme uleste={uleste}><Arv><WorkbenchPeriode key={`${playerId}:${kontekst.year}:${periodRes.data.period?.id ?? "tom"}`} planKontekst={kontekst.referanse} playerId={playerId} spillerNavn={spillerNavn} periode={periodRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} routeSurface="player" /></Arv></Ramme>;
+    return <Ramme uleste={uleste}><PH11Periode key={`${playerId}:${kontekst.year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} periode={periodRes.data} referanse={kontekst.referanse} idag={OSLO_YMD_FMT.format(now)} /></Ramme>;
   }
 
   if (visning === "live") {

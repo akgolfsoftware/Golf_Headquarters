@@ -30,3 +30,10 @@ test("AxisMinutesSchema avviser ukjente akser uten å lagre dem", () => {
   assert.equal(r.success, true);
   assert.deepEqual(r.success && r.data, { FYS: 60 });
 });
+
+test("periodeinput tar notat, trimmer det og nekter over 1000 tegn", () => {
+  const ok = PeriodeInputSchema.safeParse({ ...basis, notat: "  Lett uke i tentamen  " });
+  assert.equal(ok.success && ok.data.notat, "Lett uke i tentamen");
+  assert.equal(PeriodeInputSchema.safeParse({ ...basis, notat: null }).success, true);
+  assert.equal(PeriodeInputSchema.safeParse({ ...basis, notat: "x".repeat(1001) }).success, false);
+});

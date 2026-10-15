@@ -75,6 +75,8 @@ export const PeriodeInputSchema = z
     axisMinutes: AxisMinutesSchema.nullish(),
     /** Minutter per akse, lett uke. undefined = ikke rør; null = nullstill. */
     axisMinutesLight: AxisMinutesSchema.nullish(),
+    /** Fritekst for perioden. undefined = ikke rør; null/tomt = nullstill. */
+    notat: z.string().trim().max(1000).nullish(),
   })
   .refine((v) => v.sluttDato >= v.startDato, { message: "Sluttdato må være etter startdato" });
 
