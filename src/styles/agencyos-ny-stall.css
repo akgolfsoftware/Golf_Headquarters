@@ -1,0 +1,104 @@
+/* AgencyOS pakke 2: AG-07 Stall, AG-08 Spiller 360, AG-A02, AG-A04, AG-A06.
+   Portert fra docs/design-system/utkast-agencyos/stall.html. Gjelder bare inni .agn-s. */
+
+/* Stall */
+.agn-s .baand { display: grid; gap: var(--r3); align-content: start; }
+.agn-s .stall-grid { display: grid; gap: var(--r5); }
+.agn-s .stall-grid > div { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .idag-rad { display: flex; flex-wrap: wrap; gap: var(--r2); }
+.agn-s .idag-kort { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; color: #fff; background: var(--graphite-800); flex: 1 1 220px; text-decoration: none; min-height: 56px; }
+.agn-s .idag-kort.tek { background: var(--tek-ink); } .agn-s .idag-kort.slag { background: var(--slag); } .agn-s .idag-kort.spill { background: var(--spill-ink); } .agn-s .idag-kort.fys { background: var(--fys-ink); }
+.agn-s .idag-kort .kl { font: 600 18px/1 var(--mono); }
+.agn-s .idag-kort b { display: block; font: 600 15px/1.25 var(--sans); }
+.agn-s .idag-kort span.i { font-size: 12.5px; opacity: .9; }
+.agn-s .naa-kort { display: grid; gap: var(--r3); padding: 14px 16px; border-radius: 12px; background: var(--graphite-800); color: #fff; }
+.agn-s .naa-kort .topp-rad { align-items: center; }
+.agn-s .naa-lenke { color: #fff; text-decoration: none; display: grid; min-height: 44px; align-content: center; }
+.agn-s .naa-kort b.n { font: 600 17px/1.25 var(--sans); }
+.agn-s .naa-sub { display: block; font-size: 13.5px; opacity: .9; }
+.agn-s .naa-sub.dempet { font-size: 12.5px; opacity: .8; }
+.agn-s .naa-kort .pulse { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(255, 255, 255, .2); font: 600 12px/1 var(--sans); }
+.agn-s .naa-kort .pulse i { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: agn-puls 1.6s infinite; }
+@keyframes agn-puls { 50% { opacity: .3; } }
+.agn-s .hurtigsvar { display: flex; flex-wrap: wrap; gap: 6px; }
+.agn-s .hurtigsvar button { min-height: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, .5); background: transparent; color: #fff; font: 600 14px/1 var(--sans); cursor: pointer; }
+.agn-s .hurtigsvar button.pri { background: #fff; color: var(--graphite-900); border-color: #fff; }
+.agn-s .matrise { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.agn-s .matrise button { display: grid; gap: 2px; justify-items: start; padding: 12px; border-radius: 12px; border: 1px solid var(--sand-300); background: var(--white); font: inherit; color: inherit; cursor: pointer; text-align: left; min-height: 64px; }
+.agn-s .matrise button b { font: 600 26px/1 var(--mono); }
+.agn-s .matrise button span { font-size: 13px; color: var(--graphite-800); }
+.agn-s .matrise button.trenger { border-left: 6px solid var(--rust-tekst); }
+.agn-s .matrise button.folger { border-left: 6px solid var(--green-700); }
+.agn-s .matrise button.hviler { border-left: 6px solid var(--graphite-500); }
+.agn-s .matrise button[aria-pressed="true"] { border-color: var(--graphite-900); box-shadow: inset 0 0 0 1px var(--graphite-900); }
+.agn-s .sp-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 12px 14px; border: 1px solid var(--sand-300); border-radius: 12px; background: var(--white); text-align: left; font: inherit; color: inherit; width: 100%; text-decoration: none; }
+.agn-s .sp-rad.trenger { box-shadow: inset 4px 0 0 var(--rust-tekst); }
+.agn-s .sp-rad.folger { box-shadow: inset 4px 0 0 var(--green-700); }
+.agn-s .sp-rad.hviler { box-shadow: inset 4px 0 0 var(--graphite-500); }
+@media (hover: hover) and (pointer: fine) { .agn-s .sp-rad:hover { background: var(--sand-100); } }
+.agn-s .sp-rad b.n { display: block; font: 600 15.5px/1.3 var(--sans); }
+.agn-s .sp-fakta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; color: var(--graphite-800); margin-top: 4px; }
+.agn-s .sp-grunn { display: block; font-size: 13px; color: var(--rust-tekst); font-weight: 500; margin-top: 4px; }
+.agn-s .sp-grunn.hvil { color: var(--graphite-600); }
+.agn-s .sp-etl { display: grid; justify-items: end; gap: 2px; }
+.agn-s .sp-etl b { font: 600 20px/1 var(--mono); }
+.agn-s .sp-etl b.lav { color: var(--rust-tekst); }
+.agn-s .sp-etl span { font-size: 11.5px; color: var(--graphite-600); }
+.agn-s .sok { display: flex; gap: var(--r2); flex-wrap: wrap; }
+.agn-s .sok input { flex: 1 1 200px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 15px/1.3 var(--sans); }
+.agn-s .detaljer summary { cursor: pointer; font: 600 14px/1 var(--sans); min-height: 44px; display: flex; align-items: center; }
+
+/* Spiller 360 */
+.agn-s .s360-topp { display: grid; border-radius: 14px; overflow: hidden; border: 1px solid var(--sand-300); }
+.agn-s .s360-topp .st { padding: var(--r4) 18px 18px; display: grid; gap: var(--r3); }
+.agn-s .s360-topp .navn-rad { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--r3); align-items: center; }
+.agn-s .s360-topp b.navn { display: block; font: 700 24px/1.15 var(--sans); letter-spacing: -.02em; }
+.agn-s .kat { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; background: var(--graphite-900); color: var(--white); font: 600 12px/1 var(--sans); white-space: nowrap; }
+.agn-s .fakta-rad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r2); }
+.agn-s .fakta-rad div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--sand-100); }
+.agn-s .fakta-rad b { font: 600 22px/1.1 var(--mono); }
+.agn-s .fakta-rad span { font-size: 12.5px; color: var(--graphite-600); }
+.agn-s .krever { display: grid; gap: 8px; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--graphite-900); background: var(--white); }
+.agn-s .krever b { font: 600 16px/1.3 var(--sans); }
+.agn-s .krever ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14.5px; }
+.agn-s .panel { display: grid; gap: var(--r5); }
+.agn-s .akse-sammen { display: grid; gap: 10px; }
+.agn-s .akse-sammen .rad { display: grid; grid-template-columns: 52px minmax(0, 1fr) 112px; gap: 10px; align-items: center; font-size: 13.5px; }
+.agn-s .akse-sammen .rad b { font: 600 13px/1 var(--sans); letter-spacing: .04em; }
+.agn-s .dobbel { position: relative; height: 20px; border-radius: 5px; background: var(--sand-150); }
+.agn-s .dobbel .p { position: absolute; inset: 0 auto 0 0; border-radius: 5px; border: 2px dashed var(--graphite-500); background: transparent; }
+.agn-s .dobbel .g { position: absolute; top: 4px; bottom: 4px; left: 4px; border-radius: 3px; }
+.agn-s .akse-sammen .v { font: 600 13px/1.2 var(--mono); text-align: right; }
+.agn-s .akse-sammen .v small { display: block; font: 500 11.5px/1.2 var(--mono); color: var(--graphite-600); }
+.agn-s .sg-liste { display: grid; gap: 10px; }
+.agn-s .sg-rad { display: grid; grid-template-columns: 84px minmax(0, 1fr) 52px; gap: 10px; align-items: center; font-size: 14px; }
+.agn-s .sg-rad .v { font: 600 14px/1 var(--mono); text-align: right; }
+.agn-s .sg-spor { position: relative; height: 16px; background: var(--sand-100); border-radius: 4px; }
+.agn-s .sg-spor::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--graphite-500); }
+.agn-s .sg-spor i { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; }
+.agn-s .tidslinje { display: grid; gap: 0; padding: 0; list-style: none; border-left: 2px solid var(--sand-300); margin: 0 0 0 8px; }
+.agn-s .tidslinje li { position: relative; padding: 0 0 14px 18px; font-size: 14px; }
+.agn-s .tidslinje li::before { content: ""; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--white); border: 2px solid var(--graphite-900); }
+.agn-s .tidslinje li b { display: block; font: 600 14.5px/1.3 var(--sans); }
+.agn-s .test-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); font-size: 14px; }
+.agn-s .test-rad b { font-weight: 600; }
+.agn-s .test-rad .v { font: 600 14px/1 var(--mono); }
+
+@media (min-width: 900px) {
+  .agn-s .stall-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--r6); align-items: start; }
+}
+
+.agn-s .s360-stabel { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .chips-lite { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+.agn-s .krever-lenke { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; }
+.agn-s .s360-arbeid { display: grid; gap: var(--r5); }
+.agn-s .s360-rail .liste > a[aria-current="page"] { background: var(--sand-150); }
+/* Fanene i Spiller 360 bruker de felles delene (pa-spiller360); de får samme kort og ro som resten. */
+.agn-s .s360-fane { background: transparent; display: grid; gap: var(--r5); }
+.agn-s .s360-fane .pa-card { border-radius: 12px; border: 1px solid var(--sand-300); background: var(--white); box-shadow: none; }
+@media (min-width: 900px) {
+  .agn-s .s360-arbeid { grid-template-columns: 260px minmax(0, 1fr); align-items: start; }
+}
+.agn-s .chips-lite .pille { white-space: normal; height: auto; min-height: 24px; padding: 4px 10px; line-height: 1.3; }
+.agn-s .fakta-rad b { font-size: 18px; overflow-wrap: anywhere; }
+@media (min-width: 900px) { .agn-s .fakta-rad b { font-size: 22px; } }

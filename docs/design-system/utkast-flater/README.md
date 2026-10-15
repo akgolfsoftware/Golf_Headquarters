@@ -15,6 +15,7 @@ og [AgencyOS-utkastene](../utkast-agencyos/README.md): én HTML-fil og én PR pe
 | 4 Statistikk | ST-01 (hub, søk), ST-02 (spillere, turneringer), ST-03 (spiller, klubb), ST-04, ST-05 (PGA og sammenligning for coach, det spilleren ser), ST-06 (verktøy, quiz, sesongen) | `statistikk.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/65vftfHuExDhcsZQj3eCRK |
 | 5 GFGK Junior og system | GJ-01 (forside, gruppe, treningsplaner, kalender), GJ-02 (kunnskapsbase, artikkel), SY-01 (404, 500, vedlikehold, ikke tilgang, frakoblet) | `gfgk-system.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XoX64HHB4yBazhdTWPYCtZ |
 | 6 Bookinge-postene | EP-01 (gjest og appbruker), EP-02, EP-03, EP-04, EP-05 (utkast hos coach), EP-06, e-postsikker mal 600 px | `epost.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/BdnNgxqZDqXPX7RM6DxzkH |
+| 7 Markedssidene | Forside, Tjenester (coaching), Priser, Produkt (AK Golf HQ), Junior, Innholdsside (slik trener vi, cases, suksess), Om oss og coacher (+ anlegg, jobb), Kontakt (+ spørsmål og svar), Artikler (liste og artikkel), Juridisk, Mulligan som eget merke | `marked.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/1rY9iXperGRR4PXgZTtDTA |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` (avsnittene Forelder, Konto, Booking, Statistikk,
 GFGK Junior og system) og vedtakene i `.claude/rules/beslutninger.md`. Ord: `docs/treningsplanlegging.md`.
@@ -61,3 +62,8 @@ GFGK Junior og system) og vedtakene i `.claude/rules/beslutninger.md`. Ord: `doc
 - **«Vi svarer innen 48 timer»** står i publisert GFGK-tekst. Regelen sier ingen svarløfte før Jarvis er i drift.
 - **Kategorispennet** per gruppe og i artikkelen sier ikke det samme. Begge er beholdt som publisert.
 - **Avsender på bookinge-postene:** tegnet som «Anders Kristiansen, AK Golf» fra post@akgolf.no. Ikke avgjort.
+- **Junior på markedssidene:** publisert «Fem trinn med navn.» med Knøtt som trinn. Tegnet med fire trinn og Knøtt ved siden av. Teksten endres bare med ja.
+- **Kontakt:** «Vi svarer innen 1 virkedag» står i publisert tekst og bryter regelen om svarløfte.
+- **Om oss:** avsnittet i anførselstegn er et sitat. Vist som vanlig tekst. Bør det ut?
+- **Vilkår:** nevner «Pro-tier (kr 300)» og «AI-coach». Endres med advokat.
+- **Forside og produkt:** «Analyse» som fane og «Player HQ» med mellomrom i publisert tekst.
