@@ -1,33 +1,26 @@
 "use client";
 
 /**
- * AG-01 Cockpit i Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/agencyos/screens/AG-cockpit.jsx, runde 25 — vinner over AG-01.jsx
- * fordi screen.html laster den sist). Startskjerm i AgencyOS med dagens
- * kalender 05–22 (beslutninger.md §SKJERMENE … RUNDE 8).
+ * AG-01 Cockpit i nytt design (designbrevet 13.10.2026).
+ * Fasit: docs/design-system/utkast-agencyos/cockpit.html, skjerm «AG-01 Cockpit».
+ * Startskjerm i AgencyOS med dagens kalender 05–22 (beslutninger.md §SKJERMENE … RUNDE 8).
  *
- * Erstatter TrainLockCockpit. Bevart derfra: køen fra lastGodkjenninger
- * (samme tall som /admin/ko), dagens økter fra loadDailyBrief, «Skriv ut» og
- * «Eksporter rapport» (EksportModal kind="brief") og frakoblet-tilstanden.
- * Nytt fra eksisterende data: nøkkeltall, oppgaver fra Notion-cachen,
- * «Følger ikke planen» (to siste uker) og turneringer denne uka.
+ * Data som før (byggAG01Data): køen fra lastGodkjenninger, dagens økter fra
+ * loadDailyBrief, oppgaver fra Notion-cachen, «Følger ikke planen» (to siste
+ * uker) og turneringer denne uka. «Skriv ut» og «Eksporter rapport» er beholdt.
  *
- * Bevisst utelatt (verken i tegningen eller i den forrige TrainLockCockpit):
- * fokusspillere og Økonomi/MRR — se page.tsx-hodet.
- *
- * Ikke bygget fordi grunnlaget mangler i koden (se PR «Parkert»): kort svar
- * direkte fra Cockpit, huke av Notion-oppgaver, «Start live» fra kalenderen
- * og turneringsresultat.
+ * Avvik:
+ *   - Fjerde teller er «Økter i dag», ikke «Forslag venter»: forslag telles
+ *    sammen med resten av køen og finnes ikke som eget tall.
+ *   - Kort svar fra Cockpit og avhuking av Notion-oppgaver finnes ikke i koden.
+ *   - Øktblokkene får aksefarge bare når tittelen sier aksen; ellers nøytral grå.
  */
+import Link from "next/link";
 import { useSyncExternalStore } from "react";
-import { ArrowRight, CalendarX, WifiOff } from "lucide-react";
-import { Knapp, KnappLenke, Meta, StatusPille, LasterTilstand, FeilTilstand } from "@/components/precision/pa";
-import { SideHode } from "@/components/precision/pa-a4";
-import { Seksjon, Dempet, Rad, RadLenke, Etikett, Teller, Tellere, Dagsstripe } from "@/components/precision/pa-cockpit";
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
-import { kalPst, KAL_START_MIN, KAL_SLUTT_MIN, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
-import "@/styles/precision-a6.css";
+import { KAL_START_MIN, KAL_SLUTT_MIN, hhmm, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
+import "@/styles/agencyos-ny-cockpit.css";
 
 export type AG01Tilstand = "data" | "tom" | "laster" | "feil";
 
@@ -41,126 +34,155 @@ function usePaaNett(): boolean {
   return useSyncExternalStore(abonnerNett, () => navigator.onLine, () => true);
 }
 
-const STATUS_TEKST: Record<CockpitKalenderRad["status"], string> = { ferdig: "Ferdig", pagar: "Pågår", neste: "Neste", planlagt: "" };
+const AKSE_NAVN = { fys: "FYS", tek: "TEK", slag: "SLAG", spill: "SPILL", turn: "TURN" } as const;
 
-function Kalender({ rader, naaMin }: { rader: CockpitKalenderRad[]; naaMin: number }) {
-  const naaPst = naaMin >= KAL_START_MIN && naaMin <= KAL_SLUTT_MIN ? kalPst(naaMin) : null;
-  return <Seksjon kicker="Dagens kalender · 05:00–22:00" meta={rader.length ? `${rader.length} ${rader.length === 1 ? "ØKT" : "ØKTER"}` : "INGEN ØKTER"} label="Dagens kalender">
-    <Dagsstripe okter={rader.map((r) => ({ id: r.id, fra: kalPst(r.startMin), til: kalPst(r.sluttMin), ferdig: r.status === "ferdig" }))} naaPst={naaPst} />
-    {rader.length === 0 ? <Dempet>Ingen coaching- eller gruppeøkter i dag.</Dempet> : <div role="list">
-      {rader.map((r, i) => {
+export function initialer(navn: string) {
+  return navn.split(/\s+/).filter(Boolean).slice(0, 2).map((d) => d[0]!.toUpperCase()).join("") || "—";
+}
+
+/** Fordeler overlappende økter i spor, så ingen blokk dekker en annen. */
+function spor(rader: CockpitKalenderRad[]) {
+  const slutt: number[] = [];
+  const ut = rader.map((r) => {
+    let i = slutt.findIndex((s) => s <= r.startMin);
+    if (i < 0) { i = slutt.length; slutt.push(r.sluttMin); } else slutt[i] = r.sluttMin;
+    return { r, i };
+  });
+  return { ut, antall: Math.max(1, slutt.length) };
+}
+
+function Dag({ rader, naaMin }: { rader: CockpitKalenderRad[]; naaMin: number }) {
+  const timer = Array.from({ length: (KAL_SLUTT_MIN - KAL_START_MIN) / 60 }, (_, i) => hhmm(KAL_START_MIN + i * 60));
+  const synlige = rader.filter((r) => r.sluttMin > KAL_START_MIN && r.startMin < KAL_SLUTT_MIN);
+  const { ut, antall } = spor(synlige);
+  const naa = naaMin >= KAL_START_MIN && naaMin <= KAL_SLUTT_MIN ? naaMin : null;
+  const y = (min: number) => `calc(var(--time) * ${(Math.max(KAL_START_MIN, Math.min(KAL_SLUTT_MIN, min)) - KAL_START_MIN) / 60})`;
+  return <div className="dag" role="list" aria-label="Dagens økter 05–22">
+    <div className="timer" aria-hidden>{timer.map((t) => <span key={t}>{t.slice(0, 2)}</span>)}</div>
+    <div className="bane">
+      {naa != null && <div className="na-linje" style={{ top: y(naa) }} data-klokke={hhmm(naa)} aria-hidden />}
+      {ut.map(({ r, i }) => {
+        const stil = {
+          top: y(r.startMin),
+          height: `calc(${y(r.sluttMin)} - ${y(r.startMin)} - 2px)`,
+          left: `calc(6px + (100% - 12px) * ${i / antall})`,
+          width: `calc((100% - 12px) / ${antall} - ${antall > 1 ? 4 : 0}px)`,
+        };
+        const kl = `blokk-okt ${r.akse ?? "noy"}${r.status === "ferdig" ? " ferdig" : ""}`;
         const innhold = <>
-          <span className="pa-a6-tid"><span className="pa-a6-tid__start" data-ferdig={r.status === "ferdig" || undefined}>{r.start}</span><Meta>{r.slutt}</Meta></span>
-          <Etikett a={`${r.tittel} · ${r.hvem}`} sub={r.sted ? r.sted.toUpperCase() : "—"} />
-          {r.status === "planlagt" ? <span /> : <StatusPille tone={r.status === "ferdig" ? "ok" : r.status === "pagar" ? "live" : "neutral"}>{STATUS_TEKST[r.status]}</StatusPille>}
+          <b>{r.hvem}</b>
+          <span className="t">{r.start}–{r.slutt}</span>
+          <span className="i">{r.tittel}{r.sted ? ` · ${r.sted}` : ""}</span>
+          {r.status === "pagar" && r.href && <span className="live"><i />Åpne live</span>}
         </>;
+        const etikett = `${r.start}–${r.slutt} ${r.tittel} med ${r.hvem}${r.akse ? `, ${AKSE_NAVN[r.akse]}` : ""}${r.status === "pagar" ? ", pågår" : r.status === "ferdig" ? ", ferdig" : ""}`;
         return r.href
-          ? <RadLenke key={r.id} href={r.href} forste={i === 0} mal="56px minmax(0,1fr) auto" min={64} label={`${r.start} ${r.tittel} med ${r.hvem}`}>{innhold}</RadLenke>
-          : <Rad key={r.id} forste={i === 0} mal="56px minmax(0,1fr) auto" min={64}>{innhold}</Rad>;
+          ? <Link key={r.id} role="listitem" href={r.href} className={kl} style={stil} aria-label={etikett}>{innhold}</Link>
+          : <div key={r.id} role="listitem" className={kl} style={stil} aria-label={etikett}>{innhold}</div>;
       })}
-    </div>}
-  </Seksjon>;
+    </div>
+  </div>;
 }
 
-function Venter({ venter }: { venter: AG01Data["venter"] }) {
-  const { totalt, rader } = venter;
-  return <Seksjon kicker="Venter på deg" meta={totalt ? `${totalt} · NYESTE FØRST` : "INGEN"} label="Venter på deg">
-    {rader.length === 0 ? <Dempet>Ingenting venter på deg. Godkjenninger, forespørsler og utkast dukker opp her.</Dempet> : <div role="list">
-      {rader.map((r, i) => <div role="listitem" key={r.id} className="pa-a6-venter" data-forste={i === 0 || undefined}>
-        <div className="pa-a6-venter__topp"><span className="pa-a6-venter__hvem">{r.hvem}</span>{r.haster && <StatusPille tone="warn">Haster</StatusPille>}<Meta>{r.nar.toUpperCase()}</Meta></div>
-        <span className="pa-a6-venter__tekst">{r.tittel}{r.detalj ? ` · ${r.detalj}` : ""}</span>
-      </div>)}
-    </div>}
-    <div><KnappLenke href="/admin/ko" variant="ghost" size="sm" iconRight={ArrowRight}>Åpne køen</KnappLenke></div>
-  </Seksjon>;
+function Seksjon({ tittel, kilde, lenke, id, children }: { tittel: string; kilde?: string; lenke?: { href: string; tekst: string }; id?: string; children: React.ReactNode }) {
+  return <section className="seksjon" id={id} aria-label={tittel}>
+    <div className="sek-topp"><h2>{tittel}</h2>{lenke ? <Link className="lenke" href={lenke.href}>{lenke.tekst}</Link> : kilde ? <span className="kilde">{kilde}</span> : null}</div>
+    {children}
+  </section>;
 }
 
-function Oppgaver({ oppgaver }: { oppgaver: AG01Data["oppgaver"] }) {
-  const apne = oppgaver.filter((o) => !o.ferdig);
-  const meta = oppgaver.length ? `${apne.filter((o) => o.fristIDag).length} FRIST I DAG · ${apne.length} ÅPNE` : "—";
-  return <Seksjon kicker="Oppgaver fra Notion" meta={meta} label="Oppgaver fra Notion">
-    {oppgaver.length === 0 ? <Dempet>Ingen oppgaver fra Notion.</Dempet> : <div role="list">
-      {oppgaver.map((o, i) => <Rad key={o.id} forste={i === 0} min={52}>
-        <span className="pa-a6-etikett"><span className="pa-a6-oppgave__tittel" data-ferdig={o.ferdig || undefined}>{o.tittel}</span>{o.ferdig && <Meta>FERDIG</Meta>}</span>
-        <Meta style={o.fristIDag && !o.ferdig ? { color: "var(--text-primary)" } : undefined}>{o.fristIDag && !o.ferdig ? "FRIST I DAG" : o.tag}</Meta>
-      </Rad>)}
-    </div>}
-    <Meta>NOTION · TASKS OG PROSJEKTER</Meta>
-  </Seksjon>;
-}
-
-function Turneringer({ rader }: { rader: AG01Data["turneringer"] }) {
-  return <Seksjon kicker="Turneringer denne uka" meta={rader.length ? "EGNE SPILLERE" : "INGEN"} label="Turneringer denne uka">
-    {rader.length === 0 ? <Dempet>Ingen av spillerne dine er påmeldt en turnering denne uka.</Dempet> : <div role="list">
-      {rader.map((t, i) => <Rad key={t.id} forste={i === 0}>
-        <Etikett a={`${t.hvem} · ${t.navn}`} sub={t.sted ? t.sted.toUpperCase() : "—"} />
-        <span className="pa-a6-tall pa-a6-tall--s">{t.dagerTil === 0 ? "I dag" : t.dagerTil < 0 ? "Startet" : `Om ${t.dagerTil} ${t.dagerTil === 1 ? "dag" : "dager"}`}</span>
-      </Rad>)}
-    </div>}
-  </Seksjon>;
-}
-
-function UtenforPlan({ rader, uker }: { rader: AG01Data["utenforPlan"]; uker: string }) {
-  return <Seksjon kicker="Følger ikke planen" meta={rader.length ? "LAVESTE FØRST" : "INGEN"} label="Følger ikke planen">
-    {rader.length === 0 ? <Dempet>Alle ligger på 70 % eller mer av planen.</Dempet> : <div role="list">
-      {rader.map((p, i) => <RadLenke key={p.id} href={p.href} forste={i === 0} label={`${p.navn}, ${p.siste} % forrige uke. Åpne hele planen`}>
-        <Etikett a={p.navn} sub="TO UKER PÅ RAD" />
-        <span className="pa-a6-pst"><span className="pa-a6-tall">{p.siste} %</span><Meta>UKA FØR {p.forrige} %</Meta></span>
-      </RadLenke>)}
-    </div>}
-    <Meta>{uker} · GJENNOMFØRT TID MOT PLAN · UNDER 70 % TO UKER PÅ RAD · TRYKK FOR HELE PLANEN</Meta>
-  </Seksjon>;
-}
-
-function Nokkeltall({ tittel, meta, rader, tom }: { tittel: string; meta: string; rader: AG01Data["nokkeltall"]; tom: boolean }) {
-  return <Seksjon kicker={tittel} meta={meta} label={tittel}>
-    <div role="list">{rader.map((k, i) => <Rad key={k.label} forste={i === 0}>
-      <Etikett a={k.label} sub={tom ? "—" : k.kilde} /><span className="pa-a6-tall">{tom ? "—" : k.verdi}</span>
-    </Rad>)}</div>
-  </Seksjon>;
+function Tom({ children }: { children: React.ReactNode }) {
+  return <div className="kort dempet"><p className="forklar">{children}</p></div>;
 }
 
 export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: AG01Data }) {
   const paaNett = usePaaNett();
+  const topp = <div className="topp">
+    <div className="topp-rad">
+      <div><div className="dato">{data.kicker} · {data.klokke}</div><h1 className="tittel">{data.hilsen}</h1></div>
+      {tilstand === "data" && paaNett && <div className="knapper">
+        <PrintButton label="Skriv ut" className="knapp sek" />
+        <EksportTrigger kind="brief" className="knapp sek" />
+      </div>}
+    </div>
+  </div>;
+
+  if (tilstand === "laster") return <div className="agn-s">{topp}<div className="tilstand-blokk" aria-busy="true">
+    <p className="forklar">Henter dagen …</p>
+    <i className="skjelett" style={{ height: 96 }} /><i className="skjelett" style={{ height: 320 }} /><i className="skjelett" style={{ height: 120 }} />
+  </div></div>;
+  if (tilstand === "feil" || !paaNett) return <div className="agn-s">{topp}<div className="kort dempet" role="alert">
+    <b className="undertittel">{paaNett ? "Cockpit kunne ikke lastes" : "Ingen forbindelse"}</b>
+    <p className="forklar">{paaNett ? "Ingenting er endret. Kalender, innboks og oppgaver hentes på nytt når du prøver igjen." : `Nettet er nede. Sist hentet ${data.klokke}.`}</p>
+    <div className="knapper"><button type="button" className="knapp pri" onClick={() => window.location.reload()}>Prøv igjen</button></div>
+  </div></div>;
+
   const tom = tilstand === "tom";
-  const handlinger = <div className="pa-a6-handlinger">
-    <PrintButton label="Skriv ut" className="pa-btn pa-btn--secondary pa-btn--sm pa-btn--icon-l" />
-    <EksportTrigger kind="brief" className="pa-btn pa-btn--secondary pa-btn--sm pa-btn--icon-l" />
-  </div>;
-  const hode = <SideHode kicker={`${data.kicker} · ${data.klokke}`} title="Cockpit" actions={tilstand === "data" ? handlinger : undefined} />;
-
-  if (tilstand === "laster") return <div className="pa-a6-side">{hode}<LasterTilstand text="Henter dagen …" /></div>;
-  if (tilstand === "feil" || !paaNett) {
-    return <div className="pa-a6-side">{hode}<FeilTilstand
-      icon={paaNett ? CalendarX : WifiOff}
-      title={paaNett ? "Cockpit kunne ikke lastes" : "Ingen forbindelse"}
-      text={paaNett ? "Kalender, køen og oppgaver hentes på nytt når du prøver igjen. Ingenting er endret." : `Nettet er nede. Sist hentet ${data.klokke}.`}
-      code={paaNett ? "COCKPIT · FEIL" : "FRAKOBLET"}
-      retry={<Knapp variant="secondary" onClick={() => window.location.reload()}>Prøv igjen</Knapp>}
-    /></div>;
-  }
-
   const d = tom ? { ...data, kalender: [], venter: { totalt: 0, rader: [] }, oppgaver: [], turneringer: [], utenforPlan: [] } : data;
-  const tellere = <Tellere>
-    <Teller href="/admin/ko" tall={d.venter.totalt} label="Venter på deg" />
-    <Teller href="/admin/spillere" tall={d.utenforPlan.length} label="Følger ikke planen" />
-    <Teller href="/admin/tournaments" tall={d.turneringer.length} label="Turneringer denne uka" />
-    <Teller href="/admin/kalender" tall={d.kalender.length} label="Økter i dag" />
-  </Tellere>;
-  const venstre = <div className="pa-a6-stabel">
-    <Kalender rader={d.kalender} naaMin={d.naaMin} />
-    <Venter venter={d.venter} />
-    <Oppgaver oppgaver={d.oppgaver} />
-  </div>;
-  const hoyre = <div className="pa-a6-stabel">
-    <Turneringer rader={d.turneringer} />
-    <UtenforPlan rader={d.utenforPlan} uker={d.utenforPlanUker} />
-    <Nokkeltall tittel="Nøkkeltall" meta="INGEN ØKONOMI HER" rader={d.nokkeltall} tom={tom} />
-  </div>;
-  return <div className="pa-a6-side">
-    {hode}
-    {tellere}
-    <div className="pa-a6-kolonner">{venstre}{hoyre}</div>
+  const haster = d.venter.rader.filter((r) => r.haster).length;
+  const apneOppgaver = d.oppgaver.filter((o) => !o.ferdig);
+  const oppgaver = [...d.oppgaver].sort((a, b) => Number(a.ferdig) - Number(b.ferdig) || Number(b.fristIDag) - Number(a.fristIDag));
+
+  return <div className="agn-s">
+    {topp}
+    <div className="teller-rad">
+      <Link href="/admin/innboks" className={`teller${haster ? " signal" : ""}`}>
+        <span className="e">Venter på deg</span><b className="t">{d.venter.totalt}</b>
+        <span className="s">{haster ? `${haster} haster` : "i innboksen"}</span>
+      </Link>
+      <a href="#folger-ikke" className="teller"><span className="e">Følger ikke planen</span><b className="t">{d.utenforPlan.length}</b><span className="s">under 70 % to uker</span></a>
+      <a href="#turneringer" className="teller"><span className="e">Turneringer</span><b className="t">{d.turneringer.length}</b><span className="s">denne uka</span></a>
+      <Link href="/admin/kalender" className="teller"><span className="e">Økter i dag</span><b className="t">{d.kalender.length}</b><span className="s">05–22</span></Link>
+    </div>
+    <div className="cockpit-grid">
+      <div>
+        <Seksjon tittel="I dag" kilde={d.kalender.length ? `${d.kalender.length} ${d.kalender.length === 1 ? "økt" : "økter"} · 05–22` : "Ingen økter"}>
+          {d.kalender.length ? <>
+            <Dag rader={d.kalender} naaMin={d.naaMin} />
+            <div className="lg-rad" aria-hidden><span className="lg"><i className="a-fys" />FYS</span><span className="lg"><i className="a-tek" />TEK</span><span className="lg"><i className="a-slag" />SLAG</span><span className="lg"><i className="a-spill" />SPILL</span><span className="lg"><i className="a-turn" />TURN</span><span className="lg"><i className="a-noy" />Akse ikke satt</span></div>
+          </> : <Tom>Ingen coaching- eller gruppeøkter i dag.</Tom>}
+        </Seksjon>
+        <Seksjon tittel="Venter på svar" lenke={{ href: "/admin/innboks", tekst: "Hele innboksen" }}>
+          {d.venter.rader.length === 0 ? <Tom>Ingenting venter på deg. Godkjenninger, forespørsler og utkast dukker opp her.</Tom> : <div className="kort tett">
+            {d.venter.rader.map((r) => <div key={r.id} className="svar-rad">
+              <span className="avatar liten" aria-hidden>{initialer(r.hvem)}</span>
+              <span><b>{r.hvem}</b><span className="sitat">{r.tittel}{r.detalj ? ` · ${r.detalj}` : ""}</span></span>
+              <span className="svar-hoyre">{r.haster && <span className="haster-pille">Haster</span>}<time>{r.nar}</time></span>
+            </div>)}
+          </div>}
+        </Seksjon>
+      </div>
+      <div>
+        <Seksjon tittel="Følger ikke planen" kilde={d.utenforPlanUker ? `Siste to uker · ${d.utenforPlanUker.toLowerCase()}` : "Siste to uker"} id="folger-ikke">
+          {d.utenforPlan.length === 0 ? <Tom>Alle ligger på 70 % eller mer av planen.</Tom> : <div className="kort tett">
+            {d.utenforPlan.map((p) => <Link key={p.id} href={p.href} className="etl-rad" aria-label={`${p.navn}: ${p.forrige} % og ${p.siste} %. Åpne hele planen`}>
+              <span className="avatar liten lys" aria-hidden>{initialer(p.navn)}</span>
+              <span><b>{p.navn}</b><span className="etl-uker"><span>Uka før {p.forrige} %</span><span>Forrige {p.siste} %</span></span></span>
+              <span className="etl-prosent">{p.siste} %</span>
+            </Link>)}
+          </div>}
+          <p className="kilde">Gjennomført tid mot planlagt. Under 70 % to uker på rad. Trykk for hele planen.</p>
+        </Seksjon>
+        <Seksjon tittel="Oppgaver" kilde="Fra Notion · Tasks">
+          {oppgaver.length === 0 ? <Tom>Ingen oppgaver fra Notion.</Tom> : <div className="kort tett">
+            {oppgaver.map((o) => <div key={o.id} className={`oppgave${o.ferdig ? " gjort" : ""}`}>
+              <span className="hake" aria-hidden data-ferdig={o.ferdig || undefined} />
+              <span><b>{o.tittel}</b><span className={`kilde${o.fristIDag && !o.ferdig ? " frist" : ""}`}>{o.ferdig ? "Ferdig" : o.fristIDag ? "Frist i dag" : o.tag}</span></span>
+            </div>)}
+          </div>}
+          {oppgaver.length > 0 && <p className="kilde">{apneOppgaver.length} åpne · huk av i Notion</p>}
+        </Seksjon>
+        <Seksjon tittel="Turneringer denne uka" id="turneringer">
+          {d.turneringer.length === 0 ? <Tom>Ingen av spillerne dine er påmeldt en turnering denne uka.</Tom> : d.turneringer.map((t) => <div key={t.id} className="turn-kort">
+            <b>{t.navn}</b>
+            <span>{t.dagerTil === 0 ? "I dag" : t.dagerTil < 0 ? "Startet" : `Om ${t.dagerTil} ${t.dagerTil === 1 ? "dag" : "dager"}`}{t.sted ? ` · ${t.sted}` : ""}</span>
+            <span>{t.hvem}</span>
+          </div>)}
+        </Seksjon>
+        <Seksjon tittel="Stallen" kilde="Nøkkeltall · ingen økonomi her">
+          <div className="nokkel">{d.nokkeltall.map((k) => <div key={k.label}><b>{tom ? "—" : k.verdi}</b><span>{k.label}</span></div>)}</div>
+        </Seksjon>
+      </div>
+    </div>
   </div>;
 }
-
