@@ -18,8 +18,10 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 7 Mer | Mer, AG-15, AG-16 (+ gruppa), AG-A03, AG-20 (bare head coach, + AG-20-ASS), AG-23, `mer.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/3f8o54VRQF2j7oKn6YKCYs |
 | 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GjxtcH7JeoeMARfSMxu5SG |
 | 9 Samleside | Alle lenker på én side, `samleside.html` | **Ferdig** (15.10) | https://claude.ai/artifact/Ursvr6vJ7qgptHq7V6sxuF |
+| 10 Data Golf for coach | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning, `datagolf.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/7hbTKLJdXoUYYyj86cZHPN |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` og vedtakene i `.claude/rules/beslutninger.md`.
+Data Golf-skjermene (pakke 10) følger `docs/design-system/datagolf-coach-datakart-og-skjermliste.md`: ni skjermer, bare det basen har, samme liste for WANG og Team Norway.
 Ord: `docs/treningsplanlegging.md` §2.6 og §22. Det finnes ingen skjermbilder av dagens AgencyOS i registeret, så utkastene har ingen «Dagens design»-knapp.
 
 ## Grunnmuren

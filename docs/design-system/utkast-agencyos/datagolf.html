@@ -1,0 +1,677 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Data Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<style>
+/* ---------- Pakke 10: Data Golf for coach · DG-01–DG-09 ----------
+   Aksen er SLAG (--slag). Fylte flater i slag-ink, valgte filtre i slag. Rust bare for feilet synk.
+   Alle tall har kilde og dato. Målt (resultater) skilles fra modell (ferdighetsprofil) og estimat (Broadie). */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.dg-kilde{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);letter-spacing:.04em;color:var(--graphite-600)}
+.dg-kilde i{width:8px;height:8px;border-radius:2px;background:var(--slag)}
+
+/* Fylt flate i slag */
+.fylt-slag{background:var(--slag-ink);color:#fff;border:0;--graphite-900:#fff;--graphite-800:rgba(255,255,255,.92);--graphite-600:rgba(255,255,255,.78);--graphite-500:rgba(255,255,255,.6);--sand-100:rgba(255,255,255,.12);--sand-150:rgba(255,255,255,.16);--sand-300:rgba(255,255,255,.3);--white:var(--slag-ink)}
+.fylt-slag .pille.noy{background:rgba(255,255,255,.18);color:#fff}.fylt-slag .pille.noy i{background:#fff}
+.fylt-slag .pille.ok{background:#fff;color:var(--green-700)}
+.fylt-slag .estimat{border-color:rgba(255,255,255,.6);color:#fff}
+.fylt-slag .sg-spor{background:rgba(255,255,255,.14)}.fylt-slag .sg-spor::before{background:rgba(255,255,255,.7)}.fylt-slag .sg-spor i{background:#fff}
+.fylt-slag .knapp.sek{background:#fff;color:var(--slag-ink);border-color:#fff}
+.fylt-slag .knapp.pri{background:#fff;color:var(--slag-ink);border-color:#fff}
+.fylt-slag .hoved strong{color:#fff}
+.hero{display:grid;gap:var(--r3);border-radius:14px;padding:18px 18px 20px}
+.hero .over{display:flex;justify-content:space-between;align-items:center;gap:var(--r2);flex-wrap:wrap}
+.hero .stor{font:700 26px/1.15 var(--sans);letter-spacing:-.02em}
+.hero .rad{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;color:var(--graphite-800)}
+
+/* Tellere i slag-toner */
+.teller.slag{background:#eef3fe;border-color:#c9d8fb}
+.teller.slag b.t{color:var(--slag-ink)}
+.teller.live{border-color:var(--slag)}
+.live-prikk{display:inline-flex;align-items:center;gap:6px;font:600 12px/1 var(--sans);color:var(--slag-ink)}
+.live-prikk i{width:8px;height:8px;border-radius:50%;background:var(--slag);animation:puls 1.6s ease-in-out infinite}
+@keyframes puls{50%{opacity:.35}}
+
+/* SG-rader (samme som Spiller 360) */
+.sg-liste{display:grid;gap:10px}
+.sg-rad{display:grid;grid-template-columns:84px minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:14px}
+.sg-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.sg-spor{position:relative;height:16px;background:var(--sand-100);border-radius:4px}
+.sg-spor::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--graphite-500)}
+.sg-spor i{position:absolute;top:2px;bottom:2px;border-radius:3px;background:var(--slag)}
+.sg-spor i.p{background:var(--graphite-900);opacity:.35}
+
+/* Lister og tabellrader */
+.dg-rad{display:grid;grid-template-columns:28px auto minmax(0,1fr) auto;gap:10px;align-items:center;min-height:56px;padding:8px 0;border-bottom:1px solid var(--sand-300);text-align:left;font:inherit;color:inherit;background:none;border-left:0;border-right:0;border-top:0;width:100%;cursor:pointer}
+.dg-rad:last-child{border-bottom:0}
+.dg-rad .nr{font:600 13px/1 var(--mono);color:var(--graphite-600)}
+.dg-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.dg-rad .v{font:600 15px/1 var(--mono);text-align:right}
+.dg-rad .v small{display:block;font:500 11px/1.4 var(--mono);color:var(--graphite-600)}
+.dg-rad.hode{min-height:32px;padding:4px 0;font:600 12px/1.2 var(--sans);color:var(--graphite-600);cursor:default}
+.flagg{display:inline-grid;place-items:center;width:28px;height:20px;border-radius:4px;background:var(--sand-150);font:600 10.5px/1 var(--mono);color:var(--graphite-800)}
+.flagg.no{background:#fbe9e7;color:#8a2a1c}
+.chips button[aria-pressed="true"].slag,.chips.slag button[aria-pressed="true"]{background:var(--slag-ink);border-color:var(--slag-ink)}
+.valg.slag button[aria-pressed="true"]{background:var(--slag-ink)}
+.sok{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.sok input{min-height:48px;padding:10px 12px 10px 40px;border:1px solid var(--graphite-500);border-radius:8px;font:400 16px/1.4 var(--sans);width:100%;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2346443f' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") 12px 50%/20px no-repeat;color:var(--graphite-900)}
+
+/* Sammenligning og innspill */
+.sammen-hode{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:var(--r2);align-items:center}
+.sammen-hode .hvem{display:grid;gap:4px;justify-items:center;text-align:center}
+.sammen-hode .hvem b{font:600 15px/1.25 var(--sans)}
+.sammen-hode .mot{font:600 12px/1 var(--mono);letter-spacing:.08em;color:var(--graphite-600)}
+.gap-rad{display:grid;grid-template-columns:76px 54px minmax(0,1fr) 54px 54px;gap:8px;align-items:center;font-size:13.5px}
+.gap-rad .v{font:600 13.5px/1 var(--mono);text-align:right}
+.gap-rad .v.gap{color:var(--slag-ink)}
+.gap-rad .v.pos{color:var(--green-700)}
+.gap-rad.hode{font:600 11.5px/1.2 var(--sans);color:var(--graphite-600)}
+.gap-rad.hode span{text-align:right}.gap-rad.hode span:first-child{text-align:left}
+.gap-spor{position:relative;height:12px;background:var(--sand-100);border-radius:3px}
+.gap-spor::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--graphite-500)}
+.gap-spor i{position:absolute;top:2px;bottom:2px;border-radius:2px;background:var(--slag)}
+.gap-spor i.pos{background:var(--green-700)}
+.maal-rad{display:grid;grid-template-columns:minmax(0,1fr) 78px 78px 48px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.maal-rad:last-child{border-bottom:0}
+.maal-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.maal-rad .v small{display:block;font:500 10.5px/1.4 var(--mono);color:var(--graphite-600)}
+.maal-rad.hode{font:600 11.5px/1.2 var(--sans);color:var(--graphite-600);padding:0 0 6px}
+.maal-rad.hode span{text-align:right}.maal-rad.hode span:first-child{text-align:left}
+.band-rad{display:grid;grid-template-columns:minmax(0,1fr) 60px 60px auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:13.5px}
+.band-rad .gap-spor{display:none}
+.band-rad.pr{grid-template-columns:minmax(0,1fr) 60px 60px 48px}
+.band-rad:last-child{border-bottom:0}
+.band-rad b{display:block;font:600 13.5px/1.25 var(--sans)}
+.band-rad .kilde{display:block}
+.band-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.band-rad .v small{display:block;font:500 10.5px/1.4 var(--mono);color:var(--graphite-600)}
+.band-rad.hode{font:600 11.5px/1.2 var(--sans);color:var(--graphite-600);padding:0 0 6px}
+.band-rad.hode span{text-align:right}.band-rad.hode span:first-child{text-align:left}
+.band-rad .knapp{min-height:36px;padding:0 10px;font-size:13px}
+.sirkel{display:grid;place-items:center;width:112px;height:112px;border-radius:50%;background:#eef3fe;border:2px solid var(--slag);justify-self:center;text-align:center}
+.sirkel b{font:600 28px/1 var(--mono);color:var(--slag-ink)}
+.sirkel span{font:500 11px/1.3 var(--sans);color:var(--graphite-600)}
+
+/* Funn og forslag */
+.funn{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:14px 16px;border-radius:12px;background:#eef3fe;border:1px solid #c9d8fb}
+.funn b{display:block;font:600 16px/1.3 var(--sans)}
+.funn .ikonboks{background:var(--slag-ink);color:#fff}
+.kvitt{display:grid;gap:6px;padding:14px 16px;border-radius:12px;background:var(--sand-100)}
+.kvitt b{font:600 15px/1.3 var(--sans)}
+.steg{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;font-size:14px}
+.steg i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--slag-ink);color:#fff;font:600 12px/1 var(--mono);font-style:normal}
+
+/* Resultater og kilde */
+.res-rad{display:grid;grid-template-columns:minmax(0,1fr) 56px 56px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.res-rad:last-child{border-bottom:0}
+.res-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.res-rad .v{font:600 15px/1 var(--mono);text-align:right}
+.res-rad .v small{display:block;font:500 10.5px/1.4 var(--mono);color:var(--graphite-600)}
+.runder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.runder div{display:grid;gap:2px;padding:8px 6px;border-radius:8px;background:var(--sand-100);text-align:center}
+.runder b{font:600 16px/1 var(--mono)}
+.runder span{font:500 11px/1.3 var(--sans);color:var(--graphite-600)}
+.kilde-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.kilde-rad:last-child{border-bottom:0}
+.kilde-rad b{display:block;font:600 14.5px/1.3 var(--sans)}
+.kilde-rad code{font:500 12px/1.4 var(--mono);color:var(--graphite-600)}
+.kilde-rad .pille.feil{background:var(--rust-50);color:#8a2a1c}.kilde-rad .pille.feil i{background:var(--rust)}
+.ikke{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;color:var(--graphite-800)}
+
+@container (min-width:900px){
+  .teller-rad.dg{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .innganger{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sammen-hode .hvem b{font-size:17px}
+  .gap-rad{grid-template-columns:120px 72px minmax(0,1fr) 72px 72px}
+  .band-rad{grid-template-columns:140px 84px 84px minmax(0,1fr) auto}
+  .band-rad .gap-spor{display:block}
+  .band-rad.pr{grid-template-columns:140px 84px 84px 64px}
+  .maal-rad{grid-template-columns:minmax(0,1fr) 100px 100px 64px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 10 · Data Golf for coach · DG-01–DG-09 · utkast 1 · 15.10.2026</span>
+    <h1>Data Golf</h1>
+    <p>Ni skjermer i én fil: oversikt, proffkatalog, proffprofil, topplister, spiller mot proff, innspill-tak, fra funn til forslag, norske proffer og kilde og dekning. Bare for coach. Coach Anders Kristiansen, spiller Øyvind Rohjan. Mandag 5. oktober, uke 41. Proffnavn er ekte, tallene er eksempeltall.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="oversikt">DG-01 Oversikt</button>
+      <button type="button" aria-pressed="false" data-skjerm="katalog">DG-02 Katalog</button>
+      <button type="button" aria-pressed="false" data-skjerm="profil">DG-03 Proffprofil</button>
+      <button type="button" aria-pressed="false" data-skjerm="topp">DG-04 Topplister</button>
+      <button type="button" aria-pressed="false" data-skjerm="sammen">DG-05 Spiller mot proff</button>
+      <button type="button" aria-pressed="false" data-skjerm="innspill">DG-06 Innspill-tak</button>
+      <button type="button" aria-pressed="false" data-skjerm="forslag">DG-07 Fra funn til forslag</button>
+      <button type="button" aria-pressed="false" data-skjerm="norske">DG-08 Norske proffer</button>
+      <button type="button" aria-pressed="false" data-skjerm="kilde">DG-09 Kilde og dekning</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Ni skjermer i stedet for sytten.</b> Bare det basen faktisk har: ferdighetsprofil, innspill per avstand, sesongtall, norske proffers resultater og live, kalender og synkstatus. Bane og felt, modellanalyse, trend og spesialistregister er tatt ut (ingen lagring).</li>
+        <li><b>Spiller mot proff</b> (DG-05) gir gap per område i slag, med spillerens tall som estimat og proffens som modell. Snittscore sammenlignes aldri som justert nivågap.</li>
+        <li><b>Innspill-tak</b> (DG-06) gjør proffens nærhet til en sirkel i meter og en øvelse i Workbench med ett trykk.</li>
+        <li><b>Fra funn til forslag</b> (DG-07): funnet blir en målsetning og et planforslag spilleren godtar. Anvendes én gang; nyere plan gir konflikt.</li>
+        <li><b>Norske proffer</b> (DG-08): live-stilling med hentet-tidspunkt, resultater med SG per runde, kommende turneringer.</li>
+        <li><b>Innganger:</b> Mer › Data Golf, Spiller 360 › Stats «Mot PGA Tour», og «Fra Data Golf» i Workbench-øvelsen.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Data Golf bare for coach og ADMIN. Spilleren ser aldri sammenligning med andre. «Powered by Data Golf» på hver skjerm.</li>
+        <li>Alle tall har kilde og dato. Modell (ferdighetsprofil), målt (resultater) og estimat (Broadie) er merket hver for seg. Manglende tall vises «—».</li>
+        <li>Aksen er SLAG: fylte flater og valgte filtre i slag-blått. Primærknapp grafitt. Rust bare på feilet synk.</li>
+        <li>Ingen eksport. Ingen odds, prognoser eller fantasy-felt. Ingen sidelengs rulling i 390 og 1280.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Mer får et sjette punkt «Data Golf».</b> Beslutningen 28.09 sier fem punkter. Alternativet er bare inngang via Spiller 360 › Stats.</li>
+        <li><b>Lisens for WANG og Team Norway.</b> Kundedistribusjon er ikke dokumentert. Utkastene for de to flatene tegnes i egne økter, men bygges ikke før det er avklart.</li>
+        <li><b>Innspill-tak som øvelse:</b> sirkelen er proffens nærhet rett av. Vil du ha et trinn (for eksempel proffens tall + 30 %) for spillere under kategori C?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= DG-01 Oversikt ================= -->
+<template id="oversikt">
+<div class="app" data-fane="mer" data-tilbake="Mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Mer · Data Golf</div><h1 class="tittel">Data Golf</h1></div><span class="dg-kilde"><i></i>Powered by Data Golf</span></div></div>
+    <div class="kort fylt-slag hero">
+      <div class="over"><span class="pille noy"><i></i>Ferdighetsmodell 12. okt</span><span class="pille ok"><i></i>Synket mandag 05:00</span></div>
+      <div class="stor">412 proffer med ferdighetsprofil og innspill per avstand</div>
+      <div class="rad"><span>PGA Tour · DP World · Korn Ferry</span><span>6 norske</span><span>Resultater for norske fra mandag</span></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-gaa="sammen">Spiller mot proff</button><button type="button" class="knapp sek" data-gaa="katalog">Finn proff</button></div>
+    </div>
+    <div class="teller-rad dg">
+      <button type="button" class="teller slag" data-gaa="katalog"><span class="e">Proffer</span><b class="t" data-tell="412">0</b><span class="s">med SG-profil</span></button>
+      <button type="button" class="teller slag" data-gaa="norske"><span class="e">Norske</span><b class="t" data-tell="6">0</b><span class="s">koblet til Data Golf</span></button>
+      <button type="button" class="teller live" data-gaa="norske"><span class="e"><span class="live-prikk"><i></i>Live</span></span><b class="t" data-tell="3">0</b><span class="s">norske i spill nå</span></button>
+      <button type="button" class="teller" data-gaa="kilde"><span class="e">Siste synk</span><b class="t" style="font-size:22px;padding-top:6px">05.10</b><span class="s">05:00 · alle OK</span></button>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Norske i spill</h2><span class="kilde">Hentet 08:14 · runde 2 pågår</span></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px" data-live></div>
+      <a class="lenke" href="#" data-gaa="norske">Alle norske proffer</a>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Bruk dataene</h2></div>
+      <div class="liste innganger" style="display:grid">
+        <button type="button" data-gaa="sammen"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/></svg></span><span><b>Spiller mot proff</b><span class="kilde">Gap per område i slag</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" data-gaa="innspill"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><span><b>Innspill-tak</b><span class="kilde">Proffens nærhet som øvelse</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" data-gaa="topp"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span><span><b>Topplister</b><span class="kilde">Seks kategorier, per tour og år</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" data-gaa="forslag"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span><span><b>Fra funn til forslag</b><span class="kilde">2 forslag venter på spiller</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" data-gaa="kilde"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span><b>Kilde og dekning</b><span class="kilde">Hva som hentes, og hva som ikke hentes</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </section>
+    <p class="kildetekst">Ferdighetsprofil er Data Golfs modell, ikke målte runder. Resultater og live er målt. Spillerens egne tall er Broadie-estimat. Tallene i utkastet er eksempeltall.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-02 Proffkatalog ================= -->
+<template id="katalog">
+<div class="app" data-fane="mer" data-tilbake="Data Golf" data-tilbake-gaa="oversikt">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf</div><h1 class="tittel">Proffkatalog</h1></div><span class="dg-kilde"><i></i>412 proffer · 12. okt</span></div></div>
+    <div class="sok"><label class="undertittel" for="k-sok">Søk</label><input id="k-sok" placeholder="Navn" data-sok></div>
+    <div class="chips slag" role="group" aria-label="Filter" data-filter><button type="button" aria-pressed="true" data-f="alle">Alle</button><button type="button" aria-pressed="false" data-f="no">Norske</button><button type="button" aria-pressed="false" data-f="pga">PGA Tour</button><button type="button" aria-pressed="false" data-f="dp">DP World</button><button type="button" aria-pressed="false" data-f="topp">Topp 50</button></div>
+    <div class="valg slag" role="group" aria-label="Sorter"><button type="button" aria-pressed="true">SG total</button><button type="button" aria-pressed="false">Innspill</button><button type="button" aria-pressed="false">Driver</button><button type="button" aria-pressed="false">Navn</button></div>
+    <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+      <div class="dg-rad hode"><span></span><span></span><span>Proff</span><span class="v" style="font-weight:600">SG total</span></div>
+      <div data-liste style="display:contents"></div>
+    </div>
+    <p class="kildetekst">Ferdighetsmodell fra Data Golf, oppdatert 12. oktober. SG er forventede slag vunnet per runde mot feltet. Norske proffer har i tillegg målte resultater.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-03 Proffprofil ================= -->
+<template id="profil">
+<div class="app" data-fane="mer" data-tilbake="Proffkatalog" data-tilbake-gaa="katalog">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="dato">Data Golf · proff</div></div>
+    <div class="kort fylt-slag hero">
+      <div class="over"><span class="pille noy"><i></i>Ferdighetsmodell 12. okt</span><span class="flagg no" style="background:#fff;color:var(--slag-ink)">NOR</span></div>
+      <div class="stor">Viktor Hovland</div>
+      <div class="rad"><span>PGA Tour</span><span>Data Golf-rang 9</span><span>OWGR 11</span></div>
+      <div class="hoved"><strong>+1,9</strong><span class="forklar">slag vunnet per runde mot feltet <span class="estimat">Modell</span></span></div>
+      <div class="sg-liste">
+        <div class="sg-rad"><span>Utslag</span><div class="sg-spor"><i style="left:50%;width:14%"></i></div><span class="v">+0,6</span></div>
+        <div class="sg-rad"><span>Innspill</span><div class="sg-spor"><i style="left:50%;width:22%"></i></div><span class="v">+0,9</span></div>
+        <div class="sg-rad"><span>Nærspill</span><div class="sg-spor"><i style="left:50%;width:5%"></i></div><span class="v">+0,2</span></div>
+        <div class="sg-rad"><span>Putting</span><div class="sg-spor"><i style="left:50%;width:5%"></i></div><span class="v">+0,2</span></div>
+      </div>
+      <div class="rad"><span>Driver 302 yd · 276 m</span><span>Fairway 58 %</span><span>Størst styrke: innspill</span></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-gaa="sammen">Mot spiller i stallen</button><button type="button" class="knapp sek" data-gaa="innspill">Innspill-tak</button></div>
+    </div>
+    <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="innspill">Innspill</button><button type="button" aria-pressed="false" data-p="sesong">Sesong</button><button type="button" aria-pressed="false" data-p="res">Resultater</button></div>
+    <div data-panel="innspill" style="display:grid;gap:var(--r3)">
+      <div class="sek-topp"><h2 style="margin:0;font:600 18px/1.25 var(--sans)">Innspill per avstand</h2><div class="valg slag" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="band-rad pr hode"><span>Avstand</span><span>Nærhet</span><span>SG/slag</span><span>GIR</span></div>
+        <div data-band style="display:contents"></div>
+      </div>
+      <p class="kildetekst">Nærhet er justert for hvor vanskelig slaget var, i meter. Intervallene er Data Golfs (yards), omregnet. 12. oktober, siste 12 måneder.</p>
+    </div>
+    <div data-panel="sesong" hidden style="display:grid;gap:var(--r3)">
+      <div class="valg slag" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="maal-rad hode"><span>PGA Tour 2026</span><span>Verdi</span><span>Tour-snitt</span><span>Runder</span></div>
+        <div class="maal-rad"><span>Snittscore</span><span class="v">69,8</span><span class="v">70,9</span><span class="v">62</span></div>
+        <div class="maal-rad"><span>Driver</span><span class="v">302 yd</span><span class="v">299 yd</span><span class="v">62</span></div>
+        <div class="maal-rad"><span>Fairway</span><span class="v">58 %</span><span class="v">60 %</span><span class="v">62</span></div>
+        <div class="maal-rad"><span>GIR</span><span class="v">69 %</span><span class="v">65 %</span><span class="v">62</span></div>
+        <div class="maal-rad"><span>Putt per runde</span><span class="v">28,9</span><span class="v">29,1</span><span class="v">62</span></div>
+        <div class="maal-rad"><span>Scrambling</span><span class="v">—</span><span class="v">59 %</span><span class="v">—</span></div>
+      </div>
+      <p class="kildetekst">Sesongtall fra Data Golf, målt. «—» betyr at Data Golf ikke har tallet for spilleren.</p>
+    </div>
+    <div data-panel="res" hidden style="display:grid;gap:var(--r3)">
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="res-rad"><span><b>Procore Championship</b><span class="kilde">11.–14. sep · Silverado</span></span><span class="v">T4<small>plass</small></span><span class="v">−14<small>til par</small></span></div>
+        <div class="res-rad"><span><b>Tour Championship</b><span class="kilde">21.–24. aug · East Lake</span></span><span class="v">12<small>plass</small></span><span class="v">−8<small>til par</small></span></div>
+        <div class="res-rad"><span><b>BMW Championship</b><span class="kilde">14.–17. aug · Caves Valley</span></span><span class="v">T19<small>plass</small></span><span class="v">−3<small>til par</small></span></div>
+      </div>
+      <a class="lenke" href="#" data-gaa="norske">Alle resultater med SG per runde</a>
+      <p class="kildetekst">Målt. Brutto score. Resultater finnes bare for norske proffer (pipelines, mandag). Turneringsdato er ikke hentedato.</p>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-04 Topplister ================= -->
+<template id="topp">
+<div class="app" data-fane="mer" data-tilbake="Data Golf" data-tilbake-gaa="oversikt">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf</div><h1 class="tittel">Topplister</h1></div><span class="dg-kilde"><i></i>Målt · sesong</span></div></div>
+    <div class="chips slag" role="group" aria-label="Kategori" data-kat><button type="button" aria-pressed="true" data-k="sg">SG total</button><button type="button" aria-pressed="false" data-k="snitt">Snittscore</button><button type="button" aria-pressed="false" data-k="driver">Driver</button><button type="button" aria-pressed="false" data-k="fw">Fairway %</button><button type="button" aria-pressed="false" data-k="gir">GIR %</button><button type="button" aria-pressed="false" data-k="putt">Putt per runde</button></div>
+    <div class="kontroller" style="gap:8px"><div class="valg slag" role="group" aria-label="Tour"><button type="button" aria-pressed="true">PGA Tour</button><button type="button" aria-pressed="false">DP World</button><button type="button" aria-pressed="false">Korn Ferry</button></div><div class="valg slag" role="group" aria-label="År"><button type="button" aria-pressed="true">2026</button><button type="button" aria-pressed="false">2025</button></div></div>
+    <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+      <div class="dg-rad hode"><span>#</span><span></span><span>Proff</span><span class="v" style="font-weight:600" data-kat-navn>SG total</span></div>
+      <div data-topp style="display:contents"></div>
+    </div>
+    <p class="kildetekst">Minst 20 runder i sesongen. Tour-snitt SG total er 0,0 per definisjon. Hentet ukentlig fra Data Golf.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-05 Spiller mot proff ================= -->
+<template id="sammen">
+<div class="app" data-fane="mer" data-tilbake="Data Golf" data-tilbake-gaa="oversikt">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf</div><h1 class="tittel">Spiller mot proff</h1></div><span class="dg-kilde"><i></i>Powered by Data Golf</span></div></div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <div class="sammen-hode">
+            <div class="hvem"><span class="avatar">ØR</span><b>Øyvind Rohjan</b><span class="kilde">Kategori C · WANG</span></div>
+            <span class="mot">MOT</span>
+            <div class="hvem"><span class="avatar" style="background:var(--slag-ink)">VH</span><b>Viktor Hovland</b><span class="kilde">PGA Tour · rang 9</span></div>
+          </div>
+          <div class="knapper" style="justify-content:center"><button type="button" class="knapp sek" data-bytt-s>Bytt spiller</button><button type="button" class="knapp sek" data-gaa="katalog">Bytt proff</button></div>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Gap per område</h2><span class="kilde">Slag per runde</span></div>
+          <div class="kort fylt-slag">
+            <div class="hoved"><strong>−3,1</strong><span class="forklar">slag per runde bak Viktor, samlet <span class="estimat">Estimat</span></span></div>
+            <p class="forklar">Størst gap i innspill. Nærspill og putting er på høyde.</p>
+          </div>
+          <div class="kort" style="gap:8px">
+            <div class="gap-rad hode"><span>Område</span><span>Øyvind</span><span></span><span>Viktor</span><span>Gap</span></div>
+            <div class="gap-rad"><span>Utslag</span><span class="v">+0,3</span><div class="gap-spor"><i style="right:50%;width:9%"></i></div><span class="v">+0,6</span><span class="v gap">−0,3</span></div>
+            <div class="gap-rad"><span>Innspill</span><span class="v">−0,9</span><div class="gap-spor"><i style="right:50%;width:48%"></i></div><span class="v">+0,9</span><span class="v gap">−1,8</span></div>
+            <div class="gap-rad"><span>Nærspill</span><span class="v">+0,2</span><div class="gap-spor"><i style="right:50%;width:1%"></i></div><span class="v">+0,2</span><span class="v gap">0,0</span></div>
+            <div class="gap-rad"><span>Putting</span><span class="v">+0,1</span><div class="gap-spor"><i style="right:50%;width:3%"></i></div><span class="v">+0,2</span><span class="v gap">−0,1</span></div>
+            <div class="gap-rad"><span><b>Samlet</b></span><span class="v">−0,3</span><div class="gap-spor"><i style="right:50%;width:50%"></i></div><span class="v">+1,9</span><span class="v gap"><b>−3,1</b></span></div>
+          </div>
+          <p class="kildetekst">Øyvind: 12 runder slag for slag, 14. juni–27. sep, SG etter Broadie mot Kategori B <span class="estimat">Estimat</span>. Viktor: Data Golfs ferdighetsmodell 12. okt mot PGA-feltet <span class="estimat">Modell</span>. To ulike referanser; gapet er en pekepinn, ikke et målt tall.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Målinger</h2><div class="valg slag" role="group" aria-label="Runder"><button type="button" aria-pressed="true">12</button><button type="button" aria-pressed="false">24</button><button type="button" aria-pressed="false">50</button></div></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="maal-rad hode"><span>Måling</span><span>Øyvind</span><span>Viktor</span><span>Diff</span></div>
+            <div class="maal-rad"><span>Snittscore, brutto</span><span class="v">73,1<small>12 r · GolfBox</small></span><span class="v">69,8<small>62 r · Data Golf</small></span><span class="v">—</span></div>
+            <div class="maal-rad"><span>Fairwaytreff</span><span class="v">58 %<small>12 r</small></span><span class="v">58 %<small>62 r</small></span><span class="v">0</span></div>
+            <div class="maal-rad"><span>GIR</span><span class="v">61 %<small>12 r</small></span><span class="v">69 %<small>62 r</small></span><span class="v">−8</span></div>
+            <div class="maal-rad"><span>Putt per runde</span><span class="v">—<small>ikke ført</small></span><span class="v">28,9<small>62 r</small></span><span class="v">—</span></div>
+            <div class="maal-rad"><span>Driver</span><span class="v">—<small>ingen TrackMan</small></span><span class="v">276 m<small>62 r</small></span><span class="v">—</span></div>
+          </div>
+          <p class="kildetekst">Snittscore spilt på ulike baner sammenlignes ikke som justert nivågap. Hver måling har sitt eget datagrunnlag; «—» betyr at tallet mangler.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Neste steg</h2></div>
+          <div class="knapper"><button type="button" class="knapp pri" data-gaa="innspill">Se innspill per avstand</button><button type="button" class="knapp sek" data-gaa="forslag">Lag forslag til Øyvind</button></div>
+        </section>
+      </div>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Velg spiller">
+        <div class="ark-topp"><h2>Velg spiller</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="liste" data-spillere></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-06 Innspill-tak ================= -->
+<template id="innspill">
+<div class="app" data-fane="mer" data-tilbake="Spiller mot proff" data-tilbake-gaa="sammen">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf · Øyvind mot Viktor</div><h1 class="tittel">Innspill-tak</h1></div><span class="dg-kilde"><i></i>Nærhet i meter</span></div></div>
+    <div class="to-del">
+      <div>
+        <div class="sek-topp"><h2 style="margin:0;font:600 18px/1.25 var(--sans)">Per avstand</h2><div class="valg slag" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
+        <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+          <div class="band-rad hode"><span>Avstand</span><span>Viktor</span><span>Øyvind</span><span class="gap-spor" style="height:auto;background:none">Gap</span><span></span></div>
+          <div data-band style="display:contents"></div>
+        </div>
+        <p class="kildetekst">Viktor: justert nærhet, Data Golf 12. okt <span class="estimat">Modell</span>. Øyvind: snitt av registrerte innspill fra samme avstand, 12 runder, ikke justert for vanskelighet. «—» når Øyvind har under 10 slag fra avstanden.</p>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tour-referanse</h2><span class="kilde">PGA Tour 2026</span></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="maal-rad hode"><span>Avstand</span><span>Nærhet</span><span>GIR</span><span></span></div>
+            <div class="maal-rad"><span>50–100 yd · 46–91 m</span><span class="v">5,2 m</span><span class="v">81 %</span><span></span></div>
+            <div class="maal-rad"><span>100–150 yd · 91–137 m</span><span class="v">7,6 m</span><span class="v">72 %</span><span></span></div>
+            <div class="maal-rad"><span>150–200 yd · 137–183 m</span><span class="v">10,4 m</span><span class="v">59 %</span><span></span></div>
+            <div class="maal-rad"><span>200+ yd · 183+ m</span><span class="v">14,1 m</span><span class="v">44 %</span><span></span></div>
+          </div>
+          <p class="kildetekst">Tour-snittet er ikke per proff. Det er referansen når proffen mangler data for et intervall.</p>
+        </section>
+      </div>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Lag øvelse">
+        <div class="ark-topp"><h2>Lag øvelse</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="sirkel"><b data-sirkel>7,0</b><span>meter radius</span></div>
+        <div class="kvitt"><b data-ovelse-navn>Innspill 91–137 m, fairway</b><span class="forklar">SLAG · Innspill · 20 slag · treff innenfor sirkelen teller. Sirkelen er Viktors justerte nærhet. Måles med TrackMan eller for hånd.</span></div>
+        <div class="felt"><label for="ov-slag">Antall slag</label><select id="ov-slag"><option>20</option><option>30</option><option>40</option></select></div>
+        <div class="felt"><label for="ov-uke">Legg i</label><select id="ov-uke"><option>Øyvinds Workbench, uke 42</option><option>Øvelsesbanken (alle spillere)</option></select></div>
+        <button type="button" class="knapp pri stor" data-ov-ok>Legg i Workbench</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-07 Fra funn til forslag ================= -->
+<template id="forslag">
+<div class="app" data-fane="mer" data-tilbake="Spiller mot proff" data-tilbake-gaa="sammen">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf · Øyvind Rohjan</div><h1 class="tittel">Fra funn til forslag</h1></div></div></div>
+    <div class="to-del">
+      <div>
+        <div class="funn"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><span><b>Innspill: 1,8 slag per runde bak Viktor</b><span class="kilde">Størst gap 91–137 m fra fairway: 9,8 m mot 7,0 m. GIR 61 % mot 69 %. Kilde: 12 runder og Data Golf 12. okt.</span></span></div>
+        <div class="steg"><i>1</i><div><span class="undertittel">Målsetning</span><div class="felt" style="margin-top:6px"><label for="f-maal" class="kilde">Resultatmål, 8 uker</label><input id="f-maal" value="Innspill 91–137 m: snitt under 8,5 m fra hullet"></div></div></div>
+        <div class="steg"><i>2</i><div><span class="undertittel">Forslag til planen</span>
+          <div class="kontroller" style="gap:8px;margin-top:6px"><div><span class="kilde">Økter per uke</span><div class="chips slag" role="group" data-okter><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="true">2</button><button type="button" aria-pressed="false">3</button></div></div><div><span class="kilde">Uker</span><div class="chips slag" role="group" data-uker><button type="button" aria-pressed="false">4</button><button type="button" aria-pressed="true">6</button><button type="button" aria-pressed="false">8</button></div></div></div>
+        </div></div>
+        <div class="steg"><i>3</i><div><span class="undertittel">Øvelser i hver økt</span>
+          <div class="liste" style="margin-top:6px">
+            <div><span class="akse-prikk a-slag"></span><span><b>Innspill 91–137 m, fairway</b><span class="kilde">Sirkel 7,0 m · 20 slag · fra Data Golf</span></span><span class="pille noy"><i></i>Ny</span></div>
+            <div><span class="akse-prikk a-slag"></span><span><b>Wedge-gapping 90–140 m</b><span class="kilde">TrackMan · fra øvelsesbanken</span></span><span class="pille noy"><i></i>Bank</span></div>
+          </div>
+        </div></div>
+      </div>
+      <div>
+        <div class="kvitt"><b data-kvitt>12 økter · uke 42–47 · 45 min</b><span class="forklar">Sendes til Øyvinds Workbench som forslag. Han godtar eller avviser. Godtatt forslag legges inn én gang; har planen endret seg siden, får du beskjed om konflikt.</span></div>
+        <div class="knapper"><button type="button" class="knapp pri stor" data-send>Send forslag til Øyvind</button></div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Forslag som venter</h2></div>
+          <div class="liste">
+            <div><span class="avatar liten">SM</span><span><b>Sander Moe · Utslag</b><span class="kilde">Sendt 2. okt · 8 økter</span></span><span class="pille vent"><i></i>Venter på spiller</span></div>
+            <div><span class="avatar liten">NB</span><span><b>Nora Bakke · Nærspill</b><span class="kilde">Sendt 30. sep · godtatt 1. okt</span></span><span class="pille ok"><i></i>Lagt inn</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-08 Norske proffer ================= -->
+<template id="norske">
+<div class="app" data-fane="mer" data-tilbake="Data Golf" data-tilbake-gaa="oversikt">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf</div><h1 class="tittel">Norske proffer</h1></div><span class="dg-kilde"><i></i>Målt</span></div></div>
+    <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="live">Live</button><button type="button" aria-pressed="false" data-p="res">Resultater</button><button type="button" aria-pressed="false" data-p="kommende">Kommende</button></div>
+    <div data-panel="live" style="display:grid;gap:var(--r3)">
+      <div class="sek-topp"><h2 style="margin:0;font:600 18px/1.25 var(--sans)">I spill nå</h2><span class="live-prikk"><i></i>Hentet 08:14</span></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px" data-live></div>
+      <p class="kildetekst">Live hentes hvert 15. minutt under PGA Tour-turneringer. Hentet-tidspunktet står alltid; stillingen kan være eldre enn nå. DP World og Korn Ferry har ikke live.</p>
+    </div>
+    <div data-panel="res" hidden style="display:grid;gap:var(--r3)">
+      <div class="chips slag" role="group" aria-label="Spiller"><button type="button" aria-pressed="true">Hovland</button><button type="button" aria-pressed="false">Reitan</button><button type="button" aria-pressed="false">Ventura</button><button type="button" aria-pressed="false">Ege</button><button type="button" aria-pressed="false">Halvorsen</button><button type="button" aria-pressed="false">Nordgaard</button></div>
+      <div class="kort">
+        <div class="res-rad" style="border:0;padding:0"><span><b>Procore Championship</b><span class="kilde">11.–14. sep · Silverado · hentet 15. sep</span></span><span class="v">T4<small>plass</small></span><span class="v">−14<small>til par</small></span></div>
+        <div class="runder"><div><b>66</b><span>R1 · SG +4,1</span></div><div><b>68</b><span>R2 · SG +2,3</span></div><div><b>70</b><span>R3 · SG +0,9</span></div><div><b>66</b><span>R4 · SG +3,8</span></div></div>
+        <div class="gap-rad hode"><span>SG per område</span><span>Utslag</span><span></span><span>Innspill</span><span>Putt</span></div>
+        <div class="gap-rad"><span>Snitt 4 runder</span><span class="v">+0,8</span><div class="gap-spor"><i style="left:50%;width:30%"></i></div><span class="v">+1,4</span><span class="v">+0,4</span></div>
+      </div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="res-rad"><span><b>Tour Championship</b><span class="kilde">21.–24. aug · East Lake</span></span><span class="v">12<small>plass</small></span><span class="v">−8<small>til par</small></span></div>
+        <div class="res-rad"><span><b>BMW Championship</b><span class="kilde">14.–17. aug · Caves Valley</span></span><span class="v">T19<small>plass</small></span><span class="v">−3<small>til par</small></span></div>
+        <div class="res-rad"><span><b>FedEx St. Jude</b><span class="kilde">7.–10. aug · TPC Southwind</span></span><span class="v">CUT<small>status</small></span><span class="v">+2<small>til par</small></span></div>
+      </div>
+      <p class="kildetekst">Brutto score. SG per runde er målt av Data Golf. CUT og WD vises som status, aldri som plass. Hentes mandag av pipelines.</p>
+    </div>
+    <div data-panel="kommende" hidden style="display:grid;gap:var(--r3)">
+      <div class="liste">
+        <div><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Shriners Children's Open</b><span class="kilde">16.–19. okt · TPC Summerlin · PGA Tour</span></span><span class="pille noy"><i></i>Hovland</span></div>
+        <div><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Open de España</b><span class="kilde">16.–19. okt · Club de Campo · DP World</span></span><span class="pille noy"><i></i>Reitan · Ventura</span></div>
+        <div><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Korn Ferry Tour Championship</b><span class="kilde">23.–26. okt · French Lick · Korn Ferry</span></span><span class="pille noy"><i></i>Ege</span></div>
+      </div>
+      <p class="kildetekst">Kalender fra Data Golf. Hvem som spiller, bekreftes ikke før startlista er ute.</p>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= DG-09 Kilde og dekning ================= -->
+<template id="kilde">
+<div class="app" data-fane="mer" data-tilbake="Data Golf" data-tilbake-gaa="oversikt">
+  <main class="innhold">
+    <div class="topp" data-behold><div class="topp-rad"><div><div class="dato">Data Golf</div><h1 class="tittel">Kilde og dekning</h1></div><span class="dg-kilde"><i></i>Powered by Data Golf</span></div></div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Det som hentes</h2><span class="kilde">Siste synk</span></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="kilde-rad"><span><b>Ferdighetsprofil</b><code>skill-ratings · 412 rader · 12. okt</code></span><span class="pille ok"><i></i>Mandag 05:00</span></div>
+            <div class="kilde-rad"><span><b>Innspill per avstand</b><code>approach-skill · 3 296 rader · 12. okt</code></span><span class="pille ok"><i></i>Mandag 05:00</span></div>
+            <div class="kilde-rad"><span><b>Rangering</b><code>get-dg-rankings · 500 rader</code></span><span class="pille ok"><i></i>Mandag 05:00</span></div>
+            <div class="kilde-rad"><span><b>Sesongtall</b><code>pga-skill-ratings · 3 tourer · 2026</code></span><span class="pille ok"><i></i>Mandag 05:10</span></div>
+            <div class="kilde-rad"><span><b>Turneringskalender</b><code>get-schedule · pga, euro, kft</code></span><span class="pille ok"><i></i>I dag 06:00</span></div>
+            <div class="kilde-rad"><span><b>Live</b><code>live-tournament-stats · pga, opp</code></span><span class="pille ok"><i></i>08:14</span></div>
+            <div class="kilde-rad"><span><b>Resultater norske</b><code>pipelines · public_player_rounds</code></span><span class="pille ok"><i></i>Mandag 06:30</span></div>
+            <div class="kilde-rad"><span><b>Tour-snitt innspill</b><code>pga-approach · 4 bøtter</code></span><span class="pille feil"><i></i>Feilet 28. sep · viser 21. sep</span></div>
+          </div>
+          <p class="kildetekst">Feilet synk beholder forrige data og viser datoen. Synk eldre enn 14 dager merkes gul på skjermene som bruker den.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Det som ikke hentes</h2></div>
+          <ul class="ikke">
+            <li>Prognoser, odds og fantasy (24 felt). Vises aldri.</li>
+            <li>Banestatistikk, feltstyrke og hull for hull. Ingen lagring.</li>
+            <li>Putt per avstand fra Data Golf finnes ikke; tabellen er Broadie-estimat.</li>
+            <li>Spillere utenfor skill-ratings (ingen modell).</li>
+          </ul>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Hvem ser dette</h2></div>
+          <div class="liste">
+            <div><span class="avatar liten">AK</span><span><b>Coach og ADMIN i AgencyOS</b><span class="kilde">Alle ni skjermene</span></span><span class="pille ok"><i></i>Ja</span></div>
+            <div><span class="avatar liten lys">S</span><span><b>Spiller i PlayerHQ</b><span class="kilde">Ingen Data Golf, ingen sammenligning</span></span><span class="pille noy"><i></i>Nei</span></div>
+            <div><span class="avatar liten wang">W</span><span><b>WANG- og Team Norway-trenere</b><span class="kilde">Bruksretten er ikke avklart</span></span><span class="pille vent"><i></i>Venter</span></div>
+          </div>
+          <p class="kildetekst">Ingen eksport av Data Golf-tall. Kildehenvisning «Powered by Data Golf» på alle skjermene.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script>
+(function () {
+  var D = window.AKDemo, A = window.AKAgency;
+  /* Proffnavn er ekte (offentlige proffspillere). Alle tall er eksempeltall. */
+  var P = [
+    { n: 'Scottie Scheffler', i: 'SS', l: 'USA', t: 'pga', sg: 2.9, app: 1.3, drv: 310, r: 1 },
+    { n: 'Rory McIlroy', i: 'RM', l: 'NIR', t: 'pga', sg: 2.3, app: 0.8, drv: 319, r: 2 },
+    { n: 'Xander Schauffele', i: 'XS', l: 'USA', t: 'pga', sg: 2.1, app: 0.9, drv: 304, r: 3 },
+    { n: 'Ludvig Åberg', i: 'LÅ', l: 'SWE', t: 'pga', sg: 2.0, app: 0.8, drv: 313, r: 4 },
+    { n: 'Viktor Hovland', i: 'VH', l: 'NOR', t: 'pga', sg: 1.9, app: 0.9, drv: 302, r: 9, no: true },
+    { n: 'Tommy Fleetwood', i: 'TF', l: 'ENG', t: 'pga', sg: 1.7, app: 0.7, drv: 300, r: 12 },
+    { n: 'Kristoffer Reitan', i: 'KR', l: 'NOR', t: 'dp', sg: 0.6, app: 0.3, drv: 296, r: 128, no: true },
+    { n: 'Kristian Krogh Johannessen', i: 'KJ', l: 'NOR', t: 'dp', sg: 0.3, app: 0.1, drv: 291, r: 212, no: true },
+    { n: 'Mats Ege', i: 'ME', l: 'NOR', t: 'kft', sg: 0.2, app: 0.2, drv: 298, r: 260, no: true },
+    { n: 'Andreas Halvorsen', i: 'AH', l: 'NOR', t: 'kft', sg: -0.1, app: 0.0, drv: 303, r: 340, no: true },
+    { n: 'Markus Nordgaard', i: 'MN', l: 'NOR', t: 'dp', sg: -0.4, app: -0.2, drv: 289, r: 402, no: true }
+  ];
+  var LIVE = [
+    { n: 'Viktor Hovland', i: 'VH', pos: 'T12', tot: -6, thru: 'R2 · 14', tour: 'Procore Championship' },
+    { n: 'Kristoffer Reitan', i: 'KR', pos: 'T31', tot: -3, thru: 'R2 · F', tour: 'Open de España' },
+    { n: 'Mats Ege', i: 'ME', pos: '58', tot: +1, thru: 'R2 · 9', tour: 'KFT Championship' }
+  ];
+  /* Innspill per avstand: proffens justerte nærhet (modell) og spillerens snitt (12 runder). null = «—». */
+  var BAND = {
+    fw: [ { b: '50–100 yd', m: '46–91 m', p: 5.0, s: 6.8, sg: 0.11, gir: 84, n: 24 }, { b: '100–150 yd', m: '91–137 m', p: 7.0, s: 9.8, sg: 0.09, gir: 76, n: 31 }, { b: '150–200 yd', m: '137–183 m', p: 9.6, s: 12.9, sg: 0.06, gir: 62, n: 18 }, { b: '200+ yd', m: '183+ m', p: 13.2, s: null, sg: 0.02, gir: 47, n: 6 } ],
+    ro: [ { b: '50–100 yd', m: '46–91 m', p: 6.4, s: 8.9, sg: 0.05, gir: 71, n: 11 }, { b: '100–150 yd', m: '91–137 m', p: 9.1, s: 12.4, sg: 0.03, gir: 58, n: 14 }, { b: '150–200 yd', m: '137–183 m', p: 12.8, s: null, sg: 0.01, gir: 41, n: 5 }, { b: '200+ yd', m: '183+ m', p: null, s: null, sg: null, gir: null, n: 0 } ]
+  };
+  function tall(v, d, sign) { if (v === null || v === undefined) return '—'; var s = v.toFixed(d).replace('.', ',').replace('-', '−'); return sign && v > 0 ? '+' + s : s; }
+  function flagg(l) { return '<span class="flagg' + (l === 'NOR' ? ' no' : '') + '">' + l + '</span>'; }
+  function tourNavn(t) { return { pga: 'PGA Tour', dp: 'DP World', kft: 'Korn Ferry' }[t]; }
+  function faner(app) {
+    var f = app.querySelector('[data-faner]'); if (!f) return;
+    f.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b || !b.dataset.p) return; app.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.p; }); });
+  }
+  function liveRader(el) {
+    el.innerHTML = LIVE.map(function (r) { return '<div class="dg-rad" style="cursor:default"><span class="avatar liten">' + r.i + '</span><span></span><span><b>' + r.n + '</b><span class="kilde">' + r.tour + ' · ' + r.thru + '</span></span><span class="v">' + r.pos + '<small>' + tall(r.tot, 0, true) + '</small></span></div>'; }).join('');
+  }
+
+  function oversikt(app) { liveRader(app.querySelector('[data-live]')); }
+
+  function katalog(app) {
+    var liste = app.querySelector('[data-liste]'), filter = 'alle', sok = '';
+    function tegn() {
+      var rader = P.filter(function (p) {
+        if (filter === 'no' && !p.no) return false;
+        if (filter === 'pga' && p.t !== 'pga') return false;
+        if (filter === 'dp' && p.t !== 'dp') return false;
+        if (filter === 'topp' && p.r > 50) return false;
+        return !sok || p.n.toLowerCase().indexOf(sok) >= 0;
+      });
+      liste.innerHTML = rader.length ? rader.map(function (p) {
+        return '<button type="button" class="dg-rad" data-gaa="profil"><span class="avatar liten' + (p.no ? '' : ' lys') + '">' + p.i + '</span>' + flagg(p.l) + '<span><b>' + p.n + '</b><span class="kilde">' + tourNavn(p.t) + ' · Data Golf-rang ' + p.r + '</span></span><span class="v">' + tall(p.sg, 1, true) + '<small>innspill ' + tall(p.app, 1, true) + '</small></span></button>';
+      }).join('') : '<div class="dg-rad" style="cursor:default;grid-template-columns:1fr"><span class="forklar">Ingen treff på «' + sok + '». Søk på etternavn, eller fjern filteret.</span></div>';
+    }
+    app.querySelector('[data-filter]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { filter = b.dataset.f; tegn(); } });
+    app.querySelector('[data-sok]').addEventListener('input', function (e) { sok = e.target.value.trim().toLowerCase(); tegn(); });
+    tegn();
+  }
+
+  function bandRader(el, leie, medSpiller) {
+    el.innerHTML = BAND[leie].map(function (b) {
+      var gap = (b.p !== null && b.s !== null) ? b.s - b.p : null;
+      var bredde = gap === null ? 0 : Math.min(50, Math.round(gap / 6 * 50));
+      if (medSpiller) {
+        return '<div class="band-rad"><span><b>' + b.b + '</b><span class="kilde">' + b.m + '</span></span><span class="v">' + (b.p === null ? '—' : tall(b.p, 1) + ' m') + '</span><span class="v">' + (b.s === null ? '—<small>' + (b.n < 10 ? b.n + ' slag' : '') + '</small>' : tall(b.s, 1) + ' m<small>' + b.n + ' slag</small>') + '</span><div class="gap-spor"><i style="left:50%;width:' + bredde + '%"></i></div>' + (b.p === null ? '<span class="kilde">Ingen proffdata</span>' : '<button type="button" class="knapp sek" data-ov="' + b.m + '" data-r="' + b.p + '">Lag øvelse</button>') + '</div>';
+      }
+      return '<div class="band-rad pr"><span><b>' + b.b + '</b><span class="kilde">' + b.m + (b.p === null ? ' · under 50 slag' : '') + '</span></span><span class="v">' + (b.p === null ? '—' : tall(b.p, 1) + ' m') + '</span><span class="v">' + (b.sg === null ? '—' : tall(b.sg, 2, true)) + '</span><span class="v">' + (b.gir === null ? '—' : b.gir + ' %') + '</span></div>';
+    }).join('');
+  }
+  function profil(app) {
+    faner(app);
+    var el = app.querySelector('[data-band]');
+    bandRader(el, 'fw', false);
+    app.querySelector('[data-leie]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) bandRader(el, b.dataset.l, false); });
+  }
+
+  function topp(app) {
+    var el = app.querySelector('[data-topp]'), navn = app.querySelector('[data-kat-navn]');
+    var K = { sg: ['SG total', function (p) { return tall(p.sg, 1, true); }], snitt: ['Snittscore', function (p) { return tall(71.2 - p.sg * 0.55, 1); }], driver: ['Driver', function (p) { return p.drv + ' yd'; }], fw: ['Fairway %', function (p) { return (62 - Math.round(p.drv / 40)) + ' %'; }], gir: ['GIR %', function (p) { return (64 + Math.round(p.app * 6)) + ' %'; }], putt: ['Putt per runde', function (p) { return tall(29.3 - p.sg * 0.2, 1); }] };
+    function tegn(k) {
+      navn.textContent = K[k][0];
+      var rader = P.filter(function (p) { return p.t === 'pga'; }).slice(0, 6);
+      el.innerHTML = rader.map(function (p, i) { return '<button type="button" class="dg-rad" data-gaa="profil"><span class="nr">' + (i + 1) + '</span>' + flagg(p.l) + '<span><b>' + p.n + '</b><span class="kilde">62 runder</span></span><span class="v">' + K[k][1](p) + '</span></button>'; }).join('');
+    }
+    app.querySelector('[data-kat]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) tegn(b.dataset.k); });
+    tegn('sg');
+  }
+
+  function sammen(app) {
+    var ark = app.querySelector('[data-ark]');
+    app.querySelector('[data-spillere]').innerHTML = D.stall.slice(0, 6).map(function (s) { return '<button type="button" data-velg="' + s.navn + '"><span class="avatar liten">' + s.i + '</span><span><b>' + s.navn + '</b><span class="kilde">Kategori ' + s.kat + ' · ' + (s.sg === null ? 'ingen SG ennå' : 'SG ' + tall(s.sg, 1, true)) + '</span></span><span class="kilde">' + (s.sg === null ? '—' : '') + '</span></button>'; }).join('');
+    app.querySelector('[data-bytt-s]').addEventListener('click', function () { A.vis(app, '[data-ark]', true); });
+    ark.querySelector('[data-lukk]').addEventListener('click', function () { A.vis(app, '[data-ark]', false); });
+    ark.addEventListener('click', function (e) { var b = e.target.closest('[data-velg]'); if (!b) return; A.vis(app, '[data-ark]', false); A.toast(app, b.dataset.velg + ' er valgt. Tallene hentes på nytt.'); });
+  }
+
+  function innspill(app) {
+    var el = app.querySelector('[data-band]');
+    bandRader(el, 'fw', true);
+    app.querySelector('[data-leie]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) bandRader(el, b.dataset.l, true); });
+    el.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ov]'); if (!b) return;
+      app.querySelector('[data-sirkel]').textContent = tall(parseFloat(b.dataset.r), 1);
+      app.querySelector('[data-ovelse-navn]').textContent = 'Innspill ' + b.dataset.ov + ', ' + (app.querySelector('[data-leie] [aria-pressed="true"]').textContent.toLowerCase());
+      A.vis(app, '[data-ark]', true);
+    });
+    app.querySelector('[data-ark] [data-lukk]').addEventListener('click', function () { A.vis(app, '[data-ark]', false); });
+    app.querySelector('[data-ov-ok]').addEventListener('click', function () { A.vis(app, '[data-ark]', false); A.toast(app, 'Øvelsen ligger i Øyvinds Workbench, uke 42. Kilde: Data Golf 12. okt.', function () { A.toast(app, 'Fjernet igjen.'); }); });
+  }
+
+  function forslag(app) {
+    var okter = 2, uker = 6, k = app.querySelector('[data-kvitt]');
+    function kvitt() { k.textContent = (okter * uker) + ' økter · uke 42–' + (41 + uker) + ' · 45 min'; }
+    app.querySelector('[data-okter]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { okter = +b.textContent; kvitt(); } });
+    app.querySelector('[data-uker]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { uker = +b.textContent; kvitt(); } });
+    app.querySelector('[data-send]').addEventListener('click', function () {
+      var b = app.querySelector('[data-send]'); b.disabled = true; b.textContent = 'Sendt · venter på Øyvind';
+      A.toast(app, 'Forslaget er sendt. Øyvind får beskjed i PlayerHQ og godtar selv.', function () { b.disabled = false; b.textContent = 'Send forslag til Øyvind'; });
+    });
+  }
+
+  function norske(app) { faner(app); liveRader(app.querySelector('[data-live]')); }
+
+  A.start({
+    start: 'oversikt',
+    skjermer: {
+      oversikt: { etter: oversikt, tom: { tittel: 'Ingen Data Golf-data ennå', tekst: 'Første synk kjører mandag 05:00. Til da finnes ingen proffer, tall eller resultater her.', knapp: 'Se kilde og dekning' }, laster: 'Henter Data Golf …', feil: 'Data Golf kunne ikke hentes' },
+      katalog: { etter: katalog, tom: { tittel: 'Ingen proffer', tekst: 'Ferdighetsprofilene er ikke synket ennå.', knapp: null }, laster: 'Henter proffene …', feil: 'Proffene kunne ikke hentes' },
+      profil: { etter: profil, tom: { tittel: 'Ingen profil', tekst: 'Proffen er ikke i Data Golfs ferdighetsmodell. Resultater kan likevel finnes under Norske proffer.', knapp: null }, laster: 'Henter profilen …', feil: 'Profilen kunne ikke hentes' },
+      topp: { etter: topp, tom: { tittel: 'Ingen sesongtall', tekst: 'Sesongen har ingen spillere med minst 20 runder ennå.', knapp: null }, laster: 'Henter topplistene …', feil: 'Topplistene kunne ikke hentes' },
+      sammen: { etter: sammen, tom: { tittel: 'Øyvind har ingen SG ennå', tekst: 'Sammenligningen krever minst 4 runder slag for slag. Proffens tall vises likevel.', knapp: 'Velg annen spiller' }, laster: 'Henter tallene …', feil: 'Tallene kunne ikke hentes' },
+      innspill: { etter: innspill, tom: { tittel: 'Ingen innspillsdata', tekst: 'Viktor mangler innspill per avstand i Data Golf. Bruk tour-referansen, eller velg en annen proff.', knapp: 'Bytt proff' }, laster: 'Henter innspillene …', feil: 'Innspillene kunne ikke hentes' },
+      forslag: { etter: forslag, tom: { tittel: 'Ingen funn å foreslå fra', tekst: 'Gå via Spiller mot proff. Funnet følger med hit.', knapp: 'Spiller mot proff' }, laster: 'Henter funnet …', feil: 'Funnet kunne ikke hentes' },
+      norske: { etter: norske, tom: { tittel: 'Ingen norske i spill', tekst: 'Ingen av de seks spiller denne uka. Resultater og kommende ligger i fanene.', knapp: null }, laster: 'Henter stillingen …', feil: 'Stillingen kunne ikke hentes. Viser forrige fra 07:59' },
+      kilde: { etter: null, tom: null }
+    }
+  });
+})();
+</script>
