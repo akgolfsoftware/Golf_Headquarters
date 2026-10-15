@@ -13,7 +13,7 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 2 Stall og Spiller 360 | AG-07, AG-08 (+ faner), AG-A02, AG-A04, AG-A06, AG-08-TALENT, `stall.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XrBWRwAsnaFsvhHVX9uhwX |
 | 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking, bookingen), `kalender.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GuayaQiCeJtqCGqnsQNeKp |
 | 4 Workbench coach | AG-11 (spiller og gruppe), AG-11-GRUPPE-AR, AG-WB-FYS, AG-WB-TURN, AG-14, `workbench.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/FjojaPjQxC6yKaPzz3nnks |
-| 5 Live coachingøkt | AG-13 (+ uten samtykke), AG-12, `live.html` | | |
+| 5 Live coachingøkt | AG-13 (+ AG-13-U uten samtykke), AG-12, `live.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/NvmKeAQwkUAnJPLfEya1VL |
 | 6 Teknisk plan og runder | AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02, `teknisk.html` | | |
 | 7 Mer | AG-15, AG-16, AG-A03, AG-20 (bare head coach), AG-23, `mer.html` | | |
 | 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | | |
