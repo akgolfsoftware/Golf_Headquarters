@@ -42,8 +42,8 @@
 .phn-iup .tre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .phn-iup .tre button { min-height: 48px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 600 15px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; }
 .phn-iup .tre button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
-.phn-iup .navigasjon { position: sticky; bottom: 0; z-index: 4; display: flex; gap: 8px; padding: 12px 0 8px; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
-.phn-iup .navigasjon .phn-knapp { flex: 1; }
+.phn-iup .navigasjon { position: sticky; bottom: calc(var(--tabbar-h, 64px) + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); z-index: 4; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0 8px; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
+.phn-iup .navigasjon .phn-knapp { flex: 1 1 auto; padding: 0 12px; white-space: nowrap; }
 .phn-iup .omr-oversikt { display: grid; gap: 6px; }
 .phn-iup .omr-oversikt button { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; min-height: 52px; padding: 8px 14px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .phn-iup .omr-oversikt b { font: 600 15px/1.3 var(--phn-sans); }

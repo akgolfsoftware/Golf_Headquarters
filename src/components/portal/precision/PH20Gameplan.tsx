@@ -1,648 +1,182 @@
 "use client";
 
 /**
- * PH-20 Gameplan og banekart — Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/playerhq/screens/PH-20.jsx).
+ * PH-20 Gameplan i nytt design (pakke 9 IUP og gameplan). Markør: PH20Gameplan
+ * Fasit: docs/design-system/utkast-playerhq/iup.html, skjermene «gameplan» og «hull». Stil: src/styles/playerhq-ny-iup.css.
  *
- * Markør: PH20Gameplan
- * Banebibliotek, interaktivt hullvalg (1–18), SVG-banekart, TrackMan-spredning
- * og risikoanalyse per kølle fra tee.
+ * Banevalg, alle hull med par og lengde, hull for hull med kart og slagvalg fra tee (velg kølle) beholdes.
+ *
+ * Avvik:
+ *   - Banekartet, hindrene, kølle-lengdene og spredningen er eksempeldata (ph20-data.ts), ikke dine TrackMan-tall.
+ *     Det står på skjermen. Tegningens «lengdene er dine egne fra TrackMan» er derfor ikke med.
+ *   - Snitt per hull vises som «—»: det finnes ikke registrert snitt per hull ennå (tallene i spørringen er faste eksempeltall).
+ *   - Slagvalget viser utslaget (køllevalg med carry, igjen til green og risiko), ikke innspill og putter som tegningen:
+ *     de slagene finnes ikke i dataene.
+ *   - «Angrip» og «Spill trygt» per hull er regnet fra eksempelgeometrien: Angrip når driveren er anbefalt, ellers Spill trygt. Par 3 får ikke merke.
+ *   - Knappene «Last ned gameplan» og «Lag gameplan» er fjernet: de viste bare en melding og lagret eller lastet ikke ned noe.
+ *   - Banevalget viser banene fra spørringen, ikke «Neste turnering».
+ *   - Skallet markerer fanen Stats for /portal/gameplan (skallets egen regel, ikke endret her); tilbakelenken går til Plan som i tegningen.
+ *   - Sidene /portal/gameplan/[baneId] og /hull/[nr] (Mapbox-kart) er ikke en del av denne pakken.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-20.
  */
-
 import { useState } from "react";
-import { Download, TriangleAlert, MapPin } from "lucide-react";
-import { Meta, Tall, TomTilstand, FeilTilstand, StatusPille } from "@/components/precision/pa";
-import { SideHode, Side, Stabel, Kort, Nokkelverdi } from "@/components/precision/pa-a4";
+import Link from "next/link";
+import { ChevronLeft, Info } from "lucide-react";
 import { formaterTall } from "@/lib/format-tall";
 import {
   TEE_CLUBS,
   getHoleGeo,
   getClubOptions,
   evaluateClubOptions,
-  getRecommendedClub,
   type GameplanCourseItem,
 } from "@/lib/portal-gameplan/ph20-data";
-import "@/styles/precision-komponenter.css";
-import { usePaToast } from "@/components/precision/pa-toast";
+import { PHIupFeil } from "@/components/portal/precision/PHIupTilstand";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-iup.css";
 
 export type PH20Props = {
   tilstand?: "data" | "tom" | "feil";
   courses: GameplanCourseItem[];
   defaultCourseId?: string;
+  /** Hull som åpnes først (0-basert). Uten verdi vises alle hull. */
+  startHull?: number | null;
 };
 
-function HoleSvg({
-  i,
-  par,
-  len,
-  club,
-  empty,
-}: {
-  i: number;
-  par: number;
-  len: number;
-  club: string;
-  empty?: boolean;
-}) {
-  const g = getHoleGeo(i, len);
-  const k = 640 / len;
-  const X = (off: number) => 200 + off * k;
-  const Y = (m: number) => 690 - m * k;
-  const spec = TEE_CLUBS[club] || { carry: len, hw: 4, ry: 4 };
-  const { carry, hw, ry } = spec;
-  const land = Math.min(carry, len);
-  const fwFrom = par === 3 ? len - 30 : 150;
-  const fw =
-    "M" +
-    X(-15) +
-    " " +
-    Y(fwFrom) +
-    " L" +
-    X(-15) +
-    " " +
-    Y(len - 22) +
-    " Q" +
-    X(0) +
-    " " +
-    Y(len - 12) +
-    " " +
-    X(15) +
-    " " +
-    Y(len - 22) +
-    " L" +
-    X(15) +
-    " " +
-    Y(fwFrom) +
-    " Q" +
-    X(0) +
-    " " +
-    Y(fwFrom - 10) +
-    " " +
-    X(-15) +
-    " " +
-    Y(fwFrom) +
-    "Z";
+const KART = { skog: "#7c9a6a", rough: "#cfdcc0", fairway: "#9cc27e", green: "#6fae5b", sand: "#eadcb4", vann: "#9cc3df", tee: "#5b8f4a" };
 
+function hullVurdering(i: number, par: number, len: number) {
+  const geo = getHoleGeo(i, len);
+  return { geo, ...evaluateClubOptions(par, len, getClubOptions(par, len), geo) };
+}
+
+function HullKart({ i, par, len, club }: { i: number; par: number; len: number; club: string }) {
+  const g = getHoleGeo(i, len);
+  const k = 440 / len;
+  const X = (off: number) => 150 + off * k * 1.6;
+  const Y = (m: number) => 490 - m * k;
+  const spec = TEE_CLUBS[club] ?? { carry: len, hw: 4, ry: 4 };
+  const land = Math.min(spec.carry, len);
+  const rest = len - land;
   return (
-    <svg
-      viewBox="0 0 400 720"
-      preserveAspectRatio="xMidYMid meet"
-      style={{ width: "100%", height: "100%", display: "block" }}
-      role="img"
-      aria-label={`Hull ${i + 1}, par ${par}, ${len} meter${empty ? "" : `, slagvalg ${club} ${carry} meter`}`}
-    >
-      <rect x="0" y="0" width="400" height="720" fill="var(--sand-200)" />
-      <path d={fw} fill="var(--sand-100)" stroke="var(--border-strong)" strokeWidth="1" />
-      {g.water && (
-        <rect
-          x={X(g.water.off - 8)}
-          y={Y(g.water.to)}
-          width={16 * k}
-          height={(g.water.to - g.water.from) * k}
-          rx={8 * k}
-          fill="var(--surface-sunken)"
-          stroke="var(--text-secondary)"
-          strokeDasharray="4 3"
-        />
-      )}
-      {g.bunkers.map((b, j) => (
-        <ellipse
-          key={j}
-          cx={X(b.off)}
-          cy={Y(b.d)}
-          rx={b.r * k}
-          ry={b.r * k * 0.75}
-          fill="var(--sand-300)"
-          stroke="var(--sand-400)"
-          strokeWidth="1.5"
-        />
-      ))}
-      <circle
-        cx={X(0)}
-        cy={Y(len)}
-        r={14 * k}
-        fill="var(--surface-card)"
-        stroke="var(--text-primary)"
-        strokeWidth="1.5"
-      />
-      <line
-        x1={X(0)}
-        y1={Y(len)}
-        x2={X(0)}
-        y2={Y(len) - 26}
-        stroke="var(--text-primary)"
-        strokeWidth="1.5"
-      />
-      <path
-        d={"M" + X(0) + " " + (Y(len) - 26) + " l14 5 l-14 5Z"}
-        fill="var(--text-primary)"
-      />
-      {[100, 150, 200]
-        .filter((m) => m < len - 20)
-        .map((m) => (
-          <g key={m}>
-            <line
-              x1="24"
-              x2="376"
-              y1={Y(len - m)}
-              y2={Y(len - m)}
-              stroke="var(--text-muted)"
-              strokeDasharray="2 5"
-            />
-            <text
-              x="28"
-              y={Y(len - m) - 4}
-              style={{ font: "500 12px var(--font-mono)", fill: "var(--text-secondary)" }}
-            >
-              {m} M
-            </text>
-          </g>
-        ))}
-      {!empty && (
-        <>
-          <ellipse
-            cx={X(0)}
-            cy={Y(land)}
-            rx={hw * k}
-            ry={ry * k}
-            fill="var(--text-primary)"
-            fillOpacity=".1"
-            stroke="var(--text-primary)"
-            strokeDasharray="5 4"
-            strokeWidth="1.5"
-          />
-          <polyline
-            points={
-              X(0) +
-              "," +
-              Y(4) +
-              " " +
-              X(0) +
-              "," +
-              Y(land) +
-              (land < len ? " " + X(0) + "," + Y(len) : "")
-            }
-            fill="none"
-            stroke="var(--text-primary)"
-            strokeWidth="2"
-          />
-          <circle cx={X(0)} cy={Y(land)} r="5" fill="var(--text-primary)" />
-          <text
-            x={X(hw) + 8}
-            y={Y(land) + 4}
-            style={{ font: "600 13px var(--font-mono)", fill: "var(--text-primary)" }}
-          >
-            {club} · {carry} M
-          </text>
-          {land < len && (
-            <text
-              x={X(0) + 8}
-              y={(Y(land) + Y(len)) / 2}
-              style={{ font: "500 12px var(--font-mono)", fill: "var(--text-secondary)" }}
-            >
-              {len - land} M IGJEN
-            </text>
-          )}
-        </>
-      )}
-      <rect x={X(-6)} y={Y(0) - 8} width={12 * k} height="10" rx="2" fill="var(--graphite-600)" />
-      <rect
-        x="12"
-        y="12"
-        width="236"
-        height="26"
-        rx="4"
-        fill="var(--surface-card)"
-        stroke="var(--border-strong)"
-      />
-      <text
-        x="22"
-        y="30"
-        style={{ font: "600 12px var(--font-sans)", fill: "var(--text-primary)" }}
-      >
-        Eksempeldata — ikke ekte baneguide
-      </text>
-      <text
-        x="376"
-        y="708"
-        textAnchor="end"
-        style={{ font: "500 12px var(--font-mono)", fill: "var(--text-secondary)" }}
-      >
-        HULL {i + 1} · PAR {par} · {len} M
-      </text>
+    <svg className="hull-kart" viewBox="0 0 300 520" role="img"
+      aria-label={`Hull ${i + 1}, par ${par}, ${len} meter. Eksempelkart. Utslag med ${club}, carry ${spec.carry} meter${rest > 0 ? `, ${rest} meter igjen` : ""}.`}>
+      <rect x="0" y="0" width="300" height="520" fill={KART.skog} />
+      <line x1={X(0)} y1={Y(-10)} x2={X(0)} y2={Y(len + 10)} stroke={KART.rough} strokeWidth="120" strokeLinecap="round" />
+      <line x1={X(0)} y1={Y(par === 3 ? len - 30 : 140)} x2={X(0)} y2={Y(len - 10)} stroke={KART.fairway} strokeWidth="58" strokeLinecap="round" />
+      {g.water && <rect x={X(g.water.off) - 12} y={Y(g.water.to)} width="24" height={(g.water.to - g.water.from) * k} rx="12" fill={KART.vann} />}
+      {g.bunkers.map((b, j) => <ellipse key={j} cx={X(b.off)} cy={Y(b.d)} rx={Math.max(8, b.r * k * 1.6)} ry={Math.max(6, b.r * k)} fill={KART.sand} />)}
+      <ellipse cx={X(0)} cy={Y(len)} rx="34" ry="24" fill={KART.green} />
+      <circle cx={X(0)} cy={Y(len)} r="3" fill="#141413" />
+      <rect x={X(0) - 12} y={Y(0) - 8} width="24" height="16" rx="3" fill={KART.tee} />
+      <line x1={X(0)} y1={Y(0)} x2={X(0)} y2={Y(land)} stroke="#ffffff" strokeWidth="2.5" strokeDasharray="6 5" />
+      {rest > 0 && <line x1={X(0)} y1={Y(land)} x2={X(0)} y2={Y(len)} stroke="#ffffff" strokeWidth="2.5" strokeDasharray="6 5" />}
+      <circle cx={X(0)} cy={Y(land)} r="9" fill="var(--phn-slag)" stroke="#fff" strokeWidth="2.5" />
+      <rect x="164" y={Y(land) - 11} width="128" height="22" rx="4" fill="#fff" />
+      <text x="170" y={Y(land) + 4}>{spec.carry} m{rest > 0 ? ` · ${rest} m inn` : " · på green"}</text>
+      {g.water && <><rect x="8" y={Y(g.water.to) - 11} width="98" height="22" rx="4" fill="#fff" /><text x="14" y={Y(g.water.to) + 4}>Vann {Math.round(g.water.from)}–{Math.round(g.water.to)} m</text></>}
+      <rect x="8" y="8" width="112" height="22" rx="4" fill="#fff" /><text x="14" y="23">Eksempelkart</text>
     </svg>
   );
 }
 
-export function PH20Gameplan({
-  tilstand = "data",
-  courses,
-  defaultCourseId,
-}: PH20Props) {
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(
-    defaultCourseId || (courses.length > 0 ? courses[0].id : ""),
-  );
-  const [selectedHoleIdx, setSelectedHoleIdx] = useState<number>(0);
+export function PH20Gameplan({ tilstand = "data", courses, defaultCourseId, startHull = null }: PH20Props) {
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(defaultCourseId || (courses.length > 0 ? courses[0].id : ""));
+  const [hull, setHull] = useState<number | null>(startHull);
   const [picks, setPicks] = useState<Record<number, string>>({});
-  const paToast = usePaToast();
-
-  const activeCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
-  const hasCourse = Boolean(activeCourse && activeCourse.holes && activeCourse.holes.length > 0);
-  const isEmpty = tilstand === "tom" || courses.length === 0;
-
-  const currentHole =
-    hasCourse && activeCourse.holes[selectedHoleIdx]
-      ? activeCourse.holes[selectedHoleIdx]
-      : { par: 4, len: 360, avgScoreDiff: 0.5 };
-
-  const par = currentHole.par;
-  const len = currentHole.len;
-  const geo = getHoleGeo(selectedHoleIdx, len);
-  const options = getClubOptions(par, len);
-  const { scored, recommended } = evaluateClubOptions(par, len, options, geo);
-  const activeClub = picks[selectedHoleIdx] || recommended;
-  const activeClubSpec = TEE_CLUBS[activeClub] || { carry: len, hw: 6, ry: 6 };
-
-  const showToast = (msg: string) => paToast.vis(msg);
-
-  const handleDownload = () => {
-    showToast(`Gameplan lastet ned som PDF for ${activeCourse ? activeCourse.name : "banen"}`);
-  };
-
-  const handleStartPlan = () => {
-    showToast(`Gameplan opprettet for ${activeCourse ? activeCourse.name : "banen"}`);
-  };
 
   if (tilstand === "feil") {
-    return (
-      <Side max={1400}>
-        <FeilTilstand
-          icon={TriangleAlert}
-          title="Banekartet kunne ikke lastes"
-          text="Banedata hentes fra GolfBox. Gameplanene dine er lagret trygt."
-          code="FEIL 502 · GOLFBOX"
-        />
-      </Side>
-    );
+    return <PHIupFeil tittel="Banen kunne ikke hentes" tekst="Banedata hentes fra GolfBox. Gameplanene dine er ikke endret." kode="Feil 502 · GolfBox" />;
   }
 
-  return (
-    <Side max={1400}>
-      {paToast.el}
+  const bane = courses.find((c) => c.id === selectedCourseId) ?? courses[0];
+  const tom = tilstand === "tom" || !bane;
+  const harHull = Boolean(bane && bane.holes.length > 0);
+  const gaaTil = (i: number | null) => { setHull(i); window.scrollTo({ top: 0 }); };
 
-      <SideHode
-        kicker="Stats · Gameplan"
-        title="Gameplan og banekart"
-        sub="Velg bane og hull. Slagvalget bygger på TrackMan-spredningen din og hvor hindrene ligger."
-        actions={
-          hasCourse && (
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="pa-knapp pa-knapp--sekundaer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
-            >
-              <Download size={16} />
-              Last ned gameplan
-            </button>
-          )
-        }
-      />
+  const topp = (tilbake: React.ReactNode, dato: string, tittel: string) => <div className="topp">
+    {tilbake}
+    <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
+  </div>;
+  const banner = <div className="eksempel-banner"><Info size={18} aria-hidden /><span>Banekartet er eksempeldata. Lengder, hindre og kølle-lengder er ikke målt ennå.</span></div>;
 
-      {/* Banevelger-kort */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
-        {courses.map((c) => {
-          const isSelected = c.id === selectedCourseId;
-          return (
-            <button
-              key={c.id}
-              type="button"
-              aria-pressed={isSelected}
-              onClick={() => {
-                setSelectedCourseId(c.id);
-                setSelectedHoleIdx(0);
-              }}
-              className="pa-card pa-card--interactive"
-              style={{
-                padding: 14,
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                textAlign: "left",
-                font: "inherit",
-                cursor: "pointer",
-                minWidth: 0,
-                borderColor: isSelected ? "var(--border-ink)" : undefined,
-                boxShadow: isSelected ? "inset 0 0 0 1px var(--border-ink)" : undefined,
-                background: "var(--surface-card)",
-              }}
-            >
-              <span style={{ font: "600 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>
-                {c.name}
-              </span>
-              <Meta>
-                {c.tee.toUpperCase()} · PAR {c.par} · {formaterTall(c.len, 0, false)} M
-              </Meta>
-              <span style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 4 }}>
-                <Tall>{isEmpty || c.avg == null ? "—" : `${formaterTall(c.avg, 1, true)} slag`}</Tall>
-                <Meta>{isEmpty ? "0 RUNDER" : `${c.played} RUNDER`}</Meta>
-                <span style={{ flex: 1 }} />
-                {!isEmpty && (
-                  <StatusPille tone={c.plan === "Gameplan klar" ? "ok" : "neutral"}>
-                    {c.plan}
-                  </StatusPille>
-                )}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {isEmpty || !hasCourse ? (
-        <TomTilstand
-          icon={MapPin}
-          title={isEmpty ? "Ingen gameplan ennå" : `Ingen gameplan for ${activeCourse?.name || "denne banen"}`}
-          text={
-            isEmpty
-              ? "Spill en runde eller registrer TrackMan-spredning, så foreslår vi slagvalg per hull."
-              : "Banekart for denne banen kommer etter lansering. Du kan lage gameplan med par og lengde nå."
-          }
-          actions={
-            <button
-              type="button"
-              onClick={handleStartPlan}
-              className="pa-knapp pa-knapp--primaer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
-            >
-              <MapPin size={16} />
-              Lag gameplan
-            </button>
-          }
-        />
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: 16,
-            alignItems: "start",
-          }}
-        >
-          {/* Kolonne 1: Hulliste (tabell for desktop) */}
-          <div
-            className="pa-card"
-            style={{
-              padding: 0,
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div
-              style={{
-                padding: "12px 16px",
-                borderBottom: "1px solid var(--border-hairline)",
-                font: "600 13px var(--font-sans)",
-                color: "var(--text-secondary)",
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-              }}
-            >
-              {activeCourse.name} · hull-liste
-            </div>
-            <div style={{ overflowX: "auto" }}>
-              <table className="pa-table" style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: "left", padding: "8px 12px" }}>Hull</th>
-                    <th style={{ textAlign: "left", padding: "8px 12px" }}>Par</th>
-                    <th style={{ textAlign: "right", padding: "8px 12px" }}>Meter</th>
-                    <th style={{ textAlign: "left", padding: "8px 12px" }}>Tee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeCourse.holes.map((h, i) => {
-                    const isSelected = i === selectedHoleIdx;
-                    const holeRec =
-                      picks[i] || getRecommendedClub(i, h.par, h.len);
-                    return (
-                      <tr
-                        key={i}
-                        onClick={() => setSelectedHoleIdx(i)}
-                        style={{
-                          cursor: "pointer",
-                          background: isSelected ? "var(--surface-card)" : "transparent",
-                          fontWeight: isSelected ? 600 : 400,
-                        }}
-                      >
-                        <td style={{ padding: "10px 12px", fontFamily: "var(--font-mono)" }}>
-                          {i + 1}
-                        </td>
-                        <td style={{ padding: "10px 12px", fontFamily: "var(--font-mono)" }}>
-                          {h.par}
-                        </td>
-                        <td
-                          style={{
-                            padding: "10px 12px",
-                            fontFamily: "var(--font-mono)",
-                            textAlign: "right",
-                          }}
-                        >
-                          {h.len}
-                        </td>
-                        <td style={{ padding: "10px 12px", fontFamily: "var(--font-mono)" }}>
-                          {holeRec}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Kolonne 2: Mobil hullvelger + SVG Banekart */}
-          <Stabel gap={12}>
-            {/* Mobil hull-velger pills */}
-            <div
-              role="group"
-              aria-label="Hullvelger"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(48px, 1fr))",
-                gap: 4,
-              }}
-            >
-              {activeCourse.holes.map((h, i) => {
-                const on = i === selectedHoleIdx;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    aria-pressed={on}
-                    aria-label={`Hull ${i + 1}`}
-                    onClick={() => setSelectedHoleIdx(i)}
-                    style={{
-                      height: 48,
-                      borderRadius: 6,
-                      border: `1px solid ${on ? "var(--border-ink)" : "var(--border-hairline)"}`,
-                      background: on ? "var(--primary)" : "var(--surface-card)",
-                      color: on ? "var(--text-on-primary)" : "var(--text-primary)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 2,
-                      cursor: "pointer",
-                      minWidth: 0,
-                    }}
-                  >
-                    <span style={{ font: "600 13px/1 var(--font-mono)" }}>{i + 1}</span>
-                    <span style={{ font: "500 9px/1 var(--font-mono)", opacity: 0.75 }}>
-                      PAR {h.par}
-                    </span>
-                  </button>
-                );
+  if (!tom && harHull && hull != null && bane.holes[hull]) {
+    const h = bane.holes[hull];
+    const { scored, recommended } = hullVurdering(hull, h.par, h.len);
+    const valgt = picks[hull] || recommended;
+    const spec = TEE_CLUBS[valgt] ?? { carry: h.len, hw: 6, ry: 6 };
+    const trygt = h.par !== 3 && recommended !== "Driver";
+    return <div className="phn phn-iup" data-od-id="playerhq-gameplan-hull">
+      {topp(<button type="button" className="tilbake" style={{ border: 0, background: "none", cursor: "pointer" }} onClick={() => gaaTil(null)}><ChevronLeft size={20} aria-hidden />Gameplan</button>,
+        `${bane.name} · ${bane.tee}`, `Hull ${hull + 1} · par ${h.par} · ${h.len} m`)}
+      {banner}
+      <div className="to-del">
+        <div>
+          <HullKart i={hull} par={h.par} len={h.len} club={valgt} />
+          <p className="phn-kilde" style={{ textAlign: "center" }}>Eksempeldata. Kartet er ikke målt på banen.</p>
+        </div>
+        <div>
+          <section className="phn-kort" aria-label="Ditt snitt på hullet">
+            <div className="phn-hoved"><strong>—</strong></div>
+            <p className="phn-forklar">Ditt snitt på hull {hull + 1}. Det finnes ikke registrert snitt per hull ennå.</p>
+          </section>
+          <section className="phn-seksjon" aria-label="Slagvalg">
+            <div className="phn-sek-topp"><h2>Slagvalg fra tee</h2>{h.par !== 3 && <span className={`phn-pille ${trygt ? "vent" : "ok"}`}>{trygt ? "Spill trygt" : "Angrip"}</span>}</div>
+            <div className="slagplan" role="radiogroup" aria-label="Kølle fra tee">
+              {scored.map((o, n) => {
+                const on = o.club === valgt;
+                return <button key={o.club} type="button" role="radio" aria-checked={on} className="slag-steg"
+                  onClick={() => setPicks((x) => ({ ...x, [hull]: o.club }))}>
+                  <span className="nr">{n + 1}</span>
+                  <span><b>{o.club}{o.club === recommended ? " · anbefalt" : ""}</b>
+                    <span className="i">{o.remainingMeters ? `${o.remainingMeters} m igjen` : "På green"} · {o.riskPercent ? `hinder i spredningen, ca. ${o.riskPercent} %` : "ingen hinder i spredningen"}</span></span>
+                  <span className="m">{o.carry}</span>
+                </button>;
               })}
             </div>
-
-            {/* Banekart kort */}
-            <div
-              className="pa-card"
-              style={{
-                padding: 0,
-                overflow: "hidden",
-                height: 520,
-                background: "var(--sand-200)",
-              }}
-            >
-              <HoleSvg
-                i={selectedHoleIdx}
-                par={par}
-                len={len}
-                club={activeClub}
-                empty={isEmpty}
-              />
-            </div>
-
-            {/* TruthLayer kilde */}
-            <div style={{ marginTop: 2 }}>
-              <Meta>
-                BANEDATA · GOLFBOX · 01.05.2026 · BUNKER OG VANN ER EKSEMPELDATA · KOMPLETT BANEGUIDE ETTER LANSERING
-              </Meta>
-            </div>
-          </Stabel>
-
-          {/* Kolonne 3: Slagvalg fra tee */}
-          <Stabel gap={12}>
-            <Kort>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 8,
-                  flexWrap: "wrap",
-                  marginBottom: 12,
-                }}
-              >
-                <span className="kicker">Slagvalg fra tee · hull {selectedHoleIdx + 1}</span>
-                <Meta>TRACKMAN-SPREDNING · 24.09.2026</Meta>
-              </div>
-
-              {/* Køllevalg radiogroup */}
-              <div
-                role="radiogroup"
-                aria-label="Kølle fra tee"
-                style={{ display: "flex", flexDirection: "column", gap: 8 }}
-              >
-                {scored.map((o) => {
-                  const on = o.club === activeClub;
-                  return (
-                    <button
-                      key={o.club}
-                      type="button"
-                      role="radio"
-                      aria-checked={on}
-                      onClick={() =>
-                        setPicks((x) => ({ ...x, [selectedHoleIdx]: o.club }))
-                      }
-                      style={{
-                        textAlign: "left",
-                        display: "grid",
-                        gridTemplateColumns: "56px minmax(0, 1fr) auto",
-                        gap: 12,
-                        alignItems: "center",
-                        minHeight: 56,
-                        padding: "8px 12px",
-                        borderRadius: 8,
-                        border: `1px solid ${on ? "var(--border-ink)" : "var(--border-hairline)"}`,
-                        boxShadow: on ? "inset 0 0 0 1px var(--border-ink)" : "none",
-                        background: "var(--surface-card)",
-                        color: "var(--text-primary)",
-                        cursor: "pointer",
-                        minWidth: 0,
-                      }}
-                    >
-                      <span style={{ font: "600 15px/1 var(--font-mono)" }}>{o.club}</span>
-                      <span style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
-                        <span style={{ font: "var(--type-num-s)" }}>
-                          Carry {o.carry} m ·{" "}
-                          {o.remainingMeters ? `${o.remainingMeters} m igjen` : "på green"}
-                        </span>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            gap: 4,
-                            alignItems: "center",
-                            font: "var(--type-meta)",
-                            color: o.riskPercent >= 10 ? "var(--warn)" : "var(--text-muted)",
-                          }}
-                        >
-                          {o.riskPercent >= 10 && <TriangleAlert size={12} />}
-                          {o.riskPercent
-                            ? `BUNKER I SPREDNING · CA. ${o.riskPercent} %`
-                            : "INGEN HINDER I SPREDNING"}
-                        </span>
-                      </span>
-                      {o.club === recommended ? (
-                        <StatusPille tone="ok">Anbefalt</StatusPille>
-                      ) : (
-                        <span />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Spredning og Snitt på hullet */}
-              <div style={{ marginTop: 16 }}>
-                <Nokkelverdi
-                  items={[
-                    [
-                      "Spredning",
-                      `± ${activeClubSpec.hw} m side · ± ${activeClubSpec.ry} m lengde`,
-                      { hint: "2 SD · ESTIMAT" },
-                    ],
-                    [
-                      "Snitt på hullet",
-                      `+${formaterTall(currentHole.avgScoreDiff, 1, true)} til par`,
-                      { hint: `${activeCourse.played} RUNDER · 2026` },
-                    ],
-                  ]}
-                />
-              </div>
-            </Kort>
-          </Stabel>
+            <div className="alt-plan"><b>Spredning med {valgt}</b><span>± {spec.hw} m til siden og ± {spec.ry} m i lengde. Estimat.</span></div>
+            <p className="phn-kilde">Lengdene og spredningen er eksempeltall, ikke dine egne fra TrackMan ennå.</p>
+          </section>
+          <div className="phn-knapper">
+            <button type="button" className="phn-knapp pri" onClick={() => gaaTil(null)}>Alle hull</button>
+            {hull + 1 < bane.holes.length && <button type="button" className="phn-knapp sek" onClick={() => gaaTil(hull + 1)}>Hull {hull + 2}</button>}
+          </div>
         </div>
-      )}
-    </Side>
-  );
+      </div>
+    </div>;
+  }
+
+  return <div className="phn phn-iup" data-od-id="playerhq-gameplan">
+    {topp(<Link href="/portal/planlegge" className="tilbake"><ChevronLeft size={20} aria-hidden />Plan</Link>, "Plan · gameplan", "Gameplan")}
+    {tom ? <section className="phn-kort" aria-label="Ingen bane">
+      <h2 style={{ margin: 0, font: "600 18px/1.25 var(--phn-sans)" }}>Ingen bane valgt</h2>
+      <p className="phn-forklar">Når en bane er lagt inn, får du en plan for hvert hull her.</p>
+    </section> : <>
+      {banner}
+      <div className="bane-topp">
+        {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+        <img src="/images/playerhq/spill-bane.jpg" alt="" width={1400} height={933} />
+        <div className="bt">
+          <b>{bane.name} · {bane.tee.toLowerCase()}</b>
+          <div className="phn-hoved"><strong>{bane.avg == null ? "—" : formaterTall(bane.avg, 1, true)}</strong>
+            <span className="phn-forklar">{bane.avg == null ? "ingen registrerte runder her ennå" : `din snittscore her, ${bane.played} ${bane.played === 1 ? "runde" : "runder"}`}</span></div>
+          <p className="phn-kilde">Kilde: dine registrerte runder på banen. Par {bane.par} · {formaterTall(bane.len, 0, false)} m.</p>
+          {courses.length > 1 && <div className="bane-valg" role="group" aria-label="Bane">{courses.map((c) =>
+            <button key={c.id} type="button" aria-pressed={c.id === bane.id} onClick={() => { setSelectedCourseId(c.id); setHull(null); }}>{c.name}</button>)}</div>}
+        </div>
+      </div>
+      <section className="phn-seksjon" aria-label="Hull for hull">
+        <div className="phn-sek-topp"><h2>Hull for hull</h2>
+          <span className="phn-lg-rad"><span className="phn-lg"><i style={{ background: "var(--phn-green-50)", border: "1px solid var(--phn-green-700)" }} />Angrip</span>
+            <span className="phn-lg"><i style={{ background: "var(--phn-amber-50)", border: "1px solid var(--phn-amber-700)" }} />Spill trygt</span></span></div>
+        {harHull ? <div className="hull-grid">{bane.holes.map((h, i) => {
+          const { recommended } = hullVurdering(i, h.par, h.len);
+          const merke = h.par === 3 ? null : recommended === "Driver" ? "angrip" : "forsiktig";
+          return <button key={i} type="button" className="hull" aria-label={`Hull ${i + 1}, par ${h.par}, ${h.len} meter${merke ? `, ${merke === "angrip" ? "angrip" : "spill trygt"}` : ""}`} onClick={() => gaaTil(i)}>
+            <b>{i + 1}</b><span>Par {h.par} · {h.len} m</span>
+            {merke && <span className={`ris ${merke}`}>{merke === "angrip" ? "Angrip" : "Spill trygt"}</span>}
+          </button>;
+        })}</div> : <p className="phn-forklar">Hullene på {bane.name} er ikke lagt inn ennå.</p>}
+      </section>
+    </>}
+  </div>;
 }

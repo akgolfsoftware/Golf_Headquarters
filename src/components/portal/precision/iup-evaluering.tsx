@@ -51,15 +51,15 @@ function Felt({ navn, children }: { navn: string; children: ReactElement<{ id?: 
   return <div className="iup-felt"><label htmlFor={id}>{navn}</label>{cloneElement(children, { id })}</div>;
 }
 
-export function PHIupEvaluering({ oversikt, historikk, nyType, uleste }: {
-  oversikt: Oversikt; historikk: Historikk | null; nyType: Type | null; uleste: number;
+export function PHIupEvaluering({ oversikt, historikk, nyType, uleste, startSteg = 0 }: {
+  oversikt: Oversikt; historikk: Historikk | null; nyType: Type | null; uleste: number; startSteg?: number;
 }) {
   const [ny, setNy] = useState<IupValg | null>(null);
   const siste = historikk?.revisjoner[0];
   // Velg bare de offentlige kontraktfeltene; strict-skjemaet avviser metadata.
   const lagretValg = historikk ? IupValgSchema.safeParse({ type: historikk.type, versjon: historikk.versjon, niva: historikk.niva, periodeStart: historikk.periodeStart, periodeSlutt: historikk.periodeSlutt }) : null;
   const neste = oversikt.nesteSide;
-  const tittel = nyType ? NAVN[nyType] : historikk ? NAVN[historikk.type] ?? "Evaluering" : "Evaluering";
+  const tittel = nyType ? NAVN[nyType] : historikk ? `${NAVN[historikk.type] ?? "Evaluering"}${historikk.type === "SESONGEVALUERING" && siste?.status === "LEVERT" ? " levert" : ""}` : "Evaluering";
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
     <div className="phn phn-iup" data-od-id="playerhq-iup-evaluering">
       <div className="smal">
@@ -74,7 +74,7 @@ export function PHIupEvaluering({ oversikt, historikk, nyType, uleste }: {
         {!oversikt.kanSvare && <Panel><p>Spørsmålssjekkene gjelder aktive spillere i WANG eller Team Norway. Tidligere besvarelser er fortsatt tilgjengelige for deg.</p></Panel>}
         {historikk ? <>
           {!siste?.innhold || !lagretValg?.success || siste.revisjon !== historikk.revisjon ? <Panel><p role="alert">Denne besvarelsen har et kilde- eller formatavvik. Den kan ikke redigeres før avviket er avklart.</p></Panel> :
-            <IupSkjema valg={lagretValg.data} initial={siste.innhold} id={historikk.id} revisjon={historikk.revisjon} kanSvare={oversikt.kanSvare} />}
+            <IupSkjema valg={lagretValg.data} initial={siste.innhold} id={historikk.id} revisjon={historikk.revisjon} kanSvare={oversikt.kanSvare} startSteg={startSteg} />}
           <IupHistorikk initial={historikk} />
           <div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/mal/evaluering">Til evalueringene</Link></div>
         </> : nyType && oversikt.kanSvare ? ny ?
@@ -130,7 +130,7 @@ function NyttValg({ type, onVelg }: { type: Type; onVelg: (v: IupValg) => void }
   </Panel>;
 }
 
-function IupSkjema({ valg, initial, id, revisjon, kanSvare }: { valg: IupValg; initial: Svar; id: string | null; revisjon: number; kanSvare: boolean }) {
+function IupSkjema({ valg, initial, id, revisjon, kanSvare, startSteg = 0 }: { valg: IupValg; initial: Svar; id: string | null; revisjon: number; kanSvare: boolean; startSteg?: number }) {
   const router = useRouter();
   const [svar, setSvar] = useState(initial);
   const [aktivRevisjon, setAktivRevisjon] = useState(revisjon);
@@ -142,7 +142,7 @@ function IupSkjema({ valg, initial, id, revisjon, kanSvare }: { valg: IupValg; i
   const [feil, setFeil] = useState<string | null>(null);
   const [konflikt, setKonflikt] = useState(false);
   const [ukjentUtfall, setUkjentUtfall] = useState(false);
-  const [steg, setSteg] = useState(0);
+  const [steg, setSteg] = useState(startSteg);
   type Foresporsel = { type: Type; periodeStart: string; periodeSlutt: string; forventetRevisjon: number; requestId: string; besvarelse: Svar };
   const [ventende, setVentende] = useState<Foresporsel | null>(null);
   const laast = !kanSvare || !redigerer || pending || ukjentUtfall || konflikt;

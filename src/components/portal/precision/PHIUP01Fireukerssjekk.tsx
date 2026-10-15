@@ -278,7 +278,8 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
   </>;
   else if (!erLever && naa.qs) innhold = <>
     <div className="omr-tittel"><h2>{naa.k}</h2><span className="phn-kilde">{naa.ferdig} av {naa.n} besvart</span></div>
-    <div className="skal-forklar"><span>1 {UTVIKLINGSSJEKK_SKALA[0].tekst.toLowerCase()}</span>{forrigeSvar && <span>Streken viser forrige svar</span>}<span>5 {UTVIKLINGSSJEKK_SKALA[4].tekst.toLowerCase()}</span></div>
+    <div className="skal-forklar"><span>1 {UTVIKLINGSSJEKK_SKALA[0].tekst.toLowerCase()}</span><span>5 {UTVIKLINGSSJEKK_SKALA[4].tekst.toLowerCase()}</span></div>
+    {forrigeSvar && <p className="phn-kilde">Streken under et tall viser svaret ditt forrige runde.</p>}
     <div className="spm-liste">{naa.qs.map((s) => {
       const forrige = forrigeSvar?.[s.id] ?? null;
       return <div key={s.id} className={`spm${svar[s.id] ? " besvart" : ""}`}>
