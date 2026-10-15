@@ -11,8 +11,7 @@
  *     (beslutninger.md §Workbench over uka, punkt 2, er ikke bygget).
  *   - Kilden på perioden er «Fra gruppa» eller «Egen». Appen lagrer ikke hvem i
  *     teamet som la inn en periode, så «Fra Anders» vises ikke.
- *   - «Ny periode» og «Ny årsplan» åpner dagens skjema. De får nytt design med
- *     PH-11-PERSKJEMA og PH-11-NY.
+ *   - «Ny årsplan» åpner dagens skjema til PH-11-NY er portert.
  *   - Piler for forrige og neste år er beholdt fra dagens Workbench.
  */
 import Link from "next/link";
@@ -26,7 +25,7 @@ import { workbenchUrl, type WbVisning } from "@/lib/workbench/visning-url";
 import type { PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { formaterVarighet } from "@/lib/format-tall";
 import { AarsplanOppretter } from "@/components/workbench/WorkbenchAar";
-import { PeriodeSkjema } from "@/components/workbench/WorkbenchPeriode";
+import { PH11PeriodeSkjema } from "@/components/portal/precision/PH11Periode";
 import "@/styles/playerhq-ny.css";
 
 const AKSER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -163,7 +162,7 @@ export function PH11Aarsplan({ playerId, aar, referanse, idag }: PH11AarsplanPro
           </section>
         </div>}
 
-    {skjema === "periode" && <PeriodeSkjema playerId={playerId} year={aar.year} period={null} onClose={() => setSkjema(null)} onSaved={() => { setSkjema(null); router.refresh(); }} />}
+    {skjema === "periode" && <PH11PeriodeSkjema playerId={playerId} year={aar.year} periode={null} onLukk={() => setSkjema(null)} onLagret={() => { setSkjema(null); router.refresh(); }} />}
     {skjema === "aarsplan" && <AarsplanOppretter playerId={playerId} year={aar.year} onClose={() => setSkjema(null)} />}
   </div>;
 }

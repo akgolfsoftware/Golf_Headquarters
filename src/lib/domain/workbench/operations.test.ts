@@ -488,6 +488,9 @@ describe("måned og år", () => {
     assert.equal(periode.weeks[0].weekNumber, 35);
     assert.equal(periode.weeks[0].minutes, 90);
     assert.equal(periode.weeks[1].minutes, 60);
+    assert.equal(periode.weeks[0].byPyramid?.TEK, 90);
+    assert.equal(periode.weeks[1].byPyramid?.FYS, 60);
+    assert.equal(periode.weeks[0].byPyramid?.SLAG, 0); // avlyst teller ikke
     assert.equal(periode.distribution.find((row) => row.pyramid === "TEK")?.sharePct, 60);
     assert.equal(periode.distribution.find((row) => row.pyramid === "FYS")?.sharePct, 40);
     assert.equal(periode.distribution.find((row) => row.pyramid === "SLAG")?.plannedMinutes, 0);

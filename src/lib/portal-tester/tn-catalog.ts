@@ -3,9 +3,13 @@ import { TEST_PROTOKOLLER, hentProtokoll } from "@/lib/domain/pei/protokoll-defi
 
 export const TN_VERSION = "tn-excel-v3-2026-09-10";
 export const TN_RULES_VERSION = "tn-excel-v3-2026-10-02";
-export type TnVersion = typeof TN_VERSION | typeof TN_RULES_VERSION;
+/** Anders 14.10.2026: 8-ball med carry og side og 5 poeng i hull; gate-testene føres som Godkjent eller Bom. */
+export const TN_GODKJENT_VERSION = "tn-excel-v3-2026-10-14";
+export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION] as const;
+export type TnVersion = typeof TN_VERSIONS[number];
 export const tnVersion = (p: TnProtocol): TnVersion => p.version ?? TN_VERSION;
-export type TnField = { key: string; label: string; unit?: string; choices?: string[]; min?: number; integer?: boolean; optional?: boolean };
+/** `requiredUnless`: feltet kreves bare når det andre feltet står tomt (8-ball: carry og side, eller «I hull»). */
+export type TnField = { key: string; label: string; unit?: string; choices?: string[]; min?: number; integer?: boolean; optional?: boolean; requiredUnless?: string };
 export type TnRow = { label: string; target?: number; fields: TnField[] };
 export type TnKind = "near" | "carry" | "putts" | "course" | "free-course" | "length-putt" | "points" | "gate" | "speed" | "technique";
 export type TnProtocol = {
@@ -38,7 +42,8 @@ function add(id: string, name: string, source: string, kind: TnKind, rs: TnRow[]
 }
 for (const id of ["8-ball-variation", "8-ball-blocked"]) {
   const p = from(id);
-  add(id, p.name, `Scorekort GolfslagTester!${id.endsWith("variation") ? "A4:I35" : "K4:S35"}`, "near",
+  // Lagrede resultater med den gamle skalaen merkes med regelversjonen i navnet (Anders 14.10.2026).
+  add(id, `${p.name} · skala før 14.10.2026`, `Scorekort GolfslagTester!${id.endsWith("variation") ? "A4:I35" : "K4:S35"}`, "near",
     p.rows.map(r => ({ label: r.slag!, target: r.lengde, fields: [result] })), { points8Ball: true });
 }
 for (const [id, name, source] of [
@@ -105,7 +110,8 @@ for (const [id, range] of [["a", "B1:N20"], ["b", "R1:AD20"], ["c", "AG1:AS20"]]
 }
 // Keep the original registry intact: an old draft never silently changes its fields or rules.
 const LEGACY_CATALOG: readonly TnProtocol[] = protocols;
-export const TN_CATALOG: readonly TnProtocol[] = protocols.map(p => {
+/** Regelutgaven fra 02.10.2026, som protokollregisteret samme dag beskriver. Eldre utkast og resultater regnes mot den. */
+export const TN_RULES_CATALOG: readonly TnProtocol[] = protocols.map(p => {
   if (p.id === "teknikktest-c") {
     return { ...p, version: TN_RULES_VERSION, rows: p.rows.slice(0, 10),
       blocked: "Målemetode og enhet for Impact Location må bekreftes. Fem grunnmålinger og fem måleforsøk kan lagres som utkast." };
@@ -136,10 +142,29 @@ export const TN_CATALOG: readonly TnProtocol[] = protocols.map(p => {
   }
   return p;
 });
+const godkjentEllerBom = (key: string, label: string): TnField => choice(key, label, ["Godkjent", "Bom"]);
+const GATE_IDS = ["naerspill-gate", "visa-express", "wedge-gate", "driver-gate", "putt-gate"];
+/** Gjeldende katalog: 8-ball med carry og side, gate-testene med Godkjent eller Bom (Anders 14.10.2026). */
+export const TN_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p => {
+  if (p.points8Ball) {
+    return { ...p, version: TN_GODKJENT_VERSION, name: from(p.id).name, rows: p.rows.map(r => ({ ...r, fields: [
+      { ...carry, requiredUnless: "holed" }, { ...side, requiredUnless: "holed" },
+      { ...choice("holed", "Ballen gikk i hull på ett slag", ["I hull"]), optional: true },
+    ] })) };
+  }
+  if (!GATE_IDS.includes(p.id)) return p;
+  // Nærspill Gate og VISA Express var poeng for hånd; nå ett valg per slag.
+  const label = p.id === "naerspill-gate" ? "Både utslagsvinkel og carry innenfor sonen"
+    : p.id === "visa-express" ? "Godkjent eller bom" : undefined;
+  return { ...p, version: TN_GODKJENT_VERSION, blocked: undefined, kind: "gate",
+    rows: p.rows.map(r => ({ ...r, fields: label ? [godkjentEllerBom("ok", label)]
+      : r.fields.map(f => f.key === "ok" ? godkjentEllerBom("ok", f.label) : f) })) };
+});
+const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_CATALOG];
 export function tnProtocol(id: string, count?: number, version?: string): TnProtocol | null {
-  if (version !== undefined && version !== TN_VERSION && version !== TN_RULES_VERSION) return null;
-  const catalog = version === TN_VERSION ? LEGACY_CATALOG : TN_CATALOG;
-  const p = catalog.find(p => p.id === id && (version === undefined || tnVersion(p) === version));
+  if (version !== undefined && !(TN_VERSIONS as readonly string[]).includes(version)) return null;
+  const p = version === undefined ? TN_CATALOG.find(p => p.id === id)
+    : CATALOGS.map(c => c.find(p => p.id === id && tnVersion(p) === version)).find(Boolean);
   if (!p) return null;
   if (count === undefined) return p;
   if (!p.variableCount || !Number.isInteger(count) || count < 1 || count > 200) return null;

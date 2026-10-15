@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 import { tnProtocol, type TnField, type TnRow } from "../portal-tester/tn-catalog";
 import { tnScore } from "../portal-tester/tn-scoring";
+import { tnDefinitionId } from "../portal-tester/tn-integration";
 
 const GRUPPE = { id: "tn-gruppe", name: "Team Norway Golf" };
 
@@ -62,7 +63,7 @@ function ekteResultat(protocolId: string, presis: boolean, count?: number) {
   const values: Record<string, Record<string, string | number>> = {};
   p.rows.forEach((row, i) => {
     const felter: Record<string, string | number> = {};
-    for (const f of row.fields) felter[f.key] = feltVerdi(f, row, presis);
+    for (const f of row.fields) if (!f.optional) felter[f.key] = feltVerdi(f, row, presis);
     values[String(i + 1)] = felter;
   });
   return tnScore(p, values);
@@ -351,16 +352,17 @@ test("gruppeanalyse avvises for spiller uten TN-lese-rolle", async () => {
 // Regresjoner fra Codex uavhengig kontroll (root-review-main.md)
 // ---------------------------------------------------------------------
 
+const ATTE_BALL_ID = tnDefinitionId(tnProtocol("8-ball-variation")!);
 test("8-ball: HØYEST poeng vinner som beste, selv om metrics[0] (PEI) er lowerIsBetter", async () => {
   const darlig = ekteResultat("8-ball-variation", false);
   const god = ekteResultat("8-ball-variation", true);
   assert.ok(god.score > darlig.score, "test-fixturen må faktisk gi flere poeng for gode forsøk");
   resultater = [
-    { id: "r1", userId: "player-a", testId: "tn-v3-8-ball-variation", takenAt: new Date("2026-09-01"), score: darlig.score, details: darlig, recordedById: null },
-    { id: "r2", userId: "player-a", testId: "tn-v3-8-ball-variation", takenAt: new Date("2026-09-10"), score: god.score, details: god, recordedById: null },
+    { id: "r1", userId: "player-a", testId: ATTE_BALL_ID, takenAt: new Date("2026-09-01"), score: darlig.score, details: darlig, recordedById: null },
+    { id: "r2", userId: "player-a", testId: ATTE_BALL_ID, takenAt: new Date("2026-09-10"), score: god.score, details: god, recordedById: null },
   ];
   const data = await hentTnSpillerTester({ id: "player-a", role: "PLAYER", name: "Spiller A" }, "player-a");
-  const rad = data!.rader.find((r) => r.testId === "tn-v3-8-ball-variation");
+  const rad = data!.rader.find((r) => r.testId === ATTE_BALL_ID);
   assert.ok(rad);
   // Feil kode (metrics[0]/PEI, lowerIsBetter=true) ville gitt besteScore=darlig.score.
   assert.equal(rad!.besteScore, god.score);
@@ -372,13 +374,13 @@ test("8-ball: uforenlig/annen versjon blir ALDRI 'beste', selv med et ekstremt t
   const god = ekteResultat("8-ball-variation", true);
   const forfalsket = { ...god, version: "gammel-versjon", score: god.score + 1000 };
   resultater = [
-    { id: "r1", userId: "player-a", testId: "tn-v3-8-ball-variation", takenAt: new Date("2026-09-01"), score: darlig.score, details: darlig, recordedById: null },
-    { id: "r2", userId: "player-a", testId: "tn-v3-8-ball-variation", takenAt: new Date("2026-09-10"), score: god.score, details: god, recordedById: null },
+    { id: "r1", userId: "player-a", testId: ATTE_BALL_ID, takenAt: new Date("2026-09-01"), score: darlig.score, details: darlig, recordedById: null },
+    { id: "r2", userId: "player-a", testId: ATTE_BALL_ID, takenAt: new Date("2026-09-10"), score: god.score, details: god, recordedById: null },
     // Score ville "vunnet stort" om raden ble tatt med — men versjonen er feil.
-    { id: "r3", userId: "player-a", testId: "tn-v3-8-ball-variation", takenAt: new Date("2026-09-12"), score: forfalsket.score, details: forfalsket, recordedById: null },
+    { id: "r3", userId: "player-a", testId: ATTE_BALL_ID, takenAt: new Date("2026-09-12"), score: forfalsket.score, details: forfalsket, recordedById: null },
   ];
   const data = await hentTnSpillerTester({ id: "player-a", role: "PLAYER", name: "Spiller A" }, "player-a");
-  const rad = data!.rader.find((r) => r.testId === "tn-v3-8-ball-variation");
+  const rad = data!.rader.find((r) => r.testId === ATTE_BALL_ID);
   assert.equal(rad!.besteScore, god.score);
   assert.equal(rad!.antall, 2);
   assert.equal(rad!.antallUtelatt, 1);

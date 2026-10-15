@@ -55,7 +55,7 @@ describe("ph15-data", () => {
       const oppsett = utledPH15Oppsett(spec);
       assert.equal(oppsett.modus, "hit_miss");
       assert.equal(oppsett.antallSlag, 9);
-      assert.equal(oppsett.enhet, "treff");
+      assert.equal(oppsett.enhet, "godkjent");
     });
   });
 

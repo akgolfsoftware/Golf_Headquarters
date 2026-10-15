@@ -523,6 +523,7 @@ export interface YearPeriodInput {
   axisMinutes?: Partial<Record<PyramidArea, number>> | null;
   axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
   fraGruppe?: boolean;
+  notat?: string | null;
 }
 
 export interface YearEventInput {
@@ -629,6 +630,7 @@ export function buildYearViewModel(
         completedMinutes: gjennomfortMinutter(periodeHittil),
         turneringer: turneringer.sort((a, b) => (a.dato < b.dato ? -1 : 1)),
         fraGruppe: p.fraGruppe ?? false,
+        notat: p.notat ?? null,
       };
     });
 
@@ -675,6 +677,8 @@ export function buildPeriodViewModel(
   for (let cursor = mondayOf(period.startDate); cursor <= period.endDate; cursor = addDays(cursor, 7)) {
     const end = addDays(cursor, 6);
     const list = active.filter((s) => s.date >= cursor && s.date <= end);
+    const byPyramid = { ...TOM_BALANSE };
+    for (const s of list) byPyramid[s.pyramid] += planlagtMinutter([s]);
     weeks.push({
       weekStart: cursor,
       weekNumber: isoWeekNumber(cursor),
@@ -682,6 +686,7 @@ export function buildPeriodViewModel(
       completedMinutes: gjennomfortMinutter(list),
       sessionCount: list.length,
       dominantPyramid: dominantPyramid(list),
+      byPyramid,
     });
   }
 

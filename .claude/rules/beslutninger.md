@@ -4,6 +4,61 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLERPROFILEN HETER IUP I TEAM NORWAY (Anders 15.10.2026, bindende)
+
+Anders 15.10: «For Team Norway skjerm skal det hete IUP som spiller profil.»
+
+- **Under `/team-norway/*` heter spillerprofilen «IUP».** Menyvalg, tilbakelenker og overskrifter sier IUP, ikke «Profil» eller spillerens navn alene.
+- Fanen som i koden heter «Evaluering», heter **«Fireukerssjekk»**, fordi hele profilen nå er IUP-en.
+- Gjelder Team Norway. Spiller 360 i AgencyOS og WANG er ikke endret av dette.
+
+**Arbeidet dette utløser:** når TN-skjermene porteres, får `/team-norway/spiller/[spillerId]` tittelen IUP og fanene i
+`TnSpillerFaner` (`src/components/team-norway/tn-shell.tsx`) bytter «Evaluering» til «Fireukerssjekk». Utkastene i
+`docs/design-system/utkast-tn/spillere.html` og `gruppe.html` er rettet (utkast 2).
+
+## TEAM NORWAY FÅR EGNE AKSEFARGER FRA TN-PALETTEN (Anders 14.10.2026, bindende)
+
+Anders 14.10: «Ja til aksefargene», etter grunnmuren for Team Norway (PR #1256, `docs/design-system/utkast-tn/grunnmur.html`).
+
+- **Under `/team-norway/*` har aksene egne farger:** FYS `#0D6E6A` · TEK `#0A5199` · SLAG `#4B3F9E` · SPILL `#8A2A72` · TURN `#A80126`.
+  Lyse varianter på navy: `#6FD3C9` · `#8DBDF0` · `#B9B0F2` · `#EBA3D8` · `#FF9CB0`. Alle målt over 4,5 : 1.
+- **Ingen AK Golf-farger i Team Norway**, heller ikke i pyramiden. Logorøden `#D70232` er aldri akse.
+- **TURN blir i mørk rød**, ikke navy. Statusrød vises alltid med ordet ved seg.
+
+**Arbeidet dette utløser:**
+
+1. **Trenerskjermene tegnes** pakke for pakke etter `docs/design-system/utkast-tn/README.md` (pakke 2–8), én PR per pakke.
+2. **Kode når skjermene porteres:** `--tn-akse-*` i `src/styles/team-norway-tokens.css` og speil i `src/lib/v2/team-norway.ts`.
+   Ferdig når pyramiden under `/team-norway/*` vises i disse fargene og ingen TN-fil bruker AK-aksefargene.
+
+## SPILLERENS WORKBENCH FÅR NIVÅENE, COACHEN BEHOLDER DE FIRE FLATENE (Anders 14.10.2026, bindende)
+
+Svar på avklaringen i `docs/planer/portering-godkjente-skjermer-2026-10-14.md`: «Spilleren får nivåene
+År · Periode · Måned · Uke · Målsetninger fra det godkjente designet i stedet for de fire flatene.
+Coachen beholder de fire flatene.»
+
+- **PlayerHQ:** Workbench (`/portal/planlegge/workbench`) har nivåene År · Periode · Måned · Uke ·
+  Målsetninger, tegnet etter pakke 3 (`docs/design-system/utkast-playerhq/plan.html`, godkjent 14.10).
+- **AgencyOS:** coachens Workbench (`/admin/workbench/[playerId]`) beholder Sesongkart · Ukeverksted ·
+  Trenerbord · Stats (`WorkbenchSamlet`).
+- Ingen funksjon forsvinner for spilleren: det de fire flatene gir i dag, skal finnes i et nivå eller i
+  Plan, Stats eller Meg.
+
+**Overstyrer:** «Workbench beholder de fire visningene fra 02.10» i §KODEGJENNOMGANGEN 06.10, for spilleren.
+
+**Arbeidet dette utløser** (steg i porteringsplanen):
+
+1. **År:** `PH11Aarsplan` (#1255). Ferdig når `?niva=ar` viser den og Anders har sett den (port 7).
+2. **Periode og periodeskjema** (steg 3), **måned og månedsskjema** (steg 4), **opprett årsplan** (steg 5):
+   nye komponenter i `src/components/portal/precision/`, koblet i `src/app/portal/planlegge/workbench/page.tsx`.
+3. **Uke og Gjenta** (steg 6): spilleren slutter å bruke `WorkbenchSamlet`. `brukSamletWorkbench`
+   (`src/lib/workbench/samlet-url.ts`) gjelder da bare coach. Ferdig når ingen `/portal`-adresse viser
+   `WorkbenchSamlet`, og gamle `flate=`-lenker for spilleren sender til riktig nivå, låst med test.
+4. **Målsetninger og IUP-måltall** (steg 7).
+5. **Mer-registeret** (`samletMerRegister`, 18 innganger) og «Trenerbord»/«Stats» for spilleren: hver inngang
+   får et sted i nivåene eller i Plan, Stats eller Meg før steg 6 legges inn. Ferdig når lista er gått
+   gjennom og ingen inngang mangler.
+
 ## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
 
 Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller skal kunne booke om timen sin om det er ledig i bookingsystemet. Men det er kun innenfor tilgjengeligheten som er satt hos coach.»
@@ -13,6 +68,37 @@ Svar på spørsmålet etter utkast 1 av pakke 7 Kommunikasjon (PH-23): «Spiller
 - Coachen får beskjed om den nye tiden. Flytting trekker ikke klipp.
 
 Krever ingen kodeendring, fordi koden gjør dette allerede: `rescheduleBooking` (`src/app/portal/meg/bookinger/actions.ts`) sjekker at tiden er ledig og innenfor coachens tilgjengelighet (`isSlotStillAvailable`). Den krever i tillegg mer enn 24 timer til opprinnelig start (`rescheduleOutcome`), samme frist som gratis avbestilling. Utkastet `docs/design-system/utkast-playerhq/kommunikasjon.html` er tegnet slik.
+
+## PEI-TESTER FØRES MED CARRY OG SIDE, 8-BALL MED METER FRA HULLET OG 5 POENG I HULL, TREFF HETER GODKJENT (Anders 14.10.2026, bindende)
+
+Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utkast-playerhq/stats-dybde.html`, PR #1251).
+
+- **8-ball føres med meter fra hullet**, for eksempel 2,4, og «I hull» når ballen går i på ett slag. Ingen høyre eller
+  venstre (Anders 14.10, kommentar på utkastet: «Kun PEI på hvor langt unna hullet i avstand»). Feltet godtar alltid både
+  komma og punktum («2,4» og «2.4»). Appen regner PEI = meter fra hullet / slaglengde, og poeng.
+- **8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.
+- **Alle PEI-tester føres med carry og side.** Appen regner selv ut avstand fra hullet og feilprosenten
+  (PEI = avstand fra hullet / slaglengde). Eksempel: riktig lengde, 5 m til høyre, gir 5 m fra hullet.
+- **Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».
+
+**Overstyrer:** 8-ball-skalaen (under 0,1 m = 4 · 0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0) i
+§Åpne punkter etter runde 19–26, og «Treff eller Bom» / «X / 9 treff» for Wedge Gate (skjermlista PH-15 og
+§ØKONOMI BARE FOR HEAD COACH).
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **8-ball i koden:** `POENG_8BALL` (`src/lib/domain/pei/poeng-tabeller.ts`) får den nye skalaen med 5 for i hull.
+   `attBall` (`src/lib/domain/pei/protokoll-definisjoner.ts`) beholder «Resultat, meter fra hull», og legger til «I hull».
+   Tallfeltet godtar komma og punktum. Ferdig når en test låser 5 / 3 / 2 / 1 / 0, at «2,4» og «2.4» gir samme resultat, og PEI = meter / slaglengde.
+   Lagrede 8-ball-resultater med gammel skala beholdes og merkes med regelversjon.
+2. **PEI-testene** (`pei-*` i `src/lib/portal-tester/tn-catalog.ts`) bruker allerede carry og side; kontroller at
+   alle viser avstand fra hullet og PEI rett etter hvert slag.
+3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
+   skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.
+4. **Nærspill Gate og VISA Express føres også som godkjent eller bom** (Anders 14.10: «Ja»), ikke med poeng for hånd.
+   Overstyrer «poeng føres for hånd per slag og appen summerer» (§Åpne punkter etter runde 19–26) og runde 29 i
+   skjermlista PH-15. `tn-catalog.ts` får `kind: "gate"` med `choice("ok", …)` for begge. Ferdig når
+   `tn-scoring.test.ts` låser «X / 9 godkjent» for begge.
 
 ## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
 
@@ -140,9 +226,10 @@ Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` 
 - **Forelderens innsyn fortsetter etter 16 år**, til spilleren selv fjerner forelderen.
 - **Gamle filer som ingen levende kode bruker, slettes** (432 filer, liste i
   `docs/review/vedlegg/doedkode-filliste.txt`), i små samlede endringer på høyst 20 filer.
-- **Workbench beholder de fire visningene fra 02.10** (Sesongkart · Ukeverksted · Trenerbord · Stats).
+- **Coachens Workbench beholder de fire visningene fra 02.10** (Sesongkart · Ukeverksted · Trenerbord · Stats).
   Detaljene fra nivåtegningene (Gjenta-arket, «Egen»-merket, øktarket, periode- og månedsskjema)
-  tegnes inn i dem. Svar på M1 i Workbench-beskrivelsen.
+  tegnes inn i dem. Svar på M1 i Workbench-beskrivelsen. Spilleren får nivåene i stedet
+  (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10).
 - **Tilgangsreglene kan endres i fase 2** av kodegjennomgangen, etter planen i dokumentet.
 
 **Overstyrer:** «DataGolf vises aldri for andre enn Anders» i §PIPELINES ER ENESTE KILDE og D-19

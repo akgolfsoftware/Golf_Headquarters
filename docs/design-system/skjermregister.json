@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "160bd27b9b0ec7fcdf0647092de53e6b0962805a",
+  "kodeversjon": "d99a85117d273087304c222b40c9cf3010e62d8e",
   "inventar": {
-    "pageFiles": 543,
-    "uniqueRoutePatterns": 543,
-    "componentFiles": 887,
-    "surfaceFiles": 258,
+    "pageFiles": 544,
+    "uniqueRoutePatterns": 544,
+    "componentFiles": 893,
+    "surfaceFiles": 260,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 183
+      "playerhq": 184
     }
   },
   "presisjon": {
@@ -15225,7 +15225,52 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-17"
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/analysere/trackman/koller",
+      "kildefil": "src/app/portal/analysere/trackman/koller/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [
+        "Kodekommentaren sier PH-17, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning."
+      ],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-17 TrackMan, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-17 TrackMan",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "PH-17"
     },
     {
       "screenId": "PH-17",
@@ -15260,7 +15305,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "TrackMan og analyse merker PH17TrackMan i PlayerHQSkall. Fire faner (Økter, Gapping, Utstyr, Stasjon) etter Claude Design PH-17.",
+      "kontrollbevis": "TrackMan-økt merker PH17TmOkt i PlayerHQSkall. Økta er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -17572,20 +17617,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-17",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/mal/trackman/gapping",
       "kildefil": "src/app/portal/mal/trackman/gapping/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/mal/trackman/gapping",
-      "handlinger": "Øktliste, spredningskart, gapping, utstyrshelse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/analysere/trackman/koller",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -17596,25 +17640,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Gapping merker PH17Gapping i PlayerHQSkall. Lesingen fra TrackMan er beholdt. Stats lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-17 TrackMan er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/analysere/trackman/koller. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-17"
+      "videresendingMal": "/portal/analysere/trackman/koller",
+      "kodekommentar": null
     },
     {
       "screenId": "VIDERESENDING",
@@ -23926,18 +23968,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 543,
+    "sidefiler": 544,
     "medAvvik": 166,
-    "valgtForBygging": 250,
-    "utenEksaktType": 11,
-    "implementert": 140,
+    "valgtForBygging": 249,
+    "utenEksaktType": 12,
+    "implementert": 139,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 285,
-      "videresending": 164,
-      "teknisk-forklaring": 28,
+      "tegnet-skjermtype": 284,
+      "videresending": 165,
+      "teknisk-forklaring": 29,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -23958,7 +24000,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 164,
+      "VIDERESENDING": 165,
       "AG-05": 4,
       "AG-06": 3,
       "AG-08": 3,
@@ -23970,7 +24012,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
-      "UTEN-TEGNET-TYPE": 11,
+      "UTEN-TEGNET-TYPE": 12,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -24007,7 +24049,7 @@
       "PH-15": 1,
       "PH-03": 2,
       "PH-02": 2,
-      "PH-17": 5,
+      "PH-17": 4,
       "PH-26": 11,
       "PH-13": 4,
       "PH-22": 2,

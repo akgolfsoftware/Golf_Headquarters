@@ -8,7 +8,7 @@ import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
-import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_GODKJENT_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
@@ -140,7 +140,7 @@ async function lesTnSpillerRader(tx: Prisma.TransactionClient, spillerId: string
 
 export function hentTnProtokollbibliotek() {
   return {
-    versjon: TN_RULES_VERSION,
+    versjon: TN_GODKJENT_VERSION,
     rader: TN_CATALOG.map((protokoll) => ({
       id: protokoll.id,
       navn: protokoll.name,
@@ -1047,7 +1047,8 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
     });
     if (!dag) return null;
     const protokollId = (dag.testDefinition.protocol as { protocolId?: string } | null)?.protocolId ?? "";
-    const protokoll = tnProtocol(protokollId);
+    // Testdagens låste regelversjon, ellers avvises resultater ført før en regelendring.
+    const protokoll = tnProtocol(protokollId, undefined, dag.testDefinition.scoringRule ?? "");
     if (!protokoll) return null;
     // Statisk fra protokollen (samme regel som `tnScore` bruker for å velge
     // primærmetrikk): kun 8-ball-protokoller har "høyere er bedre"
