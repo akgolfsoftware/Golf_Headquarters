@@ -48,7 +48,7 @@ export async function TnCollegeSkjerm() {
 
   return (
     <SkjermRamme aktiv="college" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/college" tittel="College-gruppen" ingress="Landslagsspillere på college i USA. Hvem kan stille på samling, og hvem er bundet av college-kalenderen."
+      <TnSkjermhode tittel="College-gruppen" ingress="Landslagsspillere på college i USA. Hvem kan stille på samling, og hvem er bundet av college-kalenderen."
         handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnCollegeSkjema spillere={spillervalg} knapp="Legg til college" /> : undefined}
       />
 

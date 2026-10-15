@@ -27,7 +27,7 @@ export async function TnFagapparatSkjerm() {
 
   return (
     <SkjermRamme aktiv="fagapparat" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/fagapparat" tittel="Fagapparat" ingress="Hvem i trenerteamet som følger landslagsspillerne." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/tilgang">Legg til trener</TnHandlingLenke> : undefined} />
+      <TnSkjermhode tittel="Fagapparat" ingress="Hvem i trenerteamet som følger landslagsspillerne." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/tilgang">Legg til trener</TnHandlingLenke> : undefined} />
 
       <TnFlate>
         <TnFlatehode tittel="Fagteam" merknad={`${data.rader.length} ${data.rader.length === 1 ? "person" : "personer"}`} />

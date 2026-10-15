@@ -68,7 +68,6 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
   return (
     <SkjermRamme aktiv="samlinger" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
-        rute={valgt && valgtId ? `/team-norway/samlinger/${valgt.id}` : "/team-norway/samlinger"}
         tittel="Samlinger og terminliste"
         ingress="Hele sesongen på ett ark. Velg en måned for detaljer."
         handling={data.kontekst.kanAdministrere ? <TnSamlingSkjema knapp="Ny samling" /> : undefined}
