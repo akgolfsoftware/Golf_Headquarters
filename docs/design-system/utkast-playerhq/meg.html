@@ -1,0 +1,937 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlayerHQ Meg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Meg (PH-24 Meg, PH-25 Abonnement og innstillinger, PH-27 Deling) ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2,.dialog h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.dialog-lag{position:sticky;bottom:0;z-index:7;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)}
+.dialog{border-radius:16px;background:var(--white);padding:var(--r5) var(--r4) var(--r4);display:grid;gap:var(--r4);box-shadow:0 12px 40px rgba(0,0,0,.25);animation:inn 240ms var(--ut)}
+.dialog .knapper{display:grid;gap:var(--r2)}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--sans);flex:none;background:var(--graphite-900);color:var(--white)}
+.avatar.wang{background:#1d3557}
+.avatar.tn{background:#012B5D}
+.avatar.lys{background:var(--sand-150);color:var(--graphite-900)}
+.avatar.stor{width:72px;height:72px;font-size:24px}
+
+/* Hub */
+.meg-topp{display:grid;border-radius:14px;overflow:hidden;border:1px solid var(--sand-300)}
+.meg-topp img{display:block;width:100%;height:150px;object-fit:cover;object-position:50% 55%}
+.meg-topp .mt{padding:var(--r4) 18px 18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r4);align-items:center}
+.meg-topp .mt b.navn{display:block;font:700 24px/1.15 var(--sans);letter-spacing:-.02em}
+.meg-topp .mt .rad{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:6px}
+.kat{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--graphite-900);color:var(--white);font:600 12px/1 var(--sans)}
+.ruter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.rute{display:grid;gap:4px;align-content:start;padding:14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:104px}
+.rute span.e{font-size:13px;color:var(--graphite-600)}
+.rute b.t{font:600 28px/1.05 var(--mono);letter-spacing:-.03em}
+.rute b.t small{font:500 14px/1 var(--mono);color:var(--graphite-600);letter-spacing:0;margin-left:3px}
+.rute .s{font-size:13.5px;line-height:1.35;color:var(--graphite-800);overflow-wrap:anywhere}
+.rute.fylt{background:var(--slag);border-color:var(--slag);color:#fff}
+.rute.fylt span.e,.rute.fylt .s,.rute.fylt b.t small{color:#fff;opacity:.9}
+.liste{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.liste > *{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:60px;padding:10px 14px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;text-decoration:none;width:100%}
+.liste > *:last-child{border-bottom:0}
+.liste b{display:block;font:600 15px/1.3 var(--sans)}
+.liste .kilde{display:block}
+.liste .ikonboks{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150);color:var(--graphite-900)}
+.liste .ikonboks .ikon{width:18px;height:18px}
+.liste .hoyre{display:inline-flex;align-items:center;gap:8px;color:var(--graphite-600);font:500 13px/1 var(--sans)}
+.liste.statisk > *{cursor:default}
+.utgaatt{display:grid;gap:6px;font-size:13.5px;color:var(--graphite-600)}
+
+/* Profil */
+.felter{display:grid;gap:var(--r4)}
+.felt .laast{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);min-height:48px;padding:10px 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--sand-100);font-size:16px;color:var(--graphite-800)}
+.felt .laast .ikon{width:16px;height:16px;color:var(--graphite-600)}
+.funnet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:14px;border:2px solid var(--graphite-900);border-radius:12px;background:var(--white)}
+.funnet b{display:block;font:600 16px/1.3 var(--sans)}
+.funnet .knapper{grid-column:1 / -1}
+.turn-rad{display:grid;grid-template-columns:72px minmax(0,1fr);border-radius:12px;overflow:hidden;background:var(--turn);color:#fff}
+.turn-rad img{width:100%;height:100%;min-height:76px;object-fit:cover}
+.turn-rad div{padding:10px 12px;display:grid;gap:2px}
+.turn-rad b{font:600 15px/1.3 var(--sans)}
+.turn-rad span{font-size:13.5px;opacity:.92}
+
+/* Fasiliteter */
+.omr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.omr{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 10px;border-radius:8px;font:500 13.5px/1.25 var(--sans);color:#fff}
+.omr .ikon{width:16px;height:16px;flex:none}
+.omr.a-slag{background:var(--slag)} .omr.a-fys{background:var(--fys-ink)} .omr.a-spill{background:var(--spill-ink)}
+.omr.mangler{background:var(--white);color:var(--graphite-800);border:1.5px dashed var(--graphite-500)}
+.familie{display:grid;gap:6px}
+.familie > span{font:600 13px/1.3 var(--sans);color:var(--graphite-800)}
+.sporsmal{display:grid;gap:var(--r4)}
+.fremdrift{display:grid;gap:6px}
+.fremdrift .stolpe{height:8px}
+.svarvalg{display:grid;gap:var(--r2)}
+.svarvalg button{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);min-height:56px;padding:10px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:500 16px/1.3 var(--sans);color:var(--graphite-900);cursor:pointer;text-align:left}
+.svarvalg button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.svarvalg button .dekker{font:400 13px/1.3 var(--sans);color:var(--graphite-600)}
+.sp-tekst{font:600 21px/1.3 var(--sans);letter-spacing:-.01em;margin:0}
+
+/* Utstyr */
+.bag{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.bag li{display:grid;grid-template-columns:84px minmax(0,1fr) 64px;gap:var(--r3);align-items:center;min-height:48px;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.bag li b{font-weight:600}
+.bag li .v{font:600 15px/1 var(--mono);text-align:right}
+.bag li .stolpe{height:12px;border-radius:4px}
+.bag li .stolpe span{background:var(--slag);border-radius:4px}
+
+/* Abonnement */
+.niva{display:grid;border-radius:14px;overflow:hidden;background:var(--graphite-900);color:#fff}
+.niva .nt{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.niva .nt .e{font:600 13px/1.3 var(--sans);opacity:.85}
+.niva .nt b.navn{font:700 34px/1 var(--sans);letter-spacing:-.02em}
+.niva .nt .info{font-size:14.5px;opacity:.92}
+.niva .pille.ok{justify-self:start;background:#e3f1e3}
+.sammenlign{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.sammenlign > div{display:grid;gap:var(--r2);align-content:start;padding:14px;border:1px solid var(--sand-300);border-radius:12px}
+.sammenlign > div.valgt{border:2px solid var(--graphite-900)}
+.sammenlign b.n{font:600 17px/1.2 var(--sans)}
+.sammenlign .pris{font:600 22px/1.1 var(--mono)}
+.sammenlign .pris small{font:500 13px/1 var(--mono);color:var(--graphite-600)}
+.sammenlign ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.klipp{display:flex;gap:8px}
+.klipp i{flex:1;height:14px;border-radius:7px;background:var(--sand-150);border:1px solid var(--sand-300)}
+.klipp i.brukt{background:var(--graphite-900);border-color:var(--graphite-900)}
+.klipp i.reservert{background:repeating-linear-gradient(45deg,var(--graphite-600) 0 4px,var(--graphite-500) 4px 8px);border-color:var(--graphite-600)}
+.ekstern{display:inline-flex;align-items:center;gap:6px}
+.ekstern .ikon{width:16px;height:16px}
+
+/* Innstillinger */
+.bryter-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:64px;padding:10px 14px;border-bottom:1px solid var(--sand-300)}
+.bryter-rad:last-child{border-bottom:0}
+.bryter-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.bryter{position:relative;width:52px;height:32px;border-radius:16px;border:0;background:var(--sand-300);cursor:pointer;flex:none;transition:background 160ms var(--ut)}
+.bryter::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform 200ms var(--ut)}
+.bryter[aria-checked="true"]{background:var(--graphite-900)}
+.bryter[aria-checked="true"]::after{transform:translateX(20px)}
+.bryter:disabled{opacity:.5;cursor:default}
+.boks{border:1px solid var(--sand-300);border-radius:12px;background:var(--white);overflow:hidden}
+.slett-felt{font:600 18px/1 var(--mono)!important;letter-spacing:.1em}
+
+/* Deling */
+.tilgang{display:grid;gap:var(--r3);padding:14px 16px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.tilgang-topp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center}
+.tilgang-topp b{display:block;font:600 16px/1.3 var(--sans)}
+.tilgang-topp .kilde{display:block}
+.ser{display:flex;flex-wrap:wrap;gap:6px}
+.ser span{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;background:var(--sand-150);font:500 12.5px/1 var(--sans);color:var(--graphite-800)}
+.ser.bare span{background:var(--slag);color:#fff}
+.gruppe-merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--sand-150);font:600 12px/1 var(--sans);color:var(--graphite-800)}
+.gruppe-merke .ikon{width:14px;height:14px}
+.innsyn-alt{display:grid;gap:var(--r2);padding:14px 16px;border-radius:12px;background:var(--amber-50);color:var(--graphite-900)}
+.innsyn-alt b{font:600 16px/1.3 var(--sans)}
+.innsyn-alt ul{margin:0;padding-left:18px;display:grid;gap:2px;font-size:14.5px}
+.feltfeil{font:500 13.5px/1.4 var(--sans);color:#8a2a1c}
+.felt input[aria-invalid="true"]{border:2px solid #8a2a1c}
+.avkryss{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;font-size:15px;line-height:1.45;cursor:pointer}
+.avkryss input{width:24px;height:24px;margin:0;accent-color:var(--graphite-900)}
+.u16-merke{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:14px 16px;border-radius:12px;border:2px solid var(--amber-700);background:var(--amber-50)}
+.u16-merke .ikon{color:var(--amber-700);margin-top:2px}
+.u16-merke b{display:block;font:600 16px/1.3 var(--sans)}
+
+/* Helse */
+.fravaer{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.fravaer li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:60px;padding:8px 0;border-bottom:1px solid var(--sand-300)}
+.fravaer li b{display:block;font:600 15px/1.3 var(--sans)}
+.ytelse{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.ytelse > div{display:grid;gap:4px;padding:12px;border-radius:10px;background:var(--sand-100)}
+.ytelse span{font-size:13px;color:var(--graphite-600)}
+.ytelse b{font:600 24px/1.05 var(--mono)}
+.ytelse b small{font:500 13px/1 var(--mono);color:var(--graphite-600);margin-left:2px}
+
+.to-del,.hub-grid{display:grid;gap:var(--r5);align-content:start}
+.to-del > div,.hub-grid > div{display:grid;gap:var(--r5);align-content:start}
+
+@container (min-width:900px){
+  .ark-lag,.dialog-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark,.dialog{width:100%;max-width:520px;border-radius:16px}
+  .hub-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .to-del{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .meg-topp{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+  .meg-topp img{height:100%;min-height:180px}
+  .omr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .smal{max-width:760px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 8 · PH-24, PH-25 og PH-27 · utkast 1 · 14.10.2026</span>
+    <h1>Meg</h1>
+    <p>Ti skjermer i én fil: Meg-oversikten, profil med turneringsresultatene, fasiliteter mot de 19 treningsområdene, utstyr, helse og fravær, foreldre, abonnement, innstillinger og samtykker, og deling, også varianten for spillere under 16. Demodata for Øyvind Rohjan, 17 år, Kategori C, i WANG Toppidrett og med coaching-pakken Performance Pro. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="meg">PH-24 Meg</button>
+      <button type="button" aria-pressed="false" data-skjerm="profil">Profil</button>
+      <button type="button" aria-pressed="false" data-skjerm="fasiliteter">Fasiliteter</button>
+      <button type="button" aria-pressed="false" data-skjerm="utstyr">Utstyr</button>
+      <button type="button" aria-pressed="false" data-skjerm="helse">Helse og fravær</button>
+      <button type="button" aria-pressed="false" data-skjerm="foreldre">Foreldre</button>
+      <button type="button" aria-pressed="false" data-skjerm="abonnement">PH-25 Abonnement</button>
+      <button type="button" aria-pressed="false" data-skjerm="innstillinger">Innstillinger</button>
+      <button type="button" aria-pressed="false" data-skjerm="deling">PH-27 Deling</button>
+      <button type="button" aria-pressed="false" data-skjerm="deling16">Deling under 16</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Meg er én oversikt</b> med bilde, navn, kategori og fire ruter: HCP, coaching-pakken, deling og fasiliteter. Resten ligger i fire grupper: Deg, Coaching, Familie og deling, Konto.</li>
+        <li><b>Målsetninger ligger i Workbench</b> (vedtak 28.09). Meg lenker dit, med fremdriften fra ekte data.</li>
+        <li><b>«Finn deg i turneringsresultatene»:</b> Øyvind kobler seg til resultatene fra GolfBox med ett trykk. Resultatene vises i Stats › Snittscore.</li>
+        <li><b>Fasiliteter:</b> ett spørsmål om gangen, og svaret vises som dekning av de 19 treningsområdene: 17 av 19, med det som mangler stiplet.</li>
+        <li><b>Abonnement:</b> nivåene heter Gratis og Full. Full er inkludert i Performance Pro. Velgeren øverst viser også spilleren som betaler selv (299 kr/mnd eller 2 690 kr/år) og spilleren på Gratis.</li>
+        <li><b>Deling:</b> innsyn er alt, og skjermen sier det rett ut. Lenke bare til @wang.no og @golfforbundet.no, gyldig i sju dager. WANG og Team Norway står som «Gruppe» uten «Trekk tilgang».</li>
+        <li><b>Under 16:</b> deling og opptak er sperret til forelderen har godkjent. Over 16 kan spilleren fjerne forelderen selv.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Rust bare i dialogene som avslutter eller sletter: Avslutt pakken, Trekk tilgang, Fjern forelder, Send sletteforespørsel. Ingen rust på selve skjermene.</li>
+        <li>Farge betyr akse: fasilitetene og køllene er SLAG, styrke og bevegelighet FYS, banespill SPILL. Coaching-pakken er grafitt, fordi den ikke er én akse.</li>
+        <li>Fødselsdatoen kan ikke endres av spilleren (vedtak 06.10). Kategori settes av coachen ut fra brutto snittscore.</li>
+        <li>Slett kontoen min sender en forespørsel som coach eller admin godkjenner (vedtak 28.09). Spilleren skriver SLETT først.</li>
+        <li>Utgått og ikke tegnet: Talent «Min plan», roadmap, ukesdigest (blir melding) og «Utenfor banen». Talentradar vises aldri for spilleren.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Trekk tilgang:</b> skjermlista sier «med ett trykk» og rust. Utkastet åpner en dialog med rust bekreft, fordi skjermen har flere tilganger og rust er høyst én per flate. Trekkes tilgangen, forsvinner treneren med en gang.</li>
+        <li><b>Hva Gratis inneholder</b> står bare som eksempel. Fasit er produktreglene (BUSINESS-RULES §Abonnement).</li>
+        <li><b>Spilleren betaler PlayerHQ selv</b> (vedtak 28.09) mot at Performance Pro og WANG-gruppa gir Full (BUSINESS-RULES). Utkastet følger BUSINESS-RULES, som vinner ved konflikt.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PH-24 Meg ================= -->
+<template id="meg">
+<div class="app" data-fane="meg">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg</div><h1 class="tittel">Meg</h1></div>
+    </div>
+    <div class="hub-grid">
+      <div>
+        <div class="meg-topp">
+          <img src="bilder/spill-bane.jpg" alt="">
+          <div class="mt">
+            <span class="avatar stor" aria-hidden="true">ØR</span>
+            <div>
+              <b class="navn">Øyvind Rohjan</b>
+              <div class="rad"><span class="kat">Kategori C</span><span class="pille noy"><i></i>WANG Toppidrett</span></div>
+              <p class="kildetekst" style="margin-top:8px">Fredrikstad GK · coach Anders Kristiansen</p>
+            </div>
+          </div>
+        </div>
+        <div class="ruter">
+          <button type="button" class="rute" data-gaa="profil"><span class="e">HCP</span><b class="t" data-tell="3.6">3,6</b><span class="s">Fra NGF, 4. okt</span></button>
+          <button type="button" class="rute" data-gaa="abonnement"><span class="e">Performance Pro</span><b class="t">2<small>klipp</small></b><span class="s">igjen i oktober</span></button>
+          <button type="button" class="rute" data-gaa="deling"><span class="e">Deling</span><b class="t">4</b><span class="s">ser profilen din</span></button>
+          <button type="button" class="rute fylt" data-gaa="fasiliteter"><span class="e">Fasiliteter</span><b class="t">17<small>av 19</small></b><span class="s">treningsområder</span></button>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Deg</h2></div>
+          <div class="liste">
+            <button type="button" data-gaa="profil"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span><b>Profil</b><span class="kilde">Personalia, HCP, klubb og turneringsresultater</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button" data-gaa="fasiliteter"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span><span><b>Fasiliteter</b><span class="kilde">Hvor du kan trene · 17 av 19 områder</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button" data-gaa="utstyr"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 21l6-18M13 3h3"/><circle cx="7" cy="19" r="2"/></svg></span><span><b>Utstyr</b><span class="kilde">13 køller i bagen</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button" data-gaa="helse"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></span><span><b>Helse og fravær</b><span class="kilde">Ingen skade registrert</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Coaching</h2></div>
+          <div class="liste">
+            <a href="#"><span class="avatar" aria-hidden="true">AK</span><span><b>Min coach: Anders Kristiansen</b><span class="kilde">Performance Pro · videoer og tilbakemeldinger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Bookinger</b><span class="kilde">Neste: fredag 9. oktober kl. 16:00</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span><span><b>Målsetninger</b><span class="kilde">Ligger i Plan › Workbench · 2 på vei</span></span><span class="hoyre">Plan<svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></a>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Familie og deling</h2></div>
+          <div class="liste">
+            <button type="button" data-gaa="foreldre"><span class="avatar lys" aria-hidden="true">HR</span><span><b>Foreldre</b><span class="kilde">Hilde Rohjan ser profilen din</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button" data-gaa="deling"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><span><b>Deling</b><span class="kilde">Anders, WANG, Team Norway og én trener</span></span><span class="hoyre"><span class="pille vent"><i></i>1 svar</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span><span><b>Venner og utfordringer</b><span class="kilde">5 venner · 1 utfordring pågår</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Konto</h2></div>
+          <div class="liste">
+            <button type="button" data-gaa="abonnement"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><span><b>Abonnement</b><span class="kilde">Full · inkludert i Performance Pro</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button" data-gaa="innstillinger"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span><b>Innstillinger og samtykker</b><span class="kilde">Varsler, kalender, opptak, Ytelsesbilde</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></span><span><b>Hjelp og tilbakemelding</b><span class="kilde">Spørsmål og svar, skriv til oss</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+          <button type="button" class="knapp sek">Logg ut</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Profil ================= -->
+<template id="profil">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Meg · profil</div><h1 class="tittel">Profil</h1></div></div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong data-tell="3.6">3,6</strong><span class="forklar">HCP</span></div>
+          <p class="kildetekst">Kilde: NGF, oppdatert 4. oktober. HCP endres bare der, ikke i appen.</p>
+        </div>
+        <div class="felter">
+          <div class="felt"><label for="p-navn">Navn</label><input id="p-navn" value="Øyvind Rohjan" autocomplete="name"></div>
+          <div class="felt"><span class="etikett">Fødselsdato</span><span class="laast">12. mars 2009<svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="hjelp">Fødselsdatoen kan bare endres av coachen din.</span></div>
+          <div class="felt"><label for="p-klubb">Hjemmeklubb</label><select id="p-klubb"><option>Fredrikstad GK</option><option>Gamle Fredrikstad GK</option><option>Borregaard GK</option></select></div>
+          <div class="felt"><span class="etikett">Kategori</span><span class="laast">C · National U21<svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="hjelp">Satt ut fra brutto snittscore 73,1, siste 18 runder.</span></div>
+          <div class="felt"><label for="p-epost">E-post</label><input id="p-epost" type="email" value="oyvind@eksempel.no" autocomplete="email"></div>
+          <div class="felt"><label for="p-tlf">Mobil</label><input id="p-tlf" type="tel" value="900 00 000" autocomplete="tel"></div>
+          <button type="button" class="knapp pri stor" data-lagre>Lagre</button>
+        </div>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Turneringsresultater</h2></div>
+          <div data-ikke-koblet>
+            <div class="kort dempet" style="gap:var(--r3)">
+              <b class="undertittel">Finn deg i turneringsresultatene</b>
+              <p class="forklar">Vi har funnet én spiller i GolfBox som ligner på deg. Kobler du deg, kommer resultatene inn i Stats › Snittscore og i kategorien.</p>
+              <div class="funnet">
+                <span class="avatar lys" aria-hidden="true">ØR</span>
+                <span><b>Øyvind Rohjan</b><span class="kilde">Fredrikstad GK · født 2009 · 18 turneringer siden 2024</span></span>
+                <div class="knapper"><button type="button" class="knapp pri" data-koble>Det er meg</button><button type="button" class="knapp sek" data-ikke-meg>Ikke meg</button></div>
+              </div>
+            </div>
+          </div>
+          <div data-koblet hidden style="display:grid;gap:var(--r3)">
+            <span class="pille ok" style="justify-self:start"><i></i>Koblet til GolfBox</span>
+            <div class="turn-rad"><img src="bilder/turn-tee.jpg" alt=""><div><b>Srixon Tour 5, Kongsberg</b><span>27. sep · 72, 74 · brutto 146 · 9. plass</span></div></div>
+            <div class="turn-rad"><img src="bilder/turn-tee.jpg" alt=""><div><b>Østlandstouren 4, Larvik</b><span>13. sep · 71, 73 · brutto 144 · 4. plass</span></div></div>
+            <p class="kildetekst">Kilde: GolfBox via turneringsdataene, hentet mandag 5. oktober. Bare brutto score.</p>
+          </div>
+        </section>
+        <div class="kort dempet">
+          <b class="undertittel">Målsetninger</b>
+          <p class="forklar">Målsetningene dine ligger i Plan › Workbench, sammen med planen de styrer. Der ser du fremdriften fra rundene og testene dine.</p>
+          <a class="lenke" href="#">Åpne målsetninger i Workbench</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Fasiliteter ================= -->
+<template id="fasiliteter">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Meg · fasiliteter</div><h1 class="tittel">Fasiliteter</h1></div></div>
+    <div data-resultat style="display:grid;gap:var(--r5)">
+      <div class="kort">
+        <div class="hoved"><strong data-dekning>17</strong><span class="forklar">av 19 treningsområder kan du trene der du er</span></div>
+        <div class="stolpe"><span data-til="89%" style="width:89%;background:var(--slag)"></span></div>
+        <p class="kildetekst">Ut fra svarene dine 28. september. Planforslagene bruker dette.</p>
+      </div>
+      <div data-omr style="display:grid;gap:var(--r4)"></div>
+      <div class="kort dempet">
+        <b class="undertittel">Dette mangler</b>
+        <p class="forklar" data-mangler-tekst>Bunker og putter over 40 fot. Planen foreslår ikke økter du ikke har sted til. Vil du trene dem, kan du legge inn en økt på en annen bane.</p>
+      </div>
+      <button type="button" class="knapp pri stor" data-start>Endre svarene</button>
+    </div>
+    <div data-flyt hidden class="sporsmal">
+      <div class="fremdrift"><span class="kilde" data-nr>Spørsmål 1 av 7</span><div class="stolpe"><span data-stolpe style="width:14%"></span></div></div>
+      <p class="sp-tekst" data-sp></p>
+      <p class="forklar" data-sp-hjelp></p>
+      <div class="svarvalg" data-valg role="group"></div>
+      <div class="knapper"><button type="button" class="knapp sek" data-forrige>Tilbake</button><button type="button" class="knapp pri" data-neste>Neste</button></div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Utstyr ================= -->
+<template id="utstyr">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Meg · utstyr</div><h1 class="tittel">Utstyr</h1></div></div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong>228<small>m</small></strong><span class="forklar">carry med driveren</span></div>
+          <p class="kildetekst">Kilde: TrackMan, snitt med full hastighet, 14. september.</p>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Bagen</h2><span class="kilde">13 køller · carry i meter</span></div>
+          <ul class="bag" data-bag></ul>
+        </section>
+      </div>
+      <div>
+        <div class="kort">
+          <b class="undertittel">Annet utstyr</b>
+          <ul class="bag" style="border-top:0">
+            <li><b>Ball</b><span>Turneringsball, samme modell på trening</span><span class="v">—</span></li>
+            <li><b>Radar</b><span>Ingen egen. Bruker TrackMan i simulatoren</span><span class="v">—</span></li>
+            <li><b>Klokke</b><span>Ikke koblet</span><span class="v">—</span></li>
+          </ul>
+        </div>
+        <div class="knapper"><button type="button" class="knapp pri">Endre bagen</button><button type="button" class="knapp sek">Legg til utstyr</button></div>
+        <p class="kildetekst">Køllene brukes i runderegistreringen og i TrackMan-oversikten i Stats.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Helse og fravær ================= -->
+<template id="helse">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Meg · helse og fravær</div><h1 class="tittel">Helse og fravær</h1></div></div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong>0</strong><span class="forklar">dager borte de siste 4 ukene</span></div>
+          <p class="kildetekst">Ingen skade eller sykdom registrert siden 14. august.</p>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Registrert</h2></div>
+          <ul class="fravaer">
+            <li><span class="ikonboks" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150)"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span><span><b>Høstferie</b><span class="kilde">12.–16. oktober · planen holder igjen ukene</span></span><span class="pille noy"><i></i>Ferie</span></li>
+            <li><span class="ikonboks" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150)"><svg class="ikon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></span><span><b>Vond venstre håndledd</b><span class="kilde">8.–14. august · friskmeldt av deg selv</span></span><span class="pille ok"><i></i>Over</span></li>
+          </ul>
+        </section>
+        <div class="knapper"><button type="button" class="knapp pri" data-ny-fravaer>Registrer fravær</button></div>
+        <p class="kildetekst">Anders ser det du registrerer her. WANG og Team Norway ser det også, fordi du deler alt med dem.</p>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Ytelsesbilde</h2><span class="pille ok"><i></i>Samtykke gitt</span></div>
+          <div class="ytelse">
+            <div><span>Søvn</span><b>7,4<small>t</small></b></div>
+            <div><span>Energi</span><b>4<small>av 5</small></b></div>
+            <div><span>Mat</span><b>—</b></div>
+          </div>
+          <p class="kildetekst">Snitt siste 7 dager, fra det du har registrert etter øktene. Mat er ikke registrert.</p>
+        </section>
+        <div class="kort dempet">
+          <b class="undertittel">Hvorfor vi spør</b>
+          <p class="forklar">Søvn, energi og mat hjelper coachen å se når belastningen bør ned. Du kan slå Ytelsesbilde av i Innstillinger. Da slettes det du har registrert.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ark-lag" data-fravaer-ark hidden>
+      <div class="ark" role="dialog" aria-label="Registrer fravær">
+        <div class="ark-topp"><h2>Registrer fravær</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="valg" role="group" aria-label="Type"><button type="button" aria-pressed="true">Skade</button><button type="button" aria-pressed="false">Sykdom</button><button type="button" aria-pressed="false">Ferie</button><button type="button" aria-pressed="false">Annet</button></div>
+        <div class="felt"><label for="h-fra">Fra og med</label><input id="h-fra" type="date" value="2026-10-05"></div>
+        <div class="felt"><label for="h-til">Til og med</label><input id="h-til" type="date"><span class="hjelp">La stå tomt hvis du ikke vet når du er tilbake.</span></div>
+        <div class="felt"><label for="h-notat">Hva skjedde</label><textarea id="h-notat" rows="2" placeholder="Kort, for coachen"></textarea></div>
+        <button type="button" class="knapp pri stor" data-lagre-fravaer>Registrer</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Foreldre ================= -->
+<template id="foreldre">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Meg · foreldre</div><h1 class="tittel">Foreldre</h1></div></div>
+    <div class="tilgang" data-forelder>
+      <div class="tilgang-topp"><span class="avatar lys" aria-hidden="true">HR</span><span><b>Hilde Rohjan</b><span class="kilde">Forelder · godkjent 20. august 2025</span></span><span class="pille ok"><i></i>Ser alt</span></div>
+      <div class="ser"><span>Plan</span><span>Økter</span><span>Runder</span><span>Tester</span><span>Bookinger</span><span>Helse</span></div>
+      <p class="forklar">Hilde kan booke timer for deg og ser kvitteringene. Hun ser ikke meldingene mellom deg og Anders.</p>
+      <div class="knapper"><button type="button" class="knapp sek" data-fjern>Fjern forelder</button></div>
+    </div>
+    <div class="kort dempet">
+      <b class="undertittel">Du er over 16 år</b>
+      <p class="forklar">Forelderen din ser profilen din til du fjerner henne. Du trenger ikke lenger godkjenning for deling eller opptak.</p>
+    </div>
+    <button type="button" class="knapp pri stor" data-inviter>Inviter forelder</button>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="fj-tittel">
+        <h2 id="fj-tittel">Fjerne Hilde Rohjan som forelder?</h2>
+        <p class="forklar">Hilde mister innsynet med en gang og kan ikke lenger booke for deg. Hun får beskjed. Du kan invitere henne igjen senere.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-fj-ok>Fjern forelder</button><button type="button" class="knapp sek stor" data-fj-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-25 Abonnement ================= -->
+<template id="abonnement">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · abonnement</div><h1 class="tittel">Abonnement</h1></div>
+      <div class="valg" role="group" aria-label="Eksempel" data-variant><button type="button" aria-pressed="true" data-v="pakke">I pakke</button><button type="button" aria-pressed="false" data-v="betaler">Betaler selv</button><button type="button" aria-pressed="false" data-v="gratis">Gratis</button></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <div class="niva">
+          <div class="nt">
+            <span class="e">PlayerHQ-nivå</span>
+            <b class="navn" data-niva>Full</b>
+            <span class="pille ok" data-niva-pille><i></i>Aktiv</span>
+            <span class="info" data-niva-info>Inkludert i coaching-pakken Performance Pro. Du betaler ikke ekstra for appen.</span>
+          </div>
+        </div>
+        <div data-betaler hidden style="display:grid;gap:var(--r3)">
+          <ul class="vilkaar" style="list-style:none;margin:0">
+            <li><b>299 kr/mnd</b> · neste trekk 1. november</li>
+            <li>Kort som slutter på 4242</li>
+          </ul>
+          <div class="kort dempet"><b class="undertittel">Bytt til årlig</b><p class="forklar">2 690 kr/år i stedet for 3 588 kr. Gjelder fra neste trekk.</p><div class="knapper"><button type="button" class="knapp sek" data-aarlig>Bytt til 2 690 kr/år</button></div></div>
+        </div>
+        <div data-gratis hidden style="display:grid;gap:var(--r3)">
+          <div class="sammenlign">
+            <div class="valgt"><b class="n">Gratis</b><span class="pris">0 kr</span><ul><li>Profil og turneringsresultater</li><li>Stats › Snittscore</li><li>Booking</li></ul></div>
+            <div><b class="n">Full</b><span class="pris">299<small> kr/mnd</small></span><ul><li>Plan og Workbench</li><li>Treningsøkta og tester</li><li>Caddie og alle Stats</li></ul></div>
+          </div>
+          <span class="estimat">Eksempel på innhold</span>
+          <button type="button" class="knapp pri stor">Velg Full</button>
+          <p class="kildetekst">Eller 2 690 kr/år. Første gang får du én uke Full før det trekkes, og du kan si opp når som helst.</p>
+        </div>
+        <div data-pakke style="display:grid;gap:var(--r3)">
+          <div class="kort">
+            <div class="sek-topp"><b class="undertittel">Performance Pro</b><span class="kilde">Fornyes 1. november</span></div>
+            <div class="hoved"><strong>2</strong><span class="forklar">klipp igjen i oktober</span></div>
+            <div class="klipp" aria-label="1 brukt, 1 booket, 2 igjen av 4"><i class="brukt"></i><i class="reservert"></i><i></i><i></i></div>
+            <p class="kildetekst">4 klipp i måneden. Én coachet økt trekker ett klipp.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Betaling</h2></div>
+          <div class="liste">
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><span><b>Bytt kort og se kvitteringer</b><span class="kilde">Åpner betalingssiden hos Stripe</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span><b>Bookinger</b><span class="kilde">Klippene brukes når du booker</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </section>
+        <div class="kort dempet" data-avslutt-kort>
+          <b class="undertittel" data-avslutt-tittel>Avslutte Performance Pro</b>
+          <p class="forklar" data-avslutt-tekst>Du beholder pakken, klippene og Full ut oktober.</p>
+          <div class="knapper"><button type="button" class="knapp sek" data-avslutt>Avslutt</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="av-tittel">
+        <h2 id="av-tittel" data-d-tittel>Avslutte Performance Pro?</h2>
+        <p class="forklar" data-d-tekst>Du beholder pakken, de 2 klippene og Full ut oktober. Fra 1. november har du Gratis, med mindre du velger Full for 299 kr/mnd. Planen og dataene dine blir liggende.</p>
+        <div class="vilkaar"><b>Siste dag: 31. oktober</b><span>Ingen flere trekk etter det.</span></div>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-av-ok>Avslutt abonnementet</button><button type="button" class="knapp sek stor" data-av-nei>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-25 Innstillinger ================= -->
+<template id="innstillinger">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Meg · innstillinger</div><h1 class="tittel">Innstillinger</h1></div></div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Samtykker</h2></div>
+          <div class="boks">
+            <div class="bryter-rad"><span><b>Ytelsesbilde</b><span class="kilde">Søvn, energi og mat etter øktene. Coachen ser det.</span></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Ytelsesbilde"></button></div>
+            <div class="bryter-rad"><span><b>Opptak i coachingøkt</b><span class="kilde">Lyd fra timen blir sammendrag. Du ser «Opptak pågår».</span></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Opptak i coachingøkt"></button></div>
+          </div>
+          <p class="kildetekst">Navnet ditt tas ut før tekst sendes til AI. AK Golf kan bruke dataene anonymisert, som det står i vilkårene.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Kalender</h2></div>
+          <div class="boks">
+            <div class="bryter-rad"><span><b>Google-kalender</b><span class="kilde">Begge veier. Coachen ser bare at du er opptatt, aldri tittelen.</span></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Google-kalender"></button></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Varsler</h2></div>
+          <div class="boks">
+            <div class="bryter-rad"><span><b>Melding fra coachen</b></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Melding fra coachen"></button></div>
+            <div class="bryter-rad"><span><b>Endring i dagens plan</b></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Endring i dagens plan"></button></div>
+            <div class="bryter-rad"><span><b>Forslag fra trener og Caddie</b></span><button type="button" class="bryter" role="switch" aria-checked="true" aria-label="Forslag"></button></div>
+            <div class="bryter-rad"><span><b>Påminnelse før økt</b><span class="kilde">30 min før</span></span><button type="button" class="bryter" role="switch" aria-checked="false" aria-label="Påminnelse før økt"></button></div>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Sikkerhet</h2></div>
+          <div class="boks">
+            <div class="bryter-rad"><span><b>Tofaktor-innlogging</b><span class="kilde">Kode fra app ved innlogging på ny enhet</span></span><button type="button" class="bryter" role="switch" aria-checked="false" aria-label="Tofaktor-innlogging"></button></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Hjelp</h2></div>
+          <div class="liste">
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></span><span><b>Spørsmål og svar</b></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+            <a href="#"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span><b>Gi tilbakemelding</b></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Konto</h2></div>
+          <div class="kort dempet" data-slett-kort>
+            <b class="undertittel">Slett kontoen min</b>
+            <p class="forklar">Du sender en forespørsel. Coachen eller AK Golf sletter kontoen og dataene dine, og du får beskjed når det er gjort.</p>
+            <div class="knapper"><button type="button" class="knapp sek" data-slett>Slett kontoen min</button></div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="sl-tittel">
+        <h2 id="sl-tittel">Slette kontoen?</h2>
+        <p class="forklar">Planen, øktene, rundene, testene og meldingene slettes. Det kan ikke angres. Turneringsresultatene i GolfBox blir liggende der.</p>
+        <div class="felt"><label for="sl-felt">Skriv SLETT for å bekrefte</label><input id="sl-felt" class="slett-felt" autocomplete="off" autocapitalize="characters"></div>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-sl-ok disabled style="opacity:.45">Send sletteforespørsel</button><button type="button" class="knapp sek stor" data-sl-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-27 Deling ================= -->
+<template id="deling">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Meg · deling</div><h1 class="tittel">Deling</h1></div></div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong data-antall>4</strong><span class="forklar">ser profilen din</span></div>
+          <p class="kildetekst">Pluss forelderen din. Sist endret 2. oktober.</p>
+        </div>
+        <div class="innsyn-alt">
+          <b>Den du deler med, ser alt</b>
+          <ul><li>Plan, økter og målsetninger</li><li>Runder, tester og Stats</li><li>Helse og fravær</li><li>Meldinger med coachen</li></ul>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Venter på deg</h2></div>
+          <article class="tilgang" data-foresp>
+            <div class="tilgang-topp"><span class="avatar tn" aria-hidden="true">TN</span><span><b>Jon Berg ber om innsyn</b><span class="kilde">jon.berg@golfforbundet.no · Team Norway</span></span><span class="pille vent"><i></i>Ny</span></div>
+            <p class="forklar">Godtar du, ser Jon alt i listen over. Du kan trekke tilgangen når du vil.</p>
+            <div class="knapper"><button type="button" class="knapp pri" data-godta>Godta</button><button type="button" class="knapp sek" data-avsla>Avslå</button></div>
+          </article>
+          <article class="tilgang">
+            <div class="tilgang-topp"><span class="avatar lys" aria-hidden="true"><svg class="ikon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span><b>Lenke til eva.lund@wang.no</b><span class="kilde">Sendt 2. oktober · gjelder til 9. oktober</span></span><span class="pille noy"><i></i>Ikke åpnet</span></div>
+          </article>
+        </section>
+        <button type="button" class="knapp pri stor" data-del>Del med trener</button>
+      </div>
+      <div>
+        <section class="seksjon" data-tilganger>
+          <div class="sek-topp"><h2>Har tilgang</h2></div>
+          <article class="tilgang">
+            <div class="tilgang-topp"><span class="avatar" aria-hidden="true">AK</span><span><b>Anders Kristiansen</b><span class="kilde">AK-coach · siden 20. august 2025</span></span><span class="pille ok"><i></i>Ser alt</span></div>
+            <p class="forklar">Endrer planen direkte. Du kan angre det han endrer.</p>
+          </article>
+          <article class="tilgang" data-person="kari">
+            <div class="tilgang-topp"><span class="avatar wang" aria-hidden="true">KN</span><span><b>Kari Nordvik</b><span class="kilde">kari.nordvik@wang.no · delt 18. august</span></span><span class="pille ok"><i></i>Ser alt</span></div>
+            <p class="forklar">Sender forslag. Ingenting endres før du godtar.</p>
+            <div class="knapper"><button type="button" class="knapp sek" data-trekk="Kari Nordvik">Trekk tilgang</button></div>
+          </article>
+          <article class="tilgang">
+            <div class="tilgang-topp"><span class="avatar wang" aria-hidden="true">W</span><span><b>WANG Toppidrett Fredrikstad</b><span class="kilde">Trenerne i gruppa di</span></span><span class="gruppe-merke"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Gruppe</span></div>
+            <p class="forklar">WANG ser profilen din fordi du er i gruppa. Går du ut av gruppa, forsvinner innsynet med en gang.</p>
+          </article>
+          <article class="tilgang">
+            <div class="tilgang-topp"><span class="avatar tn" aria-hidden="true">TN</span><span><b>Team Norway</b><span class="kilde">Testresultater fra WANG</span></span><span class="gruppe-merke"><svg class="ikon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Gruppe</span></div>
+            <div class="ser bare"><span>Bare tester, med navn</span></div>
+            <p class="forklar">WANG-elevers testresultater deles med Team Norway. Det står i opptaksavtalen og kan ikke slås av.</p>
+          </article>
+        </section>
+      </div>
+    </div>
+
+    <div class="ark-lag" data-del-ark hidden>
+      <div class="ark" role="dialog" aria-label="Del med trener">
+        <div class="ark-topp"><h2>Del med trener</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><label for="d-epost">Trenerens e-post</label><input id="d-epost" type="email" placeholder="navn@wang.no" autocomplete="off"><span class="hjelp">Bare adresser som slutter på @wang.no eller @golfforbundet.no.</span><span class="feltfeil" data-epost-feil hidden>Lenken kan bare sendes til @wang.no eller @golfforbundet.no.</span></div>
+        <div class="innsyn-alt"><b>Treneren ser alt</b><span style="font-size:14.5px">Plan, økter, runder, tester, helse og meldinger. Lenken gjelder i sju dager.</span></div>
+        <label class="avkryss"><input type="checkbox" data-forstaar><span>Jeg forstår at treneren ser alt, også helse og meldinger.</span></label>
+        <button type="button" class="knapp pri stor" data-send>Send lenke</button>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="tr-tittel">
+        <h2 id="tr-tittel">Trekke tilgangen til Kari Nordvik?</h2>
+        <p class="forklar">Kari ser ingenting fra deg lenger, med en gang. Forslag hun har sendt, blir liggende i innboksen din.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-tr-ok>Trekk tilgang</button><button type="button" class="knapp sek stor" data-tr-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-27-U16 Deling under 16 ================= -->
+<template id="deling16">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Meg · deling</div><h1 class="tittel">Deling</h1></div></div>
+    <div class="u16-merke">
+      <svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span><b>Venter på forelder</b><span class="forklar">Du er under 16. Deling og opptak er sperret til forelderen din har godkjent. Vi sendte en e-post til forelderen 2. oktober.</span></span>
+    </div>
+    <div class="kort">
+      <div class="hoved"><strong>4</strong><span class="forklar">dager igjen til forelderen må godkjenne</span></div>
+      <div class="stolpe"><span data-til="43%" style="width:43%"></span></div>
+      <p class="kildetekst">Kontoen ble opprettet 2. oktober. Godkjenner ikke forelderen innen 9. oktober, låses kontoen til godkjenningen kommer.</p>
+    </div>
+    <div class="knapper"><button type="button" class="knapp pri" data-paaminn>Send påminnelse til forelder</button><button type="button" class="knapp sek">Endre forelderens e-post</button></div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Har tilgang</h2></div>
+      <article class="tilgang">
+        <div class="tilgang-topp"><span class="avatar" aria-hidden="true">AK</span><span><b>Anders Kristiansen</b><span class="kilde">AK-coach</span></span><span class="pille ok"><i></i>Ser alt</span></div>
+      </article>
+      <article class="tilgang">
+        <div class="tilgang-topp"><span class="avatar wang" aria-hidden="true">W</span><span><b>WANG Ung Fredrikstad</b><span class="kilde">Trenerne i gruppa di</span></span><span class="pille vent"><i></i>Venter på forelder</span></div>
+      </article>
+    </section>
+    <button type="button" class="knapp pri stor" disabled style="opacity:.45">Del med trener</button>
+    <p class="kildetekst">Du kan dele med en trener når forelderen din har godkjent.</p>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  function vis(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('input, textarea, button'); if (f) f.focus({ preventScroll: true }); }
+  }
+  function brytere(app) {
+    app.querySelectorAll('.bryter').forEach(function (b) {
+      b.addEventListener('click', function () { b.setAttribute('aria-checked', b.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); toast(app, 'Lagret.'); });
+    });
+  }
+  var HAKE = '<svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
+  var KRYSS = '<svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>';
+
+  /* ---------- Profil ---------- */
+  function profil(app) {
+    app.querySelector('[data-lagre]').addEventListener('click', function () { toast(app, 'Lagret.'); });
+    app.querySelector('[data-koble]').addEventListener('click', function () {
+      app.querySelector('[data-ikke-koblet]').hidden = true; app.querySelector('[data-koblet]').hidden = false;
+      toast(app, '18 turneringer er koblet til profilen din.');
+    });
+    app.querySelector('[data-ikke-meg]').addEventListener('click', function () {
+      app.querySelector('[data-ikke-koblet]').innerHTML = '<div class="kort dempet"><b class="undertittel">Ingen treff</b><p class="forklar">Vi fant ingen andre spillere som ligner. Spiller du turneringer under et annet navn, skriv til Anders.</p></div>';
+    });
+  }
+
+  /* ---------- Fasiliteter: 19 treningsområder (masteren §11) ---------- */
+  var OMR = [
+    { f: 'Utslag', a: 'slag', o: [['UTSLAG', 'Utslag']] },
+    { f: 'Innspill', a: 'slag', o: [['I200', '200 m og lengre'], ['I150', '150–200 m'], ['I100', '100–150 m'], ['I50', '50–100 m']] },
+    { f: 'Nærspill', a: 'slag', o: [['CHIP', 'Chip'], ['PITCH', 'Pitch'], ['LOB', 'Lob'], ['BUNKER', 'Bunker']] },
+    { f: 'Putting', a: 'slag', o: [['P3', '0–3 fot'], ['P5', '3–5 fot'], ['P10', '5–10 fot'], ['P25', '10–25 fot'], ['P40', '25–40 fot'], ['P40P', '40+ fot']] },
+    { f: 'Fysisk', a: 'fys', o: [['STYRKE', 'Styrke'], ['KOND', 'Kondisjon'], ['BEV', 'Bevegelighet']] },
+    { f: 'Spill', a: 'spill', o: [['BANE', 'Banespill']] }
+  ];
+  var SP = [
+    { t: 'Har du en driving range du kan bruke?', h: 'Gress eller matter, ute eller under tak.', v: [['Nei', []], ['Under 150 m', ['I100', 'I50']], ['150–200 m', ['UTSLAG', 'I150', 'I100', 'I50']], ['Over 200 m', ['UTSLAG', 'I200', 'I150', 'I100', 'I50']]] },
+    { t: 'Har du simulator eller radar?', h: 'TrackMan eller annen radar.', v: [['Nei', []], ['Ja, simulator med TrackMan', ['UTSLAG', 'I200', 'I150', 'I100', 'I50']], ['Ja, egen radar ute', ['UTSLAG', 'I150', 'I100', 'I50']]] },
+    { t: 'Har du en chippinggreen?', h: 'Med plass til slag fra ulike lier og avstander.', v: [['Nei', []], ['Ja, bare korte slag', ['CHIP']], ['Ja, opptil 50 m', ['CHIP', 'PITCH', 'LOB']]] },
+    { t: 'Har du en treningsbunker?', h: '', v: [['Nei', []], ['Ja', ['BUNKER']]] },
+    { t: 'Hvor lange putter kan du trene?', h: 'På puttinggreenen du bruker mest.', v: [['Ingen puttinggreen', []], ['Opptil 10 fot', ['P3', 'P5', 'P10']], ['Opptil 40 fot', ['P3', 'P5', 'P10', 'P25', 'P40']], ['Over 40 fot', ['P3', 'P5', 'P10', 'P25', 'P40', 'P40P']]] },
+    { t: 'Har du treningsrom eller studio?', h: 'Kondisjon kan du alltid trene ute.', v: [['Nei', ['KOND']], ['Ja', ['STYRKE', 'KOND', 'BEV']]] },
+    { t: 'Kan du spille en bane jevnlig?', h: 'Minst ni hull, minst én gang i uka i sesongen.', v: [['Nei', []], ['Ja', ['BANE']]] }
+  ];
+  function fasiliteter(app) {
+    var svar = [2, 1, 2, 0, 2, 1, 1], i = 0;
+    function dekket() { var d = {}; svar.forEach(function (s, n) { SP[n].v[s][1].forEach(function (k) { d[k] = 1; }); }); return d; }
+    function tegnRes() {
+      var d = dekket(), ant = Object.keys(d).length, mangler = [];
+      app.querySelector('[data-dekning]').textContent = ant;
+      var st = app.querySelector('[data-til]'); st.style.width = Math.round(ant / 19 * 100) + '%';
+      app.querySelector('[data-omr]').innerHTML = OMR.map(function (g) {
+        return '<div class="familie"><span>' + g.f + '</span><div class="omr-grid">' + g.o.map(function (o) {
+          var ja = d[o[0]]; if (!ja) mangler.push((g.f === 'Putting' ? 'putter ' : '') + o[1].toLowerCase());
+          return '<span class="omr ' + (ja ? 'a-' + g.a : 'mangler') + '">' + (ja ? HAKE : KRYSS) + o[1] + (ja ? '' : ' · mangler') + '</span>';
+        }).join('') + '</div></div>';
+      }).join('');
+      app.querySelector('[data-mangler-tekst]').textContent = mangler.length ? 'Dette mangler: ' + mangler.join(', ') + '. Planen foreslår ikke økter du ikke har sted til. Du kan likevel legge inn en økt på en annen bane.' : 'Du kan trene alle 19 områdene.';
+    }
+    function tegnSp() {
+      var s = SP[i];
+      app.querySelector('[data-nr]').textContent = 'Spørsmål ' + (i + 1) + ' av ' + SP.length;
+      app.querySelector('[data-stolpe]').style.width = Math.round((i + 1) / SP.length * 100) + '%';
+      app.querySelector('[data-sp]').textContent = s.t;
+      var h = app.querySelector('[data-sp-hjelp]'); h.textContent = s.h; h.hidden = !s.h;
+      app.querySelector('[data-valg]').innerHTML = s.v.map(function (v, n) { return '<button type="button" aria-pressed="' + (svar[i] === n) + '" data-n="' + n + '"><span>' + v[0] + '</span><span class="dekker">' + (v[1].length ? v[1].length + ' områder' : '') + '</span></button>'; }).join('');
+      app.querySelector('[data-forrige]').textContent = i ? 'Tilbake' : 'Avbryt';
+      app.querySelector('[data-neste]').textContent = i === SP.length - 1 ? 'Lagre svarene' : 'Neste';
+    }
+    app.querySelector('[data-valg]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; svar[i] = +b.dataset.n; tegnSp(); });
+    app.querySelector('[data-start]').addEventListener('click', function () { i = 0; app.querySelector('[data-resultat]').hidden = true; app.querySelector('[data-flyt]').hidden = false; tegnSp(); });
+    app.querySelector('[data-forrige]').addEventListener('click', function () { if (i) { i--; tegnSp(); } else { app.querySelector('[data-flyt]').hidden = true; app.querySelector('[data-resultat]').hidden = false; } });
+    app.querySelector('[data-neste]').addEventListener('click', function () {
+      if (i < SP.length - 1) { i++; tegnSp(); return; }
+      app.querySelector('[data-flyt]').hidden = true; app.querySelector('[data-resultat]').hidden = false; tegnRes(); toast(app, 'Lagret. Planforslagene bruker de nye svarene.');
+    });
+    tegnRes();
+  }
+
+  /* ---------- Utstyr: carry fra TrackMan (samme tall som Stats › TrackMan) ---------- */
+  var BAG = [['Driver', 228], ['3-tre', 211], ['Hybrid 4', 192], ['5-jern', 184], ['6-jern', 170], ['7-jern', 156], ['8-jern', 145], ['9-jern', 133], ['PW', 121], ['50°', 108], ['54°', 94], ['58°', 79], ['Putter', null]];
+  function utstyr(app) {
+    app.querySelector('[data-bag]').innerHTML = BAG.map(function (k) {
+      return '<li><b>' + k[0] + '</b>' + (k[1] ? '<div class="stolpe"><span data-til="' + Math.round(k[1] / 228 * 100) + '%" style="width:' + Math.round(k[1] / 228 * 100) + '%"></span></div>' : '<span class="kilde">Ikke målt</span>') + '<span class="v">' + (k[1] || '—') + '</span></li>';
+    }).join('');
+  }
+
+  function helse(app) {
+    app.querySelector('[data-ny-fravaer]').addEventListener('click', function () { vis(app, '[data-fravaer-ark]', true); });
+    app.querySelector('[data-fravaer-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-fravaer-ark]', false); });
+    app.querySelector('[data-lagre-fravaer]').addEventListener('click', function () { vis(app, '[data-fravaer-ark]', false); toast(app, 'Registrert. Anders får beskjed, og planen holder igjen dagene.'); });
+  }
+
+  function foreldre(app) {
+    app.querySelector('[data-fjern]').addEventListener('click', function () { vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-fj-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-fj-ok]').addEventListener('click', function () {
+      vis(app, '[data-dialog]', false);
+      app.querySelector('[data-forelder]').innerHTML = '<div class="tilgang-topp"><span class="avatar lys" aria-hidden="true">HR</span><span><b>Hilde Rohjan</b><span class="kilde">Fjernet i dag kl. 14:20</span></span><span class="pille noy"><i></i>Ingen tilgang</span></div>';
+      toast(app, 'Hilde er fjernet og har fått beskjed.');
+    });
+    app.querySelector('[data-inviter]').addEventListener('click', function () { toast(app, 'Skriv inn forelderens e-post. Forelderen får en lenke som gjelder i sju dager.'); });
+  }
+
+  /* ---------- PH-25 Abonnement: tre eksempler ---------- */
+  function abonnement(app) {
+    var V = {
+      pakke: { niva: 'Full', pille: '<i></i>Aktiv', info: 'Inkludert i coaching-pakken Performance Pro. Du betaler ikke ekstra for appen.', vis: 'pakke', at: 'Avslutte Performance Pro', ax: 'Du beholder pakken, klippene og Full ut oktober.', dt: 'Avslutte Performance Pro?', dx: 'Du beholder pakken, de 2 klippene og Full ut oktober. Fra 1. november har du Gratis, med mindre du velger Full for 299 kr/mnd. Planen og dataene dine blir liggende.' },
+      betaler: { niva: 'Full', pille: '<i></i>Aktiv', info: 'Du betaler selv. Ingen coaching-pakke.', vis: 'betaler', at: 'Avslutte Full', ax: 'Du beholder Full ut oktober.', dt: 'Avslutte Full?', dx: 'Du beholder Full ut oktober. Fra 1. november har du Gratis. Planen og dataene dine blir liggende, og du kan velge Full igjen når du vil.' },
+      gratis: { niva: 'Gratis', pille: '', info: 'Profil, turneringsresultater, snittscore og booking.', vis: 'gratis', at: '', ax: '', dt: '', dx: '' }
+    };
+    function sett(k) {
+      var v = V[k];
+      app.querySelector('[data-niva]').textContent = v.niva;
+      var p = app.querySelector('[data-niva-pille]'); p.innerHTML = v.pille; p.hidden = !v.pille;
+      app.querySelector('[data-niva-info]').textContent = v.info;
+      ['pakke', 'betaler', 'gratis'].forEach(function (x) { app.querySelector('[data-' + x + ']').hidden = x !== v.vis; });
+      var ak = app.querySelector('[data-avslutt-kort]'); ak.hidden = !v.at;
+      app.querySelector('[data-avslutt-tittel]').textContent = v.at; app.querySelector('[data-avslutt-tekst]').textContent = v.ax;
+      app.querySelector('[data-d-tittel]').textContent = v.dt; app.querySelector('[data-d-tekst]').textContent = v.dx;
+    }
+    app.querySelector('[data-variant]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) sett(b.dataset.v); });
+    app.querySelector('[data-avslutt]').addEventListener('click', function () { vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-av-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-av-ok]').addEventListener('click', function () {
+      vis(app, '[data-dialog]', false);
+      app.querySelector('[data-niva-pille]').innerHTML = '<i></i>Avsluttes 31. oktober';
+      app.querySelector('[data-avslutt-kort]').innerHTML = '<b class="undertittel">Abonnementet avsluttes 31. oktober</b><p class="forklar">Ingen flere trekk. Ombestemmer du deg, kan du fortsette før 31. oktober.</p><div class="knapper"><button type="button" class="knapp pri">Fortsett abonnementet</button></div>';
+      toast(app, 'Avsluttet. Du har Full ut oktober.');
+    });
+    var aar = app.querySelector('[data-aarlig]'); aar.addEventListener('click', function () { toast(app, 'Fra 1. november betaler du 2 690 kr/år.'); });
+    sett('pakke');
+  }
+
+  function innstillinger(app) {
+    brytere(app);
+    var felt = app.querySelector('#sl-felt'), ok = app.querySelector('[data-sl-ok]');
+    felt.addEventListener('input', function () { var r = felt.value.trim().toUpperCase() === 'SLETT'; ok.disabled = !r; ok.style.opacity = r ? '' : '.45'; });
+    app.querySelector('[data-slett]').addEventListener('click', function () { vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-sl-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    ok.addEventListener('click', function () {
+      vis(app, '[data-dialog]', false);
+      app.querySelector('[data-slett-kort]').innerHTML = '<b class="undertittel">Sletteforespørsel sendt</b><span class="pille vent" style="justify-self:start"><i></i>Venter på godkjenning</span><p class="forklar">Sendt i dag kl. 14:20. Du kan bruke appen til kontoen er slettet, og du får beskjed når det er gjort.</p><div class="knapper"><button type="button" class="knapp sek">Trekk forespørselen</button></div>';
+      toast(app, 'Forespørselen er sendt.');
+    });
+  }
+
+  /* ---------- PH-27 Deling ---------- */
+  function deling(app) {
+    var ant = app.querySelector('[data-antall]');
+    app.querySelector('[data-godta]').addEventListener('click', function () {
+      var f = app.querySelector('[data-foresp]');
+      app.querySelector('[data-tilganger]').insertAdjacentHTML('beforeend', '<article class="tilgang"><div class="tilgang-topp"><span class="avatar tn" aria-hidden="true">JB</span><span><b>Jon Berg</b><span class="kilde">jon.berg@golfforbundet.no · delt i dag</span></span><span class="pille ok"><i></i>Ser alt</span></div><div class="knapper"><button type="button" class="knapp sek" data-trekk="Jon Berg">Trekk tilgang</button></div></article>');
+      f.remove(); ant.removeAttribute('data-tell'); ant.textContent = +ant.textContent + 1; toast(app, 'Jon Berg ser nå profilen din.');
+    });
+    app.querySelector('[data-avsla]').addEventListener('click', function () { app.querySelector('[data-foresp]').remove(); toast(app, 'Avslått. Jon får beskjed.'); });
+    var hvem = null;
+    app.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-trekk]'); if (!t) return;
+      hvem = t.closest('.tilgang'); app.querySelector('#tr-tittel').textContent = 'Trekke tilgangen til ' + t.dataset.trekk + '?';
+      vis(app, '[data-dialog]', true);
+    });
+    app.querySelector('[data-tr-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-tr-ok]').addEventListener('click', function () {
+      vis(app, '[data-dialog]', false); if (hvem) hvem.remove();
+      ant.removeAttribute('data-tell'); ant.textContent = Math.max(0, +ant.textContent - 1); toast(app, 'Tilgangen er trukket. Treneren ser ingenting fra deg lenger.');
+    });
+    var epost = app.querySelector('#d-epost'), feil = app.querySelector('[data-epost-feil]'), forstaar = app.querySelector('[data-forstaar]');
+    app.querySelector('[data-del]').addEventListener('click', function () { vis(app, '[data-del-ark]', true); });
+    app.querySelector('[data-del-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-del-ark]', false); });
+    app.querySelector('[data-send]').addEventListener('click', function () {
+      var v = epost.value.trim().toLowerCase(), gyldig = /^[^@\s]+@(wang\.no|golfforbundet\.no)$/.test(v);
+      feil.hidden = gyldig; epost.setAttribute('aria-invalid', gyldig ? 'false' : 'true');
+      if (!gyldig) { epost.focus(); return; }
+      if (!forstaar.checked) { toast(app, 'Kryss av for at du forstår hva treneren ser.'); return; }
+      vis(app, '[data-del-ark]', false); toast(app, 'Lenken er sendt til ' + v + '. Den gjelder til 12. oktober.');
+    });
+  }
+  function deling16(app) { app.querySelector('[data-paaminn]').addEventListener('click', function () { toast(app, 'Påminnelsen er sendt til forelderen din.'); }); }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  AKUtkast.start({
+    start: 'meg',
+    skjermer: {
+      meg: m('PH-24', 'meg', null, { tittel: 'Velkommen til PlayerHQ', tekst: 'Fyll inn profilen og fasilitetene dine, så kan planen tilpasses deg.', knapp: 'Fyll inn profilen' }, 'Henter profilen …', 'Profilen kunne ikke hentes'),
+      profil: m('PH-24', 'profil', profil, { tittel: 'Profilen er tom', tekst: 'Navn og fødselsdato trengs før du kan bruke appen. HCP hentes fra NGF når du er koblet.', knapp: 'Fyll inn' }, 'Henter profilen …', 'Profilen kunne ikke hentes'),
+      fasiliteter: m('PH-24', 'fasiliteter', fasiliteter, { tittel: 'Hvor kan du trene?', tekst: 'Sju korte spørsmål. Svarene viser hvilke av de 19 treningsområdene du har sted til, og planforslagene bruker dem.', knapp: 'Start' }, 'Henter fasilitetene …', 'Fasilitetene kunne ikke hentes'),
+      utstyr: m('PH-24', 'utstyr', utstyr, { tittel: 'Ingen køller registrert', tekst: 'Legg inn bagen din. Køllene brukes når du registrerer runder og i TrackMan-oversikten.', knapp: 'Legg inn bagen' }, 'Henter utstyret …', 'Utstyret kunne ikke hentes'),
+      helse: m('PH-24', 'helse', helse, { tittel: 'Ingenting registrert', tekst: 'Er du skadet, syk eller på ferie, registrer det her. Planen og coachen tar hensyn til det.', knapp: 'Registrer fravær' }, 'Henter helse og fravær …', 'Helse og fravær kunne ikke hentes'),
+      foreldre: m('PH-24', 'foreldre', foreldre, { tittel: 'Ingen forelder lagt til', tekst: 'En forelder kan se profilen din og booke timer for deg. Er du under 16, må en forelder godkjenne kontoen innen sju dager.', knapp: 'Inviter forelder' }, 'Henter foreldre …', 'Foreldre kunne ikke hentes'),
+      abonnement: m('PH-25', 'abonnement', abonnement, { tittel: 'Du har Gratis', tekst: 'Med Full får du plan, Workbench, treningsøkta, tester og Caddie. 299 kr/mnd eller 2 690 kr/år.', knapp: 'Se Full' }, 'Henter abonnementet …', 'Abonnementet kunne ikke hentes'),
+      innstillinger: m('PH-25', 'innstillinger', innstillinger, null, 'Henter innstillingene …', 'Innstillingene kunne ikke hentes'),
+      deling: m('PH-27', 'deling', deling, { tittel: 'Ingen ser profilen din', tekst: 'Del med en trener ved WANG eller Team Norway. Treneren ser alt, også helse og meldinger.', knapp: 'Del med trener' }, 'Henter delingen …', 'Delingen kunne ikke hentes'),
+      deling16: m('PH-27', 'deling16', deling16, null)
+    }
+  });
+})();
+</script>
