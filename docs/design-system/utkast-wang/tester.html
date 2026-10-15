@@ -9,9 +9,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
-  .faner{display:flex;flex-wrap:wrap;gap:6px}
-  .faner a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:var(--r-chip);background:#fff;box-shadow:var(--skygge-s);font:700 14px/1 var(--brand);color:var(--tekst-2);text-decoration:none}
-  .faner a.aktiv{background:var(--navy);color:#fff}
   .testliste{display:grid;gap:10px}
   .test{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:14px 16px;border-radius:var(--r-kort-s);background:#fff;box-shadow:var(--skygge-s);border:0;text-align:left;font:inherit;cursor:pointer;width:100%}
   .test b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
@@ -104,8 +101,8 @@
     </div>
     <nav class="faner" aria-label="Tester"><a href="#" class="aktiv">Testbatteriet</a><a href="#" data-gaa="ko">Til kontroll <span class="teller">4</span></a></nav>
   </section>
-  <section class="helt">
-    <div><p class="dato">Testuke 47 · 16.–20. november</p><h2 class="tittel" style="font-size:24px">Fysisk test og 8-ball</h2><p class="ingress">Fem fysiske tester og 8-ball for 11 elever. Planlagt i årsplanen, Grunnperiode 1.</p></div>
+  <section class="kort" style="border-left:6px solid var(--navy)">
+    <div><p class="dato">Testuke 47 · 16.–20. november</p><h2 class="undertittel" style="font-size:20px;margin:4px 0 0">Fysisk test og 8-ball</h2><p class="forklar" style="margin-top:6px">Fem fysiske tester og 8-ball for 11 elever. Planlagt i årsplanen, Grunnperiode 1.</p></div>
     <div class="knapper"><button type="button" class="knapp mint" data-gaa="foring">Start testdag</button></div>
   </section>
   <div class="to-kol">

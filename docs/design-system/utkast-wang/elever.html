@@ -9,11 +9,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
-  .faner{display:flex;flex-wrap:wrap;gap:6px}
-  .faner a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:var(--r-chip);background:#fff;box-shadow:var(--skygge-s);font:700 14px/1 var(--brand);color:var(--tekst-2);text-decoration:none}
-  .faner a.aktiv{background:var(--navy);color:#fff}
   .sok{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
-  .sok input{min-height:48px;padding:10px 16px;border:1.5px solid var(--n300);border-radius:var(--r-chip);font:400 16px/1.4 var(--body);width:100%;background:#fff}
+  .sok input{min-height:48px;padding:10px 16px;border:1.5px solid var(--n300);border-radius:var(--r-knapp);font:400 16px/1.4 var(--body);width:100%;background:#fff}
   .elevkort{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:14px 16px;border:0;background:#fff;border-radius:var(--r-kort-s);box-shadow:var(--skygge-s);text-align:left;font:inherit;cursor:pointer;width:100%}
   .elevkort b{font:800 16px/1.2 var(--brand);color:var(--navy-dyp)}
   .elevkort .sma{grid-column:2 / -1;font-size:13px;color:var(--tekst-2)}
@@ -21,9 +18,11 @@
   .elevkort .tall span{display:block;font:700 11px/1.3 var(--brand);color:var(--tekst-2)}
   .elevkort .rad{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
   .elevkort.laast{background:var(--tint-graa);box-shadow:none}
+  /* Statuskant til venstre, som Stall i AgencyOS: rosa trenger deg, gul venter, mint i rute */
+  .elevkort.s-haster{border-left:5px solid var(--rosa)} .elevkort.s-vent{border-left:5px solid var(--gul)} .elevkort.s-ok{border-left:5px solid var(--mint)}
   .elevliste{display:grid;gap:10px}
   .profil{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-  .profil .avatar{width:64px;height:64px;font-size:18px;background:var(--grad-score);color:var(--navy-dyp)}
+  .profil .avatar{width:64px;height:64px;font-size:18px}
   .nok{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .nok .kort{gap:4px;padding:16px}
   .nok strong{font:800 26px/1 var(--brand);color:var(--navy-dyp)}
@@ -282,7 +281,7 @@
     var E = [['01', 'VG1', 'E', '94 %', 'ok', 'Delt'], ['02', 'VG1', '—', '—', 'laast', 'Ikke delt'], ['03', 'VG1', 'D', '98 %', 'ok', 'Delt'], ['04', 'VG2', 'D', '95 %', 'ok', 'Delt'], ['05', 'VG2', 'D', '92 %', 'vent', '1 test til kontroll'], ['06', 'VG2', 'C', '96 %', 'ok', 'Delt'], ['07', 'VG2', 'E', '86 %', 'ok', 'Delt'], ['08', 'VG3', 'C', '101 %', 'ok', 'Delt'], ['09', 'VG2', 'D', '74 %', 'haster', 'Fravær 3 dager'], ['10', 'VG3', 'C', '99 %', 'ok', 'Delt'], ['11', 'VG3', 'C', '89 %', 'ok', 'Delt']];
     app.querySelector('[data-liste]').innerHTML = E.map(function (e) {
       var l = e[4] === 'laast';
-      return '<button type="button" class="elevkort' + (l ? ' laast' : '') + '" data-gaa="' + (l ? 'ikkedelt' : 'profil') + '"><span class="avatar">' + e[0] + '</span><b>Elev ' + e[0] + '</b><span class="tall">' + e[3] + '<span>etterlevelse</span></span><span class="sma">' + e[1] + (l ? '' : ' · Kategori ' + e[2]) + '</span><div class="rad"><span class="pille ' + (l ? 'noy' : e[4]) + '"><i></i>' + e[5] + '</span></div></button>';
+      return '<button type="button" class="elevkort' + (l ? ' laast' : ' s-' + e[4]) + '" data-gaa="' + (l ? 'ikkedelt' : 'profil') + '"><span class="avatar">' + e[0] + '</span><b>Elev ' + e[0] + '</b><span class="tall">' + e[3] + '<span>etterlevelse</span></span><span class="sma">' + e[1] + (l ? '' : ' · Kategori ' + e[2]) + '</span><div class="rad"><span class="pille ' + (l ? 'noy' : e[4]) + '"><i></i>' + e[5] + '</span></div></button>';
     }).join('');
   }
   function prikker(n, kl) { var s = '<span class="prikker ' + (kl || '') + '" role="img" aria-label="' + n + ' av 5">'; for (var i = 1; i <= 5; i++) s += '<i class="' + (i <= n ? 'p' : '') + '"></i>'; return s + '</span>'; }

@@ -53,6 +53,16 @@
   .gruppevelger button{min-height:36px;padding:0 14px;border-radius:var(--r-chip);border:1.5px solid var(--n300);background:#fff;font:700 13px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
   .gruppevelger button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
   .helt .knapp.mint{justify-self:start}
+  /* Dagen som tidslinje, som Cockpit i AgencyOS: én rad per time, øktene som fylte blokker */
+  .dagen{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);border:1px solid var(--n200);border-radius:var(--r-kort);overflow:hidden;background:#fff}
+  .dagen .t{grid-column:1;height:52px;padding:6px 0 0 8px;border-bottom:1px solid var(--linje);background:var(--tint-graa);font:700 12px/1 var(--brand);color:var(--tekst-2)}
+  .dagen .s{grid-column:2;height:52px;border-bottom:1px solid var(--linje)}
+  .dagen .blokk{position:absolute;left:52px;right:8px;display:grid;align-content:start;gap:2px;padding:6px 12px;border-radius:8px;border:0;text-align:left;font:inherit;cursor:pointer;overflow:hidden}
+  .dagen .blokk b{font:800 14px/1.2 var(--brand)}
+  .dagen .blokk span{font:700 12px/1.3 var(--brand)}
+  .dagen .blokk.skole{background:var(--n100);color:var(--tekst-2);cursor:default}
+  .dagen .na{position:absolute;left:44px;right:0;height:0;border-top:2px solid var(--rosa)}
+  .dagen .na::before{content:"07:40";position:absolute;left:-44px;top:-10px;padding:2px 5px;border-radius:4px;background:var(--rosa);color:#fff;font:700 10px/1.2 var(--brand)}
   /* Mobil: én kolonne i prioritert rekkefølge. Det som venter kommer først. */
   .idag-kol{display:grid;gap:28px}
   .idag-kol > div{display:contents}
@@ -118,9 +128,10 @@
       <p class="ingress">Morgentrening om 20 minutter. Oppmøtet er ikke ført ennå.</p>
     </div>
     <div class="helt-tall">
-      <div><strong>2</strong><span>Økter i dag</span></div>
-      <div><strong>5</strong><span>Krever handling</span></div>
-      <div><strong>10 av 11</strong><span>Til stede i går</span></div>
+      <div class="signal"><strong>5</strong><span>Krever handling</span><span class="kilde" style="order:3">Oppmøte ikke ført, frist 07:50</span></div>
+      <div><strong>2</strong><span>Økter i dag</span><span class="kilde" style="order:3">Morgentrening og styrke</span></div>
+      <div><strong>10 av 11</strong><span>Til stede i går</span><span class="kilde" style="order:3">Elev 09 ikke møtt</span></div>
+      <div><strong>3</strong><span>Følger opp</span><span class="kilde" style="order:3">Elever med lav etterlevelse</span></div>
     </div>
     <button type="button" class="knapp mint" data-gaa="oppmote">Før oppmøte</button>
   </section>
@@ -146,19 +157,9 @@
       </section>
 
       <section class="seksjon r2">
-        <div class="sek-topp"><h2>Økter i dag</h2><a class="lenke" href="#">Hele uka</a></div>
-        <button type="button" class="okt slag inn" data-gaa="okt">
-          <img src="bilder/slag-utslag.jpg" alt="" width="390" height="120">
-          <div class="okt-tekst">
-            <div class="okt-rad"><span class="okt-tid">08:00<small>120 min</small></span><span class="okt-merke"><i></i>SLAG</span></div>
-            <span class="navn">Morgentrening: driver med TrackMan</span>
-            <div class="okt-info"><span>Innendørshallen</span><span>11 elever</span><span>2 fravær meldt</span></div>
-          </div>
-        </button>
-        <button type="button" class="okt mini fys inn" data-gaa="okt">
-          <img src="bilder/fys-styrke.jpg" alt="" width="76" height="76">
-          <div class="okt-tekst"><span class="okt-merke" style="justify-self:start"><i></i>FYS</span><span class="navn">Styrke: bein og rotasjon</span><div class="okt-info"><span>13:00 · 60 min · Styrkerommet</span></div></div>
-        </button>
+        <div class="sek-topp"><h2>Dagen</h2><span class="kilde">2 økter · 07–16</span></div>
+        <div class="dagen" data-dagen></div>
+        <div class="lg-rad"><span class="lg"><i class="bg-slag"></i>SLAG</span><span class="lg"><i class="bg-fys"></i>FYS</span><span class="lg"><i style="background:var(--n200)"></i>Skole</span></div>
       </section>
 
       <section class="seksjon r5">
@@ -314,6 +315,16 @@
     ['07', 'VG2', 'E'], ['08', 'VG3', 'C'], ['09', 'VG2', 'D'], ['10', 'VG3', 'C', 'Meldt av foresatt'], ['11', 'VG3', 'C']
   ];
 
+  function dagen(app) {
+    var el = app.querySelector('[data-dagen]'); if (!el) return;
+    var fra = 7, til = 16, h = 52, html = '';
+    for (var t = fra; t < til; t++) html += '<span class="t">' + (t < 10 ? '0' : '') + t + '</span><span class="s"></span>';
+    var B = [[8, 10, 'fyll-slag', 'Morgentrening: driver med TrackMan', '08:00–10:00 · Innendørshallen · 2 fravær meldt', 'okt'], [10.25, 12.75, 'skole', 'Skole', '10:15–12:45', ''], [13, 14, 'fyll-fys', 'Styrke: bein og rotasjon', '13:00–14:00 · Styrkerommet', 'okt'], [14.25, 15.5, 'skole', 'Skole', '14:15–15:30', '']];
+    html += B.map(function (b) { return '<button type="button" class="blokk ' + b[2] + '" style="top:' + ((b[0] - fra) * h + 3) + 'px;height:' + ((b[1] - b[0]) * h - 6) + 'px"' + (b[5] ? ' data-gaa="' + b[5] + '"' : ' tabindex="-1"') + '><b>' + b[3] + '</b><span>' + b[4] + '</span></button>'; }).join('');
+    html += '<span class="na" style="top:' + ((7 + 40 / 60 - fra) * h) + 'px" aria-label="Nå 07:40"></span>';
+    el.innerHTML = html;
+  }
+
   function oppmote(app) {
     var liste = app.querySelector('[data-elever]');
     liste.innerHTML = ELEVER.map(function (e) {
@@ -346,7 +357,7 @@
   WANGUtkast.start({
     start: 'idag',
     skjermer: {
-      idag: { mal: 's-idag', tom: { tittel: 'Ingen økter i dag', tekst: 'Gruppa har fri i dag. Ingen saker venter på deg.', knapp: 'Se uka' }, laster: 'Henter dagen …', feil: 'Dagen kunne ikke hentes' },
+      idag: { mal: 's-idag', etter: dagen, tom: { tittel: 'Ingen økter i dag', tekst: 'Gruppa har fri i dag. Ingen saker venter på deg.', knapp: 'Se uka' }, laster: 'Henter dagen …', feil: 'Dagen kunne ikke hentes' },
       oppmote: { mal: 's-oppmote', etter: oppmote, tom: { tittel: 'Ingen elever i gruppa', tekst: 'Legg til elever under Elever før du fører oppmøte.', knapp: 'Gå til Elever' }, laster: 'Henter elevene …', feil: 'Oppmøtet kunne ikke hentes' },
       okt: { mal: 's-okt', etter: okt, tom: { tittel: 'Økta har ingen øvelser', tekst: 'Legg inn øvelser, eller kopier fra en tidligere økt.', knapp: 'Legg inn øvelser' }, laster: 'Henter økta …', feil: 'Økta kunne ikke hentes' },
       fravaer: { mal: 's-fravaer', etter: fravaer, tom: { tittel: 'Ingen økter å melde fravær fra', tekst: 'Gruppa har ingen økter i dag.', knapp: 'Tilbake til I dag' }, laster: 'Henter elevene …', feil: 'Fraværet kunne ikke lagres. Ingenting er sendt.' }

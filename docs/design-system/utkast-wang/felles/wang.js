@@ -6,7 +6,7 @@
    data-skall="tilbake" gir tilbakelinje i stedet (undersider), data-tilbake="Elever" setter teksten.
    Velgere på siden: data-bredde (mob|pc), data-rolle (trener|sportssjef; start med opt.rolle), data-tilstand (data|tom|laster|feil), data-skjerm.
    Menyen (beslutninger.md 27.09): seks hovedpunkter, Administrasjon bare for sportssjef.
-   Mobil: I dag · Trening · Tester · Elever · Mer. Konkurranse, Meldinger og Administrasjon ligger under Mer. */
+   Skallet følger AgencyOS-utkastene: hamburgermeny og bjelle på mobil, lys sidemeny på PC, hurtigknapp på alle skjermer. */
 (function () {
   var IKON = {
     idag: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
@@ -16,13 +16,15 @@
     meldinger: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     elever: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
     admin: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
-    mer: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
+    hamburger: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    pluss: '<path d="M12 5v14M5 12h14"/>',
+    stoppeklokke: '<circle cx="12" cy="14" r="8"/><path d="M12 10v4l2 2M10 2h4"/>',
     bjelle: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
     tilbake: '<path d="M15 6l-6 6 6 6"/>'
   };
   var NAVN = { idag: 'I dag', trening: 'Trening', tester: 'Tester', konkurranse: 'Konkurranse', meldinger: 'Meldinger', elever: 'Elever', admin: 'Administrasjon' };
   var HOVED = ['idag', 'trening', 'tester', 'konkurranse', 'meldinger', 'elever'];
-  var BUNN = ['idag', 'trening', 'tester', 'elever'];
+  var HURTIG = [['trening', 'Ny økt'], ['idag', 'Før oppmøte'], ['meldinger', 'Ny melding'], ['stoppeklokke', 'Før test']];
   var ULESTE = 3; /* syntetisk: tre uleste meldinger */
   var LOGO = 'bilder/wang-logo-horizontal.svg';
   function ikon(d) { return '<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>'; }
@@ -45,37 +47,38 @@
     if (rolle === 'sportssjef') punkter.push('admin');
     var rolleNavn = rolle === 'sportssjef' ? 'Sportssjef' : 'Trener';
 
+    /* Samme skall som AgencyOS: hamburgermeny på mobil, lys sidemeny på PC, bjelle på alle skjermer, hurtigknapp. */
+    var menyLenker = HOVED.map(function (k) { return lenke(k, fane); }).join('') + (rolle === 'sportssjef' ? '<p class="etikett del">Sportssjef</p>' + lenke('admin', fane) : '');
+    var bruker = '<div class="bruker"><span class="avatar">' + (rolle === 'sportssjef' ? 'SS' : 'T1') + '</span><div><b>' + (rolle === 'sportssjef' ? 'Sportssjef' : 'Trener 1') + '</b><span>' + rolleNavn + ' · golf</span></div></div>';
+    var bjelle = '<button type="button" class="bjelle" data-meny="meldinger" aria-label="Meldinger, ' + ULESTE + ' uleste">' + ikon(IKON.bjelle) + '<b>' + ULESTE + '</b></button>';
+
     var topp = document.createElement('div');
     topp.className = 'topplinje';
-    topp.innerHTML = '<img class="logo" src="' + LOGO + '" alt="WANG Toppidrett" width="100" height="34"><div class="topp-hoyre"><span class="rolle">' + rolleNavn + '</span><button type="button" class="bjelle" data-meny="meldinger" aria-label="Meldinger, ' + ULESTE + ' uleste">' + ikon(IKON.bjelle) + '<b>' + ULESTE + '</b></button></div>';
+    topp.innerHTML = '<div class="topp-venstre"><button type="button" class="ikonknapp" data-hamburger aria-expanded="false" aria-label="Meny">' + ikon(IKON.hamburger) + '</button><img class="logo" src="' + LOGO + '" alt="WANG Toppidrett" width="94" height="32"></div>' + bjelle;
+    var skuff = document.createElement('div');
+    skuff.className = 'skuff';
+    skuff.hidden = true;
+    skuff.innerHTML = '<nav aria-label="Hovedmeny">' + menyLenker + bruker + '</nav>';
 
     var s = document.createElement('div');
     s.className = 'skall';
-    var meny = '<nav class="meny" aria-label="Hovedmeny"><img class="logo" src="' + LOGO + '" alt="WANG Toppidrett" width="118" height="40"><p class="gruppe">Golf · WANG Fredrikstad</p>';
-    meny += HOVED.map(function (k) { return lenke(k, fane); }).join('');
-    if (rolle === 'sportssjef') meny += '<p class="etikett del">Sportssjef</p>' + lenke('admin', fane);
-    meny += '<div class="bruker"><span class="avatar">' + (rolle === 'sportssjef' ? 'SS' : 'T1') + '</span><div><b>' + (rolle === 'sportssjef' ? 'Sportssjef' : 'Trener 1') + '</b><span>' + rolleNavn + ' · golf</span></div></div></nav>';
-    s.innerHTML = meny;
+    s.innerHTML = '<nav class="meny" aria-label="Hovedmeny"><img class="logo" src="' + LOGO + '" alt="WANG Toppidrett" width="118" height="40"><p class="gruppe">Golf · WANG Fredrikstad</p>' + menyLenker + bruker + '</nav><div class="hoved-kol"><div class="pc-topp">' + bjelle + '</div></div>';
     app.insertBefore(topp, main);
+    app.insertBefore(skuff, main);
     app.insertBefore(s, main);
-    s.appendChild(main);
+    s.querySelector('.hoved-kol').appendChild(main);
+    var hb = topp.querySelector('[data-hamburger]');
+    hb.addEventListener('click', function () { skuff.hidden = !skuff.hidden; hb.setAttribute('aria-expanded', String(!skuff.hidden)); });
+    skuff.addEventListener('click', function (e) { if (e.target.closest('a')) { skuff.hidden = true; hb.setAttribute('aria-expanded', 'false'); } });
 
-    var iMer = punkter.filter(function (k) { return BUNN.indexOf(k) < 0; });
-    var bunn = document.createElement('nav');
-    bunn.className = 'bunnmeny';
-    bunn.setAttribute('aria-label', 'Faner');
-    bunn.innerHTML = BUNN.map(function (k) {
-      return '<a href="#" data-meny="' + k + '"' + (k === fane ? ' class="aktiv" aria-current="page"' : '') + '>' + ikon(IKON[k]) + NAVN[k] + '</a>';
-    }).join('') + '<button type="button" data-mer' + (iMer.indexOf(fane) >= 0 ? ' class="aktiv"' : '') + ' aria-haspopup="dialog">' + ikon(IKON.mer) + 'Mer</button>';
-    app.insertBefore(bunn, s.nextSibling);
-
-    var ark = document.createElement('div');
-    ark.className = 'mer-ark';
-    ark.hidden = true;
-    ark.innerHTML = '<div class="ark" role="dialog" aria-label="Mer">' + iMer.map(function (k) { return lenke(k, fane); }).join('') + '</div>';
-    app.appendChild(ark);
-    bunn.querySelector('[data-mer]').addEventListener('click', function () { ark.hidden = false; });
-    ark.addEventListener('click', function (e) { if (e.target === ark || e.target.closest('a')) ark.hidden = true; });
+    /* Hurtigknappen: fire handlinger for treneren, på alle skjermer */
+    var lag = document.createElement('div');
+    lag.className = 'hurtig-lag';
+    lag.innerHTML = '<div class="hurtig-meny" role="menu" hidden>' + HURTIG.map(function (h) { return '<button type="button" role="menuitem">' + ikon(IKON[h[0]]) + h[1] + '</button>'; }).join('') + '</div><button type="button" class="hurtig" aria-expanded="false" aria-label="Hurtighandlinger">' + ikon(IKON.pluss) + '</button>';
+    app.appendChild(lag);
+    var hk = lag.querySelector('.hurtig'), hm = lag.querySelector('.hurtig-meny');
+    hk.addEventListener('click', function () { hm.hidden = !hm.hidden; hk.setAttribute('aria-expanded', String(!hm.hidden)); });
+    hm.addEventListener('click', function () { hm.hidden = true; hk.setAttribute('aria-expanded', 'false'); });
   }
 
   /* Tom, laster og feil: beholder skjermens topp ([data-behold]) og bytter resten. */

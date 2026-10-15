@@ -44,15 +44,15 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   --orange:#F47B20; --orange-tekst:#B4571A; --gul:#FCD700; --gul-tekst:#7A6200; --rosa:#D12A5C; --blaa:#007DB1; --blaa-tekst:#00618A; --lilla:#7F1975; --graa:#D2D2D2;
   /* Ny i utkastet: rosa som tekst på rosa tint. #D12A5C gir bare 4,2:1 der. Forslag, ikke i wang-tokens.css ennå. */
   --rosa-tekst:#A81F49;
-  --bg:#F4F6F8; --kort:#FFFFFF; --tekst:#1E293B; --tekst-2:#475569; --navy-dyp:#0F172A; --linje:#E9EDF1;
+  --bg:#FFFFFF; --kort:#FFFFFF; --tekst:#1E293B; --tekst-2:#475569; --navy-dyp:#0F172A; --linje:#E9EDF1;
   --n100:#E9EDF1; --n200:#DCE3EA; --n300:#C5D0DA; --n400:#94A3B8; --n500:#64748B;
   --tint-navy:color-mix(in srgb,var(--navy) 12%,white); --tint-teal:color-mix(in srgb,var(--teal) 13%,white); --tint-mint:color-mix(in srgb,var(--mint) 13%,white);
   --tint-orange:color-mix(in srgb,var(--orange) 9%,white); --tint-gul:color-mix(in srgb,var(--gul) 9%,white); --tint-rosa:color-mix(in srgb,var(--rosa) 10%,white);
   --tint-blaa:color-mix(in srgb,var(--blaa) 10%,white); --tint-lilla:color-mix(in srgb,var(--lilla) 10%,white); --tint-graa:#F1F4F7;
-  --grad-hero:linear-gradient(160deg,color-mix(in srgb,var(--navy) 82%,white) 0%,var(--navy) 55%,color-mix(in srgb,var(--navy) 82%,black) 100%);
   --grad-score:linear-gradient(135deg,var(--teal) 0%,var(--mint) 100%);
-  --r-kort:26px; --r-kort-s:20px; --r-felt:16px; --r-chip:999px; --r-ikon:14px;
-  --skygge:0 8px 24px rgba(23,68,111,.08); --skygge-s:0 4px 14px rgba(23,68,111,.06); --skygge-flyt:0 12px 32px rgba(15,42,68,.18);
+  --r-kort:14px; --r-kort-s:12px; --r-felt:10px; --r-chip:999px; --r-ikon:10px; --r-knapp:10px;
+  /* Skyggene er tynne kanter, som AgencyOS. Flytende lag (hurtigmeny, ark) beholder ekte skygge. */
+  --skygge:0 0 0 1px var(--n200); --skygge-s:0 0 0 1px var(--n200); --skygge-flyt:0 12px 32px rgba(15,42,68,.18);
   /* Aksene. Samme fargevalg som AKSE_FARGE (ak-primitiver.tsx).
      --x = ren farge (søyler, prikker). --x-fyll = flate med tekst. --x-paa = tekst på fyllet. --x-tekst = tekst på hvitt/tint. */
   --fys:var(--navy);   --fys-fyll:var(--navy);        --fys-paa:#FFFFFF;          --fys-tekst:var(--navy);        --fys-tint:var(--tint-navy);
@@ -66,29 +66,38 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .app [hidden]{display:none!important}
 .ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- Skall: topplinje + bunnmeny på mobil, sidemeny på PC ---------- */
-.topplinje{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 8px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);box-shadow:0 1px 0 var(--linje)}
-.logo{display:block;height:34px;width:auto}
-.topp-hoyre{display:flex;align-items:center;gap:4px}
-.rolle{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--r-chip);background:var(--tint-navy);color:var(--navy);font:700 11px/1 var(--brand);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.bjelle{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-ikon);color:var(--navy);background:transparent;border:0;cursor:pointer}
-.bjelle b{position:absolute;top:5px;right:4px;min-width:18px;height:18px;border-radius:9px;background:var(--rosa);color:#fff;font:700 11px/18px var(--brand);text-align:center}
+/* ---------- Skall: samme oppsett som AgencyOS-utkastene ----------
+   Mobil: topplinje med hamburgermeny, logo og bjelle. PC fra 900 px: lys sidemeny, bjelle øverst til høyre.
+   Hurtigknappen står på alle skjermer. */
+.topplinje{position:sticky;top:0;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;background:#fff;border-bottom:1px solid var(--n200)}
+.topp-venstre{display:flex;align-items:center;gap:4px}
+.logo{display:block;height:32px;width:auto}
+.ikonknapp,.bjelle{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-ikon);color:var(--navy-dyp);background:transparent;border:0;cursor:pointer}
+.bjelle b{position:absolute;top:5px;right:4px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--rosa);color:#fff;font:700 11px/18px var(--brand);text-align:center}
+.skuff{position:sticky;top:57px;z-index:9;height:0}
+.skuff nav{position:absolute;left:0;right:0;top:0;display:grid;gap:2px;padding:12px;background:#fff;border-bottom:1px solid var(--n200);box-shadow:0 16px 32px rgba(15,23,42,.12)}
 .skall{display:block}
 .meny{display:none}
-.innhold{padding:20px 16px 32px;display:grid;gap:28px;align-content:start}
-.bunnmeny{position:sticky;bottom:0;z-index:4;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;box-shadow:0 -1px 0 var(--linje),0 -8px 24px rgba(23,68,111,.06)}
-.bunnmeny a,.bunnmeny button{display:grid;justify-items:center;gap:4px;padding:9px 0 12px;font:700 11px/1 var(--brand);color:var(--n500);text-decoration:none;border:0;background:transparent;cursor:pointer;position:relative}
-.bunnmeny .aktiv{color:var(--navy)}
-.bunnmeny .aktiv::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--mint)}
-.mer-ark{position:absolute;inset:0;z-index:6;display:grid;align-items:end;background:rgba(15,23,42,.42)}
-.mer-ark[hidden]{display:none}
-.mer-ark .ark{border-radius:26px 26px 0 0;background:#fff;padding:12px 16px 24px;display:grid;gap:4px;box-shadow:var(--skygge-flyt)}
-.mer-ark .ark::before{content:"";justify-self:center;width:40px;height:4px;border-radius:2px;background:var(--n200);margin-bottom:8px}
-.mer-ark a{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 12px;border-radius:var(--r-felt);color:var(--tekst);text-decoration:none;font:700 16px/1 var(--brand)}
-.mer-ark a.aktiv{background:var(--tint-navy);color:var(--navy)}
-.mer-ark .teller{margin-left:auto}
-.tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;background:#fff;box-shadow:0 1px 0 var(--linje);position:sticky;top:0;z-index:4}
+.pc-topp{display:none}
+.meny a,.skuff a{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border-radius:var(--r-knapp);color:var(--tekst);text-decoration:none;font:700 15px/1 var(--brand)}
+.meny a.aktiv,.skuff a.aktiv{background:var(--navy);color:#fff}
+.meny a.aktiv .teller,.skuff a.aktiv .teller{background:#fff;color:var(--navy)}
+.meny .teller,.skuff .teller{margin-left:auto}
+.meny .del,.skuff .del{margin:12px 12px 4px}
+.bruker{display:flex;align-items:center;gap:10px;padding:12px;margin-top:auto;border-top:1px solid var(--n200)}
+.bruker b{display:block;font:700 14px/1.2 var(--brand);color:var(--navy-dyp)}
+.bruker div span{font-size:13px;color:var(--tekst-2)}
+.innhold{padding:20px 16px 96px;display:grid;gap:28px;align-content:start}
+.tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;background:#fff;border-bottom:1px solid var(--n200);position:sticky;top:0;z-index:8}
 .tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;border:0;background:transparent;font:700 15px/1 var(--brand);color:var(--navy);cursor:pointer;border-radius:var(--r-ikon);text-decoration:none}
+.hurtig-lag{position:sticky;bottom:0;z-index:7;height:0}
+.hurtig{position:absolute;right:16px;bottom:16px;width:56px;height:56px;border-radius:var(--r-knapp);border:0;background:var(--navy);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(15,23,42,.28)}
+.hurtig .ikon{width:24px;height:24px;transition:transform 200ms var(--ut)}
+.hurtig[aria-expanded="true"] .ikon{transform:rotate(45deg)}
+.hurtig-meny{position:absolute;right:16px;bottom:84px;width:240px;display:grid;gap:2px;padding:8px;border-radius:var(--r-kort);background:#fff;border:1px solid var(--n200);box-shadow:0 16px 40px rgba(15,23,42,.18)}
+.hurtig-meny button{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border:0;border-radius:var(--r-knapp);background:transparent;font:700 15px/1.2 var(--brand);color:var(--navy-dyp);cursor:pointer;text-align:left}
+.hurtig-meny button:hover,.hurtig-meny button:focus-visible{background:var(--tint-graa)}
+.hurtig-meny .ikon{color:var(--navy)}
 
 /* Rolle: [data-bare=sportssjef] vises bare når rollevelgeren står på Sportssjef */
 .app:not(.rolle-sportssjef) [data-bare=sportssjef]{display:none!important}
@@ -106,19 +115,20 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .undertittel{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
 .etikett{font:700 11px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
 
-/* Helteflate: navy med WANGs linjegradient (fasitens hero) */
-.helt{border-radius:var(--r-kort);background:var(--grad-hero);color:#fff;padding:22px 20px;display:grid;gap:14px;box-shadow:0 18px 40px rgba(15,23,42,.22);overflow:hidden;position:relative}
-.helt .dato{color:rgba(255,255,255,.85)}
-.helt .tittel{color:#fff}
-.helt .ingress{color:rgba(255,255,255,.85)}
-.helt-tall{display:flex;flex-wrap:wrap;gap:10px 24px}
-.helt-tall div{display:grid;gap:2px}
-.helt-tall strong{font:800 30px/1 var(--brand);letter-spacing:-.02em}
-.helt-tall span{font:700 11px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+/* Toppen av en skjerm: dato over tittel, ingen farget flate (samme som AgencyOS).
+   .helt-tall blir tellere med kant. En teller som krever handling får klassen .signal. */
+.helt{display:grid;gap:16px}
+.helt-tall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.helt-tall > div{display:grid;gap:4px;align-content:start;padding:14px;border-radius:var(--r-kort);border:1px solid var(--n200);background:#fff;min-height:92px}
+.helt-tall strong{order:2;font:800 30px/1 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
+.helt-tall span{order:1;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+.helt-tall > div.signal{border:2px solid var(--rosa)}
+.helt-tall > div.signal strong{color:var(--rosa-tekst)}
+.helt > .knapper,.helt > .knapp{justify-self:start}
 
-/* ---------- Flater: hvite kort, myk navy-skygge, ingen kantlinje ---------- */
-.kort{border-radius:var(--r-kort);background:var(--kort);box-shadow:var(--skygge);padding:18px;display:grid;gap:14px;align-content:start}
-.kort.dempet{background:var(--tint-graa);box-shadow:none}
+/* ---------- Flater: hvite kort med tynn kant (samme som AgencyOS) ---------- */
+.kort{border-radius:var(--r-kort);background:var(--kort);border:1px solid var(--n200);padding:18px;display:grid;gap:14px;align-content:start}
+.kort.dempet{background:var(--tint-graa);border-color:transparent}
 .skille{height:1px;background:var(--linje)}
 
 /* Ett stort tall per flate */
@@ -146,10 +156,10 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .akse.fys{background:var(--fys-fyll);color:var(--fys-paa)} .akse.tek{background:var(--tek-fyll);color:var(--tek-paa)}
 .akse.slag{background:var(--slag-fyll);color:var(--slag-paa)} .akse.spill{background:var(--spill-fyll);color:var(--spill-paa)}
 .akse.turn{background:var(--turn-fyll);color:var(--turn-paa)}
-.avatar{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--tint-navy);color:var(--navy);font:800 12px/1 var(--brand);flex:none}
+.avatar{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font:800 12px/1 var(--brand);flex:none}
 
 /* ---------- Knapper: pille-form, navy primær, rosa bare for det som sletter eller avslutter ---------- */
-.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:var(--r-chip);font:700 14px/1 var(--brand);cursor:pointer;text-decoration:none;border:2px solid transparent}
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r-knapp);font:700 14px/1 var(--brand);cursor:pointer;text-decoration:none;border:2px solid transparent}
 .knapp.pri{background:var(--navy);color:#fff}
 .knapp.sek{background:#fff;color:var(--navy);border-color:var(--navy)}
 .knapp.mint{background:var(--mint);color:var(--navy-dyp)}
@@ -157,14 +167,19 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .knapp.flat{background:transparent;color:var(--navy);padding:0 12px}
 .knapp[disabled]{background:var(--n100);color:var(--tekst-2);cursor:not-allowed}
 .knapp.stor{min-height:54px;font-size:16px;width:100%}
-.knapp:focus-visible,.valg button:focus-visible,.okt:focus-visible,.bunnmeny a:focus-visible,.meny a:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.knapp:focus-visible,.valg button:focus-visible,.okt:focus-visible,.meny a:focus-visible,.skuff a:focus-visible,.hurtig:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 .knapper{display:flex;gap:8px;flex-wrap:wrap}
-.valg{display:inline-flex;flex-wrap:wrap;gap:3px;padding:4px;border-radius:var(--r-chip);background:#fff;box-shadow:var(--skygge-s);justify-self:start}
-.valg button{min-height:40px;padding:0 16px;border:0;border-radius:var(--r-chip);background:transparent;font:700 14px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
+.valg{display:inline-flex;flex-wrap:wrap;gap:3px;padding:3px;border-radius:var(--r-knapp);background:var(--tint-graa);justify-self:start}
+.valg button{min-height:40px;padding:0 14px;border:0;border-radius:8px;background:transparent;font:700 14px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
 .valg button[aria-pressed="true"]{background:var(--navy);color:#fff}
 
+/* Faner: understreket, som AgencyOS. Gjelder .faner i alle skjermene. */
+.app .faner{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--n200)}
+.app .faner a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:0;background:transparent;box-shadow:none;border-bottom:3px solid transparent;font:700 15px/1 var(--brand);color:var(--tekst-2);text-decoration:none}
+.app .faner a.aktiv{background:transparent;color:var(--navy-dyp);border-bottom-color:var(--navy)}
+
 /* ---------- Øktkort: fylt flate i aksefargen, bilde øverst, aldri tekst oppå bildet ---------- */
-.okt{display:grid;border-radius:var(--r-kort-s);overflow:hidden;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;text-align:left;font:inherit;box-shadow:var(--skygge)}
+.okt{display:grid;border-radius:var(--r-kort-s);overflow:hidden;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;text-align:left;font:inherit}
 .okt.fys{background:var(--fys-fyll);color:var(--fys-paa)} .okt.tek{background:var(--tek-fyll);color:var(--tek-paa)}
 .okt.slag{background:var(--slag-fyll);color:var(--slag-paa)} .okt.spill{background:var(--spill-fyll);color:var(--spill-paa)}
 .okt.turn{background:var(--turn-fyll);color:var(--turn-paa)}
@@ -225,23 +240,15 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 
 /* ---------- PC fra 900 px containerbredde ---------- */
 @container (min-width:900px){
-  .topplinje{display:none}
-  .skall{display:grid;grid-template-columns:248px 1fr;min-height:900px}
-  .meny{display:flex;flex-direction:column;gap:4px;padding:22px 14px;background:#fff;box-shadow:1px 0 0 var(--linje)}
-  .meny .logo{height:40px;margin:2px 10px 6px}
+  .topplinje,.skuff{display:none!important}
+  .skall{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:900px}
+  .meny{display:flex;flex-direction:column;gap:2px;padding:20px 12px 12px;background:var(--tint-graa);border-right:1px solid var(--n200)}
+  .meny .logo{height:40px;margin:2px 10px 4px}
   .meny .gruppe{margin:0 12px 18px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
-  .meny a{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:var(--r-chip);color:var(--tekst-2);text-decoration:none;font:700 15px/1 var(--brand)}
-  .meny a.aktiv{background:var(--navy);color:#fff}
-  .meny .teller{margin-left:auto}
-  .meny .del{margin:14px 12px 6px}
-  .meny .bruker{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--r-felt);background:var(--tint-graa)}
-  .meny .bruker b{display:block;font:700 14px/1.2 var(--brand);color:var(--navy-dyp)}
-  .meny .bruker span{font-size:13px;color:var(--tekst-2)}
-  .innhold{padding:32px 40px 48px}
-  .bunnmeny{display:none}
-  .mer-ark{display:none!important}
+  .pc-topp{display:flex;justify-content:flex-end;padding:12px 40px 0}
+  .innhold{padding:8px 40px 96px}
+  .helt-tall{grid-template-columns:repeat(4,minmax(0,1fr))}
   .to-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
   .tre-kol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
-  .helt{padding:30px 32px}
   .tittel{font-size:34px}
 }

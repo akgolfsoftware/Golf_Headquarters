@@ -21,6 +21,22 @@ Anders går gjennom alt samlet til slutt (port 7).
 - **Bare syntetiske data.** Elevene er mindreårige: «Elev 04», «Trener 1». Aldri ekte navn.
 - Aldri sidelengs rulling. Tekst minst 4,5:1 i kontrast (stor tekst 3:1).
 
+## Nærmere AgencyOS (Anders 15.10.2026)
+
+Anders 15.10: «Få designet på WANG-skjermene litt nærmere hvordan AgencyOS-skjermene ser ut. Og utbedre farger.»
+Mal: AgencyOS-utkastene i `docs/design-system/utkast-agencyos/` (grenen `claude/agencyos-p4-workbench`, Cockpit og Stall).
+WANG beholder egne farger og skrifter; oppsettet er hentet fra AgencyOS:
+
+- **Skallet:** lys sidemeny på PC med navy aktiv rad og trener nederst, bjelle øverst til høyre. På mobil
+  hamburgermeny, logo og bjelle i stedet for bunnmeny. Hurtigknappen (navy, 56 x 56) står på alle skjermer:
+  Ny økt · Før oppmøte · Ny melding · Før test.
+- **Toppen av skjermen:** dato over tittel, ingen farget flate. Nøkkeltallene står i tellere med tynn kant;
+  det som krever handling får rosa kant (som rust-signalet i AgencyOS).
+- **Flater:** hvit bakgrunn, kort med tynn grå kant og 14 px hjørner, knapper med 10 px hjørner, understrekte faner, navy avatarer.
+- **I dag** har fått dagen som tidslinje, som Cockpit: én rad per time, øktene som fylte blokker i aksefargen, skoletimer i grått og rød nå-strek.
+- **Farger:** navy er handling, mint det viktigste valget, rosa haster. Aksefargene er uendret. Perioder, grupper og
+  elevens prikker bruker ikke aksefarger.
+
 ## Aksefargene (godkjent av Anders 14.10.2026)
 
 | Akse | Farge | Søyle og prikk | Flate med tekst | Tekst på flaten |
