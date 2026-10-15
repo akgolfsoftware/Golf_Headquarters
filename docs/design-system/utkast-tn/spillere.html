@@ -120,7 +120,7 @@
       <h2>Hva som er nytt</h2>
       <ul>
         <li><b>Spillerprofilen heter IUP</b> (Anders 15.10). Den har fanene i dagens rekkefølge og spillerens pyramide i aksefargene. Merket «Delt med Team Norway» viser hva treneren faktisk ser.</li>
-        <li><b>Tester</b> merkes «Egenført» eller «Kontrollert». 8-ball føres med carry og side per slag (vedtak 14.10). Wedge Gate føres som Godkjent eller Bom, og resultatet er antall godkjent.</li>
+        <li><b>Tester</b> merkes «Egenført» eller «Kontrollert». 8-ball føres med meter fra hullet per slag, og «I hull» når ballen går i (vedtak 14.10). Andre PEI-tester føres med carry og side. Wedge Gate føres som Godkjent eller Bom, og resultatet er antall godkjent.</li>
         <li><b>Før resultat</b> på testdagen har to store knapper, så treneren kan føre med én hånd mens spilleren står ved siden av.</li>
         <li><b>Evaluering</b> viser fireukerssjekken og utviklingssjekken spilleren har levert. Treneren foreslår, spilleren bestemmer.</li>
         <li><b>Skoler</b> skjuler navn der en skole har færre enn tre spillere.</li>
@@ -129,7 +129,6 @@
     <section class="endringer">
       <h2>Åpne spørsmål</h2>
       <ul>
-        <li>8-ball-poengene per slag følger vedtaket 14.10 (5 i hull, 3 innen 1 m, så 2, 1, 0). Grensene for 2 og 1 er ikke skrevet ned, derfor viser utkastet bare totalen og slagene.</li>
         <li>Strokes Gained og TrackMan i Analyse: Data Golf er bare for coacher. Utkastet viser egne SG-tall fra spillerens runder og en lås for Data Golf.</li>
       </ul>
     </section>
@@ -193,7 +192,7 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Siste tester</h2><a class="lenke" href="#" data-gaa="tester">Alle tester</a></div>
     <div class="kort">
-      <a class="test-rad" href="#" data-gaa="test8"><span><b>8-ball variasjon</b><br><span class="kilde">7. okt · fellestest</span></span><span class="verdi">19<small>poeng · PEI 2,3 %</small></span><span class="under"><span class="merke ok"><i></i>Kontrollert</span></span></a>
+      <a class="test-rad" href="#" data-gaa="test8"><span><b>8-ball variasjon</b><br><span class="kilde">7. okt · fellestest</span></span><span class="verdi">19<small>poeng · PEI 1,9 %</small></span><span class="under"><span class="merke ok"><i></i>Kontrollert</span></span></a>
       <a class="test-rad" href="#" data-gaa="wedge"><span><b>Wedge Gate</b><br><span class="kilde">7. okt · fellestest</span></span><span class="verdi">7<small>av 9 godkjent</small></span><span class="under"><span class="merke ok"><i></i>Kontrollert</span></span></a>
       <a class="test-rad" href="#"><span><b>Club Speed, driver</b><br><span class="kilde">2. okt · egen trening</span></span><span class="verdi">99,6<small>mph</small></span><span class="under"><span class="merke info"><i></i>Egenført</span></span></a>
     </div>
@@ -244,17 +243,17 @@
   <header data-behold>
     <span class="overlinje">IUP · Mathea Lund · 7. oktober</span>
     <h1 class="tittel">8-ball variasjon</h1>
-    <p class="ingress">Åtte slag fra 40 til 110 meter. Hvert slag føres med carry og side.</p>
+    <p class="ingress">Åtte slag fra 40 til 110 meter. Hvert slag føres med meter fra hullet, eller «I hull».</p>
   </header>
   <div class="rutenett">
     <div class="kort navy"><span class="overlinje" style="color:var(--rail-tekst)">Poeng</span><div class="hoved"><strong>19<small>av 40</small></strong></div><p style="color:var(--rail-tekst)">Fra 17 i juni.</p></div>
-    <div class="kort"><span class="overlinje">PEI</span><div class="hoved"><strong>2,3<small>%</small></strong></div><p class="kilde">Snittavstand til hull delt på slaglengde. Lavere er bedre.</p></div>
+    <div class="kort"><span class="overlinje">PEI</span><div class="hoved"><strong>1,9<small>%</small></strong></div><p class="kilde">Meter fra hullet delt på slaglengde, snitt av åtte slag. Lavere er bedre.</p></div>
   </div>
   <section class="seksjon">
     <div class="sek-topp"><h2>Slagene</h2><span class="merke ok"><i></i>Kontrollert av Tor Aune</span></div>
     <div class="kort">
       <div class="slagtabell" id="slag8"></div>
-      <p class="kilde">Side: minus er venstre, pluss er høyre. Til hull regnet fra carry, side og målavstand.</p>
+      <p class="kilde">Poeng: 5 i hull, 3 innenfor 1 m, 2 innenfor 2 m, 1 innenfor 3 m, ellers 0.</p>
     </div>
   </section>
   <section class="seksjon">
@@ -545,7 +544,7 @@ function linje(svg, v, ref, min, maks, etiketter) {
   p.forEach(function (q, i) { g += '<rect x="' + (q[0] - 4) + '" y="' + (q[1] - 4).toFixed(1) + '" width="8" height="8"/><text class="gt" x="' + q[0] + '" y="136" text-anchor="middle">' + etiketter[i] + '</text>'; });
   svg.innerHTML = g;
 }
-var SLAG = [[40, 39.4, -0.4, 0.7, 3], [50, 50.8, 1.2, 1.4, 2], [60, 59.6, -0.3, 0.5, 3], [70, 71.9, 0.9, 2.1, 2], [80, 79.4, -1.8, 1.9, 2], [90, 90.0, 0.0, 0.0, 5], [100, 97.2, 2.4, 3.7, 1], [110, 108.1, -3.1, 3.6, 1]];
+var SLAG = [[40, 0.7, 3], [50, 1.4, 2], [60, 0.5, 3], [70, 1.6, 2], [80, 1.9, 2], [90, 0, 5], [100, 2.7, 1], [110, 2.4, 1]];
 function k(x) { return String(x).replace('.', ',').replace('-', '−'); }
 TNUtkast.start({
   start: 'liste',
@@ -557,12 +556,12 @@ TNUtkast.start({
     tester: { mal: 'tester', laster: 'Henter testene …', feil: 'Testene kunne ikke hentes',
       tom: { tittel: 'Ingen testresultater ennå', tekst: 'Spilleren har ikke fullført noen Team Norway-protokoll ennå. Neste fellestest er 26. oktober.', knapp: 'Legg til i testdag' } },
     test8: { mal: 'test8', etter: function (a) {
-        a.querySelector('#slag8').innerHTML = '<div class="slag-rad hode"><span>Slag</span><span>Mål</span><span>Carry</span><span>Side</span><span>Til hull</span></div>' + SLAG.map(function (s, i) {
-          return '<div class="slag-rad"><span>' + (i + 1) + '</span><span>' + s[0] + ' m</span><span>' + k(s[1].toFixed(1)) + '</span><span>' + (s[2] > 0 ? '+' : '') + k(s[2].toFixed(1)) + '</span><span><span class="poeng' + (s[4] === 5 ? ' topp' : '') + '" title="' + s[4] + ' poeng">' + k(s[3].toFixed(1)) + '</span></span></div>';
+        a.querySelector('#slag8').innerHTML = '<div class="slag-rad hode"><span>Slag</span><span>Lengde</span><span>Fra hullet</span><span>PEI</span><span>Poeng</span></div>' + SLAG.map(function (s, i) {
+          return '<div class="slag-rad"><span>' + (i + 1) + '</span><span>' + s[0] + ' m</span><span>' + (s[1] === 0 ? 'I hull' : k(s[1].toFixed(1)) + ' m') + '</span><span>' + k((s[1] / s[0] * 100).toFixed(1)) + ' %</span><span><span class="poeng' + (s[2] === 5 ? ' topp' : '') + '">' + s[2] + '</span></span></div>';
         }).join('');
         linje(a.querySelector('#graf8'), [14, 15, 16, 17, 19], null, 10, 30, ['jan', 'mar', 'apr', 'jun', 'okt']);
       }, laster: 'Henter testen …', feil: 'Testen kunne ikke hentes',
-      tom: { tittel: 'Ingen 8-ball ført', tekst: 'Testen teller bare når alle åtte slag er ført med carry og side.', knapp: 'Før 8-ball' } },
+      tom: { tittel: 'Ingen 8-ball ført', tekst: 'Testen teller bare når alle åtte slag er ført med meter fra hullet.', knapp: 'Før 8-ball' } },
     wedge: { mal: 'wedge', laster: 'Henter testen …', feil: 'Testen kunne ikke hentes',
       tom: { tittel: 'Ingen Wedge Gate ført', tekst: 'Testen teller bare når alle ni slag er ført som Godkjent eller Bom.', knapp: 'Før Wedge Gate' } },
     analyse: { mal: 'analyse', etter: function (a) {
