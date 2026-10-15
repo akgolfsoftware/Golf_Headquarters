@@ -7,6 +7,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { finnStedForTjeneste } from "@/lib/booking/tjeneste-sted";
 import { audit } from "@/lib/audit";
 import { pushBooking } from "@/lib/google-calendar-kilder";
 import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
@@ -98,14 +99,9 @@ export async function createCreditBooking(
 
   const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
 
-  // Default-location: samme regel som drop-in. Mulligan for Trackman, GFGK ellers.
-  const lokasjon = await prisma.location.findFirst({
-    where: {
-      name: service.slug.includes("trackman")
-        ? "Mulligan Indoor Golf"
-        : "Gamle Fredrikstad GK",
-    },
-  });
+  // Stedet leses fra tjenesten (locationId); navnegjetning bare som fallback
+  // når det ikke er satt (src/lib/booking/tjeneste-sted.ts).
+  const lokasjon = await finnStedForTjeneste(service);
   if (!lokasjon) {
     throw new Error("Stedet for timen er ikke satt opp. Kontakt oss for å bestille.");
   }

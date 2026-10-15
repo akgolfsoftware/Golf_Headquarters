@@ -5,6 +5,8 @@
  * - CoachAvailability (ukedag + start/slutt-tider)
  * - Eksisterende Booking (status != CANCELLED)
  * - Tjenestens varighet
+ * - Tjenestens buffer før og etter, minste varsel og maks dager fram
+ *   (bookingplanen steg 2, 15.10.2026)
  */
 
 import { vurderDeling } from "@/lib/booking/deling";
@@ -22,6 +24,34 @@ export type Slot = {
 };
 
 const SLOT_INTERVAL_MIN = 30;
+
+/** Reglene på tjenesten som styrer hvilke luker som tilbys. */
+export type LukeRegler = {
+  durationMin: number;
+  bufferForMin: number;
+  bufferEtterMin: number;
+  minVarselTimer: number;
+  maksDagerFram: number;
+};
+
+/**
+ * Er dagen innenfor «maks dager fram» fra i dag (Oslo-veggklokke)? Dag 0 er
+ * i dag, så maksDagerFram = 7 gir i dag og de seks neste dagene, som den gamle
+ * faste sjudagersstrimmelen på BK-01.
+ */
+export function dagInnenforMaksFram(date: Date, maksDagerFram: number, naa: Date): boolean {
+  const idag = new Date(naa);
+  idag.setHours(0, 0, 0, 0);
+  const dag = new Date(date);
+  dag.setHours(0, 0, 0, 0);
+  const diffDager = Math.round((dag.getTime() - idag.getTime()) / 86_400_000);
+  return diffDager >= 0 && diffDager < Math.max(1, maksDagerFram);
+}
+
+/** Tidligste start som respekterer minste varsel. */
+export function tidligsteStart(naa: Date, minVarselTimer: number): Date {
+  return new Date(naa.getTime() + Math.max(0, minVarselTimer) * 3_600_000);
+}
 
 // Antall hele uker siden en fast mandag-epoke (1970-01-05). Brukes til å avgjøre
 // om et «hver Nte uke»-vindu treffer en gitt dato.
@@ -46,6 +76,10 @@ export async function getAvailableSlots(
     where: { id: serviceTypeId },
   });
   if (!service || !service.active) return [];
+
+  const now = tilNaivVeggklokke(new Date());
+  // Maks dager fram: dager etter vinduet har ingen luker, uansett tilgjengelighet.
+  if (!dagInnenforMaksFram(date, service.maksDagerFram, now)) return [];
 
   // 0 = søndag i JS Date.getDay(), men 0 = mandag i CoachAvailability.
   // Konverter: (jsDay + 6) % 7.
@@ -129,7 +163,10 @@ export async function getAvailableSlots(
   );
 
   const slots: Slot[] = [];
-  const now = tilNaivVeggklokke(new Date());
+  // Minste varsel: luker nærmere enn så mange timer tilbys ikke.
+  const tidligste = tidligsteStart(now, service.minVarselTimer);
+  const bufferFor = Math.max(0, service.bufferForMin) * 60_000;
+  const bufferEtter = Math.max(0, service.bufferEtterMin) * 60_000;
 
   for (const av of gjeldende) {
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
@@ -151,18 +188,23 @@ export async function getAvailableSlots(
     while (cursor.getTime() + service.durationMin * 60_000 <= dayEndForAv.getTime()) {
       const slotEnd = new Date(cursor.getTime() + service.durationMin * 60_000);
 
-      // Filtrer ut historiske slots.
-      if (cursor.getTime() > now.getTime()) {
+      // Filtrer ut historiske slots og slots innenfor minste varsel.
+      if (cursor.getTime() >= tidligste.getTime()) {
+        // Bufferen holdes av rundt timen: en annen avtale som ligger innenfor
+        // bufferen før eller etter, blokkerer luka. Deling (2-til-1) sjekkes
+        // fortsatt på selve timen, så nøyaktig samme økt teller ikke som konflikt.
+        const medBufferStart = new Date(cursor.getTime() - bufferFor);
+        const medBufferEnd = new Date(slotEnd.getTime() + bufferEtter);
         // Sjekk konflikt med eksisterende bookinger ELLER Calendar-busy.
-        const overlapping = existing.filter(b => b.coachId === av.coach.id && cursor < b.endAt && slotEnd > b.startAt);
+        const overlapping = existing.filter(b => b.coachId === av.coach.id && medBufferStart < b.endAt && medBufferEnd > b.startAt);
         const bookingConflict = vurderDeling(overlapping, { serviceTypeId: service.id, startAt: cursor, endAt: slotEnd }, service.maxDeltakere).utfall !== "ledig";
         const hendelseConflict = hendelser.some(
           (h) =>
             (h.coachId === null || h.coachId === av.coach.id) &&
-            cursor.getTime() < h.endAt.getTime() &&
-            slotEnd.getTime() > h.startAt.getTime(),
+            medBufferStart.getTime() < h.endAt.getTime() &&
+            medBufferEnd.getTime() > h.startAt.getTime(),
         );
-        const calendarConflict = kalenderBlokkererSlot(kalender, cursor, slotEnd);
+        const calendarConflict = kalenderBlokkererSlot(kalender, medBufferStart, medBufferEnd);
         const conflict = bookingConflict || hendelseConflict || calendarConflict;
         if (!conflict) {
           slots.push({

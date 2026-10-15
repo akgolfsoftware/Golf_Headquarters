@@ -6,10 +6,10 @@ export const sti = "/booking";
 const base: BK01Props = {
   lokasjon: "Gamle Fredrikstad GK",
   tjenester: [
-    { slug: "pt60", navn: "Privattime", coachNavn: null, pris: 950, varighetMin: 60, beskrivelse: "Én spiller, én coach. Studio 1 eller bane." },
-    { slug: "pt30", navn: "Privattime", coachNavn: null, pris: 550, varighetMin: 30, beskrivelse: "Kort økt med ett fokus." },
-    { slug: "bane", navn: "Banecoaching 9 hull med et langt navn som må brytes riktig", coachNavn: "Anders", pris: 1900, varighetMin: 150, beskrivelse: "Strategi og slagvalg på banen." },
-    { slug: "flex", navn: "Flex 20 min", coachNavn: null, pris: 350, varighetMin: 20, beskrivelse: null },
+    { slug: "pt60", navn: "Privattime", coachNavn: null, pris: 950, varighetMin: 60, sted: null, beskrivelse: "Én spiller, én coach. Studio 1 eller bane." },
+    { slug: "pt30", navn: "Privattime", coachNavn: null, pris: 550, varighetMin: 30, sted: null, beskrivelse: "Kort økt med ett fokus." },
+    { slug: "bane", navn: "Banecoaching 9 hull med et langt navn som må brytes riktig", coachNavn: "Anders", pris: 1900, varighetMin: 150, sted: null, beskrivelse: "Strategi og slagvalg på banen." },
+    { slug: "flex", navn: "Flex 20 min", coachNavn: null, pris: 350, varighetMin: 20, sted: null, beskrivelse: null },
   ],
   abonnement: [{ slug: "perf", navn: "Performance", coachNavn: null, pris: 1490, beskrivelse: null }],
 };
