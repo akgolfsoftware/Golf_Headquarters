@@ -9,11 +9,11 @@
  * loadDailyBrief, oppgaver fra Notion-cachen, «Følger ikke planen» (to siste
  * uker) og turneringer denne uka. «Skriv ut» og «Eksporter rapport» er beholdt.
  *
- * Avvik fra utkastet:
- *  - Fjerde teller er «Økter i dag», ikke «Forslag venter»: forslag telles
+ * Avvik:
+ *   - Fjerde teller er «Økter i dag», ikke «Forslag venter»: forslag telles
  *    sammen med resten av køen og finnes ikke som eget tall.
- *  - Kort svar fra Cockpit og avhuking av Notion-oppgaver finnes ikke i koden.
- *  - Øktblokkene får aksefarge bare når tittelen sier aksen; ellers nøytral grå.
+ *   - Kort svar fra Cockpit og avhuking av Notion-oppgaver finnes ikke i koden.
+ *   - Øktblokkene får aksefarge bare når tittelen sier aksen; ellers nøytral grå.
  */
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
