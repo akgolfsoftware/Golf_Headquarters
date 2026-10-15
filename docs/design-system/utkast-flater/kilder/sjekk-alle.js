@@ -3,7 +3,7 @@
 // samler JS-feil og tar skjermbilde av hver skjerm i mobil og PC.
 const {chromium}=require('playwright');const fs=require('fs');
 (async()=>{const [fil,ut]=process.argv.slice(2);fs.mkdirSync(ut,{recursive:true});
-const b=await chromium.launch();const p=await b.newPage({viewport:{width:1300,height:2400}});const fe=[];
+const b=await chromium.launch().catch(()=>chromium.launch({channel:'chrome'}));const p=await b.newPage({viewport:{width:1300,height:2400}});const fe=[];
 p.on('pageerror',e=>fe.push(e.message));p.on('requestfailed',r=>{if(!/fonts\.g/.test(r.url()))fe.push('mangler '+r.url())});
 await p.goto('file://'+fil);await p.waitForTimeout(1200);
 const ids=await p.$$eval('[data-skjerm]',x=>x.map(e=>e.dataset.skjerm));
