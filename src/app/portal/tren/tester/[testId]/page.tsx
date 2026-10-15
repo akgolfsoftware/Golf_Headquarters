@@ -1,12 +1,13 @@
 /**
- * PH14Detalj — testens detaljside i PlayerHQSkall.
- * Samme tilgang, protokoll, historikk, gate-tall og startlenke.
- * Gjennomføring og Team Norway-scorekort er ikke med.
- * Tegningen ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.
+ * PH-14 Én test i nytt design (pakke 6, godkjent av Anders 14.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/stats-dybde.html, malen «test».
+ * Avvik:
+ *   - Avvikene mot utkastet står øverst i PH14Test.tsx.
+ *   - Team Norway-testene får også en egen testside nå (før sendte adressen rett til scorekortet).
+ *     «Ta testen» åpner gjeldende utgave av scorekortet.
+ * Samme tilgang (testTilgangWhere), protokoll, historikk, siste forsøk, øvelsesforslag og startlenke som før.
  */
 
-import Link from "next/link";
-import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getUnreadNotifications } from "@/app/portal/actions";
@@ -19,37 +20,30 @@ import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format
 import { gateMaalFraProtokoll } from "@/lib/domain/tester-live";
 import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
 import { foreslaGodkjenteOvelser, ovelsesNavn, sammenlignMedForrige } from "@/lib/portal-tester/test-anbefaling";
-import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
+import { tnComparableResult, tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { tnFormat } from "@/lib/portal-tester/tn-scoring";
+import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { StatusPille, TomTilstand } from "@/components/precision/pa";
-import { ClipboardList } from "lucide-react";
+import { PH14Test, type PH14Maaling, type PH14TestData } from "@/components/portal/precision/PH14Test";
+import type { SdAkse } from "@/components/portal/precision/PHStatsDybdeFelles";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Test · PlayerHQ" };
 
-const NGF_URL = "https://www.golfforbundet.no/spiller/toppidrett/skjemaer";
+const OMRAADE: Record<string, { akse: SdAkse; navn: string }> = {
+  FYS: { akse: "fys", navn: "Fysisk" }, TEK: { akse: "tek", navn: "Teknikk" }, SLAG: { akse: "slag", navn: "Golfslag" },
+  SPILL: { akse: "spill", navn: "Spill" }, TURN: { akse: "turn", navn: "Turnering" },
+};
+const KORT = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
 
-function grupperSteg(
-  forsok: ScorekortForsok[],
-): { label: string; antall: number; target: string | null }[] {
-  const m = new Map<string, { label: string; antall: number; target: string | null }>();
+function grupperSteg(forsok: ScorekortForsok[]) {
+  const m = new Map<string, { label: string; antall: number; maal: string | null }>();
   for (const f of forsok) {
     const ex = m.get(f.label);
     if (ex) ex.antall += 1;
-    else m.set(f.label, { label: f.label, antall: 1, target: f.target ?? null });
+    else m.set(f.label, { label: f.label, antall: 1, maal: f.target != null ? String(f.target).replace(".", ",") : null });
   }
   return [...m.values()];
-}
-
-function fmtNum(n: number): string {
-  return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
-}
-
-function fmtDatoKort(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
-}
-
-function fmtDatoLang(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "Europe/Oslo" });
 }
 
 export default async function TestDetaljSpillerPage({
@@ -60,36 +54,80 @@ export default async function TestDetaljSpillerPage({
   searchParams: Promise<{ lagret?: string }>;
 }) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
-  const [{ testId }, sp, ulest] = await Promise.all([
-    params,
-    searchParams,
-    getUnreadNotifications(user.id, 1),
-  ]);
-  const tn = tnFromDefinitionId(testId);
-  if (tn) redirect(`/portal/tren/tester/team-norway?test=${tn.id}${tn.variableCount ? `&count=${tn.rows.length}` : ""}`);
-  const lagret = sp.lagret === "1";
+  if (user.role === "PARENT") redirect("/forelder");
+  const [{ testId }, sp, ulest] = await Promise.all([params, searchParams, getUnreadNotifications(user.id, 1)]);
 
-  const test = await prisma.testDefinition.findFirst({
-    where: { id: testId, AND: [testTilgangWhere(user.id)] },
-  });
+  const tn = tnFromDefinitionId(testId);
+  const test = await prisma.testDefinition.findFirst({ where: { id: testId, AND: [testTilgangWhere(user.id)] } });
+  // Team Norway-testene kan mangle definisjonsrad til første resultat er lagret; da går vi rett til scorekortet som før.
+  if (!test && tn) redirect(`/portal/tren/tester/team-norway?test=${tn.id}${tn.variableCount ? `&count=${tn.rows.length}` : ""}`);
   if (!test) notFound();
 
   const resultater = await prisma.testResult.findMany({
     where: { userId: user.id, testId },
     orderBy: { takenAt: "asc" },
-    select: { id: true, score: true, takenAt: true, details: true },
+    select: { id: true, score: true, takenAt: true, details: true, recordedBy: { select: { name: true } } },
   });
 
   const spec = parseProtocol(test.protocol);
   const scoringSpec = parseForScoring(test.protocol);
-  const steg = spec ? grupperSteg(spec.forsok) : [];
-  const enhet = scoringSpec.unit;
-  const lavere = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
+  const shots = scoringSpec.shots.length;
+  const tnKanon = tn ? resultater.map((r) => tnComparableResult(testId, r.score, r.details)) : [];
+  const vis = (score: number, i: number) => {
+    if (!tn) return formaterTestVerdi({ kind: scoringSpec.kind, verdi: score, shotsCount: shots });
+    const k = tnKanon[i];
+    return k ? tnFormat({ value: score, unit: k.unit }) : "—";
+  };
 
-  const hist = resultater.slice(-8);
-  const maks = hist.length > 0 ? Math.max(...hist.map((r) => r.score), 0) : 0;
+  const maalinger: PH14Maaling[] = resultater.map((r, i) => ({
+    id: r.id, dato: KORT.format(r.takenAt), verdi: r.score, vis: vis(r.score, i), fortAv: r.recordedBy?.name ?? null,
+  }));
+
+  // Retning: TN fra det kanoniske resultatet, ellers fra scoringtypen.
+  const tnRetning = tnKanon.findLast((k) => k != null)?.direction ?? null;
+  const lavere = tn ? (tnRetning == null ? null : tnRetning === "lower") : scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
+
   const siste = resultater[resultater.length - 1] ?? null;
   const nestSiste = resultater[resultater.length - 2] ?? null;
+  let endring: string | null = null;
+  if (siste && nestSiste) {
+    const sammenlignbar = tn
+      ? !!tnKanon[tnKanon.length - 1] && tnKanon[tnKanon.length - 1]?.comparisonKey === tnKanon[tnKanon.length - 2]?.comparisonKey
+      : sammenlignMedForrige({ ...siste, testId }, resultater.map((r) => ({ ...r, testId }))) !== "IKKE_SAMMENLIGNBAR";
+    if (sammenlignbar) {
+      const diff = siste.score - nestSiste.score;
+      endring = diff === 0 ? "±0 mot forrige" : tn
+        ? `${diff > 0 ? "+" : "−"}${tnFormat({ value: Math.abs(diff), unit: tnKanon[tnKanon.length - 1]!.unit })} mot forrige`
+        : `${formaterTestDelta({ kind: scoringSpec.kind, delta: diff })} mot forrige`;
+    }
+  }
+
+  // Snitt og beste regnes bare over målinger med samme visning (ikke «—»).
+  const tellende = maalinger.filter((x) => x.vis !== "—");
+  const fmt = (v: number) => (tn ? tnFormat({ value: v, unit: tnKanon.findLast((k) => k != null)!.unit }) : formaterTestVerdi({ kind: scoringSpec.kind, verdi: v, shotsCount: shots }));
+  const snitt = tellende.length ? fmt(tellende.reduce((a, x) => a + x.verdi, 0) / tellende.length) : null;
+  const beste = tellende.length && lavere != null ? fmt(lavere ? Math.min(...tellende.map((x) => x.verdi)) : Math.max(...tellende.map((x) => x.verdi))) : null;
+
+  // 8-ball: PEI per slagkategori fra siste måling.
+  const sisteKanon = tnKanon[tnKanon.length - 1] ?? null;
+  const perSlagtype = sisteKanon
+    ? sisteKanon.metrics.filter((x) => /^(Chip|Wedge|Lobb|Bunker) PEI$/.test(x.label)).map((x) => ({ navn: x.label.replace(" PEI", ""), vis: tnFormat(x) }))
+    : [];
+
+  const erGate = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
+  let sisteForsok: PH14TestData["sisteForsok"] = [];
+  if (erGate && siste) {
+    const parsed = ScoringDetailsSchema.safeParse(siste.details);
+    if (parsed.success) {
+      sisteForsok = parsed.data.perSlag.map((s) => ({
+        nr: s.nr,
+        ok: typeof s.verdier.ok === "boolean" ? s.verdier.ok : typeof s.verdier.sunket === "boolean" ? s.verdier.sunket : null,
+        side: s.verdier.miss_side === "V" || s.verdier.miss_side === "H" ? (s.verdier.miss_side as "V" | "H") : null,
+      }));
+    }
+  }
+  const gateMal = erGate ? gateMaalFraProtokoll(test.protocol) : null;
+
   const fasiliteter = siste && test.omraade ? await prisma.playerFacility.findMany({
     where: { userId: user.id },
     select: { capabilities: true, maksPuttLengdeM: true, rangeLengdeM: true },
@@ -101,195 +139,39 @@ export default async function TestDetaljSpillerPage({
     spillerKategori: null,
   }) : [];
 
-  const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
-  const gateMal = erGateType ? gateMaalFraProtokoll(test.protocol) : null;
-  const gateShotsCount = scoringSpec.shots.length;
+  const omraade = OMRAADE[test.pyramidArea] ?? { akse: "slag" as const, navn: test.pyramidArea };
+  const regel = [test.scoringRule, gateMal != null ? `mål ${gateMal} av ${shots}` : null, scoringSpec.unit ? `måles i ${scoringSpec.unit}` : null].filter(Boolean).join(" · ");
+  // «Ta testen» åpner alltid gjeldende utgave av Team Norway-scorekortet.
+  const current = tn ? tnProtocol(tn.id) ?? tn : null;
 
-  let sisteForsok: { nr: number; ok: boolean | null; side: "V" | "H" | null }[] = [];
-  if (erGateType && siste) {
-    const parsedDetails = ScoringDetailsSchema.safeParse((siste as { details?: unknown }).details);
-    if (parsedDetails.success) {
-      sisteForsok = parsedDetails.data.perSlag.map((s) => ({
-        nr: s.nr,
-        ok: typeof s.verdier.ok === "boolean" ? s.verdier.ok : typeof s.verdier.sunket === "boolean" ? s.verdier.sunket : null,
-        side: s.verdier.miss_side === "V" || s.verdier.miss_side === "H" ? (s.verdier.miss_side as "V" | "H") : null,
-      }));
-    }
-  }
-
-  let trend: { text: string; tone: "pos" | "neg" | "flat" } | null = null;
-  const sikkertSammenlignbar = siste && nestSiste && sammenlignMedForrige(
-    { ...siste, testId: test.id },
-    resultater.map((rad) => ({ ...rad, testId: test.id })),
-  ) !== "IKKE_SAMMENLIGNBAR";
-  if (siste && nestSiste && sikkertSammenlignbar) {
-    const diff = siste.score - nestSiste.score;
-    if (diff === 0) {
-      trend = { text: "±0 vs forrige måling", tone: "flat" };
-    } else {
-      const bedre = lavere == null ? null : lavere ? diff < 0 : diff > 0;
-      trend = {
-        text: `${formaterTestDelta({ kind: scoringSpec.kind, delta: diff })} vs forrige måling`,
-        tone: bedre == null ? "flat" : bedre ? "pos" : "neg",
-      };
-    }
-  }
-
-  const subBiter = [test.pyramidArea, enhet ? `måles i ${enhet}` : null].filter(Boolean);
-  const omRader: [string, string][] = [
-    ["Pyramide", test.pyramidArea],
-    ...(enhet ? [["Enhet", enhet] as [string, string]] : []),
-    ...(steg.length > 0 ? [["Øvelser", `${steg.length} steg`] as [string, string]] : []),
-  ];
+  const data: PH14TestData = {
+    navn: test.name,
+    akse: omraade.akse,
+    omraade: omraade.navn,
+    maalinger,
+    lavereErBedre: lavere,
+    endring,
+    snitt,
+    beste,
+    regel,
+    beskrivelse: test.description,
+    protokoll: tn ? [] : spec ? grupperSteg(spec.forsok) : [],
+    perSlagtype,
+    sisteForsok,
+    sperret: current?.blocked ?? null,
+    startHref: tn
+      ? `/portal/tren/tester/team-norway?test=${current!.id}${current!.variableCount ? `&count=${current!.rows.length}` : ""}`
+      : `/portal/tren/tester/${test.id}/gjennomfor`,
+    lagret: sp.lagret === "1",
+    talentHref: FEATURES.TALENT ? "/portal/talent" : null,
+    forslag: forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => ({
+      id: ovelse.id, navn: ovelsesNavn(ovelse.navn), beskrivelse: ovelse.beskrivelse, begrunnelse, kanLeggesTil,
+    })),
+  };
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
-      <div className="pa-side ph14d" data-od-id="playerhq-test-detalj">
-        <Link href="/portal/tren/tester" className="ph14d-tilbake">Tester</Link>
-
-        {lagret && (
-          <section className="pa-card ph14d-kort ph14d-lagret">
-            <header>
-              <StatusPille tone="ok">Lagret</StatusPille>
-              <Link href="/portal/coach/melding">Del med coach</Link>
-            </header>
-            <p>Resultatet er lagret og telles i historikken under. Coachen ser det i stallen.</p>
-            {FEATURES.TALENT && <Link href="/portal/talent">Se utviklingen i talentprofilen</Link>}
-          </section>
-        )}
-
-        <header className="ph14d-hode">
-          <h1>{test.name}</h1>
-          <p>{subBiter.join(" · ")}</p>
-        </header>
-
-        {erGateType && siste && (
-          <section className="ph14d-hero">
-            <p>
-              <strong>{fmtNum(siste.score)}</strong>
-              <span>OK av {gateShotsCount}{gateMal != null ? ` · mål ${gateMal}` : ""}</span>
-            </p>
-            <small>sist {fmtDatoLang(siste.takenAt)}</small>
-            {sisteForsok.length > 0 && (
-              <>
-                <p className="ph14d-kicker">Siste forsøk · {fmtDatoLang(siste.takenAt)}</p>
-                <div className="ph14d-forsok">
-                  {sisteForsok.map((f) => (
-                    <p key={f.nr} data-bom={f.ok === false ? "true" : undefined}>
-                      <span>{f.nr}</span>
-                      <span>{f.ok == null ? "—" : f.ok ? "OK" : f.side ? `BOM · ${f.side}` : "BOM"}</span>
-                    </p>
-                  ))}
-                </div>
-              </>
-            )}
-          </section>
-        )}
-
-        {resultater.length === 0 && (
-          <TomTilstand
-            icon={ClipboardList}
-            title="Du har ikke tatt denne testen ennå"
-            text="Protokollen står under — første måling blir referansen din."
-            actions={
-              <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} data-od-id="testd-tom-start" className="pa-btn pa-btn--primary pa-btn--full">
-                Ta første måling
-              </Link>
-            }
-          />
-        )}
-
-        <section className="pa-card ph14d-kort">
-          <p className="ph14d-kicker">Om testen</p>
-          <dl>
-            {omRader.map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd>{v}</dd>
-              </div>
-            ))}
-          </dl>
-          {test.description && <p>{test.description}</p>}
-        </section>
-
-        <section className="pa-card ph14d-kort">
-          <p className="ph14d-kicker">Protokoll</p>
-          {steg.length > 0 ? (
-            <ol>
-              {steg.map((s, i) => (
-                <li key={s.label}>
-                  <span>{i + 1}</span>
-                  <span>
-                    {s.label}
-                    <small> × {s.antall}{s.target != null ? ` · mål ${s.target}` : ""}</small>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p>
-              Testen har ingen steg-protokoll i systemet ennå — scoringsregelen under gjelder.{" "}
-              <a href={NGF_URL} target="_blank" rel="noreferrer">Protokoller hos NGF</a>
-            </p>
-          )}
-          <p className="ph14d-scoring"><span>Scoring</span><span>{test.scoringRule}</span></p>
-        </section>
-
-        {resultater.length > 0 && (
-          <section className="pa-card ph14d-kort">
-            <p className="ph14d-kicker">Din historikk · {resultater.length} {resultater.length === 1 ? "måling" : "målinger"}</p>
-            <div className="ph14d-stolper" aria-hidden>
-              {hist.map((r, i) => (
-                <div key={r.id} data-siste={i === hist.length - 1 ? "true" : undefined} style={{ height: maks > 0 ? `${Math.round((r.score / maks) * 100)}%` : "8px" }}>
-                  <span>{formaterTestVerdi({ kind: scoringSpec.kind, verdi: r.score, shotsCount: gateShotsCount })}</span>
-                </div>
-              ))}
-            </div>
-            <div className="ph14d-datoer">
-              {hist.map((r) => <span key={r.id}>{fmtDatoKort(r.takenAt)}</span>)}
-            </div>
-            {trend && (
-              <StatusPille tone={trend.tone === "pos" ? "ok" : trend.tone === "neg" ? "signal" : "neutral"}>{trend.text}</StatusPille>
-            )}
-            <details data-od-id="testd-why">
-              <summary>Hvorfor dette tallet</summary>
-              <ul>
-                <li>Kilde: dine {resultater.length === 1 ? "logg av" : `${resultater.length} loggede målinger av`} {test.name}, sist {fmtDatoLang((siste ?? resultater[0]).takenAt)}.</li>
-                {siste && nestSiste && trend ? (
-                  <li>Beregning: trenden er siste måling mot nest siste — {formaterTestVerdi({ kind: scoringSpec.kind, verdi: siste.score, shotsCount: gateShotsCount })} mot {formaterTestVerdi({ kind: scoringSpec.kind, verdi: nestSiste.score, shotsCount: gateShotsCount })}.</li>
-                ) : (
-                  <li>{resultater.length === 1 ? "Én måling gir ingen trend." : "Historikken vises, men protokoll og testforhold kan ikke verifiseres for sikker trend."}</li>
-                )}
-                <li>Forbehold: målingene er gyldige når protokollen følges likt hver gang.</li>
-              </ul>
-            </details>
-          </section>
-        )}
-
-        {siste && <ResultatKontekst />}
-        {siste && (
-          <section className="pa-card ph14d-kort">
-            <p className="ph14d-kicker">Øvelser å vurdere</p>
-            <p>Dette er forslag etter et registrert resultat, ikke en diagnose eller automatisk planendring. Coachen velger eventuell videre trening.</p>
-            {forslag.length ? (
-              <ul className="ph14d-forslag">
-                {forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => (
-                  <li key={ovelse.id}>
-                    <strong>{ovelsesNavn(ovelse.navn)}</strong> · {ovelse.beskrivelse}
-                    <small>{kanLeggesTil ? "Fasilitet er bekreftet. " : ""}{begrunnelse}</small>
-                  </li>
-                ))}
-              </ul>
-            ) : <p>Ingen godkjent øvelse er koblet til dette testområdet ennå.</p>}
-          </section>
-        )}
-
-        {resultater.length > 0 && (
-          <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} data-od-id="testd-start" className="pa-btn pa-btn--primary pa-btn--full">
-            Start testen
-          </Link>
-        )}
-      </div>
+      <PH14Test data={data} />
     </PlayerHQSkall>
   );
 }

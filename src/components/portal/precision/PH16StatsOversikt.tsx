@@ -1,7 +1,8 @@
 /**
  * PH-16 Stats i nytt design (designbrevet 13.10.2026): fire deler på én flate, ett stort tall per del.
  * Fasit: docs/design-system/utkast-playerhq/stats.html. Stil: src/styles/playerhq-ny-statshub.css.
- * Lenkene «Alle runder», «Per område», «Til Plan» og «Alle tester» åpner dybden (PH16Stats med ?del=).
+ * «Per område» åpner dybden (PH16Stats med ?del=sg). «Alle runder» åpner Resultater, «Mot planen» Trening (PH-17)
+ * og «Alle tester» Tester (PH-14), alle fra pakke 6 (stats-dybde.html).
  *
  * Avvik:
  *   - Periodevalget (Siste 5 runder · Siste 20 · Sesong) er ikke med: snittet regnes alltid av siste 10 runder.
@@ -76,7 +77,7 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
     </div>
 
     <div className="deler">
-      <Del tittel="Snittscore" lenke="Alle runder" href="/portal/analysere?del=snitt">
+      <Del tittel="Snittscore" lenke="Alle runder" href="/portal/analysere/resultater">
         <div className="phn-hoved"><strong>{s.snittBrutto != null ? formaterDesimal(s.snittBrutto, 1) : "—"}</strong>
           {endring != null && endring !== 0 && <span className={`phn-trend ${endring > 0 ? "opp" : "ned"}`}><Ikon icon={endring > 0 ? TrendingUp : TrendingDown} size={16} name="trend" />{formaterDesimal(Math.abs(endring), 1)} {endring > 0 ? "bedre" : "dårligere"} enn de 10 før</span>}</div>
         <p className="phn-forklar">{s.antallSnittRunder < MIN_RUNDER_FOR_KONKLUSJON ? `Registrer minst ${MIN_RUNDER_FOR_KONKLUSJON} runder, så regnes snittet ut.` : `Snitt av siste ${s.antallSnittRunder} runder, brutto.`}</p>
@@ -101,7 +102,7 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
         <p className="phn-kilde">Siste 10 runder med slag for slag · nærspill og putting er sikre fra 24 runder</p>
       </Del>
 
-      <Del tittel="Trening" lenke="Til Plan" href="/portal/planlegge">
+      <Del tittel="Trening" lenke="Mot planen" href="/portal/analysere?del=tren">
         <div className="phn-hoved"><strong>{trening ? <StorTid min={trening.gjortMin} /> : "—"}</strong>{trening?.pct != null && <span className="phn-trend">{trening.pct} % av plan</span>}</div>
         <p className="phn-forklar">{trening ? `Siste 4 uker, av ${formaterVarighet(trening.planMin)} planlagt.` : "Ingen planlagte økter de siste fire ukene."}</p>
         {trening && trening.gjortMin > 0 && <>
@@ -111,7 +112,7 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
         <p className="phn-kilde">{trening ? `Gjennomført tid · ${trening.periode}` : "Øktlogg"}</p>
       </Del>
 
-      <Del tittel="Tester" lenke="Alle tester" href="/portal/analysere?del=test">
+      <Del tittel="Tester" lenke="Alle tester" href="/portal/tren/tester">
         {!forsteTest ? <>
           <div className="phn-hoved"><strong>—</strong></div>
           <p className="phn-forklar">Ingen testresultater her ennå. Gjennomfør en test, så ser du utviklingen.</p>
