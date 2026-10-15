@@ -42,7 +42,8 @@ export type PH20Props = {
   startHull?: number | null;
 };
 
-const KART = { skog: "#7c9a6a", rough: "#cfdcc0", fairway: "#9cc27e", green: "#6fae5b", sand: "#eadcb4", vann: "#9cc3df", tee: "#5b8f4a" };
+/** Kartfargene er definert i playerhq-ny-iup.css (.hull-kart). */
+const KART = { skog: "var(--kart-skog)", rough: "var(--kart-rough)", fairway: "var(--kart-fairway)", green: "var(--kart-green)", sand: "var(--kart-sand)", vann: "var(--kart-vann)", tee: "var(--kart-tee)" };
 
 function hullVurdering(i: number, par: number, len: number) {
   const geo = getHoleGeo(i, len);
@@ -66,15 +67,15 @@ function HullKart({ i, par, len, club }: { i: number; par: number; len: number; 
       {g.water && <rect x={X(g.water.off) - 12} y={Y(g.water.to)} width="24" height={(g.water.to - g.water.from) * k} rx="12" fill={KART.vann} />}
       {g.bunkers.map((b, j) => <ellipse key={j} cx={X(b.off)} cy={Y(b.d)} rx={Math.max(8, b.r * k * 1.6)} ry={Math.max(6, b.r * k)} fill={KART.sand} />)}
       <ellipse cx={X(0)} cy={Y(len)} rx="34" ry="24" fill={KART.green} />
-      <circle cx={X(0)} cy={Y(len)} r="3" fill="#141413" />
+      <circle cx={X(0)} cy={Y(len)} r="3" fill="var(--phn-g900)" />
       <rect x={X(0) - 12} y={Y(0) - 8} width="24" height="16" rx="3" fill={KART.tee} />
-      <line x1={X(0)} y1={Y(0)} x2={X(0)} y2={Y(land)} stroke="#ffffff" strokeWidth="2.5" strokeDasharray="6 5" />
-      {rest > 0 && <line x1={X(0)} y1={Y(land)} x2={X(0)} y2={Y(len)} stroke="#ffffff" strokeWidth="2.5" strokeDasharray="6 5" />}
-      <circle cx={X(0)} cy={Y(land)} r="9" fill="var(--phn-slag)" stroke="#fff" strokeWidth="2.5" />
-      <rect x="164" y={Y(land) - 11} width="128" height="22" rx="4" fill="#fff" />
+      <line x1={X(0)} y1={Y(0)} x2={X(0)} y2={Y(land)} stroke="var(--phn-hvit)" strokeWidth="2.5" strokeDasharray="6 5" />
+      {rest > 0 && <line x1={X(0)} y1={Y(land)} x2={X(0)} y2={Y(len)} stroke="var(--phn-hvit)" strokeWidth="2.5" strokeDasharray="6 5" />}
+      <circle cx={X(0)} cy={Y(land)} r="9" fill="var(--phn-slag)" stroke="var(--phn-hvit)" strokeWidth="2.5" />
+      <rect x="164" y={Y(land) - 11} width="128" height="22" rx="4" fill="var(--phn-hvit)" />
       <text x="170" y={Y(land) + 4}>{spec.carry} m{rest > 0 ? ` · ${rest} m inn` : " · på green"}</text>
-      {g.water && <><rect x="8" y={Y(g.water.to) - 11} width="98" height="22" rx="4" fill="#fff" /><text x="14" y={Y(g.water.to) + 4}>Vann {Math.round(g.water.from)}–{Math.round(g.water.to)} m</text></>}
-      <rect x="8" y="8" width="112" height="22" rx="4" fill="#fff" /><text x="14" y="23">Eksempelkart</text>
+      {g.water && <><rect x="8" y={Y(g.water.to) - 11} width="98" height="22" rx="4" fill="var(--phn-hvit)" /><text x="14" y={Y(g.water.to) + 4}>Vann {Math.round(g.water.from)}–{Math.round(g.water.to)} m</text></>}
+      <rect x="8" y="8" width="112" height="22" rx="4" fill="var(--phn-hvit)" /><text x="14" y="23">Eksempelkart</text>
     </svg>
   );
 }

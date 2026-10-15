@@ -133,7 +133,7 @@
 .phn-iup .hull .ris.forsiktig { background: var(--phn-amber-50); color: var(--phn-amber-700); }
 .phn-iup .hull .ris.angrip { background: var(--phn-green-50); color: var(--phn-green-700); }
 .phn-iup .hull[aria-current="true"] { border: 2px solid var(--phn-g900); }
-.phn-iup .hull-kart { display: block; width: 100%; max-width: 340px; height: auto; justify-self: center; border-radius: 12px; }
+.phn-iup .hull-kart { --kart-skog: #7c9a6a; --kart-rough: #cfdcc0; --kart-fairway: #9cc27e; --kart-green: #6fae5b; --kart-sand: #eadcb4; --kart-vann: #9cc3df; --kart-tee: #5b8f4a; display: block; width: 100%; max-width: 340px; height: auto; justify-self: center; border-radius: 12px; }
 .phn-iup .hull-kart text { font: 600 11px/1 var(--phn-sans); fill: #141413; }
 .phn-iup .slagplan { display: grid; gap: 8px; }
 .phn-iup .slag-steg { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 64px; padding: 12px 14px; border-radius: 12px; border: 0; background: var(--phn-slag); color: #fff; font: inherit; text-align: left; cursor: pointer; width: 100%; }
