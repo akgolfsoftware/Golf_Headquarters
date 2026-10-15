@@ -44,20 +44,23 @@ export function TnAkseTekst({ akse }: { akse: TnAkse }) {
   return <span className={s.akseTekst} style={{ color: TN.akse[akse].fyll }}>{akse}</span>;
 }
 
-/** Fylt øktkort i aksefargen, kantete og uten bilde. */
-export function TnOktkort({ akse, tid, varighet, navn, info = [], href, liten = false }: { akse: TnAkse; tid: string; varighet?: string; navn: string; info?: ReactNode[]; href?: string; liten?: boolean }) {
+/**
+ * Fylt øktkort i aksefargen, kantete og uten bilde. Uten kjent akse (gruppeøkter
+ * har ingen akse i datamodellen) blir kortet nøytralt med «Økt» som merke.
+ */
+export function TnOktkort({ akse, tid, varighet, navn, info = [], href, liten = false }: { akse: TnAkse | null; tid: string; varighet?: string; navn: string; info?: ReactNode[]; href?: string; liten?: boolean }) {
   const innhold = (
     <>
       <span className={s.oktRad}>
-        <span className={s.akseMerke}>{akse}</span>
+        <span className={s.akseMerke}>{akse ?? "Økt"}</span>
         <span className={s.oktTid}>{tid}{varighet ? <small>{varighet}</small> : null}</span>
       </span>
       <span className={s.oktNavn}>{navn}</span>
       {info.length ? <span className={s.oktInfo}>{info.map((x, i) => <span key={i}>{x}</span>)}</span> : null}
     </>
   );
-  const klasse = liten ? `${s.okt} ${s.liten}` : s.okt;
-  const stil = { background: TN.akse[akse].fyll };
+  const klasse = [s.okt, liten ? s.liten : "", akse ? "" : s.noytral].filter(Boolean).join(" ");
+  const stil = akse ? { background: TN.akse[akse].fyll } : undefined;
   return href ? <Link href={href} className={klasse} style={stil}>{innhold}</Link> : <div className={klasse} style={stil}>{innhold}</div>;
 }
 
@@ -89,7 +92,7 @@ export function TnPyramide({ verdier, enhet = "t", etikett }: { verdier: Partial
   const tekst = (k: TnAkse) => (verdier[k] === undefined ? "—" : `${komma(verdier[k] ?? 0)} ${enhet}`);
   const deler = [...TN_AKSER].reverse().map((k, i) => {
     const y0 = i * (h + mellom), y1 = y0 + h, w0 = bredde(y0), w1 = bredde(y1);
-    const p = [[(340 - w0) / 2, y0], [(340 + w0) / 2, y0], [(340 + w1) / 2, y1], [(340 - w1) / 2, y1]].map((q) => `${q[0].toFixed(1)},${q[1]}`).join(" ");
+    const p = [[(340 - w0) / 2, y0], [(340 + w0) / 2, y0], [(340 + w1) / 2, y1], [(340 - w1) / 2, y1]].map((q) => `${Math.round(q[0] * 10) / 10},${q[1]}`).join(" ");
     return (
       <g key={k}>
         <polygon points={p} fill={TN.akse[k].fyll} />
