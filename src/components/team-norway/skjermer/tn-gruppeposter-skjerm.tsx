@@ -10,7 +10,7 @@ import { TnInnleggKort, TnInnleggSkjema, type TnInnlegg } from "../tn-gruppe-kli
 
 /**
  * TN-13 Gruppeposter. Beskjeder fra trenerteamet til gruppen, med lesekvittering.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-13.
+ * Fasit: docs/design-system/utkast-tn/gruppe.html, skjerm Gruppeposter (pakke 6).
  *
  * Avvik:
  *   - Mottaker er alltid hele gruppen. Herrer, Damer og U18 finnes ikke som
@@ -56,7 +56,7 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
 
   return (
     <TnShell aktiv="gruppeposter" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleEtikett} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
-      <TnSkjermhode tittel="Gruppeposter" ingress={`Beskjeder fra trenerteamet til ${side.gruppeNavn}. ${erTrener ? "Du ser hvem som har lest hva." : "Alle i gruppen ser de samme innleggene."}`} />
+      <TnSkjermhode overlinje={`${side.gruppeNavn} · ${side.utovere} spillere`} tittel="Gruppeposter" ingress={`Beskjeder til hele gruppa. Spillerne og foresatte ser dem i PlayerHQ. ${erTrener ? "Du ser hvem som har lest hva." : ""}`} />
 
       <div style={{ maxWidth: 860, width: "100%", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
         {erTrener ? <TnInnleggSkjema send={opprettGruppepostAction.bind(null, groupId)} forfatterNavn={bruker.name ?? "Ukjent"} mottakere={mottakere} /> : null}
@@ -66,16 +66,16 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
         ))}
 
         {innlegg.length === 0 ? (
-          <section style={{ background: TN.white, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, padding: "clamp(16px, 2vw, 24px)" }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900 }}>Ingen innlegg ennå</div>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "10px 0 0", maxWidth: "60ch" }}>
+          <section style={{ background: TN.ink50, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>Ingen innlegg ennå</div>
+            <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
               {erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
             </p>
           </section>
         ) : null}
 
         {side.under18 > 0 ? (
-          <p style={{ fontSize: 13, lineHeight: 1.6, color: TN.textSecondary, margin: 0, maxWidth: "70ch" }}>
+          <p style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, margin: 0, maxWidth: "70ch" }}>
             Mindreårige står med fornavn og forbokstav i lesekvitteringen. Fullt navn finnes bare i spillerprofilen.
           </p>
         ) : null}
