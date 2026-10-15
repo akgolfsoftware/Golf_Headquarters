@@ -10,7 +10,7 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 |---|---|---|---|
 | 0 Grunnmur | `felles/agencyos.css`, `felles/agencyos.js`, `felles/demo.js` | Ferdig 14.10 | — |
 | 1 Cockpit og Innboks | AG-01, AG-04 (+ sak, haster, oppfølging), `cockpit.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/Hb2VAqh6Sr9GxCs5bagRyK |
-| 2 Stall og Spiller 360 | AG-07, AG-08 (+ faner), AG-A02, AG-A04, AG-A06, `stall.html` | | |
+| 2 Stall og Spiller 360 | AG-07, AG-08 (+ faner), AG-A02, AG-A04, AG-A06, AG-08-TALENT, `stall.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XrBWRwAsnaFsvhHVX9uhwX |
 | 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking), `kalender.html` | | |
 | 4 Workbench coach | AG-11, AG-11-GRUPPE-AR, AG-WB-FYS, AG-WB-TURN, AG-14, `workbench.html` | | |
 | 5 Live coachingøkt | AG-13 (+ uten samtykke), AG-12, `live.html` | | |
