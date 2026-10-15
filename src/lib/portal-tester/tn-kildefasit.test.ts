@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
-import { TN_CATALOG } from "./tn-catalog";
+import { TN_CATALOG, TN_RULES_CATALOG } from "./tn-catalog";
 import { tnScore, tnValidate, type TnValues } from "./tn-scoring";
 
 const register = z.object({
@@ -16,7 +16,8 @@ const inputRows = z.array(z.record(z.string(), z.unknown()));
 
 // Expected values were calculated independently from the attached workbook's
 // targets, not by tnScore. Includes explicit field mapping for the verified gate and speed rules.
-for (const protocol of TN_CATALOG.filter(p => !p.blocked)) {
+// The register describes the rules of 02.10.2026; the 14.10.2026 changes are locked in tn-scoring.test.ts.
+for (const protocol of TN_RULES_CATALOG.filter(p => !p.blocked)) {
   test(`uavhengig kildefasit: ${protocol.id}`, () => {
     const fixture = register.acceptanceCases.find(c => c.protocolId === protocol.id)!;
     assert.ok(fixture, "Protokollen må ha en egen fasit");
@@ -58,8 +59,8 @@ for (const protocol of TN_CATALOG.filter(p => !p.blocked)) {
   });
 }
 
-test("8-ball-grenser er nedre intervallgrenser, og verdier rundes ikke før oppslag", () => {
-  const p = TN_CATALOG.find(p => p.id === "8-ball-variation")!;
+test("lagrede 8-ball-resultater beholder den gamle skalaen: nedre intervallgrenser, ingen avrunding", () => {
+  const p = TN_RULES_CATALOG.find(p => p.id === "8-ball-variation")!;
   for (const [rest, points] of [[0, 4], [0.099, 4], [0.1, 3], [0.999, 3], [1, 2], [1.999, 2], [2, 1], [2.999, 1], [3, 0]]) {
     const values = Object.fromEntries(p.rows.map((_, i) => [String(i + 1), { result: rest }]));
     assert.equal(tnScore(p, values).score, points * 24);

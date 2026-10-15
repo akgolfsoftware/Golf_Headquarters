@@ -1,14 +1,16 @@
-import { TN_CATALOG, TN_VERSION, TN_RULES_VERSION, tnVersion, tnProtocol, isTnTestName, type TnProtocol } from "./tn-catalog";
+import { TN_CATALOG, TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, tnVersion, tnProtocol, isTnTestName, type TnProtocol } from "./tn-catalog";
 import { TnResultSchema, tnScore, tnSameScore } from "./tn-scoring";
 
-export const tnDefinitionId = (p: TnProtocol) => `tn-v3-${tnVersion(p) === TN_RULES_VERSION ? "20261002-" : ""}${p.id}`;
+const DEFINITION_PREFIX = { [TN_VERSION]: "", [TN_RULES_VERSION]: "20261002-", [TN_GODKJENT_VERSION]: "20261014-" } as const;
+export const tnDefinitionId = (p: TnProtocol) => `tn-v3-${DEFINITION_PREFIX[tnVersion(p)]}${p.id}`;
 export function tnFromDefinitionId(id: string) {
+  if (id.startsWith("tn-v3-20261014-")) return tnProtocol(id.slice(15), undefined, TN_GODKJENT_VERSION);
   if (id.startsWith("tn-v3-20261002-")) return tnProtocol(id.slice(15), undefined, TN_RULES_VERSION);
   return id.startsWith("tn-v3-") ? tnProtocol(id.slice(6), undefined, TN_VERSION) : undefined;
 }
 export function tnDefinitionData(p: TnProtocol) {
   return { id: tnDefinitionId(p), name: p.name, description: `Team Norway · ${p.rows.length} forsøk · ${p.source}`,
-    pyramidArea: tnVersion(p) === TN_RULES_VERSION ? "TEK" as const : "SLAG" as const, erCanon: false, scoringRule: tnVersion(p),
+    pyramidArea: tnVersion(p) === TN_VERSION || p.points8Ball ? "SLAG" as const : "TEK" as const, erCanon: false, scoringRule: tnVersion(p),
     protocol: { version: tnVersion(p), protocolId: p.id } };
 }
 /** Virtual catalog: coach can assign before a player has ever taken the test. No writes during page loads. */

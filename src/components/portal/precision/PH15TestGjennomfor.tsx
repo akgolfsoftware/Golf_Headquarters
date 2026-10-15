@@ -124,8 +124,7 @@ export function PH15TestGjennomfor({
     void speilForsokTilServer(nyttSlagNr, verdi);
 
     if (oppsett.modus === "hit_miss") {
-      const treff = Boolean(verdi);
-      showToast(treff ? "Treff" : "Bom");
+      showToast(verdi ? "Godkjent" : "Bom");
     } else {
       const erInnenfor = typeof verdi === "number" && verdi <= LIM;
       showToast(
@@ -443,7 +442,7 @@ export function PH15TestGjennomfor({
                     cursor: "pointer",
                   }}
                 >
-                  Treff
+                  Godkjent
                 </button>
                 <button
                   type="button"

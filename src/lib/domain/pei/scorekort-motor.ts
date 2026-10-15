@@ -48,6 +48,8 @@ function lieForRad(vals: CelleVerdier, row: ProtokollRad): LieKode {
 /** PEI-familien: "pei", "diff", "tilMaal". Aldri Broadie-SG i denne funksjonen. */
 export function beregnPeiCelle(col: ProtokollKolonne, row: ProtokollRad, vals: CelleVerdier): number | null {
   const maal = row.maal ?? num(vals.maal);
+  // 8-ball: i hull på ett slag er null meter fra hullet.
+  if (vals.iHull === "✓" && (col.key === "tilMaal" || col.key === "pei")) return 0;
   if (col.key === "tilMaal") {
     const carry = num(vals.carry);
     if (carry == null || maal == null) return null;
@@ -78,14 +80,15 @@ export function beregnSgCelle(
   row: ProtokollRad,
   vals: CelleVerdier
 ): number | null {
-  const resultat = num(vals.resultat);
   const maal = row.maal ?? num(vals.maal);
+  const resultat = tilHullMeter(row, vals);
 
   if (col.key === "sgFraLengde") {
     return row.lengde != null ? sgFraLengde(row.lengde, lieForRad(vals, row)) : null;
   }
   if (col.key === "pgaPutts") {
     if (resultat == null) return null;
+    if (vals.iHull === "✓") return 0;
     return protocol.puttsTable === "green" ? gronnePutter(resultat) : forventedePutter(resultat);
   }
   if (col.key === "sg") {
@@ -114,15 +117,29 @@ export function beregnSgCelle(
   return null;
 }
 
+/**
+ * Meter fra hullet: tastet resultat, eller regnet fra carry og side mot radens
+ * mål (8-ball, Anders 14.10.2026). I hull på ett slag er null.
+ */
+function tilHullMeter(row: ProtokollRad, vals: CelleVerdier): number | null {
+  if (vals.iHull === "✓") return 0;
+  const resultat = num(vals.resultat);
+  if (resultat != null) return resultat;
+  const maal = row.maal ?? num(vals.maal);
+  const carry = num(vals.carry);
+  if (row.slag == null || maal == null || carry == null) return null;
+  return avstandTilMal(maal, carry, num(vals.side) ?? 0);
+}
+
 /** Poeng-familien: "poeng" (8-ball/gate/lengdeputt). Aldri PEI eller SG i denne funksjonen. */
-export function beregnPoengCelle(col: ProtokollKolonne, vals: CelleVerdier): number | null {
+export function beregnPoengCelle(col: ProtokollKolonne, vals: CelleVerdier, row: ProtokollRad = {}): number | null {
   if (col.key !== "poeng") return null;
   if (vals.treff != null) return vals.treff === "✓" ? 1 : 0;
   if (vals.ok != null) return vals.ok === "✓" ? 1 : 0;
   const fot = num(vals.antallFot);
   if (fot != null) return poengLengdePutt(fot);
-  const resultat = num(vals.resultat);
-  if (resultat != null) return poeng8Ball(resultat);
+  const tilHull = tilHullMeter(row, vals);
+  if (tilHull != null) return poeng8Ball(tilHull, vals.iHull === "✓");
   return null;
 }
 
@@ -141,7 +158,7 @@ export function beregnCelle(
 ): number | null {
   if (PEI_NOKLER.has(col.key)) return beregnPeiCelle(col, row, vals);
   if (SG_NOKLER.has(col.key)) return beregnSgCelle(protocol, col, row, vals);
-  if (col.key === "poeng") return beregnPoengCelle(col, vals);
+  if (col.key === "poeng") return beregnPoengCelle(col, vals, row);
   return null;
 }
 
@@ -279,7 +296,7 @@ export function byggPoengRader(
   return rows.map((row, i) => {
     const v = allVals[i] || {};
     let points: number | null = null;
-    if (poengCol) points = beregnPoengCelle(poengCol, v);
+    if (poengCol) points = beregnPoengCelle(poengCol, v, row);
     else if (resCol) points = rund(beregnSgCelle(protocol, resCol, row, v), 3);
     else if (cols.some(c => c.key === "antallSlag")) points = num(v.antallSlag);
     return { shotNr: i + 1, resultM: finnResultat(cols, v), points };
