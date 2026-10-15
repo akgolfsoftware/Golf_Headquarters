@@ -1,0 +1,8 @@
+/* Pakke 5 Plan og fag. Kalenderen vises fra 1024 px, lista under. */
+.kalender { display: none; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.visningsvalg { display: none; }
+@media (min-width: 1024px) {
+  .kalender[data-vis] { display: grid; }
+  .liste[data-kun-mobil] { display: none; }
+  .visningsvalg { display: block; }
+}
