@@ -6,27 +6,35 @@ description: |
   (betyr «se her»), IBM Plex Sans Condensed / Sans / Mono, instrumentlaget
   (rutenett 56px, målestokk, kryss). Krem #FAF9F5, clay #D97757, Poppins, Lora
   og Archivo er UTE av merket.
-  Bruk ved: markedsside, landingsside, kampanje, presentasjon, roll-up, plakat,
-  visittkort, e-post, nyhetsbrev, innlegg, story, brevark, tilbud, profilklær,
-  logobruk, favicon, fotovalg, merketekst, tagline, tone, trykkfarger.
+  Bruk ved: kampanje, presentasjon, roll-up, plakat, visittkort, e-post,
+  nyhetsbrev, innlegg, story, brevark, tilbud, profilklær, logobruk, favicon,
+  fotovalg, merketekst, tagline, tone, trykkfarger.
   Trigger også uten ordet «design»: «finpuss», «juster», «ser dette riktig ut»,
   «sjekk mot merket», «kan vi skrive», «hvilket bilde».
-  IKKE for produktskjermer i /portal, /admin eller /forelder — bruk ak-hq-design
-  og den aktive produktretningen. IKKE for /team-norway/* — der gjelder
-  «Team Norway App» i Claude Design (se beslutninger.md §TEAM NORWAY-APPEN
-  BYTTER DESIGNSPRÅK). Claw er utgått.
+  IKKE for nettsidene (markedssidene under src/app/(marketing), landingssider):
+  de får Precision Athletics fra 04.10.2026 (beslutninger.md §LANSERING 05.10) —
+  bruk ak-hq-design; merkets TEKSTREGLER (ingen vitnesbyrd, ingen klisjéer,
+  MORAD aldri offentlig, TrackMan på engelsk) gjelder fortsatt der.
+  IKKE for produktskjermer i /portal, /admin eller /forelder — bruk ak-hq-design.
+  IKKE for /team-norway/* — der gjelder «Team Norway App» i Claude Design
+  (se beslutninger.md §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Claw er utgått.
 metadata:
-  version: "1.1"
-  reviewed: "2026-09-11"
+  version: "1.2"
+  reviewed: "2026-10-15"
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
 
 # AK Merkevare — verkstedet
 
-Du finjusterer AK Golfs merkevare. Ikke produktet. Grensen er absolutt, og den er
-det første du sjekker: **er dette en skjerm inne i appen?** Da er du feil skill.
-Si det, og pek på `ak-hq-design` og [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Produktets nye Design System v0.1 utforskes fra blankt lerret. Denne merkevareskillens fonter, farger og verkstedregler gjelder ikke automatisk inne i PlayerHQ, AgencyOS eller AgenticOS.
+Du finjusterer AK Golfs merkevare i trykk, presentasjon, sosiale medier, e-post og
+foto. Ikke produktet, og ikke nettsidene. Grensen er absolutt, og den er det første
+du sjekker: **er dette en skjerm i appen eller en side på akgolf.no?** Da er du feil
+skill. Si det, og pek på `ak-hq-design`: produktet og markedssidene følger Claude
+Design «AK Golf Precision Athletics» (`7d7c2994`), jf. `docs/design-system/design-autoritet.md`
+og beslutninger.md §LANSERING 05.10 («Markedssidene får Precision Athletics», Anders 04.10.2026).
+Denne merkevareskillens fonter, farger og verkstedregler gjelder ikke der. Tekstreglene
+under §Aldri gjelder derimot overalt der AK Golf snakker offentlig.
 
 ## Hvor fasiten bor
 
