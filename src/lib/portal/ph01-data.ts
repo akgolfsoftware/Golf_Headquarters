@@ -80,3 +80,13 @@ export async function hentIDagPopup(userId: string, naa: Date): Promise<IDagPopu
     href: v.link ?? "/portal/varsler",
   };
 }
+
+/** De siste 24 rundene med Strokes Gained, nyest først, til forbedringsområdene på I dag. */
+export async function hentSgRunder(userId: string) {
+  return prisma.round.findMany({
+    where: { userId, OR: [{ sgOtt: { not: null } }, { sgApp: { not: null } }, { sgArg: { not: null } }, { sgPutt: { not: null } }] },
+    orderBy: { playedAt: "desc" },
+    take: 24,
+    select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+  });
+}
