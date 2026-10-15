@@ -1,32 +1,27 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { hentTnRangliste, hentTnUttak } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnPille } from "../core";
+import { TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnListerad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
 import { UTTAKSKRITERIER } from "../tn-registrerte-skjermer";
 import { TnKnapperekke } from "../tn-handlinger";
 import { TnSlettUttak, TnUttakSkjema, UTTAK_TEKST } from "../tn-redigering-skjema";
-import { SkjermRamme, datoLang, hentSkjermbruker } from "./felles";
+import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
+import u from "./tn-uttak.module.css";
 
 /**
  * TN-05 Uttak og kriterier.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-05.
+ * Fasit: docs/design-system/utkast-tn/uttak.html, skjerm Uttak og kriterier (pakke 4).
  *
  * Avvik:
- *   - Kriteriene er de tre bindende (resultater, prestasjoner, prosess og adferd),
- *     ikke designets eksempeltekster per mesterskap. De summeres aldri.
- *   - EM/VM-bryteren er utelatt: ingen mesterskap, frister eller troppsstørrelser
- *     er registrert i dag.
- *   - WAGR finnes ikke i dataene. Ranglisten viser registrerte starter,
- *     snittplassering og brutto snitt, sortert på snittplassering.
- *   - Uttak registreres per spiller og arrangement, med begrunnelse
- *     (Anders 27.09.2026). Ingen score regnes ut; det er trenerens beslutning.
+ *   - Kriteriene er de tre bindende (resultater, prestasjoner, prosess og adferd).
+ *     De summeres aldri. Kriterium 3 har ingen vedtatt vurderingsmodell.
+ *   - Uttaksrundene er arrangementene det er registrert uttak for. Frist,
+ *     antall plasser og «send til spillerne» har ingen datamodell. Uttak
+ *     registreres per spiller med begrunnelse (Anders 27.09.2026).
+ *   - Ranglisten har egen side (Rangliste) og står ikke her.
  */
-
-const tall = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-
-const kolonner = "28px minmax(0, 1fr) 52px 60px 64px";
 
 export async function TnUttakSkjerm() {
   const bruker = await hentSkjermbruker();
@@ -38,86 +33,70 @@ export async function TnUttakSkjerm() {
   const spillervalg = [...data.rader].sort((a, b) => a.navn.localeCompare(b.navn, "nb")).map((r) => ({ id: r.id, navn: r.navn }));
   const arrangementer = [...new Set(uttak.map((u) => u.arrangement))];
 
-  const rader = [...data.rader].sort((a, b) => {
-    if (a.snittplassering === null && b.snittplassering === null) return a.navn.localeCompare(b.navn, "nb");
-    if (a.snittplassering === null) return 1;
-    if (b.snittplassering === null) return -1;
-    return a.snittplassering - b.snittplassering;
-  });
-
   return (
     <SkjermRamme aktiv="uttak" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
+        overlinje={`Uttakskriterier · sesong ${osloDag(new Date()).aar}`}
         tittel="Uttak og kriterier"
         ingress="Kriteriene er kjent på forhånd. Ranglisten viser hvor hver spiller står i dag."
         handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnUttakSkjema spillere={spillervalg} knapp="Registrer uttak" /> : undefined}
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 20, alignItems: "start" }}>
-        <TnFlate>
-          <TnKorttittel overlinje="Uttakskriterier" tittel="Tre kriterier, hver for seg" />
+      <section style={{ display: "grid", gap: 12 }}>
+        <TnFlatehode tittel="Tre kriterier, hver for seg" />
+        <div className={u.kriterier}>
           {UTTAKSKRITERIER.map((k, i) => (
-            <div key={k.nummer} style={{ display: "grid", gridTemplateColumns: "72px minmax(0, 1fr)", gap: 14, padding: "14px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "baseline" }}>
-              <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: TN.navy900 }}>{String(i + 1).padStart(2, "0")}</span>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 14.5, fontWeight: 700 }}>{k.tittel}</div>
-                <div style={{ fontSize: 13.5, lineHeight: 1.55, color: TN.textSecondary, marginTop: 2 }}>{k.tekst}</div>
-                <div style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, marginTop: 6 }}>{k.kilde}</div>
-              </div>
+            <div key={k.nummer} className={u.kriterium}>
+              <span className={u.nr}>{k.nummer}</span>
+              <h3>{k.tittel}</h3>
+              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.55, color: TN.ink700 }}>{k.tekst}</p>
+              {i === 2 ? <TnPille>Vurderingsmodell ikke vedtatt</TnPille> : <span style={{ fontSize: 12.5, color: TN.ink500 }}>{k.kilde}</span>}
             </div>
           ))}
-          <TnFotnote>Kriteriene vurderes hver for seg og legges aldri sammen til én uttaksscore. Uttaket er trenerteamets beslutning.</TnFotnote>
-        </TnFlate>
+        </div>
+        <TnFotnote>Kriteriene vurderes hver for seg og legges aldri sammen til én uttaksscore. Uttaket er trenerteamets beslutning.</TnFotnote>
+      </section>
 
-        <TnFlate>
-          <TnFlatehode tittel="Rangliste · resultatgrunnlag" merknad="Kun brutto" />
-          <div style={{ display: "grid", gridTemplateColumns: kolonner, gap: 10, padding: "12px 0 8px", borderBottom: `1px solid ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.textSecondary }}>
-            <span>#</span><span>Spiller</span><span style={{ textAlign: "right" }}>Start</span><span style={{ textAlign: "right" }}>Plass</span><span style={{ textAlign: "right" }}>Brutto</span>
-          </div>
-          {rader.map((r, i) => (
-            <Link key={r.id} href={`/team-norway/spiller/${r.id}/oversikt`} style={{ display: "grid", gridTemplateColumns: kolonner, gap: 10, padding: "12px 0", minHeight: 44, alignItems: "baseline", borderBottom: `1px solid ${TN.navy100}`, textDecoration: "none", color: TN.textPrimary }}>
-              <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary }}>{r.snittplassering === null ? "—" : i + 1}</span>
-              <span style={{ minWidth: 0 }}>
-                <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{r.navn}</span>
-                <span style={{ display: "block", fontSize: 12.5, color: TN.textSecondary, marginTop: 3 }}>{r.klubb ?? "Klubb ikke registrert"}</span>
-              </span>
-              <span style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 13.5, fontVariantNumeric: "tabular-nums" }}>{r.starter}</span>
-              <span style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 13.5, fontVariantNumeric: "tabular-nums" }}>{r.snittplassering === null ? "—" : tall.format(r.snittplassering)}</span>
-              <span style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 13.5, fontVariantNumeric: "tabular-nums" }}>{r.bruttoScore === null ? "—" : tall.format(r.bruttoScore)}</span>
-            </Link>
-          ))}
-          {rader.length === 0 ? <TnMangler>Ingen aktive spillere i Team Norway-gruppen.</TnMangler> : null}
-          <TnFotnote>Plass = snittplassering i registrerte starter. Brutto = snitt av ekte slag. Spillere uten registrerte starter står nederst fordi ingenting er målt, ikke fordi de er dårligst. WAGR er ikke koblet til ennå.</TnFotnote>
-        </TnFlate>
-      </div>
-
-      <TnFlate>
-        <TnFlatehode tittel="Uttak" merknad={`${uttak.length} REGISTRERT`} />
-        {arrangementer.map((a) => (
-          <div key={a} style={{ marginTop: 18 }}>
-            <div style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.navy900, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{a}</div>
-            {uttak.filter((u) => u.arrangement === a).map((u) => {
-              const navn = spillernavn.get(u.spillerId) ?? "Tidligere spiller";
-              return (
-                <div key={u.id} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "4px 16px", padding: "10px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "start" }}>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{navn}</div>
-                    <div style={{ fontSize: 13, color: TN.textSecondary, marginTop: 2 }}>{UTTAK_TEKST[u.status] ?? u.status} · {datoLang(u.decidedAt)}</div>
-                    {u.begrunnelse ? <p style={{ fontSize: 13.5, lineHeight: 1.55, margin: "6px 0 0", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{u.begrunnelse}</p> : null}
-                  </div>
-                  {data.kontekst.kanAdministrere ? (
-                    <TnKnapperekke>
-                      <TnUttakSkjema spillere={spillervalg} knapp="Endre" variant="tekst" standard={{ spillerId: u.spillerId, arrangement: u.arrangement, status: u.status, begrunnelse: u.begrunnelse ?? "" }} />
-                      <TnSlettUttak id={u.id} beskrivelse={`Uttaket av ${navn} til ${u.arrangement}`} />
-                    </TnKnapperekke>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-        {uttak.length === 0 ? <TnMangler>Ingen uttak er registrert ennå. {data.kontekst.kanAdministrere ? "Registrer uttak når trenerteamet har bestemt." : ""}</TnMangler> : null}
-      </TnFlate>
+      <section style={{ display: "grid", gap: 12 }}>
+        <TnFlatehode tittel="Uttaksrunder" merknad={`${uttak.length} registrert`} />
+        {arrangementer.map((a) => {
+          const rader = uttak.filter((x) => x.arrangement === a);
+          const tattUt = rader.filter((x) => x.status === "UTTATT").length;
+          const reserve = rader.filter((x) => x.status === "RESERVE").length;
+          return (
+            <TnFlate key={a} style={{ paddingBlock: 4 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: "4px 12px", padding: "12px 0 4px" }}>
+                <b style={{ fontSize: 15, overflowWrap: "anywhere" }}>{a}</b>
+                <span style={{ fontSize: 12.5, color: TN.ink500 }}>{tattUt} tatt ut · {reserve} reserve</span>
+              </div>
+              {rader.map((x) => {
+                const navn = spillernavn.get(x.spillerId) ?? "Tidligere spiller";
+                return (
+                  <TnListerad
+                    key={x.id}
+                    foran={<TnInitialer navn={navn} />}
+                    tittel={navn}
+                    tekst={<>{datoLang(x.decidedAt)}{x.begrunnelse ? <span style={{ display: "block", whiteSpace: "pre-line", color: TN.ink700 }}>{x.begrunnelse}</span> : null}</>}
+                    hoyre={
+                      <span style={{ display: "grid", justifyItems: "end", gap: 4 }}>
+                        <TnPille tone={x.status === "UTTATT" ? "green" : x.status === "RESERVE" ? "amber" : "nøytral"}>{UTTAK_TEKST[x.status] ?? x.status}</TnPille>
+                        {data.kontekst.kanAdministrere ? (
+                          <TnKnapperekke>
+                            <TnUttakSkjema spillere={spillervalg} knapp="Endre" variant="tekst" standard={{ spillerId: x.spillerId, arrangement: x.arrangement, status: x.status, begrunnelse: x.begrunnelse ?? "" }} />
+                            <TnSlettUttak id={x.id} beskrivelse={`Uttaket av ${navn} til ${x.arrangement}`} />
+                          </TnKnapperekke>
+                        ) : null}
+                      </span>
+                    }
+                  />
+                );
+              })}
+            </TnFlate>
+          );
+        })}
+        {uttak.length === 0 ? <TnFlate style={{ background: TN.ink50 }}><TnMangler>Ingen uttak er registrert ennå. {data.kontekst.kanAdministrere ? "Registrer uttak når trenerteamet har bestemt." : ""}</TnMangler></TnFlate> : null}
+        <TnTekstlenke href="/team-norway/rangliste">Rangliste</TnTekstlenke>
+      </section>
     </SkjermRamme>
   );
 }
