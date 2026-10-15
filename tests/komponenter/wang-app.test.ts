@@ -156,7 +156,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     );
 
     assert.ok(html.includes('Trenere og roller'), 'Skal vise trenerstab');
-    assert.ok(html.includes('WANG-19'), 'Skal referere til WANG-19');
+    assert.ok(html.includes('Administrasjon'), 'Skal ha tittel Administrasjon');
     assert.ok(html.includes('Sportssjef'), 'Skal vise sportssjef-rolle');
   });
 
