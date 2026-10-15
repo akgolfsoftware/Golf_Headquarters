@@ -5,7 +5,8 @@
  * ui_kits/playerhq/parts.jsx › Shell, runde 19–20).
  *
  * Under 1024 px: topplinje 56 px (logo + bjelle) og fanelinje 64 px nederst.
- * Fra 1024 px: skinne 56 px til venstre med bjella øverst.
+ * Fra 1024 px: sidemeny 232 px med logo, fanene med navn og Innboks med teller
+ * (nytt design, utkast-playerhq/felles/felles.css; stil i playerhq-ny-skall.css).
  * Faner 28.09.2026: I dag · Plan · Stats · Meg.
  *
  * Ikke med ennå: hurtigknappen og innboks-arket bak bjella. Bjella lenker til
@@ -18,6 +19,7 @@ import type { ReactNode } from "react";
 import { Bell, CalendarDays, ChartNoAxesColumn, Sun, User } from "lucide-react";
 import { Ikon } from "./pa";
 import "@/styles/precision-athletics.css";
+import "@/styles/playerhq-ny-skall.css";
 
 const FANER = [
   { href: "/portal", label: "I dag", icon: Sun, name: "sun" },
@@ -63,18 +65,19 @@ function Bjelle({ href, antall }: { href: string; antall: number }) {
 
 export function PlayerHQSkall({ children, innboksHref, uleste }: { children: ReactNode; innboksHref: string; uleste: number }) {
   const path = usePathname() ?? "/portal";
-  return <div className="pa-root pa-skall" data-design="precision-athletics">
+  return <div className="pa-root pa-skall pa-skall--ny" data-design="precision-athletics">
     <a className="pa-sr pa-skip" href="#pa-innhold">Hopp til innhold</a>
     <nav className="pa-skall__skinne" aria-label="Hovedmeny">
-      <div className="pa-skall__bjellecelle"><Bjelle href={innboksHref} antall={uleste} /></div>
-      <div className="pa-rail">
-        <Link href="/portal" aria-label="PlayerHQ hjem" style={{ display: "grid", placeItems: "center", width: 44, height: 44, marginBottom: 8 }}>
-          <Image src="/logos/ak-golf-logo-ink.svg" alt="AK Golf HQ" width={28} height={28} />
-        </Link>
-        {FANER.map((f) => <Link key={f.href} href={f.href} className="pa-rail__item" aria-label={f.label} aria-current={erAktiv(path, f.href) ? "page" : undefined}>
-          <Ikon icon={f.icon} size={20} name={f.name} />
-        </Link>)}
-      </div>
+      <Link href="/portal" className="phs-logo" aria-label="PlayerHQ hjem">
+        <Image src="/logos/logo-ak-golf-hq.svg" alt="AK Golf HQ" width={100} height={22} style={{ height: 22, width: "auto" }} />
+      </Link>
+      {FANER.map((f) => <Link key={f.href} href={f.href} className="phs-lenke" aria-current={erAktiv(path, f.href) ? "page" : undefined}>
+        <Ikon icon={f.icon} size={20} name={f.name} />{f.label}
+      </Link>)}
+      <span className="phs-skille" aria-hidden />
+      <Link href={innboksHref} className="phs-lenke" aria-label={uleste > 0 ? `Innboks, ${uleste} uleste` : "Innboks"}>
+        <Ikon icon={Bell} size={20} name="bell" />Innboks{uleste > 0 && <span className="phs-teller" aria-hidden>{uleste}</span>}
+      </Link>
     </nav>
     <header className="pa-skall__topp">
       <Link href="/portal" aria-label="PlayerHQ hjem" style={{ display: "flex", alignItems: "center", minHeight: 44, minWidth: 0 }}>
