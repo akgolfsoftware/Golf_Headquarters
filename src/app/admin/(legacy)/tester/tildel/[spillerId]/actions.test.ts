@@ -53,6 +53,7 @@ function nullstill() {
 }
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
+mock.module("@/lib/auth/effective-capabilities", { namedExports: { assertCapability: async () => undefined } });
 mock.module("@/lib/auth/requirePortalUser", {
   namedExports: {
     requirePortalUser: async (options: { allow?: Rolle | Rolle[] }) => {
