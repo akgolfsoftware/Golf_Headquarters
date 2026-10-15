@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Kilde: AK Golf Precision Athletics PH-15 (Test: gjennomfør i nattmodus / fokus).
- * Natt/fokus-visning med store trykkflater (56-80px), ingen hex-farger (kun CSS-variabler).
+ * Kilde: AK Golf Precision Athletics PH-15 (Test: gjennomfør, fokusvisning).
+ * Alltid lyst tema, også ute (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10.2026).
+ * Store trykkflater (56-80px), ingen hex-farger (kun CSS-variabler).
  * Implementerer standard avstands- og poengtester med scorekort-grid, stepper og live-lagring.
  */
 
@@ -190,7 +191,7 @@ export function PH15TestGjennomfor({
 
   return (
     <div
-      data-theme="night"
+      data-theme="light"
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",
