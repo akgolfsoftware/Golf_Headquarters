@@ -55,7 +55,7 @@ export async function TnDokumenterSkjerm({ groupId, sokeparametre }: { groupId: 
 
   return (
     <TnShell aktiv="dokumenter" brukerNavn={bruker.name ?? "Ukjent"} rolle={erTrener ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt"} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
-      <TnSkjermhode rute={base} tittel="Dokumenter" ingress={`Sesongplan, uttakskriterier og reiseinfo for ${gruppe.name}. Alle i gruppen finner filene her.`} />
+      <TnSkjermhode tittel="Dokumenter" ingress={`Sesongplan, uttakskriterier og reiseinfo for ${gruppe.name}. Alle i gruppen finner filene her.`} />
 
       {erTrener ? <TnDokumentSkjema groupId={groupId} maksMb={maksMb} kategorier={[...TN_DOKUMENT_KATEGORIER]} /> : null}
 

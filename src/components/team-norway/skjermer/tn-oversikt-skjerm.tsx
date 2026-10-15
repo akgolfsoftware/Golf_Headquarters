@@ -76,7 +76,7 @@ export async function TnOversiktSkjerm() {
 
   return (
     <SkjermRamme aktiv="oversikt" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute="/team-norway" tittel="Landslagsoversikt" ingress="Neste samling, fellestesten og det siste fra trenerteamet. Tre ting, i den rekkefølgen." />
+      <TnSkjermhode tittel="Landslagsoversikt" ingress="Neste samling, fellestesten og det siste fra trenerteamet. Tre ting, i den rekkefølgen." />
 
       {kontekst.kanAdministrere ? (
         <TnKnapperekke>

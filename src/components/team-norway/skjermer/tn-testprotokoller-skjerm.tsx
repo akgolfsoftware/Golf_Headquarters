@@ -64,7 +64,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
 
   return (
     <SkjermRamme aktiv="protokoller" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute={valgtId ? `/team-norway/protokoller/${valgtId}` : "/team-norway/protokoller"} tittel="Testprotokoller" ingress="De nasjonale testene slik de skal gjennomføres. Bare protokoller med status Klar kan brukes i fellestesting." />
+      <TnSkjermhode tittel="Testprotokoller" ingress="De nasjonale testene slik de skal gjennomføres. Bare protokoller med status Klar kan brukes i fellestesting." />
 
       <TnFilterknapper
         etikett="Filtrer på status"

@@ -123,7 +123,7 @@ export function TnPostKomponer({
               style={{
                 height: 32,
                 padding: "0 12px",
-                borderRadius: TN.radius.full,
+                borderRadius: TN.radius.xs,
                 border: `1px solid ${aktiv ? TN.navy100 : TN.borderDefault}`,
                 background: aktiv ? TN.navy50 : "transparent",
                 fontFamily: TN.font.body,
