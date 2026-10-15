@@ -236,7 +236,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
 
   return (
     <SkjermRamme aktiv="manedsplan" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/manedsplan" tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
+      <TnSkjermhode tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
         handling={data.kontekst.kanAdministrere ? <TnOktSkjema knapp="Ny økt" standardDato={valgtNokkel} /> : undefined}
       />
 

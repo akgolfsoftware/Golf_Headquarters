@@ -40,7 +40,6 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
   return (
     <SkjermRamme aktiv="turneringer" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
-        rute="/team-norway/turneringer"
         tittel="Turneringer og reiselogistikk"
         ingress="Mesterskap og kvalifiseringsturneringer, med datoer, påmeldte og resultater."
         handling={data.kontekst.erSpiller ? (

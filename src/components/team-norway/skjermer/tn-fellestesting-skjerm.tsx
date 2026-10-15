@@ -61,7 +61,6 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
     return (
       <SkjermRamme aktiv="fellestesting" brukerNavn={bruker.name} kontekst={valgt.kontekst}>
         <TnSkjermhode
-          rute={`/team-norway/fellestesting?dag=${dag.id}`}
           tittel={dag.title}
           ingress={`${dag.eventId ? `${dag.groupName} · ${dag.stationName ?? "Stasjon"} · ` : ""}${dag.protokollNavn}${dag.location ? ` · ${dag.location}` : ""} · ${datoLang(dag.scheduledAt)} kl. ${klokke.format(dag.scheduledAt)}`}
           handling={
@@ -107,7 +106,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
 
   return (
     <SkjermRamme aktiv="fellestesting" brukerNavn={bruker.name} kontekst={spillerside.kontekst}>
-      <TnSkjermhode rute="/team-norway/fellestesting" tittel="Fellestesting" ingress="Nasjonale minstekrav per klasse. Før resultatet mens spilleren står ved siden av deg." />
+      <TnSkjermhode tittel="Fellestesting" ingress="Nasjonale minstekrav per klasse. Før resultatet mens spilleren står ved siden av deg." />
 
       <TnRutenett min={380}>
         <TnFlate>
