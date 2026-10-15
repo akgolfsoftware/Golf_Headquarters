@@ -139,10 +139,10 @@
 .agn-s .knapp:focus-visible, .agn-s button:focus-visible, .agn-s a:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
 .agn-s .knapper { display: flex; gap: var(--r2); flex-wrap: wrap; }
 .agn-s .valg { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border-radius: 8px; background: var(--sand-150); justify-self: start; }
-.agn-s .valg > button, .agn-s .valg > a { min-height: 40px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
+.agn-s .valg > button, .agn-s .valg > a { min-height: 44px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
 .agn-s .valg > [aria-pressed="true"], .agn-s .valg > [aria-current="page"] { background: var(--graphite-900); color: var(--white); }
 .agn-s .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.agn-s .chips > button, .agn-s .chips > a { min-height: 40px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 999px; background: var(--white); font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.agn-s .chips > button, .agn-s .chips > a { min-height: 44px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 999px; background: var(--white); font: 500 14px/1 var(--sans); color: var(--graphite-800); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
 .agn-s .chips b { font: 600 12px/1 var(--mono); }
 .agn-s .chips > [aria-pressed="true"], .agn-s .chips > [aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
 .agn-s .faner { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--sand-300); }
@@ -247,3 +247,13 @@
 .agn-s .laast { display: inline-flex; align-items: center; gap: 4px; font: 600 11.5px/1 var(--sans); color: var(--graphite-600); }
 @media (hover: hover) and (pointer: fine) { .agn-s .mer-kort:hover { background: var(--sand-100); } }
 @media (min-width: 900px) { .agn-s .mer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Spøkelsesknapp, varsel og nøkkelverdier (src/components/admin/agencyos-ny/ny.tsx) */
+.agn-s .knapp.spok { background: transparent; color: var(--graphite-900); border: 1px solid transparent; text-decoration: underline; text-underline-offset: 3px; }
+.agn-s .varsel { display: grid; gap: 4px; padding: 12px 14px; border-radius: 10px; background: var(--sand-100); border-left: 4px solid var(--graphite-500); }
+.agn-s .varsel.ok { border-left-color: var(--green-700); background: var(--green-50); }
+.agn-s .varsel.advarsel { border-left-color: var(--rust); background: var(--rust-50); }
+.agn-s .nv { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--sand-300); }
+.agn-s .nv > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--r3); padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .nv dt { font-size: 13.5px; color: var(--graphite-600); }
+.agn-s .nv dd { margin: 0; font: 500 14.5px/1.4 var(--sans); }
