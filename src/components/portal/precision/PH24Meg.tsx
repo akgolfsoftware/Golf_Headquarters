@@ -7,7 +7,7 @@
  * Avvik:
  *   - Kategori (A–K) vises som «—»: kategorien er ikke lagret på spilleren ennå.
  *   - HCP-ruten viser HCP fra profilen uten dato: appen lagrer ikke når HCP sist ble hentet fra NGF.
- *   - Fasilitet-ruten viser hvor mange anlegg og utstyr spilleren har krysset av (av 14), ikke dekning av
+ *   - Fasilitet-ruten viser hvor mange anlegg og utstyr spilleren har krysset av (av 10), ikke dekning av
  *     de 19 treningsområdene: svarene fra fasilitetsspørsmålene lagres ikke, så dekningen kan ikke regnes.
  *   - Deling-ruten teller organisasjoner spilleren deler med (Team Norway, WANG). Navngitte trenere
  *     og forelder telles ikke med her; de står på Deling-skjermen.
@@ -19,6 +19,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Building2, CalendarDays, ChevronRight, CircleHelp, CreditCard, HeartPulse, LogOut, Settings, Share2, Target, User, Users, Wrench } from "lucide-react";
 import { logout } from "@/app/portal/meg/actions";
+import { initialer } from "@/lib/portal/initialer";
 import { PH24MegFeil } from "./PH24MegTilstand";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
@@ -51,12 +52,6 @@ export type PH24Props = {
     foreldre: string; deling: string; venner: string; abo: string; innstillinger: string; hjelp: string;
   };
 };
-
-export function initialer(navn: string): string {
-  const d = navn.trim().split(/\s+/).filter(Boolean);
-  if (d.length === 0) return "—";
-  return ((d[0]?.[0] ?? "") + (d.length > 1 ? d[d.length - 1]?.[0] ?? "" : "")).toUpperCase();
-}
 
 const Pil = () => <ChevronRight size={20} aria-hidden />;
 

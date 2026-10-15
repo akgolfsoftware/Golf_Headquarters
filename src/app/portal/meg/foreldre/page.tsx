@@ -1,16 +1,21 @@
 /**
- * PH24Foreldre — Meg · Foresatte i PlayerHQSkall (Precision Athletics).
- * Viser foresatte koblet til spillerens konto med innsyn.
+ * PlayerHQ · Meg · Foreldre (/portal/meg/foreldre) — PH-24 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «Foreldre»).
+ * Viser foreldre koblet til spillerens konto, og om forelderen må godkjenne (under 16, D-63).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
+import { maaHaForesattSamtykke, venterPaaForelder } from "@/lib/auth/minor";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { MegForeldreV2, type MegForeldreData } from "@/components/portal/v2/MegForeldreV2";
+import { PH24Foreldre, type PH24ForeldreData } from "@/components/portal/precision/PH24Foreldre";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Foreldre · PlayerHQ" };
+
+const DATO = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" });
 
 function relasjonLabel(r: string): string {
   const lower = r.toLowerCase();
@@ -28,36 +33,28 @@ export default async function PH24ForeldrePage() {
   const [parentLinks, ulest] = await Promise.all([
     prisma.parentRelation.findMany({
       where: { childId: user.id },
-      include: {
-        parent: { select: { id: true, name: true, email: true } },
-      },
+      include: { parent: { select: { id: true, name: true, email: true } } },
       orderBy: { createdAt: "desc" },
     }),
     getUnreadNotifications(user.id, 1),
   ]);
 
-  const data: MegForeldreData = {
-    foresatte: parentLinks.map((rel) => ({
+  const data: PH24ForeldreData = {
+    foreldre: parentLinks.map((rel) => ({
       id: rel.id,
       navn: rel.parent.name ?? rel.parent.email,
       relasjon: relasjonLabel(rel.relationship),
-      kontekst: rel.parent.email,
-      href: "/portal/meg/foreldre",
+      epost: rel.parent.email,
+      godkjent: rel.approved,
+      siden: DATO.format(rel.updatedAt),
     })),
+    under16: maaHaForesattSamtykke(user),
+    venterPaaForelder: venterPaaForelder(user),
   };
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
-      <div className="pa-side ph24f">
-        <header>
-          <p className="ph24f-kicker">PlayerHQ · Meg</p>
-          <h1>Foresatte</h1>
-          <p>Foresatte koblet til kontoen din med innsyn i treningslogg.</p>
-        </header>
-        <section className="pa-card ph24f-kort">
-          <MegForeldreV2 data={data} />
-        </section>
-      </div>
+      <PH24Foreldre data={data} />
     </PlayerHQSkall>
   );
 }
