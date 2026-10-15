@@ -87,6 +87,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
             }}
             disabled={isPending}
             placeholder="Skriv en rask melding …"
+            style={{ minHeight: 44 }}
           />
           <span style={{ position: "absolute", right: 6 }}>
             <MicButton variant="suffix" onResult={(t) => setTekst((prev) => (prev ? prev + " " + t : t))} disabled={isPending} />
