@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { byggAG01Data, kalenderRader, kalPst, hhmm } from "./cockpit-precision";
+import { akseFraTekst, byggAG01Data, kalenderRader, kalPst, hhmm } from "./cockpit-precision";
 import type { CockpitData, CockpitTimelineSession } from "@/components/admin/cockpit/agency-cockpit";
 
 function okt(id: string, startMin: number, durMin: number): CockpitTimelineSession {
@@ -47,4 +47,10 @@ test("mangler tallet, blir det «—»", () => {
   const d = byggAG01Data({ brief: uten, ko: { rows: [] }, tillegg, kicker: "K", klokke: "10:30" });
   assert.equal(d.nokkeltall.find((k) => k.label === "Økter i dag")?.verdi, "—");
   assert.equal(d.venter.totalt, 0);
+});
+
+test("akse fra tittel gjettes aldri: ukjent blir null", () => {
+  assert.equal(akseFraTekst("Innspill 50–80 m"), "slag");
+  assert.equal(akseFraTekst("Fysisk test: styrke"), "fys");
+  assert.equal(akseFraTekst("Privattime"), null);
 });

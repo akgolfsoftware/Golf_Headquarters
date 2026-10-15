@@ -9,7 +9,7 @@ import { PH21Innboks } from "@/components/portal/precision/PH21Innboks";
 export const dynamic = "force-dynamic";
 
 export default async function PortalCoachPage(props: {
-  searchParams?: Promise<{ tab?: string }>;
+  searchParams?: Promise<{ tab?: string; ny?: string }>;
 }) {
   const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
@@ -21,9 +21,7 @@ export default async function PortalCoachPage(props: {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <PH21Innboks data={data} initialTab={tab} />
-      </div>
+      <PH21Innboks data={data} initialTab={tab} apneNy={searchParams?.ny === "1"} />
     </PlayerHQSkall>
   );
 }

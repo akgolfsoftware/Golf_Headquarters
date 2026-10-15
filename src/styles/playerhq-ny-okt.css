@@ -1,0 +1,98 @@
+/*
+ * Pakke 2 Treningsøkten (PH-03 til PH-07) i nytt design.
+ * Fasit: docs/design-system/utkast-playerhq/treningsokt.html. Alltid lyst tema (Anders 14.10).
+ * Bygger på playerhq-ny.css og er avgrenset til .phn.
+ */
+.phn.phn-okt, .phn-okt * { box-sizing: border-box; }
+.phn-okt .smal { display: grid; gap: 24px; align-content: start; width: 100%; max-width: 720px; margin-inline: auto; }
+.phn-okt .hode-okt { display: grid; gap: 8px; }
+.phn-okt .hode-okt h1 { margin: 0; font: 700 28px/1.12 var(--phn-sans); letter-spacing: -.025em; text-wrap: balance; }
+.phn-okt .sub { font: 400 13px/1.4 var(--phn-sans); color: var(--phn-g600); }
+.phn-okt .phn-dato a { color: inherit; }
+
+/* Fylt øktkort som topp (ikke klikkbart) */
+.phn-okt .okt-hero { display: grid; border-radius: 12px; overflow: hidden; color: #fff; }
+.phn-okt .okt-hero img { display: block; width: 100%; height: 160px; object-fit: cover; }
+.phn-okt .okt-hero .tekst { padding: 16px 18px 18px; display: grid; gap: 8px; }
+.phn-okt .okt-rad { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.phn-okt .okt-tid { font: 600 34px/1.05 var(--phn-mono); letter-spacing: -.03em; white-space: nowrap; }
+.phn-okt .okt-tid small { font: 500 15px/1 var(--phn-mono); opacity: .85; letter-spacing: 0; margin-left: 6px; }
+.phn-okt .akse-merke { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(255,255,255,.2); font: 600 11px/1 var(--phn-sans); letter-spacing: .08em; }
+.phn-okt .akse-merke i { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+.phn-okt .okt-hero .navn { font: 600 22px/1.25 var(--phn-sans); }
+.phn-okt .okt-info { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; line-height: 1.45; opacity: .92; }
+.phn-okt .fylt-fys { background: var(--phn-fys-ink); } .phn-okt .fylt-tek { background: var(--phn-tek-ink); }
+.phn-okt .fylt-slag { background: var(--phn-slag); } .phn-okt .fylt-spill { background: var(--phn-spill-ink); } .phn-okt .fylt-turn { background: var(--phn-turn); }
+
+.phn-okt .undertittel { display: block; font: 600 15px/1.35 var(--phn-sans); }
+.phn-okt .phn-kort.dempet { background: var(--phn-sand-100); }
+.phn-okt .skille { height: 1px; background: var(--phn-sand-300); }
+
+/* Øvelser med AK-formel */
+.phn-okt .ovelser { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.phn-okt .ovelse { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: #fff; }
+.phn-okt .ovelse .nr { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 600 14px/1 var(--phn-mono); background: var(--phn-sand-150); }
+.phn-okt .ovelse.gjort .nr { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn-okt .ovelse b { display: block; font: 600 15px/1.35 var(--phn-sans); }
+.phn-okt .ovelse .min { font: 500 13px/1.3 var(--phn-mono); white-space: nowrap; color: var(--phn-g800); }
+.phn-okt .formel { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 6px; }
+.phn-okt .formel span { display: inline-flex; align-items: center; min-height: 22px; padding: 2px 8px; border-radius: 4px; background: var(--phn-sand-150); font: 500 12px/1.2 var(--phn-sans); color: var(--phn-g800); }
+
+.phn-okt .meta-liste { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; }
+.phn-okt .meta-liste div { display: grid; gap: 2px; }
+.phn-okt .meta-liste dt { font: 500 11px/1.3 var(--phn-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--phn-g600); }
+.phn-okt .meta-liste dd { margin: 0; font-size: 14px; line-height: 1.4; }
+.phn-okt .phn-knapp.stor { min-height: 52px; font-size: 16px; flex: 1 1 200px; }
+.phn-okt .rad-liste { display: grid; }
+.phn-okt .rad-liste > div { display: flex; justify-content: space-between; gap: 12px; min-height: 44px; align-items: center; border-top: 1px solid var(--phn-sand-300); font-size: 14px; }
+.phn-okt details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 500 14px/1.3 var(--phn-sans); }
+
+@container (min-width: 900px) {
+  .phn-okt .smal { max-width: 1040px; }
+  .phn-okt .to-kol { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .phn-okt .okt-hero { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); }
+  .phn-okt .okt-hero img { height: 100%; min-height: 220px; }
+  .phn-okt .okt-hero .tekst { padding: 24px; align-content: center; }
+}
+@container (max-width: 899px) { .phn-okt .to-kol { display: grid; gap: 24px; } }
+.phn-okt .phn-mono { font-family: var(--phn-mono); overflow-wrap: anywhere; }
+
+/* Fast handlingsrad nederst (brief, aktiv, etter økten) */
+.phn-okt .startbar { position: sticky; bottom: 0; z-index: 4; margin-inline: -16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--phn-sand-300); display: grid; gap: 8px; }
+@container (min-width: 900px) { .phn-okt .startbar { margin-inline: 0; border: 1px solid var(--phn-sand-300); border-radius: 12px; position: static; } }
+.phn-okt .pille-live { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; background: var(--phn-rust); color: #fff; font: 600 12px/1 var(--phn-sans); }
+.phn-okt .pille-live i { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+
+/* Live aktiv (PH-05): klokke, øvelsesstripe og teller */
+.phn-okt .klokkerad { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.phn-okt .oktklokke { display: inline-flex; align-items: baseline; gap: 8px; font: 600 40px/1 var(--phn-mono); letter-spacing: -.03em; }
+.phn-okt .oktklokke span { color: var(--phn-g600); font: 500 12px/1 var(--phn-mono); letter-spacing: .06em; }
+.phn-okt .stripe { display: flex; gap: 6px; flex-wrap: wrap; }
+.phn-okt .stripe .fan { border: 0; padding: 0; background: none; cursor: pointer; border-radius: 10px; }
+.phn-okt .stripe .fan:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn-okt .stripe i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--phn-sand-300); font: 600 15px/1 var(--phn-mono); font-style: normal; color: var(--phn-g600); }
+.phn-okt .stripe i.na { border: 2px solid var(--phn-g900); color: var(--phn-g900); }
+.phn-okt .stripe i.ok { background: var(--phn-green-50); color: var(--phn-green-700); border-color: var(--phn-green-50); }
+.phn-okt .teller { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: #fff; }
+.phn-okt .teller-topp { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.phn-okt .teller-topp b { font: 600 15px/1.3 var(--phn-sans); }
+.phn-okt .teller-tall { font: 600 52px/1 var(--phn-mono); letter-spacing: -.04em; white-space: nowrap; }
+.phn-okt .teller-tall small { font: 500 16px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 6px; letter-spacing: 0; }
+.phn-okt .phn-stolpe-lys { height: 10px; border-radius: 5px; background: var(--phn-sand-150); overflow: hidden; }
+.phn-okt .phn-stolpe-lys span { display: block; height: 100%; border-radius: 5px; background: var(--phn-g900); }
+.phn-okt .trinn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phn-okt .trinn button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 52px; border-radius: 8px; border: 1px solid var(--phn-g500); background: #fff; color: var(--phn-g900); font: 600 16px/1 var(--phn-mono); cursor: pointer; transition: transform 160ms var(--phn-ut); }
+.phn-okt .trinn button:active { transform: scale(.97); }
+.phn-okt .phn-felt textarea { min-height: 88px; }
+@media (prefers-reduced-motion: reduce) { .phn-okt .trinn button { transition: none; } }
+
+/* Etter økten (PH-07) */
+.phn-okt .akse-rad { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 44px; }
+.phn-okt .resultat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn-okt .resultat:last-child { border-bottom: 0; }
+.phn-okt .resultat b { font: 600 15px/1.35 var(--phn-sans); }
+.phn-okt .resultat .tall { font: 600 15px/1.35 var(--phn-mono); white-space: nowrap; }
+.phn-okt .resultat .sub { grid-column: 1 / -1; }
+.phn-okt .phn-stolpe-lys span.akse-fys { background: var(--phn-fys); } .phn-okt .phn-stolpe-lys span.akse-tek { background: var(--phn-tek); }
+.phn-okt .phn-stolpe-lys span.akse-slag { background: var(--phn-slag); } .phn-okt .phn-stolpe-lys span.akse-spill { background: var(--phn-spill); }
+.phn-okt .phn-stolpe-lys span.akse-turn { background: var(--phn-turn); }

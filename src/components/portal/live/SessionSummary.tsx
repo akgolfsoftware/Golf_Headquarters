@@ -164,7 +164,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
   }
 
   return (
-    <div className="pa-root ph07" data-theme="night" data-od-id="playerhq-live-summary">
+    <div className="pa-root ph07" data-theme="light" data-od-id="playerhq-live-summary">
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
       <header className="ph07-heading">
         <p className="ph07-eyebrow">Økt ferdig{data.durationSec > 0 ? ` · ${tidTekst(minutter)}` : ""}</p>

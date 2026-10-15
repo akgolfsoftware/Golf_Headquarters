@@ -1,31 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-import { RotateCw, TriangleAlert } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { FeilTilstand, Knapp } from "@/components/precision/pa";
+import { SdFeil } from "@/components/portal/precision/PHStatsDybdeFelles";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error("[tester/error]", error.digest, error);
   }, [error]);
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <FeilTilstand
-          icon={TriangleAlert}
-          title="Klarte ikke å hente testene"
-          text="Resultatlageret svarte ikke innen 30 sekunder. Loggede resultater er trygge — også de som alt er sendt til talentprofilen din."
-          retry={<Knapp variant="secondary" icon={RotateCw} data-od-id="tester-retry" onClick={reset}>Prøv igjen</Knapp>}
-        />
-      </div>
+      <SdFeil tittel="Testene kunne ikke hentes" tekst="Resultatene dine er trygge. Prøv igjen om litt." reset={reset} />
     </PlayerHQSkall>
   );
 }

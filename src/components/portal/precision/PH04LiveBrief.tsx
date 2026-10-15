@@ -42,7 +42,7 @@ export function PH04LiveBrief({
   return (
     <div
       className="pa-root ph04"
-      data-theme="night"
+      data-theme="light"
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",
