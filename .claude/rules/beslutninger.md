@@ -103,7 +103,11 @@ planen for akgolf.no som animert reise, der domeneflytting sto som steg 1.
    funksjoner om vi enda ikke har dette»). Gap mot Acuity og ti steg står i
    `docs/planer/booking-komplett-agencyos-plan-2026-10-15.md`. Ferdig når coachen gjør alt uten gamle
    sider eller Acuity, gjesten kan endre og avbestille fra e-postlenke, duo og gavekort kan bookes,
-   og én ekte betaling av hver type er røyktestet.
+   og én ekte betaling av hver type er røyktestet. **Planen er godkjent 15.10** med disse valgene:
+   duo betales av én person (som i Acuity: 1 700 og 2 700 kr) · gavekort gjelder alle tjenester og
+   alle coacher, verdi i kroner · no-show belastes etter 24-timersregelen, coach kan overstyre og
+   refundere · SMS utsettes til etter lansering. Steg 1 bygges i `claude/booking-avlys-flytt`;
+   steg 2 (tjenester i AgencyOS) starter 15.10.
 3. **Domeneflytting (steg 10)** gjøres først når punkt 2 og nettstedsplanens steg 8 er dokumentert. Ferdig når
    `curl -I https://akgolf.no` gir 200 fra appen, ikke 307 til Acuity, og Acuity-lenkene er
    borte fra nettsiden.

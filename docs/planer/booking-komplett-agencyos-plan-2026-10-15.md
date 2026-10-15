@@ -5,7 +5,8 @@ være fungerende i AgencyOS før vi lanserer. Lag en kopi av Acuity funksjoner o
 dette i booking systemet.» Henger sammen med [nettstedsplanen](akgolf-no-nettsted-reise-plan-2026-10-15.md):
 dette må være ferdig før steg 9 (røyktest) og steg 10 (domenet flyttes).
 
-Status: **plan, ikke bygget.** Venter på Anders' ja.
+Status: **godkjent av Anders 15.10** med anbefalingene i §5 (én betaler duo, gavekort for alle
+tjenester, no-show belastes med overstyring, SMS utsettes). Steg 1 pågår i annen økt, steg 2 starter.
 
 Kilder: Acuity-oppsettet lest på `akgolfgroup.as.me` 15.10 (offentlig side, ikke admin), og
 koden i repoet lest samme dag (inventaret står i §2).
