@@ -63,7 +63,7 @@ export default async function LiveTapperPage({
     return (
       <main
         className="pa-root ph06"
-        data-theme="night"
+        data-theme="light"
         style={{
           minHeight: "100dvh",
           background: "var(--surface-page)",

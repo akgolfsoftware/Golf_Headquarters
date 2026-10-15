@@ -285,7 +285,7 @@ function RegistrerArk({ plan, start, onLukk, onLagret }: { plan: TpPlan; start: 
   const [lagrer, run] = useTransition();
   useEffect(() => { ark.current?.showModal(); }, []);
 
-  const velgOppgave = (o: TpOppgave) => { setOppgaveId(o.id); setSteg(stegKode(o.stegNaa) ?? "LAV_HAST"); };
+  const velgOppgave = (o: TpOppgave) => { setOppgaveId(o.id); setSteg(stegKode(o.stegNaa ?? null) ?? "LAV_HAST"); };
   const lagre = () => {
     if (!oppgave) return;
     if (antall <= 0) { setFeil("Legg inn minst én repetisjon."); return; }

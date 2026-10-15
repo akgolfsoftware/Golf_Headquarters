@@ -233,7 +233,7 @@ export type TpTmRad = {
 };
 
 /** `siste`: treff av de siste slagene i rullende vindu, ellers null. */
-export type TpProtokoll = { type: Protokolltype; navn: string; tekst: string; naa: string; siste: { treff: number; antall: number } | null };
+export type TpProtokoll = { type: Protokolltype; navn: string; tekst: string; naa: string; siste?: { treff: number; antall: number } | null };
 
 export type TpOppgave = {
   id: string;
@@ -248,9 +248,9 @@ export type TpOppgave = {
   formel: string | null;
   familie: "FULLSVING" | "BUNKER" | "ANNET";
   /** Læringssteget oppgaven står på nå (bare fullsving), f.eks. «Lav hastighet». */
-  stegNaa: string | null;
+  stegNaa?: string | null;
   /** Hovedmiljøet for oppgaven, f.eks. «Treningsområde». */
-  miljoNaa: string | null;
+  miljoNaa?: string | null;
   steg: TpSteg[];
   miljo: TpMiljo[];
   gjort: number;
