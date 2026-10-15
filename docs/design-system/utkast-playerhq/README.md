@@ -1,6 +1,6 @@
 # PlayerHQ i nytt design — utkast
 
-Status: **utkast. Pakke 3 Plan og Workbench, pakke 4 Øvelser og teknikk, pakke 5 Runder og pakke 7 Kommunikasjon er godkjent 14.10; pakke 2 Treningsøkta er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
+Status: **utkast. Pakke 3 Plan og Workbench, pakke 4 Øvelser og teknikk, pakke 5 Runder og pakke 7 Kommunikasjon er godkjent 14.10, pakke 9 IUP og gameplan 15.10; pakke 2 Treningsøkta er utkast 1; de andre skjermene venter på port 7.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
 Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-knapp for sammenligning.
 
 ## Plan (Anders 14.10.2026: «Ok»)
@@ -17,7 +17,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 6 Stats i dybden | PH-14 (+ én test), PH-15 (Wedge Gate), PH-15-TN (8-ball med poeng og PEI, Nærspill Gate), PH-17 (Trening, TrackMan: økter, én økt, alle køller), Resultater, `stats-dybde.html` | **Godkjent 14.10** (port 7, Anders), utkast 6 med spredning på green | https://claude.ai/artifact/TCAjvtfCSbP55GXGq2UNcL |
 | 7 Kommunikasjon | PH-21 Innboks (+ meldinger), PH-22 Caddie, PH-23 Booking (+ book time, bekreftet, flytt og avbestill), `kommunikasjon.html` | **Godkjent 14.10** (port 7, Anders), utkast 2 | https://claude.ai/artifact/2Dtxo3nS4rwN2yBaaRTpTD |
 | 8 Meg | PH-24 (+ profil, fasiliteter, utstyr, helse, foreldre), PH-25 (+ innstillinger), PH-27 (+ under 16), `meg.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/3LLqsVrsgjq5KxwysoGxg3 |
-| 9 IUP og gameplan | PH-IUP-01 (+ levert), PH-IUP-02 (+ levert), PH-20 (+ hull), `iup.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/6ALZka6wvTpvKvnboZXb5E |
+| 9 IUP og gameplan | PH-IUP-01 (+ levert), PH-IUP-02 (+ levert), PH-20 (+ hull), `iup.html` | **Godkjent 15.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/6ALZka6wvTpvKvnboZXb5E |
 | 10 Samleside | Alle lenker på én side, designbrevet oppdatert | | |
 
 Rekkefølgen er 3 først (Anders minst fornøyd med Workbench). Én fersk økt per pakke.
