@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { TnRailMobil, initialer } from "./rail-mobil";
+import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
@@ -166,6 +167,7 @@ export function TnShell({
   visTrenerflater,
   kanAdministrere,
   flate = "standard",
+  tilbake,
   children,
 }: {
   aktiv: TnAktivSide;
@@ -181,6 +183,8 @@ export function TnShell({
    * spriken oppsto, ikke i innholdet.
    */
   flate?: "standard" | "full";
+  /** Undersider: tilbakelinje under topplinjen på mobil (PC har sidemenyen). */
+  tilbake?: { href: string; label: string };
   children: ReactNode;
 }) {
   const valg = { aktiv, groupId, visTrenerflater, kanAdministrere };
@@ -190,6 +194,11 @@ export function TnShell({
       <TnRail grupper={grupper} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
       <div className={s.kolonne}>
         <TnRailMobil grupper={grupper} bunn={tnBunnmeny(valg)} brukerNavn={brukerNavn} rolle={rolle} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
+        {tilbake ? (
+          <div className={s.tilbakelinje}>
+            <Link href={tilbake.href} className={s.tilbake}><TnIkon navn="pil" />{tilbake.label}</Link>
+          </div>
+        ) : null}
         {flate === "full" ? children : <main className={s.innhold}>{children}</main>}
         {/* Plass til den faste bunnmenyen på mobil, så siste rad aldri skjules bak den. */}
         <div className={s.bunnplass} aria-hidden="true" />
