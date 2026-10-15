@@ -26,6 +26,7 @@ import { onsketTema } from "@/lib/v2/tema-default";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG, skallAktivFraPath } from "@/lib/agencyos/skall-ia";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
@@ -1326,6 +1327,24 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       document.cookie = "ak-coach=1; path=/; max-age=31536000; samesite=lax";
     }
   }, [erAgency]);
+
+  // AgencyOS i nytt design (designbrevet 13.10.2026): alle /admin-sider får
+  // samme skall som de porterte sidene — sidemeny, bjelle og hurtigknapp.
+  // Skallet eier tema, coach-cookie og globalt søk (Cmd+K).
+  if (erAgency) {
+    return (
+      <AgencyOSSkall navn={navn}>
+        <div className="agn-legacy">
+          {vekslerData && <SpillerVeksler data={vekslerData} />}
+          {bredde === "kolonne" ? (
+            <div data-paper-column="agency" style={{ width: "100%", maxWidth: "74ch", marginLeft: "auto", marginRight: "auto" }}>{children}</div>
+          ) : (
+            children
+          )}
+        </div>
+      </AgencyOSSkall>
+    );
+  }
 
   return (
     <TrainLockPlayerCaddie key={erPlayer ? "player" : "other"} aktiv={erPlayer} composer={composer}>

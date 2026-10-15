@@ -10,13 +10,13 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **544**. Unike rutemønstre i skanningen: 544. Komponentfiler: 896. Ramme- og tilstandsfiler: 266.
+Sidefiler med rute: **545**. Unike rutemønstre i skanningen: 545. Komponentfiler: 898. Ramme- og tilstandsfiler: 266.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
 | Område | Sidefiler |
 |---|---:|
-| agencyos | 166 |
+| agencyos | 167 |
 | delt-innsyn | 11 |
 | forelder | 16 |
 | inngang-og-konto | 19 |
@@ -35,11 +35,11 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | tegnet-skjermtype | 284 |
 | videresending | 165 |
 | byggeunderlag | 37 |
-| teknisk-forklaring | 29 |
+| teknisk-forklaring | 30 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 12 rader har ingen eksakt type. 166 rader har et registrert avvik. 139 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+249 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 166 rader har et registrert avvik. 139 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -49,6 +49,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 |---|---|---|
 | `/admin/bookinger` | UTEN-TEGNET-TYPE | AG-06 Booking (coach) |
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
+| `/admin/mer` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | PH-17 TrackMan |

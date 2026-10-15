@@ -75,6 +75,8 @@ export type GoalItem = {
   status: "ACTIVE" | "ACHIEVED" | "ABANDONED";
   targetValue: number | null;
   progress: number;
+  /** Fremdriftsstatus fra målberegningen (på vei, bak, oppnådd, ingen data). */
+  progressStatus: "on-track" | "behind" | "achieved" | "no-data";
   deadline: Date | null;
   daysLeft: number | null;
   href: string;
@@ -306,7 +308,9 @@ export async function getGoals(userId: string, limit = 3, naa: Date = new Date()
     goals.map(async (g) => {
       const daysLeft = g.targetDate ? Math.ceil((g.targetDate.getTime() - now.getTime()) / 86_400_000) : null;
       // Oppnådd mål vises alltid som fullført, uansett hva nåværende tall skulle si.
-      const progress = g.status === "ACHIEVED" ? 100 : (await beregnGoalProgress(g, { hcp })).pct;
+      const beregnet = g.status === "ACHIEVED" ? null : await beregnGoalProgress(g, { hcp });
+      const progress = beregnet ? beregnet.pct : 100;
+      const progressStatus = beregnet ? (beregnet.hasData ? beregnet.status : "no-data") : "achieved";
 
       const status = g.status as GoalItem["status"];
 
@@ -317,6 +321,7 @@ export async function getGoals(userId: string, limit = 3, naa: Date = new Date()
         status,
         targetValue: g.targetValue,
         progress,
+        progressStatus,
         deadline: g.targetDate,
         daysLeft,
         href: `/portal/mal/goal/${g.id}`,
