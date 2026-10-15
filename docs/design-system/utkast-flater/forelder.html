@@ -1,0 +1,576 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Forelder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 1: Forelder · FO-01 til FO-06 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.barnvalg{display:flex;flex-wrap:wrap;gap:6px}
+.barnvalg button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 6px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 15px/1 var(--sans);cursor:pointer;color:var(--graphite-900)}
+.barnvalg button .avatar{width:32px;height:32px;font-size:12px}
+.barnvalg button[aria-pressed="true"]{background:var(--graphite-900);color:var(--white);border-color:var(--graphite-900)}
+.barnvalg button[aria-pressed="true"] .avatar{background:var(--white);color:var(--graphite-900)}
+.haster-kort{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:12px;border:2px solid var(--rust);background:var(--white)}
+.haster-kort .rad{display:flex;justify-content:space-between;gap:var(--r3);align-items:center;flex-wrap:wrap}
+.haster-kort b.t{font:600 17px/1.3 var(--sans)}
+.frist{font:600 28px/1 var(--mono);color:var(--rust);letter-spacing:-.02em}
+.frist small{font:500 14px/1 var(--sans);color:var(--graphite-800);margin-left:6px;letter-spacing:0}
+.uke-ring{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r4);align-items:center}
+.ring{width:112px;height:112px}
+.akse-stolper{display:grid;gap:8px}
+.as-rad{display:grid;grid-template-columns:64px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:14px}
+.as-rad .v{font:600 13.5px/1 var(--mono);text-align:right}
+.booking-kort{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center;padding:14px 16px;border-radius:12px;background:var(--graphite-900);color:var(--white)}
+.booking-kort .dag{display:grid;justify-items:center;width:56px;padding:8px 0;border-radius:10px;background:rgba(255,255,255,.12)}
+.booking-kort .dag b{font:600 26px/1 var(--mono)}
+.booking-kort .dag span{font:600 11px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.booking-kort .n{font:600 17px/1.3 var(--sans)}
+.booking-kort p{font-size:14px;opacity:.9}
+.varsel-rad{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.varsel-rad:last-child{border-bottom:0}
+.varsel-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.prikk{width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--graphite-900)}
+.prikk.lest{background:var(--sand-300)}
+.barn-kort{display:grid;gap:var(--r3);padding:var(--r4) 18px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.barn-kort .rad{display:flex;gap:var(--r3);align-items:center}
+.barn-kort b.n{font:600 18px/1.25 var(--sans)}
+.mini-tall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.mini-tall div{display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)}
+.mini-tall b{font:600 20px/1 var(--mono)}
+.mini-tall span{font-size:12.5px;color:var(--graphite-600)}
+.sg-sok{display:grid;gap:8px}
+.sg-rad{display:grid;grid-template-columns:92px minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:14px}
+.sg-bane{position:relative;height:14px;border-radius:7px;background:var(--sand-150)}
+.sg-bane::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--graphite-500)}
+.sg-bane span{position:absolute;top:0;bottom:0;border-radius:7px}
+.sg-rad .v{font:600 13.5px/1 var(--mono);text-align:right}
+.graf-ramme{display:grid;gap:8px}
+.steg-tall{display:flex;gap:8px;align-items:center;font:600 13px/1 var(--sans);color:var(--graphite-600)}
+.steg-tall b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--graphite-900);color:#fff;font:600 13px/1 var(--mono)}
+.tid-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tid-grid button{min-height:48px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:600 15px/1 var(--mono);cursor:pointer;color:var(--graphite-900)}
+.tid-grid button[aria-pressed="true"]{background:var(--graphite-900);color:#fff;border-color:var(--graphite-900)}
+.tid-grid button:disabled{color:var(--graphite-500);background:var(--sand-100);text-decoration:line-through;cursor:not-allowed}
+.dag-rad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dag-rad button{display:grid;justify-items:center;gap:2px;padding:8px 0;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);cursor:pointer;font:inherit;color:inherit}
+.dag-rad button b{font:600 18px/1 var(--mono)}
+.dag-rad button span{font:500 11.5px/1 var(--sans);color:var(--graphite-600)}
+.dag-rad button[aria-pressed="true"]{background:var(--graphite-900);color:#fff;border-color:var(--graphite-900)}
+.dag-rad button[aria-pressed="true"] span{color:#fff}
+.oppsummering{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:12px;background:var(--sand-100)}
+.faktura{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--r3);align-items:center;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.faktura:last-child{border-bottom:0}
+.faktura b{display:block;font:600 15px/1.3 var(--sans)}
+.faktura .belop{font:600 15px/1 var(--mono);text-align:right}
+.klipp{display:flex;gap:6px}
+.klipp i{width:36px;height:36px;border-radius:8px;border:2px solid var(--graphite-900)}
+.klipp i.brukt{background:var(--graphite-900)}
+.samtykke-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.samtykke-rad:last-child{border-bottom:0}
+.samtykke-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.logg{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.logg li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:var(--r2);padding:9px 0;border-bottom:1px solid var(--sand-300);font-size:13.5px}
+.logg time{font:500 12px/1.5 var(--mono);color:var(--graphite-600)}
+.innsyn-liste{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.innsyn-liste li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;font-size:14.5px;align-items:start}
+.innsyn-liste .ikon{width:18px;height:18px;margin-top:2px}
+.melding{display:grid;gap:6px;padding:12px 14px;border-radius:12px;background:var(--sand-100);max-width:52ch}
+.melding.fra-meg{justify-self:end;background:var(--graphite-900);color:#fff}
+.melding .kilde{font-size:12px}
+.melding.fra-meg .kilde{color:rgba(255,255,255,.75)}
+@container (min-width:900px){
+  .barn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r4)}
+  .tid-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">Forelder · gruppe 1 · FO-01 til FO-06 · utkast 1 · 15.10.2026</span>
+    <h1>Forelder</h1>
+    <p>Elleve skjermer i én fil for forelderen Kari Rohjan med to barn: Øyvind (17, Kategori C) og Ingrid (13). Felles skall: hamburgermeny på mobil, topplinje med fire mål og «Mer» på PC. Mandag 5. oktober kl. 14:20, uke 41. Alle navn og tall er oppdiktet.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="idag">FO-01 I dag</button>
+      <button type="button" aria-pressed="false" data-skjerm="ukerapport">FO-01 Ukerapport</button>
+      <button type="button" aria-pressed="false" data-skjerm="barn">FO-02 Barn</button>
+      <button type="button" aria-pressed="false" data-skjerm="barnet">FO-02 Utviklingsprofil</button>
+      <button type="button" aria-pressed="false" data-skjerm="booking">FO-03 Booking</button>
+      <button type="button" aria-pressed="false" data-skjerm="bekreftet">FO-03 Bekreftet</button>
+      <button type="button" aria-pressed="false" data-skjerm="okonomi">FO-04 Økonomi</button>
+      <button type="button" aria-pressed="false" data-skjerm="samtykke">FO-05 Samtykke</button>
+      <button type="button" aria-pressed="false" data-skjerm="deling">FO-05 Deling</button>
+      <button type="button" aria-pressed="false" data-skjerm="coach">FO-06 Coach</button>
+      <button type="button" aria-pressed="false" data-skjerm="innstillinger">FO-06 Innstillinger</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Ett skall for hele forelderflaten:</b> I dag · Barn · Booking · Økonomi, og Mer med Samtykke, Coach, Ukerapport og Innstillinger. Hamburgermeny på mobil.</li>
+        <li><b>I dag</b> viser barnets økter som fylte kort i aksefargen, neste time, uka som ring og fordeling per akse.</li>
+        <li><b>Fristen for under 16</b> står øverst når et barn ikke er godkjent: dager igjen i stort tall og én knapp.</li>
+        <li><b>Utviklingsprofilen</b> har snittscore, Strokes Gained per område og trening mot plan, med kilde og dato.</li>
+        <li><b>Booking for barn</b> i fire steg: barn, tjeneste, tid, bekreft. Bekreftes med en gang tiden er ledig og betalt.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Under 16 år: forelder godkjenner innen sju dager etter at kontoen ble opprettet. Barnet bruker appen fullt ut i mellomtiden. Deling og opptak er sperret til forelder har godkjent (vedtak 06.10).</li>
+        <li>Forelderens innsyn fortsetter etter 16 år, til spilleren selv fjerner forelderen (Øyvind, 17).</li>
+        <li>Innsyn ved deling er alt, også helse og meldinger, og det står rett ut før forelderen godkjenner. Delingslenke bare til @wang.no og @golfforbundet.no, gyldig i sju dager.</li>
+        <li>Klipp gjelder Performance og Performance Pro. Én coachet økt trekker ett klipp. Priser er merket «Eksempel» og leses fra tjenestelista i appen.</li>
+        <li>Rust bare på fristen som haster og i dialogen som trekker tilbake et samtykke. Manglende tall vises som «—».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Belastningsvarsel (ACWR):</b> skjermlista sier at I dag skal ha det, men tallet er ikke regnet ut i appen. Tegnet som «—» med forklaring til det finnes.</li>
+        <li><b>Avslå deling:</b> tegnet som vanlig knapp med kvittering, ikke dialog. Samme spørsmål som «trekk tilgang» i PlayerHQ.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FO-01 I dag ================= -->
+<template id="idag">
+<div class="app" data-skall="forelder" data-aktiv="idag"><main class="innhold">
+  <div class="topp" data-behold>
+    <span class="dato">Mandag 5. oktober · uke 41</span>
+    <h1 class="tittel">Hei, Kari</h1>
+    <div class="barnvalg" data-gruppe><button type="button" aria-pressed="true"><span class="avatar">ØR</span>Øyvind</button><button type="button" aria-pressed="false"><span class="avatar lys">IR</span>Ingrid</button></div>
+  </div>
+
+  <div class="haster-kort inn">
+    <div class="rad"><b class="t">Godkjenn Ingrids konto</b><span class="frist">3<small>dager igjen</small></span></div>
+    <p class="forklar">Ingrid er 13 år. Kontoen ble opprettet torsdag 1. oktober. Godkjenner du ikke innen torsdag 8. oktober, låses kontoen til du gjør det. Deling og opptak er sperret til da.</p>
+    <div class="knapper"><button type="button" class="knapp pri" data-gaa="samtykke">Se og godkjenn</button></div>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Øyvinds økter i dag</h2><a href="#" class="lenke" data-gaa="barnet">Utviklingsprofil</a></div>
+    <div class="to-del">
+      <div class="okt slag bred inn"><img src="bilder/naerspill-wedge.jpg" alt=""><div class="okt-tekst"><div class="okt-rad"><span class="akse-merke"><i></i>SLAG</span><span class="okt-tid">15:30<small>75 min</small></span></div><span class="navn">Innspill og nærspill</span><div class="okt-info"><span>Range, Gamle Fredrikstad</span><span>4 øvelser</span></div></div></div>
+      <div class="okt fys bred inn"><img src="bilder/fys-styrke.jpg" alt=""><div class="okt-tekst"><div class="okt-rad"><span class="akse-merke"><i></i>FYS</span><span class="okt-tid">17:30<small>45 min</small></span></div><span class="navn">Styrke bein og kjerne</span><div class="okt-info"><span>Treningsrom</span><span>6 øvelser</span></div></div></div>
+    </div>
+    <p class="kilde">Fra Øyvinds plan i PlayerHQ. Du ser planen, men endrer den ikke.</p>
+  </section>
+
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Neste time</h2><a href="#" class="lenke" data-gaa="booking">Book time</a></div>
+      <div class="booking-kort inn"><div class="dag"><span>Tor</span><b>8</b><span>okt</span></div><div><span class="n">Performance Pro med Anders</span><p>kl. 16:00 · 60 min · Gamle Fredrikstad Golfklubb</p><p>Trekker 1 av 4 klipp i oktober</p></div></div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Uka så langt</h2><a href="#" class="lenke" data-gaa="ukerapport">Ukerapport</a></div>
+      <div class="kort">
+        <div class="hoved"><strong>0<small>t</small></strong><span class="trend">av 14 t 5 min planlagt</span></div>
+        <div class="stolpe"><span style="width:0%"></span></div>
+        <p class="kilde">Uka starter i dag. Dagens økter teller når Øyvind har gjennomført dem.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Belastning</h2></div>
+    <div class="kort dempet">
+      <div class="hoved"><strong>—</strong><span class="pille noy"><i></i>Ikke regnet ut ennå</span></div>
+      <p class="forklar">Her kommer et varsel når treningsmengden øker raskere enn kroppen tåler (belastningsforhold siste uke mot siste fire uker). Tallet vises når appen regner det ut fra Øyvinds egne økter.</p>
+    </div>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Varsler</h2></div>
+    <div class="kort">
+      <div class="varsel-rad"><i class="prikk"></i><div><b>Anders sendte en melding til Øyvind</b><p class="kilde">I dag 09:12 · «Fin økt i går. Hold fokus på startlinja på wedgene.»</p></div></div>
+      <div class="varsel-rad"><i class="prikk"></i><div><b>Ingrid vil dele PlayerHQ med en WANG-trener</b><p class="kilde">I går 19:40 · krever ditt ja fordi Ingrid er under 16</p></div></div>
+      <div class="varsel-rad"><i class="prikk lest"></i><div><b>Faktura for oktober er betalt</b><p class="kilde">1. oktober · 299 kr · Visa</p></div></div>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-01 Ukerapport ================= -->
+<template id="ukerapport">
+<div class="app" data-skall="forelder" data-aktiv="rapport" data-tilbake="I dag" data-tilbake-gaa="idag"><main class="innhold">
+  <div class="topp" data-behold>
+    <span class="dato">Uke 40 · 28. sep – 4. okt</span>
+    <h1 class="tittel">Øyvinds uke</h1>
+  </div>
+  <div class="kort">
+    <div class="uke-ring">
+      <svg class="ring" viewBox="0 0 112 112" aria-hidden="true"><circle cx="56" cy="56" r="48" fill="none" stroke="var(--sand-150)" stroke-width="12"/><circle class="tegn" cx="56" cy="56" r="48" fill="none" stroke="var(--graphite-900)" stroke-width="12" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="18" transform="rotate(-90 56 56)" style="stroke-dasharray:301.6;stroke-dashoffset:18"/></svg>
+      <div style="display:grid;gap:6px"><div class="hoved"><strong data-tell="94">94</strong><span style="font:600 22px/1 var(--mono)">%</span></div><p class="forklar">12 t 40 min gjennomført av 13 t 30 min planlagt.</p><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>+6 % fra uke 39</span></div>
+    </div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Per akse</h2></div>
+    <div class="kort akse-stolper">
+      <div class="as-rad"><span><i class="akse-prikk a-fys"></i> FYS</span><div class="stolpe"><span class="a-fys" data-til="100%"></span></div><span class="v">2 t 30</span></div>
+      <div class="as-rad"><span><i class="akse-prikk a-tek"></i> TEK</span><div class="stolpe"><span class="a-tek" data-til="88%"></span></div><span class="v">3 t 30</span></div>
+      <div class="as-rad"><span><i class="akse-prikk a-slag"></i> SLAG</span><div class="stolpe"><span class="a-slag" data-til="100%"></span></div><span class="v">4 t 10</span></div>
+      <div class="as-rad"><span><i class="akse-prikk a-spill"></i> SPILL</span><div class="stolpe"><span class="a-spill" data-til="83%"></span></div><span class="v">2 t 30</span></div>
+      <div class="as-rad"><span><i class="akse-prikk a-turn"></i> TURN</span><div class="stolpe"><span class="a-turn" data-til="0%"></span></div><span class="v">—</span></div>
+      <p class="kilde">Stolpen er gjennomført mot planlagt per akse. Ingen turnering i uke 40.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Fra coachen</h2></div>
+    <div class="melding"><p>God uke. Wedgene fra 60–90 meter er jevnere. Neste uke legger vi inn en test på torsdag.</p><span class="kilde">Anders Kristiansen · fredag 2. oktober</span></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Runder</h2></div>
+    <div class="liste">
+      <div><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 22V3l12 4-12 4"/></svg></span><span><b>Gamle Fredrikstad, 18 hull</b><span class="kilde">Lørdag 3. oktober · brutto</span></span><b class="mono" style="font:600 20px/1 var(--mono)">74</b></div>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-02 Barn ================= -->
+<template id="barn">
+<div class="app" data-skall="forelder" data-aktiv="barn"><main class="innhold">
+  <div class="topp" data-behold>
+    <h1 class="tittel">Barn</h1>
+    <p class="ingress">Barna som er koblet til deg. Du ser planen og utviklingen deres.</p>
+  </div>
+  <div class="barn-grid" style="display:grid;gap:var(--r3)">
+    <button type="button" class="barn-kort inn" data-gaa="barnet">
+      <span class="rad"><span class="avatar">ØR</span><span><b class="n">Øyvind Rohjan</b><span class="kilde">17 år · Kategori C · Performance Pro</span></span></span>
+      <span class="mini-tall"><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">73,1</b><span style="font-size:12.5px;color:var(--graphite-600)">Snittscore</span></span><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">92 %</b><span style="font-size:12.5px;color:var(--graphite-600)">Fulgt planen</span></span><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">2</b><span style="font-size:12.5px;color:var(--graphite-600)">Økter i dag</span></span></span>
+      <span class="kilde">Over 16: du ser fortsatt alt. Øyvind kan fjerne deg som forelder i Meg.</span>
+    </button>
+    <button type="button" class="barn-kort inn">
+      <span class="rad"><span class="avatar lys">IR</span><span><b class="n">Ingrid Rohjan</b><span class="kilde">13 år · Gratis</span></span><span class="pille vent" style="margin-left:auto"><i></i>Venter på deg</span></span>
+      <span class="mini-tall"><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">—</b><span style="font-size:12.5px;color:var(--graphite-600)">Snittscore</span></span><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">—</b><span style="font-size:12.5px;color:var(--graphite-600)">Fulgt planen</span></span><span style="display:grid;gap:2px;padding:10px;border-radius:10px;background:var(--sand-100)"><b style="font:600 20px/1 var(--mono)">0</b><span style="font-size:12.5px;color:var(--graphite-600)">Økter i dag</span></span></span>
+      <span class="kilde">Under 4 runder: ingen snittscore ennå.</span>
+    </button>
+  </div>
+  <div class="kort dempet">
+    <b class="undertittel">Koble til et barn til</b>
+    <p class="forklar">Barnet sender en invitasjon fra Meg i PlayerHQ, eller du oppretter kontoen for barnet her.</p>
+    <div class="knapper"><button type="button" class="knapp sek">Opprett konto for barn</button></div>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= FO-02 Utviklingsprofil ================= -->
+<template id="barnet">
+<div class="app" data-skall="forelder" data-aktiv="barn" data-tilbake="Barn" data-tilbake-gaa="barn"><main class="innhold">
+  <img class="toppbilde" src="bilder/stats-topp.jpg" alt="" data-behold>
+  <div class="topp" data-behold>
+    <span class="dato">Kategori C · 17 år</span>
+    <h1 class="tittel">Øyvind Rohjan</h1>
+    <div class="faner" data-gruppe><button type="button" aria-pressed="true">Utvikling</button><button type="button" aria-pressed="false">Plan</button><button type="button" aria-pressed="false">Tester</button></div>
+  </div>
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Snittscore</h2><span class="kilde">brutto, 10 siste runder</span></div>
+      <div class="kort">
+        <div class="hoved"><strong data-tell="73.1">73,1</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></svg>−1,4 slag i år</span></div>
+        <svg class="graf" viewBox="0 0 320 110" aria-label="Snittscore fra april til oktober"><defs><linearGradient id="fyll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a32d2d" stop-opacity=".35"/><stop offset="1" stop-color="#a32d2d" stop-opacity="0"/></linearGradient></defs><path d="M0 30 L53 36 L106 42 L160 48 L213 58 L266 62 L320 70 L320 110 L0 110Z" fill="url(#fyll)"/><path class="tegn" d="M0 30 L53 36 L106 42 L160 48 L213 58 L266 62 L320 70" fill="none" stroke="#a32d2d" stroke-width="3"/><text class="gt" x="0" y="106">apr</text><text class="gt" x="296" y="106">okt</text></svg>
+        <p class="kilde">18 runder registrert i PlayerHQ · sist 3. oktober</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Strokes Gained</h2><span class="estimat">Estimat</span></div>
+      <div class="kort">
+        <div class="hoved"><strong>+0,8</strong><span class="trend">mot Kategori B</span></div>
+        <div class="sg-sok">
+          <div class="sg-rad"><span>Utslag</span><div class="sg-bane"><span style="left:50%;width:22%;background:var(--slag)"></span></div><span class="v">+0,9</span></div>
+          <div class="sg-rad"><span>Innspill</span><div class="sg-bane"><span style="left:50%;width:10%;background:var(--slag)"></span></div><span class="v">+0,4</span></div>
+          <div class="sg-rad"><span>Nærspill</span><div class="sg-bane"><span style="left:38%;width:12%;background:var(--spill-ink)"></span></div><span class="v">−0,5</span></div>
+          <div class="sg-rad"><span>Putting</span><div class="sg-bane"><span style="left:50%;width:0%;background:var(--slag)"></span></div><span class="v">0,0</span></div>
+        </div>
+        <p class="kilde">Sterkest: utslag. Svakest: nærspill. Broadie-tall for neste kategori, merket estimat.</p>
+      </div>
+    </section>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Trening siste fire uker</h2></div>
+    <div class="kort">
+      <div class="hoved"><strong>48<small>t</small> 10<small>min</small></strong><span class="trend opp">92 % av planen</span></div>
+      <div class="akse-stolper">
+        <div class="as-rad"><span><i class="akse-prikk a-fys"></i> FYS</span><div class="stolpe"><span class="a-fys" data-til="96%"></span></div><span class="v">9 t 40</span></div>
+        <div class="as-rad"><span><i class="akse-prikk a-tek"></i> TEK</span><div class="stolpe"><span class="a-tek" data-til="90%"></span></div><span class="v">13 t 20</span></div>
+        <div class="as-rad"><span><i class="akse-prikk a-slag"></i> SLAG</span><div class="stolpe"><span class="a-slag" data-til="95%"></span></div><span class="v">14 t 50</span></div>
+        <div class="as-rad"><span><i class="akse-prikk a-spill"></i> SPILL</span><div class="stolpe"><span class="a-spill" data-til="86%"></span></div><span class="v">8 t 00</span></div>
+        <div class="as-rad"><span><i class="akse-prikk a-turn"></i> TURN</span><div class="stolpe"><span class="a-turn" data-til="100%"></span></div><span class="v">2 t 20</span></div>
+      </div>
+      <p class="kilde">Gjennomført mot planlagt, uke 37–40. 48 t 10 min av 52 t 20 min.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Siste tester</h2></div>
+    <div class="liste">
+      <div><span class="akse-prikk a-slag"></span><span><b>Wedge Gate</b><span class="kilde">30. september</span></span><b class="mono">7 / 9 godkjent</b></div>
+      <div><span class="akse-prikk a-fys"></span><span><b>Club Speed</b><span class="kilde">22. september</span></span><b class="mono">104 mph</b></div>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-03 Booking for barn ================= -->
+<template id="booking">
+<div class="app" data-skall="forelder" data-aktiv="booking"><main class="innhold smal">
+  <div class="topp" data-behold>
+    <h1 class="tittel">Book time</h1>
+    <div class="steg-linje" aria-label="Steg 3 av 4"><i class="ja"></i><i class="ja"></i><i class="ja"></i><i></i></div>
+  </div>
+  <section class="seksjon">
+    <span class="steg-tall"><b>1</b>Hvem gjelder timen?</span>
+    <div class="barnvalg" data-gruppe><button type="button" aria-pressed="true"><span class="avatar">ØR</span>Øyvind</button><button type="button" aria-pressed="false"><span class="avatar lys">IR</span>Ingrid</button></div>
+  </section>
+  <section class="seksjon">
+    <span class="steg-tall"><b>2</b>Tjeneste</span>
+    <div class="valg-grid to" data-gruppe>
+      <button type="button" class="valgkort" aria-pressed="true"><b>Coaching 60 min</b><span class="kilde">Trekker 1 klipp · 3 av 4 igjen i oktober</span></button>
+      <button type="button" class="valgkort" aria-pressed="false"><b>Coaching 30 min</b><span class="kilde">Trekker 1 klipp</span></button>
+      <button type="button" class="valgkort" aria-pressed="false"><b>Banerunde 9 hull</b><span class="kilde">650 kr <span class="eksempel">Eksempel</span></span></button>
+      <button type="button" class="valgkort" aria-pressed="false"><b>Gruppetime</b><span class="kilde">250 kr <span class="eksempel">Eksempel</span></span></button>
+    </div>
+  </section>
+  <section class="seksjon">
+    <span class="steg-tall"><b>3</b>Tid hos Anders</span>
+    <div class="dag-rad" data-gruppe>
+      <button type="button" aria-pressed="false"><span>Tir</span><b>6</b></button><button type="button" aria-pressed="false"><span>Ons</span><b>7</b></button><button type="button" aria-pressed="true"><span>Tor</span><b>8</b></button><button type="button" aria-pressed="false"><span>Fre</span><b>9</b></button><button type="button" aria-pressed="false"><span>Lør</span><b>10</b></button>
+    </div>
+    <div class="tid-grid" data-gruppe><button type="button" disabled>14:00</button><button type="button" aria-pressed="false">15:00</button><button type="button" disabled>16:00</button><button type="button" aria-pressed="true">17:00</button><button type="button" aria-pressed="false">18:00</button></div>
+    <p class="kilde">Bare ledige tider innenfor coachens tilgjengelighet. Øyvind har allerede 16:00 torsdag.</p>
+  </section>
+  <section class="seksjon">
+    <span class="steg-tall"><b>4</b>Bekreft</span>
+    <div class="oppsummering">
+      <dl class="dl"><div><dt>Spiller</dt><dd>Øyvind Rohjan</dd></div><div><dt>Tjeneste</dt><dd>Coaching 60 min</dd></div><div><dt>Tid</dt><dd>Tor 8. okt kl. 17:00</dd></div><div><dt>Betaling</dt><dd>1 klipp fra Performance Pro</dd></div></dl>
+      <p class="kilde">Gratis avbestilling til onsdag 7. oktober kl. 17:00 (24 timer før).</p>
+    </div>
+    <button type="button" class="knapp pri stor" data-gaa="bekreftet">Book time</button>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-03 Bekreftet ================= -->
+<template id="bekreftet">
+<div class="app" data-skall="forelder" data-aktiv="booking"><main class="innhold smal">
+  <div class="topp" data-behold>
+    <span class="pille ok"><i></i>Bekreftet</span>
+    <h1 class="tittel">Timen er booket</h1>
+    <p class="ingress">Øyvind og Anders har fått beskjed. Timen står i Øyvinds plan.</p>
+  </div>
+  <div class="booking-kort"><div class="dag"><span>Tor</span><b>8</b><span>okt</span></div><div><span class="n">Coaching 60 min med Anders</span><p>kl. 17:00 · Gamle Fredrikstad Golfklubb</p></div></div>
+  <div class="kort">
+    <dl class="dl"><div><dt>Referanse</dt><dd class="mono">AK-4821-KR</dd></div><div><dt>Klipp igjen i oktober</dt><dd class="mono">2 av 4</dd></div><div><dt>Gratis avbestilling til</dt><dd>Ons 7. okt kl. 17:00</dd></div></dl>
+    <div class="klipp" aria-label="2 av 4 klipp brukt"><i class="brukt"></i><i class="brukt"></i><i></i><i></i></div>
+  </div>
+  <div class="knapper"><button type="button" class="knapp sek">Legg i kalender</button><button type="button" class="knapp sek" data-gaa="idag">Til I dag</button></div>
+</main></div>
+</template>
+
+<!-- ================= FO-04 Økonomi ================= -->
+<template id="okonomi">
+<div class="app" data-skall="forelder" data-aktiv="okonomi"><main class="innhold">
+  <div class="topp" data-behold><h1 class="tittel">Økonomi</h1></div>
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Neste trekk</h2></div>
+      <div class="kort">
+        <div class="hoved"><strong>1 798<small>kr</small></strong><span class="eksempel">Eksempel</span></div>
+        <p class="forklar">Trekkes søndag 1. november fra Visa •• 4417.</p>
+        <dl class="dl"><div><dt>PlayerHQ Full, Øyvind</dt><dd class="mono">299 kr</dd></div><div><dt>Performance Pro, Øyvind</dt><dd class="mono">1 499 kr</dd></div><div><dt>PlayerHQ Gratis, Ingrid</dt><dd class="mono">0 kr</dd></div></dl>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Klipp i oktober</h2></div>
+      <div class="kort">
+        <div class="hoved"><strong>2<small>av 4</small></strong></div>
+        <div class="klipp"><i class="brukt"></i><i class="brukt"></i><i></i><i></i></div>
+        <p class="kilde">Performance Pro gir 4 klipp i måneden. Én coachet økt trekker ett klipp.</p>
+      </div>
+    </section>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Abonnement</h2></div>
+    <div class="liste">
+      <button type="button"><span class="avatar liten" style="width:32px;height:32px;font-size:12px">ØR</span><span><b>Øyvind · Full og Performance Pro</b><span class="kilde">Månedlig · startet 1. august</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button"><span class="avatar lys" style="width:32px;height:32px;font-size:12px">IR</span><span><b>Ingrid · Gratis</b><span class="kilde">Oppgrader til Full</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="knapper"><button type="button" class="knapp sek">Endre betalingskort</button><button type="button" class="knapp sek">Endre eller avslutt</button></div>
+    <p class="kilde">Endre og avslutt åpner betalingsportalen. Avslutning gjelder fra slutten av perioden.</p>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Fakturaer</h2></div>
+    <div class="kort">
+      <div class="faktura"><span><b>Oktober 2026</b><span class="kilde">Betalt 1. oktober</span></span><span class="pille ok"><i></i>Betalt</span><span class="belop">1 798 kr</span></div>
+      <div class="faktura"><span><b>September 2026</b><span class="kilde">Betalt 1. september</span></span><span class="pille ok"><i></i>Betalt</span><span class="belop">1 798 kr</span></div>
+      <div class="faktura"><span><b>Banerunde 9 hull</b><span class="kilde">Betalt 14. august</span></span><span class="pille ok"><i></i>Betalt</span><span class="belop">650 kr</span></div>
+      <p class="kilde">Beløpene er eksempler. Fakturaene hentes fra betalingsløsningen og kan lastes ned som PDF.</p>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-05 Samtykke ================= -->
+<template id="samtykke">
+<div class="app" data-skall="forelder" data-aktiv="samtykke"><main class="innhold">
+  <div class="topp" data-behold>
+    <h1 class="tittel">Samtykke</h1>
+    <p class="ingress">Hva barna dine har lov til i appen. Under 16 år bestemmer du. Fra 16 år bestemmer barnet selv.</p>
+  </div>
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Ingrid, 13 år</h2><span class="pille vent"><i></i>Venter på deg</span></div>
+      <div class="haster-kort">
+        <div class="rad"><b class="t">Godkjenn kontoen</b><span class="frist">3<small>dager igjen</small></span></div>
+        <p class="forklar">Frist torsdag 8. oktober. Uten godkjenning låses kontoen til du godkjenner.</p>
+        <div class="knapper"><button type="button" class="knapp pri" data-godkjenn>Godkjenn Ingrids konto</button></div>
+      </div>
+      <div class="kort">
+        <div class="samtykke-rad"><span><b>Deling med trener</b><span class="kilde">1 forespørsel venter</span></span><button type="button" class="knapp sek" data-gaa="deling">Se</button></div>
+        <div class="samtykke-rad"><span><b>Opptak i coachingtimer</b><span class="kilde">Sperret til kontoen er godkjent</span></span><button class="bryter" role="switch" aria-checked="false" aria-label="Opptak" disabled></button></div>
+        <div class="samtykke-rad"><span><b>Ytelsesbilde</b><span class="kilde">Søvn, mat og energi</span></span><button class="bryter" role="switch" aria-checked="false" aria-label="Ytelsesbilde" disabled></button></div>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Øyvind, 17 år</h2><span class="pille ok"><i></i>Bestemmer selv</span></div>
+      <div class="kort">
+        <p class="forklar">Øyvind er over 16 og gir samtykke selv. Du ser fortsatt plan og utvikling til Øyvind fjerner deg som forelder.</p>
+        <div class="samtykke-rad"><span><b>Deling med trener</b><span class="kilde">WANG Toppidrett Fredrikstad · siden 12. august</span></span><span class="pille ok"><i></i>På</span></div>
+        <div class="samtykke-rad"><span><b>Opptak i coachingtimer</b><span class="kilde">Gitt av Øyvind 1. august</span></span><span class="pille ok"><i></i>På</span></div>
+        <div class="samtykke-rad"><span><b>Ytelsesbilde</b></span><span class="pille noy"><i></i>Av</span></div>
+      </div>
+    </section>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Historikk</h2></div>
+    <ul class="logg">
+      <li><time>04.10 19:40</time><span>Ingrid ba om å dele PlayerHQ med m.hansen@wang.no</span></li>
+      <li><time>01.10 18:02</time><span>Ingrids konto opprettet. Frist for godkjenning 8. oktober.</span></li>
+      <li><time>12.08 10:15</time><span>Øyvind delte PlayerHQ med WANG Toppidrett Fredrikstad</span></li>
+      <li><time>01.08 09:30</time><span>Øyvind ga samtykke til opptak</span></li>
+    </ul>
+  </section>
+  <div class="dialog-lag" hidden data-dialog>
+    <div class="dialog" role="dialog" aria-label="Godkjent">
+      <h2>Ingrids konto er godkjent</h2>
+      <p class="forklar">Kontoen låses ikke. Deling og opptak kan nå slås på, hver for seg.</p>
+      <div class="knapper"><button type="button" class="knapp pri" data-lukk>Ferdig</button></div>
+    </div>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= FO-05 Deling ================= -->
+<template id="deling">
+<div class="app" data-skall="forelder" data-aktiv="samtykke" data-tilbake="Samtykke" data-tilbake-gaa="samtykke"><main class="innhold smal">
+  <div class="topp" data-behold>
+    <span class="dato">Forespørsel fra Ingrid · 4. oktober</span>
+    <h1 class="tittel">Ingrid vil dele PlayerHQ med en trener</h1>
+  </div>
+  <div class="kort">
+    <div class="liste" style="border:0">
+      <div style="padding:0"><span class="avatar lys">MH</span><span><b>Mia Hansen</b><span class="kilde">m.hansen@wang.no · WANG Ung Fredrikstad</span></span><span class="pille ok"><i></i>@wang.no</span></div>
+    </div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Treneren ser alt</h2></div>
+    <div class="kort">
+      <ul class="innsyn-liste">
+        <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Plan, økter og gjennomført trening</span></li>
+        <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Runder, tester og statistikk</span></li>
+        <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Målsetninger og IUP</span></li>
+        <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Helse</b>: skader, søvn og belastning</span></li>
+        <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Meldinger</b> mellom Ingrid og coach</span></li>
+      </ul>
+      <p class="forklar">Treneren kan foreslå endringer i planen. Ingrid bestemmer om hun tar dem i bruk. Du eller Ingrid kan trekke delingen tilbake når som helst, og da forsvinner treneren med en gang.</p>
+    </div>
+  </section>
+  <div class="knapper"><button type="button" class="knapp pri" data-godkjenn-deling>Godkjenn deling</button><button type="button" class="knapp sek" data-avslaa>Avslå</button></div>
+  <p class="kilde">Lenken gjelder til 11. oktober. Kontoen må være godkjent før delingen starter.</p>
+</main></div>
+</template>
+
+<!-- ================= FO-06 Coach ================= -->
+<template id="coach">
+<div class="app" data-skall="forelder" data-aktiv="coach"><main class="innhold smal">
+  <div class="topp" data-behold><h1 class="tittel">Coach</h1></div>
+  <div class="kort">
+    <div style="display:flex;gap:var(--r3);align-items:center"><span class="avatar stor">AK</span><span><b style="font:600 19px/1.3 var(--sans);display:block">Anders Kristiansen</b><span class="kilde">Head coach · Øyvinds coach siden august</span></span></div>
+    <dl class="dl"><div><dt>Neste time</dt><dd>Tor 8. okt kl. 16:00</dd></div><div><dt>Pakke</dt><dd>Performance Pro</dd></div></dl>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Meldinger med deg</h2></div>
+    <div style="display:grid;gap:var(--r2)">
+      <div class="melding"><p>Hei Kari. Øyvind blir med på samlingen 17. oktober. Jeg sender pakkliste i uka før.</p><span class="kilde">Anders · 30. september</span></div>
+      <div class="melding fra-meg"><p>Takk. Han kan bli hentet kl. 16 etter samlingen.</p><span class="kilde">Deg · 30. september</span></div>
+    </div>
+    <div class="felt"><label for="m">Ny melding til Anders</label><textarea id="m" rows="3" placeholder="Skriv til coachen"></textarea></div>
+    <div class="knapper"><button type="button" class="knapp pri" data-send>Send</button></div>
+    <p class="kilde">Meldinger mellom Øyvind og coach ser du ikke her. De er Øyvinds egne.</p>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= FO-06 Innstillinger ================= -->
+<template id="innstillinger">
+<div class="app" data-skall="forelder" data-aktiv="innstillinger"><main class="innhold smal">
+  <div class="topp" data-behold><h1 class="tittel">Innstillinger</h1></div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Din kontakt</h2></div>
+    <div class="kort">
+      <div class="felt"><label for="n">Navn</label><input id="n" value="Kari Rohjan"></div>
+      <div class="felt"><label for="e">E-post</label><input id="e" type="email" value="kari.rohjan@eksempel.no"></div>
+      <div class="felt"><label for="t">Telefon</label><input id="t" value="+47 900 00 000"></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-lagre>Lagre</button></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Varsler</h2></div>
+    <div class="kort">
+      <div class="samtykke-rad"><span><b>Ukerapport på e-post</b><span class="kilde">Mandag morgen</span></span><button class="bryter" role="switch" aria-checked="true" aria-label="Ukerapport"></button></div>
+      <div class="samtykke-rad"><span><b>Ny booking og endret time</b></span><button class="bryter" role="switch" aria-checked="true" aria-label="Booking"></button></div>
+      <div class="samtykke-rad"><span><b>Melding fra coach</b></span><button class="bryter" role="switch" aria-checked="true" aria-label="Melding"></button></div>
+      <div class="samtykke-rad"><span><b>Belastningsvarsel</b><span class="kilde">Når tallet regnes ut</span></span><button class="bryter" role="switch" aria-checked="false" aria-label="Belastning"></button></div>
+    </div>
+  </section>
+  <div class="knapper"><button type="button" class="knapp sek">Logg ut</button></div>
+</main></div>
+</template>
+
+<script src="felles/flater.js"></script>
+<script>
+AKFlate.menyMaal = { idag: 'idag', barn: 'barn', booking: 'booking', okonomi: 'okonomi', samtykke: 'samtykke', coach: 'coach', rapport: 'ukerapport', innstillinger: 'innstillinger' };
+function brytere(app) { app.querySelectorAll('.bryter:not([disabled])').forEach(function (b) { b.addEventListener('click', function () { b.setAttribute('aria-checked', b.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); }); }); }
+AKFlate.start({
+  start: 'idag',
+  skjermer: {
+    idag: { tom: { tittel: 'Ingen barn er koblet til ennå', tekst: 'Når barnet ditt inviterer deg fra PlayerHQ, eller du oppretter en konto for barnet, ser du dagens økter her.', knapp: 'Opprett konto for barn' }, laster: 'Henter dagen …', feil: 'Dagen kunne ikke hentes' },
+    ukerapport: { tom: { tittel: 'Ingen økter i uke 40', tekst: 'Øyvind hadde ingen planlagte økter denne uka. Rapporten kommer når uka har økter.' }, laster: 'Henter uka …', feil: 'Ukerapporten kunne ikke hentes' },
+    barn: { etter: function () {}, tom: { tittel: 'Ingen barn er koblet til deg', tekst: 'Barnet sender en invitasjon fra Meg i PlayerHQ, eller du oppretter kontoen her.', knapp: 'Opprett konto for barn' }, laster: 'Henter barna …', feil: 'Barna kunne ikke hentes' },
+    barnet: { tom: { tittel: 'For lite data ennå', tekst: 'Under 4 runder gir ingen snittscore. Utviklingen vises når Øyvind har registrert runder og økter.' }, laster: 'Henter utviklingen …', feil: 'Utviklingsprofilen kunne ikke hentes' },
+    booking: { etter: function (app) { app.querySelectorAll('.tid-grid button:not(:disabled)').forEach(function () {}); }, tom: { tittel: 'Ingen ledige tider denne uka', tekst: 'Anders har ingen ledige tider tirsdag til lørdag. Se neste uke.', knapp: 'Neste uke' }, laster: 'Henter ledige tider …', feil: 'Tidene kunne ikke hentes', feilTekst: 'Ingen time er booket. Prøv igjen.' },
+    bekreftet: { tom: { tittel: 'Timen ble ikke booket', tekst: 'Tiden ble tatt av en annen like før. Velg en ny tid.', knapp: 'Velg ny tid' }, laster: 'Booker timen …', feil: 'Betalingen gikk ikke gjennom', feilTekst: 'Ingen time er booket og ingenting er trukket.' },
+    okonomi: { tom: { tittel: 'Ingen abonnement ennå', tekst: 'Barna bruker Gratis. Fakturaer kommer her når du kjøper noe.' }, laster: 'Henter økonomi …', feil: 'Økonomi kunne ikke hentes' },
+    samtykke: { etter: function (app) {
+      var d = app.querySelector('[data-dialog]');
+      app.querySelector('[data-godkjenn]').addEventListener('click', function () { d.hidden = false; });
+      d.querySelector('[data-lukk]').addEventListener('click', function () { d.hidden = true; });
+    }, tom: { tittel: 'Ingen samtykker å vise', tekst: 'Når et barn er koblet til deg, ser du samtykkene her.' }, laster: 'Henter samtykker …', feil: 'Samtykkene kunne ikke hentes' },
+    deling: { etter: function (app) {
+      app.querySelector('[data-godkjenn-deling]').addEventListener('click', function () { AKFlate.toast(app, 'Delingen starter når Ingrids konto er godkjent.'); });
+      app.querySelector('[data-avslaa]').addEventListener('click', function () { AKFlate.toast(app, 'Forespørselen er avslått. Ingrid har fått beskjed.', function () {}); });
+    }, tom: { tittel: 'Ingen forespørsler', tekst: 'Når Ingrid vil dele PlayerHQ med en trener, kommer forespørselen hit.' }, laster: 'Henter forespørselen …', feil: 'Forespørselen kunne ikke hentes' },
+    coach: { etter: function (app) { app.querySelector('[data-send]').addEventListener('click', function () { AKFlate.toast(app, 'Melding sendt til Anders.'); }); }, tom: { tittel: 'Ingen coach ennå', tekst: 'Barna dine har ingen coach i AK Golf. Book en time for å komme i gang.', knapp: 'Book time' }, laster: 'Henter coach …', feil: 'Meldingene kunne ikke hentes' },
+    innstillinger: { etter: function (app) { brytere(app); app.querySelector('[data-lagre]').addEventListener('click', function () { AKFlate.toast(app, 'Lagret.'); }); }, tom: { tittel: 'Ingen innstillinger', tekst: '—' }, laster: 'Henter innstillinger …', feil: 'Innstillingene kunne ikke hentes' }
+  }
+});
+</script>
