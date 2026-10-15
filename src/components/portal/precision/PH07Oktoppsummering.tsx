@@ -66,7 +66,7 @@ export function PH07Oktoppsummering({
   return (
     <div
       className="pa-root ph07"
-      data-theme="night"
+      data-theme="light"
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",

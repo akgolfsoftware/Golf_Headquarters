@@ -76,7 +76,7 @@ export function PH06Slagteller({
   return (
     <div
       className="pa-root ph06"
-      data-theme="night"
+      data-theme="light"
       style={{
         minHeight: "100dvh",
         background: "var(--surface-page)",
