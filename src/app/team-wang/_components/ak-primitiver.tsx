@@ -75,8 +75,9 @@ export const STATUS_TEKST: Record<MaalStatus, string> = {
 
 const STATUS_FARGE: Record<MaalStatus, { bg: string; fg: string }> = {
   IKKE_STARTET: { bg: "var(--neutral-100)", fg: "var(--text-secondary)" },
-  PAA_VEI: { bg: "var(--tint-orange)", fg: "var(--cat-orange-text)" },
-  NAADD: { bg: "var(--tint-teal)", fg: "var(--wang-teal-text)" },
+  // Status bruker aldri aksefargene (oransje er SLAG, teal er TEK): gul venter, mint er nådd.
+  PAA_VEI: { bg: "var(--tint-yellow)", fg: "var(--cat-yellow-text)" },
+  NAADD: { bg: "var(--tint-mint)", fg: "var(--wang-navy-deep-text)" },
 };
 
 // ---- Komponenter -------------------------------------------------------
