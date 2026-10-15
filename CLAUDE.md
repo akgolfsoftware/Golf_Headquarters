@@ -22,3 +22,9 @@ Kommandoenes innhold eies av [package.json](package.json).
 ## Git-arbeidsflyt
 
 Følg AGENTS.md §Git-arbeidsflyt. Bestilt lokalt arbeid gir ikke i seg selv tillatelse til publisering.
+
+## Push og merge
+- Når en oppgave er ferdig: commit, push branchen og lag PR uten å spørre.
+- Etter push: gi Anders Vercel preview-lenken og skjermbilder på 390 px og desktop av alle skjermer som er endret.
+- Merge ALDRI til main før Anders har skrevet «merge». Han sjekker designet manuelt først.
+- Push aldri direkte til main.
