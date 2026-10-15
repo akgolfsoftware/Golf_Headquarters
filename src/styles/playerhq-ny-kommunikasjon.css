@@ -1,0 +1,229 @@
+/*
+ * PlayerHQ pakke 7 «Kommunikasjon» (utkast 2, godkjent av Anders 14.10.2026).
+ * Portert fra docs/design-system/utkast-playerhq/kommunikasjon.html:
+ * PH-21 Innboks og Meldinger, PH-22 Caddie, PH-23 Booking (oversikt, book time, bekreftet, bookingen).
+ * Bygger på src/styles/playerhq-ny.css (tokens og felles flater) og er avgrenset til .phn.
+ * Alle klasser har prefikset phn-k- så de ikke kolliderer med andre pakker.
+ */
+
+.phn .phn-k-topp { display: grid; gap: 12px; }
+.phn .phn-k-kildetekst { font: 400 12.5px/1.45 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-k-undertittel { font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-k-ingress { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--phn-g800); max-width: 46ch; }
+.phn .phn-k-estimat { display: inline-flex; height: 20px; align-items: center; padding: 0 7px; border-radius: 4px; border: 1px dashed var(--phn-g500); font: 500 11px/1 var(--phn-sans); color: var(--phn-g600); width: max-content; vertical-align: 1px; }
+.phn .phn-kort.phn-k-dempet { background: var(--phn-sand-100); }
+.phn .phn-knapp.phn-k-stor { min-height: 52px; font-size: 16px; width: 100%; }
+.phn .phn-k-toast { position: sticky; bottom: 16px; z-index: 5; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--phn-g900); color: var(--phn-hvit); font: 500 14px/1.4 var(--phn-sans); box-shadow: 0 8px 24px rgba(0, 0, 0, .2); }
+.phn .phn-k-feil { padding: 12px 14px; border-radius: 10px; background: var(--phn-rust-50); color: #8a2a1c; font: 500 14px/1.45 var(--phn-sans); }
+
+/* Brikker (filter og valg) */
+.phn .phn-k-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-k-chips > button, .phn .phn-k-chips > a { min-height: 44px; padding: 0 12px; border: 1px solid var(--phn-sand-300); border-radius: 999px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.phn .phn-k-chips b { font: 600 12px/1 var(--phn-mono); }
+.phn .phn-k-chips > [aria-pressed="true"], .phn .phn-k-chips > [aria-current="page"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+
+/* Avatar og merker */
+.phn .phn-k-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font: 600 14px/1 var(--phn-sans); flex: none; background: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-avatar.caddie { border-radius: 10px; }
+.phn .phn-k-avatar.wang { background: #1d3557; }
+.phn .phn-k-avatar.tn { background: #012b5d; }
+.phn .phn-k-avatar.lys { background: var(--phn-sand-150); color: var(--phn-g900); }
+.phn .phn-k-avatar .phn-ikon { width: 20px; height: 20px; }
+.phn .phn-k-ulest { width: 10px; height: 10px; border-radius: 50%; background: var(--phn-g900); flex: none; }
+
+/* ---------- PH-21 Innboks ---------- */
+.phn .phn-k-innboks-grid, .phn .phn-k-caddie-grid, .phn .phn-k-booking-grid, .phn .phn-k-ny-grid, .phn .phn-k-traad-grid { display: grid; gap: 24px; align-content: start; }
+.phn .phn-k-innboks-grid > aside, .phn .phn-k-caddie-grid > aside, .phn .phn-k-booking-grid > div { display: grid; gap: 16px; align-content: start; }
+.phn .phn-k-saker { display: grid; gap: 12px; align-content: start; }
+.phn .phn-k-dag-merke { font: 600 13px/1.3 var(--phn-sans); color: var(--phn-g800); margin-top: 8px; }
+.phn .phn-k-sak { border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); padding: 14px 16px 16px; display: grid; gap: 12px; }
+.phn .phn-k-sak.ny { border-color: var(--phn-g900); box-shadow: inset 3px 0 0 var(--phn-g900); }
+.phn .phn-k-sak-topp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.phn .phn-k-sak-topp b { display: block; font: 600 16px/1.3 var(--phn-sans); }
+.phn .phn-k-fra { display: block; font-size: 13.5px; color: var(--phn-g600); }
+.phn .phn-k-sak-topp time { font: 500 13px/1.3 var(--phn-mono); color: var(--phn-g600); white-space: nowrap; }
+.phn .phn-k-sitat { font-size: 15px; line-height: 1.5; color: var(--phn-g800); overflow-wrap: anywhere; }
+.phn .phn-k-fra-til { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: center; }
+.phn .phn-k-fra-til .phn-k-pil { color: var(--phn-g600); }
+.phn .phn-k-fra-til .gml { opacity: .55; }
+.phn .phn-k-fra-til .gml .phn-k-okt-tid { text-decoration: line-through; text-decoration-thickness: 2px; }
+.phn .phn-k-fra-til .phn-k-okt-tid { font-size: 15px; letter-spacing: -.01em; }
+.phn .phn-k-konsekvens { font-size: 14px; color: var(--phn-g800); display: flex; gap: 8px; align-items: flex-start; }
+.phn .phn-k-konsekvens .phn-ikon { width: 18px; height: 18px; margin-top: 2px; color: var(--phn-g600); }
+.phn .phn-k-status-linje { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.phn .phn-k-varsel-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 64px; padding: 10px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); text-decoration: none; color: inherit; cursor: pointer; text-align: left; font: inherit; width: 100%; }
+.phn .phn-k-varsel-rad b { display: block; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-k-varsel-rad .phn-k-kilde { display: block; font: 400 13px/1.45 var(--phn-sans); color: var(--phn-g600); overflow-wrap: anywhere; }
+.phn .phn-k-varsel-rad time { font: 500 12.5px/1 var(--phn-mono); color: var(--phn-g600); white-space: nowrap; }
+.phn .phn-k-varsel-rad .phn-k-hoyre { display: inline-flex; align-items: center; gap: 8px; }
+.phn .phn-k-ikonboks { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: var(--phn-sand-150); color: var(--phn-g900); }
+.phn .phn-k-ikonboks.ok { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn .phn-k-oversikt-rad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phn .phn-k-oversikt-rad span { display: grid; gap: 2px; font-size: 13px; color: var(--phn-g600); background: var(--phn-sand-100); border-radius: 10px; padding: 10px 12px; }
+.phn .phn-k-oversikt-rad b { font: 600 22px/1.1 var(--phn-mono); color: var(--phn-g900); }
+
+/* Små øktkort i forslag (fylt i aksefargen) */
+.phn .phn-k-mini { grid-template-columns: 1fr; cursor: default; }
+.phn .phn-k-mini.med-bilde { grid-template-columns: 84px minmax(0, 1fr); }
+.phn .phn-k-mini img { display: block; width: 100%; height: 100%; min-height: 72px; object-fit: cover; }
+.phn .phn-k-okt-tid { font: 600 22px/1.05 var(--phn-mono); letter-spacing: -.03em; }
+.phn .phn-k-okt-par { display: grid; gap: 8px; }
+.phn .phn-k-okt-info { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 13px; line-height: 1.45; opacity: .92; }
+
+/* ---------- PH-21 Meldinger ---------- */
+.phn .phn-k-samtaler { display: grid; gap: 8px; align-content: start; }
+.phn .phn-k-samtale { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); text-align: left; font: inherit; color: inherit; width: 100%; text-decoration: none; }
+.phn .phn-k-samtale b { display: block; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-k-samtale .phn-k-siste { display: block; font-size: 14px; color: var(--phn-g600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.phn .phn-k-samtale time { font: 500 12.5px/1 var(--phn-mono); color: var(--phn-g600); white-space: nowrap; }
+.phn .phn-k-samtale[aria-current="true"] { border: 2px solid var(--phn-g900); }
+.phn .phn-k-traad { display: grid; gap: 12px; align-content: start; }
+.phn .phn-k-traad-hode { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phn-k-traad-hode b { display: block; font: 600 17px/1.25 var(--phn-sans); }
+.phn .phn-k-traad-hode .phn-k-kilde { display: block; font: 400 13px/1.4 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-k-bobler { display: grid; gap: 10px; }
+.phn .phn-k-boble { max-width: 84%; display: grid; gap: 6px; padding: 10px 14px; border-radius: 16px 16px 16px 4px; background: var(--phn-sand-150); font-size: 15px; line-height: 1.5; justify-self: start; overflow-wrap: anywhere; white-space: pre-line; }
+.phn .phn-k-boble.meg { justify-self: end; border-radius: 16px 16px 4px 16px; background: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-boble time { font: 500 11.5px/1 var(--phn-mono); opacity: .75; }
+.phn .phn-k-boble .phn-k-vedlegg { display: flex; align-items: center; gap: 8px; font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-k-dag-skille { justify-self: center; font: 500 12px/1 var(--phn-sans); color: var(--phn-g600); padding: 6px 10px; border-radius: 999px; background: var(--phn-sand-100); }
+.phn .phn-k-skrivefelt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; padding-top: 12px; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-k-skrivefelt textarea { min-height: 48px; max-height: 140px; resize: none; padding: 12px; border: 1px solid var(--phn-g500); border-radius: 12px; font: 400 16px/1.4 var(--phn-sans); width: 100%; color: var(--phn-g900); background: var(--phn-hvit); }
+.phn .phn-k-ikonknapp { width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--phn-sand-300); background: var(--phn-hvit); display: grid; place-items: center; cursor: pointer; color: var(--phn-g900); }
+.phn .phn-k-ikonknapp.pri { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-ikonknapp:disabled { opacity: .5; cursor: default; }
+.phn .phn-k-typer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.phn .phn-k-typer button { display: grid; gap: 4px; justify-items: start; align-content: start; text-align: left; padding: 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; min-height: 76px; }
+.phn .phn-k-typer button b { font: 600 15px/1.25 var(--phn-sans); }
+.phn .phn-k-typer button span { font-size: 13px; color: var(--phn-g600); line-height: 1.35; }
+.phn .phn-k-typer button[aria-pressed="true"] { border: 2px solid var(--phn-g900); }
+.phn .phn-k-skala { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.phn .phn-k-skala button { min-height: 52px; display: grid; place-items: center; gap: 2px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 600 15px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; padding: 6px 2px; }
+.phn .phn-k-skala button small { font: 500 11px/1 var(--phn-sans); color: inherit; opacity: .8; }
+.phn .phn-k-skala button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-liste { display: grid; }
+.phn .phn-k-liste > * { border-top: 1px solid var(--phn-sand-300); padding: 12px 0; display: grid; gap: 6px; }
+.phn .phn-k-liste > *:first-child { border-top: 0; padding-top: 0; }
+.phn .phn-k-liste b { font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn .phn-k-rad { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+.phn .phn-k-videoer { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.phn .phn-k-video { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; background: var(--phn-hvit); }
+.phn .phn-k-video-bilde { position: relative; aspect-ratio: 16 / 9; background: var(--phn-sand-150); display: grid; place-items: center; color: var(--phn-g600); }
+.phn .phn-k-video-bilde img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.phn .phn-k-video-bilde span { position: absolute; right: 8px; bottom: 8px; padding: 3px 6px; border-radius: 4px; background: var(--phn-g900); color: var(--phn-hvit); font: 500 11px/1 var(--phn-mono); }
+.phn .phn-k-video > div:last-child { padding: 12px; display: grid; gap: 4px; }
+
+/* ---------- PH-22 Caddie ---------- */
+.phn .phn-k-caddie-hode { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.phn .phn-k-caddie-hode .phn-k-avatar { width: 48px; height: 48px; }
+.phn .phn-k-personvern { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--phn-g600); }
+.phn .phn-k-personvern .phn-ikon { width: 16px; height: 16px; margin-top: 1px; }
+.phn .phn-k-forslag-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.phn .phn-k-forslag-chips button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-sand-100); font: 500 14px/1.3 var(--phn-sans); color: var(--phn-g900); cursor: pointer; text-align: left; }
+.phn .phn-k-forslag-chips button:disabled { opacity: .55; cursor: default; }
+.phn .phn-k-svar { display: grid; gap: 12px; padding: 14px 16px; border-radius: 16px 16px 16px 4px; background: var(--phn-sand-100); border: 1px solid var(--phn-sand-300); max-width: 100%; font-size: 15px; line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
+.phn .phn-k-svar-topp { display: flex; align-items: center; gap: 8px; font: 600 14px/1 var(--phn-sans); white-space: normal; }
+.phn .phn-k-svar-topp .phn-k-avatar { width: 28px; height: 28px; }
+.phn .phn-k-svar-topp .phn-k-avatar .phn-ikon { width: 16px; height: 16px; }
+.phn .phn-k-svar-topp time { margin-left: auto; font: 500 11.5px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phn-k-kilder { display: grid; gap: 4px; margin: 0; padding: 10px 0 0; border-top: 1px solid var(--phn-sand-300); list-style: none; font-size: 13px; color: var(--phn-g600); white-space: normal; }
+.phn .phn-k-kilder li { display: flex; gap: 6px; align-items: flex-start; }
+.phn .phn-k-kilder .phn-ikon { width: 14px; height: 14px; margin-top: 3px; }
+.phn .phn-k-forslagskort { border: 2px solid var(--phn-g900); border-radius: 12px; background: var(--phn-hvit); padding: 14px 16px 16px; display: grid; gap: 12px; white-space: normal; }
+.phn .phn-k-forslagskort .phn-k-fk-topp { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.phn .phn-k-forslagskort .phn-k-fk-topp b { font: 600 16px/1.3 var(--phn-sans); }
+.phn .phn-k-skriver { display: inline-flex; gap: 5px; padding: 14px 16px; border-radius: 16px; background: var(--phn-sand-100); justify-self: start; }
+.phn .phn-k-skriver i { width: 7px; height: 7px; border-radius: 50%; background: var(--phn-g600); animation: phn-k-prikk 1.2s infinite; }
+.phn .phn-k-skriver i:nth-child(2) { animation-delay: .15s; }
+.phn .phn-k-skriver i:nth-child(3) { animation-delay: .3s; }
+@keyframes phn-k-prikk { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+.phn .phn-k-ser-liste { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.phn .phn-k-ser-liste li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14px; }
+.phn .phn-k-ser-liste li b { font: 600 14px/1.3 var(--phn-mono); text-align: right; }
+.phn .phn-k-ser-liste li span { grid-column: 1 / -1; font-size: 12.5px; color: var(--phn-g600); }
+.phn .phn-k-tom-chat { display: grid; justify-items: start; gap: 8px; padding: 8px 0; }
+.phn .phn-k-tom-chat h2 { margin: 0; font: 600 18px/1.3 var(--phn-sans); }
+
+/* ---------- PH-23 Booking ---------- */
+.phn .phn-k-klipp { display: flex; gap: 8px; }
+.phn .phn-k-klipp i { flex: 1; height: 14px; border-radius: 7px; background: var(--phn-sand-150); border: 1px solid var(--phn-sand-300); }
+.phn .phn-k-klipp i.brukt { background: var(--phn-g900); border-color: var(--phn-g900); }
+.phn .phn-k-klipp i.reservert { background: repeating-linear-gradient(45deg, var(--phn-g600) 0 4px, var(--phn-g500) 4px 8px); border-color: var(--phn-g600); }
+.phn .phn-k-booking-helt { display: grid; border-radius: 12px; overflow: hidden; background: var(--phn-g900); color: var(--phn-hvit); text-decoration: none; border: 0; padding: 0; text-align: left; font: inherit; width: 100%; }
+button.phn-k-booking-helt { cursor: pointer; }
+.phn .phn-k-booking-helt img { display: block; width: 100%; height: 140px; object-fit: cover; object-position: 50% 40%; }
+.phn .phn-k-booking-helt .phn-k-bt { padding: 16px 18px 18px; display: grid; gap: 8px; }
+.phn .phn-k-booking-helt .phn-k-bt-dag { font: 600 15px/1.2 var(--phn-sans); opacity: .9; }
+.phn .phn-k-booking-helt .phn-k-bt-tid { font: 600 40px/1 var(--phn-mono); letter-spacing: -.03em; }
+.phn .phn-k-booking-helt .phn-k-bt-tid small { font: 500 16px/1 var(--phn-mono); opacity: .8; margin-left: 6px; letter-spacing: 0; }
+.phn .phn-k-booking-helt .phn-k-navn { font: 600 19px/1.25 var(--phn-sans); }
+.phn .phn-k-booking-helt .phn-k-info { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; opacity: .92; }
+.phn .phn-k-booking-helt .phn-pille { justify-self: start; }
+.phn .phn-k-booking-liste { display: grid; gap: 0; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-k-booking-liste > * { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 64px; padding: 10px 0; border: 0; border-bottom: 1px solid var(--phn-sand-300); color: inherit; text-decoration: none; background: none; font: inherit; text-align: left; width: 100%; }
+.phn .phn-k-booking-liste > button { cursor: pointer; }
+.phn .phn-k-booking-liste .phn-k-d { display: grid; justify-items: center; gap: 2px; border-radius: 10px; background: var(--phn-sand-100); padding: 8px 0; }
+.phn .phn-k-booking-liste .phn-k-d b { font: 600 20px/1 var(--phn-mono); }
+.phn .phn-k-booking-liste .phn-k-d span { font: 500 12px/1 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-k-booking-liste .phn-k-t b { display: block; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-k-booking-liste .phn-k-t span { display: block; font: 400 13px/1.4 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-k-tjenester { display: grid; gap: 8px; }
+.phn .phn-k-tjeneste { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 14px 16px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); text-align: left; font: inherit; color: inherit; cursor: pointer; width: 100%; }
+.phn .phn-k-tjeneste b { font: 600 16px/1.3 var(--phn-sans); }
+.phn .phn-k-tjeneste .phn-k-pris { font: 600 15px/1.2 var(--phn-mono); text-align: right; white-space: nowrap; }
+.phn .phn-k-tjeneste .phn-k-kildetekst { grid-column: 1 / -1; }
+.phn .phn-k-tjeneste[aria-checked="true"] { border: 2px solid var(--phn-g900); box-shadow: 0 0 0 3px var(--phn-sand-150); }
+.phn .phn-k-dager { display: grid; grid-template-columns: repeat(auto-fit, minmax(46px, 1fr)); gap: 6px; }
+.phn .phn-k-dager button { display: grid; justify-items: center; gap: 3px; min-height: 60px; padding: 6px 0; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 500 12px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; }
+.phn .phn-k-dager button b { font: 600 17px/1 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-k-dager button i { width: 6px; height: 6px; border-radius: 50%; background: var(--phn-green-700); }
+.phn .phn-k-dager button:disabled { opacity: .45; cursor: default; }
+.phn .phn-k-dager button:disabled i { background: transparent; }
+.phn .phn-k-dager button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-dager button[aria-pressed="true"] b { color: var(--phn-hvit); }
+.phn .phn-k-dager button[aria-pressed="true"] i { background: var(--phn-hvit); }
+.phn .phn-k-tider { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.phn .phn-k-tider button { min-height: 48px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 600 15px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; }
+.phn .phn-k-tider button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-k-oppsummering { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-k-oppsummering li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14.5px; }
+.phn .phn-k-oppsummering li span { color: var(--phn-g600); }
+.phn .phn-k-oppsummering li b { font-weight: 600; overflow-wrap: anywhere; }
+.phn .phn-k-festet { position: sticky; bottom: 0; z-index: 4; padding: 12px 0 8px; background: linear-gradient(transparent, var(--phn-hvit) 30%); display: grid; gap: 8px; }
+.phn .phn-k-bekreftet-topp { display: grid; justify-items: start; gap: 12px; }
+.phn .phn-k-hake { width: 64px; height: 64px; border-radius: 50%; background: var(--phn-green-700); color: #fff; display: grid; place-items: center; }
+.phn .phn-k-hake .phn-ikon { width: 32px; height: 32px; stroke-width: 2.5; }
+.phn .phn-k-vilkaar { display: grid; gap: 6px; padding: 12px 14px; border-radius: 10px; background: var(--phn-sand-100); font-size: 14px; }
+.phn .phn-k-vilkaar b { font-weight: 600; }
+.phn .phn-k-smal { display: grid; gap: 32px; max-width: 760px; width: 100%; }
+.phn .phn-k-dialog { width: min(520px, calc(100% - 32px)); margin: auto; padding: 24px 16px 16px; border: 0; border-radius: 16px; background: var(--phn-hvit); color: var(--phn-g900); box-shadow: 0 12px 40px rgba(0, 0, 0, .25); }
+.phn .phn-k-dialog::backdrop { background: rgba(20, 20, 19, .35); }
+.phn .phn-k-dialog h2 { margin: 0; font: 600 20px/1.25 var(--phn-sans); }
+.phn .phn-k-dialog-kropp { display: grid; gap: 16px; }
+.phn .phn-k-knapper-stablet { display: grid; gap: 8px; }
+
+.phn :is(.phn-k-chips > *, .phn-k-varsel-rad, .phn-k-samtale, .phn-k-typer button, .phn-k-skala button, .phn-k-forslag-chips button, .phn-k-booking-helt, .phn-k-booking-liste > *, .phn-k-tjeneste, .phn-k-dager button, .phn-k-tider button, .phn-k-ikonknapp):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+@container (min-width: 900px) {
+  .phn .phn-k-innboks-grid { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; }
+  .phn .phn-k-innboks-grid > aside { position: sticky; top: 24px; }
+  .phn .phn-k-traad-grid { grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: start; }
+  .phn .phn-k-caddie-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 40px; align-items: start; }
+  .phn .phn-k-caddie-grid > aside { position: sticky; top: 24px; }
+  .phn .phn-k-booking-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .phn .phn-k-booking-grid > div { gap: 24px; }
+  .phn .phn-k-booking-helt.bred { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); }
+  .phn .phn-k-booking-helt.bred img { height: 100%; min-height: 230px; }
+  .phn .phn-k-ny-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .phn .phn-k-ny-grid > aside { position: sticky; top: 24px; }
+}
+@container (max-width: 380px) {
+  .phn .phn-k-dager { gap: 4px; }
+  .phn .phn-k-dager button { font-size: 11px; }
+  .phn .phn-k-dager button b { font-size: 15px; }
+  .phn .phn-k-oppsummering li { grid-template-columns: 92px minmax(0, 1fr); }
+}
+
+/* Tilbake-lenke øverst (utkastets skall «tilbake») */
+.phn .phn-k-tilbake { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 10px 0 2px; margin: -8px 0 -12px -2px; border-radius: 8px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; }
+.phn .phn-k-tilbake:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }

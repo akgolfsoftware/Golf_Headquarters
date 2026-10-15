@@ -1,0 +1,118 @@
+/* AgencyOS pakke 1: AG-01 Cockpit og AG-04 Innboks.
+   Portert fra docs/design-system/utkast-agencyos/cockpit.html. Gjelder bare inni .agn-s. */
+
+.agn-s .kort.tett { gap: 0; padding-top: 4px; padding-bottom: 4px; }
+
+/* Dagens kalender 05–22 */
+.agn-s .dag { --time: 46px; position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); border: 1px solid var(--sand-300); border-radius: 12px; overflow: hidden; background: var(--white); }
+.agn-s .dag .timer { display: grid; grid-auto-rows: var(--time); border-right: 1px solid var(--sand-300); background: var(--sand-100); }
+.agn-s .dag .timer span { font: 500 11px/1 var(--mono); color: var(--graphite-600); padding: 4px 0 0 6px; border-top: 1px solid var(--sand-300); }
+.agn-s .dag .timer span:first-child { border-top: 0; }
+.agn-s .dag .bane { position: relative; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--time) - 1px), var(--sand-150) calc(var(--time) - 1px), var(--sand-150) var(--time)); }
+.agn-s .blokk-okt { position: absolute; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; gap: 2px 8px; padding: 6px 10px; border-radius: 8px; color: #fff; overflow: hidden; text-align: left; border: 0; font: inherit; text-decoration: none; min-height: 22px; }
+.agn-s a.blokk-okt { cursor: pointer; }
+.agn-s .blokk-okt.fys { background: var(--fys-ink); } .agn-s .blokk-okt.tek { background: var(--tek-ink); } .agn-s .blokk-okt.slag { background: var(--slag); }
+.agn-s .blokk-okt.spill { background: var(--spill-ink); } .agn-s .blokk-okt.turn { background: var(--turn); } .agn-s .blokk-okt.noy { background: var(--graphite-600); }
+.agn-s .blokk-okt.ferdig { opacity: .6; }
+.agn-s .blokk-okt b { font: 600 14px/1.25 var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .blokk-okt .t { font: 600 12.5px/1.2 var(--mono); opacity: .9; white-space: nowrap; }
+.agn-s .blokk-okt .i { grid-column: 1 / -1; font-size: 12.5px; line-height: 1.3; opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .blokk-okt .live { grid-row: 1 / span 2; grid-column: 2; align-self: center; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 6px; background: #fff; color: var(--graphite-900); font: 600 13px/1 var(--sans); }
+.agn-s .blokk-okt .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--green-700); }
+.agn-s .na-linje { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid var(--graphite-900); z-index: 2; pointer-events: none; }
+.agn-s .na-linje::before { content: attr(data-klokke); position: absolute; left: -44px; top: -9px; width: 40px; text-align: center; font: 600 11px/16px var(--mono); background: var(--graphite-900); color: var(--white); border-radius: 4px; }
+
+/* Følger ikke planen */
+.agn-s .etl-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); text-decoration: none; color: inherit; min-height: 56px; }
+.agn-s .etl-rad:last-child { border-bottom: 0; }
+.agn-s .etl-rad b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .etl-uker { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.agn-s .etl-uker span { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 5px; font: 600 12px/1 var(--mono); background: var(--rust-50); color: var(--rust-tekst); white-space: nowrap; }
+.agn-s .etl-prosent { font: 600 22px/1 var(--mono); color: var(--rust-tekst); }
+
+/* Oppgaver fra Notion */
+.agn-s .oppgave { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .oppgave:last-child { border-bottom: 0; }
+.agn-s .oppgave .hake { width: 20px; height: 20px; margin-top: 1px; border: 2px solid var(--graphite-500); border-radius: 5px; }
+.agn-s .oppgave .hake[data-ferdig] { background: var(--graphite-900); border-color: var(--graphite-900); }
+.agn-s .oppgave b { display: block; font: 500 15px/1.35 var(--sans); }
+.agn-s .oppgave.gjort b { text-decoration: line-through; color: var(--graphite-600); }
+.agn-s .kilde.frist { color: var(--graphite-900); font-weight: 600; }
+
+/* Turneringer */
+.agn-s .turn-kort { display: grid; gap: 2px; padding: 12px 14px; border-radius: 12px; background: var(--turn); color: #fff; }
+.agn-s .turn-kort b { font: 600 15px/1.3 var(--sans); }
+.agn-s .turn-kort span { font-size: 13px; opacity: .92; }
+
+/* Venter på svar */
+.agn-s .svar-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: start; padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .svar-rad:last-child { border-bottom: 0; }
+.agn-s .svar-rad b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .svar-rad .sitat { font-size: 14px; color: var(--graphite-800); line-height: 1.4; display: block; }
+.agn-s .svar-rad time { font: 500 12.5px/1.3 var(--mono); color: var(--graphite-600); white-space: nowrap; }
+.agn-s .svar-hoyre { display: grid; gap: 4px; justify-items: end; }
+
+/* Nøkkeltall */
+.agn-s .nokkel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--r2); }
+.agn-s .nokkel div { display: grid; gap: 2px; padding: 12px; border-radius: 10px; background: var(--sand-100); }
+.agn-s .nokkel b { font: 600 24px/1.1 var(--mono); }
+.agn-s .nokkel span { font-size: 12.5px; color: var(--graphite-600); }
+
+.agn-s .cockpit-grid { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .cockpit-grid > div { display: grid; gap: var(--r5); align-content: start; }
+
+/* Innboks */
+.agn-s .saker { display: grid; gap: var(--r2); align-content: start; }
+.agn-s .sak { display: grid; gap: var(--r3); padding: 14px 16px; border: 1px solid var(--sand-300); border-radius: 12px; background: var(--white); }
+.agn-s .sak.haster { border: 2px solid var(--rust); }
+.agn-s .sak-topp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: start; }
+.agn-s .sak-topp b { display: block; font: 600 15.5px/1.3 var(--sans); }
+.agn-s .sak-topp .fra { display: block; font-size: 13px; color: var(--graphite-600); }
+.agn-s .sak-topp time { font: 500 12.5px/1.3 var(--mono); color: var(--graphite-600); white-space: nowrap; }
+.agn-s .sak .sitat { font-size: 14.5px; line-height: 1.5; color: var(--graphite-800); }
+.agn-s .utkast { display: grid; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--sand-100); border: 1px dashed var(--graphite-500); }
+.agn-s .utkast .hode { display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--sans); color: var(--graphite-800); }
+.agn-s .utkast .hode .ikon { width: 16px; height: 16px; }
+.agn-s .utkast p { font-size: 14.5px; line-height: 1.5; white-space: pre-wrap; }
+.agn-s .utkast textarea { min-height: 120px; padding: 10px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 15px/1.5 var(--sans); width: 100%; resize: vertical; background: var(--white); }
+.agn-s .status-rad { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.agn-s .innboks-grid { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .innboks-grid > aside { display: grid; gap: var(--r4); align-content: start; }
+.agn-s .under-filter { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-radius: 12px; background: var(--sand-100); }
+.agn-s .under-filter > button, .agn-s .under-filter > a { min-height: 44px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); font: 500 13.5px/1 var(--sans); cursor: pointer; color: var(--graphite-900); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.agn-s .under-filter b { font: 600 12px/1 var(--mono); }
+.agn-s .under-filter > [aria-pressed="true"], .agn-s .under-filter > [aria-current="page"] { background: var(--graphite-900); color: var(--white); border-color: var(--graphite-900); }
+.agn-s .folg-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 12px 14px; border: 1px solid var(--sand-300); border-radius: 12px; background: var(--white); text-decoration: none; color: inherit; }
+.agn-s .folg-rad b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .status-merke { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font: 600 12px/1 var(--sans); white-space: nowrap; }
+.agn-s .status-merke.risiko { background: var(--rust-50); color: var(--rust-tekst); }
+.agn-s .status-merke.folg { background: var(--amber-50); color: var(--amber-700); }
+.agn-s .status-merke.sjekk { background: var(--sand-150); color: var(--graphite-800); }
+.agn-s .status-merke.lost { background: var(--green-50); color: var(--green-700); }
+.agn-s .status-merke.lead { background: #e8eefc; color: var(--slag-ink); }
+
+@media (min-width: 900px) {
+  .agn-s .cockpit-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--r6); align-items: start; }
+  .agn-s .dag { --time: 44px; }
+  .agn-s .innboks-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--r6); align-items: start; }
+  .agn-s .innboks-grid > aside { position: sticky; top: 24px; }
+}
+
+/* Innboks: sak som kan åpnes */
+.agn-s .sak-knapp { width: 100%; border: 0; background: transparent; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; min-height: 44px; }
+.agn-s .sak-knapp .status-rad { margin-top: 6px; }
+.agn-s .sak-hoyre { display: grid; gap: 6px; justify-items: end; }
+.agn-s .sak-hoyre time { font: 500 12.5px/1.3 var(--mono); color: var(--graphite-600); white-space: nowrap; }
+.agn-s .sak.lost { background: var(--sand-100); }
+.agn-s .sak-kropp { display: grid; gap: var(--r3); padding-top: var(--r2); border-top: 1px solid var(--sand-300); }
+.agn-s .sak[draggable="true"] { cursor: grab; }
+.agn-s .under-filter > [data-over] { outline: 2px dashed var(--graphite-900); outline-offset: 2px; }
+.agn-s .felt.flytt { max-width: 280px; }
+.agn-s .nokkel.fire { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.agn-s .detaljer summary { cursor: pointer; font: 600 14px/1 var(--sans); min-height: 44px; display: flex; align-items: center; }
+.agn-s .detaljer ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+.agn-s .to-kort { display: grid; gap: var(--r3); }
+@media (min-width: 900px) {
+  .agn-s .nokkel.fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .agn-s .to-kort { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -86,6 +86,26 @@ export type PH18Model = {
   runder: PH18Runde[];
   hull: PH18HullSnitt | null;
   sesonger: PH18Sesong[];
+  oversikt: PH18Oversikt;
+};
+
+/** Snittscore-kortet og snitt per par i PH-18 (pakke 5). Bare brutto, bare 18-hullsrunder i snittet. */
+export type PH18Oversikt = {
+  /** Sesongen (Oslo-år) snittet gjelder: nyeste år med en tellende runde, null uten. */
+  aar: number | null;
+  /** Snitt brutto for 18-hullsrunder med kjent par i sesongen. */
+  snitt: number | null;
+  antall: number;
+  /** Snitt av de fem siste tellende rundene i sesongen (null under fem runder). */
+  siste5: number | null;
+  /** Snitt forrige sesong, for trendmerket (null uten tellende runder året før). */
+  forrigeSnitt: number | null;
+  /** Tellende runder i sesongen, eldste først, med glidende snitt av inntil fem siste. */
+  serie: { dato: string; score: number; glidende: number }[];
+  /** Snitt slag per hull for par 3, 4 og 5 fra alle runder med hullscore. null når ingen hull har den paren. */
+  perPar: { par: 3 | 4 | 5; snitt: number | null; hull: number }[];
+  /** Runder med hullscore som er med i snitt per par. */
+  runderMedHull: number;
 };
 
 const OSLO = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit", year: "numeric" });
@@ -198,10 +218,47 @@ function byggSesonger(runder: PH18Runde[], inn: PH18RundeInn[]): PH18Sesong[] {
     .reverse();
 }
 
+const snittAv = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+
+function byggOversikt(runder: PH18Runde[], inn: PH18RundeInn[]): PH18Oversikt {
+  // Eldste først. Bare 18-hullsrunder med kjent par teller i snittet (ni hull teller ikke).
+  const tellende = inn
+    .map((r, i) => ({ r, ut: runder[i], aar: osloAarMaaned(r.playedAt).aar }))
+    .filter((x) => x.ut.hull === 18 && x.ut.par != null)
+    .sort((a, b) => a.r.playedAt.getTime() - b.r.playedAt.getTime());
+  const aar = tellende.length ? tellende[tellende.length - 1].aar : null;
+  const sesong = tellende.filter((x) => x.aar === aar);
+  const scorer = sesong.map((x) => x.ut.score);
+  const serie = sesong.map((x, i) => ({
+    dato: x.ut.dato,
+    score: x.ut.score,
+    glidende: snittAv(scorer.slice(Math.max(0, i - 4), i + 1)) ?? x.ut.score,
+  }));
+  const forrige = aar == null ? [] : tellende.filter((x) => x.aar === aar - 1).map((x) => x.ut.score);
+
+  const medHull = inn.filter((r) => r.holeScores.length > 0);
+  const alleHull = medHull.flatMap((r) => r.holeScores);
+  const perPar = ([3, 4, 5] as const).map((par) => {
+    const hs = alleHull.filter((h) => h.par === par);
+    return { par, snitt: snittAv(hs.map((h) => h.strokes)), hull: hs.length };
+  });
+
+  return {
+    aar,
+    snitt: snittAv(scorer),
+    antall: scorer.length,
+    siste5: scorer.length >= 5 ? snittAv(scorer.slice(-5)) : null,
+    forrigeSnitt: snittAv(forrige),
+    serie,
+    perPar,
+    runderMedHull: medHull.length,
+  };
+}
+
 /** `inn` er sortert nyeste først. */
 export function byggPH18(inn: PH18RundeInn[]): PH18Model {
   const runder = inn.map(tilRunde);
-  return { runder, hull: byggHull(inn), sesonger: byggSesonger(runder, inn) };
+  return { runder, hull: byggHull(inn), sesonger: byggSesonger(runder, inn), oversikt: byggOversikt(runder, inn) };
 }
 
 export type PH18Metrikk = "snitt" | "fairway" | "gir" | "putter";
