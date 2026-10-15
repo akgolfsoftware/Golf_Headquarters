@@ -1,0 +1,574 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Markedssidene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 7: Markedssidene · én mal per sidetype ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app[data-skall="offentlig"] .innhold{gap:48px}
+.m-hero{display:grid;gap:var(--r5)}
+.m-hero img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;max-width:100%}
+.m-hero h1{margin:0;font:700 40px/1.04 var(--sans);letter-spacing:-.03em;text-wrap:balance}
+.m-hero .ingress{font-size:17px;max-width:44ch}
+.m-eyebrow{font:500 12.5px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600)}
+.m-h2{margin:0;font:700 28px/1.12 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.m-seksjon{display:grid;gap:var(--r4)}
+.m-to{display:grid;gap:var(--r5)}
+.inngangskort{display:grid;gap:8px;padding:var(--r4) 18px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit!important}
+.inngangskort b{font:600 18px/1.25 var(--sans)}
+.inngangskort .pil{display:flex;justify-content:space-between;align-items:center;font:600 14px/1 var(--sans)}
+.maate-liste{list-style:none;margin:0;padding:0;border-top:1px solid var(--sand-300)}
+.maate-liste li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:var(--r3);align-items:baseline;padding:14px 0;border-bottom:1px solid var(--sand-300)}
+.maate-liste .nr{font:600 14px/1 var(--mono);color:var(--graphite-600)}
+.maate-liste b{font:600 17px/1.3 var(--sans)}
+.maate-liste .hvor{font-size:14px;color:var(--graphite-600);text-align:right}
+.app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.app-flis{display:grid;gap:6px;padding:14px;border-radius:12px;color:#fff;min-height:120px;align-content:start}
+.app-flis b{font:600 17px/1.2 var(--sans)}
+.app-flis span{font-size:14px;opacity:.92}
+.f-slag{background:var(--slag)} .f-tek{background:var(--tek-ink)} .f-spill{background:var(--spill-ink)} .f-fys{background:var(--fys-ink)} .f-turn{background:var(--turn)} .f-graf{background:var(--graphite-900)}
+.galleri{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.galleri img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.slutt{display:grid;gap:var(--r3);padding:var(--r5) 20px;border-radius:16px;background:var(--graphite-900);color:#fff}
+.slutt .m-h2{color:#fff}
+.slutt .knapp.pri{background:#fff;color:var(--graphite-900);border-color:#fff}
+.slutt .kilde{color:rgba(255,255,255,.75)}
+.tjeneste-kort{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.tjeneste-kort img{display:block;width:100%;height:140px;object-fit:cover}
+.tjeneste-kort .tekst{display:grid;gap:10px;padding:var(--r4) 18px 18px}
+.tjeneste-kort b.n{font:600 19px/1.25 var(--sans)}
+.tjeneste-kort .tid{font:600 14px/1 var(--mono);color:var(--graphite-600)}
+.tjeneste-kort dl{display:grid;gap:8px;margin:0}
+.tjeneste-kort dt{font:600 12.5px/1.3 var(--sans);color:var(--graphite-600)}
+.tjeneste-kort dd{margin:0;font-size:14.5px;line-height:1.45}
+.pakke{display:grid;gap:var(--r3);padding:var(--r5) 20px;border:1px solid var(--sand-300);border-radius:14px;background:var(--white)}
+.pakke.valgt{border:2px solid var(--graphite-900)}
+.pakke .rad{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pakke b.n{font:600 20px/1.2 var(--sans)}
+.pakke .pris{font:600 40px/1 var(--mono);letter-spacing:-.03em}
+.pakke .pris small{font:500 15px/1 var(--sans);color:var(--graphite-600);margin-left:6px;letter-spacing:0}
+.pakke ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.pakke li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:15px;align-items:start}
+.pakke li .ikon{width:18px;height:18px;margin-top:2px}
+.mest{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--graphite-900);color:#fff;font:600 12px/1 var(--sans)}
+.steg-rad{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.steg-rad div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:var(--r3);padding:14px 0;border-bottom:1px solid var(--sand-300)}
+.steg-rad .nr{font:600 18px/1 var(--mono);color:var(--graphite-600)}
+.steg-rad b{display:block;font:600 16px/1.3 var(--sans)}
+.faq{display:grid;border-top:1px solid var(--sand-300)}
+.faq details{border-bottom:1px solid var(--sand-300)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:var(--r3);min-height:56px;padding:12px 0;font:600 16px/1.35 var(--sans);cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:500 22px/1 var(--mono);color:var(--graphite-600)}
+.faq details[open] summary::after{content:"−"}
+.faq details p{padding:0 0 16px;font-size:15.5px;line-height:1.6;max-width:64ch;color:var(--graphite-800)}
+.trinn-stige{display:grid;gap:var(--r2)}
+.trinn-k{display:grid;grid-template-columns:52px minmax(0,1fr);border-radius:12px;overflow:hidden;border:1px solid var(--sand-300);background:var(--white)}
+.trinn-k .nr{display:grid;place-items:center;font:600 22px/1 var(--mono);color:#fff}
+.trinn-k .tekst{display:grid;gap:4px;padding:12px 14px}
+.trinn-k b{font:600 17px/1.25 var(--sans)}
+.ved-siden{display:grid;gap:6px;padding:14px 16px;border:1px dashed var(--graphite-500);border-radius:12px}
+.portal-eks{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:14px;background:var(--sand-100);border:1px solid var(--sand-300)}
+.prinsipp{display:grid;gap:8px;padding:var(--r4) 18px;border-left:4px solid var(--graphite-900);background:var(--sand-100);border-radius:0 12px 12px 0}
+.prinsipp b{font:600 17px/1.3 var(--sans)}
+.coach-kort{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit!important}
+.coach-kort b{display:block;font:600 17px/1.3 var(--sans)}
+.anlegg-kort{display:grid;gap:8px;padding:var(--r4) 18px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.anlegg-kort b{font:600 17px/1.3 var(--sans)}
+.anlegg-kort .mono{font-size:13.5px;color:var(--graphite-600)}
+.fakta-rad{display:flex;flex-wrap:wrap;gap:6px}
+.fakta-rad span{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;background:var(--sand-150);font:500 12.5px/1 var(--sans)}
+.skjema{display:grid;gap:var(--r3);padding:var(--r5) 20px;border-radius:14px;border:1px solid var(--sand-300);background:var(--white)}
+.art-kort{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white);text-decoration:none;color:inherit!important}
+.art-kort img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
+.art-kort .tekst{display:grid;gap:6px;padding:14px 16px 16px}
+.art-kort b{font:600 18px/1.3 var(--sans)}
+.art-kort.utvalgt b{font-size:24px}
+.artikkel{display:grid;gap:var(--r4);max-width:68ch}
+.artikkel p{font-size:17px;line-height:1.7}
+.artikkel h2{margin:var(--r3) 0 0;font:600 22px/1.3 var(--sans)}
+.artikkel img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px}
+.jur{display:grid;gap:var(--r4);max-width:70ch}
+.jur h2{margin:var(--r3) 0 0;font:600 19px/1.3 var(--sans)}
+.jur p{font-size:15.5px;line-height:1.65}
+.innhold-nav{display:grid;gap:4px;padding:14px 16px;border-radius:12px;background:var(--sand-100);font-size:14.5px}
+.innhold-nav a{min-height:32px;display:flex;align-items:center}
+.utkast-boks{display:grid;gap:4px;padding:12px 14px;border-radius:10px;background:var(--amber-50);color:var(--amber-700);font-size:14px;line-height:1.5}
+/* Mulligan er eget merke: eget bånd, ikke AK Golf-farger, ingen AK-logo i båndet */
+.mulligan{display:grid;gap:var(--r5);padding:var(--r6) var(--r4);margin:0 calc(-1 * var(--r4));background:#1A1A18;color:#F1EFE8}
+.mulligan .m-eyebrow{color:#A9A69C}
+.mulligan h1,.mulligan .m-h2{color:#F1EFE8}
+.mulligan .ingress,.mulligan .forklar{color:#D9D6CC}
+.mulligan img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;max-width:100%}
+.mulligan .knapp.pri{background:#F1EFE8;color:#141413;border-color:#F1EFE8}
+.mulligan .anlegg-kort{background:#262623;border-color:#34332E}
+.mulligan .anlegg-kort .mono{color:#A9A69C}
+.pris-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);padding:12px 0;border-bottom:1px solid #34332E;font-size:15px}
+.pris-rad b{font:600 17px/1 var(--mono)}
+.mulligan-merke{display:inline-flex;align-items:center;gap:8px;font:700 15px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+@container (min-width:900px){
+  .app[data-skall="offentlig"] .innhold{gap:72px}
+  .m-hero{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:56px}
+  .m-hero h1{font-size:60px}
+  .m-to{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
+  .m-h2{font-size:36px}
+  .app-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .galleri{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .kort-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r4)}
+  .kort-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r4)}
+  .kort-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--r4)}
+  .steg-rad{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--r4);border:0}
+  .steg-rad div{grid-template-columns:1fr;border:0;border-top:2px solid var(--graphite-900)}
+  .trinn-stige{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .trinn-k{grid-template-columns:1fr;grid-template-rows:52px auto}
+  .slutt{grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:40px}
+  .mulligan{margin:0 -40px;padding:56px 40px}
+  .art-kort.utvalgt{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .art-kort.utvalgt img{height:100%;aspect-ratio:auto}
+  .jur-to{display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;align-items:start}
+}
+.kort-3,.kort-2,.kort-4{display:grid;gap:var(--r3)}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">Marked · gruppe 7 · én mal per sidetype · utkast 1 · 15.10.2026</span>
+    <h1>Markedssidene</h1>
+    <p>Elleve maler som dekker alle markedssidene på akgolf.no. Statistikk og booking er tegnet i egne filer. Teksten er hentet ordrett fra dagens sider. Bare utseendet er nytt.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="forside">Forside</button>
+      <button type="button" aria-pressed="false" data-skjerm="coaching">Tjenester: Coaching</button>
+      <button type="button" aria-pressed="false" data-skjerm="priser">Priser</button>
+      <button type="button" aria-pressed="false" data-skjerm="produkt">Produkt: AK Golf HQ</button>
+      <button type="button" aria-pressed="false" data-skjerm="junior">Junior</button>
+      <button type="button" aria-pressed="false" data-skjerm="filosofi">Innhold: Slik trener vi</button>
+      <button type="button" aria-pressed="false" data-skjerm="om">Om oss og coacher</button>
+      <button type="button" aria-pressed="false" data-skjerm="kontakt">Kontakt</button>
+      <button type="button" aria-pressed="false" data-skjerm="blogg">Artikler: liste</button>
+      <button type="button" aria-pressed="false" data-skjerm="artikkel">Artikler: artikkel</button>
+      <button type="button" aria-pressed="false" data-skjerm="juridisk">Juridisk</button>
+      <button type="button" aria-pressed="false" data-skjerm="mulligan">Mulligan (eget merke)</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Rutene og malene</span>
+      <ul>
+        <li><b>Forside:</b> <code>/</code></li>
+        <li><b>Tjenester:</b> <code>/coaching</code> (samme mal: <code>/treningsfilosofi</code> sin pakkedel)</li>
+        <li><b>Priser:</b> <code>/priser</code></li>
+        <li><b>Produkt:</b> <code>/playerhq</code></li>
+        <li><b>Junior:</b> <code>/junior</code></li>
+        <li><b>Innholdsside:</b> <code>/treningsfilosofi</code>, <code>/cases</code>, <code>/suksess</code></li>
+        <li><b>Om oss:</b> <code>/om-oss</code>, <code>/coacher</code>, <code>/coacher/[slug]</code>, <code>/anlegg</code>, <code>/anlegg/[slug]</code>, <code>/jobb</code></li>
+        <li><b>Kontakt:</b> <code>/kontakt</code>, <code>/faq</code></li>
+        <li><b>Artikler:</b> <code>/blogg</code>, <code>/blogg/[slug]</code></li>
+        <li><b>Juridisk:</b> <code>/vilkar</code>, <code>/personvern</code>, <code>/cookies</code></li>
+        <li><b>Mulligan:</b> <code>/mulligan</code>, eget merke</li>
+        <li>Egne filer: <code>/booking*</code> i booking.html, <code>/stats*</code> og <code>/turneringer*</code> i statistikk.html.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Publisert tekst er beholdt ordrett. Ingen vitnesbyrd, sitater eller stjerner vist som sitat. Vis målingen.</li>
+        <li>MORAD og Mac O'Grady nevnes ikke. Hovedknappen heter «Book time». Kartleggingsøkt finnes ikke.</li>
+        <li>Mulligan står i eget mørkt bånd med eget navn, uten AK Golf-farger eller logo i båndet.</li>
+        <li>Bilder aldri med tekst oppå. Bildene er plassholdere fra utkastenes bildebank til bildeplanen er levert.</li>
+        <li>Priser som står i publisert tekst er beholdt og merket. I appen leses de fra tjenestelista.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Junior:</b> publisert overskrift «Fem trinn med navn.» og Knøtt som trinn. Tegnet med fire trinn og Knøtt ved siden av etter vedtaket 22.09. Teksten endres bare med ja.</li>
+        <li><b>Kontakt:</b> «Vi svarer innen 1 virkedag» står i publisert tekst. Regelen sier ingen slikt løfte før Jarvis er i drift.</li>
+        <li><b>Om oss:</b> avsnittet i anførselstegn er et sitat. Vist som vanlig tekst uten sitatform. Bør det ut?</li>
+        <li><b>Vilkår:</b> nevner «Pro-tier (kr 300)» og «AI-coach». Nivåene heter Gratis og Full, og assistenten heter Caddie. Juridisk tekst endres med advokat.</li>
+        <li><b>Forside og produkt:</b> «Analyse» som fane og «Player HQ» med mellomrom står i publisert tekst. Fanen heter Stats.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Forside ================= -->
+<template id="forside">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <section class="m-hero">
+    <div style="display:grid;gap:var(--r4)">
+      <span class="m-eyebrow">Fredrikstad · coaching siden 2018</span>
+      <h1>Bedre golf, over tid.</h1>
+      <p class="ingress">Coaching med Anders Kristiansen — på bane, i studio og i gruppe. Ingen hurtigkur, ingen mirakelgrep.</p>
+      <div class="knapper"><a href="#" class="knapp pri" data-gaa="coaching">Book time</a><a href="#" class="knapp sek" data-gaa="produkt">Se Player HQ</a></div>
+    </div>
+    <img src="bilder/slag-bunker.jpg" alt="AK Golf — slag fra bunker">
+  </section>
+  <div class="kort-2">
+    <a href="#" class="inngangskort" data-gaa="coaching"><span class="m-eyebrow">Coaching</span><b>Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.</b><span class="pil">Book time <svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    <a href="#" class="inngangskort" data-gaa="produkt"><span class="m-eyebrow">Player HQ</span><b>Appen for deg som trener videre mellom timene.</b><span class="pil">299 kr / mnd <svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+  </div>
+  <section class="m-to">
+    <div class="m-seksjon"><span class="m-eyebrow">Coaching</span><h2 class="m-h2">Fem måter å jobbe sammen</h2><p class="forklar">Alt starter med en time. Hva som følger etter den, bestemmer vi når vi vet hva du trenger.</p><div class="knapper"><a href="#" class="knapp pri">Book en time</a><a href="#" class="lenke" data-gaa="priser">Se priser</a></div></div>
+    <ul class="maate-liste">
+      <li><span class="nr">01</span><b>Enkelttime på bane</b><span class="hvor">Fredrikstad</span></li>
+      <li><span class="nr">02</span><b>Enkelttime i studio</b><span class="hvor">Innendørs · helår</span></li>
+      <li><span class="nr">03</span><b>Gruppetrening</b><span class="hvor">Fast gruppe</span></li>
+      <li><span class="nr">04</span><b>Foreldresamtale og veiledning</b><span class="hvor">For juniorforeldre</span></li>
+      <li><span class="nr">05</span><b>Bedrift og firmaturer</b><span class="hvor">På forespørsel</span></li>
+    </ul>
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Player HQ · 299 kr/mnd</span><h2 class="m-h2">Appen mellom timene</h2>
+    <p class="forklar" style="max-width:60ch">For satsende juniorer og for voksne som vil bli bedre. Samme app, samme plan, ulik mengde.</p>
+    <div class="app-grid">
+      <div class="app-flis f-slag"><b>I dag</b><span>Dagens økt, klar når du våkner.</span></div>
+      <div class="app-flis f-tek"><b>Plan</b><span>Uken framover. Lagret er ikke delt.</span></div>
+      <div class="app-flis f-spill"><b>Analyse</b><span>Det vi har målt, ikke det vi tror.</span></div>
+      <div class="app-flis f-graf"><b>Meg</b><span>Din historikk, dine mål.</span></div>
+    </div>
+    <div class="knapper"><a href="#" class="knapp sek" data-gaa="produkt">Se Player HQ</a></div>
+  </section>
+  <section class="m-to">
+    <div class="m-seksjon"><span class="m-eyebrow">Akademiet</span><h2 class="m-h2">For dem som vil lenger</h2><p class="forklar">AK Golf Academy er det tetteste sporet: helårsplan, fast oppfølging og Player HQ inkludert. Få plasser, opptak etter prøvetime.</p></div>
+    <ul class="maate-liste">
+      <li><span class="nr">—</span><b>Helårsplan med fast trener</b><span class="hvor">Junior og voksen</span></li>
+      <li><span class="nr">—</span><b>Player HQ inkludert</b><span class="hvor">Uten tillegg</span></li>
+      <li><span class="nr">—</span><b>Opptak etter prøvetime</b><span class="hvor">Løpende</span></li>
+    </ul>
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Bildearkiv</span><h2 class="m-h2">Fra banen og studioet</h2>
+    <div class="galleri"><img src="bilder/slag-utslag.jpg" alt="AK Golf — bane og studio"><img src="bilder/slag-simulator.jpg" alt="AK Golf — bane og studio"><img src="bilder/naerspill-wedge.jpg" alt="AK Golf — bane og studio"><img src="bilder/slag-putting.jpg" alt="AK Golf — bane og studio"><img src="bilder/spill-bane.jpg" alt="AK Golf — bane og studio"><img src="bilder/turn-tee.jpg" alt="AK Golf — bane og studio"></div>
+  </section>
+  <section class="slutt"><div style="display:grid;gap:8px"><span class="m-eyebrow" style="color:rgba(255,255,255,.7)">Ta kontakt</span><h2 class="m-h2">Én time forteller mer enn ti tips.</h2><span class="kilde">Fredrikstad · post@akgolf.no</span></div><a href="#" class="knapp pri">Book en time</a></section>
+</main></div>
+</template>
+
+<!-- ================= Tjenester: Coaching ================= -->
+<template id="coaching">
+<div class="app" data-skall="offentlig" data-aktiv="coaching"><main class="innhold">
+  <section class="m-hero">
+    <div style="display:grid;gap:var(--r4)"><span class="m-eyebrow">Coaching</span><h1>Bedre golf i hverdagen.</h1><div class="knapper"><a href="#" class="knapp pri">Book time</a><a href="#" class="knapp sek" data-gaa="priser">Se priser</a></div></div>
+    <img src="bilder/tek-video.jpg" alt="Coach følger spiller">
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Tjenester</span><h2 class="m-h2">Velg form — samme coachingkvalitet.</h2>
+    <div class="kort-2">
+      <div class="tjeneste-kort"><img src="bilder/slag-simulator.jpg" alt="Coach filmer sving"><div class="tekst"><b class="n">Flex-økt</b><span class="tid">20 / 50 / 90 min</span><dl><div><dt>I økten</dt><dd>Tydelig neste steg og notater i PlayerHQ om du har tilgang.</dd></div><div><dt>Passer for</dt><dd>Deg som vil ha en enkeltøkt uten abonnement.</dd></div></dl></div></div>
+      <div class="tjeneste-kort"><img src="bilder/stats-topp.jpg" alt=""><div class="tekst"><b class="n">Performance</b><span class="tid">2 økter / mnd</span><dl><div><dt>I økten</dt><dd>TrackMan, analyse og plan som legges inn i PlayerHQ.</dd></div><div><dt>Du tar med deg</dt><dd>Oppdatert ukeplan og øvelser du kan trene videre på.</dd></div><div><dt>Passer for</dt><dd>Spillere som vil ha struktur og oppfølging over tid.</dd></div></dl></div></div>
+      <div class="tjeneste-kort"><img src="bilder/slag-putting.jpg" alt="Putting med data"><div class="tekst"><b class="n">Performance Pro</b><span class="tid">4 økter / mnd</span><dl><div><dt>I økten</dt><dd>TrackMan, video, spredning og skriftlig plan.</dd></div><div><dt>Du tar med deg</dt><dd>Dypere analyse og tydelig prioritert treningsfokus.</dd></div><div><dt>Passer for</dt><dd>Deg som vil gå grundigere og ha mer tid på banen/range.</dd></div></dl></div></div>
+      <div class="tjeneste-kort"><img src="bilder/spill-bane.jpg" alt=""><div class="tekst"><b class="n">Gruppe-økt</b><span class="tid">60 min · max 6</span><dl><div><dt>I økten</dt><dd>Nivåtilpasset trening i gruppe med coach.</dd></div><div><dt>Du tar med deg</dt><dd>Felles økt + individuelle justeringer.</dd></div><div><dt>Passer for</dt><dd>Junior, lag eller venner som vil trene sammen.</dd></div></dl></div></div>
+    </div>
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Slik går en økt</span><h2 class="m-h2">Fra ankomst til plan.</h2>
+    <div class="steg-rad">
+      <div><span class="nr">01</span><span><b>Ankomst</b><span class="forklar">Kort prat om form og mål for økten.</span></span></div>
+      <div><span class="nr">02</span><span><b>Måling</b><span class="forklar">TrackMan, video eller tester — tall før mening.</span></span></div>
+      <div><span class="nr">03</span><span><b>Trening</b><span class="forklar">Trening på det som koster flest slag.</span></span></div>
+      <div><span class="nr">04</span><span><b>Plan</b><span class="forklar">Neste steg legges i PlayerHQ før du drar.</span></span></div>
+    </div>
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Spørsmål før du booker</span><h2 class="m-h2">Kort og ærlig.</h2>
+    <div class="faq">
+      <details open><summary>Trenger jeg egne køller?</summary><p>Ja, ta med baggen din. Vi har ikke utleiekøller som standard. Si ifra på forhånd hvis du trenger tilpasning.</p></details>
+      <details><summary>Hvor langt i forveien må jeg booke?</summary><p>Jo tidligere, jo bedre — spesielt kvelder og helger. Ledige tider ser du i booking, eller vi finner tid i samtalen.</p></details>
+      <details><summary>Hva hvis jeg må avbestille?</summary><p>Avbestill i god tid (helst mer enn 24 timer før). Nærmere frist kan økten gå tapt, avhengig av avtale. Det står også i bekreftelsen.</p></details>
+      <details><summary>Passer dette for nybegynnere?</summary><p>Ja. Vi tilpasser tempo og språk. Flex-økt eller Performance er vanlig start — vi anbefaler det som passer deg, uten å stenge noe ute.</p></details>
+    </div>
+  </section>
+  <section class="slutt"><h2 class="m-h2">Finn riktig opplegg i en samtale.</h2><a href="#" class="knapp pri">Book time</a></section>
+</main></div>
+</template>
+
+<!-- ================= Priser ================= -->
+<template id="priser">
+<div class="app" data-skall="offentlig" data-aktiv="priser"><main class="innhold">
+  <div class="m-seksjon"><span class="m-eyebrow">Priser</span><h1 class="m-h2" style="font-size:40px">Enkelt og ærlig.</h1></div>
+  <div class="kort-2">
+    <div class="pakke"><div class="rad"><b class="n">Gratis</b></div><span class="pris">0<small>kr/mnd</small></span>
+      <ul><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Hele testbatteriet, med resultatene dine over tid</li><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Logg runder og se hvor du taper slagene</li><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Book enkelttimer med coach</li></ul>
+      <a href="#" class="knapp sek">Kom i gang</a></div>
+    <div class="pakke valgt"><div class="rad"><b class="n">Full · all tilgang</b><span class="mest">Mest valgt</span></div><span class="pris">299<small>kr/mnd</small></span><p class="forklar">For deg som trener på egen hånd, uten pakke eller gruppe.</p>
+      <ul><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Strokes gained-analyse og runder</li><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Treningsplan og loggføring</li><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>TrackMan-data og video</li><li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>AI-caddie og prioritert støtte</li></ul>
+      <a href="#" class="knapp pri">Start med Full</a></div>
+  </div>
+  <p class="kilde">Prisene leses fra tjenestelista i appen. Coaching-pakkene står på <a href="#" data-gaa="coaching">coaching-siden</a>.</p>
+  <section class="m-seksjon">
+    <h2 class="m-h2">Spørsmål som går igjen</h2>
+    <div class="faq">
+      <details open><summary>Hvordan får jeg PlayerHQ gratis?</summary><p>Testbatteriet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato og uten kort. Resten av appen følger med coaching-pakke (Performance eller Performance Pro) eller gruppe via AK Golf, for eksempel WANG eller klubbtrening. Vil du prøve full app på egen hånd, får du én uke gratis mot at du legger inn kort — den går over til 299 kr på dag åtte hvis du ikke sier opp.</p></details>
+      <details><summary>Hva er forskjellen på coaching-pakker og appen?</summary><p>Coaching-pakkene handler om antall økter med coach per måned, ikke om app-funksjoner. Appen er den samme for alle med tilgang, ingen nivåer, ingenting låst bak dyrere trinn.</p></details>
+      <details><summary>Kan jeg si opp når som helst?</summary><p>Ja. Abonnementet løper måned for måned uten binding, og du beholder tilgangen ut perioden du har betalt for.</p></details>
+      <details><summary>Hva skjer etter prøveperioden?</summary><p>Du beholder testbatteriet og runde- og statistikkføringen gratis, uten tidsbegrensning. Vil du ha resten av appen, velger du selv: 299 kr per måned, en coaching-pakke der appen er inkludert, eller la det ligge. Dataene dine slettes ikke.</p></details>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= Produkt: AK Golf HQ ================= -->
+<template id="produkt">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <section class="m-hero">
+    <div style="display:grid;gap:var(--r4)"><span class="m-eyebrow">AK Golf HQ</span><h1>Hele treningen din. Ett sted.</h1><p class="ingress">AK Golf HQ er plattformen bak coachingen: treningsplanen din, øktene, testene og Trackman-tallene — samlet, målt og fulgt opp.</p><div class="knapper"><a href="#" class="knapp pri">Logg inn i AK Golf HQ</a><a href="#" class="knapp sek">Snakk med en coach først</a></div></div>
+    <img src="bilder/stats-topp.jpg" alt="AK Golf HQ i bruk i coachingstudioet">
+  </section>
+  <section class="m-seksjon">
+    <h2 class="m-h2">Alt treningen din trenger — ingenting den ikke trenger.</h2>
+    <div class="kort-3">
+      <div class="app-flis f-tek"><b>Plan</b><span>Ukeplanen din, periodisert gjennom sesongen. Hver økt vet hvorfor den finnes.</span></div>
+      <div class="app-flis f-slag"><b>Økter</b><span>Gjennomfør økter med drills, mål og logging — på rangen, på banen eller i simulatoren.</span></div>
+      <div class="app-flis f-fys"><b>Tester</b><span>Standardiserte testprotokoller som viser fremgangen i tall, ikke i følelser.</span></div>
+      <div class="app-flis f-graf"><b>Trackman</b><span>Slagdata kobles rett på treningen din. Se hva som faktisk endrer seg.</span></div>
+      <div class="app-flis f-spill"><b>Analyse</b><span>Strokes gained og rundelogg viser hvor slagene forsvinner — og hvor planen skal peke.</span></div>
+      <div class="app-flis f-turn"><b>Coach-kobling</b><span>Coachen ser det samme som deg og justerer planen mellom øktene.</span></div>
+    </div>
+  </section>
+  <section class="m-to">
+    <img src="bilder/spill-bane.jpg" alt="AK Golf HQ på mobil" style="display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px">
+    <div class="m-seksjon"><h2 class="m-h2">Med deg på banen.</h2><p class="forklar">Planen ligger i lomma. Logg runder, følg økter og se tallene dine der treningen faktisk skjer.</p></div>
+  </section>
+  <section class="slutt"><div style="display:grid;gap:8px"><span class="m-eyebrow" style="color:rgba(255,255,255,.7)">Pris</span><h2 class="m-h2">Gratis med coaching. Ellers 299 kr/mnd.</h2><p class="kilde" style="font-size:15px">Trener du med en av coachene våre, er plattformen inkludert. Vil du bruke den på egen hånd, koster den 299 kr i måneden eller 2 690 kr i året — ingen binding. Første måned er alltid gratis.</p></div><div class="knapper"><a href="#" class="knapp pri">Kom i gang</a><a href="#" class="knapp sek" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)" data-gaa="priser">Se alle priser</a></div></section>
+</main></div>
+</template>
+
+<!-- ================= Junior ================= -->
+<template id="junior">
+<div class="app" data-skall="offentlig" data-aktiv="junior"><main class="innhold">
+  <section class="m-hero">
+    <div style="display:grid;gap:var(--r4)"><span class="m-eyebrow">AK Golf Junior Academy</span><h1>Barnet ditt skal vite hva det jobber med.</h1><p class="ingress">AK Golf Junior Academy tar spilleren fra første golfskole til turneringsspill, i trinn med navn. Du ser hvilket trinn barnet står på, og hva som skal til for det neste.</p><div class="knapper"><a href="#" class="knapp pri">Meld interesse</a></div></div>
+    <img src="bilder/naerspill-wedge.jpg" alt="Spiller slår ballen opp av gresset, jord og ball i luften">
+  </section>
+  <section class="m-to">
+    <div class="m-seksjon"><h2 class="m-h2">Du slipper å spørre hvordan det går.</h2><p class="forklar">Foreldreportalen viser hva som er trent, hva som er målt og hva som er neste steg. Ingen ukentlige meldinger fra deg som må besvares — du ser det selv.</p></div>
+    <div class="portal-eks"><span class="eksempel">Eksempel — slik ser det ut i foreldreportalen</span><span class="m-eyebrow">Trinn på AK-stigen</span><div class="hoved"><strong>2<small>av 4</small></strong></div><p class="forklar">Basis. Neste trinn krever to turneringsrunder under 85.</p><span class="kilde">AK Golf HQ · 18.08.2026</span></div>
+  </section>
+  <section class="m-seksjon">
+    <h2 class="m-h2">Fem trinn med navn.</h2>
+    <p class="forklar" style="max-width:60ch">Gruppene er satt etter alder og erfaring, ikke etter hvem som meldte seg først. Vi finner riktig gruppe i en samtale før oppstart.</p>
+    <div class="trinn-stige">
+      <div class="trinn-k"><span class="nr f-fys">1</span><span class="tekst"><span class="m-eyebrow">Trinn 1 · til og med 10 år</span><b>Mini</b><span class="forklar">Første møte med ballen. Lek, grep og balanse. Køller til lån, ingen tall ennå.</span></span></div>
+      <div class="trinn-k"><span class="nr f-tek">2</span><span class="tekst"><span class="m-eyebrow">Trinn 2 · til og med 13 år</span><b>Basis</b><span class="forklar">Fast teknisk fundament. Teknikk med Trackman, egen plan i appen, første turnering.</span></span></div>
+      <div class="trinn-k"><span class="nr f-slag">3</span><span class="tekst"><span class="m-eyebrow">Trinn 3 · til og med 15 år</span><b>Utvikling</b><span class="forklar">Egen plan og egne tester. Konkurranse begynner å telle.</span></span></div>
+      <div class="trinn-k"><span class="nr f-turn">4</span><span class="tekst"><span class="m-eyebrow">Trinn 4 · til og med 19 år</span><b>Elite</b><span class="forklar">Turneringsspill, periodisering og måling mot mål.</span></span></div>
+    </div>
+    <div class="ved-siden"><b>Knøtt · 11–12 år</b><span class="forklar">Broen mellom lek og struktur. Første egne mål, og første måling: hvor langt går 7-jernet.</span><span class="eksempel">Ved siden av stigen etter vedtaket 22.09</span></div>
+  </section>
+  <section class="m-seksjon">
+    <div class="faq">
+      <details open><summary>Må barnet ha eget utstyr?</summary><p>Nei. Vi har køller til lån i alle gruppene til og med U12.</p></details>
+      <details><summary>Hva koster det?</summary><p>Gruppeplass betales per semester. Prisen står i bookingen, ikke her — den hentes fra samme sted som fakturaen.</p></details>
+      <details><summary>Kan jeg se hva barnet trener på?</summary><p>Ja. Foreldreportalen viser øktene, målingene og neste steg. Du får en kort rapport etter hver periode.</p></details>
+      <details><summary>Hva hvis barnet ikke vil konkurrere?</summary><p>Da konkurrerer det ikke. Trinnene handler om hva spilleren kan, ikke om turneringer. Turneringsspill kommer når spilleren vil.</p></details>
+    </div>
+  </section>
+  <section class="slutt"><div style="display:grid;gap:8px"><h2 class="m-h2">Lurer du på hvilken gruppe som passer?</h2><span class="kilde" style="font-size:15px">Send oss alder og litt om erfaringen, så tar vi kontakt.</span></div><a href="#" class="knapp pri">Meld interesse</a></section>
+</main></div>
+</template>
+
+<!-- ================= Innholdsside: Slik trener vi ================= -->
+<template id="filosofi">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="m-seksjon smal"><span class="m-eyebrow">Slik trener vi</span><h1 class="m-h2" style="font-size:40px">Trening som er balansert, målbar og din egen.</h1><p class="ingress" style="max-width:60ch">Vi tror ikke på trening-flavor-of-the-week. Hver spiller får en plan basert på tre prinsipper: balansert pyramide, data-drevet retning, og individualisering på alvor.</p></div>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Prinsipp 1 · pyramiden</span><h2 class="m-h2">Fem områder, samtidig.</h2>
+    <p class="forklar" style="max-width:60ch">Fem områder må jobbes med samtidig, ikke ett etter et. Vi sørger for at tiden din fordeles riktig.</p>
+    <div class="kort-2">
+      <div class="app-flis f-fys"><b>Fysisk</b><span>Rotasjon, mobilitet og kjernemuskulatur er fundamentet alt annet bygger på. Har du ikke basen, fester ikke tekniske endringer seg, uansett hvor mange repetisjoner du tar.</span></div>
+      <div class="app-flis f-tek"><b>Teknisk</b><span>Sving, grep, impact og club-path, analysert med Trackman som fasit. Vi bygger en sving du kan stole på under press, ikke én som bare ser bra ut på video.</span></div>
+      <div class="app-flis f-slag"><b>Golfslag</b><span>60–65 % av alle slag skjer innen 100 meter fra flagget. Chip, pitch, putt og bunkerspill trenes systematisk, for det er her de fleste slag hentes.</span></div>
+      <div class="app-flis f-spill"><b>Spill</b><span>Riktig valg er like viktig som riktig utførelse. Vi trener beslutninger, risk/reward og banetilpasning, slik at du skårer lavere med svingene du allerede har.</span></div>
+    </div>
+  </section>
+  <section class="m-to">
+    <div class="m-seksjon"><span class="m-eyebrow">Prinsipp 2 · strokes gained</span><h2 class="m-h2">Data forteller hvor du skal trene.</h2></div>
+    <div class="m-seksjon"><p class="forklar">Vi bruker Strokes Gained (SG) til å se nøyaktig hvor du taper slag mot ditt nivå. Det betyr at planen din peker på det som faktisk koster deg slag, ikke det som føles dårligst.</p><div class="prinsipp"><p class="forklar">Etter 3–5 registrerte runder ser vi et klart mønster. Kanskje driver du bedre enn du tror, men taper alt rundt grønnen. Kanskje er innspillene svakheten ingen har fortalt deg om. Planen peker dit dataen peker, ikke dit magefølelsen peker.</p></div></div>
+  </section>
+  <section class="slutt"><div style="display:grid;gap:8px"><span class="m-eyebrow" style="color:rgba(255,255,255,.7)">Neste steg</span><h2 class="m-h2">Vil du trene slik?</h2><span class="kilde" style="font-size:15px">Book en intro-time, eller velg en av coaching-pakkene våre med månedlig oppfølging.</span></div><div class="knapper"><a href="#" class="knapp pri">Book intro-time</a></div></section>
+</main></div>
+</template>
+
+<!-- ================= Om oss og coacher ================= -->
+<template id="om">
+<div class="app" data-skall="offentlig" data-aktiv="om"><main class="innhold">
+  <section class="m-hero">
+    <div style="display:grid;gap:var(--r4)"><span class="m-eyebrow">Om oss</span><h1>AK Golf Academy</h1><p class="ingress">AK Golf Academy drives av Anders Kristiansen: golfcoach, gründer og CEO i AK Golf Group AS. Tett personlig oppfølging, målbar fremgang.</p><div class="knapper"><a href="#" class="knapp pri">Book første time</a><a href="#" class="knapp sek">Møt coachene</a></div></div>
+    <img src="bilder/tek-video.jpg" alt="Coach observerer spiller på range">
+  </section>
+  <section class="m-to">
+    <div class="m-seksjon"><h2 class="m-h2">Personlig og målbart</h2></div>
+    <div class="m-seksjon"><p class="forklar">Anders har brukt mer enn et tiår på spillere på alle nivåer, fra klubbamatører til konkurranseutøvere. Underveis vokste det frem en praksis der personlig oppfølging og målbare resultater ikke er motsetninger, men to sider av samme metode.</p><p class="forklar">Coaching skal ikke være magi. Det skal være tydelig: hva vi jobber med, hvorfor vi jobber med det, og hvordan du ser at det virker. Det er det Academy er bygget rundt.</p><p class="forklar">Kjernen er AK Golf-pyramiden, et balansert system som sørger for at treningstiden fordeles riktig mellom fysikk, teknikk, slag, spill og turneringserfaring. Til daglig støttes coachingen av PlayerHQ, spillerportalen som holder plan, runder og statistikk samlet på ett sted.</p></div>
+  </section>
+  <div class="kort-3">
+    <div class="prinsipp"><b>Tydelig, ikke magisk</b><span class="forklar">Du skal alltid vite hva vi jobber med, hvorfor vi jobber med det, og hvordan du ser at det virker.</span></div>
+    <div class="prinsipp"><b>Balansert, ikke tilfeldig</b><span class="forklar">AK Golf-pyramiden fordeler treningstiden riktig mellom fysikk, teknikk, slag, spill og turneringserfaring.</span></div>
+    <div class="prinsipp"><b>Målbar, ikke synsing</b><span class="forklar">PlayerHQ holder plan, runder og statistikk samlet på ett sted. Fremgangen er synlig, ikke noe du må tro på.</span></div>
+  </div>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Coachene · AK Golf Academy</span><h2 class="m-h2">Møt coachene</h2><p class="forklar">To trenere som utfyller hverandre. Felles plattform, samme forventning til kvalitet og oppfølging.</p>
+    <div class="kort-2">
+      <a href="#" class="coach-kort"><span class="avatar stor">AK</span><span><b>Anders Kristiansen</b><span class="kilde">Head coach · Fredrikstad</span></span></a>
+      <a href="#" class="coach-kort"><span class="avatar stor lys">MR</span><span><b>Markus Roinas Pedersen</b><span class="kilde">Coach · Fredrikstad</span></span></a>
+    </div>
+  </section>
+  <section class="m-seksjon">
+    <span class="m-eyebrow">Hvor vi trener</span><h2 class="m-h2">Anlegg &amp; fasiliteter</h2>
+    <div class="kort-2">
+      <div class="anlegg-kort"><span class="m-eyebrow">Innendørs</span><b>Mulligan Indoor Golf</b><span class="forklar">TrackMan-simulatorer i Fredrikstad og Sarpsborg. Datadrevet trening og videoanalyse, åpent hele året.</span><div class="fakta-rad"><span>TrackMan</span><span>Videoanalyse</span><span>Årsåpent</span></div></div>
+      <div class="anlegg-kort"><span class="m-eyebrow">Utendørs</span><b>Gamle Fredrikstad GK</b><span class="forklar">Driving range, nærspill-områder og bane. Hovedanlegg for AK Golf Academy gjennom sesongen.</span><div class="fakta-rad"><span>Driving range</span><span>Nærspill</span></div></div>
+    </div>
+  </section>
+  <dl class="dl" style="max-width:520px"><div><dt>Org.nummer</dt><dd class="mono">927 248 581</dd></div><div><dt>Adresse</dt><dd>AK Golf Group AS, Fredrikstad, Norge</dd></div></dl>
+  <section class="slutt"><h2 class="m-h2">Start med en enkelt time, så ser vi sammen hva som er riktig vei videre for spillet ditt.</h2><div class="knapper"><a href="#" class="knapp pri">Book første time</a></div></section>
+</main></div>
+</template>
+
+<!-- ================= Kontakt ================= -->
+<template id="kontakt">
+<div class="app" data-skall="offentlig" data-aktiv="kontakt"><main class="innhold">
+  <div class="m-seksjon smal"><span class="m-eyebrow">Kontakt</span><h1 class="m-h2" style="font-size:40px">Ta kontakt</h1><p class="ingress" style="max-width:60ch">Spørsmål om coaching, junior-program eller bedriftsevent? Skriv noen ord under, eller ring oss direkte. Vi svarer innen 1 virkedag.</p></div>
+  <div class="m-to">
+    <form class="skjema" data-skjema>
+      <div class="felt"><label for="kn">Navn</label><input id="kn" placeholder="Ditt navn"></div>
+      <div class="felt"><label for="ke">E-post</label><input id="ke" type="email"></div>
+      <div class="felt"><label for="kt">Telefon (valgfritt)</label><input id="kt"></div>
+      <div class="felt"><label for="ktema">Tema</label><select id="ktema"><option>Coaching</option><option>Booking</option></select></div>
+      <div class="felt"><label for="km">Melding</label><textarea id="km" rows="4" placeholder="Skriv noen ord …"></textarea></div>
+      <button type="submit" class="knapp pri stor">Send melding</button>
+      <p class="kilde">Vi leser hver melding personlig. Ingen automat-svar, ingen ventelister.</p>
+    </form>
+    <div class="m-seksjon">
+      <div class="anlegg-kort"><b>Anders Kristiansen</b><span class="forklar">Ring eller send en SMS. Du kan også booke direkte på akgolf.no.</span><span class="mono">post@akgolf.no</span><a href="#" class="knapp sek" style="justify-self:start">Book direkte</a></div>
+      <p class="forklar">Vi holder til på tre anlegg: Mulligan Indoor Golf i Fredrikstad og Sarpsborg for innendørs trening hele året, og Gamle Fredrikstad Golfklubb for utendørs sesong.</p>
+      <div class="anlegg-kort"><b>Mulligan Indoor Golf Fredrikstad</b><span class="mono">Produksjonsveien 21, 1618 Fredrikstad</span><span class="forklar">Innendørs · 4× TrackMan 4 · åpent 07–00</span><a href="#" class="lenke">Vis i kart</a></div>
+      <div class="anlegg-kort"><b>Mulligan Indoor Golf Sarpsborg</b><span class="mono">Bjørnstadveien 12, 1712 Sarpsborg</span><span class="forklar">Innendørs · 2× TrackMan iO · åpent 07–00</span><a href="#" class="lenke">Vis i kart</a></div>
+      <div class="anlegg-kort"><b>Gamle Fredrikstad Golfklubb</b><span class="mono">Torsnesveien 16, 1630 Gamle Fredrikstad</span><span class="forklar">Utendørs · mai–oktober · 18 hull</span><a href="#" class="lenke">Vis i kart</a></div>
+    </div>
+  </div>
+  <section class="m-seksjon">
+    <div class="faq">
+      <details open><summary>Hvor raskt får jeg svar?</summary><p>Vi svarer på alle henvendelser innen 1 virkedag. Coaching-forespørsler prioriteres.</p></details>
+      <details><summary>Trenger jeg medlemskap for å booke?</summary><p>Nei. Du kan booke enkelttimer uten medlemskap. Abonnement gir bedre pris per time.</p></details>
+      <details><summary>Hvor holder dere til?</summary><p>Innendørs på Mulligan Indoor Golf i Fredrikstad og Sarpsborg, og utendørs på Gamle Fredrikstad Golfklubb fra mai til oktober.</p></details>
+      <details><summary>Tar dere bedriftsevent?</summary><p>Ja. Send oss en melding med dato og antall deltakere, så lager vi et tilpasset opplegg.</p></details>
+    </div>
+  </section>
+  <section class="slutt"><h2 class="m-h2">Du trenger ikke vente på svar. Book en økt direkte, eller send oss en e-post om du vil ta det skriftlig først.</h2><div class="knapper"><a href="#" class="knapp pri">Book en økt</a></div></section>
+</main></div>
+</template>
+
+<!-- ================= Artikler: liste ================= -->
+<template id="blogg">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="m-seksjon"><span class="m-eyebrow">Blogg · AK Golf Academy</span><h1 class="m-h2" style="font-size:40px">Tanker, metoder og lærdom</h1><p class="ingress" style="max-width:60ch">Innsikt fra treningshverdagen, analyse av norsk og internasjonal golf, og konkrete råd du faktisk kan bruke. Skrevet av coachene i AK Golf Academy.</p></div>
+  <div class="chips" data-gruppe aria-label="Filtrer på kategori"><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">Coaching</button><button type="button" aria-pressed="false">Junior</button><button type="button" aria-pressed="false">Mental</button><button type="button" aria-pressed="false">Utstyr</button></div>
+  <section class="m-seksjon"><span class="m-eyebrow">Utvalgt</span>
+    <a href="#" class="art-kort utvalgt" data-gaa="artikkel"><img src="bilder/turn-tee.jpg" alt=""><span class="tekst"><span class="m-eyebrow">Coaching · 10. mai 2026</span><b>Hvorfor struktur slår talent</b><span class="lenke">Les hele saken →</span></span></a>
+  </section>
+  <section class="m-seksjon"><h2 class="m-h2" style="font-size:24px">Nyere artikler</h2>
+    <div class="kort-3">
+      <a href="#" class="art-kort"><img src="bilder/naerspill-wedge.jpg" alt=""><span class="tekst"><span class="m-eyebrow">Coaching · 22. april 2026</span><b>Nærspill er hvor runden vinnes</b></span></a>
+      <a href="#" class="art-kort"><img src="bilder/slag-simulator.jpg" alt=""><span class="tekst"><span class="m-eyebrow">Coaching · 15. mars 2026</span><b>Datadrevet coaching uten overload</b></span></a>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= Artikler: artikkel ================= -->
+<template id="artikkel">
+<div class="app" data-skall="offentlig" data-tilbake="Blogg" data-tilbake-gaa="blogg"><main class="innhold">
+  <article class="artikkel">
+    <span class="m-eyebrow">Coaching · 10. mai 2026 · Anders Kristiansen</span>
+    <h1 class="m-h2" style="font-size:38px">Hvorfor struktur slår talent</h1>
+    <img src="bilder/turn-tee.jpg" alt="">
+    <p class="ingress">Artikkelteksten hentes fra bloggen. Malen viser ingress, mellomtitler, bilde og lenke videre.</p>
+    <h2>Mellomtittel</h2>
+    <p>Brødteksten står i 17 px med god linjeavstand og høyst 68 tegn per linje, så den leses som en artikkel og ikke som et skjema. Tall og målinger står i mono der de forekommer.</p>
+  </article>
+  <section class="slutt"><h2 class="m-h2">Vil du trene slik?</h2><a href="#" class="knapp pri">Book time</a></section>
+</main></div>
+</template>
+
+<!-- ================= Juridisk ================= -->
+<template id="juridisk">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="jur-to">
+    <nav class="innhold-nav" aria-label="Innhold"><b class="undertittel">Innhold</b><a href="#">1. Tjenestebeskrivelse</a><a href="#">2. Konto og bruk</a><a href="#">3. Abonnement og betaling</a></nav>
+    <article class="jur">
+      <span class="m-eyebrow">Vilkår</span>
+      <h1 class="m-h2" style="font-size:36px">Brukervilkår</h1>
+      <p class="ingress">Vilkår for bruk av AK Golf-tjenestene: booking, portal og coaching.</p>
+      <div class="utkast-boks"><b>Utkast.</b>Endelig versjon godkjennes med advokat før Q3 2026. Disse vilkårene gjelder dagens drift, men kan endres ved formell publisering. Vesentlige endringer varsles til registrerte brukere på e-post minst 30 dager før de trer i kraft.</div>
+      <h2>1. Tjenestebeskrivelse</h2>
+      <p>AK Golf («Tjenesten») er en SaaS-plattform for golfspillere og coacher levert av AK Golf Group AS, org.nr. 927 248 581, Bossumveien 6, 1605 Fredrikstad («vi», «oss», «AK Golf»).</p>
+      <p>Tjenesten omfatter blant annet PlayerHQ (spillerportal), AgencyOS (coach-portal), AI-coach, treningsplaner, booking, og tilhørende data- og analyseverktøy.</p>
+      <h2>2. Konto og bruk</h2>
+      <p>For å bruke Tjenesten må du opprette en brukerkonto. Du er ansvarlig for at opplysningene du oppgir er riktige, og for å beskytte påloggingsinformasjonen din.</p>
+      <p>Du må være minst 16 år for å opprette egen konto. For spillere under 16 år må en forelder eller foresatt opprette og forvalte kontoen.</p>
+      <h2>3. Abonnement og betaling</h2>
+      <p>Tjenesten tilbys som gratis-tier (begrenset) og Pro-tier (kr 300 per måned, inkl. mva). Pro-abonnement faktureres månedlig via Stripe og fornyes automatisk inntil oppsigelse.</p>
+    </article>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= Mulligan (eget merke) ================= -->
+<template id="mulligan">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <section class="mulligan">
+    <span class="mulligan-merke">Mulligan Indoor Golf</span>
+    <h1 class="m-h2" style="font-size:40px">Golf hele året. På TrackMan.</h1>
+    <p class="ingress">Seks simulatorer i Fredrikstad og Sarpsborg. Tren med tall, spill verdens beste baner, eller ta kvelden med venner. Åpent 07–24 hver dag.</p>
+    <div class="knapper"><a href="#" class="knapp pri">Se priser og book</a></div>
+    <img src="bilder/slag-simulator.jpg" alt="Golfspiller i mørk simulatorbay hos Mulligan">
+    <div class="kort-2">
+      <div class="anlegg-kort"><span class="m-eyebrow">Anleggene</span><b>Fredrikstad</b><span class="mono">Fairplay Padel Senter, Produksjonsveien 21</span><span class="forklar">4 × TrackMan 4</span></div>
+      <div class="anlegg-kort"><span class="m-eyebrow">Anleggene</span><b>Sarpsborg</b><span class="mono">Superland Quality Hotel, Bjørnstadveien 12</span><span class="forklar">2 × TrackMan iO</span></div>
+    </div>
+    <div class="kort-2">
+      <div style="display:grid;gap:8px"><h2 class="m-h2" style="font-size:26px">Tren med tall.</h2><p class="forklar">Samme målinger som touren bruker. Ballhastighet, spinn, bane og treffbilde — hvert slag gir deg svar, ikke gjetning.</p></div>
+      <div style="display:grid;gap:8px"><h2 class="m-h2" style="font-size:26px">Ta kvelden her.</h2><p class="forklar">Book hele lokalet en fredag eller lørdag: simulatorene, loungen og verdens beste baner — for vennegjengen, laget eller jobben.</p></div>
+    </div>
+    <div><h2 class="m-h2" style="font-size:26px;margin-bottom:8px">Priser</h2>
+      <div class="pris-rad"><span>Hverdager 07–15 og 22–24</span><b>325 kr/t</b></div>
+      <div class="pris-rad"><span>Hverdager og helg 15–22</span><b>375 kr/t</b></div>
+      <div class="pris-rad"><span>Spill en hel kveld (fre–lør 18–24), 2 simulatorer</span><b>3 000 kr</b></div>
+      <div class="pris-rad"><span>Spill en hel kveld (fre–lør 18–24), 4 simulatorer</span><b>4 500 kr</b></div>
+      <p class="forklar" style="margin-top:8px;font-size:13px">Prisene er Mulligans egne og står uendret fra dagens side.</p>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<script src="felles/flater.js"></script>
+<script>
+AKFlate.menyMaal = { coaching: 'coaching', junior: 'junior', priser: 'priser', om: 'om', kontakt: 'kontakt' };
+var std = { laster: 'Henter siden …', feil: 'Siden kunne ikke vises', feilTekst: 'Prøv igjen om litt. Du kan også booke direkte.' };
+function m(o) { var r = {}; for (var k in std) r[k] = std[k]; for (var j in o) r[j] = o[j]; return r; }
+AKFlate.start({
+  start: 'forside',
+  skjermer: {
+    forside: m({ tom: { tittel: 'Ingen bilder i arkivet', tekst: 'Bildearkivet skjules når det er tomt.' } }),
+    coaching: m({ tom: { tittel: 'Ingen tjenester kan bookes nå', tekst: 'Ta kontakt, så finner vi en tid.', knapp: 'Ta kontakt' } }),
+    priser: m({ tom: { tittel: 'Prisene kunne ikke hentes', tekst: 'Prisene leses fra tjenestelista. Prøv igjen om litt.' } }),
+    produkt: m({}),
+    junior: m({ tom: { tittel: 'Ingen grupper er åpne', tekst: 'Meld interesse, så tar vi kontakt før neste oppstart.', knapp: 'Meld interesse' } }),
+    filosofi: m({}),
+    om: m({ tom: { tittel: 'Ingen coacher å vise', tekst: 'Coachene vises når profilene er publisert.' } }),
+    kontakt: m({ etter: function (app) { app.querySelector('[data-skjema]').addEventListener('submit', function (e) { e.preventDefault(); AKFlate.toast(app, 'Meldingen er sendt.'); }); }, tom: { tittel: 'Skjemaet er stengt', tekst: 'Send e-post til post@akgolf.no.' } }),
+    blogg: m({ tom: { tittel: 'Ingen artikler i denne kategorien ennå', tekst: 'Prøv en annen kategori, eller kom tilbake senere — vi publiserer jevnlig.' } }),
+    artikkel: m({ tom: { tittel: 'Artikkelen finnes ikke', tekst: 'Den kan være flyttet.', knapp: 'Til bloggen' } }),
+    juridisk: m({}),
+    mulligan: m({})
+  }
+});
+</script>
