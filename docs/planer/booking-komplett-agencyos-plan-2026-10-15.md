@@ -111,6 +111,10 @@ Databaseendringer er additive via `db execute` (gotchas §Database), aldri `migr
 | 9 | **Rydding.** Gamle sider under `src/app/admin/(legacy)/` for services, availability, calendar og bookinger slettes når ingen kaller dem. E2E-testene for booking kjøres med `LOCAL_E2E=1` og `LOCAL_STRIPE_E2E=1` i CI eller dokumentert lokalt. | Ingen bookingfunksjon ligger utenfor AgencyOS. E2E er grønn og dokumentert. |
 | 10 | **Røyktest i Stripe live.** Anders gjør ett ekte kjøp av hver type (kort, klipp, gavekort, duo), coachen flytter og avlyser én, alt sjekkes i AgencyOS, e-post og Google. Deretter refusjon. | Dokumentert i `docs/`. Først da kan nettstedsplanens steg 10 (domenet) gjøres. |
 
+**Pågår alt (15.10):** grenen `claude/booking-avlys-flytt` (en annen økt) bygger steg 1: coach
+avlyser med full refusjon, foreslår ny tid, betalingsmåte og avvisning som utkast. Steg 1 her
+fullføres der; denne planen tar ikke over arbeidet, bare sjekker at ferdigkriteriet nås.
+
 Rekkefølgen er valgt slik at det coachen gjør hver dag (steg 1 til 4) kommer først, det kunden
 mangler fra Acuity (5 til 7) deretter, og det som gjør systemet bedre enn Acuity (8) til slutt.
 
