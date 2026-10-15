@@ -16,6 +16,10 @@
  * - Tjenester har ikke et «trekker klipp»-felt i ServiceType; det er derfor
  *   ikke tegnet inn i tjeneste-arket (ingen data å vise).
  * - «Timepris»-fallback i tegningen er demodata; pris er alltid ServiceType.priceOre.
+ *
+ * Fanen «Tjenester og pris» (bookingplanen steg 2, 15.10.2026): opprett, endre,
+ * slå av og på, og slett tjenester her, med sted, coach, kategori, buffer,
+ * minste varsel og maks dager fram. Den gamle siden /admin/services sender hit.
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -24,7 +28,9 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Avatar, Knapp, KnappLenke, Nokkelverdier, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
 import { bekreftBooking, avvisBooking } from "@/app/admin/(legacy)/bookinger/actions";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
-import type { AG06Booking } from "@/app/admin/bookinger/data";
+import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
+import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, type TjenesteInput } from "@/app/admin/bookinger/tjeneste-actions";
+import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-kategori";
 import "@/styles/agencyos-ny-kalender.css";
 
 const TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avvist: "noy" };
@@ -37,6 +43,8 @@ export type AG06Props = {
   navn: string;
   bookinger: AG06Booking[];
   valg: BookingValg;
+  tjenester: AG06Tjeneste[];
+  tjenesteValg: AG06TjenesteValg;
   fane?: "foresp" | "alle" | "ny" | "tj";
 };
 
@@ -51,7 +59,7 @@ function Ark({ tittel, dato, onClose, children, knapper }: { tittel: string; dat
   </div>;
 }
 
-export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Props) {
+export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fane: initialFane }: AG06Props) {
   const [fane, setFane] = useState(initialFane ?? "foresp");
   const [sel, setSel] = useState<string | null>(null);
   const [rej, setRej] = useState<AG06Booking | null>(null);
@@ -91,7 +99,7 @@ export function AG06Booking({ navn, bookinger, valg, fane: initialFane }: AG06Pr
   } else if (fane === "ny") {
     body = <NyBookingSkjema valg={valg} onOpprettet={() => { setFane("alle"); router.refresh(); }} />;
   } else {
-    body = <TjenestePanel tjenester={valg.tjenester} />;
+    body = <TjenestePanel tjenester={tjenester} valg={tjenesteValg} />;
   }
 
   const FANER = [
@@ -196,14 +204,166 @@ function NyBookingSkjema({ valg, onOpprettet }: { valg: BookingValg; onOpprettet
   </div>;
 }
 
-function TjenestePanel({ tjenester }: { tjenester: BookingValg["tjenester"] }) {
+const NY_TJENESTE: TjenesteInput = {
+  name: "", description: "", priceOre: 0, durationMin: 50, maxDeltakere: 1, coachUserId: null, locationId: null,
+  kategori: "drop-in", bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, active: true,
+};
+
+function tilInput(t: AG06Tjeneste): TjenesteInput {
+  return {
+    name: t.navn, description: t.beskrivelse ?? "", priceOre: t.prisOre, durationMin: t.varighetMin, maxDeltakere: t.maxDeltakere,
+    coachUserId: t.coachUserId, locationId: t.locationId, kategori: t.kategori, bufferForMin: t.bufferForMin,
+    bufferEtterMin: t.bufferEtterMin, minVarselTimer: t.minVarselTimer, maksDagerFram: t.maksDagerFram, active: t.aktiv,
+  };
+}
+
+type TjenesteSvar = { ok: true; id: string } | { ok: false; feil: string };
+
+function TjenestePanel({ tjenester, valg }: { tjenester: AG06Tjeneste[]; valg: AG06TjenesteValg }) {
+  const [redigerer, setRedigerer] = useState<AG06Tjeneste | "ny" | null>(null);
+  const [slett, setSlett] = useState<AG06Tjeneste | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+  const router = useRouter();
+
+  const aktive = tjenester.filter((t) => t.aktiv);
+  const avslatte = tjenester.filter((t) => !t.aktiv);
+
+  const kjor = (fn: () => Promise<TjenesteSvar>, etter?: () => void) => {
+    start(async () => {
+      try {
+        const res = await fn();
+        if (!res.ok) { setFeil(res.feil); return; }
+        setFeil(null);
+        etter?.();
+        router.refresh();
+      } catch (e) {
+        setFeil(e instanceof Error ? e.message : "Endringen kunne ikke lagres.");
+      }
+    });
+  };
+
+  const rad = (t: AG06Tjeneste) => <button key={t.id} type="button" className="bk-rad" onClick={() => { setRedigerer(t); setFeil(null); }}>
+    <span className="ikonboks" aria-hidden>{t.varighetMin}</span>
+    <span><b>{t.navn}</b><span className="kilde">
+      {t.varighetMin} min · maks {t.maxDeltakere} {t.maxDeltakere === 1 ? "deltaker" : "deltakere"} · {t.coachNavn ?? "Felles"} · {t.stedNavn ?? "Sted ikke satt"} · {kategoriNavn(t.kategori)}
+    </span></span>
+    <b className="mono">{kr(t.prisOre)}</b>
+  </button>;
+
   return <div className="seksjon">
-    {tjenester.length === 0 ? <Tom tittel="Ingen tjenester" /> : <div className="liste" role="list">
-      {tjenester.map((t) => <div key={t.id} role="listitem"><span className="ikonboks" aria-hidden>{t.varighetMin}</span>
-        <span><b>{t.navn}</b><span className="kilde">{t.varighetMin} min · maks {t.maxDeltakere} deltakere</span></span>
-        <b className="mono">{kr(t.prisOre)}</b></div>)}
-    </div>}
-    <p className="kilde">Kilde: tjenestene i appen.</p>
-    <div className="knapper"><KnappLenke href="/admin/services">Endre tjenester og pris</KnappLenke></div>
+    {feil && !redigerer && <Varsel tone="advarsel">{feil}</Varsel>}
+    <div className="knapper"><Knapp onClick={() => { setRedigerer("ny"); setFeil(null); }}>Ny tjeneste</Knapp></div>
+    {aktive.length === 0 ? <Tom tittel="Ingen aktive tjenester" tekst="Opprett en tjeneste for å kunne ta imot bookinger." /> : <div className="liste" role="list">{aktive.map(rad)}</div>}
+    {avslatte.length > 0 && <>
+      <b className="undertittel">Avslått ({avslatte.length})</b>
+      <div className="liste" role="list">{avslatte.map(rad)}</div>
+    </>}
+    <p className="kilde">Pris, varighet, sted og bookingregler leses fra tjenesten. Buffer, minste varsel og maks dager fram styrer hvilke tider kundene får tilbudt.</p>
+
+    {redigerer && <TjenesteArk
+      key={redigerer === "ny" ? "ny" : redigerer.id}
+      tjeneste={redigerer === "ny" ? null : redigerer}
+      valg={valg}
+      feil={feil}
+      pending={pending}
+      onClose={() => { setRedigerer(null); setFeil(null); }}
+      onLagre={(input) => kjor(
+        () => redigerer === "ny" ? opprettTjeneste(input) : oppdaterTjeneste(redigerer.id, input),
+        () => setRedigerer(null),
+      )}
+      onAktiv={(t, aktiv) => kjor(() => settTjenesteAktiv(t.id, aktiv), () => setRedigerer(null))}
+      onSlett={(t) => setSlett(t)}
+    />}
+
+    {slett && <div className="dialog-lag"><div role="dialog" aria-modal="true" aria-label="Slette tjenesten?" className="dialog">
+      <h2>Slette tjenesten?</h2>
+      <p className="forklar">{slett.navn} fjernes for godt fra tjenestelisten. Ingen bookinger peker på den.</p>
+      <div className="knapper">
+        <Knapp variant="rust" disabled={pending} onClick={() => kjor(() => slettTjeneste(slett.id), () => { setSlett(null); setRedigerer(null); })}>Slett</Knapp>
+        <Knapp variant="spok" onClick={() => setSlett(null)}>Avbryt</Knapp>
+      </div>
+    </div></div>}
   </div>;
+}
+
+/** Tallfelt: tom streng blir 0, så feltet kan tømmes mens man skriver. Komma godtas. */
+function tall(v: string): number {
+  const n = Number(v.replace(",", "."));
+  return Number.isFinite(n) ? n : 0;
+}
+
+export function TjenesteArk({ tjeneste, valg, feil, pending, onClose, onLagre, onAktiv, onSlett }: {
+  tjeneste: AG06Tjeneste | null;
+  valg: AG06TjenesteValg;
+  feil: string | null;
+  pending: boolean;
+  onClose: () => void;
+  onLagre: (input: TjenesteInput) => void;
+  onAktiv: (t: AG06Tjeneste, aktiv: boolean) => void;
+  onSlett: (t: AG06Tjeneste) => void;
+}) {
+  const [f, setF] = useState<TjenesteInput>(tjeneste ? tilInput(tjeneste) : NY_TJENESTE);
+  const [prisKr, setPrisKr] = useState(String(f.priceOre / 100));
+  const sett = <K extends keyof TjenesteInput>(k: K, v: TjenesteInput[K]) => setF((x) => ({ ...x, [k]: v }));
+  const navnFeil = f.name.trim().length > 0 && f.name.trim().length < 2;
+
+  const lagre = () => onLagre({ ...f, priceOre: Math.round(tall(prisKr) * 100) });
+
+  return <Ark dato={tjeneste ? "Tjeneste" : "Ny tjeneste"} tittel={tjeneste ? tjeneste.navn : "Ny tjeneste"} onClose={onClose}
+    knapper={<>
+      <Knapp stor disabled={pending || f.name.trim().length < 2} onClick={lagre}>{pending ? "Lagrer …" : tjeneste ? "Lagre" : "Opprett tjeneste"}</Knapp>
+      {tjeneste && (tjeneste.aktiv
+        ? <Knapp variant="rust" stor disabled={pending} onClick={() => onAktiv(tjeneste, false)}>Slå av</Knapp>
+        : <Knapp variant="sek" stor disabled={pending} onClick={() => onAktiv(tjeneste, true)}>Slå på</Knapp>)}
+      {tjeneste && tjeneste.antallBookinger === 0 && <Knapp variant="rust" stor disabled={pending} onClick={() => onSlett(tjeneste)}>Slett</Knapp>}
+      <Knapp variant="spok" stor onClick={onClose}>Avbryt</Knapp>
+    </>}>
+    {feil && <Varsel tone="advarsel">{feil}</Varsel>}
+    <label className="felt"><span className="etikett">Navn</span>
+      <input value={f.name} onChange={(e) => sett("name", e.target.value)} placeholder="Flex 50 min" autoComplete="off" />
+      {navnFeil && <span className="feiltekst">Navnet må ha minst 2 tegn.</span>}</label>
+    <label className="felt"><span className="etikett">Beskrivelse (valgfritt)</span>
+      <textarea rows={2} value={f.description ?? ""} onChange={(e) => sett("description", e.target.value)} /></label>
+    <div className="to-felt">
+      <label className="felt"><span className="etikett">Varighet (min)</span>
+        <input type="number" inputMode="numeric" min={5} max={600} step={5} value={f.durationMin} onChange={(e) => sett("durationMin", tall(e.target.value))} /></label>
+      <label className="felt"><span className="etikett">Pris (kr)</span>
+        <input type="text" inputMode="decimal" value={prisKr} onChange={(e) => setPrisKr(e.target.value)} />
+        <span className="hjelp">{kr(Math.round(tall(prisKr) * 100))} · lagres som {Math.round(tall(prisKr) * 100).toLocaleString("nb-NO")} øre</span></label>
+    </div>
+    <label className="felt"><span className="etikett">Coach</span>
+      <select value={f.coachUserId ?? ""} onChange={(e) => sett("coachUserId", e.target.value || null)}>
+        <option value="">Felles (alle coacher)</option>
+        {valg.coacher.map((c) => <option key={c.id} value={c.id}>{c.navn}</option>)}
+      </select></label>
+    <label className="felt"><span className="etikett">Sted</span>
+      <select value={f.locationId ?? ""} onChange={(e) => sett("locationId", e.target.value || null)}>
+        <option value="">Ikke satt (gjettes fra navnet)</option>
+        {valg.steder.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}
+      </select></label>
+    <div className="to-felt">
+      <label className="felt"><span className="etikett">Maks deltakere</span>
+        <input type="number" inputMode="numeric" min={1} max={20} value={f.maxDeltakere} onChange={(e) => sett("maxDeltakere", tall(e.target.value))} /></label>
+      <label className="felt"><span className="etikett">Kategori</span>
+        <select value={f.kategori ?? ""} onChange={(e) => sett("kategori", e.target.value || null)}>
+          <option value="">Ikke satt</option>
+          {TJENESTE_KATEGORIER.map((k) => <option key={k.verdi} value={k.verdi}>{k.navn}</option>)}
+        </select></label>
+    </div>
+    <div className="to-felt">
+      <label className="felt"><span className="etikett">Buffer før (min)</span>
+        <input type="number" inputMode="numeric" min={0} max={240} step={5} value={f.bufferForMin} onChange={(e) => sett("bufferForMin", tall(e.target.value))} /></label>
+      <label className="felt"><span className="etikett">Buffer etter (min)</span>
+        <input type="number" inputMode="numeric" min={0} max={240} step={5} value={f.bufferEtterMin} onChange={(e) => sett("bufferEtterMin", tall(e.target.value))} /></label>
+    </div>
+    <div className="to-felt">
+      <label className="felt"><span className="etikett">Minste varsel (timer)</span>
+        <input type="number" inputMode="numeric" min={0} max={720} value={f.minVarselTimer} onChange={(e) => sett("minVarselTimer", tall(e.target.value))} /></label>
+      <label className="felt"><span className="etikett">Maks dager fram</span>
+        <input type="number" inputMode="numeric" min={1} max={365} value={f.maksDagerFram} onChange={(e) => sett("maksDagerFram", tall(e.target.value))} /></label>
+    </div>
+    <label className="felt avkryss"><input type="checkbox" checked={f.active} onChange={(e) => sett("active", e.target.checked)} /><span className="etikett">Aktiv (kan bookes)</span></label>
+    {tjeneste && <p className="kilde">Adresse: /booking/{tjeneste.slug} · {tjeneste.antallBookinger} {tjeneste.antallBookinger === 1 ? "booking" : "bookinger"}{tjeneste.antallBookinger > 0 ? " · kan ikke slettes, bare slås av" : ""}</p>}
+  </Ark>;
 }
