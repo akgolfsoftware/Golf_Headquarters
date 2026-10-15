@@ -116,8 +116,8 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
       React.createElement(WangTester, { campus: 'Fredrikstad' })
     );
 
-    assert.ok(html.includes('Tester og testbatteri'), 'Skal vise testseksjon');
-    assert.ok(html.includes('WG-03'), 'Skal referere til WG-03');
+    assert.ok(html.includes('Til kontroll'), 'Skal vise kontrollkøen');
+    assert.ok(html.includes('Markløft trapbar'), 'Skal vise testbatteriet');
   });
 
   test('WangKonkurranse: rendrer kalender, rapportering, analyse og DataGolf', () => {
