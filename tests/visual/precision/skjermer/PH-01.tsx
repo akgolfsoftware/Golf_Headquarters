@@ -1,6 +1,7 @@
 /** Prøvefil for PH-01 I dag i nytt design (utkast 4). Syntetiske data fra utkastet: mandag 5. oktober 2026, uke 41. */
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH01IDag, type PH01Props } from "@/components/portal/precision/PH01IDag";
+import { PH01IDagLaster } from "@/components/portal/precision/PH01IDagLaster";
 import { OKT_BILDER } from "@/lib/portal/okt-bilde";
 
 export const sti = "/portal";
@@ -47,5 +48,6 @@ export const tilstander = {
   data: <Vis />,
   utenForslag: <Vis godkjenninger={[]} />,
   tom: <Vis tilstand="tom" ingress="Ingen økter i dag." okter={[]} nesteId={null} godkjenninger={[]} uka={null} maal={[]} forbedring={[]} etterlevelse={null} fireukerssjekk={null} agenda={[]} fys={null} turn={null} fullfort={null} dagsform={null} />,
+  laster: <PlayerHQSkall innboksHref="#" uleste={0}><PH01IDagLaster /></PlayerHQSkall>,
   feil: <Vis tilstand="feil" />,
 };
