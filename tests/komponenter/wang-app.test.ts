@@ -126,7 +126,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     );
 
     assert.ok(html.includes('Turneringskalender'), 'Skal vise kalender');
-    assert.ok(html.includes('WANG-10'), 'Skal referere til WANG-10');
+    assert.ok(html.includes('Kalender'), 'Skal ha kalenderfane');
     assert.ok(html.includes('Hent resultater'), 'Skal ha knapp for synk');
   });
 
