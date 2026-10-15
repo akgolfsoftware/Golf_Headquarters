@@ -1,4 +1,10 @@
-/** Own-session registry with Precision Athletics scorecards and canonical results. */
+/**
+ * Own-session registry with Precision Athletics scorecards and canonical results.
+ * Gate-testene (Wedge Gate, Nærspill Gate, VISA Express, Driver Gate) og 8-ball føres i nytt design
+ * (PH-15 og PH-15-TN, pakke 6, godkjent av Anders 14.10.2026). Fasit: docs/design-system/utkast-playerhq/stats-dybde.html.
+ * Avvik:
+ *   - Avvikene mot utkastet står øverst i PH15TnTest.tsx. De andre testene bruker fortsatt det generelle scorekortet.
+ */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -10,6 +16,7 @@ import { tnFromDefinitionId, tnDefinitionId, tnComparableResult } from "@/lib/po
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TnLocalDrafts } from "./local-drafts";
 import { TnScorecard } from "./scorecard";
+import { PH15TnTest, ph15TnType } from "@/components/portal/precision/PH15TnTest";
 import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank";
 import { foreslaGodkjenteOvelser, ovelsesNavn } from "@/lib/portal-tester/test-anbefaling";
 import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
@@ -20,6 +27,8 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const query = await searchParams;
   let content;
+  // Ny skjerm for gate og 8-ball: rendres uten den gamle sideflaten.
+  let ny: React.ReactNode = null;
   if (query.participant) {
     const participant = await prisma.testDayParticipant.findFirst({
       where: { id: query.participant, playerId: user.id, status: "PENDING", testDay: { status: "ACTIVE" } },
@@ -36,6 +45,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
       ? { sessionId: participant.session!.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: participant.session!.status }
       : undefined;
     if (participant.session && !initial) notFound();
+    if (ph15TnType(p)) ny = <PH15TnTest key={`${participant.id}-${participant.sessionId ?? "new"}`} protocol={p} initial={initial} localSessionId={participant.sessionId ? undefined : crypto.randomUUID()} testDayParticipantId={participant.id} kontekst={`${participant.testDay.title} · ${participant.testDay.group.name}`} />;
     content = <><h1>{participant.testDay.title}</h1><p>{participant.testDay.group.name} · {p.name}</p><TnScorecard key={`${participant.id}-${participant.sessionId ?? "new"}`} protocol={p} initial={initial} localSessionId={participant.sessionId ? undefined : crypto.randomUUID()} testDayParticipantId={participant.id} /></>;
   } else if (query.session) {
     const row = await prisma.testSession.findFirst({ where: { id: query.session, userId: user.id } });
@@ -68,6 +78,17 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     // beskjed i stedet. Et FULLFØRT resultat vises fortsatt normalt (det er
     // spillerens egen, ekte historikk).
     const testdagKobling = row.status === "IN_PROGRESS" ? await prisma.testDayParticipant.findFirst({ where: { sessionId: row.id, playerId: user.id, status: "PENDING", testDay: { status: "ACTIVE" } }, select: { id: true } }) : null;
+    const forslagListe = row.status === "COMPLETED" && saved.success ? (
+      <section className="phn-kort" aria-label="Øvelsesforslag">
+        <h2>Øvelser å vurdere etter testen</h2>
+        <p className="phn-forklar">Dette er ikke en diagnose eller en endring i treningsplanen. Ta resultatet og forslagene med coachen.</p>
+        {forslag.length ? <ul className="phn-forslag">{forslag.map(({ ovelse, kanLeggesTil, begrunnelse }) => <li key={ovelse.id}>
+          <b>{ovelsesNavn(ovelse.navn)}</b><span>{ovelse.beskrivelse}</span><small>{kanLeggesTil ? "Fasiliteten er bekreftet. " : ""}{begrunnelse}</small>
+        </li>)}</ul> : <p className="phn-forklar">Ingen godkjent øvelse er koblet til denne testen ennå.</p>}
+        <ResultatKontekst />
+      </section>
+    ) : null;
+    if (!testdagKobling && ph15TnType(p)) ny = <PH15TnTest savedResult={saved.success ? saved.data : undefined} key={row.id} protocol={p} initial={{ sessionId: row.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: row.status }} etter={forslagListe} />;
     content = testdagKobling ? (
       <p>Denne økten hører til en testdag. <Link href={`?participant=${testdagKobling.id}`}>Fortsett registreringen</Link></p>
     ) : (
@@ -92,6 +113,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     content = p.variableCount && query.count === undefined
       ? <form><h1>{p.name}</h1><input type="hidden" name="test" value={p.id} /><label>Antall slag før start <input type="number" name="count" min={1} max={200} defaultValue={p.rows.length} /></label><button type="submit">Velg antall</button></form>
       : <TnScorecard key={`${p.id}-${p.rows.length}-${localSessionId}`} protocol={p} localSessionId={localSessionId} />;
+    if (!(p.variableCount && query.count === undefined) && ph15TnType(p)) ny = <PH15TnTest key={`${p.id}-${p.rows.length}-${localSessionId}`} protocol={p} localSessionId={localSessionId} />;
   } else {
     const assignments = await prisma.testAssignment.findMany({ where: { playerId: user.id, status: "OPEN", testId: { startsWith: "tn-v3-" } }, orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }], select: { id: true, testId: true, dueDate: true, note: true } });
     const sessions = await prisma.testSession.findMany({ where: { userId: user.id, testId: { startsWith: "tn-v3-" } }, orderBy: { startedAt: "desc" }, take: 100 });
@@ -128,5 +150,6 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     </>;
   }
   const uleste = await prisma.notification.count({ where: { userId: user.id, readAt: null } });
+  if (ny) return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>{ny}</PlayerHQSkall>;
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}><div className="pa-side" style={{ maxWidth: 1120, margin: "auto" }}><Link href="/portal/tren/tester">Alle tester</Link>{content}</div></PlayerHQSkall>;
 }

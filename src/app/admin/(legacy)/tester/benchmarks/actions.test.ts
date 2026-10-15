@@ -70,6 +70,7 @@ mock.module("@/lib/auth/requirePortalUser", {
     },
   },
 });
+mock.module("@/lib/auth/effective-capabilities", { namedExports: { assertCapability: async () => undefined } });
 mock.module("@/lib/admin/benchmark-sync", {
   namedExports: {
     runBenchmarkSync: async () => {

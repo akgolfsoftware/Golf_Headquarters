@@ -67,6 +67,12 @@ export type TestRow = {
   shotsCount: number;
   /** TestAssignment.dueDate, formatert DD.MM — null uten aktiv tildeling. */
   forfallDato: string | null;
+  /** Siste resultat som ISO-tid (PH-14 i nytt design). */
+  latestAt?: string | null;
+  /** Siste resultat ført av coach (`recordedById` satt) = «Kontrollert», ellers «Egenført». */
+  latestKontrollert?: boolean | null;
+  /** TestAssignment.dueDate som ISO-tid, for neste testdag. */
+  forfallAt?: string | null;
 };
 
 export type AxisGroup = {
@@ -165,7 +171,7 @@ export async function loadTesterScreen(user: {
     }),
     prisma.testResult.findMany({
       where: { userId: user.id },
-      select: { id: true, testId: true, score: true, takenAt: true },
+      select: { id: true, testId: true, score: true, takenAt: true, recordedById: true },
       orderBy: { takenAt: "asc" },
     }),
     prisma.testSession.findMany({
@@ -196,10 +202,10 @@ export async function loadTesterScreen(user: {
   }
 
   // Resultater gruppert per test, eldste→nyeste (input er allerede asc).
-  const resultsByTest = new Map<string, { score: number; takenAt: Date }[]>();
+  const resultsByTest = new Map<string, { score: number; takenAt: Date; recordedById: string | null }[]>();
   for (const r of results) {
     const arr = resultsByTest.get(r.testId) ?? [];
-    arr.push({ score: r.score, takenAt: r.takenAt });
+    arr.push({ score: r.score, takenAt: r.takenAt, recordedById: r.recordedById });
     resultsByTest.set(r.testId, arr);
   }
 
@@ -265,6 +271,9 @@ export async function loadTesterScreen(user: {
       scoringKind: spec.kind,
       shotsCount: spec.shots.length,
       forfallDato: forfallRaw ? ddmm(forfallRaw) : null,
+      latestAt: last ? last.takenAt.toISOString() : null,
+      latestKontrollert: last ? last.recordedById != null : null,
+      forfallAt: forfallRaw ? forfallRaw.toISOString() : null,
     };
     rowsByAxis.get(axis)!.push(row);
   }
