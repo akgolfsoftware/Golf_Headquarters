@@ -5,7 +5,6 @@ import { AG13LiveOkt } from "@/components/admin/precision/AG13LiveOkt";
 import type { LiveOktData } from "@/lib/agencyos/live-okt-data";
 
 export const sti = "/admin/agencyos/live/s1";
-export const natt = ["utenOpptak", "medOpptak"];
 
 const base: LiveOktData = {
   id: "s1",
@@ -31,7 +30,7 @@ const base: LiveOktData = {
 
 const Vis = (d: LiveOktData) => (
   <AdminRolleProvider erAdmin>
-    <AgencyOSSkall navn="Test Coach" natt>
+    <AgencyOSSkall navn="Test Coach">
       <AG13LiveOkt data={d} />
     </AgencyOSSkall>
   </AdminRolleProvider>
