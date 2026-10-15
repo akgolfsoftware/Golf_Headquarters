@@ -4,7 +4,7 @@ description: >
   Komplett arkitektur for AgencyOS — coach/admin i AK Golf HQ (/admin).
   Bruk ALLTID ved AgencyOS, admin, stall, cockpit, coach-workbench, godkjenninger,
   AI-hub, Caddie, booking-admin, sidemeny/hub, "bygg i AgencyOS", ny admin-side.
-  FORBUDT i UI: CoachHQ. Les ALLTID før admin-kode. Versjon 2026-09-11.
+  FORBUDT i UI: CoachHQ. Les ALLTID før admin-kode. Versjon 2026-10-15.
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -29,19 +29,22 @@ Kanon: `docs/platform/AGENT-BRIEF.md`. Design og meny følger `designsystem/READ
 
 ## Navigasjon (praktisk)
 
-| Område | Eksempel-ruter |
-|--------|----------------|
-| Cockpit | `/admin/agencyos` |
-| Stall | `/admin/spillere` |
-| Workbench / plan | `/admin/planlegge`, spiller-workbench |
-| Godkjenninger | `/admin/godkjenninger` |
-| Caddie | `/admin/caddie` |
-| Agenter | `/admin/agents` |
-| Agent-team | `/admin/agent-team` |
-| Kalender / bookinger | `/admin/kalender`, `/admin/bookinger` |
-| Innboks e-post | `/admin/innboks-epost` |
+Menyen har seks punkter (beslutninger.md §SKJERMENE … RUNDE 8, 28.09): **Cockpit · Innboks · Stall · Kalender · Workbench · Mer**. Mer har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett.
 
-Chrome: `V2Shell` + `AGENCYOS_NAV` (`src/components/v2/shell.tsx`).
+| Menypunkt | Rute |
+|-----------|------|
+| Cockpit | `/admin/agencyos` |
+| Innboks | `/admin/innboks` (e-post: `/admin/innboks-epost`) |
+| Stall | `/admin/stall` (spillerliste også på `/admin/spillere`) |
+| Kalender | `/admin/kalender`, bookinger `/admin/bookinger` |
+| Workbench | `/admin/workbench`, planlegging `/admin/planlegge` |
+| Mer | Booking · Grupper (`/admin/grupper`) · Tester (`/admin/tester`) · Økonomi (`/admin/agencyos/okonomi`) · Oppsett |
+
+Utenfor menyen: Godkjenninger `/admin/godkjenninger`, Caddie `/admin/agencyos/caddie`, Agenter `/admin/agents`, Agent-team `/admin/agent-team`.
+
+**Oppgaver kommer bare fra Notion** (Tasks og Prosjekter). Oppgavelista i appen (`/admin/oppgaver`) utgår; ikke bygg videre på den.
+
+Skall: Precision-skallet `AgencyOSSkall` (`src/components/precision/AgencyOSSkall.tsx`). `V2Shell` + `AGENCYOS_NAV` (`src/components/v2/shell.tsx`) lever videre for eldre sider.
 
 ## AI-laget (AgenticOS i produktet) — LÅST
 
@@ -53,7 +56,7 @@ Låst plassering (PR #122, 2026-07-24):
 |--------------------|-----|
 | **Hjem** `/admin/agencyos` | AI-dispatch-panel («AgenticOS · AI-dispatch»), «én ting NÅ» |
 | **Kø** `/admin/godkjenninger` | Godkjenn AI-forslag (PlanAction, CaddieDraft) — merket AgenticOS |
-| **Mer → gruppe «AgenticOS»** | Kø, Caddie, AI-agenter, Agent-team, Daglig brief |
+| **Mer** | AI-inngangene Caddie (`/admin/agencyos/caddie`), AI-agenter, Agent-team og Daglig brief ligger under Mer (fem faste punkter, 28.09) |
 | Cockpit-eyebrow | `AgencyOS · AgenticOS` |
 
 ```
@@ -72,9 +75,9 @@ Skills: `agenticos`, `agenticos-cockpit`, `playerhq-agents` (pipeline; kode i `s
 
 | Tema | Sti |
 |------|-----|
-| Cockpit UI | `src/components/admin/v2/CockpitV2.tsx` |
-| Cockpit data | `src/lib/agencyos/daily-brief-data.tsx` |
-| AI-dispatch | `src/lib/agencyos/ai-dispatch-data.ts`, `AiDispatchPanelV2.tsx` |
+| Cockpit UI | `src/components/admin/precision/AG01Cockpit.tsx` (montert i `src/app/admin/agencyos/page.tsx`) |
+| Cockpit data | `src/lib/agencyos/daily-brief-data.tsx`, `src/lib/agencyos/cockpit-precision.ts`, `src/lib/agencyos/cockpit-tillegg.ts` |
+| AI-dispatch | `src/lib/agencyos/ai-dispatch-data.ts`, `src/lib/agencyos/ai-dispatch-build.ts`, `src/lib/agencyos/cockpit-view.ts`; vist i `src/components/admin/v2/konsoll/KonsollChat.tsx` |
 | Agenter | `src/lib/agents/*`, cron i `vercel.json` |
 | Caddie | `src/lib/caddie/*`, `src/app/api/caddie/*` |
 | Auth | `requirePortalUser`, `canAccessMissionControl`, CBAC i `src/lib/auth/cbac.ts` |
@@ -91,7 +94,3 @@ Skills: `agenticos`, `agenticos-cockpit`, `playerhq-agents` (pipeline; kode i `s
 ## Scope-grense
 
 Ikke bygg spillerportal her (PlayerHQ). Ikke marketing. Ikke ny app ved siden av `/admin`.
-
-## Deprecated
-
-`coachhq-arkitektur` / `coachhq-agents` peker hit / til `agenticos`. Ikke utvid de gamle skillene.
