@@ -36,7 +36,7 @@ export const UTTAKSKRITERIER = [
   {
     nummer: "Kriterium 2",
     tittel: "Prestasjoner",
-    tekst: "Testresultater og målinger fra fellestesting. Antall tester i tabellen over sier hvor mye som faktisk er målt.",
+    tekst: "Testresultater og målinger fra fellestesting. Antall tester per spiller står i Spillerutvikling og sier hvor mye som faktisk er målt.",
     kilde: "Kilde: TN-batteriet, fellestesting",
   },
   {
