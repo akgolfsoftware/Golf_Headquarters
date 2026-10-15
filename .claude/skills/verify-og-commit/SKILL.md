@@ -1,7 +1,9 @@
 ---
 name: verify-og-commit
 description: Kjør full kvalitetsgate (npm run verify) og kontrollert lagring på arbeidsgren for AK Golf HQ. Bruk ALLTID denne skillen når en oppgave er ferdig og skal committes, når brukeren sier "verifiser", "commit", "push", "er det grønt?", "kjør verify", eller før enhver Pull Request. Trigger også når en implementasjon er fullført og neste naturlige steg er å sikre kvalitet og lagre arbeidet.
-Versjon: 3 (kontrollert 2026-09-12)
+metadata:
+  version: "4"
+  reviewed: "2026-10-15"
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -13,7 +15,7 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
 ## Prosess
 
 1. **Status først:** `git status -sb` + `git diff --stat`. Bekreft at du er på en
-   arbeidsgren — ALDRI på main (main er Anders' port, se CLAUDE.md §Git-arbeidsflyt).
+   arbeidsgren — ALDRI på main (main er Anders' port, se AGENTS.md §Git-arbeidsflyt).
 2. **Sikkerhet og personvern:** Hvis diffen rører `src/`, `prisma/`, `proxy.ts`,
    `vercel.json`, auth, betaling, filer, logger, AI eller `docs/gdpr/`: les
    [ak-sikkerhet](../ak-sikkerhet/SKILL.md) og
@@ -35,7 +37,7 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
    aldri `--no-verify`.
 6. **Commit:** Conventional Commits på engelsk (`feat:`, `fix:`, `chore:`, `docs:` …),
    én logisk endring per commit. Skjerm-endringer: ferdig-definisjonen per skjerm i
-   skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid må være oppfylt før
+   skjermbilde-gaten i `AGENTS.md` §Skjermarbeid må være oppfylt før
    skjermen regnes som ferdig (skjermbilde til Anders, mobil 390px + desktop, lys + mørk,
    fasit ved siden av, alle fire tilstander, én primærhandling etter den gjeldende fasiten, klikk-verifisert).
 7. **Ekstern lagring og publisering:** push, PR, merge og deploy følger brukerens gjeldende autorisasjon. Denne skillen gir ikke i seg selv tillatelse til slike handlinger. Fullfør autorisert lokalt arbeid og rapporter konkret hva som er kontrollert før en eventuell nødvendig publiseringsbeslutning.
