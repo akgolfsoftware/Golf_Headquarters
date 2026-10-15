@@ -23,7 +23,7 @@ import {
   Timer,
   ExternalLink,
 } from 'lucide-react';
-import wangLogo from '../../../designsystem/wang/assets/wang-logo-horizontal.svg';
+const wangLogo = '/team-wang/wang-logo-horizontal.svg';
 
 export type WangOmraade =
   | 'idag'
@@ -154,7 +154,7 @@ export function WangAppSkall({
   return (
     <div className="wg-shell">
       <aside className="wg-side" aria-label="Hovedmeny">
-        <Image className="wg-logo" src={wangLogo} alt="WANG Toppidrett" priority />
+        <Image className="wg-logo" src={wangLogo} alt="WANG Toppidrett" width={190} height={64} priority unoptimized />
         <p className="wg-gruppe">Golf · WANG Fredrikstad</p>
         <nav style={{ display: 'grid', gap: 2 }} aria-label="WANG">
           {menyLenker()}
@@ -175,7 +175,7 @@ export function WangAppSkall({
             >
               {visMobilMeny ? <X size={22} aria-hidden /> : <Menu size={22} aria-hidden />}
             </button>
-            <Image className="wg-logo" src={wangLogo} alt="WANG Toppidrett" priority />
+            <Image className="wg-logo" src={wangLogo} alt="WANG Toppidrett" width={190} height={64} priority unoptimized />
           </span>
           <span style={{ font: '700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif)', color: 'var(--wg-tekst-2)' }}>{rolle}</span>
         </header>
