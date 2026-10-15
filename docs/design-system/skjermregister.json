@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "36c8d6055a287f48e8ea0a449d8ae745d47f8361",
+  "kodeversjon": "e631123e7aa08a43711c858645f459bbf4c6c377",
   "inventar": {
     "pageFiles": 545,
     "uniqueRoutePatterns": 545,
