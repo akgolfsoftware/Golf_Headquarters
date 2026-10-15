@@ -1,17 +1,27 @@
 "use client";
 
 /**
- * PH-IUP-01 Fireukerssjekk (04.10.2026). Design: docs/design-handoff/design/playerhq/PH-IUP.jsx.txt (FT).
+ * PH-IUP-01 Fireukerssjekk i nytt design (pakke 9 IUP og gameplan).
+ * Fasit: docs/design-system/utkast-playerhq/iup.html, skjermene «sjekk» og «levert». Stil: src/styles/playerhq-ny-iup.css.
+ *
  * Bare for aktive WANG-/Team Norway-medlemmer; siden sjekker tilgangen på serveren.
  * Hvert svar lagres som en revisjon via lagreIupAction. Feiler lagringen, ligger
  * forespørselen i kø på enheten (localStorage) og sendes med samme requestId ved
  * «Prøv igjen», så serveren aldri lagrer den to ganger.
+ *
+ * Avvik:
+ *   - Merket øverst sier «IUP · nivå» (Junior eller Ung), ikke gruppenavnet: dataene for sjekken har ikke gruppenavnet.
+ *   - Alle spørsmål må fortsatt besvares før levering (som før). Tegningen lar spilleren levere med «—» på ubesvarte.
+ *   - Skalaforklaringen bruker kildens ord (1 ikke i det hele tatt oppfylt · 5 helt oppfylt), ikke utkastets «svakt/sterkt»,
+ *     som er åpent hos Anders.
+ *   - «Se svarene» etter levering er ikke med: en levert runde åpnes ikke for endring her. Knappene er «Til I dag» og «Til målsetninger».
+ *   - Knappen «Vis lagringsfeil (eksempel)» er en demoknapp i tegningen og er ikke med. Køen vises når lagringen faktisk feiler.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-IUP-01.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, CloudOff, Loader, RotateCw, Send } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, Check, ChevronLeft, CloudOff, Loader } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { Knapp, Meta, Sidehode, StatusPille, Tall } from "@/components/precision/pa";
 import { usePaToast } from "@/components/precision/pa-toast";
 import { lagreIupAction } from "@/app/portal/mal/evaluering/actions";
 import {
@@ -20,7 +30,8 @@ import {
 } from "@/lib/iup/fireukerssjekk";
 import { UTVIKLINGSSJEKK_SKALA, type IupBesvarelse } from "@/lib/iup/utviklingssjekk";
 import type { FireukerData } from "@/lib/iup/fireukerssjekk-data";
-import "@/styles/precision-iup.css";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-iup.css";
 
 type Forespørsel = {
   type: "UTVIKLINGSSJEKK"; periodeStart: string; periodeSlutt: string;
@@ -28,44 +39,45 @@ type Forespørsel = {
 };
 type Lagring = { s: "ny" } | { s: "lagrer" } | { s: "lagret"; t: string } | { s: "ko" } | { s: "konflikt" };
 
-const SKALA_TEKST = UTVIKLINGSSJEKK_SKALA.map((s) => s.tekst);
 const klokke = () => new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" }).format(new Date());
 const datoNo = (iso: string) => iso.split("-").reverse().join(".");
+const bredde = (v: number | null) => (v == null ? 0 : (v / 5) * 100);
+const retning = (naa: number | null, forrige: number | null) =>
+  naa == null || forrige == null ? "" : naa - forrige > 0.04 ? " opp" : naa - forrige < -0.04 ? " ned" : "";
 
-function Kort({ k, meta, label, children }: { k: string; meta?: string; label?: string; children: React.ReactNode }) {
-  return <section aria-label={label ?? k} className="pa-card iup27-kort">
-    <div className="iup27-hode"><span className="kicker">{k}</span>{meta != null && <Meta>{meta}</Meta>}</div>
-    {children}
-  </section>;
-}
-
-function Skala({ tekst, verdi, velg, forrige }: { tekst: string; verdi?: number; velg: (n: number) => void; forrige?: number | null }) {
-  return <div role="group" aria-label={tekst} style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
-    <span className="iup27-spm">{tekst}</span>
-    <div className="iup27-skala">{[1, 2, 3, 4, 5].map((n) =>
-      <button key={n} type="button" aria-pressed={verdi === n} aria-label={`${n} av 5 · ${SKALA_TEKST[n - 1]}`} onClick={() => velg(n)}>{n}</button>)}
+function Topp({ niva, ukeFra, ukeTil, tittel }: { niva: string; ukeFra: number; ukeTil: number; tittel: string }) {
+  return <div className="topp">
+    <Link href="/portal" className="tilbake"><ChevronLeft size={20} aria-hidden />I dag</Link>
+    <div>
+      <span className="iup-merke">IUP · {niva}</span>
+      <h1 className="phn-tittel">{tittel}</h1>
+      <span className="phn-dato">Uke {ukeFra}–{ukeTil}</span>
     </div>
-    <Meta>{verdi ? `${verdi} · ${SKALA_TEKST[verdi - 1].toUpperCase()}` : "IKKE BESVART"}{forrige != null ? ` · FORRIGE ${forrige}` : ""}</Meta>
   </div>;
 }
 
-function Lagrelinje({ st, provIgjen }: { st: Lagring; provIgjen: () => void }) {
-  if (st.s === "ko") return <div role="alert" className="iup27-ko">
-    <CloudOff size={16} aria-hidden /><span>Ikke lagret. Svarene ligger i kø på denne enheten og sendes når du prøver igjen.</span>
-    <Knapp variant="secondary" size="sm" icon={RotateCw} iconName="rotate-cw" onClick={provIgjen}>Prøv igjen</Knapp>
+function Lagrestatus({ st }: { st: Lagring }) {
+  if (st.s === "ko" || st.s === "konflikt") return <span className="lagring feil" role="status"><CloudOff size={16} aria-hidden />Ikke lagret</span>;
+  if (st.s === "lagrer") return <span className="lagring" role="status"><Loader size={16} aria-hidden />Lagrer …</span>;
+  if (st.s === "lagret") return <span className="lagring ok" role="status"><Check size={16} aria-hidden />Lagret {st.t}</span>;
+  return <span className="lagring" role="status">Lagres mens du svarer</span>;
+}
+
+function Ko({ st, provIgjen }: { st: Lagring; provIgjen: () => void }) {
+  if (st.s === "ko") return <div role="alert" className="ko">
+    <AlertTriangle size={20} aria-hidden />
+    <span><b>Svarene er ikke lagret</b><span className="phn-kilde">De ligger i kø på denne enheten og sendes når du prøver igjen.</span></span>
+    <button type="button" className="phn-knapp sek" onClick={provIgjen}>Prøv igjen</button>
   </div>;
-  if (st.s === "konflikt") return <div role="alert" className="iup27-ko">
-    <CloudOff size={16} aria-hidden /><span>Svarene er endret på en annen enhet. Last siden på nytt for å se siste versjon.</span>
-    <Knapp variant="secondary" size="sm" icon={RotateCw} iconName="rotate-cw" onClick={() => window.location.reload()}>Last på nytt</Knapp>
+  if (st.s === "konflikt") return <div role="alert" className="ko">
+    <AlertTriangle size={20} aria-hidden />
+    <span><b>Svarene er endret på en annen enhet</b><span className="phn-kilde">Last siden på nytt for å se siste versjon.</span></span>
+    <button type="button" className="phn-knapp sek" onClick={() => window.location.reload()}>Last på nytt</button>
   </div>;
-  return <div role="status" className="iup27-lagret">
-    {st.s === "lagrer" ? <Loader size={14} aria-hidden /> : <Check size={14} aria-hidden />}
-    <Meta>{st.s === "lagrer" ? "LAGRER …" : st.s === "lagret" ? `LAGRET ${st.t}` : "LAGRES MENS DU SVARER"}</Meta>
-  </div>;
+  return null;
 }
 
 export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: FireukerData; uleste: number; startSteg?: number }) {
-  const router = useRouter();
   const toast = usePaToast();
   const { runde, niva } = data;
   const omraader = useMemo(() => fireukerOmraader(niva), [niva]);
@@ -166,13 +178,16 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
     { k: "Prosessmål", n: data.prosessmal.length, ferdig: data.prosessmal.filter((m) => pm[m.id]).length, qs: null as null | typeof omraader[number]["sporsmal"] },
     ...omraader.map((o) => ({ k: o.kategori, n: o.sporsmal.length, ferdig: o.sporsmal.filter((s) => svar[s.id]).length, qs: o.sporsmal })),
   ];
-  const alle = [...steg_, { k: "Lever", n: 0, ferdig: 0, qs: null, lever: true as const }];
+  const antallSteg = steg_.length + 1;
+  const erLever = steg >= steg_.length;
+  const naa = steg_[Math.min(steg, steg_.length - 1)];
   const besvart = omraader.reduce((a, o) => a + o.sporsmal.filter((s) => svar[s.id]).length, 0);
   const mangler = steg_.filter((s) => s.ferdig < s.n);
-  const naa = alle[steg];
   const forrigeSvar = data.forrige?.besvarelse.svar ?? null;
   const forrigePm = data.forrige?.besvarelse.prosessmal ?? null;
-  const serSvarene = data.serSvarene?.toUpperCase() ?? null;
+  const alleSporsmal = omraader.flatMap((o) => o.sporsmal);
+
+  const gaaTil = (i: number) => { setSteg(i); window.scrollTo({ top: 0 }); };
 
   const lever = async () => {
     setProvd(true);
@@ -182,124 +197,138 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
     const ok = await send("LEVERT");
     if (!ok) return;
     setLevert(new Date().toISOString().slice(0, 10));
-    toast.vis("Fireukerssjekken er levert", serSvarene ?? undefined);
+    toast.vis("Fireukerssjekken er levert", data.serSvarene ?? undefined);
     window.scrollTo({ top: 0 });
   };
 
-  const hode = <Sidehode kicker="I dag · Fireukerssjekk" title={`Fireukerssjekk · uke ${runde.ukeFra}–${runde.ukeTil}`}
-    sub={`Prosessmål og utviklingssjekk. Nivå ${NIVA_NAVN[niva]}, ${total} spørsmål i ${omraader.length} områder, skala 1–5.`} />;
-  const neste = (() => { const s = new Date(`${runde.periodeSlutt}T00:00:00Z`); s.setUTCDate(s.getUTCDate() + 1); return s; })();
-
   if (levert) {
     const rader = omraader.map((o) => [o.kategori, snitt(o.sporsmal, svar), snitt(o.sporsmal, forrigeSvar)] as const);
+    const totalNaa = snitt(alleSporsmal, svar);
+    const totalForrige = snitt(alleSporsmal, forrigeSvar);
+    const tr = retning(totalNaa, totalForrige);
     return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="pa-side iup27-side">
-        {hode}
-        <Kort k="Levert" meta={datoNo(levert)}>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-            <StatusPille tone="ok">Levert</StatusPille>
-            <span className="iup27-tittel">{data.serSvarene ? `${data.serSvarene}. ` : ""}Neste runde starter {datoNo(neste.toISOString().slice(0, 10))}.</span>
+      <div className="phn phn-iup" data-od-id="playerhq-iup-fireuker-levert">
+        <Topp niva={NIVA_NAVN[niva]} ukeFra={runde.ukeFra} ukeTil={runde.ukeTil} tittel="Fireukerssjekk levert" />
+        <div className="to-del">
+          <div>
+            <section className="phn-kort" aria-label="Levert">
+              <span className="hake"><Check size={28} strokeWidth={2.5} aria-hidden /></span>
+              <div className="phn-hoved">
+                <strong>{desimal(totalNaa)}</strong>
+                {data.forrige && <span className={`phn-trend${tr}`}>{endring(totalNaa, totalForrige)}</span>}
+              </div>
+              <p className="phn-forklar">Snitt av {total} svar, skala 1–5. {data.forrige ? `Forrige runde uke ${data.forrige.runde.ukeFra}–${data.forrige.runde.ukeTil}.` : "Dette er første runde, så det er ingen å sammenligne med."}</p>
+              <p className="phn-kilde">Levert {datoNo(levert)}.{data.serSvarene ? ` ${data.serSvarene}.` : ""} Neste runde starter etter uke {runde.ukeTil}.</p>
+            </section>
+            <section className="phn-seksjon" aria-label="Prosessmål">
+              <div className="phn-sek-topp"><h2>Prosessmål</h2></div>
+              {data.prosessmal.length === 0 ? <p className="phn-forklar">Ingen aktive prosessmål.</p>
+                : <ul className="historikk">{data.prosessmal.map((m) => <li key={m.id}><span>{m.tittel}</span><b>{pm[m.id] ? PROSESS_NAVN[pm[m.id]] : "—"}</b></li>)}</ul>}
+            </section>
           </div>
-        </Kort>
-        <div className="iup27-levert">
-          <Kort k="Utvikling per område" meta={data.forrige ? `SNITT MOT UKE ${data.forrige.runde.ukeFra}–${data.forrige.runde.ukeTil}` : "FØRSTE RUNDE"}>
-            <div role="table" aria-label="Utvikling per område">
-              <div role="row" className="iup27-tabell-hode">{["OMRÅDE", "NÅ", "FORRIGE", "ENDRING"].map((h, i) => <span key={h} role="columnheader" className={i ? "iup27-hoyre" : undefined}><Meta>{h}</Meta></span>)}</div>
-              {rader.map(([t, a, b]) => <div role="row" key={t} className="iup27-tabell-rad">
-                <span role="cell" className="iup27-navn">{t}</span>
-                <span role="cell" className="iup27-hoyre"><Tall>{desimal(a)}</Tall></span>
-                <span role="cell" className="iup27-hoyre"><Tall style={{ color: "var(--text-secondary)" }}>{desimal(b)}</Tall></span>
-                <span role="cell" className="iup27-hoyre"><Tall>{endring(a, b)}</Tall></span>
-              </div>)}
+          <div>
+            <section className="phn-seksjon" aria-label="Per område">
+              <div className="phn-sek-topp"><h2>Per område</h2>
+                <span className="phn-lg-rad"><span className="phn-lg"><i style={{ background: "var(--phn-g900)" }} />Nå</span>
+                  {data.forrige && <span className="phn-lg"><i style={{ background: "var(--phn-amber-700)", width: 3 }} />Uke {data.forrige.runde.ukeFra}–{data.forrige.runde.ukeTil}</span>}</span>
+              </div>
+              <div className="snitt-rader" role="list">
+                {rader.map(([t, a, b]) => <div key={t} className="snitt-rad" role="listitem" aria-label={`${t}: nå ${desimal(a)}, forrige ${desimal(b)}`}>
+                  <b>{t}</b>
+                  <div className="snitt-spor" aria-hidden="true">
+                    <span className="naa" style={{ width: `${bredde(a)}%` }} />
+                    {b != null && <span className="forr" style={{ left: `${bredde(b)}%` }} />}
+                  </div>
+                  <span className="v">{desimal(a)}{b != null && <span className={`endr${retning(a, b)}`}>{endring(a, b)}</span>}</span>
+                </div>)}
+              </div>
+              <p className="phn-kilde">Skala 1–5 · IUP 2027.</p>
+            </section>
+            <section className="phn-seksjon" aria-label="Historikk">
+              <div className="phn-sek-topp"><h2>Tidligere runder</h2></div>
+              {data.historikk.length === 0 ? <p className="phn-forklar">Dette er første leverte runde.</p> : <>
+                {data.historikk.some((h) => h.versjon === "iup-2025") && <p className="phn-forklar">Spørsmålene var andre i 2025, så de tallene står for seg og sammenlignes ikke.</p>}
+                <ul className="historikk">{data.historikk.map((h, i) => <li key={`${h.versjon}-${h.levert}-${i}`}>
+                  <span>Uke {h.ukeFra}–{h.ukeTil} · IUP {h.versjon.replace("iup-", "")}</span><b>{datoNo(h.levert)}</b>
+                </li>)}</ul>
+              </>}
+            </section>
+            <div className="phn-knapper">
+              <Link href="/portal" className="phn-knapp pri">Til I dag</Link>
+              <Link href="/portal/mal" className="phn-knapp sek">Til målsetninger</Link>
             </div>
-            <Meta>SKALA 1–5 · IUP 2027</Meta>
-          </Kort>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
-            <Kort k="Prosessmål">
-              {data.prosessmal.length === 0 ? <p className="iup27-muted">Ingen aktive prosessmål.</p> : data.prosessmal.map((m) => <div key={m.id} className="iup27-pm">
-                <span style={{ font: "400 14px/1.35 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{m.tittel}</span>
-                <Meta style={{ color: "var(--text-primary)" }}>{pm[m.id] ? PROSESS_NAVN[pm[m.id]].toUpperCase() : "—"}</Meta>
-              </div>)}
-            </Kort>
-            <Kort k="Historikk">
-              {data.historikk.length === 0 ? <p className="iup27-muted">Dette er første leverte runde.</p> : data.historikk.map((h, i) => <div key={`${h.versjon}-${h.levert}-${i}`} style={{ display: "flex", flexDirection: "column", gap: 2, paddingTop: i ? 8 : 0, borderTop: i ? "1px solid var(--border-hairline)" : "none" }}>
-                <span className="iup27-navn">Uke {h.ukeFra}–{h.ukeTil} · IUP {h.versjon.replace("iup-", "")}</span>
-                <Meta>{datoNo(h.levert)}{h.versjon === "iup-2025" ? " · EGET SPØRSMÅLSSETT. SAMMENLIGNES IKKE MED 2027." : ""}</Meta>
-              </div>)}
-            </Kort>
           </div>
         </div>
-        <div><Knapp variant="secondary" icon={ArrowLeft} iconName="arrow-left" onClick={() => router.push("/portal")}>Til I dag</Knapp></div>
       </div>
       {toast.el}
     </PlayerHQSkall>;
   }
 
-  const navRad = <div className="iup27-nav">
-    {steg > 0 && <Knapp variant="ghost" icon={ArrowLeft} iconName="arrow-left" onClick={() => setSteg(steg - 1)}>Forrige</Knapp>}
-    <span className="iup27-fyll" />
-    {!("lever" in naa) && <Knapp variant={naa.ferdig === naa.n ? "primary" : "secondary"} iconRight={ArrowRight} onClick={() => setSteg(steg + 1)}>
-      {"lever" in alle[steg + 1] ? "Gå til levering" : `Neste: ${alle[steg + 1].k}`}
-    </Knapp>}
-  </div>;
-
   let innhold: React.ReactNode;
-  if (steg === 0) innhold = <Kort k="Prosessmål" meta={`${naa.ferdig} AV ${naa.n}`}>
-    <p className="iup27-muted">Har du fulgt prosessmålene de fire siste ukene?</p>
-    {data.prosessmal.length === 0 && <p className="iup27-muted">Ingen aktive prosessmål. Legg dem inn i Workbench › Målsetninger.</p>}
-    {data.prosessmal.map((m) => <div key={m.id} role="group" aria-label={m.tittel} className="iup27-rad">
-      <span className="iup27-spm">{m.tittel}</span>
-      <div className="iup27-valg">{PROSESS_SVAR.map((o) => <button key={o} type="button" aria-pressed={pm[m.id] === o} onClick={() => velgPm(m.id, o)}>{PROSESS_NAVN[o]}</button>)}</div>
-      {forrigePm?.[m.id] && <Meta>FORRIGE {PROSESS_NAVN[forrigePm[m.id]].toUpperCase()}</Meta>}
-    </div>)}
-    {navRad}
-  </Kort>;
-  else if (!("lever" in naa) && naa.qs) innhold = <Kort k={naa.k} meta={`${naa.ferdig} AV ${naa.n} BESVART`}>
-    <Meta>1 IKKE I DET HELE TATT OPPFYLT · 3 MODERAT · 5 HELT OPPFYLT</Meta>
-    {naa.qs.map((s) => <div key={s.id} className="iup27-rad">
-      <Skala tekst={s.tekst} verdi={svar[s.id]} velg={(n) => velgSvar(s.id, n)} forrige={forrigeSvar?.[s.id] ?? null} />
-    </div>)}
-    {navRad}
-  </Kort>;
-  else innhold = <Kort k="Lever" meta={`${besvart} AV ${total} SVAR`}>
-    <div role="list">{steg_.map((s, i) => <button role="listitem" type="button" key={s.k} className="iup27-leverrad" onClick={() => setSteg(i)}>
-      <span className="iup27-navn">{s.k}</span>
-      <Meta style={{ color: s.ferdig < s.n ? "var(--signal-ink)" : undefined }}>{s.ferdig} AV {s.n}</Meta>
-      {s.qs ? <Tall style={{ minWidth: 32, textAlign: "right" }}>{desimal(snitt(s.qs, svar))}</Tall> : <span style={{ minWidth: 32 }} />}
-    </button>)}</div>
-    {provd && mangler.length > 0 && <Meta style={{ color: "var(--signal-ink)" }}>SVAR PÅ ALT FØR DU LEVERER · {mangler.map((s) => s.k.toUpperCase()).join(", ")}</Meta>}
-    <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <span style={{ font: "500 13px/1.3 var(--font-sans)", color: "var(--text-secondary)" }}>Noe trenerne bør vite? (valgfritt)</span>
-      <textarea className="iup27-tekstfelt" aria-label="Noe trenerne bør vite" rows={3} maxLength={2000} value={notat} placeholder="Mye skole i uke 38." onChange={(e) => skrivNotat(e.target.value)} />
-    </label>
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <Knapp size="lg" icon={Send} iconName="send" onClick={() => void lever()} loading={lagring.s === "lagrer"} loadingText="Lagrer …">Lever fireukerssjekken</Knapp>
-      <Knapp variant="ghost" onClick={() => router.push("/portal")}>Fortsett senere</Knapp>
-    </div>
-    {serSvarene && <Meta>{serSvarene} NÅR DU LEVERER</Meta>}
-  </Kort>;
-
-  const stegliste = <Kort k="Steg" meta={`${besvart} AV ${total} SVAR`} label="Steg">
-    <div role="list" style={{ display: "flex", flexDirection: "column" }}>{alle.map((s, i) => {
-      const ok = !("lever" in s) && s.n > 0 && s.ferdig === s.n;
-      return <button key={s.k} role="listitem" type="button" className="iup27-steg" aria-current={i === steg ? "step" : undefined} onClick={() => setSteg(i)}>
-        <span>{s.k}</span>{!("lever" in s) && <Meta>{s.ferdig} AV {s.n}</Meta>}
-        <span style={{ width: 16, display: "inline-flex", color: "var(--text-primary)" }}>{ok && <Check size={14} aria-hidden />}</span>
-      </button>;
+  if (steg === 0) innhold = <>
+    <div className="omr-tittel"><h2>Prosessmål</h2><span className="phn-kilde">Siste fire uker</span></div>
+    <p className="phn-forklar">Har du gjort det du satte deg fore? Målsetningene ligger i Workbench.</p>
+    {data.prosessmal.length === 0 ? <p className="phn-forklar">Ingen aktive prosessmål. Legg dem inn i Workbench › Målsetninger.</p>
+      : <div className="spm-liste">{data.prosessmal.map((m) => <div key={m.id} className={`spm${pm[m.id] ? " besvart" : ""}`}>
+        <p>{m.tittel}</p>
+        <div className="tre" role="group" aria-label={m.tittel}>{PROSESS_SVAR.map((o) =>
+          <button key={o} type="button" aria-pressed={pm[m.id] === o} onClick={() => velgPm(m.id, o)}>{PROSESS_NAVN[o]}</button>)}</div>
+        {forrigePm?.[m.id] && <span className="phn-kilde">Forrige runde: {PROSESS_NAVN[forrigePm[m.id]]}</span>}
+      </div>)}</div>}
+  </>;
+  else if (!erLever && naa.qs) innhold = <>
+    <div className="omr-tittel"><h2>{naa.k}</h2><span className="phn-kilde">{naa.ferdig} av {naa.n} besvart</span></div>
+    <div className="skal-forklar"><span>1 {UTVIKLINGSSJEKK_SKALA[0].tekst.toLowerCase()}</span>{forrigeSvar && <span>Streken viser forrige svar</span>}<span>5 {UTVIKLINGSSJEKK_SKALA[4].tekst.toLowerCase()}</span></div>
+    <div className="spm-liste">{naa.qs.map((s) => {
+      const forrige = forrigeSvar?.[s.id] ?? null;
+      return <div key={s.id} className={`spm${svar[s.id] ? " besvart" : ""}`}>
+        <p>{s.tekst}</p>
+        <div className="skal" role="group" aria-label={s.tekst}>{[1, 2, 3, 4, 5].map((n) =>
+          <button key={n} type="button" aria-pressed={svar[s.id] === n} className={forrige === n ? "forrige" : undefined}
+            title={forrige === n ? "Forrige svar" : undefined}
+            aria-label={`${n} av 5 · ${UTVIKLINGSSJEKK_SKALA[n - 1].tekst}${forrige === n ? " · forrige svar" : ""}`}
+            onClick={() => velgSvar(s.id, n)}>{n}</button>)}</div>
+      </div>;
     })}</div>
-  </Kort>;
+  </>;
+  else innhold = <>
+    <div className="omr-tittel"><h2>Klar til å levere?</h2><span className="phn-kilde">{besvart} av {total} besvart</span></div>
+    <p className="phn-forklar">{mangler.length ? "Svar på alt før du leverer. Trykk på et område for å gå dit." : "Alle spørsmålene er besvart."}{data.serSvarene ? ` ${data.serSvarene} når du leverer.` : ""}</p>
+    <div className="omr-oversikt">{steg_.map((s, i) => <button key={s.k} type="button" onClick={() => gaaTil(i)}>
+      <b>{s.k}</b>
+      <span className={`n${s.ferdig < s.n ? " mangler" : ""}`}>{s.ferdig} / {s.n}</span>
+      <span className="s">{s.qs ? desimal(snitt(s.qs, svar)) : ""}</span>
+    </button>)}</div>
+    {provd && mangler.length > 0 && <p className="advarsel" role="alert">Mangler svar i {mangler.map((s) => s.k).join(", ")}.</p>}
+    <div className="phn-felt">
+      <label htmlFor="iup-notat">Noe trenerne bør vite? (valgfritt)</label>
+      <textarea id="iup-notat" rows={3} maxLength={2000} value={notat} placeholder="Mye skole i uke 38." onChange={(e) => skrivNotat(e.target.value)} />
+    </div>
+  </>;
 
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-    <div className="pa-side iup27-side">
-      {hode}
-      <Lagrelinje st={lagring} provIgjen={provIgjen} />
-      <div className="iup27-mobbar">
-        <Meta>STEG {steg + 1} AV {alle.length} · {naa.k.toUpperCase()} · {besvart} AV {total} SVAR</Meta>
-        <div aria-hidden="true" className="iup27-fremdrift"><div style={{ width: `${Math.round((steg / (alle.length - 1)) * 100)}%` }} /></div>
-      </div>
-      <div className="iup27-kol">
-        <div className="iup27-stegliste">{stegliste}</div>
-        {innhold}
+    <div className="phn phn-iup" data-od-id="playerhq-iup-fireuker">
+      <div className="smal">
+        <Topp niva={NIVA_NAVN[niva]} ukeFra={runde.ukeFra} ukeTil={runde.ukeTil} tittel="Fireukerssjekk" />
+        <div className="flyt">
+          <div className="steg-topp">
+            <div className="rad">
+              <span className="phn-kilde">Steg {steg + 1} av {antallSteg}{steg > 0 && !erLever ? ` · ${naa.k}` : ""} · {besvart} av {total} svar</span>
+              <Lagrestatus st={lagring} />
+            </div>
+            <div className="stolpe" aria-hidden="true"><span style={{ width: `${((steg + 1) / antallSteg) * 100}%` }} /></div>
+          </div>
+          <Ko st={lagring} provIgjen={provIgjen} />
+          <div className="steg">{innhold}</div>
+          <div className="navigasjon">
+            {steg > 0
+              ? <button type="button" className="phn-knapp sek" onClick={() => gaaTil(steg - 1)}>Tilbake</button>
+              : <Link href="/portal" className="phn-knapp sek">Fortsett senere</Link>}
+            {erLever
+              ? <button type="button" className="phn-knapp pri" disabled={lagring.s === "lagrer"} onClick={() => void lever()}>{lagring.s === "lagrer" ? "Lagrer …" : "Lever sjekken"}</button>
+              : <button type="button" className="phn-knapp pri" onClick={() => gaaTil(steg + 1)}>Neste</button>}
+          </div>
+        </div>
       </div>
     </div>
     {toast.el}
