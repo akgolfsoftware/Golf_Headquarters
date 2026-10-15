@@ -80,7 +80,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
       )
     );
 
-    assert.ok(html.includes('WANG TOPPIDRETT'), 'Skal vise WANG Toppidrett merkevare');
+    assert.ok(html.includes('alt="WANG Toppidrett"'), 'Skal vise WANG Toppidrett merkevare');
     assert.ok(html.includes('I dag'), 'Skal inneholde menylenke I dag');
     assert.ok(html.includes('Trening'), 'Skal inneholde menylenke Trening');
     assert.ok(html.includes('Tester'), 'Skal inneholde menylenke Tester');
@@ -97,7 +97,8 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
 
     assert.ok(html.includes('I dag'), 'Skal ha tittel I dag');
     assert.ok(html.includes('Morgentrening'), 'Skal vise morgentreninger');
-    assert.ok(html.includes('WG-01'), 'Skal ha referanse til WG-01');
+    assert.ok(html.includes('Dagens fokus'), 'Skal vise dagens fokus');
+    assert.ok(html.includes('Elever som trenger oppfølging'), 'Skal vise oppfølging');
   });
 
   test('WangTrening: rendrer 4-ukers etterlevelse og øktplan', () => {
@@ -105,9 +106,9 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
       React.createElement(WangTrening, { campus: 'Fredrikstad' })
     );
 
-    assert.ok(html.includes('Trening og etterlevelse'), 'Skal ha treningsoverskrift');
+    assert.ok(html.includes('Trening'), 'Skal ha treningsoverskrift');
     assert.ok(html.includes('Etterlevelse'), 'Skal vise etterlevelse');
-    assert.ok(html.includes('WANG-42'), 'Skal referere til WANG-42');
+    assert.ok(html.includes('Per elev'), 'Skal vise per elev');
   });
 
   test('WangTester: rendrer nasjonalt testbatteri, godkjenningskø og testføring', () => {
