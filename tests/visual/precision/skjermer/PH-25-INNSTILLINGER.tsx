@@ -5,7 +5,7 @@ import { PH24MegFeil, PH24MegLaster } from "@/components/portal/precision/PH24Me
 
 export const sti = "/portal/meg/innstillinger";
 
-const slett = async () => ({ ok: true as const });
+const slett = async () => ({ ok: true as const, alleredeSendt: false });
 const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}>{children}</PlayerHQSkall>;
 
 export const tilstander = {
