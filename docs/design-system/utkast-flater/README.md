@@ -1,6 +1,6 @@
 # Øvrige flater i nytt design — utkast
 
-Status: **utkast 1 tegnes 15.10.2026. Ingen gruppe er godkjent ennå.** Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
+Status: **utkast 1 av alle sju grupper er tegnet 15.10.2026. Ingen gruppe er godkjent ennå.** Oversikt: [samlesiden](samleside.html). Målestokk: [designbrevet 13.10](../designbrev-2026-10-13.md).
 Bestilling (Anders 15.10): «Tegn nå alle resterende skjermer.» Samme metode som [PlayerHQ-utkastene](../utkast-playerhq/README.md)
 og [AgencyOS-utkastene](../utkast-agencyos/README.md): én HTML-fil og én PR per gruppe, publisert som privat Artifact til Anders.
 
@@ -16,6 +16,7 @@ og [AgencyOS-utkastene](../utkast-agencyos/README.md): én HTML-fil og én PR pe
 | 5 GFGK Junior og system | GJ-01 (forside, gruppe, treningsplaner, kalender), GJ-02 (kunnskapsbase, artikkel), SY-01 (404, 500, vedlikehold, ikke tilgang, frakoblet) | `gfgk-system.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XoX64HHB4yBazhdTWPYCtZ |
 | 6 Bookinge-postene | EP-01 (gjest og appbruker), EP-02, EP-03, EP-04, EP-05 (utkast hos coach), EP-06, e-postsikker mal 600 px | `epost.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/BdnNgxqZDqXPX7RM6DxzkH |
 | 7 Markedssidene | Forside, Tjenester (coaching), Priser, Produkt (AK Golf HQ), Junior, Innholdsside (slik trener vi, cases, suksess), Om oss og coacher (+ anlegg, jobb), Kontakt (+ spørsmål og svar), Artikler (liste og artikkel), Juridisk, Mulligan som eget merke | `marked.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/1rY9iXperGRR4PXgZTtDTA |
+| 8 Samleside | Alle lenker på én side med status, `samleside.html` | — | **Ferdig** (15.10) | https://claude.ai/artifact/8yDiaFFL9RcZrtUrGSnSk6 |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` (avsnittene Forelder, Konto, Booking, Statistikk,
 GFGK Junior og system) og vedtakene i `.claude/rules/beslutninger.md`. Ord: `docs/treningsplanlegging.md`.
