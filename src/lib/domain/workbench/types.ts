@@ -676,6 +676,18 @@ export interface YearPeriodBand {
   plannedToDateMinutes: number;
   completedMinutes: number;
   turneringer: { navn: string; dato: string }[];
+  /** Rullet ut fra en gruppes årsplan (PeriodBlock.sourceGroupId satt). */
+  fraGruppe?: boolean;
+  /** PeriodBlock.notes. */
+  notat?: string | null;
+}
+
+/** Én ISO-uke i årsgrafen (PH-11-AR): lagt inn per akse og gjennomført. */
+export interface YearWeekRow {
+  weekStart: string; // mandag, YYYY-MM-DD
+  weekNumber: number;
+  plannedByPyramid: Record<PyramidArea, number>;
+  completedMinutes: number;
 }
 
 export interface YearViewModel {
@@ -686,6 +698,8 @@ export interface YearViewModel {
   plannedToDateMinutes: number;
   completedMinutes: number;
   completedByPyramid: Record<PyramidArea, number>;
+  /** ISO-ukene der torsdagen ligger i året. */
+  weeks?: YearWeekRow[];
   mode: WorkbenchMode;
 }
 
@@ -696,6 +710,8 @@ export interface PeriodWeekRow {
   completedMinutes: number;
   sessionCount: number;
   dominantPyramid: PyramidArea | null;
+  /** Lagt inn per akse i uka (PH-11-PER). */
+  byPyramid?: Record<PyramidArea, number>;
 }
 
 export interface PeriodPyramidRow {
