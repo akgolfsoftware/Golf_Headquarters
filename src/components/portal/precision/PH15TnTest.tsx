@@ -357,7 +357,7 @@ function BallInn({ p, n, laast, alle, raw, sett, angre, kanAngre }: {
         {tallFelt.map((f, i) => (
           <label key={f.key} className="phn-felt stort-tall">{f.label}{f.unit ? ` (${f.unit})` : ""}
             <input ref={i === 0 ? forsteFelt : undefined} type="text" inputMode="decimal" autoComplete="off" maxLength={20} disabled={laast}
-              value={lokal[f.key] ?? ""} placeholder="f.eks. 2,4"
+              value={lokal[f.key] ?? ""} placeholder={f.key === "result" ? "f.eks. 2,4" : undefined}
               onChange={(e) => { setMelding(""); setLokal({ ...lokal, [f.key]: e.target.value }); }}
               onKeyDown={(e) => { if (e.key === "Enter") registrer(); }} />
           </label>
@@ -426,15 +426,17 @@ function Foto({ sessionId, forsok, klar, revisjon }: { sessionId: string; forsok
   const [foto, setFoto] = useState<{ url: string; forsok: number } | null>(null);
   const [opptatt, setOpptatt] = useState(false);
   const [melding, setMelding] = useState("");
+  // Bildet hentes først når spilleren åpner delen.
+  const [apen, setApen] = useState(false);
   useEffect(() => {
     let aktiv = true;
-    if (!klar || revisjon < 1) return;
+    if (!apen || !klar || revisjon < 1) return;
     void fetch(`/api/portal/tester/test-photo?sessionId=${encodeURIComponent(sessionId)}&attempt=${forsok + 1}`, { cache: "no-store" })
       .then(async (r) => (r.ok ? (r.json() as Promise<{ id: string; url: string }>) : null))
       .then((v) => { if (aktiv) setFoto(v ? { url: v.url, forsok } : null); })
       .catch(() => { if (aktiv) setMelding("Bildet kunne ikke hentes akkurat nå."); });
     return () => { aktiv = false; };
-  }, [sessionId, forsok, klar, revisjon]);
+  }, [apen, sessionId, forsok, klar, revisjon]);
   async function last(fil?: File) {
     if (!fil) return;
     setOpptatt(true); setMelding("Lagrer bildet privat …");
@@ -459,7 +461,7 @@ function Foto({ sessionId, forsok, klar, revisjon }: { sessionId: string; forsok
   }
   const vis = foto?.forsok === forsok ? foto : null;
   return (
-    <details className="phn-kort">
+    <details className="phn-kort" onToggle={(e) => setApen(e.currentTarget.open)}>
       <summary className="phn-etikett" style={{ cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" }}>Bilde til slag {forsok + 1} · valgfritt</summary>
       <p className="phn-forklar">Ta bilde av ballen eller resultatet. Unngå personer. Bildet lagres privat og deles ikke med grupper.</p>
       {vis && <Image src={vis.url} width={1600} height={1200} unoptimized alt={`Privat bilde til slag ${forsok + 1}`} style={{ width: "100%", height: "auto", borderRadius: 10 }} />}

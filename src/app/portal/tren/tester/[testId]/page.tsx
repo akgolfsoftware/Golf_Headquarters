@@ -140,7 +140,9 @@ export default async function TestDetaljSpillerPage({
   }) : [];
 
   const omraade = OMRAADE[test.pyramidArea] ?? { akse: "slag" as const, navn: test.pyramidArea };
-  const regel = [test.scoringRule, gateMal != null ? `mål ${gateMal} av ${shots}` : null, scoringSpec.unit ? `måles i ${scoringSpec.unit}` : null].filter(Boolean).join(" · ");
+  // Team Norway lagrer regelutgaven som scoringRule; vis hva regelen betyr i stedet for versjonsnavnet.
+  const tnRegel = tn ? `${tn.points8Ball ? "Appen regner avstand fra hullet, PEI og poeng for hvert slag" : tn.kind === "gate" ? "Godkjent eller bom per slag" : "Etter Team Norways scorekort"} · utgave ${test.scoringRule}` : null;
+  const regel = tnRegel ?? [test.scoringRule, gateMal != null ? `mål ${gateMal} av ${shots}` : null, scoringSpec.unit ? `måles i ${scoringSpec.unit}` : null].filter(Boolean).join(" · ");
   // «Ta testen» åpner alltid gjeldende utgave av Team Norway-scorekortet.
   const current = tn ? tnProtocol(tn.id) ?? tn : null;
 

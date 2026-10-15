@@ -95,7 +95,7 @@ export function PH14Tester({ data }: { data: PH14Data }) {
                   <span className="phn-dagboks" aria-hidden>{data.nesteTestdag.mnd}<b>{data.nesteTestdag.dag}</b></span>
                   <span>
                     <b className="phn-undertittel">Neste testdag</b>
-                    <span className="phn-forklar" style={{ display: "block" }}>{data.nesteTestdag.navn}, frist {data.nesteTestdag.dato}. Satt av coachen.</span>
+                    <span className="phn-forklar" style={{ display: "block" }}>{data.nesteTestdag.navn} · frist {data.nesteTestdag.dato} · satt av coachen</span>
                   </span>
                 </>
               ) : (
@@ -162,8 +162,8 @@ function HvitLinje({ verdier }: { verdier: number[] }) {
   const siste = pkt[pkt.length - 1]!;
   return (
     <svg viewBox="0 0 120 40" width={120} height={40} aria-hidden="true">
-      <path className="phn-tegn" d={`M${pkt.map((p) => p.join(",")).join(" L")}`} fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={siste[0]} cy={siste[1]} r={3.5} fill="#fff" />
+      <path className="phn-tegn" d={`M${pkt.map((p) => p.join(",")).join(" L")}`} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={siste[0]} cy={siste[1]} r={3.5} fill="currentColor" />
     </svg>
   );
 }
