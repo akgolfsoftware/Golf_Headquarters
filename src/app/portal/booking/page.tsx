@@ -41,6 +41,7 @@ export default async function BookingHubPage({ searchParams }: Props) {
       <PH23Booking
         initialData={bookingData}
         state={visningsTilstand}
+        start="ny"
         betaling={betalt === "1" ? "betalt" : avbrutt === "1" ? "avbrutt" : undefined}
         onConfirmBooking={bekreftPH23BookingAction}
         onHentSlots={hentPH23Slots}

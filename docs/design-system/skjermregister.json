@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "41c6bdaf537c10758ea656d2ef4dd5109c7040e2",
+  "kodeversjon": "57c1b30af3230f7ba21346fc9d3a9a1871e14fcb",
   "inventar": {
     "pageFiles": 545,
     "uniqueRoutePatterns": 545,
-    "componentFiles": 900,
-    "surfaceFiles": 266,
+    "componentFiles": 904,
+    "surfaceFiles": 269,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -21322,8 +21322,9 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Varslene merker PH25Varsler i PlayerHQSkall. Liste, lest-markering og lenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
+        "Kodekommentaren sier PH-21. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -21332,7 +21333,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-21"
     },
     {
       "screenId": "PH-24",
