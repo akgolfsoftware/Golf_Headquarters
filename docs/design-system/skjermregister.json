@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "9db4c0af79acc6b194cfb4860543b10071de157b",
+  "kodeversjon": "b77212a59d2a365a713f9d87d3976a346f08e23b",
   "inventar": {
-    "pageFiles": 546,
-    "uniqueRoutePatterns": 546,
-    "componentFiles": 913,
+    "pageFiles": 547,
+    "uniqueRoutePatterns": 547,
+    "componentFiles": 916,
     "surfaceFiles": 271,
     "byArea": {
       "interne-eksempler": 6,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 185
+      "playerhq": 186
     }
   },
   "presisjon": {
@@ -16592,7 +16592,52 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Drill-detaljen merker PH13DrillDetalj i PlayerHQSkall. AK-formel, nøkkelfakta, caddie-begrunnelse og handlinger er beholdt.",
+      "kontrollbevis": "Øvelsen monterer PH13DrillDetalj i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). AK-formelen i åtte trinn og Legg i plan (Workbench-utkast).",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-13 Øvelsesbank er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "PH-13"
+    },
+    {
+      "screenId": "PH-13",
+      "rute": "/portal/drills/break-tabell",
+      "kildefil": "src/app/portal/drills/break-tabell/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/drills/break-tabell",
+      "handlinger": "Liste med filter per akse, øvelsesdetalj, Caddie-forslag",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": "Break-tabellen monterer PH13BreakTabell i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Tallene er eksempel til Anders har valgt tabell.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16637,7 +16682,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Øvelsesbanken merker PH13DrillListe i PlayerHQSkall. AK-formel, søk, aksefilter, Caddie-utkast, Putting Break-tabell og detaljpanel er implementert etter Claude Design PH-13.",
+      "kontrollbevis": "Siden merker PH13DrillListe og monterer PH13DrillBank i PlayerHQSkall i nytt design (pakke 4, godkjent 14.10.2026, fasit docs/design-system/utkast-playerhq/ovelser.html). Pyramide, treningsområde, søk, Caddie-forslag og ny egen øvelse. Ingen eksempeløvelser.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16647,7 +16692,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-13"
     },
     {
       "screenId": "PH-26",
@@ -20617,7 +20662,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Teknisk plan merker PHTP01TekniskPlan i PlayerHQSkall. Posisjonslinje, oppgaver, felles fremdrift og repetisjonslogg er beholdt.",
+      "kontrollbevis": "Teknisk plan monterer PHTP01TekniskPlan i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Hovedfokus, fra og til, oppgaver med læringssteg, svingen P1.0–P10.0, registrering og utkastvisning.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -24053,16 +24098,16 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 546,
-    "medAvvik": 165,
-    "valgtForBygging": 249,
+    "sidefiler": 547,
+    "medAvvik": 166,
+    "valgtForBygging": 250,
     "utenEksaktType": 14,
-    "implementert": 137,
+    "implementert": 138,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 284,
+      "tegnet-skjermtype": 285,
       "videresending": 165,
       "teknisk-forklaring": 31,
       "byggeunderlag": 37
@@ -24136,7 +24181,7 @@
       "PH-02": 2,
       "PH-17": 4,
       "PH-26": 11,
-      "PH-13": 4,
+      "PH-13": 5,
       "PH-22": 2,
       "PH-12": 2,
       "PH-18": 7,
