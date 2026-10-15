@@ -1,7 +1,6 @@
 /** Prøvefil for PH-IUP-01 Fireukerssjekk. Bare syntetiske data. */
-import { CloudOff, RotateCw } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { FeilTilstand, Knapp, LasterTilstand } from "@/components/precision/pa";
+import { PHIupFeil, PHIupLaster } from "@/components/portal/precision/PHIupTilstand";
 import { PHIUP01Fireukerssjekk } from "@/components/portal/precision/PHIUP01Fireukerssjekk";
 import { fireukerOmraader, fireukerRunde } from "@/lib/iup/fireukerssjekk";
 import type { FireukerData } from "@/lib/iup/fireukerssjekk-data";
@@ -47,7 +46,7 @@ function MedKo({ data }: { data: FireukerData }) {
   return <PHIUP01Fireukerssjekk data={data} uleste={0} />;
 }
 
-const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}><div className="pa-side">{children}</div></PlayerHQSkall>;
+const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}>{children}</PlayerHQSkall>;
 
 export const tilstander = {
   data: <PHIUP01Fireukerssjekk data={delvis} uleste={0} />,
@@ -57,6 +56,6 @@ export const tilstander = {
   ung: <PHIUP01Fireukerssjekk data={base("UNG")} uleste={0} />,
   ko: <MedKo data={base("JUNIOR", { revisjon: 2 })} />,
   levert: <PHIUP01Fireukerssjekk data={levert} uleste={0} />,
-  laster: <Skall><LasterTilstand text="Henter fireukerssjekken …" /></Skall>,
-  feil: <Skall><FeilTilstand icon={CloudOff} title="Fireukerssjekken kunne ikke hentes" text="Ingen svar er endret. Prøv igjen." code="FEIL 503 · IUP · 04.10.2026" retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw">Prøv igjen</Knapp>} /></Skall>,
+  laster: <Skall><PHIupLaster tekst="Henter fireukerssjekken …" /></Skall>,
+  feil: <Skall><PHIupFeil tittel="Fireukerssjekken kunne ikke hentes" tekst="Ingen svar er endret. Prøv igjen." kode="Feil 503 · IUP · 04.10.2026" onProvIgjen={() => {}} /></Skall>,
 };
