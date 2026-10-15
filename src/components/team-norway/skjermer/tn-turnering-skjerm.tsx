@@ -33,7 +33,6 @@ export async function TnTurneringSkjerm({ id }: { id: string }) {
   return (
     <SkjermRamme aktiv="turneringer" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
-        rute={`/team-norway/turneringer/${t.id}`}
         tittel={t.name}
         ingress={`${t.startDate ? periode(t.startDate, t.endDate ?? t.startDate, true) : "Dato ikke registrert"} · ${t.location ?? "Sted ikke registrert"}`}
         handling={<Link href="/team-norway/turneringer" style={{ color: TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle turneringer</Link>}

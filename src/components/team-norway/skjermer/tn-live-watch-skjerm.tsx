@@ -28,7 +28,7 @@ export async function TnLiveWatchSkjerm() {
 
   return (
     <SkjermRamme aktiv="live-watch" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/live-watch" tittel="Live Tournament Watch" ingress="Landslagsspillere i turnering akkurat nå." />
+      <TnSkjermhode tittel="Live Tournament Watch" ingress="Landslagsspillere i turnering akkurat nå." />
 
       <TnFlate>
         <TnFlatehode tittel="I turnering nå" merknad={`${pagar.length} ${pagar.length === 1 ? "turnering" : "turneringer"}`} />

@@ -34,7 +34,7 @@ export async function TnRanglisteSkjerm({ sokeparametre }: { sokeparametre: Reco
 
   return (
     <SkjermRamme aktiv="rangliste" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/rangliste" tittel="Rangliste" ingress={`Alle landslagsspillere med antall starter, snittplassering og brutto snitt i ${aar}. Netto regnes ikke.`} />
+      <TnSkjermhode tittel="Rangliste" ingress={`Alle landslagsspillere med antall starter, snittplassering og brutto snitt i ${aar}. Netto regnes ikke.`} />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
         <TnEtikett>Sorter</TnEtikett>

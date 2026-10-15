@@ -41,7 +41,7 @@ export async function TnSkolerSkjerm() {
 
   return (
     <SkjermRamme aktiv="skoler" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/skoler" tittel="Skoleoversikt" ingress="Skole og trinn slik spillerne har registrert det i profilen. Bruk den når samlinger skal legges utenom eksamen." />
+      <TnSkjermhode tittel="Skoleoversikt" ingress="Skole og trinn slik spillerne har registrert det i profilen. Bruk den når samlinger skal legges utenom eksamen." />
 
       {tall.length > 0 ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}` }}>

@@ -355,7 +355,7 @@ function pilleLenkeStil(aktiv: boolean): CSSProperties {
     alignItems: "center",
     minHeight: 36,
     padding: "6px 14px",
-    borderRadius: TN.radius.full,
+    borderRadius: TN.radius.xs,
     fontSize: TN.text.sm,
     fontWeight: TN.weight.semibold,
     textDecoration: "none",

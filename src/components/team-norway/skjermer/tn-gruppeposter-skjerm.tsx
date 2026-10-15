@@ -56,7 +56,7 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
 
   return (
     <TnShell aktiv="gruppeposter" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleEtikett} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
-      <TnSkjermhode rute={`/team-norway/${groupId}`} tittel="Gruppeposter" ingress={`Beskjeder fra trenerteamet til ${side.gruppeNavn}. ${erTrener ? "Du ser hvem som har lest hva." : "Alle i gruppen ser de samme innleggene."}`} />
+      <TnSkjermhode tittel="Gruppeposter" ingress={`Beskjeder fra trenerteamet til ${side.gruppeNavn}. ${erTrener ? "Du ser hvem som har lest hva." : "Alle i gruppen ser de samme innleggene."}`} />
 
       <div style={{ maxWidth: 860, width: "100%", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
         {erTrener ? <TnInnleggSkjema send={opprettGruppepostAction.bind(null, groupId)} forfatterNavn={bruker.name ?? "Ukjent"} mottakere={mottakere} /> : null}

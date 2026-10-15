@@ -111,7 +111,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
       <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, alignSelf: "flex-start", color: TN.navy700, fontSize: TN.text.sm, fontWeight: TN.weight.semibold }}>Tilbake til køen</Link>
       <TnKort padding={0} style={{ overflow: "hidden" }}>
         <div style={{ display: "flex", gap: 12, padding: "16px 18px" }}>
-          <span aria-hidden="true" style={{ width: 4, alignSelf: "stretch", borderRadius: TN.radius.full, background: TN.red600, flexShrink: 0 }} />
+          <span aria-hidden="true" style={{ width: 4, alignSelf: "stretch", borderRadius: TN.radius.xs, background: TN.red600, flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <h1 style={{ margin: 0, fontFamily: TN.font.display, fontSize: TN.text.h2, letterSpacing: TN.tracking.heading, color: TN.navy900 }}>{deltaker.spillerNavn}</h1>
@@ -140,8 +140,8 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
                 <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
                   <span style={{ fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{ferdigAntall} av {p.rows.length} forsøk registrert</span>
                 </div>
-                <div style={{ height: 6, borderRadius: TN.radius.full, background: TN.ink100, overflow: "hidden" }} role="progressbar" aria-valuenow={fremdriftPct} aria-valuemin={0} aria-valuemax={100}>
-                  <div style={{ width: `${fremdriftPct}%`, height: "100%", background: TN.navy600, borderRadius: TN.radius.full }} />
+                <div style={{ height: 6, borderRadius: TN.radius.xs, background: TN.ink100, overflow: "hidden" }} role="progressbar" aria-valuenow={fremdriftPct} aria-valuemin={0} aria-valuemax={100}>
+                  <div style={{ width: `${fremdriftPct}%`, height: "100%", background: TN.navy600, borderRadius: TN.radius.xs }} />
                 </div>
               </div>
 
