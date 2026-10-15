@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "4469ac664811df301cecb8df38092868e15a0b16",
+  "kodeversjon": "77ac26521427c6300af4418d464cbc751d7db7f9",
   "inventar": {
     "pageFiles": 546,
     "uniqueRoutePatterns": 546,
@@ -18078,12 +18078,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Abonnement monterer PH25Abonnement i PlayerHQSkall i nytt design (pakke 8 Meg, utkast-playerhq/meg.html). Avbestilling går til Stripe før egen database, uendret.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -18604,12 +18606,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Helse og fravær monterer PH24Helse i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke og visning er beholdt.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -18735,13 +18739,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Fasiliteter monterer PH24Fasiliteter i PlayerHQSkall i nytt design (pakke 8 Meg). Lagring av anlegg og utstyr er beholdt.",
       "avvik": [
-        "Kodekommentaren sier PH-24. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier PH-24. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
@@ -18912,13 +18917,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
+      "kontrollbevis": "Deling monterer PH27Deling i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke per organisasjon og navngitt deling er beholdt.",
       "avvik": [
-        "Kodekommentaren sier PH-27. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning."
+        "Kodekommentaren sier PH-27. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
@@ -24054,10 +24060,10 @@
   ],
   "tellinger": {
     "sidefiler": 546,
-    "medAvvik": 165,
+    "medAvvik": 167,
     "valgtForBygging": 250,
     "utenEksaktType": 13,
-    "implementert": 136,
+    "implementert": 140,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 165 rader har et registrert avvik. 136 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 13 rader har ingen eksakt type. 167 rader har et registrert avvik. 140 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
