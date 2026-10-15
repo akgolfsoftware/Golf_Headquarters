@@ -1,7 +1,11 @@
-/* v2-skjelett for /portal/booking (liste over ledige tider). */
-
-import { V2Laster } from "@/components/v2/laster";
+/* Lastetilstand for /portal/booking og undersider, nytt design (pakke 7). */
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHKommunikasjonLaster } from "@/components/portal/precision/PHKommunikasjonLaster";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHKommunikasjonLaster variant="booking" />
+    </PlayerHQSkall>
+  );
 }

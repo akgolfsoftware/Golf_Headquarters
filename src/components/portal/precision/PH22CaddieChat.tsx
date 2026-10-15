@@ -1,31 +1,26 @@
 "use client";
 
 /**
- * PH22CaddieChat — Precision Athletics implementasjon av PH-22 Caddie-chat.
- * Kilde: Claude Design ui_kits/playerhq/screens/PH-22.jsx
+ * PH-22 Caddie — nytt design (pakke 7 Kommunikasjon, godkjent av Anders 14.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «caddie».
+ * Stil: src/styles/playerhq-ny.css og src/styles/playerhq-ny-kommunikasjon.css.
  *
- * Ansvar:
- * - Autentisk visning etter Precision Athletics med ren CSS og tokens
- * - Støtter data-, tom-, laste-, feil- og ikke-tilgangstilstander
- * - Streaming chat mot /api/coach/ai-chat med feilhåndtering og rate-limit
- * - Utkast (Draft) for treningsforslag med "Godta og send til coach"
- * - Eksport til Markdown og hurtigforslag (chips)
+ * Samme oppførsel som før: strømmende svar fra /api/coach/ai-chat (navnet byttes med et pseudonym
+ * på serveren), ny samtale, eksport til Markdown, hurtigspørsmål, utkast med Godkjenn · Avvis og
+ * Pro-sperre for Gratis.
+ *
+ * Avvik:
+ *   - Svaret vises som tekst. Strokes Gained-stolper, øktkort og turneringskort i svaret er ikke med:
+ *     Caddie sender bare tekst, ikke tall eller økter appen kan tegne.
+ *   - «Dette ser Caddie» lister hvilke kilder Caddie leser, uten tall: siden har ikke tallene.
+ *   - Utkast godkjennes bare i samtalen (som før). Caddie lagrer ikke utkast i Innboks ennå.
+ *   - «Send til coach» på utkast er fjernet (vedtak 28.09): spilleren godkjenner selv.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-22.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import {
-  Sparkles,
-  Database,
-  ArrowUp,
-  MessageSquare,
-  RotateCcw,
-  Download,
-  AlertCircle,
-  Lock,
-  ArrowUpRight,
-  Send,
-} from "lucide-react";
+import { ArrowUp, BarChart3, Download, LockKeyhole, RotateCcw, Sparkles } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import {
   PH22_HURTIGSPORSMAL,
@@ -35,7 +30,8 @@ import {
   type PH22CaddieMelding,
   type PH22CaddieDraft,
 } from "@/lib/portal-caddie/ph22-caddie-data";
-import { StatusPille } from "@/components/precision/pa";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-kommunikasjon.css";
 
 export interface PH22CaddieChatProps {
   tier: Tier;
@@ -48,10 +44,23 @@ export interface PH22CaddieChatProps {
   stateOverride?: "data" | "tom" | "laster" | "feil";
 }
 
+const CaddieMerke = ({ liten = false }: { liten?: boolean }) => (
+  <span className="phn-k-avatar caddie" aria-hidden style={liten ? { width: 28, height: 28 } : undefined}>
+    <Sparkles className="phn-ikon" style={liten ? { width: 16, height: 16 } : undefined} />
+  </span>
+);
+
+const SER: { navn: string; tekst: string }[] = [
+  { navn: "Plan", tekst: "Ukene, periodene og øktene du har lagt inn" },
+  { navn: "Gjennomført", tekst: "Øktene du har fullført og tiden du har brukt" },
+  { navn: "Runder", tekst: "Brutto score og Strokes Gained fra rundene dine" },
+  { navn: "TrackMan", tekst: "Øktene og tallene du har lastet opp" },
+  { navn: "Teknisk plan", tekst: "Oppgavene coachen har satt opp" },
+];
+
 export function PH22CaddieChat({
   tier,
   fornavn,
-  initialer: _initialer,
   sessionId: initialSessionId,
   initialMessages,
   coachNavn = "Anders",
@@ -60,9 +69,7 @@ export function PH22CaddieChat({
 }: PH22CaddieChatProps) {
   const harTilgang = harCaddieTilgang(tier, userRole);
 
-  const [meldinger, setMeldinger] = useState<PH22CaddieMelding[]>(
-    stateOverride === "tom" ? [] : initialMessages,
-  );
+  const [meldinger, setMeldinger] = useState<PH22CaddieMelding[]>(stateOverride === "tom" ? [] : initialMessages);
   const [inputTekst, setInputTekst] = useState("");
   const [sender, setSender] = useState(false);
   const [feil, setFeil] = useState<string | null>(
@@ -71,44 +78,25 @@ export function PH22CaddieChat({
   const [sessionId, setSessionId] = useState<string | null>(initialSessionId);
   const [toastMelding, setToastMelding] = useState<string | null>(null);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const bunnRef = useRef<HTMLDivElement>(null);
   const genRef = useRef(0);
   const idCounterRef = useRef(0);
   const streamAccRef = useRef("");
 
+  const forsteVisning = useRef(true);
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    // Ikke rull ved første visning; bare når samtalen vokser.
+    if (forsteVisning.current) { forsteVisning.current = false; return; }
+    bunnRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [meldinger, sender]);
 
-  // Toast auto-hide
   useEffect(() => {
     if (!toastMelding) return;
-    const t = setTimeout(() => setToastMelding(null), 4000);
+    const t = setTimeout(() => setToastMelding(null), 3600);
     return () => clearTimeout(t);
   }, [toastMelding]);
 
-  // Hvis tilgang mangler og ikke coach/admin
-  if (!harTilgang) {
-    return <PH22ProGate />;
-  }
-
-  // Hvis overstyrt til laster
-  if (stateOverride === "laster") {
-    return (
-      <div className="pa-side" style={{ maxWidth: 880, margin: "0 auto", width: "100%" }}>
-        <PH22Header coachNavn={coachNavn} onReset={() => {}} onExport={() => {}} kanEksportere={false} />
-        <div className="pa-card" style={{ padding: 48, textAlign: "center" }}>
-          <div style={{ display: "inline-flex", gap: 10, alignItems: "center", color: "var(--text-muted)" }}>
-            <Sparkles className="animate-spin" size={18} />
-            <span style={{ fontSize: 14, fontWeight: 500 }}>Caddie leser dataene dine …</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (!harTilgang) return <PH22ProGate />;
 
   async function sendMelding(valgtTekst?: string) {
     const tekst = (valgtTekst || inputTekst).trim();
@@ -121,19 +109,9 @@ export function PH22CaddieChat({
     idCounterRef.current += 1;
     const cId = `c-${idCounterRef.current}`;
 
-    const brukerMelding: PH22CaddieMelding = {
-      id: uId,
-      role: "user",
-      content: tekst,
-      timestamp: klokke,
-    };
-
+    const brukerMelding: PH22CaddieMelding = { id: uId, role: "user", content: tekst, timestamp: klokke };
     const assisterendePlaceholder: PH22CaddieMelding = {
-      id: cId,
-      role: "assistant",
-      content: "",
-      timestamp: klokke,
-      source: "PLAN OG ØKTER",
+      id: cId, role: "assistant", content: "", timestamp: klokke, source: "Plan og økter",
     };
 
     setMeldinger((m) => [...m, brukerMelding, assisterendePlaceholder]);
@@ -142,10 +120,7 @@ export function PH22CaddieChat({
     setFeil(null);
 
     try {
-      const payloadMessages = [...meldinger, brukerMelding].map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
+      const payloadMessages = [...meldinger, brukerMelding].map((m) => ({ role: m.role, content: m.content }));
 
       const res = await fetch("/api/coach/ai-chat", {
         method: "POST",
@@ -164,9 +139,7 @@ export function PH22CaddieChat({
       }
 
       const reader = res.body?.getReader();
-      if (!reader) {
-        throw new Error("Ingen respons-stream mottatt fra Caddie");
-      }
+      if (!reader) throw new Error("Ingen respons-stream mottatt fra Caddie");
 
       const decoder = new TextDecoder();
       streamAccRef.current = "";
@@ -178,25 +151,17 @@ export function PH22CaddieChat({
           await reader.cancel();
           break;
         }
-
         streamAccRef.current += decoder.decode(value, { stream: true });
         const gjeldendeTekst = streamAccRef.current;
-
         setMeldinger((tidligere) => {
           const nyListe = [...tidligere];
           const siste = nyListe[nyListe.length - 1];
-          if (siste && siste.role === "assistant") {
-            nyListe[nyListe.length - 1] = {
-              ...siste,
-              content: gjeldendeTekst,
-            };
-          }
+          if (siste && siste.role === "assistant") nyListe[nyListe.length - 1] = { ...siste, content: gjeldendeTekst };
           return nyListe;
         });
       }
     } catch (err) {
       if (gen === genRef.current) {
-        // Fjern den tomme placeholder-meldingen ved feil
         setMeldinger((m) => m.filter((msg) => msg.id !== assisterendePlaceholder.id));
         setFeil(
           err instanceof Error
@@ -231,808 +196,116 @@ export function PH22CaddieChat({
   }
 
   function oppdaterDraftStatus(meldingId: string, status: "godtatt" | "forkastet") {
-    setMeldinger((m) =>
-      m.map((msg) => {
-        if (msg.id === meldingId && msg.draft) {
-          return {
-            ...msg,
-            draft: { ...msg.draft, status },
-          };
-        }
-        return msg;
-      }),
-    );
-    if (status === "godtatt") {
-      setToastMelding(`Utkastet er sendt til ${coachNavn}. Trener godkjenner før det legges inn i planen.`);
-    }
+    setMeldinger((m) => m.map((msg) => (msg.id === meldingId && msg.draft ? { ...msg, draft: { ...msg.draft, status } } : msg)));
+    setToastMelding(status === "godtatt" ? `Utkastet er godkjent. ${coachNavn} ser det du godkjenner.` : "Utkastet er avvist. Planen er uendret.");
   }
 
   const erTom = meldinger.length === 0;
+  const laster = stateOverride === "laster";
 
-  return (
-    <div className="pa-side" style={{ maxWidth: 880, margin: "0 auto", width: "100%" }}>
-      {/* Toast bekreftelse */}
-      {toastMelding && (
-        <div
-          role="status"
-          style={{
-            position: "fixed",
-            top: 20,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "var(--primary)",
-            color: "var(--text-on-primary)",
-            padding: "10px 16px",
-            borderRadius: "var(--radius)",
-            boxShadow: "var(--shadow-pop)",
-            zIndex: 100,
-            fontSize: 13,
-            fontWeight: 500,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <Sparkles size={14} style={{ color: "var(--signal)" }} />
-          <span>{toastMelding}</span>
-        </div>
-      )}
-
-      {/* Header etter PH-22 Claude Design */}
-      <PH22Header
-        coachNavn={coachNavn}
-        onReset={nullstillSamtale}
-        onExport={eksporterSamtale}
-        kanEksportere={!erTom}
-      />
-
-      {/* Chat-ramme */}
-      <div
-        className="pa-card"
-        style={{
-          padding: 0,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          minHeight: 520,
-          background: "var(--surface-flat)",
-          border: "1px solid var(--border-hairline)",
-          borderRadius: "var(--radius)",
-        }}
-      >
-        {/* Meldingsområde */}
-        <div
-          ref={scrollRef}
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            minHeight: 340,
-          }}
-          aria-live="polite"
-        >
-          {erTom ? (
-            <div
-              style={{
-                margin: "auto 0",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                padding: "32px 16px",
-                gap: 12,
-              }}
-            >
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "var(--radius)",
-                  background: "var(--surface-sunken)",
-                  display: "grid",
-                  placeItems: "center",
-                  color: "var(--text-primary)",
-                }}
-              >
-                <Sparkles size={22} />
-              </div>
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "var(--text-primary)",
-                }}
-              >
-                Spør Caddie om treningen din
-              </h2>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 13,
-                  color: "var(--text-muted)",
-                  maxWidth: 440,
-                  lineHeight: 1.45,
-                }}
-              >
-                Caddie kjenner planen, øktene, rundene og TrackMan-tallene dine.
-                Caddie sender og endrer ingenting selv.
-              </p>
-            </div>
-          ) : (
-            meldinger.map((m) =>
-              m.role === "user" ? (
-                <div
-                  key={m.id}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                    gap: 4,
-                  }}
-                >
-                  <div
-                    style={{
-                      maxWidth: "min(520px, 88%)",
-                      padding: "10px 14px",
-                      borderRadius: "var(--radius)",
-                      background: "var(--primary)",
-                      color: "var(--text-on-primary)",
-                      fontSize: 14,
-                      lineHeight: 1.45,
-                      overflowWrap: "anywhere",
-                    }}
-                  >
-                    {m.content}
-                  </div>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: 11,
-                      letterSpacing: "0.04em",
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    DU · {m.timestamp}
-                  </span>
-                </div>
-              ) : (
-                <div
-                  key={m.id}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "32px minmax(0, 1fr)",
-                    gap: 10,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "var(--radius)",
-                      background: "var(--surface-sunken)",
-                      display: "grid",
-                      placeItems: "center",
-                      color: "var(--text-primary)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Sparkles size={16} />
-                  </span>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
-                    {m.content ? (
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: 14,
-                          lineHeight: 1.45,
-                          color: "var(--text-primary)",
-                          whiteSpace: "pre-wrap",
-                          overflowWrap: "anywhere",
-                        }}
-                      >
-                        {m.content}
-                      </p>
-                    ) : (
-                      <div
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 6,
-                          fontSize: 13,
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        <Sparkles size={14} className="animate-spin" />
-                        <span>Caddie tenker …</span>
-                      </div>
-                    )}
-
-                    {m.source && (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 6,
-                          fontFamily: "var(--font-mono)",
-                          fontSize: 11,
-                          letterSpacing: "0.04em",
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        <Database size={12} />
-                        KILDE · {m.source}
-                      </span>
-                    )}
-
-                    {m.draft && (
-                      <PH22DraftBox
-                        draft={m.draft}
-                        coachNavn={coachNavn}
-                        onAccept={() => oppdaterDraftStatus(m.id, "godtatt")}
-                        onDrop={() => oppdaterDraftStatus(m.id, "forkastet")}
-                      />
-                    )}
-
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 11,
-                        letterSpacing: "0.04em",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      CADDIE · {m.timestamp}
-                    </span>
-                  </div>
-                </div>
-              ),
-            )
-          )}
-
-          {sender && (
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                letterSpacing: "0.04em",
-                color: "var(--text-muted)",
-                paddingLeft: 42,
-              }}
-            >
-              CADDIE LESER PLAN OG ØKTER …
-            </div>
-          )}
-
-          {feil && (
-            <div
-              style={{
-                padding: 12,
-                borderRadius: "var(--radius)",
-                background: "var(--surface-sunken)",
-                border: "1px solid var(--signal)",
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-              }}
-            >
-              <AlertCircle size={16} style={{ color: "var(--signal)", flexShrink: 0, marginTop: 2 }} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                  Caddie svarer ikke
-                </div>
-                <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>
-                  {feil}
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setFeil(null)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: "var(--text-muted)",
-                  cursor: "pointer",
-                }}
-              >
-                Lukk
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Input og chips i bunn */}
-        <div
-          style={{
-            padding: 12,
-            borderTop: "1px solid var(--border-hairline)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            background: "var(--surface-sunken)",
-          }}
-        >
-          {/* Hurtig-chips */}
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              overflowX: "auto",
-              paddingBottom: 2,
-              scrollbarWidth: "none",
-            }}
-          >
-            {PH22_HURTIGSPORSMAL.map((spm) => (
-              <button
-                key={spm}
-                type="button"
-                onClick={() => sendMelding(spm)}
-                disabled={sender}
-                className="pa-filter__opt"
-                style={{
-                  height: 36,
-                  padding: "0 12px",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border-hairline)",
-                  background: "var(--surface-flat)",
-                  color: "var(--text-primary)",
-                  fontSize: 12.5,
-                  fontWeight: 500,
-                  cursor: sender ? "not-allowed" : "pointer",
-                  flexShrink: 0,
-                }}
-              >
-                {spm}
-              </button>
-            ))}
-          </div>
-
-          {/* Tekstfelt med send-knapp */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <input
-              type="text"
-              aria-label="Spørsmål til Caddie"
-              value={inputTekst}
-              onChange={(e) => setInputTekst(e.target.value)}
-              placeholder="Spør Caddie"
-              disabled={sender}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMelding();
-                }
-              }}
-              style={{
-                flex: 1,
-                minWidth: 0,
-                height: 44,
-                padding: "0 14px",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border-hairline)",
-                background: "var(--surface-flat)",
-                color: "var(--text-primary)",
-                fontSize: 14,
-                fontFamily: "var(--font-sans)",
-                outline: "none",
-              }}
-            />
-            <button
-              type="button"
-              aria-label="Send til Caddie"
-              disabled={!inputTekst.trim() || sender}
-              onClick={() => sendMelding()}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: "var(--radius)",
-                border: "none",
-                background:
-                  !inputTekst.trim() || sender
-                    ? "var(--surface-sunken)"
-                    : "var(--primary)",
-                color:
-                  !inputTekst.trim() || sender
-                    ? "var(--text-muted)"
-                    : "var(--text-on-primary)",
-                display: "grid",
-                placeItems: "center",
-                cursor: !inputTekst.trim() || sender ? "not-allowed" : "pointer",
-                transition: "background 0.15s ease",
-                flexShrink: 0,
-              }}
-            >
-              <ArrowUp size={18} />
-            </button>
-          </div>
-        </div>
+  return <div className="phn">
+    <div className="phn-k-topp">
+      <div className="phn-k-caddie-hode">
+        <CaddieMerke />
+        <div><div className="phn-dato">Caddie</div><h1 className="phn-tittel" style={{ margin: 0 }}>Spør Caddie</h1></div>
+      </div>
+      <p className="phn-k-personvern"><LockKeyhole className="phn-ikon" aria-hidden />
+        <span>Caddie ser tallene og planen din. Navnet ditt sendes ikke til AI, så ikke skriv navn på andre i spørsmålet. Alt Caddie foreslår er et utkast til du godkjenner det.</span></p>
+      <div className="phn-knapper">
+        <Link href="/portal/coach" className="phn-knapp sek">Skriv til {coachNavn}</Link>
+        <button type="button" className="phn-knapp sek" onClick={eksporterSamtale} disabled={erTom || laster}><Download className="phn-ikon" aria-hidden />Last ned samtalen</button>
+        <button type="button" className="phn-knapp sek" onClick={nullstillSamtale} disabled={erTom || laster}><RotateCcw className="phn-ikon" aria-hidden />Ny samtale</button>
       </div>
     </div>
-  );
-}
 
-/**
- * Header for PH-22 Caddie-siden etter Claude Design.
- */
-function PH22Header({
-  coachNavn,
-  onReset,
-  onExport,
-  kanEksportere,
-}: {
-  coachNavn: string;
-  onReset: () => void;
-  onExport: () => void;
-  kanEksportere: boolean;
-}) {
-  return (
-    <div style={{ marginBottom: 16 }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 16,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "var(--text-muted)",
-              display: "block",
-              marginBottom: 4,
-            }}
-          >
-            Meg · Caddie
-          </span>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 24,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--text-primary)",
-            }}
-          >
-            Caddie
-          </h1>
-          <p
-            style={{
-              margin: "6px 0 0",
-              fontSize: 13,
-              color: "var(--text-muted)",
-              lineHeight: 1.45,
-              maxWidth: 580,
-            }}
-          >
-            Caddie svarer ut fra dine data og viser kilden. Alt Caddie foreslår er
-            utkast. Du eller {coachNavn} godtar før noe endres.
-          </p>
+    <div className="phn-k-caddie-grid">
+      <div className="phn-k-traad" aria-live="polite" aria-busy={laster || sender || undefined}>
+        {laster ? <>
+          <span className="phn-skjelett" style={{ height: 72, width: "70%", justifySelf: "end" }} />
+          <span className="phn-skjelett" style={{ height: 160 }} />
+          <p className="phn-kilde" role="status">Caddie leser dataene dine …</p>
+        </> : erTom ? <div className="phn-k-tom-chat">
+          <h2>Spør Caddie om treningen din</h2>
+          <p className="phn-forklar">Caddie kjenner planen, øktene, rundene og TrackMan-tallene dine. Caddie sender og endrer ingenting selv.</p>
+        </div> : meldinger.map((m) => m.role === "user"
+          ? <div key={m.id} className="phn-k-boble meg"><span>{m.content}</span><time>{m.timestamp}</time></div>
+          : (m.content || m.draft) ? <div key={m.id} className="phn-k-svar">
+            <div className="phn-k-svar-topp"><CaddieMerke liten />Caddie<time>{m.timestamp}</time></div>
+            {m.content && <p>{m.content}</p>}
+            {m.draft && <PH22DraftBox draft={m.draft} onAccept={() => oppdaterDraftStatus(m.id, "godtatt")} onDrop={() => oppdaterDraftStatus(m.id, "forkastet")} />}
+            {m.source && <ul className="phn-k-kilder"><li><BarChart3 className="phn-ikon" aria-hidden />Kilde: {m.source}</li></ul>}
+          </div> : null)}
+
+        {sender && meldinger.at(-1)?.content === "" && <div className="phn-k-skriver" aria-label="Caddie skriver"><i /><i /><i /></div>}
+
+        {feil && <div className="phn-k-feil" role="alert">
+          <b>Caddie svarer ikke.</b> {feil.replace(/^Caddie svarer ikke[.:]\s*/, "")}
+          <div className="phn-knapper" style={{ marginTop: 8 }}><button type="button" className="phn-knapp sek" onClick={() => setFeil(null)}>Lukk</button></div>
+        </div>}
+
+        <div className="phn-k-forslag-chips" aria-label="Forslag til spørsmål">
+          {PH22_HURTIGSPORSMAL.map((s) => <button key={s} type="button" disabled={sender || laster} onClick={() => void sendMelding(s)}>{s}</button>)}
         </div>
 
-        {/* Handlinger */}
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <Link
-            href="/portal/coach"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              height: 36,
-              padding: "0 12px",
-              borderRadius: "var(--radius)",
-              border: "1px solid var(--border-hairline)",
-              background: "var(--surface-flat)",
-              color: "var(--text-primary)",
-              fontSize: 13,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            <MessageSquare size={14} />
-            <span>Skriv til {coachNavn}</span>
-          </Link>
+        <form className="phn-k-skrivefelt" onSubmit={(e: FormEvent) => { e.preventDefault(); void sendMelding(); }}>
+          <label className="phn-felt" style={{ gap: 0 }}>
+            <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>Spørsmål til Caddie</span>
+            <textarea rows={1} value={inputTekst} placeholder="Spør Caddie" disabled={laster} onChange={(e) => setInputTekst(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void sendMelding(); } }} />
+          </label>
+          <button type="submit" className="phn-k-ikonknapp pri" aria-label="Send" disabled={!inputTekst.trim() || sender || laster}><ArrowUp className="phn-ikon" aria-hidden /></button>
+        </form>
+        <div ref={bunnRef} />
+      </div>
 
-          <button
-            type="button"
-            onClick={onExport}
-            disabled={!kanEksportere}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              height: 36,
-              padding: "0 12px",
-              borderRadius: "var(--radius)",
-              border: "1px solid transparent",
-              background: "transparent",
-              color: kanEksportere
-                ? "var(--text-primary)"
-                : "var(--text-muted)",
-              fontSize: 13,
-              fontWeight: 500,
-              cursor: kanEksportere ? "pointer" : "not-allowed",
-            }}
-          >
-            <Download size={14} />
-            <span>Eksporter</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onReset}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              height: 36,
-              padding: "0 12px",
-              borderRadius: "var(--radius)",
-              border: "1px solid transparent",
-              background: "transparent",
-              color: "var(--text-primary)",
-              fontSize: 13,
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-          >
-            <RotateCcw size={14} />
-            <span>Ny samtale</span>
-          </button>
+      <aside>
+        <div className="phn-kort">
+          <b className="phn-k-undertittel">Dette ser Caddie</b>
+          <ul className="phn-k-ser-liste">
+            {SER.map((s) => <li key={s.navn}>{s.navn}<span>{s.tekst}</span></li>)}
+          </ul>
         </div>
-      </div>
+        <div className="phn-kort phn-k-dempet">
+          <b className="phn-k-undertittel">Caddie endrer ingenting selv</b>
+          <p className="phn-forklar">Forslag er utkast til du godkjenner eller avviser dem. {coachNavn} ser det du godkjenner.</p>
+        </div>
+      </aside>
     </div>
-  );
+    {toastMelding && <div className="phn-k-toast" role="status">{toastMelding}</div>}
+  </div>;
 }
 
-/**
- * Utkast (Draft) for forslag fra Caddie.
- */
-function PH22DraftBox({
-  draft,
-  coachNavn,
-  onAccept,
-  onDrop,
-}: {
-  draft: PH22CaddieDraft;
-  coachNavn: string;
-  onAccept: () => void;
-  onDrop: () => void;
-}) {
-  const erAvgjort = draft.status !== "utkast";
-
-  return (
-    <div
-      style={{
-        border: "1px dashed var(--border-strong)",
-        borderRadius: "var(--radius)",
-        padding: 12,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        background: "var(--surface-sunken)",
-      }}
-    >
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <StatusPille
-          tone={
-            draft.status === "godtatt"
-              ? "ok"
-              : draft.status === "forkastet"
-              ? "neutral"
-              : "neutral"
-          }
-        >
-          {draft.status === "godtatt"
-            ? `Sendt til ${coachNavn}`
-            : draft.status === "forkastet"
-            ? "Forkastet"
-            : "Utkast"}
-        </StatusPille>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 11,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            color: "var(--text-muted)",
-          }}
-        >
-          {draft.kind.toUpperCase()}
-        </span>
-      </div>
-
-      <div
-        style={{
-          fontWeight: 600,
-          fontSize: 14,
-          lineHeight: 1.35,
-          color: "var(--text-primary)",
-        }}
-      >
-        {draft.title}
-      </div>
-
-      <div
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 11,
-          color: "var(--text-muted)",
-        }}
-      >
-        {draft.meta}
-      </div>
-
-      {!erAvgjort && (
-        <>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
-            <button
-              type="button"
-              onClick={onAccept}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                height: 32,
-                padding: "0 10px",
-                borderRadius: "var(--radius)",
-                border: "none",
-                background: "var(--primary)",
-                color: "var(--text-on-primary)",
-                fontSize: 12.5,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              <Send size={12} />
-              <span>Godta og send til {coachNavn}</span>
-            </button>
-            <button
-              type="button"
-              onClick={onDrop}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                height: 32,
-                padding: "0 10px",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border-hairline)",
-                background: "transparent",
-                color: "var(--text-primary)",
-                fontSize: 12.5,
-                fontWeight: 500,
-                cursor: "pointer",
-              }}
-            >
-              <span>Forkast</span>
-            </button>
-          </div>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.04em",
-              color: "var(--text-muted)",
-            }}
-          >
-            CADDIE ENDRER IKKE PLANEN. {coachNavn.toUpperCase()} GODKJENNER FØR DET BLIR LAGT INN.
-          </span>
-        </>
-      )}
+/** Utkast fra Caddie: Godkjenn · Avvis. Caddie endrer ikke planen selv. */
+function PH22DraftBox({ draft, onAccept, onDrop }: { draft: PH22CaddieDraft; onAccept: () => void; onDrop: () => void }) {
+  const avgjort = draft.status !== "utkast";
+  return <div className="phn-k-forslagskort">
+    <div className="phn-k-fk-topp">
+      <b>Utkast: {draft.title}</b>
+      <span className={`phn-pille ${draft.status === "godtatt" ? "ok" : draft.status === "forkastet" ? "noy" : "vent"}`}>
+        {draft.status === "godtatt" ? "Godkjent" : draft.status === "forkastet" ? "Avvist" : "Forslag"}
+      </span>
     </div>
-  );
+    <p className="phn-k-kildetekst">{draft.meta}</p>
+    {!avgjort && <div className="phn-knapper">
+      <button type="button" className="phn-knapp pri" onClick={onAccept}>Godkjenn</button>
+      <button type="button" className="phn-knapp sek" onClick={onDrop}>Avvis</button>
+    </div>}
+  </div>;
 }
 
-/**
- * Pro-gate for brukere uten Caddie-tilgang.
- */
+/** Sperre for Gratis: Caddie krever Full. */
 function PH22ProGate() {
-  return (
-    <div className="pa-side" style={{ maxWidth: 640, margin: "0 auto", width: "100%" }}>
-      <div style={{ marginBottom: 16 }}>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 11,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "var(--text-muted)",
-            display: "block",
-            marginBottom: 4,
-          }}
-        >
-          PlayerHQ · Caddie
-        </span>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 24,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            color: "var(--text-primary)",
-          }}
-        >
-          Krever Pro-abonnement
-        </h1>
-      </div>
-
-      <div
-        className="pa-card"
-        style={{
-          padding: 24,
-          background: "var(--surface-flat)",
-          border: "1px solid var(--border-hairline)",
-          borderRadius: "var(--radius)",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-        }}
-      >
-        <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "var(--radius)",
-              background: "var(--surface-sunken)",
-              display: "grid",
-              placeItems: "center",
-              color: "var(--text-primary)",
-              flexShrink: 0,
-            }}
-          >
-            <Lock size={18} />
-          </div>
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
-              Personlig AI-assistent for treningen din
-            </div>
-            <p
-              style={{
-                margin: "4px 0 0",
-                fontSize: 13,
-                color: "var(--text-muted)",
-                lineHeight: 1.45,
-              }}
-            >
-              Caddie leser dine planer, økter og runder, og hjelper deg med å
-              forberede spørsmål og forslag til coachen din.
-            </p>
-          </div>
-        </div>
-
-        <Link
-          href="/portal/meg/abonnement"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            height: 40,
-            padding: "0 16px",
-            borderRadius: "var(--radius)",
-            background: "var(--primary)",
-            color: "var(--text-on-primary)",
-            fontSize: 13,
-            fontWeight: 600,
-            textDecoration: "none",
-            alignSelf: "flex-start",
-          }}
-        >
-          <span>Oppgrader til Pro</span>
-          <ArrowUpRight size={14} />
-        </Link>
+  return <div className="phn">
+    <div className="phn-k-topp">
+      <div className="phn-k-caddie-hode">
+        <CaddieMerke />
+        <div><div className="phn-dato">Caddie</div><h1 className="phn-tittel" style={{ margin: 0 }}>Spør Caddie</h1></div>
       </div>
     </div>
-  );
+    <section className="phn-kort" style={{ maxWidth: 640 }}>
+      <b className="phn-k-undertittel">Caddie er med i Full</b>
+      <p className="phn-forklar">Caddie leser planene, øktene og rundene dine, og hjelper deg med spørsmål og forslag til treningen.</p>
+      <div className="phn-knapper"><Link href="/portal/meg/abonnement" className="phn-knapp pri">Se abonnement</Link></div>
+    </section>
+  </div>;
 }
