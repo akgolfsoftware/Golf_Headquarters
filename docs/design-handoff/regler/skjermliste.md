@@ -178,7 +178,7 @@ Ikke eget menypunkt fra 28.09. A01 → Stall › Trenger oppfølging, A02/A04 �
 
 | ID | Skjermtype | Ruter | Må vise |
 |---|---|---|---|
-| AU-01 | Logg inn | `/auth/login`, `/auth/bankid`, `/auth/logget-ut` | E-post/passord, Google, BankID-plassholder |
+| AU-01 | Logg inn | `/auth/login`, `/auth/bankid`, `/auth/logget-ut` | E-post/passord og Google. Ingen BankID (Anders 15.10) |
 | AU-02 | Registrer | `/auth/signup`, `/auth/check-email`, `/auth/checkout-resume` | Pakke, samtykke, sjekk e-post |
 | AU-03 | Passord | `/auth/forgot-password`, `/auth/reset-password` | Be om lenke, nytt passord |
 | AU-04 | Oppstart (runde 23 · audit alle steg) | `/auth/onboarding`, `/auth/onboarding/forelder` | Spiller: alder, HCP, snittscore, turneringsnivå, SG i år og forrige sesong · fasiliteter (kan fullføres senere) · finn deg i turneringsresultatene (golf-ID eller navn + fødselsår, mellomnavn ignoreres, kan hoppes over) · teknikktest (anbefalt, Inspill Basic: sandwedge, 7-jern, driver, carry og avstand fra mål; med TrackMan spredning og variasjon i seks parametere; viser største svakhet, setter ikke nivå) · samtykker (Ytelsesbilde, opptak; under 16 gir forelderen samtykket) · velg treningsplan (fem standardplaner tilpasset A–K). Coach og forelder som før. Audit kjører alle sju steg (AU-04, AU-04-2 til AU-04-7). Fasilitetsspørsmålene gjelder alle spillere. Treningsplan anbefales etter turneringsnivå (Region/Nasjonalt/Internasjonalt → Konkurransespilleren, ellers Klubbspilleren); spilleren velger selv. Alle fem standardplaner kan velges i alle kategorier A–K; innholdet tilpasses kategorien (28.09)
@@ -190,7 +190,7 @@ Ikke eget menypunkt fra 28.09. A01 → Stall › Trenger oppfølging, A02/A04 �
 | ID | Skjermtype | Ruter | Må vise |
 |---|---|---|---|
 | BK-01 | Velg tjeneste | `/booking` | Fire steg i én flyt, pauset-tilstand |
-| BK-02 | Velg tid og betal | `/booking/[slug]`, `/booking/[slug]/bekreft` | Dag/uke, tidsluker, Stripe, Vipps |
+| BK-02 | Velg tid og betal | `/booking/[slug]`, `/booking/[slug]/bekreft` | Dag/uke, tidsluker, kort og Apple Pay. Ingen Vipps (Anders 15.10) |
 | BK-03 | Kvittering | `/booking/kvittering/[bookingId]` | Referanse i mono, .ics, opprett konto |
 
 ## Statistikk (`/stats`, `/turneringer`)

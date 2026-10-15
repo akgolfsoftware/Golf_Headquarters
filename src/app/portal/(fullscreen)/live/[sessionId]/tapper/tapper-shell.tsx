@@ -262,7 +262,7 @@ export function TapperShell({
   return (
     <div
       className="pa-root ph06"
-      data-theme="night"
+      data-theme="light"
       data-od-id="playerhq-live-tapper"
       style={{
         position: "fixed",

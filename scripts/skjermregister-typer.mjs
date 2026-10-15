@@ -21,7 +21,7 @@ export const PRECISION_TYPER = [
   { id: "PH-10", navn: "Plan", natt: false, maVise: "Uke/dag/måned, økter per akse, opptatt tid", monster: ["/portal/planlegge", "/portal/kalender", "/portal/kalender/opptatt"] },
   { id: "PH-11", navn: "Workbench (spiller)", natt: false, maVise: "År → periode → uke → økt på én flate, dra-og-slipp", monster: ["/portal/planlegge/workbench"] },
   { id: "PH-12", navn: "Velg treningsplan", natt: false, maVise: "Stegviser, mal, SMART-mål", monster: ["/portal/planlegge/bygger", "/portal/ai/mal-bygger"] },
-  { id: "PH-13", navn: "Øvelsesbank", natt: false, maVise: "Liste med filter per akse, øvelsesdetalj, Caddie-forslag", monster: ["/portal/drills", "/portal/drills/[id]", "/portal/coach/ovelser", "/portal/ai/foresla-drill"] },
+  { id: "PH-13", navn: "Øvelsesbank", natt: false, maVise: "Liste med filter per akse, øvelsesdetalj, Caddie-forslag", monster: ["/portal/drills", "/portal/drills/[id]", "/portal/drills/break-tabell", "/portal/coach/ovelser", "/portal/ai/foresla-drill"] },
   { id: "PH-14", navn: "Tester", natt: false, maVise: "Protokoller, historikk, registrer resultat", monster: ["/portal/tren/tester", "/portal/tren/tester/[testId]", "/portal/tren/tester/ny", "/portal/tren/tester/ny/egen", "/portal/tren/tester/team-norway"] },
   { id: "PH-15", navn: "Test: gjennomfør", natt: true, maVise: "Scorekort, live-registrering", monster: ["/portal/tren/tester/[testId]/gjennomfor"] },
   { id: "PH-16", navn: "Stats", natt: false, maVise: "SG per kategori, siste runder/økter, filter", monster: ["/portal/analysere", "/portal/analysere/historikk", "/portal/analysere/skill-map"] },

@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * AG-04 Innboks i Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/agencyos/screens/AG-innboks.jsx, runde 26/28, med AG-04-HASTER og
- * AG-04-OPP). Fanene Caddie-forslag og Datakvalitet følger AG-A08, AG-A05 og
- * AG-RD-02 (screens/AG-A2.jsx og AG-RD.jsx; plassering i _shared/ia.js).
+ * AG-04 Innboks i nytt design (designbrevet 13.10.2026). Fasit:
+ * docs/design-system/utkast-agencyos/cockpit.html, skjermene «AG-04 Innboks»,
+ * «Sak med utkast», «AG-04-HASTER» og «Oppfølging». Fanene Caddie-forslag og
+ * Datakvalitet følger jarvis.html (AG-A08, AG-A05).
  *
  * Én liste for alt som før lå på tre sider. Handlingene er de samme:
  *   Kommunikasjon — avgjorInnboksSak (varsler, tilbakemeldinger, Jarvis-triage),
@@ -19,13 +19,10 @@
  * Jarvis og Caddie lager bare utkast. Ingenting sendes uten at coachen trykker.
  */
 import { useMemo, useState, useTransition, type DragEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Check, CheckCheck, ChevronDown, ChevronUp, Pencil, Reply, Send, Sparkles, Trash2, TriangleAlert, X,
-} from "lucide-react";
-import { FeilTilstand, Ikon, Knapp, KnappLenke, LasterTilstand, Meta, StatusPille, Tall, TomTilstand } from "@/components/precision/pa";
-import { InlineVarsel, Nokkelverdi, ValgFelt } from "@/components/precision/pa-a5";
-import { Avatar, SidehodeMedHandling, Tekstomrade, UtkastMerke, Valgpille } from "@/components/precision/pa-innboks";
+import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Avatar, Feil, HasterPille, Knapp, KnappLenke, Laster, Nokkelverdier, Pille, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import {
   INNBOKS_FILTRE, OPPF_STATUSER, innboksHref, type InnboksFilterId, type OppfStatus,
 } from "@/lib/admin/innboks/filter";
@@ -42,7 +39,7 @@ import { delUkesdigestAction } from "@/app/admin/godkjenninger/del-digest-action
 import { settOppfolgingsstatus } from "@/app/admin/queue/actions";
 import { svarPaSporsmal } from "@/app/portal/(legacy)/coach/sporsmal/actions";
 import { arkiverEpost, sendGodkjentSvar } from "@/lib/innboks/actions";
-import "@/styles/precision-a7.css";
+import "@/styles/agencyos-ny-cockpit.css";
 
 export type AG04Tilstand = "data" | "laster" | "feil";
 
@@ -75,6 +72,7 @@ export type AG04Props = {
   sok?: Record<string, string>;
 };
 
+const OPPF_KLASSE: Record<OppfStatus, string> = { risk: "risiko", watch: "folg", check: "sjekk", ok: "lost" };
 const OPPF_LABEL: Record<OppfStatus, string> = Object.fromEntries(OPPF_STATUSER.map((o) => [o.id, o.label])) as Record<OppfStatus, string>;
 const KILDE_LABEL: Record<GodkjennKilde, string> = { motor: "Motoren", caddie: "Caddie", foresporsel: "Forespørsler" };
 const DND = "application/x-akgolf-oppfolging";
@@ -115,7 +113,7 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
   const [grunn, setGrunn] = useState<{ valg: "godkjenn" | "avvis" } | null>(null);
   const [grunnTekst, setGrunnTekst] = useState("");
   const [melding, setMelding] = useState<string | null>(null);
-  const sub = [p.kind, p.konto, p.at].filter(Boolean).join(" · ").toUpperCase();
+  const sub = [p.kind, p.konto].filter(Boolean).join(" · ");
   const visUtkast = p.utkast && !forkastet;
 
   const sendSvar = (tekst: string) => {
@@ -149,101 +147,97 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
     else if (h.t === "sak") avgjorSak(grunn.valg, g);
   }
 
-  return <div role="listitem" className="pa-a7-sak" data-lost={p.lost || undefined} aria-busy={pending || undefined} {...dragProps}>
-    <button type="button" aria-expanded={open} onClick={onOpen} className="pa-a7-sak__hode">
-      <Avatar navn={p.fra} size={32} />
-      <span className="pa-a7-sak__tekst">
-        <span className="pa-a7-sak__linje">
-          <span className="pa-a7-sak__fra">{p.fra}</span>
-          {p.haster && <StatusPille tone="warn">Haster</StatusPille>}
-          {p.oppf && <StatusPille>{OPPF_LABEL[p.oppf]}</StatusPille>}
-          {p.merker.map((m) => <StatusPille key={m}>{m}</StatusPille>)}
-          {p.lost && p.lostTekst && !p.oppf && <StatusPille tone="ok">{p.lostTekst}</StatusPille>}
-          {visUtkast && <UtkastMerke>{"Utkast · " + p.utkast!.av}</UtkastMerke>}
+  return <div role="listitem" className={`sak${p.haster && !p.lost ? " haster" : ""}${p.lost ? " lost" : ""}`} aria-busy={pending || undefined} {...dragProps}>
+    <button type="button" aria-expanded={open} onClick={onOpen} className="sak-topp sak-knapp">
+      <Avatar navn={p.fra} liten />
+      <span>
+        <b>{p.fra}</b>
+        <span className="fra">{p.tittel}</span>
+        <span className="status-rad">
+          {p.haster && !p.lost && <HasterPille />}
+          {p.oppf && <span className={`status-merke ${OPPF_KLASSE[p.oppf]}`}>{OPPF_LABEL[p.oppf]}</span>}
+          {p.merker.map((m) => <span key={m} className="type">{m}</span>)}
+          {p.lost && p.lostTekst && !p.oppf && <Pille tone="ok">{p.lostTekst}</Pille>}
+          {visUtkast && <span className="type">Utkast · {p.utkast!.av}</span>}
+          {sub && <span className="kilde">{sub}</span>}
         </span>
-        <span className="pa-a7-sak__tittel">{p.tittel}</span>
-        <Meta>{sub}</Meta>
       </span>
-      <Ikon icon={open ? ChevronUp : ChevronDown} size={16} name={open ? "chevron-up" : "chevron-down"} />
+      <span className="sak-hoyre"><time>{p.at}</time>{open ? <ChevronUp className="ikon" aria-hidden /> : <ChevronDown className="ikon" aria-hidden />}</span>
     </button>
-    {open && <div className="pa-a7-sak__kropp">
-      <p className="pa-a7-p">{p.tekst}</p>
-      {p.detaljer.length > 0 && <Nokkelverdi items={p.detaljer.map((d) => [d.label, d.tekst] as const)} />}
-      {p.grunnlag.length > 0 && <Meta>{p.grunnlag.join(" · ").toUpperCase()}</Meta>}
+    {open && <div className="sak-kropp">
+      <p className="sitat">{p.tekst}</p>
+      {p.detaljer.length > 0 && <Nokkelverdier rader={p.detaljer.map((d) => [d.label, d.tekst] as const)} />}
+      {p.grunnlag.length > 0 && <p className="kilde">{p.grunnlag.join(" · ")}</p>}
 
-      {visUtkast && <div className="pa-a7-blokk pa-a7-blokk--utkast">
-        <Meta>{`UTKAST FRA ${p.utkast!.av.toUpperCase()} · SENDES IKKE UTEN TRYKK${p.konto ? " · FRA " + p.konto.toUpperCase() : ""}`}</Meta>
-        {red ? <Tekstomrade rows={4} value={txt} aria-label="Rediger utkast" onChange={(e) => setTxt(e.target.value)} />
-          : <p className="pa-a7-p pa-a7-p--dempet">{txt}</p>}
-        {h.t === "epost" && <div className="pa-a7-knapper">
-          <Knapp size="sm" icon={Send} iconName="send" disabled={pending || !txt.trim()} onClick={() => epostSend(txt)}>Send</Knapp>
-          <Knapp size="sm" variant="secondary" icon={Pencil} iconName="pencil" onClick={() => setRed(!red)}>{red ? "Ferdig redigert" : "Rediger"}</Knapp>
-          <Knapp size="sm" variant="ghost" icon={Trash2} iconName="trash-2" onClick={() => { setForkastet(true); setRed(false); }}>Forkast</Knapp>
+      {visUtkast && <div className="utkast">
+        <span className="hode"><Sparkles className="ikon" aria-hidden />Utkast fra {p.utkast!.av} · sendes ikke uten trykk{p.konto ? ` · fra ${p.konto}` : ""}</span>
+        {red ? <textarea value={txt} aria-label="Rediger utkast" onChange={(e) => setTxt(e.target.value)} /> : <p>{txt}</p>}
+        {h.t === "epost" && <div className="knapper">
+          <Knapp disabled={pending || !txt.trim()} onClick={() => epostSend(txt)}>Send</Knapp>
+          <Knapp variant="sek" onClick={() => setRed(!red)}>{red ? "Ferdig redigert" : "Rediger"}</Knapp>
+          <Knapp variant="spok" onClick={() => { setForkastet(true); setRed(false); }}>Forkast</Knapp>
         </div>}
-        {h.t === "caddie" && <div className="pa-a7-knapper">
-          <Knapp size="sm" icon={Send} iconName="send" disabled={pending} onClick={() => kjor(() => godkjennCaddieDraft(h.id), onBorte)}>Send</Knapp>
-          <Knapp size="sm" variant="ghost" icon={Trash2} iconName="trash-2" disabled={pending} onClick={() => kjor(() => avvisProaktivtForslag(h.id), onBorte)}>Forkast</Knapp>
+        {h.t === "caddie" && <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(() => godkjennCaddieDraft(h.id), onBorte)}>Send</Knapp>
+          <Knapp variant="spok" disabled={pending} onClick={() => kjor(() => avvisProaktivtForslag(h.id), onBorte)}>Forkast</Knapp>
         </div>}
       </div>}
 
-      {svar != null && <div className="pa-a7-blokk">
-        <Tekstomrade rows={4} value={svar} aria-label={"Svar til " + p.fra} placeholder={"Svar til " + (p.fra.split(" ")[0] ?? p.fra)} onChange={(e) => setSvar(e.target.value)} />
-        <Meta>DU SENDER · JARVIS LAGER BARE UTKAST</Meta>
-        <div className="pa-a7-knapper">
-          <Knapp size="sm" icon={Send} iconName="send" disabled={pending || !svar.trim()} onClick={() => sendSvar(svar)}>Send</Knapp>
-          <Knapp size="sm" variant="secondary" icon={Sparkles} iconName="sparkles" disabled title="Jarvis lager ikke utkast på forespørsel ennå. Skriv svaret selv.">Lag utkast</Knapp>
-          <Knapp size="sm" variant="ghost" onClick={() => setSvar(null)}>Avbryt</Knapp>
+      {svar != null && <div className="utkast">
+        <label className="felt"><span className="etikett">Svar til {p.fra}</span>
+          <textarea value={svar} placeholder={"Svar til " + (p.fra.split(" ")[0] ?? p.fra)} onChange={(e) => setSvar(e.target.value)} /></label>
+        <span className="kilde">Du sender. Jarvis lager bare utkast.</span>
+        <div className="knapper">
+          <Knapp disabled={pending || !svar.trim()} onClick={() => sendSvar(svar)}>Send</Knapp>
+          <Knapp variant="sek" disabled title="Jarvis lager ikke utkast på forespørsel ennå. Skriv svaret selv.">Lag utkast</Knapp>
+          <Knapp variant="spok" onClick={() => setSvar(null)}>Avbryt</Knapp>
         </div>
       </div>}
 
-      {grunn && <div className="pa-a7-blokk">
-        <label className="pa-field">
-          <span className="pa-field__label">Grunn (valgfritt)</span>
-          <span className="pa-control"><input type="text" value={grunnTekst} maxLength={500} autoFocus
+      {grunn && <div className="utkast">
+        <label className="felt"><span className="etikett">Grunn (valgfritt)</span>
+          <input type="text" value={grunnTekst} maxLength={500} autoFocus
             onChange={(e) => setGrunnTekst(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") bekreftGrunn(); }} /></span>
-        </label>
-        <div className="pa-a7-knapper">
-          <Knapp size="sm" variant="secondary" disabled={pending} onClick={bekreftGrunn}>{grunn.valg === "avvis" ? "Avvis" : "Bekreft"}</Knapp>
-          <Knapp size="sm" variant="ghost" onClick={() => { setGrunn(null); setGrunnTekst(""); }}>Avbryt</Knapp>
+            onKeyDown={(e) => { if (e.key === "Enter") bekreftGrunn(); }} /></label>
+        <div className="knapper">
+          <Knapp variant="sek" disabled={pending} onClick={bekreftGrunn}>{grunn.valg === "avvis" ? "Avvis" : "Bekreft"}</Knapp>
+          <Knapp variant="spok" onClick={() => { setGrunn(null); setGrunnTekst(""); }}>Avbryt</Knapp>
         </div>
       </div>}
 
-      {(feil || melding) && <InlineVarsel tone={feil ? "warn" : "info"}>{feil ?? melding}</InlineVarsel>}
+      {(feil || melding) && <Varsel tone={feil ? "advarsel" : "info"}>{feil ?? melding}</Varsel>}
 
-      <div className="pa-a7-knapper">
+      <div className="knapper">
         {h.t === "plan" && !grunn && <>
-          <Knapp size="sm" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => acceptPlanAction(h.id), onBorte)}>Godkjenn</Knapp>
-          <Knapp size="sm" variant="secondary" disabled={pending} onClick={() => setGrunn({ valg: "avvis" })}>Avvis</Knapp>
+          <Knapp disabled={pending} onClick={() => kjor(() => acceptPlanAction(h.id), onBorte)}>Godkjenn</Knapp>
+          <Knapp variant="sek" disabled={pending} onClick={() => setGrunn({ valg: "avvis" })}>Avvis</Knapp>
         </>}
         {h.t === "foresporsel" && <>
-          <Knapp size="sm" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => foresporsel.markerSomPlanlagt(h.id), onBorte)}>Legg i kalenderen</Knapp>
-          <Knapp size="sm" variant="secondary" disabled={pending} onClick={() => kjor(() => foresporsel.avslaaForespørsel(h.id), onBorte)}>Kan ikke</Knapp>
+          <Knapp disabled={pending} onClick={() => kjor(() => foresporsel.markerSomPlanlagt(h.id), onBorte)}>Legg i kalenderen</Knapp>
+          <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => foresporsel.avslaaForespørsel(h.id), onBorte)}>Kan ikke</Knapp>
         </>}
         {h.t === "sak" && !grunn && <>
           {h.primaer && (h.primaer.label === "Kvitter ut"
-            ? <Knapp size="sm" variant="ghost" icon={Check} iconName="check" disabled={pending} onClick={() => avgjorSak("godkjenn")}>Ferdig</Knapp>
-            : <Knapp size="sm" disabled={pending} onClick={() => (h.primaer!.krevGrunn ? setGrunn({ valg: "godkjenn" }) : avgjorSak("godkjenn"))}>{h.primaer.label}</Knapp>)}
-          {h.sekundaer && <Knapp size="sm" variant="secondary" disabled={pending} onClick={() => (h.sekundaer!.krevGrunn ? setGrunn({ valg: "avvis" }) : avgjorSak("avvis"))}>{h.sekundaer.label}</Knapp>}
+            ? <Knapp variant="sek" disabled={pending} onClick={() => avgjorSak("godkjenn")}>Ferdig</Knapp>
+            : <Knapp disabled={pending} onClick={() => (h.primaer!.krevGrunn ? setGrunn({ valg: "godkjenn" }) : avgjorSak("godkjenn"))}>{h.primaer.label}</Knapp>)}
+          {h.sekundaer && <Knapp variant="sek" disabled={pending} onClick={() => (h.sekundaer!.krevGrunn ? setGrunn({ valg: "avvis" }) : avgjorSak("avvis"))}>{h.sekundaer.label}</Knapp>}
         </>}
-        {h.t === "caddieGruppe" && <Knapp size="sm" variant="secondary" onClick={() => onFilter("caddie")}>Se alle {h.antall} under Caddie-forslag</Knapp>}
+        {h.t === "caddieGruppe" && <Knapp variant="sek" onClick={() => onFilter("caddie")}>Se alle {h.antall} under Caddie-forslag</Knapp>}
         {(h.t === "epost" || h.t === "sporsmal") && p.kanSvare && (!p.utkast || forkastet) && svar == null &&
-          <Knapp size="sm" variant="secondary" icon={Reply} iconName="reply" onClick={() => setSvar("")}>Svar</Knapp>}
-        {p.lenker.map((l) => <KnappLenke key={l.href + l.label} size="sm" variant="secondary" href={l.href}>{l.label}</KnappLenke>)}
-        {h.t === "epost" && !h.lukket && <Knapp size="sm" variant="ghost" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => arkiverEpost(h.id), onBorte)}>Ferdig</Knapp>}
-        {h.t === "oppf" && h.status !== "ok" && <Knapp size="sm" variant="ghost" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => settOppfolgingsstatus(h.spillerId, "ok"))}>Ferdig</Knapp>}
+          <Knapp variant="sek" onClick={() => setSvar("")}>Svar</Knapp>}
+        {p.lenker.map((l) => <KnappLenke key={l.href + l.label} href={l.href}>{l.label}</KnappLenke>)}
+        {h.t === "epost" && !h.lukket && <Knapp variant="spok" disabled={pending} onClick={() => kjor(() => arkiverEpost(h.id), onBorte)}>Ferdig</Knapp>}
+        {h.t === "oppf" && h.status !== "ok" && <Knapp variant="spok" disabled={pending} onClick={() => kjor(() => settOppfolgingsstatus(h.spillerId, "ok"))}>Ferdig</Knapp>}
       </div>
-      {h.t === "oppf" && <div className="pa-a7-flytt">
-        <label className="pa-field">
-          <span className="pa-field__label">Flytt sak</span>
-          <ValgFelt aria-label={`Flytt ${p.fra} til status`} value={h.status} disabled={pending}
-            options={OPPF_STATUSER.map((o) => ({ value: o.id, label: o.label }))}
-            onChange={(e) => { const s = e.target.value as OppfStatus; if (s !== h.status) kjor(() => settOppfolgingsstatus(h.spillerId, s)); }} />
-        </label>
-      </div>}
+      {h.t === "oppf" && <label className="felt flytt">
+        <span className="etikett">Flytt sak</span>
+        <select aria-label={`Flytt ${p.fra} til status`} value={h.status} disabled={pending}
+          onChange={(e) => { const st = e.target.value as OppfStatus; if (st !== h.status) kjor(() => settOppfolgingsstatus(h.spillerId, st)); }}>
+          {OPPF_STATUSER.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+        </select>
+      </label>}
     </div>}
   </div>;
-
 }
 
 /* ---------- Godkjenn: køen i tall, lav risiko samlet, ukesrapport ---------- */
@@ -253,29 +247,29 @@ function GodkjennTopp({ g, visRapport }: { g: AG04Godkjenn; visRapport: boolean 
   const deler = useHandling();
   const [digest, setDigest] = useState<string | null>(null);
   return <>
-    <div className="pa-a7-rad">
-      <Meta>{[
-        `VENTER ${g.venter}`, `LAV RISIKO ${g.lavRisiko}`,
-        `ELDSTE ${g.eldste ? `${g.eldste.dagerLabel.toUpperCase()} · ${g.eldste.who.toUpperCase()}` : "—"}`,
-        `GODKJENT 7 DG ${tallTekst(g.godkjent7Dager)}`, `AVVIST ${tallTekst(g.avvist7Dager)}`,
-      ].join(" · ")}</Meta>
-      {g.lavRisiko > 0 && <Knapp size="sm" variant="secondary" icon={CheckCheck} iconName="check-check" loading={pending} loadingText="Godkjenner …"
-        onClick={() => kjor(async () => { const r = await batchApproveLowRisk(); setMelding(`${r.godkjent} av ${g.lavRisiko} godkjent.`); return r; })}>
-        {`Godkjenn ${g.lavRisiko} med lav risiko samlet`}
-      </Knapp>}
+    <div className="nokkel fire">
+      <div><b>{g.venter}</b><span>venter</span></div>
+      <div><b>{g.lavRisiko}</b><span>lav risiko</span></div>
+      <div><b>{tallTekst(g.godkjent7Dager)}</b><span>godkjent 7 dager</span></div>
+      <div><b>{tallTekst(g.avvist7Dager)}</b><span>avvist 7 dager</span></div>
     </div>
-    {(feil || melding) && <InlineVarsel tone={feil ? "warn" : "ok"}>{feil ?? melding}</InlineVarsel>}
-    {visRapport && g.ukesrapport && <section aria-label="Ukesrapport" className="pa-card pa-a7-kort">
-      <div className="pa-a7-rad"><span className="kicker">{`Ukesrapport · uke ${g.ukesrapport.ukenummer}`}</span><Meta>{g.ukesrapport.when.toUpperCase()}</Meta></div>
-      <p className="pa-a7-p pa-a7-p--dempet">Rapportagenten leser plan, logg, runder og tester. Den skriver aldri noe selv. Alt under er telt, ikke vurdert. Leses, godkjennes ikke.</p>
-      <Nokkelverdi kolonner={2} items={g.ukesrapport.tall.map((t) => [t.key, t.verdi, t.nevner] as const)} />
-      {g.ukesrapport.hvorfor.length > 0 && <details className="pa-a7-detaljer"><summary>Hvorfor?</summary>
+    <p className="kilde">Eldste: {g.eldste ? `${g.eldste.dagerLabel} · ${g.eldste.who}` : "—"}</p>
+    {g.lavRisiko > 0 && <div className="knapper"><Knapp variant="sek" disabled={pending}
+      onClick={() => kjor(async () => { const r = await batchApproveLowRisk(); setMelding(`${r.godkjent} av ${g.lavRisiko} godkjent.`); return r; })}>
+      {pending ? "Godkjenner …" : `Godkjenn ${g.lavRisiko} med lav risiko samlet`}
+    </Knapp></div>}
+    {(feil || melding) && <Varsel tone={feil ? "advarsel" : "ok"}>{feil ?? melding}</Varsel>}
+    {visRapport && g.ukesrapport && <section aria-label="Ukesrapport" className="kort">
+      <div className="sek-topp"><h2>Ukesrapport · uke {g.ukesrapport.ukenummer}</h2><span className="kilde">{g.ukesrapport.when}</span></div>
+      <p className="forklar">Rapportagenten leser plan, logg, runder og tester. Den skriver aldri noe selv. Alt under er telt, ikke vurdert. Leses, godkjennes ikke.</p>
+      <Nokkelverdier rader={g.ukesrapport.tall.map((t) => [t.key, t.verdi, t.nevner] as const)} />
+      {g.ukesrapport.hvorfor.length > 0 && <details className="detaljer"><summary>Hvorfor?</summary>
         <ul>{g.ukesrapport.hvorfor.map((x, i) => <li key={i}>{x}</li>)}</ul></details>}
-      <div className="pa-a7-knapper">
-        <Knapp size="sm" variant="secondary" loading={deler.pending} loadingText="Deler …"
-          onClick={() => deler.kjor(async () => { const r = await delUkesdigestAction(); setDigest(r.melding); return { ok: true }; })}>Del digest med spillere og foresatte</Knapp>
+      <div className="knapper">
+        <Knapp variant="sek" disabled={deler.pending}
+          onClick={() => deler.kjor(async () => { const r = await delUkesdigestAction(); setDigest(r.melding); return { ok: true }; })}>{deler.pending ? "Deler …" : "Del digest med spillere og foresatte"}</Knapp>
       </div>
-      {(deler.feil || digest) && <InlineVarsel tone={deler.feil ? "warn" : "info"}>{deler.feil ?? digest}</InlineVarsel>}
+      {(deler.feil || digest) && <Varsel tone={deler.feil ? "advarsel" : "info"}>{deler.feil ?? digest}</Varsel>}
     </section>}
   </>;
 }
@@ -284,20 +278,15 @@ function GodkjennBunn({ g, lost }: { g: AG04Godkjenn; lost: InnboksPost[] }) {
   const lostIder = new Set(lost.map((p) => p.key.replace(/^lost:planAction:/, "")));
   const sjekk = g.lostSjekkpunkter.filter((l) => !lostIder.has(l.id));
   return <>
-    {(lost.length > 0 || sjekk.length > 0) && <section aria-label="Løst nylig" className="pa-card pa-a7-kort">
-      <div className="pa-a7-rad"><span className="kicker">Løst nylig</span><Meta>{`${lost.length + sjekk.length} SAKER`}</Meta></div>
-      <div role="list">
-        {lost.map((p) => <div role="listitem" key={p.key} className="pa-a7-linje">
-          <span className="pa-a7-linje__tekst">{`${p.fra} · ${p.tittel}`}</span><Meta>{(p.lostTekst ?? "").toUpperCase()}</Meta>
-        </div>)}
-        {sjekk.map((l) => <div role="listitem" key={l.id} className="pa-a7-linje">
-          <span className="pa-a7-linje__tekst">{`${l.who} · ${l.sjekkpunkt}`}</span><Meta>{l.when.toUpperCase()}</Meta>
-        </div>)}
+    {(lost.length > 0 || sjekk.length > 0) && <section aria-label="Løst nylig" className="seksjon">
+      <div className="sek-topp"><h2>Løst nylig</h2><span className="kilde">{lost.length + sjekk.length} saker</span></div>
+      <div className="liste" role="list">
+        {lost.map((p) => <div role="listitem" key={p.key}><Avatar navn={p.fra} liten lys /><span><b>{p.fra}</b><span className="kilde">{p.tittel}</span></span><span className="kilde">{p.lostTekst ?? ""}</span></div>)}
+        {sjekk.map((l) => <div role="listitem" key={l.id}><Avatar navn={l.who} liten lys /><span><b>{l.who}</b><span className="kilde">{l.sjekkpunkt}</span></span><span className="kilde">{l.when}</span></div>)}
       </div>
     </section>}
-    {g.andreKoer.length > 0 && <div className="pa-a7-rad pa-a7-rad--start">
-      <Meta>ANDRE KØER</Meta>
-      {g.andreKoer.map((k) => <KnappLenke key={k.href} size="sm" variant="ghost" href={k.href}>{k.label}</KnappLenke>)}
+    {g.andreKoer.length > 0 && <div className="knapper"><span className="kilde" style={{ alignSelf: "center" }}>Andre køer</span>
+      {g.andreKoer.map((k) => <KnappLenke key={k.href} variant="spok" href={k.href}>{k.label}</KnappLenke>)}
     </div>}
   </>;
 }
@@ -308,32 +297,32 @@ function CaddieKort({ p, onBorte }: { p: InnboksPost; onBorte: () => void }) {
   const [bekreft, setBekreft] = useState(false);
   const h = p.handling;
   if (h.t !== "caddie") return null;
-  return <article className="pa-card pa-a7-kort">
-    <div className="pa-a7-rad pa-a7-rad--start"><StatusPille>Utkast fra Caddie</StatusPille><Meta>{p.at.toUpperCase()}</Meta></div>
-    <h3 className="pa-a7-h3">{p.tittel}</h3>
-    <p className="pa-a7-p pa-a7-p--dempet"><b>Gjelder:</b> {p.fra}</p>
-    <p className="pa-a7-p"><b>Utkast:</b> {p.utkast?.tekst ?? "—"}</p>
-    {p.grunnlag.length > 0 && <Meta>{p.grunnlag.join(" · ").toUpperCase()}</Meta>}
-    {feil && <InlineVarsel tone="warn">{feil}</InlineVarsel>}
-    {bekreft ? <div className="pa-a7-blokk">
-      <p className="pa-a7-p"><b>Godkjenne forslaget?</b> Utkastet utføres og sendes nå.</p>
-      <div className="pa-a7-knapper">
-        <Knapp size="sm" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => godkjennCaddieDraft(h.id), onBorte)}>Godkjenn og utfør</Knapp>
-        <Knapp size="sm" variant="ghost" onClick={() => setBekreft(false)}>Avbryt</Knapp>
+  return <article className="kort">
+    <div className="status-rad"><span className="type">Utkast fra Caddie</span><span className="kilde">{p.at}</span></div>
+    <b className="undertittel" style={{ fontSize: 16 }}>{p.tittel}</b>
+    <p className="forklar"><b>Gjelder:</b> {p.fra}</p>
+    <div className="utkast"><span className="hode"><Sparkles className="ikon" aria-hidden />Utkast</span><p>{p.utkast?.tekst ?? "—"}</p></div>
+    {p.grunnlag.length > 0 && <p className="kilde">{p.grunnlag.join(" · ")}</p>}
+    {feil && <Varsel tone="advarsel">{feil}</Varsel>}
+    {bekreft ? <div className="utkast">
+      <p><b>Godkjenne forslaget?</b> Utkastet utføres og sendes nå.</p>
+      <div className="knapper">
+        <Knapp disabled={pending} onClick={() => kjor(() => godkjennCaddieDraft(h.id), onBorte)}>Godkjenn og utfør</Knapp>
+        <Knapp variant="spok" onClick={() => setBekreft(false)}>Avbryt</Knapp>
       </div>
-    </div> : <div className="pa-a7-knapper">
-      <Knapp size="sm" icon={Check} iconName="check" disabled={pending} onClick={() => setBekreft(true)}>Godkjenn</Knapp>
-      {p.lenker.map((l) => <KnappLenke key={l.href} size="sm" variant="secondary" href={l.href}>{l.label}</KnappLenke>)}
-      <Knapp size="sm" variant="ghost" icon={X} iconName="x" disabled={pending} onClick={() => kjor(() => avvisProaktivtForslag(h.id), onBorte)}>Avvis</Knapp>
+    </div> : <div className="knapper">
+      <Knapp disabled={pending} onClick={() => setBekreft(true)}>Godkjenn</Knapp>
+      {p.lenker.map((l) => <KnappLenke key={l.href} href={l.href}>{l.label}</KnappLenke>)}
+      <Knapp variant="spok" disabled={pending} onClick={() => kjor(() => avvisProaktivtForslag(h.id), onBorte)}>Avvis</Knapp>
     </div>}
   </article>;
 }
 
 function CaddieForslag({ poster, onBorte }: { poster: InnboksPost[]; onBorte: (k: string) => void }) {
-  if (!poster.length) return <TomTilstand icon={Sparkles} title="Ingen forslag nå" text="Caddie foreslår når data viser et avvik. Forslagene kommer hit." />;
+  if (!poster.length) return <Tom tittel="Ingen forslag nå" tekst="Caddie foreslår når data viser et avvik. Forslagene kommer hit." />;
   return <>
-    <InlineVarsel tone="info" tittel="Du godkjenner alt.">Caddie og Jarvis lager bare utkast. Godkjenn, åpne i Caddie eller avvis.</InlineVarsel>
-    <div className="pa-a7-grid">{poster.map((p) => <CaddieKort key={p.key} p={p} onBorte={() => onBorte(p.key)} />)}</div>
+    <Varsel tittel="Du godkjenner alt.">Caddie og Jarvis lager bare utkast. Godkjenn, åpne i Caddie eller avvis.</Varsel>
+    <div className="to-kort">{poster.map((p) => <CaddieKort key={p.key} p={p} onBorte={() => onBorte(p.key)} />)}</div>
   </>;
 }
 
@@ -341,29 +330,29 @@ function CaddieForslag({ poster, onBorte }: { poster: InnboksPost[]; onBorte: (k
 function Datakvalitet({ d }: { d: DatakvalitetData }) {
   return <>
     {d.runder.length === 0
-      ? <TomTilstand icon={Check} title="Alle runder har grunnlag" text="Ingen runder de siste 28 dagene mangler slagdata eller SG." />
+      ? <Tom tittel="Alle runder har grunnlag" tekst="Ingen runder de siste 28 dagene mangler slagdata eller SG." />
       : <>
-        <InlineVarsel tone="info" tittel={`${d.runder.length} ${d.runder.length === 1 ? "runde mangler" : "runder mangler"} grunnlag.`}>SG vises som «—» for disse til spilleren legger inn slag-for-slag med avstand.</InlineVarsel>
-        <div className="pa-a7-grid">{d.runder.map((r) => <article key={r.id} className="pa-card pa-a7-kort">
-          <div className="pa-a7-rad"><span className="pa-a7-h3">{r.spiller}</span><StatusPille>Mangler grunnlag</StatusPille></div>
-          <Meta>{r.runde.toUpperCase()}</Meta>
-          <p className="pa-a7-p">{r.hvorfor}</p>
-          <p className="pa-a7-p pa-a7-p--dempet"><b>Trengs:</b> {r.trengs}</p>
-          <div className="pa-a7-knapper pa-a7-knapper--skille"><KnappLenke size="sm" variant="secondary" href={`/admin/spillere/${r.spillerId}`}>Spiller 360</KnappLenke></div>
+        <Varsel tittel={`${d.runder.length} ${d.runder.length === 1 ? "runde mangler" : "runder mangler"} grunnlag.`}>SG vises som «—» for disse til spilleren legger inn slag-for-slag med avstand.</Varsel>
+        <div className="to-kort">{d.runder.map((r) => <article key={r.id} className="kort">
+          <div className="sek-topp"><b className="undertittel" style={{ fontSize: 16 }}>{r.spiller}</b><Pille tone="vent">Mangler grunnlag</Pille></div>
+          <p className="kilde">{r.runde}</p>
+          <p className="forklar">{r.hvorfor}</p>
+          <p className="forklar"><b>Trengs:</b> {r.trengs}</p>
+          <div className="knapper"><KnappLenke href={`/admin/spillere/${r.spillerId}`}>Spiller 360</KnappLenke></div>
         </article>)}</div>
       </>}
-    <Meta>{`SISTE 28 DAGER · ${d.sjekket} RUNDER SJEKKET · BRUTTO SCORE`}</Meta>
-    <div className="pa-a7-grid pa-a7-grid--2">
-      <section aria-label="Importer" className="pa-card pa-a7-kort">
-        <div className="pa-a7-rad"><span className="kicker">Importer siste 7 dager</span><Meta>TRACKMAN · GOLFBOX</Meta></div>
-        <Tall>—</Tall>
-        <p className="pa-a7-p pa-a7-p--dempet">Appen fører ingen importlogg ennå. Status per import vises her når den finnes.</p>
+    <p className="kilde">Siste 28 dager · {d.sjekket} runder sjekket · brutto score</p>
+    <div className="to-kort">
+      <section aria-label="Importer" className="kort">
+        <div className="sek-topp"><h2>Importer siste 7 dager</h2><span className="kilde">TrackMan · GolfBox</span></div>
+        <div className="hoved"><strong>—</strong></div>
+        <p className="forklar">Appen fører ingen importlogg ennå. Status per import vises her når den finnes.</p>
       </section>
-      <section aria-label="Mulige dubletter" className="pa-card pa-a7-kort">
-        <div className="pa-a7-rad"><span className="kicker">Mulige turneringsdubletter</span><Meta>MANUELT LAGT INN</Meta></div>
-        <Tall>{tallTekst(d.muligeDubletter)}</Tall>
-        <p className="pa-a7-p pa-a7-p--dempet">Turneringer spillere har lagt inn selv, som ikke er slått sammen med en kjent kilde.</p>
-        <div className="pa-a7-knapper"><KnappLenke size="sm" variant="secondary" href="/admin/ko?fane=dubletter">Slå sammen</KnappLenke></div>
+      <section aria-label="Mulige dubletter" className="kort">
+        <div className="sek-topp"><h2>Mulige turneringsdubletter</h2><span className="kilde">Manuelt lagt inn</span></div>
+        <div className="hoved"><strong>{tallTekst(d.muligeDubletter)}</strong></div>
+        <p className="forklar">Turneringer spillere har lagt inn selv, som ikke er slått sammen med en kjent kilde.</p>
+        <div className="knapper"><KnappLenke href="/admin/ko?fane=dubletter">Slå sammen</KnappLenke></div>
       </section>
     </div>
   </>;
@@ -398,32 +387,33 @@ export function AG04Innboks(props: AG04Props) {
   const lost = iFane.filter((p) => p.lost);
   const visOppf = f === "oppfolging";
   const liste = visOppf ? (o ? iFane.filter((p) => p.oppf === o) : iFane.filter((p) => !p.lost)) : apne;
+  const venterTotalt = poster.filter((p) => !p.lost).length;
 
-  const slipp = (s: OppfStatus) => (e: DragEvent) => {
+  const slipp = (st: OppfStatus) => (e: DragEvent) => {
     e.preventDefault(); setOver(null);
     const id = e.dataTransfer.getData(DND);
-    if (id) flytt.kjor(() => settOppfolgingsstatus(id, s));
+    if (id) flytt.kjor(() => settOppfolgingsstatus(id, st));
   };
 
   const underfilter: ReactNode = visOppf
-    ? <div role="group" aria-label="Oppfølging" className="pa-a7-under">
-      {OPPF_STATUSER.map((s) => <Valgpille key={s.id} valgt={o === s.id} data-over={over === s.id || undefined}
-        onClick={() => setO(o === s.id ? null : s.id)}
-        onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (over !== s.id) setOver(s.id); }}
-        onDragLeave={() => setOver((v) => (v === s.id ? null : v))}
-        onDrop={slipp(s.id)}>{`${s.label} · ${iFane.filter((p) => p.oppf === s.id).length}`}</Valgpille>)}
+    ? <div role="group" aria-label="Oppfølging" className="under-filter">
+      {OPPF_STATUSER.map((st) => <button type="button" key={st.id} aria-pressed={o === st.id} data-over={over === st.id || undefined}
+        onClick={() => setO(o === st.id ? null : st.id)}
+        onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (over !== st.id) setOver(st.id); }}
+        onDragLeave={() => setOver((v) => (v === st.id ? null : v))}
+        onDrop={slipp(st.id)}>{st.label} <b>{iFane.filter((p) => p.oppf === st.id).length}</b></button>)}
     </div>
     : f === "godkjenn"
-      ? <div role="group" aria-label="Kilde" className="pa-a7-under">
-        {(["motor", "caddie", "foresporsel"] as const).map((k) => <Valgpille key={k} valgt={kilde === k} onClick={() => setKilde(kilde === k ? null : k)}>
-          {`${KILDE_LABEL[k]} · ${iFane.filter((p) => !p.lost && p.godkjennKilde === k).length}`}</Valgpille>)}
-        {godkjenn.ukesrapport && <Valgpille valgt={kilde === "rapport"} onClick={() => setKilde(kilde === "rapport" ? null : "rapport")}>Rapport · 1</Valgpille>}
+      ? <div role="group" aria-label="Kilde" className="under-filter">
+        {(["motor", "caddie", "foresporsel"] as const).map((k) => <button type="button" key={k} aria-pressed={kilde === k} onClick={() => setKilde(kilde === k ? null : k)}>
+          {KILDE_LABEL[k]} <b>{iFane.filter((p) => !p.lost && p.godkjennKilde === k).length}</b></button>)}
+        {godkjenn.ukesrapport && <button type="button" aria-pressed={kilde === "rapport"} onClick={() => setKilde(kilde === "rapport" ? null : "rapport")}>Rapport <b>1</b></button>}
       </div>
       : f === "epost"
-        ? <div role="group" aria-label="E-post" className="pa-a7-under">
-          <KnappLenke size="sm" variant={visSendt ? "ghost" : "secondary"} href={innboksHref("epost", Object.fromEntries(Object.entries(sok ?? {}).filter(([k]) => k !== "vis")))}>{`Venter · ${iFane.filter((p) => !p.lost).length}`}</KnappLenke>
-          <KnappLenke size="sm" variant={visSendt ? "secondary" : "ghost"} href={innboksHref("epost", { ...(sok ?? {}), vis: "sendt" })}>Sendt og arkivert</KnappLenke>
-          <KnappLenke size="sm" variant="ghost" href="/admin/kommunikasjon?fane=maler">Maler</KnappLenke>
+        ? <div role="group" aria-label="E-post" className="under-filter">
+          <Link aria-current={visSendt ? undefined : "page"} href={innboksHref("epost", Object.fromEntries(Object.entries(sok ?? {}).filter(([k]) => k !== "vis")))}>Venter <b>{iFane.filter((p) => !p.lost).length}</b></Link>
+          <Link aria-current={visSendt ? "page" : undefined} href={innboksHref("epost", { ...(sok ?? {}), vis: "sendt" })}>Sendt og arkivert</Link>
+          <Link href="/admin/kommunikasjon?fane=maler">Maler</Link>
         </div>
         : null;
 
@@ -434,41 +424,51 @@ export function AG04Innboks(props: AG04Props) {
       : `Ingen saker under ${INNBOKS_FILTRE.find((x) => x.id === f)?.label ?? f}${visOppf && o ? " · " + OPPF_LABEL[o] : ""}.`;
 
   const hovedliste = liste.length === 0
-    ? <TomTilstand icon={CheckCheck} title="Alt er håndtert." text={tomTekst} />
-    : <section aria-label="Saker" className="pa-card pa-a7-liste">
-      <div role="list">{liste.map((p) => <Sak key={p.key} p={p} open={open === p.key}
-        onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={visOppf} />)}</div>
-    </section>;
+    ? <Tom tittel="Alt er håndtert." tekst={tomTekst} />
+    : <div className="saker" role="list" aria-label="Saker">{liste.map((p) => <Sak key={p.key} p={p} open={open === p.key}
+      onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={visOppf} />)}</div>;
 
-  return <div className="pa-side pa-a7-side">
-    <SidehodeMedHandling kicker={`Innboks · ${dagLabel}`} tittel="Innboks"
-      handlinger={<KnappLenke variant="secondary" icon={Sparkles} iconName="sparkles" href="/admin/jarvis">Jarvis</KnappLenke>} />
-    {tilstand === "laster" ? <LasterTilstand text="Henter innboksen …" />
-      : tilstand === "feil" ? <FeilTilstand icon={TriangleAlert} title="Innboksen kunne ikke hentes" text="E-post og meldinger hentes på nytt når du prøver igjen. Ingenting er sendt." code="FEIL · INNBOKS" />
-        : <>
-          <div role="group" aria-label="Filter" className="pa-a7-filter">
-            {INNBOKS_FILTRE.map((x) => { const n = antall(x.id); return <Valgpille key={x.id} valgt={f === x.id} onClick={() => velg(x.id)}>{x.label + (n ? " · " + n : "")}</Valgpille>; })}
-          </div>
-          {underfilter}
-          {flytt.feil && <InlineVarsel tone="warn">{flytt.feil}</InlineVarsel>}
-          {f === "caddie" ? <CaddieForslag poster={iFane.filter((p) => !p.lost)} onBorte={borteFra} />
-            : f === "datakvalitet" ? <Datakvalitet d={datakvalitet} />
-              : <>
-                {f === "godkjenn" && <GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} />}
-                {!(f === "godkjenn" && kilde === "rapport") && hovedliste}
-                {f === "godkjenn" && <GodkjennBunn g={godkjenn} lost={lost} />}
-                {f !== "godkjenn" && !visOppf && lost.length > 0 && <section aria-label="Løst" className="pa-card pa-a7-kort">
-                  <div className="pa-a7-rad"><span className="kicker">{f === "epost" && visSendt ? "Sendt og arkivert" : "Løst siste 7 dager"}</span><Meta>{`${lost.length} SAKER`}</Meta></div>
-                  <div role="list">{lost.map((p) => <Sak key={p.key} p={p} open={open === p.key}
-                    onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={false} />)}</div>
-                </section>}
-                {visOppf && <div className="pa-a7-rad">
-                  <Meta>{`DRA EN SAK TIL RISIKO, FØLG MED, SJEKK ELLER LØST · AV ${tallTekst(oppfolgingSpillere)} SPILLERE TOTALT`}</Meta>
-                  <KnappLenke size="sm" variant="ghost" href="/admin/oppsett">Justere regler</KnappLenke>
-                </div>}
-              </>}
-          <Meta>HASTER FØRST, DERETTER NYESTE · SPØRSMÅL FRA SPILLER UBESVART I 24 T MERKES HASTER · RISIKO ER FILTER UNDER OPPFØLGING · JARVIS-CHATTEN HAR EGEN SIDE</Meta>
-        </>}
+  const topp = <Topp dato={`Innboks · ${dagLabel} · haster først`} tittel="Innboks"
+    handlinger={<KnappLenke href="/admin/jarvis"><Sparkles className="ikon" aria-hidden />Jarvis</KnappLenke>} />;
+
+  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter innboksen …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s">{topp}<Feil tittel="Innboksen kunne ikke hentes" tekst="E-post og meldinger hentes på nytt når du prøver igjen. Ingenting er sendt." kode="FEIL · INNBOKS" /></div>;
+
+  return <div className="agn-s">
+    {topp}
+    <div className="innboks-grid">
+      <div className="saker">
+        <div className="hoved"><strong>{venterTotalt}</strong><span className="forklar">{venterTotalt === 1 ? "sak venter på deg" : "saker venter på deg"}</span></div>
+        <div role="group" aria-label="Vis" className="chips">
+          {INNBOKS_FILTRE.map((x) => { const n = antall(x.id); return <button type="button" key={x.id} aria-pressed={f === x.id} onClick={() => velg(x.id)}>{x.label}{n ? <b>{n}</b> : null}</button>; })}
+        </div>
+        {underfilter}
+        {flytt.feil && <Varsel tone="advarsel">{flytt.feil}</Varsel>}
+        {f === "caddie" ? <CaddieForslag poster={iFane.filter((p) => !p.lost)} onBorte={borteFra} />
+          : f === "datakvalitet" ? <Datakvalitet d={datakvalitet} />
+            : <>
+              {f === "godkjenn" && <GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} />}
+              {!(f === "godkjenn" && kilde === "rapport") && hovedliste}
+              {f === "godkjenn" && <GodkjennBunn g={godkjenn} lost={lost} />}
+              {f !== "godkjenn" && !visOppf && lost.length > 0 && <section aria-label="Løst" className="seksjon">
+                <div className="sek-topp"><h2>{f === "epost" && visSendt ? "Sendt og arkivert" : "Løst siste 7 dager"}</h2><span className="kilde">{lost.length} saker</span></div>
+                <div className="saker" role="list">{lost.map((p) => <Sak key={p.key} p={p} open={open === p.key}
+                  onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={false} />)}</div>
+              </section>}
+              {visOppf && <div className="sek-topp">
+                <span className="kilde">Dra en sak til Risiko, Følg med, Sjekk eller Løst · av {tallTekst(oppfolgingSpillere)} spillere totalt</span>
+                <Link className="lenke" href="/admin/oppsett">Justere regler</Link>
+              </div>}
+            </>}
+      </div>
+      <aside aria-label="Om innboksen">
+        <div className="kort dempet">
+          <b className="undertittel">Slik er innboksen sortert</b>
+          <p className="forklar">Haster først, deretter nyeste. Spørsmål fra spiller som er ubesvart i 24 timer, haster.</p>
+          <p className="forklar">Jarvis forbereder utkast. Ingenting sendes før du trykker Send.</p>
+          <div className="knapper"><KnappLenke href="/admin/jarvis">Spør Jarvis</KnappLenke></div>
+        </div>
+      </aside>
+    </div>
   </div>;
 }
-

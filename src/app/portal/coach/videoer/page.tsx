@@ -16,9 +16,7 @@ export default async function CoachVideoerPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <PH21Innboks data={data} initialTab="vid" />
-      </div>
+      <PH21Innboks data={data} initialTab="vid" />
     </PlayerHQSkall>
   );
 }

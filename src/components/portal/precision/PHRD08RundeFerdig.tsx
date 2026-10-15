@@ -1,39 +1,34 @@
 /**
- * PH-RD-08 Runde ferdig — Precision Athletics
- * (Claude Design 7d7c2994, ui_kits/playerhq/screens/PH-RD-2.jsx › RD08, etag 1790575336603608;
- * SGBar fra ui_kits/playerhq/an-parts.jsx).
+ * PH-RD-08 Runde gjennomført — nytt design (pakke 5, godkjent av Anders 14.10.2026, utkast 2 med farge).
+ * Fasit: docs/design-system/utkast-playerhq/runder.html, skjerm «ferdig». Stil: playerhq-ny-runder.css.
+ * Siden viser en lagret runde: brutto score, Strokes Gained, Tiger 5 og scorekortet.
  *
- * Siden viser en lagret runde: score, Strokes Gained og hull for hull.
- *
- * Bevisste avvik fra tegningen:
- *   - Tegningens «Lagre runde» og «Lagre delvis» finnes ikke: runden er allerede lagret når siden
- *     åpnes. Handlingene er de siden allerede hadde (fullfør slag-kjeden, rediger hull for hull,
- *     slag for slag, import fra UpGame, del med coach).
- *   - Hull-SG under hvert hull mangler: appen lagrer ikke SG per hull, og et tall vi ikke har
- *     vises ikke som gjetning.
- *   - Handlingsraden er ikke klebrig nederst: PlayerHQ-skallet har allerede fanelinje nederst.
- *   - Manuell SG-redigering, UpGame-import og kontekstspørsmålene er beholdt med eget uttrykk
- *     til RD-09 (rediger) og RD-07 (import) er portert.
+ * Avvik:
+ *   - «Lagre runden» finnes ikke: runden er lagret når siden åpnes. Notatet vises når det finnes, men kan ikke endres her
+ *     (ingen handling for å endre notat på en lagret runde).
+ *   - «Planen din oppdateres» viser ikke et konkret forslag: forslaget lages av agentene etter lagring og kommer i Innboks.
+ *   - SG sammenlignes med referansen runden ble regnet mot, ikke med «Kategori B» (kategorien er ikke lagret på runden).
+ *   - Tiger 5: «Bom på enkel up and down» vises som «—» til det er vedtatt hva «enkel» betyr. «Bogey fra innenfor 130 m»
+ *     krever slag ført slag for slag.
+ *   - PH-RD-09 Rediger er ikke tegnet om: «Rediger hull for hull», «Slag for slag» og manuell SG bruker dagens skjemaer.
+ *     Sletting av en runde finnes ikke i appen.
+ *   - «Fullfør slag-kjeden» går til slag for slag (/slag); den gamle /fullfor-adressen sendte tilbake hit.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-RD-08.
  */
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { ArrowLeft, Flag, MessageSquare, Pencil, Route, TrendingUp, TriangleAlert, ListChecks } from "lucide-react";
-import { formaterFortegn } from "@/lib/format-tall";
+import { RefreshCw } from "lucide-react";
 import { ManuellSgRedigering } from "@/components/portal/runde-ny/manuell-sg-redigering";
 import { SG_DETALJGRUPPER, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
-import {
-  RUNDE_DATAQUALITY_META,
-  RUNDE_SG_KILDE,
-  RUNDE_STATUS_META,
-  type RundeRegistreringStatus,
-} from "@/lib/runde-logg/kontrakt";
+import { RUNDE_DATAQUALITY_META, RUNDE_SG_KILDE, RUNDE_STATUS_META, type RundeRegistreringStatus } from "@/lib/runde-logg/kontrakt";
+import type { Tiger5Regel } from "@/lib/portal-runder/tiger5-runde";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
-import { Ikon, KnappLenke, Meta, Sidehode, StatusPille, TomTilstand } from "@/components/precision/pa";
-import { InlineVarsel, Nokkelverdi } from "@/components/precision/pa-a5";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { SG_NAVN, Scorekort, SgListe, Tilbake, sgEn, tilParTekst } from "./PHRunderFelles";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-runder.css";
 
-export type PHRD08Hull = { nr: number; par: number; score: number };
+export type PHRD08Hull = { nr: number; par: number; score: number; putter?: number | null };
 export type PHRD08Data = {
   id: string;
   nettoppLagret: boolean;
@@ -61,174 +56,165 @@ export type PHRD08Data = {
   straff: number | null;
   ut: { score: number; par: number } | null;
   inn: { score: number; par: number } | null;
+  /** Turnering eller trening; null når typen ikke er satt. */
+  art?: "turnering" | "trening" | null;
+  notat?: string | null;
+  tiger5?: Tiger5Regel[];
 };
 
-/** Fortegn og én desimal, som tegningens sg(): «+0,4», «−0,8», «±0,0», «—». */
+/** Fortegn og én desimal: «+0,4», «−0,8», «0,0», «—». */
 export function sg1(v: number | null): string {
-  if (v == null) return "—";
-  return Math.abs(v) <= 0.04 ? "±0,0" : formaterFortegn(v, 1);
+  return sgEn(v);
 }
 export function tilPar(d: number): string {
-  return d > 0 ? `+${d}` : d < 0 ? `−${Math.abs(d)}` : "±0";
+  return tilParTekst(d);
 }
 
-/** Divergerende SG-stolpe. Grafitt for alle verdier: fortegnet bærer betydningen, ikke fargen. */
-function SGBar({ label, v, max = 1.5 }: { label: string; v: number | null; max?: number }) {
-  const w = v == null ? 0 : Math.min(50, (Math.abs(v) / max) * 50);
-  return <div style={{ display: "grid", gridTemplateColumns: "minmax(64px,120px) minmax(0,1fr) 56px", gap: 12, alignItems: "center", minHeight: 44 }}>
-    <span style={{ font: "600 13px/1 var(--font-mono)", color: "var(--text-primary)", minWidth: 0 }}>{label}</span>
-    <span style={{ position: "relative", height: 14, background: "var(--surface-sunken)" }} aria-hidden="true">
-      <span style={{ position: "absolute", left: "50%", top: -4, bottom: -4, width: 1, background: "var(--border-ink)" }} />
-      {v != null && <span style={{ position: "absolute", top: 0, bottom: 0, background: v < 0 ? "var(--text-secondary)" : "var(--text-primary)", left: v < 0 ? `${50 - w}%` : "50%", width: `${w}%` }} />}
-    </span>
-    <span style={{ font: "600 15px/1 var(--font-mono)", color: "var(--text-primary)", textAlign: "right" }}>{sg1(v)}</span>
-  </div>;
+function sgKildeTekst(d: PHRD08Data): string {
+  if (d.sgSource === RUNDE_SG_KILDE.BEREGNET) return "Regnet fra slagene dine";
+  if (d.sgSource === RUNDE_SG_KILDE.MANUAL) return "Ført for hånd";
+  if (d.sgSource === RUNDE_SG_KILDE.ESTIMERT) return "Estimert fra score";
+  return "Ikke registrert";
 }
 
-function Sek({ k, aside, children }: { k?: ReactNode; aside?: ReactNode; children: ReactNode }) {
-  return <section className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0 }}>
-    {(k || aside) && <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-      {k && <h2 className="kicker" style={{ margin: 0 }}>{k}</h2>}{aside}
-    </div>}
-    {children}
-  </section>;
+function Tiger5({ regler }: { regler: Tiger5Regel[] }) {
+  const kjente = regler.filter((r) => r.antall != null);
+  const sum = kjente.reduce((s, r) => s + (r.antall ?? 0), 0);
+  return (
+    <section className="phn-kort phr-kort">
+      <div className="phn-sek-topp"><h2>Tiger 5</h2><span className="phn-kilde">{kjente.length ? `${sum} bortkastede slag` : "—"}</span></div>
+      <div className="phr-tiger">
+        {regler.map((r) => (
+          <div key={r.navn}>
+            <span><b>{r.navn}</b><span>{r.antall == null ? "Mangler data" : r.hull.length ? `Hull ${r.hull.join(", ")}` : "Ingen"}</span></span>
+            <span className={`v${r.antall == null ? "" : r.antall === 0 ? " null" : " feil"}`}>{r.antall ?? "—"}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
-
-function Kvalitet({ r }: { r: RundeRegistreringStatus }) {
-  const meta = RUNDE_DATAQUALITY_META[r.dataQuality];
-  const klasse = r.kanBeregneSg ? "pa-status--ok" : r.beskytterManuellSg ? "pa-status--info" : "pa-status--warn";
-  const detalj = r.kanBeregneSg ? ` · ${r.antallKompletteHull} av ${r.antallHullMedScore} hull med slag` : "";
-  return <span className={`pa-status ${klasse}`}><span className="pa-status__dot" />{meta.label}{detalj}</span>;
-}
-
-function Kilde({ d }: { d: PHRD08Data }) {
-  const beregnet = d.sgSource === RUNDE_SG_KILDE.BEREGNET;
-  const manuell = d.sgSource === RUNDE_SG_KILDE.MANUAL;
-  const est = d.sgSource === RUNDE_SG_KILDE.ESTIMERT;
-  const tekst = beregnet ? "Beregnet · slag-for-slag" : manuell ? "Manuell SG" : est ? "Estimert fra score" : "Kilde mangler";
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap", font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)", textTransform: "uppercase", minWidth: 0 }}>
-    <span>{[tekst, d.datoKort].join(" · ")}</span>
-    {est && <span style={{ padding: "1px 6px", border: "1px dashed var(--border-strong)", borderRadius: 4, color: "var(--text-secondary)" }}>Estimat</span>}
-  </span>;
-}
-
-const CSS = `
-.phrd08-kol{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
-@media (min-width:1024px){.phrd08-kol{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}}
-.phrd08-hull{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:0;padding:0;list-style:none}
-@media (min-width:600px){.phrd08-hull{grid-template-columns:repeat(9,minmax(0,1fr))}}
-.phrd08-hullcelle{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:var(--radius-inner);border:1px solid var(--border-hairline);min-width:0}
-.phrd08-handling{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-width:0}
-.phrd08-handling>a,.phrd08-handling>button{flex:1 1 100%}
-@media (min-width:1024px){.phrd08-handling{justify-content:flex-end}.phrd08-handling>a,.phrd08-handling>button{flex:0 0 auto}}
-.phrd08-detalj{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
-@media (min-width:600px){.phrd08-detalj{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.phrd08-rad{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-width:0}
-`;
-
-const sgUnder = (d: PHRD08Data) => {
-  if (d.sgSource === RUNDE_SG_KILDE.BEREGNET) return "Brutto score. SG er beregnet fra slag-for-slag.";
-  if (d.sgSource === RUNDE_SG_KILDE.MANUAL) return "Brutto score. SG er lagt inn manuelt.";
-  if (d.sgSource === RUNDE_SG_KILDE.ESTIMERT) return "Brutto score. SG er estimert fra score, ikke beregnet fra slag.";
-  return "Brutto score. SG er ikke registrert.";
-};
 
 export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; uleste?: number }) {
   const status = RUNDE_STATUS_META[d.registrering.status];
+  const kvalitet = RUNDE_DATAQUALITY_META[d.registrering.dataQuality];
   const harHull = d.hull.length > 0;
-  const forklaring = RUNDE_DATAQUALITY_META[d.registrering.dataQuality].forklaring;
-  const harSg = d.sgTotal != null || d.sgKategorier.length > 0;
   const harDetalj = SG_DETALJGRUPPER.some((g) => g.fields.some((f) => d.granulaerSg[f.key] != null));
-  const tone = d.registrering.status === "komplett" ? "ok" : "warn";
+  const artTekst = d.art === "turnering" ? "TURNERING" : d.art === "trening" ? "TRENINGSRUNDE" : "RUNDE";
+  const sgRader = d.sgKategorier.map((k) => ({ navn: SG_NAVN[k.akse], kode: k.akse, v: k.sg }));
+  const tiger5 = d.tiger5 ?? [];
 
-  return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-    <div className="pa-side" style={{ maxWidth: 1200 }}>
-      <style>{CSS}</style>
-      <Link href="/portal/mal/runder" className="pa-btn pa-btn--ghost pa-btn--sm pa-btn--icon-l" style={{ alignSelf: "flex-start" }}>
-        <Ikon icon={ArrowLeft} size={16} name="arrow-left" />Runder
-      </Link>
-      <Sidehode kicker={`Runde · Ferdig · ${d.datoKort}`} title={d.baneNavn} sub={sgUnder(d)} />
-      <div className="phrd08-rad"><StatusPille tone={tone}>{status.label}</StatusPille></div>
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <div className="phn">
+        <div className="phr-hode-rad">
+          <Tilbake href="/portal/mal/runder" tekst="Runder" />
+          {d.erEier && harHull && <Link className="phn-knapp sek" href={`/portal/mal/runder/${d.id}/hull`}>Rediger</Link>}
+        </div>
+        <div className="phr-topp">
+          <div className="phn-dato">Runde gjennomført · {d.datoKort}</div>
+          <h1 className="phn-tittel">{d.baneNavn}</h1>
+        </div>
 
-      {d.nettoppLagret && d.erEier && <InlineVarsel tone="ok" tittel="Runden er lagret.">
-        {d.sgSource === RUNDE_SG_KILDE.MANUAL ? "SG-tallene dine er lagret." : d.sgTotal != null ? "Strokes Gained er klar." : "Mangler hull-score for full Strokes Gained."}
-      </InlineVarsel>}
-      {d.visKjedeStatus && <InlineVarsel tone="warn" tittel="SG venter på slag-kjeden.">
-        {d.antallKomplette} av {d.antallHullMedScore} hull er komplette.{" "}
-        <Link href={`/portal/mal/runder/${d.id}/fullfor`} style={{ color: "inherit", textDecoration: "underline" }}>Fullfør kjeden</Link> for full Strokes Gained.
-      </InlineVarsel>}
-
-      <div className="phrd08-kol">
-        <Sek k="Score" aside={<Kvalitet r={d.registrering} />}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-            <span style={{ font: "600 56px/1 var(--font-mono)" }}>{d.score}</span>
-            <Meta>BRUTTO · {tilPar(d.score - d.par)} · PAR {d.par}</Meta>
+        {d.nettoppLagret && d.erEier && (
+          <div className="phr-sjekk ok" role="status">
+            <span><b>Runden er lagret.</b> {d.sgSource === RUNDE_SG_KILDE.MANUAL ? "SG-tallene dine er lagret." : d.sgTotal != null ? "Strokes Gained er klar." : "Før slag for slag for å få Strokes Gained."}</span>
           </div>
-          <Nokkelverdi kolonner={2} items={[
-            ["Putter", d.putter ? String(d.putter.totalt) : "—", d.putter && d.putter.hull < d.hull.length ? `${d.putter.hull} hull ført` : undefined],
-            ["Fairway", d.fairway ? `${d.fairway.treff} av ${d.fairway.av}` : "—"],
-            ["GIR", d.gir ? `${d.gir.treff} av ${d.gir.av}` : "—"],
-            ["Straff", d.straff != null ? String(d.straff) : "—"],
-          ]} />
-          <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>
-            {d.registrering.beskytterManuellSg ? "Manuell SG er låst mot automatisk overskriving. Slag og scorekort kan fortsatt rettes." : forklaring}
-          </p>
-        </Sek>
-
-        <Sek k="Strokes Gained" aside={<Kilde d={d} />}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-            <span style={{ font: "600 40px/1 var(--font-mono)" }}>{sg1(d.sgTotal)}</span><Meta>SG TOTALT</Meta>
+        )}
+        {d.visKjedeStatus && (
+          <div className="phr-sjekk vent">
+            <span>SG venter på slagene: {d.antallKomplette} av {d.antallHullMedScore} hull er komplette.{" "}
+              {d.erEier && <Link href={`/portal/mal/runder/${d.id}/slag`} style={{ color: "inherit" }}>Før slagene</Link>}</span>
           </div>
-          {d.sgKategorier.length > 0
-            ? <>
-              {d.sgKategorier.map((k) => <SGBar key={k.akse} label={k.akse} v={k.sg} />)}
-              <Meta>{d.sgSource === RUNDE_SG_KILDE.MANUAL ? "NULL = DIN REFERANSE" : "NULL = BASELINE KATEGORI D"}</Meta>
-            </>
-            : !harSg && <TomTilstand icon={TrendingUp} title="Ingen SG registrert"
-              text="Før slag for slag for å beregne SG, eller legg inn tallene fra en annen app. Ukjente tall vises som —." />}
-        </Sek>
+        )}
+
+        <div className="phr-grid phr-to">
+          <div>
+            <section className="phr-helt" aria-label="Brutto score">
+              {/* eslint-disable-next-line @next/next/no-img-element -- dekorbilde fra public */}
+              <img src="/images/playerhq/spill-bane.jpg" alt="" width={640} height={264} />
+              <div className="t">
+                <span className="phr-akse-merke">SPILL · {artTekst}</span>
+                <div className="phr-stort">
+                  <strong>{d.score}</strong>
+                  <span>{harHull ? tilParTekst(d.score - d.par) : "—"}</span>
+                  <span className="phn-trend">{status.label}</span>
+                </div>
+                <div className="phr-info">
+                  <span>Brutto{harHull ? ` · par ${d.par}` : ""}</span>
+                  <span>{kvalitet.label}{harHull ? ` · ${d.antallHullMedScore} hull` : ""}</span>
+                </div>
+              </div>
+            </section>
+            <div className="phr-fakta">
+              <div><b>{d.putter ? d.putter.totalt : "—"}</b><span>putter</span></div>
+              <div><b>{d.fairway ? <>{d.fairway.treff}<small>av {d.fairway.av}</small></> : "—"}</b><span>fairway</span></div>
+              <div><b>{d.gir ? <>{d.gir.treff}<small>av {d.gir.av}</small></> : "—"}</b><span>GIR</span></div>
+            </div>
+            <section className="phn-kort phr-kort">
+              <div className="phn-sek-topp"><h2>Strokes Gained</h2>{d.sgSource === RUNDE_SG_KILDE.ESTIMERT ? <span className="phr-estimat">Estimat</span> : <span className="phn-kilde">{sgKildeTekst(d)}</span>}</div>
+              <div className="phn-hoved"><strong>{sg1(d.sgTotal)}</strong><span className="phn-forklar">slag totalt</span></div>
+              {sgRader.length > 0
+                ? <SgListe rader={sgRader} />
+                : <p className="phn-forklar">Ingen SG per kategori. Før slag for slag, eller legg inn tallene fra en annen app.</p>}
+              <p className="phn-kilde">Én runde gir ingen konklusjon. Stats bruker snittet av mange runder. Straff: {d.straff ?? "—"}.</p>
+            </section>
+            {harHull && <Tiger5 regler={tiger5} />}
+          </div>
+          <div>
+            {d.erEier && (
+              <section className="phr-oppdat">
+                <div className="phr-oppdat-topp"><span className="phr-oppdat-ikon"><RefreshCw className="phn-ikon" aria-hidden /></span>Planen din oppdateres</div>
+                <p className="phn-forklar">Runden går inn i snittscoren og Strokes Gained i Stats. Ser Caddie at noe bør endres i planen, kommer forslaget i Innboks.</p>
+                <p className="phn-kilde">Du godkjenner selv.</p>
+              </section>
+            )}
+            <section className="phn-kort phr-kort">
+              <div className="phn-sek-topp"><h2>Scorekort</h2><span className="phn-kilde">{kvalitet.label} · {d.datoKort}</span></div>
+              {harHull
+                ? <Scorekort hull={d.hull.map((h) => ({ nr: h.nr, par: h.par, score: h.score, putter: h.putter ?? null }))} />
+                : <>
+                  <p className="phn-forklar">Bare totalscore er lagret for denne runden.</p>
+                  {d.erEier && <div className="phn-knapper"><Link className="phn-knapp sek" href={`/portal/mal/runder/${d.id}/hull`}>Legg til hull for hull</Link></div>}
+                </>}
+            </section>
+            {d.notat && (
+              <section className="phn-kort phr-kort">
+                <h2>Notat</h2>
+                <p className="phn-forklar">{d.notat}</p>
+                <p className="phn-kilde">Coachen ser notatet.</p>
+              </section>
+            )}
+            {d.erEier && d.manuellSg && (
+              <section className="phn-kort phr-kort">
+                <h2>Strokes Gained fra en annen app</h2>
+                <ManuellSgRedigering roundId={d.id} verdier={d.manuellSg} kilde={d.sgSource} />
+              </section>
+            )}
+            {harDetalj && (
+              <section className="phn-kort phr-kort">
+                <h2>SG i detalj</h2>
+                <div className="phr-forhand">
+                  {SG_DETALJGRUPPER.flatMap((g) => g.fields.map((f) => (
+                    <div key={f.key}><span><b>{f.label}</b><span>{g.label}</span></span><span className="v">{sg1(d.granulaerSg[f.key] ?? null)}</span></div>
+                  )))}
+                </div>
+              </section>
+            )}
+            <section className="phn-kort phr-kort"><ResultatKontekst /></section>
+            <div className="phn-knapper">
+              {d.erEier && harHull && <>
+                <Link className="phn-knapp sek" href={`/portal/mal/runder/${d.id}/slag`}>Slag for slag</Link>
+                <UpGameImportModal roundId={d.id} />
+              </>}
+              {d.erEier
+                ? <Link className="phn-knapp sek" href={`/portal/statistikk/runder/${d.id}/del`}>Del runde</Link>
+                : <Link className="phn-knapp sek" href="/portal/coach/melding">Del med coach</Link>}
+              {d.erEier && <Link className="phn-knapp pri" href="/portal/analysere">Se Stats</Link>}
+            </div>
+          </div>
+        </div>
       </div>
-
-      {d.erEier && d.manuellSg && <Sek k="Manuell SG">
-        <ManuellSgRedigering roundId={d.id} verdier={d.manuellSg} kilde={d.sgSource} />
-      </Sek>}
-
-      {harDetalj && <div className="phrd08-detalj">
-        {SG_DETALJGRUPPER.map((g) => <Sek key={g.label} k={g.label}>
-          <Nokkelverdi items={g.fields.map((f) => [f.label, sg1(d.granulaerSg[f.key] ?? null)] as const)} />
-        </Sek>)}
-      </div>}
-
-      {harHull
-        ? <Sek k="Hull for hull">
-          <ul className="phrd08-hull" aria-label="Score per hull">
-            {d.hull.map((h) => <li className="phrd08-hullcelle" key={h.nr}>
-              <Meta>{h.nr}</Meta>
-              <span style={{ font: "600 15px/1 var(--font-mono)" }}>{h.score}</span>
-              <Meta style={{ fontSize: 10 }}>P{h.par}</Meta>
-            </li>)}
-          </ul>
-          <Meta>TALL = BRUTTO · UNDER = PAR{d.ut && d.inn ? ` · UT ${d.ut.score} · INN ${d.inn.score}` : d.ut ? ` · SUM ${d.ut.score}` : ""}</Meta>
-        </Sek>
-        : <Sek k="Hull for hull">
-          <TomTilstand icon={Flag} title="Ingen hull-for-hull ennå" text="Kun totalscore er registrert for denne runden."
-            actions={d.erEier ? <KnappLenke href={`/portal/mal/runder/${d.id}/hull`} icon={ListChecks} iconName="list-checks">Legg til hull-for-hull</KnappLenke> : undefined} />
-        </Sek>}
-
-      <Sek><ResultatKontekst /></Sek>
-
-      <div className="phrd08-handling">
-        {d.erEier && harHull && <>
-          <UpGameImportModal roundId={d.id} />
-          <KnappLenke variant="ghost" icon={Route} iconName="route" href={`/portal/mal/runder/${d.id}/slag`}>Slag for slag</KnappLenke>
-          <KnappLenke variant="secondary" icon={Pencil} iconName="pencil" href={`/portal/mal/runder/${d.id}/hull`}>Rediger hull for hull</KnappLenke>
-        </>}
-        {d.erEier && d.visKjedeStatus
-          ? <KnappLenke icon={TriangleAlert} iconName="triangle-alert" href={`/portal/mal/runder/${d.id}/fullfor`}>Fullfør slag-kjeden</KnappLenke>
-          : d.erEier
-            ? <KnappLenke icon={TrendingUp} iconName="trending-up" href="/portal/analysere">Se SG-trend i Stats</KnappLenke>
-            : <KnappLenke icon={MessageSquare} iconName="message-square" href="/portal/coach/melding">Del med coach</KnappLenke>}
-      </div>
-    </div>
-  </PlayerHQSkall>;
+    </PlayerHQSkall>
+  );
 }
