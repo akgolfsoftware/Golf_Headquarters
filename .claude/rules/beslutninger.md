@@ -4,6 +4,32 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## COACH SOM AVLYSER GIR ALLTID FULL REFUSJON ELLER KLIPPET TILBAKE (Anders 15.10.2026, bindende)
+
+Svar på utkast-PR #1010 (kalender og booking), som Anders sa ja til 15.10.
+
+- **Avlyser coachen en booking, får kunden alltid alt tilbake**, uansett hvor nær timen er: hele beløpet i Stripe
+  (AK Golf dekker gebyret) eller klippet tilbake til pakken. 24-timersfristen gjelder bare spillerens egen avbestilling.
+  `cancelOutcome` (`src/lib/booking/policy.ts`) gjør dette allerede for staff; det som mangler, er knappen i AgencyOS.
+- **Betalingsmåte på booking:** Stripe · Klipp · Faktura · Gratis. Faktura er bare et merke; fakturaen lages i Tripletex av Anders.
+- **Coach foreslår ny tid** på en booket time. Tiden endres først når spilleren godtar i PlayerHQ. Spilleren flytter
+  fortsatt selv innenfor coachens tilgjengelighet (§SPILLEREN FLYTTER TIMEN SELV, 14.10).
+- **Avvisning med begrunnelse blir et utkast i Innboks.** Ingenting sendes automatisk; coachen sender selv.
+
+**Arbeidet dette utløser:**
+
+1. **Tre tillegg i basen**, additivt via `db execute` (gotchas §Database): `bookings."paymentMethod"`
+   (`BookingPaymentMethod`), `bookings."proposedStartAt"`/`"proposedEndAt"`/`"proposedAt"`/`"proposedById"` og
+   `innboks_epost."bookingId"`. Skriptet `scripts/add-booking-betaling-flytting-utkast-2026-09-29.ts` fra #1010.
+   Ferdig når Anders har kjørt det og feltene finnes. Koden som leser feltene legges ikke inn før det.
+2. **Avlys i AG-06 Booking** (`src/components/admin/precision/AG06Booking.tsx`): ny handling som avlyser, refunderer
+   eller fører klippet tilbake i én transaksjon, med varig refusjonsjobb ved Stripe-feil. Ferdig når en test låser full
+   refusjon under 24 timer for coach.
+3. **Betalingsmåte i coachens booking** (`bookIKalender`, `src/app/admin/kalender/booking-actions.ts`): Klipp trekker
+   ett klipp atomisk, Faktura og Gratis merkes.
+4. **Flytteforslag:** coach foreslår i AG-05 Kalender, spilleren godtar eller avslår i PlayerHQ-bookingen.
+5. **Avvis med utkast i Innboks**, og GDPR-anonymisering vasker utkastene (`src/lib/gdpr/anonymiser-bruker.ts`).
+
 ## SPILLERPROFILEN HETER IUP I TEAM NORWAY (Anders 15.10.2026, bindende)
 
 Anders 15.10: «For Team Norway skjerm skal det hete IUP som spiller profil.»
