@@ -21,6 +21,7 @@ function erIupFokusforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is
 }
 
 const panel: React.CSSProperties = { display: "grid", gap: 12, padding: 16, border: "1px solid var(--border-default)", borderRadius: 12, background: "var(--surface-1)" };
+const stdKnapp: React.CSSProperties = { minHeight: 40, border: 0, borderRadius: 8, background: "var(--surface-inverse)", color: "var(--text-inverse)", padding: "8px 14px", font: "var(--type-body-s)", cursor: "pointer" };
 // Skjemaet får tema fra systemet det vises i (WANG- eller Team Norway-tokens).
 // `panel` og `stdKnapp` over brukes bare av innboksen i PlayerHQ.
 const tnPanel: React.CSSProperties = { display: "grid", gap: 12, padding: "16px 18px 18px", border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, background: TN.surfaceCard, fontFamily: TN.font.body };
