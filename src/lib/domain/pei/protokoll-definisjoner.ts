@@ -58,13 +58,17 @@ function attBall(id: string, name: string, rekkefolge: string[], description: st
     columns: [
       { key: "slag", label: "Slag", kind: "preset" },
       { key: "lengde", label: "Lengde", kind: "preset", unit: "m" },
-      { key: "resultat", label: "Resultat", kind: "input", input: "number", unit: "m" },
+      // Carry og side per slag, «I hull» når ballen går i på ett slag (Anders 14.10.2026).
+      { key: "carry", label: "Carry", kind: "input", input: "number", unit: "m" },
+      { key: "side", label: "Side", kind: "input", input: "number", unit: "m" },
+      { key: "iHull", label: "I hull", kind: "input", input: "choice", options: ["✓", "✗"] },
+      { key: "tilMaal", label: "Fra hull", kind: "computed", unit: "m", decimals: 1 },
       { key: "pei", label: "PEI", kind: "computed", percent: true, decimals: 1 },
       { key: "pgaPutts", label: "PGA putts", kind: "computed", decimals: 2 },
       { key: "poeng", label: "Poeng", kind: "computed", decimals: 0 },
     ],
     puttsTable: "green",
-    rows: rekkefolge.map(slag => ({ slag, lengde: ATTE_BALL_LENGDE[slag] })),
+    rows: rekkefolge.map(slag => ({ slag, lengde: ATTE_BALL_LENGDE[slag], maal: ATTE_BALL_LENGDE[slag] })),
     totals: [
       { label: "Total poeng", column: "poeng", compute: "sum" },
       { label: "Chip PEI", column: "pei", compute: "avg", percent: true, decimals: 1, filter: filterKat("Chip") },
@@ -195,13 +199,13 @@ export const TEST_PROTOKOLLER: TestProtokoll[] = [
     "8-ball-variation",
     "8-ball variation",
     sykel(ATTE_BALL_REKKEFOLGE, 24),
-    "24 slag, slagtypene i variert rekkefølge. Resultat = meter fra hull."
+    "24 slag, slagtypene i variert rekkefølge. Carry og side per slag; appen regner ut avstand fra hull."
   ),
   attBall(
     "8-ball-blocked",
     "8-ball blocked",
     gjenta(ATTE_BALL_REKKEFOLGE, 3),
-    "24 slag, 3 like slag om gangen. Resultat = meter fra hull."
+    "24 slag, 3 like slag om gangen. Carry og side per slag; appen regner ut avstand fra hull."
   ),
   baneTest(
     "golfslag-bane",

@@ -194,7 +194,7 @@ function tilAkseMinutter(m: Record<AkseNokkel, number>): Record<AkseNokkel, numb
   return Object.values(m).some((v) => v > 0) ? m : null;
 }
 
-export function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
+function PeriodeSkjema({ playerId, year, period, onClose, onSaved }: {
   playerId: string;
   year: number;
   period: PeriodViewModel["period"];

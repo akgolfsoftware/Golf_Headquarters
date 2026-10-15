@@ -1011,6 +1011,7 @@ export async function loadYear(params: {
     axisMinutes: parseAxisMinutes(b.axisMinutes),
     axisMinutesLight: parseAxisMinutes(b.axisMinutesLight),
     fraGruppe: b.sourceGroupId !== null,
+    notat: b.notes,
   }));
   const tournamentEvents = tournamentEntries
     .map((e) => {
@@ -1089,6 +1090,8 @@ export async function loadPeriod(params: {
     sessionBudget: parseSessionBudget(block.weeklySessionBudget),
     axisMinutes: parseAxisMinutes(block.axisMinutes),
     axisMinutesLight: parseAxisMinutes(block.axisMinutesLight),
+    fraGruppe: block.sourceGroupId !== null,
+    notat: block.notes,
   }));
   const tournamentEvents = tournamentEntries
     .map((entry) => {

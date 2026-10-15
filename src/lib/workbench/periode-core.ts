@@ -42,6 +42,7 @@ function tilData(input: PeriodeInput) {
     weeklySessionBudget: budsjett ?? Prisma.DbNull,
     axisMinutes: akseData(input.axisMinutes),
     axisMinutesLight: akseData(input.axisMinutesLight),
+    notes: input.notat === undefined ? undefined : input.notat || null,
   };
 }
 

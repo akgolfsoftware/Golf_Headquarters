@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { TN_CATALOG, TN_RULES_VERSION, tnProtocol, tnVersion } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_GODKJENT_VERSION, tnProtocol, tnVersion } from "@/lib/portal-tester/tn-catalog";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { z } from "zod";
 import { tnFromDefinitionId, tnDefinitionId, tnComparableResult } from "@/lib/portal-tester/tn-integration";
@@ -102,7 +102,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     const kobledeSessioner = new Map(testdagKoblinger.filter((k) => k.sessionId).map((k) => [k.sessionId!, k.id]));
     const aktiveGrupper = new Set((await prisma.groupMember.findMany({ where: { groupId: { in: [...new Set(egneTestdager.map((d) => d.testDay.groupId))] }, userId: user.id, ...aktivtSpillerMedlemskapWhere() }, select: { groupId: true } })).map((m) => m.groupId));
     const aktiveEgneTestdager = egneTestdager.filter((d) => aktiveGrupper.has(d.testDay.groupId));
-    content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_RULES_VERSION}</p>
+    content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_GODKJENT_VERSION}</p>
       <h2>Pågående felles testdager</h2>{aktiveEgneTestdager.length === 0 ? <p>Ingen aktive testdagstildelinger.</p> : <ul>{aktiveEgneTestdager.map((d) => {
         const protocolId = (d.testDay.testDefinition.protocol as { protocolId?: string } | null)?.protocolId;
         const p = protocolId ? tnProtocol(protocolId, undefined, d.testDay.testDefinition.scoringRule ?? "") : null;

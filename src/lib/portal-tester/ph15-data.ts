@@ -30,12 +30,12 @@ export function utledPH15Oppsett(spec: ScorekortSpec, _scoringRule?: string): PH
   const antallSlag = spec.forsok.length > 0 ? spec.forsok.length : 10;
   const forsteFelt = spec.forsok[0]?.felter[0];
 
-  // Sjekk om testen er boolean treff/bom
+  // Sjekk om testen er godkjent/bom (Anders 14.10.2026: «Godkjent» erstatter «Treff»)
   if (forsteFelt?.type === "checkbox") {
     return {
       antallSlag,
       modus: "hit_miss",
-      enhet: "treff",
+      enhet: "godkjent",
       stepperVerdier: [],
       standardInndataVerdi: 1,
     };
