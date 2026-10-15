@@ -13,7 +13,7 @@ const finnesSide = (href: string) => {
 
 describe("AgencyOS-menyen (Precision)", () => {
   it("har menyen fra 28.09 i riktig rekkefølge", () => {
-    assert.deepEqual(AOS_MENY.map((m) => m.label), ["Cockpit", "Innboks", "Stall", "Kalender", "Workbench"]);
+    assert.deepEqual(AOS_MENY.map((m) => m.label), ["Cockpit", "Innboks", "Stall", "Kalender", "Workbench", "Mer"]);
     assert.deepEqual(AOS_MER.map((m) => m.label), ["Booking", "Grupper", "Tester", "Økonomi", "Oppsett"]);
     assert.equal(AOS_HURTIG.length, 5);
   });
@@ -33,6 +33,7 @@ describe("AgencyOS-menyen (Precision)", () => {
     assert.deepEqual(aktivtAosPunkt("/admin/spillere/abc/plan"), { punkt: "stall", mer: null });
     assert.deepEqual(aktivtAosPunkt("/admin/plan-templates/x"), { punkt: "workbench", mer: null });
     assert.deepEqual(aktivtAosPunkt("/admin/bookinger/ny"), { punkt: "mer", mer: "booking" });
+    assert.deepEqual(aktivtAosPunkt("/admin/mer"), { punkt: "mer", mer: null });
     assert.deepEqual(aktivtAosPunkt("/admin/planleggeX"), { punkt: null, mer: null });
   });
 });
