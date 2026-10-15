@@ -86,7 +86,7 @@ export function TnSeHvem({ postId }: { postId: string }) {
           style={{
             marginTop: 8,
             padding: 10,
-            borderRadius: TN.radius.md,
+            borderRadius: TN.radius.sm,
             background: TN.surfaceSunken,
             display: "flex",
             flexDirection: "column",
@@ -137,8 +137,8 @@ function VedleggChip({
         display: "flex",
         alignItems: "center",
         gap: 10,
-        border: `1px solid ${TN.borderSubtle}`,
-        borderRadius: TN.radius.md,
+        border: `1px solid ${TN.ink200}`,
+        borderRadius: TN.radius.sm,
         padding: "8px 14px 8px 8px",
         minWidth: 210,
         background: TN.surfacePage,
@@ -219,8 +219,8 @@ export function TnPostTidslinje({
       <div
         style={{
           background: TN.surfaceCard,
-          borderRadius: TN.radius.lg,
-          border: `1px solid ${TN.borderSubtle}`,
+          borderRadius: TN.radius.sm,
+          border: `1px solid ${TN.ink200}`,
           padding: 20,
           display: "flex",
           flexDirection: "column",
@@ -261,8 +261,8 @@ export function TnPostTidslinje({
             key={p.id}
             style={{
               background: TN.surfaceCard,
-              borderRadius: TN.radius.lg,
-              border: `1px solid ${TN.borderSubtle}`,
+              borderRadius: TN.radius.sm,
+              border: `1px solid ${TN.ink200}`,
               padding: "14px 18px",
               display: "flex",
               flexDirection: "column",
@@ -308,7 +308,7 @@ export function TnPostTidslinje({
             )}
 
             {p.kvittering && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `1px solid ${TN.borderSubtle}`, paddingTop: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `1px solid ${TN.ink200}`, paddingTop: 10 }}>
                 <span
                   style={{
                     width: 8,

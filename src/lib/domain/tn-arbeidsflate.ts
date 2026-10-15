@@ -20,6 +20,7 @@ import { aggregerRangliste } from "./tn-rangliste";
 import { kanSeDataGolf, UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
+import { summerAksefordeling } from "./tn-aksefordeling";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -685,6 +686,21 @@ export async function medTnSpillerData<T>(bruker: TnBruker, spillerId: string, l
 
 export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
   return medTnSpillerData(bruker, spillerId, async (_tx, tilgang) => tilgang);
+}
+
+/**
+ * Spillerens trening per akse siste 28 dager (pyramiden i IUP-en). Leses bare
+ * innenfor delingslåsen, som de andre personlige dataene.
+ */
+export async function hentTnSpillerAksefordeling(bruker: TnBruker, spillerId: string) {
+  const fra = new Date(Date.now() - 28 * 864e5);
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const okter = await tx.workbenchSession.findMany({
+      where: { playerId: tilgang.spillerId, date: { gte: fra, lte: new Date() } },
+      select: { pyramid: true, durationMinutes: true, status: true },
+    });
+    return summerAksefordeling(okter);
+  });
 }
 
 /** IUP-besvarelser leses bare innenfor aktuell navngitt profiltilgang/lås. */

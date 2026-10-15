@@ -3,7 +3,8 @@
    Bruk: <template id="skjerm"><div class="app" data-fane="idag"><main class="innhold">…</main></div></template>
    og WANGUtkast.start({ etter: function (app, tilstand) {}, tom: {…}, laster: '…', feil: '…' }).
    data-fane: idag | trening | tester | konkurranse | meldinger | elever | admin.
-   data-skall="tilbake" gir tilbakelinje i stedet (undersider), data-tilbake="Elever" setter teksten.
+   data-skall="tilbake" gir tilbakelinje i stedet (undersider), data-tilbake="Elever" setter teksten,
+   data-tilbake-gaa="id" lar tilbakelinja gå til en annen skjerm i samme fil.
    Velgere på siden: data-bredde (mob|pc), data-rolle (trener|sportssjef; start med opt.rolle), data-tilstand (data|tom|laster|feil), data-skjerm.
    Menyen (beslutninger.md 27.09): seks hovedpunkter, Administrasjon bare for sportssjef.
    Skallet følger AgencyOS-utkastene: hamburgermeny og bjelle på mobil, lys sidemeny på PC, hurtigknapp på alle skjermer. */
@@ -39,7 +40,8 @@
     if (app.dataset.skall === 'tilbake') {
       var linje = document.createElement('div');
       linje.className = 'tilbakelinje';
-      linje.innerHTML = '<a class="tilbake" href="#">' + ikon(IKON.tilbake) + (app.dataset.tilbake || NAVN[fane] || 'Tilbake') + '</a>' + (app.dataset.hoyre || '');
+      /* data-tilbake-gaa="id" gjør tilbakelinja til en lenke til en annen skjerm i samme fil */
+      linje.innerHTML = '<a class="tilbake" href="#"' + (app.dataset.tilbakeGaa ? ' data-gaa="' + app.dataset.tilbakeGaa + '"' : '') + '>' + ikon(IKON.tilbake) + (app.dataset.tilbake || NAVN[fane] || 'Tilbake') + '</a>' + (app.dataset.hoyre || '');
       app.insertBefore(linje, main);
       return;
     }
