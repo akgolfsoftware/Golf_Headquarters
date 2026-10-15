@@ -1,0 +1,181 @@
+/*
+ * PlayerHQ pakke 4 «Øvelser og teknikk» (godkjent av Anders 14.10.2026).
+ * Portert fra docs/design-system/utkast-playerhq/ovelser.html: PH-12 Velg treningsplan,
+ * PH-13 Øvelsesbank, øvelse og break-tabell, PH-TP-01 Teknisk plan (aktiv og utkast).
+ * Bygger på src/styles/playerhq-ny.css (tokens og felles flater). Alt er avgrenset til .phn,
+ * og egne klasser har forleddet phn-ov- så de ikke kolliderer med andre pakker.
+ * Farge betyr akse. Teknisk plan er TEK hele veien. Ingen rust: ingenting her sletter.
+ */
+
+.phn .phn-ov-topp { display: grid; gap: 4px; }
+.phn .phn-ov-ingress { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--phn-g800); max-width: 52ch; }
+.phn .phn-ov-under { font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-ov-akse-tekst { font: 600 12px/1.3 var(--phn-sans); letter-spacing: .05em; }
+.phn .phn-ov-estimat { display: inline-flex; height: 20px; align-items: center; padding: 0 7px; border-radius: 4px; border: 1px dashed var(--phn-g500); font: 500 11px/1 var(--phn-sans); color: var(--phn-g600); width: max-content; }
+.phn .phn-ov-knapp-stor { min-height: 52px; font-size: 16px; width: 100%; }
+.phn .phn-ov-lenke { color: var(--phn-g900); text-decoration: underline; text-underline-offset: 3px; font: 500 14px/1.3 var(--phn-sans); background: none; border: 0; padding: 0 4px; min-height: 44px; cursor: pointer; }
+.phn .phn-ov-status { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--phn-g900); color: var(--phn-hvit); font: 500 14px/1.45 var(--phn-sans); }
+.phn .phn-ov-status a { color: var(--phn-hvit); }
+.phn .phn-ov-fordeling { display: flex; height: 12px; border-radius: 6px; overflow: hidden; gap: 2px; background: var(--phn-sand-150); }
+.phn .phn-ov-fordeling i { display: block; height: 100%; }
+.phn .phn-ov-ikonboks { width: 44px; height: 44px; border-radius: 10px; background: var(--phn-sand-150); display: grid; place-items: center; flex: none; }
+.phn .phn-ov-malkort { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.phn .phn-ov-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-ov-chips button { min-height: 44px; padding: 0 12px; border: 1px solid var(--phn-sand-300); border-radius: 999px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; }
+.phn .phn-ov-chips button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn :is(.phn-ov-chips button, .phn-ov-plankort, .phn-ov-pyramide button, .phn-ov-kort, .phn-ov-plinje button, .phn-ov-trinn button, .phn-ov-ukedager button, .phn-ov-lenke, .phn-ov-flere summary):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+/* PH-12 Velg treningsplan */
+.phn .phn-ov-planer { display: grid; gap: 12px; }
+.phn .phn-ov-plankort { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; background: var(--phn-hvit); text-align: left; font: inherit; color: inherit; padding: 0; cursor: pointer; width: 100%; transition: transform 160ms var(--phn-ut); }
+.phn .phn-ov-plankort:active { transform: scale(.98); }
+.phn .phn-ov-plankort img { display: block; width: 100%; height: 112px; object-fit: cover; }
+.phn .phn-ov-pk-tekst { padding: 14px 16px 16px; display: grid; gap: 10px; }
+.phn .phn-ov-pk-rad { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.phn .phn-ov-pk-navn { display: block; font: 600 18px/1.25 var(--phn-sans); }
+.phn .phn-ov-pk-tall { font: 600 26px/1 var(--phn-mono); letter-spacing: -.02em; white-space: nowrap; }
+.phn .phn-ov-pk-tall small { font: 500 13px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 3px; letter-spacing: 0; }
+.phn .phn-ov-plankort[aria-pressed="true"] { border: 2px solid var(--phn-g900); box-shadow: 0 0 0 3px var(--phn-sand-150); }
+.phn .phn-ov-valgt { display: none; align-items: center; gap: 6px; font: 600 13px/1 var(--phn-sans); }
+.phn .phn-ov-plankort[aria-pressed="true"] .phn-ov-valgt { display: inline-flex; }
+.phn .phn-ov-festet { position: sticky; bottom: 64px; z-index: 4; padding: 12px 0 0; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
+
+/* PH-13 Øvelsesbank */
+.phn .phn-ov-bank, .phn .phn-ov-ovgrid { display: grid; gap: 24px; align-content: start; }
+.phn .phn-ov-filterkol { display: grid; gap: 16px; align-content: start; }
+.phn .phn-ov-pyramide { display: grid; gap: 6px; justify-items: center; }
+.phn .phn-ov-pyramide button { height: 44px; border: 0; border-radius: 8px; font: 600 13px/1 var(--phn-sans); letter-spacing: .06em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--phn-g900); transition: transform 160ms var(--phn-ut); }
+.phn .phn-ov-pyramide button:active { transform: scale(.97); }
+.phn .phn-ov-pyramide button b { font: 600 13px/1 var(--phn-mono); }
+.phn .phn-ov-pyramide [data-akse="turn"] { width: 44%; background: #f1dcdc; }
+.phn .phn-ov-pyramide [data-akse="spill"] { width: 58%; background: #f4e1e8; }
+.phn .phn-ov-pyramide [data-akse="slag"] { width: 72%; background: #dde6fb; }
+.phn .phn-ov-pyramide [data-akse="tek"] { width: 86%; background: #f2e7d2; }
+.phn .phn-ov-pyramide [data-akse="fys"] { width: 100%; background: #e6ebdf; }
+.phn .phn-ov-pyramide [data-akse="turn"][aria-pressed="true"] { background: var(--phn-turn); color: #fff; }
+.phn .phn-ov-pyramide [data-akse="spill"][aria-pressed="true"] { background: var(--phn-spill-ink); color: #fff; }
+.phn .phn-ov-pyramide [data-akse="slag"][aria-pressed="true"] { background: var(--phn-slag); color: #fff; }
+.phn .phn-ov-pyramide [data-akse="tek"][aria-pressed="true"] { background: var(--phn-tek-ink); color: #fff; }
+.phn .phn-ov-pyramide [data-akse="fys"][aria-pressed="true"] { background: var(--phn-fys-ink); color: #fff; }
+.phn .phn-ov-flere { border: 1px solid var(--phn-sand-300); border-radius: 12px; padding: 0 14px; }
+.phn .phn-ov-flere summary { min-height: 48px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font: 600 14px/1 var(--phn-sans); list-style: none; }
+.phn .phn-ov-flere summary::-webkit-details-marker { display: none; }
+.phn .phn-ov-flere[open] summary { border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phn-ov-innmat { display: grid; gap: 16px; padding: 14px 0 16px; }
+.phn .phn-ov-liste { display: grid; gap: 8px; }
+.phn .phn-ov-kort { display: grid; grid-template-columns: 84px minmax(0, 1fr); border-radius: 12px; overflow: hidden; color: #fff; text-decoration: none; background: var(--phn-g800); }
+.phn .phn-ov-kort.fys { background: var(--phn-fys-ink); }
+.phn .phn-ov-kort.tek { background: var(--phn-tek-ink); }
+.phn .phn-ov-kort.slag { background: var(--phn-slag); }
+.phn .phn-ov-kort.spill { background: var(--phn-spill-ink); }
+.phn .phn-ov-kort.turn { background: var(--phn-turn); }
+.phn .phn-ov-kort img { display: block; width: 100%; height: 100%; min-height: 84px; object-fit: cover; }
+.phn .phn-ov-kort-tekst { padding: 10px 12px; display: grid; gap: 4px; align-content: center; }
+.phn .phn-ov-kort .phn-ov-navn { display: block; font: 600 15px/1.25 var(--phn-sans); }
+.phn .phn-ov-kort-info { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 13px; line-height: 1.4; opacity: .92; }
+.phn .phn-ov-caddie { display: grid; gap: 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; padding: 16px 18px 18px; background: var(--phn-sand-100); }
+.phn .phn-ov-caddie-topp { display: flex; align-items: center; gap: 10px; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-ov-caddie-ikon { width: 32px; height: 32px; border-radius: 8px; background: var(--phn-g900); color: var(--phn-hvit); display: grid; place-items: center; flex: none; }
+.phn .phn-ov-caddie-ikon .phn-ikon { width: 18px; height: 18px; }
+
+/* Øvelse */
+.phn .phn-ov-helt { border-radius: 12px; width: 100%; height: 190px; object-fit: cover; display: block; }
+.phn .phn-ov-formel { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; margin: 0; }
+.phn .phn-ov-formel > div { position: relative; display: grid; gap: 2px; padding: 12px 14px 12px 52px; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-ov-formel > div:first-child { border-top: 0; }
+.phn .phn-ov-formel dt::before { content: attr(data-nr); position: absolute; left: 14px; top: 12px; font: 600 12px/1.6 var(--phn-mono); color: var(--phn-g600); }
+.phn .phn-ov-formel dt { font-size: 13px; color: var(--phn-g600); }
+.phn .phn-ov-formel dd { margin: 0; font: 600 15px/1.35 var(--phn-sans); color: var(--phn-g900); }
+.phn .phn-ov-beskrivelse { font-size: 15px; line-height: 1.55; white-space: pre-line; }
+.phn .phn-ov-ukedager { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-ov-ukedager button { min-width: 52px; min-height: 52px; padding: 4px 8px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); cursor: pointer; display: grid; place-items: center; font: 500 12px/1.2 var(--phn-sans); color: var(--phn-g800); }
+.phn .phn-ov-ukedager button b { font: 600 16px/1 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-ov-ukedager button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-ov-ukedager button[aria-pressed="true"] b { color: var(--phn-hvit); }
+.phn .phn-ov-ukedager button:disabled { opacity: .4; cursor: default; }
+
+/* Break-tabell */
+.phn .phn-ov-breaktab { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.phn .phn-ov-breaktab th, .phn .phn-ov-breaktab td { padding: 10px 6px; border-bottom: 1px solid var(--phn-sand-300); text-align: right; }
+.phn .phn-ov-breaktab th:first-child, .phn .phn-ov-breaktab td:first-child { text-align: left; }
+.phn .phn-ov-breaktab thead th { font: 600 13px/1.3 var(--phn-sans); color: var(--phn-g800); }
+.phn .phn-ov-breaktab td { font: 500 15px/1 var(--phn-mono); }
+.phn .phn-ov-breaktab td:first-child { font: 600 14px/1 var(--phn-sans); }
+.phn .phn-ov-breaktab tr.uthevet td { background: #dde6fb; }
+
+/* PH-TP-01 Teknisk plan */
+.phn .phn-ov-tphelt { border-radius: 12px; overflow: hidden; background: var(--phn-tek-ink); color: #fff; display: grid; }
+.phn .phn-ov-tphelt img { display: block; width: 100%; height: 150px; object-fit: cover; object-position: 50% 40%; }
+.phn .phn-ov-tphelt-tekst { padding: 16px 18px 20px; display: grid; gap: 10px; }
+.phn .phn-ov-akse-merke { display: inline-flex; align-items: center; gap: 6px; justify-self: start; height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(255, 255, 255, .18); font: 600 12px/1 var(--phn-sans); letter-spacing: .05em; }
+.phn .phn-ov-tphelt .phn-ov-navn { font: 600 22px/1.2 var(--phn-sans); }
+.phn .phn-ov-stort { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.phn .phn-ov-stort strong { font: 600 56px/1 var(--phn-mono); letter-spacing: -.04em; }
+.phn .phn-ov-stort span { font-size: 15px; line-height: 1.4; opacity: .92; }
+.phn .phn-ov-info { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; opacity: .92; }
+.phn .phn-ov-tpgrid, .phn .phn-ov-tpgrid > div { display: grid; gap: 32px; align-content: start; }
+.phn .phn-ov-fratil { display: grid; gap: 16px; }
+.phn .phn-ov-ftrad { display: grid; gap: 8px; }
+.phn .phn-ov-ftrad + .phn-ov-ftrad { padding-top: 16px; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-ov-fttopp { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.phn .phn-ov-fttopp b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-ov-skala { display: block; width: 100%; height: auto; }
+.phn .phn-ov-fttall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.phn .phn-ov-fttall div { display: grid; gap: 2px; }
+.phn .phn-ov-fttall dt { font-size: 12.5px; color: var(--phn-g600); }
+.phn .phn-ov-fttall dd { margin: 0; font: 600 17px/1.2 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-ov-oppg { border: 1px solid var(--phn-sand-300); border-radius: 12px; padding: 16px 18px 18px; display: grid; gap: 12px; background: var(--phn-hvit); }
+.phn .phn-ov-oppg-topp { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.phn .phn-ov-oppg-topp h3 { margin: 0; font: 600 17px/1.3 var(--phn-sans); }
+.phn .phn-ov-tek { color: var(--phn-tek-ink); }
+.phn .phn-ov-reprader { display: grid; gap: 10px; }
+.phn .phn-ov-reprad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; }
+.phn .phn-ov-reprad > span:first-child { font-size: 14px; }
+.phn .phn-ov-reprad .v { font: 500 13px/1.2 var(--phn-mono); white-space: nowrap; }
+.phn .phn-ov-spor { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: var(--phn-sand-150); overflow: hidden; }
+.phn .phn-ov-spor span { display: block; height: 100%; border-radius: 4px; background: var(--phn-tek); }
+.phn .phn-ov-reprad.her > span:first-child { font-weight: 600; }
+.phn .phn-ov-reprad.her .phn-ov-spor span { background: var(--phn-tek-ink); }
+.phn .phn-ov-her { display: inline-block; height: 20px; padding: 0 7px; border-radius: 4px; background: var(--phn-tek-ink); color: #fff; font: 600 11px/20px var(--phn-sans); margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+.phn .phn-ov-plinje { display: grid; gap: 4px; }
+.phn .phn-ov-plinje button { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 8px; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: inherit; font-size: 14px; color: var(--phn-g900); text-align: left; cursor: pointer; }
+.phn .phn-ov-plinje button i { font: 600 13px/1 var(--phn-mono); font-style: normal; }
+.phn .phn-ov-plinje button em { font: 600 12px/1 var(--phn-sans); font-style: normal; color: #fff; background: var(--phn-tek-ink); border-radius: 10px; padding: 4px 8px; white-space: nowrap; }
+.phn .phn-ov-plinje button[aria-pressed="true"] { border: 2px solid var(--phn-g900); }
+.phn .phn-ov-ppanel { border-radius: 12px; background: var(--phn-sand-100); padding: 16px; display: grid; gap: 12px; }
+.phn .phn-ov-tmtall { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; margin: 0; }
+.phn .phn-ov-tmtall div { display: grid; gap: 2px; background: var(--phn-hvit); border-radius: 8px; padding: 8px 10px; }
+.phn .phn-ov-tmtall dt { font-size: 12.5px; color: var(--phn-g600); }
+.phn .phn-ov-tmtall dd { margin: 0; font: 600 16px/1.2 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-ov-reglist { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-ov-reglist > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 12px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phn-ov-reglist b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-ov-reglist .v { font: 600 15px/1.3 var(--phn-mono); text-align: right; white-space: nowrap; }
+.phn .phn-ov-reglist span { font-size: 13px; color: var(--phn-g600); grid-column: 1 / -1; }
+.phn .phn-ov-teller { display: grid; gap: 12px; justify-items: center; padding: 8px 0; }
+.phn .phn-ov-teller strong { font: 600 64px/1 var(--phn-mono); letter-spacing: -.04em; }
+.phn .phn-ov-teller .sub { font-size: 14px; color: var(--phn-g600); }
+.phn .phn-ov-trinn { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.phn .phn-ov-trinn button { min-height: 56px; border: 1px solid var(--phn-g500); border-radius: 10px; background: var(--phn-hvit); font: 600 18px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; }
+.phn .phn-ov-trinn button:active { transform: scale(.96); }
+.phn .phn-ov-utkast { display: flex; gap: 10px; align-items: flex-start; border: 1px dashed var(--phn-amber-700); background: var(--phn-amber-50); color: var(--phn-g900); border-radius: 12px; padding: 14px 16px; }
+.phn .phn-ov-utkast .phn-ikon { color: var(--phn-amber-700); margin-top: 2px; }
+
+@container (min-width: 900px) {
+  .phn .phn-ov-festet { bottom: 0; }
+  .phn .phn-ov-planer { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .phn .phn-ov-planer .phn-ov-plankort img { height: 132px; }
+  .phn .phn-ov-bank { grid-template-columns: 300px minmax(0, 1fr); gap: 32px; align-items: start; }
+  .phn .phn-ov-bank .phn-ov-filterkol { position: sticky; top: 24px; }
+  .phn .phn-ov-liste { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .phn .phn-ov-ovgrid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .phn .phn-ov-helt { height: 280px; }
+  .phn .phn-ov-tphelt { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); }
+  .phn .phn-ov-tphelt img { height: 100%; min-height: 240px; }
+  .phn .phn-ov-tpgrid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+  .phn .phn-ov-smal { max-width: 760px; }
+}
+
+/* Tilbake, laster og feil */
+.phn .phn-ov-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 4px; margin: -8px 0 -16px -4px; border-radius: 8px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; }
+.phn .phn-ov-tilbake:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }

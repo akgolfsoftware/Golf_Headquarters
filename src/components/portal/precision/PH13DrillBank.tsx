@@ -1,857 +1,218 @@
 "use client";
 
 /**
- * PH-13 Øvelsesbank — Precision Athletics.
- * Kilde: Claude Design ui_kits/playerhq/screens/PH-13.jsx
+ * PH-13 Øvelsesbank i nytt design (pakke 4, godkjent av Anders 14.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/ovelser.html, skjerm «bank». Stil: playerhq-ny-ovelser.css.
  *
- * Full responsiv øvelsesbank med AK-formelvisning, søk, aksefilter,
- * Caddie-utkast, Putting Break-tabell og detaljpanel.
+ * Pyramiden velges først (vedtak 28.09), så treningsområdet. Det store tallet er antall øvelser som
+ * passer filteret. Øvelsene er fylte kort i aksefargen med bilde. Trykk åpner øvelsen.
+ *
+ * Avvik:
+ *   - Filteret «Måleutstyr» (med eller uten TrackMan) er ikke med: øvelsene har ikke måleutstyr i basen.
+ *     Treningsmiljø og press viser bare valg som finnes i banken.
+ *   - Caddie-forslaget sammenligner ikke med neste kategori og viser ikke antall runder: SG-gapet gir
+ *     bare kategori og snitt. Uten SG-tall eller uten øvelse i området vises ikke forslaget.
+ *   - Caddie-utkastene (godta eller forkast) fra forrige versjon er tatt ut. De ble aldri lagret.
+ *   - «Ny egen øvelse» lagrer akse, treningsområde og navn. Resten av de åtte trinnene fylles i Workbench.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-13.
  */
-
-import { useState } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, ChevronRight, Plus, Sparkles, X } from "lucide-react";
+import { formaterFortegn } from "@/lib/format-tall";
 import {
-  Check,
-  Plus,
-  RotateCcw,
-  Search,
-  Sparkles,
-  X,
-} from "lucide-react";
-import {
-  AkseMerke,
-  FeilTilstand,
-  Ikon,
-  LasterTilstand,
-  Meta,
-  Sidehode,
-  StatusPille,
-  TomTilstand,
-} from "@/components/precision/pa";
-import {
-  beregnBreakCm,
-  filtrerDrills,
-  PH13_AKSER,
-  type PH13Drill,
-} from "@/lib/portal-drills/ph13-drills-data";
-import { PH13DrillDetalj } from "./PH13DrillDetalj";
-import { usePaToast } from "@/components/precision/pa-toast";
+  OV_AKSE_KODE, OV_PYRAMIDE, TOMT_FILTER, antallPerAkse, filterAktivt, omraadeValgFor, omraaderFor, passer, verdierI,
+  type OvAkse, type OvFilter, type OvelseVisning,
+} from "@/lib/portal-drills/ovelser-visning";
+import { opprettEgenOvelse } from "@/app/portal/drills/actions";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-ovelser.css";
 
-export type PH13DrillBankProps = {
-  initialDrills: PH13Drill[];
-  initialDrafts?: PH13Drill[];
-  state?: "data" | "tom" | "laster" | "feil";
-  onRetry?: () => void;
+export type PH13Caddie = { ovelseId: string; omraade: string; sg: number };
+export type PH13BankProps = {
+  ovelser: OvelseVisning[];
+  caddie: PH13Caddie | null;
+  /** Skjermprøven: åpne «Ny egen øvelse» ved første visning. */
+  startMedNy?: boolean;
 };
 
-const BREAK_FOT = [3, 5, 10, 15, 20, 25];
-const BREAK_SLOPES = [1, 2, 3, 4];
+export function OvelseKort({ o }: { o: OvelseVisning }) {
+  const info = [o.min != null ? `${o.min} min` : null, o.mengde, o.miljo[0] ?? null].filter(Boolean) as string[];
+  return (
+    <Link className={`phn-ov-kort ${o.akse}`} href={`/portal/drills/${o.id}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+      <img src={o.bilde.src} alt="" width={168} height={168} loading="lazy" style={{ objectPosition: o.bilde.posisjon }} />
+      <span className="phn-ov-kort-tekst">
+        <span className="phn-ov-akse-tekst">{OV_AKSE_KODE[o.akse]}{o.omraade ? ` · ${o.omraade.toUpperCase()}` : ""}</span>
+        <span className="phn-ov-navn">{o.navn}{o.egen && <span className="phn-lys-merke">Egen</span>}</span>
+        <span className="phn-ov-kort-info">{info.length ? info.map((t) => <span key={t}>{t}</span>) : <span>—</span>}</span>
+      </span>
+    </Link>
+  );
+}
 
-export function PH13DrillBank({
-  initialDrills,
-  initialDrafts = [],
-  state = initialDrills.length === 0 ? "tom" : "data",
-  onRetry,
-}: PH13DrillBankProps) {
-  const [bank, setBank] = useState<PH13Drill[]>(initialDrills);
-  const [drafts, setDrafts] = useState<PH13Drill[]>(initialDrafts);
-  const [q, setQ] = useState("");
-  const [ax, setAx] = useState<string>("alle");
-  const [src, setSrc] = useState<string>("Alle");
-  const [sel, setSel] = useState<string | null>(initialDrills[0]?.id ?? null);
-  const [visMobilModal, setVisMobilModal] = useState(false);
-  const [stimp, setStimp] = useState<"8" | "10" | "12">("10");
-  const paToast = usePaToast();
+function Chips({ valg, verdi, onVelg, navn }: { valg: string[]; verdi: string | null; onVelg: (v: string | null) => void; navn: string }) {
+  return (
+    <div className="phn-ov-chips" role="group" aria-label={navn}>
+      {valg.map((v) => <button key={v} type="button" aria-pressed={verdi === v} onClick={() => onVelg(verdi === v ? null : v)}>{v}</button>)}
+    </div>
+  );
+}
 
-  function visToast(tittel: string, tekst?: string) {
-    paToast.vis(tittel, tekst);
-  }
+export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
+  const [f, setF] = useState<OvFilter>(TOMT_FILTER);
+  const [ny, setNy] = useState(!!startMedNy);
+  const [melding, setMelding] = useState<string | null>(null);
 
-  function handleAcceptDraft(c: PH13Drill) {
-    setDrafts((prev) => prev.filter((x) => x.id !== c.id));
-    const accepted: PH13Drill = {
-      ...c,
-      draft: false,
-      src: "mine",
-      bruktTekst: "ny for deg",
-    };
-    setBank((prev) => [accepted, ...prev]);
-    visToast("Lagt i øvelsesbanken", "MERKET SOM DIN · ANDERS SER DEN");
-  }
+  const treff = useMemo(() => ovelser.filter((o) => passer(o, f)), [ovelser, f]);
+  const perAkse = useMemo(() => antallPerAkse(ovelser), [ovelser]);
+  const aktivt = filterAktivt(f);
+  const omraader = f.akse ? omraaderFor(ovelser, f.akse) : [];
+  const miljoValg = useMemo(() => verdierI(ovelser, "miljo"), [ovelser]);
+  const pressValg = useMemo(() => verdierI(ovelser, "press"), [ovelser]);
+  const caddieOvelse = caddie ? ovelser.find((o) => o.id === caddie.ovelseId) ?? null : null;
+  const listeTittel = f.omraade ?? (f.akse ? `${OV_AKSE_KODE[f.akse]}-øvelser` : "Alle øvelser");
+  const visBreak = !f.akse || f.akse === "slag" || f.akse === "tek";
 
-  function handleDiscardDraft(c: PH13Drill) {
-    setDrafts((prev) => prev.filter((x) => x.id !== c.id));
-    if (sel === c.id) {
-      setSel(null);
-      setVisMobilModal(false);
-    }
-    visToast("Utkastet er forkastet", "CADDIE FORESLÅR IKKE DENNE IGJEN");
-  }
+  const velgAkse = (a: OvAkse) => setF((x) => ({ ...x, akse: x.akse === a ? null : a, omraade: null }));
 
-  function handleAddToSession(drill: PH13Drill) {
-    visToast("Lagt til i økt", `${drill.name.toUpperCase()} · WORKBENCH`);
-  }
-
-  // Filtrering
-  const alleKildeDrills = bank.filter(
-    (o) =>
-      src === "Alle" ||
-      (src === "Fra coach" ? o.src === "coach" : o.src === "mine")
+  const hode = (
+    <div className="phn-ov-topp">
+      <span className="phn-dato">Plan · øvelsesbank</span>
+      <h1 className="phn-tittel">Øvelsesbank</h1>
+    </div>
   );
 
-  const hits = filtrerDrills(bank, src, ax, q);
-
-  // Nåværende valgte øvelse (fra bank eller drafts)
-  const currentDrill =
-    [...bank, ...drafts].find((o) => o.id === sel) ?? bank[0] ?? null;
-
-  // Akse-tellere
-  const akseValg = [
-    { value: "alle", label: "Alle", count: alleKildeDrills.length },
-    ...PH13_AKSER.map((a) => ({
-      value: a,
-      label: a.toUpperCase(),
-      count: alleKildeDrills.filter((o) => o.axis === a).length,
-    })),
-  ];
-
-  if (state === "laster") {
+  if (ovelser.length === 0) {
     return (
-      <div
-        className="pa-side"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-          maxWidth: 1320,
-          margin: "0 auto",
-        }}
-      >
-        <Sidehode
-          kicker="Plan · Øvelsesbank"
-          title="Øvelsesbank"
-          sub="Alle øvelser er navngitt etter AK-formelen."
-        />
-        <LasterTilstand text="Henter øvelsesbanken …" />
-      </div>
-    );
-  }
-
-  if (state === "feil") {
-    return (
-      <div
-        className="pa-side"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-          maxWidth: 1320,
-          margin: "0 auto",
-        }}
-      >
-        <Sidehode
-          kicker="Plan · Øvelsesbank"
-          title="Øvelsesbank"
-          sub="Alle øvelser er navngitt etter AK-formelen."
-        />
-        <FeilTilstand
-          icon={RotateCcw}
-          title="Øvelsesbanken kunne ikke hentes"
-          text="Ingen øvelser er slettet. Prøv igjen om litt."
-          code="FEIL 503 · ØVELSER"
-          retry={
-            onRetry ? (
-              <button
-                type="button"
-                onClick={onRetry}
-                className="pa-btn pa-btn--primary"
-              >
-                Prøv igjen
-              </button>
-            ) : undefined
-          }
-        />
+      <div className="phn">
+        {hode}
+        <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
+          <b className="phn-ov-under">Ingen øvelser ennå</b>
+          <p className="phn-forklar">Lag din første øvelse, eller be coachen dele sine.</p>
+          <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button></div>
+        </section>
+        {melding && <p className="phn-ov-status" role="status">{melding}</p>}
+        {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
       </div>
     );
   }
 
   return (
-    <div
-      className="pa-side"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 20,
-        maxWidth: 1320,
-        margin: "0 auto",
-      }}
-    >
-      {/* Toast-varsel */}
-      {paToast.el}
-
-      {/* Sidehode */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 16,
-          flexWrap: "wrap",
-        }}
-      >
-        <Sidehode
-          kicker={`Plan · ${bank.length} øvelser`}
-          title="Øvelsesbank"
-          sub="Alle øvelser er navngitt etter AK-formelen. Caddie-forslag er utkast til du legger dem i banken."
-        />
-        <Link
-          href="/portal/ai/foresla-drill"
-          className="pa-btn pa-btn--secondary"
-          style={{ textDecoration: "none" }}
-        >
-          <Ikon icon={Plus} size={16} name="plus" />
-          <span>Ny øvelse</span>
-        </Link>
-      </div>
-
-      {/* 2-kolonners rutenett: venstre innholds-stack + høyre sticky detaljpanel på desktop */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 540px), 1fr))",
-          gap: 24,
-          alignItems: "start",
-        }}
-      >
-        {/* Venstre kolonne: Caddie-utkast, søk, filtre, drill-liste, break-tabell */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-          {/* Caddie foreslår utkast */}
-          {drafts.length > 0 && (
-            <section
-              aria-label="Caddie forslag"
-              className="pa-card"
-              style={{
-                padding: 16,
-                gap: 12,
-                border: "1px dashed var(--border-strong)",
-                background: "var(--surface-flat)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <Ikon icon={Sparkles} size={16} name="sparkles" />
-                <span className="kicker" style={{ flex: 1 }}>
-                  Caddie foreslår · {drafts.length} utkast
-                </span>
-                <Meta>BYGGER PÅ SG OG TRACKMAN SISTE 30 DAGER</Meta>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {drafts.map((c) => (
-                  <div
-                    key={c.id}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                      padding: 12,
-                      borderRadius: 8,
-                      background: "var(--surface-card)",
-                      border: "1px solid var(--border-hairline)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        gap: 12,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
-                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                          <AkseMerke axis={c.axis} size="sm" />
-                          <StatusPille tone="neutral">Utkast</StatusPille>
-                        </div>
-                        <span
-                          style={{
-                            font: "600 14px/1.3 var(--font-sans)",
-                            color: "var(--text-primary)",
-                          }}
-                        >
-                          {c.name}
-                        </span>
-                        {c.why && (
-                          <span
-                            style={{
-                              font: "var(--type-body-s)",
-                              color: "var(--text-secondary)",
-                              textWrap: "pretty",
-                            }}
-                          >
-                            {c.why}
-                          </span>
-                        )}
-                      </div>
-
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <button
-                          type="button"
-                          onClick={() => handleAcceptDraft(c)}
-                          className="pa-btn pa-btn--secondary pa-btn--sm"
-                        >
-                          <Ikon icon={Check} size={14} name="check" />
-                          <span>Legg i banken</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSel(c.id);
-                            setVisMobilModal(true);
-                          }}
-                          className="pa-btn pa-btn--ghost pa-btn--sm"
-                        >
-                          <span>Se detaljer</span>
-                        </button>
-                      </div>
-                    </div>
+    <div className="phn">
+      {hode}
+      {melding && <p className="phn-ov-status" role="status">{melding}</p>}
+      <div className="phn-ov-bank">
+        <div className="phn-ov-filterkol">
+          <div className="phn-hoved"><strong>{treff.length}</strong><span className="phn-forklar">{aktivt ? (treff.length === 1 ? "øvelse passer" : "øvelser passer") : "øvelser i banken"}</span></div>
+          <label className="phn-felt">Søk<input type="search" value={f.sok} placeholder="Navn eller treningsområde" onChange={(e) => setF((x) => ({ ...x, sok: e.target.value }))} /></label>
+          <section className="phn-seksjon" aria-label="Pyramiden">
+            <div className="phn-sek-topp"><h2>1 Velg i pyramiden</h2></div>
+            <div className="phn-ov-pyramide">
+              {OV_PYRAMIDE.map((a) => <button key={a} type="button" data-akse={a} aria-pressed={f.akse === a} onClick={() => velgAkse(a)}>{OV_AKSE_KODE[a]} <b>{perAkse[a]}</b></button>)}
+            </div>
+          </section>
+          {f.akse && (
+            <section className="phn-seksjon" aria-label="Treningsområde">
+              <div className="phn-sek-topp"><h2>2 Treningsområde</h2></div>
+              {omraader.length > 0
+                ? <div className="phn-ov-chips" role="group" aria-label="Treningsområde">
+                    <button type="button" aria-pressed={!f.omraade} onClick={() => setF((x) => ({ ...x, omraade: null }))}>Alle</button>
+                    {omraader.map((o) => <button key={o} type="button" aria-pressed={f.omraade === o} onClick={() => setF((x) => ({ ...x, omraade: o }))}>{o}</button>)}
                   </div>
-                ))}
-              </div>
+                : <p className="phn-kilde">Øvelsene i {OV_AKSE_KODE[f.akse]} har ikke treningsområde ennå.</p>}
             </section>
           )}
-
-          {/* Søk og kildevalg */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                flexWrap: "wrap",
-                alignItems: "center",
-              }}
-            >
-              {/* Søkefelt */}
-              <div
-                style={{
-                  flex: "1 1 240px",
-                  minWidth: 0,
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 12,
-                    pointerEvents: "none",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  <Ikon icon={Search} size={16} name="search" />
-                </span>
-                <input
-                  type="search"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Søk øvelse, område eller kode"
-                  aria-label="Søk i øvelsesbanken"
-                  style={{
-                    width: "100%",
-                    height: "var(--control-h)",
-                    paddingLeft: 38,
-                    paddingRight: 40,
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border-strong)",
-                    background: "var(--surface-card)",
-                    font: "var(--type-body-s)",
-                    color: "var(--text-primary)",
-                  }}
-                />
-                {q && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      right: 12,
-                      font: "600 11px/1 var(--font-mono)",
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    {hits.length}
-                  </span>
-                )}
+          {(miljoValg.length > 0 || pressValg.length > 0) && (
+            <details className="phn-ov-flere">
+              <summary>Flere filter <ChevronDown className="phn-ikon" aria-hidden /></summary>
+              <div className="phn-ov-innmat">
+                {miljoValg.length > 0 && <div className="phn-felt"><span>Treningsmiljø</span><Chips navn="Treningsmiljø" valg={miljoValg} verdi={f.miljo} onVelg={(v) => setF((x) => ({ ...x, miljo: v }))} /></div>}
+                {pressValg.length > 0 && <div className="phn-felt"><span>Press</span><Chips navn="Press" valg={pressValg} verdi={f.press} onVelg={(v) => setF((x) => ({ ...x, press: v }))} /></div>}
               </div>
+            </details>
+          )}
+          <button type="button" className="phn-knapp sek" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>
+        </div>
 
-              {/* Segmentert kilde-filter (Alle / Fra coach / Mine) */}
-              <div
-                role="group"
-                aria-label="Filtrer etter kilde"
-                style={{
-                  display: "inline-flex",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border-strong)",
-                  background: "var(--surface-sunken)",
-                  padding: 2,
-                }}
-              >
-                {(["Alle", "Fra coach", "Mine"] as const).map((label) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => setSrc(label)}
-                    aria-pressed={src === label}
-                    className="v2-press"
-                    style={{
-                      border: "none",
-                      background: src === label ? "var(--surface-card)" : "transparent",
-                      color: src === label ? "var(--text-primary)" : "var(--text-secondary)",
-                      font: "600 12px/1 var(--font-sans)",
-                      padding: "8px 12px",
-                      borderRadius: "calc(var(--radius) - 2px)",
-                      cursor: "pointer",
-                      boxShadow: src === label ? "0 1px 3px var(--scrim-modal)" : "none",
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Segmentert akse-filter */}
-            <div
-              role="group"
-              aria-label="Filtrer etter akse"
-              style={{
-                display: "flex",
-                gap: 6,
-                overflowX: "auto",
-                paddingBottom: 4,
-              }}
-            >
-              {akseValg.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setAx(opt.value)}
-                  aria-pressed={ax === opt.value}
-                  className="v2-press"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "6px 12px",
-                    borderRadius: "var(--radius)",
-                    border: `1px solid ${
-                      ax === opt.value ? "var(--border-ink)" : "var(--border-hairline)"
-                    }`,
-                    background:
-                      ax === opt.value ? "var(--surface-flat)" : "transparent",
-                    color:
-                      ax === opt.value
-                        ? "var(--text-primary)"
-                        : "var(--text-secondary)",
-                    font: "600 12px/1.3 var(--font-mono)",
-                    cursor: "pointer",
-                  }}
-                >
-                  <span>{opt.label}</span>
-                  <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
-                    {opt.count}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Drill-liste */}
-          <div
-            className="pa-card"
-            style={{
-              padding: 0,
-              overflow: "hidden",
-              border: "1px solid var(--border-hairline)",
-            }}
-          >
-            {hits.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {hits.map((o, i) => {
-                  const on = o.id === sel;
-                  return (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => {
-                        setSel(o.id);
-                        setVisMobilModal(true);
-                      }}
-                      aria-pressed={on}
-                      style={{
-                        all: "unset",
-                        cursor: "pointer",
-                        display: "grid",
-                        gridTemplateColumns: "4px minmax(0,1fr) auto",
-                        gap: 12,
-                        alignItems: "center",
-                        padding: "12px 16px 12px 12px",
-                        borderTop: i ? "1px solid var(--border-hairline)" : "none",
-                        background: on ? "var(--surface-flat)" : "transparent",
-                        boxShadow: on ? "inset 2px 0 0 var(--border-ink)" : "none",
-                        minHeight: 56,
-                      }}
-                    >
-                      {/* Vertikal aksefargestripe */}
-                      <span
-                        style={{
-                          alignSelf: "stretch",
-                          borderRadius: 2,
-                          background: `var(--axis-${o.axis})`,
-                        }}
-                      />
-
-                      {/* Tittel og AK-formel kode */}
-                      <span
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 4,
-                          minWidth: 0,
-                        }}
-                      >
-                        <span
-                          style={{
-                            font: "500 14px/1.3 var(--font-sans)",
-                            color: "var(--text-primary)",
-                            textWrap: "pretty",
-                          }}
-                        >
-                          {o.name}
-                        </span>
-                        <span
-                          style={{
-                            font: "500 11px/1.3 var(--font-mono)",
-                            color: "var(--text-muted)",
-                            overflowWrap: "anywhere",
-                          }}
-                        >
-                          {o.code}
-                        </span>
-                      </span>
-
-                      {/* Varighet og mengde */}
-                      <span
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-end",
-                          gap: 4,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        <span
-                          style={{
-                            font: "600 13px/1.3 var(--font-mono)",
-                            color: "var(--text-primary)",
-                          }}
-                        >
-                          {o.min} min
-                        </span>
-                        <Meta>{o.qty.split(" · ")[0].toUpperCase()}</Meta>
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              <div style={{ padding: 24 }}>
-                <TomTilstand
-                  icon={Search}
-                  title={bank.length === 0 ? "Øvelsesbanken er tom" : "Ingen øvelser passer filteret"}
-                  text={
-                    bank.length === 0
-                      ? "Anders har ikke delt øvelser med deg ennå. Du kan lage din egen eller be Caddie foreslå."
-                      : "Prøv en annen akse eller nullstill søket for å se flere øvelser."
-                  }
-                  actions={
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setQ("");
-                        setAx("alle");
-                        setSrc("Alle");
-                      }}
-                      className="pa-btn pa-btn--secondary"
-                    >
-                      <Ikon icon={RotateCcw} size={14} name="rotate-ccw" />
-                      <span>Nullstill filter</span>
-                    </button>
-                  }
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Putting Break-tabell (vises ved 'alle' eller 'slag') */}
-          {(ax === "alle" || ax === "slag") && (
-            <section
-              aria-label="Putting Break-tabell"
-              className="pa-card"
-              style={{
-                padding: 16,
-                gap: 12,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "baseline",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                }}
-              >
-                <span className="kicker">Putting · Break-tabell</span>
-                <Meta>CM BREAK VED HELNING · ESTIMAT</Meta>
-              </div>
-
-              {/* Stimp-velger */}
-              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <Meta>STIMP</Meta>
-                <div
-                  role="group"
-                  aria-label="Velg stimp"
-                  style={{
-                    display: "inline-flex",
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border-strong)",
-                    background: "var(--surface-sunken)",
-                    padding: 2,
-                  }}
-                >
-                  {(["8", "10", "12"] as const).map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setStimp(s)}
-                      aria-pressed={stimp === s}
-                      className="v2-press"
-                      style={{
-                        border: "none",
-                        background: stimp === s ? "var(--surface-card)" : "transparent",
-                        color: stimp === s ? "var(--text-primary)" : "var(--text-secondary)",
-                        font: "600 12px/1 var(--font-sans)",
-                        padding: "6px 12px",
-                        borderRadius: "calc(var(--radius) - 2px)",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Rutenett for break */}
-              <div
-                role="table"
-                aria-label={`Break i cm, stimp ${stimp}`}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 1.2fr) repeat(4, minmax(0, 1fr))",
-                  gap: "0 8px",
-                  fontSize: 13,
-                }}
-              >
-                <Meta style={{ padding: "6px 0" }}>AVSTAND</Meta>
-                {BREAK_SLOPES.map((s) => (
-                  <Meta key={s} style={{ padding: "6px 0", textAlign: "right" }}>
-                    {s} %
-                  </Meta>
-                ))}
-
-                {BREAK_FOT.map((ft) => (
-                  <div
-                    key={ft}
-                    style={{
-                      display: "contents",
-                    }}
-                  >
-                    <span
-                      style={{
-                        font: "600 13px/1 var(--font-mono)",
-                        color: "var(--text-primary)",
-                        padding: "10px 0",
-                        borderTop: "1px solid var(--border-hairline)",
-                      }}
-                    >
-                      {ft} fot
-                    </span>
-                    {BREAK_SLOPES.map((s) => (
-                      <span
-                        key={s}
-                        style={{
-                          font: "500 13px/1 var(--font-mono)",
-                          color: "var(--text-primary)",
-                          textAlign: "right",
-                          padding: "10px 0",
-                          borderTop: "1px solid var(--border-hairline)",
-                        }}
-                      >
-                        {beregnBreakCm(ft, s, parseInt(stimp, 10))}
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-
-              <Meta>SIKT UT FRA HULLET · TOMMELFINGERREGEL, IKKE MÅLT PÅ DIN GREEN</Meta>
+        <div className="phn-seksjon" style={{ gap: 24 }}>
+          {caddie && caddieOvelse && !aktivt && (
+            <section className="phn-ov-caddie" aria-label="Caddie foreslår">
+              <div className="phn-ov-caddie-topp"><span className="phn-ov-caddie-ikon"><Sparkles className="phn-ikon" aria-hidden /></span>Caddie foreslår</div>
+              <p className="phn-forklar">{caddie.omraade} er det svakeste området ditt: <b>{formaterFortegn(caddie.sg, 1)} slag per runde</b> i Strokes Gained. {caddieOvelse.navn} trener {caddieOvelse.omraade ? caddieOvelse.omraade.toLowerCase() : "dette området"}.</p>
+              <p className="phn-kilde">Snitt av rundene dine med Strokes Gained.</p>
+              <div className="phn-knapper"><Link className="phn-knapp pri" href={`/portal/drills/${caddieOvelse.id}`}>Se øvelsen</Link></div>
             </section>
           )}
-        </div>
-
-        {/* Høyre kolonne (Desktop detaljpanel) */}
-        <aside
-          aria-label="Øvelsedetaljer"
-          className="pa-card"
-          style={{
-            position: "sticky",
-            top: 24,
-            minWidth: 0,
-            padding: 0,
-            overflow: "hidden",
-            border: "1px solid var(--border-hairline)",
-          }}
-        >
-          {currentDrill ? (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div
-                style={{
-                  padding: "16px 16px 12px",
-                  borderBottom: "1px solid var(--border-hairline)",
-                }}
-              >
-                <span className="kicker">Øvelse</span>
-                <div
-                  style={{
-                    font: "var(--type-title-s)",
-                    color: "var(--text-primary)",
-                    marginTop: 6,
-                    textWrap: "pretty",
-                  }}
-                >
-                  {currentDrill.name}
-                </div>
-              </div>
-              <div style={{ padding: 16 }}>
-                <PH13DrillDetalj
-                  drill={currentDrill}
-                  onAcceptDraft={handleAcceptDraft}
-                  onDiscardDraft={handleDiscardDraft}
-                  onAddToSession={handleAddToSession}
-                />
-              </div>
+          <section className="phn-seksjon" aria-label="Øvelser">
+            <div className="phn-sek-topp">
+              <h2>{listeTittel}</h2>
+              {aktivt && <button type="button" className="phn-ov-lenke" onClick={() => setF(TOMT_FILTER)}>Nullstill filter</button>}
             </div>
-          ) : (
-            <div style={{ padding: 24, textAlign: "center" }}>
-              <Meta>Velg en øvelse for å se AK-formelen, mengde og mål.</Meta>
-            </div>
+            {treff.length > 0
+              ? <div className="phn-ov-liste">{treff.map((o) => <OvelseKort key={o.id} o={o} />)}</div>
+              : <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b className="phn-ov-under">Ingen øvelser passer filteret</b><p className="phn-forklar">Ta bort et filter, eller lag en egen øvelse.</p></div>}
+          </section>
+          {visBreak && (
+            <Link className="phn-rad-lenke" href="/portal/drills/break-tabell">
+              <span><span className="phn-ov-akse-tekst" style={{ color: "var(--phn-slag-ink)" }}>PUTTING</span><b>Break-tabell</b><span className="phn-kilde">Hvor mye du sikter utenfor hullet, etter avstand og helling</span></span>
+              <ChevronRight className="phn-ikon" aria-hidden />
+            </Link>
           )}
-        </aside>
-      </div>
-
-      {/* Mobil Modal / Bottom Sheet for valgt øvelse */}
-      {visMobilModal && currentDrill && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={currentDrill.name}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 90,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            padding: 0,
-            background: "var(--scrim-modal)",
-          }}
-        >
-          <div
-            className="pa-card"
-            style={{
-              width: "100%",
-              maxWidth: 540,
-              maxHeight: "85vh",
-              overflowY: "auto",
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-              padding: 20,
-              background: "var(--surface-card)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-              boxShadow: "0 -8px 24px var(--scrim-modal)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: 12,
-              }}
-            >
-              <div>
-                <span className="kicker">Øvelse</span>
-                <h3
-                  style={{
-                    font: "var(--type-title-s)",
-                    color: "var(--text-primary)",
-                    margin: "4px 0 0",
-                  }}
-                >
-                  {currentDrill.name}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setVisMobilModal(false)}
-                className="pa-btn pa-btn--ghost pa-btn--sm"
-                aria-label="Lukk detaljer"
-              >
-                <Ikon icon={X} size={18} name="x" />
-              </button>
-            </div>
-
-            <PH13DrillDetalj
-              drill={currentDrill}
-              onClose={() => setVisMobilModal(false)}
-              onAcceptDraft={(c) => {
-                handleAcceptDraft(c);
-                setVisMobilModal(false);
-              }}
-              onDiscardDraft={(c) => {
-                handleDiscardDraft(c);
-                setVisMobilModal(false);
-              }}
-              onAddToSession={(c) => {
-                handleAddToSession(c);
-                setVisMobilModal(false);
-              }}
-            />
-          </div>
         </div>
-      )}
+      </div>
+      {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
     </div>
+  );
+}
+
+const AKSE_VALG: readonly OvAkse[] = ["fys", "tek", "slag", "spill", "turn"];
+
+function NyOvelseArk({ onLukk, onLagret }: { onLukk: () => void; onLagret: (navn: string) => void }) {
+  const router = useRouter();
+  const ark = useRef<HTMLDialogElement>(null);
+  const [akse, setAkse] = useState<OvAkse>("slag");
+  const [omraade, setOmraade] = useState<string>(omraadeValgFor("slag")[0]?.kode ?? "");
+  const [navn, setNavn] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
+  const [lagrer, start] = useTransition();
+  useEffect(() => { ark.current?.showModal(); }, []);
+
+  const byttAkse = (a: OvAkse) => { setAkse(a); setOmraade(omraadeValgFor(a)[0]?.kode ?? ""); };
+  const lagre = () => {
+    if (!navn.trim()) { setFeil("Skriv et navn på øvelsen."); return; }
+    start(async () => {
+      setFeil(null);
+      const r = await opprettEgenOvelse({ akse, omraade, navn: navn.trim() });
+      if (!r.ok) { setFeil(r.error); return; }
+      onLagret(navn.trim());
+      router.refresh();
+    });
+  };
+
+  return (
+    <dialog ref={ark} className="phn-ark" aria-label="Ny egen øvelse" onClose={onLukk} onClick={(e) => { if (e.target === ark.current) ark.current?.close(); }}>
+      <div className="phn-ark-kropp">
+        <div className="phn-ark-topp">
+          <h2>Ny egen øvelse</h2>
+          <button type="button" className="phn-lukk" aria-label="Lukk" onClick={() => ark.current?.close()}><X className="phn-ikon" aria-hidden /></button>
+        </div>
+        {feil && <p className="phn-melding" role="alert">{feil}</p>}
+        <div className="phn-felt"><span>Pyramide</span>
+          <div className="phn-ov-chips" role="group" aria-label="Pyramide">
+            {AKSE_VALG.map((a) => <button key={a} type="button" aria-pressed={akse === a} onClick={() => byttAkse(a)}>{OV_AKSE_KODE[a]}</button>)}
+          </div>
+        </div>
+        <label className="phn-felt">Treningsområde
+          <select value={omraade} onChange={(e) => setOmraade(e.target.value)}>
+            {omraadeValgFor(akse).map((o) => <option key={o.kode} value={o.kode}>{o.navn}</option>)}
+          </select>
+        </label>
+        <label className="phn-felt">Navn<input type="text" value={navn} maxLength={120} placeholder="F.eks. Chip til tre mål" onChange={(e) => setNavn(e.target.value)} /></label>
+        <p className="phn-kilde">Resten av de åtte trinnene fyller du i Workbench. Øvelsen er bare din og coachens.</p>
+        <button type="button" className="phn-knapp pri phn-ov-knapp-stor" disabled={lagrer} onClick={lagre}>{lagrer ? "Lagrer …" : "Lagre øvelsen"}</button>
+      </div>
+    </dialog>
   );
 }
