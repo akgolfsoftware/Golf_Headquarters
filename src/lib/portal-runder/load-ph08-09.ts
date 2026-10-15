@@ -1,12 +1,14 @@
 /**
- * Datainnhenting for PH-08 (Runde live) og PH-09 (Registrer runde).
- * Henter baner og spillerens siste runder med fail-safe fallback.
+ * Datainnhenting for runde-føringen (PH-RD-02 til PH-RD-06): banene spilleren kan velge.
+ *
+ * Bare ekte baner fra basen. Tidligere fylte en fast liste med baner og hull inn når basen var tom
+ * eller utilgjengelig; de banene fantes ikke i basen, så en runde mot dem kunne aldri lagres.
+ * Tom liste gir tom tilstand, feil gir feil tilstand.
  */
 
 import { prisma } from "@/lib/prisma";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
-import { STANDARD_18_HOLES, type CourseHoleDef } from "./ph08-09-data";
 
 export interface PhBaneValg {
   id: string;
@@ -24,26 +26,11 @@ export interface PhSisteRunde {
 export interface Ph0809Data {
   baner: PhBaneValg[];
   sisteBaneId: string | null;
-  valgtBane: {
-    id: string;
-    navn: string;
-    tee: string;
-    par: number;
-    hull: CourseHoleDef[];
-  };
   sisteRunder: PhSisteRunde[];
   ulesteVarsler: number;
+  /** true når banene ikke kunne hentes. */
+  feil: boolean;
 }
-
-const FALLBACK_BANER: PhBaneValg[] = [
-  { id: "fredrikstad-gk", navn: "Fredrikstad Golfklubb", par: 72 },
-  { id: "gamle-fredrikstad", navn: "Gamle Fredrikstad Golfklubb", par: 72 },
-  { id: "onsoy-gk", navn: "Onsøy Golfklubb", par: 72 },
-  { id: "hvaler-gk", navn: "Hvaler Golfklubb", par: 72 },
-  { id: "moss-rygge", navn: "Moss & Rygge Golfklubb", par: 72 },
-  { id: "skjeberg-gk", navn: "Skjeberg Golfklubb", par: 72 },
-  { id: "halden-gk", navn: "Halden Golfklubb", par: 71 },
-];
 
 export async function loadPh0809Data(userId: string): Promise<Ph0809Data> {
   try {
@@ -57,64 +44,28 @@ export async function loadPh0809Data(userId: string): Promise<Ph0809Data> {
         where: { userId },
         orderBy: { playedAt: "desc" },
         take: 3,
-        select: {
-          id: true,
-          playedAt: true,
-          score: true,
-          course: { select: { name: true } },
-        },
+        select: { id: true, playedAt: true, score: true, course: { select: { name: true } } },
       }).catch(() => []),
       prisma.notification.count({ where: { userId, readAt: null } }).catch(() => 0),
     ]);
 
-    const banerListe: PhBaneValg[] = dbCourses.length > 0
-      ? dbCourses.map((c) => ({ id: c.id, navn: c.name, par: c.par || 72 }))
-      : FALLBACK_BANER;
-
-    // Prefill: legg sist spilte bane først i listen
-    const sorterteBaner = medForst(banerListe, sisteBaneIdRaw);
-
-    const forsteBane = sorterteBaner[0] || FALLBACK_BANER[0];
-
-    const sisteRunder: PhSisteRunde[] = dbRounds.map((r) => ({
-      id: r.id,
-      dato: r.playedAt.toLocaleDateString("nb-NO", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        timeZone: "Europe/Oslo",
-      }),
-      bane: r.course?.name || "Bane",
-      score: r.score,
-    }));
+    // Prefill: sist spilte bane først i listen.
+    const baner = medForst(dbCourses.map((c) => ({ id: c.id, navn: c.name, par: c.par })), sisteBaneIdRaw);
 
     return {
-      baner: sorterteBaner,
+      baner,
       sisteBaneId: sisteBaneIdRaw,
-      valgtBane: {
-        id: forsteBane.id,
-        navn: forsteBane.navn,
-        tee: "Gul",
-        par: forsteBane.par,
-        hull: STANDARD_18_HOLES,
-      },
-      sisteRunder,
+      sisteRunder: dbRounds.map((r) => ({
+        id: r.id,
+        dato: r.playedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" }),
+        bane: r.course?.name || "—",
+        score: r.score,
+      })),
       ulesteVarsler: uleste,
+      feil: false,
     };
   } catch (feil) {
     console.error("loadPh0809Data feilet:", feil);
-    return {
-      baner: FALLBACK_BANER,
-      sisteBaneId: null,
-      valgtBane: {
-        id: FALLBACK_BANER[0].id,
-        navn: FALLBACK_BANER[0].navn,
-        tee: "Gul",
-        par: 72,
-        hull: STANDARD_18_HOLES,
-      },
-      sisteRunder: [],
-      ulesteVarsler: 0,
-    };
+    return { baner: [], sisteBaneId: null, sisteRunder: [], ulesteVarsler: 0, feil: true };
   }
 }

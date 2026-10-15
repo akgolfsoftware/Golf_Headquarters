@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "f512e7cd03b2cff747bb9ea686c2501fc8c23f0f",
+  "kodeversjon": "2206d7c17f5bda22c2d5fed18fc7edd45904ef4b",
   "inventar": {
-    "pageFiles": 545,
-    "uniqueRoutePatterns": 545,
-    "componentFiles": 898,
-    "surfaceFiles": 260,
+    "pageFiles": 547,
+    "uniqueRoutePatterns": 547,
+    "componentFiles": 923,
+    "surfaceFiles": 273,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 184
+      "playerhq": 186
     }
   },
   "presisjon": {
@@ -13676,7 +13676,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-08"
+      "kodekommentar": null
     },
     {
       "screenId": "PH-09",
@@ -13721,7 +13721,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-09"
+      "kodekommentar": null
     },
     {
       "screenId": "VIDERESENDING",
@@ -15181,6 +15181,49 @@
       "kodekommentar": "PH-16"
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/analysere/resultater",
+      "kildefil": "src/app/portal/analysere/resultater/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-16 Stats, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-16 Stats",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-16",
       "rute": "/portal/analysere/skill-map",
       "kildefil": "src/app/portal/analysere/skill-map/page.tsx",
@@ -16549,7 +16592,52 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Drill-detaljen merker PH13DrillDetalj i PlayerHQSkall. AK-formel, nøkkelfakta, caddie-begrunnelse og handlinger er beholdt.",
+      "kontrollbevis": "Øvelsen monterer PH13DrillDetalj i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). AK-formelen i åtte trinn og Legg i plan (Workbench-utkast).",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-13 Øvelsesbank er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "PH-13"
+    },
+    {
+      "screenId": "PH-13",
+      "rute": "/portal/drills/break-tabell",
+      "kildefil": "src/app/portal/drills/break-tabell/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/drills/break-tabell",
+      "handlinger": "Liste med filter per akse, øvelsesdetalj, Caddie-forslag",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": true,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": "Break-tabellen monterer PH13BreakTabell i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Tallene er eksempel til Anders har valgt tabell.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16594,7 +16682,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Øvelsesbanken merker PH13DrillListe i PlayerHQSkall. AK-formel, søk, aksefilter, Caddie-utkast, Putting Break-tabell og detaljpanel er implementert etter Claude Design PH-13.",
+      "kontrollbevis": "Siden merker PH13DrillListe og monterer PH13DrillBank i PlayerHQSkall i nytt design (pakke 4, godkjent 14.10.2026, fasit docs/design-system/utkast-playerhq/ovelser.html). Pyramide, treningsområde, søk, Caddie-forslag og ny egen øvelse. Ingen eksempeløvelser.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16604,7 +16692,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-13"
     },
     {
       "screenId": "PH-26",
@@ -18037,7 +18125,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Abonnement og innstillinger merker PH25AboOversikt og PH25Abonnement i PlayerHQSkall. Gratis/Full, betalingsperiode, Stripe-kort, fakturahistorikk, samtykke, varsler, 2FA og slettedialog er implementert etter Claude Design PH-25.",
+      "kontrollbevis": "Abonnement monterer PH25Abonnement i PlayerHQSkall i nytt design (pakke 8 Meg, utkast-playerhq/meg.html). Avbestilling går til Stripe før egen database, uendret.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -18047,7 +18135,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "PH-23",
@@ -18356,7 +18444,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "PH-25",
@@ -18565,7 +18653,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Helse merker PH24HelseKort i PlayerHQSkall. Samtykke og visning er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Helse og fravær monterer PH24Helse i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke og visning er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -18575,7 +18663,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "PH-24",
@@ -18698,8 +18786,9 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Anlegg merker PH25AnleggValg i PlayerHQSkall. Valget er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Fasiliteter monterer PH24Fasiliteter i PlayerHQSkall i nytt design (pakke 8 Meg). Lagring av anlegg og utstyr er beholdt.",
       "avvik": [
+        "Kodekommentaren sier PH-24. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -18708,7 +18797,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "VIDERESENDING",
@@ -18840,7 +18929,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "PH-25",
@@ -18875,8 +18964,9 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Deling merker PH25DelingSamtykke i PlayerHQSkall. Samtykket er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Deling monterer PH27Deling i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke per organisasjon og navngitt deling er beholdt.",
       "avvik": [
+        "Kodekommentaren sier PH-27. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -18885,7 +18975,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "TN-12"
+      "kodekommentar": "PH-27"
     },
     {
       "screenId": "PH-25",
@@ -20574,7 +20664,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Teknisk plan merker PHTP01TekniskPlan i PlayerHQSkall. Posisjonslinje, oppgaver, felles fremdrift og repetisjonslogg er beholdt.",
+      "kontrollbevis": "Teknisk plan monterer PHTP01TekniskPlan i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Hovedfokus, fra og til, oppgaver med læringssteg, svingen P1.0–P10.0, registrering og utkastvisning.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -20658,14 +20748,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Testdetaljen merker PH14Detalj i PlayerHQSkall. Protokoll, historikk, gate-tall, øvelsesforslag og start er beholdt. Gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20793,14 +20881,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Tester-huben merker PH14Hub i PlayerHQSkall. Grupper, forfall, Team Norway-lenke, egen test og tom tilstand er beholdt. Gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20843,14 +20929,16 @@
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
-      "avvik": [],
+      "avvik": [
+        "Kodekommentaren sier PH-15. Skjermlisten sier PH-14. Kommentaren er opphav, ikke en ny godkjenning."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-15"
     },
     {
       "screenId": "PH-26",
@@ -21322,8 +21410,9 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Varslene merker PH25Varsler i PlayerHQSkall. Liste, lest-markering og lenke er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
+        "Kodekommentaren sier PH-21. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -21332,7 +21421,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-21"
     },
     {
       "screenId": "PH-24",
@@ -24011,18 +24100,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 545,
+    "sidefiler": 547,
     "medAvvik": 166,
-    "valgtForBygging": 249,
-    "utenEksaktType": 13,
-    "implementert": 139,
+    "valgtForBygging": 250,
+    "utenEksaktType": 14,
+    "implementert": 138,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 284,
+      "tegnet-skjermtype": 285,
       "videresending": 165,
-      "teknisk-forklaring": 30,
+      "teknisk-forklaring": 31,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24055,7 +24144,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
-      "UTEN-TEGNET-TYPE": 13,
+      "UTEN-TEGNET-TYPE": 14,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -24094,7 +24183,7 @@
       "PH-02": 2,
       "PH-17": 4,
       "PH-26": 11,
-      "PH-13": 4,
+      "PH-13": 5,
       "PH-22": 2,
       "PH-12": 2,
       "PH-18": 7,

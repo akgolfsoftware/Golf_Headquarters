@@ -1,104 +1,60 @@
 /**
- * PH25Varsler — varsellisten i PlayerHQSkall.
- * Samme Notification-spørring. Åpning markerer lest og følger lenken.
+ * PH-21 Innboks bak bjella (pakke 7 Kommunikasjon, nytt design 15.10.2026).
+ * Samler forslag (trener, coach, planer), siste melding fra coach og varslene.
+ * Samme Notification-spørring som før. Åpning av et varsel markerer det lest og følger lenken.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { VarslerV2, type VarslerV2Data, type VarslerV2Item, type VarselKategori } from "@/components/portal/v2/VarslerV2";
+import { PH21InnboksOversikt } from "@/components/portal/precision/PH21InnboksOversikt";
+import { getPH21Data } from "@/lib/portal-coach/ph21-queries";
+import { hentPlanForslag } from "@/lib/portal/plan-data";
+import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
+import { hentEffektivNaa } from "@/lib/testing/dato-override";
+import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
+import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
+import {
+  coachforslagTilSak, planTilSak, relativTid, sisteCoachMelding, trenerforslagTilSak,
+  type InnboksForslag, type PH21InnboksData, type TrenerforslagInn,
+} from "@/lib/portal/ph21-innboks";
 
 export const dynamic = "force-dynamic";
-
-// ── Ikon-oppslag per varsel-type (v2 ikon-navn, "@/components/v2/icon") ──
-const IKON: Record<string, string> = {
-  plan: "activity",
-  drill: "target",
-  melding: "message-circle",
-  turnering: "trophy",
-  achievement: "star",
-  runde: "bar-chart",
-  trackman: "activity",
-  booking: "calendar",
-  credit: "credit-card",
-  betaling: "credit-card",
-  faktura: "file-text",
-  ai: "sparkles",
-  "session-invite": "users",
-  system: "bell",
-};
-
-function ikon(type: string): string {
-  return IKON[type] ?? "info";
-}
-
-/** Fasitens filterkategorier, avledet av Notification.type. */
-function kategori(type: string): VarselKategori {
-  if (type === "melding" || type === "ai" || type === "session-invite") return "coach";
-  if (type === "booking") return "timer";
-  if (type === "runde" || type === "trackman") return "foring";
-  if (type.includes("test")) return "tester";
-  if (type === "betaling" || type === "faktura" || type === "credit") return "betaling";
-  return "annet";
-}
-
-// ── Relativ tid (uendret fra forrige versjon av skjermen) ─────────────
-function relTid(d: Date, now: Date): string {
-  const startIdag = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  if (d >= startIdag) {
-    return d.toLocaleTimeString("nb-NO", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Europe/Oslo",
-    });
-  }
-  const dager = Math.floor((startIdag.getTime() - d.getTime()) / 86_400_000) + 1;
-  if (dager === 1) return "I går";
-  if (dager < 7) return `${dager} dager`;
-  return d.toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    timeZone: "Europe/Oslo",
-  });
-}
+export const metadata = { title: "Innboks · PlayerHQ" };
 
 export default async function VarslerPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const naa = await hentEffektivNaa(user.email);
+  const denneUka = OSLO_YMD_FMT.format(osloUkeGrenser(naa).start);
+  const nesteUka = OSLO_YMD_FMT.format(osloUkeGrenser(new Date(naa.getTime() + 7 * 86_400_000)).start);
 
-  const rows = await prisma.notification.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: "desc" },
-    take: 100,
-  });
+  const [rows, ph21, coachDenne, coachNeste, trener] = await Promise.all([
+    prisma.notification.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 100 }),
+    getPH21Data(user.id),
+    hentPlanForslag(user.id, denneUka),
+    hentPlanForslag(user.id, nesteUka),
+    user.role === "PLAYER" ? hentMineTrenerforslag() : Promise.resolve([]),
+  ]);
 
-  const now = new Date();
-  const startIdag = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startUke = new Date(startIdag.getTime() - 6 * 86_400_000);
+  const forslag: InnboksForslag[] = [
+    ...(trener as TrenerforslagInn[]).map((f) => trenerforslagTilSak(f, naa)),
+    ...[...coachDenne, ...coachNeste].map(coachforslagTilSak),
+    ...ph21.plans.map((p) => planTilSak(p, ph21.coach?.name ?? null)).filter((p): p is InnboksForslag => p !== null),
+  ];
 
-  let uleste = 0;
-  const items: VarslerV2Item[] = rows.map((r) => {
-    if (r.readAt == null) uleste++;
-    return {
-      id: r.id,
-      icon: ikon(r.type),
-      kategori: kategori(r.type),
-      tittel: r.title,
-      body: r.body,
-      tid: relTid(r.createdAt, now),
-      ulest: r.readAt == null,
-      link: r.link,
-      gruppe: r.createdAt >= startIdag ? "I dag" : r.createdAt >= startUke ? "Denne uka" : "Tidligere",
-    };
-  });
-
-  const data: VarslerV2Data = { items, uleste, navn: user.name ?? "" };
+  const data: PH21InnboksData = {
+    forslag,
+    melding: sisteCoachMelding(ph21.messages, ph21.coach?.name ?? null),
+    varsler: rows.map((r) => ({
+      id: r.id, type: r.type, tittel: r.title, tekst: r.body, tid: relativTid(r.createdAt, naa), ulest: r.readAt == null, link: r.link,
+    })),
+    harCoach: Boolean(ph21.coach),
+  };
+  const uleste = rows.filter((r) => r.readAt == null).length;
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="pa-side">
-        <VarslerV2 data={data} />
-      </div>
+      <PH21InnboksOversikt data={data} />
     </PlayerHQSkall>
   );
 }

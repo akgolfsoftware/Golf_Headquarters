@@ -37,7 +37,7 @@
     forelder: { hoved: [['idag', 'I dag'], ['barn', 'Barn'], ['booking', 'Booking'], ['okonomi', 'Økonomi']],
       mer: [['samtykke', 'Samtykke'], ['coach', 'Coach'], ['rapport', 'Ukerapport'], ['innstillinger', 'Innstillinger']] },
     offentlig: { hoved: [['coaching', 'Coaching'], ['junior', 'Junior'], ['priser', 'Priser'], ['om', 'Om oss'], ['kontakt', 'Kontakt']] },
-    gfgk: { hoved: [['forside', 'Forside'], ['grupper', 'Grupper'], ['planer', 'Treningsplaner'], ['kalender', 'Kalender'], ['veileder', 'Veileder']] }
+    gfgk: { hoved: [['forside', 'Hjem'], ['starte', 'Starte med golf'], ['grupper', 'Gruppene'], ['planer', 'Treningsplaner'], ['veileder', 'Kunnskap'], ['kalender', 'Kalender']] }
   };
   function ikon(d) { return '<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true">' + (I[d] || d) + '</svg>'; }
   function lenke(m, aktiv, medIkon) {
@@ -60,6 +60,7 @@
       (s.mer ? '<div class="fl-mer"><button type="button" aria-expanded="false" data-mer' + (s.mer.some(function (m) { return m[0] === aktiv; }) ? ' style="background:var(--graphite-900);color:var(--white)"' : '') + '>Mer' + ikon('ned') + '</button></div>' : '') + '</nav>';
     var hoyre = '';
     if (type === 'forelder') hoyre = '<button type="button" class="fl-ikonknapp" aria-label="Varsler, 2 nye">' + ikon('bjelle') + '<b>2</b></button><span class="fl-avatar" aria-label="Kari Rohjan">KR</span>';
+    else if (type === 'gfgk') hoyre = '<a href="#" class="lenke pc-bare">Logg inn</a>';
     else if (type === 'offentlig') hoyre = '<a href="#" class="lenke pc-bare" style="margin-right:8px">Logg inn</a><a href="#" class="knapp pri" style="min-height:40px">Book time</a>';
     topp.innerHTML = '<div class="venstre">' + hamburger() + merke + pc + '</div><div class="hoyre">' + hoyre + '</div>';
     skuff = document.createElement('div'); skuff.className = 'fl-skuff'; skuff.hidden = true;
@@ -96,10 +97,10 @@
   function bunn(app, type) {
     var f = document.createElement('footer'); f.className = 'fl-bunn';
     if (type === 'gfgk') {
-      f.innerHTML = '<div class="kol"><b>GFGK Junior</b><p class="forklar" style="max-width:34ch">Juniorarbeidet i Gamle Fredrikstad Golfklubb. Sportslig opplegg ved AK Golf.</p></div>' +
-        '<div class="kol"><b>Juniorene</b><a href="#">Grupper</a><a href="#">Treningsplaner</a><a href="#">Kalender</a></div>' +
-        '<div class="kol"><b>For foreldre</b><a href="#">Veileder</a><a href="#">Logg inn</a></div>' +
-        '<div class="kol"><b>Klubben</b><a href="#">Gamle Fredrikstad Golfklubb</a></div>' +
+      f.innerHTML = '<div class="kol"><b>GFGK Junior &amp; Elite</b><p class="forklar" style="max-width:34ch">I samarbeid med Gamle Fredrikstad Golfklubb, AK Golf Academy og WANG Toppidrett Fredrikstad.</p></div>' +
+        '<div class="kol"><b>Juniorene</b><a href="#">Hjem</a><a href="#">Gruppene</a><a href="#">Starte med golf</a><a href="#">Treningsplaner</a></div>' +
+        '<div class="kol"><b>Mer</b><a href="#">Kunnskapsbase</a><a href="#">Full treningskalender</a><a href="#">Logg inn</a></div>' +
+        '<div class="kol"><b>Adresse</b><span class="forklar">Torsnesveien 16, 1630 Gamle Fredrikstad</span></div>' +
         '<div class="jur"><a href="#">Personvern</a><a href="#">Informasjonskapsler</a></div>';
     } else {
       f.innerHTML = '<div class="kol"><img class="logo" src="' + LOGO + '" alt="AK Golf HQ" width="146" height="32" style="height:32px"><p class="forklar" style="max-width:34ch;margin-top:8px">AK Golf Academy drives av Anders Kristiansen — golfcoach, sportslig ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett Fredrikstad.</p><div class="merkelapper" style="margin-top:8px"><span class="merkelapp">Junior Academy</span><span class="merkelapp">AK Golf HQ</span><span class="merkelapp">Skarpnord</span></div></div>' +

@@ -1,7 +1,6 @@
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
- * PlayerHQ · Live-økt oppsummering — PH07Summary i Precision Athletics (natt).
- * Kilde: ui_kits/playerhq/screens/PH-07.jsx.
+ * PlayerHQ · Live-økt oppsummering — PH-07 Etter økten i nytt design (lyst tema).
  * Tall, pyramide, notater, vurdering og lagring beholdes.
  * Visningen er PH07Oktoppsummering.
  */
@@ -48,12 +47,10 @@ export default async function LiveSummaryPage({
 
   async function handleSave(note: string, _shareWithCoach: boolean) {
     "use server";
-    try {
-      if (note.trim().length > 0) {
-        await lagreDineOrd(sessionId, note);
-      }
-    } catch {
-      // Ignorer
+    // Feil sendes videre, så skjermen sier «Ikke lagret» i stedet for å late som.
+    if (note.trim().length > 0) {
+      const res = await lagreDineOrd(sessionId, note);
+      if (!res.ok) throw new Error(res.error ?? "Ikke lagret");
     }
   }
 
@@ -61,7 +58,7 @@ export default async function LiveSummaryPage({
     <PH07Oktoppsummering
       key={sessionId}
       data={data}
-      onSave={handleSave}
+      onSave={_v2 ? handleSave : undefined}
       onCloseHref="/portal"
     />
   );

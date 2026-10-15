@@ -100,13 +100,21 @@ export default async function NyRundePage({
   }
 
   const flyt = lesFlyt(rawFlyt);
-  const [alleCourses, sisteBaneId, ph0809Data] = await Promise.all([
+  // Scorekort er PH-RD-06 Rask score i nytt design, med eget skall.
+  if (flyt === "scorekort") {
+    const data = await loadPh0809Data(user.id);
+    return (
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.ulesteVarsler}>
+        <PH09RegistrerRunde data={data} />
+      </PlayerHQSkall>
+    );
+  }
+  const [alleCourses, sisteBaneId] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },
       select: { id: true, name: true, par: true },
     }),
     sisteSpilteBaneId(user.id),
-    loadPh0809Data(user.id),
   ]);
   // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
   const courses = medForst(alleCourses, sisteBaneId);
@@ -218,8 +226,6 @@ export default async function NyRundePage({
                 </Link>
               </div>
             </Kort>
-          ) : flyt === "scorekort" ? (
-            <PH09RegistrerRunde data={ph0809Data} />
           ) : (
             <RundeNyForm courses={courses} initialFlyt={flyt} />
           )}

@@ -4,7 +4,7 @@
  * lastCockpitTillegg) — ingen spørringer, ingen anslag.
  * Mangler et tall, blir det «—».
  */
-import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
+import type { CockpitAxis, CockpitData } from "@/components/admin/cockpit/agency-cockpit";
 import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
 import type { CockpitTillegg } from "./cockpit-tillegg-regler";
 
@@ -24,12 +24,16 @@ export type CockpitKalenderRad = {
   sted: string | null;
   status: KalenderStatus;
   href: string | null;
+  /** Aksen når tittelen sier den. null = ukjent: blokken vises nøytral, aldri gjettet. */
+  akse: CockpitAxis | null;
 };
 export type CockpitVenterRad = { id: string; hvem: string; tittel: string; detalj: string | null; nar: string; haster: boolean };
 export type CockpitOppgave = { id: string; tittel: string; ferdig: boolean; fristIDag: boolean; tag: string };
 export type CockpitNokkel = { label: string; verdi: string; kilde: string };
 
 export type AG01Data = {
+  /** «God morgen, Anders». */
+  hilsen: string;
   kicker: string;
   klokke: string;
   naaMin: number;
@@ -45,6 +49,20 @@ export type AG01Data = {
 export function hhmm(min: number): string {
   const m = ((Math.round(min) % 1440) + 1440) % 1440;
   return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
+
+/**
+ * Akse fra øktens tittel. Samme ord som daily-brief-data, men uten
+ * reserveverdien SLAG: står ikke aksen i teksten, er den ukjent (null).
+ */
+export function akseFraTekst(tekst: string): CockpitAxis | null {
+  const t = tekst.toLowerCase();
+  if (/(turnering|konkurranse|cup|tour\b)/.test(t)) return "turn";
+  if (/(fys|styrke|kondisjon|mobilitet)/.test(t)) return "fys";
+  if (/(putt|teknikk|sekvens|p[0-9]|gripp|sving)/.test(t)) return "tek";
+  if (/(innspill|wedge|chip|pitch|bunker|jern|driver|utslag|range)/.test(t)) return "slag";
+  if (/(\bspill|simulering|runde|bane|9-hull|18-hull)/.test(t)) return "spill";
+  return null;
 }
 
 /** Posisjon i prosent på stripen 05–22, klemt til 0–100. */
@@ -72,6 +90,7 @@ export function kalenderRader(timeline: CockpitData["timeline"], naaMin: number)
       sted,
       status,
       href: o.href ?? null,
+      akse: akseFraTekst(o.title),
     };
   });
 }
@@ -96,6 +115,7 @@ export function byggAG01Data(inn: {
     { label: "Planøkter gjennomført", verdi: brief.planAdherenceKpi, kilde: "FULLFØRTE AV PLANLAGTE · ALLE PLANER · 30 DAGER" },
   ];
   return {
+    hilsen: brief.coachFirstName ? `${brief.greeting}, ${brief.coachFirstName}` : brief.greeting,
     kicker: inn.kicker,
     klokke: inn.klokke,
     naaMin: brief.now,
