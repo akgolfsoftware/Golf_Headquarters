@@ -31,7 +31,7 @@ export async function TnReferansenivaerSkjerm() {
 
   return (
     <SkjermRamme aktiv="referansenivaer" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute="/team-norway/referansenivaer" tittel="Referansenivåer" ingress="Målverdiene per test og klasse, hentet fra den versjonerte protokollkilden. De endres bare når protokollen får ny versjon." />
+      <TnSkjermhode tittel="Referansenivåer" ingress="Målverdiene per test og klasse, hentet fra den versjonerte protokollkilden. De endres bare når protokollen får ny versjon." />
 
       <TnFlate>
         <TnFlatehode tittel="Nivåer per test" merknad={versjon} />

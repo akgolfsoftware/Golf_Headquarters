@@ -48,7 +48,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
 
   return (
     <TnShell aktiv="tilgang" brukerNavn={brukerNavn} rolle="Trener" groupId={gruppeId} visTrenerflater kanAdministrere>
-      <TnSkjermhode rute="/team-norway/tilgang" tittel="Trenere og tilgang" ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med." />
+      <TnSkjermhode tittel="Trenere og tilgang" ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med." />
 
       <TnFlate>
         <TnFlatehode tittel={`Tilgang til ${gruppeNavn}`} merknad={`Trener ${trenere} · Assist Coach ${aktive.length - trenere}`} />

@@ -5,61 +5,56 @@ import { ukenummer } from "@/lib/uke-helpers";
 import { TN } from "@/lib/v2/team-norway";
 
 /**
- * Byggeklosser for skjermene TN-04 til TN-10.
- * Fasit: Claude Design-prosjektet «Team Norway App delivery»
- * (bc3e41fc), fila «Team Norway App.dc.html». Hvit flate med én hårstrek,
- * seksjonstittel i sperret Jost over en 2 px navy strek, tall i IBM Plex Mono.
- * Hjørner 2 og 4, ingen skygger, ingen sirkler.
+ * Byggeklosser for Team Norway-skjermene.
+ * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur, 14.10.2026).
+ * Overlinje i mono, tittel i Jost, seksjonstittel i sperrede versaler, kort med
+ * én hårstrek, tall i IBM Plex Mono. Hjørner 2, ingen skygger, ingen sirkler.
  * Avvik:
  *   - Filterknapper og månedsvalg er lenker med valget i adressen, ikke
- *     klientstate som i prototypen. Da virker de uten JavaScript.
+ *     klientstate. Da virker de uten JavaScript.
  */
 
 const etikettStil: CSSProperties = {
-  fontFamily: TN.font.display,
-  fontSize: "0.6875rem",
-  letterSpacing: "0.16em",
+  fontFamily: TN.font.mono,
+  fontSize: 12,
+  lineHeight: 1.3,
+  letterSpacing: "0.12em",
   textTransform: "uppercase",
-  color: TN.textSecondary,
+  color: TN.ink500,
 };
 
-const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", timeZone: "Europe/Oslo" });
-const datoFormat = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" });
+const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 
-/** Sidehodet: rute i mono, tittel i tynn sperret Jost, ingress, dato og uke til høyre. */
-export function TnSkjermhode({ rute, tittel, ingress, handling }: { rute: string; tittel: string; ingress: string; handling?: ReactNode }) {
+/** Sidehodet: dato og uke i mono, tittel i Jost, ingress, og handlinger under. */
+export function TnSkjermhode({ tittel, ingress, overlinje, handling }: { tittel: string; ingress: string; overlinje?: string; handling?: ReactNode }) {
   const naa = new Date();
   return (
-    <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "16px 32px", paddingBottom: 22, borderBottom: `1px solid ${TN.navy100}` }}>
-      <div style={{ minWidth: 0, flex: "1 1 320px" }}>
-        <div style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: "0.08em", color: TN.textSecondary, overflowWrap: "anywhere" }}>{rute}</div>
-        <h1 style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(24px, 3vw, 36px)", lineHeight: 1.1, letterSpacing: "0.1em", textTransform: "uppercase", margin: "10px 0 0", color: TN.navy900 }}>{tittel}</h1>
-        <p style={{ fontSize: 15, lineHeight: 1.6, color: TN.textSecondary, maxWidth: "64ch", margin: "10px 0 0" }}>{ingress}</p>
+    <header style={{ display: "grid", gap: 16 }}>
+      <div style={{ minWidth: 0 }}>
+        <span style={etikettStil}>{overlinje ?? `${dagFormat.format(naa)} · uke ${ukenummer(naa)}`}</span>
+        <h1 style={{ margin: "4px 0 0", fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{tittel}</h1>
+        <p style={{ margin: "8px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>{ingress}</p>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>
-        <div style={{ fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, whiteSpace: "nowrap", textTransform: "uppercase" }}>
-          {dagFormat.format(naa)} {datoFormat.format(naa)} · uke {ukenummer(naa)}
-        </div>
-        {handling}
-      </div>
+      {handling ? <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{handling}</div> : null}
     </header>
   );
 }
 
+/** Kort: hvit flate med én hårstrek, aldri skygge. */
 export function TnFlate({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <section style={{ background: TN.surfaceCard, border: `1px solid ${TN.navy100}`, borderRadius: TN.radius.lg, padding: "clamp(16px, 2vw, 24px)", minWidth: 0, ...style }}>
+    <section style={{ background: TN.surfaceCard, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px", minWidth: 0, ...style }}>
       {children}
     </section>
   );
 }
 
-/** Seksjonstittel over en 2 px navy strek, med valgfri mono-merknad til høyre. */
+/** Seksjonstittel i sperrede versaler, med valgfri merknad til høyre. */
 export function TnFlatehode({ tittel, merknad, children }: { tittel: string; merknad?: ReactNode; children?: ReactNode }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 14px", alignItems: "baseline", paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>
-      <h2 style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
-      {merknad !== undefined ? <span style={{ whiteSpace: "nowrap", fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.textSecondary }}>{merknad}</span> : null}
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 12px", alignItems: "baseline", paddingBottom: 12 }}>
+      <h2 style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+      {merknad !== undefined ? <span style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500 }}>{merknad}</span> : null}
       {children}
     </div>
   );
@@ -69,12 +64,12 @@ export function TnEtikett({ children, style }: { children: ReactNode; style?: CS
   return <div style={{ ...etikettStil, ...style }}>{children}</div>;
 }
 
-/** Stor tittel inne i et kort, som «Mar Menor» i samlingskortet. */
+/** Stor tittel inne i et kort, som stedet i samlingskortet. */
 export function TnKorttittel({ overlinje, tittel, children }: { overlinje?: ReactNode; tittel: string; children?: ReactNode }) {
   return (
     <div>
       {overlinje ? <TnEtikett>{overlinje}</TnEtikett> : null}
-      <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(20px, 2.2vw, 26px)", letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 6, lineHeight: 1.2, overflowWrap: "anywhere" }}>{tittel}</div>
+      <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 26, letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 6, lineHeight: 1.1, overflowWrap: "anywhere" }}>{tittel}</div>
       {children}
     </div>
   );
@@ -83,11 +78,11 @@ export function TnKorttittel({ overlinje, tittel, children }: { overlinje?: Reac
 /** Rad med dato/tall i mono til venstre og tekst til høyre. */
 export function TnDatoRad({ dato, tittel, tekst, datoFarge, datoBredde = 96, hoyre }: { dato: ReactNode; tittel: ReactNode; tekst?: ReactNode; datoFarge?: string; datoBredde?: number; hoyre?: ReactNode }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: hoyre ? `${datoBredde}px minmax(0, 1fr) auto` : `${datoBredde}px minmax(0, 1fr)`, gap: "6px 14px", padding: "13px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "baseline" }}>
-      <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: datoFarge ?? TN.navy900, fontVariantNumeric: "tabular-nums" }}>{dato}</span>
+    <div style={{ display: "grid", gridTemplateColumns: hoyre ? `${datoBredde}px minmax(0, 1fr) auto` : `${datoBredde}px minmax(0, 1fr)`, gap: "6px 14px", padding: "13px 0", borderBottom: `1px solid ${TN.ink200}`, alignItems: "baseline" }}>
+      <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: datoFarge ?? TN.navy900, fontVariantNumeric: "tabular-nums" }}>{dato}</span>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{tittel}</div>
-        {tekst ? <div style={{ fontSize: 13, color: TN.textSecondary, marginTop: 2, overflowWrap: "anywhere" }}>{tekst}</div> : null}
+        <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3, overflowWrap: "anywhere" }}>{tittel}</div>
+        {tekst ? <div style={{ fontSize: 13, color: TN.ink500, marginTop: 2, overflowWrap: "anywhere" }}>{tekst}</div> : null}
       </div>
       {hoyre}
     </div>
@@ -96,28 +91,29 @@ export function TnDatoRad({ dato, tittel, tekst, datoFarge, datoBredde = 96, hoy
 
 /** Ærlig tomrad inne i en flate: sier hva som mangler og hvorfor. */
 export function TnMangler({ children }: { children: ReactNode }) {
-  return <p style={{ fontSize: 14, lineHeight: 1.6, color: TN.textSecondary, margin: "16px 0 0", maxWidth: "70ch" }}>{children}</p>;
+  return <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "12px 0 0", maxWidth: "70ch" }}>{children}</p>;
 }
 
+/** Kilde og dato under en flate. */
 export function TnFotnote({ children }: { children: ReactNode }) {
-  return <p style={{ fontSize: 13, lineHeight: 1.6, color: TN.textSecondary, margin: "14px 0 0", maxWidth: "70ch" }}>{children}</p>;
+  return <p style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, margin: "12px 0 0", maxWidth: "70ch" }}>{children}</p>;
 }
 
 /** Kvadratisk initialplate. Aldri sirkel. */
-export function TnInitialer({ navn, storrelse = 44, mork = false }: { navn: string; storrelse?: number; mork?: boolean }) {
+export function TnInitialer({ navn, storrelse = 36, mork = false }: { navn: string; storrelse?: number; mork?: boolean }) {
   const initialer = navn.split(/\s+/).filter(Boolean).slice(0, 2).map((del) => del[0]?.toUpperCase() ?? "").join("");
   return (
-    <span aria-hidden="true" style={{ width: storrelse, height: storrelse, flex: "none", borderRadius: TN.radius.sm, background: mork ? TN.navy900 : TN.navy50, border: mork ? "none" : `1px solid ${TN.navy100}`, color: mork ? TN.white : TN.navy900, fontFamily: TN.font.display, fontSize: storrelse >= 60 ? 20 : 14, letterSpacing: "0.08em", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <span aria-hidden="true" style={{ width: storrelse, height: storrelse, flex: "none", background: mork ? TN.rail.active : TN.navy100, color: mork ? TN.white : TN.navy900, fontFamily: TN.font.mono, fontSize: storrelse >= 60 ? 20 : 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {initialer || "?"}
     </span>
   );
 }
 
-/** Statusord i mono med en liten kvadratisk markør. */
+/** Statusord med en liten kvadratisk markør, som merkene i grunnmuren. */
 export function TnStatusmerke({ children, farge }: { children: ReactNode; farge: string }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: "0.06em", color: farge, whiteSpace: "nowrap", textTransform: "uppercase" }}>
-      <span aria-hidden="true" style={{ width: 8, height: 8, background: farge, flex: "none" }} />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TN.font.body, fontSize: 12, fontWeight: 700, lineHeight: 1.2, color: farge, whiteSpace: "nowrap" }}>
+      <span aria-hidden="true" style={{ width: 6, height: 6, background: farge, flex: "none" }} />
       {children}
     </span>
   );
@@ -135,10 +131,10 @@ export function TnFilterknapper({ valg, etikett }: { valg: TnFilterValg[]; etike
           href={v.href}
           scroll={false}
           aria-current={v.aktiv ? "page" : undefined}
-          style={{ minHeight: 44, padding: "0 16px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: v.aktiv ? TN.navy900 : TN.white, color: v.aktiv ? TN.white : TN.navy900, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", maxWidth: "100%" }}
+          style={{ minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: v.aktiv ? TN.navy900 : TN.white, color: v.aktiv ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: 13.5, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", maxWidth: "100%" }}
         >
           {v.label}
-          {v.antall !== undefined ? <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, opacity: 0.75 }}>{v.antall}</span> : null}
+          {v.antall !== undefined ? <span style={{ fontFamily: TN.font.mono, fontSize: 12, fontWeight: 500 }}>{v.antall}</span> : null}
         </Link>
       ))}
     </nav>
@@ -147,5 +143,5 @@ export function TnFilterknapper({ valg, etikett }: { valg: TnFilterValg[]; etike
 
 /** To- eller flerkolonne som stables under 360 px per kolonne. */
 export function TnRutenett({ children, min = 360, style }: { children: ReactNode; min?: number; style?: CSSProperties }) {
-  return <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${min}px), 1fr))`, gap: 20, alignItems: "start", ...style }}>{children}</div>;
+  return <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${min}px), 1fr))`, gap: 24, alignItems: "start", ...style }}>{children}</div>;
 }

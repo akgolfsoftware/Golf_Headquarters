@@ -104,7 +104,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
 
   return (
     <SkjermRamme aktiv="spillere" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/spillere" tittel="Spillerutvikling" ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter">Inviter spiller</TnHandlingLenke> : undefined} />
+      <TnSkjermhode tittel="Spillerutvikling" ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk." handling={data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter">Inviter spiller</TnHandlingLenke> : undefined} />
 
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
         <TnFilterknapper

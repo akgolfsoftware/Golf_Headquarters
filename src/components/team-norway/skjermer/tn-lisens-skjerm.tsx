@@ -44,7 +44,7 @@ export async function TnLisensSkjerm() {
 
   return (
     <SkjermRamme aktiv="lisens" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute="/team-norway/lisens-okonomi" tittel="Lisens, helse og stipend" ingress="Dokumentene som må være i orden før du kan stille, og pengene du har krav på." />
+      <TnSkjermhode tittel="Lisens, helse og stipend" ingress="Dokumentene som må være i orden før du kan stille, og pengene du har krav på." />
 
       <TnFlate>
         <TnFlatehode tittel={`Lisens og dokumenter ${aar}`} merknad={`${status.size} / ${spillerside.rader.length} REGISTRERT`} />

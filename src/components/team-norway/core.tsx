@@ -3,27 +3,16 @@
 import Image from "next/image";
 import { useId, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
-import { Icon } from "@/components/v2/icon";
 import styles from "./tn-kontroller.module.css";
+import type { TnIkonNavn } from "./tn-ikon";
 import teamNorwayLogo from "../../../designsystem/team-norway/assets/logo/team-norway-golf.png";
 import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png";
 
 /**
- * Team Norway — delte primitiver (Claw batch 3, 01.09.2026).
- *
- * Fasit: designsystem/team-norway/templates/tn-skall/TnSkall.dc.html (rail),
- * gjenkjennelig identisk oppsett i tn-gruppeposter/tn-dokumentdeling/tn-samtykke.
- * Bruker KUN TN.* (aldri TL.* / --p-* / --tl-*) — Claw og Train-lock er to
- * parallelle systemer, en skjerm bruker aldri begge (beslutninger.md).
- *
- * `Icon` gjenbrukes fra @/components/v2 — den er generisk (Lucide-wrapper),
- * ikke Train-lock-spesifikk.
- *
- * Avvik:
- *   - Ingen riggrad: den visuelle riggen (tests/visual/skjerm-mapping.ts) dekker
- *     Train-lock, ikke Claw ennå (PORTING.md §0b, ingen Claw-skjerm har det per 08.09.2026).
- *   - TnKnapp/TnRail rettet 08.09.2026 (44/48/56px, 252px) mot components/core/Button.jsx
- *     i Claw-designsystemet a03bf94a — se commit-melding for kilden.
+ * Team Norway — delte primitiver. Fasit: docs/design-system/utkast-tn/felles/tn.css
+ * (pakke 1 grunnmur, 14.10.2026). Bruker KUN TN.* (aldri AK-, Train-lock- eller
+ * Precision-tokens). Hjørner 0 · 2 · 4, ingen skygger, ingen sirkler.
+ * Skallet (sidemeny, topplinje, bunnmeny) bor i tn-shell.tsx og rail-mobil.tsx.
  */
 
 // ───────────────────────── Kort ─────────────────────────
@@ -66,7 +55,7 @@ export function TnLogo({
 export function TnKort({
   children,
   style,
-  padding = 24,
+  padding = 18,
 }: {
   children: ReactNode;
   style?: CSSProperties;
@@ -76,7 +65,7 @@ export function TnKort({
     <div
       style={{
         background: TN.surfaceCard,
-        borderRadius: TN.radius.lg,
+        borderRadius: TN.radius.sm,
         // Systemet har ingen skygger. Flater skilles med én hårstrek.
         border: `1px solid ${TN.borderSubtle}`,
         padding,
@@ -93,14 +82,15 @@ export function TnKort({
 
 export type TnPilleTone = "navy" | "green" | "amber" | "red" | "info" | "nøytral" | "invers";
 
-const PILLE_TONE: Record<TnPilleTone, { bg: string; fg: string }> = {
-  navy: { bg: TN.navy50, fg: TN.navy700 },
-  green: { bg: TN.status.greenBg, fg: TN.status.greenText },
-  amber: { bg: TN.status.amberBg, fg: TN.status.amberText },
-  red: { bg: TN.status.redBg, fg: TN.status.redText },
-  info: { bg: TN.status.infoBg, fg: TN.status.infoText },
-  nøytral: { bg: TN.ink100, fg: TN.ink700 },
-  invers: { bg: TN.navy900, fg: TN.white },
+/** Merke: kantete 24 px med kvadratisk prikk. Grønt, gult og rødt er bare status. */
+const PILLE_TONE: Record<TnPilleTone, { bg: string; fg: string; prikk: string }> = {
+  navy: { bg: TN.status.infoBg, fg: TN.status.infoText, prikk: TN.navy600 },
+  green: { bg: TN.status.greenBg, fg: TN.status.greenText, prikk: TN.status.green },
+  amber: { bg: TN.status.amberBg, fg: TN.status.amberText, prikk: TN.status.amber },
+  red: { bg: TN.status.redBg, fg: TN.status.redText, prikk: TN.status.red },
+  info: { bg: TN.status.infoBg, fg: TN.status.infoText, prikk: TN.navy600 },
+  nøytral: { bg: TN.ink100, fg: TN.ink700, prikk: TN.ink500 },
+  invers: { bg: TN.navy900, fg: TN.white, prikk: TN.white },
 };
 
 export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; tone?: TnPilleTone }) {
@@ -108,18 +98,23 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
   return (
     <span
       style={{
-        fontFamily: TN.font.mono,
-        fontSize: TN.text.micro,
-        fontWeight: TN.weight.semibold,
-        letterSpacing: TN.tracking.eyebrow,
-        textTransform: "uppercase",
-        padding: "4px 9px",
-        borderRadius: TN.radius.xs,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        minHeight: 24,
+        padding: "2px 8px",
+        borderRadius: TN.radius.sm,
         background: t.bg,
         color: t.fg,
+        fontFamily: TN.font.body,
+        fontSize: 12,
+        fontWeight: TN.weight.bold,
+        lineHeight: 1.2,
         whiteSpace: "nowrap",
+        flex: "none",
       }}
     >
+      <span aria-hidden="true" style={{ width: 6, height: 6, flex: "none", background: t.prikk }} />
       {children}
     </span>
   );
@@ -129,12 +124,12 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
 
 export function TnAvatarInitialer({
   navn,
-  size = 30,
+  size = 36,
   paaMork = false,
 }: {
   navn: string;
   size?: number;
-  /** Hvit plate med navy bokstaver — for bruk på skinnen og andre mørke flater. */
+  /** Lysere navy plate med hvite bokstaver — for bruk på navy flater. */
   paaMork?: boolean;
 }) {
   const initialer = navn
@@ -148,9 +143,8 @@ export function TnAvatarInitialer({
       style={{
         width: size,
         height: size,
-        borderRadius: TN.radius.full,
-        background: paaMork ? TN.white : TN.ink200,
-        color: paaMork ? TN.navy900 : TN.ink700,
+        background: paaMork ? TN.rail.active : TN.navy100,
+        color: paaMork ? TN.rail.on : TN.navy900,
         fontFamily: TN.font.mono,
         fontSize: TN.text.xs,
         display: "inline-flex",
@@ -200,162 +194,11 @@ export function TnKnapp({
   );
 }
 
-// ───────────────────────── Rail (org-skall) ─────────────────────────
+// ───────────────────────── Meny-typer (skallet bor i tn-shell.tsx) ─────────────────────────
 
 export type TnMenyLenke = { label: string; href: string; aktiv: boolean };
-export type TnMenyGruppe = { id: string; label: string; ikon: string; aktiv: boolean; punkter: TnMenyLenke[] };
-export type TnBunnValg = TnMenyLenke & { ikon: string };
-
-/** Ett menypunkt i skinnen: rød markør 3 px og lysere navy bak når aktivt. */
-export function TnMenyrad({ punkt, onClick }: { punkt: TnMenyLenke; onClick?: () => void }) {
-  return (
-    <a
-      href={punkt.href}
-      onClick={onClick}
-      aria-current={punkt.aktiv ? "page" : undefined}
-      style={{
-        minHeight: 44,
-        padding: "4px 10px 4px 0",
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        textDecoration: "none",
-        background: punkt.aktiv ? TN.rail.active : "transparent",
-        color: punkt.aktiv ? TN.rail.on : TN.rail.text,
-        fontFamily: TN.font.body,
-        fontSize: TN.text.sm,
-        fontWeight: punkt.aktiv ? TN.weight.bold : TN.weight.regular,
-      }}
-    >
-      <span aria-hidden="true" style={{ width: 3, alignSelf: "stretch", background: punkt.aktiv ? TN.rail.marker : "transparent", flexShrink: 0 }} />
-      <span style={{ flex: 1, minWidth: 0, paddingLeft: 27 }}>{punkt.label}</span>
-    </a>
-  );
-}
-
-/**
- * Én menygruppe som kan foldes sammen. Native <details>, så den virker uten
- * JavaScript. Gruppen med aktiv skjerm er åpen; lukkede grupper viser antall.
- */
-export function TnMenygruppe({ gruppe, alltidApen = false, onVelg }: { gruppe: TnMenyGruppe; alltidApen?: boolean; onVelg?: () => void }) {
-  const hode = (
-    <>
-      <Icon name={gruppe.ikon} size={18} style={{ color: gruppe.aktiv ? TN.rail.on : TN.rail.muted, flexShrink: 0 }} />
-      <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase" }}>{gruppe.label}</span>
-    </>
-  );
-  const punkter = gruppe.punkter.map((p) => <TnMenyrad key={p.href} punkt={p} onClick={onVelg} />);
-  const hodeStil: CSSProperties = { minHeight: 44, display: "flex", alignItems: "center", gap: 10, padding: "0 10px", color: gruppe.aktiv ? TN.rail.on : TN.rail.text };
-  if (alltidApen) {
-    return (
-      <div>
-        <div style={hodeStil}>{hode}</div>
-        {punkter}
-      </div>
-    );
-  }
-  return (
-    <details open={gruppe.aktiv} className="group">
-      <summary className="list-none [&::-webkit-details-marker]:hidden" style={{ ...hodeStil, cursor: "pointer" }}>
-        {hode}
-        <span className="group-open:hidden" style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.rail.muted }}>{gruppe.punkter.length}</span>
-        <Icon name="chevron-right" size={14} className="group-open:rotate-90" style={{ color: TN.rail.muted, flexShrink: 0 }} />
-      </summary>
-      {punkter}
-    </details>
-  );
-}
-
-export type TnBrukerFot = { navn: string; rolle: string };
-
-/**
- * 252px sidepanel — logo på hvit plate (rød stolpe), grupperte menypunkter
- * (aktiv = navy-50 bakgrunn + rød markør), bruker-fot nederst. Fasit:
- * TnSkall.dc.html §rail. Ikke ansvarlig for ruting — kall-siden gir `href`
- * og avgjør `aktiv` selv (unngår en client-side routing-avhengighet her).
- */
-export function TnRail({
-  grupper,
-  bruker,
-  orgNavn,
-  orgUndertittel,
-}: {
-  grupper: TnMenyGruppe[];
-  bruker: TnBrukerFot;
-  orgNavn: string;
-  orgUndertittel: string;
-}) {
-  return (
-    <div
-      className="hidden lg:flex"
-      style={{
-        width: 252,
-        flexShrink: 0,
-        position: "sticky",
-        top: 0,
-        height: "100dvh",
-        alignSelf: "flex-start",
-        background: TN.rail.bg,
-        color: TN.rail.on,
-        flexDirection: "column",
-        padding: "26px 14px 18px",
-        gap: 20,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          minWidth: 0,
-        }}
-      >
-        <TnLogo hoyde={30} prioritet paaMork />
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <span className="sr-only">{orgNavn}</span>
-          <div
-            style={{
-              fontFamily: TN.font.mono,
-              fontSize: TN.text.micro,
-              letterSpacing: TN.tracking.eyebrow,
-              color: TN.rail.muted,
-              textTransform: "uppercase",
-            }}
-          >
-            {orgUndertittel}
-          </div>
-        </div>
-      </div>
-
-      <nav aria-label="Team Norway" style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minHeight: 0, overflowY: "auto" }}>
-        {grupper.map((g) => <TnMenygruppe key={g.id} gruppe={g} />)}
-      </nav>
-
-      {/* Ingen hvit strek i skinnen (Anders 22.09.2026) — foten skilles med luft. */}
-      <div style={{ marginTop: 18, paddingTop: 14, display: "flex", alignItems: "center", gap: 10 }}>
-        <TnAvatarInitialer navn={bruker.navn} size={32} paaMork />
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.rail.on }}>
-            {bruker.navn}
-          </div>
-          <div
-            style={{
-              fontFamily: TN.font.mono,
-              fontSize: TN.text.micro,
-              letterSpacing: TN.tracking.eyebrow,
-              textTransform: "uppercase",
-              color: TN.rail.muted,
-              marginTop: 1,
-            }}
-          >
-            {bruker.rolle}
-          </div>
-        </div>
-        <Icon name="chevron-up" size={14} style={{ color: TN.rail.muted }} />
-      </div>
-    </div>
-  );
-}
+export type TnMenyGruppe = { id: string; label: string; ikon: TnIkonNavn; aktiv: boolean; punkter: TnMenyLenke[] };
+export type TnBunnValg = TnMenyLenke & { ikon: TnIkonNavn };
 
 // ───────────────────────── Input ─────────────────────────
 
