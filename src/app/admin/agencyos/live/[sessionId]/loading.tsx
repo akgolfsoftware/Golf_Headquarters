@@ -6,7 +6,7 @@ import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
   return (
-    <div className="pa-root" data-design="precision-athletics" data-theme="night" style={{ minHeight: "100dvh", background: "var(--surface-page)" }}>
+    <div className="pa-root" data-design="precision-athletics" style={{ minHeight: "100dvh", background: "var(--surface-page)" }}>
       <div className="pa-side">
         <LasterTilstand text="Henter live-økta …" />
       </div>
