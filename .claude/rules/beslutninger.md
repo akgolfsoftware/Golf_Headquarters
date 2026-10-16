@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DEL RUNDE FINNES VED LANSERING, VENNER MED INVITASJON, FØLGING OG FEED KOMMER I NESTE VERSJON (Anders 16.10.2026, bindende)
+
+Svar på punkt 2 i utkastet til PlayerHQ pakke 13 (`docs/design-system/utkast-playerhq/stats-resten.html`, PR #1367):
+«Vi må ha del runde funksjon, men opprette Venner funksjoner så man kan invitere venner og følge hverandre i en form for feed. Men dette er i neste versjon.»
+
+- **Del runde er med ved lansering:** bilde for story eller innlegg, eller PDF med scorekortet. Synlig for «Bare deg» eller «Coach kan se», slik utkastet viser.
+- **Ingen offentlig rundeside og ingen delingslenke ved lansering.** Bildet deles der spilleren selv vil.
+- **Venner kommer i neste versjon, ikke ved lansering:** invitere venner, følge hverandre og en feed.
+
+**Overstyrer:** ingenting. Pakke 16 «Venner og utfordringer» i `docs/planer/playerhq-alle-sider-nytt-design-2026-10-16.md` er delt (rettet i samme PR).
+
+**Arbeidet dette utløser:**
+
+1. **Del runde virker:** `DelRundeV2` (`src/components/portal/v2/DelRundeV2.tsx`) lager i dag ingen fil (`lastNed` er bare en `setTimeout`) og lagrer ikke synligheten. «Kopier lenke» peker til `/r/[id]`, som ikke finnes. Bygges etter `stats-resten.html` når pakke 13 porteres. Ferdig når «Lagre bildet» gir et ekte bilde eller PDF, synligheten lagres på runden, og lenkevalget er borte, låst med test.
+2. **Venner i neste versjon:** tegnes og bygges etter lansering. Grunnlaget finnes: `Friendship` (PENDING, ACCEPTED, BLOCKED) og `/portal/venner`. Feed og følging finnes ikke.
+3. **Uavklart:** hva `/portal/venner` og `/portal/venner/[spillerId]` gjør ved lansering (beholdes som i dag eller skjules), og om utfordringer fortsatt skal kunne velge deltakere blant venner (§UTFORDRINGER SKAL LEVE). Spørres Anders om før pakke 16 tegnes.
+4. **Uavklart:** samtykke for mindreårige i feeden. Avklares når Venner tegnes, etter `ak-personvern`.
+
 ## WORKBENCH FÅR SØK I ALLE ØVELSER, MEST BRUKT FØRST, «NY ØVELSE» MED ALLE PARAMETRE OG LENKE TIL HELE ØVELSESBANKEN (Anders 16.10.2026, bindende)
 
 Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor man kan klikke seg inn og se en komplett egen side med alle øvelsene i øvelsesbanken, og filtrere på ulike ting.» Og: man skal kunne søke opp øvelsen, «som standard vises øvelsene som er gjort flest ganger», og trykke på pluss for å legge inn en egen øvelse med alle parametrene. Planen ble godkjent samme dag («ok»), og utkast 1 (`docs/design-system/utkast-playerhq/workbench-ovelser.html`) fikk ja: «Mest brukt teller alle økter, og coachen får samme bank-side i AgencyOS.»
