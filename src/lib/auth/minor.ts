@@ -173,5 +173,14 @@ export function vurderEgenFodselsdato(
   return dagNokkel(eksisterende) === dagNokkel(ny) ? "uendret" : "avvist";
 }
 
+/**
+ * Spiller uten fødselsdato må fylle den inn før PlayerHQ åpnes (punkt 8 i
+ * §KODEGJENNOMGANGEN 06.10). Gjelder alle spillere, også voksne (Anders 14.10).
+ * Coach, admin og forelder berøres ikke.
+ */
+export function maaFylleInnFodselsdato(u: { role: string; dateOfBirth: Date | null }): boolean {
+  return u.role === "PLAYER" && !u.dateOfBirth;
+}
+
 export const FODSELSDATO_LAAST_MELDING =
   "Fødselsdatoen er allerede satt og kan ikke endres her. Be coachen din om å rette den.";
