@@ -48,7 +48,7 @@ export const UTTAKSKRITERIER = [
 ] as const;
 
 export async function TnRegistrertSkjerm({ skjerm }: { skjerm: Skjerm }) {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const brukerNavn = bruker.name ?? "Ukjent";
 
   if (skjerm === "turnering-ny") {

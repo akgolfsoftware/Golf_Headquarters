@@ -34,7 +34,7 @@ const SvarInput = z.object({
 type Tx = Prisma.TransactionClient;
 
 async function trener() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   await assertCapability(user, Capability.EDIT_GROUP_PLANS);
   return user;
 }

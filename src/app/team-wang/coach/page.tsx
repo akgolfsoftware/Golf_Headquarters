@@ -47,6 +47,7 @@ const GYLDIGE_OMRAADER: WangOmraade[] = [
 export default async function WangCoachPage({ searchParams }: WangCoachPageProps = {}) {
   const params = searchParams ? await searchParams : {};
   const bruker = await requirePortalUser({
+    tillatDemo: true,
     allow: ["ADMIN", "COACH"],
     redirectTo: "/team-wang/logg-inn?next=%2Fteam-wang%2Fcoach",
   });

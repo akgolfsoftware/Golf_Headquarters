@@ -620,6 +620,27 @@ export interface MonthViewModel {
   mode: WorkbenchMode;
   /** Månedsplanen (fokus, notat og uker måneden har tilpasset). Satt av loadMonth. */
   maanedsplan?: MaanedsplanVisning | null;
+  /** PH-11-MND: ukene i måneden (torsdagsregelen), periodene og hendelsene. Satt av loadMonth. */
+  detaljer?: MaanedDetaljer;
+}
+
+/** Det spillerens Måned (PH-11-MND) trenger utover kalenderen. */
+export interface MaanedDetaljer {
+  uker: Array<{
+    nokkel: string;
+    weekStart: string;
+    weekNumber: number;
+    fordelt: Partial<Record<PyramidArea, number>> | null;
+    lagtInn: Record<PyramidArea, number>;
+    gjennomfort: number;
+    /** Gjennomført per akse (samme økter som `gjennomfort`). */
+    gjennomfortPerAkse: Record<PyramidArea, number>;
+    endret: boolean;
+  }>;
+  /** Treningsperioder som overlapper måneden (uten testuker og samlinger). */
+  perioder: Array<{ id: string; type: PeriodType; startDate: string; endDate: string; focus: string | null }>;
+  /** Testuker, samlinger og turneringer i måneden, kronologisk. */
+  hendelser: Array<{ type: PeriodType | "TURNERING"; navn: string; startDate: string; endDate: string }>;
 }
 
 /** Lagret månedsplan. `uker`: «ÅÅÅÅ-Uxx» → minutter per akse; en uke her er «Endret i måneden». */
@@ -688,6 +709,10 @@ export interface YearWeekRow {
   weekNumber: number;
   plannedByPyramid: Record<PyramidArea, number>;
   completedMinutes: number;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearViewModel {
@@ -712,6 +737,10 @@ export interface PeriodWeekRow {
   dominantPyramid: PyramidArea | null;
   /** Lagt inn per akse i uka (PH-11-PER). */
   byPyramid?: Record<PyramidArea, number>;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface PeriodPyramidRow {

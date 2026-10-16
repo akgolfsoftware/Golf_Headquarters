@@ -54,7 +54,7 @@ export async function leggTilTurnering(input: {
   if (!zodResult.success) {
     return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig input" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   if (!input.tournamentId && !input.manualName) {
     return { ok: false, feil: "Velg turnering eller oppgi navn" };
@@ -106,7 +106,7 @@ export async function oppdaterTournamentEntry(
     seasonPlanId?: string | null;
   }
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const entry = await prisma.tournamentEntry.findFirst({
     where: { id, userId: user.id },
@@ -140,7 +140,7 @@ export async function meldDegPa(
   if (!zodResult.success) {
     return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig turnerings-ID" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const turnering = await prisma.tournament.findUnique({
     where: { id: tournamentId },
@@ -186,7 +186,7 @@ export async function settPlanTier(
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
   const parsed = PlanTierSchema.safeParse(planTier);
   if (!parsed.success) return { ok: false, feil: "Ugyldig plan-nivå" };
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
   const entry = await prisma.tournamentEntry.findFirst({
     where: { id: entryId, userId: user.id },
     select: { id: true, tournamentId: true },
@@ -211,7 +211,7 @@ export async function claimPaamelding(
   if (!zodResult.success) {
     return { ok: false, feil: "Ugyldig turnerings-ID" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   let entry = await prisma.tournamentEntry.findFirst({
     where: { userId: user.id, tournamentId },
@@ -258,7 +258,7 @@ export async function confirmPaamelding(
   if (!zodResult.success) {
     return { ok: false, feil: "Ugyldig turnerings-ID" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const entry = await prisma.tournamentEntry.findFirst({
     where: { userId: user.id, tournamentId },
@@ -321,7 +321,7 @@ export async function koblTilArsplan(
   tournamentEntryId: string,
   seasonPlanId: string,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const entry = await prisma.tournamentEntry.findFirst({
     where: { id: tournamentEntryId, userId: user.id },
@@ -353,7 +353,7 @@ export async function bulkKoblTurneringerTilArsplan(
   seasonPlanId: string,
   year: number,
 ): Promise<{ ok: true; antall: number } | { ok: false; feil: string }> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const plan = await prisma.seasonPlan.findFirst({
     where: { id: seasonPlanId, userId: user.id },
@@ -439,7 +439,7 @@ export async function opprettManuellTurnering(input: {
   if (!parsed.success) {
     return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
   const data = parsed.data;
 
   // Anti-spam: tell brukerens manuelle turneringer denne måneden
@@ -520,7 +520,7 @@ export async function slettTournamentEntry(
   if (!zodResult.success) {
     return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig ID" };
   }
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
 
   const entry = await prisma.tournamentEntry.findFirst({
     where: { id, userId: user.id },

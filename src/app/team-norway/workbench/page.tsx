@@ -116,7 +116,7 @@ type Props = {
 };
 
 export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const kontekst = await hentTnWorkbenchKontekst(bruker);
   if (!kontekst) notFound();
 
@@ -142,7 +142,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function opprettPeriode(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const input = {
@@ -159,7 +159,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function slettPeriode(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const periodeId = String(form.get("periodeId") ?? "");
@@ -169,7 +169,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function rullUtAarsplan() {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const svar = await tnRullUtAarsplan(ferskBruker, ferskKontekst);
@@ -178,7 +178,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function flyttOkt(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sessionId = String(form.get("sessionId") ?? "");
@@ -195,7 +195,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function slettOkt(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sessionId = String(form.get("sessionId") ?? "");
@@ -207,7 +207,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function kopierOkt(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const kildeSessionId = String(form.get("sessionId") ?? "");
@@ -224,7 +224,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function settMal(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sessionId = String(form.get("sessionId") ?? "");
@@ -236,7 +236,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function redigerOktInnhold(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sessionId = String(form.get("sessionId") ?? "");
@@ -261,7 +261,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function opprettFraKilde(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sourceId = String(form.get("sourceId") ?? "");
@@ -278,7 +278,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   async function leggTilOvelse(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     const malSpillerId = String(form.get("spillerId") ?? "");
     const sessionId = String(form.get("sessionId") ?? "");

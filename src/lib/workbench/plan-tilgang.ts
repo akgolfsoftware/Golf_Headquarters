@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
  * coach-relasjon (D-25); «les» slipper også inn uttrykkelig deling (D-04).
  */
 export async function planTilgang(playerId: string, modus: "les" | "skriv" = "skriv") {
-  const viewer = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ tillatDemo: true, allow: ["PLAYER", "COACH", "ADMIN"] });
   if (!["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return null;
   if (viewer.id === playerId) return viewer;
   const sjekk = modus === "les" ? harCoachLesetilgangTilSpiller : harCoachTilgangTilSpiller;

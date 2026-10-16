@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "d179d3eb15dde19d8dc40cb845fc1ab7bbfbaede",
+  "kodeversjon": "ab84c9499f89c3f2599b6c772a1ed731f83c0938",
   "inventar": {
     "pageFiles": 548,
     "uniqueRoutePatterns": 548,
-    "componentFiles": 945,
+    "componentFiles": 943,
     "surfaceFiles": 284,
     "byArea": {
       "interne-eksempler": 6,
@@ -4590,20 +4590,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "AG-06",
+      "screenId": "VIDERESENDING",
       "rute": "/admin/services",
       "kildefil": "src/app/admin/(legacy)/services/page.tsx",
       "omrade": "agencyos",
       "rolle": "trener",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/admin/services",
-      "handlinger": "Bookingdetalj, bekreft/avvis booking, ny booking, tjenester og pris",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /admin/bookinger",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -4614,23 +4613,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "AG-06 Booking (coach) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/bookinger. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": null
+      "videresendingMal": "/admin/bookinger",
+      "kodekommentar": "AG-06"
     },
     {
       "screenId": "VIDERESENDING",
@@ -24121,15 +24120,15 @@
   "tellinger": {
     "sidefiler": 548,
     "medAvvik": 155,
-    "valgtForBygging": 247,
+    "valgtForBygging": 246,
     "utenEksaktType": 15,
     "implementert": 127,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 282,
-      "videresending": 168,
+      "tegnet-skjermtype": 281,
+      "videresending": 169,
       "teknisk-forklaring": 32,
       "byggeunderlag": 37
     },
@@ -24151,9 +24150,8 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 168,
+      "VIDERESENDING": 169,
       "AG-05": 4,
-      "AG-06": 3,
       "AG-08": 3,
       "AG-15": 3,
       "AG-16": 6,
@@ -24163,6 +24161,7 @@
       "AG-19": 2,
       "AG-09": 2,
       "AG-24": 5,
+      "AG-06": 2,
       "UTEN-TEGNET-TYPE": 15,
       "AG-04": 2,
       "AG-12": 1,

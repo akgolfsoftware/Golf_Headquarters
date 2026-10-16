@@ -20,7 +20,7 @@ const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", 
  */
 export default async function SpillerTesterPage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
-  const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
   const [data, ovrige] = await Promise.all([
     hentTnSpillerTester(bruker, spillerId),
     hentTnSpillerOvrigeTester(bruker, spillerId),

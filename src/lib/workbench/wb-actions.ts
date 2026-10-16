@@ -106,7 +106,7 @@ import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } 
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
-import { hentMaaned, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
+import { hentFordeltPerUke, hentMaaned, hentMaanedDetaljer, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
 import type { MaanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import {
   isoUkeIdentitet,
@@ -176,7 +176,7 @@ async function kreverTilgangTilSpiller(
   playerId: string,
   modus: "les" | "skriv" = "skriv",
 ): Promise<Viewer | null> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
   if (user.id === playerId) return { id: user.id, role: user.role };
   if (user.role !== "COACH" && user.role !== "ADMIN") return null;
   const viewer = { id: user.id, role: user.role };
@@ -760,7 +760,7 @@ export async function loadMinCalendar(params: {
 
   const access = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!access) return { ok: false, error: INGEN_TILGANG };
-  const viewer = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const viewer = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const weekStart = mondayOf(parsed.data);
   const weekEnd = addDays(weekStart, 7);
   const [year, month, day] = weekStart.split("-").map(Number);
@@ -917,6 +917,7 @@ export async function loadMonth(params: {
   const label = `${UI.monthNames[m - 1]} ${y}`;
   const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
   const maanedsplan = await hentMaaned(params.playerId, y, m);
+  const detaljer = await hentMaanedDetaljer(params.playerId, y, m, sessions, maanedsplan?.uker ?? {});
   return {
     ok: true,
     data: {
@@ -929,6 +930,7 @@ export async function loadMonth(params: {
         idagIso,
       ),
       maanedsplan,
+      detaljer,
     },
   };
 }
@@ -1022,18 +1024,20 @@ export async function loadYear(params: {
     dato: fraDatoKolonne(t.takenAt),
   }));
 
+  const aar = buildYearViewModel(
+    params.year,
+    sessions,
+    params.mode,
+    params.targetMinutes ?? 0,
+    periodInput,
+    tournamentEvents,
+    testEvents,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, (aar.weeks ?? []).map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildYearViewModel(
-      params.year,
-      sessions,
-      params.mode,
-      params.targetMinutes ?? 0,
-      periodInput,
-      tournamentEvents,
-      testEvents,
-      idagIso,
-    ),
+    data: { ...aar, weeks: aar.weeks?.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 
@@ -1108,16 +1112,18 @@ export async function loadPeriod(params: {
     idagIso,
   );
 
+  const periode = buildPeriodViewModel(
+    params.year,
+    year.periods,
+    params.periodId ?? null,
+    sessions,
+    params.mode,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, periode.weeks.map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildPeriodViewModel(
-      params.year,
-      year.periods,
-      params.periodId ?? null,
-      sessions,
-      params.mode,
-      idagIso,
-    ),
+    data: { ...periode, weeks: periode.weeks.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 
@@ -1146,7 +1152,7 @@ export async function loadStallDag(params: {
   const dato = IsoDateSchema.safeParse(params.dato);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const stall = await loadStallen({ id: user.id, role: user.role }, {});
 
   const dag = tilDatoKolonne(dato.data);
@@ -1312,7 +1318,7 @@ export async function loadPlayerDay(params: {
 export async function loadPlayerSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession | null>> {
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["PLAYER"] });
 
   const row = await prisma.workbenchSession.findUnique({
     where: { id: sessionId },

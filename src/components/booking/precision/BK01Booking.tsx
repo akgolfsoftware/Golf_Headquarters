@@ -8,7 +8,7 @@
  * Avvik:
  *   - Betaling går til Stripe Checkout (omdirigering). Kortfelt finnes ikke i koden; kort og Apple Pay vises i Checkout (beslutning 15.10).
  *   - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
- *   - «Neste uke» finnes ikke: `hentLedigeDager` henter sju dager fram.
+ *   - «Neste uke» finnes ikke: `hentLedigeDager` henter tjenestens maks dager fram (standard sju).
  */
 import { useCallback, useMemo, useState } from "react";
 import { ArrowRight, CalendarX, CircleAlert, Lock, LogIn, RotateCw } from "lucide-react";
@@ -31,6 +31,8 @@ export type BookingTjeneste = {
   pris: number;
   varighetMin: number;
   beskrivelse: string | null;
+  /** Stedet satt på tjenesten i AgencyOS. Null = standardstedet (`lokasjon`). */
+  sted: string | null;
 };
 
 export type BookingAbonnement = { slug: string; navn: string; coachNavn: string | null; pris: number; beskrivelse: string | null };
@@ -187,7 +189,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
             {valgtDag ? (valgtDag.tider.length
               ? <div className="bk__dagliste">{valgtDag.tider.map((t) => <button key={t.startIso} type="button" className="bk__tidrad" aria-pressed={kl === t.kl} onClick={() => setKl(t.kl)}>
                 <span style={{ font: "600 15px/1 var(--font-mono)" }}>{t.kl}</span>
-                <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{tj?.coachNavn ? `${tj.coachNavn} · ` : ""}{lokasjon}</span>
+                <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{tj?.coachNavn ? `${tj.coachNavn} · ` : ""}{tj?.sted ?? lokasjon}</span>
               </button>)}</div>
               : <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen ledige tider denne dagen.</p>)
               : <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Velg en dag.</p>}

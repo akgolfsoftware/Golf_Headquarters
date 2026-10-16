@@ -1235,13 +1235,29 @@ model ServiceType {
   // Coach som tilbyr tjenesten. Null = felles (gruppe, WANG).
   // Erstatter slug-prefiks-konvensjonen i UI med ekte DB-relasjon.
   coachUserId  String?
+  // Bookingplanen steg 2 (15.10.2026): stedet settes på tjenesten, ikke gjettet
+  // fra navnet. Null = ikke satt; da brukes navnegjetningen som fallback
+  // (src/lib/booking/tjeneste-sted.ts).
+  locationId     String?
+  // Minutter som holdes av før og etter timen, så coachen får pause mellom to.
+  bufferForMin   Int      @default(0)
+  bufferEtterMin Int      @default(0)
+  // Kunden kan tidligst booke så mange timer før start.
+  minVarselTimer Int      @default(24)
+  // Kunden kan booke så mange dager fram i tid.
+  maksDagerFram  Int      @default(7)
+  // Gruppering på BK-01 og i AgencyOS (src/lib/booking/tjeneste-kategori.ts).
+  // Null = ikke satt; da gjettes «abonnement» fra navnet (Performance).
+  kategori       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   bookings Booking[]
   coach    User?     @relation("CoachServiceTypes", fields: [coachUserId], references: [id], onDelete: SetNull)
+  location Location? @relation("ServiceTypeLocation", fields: [locationId], references: [id], onDelete: SetNull)
 
   @@index([coachUserId])
+  @@index([locationId])
   @@map("service_types")
 }
 
@@ -1258,6 +1274,7 @@ model Location {
   bookings          Booking[]
   facilities        Facility[]
   coachAvailability CoachAvailability[]
+  serviceTypes      ServiceType[]       @relation("ServiceTypeLocation")
 
   @@map("locations")
 }

@@ -11,9 +11,14 @@ import { osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import { fordelPeriodeTilUker } from "@/lib/workbench/periode-ukefordeling";
 import { ukeTimerFraMinutter } from "@/lib/workbench/periode-ukefordeling-regler";
 import {
-  MaanedInputSchema, gjeldendeOverstyringer, parseUkeOverstyringer, ukeNokkel, ukerForMaaned,
-  type MaanedKvittering,
+  MaanedInputSchema, alleUkerIMaaned, gjeldendeOverstyringer, parseUkeOverstyringer, ukeNokkel, ukerForMaaned,
+  type MaanedKvittering, type UkeOverstyringer,
 } from "@/lib/workbench/maanedsplan-regler";
+import { byggMaanedUker, minutterFraUkeplan } from "@/lib/workbench/maaned-visning";
+import { isoUkeIdentitet } from "@/lib/workbench/ukeplan-schema";
+import type { AxisMinutes } from "@/lib/workbench/perioder";
+import { fraDatoKolonne } from "@/lib/workbench/wb-map";
+import type { MaanedDetaljer } from "@/lib/domain/workbench/types";
 
 export type LagreMaanedResultat =
   | { ok: true; kvittering: MaanedKvittering; fordelingFeilet?: boolean }
@@ -123,4 +128,83 @@ export async function hentMaaned(userId: string, year: number, month: number) {
     evaluering: rad.evaluation,
     uker: parseUkeOverstyringer(rad.weekAxisMinutes),
   };
+}
+
+const HENDELSE_TYPER = new Set(["TESTUKE", "TRENINGSSAMLING", "HELDAGSSAMLING"]);
+
+/**
+ * PH-11-MND: ukene i måneden med fordelt (ukeplanen), lagt inn og gjennomført, periodene
+ * som overlapper måneden og testuker, samlinger og turneringer. Bare lesing.
+ */
+export async function hentMaanedDetaljer(
+  userId: string,
+  year: number,
+  month: number,
+  okter: Parameters<typeof byggMaanedUker>[0]["okter"],
+  overstyringer: UkeOverstyringer,
+): Promise<MaanedDetaljer> {
+  const { fra, til } = maanedGrenser(year, month);
+  const uker = alleUkerIMaaned(year, month);
+  const [ukeplaner, blokker, turneringer] = await Promise.all([
+    uker.length === 0 ? [] : prisma.weekPlan.findMany({
+      where: { playerId: userId, OR: uker.map((u) => ({ isoYear: u.isoYear, weekNumber: u.weekNumber })) },
+      select: {
+        isoYear: true, weekNumber: true, plannedHoursFys: true, plannedHoursTek: true,
+        plannedHoursSlag: true, plannedHoursSpill: true, plannedHoursTurn: true,
+      },
+    }),
+    prisma.periodBlock.findMany({
+      where: { seasonPlan: { userId }, startDate: { lte: til }, endDate: { gte: fra } },
+      orderBy: { startDate: "asc" },
+      select: { id: true, lPhase: true, startDate: true, endDate: true, focus: true },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: {
+        userId, entryStatus: { not: "WITHDRAWN" },
+        OR: [{ tournament: { startDate: { gte: fra, lte: til } } }, { manualDate: { gte: fra, lte: til } }],
+      },
+      select: { tournament: { select: { name: true, startDate: true, endDate: true } }, manualName: true, manualDate: true },
+    }),
+  ]);
+  const blokk = blokker.map((b) => ({
+    id: b.id, type: b.lPhase, startDate: fraDatoKolonne(b.startDate), endDate: fraDatoKolonne(b.endDate), focus: b.focus,
+  }));
+  const hendelser: MaanedDetaljer["hendelser"] = [
+    ...blokk.filter((b) => HENDELSE_TYPER.has(b.type)).map((b) => ({ type: b.type, navn: b.focus ?? "", startDate: b.startDate, endDate: b.endDate })),
+    ...turneringer.flatMap((t) => {
+      const navn = t.tournament?.name ?? t.manualName;
+      const start = t.tournament?.startDate ?? t.manualDate;
+      if (!navn || !start) return [];
+      const slutt = t.tournament?.endDate ?? start;
+      return [{ type: "TURNERING" as const, navn, startDate: fraDatoKolonne(start), endDate: fraDatoKolonne(slutt) }];
+    }),
+  ].sort((a, b) => a.startDate.localeCompare(b.startDate));
+  return {
+    uker: byggMaanedUker({ year, month, okter, ukeplaner, overstyringer }),
+    perioder: blokk.filter((b) => !HENDELSE_TYPER.has(b.type)),
+    hendelser,
+  };
+}
+
+/**
+ * Fordelt per uke (WeekPlan.plannedHours*) for År og Periode, nøklet på ukas mandag.
+ * Bare lesing. Uker uten ukeplan, eller uten timer, får null.
+ */
+export async function hentFordeltPerUke(
+  userId: string,
+  mandager: readonly string[],
+): Promise<Map<string, AxisMinutes | null>> {
+  const ut = new Map<string, AxisMinutes | null>(mandager.map((m) => [m, null]));
+  if (mandager.length === 0) return ut;
+  const uker = mandager.map((m) => ({ mandag: m, ...isoUkeIdentitet(m) }));
+  const rader = await prisma.weekPlan.findMany({
+    where: { playerId: userId, OR: uker.map((u) => ({ isoYear: u.isoYear, weekNumber: u.weekNumber })) },
+    select: {
+      isoYear: true, weekNumber: true, plannedHoursFys: true, plannedHoursTek: true,
+      plannedHoursSlag: true, plannedHoursSpill: true, plannedHoursTurn: true,
+    },
+  });
+  const perNokkel = new Map(rader.map((r) => [ukeNokkel(r.isoYear, r.weekNumber), r]));
+  for (const u of uker) ut.set(u.mandag, minutterFraUkeplan(perNokkel.get(ukeNokkel(u.isoYear, u.weekNumber))));
+  return ut;
 }

@@ -23,6 +23,7 @@ import {
   assertParentRole,
   assertSpillerRole,
 } from "./action-guards-assert";
+import { demoStoppesAvVakt } from "@/lib/domain/demo-sperre";
 
 export type { ActionAuthError } from "./action-guards-assert";
 export {
@@ -32,9 +33,14 @@ export {
   assertSpillerRole,
 } from "./action-guards-assert";
 
-/** Coach eller admin — AgencyOS-mutasjoner. */
-export async function requireCoachActionUser(): Promise<User> {
-  return assertCoachRole(await getCurrentUser());
+/**
+ * Coach eller admin — AgencyOS-mutasjoner. Demokontoene for Team Norway og
+ * WANG avvises med mindre handlingen hører til deres flate (`tillatDemo`).
+ */
+export async function requireCoachActionUser(opts: { tillatDemo?: boolean } = {}): Promise<User> {
+  const user = assertCoachRole(await getCurrentUser());
+  if (demoStoppesAvVakt(user.email, opts.tillatDemo === true)) throw new Error("forbidden");
+  return user;
 }
 
 /** Kun ADMIN — f.eks. klubbinnstillinger, wipe, API-nøkler. */

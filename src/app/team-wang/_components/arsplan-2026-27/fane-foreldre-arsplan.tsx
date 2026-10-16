@@ -16,7 +16,7 @@ import { FaneHero, Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./prim
 function Ukessammendrag() {
   const [apen, setApen] = useState<number | null>(null);
   // Hydreringstrygt: server viser sesongstart, klient bytter til ekte Oslo-dato
-  // rett etter mount (jf. samme mønster i wang-fellesside.tsx).
+  // rett etter mount (useSyncExternalStore-mønsteret).
   const naaIso = useOsloIdagIso(SPAN_START_ISO);
 
   const siste = UKESRAPPORTER[0];
