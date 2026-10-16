@@ -2,7 +2,8 @@
 
 /**
  * PH-11-MND Måned og PH-11-MNDSKJEMA Månedsskjema — nytt design (pakke 3, godkjent av Anders 14.10.2026).
- * Fasit: docs/design-system/utkast-playerhq/plan.html, malene «mnd» og «mndskjema». Stil: src/styles/playerhq-ny.css.
+ * Fasit: docs/design-system/utkast-playerhq/plan-farge.html (utkast 3 med farge og progresjon, Anders 16.10)
+ * for Måned, og plan.html mal «mndskjema» for skjemaet. Stil: src/styles/playerhq-ny.css.
  *
  * Bare spilleren (PlayerHQ, §SPILLERENS WORKBENCH FÅR NIVÅENE). Coachen bruker fortsatt WorkbenchManed.
  * Lagring og fordeling nedover er saveMonthPlan (§PLANNIVÅENE HENGER SAMMEN).
@@ -12,6 +13,9 @@
  *   - Målsetninger kan ikke knyttes til en måned. Måneden viser målsetningene på nivået Måned med frist i måneden.
  *   - Evalueringen er én tekst, ikke én fra spilleren og én fra coachen. Notatet viser ikke hvem som skrev det.
  *   - «Legg til test» og «Legg til turnering» åpner Periode og Turneringer, der de legges inn i dag.
+ *   - Ringen måles mot fordelt. Er ingenting fordelt i måneden, måles den mot lagt inn, og det står i ringen.
+ *   - Fokuskortet får farge og bilde etter aksen med flest timer; uten timer er det grafitt uten bilde.
+ *   - «I rute» er gjennomført mot fordelt i ukene som er gått, grense 90 % (plan-progresjon.ts).
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,19 +30,22 @@ import type { PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { saveMonthPlan } from "@/lib/workbench/wb-actions";
 import { maanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import { MAANED_AKSER, fraTimerMin, sumAkser, tilTimerMin, ukerSomLagres } from "@/lib/workbench/maaned-visning";
-import { formaterVarighet } from "@/lib/format-tall";
+import { avrund1, hovedakse, leggSammen, tempo, ukeErGatt, ukeErNa, velgGrunnlag } from "@/lib/workbench/plan-progresjon";
+import { oktBilde } from "@/lib/portal/okt-bilde";
+import { AKSE_INK, HeltKort, HendelseListe, SoyleForklaring, UkeSoyler, tempoSetning, varighet, type SoyleUke } from "@/components/portal/precision/PlanProgresjon";
 import { PERIODE_NAVN } from "@/components/portal/precision/PH11Periode";
 import "@/styles/playerhq-ny.css";
 
 const AKSE_KLASSE: Record<PyramidArea, string> = { FYS: "akse-fys", TEK: "akse-tek", SLAG: "akse-slag", SPILL: "akse-spill", TURN: "akse-turn" };
+const MAL_STATUS: Record<PlanningGoalSummary["fremdrift"]["status"], { tekst: string; klasse: string }> = {
+  "on-track": { tekst: "I rute", klasse: "ok" }, behind: { tekst: "Bak", klasse: "bak" }, achieved: { tekst: "Nådd", klasse: "ok" }, "no-data": { tekst: "Ingen data ennå", klasse: "" },
+};
 const NIVAER: { id: WbVisning; navn: string }[] = [
   { id: "aar", navn: "År" }, { id: "periode", navn: "Periode" }, { id: "maned", navn: "Måned" }, { id: "uke", navn: "Uke" }, { id: "mal", navn: "Målsetninger" },
 ];
 const kortDato = new Intl.DateTimeFormat("nb-NO", { timeZone: "UTC", day: "numeric", month: "short" });
 const ukedagDato = new Intl.DateTimeFormat("nb-NO", { timeZone: "UTC", weekday: "long", day: "numeric", month: "long" });
 const dato = (iso: string, f = kortDato) => f.format(new Date(`${iso}T00:00:00Z`));
-const tid = (min: number) => (min > 0 ? formaterVarighet(min) : "—");
-const pst = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : 0);
 type Uke = MaanedDetaljer["uker"][number];
 
 function addDager(iso: string, n: number) {
@@ -52,19 +59,6 @@ function ukeSpenn(uker: Uke[]) {
 }
 function hendelseDato(h: { startDate: string; endDate: string }) {
   return h.startDate === h.endDate ? dato(h.startDate) : `${dato(h.startDate)}–${dato(h.endDate)}`;
-}
-
-function StortTall({ minutter }: { minutter: number }) {
-  const t = Math.floor(minutter / 60), m = minutter % 60;
-  if (!t) return <strong>{m}<small>min</small></strong>;
-  return <strong>{t}<small>t{m ? ` ${m} min` : ""}</small></strong>;
-}
-
-function Fordeling({ m, lys }: { m: Partial<Record<PyramidArea, number>>; lys?: boolean }) {
-  const med = MAANED_AKSER.filter((a) => (m[a] ?? 0) > 0);
-  return <span className={`phn-fordeling${lys ? " lys" : ""}`} role="img" aria-label={med.map((a) => `${a} ${tid(m[a] ?? 0)}`).join(", ") || "Ingen timer"}>
-    {med.map((a) => <i key={a} className={AKSE_KLASSE[a]} style={{ flex: m[a] }} />)}
-  </span>;
 }
 
 export type PH11ManedProps = {
@@ -88,15 +82,27 @@ export function PH11Maned({ playerId, maned, goals, referanse, idag }: PH11Maned
   const fase = sisteDag < idag ? "for" : maned.monthStart > idag ? "etter" : "na";
   const url = (visning: WbVisning, ref: PlanReferanse = {}) => workbenchUrl(playerId, visning, { ...referanse, maned: maned.monthStart.slice(0, 7), ...ref }, "player");
 
-  const fordelt: Record<PyramidArea, number> = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 };
-  const lagtInn: Record<PyramidArea, number> = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 };
-  for (const u of d.uker) for (const a of MAANED_AKSER) { fordelt[a] += u.fordelt?.[a] ?? 0; lagtInn[a] += u.lagtInn[a]; }
-  const fordeltSum = sumAkser(fordelt), lagtInnSum = sumAkser(lagtInn);
-  const gjennomfort = d.uker.reduce((s, u) => s + u.gjennomfort, 0);
-  const visAkser = fase === "for" || fordeltSum === 0 ? lagtInn : fordelt;
+  const fordelt = leggSammen(d.uker.map((u) => u.fordelt));
+  const lagtInn = leggSammen(d.uker.map((u) => u.lagtInn));
+  const gj = leggSammen(d.uker.map((u) => u.gjennomfortPerAkse));
+  const { grunnlag, kilde } = velgGrunnlag(fordelt, lagtInn);
+  const naUke = d.uker.find((u) => ukeErNa(u.weekStart, idag));
+  const tempoTekst = tempoSetning(
+    tempo(d.uker.map((u) => ({ weekStart: u.weekStart, fordelt: u.fordelt, gjennomfort: u.gjennomfort })), idag),
+    { hva: "måneden", ferdig: fase === "for", startet: fase !== "etter", lagtDenneUka: naUke ? sumAkser(naUke.lagtInn) : 0 },
+  );
+  const akse = hovedakse(grunnlag);
   const maal = goals.filter((g) => g.planNivaa === "MANED" && g.targetDate && g.targetDate.slice(0, 7) === maned.monthStart.slice(0, 7));
   const periodeFokus = d.perioder.find((p) => p.focus)?.focus ?? null;
   const nesteManed = addMonths(maned.monthStart, 1);
+  const testuker = d.hendelser.filter((h) => h.type === "TESTUKE");
+  const soyler: SoyleUke[] = d.uker.map((u) => ({
+    nokkel: u.nokkel, weekNumber: u.weekNumber, href: url("uke", { uke: u.weekStart }),
+    gj: u.gjennomfortPerAkse, lagtInn: u.lagtInn, fordelt: u.fordelt ? sumAkser(u.fordelt) : null,
+    na: ukeErNa(u.weekStart, idag), gatt: ukeErGatt(u.weekStart, idag), dato: dato(u.weekStart),
+    merke: u.endret ? "Endret" : testuker.some((t) => t.startDate <= addDager(u.weekStart, 6) && t.endDate >= u.weekStart) ? "Testuke" : null,
+  }));
+  const bilde = akse ? oktBilde(akse, plan?.fokus ?? periodeFokus ?? "") : null;
 
   return <div className="phn">
     <header className="phn-topp">
@@ -118,68 +124,42 @@ export function PH11Maned({ playerId, maned, goals, referanse, idag }: PH11Maned
       </nav>
     </header>
 
-    <div className="phn-per-grid">
-      <div className="phn-seksjon" style={{ gap: 32 }}>
-        <section className="phn-kort" aria-label="Måneden i tall">
-          {fase === "for"
-            ? <>
-              <div className="phn-hoved"><StortTall minutter={gjennomfort} />{lagtInnSum > 0 && <span className="phn-trend">{pst(gjennomfort, lagtInnSum)} % av plan</span>}</div>
-              <p className="phn-forklar">{lagtInnSum > 0 ? `Gjennomført i ${nav}, av ${tid(lagtInnSum)} lagt inn.` : `Ingen økter ble lagt inn i ${nav}.`}</p>
-            </>
-            : <>
-              <div className="phn-hoved"><StortTall minutter={fordeltSum || lagtInnSum} /><span className="phn-trend">{d.uker.length} {d.uker.length === 1 ? "uke" : "uker"}</span></div>
-              <p className="phn-forklar">{fordeltSum > 0
-                ? `Fordelt i ${nav}. ${lagtInnSum > 0 ? `${tid(lagtInnSum)} er lagt inn som økter så langt.` : "Ingen økter er lagt inn ennå."}`
-                : `Lagt inn i ${nav}. Perioden har ikke fordelt timer til ukene ennå.`}</p>
-            </>}
-          {sumAkser(visAkser) > 0 && <div className="phn-seksjon" style={{ gap: 8 }}>
-            <Fordeling m={visAkser} />
-            <div className="phn-lg-rad">{MAANED_AKSER.filter((a) => visAkser[a] > 0).map((a) => <span key={a} className="phn-lg"><i className={AKSE_KLASSE[a]} />{a} {tid(visAkser[a])}</span>)}</div>
-          </div>}
-        </section>
+    <div className="phn-to-kol">
+      <div className="phn-kol">
+        <HeltKort label={`${navn} i tall`} tittel={navn} gj={gj} grunnlag={grunnlag} kilde={kilde} under={`av ${nav}`} tempo={tempoTekst} />
 
         <section className="phn-kort" aria-label="Uke for uke">
-          <div className="phn-sek-topp"><h2>Uke for uke</h2><span className="phn-kilde">{fase === "for" ? "Gjennomført mot lagt inn" : "Lagt inn mot fordelt"}</span></div>
-          <div className="phn-ukerader">
-            {d.uker.map((u) => {
-              const forbi = addDager(u.weekStart, 6) < idag;
-              const na = u.weekStart <= idag && !forbi;
-              const li = sumAkser(u.lagtInn), f = sumAkser(u.fordelt);
-              const merke = u.endret ? "Endret i måneden" : na ? "Nå" : dato(u.weekStart);
-              return <Link key={u.nokkel} href={url("uke", { uke: u.weekStart })} className={`phn-ukerad${na ? " na" : ""}`}>
-                <span>Uke {u.weekNumber}<small>{merke}</small></span>
-                {forbi || f === 0
-                  ? <Fordeling m={u.lagtInn} lys={!forbi} />
-                  : <span className="phn-lagtinn"><Fordeling m={u.fordelt ?? {}} lys /><em style={{ left: `${Math.min(100, pst(li, f))}%` }} aria-hidden /></span>}
-                <span className="phn-v">{forbi ? tid(u.gjennomfort) : tid(li)}<small>{forbi ? (li ? `av ${tid(li)}` : "ingen økter") : f > 0 ? `av ${tid(f)}` : "ikke fordelt"}</small></span>
-              </Link>;
-            })}
-          </div>
-          <p className="phn-kilde">Uka arver fordelingen. Workbench viser hvor mye som mangler.</p>
+          <div className="phn-sek-topp"><h2>Uke for uke</h2>{naUke && <Link className="phn-lenke" href={url("uke", { uke: naUke.weekStart })}>Åpne uka</Link>}</div>
+          {d.uker.length > 0 ? <UkeSoyler uker={soyler} /> : <p className="phn-forklar">Ingen uker i {nav}.</p>}
+          <SoyleForklaring />
         </section>
 
         <section className="phn-kort" aria-label="Tester og samlinger">
           <div className="phn-sek-topp"><h2>Tester og samlinger</h2></div>
-          <div className="phn-liste">
-            {d.hendelser.length === 0 && <p className="phn-forklar phn-prad">Ingen tester, samlinger eller turneringer i {nav}.</p>}
-            {d.hendelser.map((h, i) => <div key={i} className="phn-hendelse">
-              <span><b>{h.type === "TURNERING" ? h.navn : PERIODE_NAVN[h.type]}</b>{h.type !== "TURNERING" && h.navn && <><br /><span className="phn-kilde">{h.navn}</span></>}</span>
-              <small>{hendelseDato(h)}</small>
-            </div>)}
-          </div>
+          {d.hendelser.length > 0 && <Tidslinje monthStart={maned.monthStart} idag={idag} hendelser={d.hendelser} />}
+          <HendelseListe tom={`Ingen tester, samlinger eller turneringer i ${nav}.`} liste={d.hendelser.map((h) => ({
+            type: h.type === "TURNERING" ? "turn" : h.type === "TESTUKE" ? "test" : "samling",
+            navn: h.type === "TURNERING" ? h.navn : PERIODE_NAVN[h.type],
+            tekst: h.type !== "TURNERING" && h.navn ? h.navn : undefined,
+            dato: hendelseDato(h),
+          }))} />
         </section>
       </div>
 
-      <div className="phn-seksjon" style={{ gap: 32 }}>
-        <section className="phn-kort" aria-label="Fokus og målsetninger">
-          <span className="phn-undertittel">Fokus</span>
-          {plan?.fokus
-            ? <p className="phn-fokus">{plan.fokus}</p>
-            : <>
-              <p className="phn-forklar">{plan ? "Ikke satt." : `Ingen månedsplan ennå. Timene kommer fra perioden${periodeFokus ? `, og periodens fokus gjelder: ${periodeFokus}` : ""}.`}</p>
-              {!plan && <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => setSkjema(true)}><Plus className="phn-ikon" aria-hidden />Lag månedsplan</button></div>}
-            </>}
-          {maal.length > 0 && <div className="phn-knytt">{maal.map((g) => <Link key={g.id} href={url("mal")}><span><b>{g.title}</b><br />{g.category === "OUTCOME" ? "Resultatmål" : "Prosessmål"}{g.targetDate ? ` · frist ${dato(g.targetDate)}` : ""}</span></Link>)}</div>}
+      <div className="phn-kol">
+        <section className="phn-kort phn-fokus-kort" aria-label="Fokus og målsetninger" style={akse ? { ["--fokus-bg" as string]: AKSE_INK[akse] } : undefined}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+          {bilde && <img src={bilde.src} alt="" style={{ objectPosition: bilde.posisjon }} />}
+          <div className="phn-fokus-inn">
+            <span className="phn-kicker">Fokus i {nav}{akse ? ` · ${akse}` : ""}</span>
+            {plan?.fokus
+              ? <p className="phn-fokus">{plan.fokus}</p>
+              : <>
+                <p className="phn-forklar">{plan ? "Fokus er ikke satt." : `Ingen månedsplan ennå. Timene kommer fra perioden${periodeFokus ? `, og periodens fokus gjelder: ${periodeFokus}` : ""}.`}</p>
+                {!plan && <div className="phn-knapper"><button type="button" className="phn-knapp lys" onClick={() => setSkjema(true)}><Plus className="phn-ikon" aria-hidden />Lag månedsplan</button></div>}
+              </>}
+            {maal.map((g) => <Malsetning key={g.id} g={g} href={url("mal")} />)}
+          </div>
         </section>
         {plan?.notat && <section className="phn-kort" aria-label="Notat">
           <span className="phn-undertittel">Notat</span>
@@ -198,6 +178,37 @@ export function PH11Maned({ playerId, maned, goals, referanse, idag }: PH11Maned
 
     {skjema && <PH11ManedSkjema playerId={playerId} maned={maned} idag={idag} fase={fase} maal={maal} url={url}
       onLukk={() => setSkjema(false)} onLagret={() => { setSkjema(false); router.refresh(); }} />}
+  </div>;
+}
+
+/** Målsetning med fremdrift fra beregnGoalProgress. Uten data vises ingen stolpe. */
+function Malsetning({ g, href }: { g: PlanningGoalSummary; href: string }) {
+  const st = MAL_STATUS[g.fremdrift.status];
+  return <Link className="phn-mr" href={href}>
+    <div className="phn-mr-topp">
+      <div><strong>{g.title}</strong><small>{g.category === "OUTCOME" ? "Resultatmål" : "Prosessmål"}{g.targetDate ? ` · frist ${dato(g.targetDate)}` : ""}</small></div>
+      <span className={`phn-pille ${st.klasse}`}>{st.tekst}</span>
+    </div>
+    {g.fremdrift.hasData && <div className="phn-mr-spor"><span style={{ width: `${Math.max(0, Math.min(100, g.fremdrift.pct))}%` }} /></div>}
+    {g.fremdrift.detail && <span className="phn-mr-tekst">{g.fremdrift.detail}</span>}
+  </Link>;
+}
+
+/** Tester, samlinger og turneringer som felt over månedens dager, med i dag markert. */
+function Tidslinje({ monthStart, idag, hendelser }: { monthStart: string; idag: string; hendelser: MaanedDetaljer["hendelser"] }) {
+  const sist = addDager(addMonths(monthStart, 1), -1);
+  const dager = Number(sist.slice(8, 10));
+  const dag = (iso: string) => (iso < monthStart ? 1 : iso > sist ? dager : Number(iso.slice(8, 10)));
+  const x = (d: number) => `${avrund1(((d - 1) / Math.max(1, dager - 1)) * 100)}%`;
+  const iMnd = idag >= monthStart && idag <= sist;
+  const gatt = idag > sist ? dager : iMnd ? dag(idag) : 1;
+  return <div className="phn-linje" aria-hidden>
+    <div className="bane" />
+    {gatt > 1 && <div className="gatt" style={{ width: x(gatt) }} />}
+    {hendelser.map((h, i) => <div key={i} className={`h ${h.type === "TURNERING" ? "turn" : h.type === "TESTUKE" ? "test" : "samling"}`}
+      style={{ left: x(dag(h.startDate)), width: `calc(${x(dag(h.endDate))} - ${x(dag(h.startDate))})` }} />)}
+    {iMnd && <div className="idag" style={{ left: x(dag(idag)) }}><span>I dag</span></div>}
+    {[1, 8, 15, 22, 29].filter((d) => d <= dager).map((d) => <span key={d} className="dg" style={{ left: x(d) }}>{d}.</span>)}
   </div>;
 }
 
@@ -285,7 +296,7 @@ function PH11ManedSkjema({ playerId, maned, idag, fase, maal, url, onLukk, onLag
           <span className="phn-undertittel">Sum</span>
           {uker.map((u) => <span key={u.nokkel} className="phn-uketab-s">{tilTimerMin(ukeSum(u.nokkel))}</span>)}
         </div>
-        <p className="phn-forklar">{totalt > 0 ? `Fordelt i ${nav}: ${tid(totalt)}.` : `Ingen timer er fordelt i ${nav} ennå.`}</p>
+        <p className="phn-forklar">{totalt > 0 ? `Fordelt i ${nav}: ${varighet(totalt)}.` : `Ingen timer er fordelt i ${nav} ennå.`}</p>
         {endrede.length > 0 && <div className="phn-seksjon" style={{ gap: 6 }}>
           {endrede.map((u) => <label key={u.nokkel} className="phn-sjekk">
             <input type="checkbox" checked={folg.has(u.nokkel)} onChange={(e) => setFolg((s) => { const n = new Set(s); if (e.target.checked) n.add(u.nokkel); else n.delete(u.nokkel); return n; })} />

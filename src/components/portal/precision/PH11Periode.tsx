@@ -2,13 +2,14 @@
 
 /**
  * PH-11-PER Periode og PH-11-PERSKJEMA Periodeskjema — nytt design (pakke 3, godkjent av Anders 14.10.2026).
- * Fasit: docs/design-system/utkast-playerhq/plan.html, malene «per» og «perskjema». Stil: src/styles/playerhq-ny.css.
+ * Fasit: docs/design-system/utkast-playerhq/plan-farge.html, mal «per» (utkast 3 med farge og progresjon,
+ * Anders 16.10), og plan.html mal «perskjema» for skjemaet. Stil: src/styles/playerhq-ny.css.
  *
  * Bare spilleren (PlayerHQ, §SPILLERENS WORKBENCH FÅR NIVÅENE). Coachen bruker fortsatt WorkbenchPeriode.
  *
  * Avvik:
- *   - Ukene viser lagt inn per akse (WorkbenchSession). Utkastets «fordelt» per uke står i ukeplanen,
- *     som perioden ikke leser her; timer per vanlig og lett uke står øverst.
+ *   - Fordelt per uke leses fra ukeplanen (WeekPlan.plannedHours*). «Lett»-merket på ukene finnes ikke,
+ *     fordi appen ikke lagrer hvilke uker som er lette.
  *   - Målsetninger knyttet til perioden og evaluering når perioden er over finnes ikke i appen.
  *   - Kilden er «Fra gruppa» eller «Egen»; appen lagrer ikke hvem som la inn perioden.
  *   - Skjemaet beholder dagens felt som utkastet ikke viser (lett uke, øktbudsjett, min og maks per uke),
@@ -28,6 +29,8 @@ import type { PlanReferanse } from "@/lib/workbench/plan-kontekst";
 import { fordelingKvittering } from "@/lib/workbench/periode-ukefordeling-regler";
 import { deleteSeasonPeriod, publishSessions, saveSeasonPeriod } from "@/lib/workbench/wb-actions";
 import { formaterVarighet } from "@/lib/format-tall";
+import { leggSammen, tempo, ukeErGatt, ukeErNa, velgGrunnlag } from "@/lib/workbench/plan-progresjon";
+import { FordelingStolper, HeltKort, HendelseListe, SoyleForklaring, UkeSoyler, tempoSetning, varighet, type PlanHendelse, type SoyleUke } from "@/components/portal/precision/PlanProgresjon";
 import { PublishConfirmDialog } from "@/components/workbench/PublishConfirmDialog";
 import "@/styles/playerhq-ny.css";
 
@@ -45,22 +48,15 @@ const NIVAER: { id: WbVisning; navn: string }[] = [
 const kortDato = new Intl.DateTimeFormat("nb-NO", { timeZone: "UTC", day: "numeric", month: "short" });
 const langDato = new Intl.DateTimeFormat("nb-NO", { timeZone: "UTC", day: "numeric", month: "long", year: "numeric" });
 const dato = (iso: string, f = kortDato) => f.format(new Date(`${iso}T00:00:00Z`));
-const tid = (min: number) => (min > 0 ? formaterVarighet(min) : "—");
 const sum = (m: Partial<Record<PyramidArea, number>> | null | undefined) => AKSER.reduce((s, a) => s + (m?.[a] ?? 0), 0);
-const pst = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : 0);
 function addDager(iso: string, n: number) {
   const [a, m, d] = iso.split("-").map(Number);
   return new Date(Date.UTC(a, m - 1, d + n)).toISOString().slice(0, 10);
 }
+const spenn = (x: { startDate: string; endDate: string }) => (x.startDate === x.endDate ? dato(x.startDate) : `${dato(x.startDate)}–${dato(x.endDate)}`);
 function ukeSpenn(p: { startDate: string; endDate: string }) {
   const a = isoWeekNumber(p.startDate), b = isoWeekNumber(p.endDate);
   return a === b ? `uke ${a}` : `uke ${a}–${b}`;
-}
-
-function StortTall({ minutter }: { minutter: number }) {
-  const t = Math.floor(minutter / 60), m = minutter % 60;
-  if (!t) return <strong>{m}<small>min</small></strong>;
-  return <strong>{t}<small>t{m ? ` ${m} min` : ""}</small></strong>;
 }
 
 export type PH11PeriodeProps = {
@@ -119,9 +115,30 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
   const fase = p.endDate < idag ? "for" : p.startDate > idag ? "etter" : "na";
   const omUker = Math.max(1, Math.ceil((dagNr(p.startDate) - dagNr(idag)) / 7));
   const vanlig = p.axisMinutes ?? null;
-  const maksAkse = Math.max(1, ...AKSER.map((a) => vanlig?.[a] ?? 0));
   const lett = sum(p.axisMinutesLight);
-  const testuker = periode.periods.filter((x) => x.type === "TESTUKE" && x.startDate >= p.startDate && x.startDate <= p.endDate);
+  const iPerioden = (x: { startDate: string }) => x.startDate >= p.startDate && x.startDate <= p.endDate;
+  const testuker = periode.periods.filter((x) => x.type === "TESTUKE" && iPerioden(x));
+  const samlinger = periode.periods.filter((x) => (x.type === "TRENINGSSAMLING" || x.type === "HELDAGSSAMLING") && iPerioden(x) && x.id !== p.id);
+  const uker = periode.weeks;
+  const gj = leggSammen(uker.map((u) => u.completedByPyramid));
+  const { grunnlag, kilde } = velgGrunnlag(leggSammen(uker.map((u) => u.fordelt)), leggSammen(uker.map((u) => u.byPyramid)));
+  const naIndeks = uker.findIndex((u) => ukeErNa(u.weekStart, idag));
+  const naUke = naIndeks >= 0 ? uker[naIndeks] : null;
+  const t = tempo(uker.map((u) => ({ weekStart: u.weekStart, fordelt: u.fordelt, gjennomfort: u.completedMinutes })), idag);
+  const tempoTekst = tempoSetning(t, { hva: "perioden", ferdig: fase === "for", startet: fase !== "etter", lagtDenneUka: naUke ? sum(naUke.byPyramid) : 0 });
+  const nesteTest = testuker.find((x) => x.startDate >= idag);
+  const tittel = fase === "for" ? "Perioden er ferdig" : fase === "etter" ? `Starter om ${omUker} ${omUker === 1 ? "uke" : "uker"}` : `Uke ${naIndeks + 1} av ${uker.length}`;
+  const soyler: SoyleUke[] = uker.map((u) => ({
+    nokkel: u.weekStart, weekNumber: u.weekNumber, href: url("uke", { uke: u.weekStart }),
+    gj: u.completedByPyramid, lagtInn: u.byPyramid, fordelt: sum(u.fordelt) > 0 ? sum(u.fordelt) : null,
+    na: ukeErNa(u.weekStart, idag), gatt: ukeErGatt(u.weekStart, idag), dato: dato(u.weekStart),
+    merke: testuker.some((x) => x.startDate <= addDager(u.weekStart, 6) && x.endDate >= u.weekStart) ? "Testuke" : null,
+  }));
+  const hendelser: PlanHendelse[] = [
+    ...testuker.map((x): PlanHendelse & { s: string } => ({ type: "test", navn: x.focus ? `Testuke · ${x.focus}` : "Testuke", tekst: ukeSpenn(x), dato: spenn(x), s: x.startDate })),
+    ...samlinger.map((x): PlanHendelse & { s: string } => ({ type: "samling", navn: x.focus ? `${PERIODE_NAVN[x.type]} · ${x.focus}` : PERIODE_NAVN[x.type], tekst: ukeSpenn(x), dato: spenn(x), s: x.startDate })),
+    ...p.turneringer.map((x): PlanHendelse & { s: string } => ({ type: "turn", navn: x.navn, tekst: `uke ${isoWeekNumber(x.dato)} · konkurransedag`, dato: dato(x.dato), s: x.dato })),
+  ].sort((a, b) => a.s.localeCompare(b.s));
 
   return <div className="phn">
     <header className="phn-topp">
@@ -144,59 +161,39 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
       {nivaer}
     </header>
 
-    <div className="phn-per-grid">
-      <div className="phn-seksjon" style={{ gap: 32 }}>
-        <section className="phn-kort" aria-label="Perioden i tall">
-          {fase === "for" && <>
-            <div className="phn-hoved"><StortTall minutter={periode.completedMinutes} /><span className="phn-trend">{pst(periode.completedMinutes, periode.plannedToDateMinutes)} % av plan</span></div>
-            <p className="phn-forklar">Gjennomført av {tid(periode.plannedToDateMinutes)} lagt inn. Perioden er ferdig.</p>
-          </>}
-          {fase === "na" && <>
-            <div className="phn-hoved"><StortTall minutter={periode.plannedMinutes} />{periode.plannedToDateMinutes > 0 && <span className="phn-trend">{pst(periode.completedMinutes, periode.plannedToDateMinutes)} % gjennomført så langt</span>}</div>
-            <p className="phn-forklar">Lagt inn i perioden. {tid(periode.completedMinutes)} gjennomført av {tid(periode.plannedToDateMinutes)} lagt inn til nå.</p>
-          </>}
-          {fase === "etter" && <>
-            <div className="phn-hoved"><StortTall minutter={periode.plannedMinutes} /><span className="phn-trend">Starter om {omUker} {omUker === 1 ? "uke" : "uker"}</span></div>
-            <p className="phn-forklar">Lagt inn i perioden. Hver uke arver timene herfra.</p>
-          </>}
-          <span className="phn-undertittel">Timer per vanlig uke</span>
-          {vanlig
-            ? <div className="phn-akserader">{AKSER.map((a) => <div key={a} className="phn-akserad"><b>{a}</b><span className="phn-spor"><span className={AKSE_KLASSE[a]} style={{ width: `${((vanlig[a] ?? 0) / maksAkse) * 100}%` }} /></span><span className="phn-v">{tid(vanlig[a] ?? 0)}</span></div>)}</div>
-            : <p className="phn-forklar">Ikke satt. Velg «Endre periode» for å fordele timer per akse.</p>}
-          {(vanlig || lett > 0 || testuker.length > 0) && <p className="phn-kilde">
-            {vanlig ? `Sum ${tid(sum(vanlig))} per uke.` : ""}{lett > 0 ? ` Lett uke: ${tid(lett)}.` : ""}{testuker.length ? ` ${testuker.map((t) => `Uke ${isoWeekNumber(t.startDate)}`).join(" og ")} er testuke.` : ""}
-          </p>}
-        </section>
+    <div className="phn-to-kol">
+      <div className="phn-kol">
+        <HeltKort label="Perioden i tall" className={`phn-periode-topp type-${p.type}`} tittel={tittel} gj={gj} grunnlag={grunnlag} kilde={kilde} under="av perioden"
+          tempo={{ status: tempoTekst.status, tekst: <>{tempoTekst.tekst}{nesteTest && fase !== "for" ? ` Neste test er testuka ${dato(nesteTest.startDate)}.` : ""}</> }}
+          fase={uker.length > 0 ? <div className="phn-fase" role="img" aria-label={fase === "na" ? `Uke ${naIndeks + 1} av ${uker.length}` : tittel}>
+            {uker.map((u) => <span key={u.weekStart} className={ukeErGatt(u.weekStart, idag) ? "ferdig" : ukeErNa(u.weekStart, idag) ? "na" : undefined} />)}
+          </div> : undefined} />
 
         <section className="phn-kort" aria-label="Ukene">
-          <div className="phn-sek-topp"><h2>Ukene</h2><span className="phn-kilde">Lagt inn per akse</span></div>
-          <div className="phn-ukerader">
-            {periode.weeks.map((u) => {
-              const na = u.weekStart <= idag && idag <= addDager(u.weekStart, 6);
-              const forbi = addDager(u.weekStart, 6) < idag;
-              const by = u.byPyramid;
-              return <Link key={u.weekStart} href={url("uke", { uke: u.weekStart })} className={`phn-ukerad${na ? " na" : ""}`}>
-                <span>Uke {u.weekNumber}<small>{dato(u.weekStart)}</small></span>
-                <span className={`phn-fordeling${forbi || na ? "" : " lys"}`}>{by && AKSER.filter((a) => by[a]).map((a) => <i key={a} className={AKSE_KLASSE[a]} style={{ flex: by[a] }} />)}</span>
-                <span className="phn-v">{forbi ? tid(u.completedMinutes) : tid(u.minutes)}<small>{forbi ? (u.minutes ? `${pst(u.completedMinutes, u.minutes)} % av ${tid(u.minutes)}` : "ingen økter") : `${u.sessionCount} ${u.sessionCount === 1 ? "økt" : "økter"}`}</small></span>
-              </Link>;
-            })}
-          </div>
+          <div className="phn-sek-topp"><h2>Ukene</h2>{naUke && <Link className="phn-lenke" href={url("uke", { uke: naUke.weekStart })}>Åpne uka</Link>}</div>
+          {uker.length > 0 ? <UkeSoyler uker={soyler} /> : <p className="phn-forklar">Ingen uker i perioden.</p>}
+          <SoyleForklaring />
         </section>
       </div>
 
-      <div className="phn-seksjon" style={{ gap: 32 }}>
+      <div className="phn-kol">
         <section className="phn-kort" aria-label="Fokus">
           <span className="phn-undertittel">Fokus</span>
           <p className="phn-fokus">{p.focus ?? "Ikke satt."}</p>
+          {vanlig && sum(vanlig) > 0
+            ? <FordelingStolper m={vanlig} />
+            : <p className="phn-forklar">Timer per uke er ikke satt. Velg «Endre periode» for å fordele timer per akse.</p>}
+          {(vanlig || lett > 0 || testuker.length > 0) && <p className="phn-kilde">
+            {vanlig ? `Timer per vanlig uke, sum ${varighet(sum(vanlig))}.` : ""}{lett > 0 ? ` Lett uke: ${varighet(lett)}.` : ""}{testuker.length ? ` ${testuker.map((x) => `Uke ${isoWeekNumber(x.startDate)}`).join(" og ")} er testuke.` : ""}
+          </p>}
+        </section>
+        <section className="phn-kort" aria-label="Tester og samlinger">
+          <div className="phn-sek-topp"><h2>Tester og samlinger</h2></div>
+          <HendelseListe liste={hendelser} tom="Ingen tester, samlinger eller turneringer i perioden." />
         </section>
         {p.notat && <section className="phn-kort" aria-label="Notat">
           <span className="phn-undertittel">Notat</span>
           <div className="phn-sitat">{p.notat}</div>
-        </section>}
-        {p.turneringer.length > 0 && <section className="phn-kort" aria-label="Turneringer">
-          <span className="phn-undertittel">Turneringer</span>
-          <div className="phn-liste">{p.turneringer.map((t) => <div key={`${t.dato}${t.navn}`} className="phn-prad"><b>{t.navn}</b><small>uke {isoWeekNumber(t.dato)} · {dato(t.dato)}</small></div>)}</div>
         </section>}
       </div>
     </div>

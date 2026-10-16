@@ -48,6 +48,8 @@ export type MaanedUke = {
   /** Lagt inn per akse (alle økter som ikke er avlyst eller hoppet over). */
   lagtInn: Record<PyramidArea, number>;
   gjennomfort: number;
+  /** Gjennomført per akse. */
+  gjennomfortPerAkse: Record<PyramidArea, number>;
   /** Uka har månedens egne tall («Endret i måneden»). */
   endret: boolean;
 };
@@ -73,17 +75,21 @@ export function byggMaanedUker(input: {
     const nokkel = ukeNokkel(u.isoYear, u.weekNumber);
     const slutt = leggTil(u.mandag, 6);
     const lagtInn = tomme();
+    const gjennomfortPerAkse = tomme();
     let gjennomfort = 0;
     for (const o of input.okter) {
       if (o.date < u.mandag || o.date > slutt) continue;
       if (o.status === "CANCELLED" || o.status === "SKIPPED") continue;
       lagtInn[o.pyramid] += Math.max(0, o.durationMinutes);
-      if (o.status === "COMPLETED") gjennomfort += Math.max(0, o.durationMinutes);
+      if (o.status === "COMPLETED") {
+        gjennomfort += Math.max(0, o.durationMinutes);
+        gjennomfortPerAkse[o.pyramid] += Math.max(0, o.durationMinutes);
+      }
     }
     return {
       nokkel, weekStart: u.mandag, weekNumber: u.weekNumber,
       fordelt: minutterFraUkeplan(planer.get(nokkel)),
-      lagtInn, gjennomfort, endret: Boolean(input.overstyringer[nokkel]),
+      lagtInn, gjennomfort, gjennomfortPerAkse, endret: Boolean(input.overstyringer[nokkel]),
     };
   });
 }
