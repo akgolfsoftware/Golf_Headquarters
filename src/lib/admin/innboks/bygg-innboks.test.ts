@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { apneSaker, byggInnboks, iFilter, innboksHaster, sorterInnboks, tellFilter, type InnboksKilder } from "./bygg-innboks";
+import { apneSaker, byggInnboks, iFilter, innboksHaster, sorterInnboks, tellFilter, tillattLenke, type InnboksKilder } from "./bygg-innboks";
 import { innboksHref, lesInnboksFilter } from "./filter";
 
 const now = new Date("2026-09-29T08:00:00Z");
 const timerSiden = (t: number) => new Date(now.getTime() - t * 3_600_000).toISOString();
 
-const tomme: InnboksKilder = { saker: [], godkjenn: [], oppfolging: [], sporsmal: [], epost: [], epostSendt: [], now };
+const tomme: InnboksKilder = { saker: [], godkjenn: [], oppfolging: [], sporsmal: [], epost: [], epostSendt: [], spillere: new Set(["s1"]), now };
 
 const sporsmal = (id: string, timer: number) => ({ id, spillerId: "s1", spiller: "Test Spiller", tittel: "Spørsmål", tekst: "Tekst", opprettetIso: timerSiden(timer) });
 const oppf = (id: string, status: "risk" | "watch" | "check" | "ok") => ({
@@ -63,5 +63,32 @@ describe("Innboks: adresser", () => {
   it("beholder andre søkeparametre når fanen byttes", () => {
     assert.equal(innboksHref("oppfolging", { filter: "x", spiller: "abc" }), "/admin/innboks?spiller=abc&filter=oppfolging");
     assert.equal(innboksHref("alle", {}), "/admin/innboks");
+  });
+});
+
+describe("Innboks: Spiller 360-lenken", () => {
+  const profil = (p: { lenker: { label: string; href: string }[] }) => p.lenker.filter((l) => l.label === "Spiller 360");
+
+  it("vises for en spiller i stallen", () => {
+    const [post] = byggInnboks({ ...tomme, sporsmal: [sporsmal("q1", 1)] });
+    assert.deepEqual(profil(post), [{ label: "Spiller 360", href: "/admin/spillere/s1" }]);
+  });
+
+  it("vises ikke når kontoen ikke er spiller (coach, forelder)", () => {
+    const ikkeSpiller = { ...sporsmal("q1", 1), spillerId: "coach1" };
+    const liste = byggInnboks({
+      ...tomme,
+      sporsmal: [ikkeSpiller],
+      oppfolging: [{ ...oppf("forelder1", "check") }],
+      godkjenn: [{ ...caddie("c1", "Plan"), playerId: "coach1", kilde: "agent" as const }],
+    });
+    for (const p of liste) assert.deepEqual(profil(p), [], p.key);
+  });
+
+  it("varsel-lenker til profilen til en ikke-spiller slippes", () => {
+    const spillere = new Set(["s1"]);
+    assert.equal(tillattLenke("/admin/spillere/s1?fane=plan", spillere), true);
+    assert.equal(tillattLenke("/admin/spillere/coach1", spillere), false);
+    assert.equal(tillattLenke("/admin/godkjenninger#x", spillere), true);
   });
 });

@@ -16,6 +16,7 @@ const t = (timer: number) => new Date(now.getTime() - timer * 3_600_000).toISOSt
 export function kilder(haster: boolean): InnboksKilder {
   return {
     now,
+    spillere: new Set(["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]),
     sporsmal: [
       { id: "q1", spillerId: "s1", spiller: "Nora Vik", tittel: "Skal jeg spille klubbturneringen lørdag eller hvile før kretsfinalen søndag?", tekst: "Kretsfinalen er søndag. Klubbturneringen er lørdag. Jeg rekker begge, men blir sliten.", opprettetIso: t(haster ? 30 : 20) },
     ],
@@ -60,7 +61,7 @@ export const datakvalitet: DatakvalitetData = {
 };
 
 const tomGodkjenn: AG04Godkjenn = { venter: 0, lavRisiko: 0, eldste: null, godkjent7Dager: 0, avvist7Dager: 0, ukesrapport: null, lostSjekkpunkter: [], andreKoer: [] };
-const tomKilder: InnboksKilder = { now, sporsmal: [], epost: [], epostSendt: [], godkjenn: [], saker: [], oppfolging: [] };
+const tomKilder: InnboksKilder = { now, sporsmal: [], epost: [], epostSendt: [], godkjenn: [], saker: [], oppfolging: [], spillere: new Set() };
 
 export function Vis({ tilstand = "data", filter = "alle", oppf = null, haster = false, tom = false }: {
   tilstand?: AG04Tilstand; filter?: InnboksFilterId; oppf?: OppfStatus | null; haster?: boolean; tom?: boolean;

@@ -338,7 +338,7 @@ function Datakvalitet({ d }: { d: DatakvalitetData }) {
           <p className="kilde">{r.runde}</p>
           <p className="forklar">{r.hvorfor}</p>
           <p className="forklar"><b>Trengs:</b> {r.trengs}</p>
-          <div className="knapper"><KnappLenke href={`/admin/spillere/${r.spillerId}`}>Spiller 360</KnappLenke></div>
+          {r.spillerId && <div className="knapper"><KnappLenke href={`/admin/spillere/${r.spillerId}`}>Spiller 360</KnappLenke></div>}
         </article>)}</div>
       </>}
     <p className="kilde">Siste 28 dager · {d.sjekket} runder sjekket · brutto score</p>
