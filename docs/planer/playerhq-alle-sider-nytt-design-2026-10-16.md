@@ -44,10 +44,10 @@ og Plan har ikke funksjonen ennå. De tas med i pakke 17.
 |---|---|---|
 | 11 Booking og meldinger, resten | booking/ny, ny/bekreft, [bookingId], meg/bookinger/reschedule, coach/melding, coach/sporsmal/[id] · **tegnes:** booking/coach/[coachId], booking/anlegg/[anleggId], coach/melding/ny, coach/sporsmal/ny, coach/tilbakemelding/[oktId], coach/ovelser, onskeligokt/bekreftet | Pakke 7 godkjent 14.10 + `booking-meldinger.html` (godkjent 16.10) |
 | 12 Målsetninger, runder og gameplan, resten | mal, mal/runder/[id]/slag, mal/runder/[id]/hull, gameplan/[baneId], gameplan/[baneId]/hull/[nr] · **tegnes:** mal/goal/[id] | Pakke 3, 5 og 9 godkjent + `booking-meldinger.html` (godkjent 16.10) |
-| 13 Stats, resten | statistikk/[metric], analysere/historikk, hull, skill-map, turneringer, datagolf/stasjon, statistikk/runder/[runId]/del, coach/sg-hub, trening/logg, putte-laboratoriet, tren/tester/ny, ny/egen | Tegnes |
+| 13 Stats, resten | statistikk/[metric], analysere/historikk, hull, skill-map, turneringer (blir del av Resultater, 16.10), statistikk/runder/[runId]/del, trening/logg, putte-laboratoriet, tren/tester/ny, ny/egen · **ikke tegnet:** datagolf/stasjon (coach, flyttes til AgencyOS pakke 10), coach/sg-hub (forslag: videresend til Stats) | `stats-resten.html`, utkast 1, **godkjent 16.10** (port 7, Anders): https://claude.ai/artifact/FnhAAsmEftVbqbJBFoREAj |
 | 14 Meg, resten | abonnement/oppgrader/flyt, avbestill, fortsett, kort/ny, faktura/[id], innstillinger/varsler, sprak, sikkerhet, personvern, integrasjoner, ai-coach, sikkerhet/2fa, deling, dokumenter, resultater, helse/symptom/ny | Tegnes etter at Anders har sett pakke 8 |
 | 15 Hjelp og tilbakemelding | meg/help, help/kategori/[slug], help/artikkel/[slug], help/kontakt, meg/feedback | Tegnes |
-| 16 Venner og utfordringer | utfordringer, [id], ny, venner, venner/[spillerId], spiller/[spillerId], samlinger | Tegnes |
+| 16 Venner og utfordringer | utfordringer, [id], ny, spiller/[spillerId], samlinger · **venner og venner/[spillerId] med invitasjon, følging og feed: neste versjon** (beslutning 16.10) | Tegnes. Uavklart hva venner-sidene gjør ved lansering |
 | 17 Caddie og plan-hjelpere | ai/foresla-drill, foresla-turnering, mal-bygger, utviklingsplan, kalender, kalender/opptatt, tren/feiring/[planId] + fysisk og turneringer i Plan | Tegnes |
 | Pakke 2 | tren/wb/[sessionId] | Følger pakke 2 Treningsøkta |
 

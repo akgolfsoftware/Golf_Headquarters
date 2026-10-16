@@ -4,6 +4,40 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## STATS-RESTEN: TURNERINGER BLIR DEL AV RESULTATER, OG ØKT LOGGET I ETTERKANT TELLER BARE I TOTALEN (Anders 16.10.2026, bindende)
+
+Svar på punkt 1, 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 1 og 3: «Ja». Punkt 4: «Logg i etterkant går på totalen men ikke inforhold til plan».
+
+- **«Sammenlign med coach» finnes ikke.** Spilleren sammenlignes ikke med coachens tall.
+- **Turneringer er en del av Resultater** (pakke 6), med kurven over til par øverst. `/portal/analysere/turneringer` blir ikke egen side.
+- **En økt logget i etterkant teller i total treningstid** (Stats › Trening, akse og område). **Den teller ikke mot planen:** verken i «lagt inn mot fordelt» eller i etterlevelsen (§KARTLEGGINGSØKT FJERNES).
+
+**Overstyrer:** ingenting. Presiserer «Oppover» i §PLANNIVÅENE HENGER SAMMEN: der gjelder økter som ligger i planen.
+
+**Arbeidet dette utløser** (når pakke 13 porteres):
+
+1. **Turneringer inn i Resultater:** kurven fra `stats-resten.html` legges øverst i Turneringer-visningen i Resultater (`/portal/analysere/resultater`). `/portal/analysere/turneringer` sender dit, med sesongvalget med. Ferdig når turneringene vises én gang, ikke to (i dag gjør `MinKurveTrainLock` og `TurneringshistorikkTrainLock` det begge).
+2. **Logg økt i totalen, ikke i planen:** `TreningLoggV2` lagrer i `trainingLog`. Total treningstid i Stats leser den med; etterlevelse og «lagt inn mot fordelt» gjør det ikke. Ferdig når en test låser at en logget økt øker totalen og lar etterlevelsen stå.
+3. **«Sammenlign med coach» sendes til Stats** (punkt 1, Anders 16.10: «Ja»): `/portal/coach/sg-hub` blir videresending til Stats › Strokes Gained, og de faste tallene `COACH_SG` (`src/app/portal/coach/sg-hub/page.tsx:21`) og `CoachSgHubV2` fjernes. Ferdig når adressen sender videre og ingen lenke peker dit.
+
+## DEL RUNDE FINNES VED LANSERING, VENNER MED INVITASJON, FØLGING OG FEED KOMMER I NESTE VERSJON (Anders 16.10.2026, bindende)
+
+Svar på punkt 2 i utkastet til PlayerHQ pakke 13 (`docs/design-system/utkast-playerhq/stats-resten.html`, PR #1367):
+«Vi må ha del runde funksjon, men opprette Venner funksjoner så man kan invitere venner og følge hverandre i en form for feed. Men dette er i neste versjon.»
+
+- **Del runde er med ved lansering:** bilde for story eller innlegg, eller PDF med scorekortet. Synlig for «Bare deg» eller «Coach kan se», slik utkastet viser.
+- **Ingen offentlig rundeside og ingen delingslenke ved lansering.** Bildet deles der spilleren selv vil.
+- **Venner kommer i neste versjon, ikke ved lansering:** invitere venner, følge hverandre og en feed.
+
+**Overstyrer:** ingenting. Pakke 16 «Venner og utfordringer» i `docs/planer/playerhq-alle-sider-nytt-design-2026-10-16.md` er delt (rettet i samme PR).
+
+**Arbeidet dette utløser:**
+
+1. **Del runde virker:** `DelRundeV2` (`src/components/portal/v2/DelRundeV2.tsx`) lager i dag ingen fil (`lastNed` er bare en `setTimeout`) og lagrer ikke synligheten. «Kopier lenke» peker til `/r/[id]`, som ikke finnes. Bygges etter `stats-resten.html` når pakke 13 porteres. Ferdig når «Lagre bildet» gir et ekte bilde eller PDF, synligheten lagres på runden, og lenkevalget er borte, låst med test.
+2. **Venner i neste versjon:** tegnes og bygges etter lansering. Grunnlaget finnes: `Friendship` (PENDING, ACCEPTED, BLOCKED) og `/portal/venner`. Feed og følging finnes ikke.
+3. **Uavklart:** hva `/portal/venner` og `/portal/venner/[spillerId]` gjør ved lansering (beholdes som i dag eller skjules), og om utfordringer fortsatt skal kunne velge deltakere blant venner (§UTFORDRINGER SKAL LEVE). Spørres Anders om før pakke 16 tegnes.
+4. **Uavklart:** samtykke for mindreårige i feeden. Avklares når Venner tegnes, etter `ak-personvern`.
+
 ## WORKBENCH FÅR SØK I ALLE ØVELSER, MEST BRUKT FØRST, «NY ØVELSE» MED ALLE PARAMETRE OG LENKE TIL HELE ØVELSESBANKEN (Anders 16.10.2026, bindende)
 
 Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor man kan klikke seg inn og se en komplett egen side med alle øvelsene i øvelsesbanken, og filtrere på ulike ting.» Og: man skal kunne søke opp øvelsen, «som standard vises øvelsene som er gjort flest ganger», og trykke på pluss for å legge inn en egen øvelse med alle parametrene. Planen ble godkjent samme dag («ok»), og utkast 1 (`docs/design-system/utkast-playerhq/workbench-ovelser.html`) fikk ja: «Mest brukt teller alle økter, og coachen får samme bank-side i AgencyOS.»
