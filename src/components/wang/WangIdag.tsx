@@ -28,7 +28,8 @@ const tilFravaer = (id: string) => `${BASE}&fane=fravaer&okt=${encodeURIComponen
  * Pakke 2 I dag for trener og sportssjef: I dag, Oppmøte morgentrening, Økta (med avlys) og Meld fravær.
  * Fasit: docs/design-system/utkast-wang/idag.html (utkast 2, retning B, godkjent av Anders 16.10.2026)
  * og felles/wang.css §Nærmere wang.no.
- * Bare ekte gruppedata (byggWangTrenerData). Avvik fra utkastet, fordi dataene ikke finnes i basen ennå:
+ * Bare ekte gruppedata (byggWangTrenerData). Avvikene skyldes at dataene ikke finnes i basen ennå.
+ * Avvik:
  *   - Helteflaten viser dagens økter, ikke «saker krever deg»: Krever handling er ikke koblet.
  *   - Dagens fokus er periodens fokus fra årsplanen, uten akse og uten TrackMan-måltall («—»).
  *   - Øktene har ingen akse i kalenderen, så de vises nøytrale, ikke fylt i aksefargen.
