@@ -11,7 +11,9 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
 - **Ingen lesbar tekst i bildet**: ingen navn på resultattavler, ingen merkelogoer (TrackMan, Titleist, Nike osv.),
   ingen reklameskilt. Tekst som må finnes (resultattavle), er uskarp.
 - **Ingen gjenkjennelige ansikter.** Spilleren sees bakfra, fra siden eller på avstand. Ingen ekte personer.
-- **Nordisk lys og natur**: lav sol, kjølig luft, gress og skog som på Østlandet. Ikke palmer, ikke ørken.
+- **Lyst og klart, som bildene i appen i dag** (Anders 16.10: «Bilde må matche resten av appen»): sol eller lett dis,
+  blå himmel, frodig grønt og velholdt gress, rent og skarpt. Skog og natur som på Østlandet. Ikke grått, vått,
+  løv på bakken eller vinter. Ikke palmer, ikke ørken.
 - **Fotografisk, ikke illustrasjon.** Naturlige farger, litt dempet, så aksefargen på kortet bestemmer.
 - **Format:** lages i 3:2 (1800 × 1200). Motivet midt i bildet, så det tåler utsnitt til 4:5 (mobil) og 16:9 (topp).
 - **Filnavn:** `<akse>-<motiv>.jpg`, kebab-case, under 300 kB etter komprimering. Legges i
@@ -30,10 +32,10 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
 Bestillinger (lim inn i bildeverktøyet, én om gangen):
 
 - **FYS:** `Photorealistic, dim moody strength gym, a loaded olympic barbell with iron plates resting on a rubber floor, low side light, dark background, shallow depth of field, no people, no logos, no text, muted colors, 3:2`
-- **TEK:** `Photorealistic, high overhead angle looking down at a golfer on a driving range mat, a large pile of practice balls beside them, mid backswing, repetition and focus, Nordic autumn light, golfer seen from above and behind, face not visible, no logos, no text, 3:2`
-- **SLAG:** `Photorealistic, elevated side view of a golfer just after impact on a fairway, a bright thin shot-tracer line drawn in the sky following the ball flight toward a distant green with a flag, the result is the focus, Nordic landscape with forest, face not visible, no logos, no text, 3:2`
-- **SPILL:** `Photorealistic, a golfer crouching to read a putt on a quiet green during an ordinary round, early morning Nordic light, trees around, calm, seen from behind, no spectators, no logos, no text, 3:2`
-- **TURN:** `Photorealistic, 18th green of a tournament, a golfer standing over a putt, spectators lining the green, a large tournament leaderboard in the background out of focus and unreadable, tension and pressure, late afternoon light, golfer seen from behind, no logos, no readable text, 3:2`
+- **TEK:** `Photorealistic, high overhead angle looking down at a golfer on a driving range mat, a large pile of practice balls beside them, mid backswing, repetition and focus, premium grass tee line on a well-kept range, a neat pyramid of clean white balls, bright clear summer morning with low warm sun, lush green grass, golfer seen from above and behind, face not visible, no logos, no text, 3:2`
+- **SLAG:** `Photorealistic, elevated side view of a golfer just after impact on a fairway, a bright thin shot-tracer line drawn in the sky following the ball flight toward a distant green with a flag, the result is the focus, bright clear day with blue sky, lush green fairway, Scandinavian forest, face not visible, no logos, no text, 3:2`
+- **SPILL:** `Photorealistic, a golfer crouching to read a putt on a quiet green during an ordinary round, bright early morning sun, lush green well-kept green, trees around, calm, seen from behind, no spectators, no logos, no text, 3:2`
+- **TURN:** `Photorealistic, 18th green of a tournament, a golfer standing over a putt, spectators lining the green, a large tournament leaderboard in the background out of focus and unreadable, tension and pressure, warm late afternoon sun, lush green, golfer seen from behind, no logos, no readable text, 3:2`
 
 ## 2. Treningsområdene — bilde per område
 
