@@ -75,12 +75,13 @@ function standard(): Tjeneste {
   };
 }
 
-/** En dag `n` dager fram (lokal veggklokke, midnatt). */
+/** En dag `n` dager fram (Oslo-dato, midnatt), likt som koden regner «i dag». */
 function dagFram(n: number): Date {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + n);
-  return d;
+  const [y, m, dd] = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  return new Date(y, m - 1, dd + n);
 }
 
 function kl(dag: Date, t: string): Date {
