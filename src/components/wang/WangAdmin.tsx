@@ -13,6 +13,58 @@ interface WangAdminProps {
   campus?: string;
 }
 
+const FANER = [
+  { id: 'WANG-19', navn: 'Trenere og roller' },
+  { id: 'WANG-34', navn: 'Samtykke' },
+  { id: 'WANG-26', navn: 'Timeplan' },
+  { id: 'WANG-31', navn: 'Rekruttering' },
+  { id: 'WANG-32', navn: 'Plasser' },
+  { id: 'WANG-33', navn: 'Skolene' },
+] as const;
+
+const TRENERE = [
+  { navn: 'Anders Kristiansen', campus: 'Fredrikstad / Nasjonalt', rolle: 'Sportssjef' },
+  { navn: 'Kjersti Jørgensen', campus: 'Oslo', rolle: 'Sportssjef' },
+  { navn: 'Niklas Diethelm', campus: 'Romerike / Tønsberg', rolle: 'Trener' },
+  { navn: 'Jørn Hovland', campus: 'Oslo / Stavanger', rolle: 'Trener' },
+  { navn: 'Mia Sandtorv', campus: 'Fredrikstad', rolle: 'Trener' },
+] as const;
+
+const BLOKKER = [
+  { tid: 'Tirsdag 08:00–10:00', navn: 'Morgentrening golfteknikk', merknad: 'Obligatorisk for VG1, VG2 og VG3' },
+  { tid: 'Onsdag 08:00–10:00', navn: 'Fysisk trening og kapasitet', merknad: 'Styrkerom og basistrening' },
+  { tid: 'Fredag 08:00–10:00', navn: 'Morgentrening nærspill og test', merknad: 'Forberedelse til turnering' },
+] as const;
+
+const PLASSER = [
+  { skole: 'WANG Fredrikstad', brukt: 18, totalt: 20 },
+  { skole: 'WANG Oslo', brukt: 24, totalt: 24 },
+  { skole: 'WANG Stavanger', brukt: 14, totalt: 16 },
+] as const;
+
+const KONTAKTLOGG = [
+  { dato: '01.10.2026', parter: 'Fredrikstad og Oslo', status: 'Avtalt program' },
+  { dato: '28.09.2026', parter: 'Fredrikstad og Stavanger', status: 'Ferdig' },
+  { dato: '20.09.2026', parter: 'Nasjonalt sportssjefmøte', status: 'Ført' },
+] as const;
+
+const KANDIDATSTATUS: Record<WangKandidat['status'], string> = {
+  sokt: 'Søkt',
+  vurdert: 'Vurdert',
+  provespill: 'Prøvespill',
+  intervju: 'Intervju',
+  tilbudt: 'Tilbudt plass',
+  takket_ja: 'Takket ja',
+};
+
+/**
+ * WANG-19/34/26/31/32/33 Administrasjon, bare for sportssjef.
+ * Fasit: docs/design-system/utkast-wang/administrasjon.html (pakke 8, utkast 1, 14.10.2026).
+ * Avvik:
+ *   - Samtykkeoversikten viser ingen status før den er koblet til delingssamtykke.
+ *   - Kontaktloggen mellom skolene viser hvem og når, ikke tema eller innhold
+ *     (Anders 26.09.2026). Stjernemerking per skole er ikke med.
+ */
 export function WangAdmin({
   aktivFane = 'WANG-19',
   onFaneEndret,
@@ -31,345 +83,212 @@ export function WangAdmin({
     if (onFaneEndret) onFaneEndret(nyFane);
   };
 
+  const ledige = PLASSER.reduce((s, p) => s + (p.totalt - p.brukt), 0);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Fanevelger */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid #E6E8EA', paddingBottom: '12px' }}>
-        {[
-          { id: 'WANG-19', navn: 'Trenere og roller (WANG-19)' },
-          { id: 'WANG-34', navn: 'Samtykkeoversikt (WANG-34)' },
-          { id: 'WANG-26', navn: 'Timeplanføring (WANG-26)' },
-          { id: 'WANG-31', navn: 'Rekruttering (WANG-31)' },
-          { id: 'WANG-32', navn: 'Plasser og kvoter (WANG-32)' },
-          { id: 'WANG-33', navn: 'Skolekoordinering (WANG-33)' },
-        ].map((f) => (
+    <>
+      <section className="wg-helt">
+        <div>
+          <p className="wg-dato">WANG Golf · bare sportssjef</p>
+          <h1 className="wg-tittel">Administrasjon</h1>
+          <p className="wg-ingress">Trenere og roller, samtykke, timeplan, rekruttering og samarbeidet mellom skolene.</p>
+        </div>
+        <div className="wg-helt-tall">
+          <div>
+            <span>Trenere</span>
+            <strong>{TRENERE.length}</strong>
+            <span className="wg-kilde">{TRENERE.filter((t) => t.rolle === 'Sportssjef').length} sportssjefer</span>
+          </div>
+          <div>
+            <span>Kandidater</span>
+            <strong>{kandidater.length}</strong>
+            <span className="wg-kilde">Inntak 2027/28</span>
+          </div>
+          <div>
+            <span>Ledige plasser</span>
+            <strong>{ledige}</strong>
+            <span className="wg-kilde">Alle skolene</span>
+          </div>
+          <div>
+            <span>Samtykke</span>
+            <strong>—</strong>
+            <span className="wg-kilde">Ikke koblet ennå</span>
+          </div>
+        </div>
+      </section>
+
+      <nav aria-label="Visning" className="wgf-rad">
+        {FANER.map((f) => (
           <button
             key={f.id}
+            type="button"
+            aria-pressed={fane === f.id}
             onClick={() => byttFane(f.id)}
-            style={{
-              minHeight: '44px',
-              padding: '0 16px',
-              borderRadius: '999px',
-              border: fane === f.id ? '1px solid #17446F' : '1px solid #D2D2D2',
-              background: fane === f.id ? '#17446F' : '#FFFFFF',
-              color: fane === f.id ? '#FFFFFF' : '#17446F',
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
+            className={`wgf ${fane === f.id ? 'wgf-pa' : ''}`}
           >
             {f.navn}
           </button>
         ))}
-      </div>
+      </nav>
 
-      {/* ========================================================== */}
-      {/* WANG-19: Trenere og roller                                 */}
-      {/* ========================================================== */}
       {fane === 'WANG-19' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-19 · Trenerstab og tilgangsstyring
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Trenere og roller
-            </h2>
+        <section className="wg-seksjon" aria-labelledby="wg-trenere-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-trenere-tittel">Trenere og roller</h2>
+            <span className="wg-kilde">To roller: Sportssjef og Trener</span>
           </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 140px', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Trener</span>
-              <span>Campus</span>
-              <span>Rolle</span>
-              <span>Status</span>
-            </div>
-            {[
-              { navn: 'Anders Kristiansen', campus: 'Fredrikstad / Nasjonalt', rolle: 'Sportssjef', status: 'Aktiv' },
-              { navn: 'Kjersti Jørgensen', campus: 'Oslo', rolle: 'Sportssjef', status: 'Aktiv' },
-              { navn: 'Niklas Diethelm', campus: 'Romerike / Tønsberg', rolle: 'Trener', status: 'Aktiv' },
-              { navn: 'Jørn Hovland', campus: 'Oslo / Stavanger', rolle: 'Trener', status: 'Aktiv' },
-              { navn: 'Mia Sandtorv', campus: 'Fredrikstad', rolle: 'Trener', status: 'Aktiv' },
-            ].map((t, idx) => (
-              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 140px', padding: '16px', borderTop: '1px solid #E6E8EA', alignItems: 'center', fontSize: '14px' }}>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{t.navn}</span>
-                <span style={{ color: '#5B7793' }}>{t.campus}</span>
-                <span style={{ fontWeight: 500, color: t.rolle === 'Sportssjef' ? '#2E857D' : '#17446F' }}>{t.rolle}</span>
-                <span style={{ color: '#2E857D', fontWeight: 600 }}>{t.status}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================== */}
-      {/* WANG-34: Samtykkeoversikt                                  */}
-      {/* ========================================================== */}
-      {fane === 'WANG-34' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-34 · GDPR, personvern og samtykker
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Samtykkeoversikt
-            </h2>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <p style={{ margin: 0, fontSize: '14px', color: '#17446F' }}>
-              Samtykkestatus per elev vises her når skjermen er koblet til delingssamtykke i basen. Ingen status er vist før det, for en feil status i en personvernskjerm er verre enn ingen.
-            </p>
-            <WangIkkeKoblet />
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================== */}
-      {/* WANG-26: Timeplanføring                                    */}
-      {/* ========================================================== */}
-      {fane === 'WANG-26' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-26 · Skolens timeplan og treningsblokker
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Timeplanføring
-            </h2>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>Faste treningsblokker WANG {campus}</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontWeight: 600, color: '#17446F' }}>Tirsdag 08:00 – 10:00</div>
-                <div style={{ fontSize: '13px', color: '#5B7793', margin: '4px 0 8px' }}>Morgentrening Golfteknikk</div>
-                <div style={{ fontSize: '12px', color: '#2E857D' }}>Obligatorisk for VG1, VG2, VG3</div>
-              </div>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontWeight: 600, color: '#17446F' }}>Onsdag 08:00 – 10:00</div>
-                <div style={{ fontSize: '13px', color: '#5B7793', margin: '4px 0 8px' }}>Fysisk trening og kapasitet</div>
-                <div style={{ fontSize: '12px', color: '#2E857D' }}>Styrkerom / basistrening</div>
-              </div>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontWeight: 600, color: '#17446F' }}>Fredag 08:00 – 10:00</div>
-                <div style={{ fontSize: '13px', color: '#5B7793', margin: '4px 0 8px' }}>Morgentrening Nærspill / Test</div>
-                <div style={{ fontSize: '12px', color: '#2E857D' }}>Pre-turnering forberedelse</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================== */}
-      {/* WANG-31: Rekruttering                                      */}
-      {/* ========================================================== */}
-      {fane === 'WANG-31' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-31 · Inntak og rekruttering til skoleåret 2027/28
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Rekruttering
-            </h2>
-          </div>
-
-          {/* Legg til kandidat */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-            <h3 style={{ margin: '0 0 14px', fontSize: '16px', color: '#17446F' }}>Registrer ny søker / kandidat</h3>
-            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end' }}>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F', minWidth: '180px' }}>
-                Navn
-                <input
-                  type="text"
-                  value={nyttNavn}
-                  onChange={(e) => setNyttNavn(e.target.value)}
-                  placeholder="Kandidatens navn"
-                  style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                />
-              </label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F', minWidth: '160px' }}>
-                Hjemmeklubb
-                <input
-                  type="text"
-                  value={nyKlubb}
-                  onChange={(e) => setNyKlubb(e.target.value)}
-                  placeholder="F.eks. Losby GK"
-                  style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                />
-              </label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F', width: '100px' }}>
-                HCP
-                <input
-                  type="number"
-                  step="0.1"
-                  value={nyttHcp}
-                  onChange={(e) => setNyttHcp(e.target.value)}
-                  placeholder="3.2"
-                  style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                />
-              </label>
-              <button
-                type="submit"
-                disabled
-                style={{
-                  ...IKKE_KOBLET_KNAPP_STIL,
-                  minHeight: '44px',
-                  padding: '0 20px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: '#17446F',
-                  color: '#FFFFFF',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Legg til
-              </button>
-              <WangIkkeKoblet />
-            </form>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 80px 140px 1.5fr', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Kandidat</span>
-              <span>Klubb</span>
-              <span>HCP</span>
-              <span>Status</span>
-              <span>Handlinger</span>
-            </div>
-            {kandidater.map((k) => (
-              <div key={k.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 80px 140px 1.5fr', padding: '16px', borderTop: '1px solid #E6E8EA', alignItems: 'center', fontSize: '14px' }}>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{k.navn}</span>
-                <span style={{ color: '#5B7793' }}>{k.klubb}</span>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{k.handicap}</span>
+          <div className="wg-kort wg-rader">
+            {TRENERE.map((t) => (
+              <div key={t.navn} className="wg-rad">
                 <div>
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      background:
-                        k.status === 'tilbudt' ? '#E3F5EC' : k.status === 'provespill' ? '#FFF5E5' : '#F2F5F8',
-                      color:
-                        k.status === 'tilbudt' ? '#1B5E57' : k.status === 'provespill' ? '#B25E00' : '#17446F',
-                    }}
-                  >
-                    {k.status}
-                  </span>
+                  <b>{t.navn}</b>
+                  <p className="wg-kilde">{t.campus}</p>
                 </div>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  <button
-                    type="button"
-                    disabled
-                    title="Ikke koblet ennå"
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
-                  >
-                    Prøvespill
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    title="Ikke koblet ennå"
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #D2D2D2', background: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
-                  >
-                    Intervju
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    title="Ikke koblet ennå"
-                    style={{ minHeight: '44px', padding: '0 8px', borderRadius: '4px', border: '1px solid #2E857D', background: '#2E857D', color: '#FFFFFF', fontSize: '11px', opacity: 0.55, cursor: 'not-allowed' }}
-                  >
-                    Tilby plass (ikke koblet ennå)
-                  </button>
-                </div>
+                <span style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  <span className="wg-pille">{t.rolle}</span>
+                  <span className="wg-pille wg-pille-ok"><i />Aktiv</span>
+                </span>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ========================================================== */}
-      {/* WANG-32: Plasser og kvoter                                 */}
-      {/* ========================================================== */}
+      {fane === 'WANG-34' && (
+        <section className="wg-seksjon" aria-labelledby="wg-samtykke-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-samtykke-tittel">Samtykke</h2>
+          </div>
+          <div className="wg-kort wg-fyll">
+            <p className="wg-kilde">
+              Samtykke per elev vises her når skjermen er koblet til delingssamtykke i basen. Ingen status vises før det, fordi en feil status her er verre enn ingen.
+            </p>
+            <span><WangIkkeKoblet /></span>
+          </div>
+        </section>
+      )}
+
+      {fane === 'WANG-26' && (
+        <section className="wg-seksjon" aria-labelledby="wg-timeplan-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-timeplan-tittel">Faste treningsblokker</h2>
+            <span className="wg-kilde">WANG {campus}</span>
+          </div>
+          <div className="wg-rutenett">
+            {BLOKKER.map((b) => (
+              <div key={b.tid} className="wg-kort">
+                <span className="wg-dato">{b.tid}</span>
+                <h3>{b.navn}</h3>
+                <p className="wg-kilde">{b.merknad}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {fane === 'WANG-31' && (
+        <>
+          <section className="wg-seksjon" aria-labelledby="wg-kandidat-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-kandidat-tittel">Kandidater 2027/28</h2>
+              <span className="wg-kilde">{kandidater.length} kandidater</span>
+            </div>
+            <div className="wg-kort wg-saker">
+              {kandidater.length === 0 ? (
+                <p className="wg-kilde" style={{ padding: '14px 0' }}>Ingen kandidater ennå.</p>
+              ) : (
+                kandidater.map((k) => (
+                  <div key={k.id} className="wg-sak">
+                    <span className={`wg-pille ${k.status === 'tilbudt' || k.status === 'takket_ja' ? 'wg-pille-ok' : k.status === 'provespill' || k.status === 'intervju' ? 'wg-pille-vent' : ''}`}>
+                      <i />
+                      {KANDIDATSTATUS[k.status]}
+                    </span>
+                    <b>{k.navn} · {k.klubb} · HCP {String(k.handicap).replace('.', ',')}</b>
+                    <p>Ønsker {k.onsketCampus}.{k.notat ? ` ${k.notat}` : ''}</p>
+                    <div className="wg-knapper">
+                      <button type="button" disabled className="wg-btn wg-btn-secondary" style={IKKE_KOBLET_KNAPP_STIL}>Prøvespill</button>
+                      <button type="button" disabled className="wg-btn wg-btn-secondary" style={IKKE_KOBLET_KNAPP_STIL}>Intervju</button>
+                      <button type="button" disabled className="wg-btn wg-btn-primary" style={IKKE_KOBLET_KNAPP_STIL}>Tilby plass</button>
+                      <WangIkkeKoblet />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+          <section className="wg-seksjon" aria-labelledby="wg-nykandidat-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-nykandidat-tittel">Legg til kandidat</h2>
+            </div>
+            <form onSubmit={(e) => e.preventDefault()} className="wg-kort wg-fyll">
+              <div className="wg-rutenett" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))' }}>
+                <label className="wg-lbl">
+                  <span>Navn</span>
+                  <input type="text" value={nyttNavn} onChange={(e) => setNyttNavn(e.target.value)} placeholder="Kandidatens navn" className="wg-field" />
+                </label>
+                <label className="wg-lbl">
+                  <span>Hjemmeklubb</span>
+                  <input type="text" value={nyKlubb} onChange={(e) => setNyKlubb(e.target.value)} placeholder="For eksempel Losby GK" className="wg-field" />
+                </label>
+                <label className="wg-lbl">
+                  <span>HCP</span>
+                  <input type="number" step="0.1" inputMode="decimal" value={nyttHcp} onChange={(e) => setNyttHcp(e.target.value)} placeholder="3,2" className="wg-field" />
+                </label>
+              </div>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <button type="submit" disabled className="wg-btn wg-btn-primary" style={IKKE_KOBLET_KNAPP_STIL}>Legg til</button>
+                <WangIkkeKoblet />
+              </div>
+            </form>
+          </section>
+        </>
+      )}
+
       {fane === 'WANG-32' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-32 · Kapasitet og plasskvoter 2026/27
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Plasser og kvoter
-            </h2>
+        <section className="wg-seksjon" aria-labelledby="wg-plasser-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-plasser-tittel">Plasser 2026/27</h2>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>WANG Fredrikstad</div>
-              <div style={{ fontSize: '28px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>18 / 20</div>
-              <div style={{ fontSize: '12px', color: '#2E857D' }}>2 ledige plasser for neste inntak</div>
-            </div>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>WANG Oslo</div>
-              <div style={{ fontSize: '28px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>24 / 24</div>
-              <div style={{ fontSize: '12px', color: '#D12A5C' }}>Fullt besatt · Venteliste aktivert</div>
-            </div>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>WANG Stavanger</div>
-              <div style={{ fontSize: '28px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>14 / 16</div>
-              <div style={{ fontSize: '12px', color: '#2E857D' }}>2 ledige plasser</div>
-            </div>
+          <div className="wg-kort wg-rader">
+            {PLASSER.map((p) => {
+              const fullt = p.brukt >= p.totalt;
+              return (
+                <div key={p.skole} className="wg-rad">
+                  <div>
+                    <b>{p.skole}</b>
+                    <p className="wg-kilde">{fullt ? 'Fullt, venteliste' : `${p.totalt - p.brukt} ledige plasser`}</p>
+                  </div>
+                  <span className="wg-tall">{p.brukt} / {p.totalt}</span>
+                  <div className="wg-stolpe" role="img" aria-label={`${p.brukt} av ${p.totalt} plasser brukt`}>
+                    <span style={{ width: `${Math.round((p.brukt / p.totalt) * 100)}%` }} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ========================================================== */}
-      {/* WANG-33: Koordinering mellom skoler                        */}
-      {/* ========================================================== */}
       {fane === 'WANG-33' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-33 · Koordinering mellom skoler · Personvernsikret kontaktlogg
+        <section className="wg-seksjon" aria-labelledby="wg-skolene-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-skolene-tittel">Samarbeid mellom skolene</h2>
+          </div>
+          <div className="wg-kort wg-saker">
+            <p className="wg-kilde" style={{ padding: '14px 0' }}>
+              Skolene deler hvem som har snakket med hvem, og når. Innholdet, vurderinger og notater blir hos skolen som eier dem.
             </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Skolekoordinering
-            </h2>
-          </div>
-
-          <div style={{ background: '#E3F5EC', border: '1px solid #49CA9F', borderRadius: '6px', padding: '14px', fontSize: '13px', color: '#1B5E57', lineHeight: 1.5 }}>
-            <strong>Personvernregel (ak-personvern):</strong> Skolene deler kun kontaktlogg (hvem snakket med hvem når og hvilket tema det gjaldt), men aldri selve meldingsinnholdet eller sensitive interne vurderinger.
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '120px 1.5fr 1.5fr 1fr', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Dato</span>
-              <span>Parter</span>
-              <span>Tema for samhandling</span>
-              <span>Status</span>
-            </div>
-            {[
-              { dato: '01.10.2026', parter: 'Fredrikstad ↔ Oslo', tema: 'Felles høstsamling på Bogstad', status: 'Avtalt program' },
-              { dato: '28.09.2026', parter: 'Fredrikstad ↔ Stavanger', tema: 'Transportkoordinering Norgescup', status: 'Ferdigstilt' },
-              { dato: '20.09.2026', parter: 'Nasjonalt sportssjefmøte', tema: 'Revisjon av nasjonalt testbatteri v3.1', status: 'Vedtattsført' },
-            ].map((logg, idx) => (
-              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '120px 1.5fr 1.5fr 1fr', padding: '16px', borderTop: '1px solid #E6E8EA', alignItems: 'center', fontSize: '14px' }}>
-                <span style={{ color: '#5B7793' }}>{logg.dato}</span>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{logg.parter}</span>
-                <span style={{ color: '#17446F' }}>{logg.tema}</span>
-                <span style={{ color: '#2E857D', fontWeight: 500 }}>{logg.status}</span>
+            {KONTAKTLOGG.map((l) => (
+              <div key={l.dato} className="wg-sak">
+                <span className="wg-pille"><i />{l.dato}</span>
+                <b>{l.parter}</b>
+                <p>{l.status}</p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
-    </div>
+    </>
   );
 }

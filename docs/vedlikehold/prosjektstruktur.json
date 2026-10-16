@@ -109,7 +109,6 @@
     "docs/juridisk"
   ],
   "eksterneDokumenter": [
-    ".claude/skills/react-best-practices",
     ".claude/skills/security-and-hardening",
     ".claude/skills/api-and-interface-design",
     ".claude/skills/nextjs-security",

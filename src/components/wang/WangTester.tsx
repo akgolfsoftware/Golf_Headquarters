@@ -17,13 +17,40 @@ interface WangTesterProps {
   campus?: string;
 }
 
+const FANER = [
+  { id: "fysisk", tittel: "Testbatteri" },
+  { id: "ko", tittel: "Til kontroll" },
+  { id: "scorekort", tittel: "Før test" },
+  { id: "rangering", tittel: "Rangering" },
+] as const;
+
+/** Fysisk del av testbatteriet (Anders 28.09.2026). id peker på testen i kilden når den finnes. */
+const BATTERI = [
+  { navn: "Benkpress", id: "benkpress" },
+  { navn: "Markløft trapbar", id: "trapbar" },
+  { navn: "Lengdehopp", id: null },
+  { navn: "Rotasjonskast", id: "medball" },
+  { navn: "Club Speed", id: null },
+] as const;
+
+const tall = (v: number | string) => String(v).replace(".", ",");
+
+/**
+ * WANG-48 Tester for trener og sportssjef.
+ * Fasit: docs/design-system/utkast-wang/tester.html (pakke 4, utkast 1, 14.10.2026).
+ * Avvik:
+ *   - Golftestene fra 6-årsløpet, 8-ball slag for slag, én test og én elev er ikke med.
+ *     Kilden har bare de fysiske testene.
+ *   - Lengdehopp og Club Speed finnes ikke i kilden og står med «—».
+ *   - Rangeringen viser markløft trapbar, bare egne elever.
+ */
 export function WangTester({
   valgtFane = "fysisk",
   aktivFane,
-  onFaneEndret: _onFaneEndret,
+  onFaneEndret,
   campus: _campus = "Fredrikstad",
 }: WangTesterProps) {
-  const [fane, setFane] = useState(aktivFane || valgtFane);
+  const [fane, setFane] = useState(aktivFane === "fokus" || aktivFane === "oversikt" ? "fysisk" : aktivFane || valgtFane);
   const [fysiskeTester] = useState<WangFysiskTest[]>(WANG_FYSISKE_TESTER);
   const testKo: WangTestResultat[] = WANG_TEST_RESULTATER;
 
@@ -32,314 +59,176 @@ export function WangTester({
   const [valgtTestId, setValgtTestId] = useState(WANG_FYSISKE_TESTER[0]?.id || "");
   const [innsendtVerdi, setInnsendtVerdi] = useState("");
 
+  const tilKontroll = testKo.filter((t) => t.status === "Ført");
+  const kontrollert = testKo.filter((t) => t.status === "Kontrollert").length;
+  const trapbar = fysiskeTester.find((t) => t.id === "trapbar");
+  const toppliste = trapbar
+    ? WANG_ELEVER.filter((e) => trapbar.resultater[e.id] !== undefined).sort(
+        (a, b) => trapbar.resultater[b.id] - trapbar.resultater[a.id]
+      )
+    : [];
+
+  const velgFane = (id: string) => {
+    setFane(id);
+    onFaneEndret?.(id);
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      {/* 1. Tittel og faner */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "16px" }}>
+    <>
+      <section className="wg-helt">
         <div>
-          <p className="wg-num" style={{ margin: "0 0 6px", fontSize: "12px", fontWeight: 500, color: "var(--wang-text-muted)" }}>
-            WANG-48 / WG-03 · Testbatteri & Fysisk
+          <p className="wg-dato">WANG Golf · testbatteriet</p>
+          <h1 className="wg-tittel">Tester</h1>
+          <p className="wg-ingress">
+            Elevene fører selv, du kontrollerer. Fysisk test hver sjette uke i grunnperioden.
           </p>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-              fontWeight: 300,
-              fontSize: "36px",
-              letterSpacing: "-0.015em",
-              color: "var(--wang-blue)",
-              lineHeight: 1.1,
-            }}
-          >
-            Tester og testbatteri
-          </h1>
         </div>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-          <button
-            type="button"
-            onClick={() => setFane("fysisk")}
-            className={`wg-chip ${fane === "fokus" || fane === "fysisk" ? "wg-chip-pa" : ""}`}
-          >
-            Fysiske tester (WG-03)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("ko")}
-            className={`wg-chip ${fane === "ko" ? "wg-chip-pa" : ""}`}
-          >
-            Testkø (WANG-37)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("scorekort")}
-            className={`wg-chip ${fane === "scorekort" ? "wg-chip-pa" : ""}`}
-          >
-            Scorekort (WANG-48B)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("rangering")}
-            className={`wg-chip ${fane === "rangering" ? "wg-chip-pa" : ""}`}
-          >
-            Rangering (WANG-39)
-          </button>
+        <div className="wg-helt-tall">
+          <div className={tilKontroll.length > 0 ? "wg-signal" : undefined}>
+            <span>Til kontroll</span>
+            <strong>{tilKontroll.length}</strong>
+            <span className="wg-kilde">Egenført</span>
+          </div>
+          <div>
+            <span>Kontrollert</span>
+            <strong>{kontrollert}</strong>
+            <span className="wg-kilde">Siste fire uker</span>
+          </div>
+          <div>
+            <span>Fysiske tester</span>
+            <strong>{BATTERI.length}</strong>
+            <span className="wg-kilde">I batteriet</span>
+          </div>
+          <div>
+            <span>Neste testdag</span>
+            <strong>—</strong>
+            <span className="wg-kilde">Ikke koblet ennå</span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* 2. WG-03: Fysiske tester (5 nasjonale tester) */}
-      {(fane === "fysisk" || fane === "oversikt") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ marginBottom: "16px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              WG-03 · 5 Nasjonale tester
-            </p>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                fontSize: "18px",
-                fontWeight: 600,
-                color: "var(--wang-blue)",
-              }}
-            >
-              Nasjonale fysiske tester for WANG Toppidrett
-            </h2>
-            <p style={{ margin: "4px 0 0", fontSize: "13px", color: "var(--wang-text-muted)" }}>
-              Standardiserte tester for rotasjonell kraft, maksimal styrke og vertikal spenst.
-            </p>
-          </div>
+      <nav aria-label="Visning" className="wgf-rad">
+        {FANER.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            aria-pressed={fane === f.id}
+            onClick={() => velgFane(f.id)}
+            className={`wgf ${fane === f.id ? "wgf-pa" : ""}`}
+          >
+            {f.id === "ko" ? `${f.tittel} (${tilKontroll.length})` : f.tittel}
+          </button>
+        ))}
+      </nav>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-            {fysiskeTester.map((t) => (
-              <div
-                key={t.id}
-                style={{
-                  padding: "16px",
-                  border: "1px solid var(--wang-grey-line)",
-                  borderRadius: "4px",
-                  backgroundColor: "var(--wang-blue-tint)",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--wang-green)", textTransform: "uppercase" }}>
-                    {t.kategori}
-                  </span>
-                  <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                    Enhet: {t.enhet}
-                  </span>
-                </div>
-                <h3 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "var(--wang-blue)" }}>
-                  {t.navn}
-                </h3>
-                <p style={{ margin: "0 0 12px", fontSize: "12.5px", color: "var(--wang-text-muted)", lineHeight: 1.4 }}>
-                  {t.beskrivelse}
-                </p>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", borderTop: "1px solid rgba(23, 68, 111, 0.1)", paddingTop: "8px" }}>
-                  <div>
-                    <span style={{ fontSize: "11px", color: "var(--wang-text-muted)", display: "block" }}>
-                      Nasj. snitt
-                    </span>
-                    <span className="wg-num" style={{ fontWeight: 700, fontSize: "16px", color: "var(--wang-blue)" }}>
-                      {t.nasjonaltSnitt} {t.enhet}
-                    </span>
-                  </div>
-                  <div>
-                    <span style={{ fontSize: "11px", color: "var(--wang-text-muted)", display: "block" }}>
-                      Nasjonal topp
-                    </span>
-                    <span className="wg-num" style={{ fontWeight: 700, fontSize: "16px", color: "var(--wang-green)" }}>
-                      {t.nasjonalTopp} {t.enhet}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 3. WANG-37: Testkø (Godkjenn / Kontroller) */}
       {(fane === "ko" || fane === "fysisk") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px" }}>
-            <div>
-              <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-                WANG-37 · Kontroll og godkjenning
-              </p>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--wang-blue)",
-                }}
-              >
-                Testkø for godkjenning
-              </h2>
-            </div>
-            <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-              {testKo.filter((t) => t.status === "Ført").length} venter på kontroll
-            </span>
+        <section className="wg-seksjon" aria-labelledby="wg-ko-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-ko-tittel">Til kontroll</h2>
+            <span className="wg-kilde">{tilKontroll.length} venter</span>
           </div>
-
-          <div style={{ display: "grid", gap: "10px" }}>
-            {testKo.map((item) => (
-              <div
-                key={item.id}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "12px",
-                  padding: "14px 16px",
-                  backgroundColor: "#FFFFFF",
-                  border: "1px solid var(--wang-grey-line)",
-                  borderRadius: "4px",
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
-                    <span
-                      className="wg-st"
-                      style={{
-                        borderColor:
-                          item.status === "Kontrollert"
-                            ? "var(--wang-green)"
-                            : item.status === "Avvist"
-                            ? "var(--wang-pink)"
-                            : "var(--wang-orange)",
-                      }}
-                    >
-                      <span
-                        className={`wg-dot ${
-                          item.status === "Kontrollert"
-                            ? "wg-dot-fullfort"
-                            : item.status === "Avvist"
-                            ? "wg-dot-varsel"
-                            : "wg-dot-aktiv"
-                        }`}
-                      />
-                      {item.status}
-                    </span>
-                    <span style={{ fontWeight: 700, fontSize: "15px", color: "var(--wang-blue)" }}>
-                      {item.elevNavn}
-                    </span>
-                    <span className="wg-num" style={{ fontSize: "13px", fontWeight: 700, color: "var(--wang-blue)" }}>
-                      {item.testNavn}: {item.verdi} {item.enhet}
-                    </span>
-                  </div>
-                  <p style={{ margin: 0, fontSize: "12.5px", color: "var(--wang-text-muted)" }}>
-                    Kilde: {item.protokoll} · Registrert: {item.dato} av {item.registrertAv}
-                    {item.notat ? ` · Notat: ${item.notat}` : ""}
-                  </p>
-                </div>
-
-                {item.status === "Ført" ? (
-                  <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      disabled
-                      className="wg-btn wg-btn-primary"
-                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
-                    >
-                      Godkjenn
-                    </button>
-                    <button
-                      type="button"
-                      disabled
-                      className="wg-btn wg-btn-secondary"
-                      style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
-                    >
-                      Avvis
-                    </button>
-                    <WangIkkeKoblet />
-                  </div>
-                ) : (
-                  <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)", fontWeight: 500 }}>
-                    {item.status === "Kontrollert" ? "Flyttet til profil" : "Avslått"}
+          <div className="wg-kort wg-saker">
+            {testKo.length === 0 ? (
+              <p className="wg-kilde" style={{ padding: "14px 0" }}>Ingen resultater er ført ennå.</p>
+            ) : (
+              testKo.map((item) => (
+                <div key={item.id} className="wg-sak">
+                  <span
+                    className={`wg-pille ${
+                      item.status === "Kontrollert" ? "wg-pille-ok" : item.status === "Avvist" ? "wg-pille-haster" : "wg-pille-vent"
+                    }`}
+                  >
+                    <i />
+                    {item.status === "Ført" ? "Egenført" : item.status}
                   </span>
-                )}
-              </div>
-            ))}
+                  <b>{item.elevNavn} · {item.testNavn}: {tall(item.verdi)} {item.enhet}</b>
+                  <p>
+                    {item.dato}, ført av {item.registrertAv}. {item.protokoll}.
+                    {item.notat ? ` ${item.notat}` : ""}
+                  </p>
+                  {item.status === "Ført" ? (
+                    <div className="wg-knapper">
+                      <button type="button" disabled className="wg-btn wg-btn-primary" style={IKKE_KOBLET_KNAPP_STIL}>
+                        Kontroller
+                      </button>
+                      <button type="button" disabled className="wg-btn wg-btn-secondary" style={IKKE_KOBLET_KNAPP_STIL}>
+                        Avvis
+                      </button>
+                      <WangIkkeKoblet />
+                    </div>
+                  ) : null}
+                </div>
+              ))
+            )}
           </div>
         </section>
       )}
 
-      {/* 4. WANG-48B: Scorekort / Registrer testresultat */}
-      {(fane === "scorekort" || fane === "ko") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-            WANG-48B · Scorekort
-          </p>
-          <h2
-            style={{
-              margin: "0 0 16px",
-              fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-              fontSize: "18px",
-              fontWeight: 600,
-              color: "var(--wang-blue)",
-            }}
-          >
-            Registrer nytt testresultat
-          </h2>
+      {fane === "fysisk" && (
+        <section className="wg-seksjon" aria-labelledby="wg-batteri-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-batteri-tittel">Fysiske tester</h2>
+            <span className="wg-kilde">Nivå A–K: referanse ikke satt</span>
+          </div>
+          <div className="wg-rutenett">
+            {BATTERI.map((b) => {
+              const t = b.id ? fysiskeTester.find((f) => f.id === b.id) : undefined;
+              return (
+                <div key={b.navn} className="wg-kort">
+                  <span className="wg-dato">{t ? `${t.kategori} · ${t.enhet}` : "Ikke i kilden ennå"}</span>
+                  <h3>{b.navn}</h3>
+                  {t ? <p className="wg-kilde">{t.beskrivelse}</p> : null}
+                  <div className="wg-maltall" style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
+                    <div><strong>{t ? tall(t.nasjonaltSnitt) : "—"}</strong><span>Nasjonalt snitt</span></div>
+                    <div><strong>{t ? tall(t.nasjonalTopp) : "—"}</strong><span>Nasjonal topp</span></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-          <form onSubmit={(e) => e.preventDefault()} style={{ display: "grid", gap: "16px", maxWidth: "600px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-              <div className="wg-lbl">
-                <span>Velg elev</span>
-                <select
-                  value={valgtElevId}
-                  onChange={(e) => setValgtElevId(e.target.value)}
-                  className="wg-field"
-                >
+      {fane === "scorekort" && (
+        <section className="wg-seksjon" aria-labelledby="wg-for-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-for-tittel">Før testresultat</h2>
+            <span className="wg-kilde">Resultatet lagres som Kontrollert</span>
+          </div>
+          <form onSubmit={(e) => e.preventDefault()} className="wg-kort wg-fyll" style={{ maxWidth: 600 }}>
+            <div className="wg-rutenett">
+              <label className="wg-lbl">
+                <span>Elev</span>
+                <select value={valgtElevId} onChange={(e) => setValgtElevId(e.target.value)} className="wg-field">
                   {WANG_ELEVER.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.navn} ({e.trinn})
-                    </option>
+                    <option key={e.id} value={e.id}>{e.navn} ({e.trinn})</option>
                   ))}
                 </select>
-              </div>
-
-              <div className="wg-lbl">
-                <span>Velg test</span>
-                <select
-                  value={valgtTestId}
-                  onChange={(e) => setValgtTestId(e.target.value)}
-                  className="wg-field"
-                >
+              </label>
+              <label className="wg-lbl">
+                <span>Test</span>
+                <select value={valgtTestId} onChange={(e) => setValgtTestId(e.target.value)} className="wg-field">
                   {WANG_FYSISKE_TESTER.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.navn} ({t.enhet})
-                    </option>
+                    <option key={t.id} value={t.id}>{t.navn} ({t.enhet})</option>
                   ))}
                 </select>
-              </div>
+              </label>
             </div>
-
-            <div className="wg-lbl">
+            <label className="wg-lbl">
               <span>Målt resultat</span>
               <input
                 type="text"
+                inputMode="decimal"
                 value={innsendtVerdi}
                 onChange={(e) => setInnsendtVerdi(e.target.value)}
-                placeholder="F.eks. 1.85 eller 16.5"
+                placeholder="For eksempel 1,85 eller 16,5"
                 className="wg-field"
                 required
               />
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-              <button
-                type="submit"
-                disabled
-                className="wg-btn wg-btn-primary"
-                style={{ width: "fit-content", ...IKKE_KOBLET_KNAPP_STIL }}
-              >
-                Lagre og godkjenn resultat
+            </label>
+            <div className="wg-knapper" style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              <button type="submit" disabled className="wg-btn wg-btn-primary" style={IKKE_KOBLET_KNAPP_STIL}>
+                Lagre resultat
               </button>
               <WangIkkeKoblet />
             </div>
@@ -347,62 +236,29 @@ export function WangTester({
         </section>
       )}
 
-      {/* 5. WANG-39: Rangering og persentiler */}
       {(fane === "rangering" || fane === "fysisk") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ marginBottom: "16px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              WANG-39 · Nasjonal rangering
-            </p>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                fontSize: "18px",
-                fontWeight: 600,
-                color: "var(--wang-blue)",
-              }}
-            >
-              Toppliste Trapbar Markløft (relativ styrke x KV)
-            </h2>
+        <section className="wg-seksjon" aria-labelledby="wg-rang-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-rang-tittel">Rangering: markløft trapbar</h2>
+            <span className="wg-kilde">Bare dine elever</span>
           </div>
-
-          <div style={{ display: "grid", gap: "8px" }}>
-            {WANG_ELEVER.slice()
-              .sort((a, b) => b.snittscore - a.snittscore)
-              .map((elev, idx) => (
-                <div
-                  key={elev.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 16px",
-                    backgroundColor: idx === 0 ? "var(--wang-green-tint, #EEF6F5)" : "var(--wang-blue-tint)",
-                    borderRadius: "4px",
-                    borderLeft: idx < 3 ? "4px solid var(--wang-green)" : "1px solid var(--wang-grey-line)",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <span className="wg-num" style={{ fontWeight: 700, fontSize: "14px", width: "24px" }}>
-                      #{idx + 1}
-                    </span>
-                    <span style={{ fontWeight: 600, fontSize: "14px", color: "var(--wang-blue)" }}>
-                      {elev.navn}
-                    </span>
-                    <span style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                      {elev.trinn} · {elev.klubb}
-                    </span>
+          <div className="wg-kort wg-rader">
+            {toppliste.length === 0 || !trapbar ? (
+              <p className="wg-kilde" style={{ padding: "14px 0" }}>Ingen resultater ennå.</p>
+            ) : (
+              toppliste.map((elev, idx) => (
+                <div key={elev.id} className="wg-rad">
+                  <div>
+                    <b>{idx + 1}. {elev.navn}</b>
+                    <p className="wg-kilde">{elev.trinn} · {elev.klubb}</p>
                   </div>
-
-                  <span className="wg-num" style={{ fontWeight: 700, fontSize: "15px", color: "var(--wang-blue)" }}>
-                    HCP {elev.hcp}
-                  </span>
+                  <span className="wg-tall">{trapbar.resultater[elev.id]} kg</span>
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </section>
       )}
-    </div>
+    </>
   );
 }

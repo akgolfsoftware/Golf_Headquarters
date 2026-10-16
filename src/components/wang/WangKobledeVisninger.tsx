@@ -30,17 +30,19 @@ const BESKRIVELSE = {
  */
 export function WangKobledeVisninger({ elever, visning }: WangKobledeVisningerProps) {
   return (
-    <section className="wg-kort" aria-label={TITTEL[visning]} style={{ marginBottom: '20px' }}>
-      <h2 style={{ margin: '0 0 4px', fontSize: '16px' }}>{TITTEL[visning]} (koblet til ekte data)</h2>
-      <p style={{ margin: '0 0 12px', fontSize: '13px', color: 'var(--wang-text-muted)' }}>
-        {BESKRIVELSE[visning]}
-      </p>
+    <section className="wg-kort wg-fyll" aria-label={TITTEL[visning]} style={{ borderLeft: '4px solid var(--wg-mint)' }}>
+      <div>
+        <h2 style={{ margin: 0, font: '800 17px/1.3 var(--font-wang-brand, Montserrat, sans-serif)', color: 'var(--wg-navy-dyp)' }}>
+          {TITTEL[visning]}
+        </h2>
+        <p className="wg-kilde">{BESKRIVELSE[visning]}</p>
+      </div>
       {visning === 'tester' ? (
         <Link href="/team-wang/coach/tester" className="wg-btn wg-btn-primary">
           Åpne testresultater
         </Link>
       ) : elever.length === 0 ? (
-        <p style={{ margin: 0, fontSize: '13px' }}>Ingen elever i gruppa.</p>
+        <p className="wg-kilde">Ingen elever i gruppa.</p>
       ) : (
         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
           {elever.map((elev) => (
