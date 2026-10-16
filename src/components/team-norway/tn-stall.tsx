@@ -11,6 +11,9 @@ import s from "./tn-stall.module.css";
  * Fasit: docs/design-system/utkast-tn/felles/tn.css §Utkast 2 og grunnmur.html.
  * Helteflate med ett hovedtall, bånd med teller, spillerrad med plan-stolpe,
  * statusmarkør med ord og bildekort. Status har alltid ord ved fargen.
+ * Avvik:
+ *   - Bildene er next/image fra public/team-norway/bilder, ikke <img>.
+ *   - Svar-stolpen (ja / venter / kan ikke) er ikke med: svar på samlinger har ingen datamodell.
  */
 
 export type TnStatus = "trenger" | "folger" | "folgmed" | "ikkedelt";

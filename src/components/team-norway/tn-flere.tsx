@@ -12,6 +12,8 @@ import s from "./tn-stall.module.css";
  * Radene er vanlige handlinger (lenker eller skjemaark) med variant «meny».
  * Lista holdes åpen mens et skjemaark (dialog) fra den er åpent, ellers ville
  * arket forsvunnet sammen med lista.
+ * Avvik:
+ *   - Lista lukkes med Escape og klikk utenfor, men ikke mens et ark fra den er åpent.
  */
 export function TnFlere({ knapp, variant = "sekundar", children }: { knapp: string; variant?: TnKnappVariant; children: ReactNode }) {
   const [apen, setApen] = useState(false);
