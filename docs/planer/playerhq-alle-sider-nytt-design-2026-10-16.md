@@ -42,8 +42,8 @@ og Plan har ikke funksjonen ennå. De tas med i pakke 17.
 
 | Pakke | Sider | Tegning |
 |---|---|---|
-| 11 Booking og meldinger, resten | booking/ny, ny/bekreft, [bookingId], meg/bookinger/reschedule, coach/melding, coach/sporsmal/[id] · **tegnes:** booking/coach/[coachId], booking/anlegg/[anleggId], coach/melding/ny, coach/sporsmal/ny, coach/tilbakemelding/[oktId], coach/ovelser, onskeligokt/bekreftet | Pakke 7 godkjent 14.10 + `booking-meldinger.html` |
-| 12 Målsetninger, runder og gameplan, resten | mal, mal/runder/[id]/slag, mal/runder/[id]/hull, gameplan/[baneId], gameplan/[baneId]/hull/[nr] · **tegnes:** mal/goal/[id] | Pakke 3, 5 og 9 godkjent + `booking-meldinger.html` |
+| 11 Booking og meldinger, resten | booking/ny, ny/bekreft, [bookingId], meg/bookinger/reschedule, coach/melding, coach/sporsmal/[id] · **tegnes:** booking/coach/[coachId], booking/anlegg/[anleggId], coach/melding/ny, coach/sporsmal/ny, coach/tilbakemelding/[oktId], coach/ovelser, onskeligokt/bekreftet | Pakke 7 godkjent 14.10 + `booking-meldinger.html` (godkjent 16.10) |
+| 12 Målsetninger, runder og gameplan, resten | mal, mal/runder/[id]/slag, mal/runder/[id]/hull, gameplan/[baneId], gameplan/[baneId]/hull/[nr] · **tegnes:** mal/goal/[id] | Pakke 3, 5 og 9 godkjent + `booking-meldinger.html` (godkjent 16.10) |
 | 13 Stats, resten | statistikk/[metric], analysere/historikk, hull, skill-map, turneringer, datagolf/stasjon, statistikk/runder/[runId]/del, coach/sg-hub, trening/logg, putte-laboratoriet, tren/tester/ny, ny/egen | Tegnes |
 | 14 Meg, resten | abonnement/oppgrader/flyt, avbestill, fortsett, kort/ny, faktura/[id], innstillinger/varsler, sprak, sikkerhet, personvern, integrasjoner, ai-coach, sikkerhet/2fa, deling, dokumenter, resultater, helse/symptom/ny | Tegnes etter at Anders har sett pakke 8 |
 | 15 Hjelp og tilbakemelding | meg/help, help/kategori/[slug], help/artikkel/[slug], help/kontakt, meg/feedback | Tegnes |
@@ -53,5 +53,8 @@ og Plan har ikke funksjonen ennå. De tas med i pakke 17.
 
 Hver pakke: utkast i utkast-metoden → Anders ser det (port 7) → bygging i én PR med skjermbilder i 390 og 1280 px →
 «merge» fra Anders. Steg 8 legger inn videresendingene over. Steg 9 er sluttkontroll av alle sider i 390 og 1280 px.
+
+**Port 7 for pakke 11 og 12:** Anders godkjente de seks utkastene i `booking-meldinger.html` 16.10 («Ja dette ser bra ut»),
+https://claude.ai/artifact/1VqTieHpgVPDYSS9qGL2Xh. Alle sidene i pakke 11 og 12 kan nå bygges.
 
 Ikke rørt: PH-01 I dag, PH-16 Stats, pakke 2 Treningsøkta og pakke 8 Meg (venter på port 7), og Workbench-nivåene.
