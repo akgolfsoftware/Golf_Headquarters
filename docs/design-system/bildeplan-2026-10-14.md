@@ -1,8 +1,9 @@
 # Bildeplan — referansebilder for økter, tester og flater
 
-Status: **plan, godkjent retning 14.10.2026 (Anders).** Ingen bilder er laget ennå.
+Status: **plan, godkjent retning 14.10.2026 (Anders).** TEK er godkjent 16.10; resten gjenstår.
 Bakgrunn: designbrevet 13.10, punkt «Bilder (åpent)». Denne planen svarer på *hva* bildene skal vise.
 *Hvem* som lager dem (bildeverktøy, egne foto eller lisens) er fortsatt Anders' valg.
+Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2026-10-16.md).
 
 ## Faste regler for alle bilder
 
@@ -10,8 +11,13 @@ Bakgrunn: designbrevet 13.10, punkt «Bilder (åpent)». Denne planen svarer på
 - **Ingen lesbar tekst i bildet**: ingen navn på resultattavler, ingen merkelogoer (TrackMan, Titleist, Nike osv.),
   ingen reklameskilt. Tekst som må finnes (resultattavle), er uskarp.
 - **Ingen gjenkjennelige ansikter.** Spilleren sees bakfra, fra siden eller på avstand. Ingen ekte personer.
-- **Nordisk lys og natur**: lav sol, kjølig luft, gress og skog som på Østlandet. Ikke palmer, ikke ørken.
-- **Fotografisk, ikke illustrasjon.** Naturlige farger, litt dempet, så aksefargen på kortet bestemmer.
+- **Rolig og dempet** (Anders 16.10, etter to Gemini-forsøk): varme, nedtonede farger i sand, stein, grafitt og
+  dempet salviegrønt, som appens flater. Mykt, spredt lys, mye luft og ett tydelig motiv. Bildet holder seg i
+  bakgrunnen; aksefargen på kortet bestemmer. Ikke mettet grønt, ikke blå himmel med gjenskinn, ikke grått og vått.
+  Bildene som ligger i appen i dag er ikke stilfasit.
+- **Stilfasit er `tek-range.jpg`** (godkjent av Anders 16.10): naturlig, mykt overskyet dagslys, naturlige og litt
+  dempede farger, ryddig og eksklusivt. Legg det ved i Gemini som stilreferanse for alle nye bilder.
+- **Fotografisk, ikke illustrasjon.**
 - **Format:** lages i 3:2 (1800 × 1200). Motivet midt i bildet, så det tåler utsnitt til 4:5 (mobil) og 16:9 (topp).
 - **Filnavn:** `<akse>-<motiv>.jpg`, kebab-case, under 300 kB etter komprimering. Legges i
   `docs/design-system/utkast-playerhq/bilder/` og senere `public/images/okter/`.
@@ -21,18 +27,18 @@ Bakgrunn: designbrevet 13.10, punkt «Bilder (åpent)». Denne planen svarer på
 | Akse | Fil | Motiv (Anders 14.10) |
 |---|---|---|
 | FYS Fysisk | `fys-gym.jpg` | Mørkt gym. Vektstang med skiver ligger på gulvet. |
-| TEK Teknisk | `tek-range.jpg` | Spiller på drivingrangen, sett ovenfra. Mange baller. Detaljarbeid, gjentakelse. |
+| TEK Teknisk | `tek-range.jpg` | Spilleren trener en teknisk oppgave (Anders 16.10): stopper i en posisjon i baksvingen, to alignment-pinner på bakken, mobil på stativ filmer. Ingen ballhaug. |
 | SLAG Golfslag | `slag-tracer.jpg` | Litt høyt fra siden. Ballbanen tegnet som lyst spor inn mot green. Resultatet teller. |
 | SPILL Spill | `spill-runde.jpg` | Spiller på vanlig runde som leser greenen. Rolig, ingen publikum. |
 | TURN Turnering | `turn-hull18.jpg` | Hull 18, publikum rundt greenen, resultattavle i bakgrunnen. Press. |
 
 Bestillinger (lim inn i bildeverktøyet, én om gangen):
 
-- **FYS:** `Photorealistic, dim moody strength gym, a loaded olympic barbell with iron plates resting on a rubber floor, low side light, dark background, shallow depth of field, no people, no logos, no text, muted colors, 3:2`
-- **TEK:** `Photorealistic, high overhead angle looking down at a golfer on a driving range mat, a large pile of practice balls beside them, mid backswing, repetition and focus, Nordic autumn light, golfer seen from above and behind, face not visible, no logos, no text, 3:2`
-- **SLAG:** `Photorealistic, elevated side view of a golfer just after impact on a fairway, a bright thin shot-tracer line drawn in the sky following the ball flight toward a distant green with a flag, the result is the focus, Nordic landscape with forest, face not visible, no logos, no text, 3:2`
-- **SPILL:** `Photorealistic, a golfer crouching to read a putt on a quiet green during an ordinary round, early morning Nordic light, trees around, calm, seen from behind, no spectators, no logos, no text, 3:2`
-- **TURN:** `Photorealistic, 18th green of a tournament, a golfer standing over a putt, spectators lining the green, a large tournament leaderboard in the background out of focus and unreadable, tension and pressure, late afternoon light, golfer seen from behind, no logos, no readable text, 3:2`
+- **FYS:** `Use the attached image as the style reference: same photographer, same soft natural light, same muted natural colors and clean premium sports-documentary look. Photorealistic, a dimly lit strength gym with daylight falling in from one large window, a loaded olympic barbell with iron plates resting on a rubber floor in the foreground, calm and uncluttered, shallow depth of field, no people, no logos, no readable text, landscape 3:2 aspect ratio`
+- **TEK:** `A golfer on a grass practice tee holding a slow, controlled position halfway into the backswing with the club shaft parallel to the ground, two alignment sticks laid on the grass at the feet, a smartphone on a small tripod filming from behind, a single ball, deliberate technical drill, seen from the side and slightly behind, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **SLAG:** `Use the attached image as the style reference: same photographer, same soft natural light, same muted natural colors and clean premium sports-documentary look. Photorealistic, elevated side view of a golfer holding a balanced finish on a fairway just after an iron shot, a thin pale shot-tracer line in the sky following the ball flight toward a distant green with a flag, the result is the focus, trees around, face not visible, no logos, no readable text, landscape 3:2 aspect ratio`
+- **SPILL:** `Use the attached image as the style reference: same photographer, same soft natural light, same muted natural colors and clean premium sports-documentary look. Photorealistic, a golfer crouching behind the ball to read a putt on a quiet green during an ordinary round, golf bag lying at the edge of the green, flag in the hole, trees around, calm morning, seen from behind, no spectators, no logos, no readable text, landscape 3:2 aspect ratio`
+- **TURN:** `18th green of a tournament, a golfer standing over a putt, spectators softly out of focus around the green, a large leaderboard far in the background blurred and unreadable, quiet tension, seen from behind, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
 
 ## 2. Treningsområdene — bilde per område
 
