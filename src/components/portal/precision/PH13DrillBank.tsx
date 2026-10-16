@@ -15,6 +15,9 @@
  *   - Caddie-utkastene (godta eller forkast) fra forrige versjon er tatt ut. De ble aldri lagret.
  *   - «Ny egen øvelse» lagrer akse, treningsområde og navn. Resten av de åtte trinnene fylles i Workbench.
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-13.
+ *   - Coachens bank i AgencyOS (`coach`, beslutning 16.10.2026) viser samme side for coachens tilgang. Kortene
+ *     åpner Øvelser i Plan-hub (AG-14), der coachen endrer og lager øvelser; «Ny egen øvelse», Caddie og
+ *     break-tabellen (spillerens sider) er ikke med.
  */
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
@@ -35,12 +38,16 @@ export type PH13BankProps = {
   caddie: PH13Caddie | null;
   /** Skjermprøven: åpne «Ny egen øvelse» ved første visning. */
   startMedNy?: boolean;
+  /** Coachens bank i AgencyOS (/admin/ovelser): kortene åpner Plan-hub, ingen spillerhandlinger. */
+  coach?: boolean;
 };
 
-export function OvelseKort({ o }: { o: OvelseVisning }) {
+const COACH_OVELSE_HREF = "/admin/plan?fane=ovelser";
+
+export function OvelseKort({ o, href = `/portal/drills/${o.id}` }: { o: OvelseVisning; href?: string }) {
   const info = [o.min != null ? `${o.min} min` : null, o.mengde, o.miljo[0] ?? null].filter(Boolean) as string[];
   return (
-    <Link className={`phn-ov-kort ${o.akse}`} href={`/portal/drills/${o.id}`}>
+    <Link className={`phn-ov-kort ${o.akse}`} href={href}>
       {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
       <img src={o.bilde.src} alt="" width={168} height={168} loading="lazy" style={{ objectPosition: o.bilde.posisjon }} />
       <span className="phn-ov-kort-tekst">
@@ -60,7 +67,7 @@ function Chips({ valg, verdi, onVelg, navn }: { valg: string[]; verdi: string | 
   );
 }
 
-export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
+export function PH13DrillBank({ ovelser, caddie, startMedNy, coach = false }: PH13BankProps) {
   const [f, setF] = useState<OvFilter>(TOMT_FILTER);
   const [ny, setNy] = useState(!!startMedNy);
   const [melding, setMelding] = useState<string | null>(null);
@@ -73,13 +80,13 @@ export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
   const pressValg = useMemo(() => verdierI(ovelser, "press"), [ovelser]);
   const caddieOvelse = caddie ? ovelser.find((o) => o.id === caddie.ovelseId) ?? null : null;
   const listeTittel = f.omraade ?? (f.akse ? `${OV_AKSE_KODE[f.akse]}-øvelser` : "Alle øvelser");
-  const visBreak = !f.akse || f.akse === "slag" || f.akse === "tek";
+  const visBreak = !coach && (!f.akse || f.akse === "slag" || f.akse === "tek");
 
   const velgAkse = (a: OvAkse) => setF((x) => ({ ...x, akse: x.akse === a ? null : a, omraade: null }));
 
   const hode = (
     <div className="phn-ov-topp">
-      <span className="phn-dato">Plan · øvelsesbank</span>
+      <span className="phn-dato">{coach ? "Workbench · øvelsesbank" : "Plan · øvelsesbank"}</span>
       <h1 className="phn-tittel">Øvelsesbank</h1>
     </div>
   );
@@ -90,8 +97,11 @@ export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
         {hode}
         <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
           <b className="phn-ov-under">Ingen øvelser ennå</b>
-          <p className="phn-forklar">Lag din første øvelse, eller be coachen dele sine.</p>
-          <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button></div>
+          {coach
+            ? <><p className="phn-forklar">Lag øvelser i Plan-hub eller med pluss i Workbench.</p>
+                <div className="phn-knapper"><Link className="phn-knapp pri" href={COACH_OVELSE_HREF}>Til Plan-hub</Link></div></>
+            : <><p className="phn-forklar">Lag din første øvelse, eller be coachen dele sine.</p>
+                <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button></div></>}
         </section>
         {melding && <p className="phn-ov-status" role="status">{melding}</p>}
         {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
@@ -133,7 +143,9 @@ export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
               </div>
             </details>
           )}
-          <button type="button" className="phn-knapp sek" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>
+          {coach
+            ? <Link className="phn-knapp sek" href={COACH_OVELSE_HREF}>Lag og endre øvelser i Plan-hub</Link>
+            : <button type="button" className="phn-knapp sek" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>}
         </div>
 
         <div className="phn-seksjon" style={{ gap: 24 }}>
@@ -151,8 +163,8 @@ export function PH13DrillBank({ ovelser, caddie, startMedNy }: PH13BankProps) {
               {aktivt && <button type="button" className="phn-ov-lenke" onClick={() => setF(TOMT_FILTER)}>Nullstill filter</button>}
             </div>
             {treff.length > 0
-              ? <div className="phn-ov-liste">{treff.map((o) => <OvelseKort key={o.id} o={o} />)}</div>
-              : <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b className="phn-ov-under">Ingen øvelser passer filteret</b><p className="phn-forklar">Ta bort et filter, eller lag en egen øvelse.</p></div>}
+              ? <div className="phn-ov-liste">{treff.map((o) => <OvelseKort key={o.id} o={o} href={coach ? COACH_OVELSE_HREF : undefined} />)}</div>
+              : <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b className="phn-ov-under">Ingen øvelser passer filteret</b><p className="phn-forklar">{coach ? "Ta bort et filter." : "Ta bort et filter, eller lag en egen øvelse."}</p></div>}
           </section>
           {visBreak && (
             <Link className="phn-rad-lenke" href="/portal/drills/break-tabell">

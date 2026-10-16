@@ -37,6 +37,7 @@ test("standardlista uten søk er sortert etter antall, filtrert på pyramide og 
   const r = velgOvelser(alle, { grense: 2, pyramide: "SLAG" });
   assert.deepEqual(r.treff.map((x) => x.id), ["d", "c"]);
   assert.equal(r.antall, 4);
+  assert.equal(r.total, 5);
 });
 
 test("antallet vises som «14× lagt inn», og «—» når øvelsen ikke er brukt", () => {

@@ -20,7 +20,8 @@ export type VelgerOvelse = {
   min: number | null;
 };
 
-export type VelgerResultat = { treff: VelgerOvelse[]; antall: number };
+/** `antall`: treff for søk og pyramide. `total`: alle øvelser brukeren har tilgang til. */
+export type VelgerResultat = { treff: VelgerOvelse[]; antall: number; total: number };
 
 /** Hvor mange ganger hver øvelse er lagt inn. Rader uten øvelse telles ikke. */
 export function tellBruk(rader: readonly { exerciseId: string | null }[]): Map<string, number> {
@@ -49,7 +50,7 @@ export function velgOvelser(
   valg: { q?: string; pyramide?: PyramidArea | null; grense: number },
 ): VelgerResultat {
   const passer = alle.filter((o) => (!valg.pyramide || o.pyramide === valg.pyramide) && treffer(o, valg.q ?? ""));
-  return { treff: sorterMestBrukt(passer).slice(0, valg.grense), antall: passer.length };
+  return { treff: sorterMestBrukt(passer).slice(0, valg.grense), antall: passer.length, total: alle.length };
 }
 
 /** «14× lagt inn» eller «—» når øvelsen aldri er brukt. */
